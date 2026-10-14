@@ -1,7 +1,7 @@
 import { act, renderHook } from '@testing-library/react';
 
 import { TorStatus } from '@suite/tor';
-import { mock } from '@suite-common/dependency-injection';
+import { mock } from '@trezor/dependency-injection';
 
 import {
     type TorReconnectionLifecycleParams,

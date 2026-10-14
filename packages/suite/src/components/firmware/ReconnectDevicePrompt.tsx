@@ -20,13 +20,12 @@ import { DeviceConfirmImage } from 'src/components/suite/DeviceConfirmImage';
 import { useSelector } from 'src/hooks/suite';
 import { selectHasTransportOfType } from 'src/selectors/suite/suiteSelectors';
 
-const RebootDeviceGraphics = ({
-    device,
-    isManualRebootRequired,
-}: {
+type RebootDeviceGraphicsProps = {
     device?: Device | TrezorDevice;
     isManualRebootRequired: boolean;
-}) => {
+};
+
+const RebootDeviceGraphics = ({ device, isManualRebootRequired }: RebootDeviceGraphicsProps) => {
     if (!isManualRebootRequired) {
         return device ? <DeviceConfirmImage device={device} /> : null;
     }

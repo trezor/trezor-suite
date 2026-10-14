@@ -1,11 +1,17 @@
 import { DeviceModelInternal } from '@trezor/device-utils';
 import {
+    DEFAULT_ACCOUNT_SYNC_INTERVAL,
     type Explorer,
     type SuiteCommonNetworkConfig,
     asDisplayOrderKey,
     asProtocol,
 } from '@trezor/network-module-suite-common-types';
-import type { SolanaNetworkSymbol } from '@trezor/network-solana/constants';
+import type { SolanaNetworkSymbol } from '@trezor/network-solana-types';
+
+const syncIntervalBySymbol: Readonly<Record<SolanaNetworkSymbol, number>> = {
+    sol: DEFAULT_ACCOUNT_SYNC_INTERVAL * 5,
+    dsol: DEFAULT_ACCOUNT_SYNC_INTERVAL,
+};
 
 const getExplorerUrls = (baseUrl: string, isDevnet = false): Explorer => ({
     base: baseUrl,
@@ -55,6 +61,7 @@ export const networkConfigBySymbol = {
         },
         coingeckoId: 'solana',
         tradeCryptoId: 'solana',
+        fiatRateCryptoId: 'solana',
         caipId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
         nativeTokenReserve: '0.003',
         yieldXyzId: 'solana',
@@ -96,3 +103,6 @@ export const networkConfigBySymbol = {
 
 export const getNetworkConfig = (symbol: SolanaNetworkSymbol): SuiteCommonNetworkConfig =>
     networkConfigBySymbol[symbol];
+
+export const getAccountSyncInterval = (symbol: SolanaNetworkSymbol): number =>
+    syncIntervalBySymbol[symbol];

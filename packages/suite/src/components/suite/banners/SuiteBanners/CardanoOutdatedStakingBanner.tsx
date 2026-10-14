@@ -1,11 +1,11 @@
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { selectPoolStatsApy } from '@suite-common/wallet-core';
 import { Banner } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
 import { useSelector } from 'src/hooks/suite';
@@ -29,12 +29,20 @@ export const CardanoOutdatedStakingBanner = () => {
             icon
             intent="warning"
             rightContent={
-                <Banner.Button onClick={() => dispatch(gotoThunk({ routeName: 'suite-earn' }))}>
+                <Banner.Button
+                    onClick={() => dispatch(gotoThunk({ routeName: 'suite-earn' }))}
+                    data-testid="@staking/cardano-outdated-banner/update-provider-button"
+                >
                     <Translation id="TR_STAKING_MODAL_OUTDATED_BUTTON" />
                 </Banner.Button>
             }
             description={
-                <Translation id="TR_STAKING_MODAL_OUTDATED" values={{ apy: formatApyValue(apy) }} />
+                <span data-testid="@staking/cardano-outdated-banner/paragraph">
+                    <Translation
+                        id="TR_STAKING_MODAL_OUTDATED"
+                        values={{ apy: formatApyValue(apy) }}
+                    />
+                </span>
             }
         />
     );

@@ -7,10 +7,10 @@ import {
     injectDesktopApi,
 } from '@suite/desktop-app-api';
 import { TorStatus, selectIsTorEnabling, selectTorBootstrap, torActions } from '@suite/tor';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { addToastOnceThunk } from '@suite-common/toast-notifications';
+import { useServices } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { setTorBootstrapSlowThunk } from './bootstrap/setTorBootstrapSlowThunk';
 import { setTorBootstrapThunk } from './bootstrap/setTorBootstrapThunk';

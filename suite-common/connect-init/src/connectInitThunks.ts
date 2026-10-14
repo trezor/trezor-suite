@@ -5,7 +5,6 @@ import {
     type DeviceRootState,
     deviceActions,
     selectDevices,
-    selectIsPendingTransportEvent,
     selectSelectedDevice,
 } from '@suite-common/device';
 import { type FirmwareRootState, selectEffectiveFirmwareChannel } from '@suite-common/firmware';
@@ -15,7 +14,6 @@ import {
     parseTimeoutThresholdsPerModel,
     selectFeatureConfig,
 } from '@suite-common/message-system';
-import { createThunk } from '@suite-common/redux-utils';
 import {
     type ConnectInitDeviceEventHooksDep,
     type GetAllowPrereleaseDep,
@@ -34,7 +32,6 @@ import {
 import TrezorConnect, {
     BLOCKCHAIN_EVENT,
     type CallMethodPayload,
-    type CreateLoggerDep,
     DEVICE,
     DEVICE_EVENT,
     TRANSPORT_EVENT,
@@ -42,6 +39,8 @@ import TrezorConnect, {
     UI_REQUEST,
 } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
+import type { CreateLoggerDep } from '@trezor/logger';
+import { createThunk } from '@trezor/redux-utils';
 import { getSynchronize, isArrayMember } from '@trezor/utils';
 
 import { blacklist } from './blacklist';
@@ -111,7 +110,10 @@ export const connectInitThunk = createThunk<
             // and change the type of the action (in this case DeviceEvent type !== Redux Action type)
             const connectedDevices = selectDevices(getState());
             dispatch(deviceConnectThunk({ type: eventData.type, device: eventData.payload }));
-
+            connectInitDeviceEventHooks[eventData.type]?.(eventData.payload, connectedDevices);
+        } else if (eventData.type === DEVICE.DISCONNECT) {
+            const connectedDevices = selectDevices(getState());
+            dispatch({ type: eventData.type, payload: eventData.payload });
             connectInitDeviceEventHooks[eventData.type]?.(eventData.payload, connectedDevices);
         } else {
             // dispatch event as action
@@ -202,7 +204,6 @@ export const connectInitThunk = createThunk<
         await TrezorConnect.init({
             ...connectInitSettings,
             binFilesBaseUrl,
-            pendingTransportEvent: selectIsPendingTransportEvent(getState()),
             transports: createTransports(debugTransports),
             thp,
             debug: showConnectLogs,

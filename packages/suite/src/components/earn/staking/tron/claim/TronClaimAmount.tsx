@@ -20,7 +20,10 @@ export const TronClaimAmount = () => {
                 <Row alignItems="center" gap={8}>
                     <TokenIcon symbol={account.symbol} size={24} />
                     <Column gap={2} alignItems="flex-end">
-                        <Text typographyStyle="body-md-strong">
+                        <Text
+                            typographyStyle="body-md-strong"
+                            data-testid="@staking/tron-claim/amount"
+                        >
                             <FormattedCryptoAmount value={reward} symbol={account.symbol} />
                         </Text>
                         <Text typographyStyle="body-sm" intent="neutral" priority="secondary">

@@ -1096,8 +1096,7 @@ const readJsonBody = (req: http.IncomingMessage): Promise<unknown> =>
         req.on('error', reject);
     });
 
-export const init: ModuleInit = ({ mainWindowProxy, store }) => {
-    const { logger } = global;
+export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
     let server: http.Server | null = null;
     let sessionId: string | null = null;
     let sessionProcessInfo: ConnectProcessInfo | undefined;
@@ -1287,7 +1286,7 @@ export const init: ModuleInit = ({ mainWindowProxy, store }) => {
                                 name: processInfo.name,
                                 fullPath: processInfo.fullPath,
                                 warning: !!processInfo.warning,
-                                icon: await getProcessIcon(processInfo.fullPath),
+                                icon: await getProcessIcon({ path: processInfo.fullPath, logger }),
                             };
                         } else if (clientInfo?.name) {
                             sessionProcessInfo = {

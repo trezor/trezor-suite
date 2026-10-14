@@ -15,7 +15,6 @@
     "dependencies": {
         "@suite-common/bip329": "workspace:*",
         "@suite-common/bip329-types": "workspace:*",
-        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/jsonl": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
@@ -26,13 +25,14 @@
         "@suite-native/labeling": "workspace:*",
         "@suite-native/suite-sync": "workspace:*",
         "@suite-native/toasts": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "expo-file-system": "~57.0.1",
         "expo-sharing": "~57.0.6",
         "react": "19.2.3",
-        "react-native": "0.86.0",
+        "react-native": "0.86.3",
         "react-redux": "9.3.0"
     }
 }

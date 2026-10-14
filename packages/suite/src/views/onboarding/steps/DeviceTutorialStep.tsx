@@ -3,12 +3,12 @@ import { useIntl } from 'react-intl';
 
 import { Translation, messages } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
-import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import TrezorConnect from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
+import { DEFAULT_FLAGSHIP_MODEL } from '@trezor/device';
 import { mapTrezorModelToFilledIcon } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { beginOnboardingTutorialThunk } from 'src/actions/onboarding/onboardingActions';
 import { useSelector } from 'src/hooks/suite';

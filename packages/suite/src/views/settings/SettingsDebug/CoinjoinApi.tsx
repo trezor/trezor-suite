@@ -12,13 +12,13 @@ import {
     type CoinjoinServerEnvironment,
     type CoinjoinSymbol,
 } from '@suite/coinjoin';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
 import { injectReloadApp } from '@suite-common/suite-types';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Button } from '@trezor/components';
-import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
+import { useServices } from '@trezor/dependency-injection';
+import { SectionItem } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 import { typedObjectKeys } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
@@ -75,26 +75,25 @@ const CoordinatorServer = ({
     if (!isCoinjoinSupportedSymbol(symbol)) return null;
 
     return (
-        <SectionItem data-testid={`@settings/debug/coinjoin/${symbol}`}>
-            <TextColumn
-                title={`${networkName}`}
-                description={
-                    <>
-                        {networkName} coordinator server configuration
-                        <CoordinatorVersion version={version} />
-                    </>
-                }
-            />
-            <ActionColumn>
-                <ActionSelect
+        <SectionItem
+            data-testid={`@settings/debug/coinjoin/${symbol}`}
+            title={`${networkName}`}
+            description={
+                <>
+                    {networkName} coordinator server configuration
+                    <CoordinatorVersion version={version} />
+                </>
+            }
+            actions={
+                <SectionItem.Select
                     isDisabled={options.length < 2}
                     onChange={({ value }) => onChange(symbol, value)}
                     value={selectedOption}
                     options={options}
                     data-testid={`@settings/debug/coinjoin/${symbol}/server-select`}
                 />
-            </ActionColumn>
-        </SectionItem>
+            }
+        />
     );
 };
 

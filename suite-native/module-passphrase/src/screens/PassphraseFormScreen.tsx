@@ -1,12 +1,11 @@
 import { useCallback } from 'react';
 import { type LayoutChangeEvent, View } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
-import { Box, Button, HStack, Text, TitleHeader, VStack } from '@suite-native/atoms';
+import { AnimatedView, Box, Button, HStack, Text, TitleHeader, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
@@ -22,6 +21,7 @@ import {
     PassphraseScreenHeader,
     useHandleUiRequestPassphraseOnDevice,
 } from '@suite-native/passphrase';
+import { useServices } from '@trezor/dependency-injection';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 
@@ -122,7 +122,7 @@ export const PassphraseFormScreen = () => {
                         setWarningHeight(event.nativeEvent.layout.height)
                     }
                 >
-                    <Animated.View style={animationStyle}>
+                    <AnimatedView style={animationStyle}>
                         <Box style={applyStyle(cardStyle)}>
                             <VStack spacing="sp16">
                                 <VStack spacing="sp12">
@@ -186,7 +186,7 @@ export const PassphraseFormScreen = () => {
                                 </Button>
                             </VStack>
                         </Box>
-                    </Animated.View>
+                    </AnimatedView>
                 </View>
                 <PassphraseForm
                     onFocus={handleAnimation}

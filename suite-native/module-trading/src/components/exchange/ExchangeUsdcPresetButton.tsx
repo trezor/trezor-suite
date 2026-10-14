@@ -1,16 +1,17 @@
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { cryptoIdToNetworkSymbol, tradingExchangeActions } from '@suite-common/trading';
 import { type AccountsRootState, selectAccounts } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { Button, Text } from '@suite-native/atoms';
 import { exchangeActions } from '@suite-native/trading-state';
 import { type TradeableAsset } from '@suite-native/trading-types';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { useExchangeFormContext } from '../../hooks/exchange/useExchangeFormContext';
+import { setExchangeSendCryptoAmount } from '../../utils/exchange/exchangeSendAmountUtils';
 
 const USDC_ETH: TradeableAsset = {
     symbol: 'USDC',
@@ -62,7 +63,7 @@ export const ExchangeUsdcPresetButton = () => {
         setValue('sendAsset', USDC_ETH);
         setValue('sendAccount', debugAccount);
         dispatch(tradingExchangeActions.setTradingAccountKey(debugAccount.key));
-        setValue('sendCryptoAmount', '1');
+        setExchangeSendCryptoAmount(setValue, '1');
         setValue('receiveAsset', USDT_ETH);
         dispatch(exchangeActions.sendAssetChanged());
         dispatch(

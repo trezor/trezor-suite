@@ -15,13 +15,13 @@
         "@noble/curves": "^2.0.1",
         "@reduxjs/toolkit": "2.12.0",
         "@suite-common/delegated-identity-key-types": "workspace:*",
-        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/persistent-device-data": "workspace:*",
         "@suite-common/platform-encryption": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/connect-common": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*"
     }

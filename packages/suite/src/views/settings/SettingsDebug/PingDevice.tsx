@@ -1,12 +1,12 @@
 import { useRef, useState } from 'react';
 
 import { useDevice } from '@suite/device';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type ToastPayload, notificationsActions } from '@suite-common/toast-notifications';
 import { Checkbox, Input } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { useServices } from '@trezor/dependency-injection';
+import { SectionItem } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 export const PingDevice = () => {
     const { device, isLocked } = useDevice();
@@ -42,28 +42,27 @@ export const PingDevice = () => {
     };
 
     return (
-        <SectionItem>
-            <ActionColumn>
-                <Input innerRef={inputRef} placeholder="Ping message" />
-            </ActionColumn>
-
-            <ActionColumn>
-                <Checkbox
-                    isChecked={buttonProtection}
-                    labelAlignment="end"
-                    onChange={() => setButtonProtection(prev => !prev)}
-                >
-                    <TextColumn description="With confirmation" />
-                </Checkbox>
-                <ActionButton
-                    onClick={handleClick}
-                    size="small"
-                    isDisabled={isDeviceLocked}
-                    isLoading={isLoading}
-                >
-                    Send
-                </ActionButton>
-            </ActionColumn>
-        </SectionItem>
+        <SectionItem
+            actions={
+                <>
+                    <Input innerRef={inputRef} placeholder="Ping message" />
+                    <Checkbox
+                        isChecked={buttonProtection}
+                        labelAlignment="end"
+                        onChange={() => setButtonProtection(prev => !prev)}
+                    >
+                        With confirmation
+                    </Checkbox>
+                    <SectionItem.Button
+                        onClick={handleClick}
+                        size="small"
+                        isDisabled={isDeviceLocked}
+                        isLoading={isLoading}
+                    >
+                        Send
+                    </SectionItem.Button>
+                </>
+            }
+        />
     );
 };

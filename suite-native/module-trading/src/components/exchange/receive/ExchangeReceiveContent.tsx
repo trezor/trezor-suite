@@ -23,15 +23,15 @@ export const ExchangeReceiveContent = () => {
     return (
         <>
             <ExchangeTradeableAssetPicker />
-            <HStack justifyContent="space-between" alignItems="center" spacing="sp4">
-                {!!receiveAsset?.cryptoId && (
+            {!!receiveAsset?.cryptoId && (
+                <HStack justifyContent="space-between" alignItems="center" spacing="sp4">
                     <CryptoToFiatValueBadge
                         cryptoId={receiveAsset.cryptoId}
                         amount={receiveCryptoAmountInBaseUnit}
                     />
-                )}
-                <ExchangeReceiveAccountCryptoBalance />
-            </HStack>
+                    <ExchangeReceiveAccountCryptoBalance />
+                </HStack>
+            )}
         </>
     );
 };

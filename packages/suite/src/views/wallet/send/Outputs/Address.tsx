@@ -16,18 +16,16 @@ import {
     isEvmAddress,
     toChecksumAddress,
 } from '@suite-common/address';
-import { useServices } from '@suite-common/dependency-injection';
 import {
     injectAddressValidator,
     injectGetNamedAddressSupport,
     selectNetworkSymbolForProtocol,
 } from '@suite-common/networks';
 import { useQueryClient } from '@suite-common/react-query';
-import { injectDispatch, injectGetState } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { isAmountPresent, parseTransferUri } from '@suite-common/transfer-uri';
-import { formInputsMaxLength } from '@suite-common/validators';
 import {
+    ADDRESS_MAX_LENGTH,
     NAMED_ADDRESS_RESOLVE_DEBOUNCE_MS,
     getResolveNamedAddressQueryOptions,
     useResolveNamedAddress,
@@ -41,8 +39,10 @@ import {
 import { Icon, IconButton, Input, Link, Row, Text } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
+import { useServices } from '@trezor/dependency-injection';
 import { CheckIcon, InfoIcon, QrCodeIcon, WarningCircleIcon, XIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
+import { injectDispatch, injectGetState } from '@trezor/redux-utils';
 import { type TimerId } from '@trezor/type-utils';
 import {
     ALL_URLS,
@@ -57,6 +57,7 @@ import { InputError } from 'src/components/wallet';
 import { type InputErrorProps } from 'src/components/wallet/InputError';
 import { useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
+import { useReportEnsResolutionToAnalytics } from 'src/hooks/wallet/useReportEnsResolutionToAnalytics';
 import { selectIsSuiteOnline } from 'src/selectors/suite/suiteSelectors';
 import { captureSentryMessage } from 'src/utils/suite/sentry';
 
@@ -133,9 +134,19 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     const {
         mode: namedAddressMode,
         isResolving,
+        isFetching: isFetchingNamedAddress,
+        isSuccess: isNamedAddressSuccess,
+        isError: isNamedAddressError,
         resolvedAddress: resolvedNamedAddress,
         reverseResolvedName,
     } = useResolveNamedAddress(address, symbol);
+    useReportEnsResolutionToAnalytics({
+        symbol,
+        mode: namedAddressMode,
+        isFetching: isFetchingNamedAddress,
+        isSuccess: isNamedAddressSuccess,
+        isError: isNamedAddressError,
+    });
     // Reverse resolution runs for every hex address typed; it is a bonus lookup, so it must not
     // announce itself or occupy the bottom text the way a name the user typed does.
     const isResolvingNamedAddress = namedAddressMode === 'forward' && isResolving;
@@ -691,7 +702,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             bottomTextIconComponent={getBottomTextIconComponent()}
             data-testid={inputName}
             defaultValue={addressValue}
-            maxLength={formInputsMaxLength.address}
+            maxLength={ADDRESS_MAX_LENGTH}
             innerRef={inputRef}
             {...inputField}
         />

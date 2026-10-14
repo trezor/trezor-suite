@@ -4,6 +4,14 @@ import { step } from '../../common';
 import { DeviceFixture } from '../../device';
 import { DevicePrompt } from '../devicePrompt';
 
+type PassThroughShamirBackupParams = {
+    shares?: number;
+    threshold?: number;
+    deviceConfirmations: number;
+};
+
+type PassThroughBip39BackupParams = { deviceConfirmations: number };
+
 export class BackupSection {
     readonly startButton: Locator;
     readonly understandWhatSeedIsCheckbox: Locator;
@@ -75,11 +83,7 @@ export class BackupSection {
         shares = 1,
         threshold = 1,
         deviceConfirmations,
-    }: {
-        shares?: number;
-        threshold?: number;
-        deviceConfirmations: number;
-    }) {
+    }: PassThroughShamirBackupParams) {
         await expect(this.createBackupButton).toBeDisabled();
 
         await this.wroteSeedProperlyCheckbox.click();
@@ -106,7 +110,7 @@ export class BackupSection {
     }
 
     @step()
-    async passThroughBip39Backup({ deviceConfirmations }: { deviceConfirmations: number }) {
+    async passThroughBip39Backup({ deviceConfirmations }: PassThroughBip39BackupParams) {
         await expect(this.createBackupButton).toBeDisabled();
 
         await this.wroteSeedProperlyCheckbox.click();

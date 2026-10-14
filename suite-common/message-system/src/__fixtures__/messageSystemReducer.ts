@@ -1,4 +1,4 @@
-import { mockActionType } from '@suite-common/redux-utils/mocks';
+import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { messageSystemActions } from '../messageSystemActions';
 

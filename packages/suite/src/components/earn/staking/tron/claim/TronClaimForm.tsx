@@ -20,7 +20,7 @@ export const TronClaimForm = () => {
     return (
         <FormProvider {...form.methods}>
             <Column gap={16}>
-                <Text typographyStyle="headline-md">
+                <Text typographyStyle="headline-md" data-testid="@staking/tron-claim/title">
                     <Translation id="TR_EARN_TRON_CLAIM_TITLE" />
                 </Text>
 
@@ -36,6 +36,7 @@ export const TronClaimForm = () => {
                     <Banner
                         intent="warning"
                         description={<Translation id="TR_EARN_TRON_SUBMIT_ERROR" />}
+                        data-testid="@staking/tron-claim/submit-error"
                     />
                 )}
 

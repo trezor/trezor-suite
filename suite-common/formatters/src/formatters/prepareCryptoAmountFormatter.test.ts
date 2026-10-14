@@ -4,7 +4,7 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenSymbol } from '@suite-common/wallet-types';
 import { PROTO } from '@trezor/connect';
 
-import { prepareCryptoAmountFormatter } from './prepareCryptoAmountFormatter';
+import { joinAmountWithSymbol, prepareCryptoAmountFormatter } from './prepareCryptoAmountFormatter';
 
 const btcSymbol = asNetworkSymbol('btc');
 const ethSymbol = asNetworkSymbol('eth');
@@ -39,12 +39,12 @@ const CryptoAmountFormatterCzech = prepareCryptoAmountFormatter({
 describe('CryptoAmountFormatter', () => {
     describe('Money-like tokens (6 decimals) compact formatting', () => {
         it.each([
-            { value: '21.543', expected: '21.54 USDT' },
-            { value: '2', expected: '2.00 USDT' },
-            { value: '0.5', expected: '0.50 USDT' },
-            { value: '0.009', expected: '<0.01 USDT' },
-            { value: '0', expected: '0 USDT' },
-            { value: '1234567.899', expected: '1.23M USDT' },
+            { value: '21.543', expected: joinAmountWithSymbol('21.54', 'USDT') },
+            { value: '2', expected: joinAmountWithSymbol('2.00', 'USDT') },
+            { value: '0.5', expected: joinAmountWithSymbol('0.50', 'USDT') },
+            { value: '0.009', expected: joinAmountWithSymbol('<0.01', 'USDT') },
+            { value: '0', expected: joinAmountWithSymbol('0', 'USDT') },
+            { value: '1234567.899', expected: joinAmountWithSymbol('1.23M', 'USDT') },
         ])('formats $value as money for a 6-decimal token', ({ value, expected }) => {
             expect(
                 CryptoAmountFormatter.format(value, {
@@ -64,12 +64,16 @@ describe('CryptoAmountFormatter', () => {
                     formatStyle: 'compact-balance',
                     tokenDecimals: 18,
                 }),
-            ).toBe('0.009 USDT');
+            ).toBe(joinAmountWithSymbol('0.009', 'USDT'));
         });
 
         it.each([
-            { value: '0.009', tokenDecimals: 6, expected: '<0,01 USDT' },
-            { value: '0.000009', tokenDecimals: 18, expected: '<0,00001 USDT' },
+            { value: '0.009', tokenDecimals: 6, expected: joinAmountWithSymbol('<0,01', 'USDT') },
+            {
+                value: '0.000009',
+                tokenDecimals: 18,
+                expected: joinAmountWithSymbol('<0,00001', 'USDT'),
+            },
         ])('localizes compact dust threshold for $value', ({ value, tokenDecimals, expected }) => {
             expect(
                 CryptoAmountFormatterCzech.format(value, {
@@ -84,10 +88,10 @@ describe('CryptoAmountFormatter', () => {
 
     describe('Formats a compact balance shown in sats', () => {
         it.each([
-            { initialValue: '0.00098419', expected: '98,419 sat' },
-            { initialValue: '0.00000001', expected: '1 sat' },
-            { initialValue: '1.5', expected: '150,000,000 sat' },
-            { initialValue: '0', expected: '0 sat' },
+            { initialValue: '0.00098419', expected: joinAmountWithSymbol('98,419', 'sat') },
+            { initialValue: '0.00000001', expected: joinAmountWithSymbol('1', 'sat') },
+            { initialValue: '1.5', expected: joinAmountWithSymbol('150,000,000', 'sat') },
+            { initialValue: '0', expected: joinAmountWithSymbol('0', 'sat') },
         ] as const)('formats $initialValue BTC as $expected', ({ initialValue, expected }) => {
             expect(
                 CryptoAmountFormatterSats.format(initialValue, {
@@ -105,7 +109,7 @@ describe('CryptoAmountFormatter', () => {
                 CryptoAmountFormatter.format('300', {
                     symbol: btcSymbol,
                 }),
-            ).toBe('0.000003 BTC');
+            ).toBe(joinAmountWithSymbol('0.000003', 'BTC'));
         });
 
         it('BTC without symbol', () => {
@@ -126,16 +130,16 @@ describe('CryptoAmountFormatter', () => {
         });
 
         it.each([
-            ['0.3', '0.3 BTC'],
-            ['0.3000', '0.3 BTC'],
-            ['3.000', '3 BTC'],
-            ['000.3', '0.3 BTC'],
-            ['003', '3 BTC'],
-            ['0', '0 BTC'],
-            ['000', '0 BTC'],
-            ['3000', '3,000 BTC'],
-            ['0033.3300', '33.33 BTC'],
-            ['0033', '33 BTC'],
+            ['0.3', joinAmountWithSymbol('0.3', 'BTC')],
+            ['0.3000', joinAmountWithSymbol('0.3', 'BTC')],
+            ['3.000', joinAmountWithSymbol('3', 'BTC')],
+            ['000.3', joinAmountWithSymbol('0.3', 'BTC')],
+            ['003', joinAmountWithSymbol('3', 'BTC')],
+            ['0', joinAmountWithSymbol('0', 'BTC')],
+            ['000', joinAmountWithSymbol('0', 'BTC')],
+            ['3000', joinAmountWithSymbol('3,000', 'BTC')],
+            ['0033.3300', joinAmountWithSymbol('33.33', 'BTC')],
+            ['0033', joinAmountWithSymbol('33', 'BTC')],
         ])('BTC balance with symbol, case %#', (inputValue, expectedValue) => {
             expect(
                 CryptoAmountFormatter.format(inputValue, {
@@ -151,7 +155,7 @@ describe('CryptoAmountFormatter', () => {
                     symbol: ethSymbol,
                     isBalance: true,
                 }),
-            ).toBe('0.0206387… ETH');
+            ).toBe(joinAmountWithSymbol('0.0206387…', 'ETH'));
         });
 
         it('ETH balance with symbol + truncate decimals + hide ellipsis', () => {
@@ -161,7 +165,7 @@ describe('CryptoAmountFormatter', () => {
                     isBalance: true,
                     isEllipsisAppended: false,
                 }),
-            ).toBe('0.0206387 ETH');
+            ).toBe(joinAmountWithSymbol('0.0206387', 'ETH'));
         });
 
         it('ETH balance with units', () => {
@@ -170,7 +174,7 @@ describe('CryptoAmountFormatter', () => {
                     symbol: ethSymbol,
                     isBalance: false,
                 }),
-            ).toBe('0.00014898… ETH');
+            ).toBe(joinAmountWithSymbol('0.00014898…', 'ETH'));
         });
 
         it('ETH fee preserves all 18 decimals without Number precision loss', () => {
@@ -180,41 +184,69 @@ describe('CryptoAmountFormatter', () => {
                     isBalance: false,
                     maxDisplayedDecimals: 18,
                 }),
-            ).toBe('0.001005309106970022 ETH');
+            ).toBe(joinAmountWithSymbol('0.001005309106970022', 'ETH'));
         });
 
         it.each([
-            { initialValue: '1', compact: '1.00 ETH', exact: '1 ETH' },
-            { initialValue: '1.2', compact: '1.20 ETH', exact: '1.2 ETH' },
-            { initialValue: '1.239', compact: '1.23 ETH', exact: '1.239 ETH' },
+            {
+                initialValue: '1',
+                compact: joinAmountWithSymbol('1.00', 'ETH'),
+                exact: joinAmountWithSymbol('1', 'ETH'),
+            },
+            {
+                initialValue: '1.2',
+                compact: joinAmountWithSymbol('1.20', 'ETH'),
+                exact: joinAmountWithSymbol('1.2', 'ETH'),
+            },
+            {
+                initialValue: '1.239',
+                compact: joinAmountWithSymbol('1.23', 'ETH'),
+                exact: joinAmountWithSymbol('1.239', 'ETH'),
+            },
             {
                 initialValue: '0.123456789',
-                compact: '0.12345 ETH',
-                exact: '0.12345678… ETH',
+                compact: joinAmountWithSymbol('0.12345', 'ETH'),
+                exact: joinAmountWithSymbol('0.12345678…', 'ETH'),
             },
             {
                 initialValue: '0.999999999',
-                compact: '0.99999 ETH',
-                exact: '0.99999999… ETH',
+                compact: joinAmountWithSymbol('0.99999', 'ETH'),
+                exact: joinAmountWithSymbol('0.99999999…', 'ETH'),
             },
-            { initialValue: '0.123456', compact: '0.12345 ETH', exact: '0.123456 ETH' },
-            { initialValue: '0.000009', compact: '<0.00001 ETH', exact: '0.000009 ETH' },
+            {
+                initialValue: '0.123456',
+                compact: joinAmountWithSymbol('0.12345', 'ETH'),
+                exact: joinAmountWithSymbol('0.123456', 'ETH'),
+            },
+            {
+                initialValue: '0.000009',
+                compact: joinAmountWithSymbol('<0.00001', 'ETH'),
+                exact: joinAmountWithSymbol('0.000009', 'ETH'),
+            },
             {
                 initialValue: '999999.999',
-                compact: '999,999.99 ETH',
-                exact: '999,999.999 ETH',
+                compact: joinAmountWithSymbol('999,999.99', 'ETH'),
+                exact: joinAmountWithSymbol('999,999.999', 'ETH'),
             },
-            { initialValue: '1000000', compact: '1.00M ETH', exact: '1,000,000 ETH' },
+            {
+                initialValue: '1000000',
+                compact: joinAmountWithSymbol('1.00M', 'ETH'),
+                exact: joinAmountWithSymbol('1,000,000', 'ETH'),
+            },
             {
                 initialValue: '1234567.899',
-                compact: '1.23M ETH',
-                exact: '1,234,567.899 ETH',
+                compact: joinAmountWithSymbol('1.23M', 'ETH'),
+                exact: joinAmountWithSymbol('1,234,567.899', 'ETH'),
             },
-            { initialValue: '1000000000', compact: '1.00B ETH', exact: '1,000,000,000 ETH' },
+            {
+                initialValue: '1000000000',
+                compact: joinAmountWithSymbol('1.00B', 'ETH'),
+                exact: joinAmountWithSymbol('1,000,000,000', 'ETH'),
+            },
             {
                 initialValue: '1234567890',
-                compact: '1.23B ETH',
-                exact: '1,234,567,890 ETH',
+                compact: joinAmountWithSymbol('1.23B', 'ETH'),
+                exact: joinAmountWithSymbol('1,234,567,890', 'ETH'),
             },
         ])('formats ETH balance with symbol, case %#', ({ initialValue, compact, exact }) => {
             expect(
@@ -238,7 +270,7 @@ describe('CryptoAmountFormatter', () => {
                     CryptoAmountFormatterSats.format('300', {
                         symbol: btcSymbol,
                     }),
-                ).toBe('300 sat');
+                ).toBe(joinAmountWithSymbol('300', 'sat'));
             });
 
             it('BTC sats without symbol', () => {
@@ -256,7 +288,7 @@ describe('CryptoAmountFormatter', () => {
                         symbol: btcSymbol,
                         isBalance: true,
                     }),
-                ).toBe('30,000,000 sat');
+                ).toBe(joinAmountWithSymbol('30,000,000', 'sat'));
             });
 
             it('TEST sats with symbol', () => {
@@ -264,7 +296,7 @@ describe('CryptoAmountFormatter', () => {
                     CryptoAmountFormatterSats.format('300', {
                         symbol: asNetworkSymbol('test'),
                     }),
-                ).toBe('300 sat TEST');
+                ).toBe(joinAmountWithSymbol('300', 'sat TEST'));
             });
         });
     });

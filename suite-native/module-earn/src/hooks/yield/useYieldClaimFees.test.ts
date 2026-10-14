@@ -1,7 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { buildClaimCalldata } from '@suite-common/earn-stablecoin';
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { estimateYieldFeeLevel, formDraftReducer } from '@suite-common/wallet-core';
 import { type FeesState, type PrecomposedLevels } from '@suite-common/wallet-types';
 import {
@@ -11,6 +10,7 @@ import {
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
 import { prepareSendFormReducer } from '@suite-native/transaction-management';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { useYieldClaimFees } from './useYieldClaimFees';
 import { type StablecoinYieldAccountRewards } from '../../utils/yield/stablecoinYieldClaimSummaryUtils';

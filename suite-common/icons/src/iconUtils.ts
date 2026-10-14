@@ -1,3 +1,5 @@
+import { type NetworkSymbol, getNetworkOptional } from '@suite-common/wallet-config';
+
 import { type NetworkIconSymbol, legacyIconSymbols, networkSymbols } from './iconSymbols';
 import { type NetworkIconName } from './networkIcons';
 
@@ -25,6 +27,8 @@ export const networkIconSymbolMap = {
     rhc: 'rhc',
     sol: 'sol',
     tada: 'ada',
+    arc: 'arc',
+    tarc: 'arc',
     test: 'btc',
     thod: 'eth',
     trx: 'trx',
@@ -47,6 +51,7 @@ export const testnetNetworkIconSymbols = [
     'ttrx',
     'tsep',
     'thod',
+    'tarc',
     'txrp',
     'txlm',
     'dsol',
@@ -73,3 +78,6 @@ export const isTestnetNetworkIconSymbol = (
 /** Symbol has a bundled coin disc SVG (listed in the network icon map and present in cryptoIcons). */
 export const isCryptoIconSymbol = (symbol: string): symbol is NetworkIconSymbol =>
     cryptoIconSymbolSet.has(symbol);
+
+export const getNativeAssetIconSymbol = (networkSymbol: NetworkSymbol): NetworkSymbol =>
+    getNetworkOptional(networkSymbol)?.settlementLayer ?? networkSymbol;

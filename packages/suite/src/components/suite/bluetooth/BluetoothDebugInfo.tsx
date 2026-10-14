@@ -7,7 +7,9 @@ import { CellSignalFullIcon, FloppyDiskBackFilledIcon } from '@trezor/icons';
 
 import { useSelector } from 'src/hooks/suite';
 
-const TimeAgo = ({ timestamp }: { timestamp: number }) => {
+type TimeAgoProps = { timestamp: number };
+
+const TimeAgo = ({ timestamp }: TimeAgoProps) => {
     const [secAgo, setSecAgo] = useState(0);
 
     useEffect(() => {

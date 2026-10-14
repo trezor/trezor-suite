@@ -1,8 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type PhishingDetectorId,
     type TokenDefinitionsRootState,
@@ -25,6 +23,8 @@ import { CryptoToFiatAmountFormatter, ExactCryptoAmountFormatter } from '@suite-
 import { Translation, useTranslate } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 import { useNativeStyles } from '@trezor/styles-native';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 
@@ -45,6 +45,8 @@ const getPhishingWarningTranslationId = (detectorId?: PhishingDetectorId) => {
             return 'transactions.phishing.warningZeroAmount';
         case 'TRC10_TRANSFER':
             return 'transactions.phishing.warningTrc10Transfer';
+        case 'UNSOLICITED_ASSET_OFFER':
+            return 'transactions.phishing.warningUnsolicitedAssetOffer';
         default:
             return 'transactions.phishing.warning';
     }

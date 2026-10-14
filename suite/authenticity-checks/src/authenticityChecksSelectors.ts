@@ -1,13 +1,11 @@
 import { type RouterRootState, selectRouterApp } from '@suite/router';
 import {
-    type SuiteSettingsRootState,
     selectAreDeviceMetaChecksEnabled,
     selectIsEntropyCheckEnabled,
     selectIsFirmwareHashCheckEnabled,
     selectIsFirmwareRevisionCheckEnabled,
 } from '@suite/settings';
 import {
-    type DeviceRootState,
     getIsDeviceIdValid,
     selectIsFirmwareAuthenticityCheckDismissed,
     selectSelectedDevice,
@@ -20,24 +18,14 @@ import {
     getIsSkippedHashCheckError,
     getIsSkippedRevisionCheckError,
 } from '@suite-common/firmware-authenticity';
+import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 import {
-    Feature,
-    type MessageSystemRootState,
-    selectIsFeatureDisabled,
-} from '@suite-common/message-system';
-import {
-    type PersistentDeviceDataRootState,
     selectIsDeviceInvariabilityCheckSuccess,
     selectIsEntropyCheckFailed,
 } from '@suite-common/persistent-device-data';
 
 import { SHOULD_ROUTER_APP_SKIP_AUTHENTICITY_CHECKS } from './config';
-
-export type AuthenticityChecksRootState = SuiteSettingsRootState &
-    DeviceRootState &
-    PersistentDeviceDataRootState &
-    MessageSystemRootState &
-    RouterRootState;
+import type { AuthenticityChecksRootState } from './types';
 
 export const selectFirmwareRevisionCheckErrorIfEnabled = (state: AuthenticityChecksRootState) => {
     const device = selectSelectedDevice(state);
@@ -146,6 +134,16 @@ export const selectIsDeviceInvariabilityEnabledAndFailed = (state: AuthenticityC
     );
 };
 
+/**
+ * Whether to display the Device Compromised Screen for failed non-interactive checks,
+ * i.e. checks that run automatically, without prompting the user, as part of certain flows.
+ * Their results may be session-scoped, or persisted from the past.
+ * For the interactive checks, see `selectShouldEnterInteractiveDeviceChecks`
+ *
+ * - FW revision & hash check: they always rerun when a device is connected, or persisted for a remembered wallet.
+ * - Entropy check: once a result is persisted, it can never be changed.
+ * - Id check & invariability check: are derived solely from redux state in Suite.
+ */
 export const selectShouldDisplayDeviceCompromised = (
     state: AuthenticityChecksRootState,
 ): boolean => {

@@ -42,7 +42,6 @@ export default class BlockchainGetContractInfo extends AbstractMethod<
         });
 
         this.useDevice = false;
-        this.useUi = false;
     }
 
     get requiredPermissions(): PermissionRequest[] {

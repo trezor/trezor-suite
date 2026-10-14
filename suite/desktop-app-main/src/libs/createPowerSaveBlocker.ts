@@ -1,5 +1,7 @@
 import type { PowerSaveBlocker as ElectronPowerSaveBlocker } from 'electron';
 
+import type { ILogger } from './logger';
+
 export type PowerSaveBlockerDeps = {
     electronPowerSaveBlocker: Pick<ElectronPowerSaveBlocker, 'start' | 'stop'>;
     logger: Pick<ILogger, 'info'>;

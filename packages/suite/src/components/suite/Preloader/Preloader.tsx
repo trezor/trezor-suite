@@ -11,33 +11,34 @@ import {
     selectRouterLoaded,
 } from '@suite/router';
 import { selectIsAnalyticsConfirmed } from '@suite-common/analytics-redux';
-import { useServices } from '@suite-common/dependency-injection';
 import {
     useReportDeviceCompromised,
     useRetryFwAuthenticityChecks,
 } from '@suite-common/firmware-authenticity';
 import { selectActiveKillswitchMessage } from '@suite-common/message-system';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { Card } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import * as analyticsActions from 'src/actions/suite/analyticsActions';
 import { initThunk } from 'src/actions/suite/initAction';
+import {
+    InteractiveDeviceChecksFlow,
+    useInteractiveDeviceChecksFlowState,
+} from 'src/components/suite/SecurityCheck/InteractiveDeviceChecksFlow';
+import { WelcomeLayoutWithoutModalSwitcher } from 'src/components/suite/layouts/WelcomeLayout/WelcomeLayoutWithoutModalSwitcher';
 import { useGuideDesktopMenu, useGuideKeyboard } from 'src/hooks/guide';
 import { useAppShortcuts, useSelector } from 'src/hooks/suite';
 import { useWindowVisibility } from 'src/hooks/suite/useWindowVisibility';
-import {
-    selectIsTransportInitialized,
-    selectPrerequisite,
-    selectSuiteLifecycle,
-} from 'src/selectors/suite/suiteSelectors';
+import { selectPrerequisite, selectSuiteLifecycle } from 'src/selectors/suite/suiteSelectors';
 import { Onboarding } from 'src/views/onboarding';
 import { AnalyticsConsentScreen } from 'src/views/start/AnalyticsConsentScreen';
-import { SuiteStart } from 'src/views/start/SuiteStart';
 import { ErrorPage } from 'src/views/suite/ErrorPage';
 
 import { DatabaseCorruptedModal } from './DatabaseCorruptedModal';
 import { DatabaseUpgradeModal } from './DatabaseUpgradeModal';
 import { InitialLoading } from './InitialLoading';
+import { useWaitForTransport } from './useWaitForTransport';
 import { PrerequisitesGuide } from '../PrerequisitesGuide/PrerequisitesGuide';
 import { DeviceCompromisedScreen } from '../SecurityCheck/DeviceCompromisedScreen';
 import { useDeviceCompromisedNotification } from '../SecurityCheck/useDeviceCompromisedNotification';
@@ -46,8 +47,6 @@ import { WelcomeLayout } from '../layouts/WelcomeLayout/WelcomeLayout';
 
 const getFullscreenApp = (app: RouterAppWithParams['app']): FC | undefined => {
     switch (app) {
-        case 'start':
-            return SuiteStart;
         case 'onboarding':
             return Onboarding;
         default:
@@ -60,7 +59,6 @@ const getFullscreenApp = (app: RouterAppWithParams['app']): FC | undefined => {
 // Memoised so that a re-render above it (Main) does not cascade through the whole app.
 export const Preloader = memo(function Preloader({ children }: PropsWithChildren) {
     const lifecycle = useSelector(selectSuiteLifecycle);
-    const isTransportInitialized = useSelector(selectIsTransportInitialized);
     const isRouterLoaded = useSelector(selectRouterLoaded);
     const routerApp = useSelector(selectRouterApp);
     const isForegroundApp = useSelector(selectIsForegroundApp);
@@ -72,6 +70,8 @@ export const Preloader = memo(function Preloader({ children }: PropsWithChildren
     const killswitch = useSelector(selectActiveKillswitchMessage);
 
     const isAnalyticsConsentConfirmed = useSelector(selectIsAnalyticsConfirmed);
+
+    const waitForTransport = useWaitForTransport();
 
     const { device } = useDevice();
     useReportDeviceCompromised({ device });
@@ -103,6 +103,12 @@ export const Preloader = memo(function Preloader({ children }: PropsWithChildren
     useAppShortcuts();
     useWindowVisibility();
 
+    const {
+        isInteractiveDeviceChecksFlowDisplayed,
+        isAuthenticityCheckStepActive,
+        setIsAuthenticityCheckStepActive,
+    } = useInteractiveDeviceChecksFlowState();
+
     // Failed storage loading also prevents persisted analytics consent from loading.
     // Show the failure before consent so it cannot hide the database error.
     if (lifecycle.status === 'db-corrupted') {
@@ -124,15 +130,26 @@ export const Preloader = memo(function Preloader({ children }: PropsWithChildren
         return <KillswitchMessageScreen />;
     }
 
-    // @trezor/connect was initialized, but didn't emit "TRANSPORT" event yet (it could take a while)
-    // display Loader as full page view
-    if (lifecycle.status !== 'ready' || !isRouterLoaded || !isTransportInitialized) {
+    // @trezor/connect was initialized, but didn't emit "TRANSPORT" event or initially connected
+    // devices yet (it could take a while), display Loader as full page view
+    if (lifecycle.status !== 'ready' || !isRouterLoaded || waitForTransport) {
         // TODO: multiplied by 5, temporarily. Now initActions incorrectly awaits altcoin specific logic which can trigger this timeout easily for bigger accounts
         return <InitialLoading timeout={90 * 5} />;
     }
 
     if (shouldDisplayDeviceCompromisedOnRoute) {
         return <DeviceCompromisedScreen />;
+    }
+
+    if (isInteractiveDeviceChecksFlowDisplayed) {
+        return (
+            <WelcomeLayoutWithoutModalSwitcher>
+                <InteractiveDeviceChecksFlow
+                    isAuthenticityCheckStepActive={isAuthenticityCheckStepActive}
+                    setIsAuthenticityCheckStepActive={setIsAuthenticityCheckStepActive}
+                />
+            </WelcomeLayoutWithoutModalSwitcher>
+        );
     }
 
     // TODO: murder the fullscreen app logic, there must be a better way

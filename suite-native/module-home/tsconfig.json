@@ -5,16 +5,10 @@
         {
             "path": "../../suite-common/analytics"
         },
-        {
-            "path": "../../suite-common/dependency-injection"
-        },
         { "path": "../../suite-common/device" },
         { "path": "../../suite-common/feedback" },
         {
             "path": "../../suite-common/message-system"
-        },
-        {
-            "path": "../../suite-common/redux-utils"
         },
         {
             "path": "../../suite-common/suite-sync"
@@ -54,7 +48,11 @@
         { "path": "../settings" },
         { "path": "../suite-sync" },
         { "path": "../toasts" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
         { "path": "../../packages/device-utils" },
+        { "path": "../../packages/redux-utils" },
         {
             "path": "../../packages/styles-native"
         },

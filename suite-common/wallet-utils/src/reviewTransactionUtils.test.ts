@@ -13,7 +13,7 @@ import {
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import type { TokenInfo } from '@trezor/connect';
 
-import { buildApprovalTransactionData } from './ethUtils';
+import { buildApprovalTransactionData, getPrecomposedTxWithAccountToken } from './ethUtils';
 import {
     constructTransactionReviewOutputs,
     isClearSignedEvmTradingSwapTransaction,
@@ -56,6 +56,8 @@ const ERC20_REVOKE_DATA = buildApprovalTransactionData({
 const WETH_MAINNET = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
 const WETH_DEPOSIT_DATA = '0xd0e30db0'; // deposit() — wrap
 const WETH_WITHDRAW_DATA = `0x2e1a7d4d${'00'.repeat(32)}`; // withdraw(uint256) — unwrap
+const TRON_REPRESENTATIVE_A = 'TN3W4H6rK2ce4vX9YnFQHwKENnHjoxb3m9';
+const TRON_REPRESENTATIVE_B = 'TKWJhMU8NAviZ9TN5hroaFQPZ83FNctzz4';
 // WBNB on BSC — a wrapped native the firmware does NOT clear-sign
 const WBNB_BSC = '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c';
 
@@ -124,16 +126,17 @@ const buildUpdatedDevice = () =>
         minor_version: 12,
         patch_version: 4,
     });
+type BuildPrecomposedTransactionParams = {
+    isTokenKnown?: boolean;
+    to: string;
+    token?: TokenInfo;
+};
 
 const buildPrecomposedTransaction = ({
     isTokenKnown = true,
     to,
     token,
-}: {
-    isTokenKnown?: boolean;
-    to: string;
-    token?: TokenInfo;
-}): GeneralPrecomposedTransactionFinal =>
+}: BuildPrecomposedTransactionParams): GeneralPrecomposedTransactionFinal =>
     ({
         outputs: [{ address: to, amount: '1000000' }],
         fee: '21000',
@@ -611,6 +614,68 @@ describe('constructTransactionReviewOutputs', () => {
         );
     });
 
+    describe('connect transfer of a token without a firmware definition', () => {
+        const recipient = '0x000000000000000000000000000000000000abcd';
+        const transferAmount = '1500000';
+        const transactionData = `a9059cbb${recipient.slice(2).padStart(64, '0')}${BigInt(
+            transferAmount,
+        )
+            .toString(16)
+            .padStart(64, '0')}`;
+        const precomposedTx = getPrecomposedTxWithAccountToken({
+            precomposedTx: {
+                type: 'final',
+                inputs: [],
+                outputsPermutation: [0],
+                outputs: [
+                    { address: usdcToken.contract, amount: '0', script_type: 'PAYTOADDRESS' },
+                ],
+                totalSpent: '42000',
+                fee: '42000',
+                feePerByte: '20',
+                bytes: 0,
+                max: undefined,
+                isTokenKnown: false,
+            },
+            contract: usdcToken.contract,
+            data: transactionData,
+            accountTokens: [usdcToken],
+        });
+
+        it('renders it like an unknown-token send', () => {
+            const outputs = constructTransactionReviewOutputs({
+                account,
+                device,
+                decreaseOutputId: undefined,
+                precomposedForm: buildFormState({ transactionData }),
+                precomposedTx,
+            });
+
+            expect(outputs).toEqual([
+                { type: 'contract', value: usdcToken.contract },
+                { type: 'address', value: recipient },
+            ]);
+        });
+
+        it('shows the decoded recipient on pre-2.6.0 firmware', () => {
+            const outputs = constructTransactionReviewOutputs({
+                account,
+                device: mockSuiteDevice(undefined, {
+                    major_version: 2,
+                    minor_version: 5,
+                    patch_version: 3,
+                }),
+                decreaseOutputId: undefined,
+                precomposedForm: buildFormState({ transactionData }),
+                precomposedTx,
+            });
+
+            expect(outputs).toEqual(
+                expect.arrayContaining([{ type: 'regular_legacy', value: recipient }]),
+            );
+        });
+    });
+
     it('treats plain 0x calldata as a regular transfer', () => {
         const recipient = '0x000000000000000000000000000000000000abcd';
         const outputs = constructTransactionReviewOutputs({
@@ -650,6 +715,30 @@ describe('constructTransactionReviewOutputs', () => {
                 expect.objectContaining({ type: 'data', value: WETH_DEPOSIT_DATA }),
             ]),
         );
+    });
+
+    it('renders one tron-vote line per representative with its own vote count', () => {
+        const outputs = constructTransactionReviewOutputs({
+            account: mockWalletAccount({ symbol: asNetworkSymbol('trx') }),
+            device,
+            decreaseOutputId: undefined,
+            precomposedForm: buildFormState({
+                tronStaking: {
+                    kind: 'vote',
+                    votes: '46',
+                    allocations: [
+                        { address: TRON_REPRESENTATIVE_A, votes: '16' },
+                        { address: TRON_REPRESENTATIVE_B, votes: '30' },
+                    ],
+                },
+            }),
+            precomposedTx: buildPrecomposedTransaction({ to: TRON_REPRESENTATIVE_A }),
+        });
+
+        expect(outputs).toEqual([
+            { type: 'tron-vote', value: TRON_REPRESENTATIVE_A, value2: '16' },
+            { type: 'tron-vote', value: TRON_REPRESENTATIVE_B, value2: '30' },
+        ]);
     });
 });
 

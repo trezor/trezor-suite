@@ -13,11 +13,7 @@ export default class StellarGetAddress extends AbstractMiscGetAddress<'stellarGe
     }
 
     get info() {
-        return this.getInfo('Stellar', true);
-    }
-
-    get confirmation() {
-        return this.getConfirmation('Stellar');
+        return this.getInfo('Stellar');
     }
 
     async _call({ proto }: MiscGetAddressParams) {

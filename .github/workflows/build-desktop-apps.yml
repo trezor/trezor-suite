@@ -15,6 +15,19 @@ on:
   pull_request:
     types: [labeled]
   workflow_dispatch:
+    inputs:
+      linux:
+        description: "Build Linux"
+        type: boolean
+        default: true
+      mac:
+        description: "Build macOS"
+        type: boolean
+        default: true
+      win:
+        description: "Build Windows"
+        type: boolean
+        default: true
 
 env:
   DESKTOP_APP_NAME: "Trezor-Suite"
@@ -27,8 +40,11 @@ jobs:
   # An optimization needed to save RAM on the macOS runner, which is most constrained: build the Webpack Renderer bundle only once in Linux.
   # The Renderer bundle is the heaviest part of the build, and also the only part which can be safely shared (not platform dependent).
   build-and-cache-renderer:
-    if: (github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'build-desktop') || (github.event_name == 'push' && github.ref == 'refs/heads/develop')) && (github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private')
-    name: Build and cache Elecron Renderer process bundle
+    if: >-
+      (github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'build-desktop') || (github.event_name == 'push' && github.ref == 'refs/heads/develop')) &&
+      (github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private') &&
+      (github.event_name != 'workflow_dispatch' || inputs.linux || inputs.mac)
+    name: Build and cache Electron Renderer process bundle
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -40,7 +56,7 @@ jobs:
         with:
           node-version-file: ".nvmrc"
       - name: Install SafeDep PMG
-        uses: safedep/pmg@0d4f89121c773b0009cc2f2dfb578d03603263f2 # v0.29.1
+        uses: safedep/pmg@961499c36c98afbafec10a257ff27fb464073c86 # v0.30.0
         continue-on-error: true
         with:
           version: v0.19.1
@@ -60,20 +76,23 @@ jobs:
           key: renderer-bundle-${{ github.sha }}
 
   suite-desktop:
-    if: (github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'build-desktop') || (github.event_name == 'push' && github.ref == 'refs/heads/develop')) && (github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private')
+    if: >-
+      (github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'build-desktop') || (github.event_name == 'push' && github.ref == 'refs/heads/develop')) &&
+      (github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private') &&
+      (github.event_name != 'workflow_dispatch' || inputs.linux || inputs.mac)
     name: Build suite-desktop-${{ matrix.platform }}
     needs: build-and-cache-renderer
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.platform == 'mac' && 'macos-14' || 'ubuntu-latest' }}
     timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-14]
-        include:
-          - os: ubuntu-latest
-            platform: linux
-          - os: macos-14
-            platform: mac
+        platform: [linux, mac]
+        # no `include` here: it would re-add excluded platforms as new combinations
+        # on workflow_dispatch, skip platforms which were not selected ('none' matches nothing)
+        exclude:
+          - platform: ${{ github.event_name == 'workflow_dispatch' && !inputs.linux && 'linux' || 'none' }}
+          - platform: ${{ github.event_name == 'workflow_dispatch' && !inputs.mac && 'mac' || 'none' }}
     steps:
       - name: Checkout code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
@@ -90,6 +109,11 @@ jobs:
           path: suite/desktop-app/build
           key: renderer-bundle-${{ github.sha }}
           fail-on-cache-miss: true
+
+      - name: Install native binaries for every target architecture
+        uses: ./.github/actions/yarn-target-architectures
+        with:
+          platform: ${{ matrix.platform }}
 
       # safedep/pmg not available on macOS (that's ok, it already guards the `build-and-cache-renderer` job)
       - name: Install deps and build libs
@@ -119,7 +143,7 @@ jobs:
           retention-days: 3
 
       - name: Upload suite-desktop mac-arm artifact
-        if: matrix.os == 'macos-14'
+        if: matrix.platform == 'mac'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: suite-desktop-mac-arm-dmg
@@ -128,7 +152,10 @@ jobs:
           retention-days: 3
 
   suite-desktop-win:
-    if: (github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'build-desktop') || (github.event_name == 'push' && github.ref == 'refs/heads/develop')) && (github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private')
+    if: >-
+      (github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'build-desktop') || (github.event_name == 'push' && github.ref == 'refs/heads/develop')) &&
+      (github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private') &&
+      (github.event_name != 'workflow_dispatch' || inputs.win)
     name: Build suite-desktop-win
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -148,10 +175,16 @@ jobs:
           node-version-file: ".nvmrc"
 
       - name: Install SafeDep PMG
-        uses: safedep/pmg@0d4f89121c773b0009cc2f2dfb578d03603263f2 # v0.29.1
+        uses: safedep/pmg@961499c36c98afbafec10a257ff27fb464073c86 # v0.30.0
         continue-on-error: true
         with:
           version: v0.19.1
+
+      - name: Install native binaries for every target architecture
+        uses: ./.github/actions/yarn-target-architectures
+        with:
+          platform: ${{ env.platform }}
+
       - name: Install deps and build libs
         run: |
           yarn workspaces focus trezor-suite @suite/desktop-app @suite/desktop-app-renderer @suite/desktop-app-main @trezor/suite @suite/app-assets @trezor/transport-bridge @suite-common/message-system

@@ -2,8 +2,8 @@ import { useCallback, useRef, useState } from 'react';
 
 import { injectDesktopAnalytics } from '@suite/analytics';
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { type Network, filterNetworksByName } from '@suite-common/wallet-config';
+import { useServices } from '@trezor/dependency-injection';
 
 type NetworkSettingsSearchOrigin = 'network-settings' | 'add-account';
 

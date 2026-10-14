@@ -1,9 +1,9 @@
 import { type ReactNode } from 'react';
-import Animated, { SlideOutDown, useAnimatedStyle, withTiming } from 'react-native-reanimated';
+import { SlideOutDown, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 
 import { LinearGradient } from 'expo-linear-gradient';
 
-import { Box } from '@suite-native/atoms';
+import { AnimatedView, Box } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { hexToRgba } from '@trezor/utils';
 
@@ -42,7 +42,7 @@ export const SlidingFooterOverlay = ({ children, activeStepOffset }: SlidingFoot
     }));
 
     return (
-        <Animated.View
+        <AnimatedView
             style={[footerAnimatedStyle, applyStyle(footerOverlayStyle)]}
             exiting={SlideOutDown}
             testID={SLIDING_FOOTER_OVERLAY_TEST_ID}
@@ -56,6 +56,6 @@ export const SlidingFooterOverlay = ({ children, activeStepOffset }: SlidingFoot
                 style={applyStyle(gradientBackgroundStyle)}
             />
             <Box style={applyStyle(contentWrapperStyle)}>{children}</Box>
-        </Animated.View>
+        </AnimatedView>
     );
 };

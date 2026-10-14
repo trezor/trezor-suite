@@ -1,7 +1,7 @@
 import { BlockbookAPI } from '@trezor/blockchain-link/src/workers/blockbook/websocket';
+import type { Logger } from '@trezor/logger';
 
 import { HTTP_REQUEST_TIMEOUT, WS_CONNECT_TIMEOUT } from '../constants';
-import type { Logger } from '../types';
 import { identifyWsError } from './backendUtils';
 import { resetIdentityCircuit } from '../utils/http';
 

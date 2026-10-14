@@ -261,16 +261,59 @@ describe('NotificationRenderer transaction broadcasts', () => {
         expect(notificationView).toHaveAttribute('data-variant', 'warning');
     });
 
-    it.each(['tx-staked', 'tx-unstaked', 'tx-claimed'] as const)(
-        'renders a %s broadcast with the warning variant and piggy-bank icon',
+    const { amount: _amount, ...earnTransactionPayload } = transactionPayload;
+    const earnToastTypes = [
+        'tx-staked',
+        'tx-unstaked',
+        'tx-claimed',
+        'tx-withdrawn',
+        'tx-voted',
+        'tx-yield-deposit',
+        'tx-yield-withdraw',
+        'tx-yield-claim',
+    ] as const;
+
+    it.each(earnToastTypes)(
+        'renders a pending %s with the warning variant and piggy-bank icon',
         type => {
             renderNotification({
-                ...transactionPayload,
+                ...earnTransactionPayload,
                 type,
+                stage: 'pending',
             });
 
             const notificationView = screen.getByTestId('notification-view');
             expect(notificationView).toHaveAttribute('data-variant', 'warning');
+            expect(notificationView).toHaveAttribute('data-icon', 'piggy-bank');
+        },
+    );
+
+    it.each(earnToastTypes)(
+        'renders a sped-up %s with the warning variant and piggy-bank icon',
+        type => {
+            renderNotification({
+                ...earnTransactionPayload,
+                type,
+                stage: 'sped-up',
+            });
+
+            const notificationView = screen.getByTestId('notification-view');
+            expect(notificationView).toHaveAttribute('data-variant', 'warning');
+            expect(notificationView).toHaveAttribute('data-icon', 'piggy-bank');
+        },
+    );
+
+    it.each(earnToastTypes)(
+        'renders a confirmed %s with the success variant and piggy-bank icon',
+        type => {
+            renderNotification({
+                ...earnTransactionPayload,
+                type,
+                stage: 'confirmed',
+            });
+
+            const notificationView = screen.getByTestId('notification-view');
+            expect(notificationView).toHaveAttribute('data-variant', 'success');
             expect(notificationView).toHaveAttribute('data-icon', 'piggy-bank');
         },
     );

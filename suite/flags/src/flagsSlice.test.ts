@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { DEVICE } from '@trezor/connect';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { NewContentIndicatorId } from './flagsConstants';
 import {
@@ -24,6 +24,8 @@ const initStore = (preloadedState = flagsInitialState) =>
         reducer: { flags: flagsReducer },
         preloadedState: { flags: preloadedState },
     });
+
+const initUnseenStore = () => initStore({ ...flagsInitialState, seenNewContentIndicators: {} });
 
 describe('flagsSlice', () => {
     it('should return initial state', () => {
@@ -53,36 +55,28 @@ describe('flagsSlice', () => {
         expect(state.dashboardAssetsGridMode).toBe(flagsInitialState.dashboardAssetsGridMode);
     });
 
-    it('shows unseen new-content indicators by default', () => {
+    it('hides all current new-content indicators on a fresh start', () => {
         const store = initStore();
 
-        expect(
-            selectIsNewContentIndicatorVisible(NewContentIndicatorId.Activity26_8)(
-                store.getState(),
-            ),
-        ).toBe(true);
-        expect(
-            selectIsNewContentIndicatorVisible(NewContentIndicatorId.Earn26_8)(store.getState()),
-        ).toBe(true);
+        Object.values(NewContentIndicatorId).forEach(indicatorId => {
+            expect(selectIsNewContentIndicatorVisible(indicatorId)(store.getState())).toBe(false);
+        });
     });
 
-    it('marks only the selected new-content indicator as seen', () => {
-        const store = initStore();
+    it.each(Object.values(NewContentIndicatorId))('marks only %s as seen', indicatorId => {
+        const store = initUnseenStore();
 
-        store.dispatch(markNewContentIndicatorAsSeen(NewContentIndicatorId.Activity26_8));
+        store.dispatch(markNewContentIndicatorAsSeen(indicatorId));
 
-        expect(
-            selectIsNewContentIndicatorVisible(NewContentIndicatorId.Activity26_8)(
-                store.getState(),
-            ),
-        ).toBe(false);
-        expect(
-            selectIsNewContentIndicatorVisible(NewContentIndicatorId.Earn26_8)(store.getState()),
-        ).toBe(true);
+        Object.values(NewContentIndicatorId).forEach(id => {
+            expect(selectIsNewContentIndicatorVisible(id)(store.getState())).toBe(
+                id !== indicatorId,
+            );
+        });
     });
 
     it('marks a new-content indicator as seen idempotently', () => {
-        const store = initStore();
+        const store = initUnseenStore();
 
         store.dispatch(markNewContentIndicatorAsSeen(NewContentIndicatorId.Earn26_8));
         store.dispatch(markNewContentIndicatorAsSeen(NewContentIndicatorId.Earn26_8));
@@ -101,7 +95,29 @@ describe('flagsSlice', () => {
 
         store.dispatch(setNewContentIndicatorSeen({ indicatorId, isSeen: false }));
         expect(selectIsNewContentIndicatorVisible(indicatorId)(store.getState())).toBe(true);
-        expect(store.getState().flags.seenNewContentIndicators).toEqual({});
+        expect(store.getState().flags.seenNewContentIndicators).toEqual({
+            [NewContentIndicatorId.Earn26_8]: true,
+            [NewContentIndicatorId.Swap26_10]: true,
+        });
+    });
+
+    it('shows a newly introduced ID missing from an existing baseline', () => {
+        const store = initStore({
+            ...flagsInitialState,
+            seenNewContentIndicators: {
+                [NewContentIndicatorId.Activity26_8]: true,
+                [NewContentIndicatorId.Earn26_8]: true,
+            },
+        });
+
+        expect(
+            selectIsNewContentIndicatorVisible(NewContentIndicatorId.Swap26_10)(store.getState()),
+        ).toBe(true);
+        expect(
+            selectIsNewContentIndicatorVisible(NewContentIndicatorId.Activity26_8)(
+                store.getState(),
+            ),
+        ).toBe(false);
     });
 
     it('should disable no-device eShop banners once a device connects', () => {

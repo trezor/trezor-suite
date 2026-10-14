@@ -1,10 +1,17 @@
 import {
+    DEFAULT_ACCOUNT_SYNC_INTERVAL,
     type Explorer,
     type SuiteCommonNetworkConfig,
     asDisplayOrderKey,
     asProtocol,
 } from '@trezor/network-module-suite-common-types';
-import { RIPPLE_DECIMALS, type RippleNetworkSymbol } from '@trezor/network-ripple/constants';
+import { RIPPLE_DECIMALS } from '@trezor/network-ripple/constants';
+import type { RippleNetworkSymbol } from '@trezor/network-ripple-types';
+
+const syncIntervalBySymbol: Readonly<Record<RippleNetworkSymbol, number>> = {
+    xrp: DEFAULT_ACCOUNT_SYNC_INTERVAL,
+    txrp: DEFAULT_ACCOUNT_SYNC_INTERVAL,
+};
 
 const getExplorerUrls = (baseUrl: string): Explorer => ({
     base: baseUrl,
@@ -33,6 +40,7 @@ export const networkConfigBySymbol = {
         accountTypes: {},
         coingeckoId: 'ripple',
         tradeCryptoId: 'ripple',
+        fiatRateCryptoId: 'ripple',
         yieldXyzId: null,
     },
     txrp: {
@@ -57,3 +65,6 @@ export const networkConfigBySymbol = {
 
 export const getNetworkConfig = (symbol: RippleNetworkSymbol): SuiteCommonNetworkConfig =>
     networkConfigBySymbol[symbol];
+
+export const getAccountSyncInterval = (symbol: RippleNetworkSymbol): number =>
+    syncIntervalBySymbol[symbol];

@@ -14,12 +14,17 @@ import type {
 } from '@suite-common/wallet-types';
 import { parseElectrumUrl } from '@trezor/utils';
 
+export const isDirectRpcBackendType = (backendType?: BackendType) => backendType === 'evm-rpc';
+
 export const getDefaultBackendType = (symbol: NetworkSymbol) => {
     if (symbol === 'ada') {
         return 'blockfrost';
     }
     if (symbol === 'sol' || symbol === 'dsol') {
         return 'solana';
+    }
+    if (symbol === 'arc' || symbol === 'tarc') {
+        return 'evm-rpc';
     }
 
     return 'blockbook';

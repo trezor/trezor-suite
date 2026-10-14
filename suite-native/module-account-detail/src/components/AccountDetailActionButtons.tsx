@@ -2,14 +2,12 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Box, Button, HStack } from '@suite-native/atoms';
 import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
-import { type FeatureFlagsRootState } from '@suite-native/feature-flags';
 import { Translation } from '@suite-native/intl';
 import {
     type AccountDetailStackParamList,
@@ -21,11 +19,9 @@ import {
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
+import { useServices } from '@trezor/dependency-injection';
 
-import {
-    selectHasAccountOrTokenSpendableBalance,
-    selectIsNetworkSendFlowEnabled,
-} from '../selectors';
+import { selectHasAccountOrTokenSpendableBalance } from '../selectors';
 
 type AccountDetailActionButtonsProps = {
     accountKey: AccountKey;
@@ -50,9 +46,6 @@ export const AccountDetailActionButtons = ({
     );
     const token = useSelector((state: TokensRootState) =>
         selectAccountTokenInfo(state, accountKey, tokenContract),
-    );
-    const isNetworkSendFlowEnabled = useSelector((state: FeatureFlagsRootState) =>
-        selectIsNetworkSendFlowEnabled(state, account?.symbol),
     );
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const hasFirmwareAuthenticityCheckHardFailed = useSelector(
@@ -105,8 +98,7 @@ export const AccountDetailActionButtons = ({
     };
 
     const isReceiveButtonDisplayed = !hasFirmwareAuthenticityCheckHardFailed;
-    const isSendButtonDisplayed =
-        isNetworkSendFlowEnabled && !isPortfolioTrackerDevice && hasSelectedAssetSpendableBalance;
+    const isSendButtonDisplayed = !isPortfolioTrackerDevice && hasSelectedAssetSpendableBalance;
 
     if (!isReceiveButtonDisplayed && !isSendButtonDisplayed) return null;
 

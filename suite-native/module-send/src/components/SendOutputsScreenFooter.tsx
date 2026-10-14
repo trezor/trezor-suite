@@ -1,6 +1,6 @@
-import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated';
+import { FadeInDown, FadeOutDown } from 'react-native-reanimated';
 
-import { Box, Button } from '@suite-native/atoms';
+import { AnimatedView, Box, Button } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 
 export const SendOutputsScreenFooter = ({
@@ -13,7 +13,7 @@ export const SendOutputsScreenFooter = ({
     const { translate } = useTranslate();
 
     return (
-        <Animated.View entering={FadeInDown} exiting={FadeOutDown}>
+        <AnimatedView entering={FadeInDown} exiting={FadeOutDown}>
             <Box paddingVertical="sp16">
                 <Button
                     accessibilityRole="button"
@@ -25,6 +25,6 @@ export const SendOutputsScreenFooter = ({
                     <Translation id="moduleSend.fees.submitButton" />
                 </Button>
             </Box>
-        </Animated.View>
+        </AnimatedView>
     );
 };

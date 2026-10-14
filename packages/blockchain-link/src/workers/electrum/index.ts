@@ -169,15 +169,21 @@ class ElectrumWorker extends BaseWorker<ElectrumClient> {
             proxyAgent: this.proxyAgent,
         });
         const api = new CachingElectrumClient();
-        await api.connect(socket, {
-            url,
-            coin: name ?? 'BTC',
-            debug,
-            client: {
-                name: 'blockchain-link',
-                protocolVersion: '1.4',
-            },
-        });
+        await api
+            .connect(socket, {
+                url,
+                coin: name ?? 'BTC',
+                debug,
+                client: {
+                    name: 'blockchain-link',
+                    protocolVersion: '1.4',
+                },
+            })
+            .catch(error => {
+                // Electrum handshake failed, the socket is still open.
+                socket.close();
+                throw error;
+            });
 
         this.addressCache = createAddressCache(api.getInfo()?.network);
 

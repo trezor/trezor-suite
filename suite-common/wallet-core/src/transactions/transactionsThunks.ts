@@ -1,4 +1,3 @@
-import { createSingleInstanceThunk, createThunk } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import {
     type Account,
@@ -17,10 +16,12 @@ import {
     findAccountsByAddress,
     findTransactions,
     fromGwei,
+    getAccountAddresses,
     getEvmTransactionTextSignature,
     getPendingAccount,
     getRbfParams,
     getTronResources,
+    getUtxoOutpoint,
     isEip1559,
     isEvmYieldTxByTextSignature,
     isRbfBumpFeeTransaction,
@@ -36,6 +37,9 @@ import TrezorConnect, {
     type TokenTransfer,
 } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
+import { LOVELACE_UNIT } from '@trezor/network-cardano/constants';
+import { SOLANA_SLOT_TIME_MS } from '@trezor/network-solana/constants';
+import { createSingleInstanceThunk, createThunk } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { TRANSACTIONS_MODULE_PREFIX, transactionsActions } from './transactionsActions';
@@ -60,11 +64,19 @@ import { type FeesRootState, selectRawNetworkFeeInfo } from '../fees/feesReducer
 import { ethereumGetCurrentNonceThunk } from '../send/sendFormEthereumThunks';
 import { type SendRootState } from '../send/sendFormReducer';
 import { selectSendSignedTx } from '../send/sendFormSelectors';
+import {
+    type StellarContractTokensRootState,
+    selectStellarContractTokens,
+} from '../token/stellarContractTokensSlice';
 
 // How long a locally added fake pending tx is kept in the UI.
 const FAKE_TX_TTL_SECONDS = 15 * 60;
+// A Stellar ledger closes about every five seconds.
+const STELLAR_LEDGER_CLOSE_SECONDS = 5;
 // Cardano's average block interval, not reported by @trezor/connect.
 const CARDANO_BLOCK_TIME_SECONDS = 20;
+// Solana's average block interval; its fee info reports the block time as unknown (-1).
+const SOLANA_BLOCK_TIME_SECONDS = SOLANA_SLOT_TIME_MS / 1000;
 
 /**
  * Replace existing transaction in the reducer (RBF)
@@ -232,6 +244,16 @@ export const addFakePendingTxThunk = createThunk<
         });
     },
 );
+type BuildFakePendingEvmTxParams = {
+    precomposedTransaction: PrecomposedTransactionFinal;
+    precomposedForm: FormState;
+    txid: string;
+    account: Account;
+    nonce: string;
+    blockHeight: number;
+    deadline: number;
+    token?: TokenInfo;
+};
 
 const buildFakePendingEvmTx = ({
     precomposedTransaction,
@@ -242,16 +264,7 @@ const buildFakePendingEvmTx = ({
     blockHeight,
     deadline,
     token,
-}: {
-    precomposedTransaction: PrecomposedTransactionFinal;
-    precomposedForm: FormState;
-    txid: string;
-    account: Account;
-    nonce: string;
-    blockHeight: number;
-    deadline: number;
-    token?: TokenInfo;
-}): AccountTransaction & Partial<WalletAccountTransaction> => {
+}: BuildFakePendingEvmTxParams): AccountTransaction & Partial<WalletAccountTransaction> => {
     const { outputs: precomposedOutputs } = precomposedTransaction;
     // @ts-expect-error: indexing with noUncheckedIndexedAccess
     const output: (typeof precomposedOutputs)[number] = precomposedOutputs[0];
@@ -443,8 +456,14 @@ export const addFakePendingEvmTxThunk = createThunk<
     },
 );
 
+const sumValues = (items: { value: string }[]) =>
+    items.reduce((sum, { value }) => sum.plus(value), new BigNumber(0)).toString();
+
 type AddFakePendingCardanoTxThunkParams = {
-    precomposedTransaction: Pick<PrecomposedTransactionCardanoFinal, 'totalSpent' | 'fee'>;
+    precomposedTransaction: Pick<
+        PrecomposedTransactionCardanoFinal,
+        'totalSpent' | 'fee' | 'inputs' | 'outputs'
+    >;
     txid: string;
     account: Account;
     cardanoSpecific?: WalletAccountTransaction['cardanoSpecific'];
@@ -458,36 +477,129 @@ export const addFakePendingCardanoTxThunk = createThunk<
     { state: AddFakePendingCardanoTxThunkState }
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
-    ({ precomposedTransaction, txid, account, cardanoSpecific }, { dispatch, getState }) => {
+    (
+        {
+            precomposedTransaction: { totalSpent, fee, inputs, outputs },
+            txid,
+            account,
+            cardanoSpecific,
+        },
+        { dispatch, getState },
+    ) => {
         const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol);
 
         // Used in cardano send form and staking tab until Blockfrost supports pending txs on its backend
         // https://github.com/trezor/trezor-suite/issues/4932
+        // Mirrors the shape Blockfrost produces for the confirmed tx, so the placeholder renders the same.
+        const addressByPath = new Map(
+            getAccountAddresses(account).map(({ path, address }) => [path, address]),
+        );
+        const ownAddresses = new Set(addressByPath.values());
+        const changeAddresses = new Set(account.addresses?.change.map(({ address }) => address));
+        // Blockfrost lists one entry per asset a UTXO carries; the ADA entry is what the input spends.
+        const adaUtxoByOutpoint = new Map(
+            account.utxo
+                ?.filter(utxo => (utxo.cardanoSpecific?.unit ?? LOVELACE_UNIT) === LOVELACE_UNIT)
+                .map(utxo => [getUtxoOutpoint(utxo), utxo]),
+        );
+        const accountTokenByUnit = new Map(account.tokens?.map(token => [token.contract, token]));
+
+        const toVinVout = (n: number, address: string, value: string) => ({
+            n,
+            addresses: [address],
+            isAddress: true,
+            value,
+            // Blockfrost leaves the flag out for foreign addresses instead of setting it to false.
+            isAccountOwned: ownAddresses.has(address) || undefined,
+        });
+
+        const vin = inputs.flatMap((input, n) => {
+            const utxo = adaUtxoByOutpoint.get(
+                getUtxoOutpoint({ txid: input.prev_hash, vout: input.prev_index }),
+            );
+
+            return utxo ? [toVinVout(n, utxo.address, utxo.amount)] : [];
+        });
+
+        const getOutputAddress = (output: (typeof outputs)[number]) => {
+            if ('address' in output) return output.address;
+            const { path } = output.addressParameters;
+
+            return typeof path === 'string' ? addressByPath.get(path) : undefined;
+        };
+
+        const resolvedOutputs = outputs.flatMap((output, n) => {
+            const address = getOutputAddress(output);
+
+            return address
+                ? [{ output, address, vinVout: toVinVout(n, address, output.amount) }]
+                : [];
+        });
+        const nonChangeOutputs = resolvedOutputs.filter(
+            ({ address }) => !changeAddresses.has(address),
+        );
+        const foreignOutputs = nonChangeOutputs.filter(({ address }) => !ownAddresses.has(address));
+
+        const type = foreignOutputs.length === 0 ? ('self' as const) : ('sent' as const);
+
+        const vout = resolvedOutputs.map(({ vinVout }) => vinVout);
+        const targets = nonChangeOutputs.map(
+            ({ vinVout: { value, isAccountOwned, ...target } }) => ({
+                ...target,
+                amount: value,
+                isAccountTarget: isAccountOwned,
+            }),
+        );
+
+        const tokens = nonChangeOutputs.flatMap(({ address, output }) =>
+            (output.tokenBundle ?? []).flatMap(({ policyId, tokenAmounts }) =>
+                tokenAmounts.flatMap(({ assetNameBytes, amount }) => {
+                    if (!amount) return [];
+
+                    const unit = policyId + assetNameBytes;
+                    const token = accountTokenByUnit.get(unit);
+
+                    return [
+                        {
+                            type,
+                            standard: 'BLOCKFROST' as const,
+                            amount,
+                            from: account.descriptor,
+                            to: address,
+                            contract: unit,
+                            name: token?.name,
+                            symbol: token?.symbol,
+                            decimals: token?.decimals ?? 0,
+                        },
+                    ];
+                }),
+            ),
+        );
+
         const fakeTx = {
-            type: 'sent' as const,
+            type,
             txid,
             blockTime: Math.floor(new Date().getTime() / 1000),
             blockHash: undefined,
-            // fee is excluded to match the amount of the confirmed tx from blockfrost
-            amount: new BigNumber(precomposedTransaction.totalSpent)
-                .minus(precomposedTransaction.fee)
-                .toString(),
-            fee: precomposedTransaction.fee,
+            // Blockfrost reports what left the account: the foreign outputs, or just the fee of a self tx
+            amount: type === 'self' ? fee : sumValues(foreignOutputs.map(({ vinVout }) => vinVout)),
+            fee,
             feeRate: '0',
-            totalSpent: precomposedTransaction.totalSpent,
-            targets: [],
-            tokens: [],
+            totalSpent,
+            targets,
+            tokens,
             internalTransfers: [],
             cardanoSpecific: cardanoSpecific || {},
             details: {
-                vin: [],
-                vout: [],
+                vin,
+                vout,
                 size: 0,
-                totalInput: '0',
-                totalOutput: '0',
+                totalInput: sumValues(vin),
+                totalOutput: sumValues(vout),
             },
             deadline: blockHeight + Math.ceil(FAKE_TX_TTL_SECONDS / CARDANO_BLOCK_TIME_SECONDS),
         };
+
         dispatch(transactionsActions.addTransaction({ transactions: [fakeTx], account }));
     },
 );
@@ -558,6 +670,88 @@ export const addFakePendingTronTxThunk = createThunk<
     },
 );
 
+interface AddFakePendingStellarTxThunkParams {
+    precomposedTransaction: PrecomposedTransactionFinal;
+    memo?: string;
+    txid: string;
+    account: Account;
+}
+
+export type AddFakePendingStellarTxThunkState = BlockchainRootState;
+
+/** Horizon lists a transaction only once it has ingested the ledger; until then this stands in. */
+export const addFakePendingStellarTxThunk = createThunk<
+    void,
+    AddFakePendingStellarTxThunkParams,
+    { state: AddFakePendingStellarTxThunkState }
+>(
+    `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
+    ({ precomposedTransaction, memo, txid, account }, { dispatch, getState }) => {
+        if (account.networkType !== 'stellar') return;
+
+        const [output] = precomposedTransaction.outputs;
+        const recipient = output?.address;
+        if (!recipient) return;
+
+        const { token, fee } = precomposedTransaction;
+        const amount = String(output.amount);
+        const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol) ?? 0;
+
+        const tokenTransfer: TokenTransfer | undefined = token
+            ? {
+                  type: 'sent',
+                  standard: token.standard,
+                  amount,
+                  from: account.descriptor,
+                  to: recipient,
+                  contract: token.contract,
+                  name: token.name,
+                  symbol: token.symbol,
+                  decimals: token.decimals,
+              }
+            : undefined;
+
+        const fakeTx = {
+            type: 'sent' as const,
+            txid,
+            blockTime: Math.floor(Date.now() / 1000),
+            blockHash: undefined,
+            amount: token ? '0' : amount,
+            fee,
+            feeRate: undefined,
+            targets: token ? [] : [{ n: 0, addresses: [recipient], isAddress: true, amount }],
+            tokens: tokenTransfer ? [tokenTransfer] : [],
+            internalTransfers: [],
+            stellarSpecific: {
+                memo: memo || undefined,
+                feeSource: account.descriptor,
+                operationType:
+                    token?.standard === 'STELLAR-CONTRACT'
+                        ? ('invokeHostFunction' as const)
+                        : ('payment' as const),
+            },
+            details: {
+                vin: [
+                    {
+                        n: 0,
+                        addresses: [account.descriptor],
+                        isAddress: true,
+                        isOwn: true,
+                        isAccountOwned: true,
+                    },
+                ],
+                vout: [{ value: amount, n: 0, addresses: [recipient], isAddress: true }],
+                size: 0,
+                totalInput: '0',
+                totalOutput: amount,
+            },
+            deadline: blockHeight + Math.ceil(FAKE_TX_TTL_SECONDS / STELLAR_LEDGER_CLOSE_SECONDS),
+        };
+
+        dispatch(transactionsActions.addTransaction({ transactions: [fakeTx], account }));
+    },
+);
+
 interface AddFakePendingTronSendTxThunkParams {
     precomposedTransaction: PrecomposedTransactionFinal;
     txid: string;
@@ -621,6 +815,85 @@ export const addFakePendingTronSendTxThunk = createThunk<
     },
 );
 
+interface AddFakePendingSolanaSendTxThunkParams {
+    precomposedTransaction: PrecomposedTransactionFinal;
+    txid: string;
+    account: Account;
+}
+
+type AddFakePendingSolanaSendTxThunkState = BlockchainRootState;
+
+export const addFakePendingSolanaSendTxThunk = createThunk<
+    void,
+    AddFakePendingSolanaSendTxThunkParams,
+    { state: AddFakePendingSolanaSendTxThunkState }
+>(
+    `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
+    ({ precomposedTransaction, txid, account }, { dispatch, getState }) => {
+        if (account.networkType !== 'solana') return;
+
+        const [output] = precomposedTransaction.outputs;
+        const { token } = precomposedTransaction;
+        const recipient = output?.address;
+        const outputAmount = output?.amount?.toString() ?? '0';
+        const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol) ?? 0;
+
+        const tokenTransfer: TokenTransfer | undefined =
+            token && recipient
+                ? {
+                      type: 'sent',
+                      standard: token.standard,
+                      amount: outputAmount,
+                      from: account.descriptor,
+                      to: recipient,
+                      contract: token.contract,
+                      name: token.name,
+                      symbol: token.symbol,
+                      decimals: token.decimals,
+                  }
+                : undefined;
+        const nativeTarget = recipient && !token ? recipient : undefined;
+
+        const fakeTx = {
+            type: 'sent' as const,
+            txid,
+            blockTime: Math.floor(Date.now() / 1000),
+            blockHash: undefined,
+            // the fee is included to match the confirmed tx, whose amount is the account's SOL
+            // balance change; for an SPL token transfer that change is only the fee
+            amount: new BigNumber(token ? '0' : outputAmount)
+                .plus(precomposedTransaction.fee)
+                .toString(),
+            fee: precomposedTransaction.fee,
+            feeRate: undefined,
+            targets: nativeTarget
+                ? [{ n: 0, addresses: [nativeTarget], isAddress: true, amount: outputAmount }]
+                : [],
+            tokens: tokenTransfer ? [tokenTransfer] : [],
+            internalTransfers: [],
+            details: {
+                vin: [
+                    {
+                        n: 0,
+                        addresses: [account.descriptor],
+                        isAddress: true,
+                        isOwn: true,
+                        isAccountOwned: true,
+                    },
+                ],
+                vout: nativeTarget
+                    ? [{ value: outputAmount, n: 0, addresses: [nativeTarget], isAddress: true }]
+                    : [],
+                size: 0,
+                totalInput: '0',
+                totalOutput: nativeTarget ? outputAmount : '0',
+            },
+            deadline: blockHeight + Math.ceil(FAKE_TX_TTL_SECONDS / SOLANA_BLOCK_TIME_SECONDS),
+        };
+        dispatch(transactionsActions.addTransaction({ transactions: [fakeTx], account }));
+    },
+);
+
 /**
  * @param noLoading - disable loading indicator
  * @param forceRefetch - force refetch of transactions even if this page is already fetched
@@ -631,10 +904,17 @@ type FetchTransactionsPageThunkParams = {
     perPage: number;
     noLoading?: boolean;
     forceRefetch?: boolean;
+    /**
+     * Oldest block the backend should cover. Direct-RPC backends scan a window rather than the
+     * whole chain, so this is how history older than that window is reached; they remember it, so
+     * later pages come back without repeating it.
+     */
+    from?: number;
 };
 
 type FetchTransactionsPageThunkState = AccountsRootState &
     BlockchainRootState &
+    StellarContractTokensRootState &
     TransactionsRootState;
 
 export const fetchTransactionsPageThunk = createThunk<
@@ -645,7 +925,7 @@ export const fetchTransactionsPageThunk = createThunk<
     }
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/fetchTransactionsPageThunk`,
-    async ({ accountKey, page, perPage, forceRefetch }, { dispatch, getState }) => {
+    async ({ accountKey, page, perPage, forceRefetch, from }, { dispatch, getState }) => {
         const account = selectAccountByKey(getState(), accountKey);
         if (!account) {
             throw new Error(`Account not found: ${accountKey}`);
@@ -674,11 +954,17 @@ export const fetchTransactionsPageThunk = createThunk<
             details: 'txs',
             page, // useful for every network except ripple and stellar
             pageSize: perPage,
+            ...(from !== undefined ? { from } : {}),
             pageCursor: stellarCursor,
             // set marker only if it is not undefined (ripple), otherwise it fails on marker validation
             // if back on first page, the marker is reset
             ...(marker && !isFirstPage ? { marker } : {}),
             suppressBackupWarning: true,
+            // The response replaces `account.tokens` wholesale, which would wipe the watch list.
+            stellarContractTokens:
+                account.networkType === 'stellar'
+                    ? selectStellarContractTokens(getState(), account.key)
+                    : undefined,
             protocols: account.networkType === 'ethereum' ? ['erc4626'] : undefined,
             gap:
                 account.networkType === 'bitcoin'

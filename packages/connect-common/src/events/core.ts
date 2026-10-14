@@ -4,10 +4,9 @@ import type { BlockchainEventMessage } from './blockchain';
 import type { CoreCallCancelMessage, CoreCallMessage, MethodResponseMessage } from './call';
 import type { DeviceEventMessage } from './device';
 import type { SetEnabledNetworksMessage } from './networks';
-import type { PopupClosedMessage, PopupEventMessage } from './popup';
+import type { PopupEventMessage } from './popup';
 import type {
     TransportEventMessage,
-    TransportGetInfo,
     TransportRequestWebUSBDevice,
     TransportSetTransports,
 } from './transport';
@@ -19,11 +18,9 @@ import type { ErrorCode, SerializedError, TrezorError } from '../constants/error
 export const CORE_EVENT = 'CORE_EVENT';
 
 export type CoreRequestMessage =
-    | PopupClosedMessage
     | CoreCallCancelMessage
     | TransportSetTransports
     | TransportRequestWebUSBDevice
-    | TransportGetInfo
     | UiResponseEvent
     | CoreCallMessage
     | SetEnabledNetworksMessage;

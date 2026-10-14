@@ -15,7 +15,7 @@ import {
     asBaseCurrencyAmount,
 } from '@suite-common/wallet-types';
 import { Card, Column, Divider, Flag, H4, InfoItem, Row, Text } from '@trezor/components';
-import { TokenIcon, isCoinSymbol, shouldShowNetworkIcon } from '@trezor/product-components';
+import { TokenIcon, isCoinSymbol, selectShouldShowNetworkIcon } from '@trezor/product-components';
 import { BigNumber, localizeNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
@@ -48,6 +48,10 @@ const TransactionReviewOutputAssetsCryptoCurrency = ({
     const isTokenAmount = !!cryptoCurrency.contractAddress;
     const formattedAmount = localizeNumber(amount, 'en-US');
 
+    const showNetworkIcon = useSelector(state =>
+        selectShouldShowNetworkIcon(state, symbol, contractAddress),
+    );
+
     const cryptoId = contractAddress
         ? toTokenCryptoId(symbol, contractAddress)
         : (getCoingeckoId(symbol) as CryptoId);
@@ -65,7 +69,7 @@ const TransactionReviewOutputAssetsCryptoCurrency = ({
                     symbol={symbol}
                     contractAddress={contractAddress}
                     placeholder={displaySymbol ?? ''}
-                    showNetworkIcon={shouldShowNetworkIcon(symbol, contractAddress)}
+                    showNetworkIcon={showNetworkIcon}
                 />
             );
         }

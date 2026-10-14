@@ -3,14 +3,8 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../../suite-common/address" },
-        {
-            "path": "../../suite-common/dependency-injection"
-        },
         { "path": "../../suite-common/device" },
         { "path": "../../suite-common/receive" },
-        {
-            "path": "../../suite-common/redux-utils"
-        },
         {
             "path": "../../suite-common/toast-notifications"
         },
@@ -36,10 +30,14 @@
         { "path": "../modal" },
         { "path": "../../packages/components" },
         { "path": "../../packages/crypto-utils" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
         { "path": "../../packages/icons" },
         {
             "path": "../../packages/product-components"
         },
+        { "path": "../../packages/redux-utils" },
         { "path": "../../packages/theme" }
     ]
 }

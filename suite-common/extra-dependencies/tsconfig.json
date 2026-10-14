@@ -7,11 +7,9 @@
         {
             "path": "../delegated-identity-key-types"
         },
-        { "path": "../dependency-injection" },
         { "path": "../metadata-types" },
         { "path": "../networks" },
         { "path": "../platform-encryption" },
-        { "path": "../redux-utils" },
         {
             "path": "../suite-rbf-labels-migrations-types"
         },
@@ -20,6 +18,11 @@
         { "path": "../wallet-config" },
         { "path": "../wallet-types" },
         { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        { "path": "../../packages/logger" },
+        { "path": "../../packages/redux-utils" },
         { "path": "../../packages/requirements" }
     ]
 }

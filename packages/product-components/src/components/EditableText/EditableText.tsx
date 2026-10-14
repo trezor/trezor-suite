@@ -150,7 +150,10 @@ const Container = styled.span<ContainerProps>`
             css`
                 opacity: 1;
                 transform: scaleX(1);
-                transition: 0.2s ease-in-out;
+                transition:
+                    opacity 0.2s ease-in-out,
+                    transform 0.2s ease-in-out,
+                    background 0.2s ease-in-out;
             `}
     }
 

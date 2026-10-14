@@ -19,14 +19,13 @@
         "@reduxjs/toolkit": "2.12.0",
         "@suite-common/analytics-redux": "workspace:*",
         "@suite-common/geolocation": "workspace:*",
-        "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
-        "@suite-common/validators": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/env-utils": "workspace:*",
+        "@trezor/redux-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "@types/semver": "^7.7.0",
@@ -34,7 +33,8 @@
         "json-schema-to-typescript": "^15.0.4",
         "react": "19.2.3",
         "react-redux": "9.3.0",
-        "semver": "^7.7.1"
+        "semver": "^7.7.1",
+        "yup": "1.7.1"
     },
     "devDependencies": {
         "@suite-common/test-utils": "workspace:*",

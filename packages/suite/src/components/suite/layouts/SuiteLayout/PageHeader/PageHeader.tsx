@@ -9,9 +9,9 @@ import {
     resolveEffectiveBackgroundRouteName,
     selectRoute,
 } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectAccounts } from '@suite-common/wallet-core';
 import { Row } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { zIndices } from '@trezor/theme';
 
 import { HEADER_HEIGHT } from 'src/constants/suite/layout';

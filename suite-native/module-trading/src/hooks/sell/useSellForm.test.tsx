@@ -1,8 +1,13 @@
 import { type Store } from '@reduxjs/toolkit';
 import type { SellFiatTrade } from 'invity-api';
 
+import { joinAmountWithSymbol } from '@suite-common/formatters';
 import { tradingSellActions } from '@suite-common/trading';
-import { type AccountsRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    type WalletSettingsRootState,
+    setBaseCurrency,
+} from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { getTranslation } from '@suite-native/intl';
 import { act, renderHookWithStoreProvider, screen, waitFor } from '@suite-native/test-utils-store';
@@ -16,7 +21,11 @@ import {
     sellQuotes,
     usdcAsset,
 } from '@suite-native/trading-fixtures';
-import { type TradingRootState, selectTradingResidenceCountry } from '@suite-native/trading-state';
+import {
+    type TradingRootState,
+    selectSellAmountLimits,
+    selectTradingResidenceCountry,
+} from '@suite-native/trading-state';
 import { type SellFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
@@ -71,8 +80,8 @@ describe('useSellForm', () => {
     describe('validations', () => {
         describe('cryptoStringAmount', () => {
             it.each([
-                ['0.00001', 'Minimum is 0.0001 BTC'],
-                ['100', 'Maximum is 50 BTC'],
+                ['0.00001', `Minimum is ${joinAmountWithSymbol('0.0001', 'BTC')}`],
+                ['100', `Maximum is ${joinAmountWithSymbol('50', 'BTC')}`],
                 ['1', 'Insufficient funds'],
             ])('should display error for crypto amount %s BTC', async (amount, expectedValue) => {
                 const { result } = await renderUseSellForm();
@@ -98,8 +107,8 @@ describe('useSellForm', () => {
             });
 
             it.each([
-                ['100', 'Minimum is 10,000 sat'],
-                ['10000000000', 'Maximum is 5,000,000,000 sat'],
+                ['100', `Minimum is ${joinAmountWithSymbol('10,000', 'sat')}`],
+                ['10000000000', `Maximum is ${joinAmountWithSymbol('5,000,000,000', 'sat')}`],
                 ['10000000', 'Insufficient funds'],
             ])('should display error for crypto amount %s SATS', async (amount, expectedValue) => {
                 store = getInitializedStore(PROTO.AmountUnit.SATOSHI);
@@ -569,6 +578,35 @@ describe('useSellForm', () => {
             });
 
             expect(selectTradingResidenceCountry(store.getState())).toBe('CA');
+        });
+    });
+
+    describe('on base currency change', () => {
+        it('should keep fiatCurrency and amount limits on mount', async () => {
+            const { result } = await renderUseSellForm();
+
+            expect(result.current.getValues('fiatCurrency')).toBe('usd');
+            expect(selectSellAmountLimits(store.getState())).toBeDefined();
+        });
+
+        it('should update fiatCurrency to the new base currency', async () => {
+            const { result } = await renderUseSellForm();
+
+            await act(() => {
+                store.dispatch(setBaseCurrency('eur'));
+            });
+
+            expect(result.current.getValues('fiatCurrency')).toBe('eur');
+        });
+
+        it('should clear amount limits', async () => {
+            await renderUseSellForm();
+
+            await act(() => {
+                store.dispatch(setBaseCurrency('eur'));
+            });
+
+            expect(selectSellAmountLimits(store.getState())).toBeUndefined();
         });
     });
 });

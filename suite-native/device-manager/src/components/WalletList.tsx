@@ -2,17 +2,17 @@ import { useSelector } from 'react-redux';
 
 import { A } from '@mobily/ts-belt';
 
-import { useServices } from '@suite-common/dependency-injection';
 import {
     selectDeviceInstances,
     selectIsPortfolioTrackerDevice,
     selectSelectedDevice,
 } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { startDiscoveryThunk } from '@suite-common/wallet-core';
 import { VStack } from '@suite-native/atoms';
 import { selectHasNoDeviceWithEmptyPassphrase } from '@suite-native/device';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { WalletItem } from './WalletItem';
 import { WalletItemBase } from './WalletItemBase';

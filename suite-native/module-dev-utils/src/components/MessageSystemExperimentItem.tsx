@@ -1,7 +1,6 @@
 import { useSelector } from 'react-redux';
 
 import { selectAnalyticsInstanceId } from '@suite-common/analytics-redux';
-import { useServices } from '@suite-common/dependency-injection';
 import {
     EXPERIMENT_MAP,
     type ExperimentId,
@@ -13,10 +12,11 @@ import {
     selectAllExperimentInclusionOverrides,
     selectIsExperimentValid,
 } from '@suite-common/message-system';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type Experiments, type ExperimentsItem } from '@suite-common/suite-types';
 import { Button, Card, Text, VStack } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/clipboard';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { MessageSystemExperimentInclusion } from './MessageSystemExperimentInclusion';
 

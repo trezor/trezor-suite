@@ -3,6 +3,10 @@ import { useCallback } from 'react';
 import { useWatch } from '@suite-native/forms';
 
 import { useSellFormContext } from './useSellFormContext';
+import {
+    syncSellAmountsAfterCryptoChange,
+    syncSellAmountsAfterFiatChange,
+} from '../../utils/sell/sellAmountUtils';
 import { useInputFieldControls } from '../general/useInputFieldControls';
 
 export const useSellInputFormControls = (name: 'fiatStringAmount' | 'cryptoStringAmount') => {
@@ -19,17 +23,9 @@ export const useSellInputFormControls = (name: 'fiatStringAmount' | 'cryptoStrin
             updateFieldValue(nextValue);
 
             if (name === 'fiatStringAmount') {
-                setValue('cryptoStringAmount', undefined, { shouldValidate: true });
-
-                if (getValues('amountInCrypto')) {
-                    setValue('amountInCrypto', false);
-                }
+                syncSellAmountsAfterFiatChange({ getValues, setValue });
             } else {
-                setValue('fiatStringAmount', undefined, { shouldValidate: true });
-
-                if (!getValues('amountInCrypto')) {
-                    setValue('amountInCrypto', true);
-                }
+                syncSellAmountsAfterCryptoChange({ getValues, setValue });
             }
         },
         [getValues, name, setValue, updateFieldValue],

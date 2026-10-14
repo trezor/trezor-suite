@@ -3,6 +3,7 @@ import { IntlProvider } from 'react-intl';
 
 import { type Coins, type CryptoId } from 'invity-api';
 
+import { joinAmountWithSymbol } from '@suite-common/formatters';
 import { MockedFormatterProvider } from '@suite-common/formatters/mocks';
 
 import { useFormatCryptoValue } from './useFormatCryptoValue';
@@ -50,8 +51,8 @@ describe('useFormatCryptoValue', () => {
     });
 
     it.each<[string, CryptoId, string]>([
-        ['1.22', BITCOIN_CRYPTO_ID, '1.22 BTC'],
-        ['10.1232', USDC_CRYPTO_ID, '10.1232 USDC'],
+        ['1.22', BITCOIN_CRYPTO_ID, joinAmountWithSymbol('1.22', 'BTC')],
+        ['10.1232', USDC_CRYPTO_ID, joinAmountWithSymbol('10.1232', 'USDC')],
     ])('formats %s %s as "%s"', (value, cryptoId, expected) => {
         const { result } = renderUseFormatCryptoValue();
 
@@ -60,9 +61,13 @@ describe('useFormatCryptoValue', () => {
 
     it.each<[string, CryptoId, string]>([
         // BTC has 8 decimals — extra precision is truncated
-        ['0.123456789', BITCOIN_CRYPTO_ID, '0.12345678 BTC'],
+        ['0.123456789', BITCOIN_CRYPTO_ID, joinAmountWithSymbol('0.12345678', 'BTC')],
         // Tokens are truncated to 16 decimals
-        ['0.1234567890123456789', USDC_CRYPTO_ID, '0.1234567890123456 USDC'],
+        [
+            '0.1234567890123456789',
+            USDC_CRYPTO_ID,
+            joinAmountWithSymbol('0.1234567890123456', 'USDC'),
+        ],
     ])('respects network decimal precision for %s %s', (value, cryptoId, expected) => {
         const { result } = renderUseFormatCryptoValue();
 

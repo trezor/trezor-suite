@@ -150,6 +150,20 @@ describe('BuyTradeableAssetPicker', () => {
             });
         });
 
+        it('should navigate to the buy asset screen on base currency input press without an asset', async () => {
+            const { getByLabelText } = await renderTradeableAssetPicker();
+
+            await fireEvent.press(
+                getByLabelText(
+                    getTranslation('moduleTrading.tradingScreen.baseCurrencyAmountLabel'),
+                ),
+            );
+
+            expect(mockNavigate).toHaveBeenCalledWith('TradingTradeableAsset', {
+                tradingType: 'buy',
+            });
+        });
+
         it('should apply buy asset change effects for an asset selected on the screen', async () => {
             const dispatchSpy = jest.spyOn(store, 'dispatch');
 

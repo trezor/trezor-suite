@@ -1,8 +1,8 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 
-import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type IconComponent, Toast, type ToastProps } from '@trezor/components';
 import { ArrowDownIcon, ArrowUpIcon } from '@trezor/icons';
+import { asNetworkSymbol } from '@trezor/network-module-types';
 import { typedObjectKeys } from '@trezor/utils';
 
 import {
@@ -96,6 +96,26 @@ const transactionNotificationConfig: Record<
         transaction: {
             notificationType: 'tx-staked',
             symbol: asNetworkSymbol('eth'),
+        },
+    },
+    'tx-withdrawn': {
+        toastIcon: ArrowUpIcon,
+        intent: 'brand',
+        message: 'Your withdrawal is pending',
+        amount: '',
+        transaction: {
+            notificationType: 'tx-withdrawn',
+            symbol: asNetworkSymbol('trx'),
+        },
+    },
+    'tx-voted': {
+        toastIcon: ArrowUpIcon,
+        intent: 'brand',
+        message: 'Your vote is pending',
+        amount: '',
+        transaction: {
+            notificationType: 'tx-voted',
+            symbol: asNetworkSymbol('trx'),
         },
     },
     'tx-approved': {

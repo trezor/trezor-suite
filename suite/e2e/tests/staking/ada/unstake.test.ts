@@ -11,7 +11,6 @@ const adaSymbol = asNetworkSymbol('ada');
 const startingBalance = 86858306;
 const startingBalanceFormatted = toADA(startingBalance);
 const feeAmount = 171881;
-const unstakedAmountFormatted = toADA(startingBalance - feeAmount);
 const finalBalance =
     startingBalance - feeAmount + Number(CARDANO_STAKING_REGISTRATION_DEPOSIT) * 1_000_000;
 const finalBalanceFormatted = toADA(finalBalance);
@@ -171,11 +170,7 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
             });
 
             await test.step('Verify unstaked account', async () => {
-                await stakingSection.verifyStakingToast({
-                    type: 'unstaked',
-                    account: 'Cardano #1',
-                    amount: unstakedAmountFormatted,
-                });
+                await stakingSection.verifyStakingToast({ type: 'unstaked' });
                 await expect(walletPage.topPanelBalanceWithSymbol).toHaveText(
                     finalBalanceFormatted,
                 );

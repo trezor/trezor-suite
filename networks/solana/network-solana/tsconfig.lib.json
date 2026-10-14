@@ -6,6 +6,7 @@
     },
     "include": ["./src"],
     "references": [
+        { "path": "../network-solana-types" },
         {
             "path": "../../../packages/type-utils"
         },

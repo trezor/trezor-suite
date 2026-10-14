@@ -1,9 +1,4 @@
 import { deviceActions } from '@suite-common/device';
-import {
-    type ActionTypesDep,
-    type ReducersDep,
-    createReducerWithExtraDeps,
-} from '@suite-common/redux-utils';
 import type {
     PersistentDeviceData,
     StoredAuthenticateDeviceResult,
@@ -11,6 +6,11 @@ import type {
 } from '@suite-common/suite-types';
 import { type Device } from '@trezor/connect';
 import { getFirmwareVersionArray } from '@trezor/device-utils';
+import {
+    type ActionTypesDep,
+    type ReducersDep,
+    createReducerWithExtraDeps,
+} from '@trezor/redux-utils';
 
 import { persistentDeviceDataActions } from './persistentDeviceDataActions';
 

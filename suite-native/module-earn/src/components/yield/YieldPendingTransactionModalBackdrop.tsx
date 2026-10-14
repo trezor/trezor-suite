@@ -1,7 +1,8 @@
-import Animated, { Extrapolation, interpolate, useAnimatedStyle } from 'react-native-reanimated';
+import { Extrapolation, interpolate, useAnimatedStyle } from 'react-native-reanimated';
 
 import { type BottomSheetBackdropProps } from '@gorhom/bottom-sheet';
 
+import { AnimatedView } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { modalSnap } from './YieldPendingTransactionModalConstants';
@@ -26,7 +27,7 @@ export const YieldPendingTransactionModalBackdrop = ({
     }));
 
     return (
-        <Animated.View
+        <AnimatedView
             pointerEvents="none"
             style={[style, applyStyle(backdropStyle), animatedBackdropStyle]}
         />

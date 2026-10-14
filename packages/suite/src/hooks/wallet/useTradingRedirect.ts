@@ -8,8 +8,6 @@ import {
 } from 'invity-api';
 
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     parseCryptoId,
     tradingActions,
@@ -19,6 +17,8 @@ import {
 } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
 import { type FeeLevel, type TokenInfo } from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
@@ -134,7 +134,6 @@ export const useTradingRedirect = () => {
         }
         prefilledAccountFromRedirect(params);
         dispatch(tradingBuyActions.saveQuoteRequest(request));
-        dispatch(tradingBuyActions.setIsFromRedirect(true));
         dispatch(gotoThunk({ routeName: 'wallet-trading-buy' }));
     };
 
@@ -172,7 +171,9 @@ export const useTradingRedirect = () => {
         }
         prefilledAccountFromRedirect(params);
         dispatch(tradingSellActions.saveQuoteRequest(request));
-        dispatch(tradingSellActions.setIsFromRedirect(true));
+        if (orderId) {
+            dispatch(tradingSellActions.setIsFromRedirect(true));
+        }
         const composed = {
             feeLimit,
             feePerByte: feePerByte || '',

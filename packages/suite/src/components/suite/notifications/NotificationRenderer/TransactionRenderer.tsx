@@ -2,9 +2,7 @@ import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { getTxAnchor, gotoThunk, selectRouteName, selectRouterApp } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectDeviceThunk, selectDevices, selectSelectedDevice } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     selectAccounts,
     selectNetworkBlockchainInfo,
@@ -20,10 +18,12 @@ import {
     isStakeTypeTx,
 } from '@suite-common/wallet-utils';
 import { Row } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import {
     TransactionNotification,
     type TransactionNotificationType,
 } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { AccountLabeling } from 'src/components/suite/labeling/AccountLabeling';
@@ -170,6 +170,7 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
                     ? {
                           onClick: handleTransactionClick,
                           label: 'TOAST_TX_BUTTON',
+                          dataTestId: `${toastTestIdPrefix}/view-details`,
                       }
                     : undefined
             }

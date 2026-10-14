@@ -44,7 +44,9 @@ const ItemSkeleton = () => (
     </Row>
 );
 
-const AssetsNoResults = ({ onViewAccountsClick }: { onViewAccountsClick: () => void }) => (
+type AssetsNoResultsProps = { onViewAccountsClick: () => void };
+
+const AssetsNoResults = ({ onViewAccountsClick }: AssetsNoResultsProps) => (
     <Column
         height={GLOBAL_RECEIVE_LIST_HEIGHT}
         width="100%"

@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { createThunk } from '@suite-common/redux-utils';
+import { createThunk } from '@trezor/redux-utils';
 
 import { selectVisibleNotificationsByType } from './notificationsSelectors';
 import {

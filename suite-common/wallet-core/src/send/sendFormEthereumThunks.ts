@@ -3,7 +3,6 @@ import {
     isApprovalFlowSupported,
     selectSelectedDevice,
 } from '@suite-common/device';
-import { createThunk } from '@suite-common/redux-utils';
 import { type EvmGasParamsGwei } from '@suite-common/schemas/src/evm';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -50,6 +49,7 @@ import {
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { type FeeLevel, type TokenInfo } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
+import { createThunk } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { reportEthereumFeeEstimationFailed } from './reportEthereumFeeEstimationError';
@@ -378,6 +378,10 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
         // increase gas limit, this flow is used only for Invity
         if (formState.ethereumAdjustGasLimit) {
             customFeeLimit = customFeeLimit.multipliedBy(formState.ethereumAdjustGasLimit);
+        }
+
+        if (formState.ethereumFixedGasLimit) {
+            customFeeLimit = new BigNumber(formState.ethereumFixedGasLimit);
         }
 
         // increase gas limit for staking, this flow is used only during bump fee

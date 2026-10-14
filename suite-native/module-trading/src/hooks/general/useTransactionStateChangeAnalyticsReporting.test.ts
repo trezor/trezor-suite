@@ -1,11 +1,11 @@
 import React from 'react';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { type TradingTransaction } from '@suite-common/trading';
 import { type NativeAnalyticsDep, events, injectNativeAnalytics } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { renderHook, renderHookWithBasicProvider } from '@suite-native/test-utils';
 import { getBuyTrade, getExchangeTrade } from '@suite-native/trading-fixtures';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useTransactionStateChangeAnalyticsReporting } from './useTransactionStateChangeAnalyticsReporting';
 

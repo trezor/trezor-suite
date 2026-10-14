@@ -12,9 +12,6 @@
         {
             "path": "../../suite-common/delegated-identity-key"
         },
-        {
-            "path": "../../suite-common/dependency-injection"
-        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/discreet-mode"
@@ -41,9 +38,6 @@
             "path": "../platform-encryption-native"
         },
         { "path": "../../suite-common/receive" },
-        {
-            "path": "../../suite-common/redux-utils"
-        },
         {
             "path": "../../suite-common/suite-rbf-labels-migrations"
         },
@@ -99,7 +93,11 @@
         { "path": "../trading-state" },
         { "path": "../transaction-management" },
         { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
         { "path": "../../packages/env-utils" },
+        { "path": "../../packages/redux-utils" },
         {
             "path": "../../packages/transport-common"
         },

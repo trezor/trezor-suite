@@ -2,15 +2,17 @@ import { type UnavailableCapability } from '@trezor/connect';
 
 import { type Account } from 'src/types/wallet';
 
+type VerifyAvailabilityParams = {
+    emptyAccounts: Account[];
+    account?: Account;
+    unavailableCapability?: UnavailableCapability;
+};
+
 export const verifyAvailability = ({
     emptyAccounts,
     account,
     unavailableCapability,
-}: {
-    emptyAccounts: Account[];
-    account?: Account;
-    unavailableCapability?: UnavailableCapability;
-}) => {
+}: VerifyAvailabilityParams) => {
     if (unavailableCapability === 'no-support') {
         return 'TR_ACCOUNT_TYPE_NO_SUPPORT';
     }

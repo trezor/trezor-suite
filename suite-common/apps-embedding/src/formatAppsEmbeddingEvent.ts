@@ -1,6 +1,13 @@
 import { exhaustive } from '@trezor/type-utils';
 
-import { type AppsEmbeddingEvent } from './types';
+import { type AppsEmbeddingEvent, type AppsEmbeddingWindowOpenOutcome } from './types';
+
+// A record rather than a nested switch: adding an outcome then fails to compile here too.
+const WINDOW_OPEN_OUTCOME_LABEL: Record<AppsEmbeddingWindowOpenOutcome, string> = {
+    denied: 'denied',
+    'opened-in-app': 'opened in an app window',
+    'opened-in-system-browser': 'opened in the system browser',
+};
 
 const MAX_MESSAGE_DATA_LENGTH = 500;
 
@@ -33,7 +40,9 @@ export const formatAppsEmbeddingEvent = (event: AppsEmbeddingEvent): string => {
         case 'message':
             return `message ${formatMessageData(event.data)}`;
         case 'window-open-attempt':
-            return `window.open denied — ${event.url}`;
+            return `window.open ${WINDOW_OPEN_OUTCOME_LABEL[event.outcome]} — ${event.url}`;
+        case 'navigation-blocked':
+            return `navigation blocked — ${event.url}`;
         case 'closed':
             return `closed — ${event.detail}`;
         default:

@@ -5,8 +5,6 @@ import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type Route, gotoThunk, selectRouteName } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { selectCoinDefinitions, selectNftDefinitions } from '@suite-common/token-definitions';
 import { type NetworkType } from '@suite-common/wallet-config';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
@@ -20,6 +18,7 @@ import {
     Row,
     SubTabs,
 } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import {
     CoinSlashIcon,
     CoinsIcon,
@@ -29,6 +28,7 @@ import {
     PictureFrameIcon,
     PlusIcon,
 } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 import { arrayPartition } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';

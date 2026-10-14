@@ -1,27 +1,28 @@
 import { useRef, useState } from 'react';
 import { View } from 'react-native';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import {
+    getPassphraseMaxLength,
     selectHasDevicePassphraseEntryCapability,
     selectSelectedDevice,
 } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
-import {
-    type PassphraseFormValues,
-    formInputsMaxLength,
-    passphraseFormSchema,
-} from '@suite-common/validators';
 import { submitPassphraseThunk } from '@suite-common/wallet-core';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
-import { Button, Card, TextDivider, VStack } from '@suite-native/atoms';
+import { AnimatedView, Button, Card, TextDivider, VStack } from '@suite-native/atoms';
 import { selectPassphraseRequestId } from '@suite-native/device-authorization';
 import { Form, SecureTextInputField, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import {
+    type PassphraseFormContext,
+    type PassphraseFormValues,
+    passphraseFormSchema,
+} from '../passphraseSchema';
 import { EnterPassphraseOnTrezorButton } from './EnterPassphraseOnTrezorButton';
 import { NoPassphraseButton } from './NoPassphraseButton';
 
@@ -57,8 +58,11 @@ export const PassphraseForm = ({
         selectHasDevicePassphraseEntryCapability,
     );
 
-    const form = useForm<PassphraseFormValues>({
+    const passphraseMaxLength = getPassphraseMaxLength(device);
+
+    const form = useForm<PassphraseFormValues, PassphraseFormContext>({
         validation: passphraseFormSchema,
+        context: { passphraseMaxLength },
         mode: 'onSubmit',
         defaultValues: {
             passphrase: '',
@@ -96,7 +100,7 @@ export const PassphraseForm = ({
                         <SecureTextInputField
                             label={inputLabel}
                             name="passphrase"
-                            maxLength={formInputsMaxLength.passphrase}
+                            maxLength={passphraseMaxLength}
                             accessibilityLabel="passphrase input"
                             autoCapitalize="none"
                             onFocus={handleFocusInput}
@@ -104,7 +108,7 @@ export const PassphraseForm = ({
                             testID="@passphrase/passphraseInput"
                         />
                         {(isInputFocused || isDirty) && (
-                            <Animated.View entering={FadeIn} exiting={FadeOut}>
+                            <AnimatedView entering={FadeIn} exiting={FadeOut}>
                                 <Button
                                     accessibilityRole="button"
                                     accessibilityLabel="confirm passphrase"
@@ -113,10 +117,10 @@ export const PassphraseForm = ({
                                 >
                                     <Translation id="generic.buttons.confirm" />
                                 </Button>
-                            </Animated.View>
+                            </AnimatedView>
                         )}
                         {!isDirty && !isInputFocused && hasDevicePassphraseEntryCapability && (
-                            <Animated.View entering={FadeIn} exiting={FadeOut}>
+                            <AnimatedView entering={FadeIn} exiting={FadeOut}>
                                 <VStack>
                                     <TextDivider
                                         title="generic.orSeparator"
@@ -125,7 +129,7 @@ export const PassphraseForm = ({
                                     <EnterPassphraseOnTrezorButton />
                                     {noPassphraseEnabled && <NoPassphraseButton />}
                                 </VStack>
-                            </Animated.View>
+                            </AnimatedView>
                         )}
                     </VStack>
                 </Card>

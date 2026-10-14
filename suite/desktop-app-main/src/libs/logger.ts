@@ -29,6 +29,64 @@ export type Options = {
     memoryCap: number; // Maximum number of messages stored in memory
 };
 
+export type LogMessage = {
+    date: Date;
+    level: LogLevel;
+    topic: string;
+    text: string;
+};
+
+export type ILogger = {
+    /**
+     * Exit the Logger (will correctly end the log file)
+     */
+    exit: () => void;
+    /**
+     * Error message (level: 1)
+     * @param topic(string) - Log topic
+     * @param message(string | string[]) - Message content(s)
+     */
+    error: (topic: string, message: string | string[]) => void;
+    /**
+     * Warning message (level: 2)
+     * @param topic(string) - Log topic
+     * @param message(string | string[]) - Message content(s)
+     */
+    warn: (topic: string, message: string | string[]) => void;
+    /**
+     * Info message (level: 3)
+     * @param topic(string) - Log topic
+     * @param message(string | string[]) - Message content(s)
+     */
+    info: (topic: string, message: string | string[]) => void;
+    /**
+     * Log message (info level: 3) - same as info
+     * @param topic(string) - Log topic
+     * @param message(string | string[]) - Message content(s)
+     */
+    log: (topic: string, message: string | string[]) => void;
+    /**
+     * Debug message (level: 4)
+     * @param topic(string) - Log topic
+     * @param message(string | string[]) - Message content(s)
+     */
+    debug: (topic: string, message: string | string[]) => void;
+    /**
+     * Log Level getter/setter
+     */
+    get level(): LogLevel;
+    set level(level: LogLevel | undefined);
+    /**
+     * Options getter/setter
+     */
+    get config(): Options;
+    set config(options: Partial<Options> | undefined);
+    /**
+     * If logs are stored in memory, return array of logs
+     */
+    getLog: () => LogMessage[];
+};
+
 const logLevelSwitchValue = getSwitchValue('log-level');
 const logLevelByEnv = isDevEnv ? 'debug' : 'info';
 const logLevelDefault = isLogLevel(logLevelSwitchValue) ? logLevelSwitchValue : logLevelByEnv;
@@ -113,7 +171,7 @@ export class Logger implements ILogger {
         this.debug('computer', computerInfo);
     }
 
-    private log(level: LogLevel, topic: string, message: string | string[]) {
+    private addMessage(level: LogLevel, topic: string, message: string | string[]) {
         const { writeToConsole, writeToDisk, writeToMemory, logFormat } = this.options;
 
         if ((!writeToConsole && !writeToDisk && !writeToMemory) || !logFormat) {
@@ -237,34 +295,38 @@ export class Logger implements ILogger {
     }
 
     public error(topic: string, message: string | string[]) {
-        this.log('error', topic, message);
+        this.addMessage('error', topic, message);
     }
 
     public warn(topic: string, message: string | string[]) {
-        this.log('warn', topic, message);
+        this.addMessage('warn', topic, message);
     }
 
     public info(topic: string, message: string | string[]) {
-        this.log('info', topic, message);
+        this.addMessage('info', topic, message);
+    }
+
+    public log(topic: string, message: string | string[]) {
+        this.addMessage('info', topic, message);
     }
 
     public debug(topic: string, message: string | string[]) {
-        this.log('debug', topic, message);
+        this.addMessage('debug', topic, message);
     }
 
     public get level(): LogLevel {
         return logLevels[this.logLevel] ?? 'mute';
     }
 
-    public set level(level: LogLevel) {
-        this.logLevel = logLevels.indexOf(isLogLevel(level) ? level : logLevelDefault);
+    public set level(level: LogLevel | undefined) {
+        this.logLevel = logLevels.indexOf(level && isLogLevel(level) ? level : logLevelDefault);
     }
 
-    public get config() {
+    public get config(): Options {
         return this.options;
     }
 
-    public set config(options: Partial<Options>) {
+    public set config(options: Partial<Options> | undefined) {
         if (options) {
             this.options = {
                 ...this.options,

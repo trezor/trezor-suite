@@ -13,15 +13,13 @@ const AppIconImage = styled.img<{ size: SpacingValue }>`
     background: ${({ theme }) => theme.elementFillNeutralSoft};
 `;
 
-export const ConnectAppIcon = ({
-    src,
-    type,
-    size = 32,
-}: {
+type ConnectAppIconProps = {
     src?: string;
     type?: 'walletConnect' | 'trezorConnect';
     size?: SpacingValue;
-}) => {
+};
+
+export const ConnectAppIcon = ({ src, type, size = 32 }: ConnectAppIconProps) => {
     const proxyImageQuery = useProxyImage(src);
 
     if (!proxyImageQuery.isSuccess) {

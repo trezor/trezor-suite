@@ -1,8 +1,6 @@
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { type Rating, buildUserFeedbackData, sendFeedbackThunk } from '@suite-common/feedback';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { Text, VStack } from '@suite-native/atoms';
 import { FEEDBACK_FEATURE_CONFIGS } from '@suite-native/experimental-features';
 import { FeatureRatingForm, feedbackDismissed } from '@suite-native/feature-feedback';
@@ -13,6 +11,8 @@ import {
     Screen,
     ScreenHeader,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 type RouteProps = RouteProp<RootStackParamList, RootStackRoutes.FeatureFeedbackModal>;
 

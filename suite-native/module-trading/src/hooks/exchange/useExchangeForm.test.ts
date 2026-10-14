@@ -1,6 +1,7 @@
 import { type Store } from '@reduxjs/toolkit';
 import type { ExchangeTrade } from 'invity-api';
 
+import { joinAmountWithSymbol } from '@suite-common/formatters';
 import {
     exchangeThunks,
     selectTradingProviderMetadata,
@@ -31,7 +32,7 @@ import { type TradingRootState } from '@suite-native/trading-state';
 import { type ExchangeFormType } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
-import { clearExchangeFormQuoteData, useExchangeForm } from './useExchangeForm';
+import { useExchangeForm } from './useExchangeForm';
 import { createTradingTestStore } from '../../test-utils/tradingTestUtils';
 
 type State = TradingRootState & AccountsRootState & WalletSettingsRootState;
@@ -436,8 +437,8 @@ describe('useExchangeForm', () => {
 
     describe('validations', () => {
         it.each([
-            ['0.00001', 'Minimum is 0.0001 BTC'],
-            ['100', 'Maximum is 50 BTC'],
+            ['0.00001', `Minimum is ${joinAmountWithSymbol('0.0001', 'BTC')}`],
+            ['100', `Maximum is ${joinAmountWithSymbol('50', 'BTC')}`],
             ['1', 'Insufficient funds'],
         ])('should display error for crypto amount %s BTC', async (amount, expectedValue) => {
             const { result } = await renderUseExchangeForm();
@@ -464,8 +465,8 @@ describe('useExchangeForm', () => {
         });
 
         it.each([
-            ['100', 'Minimum is 10,000 sat'],
-            ['10000000000', 'Maximum is 5,000,000,000 sat'],
+            ['100', `Minimum is ${joinAmountWithSymbol('10,000', 'sat')}`],
+            ['10000000000', `Maximum is ${joinAmountWithSymbol('5,000,000,000', 'sat')}`],
             ['10000000', 'Insufficient funds'],
         ])('should display error for crypto amount %s SATS', async (amount, expectedValue) => {
             store = getInitializedStore(PROTO.AmountUnit.SATOSHI);
@@ -709,28 +710,6 @@ describe('useExchangeForm', () => {
 
                 expect(result.current.getValues('generalAlert')).toBeUndefined();
             });
-        });
-    });
-
-    describe('clearExchangeFormQuoteData', () => {
-        it('should clear quote, sendCryptoAmount, receiveCryptoAmount and generalAlert data', async () => {
-            const { result } = await renderUseExchangeForm();
-
-            await act(() => {
-                result.current.setValue('quote', mercuryoFixedWorstQuote as ExchangeTrade);
-                result.current.setValue('sendCryptoAmount', '10');
-                result.current.setValue('receiveCryptoAmount', '10');
-                result.current.setValue('generalAlert', 'test');
-            });
-
-            await act(() => {
-                clearExchangeFormQuoteData(result.current);
-            });
-
-            expect(result.current.getValues('quote')).toBeUndefined();
-            expect(result.current.getValues('sendCryptoAmount')).toBeUndefined();
-            expect(result.current.getValues('receiveCryptoAmount')).toBeUndefined();
-            expect(result.current.getValues('generalAlert')).toBeUndefined();
         });
     });
 });

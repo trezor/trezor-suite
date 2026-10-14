@@ -2,7 +2,6 @@ import React from 'react';
 
 import { type Store } from '@reduxjs/toolkit';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
@@ -11,6 +10,7 @@ import { type NativeAnalyticsDep, injectNativeAnalytics } from '@suite-native/an
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getBuyTrade } from '@suite-native/trading-fixtures';
 import { type TradingRootState } from '@suite-native/trading-state';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useWatchTrade } from './useWatchTrade';
 import {

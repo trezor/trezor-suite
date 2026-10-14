@@ -2,7 +2,9 @@ import { Translation } from '@suite/intl';
 import { H3, Modal } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 
-export const BackupStepError = ({ onCancel }: { onCancel: () => void }) => (
+type BackupStepErrorProps = { onCancel: () => void };
+
+export const BackupStepError = ({ onCancel }: BackupStepErrorProps) => (
     <Modal
         onCancel={onCancel}
         intent="warning"

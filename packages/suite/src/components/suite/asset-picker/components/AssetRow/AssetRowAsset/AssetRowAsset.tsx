@@ -1,6 +1,8 @@
 import { type TradeableAssetBalance, type TradingAssetOption } from '@suite-common/trading';
 import { Row } from '@trezor/components';
-import { TokenIcon, shouldShowNetworkIcon } from '@trezor/product-components';
+import { TokenIcon, selectShouldShowNetworkIcon } from '@trezor/product-components';
+
+import { useSelector } from 'src/hooks/suite';
 
 import { AssetDetails } from '../AssetDetails';
 import { AssetAmount } from '../AssetRowToken/AssetAmount';
@@ -21,6 +23,10 @@ export function AssetRowAsset({
     isDisabled,
     onClick,
 }: AssetRowAssetProps) {
+    const showNetworkIcon = useSelector(state =>
+        selectShouldShowNetworkIcon(state, asset.networkSymbol, asset.contractAddress),
+    );
+
     return (
         <ItemClickableContainer
             isDisabled={isDisabled}
@@ -37,10 +43,7 @@ export function AssetRowAsset({
                         symbol={asset.networkSymbol}
                         contractAddress={asset.contractAddress}
                         placeholder={asset.displaySymbol}
-                        showNetworkIcon={shouldShowNetworkIcon(
-                            asset.networkSymbol,
-                            asset.contractAddress,
-                        )}
+                        showNetworkIcon={showNetworkIcon}
                     />
                 )}
                 <AssetDetails

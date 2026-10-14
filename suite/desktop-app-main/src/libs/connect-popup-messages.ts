@@ -7,6 +7,7 @@ import type { ConnectPopupResponse } from '@suite/desktop-app-api';
 import { type Deferred, createDeferred } from '@trezor/utils';
 
 import { ipcMain } from '../ipcMain';
+import type { ILogger } from './logger';
 
 const LOG_PREFIX = 'connect-popup-messages';
 
@@ -27,13 +28,28 @@ export const addMessage = (id: string): Deferred<any> => {
         }
     }, DEFERRED_TIMEOUT_MS);
 
-    deferred.promise.finally(() => clearTimeout(timer));
+    // Swallow on this internal cleanup branch: the real awaiter handles the rejection on its own
+    // branch; without the catch, a rejected deferred (timeout, or rejectMessage on disconnect)
+    // would surface here as an unhandled promise rejection.
+    deferred.promise.finally(() => clearTimeout(timer)).catch(() => {});
 
     return deferred;
 };
 
 export const deleteMessage = (id: string) => {
     delete messages[id];
+};
+
+/**
+ * Settle a pending message with an error before removing it. Unlike deleteMessage, this rejects
+ * the deferred so any `await deferred.promise` unblocks (and releases its closure) instead of
+ * hanging forever — the timeout would otherwise no-op once the entry is gone.
+ */
+export const rejectMessage = (id: string, error: Error) => {
+    const deferred = messages[id];
+    if (!deferred) return;
+    delete messages[id];
+    deferred.reject(error);
 };
 
 export const setAppInit = (deferred: Deferred<void> | undefined) => {
@@ -44,11 +60,9 @@ export const setAppInit = (deferred: Deferred<void> | undefined) => {
  * Register the shared IPC handlers for connect-popup/response and connect-popup/ready.
  * Must be called exactly once, before any connect-popup calls are made.
  */
-export const initConnectPopupResponseHandler = () => {
+export const initConnectPopupResponseHandler = (logger: ILogger) => {
     if (initialized) return;
     initialized = true;
-
-    const { logger } = global;
 
     ipcMain.handle('connect-popup/response', (_, response: ConnectPopupResponse) => {
         const success = (response as { success?: boolean })?.success;

@@ -13,6 +13,9 @@ export const PORTFOLIO_TRACKER_DEVICE_STATE = `state@${PORTFOLIO_TRACKER_DEVICE_
 
 export const DEVICE_LOW_BATTERY_PERCENTAGE_THRESHOLD = 40;
 
+export const PIN_MAX_LENGTH = 50;
+export const PASSPHRASE_MAX_LENGTH = 50;
+
 export const portfolioTrackerDevice: TrezorDevice = {
     type: 'acquired',
     id: PORTFOLIO_TRACKER_DEVICE_ID,

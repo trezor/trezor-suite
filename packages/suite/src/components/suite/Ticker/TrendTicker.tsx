@@ -64,7 +64,12 @@ export const TrendTicker = ({
     const emptyStateComponent = noEmptyStateTooltip ? <Empty>—</Empty> : <NoRatesTooltip />;
 
     return (
-        <BaseCurrencyValue amount="1" symbol={symbol} showLoadingSkeleton={false}>
+        <BaseCurrencyValue
+            amount="1"
+            symbol={symbol}
+            tokenAddress={contractAddress}
+            showLoadingSkeleton={false}
+        >
             {({ rate, timestamp }) =>
                 rate && timestamp && isSuccessfullyFetched ? (
                     <TrendBadge valueInFraction={percentageChange} />

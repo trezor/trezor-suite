@@ -21,6 +21,8 @@ import { BigNumber } from '@trezor/utils';
 import type { MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getEthereumNetwork } from '../../../data/coinInfo';
+import type { DefinitionsVersion } from '../../../utils/definitionsUtils';
+import { getDefinitionsVersion } from '../../../utils/definitionsUtils';
 import { getNetworkLabel } from '../../../utils/ethereumUtils';
 import { addHexPrefix, deepTransform, stripHexPrefix } from '../../../utils/formatUtils';
 import { getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
@@ -171,7 +173,7 @@ export default class EthereumSignTransaction extends AbstractMethod<
         return this.coinPerms('sign', this.requiredFirmwareCoins);
     }
 
-    async initAsync(): Promise<void> {
+    private async getDefinitions(version?: DefinitionsVersion) {
         // eth && token => yes
         // evm && token => yes
         // eth && !token => no
@@ -180,18 +182,30 @@ export default class EthereumSignTransaction extends AbstractMethod<
             return;
         }
         const slip44 = getSlip44ByPath(this.params.path);
-        const definitions = await getEthereumDefinitions({
+
+        return await getEthereumDefinitions({
             chainId: this.params.tx.chainId,
             slip44,
             contractAddress:
                 this.params.tx.data && this.params.tx.to != null ? this.params.tx.to : undefined,
+            version,
         });
-        this.params.definitions = definitions;
+    }
 
-        const decoded = decodeEthereumDefinition(definitions);
-        if (decoded.network) {
-            this.params.network = ethereumNetworkInfoFromDefinition(decoded.network);
+    // Only `__info` names the network and token and previews the transfer, so only `__info`
+    // downloads their definitions to decode them.
+    async getMethodInfo() {
+        const definitions = await this.getDefinitions();
+        if (definitions) {
+            this.params.definitions = definitions;
+
+            const decoded = decodeEthereumDefinition(definitions);
+            if (decoded.network) {
+                this.params.network = ethereumNetworkInfoFromDefinition(decoded.network);
+            }
         }
+
+        return super.getMethodInfo();
     }
 
     get info() {
@@ -284,13 +298,16 @@ export default class EthereumSignTransaction extends AbstractMethod<
     }
 
     async run() {
-        const { type, tx, definitions, chunkify, auth7702 } = this.params;
+        const { type, tx, chunkify, auth7702 } = this.params;
+        const definitionsVersion = getDefinitionsVersion(this.getDevice());
+        const definitions = await this.getDefinitions(definitionsVersion);
 
         const isLegacy = type === 'legacy';
 
         const signature = isLegacy
             ? await helper.ethereumSignTx(
                   this.getDevice().getCommands().typedCall,
+                  definitionsVersion,
                   this.params.path,
                   tx.to,
                   tx.value,
@@ -306,6 +323,7 @@ export default class EthereumSignTransaction extends AbstractMethod<
               )
             : await helper.ethereumSignTxEIP1559(
                   this.getDevice().getCommands().typedCall,
+                  definitionsVersion,
                   this.params.path,
                   tx.to,
                   tx.value,

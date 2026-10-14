@@ -2,18 +2,12 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        {
-            "path": "../../suite-common/dependency-injection"
-        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/formatters"
         },
         {
             "path": "../../suite-common/react-query"
-        },
-        {
-            "path": "../../suite-common/redux-utils"
         },
         {
             "path": "../../suite-common/token-definitions"
@@ -49,6 +43,10 @@
         { "path": "../transaction-management" },
         { "path": "../transactions" },
         { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        { "path": "../../packages/redux-utils" },
         {
             "path": "../../packages/styles-native"
         },

@@ -2,7 +2,6 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../redux-utils" },
         { "path": "../suite-constants" },
         { "path": "../suite-types" },
         { "path": "../test-utils" },
@@ -11,6 +10,7 @@
         { "path": "../../packages/connect" },
         {
             "path": "../../networks/network-module/network-module-suite-common-types"
-        }
+        },
+        { "path": "../../packages/redux-utils" }
     ]
 }

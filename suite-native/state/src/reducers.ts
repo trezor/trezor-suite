@@ -25,6 +25,7 @@ import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions'
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     accountsRefreshTimeReducer,
+    earnTransactionsReducer,
     feesReducer,
     formDraftReducer,
     prepareAccountsReducer,
@@ -35,6 +36,7 @@ import {
     prepareFiatRatesReducer,
     preparePhishingReducer,
     prepareStakeReducer,
+    prepareStellarContractTokensReducer,
     prepareTransactionsReducer,
     prepareWalletSettingsReducer,
     walletSettingsPersistedWhitelist,
@@ -100,6 +102,7 @@ const persistentDeviceDataReducer = preparePersistentDeviceDataReducer(extraDepe
 const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
 const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(extraDependencies);
 const sendFormReducer = prepareSendFormReducer(extraDependencies);
+const stellarContractTokensReducer = prepareStellarContractTokensReducer(extraDependencies);
 const tradingReducer = tradingSlice.prepareReducer(extraDependencies);
 const stakeReducer = prepareStakeReducer(extraDependencies);
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
@@ -280,6 +283,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         accounts: accountsReducer,
         earnOnboarding: earnOnboardingReducer,
         accountsRefreshTime: accountsRefreshTimeReducer,
+        earnTransactions: earnTransactionsReducer,
         blockchain: blockchainPersistedReducer,
         explorer: explorerPersistedReducer,
         fiat: fiatRatesReducer,
@@ -293,11 +297,12 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         trading: tradingPersistedReducer,
         settings: walletSettingsPersistedReducer,
         formDrafts: formDraftReducer,
+        stellarContractTokens: stellarContractTokensReducer,
     });
 
     const walletPersistedReducer = preparePersistReducer({
         reducer: walletReducers,
-        persistedKeys: ['accounts', 'transactions'],
+        persistedKeys: ['accounts', 'transactions', 'stellarContractTokens'],
         key: 'wallet',
         version: 4,
         migrations: {

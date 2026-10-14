@@ -1,6 +1,10 @@
 import type { DeviceRootState } from '@suite-common/device';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
-import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
+import {
+    type NetworkSymbol,
+    type TrezorConnectBackendType,
+    asNetworkSymbol,
+} from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type DiscoveryRootState,
@@ -12,6 +16,7 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import {
     selectDeviceHistoryIgnoredNetworkSymbols,
+    selectIsHistoryEnabledAccountByAccountKey,
     selectPortfolioGraphAccountItemsIfDiscoveryIsNotRunning,
 } from './selectors';
 
@@ -20,10 +25,6 @@ jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
     selectDeviceMainnetAccounts: jest.fn(),
     selectHasRunningDiscovery: jest.fn(),
-}));
-
-jest.mock('@suite-common/graph/src/constants', () => ({
-    isIgnoredBalanceHistoryCoin: (symbol: NetworkSymbol) => ['sol', 'ada'].includes(symbol),
 }));
 
 const mockSelectDeviceMainnetAccounts = selectDeviceMainnetAccounts as jest.MockedFunction<
@@ -36,6 +37,12 @@ type TestState = DeviceRootState &
     AccountsRootState &
     DiscoveryRootState &
     TokenDefinitionsRootState;
+
+// Only discovery reports the backend, so the mock leaves it out.
+const withBackendType = (account: Account, backendType: TrezorConnectBackendType): Account => ({
+    ...account,
+    backendType,
+});
 
 describe('selectDeviceHistoryIgnoredNetworkSymbols', () => {
     let mockState: TestState;
@@ -98,6 +105,20 @@ describe('selectDeviceHistoryIgnoredNetworkSymbols', () => {
         const result = selectDeviceHistoryIgnoredNetworkSymbols(mockState);
 
         expect(result).toEqual([]);
+    });
+
+    it('should return the network of an account on a direct-RPC backend', () => {
+        const accounts: Account[] = [
+            { symbol: 'btc' as NetworkSymbol } as Account,
+            { symbol: 'arc' as NetworkSymbol, backendType: 'evm-rpc' } as Account,
+            { symbol: 'eth' as NetworkSymbol, backendType: 'blockbook' } as Account,
+        ];
+
+        mockSelectDeviceMainnetAccounts.mockReturnValue(accounts);
+
+        const result = selectDeviceHistoryIgnoredNetworkSymbols(mockState);
+
+        expect(result).toEqual(['arc']);
     });
 
     it('should be stable', () => {
@@ -166,6 +187,29 @@ describe('selectPortfolioGraphAccountItemsIfDiscoveryIsNotRunning', () => {
         ]);
     });
 
+    it('should keep an account on a direct-RPC backend in the items', () => {
+        const account = withBackendType(
+            mockWalletAccount({
+                symbol: asNetworkSymbol('arc'),
+                descriptor: asAccountDescriptor('0xarc'),
+            }),
+            'evm-rpc',
+        );
+
+        mockSelectDeviceMainnetAccounts.mockReturnValue([account]);
+
+        const result = selectPortfolioGraphAccountItemsIfDiscoveryIsNotRunning(mockState);
+
+        expect(result).toEqual([
+            expect.objectContaining({
+                symbol: 'arc',
+                backendType: 'evm-rpc',
+                descriptor: '0xarc',
+                accountKey: account.key,
+            }),
+        ]);
+    });
+
     it('should exclude accounts whose discovery failed', () => {
         const account = mockWalletAccount({
             symbol: asNetworkSymbol('btc'),
@@ -193,5 +237,36 @@ describe('selectPortfolioGraphAccountItemsIfDiscoveryIsNotRunning', () => {
                 tokensFilter: [],
             },
         ]);
+    });
+});
+
+describe('selectIsHistoryEnabledAccountByAccountKey', () => {
+    const buildState = (account: Account): TestState =>
+        ({
+            device: {} as DeviceRootState['device'],
+            wallet: { accounts: [account] } as TestState['wallet'],
+            tokenDefinitions: {} as TokenDefinitionsRootState['tokenDefinitions'],
+        }) as TestState;
+
+    it('should be false for an account on a direct-RPC backend', () => {
+        const account = withBackendType(
+            mockWalletAccount({ symbol: asNetworkSymbol('arc') }),
+            'evm-rpc',
+        );
+
+        expect(selectIsHistoryEnabledAccountByAccountKey(buildState(account), account.key)).toBe(
+            false,
+        );
+    });
+
+    it('should be true for an account on a blockbook backend', () => {
+        const account = withBackendType(
+            mockWalletAccount({ symbol: asNetworkSymbol('eth') }),
+            'blockbook',
+        );
+
+        expect(selectIsHistoryEnabledAccountByAccountKey(buildState(account), account.key)).toBe(
+            true,
+        );
     });
 });

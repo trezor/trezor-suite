@@ -1,7 +1,48 @@
 import type { Account, StellarTokenInfo } from '@suite-common/wallet-types';
 import type { TokenDetailByMint } from '@trezor/blockchain-link-types';
 import { getTokenMetadata } from '@trezor/blockchain-link-utils/src/stellar';
-import { STELLAR_DECIMALS } from '@trezor/network-stellar/constants';
+import {
+    STELLAR_DECIMALS,
+    fitStellarMemoText,
+    isStellarClassicAssetKey,
+} from '@trezor/network-stellar/constants';
+import stellar from '@trezor/network-stellar/runtime';
+import { createLazy, scheduleAction } from '@trezor/utils';
+
+export const lazyStellarTokenMetadata = createLazy(getTokenMetadata);
+
+/** Resolves a pasted Stellar Asset Contract id to the classic asset the definitions list. */
+export const resolveStellarContractId = async (contractId: string) => {
+    const { resolveClassicAssetFromContractId } = await stellar();
+
+    return resolveClassicAssetFromContractId(
+        contractId,
+        await lazyStellarTokenMetadata.getOrInit(),
+    );
+};
+
+/** The token name as trustline memo; the operation already carries code and issuer. */
+export const getStellarTrustlineMemoFromMetadata = (
+    contract: string,
+    tokenMetadata: TokenDetailByMint,
+): string | undefined => fitStellarMemoText(tokenMetadata[contract]?.name ?? '') || undefined;
+
+// The definitions are fetched over the network, and this runs on the way to a device prompt.
+const TRUSTLINE_MEMO_TIMEOUT_MS = 3000;
+
+/** Bounded: the memo must not delay the device prompt. */
+export const getStellarTrustlineMemo = async (contract: string) => {
+    try {
+        const tokenMetadata = await scheduleAction(() => lazyStellarTokenMetadata.getOrInit(), {
+            timeout: TRUSTLINE_MEMO_TIMEOUT_MS,
+        });
+
+        return getStellarTrustlineMemoFromMetadata(contract, tokenMetadata);
+    } catch {
+        // A trustline signs and settles without a memo.
+        return undefined;
+    }
+};
 
 /** Get the list of inactive Stellar tokens for the user account */
 export const getStellarInactiveTokens = async (account: Account): Promise<StellarTokenInfo[]> => {
@@ -14,7 +55,12 @@ export const getStellarInactiveTokens = async (account: Account): Promise<Stella
 
     // Return tokens that the user has not activated yet
     const inactiveTokens = Object.entries(allTokens)
-        .filter(([contractAddress]) => !activeTokenContracts.has(contractAddress))
+        // A native SEP-41 token has no trustline to activate; it is watched by contract id instead.
+        .filter(
+            ([contractAddress]) =>
+                isStellarClassicAssetKey(contractAddress) &&
+                !activeTokenContracts.has(contractAddress),
+        )
         .map(([contract]) => ({
             type: 'STELLAR-CLASSIC' as const,
             standard: 'STELLAR-CLASSIC' as const,

@@ -49,11 +49,13 @@ async function handleTxScan(input: GetTxSimulationParams): Promise<NetworkTxSimu
     switch (input.method) {
         case 'ethereumSignTransaction':
         case 'ethereumSignTypedData': {
+            const isChainSupported = Boolean(input.params.chain);
             const scanResult = await client.evm.jsonRpc.scan(input.params);
 
             const result: TxSimulationEVMResult = {
                 ...scanResult,
                 needsDisclaimer: getEVMNeedsDisclaimer(scanResult),
+                isChainSupported,
             };
 
             return { method: input.method, payload: result } as const;

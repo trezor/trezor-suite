@@ -7,9 +7,7 @@ import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { preserveModal } from '@suite/modal';
 import { selectIsTestnetNetworksEnabled } from '@suite/settings';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type Network,
@@ -26,8 +24,10 @@ import {
 } from '@suite-common/wallet-core';
 import { getAvailableAccountTypes, prepareNewAccountPayload } from '@suite-common/wallet-utils';
 import { Box, Column, Icon, Modal, Tooltip } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 import { InfoIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { NetworkSettingsSearchInput } from 'src/components/suite/NetworkList/NetworkSettingsSearchInput';
 import { AddAccountBannerAboutNetworks } from 'src/components/suite/modals/ReduxModal/UserContextModal/AddAccountModal/AddAccountBannerAboutNetworks';
@@ -297,15 +297,17 @@ export const AddAccountModal = ({
         closeModalAndNotifyCompletion();
     }
 
+    type EnableAccountParams = {
+        selectedAccount?: NetworkAccount;
+        accountTypes?: NetworkAccount[];
+    };
+
     async function enableAccount(
         account: Account,
         {
             selectedAccount: nextSelectedAccount = selectedAccount,
             accountTypes: nextAccountTypes = accountTypes,
-        }: {
-            selectedAccount?: NetworkAccount;
-            accountTypes?: NetworkAccount[];
-        } = {},
+        }: EnableAccountParams = {},
     ) {
         if (addingAccountNetworkSymbolRef.current) {
             return;
@@ -381,15 +383,17 @@ export const AddAccountModal = ({
         }
     }
 
+    type AddNewAccountParams = {
+        network: Network;
+        account: NetworkAccount;
+        accountTypes: NetworkAccount[];
+    };
+
     async function addNewAccount({
         network,
         account,
         accountTypes: nextAccountTypes,
-    }: {
-        network: Network;
-        account: NetworkAccount;
-        accountTypes: NetworkAccount[];
-    }) {
+    }: AddNewAccountParams) {
         if (!shouldStartAddingAccount(network.symbol)) {
             return;
         }

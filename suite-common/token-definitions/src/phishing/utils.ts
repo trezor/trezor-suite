@@ -48,7 +48,7 @@ const getTransactionAmountInFiat = ({
     const roundedTimestamp = roundTimestampToNearestPastHour(transaction.blockTime as Timestamp);
 
     const amountInUnits = subunitsToUnits(
-        decimals
+        decimals !== undefined
             ? {
                   value: asAmountSubunit(new BigNumber(amount)),
                   decimals,
@@ -111,6 +111,7 @@ const PHISHING_RESULT_TRUE_BY_DETECTOR: Record<
     DUST_AMOUNT: { isPhishing: true, detectorId: 'DUST_AMOUNT' },
     ZERO_AMOUNT: { isPhishing: true, detectorId: 'ZERO_AMOUNT' },
     TRC10_TRANSFER: { isPhishing: true, detectorId: 'TRC10_TRANSFER' },
+    UNSOLICITED_ASSET_OFFER: { isPhishing: true, detectorId: 'UNSOLICITED_ASSET_OFFER' },
 };
 
 // fallback when `isPhishing` is true without a detector id

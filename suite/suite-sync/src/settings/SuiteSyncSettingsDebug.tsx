@@ -1,13 +1,13 @@
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     selectIsSuiteSyncDebugEnabled,
     updateSuiteSyncDebugEnabled,
 } from '@suite-common/suite-sync';
 import { Checkbox } from '@trezor/components';
-import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { useServices } from '@trezor/dependency-injection';
+import { SectionItem } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { SuiteSyncConnectionStatus } from './SuiteSyncConnectionStatus';
 
@@ -21,16 +21,17 @@ export const SuiteSyncSettingsDebug = () => {
 
     return (
         <>
-            <SectionItem>
-                <TextColumn title="Suite Sync (Evolu) Debug" />
-                <ActionColumn>
+            <SectionItem
+                title="Suite Sync (Evolu) Debug"
+                actions={
                     <Checkbox
                         data-testid="@settings/debug/suite-sync/debug-toggle"
                         isChecked={isSuiteSyncDebugEnabled}
                         onChange={handleToggleSuiteSyncDebug}
                     />
-                </ActionColumn>
-            </SectionItem>
+                }
+            />
+
             <SuiteSyncConnectionStatus />
         </>
     );

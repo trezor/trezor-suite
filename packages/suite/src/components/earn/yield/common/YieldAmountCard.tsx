@@ -7,15 +7,14 @@ import { selectLanguage } from '@suite/settings';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { YieldFlowFormValues } from '@suite-common/wallet-core';
 import { toTokenAddress } from '@suite-common/wallet-types';
-import { Banner, Button, Card, Column, Row, Text, TextButton } from '@trezor/components';
+import { Banner, Card, Column, Row, Text, TextButton } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { useSelector } from 'src/hooks/suite';
-import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { validateDecimals } from 'src/utils/suite/validation';
 
-import { TruncatedAmount } from './TruncatedAmount';
+import { YieldAmountInputAddon } from './YieldAmountInputAddon';
 
 const FIAT_DECIMALS = 2;
 // Amount inputs never need the 255-char default; cap them so a long value can't stretch the field
@@ -75,7 +74,6 @@ export const YieldAmountCard = ({
 }: YieldAmountCardProps) => {
     const locale = useSelector(selectLanguage);
     const { translationString } = useTranslation();
-    const { isBelowMobile } = useLayoutSize();
     const {
         control,
         formState: { errors },
@@ -169,9 +167,10 @@ export const YieldAmountCard = ({
                         maxLength={FIAT_INPUT_MAX_LENGTH}
                         isDisabled={isDisabled}
                         rightContent={
-                            <Text typographyStyle="body-md" intent="neutral" priority="secondary">
-                                {fiatToggle?.fiatSymbol}
-                            </Text>
+                            <YieldAmountInputAddon
+                                unit={fiatToggle.fiatSymbol}
+                                onMaxClick={summary?.onMaxClick}
+                            />
                         }
                     />
                 ) : (
@@ -184,53 +183,17 @@ export const YieldAmountCard = ({
                         maxLength={AMOUNT_INPUT_MAX_LENGTH}
                         isDisabled={isDisabled}
                         rightContent={
-                            <Text
-                                typographyStyle="body-md"
-                                intent="neutral"
-                                priority="secondary"
+                            <YieldAmountInputAddon
+                                unit={tokenSymbol}
+                                onMaxClick={summary?.onMaxClick}
                                 data-testid="@yield/form/amount-unit"
-                            >
-                                {tokenSymbol}
-                            </Text>
+                            />
                         }
                     />
                 )}
 
                 {summary && (
-                    <Row justifyContent="space-between" alignItems="center" gap={8} width="100%">
-                        <Row alignItems="center" gap={8} minWidth={0}>
-                            <Text
-                                typographyStyle={isBelowMobile ? 'body-sm' : 'body-md'}
-                                intent="neutral"
-                                priority="secondary"
-                                data-testid="@yield/form/summary-label"
-                            >
-                                <Translation id={summary.labelTranslationId} />:
-                            </Text>
-                            <TruncatedAmount>
-                                <Text
-                                    typographyStyle={isBelowMobile ? 'body-sm' : 'body-md'}
-                                    textWrap="nowrap"
-                                    intent="neutral"
-                                    priority="secondary"
-                                    data-testid="@yield/form/summary-amount-with-symbol"
-                                >
-                                    {summary.value}
-                                </Text>
-                            </TruncatedAmount>
-                            {summary.onMaxClick && (
-                                <Button
-                                    type="button"
-                                    size="small"
-                                    intent="neutral"
-                                    priority="secondary"
-                                    data-testid="@yield/form/max-button"
-                                    onClick={() => summary.onMaxClick?.()}
-                                >
-                                    <Translation id="TR_FRACTION_BUTTONS_MAX" />
-                                </Button>
-                            )}
-                        </Row>
+                    <Row alignItems="center" gap={8} width="100%" flexWrap="wrap">
                         {/* In fiat mode the user already types the fiat amount, so converting
                         it back would just restate the input. */}
                         {approxFiat && !isFiatMode && (
@@ -247,7 +210,8 @@ export const YieldAmountCard = ({
                                 {({ value }) =>
                                     value ? (
                                         <Text
-                                            typographyStyle="body-xs"
+                                            typographyStyle="body-sm"
+                                            textWrap="nowrap"
                                             intent="neutral"
                                             priority="secondary"
                                         >
@@ -257,6 +221,30 @@ export const YieldAmountCard = ({
                                 }
                             </BaseCurrencyValue>
                         )}
+                        <Row
+                            justifyContent="flex-end"
+                            alignItems="center"
+                            gap={4}
+                            margin={{ left: 'auto' }}
+                            flexWrap="wrap"
+                        >
+                            <Text
+                                typographyStyle="body-sm"
+                                textWrap="nowrap"
+                                intent="neutral"
+                                priority="secondary"
+                                data-testid="@yield/form/summary-label"
+                            >
+                                <Translation id={summary.labelTranslationId} />:
+                            </Text>
+                            <Text
+                                typographyStyle="body-sm"
+                                textWrap="nowrap"
+                                data-testid="@yield/form/summary-amount-with-symbol"
+                            >
+                                {summary.value}
+                            </Text>
+                        </Row>
                     </Row>
                 )}
 

@@ -152,4 +152,13 @@ describe('extractUrlsFromText', () => {
         expect(textParts).toEqual(['Visit ', ' ']);
         expect(urls).toEqual(['trezor.io', 'ledger.com']);
     });
+
+    it('should match url spelled in lookalike letters', () => {
+        const text = 'ᴄʟᴀɪᴍ👉ᴡᴡᴡ.ᴡɪɴᴘʜᴀɴᴛᴏᴍ.ᴄᴏᴍ';
+
+        const { textParts, urls } = extractUrlsFromText(text);
+
+        expect(textParts).toEqual(['ᴄʟᴀɪᴍ👉']);
+        expect(urls).toEqual(['ᴡᴡᴡ.ᴡɪɴᴘʜᴀɴᴛᴏᴍ.ᴄᴏᴍ']);
+    });
 });

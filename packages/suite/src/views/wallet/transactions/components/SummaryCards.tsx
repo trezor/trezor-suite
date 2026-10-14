@@ -51,7 +51,9 @@ const DateWrapper = styled.span`
     white-space: nowrap;
 `;
 
-const NumberOfTransactions = ({ value }: { value: number }) => (
+type NumberOfTransactionsProps = { value: number };
+
+const NumberOfTransactions = ({ value }: NumberOfTransactionsProps) => (
     <Translation
         id="TR_N_TRANSACTIONS"
         values={{ value: useShouldRedactNumbers() ? DISCREET_PLACEHOLDER : value }}

@@ -6,9 +6,9 @@ import {
     selectIsFirmwareHashCheckEnabled,
     selectIsFirmwareRevisionCheckEnabled,
 } from '@suite/settings';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { useServices } from '@trezor/dependency-injection';
+import { SectionItem } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 import { HELP_CENTER_FIRMWARE_REVISION_CHECK } from '@trezor/urls';
 
 import { toggleFirmwareAuthenticityChecks } from 'src/actions/suite/suiteActions';
@@ -34,30 +34,28 @@ export const FirmwareAuthenticityChecks = () => {
     };
 
     return (
-        <SectionItem>
-            <TextColumn
-                title={
-                    <Translation
-                        id={
-                            areAllFirmwareChecksEnabled
-                                ? 'TR_DEVICE_FIRMWARE_REVISION_CHECK_TITLE'
-                                : 'TR_DEVICE_FIRMWARE_REVISION_CHECK_TITLE_DISABLED'
-                        }
-                    />
-                }
-                description={
-                    <Translation
-                        id={
-                            areAllFirmwareChecksEnabled
-                                ? 'TR_DEVICE_FIRMWARE_REVISION_CHECK_DESCRIPTION'
-                                : 'TR_DEVICE_FIRMWARE_REVISION_CHECK_DESCRIPTION_DISABLED'
-                        }
-                    />
-                }
-                bottomContent={<LearnMoreButton url={HELP_CENTER_FIRMWARE_REVISION_CHECK} />}
-            />
-            <ActionColumn>
-                <ActionButton
+        <SectionItem
+            title={
+                <Translation
+                    id={
+                        areAllFirmwareChecksEnabled
+                            ? 'TR_DEVICE_FIRMWARE_REVISION_CHECK_TITLE'
+                            : 'TR_DEVICE_FIRMWARE_REVISION_CHECK_TITLE_DISABLED'
+                    }
+                />
+            }
+            description={
+                <Translation
+                    id={
+                        areAllFirmwareChecksEnabled
+                            ? 'TR_DEVICE_FIRMWARE_REVISION_CHECK_DESCRIPTION'
+                            : 'TR_DEVICE_FIRMWARE_REVISION_CHECK_DESCRIPTION_DISABLED'
+                    }
+                />
+            }
+            bottomContent={<LearnMoreButton url={HELP_CENTER_FIRMWARE_REVISION_CHECK} />}
+            actions={
+                <SectionItem.Button
                     onClick={handleClick}
                     intent={areAllFirmwareChecksEnabled ? 'critical' : 'brand'}
                     data-testid="@settings/device/open-firmware-revision-check-modal-button"
@@ -69,8 +67,8 @@ export const FirmwareAuthenticityChecks = () => {
                                 : 'TR_DEVICE_FIRMWARE_REVISION_CHECK_BUTTON_DISABLED'
                         }
                     />
-                </ActionButton>
-            </ActionColumn>
-        </SectionItem>
+                </SectionItem.Button>
+            }
+        />
     );
 };

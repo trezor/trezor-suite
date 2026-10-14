@@ -3,10 +3,10 @@ import { type ReactNode } from 'react';
 import { injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { type WrappedNativeFlowType } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Button, Card, Column, Divider, Icon, IconCircle, Row, Text } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { CheckCircleFilledIcon, CheckIcon } from '@trezor/icons';
 
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';

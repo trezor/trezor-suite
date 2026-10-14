@@ -4,14 +4,12 @@ import { useSelector } from 'react-redux';
 import { A, pipe } from '@mobily/ts-belt';
 import { CommonActions, useNavigation, useRoute } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import {
     type DeviceRootState,
     selectIsDeviceInViewOnlyMode,
     selectSelectedDevice,
 } from '@suite-common/device';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountType,
     NORMAL_ACCOUNT_TYPE,
@@ -55,6 +53,8 @@ import {
     RootStackRoutes,
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 import { resolveAfter } from '@trezor/utils';
 
@@ -149,6 +149,20 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
         }
     };
 
+    const resetToEarnTab = () => {
+        navigation.dispatch(
+            CommonActions.reset({
+                index: 0,
+                routes: [
+                    {
+                        name: RootStackRoutes.AppTabs,
+                        params: { screen: AppTabsRoutes.EarnStack },
+                    },
+                ],
+            }),
+        );
+    };
+
     const navigateToEarnAfterDiscovery = ({
         symbol,
         accountIndex,
@@ -167,25 +181,20 @@ export const useAddCoinAccount = (networksSearchQuery?: string) => {
 
         if (!account) {
             showGeneralErrorAlert();
-            navigation.dispatch(
-                CommonActions.reset({
-                    index: 0,
-                    routes: [
-                        {
-                            name: RootStackRoutes.AppTabs,
-                            params: { screen: AppTabsRoutes.EarnStack },
-                        },
-                    ],
-                }),
-            );
+            resetToEarnTab();
 
             return;
         }
 
         switch (earnFlowParams?.earnType) {
-            case 'staking':
-                navigateByAccountState(account, navigation.navigate);
+            case 'staking': {
+                const hasNavigated = navigateByAccountState(account, navigation.navigate);
+
+                if (!hasNavigated) {
+                    resetToEarnTab();
+                }
                 break;
+            }
             case 'yield':
                 navigateByYieldAccountState(
                     account,

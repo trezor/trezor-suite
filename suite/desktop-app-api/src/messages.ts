@@ -104,7 +104,7 @@ export type UpdateProgress = Partial<{
     verifying: boolean;
 }>;
 
-// todo: desktop-app-api does not have suite-desktop dependency but we could reuse lot of types from there I guess
+// TODO: `desktop-app-api` does not depend on `desktop-app-main`, but it could reuse many of its types.
 export type Status = {
     service: boolean;
     process: boolean;
@@ -113,6 +113,11 @@ export type Status = {
 // todo: duplicate, see prev comment
 export type BridgeSettings = {
     doNotStartOnStartup: boolean;
+    /**
+     * Which usb library the bundled node-bridge uses. Read at bridge cold-start; a change applies
+     * on the next app launch. Undefined = 'legacy' (the safe default). Desktop-only.
+     */
+    usbImplementation?: 'legacy' | 'nusb';
 };
 
 export type BioAuthSettings = {
@@ -126,6 +131,7 @@ export type InvokeResult<Payload = undefined> =
 
 export type ConnectPopupCall = {
     id: string;
+    connectionId?: string;
     method: string;
     payload: any;
     sourceType?: string;
@@ -152,6 +158,7 @@ export type ConnectPopupCall = {
 export type ConnectPopupCancel = {
     error?: string;
     callId?: string;
+    connectionId: string;
 };
 
 export type ConnectPopupResponse = {

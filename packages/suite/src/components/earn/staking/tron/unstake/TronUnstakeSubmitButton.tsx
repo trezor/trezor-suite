@@ -3,9 +3,9 @@ import { useFormState } from 'react-hook-form';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Button, Tooltip } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
@@ -55,6 +55,7 @@ export const TronUnstakeSubmitButton = () => {
                 size="large"
                 width="100%"
                 onClick={handleClick}
+                data-testid="@staking/tron-unstake/continue-button"
                 isDisabled={
                     isUnstakingDisabled ||
                     !isValid ||

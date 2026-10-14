@@ -18,7 +18,7 @@ export class TradingActions {
             | 'exchange-preview'
             | 'exchange-revoke'
             | 'exchange-fees'
-            | 'outputs-review'
+            | 'transaction-review'
             | 'sell-preview'
             | 'sell-completion'
             | 'sell-fees',

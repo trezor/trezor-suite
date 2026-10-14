@@ -23,7 +23,9 @@ const ReleaseHeader = ({ version }: ReleaseHeaderProps) => (
     </Row>
 );
 
-const GithubFooter = ({ url }: { url: string }) => (
+type GithubFooterProps = { url: string };
+
+const GithubFooter = ({ url }: GithubFooterProps) => (
     <TextButton
         href={url}
         target="_blank"

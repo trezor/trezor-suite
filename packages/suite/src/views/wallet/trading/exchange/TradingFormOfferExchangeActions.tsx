@@ -3,16 +3,17 @@ import { useEffect } from 'react';
 import type { CryptoId } from 'invity-api';
 
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     requiresTokenApproval,
     selectIsTradingNetworkFeeMissing,
+    selectTradingExchangeQuoteToEstimate,
     selectTradingSendAccount,
     tradingExchangeActions,
 } from '@suite-common/trading';
 import { isAmountTooHigh } from '@suite-common/wallet-utils';
 import { Button } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { selectExchangeQuoteThunk } from 'src/actions/wallet/trading/exchange/selectExchangeQuoteThunk';
 import { useSelector } from 'src/hooks/suite';
@@ -31,6 +32,7 @@ export const TradingFormOfferExchangeActions = () => {
     const context = useTradingFormContext<'exchange'>();
     const {
         watch,
+        getValues,
         shouldSendInSats,
         tradingReceiveAddress,
         isLoadingQuote,
@@ -43,7 +45,8 @@ export const TradingFormOfferExchangeActions = () => {
 
     const modalControls = useReceiveAddressModalControls();
 
-    const { outputs, sendCryptoSelect, receiveCryptoSelect, exchangeType, rateType } = watch();
+    const { outputs, sendCryptoSelect, receiveCryptoSelect, exchangeType, rateType, provider } =
+        watch();
     const { amount, tokenAddress } = getTradingFirstOutput(outputs);
     const areSatsUsed = !!shouldSendInSats;
 
@@ -57,7 +60,14 @@ export const TradingFormOfferExchangeActions = () => {
     } = useTradingFormOfferCommon<'exchange'>();
 
     const isNetworkFeeMissing = useSelector(reduxState =>
-        selectIsTradingNetworkFeeMissing(reduxState, quote),
+        selectIsTradingNetworkFeeMissing(
+            reduxState,
+            selectTradingExchangeQuoteToEstimate(reduxState, {
+                provider,
+                exchangeType,
+                sendCryptoId: sendCryptoSelect?.id,
+            }),
+        ),
     );
 
     const { stellarActivateButton, stellarActivateModal } = useTradingStellarActivation({
@@ -129,6 +139,7 @@ export const TradingFormOfferExchangeActions = () => {
 
             if (!newTrade) return;
 
+            dispatch(tradingExchangeActions.saveFormValues(getValues()));
             dispatch(
                 selectExchangeQuoteThunk({
                     quote: newTrade,

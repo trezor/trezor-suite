@@ -88,29 +88,43 @@ type ReceivedTransactionNotification = {
     token?: Pick<TokenInfo, 'contract' | 'name' | 'symbol' | 'decimals'>;
 } & TransactionNotificationPayload;
 
+export type EarnTransactionStage = 'pending' | 'sped-up' | 'confirmed';
+
+type EarnTransactionNotificationPayload = {
+    stage: EarnTransactionStage;
+} & BaseTransactionNotificationPayload;
+
 type StakedTransactionNotification = {
     type: 'tx-staked';
-} & TransactionNotificationPayload;
+} & EarnTransactionNotificationPayload;
 
 type UnstakedTransactionNotification = {
     type: 'tx-unstaked';
-} & TransactionNotificationPayload;
+} & EarnTransactionNotificationPayload;
 
 type ClaimedTransactionNotification = {
     type: 'tx-claimed';
-} & TransactionNotificationPayload;
+} & EarnTransactionNotificationPayload;
+
+type WithdrawnTransactionNotification = {
+    type: 'tx-withdrawn';
+} & EarnTransactionNotificationPayload;
+
+type VotedTransactionNotification = {
+    type: 'tx-voted';
+} & EarnTransactionNotificationPayload;
 
 type YieldDepositTransactionNotification = {
     type: 'tx-yield-deposit';
-} & BaseTransactionNotificationPayload;
+} & EarnTransactionNotificationPayload;
 
 type YieldWithdrawTransactionNotification = {
     type: 'tx-yield-withdraw';
-} & BaseTransactionNotificationPayload;
+} & EarnTransactionNotificationPayload;
 
 type YieldClaimTransactionNotification = {
     type: 'tx-yield-claim';
-} & BaseTransactionNotificationPayload;
+} & EarnTransactionNotificationPayload;
 
 type AccountAddedNotification = {
     type: 'account-added';
@@ -242,13 +256,11 @@ export type ToastPayload<TranslationKey extends UnknownTranslationKey = UnknownT
           type: 'firmware-authenticity-check-error';
           translationKey: TranslationKey;
       }
-    | {
-          type: 'successful-claim';
-          symbol: NetworkSymbol;
-      }
     | StakedTransactionNotification
     | UnstakedTransactionNotification
     | ClaimedTransactionNotification
+    | WithdrawnTransactionNotification
+    | VotedTransactionNotification
     | YieldDepositTransactionNotification
     | YieldWithdrawTransactionNotification
     | YieldClaimTransactionNotification

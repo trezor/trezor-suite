@@ -4,9 +4,7 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { Context } from '@suite-common/message-system';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -29,6 +27,8 @@ import {
     type YieldStackParamList,
     YieldStackRoutes,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { YieldClaimFlowFooter } from '../../components/yield/YieldClaimFlowFooter';
 import { YieldClaimRewardsCard } from '../../components/yield/YieldClaimRewardsCard';

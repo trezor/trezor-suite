@@ -1,13 +1,8 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import {
-    type FeedbackFeatureName,
-    experimentalFeedbackFeatureSet,
-    translatedFeedbackFeatures,
-} from '@suite/experimental';
+import { type FeedbackFeatureName, experimentalFeedbackFeatureSet } from '@suite/experimental';
 import { Translation, useTranslation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import {
     type FeatureFeedbackRootState,
     type Rating,
@@ -15,12 +10,14 @@ import {
     selectPendingFeedbackFeature,
     sendFeedbackThunk,
 } from '@suite-common/feedback';
-import { injectDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@trezor/dependency-injection';
 import { SmileyIcon } from '@trezor/icons';
 import { SidebarBanner } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { feedbackDismissed } from '../featureFeedbackSlice';
 import { FeedbackFormModal } from './FeedbackFormModal';
+import { translatedFeedbackFeatures } from '../translatedFeedbackFeatures';
 
 type FeedbackSidebarBannerRootState = FeatureFeedbackRootState<FeedbackFeatureName>;
 

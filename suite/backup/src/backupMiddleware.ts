@@ -1,5 +1,5 @@
 import { routerAppChanged, selectRouterApp } from '@suite/router';
-import { createMiddleware } from '@suite-common/redux-utils';
+import { createMiddleware } from '@trezor/redux-utils';
 
 import { backupActions } from './backupReducer';
 

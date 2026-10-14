@@ -45,13 +45,6 @@ jest.mock('../libs/process-icon', () => ({
     getProcessIcon: jest.fn().mockResolvedValue(undefined),
 }));
 
-(global as any).logger = {
-    info: jest.fn(),
-    warn: jest.fn(),
-    error: jest.fn(),
-    debug: jest.fn(),
-};
-
 import { init } from './mcp-server';
 
 const TEST_TOKEN = 'test-token-abc123';
@@ -103,6 +96,12 @@ const startMcpServer = async (overrides?: {
         interceptor: {} as any,
         mainThreadEmitter: {} as any,
         cspNonce: 'test-nonce',
+        logger: {
+            info: jest.fn(),
+            warn: jest.fn(),
+            error: jest.fn(),
+            debug: jest.fn(),
+        },
     } as any);
 
     result!.onLoad({} as any);

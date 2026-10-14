@@ -16,12 +16,14 @@
         "@suite-common/calldata": "workspace:*",
         "@trezor/connect-common": "workspace:*",
         "@trezor/network-ethereum": "workspace:*",
+        "@trezor/network-ethereum-assets": "workspace:*",
+        "@trezor/network-ethereum-types": "workspace:*",
         "@trezor/network-module-suite-common-types": "workspace:*",
         "@trezor/network-module-types": "workspace:*",
         "@trezor/utils": "workspace:*",
         "viem": "^2.54.1"
     },
     "devDependencies": {
-        "@suite-common/dependency-injection": "workspace:*"
+        "@trezor/dependency-injection": "workspace:*"
     }
 }

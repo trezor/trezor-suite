@@ -15,7 +15,10 @@ const Item = styled.button<{ $isSelected: boolean }>`
     justify-content: center;
     ${typography['headline-sm']}
     cursor: pointer;
-    transition: 0.1s ease-in-out;
+    transition:
+        background 0.1s ease-in-out,
+        outline 0.1s ease-in-out,
+        outline-offset 0.1s ease-in-out;
     background: ${({ $isSelected, theme }) =>
         $isSelected ? theme.elementFillContrast : theme.elementFillNeutralSoft};
 

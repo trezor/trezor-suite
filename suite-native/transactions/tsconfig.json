@@ -3,17 +3,12 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
-            "path": "../../suite-common/dependency-injection"
-        },
-        {
             "path": "../../suite-common/discreet-mode"
         },
         {
             "path": "../../suite-common/formatters"
         },
-        {
-            "path": "../../suite-common/redux-utils"
-        },
+        { "path": "../../suite-common/icons" },
         {
             "path": "../../suite-common/suite-sync"
         },
@@ -51,7 +46,6 @@
         { "path": "../intl" },
         { "path": "../labeling" },
         { "path": "../navigation" },
-        { "path": "../scrollview" },
         { "path": "../suite-sync" },
         { "path": "../tokens" },
         {
@@ -59,8 +53,15 @@
         },
         { "path": "../../packages/connect" },
         {
+            "path": "../../packages/dependency-injection"
+        },
+        {
             "path": "../../networks/ethereum/network-ethereum-suite-common"
         },
+        {
+            "path": "../../networks/stellar/network-stellar"
+        },
+        { "path": "../../packages/redux-utils" },
         {
             "path": "../../packages/styles-native"
         },

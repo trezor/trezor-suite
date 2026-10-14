@@ -12,30 +12,19 @@ import type { Device } from '../types/device';
 export const UI_EVENT = 'UI_EVENT';
 
 export const UI_EVENTS = {
-    // --- Transport ---
-
-    /** No transport layer (bridge/WebUSB) is available */
-    TRANSPORT_MISSING: 'ui-event_transport_missing',
-
     // --- Device state ---
 
     /** Device is in bootloader mode (unexpected for the current method) */
     DEVICE_IN_BOOTLOADER: 'ui-event_device_in_bootloader',
-    /** Device is NOT in bootloader mode (unexpected for the current method) */
-    DEVICE_NOT_IN_BOOTLOADER: 'ui-event_device_not_in_bootloader',
     /** Device has not been initialized (no seed) */
     DEVICE_NOT_INITIALIZED: 'ui-event_device_not_initialized',
     /** Device is in seedless mode */
     DEVICE_SEEDLESS: 'ui-event_device_seedless',
-    /** Device has no backup — user should be warned */
-    DEVICE_NEEDS_BACKUP: 'ui-event_device_needs_backup',
 
     // --- Firmware status ---
 
     /** Installed firmware is older than the minimum required version */
     FIRMWARE_OLD: 'ui-event_firmware_old',
-    /** Installed firmware is outdated but still functional */
-    FIRMWARE_OUTDATED: 'ui-event_firmware_outdated',
     /** Installed firmware is not supported by the current method */
     FIRMWARE_NOT_SUPPORTED: 'ui-event_firmware_not_supported',
     /** Installed firmware is not compatible with the current method */
@@ -85,10 +74,6 @@ export const UI_EVENTS = {
 } as const;
 
 export type UiEventWithoutPayload =
-    | {
-          type: typeof UI_EVENTS.TRANSPORT_MISSING;
-          payload?: never;
-      }
     | {
           type: typeof UI_EVENTS.ACCOUNT_INSUFFICIENT_FUNDS;
           payload?: never;
@@ -145,14 +130,11 @@ export interface UiEventButtonRequest {
 
 export type UiEventUnexpectedDeviceMode =
     | { type: typeof UI_EVENTS.DEVICE_IN_BOOTLOADER; payload: { device: Device } }
-    | { type: typeof UI_EVENTS.DEVICE_NOT_IN_BOOTLOADER; payload: { device: Device } }
     | { type: typeof UI_EVENTS.DEVICE_NOT_INITIALIZED; payload: { device: Device } }
-    | { type: typeof UI_EVENTS.DEVICE_SEEDLESS; payload: { device: Device } }
-    | { type: typeof UI_EVENTS.DEVICE_NEEDS_BACKUP; payload: { device: Device } };
+    | { type: typeof UI_EVENTS.DEVICE_SEEDLESS; payload: { device: Device } };
 
 export type UiEventFirmwareException =
     | { type: typeof UI_EVENTS.FIRMWARE_OLD; payload: { device: Device } }
-    | { type: typeof UI_EVENTS.FIRMWARE_OUTDATED; payload: { device: Device } }
     | { type: typeof UI_EVENTS.FIRMWARE_NOT_SUPPORTED; payload: { device: Device } }
     | { type: typeof UI_EVENTS.FIRMWARE_NOT_COMPATIBLE; payload: { device: Device } }
     | { type: typeof UI_EVENTS.FIRMWARE_NOT_INSTALLED; payload: { device: Device } };

@@ -18,7 +18,7 @@ export const TronUnstakingCard = ({ account }: TronUnstakingCardProps) => {
     }
 
     return (
-        <Card paddingType="none">
+        <Card paddingType="none" data-testid="@staking/tron-unstaking-card/container">
             <Box padding={{ vertical: 12, horizontal: 20 }}>
                 <Row justifyContent="space-between" alignItems="center">
                     <Text typographyStyle="body-sm-strong">
@@ -28,7 +28,10 @@ export const TronUnstakingCard = ({ account }: TronUnstakingCardProps) => {
                         />
                     </Text>
                     <Column gap={2} alignItems="flex-end">
-                        <Text typographyStyle="body-md-strong">
+                        <Text
+                            typographyStyle="body-md-strong"
+                            data-testid="@staking/tron-unstaking-card/amount"
+                        >
                             <FormattedCryptoAmount value={pendingAmount} symbol={account.symbol} />
                         </Text>
                         <Text typographyStyle="body-sm" intent="neutral" priority="secondary">

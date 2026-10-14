@@ -4,12 +4,12 @@ import {
     connectPopupCallInnerThunk,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { Card, Column, H3, Icon, Modal, Paragraph, Row } from '@trezor/components';
 import { UI_EVENTS } from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
 import { WarningIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { ConnectCallSource } from 'src/components/suite/ConnectCallSource';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
@@ -144,8 +144,6 @@ export const ConnectErrorModal = () => {
 
         if (popupCall.error?.message === UI_EVENTS.DEVICE_IN_BOOTLOADER)
             return <Translation id="TR_DEVICE_IN_BOOTLOADER" />;
-        if (popupCall.error?.message === UI_EVENTS.DEVICE_NOT_IN_BOOTLOADER)
-            return <Translation id="TR_RECONNECT_IN_BOOTLOADER" />;
         if (popupCall.error?.message === UI_EVENTS.DEVICE_SEEDLESS)
             return <Translation id="TR_YOUR_DEVICE_IS_SEEDLESS" />;
         if (popupCall.error?.message === UI_EVENTS.DEVICE_NOT_INITIALIZED)

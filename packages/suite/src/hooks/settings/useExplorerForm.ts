@@ -2,10 +2,10 @@ import { useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import { useTranslation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type Explorer, type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectNetworkExplorers, setNetworkExplorerThunk } from '@suite-common/wallet-core';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 import { deepEqual, isUrl } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
@@ -22,9 +22,9 @@ const useExplorerInput = (currentValues: Explorer) => {
         defaultValues: currentValues,
     });
 
-    const [base, tx, address, token, nft, queryString] = useWatch({
+    const [base, tx, address, token, nft, contract, queryString] = useWatch({
         control,
-        name: ['base', 'tx', 'address', 'token', 'nft', 'queryString'],
+        name: ['base', 'tx', 'address', 'token', 'nft', 'contract', 'queryString'],
     });
 
     const { translationString } = useTranslation();
@@ -58,6 +58,10 @@ const useExplorerInput = (currentValues: Explorer) => {
     });
 
     const { ref: nftInputRef, ...nftInputField } = register('nft', {
+        validate: validateSuffix,
+    });
+
+    const { ref: contractInputRef, ...contractInputField } = register('contract', {
         validate: validateSuffix,
     });
 
@@ -104,6 +108,12 @@ const useExplorerInput = (currentValues: Explorer) => {
                 field: nftInputField,
                 error: errors.nft?.message,
             },
+            contract: {
+                ref: contractInputRef,
+                value: contract,
+                field: contractInputField,
+                error: errors.contract?.message,
+            },
             queryString: {
                 ref: queryStringInputRef,
                 value: queryString,
@@ -120,7 +130,7 @@ export const useExplorerForm = (symbol: NetworkSymbol) => {
     const explorerConfig = useSelector(state => selectNetworkExplorers(state, symbol));
 
     const input = useExplorerInput(explorerConfig.custom ?? explorerConfig.default);
-    const { base, tx, address, token, nft, queryString } = input.fields;
+    const { base, tx, address, token, nft, contract, queryString } = input.fields;
 
     const explorer: Explorer = useMemo(
         () => ({
@@ -129,9 +139,10 @@ export const useExplorerForm = (symbol: NetworkSymbol) => {
             address: address.value,
             token: token.value,
             nft: nft.value,
+            contract: contract.value,
             queryString: queryString.value,
         }),
-        [base, tx, address, token, nft, queryString],
+        [base, tx, address, token, nft, contract, queryString],
     );
 
     const save = () => {
@@ -151,6 +162,7 @@ export const useExplorerForm = (symbol: NetworkSymbol) => {
         !input.fields.address.error &&
         !input.fields.token.error &&
         !input.fields.nft.error &&
+        !input.fields.contract.error &&
         !input.fields.queryString.error;
 
     return {

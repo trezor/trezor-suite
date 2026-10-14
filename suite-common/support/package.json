@@ -12,10 +12,10 @@
     },
     "dependencies": {
         "@suite-common/device": "workspace:*",
-        "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/env-utils": "workspace:*",
+        "@trezor/redux-utils": "workspace:*",
         "@trezor/urls": "workspace:*"
     }
 }

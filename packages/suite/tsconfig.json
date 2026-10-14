@@ -38,9 +38,6 @@
         {
             "path": "../../suite-common/delegated-identity-key"
         },
-        {
-            "path": "../../suite-common/dependency-injection"
-        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/device-authenticity"
@@ -95,9 +92,6 @@
             "path": "../../suite-common/react-query"
         },
         { "path": "../../suite-common/receive" },
-        {
-            "path": "../../suite-common/redux-utils"
-        },
         { "path": "../../suite-common/sentry" },
         {
             "path": "../../suite-common/suite-config"
@@ -151,9 +145,6 @@
             "path": "../../suite-common/tx-simulation"
         },
         {
-            "path": "../../suite-common/validators"
-        },
-        {
             "path": "../../suite-common/wallet-config"
         },
         {
@@ -176,6 +167,9 @@
         { "path": "../../suite/analytics" },
         { "path": "../../suite/app-assets" },
         {
+            "path": "../../suite/apps-embedding-demo"
+        },
+        {
             "path": "../../suite/authenticity-checks"
         },
         { "path": "../../suite/backup" },
@@ -196,6 +190,7 @@
             "path": "../../suite/firmware-upgrade"
         },
         { "path": "../../suite/flags" },
+        { "path": "../../suite/forms" },
         { "path": "../../suite/github" },
         {
             "path": "../../suite/idb-migration-utils"
@@ -240,10 +235,16 @@
         { "path": "../connect" },
         { "path": "../connect-common" },
         { "path": "../crypto-utils" },
+        { "path": "../dependency-injection" },
+        { "path": "../device" },
         { "path": "../device-utils" },
         { "path": "../dom-utils" },
         { "path": "../env-utils" },
         { "path": "../icons" },
+        { "path": "../logger" },
+        {
+            "path": "../../networks/ethereum/network-ethereum"
+        },
         {
             "path": "../../networks/ethereum/network-ethereum-suite-common"
         },
@@ -251,13 +252,20 @@
             "path": "../../networks/network-module/network-module-suite-common-types"
         },
         {
+            "path": "../../networks/ripple/network-ripple"
+        },
+        {
             "path": "../../networks/solana/network-solana"
         },
         {
             "path": "../../networks/stellar/network-stellar"
         },
+        {
+            "path": "../../networks/tron/network-tron"
+        },
         { "path": "../product-components" },
         { "path": "../react-utils" },
+        { "path": "../redux-utils" },
         { "path": "../styles" },
         { "path": "../suite-storage" },
         { "path": "../theme" },

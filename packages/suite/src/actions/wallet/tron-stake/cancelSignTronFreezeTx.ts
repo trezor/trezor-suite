@@ -1,11 +1,11 @@
 import { closeModal } from '@suite/modal';
-import { createThunk } from '@suite-common/redux-utils';
 import {
     TRON_STAKE_PREFIX,
     type TronStakeRootState,
     selectTronStakeTxReview,
 } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
+import { createThunk } from '@trezor/redux-utils';
 
 type CancelSignTronFreezeTxThunkState = TronStakeRootState;
 

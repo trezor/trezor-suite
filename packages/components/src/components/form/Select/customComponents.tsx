@@ -14,11 +14,13 @@ import {
     components,
 } from 'react-select';
 
+import { useMergeRefs } from '@floating-ui/react';
 import styled from 'styled-components';
 
 import { CaretDownIcon } from '@trezor/icons';
 
 import type { CustomSelectProps, Option as OptionType } from './types';
+import { useScrollShadow } from '../../../utils/useScrollShadow';
 import { Box } from '../../Box/Box';
 import { Column, Row } from '../../Flex/Flex';
 import { Icon } from '../../Icon/Icon';
@@ -123,22 +125,34 @@ export const Menu = ({ children, ...props }: MenuProps<OptionType, boolean>) => 
     );
 };
 
-export const MenuList = ({ children, ...props }: MenuListProps<OptionType, boolean>) => {
+export const MenuList = ({ children, innerRef, ...props }: MenuListProps<OptionType, boolean>) => {
     const isGrouped = props.selectProps.options.some(option => option.options);
+    const { scrollElementRef, ScrollSentinels, ShadowTop, ShadowBottom } = useScrollShadow({
+        backgroundColor: 'surfaceFillModeless',
+    });
+    const ref = useMergeRefs([innerRef, scrollElementRef]);
 
     return (
-        <components.MenuList
-            {...props}
-            innerProps={{
-                ...props.innerProps,
-                style: {
-                    ...props.innerProps.style,
-                    padding: 8,
-                },
-            }}
-        >
-            <Column gap={isGrouped ? 12 : 0}>{children}</Column>
-        </components.MenuList>
+        <Box position={{ type: 'relative' }}>
+            <ShadowTop />
+            <components.MenuList
+                {...props}
+                innerRef={ref}
+                innerProps={{
+                    ...props.innerProps,
+                    style: {
+                        ...props.innerProps.style,
+                        padding: 8,
+                    },
+                }}
+            >
+                <Column gap={isGrouped ? 12 : 0} position={{ type: 'relative' }}>
+                    <ScrollSentinels />
+                    {children}
+                </Column>
+            </components.MenuList>
+            <ShadowBottom />
+        </Box>
     );
 };
 

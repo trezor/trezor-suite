@@ -15,8 +15,6 @@ import type { ConnectSettings, LocalFirmwares, Manifest } from '../types/setting
 const initialSettings: ConnectSettings = {
     debug: false,
     transports: undefined,
-    pendingTransportEvent: true,
-    transportReconnect: true,
 };
 
 export const parseManifest = (manifest?: Manifest) => {
@@ -83,10 +81,6 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
         settings.createLogger = input.createLogger;
     }
 
-    if (typeof input.transportReconnect === 'boolean') {
-        settings.transportReconnect = input.transportReconnect;
-    }
-
     if (typeof input.localFirmwares === 'object') {
         settings.localFirmwares = parseLocalFirmwares(input.localFirmwares);
     }
@@ -101,10 +95,6 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
 
     if (Array.isArray(input.transports)) {
         settings.transports = input.transports;
-    }
-
-    if (typeof input.pendingTransportEvent === 'boolean') {
-        settings.pendingTransportEvent = input.pendingTransportEvent;
     }
 
     if (typeof input.manifest === 'object') {

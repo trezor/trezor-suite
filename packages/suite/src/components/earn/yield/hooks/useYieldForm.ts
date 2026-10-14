@@ -7,16 +7,18 @@ import {
     type ResolvedYieldFlowData,
     type YieldFlowFormValues,
     type YieldFlowStepId,
+    type YieldGasReserve,
+    type YieldNativeFeeStatus,
     type YieldPositionFlowType,
     type YieldSessionState,
-    getMaxWrapAmount,
+    getWrappableNativeBalance,
+    getYieldNativeFeeStatus,
     isYieldSessionResumable,
     isYieldWithdrawFlow,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { useCurrentRef, useFreshRef } from '@trezor/react-utils';
 
-import { useYieldFiatInput } from './useYieldFiatInput';
 import { type YieldAmountCardFiatToggleProps } from '../common/YieldAmountCard';
 import {
     getYieldFiatRateToken,
@@ -24,6 +26,7 @@ import {
     getYieldUnwrapDefaultAmount,
     isAmountGreaterThan,
 } from '../yieldFlowUtils';
+import { useYieldFiatInput } from './useYieldFiatInput';
 
 export type AmountIssue = 'amount-empty' | 'amount-too-high' | 'amount-invalid-decimals';
 
@@ -34,6 +37,7 @@ type UseYieldFormProps = {
     vault: YieldDtoV2;
     flowKey: string;
     session: YieldSessionState;
+    gasReserve: YieldGasReserve;
 };
 
 type UseYieldFormResult = {
@@ -42,6 +46,7 @@ type UseYieldFormResult = {
     maxAmount: string;
     setAmountInput: (amount: string) => void;
     amountIssues: AmountIssue[];
+    nativeFeeStatus: YieldNativeFeeStatus;
     fiatToggle: YieldAmountCardFiatToggleProps | undefined;
     setMaxAmount: (cryptoMax: string) => void;
     resetAmounts: (cryptoAmount: string) => void;
@@ -54,6 +59,7 @@ export const useYieldForm = ({
     vault,
     flowKey,
     session,
+    gasReserve,
 }: UseYieldFormProps): UseYieldFormResult => {
     const methods = useForm<YieldFlowFormValues>({
         mode: 'onChange',
@@ -91,7 +97,7 @@ export const useYieldForm = ({
     const getMaxAmount = (): string => {
         if (flowType === 'deposit') {
             if (session.step === 'wrap') {
-                return getMaxWrapAmount(account.formattedBalance);
+                return getWrappableNativeBalance(account.formattedBalance, gasReserve.recommended);
             }
 
             return token?.balance ?? '';
@@ -223,12 +229,23 @@ export const useYieldForm = ({
         amountIssues.push('amount-invalid-decimals');
     }
 
+    const nativeFeeStatus: YieldNativeFeeStatus =
+        flowType === 'deposit'
+            ? getYieldNativeFeeStatus({
+                  nativeBalance: account.formattedBalance,
+                  reserve: gasReserve,
+                  isWrapStep: session.step === 'wrap',
+                  isWrappedNativeVault: flowData.isWrappedNativeVault,
+              })
+            : 'sufficient';
+
     return {
         methods,
         liveAmount,
         maxAmount,
         setAmountInput,
         amountIssues,
+        nativeFeeStatus,
         fiatToggle,
         setMaxAmount,
         resetAmounts,

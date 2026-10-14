@@ -7,7 +7,7 @@ import {
     deviceActions,
     prepareDeviceReducer as prepareCommonDeviceReducer,
 } from '@suite-common/device';
-import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
+import { createSliceWithExtraDeps } from '@trezor/redux-utils';
 
 type ConnectionMode = 'cable' | 'bluetooth';
 

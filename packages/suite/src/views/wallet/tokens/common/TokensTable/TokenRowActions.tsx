@@ -11,10 +11,8 @@ import { Translation, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
 import { events as sharedEvents } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import {
     DefinitionType,
@@ -43,6 +41,7 @@ import {
     getContractAddressForNetworkSymbol,
     getTokenExplorerUrl,
     isErc4626,
+    isStellarContractToken,
 } from '@suite-common/wallet-utils';
 import {
     Button,
@@ -55,6 +54,7 @@ import {
     Link,
     Row,
 } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import {
     ArrowDownIcon,
     ArrowUUpLeftIcon,
@@ -69,7 +69,11 @@ import {
     RepeatIcon,
     XIcon,
 } from '@trezor/icons';
-import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
+import {
+    isNativeTokenWrappable,
+    isWrappedNativeToken,
+} from '@trezor/network-ethereum-suite-common';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { setSendFormPrefill, setTransactionHistoryPrefill } from 'src/actions/suite/suiteActions';
 import { getEarnRouteParams } from 'src/components/earn/utils/getEarnRouteParams';
@@ -87,8 +91,9 @@ interface TokenRowBasicActionsProps {
     account: Account;
     network: Network;
     isUnverifiedTable?: boolean;
+    isRemovableContractToken?: boolean;
     yieldOpportunities?: YieldDtoV2[];
-    setShowDeactivateModal: (value: boolean) => void;
+    onDeactivateToken: () => void;
 }
 
 const TokenRowBasicActions = ({
@@ -98,8 +103,9 @@ const TokenRowBasicActions = ({
     account,
     network,
     isUnverifiedTable,
+    isRemovableContractToken,
     yieldOpportunities,
-    setShowDeactivateModal,
+    onDeactivateToken,
 }: TokenRowBasicActionsProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const device = useSelector(selectSelectedDevice);
@@ -127,6 +133,7 @@ const TokenRowBasicActions = ({
         !!tokenTradingOptions && tokenTradingOptions.exchange && token.balance !== '0';
     const canSellToken = !!tokenTradingOptions && tokenTradingOptions.sell;
     const canReceiveToken = !isDeviceLocked && !isDeviceCompromised;
+    const isContractToken = isStellarContractToken(token);
 
     const availableVault = useMemo(
         () =>
@@ -348,19 +355,13 @@ const TokenRowBasicActions = ({
         window.open(explorerUrl, '_blank');
     };
 
-    const onDeactivateTokenButtonClick = () => {
-        setShowDeactivateModal(true);
-    };
-
-    const TokenAddressItem = ({
-        label,
-        address,
-        type,
-    }: {
+    type TokenAddressItemProps = {
         label: ReactNode;
         address: string;
         type: 'contract' | 'fingerprint' | 'policyId';
-    }) => (
+    };
+
+    const TokenAddressItem = ({ label, address, type }: TokenAddressItemProps) => (
         <InfoItem typographyStyle="body-xs" label={label} gap={0}>
             <Link href={explorerUrl}>
                 <Address
@@ -476,7 +477,9 @@ const TokenRowBasicActions = ({
                         icon: ArrowUUpLeftIcon,
                         onClick: onUnwrapButtonClick,
                         isDisabled: token.balance === '0' || isUnwrapDisabled,
-                        isHidden: !isWrappedNativeToken(account.symbol, token.contract),
+                        isHidden:
+                            !isWrappedNativeToken(account.symbol, token.contract) ||
+                            !isNativeTokenWrappable(account.symbol),
                     },
                     {
                         label: <Translation id="TR_EARN_YIELD_DEPOSIT_BUTTON" />,
@@ -518,11 +521,17 @@ const TokenRowBasicActions = ({
                         onClick: onViewInExplorerButtonClick,
                     },
                     {
-                        label: <Translation id="TR_DEACTIVATE_TOKEN" />,
+                        // A contract token has no trustline to deactivate, only a watch list.
+                        label: (
+                            <Translation
+                                id={isContractToken ? 'TR_REMOVE_TOKEN' : 'TR_DEACTIVATE_TOKEN'}
+                            />
+                        ),
                         icon: XIcon,
-                        onClick: onDeactivateTokenButtonClick,
-                        // Only show for Stellar tokens
-                        isHidden: network.networkType !== 'stellar',
+                        onClick: onDeactivateToken,
+                        isHidden:
+                            network.networkType !== 'stellar' ||
+                            (isContractToken && !isRemovableContractToken),
                     },
                 ]}
             />
@@ -652,7 +661,8 @@ interface TokenRowActionsProps {
     network: Network;
     yieldOpportunities?: YieldDtoV2[];
     isUnverifiedTable?: boolean;
-    setShowDeactivateModal: (value: boolean) => void;
+    isRemovableContractToken?: boolean;
+    onDeactivateToken: () => void;
 }
 
 export const TokenRowActions = ({
@@ -663,7 +673,8 @@ export const TokenRowActions = ({
     network,
     yieldOpportunities,
     isUnverifiedTable,
-    setShowDeactivateModal,
+    isRemovableContractToken,
+    onDeactivateToken,
 }: TokenRowActionsProps) => (
     <TokenRowBasicActions
         type={type}
@@ -672,7 +683,8 @@ export const TokenRowActions = ({
         account={account}
         network={network}
         isUnverifiedTable={isUnverifiedTable}
+        isRemovableContractToken={isRemovableContractToken}
         yieldOpportunities={yieldOpportunities}
-        setShowDeactivateModal={setShowDeactivateModal}
+        onDeactivateToken={onDeactivateToken}
     />
 );

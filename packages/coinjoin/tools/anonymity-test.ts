@@ -3,6 +3,8 @@
 import fs from 'fs';
 import http from 'http';
 
+import { noopLogger } from '@trezor/logger';
+
 import { getAccountInfo, getAccountInfoParams } from './discovery';
 import { getAnonymityScores } from '../src/client/analyzeTransactions';
 import { getCoinjoinNetwork } from '../src/utils/settingsUtils';
@@ -96,12 +98,7 @@ const CACHE_PARAMS = `${CACHE_DIR}/anonymityScoreParams.json`;
         middlewareUrl: 'http://localhost:37128/',
         network: getCoinjoinNetwork(network as any),
         signal: new AbortController().signal,
-        logger: {
-            debug: () => {},
-            info: () => {},
-            warn: () => {},
-            error: () => {},
-        },
+        logger: noopLogger,
     });
 
     console.log('✅', 'End, printing anonymity scores:');

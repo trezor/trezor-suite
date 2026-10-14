@@ -1,0 +1,35 @@
+{
+    "fill-specializations": [
+        {
+            "value": {
+                "solid": "extended-srgb:0.37647,0.88235,0.59608,1.00000"
+            }
+        },
+        {
+            "appearance": "dark",
+            "value": {
+                "solid": "extended-srgb:0.37647,0.88235,0.59608,1.00000"
+            }
+        }
+    ],
+    "groups": [
+        {
+            "name": "Mark",
+            "layers": [
+                {
+                    "name": "Lock",
+                    "image-name": "lock.png",
+                    "glass": false,
+                    "position": {
+                        "scale": 1.24,
+                        "translation-in-points": [0, 0]
+                    }
+                }
+            ],
+            "shadow": { "kind": "none", "opacity": 0 },
+            "specular": false,
+            "translucency": { "enabled": false, "value": 0 }
+        }
+    ],
+    "supported-platforms": { "squares": "shared" }
+}

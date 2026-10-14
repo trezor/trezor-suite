@@ -5,18 +5,19 @@ export type TradeableAssetGroups<TAsset> = {
     lowBalanceAssets: TAsset[];
     nonTradeableAssets: TAsset[];
 };
+type GroupTradeableAssetsByTradabilityParams<TAsset> = {
+    assets: readonly TAsset[];
+    threshold: BaseCurrencyAmount | null;
+    getFiatBalance: (asset: TAsset) => BaseCurrencyAmount | null;
+    getIsTradeable: (asset: TAsset) => boolean;
+};
 
 export const groupTradeableAssetsByTradability = <TAsset>({
     assets,
     threshold,
     getFiatBalance,
     getIsTradeable,
-}: {
-    assets: readonly TAsset[];
-    threshold: BaseCurrencyAmount | null;
-    getFiatBalance: (asset: TAsset) => BaseCurrencyAmount | null;
-    getIsTradeable: (asset: TAsset) => boolean;
-}): TradeableAssetGroups<TAsset> => {
+}: GroupTradeableAssetsByTradabilityParams<TAsset>): TradeableAssetGroups<TAsset> => {
     const regularAssets: TAsset[] = [];
     const lowBalanceAssets: TAsset[] = [];
     const nonTradeableAssets: TAsset[] = [];

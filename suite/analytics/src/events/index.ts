@@ -53,6 +53,7 @@ export { routerLocationChangeEvent } from './routerLocationChangeEvent';
 export { selectWalletTypeEvent } from './selectWalletTypeEvent';
 export { sendConfirmedOnDeviceEvent } from './sendConfirmedOnDeviceEvent';
 export { sendDetailOpenedEvent } from './sendDetailOpenedEvent';
+export { sendEnsResolutionEvent } from './sendEnsResolutionEvent';
 export { sendInitialisedEvent } from './sendInitialisedEvent';
 export { sendQrScanEvent } from './sendQrScanEvent';
 export { sendRawTransactionEvent } from './sendRawTransactionEvent';

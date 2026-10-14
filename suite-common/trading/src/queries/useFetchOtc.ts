@@ -1,5 +1,5 @@
 import { tradingQueryKeys, useQuery } from '@suite-common/react-query';
-import { returnStableArrayIfEmpty } from '@suite-common/redux-utils';
+import { returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { getWeakRandomId } from '@trezor/utils';
 
 import { tradeApi } from '../tradeApi';

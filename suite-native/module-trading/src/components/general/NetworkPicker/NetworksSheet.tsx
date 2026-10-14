@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { Dimensions } from 'react-native';
+import { useWindowDimensions } from 'react-native';
 
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
@@ -41,7 +41,7 @@ type NetworkOption = {
     name: string;
     symbol: NetworkSymbol | undefined;
 };
-const SHEET_HEIGHT = Dimensions.get('window').height * 0.9;
+const SHEET_HEIGHT_RATIO = 0.9;
 
 const networkRowStyle = prepareNativeStyle<{ isFirst: boolean; isLast: boolean }>(
     (utils, { isFirst, isLast }) => ({
@@ -79,7 +79,7 @@ const NetworkRow = ({
         >
             <HStack alignItems="center" justifyContent="space-between">
                 <HStack alignItems="center" spacing="sp12">
-                    {symbol && <NetworkIcon symbol={symbol} size="extraLarge" />}
+                    {symbol && <NetworkIcon symbol={symbol} size={24} />}
                     <Text variant="body-md">{name}</Text>
                 </HStack>
                 {isSelected && (
@@ -104,6 +104,7 @@ export const NetworksSheet = ({
 }: NetworksSheetProps) => {
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
+    const { height: windowHeight } = useWindowDimensions();
     const networkOptions = useMemo<NetworkOption[]>(
         () => [
             {
@@ -149,7 +150,7 @@ export const NetworksSheet = ({
         <BottomSheetFlashList<NetworkOption>
             footer={selectedNetwork ? footer : undefined}
             isVisible={isVisible}
-            estimatedListHeight={SHEET_HEIGHT}
+            estimatedListHeight={windowHeight * SHEET_HEIGHT_RATIO}
             onClose={onClose}
             data={networkOptions}
             keyExtractor={keyExtractor}

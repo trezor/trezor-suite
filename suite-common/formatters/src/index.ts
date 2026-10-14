@@ -4,11 +4,14 @@ export type * from './types';
 export * from './makeFormatter';
 export * from './utils/sign';
 export * from './utils/convert';
+export * from './utils/currencyAmountParts';
 export * from './utils/clearAddressPrefix';
 export {
     BASE_CRYPTO_MAX_DISPLAYED_DECIMALS,
+    joinAmountWithSymbol,
     type CryptoAmountFormatterFormatStyle,
 } from './formatters/prepareCryptoAmountFormatter';
 export { getCompactAmount } from './utils/getCompactAmount';
 export { formatCompactCryptoAmount, isMoneyLikeToken } from './utils/formatCompactCryptoAmount';
 export { AddressFormatter, type AddressFormat } from './formatters/AddressFormatter';
+export * from './hooks/useCurrencyAmountParts';

@@ -1,7 +1,5 @@
 import { selectFullSelectedAccount } from '@suite/account';
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     cancelSignSendFormTransactionThunk,
     selectPrecomposedSendForm,
@@ -14,6 +12,8 @@ import {
     stakeActions,
 } from '@suite-common/wallet-core';
 import { type FormState, type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import {
     removeSendFormDraftThunk,

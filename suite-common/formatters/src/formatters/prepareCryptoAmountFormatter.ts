@@ -23,6 +23,12 @@ import { prepareDisplaySymbolFormatter } from './prepareDisplaySymbolFormatter';
 import { formatCompactCryptoAmount, isMoneyLikeToken } from '../utils/formatCompactCryptoAmount';
 import { truncateCryptoAmount } from '../utils/truncateCryptoAmount';
 
+// Keeps the symbol from wrapping onto a separate (possibly hidden) line.
+const NON_BREAKING_SPACE = '\u00A0';
+
+export const joinAmountWithSymbol = (amount: string, symbol: string): string =>
+    `${amount}${NON_BREAKING_SPACE}${symbol}`;
+
 export type CryptoAmountFormatterInputValue = string;
 
 export type CryptoAmountFormatterFormatStyle = 'exact' | 'compact-balance';
@@ -45,16 +51,17 @@ const DEFAULT_LOCALE: Locale = 'en-US';
 const isLocale = (value: string): value is Locale => Object.hasOwn(LANGUAGES, value);
 
 const getSafeLocale = (locale: string): Locale => (isLocale(locale) ? locale : DEFAULT_LOCALE);
+type AppendEllipsisParams = {
+    value: string;
+    wasResultRounded: boolean;
+    formatterContext: Partial<CryptoAmountFormatterDataContext>;
+};
 
 const appendEllipsis = ({
     value,
     wasResultRounded,
     formatterContext,
-}: {
-    value: string;
-    wasResultRounded: boolean;
-    formatterContext: Partial<CryptoAmountFormatterDataContext>;
-}): string => {
+}: AppendEllipsisParams): string => {
     const { isEllipsisAppended = true } = formatterContext;
 
     if (wasResultRounded && isEllipsisAppended) {
@@ -63,16 +70,17 @@ const appendEllipsis = ({
 
     return value;
 };
+type FormatExactCryptoAmountParams = {
+    value: string;
+    locale: Locale;
+    formatterContext: Partial<CryptoAmountFormatterDataContext>;
+};
 
 const formatExactCryptoAmount = ({
     value,
     locale,
     formatterContext,
-}: {
-    value: string;
-    locale: Locale;
-    formatterContext: Partial<CryptoAmountFormatterDataContext>;
-}): string => {
+}: FormatExactCryptoAmountParams): string => {
     const { maxDisplayedDecimals = BASE_CRYPTO_MAX_DISPLAYED_DECIMALS } = formatterContext;
     const cryptoAmount = new BigNumber(value);
     const truncatedCryptoAmount = cryptoAmount.isFinite()
@@ -91,16 +99,17 @@ type NormalizedCryptoAmount = {
     value: string;
     areSubunitsDisplayed: boolean;
 };
+type NormalizeCryptoAmountForDisplayParams = {
+    value: string;
+    config: FormatterConfig;
+    formatterContext: Partial<CryptoAmountFormatterDataContext>;
+};
 
 const normalizeCryptoAmountForDisplay = ({
     value,
     config,
     formatterContext,
-}: {
-    value: string;
-    config: FormatterConfig;
-    formatterContext: Partial<CryptoAmountFormatterDataContext>;
-}): NormalizedCryptoAmount => {
+}: NormalizeCryptoAmountForDisplayParams): NormalizedCryptoAmount => {
     const { symbol, isBalance = false, smallestUnitsOverride } = formatterContext;
     const { bitcoinAmountUnit } = config;
     const decimals = getNetworkOptional(symbol)?.decimals ?? 0;
@@ -140,18 +149,19 @@ const normalizeCryptoAmountForDisplay = ({
     // branch above.
     return { value, areSubunitsDisplayed: !isBalance };
 };
+type FormatCryptoAmountForDisplayParams = {
+    value: string;
+    config: FormatterConfig;
+    formatterContext: Partial<CryptoAmountFormatterDataContext>;
+    areSubunitsDisplayed: boolean;
+};
 
 const formatCryptoAmountForDisplay = ({
     value,
     config,
     formatterContext,
     areSubunitsDisplayed,
-}: {
-    value: string;
-    config: FormatterConfig;
-    formatterContext: Partial<CryptoAmountFormatterDataContext>;
-    areSubunitsDisplayed: boolean;
-}): string => {
+}: FormatCryptoAmountForDisplayParams): string => {
     const { formatStyle = 'exact', tokenDecimals } = formatterContext;
     const locale = getSafeLocale(config.locale);
 
@@ -169,16 +179,13 @@ const formatCryptoAmountForDisplay = ({
             return exhaustive(formatStyle);
     }
 };
-
-const appendSymbol = ({
-    value,
-    config,
-    formatterContext,
-}: {
+type AppendSymbolParams = {
     value: string;
     config: FormatterConfig;
     formatterContext: Partial<CryptoAmountFormatterDataContext>;
-}) => {
+};
+
+const appendSymbol = ({ value, config, formatterContext }: AppendSymbolParams) => {
     const { symbol, smallestUnitsOverride, withSymbol = true } = formatterContext;
 
     if (!withSymbol) {
@@ -193,9 +200,7 @@ const appendSymbol = ({
               })
             : symbol;
 
-    const symbolSuffix = formattedSymbol ? ` ${formattedSymbol}` : '';
-
-    return `${value}${symbolSuffix}`;
+    return formattedSymbol ? joinAmountWithSymbol(value, formattedSymbol) : value;
 };
 
 export const prepareCryptoAmountFormatter = (config: FormatterConfig) =>

@@ -1,9 +1,8 @@
 import { type Store } from '@reduxjs/toolkit';
 
-import { yup } from '@suite-common/validators';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type FeesRootState } from '@suite-common/wallet-core';
-import { Form, useForm } from '@suite-native/forms';
+import { Form, useForm, yup } from '@suite-native/forms';
 import {
     createStoreFromPreloadedState,
     renderWithStoreProvider,

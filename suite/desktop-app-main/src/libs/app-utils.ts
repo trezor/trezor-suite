@@ -1,10 +1,13 @@
 import { isNotNull, mergeDeepObject } from '@trezor/utils';
 
 import { app } from '../typed-electron';
+import type { ILogger } from './logger';
 
-export const restartApp = () => {
-    const { logger } = global;
+type RestartAppParams = {
+    logger: ILogger;
+};
 
+export const restartApp = ({ logger }: RestartAppParams) => {
     logger.info('app', `Relaunching app with ${process.argv.slice(1).join(', ')} arguments.`);
 
     const options: Electron.RelaunchOptions = { args: process.argv ?? [] };

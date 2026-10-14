@@ -55,17 +55,19 @@ const mockDispatchResult = (requestStatus: 'fulfilled' | 'rejected', payload?: u
         payload,
     });
 
+type RenderUseEthereumCancelTxComposeParams = {
+    account?: Account;
+    tx?: WalletAccountTransactionWithRequiredRbfParams;
+    feeInfo?: FeeInfo | null;
+    dispatch?: jest.Mock;
+};
+
 const renderUseEthereumCancelTxCompose = ({
     account = ethAccount,
     tx = ethTx,
     feeInfo = feeInfoStub,
     dispatch = jest.fn(),
-}: {
-    account?: Account;
-    tx?: WalletAccountTransactionWithRequiredRbfParams;
-    feeInfo?: FeeInfo | null;
-    dispatch?: jest.Mock;
-} = {}) => {
+}: RenderUseEthereumCancelTxComposeParams = {}) => {
     const { services } = createTestCompositionRoot<void, AppState>({
         preloadedState: {
             wallet: {

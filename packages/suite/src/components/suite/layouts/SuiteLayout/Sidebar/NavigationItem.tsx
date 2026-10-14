@@ -4,8 +4,6 @@ import styled, { css } from 'styled-components';
 
 import { type ExtendedMessageDescriptor, Translation, type TranslationKey } from '@suite/intl';
 import { type Route, gotoThunk, selectRouteName } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     Badge,
     Icon,
@@ -20,6 +18,8 @@ import {
     Tooltip,
 } from '@trezor/components';
 import { commonFocusStyles } from '@trezor/components/src/utils/utils';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
@@ -31,7 +31,11 @@ const Container = styled.button<{ $isActive?: boolean }>`
     gap: 16px;
     padding: 8px;
     border-radius: 12px;
-    transition: 0.2s ease-in-out;
+    transition:
+        background 0.2s ease-in-out,
+        box-shadow 0.2s ease-in-out,
+        outline 0.2s ease-in-out,
+        outline-offset 0.2s ease-in-out;
     cursor: pointer;
     border: 0;
     background: none;

@@ -517,6 +517,10 @@ export interface Experiments {
  */
 export interface ExperimentsItem {
     id: string;
+    /**
+     * Human readable name of the experiment, shown in the debug settings
+     */
+    name?: string;
     groups: {
         /**
          * The name of the variant, e.g., 'A' or 'B'

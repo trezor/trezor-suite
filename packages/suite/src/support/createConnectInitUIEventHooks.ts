@@ -1,8 +1,8 @@
 import { openModal, preserveModal } from '@suite/modal';
 import { recoveryActions, selectRecoveryStatus } from '@suite/recovery';
-import { type Dispatch } from '@suite-common/redux-utils';
 import { type ConnectInitUIEventHooks } from '@suite-common/suite-types';
 import { UI_EVENTS, UI_REQUESTS } from '@trezor/connect';
+import { type Dispatch } from '@trezor/redux-utils';
 
 type ConnectInitUIEventHooksDeps = {
     dispatch: Dispatch;

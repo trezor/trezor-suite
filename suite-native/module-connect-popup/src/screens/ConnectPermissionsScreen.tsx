@@ -5,8 +5,6 @@ import { connectPopupActions, selectConnectAppPermissions } from '@suite-common/
 // TODO fix deep import
 // eslint-disable-next-line local-rules/no-package-deep-imports
 import { type AppRememberedPermission } from '@suite-common/connect-popup/src/connectPopupTypes';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     AnimatedBox,
     Button,
@@ -23,6 +21,8 @@ import { AccordionContent } from '@suite-native/atoms/src/Accordion/AccordionCon
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { ConnectAppIcon } from '../components/ConnectAppIcon';
 import { GroupedPermissionsList } from '../components/GroupedPermissionsList';

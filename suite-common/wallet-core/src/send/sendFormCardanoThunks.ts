@@ -1,4 +1,3 @@
-import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     AddressDisplayOptions,
@@ -16,6 +15,7 @@ import {
     transformUserOutputs,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { PROTO, type PrecomposedTransactionFinalCardano } from '@trezor/connect';
+import { createThunk } from '@trezor/redux-utils';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 import {
@@ -39,7 +39,7 @@ export const composeCardanoTransactionFeeLevelsThunk = createThunk<
     `${SEND_MODULE_PREFIX}/composeCardanoTransactionFeeLevelsThunk`,
     async ({ formState, composeContext }, { dispatch, rejectWithValue }) => {
         const { account, feeInfo } = composeContext;
-        const changeAddress = getUnusedChangeAddress(account);
+        const changeAddress = getUnusedChangeAddress(account.addresses?.change);
         if (!changeAddress || !account.utxo || !account.addresses)
             return rejectWithValue({
                 error: 'fee-levels-compose-failed',

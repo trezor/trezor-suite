@@ -8,6 +8,7 @@ import { mockInitialAppState } from '@suite-native/state/mocks';
 import { MNEMONICS, Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { mergeDeepObject } from '@trezor/utils';
 
+import { enableIOSReducedMotion } from './reducedMotion';
 import { appIsFullyLoaded, getModelFromEnv, platform } from './utils';
 import { onDeviceOnboarding } from '../pageObjects/deviceOnboardingActions';
 import { onDevicePrompt } from '../pageObjects/devicePromptActions';
@@ -136,6 +137,10 @@ export const openApp = async ({
     if (wipeData && platform !== 'android') {
         await device.uninstallApp();
         await device.installApp();
+    }
+
+    if (platform === 'ios') {
+        enableIOSReducedMotion(device.id);
     }
 
     if (await isDebugTestBuild()) {

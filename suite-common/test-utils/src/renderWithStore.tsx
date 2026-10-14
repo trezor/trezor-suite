@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import { type Store } from '@reduxjs/toolkit';
 import { type RenderHookOptions, renderHook } from '@testing-library/react';
 
-import { ServicesProvider } from '@suite-common/dependency-injection';
+import { ServicesProvider } from '@trezor/dependency-injection';
 
 type RenderHookOptionsExtended<
     Props,

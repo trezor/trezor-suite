@@ -1,9 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type ButtonRequest,
     type FirmwareStatus,
@@ -17,12 +15,14 @@ import {
     FirmwareType,
     UI_EVENTS,
 } from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
 import {
     DeviceModelInternal,
     getFirmwareVersion,
     hasBitcoinOnlyFirmware,
     isBitcoinOnlyDevice,
 } from '@trezor/device-utils';
+import { injectDispatch } from '@trezor/redux-utils';
 import { isArrayMember } from '@trezor/utils';
 
 import { firmwareActions } from '../firmwareActions';

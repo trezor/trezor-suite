@@ -1,7 +1,6 @@
 import { FadeInUp, FadeOutUp, LinearTransition } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
@@ -9,6 +8,7 @@ import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { AnimatedBox, Box, Button } from '@suite-native/atoms';
 import { useConnectDeviceHandler } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
+import { useServices } from '@trezor/dependency-injection';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { useDeviceManager } from '../hooks/useDeviceManager';

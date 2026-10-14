@@ -9,6 +9,7 @@ import {
 } from '@suite-common/wallet-types';
 import { isSafeObjectKey } from '@trezor/utils';
 
+import { transactionsActions } from '../transactions/transactionsActions';
 import { getNextYieldFlowStep, getYieldFlowStepSequence } from './utils/yieldUtils';
 import { YIELD_PREFIX } from './yieldConstants';
 import {
@@ -20,10 +21,10 @@ import {
     type YieldFlowCompleteRewardItem,
     type YieldFlowStepId,
     type YieldFlowType,
+    type YieldGasReserve,
     type YieldPendingTransactionState,
     type YieldPositionFlowType,
 } from './yieldTypes';
-import { transactionsActions } from '../transactions/transactionsActions';
 
 // Message ids must exist in the desktop `suite/intl` messages — the desktop app renders
 // `session.error` directly via `<Translation>`.
@@ -94,6 +95,11 @@ export type YieldSessionState = {
      * what tells a session that already moved on-chain apart from an untouched one.
      */
     hasBroadcastTransaction: boolean;
+    /**
+     * Fee reserve frozen when the flow first sees a fee estimate, so the Max amount and the
+     * validation do not shift under the user as fees are refetched during the flow.
+     */
+    gasReserve: YieldGasReserve | null;
     error: YieldTranslationKey | null;
     approval: {
         allowanceAmount: string | null;
@@ -140,6 +146,7 @@ export const initialStablecoinYieldSessionState: YieldSessionState = {
     step: 'approve',
     isWrappedNativeVault: false,
     hasBroadcastTransaction: false,
+    gasReserve: null,
     error: null,
     approval: {
         allowanceAmount: null,
@@ -355,6 +362,18 @@ const yieldSlice = createSlice({
                 flowType,
                 isWrappedNativeVault,
             );
+        },
+        freezeGasReserve(
+            state: YieldState,
+            action: PayloadAction<YieldSessionActionPayload & { gasReserve: YieldGasReserve }>,
+        ) {
+            withSession(state, action.payload, session => {
+                if (session.gasReserve) {
+                    return;
+                }
+
+                session.gasReserve = action.payload.gasReserve;
+            });
         },
         setError(
             state: YieldState,

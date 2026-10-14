@@ -582,6 +582,59 @@ describe('HttpServer', () => {
         expect(newAddress.port).toEqual(address.port);
     });
 
+    test('port negotiation - restart tries the ports from the first one again', async () => {
+        const [freePort1 = 0, freePort2 = 0] = await getFreePort(2);
+
+        server = new HttpServer<Events>({ logger: muteLogger, ports: [freePort1, freePort2] });
+        await server.start();
+        expect(server.getServerAddress()).toMatchObject({ port: freePort1 });
+
+        await server.stop();
+        await server.start();
+        expect(server.getServerAddress()).toMatchObject({ port: freePort1 });
+    });
+
+    // Regression for #28825: a restart onto an occupied port must not loop.
+    test('port negotiation - restart falls back to the next port while the first one is occupied', async () => {
+        const [freePort1 = 0, freePort2 = 0] = await getFreePort(2);
+
+        server = new HttpServer<Events>({ logger: muteLogger, ports: [freePort1, freePort2] });
+        await server.start();
+        await server.stop();
+
+        const blocker = new HttpServer<Events>({ logger: muteLogger, port: freePort1 });
+        await blocker.start();
+        try {
+            const result = await server.start();
+            expect(result).toMatchObject({ success: true, payload: { port: freePort2 } });
+        } finally {
+            await blocker.stop();
+        }
+
+        await server.stop();
+        await server.start();
+        expect(server.getServerAddress()).toMatchObject({ port: freePort1 });
+    });
+
+    test('port negotiation - restart resolves with an error when all ports are occupied', async () => {
+        const [freePort1 = 0, freePort2 = 0] = await getFreePort(2);
+
+        server = new HttpServer<Events>({ logger: muteLogger, ports: [freePort1, freePort2] });
+        await server.start();
+        await server.stop();
+
+        const blockers = [freePort1, freePort2].map(
+            port => new HttpServer<Events>({ logger: muteLogger, port }),
+        );
+        await Promise.all(blockers.map(blocker => blocker.start()));
+        try {
+            const result = await server.start();
+            expect(result).toMatchObject({ success: false, error: 'port already in use' });
+        } finally {
+            await Promise.all(blockers.map(blocker => blocker.stop()));
+        }
+    });
+
     describe('route matching logic (express.js-like)', () => {
         test('unregistered route does not match any registered route', async () => {
             const handler1 = jest.fn((_request, response) => {

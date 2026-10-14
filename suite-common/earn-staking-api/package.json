@@ -21,11 +21,11 @@
         "@suite-common/react-query": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@trezor/env-utils": "workspace:*",
-        "zod": "4.3.6"
+        "zod": "4.6.5"
     },
     "devDependencies": {
         "@suite-common/wallet-config": "workspace:*",
-        "orval": "8.19.0",
+        "orval": "8.33.0",
         "prettier": "^3.9.6"
     }
 }

@@ -3,8 +3,6 @@ import { memo, useMemo } from 'react';
 import { useDevice } from '@suite/device';
 import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { networksCollection } from '@suite-common/wallet-config';
 import {
     selectAllAccountsToList,
@@ -24,7 +22,9 @@ import {
     Paragraph,
     Row,
 } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { CaretDownIcon, CaretUpIcon, InfoIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 import { breakpoints } from '@trezor/theme';
 
 import { updateGraphDataThunk } from 'src/actions/wallet/graphActions';

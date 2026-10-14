@@ -13,13 +13,13 @@ import {
     SettingsStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
+import { isDevUtilsEnabledAtom } from '@suite-native/storage';
 
 import { AppSettingsCardWithIconLayout } from './AppSettingsCardWithIconLayout';
-import { isDevButtonVisibleAtom } from './ProductionDebug';
 import { useSettingsNavigateTo } from '../navigation/useSettingsNavigateTo';
 
 export const FeaturesSettings = () => {
-    const isDevButtonVisible = useAtomValue(isDevButtonVisibleAtom);
+    const isDevUtilsEnabled = useAtomValue(isDevUtilsEnabledAtom);
     const hasDiscovery = useSelector(selectHasRunningDiscovery);
     const isSuiteSyncFeatureAvailable = useSelector(selectIsSuiteSyncFeatureAvailable);
 
@@ -28,7 +28,7 @@ export const FeaturesSettings = () => {
 
     return (
         <TitledSection title={<Translation id="moduleSettings.items.features.title" />}>
-            {isDevButtonVisible && (
+            {isDevUtilsEnabled && (
                 <AppSettingsCardWithIconLayout
                     icon="circleDashed"
                     title={<Translation id="moduleSettings.items.features.devUtils.title" />}

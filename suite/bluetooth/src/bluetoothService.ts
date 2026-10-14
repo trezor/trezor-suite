@@ -10,35 +10,24 @@ import { type BluetoothDevice, bluetoothIpc } from '@trezor/transport-bluetooth'
 import { resolveAfter } from '@trezor/utils';
 
 import { type DesktopBluetoothDevice, fromBluetoothDevice } from './DesktopBluetoothDevice';
+import { type BackgroundScan } from './bluetoothBackgroundScan';
 import { bluetoothConnectDeviceThunk } from './bluetoothConnectDeviceThunk';
-import {
-    type BluetoothService,
-    type BluetoothServiceDeps,
-    type BluetoothServiceInternalDeps,
-} from './bluetoothServiceTypes';
+import { type BluetoothService, type BluetoothServiceDeps } from './bluetoothServiceTypes';
 import { selectConnectingDevices } from './desktopBluetoothSelectors';
 
-const bluetoothServiceInternal: Partial<BluetoothServiceInternalDeps> = {};
+type AttemptDeviceConnectDeps = Pick<BluetoothServiceDeps, 'getState' | 'dispatch'>;
 
-export const getBluetoothServiceInternal = <N extends keyof BluetoothServiceInternalDeps>(
-    name: N,
-): BluetoothServiceInternalDeps[N] => {
-    if (!bluetoothServiceInternal[name]) {
-        throw new Error(`Bluetooth service ${name} not initialized`);
-    }
-
-    return bluetoothServiceInternal[name];
-};
-
-const attemptDeviceConnect = async (deps: BluetoothServiceDeps, device: DesktopBluetoothDevice) => {
-    const { getState, dispatch } = deps;
-    const knownDevice = selectKnownDevices<DesktopBluetoothDevice>(getState()).find(
+const attemptDeviceConnect = async (
+    deps: AttemptDeviceConnectDeps,
+    device: DesktopBluetoothDevice,
+) => {
+    const knownDevice = selectKnownDevices<DesktopBluetoothDevice>(deps.getState()).find(
         d => d.id === device.id,
     );
-    const connectingDevices = selectConnectingDevices(getState());
-    const adapterStatus = selectAdapterStatus(getState());
-    const suiteDevices = selectDevices(getState());
-    const firmwareStatus = selectFirmware(getState());
+    const connectingDevices = selectConnectingDevices(deps.getState());
+    const adapterStatus = selectAdapterStatus(deps.getState());
+    const suiteDevices = selectDevices(deps.getState());
+    const firmwareStatus = selectFirmware(deps.getState());
 
     if (adapterStatus === 'power-suspending') {
         // system is going to sleep
@@ -69,7 +58,7 @@ const attemptDeviceConnect = async (deps: BluetoothServiceDeps, device: DesktopB
     }
 
     // do not hijack BT connection
-    const autoConnectPolicy = selectAutoConnectPolicy(getState());
+    const autoConnectPolicy = selectAutoConnectPolicy(deps.getState());
     const devicePolicy = autoConnectPolicy[knownDevice.id];
     const isConnectable =
         device.connectionStatus.type === 'disconnected' &&
@@ -90,12 +79,15 @@ const attemptDeviceConnect = async (deps: BluetoothServiceDeps, device: DesktopB
     // }
 
     if (isConnectable) {
-        await dispatch(bluetoothConnectDeviceThunk({ deviceId: device.id }));
+        await deps.dispatch(bluetoothConnectDeviceThunk({ deviceId: device.id }));
     }
 };
 
-const setupAutoReconnect = (deps: BluetoothServiceDeps) => {
-    const { getState } = deps;
+type SetupAutoReconnectDeps = Pick<BluetoothServiceDeps, 'getState' | 'dispatch'> & {
+    backgroundScan: BackgroundScan;
+};
+
+const setupAutoReconnect = (deps: SetupAutoReconnectDeps) => {
     // Wait for 3 seconds or earlier if a connected device is detected.
     // The delay shouldn't be too perceptible, since other things are also loading at app start.
     // If user connects a device via USB, we don't start the BT connection,
@@ -118,20 +110,18 @@ const setupAutoReconnect = (deps: BluetoothServiceDeps) => {
 
         // If we already have some paired devices, we assume user will have a BT device,
         // and therefore we start looking for it.
-        const knownDevices = selectKnownDevices<DesktopBluetoothDevice>(getState());
+        const knownDevices = selectKnownDevices<DesktopBluetoothDevice>(deps.getState());
         if (knownDevices.length > 0) {
-            getBluetoothServiceInternal('backgroundScan').start();
+            deps.backgroundScan.start();
         }
     });
 };
 
 export const createBluetoothService = (
     deps: BluetoothServiceDeps,
-    internalDeps: BluetoothServiceInternalDeps,
+    internalDeps: { backgroundScan: BackgroundScan },
 ): BluetoothService => {
     let inited = false;
-
-    Object.assign(bluetoothServiceInternal, internalDeps);
 
     return {
         init: () => {
@@ -140,7 +130,14 @@ export const createBluetoothService = (
             }
             inited = true;
 
-            return setupAutoReconnect(deps);
+            return setupAutoReconnect({
+                getState: deps.getState,
+                dispatch: deps.dispatch,
+                backgroundScan: internalDeps.backgroundScan,
+            });
+        },
+        restartBackgroundScan: () => {
+            internalDeps.backgroundScan.restartIfNeeded();
         },
     };
 };

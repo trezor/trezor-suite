@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import Animated, { LinearTransition } from 'react-native-reanimated';
+import { LinearTransition } from 'react-native-reanimated';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { noop } from '@trezor/utils';
@@ -10,6 +10,7 @@ import {
     type AnimatedViewWrapperProps,
 } from './AnimatedViewWrapper';
 import { SwitchViewsButton } from './SwitchViewsButton';
+import { AnimatedView } from '../Animated/AnimatedView';
 
 export type { RenderViewProps } from './AnimatedViewWrapper';
 
@@ -60,7 +61,7 @@ export const AnimatedDoubleView = ({
     }, [activeView, controlledActiveView, onViewSwitch]);
 
     return (
-        <Animated.View
+        <AnimatedView
             layout={LinearTransition}
             style={applyStyle(viewsWrapperStyle, { wrapperHeight })}
         >
@@ -77,6 +78,6 @@ export const AnimatedDoubleView = ({
                 handleViewSwitch={handleViewSwitch}
                 unfocusedOffset={unfocusedOffset}
             />
-        </Animated.View>
+        </AnimatedView>
     );
 };

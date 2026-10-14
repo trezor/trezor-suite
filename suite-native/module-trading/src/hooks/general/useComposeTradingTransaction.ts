@@ -1,9 +1,7 @@
 import { useCallback } from 'react';
 import { useStore } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { type MessageSystemRootState } from '@suite-common/message-system';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingRootStateWithDeviceAndAccounts,
     selectTradingAccountKeyByTradeType,
@@ -23,6 +21,8 @@ import {
     getFormDraftKeyByTradeType,
     selectIsTradingSlip24Enabled,
 } from '@suite-native/trading-state';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { composeTradingTransactionThunk } from '../../thunks';
 

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import styled, { css } from 'styled-components';
 
@@ -11,15 +12,16 @@ import {
     pickAndPrepareFrameProps,
     withFrameProps,
 } from '@trezor/components';
+import type { NetworkConfigState } from '@trezor/network-module-types';
 import { useAsyncMemo } from '@trezor/react-utils';
 
 import { TokenInitials } from './TokenInitials';
+import { selectCoingeckoIdAndContractAddressIncludesNativeTokens } from './tokenIconSelectors';
 import { type TokenIconProps, allowedTokenIconFrameProps } from './tokenIconTypes';
 import {
     type LogoCandidate,
     ZERO_ADDRESS,
     failedAddressesCache,
-    getCoingeckoIdAndContractAddressIncludesNativeTokens,
     makeAddressKey,
     makeCacheKey,
     resolvedLogoCache,
@@ -83,12 +85,14 @@ export const NonNativeTokenIcon = ({
         [symbol, contractAddress],
     );
 
-    const normalizedAddresses = useMemo(
-        () =>
-            getCoingeckoIdAndContractAddressIncludesNativeTokens(coingeckoId, contractAddressArray),
-        [coingeckoId, contractAddressArray],
+    const { coingeckoId: coingeckoIdLogo, contractAddresses } = useSelector(
+        (state: NetworkConfigState) =>
+            selectCoingeckoIdAndContractAddressIncludesNativeTokens(
+                state,
+                coingeckoId,
+                contractAddressArray,
+            ),
     );
-    const { coingeckoId: coingeckoIdLogo, contractAddresses } = normalizedAddresses;
 
     const canonicalAddresses = useMemo(() => {
         const set = new Set<string>();

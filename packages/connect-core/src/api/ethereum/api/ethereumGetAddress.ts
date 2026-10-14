@@ -17,6 +17,7 @@ import { Assert } from '@trezor/schema-utils';
 import type { MethodContext, MethodMessage, MethodReturnType } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getEthereumNetwork, getUniqueNetworks } from '../../../data/coinInfo';
+import { getDefinitionsVersion } from '../../../utils/definitionsUtils';
 import { getNetworkLabel } from '../../../utils/ethereumUtils';
 import { stripHexPrefix } from '../../../utils/formatUtils';
 import { getSerializedPath, getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
@@ -68,7 +69,9 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
         return this.coinPerms('read_address', this.requiredFirmwareCoins);
     }
 
-    async initAsync(): Promise<void> {
+    // Only the `__info` title names networks that are not well-known, so only `__info` downloads
+    // their definitions to decode them.
+    async getMethodInfo() {
         for (let i = 0; i < this.params.length; i++) {
             const { params } = this;
             // @ts-expect-error: indexing with noUncheckedIndexedAccess
@@ -83,11 +86,10 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
                 if (decoded.network) {
                     param.network = ethereumNetworkInfoFromDefinition(decoded.network);
                 }
-                if (definitions.encoded_network) {
-                    param.proto.encoded_network = definitions.encoded_network;
-                }
             }
         }
+
+        return super.getMethodInfo();
     }
 
     get info() {
@@ -121,11 +123,17 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
         }
     }
 
-    get confirmation() {
-        return {
-            view: 'export-address' as const,
-            label: this.info,
-        };
+    // Networks that are not well-known need a definition. Its version depends on the device
+    // firmware, so it is fetched here, once the device is known.
+    private async getEncodedNetwork(path: number[]) {
+        if (getEthereumNetwork(path)) return;
+
+        const definitions = await getEthereumDefinitions({
+            slip44: getSlip44ByPath(path),
+            version: getDefinitionsVersion(this.getDevice()),
+        });
+
+        return definitions.encoded_network;
     }
 
     private async _call(params: Params) {
@@ -146,6 +154,7 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
             const { params } = this;
             // @ts-expect-error: indexing with noUncheckedIndexedAccess
             const batch: (typeof params)[number] = params[i];
+            batch.proto.encoded_network = await this.getEncodedNetwork(batch.proto.address_n);
 
             // silently get address and compare with requested address
             // or display as default inside popup

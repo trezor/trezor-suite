@@ -6,16 +6,17 @@ import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { Translation, useTranslation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { getNetworkType } from '@suite-common/wallet-config';
 import { isWrappedNativeFlowSupported } from '@suite-common/wallet-core';
 import { Button, Tooltip } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import {
     getWrappedNativeAddress,
     getWrappedNativeSymbol,
+    isNativeTokenWrappable,
 } from '@trezor/network-ethereum-suite-common';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { useFirmwareUpgradeModal } from 'src/hooks/suite/useFirmwareUpgradeModal';
@@ -50,7 +51,8 @@ export const WrapNativeTokenButton = ({ account }: WrapNativeTokenButtonProps) =
         !isDebugModeActive ||
         getNetworkType(symbol) !== 'ethereum' ||
         !wrappedAddress ||
-        !wrappedSymbol
+        !wrappedSymbol ||
+        !isNativeTokenWrappable(symbol)
     ) {
         return null;
     }

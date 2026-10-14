@@ -41,7 +41,6 @@ export default class PushTransaction extends AbstractMethod<'pushTransaction', P
         };
 
         super(message, params);
-        this.useUi = false;
         this.useDevice = false;
     }
     get requiredPermissions(): PermissionRequest[] {

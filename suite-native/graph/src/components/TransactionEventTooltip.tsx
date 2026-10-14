@@ -1,5 +1,5 @@
-import { Dimensions } from 'react-native';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { useWindowDimensions } from 'react-native';
+import { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { N } from '@mobily/ts-belt';
@@ -8,7 +8,7 @@ import { type GroupedBalanceMovementEventPayload } from '@suite-common/graph';
 import { type SignValue } from '@suite-common/suite-types';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { Box, Card, Text } from '@suite-native/atoms';
+import { AnimatedView, Box, Card, Text } from '@suite-native/atoms';
 import {
     ExactCryptoAmountFormatter,
     ExactTokenAmountFormatter,
@@ -31,24 +31,25 @@ type EventTooltipRowProps = {
     tokenAddress?: TokenAddress;
 };
 
-const SCREEN_WIDTH = Dimensions.get('screen').width;
 const ANIMATION_DURATION = 200;
 const TOOLTIP_LEFT_OFFSET = 25;
 const TOOLTIP_RIGHT_OFFSET = 145;
 
-const TooltipContainerStyle = prepareNativeStyle<{ x: number; y: number }>((_, { x, y }) => ({
-    position: 'absolute',
-    left: x + TOOLTIP_LEFT_OFFSET,
-    top: N.clamp(0, 100, y), // The clamping prevents an Y axis overflow.
-    extend: {
-        // If the tooltip is on the right half of the screen,
-        // render it on the left side of the referred event point to prevent an X axis overflow.
-        condition: x > SCREEN_WIDTH / 2,
-        style: {
-            left: x - TOOLTIP_RIGHT_OFFSET,
+const TooltipContainerStyle = prepareNativeStyle<{ x: number; y: number; windowWidth: number }>(
+    (_, { x, y, windowWidth }) => ({
+        position: 'absolute',
+        left: x + TOOLTIP_LEFT_OFFSET,
+        top: N.clamp(0, 100, y), // The clamping prevents an Y axis overflow.
+        extend: {
+            // If the tooltip is on the right half of the screen,
+            // render it on the left side of the referred event point to prevent an X axis overflow.
+            condition: x > windowWidth / 2,
+            style: {
+                left: x - TOOLTIP_RIGHT_OFFSET,
+            },
         },
-    },
-}));
+    }),
+);
 
 const TooltipCardStyle = prepareNativeStyle(utils => ({
     paddingVertical: utils.spacings.sp12,
@@ -139,6 +140,7 @@ export const TransactionEventTooltip = ({
     },
 }: TransactionEventTooltipProps) => {
     const { applyStyle } = useNativeStyles();
+    const { width: windowWidth } = useWindowDimensions();
 
     const totalAmount = received && sent ? received - sent : null;
 
@@ -146,8 +148,8 @@ export const TransactionEventTooltip = ({
     const isReceivedDisplayed = received !== 0 && receivedTransactionsCount !== 0;
 
     return (
-        <Animated.View
-            style={applyStyle(TooltipContainerStyle, { x: eventX, y: eventY })}
+        <AnimatedView
+            style={applyStyle(TooltipContainerStyle, { x: eventX, y: eventY, windowWidth })}
             entering={FadeIn.duration(ANIMATION_DURATION)}
             exiting={FadeOut.duration(ANIMATION_DURATION)}
         >
@@ -183,6 +185,6 @@ export const TransactionEventTooltip = ({
                     />
                 )}
             </Card>
-        </Animated.View>
+        </AnimatedView>
     );
 };

@@ -32,8 +32,7 @@ export const asTimestamp = (number: number) => number as Timestamp;
 type RateType = 'current' | 'lastWeek' | 'historic';
 export type RateTypeWithoutHistoric = Exclude<RateType, 'historic'>;
 
-export type Rate = {
-    rate?: number;
+type RateStatus = {
     lastTickerTimestamp: Timestamp;
     lastSuccessfulFetchTimestamp: Timestamp;
     isLoading: boolean;
@@ -41,8 +40,30 @@ export type Rate = {
     ticker: TickerId;
 };
 
+export type Rate = RateStatus & {
+    rate?: number;
+};
+
+/**
+ * A current entry holds no numbers until its first answer lands, and both from then on: a current
+ * rate never comes without its dollar rate (see `CurrentFiatRatesResult`).
+ */
+export type CurrentRate = RateStatus &
+    ({ rate: number; usdRate: number } | { rate?: undefined; usdRate?: undefined });
+
 export type FiatRatesResult = {
     rate?: number;
+    lastTickerTimestamp: Timestamp;
+};
+
+/**
+ * A current rate always comes with the dollar rate, whatever the chosen currency: CoinGecko returns
+ * every currency it knows, dollars included, and Blockbook is asked for dollars next to the chosen
+ * one. A provider answer missing either number is no rate at all, so neither is ever undefined here.
+ */
+export type CurrentFiatRatesResult = {
+    rate: number;
+    usdRate: number;
     lastTickerTimestamp: Timestamp;
 };
 
@@ -53,4 +74,5 @@ export type TickerResult = {
 };
 
 export type RatesByKey = Record<CryptoBaseCurrencyPair, Rate>;
+export type CurrentRatesByKey = Record<CryptoBaseCurrencyPair, CurrentRate>;
 export type RatesByTimestamps = Record<CryptoBaseCurrencyPair, Record<Timestamp, number>>;

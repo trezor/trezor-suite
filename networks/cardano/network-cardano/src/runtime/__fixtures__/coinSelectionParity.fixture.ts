@@ -130,8 +130,7 @@ export type SmokeScenario = {
     { expectedResultType: 'final' | 'nonfinal' } | { expectedErrorCode: CoinSelectionError['code'] }
 );
 
-// Code paths the parity cases do not reach; no expected output. The keep list was traced on these
-// together with the parity cases.
+// Code paths the parity cases do not reach; no expected output.
 export const smokeScenarios: SmokeScenario[] = [
     {
         name: 'random-improve selection',

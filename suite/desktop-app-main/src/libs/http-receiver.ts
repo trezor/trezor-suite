@@ -3,6 +3,7 @@ import { trezorLogo } from '@suite-common/suite-constants';
 import { HttpServer, allowReferers, parseRequestUrl } from '@trezor/node-utils';
 import { xssFilters } from '@trezor/utils';
 
+import type { ILogger } from './logger';
 import { convertILoggerToLog } from '../utils/IloggerToLog';
 
 type TemplateOptions = {
@@ -161,14 +162,17 @@ const renderStatusPage = (status?: HttpReceiverStatus) => {
 </html>`;
 };
 
-export const createHttpReceiver = (options?: {
+type CreateHttpReceiverParams = {
+    logger: ILogger;
     port?: number;
     /** Provides the current status rendered on the `/status` page. */
     getStatus?: () => HttpReceiverStatus;
-}) => {
+};
+
+export const createHttpReceiver = ({ logger, ...options }: CreateHttpReceiverParams) => {
     // Note that if we override the `address` to something else than 127.0.0.1 or localhost, it might break google oauth
     const httpReceiver = new HttpServer<Events>({
-        logger: convertILoggerToLog(global.logger, { serviceName: 'http-receiver' }),
+        logger: convertILoggerToLog(logger, { serviceName: 'http-receiver' }),
         port: options?.port ?? 21335,
     });
 

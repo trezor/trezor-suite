@@ -28,6 +28,7 @@ type RouteDefinition = {
     // Whether this app renders with priority over Prerequisites, see Preloader.tsc
     isForegroundApp?: boolean;
     // When navigating to this URL, should it be cleared of hash and get parameters?
+    // TODO also delete now that suite-start functionality was removed?
     clearUrl?: boolean;
     hasNestedRoutes?: boolean;
     isNestedRoute?: boolean;
@@ -37,9 +38,7 @@ export const routes = [
     {
         name: 'suite-start',
         pattern: '/start',
-        app: 'start',
-        isFullscreenApp: true,
-        isForegroundApp: true,
+        app: 'dashboard',
         clearUrl: true,
     },
     {
@@ -47,6 +46,11 @@ export const routes = [
         pattern: '/',
         app: 'dashboard',
         params: dashboardParams,
+    },
+    {
+        name: 'suite-hidden-tokens',
+        pattern: '/hidden-tokens',
+        app: 'dashboard',
     },
     {
         name: 'suite-earn',
@@ -117,6 +121,11 @@ export const routes = [
         pattern: '/earn/tron/claim',
         app: 'earn-staking',
         params: earnParams,
+    },
+    {
+        name: 'apps-embedding-index',
+        pattern: '/apps-embedding',
+        app: 'apps-embedding',
     },
     {
         name: 'suite-version',

@@ -5,10 +5,11 @@ import { Icon, type IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color } from '@trezor/theme';
 
+import { AnimatedVStack } from '../Animated/AnimatedStack';
 import { Button, type ButtonColorProps } from '../Button/Button';
 import { AnimatedContainerCard } from '../Card/Card';
 import { Divider } from '../Divider';
-import { AnimatedVStack, HStack, VStack } from '../Stack';
+import { HStack, VStack } from '../Stack';
 import { Text } from '../Text';
 
 export type CardStepperButtonsActionType = 'destructive' | 'primary';

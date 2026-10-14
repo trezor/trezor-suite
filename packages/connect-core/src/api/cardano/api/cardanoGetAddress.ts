@@ -99,15 +99,6 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
         }
     }
 
-    get confirmation() {
-        return !this.useUi
-            ? undefined
-            : {
-                  view: 'export-address' as const,
-                  label: this.info,
-              };
-    }
-
     async _call({ proto }: Params) {
         const cmd = this.getDevice().getCommands();
         const response = await cmd.typedCall('CardanoGetAddress', 'CardanoAddress', proto);

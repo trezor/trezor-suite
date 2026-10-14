@@ -2,13 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        {
-            "path": "../../suite-common/dependency-injection"
-        },
         { "path": "../../suite-common/networks" },
-        {
-            "path": "../../suite-common/redux-utils"
-        },
         {
             "path": "../../suite-common/suite-config"
         },
@@ -30,11 +24,15 @@
         { "path": "../tor" },
         { "path": "../tor-types" },
         { "path": "../../packages/components" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/icons" },
         {
             "path": "../../packages/product-components"
         },
+        { "path": "../../packages/redux-utils" },
         { "path": "../../packages/urls" }
     ]
 }

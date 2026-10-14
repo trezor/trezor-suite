@@ -102,21 +102,21 @@ const PLATFORM_USAGE_IMPORTS: Record<
 > = {
     desktop: {
         events: '@suite/analytics',
-        services: '@suite-common/dependency-injection',
+        services: '@trezor/dependency-injection',
         analyticsImport: '@suite/analytics',
         analyticsDep: 'DesktopAnalyticsDep',
         analyticsInjector: 'injectDesktopAnalytics',
     },
     mobile: {
         events: '@suite-native/analytics',
-        services: '@suite-common/dependency-injection',
+        services: '@trezor/dependency-injection',
         analyticsImport: '@suite-native/analytics',
         analyticsDep: 'NativeAnalyticsDep',
         analyticsInjector: 'injectNativeAnalytics',
     },
     shared: {
         events: '@suite/analytics',
-        services: '@suite-common/dependency-injection',
+        services: '@trezor/dependency-injection',
         analyticsImport: '@suite/analytics',
         analyticsDep: 'DesktopAnalyticsDep',
         analyticsInjector: 'injectDesktopAnalytics',

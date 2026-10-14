@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import type { SellFiatTrade } from 'invity-api';
 
-import { useServices } from '@suite-common/dependency-injection';
 import {
     type TradingRootState,
     selectTradingCoinInfoByCryptoId,
@@ -15,6 +14,7 @@ import {
     events,
     injectNativeAnalytics,
 } from '@suite-native/analytics';
+import { useServices } from '@trezor/dependency-injection';
 
 import { getAnalyticsTradingSellPayload } from '../utils/quotesUtils';
 

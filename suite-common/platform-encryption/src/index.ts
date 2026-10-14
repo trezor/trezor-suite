@@ -2,6 +2,8 @@ export type {
     PlatformEncryption,
     EncryptedHex,
     EncryptableBranded,
+    EncryptParams,
+    DecryptParams,
     DecryptionError,
     EncryptionError,
 } from './platformEncryption';

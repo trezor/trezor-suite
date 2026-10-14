@@ -8,8 +8,6 @@ import { useExternalLink } from '@suite/external-links';
 import { setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     Box,
     Button,
@@ -20,7 +18,9 @@ import {
     Row,
     intermediaryTheme,
 } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { XIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 import { DASHBOARD_ONBOARDING_FEEDBACK_URL } from '@trezor/urls';
 
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
@@ -29,7 +29,9 @@ import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/Cont
 import { selectShouldShowOnboardingFeedbackBanner } from './onboardingFeedbackBannerSelectors';
 import { bannerAnimationConfig } from '../banner-animations';
 
-const Title = ({ isVerticalLayout }: { isVerticalLayout: boolean }) => {
+type TitleProps = { isVerticalLayout: boolean };
+
+const Title = ({ isVerticalLayout }: TitleProps) => {
     const { isBelowLaptop } = useLayoutSize();
     const { variant } = useTheme();
     const isDarkMode = variant === 'dark';
@@ -61,13 +63,12 @@ const Description = () => {
     );
 };
 
-export const ForceDarkTheme = ({
-    children,
-    isActive,
-}: {
+type ForceDarkThemeProps = {
     children: ReactNode;
     isActive: boolean;
-}) =>
+};
+
+export const ForceDarkTheme = ({ children, isActive }: ForceDarkThemeProps) =>
     isActive ? (
         <ThemeProvider theme={{ variant: 'dark', ...intermediaryTheme.dark }}>
             {children}
@@ -76,7 +77,9 @@ export const ForceDarkTheme = ({
         children
     );
 
-const CTAButton = ({ onClick }: { onClick: () => void }) => {
+type CTAButtonProps = { onClick: () => void };
+
+const CTAButton = ({ onClick }: CTAButtonProps) => {
     const href = useExternalLink(DASHBOARD_ONBOARDING_FEEDBACK_URL);
 
     return (

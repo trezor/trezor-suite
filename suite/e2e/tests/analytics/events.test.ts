@@ -166,16 +166,18 @@ test.describe('Analytics Events', { tag: ['@webOnly', '@T3W1', '@T3T1', '@option
             });
 
             await test.step('Wait for analytics events and validate event types', async () => {
-                await analytics.waitForAnalyticsRequests(4);
-                expect(analytics.requests[0]).toHaveProperty(
-                    'c_type',
-                    events.settingsAnalyticsEvent.name,
-                );
-                expect(analytics.requests[1]).toHaveProperty(
-                    'c_type',
-                    events.routerLocationChangeEvent.name,
-                );
-                expect(analytics.requests[2]).toHaveProperty('c_type', events.suiteReadyEvent.name);
+                await expect
+                    .poll(
+                        () => analytics.requests.map(request => request.c_type),
+                        'expected analytics to capture the settings, location change and suite-ready events',
+                    )
+                    .toEqual(
+                        expect.arrayContaining([
+                            events.settingsAnalyticsEvent.name,
+                            events.routerLocationChangeEvent.name,
+                            events.suiteReadyEvent.name,
+                        ]),
+                    );
             });
 
             await test.step('Validate SettingsAnalytics event', () => {

@@ -4,13 +4,11 @@ import { useSelector } from 'react-redux';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 
-import { useServices } from '@suite-common/dependency-injection';
 import {
     type DeviceRootState,
     selectDeviceButtonRequestsCodes,
     selectIsDeviceConnectedAndAuthorized,
 } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
     type FormDraftRootState,
@@ -41,7 +39,9 @@ import {
     selectFeeLevels,
     useFeesManagement,
 } from '@suite-native/transaction-management';
+import { useServices } from '@trezor/dependency-injection';
 import { STELLAR_BASE_RESERVE } from '@trezor/network-stellar/constants';
+import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { getStellarTokenFormDraftKey, updateStellarTokenSelectedFeeLevelThunk } from '../thunks';

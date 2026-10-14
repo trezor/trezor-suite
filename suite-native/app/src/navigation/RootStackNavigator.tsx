@@ -34,7 +34,6 @@ import {
     EarnConsentsScreen,
     HowStakeWorksScreen,
     StakingClaimReviewScreen,
-    StakingDetailScreen,
     StakingFormScreen,
     StakingManagementScreen,
     StakingTransactionCompleteScreen,
@@ -127,11 +126,6 @@ export const RootStackNavigator = () => {
             <RootStack.Screen
                 name={RootStackRoutes.TransactionDetailStack}
                 component={TransactionDetailStackNavigator}
-            />
-            <RootStack.Screen
-                options={{ title: RootStackRoutes.StakingDetail }}
-                name={RootStackRoutes.StakingDetail}
-                component={StakingDetailScreen}
             />
             <RootStack.Screen
                 options={{ title: RootStackRoutes.StakingManagement }}

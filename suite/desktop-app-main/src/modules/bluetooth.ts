@@ -27,9 +27,7 @@ export const bluetoothModuleState: BluetoothModuleState = {
     getTransport: () => undefined,
 };
 
-export const init: ModuleInit = () => {
-    const { logger } = global;
-
+export const init: ModuleInit = ({ logger }) => {
     // BluetoothTransport's Logger types args as unknown[]; Suite's global logger
     // expects string[]. In practice BluetoothTransport only ever passes strings.
     const desktopLogger: ConstructorParameters<typeof BluetoothTransport>[0]['logger'] = {
@@ -45,7 +43,7 @@ export const init: ModuleInit = () => {
     const lazyBluetooth = createLazy(
         async () => {
             const [port] = await getFreePort();
-            const process = new BluetoothProcess(port);
+            const process = new BluetoothProcess({ port, logger });
             await process.start();
 
             const client = new BluetoothIpc({

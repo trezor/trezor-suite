@@ -4,15 +4,14 @@ import { type TradeExchangeAction, events, injectDesktopAnalytics } from '@suite
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import {
     Feature,
     type MessageSystemRootState,
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     getSimulatedReceiveAmount,
+    hasFixedPsbtFee,
     selectTradingComposedTransactionInfo,
     selectTradingExchangeActiveTrade,
     selectTradingExchangeFormStep,
@@ -26,7 +25,9 @@ import {
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Button, Card, Column, H2 } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { useAsyncClickHandler } from '@trezor/react-utils';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { getSupportsAdjustableFees } from 'src/components/wallet/Fees/feeUtils';
 import { TRADING_DEX_SOURCE_ORIGIN } from 'src/constants/wallet/trading/txSimulation';
@@ -99,6 +100,7 @@ export const TradingOfferExchange = () => {
     const isSignData = formStep === 'SIGN_DATA' && !!signData;
 
     const isNetworkFeeEditable = (account: Account) =>
+        !hasFixedPsbtFee(selectedTrade, account.networkType) &&
         getSupportsAdjustableFees({
             networkType: account.networkType,
             isTokenTransfer: !!composed?.token,

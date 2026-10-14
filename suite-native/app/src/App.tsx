@@ -3,13 +3,14 @@ import { Freeze } from 'react-freeze';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { PortalProvider } from 'react-native-teleport';
 import { useSelector } from 'react-redux';
 
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import * as SplashScreen from 'expo-splash-screen';
 
 import { FormatterProvider } from '@suite-common/formatters';
-import { ReactNativeQueryProvider } from '@suite-common/react-query/src/components/ReactNativeQueryProvider';
+import { ReactNativeQueryProvider } from '@suite-common/react-query/react-native';
 import { selectShouldUserBeAuthenticated } from '@suite-native/biometrics';
 import { useFormattersConfig } from '@suite-native/formatters-config';
 import { IntlProvider } from '@suite-native/intl';
@@ -76,7 +77,9 @@ export const PureApp = ({ services }: PureAppProps) => (
                         <SafeAreaProvider>
                             <StylesProvider>
                                 <NavigationContainerWithAnalytics>
-                                    <AppComponent />
+                                    <PortalProvider>
+                                        <AppComponent />
+                                    </PortalProvider>
                                 </NavigationContainerWithAnalytics>
                             </StylesProvider>
                         </SafeAreaProvider>

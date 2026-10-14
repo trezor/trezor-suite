@@ -1,4 +1,3 @@
-import { createThunk } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -12,9 +11,10 @@ import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { getSuiteVersion } from '@trezor/env-utils';
-import type { SolanaNetworkSymbol } from '@trezor/network-solana/constants';
 import solana from '@trezor/network-solana/runtime';
 import type { Fee, PrepareStakeSolTxResponse } from '@trezor/network-solana/types';
+import type { SolanaNetworkSymbol } from '@trezor/network-solana-types';
+import { createThunk } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { type AccountsRootState } from '../../accounts/accountsReducer';
@@ -177,6 +177,13 @@ const signPrepareFailed = (message?: string): PrepareSignFailure => {
     return { ok: false, error: { error: 'sign-transaction-failed', message } };
 };
 
+type PrepareSolanaStakingSignContextParams = {
+    accountKey: AccountKey;
+    stakeType: StakeType;
+    precomposedTransaction: PrecomposedTransactionFinal;
+    source?: string;
+};
+
 // Resolves everything needed to sign a Solana staking transaction: the account and backend URL,
 // the sign-time amount taken from the compose result, and the transaction shim built with the
 // composed fee. The caller only performs the device call and stores the results.
@@ -187,12 +194,7 @@ export const prepareSolanaStakingSignContext = async (
         stakeType,
         precomposedTransaction,
         source,
-    }: {
-        accountKey: AccountKey;
-        stakeType: StakeType;
-        precomposedTransaction: PrecomposedTransactionFinal;
-        source?: string;
-    },
+    }: PrepareSolanaStakingSignContextParams,
 ): Promise<{ ok: true; context: PreparedSolanaStakingSignContext } | PrepareSignFailure> => {
     const resolved = await resolveSolanaStakingContext(state, accountKey);
     if (!resolved.success) {

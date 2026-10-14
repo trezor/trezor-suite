@@ -3,11 +3,11 @@ import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { Button, Icon, Paragraph, Row, Tooltip } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { isMacOs } from '@trezor/env-utils';
 import { LockFilledIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import {
     Body,
@@ -33,13 +33,12 @@ const Container = styled.div`
     padding: 12px 4px;
 `;
 
-const BioAuthOverlay = ({
-    isBioAuthAvailable,
-    onPrimaryButtonClick,
-}: {
+type BioAuthOverlayProps = {
     isBioAuthAvailable: boolean;
     onPrimaryButtonClick: () => void;
-}) => {
+};
+
+const BioAuthOverlay = ({ isBioAuthAvailable, onPrimaryButtonClick }: BioAuthOverlayProps) => {
     const wrapperRef = useRef<HTMLDivElement>(null);
 
     return (
@@ -92,7 +91,9 @@ const BioAuthOverlay = ({
     );
 };
 
-export const BioAuthGuard = ({ children }: { children: React.ReactNode }) => {
+type BioAuthGuardProps = { children: React.ReactNode };
+
+export const BioAuthGuard = ({ children }: BioAuthGuardProps) => {
     const [isWindowFocused, setIsWindowFocused] = useState(true);
 
     const {

@@ -1,6 +1,6 @@
 import '@suite-common/test-utils/globalOverrides';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { type FieldPath, useForm, useWatch } from 'react-hook-form';
 
 import { screen } from '@testing-library/react';
@@ -57,6 +57,12 @@ const ETH_BTC_RATE: Rate = {
     ticker: { symbol: ETH_SYMBOL },
 };
 
+const ETH_USD_RATE: Rate = {
+    ...BTC_USD_RATE,
+    rate: 50,
+    ticker: { symbol: ETH_SYMBOL },
+};
+
 const DEFAULT_VALUES: TradingBuyFormProps = {
     fiatInput: '75',
     cryptoInput: '',
@@ -80,14 +86,17 @@ const DEFAULT_VALUES: TradingBuyFormProps = {
 type TradingFormTestHarnessProps = {
     invalidField?: FieldPath<TradingBuyFormProps>;
     symbol?: NetworkSymbol;
+    nextSymbol?: NetworkSymbol;
     cryptoInput?: string;
 };
 
 const TradingFormTestHarness = ({
     invalidField,
-    symbol = BTC_SYMBOL,
+    symbol: initialSymbol = BTC_SYMBOL,
+    nextSymbol,
     cryptoInput: initialCryptoInput = '',
 }: TradingFormTestHarnessProps) => {
+    const [symbol, setSymbol] = useState(initialSymbol);
     const methods = useForm<TradingBuyFormProps>({
         defaultValues: { ...DEFAULT_VALUES, cryptoInput: initialCryptoInput },
     });
@@ -123,6 +132,13 @@ const TradingFormTestHarness = ({
             <output data-testid="@trading/form/values">
                 {JSON.stringify({ cryptoInput, fiatInput, amountInCrypto, amountInputSource })}
             </output>
+            {nextSymbol && (
+                <button
+                    type="button"
+                    data-testid="@trading/form/switch-asset"
+                    onClick={() => setSymbol(nextSymbol)}
+                />
+            )}
         </>
     );
 };
@@ -155,6 +171,7 @@ const renderBaseCurrencyAmount = ({
                         ...mockInitialAppState.wallet.fiat.current,
                         'btc-usd': { ...BTC_USD_RATE, rate: btcUsdRate },
                         'eth-btc': ETH_BTC_RATE,
+                        'eth-usd': ETH_USD_RATE,
                     },
                 },
             },
@@ -221,6 +238,29 @@ describe('TradingFormInputBaseCurrencyAmount', () => {
                 amountInputSource: 'base-currency',
             }),
         );
+    });
+
+    it('keeps the typed base currency amount and recalculates the crypto amount when the asset changes', async () => {
+        const user = userEvent.setup();
+
+        renderBaseCurrencyAmount({ nextSymbol: ETH_SYMBOL });
+
+        await user.type(screen.getByTestId('@trading/form/base-currency-input'), '100');
+        await user.click(screen.getByTestId('@trading/form/switch-asset'));
+
+        expect(screen.getByTestId('@trading/form/base-currency-input')).toHaveValue('100');
+        expect(screen.getByTestId('@trading/form/values')).toHaveTextContent('"cryptoInput":"2"');
+    });
+
+    it('keeps the typed crypto amount and recalculates the base currency amount when the asset changes', async () => {
+        const user = userEvent.setup();
+
+        renderBaseCurrencyAmount({ cryptoInput: '4', nextSymbol: ETH_SYMBOL });
+
+        await user.click(screen.getByTestId('@trading/form/switch-asset'));
+
+        expect(screen.getByTestId('@trading/form/base-currency-input')).toHaveValue('200');
+        expect(screen.getByTestId('@trading/form/values')).toHaveTextContent('"cryptoInput":"4"');
     });
 
     it('keeps the neutral color when neither amount is invalid', () => {

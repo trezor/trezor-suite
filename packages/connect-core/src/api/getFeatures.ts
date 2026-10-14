@@ -9,7 +9,6 @@ export default class GetFeatures extends AbstractMethod<'getFeatures'> {
     constructor(message: MethodMessage<'getFeatures'>) {
         super(message, undefined);
 
-        this.useUi = false;
         this.allowDeviceMode = [
             ...this.allowDeviceMode,
             UI_EVENTS.DEVICE_NOT_INITIALIZED,
@@ -21,6 +20,10 @@ export default class GetFeatures extends AbstractMethod<'getFeatures'> {
 
     get requiredPermissions(): PermissionRequest[] {
         return [{ permission: 'read_features' }];
+    }
+
+    get useUi() {
+        return false;
     }
 
     checkFirmwareRange() {

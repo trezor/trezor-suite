@@ -40,7 +40,7 @@ type SelectedAccountState = DeviceRootState &
     };
 
 // move to selector!!!!
-export const getAccountState = (state: SelectedAccountState): SelectedAccountStatus => {
+const getAccountState = (state: SelectedAccountState): SelectedAccountStatus => {
     const device = selectSelectedDevice(state);
 
     // waiting for device

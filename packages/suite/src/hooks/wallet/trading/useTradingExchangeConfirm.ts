@@ -1,8 +1,6 @@
 import { useEffect } from 'react';
 
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     selectTradingExchangeActiveTrade,
     selectTradingExchangeIsFromRedirect,
@@ -11,6 +9,8 @@ import {
     tradingExchangeActions,
     tradingThunks,
 } from '@suite-common/trading';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 

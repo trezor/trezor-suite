@@ -1,12 +1,12 @@
 import { type Dispatch } from '@reduxjs/toolkit';
 
-import { createThunk } from '@suite-common/redux-utils';
 import {
     asAmountUnit,
     subunitsToUnits,
     tokenSupportsIncreasingAllowance,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
+import { createThunk } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { fetchAllowance } from '../../allowance/fetchAllowance';

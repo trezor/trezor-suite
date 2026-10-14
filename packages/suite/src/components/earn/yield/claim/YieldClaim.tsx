@@ -7,10 +7,8 @@ import { Translation, useTranslation } from '@suite/intl';
 import { ContextMessage } from '@suite/message-system';
 import { openModal } from '@suite/modal';
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { type YieldAccountRewards } from '@suite-common/earn-stablecoin-api';
 import { Context } from '@suite-common/message-system';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     YIELD_FLOW_AVAILABLE_STEPS,
     isYieldSupported,
@@ -20,7 +18,9 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Banner, Button, Card, Column, Text } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { WarningIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { claimMerklRewardsThunk } from 'src/actions/wallet/stablecoin-yield';
 import { useSelector } from 'src/hooks/suite';

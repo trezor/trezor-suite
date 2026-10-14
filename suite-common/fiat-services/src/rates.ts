@@ -2,12 +2,13 @@ import { getUnixTime, subWeeks } from 'date-fns';
 
 import { type BackendType, isBlockbookBasedNetwork } from '@suite-common/wallet-config';
 import type {
+    CurrentFiatRatesResult,
     FiatRatesResult,
     HistoricRates,
     TickerId,
     Timestamp,
 } from '@suite-common/wallet-types';
-import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import type { BaseCurrencyCode, FiatRatesBySymbol } from '@trezor/blockchain-link-types';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import {
@@ -71,12 +72,32 @@ const getConnectFiatRatesForTimestamp = async (
     }
 };
 
+/**
+ * The chosen currency and dollars out of one provider answer, or nothing: a current rate without
+ * its dollar rate is no rate. Blockbook answers -1 for a currency it does not know; a rate of zero
+ * is an answer, not a gap.
+ */
+const toCurrentRates = (
+    rates: FiatRatesBySymbol | undefined,
+    localCurrency: BaseCurrencyCode,
+    lastTickerTimestamp: number | undefined,
+): CurrentFiatRatesResult | null => {
+    const rate = rates?.[localCurrency];
+    const usdRate = rates?.usd;
+
+    if (rate === undefined || rate < 0 || usdRate === undefined || usdRate < 0) {
+        return null;
+    }
+
+    return { rate, usdRate, lastTickerTimestamp: lastTickerTimestamp as Timestamp };
+};
+
 export const fetchCurrentFiatRates = ({
     ticker,
     localCurrency,
     backendType,
     skipCache,
-}: FiatRatesParams): Promise<FiatRatesResult | null> =>
+}: FiatRatesParams): Promise<CurrentFiatRatesResult | null> =>
     parallelRequestsCache.cache(
         ['fetchCurrentFiatRates', ticker.symbol, ticker.tokenAddress, localCurrency],
         async () => {
@@ -89,7 +110,9 @@ export const fetchCurrentFiatRates = ({
                             TrezorConnect.blockchainGetCurrentFiatRates({
                                 coin: asCoinSymbol(ticker.symbol),
                                 token: ticker.tokenAddress,
-                                currencies: [localCurrency],
+                                // Dollars ride along in the same request, so every current rate has them.
+                                currencies:
+                                    localCurrency === 'usd' ? ['usd'] : [localCurrency, 'usd'],
                             }),
                         { timeout: CONNECT_FETCH_TIMEOUT },
                     );
@@ -98,54 +121,35 @@ export const fetchCurrentFiatRates = ({
                         const fallbackCoinGeckoResponse =
                             await coingeckoService.fetchCurrentFiatRates(ticker);
 
-                        if (!fallbackCoinGeckoResponse) {
-                            return null;
-                        }
-
-                        return {
-                            rate: fallbackCoinGeckoResponse?.rates?.[localCurrency],
-                            lastTickerTimestamp: fallbackCoinGeckoResponse?.ts as Timestamp,
-                        };
+                        return toCurrentRates(
+                            fallbackCoinGeckoResponse?.rates,
+                            localCurrency,
+                            fallbackCoinGeckoResponse?.ts,
+                        );
                     }
 
                     if (!result.success) return null;
 
-                    const rate = result.payload.rates?.[localCurrency];
-
-                    // in case blockbook does not know fiat rate, it returns -1
-                    if (!rate || rate < 0) return null;
-
-                    return {
-                        rate,
-                        lastTickerTimestamp: result.payload.ts as Timestamp,
-                    };
+                    return toCurrentRates(result.payload.rates, localCurrency, result.payload.ts);
                 }
 
-                const blockbookResponse = await blockbookService.fetchCurrentFiatRates(
-                    'btc',
-                    undefined,
-                    localCurrency,
-                );
+                // No currency asked for, so Blockbook answers with all of them, dollars included.
+                const blockbookResponse = await blockbookService.fetchCurrentFiatRates('btc');
 
                 if (blockbookResponse)
-                    return {
-                        rate: blockbookResponse.rates?.[localCurrency],
-                        lastTickerTimestamp: blockbookResponse.ts as Timestamp,
-                    };
+                    return toCurrentRates(
+                        blockbookResponse.rates,
+                        localCurrency,
+                        blockbookResponse.ts,
+                    );
             }
 
+            // CoinGecko answers with every currency it knows, dollars always among them.
             const coingeckoResponse = await coingeckoService.fetchCurrentFiatRates(ticker, {
                 skipCache,
             });
 
-            if (!coingeckoResponse) {
-                return null;
-            }
-
-            return {
-                rate: coingeckoResponse?.rates?.[localCurrency],
-                lastTickerTimestamp: coingeckoResponse?.ts as Timestamp,
-            };
+            return toCurrentRates(coingeckoResponse?.rates, localCurrency, coingeckoResponse?.ts);
         },
     );
 

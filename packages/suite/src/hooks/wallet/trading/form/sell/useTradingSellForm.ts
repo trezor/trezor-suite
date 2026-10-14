@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_FORM_AMOUNT_IN_CRYPTO,
     TRADING_FORM_OUTPUT_AMOUNT,
@@ -10,17 +8,17 @@ import {
     type TradingAmountLimitProps,
     type TradingSellFormProps,
     selectTradingComposedTransactionInfo,
-    selectTradingSellActiveTrade,
     selectTradingSellAmountLimits,
+    selectTradingSellFormValues,
     selectTradingSellInfo,
-    selectTradingSellIsFromRedirect,
     selectTradingSellIsLoading,
-    selectTradingSellQuotesRequest,
-    selectTradingSellTransactionId,
     selectTradingSendAccount,
     tradingSellActions,
+    tradingThunks,
 } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { useSolanaSubscribeBlocks } from 'src/hooks/wallet/form/useSolanaSubscribeBlocks';
@@ -30,11 +28,10 @@ import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnvirome
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { type TradingSellFormContextProps } from 'src/types/trading/tradingForm';
 
-import { useSellFlow } from './useSellFlow';
 import { useSellFormInputs } from './useSellFormInputs';
 import { useSellQuotes } from './useSellQuotes';
 import { useTradingSellFormDefaultValues } from './useTradingSellFormDefaultValues';
-import { useTradingSellFormRedirectValues } from './useTradingSellFormRedirectValues';
+import { useTradingClearStaleQuotes } from '../common/useTradingClearStaleQuotes';
 import { useTradingFormReset } from '../common/useTradingFormReset';
 import { useTradingFormAccount } from '../useTradingFormAccount';
 
@@ -42,9 +39,7 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
     const type = 'sell';
     const { dispatch } = useServices(injectDispatch);
     const isLoading = useSelector(selectTradingSellIsLoading);
-    const quotesRequest = useSelector(selectTradingSellQuotesRequest);
-    const isFromRedirect = useSelector(selectTradingSellIsFromRedirect);
-    const transactionId = useSelector(selectTradingSellTransactionId);
+    const savedFormValues = useSelector(selectTradingSellFormValues);
     const sellInfo = useSelector(selectTradingSellInfo);
     const amountLimits = useSelector(selectTradingSellAmountLimits);
 
@@ -52,7 +47,6 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
 
     const { tradingAccountKey: accountKey, cryptoId } = useTradingFormAccount(type);
 
-    const trade = useSelector(selectTradingSellActiveTrade);
     const account = useSelector(state => selectTradingSendAccount(state, type));
 
     useServerEnvironment();
@@ -68,10 +62,10 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
         sellInfo?.country,
         sellInfo?.countrySubdivision,
     );
-    const redirectValues = useTradingSellFormRedirectValues(isFromRedirect, quotesRequest);
+    const initialValues = savedFormValues ?? defaultValues;
     const methods = useForm<TradingSellFormProps>({
         mode: 'onChange',
-        defaultValues: redirectValues ?? defaultValues,
+        defaultValues: initialValues,
     });
     const { register, reset, control, formState, getValues } = methods;
     // Watch only those values that are relevant in the render function
@@ -154,12 +148,16 @@ export const useTradingSellForm = (): TradingSellFormContextProps => {
         register('setMaxOutputId');
     }, [register]);
 
-    useSellFlow({ isFromRedirect, trade, transactionId, isAmountEmpty });
+    useEffect(() => {
+        dispatch(tradingThunks.loadInitialDataThunk({ activeSection: type }));
+    }, [dispatch]);
+
+    useTradingClearStaleQuotes({ type, isAmountEmpty });
 
     useTradingFormReset({
         isInfoReady: !!sellInfo,
         reset,
-        defaultValues,
+        defaultValues: initialValues,
     });
 
     // Subscribe to blocks for Solana, since they are not fetched globally

@@ -1,12 +1,7 @@
 import { useEffect, useState } from 'react';
-import Animated, {
-    useAnimatedStyle,
-    withDelay,
-    withSequence,
-    withTiming,
-} from 'react-native-reanimated';
+import { useAnimatedStyle, withDelay, withSequence, withTiming } from 'react-native-reanimated';
 
-import { Box, Spinner, type SpinnerLoadingState, Text } from '@suite-native/atoms';
+import { AnimatedView, Box, Spinner, type SpinnerLoadingState, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -74,7 +69,7 @@ export const AccountImportLoader = ({ loadingState, onComplete }: AccountImportL
                 <Spinner loadingState={spinnerLoadingState} onComplete={onComplete} />
             </Box>
             <Box style={applyStyle(textContainerStyle)}>
-                <Animated.View style={animatedTextStyle}>
+                <AnimatedView style={animatedTextStyle}>
                     <Text
                         variant="headline-sm"
                         style={applyStyle(textStyle)}
@@ -102,7 +97,7 @@ export const AccountImportLoader = ({ loadingState, onComplete }: AccountImportL
                     >
                         <Translation id="moduleAccountImport.accountImportLoaderScreen.loaderState.transactions" />
                     </Text>
-                </Animated.View>
+                </AnimatedView>
             </Box>
         </Box>
     );

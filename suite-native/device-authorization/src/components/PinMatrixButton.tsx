@@ -1,4 +1,4 @@
-import { formInputsMaxLength } from '@suite-common/validators';
+import { PIN_MAX_LENGTH } from '@suite-common/device';
 import { NumPadButton } from '@suite-native/atoms';
 import { useFormContext, useWatch } from '@suite-native/forms';
 
@@ -17,10 +17,6 @@ export const PinMatrixButton = ({ value }: PinItemProps) => {
     };
 
     return (
-        <NumPadButton
-            disabled={pinLength === formInputsMaxLength.pin}
-            onPress={handlePress}
-            value={value}
-        />
+        <NumPadButton disabled={pinLength === PIN_MAX_LENGTH} onPress={handlePress} value={value} />
     );
 };

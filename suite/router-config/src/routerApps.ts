@@ -1,9 +1,9 @@
 export type RouterApp =
-    | 'start'
     | 'dashboard'
     | 'earn'
     | 'earn-yield'
     | 'earn-staking'
+    | 'apps-embedding'
     | 'version'
     | 'bridge-requested'
     | 'bridge'

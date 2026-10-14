@@ -46,6 +46,7 @@ export const YieldPendingTransaction = ({
                 value={pendingTransaction.txid}
                 intent="brand"
                 typographyStyle="body-md"
+                data-testid="@pending-transaction/txid/value"
             />
         }
         timeEstimateSeconds={PENDING_TRANSACTION_TIME_ESTIMATE_SECONDS}

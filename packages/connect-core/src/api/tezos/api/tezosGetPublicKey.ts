@@ -50,18 +50,9 @@ export default class TezosGetPublicKey extends AbstractMethod<
         return this.coinPerms('read_xpub', this.requiredFirmwareCoins);
     }
 
-    init() {}
-
     get info() {
-        return 'Export Tezos public key';
-    }
-
-    get confirmation() {
         if (this.params.length > 1) {
-            return {
-                view: 'export-address' as const,
-                label: 'Export multiple Tezos public keys',
-            };
+            return 'Export multiple Tezos public keys';
         }
         const { params } = this;
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
@@ -70,10 +61,7 @@ export default class TezosGetPublicKey extends AbstractMethod<
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const accountIndex: number = addressN[2];
 
-        return {
-            view: 'export-address' as const,
-            label: `Export Tezos public key for account #${fromHardenedPathPart(accountIndex) + 1}`,
-        };
+        return `Export Tezos public key for account #${fromHardenedPathPart(accountIndex) + 1}`;
     }
 
     async run({ sendCoreMessage }: MethodContext) {

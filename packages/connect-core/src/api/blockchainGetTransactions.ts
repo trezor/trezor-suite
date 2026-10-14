@@ -43,14 +43,11 @@ export default class BlockchainGetTransactions extends AbstractMethod<
 
         super(message, params);
         this.useDevice = false;
-        this.useUi = false;
     }
 
     get requiredPermissions(): PermissionRequest[] {
         return [];
     }
-
-    init() {}
 
     async run({ sendCoreMessage }: MethodContext) {
         const backend = await initBlockchain(

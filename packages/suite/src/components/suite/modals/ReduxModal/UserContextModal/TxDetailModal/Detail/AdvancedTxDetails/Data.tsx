@@ -4,6 +4,8 @@ import { Translation, type TranslationKey } from '@suite/intl';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Column, InfoItem, Paragraph } from '@trezor/components';
 
+import { StellarContractCallRows } from './StellarContractCallRows';
+
 const ParagraphWrapper = styled.div`
     white-space: pre-wrap;
     overflow-wrap: anywhere;
@@ -49,6 +51,10 @@ export const Data = ({ tx }: DataProps) => {
                 />
             )}
             {data && <DataRow translationId="TR_TX_DATA_INPUT_DATA" content={data} />}
+            <StellarContractCallRows
+                contractCall={tx.stellarSpecific?.contractCall}
+                symbol={tx.symbol}
+            />
         </Column>
     );
 };

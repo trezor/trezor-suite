@@ -46,7 +46,7 @@ const getTemplate = (translationId: TxKeyPath): string => {
  * @example
  * // With regex matcher for flexible matching
  * expect(screen.getByAccessibilityHint('status')).toHaveTextContent(
- *   new RegExp(getTranslation('moduleTrading.tradeHistory.status.success'))
+ *   new RegExp(getTranslation('moduleTrading.tradeHistory.statusIcon.success'))
  * );
  *
  * @example

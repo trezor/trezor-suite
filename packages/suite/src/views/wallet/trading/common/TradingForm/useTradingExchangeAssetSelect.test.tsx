@@ -8,6 +8,7 @@ import {
     type TradingAssetOption,
     type TradingAssetSellOption,
     type TradingExchangeFormProps,
+    tradingExchangeActions,
 } from '@suite-common/trading';
 import { toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
@@ -118,7 +119,12 @@ const renderAssetSelect = (
         { services },
     );
 
-    return { result, onCryptoCurrencyChange, setAmountLimits };
+    return {
+        result,
+        onCryptoCurrencyChange,
+        setAmountLimits,
+        getActions: services.store.getActions,
+    };
 };
 
 describe('useTradingExchangeAssetSelect', () => {
@@ -138,6 +144,27 @@ describe('useTradingExchangeAssetSelect', () => {
         expect(onCryptoCurrencyChange).toHaveBeenCalledWith(pickedAsset);
         expect(result.current.methods.getValues('receiveCryptoSelect')).toBeNull();
         expect(result.current.methods.getValues('provider')).toBeUndefined();
+    });
+
+    it('drops the quotes and DEX transaction of the previous send asset', async () => {
+        const { result, getActions } = renderAssetSelect({
+            ...buildDefaults({
+                sendCryptoSelect: asSellOption(ETH_ASSET, ETH_ACCOUNT_KEY),
+                receiveCryptoSelect: SOL_ASSET,
+                amount: '1',
+            }),
+            transactionData: '0xa9059cbb',
+        });
+
+        await act(async () => {
+            await result.current.handlers.handleSellAssetSelect(
+                asSellOption(BTC_ASSET, BTC_ACCOUNT_KEY),
+            );
+        });
+
+        expect(result.current.methods.getValues('transactionData')).toBe('');
+        expect(result.current.methods.getValues('outputs.0.address')).toBe('');
+        expect(getActions()).toContainEqual({ type: tradingExchangeActions.clearQuotes.type });
     });
 
     it('clears the colliding receive asset before the send asset change settles', async () => {

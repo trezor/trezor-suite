@@ -22,21 +22,6 @@ export default class WipeDevice extends AbstractMethod<'wipeDevice'> {
         return [{ permission: 'management' }];
     }
 
-    get confirmation() {
-        return {
-            view: 'device-management' as const,
-            customConfirmButton: {
-                className: 'wipe',
-                label: `Wipe`,
-            },
-            label: 'Are you sure you want to wipe your device?',
-        };
-    }
-
-    get info() {
-        return 'Wipe device';
-    }
-
     setDevice(device: Device) {
         super.setDevice(device);
 

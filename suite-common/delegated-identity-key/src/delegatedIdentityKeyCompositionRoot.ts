@@ -1,12 +1,12 @@
 import { type Dispatch } from '@reduxjs/toolkit';
 
-import { toGetter } from '@suite-common/dependency-injection';
 import { type DeviceRootState } from '@suite-common/device';
 import {
     type PersistentDeviceDataRootState,
     selectDelegatedIdentityKeyByDeviceId,
 } from '@suite-common/persistent-device-data';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
+import { toGetter } from '@trezor/dependency-injection';
 
 import { createEnsureDelegatedIdentityKey } from './ensureDelegatedIdentityKey';
 import { createLoadDelegatedIdentityKeyFromState } from './loadDelegatedIdentityKeyFromState';

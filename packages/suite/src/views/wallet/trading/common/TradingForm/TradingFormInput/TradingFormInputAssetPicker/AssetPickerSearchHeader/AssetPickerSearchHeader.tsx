@@ -20,7 +20,9 @@ import { zIndices } from '@trezor/theme';
 
 const DATA_TESTID_BASE = '@asset-picker/search';
 
-const NetworkLabel = ({ symbol, name }: { symbol: NetworkSymbol; name: string }) => (
+type NetworkLabelProps = { symbol: NetworkSymbol; name: string };
+
+const NetworkLabel = ({ symbol, name }: NetworkLabelProps) => (
     <Row gap={8}>
         {isNetworkIconSymbol(symbol) ? (
             <NetworkIcon size={20} networkSymbol={symbol} />
@@ -121,6 +123,7 @@ export const AssetPickerSearchHeader = memo(function AssetPickerSearchHeaderInne
                 >
                     {networkFilter ? (
                         <Row
+                            height={24}
                             data-testid={`${DATA_TESTID_BASE}/filter/select-option-value/${networkFilter}`}
                         >
                             {isNetworkIconSymbol(networkFilter) ? (

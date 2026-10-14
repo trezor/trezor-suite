@@ -1,4 +1,3 @@
-import { useServices } from '@suite-common/dependency-injection';
 import { type AnalyticsNativeEvents, events, injectNativeAnalytics } from '@suite-native/analytics';
 import { CardStepper, type CardStepperMap, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -10,6 +9,7 @@ import {
     type StackProps,
 } from '@suite-native/navigation';
 import { type Analytics } from '@trezor/analytics-uploader';
+import { useServices } from '@trezor/dependency-injection';
 import { TREZOR_RESELLERS_URL } from '@trezor/urls';
 
 import { DeviceOnboardingScreenWithExitButton } from '../components/DeviceOnboardingScreenWithExitButton';

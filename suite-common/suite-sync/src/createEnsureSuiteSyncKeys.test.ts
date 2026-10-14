@@ -1,6 +1,6 @@
-import { createMockDeps as createDependencyMocks } from '@suite-common/dependency-injection';
 import { asSuiteSyncOwnerId, asSuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-storage';
 import { type TrezorDevice, asDelegatedIdentityKey } from '@suite-common/suite-types';
+import { createMockDeps as createDependencyMocks } from '@trezor/dependency-injection';
 import { ok } from '@trezor/type-utils';
 
 import {

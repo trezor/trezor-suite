@@ -8,6 +8,7 @@ use btleplug::{
     platform::Peripheral,
 };
 use log::info;
+use tokio::sync::broadcast::error::RecvError;
 use windows::{
     core::Ref,
     Devices::Bluetooth::BluetoothLEDevice,
@@ -44,7 +45,7 @@ impl PlatformDevice for WindowsDevice {
         let result = pairing.UnpairAsync()?.await?;
         let status = result.Status()?;
         if status != DeviceUnpairingResultStatus::Unpaired {
-            Err(format!("Unpair failed: {:?}", status).into())
+            Err(format!("Unpair failed: {status:?}").into())
         } else {
             let _ = device.Close();
             Ok(())
@@ -81,7 +82,16 @@ pub async fn try_to_pair(ctx: &ConnectDeviceContext) -> Result<(), PlatformError
         let pin_sender = tx.clone();
         let mut listener = tx.subscribe();
         let pin_listener = tokio::spawn(async move {
-            while let Ok(pin) = listener.recv().await {
+            loop {
+                let pin = match listener.recv().await {
+                    Ok(pin) => pin,
+                    Err(RecvError::Lagged(skipped)) => {
+                        info!("pin_listener loop lagged, {skipped} events skipped");
+                        continue;
+                    }
+                    Err(RecvError::Closed) => break,
+                };
+
                 dispatch_status(
                     bt_manager.clone(),
                     bt_device.clone(),
@@ -101,7 +111,7 @@ pub async fn try_to_pair(ctx: &ConnectDeviceContext) -> Result<(), PlatformError
                             info!("try_to_pair confirm PIN");
                             args.Accept()?; // automatically confirm pin
                             if let Err(err) = pin_sender.send(pin.to_string()) {
-                                info!("try_to_pair error sending PIN {:?}", err);
+                                info!("try_to_pair error sending PIN {err:?}");
                             }
                         }
                     }
@@ -122,12 +132,12 @@ pub async fn try_to_pair(ctx: &ConnectDeviceContext) -> Result<(), PlatformError
             // similar to linux, disconnect after successful paring and proceed to discover_services()
             let result = device.Close();
             if let Err(err) = result {
-                info!("try_to_pair close error {:?}", err);
+                info!("try_to_pair close error {err:?}");
             }
 
             dispatch_status(manager.clone(), bt_device, DeviceConnectionStatus::Paired).await;
         } else {
-            let error = format!("try_to_pair pairing failed status: {:?}", pairing_status);
+            let error = format!("try_to_pair pairing failed status: {pairing_status:?}");
             dispatch_status(
                 manager.clone(),
                 bt_device,

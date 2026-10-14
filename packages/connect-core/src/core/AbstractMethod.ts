@@ -13,7 +13,6 @@ import type {
     PrecomposeResultFinal,
     StaticSessionId,
     UiRequestButtonData,
-    UiRequestConfirmation,
 } from '@trezor/connect-common';
 import { isStaticSessionId } from '@trezor/device-utils';
 import type { Capability } from '@trezor/protobuf/src/definitions';
@@ -122,11 +121,10 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         return '';
     } // method info, displayed in popup info-panel
 
-    protected get confirmation(): UiRequestConfirmation['payload'] | undefined {
-        return undefined;
+    // whether the popup brings Suite to the foreground while the call is ongoing
+    protected get useUi() {
+        return this.useDevice;
     }
-
-    public useUi: boolean; // should use popup?
 
     public useDevice: boolean; // use device
 
@@ -190,8 +188,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     public getButtonRequestData?(code: string, name?: string): UiRequestButtonData | undefined;
 
-    public initAsync?(): Promise<void>;
-
     constructor(message: MethodMessage<Name>, params: Params) {
         const { payload } = message;
         this.name = payload.method;
@@ -212,7 +208,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         // default values for all methods
         this.useDevice = true;
         this.useDeviceState = true;
-        this.useUi = true;
         this.useCardanoDerivation = false;
         this.confirmMissingBackup = false;
     }
@@ -283,20 +278,18 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         }
     }
 
-    public getMethodInfo(): MethodInfo {
+    // Async so that a method can download what its title names (e.g. a network definition) only
+    // when the title is requested, instead of on every call.
+    public async getMethodInfo(): Promise<MethodInfo> {
         return {
             useUi: this.useUi,
-            useDevice: this.useDevice,
-            useDeviceState: this.useDeviceState,
-            name: this.name,
             requiredPermissions: this.requiredPermissions,
             info: this.info,
-            precomposed: undefined, // requested by a special flag,
-            confirmation: this.confirmation,
+            precomposed: await this.payloadToPrecomposed(),
         };
     }
 
-    public payloadToPrecomposed(): Promise<PrecomposeResultFinal | undefined> {
+    protected payloadToPrecomposed(): Promise<PrecomposeResultFinal | undefined> {
         // Suite uses precomposed result for transaction review modals
         return Promise.resolve(undefined);
     }

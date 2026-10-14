@@ -17,12 +17,10 @@ export const useButtonPressAnimatedStyle = (
     onPressColor: Color,
 ) => {
     const { utils } = useNativeStyles();
-    const pressAnimationValue = useDerivedValue(
-        () =>
-            isPressed && !isDisabled
-                ? withTiming(1, pressTimingConfig)
-                : withTiming(0, pressTimingConfig),
-        [isPressed, isDisabled],
+    const pressAnimationValue = useDerivedValue(() =>
+        isPressed && !isDisabled
+            ? withTiming(1, pressTimingConfig)
+            : withTiming(0, pressTimingConfig),
     );
 
     return useAnimatedStyle(() => ({

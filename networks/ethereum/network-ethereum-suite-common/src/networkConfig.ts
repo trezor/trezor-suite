@@ -1,11 +1,29 @@
-import type { EthereumNetworkSymbol } from '@trezor/network-ethereum/constants';
+import type { EthereumNetworkSymbol } from '@trezor/network-ethereum-types';
 import {
+    DEFAULT_ACCOUNT_SYNC_INTERVAL,
     type Explorer,
     type SuiteCommonNetworkConfig,
     asDisplayOrderKey,
     asProtocol,
 } from '@trezor/network-module-suite-common-types';
 import { asNetworkSymbol } from '@trezor/network-module-types';
+
+const syncIntervalBySymbol: Readonly<Record<EthereumNetworkSymbol, number>> = {
+    eth: DEFAULT_ACCOUNT_SYNC_INTERVAL,
+    pol: DEFAULT_ACCOUNT_SYNC_INTERVAL / 1.5,
+    bsc: DEFAULT_ACCOUNT_SYNC_INTERVAL / 1.5,
+    arb: DEFAULT_ACCOUNT_SYNC_INTERVAL / 1.5,
+    base: DEFAULT_ACCOUNT_SYNC_INTERVAL / 1.5,
+    op: DEFAULT_ACCOUNT_SYNC_INTERVAL / 1.5,
+    rhc: DEFAULT_ACCOUNT_SYNC_INTERVAL / 1.5,
+    hype: DEFAULT_ACCOUNT_SYNC_INTERVAL / 1.5,
+    avax: DEFAULT_ACCOUNT_SYNC_INTERVAL / 1.5,
+    etc: DEFAULT_ACCOUNT_SYNC_INTERVAL,
+    tsep: DEFAULT_ACCOUNT_SYNC_INTERVAL,
+    thod: DEFAULT_ACCOUNT_SYNC_INTERVAL,
+    arc: DEFAULT_ACCOUNT_SYNC_INTERVAL,
+    tarc: DEFAULT_ACCOUNT_SYNC_INTERVAL,
+};
 
 const getExplorerUrls = (baseUrl: string): Explorer => ({
     base: baseUrl,
@@ -64,6 +82,7 @@ export const networkConfigBySymbol = {
         },
         coingeckoId: 'ethereum',
         tradeCryptoId: 'ethereum',
+        fiatRateCryptoId: 'ethereum',
         caipId: 'eip155:1',
         yieldXyzId: 'ethereum',
     },
@@ -101,6 +120,7 @@ export const networkConfigBySymbol = {
         },
         coingeckoId: 'polygon-pos',
         tradeCryptoId: 'polygon-ecosystem-token',
+        fiatRateCryptoId: 'polygon-ecosystem-token',
         caipId: 'eip155:137',
         yieldXyzId: 'polygon',
     },
@@ -138,6 +158,7 @@ export const networkConfigBySymbol = {
         },
         coingeckoId: 'binance-smart-chain',
         tradeCryptoId: 'binancecoin',
+        fiatRateCryptoId: 'binancecoin',
         caipId: 'eip155:56',
         yieldXyzId: 'binance',
     },
@@ -182,6 +203,7 @@ export const networkConfigBySymbol = {
         },
         coingeckoId: 'arbitrum-one',
         tradeCryptoId: 'arbitrum-one--0x0000000000000000000000000000000000000000',
+        fiatRateCryptoId: 'ethereum',
         caipId: 'eip155:42161',
         yieldXyzId: 'arbitrum',
     },
@@ -221,6 +243,7 @@ export const networkConfigBySymbol = {
         },
         coingeckoId: 'base',
         tradeCryptoId: 'base--0x0000000000000000000000000000000000000000',
+        fiatRateCryptoId: 'ethereum',
         caipId: 'eip155:8453',
         nativeTokenReserve: '0.0002',
         yieldXyzId: 'base',
@@ -260,6 +283,7 @@ export const networkConfigBySymbol = {
         },
         coingeckoId: 'optimistic-ethereum',
         tradeCryptoId: 'optimistic-ethereum--0x0000000000000000000000000000000000000000',
+        fiatRateCryptoId: 'ethereum',
         caipId: 'eip155:10',
         nativeTokenReserve: '0.0002',
         yieldXyzId: 'optimism',
@@ -277,7 +301,7 @@ export const networkConfigBySymbol = {
         bip43Path: "m/44'/60'/0'/0/i",
         decimals: 18,
         testnet: false,
-        explorer: getExplorerUrls('https://robinscan.io'),
+        explorer: getExplorerUrls('https://robin.etherscan.io'),
         features: [
             'rbf',
             'sign-verify',
@@ -299,6 +323,7 @@ export const networkConfigBySymbol = {
         },
         coingeckoId: 'robinhood',
         tradeCryptoId: 'robinhood--0x0000000000000000000000000000000000000000',
+        fiatRateCryptoId: 'ethereum',
         caipId: 'eip155:4663',
         nativeTokenReserve: '0.0002',
         yieldXyzId: null,
@@ -337,6 +362,7 @@ export const networkConfigBySymbol = {
         },
         coingeckoId: 'hyperevm',
         tradeCryptoId: 'hyperliquid',
+        fiatRateCryptoId: 'hyperliquid',
         caipId: 'eip155:999',
         yieldXyzId: null,
     },
@@ -374,6 +400,7 @@ export const networkConfigBySymbol = {
         },
         coingeckoId: 'avalanche',
         tradeCryptoId: 'avalanche-2',
+        fiatRateCryptoId: 'avalanche-2',
         caipId: 'eip155:43114',
         yieldXyzId: 'avalanche-c',
     },
@@ -394,6 +421,31 @@ export const networkConfigBySymbol = {
         accountTypes: {},
         coingeckoId: 'ethereum-classic',
         tradeCryptoId: 'ethereum-classic',
+        fiatRateCryptoId: 'ethereum-classic',
+        yieldXyzId: null,
+    },
+    arc: {
+        color: '#2775ca',
+        displayOrder: asDisplayOrderKey('aNV'),
+        protocols: [asProtocol('arc')],
+        displaySymbol: 'USDC',
+        displaySymbolName: 'USDC',
+        name: 'Arc',
+        networkType: 'ethereum',
+        chainId: 5042,
+        bip43Path: "m/44'/60'/0'/0/i",
+        decimals: 18,
+        testnet: false,
+        explorer: getExplorerUrls('https://explorer.arc.io'),
+        features: ['rbf', 'sign-verify', 'tokens', 'coin-definitions', 'eip1559'],
+        backendOptions: [{ type: 'evm-rpc', isExternalBackend: true }],
+        accountTypes: {},
+        // Arc's native asset is USDC, so the balance prices against the USDC market; the platform
+        // id only names the token definitions, which are built from CoinGecko's `arc` platform.
+        coingeckoId: 'arc',
+        tradeCryptoId: 'arc--0x0000000000000000000000000000000000000000',
+        fiatRateCryptoId: 'usd-coin',
+        caipId: 'eip155:5042',
         yieldXyzId: null,
     },
     tsep: {
@@ -419,6 +471,7 @@ export const networkConfigBySymbol = {
         },
         coingeckoId: 'sepolia-test-ethereum', // fake, coingecko does not have testnets
         tradeCryptoId: 'sepolia-test-ethereum', // fake, coingecko does not have testnets
+        fiatRateCryptoId: 'sepolia-test-ethereum',
         yieldXyzId: 'ethereum-sepolia',
     },
     thod: {
@@ -444,9 +497,33 @@ export const networkConfigBySymbol = {
         },
         coingeckoId: 'hoodi-test-ethereum', // fake, coingecko does not have testnets
         tradeCryptoId: 'hoodi-test-ethereum', // fake, coingecko does not have testnets
+        fiatRateCryptoId: 'hoodi-test-ethereum',
         yieldXyzId: 'ethereum-hoodi',
+    },
+    tarc: {
+        color: '#2775ca',
+        displayOrder: asDisplayOrderKey('aNk'),
+        protocols: [asProtocol('tarc')],
+        displaySymbol: 'tUSDC',
+        name: 'Arc Testnet',
+        networkType: 'ethereum',
+        chainId: 5042002,
+        bip43Path: "m/44'/60'/0'/0/i",
+        decimals: 18,
+        testnet: true,
+        explorer: getExplorerUrls('https://testnet.arcscan.app'),
+        features: ['rbf', 'sign-verify', 'tokens', 'eip1559'],
+        backendOptions: [{ type: 'evm-rpc', isExternalBackend: true }],
+        accountTypes: {},
+        isDebugOnlyNetwork: true,
+        coingeckoId: undefined,
+        tradeCryptoId: undefined,
+        yieldXyzId: null,
     },
 } satisfies Readonly<Record<EthereumNetworkSymbol, NetworkConfig>>;
 
 export const getNetworkConfig = (symbol: EthereumNetworkSymbol): SuiteCommonNetworkConfig =>
     networkConfigBySymbol[symbol];
+
+export const getAccountSyncInterval = (symbol: EthereumNetworkSymbol): number =>
+    syncIntervalBySymbol[symbol];

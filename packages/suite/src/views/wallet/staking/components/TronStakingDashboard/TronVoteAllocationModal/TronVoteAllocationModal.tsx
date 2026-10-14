@@ -1,9 +1,7 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { useTronStakingStats } from '@suite-common/earn-staking-api';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     getTronAvailableVotingPower,
     getTronTotalVotingPower,
@@ -22,6 +20,8 @@ import {
     Text,
     Tooltip,
 } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { TronStakeInfoRow } from 'src/components/earn/staking/tron/TronStakeInfoRow';
@@ -80,6 +80,7 @@ export const TronVoteAllocationModal = ({ account, onClose }: TronVoteAllocation
     return (
         <Modal
             width={600}
+            data-testid="@modal/tron-vote-allocation"
             heading={<Translation id="TR_EARN_TRON_VOTE_ALLOCATION" />}
             onCancel={onClose}
         >
@@ -88,7 +89,10 @@ export const TronVoteAllocationModal = ({ account, onClose }: TronVoteAllocation
                     <TronStakeInfoRow
                         label={<Translation id="TR_EARN_TRON_ASSIGNED_VOTES_LABEL" />}
                     >
-                        <Text typographyStyle="body-md-strong">
+                        <Text
+                            typographyStyle="body-md-strong"
+                            data-testid="@modal/tron-vote-allocation/assigned-votes"
+                        >
                             {assignedVotes}/{totalVotes}
                         </Text>
                     </TronStakeInfoRow>
@@ -101,7 +105,11 @@ export const TronVoteAllocationModal = ({ account, onClose }: TronVoteAllocation
                         description={<Translation id="TR_EARN_TRON_ASSIGN_VOTES_BANNER" />}
                         rightContent={
                             <Tooltip content={votingMessageContent}>
-                                <Banner.Button onClick={goToVote} isDisabled={isVotingDisabled}>
+                                <Banner.Button
+                                    onClick={goToVote}
+                                    isDisabled={isVotingDisabled}
+                                    data-testid="@modal/tron-vote-allocation/vote-button"
+                                >
                                     <Translation id="TR_EARN_TRON_VOTE" />
                                 </Banner.Button>
                             </Tooltip>
@@ -158,6 +166,7 @@ export const TronVoteAllocationModal = ({ account, onClose }: TronVoteAllocation
                                 priority="secondary"
                                 onClick={goToVote}
                                 isDisabled={isVotingDisabled}
+                                data-testid="@modal/tron-vote-allocation/change-votes-button"
                             >
                                 <Translation id="TR_EARN_TRON_CHANGE_VOTES" />
                             </Button>

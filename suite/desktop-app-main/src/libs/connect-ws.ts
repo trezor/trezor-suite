@@ -16,12 +16,20 @@ import { isLinux } from '@trezor/env-utils';
 import { type ProcessInfo, findProcessFromIncomingPort } from '@trezor/node-utils';
 import { createDeferred, resolveAfter } from '@trezor/utils';
 
-import { addMessage, deleteMessage, setAppInit } from './connect-popup-messages';
+import { addMessage, deleteMessage, rejectMessage, setAppInit } from './connect-popup-messages';
 import { type createHttpReceiver } from './http-receiver';
 import { getProcessIcon } from './process-icon';
 import { type Dependencies } from '../modules';
 
 const LOG_PREFIX = 'connect-ws';
+const HANDSHAKE_TIMEOUT_MS = 10000;
+export const MAX_CONCURRENT_CONNECTIONS = 50;
+export const MAX_CONNECTIONS_PER_ORIGIN = 5;
+const MAX_MESSAGE_SIZE = 2 * 1024 * 1024; // 2 MB
+
+// Per-connection id used to namespace the process-global response store. Each client numbers
+// its requests on its own, so two connections can have a call with the same id in flight.
+let connectionCounter = 0;
 
 /**
  * allowed message from connect-in-suite-desktop implementation
@@ -68,21 +76,28 @@ const validateIncomingMessage = (message: any): message is IncomingMessage => {
     return false;
 };
 
+type ExposeConnectWsParams = {
+    mainThreadEmitter: Dependencies['mainThreadEmitter'];
+    mainWindowProxy: Dependencies['mainWindowProxy'];
+    httpReceiver: ReturnType<typeof createHttpReceiver>;
+    store: Dependencies['store'];
+    logger: Dependencies['logger'];
+};
+
 export const exposeConnectWs = ({
     mainThreadEmitter,
     mainWindowProxy,
     httpReceiver,
     store,
-}: {
-    mainThreadEmitter: Dependencies['mainThreadEmitter'];
-    mainWindowProxy: Dependencies['mainWindowProxy'];
-    httpReceiver: ReturnType<typeof createHttpReceiver>;
-    store: Dependencies['store'];
-}) => {
-    const { logger } = global;
+    logger,
+}: ExposeConnectWsParams) => {
+    const connectionsByOrigin = new Map<string, number>();
+    const getActiveConnections = () =>
+        Array.from(connectionsByOrigin.values()).reduce((acc, val) => acc + val, 0);
 
     const wss = new WebSocketServer({
         noServer: true,
+        maxPayload: MAX_MESSAGE_SIZE,
     });
 
     wss.on('listening', () => {
@@ -90,29 +105,52 @@ export const exposeConnectWs = ({
     });
 
     wss.on('connection', (ws, req) => {
+        ws.on('error', err => {
+            logger.error(LOG_PREFIX, err.message);
+        });
+
+        const connectionId = `ws-${++connectionCounter}`;
+        // Namespaces a caller-supplied request id to this connection. Internal to the main
+        // process; the original id is still echoed back to the client on the wire.
+        const getStoreId = (id: string) => `${connectionId}:${id}`;
+        // Namespaced store keys of this connection's in-flight calls.
         const connectionPendingMessages = new Set<string>();
         const ip = req.socket.remoteAddress;
         const port = req.socket.remotePort;
-        if ((ip !== '127.0.0.1' && ip !== '::1') || !port) {
-            logger.error(LOG_PREFIX, `invalid connection attempt from ${ip}:${port}`);
-            ws.close();
+        if (!port) {
+            // Unreachable: the upgrade handler rejects sockets without a remote port.
+            ws.terminate();
 
             return;
         }
-        logger.info(LOG_PREFIX, `new connection from ${ip}:${port}`);
+
+        const { origin } = req.headers;
+        const originKey = origin || 'unknown';
+        const originConnections = connectionsByOrigin.get(originKey) ?? 0;
+        const activeConnections = getActiveConnections();
+        connectionsByOrigin.set(originKey, originConnections + 1);
+
+        logger.info(
+            LOG_PREFIX,
+            `new connection from ${ip}:${port} (${activeConnections + 1}/${MAX_CONCURRENT_CONNECTIONS})`,
+        );
 
         let processOnPort: ProcessInfo | undefined;
-        const { origin } = req.headers;
 
         let manifest: Manifest | undefined;
         let version: string | undefined;
         let requestedPermissions: PermissionRequest[] | undefined;
+        let isHandshakeDone = false;
+
+        // Close connection if handshake is not received within timeout
+        const handshakeTimeout = setTimeout(() => {
+            if (!isHandshakeDone) {
+                logger.warn(LOG_PREFIX, `connection closed: handshake timeout from ${ip}:${port}`);
+                req.socket.destroy();
+            }
+        }, HANDSHAKE_TIMEOUT_MS);
 
         logger.info(LOG_PREFIX, `origin: ${origin}`);
-
-        ws.on('error', err => {
-            logger.error(LOG_PREFIX, err.message);
-        });
 
         ws.on('message', async data => {
             const dataString = data.toString();
@@ -137,6 +175,12 @@ export const exposeConnectWs = ({
 
                 return;
             }
+
+            if (!isHandshakeDone && message.type !== POPUP.HANDSHAKE) {
+                logger.warn(LOG_PREFIX, `${message.type} rejected: handshake not completed`);
+
+                return;
+            }
             if (message.type === POPUP.HANDSHAKE) {
                 const filterSelf = !process.env.PLAYWRIGHT_RUN; // ignore own process, unless testing
                 processOnPort = await findProcessFromIncomingPort(port, filterSelf).catch(() => {
@@ -147,16 +191,22 @@ export const exposeConnectWs = ({
                 manifest = parseManifest(message.payload.settings.manifest);
                 version = parseVersion(message.payload.settings.version);
                 requestedPermissions = message.payload.settings.requestedPermissions;
+                isHandshakeDone = true;
+                clearTimeout(handshakeTimeout);
                 ws.send(JSON.stringify({ id: message.id, type: POPUP.HANDSHAKE, payload: 'ok' }));
             } else if (message.type === POPUP.CLOSED) {
                 mainWindowProxy.getInstance()?.webContents.send('connect-popup/cancel', {
                     error: message.payload?.error,
                     callId: message.payload?.callId,
+                    // the renderer acts only on this connection's own calls
+                    connectionId,
                 });
             } else if (message.type === CORE_CALL_CANCEL) {
                 mainWindowProxy.getInstance()?.webContents.send('connect-popup/cancel', {
                     error: message.payload?.reason,
                     callId: message.payload?.callId,
+                    // the renderer acts only on this connection's own calls
+                    connectionId,
                 });
             } else if (message.type === CORE_CALL) {
                 if (!processOnPort) {
@@ -187,8 +237,23 @@ export const exposeConnectWs = ({
 
                 const { method, ...rest } = message.payload;
 
-                const deferred = addMessage(message.id);
-                connectionPendingMessages.add(message.id);
+                const storeId = getStoreId(message.id);
+                // Reject a request id that this connection already has in flight instead of
+                // overwriting its deferred (which would leave the first call without a response).
+                if (connectionPendingMessages.has(storeId)) {
+                    logger.error(LOG_PREFIX, `duplicate in-flight id ${message.id}`);
+                    ws.send(
+                        JSON.stringify({
+                            id: message.id,
+                            success: false,
+                            payload: { error: 'Duplicate in-flight request id' },
+                        }),
+                    );
+
+                    return;
+                }
+                const deferred = addMessage(storeId);
+                connectionPendingMessages.add(storeId);
 
                 try {
                     // check window exists, if not wait for it to be created
@@ -209,8 +274,8 @@ export const exposeConnectWs = ({
                             LOG_PREFIX,
                             'Main window not available after initialization timeout',
                         );
-                        deleteMessage(message.id);
-                        connectionPendingMessages.delete(message.id);
+                        deleteMessage(storeId);
+                        connectionPendingMessages.delete(storeId);
                         ws.send(
                             JSON.stringify({
                                 id: message.id,
@@ -224,9 +289,12 @@ export const exposeConnectWs = ({
                         return;
                     }
 
-                    // send call to renderer
+                    // Send call to renderer. It echoes the namespaced `id` back on the response,
+                    // which resolves this connection's deferred; `connectionId` marks the owner so
+                    // that a cancel from another connection leaves the call alone.
                     mainWindow.webContents.send('connect-popup/call', {
-                        id: message.id,
+                        id: storeId,
+                        connectionId,
                         method,
                         payload: rest,
                         origin,
@@ -235,7 +303,10 @@ export const exposeConnectWs = ({
                                   name: processOnPort.name,
                                   fullPath: processOnPort.fullPath,
                                   warning: !!processOnPort.warning,
-                                  icon: await getProcessIcon(processOnPort.fullPath),
+                                  icon: await getProcessIcon({
+                                      path: processOnPort.fullPath,
+                                      logger,
+                                  }),
                               }
                             : undefined,
                         manifest: {
@@ -251,6 +322,7 @@ export const exposeConnectWs = ({
                     // wait for response
                     const response = await deferred.promise;
 
+                    // Echo back the original (client-facing) id, not the namespaced store id.
                     ws.send(
                         JSON.stringify({
                             ...response,
@@ -260,20 +332,34 @@ export const exposeConnectWs = ({
                 } catch (e) {
                     logger.error(LOG_PREFIX, 'error handling call: ' + e);
                 } finally {
-                    connectionPendingMessages.delete(message.id);
+                    connectionPendingMessages.delete(storeId);
                 }
             }
         });
         ws.on('close', () => {
-            logger.info(LOG_PREFIX, 'Connection closed');
+            clearTimeout(handshakeTimeout);
+            const currentOriginCount = connectionsByOrigin.get(originKey) ?? 1;
+            if (currentOriginCount <= 1) {
+                connectionsByOrigin.delete(originKey);
+            } else {
+                connectionsByOrigin.set(originKey, currentOriginCount - 1);
+            }
+            logger.info(
+                LOG_PREFIX,
+                `Connection closed (${getActiveConnections()}/${MAX_CONCURRENT_CONNECTIONS})`,
+            );
 
             if (connectionPendingMessages.size > 0) {
                 mainWindowProxy.getInstance()?.webContents.send('connect-popup/cancel', {
                     error: 'Connection closed',
+                    // the renderer acts only on the closed connection's own calls
+                    connectionId,
                 });
 
                 for (const id of connectionPendingMessages) {
-                    deleteMessage(id);
+                    // Reject (not just delete) so the awaiting message handler unblocks and
+                    // releases its closure instead of waiting on a deferred nothing settles.
+                    rejectMessage(id, new Error('Connection closed'));
                 }
                 connectionPendingMessages.clear();
             }
@@ -284,12 +370,56 @@ export const exposeConnectWs = ({
     });
 
     httpReceiver.server.on('upgrade', (request, socket, head) => {
-        if (!request?.url) return;
-        const { pathname } = new URL(request.url, 'http://localhost');
-        if (pathname === '/connect-ws') {
-            wss.handleUpgrade(request, socket, head, ws => {
-                wss.emit('connection', ws, request);
-            });
+        if (!request?.url) {
+            socket.destroy();
+
+            return;
         }
+
+        // `new URL()` would throw for some request targets that node's http parser accepts.
+        const pathname = request.url.split('?')[0];
+        if (pathname !== '/connect-ws') {
+            socket.destroy();
+
+            return;
+        }
+
+        // Checked before `handleUpgrade()`, so a rejected socket gets no `101` and no frame parser.
+        const ip = request.socket.remoteAddress;
+        const port = request.socket.remotePort;
+        if ((ip !== '127.0.0.1' && ip !== '::1') || !port) {
+            logger.error(LOG_PREFIX, `invalid connection attempt from ${ip}:${port}`);
+            socket.destroy();
+
+            return;
+        }
+
+        const originKey = request.headers.origin || 'unknown';
+
+        // Enforce per-origin connection limit to prevent single client monopolization
+        if ((connectionsByOrigin.get(originKey) ?? 0) + 1 > MAX_CONNECTIONS_PER_ORIGIN) {
+            logger.warn(
+                LOG_PREFIX,
+                `connection rejected: limit per origin (${MAX_CONNECTIONS_PER_ORIGIN}) exceeded for ${originKey}`,
+            );
+            socket.destroy();
+
+            return;
+        }
+
+        // Enforce global connection limit to prevent resource exhaustion
+        if (getActiveConnections() + 1 > MAX_CONCURRENT_CONNECTIONS) {
+            logger.warn(
+                LOG_PREFIX,
+                `connection rejected: limit (${MAX_CONCURRENT_CONNECTIONS}) exceeded`,
+            );
+            socket.destroy();
+
+            return;
+        }
+
+        wss.handleUpgrade(request, socket, head, ws => {
+            wss.emit('connection', ws, request);
+        });
     });
 };

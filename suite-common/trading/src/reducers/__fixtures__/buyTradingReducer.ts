@@ -160,20 +160,6 @@ export const buyTradingFixtures = [
         },
     },
     {
-        description: 'should set status whether is from redirect',
-        initialState: buyInitialState,
-        actions: [
-            {
-                type: tradingBuyActions.setIsFromRedirect.type,
-                payload: true,
-            },
-        ],
-        result: {
-            ...buyInitialState,
-            isFromRedirect: true,
-        },
-    },
-    {
         description: 'should set loading status',
         initialState: buyInitialState,
         actions: [

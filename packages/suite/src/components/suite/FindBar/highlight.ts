@@ -16,14 +16,10 @@ export const removeHighlights = (root: HTMLElement) => {
     });
 };
 
-const isVisible = (el: HTMLElement): boolean => {
-    if (!el.offsetParent && getComputedStyle(el).position !== 'fixed') return false;
-    const style = getComputedStyle(el);
-    if (style.visibility === 'hidden' || style.display === 'none' || style.opacity === '0')
-        return false;
-
-    return !el.hasAttribute('hidden');
-};
+const isVisible = (el: Element): boolean =>
+    el instanceof HTMLElement &&
+    el.checkVisibility({ opacityProperty: true, visibilityProperty: true }) &&
+    !el.hasAttribute('hidden');
 
 const collectTextNodes = (root: HTMLElement): Text[] => {
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);

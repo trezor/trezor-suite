@@ -8,91 +8,121 @@ import { accountSearchFn, isTokenMatchesSearch } from '@suite-common/wallet-util
 
 import { useSelector } from 'src/hooks/suite';
 
-import { type AccountWithTokensOption } from '../types';
+import { type AccountWithOptionalLabel, type AccountWithTokensOption } from '../types';
 
-export function useFilterAccountsWithTokens(
-    accountsWithTokens: AccountWithTokensOption[],
-    search: string,
-) {
+export type FilterAccountsWithTokensParams = {
+    accountsWithTokens: AccountWithTokensOption[];
+    search: string;
+    getAccountLabel: (account: AccountWithOptionalLabel) => string;
+    shouldKeepAccountWithMatchedToken: boolean;
+};
+
+export const filterAccountsWithTokens = ({
+    accountsWithTokens,
+    search,
+    getAccountLabel,
+    shouldKeepAccountWithMatchedToken,
+}: FilterAccountsWithTokensParams): AccountWithTokensOption[] => {
+    if (!search) {
+        return accountsWithTokens;
+    }
+
+    const matchedAccountKeys = new Set<AccountKey>();
+    const accountKeysWithMatchedToken = new Set<AccountKey>();
+
+    for (const item of accountsWithTokens) {
+        switch (item.type) {
+            case 'account':
+                if (
+                    accountSearchFn(item.account, search, {
+                        tokensMatch: false,
+                        accountLabel: getAccountLabel(item.account),
+                    })
+                ) {
+                    matchedAccountKeys.add(item.account.key);
+                }
+                break;
+
+            case 'token':
+                if (isTokenMatchesSearch(item.token, search)) {
+                    accountKeysWithMatchedToken.add(item.account.key);
+                }
+                break;
+
+            case 'hidden-tokens':
+                if (item.tokens.some(token => isTokenMatchesSearch(token, search))) {
+                    accountKeysWithMatchedToken.add(item.account.key);
+                }
+                break;
+        }
+    }
+
+    return accountsWithTokens
+        .filter(item => {
+            const accountMatched = matchedAccountKeys.has(item.account.key);
+
+            switch (item.type) {
+                case 'account':
+                    return (
+                        accountMatched ||
+                        (shouldKeepAccountWithMatchedToken &&
+                            accountKeysWithMatchedToken.has(item.account.key))
+                    );
+
+                case 'token':
+                    return accountMatched || isTokenMatchesSearch(item.token, search);
+
+                case 'hidden-tokens':
+                    return (
+                        accountMatched ||
+                        item.tokens.some(token => isTokenMatchesSearch(token, search))
+                    );
+            }
+        })
+        .map(item => {
+            if (item.type === 'hidden-tokens' && !matchedAccountKeys.has(item.account.key)) {
+                return {
+                    ...item,
+                    tokens: item.tokens.filter(token => isTokenMatchesSearch(token, search)),
+                };
+            }
+
+            return item;
+        });
+};
+
+export type UseFilterAccountsWithTokensParams = {
+    accountsWithTokens: AccountWithTokensOption[];
+    search: string;
+    shouldKeepAccountWithMatchedToken?: boolean;
+};
+
+export function useFilterAccountsWithTokens({
+    accountsWithTokens,
+    search,
+    shouldKeepAccountWithMatchedToken = true,
+}: UseFilterAccountsWithTokensParams) {
     const { translationString } = useTranslation();
     const accountLegacyLabels = useSelector(selectAccountLabelsLegacy);
 
-    return useMemo(() => {
-        if (!search) {
-            return accountsWithTokens;
-        }
-
-        // An account row matches the search by its symbol, network name, account
-        // number or label. A token row matches by its own name/symbol/contract.
-        // To keep the grouped list consistent: an account that matches keeps all of
-        // its tokens, while a token that matches keeps its parent account row (so
-        // tokens are never orphaned and accounts never hide their matching tokens).
-        const matchedAccountKeys = new Set<AccountKey>();
-        const accountKeysWithMatchedToken = new Set<AccountKey>();
-
-        for (const item of accountsWithTokens) {
-            switch (item.type) {
-                case 'account': {
-                    const { key } = item.account;
-
-                    const accountLabel =
-                        item.account.label ??
-                        accountLegacyLabels[key] ??
-                        getDefaultAccountLabel(translationString, item.account) ??
-                        '';
-
-                    if (
-                        accountSearchFn(item.account, search, {
-                            tokensMatch: false,
-                            accountLabel,
-                        })
-                    ) {
-                        matchedAccountKeys.add(key);
-                    }
-                    break;
-                }
-
-                case 'token':
-                    if (isTokenMatchesSearch(item.token, search)) {
-                        accountKeysWithMatchedToken.add(item.account.key);
-                    }
-                    break;
-
-                case 'hidden-tokens':
-                    if (item.tokens.some(token => isTokenMatchesSearch(token, search))) {
-                        accountKeysWithMatchedToken.add(item.account.key);
-                    }
-                    break;
-            }
-        }
-
-        return accountsWithTokens
-            .filter(item => {
-                const accountMatched = matchedAccountKeys.has(item.account.key);
-
-                switch (item.type) {
-                    case 'account':
-                        return accountMatched || accountKeysWithMatchedToken.has(item.account.key);
-
-                    case 'token':
-                        return accountMatched || isTokenMatchesSearch(item.token, search);
-
-                    case 'hidden-tokens':
-                        return (
-                            accountMatched ||
-                            item.tokens.some(token => isTokenMatchesSearch(token, search))
-                        );
-                }
-            })
-            .map(item => {
-                if (item.type === 'hidden-tokens' && !matchedAccountKeys.has(item.account.key)) {
-                    return {
-                        ...item,
-                        tokens: item.tokens.filter(token => isTokenMatchesSearch(token, search)),
-                    };
-                }
-
-                return item;
-            });
-    }, [accountLegacyLabels, accountsWithTokens, search, translationString]);
+    return useMemo(
+        () =>
+            filterAccountsWithTokens({
+                accountsWithTokens,
+                search,
+                getAccountLabel: account =>
+                    account.label ??
+                    accountLegacyLabels[account.key] ??
+                    getDefaultAccountLabel(translationString, account) ??
+                    '',
+                shouldKeepAccountWithMatchedToken,
+            }),
+        [
+            accountLegacyLabels,
+            accountsWithTokens,
+            search,
+            shouldKeepAccountWithMatchedToken,
+            translationString,
+        ],
+    );
 }

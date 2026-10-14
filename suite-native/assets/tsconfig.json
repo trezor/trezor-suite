@@ -15,9 +15,6 @@
             "path": "../../suite-common/react-query"
         },
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/token-definitions"
         },
         {
@@ -41,6 +38,7 @@
         { "path": "../module-earn" },
         { "path": "../navigation" },
         { "path": "../tokens" },
+        { "path": "../../packages/redux-utils" },
         { "path": "../../packages/utils" }
     ]
 }

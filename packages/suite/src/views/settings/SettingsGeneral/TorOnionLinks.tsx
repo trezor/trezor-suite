@@ -3,10 +3,10 @@ import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectTorOnionLinks, suiteSettingsActions } from '@suite/settings';
 import { selectIsTorEnabled, selectIsTorEnabling } from '@suite/tor';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { Switch } from '@trezor/components';
-import { ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { useServices } from '@trezor/dependency-injection';
+import { SectionItem } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 /* keep torOnionLinks value as it is but hide this section when tor is off.
@@ -37,19 +37,16 @@ export const TorOnionLinks = () => {
                     data-testid={anchorId}
                     ref={anchorRef}
                     shouldHighlight={shouldHighlight}
-                >
-                    <TextColumn
-                        title={<Translation id="TR_ONION_LINKS_TITLE" />}
-                        description={<Translation id="TR_ONION_LINKS_DESCRIPTION" />}
-                    />
-                    <ActionColumn>
+                    title={<Translation id="TR_ONION_LINKS_TITLE" />}
+                    description={<Translation id="TR_ONION_LINKS_DESCRIPTION" />}
+                    actions={
                         <Switch
                             data-testid="@settings/general/onion-links-switch"
                             isChecked={torOnionLinks}
                             onChange={handleChange}
                         />
-                    </ActionColumn>
-                </SectionItem>
+                    }
+                />
             )}
         </Anchor>
     );

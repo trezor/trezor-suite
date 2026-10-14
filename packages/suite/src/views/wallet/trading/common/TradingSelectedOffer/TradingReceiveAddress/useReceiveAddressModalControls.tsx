@@ -28,7 +28,11 @@ const ReceiveAddressModalControlsContext = createContext<
     ReceiveAddressModalControlsContextType | undefined
 >(undefined);
 
-export const ReceiveAddressModalControlsProvider = ({ children }: { children: ReactNode }) => {
+type ReceiveAddressModalControlsProviderProps = { children: ReactNode };
+
+export const ReceiveAddressModalControlsProvider = ({
+    children,
+}: ReceiveAddressModalControlsProviderProps) => {
     const modal = useReceiveAddressModal();
 
     return (

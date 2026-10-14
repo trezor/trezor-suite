@@ -1,4 +1,3 @@
-import { createMockDeps } from '@suite-common/dependency-injection';
 import { DeviceError } from '@suite-common/device';
 import { type AllocateOwnerQuotaErr } from '@suite-common/suite-sync-quota-manager';
 import { asSuiteSyncOwnerId } from '@suite-common/suite-sync-storage';
@@ -10,6 +9,7 @@ import {
 } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { type StaticSessionId } from '@trezor/connect';
+import { createMockDeps } from '@trezor/dependency-injection';
 import { asWalletDescriptor } from '@trezor/device-utils';
 import { err, ok } from '@trezor/type-utils';
 

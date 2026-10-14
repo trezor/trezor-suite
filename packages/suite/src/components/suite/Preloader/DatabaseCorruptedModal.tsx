@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { H3, Modal } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { DatabaseIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { resetSuiteAppThunk } from 'src/actions/suite/suiteThunks';
 

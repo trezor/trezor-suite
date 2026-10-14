@@ -18,7 +18,7 @@ const wethContract = toTokenAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
 const otherTokenContract = toTokenAddress('0x0000000000000000000000000000000000000001');
 
 const baseParams: Params = {
-    isDebugEnvironment: true,
+    isDevUtilsEnabled: true,
     isPortfolioTrackerDevice: false,
     isUnwrapDisabled: false,
     isWrapDisabled: false,
@@ -37,8 +37,8 @@ describe('getWrappedNativeTokenEntries', () => {
         it.each([
             ['is displayed and enabled by default', {}, { isDisplayed: true, isDisabled: false }],
             [
-                'is hidden outside a debug/develop environment',
-                { isDebugEnvironment: false },
+                'is hidden when dev utils are not enabled',
+                { isDevUtilsEnabled: false },
                 { isDisplayed: false, isDisabled: false },
             ],
             [
@@ -106,8 +106,8 @@ describe('getWrappedNativeTokenEntries', () => {
                 { isDisplayed: true, isDisabled: true },
             ],
             [
-                'is unaffected by isDebugEnvironment',
-                { tokenContract: wethContract, isDebugEnvironment: false },
+                'is unaffected by isDevUtilsEnabled',
+                { tokenContract: wethContract, isDevUtilsEnabled: false },
                 { isDisplayed: true, isDisabled: false },
             ],
             [

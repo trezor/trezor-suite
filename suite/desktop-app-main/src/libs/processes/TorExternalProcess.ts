@@ -4,11 +4,13 @@ import { type Status } from './BaseProcess';
 
 export type TorProcessStatus = Status;
 
+type TorExternalProcessParams = { port: number; host: string };
+
 export class TorExternalProcess {
     torController: TorControllerExternal;
     port: number;
     host: string;
-    constructor({ port, host }: { port: number; host: string }) {
+    constructor({ port, host }: TorExternalProcessParams) {
         this.port = port;
         this.host = host;
         this.torController = new TorControllerExternal({ host: this.host, port: this.port });

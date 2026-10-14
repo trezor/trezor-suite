@@ -5,8 +5,6 @@ import { useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 import { useAtomValue } from 'jotai';
 
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { useConfirmOnTrezorController } from '@suite-native/confirm-on-trezor';
 import {
@@ -23,6 +21,8 @@ import {
     selectTransactionReviewOutputsFromDraft,
 } from '@suite-native/transaction-management';
 import { TransactionReviewScreen } from '@suite-native/transaction-review';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { wasAppLeftDuringReviewAtom } from '../atoms/wasAppLeftDuringReviewAtom';
 import { useSendTransactionErrorAlert } from '../hooks/useSendTransactionErrorAlert';

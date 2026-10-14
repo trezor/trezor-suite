@@ -1,16 +1,24 @@
 import {
+    DEFAULT_ACCOUNT_SYNC_INTERVAL,
     type Explorer,
     type SuiteCommonNetworkConfig,
     asDisplayOrderKey,
     asProtocol,
 } from '@trezor/network-module-suite-common-types';
-import { STELLAR_DECIMALS, type StellarNetworkSymbol } from '@trezor/network-stellar/constants';
+import { STELLAR_DECIMALS } from '@trezor/network-stellar/constants';
+import type { StellarNetworkSymbol } from '@trezor/network-stellar-types';
+
+const syncIntervalBySymbol: Readonly<Record<StellarNetworkSymbol, number>> = {
+    xlm: DEFAULT_ACCOUNT_SYNC_INTERVAL,
+    txlm: DEFAULT_ACCOUNT_SYNC_INTERVAL,
+};
 
 const getExplorerUrls = (baseUrl: string): Explorer => ({
     base: baseUrl,
     tx: `${baseUrl}/tx/`,
     address: `${baseUrl}/account/`,
     token: `${baseUrl}/asset/`,
+    contract: `${baseUrl}/contract/`,
 });
 
 type NetworkConfig = SuiteCommonNetworkConfig & {
@@ -34,6 +42,7 @@ export const networkConfigBySymbol = {
         accountTypes: {},
         coingeckoId: 'stellar',
         tradeCryptoId: 'stellar',
+        fiatRateCryptoId: 'stellar',
         yieldXyzId: 'stellar',
         caipId: 'stellar:pubnet',
     },
@@ -60,3 +69,6 @@ export const networkConfigBySymbol = {
 
 export const getNetworkConfig = (symbol: StellarNetworkSymbol): SuiteCommonNetworkConfig =>
     networkConfigBySymbol[symbol];
+
+export const getAccountSyncInterval = (symbol: StellarNetworkSymbol): number =>
+    syncIntervalBySymbol[symbol];

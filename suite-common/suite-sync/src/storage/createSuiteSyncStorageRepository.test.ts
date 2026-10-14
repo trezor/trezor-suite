@@ -1,5 +1,5 @@
-import { mockNotExpected } from '@suite-common/dependency-injection';
 import { mockSuiteSyncStorage } from '@suite-common/suite-sync-storage/mocks';
+import { mockNotExpected } from '@trezor/dependency-injection';
 
 import { asStorageId, createSuiteSyncStorageRepository } from './createSuiteSyncStorageRepository';
 import { createSuiteSyncStorageMock } from '../../mocks/mockCreateSuiteSyncStorage';

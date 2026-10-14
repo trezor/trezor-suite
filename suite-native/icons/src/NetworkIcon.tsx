@@ -22,33 +22,25 @@ import { useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type CSSColor } from '@trezor/theme';
 
-interface NetworkIconProps {
+export const NETWORK_ICON_SIZES = [8, 12, 16, 20, 24, 32] as const;
+export type NetworkIconSize = (typeof NETWORK_ICON_SIZES)[number];
+
+type NetworkIconProps = {
     symbol: NetworkSymbol;
-    size?: NetworkIconSize | number;
-}
-
-export const networkIconSizes = {
-    tiny: 6,
-    extraSmall: 9,
-    small: 12,
-    medium: 15,
-    large: 18,
-    extraLarge: 24,
-} as const;
-
-export type NetworkIconSize = keyof typeof networkIconSizes;
-
-const iconStyle = prepareNativeStyle<{ width: number; height: number }>((_, { width, height }) => ({
-    width,
-    height,
-}));
+    size?: NetworkIconSize;
+};
 
 type NetworkIconCanvasProps = {
     iconName: NetworkIconName;
-    size: number;
+    size: NetworkIconSize;
     backgroundColor: CSSColor;
     iconColor: CSSColor;
 };
+
+const iconStyle = prepareNativeStyle<{ size: NetworkIconSize }>((_, { size }) => ({
+    width: size,
+    height: size,
+}));
 
 const NetworkIconCanvas = ({
     iconName,
@@ -85,11 +77,9 @@ const NetworkIconCanvas = ({
     );
 };
 
-export const NetworkIcon = ({ symbol, size = 'small' }: NetworkIconProps) => {
+export const NetworkIcon = ({ symbol, size = 16 }: NetworkIconProps) => {
     const { applyStyle, utils } = useNativeStyles();
     const { translate } = useTranslate();
-
-    const sizeNumber = typeof size === 'number' ? size : networkIconSizes[size];
 
     if (!isNetworkIconSymbol(symbol)) {
         return null;
@@ -109,11 +99,11 @@ export const NetworkIcon = ({ symbol, size = 'small' }: NetworkIconProps) => {
             accessible
             accessibilityRole="image"
             accessibilityHint={translate('icons.networkIconHint')}
-            style={applyStyle(iconStyle, { width: sizeNumber, height: sizeNumber })}
+            style={applyStyle(iconStyle, { size })}
         >
             <NetworkIconCanvas
                 iconName={iconName}
-                size={sizeNumber}
+                size={size}
                 backgroundColor={backgroundColor}
                 iconColor={iconColor}
             />

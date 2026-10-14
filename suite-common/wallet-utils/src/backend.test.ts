@@ -1,12 +1,24 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 
-import { getDefaultBackendType, isTrezorConnectBackendType } from './backendUtils';
+import {
+    getDefaultBackendType,
+    isDirectRpcBackendType,
+    isTrezorConnectBackendType,
+} from './backendUtils';
 
 describe('backend utils', () => {
     test('getDefaultBackendType', () => {
         expect(getDefaultBackendType(asNetworkSymbol('btc'))).toBe('blockbook');
         expect(getDefaultBackendType(asNetworkSymbol('ltc'))).toBe('blockbook');
         expect(getDefaultBackendType(asNetworkSymbol('ada'))).toBe('blockfrost');
+        expect(getDefaultBackendType(asNetworkSymbol('arc'))).toBe('evm-rpc');
+        expect(getDefaultBackendType(asNetworkSymbol('tarc'))).toBe('evm-rpc');
+    });
+
+    test('isDirectRpcBackendType', () => {
+        expect(isDirectRpcBackendType('evm-rpc')).toBe(true);
+        expect(isDirectRpcBackendType('blockbook')).toBe(false);
+        expect(isDirectRpcBackendType()).toBe(false);
     });
 
     test('isTrezorConnectBackendType', () => {

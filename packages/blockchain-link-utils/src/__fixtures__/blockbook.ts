@@ -1,6 +1,8 @@
 import type {
     AccountAddresses,
+    BlockbookAccountInfo,
     BlockbookTransaction,
+    TokenInfo,
     Transaction,
 } from '@trezor/blockchain-link-types';
 import type { DeepPartial } from '@trezor/type-utils';
@@ -133,6 +135,20 @@ export const filterTokenTransfers = [
         ],
     },
     {
+        description: 'decimals: 0 is preserved (indivisible token, not treated as missing)',
+        addresses: 'B',
+        transfers: [{ ...tIn, from: 'A', to: 'B', decimals: 0 }],
+        parsed: [
+            {
+                ...tOut,
+                decimals: 0,
+                type: 'recv',
+                from: 'A',
+                to: 'B',
+            },
+        ],
+    },
+    {
         description: 'addresses as unexpected object (number)',
         addresses: 1,
         transfers: tokenTransfers,
@@ -179,6 +195,196 @@ export const filterTokenTransfers = [
         addresses: 'A',
         transfers: ['A', null, 1, {}],
         parsed: [],
+    },
+];
+
+type BlockbookAccountToken = NonNullable<BlockbookAccountInfo['tokens']>[number];
+
+const erc20Balance = {
+    type: 'ERC20',
+    standard: 'ERC20',
+    contract: '0x0',
+    name: 'Token name',
+    symbol: 'TN',
+    transfers: 1,
+    balance: '5',
+    decimals: 6,
+} satisfies BlockbookAccountToken;
+
+const { decimals: _decimals, ...erc20BalanceWithoutDecimals } = erc20Balance;
+const erc20BalanceMissingDecimals = erc20BalanceWithoutDecimals as BlockbookAccountToken;
+
+const xpubAddressBase = {
+    type: 'XPUBAddress',
+    decimals: 8,
+    balance: '0',
+    totalSent: '0',
+    totalReceived: '0',
+} as const;
+
+const usedReceiveAddress = {
+    ...xpubAddressBase,
+    name: 'receive-used',
+    path: "m/44'/0'/0'/0/0",
+    transfers: 2,
+    balance: '100',
+    totalSent: '20',
+    totalReceived: '120',
+} satisfies BlockbookAccountToken;
+
+const unusedReceiveAddress = {
+    ...xpubAddressBase,
+    name: 'receive-unused',
+    path: "m/44'/0'/0'/0/1",
+    transfers: 0,
+} satisfies BlockbookAccountToken;
+
+const usedChangeAddress = {
+    ...xpubAddressBase,
+    name: 'change-used',
+    path: "m/44'/0'/0'/1/0",
+    transfers: 1,
+} satisfies BlockbookAccountToken;
+
+const unusedChangeAddress = {
+    ...xpubAddressBase,
+    name: 'change-unused',
+    path: "m/44'/0'/0'/1/1",
+    transfers: 0,
+} satisfies BlockbookAccountToken;
+
+export const transformTokenInfo: {
+    description: string;
+    tokens: BlockbookAccountInfo['tokens'];
+    parsed: TokenInfo[] | undefined;
+}[] = [
+    {
+        description: 'decimals: 0 is preserved (indivisible token, not treated as missing)',
+        tokens: [{ ...erc20Balance, decimals: 0 }],
+        parsed: [{ ...erc20Balance, decimals: 0 }],
+    },
+    {
+        description: 'missing decimals falls back to the ERC-20 convention (18)',
+        tokens: [erc20BalanceMissingDecimals],
+        parsed: [{ ...erc20BalanceWithoutDecimals, decimals: 18 }],
+    },
+    {
+        description: 'decimals are taken as reported',
+        tokens: [erc20Balance],
+        parsed: [erc20Balance],
+    },
+    {
+        description: 'XPUBAddress entries are skipped',
+        tokens: [
+            {
+                type: 'XPUBAddress',
+                name: 'A',
+                path: "m/44'/0'/0'/0/0",
+                transfers: 1,
+                decimals: 8,
+                balance: '0',
+                totalSent: '0',
+                totalReceived: '0',
+            },
+        ],
+        parsed: undefined,
+    },
+    {
+        description: 'empty token list yields undefined',
+        tokens: [],
+        parsed: undefined,
+    },
+    {
+        description: 'XPUBAddress entries are skipped and the remaining tokens keep their order',
+        tokens: [
+            usedReceiveAddress,
+            erc20Balance,
+            usedChangeAddress,
+            { ...erc20Balance, contract: '0x1' },
+        ],
+        parsed: [erc20Balance, { ...erc20Balance, contract: '0x1' }],
+    },
+];
+
+export const transformAddresses: {
+    description: string;
+    tokens: BlockbookAccountInfo['tokens'];
+    parsed: AccountAddresses | undefined;
+}[] = [
+    {
+        description: 'missing token list yields undefined',
+        tokens: undefined,
+        parsed: undefined,
+    },
+    {
+        description: 'empty token list yields undefined',
+        tokens: [],
+        parsed: undefined,
+    },
+    {
+        description: 'token list without XPUBAddress entries yields undefined',
+        tokens: [erc20Balance],
+        parsed: undefined,
+    },
+    {
+        description:
+            'XPUBAddress entries are split into change, used and unused in their original order',
+        tokens: [
+            unusedChangeAddress,
+            erc20Balance,
+            unusedReceiveAddress,
+            usedChangeAddress,
+            usedReceiveAddress,
+            { ...unusedReceiveAddress, name: 'receive-unused-2', path: "m/44'/0'/0'/0/2" },
+        ],
+        parsed: {
+            change: [
+                {
+                    address: 'change-unused',
+                    path: "m/44'/0'/0'/1/1",
+                    transfers: 0,
+                    balance: '0',
+                    sent: '0',
+                    received: '0',
+                },
+                {
+                    address: 'change-used',
+                    path: "m/44'/0'/0'/1/0",
+                    transfers: 1,
+                    balance: '0',
+                    sent: '0',
+                    received: '0',
+                },
+            ],
+            used: [
+                {
+                    address: 'receive-used',
+                    path: "m/44'/0'/0'/0/0",
+                    transfers: 2,
+                    balance: '100',
+                    sent: '20',
+                    received: '120',
+                },
+            ],
+            unused: [
+                {
+                    address: 'receive-unused',
+                    path: "m/44'/0'/0'/0/1",
+                    transfers: 0,
+                    balance: '0',
+                    sent: '0',
+                    received: '0',
+                },
+                {
+                    address: 'receive-unused-2',
+                    path: "m/44'/0'/0'/0/2",
+                    transfers: 0,
+                    balance: '0',
+                    sent: '0',
+                    received: '0',
+                },
+            ],
+        },
     },
 ];
 
@@ -637,6 +843,80 @@ export const transformTransaction: {
             type: 'self',
             amount: '10', // only fee
             targets: [{ addresses: ['change'] }],
+        },
+    },
+    {
+        description: 'BTC: sent with multiple change outputs',
+        descriptor: 'xpub',
+        addresses: {
+            used: [{ address: 'A' }],
+            unused: [],
+            change: [{ address: 'A-change-1' }, { address: 'A-change-2' }],
+        },
+        tx: {
+            vin: [
+                {
+                    addresses: ['A'],
+                    value: '100',
+                },
+            ],
+            vout: [
+                {
+                    addresses: ['A-change-1'],
+                    value: '30',
+                },
+                {
+                    addresses: ['B'],
+                    value: '40',
+                },
+                {
+                    addresses: ['A-change-2'],
+                    value: '20',
+                },
+            ],
+            ...FEES,
+        },
+        parsed: {
+            type: 'sent',
+            amount: '40',
+            targets: [
+                {
+                    addresses: ['B'],
+                },
+            ],
+        },
+    },
+    {
+        description: 'BTC: sent to myself with change and an own non-change output',
+        descriptor: 'xpub',
+        addresses: {
+            used: [{ address: 'utxo' }],
+            unused: [{ address: 'receive' }],
+            change: [{ address: 'change' }],
+        },
+        tx: {
+            vin: [
+                {
+                    addresses: ['utxo'],
+                    value: '100',
+                },
+            ],
+            vout: [
+                {
+                    addresses: ['change'],
+                    value: '50',
+                },
+                {
+                    addresses: ['receive'],
+                    value: '40',
+                },
+            ],
+            ...FEES,
+        },
+        parsed: {
+            type: 'self',
+            amount: '10', // only fee
+            targets: [{ addresses: ['receive'] }],
         },
     },
 

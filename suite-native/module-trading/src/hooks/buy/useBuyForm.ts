@@ -18,12 +18,15 @@ import { useTranslate } from '@suite-native/intl';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { MAX_CRYPTO_DECIMALS, MAX_FIAT_DECIMALS } from '@suite-native/trading-consts';
 import {
+    buyActions,
     selectBuyAmountLimits,
     selectBuyFormDefaultValues,
     selectBuySelectedReceiveAccount,
     selectValidTradingBuyQuotesNative,
 } from '@suite-native/trading-state';
 import { type BuyFormType, type BuyFormValues } from '@suite-native/trading-types';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { buyFormValidationSchema } from '../../utils/buy/buyFormValidationSchema';
 import { useContextForTradingForm } from '../general/form/useContextForTradingForm';
@@ -161,8 +164,19 @@ export const useBuyForm = (): BuyFormType => {
         validation: buyFormValidationSchema,
         context,
     });
-    const { control, setValue } = form;
+    const { control, getValues, setValue } = form;
+    const { dispatch } = useServices(injectDispatch);
     const asset = useWatch({ control, name: 'asset' });
+
+    useEffect(() => {
+        const defaultFiatCurrency = defaultValues.fiatCurrency;
+        if (!defaultFiatCurrency || defaultFiatCurrency === getValues('fiatCurrency')) {
+            return;
+        }
+
+        setValue('fiatCurrency', defaultFiatCurrency);
+        dispatch(buyActions.fiatCurrencyChanged());
+    }, [defaultValues.fiatCurrency, dispatch, getValues, setValue]);
 
     useEffect(() => {
         setContractAddress(asset?.contractAddress);
@@ -183,11 +197,4 @@ export const useBuyForm = (): BuyFormType => {
     useProviderMetadataChangeEffect(control, 'buy');
 
     return form;
-};
-
-export const clearBuyFormQuoteData = (form: BuyFormType) => {
-    form.setValue('quote', undefined);
-    form.setValue('fiatValue', undefined, { shouldValidate: true });
-    form.setValue('cryptoValue', undefined, { shouldValidate: true });
-    form.setValue('generalAlert', undefined);
 };

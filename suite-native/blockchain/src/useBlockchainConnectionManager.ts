@@ -2,8 +2,6 @@ import { useEffect } from 'react';
 import { AppState } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type BlockchainRootState,
@@ -12,6 +10,8 @@ import {
 } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 // No other networks need managing at the moment.
 const symbol: NetworkSymbol = asNetworkSymbol('btc');

@@ -22,6 +22,11 @@ const TRADE_ACCOUNT: Account = mockWalletAccount({
     descriptor: asAccountDescriptor('0xTradeAccount'),
     balance: '2000000000000000000',
 });
+const DEFAULT_BTC_ACCOUNT: Account = mockWalletAccount({
+    symbol: asNetworkSymbol('btc'),
+    descriptor: asAccountDescriptor('xpubDefaultBtc'),
+    balance: '0',
+});
 const INELIGIBLE_TRADE_ACCOUNT: Account = mockWalletAccount({
     symbol: ethSymbol,
     descriptor: asAccountDescriptor('0xIneligibleTradeAccount'),
@@ -58,10 +63,16 @@ const renderForSell = (
 };
 
 describe('useTradingFormAccount – sell account across redirect', () => {
-    it('preselects the first eligible account when tradingAccountKey is lost and none is prefilled', () => {
+    it('preselects the default BTC account when tradingAccountKey is lost and none is prefilled', () => {
+        const result = renderForSell(undefined, [FIRST_ELIGIBLE_ACCOUNT, DEFAULT_BTC_ACCOUNT]);
+
+        expect(result.current.account?.key).toBe(DEFAULT_BTC_ACCOUNT.key);
+    });
+
+    it('resolves no account when tradingAccountKey is lost and no BTC account exists', () => {
         const result = renderForSell(undefined);
 
-        expect(result.current.account?.key).toBe(FIRST_ELIGIBLE_ACCOUNT.key);
+        expect(result.current.account).toBeUndefined();
     });
 
     it('resolves the trade account when tradingAccountKey is rehydrated from the trade', () => {

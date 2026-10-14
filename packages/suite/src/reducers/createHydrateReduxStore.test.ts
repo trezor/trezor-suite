@@ -1,4 +1,4 @@
-import { createMockDeps, mock } from '@suite-common/dependency-injection';
+import { createMockDeps, mock } from '@trezor/dependency-injection';
 import { createDeferred } from '@trezor/utils';
 
 import * as STORAGE from 'src/actions/suite/constants/storageConstants';

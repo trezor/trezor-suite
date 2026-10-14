@@ -8,10 +8,13 @@
         { "path": "../wallet-types" },
         { "path": "../wallet-utils" },
         {
-            "path": "../../networks/solana/network-solana"
+            "path": "../../networks/solana/network-solana-types"
         },
         {
             "path": "../../networks/stellar/network-stellar"
+        },
+        {
+            "path": "../../networks/stellar/network-stellar-types"
         },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }

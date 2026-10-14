@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useWindowDimensions } from 'react-native';
 
-import { type PinFormValues, pinFormSchema } from '@suite-common/validators';
 import { Box, Card, HStack, Loader, Text, VStack } from '@suite-native/atoms';
 import { Form, useForm } from '@suite-native/forms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import { type PinFormValues, pinFormSchema } from '../pinSchema';
 import { DevicePinImage } from './DevicePinImage';
 import { PinFormControlButtons } from './PinFormControlButtons';
 import { PinFormProgress } from './PinFormProgress';

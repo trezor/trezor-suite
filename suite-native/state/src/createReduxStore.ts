@@ -2,15 +2,10 @@ import { type Middleware, configureStore } from '@reduxjs/toolkit';
 
 import { type ExtraDependenciesStatic } from '@suite-common/extra-dependencies';
 import { logsMiddleware } from '@suite-common/logger';
-import {
-    type ReducerState,
-    type ReduxStoreWithThunk,
-    type WithServices,
-    createReduxExtra,
-} from '@suite-common/redux-utils';
 import { prepareSuiteSyncMiddleware } from '@suite-common/suite-sync';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import {
+    prepareBlockchainSubscriptionMiddleware,
     prepareFiatRatesMiddleware,
     preparePushNotificationMiddleware,
 } from '@suite-common/wallet-core';
@@ -24,6 +19,12 @@ import {
     prepareTradingLastErrorSentryMiddleware,
     prepareTradingMiddleware,
 } from '@suite-native/trading-state';
+import {
+    type ReducerState,
+    type ReduxStoreWithThunk,
+    type WithServices,
+    createReduxExtra,
+} from '@trezor/redux-utils';
 import { type DeepPartial } from '@trezor/type-utils';
 
 import { type NativeServices } from './NativeServices';
@@ -65,6 +66,7 @@ const getMiddlewares = (getExtra: () => GetMiddlewaresDeps | null) => {
     const middlewares: Middleware[] = [
         messageSystemMiddleware,
         blockchainMiddleware,
+        prepareBlockchainSubscriptionMiddleware(getExtra),
         prepareFiatRatesMiddleware(getExtra),
         prepareDeviceMiddleware(getExtra),
         prepareDiscoveryMiddleware(getExtra),

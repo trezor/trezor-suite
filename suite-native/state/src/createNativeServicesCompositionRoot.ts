@@ -5,7 +5,6 @@ import * as Device from 'expo-device';
 
 import { createBip329CompositionRoot } from '@suite-common/bip329';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
-import { asGetter, toGetter } from '@suite-common/dependency-injection';
 import { notImplementedGetter } from '@suite-common/extra-dependencies';
 import { createNetworksCompositionRoot } from '@suite-common/networks';
 import { createNativePlatformEncryption } from '@suite-common/platform-encryption-native';
@@ -26,6 +25,7 @@ import type {
 import { createSuiteSyncNativeCompositionRoot } from '@suite-native/suite-sync';
 import { selectTradedAccountKeys, selectTradingEnvironment } from '@suite-native/trading-state';
 import { type ConnectSettings, type GetTrezorConnectPrivilegedDep, initLog } from '@trezor/connect';
+import { asGetter, toGetter } from '@trezor/dependency-injection';
 import { resolveConnectPath } from '@trezor/env-utils';
 import { BridgeTransport } from '@trezor/transport-common';
 import { NativeBluetoothTransport } from '@trezor/transport-native-bluetooth';
@@ -40,7 +40,7 @@ type NativeTransport = 'BridgeTransport' | 'NativeUsbTransport' | 'NativeBluetoo
 
 const transportsPerDeviceType = {
     device: Platform.select<NativeTransport[]>({
-        ios: ['BridgeTransport', 'NativeBluetoothTransport'],
+        ios: ['NativeBluetoothTransport'],
         android: ['NativeUsbTransport', 'NativeBluetoothTransport'],
         default: ['BridgeTransport'],
     }),
@@ -108,7 +108,6 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
                 `Save data: ${data} into file: ${fileName}. Implementation on phone not ready.`,
             ),
         connectInitSettings: {
-            transportReconnect: false,
             debug: false,
             manifest: {
                 email: 'info@trezor.io',

@@ -92,8 +92,8 @@ export interface CoinjoinRoundParameters {
     BlameInputRegistrationTimeout: string;
     MinAmountCredentialValue: number;
     MaxAmountCredentialValue: number;
-    InitialInputVsizeAllocation: number;
-    MaxVsizeCredentialValue: number;
+    // Also the max vsize credential value. Coordinators running WalletWasabi 2.8.0 or newer no
+    // longer send MaxVsizeCredentialValue.
     MaxVsizeAllocationPerAlice: number;
     MaxTransactionSize: number;
     MinRelayTxFee: number;

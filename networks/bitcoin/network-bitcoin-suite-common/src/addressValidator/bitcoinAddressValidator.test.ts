@@ -1,4 +1,4 @@
-import type { BitcoinNetworkSymbol } from '@trezor/network-bitcoin/constants';
+import type { BitcoinNetworkSymbol } from '@trezor/network-bitcoin-types';
 import { type AddressType, addressType } from '@trezor/network-module-suite-common-types';
 
 import { bitcoinValidator } from './bitcoinAddressValidator';

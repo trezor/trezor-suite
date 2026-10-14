@@ -1,13 +1,14 @@
 import { captureException, withScope } from '@sentry/core';
 
-import { createThunk } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { getAccountIdentity } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
+import { createThunk } from '@trezor/redux-utils';
 
 import { type VoteThunkArguments, composeTronVoteFeeLevelsThunk } from './composeVote';
-import { buildVoteContract, buildVoteReviewForm, getTotalVotes } from './voteContract';
+import { buildVoteContract, buildVoteReviewForm } from './voteContract';
+import { notifyEarnTransactionBroadcastThunk } from '../../../../earn/earnTransactionsThunks';
 import {
     type AddFakePendingTronTxThunkState,
     addFakePendingTronTxThunk,
@@ -40,7 +41,7 @@ export const submitTronVoteThunk = createThunk<
             account,
             device,
             flow,
-            representativeAddress,
+            allocations,
             requestVoteConsent,
             requestPushApproval,
             onSigningStart,
@@ -73,14 +74,15 @@ export const submitTronVoteThunk = createThunk<
             return;
         }
 
-        const contract = buildVoteContract(account, representativeAddress);
+        const votedAllocations = allocations.filter(({ count }) => count > 0);
+        const contract = buildVoteContract(account, votedAllocations);
 
         if (!contract) {
             dispatch(
                 tronStakeActions.submitFinished({
                     accountKey,
                     flow,
-                    error: { kind: 'compose-failed', message: 'Invalid representative address.' },
+                    error: { kind: 'compose-failed', message: 'Invalid vote allocation.' },
                 }),
             );
 
@@ -91,7 +93,7 @@ export const submitTronVoteThunk = createThunk<
 
         try {
             const composed = await dispatch(
-                composeTronVoteFeeLevelsThunk({ account, representativeAddress }),
+                composeTronVoteFeeLevelsThunk({ account, allocations: votedAllocations }),
             )
                 .unwrap()
                 .catch(() => undefined);
@@ -112,7 +114,7 @@ export const submitTronVoteThunk = createThunk<
             dispatch(
                 tronStakeActions.storePrecomposedTransaction({
                     precomposedTx,
-                    precomposedForm: buildVoteReviewForm(getTotalVotes(account)),
+                    precomposedForm: buildVoteReviewForm(votedAllocations),
                     accountKey,
                 }),
             );
@@ -214,20 +216,22 @@ export const submitTronVoteThunk = createThunk<
                     amount: '0',
                     fee: precomposedTx.fee ?? '0',
                     type: 'self',
-                    target: { addresses: [representativeAddress], amount: '0' },
+                    target: {
+                        addresses: votedAllocations.map(({ address }) => address),
+                        amount: '0',
+                    },
                     tronSpecific: {
                         contractType: 'VoteWitnessContract',
                         operation: 'vote',
-                        votes: [
-                            {
-                                address: representativeAddress,
-                                count: String(getTotalVotes(account)),
-                            },
-                        ],
+                        votes: votedAllocations.map(({ address, count }) => ({
+                            address,
+                            count: String(count),
+                        })),
                     },
                 }),
             );
 
+            dispatch(notifyEarnTransactionBroadcastThunk({ account, device, txid, flow }));
             dispatch(tronStakeActions.submitFinished({ accountKey, flow, txid }));
         } finally {
             onSettled?.();

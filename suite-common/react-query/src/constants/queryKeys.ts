@@ -24,11 +24,6 @@ export const commonQueryKeys = {
         'by-address',
         params,
     ],
-    yieldOpportunitiesPages: (params: { limit: number; sort: string }) => [
-        'yield-opportunities',
-        'pages',
-        params,
-    ],
     merklRewards: (...args: any[]) => ['merkl-rewards', ...args],
     missingRateTickers: (...args: any[]) => ['missing-rate-tickers', ...args],
     // `lastKnownNonce` (account.misc.nonce) is part of the key, not just an input to the fetcher —
@@ -58,7 +53,9 @@ export const desktopQueryKeys = {
         txid,
     ],
     dateFnsLocale: (language: string) => ['date-fns-locale', language],
+    intlMessages: (locale: string) => ['intl-messages', locale],
     defaultUrls: (symbol: string) => ['default-urls', symbol],
+    rankedTokenDefinitions: () => ['ranked-token-definitions'],
     proxyImage: (src?: string) => ['proxy-image', src],
     inactiveTokens: (symbol: string, accountKey?: string) =>
         accountKey ? ['inactive-tokens', symbol, accountKey] : ['inactive-tokens', symbol],

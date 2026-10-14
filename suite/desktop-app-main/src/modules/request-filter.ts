@@ -17,9 +17,7 @@ export const SERVICE_NAME = 'request-filter';
  *
  * The actual interception is done in `createElectronSessionInterceptor`, injected when loading modules.
  */
-export const init: ModuleInit = ({ interceptor }) => {
-    const { logger } = global;
-
+export const init: ModuleInit = ({ interceptor, logger }) => {
     interceptor.onBeforeRequest(details => {
         const { hostname } = new URL(details.url);
 

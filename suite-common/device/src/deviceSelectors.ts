@@ -1,7 +1,5 @@
 import { A, pipe } from '@mobily/ts-belt';
 
-import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
-import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
 import {
     type BackupType,
     LANGUAGES,
@@ -33,6 +31,7 @@ import {
     hasBitcoinOnlyFirmware,
 } from '@trezor/device-utils';
 import { getSuiteVersion } from '@trezor/env-utils';
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { versionUtils } from '@trezor/utils';
 
 import {
@@ -58,12 +57,6 @@ export const selectIsAnyDeviceSelected = createMemoizedSelector(
 // Use in tests only! See deviceReducer for the property definition.
 export const selectSimulatedEntropyCheckFail = (state: DeviceRootState) =>
     state.device.simulatedEntropyCheckFail;
-
-// Derived selectors
-export const selectIsPendingTransportEvent = createMemoizedSelector(
-    [selectDevices],
-    devices => devices.length < 1,
-);
 
 export const selectIsDeviceUnlocked = createMemoizedSelector(
     [selectSelectedDevice],
@@ -376,13 +369,6 @@ export const selectDeviceModel = createMemoizedSelector([selectSelectedDevice], 
 export const selectDeviceModelWithFlagshipFallback = (
     state: DeviceRootState,
 ): DeviceModelInternal => getDeviceModelWithFlagshipFallback(selectSelectedDevice(state));
-
-export const selectIsDeviceAuthenticityCheckSupported = createMemoizedSelector(
-    [selectIsPortfolioTrackerDevice, selectDeviceModel],
-    (isPortfolioTrackerDevice, deviceModel) =>
-        isPortfolioTrackerDevice ||
-        (!!deviceModel && SUPPORTS_DEVICE_AUTHENTICITY_CHECK[deviceModel]),
-);
 
 export const selectFirmwareReleaseConfig = createMemoizedSelector(
     [selectSelectedDevice],

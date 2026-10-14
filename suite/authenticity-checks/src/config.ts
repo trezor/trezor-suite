@@ -12,11 +12,11 @@ export const SHOULD_ROUTER_APP_SKIP_AUTHENTICITY_CHECKS: Record<RouterApp, boole
     'firmware-type': true,
     'firmware-custom': true,
 
-    start: false,
     dashboard: false,
     earn: false,
     'earn-yield': false,
     'earn-staking': false,
+    'apps-embedding': false,
     version: false,
     'bridge-requested': false,
     bridge: false,
@@ -33,4 +33,14 @@ export const SHOULD_ROUTER_APP_SKIP_AUTHENTICITY_CHECKS: Record<RouterApp, boole
     wallet: false,
     notifications: false,
     unknown: false,
+};
+
+/**
+ * The interactive device checks flow should not be displayed in the settings or firmware installation routes,
+ * same as SHOULD_ROUTER_APP_SKIP_AUTHENTICITY_CHECKS. But this flow is also disabled during onboarding, because
+ * it is actually the starting point for onboarding, so it would conflict with an existing onboarding.
+ */
+export const SHOULD_ROUTER_APP_SKIP_INTERACTIVE_DEVICE_CHECKS: Record<RouterApp, boolean> = {
+    ...SHOULD_ROUTER_APP_SKIP_AUTHENTICITY_CHECKS,
+    onboarding: true,
 };

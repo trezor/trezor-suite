@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation, type TranslationKey } from '@suite/intl';
-import { selectDeviceModel } from '@suite-common/device';
+import { getPassphraseMaxLength, selectDeviceModel } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { selectDiscoveryByDevicePath } from '@suite-common/wallet-core';
 import { Card, Collapsible, Column, H3, H4, Icon, Paragraph, Row, Text } from '@trezor/components';
@@ -190,6 +190,7 @@ export const EnterPassphrase = ({
                         isLoading={submitting}
                         onSubmit={onSubmit}
                         offerPassphraseOnDevice={offerPassphraseOnDevice}
+                        passphraseMaxLength={getPassphraseMaxLength(device)}
                         allowNonAsciiCharacters={isExistingWallet}
                         value={value}
                         setValue={setValue}

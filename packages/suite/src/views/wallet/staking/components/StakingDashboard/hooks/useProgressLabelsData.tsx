@@ -18,17 +18,19 @@ import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 
 import { type ProgressLabelData } from '../components/ProgressLabels/types';
 
+type BuildEthereumLabelsParams = {
+    isStakeConfirming: boolean;
+    isStakePending: boolean;
+    isDaysToAddToPoolShown: boolean;
+    daysToAddToPool?: number;
+};
+
 const buildEthereumLabels = ({
     isStakeConfirming,
     isStakePending,
     isDaysToAddToPoolShown,
     daysToAddToPool,
-}: {
-    isStakeConfirming: boolean;
-    isStakePending: boolean;
-    isDaysToAddToPoolShown: boolean;
-    daysToAddToPool?: number;
-}): ProgressLabelData[] => [
+}: BuildEthereumLabelsParams): ProgressLabelData[] => [
     {
         id: 0,
         'data-testid': '@staking/transaction-status',
@@ -77,13 +79,15 @@ const buildEthereumLabels = ({
     },
 ];
 
+type BuildSolanaLabelsParams = {
+    solStakingAccountStatus: string | null;
+    isStakeConfirming: boolean;
+};
+
 const buildSolanaLabels = ({
     solStakingAccountStatus,
     isStakeConfirming,
-}: {
-    solStakingAccountStatus: string | null;
-    isStakeConfirming: boolean;
-}): ProgressLabelData[] => [
+}: BuildSolanaLabelsParams): ProgressLabelData[] => [
     {
         id: 0,
         'data-testid': '@staking/transaction-status',
@@ -129,15 +133,17 @@ const buildSolanaLabels = ({
     },
 ];
 
+type BuildCardanoLabelsParams = {
+    isStakeConfirming: boolean;
+    isStakePending: boolean;
+    isUnstake: boolean;
+};
+
 const buildCardanoLabels = ({
     isStakeConfirming,
     isStakePending,
     isUnstake,
-}: {
-    isStakeConfirming: boolean;
-    isStakePending: boolean;
-    isUnstake: boolean;
-}): ProgressLabelData[] =>
+}: BuildCardanoLabelsParams): ProgressLabelData[] =>
     [
         {
             id: 0,
@@ -197,17 +203,19 @@ const buildCardanoLabels = ({
         },
     ].filter(Boolean) as ProgressLabelData[];
 
+type ShouldHideProgressBarParams = {
+    networkType: NetworkType;
+    pendingTxStakeType?: StakeType;
+    lastTxStakeType?: StakeType;
+    isStakedWithEverstake: boolean;
+};
+
 const shouldHideProgressBar = ({
     networkType,
     pendingTxStakeType,
     lastTxStakeType,
     isStakedWithEverstake,
-}: {
-    networkType: NetworkType;
-    pendingTxStakeType?: StakeType;
-    lastTxStakeType?: StakeType;
-    isStakedWithEverstake: boolean;
-}) => {
+}: ShouldHideProgressBarParams) => {
     const isClaimPending = pendingTxStakeType === 'claim';
     const isUnstakePending = pendingTxStakeType === 'unstake';
     const isChangeDelegatePending = pendingTxStakeType === 'change-delegate';

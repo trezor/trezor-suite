@@ -3,11 +3,11 @@ import { Banner } from '@trezor/components';
 import { type DeviceModelInternal } from '@trezor/device-utils';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
 
-export const EnterOnDeviceStep = ({
-    deviceModelInternal,
-}: {
+type EnterOnDeviceStepProps = {
     deviceModelInternal: DeviceModelInternal;
-}) => (
+};
+
+export const EnterOnDeviceStep = ({ deviceModelInternal }: EnterOnDeviceStepProps) => (
     <Banner
         intent="info"
         icon={mapTrezorModelToIcon[deviceModelInternal]}

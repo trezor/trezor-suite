@@ -3,7 +3,6 @@
  */
 import { type ReactNode } from 'react';
 
-import { ServicesProvider } from '@suite-common/dependency-injection';
 import {
     type GetNamedAddressSupport,
     type NetworkSymbol,
@@ -11,6 +10,7 @@ import {
 } from '@suite-common/networks';
 import { renderHookWithQueryClient, waitFor } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { ServicesProvider } from '@trezor/dependency-injection';
 
 import { useResolveNamedAddress } from './useResolveNamedAddress';
 
@@ -42,9 +42,11 @@ const getNamedAddressSupport: GetNamedAddressSupport = symbol => {
     return { isSupported: true, isNameLike, resolver: namedAddressResolver };
 };
 
+type WrapperProps = { children: ReactNode };
+
 const renderResolveHook = (value: string, symbol: NetworkSymbol | null) =>
     renderHookWithQueryClient(() => useResolveNamedAddress(value, symbol), {
-        wrapper: ({ children }: { children: ReactNode }) => (
+        wrapper: ({ children }: WrapperProps) => (
             <ServicesProvider services={{ networks: { getNamedAddressSupport } }}>
                 {children}
             </ServicesProvider>

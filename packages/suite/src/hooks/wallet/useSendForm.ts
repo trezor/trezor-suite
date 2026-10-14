@@ -10,9 +10,7 @@ import {
 import { useFieldArray, useForm } from 'react-hook-form';
 
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectNetworkSymbolForProtocol } from '@suite-common/networks';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { useExcludedUtxos } from '@suite-common/transaction-search';
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
@@ -23,7 +21,9 @@ import {
     getDefaultValues,
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import { useServices } from '@trezor/dependency-injection';
 import { useDidUpdate } from '@trezor/react-utils';
+import { injectDispatch } from '@trezor/redux-utils';
 import { throwError } from '@trezor/utils';
 
 import { fillSendForm, resetProtocol } from 'src/actions/suite/protocolActions';

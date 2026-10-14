@@ -3,7 +3,7 @@ import { bytesToHex } from '@noble/hashes/utils.js';
 import { base58xrp } from '@scure/base';
 
 import { type AddressValidator, addressType } from '@trezor/network-module-suite-common-types';
-import type { RippleNetworkSymbol } from '@trezor/network-ripple/constants';
+import type { RippleNetworkSymbol } from '@trezor/network-ripple-types';
 
 const ALLOWED_CHARS = 'rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz';
 

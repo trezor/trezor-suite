@@ -3,6 +3,7 @@ export * from './selectors';
 export * from './components/Banner';
 export * from './components/DefiYieldPromoBanner';
 export * from './components/EthVaultPromoBanner';
+export * from './components/TradingExperiencePromoBanner';
 export * from './components/NoDevicePromoBanner';
 export * from './components/PromoBannerCarousel';
 export * from './components/PromoBanners';

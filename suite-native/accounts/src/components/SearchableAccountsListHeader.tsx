@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 import { View } from 'react-native';
-import Animated, {
+import {
     type EntryExitAnimationFunction,
     FadeOut,
     useSharedValue,
@@ -8,7 +8,7 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 
-import { Box, HStack, IconButton, Text } from '@suite-native/atoms';
+import { AnimatedView, Box, HStack, IconButton, Text } from '@suite-native/atoms';
 import { type AddCoinFlowType, type CloseActionType, GoBackIcon } from '@suite-native/navigation';
 import { SEARCH_INPUT_ANIMATION_DURATION, SearchForm } from '@suite-native/search';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -16,7 +16,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { AddAccountButton } from './AddAccountsButton';
 import { FilterCountBadge } from './FilterCountBadge';
 
-type SearchableAccountsListHeaderProps = {
+export type SearchableAccountsListHeaderProps = {
     title: ReactNode;
     onSearchInputChange: (value: string) => void;
     isSearchActive: boolean;
@@ -27,14 +27,18 @@ type SearchableAccountsListHeaderProps = {
     onAddAccount?: () => void;
     onFilterPress?: () => void;
     activeFilterCount?: number;
+    noPaddingTop?: boolean;
 };
 
 const HEADER_ANIMATION_DURATION = 100;
 
-const searchFormContainerStyle = prepareNativeStyle(({ spacings }) => ({
-    marginBottom: spacings.sp8,
-    paddingTop: spacings.sp16,
-}));
+const searchFormContainerStyle = prepareNativeStyle<{ noPaddingTop: boolean }>(
+    ({ spacings }, { noPaddingTop }) => ({
+        marginHorizontal: spacings.sp16,
+        marginBottom: spacings.sp16,
+        paddingTop: noPaddingTop ? 0 : spacings.sp8,
+    }),
+);
 
 export const SearchableAccountsListHeader = ({
     title,
@@ -47,6 +51,7 @@ export const SearchableAccountsListHeader = ({
     onAddAccount,
     onFilterPress,
     activeFilterCount = 0,
+    noPaddingTop = false,
 }: SearchableAccountsListHeaderProps) => {
     const isFirstRender = useSharedValue(true);
     const { applyStyle } = useNativeStyles();
@@ -79,7 +84,7 @@ export const SearchableAccountsListHeader = ({
     };
 
     return (
-        <Box style={applyStyle(searchFormContainerStyle)}>
+        <Box style={applyStyle(searchFormContainerStyle, { noPaddingTop })}>
             {isSearchActive ? (
                 <SearchForm
                     placeholder="accounts.searchForm.searchAccountsPlaceholder"
@@ -87,7 +92,7 @@ export const SearchableAccountsListHeader = ({
                     onInputChange={onSearchInputChange}
                 />
             ) : (
-                <Animated.View
+                <AnimatedView
                     entering={enteringFadeInAnimation}
                     exiting={FadeOut.duration(HEADER_ANIMATION_DURATION)}
                 >
@@ -140,7 +145,7 @@ export const SearchableAccountsListHeader = ({
                             )}
                         </HStack>
                     </HStack>
-                </Animated.View>
+                </AnimatedView>
             )}
         </Box>
     );

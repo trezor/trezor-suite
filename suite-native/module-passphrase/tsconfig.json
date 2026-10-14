@@ -2,13 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        {
-            "path": "../../suite-common/dependency-injection"
-        },
         { "path": "../../suite-common/device" },
-        {
-            "path": "../../suite-common/redux-utils"
-        },
         {
             "path": "../../suite-common/wallet-core"
         },
@@ -20,6 +14,10 @@
         { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../passphrase" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        { "path": "../../packages/redux-utils" },
         {
             "path": "../../packages/styles-native"
         },

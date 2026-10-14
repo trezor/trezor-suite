@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux';
 
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type TxSimulationAction, type TxSimulationMethod } from '@suite-common/wallet-types';
-import { isSupportedSolanaNetwork } from '@trezor/network-solana/constants';
-import { isSupportedStellarNetwork } from '@trezor/network-stellar/constants';
+import { isSupportedSolanaNetwork } from '@trezor/network-solana-types';
+import { isSupportedStellarNetwork } from '@trezor/network-stellar-types';
 
 import {
     type ConnectPopupStateRootState,

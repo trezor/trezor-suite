@@ -2,9 +2,6 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        {
-            "path": "../../suite-common/dependency-injection"
-        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/discreet-mode"
@@ -13,9 +10,6 @@
             "path": "../../suite-common/formatters"
         },
         { "path": "../../suite-common/graph" },
-        {
-            "path": "../../suite-common/redux-utils"
-        },
         {
             "path": "../../suite-common/suite-types"
         },
@@ -43,6 +37,10 @@
         { "path": "../storage" },
         { "path": "../theme" },
         { "path": "../tokens" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        { "path": "../../packages/redux-utils" },
         {
             "path": "../../packages/styles-native"
         },

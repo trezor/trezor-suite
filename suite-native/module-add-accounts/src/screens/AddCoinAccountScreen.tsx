@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { AccountTypeDecisionBottomSheet, useAddCoinAccount } from '@suite-native/add-coin-account';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { VStack } from '@suite-native/atoms';
@@ -15,6 +14,7 @@ import {
     type StackProps,
 } from '@suite-native/navigation';
 import { useScreenHeaderSearch } from '@suite-native/search';
+import { useServices } from '@trezor/dependency-injection';
 import { isNotNullOrUndefined } from '@trezor/utils';
 
 export const AddCoinAccountScreen = ({

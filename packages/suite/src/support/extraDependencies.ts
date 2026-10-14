@@ -10,7 +10,6 @@ import { type DeviceReducerState } from '@suite-common/device';
 import { type ExtraDependenciesStatic } from '@suite-common/extra-dependencies';
 import { type PersistentDeviceDataState } from '@suite-common/persistent-device-data';
 import { type ReceiveState } from '@suite-common/receive';
-import { type WithServices } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsMiddlewareDeps,
     type TokenDefinitionsState,
@@ -24,13 +23,15 @@ import {
     type FiatRatesState,
     type PhishingState,
     type SendState,
+    type StellarContractTokensState,
     type TransactionsState,
     type WalletSettingsState,
     changeNetworks,
 } from '@suite-common/wallet-core';
-import { createAccountKey } from '@suite-common/wallet-types';
+import { type AccountKey, createAccountKey } from '@suite-common/wallet-types';
 import { buildHistoricRatesFromStorage, sortByCoin } from '@suite-common/wallet-utils';
 import { type StaticSessionId } from '@trezor/connect';
+import { type WithServices } from '@trezor/redux-utils';
 
 import { type StorageLoadAction } from 'src/actions/suite/storageLifecycleActions';
 
@@ -70,10 +71,17 @@ export const extraDependencies: ExtraDependenciesStatic & TokenDefinitionsMiddle
         },
         storageLoadExplorer: (state: ExplorerConfig, { payload }: StorageLoadAction) => {
             payload.explorer.forEach(({ symbol, explorer }) => {
-                state[symbol as keyof typeof state] = {
-                    ...state[symbol as keyof typeof state],
-                    custom: explorer,
-                };
+                // An explorer config can outlive its network; a throw here would cost the store.
+                const config = state[symbol as keyof typeof state];
+
+                if (!config) return;
+
+                // Older configs lack newer explorer paths; unset paths keep the defaults.
+                const storedPaths = Object.fromEntries(
+                    Object.entries(explorer).filter(([, value]) => value !== undefined),
+                );
+
+                config.custom = { ...config.default, ...storedPaths };
             });
         },
         storageLoadTransactions: (state: TransactionsState, { payload }: StorageLoadAction) => {
@@ -124,12 +132,22 @@ export const extraDependencies: ExtraDependenciesStatic & TokenDefinitionsMiddle
                 });
             }
         },
+        storageLoadStellarContractTokens: (
+            state: StellarContractTokensState,
+            { payload }: StorageLoadAction,
+        ) => {
+            payload.stellarContractTokens.forEach(({ key, value }) => {
+                state[key as AccountKey] = value;
+            });
+        },
         storageLoadAccounts: (_, { payload }: StorageLoadAction) =>
             // Storage returns accounts in IndexedDB key order, sort them like the reducer does.
             sortByCoin(
-                payload.accounts.map(acc =>
-                    acc.backendType === 'coinjoin' ? fixLoadedCoinjoinAccount(acc) : acc,
-                ),
+                payload.accounts
+                    .filter(acc => payload.supportedNetworks.includes(acc.symbol))
+                    .map(acc =>
+                        acc.backendType === 'coinjoin' ? fixLoadedCoinjoinAccount(acc) : acc,
+                    ),
                 payload.supportedNetworks,
             ),
         setDeviceMetadataReducer: (
@@ -191,7 +209,15 @@ export const extraDependencies: ExtraDependenciesStatic & TokenDefinitionsMiddle
             });
         },
         storageLoadWalletSettings: (state: WalletSettingsState, { payload }: StorageLoadAction) =>
-            payload.walletSettings ? { ...state, ...payload.walletSettings } : state,
+            payload.walletSettings
+                ? {
+                      ...state,
+                      ...payload.walletSettings,
+                      enabledNetworks: payload.walletSettings.enabledNetworks.filter(symbol =>
+                          payload.supportedNetworks.includes(symbol),
+                      ),
+                  }
+                : state,
         // this is deprecated, bioAuth settings is now stored in electron store
         storageLoadBioAuth: (state: BioAuthState, { payload }: StorageLoadAction) => {
             if (!payload?.bioAuth) return state;
@@ -207,10 +233,13 @@ export const extraDependencies: ExtraDependenciesStatic & TokenDefinitionsMiddle
             return state;
         },
         storageLoadFlags: (state: FlagsState, { payload }: StorageLoadAction) =>
-            payload.suiteSettings?.flags
+            payload.suiteSettings
                 ? {
                       ...state,
                       ...payload.suiteSettings.flags,
+                      // Missing IDs in saved state represent changes introduced since that run.
+                      seenNewContentIndicators:
+                          payload.suiteSettings.flags?.seenNewContentIndicators ?? {},
                       // The onboarding feedback banner is session-only: it is enabled when onboarding
                       // is completed and must not survive an app restart. Reset it on every load so a
                       // returning user only sees it again after completing onboarding once more.

@@ -1,4 +1,4 @@
-import type { EthereumNetworkSymbol } from '@trezor/network-ethereum/constants';
+import type { EthereumNetworkSymbol } from '@trezor/network-ethereum-types';
 
 /** One RPC round trip's share of the resolution budget `resolveNamedAddress` enforces. */
 export const ONCHAIN_CALL_TIMEOUT_MS = 10_000;

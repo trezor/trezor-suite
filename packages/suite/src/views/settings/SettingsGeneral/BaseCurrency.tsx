@@ -3,8 +3,6 @@ import { useMemo } from 'react';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { selectBaseCurrency, setBaseCurrency } from '@suite-common/wallet-core';
 import { buildCurrencyLongOption, buildCurrencyShortOption } from '@suite-common/wallet-utils';
 import {
@@ -12,7 +10,9 @@ import {
     fiatBaseCurrencies,
     valuablesBaseCurrencies,
 } from '@trezor/blockchain-link-types';
-import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
+import { useServices } from '@trezor/dependency-injection';
+import { SectionItem } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 import { typedObjectKeys } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
@@ -49,6 +49,7 @@ export const BaseCurrency = () => {
                 ),
             },
         ],
+
         [translationString],
     );
 
@@ -59,18 +60,17 @@ export const BaseCurrency = () => {
                     data-testid={anchorId}
                     ref={anchorRef}
                     shouldHighlight={shouldHighlight}
-                >
-                    <TextColumn title={<Translation id="TR_BASE_CURRENCY" />} />
-                    <ActionColumn>
-                        <ActionSelect
+                    title={<Translation id="TR_BASE_CURRENCY" />}
+                    actions={
+                        <SectionItem.Select
                             isSearchable
                             onChange={handleChange}
                             value={value}
                             options={options}
                             data-testid="@settings/fiat-select"
                         />
-                    </ActionColumn>
-                </SectionItem>
+                    }
+                />
             )}
         </Anchor>
     );

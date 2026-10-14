@@ -48,7 +48,7 @@ const composedLevels = { normal: { type: 'final', feePerByte: '150' } };
 const getComposeContext = () =>
     jest.mocked(composeSendFormTransactionFeeLevelsThunk).mock.calls[0]?.[0].composeContext;
 
-describe('composeStellarTrustlineFeesThunk', () => {
+describe(composeStellarTrustlineFeesThunk.name, () => {
     beforeEach(() => {
         jest.clearAllMocks();
 

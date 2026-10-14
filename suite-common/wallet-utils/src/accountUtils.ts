@@ -25,7 +25,10 @@ import {
     asBaseCurrencyAmount,
     createAccountKey,
 } from '@suite-common/wallet-types';
-import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import {
+    type BaseCurrencyCode,
+    NON_DELEGATED_CARDANO_STAKING_INFO,
+} from '@trezor/blockchain-link-types';
 import TrezorConnect, {
     type AccountAddress,
     type AccountAddresses,
@@ -45,6 +48,7 @@ import { HELP_CENTER_ADDRESSES_URL, HELP_CENTER_TAPROOT_URL } from '@trezor/urls
 import { BigNumber, arrayDistinct, bufferUtils, typedObjectKeys } from '@trezor/utils';
 
 import { convertAmountSubunitsToUnits, formatNetworkAmount } from './amountUtils';
+import { isDirectRpcBackendType } from './backendUtils';
 import { toFiatCurrency } from './fiatConverterUtils';
 import { getFiatRateKey } from './fiatRatesUtils';
 import { getAccountTotalStakingBalance } from './stakingUtils';
@@ -657,6 +661,70 @@ export const getTotalFiatBalance = ({
 
 export const isTestnet = (symbol: NetworkSymbol) => getNetwork(symbol).testnet;
 
+/**
+ * Whether the backend's token list disagrees with what the account stores. Backend balances are in
+ * subunits and stored ones in units, so the fresh list goes through the same conversion first. A
+ * stored token missing from the fresh list only counts once it has a balance, as a token the user
+ * added by hand or has already spent to zero is not reported back on its own.
+ */
+export const haveTokenBalancesChanged = (
+    freshTokens: AccountInfo['tokens'],
+    accountTokens: Account['tokens'],
+) => {
+    const fresh = new Map(
+        enhanceTokens(freshTokens).map(token => [token.contract.toLowerCase(), token.balance]),
+    );
+    const stored = new Map(
+        (accountTokens ?? []).map(token => [token.contract.toLowerCase(), token.balance]),
+    );
+
+    const freshDiffers = [...fresh].some(([contract, balance]) => stored.get(contract) !== balance);
+    const heldTokenGone = [...stored].some(
+        ([contract, balance]) => !fresh.has(contract) && new BigNumber(balance || '0').gt(0),
+    );
+
+    return freshDiffers || heldTokenGone;
+};
+
+/**
+ * A direct-RPC backend scans a window of blocks rather than the whole chain. This is the block to
+ * send as `from` to reach one step further back, or undefined once nothing older is reachable.
+ */
+export const getOlderHistoryFrom = (account: Account) =>
+    account.networkType === 'ethereum' && isDirectRpcBackendType(account.backendType)
+        ? account.misc.olderHistoryFrom
+        : undefined;
+
+/** Unix seconds of the oldest block the direct-RPC scan has covered so far. */
+export const getHistoryCoveredSince = (account: Account) =>
+    account.networkType === 'ethereum' && isDirectRpcBackendType(account.backendType)
+        ? account.misc.historyCoveredSince
+        : undefined;
+
+/** A direct-RPC backend reports -1 until it has scanned the account's history at least once. */
+export const isDirectRpcHistoryUnscanned = (account: Account) =>
+    account.networkType === 'ethereum' &&
+    isDirectRpcBackendType(account.backendType) &&
+    account.history.total === -1;
+
+export type DirectRpcHistoryState = 'unscanned' | 'recentWindowEmpty';
+
+/**
+ * A direct-RPC backend has no history before its first scan and only a recent window after it, so
+ * an empty list means one of these rather than an account without transactions.
+ */
+export const getDirectRpcHistoryState = (account: Account): DirectRpcHistoryState | undefined => {
+    if (isDirectRpcHistoryUnscanned(account)) {
+        return 'unscanned';
+    }
+
+    if (account.history.total === 0 && getOlderHistoryFrom(account) !== undefined) {
+        return 'recentWindowEmpty';
+    }
+
+    return undefined;
+};
+
 export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
     if (
         // if backend/coin supports addrTxCount, compare it instead of total
@@ -694,19 +762,32 @@ export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
                 freshInfo.misc!.nonce !== account.misc.nonce ||
                 freshInfo.balance !== account.balance || // balance can change because of beacon chain/internal txs
                 JSON.stringify(freshInfo?.misc?.stakingPools) !==
-                    JSON.stringify(account?.misc?.stakingPools)
+                    JSON.stringify(account?.misc?.stakingPools) ||
+                // A plain RPC node has no transaction count to compare, so on direct RPC a token
+                // moving is only visible in the token list itself. An unscanned history counts
+                // as outdated too, or an account holding only the native asset never gets its
+                // transactions fetched.
+                (isDirectRpcBackendType(account.backendType) &&
+                    (freshInfo.history.total === -1 ||
+                        haveTokenBalancesChanged(freshInfo.tokens, account.tokens)))
             );
         case 'cardano': {
-            const freshDrep = freshInfo.misc!.staking?.drep ?? null;
+            const freshStaking = freshInfo.misc?.staking;
+
+            if (!freshStaking) {
+                return false;
+            }
+
+            const freshDrep = freshStaking.drep ?? null;
             const storedDrep = account.misc.staking.drep ?? null;
 
             return (
                 // stake address (de)registration
-                freshInfo.misc!.staking?.isActive !== account.misc.staking.isActive ||
+                freshStaking.isActive !== account.misc.staking.isActive ||
                 // changed rewards amount (rewards are distributed every epoch (5 days))
-                freshInfo.misc!.staking?.rewards !== account.misc.staking.rewards ||
+                freshStaking.rewards !== account.misc.staking.rewards ||
                 // changed stake pool
-                freshInfo.misc!.staking?.poolId !== account.misc.staking.poolId ||
+                freshStaking.poolId !== account.misc.staking.poolId ||
                 // changed DRep vote or its (de)registration; `amount` drifts with other delegators
                 freshDrep?.drep_id !== storedDrep?.drep_id ||
                 freshDrep?.active !== storedDrep?.active ||
@@ -733,8 +814,18 @@ export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
     }
 };
 
+type GetAccountSpecificParams = {
+    accountInfo: Partial<AccountInfo>;
+    networkType: NetworkType;
+    storedAccount?: Account;
+};
+
 // Used in accountActions and failed accounts
-export const getAccountSpecific = (accountInfo: Partial<AccountInfo>, networkType: NetworkType) => {
+export const getAccountSpecific = ({
+    accountInfo,
+    networkType,
+    storedAccount,
+}: GetAccountSpecificParams) => {
     const { misc } = accountInfo;
     if (networkType === 'ripple') {
         return {
@@ -763,16 +854,13 @@ export const getAccountSpecific = (accountInfo: Partial<AccountInfo>, networkTyp
     }
 
     if (networkType === 'cardano') {
+        const storedStaking =
+            storedAccount?.networkType === 'cardano' ? storedAccount.misc.staking : undefined;
+
         return {
             networkType,
             misc: {
-                staking: {
-                    rewards: misc?.staking?.rewards ?? '0',
-                    isActive: misc?.staking?.isActive ?? false,
-                    address: misc?.staking?.address ?? '',
-                    poolId: misc?.staking?.poolId ?? null,
-                    drep: misc?.staking?.drep ?? null,
-                },
+                staking: misc?.staking ?? storedStaking ?? NON_DELEGATED_CARDANO_STAKING_INFO,
             },
             marker: undefined,
             stellarCursor: undefined,
@@ -803,6 +891,9 @@ export const getAccountSpecific = (accountInfo: Partial<AccountInfo>, networkTyp
                 stellarSequence: misc?.stellarSequence ?? '0',
                 baseReserve: misc?.baseReserve ?? '0',
                 reserve: misc?.reserve ?? '0',
+                ...(misc?.stellarUnreadableContracts && {
+                    stellarUnreadableContracts: misc.stellarUnreadableContracts,
+                }),
             },
             marker: undefined,
             stellarCursor: accountInfo.stellarCursor,
@@ -893,6 +984,7 @@ export const accountSearchFn = (
         .toLowerCase()
         .includes(searchString);
     const symbolMatch = account.symbol.startsWith(searchString);
+    const displaySymbolMatch = network?.displaySymbol.toLowerCase().startsWith(searchString);
     const networkNameMatch = network?.name.toLowerCase().includes(searchString);
     const accountTypeMatch = account.accountType.startsWith(searchString);
     const accountTypeNameMatch = !!accountTypeName?.toLowerCase().includes(searchString);
@@ -921,6 +1013,7 @@ export const accountSearchFn = (
     return (
         accountNumberMatch ||
         symbolMatch ||
+        displaySymbolMatch ||
         networkNameMatch ||
         accountTypeMatch ||
         accountTypeNameMatch ||
@@ -931,6 +1024,13 @@ export const accountSearchFn = (
         tokenMatch
     );
 };
+type GetUtxoFromSignedTransactionParams = {
+    account: Account;
+    receivingAccount?: boolean;
+    tx: GeneralPrecomposedTransactionFinal;
+    txid: string;
+    prevTxid?: string;
+};
 
 export const getUtxoFromSignedTransaction = ({
     account,
@@ -938,13 +1038,7 @@ export const getUtxoFromSignedTransaction = ({
     tx,
     txid,
     prevTxid,
-}: {
-    account: Account;
-    receivingAccount?: boolean;
-    tx: GeneralPrecomposedTransactionFinal;
-    txid: string;
-    prevTxid?: string;
-}) => {
+}: GetUtxoFromSignedTransactionParams) => {
     if (tx.type !== 'final') return [];
 
     // find utxo to replace
@@ -1019,6 +1113,20 @@ export const getAccountAddresses = (account: Account) =>
         ? account.addresses.unused.concat(account.addresses.used).concat(account.addresses.change)
         : [];
 
+/**
+ * Returns the first change address without transfers. Falls back to the last one if all are used,
+ * which should not happen.
+ */
+export const getUnusedChangeAddress = (changeAddresses: AccountAddress[] = []) =>
+    changeAddresses.find(address => !address.transfers) ?? changeAddresses.at(-1);
+
+type GetPendingAccountParams = {
+    account: Account;
+    receivingAccount?: boolean;
+    tx: GeneralPrecomposedTransactionFinal;
+    txid: string;
+};
+
 // update account before BLOCKCHAIN.NOTIFICATION or BLOCKCHAIN.BLOCK events
 // solves race condition between pushing transaction and received notification
 export const getPendingAccount = ({
@@ -1026,12 +1134,7 @@ export const getPendingAccount = ({
     receivingAccount,
     tx,
     txid,
-}: {
-    account: Account;
-    receivingAccount?: boolean;
-    tx: GeneralPrecomposedTransactionFinal;
-    txid: string;
-}): Account => {
+}: GetPendingAccountParams): Account => {
     // calculate availableBalance
     let availableBalanceBig = new BigNumber(account.availableBalance);
 
@@ -1175,6 +1278,15 @@ export const parseAccountKey = (accountKey: AccountKey) => {
  * @deprecated use createAccountKey directly
  */
 export const getAccountKey = createAccountKey;
+type PrepareNewAccountPayloadParams = {
+    accountType: AccountType;
+    networkSymbol: NetworkSymbol;
+    index: number;
+    backendType?: TrezorConnectBackendType;
+    selectedAccount?: NetworkAccount;
+    accountTypes?: NetworkAccount[];
+    device: TrezorDevice;
+};
 
 export const prepareNewAccountPayload = async ({
     accountType,
@@ -1184,15 +1296,7 @@ export const prepareNewAccountPayload = async ({
     selectedAccount,
     accountTypes,
     device,
-}: {
-    accountType: AccountType;
-    networkSymbol: NetworkSymbol;
-    index: number;
-    backendType?: TrezorConnectBackendType;
-    selectedAccount?: NetworkAccount;
-    accountTypes?: NetworkAccount[];
-    device: TrezorDevice;
-}) => {
+}: PrepareNewAccountPayloadParams) => {
     const network = getNetwork(networkSymbol);
     const networkAccount =
         selectedAccount ?? accountTypes?.find(v => v.accountType === accountType);

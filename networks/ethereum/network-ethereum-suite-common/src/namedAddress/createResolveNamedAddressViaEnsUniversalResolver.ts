@@ -2,7 +2,7 @@ import { type Hex, decodeFunctionResult, toHex, trim } from 'viem';
 import { namehash, normalize, packetToBytes } from 'viem/ens';
 
 import { Calldata, EVM_ABI } from '@suite-common/calldata';
-import type { EthereumNetworkSymbol } from '@trezor/network-ethereum/constants';
+import type { EthereumNetworkSymbol } from '@trezor/network-ethereum-types';
 
 import type { ResolveNamedAddress } from './ResolveNamedAddress';
 import type { CallEnsUniversalResolverDep } from './createCallEnsUniversalResolver';

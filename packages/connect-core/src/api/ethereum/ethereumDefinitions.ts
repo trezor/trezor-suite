@@ -1,8 +1,8 @@
 import fetch from 'cross-fetch';
 
-import type {
-    DefinitionsChannel,
-    EthereumNetworkInfoDefinitionValues,
+import {
+    type EthereumNetworkInfoDefinitionValues,
+    getEthereumDefinitionsBaseUrl,
 } from '@trezor/connect-common';
 import type { MessagesSchema } from '@trezor/protobuf';
 import { protobufManager } from '@trezor/protobuf';
@@ -12,26 +12,17 @@ import { Assert, Type } from '@trezor/schema-utils';
 
 import { ethereumNetworkInfoBase } from '../../data/coinInfo';
 import * as settingsStore from '../../data/settingsStore';
+import type { DefinitionsVersion } from '../../utils/definitionsUtils';
 
 interface GetEthereumDefinitions {
     chainId?: number;
     slip44?: number;
     contractAddress?: string;
     functionSignature?: string;
+    // Definitions sent to the device must match its format version. The default v1 is enough
+    // to decode the content before the device is known.
+    version?: DefinitionsVersion;
 }
-
-const getDefinitionsBaseUrl = (channel: DefinitionsChannel = 'production') => {
-    switch (channel) {
-        case 'production':
-            return 'https://data.trezor.io/firmware/definitions/eth';
-        case 'development':
-            return 'https://data.trezor.io/dev/firmware/dev-definitions/eth';
-        case 'local':
-            return 'http://localhost:3000';
-        default:
-            throw new Error(`Unknown channel: ${channel}`);
-    }
-};
 
 /**
  * For given chainId and optionally contractAddress download ethereum definitions for transaction signing.
@@ -43,6 +34,7 @@ export const getEthereumDefinitions = async ({
     slip44,
     contractAddress,
     functionSignature,
+    version = 1,
 }: GetEthereumDefinitions) => {
     const definitions: MessagesSchema.EthereumDefinitions = {};
 
@@ -53,7 +45,7 @@ export const getEthereumDefinitions = async ({
     // The channel is a global connect setting; fall back to `production` when settings are not
     // loaded (e.g. when this helper is exercised outside of a running connect core).
     const channel = settingsStore.isLoaded() ? settingsStore.get('definitionsChannel') : undefined;
-    const baseUrl = getDefinitionsBaseUrl(channel);
+    const baseUrl = getEthereumDefinitionsBaseUrl(version, channel);
 
     try {
         const networkDefinitionUrl = `${baseUrl}/${chainId ? 'chain-id' : 'slip44'}/${chainId ?? slip44}/network.dat`;

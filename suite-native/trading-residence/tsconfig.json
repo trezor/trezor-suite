@@ -2,17 +2,8 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        {
-            "path": "../../suite-common/dependency-injection"
-        },
         { "path": "../../suite-common/flags" },
-        {
-            "path": "../../suite-common/redux-utils"
-        },
         { "path": "../../suite-common/trading" },
-        {
-            "path": "../../suite-common/validators"
-        },
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../forms" },
@@ -25,6 +16,10 @@
         {
             "path": "../../packages/analytics-uploader"
         },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        { "path": "../../packages/redux-utils" },
         {
             "path": "../../suite-common/message-system"
         },

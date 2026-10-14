@@ -1,15 +1,14 @@
 import { type SubTabItem, SubTabs } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
-import { type FilterItem } from '@suite-native/trading-atoms';
 
-import { type FilterValue } from '../../../hooks/general/useProviderFilters';
+import { type FilterItem, type FilterValue } from '../../../hooks/general/useProviderFilters';
 import { SimpleSheetHeader } from '../SimpleSheetHeader';
 import { TradingTypeAwareContextMessage } from '../TradingTypeAwareContextMessage';
 
 export type ProviderSheetHandleProps = {
     onClose: () => void;
     shouldShowFilters: boolean;
-    filterItems: FilterItem<FilterValue>[];
+    filterItems: FilterItem[];
     selectedFilter: FilterValue;
     setSelectedFilter: (value: FilterValue) => void;
 };

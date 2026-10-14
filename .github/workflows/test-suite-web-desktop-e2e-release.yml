@@ -40,8 +40,8 @@ on:
         type: string
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
-  cancel-in-progress: true
+  group: suite-web-deploy-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: ${{ github.ref_name != 'develop' }}
 
 env:
   DEV_SERVER_URL: "https://dev.suite.sldev.cz"
@@ -159,6 +159,7 @@ jobs:
           buildArtifacts: "true"
           nodeEnv: "development"
           connectPopupUrl: "https://dev.suite.sldev.cz/suite-web/${{ needs.extract-branch.outputs.branch }}/web/connect-popup"
+          suiteWebUrl: "https://dev.suite.sldev.cz/suite-web/${{ needs.extract-branch.outputs.branch }}/web"
 
   run-e2e-suite-web-tests:
     if: github.repository == 'trezor/trezor-suite'

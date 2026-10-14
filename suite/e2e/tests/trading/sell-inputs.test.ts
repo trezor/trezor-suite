@@ -1,16 +1,24 @@
+import type { SellFiatTradeQuoteRequest } from 'invity-api';
+
 import { messages } from '@suite/intl';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { TestStream } from '@trezor/e2e-utils';
-import { localizeNumber } from '@trezor/utils';
+import { BigNumber, localizeNumber } from '@trezor/utils';
 
+import { tradeEndpoint } from '../../fixtures/trading';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
 const btcSymbol = asNetworkSymbol('btc');
 const solSymbol = asNetworkSymbol('sol');
 
-const solanaBalanceAddress = '41baq3croaLZEj8dPWZnXn8e6xdAtvtWu2h941vm3Ngw';
+const solanaBalanceAddress = '73SMAcuFzcuZAfDWU1RMVnNLks1UKLru8gRsg2NJYcgm';
 const customFeeRate = 1;
+const cryptoAmount = '0.001';
+const fiatAmount = '100';
+const baseCurrencyAmount = '10';
+const receivedQuotesEvent = 'trade/received-quotes';
 let bitcoinBalance: string;
 let solanaBalance: string;
 
@@ -39,15 +47,15 @@ test.describe('Trading - Sell inputs', { tag: ['@T3W1', '@T3T1', '@optional'] },
     test(
         'Sell form % inputs and limits',
         { annotation: createTestAnnotation({ stream: TestStream.Trade }) },
-        async ({ page, walletPage, tradingPage }) => {
+        async ({ page, walletPage, tradingPage, analyticsHelper }) => {
             await test.step('Find out btc and sol balances', async () => {
-                await walletPage.openAccount({ symbol: btcSymbol });
+                await walletPage.openAccount({ symbol: btcSymbol, atIndex: 1 });
                 await expect(walletPage.topPanelBalance).toHaveText(/\d/);
                 bitcoinBalance = await walletPage.topPanelBalance.innerText();
-                await walletPage.openAccount({ symbol: solSymbol });
+                await walletPage.openAccount({ symbol: solSymbol, atIndex: 3 });
                 await expect(walletPage.topPanelBalance).toHaveText(/\d/);
                 solanaBalance = await walletPage.topPanelBalance.innerText();
-                await walletPage.openTrading();
+                await walletPage.openTrading({ symbol: btcSymbol, atIndex: 1 });
                 await tradingPage.sellTabButton.click();
                 const worldwideOption = messages['TR_TRADING_COUNTRY_WORLD'].defaultMessage;
                 await expect(tradingPage.inputs.countryValue).not.toHaveText(worldwideOption);
@@ -75,8 +83,67 @@ test.describe('Trading - Sell inputs', { tag: ['@T3W1', '@T3T1', '@optional'] },
                 await expect.soft(tradingPage.inputs.youPayError).toBeHidden();
             });
 
+            await test.step('Fiat error shows on the You get card, not You pay', async () => {
+                await tradingPage.inputs.fiatAmount.fill('10.123');
+                await expect(tradingPage.inputs.youGetError).toHaveTranslation(
+                    'AMOUNT_IS_NOT_IN_RANGE_DECIMALS',
+                    { values: { decimals: '2' } },
+                );
+                await expect(tradingPage.inputs.youPayError).toBeHidden();
+
+                await tradingPage.inputs.fiatAmount.clear();
+                await expect(tradingPage.inputs.youGetError).toBeHidden();
+                await expect(tradingPage.inputs.youPayError).toBeHidden();
+            });
+
+            await test.step('Crypto entry reports input=crypto', async () => {
+                const event = analyticsHelper.waitForEvent({
+                    c_type: receivedQuotesEvent,
+                    input: 'crypto',
+                });
+                await tradingPage.inputs.cryptoAmount.fill(cryptoAmount);
+                await event;
+            });
+
+            await test.step('Fiat entry requests quotes in fiat and refills crypto', async () => {
+                await tradingPage.inputs.selectFiatCurrency('eur');
+                const quotesRequest = page.waitForRequest(tradeEndpoint.sellQuotes);
+                const event = analyticsHelper.waitForEvent({
+                    c_type: receivedQuotesEvent,
+                    input: 'fiat',
+                });
+                await tradingPage.inputs.fiatAmount.fill(fiatAmount);
+
+                const request: SellFiatTradeQuoteRequest = (await quotesRequest).postDataJSON();
+                expect(request.amountInCrypto).toBe(false);
+                expect(request.fiatStringAmount).toBe(fiatAmount);
+                await expect(tradingPage.inputs.cryptoAmount).toHaveValue(/[1-9]/);
+                await page.expectReduxObjectNotToBeEmpty('wallet.trading.composedTransactionInfo');
+                await event;
+            });
+
+            await test.step('Base currency amount converts to the crypto the sell requests', async () => {
+                const quotesRequest = page.waitForRequest(tradeEndpoint.sellQuotes);
+                const event = analyticsHelper.waitForEvent({
+                    c_type: receivedQuotesEvent,
+                    input: 'base-currency',
+                });
+                await tradingPage.inputs.baseCurrencyAmount.fill(baseCurrencyAmount);
+
+                const request: SellFiatTradeQuoteRequest = (await quotesRequest).postDataJSON();
+                const requestedCryptoAmount = await tradingPage.inputs.cryptoAmount.inputValue();
+                expect(request.amountInCrypto).toBe(true);
+                expect(request.cryptoStringAmount).toBe(requestedCryptoAmount.replace(/,/g, ''));
+                await expect(tradingPage.inputs.baseCurrencyAmount).toHaveValue(baseCurrencyAmount);
+                await event;
+            });
+
             await test.step('Try all % inputs for Bitcoin', async () => {
                 await tradingPage.inputs.selectFiatCurrency('eur');
+                const fractionEvent = analyticsHelper.waitForEvent({
+                    c_type: receivedQuotesEvent,
+                    input: 'fraction',
+                });
                 for (const percentage of [25, 50]) {
                     await test.step(`${percentage}% of BTC balance`, async () => {
                         await tradingPage.inputs.fractionButtons
@@ -89,6 +156,7 @@ test.describe('Trading - Sell inputs', { tag: ['@T3W1', '@T3T1', '@optional'] },
                         });
                     });
                 }
+                await fractionEvent;
                 await tradingPage.quotes.waitForSync();
                 await tradingPage.fees.switchToCustom();
                 await tradingPage.fees.customInput.fill(customFeeRate.toString());
@@ -100,9 +168,7 @@ test.describe('Trading - Sell inputs', { tag: ['@T3W1', '@T3T1', '@optional'] },
                     await expect
                         .soft(async () => {
                             const resultingFee = await tradingPage.fees.maxFee.innerText();
-                            const maxValue = (
-                                parseFloat(bitcoinBalance) - parseFloat(resultingFee)
-                            ).toString();
+                            const maxValue = new BigNumber(bitcoinBalance).minus(resultingFee);
                             await expect(tradingPage.inputs.cryptoAmount).toHaveValue(
                                 localizeNumber(maxValue, 'en-US', 0, 8),
                             );
@@ -112,7 +178,7 @@ test.describe('Trading - Sell inputs', { tag: ['@T3W1', '@T3T1', '@optional'] },
             });
 
             await test.step('Try all % inputs on Solana', async () => {
-                await walletPage.openAccount({ symbol: solSymbol, atIndex: 0 });
+                await walletPage.openAccount({ symbol: solSymbol, atIndex: 3 });
                 await tradingPage.sellTabButton.click();
                 await expect(tradingPage.inputs.youPayAssetSymbol).toHaveText('SOL');
                 await tradingPage.inputs.selectFiatCurrency('eur');
@@ -128,15 +194,27 @@ test.describe('Trading - Sell inputs', { tag: ['@T3W1', '@T3T1', '@optional'] },
                     });
                 }
 
-                //TODO: Bug in production
-                // await test.step('Max of Solana balance', async () => {
-                //     await page.getByRole('button', { name: 'Max' }).click();
-                //     const resultingFee = await tradingPage.fees.getSolanaFee();
-                //     const maxValue = (parseFloat(solanaBalance!) - resultingFee).toString();
-                //     await expect
-                //         .soft(tradingPage.inputs.cryptoAmount)
-                //         .toHaveValue(localizeNumber(maxValue, 'en-US', 0, 9));
-                // });
+                await test.step('Max of Solana balance', async () => {
+                    await page.getByRole('button', { name: 'Max' }).click();
+                    const networkReserve = await tradingPage.fees.getNetworkReserveAmount();
+                    await expect
+                        .soft(async () => {
+                            const composedFee = await page.getReduxObject(
+                                'wallet.trading.composedTransactionInfo.composed.fee',
+                            );
+                            const resultingFee = subunitsToUnits({
+                                value: asAmountSubunit(new BigNumber(composedFee)),
+                                symbol: solSymbol,
+                            });
+                            const maxValue = new BigNumber(solanaBalance)
+                                .minus(resultingFee)
+                                .minus(networkReserve);
+                            await expect(tradingPage.inputs.cryptoAmount).toHaveValue(
+                                localizeNumber(maxValue, 'en-US', 0, 9),
+                            );
+                        })
+                        .toPass({ timeout: 15_000 });
+                });
             });
         },
     );

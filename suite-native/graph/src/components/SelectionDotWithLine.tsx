@@ -34,7 +34,6 @@ export const SelectionDotWithLine = ({ isActive, color, circleX, circleY }: Sele
                 springAnimationConfig,
             );
         },
-        [isActive],
     );
 
     return (

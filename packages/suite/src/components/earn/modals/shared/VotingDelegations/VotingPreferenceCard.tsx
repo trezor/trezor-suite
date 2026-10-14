@@ -2,8 +2,6 @@ import React, { type ReactNode } from 'react';
 
 import { TrezorLink } from '@suite/external-links';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type VotingDelegationOption,
     selectVotingDelegationOption,
@@ -24,7 +22,9 @@ import {
     Text,
     Tooltip,
 } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { QuestionIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 import { HELP_CENTER_ADA_STAKING } from '@trezor/urls';
 
@@ -131,7 +131,12 @@ export const VotingPreferenceCard = ({
             <Column gap={16}>
                 <Column gap={4}>
                     <Row gap={8}>
-                        <Text typographyStyle="body-md-strong">{heading}</Text>
+                        <Text
+                            typographyStyle="body-md-strong"
+                            data-testid="@staking/voting-preference/heading"
+                        >
+                            {heading}
+                        </Text>
                         <Tooltip content={<Translation id="TR_STAKING_DELEGATION_INFO_TEXT" />}>
                             <Icon
                                 as={QuestionIcon}
@@ -160,7 +165,10 @@ export const VotingPreferenceCard = ({
                                 >
                                     <Column gap={2}>
                                         <Row gap={8}>
-                                            <Text typographyStyle="body-md-strong">
+                                            <Text
+                                                typographyStyle="body-md-strong"
+                                                data-testid="@staking/voting-preference/option-label"
+                                            >
                                                 <Translation id={option.label} />
                                             </Text>
                                             {option.badge && (

@@ -1,7 +1,7 @@
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
-import { createThunk } from '@suite-common/redux-utils';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import TrezorConnect, { type PROTO, type Response } from '@trezor/connect';
+import { createThunk } from '@trezor/redux-utils';
 
 const CHECK_BACKUP_MODULE_PREFIX = 'checkBackup';
 

@@ -27,6 +27,8 @@ import type {
 import { EARN_API_BASE_URL } from '../../constants';
 
 export const earnHttpClient = createHttpClient({
+    fetch: (input, init) => globalThis.fetch(input, init),
+})({
     baseUrl: EARN_API_BASE_URL,
 });
 

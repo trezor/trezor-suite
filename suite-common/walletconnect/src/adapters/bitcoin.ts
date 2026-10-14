@@ -3,14 +3,14 @@ import type { ProposalTypes } from '@walletconnect/types';
 
 import * as trezorConnectPopupActions from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
-import { createThunk } from '@suite-common/redux-utils';
 import { getNetwork, networksCollection } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccounts } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { getAccountIdentity } from '@suite-common/wallet-utils';
+import { getAccountIdentity, getUnusedChangeAddress } from '@suite-common/wallet-utils';
 import TrezorConnect, { type CallMethodResponse, type ComposeOutput } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import type { Bip43Path } from '@trezor/crypto-utils';
+import { createThunk } from '@trezor/redux-utils';
 
 import { WALLETCONNECT_MODULE } from '../walletConnectConstants';
 import { type WalletConnectStateRootState, selectSessionByTopic } from '../walletConnectReducer';
@@ -154,14 +154,15 @@ const bitcoinRequestThunk = createThunk<
                 console.error('blockchainEstimateFee error', feeLevels);
                 throw new Error('blockchainEstimateFee error');
             }
+
             const precomposedTransaction = await TrezorConnect.composeTransaction({
                 outputs,
                 coin: asCoinSymbol(account.symbol),
-                account: {
-                    path: account.path,
-                    addresses: account.addresses!,
-                    utxo: account.utxo!,
-                },
+                path: account.path,
+                utxo: account.utxo!,
+                // The account change address stays unused when the dApp passes its own
+                // changeAddress, which is added as a send-max output that takes the rest.
+                changeAddress: getUnusedChangeAddress(account.addresses?.change),
                 feeLevels: feeLevels.payload.levels,
                 device,
             });

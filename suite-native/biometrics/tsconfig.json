@@ -2,17 +2,15 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        {
-            "path": "../../suite-common/dependency-injection"
-        },
-        {
-            "path": "../../suite-common/redux-utils"
-        },
         { "path": "../alerts" },
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../icons" },
         { "path": "../intl" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        { "path": "../../packages/redux-utils" },
         { "path": "../../packages/styles-native" }
     ]
 }

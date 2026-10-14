@@ -63,13 +63,17 @@ const Col = styled.div`
     flex-direction: column;
 `;
 
-const Title = ({ children }: { children: React.ReactNode }) => (
+type TitleProps = { children: React.ReactNode };
+
+const Title = ({ children }: TitleProps) => (
     <Text typographyStyle="body-md" margin={{ right: 20 }}>
         {children}
     </Text>
 );
 
-const Value = ({ children }: { children: React.ReactNode }) => (
+type ValueProps = { children: React.ReactNode };
+
+const Value = ({ children }: ValueProps) => (
     <Text typographyStyle="body-md-strong">{children}</Text>
 );
 

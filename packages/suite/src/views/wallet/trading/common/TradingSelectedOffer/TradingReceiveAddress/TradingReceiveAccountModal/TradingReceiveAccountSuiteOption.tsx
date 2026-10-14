@@ -53,7 +53,7 @@ export const TradingReceiveAccountSuiteOption = ({
 
     return (
         <TradingReceiveOptionRow
-            data-testid="@trading/receive-account-modal/option/suite"
+            data-testid={`@trading/receive-account-modal/option/suite/${account.accountType}/${account.symbol}/${account.index}`}
             isDisabled={isDiscoveryRunning}
             onClick={onOptionClick}
         >

@@ -5,8 +5,6 @@ import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type AssetFiatBalance } from '@suite-common/assets';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type NetworkSymbol,
     getNetwork,
@@ -41,7 +39,9 @@ import {
     Row,
     TOOLTIP_DELAY_LONG,
 } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { GridNineFilledIcon, PlusIcon, RowsFilledIcon, WarningIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 import { typography } from '@trezor/theme';
 import { type PartialRecord } from '@trezor/type-utils';
 import { BigNumber, typedObjectKeys } from '@trezor/utils';

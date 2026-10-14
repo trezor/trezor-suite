@@ -177,6 +177,11 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         if (this.params.push) {
             permissions.push(this.coinPerm('push_tx', this.params.coinInfo));
         }
+        // Preauthorized signing runs under the coinjoin authorization of the device session, so it
+        // shares the internal tier of authorizeCoinjoin, which creates that authorization.
+        if (this.preauthorized) {
+            permissions.push(this.coinPerm('internal', this.params.coinInfo));
+        }
 
         return permissions;
     }

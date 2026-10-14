@@ -3,9 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useAtomValue, useSetAtom } from 'jotai';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { type FiatGraphPointWithCryptoBalance } from '@suite-common/graph';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
@@ -22,6 +20,8 @@ import {
     useGraphData,
     useGraphGestureHandlers,
 } from '@suite-native/graph';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { AccountDetailGraphTimeSwitch } from './AccountDetailGraphTimeSwitch';
 import { selectAccountItemForGraph } from '../selectors';
@@ -53,6 +53,7 @@ export const AccountDetailGraph = ({ accountKey, tokenContract }: AccountDetailG
         eventsAccount: accountItem,
         timeframeHours: accountGraphTimeframe,
         backendSymbol: accountItem?.symbol ?? asNetworkSymbol('btc'),
+        isEnabled: isHistoryEnabledAccount,
     });
 
     const graphPoints = useAtomValue(accountDetailGraphAtoms.graphPointsAtom);

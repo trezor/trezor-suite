@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_EXCHANGE_FORM,
     TRADING_FORM_OUTPUT_AMOUNT,
@@ -13,19 +11,20 @@ import {
     type TradingExchangeFormProps,
     hasEip712SignDataType,
     selectTradingComposedTransactionInfo,
-    selectTradingExchangeActiveTrade,
     selectTradingExchangeAmountLimits,
+    selectTradingExchangeFormValues,
     selectTradingExchangeInfo,
-    selectTradingExchangeIsFromRedirect,
     selectTradingExchangeIsLoading,
     selectTradingExchangeSelectedQuote,
-    selectTradingExchangeTransactionId,
     selectTradingSendAccount,
     selectTradingVerifiedAddress,
     tradingExchangeActions,
+    tradingThunks,
 } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { useSolanaSubscribeBlocks } from 'src/hooks/wallet/form/useSolanaSubscribeBlocks';
@@ -40,9 +39,9 @@ import { type TradingExchangeFormContextProps } from 'src/types/trading/tradingF
 
 import { useExchangeApproval } from './useExchangeApproval';
 import { useExchangeDexQuote } from './useExchangeDexQuote';
-import { useExchangeFlow } from './useExchangeFlow';
 import { useExchangeFormInputs } from './useExchangeFormInputs';
 import { useExchangeQuotes } from './useExchangeQuotes';
+import { useTradingClearStaleQuotes } from '../common/useTradingClearStaleQuotes';
 import { useTradingFormReset } from '../common/useTradingFormReset';
 import { useTradingFormAccount } from '../useTradingFormAccount';
 import { useTradingReceiveAddress } from '../useTradingReceiveAddress';
@@ -50,8 +49,7 @@ import { useTradingReceiveAddress } from '../useTradingReceiveAddress';
 export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     const type = 'exchange';
     const { dispatch } = useServices(injectDispatch);
-    const isFromRedirect = useSelector(selectTradingExchangeIsFromRedirect);
-    const transactionId = useSelector(selectTradingExchangeTransactionId);
+    const savedFormValues = useSelector(selectTradingExchangeFormValues);
     const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
     const amountLimits = useSelector(selectTradingExchangeAmountLimits);
     const isLoading = useSelector(selectTradingExchangeIsLoading);
@@ -60,7 +58,6 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
     const { tradingAccountKey: accountKey, cryptoId } = useTradingFormAccount(type);
 
-    const trade = useSelector(selectTradingExchangeActiveTrade);
     const account = useSelector(state => selectTradingSendAccount(state, type));
 
     const [showReserveBanner, setShowReserveBanner] = useState<boolean>(false);
@@ -75,10 +72,11 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     const network = symbol ? getNetwork(symbol) : undefined;
 
     const { defaultValues } = useTradingExchangeFormDefaultValues(accountKey, cryptoId);
+    const initialValues = savedFormValues ?? defaultValues;
 
     const methods = useForm<TradingExchangeFormProps>({
         mode: 'onChange',
-        defaultValues,
+        defaultValues: initialValues,
     });
 
     const { reset, register, formState, control } = methods;
@@ -150,7 +148,7 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
         cryptoInputName: TRADING_FORM_OUTPUT_AMOUNT,
     });
 
-    const { dexQuotes, isScheduledQuotesRefresh, refreshQuotes } = useExchangeQuotes({
+    const { isScheduledQuotesRefresh, refreshQuotes } = useExchangeQuotes({
         methods,
         network,
         shouldSendInSats,
@@ -187,8 +185,6 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
         isLoadingQuote,
         exchangeType,
         sendCryptoSelect,
-        selectedQuote,
-        dexQuotes,
         composeRequest,
     });
 
@@ -201,12 +197,16 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
 
     const { confirmTrade } = useTradingExchangeTradeActions();
 
-    useExchangeFlow({ isFromRedirect, trade, transactionId, isAmountEmpty });
+    useEffect(() => {
+        dispatch(tradingThunks.loadInitialDataThunk({ activeSection: type }));
+    }, [dispatch]);
+
+    useTradingClearStaleQuotes({ type, isAmountEmpty });
 
     useTradingFormReset({
         isInfoReady: !!exchangeInfo?.providerInfos,
         reset,
-        defaultValues,
+        defaultValues: initialValues,
     });
 
     // Subscribe to blocks for Solana, since they are not fetched globally

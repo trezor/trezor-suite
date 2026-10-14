@@ -38,7 +38,6 @@ describe('buySlice', () => {
 
             expect(state).toEqual({
                 quotes: [],
-                isFromRedirect: false,
                 isLoading: false,
             });
         });

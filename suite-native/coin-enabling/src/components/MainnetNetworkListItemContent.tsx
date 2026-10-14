@@ -29,7 +29,7 @@ export const MainnetNetworkListItemContent = ({
         <HStack spacing="sp8">
             <Box>
                 <VStack justifyContent="flex-start" flex={1}>
-                    <NetworkIcon symbol={symbol} size="extraLarge" />
+                    <NetworkIcon symbol={symbol} size={24} />
                     <Box paddingLeft="sp12">
                         <RepresentativeAssetsConnectorSvg />
                     </Box>

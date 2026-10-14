@@ -1,11 +1,11 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { getTronWithdrawableBalance } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Banner, Tooltip } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
@@ -53,9 +53,14 @@ export const TronWithdrawReadyBanner = ({ account }: TronWithdrawReadyBannerProp
         <Banner
             icon
             intent="info"
+            data-testid="@staking/tron-withdraw-banner/container"
             rightContent={
                 <Tooltip content={withdrawingMessageContent}>
-                    <Banner.Button onClick={goToWithdraw} isDisabled={isWithdrawingDisabled}>
+                    <Banner.Button
+                        onClick={goToWithdraw}
+                        isDisabled={isWithdrawingDisabled}
+                        data-testid="@staking/tron-withdraw-banner/withdraw-button"
+                    >
                         <Translation id="TR_EARN_TRON_WITHDRAW_TITLE" />
                     </Banner.Button>
                 </Tooltip>

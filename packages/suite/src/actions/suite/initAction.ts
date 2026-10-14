@@ -27,7 +27,6 @@ import {
     prepareCachedEnvData,
     selectActiveKillswitchMessage,
 } from '@suite-common/message-system';
-import { type WithServices } from '@suite-common/redux-utils';
 import {
     type InitTokenDefinitionsThunkDeps,
     type InitTokenDefinitionsThunkState,
@@ -54,6 +53,7 @@ import {
 } from '@suite-common/walletconnect';
 import * as walletConnectActions from '@suite-common/walletconnect';
 import { isDesktop } from '@trezor/env-utils';
+import { type WithServices } from '@trezor/redux-utils';
 
 import * as bioAuthThunks from 'src/actions/suite/bioAuthThunks';
 import { type SuiteRootState } from 'src/reducers/suite/suiteReducer';
@@ -138,7 +138,7 @@ export const initThunk =
         }
 
         // 5. redirecting user into welcome screen (if needed)
-        dispatch(initialRedirectionThunk({ isInitialRun: selectFlags(getState()).initialRun }));
+        dispatch(initialRedirectionThunk());
 
         // Do not initialize Connect or anything else related to it, if there is an app-wide killswitch via message-system.
         const activeKillswitchMessage = selectActiveKillswitchMessage(getState());

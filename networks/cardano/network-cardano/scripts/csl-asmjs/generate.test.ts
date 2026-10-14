@@ -3,7 +3,7 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 
-import { findCoinSelectionExports } from './coinSelectionExports';
+import { findCoinSelectionClassNames, findReachableExports } from './coinSelectionExports';
 import { readInputs } from './inputs';
 
 const committedDir = path.resolve(__dirname, '../../generated/csl-asmjs');
@@ -44,13 +44,13 @@ describe('generated Cardano Serialization Lib asm.js build', () => {
                 ].join('\n'),
             );
 
-            expect(findCoinSelectionExports(libDir)).toEqual(['vkey_from_bytes', 'vkey_new']);
+            expect(findCoinSelectionClassNames(libDir)).toEqual(['Vkey']);
         } finally {
             fs.rmSync(libDir, { recursive: true, force: true });
         }
     });
 
-    it('exports every function coin selection references', () => {
+    it('exports every function coin selection can reach through the glue', () => {
         const asmJs = fs.readFileSync(
             path.join(committedDir, 'cardano_serialization_lib.asm.js'),
             'utf8',
@@ -58,13 +58,100 @@ describe('generated Cardano Serialization Lib asm.js build', () => {
         const exported = new Set(
             [...asmJs.matchAll(/^export var (\w+) =/gm)].map(([, name]) => name),
         );
-        const coinSelectionLibDir = path.join(
-            path.dirname(require.resolve('@fivebinaries/coin-selection/package.json')),
-            'lib/cjs',
-        );
+        const { reachableExports } = readInputs(__dirname, require);
 
-        expect(
-            findCoinSelectionExports(coinSelectionLibDir).filter(name => !exported.has(name)),
-        ).toEqual([]);
+        expect(reachableExports.filter(name => !exported.has(name))).toEqual([]);
+    });
+
+    describe('findReachableExports', () => {
+        const glueSource = [
+            'export function __wbg_log_1(arg0) {',
+            '    wasm.__wbindgen_free(arg0);',
+            '}',
+            'export class Builder {',
+            '    static new() {',
+            '        const ret = wasm.builder_new();',
+            '        return Builder.__wrap(ret);',
+            '    }',
+            '    build() {',
+            '        const ret = wasm.builder_build(this.__wbg_ptr);',
+            '        return Body.__wrap(ret);',
+            '    }',
+            '    unused() {',
+            '        wasm.builder_unused(this.__wbg_ptr);',
+            '    }',
+            '}',
+            'export class Body {',
+            '    to_hex() {',
+            '        wasm.body_to_hex(this.__wbg_ptr);',
+            '    }',
+            '}',
+            'export class Unreachable {',
+            '    to_hex() {',
+            '        wasm.unreachable_to_hex(this.__wbg_ptr);',
+            '    }',
+            '}',
+            'export function min_fee(tx) {',
+            '    return wasm.min_fee(tx.__wbg_ptr);',
+            '}',
+        ].join('\n');
+
+        const withCoinSelection = (source: string, run: (libDir: string) => void) => {
+            const libDir = fs.mkdtempSync(path.join(os.tmpdir(), 'coin-selection-'));
+            try {
+                fs.writeFileSync(path.join(libDir, 'compose.js'), source);
+                run(libDir);
+            } finally {
+                fs.rmSync(libDir, { recursive: true, force: true });
+            }
+        };
+
+        it('follows returned classes and keeps only the members coin selection calls', () => {
+            withCoinSelection(
+                [
+                    'const CardanoWasm = __importStar(require("@emurgo/cardano-serialization-lib-nodejs"));',
+                    'const body = CardanoWasm.Builder.new().build();',
+                    'body.to_hex(); CardanoWasm.min_fee(body);',
+                ].join('\n'),
+                libDir => {
+                    expect(findReachableExports(libDir, glueSource)).toEqual([
+                        '__wbindgen_free',
+                        'body_to_hex',
+                        'builder_build',
+                        'builder_new',
+                        'min_fee',
+                    ]);
+                },
+            );
+        });
+
+        it('rejects a computed member call it cannot resolve', () => {
+            withCoinSelection('const body = builder["build"]();', libDir => {
+                expect(() => findReachableExports(libDir, glueSource)).toThrow(
+                    'computed member call',
+                );
+            });
+        });
+
+        it('rejects an import form it cannot resolve', () => {
+            withCoinSelection(
+                'import * as CardanoWasm from "@emurgo/cardano-serialization-lib-nodejs";',
+                libDir => {
+                    expect(() => findReachableExports(libDir, glueSource)).toThrow(
+                        'unrecognised Cardano Serialization Lib import',
+                    );
+                },
+            );
+        });
+
+        it('rejects a glue class line it cannot attribute to a method', () => {
+            withCoinSelection('', libDir => {
+                const getterGlue = glueSource.replace('    to_hex() {', '    get hex() {');
+
+                expect(() => findReachableExports(libDir, getterGlue)).toThrow(
+                    'unrecognised line in glue class Body',
+                );
+            });
+        });
     });
 });

@@ -1,8 +1,6 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import {
@@ -13,6 +11,8 @@ import {
     setPortfolioGraphTimeframe,
     timeSwitchItems,
 } from '@suite-native/graph';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 const PortfolioGraphTimeSwitchContent = () => {
     const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);

@@ -1,10 +1,11 @@
 import { type ReactNode, useState } from 'react';
 import { Pressable } from 'react-native';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { useNavigation } from '@react-navigation/native';
 
 import {
+    AnimatedView,
     Box,
     Button,
     Card,
@@ -111,14 +112,14 @@ export const TurnOffCheckScreenContent = ({ title, onConfirm }: TurnOffCheckScre
                 </Pressable>
             </VStack>
             {isChecked && (
-                <Animated.View
+                <AnimatedView
                     entering={FadeIn.duration(CHECKBOX_ANIMATION_DURATION)}
                     exiting={FadeOut.duration(CHECKBOX_ANIMATION_DURATION)}
                 >
                     <Button intent="warning" priority="primary" onPress={handleButtonPress}>
                         <Translation id="moduleSettings.advanced.authenticityChecks.buttonTurnOff" />
                     </Button>
-                </Animated.View>
+                </AnimatedView>
             )}
         </Screen>
     );

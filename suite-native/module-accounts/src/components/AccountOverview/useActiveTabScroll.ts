@@ -16,39 +16,43 @@ export const useActiveTabScroll = (activeTab: AccountOverviewTab) => {
     const scrollOffset = useRef(0);
     const visibleWidth = useRef(0);
 
-    const scrollToSelectedTab = useCallback((tab: AccountOverviewTab) => {
+    const scrollToSelectedTab = useCallback((tab: AccountOverviewTab, animated = true) => {
         const layout = tabLayouts.current[tab];
-        if (!layout) return;
+        const visible = visibleWidth.current;
+        if (!layout || visible === 0) {
+            return;
+        }
 
         const { x, width } = layout;
         const offset = scrollOffset.current;
-        const visible = visibleWidth.current;
 
         if (x < offset) {
-            scrollViewRef.current?.scrollTo({ x, animated: true });
+            scrollViewRef.current?.scrollTo({ x, animated });
         } else if (x + width > offset + visible) {
-            scrollViewRef.current?.scrollTo({ x: x + width - visible, animated: true });
+            scrollViewRef.current?.scrollTo({ x: x + width - visible, animated });
         }
     }, []);
 
-    const handleTabLayout = useCallback(
+    const handleTabLayout =
         (tab: AccountOverviewTab) =>
-            ({ nativeEvent }: LayoutChangeEvent) => {
-                tabLayouts.current[tab] = {
-                    x: nativeEvent.layout.x,
-                    width: nativeEvent.layout.width,
-                };
-            },
-        [],
-    );
+        ({ nativeEvent }: LayoutChangeEvent) => {
+            tabLayouts.current[tab] = {
+                x: nativeEvent.layout.x,
+                width: nativeEvent.layout.width,
+            };
+            if (tab === activeTab) {
+                scrollToSelectedTab(tab, false);
+            }
+        };
 
-    const handleScroll = useCallback(({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const handleScroll = ({ nativeEvent }: NativeSyntheticEvent<NativeScrollEvent>) => {
         scrollOffset.current = nativeEvent.contentOffset.x;
-    }, []);
+    };
 
-    const handleScrollViewLayout = useCallback(({ nativeEvent }: LayoutChangeEvent) => {
+    const handleScrollViewLayout = ({ nativeEvent }: LayoutChangeEvent) => {
         visibleWidth.current = nativeEvent.layout.width;
-    }, []);
+        scrollToSelectedTab(activeTab, false);
+    };
 
     useEffect(() => {
         scrollToSelectedTab(activeTab);

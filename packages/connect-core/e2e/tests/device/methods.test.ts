@@ -116,8 +116,10 @@ describe(`TrezorConnect methods`, () => {
                             setupConfig.wiped ||
                             JSON.stringify(setupConfig) !== JSON.stringify(lastSetupConfig)
                         ) {
+                            TrezorConnect.dispose();
                             await setup(controller, setupConfig);
                             lastSetupConfig = setupConfig;
+                            await initTrezorConnect(controller);
                         }
 
                         // Coins enabled for this call's session: the test case's defaults (e.g.

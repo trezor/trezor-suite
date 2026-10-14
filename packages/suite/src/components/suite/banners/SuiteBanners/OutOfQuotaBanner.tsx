@@ -1,14 +1,14 @@
 import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     noQuotaLeftWarningDismissed,
     selectShouldDisplayOutOfQuotaAlert,
 } from '@suite-common/suite-sync-quota-manager';
 import { Banner, Button, IconButton } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { InfoIcon, XIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 
 import { useSelector } from 'src/hooks/suite';

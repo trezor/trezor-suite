@@ -1,7 +1,9 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { yieldActions } from '@suite-common/wallet-core';
 import { mockResolvedYieldFlowData, mockYieldSessionState } from '@suite-common/wallet-core/mocks';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import {
@@ -17,6 +19,7 @@ import { mockYieldFlowScreenBaseResult } from '../../../../mocks/mockYieldFlowSc
 import { mockYieldPendingTransactionResult } from '../../../../mocks/mockYieldPendingTransactionResult';
 import { useYieldDepositFees } from '../useYieldDepositFees';
 import { useYieldDepositForm } from '../useYieldDepositForm';
+import { useYieldDepositGasReserve } from '../useYieldDepositGasReserve';
 import { useYieldPendingTransaction } from '../useYieldPendingTransaction';
 
 jest.mock('@react-navigation/native', () => ({
@@ -31,6 +34,7 @@ jest.mock('@suite-native/navigation', () => ({
 jest.mock('./useYieldFlowScreenBase');
 jest.mock('../useYieldPendingTransaction');
 jest.mock('../useYieldDepositForm');
+jest.mock('../useYieldDepositGasReserve');
 jest.mock('../useYieldDepositFees');
 const mockHandleSubmitDeposit = jest.fn();
 jest.mock('../useYieldDepositSubmit', () => ({
@@ -52,9 +56,18 @@ jest.mock('../../earn/useNavigateBackAnalytics', () => ({
 const useYieldFlowScreenBaseMock = jest.mocked(useYieldFlowScreenBase);
 const useYieldPendingTransactionMock = jest.mocked(useYieldPendingTransaction);
 const useYieldDepositFormMock = jest.mocked(useYieldDepositForm);
+const useYieldDepositGasReserveMock = jest.mocked(useYieldDepositGasReserve);
+
+const GAS_RESERVE = { minimum: '0.002', recommended: '0.005' };
+
+const buildFlowData = (formattedBalance: string) =>
+    mockResolvedYieldFlowData({
+        account: mockWalletAccount({ symbol: asNetworkSymbol('eth'), formattedBalance }),
+        isWrappedNativeVault: false,
+    });
 const useYieldDepositFeesMock = jest.mocked(useYieldDepositFees);
 
-const resolvedYieldFlowData = mockResolvedYieldFlowData({ isWrappedNativeVault: false });
+const resolvedYieldFlowData = buildFlowData('0.2');
 
 type ScreenBase = ReturnType<typeof useYieldFlowScreenBase>;
 
@@ -107,6 +120,7 @@ describe('useYieldDepositController', () => {
         jest.clearAllMocks();
         useYieldFlowScreenBaseMock.mockReturnValue(buildScreenBase());
         useYieldPendingTransactionMock.mockReturnValue(mockYieldPendingTransactionResult());
+        useYieldDepositGasReserveMock.mockReturnValue(GAS_RESERVE);
         useYieldDepositFormMock.mockReturnValue(buildDepositForm('5'));
         useYieldDepositFeesMock.mockReturnValue({
             isDepositFeeReady: true,
@@ -160,6 +174,48 @@ describe('useYieldDepositController', () => {
 
         expect(mockHandleSubmitDeposit).not.toHaveBeenCalled();
         expect(services.analytics.report).not.toHaveBeenCalled();
+    });
+
+    it('freezes the reserve into the deposit session', async () => {
+        await renderDepositController();
+
+        expect(useYieldDepositGasReserveMock).toHaveBeenCalledWith({
+            account: resolvedYieldFlowData.account,
+            isWrappedNativeVault: false,
+            tokenContractAddress: resolvedYieldFlowData.token.contractAddress,
+            flowKey: resolvedYieldFlowData.flowKey,
+        });
+    });
+
+    it('shows no fee reserve alert when the native balance covers the recommended reserve', async () => {
+        const { result } = await renderDepositController();
+
+        if (result.current.status !== 'ready') throw new Error('not ready');
+        expect(result.current.feeReserveAlert).toBeNull();
+    });
+
+    it('recommends a top-up between the minimum and recommended reserve', async () => {
+        useYieldFlowScreenBaseMock.mockReturnValue(
+            buildScreenBase({ yieldFlowData: buildFlowData('0.003') }),
+        );
+
+        const { result } = await renderDepositController();
+
+        if (result.current.status !== 'ready') throw new Error('not ready');
+        expect(result.current.feeReserveAlert).toEqual({ type: 'top-up', amount: '0.005' });
+        expect(result.current.footer.isDisabled).toBe(false);
+    });
+
+    it('blocks the deposit below the minimum reserve', async () => {
+        useYieldFlowScreenBaseMock.mockReturnValue(
+            buildScreenBase({ yieldFlowData: buildFlowData('0.001') }),
+        );
+
+        const { result } = await renderDepositController();
+
+        if (result.current.status !== 'ready') throw new Error('not ready');
+        expect(result.current.feeReserveAlert).toEqual({ type: 'insufficient', amount: '0.002' });
+        expect(result.current.footer.isDisabled).toBe(true);
     });
 
     it('disposes the session on close', async () => {

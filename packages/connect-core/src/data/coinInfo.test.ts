@@ -62,6 +62,22 @@ describe('data/coinInfo', () => {
         });
     });
 
+    it('serves Arc testnet over the RPC worker, with no blockbook involved', () => {
+        // First network whose default backend is not blockbook. The coin-data parser copies
+        // blockchain_link through untouched, and Blockchain.getWorker() dispatches on that type,
+        // so a typo here silently becomes Backend_NotSupported at runtime.
+        expect(getCoinInfoOrThrow('tarc')).toMatchObject({
+            shortcut: 'tARC',
+            chainId: 5042002,
+            slip44: 60,
+            decimals: 18,
+            blockchainLink: {
+                type: 'evm-rpc',
+                url: ['https://rpc.testnet.arc.network'],
+            },
+        });
+    });
+
     it('every evm network uses slip44 60, except ETC (61)', () => {
         // Suite derives all EVM accounts at m/44'/60' (ETC at m/44'/61'), and slip44 drives the
         // default discovery path in connect popup — a per-chain registry value (as ethereum-lists

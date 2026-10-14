@@ -1,6 +1,5 @@
-import { yup } from '@suite-common/validators';
 import { type Account, type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { useForm } from '@suite-native/forms';
+import { useForm, yup } from '@suite-native/forms';
 import { renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import { btcAsset, getBtcAccount, getWalletState } from '@suite-native/trading-fixtures';
 import { type SellFormValues, type TradeableAsset } from '@suite-native/trading-types';

@@ -2,12 +2,17 @@ import { useMemo, useState } from 'react';
 
 import { type TradingTradeType } from '@suite-common/trading';
 import { useTranslate } from '@suite-native/intl';
-import type { FilterItem, SectionListData } from '@suite-native/trading-atoms';
+import type { SectionListData } from '@suite-native/trading-atoms';
 import { type QuotesByCategories, type QuotesCategory } from '@suite-native/trading-types';
 import { exhaustive } from '@trezor/type-utils';
 import { typedObjectKeys } from '@trezor/utils';
 
 export type FilterValue = 'all' | 'cex' | 'dex';
+
+export type FilterItem = {
+    label: string;
+    value: FilterValue;
+};
 
 const EXCHANGE_RATE_CATEGORIES: Exclude<QuotesCategory, 'dex'>[] = ['float', 'fixed'];
 
@@ -43,7 +48,7 @@ export const useProviderFilters = <T extends TradingTradeType>(
     const { translate } = useTranslate();
     const [selectedFilter, setSelectedFilter] = useState<FilterValue>('all');
 
-    const filterItems: FilterItem<FilterValue>[] = useMemo(
+    const filterItems: FilterItem[] = useMemo(
         () => [
             {
                 label: translate('moduleTrading.providerSheet.filters.allProviders'),

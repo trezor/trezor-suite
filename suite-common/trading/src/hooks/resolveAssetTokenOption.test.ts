@@ -1,5 +1,6 @@
 import { type Coins, type CryptoId } from 'invity-api';
 
+import { mockNetworkMetadata } from '@suite-common/networks/mocks';
 import { toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
 
 import { useTradingAssets } from './useTradingAssets';
@@ -12,12 +13,21 @@ const ethSymbol = toNetworkSymbolNonTestnet('eth');
 
 const renderHook = (preloadedCoins: Coins | null = coins as Coins) =>
     renderHookWithTradingStore(() => useTradingAssets(), {
-        preloadedState: createTradingTestState({
-            info: {
-                coins: preloadedCoins ?? undefined,
-                platforms: undefined,
+        preloadedState: {
+            ...createTradingTestState({
+                info: {
+                    coins: preloadedCoins ?? undefined,
+                    platforms: undefined,
+                },
+            }),
+            networks: {
+                [ethSymbol]: {
+                    ...mockNetworkMetadata.eth,
+                    coingeckoId: 'ethereum',
+                    tradeCryptoId: 'ethereum',
+                },
             },
-        }),
+        },
     });
 
 describe('resolveAssetTokenOption', () => {

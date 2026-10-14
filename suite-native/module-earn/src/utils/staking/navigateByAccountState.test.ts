@@ -33,8 +33,9 @@ describe('navigateByAccountState', () => {
         const account = createMockAccount();
         mockGetAccountTotalStakingBalance.mockReturnValue('1000000000000000');
 
-        navigateByAccountState(account, mockNavigate);
+        const hasNavigated = navigateByAccountState(account, mockNavigate);
 
+        expect(hasNavigated).toBe(true);
         expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.StakingManagement, {
             accountKey: account.key,
         });
@@ -90,16 +91,24 @@ describe('navigateByAccountState', () => {
         });
     });
 
-    it('navigates a Cardano account without a staked balance to HowStakeWorks', () => {
+    it('does not navigate a Cardano account without a staked balance', () => {
         const account = createMockAccount({ symbol: asNetworkSymbol('ada') });
         mockGetAccountTotalStakingBalance.mockReturnValue('0');
 
-        navigateByAccountState(account, mockNavigate);
+        const hasNavigated = navigateByAccountState(account, mockNavigate);
 
-        expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.HowStakeWorksScreen, {
-            symbol: account.symbol,
-            accountKey: account.key,
-        });
+        expect(hasNavigated).toBe(false);
+        expect(mockNavigate).not.toHaveBeenCalled();
+    });
+
+    it('does not navigate a Tron account without a staked balance', () => {
+        const account = createMockAccount({ symbol: asNetworkSymbol('trx') });
+        mockGetAccountTotalStakingBalance.mockReturnValue('0');
+
+        const hasNavigated = navigateByAccountState(account, mockNavigate);
+
+        expect(hasNavigated).toBe(false);
+        expect(mockNavigate).not.toHaveBeenCalled();
     });
 
     it('navigates to StakingManagement when a Cardano account is delegated but emptied', () => {
@@ -158,8 +167,9 @@ describe('navigateByAccountState', () => {
         const account = createMockAccount({ symbol: asNetworkSymbol('btc') });
         mockGetAccountTotalStakingBalance.mockReturnValue('0');
 
-        navigateByAccountState(account, mockNavigate);
+        const hasNavigated = navigateByAccountState(account, mockNavigate);
 
+        expect(hasNavigated).toBe(false);
         expect(mockNavigate).not.toHaveBeenCalled();
     });
 });

@@ -22,7 +22,7 @@ rec {
   extraPackages = [ pkgs.nix-ld pkgs.aapt ];
 
   nixLdHook = ''
-    export NIX_LD=$(nix eval --raw nixpkgs#stdenv.cc.bintools.dynamicLinker)
+    export NIX_LD="${pkgs.stdenv.cc.bintools.dynamicLinker}"
     export NIX_LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath [
       pkgs.stdenv.cc.cc
       pkgs.gcc.cc.lib
@@ -76,9 +76,5 @@ rec {
 
       echo "✓ Created Android emulator device: Pixel_6_API_34"
     fi
-
-    echo "- Java $(java -version 2>&1 | head -n1)"
-    command -v adb >/dev/null 2>&1 && echo "- adb $(adb version | head -n1)" || echo "- adb not found (install SDK packages)"
-    command -v emulator >/dev/null 2>&1 && echo "- emulator $(emulator -version | head -n1)" || echo "- emulator not found"
   '';
 }

@@ -1,8 +1,6 @@
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     earnOnboardingActions,
     getEarnOpportunityKey,
@@ -17,6 +15,8 @@ import {
     type YieldStackParamList,
     type YieldStackRoutes,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { YieldConsentsProviderCard } from '../../components/yield/YieldConsentsProviderCard';

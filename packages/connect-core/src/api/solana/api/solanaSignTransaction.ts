@@ -11,6 +11,7 @@ import { BigNumber } from '@trezor/utils';
 import type { MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getMiscNetwork } from '../../../data/coinInfo';
+import { getDefinitionsVersion } from '../../../utils/definitionsUtils';
 import { validatePath } from '../../../utils/pathUtils';
 import {
     PAYMENT_REQUEST_AMOUNT_BYTES,
@@ -74,29 +75,6 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
 
     get requiredPermissions(): PermissionRequest[] {
         return this.coinPerms('sign', this.requiredFirmwareCoins);
-    }
-
-    async initAsync(): Promise<void> {
-        const { V1_NOT_SUPPORTED_MESSAGE, isV1Transaction } = await solana();
-
-        // Firmware cannot parse the v1 envelope yet. Rejecting from initAsync matters: core runs
-        // it before payloadToPrecomposed and before the device is acquired, so the caller gets an
-        // error instead of the user confirming a transaction the device would then refuse.
-        if (isV1Transaction(this.params.proto.serialized_tx)) {
-            throw ERRORS.TypedError('Method_InvalidParameter', V1_NOT_SUPPORTED_MESSAGE);
-        }
-
-        const token = this.params.proto.additional_info?.token_accounts_infos?.[0];
-
-        if (token) {
-            const tokenDefinition = await getSolanaTokenDefinition({
-                mintAddress: token.token_mint,
-            });
-
-            if (!tokenDefinition) return;
-
-            this.params.proto.additional_info!.encoded_token = tokenDefinition;
-        }
     }
 
     get info() {
@@ -215,11 +193,35 @@ export default class SolanaSignTransaction extends AbstractMethod<'solanaSignTra
         }
     }
 
+    // The definition version depends on the device firmware, so it is fetched in run(), once the
+    // device is known.
+    private async setTokenDefinition() {
+        const additionalInfo = this.params.proto.additional_info;
+        const token = additionalInfo?.token_accounts_infos?.[0];
+        if (!additionalInfo || !token) return;
+
+        const tokenDefinition = await getSolanaTokenDefinition({
+            mintAddress: token.token_mint,
+            version: getDefinitionsVersion(this.getDevice()),
+        });
+        if (!tokenDefinition) return;
+
+        additionalInfo.encoded_token = tokenDefinition;
+    }
+
     async run() {
         const cmd = this.getDevice().getCommands();
+        const { V1_NOT_SUPPORTED_MESSAGE, createTransactionShimFromHex, isV1Transaction } =
+            await solana();
+
+        // Firmware cannot parse the v1 envelope yet.
+        if (isV1Transaction(this.params.proto.serialized_tx)) {
+            throw ERRORS.TypedError('Method_InvalidParameter', V1_NOT_SUPPORTED_MESSAGE);
+        }
+
+        await this.setTokenDefinition();
 
         if (this.params.serialize) {
-            const { createTransactionShimFromHex } = await solana();
             const tx = createTransactionShimFromHex(this.params.proto.serialized_tx);
 
             const addressCall = await cmd.typedCall('SolanaGetAddress', 'SolanaAddress', {

@@ -40,5 +40,5 @@ openssl pkcs12 -export -in cert.pem -inkey cert.pem -out cert.pfx
 Use like so in the electron-builder `sign-windows` script, providing your own `PATH_TO_CERTIFICATE.pfx` and the pfx password, if used.
 
 ```
-`java -jar ../suite-desktop-core/scripts/jsign-6.0.jar --keystore PATH_TO_CERTIFICATE.pfx --storepass PASSWORD --storetype PKCS12 --tsaurl http://timestamp.digicert.com "${configuration.path}"`
+`java -jar ../desktop-app-main/scripts/jsign-6.0.jar --keystore PATH_TO_CERTIFICATE.pfx --storepass PASSWORD --storetype PKCS12 --tsaurl http://timestamp.digicert.com "${configuration.path}"`
 ```

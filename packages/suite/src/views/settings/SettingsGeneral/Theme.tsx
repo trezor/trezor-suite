@@ -3,9 +3,9 @@ import { injectDesktopApi } from '@suite/desktop-app-api';
 import { Translation, useTranslation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectAutodetectTheme, selectThemeSettings, suiteSettingsActions } from '@suite/settings';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
-import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
+import { useServices } from '@trezor/dependency-injection';
+import { SectionItem } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 import { type ThemeColorVariant } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
@@ -58,7 +58,9 @@ export const Theme = () => {
     const themeVariant = autodetectTheme ? 'system' : theme.variant;
     const selectedValue = getOption(themeVariant === 'light' ? 'standard' : themeVariant);
 
-    const onChange = ({ value }: { value: ThemeColorVariantWithSystem }) => {
+    type OnChangeParams = { value: ThemeColorVariantWithSystem };
+
+    const onChange = ({ value }: OnChangeParams) => {
         // Inconsistency between types (standard = light)
         const themeValue = value === 'standard' ? 'light' : value;
 
@@ -95,21 +97,17 @@ export const Theme = () => {
                         data-testid={anchorId}
                         ref={anchorRef}
                         shouldHighlight={shouldHighlight}
-                    >
-                        <TextColumn
-                            title={<Translation id="TR_COLOR_SCHEME" />}
-                            description={<Translation id="TR_COLOR_SCHEME_DESCRIPTION" />}
-                        />
-
-                        <ActionColumn>
-                            <ActionSelect
+                        title={<Translation id="TR_COLOR_SCHEME" />}
+                        description={<Translation id="TR_COLOR_SCHEME_DESCRIPTION" />}
+                        actions={
+                            <SectionItem.Select
                                 value={selectedValue}
                                 options={optionGroups}
                                 onChange={onChange}
                                 data-testid="@theme/color-scheme-select"
                             />
-                        </ActionColumn>
-                    </SectionItem>
+                        }
+                    />
                 )}
             </Anchor>
         </>

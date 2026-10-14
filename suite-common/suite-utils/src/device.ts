@@ -1,4 +1,3 @@
-import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { type AcquiredDevice, type TrezorDevice } from '@suite-common/suite-types';
 import {
     DEVICE,
@@ -9,6 +8,7 @@ import {
     type PROTO,
     type UnavailableCapability,
 } from '@trezor/connect';
+import { DEFAULT_FLAGSHIP_MODEL } from '@trezor/device';
 import { DeviceModelInternal, getNarrowedDeviceModelInternal } from '@trezor/device-utils';
 import { exhaustive } from '@trezor/type-utils';
 import * as URLS from '@trezor/urls';
@@ -170,6 +170,15 @@ export const isDeviceAcquired = (device?: TrezorDevice): device is AcquiredDevic
 
 // Is a Connect device known (corresponds to Suite "acquired")
 export const isDeviceKnown = (device?: Device): device is KnownDevice => !!device?.features;
+
+export const getIsFactoryResetDevice = (device?: TrezorDevice): boolean => {
+    if (!device) return false;
+    // Cannot be determined for unacquired device
+    if (!isDeviceAcquired(device)) return false;
+
+    // Note: if firmware_present is false, then mode can be nothing else than bootloader, but not vice versa.
+    return device.mode === 'bootloader' && device.features.firmware_present === false;
+};
 
 export const isSelectedInstance = (selected?: TrezorDevice, device?: TrezorDevice) =>
     !!(
@@ -521,22 +530,25 @@ export const getDeviceModelWithFlagshipFallback = (
 export const getIsThpDevice = <T extends Device | TrezorDevice>(
     device: T,
 ): device is T & { thp: NonNullable<Device['thp']> } => device.thp !== undefined;
+type GetIsDeviceInitializedParams = {
+    deviceMode?: DeviceMode | null;
+    deviceFeatures?: PROTO.Features;
+};
 
 export const getIsDeviceInitialized = ({
     deviceMode,
     deviceFeatures,
-}: {
-    deviceMode?: DeviceMode | null;
+}: GetIsDeviceInitializedParams) =>
+    deviceMode !== 'initialize' && deviceMode !== 'seedless' && !!deviceFeatures?.initialized;
+type GetIsDeviceConnectedAndAuthorizedParams = {
+    deviceState: TrezorDevice['state'];
     deviceFeatures?: PROTO.Features;
-}) => deviceMode !== 'initialize' && deviceMode !== 'seedless' && !!deviceFeatures?.initialized;
+};
 
 export const getIsDeviceConnectedAndAuthorized = ({
     deviceState,
     deviceFeatures,
-}: {
-    deviceState: TrezorDevice['state'];
-    deviceFeatures?: PROTO.Features;
-}) => !!deviceState && !!deviceFeatures;
+}: GetIsDeviceConnectedAndAuthorizedParams) => !!deviceState && !!deviceFeatures;
 
 export const getIsDeviceDescriptorApiTypeBluetooth = (device: Device | TrezorDevice) =>
     device.descriptor?.apiType === 'bluetooth';

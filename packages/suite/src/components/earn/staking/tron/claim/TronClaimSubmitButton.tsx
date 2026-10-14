@@ -2,13 +2,13 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { Translation, useTranslation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import {
     getTronStakingRewards,
     isTronClaimSupported,
     selectHasRunningDiscovery,
 } from '@suite-common/wallet-core';
 import { Button, Tooltip } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
@@ -79,6 +79,7 @@ export const TronClaimSubmitButton = () => {
                     size="large"
                     width="100%"
                     onClick={handleClick}
+                    data-testid="@staking/tron-claim/continue-button"
                     isDisabled={isDisabled}
                     isLoading={isLoading}
                 >

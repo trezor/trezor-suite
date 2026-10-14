@@ -7,7 +7,6 @@ import { routerLocationChange, routerReducer } from '@suite/router';
 import { suiteSettingsInitialState } from '@suite/settings';
 import { torReducer } from '@suite/tor';
 import { networksReducer } from '@suite-common/networks';
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { type SuiteSyncDataState, type SuiteSyncState } from '@suite-common/suite-sync';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { testMocks } from '@suite-common/test-utils';
@@ -28,6 +27,7 @@ import {
 } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { PROTO } from '@trezor/connect';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 import { type DeepPartial } from '@trezor/type-utils';
 
 import { type AppState } from 'src/reducers/store';
@@ -857,11 +857,9 @@ export const setMax: any[] = [
         finalResult: {
             composeTransactionCalls: 1,
             composeTransactionParams: {
-                account: {
-                    // only utxos with enough anonymity are used in TrezorConnect.composeTransaction
-                    // see sendFormBitcoinActions
-                    utxo: [UTXO.BB, UTXO.DD],
-                },
+                // only utxos with enough anonymity are used in TrezorConnect.composeTransaction
+                // see sendFormBitcoinThunks
+                utxo: [UTXO.BB, UTXO.DD],
             },
         },
     },
@@ -1004,7 +1002,8 @@ export const setMax: any[] = [
                 },
             },
             {
-                type: 'input',
+                // Paste once so slow typing cannot trigger an intermediate debounced compose.
+                type: 'paste',
                 element: 'outputs.0.address',
                 value: '3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX',
                 result: {

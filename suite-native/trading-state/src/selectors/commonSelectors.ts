@@ -7,7 +7,6 @@ import {
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
 import { type NetworksRootState, selectSupportedNetworkSymbols } from '@suite-common/networks';
-import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import {
     type TokenDefinitionsRootState,
     filterKnownTokens,
@@ -28,16 +27,13 @@ import {
     selectTradingTradeByOrderId,
     toTokenCryptoId,
 } from '@suite-common/trading';
-import {
-    getNetwork,
-    getNetworkDisplaySymbolName,
-    getNetworkType,
-} from '@suite-common/wallet-config';
+import { getNetwork, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type FiatRatesRootState,
     type WalletSettingsRootState,
     selectBaseCurrency,
+    selectCurrentFiatRateByKey,
     selectCurrentFiatRates,
     selectVisibleDeviceAccounts,
     selectVisibleDeviceAccountsByNetworkSymbol,
@@ -56,11 +52,7 @@ import {
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import { selectAccountLabel, sortAccountsByNetworksAndAccountTypes } from '@suite-native/accounts';
-import {
-    FeatureFlag,
-    type FeatureFlagsRootState,
-    selectIsFeatureFlagEnabled,
-} from '@suite-native/feature-flags';
+import { type FeatureFlagsRootState } from '@suite-native/feature-flags';
 import { type CombinedLabelingState } from '@suite-native/labeling';
 import {
     type SettingsSliceRootState,
@@ -73,6 +65,7 @@ import {
     toCaseAwareCryptoId,
 } from '@suite-native/trading-atoms';
 import { type MyAsset, type TradeableAsset } from '@suite-native/trading-types';
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 
 import { selectIsTradingEnabledForCountry } from './residenceSelectors';
 import { type TradingRootState } from '../reducers';
@@ -93,10 +86,6 @@ const createCombinedMemoizedSelector =
 
 const createFeatureFlagsMemoizedSelector = createWeakMapSelector.withTypes<
     MessageSystemRootState & FeatureFlagsRootState
->();
-
-const createFiatRatesMemoizedSelector = createWeakMapSelector.withTypes<
-    FiatRatesRootState & WalletSettingsRootState & TradingRootState
 >();
 
 export const selectTradingEnvironment = (state: TradingRootState) =>
@@ -218,6 +207,9 @@ export const selectTradeToBeOpened = (state: TradingRootState) => {
     return state.wallet.trading.trades.find(trade => trade.data.orderId === orderId);
 };
 
+export const selectTradingFormResetRequestedFor = (state: TradingRootState) =>
+    state.wallet.trading.formResetRequestedFor;
+
 export const selectIsAmountInputActive = (state: TradingRootState) =>
     state.wallet.trading.isAmountInputActive;
 
@@ -227,30 +219,20 @@ export const selectActiveTradingType = (state: TradingRootState) =>
 export const selectHasActiveTradingType = (state: TradingRootState) =>
     state.wallet.trading.activeTradingType !== null;
 
-export const selectAmountInBaseFiatCurrency = createFiatRatesMemoizedSelector(
-    [
-        selectCurrentFiatRates,
-        selectBaseCurrency,
-        (_state, asset: TradeableAsset) => asset,
-        (_state, _symbol, amount: string) => amount,
-    ],
-    (fiatRates, localCurrency, asset, amount) => {
-        const symbol = getSymbolFromTradeableAsset(asset);
+export const selectFiatRateByTradeableAsset = (
+    state: FiatRatesRootState & WalletSettingsRootState,
+    asset: TradeableAsset | undefined,
+): number | undefined => {
+    const symbol = getSymbolFromTradeableAsset(asset);
 
-        if (!symbol || !fiatRates) {
-            return undefined;
-        }
+    if (!symbol) {
+        return undefined;
+    }
 
-        const fiatRateKey = getFiatRateKey(symbol, localCurrency, asset.contractAddress);
-        const rate = fiatRates[fiatRateKey]?.rate;
+    const fiatRateKey = getFiatRateKey(symbol, selectBaseCurrency(state), asset?.contractAddress);
 
-        if (!rate) {
-            return undefined;
-        }
-
-        return toFiatCurrency({ amount, rate }) || undefined;
-    },
-);
+    return selectCurrentFiatRateByKey(state, fiatRateKey)?.rate;
+};
 
 export const selectAccountsWithTokensToSellSectionListByTradingType =
     createCombinedMemoizedSelector(
@@ -260,8 +242,6 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
             selectCurrentFiatRates,
             selectBaseCurrency,
             selectTradingSupportedSymbols,
-            (state: CombinedSelectorsRootState) =>
-                selectIsFeatureFlagEnabled(state, FeatureFlag.IsCardanoSendEnabled),
             (_state, tradingType: TradingType) => tradingType,
             selectSupportedNetworkSymbols,
         ],
@@ -271,7 +251,6 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
             fiatRates,
             localCurrency,
             sellCryptoIds,
-            isCardanoSendEnabled,
             tradingType,
             supportedNetworks,
         ) => {
@@ -280,16 +259,9 @@ export const selectAccountsWithTokensToSellSectionListByTradingType =
             }
             const sellCryptoIdsSet = new Set(sellCryptoIds);
 
-            // TODO: Remove this filter when Cardano send is implemented (#15068)
-            // Currently filtering out Cardano accounts and tokens from trading until Cardano send is supported
-            const filteredAccounts = accounts.filter(account => {
-                if (!getNetwork(account.symbol).tradeCryptoId) {
-                    return false;
-                }
-                const networkType = getNetworkType(account.symbol);
-
-                return networkType !== 'cardano' || isCardanoSendEnabled;
-            });
+            const filteredAccounts = accounts.filter(
+                account => !!getNetwork(account.symbol).tradeCryptoId,
+            );
 
             const sortedAccounts = sortAccountsByNetworksAndAccountTypes(
                 filteredAccounts,

@@ -4,10 +4,10 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { NavigationContainer } from '@react-navigation/native';
 
-import { ServicesProvider } from '@suite-common/dependency-injection';
 import { FormatterProvider, type FormatterProviderConfig } from '@suite-common/formatters';
 import { QueryClient, QueryClientProvider } from '@suite-common/react-query';
 import { IntlProviderForTests } from '@suite-native/intl';
+import { ServicesProvider } from '@trezor/dependency-injection';
 import { StylesProvider, createRenderer } from '@trezor/styles-native';
 import { prepareNativeTheme } from '@trezor/theme';
 

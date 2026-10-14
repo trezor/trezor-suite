@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectIsTorEnabled } from '@suite/tor';
-import { useServices } from '@suite-common/dependency-injection';
 import {
     type WithSuiteSyncState,
     getSuiteSyncDefaultRelayUrl,
@@ -12,7 +11,8 @@ import {
 } from '@suite-common/suite-sync';
 import { injectChangeRelayUrl } from '@suite-common/suite-sync-types';
 import { Button, ButtonGroup, Code, Column, Input, Text } from '@trezor/components';
-import { ActionColumn, SectionItem, SettingsSection, TextColumn } from '@trezor/product-components';
+import { useServices } from '@trezor/dependency-injection';
+import { SectionItem, SettingsSection } from '@trezor/product-components';
 import { type BreakpointFlags } from '@trezor/theme';
 
 import { SuiteSyncSettingsDebug } from './SuiteSyncSettingsDebug';
@@ -61,9 +61,9 @@ export const SuiteSyncSettings = ({ onError }: SuiteSyncSettingsProps) => {
 
     return (
         <SettingsSection title="Suite Sync" hasVerticalLayout={isBelowLaptop}>
-            <SectionItem>
-                <TextColumn title="Relay URL" />
-                <ActionColumn>
+            <SectionItem
+                title="Relay URL"
+                actions={
                     <Column gap={4}>
                         <Input
                             data-testid="@settings/debug/suite-sync/relay-url-input"
@@ -81,6 +81,7 @@ export const SuiteSyncSettings = ({ onError }: SuiteSyncSettingsProps) => {
                                 </Button>
                             }
                         />
+
                         <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                             Default is: <Code>{getSuiteSyncDefaultRelayUrl({ isTorEnabled })}</Code>
                         </Text>
@@ -127,8 +128,9 @@ export const SuiteSyncSettings = ({ onError }: SuiteSyncSettingsProps) => {
                             </Button>
                         </ButtonGroup>
                     </Column>
-                </ActionColumn>
-            </SectionItem>
+                }
+            />
+
             <WipeSuiteSyncLabels onError={onError} />
             <SuiteSyncSettingsDebug />
         </SettingsSection>

@@ -2,15 +2,9 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        {
-            "path": "../../suite-common/dependency-injection"
-        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/formatters"
-        },
-        {
-            "path": "../../suite-common/redux-utils"
         },
         {
             "path": "../../suite-common/toast-notifications"
@@ -29,7 +23,11 @@
         { "path": "../link" },
         { "path": "../markdown" },
         { "path": "../navigation" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
         { "path": "../../packages/env-utils" },
+        { "path": "../../packages/redux-utils" },
         {
             "path": "../../packages/styles-native"
         },

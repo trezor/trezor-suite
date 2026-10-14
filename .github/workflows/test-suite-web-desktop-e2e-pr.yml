@@ -22,20 +22,36 @@ on:
       - ".github/workflows/build-desktop*"
       - ".github/workflows/release*"
       - ".github/actions/release*/**"
+      - ".github/workflows/test-suite-web-desktop-e2e-release.yml"
       - "**.md"
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
-  cancel-in-progress: true
+  group: suite-web-deploy-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: ${{ github.ref_name != 'develop' }}
 
 env:
   DEV_SERVER_URL: "https://dev.suite.sldev.cz"
   STAGING_SUITE_SERVER_URL: "https://staging-suite.trezor.io"
 
 jobs:
+  changed-scopes:
+    name: Determine changed scopes
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      default: ${{ steps.checks.outputs.default }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+      - uses: ./.github/actions/changed-scopes
+        id: checks
+
   determine-strategy:
     name: Determine test strategy
-    if: github.repository == 'trezor/trezor-suite'
+    needs: changed-scopes
+    if: github.repository == 'trezor/trezor-suite' && needs.changed-scopes.outputs.default == 'true'
     runs-on: ubuntu-latest
     outputs:
       strategy: ${{ steps.determine.outputs.strategy }}
@@ -126,11 +142,13 @@ jobs:
   # ── Web ────────────────────────────────────────────────────────────────────
 
   build-web:
-    if: github.repository == 'trezor/trezor-suite'
+    needs: changed-scopes
+    if: github.repository == 'trezor/trezor-suite' && needs.changed-scopes.outputs.default == 'true'
     uses: ./.github/workflows/build-suite-web-e2e.yml
 
   extract-branch:
-    if: github.repository == 'trezor/trezor-suite'
+    needs: changed-scopes
+    if: github.repository == 'trezor/trezor-suite' && needs.changed-scopes.outputs.default == 'true'
     runs-on: ubuntu-latest
     outputs:
       branch: ${{ steps.extract_branch.outputs.branch }}
@@ -182,12 +200,18 @@ jobs:
         with:
           ref: develop
           fetch-depth: 0
-      - name: Fetch PR head for diff
-        run: git fetch origin pull/${{ github.event.pull_request.number }}/head:pr-head
+      - name: Fetch PR head and base for diff
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          BASE_BRANCH: ${{ github.base_ref }}
+        run: |
+          git fetch origin "pull/$PR_NUMBER/head:pr-head"
+          git fetch origin "$BASE_BRANCH"
       - name: Check PR size
         id: check-size
         uses: ./.github/actions/check-pr-size
         with:
+          changed-files: ${{ github.event.pull_request.changed_files }}
           additions: ${{ github.event.pull_request.additions }}
           deletions: ${{ github.event.pull_request.deletions }}
       - name: Run LLM test selector
@@ -195,6 +219,7 @@ jobs:
         if: steps.check-size.outputs.is_small_pr == 'true'
         uses: ./.github/actions/llm-test-selector
         with:
+          base-ref: ${{ github.event.pull_request.base.sha }}
           openrouter-api-key: ${{ secrets.E2E_SELECTOR_API_KEY }}
           slack-webhook: ${{ secrets.SLACK_FIX_AGENT_WEBHOOK }}
       - name: Post LLM analysis to PR description
@@ -207,9 +232,10 @@ jobs:
   resolve-spec-list:
     name: Resolve spec list
     needs:
+      - changed-scopes
       - determine-strategy
       - run-llm-analysis
-    if: always() && github.repository == 'trezor/trezor-suite'
+    if: always() && github.repository == 'trezor/trezor-suite' && needs.changed-scopes.outputs.default == 'true'
     runs-on: ubuntu-latest
     outputs:
       spec-list: ${{ steps.resolve.outputs.spec-list }}

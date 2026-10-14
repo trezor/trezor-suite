@@ -1,7 +1,6 @@
 import { useState } from 'react';
 
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { prettifyLog, useCommonApplicationLogs as useApplicationLogs } from '@suite-common/logger';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import {
@@ -16,6 +15,7 @@ import {
 import { shareAsTextFile } from '@suite-native/helpers';
 import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 
 export const SettingsAppLogScreen = () => {
     const [includeSensitiveInfo, setIncludeSensitiveInfo] = useState(false);

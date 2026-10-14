@@ -12,7 +12,7 @@ const unexpectedReasons = [
 
 export const SERVICE_NAME = 'crash-recover';
 
-export const init: ModuleInit = ({ mainWindowProxy }) => {
+export const init: ModuleInit = ({ mainWindowProxy, logger }) => {
     // Check if the renderer process got unexpectedly terminated
     mainWindowProxy.on('init', mainWindow => {
         mainWindow.webContents.on('render-process-gone', (_, { reason }) => {
@@ -26,7 +26,7 @@ export const init: ModuleInit = ({ mainWindowProxy }) => {
 
                 // Restart
                 if (result === 1) {
-                    restartApp();
+                    restartApp({ logger });
                 } else {
                     app.quit();
                 }

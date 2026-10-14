@@ -11,6 +11,7 @@ import {
     getDexEstimationData,
     getDisplayNetworkFee,
     hasEip712SignDataType,
+    hasFixedPsbtFee,
     requiresErc20Approval,
     requiresTokenApproval,
     tokenSupportsIncreasingAllowance,
@@ -407,6 +408,32 @@ describe('hasEip712SignDataType', () => {
     });
 });
 
+describe('hasFixedPsbtFee', () => {
+    const dexTx = { from: 'from', to: 'to', data: 'cHNidP8B', value: '0' };
+
+    it('should return true for a bitcoin DEX quote with a PSBT', () => {
+        expect(hasFixedPsbtFee({ isDex: true, dexTx }, 'bitcoin')).toBe(true);
+    });
+
+    it('should return false for a bitcoin CEX quote', () => {
+        expect(hasFixedPsbtFee({ isDex: false }, 'bitcoin')).toBe(false);
+    });
+
+    it('should return false for a bitcoin DEX quote without transaction data', () => {
+        expect(hasFixedPsbtFee({ isDex: true, dexTx: { ...dexTx, data: '' } }, 'bitcoin')).toBe(
+            false,
+        );
+    });
+
+    it('should return false for an EVM DEX quote', () => {
+        expect(hasFixedPsbtFee({ isDex: true, dexTx }, 'ethereum')).toBe(false);
+    });
+
+    it('should return false when no quote is provided', () => {
+        expect(hasFixedPsbtFee(undefined, 'bitcoin')).toBe(false);
+    });
+});
+
 describe('getDisplayNetworkFee', () => {
     it('should return the original fee for a non-gasless quote', () => {
         const quote = { orderId: 'test-order', isDex: false };
@@ -551,6 +578,28 @@ describe('deriveBitcoinSwapFromAddresses', () => {
                     { type: 'payment', amount: '10000', address: 'unused-address' },
                     { type: 'payment', amount: '123', address: 'unused-address' },
                     { type: 'opreturn', dataHex: 'custom_opreturn' },
+                ],
+            }),
+        );
+    });
+
+    it('should compose send-max with percent amounts relative to available balance, ignoring a stale send amount', async () => {
+        await deriveBitcoinSwapFromAddresses({
+            account,
+            network,
+            sendStringAmount: '0.5',
+            decimals: 8,
+            setMaxOutputId: 0,
+            btcSwapComposeTemplate: btcSwapComposeTemplateWithPercent(2),
+        });
+
+        expect(TrezorConnect.composeTransaction).toHaveBeenCalledWith(
+            expect.objectContaining({
+                outputs: [
+                    { type: 'send-max', address: 'unused-address' },
+                    { type: 'opreturn', dataHex: defaultOpreturnHex },
+                    { type: 'payment', amount: '200', address: 'unused-address' },
+                    { type: 'payment', amount: '200', address: 'unused-address' },
                 ],
             }),
         );

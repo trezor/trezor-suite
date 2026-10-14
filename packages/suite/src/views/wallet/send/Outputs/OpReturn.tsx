@@ -1,7 +1,7 @@
 import { type ChangeEvent } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
-import { formInputsMaxLength } from '@suite-common/validators';
+import { OP_RETURN_MAX_LENGTH } from '@suite-common/wallet-core';
 import { isHexValid } from '@suite-common/wallet-utils';
 import { Column, Flex, IconButton, Row, Text, Textarea, Tooltip } from '@trezor/components';
 import { XIcon } from '@trezor/icons';
@@ -10,7 +10,9 @@ import { OpenGuideFromTooltip } from 'src/components/guide';
 import { useLayoutSize } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 
-export const OpReturn = ({ outputId }: { outputId: number }) => {
+type OpReturnProps = { outputId: number };
+
+export const OpReturn = ({ outputId }: OpReturnProps) => {
     const {
         register,
         setValue,
@@ -86,7 +88,7 @@ export const OpReturn = ({ outputId }: { outputId: number }) => {
                     hasError={!!asciiError}
                     data-testid={inputAsciiName}
                     defaultValue={asciiValue}
-                    maxLength={formInputsMaxLength.opReturn}
+                    maxLength={OP_RETURN_MAX_LENGTH}
                     bottomText={asciiError?.message || null}
                     label={<Translation id="OP_RETURN_HUMAN" />}
                     innerRef={asciiRef}
@@ -98,7 +100,7 @@ export const OpReturn = ({ outputId }: { outputId: number }) => {
                     hasError={!!hexError}
                     data-testid={inputHexName}
                     defaultValue={hexValue}
-                    maxLength={formInputsMaxLength.opReturn}
+                    maxLength={OP_RETURN_MAX_LENGTH}
                     bottomText={hexError?.message || null}
                     label={<Translation id="OP_RETURN_HEX" />}
                     innerRef={hexRef}

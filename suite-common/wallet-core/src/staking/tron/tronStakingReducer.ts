@@ -79,6 +79,7 @@ const getNextStep = (flow: TronFlow, step: TronStakeStepId): TronStakeStepId => 
 
 type SessionPayload = { accountKey: AccountKey; flow: TronFlow };
 type GoToStepPayload = SessionPayload & { step: TronStakeStepId };
+type PendingTransactionConfirmedPayload = SessionPayload & { txid: string };
 type SubmitFinishedPayload = SessionPayload & { txid?: string; error?: TronStakeError };
 type StorePrecomposedTransactionPayload = {
     precomposedTx: PrecomposedTransactionFinal;
@@ -112,10 +113,15 @@ const tronStakeSlice = createSlice({
         },
         pendingTransactionConfirmed(
             state: TronStakeReducerState,
-            action: PayloadAction<SessionPayload>,
+            action: PayloadAction<PendingTransactionConfirmedPayload>,
         ) {
-            const { accountKey, flow } = action.payload;
+            const { accountKey, flow, txid } = action.payload;
             const session = getSession(state, accountKey, flow);
+
+            if (session.pendingTxid !== txid) {
+                return;
+            }
+
             setSession(state, accountKey, flow, {
                 ...session,
                 pendingTxid: null,

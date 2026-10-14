@@ -1,6 +1,6 @@
 import type { BlockchainSettings } from '@trezor/blockchain-link';
 import type { DeviceModelInternal } from '@trezor/device-utils';
-import type { Logger } from '@trezor/logger';
+import type { CreateLogger } from '@trezor/logger';
 import type { ThpCredentials, ThpPairingMethod } from '@trezor/protocol';
 import type { Static } from '@trezor/schema-utils';
 import { Type } from '@trezor/schema-utils';
@@ -36,10 +36,6 @@ export type ThpSettings = {
 
 export type ConnectSettingsTransport = Transport;
 
-export type CreateLogger = (prefix: string) => Logger;
-
-export type CreateLoggerDep = { createLogger?: CreateLogger };
-
 // #23879 originally expected the permission system to extend this object with per-network
 // fields (e.g. `permissions`, `backends`). It went the other way: `EnabledNetwork` stayed a
 // minimal Core capability — it only drives `derive_cardano` at session create — orthogonal to
@@ -56,7 +52,7 @@ export interface ConnectSettings {
     // (Core/Device/DeviceCommands/@trezor/transport) — those are driven by `createLogger`. It is still
     // read by core's backend layer (BackendManager → BlockchainLink worker debug logging), by the
     // connect-web/connect-mobile host wrappers (their own `@trezor/connect-web` logger + popup URL),
-    // and serves as the desktop IPC enabled hint that suite-desktop-core's trezor-connect.ts uses to
+    // and serves as the desktop IPC enabled hint that desktop-app-main's trezor-connect.ts uses to
     // build the core's `createLogger` factory.
     debug?: boolean;
     // Logger factory supplied by the host composition root. Core expands it to logger instances for
@@ -64,9 +60,7 @@ export interface ConnectSettings {
     // (no-op) — there is no internal fallback.
     // TODO(logger-unification): unify connect's logger with the rest of the app's loggers.
     createLogger?: CreateLogger;
-    transportReconnect?: boolean;
     transports?: ConnectSettingsTransport[];
-    pendingTransportEvent?: boolean;
     // URL for binary files such as firmware, may be local or remote
     binFilesBaseUrl?: string;
     // enable firmware hash check automatically when device connects. Requires binFilesBaseUrl to be set.

@@ -1,8 +1,7 @@
 import type { ExchangeTrade } from 'invity-api';
 
 import type { SlippageFormValues } from '@suite-common/trading';
-import { yup } from '@suite-common/validators';
-import { Form, useForm } from '@suite-native/forms';
+import { Form, useForm, yup } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 import { mercuryoDexQuote } from '@suite-native/trading-fixtures';
 

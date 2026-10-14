@@ -3,12 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
-            "path": "../../suite-common/dependency-injection"
-        },
-        {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/wallet-config"
         },
         {
@@ -20,6 +14,17 @@
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/connect-common"
-        }
+        },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        { "path": "../../packages/redux-utils" },
+        {
+            "path": "../../suite-common/suite-types"
+        },
+        {
+            "path": "../../suite-common/test-utils"
+        },
+        { "path": "../analytics" }
     ]
 }

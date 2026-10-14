@@ -1,7 +1,7 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 
-import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { getFramePropsStory } from '@trezor/components';
+import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import { TokenIcon as TokenIconComponent } from './TokenIcon';
 import {
@@ -21,6 +21,7 @@ const NETWORK_SYMBOLS = [
     'avax',
     'rhc',
     'hype',
+    'arc',
     'sol',
     'trx',
     'ada',

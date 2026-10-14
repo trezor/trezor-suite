@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import type { SellFiatTrade } from 'invity-api';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { selectTradingSellIsLoading } from '@suite-common/trading';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { AnimatedBox, Text } from '@suite-native/atoms';
@@ -14,6 +13,7 @@ import {
     PaymentMethodDisplay,
 } from '@suite-native/trading-atoms';
 import { selectSellBestQuotesForAvailablePaymentMethods } from '@suite-native/trading-state';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useSheetControls } from '../../../hooks/general/useSheetControls';
 import { useSellFormContext } from '../../../hooks/sell/useSellFormContext';

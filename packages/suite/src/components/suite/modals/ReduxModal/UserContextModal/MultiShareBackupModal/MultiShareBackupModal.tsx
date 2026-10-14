@@ -4,10 +4,10 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { isAdditionalShamirBackupInProgress } from '@suite-common/backup';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Modal, type ModalProps } from '@trezor/components';
 import TrezorConnect, { PROTO } from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
 import {
     HELP_CENTER_KEEPING_SEED_SAFE_URL,

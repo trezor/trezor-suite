@@ -19,13 +19,14 @@ jest.mock('../data/firmwareReleaseStore', () => {
     };
 });
 
+jest.spyOn(global, 'fetch').mockImplementation(() => Promise.reject());
+
 // import { createTestTransport } from '../device/__tests__/DeviceList.test';
 const { createTestTransport } = global.JestMocks;
 
 const getSettings = (partial: Partial<ConnectSettings> = {}) =>
     parseConnectSettings({
         transports: [createTestTransport()],
-        transportReconnect: false,
         ...partial,
     });
 
@@ -70,8 +71,8 @@ describe('Core', () => {
         // no events emitted before initialization
         expect(eventsSpy).toHaveBeenCalledTimes(0);
         await new Promise(resolve => setTimeout(resolve, 1));
-        // device + transport events emitted in next tick
-        expect(eventsSpy).toHaveBeenCalledTimes(2);
+        // transport events emitted in next tick
+        expect(eventsSpy.mock.calls).toMatchObject([[{ type: 'transport-start' }]]);
 
         coreManager.dispose();
     });

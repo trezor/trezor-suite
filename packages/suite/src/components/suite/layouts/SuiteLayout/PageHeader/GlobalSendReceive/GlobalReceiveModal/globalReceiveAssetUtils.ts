@@ -1,3 +1,5 @@
+import { normalizeForSearch } from '@suite-common/suite-utils';
+import { type RankedTokenStructure } from '@suite-common/token-definitions';
 import {
     type TradeableAssetBalance,
     type TradeableAssetBalances,
@@ -5,10 +7,50 @@ import {
     type TradeableAssetSearchIndex,
     type TradingAssetOption,
     buildTradeableAssetSearchIndex,
-    filterTradeableAssetsBySearch,
-    orderTradeableAssetsByOwnership,
+    createAssetNativeTokenOption,
+    createAssetTokenOption,
 } from '@suite-common/trading';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import {
+    type Network,
+    type NetworkSymbol,
+    toNetworkSymbolNonTestnet,
+} from '@suite-common/wallet-config';
+
+type BuildGlobalReceiveAssetOptionsParams = {
+    networks: readonly Network[];
+    definitions: RankedTokenStructure;
+};
+
+export const buildGlobalReceiveAssetOptions = ({
+    networks,
+    definitions,
+}: BuildGlobalReceiveAssetOptionsParams): TradingAssetOption[] => {
+    const assets: TradingAssetOption[] = networks.map(network =>
+        createAssetNativeTokenOption(toNetworkSymbolNonTestnet(network.symbol)),
+    );
+    const networksByPlatform = new Map(networks.map(network => [network.coingeckoId, network]));
+    const includedIds = new Set(assets.map(asset => asset.id));
+
+    // Filtering keeps the published market-cap order; normalized duplicate IDs keep their first entry.
+    definitions.forEach(token => {
+        const network = networksByPlatform.get(token.assetPlatformId);
+        if (!network) {
+            return;
+        }
+
+        const asset = createAssetTokenOption(network.symbol, {
+            contract: token.address,
+            symbol: token.symbol.toUpperCase(),
+            name: token.name,
+        });
+        if (!includedIds.has(asset.id)) {
+            assets.push(asset);
+            includedIds.add(asset.id);
+        }
+    });
+
+    return assets;
+};
 
 export type GlobalReceiveAssetListItem = {
     asset: TradingAssetOption;
@@ -44,9 +86,6 @@ const getAssetSearchFields = (asset: TradingAssetOption): TradeableAssetSearchFi
     contractAddress: asset.contractAddress ?? '',
 });
 
-const compareNativeAssets = (assetA: TradingAssetOption, assetB: TradingAssetOption): number =>
-    Number(assetB.isNativeToken) - Number(assetA.isNativeToken);
-
 export const buildGlobalReceiveAssetSearchIndex = (assets: readonly TradingAssetOption[]) =>
     buildTradeableAssetSearchIndex({ assets, getSearchFields: getAssetSearchFields });
 
@@ -80,34 +119,38 @@ export const getGlobalReceiveAssetSections = ({
     searchIndex = buildGlobalReceiveAssetSearchIndex(assets),
     networkSymbol,
 }: GetGlobalReceiveAssetSectionsParams): GlobalReceiveAssetSections => {
-    const orderedAssets = orderTradeableAssetsByOwnership({
-        assets,
-        balances,
-        threshold: null,
-        getAssetCryptoId: asset => asset.id,
-    });
-    const assetsFilteredByNetwork = networkSymbol
-        ? orderedAssets
-              .filter(asset => asset.networkSymbol === networkSymbol)
-              .toSorted(compareNativeAssets)
-        : orderedAssets;
-    const filteredAssets = filterTradeableAssetsBySearch({
-        assets: assetsFilteredByNetwork,
-        searchIndex,
-        search,
-    });
-    const receiveOrderedAssets = search
-        ? filteredAssets.toSorted(compareNativeAssets)
-        : filteredAssets;
-
+    const query = normalizeForSearch(search);
     const heldAssets: TradingAssetOption[] = [];
-    const assetsWithoutBalance: GlobalReceiveAssetListItem[] = [];
+    const nativeAssets: GlobalReceiveAssetListItem[] = [];
+    const tokenAssets: GlobalReceiveAssetListItem[] = [];
 
-    receiveOrderedAssets.forEach(asset => {
+    assets.forEach(asset => {
+        if (networkSymbol && asset.networkSymbol !== networkSymbol) {
+            return;
+        }
+
+        if (query) {
+            const fields = searchIndex.get(asset);
+            if (
+                !fields ||
+                !(
+                    fields.name.includes(query) ||
+                    fields.symbol.includes(query) ||
+                    fields.networkName.includes(query) ||
+                    fields.networkSymbol.includes(query) ||
+                    fields.contractAddress.includes(query)
+                )
+            ) {
+                return;
+            }
+        }
+
         if (balances.has(asset.id)) {
             heldAssets.push(asset);
+        } else if (asset.isNativeToken) {
+            nativeAssets.push({ asset, balance: undefined });
         } else {
-            assetsWithoutBalance.push({ asset, balance: undefined });
+            tokenAssets.push({ asset, balance: undefined });
         }
     });
 
@@ -115,5 +158,5 @@ export const getGlobalReceiveAssetSections = ({
         .toSorted((assetA, assetB) => compareHeldAssets(balances, assetA, assetB))
         .map(asset => ({ asset, balance: balances.get(asset.id) }));
 
-    return { assetsWithBalance, assetsWithoutBalance };
+    return { assetsWithBalance, assetsWithoutBalance: [...nativeAssets, ...tokenAssets] };
 };

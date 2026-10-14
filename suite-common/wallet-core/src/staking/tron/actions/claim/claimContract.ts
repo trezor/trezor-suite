@@ -1,7 +1,9 @@
 import { type Account, type FormState } from '@suite-common/wallet-types';
 import * as tronUtils from '@trezor/network-tron/utils';
 
-export const buildWithdrawBalanceContract = ({ ownerHex }: { ownerHex: string }) =>
+type BuildWithdrawBalanceContractParams = { ownerHex: string };
+
+export const buildWithdrawBalanceContract = ({ ownerHex }: BuildWithdrawBalanceContractParams) =>
     ({
         type: 'WithdrawBalanceContract' as const,
         parameter: {

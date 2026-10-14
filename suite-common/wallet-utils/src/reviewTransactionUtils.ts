@@ -270,6 +270,7 @@ const constructOldFlow = ({
 
     const isBitcoin = account.networkType === 'bitcoin';
     const isCardano = isCardanoTx(account, precomposedTx);
+    const isSolana = account.networkType === 'solana';
     const isStellar = account.networkType === 'stellar';
     const { networkType } = account;
 
@@ -405,7 +406,7 @@ const constructOldFlow = ({
     } else if (
         !isBitcoin &&
         isValidTxData(precomposedForm.transactionData) &&
-        (!precomposedTx.token || isYieldOperation) &&
+        (!precomposedTx.token || isSolana || isYieldOperation) &&
         !isClearSignedTradingSwap
     ) {
         outputs.push({ type: 'data', value: precomposedForm.transactionData });
@@ -550,14 +551,8 @@ const constructNewFlow = ({
     }
 
     if (tronStaking?.kind === 'vote') {
-        precomposedTx.outputs.forEach(o => {
-            if ('address' in o && typeof o.address === 'string') {
-                outputs.push({
-                    type: 'tron-vote',
-                    value: o.address,
-                    value2: tronStaking.votes,
-                });
-            }
+        tronStaking.allocations.forEach(({ address, votes }) => {
+            outputs.push({ type: 'tron-vote', value: address, value2: votes });
         });
 
         return outputs;
@@ -607,6 +602,7 @@ const constructNewFlow = ({
         !isBitcoin &&
         isValidTx &&
         ((!precomposedTx.token && !isEvmApproval) ||
+            isSolana ||
             (isEvmApproval && !isApprovalFlowSupported) ||
             (isYieldOp && !isUpdatedEthereumSendFlow) ||
             (isClaimOp && !isEvmClaimClearSign)) &&

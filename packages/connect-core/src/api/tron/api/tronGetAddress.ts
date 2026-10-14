@@ -11,11 +11,7 @@ export default class TronGetAddress extends AbstractMiscGetAddress<'tronGetAddre
     }
 
     get info() {
-        return this.getInfo('Tron', false);
-    }
-
-    get confirmation() {
-        return this.getConfirmation('Tron');
+        return this.getInfo('Tron');
     }
 
     async _call({ proto }: MiscGetAddressParams) {

@@ -1,7 +1,7 @@
-import { createWeakMapSelector } from '@suite-common/redux-utils';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { AccountDescriptor } from '@suite-common/wallet-types';
 import type { WalletDescriptor } from '@trezor/device-utils';
+import { createWeakMapSelector } from '@trezor/redux-utils';
 
 import { type SuiteSyncDataRootState } from '../suiteSyncDataReducer';
 import { findSuiteSyncAccountLabel } from './findSuiteSyncAccountLabel';

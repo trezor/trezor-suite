@@ -2,13 +2,16 @@ import {
     type SuiteCommonNetworkModule,
     createNetworkModule,
 } from '@trezor/network-module-suite-common-types';
-import { supportedTronNetworks } from '@trezor/network-tron/constants';
+import { tronAssets } from '@trezor/network-tron-assets';
+import { supportedTronNetworks } from '@trezor/network-tron-types';
 
 import { tronValidator } from './addressValidator/tronAddressValidator';
-import { getNetworkConfig } from './networkConfig';
+import { getAccountSyncInterval, getNetworkConfig } from './networkConfig';
 
 export const createTronSuiteCommonNetworkModule = (): SuiteCommonNetworkModule =>
     createNetworkModule(supportedTronNetworks, {
+        icon: tronAssets,
         addressValidator: tronValidator,
         getNetworkConfig,
+        getAccountSyncInterval,
     });

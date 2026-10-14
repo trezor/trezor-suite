@@ -11,11 +11,11 @@ import {
 import { Translation } from '@suite/intl';
 import { type RouterRootState, selectRouterApp } from '@suite/router';
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { type DeviceRootState, selectPhysicalDeviceWallets } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { Image } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { SidebarBanner } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 import { palette } from '@trezor/theme';
 import { ESHOP_STORE_URL, withGetTrezorCtaUtm } from '@trezor/urls';
 
@@ -37,8 +37,7 @@ type NoDeviceEshopSidebarBannerRootState = DeviceRootState & FlagsRootState & Ro
 const isNoDeviceEshopSidebarBannerRoute = (state: RouterRootState) => {
     const routerApp = selectRouterApp(state);
 
-    // After reset, users land on the start screen (`initialRun`) rather than the dashboard.
-    return routerApp === 'dashboard' || routerApp === 'start';
+    return routerApp === 'dashboard';
 };
 
 export const selectShouldShowNoDeviceEshopSidebarBanner = (

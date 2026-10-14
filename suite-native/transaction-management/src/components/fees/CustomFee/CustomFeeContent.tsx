@@ -1,7 +1,7 @@
-import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated';
+import { FadeInDown, FadeOutDown } from 'react-native-reanimated';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { BannerInline, HStack, Text, VStack } from '@suite-native/atoms';
+import { AnimatedView, BannerInline, HStack, Text, VStack } from '@suite-native/atoms';
 import { CryptoToFiatAmountFormatter, ExactCryptoAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 
@@ -44,12 +44,12 @@ export const CustomFeeContent = ({
             </VStack>
         </HStack>
         {isErrorBoxVisible && (
-            <Animated.View entering={FadeInDown} exiting={FadeOutDown}>
+            <AnimatedView entering={FadeInDown} exiting={FadeOutDown}>
                 <BannerInline
                     intent="critical"
                     title={<Translation id="transactionManagement.fees.error" />}
                 />
-            </Animated.View>
+            </AnimatedView>
         )}
     </VStack>
 );

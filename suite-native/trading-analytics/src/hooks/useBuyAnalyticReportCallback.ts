@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import type { BuyTrade } from 'invity-api';
 
-import { useServices } from '@suite-common/dependency-injection';
 import {
     type TradingRootState,
     selectTradingBuySelectedQuote,
@@ -15,6 +14,7 @@ import {
     events,
     injectNativeAnalytics,
 } from '@suite-native/analytics';
+import { useServices } from '@trezor/dependency-injection';
 
 import { getAnalyticsTradingBuyPayload } from '../utils/quotesUtils';
 

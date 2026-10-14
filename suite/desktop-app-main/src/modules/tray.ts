@@ -8,14 +8,13 @@ import { type Status, type TraySettings } from '@suite/desktop-app-api';
 import { DEVICE, type DeviceEvent } from '@trezor/connect';
 
 import { ipcMain } from '../ipcMain';
-import { app } from '../typed-electron';
 import { type ModuleInitBackground, mainThreadEmitter } from './module';
 import { APP_NAME_BARE } from '../libs/constants';
+import { app } from '../typed-electron';
 
 export const SERVICE_NAME = 'tray';
 
-export const initBackground: ModuleInitBackground = ({ store, mainWindowProxy }) => {
-    const { logger } = global;
+export const initBackground: ModuleInitBackground = ({ store, mainWindowProxy, logger }) => {
     const initialSettings = store.getTraySettings();
 
     const state = {

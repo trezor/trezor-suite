@@ -21,19 +21,21 @@ const FAKE_CONTRACT = toTokenAddress('0x1111111111111111111111111111111111111111
 const createToken = (contract: string, symbol: string, balance: string) =>
     mockAccountToken({ name: symbol, symbol, contract: toTokenAddress(contract), balance });
 
+type CreateAccountParams = {
+    symbol?: NetworkSymbol;
+    descriptor: string;
+    balance?: string;
+    accountType?: Account['accountType'];
+    tokens?: Account['tokens'];
+};
+
 const createAccount = ({
     symbol = asNetworkSymbol('eth'),
     descriptor,
     balance = '0',
     accountType = 'normal',
     tokens = [],
-}: {
-    symbol?: NetworkSymbol;
-    descriptor: string;
-    balance?: string;
-    accountType?: Account['accountType'];
-    tokens?: Account['tokens'];
-}): Account =>
+}: CreateAccountParams): Account =>
     mockWalletAccount({
         symbol,
         descriptor: asAccountDescriptor(descriptor),
@@ -72,13 +74,12 @@ const tokenDefinitions: TokenDefinitionsState = {
     },
 };
 
-const buildRows = ({
-    accounts,
-    networkSymbolFilter,
-}: {
+type BuildRowsParams = {
     accounts: Account[];
     networkSymbolFilter?: NetworkSymbol;
-}) =>
+};
+
+const buildRows = ({ accounts, networkSymbolFilter }: BuildRowsParams) =>
     buildSellAssetRows({
         supportedNetworks: mockGetSupportedNetworks(),
         accounts,

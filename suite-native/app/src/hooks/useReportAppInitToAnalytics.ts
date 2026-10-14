@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Dimensions, PixelRatio, Platform } from 'react-native';
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import {
     selectDeviceLanguage,
     selectRememberedHiddenWalletsCount,
@@ -22,6 +21,7 @@ import { selectSupportedLanguageLocale } from '@suite-native/intl';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
 import { selectIsAppReady } from '@suite-native/state';
 import { useUserColorScheme } from '@suite-native/theme';
+import { useServices } from '@trezor/dependency-injection';
 
 export const useReportAppInitToAnalytics = () => {
     const [initWasReported, setInitWasReported] = useState(false);

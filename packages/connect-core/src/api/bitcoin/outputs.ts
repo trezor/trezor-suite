@@ -174,9 +174,15 @@ export const parseOutputScript = (output: Buffer, network?: Network) => {
     } catch {
         try {
             const { data: embedScript } = BitcoinJsPayments.embed({ output }, { validate: true });
-            const data = embedScript?.shift()?.toString('hex'); // shift OP code
+            // `embed.data` already excludes the OP_RETURN opcode. Trezor's PAYTOOPRETURN carries a
+            // single data blob, so anything other than exactly one push cannot be represented
+            // faithfully — treat it as unknown rather than silently dropping the extra pushes.
+            const [chunk, ...rest] = embedScript ?? [];
+            if (!chunk || rest.length > 0) {
+                return { type: 'unknown' } as const;
+            }
 
-            return { type: 'data', data } as const;
+            return { type: 'data', data: chunk.toString('hex') } as const;
         } catch {
             return { type: 'unknown' } as const;
         }

@@ -2,8 +2,10 @@ import { type ComponentType } from 'react';
 
 import { type PageName } from '@suite/router';
 
+import { AppsEmbedding } from 'src/views/apps-embedding/AppsEmbedding';
 import { ConnectPopup } from 'src/views/connect-popup';
 import { Dashboard } from 'src/views/dashboard';
+import { HiddenTokens } from 'src/views/dashboard/HiddenTokens';
 import { Earn } from 'src/views/earn';
 import {
     EarnTronClaim,
@@ -58,6 +60,14 @@ import { Transactions } from 'src/views/wallet/transactions/Transactions';
 
 export const desktopComponents: Record<PageName, ComponentType> = {
     'suite-index': Dashboard,
+    /*
+     Compatibility fallback after removing the `suite-start` as a fullscreen app.
+     It used to be a route dedicated as a starting point for onboarding devices.
+     Now that screen is rendered declaratively so we don't need a route for it.
+    */
+    // TODO add a redirect option to routeConfig instead of duplication.
+    'suite-start': Dashboard,
+    'suite-hidden-tokens': HiddenTokens,
     'suite-earn': Earn,
     'earn-yield-deposit': EarnDeposit,
     'earn-yield-withdraw': EarnWithdraw,
@@ -70,6 +80,7 @@ export const desktopComponents: Record<PageName, ComponentType> = {
     'earn-tron-unstake': EarnTronUnstake,
     'earn-tron-withdraw': EarnTronWithdraw,
     'earn-tron-claim': EarnTronClaim,
+    'apps-embedding-index': AppsEmbedding,
     'suite-connect-popup': ConnectPopup,
     'notifications-index': Notification,
 

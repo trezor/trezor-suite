@@ -3,9 +3,7 @@ import { useSelector, useStore } from 'react-redux';
 
 import { useRoute } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type DiscoveryRootState,
     cancelDiscoveryThunk,
@@ -13,6 +11,8 @@ import {
 } from '@suite-common/wallet-core';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { useNavigateToInitialScreen } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import {
     selectHasPassphraseError,

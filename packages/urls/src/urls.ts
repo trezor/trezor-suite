@@ -14,7 +14,7 @@ export const SUITE_WEB_DEVICE_SETTINGS_URL = (SUITE_WEB_URL + 'settings/device/'
 export const TREZOR_URL: Url = 'https://trezor.io';
 export const TREZOR_FORUM_URL: Url = 'https://forum.trezor.io/';
 export const TREZOR_START_URL: Url = 'https://trezor.io/start';
-export const TREZOR_RESELLERS_URL: Url = 'https://trezor.io/resellers/';
+export const TREZOR_RESELLERS_URL: Url = 'https://trezor.io/resellers';
 export const TREZOR_COINS_URL: Url = 'https://trezor.io/coins';
 
 // =====================
@@ -29,7 +29,7 @@ export const DATA_TOS_MOBILE_URL: Url = 'https://data.trezor.io/legal/mobile-wal
 export const DATA_PRIVACY_URL: Url = 'https://data.trezor.io/legal/privacy-policy.html';
 
 export const DOCS_ANALYTICS_URL: Url = withPlatformUtm(
-    'https://docs.trezor.io/trezor-suite/analytics/',
+    'https://docs.trezor.io/trezor-suite/analytics/index.html',
 );
 
 export const TREZOR_SUITE_TOS_URL: Url = 'https://trezor.io/documents/suite_terms_of_use.pdf';
@@ -43,15 +43,15 @@ export const MORPHO_DISCLAIMER_URL: Url = 'https://morpho.org/disclaimers/';
 // =====================
 
 export const HOW_TO_CHOOSE_RIGHT_NETWORK_URL = withPlatformUtm(
-    'https://trezor.io/guides/sending-receiving-staking-funds/moving-funds-from-exchanges/how-to-choose-the-right-network-when-withdrawing-from-or-sending-to-trezor',
+    'https://trezor.io/guides/sending-receiving-staking-funds/moving-funds-from-exchanges/choosing-the-right-network-when-sending-or-receiving-crypto',
 );
 
 export const RECOVERY_ISSUES_LINK = withPlatformUtm(
-    'https://trezor.io/support/troubleshooting/trezor-suite-issues/trezor-recovery-issues#lost-wallet-backup',
+    'https://trezor.io/support/troubleshooting/trezor-suite-issues/troubleshoot-wallet-backup-and-recovery-problems#lost-wallet-backup',
 );
 
 export const PIN_HELP_URL = withPlatformUtm(
-    'https://trezor.io/support/troubleshooting/device-issues/how-to-enter-pin-on-model-one',
+    'https://trezor.io/support/troubleshooting/device-issues/how-to-enter-your-pin-on-trezor-model-one',
 );
 
 export const TREZOR_SUPPORT_URL: Url = withPlatformUtm('https://trezor.io/support');
@@ -63,7 +63,7 @@ export const TREZOR_SUPPORT_DEVICE_URL: Url = withPlatformUtm(
     'https://trezor.io/support/troubleshooting/device-issues/trezor-suite-doesn-t-see-my-device',
 );
 export const TREZOR_SUPPORT_RECOVERY_ISSUES_URL: Url = withPlatformUtm(
-    'https://trezor.io/support/troubleshooting/trezor-suite-issues/trezor-recovery-issues',
+    'https://trezor.io/support/troubleshooting/trezor-suite-issues/troubleshoot-wallet-backup-and-recovery-problems',
 );
 export const TREZOR_SUPPORT_DEVICE_AUTHENTICATION_FAILED_URL: Url = withPlatformUtm(
     'https://trezor.io/support/troubleshooting/device-issues/trezor-safe-device-authentication-check-failed',
@@ -87,11 +87,11 @@ export const TREZOR_SUPPORT_DIFFERENT_PACKAGING: Url = withPlatformUtm(
     'https://trezor.io/support/logistics/order-shipping-faq/why-is-my-box-different-from-what-is-shown-on-the-website',
 );
 export const TREZOR_SUPPORT_RESET_PIN: Url = withPlatformUtm(
-    'https://trezor.io/support/troubleshooting/device-issues/how-to-reset-your-pin',
+    'https://trezor.io/support/troubleshooting/device-issues/how-to-reset-your-trezor-pin-using-factory-reset',
 );
 
 export const TREZOR_SUPPORT_MULTIPLE_ACCOUNTS: Url = withPlatformUtm(
-    'https://trezor.io/guides/trezor-suite/multiple-accounts-in-trezor-suite',
+    'https://trezor.io/guides/trezor-suite/manage-accounts-in-trezor-suite',
 );
 
 export const TREZOR_SUPPORT_TRADING_URL: Url = withPlatformUtm(
@@ -107,7 +107,7 @@ export const TREZOR_SUPPORT_UNDERSTANDING_FEES: Url = withPlatformUtm(
 // =====================
 
 export const HELP_CENTER_OTHER_CRYPTOCURRENCIES_DESTINATION_TAGS_URL: Url = withPlatformUtm(
-    'https://trezor.io/learn/supported-assets/xrp-xlm/destination-tags',
+    'https://trezor.io/learn/supported-assets/xrp-xlm/destination-tags-memos-explained-for-xrp-xlm-and-more',
 );
 
 export const EXPERIMENTAL_PASSWORD_MANAGER_KB_URL: Url = withPlatformUtm(
@@ -141,7 +141,7 @@ export const HELP_CENTER_DRY_RUN_T3W1_URL: Url = withPlatformUtm(
     'https://trezor.io/guides/backups-recovery/general-standards/check-backup-on-trezor-safe-7',
 );
 export const HELP_CENTER_PASSPHRASE_URL: Url = withPlatformUtm(
-    'https://trezor.io/support/troubleshooting/trezor-suite-issues/passphrase-hidden-wallets-issues',
+    'https://trezor.io/support/troubleshooting/trezor-suite-issues/fix-passphrase-wallet-problems-in-trezor-suite',
 );
 export const HELP_CENTER_RECOVERY_SEED_URL: Url = withPlatformUtm(
     'https://trezor.io/guides/backups-recovery/general-standards/how-to-use-a-wallet-backup',
@@ -166,7 +166,7 @@ export const HELP_CENTER_XRP_URL: Url = withPlatformUtm(
     'https://trezor.io/learn/supported-assets/xrp-xlm/xrp-on-trezor-devices',
 );
 export const HELP_CENTER_XLM_URL: Url = withPlatformUtm(
-    'https://trezor.io/learn/supported-assets/xrp-xlm/xlm-on-trezor-devices',
+    'https://trezor.io/guides/sending-receiving-staking-funds/sending-receiving/send-and-receive-stellar-and-tokens-in-trezor-suite',
 );
 export const HELP_CENTER_CASHADDR_URL: Url = withPlatformUtm(
     'https://trezor.io/learn/basics/glossary#CashAddr',
@@ -184,7 +184,7 @@ export const HELP_CENTER_UDEV_URL: Url = withPlatformUtm(
     'https://trezor.io/guides/trezorctl/udev-rules',
 );
 export const HELP_CENTER_TOR_URL: Url = withPlatformUtm(
-    'https://trezor.io/learn/security-privacy/how-trezor-keeps-you-safe/tor-in-trezor-suite',
+    'https://trezor.io/learn/security-privacy/how-trezor-keeps-you-safe/using-tor-in-trezor-suite-to-protect-your-privacy',
 );
 export const HELP_CENTER_FW_DOWNGRADE_T1B1_URL: Url = withPlatformUtm(
     'https://trezor.io/support/troubleshooting/device-issues/install-custom-firmware-on-trezor-model-one',
@@ -202,7 +202,7 @@ export const HELP_CENTER_FW_DOWNGRADE_T3W1_URL: Url = withPlatformUtm(
     'https://trezor.io/support/troubleshooting/device-issues/install-custom-firmware-on-trezor-safe-7',
 );
 export const HELP_CENTER_RECOVERY_ISSUES_URL: Url = withPlatformUtm(
-    'https://trezor.io/support/troubleshooting/trezor-suite-issues/trezor-recovery-issues',
+    'https://trezor.io/support/troubleshooting/trezor-suite-issues/troubleshoot-wallet-backup-and-recovery-problems',
 );
 export const HELP_CENTER_ADVANCED_RECOVERY_URL: Url = withPlatformUtm(
     'https://trezor.io/guides/backups-recovery/general-standards/advanced-recovery-on-model-one',
@@ -211,19 +211,19 @@ export const HELP_CENTER_XPUB_URL: Url = withPlatformUtm(
     'https://trezor.io/learn/supported-assets/bitcoin/what-is-a-public-key-xpub',
 );
 export const HELP_CENTER_BIP329_URL: Url = withPlatformUtm(
-    'https://trezor.io/learn/advanced/standards-proposals/what-is-bip-329',
+    'https://trezor.io/learn/advanced/standards-proposals/what-is-bip-329-portable-labels-for-bitcoin-transactions',
 );
 export const HELP_CENTER_BIP32_URL: Url = withPlatformUtm(
-    'https://trezor.io/learn/advanced/standards-proposals/what-is-bip32',
+    'https://trezor.io/learn/advanced/standards-proposals/what-is-bip-32-how-hierarchical-deterministic-wallets-work',
 );
 export const HELP_CENTER_WIPE_CODE_URL: Url = withPlatformUtm(
-    'https://trezor.io/learn/security-privacy/personal-security-standards/create-wipe-code-to-erase-device',
+    'https://trezor.io/learn/security-privacy/personal-security-standards/set-up-a-wipe-code-to-erase-your-trezor',
 );
 export const HELP_FIRMWARE_TYPE = withPlatformUtm(
     'https://trezor.io/learn/supported-assets/bitcoin/bitcoin-only-firmware-on-trezor',
 );
 export const HELP_CENTER_ZERO_VALUE_ATTACKS: Url = withPlatformUtm(
-    'https://trezor.io/support/troubleshooting/coins-tokens/address-poisoning-attacks',
+    'https://trezor.io/support/troubleshooting/coins-tokens/what-are-address-poisoning-attacks-and-how-to-avoid-them',
 );
 export const HELP_CENTER_LABELING: Url = withPlatformUtm(
     'https://trezor.io/guides/trezor-suite/labels-in-trezor-suite',
@@ -244,7 +244,7 @@ export const HELP_CENTER_ADA_STAKING: Url = withPlatformUtm(
     'https://trezor.io/guides/sending-receiving-staking-funds/staking-assets-in-trezor-suite/staking-cardano-ada-in-trezor-suite',
 );
 export const HELP_CENTER_SEED_CARD_URL: Url = withPlatformUtm(
-    'https://trezor.io/learn/security-privacy/personal-security-standards/wallet-backup-card',
+    'https://trezor.io/learn/security-privacy/personal-security-standards/wallet-backup-cards-download-and-print-for-your-trezor',
 );
 export const HELP_CENTER_MULTI_SHARE_BACKUP_URL: Url = withPlatformUtm(
     'https://trezor.io/guides/backups-recovery/advanced-wallets/multi-share-backup-on-trezor',
@@ -262,7 +262,7 @@ export const HELP_CENTER_EVM_ADDRESS_CHECKSUM: Url = withPlatformUtm(
     'https://trezor.io/learn/advanced/blockchain-architecture-technologies/evm-address-checksum-in-trezor-suite',
 );
 export const HELP_CENTER_EVM_SEND_TO_CONTRACT_URL = withPlatformUtm(
-    'https://trezor.io/support/troubleshooting/coins-tokens/where-is-my-ethereum',
+    'https://trezor.io/support/troubleshooting/coins-tokens/ethereum-or-tokens-not-showing-in-trezor-suite',
 );
 export const HELP_CENTER_FIRMWARE_REVISION_CHECK: Url = withPlatformUtm(
     'https://trezor.io/learn/security-privacy/how-trezor-keeps-you-safe/trezor-firmware-revision-check',
@@ -271,7 +271,7 @@ export const HELP_CENTER_FIRMWARE_REVISION_CHECK_MOBILE: Url = withPlatformUtm(
     'https://trezor.io/learn/security-privacy/how-trezor-keeps-you-safe/trezor-firmware-authenticity-check',
 );
 export const HELP_CENTER_ENTROPY_CHECK_URL: Url = withPlatformUtm(
-    'https://trezor.io/learn/security-privacy/how-trezor-keeps-you-safe/entropy-check-how-trezor-verifies-your-wallet-is-truly-random',
+    'https://trezor.io/learn/security-privacy/how-trezor-keeps-you-safe/entropy-check-how-trezor-suite-verifies-wallet-generation',
 );
 
 export const HELP_CENTER_REPLACE_BY_FEE_ETHEREUM: Url = withPlatformUtm(
@@ -285,11 +285,11 @@ export const HELP_CENTER_CANCEL_TRANSACTION: Url = withPlatformUtm(
 );
 // TODO: update this link when the article is ready
 export const HELP_CENTER_SOL_SEND: Url = withPlatformUtm(
-    'https://trezor.io/learn/supported-assets/solana/solana',
+    'https://trezor.io/learn/supported-assets/solana/solana-what-it-is-and-how-it-works-with-trezor',
 );
 
 export const HELP_CENTER_SOLANA_HELP_URL: Url = withPlatformUtm(
-    'https://trezor.io/support/troubleshooting/coins-tokens/where-is-my-solana',
+    'https://trezor.io/support/troubleshooting/coins-tokens/why-your-sol-isn-t-showing-up-in-trezor-suite',
 );
 
 export const UNINSTALL_BRIDGE_URL: Url = withPlatformUtm(
@@ -305,7 +305,7 @@ export const NETWORK_RESERVE_URL: Url = withPlatformUtm(
 );
 
 export const HELP_CENTER_T3W1_INTRODUCTION_URL: Url = withPlatformUtm(
-    'https://trezor.io/guides/trezor-devices/trezor-safe-7/introduction-to-the-trezor-safe-7',
+    'https://trezor.io/trezor-safe-7',
 );
 
 // =====================
@@ -340,9 +340,6 @@ export const ESHOP_KEEP_METAL_SINGLE_SHARE_URL: Url = withPlatformUtm(
 );
 
 export const SUITE_REFERRAL: Url = withPlatformUtm('https://trezor.io/refer-a-friend');
-
-export const DASHBOARD_BANNER_TEX_URL: Url =
-    'https://trezor.io/trezor-expert-consultation?utm_source=trezor_suite&utm_medium=suite_desktop_banner&utm_campaign=expert_consultation';
 
 export const DASHBOARD_BANNER_TS7_URL: Url = withPlatformUtm(
     'https://trezor.io/trezor-safe-7?utm_source=trezor_suite&utm_campaign=ts7_introduction',

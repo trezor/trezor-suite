@@ -13,8 +13,8 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
-  cancel-in-progress: true
+  group: suite-web-deploy-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: ${{ github.ref_name != 'develop' }}
 
 env:
   DEV_SERVER_URL: "https://dev.suite.sldev.cz"
@@ -117,7 +117,7 @@ jobs:
       e2e-passphrase-live: ${{ secrets.E2E_TEST_PASSPHRASE_LIVE }}
 
   build-and-publish-coverage-map:
-    if: always() && github.repository == 'trezor/trezor-suite' && needs.run-e2e-suite-web-tests.result != 'skipped'
+    if: ${{ !cancelled() && github.repository == 'trezor/trezor-suite' && github.ref == 'refs/heads/develop' && needs.run-e2e-suite-web-tests.result != 'skipped' }}
     needs: [run-e2e-suite-web-tests]
     runs-on: ubuntu-latest
     permissions:
@@ -140,7 +140,7 @@ jobs:
           cache: yarn
 
       - name: Install SafeDep PMG
-        uses: safedep/pmg@0d4f89121c773b0009cc2f2dfb578d03603263f2 # v0.29.1
+        uses: safedep/pmg@961499c36c98afbafec10a257ff27fb464073c86 # v0.30.0
         continue-on-error: true
         with:
           version: v0.19.1
@@ -164,3 +164,16 @@ jobs:
       - name: Upload coverage map to S3
         run: |
           aws s3api put-object --bucket dev.suite.sldev.cz --key coverage/e2e/index.json --body packages/e2e-utils/coverage-map/index.json --content-type application/json --cache-control "no-cache, max-age=0"
+
+  notify-coverage-map-failure:
+    if: ${{ !cancelled() && needs.build-and-publish-coverage-map.result == 'failure' }}
+    needs: [build-and-publish-coverage-map]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify coverage map failure to Slack
+        env:
+          GITHUB_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_FIX_AGENT_WEBHOOK }}
+        run: |
+          jq -n --arg text "Nightly e2e coverage map build failed: <$GITHUB_RUN_URL|Github run>" '{text: $text}' \
+            | curl -X POST -H 'Content-type: application/json' --data @- "$SLACK_WEBHOOK_URL"

@@ -1,10 +1,10 @@
 import { useCallback } from 'react';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { PressableOpacity } from '@suite-native/atoms';
 import { type AccountAddress, type StaticSessionId } from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { ReceiveAddressListItem } from './ReceiveAddressListItem';

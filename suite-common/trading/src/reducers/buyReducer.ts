@@ -9,9 +9,10 @@ import {
 } from 'invity-api';
 
 import { type AccountKey } from '@suite-common/wallet-types';
+import { cloneObject } from '@trezor/utils';
 
 import { TRADING_BUY_PREFIX } from '../constants';
-import { type TradingAmountLimitProps } from '../types';
+import { type TradingAmountLimitProps, type TradingBuyFormProps } from '../types';
 
 export interface BuyInfo {
     buyInfo: BuyListResponse;
@@ -22,8 +23,8 @@ export interface BuyInfo {
 
 export interface TradingBuyState {
     buyInfo?: BuyInfo;
-    isFromRedirect: boolean;
     quotesRequest?: BuyTradeQuoteRequest;
+    formValues?: TradingBuyFormProps;
     quotes: BuyTrade[];
     selectedQuote: BuyTrade | undefined;
     tradingAccountKey?: AccountKey;
@@ -37,9 +38,9 @@ export interface TradingBuyState {
 
 export const buyInitialState: TradingBuyState = {
     transactionId: undefined,
-    isFromRedirect: false,
     buyInfo: undefined,
     quotesRequest: undefined,
+    formValues: undefined,
     selectedQuote: undefined,
     quotes: [],
     tradingAccountKey: undefined,
@@ -56,11 +57,11 @@ const tradingBuySlice = createSlice({
         saveBuyInfo(state: TradingBuyState, action: PayloadAction<BuyInfo>) {
             state.buyInfo = action.payload;
         },
-        setIsFromRedirect(state: TradingBuyState, action: PayloadAction<boolean>) {
-            state.isFromRedirect = action.payload;
-        },
         saveQuoteRequest(state: TradingBuyState, action: PayloadAction<BuyTradeQuoteRequest>) {
             state.quotesRequest = action.payload;
+        },
+        saveFormValues(state: TradingBuyState, action: PayloadAction<TradingBuyFormProps>) {
+            state.formValues = cloneObject(action.payload);
         },
         saveTransactionId(state: TradingBuyState, action: PayloadAction<string | undefined>) {
             state.transactionId = action.payload;
@@ -91,6 +92,12 @@ const tradingBuySlice = createSlice({
             if (action.payload !== state.tradingAccountKey) {
                 state.amountLimits = undefined;
             }
+            if (action.payload === undefined) {
+                state.quotes = [];
+                state.quotesRequest = undefined;
+                state.formValues = undefined;
+                state.selectedQuote = undefined;
+            }
             state.tradingAccountKey = action.payload;
         },
         setReceiveAccountKey(
@@ -108,6 +115,7 @@ const tradingBuySlice = createSlice({
         clearQuotesAndParams(state: TradingBuyState) {
             state.quotes = [];
             state.quotesRequest = undefined;
+            state.formValues = undefined;
             state.selectedQuote = undefined;
             state.amountLimits = undefined;
         },

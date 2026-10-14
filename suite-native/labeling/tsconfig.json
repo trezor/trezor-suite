@@ -10,9 +10,6 @@
             "path": "../../suite-common/suite-sync"
         },
         {
-            "path": "../../suite-common/validators"
-        },
-        {
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../atoms" },

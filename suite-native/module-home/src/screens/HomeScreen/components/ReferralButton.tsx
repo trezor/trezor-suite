@@ -1,11 +1,11 @@
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
+import { useServices } from '@trezor/dependency-injection';
 import { SUITE_REFERRAL } from '@trezor/urls';
 
 export const ReferralButton = () => {

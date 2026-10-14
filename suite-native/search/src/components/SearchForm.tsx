@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import Animated, { FadeIn, FadeOut, SlideInLeft, SlideOutLeft } from 'react-native-reanimated';
+import { FadeIn, FadeOut, SlideInLeft, SlideOutLeft } from 'react-native-reanimated';
 
-import { Box, HStack, SearchInput, TextButton } from '@suite-native/atoms';
+import { AnimatedView, Box, HStack, SearchInput, TextButton } from '@suite-native/atoms';
 import { Translation, type TxKeyPath, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -50,14 +50,14 @@ export const SearchForm = ({ placeholder, onPressCancel, onInputChange }: Search
     );
 
     return (
-        <Animated.View
+        <AnimatedView
             entering={FadeIn.duration(SEARCH_INPUT_ANIMATION_DURATION).delay(
                 SEARCH_INPUT_ANIMATION_DELAY,
             )}
             exiting={FadeOut.duration(SEARCH_INPUT_ANIMATION_DURATION)}
         >
             <HStack marginRight="sp16" spacing="sp16" justifyContent="space-between">
-                <Animated.View
+                <AnimatedView
                     entering={SlideInLeft.duration(SEARCH_INPUT_ANIMATION_DURATION).delay(
                         SEARCH_INPUT_ANIMATION_DELAY,
                     )}
@@ -71,13 +71,13 @@ export const SearchForm = ({ placeholder, onPressCancel, onInputChange }: Search
                         //  eslint-disable-next-line jsx-a11y/no-autofocus
                         autoFocus
                     />
-                </Animated.View>
+                </AnimatedView>
                 <Box style={applyStyle(cancelButtonContainerStyle)}>
                     <TextButton onPress={onPressCancel}>
                         <Translation id="generic.buttons.cancel" />
                     </TextButton>
                 </Box>
             </HStack>
-        </Animated.View>
+        </AnimatedView>
     );
 };

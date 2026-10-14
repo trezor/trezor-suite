@@ -9,9 +9,7 @@ import type { ModuleInit } from './module';
 
 export const SERVICE_NAME = 'window-control';
 
-export const init: ModuleInit = ({ mainWindowProxy }) => {
-    const { logger } = global;
-
+export const init: ModuleInit = ({ mainWindowProxy, logger }) => {
     mainWindowProxy.on('init', mainWindow => {
         if (process.platform === 'darwin') {
             // macOS specific window behavior

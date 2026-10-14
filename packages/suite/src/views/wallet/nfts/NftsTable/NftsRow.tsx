@@ -5,8 +5,6 @@ import { RedactNumericalValue } from '@suite/discreet-mode';
 import { selectIsCopyAddressModalShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     DefinitionType,
     type TokenInfo,
@@ -35,6 +33,7 @@ import {
     Table,
     Text,
 } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import {
     ArrowUpRightIcon,
     EyeIcon,
@@ -42,6 +41,7 @@ import {
     NewspaperIcon,
     PictureFrameIcon,
 } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { setTransactionHistoryPrefill } from 'src/actions/suite/suiteActions';
 import { HiddenPlaceholder } from 'src/components/suite';

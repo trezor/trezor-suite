@@ -1,7 +1,7 @@
 import { type TransportName } from '@suite-common/connect-init';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectTransports } from '@suite-common/suite-types';
 import TrezorConnect from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
 import { useWindowFocus } from '@trezor/react-utils';
 import { SUITE_BRIDGE_DEEPLINK, SUITE_URL } from '@trezor/urls';
 

@@ -9,7 +9,14 @@ import { within } from '@suite-native/test-utils-store';
 
 import { TransactionReviewOutputItemContent } from './TransactionReviewOutputItemContent';
 import { renderWithTransactionReview } from '../__fixtures__/renderWithTransactionReview';
-import { ETH_ACCOUNT_KEY, USDC_CONTRACT } from '../__fixtures__/walletState';
+import {
+    ADA_ACCOUNT_KEY,
+    CARDANO_NO_DECIMALS_TOKEN_CONTRACT,
+    CARDANO_TOKEN_CONTRACT,
+    CARDANO_TOKEN_FINGERPRINT,
+    ETH_ACCOUNT_KEY,
+    USDC_CONTRACT,
+} from '../__fixtures__/walletState';
 
 jest.mock('./TransactionReviewOutputItemValues', () => ({
     TransactionReviewOutputItemValues: ({
@@ -81,6 +88,65 @@ describe('TransactionReviewOutputItemContent', () => {
         );
     });
 
+    it('should render the fingerprint and Trezor amount for a Cardano token', async () => {
+        const { getByTestId } = await renderContent(output('amount', '150000'), {
+            accountKey: ADA_ACCOUNT_KEY,
+            tokenContract: CARDANO_TOKEN_CONTRACT,
+        });
+
+        const content = getByTestId(CONTENT_TEST_ID);
+
+        expect(
+            within(content).getByText(
+                getTranslation('transactionManagement.review.outputs.cardanoFingerprintLabel'),
+            ),
+        ).toBeOnTheScreen();
+        expect(within(content).getByText(CARDANO_TOKEN_FINGERPRINT)).toBeOnTheScreen();
+        expect(
+            within(content).getByText(
+                getTranslation('transactionManagement.review.outputs.cardanoTrezorAmountLabel'),
+            ),
+        ).toBeOnTheScreen();
+        expect(within(content).getByText('150000')).toBeOnTheScreen();
+    });
+
+    it('should omit the Trezor amount for a Cardano token without decimals', async () => {
+        const { getByTestId } = await renderContent(output('amount', '7'), {
+            accountKey: ADA_ACCOUNT_KEY,
+            tokenContract: CARDANO_NO_DECIMALS_TOKEN_CONTRACT,
+        });
+
+        const content = getByTestId(CONTENT_TEST_ID);
+
+        expect(
+            within(content).getByText(
+                getTranslation('transactionManagement.review.outputs.cardanoFingerprintLabel'),
+            ),
+        ).toBeOnTheScreen();
+        expect(
+            within(content).queryByText(
+                getTranslation('transactionManagement.review.outputs.cardanoTrezorAmountLabel'),
+            ),
+        ).toBeNull();
+    });
+
+    it('should not render Cardano token details for a native ADA amount', async () => {
+        const { queryByText } = await renderContent(output('amount', '1000'), {
+            accountKey: ADA_ACCOUNT_KEY,
+        });
+
+        expect(
+            queryByText(
+                getTranslation('transactionManagement.review.outputs.cardanoFingerprintLabel'),
+            ),
+        ).toBeNull();
+        expect(
+            queryByText(
+                getTranslation('transactionManagement.review.outputs.cardanoTrezorAmountLabel'),
+            ),
+        ).toBeNull();
+    });
+
     it('should render the destination tag value when set', async () => {
         const { getByTestId } = await renderContent(output('destination-tag', '12345'));
 
@@ -124,11 +190,14 @@ describe('TransactionReviewOutputItemContent', () => {
         );
     });
 
-    it('should render hex data for type "data"', async () => {
-        const { getByTestId } = await renderContent(output('data', '0xabcd'));
+    it.each<TransactionReviewOutputType>(['data', 'opreturn'])(
+        'should render hex data for type "%s"',
+        async type => {
+            const { getByTestId } = await renderContent(output(type, '0xabcd'));
 
-        expect(getByTestId(CONTENT_TEST_ID)).toHaveTextContent('0xabcd');
-    });
+            expect(getByTestId(CONTENT_TEST_ID)).toHaveTextContent('0xabcd');
+        },
+    );
 
     it('should truncate long hex data and offer a show-more control', async () => {
         const { getByTestId } = await renderContent(output('data', 'd'.repeat(301)));
@@ -183,7 +252,6 @@ describe('TransactionReviewOutputItemContent', () => {
     });
 
     it.each<TransactionReviewOutputType>([
-        'opreturn',
         'locktime',
         'fee',
         'txid',

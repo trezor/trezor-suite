@@ -123,7 +123,7 @@ describe('useBuyFlow', () => {
                 expect(state.wallet.trading.buy.receiveAccountKey).toBe(btcAccount.key);
             });
 
-            it('should reset form when navigating to preview', async () => {
+            it('should keep form values when navigating to preview', async () => {
                 const { result } = await renderUseTradingBuyFlow();
                 const resetSpy = jest.spyOn(buyForm, 'reset');
 
@@ -137,7 +137,7 @@ describe('useBuyFlow', () => {
                     payload.nextStep();
                 });
 
-                expect(resetSpy).toHaveBeenCalledTimes(1);
+                expect(resetSpy).not.toHaveBeenCalled();
             });
         });
     });

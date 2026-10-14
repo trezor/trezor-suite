@@ -15,7 +15,6 @@
         "@reduxjs/toolkit": "2.12.0",
         "@suite-common/device": "workspace:*",
         "@suite-common/mev": "workspace:*",
-        "@suite-common/redux-utils": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
@@ -24,12 +23,13 @@
         "@suite-native/tokens": "workspace:*",
         "@suite-native/transaction-management": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
+        "@trezor/redux-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*"
     },
     "devDependencies": {
-        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/test-utils": "workspace:*",
-        "@suite-common/wallet-config": "workspace:*"
+        "@suite-common/wallet-config": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*"
     }
 }

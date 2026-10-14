@@ -104,4 +104,32 @@ describe('solana worker subscriptions', () => {
             ]);
         });
     });
+
+    it('keeps a failed block poll from rejecting unhandled', async () => {
+        const onUnhandledRejection = jest.fn();
+        process.on('unhandledRejection', onUnhandledRejection);
+
+        const worker = SolanaWorker();
+        worker.tryConnect = () =>
+            Promise.resolve({
+                rpc: {
+                    getLatestBlockhash: () => ({
+                        send: () => Promise.reject(new TypeError('fetch failed')),
+                    }),
+                },
+            } as unknown as SolanaAPI);
+        const blockchain = new BlockchainLink({
+            name: 'Solana',
+            worker: () => worker,
+            server: ['dummyUrl'],
+            debug: false,
+        });
+
+        await blockchain.subscribe({ type: 'block' });
+        await new Promise(resolve => setImmediate(resolve));
+        blockchain.dispose();
+
+        process.off('unhandledRejection', onUnhandledRejection);
+        expect(onUnhandledRejection).not.toHaveBeenCalled();
+    });
 });

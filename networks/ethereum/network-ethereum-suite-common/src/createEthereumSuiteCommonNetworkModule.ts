@@ -1,4 +1,6 @@
-import { supportedEthereumNetworks } from '@trezor/network-ethereum/constants';
+import { isWrappedNativeToken } from '@trezor/network-ethereum/constants';
+import { ethereumAssets } from '@trezor/network-ethereum-assets';
+import { supportedEthereumNetworks } from '@trezor/network-ethereum-types';
 import {
     type SuiteCommonNetworkModule,
     createNetworkModule,
@@ -9,7 +11,7 @@ import {
     type EthereumNamedAddressResolverCompositionRootDeps,
     createEthereumNamedAddressResolverCompositionRoot,
 } from './namedAddress/createEthereumNamedAddressResolverCompositionRoot';
-import { getNetworkConfig } from './networkConfig';
+import { getAccountSyncInterval, getNetworkConfig } from './networkConfig';
 
 type EthereumSuiteCommonNetworkModuleDeps = EthereumNamedAddressResolverCompositionRootDeps;
 
@@ -22,8 +24,14 @@ export const createEthereumSuiteCommonNetworkModule = (
         createEthereumNamedAddressResolverCompositionRoot(deps);
 
     return createNetworkModule(supportedEthereumNetworks, {
+        icon: {
+            ...ethereumAssets,
+            getTokenLogoIdentifiers: (_symbol, contract) => [contract.toLowerCase()],
+        },
+        isWrappedNativeToken,
         addressValidator: ethereumValidator,
         namedAddressResolver: ethereumNamedAddressResolver,
         getNetworkConfig,
+        getAccountSyncInterval,
     });
 };

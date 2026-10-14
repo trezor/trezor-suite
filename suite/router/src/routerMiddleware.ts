@@ -1,6 +1,6 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 
-import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
+import { createMiddlewareWithExtraDeps } from '@trezor/redux-utils';
 
 import {
     type RouterRootState,

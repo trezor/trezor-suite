@@ -4,8 +4,10 @@ import {
     type TokenDefinitionsRootState,
     selectIsSpecificCoinDefinitionKnown,
 } from '@suite-common/token-definitions';
+import { type NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
 import {
     type CryptoBaseCurrencyPair,
+    type CurrentRatesByKey,
     type Rate,
     type RateTypeWithoutHistoric,
     type RatesByKey,
@@ -19,6 +21,7 @@ import {
     roundTimestampToNearestPastHour,
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import { createWeakMapSelector, weakMapMemoize } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { MAX_AGE } from './fiatRatesConstants';
@@ -26,8 +29,73 @@ import { type FiatRatesRootState } from './fiatRatesTypes';
 import { type AccountsRootState } from '../accounts/accountsReducer';
 import { selectAccounts } from '../accounts/accountsSelectors';
 
-export const selectCurrentFiatRates = (state: FiatRatesRootState): RatesByKey | undefined =>
+const createMemoizedSelector = createWeakMapSelector.withTypes<FiatRatesRootState>();
+
+export const createStableFiatRateKeys = weakMapMemoize(
+    (...fiatRateKeys: CryptoBaseCurrencyPair[]) => fiatRateKeys,
+);
+
+export const createStableTickerId = weakMapMemoize(
+    (symbol: NetworkSymbol, tokenAddress?: TokenAddress): TickerId =>
+        tokenAddress ? { symbol, tokenAddress } : { symbol },
+);
+
+export const createStableTickerIds = weakMapMemoize((...tickers: TickerId[]) => tickers);
+
+const createStableRatesByKey = weakMapMemoize(
+    (fiatRateKeys: CryptoBaseCurrencyPair[], ...rates: (Rate | undefined)[]): RatesByKey =>
+        fiatRateKeys.reduce<RatesByKey>((ratesByKey, fiatRateKey, index) => {
+            const rate = rates[index];
+            if (rate) {
+                ratesByKey[fiatRateKey] = rate;
+            }
+
+            return ratesByKey;
+        }, {}),
+);
+
+export const selectCurrentFiatRates = (state: FiatRatesRootState): CurrentRatesByKey | undefined =>
     state.wallet.fiat?.['current'];
+
+const getRatesByLowerCasedKey = weakMapMemoize(
+    (currentFiatRates: RatesByKey) =>
+        new Map(Object.entries(currentFiatRates).map(([key, rate]) => [key.toLowerCase(), rate])),
+);
+
+const getCurrentFiatRate = (
+    currentFiatRates: RatesByKey | undefined,
+    fiatRateKey: CryptoBaseCurrencyPair,
+): Rate | undefined => {
+    if (!currentFiatRates) {
+        return undefined;
+    }
+
+    return (
+        currentFiatRates[fiatRateKey] ??
+        getRatesByLowerCasedKey(currentFiatRates).get(fiatRateKey.toLowerCase())
+    );
+};
+
+export const selectCurrentFiatRatesByFiatRateKeys = createMemoizedSelector(
+    [
+        selectCurrentFiatRates,
+        (_state: FiatRatesRootState, fiatRateKeys: readonly CryptoBaseCurrencyPair[]) =>
+            fiatRateKeys,
+    ],
+    (currentFiatRates, fiatRateKeys): RatesByKey =>
+        createStableRatesByKey(
+            createStableFiatRateKeys(...fiatRateKeys),
+            ...fiatRateKeys.map(fiatRateKey => getCurrentFiatRate(currentFiatRates, fiatRateKey)),
+        ),
+);
+
+export const selectCurrentFiatRateByKey = (
+    state: FiatRatesRootState,
+    fiatRateKey: CryptoBaseCurrencyPair,
+): Rate | undefined => getCurrentFiatRate(selectCurrentFiatRates(state), fiatRateKey);
+
+export const selectLastWeekFiatRates = (state: FiatRatesRootState): RatesByKey | undefined =>
+    state.wallet.fiat?.['lastWeek'];
 
 export const selectHistoricFiatRates = (state: FiatRatesRootState): RatesByTimestamps =>
     state.wallet.fiat.historic;
@@ -117,6 +185,7 @@ export const selectTickerFromAccounts = (
         A.filter(
             ticker =>
                 !ticker.tokenAddress ||
+                !getNetworkFeatures(ticker.symbol).includes('coin-definitions') ||
                 selectIsSpecificCoinDefinitionKnown(state, ticker.symbol, ticker.tokenAddress),
         ),
         A.uniqBy(ticker =>

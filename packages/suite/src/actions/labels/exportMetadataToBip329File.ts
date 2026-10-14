@@ -1,9 +1,9 @@
 import { METADATA } from '@suite/metadata';
 import { type Bip329Dep } from '@suite-common/bip329-types';
-import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { triggerWebDownloadFile } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type Account } from '@suite-common/wallet-types';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 import { sanitizeFilename } from '@trezor/utils';
 
 type ExportMetadataToBip329FileThunkDeps = WithServices<Bip329Dep>;

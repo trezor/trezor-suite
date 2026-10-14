@@ -1,5 +1,6 @@
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
+import { isEvmTxSimulationSupported } from '@suite-common/tx-simulation';
 import { asNetworkSymbol, getNetworkByEvmChainId } from '@suite-common/wallet-config';
 import {
     accountsActions,
@@ -7,6 +8,7 @@ import {
     sendFormActions,
 } from '@suite-common/wallet-core';
 import { type Account, type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { getPrecomposedTxWithAccountToken } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import type {
     CallMethodKeys,
@@ -24,14 +26,17 @@ import { selectConnectPopupCall } from '../connectPopupReducer';
 import { type PostCallHookParams, type PreCallHookParams } from './types';
 
 const temporaryAccounts: Account[] = [];
+type _storePrecomposedTransactionParams = {
+    typedPayload: EthereumSignTransaction;
+    txSigningPrecomposed: PrecomposedTransactionFinal;
+    account: Account;
+};
 
 const _storePrecomposedTransaction = ({
     typedPayload,
     txSigningPrecomposed,
-}: {
-    typedPayload: EthereumSignTransaction;
-    txSigningPrecomposed: PrecomposedTransactionFinal;
-}) =>
+    account,
+}: _storePrecomposedTransactionParams) =>
     sendFormActions.storePrecomposedTransaction({
         formState: {
             // Can be left empty, not used in tx review modal
@@ -50,9 +55,12 @@ const _storePrecomposedTransaction = ({
                 ? parseInt(typedPayload.transaction.nonce, 16).toString()
                 : typedPayload.transaction.nonce,
         },
-        precomposedTransaction: {
-            ...txSigningPrecomposed,
-        },
+        precomposedTransaction: getPrecomposedTxWithAccountToken({
+            precomposedTx: txSigningPrecomposed,
+            contract: typedPayload.transaction.to,
+            data: typedPayload.transaction.data,
+            accountTokens: account.tokens,
+        }),
     });
 
 const preCallHook = async <M extends CallMethodKeys>({
@@ -67,18 +75,17 @@ const preCallHook = async <M extends CallMethodKeys>({
         // Parse common parameters (path, chainId) from payload
         let path: Bip43Path;
         let chainId = 1;
+        let isSimulationSupported: boolean;
         if (method === 'ethereumSignTransaction') {
             const typedPayload = payload as any as EthereumSignTransaction;
             path = getSerializedPath(validatePath(typedPayload.path)) as Bip43Path;
             chainId = typedPayload.transaction.chainId || 1;
-
-            if (txSigningPrecomposed) {
-                dispatch(_storePrecomposedTransaction({ typedPayload, txSigningPrecomposed }));
-            }
+            isSimulationSupported = isEvmTxSimulationSupported({ method, payload: typedPayload });
         } else if (method === 'ethereumSignTypedData') {
             const typedPayload = payload as any as EthereumSignTypedData<any>;
             path = getSerializedPath(validatePath(typedPayload.path)) as Bip43Path;
             chainId = Number(typedPayload.data.domain.chainId) || 1;
+            isSimulationSupported = isEvmTxSimulationSupported({ method, payload: typedPayload });
         } else {
             return;
         }
@@ -112,7 +119,20 @@ const preCallHook = async <M extends CallMethodKeys>({
             }),
         );
 
-        if (source.type !== 'desktop-ws' && source.type !== 'web') {
+        if (method === 'ethereumSignTransaction' && txSigningPrecomposed) {
+            dispatch(
+                _storePrecomposedTransaction({
+                    typedPayload: payload as any as EthereumSignTransaction,
+                    txSigningPrecomposed,
+                    account: selectedAccount,
+                }),
+            );
+        }
+
+        // The simulation modal has nothing to render for a chain Blockaid can't scan, so opening it
+        // would leave the call waiting on a confirmation the user never sees. Decided from the raw
+        // payload, as the simulation is, not from the defaulted chainId above.
+        if (source.type !== 'desktop-ws' && source.type !== 'web' && isSimulationSupported) {
             // Display simulation
             const device = selectSelectedDevice(getState());
             if (!device) throw new Error('No device selected');
@@ -156,14 +176,19 @@ const preCallHook = async <M extends CallMethodKeys>({
                 const methodInfo = await TrezorConnect.ethereumSignTransaction({
                     ...modifiedPayload,
                     __info: true,
-                    __precomposed: true,
                 });
                 if (!methodInfo.success) {
                     throw methodInfo.error;
                 }
                 txSigningPrecomposed = (methodInfo.payload as any as MethodInfo).precomposed;
                 if (txSigningPrecomposed)
-                    dispatch(_storePrecomposedTransaction({ typedPayload, txSigningPrecomposed }));
+                    dispatch(
+                        _storePrecomposedTransaction({
+                            typedPayload,
+                            txSigningPrecomposed,
+                            account: selectedAccount,
+                        }),
+                    );
 
                 return modifiedPayload as any as typeof payload;
             }

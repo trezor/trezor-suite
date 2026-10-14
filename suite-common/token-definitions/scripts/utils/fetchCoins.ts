@@ -98,8 +98,9 @@ const fetchSorobanContractAsset = async (
     }
 
     const { asset } = result.payload;
+    // A contract without a wrapped asset is a native contract token, keyed by its own address.
     if (typeof asset !== 'string') {
-        return err({ type: 'CONTRACT_HAS_NO_ASSET', contractAddress });
+        return ok(contractAddress);
     }
 
     const normalizedAssetAddress = normalizeStellarAssetAddress(asset);
@@ -111,10 +112,8 @@ const fetchSorobanContractAsset = async (
 };
 
 /**
- * Resolve a Stellar address to the normalized CODE-ISSUER format.
- * Handles both classic Stellar asset addresses (CODE-ISSUER, CODE:ISSUER)
- * and Soroban contract addresses (C...) by looking up the underlying asset
- * via the StellarExpert API.
+ * Resolves a Stellar address to its definitions key: classic assets and the SACs wrapping them
+ * normalize to `CODE-ISSUER`, a native contract token keeps its `C…` address.
  */
 const resolveStellarAddress = async (
     address: string,

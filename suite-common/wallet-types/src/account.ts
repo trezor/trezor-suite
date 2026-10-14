@@ -1,4 +1,3 @@
-import { type Getter } from '@suite-common/dependency-injection';
 import type { AccountEntityKeys } from '@suite-common/metadata-types';
 import type { AccountType, BackendType, NetworkSymbol } from '@suite-common/wallet-config';
 import type {
@@ -10,6 +9,7 @@ import type {
 } from '@trezor/blockchain-link-types';
 import type { AccountInfo, PROTO, TokenInfo } from '@trezor/connect';
 import type { Bip43Path } from '@trezor/crypto-utils';
+import { type Getter } from '@trezor/dependency-injection';
 import type { StaticSessionId } from '@trezor/device-utils';
 import { type Branded } from '@trezor/type-utils';
 
@@ -72,6 +72,10 @@ type AccountNetworkSpecific =
               contractInfo?: ContractInfo;
               stakingPools?: StakingPool[];
               addressAliases?: { [key: string]: AddressAlias };
+              /** Direct RPC only: what to send as `from` to reach further back in history. */
+              olderHistoryFrom?: number;
+              /** Direct RPC only: unix time of the oldest block the scanned history covers. */
+              historyCoveredSince?: number;
           };
           marker: undefined;
           stellarCursor: undefined;
@@ -102,7 +106,12 @@ type AccountNetworkSpecific =
       }
     | {
           networkType: 'stellar';
-          misc: { stellarSequence: string; reserve: string; baseReserve: string };
+          misc: {
+              stellarSequence: string;
+              reserve: string;
+              baseReserve: string;
+              stellarUnreadableContracts?: string[];
+          };
           marker: undefined;
           stellarCursor: AccountInfo['stellarCursor'];
           page: undefined;

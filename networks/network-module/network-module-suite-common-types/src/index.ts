@@ -1,6 +1,8 @@
+export { DEFAULT_ACCOUNT_SYNC_INTERVAL } from './AccountSyncInterval';
 export { addressType } from './AddressValidator';
 export type { AddressType, AddressValidator } from './AddressValidator';
 export type { NamedAddressResolver } from './NamedAddressResolver';
+export type { IsWrappedNativeToken } from './IsWrappedNativeToken';
 export { createNetworkModule } from './createNetworkModule';
 export type { NetworkModuleDefinition } from './createNetworkModule';
 export { asDisplayOrderKey } from './DisplayOrderKey';

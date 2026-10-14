@@ -4,10 +4,10 @@ import { injectDesktopAnalytics } from '@suite/analytics';
 import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Banner, Row, Skeleton, Text, Tooltip } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { HandCoinsIcon, InfoIcon } from '@trezor/icons';
 
 import { useSelector } from 'src/hooks/suite';

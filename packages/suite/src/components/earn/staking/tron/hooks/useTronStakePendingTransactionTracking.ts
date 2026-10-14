@@ -1,9 +1,8 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TronFlow,
+    confirmTronPendingTransactionThunk,
     fetchAndUpdateAccountThunk,
     selectConvertedNetworkFeeInfo,
     selectTransactionByAccountKeyAndTxid,
@@ -12,6 +11,8 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { isPending } from '@suite-common/wallet-utils';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -57,6 +58,8 @@ export const useTronStakePendingTransactionTracking = ({
         return () => clearInterval(interval);
     }, [account.key, dispatch, isCurrentlyPending, pollIntervalMs]);
 
+    const confirmingTxidRef = useRef<string | null>(null);
+
     useEffect(() => {
         if (!pendingTxid || !trackedTransaction || isPending(trackedTransaction)) {
             return;
@@ -64,10 +67,23 @@ export const useTronStakePendingTransactionTracking = ({
 
         if (trackedTransaction.type === 'failed') {
             dispatch(tronStakeActions.pendingTransactionFailed({ accountKey: account.key, flow }));
-        } else {
-            dispatch(
-                tronStakeActions.pendingTransactionConfirmed({ accountKey: account.key, flow }),
-            );
+
+            return;
         }
-    }, [account.key, flow, pendingTxid, trackedTransaction, dispatch]);
+
+        if (confirmingTxidRef.current === pendingTxid) {
+            return;
+        }
+
+        confirmingTxidRef.current = pendingTxid;
+
+        dispatch(
+            confirmTronPendingTransactionThunk({
+                accountKey: account.key,
+                flow,
+                txid: pendingTxid,
+                retryDelayMs: pollIntervalMs,
+            }),
+        );
+    }, [account.key, flow, pendingTxid, trackedTransaction, dispatch, pollIntervalMs]);
 };

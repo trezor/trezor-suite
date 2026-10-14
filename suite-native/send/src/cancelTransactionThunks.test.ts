@@ -1,6 +1,5 @@
 import { createAction, isFulfilled, isRejected } from '@reduxjs/toolkit';
 
-import { asGetter } from '@suite-common/dependency-injection';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -16,6 +15,7 @@ import {
 } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
+import { asGetter, createMockDeps } from '@trezor/dependency-injection';
 
 import {
     type SignAndPushEvmCancelTransactionThunkState,
@@ -85,6 +85,9 @@ const dispatchCancel = () => {
         },
         services: () => ({
             analytics: mockNativeAnalytics(),
+            networks: createMockDeps<PushSendFormTransactionThunkDeps['services']['networks']>({
+                getAccountSyncInterval: null,
+            }),
             getIsWindowVisible: asGetter(() => true),
             getTradedAccountKeys: asGetter(() => []),
         }),

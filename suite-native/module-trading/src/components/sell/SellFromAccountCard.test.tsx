@@ -18,7 +18,7 @@ describe('SellFromAccountCard', () => {
             },
         });
 
-    it('should render TradeSideCard', async () => {
+    it('should render TradingAccountCard', async () => {
         const { getByText } = await renderSellFromAccountCard({
             quote: banxaCreditCardSellQuote,
         });

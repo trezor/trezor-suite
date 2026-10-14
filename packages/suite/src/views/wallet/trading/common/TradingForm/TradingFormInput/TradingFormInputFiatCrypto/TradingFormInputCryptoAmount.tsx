@@ -18,8 +18,11 @@ import {
     selectTradingSendAccount,
     useTradingUtils,
 } from '@suite-common/trading';
-import { formInputsMaxLength } from '@suite-common/validators';
-import { selectAccountByKey, selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
+import {
+    AMOUNT_MAX_LENGTH,
+    selectAccountByKey,
+    selectIsNetworkReserveEnabled,
+} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { asAmountUnit, unitsToSubunits } from '@suite-common/wallet-utils';
 import { Skeleton } from '@trezor/components';
@@ -251,7 +254,7 @@ const TradingFormInputCryptoAmountContent = ({
             isDisabled={isDerivedAmountLoading}
             control={control}
             rules={cryptoInputRules}
-            maxLength={formInputsMaxLength.amount}
+            maxLength={AMOUNT_MAX_LENGTH}
             data-testid="@trading/form/crypto-input"
         />
     );

@@ -5,12 +5,12 @@ import { deviceInitialState } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
 import { mockNetworkModuleRepository, mockNetworksState } from '@suite-common/networks/mocks';
-import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type WalletSettingsRootState,
+    feesInitialState,
     initialWalletSettingsState,
 } from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
@@ -18,7 +18,7 @@ import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { featureFlagsInitialState } from '@suite-native/feature-flags';
 import { Form } from '@suite-native/forms';
-import { localeReducer } from '@suite-native/intl';
+import { getTranslation, localeReducer } from '@suite-native/intl';
 import {
     type PreloadedStatePartial,
     createLightStore,
@@ -41,6 +41,7 @@ import {
     tradingSlice,
 } from '@suite-native/trading-state';
 import { type ExchangeFormType, type MyAsset } from '@suite-native/trading-types';
+import { mockActionType } from '@trezor/redux-utils/mocks';
 import { BigNumber } from '@trezor/utils';
 
 import { ExchangeSendAssetPicker } from './ExchangeSendAssetPicker';
@@ -147,6 +148,7 @@ describe('ExchangeSendAssetPicker', () => {
                 wallet: combineReducers({
                     settings: createStaticReducer(initialWalletSettingsState),
                     accounts: createStaticReducer(walletState.accounts),
+                    fees: createStaticReducer(feesInitialState),
                     fiat: createStaticReducer(walletState.fiat),
                     send: createStaticReducer(walletState.send),
                     trading: tradingSlice.prepareReducer({
@@ -168,6 +170,18 @@ describe('ExchangeSendAssetPicker', () => {
         const { getByLabelText } = await renderExchangeSendAssetPicker();
 
         await fireEvent.press(getByLabelText('Select asset'));
+
+        expect(mockNavigate).toHaveBeenCalledWith('TradingMyAsset', {
+            tradingType: 'exchange',
+        });
+    });
+
+    it('should navigate to the my asset screen on base currency input press without an asset', async () => {
+        const { getByLabelText } = await renderExchangeSendAssetPicker();
+
+        await fireEvent.press(
+            getByLabelText(getTranslation('moduleTrading.tradingScreen.baseCurrencyAmountLabel')),
+        );
 
         expect(mockNavigate).toHaveBeenCalledWith('TradingMyAsset', {
             tradingType: 'exchange',

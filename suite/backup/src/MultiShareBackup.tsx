@@ -6,13 +6,15 @@ import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { selectIsN4w1BackupEnabled } from '@suite/settings';
 import { doesSupportMultiShare } from '@suite-common/backup';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { useServices } from '@trezor/dependency-injection';
+import { SectionItem } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 import { HELP_CENTER_MULTI_SHARE_BACKUP_URL } from '@trezor/urls';
 
-export const MultiShareBackup = ({ isDeviceLocked }: { isDeviceLocked: boolean }) => {
+type MultiShareBackupProps = { isDeviceLocked: boolean };
+
+export const MultiShareBackup = ({ isDeviceLocked }: MultiShareBackupProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const device = useSelector(selectSelectedDevice);
     const isN4w1BackupEnabled = useSelector(selectIsN4w1BackupEnabled);
@@ -39,24 +41,24 @@ export const MultiShareBackup = ({ isDeviceLocked }: { isDeviceLocked: boolean }
     };
 
     return (
-        <SectionItem>
-            <TextColumn
-                title={<Translation id="TR_MULTI_SHARE_BACKUP" />}
-                description={<Translation id="TR_MULTI_SHARE_BACKUP_DESCRIPTION" />}
-                bottomContent={<LearnMoreButton url={HELP_CENTER_MULTI_SHARE_BACKUP_URL} />}
-            />
-            <ActionColumn>
-                <ActionButton
+        <SectionItem
+            title={<Translation id="TR_MULTI_SHARE_BACKUP" />}
+            description={<Translation id="TR_MULTI_SHARE_BACKUP_DESCRIPTION" />}
+            bottomContent={<LearnMoreButton url={HELP_CENTER_MULTI_SHARE_BACKUP_URL} />}
+            actions={
+                <SectionItem.Button
                     intent="brand"
                     data-testid="@settings/device/create-multi-share-backup-button"
                     onClick={handleClick}
                     isDisabled={isDeviceLocked}
-                    isTooltipActive={isDeviceLocked}
-                    tooltipContent={<Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />}
+                    tooltip={{
+                        isActive: isDeviceLocked,
+                        content: <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />,
+                    }}
                 >
                     <Translation id="TR_CREATE_MULTI_SHARE_BACKUP" />
-                </ActionButton>
-            </ActionColumn>
-        </SectionItem>
+                </SectionItem.Button>
+            }
+        />
     );
 };

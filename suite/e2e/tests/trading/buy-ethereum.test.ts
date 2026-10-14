@@ -1,8 +1,11 @@
+import type { BuyTradeQuoteRequest } from 'invity-api';
+
 import { getCryptoId } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 import { localizeNumber } from '@trezor/utils';
 
+import { tradeEndpoint } from '../../fixtures/trading';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
@@ -10,9 +13,11 @@ const fiatAmount = '1000';
 const fiatCurrency = 'CZK';
 const formattedFiatAmount = `${fiatCurrency} ${localizeNumber(fiatAmount, 'en-US', 2)}`;
 const detailFiatAmount = localizeNumber(fiatAmount, 'en-US');
-const receiveAccountLabel = 'Ethereum #1';
+const receiveAccountLabel = 'Ethereum #3';
 
 test.describe('Trading - Buy Ethereum', { tag: ['@T3W1', '@T3T1'] }, () => {
+    test.use({ deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
+
     test.beforeEach(async ({ onboardingPage, settingsPage, dashboardPage, tradingMock }) => {
         tradingMock.setTradeFlow('buy');
         await tradingMock.rewriteProviderRedirect();
@@ -20,6 +25,8 @@ test.describe('Trading - Buy Ethereum', { tag: ['@T3W1', '@T3T1'] }, () => {
 
         await onboardingPage.completeOnboarding();
         await settingsPage.changeNetworks({ enableNetworks: [asNetworkSymbol('btc')] });
+        await dashboardPage.deviceSwitchingOpenButton.click();
+        await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
         await dashboardPage.navigateTo();
     });
 
@@ -30,6 +37,7 @@ test.describe('Trading - Buy Ethereum', { tag: ['@T3W1', '@T3T1'] }, () => {
         async ({ page, walletPage, tradingPage, tradingMock, tradingResponses }) => {
             let receiveAmount: string;
             let providerName: string;
+            const quotesRequest = page.waitForRequest(tradeEndpoint.buyQuotes);
 
             await test.step('Request to buy Ethereum', async () => {
                 await walletPage.openTradingGlobalButton.click();
@@ -41,9 +49,19 @@ test.describe('Trading - Buy Ethereum', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await tradingPage.fillBuyForm({
                     amount: fiatAmount,
                     selectReceiveAddress: async () => {
-                        await tradingPage.receiveAccount.activateNetworkForReceiveAccount(0);
+                        await tradingPage.receiveAccount.activateNetworkForReceiveAccount({
+                            symbol: asNetworkSymbol('eth'),
+                            atIndex: 2,
+                        });
                     },
                 });
+            });
+
+            await test.step('Fiat entry requests quotes in fiat and refills crypto', async () => {
+                const request: BuyTradeQuoteRequest = (await quotesRequest).postDataJSON();
+                expect(request.wantCrypto).toBe(false);
+                expect(request.fiatStringAmount).toBe(fiatAmount);
+                await expect(tradingPage.inputs.cryptoAmount).toHaveValue(/[1-9]/);
             });
 
             await test.step('Continue to preview and confirm the trade', async () => {

@@ -9,9 +9,7 @@ import type { ModuleInit } from './module';
 
 export const SERVICE_NAME = 'external-links';
 
-export const init: ModuleInit = ({ mainWindowProxy, store }) => {
-    const { logger } = global;
-
+export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
     mainWindowProxy.on('init', mainWindow => {
         mainWindow.webContents.setWindowOpenHandler((details: HandlerDetails) => {
             const { url } = details;

@@ -11,7 +11,7 @@ export const Assets = () => (
     <>
         <FiveBinariesHomeBanner />
         <AnimatedContainerCard noPadding layout={LinearTransition}>
-            <AccountsRediscoveryNeededWarning hasPadding />
+            <AccountsRediscoveryNeededWarning margin="sp8" />
             <AssetList />
             <DiscoveryAssetsLoader />
         </AnimatedContainerCard>

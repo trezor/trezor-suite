@@ -1,9 +1,9 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import { type CryptoId } from 'invity-api';
 
-import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { getNetwork, toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
+import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { type HandleBuyRequestThunkState } from './handleBuyRequestThunk';
 import { ALTERNATIVE_QUOTES } from '../../__fixtures__/buyUtils';

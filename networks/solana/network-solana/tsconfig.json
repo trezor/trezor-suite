@@ -3,6 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "include": [".", "**/*.json"],
     "references": [
+        { "path": "../network-solana-types" },
         {
             "path": "../../../packages/type-utils"
         },

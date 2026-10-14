@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 
-import { formInputsMaxLength } from '@suite-common/validators';
 import { type FormOptions } from '@suite-common/wallet-types';
 import { Column } from '@trezor/components';
+import { TRON_DATA_MAX_BYTES } from '@trezor/network-tron/constants';
 
 import { useSendFormContext } from 'src/hooks/wallet';
 
@@ -38,7 +38,7 @@ export const TronOptions = () => {
             {isNoteEnabled && <TronNote close={toggleNote} />}
 
             {isDataEnabled && !token && (
-                <TransactionData maxBytes={formInputsMaxLength.ethData} close={toggleData} />
+                <TransactionData maxBytes={TRON_DATA_MAX_BYTES} close={toggleData} />
             )}
         </Column>
     );

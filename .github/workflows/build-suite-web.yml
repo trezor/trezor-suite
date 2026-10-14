@@ -27,8 +27,8 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
-  cancel-in-progress: true
+  group: suite-web-deploy-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: false
 
 env:
   DEV_SERVER_URL: "https://dev.suite.sldev.cz"
@@ -61,7 +61,7 @@ jobs:
           cache: yarn
 
       - name: Install SafeDep PMG
-        uses: safedep/pmg@0d4f89121c773b0009cc2f2dfb578d03603263f2 # v0.29.1
+        uses: safedep/pmg@961499c36c98afbafec10a257ff27fb464073c86 # v0.30.0
         continue-on-error: true
         with:
           version: v0.19.1

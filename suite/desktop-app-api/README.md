@@ -47,7 +47,7 @@ To invoke a method on the `main` process and return an asynchronous result to th
 - add a channel to validChannels in `../desktop-app-api-electron/src/validation.ts`
 - add a method to `./src/api.ts DesktopApi` as `DesktopApiInvoke<'your-new-channel'>`
 - implement it in `../desktop-app-api-electron/src/createDesktopApiBridge.ts`
-- decide the web behaviour in `../suite-web/src/support/createWebDesktopApi.ts`; that file lists
+- decide the web behaviour in `../web-app/src/support/createWebDesktopApi.ts`; that file lists
   every member explicitly, so it will not compile until you do
 - process incoming requests in `@suite/desktop-app-main/src/modules/*` using `ipcMain.handle(...)`
 - call it through an injected `desktopApi`, never through a module-level import

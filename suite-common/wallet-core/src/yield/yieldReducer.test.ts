@@ -74,6 +74,68 @@ describe('yieldReducer', () => {
             expect(getSession(state, 'deposit')?.isWrappedNativeVault).toBe(true);
         });
 
+        it('freezes the gas reserve once per session', () => {
+            const frozen = yieldReducer(
+                initSession('deposit', true),
+                yieldActions.freezeGasReserve({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                    gasReserve: { minimum: '0.002', recommended: '0.005' },
+                }),
+            );
+
+            expect(getSession(frozen, 'deposit')?.gasReserve).toEqual({
+                minimum: '0.002',
+                recommended: '0.005',
+            });
+
+            const refrozen = yieldReducer(
+                frozen,
+                yieldActions.freezeGasReserve({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                    gasReserve: { minimum: '0.01', recommended: '0.02' },
+                }),
+            );
+
+            expect(getSession(refrozen, 'deposit')?.gasReserve).toEqual({
+                minimum: '0.002',
+                recommended: '0.005',
+            });
+        });
+
+        it('ignores a gas reserve for a session that does not exist', () => {
+            const state = yieldReducer(
+                initialStablecoinYieldState,
+                yieldActions.freezeGasReserve({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                    gasReserve: { minimum: '0.002', recommended: '0.005' },
+                }),
+            );
+
+            expect(getSession(state, 'deposit')).toBeUndefined();
+        });
+
+        it('drops the frozen gas reserve when resetting a session', () => {
+            const state = yieldReducer(
+                yieldReducer(
+                    initSession('deposit', true),
+                    yieldActions.freezeGasReserve({
+                        flowType: 'deposit',
+                        flowKey: FLOW_KEY,
+                        gasReserve: { minimum: '0.002', recommended: '0.005' },
+                    }),
+                ),
+                yieldActions.resetSession({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                }),
+            );
+
+            expect(getSession(state, 'deposit')?.gasReserve).toBeNull();
+        });
+
         it('moves a native deposit from the wrap step to approve when it is skipped', () => {
             const state = yieldReducer(
                 initSession('deposit', true),

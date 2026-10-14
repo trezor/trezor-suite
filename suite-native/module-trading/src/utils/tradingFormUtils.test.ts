@@ -267,6 +267,41 @@ describe('createFormStateForSendForm', () => {
             expect(formState.transactionData).toBe('010203ff');
         });
 
+        it.each([
+            ['empty', ''],
+            ['missing', undefined],
+        ])('should leave transactionData empty when Solana DEX data is %s', (_, data) => {
+            const dexQuote = {
+                exchange: 'swapkit',
+                send: 'solana' as any,
+                sendStringAmount: '1.0',
+                sendAddress: 'sender',
+                receive: 'ethereum' as any,
+                receiveStringAmount: '1.0',
+                receiveAddress: 'receiver',
+                status: 'CONFIRM',
+                orderId: 'dex-order-123',
+                quoteId: 'dex-quote-456',
+                isDex: true,
+                dexTx: {
+                    from: 'sender',
+                    to: 'depositAddress',
+                    data,
+                    value: '1.0',
+                },
+            } as ExchangeTrade;
+
+            const formState = createFormStateForSendForm({
+                quote: dexQuote,
+                networkType: 'solana',
+                providers: { swapkit: exchangeInvity },
+                sendAccountKey,
+            });
+
+            expect(formState.outputs[0]?.address).toBe('depositAddress');
+            expect(formState.transactionData).toBe('');
+        });
+
         it('should apply gas limit adjustment for DEX approval transactions', () => {
             const dexApprovalQuote: ExchangeTrade = {
                 exchange: '1inch',

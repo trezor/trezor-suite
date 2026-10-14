@@ -8,12 +8,12 @@ import {
 import type { EthereumSignTypedDataTypes, PROTO, PermissionRequest } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { DeviceModelInternal } from '@trezor/device-utils';
-import { MessagesSchema } from '@trezor/protobuf';
 import { Assert, Type } from '@trezor/schema-utils';
 
 import type { MethodMessage } from '../../../core/AbstractMethod';
 import { AbstractMethod } from '../../../core/AbstractMethod';
 import { getEthereumNetwork } from '../../../data/coinInfo';
+import { getDefinitionsVersion } from '../../../utils/definitionsUtils';
 import { getNetworkLabel } from '../../../utils/ethereumUtils';
 import { messageToHex } from '../../../utils/formatUtils';
 import { getSerializedPath, getSlip44ByPath, validatePath } from '../../../utils/pathUtils';
@@ -32,7 +32,6 @@ type Params = (
 ) & {
     address_n: number[];
     network?: EthereumNetworkInfo;
-    definitions?: MessagesSchema.EthereumDefinitions;
 };
 const Params = Type.Intersect([
     Type.Union([
@@ -42,7 +41,6 @@ const Params = Type.Intersect([
     Type.Object({
         address_n: Type.Array(Type.Number()),
         network: Type.Optional(EthereumNetworkInfo),
-        definitions: Type.Optional(MessagesSchema.EthereumDefinitions),
     }),
 ]);
 
@@ -129,16 +127,6 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
         return this.coinPerms('sign', this.requiredFirmwareCoins);
     }
 
-    async initAsync() {
-        if (this.params.network) return;
-
-        const { address_n } = this.params;
-        const slip44 = getSlip44ByPath(address_n);
-        this.params.definitions = await getEthereumDefinitions({
-            slip44,
-        });
-    }
-
     get info() {
         return getNetworkLabel(
             'Sign #NETWORK typed data',
@@ -170,9 +158,19 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
         }
     }
 
+    private async getDefinitions() {
+        if (this.params.network) return;
+
+        return await getEthereumDefinitions({
+            slip44: getSlip44ByPath(this.params.address_n),
+            version: getDefinitionsVersion(this.getDevice()),
+        });
+    }
+
     async run() {
         const cmd = this.getDevice().getCommands();
-        const { address_n, definitions } = this.params;
+        const { address_n } = this.params;
+        const definitions = await this.getDefinitions();
         if (this.getDevice().features.internal_model === DeviceModelInternal.T1B1) {
             Assert(
                 Type.Object({

@@ -24,13 +24,12 @@ const REDEEM_MAX_FEE = '0.00010840280031 ETH';
 // USDC in ETH_MOCKED_ACCOUNT.tokens; six decimals make the dashboard render it money-like.
 const USDC_DECIMALS = 6;
 
-const buildEthAccountTokens = ({
-    usdcBalance,
-    shareBalance,
-}: {
+type BuildEthAccountTokensParams = {
     usdcBalance: string;
     shareBalance: string;
-}) => [
+};
+
+const buildEthAccountTokens = ({ usdcBalance, shareBalance }: BuildEthAccountTokensParams) => [
     ...ETH_MOCKED_ACCOUNT.tokens.map(token =>
         token.symbol === 'USDC' ? { ...token, balance: usdcBalance } : token,
     ),

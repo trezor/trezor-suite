@@ -3,8 +3,6 @@ import { useDevice } from '@suite/device';
 import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { Translation, useTranslation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     getTronRewardClaimCooldownEndsAt,
     getTronStakingRewards,
@@ -22,6 +20,8 @@ import {
     Text,
     Tooltip,
 } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue, CountdownTimer, FormattedCryptoAmount } from 'src/components/suite';
@@ -109,7 +109,7 @@ export const TronVotingRewardsCard = ({ account }: TronVotingRewardsCardProps) =
                     featureName={translationString('TR_EARN_TRON_CLAIM_TITLE')}
                 />
             )}
-            <Card paddingType="none">
+            <Card paddingType="none" data-testid="@staking/tron-rewards-card/container">
                 <Box padding={{ vertical: 12, horizontal: 20 }}>
                     <Row justifyContent="space-between" alignItems="center">
                         <Text typographyStyle="body-sm-strong">
@@ -117,7 +117,10 @@ export const TronVotingRewardsCard = ({ account }: TronVotingRewardsCardProps) =
                         </Text>
                         <Row gap={16} alignItems="center">
                             <Column gap={2} alignItems="flex-end">
-                                <Text typographyStyle="body-md-strong">
+                                <Text
+                                    typographyStyle="body-md-strong"
+                                    data-testid="@staking/tron-rewards-card/amount"
+                                >
                                     <FormattedCryptoAmount
                                         value={rewards}
                                         symbol={account.symbol}
@@ -142,6 +145,7 @@ export const TronVotingRewardsCard = ({ account }: TronVotingRewardsCardProps) =
                                     priority="secondary"
                                     onClick={goToClaim}
                                     isDisabled={isClaimOnCooldown || isClaimingDisabled}
+                                    data-testid="@staking/tron-rewards-card/claim-button"
                                 >
                                     <Translation id="TR_STAKE_CLAIM" />
                                 </Button>

@@ -13,11 +13,7 @@ export default class RippleGetAddress extends AbstractMiscGetAddress<'rippleGetA
     }
 
     get info() {
-        return this.getInfo('Ripple', true);
-    }
-
-    get confirmation() {
-        return this.getConfirmation('Ripple');
+        return this.getInfo('Ripple');
     }
 
     async _call({ proto }: MiscGetAddressParams) {

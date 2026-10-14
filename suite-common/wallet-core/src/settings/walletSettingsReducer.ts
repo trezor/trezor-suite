@@ -1,13 +1,6 @@
 import { A } from '@mobily/ts-belt';
 
 import { type DeviceRootState, selectHasBitcoinOnlyFirmware } from '@suite-common/device';
-import {
-    type ActionTypesDep,
-    type ReducersDep,
-    createReducerWithExtraDeps,
-    createWeakMapSelector,
-    returnStableArrayIfEmpty,
-} from '@suite-common/redux-utils';
 import { type NetworkSymbol, asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     AddressDisplayOptions,
@@ -16,6 +9,13 @@ import {
 } from '@suite-common/wallet-types';
 import { isBaseCurrencyWithSats } from '@suite-common/wallet-utils';
 import { PROTO } from '@trezor/connect';
+import {
+    type ActionTypesDep,
+    type ReducersDep,
+    createReducerWithExtraDeps,
+    createWeakMapSelector,
+    returnStableArrayIfEmpty,
+} from '@trezor/redux-utils';
 
 import * as walletSettingsActions from './walletSettingsActions';
 import { WALLET_SETTINGS } from './walletSettingsConstants';
@@ -39,6 +39,8 @@ const initialState: WalletSettingsState = {
     networkReserve: true,
     isAutoEjectEnabled: false,
     addressDisplayType: AddressDisplayOptions.CHUNKED,
+    homeAssetsTableGrouping: 'default',
+    areHomeAssetSmallBalancesShown: true,
 };
 export const initialWalletSettingsState: WalletSettingsState = initialState;
 
@@ -51,6 +53,8 @@ export const walletSettingsPersistedWhitelist: Array<keyof WalletSettingsState> 
     'networkReserve',
     'isAutoEjectEnabled',
     'addressDisplayType',
+    'homeAssetsTableGrouping',
+    'areHomeAssetSmallBalancesShown',
 ];
 
 export type WalletSettingsReducerDeps = ActionTypesDep<'storageLoad'> &
@@ -118,6 +122,24 @@ export const prepareWalletSettingsReducer = createReducerWithExtraDeps(
                 state.addressDisplayType = action.payload;
             },
         );
+        builder.addCase(
+            walletSettingsActions.setHomeAssetsTableGrouping.type,
+            (
+                state,
+                action: ReturnType<typeof walletSettingsActions.setHomeAssetsTableGrouping>,
+            ) => {
+                state.homeAssetsTableGrouping = action.payload;
+            },
+        );
+        builder.addCase(
+            walletSettingsActions.setAreHomeAssetSmallBalancesShown.type,
+            (
+                state,
+                action: ReturnType<typeof walletSettingsActions.setAreHomeAssetSmallBalancesShown>,
+            ) => {
+                state.areHomeAssetSmallBalancesShown = action.payload;
+            },
+        );
     },
 );
 
@@ -141,6 +163,10 @@ export const selectIsSuspiciousTransactionsBlurringEnabled = (
 ) => selectSuspiciousTransactionsFilter(state, symbol) !== 'showUnblurred';
 export const selectBitcoinAmountUnit = (state: WalletSettingsRootState) =>
     state.wallet.settings.bitcoinAmountUnit;
+export const selectHomeAssetsTableGrouping = (state: WalletSettingsRootState) =>
+    state.wallet.settings.homeAssetsTableGrouping;
+export const selectAreHomeAssetSmallBalancesShown = (state: WalletSettingsRootState) =>
+    state.wallet.settings.areHomeAssetSmallBalancesShown;
 export const selectIsDeviceAutoEjectEnabled = (state: WalletSettingsRootState) =>
     state.wallet.settings.isAutoEjectEnabled;
 

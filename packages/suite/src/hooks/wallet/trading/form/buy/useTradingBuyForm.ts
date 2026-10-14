@@ -1,8 +1,6 @@
 import { useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     TRADING_DEFAULT_CRYPTO_CURRENCY,
     TRADING_FORM_CRYPTO_CURRENCY_SELECT,
@@ -13,14 +11,17 @@ import {
     type TradingBuyFormProps,
     mapFiatCurrencyCodeToBaseCurrencyCode,
     selectTradingBuyAmountLimits,
+    selectTradingBuyFormValues,
     selectTradingBuyInfo,
-    selectTradingBuyIsFromRedirect,
     selectTradingBuyIsLoading,
     selectTradingBuyQuotesRequest,
     selectTradingBuySelectedQuote,
     tradingBuyActions,
+    tradingThunks,
 } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { useTradingAmountUnitSync } from 'src/hooks/wallet/trading/form/common/useTradingAmountUnitSync';
@@ -28,10 +29,9 @@ import { useServerEnvironment } from 'src/hooks/wallet/trading/useServerEnvirome
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { type TradingBuyFormContextProps } from 'src/types/trading/tradingForm';
 
-import { useBuyFlow } from './useBuyFlow';
 import { useBuyQuotes } from './useBuyQuotes';
 import { useTradingBuyFormDefaultValues } from './useTradingBuyFormDefaultValues';
-import { useTradingBuyFormRedirectValues } from './useTradingBuyFormRedirectValues';
+import { useTradingClearStaleQuotes } from '../common/useTradingClearStaleQuotes';
 import { useTradingFiatValues } from '../common/useTradingFiatValues';
 import { useTradingFormReset } from '../common/useTradingFormReset';
 import { useTradingFormAccount } from '../useTradingFormAccount';
@@ -42,8 +42,8 @@ export const useTradingBuyForm = (): TradingBuyFormContextProps => {
     const { dispatch } = useServices(injectDispatch);
 
     const buyInfo = useSelector(selectTradingBuyInfo);
-    const isFromRedirect = useSelector(selectTradingBuyIsFromRedirect);
     const quotesRequest = useSelector(selectTradingBuyQuotesRequest);
+    const savedFormValues = useSelector(selectTradingBuyFormValues);
     const selectedQuote = useSelector(selectTradingBuySelectedQuote);
     const amountLimits = useSelector(selectTradingBuyAmountLimits);
     const isLoading = useSelector(selectTradingBuyIsLoading);
@@ -66,10 +66,10 @@ export const useTradingBuyForm = (): TradingBuyFormContextProps => {
     useTradingFiatValues(fiatTradingValuesParams);
 
     const { defaultValues } = useTradingBuyFormDefaultValues(cryptoId, buyInfo);
-    const redirectValues = useTradingBuyFormRedirectValues(isFromRedirect, quotesRequest);
+    const initialValues = savedFormValues ?? defaultValues;
     const methods = useForm<TradingBuyFormProps>({
         mode: 'onChange',
-        defaultValues: redirectValues || defaultValues,
+        defaultValues: initialValues,
     });
     const { formState, reset, setValue, getValues, control } = methods;
     // Watch only those values that are relevant in render function
@@ -123,12 +123,16 @@ export const useTradingBuyForm = (): TradingBuyFormContextProps => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [receiveAddress]);
 
-    useBuyFlow({ isFromRedirect, quotesRequest, isAmountEmpty });
+    useEffect(() => {
+        dispatch(tradingThunks.loadInitialDataThunk({ activeSection: type }));
+    }, [dispatch]);
+
+    useTradingClearStaleQuotes({ type, isAmountEmpty });
 
     useTradingFormReset({
         isInfoReady: !!buyInfo,
         reset,
-        defaultValues,
+        defaultValues: initialValues,
         getPreservedValues: () => ({ receiveAddress: getValues('receiveAddress') }),
     });
 

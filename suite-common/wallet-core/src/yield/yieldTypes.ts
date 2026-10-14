@@ -39,6 +39,18 @@ export type YieldFlowResolvedData = {
     receiptToken: YieldFlowDisplayToken;
 };
 
+export type YieldGasReserve = {
+    /** Covers the entry transactions (wrap, approve, deposit). */
+    minimum: string;
+    /** Also covers the exit transactions (withdraw, unwrap) at a safety margin. */
+    recommended: string;
+};
+
+export type YieldNativeFeeStatus = 'insufficient' | 'below-recommended' | 'sufficient';
+
+/** Whether a wrap amount keeps exactly the fee reserve behind, eats into it, or leaves more. */
+export type WrapReserveStatus = 'kept' | 'below' | 'none';
+
 export type YieldFlowCompleteValue = {
     token: YieldFlowDisplayToken;
     amount: string;

@@ -8,6 +8,7 @@ import {
 import { type VinVoutAddress } from './types';
 import {
     getNextRequestedTransactionCount,
+    getOlderHistoryPage,
     groupTargetOutputs,
     mapTransactionInputsOutputsToAddresses,
     sortTargetAddressesToBeginning,
@@ -262,5 +263,15 @@ describe(getNextRequestedTransactionCount.name, () => {
         expect(getNextRequestedTransactionCount({ requestedCount, visibleCount, pageSize })).toBe(
             expected,
         );
+    });
+});
+
+describe(getOlderHistoryPage.name, () => {
+    it.each([
+        { loadedCount: 25, expected: 2, description: 'the page after a full one' },
+        { loadedCount: 30, expected: 2, description: 'a partial last page again, to refill it' },
+        { loadedCount: 0, expected: 1, description: 'the first page of an empty list' },
+    ])('requests $description', ({ loadedCount, expected }) => {
+        expect(getOlderHistoryPage(loadedCount, 25)).toBe(expected);
     });
 });

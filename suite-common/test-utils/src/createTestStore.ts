@@ -10,7 +10,7 @@ import {
 } from '@reduxjs/toolkit';
 import { type ThunkDispatch } from 'redux-thunk';
 
-import { createMiddleware, createReduxExtra } from '@suite-common/redux-utils';
+import { createMiddleware, createReduxExtra } from '@trezor/redux-utils';
 import { mergeDeepObject } from '@trezor/utils';
 
 /*
@@ -63,13 +63,12 @@ export type CreateTestStoreParams<S, A extends UnknownAction, Extra> = {
     ? { extra?: TestStoreExtraDependencies<Extra> }
     : { extra: TestStoreExtraDependencies<Extra> });
 
-export const initPreloadedState = ({
-    rootReducer,
-    partialState,
-}: {
+type InitPreloadedStateParams = {
     rootReducer: Reducer<any, any, any>;
     partialState: any;
-}) =>
+};
+
+export const initPreloadedState = ({ rootReducer, partialState }: InitPreloadedStateParams) =>
     mergeDeepObject.withOptions(
         { mergeArrays: false },
         rootReducer(undefined, { type: 'test-init' }),

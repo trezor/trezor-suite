@@ -1,7 +1,7 @@
 import { Pressable } from 'react-native';
-import Animated, { FadeInDown, FadeInUp, FadeOutUp } from 'react-native-reanimated';
+import { FadeInDown, FadeInUp, FadeOutUp } from 'react-native-reanimated';
 
-import { Text, VStack } from '@suite-native/atoms';
+import { AnimatedView, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -30,9 +30,9 @@ const ErrorIcon = () => {
     const { applyStyle } = useNativeStyles();
 
     return (
-        <Animated.View style={applyStyle(errorIconStyle)} entering={FadeInUp} exiting={FadeInDown}>
+        <AnimatedView style={applyStyle(errorIconStyle)} entering={FadeInUp} exiting={FadeInDown}>
             <Icon name="warning" color="contentWarning" />
-        </Animated.View>
+        </AnimatedView>
     );
 };
 
@@ -42,7 +42,7 @@ export const GraphError = ({ error, onTryAgain }: GraphErrorProps) => {
     return (
         <VStack spacing="sp8" alignItems="center" paddingHorizontal="sp16">
             <ErrorIcon />
-            <Animated.View entering={FadeInDown} exiting={FadeOutUp}>
+            <AnimatedView entering={FadeInDown} exiting={FadeOutUp}>
                 <Text variant="body-sm" color="contentSecondary" textAlign="center">
                     <Translation id="graph.errorMessage" />
                     {error}
@@ -57,7 +57,7 @@ export const GraphError = ({ error, onTryAgain }: GraphErrorProps) => {
                         <Translation id="graph.tryAgain" />
                     </Text>
                 </Pressable>
-            </Animated.View>
+            </AnimatedView>
         </VStack>
     );
 };

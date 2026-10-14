@@ -6,9 +6,6 @@
         {
             "path": "../../suite-common/delegated-identity-key-types"
         },
-        {
-            "path": "../../suite-common/dependency-injection"
-        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/message-system"
@@ -20,16 +17,10 @@
             "path": "../../suite-common/platform-encryption"
         },
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/suite-sync"
         },
         {
             "path": "../../suite-common/suite-sync-evolu"
-        },
-        {
-            "path": "../../suite-common/suite-sync-quota-manager"
         },
         {
             "path": "../../suite-common/suite-sync-storage"
@@ -51,11 +42,15 @@
         { "path": "../tor" },
         { "path": "../../packages/components" },
         { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/icons" },
         {
             "path": "../../packages/product-components"
         },
+        { "path": "../../packages/redux-utils" },
         { "path": "../../packages/theme" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },

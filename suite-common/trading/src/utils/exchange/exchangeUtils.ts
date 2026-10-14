@@ -8,12 +8,13 @@ import type {
 } from 'invity-api';
 
 import { invariant } from '@suite-common/suite-utils';
-import { type Network } from '@suite-common/wallet-config';
+import { type Network, type NetworkType } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import {
     asAmountUnit,
     buildApprovalTransactionData,
     getErc20ApproveSpender,
+    getUnusedChangeAddress,
     tokenSupportsIncreasingAllowance,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
@@ -134,6 +135,10 @@ export type ApprovalStatus =
 
 export const hasEip712SignDataType = (quote?: ExchangeTrade): boolean =>
     quote?.signData?.type === 'eip712-typed-data';
+
+// BTC DEX swaps sign the provider's PSBT as is, so its fee can't be changed.
+export const hasFixedPsbtFee = (quote: ExchangeTrade | undefined, networkType: NetworkType) =>
+    networkType === 'bitcoin' && !!quote?.isDex && !!quote.dexTx?.data;
 
 export const hasEip712SignData = (quote?: ExchangeTrade) =>
     quote?.status === 'SIGN_DATA' && hasEip712SignDataType(quote);
@@ -309,7 +314,7 @@ export const deriveBitcoinSwapFromAddresses = async ({
     }
 
     let sendAmountSubunit: BigNumber;
-    if (!sendStringAmount) {
+    if (!sendStringAmount || setMaxOutputId === 0) {
         sendAmountSubunit = new BigNumber(account.availableBalance);
     } else if (shouldSendInSats) {
         sendAmountSubunit = new BigNumber(sendStringAmount);
@@ -319,6 +324,8 @@ export const deriveBitcoinSwapFromAddresses = async ({
             decimals,
         });
     }
+
+    const changeAddress = getUnusedChangeAddress(account.addresses.change);
 
     const composeParams: Parameters<typeof TrezorConnect.composeTransaction>[0] = {
         outputs: [
@@ -339,11 +346,9 @@ export const deriveBitcoinSwapFromAddresses = async ({
             }),
         ],
         coin: asCoinSymbol(network.symbol),
-        account: {
-            path: account.path,
-            addresses: account.addresses,
-            utxo: usedUtxos,
-        },
+        path: account.path,
+        changeAddress,
+        utxo: usedUtxos,
         feeLevels: [{ feePerUnit: feePerUnit || '1' }],
     };
 

@@ -1,7 +1,7 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
-import { createMiddleware } from '@suite-common/redux-utils';
 import { accountsActions, applyDeviceStatesThunk } from '@suite-common/wallet-core';
+import { createMiddleware } from '@trezor/redux-utils';
 
 import * as metadataActions from './metadataActions';
 import * as metadataLabelingActions from './metadataLabelingActions';

@@ -6,7 +6,7 @@
 
 ## Notes for QA
 
-<!--- Unless already specified in a linked issue, please specify any relevant information or steps for the QA team to focus on during testing (e.g., areas most affected, special scenarios to cover, manual test instructions, known side effects, or things that do not need to be tested). -->
+<!--- Areas of the app to focus on. A few short bullets only. No test steps, scenarios, or technical detail. Leave empty when a linked issue already says where to look. -->
 
 ## Related Issue
 

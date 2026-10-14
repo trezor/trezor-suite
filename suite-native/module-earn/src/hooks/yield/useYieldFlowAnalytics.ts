@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 
 import { type EventInstance, events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { injectNativeAnalytics } from '@suite-native/analytics';
+import { useServices } from '@trezor/dependency-injection';
 
 type YieldFlowAnalyticsContext = {
     networkSymbol: NetworkSymbol | undefined;

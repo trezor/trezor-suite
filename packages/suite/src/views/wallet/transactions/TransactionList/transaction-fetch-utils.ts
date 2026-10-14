@@ -1,16 +1,18 @@
+type ShouldAttemptToLoadNextPageForVisibleTransactionsParams = {
+    totalNumberOfTransactions: number;
+    perPage: number;
+    currentNumberOfTransactions: number;
+    currentNumberOfVisibleTransactions: number;
+    numberOfPagesRequested: number;
+};
+
 export function shouldAttemptToLoadNextPageForVisibleTransactions({
     totalNumberOfTransactions,
     currentNumberOfTransactions,
     currentNumberOfVisibleTransactions,
     perPage,
     numberOfPagesRequested,
-}: {
-    totalNumberOfTransactions: number;
-    perPage: number;
-    currentNumberOfTransactions: number;
-    currentNumberOfVisibleTransactions: number;
-    numberOfPagesRequested: number;
-}): boolean {
+}: ShouldAttemptToLoadNextPageForVisibleTransactionsParams): boolean {
     if (totalNumberOfTransactions === 0) return false;
     if (currentNumberOfTransactions === totalNumberOfTransactions) return false;
 

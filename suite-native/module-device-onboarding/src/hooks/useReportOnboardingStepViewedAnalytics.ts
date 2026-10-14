@@ -1,9 +1,9 @@
 import { useCallback, useRef } from 'react';
 
 import { type DeviceOnboardingStepName, events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { type DeviceOnboardingStackRoutes } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 
 import {
     getDeviceOnboardingAnalyticsStepIndex,

@@ -26,6 +26,16 @@ export type CoinData = z.infer<typeof coinDataSchema>;
 
 export const coinListSchema = z.array(coinDataSchema);
 
+// `/coins/markets` leaves `market_cap` null for a coin it has no market data for, and omits the
+// coin entirely when it knows nothing about it. Both mean "no market cap", as opposed to a request
+// that never answered.
+export const coinMarketDataSchema = z.object({
+    id: z.string(),
+    market_cap: z.number().nullish(),
+});
+
+export const coinMarketsSchema = z.array(coinMarketDataSchema);
+
 // Only the fields the definitions are built from, with the same fallback as the coin list: one
 // NFT collection CoinGecko lists without a name must not fail the whole page.
 export const nftDataSchema = z.object({
@@ -37,10 +47,11 @@ export type NftData = z.infer<typeof nftDataSchema>;
 
 export const nftListSchema = z.array(nftDataSchema);
 
-// A contract that wraps no asset is a valid answer, so `asset` is read rather than required: an
-// absent one leaves the token out on purpose, while a rejected response would fail the build.
+// A native contract token wraps no asset, so `asset` is read rather than required: an absent one
+// keys the token by its contract address, while a rejected response would fail the build.
+// It has to be spelled optional, because zod rejects a missing key even for `unknown`.
 export const stellarExpertContractSchema = z.object({
-    asset: z.unknown(),
+    asset: z.unknown().optional(),
 });
 
 export const stellarExpertRatingSchema = z.object({

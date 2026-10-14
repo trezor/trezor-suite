@@ -87,7 +87,7 @@ yarn test:unit
 
 ## shell.nix
 
-For environments without flakes, use `nix-shell` with the root [shell.nix](../shell.nix).
+For environments without flakes, use `nix-shell` with the root [shell.nix](../../shell.nix).
 
 ### Default (web/desktop)
 
@@ -105,7 +105,7 @@ USE_ANDROID=1 nix-shell
 
 ### Bluetooth transport development
 
-The [packages/transport-bluetooth](../packages/transport-bluetooth/) package has its own shell with a Rust toolchain:
+The [packages/transport-bluetooth](../../packages/transport-bluetooth/) package has its own shell with a Rust toolchain:
 
 ```bash
 nix-shell packages/transport-bluetooth/shell.nix

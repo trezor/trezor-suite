@@ -61,6 +61,8 @@ export const ExplorerConfigForm = ({ form }: ExplorerConfigProps) => {
                 return <Translation id="TR_EXPLORER_NFT" />;
             case 'token':
                 return <Translation id="TR_EXPLORER_TOKEN" />;
+            case 'contract':
+                return <Translation id="TR_EXPLORER_CONTRACT" />;
             case 'queryString':
                 return <Translation id="TR_EXPLORER_QUERY_STRING" />;
         }

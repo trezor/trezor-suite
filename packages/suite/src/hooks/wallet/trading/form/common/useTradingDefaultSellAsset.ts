@@ -1,10 +1,13 @@
 import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 
 import { type CryptoId } from 'invity-api';
 
 import {
     type TradingAssetSellOption,
     createAssetNativeTokenOption,
+    parseCryptoId,
+    selectTradingInfo,
     useTradingAssets,
 } from '@suite-common/trading';
 import { type NetworkConfigWithoutTestnets } from '@suite-common/wallet-config';
@@ -25,7 +28,8 @@ export function useTradingDefaultSellAsset({
     cryptoId,
 }: UseTradingDefaultSellAssetProps) {
     const findAccountOrToken = useTradingFindAccountOrToken();
-    const { resolveAssetTokenOption } = useTradingAssets();
+    const { createAssetOptionFromCryptoId, resolveAssetTokenOption } = useTradingAssets();
+    const { coins } = useSelector(selectTradingInfo);
     const accountOrToken = useMemo(() => {
         if (!cryptoId || !accountKey) {
             return null;
@@ -36,7 +40,9 @@ export function useTradingDefaultSellAsset({
     const account = accountOrToken?.account ?? null;
 
     const defaultAsset: TradingAssetSellOption | undefined = useMemo(() => {
-        if (!accountOrToken) {
+        void coins;
+
+        if (!accountOrToken || !cryptoId) {
             return undefined;
         }
 
@@ -49,13 +55,21 @@ export function useTradingDefaultSellAsset({
             } satisfies TradingAssetSellOption;
         }
 
+        if (parseCryptoId(cryptoId).contractAddress) {
+            const assetOption = createAssetOptionFromCryptoId(cryptoId);
+
+            if (!assetOption.isNativeToken && assetOption.networkSymbol === account.symbol) {
+                return { ...assetOption, accountKey: account.key } satisfies TradingAssetSellOption;
+            }
+        }
+
         return {
             ...createAssetNativeTokenOption(
                 account.symbol as NetworkConfigWithoutTestnets['symbol'],
             ),
             accountKey: account.key,
         } satisfies TradingAssetSellOption;
-    }, [accountOrToken, resolveAssetTokenOption]);
+    }, [accountOrToken, coins, createAssetOptionFromCryptoId, cryptoId, resolveAssetTokenOption]);
 
     return { account, defaultAsset };
 }

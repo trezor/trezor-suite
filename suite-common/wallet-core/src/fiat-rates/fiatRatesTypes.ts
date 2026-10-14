@@ -1,7 +1,11 @@
-import { type RatesByKey, type RatesByTimestamps } from '@suite-common/wallet-types';
+import {
+    type CurrentRatesByKey,
+    type RatesByKey,
+    type RatesByTimestamps,
+} from '@suite-common/wallet-types';
 
 export type FiatRatesState = {
-    current: RatesByKey;
+    current: CurrentRatesByKey;
     lastWeek: RatesByKey;
     historic: RatesByTimestamps;
 };

@@ -3,15 +3,15 @@ import path from 'path';
 
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { type SuiteSettingsState, suiteSettingsInitialState } from '@suite/settings';
-import { createMockDeps } from '@suite-common/dependency-injection';
 import { deviceActions, prepareDeviceReducer } from '@suite-common/device';
 import { type MetadataState } from '@suite-common/metadata-types';
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { initialWalletSettingsState, prepareAccountsReducer } from '@suite-common/wallet-core';
 import { mockSetAccountAddMetadata } from '@suite-common/wallet-core/mocks';
 import TrezorConnect from '@trezor/connect';
+import { createMockDeps } from '@trezor/dependency-injection';
 import { asWalletDescriptor } from '@trezor/device-utils';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import * as fixtures from './__fixtures__/metadataActions';
 import * as metadataActions from './metadataActions';
@@ -356,6 +356,31 @@ describe('Metadata Actions', () => {
                 expect(store.getState()).toMatchObject(f.result);
             }
         });
+    });
+
+    it('disposeMetadataKeys - dispatches every account without its encryption keys', async () => {
+        const account = {
+            deviceState: '1stTestnetAddress@device_id:0',
+            key: 'account-key',
+            metadata: { key: 'xpub', 1: { fileName: 'foo', aesKey: 'bar' } },
+        };
+        const store = initStore(
+            getInitialState({
+                device: { state: { staticSessionId: '1stTestnetAddress@device_id:0' } },
+                accounts: [account],
+                suite: {},
+            }),
+        );
+
+        await store.dispatch(metadataThunks.disposeMetadataKeysThunk());
+
+        const disposedAccounts = store
+            .getActions()
+            .filter(metadataActions.setAccountAdd.match)
+            .map(action => action.payload);
+        expect(disposedAccounts).toEqual([{ ...account, metadata: { key: 'xpub' } }]);
+        // The account held by the previous state keeps its keys.
+        expect(account.metadata[1]).toEqual({ fileName: 'foo', aesKey: 'bar' });
     });
 
     it('marks wallet as migrated after legacy labeling migration succeeds', () => {

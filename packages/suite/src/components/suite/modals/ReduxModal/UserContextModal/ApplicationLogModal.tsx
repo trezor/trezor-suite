@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import { injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import {
     Card,
     Column,
@@ -18,6 +17,7 @@ import {
     useScrollShadow,
     variables,
 } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useApplicationLogs } from 'src/utils/suite/logsUtils';
 

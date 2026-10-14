@@ -1,13 +1,12 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
-import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
-import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-core';
+import { AMOUNT_MAX_LENGTH, getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-core';
 import { type StakeFormState } from '@suite-common/wallet-types';
 import { Banner, Column, Text } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { InputWithOptions } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
@@ -169,7 +168,7 @@ export const StakeInputs = () => {
                     labelLeft: <Translation id="AMOUNT" />,
                     control,
                     rules: cryptoInputRules,
-                    maxLength: formInputsMaxLength.amount,
+                    maxLength: AMOUNT_MAX_LENGTH,
                     rightContent: (
                         <Text intent="neutral" priority="secondary">
                             {networkDisplaySymbol}
@@ -187,7 +186,7 @@ export const StakeInputs = () => {
                               labelLeft: <Translation id="AMOUNT" />,
                               control,
                               rules: fiatInputRules,
-                              maxLength: formInputsMaxLength.fiat,
+                              maxLength: AMOUNT_MAX_LENGTH,
                               rightContent: (
                                   <Text intent="neutral" priority="secondary">
                                       {baseCurrencyCode.toUpperCase()}

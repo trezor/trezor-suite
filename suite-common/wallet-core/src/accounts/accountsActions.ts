@@ -101,7 +101,7 @@ const createAccount = createAction(
                 }),
                 utxo: enhanceUtxo(utxo, networkType, index),
                 metadata: { key: metadataKey },
-                ...getAccountSpecific(accountInfo, networkType),
+                ...getAccountSpecific({ accountInfo, networkType }),
             };
 
             return {
@@ -154,7 +154,11 @@ const updateAccount = createAction(
                         utxo: enhanceUtxo(accountInfo.utxo, account.networkType, account.index),
                         addresses: enhanceAddresses(accountInfo, account),
                         tokens: enhanceTokens(accountInfo.tokens),
-                        ...getAccountSpecific(accountInfo, account.networkType),
+                        ...getAccountSpecific({
+                            accountInfo,
+                            networkType: account.networkType,
+                            storedAccount: account,
+                        }),
                     },
                 },
             };

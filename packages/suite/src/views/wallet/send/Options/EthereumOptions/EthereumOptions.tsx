@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 import { useWatch } from 'react-hook-form';
 
-import { formInputsMaxLength } from '@suite-common/validators';
 import { useEvmNonceInfo } from '@suite-common/wallet-core';
 import { type AccountWithNetworkType, type FormOptions } from '@suite-common/wallet-types';
 import { Column } from '@trezor/components';
+import { ETHEREUM_DATA_MAX_BYTES } from '@trezor/network-ethereum/constants';
 
 import { useSendFormContext } from 'src/hooks/wallet';
 
@@ -66,7 +66,7 @@ export const EthereumOptions = () => {
     return (
         <Column gap={16}>
             {isDataEnabled && !token && (
-                <TransactionData maxBytes={formInputsMaxLength.ethData} close={toggleData} />
+                <TransactionData maxBytes={ETHEREUM_DATA_MAX_BYTES} close={toggleData} />
             )}
 
             {isEditingNonce && (

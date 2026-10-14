@@ -1,3 +1,4 @@
+import { AddressFormatter } from '@suite-common/formatters';
 import { getCryptoId } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
@@ -8,10 +9,10 @@ import { createTestAnnotation } from '../../support/reporters/annotations';
 
 const ethSymbol = asNetworkSymbol('eth');
 
-const approvalAmount = '10';
+const approvalAmount = '60';
 // The toast shows the approved amount compactly, and a stablecoin reads money-like.
-const compactApprovalAmount = '10.00';
-const accountLabel = 'Ethereum #2';
+const compactApprovalAmount = '60.00';
+const accountLabel = 'Ethereum #3';
 const providerName = 'LiFI Diamond';
 const positiveEthereumAmountPattern = /^(?!0+(?:\.0+)?\s*ETH$)\d+(?:\.\d+)?\s*ETH$/;
 
@@ -34,7 +35,7 @@ test.describe('Trading - DEX swap approval (LI.FI)', { tag: ['@T3T1', '@T3W1'] }
             });
             await dashboardPage.deviceSwitchingOpenButton.click();
             await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
-            await walletPage.openSwapTrading({ symbol: ethSymbol, atIndex: 1 });
+            await walletPage.openSwapTrading({ symbol: ethSymbol, atIndex: 2 });
         },
     );
 
@@ -59,13 +60,16 @@ test.describe('Trading - DEX swap approval (LI.FI)', { tag: ['@T3T1', '@T3W1'] }
                         tokenSymbol: 'USDC',
                         searchFilter: 'USDC',
                         networkFilter: 'eth',
-                        accountIndex: 1,
+                        accountIndex: 2,
                     },
                     buyAsset: {
                         assetCryptoId: getCryptoId(ethSymbol),
                     },
                     selectReceiveAddress: async () => {
-                        await tradingPage.receiveAccount.selectSuiteReceiveAccount(1, ethSymbol);
+                        await tradingPage.receiveAccount.selectSuiteReceiveAccount({
+                            symbol: ethSymbol,
+                            atIndex: 2,
+                        });
                     },
                 });
                 await tradingPage.quotes.chooseDifferentOfferIfAvailable(dexProvider);
@@ -204,6 +208,12 @@ test.describe('Trading - DEX swap approval (LI.FI)', { tag: ['@T3T1', '@T3W1'] }
                 await expect(tradingPage.pendingApprovalTransactionId).toHaveAttribute(
                     'id',
                     tradingMock.lastBroadcastTxid,
+                );
+                await expect(tradingPage.pendingApprovalTransactionId).toHaveText(
+                    AddressFormatter.format(tradingMock.lastBroadcastTxid, {
+                        format: 'long',
+                        isChunked: false,
+                    }),
                 );
                 await tradingPage.pendingApprovalTransactionId.click();
                 await expect(tradingPage.approvalModal.heading).toHaveTranslation(

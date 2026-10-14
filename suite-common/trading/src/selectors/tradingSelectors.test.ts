@@ -12,7 +12,7 @@ import {
 import { type NetworksRootState } from '@suite-common/networks';
 import { mockNetworksState } from '@suite-common/networks/mocks';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
-import { type AccountKey } from '@suite-common/wallet-types';
+import { type Account, type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/connect';
 
@@ -27,21 +27,19 @@ import {
     selectGroupedTradingExchangeQuotes,
     selectIsTradingNetworkFeeMissing,
     selectTradedAccountKeys,
-    selectTrading,
     selectTradingAccountAccordingActiveSection,
     selectTradingAccountKeyByTradeType,
     selectTradingActiveSection,
     selectTradingBuy,
     selectTradingBuyAmountLimits,
+    selectTradingBuyFormValues,
     selectTradingBuyInfo,
-    selectTradingBuyIsFromRedirect,
     selectTradingBuyIsLoading,
     selectTradingBuyLastErrorMessage,
     selectTradingBuyLoadingTimestampAndStatus,
     selectTradingBuyOfferQuotes,
     selectTradingBuyPaymentMethods,
     selectTradingBuyProviders,
-    selectTradingBuyQuoteByOrderId,
     selectTradingBuyQuotes,
     selectTradingBuyQuotesByPaymentMethod,
     selectTradingBuyQuotesPerPaymentMethod,
@@ -58,28 +56,29 @@ import {
     selectTradingExchangeAmountLimits,
     selectTradingExchangeBuyCryptoIds,
     selectTradingExchangeCexQuotes,
-    selectTradingExchangeDexQuoteApprovalPrefetchLoading,
     selectTradingExchangeDexQuoteApprovalPrefetchLoadingByQuoteId,
     selectTradingExchangeDexQuotes,
     selectTradingExchangeFormStep,
+    selectTradingExchangeFormValues,
     selectTradingExchangeInfo,
     selectTradingExchangeIsFromRedirect,
     selectTradingExchangeIsLoading,
     selectTradingExchangeLastErrorMessage,
     selectTradingExchangeLoadingTimestampAndStatus,
     selectTradingExchangeProviders,
+    selectTradingExchangeQuoteToEstimate,
     selectTradingExchangeQuotes,
     selectTradingExchangeQuotesRequest,
     selectTradingExchangeSelectedQuote,
     selectTradingExchangeSelectedQuoteIsDex,
     selectTradingExchangeSelectedQuoteSwapSlippage,
     selectTradingExchangeSellCryptoIds,
+    selectTradingFormAccount,
     selectTradingFormCryptoId,
     selectTradingIsSlip24Allowed,
     selectTradingIsSlip24SellAllowed,
     selectTradingLastErrorMessageByTradeType,
     selectTradingModalAccountKey,
-    selectTradingNativeCoinSymbolByCryptoId,
     selectTradingPaymentMethodsByType,
     selectTradingPlatformByCryptoId,
     selectTradingPrefilledFromAccount,
@@ -94,6 +93,7 @@ import {
     selectTradingSellActiveTrade,
     selectTradingSellAmountLimits,
     selectTradingSellFormStep,
+    selectTradingSellFormValues,
     selectTradingSellInfo,
     selectTradingSellIsFromRedirect,
     selectTradingSellLastErrorMessage,
@@ -106,14 +106,12 @@ import {
     selectTradingSellQuotesPerPaymentMethod,
     selectTradingSellQuotesRequest,
     selectTradingSellSelectedQuote,
-    selectTradingSellSellCryptoIds,
     selectTradingSellSupportedCryptoIds,
     selectTradingSupportedFiatCurrenciesByTradeType,
     selectTradingSupportedSymbols,
     selectTradingSymbolAndContractAddressByCryptoId,
     selectTradingTradeByOrderId,
     selectTradingTrades,
-    selectTradingTradesForSelectedDevice,
     selectValidTradingBuyQuotes,
     selectValidTradingSellQuotes,
 } from './tradingSelectors';
@@ -121,7 +119,12 @@ import coins from '../__fixtures__/coins.json';
 import platforms from '../__fixtures__/platforms.json';
 import { tradeApiFixtures } from '../__fixtures__/tradeApi';
 import { accountBtc, accountEth } from '../__fixtures__/utils';
-import { TRADING_SLIP24_SUPPORTED_NETWORK_TYPES } from '../constants';
+import {
+    TRADING_EXCHANGE_DEFAULT_SEND_CRYPTO_ID,
+    TRADING_EXCHANGE_FORM_CEX,
+    TRADING_EXCHANGE_FORM_DEX,
+    TRADING_SLIP24_SUPPORTED_NETWORK_TYPES,
+} from '../constants';
 import { getProviderMetadataFixture } from '../reducers/__fixtures__/providerMetadata';
 import { type BuyInfo, type TradingBuyState } from '../reducers/buyReducer';
 import { type ExchangeInfo, exchangeInitialState } from '../reducers/exchangeReducer';
@@ -551,44 +554,6 @@ describe('tradingSelectors', () => {
         });
     });
 
-    describe(selectTrading.name, () => {
-        it('should return correct data', () => {
-            const {
-                wallet: { trading },
-            } = getState() as Record<string, any>;
-
-            trading.buy.buyInfo.supportedCryptoCurrencies = new Set([
-                'eos',
-                'bitcoin',
-                'ethereum',
-                'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-                'base--0x0000000000000000000000000000000000000000',
-                'ethereum--0xWithoutObjectInCoinsInfo',
-            ]);
-            trading.buy.buyInfo.supportedFiatCurrencies = new Set(['usd', 'eur', 'czk']);
-            trading.buy.buyInfo.buyInfo.defaultAmountsOfFiatCurrencies = new Map([
-                ['usd', '150'],
-                ['eur', '100'],
-            ]);
-            trading.exchange.exchangeInfo.buyCryptoIds = new Set(['bitcoin']);
-            trading.exchange.exchangeInfo.sellCryptoIds = new Set([
-                'eos',
-                'bitcoin',
-                'ethereum',
-                'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-                'base--0x0000000000000000000000000000000000000000',
-                'ethereum--0xWithoutObjectInCoinsInfo',
-            ]);
-            trading.exchange.tradingAccountKey = accountEth.key;
-
-            expect(selectTrading(state)).toEqual(trading);
-        });
-
-        it('should be stable', () => {
-            expect(selectTrading(state)).toBe(selectTrading(state));
-        });
-    });
-
     describe(selectTradingBuyProviders.name, () => {
         it('should return correct data', () => {
             expect(selectTradingBuyProviders(state)).toEqual(
@@ -631,16 +596,24 @@ describe('tradingSelectors', () => {
         expect(selectTradingBuyQuotesRequest(state)).toBe(state.wallet.trading.buy.quotesRequest);
     });
 
-    it('selectTradingBuyIsFromRedirect should return correct data', () => {
-        state.wallet.trading.buy.isFromRedirect = true;
-
-        expect(selectTradingBuyIsFromRedirect(state)).toBe(true);
+    it('selectTradingBuyFormValues should return correct data', () => {
+        expect(selectTradingBuyFormValues(state)).toBe(state.wallet.trading.buy.formValues);
     });
 
     it('selectTradingExchangeQuotesRequest should return correct data', () => {
         expect(selectTradingExchangeQuotesRequest(state)).toBe(
             state.wallet.trading.exchange.quotesRequest,
         );
+    });
+
+    it('selectTradingExchangeFormValues should return correct data', () => {
+        expect(selectTradingExchangeFormValues(state)).toBe(
+            state.wallet.trading.exchange.formValues,
+        );
+    });
+
+    it('selectTradingSellFormValues should return correct data', () => {
+        expect(selectTradingSellFormValues(state)).toBe(state.wallet.trading.sell.formValues);
     });
 
     it('selectTradingExchangeIsFromRedirect should return correct data', () => {
@@ -651,12 +624,6 @@ describe('tradingSelectors', () => {
 
     it('selectTradingExchangeQuotes should return correct data', () => {
         expect(selectTradingExchangeQuotes(state)).toBe(state.wallet.trading.exchange.quotes);
-    });
-
-    it('selectTradingExchangeDexQuoteApprovalPrefetchLoading should return correct data', () => {
-        expect(selectTradingExchangeDexQuoteApprovalPrefetchLoading(state)).toBe(
-            !!state.wallet.trading.exchange.dexQuoteApprovalPrefetchLoadingQuoteId,
-        );
     });
 
     it('selectTradingExchangeDexQuoteApprovalPrefetchLoadingByQuoteId should return correct data', () => {
@@ -879,17 +846,6 @@ describe('tradingSelectors', () => {
         });
     });
 
-    it.each([
-        ['bitcoin', 'btc'],
-        ['ethereum', 'eth'],
-        ['ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', 'eth'],
-    ] as [CryptoId, string][])(
-        'selectTradingNativeCoinSymbolByCryptoId should return native coin symbol for cryptoId [%s]',
-        (cryptoId, expected) => {
-            expect(selectTradingNativeCoinSymbolByCryptoId(state, cryptoId)).toBe(expected);
-        },
-    );
-
     describe(selectTradingSymbolAndContractAddressByCryptoId.name, () => {
         it.each([
             ['bitcoin', { coinSymbol: 'BTC', contractAddress: undefined }],
@@ -922,6 +878,25 @@ describe('tradingSelectors', () => {
                 'bitcoin',
                 'ethereum',
                 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                'base--0x0000000000000000000000000000000000000000',
+            ]);
+        });
+
+        it('should order coins as they come in info', () => {
+            const buyInfo = getBuyState().buyInfo!;
+
+            state.wallet.trading.buy.buyInfo = {
+                ...buyInfo,
+                supportedCryptoCurrencies: [
+                    'base--0x0000000000000000000000000000000000000000',
+                    'ethereum',
+                    'bitcoin',
+                ] as CryptoId[],
+            };
+
+            expect(selectTradingBuySupportedCryptoIds(state)).toEqual([
+                'bitcoin',
+                'ethereum',
                 'base--0x0000000000000000000000000000000000000000',
             ]);
         });
@@ -985,42 +960,6 @@ describe('tradingSelectors', () => {
             state.wallet.trading.sell.sellInfo = undefined;
 
             expect(selectTradingSellSupportedCryptoIds(state)).toEqual([]);
-        });
-    });
-
-    describe(selectTradingSellSellCryptoIds.name, () => {
-        it('should select only coins presented in sellInfo and info', () => {
-            expect(selectTradingSellSellCryptoIds(state)).toEqual([
-                'bitcoin',
-                'ethereum',
-                'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-                'base--0x0000000000000000000000000000000000000000',
-            ]);
-        });
-
-        it('should be stable', () => {
-            const first = selectTradingSellSellCryptoIds(state);
-            const second = selectTradingSellSellCryptoIds(state);
-
-            expect(first).toBe(second);
-        });
-
-        it('should be empty array when platforms are not set', () => {
-            state.wallet.trading.info.platforms = undefined;
-
-            expect(selectTradingSellSellCryptoIds(state)).toEqual([]);
-        });
-
-        it('should be empty array when coins are not set', () => {
-            state.wallet.trading.info.coins = undefined;
-
-            expect(selectTradingSellSellCryptoIds(state)).toEqual([]);
-        });
-
-        it('should be empty array when supportedCryptoCurrencies are not set', () => {
-            state.wallet.trading.sell.sellInfo = undefined;
-
-            expect(selectTradingSellSellCryptoIds(state)).toEqual([]);
         });
     });
 
@@ -1199,23 +1138,6 @@ describe('tradingSelectors', () => {
                 expect.objectContaining({ orderId: 'orderId3' }),
                 expect.objectContaining({ orderId: 'orderId1' }),
             ]);
-        });
-    });
-
-    describe(selectTradingBuyQuoteByOrderId.name, () => {
-        it('should return undefined when orderId is not provided', () => {
-            const result = selectTradingBuyQuoteByOrderId(state, undefined);
-            expect(result).toBeUndefined();
-        });
-
-        it('should return undefined when quote with orderId is not found', () => {
-            const result = selectTradingBuyQuoteByOrderId(state, 'non_existent_id');
-            expect(result).toBeUndefined();
-        });
-
-        it('should return correct quote', () => {
-            const result = selectTradingBuyQuoteByOrderId(state, 'orderId1');
-            expect(result?.orderId).toBe('orderId1');
         });
     });
 
@@ -1635,6 +1557,150 @@ describe('tradingSelectors', () => {
 
             expect(selectTradingFormCryptoId(formState, 'exchange')).toBe('ethereum');
         });
+
+        it('should use the default USDT for an exchange ETH account without prefill', () => {
+            formState.wallet.trading.exchange.tradingAccountKey = eligibleEth.key;
+            formState.wallet.trading.prefilledFromAccount = { key: undefined, cryptoId: undefined };
+
+            expect(selectTradingFormCryptoId(formState, 'exchange')).toBe(
+                TRADING_EXCHANGE_DEFAULT_SEND_CRYPTO_ID,
+            );
+        });
+    });
+
+    describe('default preselected assets', () => {
+        const createAccount = (symbol: string, descriptor: string, balance: string) =>
+            mockWalletAccount({
+                symbol: asNetworkSymbol(symbol),
+                descriptor: asAccountDescriptor(descriptor),
+                deviceState: accountBtc.deviceState as StaticSessionId,
+                balance,
+                formattedBalance: balance,
+                tokens: [],
+            });
+
+        const emptyBtc = createAccount('btc', 'btcEmpty', '0');
+        const fundedBtc = createAccount('btc', 'btcFunded', '1000');
+        const emptyEth = createAccount('eth', 'ethEmpty', '0');
+        const fundedEth = createAccount('eth', 'ethFunded', '1000');
+        const fundedLtc = createAccount('ltc', 'ltcFunded', '1000');
+
+        const getFormState = (accounts: Account[]): TradingFormAccountRootState => ({
+            ...state,
+            tokenDefinitions: {},
+            wallet: {
+                ...state.wallet,
+                accounts,
+                trading: {
+                    ...state.wallet.trading,
+                    buy: { ...state.wallet.trading.buy, tradingAccountKey: undefined },
+                    sell: { ...state.wallet.trading.sell, tradingAccountKey: undefined },
+                    exchange: { ...state.wallet.trading.exchange, tradingAccountKey: undefined },
+                    prefilledFromAccount: { key: undefined, cryptoId: undefined },
+                },
+            },
+        });
+
+        it.each<[string, TradingType, Account[], Account | undefined, CryptoId | undefined]>([
+            [
+                'buy: BTC account even if not first',
+                'buy',
+                [fundedEth, emptyBtc],
+                emptyBtc,
+                'bitcoin' as CryptoId,
+            ],
+            [
+                'buy: first account without a BTC account',
+                'buy',
+                [fundedEth, fundedLtc],
+                fundedEth,
+                'ethereum' as CryptoId,
+            ],
+            [
+                'sell: BTC account with zero balance',
+                'sell',
+                [fundedLtc, emptyBtc],
+                emptyBtc,
+                'bitcoin' as CryptoId,
+            ],
+            [
+                'sell: funded BTC account first',
+                'sell',
+                [emptyBtc, fundedBtc],
+                fundedBtc,
+                'bitcoin' as CryptoId,
+            ],
+            [
+                'sell: nothing without a BTC account',
+                'sell',
+                [fundedEth, fundedLtc],
+                undefined,
+                undefined,
+            ],
+            [
+                'exchange: ETH account with zero balance',
+                'exchange',
+                [fundedBtc, emptyEth],
+                emptyEth,
+                TRADING_EXCHANGE_DEFAULT_SEND_CRYPTO_ID,
+            ],
+            [
+                'exchange: funded ETH account first',
+                'exchange',
+                [emptyEth, fundedEth],
+                fundedEth,
+                TRADING_EXCHANGE_DEFAULT_SEND_CRYPTO_ID,
+            ],
+            [
+                'exchange: nothing without an ETH account',
+                'exchange',
+                [fundedBtc, fundedLtc],
+                undefined,
+                undefined,
+            ],
+        ])(
+            'should preselect %s',
+            (_title, tradingType, accounts, expectedAccount, expectedCryptoId) => {
+                const formState = getFormState(accounts);
+
+                expect(selectTradingFormAccount(formState, tradingType)?.key).toBe(
+                    expectedAccount?.key,
+                );
+                expect(selectTradingFormCryptoId(formState, tradingType)).toBe(expectedCryptoId);
+            },
+        );
+
+        it('should keep the stored default account stable once synced', () => {
+            const formState = getFormState([fundedBtc, emptyEth]);
+            formState.wallet.trading.exchange.tradingAccountKey = emptyEth.key;
+
+            expect(selectTradingFormAccount(formState, 'exchange')?.key).toBe(emptyEth.key);
+            expect(selectTradingFormCryptoId(formState, 'exchange')).toBe(
+                TRADING_EXCHANGE_DEFAULT_SEND_CRYPTO_ID,
+            );
+        });
+
+        it('should prefer the prefilled account over the default', () => {
+            const formState = getFormState([fundedBtc, fundedEth, fundedLtc]);
+            formState.wallet.trading.prefilledFromAccount = {
+                key: fundedLtc.key,
+                cryptoId: 'litecoin' as CryptoId,
+            };
+
+            expect(selectTradingFormAccount(formState, 'sell')?.key).toBe(fundedLtc.key);
+            expect(selectTradingFormCryptoId(formState, 'sell')).toBe('litecoin');
+        });
+
+        it('should keep the native asset of a prefilled ETH account after the prefill key is cleared', () => {
+            const formState = getFormState([fundedBtc, fundedEth]);
+            formState.wallet.trading.exchange.tradingAccountKey = fundedEth.key;
+            formState.wallet.trading.prefilledFromAccount = {
+                key: undefined,
+                cryptoId: 'ethereum' as CryptoId,
+            };
+
+            expect(selectTradingFormCryptoId(formState, 'exchange')).toBe('ethereum');
+        });
     });
 
     describe(selectTradingActiveSection.name, () => {
@@ -1661,6 +1727,88 @@ describe('tradingSelectors', () => {
             data: { primaryType: 'Order' },
         },
     } as unknown as ExchangeTrade;
+
+    describe(selectTradingExchangeQuoteToEstimate.name, () => {
+        const offer: ExchangeTrade = {
+            exchange: 'lifi',
+            isDex: true,
+            dexTx: { from: '0xUser', to: '0xRouter', data: '0xswap', value: '1' },
+        };
+
+        const createdTrade: ExchangeTrade = {
+            exchange: 'lifi',
+            isDex: true,
+            dexTx: { from: '0xUser', to: '0xToken', data: '0xapproval', value: '0' },
+        };
+
+        const stateWithOfferAndTrade = {
+            wallet: {
+                trading: {
+                    exchange: { quotes: [offer], selectedQuote: createdTrade },
+                },
+            },
+        } as TradingRootState;
+
+        const formValues = { provider: 'lifi', exchangeType: TRADING_EXCHANGE_FORM_DEX } as const;
+
+        it('should return the offer selected in the form for a native send', () => {
+            expect(
+                selectTradingExchangeQuoteToEstimate(stateWithOfferAndTrade, {
+                    ...formValues,
+                    sendCryptoId: 'ethereum' as CryptoId,
+                }),
+            ).toBe(offer);
+        });
+
+        it('should return the created trade for a token send, which is where its approval calldata lives', () => {
+            expect(
+                selectTradingExchangeQuoteToEstimate(stateWithOfferAndTrade, {
+                    ...formValues,
+                    sendCryptoId:
+                        'ethereum--0xdac17f958d2ee523a2206206994597c13d831ec7' as CryptoId,
+                }),
+            ).toBe(createdTrade);
+        });
+
+        it('should return the gasless offer selected in the form for a token send before a trade is created', () => {
+            const stateWithGaslessOffer = {
+                wallet: {
+                    trading: {
+                        exchange: { quotes: [gaslessQuote], selectedQuote: undefined },
+                    },
+                },
+            } as TradingRootState;
+
+            expect(
+                selectTradingExchangeQuoteToEstimate(stateWithGaslessOffer, {
+                    provider: '1inchfusion',
+                    exchangeType: TRADING_EXCHANGE_FORM_DEX,
+                    sendCryptoId:
+                        'ethereum--0xdac17f958d2ee523a2206206994597c13d831ec7' as CryptoId,
+                }),
+            ).toBe(gaslessQuote);
+        });
+
+        it('should return the CEX offer selected in the form for a token send with a leftover created DEX trade', () => {
+            const cexOffer: ExchangeTrade = { exchange: 'changelly', isDex: false };
+            const stateWithLeftoverTrade = {
+                wallet: {
+                    trading: {
+                        exchange: { quotes: [cexOffer], selectedQuote: createdTrade },
+                    },
+                },
+            } as TradingRootState;
+
+            expect(
+                selectTradingExchangeQuoteToEstimate(stateWithLeftoverTrade, {
+                    provider: 'changelly',
+                    exchangeType: TRADING_EXCHANGE_FORM_CEX,
+                    sendCryptoId:
+                        'ethereum--0xdac17f958d2ee523a2206206994597c13d831ec7' as CryptoId,
+                }),
+            ).toBe(cexOffer);
+        });
+    });
 
     describe(selectTradingDisplayComposedFee.name, () => {
         it.each([
@@ -2428,74 +2576,6 @@ describe('tradingSelectors', () => {
             expect(() =>
                 selectTradingProviderByNameAndTradeType(state, 'provider1', 'invalid' as any),
             ).toThrow('Unreachable case: ["invalid"]');
-        });
-    });
-
-    describe(selectTradingTradesForSelectedDevice.name, () => {
-        it('should return trades for the selected device', () => {
-            const mockState = {
-                wallet: {
-                    selectedAccount: {
-                        account: { deviceState: 'device1' },
-                    },
-                    accounts: [
-                        { key: 'key1', deviceState: 'device1' },
-                        { key: 'key2', deviceState: 'device2' },
-                    ],
-                    trading: {
-                        trades: [
-                            { selectedAccountKey: 'key1', tradeType: 'buy' },
-                            { sendAccountKey: 'key2', tradeType: 'sell' },
-                        ],
-                    },
-                },
-            } as unknown as TradingRootStateWithDeviceAndAccounts;
-
-            const result = selectTradingTradesForSelectedDevice(mockState);
-
-            expect(result).toEqual([{ selectedAccountKey: 'key1', tradeType: 'buy' }]);
-        });
-
-        it('should return an empty array if no trades match the selected device', () => {
-            const mockState = {
-                wallet: {
-                    selectedAccount: {
-                        account: { deviceState: 'device3' },
-                    },
-                    accounts: [
-                        { key: 'key1', deviceState: 'device1' },
-                        { key: 'key2', deviceState: 'device2' },
-                    ],
-                    trading: {
-                        trades: [{ tradeType: 'buy' }, { tradeType: 'sell' }],
-                    },
-                },
-            } as unknown as TradingRootStateWithDeviceAndAccounts;
-
-            const result = selectTradingTradesForSelectedDevice(mockState);
-
-            expect(result).toEqual([]);
-        });
-
-        it('should return an empty array if there are no trades', () => {
-            const mockState = {
-                wallet: {
-                    selectedAccount: {
-                        account: { deviceState: 'device1' },
-                    },
-                    accounts: [
-                        { key: 'key1', deviceState: 'device1' },
-                        { key: 'key2', deviceState: 'device2' },
-                    ],
-                    trading: {
-                        trades: [],
-                    },
-                },
-            } as unknown as TradingRootStateWithDeviceAndAccounts;
-
-            const result = selectTradingTradesForSelectedDevice(mockState);
-
-            expect(result).toEqual([]);
         });
     });
 

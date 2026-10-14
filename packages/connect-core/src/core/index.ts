@@ -6,7 +6,6 @@ import {
     CORE_CALL_CANCEL,
     CORE_EVENT,
     DEVICE,
-    POPUP,
     RESPONSE_EVENT,
     SET_ENABLED_NETWORKS,
     UI_EVENT,
@@ -27,16 +26,20 @@ import type {
     CoreRequestMessage,
     DeviceIdentity,
     MethodInfo,
-    TransportInfo,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import type { TrezorError } from '@trezor/connect-common/src/constants/errors';
 import { parseLocalFirmwares } from '@trezor/connect-common/src/data/connectSettings';
-import type { CreateLogger } from '@trezor/connect-common/src/types/settings';
-import { noopCreateLogger, noopLogger, setLogWriter } from '@trezor/connect-common/src/utils/debug';
-import type { LogWriter, Logger } from '@trezor/logger';
+import { setLogWriter } from '@trezor/connect-common/src/utils/debug';
+import {
+    type CreateLogger,
+    type LogWriter,
+    type Logger,
+    noopCreateLogger,
+    noopLogger,
+} from '@trezor/logger';
 import { TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport-common';
-import { createDeferred, createLazy, throwError } from '@trezor/utils';
+import { createLazy, throwError } from '@trezor/utils';
 
 import type { AbstractMethod } from './AbstractMethod';
 import { getMethod } from './method';
@@ -122,46 +125,26 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
     method.checkDeviceCapability();
 
     const deviceNeedsBackup = device.features.backup_availability === 'Required';
-    if (deviceNeedsBackup) {
-        if (method.confirmMissingBackup) {
-            // initialize user response promise
-            const uiPromise = uiPromises.create(UI_RESPONSE.RECEIVE_CONFIRMATION, device);
+    if (deviceNeedsBackup && method.confirmMissingBackup) {
+        // initialize user response promise
+        const uiPromise = uiPromises.create(UI_RESPONSE.RECEIVE_CONFIRMATION, device);
 
-            // request confirmation view
-            sendCoreMessage(
-                createUiRequestMessage(
-                    UI_REQUESTS.REQUEST_CONFIRMATION,
-                    {
-                        view: 'no-backup',
-                    },
-                    { requestId: uiPromise.requestId },
-                ),
-            );
+        // request confirmation view
+        sendCoreMessage(
+            createUiRequestMessage(
+                UI_REQUESTS.REQUEST_CONFIRMATION,
+                { view: 'no-backup' },
+                { requestId: uiPromise.requestId },
+            ),
+        );
 
-            // wait for user action
-            const permitted = await uiPromise.promise.then(({ payload }) => payload);
+        // wait for user action
+        const permitted = await uiPromise.promise.then(({ payload }) => payload);
 
-            if (!permitted) {
-                // interrupt process and go to "final" block
-                return Promise.reject(ERRORS.TypedError('Method_PermissionsNotGranted'));
-            }
+        if (!permitted) {
+            // interrupt process and go to "final" block
+            return Promise.reject(ERRORS.TypedError('Method_PermissionsNotGranted'));
         }
-        // show notification
-        sendCoreMessage(
-            createUiEventMessage(UI_EVENTS.DEVICE_NEEDS_BACKUP, {
-                device: device.toMessageObject(),
-            }),
-        );
-    }
-
-    // notify if firmware is outdated but not required
-    if (device.firmwareStatus === 'outdated') {
-        // show notification
-        sendCoreMessage(
-            createUiEventMessage(UI_EVENTS.FIRMWARE_OUTDATED, {
-                device: device.toMessageObject(),
-            }),
-        );
     }
 
     // Make sure that device will display pin/passphrase
@@ -213,8 +196,6 @@ const onCall = async (context: CoreContext, message: CoreCallMessage) => {
         method = await getMethod(message);
         logger.debug('method selected', method.name);
 
-        await method.initAsync?.();
-
         callMethods.push(method);
     } catch (error) {
         sendCoreMessage(createResponseMessage(responseID, false, { error }));
@@ -223,12 +204,20 @@ const onCall = async (context: CoreContext, message: CoreCallMessage) => {
     }
 
     if (message.payload.__info) {
-        const response = method.getMethodInfo();
-
-        if (message.payload.__precomposed) {
-            response.precomposed = await method.payloadToPrecomposed();
+        let response: CoreEventMessage;
+        // handleMessage only logs a rejected onCall, so the caller would get no response at all.
+        try {
+            const info = await method.getMethodInfo();
+            response = createResponseMessage(method.responseID, true, info);
+        } catch (error) {
+            response = createResponseMessage(method.responseID, false, { error });
         }
-        sendCoreMessage(createResponseMessage(method.responseID, true, response));
+
+        // A cancel that arrived while this call was awaiting may have answered it already:
+        // abortRunningCall answers a call without a device itself.
+        if (callMethods.includes(method)) {
+            sendCoreMessage(response);
+        }
 
         return Promise.resolve();
     }
@@ -267,23 +256,12 @@ const onCallDevice = async (
 ): Promise<void> => {
     const { deviceList, callMethods, sendCoreMessage, logger } = context;
     const responseID = message.id;
-    const { transports, pendingTransportEvent } = settingsStore.get();
-
-    if (!deviceList.isConnected() && !deviceList.pendingConnection()) {
-        // transport is missing try to initialize it once again
-        deviceList.init({ transports, pendingTransportEvent });
-    }
-    await deviceList.pendingConnection();
 
     // find device
     let tempDevice: Device | undefined;
     try {
         tempDevice = selectDevice(context, message.payload.device);
     } catch (error) {
-        if (error.code === 'Transport_Missing') {
-            // show message about transport
-            sendCoreMessage(createUiEventMessage(UI_EVENTS.TRANSPORT_MISSING));
-        }
         // TODO: this should not be returned here before user agrees on "read" perms...
         sendCoreMessage(createResponseMessage(responseID, false, { error }));
         throw error;
@@ -705,11 +683,6 @@ const abortRunningCall = (context: CoreContext, error: TrezorError, callId?: str
     cleanup(context);
 };
 
-// Handle genuine popup window close (always produces Method_Interrupted)
-const onPopupClosed = (context: CoreContext) => {
-    abortRunningCall(context, ERRORS.TypedError('Method_Interrupted'));
-};
-
 // Handle an explicit cancel() call (always produces Method_Cancel)
 const onCallCancel = (context: CoreContext, reason?: string, callId?: string) => {
     abortRunningCall(context, ERRORS.TypedError('Method_Cancel', reason), callId);
@@ -797,10 +770,6 @@ export class Core extends EventEmitter {
         this.coreLogger.debug('handleMessage', message.type);
 
         switch (message.type) {
-            case POPUP.CLOSED:
-                onPopupClosed(this.getCoreContext());
-                break;
-
             case CORE_CALL_CANCEL:
                 onCallCancel(
                     this.getCoreContext(),
@@ -827,12 +796,6 @@ export class Core extends EventEmitter {
                 if (this.deviceList.isConnected()) {
                     this.deviceList.enumerate();
                 }
-                break;
-
-            case TRANSPORT.GET_INFO:
-                this.sendCoreMessage(
-                    createResponseMessage(message.id, true, this.getActiveTransports()),
-                );
                 break;
 
             // messages from UI (popup/modal...)
@@ -864,12 +827,9 @@ export class Core extends EventEmitter {
                     if (message.payload.__info) {
                         this.sendCoreMessage(
                             createResponseMessage(message.id, true, {
-                                name: 'firmwareUpdate',
                                 info: 'Update firmware',
                                 requiredPermissions: [{ permission: 'internal' }],
                                 useUi: true,
-                                useDevice: true,
-                                useDeviceState: false,
                             } satisfies MethodInfo),
                         );
                         break;
@@ -918,12 +878,6 @@ export class Core extends EventEmitter {
         this.deviceList.dispose();
     }
 
-    getActiveTransports(): TransportInfo[] | undefined {
-        if (this.deviceList.isConnected()) {
-            return this.deviceList.getActiveTransports();
-        }
-    }
-
     async init(
         settings: ConnectSettings,
         onCoreEvent: (message: CoreEventMessage) => void,
@@ -937,13 +891,6 @@ export class Core extends EventEmitter {
         // is created because device discovery/handshake can log during init.
         this.createLogger = settings.createLogger ?? noopCreateLogger;
         this.coreLogger = this.createLogger('Core');
-
-        // do not send any event until Core is fully loaded
-        // DeviceList emits TRANSPORT and DEVICE events if pendingTransportEvent is set
-        const throttlePromise = createDeferred();
-        throttlePromise.promise.catch(() => {});
-        const onCoreEventThrottled = (message: CoreEventMessage) =>
-            throttlePromise.promise.then(() => onCoreEvent(message));
 
         try {
             // enabledNetworks has its own store (the single source of truth); keep it out of
@@ -965,41 +912,30 @@ export class Core extends EventEmitter {
 
             this._deviceList = new DeviceList({ createLogger: this.createLogger });
             initDeviceList(this.getCoreContext());
-
-            this.on(CORE_EVENT, onCoreEventThrottled);
         } catch (error) {
             // TODO: kill app
             this.coreLogger.error('init', error);
-            throttlePromise.reject(error);
             throw error;
         }
 
-        const { transports, pendingTransportEvent, transportReconnect } = settingsStore.get();
+        const { transports } = settingsStore.get();
+
+        this.on(CORE_EVENT, onCoreEvent);
 
         try {
-            this.deviceList.init({ transports, pendingTransportEvent, transportReconnect });
+            this.deviceList.init({ transports });
         } catch (error) {
             this.sendCoreMessage(createTransportMessage(TRANSPORT.ERROR, { error }));
-            throttlePromise.reject(error);
             throw error;
         }
-
-        if (!transportReconnect) {
-            await this.deviceList.pendingConnection();
-        }
-
-        // Core initialized successfully, disable throttle
-        this.on(CORE_EVENT, onCoreEvent);
-        this.off(CORE_EVENT, onCoreEventThrottled);
-        setTimeout(throttlePromise.resolve, 0);
     }
 }
 
 const resetTransports = async ({ deviceList, sendCoreMessage }: CoreContext) => {
-    const { transports, pendingTransportEvent, transportReconnect } = settingsStore.get();
+    const { transports } = settingsStore.get();
 
     try {
-        await deviceList.init({ transports, pendingTransportEvent, transportReconnect });
+        await deviceList.init({ transports });
     } catch (error) {
         // do nothing
         sendCoreMessage(createTransportMessage(TRANSPORT.ERROR, { error }));

@@ -1,10 +1,176 @@
-import type { TokenDetailByMint, Transaction } from '@trezor/blockchain-link-types';
+import type {
+    TokenDetailByMint,
+    TokenInfo,
+    TokenTransfer,
+    Transaction,
+} from '@trezor/blockchain-link-types';
 import { isCodesignBuild } from '@trezor/env-utils';
 import { STELLAR_DECIMALS } from '@trezor/network-stellar/constants';
-import type { IdentifiedTransaction } from '@trezor/network-stellar/types';
+import type {
+    DescribedTransaction,
+    StellarAssetAmount,
+    StellarBalanceDelta,
+    StellarContractTokenTransfer,
+    StellarOperationType,
+    TokenTransferInfo,
+} from '@trezor/network-stellar/types';
+import { BigNumber } from '@trezor/utils';
+
+// A host function can move other parties' assets too; only the account's own transfers are kept.
+const transformTokenTransfers = (
+    baseTx: Omit<Transaction, 'type'>,
+    transfers: readonly TokenTransferInfo[],
+    descriptor: string,
+    tokenDetailByMint: TokenDetailByMint,
+): Transaction => {
+    const ownTransfers = transfers.filter(
+        ({ fromAddress, toAddress }) => descriptor === fromAddress || descriptor === toAddress,
+    );
+
+    if (ownTransfers.length === 0) {
+        return { ...baseTx, type: 'unknown' };
+    }
+
+    const isSender = ownTransfers.some(({ fromAddress }) => descriptor === fromAddress);
+    const isRecipient = ownTransfers.some(({ toAddress }) => descriptor === toAddress);
+
+    let type: 'self' | 'sent' | 'recv' = 'recv';
+    if (isSender) {
+        type = isRecipient ? 'self' : 'sent';
+    }
+
+    return {
+        ...baseTx,
+        type,
+        amount: '0', // No native amount for token transfers
+        tokens: ownTransfers.map(({ assetCode, assetIssuer, amount, fromAddress, toAddress }) => {
+            const contract = `${assetCode}-${assetIssuer}`;
+
+            return {
+                type: descriptor === fromAddress ? 'sent' : 'recv',
+                standard: 'STELLAR-CLASSIC',
+                from: fromAddress,
+                to: toAddress,
+                contract,
+                name: tokenDetailByMint[contract]?.name || assetCode,
+                symbol: assetCode,
+                decimals: STELLAR_DECIMALS,
+                amount,
+            };
+        }),
+    };
+};
+
+/** Signed stroops of the account's own balance; native when `asset` is absent. */
+type OwnMovement = Pick<StellarBalanceDelta, 'asset' | 'amount'>;
+
+const negated = ({ asset, amount }: StellarAssetAmount): OwnMovement => ({
+    asset,
+    amount: new BigNumber(amount).negated().toString(),
+});
+
+/** The account's own legs, and the nearest holder on the other side. */
+const selectOwnMovements = (deltas: readonly StellarBalanceDelta[], descriptor: string) => ({
+    movements: deltas.filter(({ holder }) => holder === descriptor),
+    counterparty: deltas.find(({ holder }) => holder !== descriptor)?.holder,
+});
+
+type LabelledParams = {
+    baseTx: Omit<Transaction, 'type'>;
+    operationType?: StellarOperationType;
+};
+
+const labelled = ({ baseTx, operationType }: LabelledParams): Omit<Transaction, 'type'> =>
+    operationType
+        ? { ...baseTx, stellarSpecific: { ...baseTx.stellarSpecific!, operationType } }
+        : baseTx;
+
+type TransformMovementsParams = {
+    baseTx: Omit<Transaction, 'type'>;
+    movements: readonly OwnMovement[];
+    descriptor: string;
+    /** The address on the other side, where the operation or the effects name one. */
+    counterparty?: string;
+    tokenDetailByMint: TokenDetailByMint;
+};
+
+/** Value both leaving and arriving is a conversion, which the shared type spells `self`. */
+const transformMovements = ({
+    baseTx,
+    movements,
+    descriptor,
+    counterparty,
+    tokenDetailByMint,
+}: TransformMovementsParams): Transaction => {
+    if (movements.length === 0) {
+        return { ...baseTx, type: 'unknown' };
+    }
+
+    const isSender = movements.some(({ amount }) => new BigNumber(amount).isNegative());
+    const isRecipient = movements.some(({ amount }) => new BigNumber(amount).isPositive());
+
+    let type: 'self' | 'sent' | 'recv' = 'recv';
+    if (isSender) {
+        type = isRecipient ? 'self' : 'sent';
+    }
+
+    // A round trip through the order books leaves and arrives in lumens; only the difference moved.
+    const nativeMovements = movements.filter(({ asset }) => !asset);
+    const nativeTotal = nativeMovements.reduce(
+        (total, { amount }) => total.plus(amount),
+        new BigNumber(0),
+    );
+    const hasNative = nativeMovements.length > 0;
+    const nativeAmount = nativeTotal.abs().toString();
+    const isNativeIncoming = hasNative && nativeTotal.isGreaterThan(0);
+    const hasAssetLeg = movements.some(({ asset }) => !!asset);
+    const other = counterparty ?? descriptor;
+
+    // `amount` with a target reads as "sent", which would show an incoming native leg as paid out.
+    const isNativeSwapLeg = isNativeIncoming && hasAssetLeg;
+
+    // The lumens' recipient is the account itself when they arrived.
+    const nativeRecipient = isNativeIncoming ? descriptor : counterparty;
+    const nativeTargets =
+        hasNative && !isNativeSwapLeg && nativeRecipient
+            ? [{ n: 0, addresses: [nativeRecipient], isAddress: true, amount: nativeAmount }]
+            : [];
+
+    return {
+        ...baseTx,
+        type,
+        amount: isNativeSwapLeg ? '0' : nativeAmount,
+        internalTransfers: isNativeSwapLeg
+            ? [{ type: 'recv' as const, from: other, to: descriptor, amount: nativeAmount }]
+            : [],
+        tokens: movements.flatMap(({ asset, amount }) => {
+            if (!asset) return [];
+
+            const isOutgoing = new BigNumber(amount).isNegative();
+            const contract = `${asset.assetCode}-${asset.assetIssuer}`;
+            // Effects name no counterparty, so the issuer stands in, as a mint or a burn does.
+            const assetOther = counterparty ?? asset.assetIssuer;
+
+            return [
+                {
+                    type: isOutgoing ? ('sent' as const) : ('recv' as const),
+                    standard: 'STELLAR-CLASSIC' as const,
+                    from: isOutgoing ? descriptor : assetOther,
+                    to: isOutgoing ? assetOther : descriptor,
+                    contract,
+                    name: tokenDetailByMint[contract]?.name || asset.assetCode,
+                    symbol: asset.assetCode,
+                    decimals: STELLAR_DECIMALS,
+                    amount: new BigNumber(amount).abs().toString(),
+                },
+            ];
+        }),
+        targets: nativeTargets,
+    };
+};
 
 export const transformTransaction = (
-    identifiedTx: IdentifiedTransaction,
+    identifiedTx: DescribedTransaction,
     descriptor: string,
     tokenDetailByMint: TokenDetailByMint,
 ): Transaction => {
@@ -47,6 +213,109 @@ export const transformTransaction = (
                           changeTrust: { assetCode: parsed.assetCode, isRemoval: parsed.isRemoval },
                       },
                   };
+        case 'token-transfer':
+            return transformTokenTransfers(baseTx, parsed.transfers, descriptor, tokenDetailByMint);
+        case 'contract-call': {
+            const { invocation, transfers, deltas } = parsed;
+            const contractTx: Omit<Transaction, 'type'> = invocation
+                ? {
+                      ...baseTx,
+                      stellarSpecific: { ...baseTx.stellarSpecific!, contractCall: invocation },
+                  }
+                : baseTx;
+
+            const transferTx = transformTokenTransfers(
+                contractTx,
+                transfers,
+                descriptor,
+                tokenDetailByMint,
+            );
+
+            if (transferTx.type !== 'unknown') {
+                return transferTx;
+            }
+
+            // Balance changes cover classic assets only; lumens a call moved show only in the effects.
+            const { movements, counterparty } = selectOwnMovements(deltas, descriptor);
+
+            if (movements.length > 0) {
+                return transformMovements({
+                    baseTx: contractTx,
+                    movements,
+                    descriptor,
+                    counterparty,
+                    tokenDetailByMint,
+                });
+            }
+
+            // A non-SAC call has no balance changes; the decoded call at least says what ran.
+            return invocation ? { ...contractTx, type: 'contract' } : transferTx;
+        }
+        case 'path-payment': {
+            const { fromAddress, toAddress, sent, received, operationType } = parsed;
+            const isSender = descriptor === fromAddress;
+            const isRecipient = descriptor === toAddress;
+
+            if (!isSender && !isRecipient) {
+                return { ...baseTx, type: 'unknown' };
+            }
+
+            return transformMovements({
+                baseTx: labelled({ baseTx, operationType }),
+                movements: [
+                    ...(isSender ? [negated(sent)] : []),
+                    ...(isRecipient ? [received] : []),
+                ],
+                descriptor,
+                counterparty: isSender ? toAddress : fromAddress,
+                tokenDetailByMint,
+            });
+        }
+        case 'balance-change': {
+            const { deltas, operationType } = parsed;
+            const { movements, counterparty } = selectOwnMovements(deltas, descriptor);
+
+            return transformMovements({
+                baseTx: labelled({ baseTx, operationType }),
+                movements,
+                descriptor,
+                counterparty,
+                tokenDetailByMint,
+            });
+        }
+        case 'ledger-change':
+            // Nothing moved, so the label is the whole story.
+            return { ...labelled({ baseTx, operationType: parsed.operationType }), type: 'self' };
+        case 'claimable-balance-offer': {
+            const { fromAddress, claimants, asset, offeredAmount, operationType } = parsed;
+            const isCreator = descriptor === fromAddress;
+
+            if (!isCreator && !claimants.includes(descriptor)) {
+                return { ...baseTx, type: 'unknown' };
+            }
+
+            const offer = labelled({ baseTx, operationType });
+            const withOffer: Omit<Transaction, 'type'> = {
+                ...offer,
+                stellarSpecific: {
+                    ...offer.stellarSpecific!,
+                    claimableBalanceOffer: { isClaimant: !isCreator, offeredAmount },
+                },
+            };
+
+            // A claimant has been offered value, not paid it; the claim reports the credit.
+            if (!isCreator) {
+                return { ...withOffer, type: 'recv' };
+            }
+
+            return transformMovements({
+                baseTx: withOffer,
+                movements: [negated({ asset, amount: offeredAmount })],
+                descriptor,
+                counterparty: claimants[0],
+                tokenDetailByMint,
+            });
+        }
         default: {
             if (descriptor !== parsed.fromAddress && descriptor !== parsed.toAddress)
                 // Transaction does not involve the user's address
@@ -58,67 +327,42 @@ export const transformTransaction = (
 
     const type = descriptor === fromAddress ? 'sent' : 'recv';
 
-    if (parsed.type === 'payment-token') {
-        const { assetCode, assetIssuer, amount } = parsed.tokenInfo;
-        const contract = `${assetCode}-${assetIssuer}`;
+    const nativeAmount = parsed.amount.toString();
 
-        return {
-            ...baseTx,
-            type,
-            amount: '0', // No native amount for token transfers
-            tokens: [
+    return {
+        ...baseTx,
+        type,
+        amount: nativeAmount,
+        targets: [
+            {
+                n: 0,
+                addresses: [toAddress],
+                isAddress: true,
+                amount: nativeAmount,
+            },
+        ],
+        details: {
+            vin: [
                 {
-                    type,
-                    standard: 'STELLAR-CLASSIC',
-                    from: fromAddress,
-                    to: toAddress,
-                    contract,
-                    name: tokenDetailByMint[contract]?.name || assetCode,
-                    symbol: assetCode,
-                    decimals: STELLAR_DECIMALS,
-                    amount,
+                    n: 0,
+                    addresses: [fromAddress],
+                    isAddress: true,
+                    value: nativeAmount,
                 },
             ],
-        };
-    } else {
-        // Native asset transfer
-        const nativeAmount = parsed.amount.toString();
-
-        return {
-            ...baseTx,
-            type,
-            amount: nativeAmount,
-            targets: [
+            vout: [
                 {
                     n: 0,
                     addresses: [toAddress],
                     isAddress: true,
-                    amount: nativeAmount,
+                    value: nativeAmount,
                 },
             ],
-            details: {
-                vin: [
-                    {
-                        n: 0,
-                        addresses: [fromAddress],
-                        isAddress: true,
-                        value: nativeAmount,
-                    },
-                ],
-                vout: [
-                    {
-                        n: 0,
-                        addresses: [toAddress],
-                        isAddress: true,
-                        value: nativeAmount,
-                    },
-                ],
-                size: 0,
-                totalInput: nativeAmount,
-                totalOutput: nativeAmount,
-            },
-        };
-    }
+            size: 0,
+            totalInput: nativeAmount,
+            totalOutput: nativeAmount,
+        },
+    };
 };
 
 export const getTokenMetadata = async (): Promise<TokenDetailByMint> => {
@@ -135,4 +379,88 @@ export const getTokenMetadata = async (): Promise<TokenDetailByMint> => {
     const data: TokenDetailByMint = await response.json();
 
     return data;
+};
+
+/** A SEP-41 transfer as the token's own event reports it, in the token's base units. */
+export const transformContractTokenTransfer = (
+    transfer: StellarContractTokenTransfer,
+    token: Pick<TokenInfo, 'contract' | 'name' | 'symbol' | 'decimals'>,
+    descriptor: string,
+): TokenTransfer => ({
+    type: transfer.from === descriptor ? 'sent' : 'recv',
+    standard: 'STELLAR-CONTRACT',
+    from: transfer.from,
+    to: transfer.to,
+    contract: token.contract,
+    name: token.name,
+    symbol: token.symbol,
+    decimals: token.decimals,
+    amount: transfer.amount,
+});
+
+/**
+ * Horizon reports the balances a call moved for classic assets only, so a SEP-41 transfer reaches
+ * the history as a call that moved nothing; the token's own events say what it moved.
+ */
+export const withContractTokenTransfers = (
+    tx: Transaction,
+    transfers: readonly TokenTransfer[],
+    descriptor: string,
+): Transaction => {
+    // A call that failed moved nothing, and emitted no event to say otherwise.
+    if (transfers.length === 0 || tx.type === 'failed') return tx;
+
+    const movedOut =
+        tx.type === 'sent' ||
+        tx.type === 'self' ||
+        transfers.some(({ from }) => from === descriptor);
+    const movedIn =
+        tx.type === 'recv' || tx.type === 'self' || transfers.some(({ to }) => to === descriptor);
+
+    let type: 'self' | 'sent' | 'recv' = 'recv';
+    if (movedOut) {
+        type = movedIn ? 'self' : 'sent';
+    }
+
+    return { ...tx, type, tokens: [...tx.tokens, ...transfers] };
+};
+
+/**
+ * A transfer known only from the token's events: Horizon lists a Soroban call for its source and
+ * its signers, so the other party never sees it. Nothing native moved and the fee was not this
+ * account's, so the record carries the token movement alone.
+ */
+export const transformContractTokenReceipt = (
+    receipt: Pick<StellarContractTokenTransfer, 'txHash' | 'ledger' | 'closedAt'>,
+    transfers: readonly TokenTransfer[],
+    descriptor: string,
+): Transaction => {
+    const [first] = transfers;
+    const counterparty = transfers.find(({ from }) => from !== descriptor)?.from ?? first?.to ?? '';
+
+    return withContractTokenTransfers(
+        {
+            txid: receipt.txHash,
+            type: 'unknown',
+            amount: '0',
+            fee: '0',
+            feeRate: undefined,
+            blockTime: receipt.closedAt,
+            blockHeight: receipt.ledger,
+            targets: [],
+            internalTransfers: [],
+            tokens: [],
+            details: {
+                vin: [{ n: 0, addresses: [first?.from ?? ''], isAddress: true }],
+                vout: [{ n: 0, addresses: [first?.to ?? ''], isAddress: true, value: '0' }],
+                size: 0,
+                totalInput: '0',
+                totalOutput: '0',
+            },
+            // Whoever paid the fee, it was not this account; the fee row keys off that.
+            stellarSpecific: { feeSource: counterparty, operationType: 'invokeHostFunction' },
+        },
+        transfers,
+        descriptor,
+    );
 };

@@ -2,14 +2,14 @@ import { useCallback, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { sendFormActions } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { Box, Divider } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { useCurrentRef } from '@trezor/react-utils';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { setSendFormPrefill } from 'src/actions/suite/suiteActions';
 import {
@@ -57,10 +57,10 @@ export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
         staticSessionId: device?.state?.staticSessionId ?? null,
     });
 
-    const filteredAccountsWithTokens = useFilterAccountsWithTokens(
+    const filteredAccountsWithTokens = useFilterAccountsWithTokens({
         accountsWithTokens,
-        searchFilter,
-    );
+        search: searchFilter,
+    });
     const globalSendListItems = useInsertGroupLabelsAndSpaces(filteredAccountsWithTokens);
 
     const submitRef = useCurrentRef(onSubmit);

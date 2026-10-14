@@ -129,7 +129,7 @@ it as a variable annotation.
 
 ### Use DI mock helpers whenever possible
 
-Tests MUST use `createMockDeps` and `mock` from `@suite-common/dependency-injection` wherever
+Tests MUST use `createMockDeps` and `mock` from `@trezor/dependency-injection` wherever
 applicable. Use bare `jest.fn` only when these helpers cannot represent the required mock.
 
 - `createMockDeps<TDeps>(deps)` recursively mocks dependency functions. Supply every required key;

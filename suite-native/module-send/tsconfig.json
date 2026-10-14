@@ -3,17 +3,11 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../../suite-common/address" },
-        {
-            "path": "../../suite-common/dependency-injection"
-        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/formatters"
         },
         { "path": "../../suite-common/networks" },
-        {
-            "path": "../../suite-common/redux-utils"
-        },
         {
             "path": "../../suite-common/suite-sync"
         },
@@ -25,9 +19,6 @@
         },
         {
             "path": "../../suite-common/transfer-uri"
-        },
-        {
-            "path": "../../suite-common/validators"
         },
         {
             "path": "../../suite-common/wallet-config"
@@ -72,7 +63,20 @@
         {
             "path": "../../packages/connect-common"
         },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        {
+            "path": "../../networks/solana/network-solana"
+        },
+        {
+            "path": "../../networks/stellar/network-stellar"
+        },
+        {
+            "path": "../../networks/tron/network-tron"
+        },
         { "path": "../../packages/react-utils" },
+        { "path": "../../packages/redux-utils" },
         {
             "path": "../../packages/styles-native"
         },

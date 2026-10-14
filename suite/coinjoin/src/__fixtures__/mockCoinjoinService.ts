@@ -62,12 +62,14 @@ export const mockCoinjoinService = () => {
         return { client, backend };
     };
 
+    type CreateInstanceParams = { symbol: CoinjoinSymbol };
+
     return {
         // for test purposes enable only btc symbol
         CoinjoinService: {
             getInstance: jest.fn((symbol: string) => clients[symbol]),
             getInstances: jest.fn(() => Object.values(clients)),
-            createInstance: jest.fn(({ symbol }: { symbol: CoinjoinSymbol }) => {
+            createInstance: jest.fn(({ symbol }: CreateInstanceParams) => {
                 if (!allowed.includes(symbol)) throw new Error('Client not supported');
                 if (clients[symbol]) return clients[symbol];
                 const instance = getMockedInstance(symbol);

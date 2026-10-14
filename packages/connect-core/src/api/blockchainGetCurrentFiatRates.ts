@@ -43,7 +43,6 @@ export default class BlockchainGetCurrentFiatRates extends AbstractMethod<
 
         super(message, params);
         this.useDevice = false;
-        this.useUi = false;
     }
 
     get requiredPermissions(): PermissionRequest[] {

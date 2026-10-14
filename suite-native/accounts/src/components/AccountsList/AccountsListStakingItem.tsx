@@ -1,3 +1,4 @@
+import { isSupportedAdaStakingNetworkSymbol } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 
 import { AdaAccountsListStakingItem } from './AdaAccountsListStakingItem';
@@ -17,7 +18,7 @@ type AccountsListStakingItemProps = {
 export const AccountsListStakingItem = (props: AccountsListStakingItemProps) => {
     const { account } = props;
 
-    if (account.symbol === 'ada') {
+    if (isSupportedAdaStakingNetworkSymbol(account.symbol)) {
         return <AdaAccountsListStakingItem {...props} />;
     }
 

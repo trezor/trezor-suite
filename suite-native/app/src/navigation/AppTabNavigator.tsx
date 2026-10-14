@@ -2,7 +2,6 @@ import { useSelector } from 'react-redux';
 
 import { type BottomTabBarProps, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { AccountsStackNavigator } from '@suite-native/module-accounts';
@@ -12,6 +11,7 @@ import { SettingsScreen } from '@suite-native/module-settings';
 import { TradingStackNavigator } from '@suite-native/module-trading';
 import { type AppTabsParamList, AppTabsRoutes, TabBar } from '@suite-native/navigation';
 import { selectIsTradingEnabled } from '@suite-native/trading-state';
+import { useServices } from '@trezor/dependency-injection';
 
 import { rootTabsOptions, rootTabsOptionsWithoutEarn } from './routes';
 

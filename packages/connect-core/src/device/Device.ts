@@ -16,7 +16,6 @@ import type {
     UnavailableCapabilities,
 } from '@trezor/connect-common';
 import { DEVICE, ERRORS, FIRMWARE, UI_EVENTS } from '@trezor/connect-common';
-import type { CreateLogger } from '@trezor/connect-common/src/types/settings';
 import type { FirmwareRelease, TranslationMetadata } from '@trezor/device-utils';
 import {
     DeviceModelInternal,
@@ -24,7 +23,7 @@ import {
     getFirmwareVersionArray,
     models,
 } from '@trezor/device-utils';
-import type { Logger } from '@trezor/logger';
+import type { CreateLogger, Logger } from '@trezor/logger';
 import type { TransportProtocol } from '@trezor/protocol';
 import { thp as protocolThp, v1 as protocolV1, v2 as protocolV2 } from '@trezor/protocol';
 import {
@@ -484,13 +483,15 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
     }
 
     async interrupt(reason: Error) {
+        const { runAbort, currentSession, currentRun } = this;
+
         await abortThpWorkflow(this);
-        await this.currentSession?.abort(reason);
+        await currentSession?.abort(reason);
 
         // reject inner defer
-        this.runAbort?.abort(reason);
+        runAbort?.abort(reason);
 
-        await this.currentRun;
+        await currentRun;
     }
 
     get currentRun() {
@@ -678,17 +679,14 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
     }
 
     async initialize(useCardanoDerivation: boolean) {
-        let payload: PROTO.Initialize | undefined;
-        if (this.features) {
-            const { sessionId, deriveCardano } = this.getState() || {};
-            // If the user has BIP-39 seed, and Initialize(derive_cardano=True) is not sent,
-            // all Cardano calls will fail because the root secret will not be available.
-            payload = {
-                derive_cardano: deriveCardano || useCardanoDerivation,
-            };
-            if (sessionId) {
-                payload.session_id = sessionId;
-            }
+        const { sessionId, deriveCardano } = this.getState() || {};
+        // If the user has BIP-39 seed, and Initialize(derive_cardano=True) is not sent,
+        // all Cardano calls will fail because the root secret will not be available.
+        const payload: PROTO.Initialize = {
+            derive_cardano: deriveCardano || useCardanoDerivation,
+        };
+        if (sessionId) {
+            payload.session_id = sessionId;
         }
 
         const { message } = await this.getCurrentSession().typedCall(

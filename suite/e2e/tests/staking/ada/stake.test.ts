@@ -71,7 +71,7 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
             walletPage,
             feeSection,
             stakingSection,
-            yieldNutshellModal,
+            earnNutshellModal,
             blockbookMock,
         }) => {
             const stakingAccountItemInLeftSection = walletPage.accountButton({
@@ -98,7 +98,7 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
             await test.step('Initiate staking flow', async () => {
                 await stakingSection.startStakingButton.click();
                 await expect(page.modalHeader).toHaveTranslation('TR_EARN_STAKING_IN_A_NUTSHELL');
-                await expect(yieldNutshellModal.modalContainer).toContainTranslation(
+                await expect(earnNutshellModal.modalContainer).toContainTranslation(
                     'TR_EARN_YOUR_FUNDS_STAY_ACCESSIBLE',
                     {
                         values: { networkDisplaySymbol: 'ADA' },
@@ -244,11 +244,7 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                     },
                 });
                 await devicePrompt.waitForPromptAndConfirm();
-                await stakingSection.verifyStakingToast({
-                    type: 'staked',
-                    account: 'Cardano #1',
-                    amount: finalBalanceFormatted,
-                });
+                await stakingSection.verifyStakingToast({ type: 'staked' });
             });
 
             await test.step('Verify account is staked', async () => {

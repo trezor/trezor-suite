@@ -1,0 +1,22 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../../suite-common/apps-embedding"
+        },
+        { "path": "../apps-embedding-web" },
+        { "path": "../debug" },
+        { "path": "../settings" },
+        { "path": "../../packages/components" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        { "path": "../../packages/env-utils" },
+        {
+            "path": "../../packages/product-components"
+        },
+        { "path": "../../packages/redux-utils" },
+        { "path": "../../packages/type-utils" }
+    ]
+}

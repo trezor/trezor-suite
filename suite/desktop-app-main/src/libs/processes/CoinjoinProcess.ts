@@ -1,11 +1,15 @@
 import { BaseProcess, type Status } from './BaseProcess';
+import type { ILogger } from '../logger';
 
 export class CoinjoinProcess extends BaseProcess {
     private readonly port;
 
-    constructor(port = 37128) {
-        super('coinjoin', 'WalletWasabi.WabiSabiClientLibrary', {
-            autoRestart: 0,
+    constructor({ port = 37128, logger }: { port?: number; logger: ILogger }) {
+        super({
+            resourceName: 'coinjoin',
+            processName: 'WalletWasabi.WabiSabiClientLibrary',
+            options: { autoRestart: 0 },
+            logger,
         });
         this.port = port;
     }

@@ -1,13 +1,11 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
-import Animated, { FadeInDown, FadeOutDown, LinearTransition } from 'react-native-reanimated';
+import { FadeInDown, FadeOutDown, LinearTransition } from 'react-native-reanimated';
 
 import { useNavigation } from '@react-navigation/native';
 import { useKeepAwake } from 'expo-keep-awake';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { firmwareActions } from '@suite-common/firmware';
-import { injectDispatch } from '@suite-common/redux-utils';
-import { Box, Button, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import { AnimatedView, Box, Button, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import {
     ConfirmOnTrezorWrapper,
     useConfirmOnTrezorController,
@@ -21,6 +19,8 @@ import {
 } from '@suite-native/navigation';
 import { reportSecurityCheck } from '@suite-native/sentry';
 import TrezorConnect from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { setTemporaryRememberedDeviceThunk } from '../firmwareThunks';
@@ -313,7 +313,7 @@ export const FirmwareInstallationScreenContent = ({
                     </VStack>
                 )}
                 {mayBeStuck && (
-                    <Animated.View
+                    <AnimatedView
                         entering={FadeInDown}
                         exiting={FadeOutDown}
                         layout={LinearTransition}
@@ -326,10 +326,10 @@ export const FirmwareInstallationScreenContent = ({
                         >
                             <Translation id="firmware.firmwareUpdateProgress.stuckButton" />
                         </Button>
-                    </Animated.View>
+                    </AnimatedView>
                 )}
                 {isDone && (
-                    <Animated.View
+                    <AnimatedView
                         entering={FadeInDown}
                         exiting={FadeOutDown}
                         layout={LinearTransition}
@@ -338,7 +338,7 @@ export const FirmwareInstallationScreenContent = ({
                         <Button onPress={handleFirmwareUpdateFinished}>
                             <Translation id="generic.buttons.continue" />
                         </Button>
-                    </Animated.View>
+                    </AnimatedView>
                 )}
                 <DoNotCloseAppBottomSheetTrigger
                     isTriggerDisplayed={isDontCloseAppAlertDisplayed}

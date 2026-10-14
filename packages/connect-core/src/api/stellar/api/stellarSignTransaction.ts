@@ -76,6 +76,18 @@ export default class StellarSignTransaction extends AbstractMethod<
         }
     }
 
+    // A Soroban operation must be the sole operation; the device expects the extension right after.
+    private _ensureSorobanIsTheOnlyOperation(operations: StellarOperation[] = []) {
+        const hasSoroban = operations.some(operation => operation.type === 'invokeHostFunction');
+
+        if (hasSoroban && operations.length > 1) {
+            throw ERRORS.TypedError(
+                'Method_InvalidParameter',
+                'invokeHostFunction must be the only operation of the transaction',
+            );
+        }
+    }
+
     private async parseFromXdr(xdrBase64: string, testnet: boolean) {
         const { parseTransactionFromXDR, transformTransaction } = await stellar();
 
@@ -93,6 +105,7 @@ export default class StellarSignTransaction extends AbstractMethod<
         this._ensureFirmwareSupportsOperation('manageBuyOffer', transaction.operations);
         this._ensureFirmwareSupportsOperation('pathPaymentStrictSend', transaction.operations);
         this._ensureFirmwareSupportsOperation('invokeHostFunction', transaction.operations);
+        this._ensureSorobanIsTheOnlyOperation(transaction.operations);
 
         const response = await helper.stellarSignTx(
             this.getDevice().getCommands().typedCall,

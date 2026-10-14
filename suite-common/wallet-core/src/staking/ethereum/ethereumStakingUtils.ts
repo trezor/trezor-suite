@@ -13,12 +13,6 @@ import {
 } from '@suite-common/wallet-utils';
 import { BigNumber, isArrayMember } from '@trezor/utils';
 
-export const getAccountAutocompoundBalance = (account?: Account) => {
-    const pool = getAccountEverstakeStakingPool(account);
-
-    return pool?.autocompoundBalance ?? '0';
-};
-
 export const getEthereumCryptoBalanceWithStaking = (account: Account) => {
     const stakingBalance = getEthAccountTotalStakingBalance(account);
 

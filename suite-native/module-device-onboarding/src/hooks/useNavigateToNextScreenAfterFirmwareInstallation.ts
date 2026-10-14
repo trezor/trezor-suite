@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { selectDeviceModel, selectDeviceUnavailableCapabilities } from '@suite-common/device';
-import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/suite-constants';
+import { SUPPORTS_DEVICE_AUTHENTICITY_CHECK } from '@suite-common/device-authenticity';
 import { selectThpStep } from '@suite-common/thp';
 import {
     type DeviceOnboardingStackParamList,

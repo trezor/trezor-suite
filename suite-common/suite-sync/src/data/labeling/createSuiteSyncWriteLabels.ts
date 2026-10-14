@@ -1,5 +1,5 @@
-import { toGetter } from '@suite-common/dependency-injection';
 import { type WriteLabelsDep } from '@suite-common/suite-sync-types';
+import { toGetter } from '@trezor/dependency-injection';
 
 import { createWriteAccountLabel } from './account/createWriteAccountLabel';
 import { createWriteAddressLabel } from './address/createWriteAddressLabel';

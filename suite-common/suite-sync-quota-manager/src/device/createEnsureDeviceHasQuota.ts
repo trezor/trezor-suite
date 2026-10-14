@@ -1,12 +1,12 @@
 import { getPublicIdentityKeyFromDelegatedKey } from '@suite-common/delegated-identity-key';
 import { type ProofOfDelegatedSignFailedType } from '@suite-common/delegated-identity-key-types';
-import { type Dispatch } from '@suite-common/redux-utils';
 import { type QuotaManagerCommunicationFailedErrType } from '@suite-common/suite-sync-types';
 import {
     type DelegatedIdentityKey,
     type DeviceErrorType,
     type TrezorDeviceWithState,
 } from '@suite-common/suite-types';
+import { type Dispatch } from '@trezor/redux-utils';
 import { type Result, err, exhaustive, ok } from '@trezor/type-utils';
 
 import { type RegisterDeviceDep } from './createRegisterDevice';

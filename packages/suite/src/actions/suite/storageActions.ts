@@ -31,7 +31,6 @@ import {
 } from '@suite-common/persistent-device-data';
 import { type EncryptedHex } from '@suite-common/platform-encryption';
 import { type ReceiveRootState, selectReceiveAccountState } from '@suite-common/receive';
-import { type WithServices, createThunk } from '@suite-common/redux-utils/';
 import {
     type WithSuiteSyncQuotaManagerState,
     selectSuiteSyncQuotaManager,
@@ -58,6 +57,7 @@ import {
     type PhishingRootState,
     type PhishingState,
     type SendRootState,
+    type StellarContractTokensRootState,
     type TransactionsRootState,
     type WalletSettingsRootState,
     selectAccounts,
@@ -68,6 +68,7 @@ import {
     selectPhishing,
     selectPhishingTransactions,
     selectSendFormDrafts,
+    selectStellarContractTokens,
     selectTransactions,
     selectWalletSettings,
 } from '@suite-common/wallet-core';
@@ -86,6 +87,7 @@ import {
 import { type WalletConnectStateRootState, selectSessions } from '@suite-common/walletconnect';
 import { type StaticSessionId } from '@trezor/connect';
 import { parseStaticSessionId } from '@trezor/device-utils';
+import { type WithServices, createThunk } from '@trezor/redux-utils/';
 import { cloneObject, isNotNullOrUndefined, typedObjectKeys } from '@trezor/utils';
 
 import { type SuiteState } from 'src/reducers/suite/suiteReducer';
@@ -104,16 +106,12 @@ import { deviceGraphDataFilterFn } from 'src/utils/wallet/graph';
 
 import { STORAGE } from './constants';
 
-export const saveExplorer = (
-    deps: DbDep,
-    {
-        symbol,
-        explorer,
-    }: {
-        symbol: NetworkSymbol;
-        explorer?: Explorer;
-    },
-) => {
+type SaveExplorerParams = {
+    symbol: NetworkSymbol;
+    explorer?: Explorer;
+};
+
+export const saveExplorer = (deps: DbDep, { symbol, explorer }: SaveExplorerParams) => {
     if (!deps.db.isAccessible()) return;
 
     deps.db.removeItemByPK('explorer', symbol);
@@ -407,6 +405,12 @@ export const removeAccountPhishing = (deps: DbDep, accountKey: AccountKey) => {
     return deps.db.removeItemByPK('phishing', accountKey);
 };
 
+export const removeAccountStellarContractTokens = (deps: DbDep, accountKey: AccountKey) => {
+    if (!deps.db.isAccessible()) return;
+
+    return deps.db.removeItemByPK('stellarContractTokens', accountKey);
+};
+
 type RemoveAccountWithDependenciesState = FlagsRootState &
     SuiteSettingsRootState & {
         suite: Pick<SuiteState, 'evmSettings' | 'seenDisconnectNotificationForDeviceIds'>;
@@ -431,6 +435,7 @@ export const removeAccountWithDependencies =
             removeAccountHistoricRates(deps, account.key),
             removeAccountPhishing(deps, account.key),
             removeEarnOnboarding(deps, account.key),
+            removeAccountStellarContractTokens(deps, account.key),
         ]);
 
 export type ForgetDeviceThunkState = AccountsRootState &
@@ -763,6 +768,26 @@ export const saveDebugSettingsThunk =
     ) => {
         if (!extra.services.db.isAccessible()) return;
         await extra.services.db.addItem('debug', selectDebug(getState()), 'debug', true);
+    };
+
+type SaveStellarContractTokensThunkState = StellarContractTokensRootState;
+
+type SaveStellarContractTokensThunkDeps = WithServices<DbDep>;
+
+export const saveStellarContractTokensThunk =
+    (accountKey: AccountKey) =>
+    (
+        _dispatch: Dispatch<UnknownAction>,
+        getState: () => SaveStellarContractTokensThunkState,
+        extra: SaveStellarContractTokensThunkDeps,
+    ) => {
+        if (!extra.services.db.isAccessible()) return;
+
+        const contracts = selectStellarContractTokens(getState(), accountKey);
+
+        return contracts.length > 0
+            ? extra.services.db.addItem('stellarContractTokens', contracts, accountKey, true)
+            : extra.services.db.removeItemByPK('stellarContractTokens', accountKey);
     };
 
 type SaveTokenManagementThunkState = TokenDefinitionsRootState;

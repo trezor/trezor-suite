@@ -1,4 +1,4 @@
-import { asGetter } from '@suite-common/dependency-injection';
+import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
 import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { accountsActions } from '@suite-common/wallet-core';
@@ -10,6 +10,7 @@ import {
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import TrezorConnect from '@trezor/connect';
+import { asGetter } from '@trezor/dependency-injection';
 import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import {
@@ -37,7 +38,7 @@ jest.mock('@suite-common/wallet-core', () => ({
 }));
 
 const ethSymbol = asNetworkSymbol('eth');
-const WETH = getWrappedNativeToken('eth')!;
+const WETH = getWrappedNativeToken(ethSymbol)!;
 
 const account = mockWalletAccount({ symbol: ethSymbol }) as Account;
 
@@ -55,6 +56,7 @@ const buildStore = (storeAccount: Account) =>
         },
         services: () => ({
             analytics: mockNativeAnalytics(),
+            networks: { getAccountSyncInterval: mockGetAccountSyncInterval() },
             getIsWindowVisible: asGetter(() => true),
             getTradedAccountKeys: asGetter(() => []),
         }),

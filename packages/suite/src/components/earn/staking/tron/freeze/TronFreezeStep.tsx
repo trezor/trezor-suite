@@ -39,6 +39,7 @@ export const TronFreezeStep = () => {
                     <Banner
                         intent="warning"
                         description={<Translation id="TR_EARN_TRON_SUBMIT_ERROR" />}
+                        data-testid="@staking/tron-freeze/submit-error"
                     />
                 )}
 

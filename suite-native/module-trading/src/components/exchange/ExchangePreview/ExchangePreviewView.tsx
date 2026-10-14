@@ -1,5 +1,5 @@
 import { type ReactNode, memo } from 'react';
-import Animated, { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
+import { FadeIn, FadeOut, LinearTransition } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import type { ExchangeTrade } from 'invity-api';
@@ -9,7 +9,7 @@ import {
     hasEip712SignData,
     selectTradingProviderKycPolicy,
 } from '@suite-common/trading';
-import { AnimatedVStack, BannerInline, VStack } from '@suite-native/atoms';
+import { AnimatedVStack, AnimatedView, BannerInline, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { KycPolicyWarning, hasKycPolicyWarning } from '@suite-native/trading-provider-utils';
 
@@ -58,9 +58,9 @@ export const ExchangePreviewView = memo(
                     />
                 )}
                 {isTxnError && (
-                    <Animated.View layout={LinearTransition} entering={FadeIn} exiting={FadeOut}>
+                    <AnimatedView layout={LinearTransition} entering={FadeIn} exiting={FadeOut}>
                         <BannerInline intent="critical" title={txnErrorString} />
-                    </Animated.View>
+                    </AnimatedView>
                 )}
                 <AnimatedVStack layout={LinearTransition} spacing="sp16">
                     <ExchangeFromAccountTradePreviewCard quote={quote} />

@@ -1,7 +1,6 @@
 import { G } from '@mobily/ts-belt';
 
 import { type DeviceRootState, selectDeviceButtonRequests } from '@suite-common/device';
-import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
     type AccountKey,
@@ -10,6 +9,7 @@ import {
     type TokenAddress,
 } from '@suite-common/wallet-types';
 import { getSendFormDraftKey } from '@suite-common/wallet-utils';
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 
 import { PAYMENT_REQUEST_BUTTON_NAMES } from './sendFormConstants';
 import { type SendFormDrafts, type SendRootState } from './sendFormReducer';
@@ -66,8 +66,7 @@ export const selectSendFormButtonRequestCodes = createMemoizedSelector(
                     ({ code, name }) =>
                         code === 'ButtonRequest_ConfirmOutput' ||
                         code === 'ButtonRequest_SignTx' ||
-                        isCardano ||
-                        (isEthereum && code === 'ButtonRequest_Other') ||
+                        ((isCardano || isEthereum) && code === 'ButtonRequest_Other') ||
                         (code === 'ButtonRequest_Other' &&
                             name !== undefined &&
                             PAYMENT_REQUEST_BUTTON_NAMES.includes(name)) ||
@@ -89,9 +88,6 @@ export const selectSendFormReviewButtonRequestsCount = (
 ) => {
     if (symbol === undefined) return 0;
 
-    const networkType = getNetworkType(symbol);
-    const isCardano = networkType === 'cardano';
-
     const sendFormReviewRequest = selectSendFormButtonRequestCodes(state, symbol);
 
     let count = sendFormReviewRequest.length;
@@ -105,7 +101,7 @@ export const selectSendFormReviewButtonRequestsCount = (
         count -= 1;
     }
 
-    return isCardano ? Math.max(0, count - 1) : count;
+    return count;
 };
 
 export const selectSendFormReviewLastButtonCode = (

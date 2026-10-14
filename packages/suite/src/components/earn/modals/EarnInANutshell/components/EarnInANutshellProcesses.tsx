@@ -27,7 +27,11 @@ export const EarnInANutshellProcesses = ({
                 data-testid={dataTestId}
                 heading={
                     <Row gap={8}>
-                        <Text intent="neutral" priority="secondary">
+                        <Text
+                            intent="neutral"
+                            priority="secondary"
+                            data-testid="@modal/earn-in-a-nutshell/process-heading"
+                        >
                             {heading}
                         </Text>
                         {badge && <Badge size="small">{badge}</Badge>}

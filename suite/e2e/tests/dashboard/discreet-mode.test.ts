@@ -10,15 +10,17 @@ import { ExtractByEventType } from '../../support/types';
 
 const btcSymbol = asNetworkSymbol('btc');
 
+type VerifyHiddenAndRevealedValueParams = {
+    locator: Locator;
+    hiddenValue?: string;
+    revealedValue?: string;
+};
+
 const verifyHiddenAndRevealedValue = async ({
     locator,
     hiddenValue = '$###',
     revealedValue = '$0.00',
-}: {
-    locator: Locator;
-    hiddenValue?: string;
-    revealedValue?: string;
-}) => {
+}: VerifyHiddenAndRevealedValueParams) => {
     await expect.soft(locator).toHaveText(hiddenValue);
     // Value is revealed on hover over text. But the locator might cover larger area then the text itself
     // Text is centered to the left, so we click on 0,0

@@ -3,9 +3,7 @@ import { useState } from 'react';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { getTronVotedApr, useTronStakingStats } from '@suite-common/earn-staking-api';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     getTronAvailableVotingPower,
     getTronTotalVotingPower,
@@ -23,10 +21,12 @@ import {
     TextButton,
     Tooltip,
 } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { WarningIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { formatApr } from 'src/components/earn/staking/tron/voteUtils';
+import { formatApr } from 'src/components/earn/staking/tron/utils/voteUtils';
 import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
@@ -102,12 +102,16 @@ export const TronStakedCard = ({ account }: TronStakedCardProps) => {
     return (
         <Card
             paddingType="normal"
+            data-testid="@staking/tron-staked-card/container"
             header={
                 <Column gap={2} alignItems="flex-start">
                     <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                         <Translation id="TR_EARN_TRON_STAKED" />
                     </Text>
-                    <Text typographyStyle="headline-sm">
+                    <Text
+                        typographyStyle="headline-sm"
+                        data-testid="@staking/tron-staked-card/staked-amount"
+                    >
                         <FormattedCryptoAmount value={stakedBalance} symbol={account.symbol} />
                     </Text>
                     <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
@@ -127,6 +131,7 @@ export const TronStakedCard = ({ account }: TronStakedCardProps) => {
                             priority="primary"
                             onClick={() => goToFlow('earn-tron-stake')}
                             isDisabled={isStakingDisabled}
+                            data-testid="@staking/tron-staked-card/stake-button"
                         >
                             <Translation
                                 id={
@@ -145,6 +150,7 @@ export const TronStakedCard = ({ account }: TronStakedCardProps) => {
                                 priority="secondary"
                                 onClick={() => goToFlow('earn-tron-unstake')}
                                 isDisabled={isUnstakingDisabled}
+                                data-testid="@staking/tron-staked-card/unstake-button"
                             >
                                 <Translation id="TR_EARN_TRON_UNSTAKE_TITLE" />
                             </Button>
@@ -158,6 +164,7 @@ export const TronStakedCard = ({ account }: TronStakedCardProps) => {
                                 priority="secondary"
                                 onClick={() => goToFlow('earn-tron-vote')}
                                 isDisabled={isVotingDisabled}
+                                data-testid="@staking/tron-staked-card/vote-button"
                             >
                                 <Translation id="TR_EARN_TRON_VOTE" />
                             </Button>
@@ -167,7 +174,7 @@ export const TronStakedCard = ({ account }: TronStakedCardProps) => {
             }
         >
             <Row justifyContent="space-between" alignItems="center">
-                <Text typographyStyle="body-md-strong">
+                <Text typographyStyle="body-md-strong" data-testid="@staking/tron-staked-card/apr">
                     <Translation id="TR_EARN_TRON_APR_LABEL" /> {formatApr(apr ?? undefined)}
                 </Text>
                 {hasRemainingVotes ? (
@@ -180,6 +187,7 @@ export const TronStakedCard = ({ account }: TronStakedCardProps) => {
                                 priority="secondary"
                                 isUnderlined
                                 onClick={() => setIsVoteAllocationOpen(true)}
+                                data-testid="@staking/tron-staked-card/votes-to-allocate-button"
                             >
                                 <Translation
                                     id="TR_EARN_TRON_VOTES_TO_ALLOCATE"
@@ -197,6 +205,7 @@ export const TronStakedCard = ({ account }: TronStakedCardProps) => {
                                 priority="secondary"
                                 isUnderlined
                                 onClick={() => setIsVoteAllocationOpen(true)}
+                                data-testid="@staking/tron-staked-card/remaining-votes-button"
                             >
                                 <Translation
                                     id="TR_EARN_TRON_REMAINING_VOTES"

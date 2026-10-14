@@ -12,6 +12,7 @@ import { YieldDepositApprovedAmountCard } from '../../components/yield/YieldDepo
 import { YieldDepositFlowFooter } from '../../components/yield/YieldDepositFlowFooter';
 import { YieldDepositStepCard } from '../../components/yield/YieldDepositStepCard';
 import { YieldDisabledAlert } from '../../components/yield/YieldDisabledAlert';
+import { YieldFeeReserveBanner } from '../../components/yield/YieldFeeReserveBanner';
 import { YieldFlowScreenHeader } from '../../components/yield/YieldFlowScreenHeader';
 import { YieldSessionPendingModal } from '../../components/yield/YieldSessionPendingModal';
 import { useYieldDepositApprovalController } from '../../hooks/yield/controllers/useYieldDepositApprovalController';
@@ -30,6 +31,7 @@ export const YieldDepositApprovalScreen = () => {
         approvalLimitSheet,
         approvedAmountCard,
         disabledAlert,
+        feeReserveAlert,
         feeSection,
         footer,
         header,
@@ -145,6 +147,12 @@ export const YieldDepositApprovalScreen = () => {
                                 />
                             </Box>
                         )}
+
+                        <YieldFeeReserveBanner
+                            alert={feeReserveAlert}
+                            networkSymbol={account.symbol}
+                            paddingHorizontal="sp16"
+                        />
 
                         {feeSection.isVisible && (
                             <Box paddingHorizontal="sp16">

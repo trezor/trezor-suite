@@ -18,6 +18,7 @@ import {
 } from '@suite-native/transaction-management';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import { CardanoTokenSendMinAdaAmountInfo } from './CardanoTokenSendMinAdaAmountInfo';
 import { CorrectNetworkMessageCard } from './CorrectNetworkMessageCard';
 import { RecipientInputs } from './RecipientInputs';
 import { SolanaMemoInput } from './SolanaMemoInput';
@@ -80,6 +81,10 @@ export const SendOutputFields = ({
                             onQrNetworkMismatch={setQrNetworkSymbol}
                         />
                     ))}
+                    <CardanoTokenSendMinAdaAmountInfo
+                        accountKey={accountKey}
+                        tokenContract={tokenContract}
+                    />
                     {/*
                     TODO: add output (outputs.append({...})) button
                     issue: https://github.com/trezor/trezor-suite/issues/12944

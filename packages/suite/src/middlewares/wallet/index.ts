@@ -12,6 +12,8 @@ import {
 import {
     prepareAccountsMiddleware,
     prepareBlockchainMiddleware,
+    prepareBlockchainSubscriptionMiddleware,
+    prepareEarnTransactionsMiddleware,
     prepareFiatRatesMiddleware,
     prepareStakeMiddleware,
 } from '@suite-common/wallet-core';
@@ -37,7 +39,9 @@ export const getWalletMiddlewares = (
     getExtra: () => GetWalletMiddlewaresDeps | null,
 ): ((api: MiddlewareAPI) => any)[] => [
     prepareBlockchainMiddleware(getExtra),
+    prepareBlockchainSubscriptionMiddleware(getExtra),
     prepareAccountsMiddleware(getExtra),
+    prepareEarnTransactionsMiddleware(getExtra),
     walletMiddleware,
     prepareDiscoveryMiddleware(getExtra),
     prepareFiatRatesMiddleware(getExtra),

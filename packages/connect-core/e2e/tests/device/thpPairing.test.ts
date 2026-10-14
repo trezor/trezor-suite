@@ -24,7 +24,7 @@ describe('THP pairing', () => {
 
     const waitForDevice = async (settings: Partial<ThpSettings>) => {
         await initTrezorConnect(controller, {
-            pendingTransportEvent: false,
+            waitForDevice: false,
             thp: {
                 appName: 'TrezorConnect',
                 hostName: 'tests:e2e',
@@ -270,6 +270,7 @@ describe('THP pairing', () => {
                 payload: { tag: state.code_entry_code },
             });
         });
+
         result = await TrezorConnect.getFeatures({ device });
         expect(result).toMatchObject({ success: true });
         expect(statusChangeEvents).toEqual([

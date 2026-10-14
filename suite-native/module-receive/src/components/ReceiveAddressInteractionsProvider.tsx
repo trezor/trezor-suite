@@ -2,7 +2,6 @@ import { type ReactNode, createContext, useContext } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import type { AccountKey } from '@suite-common/wallet-types';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import {
@@ -11,6 +10,7 @@ import {
     ReceiveStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 
 import { ReceiveAddressVerificationBottomSheet } from './ReceiveAddressVerificationBottomSheet';
 import { useReceiveAddressCopy } from '../hooks/useReceiveAddressCopy';

@@ -68,6 +68,7 @@ const LLM_ANALYSIS_URL = 'https://dev.suite.sldev.cz/coverage/e2e/llm-analysis.j
 const DEFAULT_COVERAGE_MAP_DIR = 'coverage-map';
 const DEFAULT_INDEX_FILE = `${DEFAULT_COVERAGE_MAP_DIR}/index.json`;
 const DEFAULT_LLM_ANALYSIS_FILE = `${DEFAULT_COVERAGE_MAP_DIR}/llm-analysis.json`;
+const DEFAULT_BASE_REF = 'origin/develop';
 
 const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
 const OPENROUTER_MODEL = 'moonshotai/kimi-k2.7-code';
@@ -126,7 +127,7 @@ const printUsage = (): void => {
         [
             'Usage: yarn workspace @trezor/e2e-utils select-tests-llm [options]',
             '',
-            'Uses git diff origin/develop...HEAD to find changed files, maps them to E2E',
+            'Uses git diff <base-ref>...<head-ref> to find changed files, maps them to E2E',
             'tests via the coverage index, downloads the LLM test analysis, then asks',
             'an LLM to recommend which tests to run and at what priority.',
             '',
@@ -138,6 +139,9 @@ const printUsage = (): void => {
             `  --llm-analysis <file>      Path to the LLM analysis JSON. Default: ${DEFAULT_LLM_ANALYSIS_FILE}`,
             '  --head-ref <ref>           Git ref for the PR head. Default: HEAD. Use pr-head',
             '                             when running from a trusted base branch checkout.',
+            `  --base-ref <ref>           Git ref the PR is merged into. Default: ${DEFAULT_BASE_REF}.`,
+            '                             Pass the PR base SHA so stacked PRs diff against their',
+            '                             own base and not the whole stack.',
             '  --help, -h                 Show this help message and exit.',
             '',
             'Output:',
@@ -188,8 +192,8 @@ const isAllowedFile = (filePath: string): boolean => {
 // Git diff
 // ---------------------------------------------------------------------------
 
-const getChangedFiles = (headRef = 'HEAD'): string[] => {
-    const result = spawnSync('git', ['diff', `origin/develop...${headRef}`, '--name-only'], {
+const getChangedFiles = (headRef = 'HEAD', baseRef = DEFAULT_BASE_REF): string[] => {
+    const result = spawnSync('git', ['diff', `${baseRef}...${headRef}`, '--name-only'], {
         encoding: 'utf8',
         stdio: ['pipe', 'pipe', 'pipe'],
     });
@@ -802,6 +806,7 @@ const main = async () => {
     let indexFile = DEFAULT_INDEX_FILE;
     let llmAnalysisFile = DEFAULT_LLM_ANALYSIS_FILE;
     let headRef = 'HEAD';
+    let baseRef = DEFAULT_BASE_REF;
 
     for (let i = 0; i < args.length; i++) {
         const nextArg = args[i + 1];
@@ -817,6 +822,9 @@ const main = async () => {
         } else if (args[i] === '--head-ref' && nextArg) {
             headRef = nextArg;
             i++;
+        } else if (args[i] === '--base-ref' && nextArg) {
+            baseRef = nextArg;
+            i++;
         }
     }
 
@@ -831,23 +839,23 @@ const main = async () => {
     }
 
     // 1. Get changed files from git
-    log(`Collecting changed files from git diff origin/develop...${headRef} --name-only`);
+    log(`Collecting changed files from git diff ${baseRef}...${headRef} --name-only`);
     let changedFiles: string[];
     try {
-        changedFiles = getChangedFiles(headRef);
+        changedFiles = getChangedFiles(headRef, baseRef);
     } catch (err) {
         error(err instanceof Error ? err.message : String(err));
         process.exit(1);
     }
 
     if (changedFiles.length === 0) {
-        log('No relevant changed files found (all filtered out or no diff vs origin/develop).');
+        log(`No relevant changed files found (all filtered out or no diff vs ${baseRef}).`);
         output(
             JSON.stringify(
                 {
                     changed_files: [],
                     recommendations: [],
-                    summary: 'No relevant source file changes detected against origin/develop.',
+                    summary: `No relevant source file changes detected against ${baseRef}.`,
                     uncovered_changes: [],
                 } satisfies SelectionResult,
                 null,

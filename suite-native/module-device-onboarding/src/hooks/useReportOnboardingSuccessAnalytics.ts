@@ -4,13 +4,13 @@ import { useSelector } from 'react-redux';
 
 import { useAtomValue } from 'jotai';
 
-import { useServices } from '@suite-common/dependency-injection';
 import {
     selectDeviceModel,
     selectIsDeviceBackupRequired,
     selectIsDeviceProtectedByPin,
 } from '@suite-common/device';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
+import { useServices } from '@trezor/dependency-injection';
 
 import { onboardingAnalyticsAtom } from '../../atoms';
 

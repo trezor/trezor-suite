@@ -1,11 +1,11 @@
-import Animated, {
+import {
     type SharedValue,
     useAnimatedStyle,
     useDerivedValue,
     withTiming,
 } from 'react-native-reanimated';
 
-import { IconButton } from '@suite-native/atoms';
+import { AnimatedView, IconButton } from '@suite-native/atoms';
 
 type SwipeableWalkthroughCloseButtonProps = {
     onPressBack: () => void;
@@ -38,7 +38,7 @@ export const SwipeableWalkthroughCloseButton = ({
     }));
 
     return (
-        <Animated.View>
+        <AnimatedView>
             <IconButton
                 iconName="caretUp"
                 intent="neutral"
@@ -59,6 +59,6 @@ export const SwipeableWalkthroughCloseButton = ({
                 accessibilityLabel="Go back"
                 size="medium"
             />
-        </Animated.View>
+        </AnimatedView>
     );
 };

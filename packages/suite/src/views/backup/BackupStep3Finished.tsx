@@ -7,13 +7,12 @@ import { useOnboarding } from 'src/hooks/suite';
 import { BackupStepDescription } from './BackupStepDescription';
 import { AfterBackupCheckboxes } from '../../components/backup';
 
-export const BackupStep3Finished = ({
-    onCancel,
-    backup,
-}: {
+type BackupStep3FinishedProps = {
     onCancel: () => void;
     backup: BackupState;
-}) => {
+};
+
+export const BackupStep3Finished = ({ onCancel, backup }: BackupStep3FinishedProps) => {
     const { backupMedium } = useOnboarding();
     const continueEnabled = canContinue(backup.userConfirmed);
 

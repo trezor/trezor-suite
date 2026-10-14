@@ -25,7 +25,6 @@ import {
     mockNetworkModule,
     mockNetworkModuleRepository,
 } from '@suite-common/networks/mocks';
-import { type WithServices } from '@suite-common/redux-utils';
 import { type MigrateSuiteSyncLabelsForRbfTransactionDep } from '@suite-common/suite-rbf-labels-migrations-types';
 import { mockMigrateSuiteSyncLabelsForRbfTransaction } from '@suite-common/suite-rbf-labels-migrations-types/mocks';
 import { mockSuiteSync } from '@suite-common/suite-sync/mocks';
@@ -47,6 +46,7 @@ import {
 import { mockGetTradedAccountKeys } from '@suite-common/wallet-types/mocks';
 import { type PROTO } from '@trezor/connect';
 import { asProtocol } from '@trezor/network-module-suite-common-types';
+import { type WithServices } from '@trezor/redux-utils';
 
 import { type AppState } from 'src/reducers/store';
 import { type ProtocolState } from 'src/reducers/suite/protocolReducer';
@@ -171,10 +171,12 @@ const createTestServices = ({
 interface TestCallback {
     getContextValues?: () => SendContextValues;
 }
+type ComponentProps = { callback: TestCallback };
+
 // component rendered inside of SendIndex
 // callback prop is an object passed from single test case
 // getContextValues returns actual state of SendFormContext
-const Component = ({ callback }: { callback: TestCallback }) => {
+const Component = ({ callback }: ComponentProps) => {
     const values = useSendFormContext();
     // eslint-disable-next-line react-hooks/immutability
     callback.getContextValues = () => values;
@@ -236,16 +238,7 @@ const actionCallback = (
         const composeTransactionsParams =
             TrezorConnect.composeTransaction.mock.calls[composeTransactionCallsLength - 1]?.[0];
 
-        if (result.composeTransactionParams.account && composeTransactionsParams) {
-            expect(composeTransactionsParams.account.utxo.length).toEqual(
-                result.composeTransactionParams.account.utxo.length,
-            );
-            expect(composeTransactionsParams.account.utxo).toMatchObject(
-                result.composeTransactionParams.account.utxo,
-            );
-        } else {
-            expect(composeTransactionsParams).toMatchObject(result.composeTransactionParams);
-        }
+        expect(composeTransactionsParams).toMatchObject(result.composeTransactionParams);
     }
     if (result.estimateFeeParams) {
         expect(TrezorConnect.blockchainEstimateFee).toHaveBeenLastCalledWith(

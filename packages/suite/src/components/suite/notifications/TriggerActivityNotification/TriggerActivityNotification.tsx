@@ -1,14 +1,14 @@
 import { useState } from 'react';
 
 import { useDevice } from '@suite/device';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { AUTH_DEVICE, notificationsActions } from '@suite-common/toast-notifications';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { Checkbox, Column, Select } from '@trezor/components';
+import { Checkbox, Column } from '@trezor/components';
 import { DEVICE } from '@trezor/connect';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { useServices } from '@trezor/dependency-injection';
+import { SectionItem } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 const MOCK_TX = {
     amount: '0.05',
@@ -126,30 +126,230 @@ const PRESETS: Preset[] = [
             notificationsActions.addToast({ type: 'tx-sent', device, ...MOCK_TX, seen }),
     },
     {
-        value: 'tx-staked',
-        label: 'Transaction: Staked',
+        value: 'tx-staked-pending',
+        label: 'Transaction: Stake pending',
         build: ({ device, seen }) =>
-            notificationsActions.addToast({ type: 'tx-staked', device, ...MOCK_TX, seen }),
-    },
-    {
-        value: 'tx-unstaked',
-        label: 'Transaction: Unstaked',
-        build: ({ device, seen }) =>
-            notificationsActions.addToast({ type: 'tx-unstaked', device, ...MOCK_TX, seen }),
-    },
-    {
-        value: 'tx-claimed',
-        label: 'Transaction: Claimed',
-        build: ({ device, seen }) =>
-            notificationsActions.addToast({ type: 'tx-claimed', device, ...MOCK_TX, seen }),
-    },
-    {
-        value: 'successful-claim',
-        label: 'Transaction: Successful claim',
-        build: ({ seen }) =>
             notificationsActions.addToast({
-                type: 'successful-claim',
-                symbol: MOCK_TX.symbol,
+                type: 'tx-staked',
+                stage: 'pending',
+                device,
+                ...MOCK_TX,
+                seen,
+            }),
+    },
+    {
+        value: 'tx-staked-sped-up',
+        label: 'Transaction: Stake sped-up',
+        build: ({ device, seen }) =>
+            notificationsActions.addToast({
+                type: 'tx-staked',
+                stage: 'sped-up',
+                device,
+                ...MOCK_TX,
+                seen,
+            }),
+    },
+    {
+        value: 'tx-staked-confirmed',
+        label: 'Transaction: Stake confirmed',
+        build: ({ device, seen }) =>
+            notificationsActions.addToast({
+                type: 'tx-staked',
+                stage: 'confirmed',
+                device,
+                ...MOCK_TX,
+                seen,
+            }),
+    },
+    {
+        value: 'tx-unstaked-pending',
+        label: 'Transaction: Unstake pending',
+        build: ({ device, seen }) =>
+            notificationsActions.addToast({
+                type: 'tx-unstaked',
+                stage: 'pending',
+                device,
+                ...MOCK_TX,
+                seen,
+            }),
+    },
+    {
+        value: 'tx-unstaked-sped-up',
+        label: 'Transaction: Unstake sped-up',
+        build: ({ device, seen }) =>
+            notificationsActions.addToast({
+                type: 'tx-unstaked',
+                stage: 'sped-up',
+                device,
+                ...MOCK_TX,
+                seen,
+            }),
+    },
+    {
+        value: 'tx-unstaked-confirmed',
+        label: 'Transaction: Unstake confirmed',
+        build: ({ device, seen }) =>
+            notificationsActions.addToast({
+                type: 'tx-unstaked',
+                stage: 'confirmed',
+                device,
+                ...MOCK_TX,
+                seen,
+            }),
+    },
+    {
+        value: 'tx-claimed-pending',
+        label: 'Transaction: Claim pending',
+        build: ({ device, seen }) =>
+            notificationsActions.addToast({
+                type: 'tx-claimed',
+                stage: 'pending',
+                device,
+                ...MOCK_TX,
+                seen,
+            }),
+    },
+    {
+        value: 'tx-claimed-sped-up',
+        label: 'Transaction: Claim sped-up',
+        build: ({ device, seen }) =>
+            notificationsActions.addToast({
+                type: 'tx-claimed',
+                stage: 'sped-up',
+                device,
+                ...MOCK_TX,
+                seen,
+            }),
+    },
+    {
+        value: 'tx-claimed-confirmed',
+        label: 'Transaction: Claim confirmed',
+        build: ({ device, seen }) =>
+            notificationsActions.addToast({
+                type: 'tx-claimed',
+                stage: 'confirmed',
+                device,
+                ...MOCK_TX,
+                seen,
+            }),
+    },
+    {
+        value: 'tx-withdrawn-pending',
+        label: 'Transaction: Withdraw pending',
+        build: ({ device, seen }) =>
+            notificationsActions.addToast({
+                type: 'tx-withdrawn',
+                stage: 'pending',
+                device,
+                ...MOCK_TX,
+                seen,
+            }),
+    },
+    {
+        value: 'tx-withdrawn-confirmed',
+        label: 'Transaction: Withdraw confirmed',
+        build: ({ device, seen }) =>
+            notificationsActions.addToast({
+                type: 'tx-withdrawn',
+                stage: 'confirmed',
+                device,
+                ...MOCK_TX,
+                seen,
+            }),
+    },
+    {
+        value: 'tx-voted-pending',
+        label: 'Transaction: Vote pending',
+        build: ({ device, seen }) =>
+            notificationsActions.addToast({
+                type: 'tx-voted',
+                stage: 'pending',
+                device,
+                ...MOCK_TX,
+                seen,
+            }),
+    },
+    {
+        value: 'tx-voted-confirmed',
+        label: 'Transaction: Vote confirmed',
+        build: ({ device, seen }) =>
+            notificationsActions.addToast({
+                type: 'tx-voted',
+                stage: 'confirmed',
+                device,
+                ...MOCK_TX,
+                seen,
+            }),
+    },
+    {
+        value: 'tx-yield-deposit-pending',
+        label: 'Transaction: Yield deposit pending',
+        build: ({ device, seen }) =>
+            notificationsActions.addToast({
+                type: 'tx-yield-deposit',
+                stage: 'pending',
+                device,
+                ...MOCK_TX,
+                seen,
+            }),
+    },
+    {
+        value: 'tx-yield-deposit-confirmed',
+        label: 'Transaction: Yield deposit confirmed',
+        build: ({ device, seen }) =>
+            notificationsActions.addToast({
+                type: 'tx-yield-deposit',
+                stage: 'confirmed',
+                device,
+                ...MOCK_TX,
+                seen,
+            }),
+    },
+    {
+        value: 'tx-yield-withdraw-pending',
+        label: 'Transaction: Yield withdraw pending',
+        build: ({ device, seen }) =>
+            notificationsActions.addToast({
+                type: 'tx-yield-withdraw',
+                stage: 'pending',
+                device,
+                ...MOCK_TX,
+                seen,
+            }),
+    },
+    {
+        value: 'tx-yield-withdraw-confirmed',
+        label: 'Transaction: Yield withdraw confirmed',
+        build: ({ device, seen }) =>
+            notificationsActions.addToast({
+                type: 'tx-yield-withdraw',
+                stage: 'confirmed',
+                device,
+                ...MOCK_TX,
+                seen,
+            }),
+    },
+    {
+        value: 'tx-yield-claim-pending',
+        label: 'Transaction: Yield claim pending',
+        build: ({ device, seen }) =>
+            notificationsActions.addToast({
+                type: 'tx-yield-claim',
+                stage: 'pending',
+                device,
+                ...MOCK_TX,
+                seen,
+            }),
+    },
+    {
+        value: 'tx-yield-claim-confirmed',
+        label: 'Transaction: Yield claim confirmed',
+        build: ({ device, seen }) =>
+            notificationsActions.addToast({
+                type: 'tx-yield-claim',
+                stage: 'confirmed',
+                device,
+                ...MOCK_TX,
                 seen,
             }),
     },
@@ -183,14 +383,13 @@ export const TriggerActivityNotification = () => {
     };
 
     return (
-        <SectionItem data-testid="@settings/debug/trigger-activity">
-            <TextColumn
-                title="Trigger activity notification"
-                description="Add a notification/activity entry of a selected type to test the Activity page. Transaction types show up in the Notifications tab, everything else in the All activity tab."
-            />
-            <ActionColumn>
+        <SectionItem
+            data-testid="@settings/debug/trigger-activity"
+            title="Trigger activity notification"
+            description="Add a notification/activity entry of a selected type to test the Activity page. Transaction types show up in the Notifications tab, everything else in the All activity tab."
+            actions={
                 <Column gap={12} alignItems="flex-end">
-                    <Select
+                    <SectionItem.Select
                         size="small"
                         width={260}
                         value={selectedOption}
@@ -198,23 +397,24 @@ export const TriggerActivityNotification = () => {
                         onChange={(option: { value: string }) => setSelectedValue(option.value)}
                         data-testid="@activity/debug/preset-select"
                     />
+
                     <Checkbox
                         isChecked={addAsUnseen}
                         labelAlignment="end"
                         onChange={() => setAddAsUnseen(prev => !prev)}
                         data-testid="@activity/debug/unseen-checkbox"
                     >
-                        <TextColumn description="Add as unseen (new)" />
+                        Add as unseen (new)
                     </Checkbox>
-                    <ActionButton
+                    <SectionItem.Button
                         intent="brand"
                         onClick={handleAdd}
                         data-testid="@activity/debug/add-button"
                     >
                         Add activity
-                    </ActionButton>
+                    </SectionItem.Button>
                 </Column>
-            </ActionColumn>
-        </SectionItem>
+            }
+        />
     );
 };

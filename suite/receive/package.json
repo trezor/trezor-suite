@@ -13,10 +13,8 @@
     "dependencies": {
         "@reduxjs/toolkit": "2.12.0",
         "@suite-common/address": "workspace:*",
-        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/receive": "workspace:*",
-        "@suite-common/redux-utils": "workspace:*",
         "@suite-common/toast-notifications": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
@@ -32,13 +30,15 @@
         "@suite/modal": "workspace:*",
         "@trezor/components": "workspace:*",
         "@trezor/crypto-utils": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*",
         "@trezor/icons": "workspace:*",
         "@trezor/product-components": "workspace:*",
+        "@trezor/redux-utils": "workspace:*",
         "@trezor/theme": "workspace:*",
         "react": "19.2.3",
         "react-redux": "9.3.0",
         "redux": "^5.0.1",
-        "styled-components": "^6.3.9"
+        "styled-components": "^6.5.3"
     },
     "devDependencies": {
         "@types/react": "19.2.14"

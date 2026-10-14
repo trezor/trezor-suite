@@ -1,6 +1,6 @@
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { FadeIn, FadeOut } from 'react-native-reanimated';
 
-import { Box, HStack, Text } from '@suite-native/atoms';
+import { AnimatedView, Box, HStack, Text } from '@suite-native/atoms';
 import { Icon, type IconColor, type IconName } from '@suite-native/icons';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
@@ -33,7 +33,7 @@ export const AddressInfoMessage = ({ txId, link, type = 'info' }: AddressInfoMes
     const { color, icon, iconColor } = stylesByType[type];
 
     return (
-        <Animated.View entering={FadeIn} exiting={FadeOut}>
+        <AnimatedView entering={FadeIn} exiting={FadeOut}>
             <HStack spacing="sp4" marginLeft="sp12" alignItems="center">
                 <Icon name={icon} size="medium" color={iconColor} />
                 <Box flex={1}>
@@ -58,6 +58,6 @@ export const AddressInfoMessage = ({ txId, link, type = 'info' }: AddressInfoMes
                     </Text>
                 </Box>
             </HStack>
-        </Animated.View>
+        </AnimatedView>
     );
 };

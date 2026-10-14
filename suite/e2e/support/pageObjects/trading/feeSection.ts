@@ -7,6 +7,12 @@ import { expect } from '../../testExtends/customMatchers';
 
 export type FeeTypes = 'low' | 'economy' | 'normal' | 'high';
 
+type CalculateEthereumMaxFeeParams = {
+    gasLimit: string;
+    maxFeePerGas: string;
+    numberOfDecimals?: number;
+};
+
 export class FeeSection {
     readonly switchModeButton = (feeMode: 'standard' | 'custom') =>
         this.page.getByTestId(`@wallet/fees/select-${feeMode}-fee`);
@@ -141,11 +147,7 @@ export class FeeSection {
         gasLimit,
         maxFeePerGas,
         numberOfDecimals = 14,
-    }: {
-        gasLimit: string;
-        maxFeePerGas: string;
-        numberOfDecimals?: number;
-    }) {
+    }: CalculateEthereumMaxFeeParams) {
         const ratioToEthereum = 1e9;
         const maxFeeInEthereum =
             (parseFloat(gasLimit) * parseFloat(maxFeePerGas)) / ratioToEthereum;

@@ -1,19 +1,19 @@
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     getSessionNetworks,
     selectSessions,
     walletConnectDisconnectThunk,
 } from '@suite-common/walletconnect';
 import { Badge, Card, Column, Dropdown, H3, Row, Text } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import {
     ArrowsClockwiseIcon,
     ShieldCheckFilledIcon,
     ShieldWarningFilledIcon,
     XCircleIcon,
 } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
 import { useSelector } from 'src/hooks/suite';

@@ -1,12 +1,12 @@
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Screen } from '@suite-native/navigation';
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { TransactionList } from '@suite-native/transactions';
+import { useServices } from '@trezor/dependency-injection';
 
 import { AccountDetailEmptyState } from '../components/AccountDetailEmptyState';
 import { AssetDetailScreenHeader } from '../components/AssetDetailScreenHeader';
@@ -44,8 +44,14 @@ export const AccountDetailContentScreen = ({
         [account.key, tokenContract],
     );
 
-    const listEmptyComponent = useMemo(
-        () => <AccountDetailEmptyState accountKey={account.key} tokenContract={tokenContract} />,
+    const renderListEmptyComponent = useCallback(
+        ({ isRecentWindowEmpty }: { isRecentWindowEmpty: boolean }) => (
+            <AccountDetailEmptyState
+                accountKey={account.key}
+                tokenContract={tokenContract}
+                isRecentWindowEmpty={isRecentWindowEmpty}
+            />
+        ),
         [account.key, tokenContract],
     );
 
@@ -62,7 +68,7 @@ export const AccountDetailContentScreen = ({
                 account={account}
                 tokenContract={tokenContract}
                 listHeaderComponent={listHeaderComponent}
-                listEmptyComponent={listEmptyComponent}
+                renderListEmptyComponent={renderListEmptyComponent}
             />
         </Screen>
     );

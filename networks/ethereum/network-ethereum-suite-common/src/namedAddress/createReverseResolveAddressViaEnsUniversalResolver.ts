@@ -2,7 +2,7 @@ import { BaseError, decodeFunctionResult } from 'viem';
 import { toCoinType } from 'viem/ens';
 
 import { Calldata, EVM_ABI } from '@suite-common/calldata';
-import type { EthereumNetworkSymbol } from '@trezor/network-ethereum/constants';
+import type { EthereumNetworkSymbol } from '@trezor/network-ethereum-types';
 import { BigNumber } from '@trezor/utils';
 
 import type { ReverseResolveAddress } from './ReverseResolveAddress';

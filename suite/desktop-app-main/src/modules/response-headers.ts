@@ -30,9 +30,7 @@ const createCspRules = ({ nonce }: CreateCspRulesParams) => [
     "img-src 'self' blob: data: https://*.trezor.io",
 ];
 
-export const init: ModuleInit = ({ cspNonce }) => {
-    const { logger } = global;
-
+export const init: ModuleInit = ({ cspNonce, logger }) => {
     session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
         logger.debug(SERVICE_NAME, `Response headers applied to ${details.url}`);
         callback({

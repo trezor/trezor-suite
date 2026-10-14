@@ -1,7 +1,14 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
+    "include": [".", "translations/*.json"],
     "references": [
+        {
+            "path": "../../suite-common/react-query"
+        },
+        {
+            "path": "../../suite-common/suite-types"
+        },
         {
             "path": "../../suite-common/suite-utils"
         },

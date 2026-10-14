@@ -1,14 +1,14 @@
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { acquireDeviceThunk, selectDeviceThunk } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type DeviceStatus as ConnectedDeviceStatus,
     type getStatus,
 } from '@suite-common/suite-utils';
 import { Banner, type BannerIntent } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 
 import { redirectAfterWalletSelectedThunk } from 'src/actions/wallet/addWalletThunk';
@@ -119,7 +119,8 @@ export const NeedsAttentionBanner = ({
                 // but we cannot tell (device.features.initialized is null)
                 return () => {
                     selectDevice();
-                    dispatch(gotoThunk({ routeName: 'suite-start' }));
+                    // ensure that Manual Device Check is not obscured by a route which overrides it (see SHOULD_ROUTER_APP_SKIP_INTERACTIVE_DEVICE_CHECKS)
+                    dispatch(gotoThunk({ routeName: 'suite-index' }));
                 };
 
             case 'seedless':

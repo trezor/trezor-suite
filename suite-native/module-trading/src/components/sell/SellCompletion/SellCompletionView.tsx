@@ -1,11 +1,11 @@
 import { type ReactNode, useState } from 'react';
-import Animated, { LinearTransition } from 'react-native-reanimated';
+import { LinearTransition } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import type { BankAccount, SellFiatTrade } from 'invity-api';
 
 import { selectTradingSellFormStep } from '@suite-common/trading';
-import { AnimatedVStack, BannerInline } from '@suite-native/atoms';
+import { AnimatedVStack, AnimatedView, BannerInline } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 import { TradingPreviewInfoCard } from '../../general/TradingPreview/TradingPreviewInfoCard';
@@ -45,9 +45,9 @@ export const SellCompletionView = ({
     return (
         <AnimatedVStack spacing="sp16" layout={LinearTransition}>
             {isTxnError && (
-                <Animated.View>
+                <AnimatedView>
                     <BannerInline intent="critical" title={txnErrorString} />
-                </Animated.View>
+                </AnimatedView>
             )}
             <SellFromAccountCard quote={quote} />
             <TradingPreviewInfoCard

@@ -4,18 +4,16 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { type AddressCorrection, autocorrectAddress } from '@suite-common/address';
-import { useServices } from '@suite-common/dependency-injection';
 import { type DeviceRootState } from '@suite-common/device';
 import {
     injectAddressValidator,
     injectGetNamedAddressSupport,
     selectNetworkSymbolForProtocol,
 } from '@suite-common/networks';
-import { injectGetState } from '@suite-common/redux-utils';
 import { parseTransferUri } from '@suite-common/transfer-uri';
-import { formInputsMaxLength } from '@suite-common/validators';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
+    ADDRESS_MAX_LENGTH,
     type AccountsRootState,
     selectAccountByKey,
     selectAccountNetworkSymbol,
@@ -35,6 +33,8 @@ import {
     SendStackRoutes,
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
+import { injectGetState } from '@trezor/redux-utils';
 import { HELP_CENTER_EVM_ADDRESS_CHECKSUM, HELP_CENTER_SOLANA_HELP_URL } from '@trezor/urls';
 
 import { AddressInfoMessage } from './AddressInfoMessage';
@@ -309,7 +309,7 @@ export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: Address
                 name={addressFieldName}
                 testID={addressFieldName}
                 onChangeText={handleChangeValue}
-                maxLength={formInputsMaxLength.address}
+                maxLength={ADDRESS_MAX_LENGTH}
                 accessibilityLabel="address input"
                 rightIcon={<QrCodeBottomSheetIcon onCodeScanned={handleScanAddressQRCode} />}
             />

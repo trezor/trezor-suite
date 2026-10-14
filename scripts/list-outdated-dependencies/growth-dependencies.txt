@@ -33,6 +33,7 @@ fela-plugin-extend
 framer-motion
 glob
 history
+intl-messageformat
 intl-pluralrules
 lottie-react
 lottie-web

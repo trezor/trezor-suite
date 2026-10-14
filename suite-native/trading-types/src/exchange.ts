@@ -10,7 +10,7 @@ import type {
 } from './general';
 
 export type ExchangeFormValues = BaseFormValues<
-    'sendCryptoAmount' | 'receiveCryptoAmount',
+    'sendCryptoAmount' | 'sendBaseCurrencyAmount' | 'receiveCryptoAmount',
     ExchangeTrade
 > &
     FormWithSendAccountValues & {

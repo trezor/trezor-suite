@@ -12,13 +12,13 @@
     },
     "dependencies": {
         "@suite-common/message-system": "workspace:*",
-        "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite/intl": "workspace:*",
         "@suite/metadata": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",
+        "@trezor/redux-utils": "workspace:*",
         "react": "19.2.3",
         "react-redux": "9.3.0"
     }

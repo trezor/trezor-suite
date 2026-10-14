@@ -15,6 +15,7 @@ import { type PowerSaveBlocker } from './libs/createPowerSaveBlocker';
 import { getBuildInfo, getComputerInfo } from './libs/info';
 import { isMainWindowUsable } from './libs/isMainWindowUsable';
 import { loadIndex } from './libs/loadIndex';
+import type { ILogger } from './libs/logger';
 import { type MainWindowProxy } from './libs/main-window-proxy';
 import { hasSwitch } from './libs/process-switches';
 import { MIN_HEIGHT, MIN_WIDTH } from './libs/screen';
@@ -85,7 +86,7 @@ export const createDesktopMainApp =
         ipcMain.on('app/restart', () => {
             deps.logger.info('main', 'App restart requested');
             mainThreadEmitter.emit('app/fully-quit');
-            restartApp();
+            restartApp(deps);
         });
 
         // workaround for Electron 36 on older linux distros, still not resolved in 37
@@ -104,6 +105,7 @@ export const createDesktopMainApp =
                 mainThreadEmitter,
                 cspNonce,
                 powerSaveBlocker: deps.powerSaveBlocker,
+                logger: deps.logger,
             });
 
         // todo:
@@ -168,6 +170,7 @@ export const createDesktopMainApp =
             mainThreadEmitter,
             cspNonce,
             powerSaveBlocker: deps.powerSaveBlocker,
+            logger: deps.logger,
         });
 
         const reactivateWindow = () => {
@@ -176,7 +179,7 @@ export const createDesktopMainApp =
             let mainWindow = deps.mainWindowProxy.getInstance();
             if (!mainWindow || mainWindow.isDestroyed()) {
                 deps.logger.info('main', 'Main window destroyed, recreating');
-                mainWindow = createMainWindow({ winBounds, store, cspNonce });
+                mainWindow = createMainWindow({ winBounds, store, cspNonce, logger: deps.logger });
                 deps.mainWindowProxy.setInstance(mainWindow);
             }
 
@@ -232,11 +235,13 @@ export const createDesktopMainApp =
             mainThreadEmitter,
             cspNonce,
             powerSaveBlocker: deps.powerSaveBlocker,
+            logger: deps.logger,
         });
 
         const { onLoad: loadBioAuthModule, onQuit: quitBioAuthModule } = initBioAuthModule({
             mainWindowProxy: deps.mainWindowProxy,
             store,
+            logger: deps.logger,
         });
 
         ipcMain.handle('browser-window/reload', () => {
@@ -331,12 +336,16 @@ export const createDesktopMainApp =
                         // Main Suite window was closed, no point in loading index.
                         if (!isMainWindowUsable(mainWindow)) return;
 
-                        loadIndex(mainWindow);
+                        loadIndex({ mainWindow, logger: deps.logger });
                     }, 1000);
                 },
             );
 
-            const { handshake, cleanup } = handshakeAndHangDetect({ mainWindow, statePatch });
+            const { handshake, cleanup } = handshakeAndHangDetect({
+                mainWindow,
+                statePatch,
+                logger: deps.logger,
+            });
             deps.mainWindowProxy.once('destroy', cleanup);
             const handshakeResult = await handshake;
 
@@ -354,10 +363,12 @@ export const createDesktopMainApp =
                 await clearAppCache().catch(err =>
                     deps.logger.error('hang-detect', `Couldn't clear cache: ${err.message}`),
                 );
-                restartApp();
+                restartApp(deps);
             }
         });
 
         // Create main window last, so all listeners are set up
-        deps.mainWindowProxy.setInstance(createMainWindow({ winBounds, store, cspNonce }));
+        deps.mainWindowProxy.setInstance(
+            createMainWindow({ winBounds, store, cspNonce, logger: deps.logger }),
+        );
     };

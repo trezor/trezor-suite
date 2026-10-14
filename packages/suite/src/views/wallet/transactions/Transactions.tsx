@@ -5,6 +5,7 @@ import {
     selectAccountTransactionsWithNulls,
     selectIsLoadingAccountTransactions,
 } from '@suite-common/wallet-core';
+import { getOlderHistoryFrom, isDirectRpcHistoryUnscanned } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
 
 import { CoinjoinAccountDiscoveryProgress, WalletLayout } from 'src/components/wallet';
@@ -75,7 +76,13 @@ export const Transactions = () => {
         );
     }
 
-    if (accountTransactions.length > 0 || transactionsIsLoading) {
+    // A direct-RPC backend has only scanned a recent window, or nothing yet, so an empty list is not
+    // proof that history is unavailable: the list shows the progress and the way further back.
+    const hasDirectRpcHistoryToLoad =
+        !account.empty &&
+        (isDirectRpcHistoryUnscanned(account) || getOlderHistoryFrom(account) !== undefined);
+
+    if (accountTransactions.length > 0 || transactionsIsLoading || hasDirectRpcHistoryToLoad) {
         return (
             <Layout selectedAccount={selectedAccount}>
                 <CardanoNewProviderCard account={account} />

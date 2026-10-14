@@ -1,4 +1,4 @@
-import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import { createReducerWithExtraDeps } from '@trezor/redux-utils';
 import { cloneObject } from '@trezor/utils';
 
 import { stakeActions } from './stakingActions';

@@ -28,6 +28,8 @@ export const mockGetSupportedNetworks = (): readonly NetworkSymbol[] =>
         'regtest',
         'tsep',
         'thod',
+        'arc',
+        'tarc',
         'dsol',
         'txrp',
         'txlm',

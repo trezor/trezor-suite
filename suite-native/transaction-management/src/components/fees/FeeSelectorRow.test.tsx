@@ -1,12 +1,23 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type FormState } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
-import { renderWithStoreProvider } from '@suite-native/test-utils-store';
+import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { FeeSelectorRow } from './FeeSelectorRow';
 import { BTC_ACCOUNT_KEY, getWalletState } from '../../__fixtures__/walletState';
 
 const noopThunk = jest.fn();
+const mockOpenModal = jest.fn();
+
+jest.mock('@suite-native/atoms', () => ({
+    ...jest.requireActual('@suite-native/atoms'),
+    useBottomSheetModal: () => ({
+        bottomSheetRef: { current: null },
+        openModal: mockOpenModal,
+        closeModal: jest.fn(),
+    }),
+}));
+
 const btcSymbol = asNetworkSymbol('btc');
 
 describe('FeeSelectorRow', () => {
@@ -14,13 +25,18 @@ describe('FeeSelectorRow', () => {
         wallet: getWalletState(),
     });
 
-    const renderRow = async () =>
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    const renderRow = async ({ isReadOnly }: { isReadOnly?: boolean } = {}) =>
         await renderWithStoreProvider(
             <FeeSelectorRow
                 accountKey={BTC_ACCOUNT_KEY}
                 updateThunk={noopThunk}
                 selectedFee="normal"
                 formDraft={null}
+                isReadOnly={isReadOnly}
             />,
             { preloadedState: getPreloadedState() },
         );
@@ -35,6 +51,23 @@ describe('FeeSelectorRow', () => {
         const { getByTestId } = await renderRow();
 
         expect(getByTestId('@transactionManagement/fee-crypto-amount')).toBeOnTheScreen();
+    });
+
+    it('should open the fee levels on press', async () => {
+        const { getByTestId } = await renderRow();
+
+        fireEvent.press(getByTestId('@transactionManagement/fee-selector-row'));
+
+        expect(mockOpenModal).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not open the fee levels on press when read-only', async () => {
+        const { getByTestId } = await renderRow({ isReadOnly: true });
+
+        fireEvent.press(getByTestId('@transactionManagement/fee-selector-row'));
+
+        expect(getByTestId('@transactionManagement/fee-crypto-amount')).toBeOnTheScreen();
+        expect(mockOpenModal).not.toHaveBeenCalled();
     });
 
     it('should render nothing when the account is not in the store', async () => {

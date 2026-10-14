@@ -1,10 +1,10 @@
 import * as http from 'http';
 
+import { type Logger, noopLogger } from '@trezor/logger';
 import { getFreePort } from '@trezor/node-utils';
 
 import { AFFILIATE_INFO, DEFAULT_ROUND, FEE_RATE_MEDIANS } from '../src/__fixtures__/round.fixture';
 import type { CoinjoinClientEvents } from '../src/types/client';
-import type { Logger } from '../src/types/logger';
 
 // Mock coordinator and middleware responses
 
@@ -245,12 +245,7 @@ export const createServer = async () => {
         coordinatorUrl: url,
         middlewareUrl: url,
         signal: new AbortController().signal,
-        logger: {
-            debug: () => {},
-            info: () => {},
-            warn: () => {},
-            error: () => {},
-        },
+        logger: noopLogger,
         setSessionPhase: () => null,
     };
 

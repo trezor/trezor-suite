@@ -25,6 +25,7 @@ import { ConnectPermissionsModal } from './pageObjects/connectPermissionsModal';
 import { ConnectSelectAccountModal } from './pageObjects/connectSelectAccountModal';
 import { DashboardPage } from './pageObjects/dashboardPage';
 import { DevicePrompt } from './pageObjects/devicePrompt';
+import { EarnNutshellModal } from './pageObjects/earnNutshellModal';
 import { GuidePanel } from './pageObjects/guidePanel';
 import { MetadataPage } from './pageObjects/metadata/metadataPage';
 import { OnboardingPage } from './pageObjects/onboarding/onboardingPage';
@@ -41,7 +42,6 @@ import { TxSimulationModal } from './pageObjects/txSimulationModal';
 import { WalletPage } from './pageObjects/walletPage';
 import { YieldConsentModal } from './pageObjects/yield/yieldConsentModal';
 import { YieldFlowSection } from './pageObjects/yield/yieldFlowSection';
-import { YieldNutshellModal } from './pageObjects/yield/yieldNutshellModal';
 import { YieldSection } from './pageObjects/yield/yieldSection';
 import { suiteBaseTest } from './testExtends/suiteBaseFixture';
 import { TradingStoreFixture } from './tradingStore';
@@ -75,9 +75,9 @@ type Fixtures = {
     connectPermissionsModal: ConnectPermissionsModal;
     connectSelectAccountModal: ConnectSelectAccountModal;
     stakingSection: StakingSection;
+    earnNutshellModal: EarnNutshellModal;
     yieldSection: YieldSection;
     yieldFlowSection: YieldFlowSection;
-    yieldNutshellModal: YieldNutshellModal;
     yieldConsentModal: YieldConsentModal;
     yieldMock: YieldMock;
     txSimulationModal: TxSimulationModal;
@@ -193,14 +193,14 @@ const test = suiteBaseTest.extend<Fixtures>({
     stakingSection: async ({ page }, use) => {
         await use(new StakingSection(page));
     },
+    earnNutshellModal: async ({ page }, use) => {
+        await use(new EarnNutshellModal(page));
+    },
     yieldSection: async ({ page }, use) => {
         await use(new YieldSection(page));
     },
     yieldFlowSection: async ({ page }, use) => {
         await use(new YieldFlowSection(page));
-    },
-    yieldNutshellModal: async ({ page }, use) => {
-        await use(new YieldNutshellModal(page));
     },
     yieldConsentModal: async ({ page }, use) => {
         await use(new YieldConsentModal(page));

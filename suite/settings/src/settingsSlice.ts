@@ -4,15 +4,15 @@ import { type SuiteThemeVariant } from '@suite/desktop-app-api';
 import type { ExperimentalFeature } from '@suite/experimental';
 import { type EarnYieldWorkerBaseUrl } from '@suite-common/earn-stablecoin-defs';
 import { type OAuthServerEnvironment } from '@suite-common/metadata-types';
-import {
-    type ActionTypesDep,
-    type ReducersDep,
-    createSliceWithExtraDeps,
-} from '@suite-common/redux-utils';
 import { type Locale } from '@suite-common/suite-types';
 import type { TradeServerEnvironment } from '@suite-common/trading';
 import type { DefinitionsChannel } from '@trezor/connect-common';
 import { isWeb } from '@trezor/env-utils';
+import {
+    type ActionTypesDep,
+    type ReducersDep,
+    createSliceWithExtraDeps,
+} from '@trezor/redux-utils';
 
 import { SIDEBAR_WIDTH_NUMERIC } from './suiteConstants';
 
@@ -32,6 +32,7 @@ export interface DebugModeOptions {
     definitionsChannel?: DefinitionsChannel;
     isN4w1BackupEnabled: boolean;
     showTranslationKeys: boolean;
+    isAppsEmbeddingEnabled: boolean;
 }
 
 export interface AutodetectSettings {
@@ -95,6 +96,7 @@ export const suiteSettingsInitialState: SuiteSettingsState = {
         showConnectLogs: false,
         isN4w1BackupEnabled: false,
         showTranslationKeys: false,
+        isAppsEmbeddingEnabled: false,
     },
     autodetect: {
         language: true,

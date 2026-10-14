@@ -1,16 +1,16 @@
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
-import {
-    type Coins,
-    type CryptoId,
-    type InfoResponse,
-    type Platforms,
-    type ProviderMetadata,
-} from 'invity-api';
+import { type Coins, type CryptoId, type Platforms, type ProviderMetadata } from 'invity-api';
 
 import { type AccountKey, type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { type FeeLevel } from '@trezor/connect';
 
-import { type TradingTransaction, type TradingType, type TradingVerifiedAddress } from '../types';
+import {
+    type TradingInfoConfig,
+    type TradingInfoResponse,
+    type TradingTransaction,
+    type TradingType,
+    type TradingVerifiedAddress,
+} from '../types';
 import { type TradingBuyState, buyInitialState } from './buyReducer';
 import { TRADING_PREFIX } from '../constants';
 import { type TradingExchangeState, exchangeInitialState } from './exchangeReducer';
@@ -34,7 +34,7 @@ export type TradingComposedTransactionInfo = {
 export type TradingInfo = {
     platforms?: Platforms;
     coins?: Coins;
-    config?: InfoResponse['config'];
+    config?: TradingInfoConfig;
 };
 
 export type TradingPrefilledFromAccount = {
@@ -106,7 +106,7 @@ const tradingCommonSlice = createSlice({
     name: TRADING_PREFIX,
     initialState,
     reducers: {
-        saveInfo(state: TradingState, action: PayloadAction<InfoResponse>) {
+        saveInfo(state: TradingState, action: PayloadAction<TradingInfoResponse>) {
             state.info.coins = action.payload.coins;
             state.info.platforms = action.payload.platforms;
             state.info.config = action.payload.config;

@@ -31,13 +31,13 @@ _Note: All paths below are relative to the root of trezor-suite repository, if n
     Produces `desktop-app/build` directory with javascript bundles & assets in production mode for the electron-renderer process.
     TEST_BUILD env variable serves to mock bundled message-system config .
 
-    _Note: This step needs to be repeated on each change in `suite` or `suite-desktop-ui` package._
+    _Note: This step needs to be repeated on each change in `suite` or `desktop-app-renderer` package._
 
 1. `yarn workspace @suite/desktop-app build:app`
 
     Produces `desktop-app/dist` directory with javascript bundles & assets in production mode for the electron-main process.
 
-    _Note: This step needs to be repeated on each change in `connect` or `suite-desktop-core` package._
+    _Note: This step needs to be repeated on each change in `connect` or `desktop-app-main` package._
 
 1. `yarn workspace @trezor/suite-e2e test:e2e:desktop`
 

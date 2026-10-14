@@ -5,10 +5,11 @@ import {
     parseAbiParameters,
 } from 'viem';
 
-import { getTokenInfo } from './tokenInfo';
+import { getTokenInfo, getTokenInfos } from './tokenInfo';
 
 const USER = '0x1234567890123456789012345678901234567890' as const;
 const TOKEN = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48' as const;
+const OTHER_TOKEN = '0xdAC17F958D2ee523a2206206994597C13D831ec7' as const;
 const MULTICALL3 = '0xcA11bde05977b3631167028862bE2a173976CA11';
 
 const encodeUint = (value: bigint) => encodeAbiParameters(parseAbiParameters('uint256'), [value]);
@@ -219,5 +220,91 @@ describe('getTokenInfo', () => {
         await expect(getTokenInfo(asPublicClient, USER, TOKEN, true)).resolves.toMatchObject({
             balance: '0',
         });
+    });
+});
+
+describe(getTokenInfos.name, () => {
+    it('reads balances and metadata for every contract in one Multicall3 request', async () => {
+        const { client, asPublicClient } = createClient();
+        client.call.mockResolvedValue({
+            data: encodeAggregate3([
+                ok(encodeUint(500n)),
+                ok(encodeString('USD Coin')),
+                ok(encodeString('USDC')),
+                ok(encodeUint8(6)),
+                ok(encodeBool(false)),
+                ok(encodeBool(false)),
+                ok(encodeUint(0n)),
+                ok(encodeString('Tether USD')),
+                ok(encodeString('USDT')),
+                ok(encodeUint8(6)),
+                ok(encodeBool(false)),
+                ok(encodeBool(false)),
+            ]),
+        });
+
+        const tokens = await getTokenInfos(asPublicClient, USER, [TOKEN, OTHER_TOKEN]);
+
+        expect(client.call).toHaveBeenCalledTimes(1);
+        expect(innerCallCount(client.call.mock.calls[0][0].data)).toBe(12);
+        expect(tokens).toEqual([
+            {
+                standard: 'ERC20',
+                contract: TOKEN.toLowerCase(),
+                balance: '500',
+                name: 'USD Coin',
+                symbol: 'USDC',
+                decimals: 6,
+            },
+            {
+                standard: 'ERC20',
+                contract: OTHER_TOKEN.toLowerCase(),
+                balance: '0',
+                name: 'Tether USD',
+                symbol: 'USDT',
+                decimals: 6,
+            },
+        ]);
+    });
+
+    it('reads only the balance of a contract whose metadata is already cached', async () => {
+        const { client, asPublicClient } = createClient();
+
+        await getTokenInfo(asPublicClient, USER, TOKEN, true);
+
+        client.call.mockResolvedValue({
+            data: encodeAggregate3([
+                ok(encodeUint(900n)),
+                ok(encodeUint(7n)),
+                ok(encodeString('Tether USD')),
+                ok(encodeString('USDT')),
+                ok(encodeUint8(6)),
+                ok(encodeBool(false)),
+                ok(encodeBool(false)),
+            ]),
+        });
+
+        const tokens = await getTokenInfos(asPublicClient, USER, [TOKEN, OTHER_TOKEN]);
+
+        expect(innerCallCount(client.call.mock.calls[1][0].data)).toBe(7);
+        expect(tokens).toEqual([
+            expect.objectContaining({
+                contract: TOKEN.toLowerCase(),
+                balance: '900',
+                symbol: 'USDC',
+            }),
+            expect.objectContaining({
+                contract: OTHER_TOKEN.toLowerCase(),
+                balance: '7',
+                symbol: 'USDT',
+            }),
+        ]);
+    });
+
+    it('returns nothing without a request for an empty contract list', async () => {
+        const { client, asPublicClient } = createClient();
+
+        await expect(getTokenInfos(asPublicClient, USER, [])).resolves.toEqual([]);
+        expect(client.call).not.toHaveBeenCalled();
     });
 });

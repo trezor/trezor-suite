@@ -8,18 +8,15 @@
         {
             "path": "../../suite-common/analytics-redux"
         },
-        {
-            "path": "../../suite-common/dependency-injection"
-        },
         { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/device-authenticity"
+        },
         {
             "path": "../../suite-common/discreet-mode"
         },
         { "path": "../../suite-common/logger" },
         { "path": "../../suite-common/mev" },
-        {
-            "path": "../../suite-common/redux-utils"
-        },
         {
             "path": "../../suite-common/suite-constants"
         },
@@ -33,9 +30,6 @@
             "path": "../../suite-common/suite-types"
         },
         { "path": "../../suite-common/support" },
-        {
-            "path": "../../suite-common/validators"
-        },
         {
             "path": "../../suite-common/wallet-config"
         },
@@ -51,7 +45,6 @@
         { "path": "../banners" },
         { "path": "../biometrics" },
         { "path": "../coin-enabling" },
-        { "path": "../config" },
         { "path": "../device" },
         { "path": "../device-manager" },
         { "path": "../experimental-features" },
@@ -76,7 +69,11 @@
             "path": "../../packages/blockchain-link-types"
         },
         { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
         { "path": "../../packages/env-utils" },
+        { "path": "../../packages/redux-utils" },
         {
             "path": "../../packages/styles-native"
         },

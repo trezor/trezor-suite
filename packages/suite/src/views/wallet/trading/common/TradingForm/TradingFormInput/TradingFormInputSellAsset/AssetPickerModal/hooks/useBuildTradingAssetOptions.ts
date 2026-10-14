@@ -24,7 +24,11 @@ export function useBuildTradingAssetOptions({
     const { networks, assetRows } = useSellAssetRows({ networkSymbolFilter: networkSymbol });
 
     const assetRowsWithDisplayNames = useAccountsWithTokenDisplayNames(assetRows);
-    const filteredAssetRows = useFilterAccountsWithTokens(assetRowsWithDisplayNames, search);
+    const filteredAssetRows = useFilterAccountsWithTokens({
+        accountsWithTokens: assetRowsWithDisplayNames,
+        search,
+        shouldKeepAccountWithMatchedToken: false,
+    });
     const groupedAssetOptions = useGroupedAssetOptions(filteredAssetRows, expandedGroupKeys);
     const listItems = useInsertGroupLabelsAndSpaces(groupedAssetOptions);
 

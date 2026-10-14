@@ -1,6 +1,6 @@
-import { createMockDeps, mock } from '@suite-common/dependency-injection';
 import { mockSuiteSyncStorage } from '@suite-common/suite-sync-storage/mocks';
 import { type StaticSessionId } from '@trezor/connect';
+import { createMockDeps, mock } from '@trezor/dependency-injection';
 import { isCodesignBuild } from '@trezor/env-utils';
 
 import { type WithSuiteSyncState } from '../suiteSyncSlice';

@@ -12,10 +12,11 @@ const MERKL_XYZ_CONTRACT: Partial<Record<LegacyNetworkSymbol, `0x${string}`>> = 
     base: '0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae',
     op: '0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae',
 };
+type IsEarnYieldClaimSupportedParams = { isDebugMode?: boolean };
 
 export const isEarnYieldClaimSupported = (
     networkSymbol: NetworkSymbol,
-    { isDebugMode = false }: { isDebugMode?: boolean } = {},
+    { isDebugMode = false }: IsEarnYieldClaimSupportedParams = {},
 ) => {
     const hasClaimContract = MERKL_XYZ_CONTRACT[networkSymbol as LegacyNetworkSymbol] !== undefined;
 

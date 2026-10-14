@@ -70,6 +70,7 @@ export type Explorer = {
     address: string;
     nft?: string;
     token?: string;
+    contract?: string;
     queryString?: string;
 };
 
@@ -113,6 +114,7 @@ export type SuiteCommonNetworkConfig = {
     readonly isExperimentalOnlyNetwork?: boolean;
     readonly coingeckoId?: string;
     readonly tradeCryptoId?: string;
+    readonly fiatRateCryptoId?: string;
     readonly caipId?: string; // CAIP-2 chain ID, used by WalletConnect.
     readonly nativeTokenReserve?: string;
     /** Network ID used by Yield.xyz. */

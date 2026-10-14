@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -24,6 +23,7 @@ import {
     type StackNavigationProps,
 } from '@suite-native/navigation';
 import { FeeSelector } from '@suite-native/transaction-management';
+import { useServices } from '@trezor/dependency-injection';
 
 import { EarnAmountCard } from '../../components/earn/EarnAmountCard';
 import { EarnOutputFields } from '../../components/earn/EarnOutputFields';

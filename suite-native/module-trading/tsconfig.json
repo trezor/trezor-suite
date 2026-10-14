@@ -3,9 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../../suite-common/calldata" },
-        {
-            "path": "../../suite-common/dependency-injection"
-        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/formatters"
@@ -19,9 +16,6 @@
         { "path": "../../suite-common/mev" },
         { "path": "../../suite-common/networks" },
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/suite-sync"
         },
         {
@@ -31,9 +25,6 @@
             "path": "../../suite-common/token-definitions"
         },
         { "path": "../../suite-common/trading" },
-        {
-            "path": "../../suite-common/validators"
-        },
         {
             "path": "../../suite-common/wallet-config"
         },
@@ -64,6 +55,7 @@
         { "path": "../helpers" },
         { "path": "../icons" },
         { "path": "../intl" },
+        { "path": "../keyboard" },
         { "path": "../labeling" },
         { "path": "../link" },
         { "path": "../message-system" },
@@ -88,16 +80,14 @@
         { "path": "../transaction-management" },
         { "path": "../transaction-review" },
         {
-            "path": "../../packages/analytics-uploader"
-        },
-        {
             "path": "../../packages/blockchain-link-types"
         },
         { "path": "../../packages/connect" },
         {
-            "path": "../../packages/connect-common"
+            "path": "../../packages/dependency-injection"
         },
         { "path": "../../packages/react-utils" },
+        { "path": "../../packages/redux-utils" },
         {
             "path": "../../packages/styles-native"
         },

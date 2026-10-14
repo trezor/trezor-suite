@@ -1,13 +1,14 @@
+import { useSelector } from 'react-redux';
+
 import { isCryptoIconSymbol, isNetworkIconSymbol } from '@suite-common/icons';
-import { getCoingeckoId, getNetworkOptional, isNetworkSymbol } from '@suite-common/wallet-config';
-import {
-    isSupportedEthereumNetwork,
-    isWrappedNativeToken,
-} from '@trezor/network-ethereum/constants';
+import { isWrappedNativeToken } from '@trezor/network-ethereum/constants';
+import { isSupportedEthereumNetwork } from '@trezor/network-ethereum-types';
+import type { NetworkConfigState } from '@trezor/network-module-types';
 
 import { NativeTokenIcon } from './NativeTokenIcon';
 import { NonNativeTokenIcon } from './NonNativeTokenIcon';
 import { type TokenIconProps } from './tokenIconTypes';
+import { selectNetworkConfig } from '../../network-display/networkDisplaySelectors';
 import { NetworkIconBadge } from '../NetworkIcon/NetworkIconBadge';
 
 export const TokenIcon = ({
@@ -24,6 +25,7 @@ export const TokenIcon = ({
     wrappedTokenIcon = 'token',
     'data-testid': dataTestId,
 }: TokenIconProps) => {
+    const network = useSelector((state: NetworkConfigState) => selectNetworkConfig(state, symbol));
     if (
         wrappedTokenIcon === 'network' &&
         isSupportedEthereumNetwork(symbol) &&
@@ -34,7 +36,6 @@ export const TokenIcon = ({
 
     if (!contractAddress) {
         if (showNetworkIcon) {
-            const network = getNetworkOptional(symbol);
             const networkSymbol = network?.settlementLayer ?? symbol;
             const displaySymbol = networkSymbol !== symbol ? networkSymbol : symbol;
             const tokenIcon = (
@@ -62,7 +63,7 @@ export const TokenIcon = ({
         return <NativeTokenIcon symbol={symbol} size={size} data-testid={dataTestId} />;
     }
 
-    const coingeckoId = isNetworkSymbol(symbol) ? getCoingeckoId(symbol) : undefined;
+    const coingeckoId = network?.coingeckoId;
 
     if (!coingeckoId) {
         if (isCryptoIconSymbol(symbol)) {

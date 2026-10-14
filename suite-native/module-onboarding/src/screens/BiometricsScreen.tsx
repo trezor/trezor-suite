@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
 import {
@@ -18,6 +17,7 @@ import {
     type StackProps,
 } from '@suite-native/navigation';
 import { selectIsTradingResidenceCheckEnabled } from '@suite-native/trading-state';
+import { useServices } from '@trezor/dependency-injection';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { useExitOnboardingFlow } from '../hooks/useExitOnboardingFlow';

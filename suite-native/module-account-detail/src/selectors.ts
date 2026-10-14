@@ -1,6 +1,4 @@
 import { type AccountItem } from '@suite-common/graph';
-import { createWeakMapSelector } from '@suite-common/redux-utils';
-import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type FiatRatesRootState,
@@ -11,14 +9,14 @@ import {
     selectAccountUnrecognizedTokens,
 } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { isPositiveBalance, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import {
-    FeatureFlag,
-    type FeatureFlagsRootState,
-    selectIsFeatureFlagEnabled,
-} from '@suite-native/feature-flags';
+    isPositiveBalance,
+    isStellarContractToken,
+    tryGetAccountIdentity,
+} from '@suite-common/wallet-utils';
 import { type AccountOverviewTab } from '@suite-native/navigation';
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
+import { createWeakMapSelector } from '@trezor/redux-utils';
 import { deepEqual } from '@trezor/utils';
 
 const createAccountsMemoizedSelector = createWeakMapSelector.withTypes<AccountsRootState>();
@@ -34,6 +32,7 @@ export const selectAccountItemForGraph = createAccountsMemoizedSelector(
 
         return {
             symbol: account.symbol,
+            backendType: account.backendType,
             descriptor: account.descriptor,
             accountKey: account.key,
             identity: tryGetAccountIdentity(account),
@@ -81,23 +80,11 @@ export const selectHasAccountOrTokenSpendableBalance = (
     if (tokenContract) {
         const token = selectAccountTokenInfo(state, accountKey, tokenContract);
 
-        return isPositiveBalance(token?.balance ?? '0');
+        // Native has no compose path for a Soroban transfer yet.
+        if (!token || isStellarContractToken(token)) return false;
+
+        return isPositiveBalance(token.balance ?? '0');
     }
 
     return isPositiveBalance(account.availableBalance);
-};
-
-export const selectIsNetworkSendFlowEnabled = (
-    state: FeatureFlagsRootState,
-    symbol?: NetworkSymbol,
-) => {
-    if (!symbol) return false;
-    const networkType = getNetworkType(symbol);
-
-    const isCardanoSendEnabled = selectIsFeatureFlagEnabled(
-        state,
-        FeatureFlag.IsCardanoSendEnabled,
-    );
-
-    return networkType !== 'cardano' || isCardanoSendEnabled;
 };

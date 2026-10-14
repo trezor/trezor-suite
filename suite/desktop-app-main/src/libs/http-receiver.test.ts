@@ -2,11 +2,11 @@ import { fixtures } from './__fixtures__/http';
 import { createHttpReceiver } from './http-receiver';
 import { Logger } from './logger';
 
-global.logger = new Logger('mute');
+const logger = new Logger('mute');
 
 describe('http receiver', () => {
     it('start should emit started event', async () => {
-        const receiver = createHttpReceiver({ port: 0 });
+        const receiver = createHttpReceiver({ logger, port: 0 });
 
         const spy = jest.spyOn(receiver, 'emit');
         const startResult = await receiver.start();
@@ -22,7 +22,7 @@ describe('http receiver', () => {
     });
 
     it.each(fixtures)('$method: $path', async ({ method, path, search, result }) => {
-        const receiver = createHttpReceiver({ port: 0 });
+        const receiver = createHttpReceiver({ logger, port: 0 });
         const spy = jest.spyOn(receiver, 'emit');
 
         try {

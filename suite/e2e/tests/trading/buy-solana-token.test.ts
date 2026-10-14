@@ -1,8 +1,11 @@
+import type { BuyTradeQuoteRequest } from 'invity-api';
+
 import { getCryptoId } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 import { localizeNumber } from '@trezor/utils';
 
+import { tradeEndpoint } from '../../fixtures/trading';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
@@ -14,22 +17,28 @@ const cryptoTicker = 'USDC';
 // Not every provider honours the exact crypto amount typed, so only the ticker is pinned.
 const cryptoAmountPattern = new RegExp(String.raw`^[\d,]+(\.\d+)? ${cryptoTicker}$`);
 const usdcCryptoId = getCryptoId(solSymbol, 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v');
-const receiveAccountLabel = 'Solana #1';
+const receiveAccountLabel = 'Solana #4';
 const fiatCurrency = 'usd';
 
 test.describe('Trading - Buy Solana token', { tag: ['@T3W1', '@T3T1'] }, () => {
-    test.beforeEach(async ({ onboardingPage, settingsPage, walletPage, tradingMock }) => {
-        tradingMock.setTradeFlow('buy');
-        await tradingMock.rewriteProviderRedirect();
-        await tradingMock.setStatus('SUBMITTED');
+    test.use({ deviceSetup: { mnemonic: 'mnemonic_academic', passphrase_protection: true } });
 
-        await onboardingPage.completeOnboarding();
+    test.beforeEach(
+        async ({ onboardingPage, dashboardPage, settingsPage, walletPage, tradingMock }) => {
+            tradingMock.setTradeFlow('buy');
+            await tradingMock.rewriteProviderRedirect();
+            await tradingMock.setStatus('SUBMITTED');
 
-        await test.step('Enable Solana and open its trading', async () => {
-            await settingsPage.changeNetworks({ enableNetworks: [solSymbol] });
-            await walletPage.openTrading({ symbol: solSymbol });
-        });
-    });
+            await onboardingPage.completeOnboarding();
+
+            await test.step('Enable Solana and open its trading', async () => {
+                await settingsPage.changeNetworks({ enableNetworks: [solSymbol] });
+                await dashboardPage.deviceSwitchingOpenButton.click();
+                await dashboardPage.addHiddenWallet(process.env.PASSPHRASE!);
+                await walletPage.openTrading({ symbol: solSymbol, atIndex: 3 });
+            });
+        },
+    );
 
     test(
         'Buy Solana USDC token - amount specified in crypto',
@@ -38,6 +47,7 @@ test.describe('Trading - Buy Solana token', { tag: ['@T3W1', '@T3T1'] }, () => {
             let fiatAmount: string;
             let cryptoAmountOfOffer: string;
             let providerName: string;
+            const quotesRequest = page.waitForRequest(tradeEndpoint.buyQuotes);
 
             await test.step('Request a specific crypto amount of USDC to buy', async () => {
                 await tradingPage.assetPicker.selectBuyAsset({
@@ -54,13 +64,23 @@ test.describe('Trading - Buy Solana token', { tag: ['@T3W1', '@T3T1'] }, () => {
                     country: 'US',
                     countrySubdivision: 'CA',
                     selectReceiveAddress: async () => {
-                        await tradingPage.receiveAccount.selectSuiteReceiveAccount(0);
+                        await tradingPage.receiveAccount.selectSuiteReceiveAccount({
+                            symbol: solSymbol,
+                            atIndex: 3,
+                        });
                     },
                 });
             });
 
-            await test.step('Continue to the preview', async () => {
+            await test.step('Crypto entry requests quotes in crypto and refills fiat', async () => {
+                const request: BuyTradeQuoteRequest = (await quotesRequest).postDataJSON();
+                expect(request.wantCrypto).toBe(true);
+                expect(request.cryptoStringAmount).toBe(cryptoAmount);
+                await expect(tradingPage.inputs.cryptoAmount).toHaveValue(cryptoAmount);
                 await expect(tradingPage.inputs.fiatAmount).toHaveValue(/^[\d,]+(\.\d+)?$/);
+            });
+
+            await test.step('Continue to the preview', async () => {
                 fiatAmount = await tradingPage.inputs.fiatAmount.inputValue();
                 providerName = await tradingPage.quotes.selectedProviderName.innerText();
 
@@ -127,7 +147,7 @@ test.describe('Trading - Buy Solana token', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await test.step('Return to account buy form', async () => {
                 await tradingPage.backToAccountButton('Buy').click();
-                await tradingPage.verifyBuyFormOpened(/BTC|SOL/);
+                await tradingPage.verifyBuyFormOpened(/^SOL$/);
             });
         },
     );

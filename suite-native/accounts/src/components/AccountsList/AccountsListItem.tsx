@@ -15,6 +15,7 @@ import {
     BaseCurrencyAmountFormatter,
     CompactCryptoAmountFormatter,
     CryptoToFiatAmountFormatter,
+    ExactCryptoAmountFormatter,
     NetworkDisplaySymbolNameFormatter,
 } from '@suite-native/formatters';
 import { Icon, TokenIcon } from '@suite-native/icons';
@@ -42,6 +43,7 @@ type AccountListItemProps = {
     isLast?: boolean;
     showDivider?: boolean;
     badges?: React.ReactNode;
+    shouldShowExactAmount?: boolean;
 };
 
 const TokenBadge = React.memo(({ accountKey }: { accountKey: AccountKey }) => {
@@ -67,6 +69,7 @@ const AccountsListItemComponent = ({
     isLast = false,
     showDivider = false,
     badges,
+    shouldShowExactAmount = false,
 }: AccountListItemProps) => {
     const formattedAccountType = useSelector((state: AccountsRootState) =>
         selectFormattedAccountType(state, account.key),
@@ -114,6 +117,9 @@ const AccountsListItemComponent = ({
             />
         );
     const isFailed = isAccountFailed(account);
+    const CryptoAmountFormatter = shouldShowExactAmount
+        ? ExactCryptoAmountFormatter
+        : CompactCryptoAmountFormatter;
 
     const title = shouldShowAccountLabel ? (
         <AccountLabel account={account} />
@@ -164,7 +170,7 @@ const AccountsListItemComponent = ({
             }
             secondaryValue={
                 isFailed ? undefined : (
-                    <CompactCryptoAmountFormatter
+                    <CryptoAmountFormatter
                         value={account.formattedBalance}
                         symbol={account.symbol}
                         numberOfLines={1}

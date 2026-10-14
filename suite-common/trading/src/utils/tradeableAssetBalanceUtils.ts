@@ -25,16 +25,17 @@ type AggregatedCryptoAmount = {
     symbol: Parameters<typeof getFiatRateKey>[0];
     contractAddress?: TokenAddress;
 };
+type AggregateTradeableAssetBalancesParams = {
+    accounts: readonly Account[];
+    fiatRates: RatesByKey | undefined;
+    baseCurrency: BaseCurrencyCode;
+};
 
 export const aggregateTradeableAssetBalances = ({
     accounts,
     fiatRates,
     baseCurrency,
-}: {
-    accounts: readonly Account[];
-    fiatRates: RatesByKey | undefined;
-    baseCurrency: BaseCurrencyCode;
-}): TradeableAssetBalances => {
+}: AggregateTradeableAssetBalancesParams): TradeableAssetBalances => {
     const amountsByCryptoId = new Map<CryptoId, AggregatedCryptoAmount>();
 
     const addAmount = (

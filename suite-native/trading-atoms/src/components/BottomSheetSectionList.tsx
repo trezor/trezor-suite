@@ -1,5 +1,5 @@
 import { type ReactElement, type ReactNode } from 'react';
-import { Dimensions } from 'react-native';
+import { useWindowDimensions } from 'react-native';
 
 import {
     BottomSheetFlashList,
@@ -15,6 +15,8 @@ import {
     type SectionListData,
     useSectionList,
 } from '../hooks/useSectionList';
+
+const DEFAULT_LIST_HEIGHT_RATIO = 0.9;
 
 export type TradingBottomSheetSectionListProps<T, U> = Omit<
     BottomSheetFlashListProps<T>,
@@ -52,6 +54,7 @@ export const BottomSheetSectionList = <T, U = undefined>({
     estimatedListHeight,
     ...rest
 }: TradingBottomSheetSectionListProps<T, U>) => {
+    const { height: windowHeight } = useWindowDimensions();
     const {
         data: internalData,
         keyExtractor: internalKeyExtractor,
@@ -66,7 +69,7 @@ export const BottomSheetSectionList = <T, U = undefined>({
         SectionEmptyComponent,
     });
 
-    const listHeight = estimatedListHeight ?? Dimensions.get('window').height * 0.9;
+    const listHeight = estimatedListHeight ?? windowHeight * DEFAULT_LIST_HEIGHT_RATIO;
 
     return (
         <BottomSheetFlashList<ListInternalItemShape<T, U>>

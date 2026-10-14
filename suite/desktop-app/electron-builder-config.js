@@ -29,7 +29,8 @@ module.exports = {
         '!**/*.{md,js.map}', // exclude files unnecessary for runtime
         'build/release-notes.md', // this one is dynamically loaded in runtime
         '!build/static/**/{favicon,icons,bin,browsers}', // copied as extraResources instead, some are platform-specific
-        '!node_modules/usb/**/{libusb,libusb_config,src}', // exclude files unnecessary for runtime
+        // usb-legacy is usb@2.17.0, which ships the whole libusb source tree next to its prebuilds.
+        '!node_modules/usb-legacy/**/{libusb,libusb_config,src}', // exclude files unnecessary for runtime
         '!node_modules/@trezor/**', // no @trezor package is a runtime dependency of this app; webpack bundles them.
     ],
     extraResources: [
@@ -82,6 +83,12 @@ module.exports = {
         files: ['entitlements.mac.inherit.plist'],
         extraResources: [
             {
+                // macOS 26+ reads the Dock icon from this catalog. The legacy icns has no
+                // dark appearance, so Dark Mode otherwise draws a black lock on a black tile.
+                from: 'mac-icon/Assets.car',
+                to: 'Assets.car',
+            },
+            {
                 from: 'build/static/bin/tor/mac-${arch}',
                 to: 'bin/tor',
             },
@@ -103,6 +110,7 @@ module.exports = {
         entitlements: 'entitlements.mac.inherit.plist',
         entitlementsInherit: 'entitlements.mac.inherit.plist',
         extendInfo: {
+            CFBundleIconName: 'Icon',
             NSBluetoothAlwaysUsageDescription:
                 'Allow Trezor Suite to use Bluetooth to securely connect and communicate with your Trezor device.',
             // Delete those keys from Info.plist, Electron adds them by default but Trezor Suite does not need these permissions
@@ -138,7 +146,7 @@ module.exports = {
         signExts: ['.exe', '.dll'],
         signtoolOptions: {
             publisherName: ['SatoshiLabs, s.r.o.', 'Trezor Company s.r.o.'],
-            // TODO #14482: when Electron-main is migrated to ESM, and we declare whole suite-desktop package as ESM, rename .mjs files to .js
+            // TODO #14482: when Electron-main is migrated to ESM, and we declare whole desktop-app package as ESM, rename .mjs files to .js
             sign: '../desktop-app-main/scripts/sign-windows.mjs',
         },
     },
@@ -167,7 +175,7 @@ module.exports = {
         category: 'Utility',
         target: ['AppImage'],
     },
-    // TODO #14482: when Electron-main is migrated to ESM, and we declare whole suite-desktop package as ESM, rename .mjs files to .js
+    // TODO #14482: when Electron-main is migrated to ESM, and we declare whole desktop-app package as ESM, rename .mjs files to .js
     afterPack: '../desktop-app-main/scripts/setElectronFuses.mjs',
     afterSign: '../desktop-app-main/scripts/notarize.mjs',
 };

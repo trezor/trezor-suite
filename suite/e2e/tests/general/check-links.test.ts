@@ -116,6 +116,7 @@ async function checkLinks(page: Page, urls: string[]) {
 const SECTIONS = {
     general: [
         '/',
+        '/hidden-tokens',
         '/notifications',
         '/version',
         '/bridge',
@@ -125,6 +126,7 @@ const SECTIONS = {
         '/udev',
         '/switch-device',
         '/password-manager',
+        '/apps-embedding',
         '/coinmarket-redirect',
     ],
     onboarding: [

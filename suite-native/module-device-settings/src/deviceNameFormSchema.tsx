@@ -1,4 +1,4 @@
-import { yup } from '@suite-common/validators';
+import { yup } from '@suite-native/forms';
 import { type useTranslate } from '@suite-native/intl';
 import { isAscii } from '@trezor/utils';
 

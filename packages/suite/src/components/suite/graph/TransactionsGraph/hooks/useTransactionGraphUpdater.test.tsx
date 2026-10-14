@@ -56,13 +56,15 @@ const confirmedTransaction = (txid: string) =>
 const pendingTransaction = (txid: string) =>
     testMocks.getWalletTransaction({ txid, blockHeight: undefined });
 
+type RenderTransactionGraphUpdaterParams = {
+    transactions?: WalletAccountTransaction[];
+    hasAccount?: boolean;
+};
+
 const renderTransactionGraphUpdater = ({
     transactions = [],
     hasAccount = true,
-}: {
-    transactions?: WalletAccountTransaction[];
-    hasAccount?: boolean;
-} = {}) => {
+}: RenderTransactionGraphUpdaterParams = {}) => {
     const { services } = createTestCompositionRoot<void, { wallet: WalletState }>({
         reducer: { wallet: walletReducer },
     });

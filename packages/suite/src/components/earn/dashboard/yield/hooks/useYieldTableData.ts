@@ -36,15 +36,17 @@ const hasTokenSymbol = (
     accountToken: NonNullable<Account['tokens']>[number],
 ): accountToken is TokenInfoBranded => accountToken.symbol !== undefined;
 
+type GetMatchedAccountTokenParams = {
+    account: Account;
+    networkSymbol: NetworkSymbol;
+    token?: Pick<TokenDtoV2, 'address' | 'symbol' | 'decimals'>;
+};
+
 const getMatchedAccountToken = ({
     account,
     networkSymbol,
     token,
-}: {
-    account: Account;
-    networkSymbol: NetworkSymbol;
-    token?: Pick<TokenDtoV2, 'address' | 'symbol' | 'decimals'>;
-}): TokenInfoBranded | undefined => {
+}: GetMatchedAccountTokenParams): TokenInfoBranded | undefined => {
     if (!account.tokens?.length || !token) {
         return undefined;
     }
@@ -64,15 +66,17 @@ const getMatchedAccountToken = ({
     );
 };
 
+type GetYieldOpportunityDataParams = {
+    account: Account;
+    networkSymbol: NetworkSymbol;
+    vault: YieldDtoV2;
+};
+
 export const getYieldOpportunityData = ({
     account,
     networkSymbol,
     vault,
-}: {
-    account: Account;
-    networkSymbol: NetworkSymbol;
-    vault: YieldDtoV2;
-}): YieldOpportunityData => {
+}: GetYieldOpportunityDataParams): YieldOpportunityData => {
     const matchedInputToken = getMatchedAccountToken({
         account,
         networkSymbol,

@@ -1,4 +1,4 @@
-import { yup } from '@suite-common/validators';
+import * as yup from 'yup';
 
 import { getSlippageFormValidationSchema } from './slippageFormValidationSchema';
 

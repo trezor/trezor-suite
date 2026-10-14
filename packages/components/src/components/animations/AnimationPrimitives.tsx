@@ -1,4 +1,6 @@
-import styled, { css } from 'styled-components';
+import { type ComponentPropsWithRef } from 'react';
+
+import styled, { type IStyledComponent, css } from 'styled-components';
 
 import { type FrameProps, type FramePropsKeys, withFrameProps } from '../../utils/frameProps';
 import { type TransientProps } from '../../utils/transientProps';
@@ -18,13 +20,17 @@ export type AllowedAnimationPrimitiveFrameProps = Pick<
 export const shapes = ['CIRCLE', 'ROUNDED', 'ROUNDED-SMALL'] as const;
 export type Shape = (typeof shapes)[number];
 
-export const AnimationWrapper = styled.div.attrs<{ 'data-component'?: string }>(props => ({
+type AnimationWrapperProps = TransientProps<AllowedAnimationPrimitiveFrameProps> & {
+    shape?: Shape;
+};
+
+// Explicit type keeps the generated declaration from expanding all inferred div props.
+export const AnimationWrapper: IStyledComponent<
+    'web',
+    ComponentPropsWithRef<'div'> & { 'data-component'?: string } & AnimationWrapperProps
+> = styled.div.attrs<{ 'data-component'?: string }>(props => ({
     'data-component': props['data-component'] ?? 'AnimationWrapper',
-}))<
-    TransientProps<AllowedAnimationPrimitiveFrameProps> & {
-        shape?: Shape;
-    }
->`
+}))<AnimationWrapperProps>`
     overflow: hidden;
     display: flex;
     justify-content: center;

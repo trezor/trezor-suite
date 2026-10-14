@@ -6,8 +6,8 @@ import {
     type PasswordEntry,
     ProviderErrorAction,
 } from '@suite-common/metadata-types';
-import { type Dispatch } from '@suite-common/redux-utils';
 import TrezorConnect from '@trezor/connect';
+import { type Dispatch } from '@trezor/redux-utils';
 import { cloneObject } from '@trezor/utils';
 
 import * as METADATA from './metadataConstants';

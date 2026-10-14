@@ -3,10 +3,8 @@ import { useEffect } from 'react';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
-import { useServices } from '@suite-common/dependency-injection';
-import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
+import { AMOUNT_MAX_LENGTH, selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
 import { type Output, type TokenAddress } from '@suite-common/wallet-types';
 import {
     convertAmountUnitsToSubunits,
@@ -18,6 +16,7 @@ import {
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Banner, Flex, Icon, Row, Text } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { ArrowsDownUpIcon, ArrowsLeftRightIcon } from '@trezor/icons';
 import { NumberInput } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
@@ -227,7 +226,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                         name={amountName}
                         data-testid={amountName}
                         defaultValue={amountValue}
-                        maxLength={formInputsMaxLength.amount}
+                        maxLength={AMOUNT_MAX_LENGTH}
                         rules={cryptoAmountRules}
                         control={control}
                         rightContent={
@@ -259,7 +258,6 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                                     <BaseCurrencyInput
                                         output={output}
                                         outputId={outputId}
-                                        isSendMaxActive={isSendMaxActive}
                                         // To fix alignment with the other input
                                         labelLeft={isBelowLaptop ? undefined : <>&nbsp;</>}
                                         labelRight={!isBelowLaptop && sendMaxSwitch}

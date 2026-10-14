@@ -1,3 +1,5 @@
+import type { ExchangeTradeQuoteRequest } from 'invity-api';
+
 import { getCryptoId } from '@suite-common/trading';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
@@ -15,6 +17,7 @@ const insufficientCryptoAmount = '1000';
 const sellBalance = '58.72333';
 const sellDecimals = 6;
 const amount = '37.12345';
+const baseCurrencyAmount = '10';
 
 // Each "To" asset and the Suite receive network expected for it.
 const buyAssets: {
@@ -105,11 +108,24 @@ test.describe('Trading - Swap inputs', { tag: ['@webOnly', '@noDevice', '@option
             });
 
             await test.step('Select sell asset USDC@ETH)', async () => {
-                await tradingPage.assetPicker.selectSellAsset({
-                    searchFilter: 'USDC',
-                    networkSymbol: fundedSymbol,
+                const { assetPicker } = tradingPage;
+                const fundedAccount = {
+                    accountSymbol: fundedSymbol,
+                    accountType: 'normal',
+                    index: 0,
+                };
+                const ethOption = assetPicker.sellOption(fundedAccount);
+                const usdcOption = assetPicker.sellOption({
+                    ...fundedAccount,
                     tokenSymbol: 'USDC',
                 });
+
+                await assetPicker.openSellModal.click();
+                await expect(ethOption).toBeVisible();
+                await assetPicker.searchAsset('USDC');
+                await expect(usdcOption).toBeVisible();
+                await expect(ethOption).toBeHidden();
+                await usdcOption.click();
             });
 
             for (const [index, asset] of buyAssets.entries()) {
@@ -149,10 +165,10 @@ test.describe('Trading - Swap inputs', { tag: ['@webOnly', '@noDevice', '@option
                 });
 
                 await test.step(`[${asset.label}] Select receive account`, async () => {
-                    await tradingPage.receiveAccount.selectSuiteReceiveAccount(
-                        asset.accountIndex,
-                        asset.receiveNetwork,
-                    );
+                    await tradingPage.receiveAccount.selectSuiteReceiveAccount({
+                        symbol: asset.receiveNetwork,
+                        atIndex: asset.accountIndex,
+                    });
                 });
 
                 // We want to run the "the fraction / Max / amount limits" asserts only once in this loop.
@@ -160,6 +176,19 @@ test.describe('Trading - Swap inputs', { tag: ['@webOnly', '@noDevice', '@option
                 if (index > 0) {
                     continue;
                 }
+
+                await test.step('Base currency amount converts to the crypto the swap sends', async () => {
+                    const quotesRequest = page.waitForRequest(tradeEndpoint.swapQuotes);
+                    await tradingPage.inputs.baseCurrencyAmount.fill(baseCurrencyAmount);
+
+                    const request: ExchangeTradeQuoteRequest = (await quotesRequest).postDataJSON();
+                    await expect(tradingPage.inputs.cryptoAmount).toHaveValue(/[1-9]/);
+                    const sendAmount = await tradingPage.inputs.cryptoAmount.inputValue();
+                    expect(request.sendStringAmount).toBe(sendAmount.replace(/,/g, ''));
+                    await expect(tradingPage.inputs.baseCurrencyAmount).toHaveValue(
+                        baseCurrencyAmount,
+                    );
+                });
 
                 await test.step('Verify fraction buttons', async () => {
                     await tradingPage.inputs.verifyFractionButtons(sellBalance, sellDecimals);

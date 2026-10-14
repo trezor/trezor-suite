@@ -138,6 +138,16 @@ describe('SellSendAssetPicker', () => {
         expect(mockNavigate).toHaveBeenCalledWith('TradingMyAsset', { tradingType: 'sell' });
     });
 
+    it('should navigate to the my asset screen on base currency input press without an asset', async () => {
+        const { getByLabelText } = await renderSellSendAssetPicker();
+
+        await userEvent.press(
+            getByLabelText(getTranslation('moduleTrading.tradingScreen.baseCurrencyAmountLabel')),
+        );
+
+        expect(mockNavigate).toHaveBeenCalledWith('TradingMyAsset', { tradingType: 'sell' });
+    });
+
     it('should select asset returned from the screen', async () => {
         mockSelectedMyAssetAccountKey = btcAccount.key;
         mockSelectedMyAssetCryptoId = 'bitcoin';

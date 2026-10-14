@@ -115,6 +115,10 @@ const config: webpack.Configuration = {
         publicPath: './',
         library: { type: 'umd' },
     },
+    // `library.type: 'umd'` defaults externalsType to 'umd', which requires all externals eagerly
+    // at bundle load. node-commonjs requires each one when it is first imported, so a broken native
+    // addon fails where it is used instead of crashing the app at startup.
+    externalsType: 'node-commonjs',
     externals: [
         ...dependencies,
         'bufferutil', // optional dependency of ws lib

@@ -2,17 +2,13 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { getNetworksWithNativeTokenReserve } from '@suite-common/wallet-config';
 import { selectIsNetworkReserveEnabled, setNetworkReserve } from '@suite-common/wallet-core';
-import { Column, Switch } from '@trezor/components';
-import {
-    ActionColumn,
-    SectionItem,
-    SettingsRequirementBanner,
-    TextColumn,
-} from '@trezor/product-components';
+import { Banner, Column, Switch } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
+import { InfoIcon } from '@trezor/icons';
+import { SectionItem } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 import { NETWORK_RESERVE_URL } from '@trezor/urls';
 
 import { useSelector } from 'src/hooks/suite';
@@ -41,26 +37,28 @@ export const NetworkReserve = () => {
                     data-testid={anchorId}
                     ref={anchorRef}
                     shouldHighlight={shouldHighlight}
-                >
-                    <TextColumn
-                        title={<Translation id="TR_NETWORK_RESERVE" />}
-                        description={<Translation id="TR_NETWORK_RESERVE_DESCRIPTION" />}
-                        bottomContent={
-                            <Column gap={8} alignItems="flex-start">
-                                <SettingsRequirementBanner>
+                    title={<Translation id="TR_NETWORK_RESERVE" />}
+                    description={<Translation id="TR_NETWORK_RESERVE_DESCRIPTION" />}
+                    bottomContent={
+                        <Column gap={8} alignItems="flex-start">
+                            <Banner
+                                intent="neutral"
+                                icon={InfoIcon}
+                                description={
                                     <Translation
                                         id="TR_MEV_AVAILABLE_ON"
                                         values={{ supportedNetworks }}
                                     />
-                                </SettingsRequirementBanner>
-                                <LearnMoreButton url={NETWORK_RESERVE_URL} />
-                            </Column>
-                        }
-                    />
-                    <ActionColumn>
+                                }
+                            />
+
+                            <LearnMoreButton url={NETWORK_RESERVE_URL} />
+                        </Column>
+                    }
+                    actions={
                         <Switch isChecked={isNetworkReserveEnabled} onChange={handleSwitchChange} />
-                    </ActionColumn>
-                </SectionItem>
+                    }
+                />
             )}
         </Anchor>
     );

@@ -3,8 +3,6 @@ import { useSelector } from 'react-redux';
 
 import type { DexApprovalType, ExchangeTrade } from 'invity-api';
 
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     exchangeThunks,
     selectTradingExchangeSelectedQuote,
@@ -15,6 +13,8 @@ import {
     selectExchangeSelectedReceiveAccount,
     selectExchangeSelectedSendAccount,
 } from '@suite-native/trading-state';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { getReceiveAccountAddressText } from '../../../utils/general/receiveAccountUtils';
 

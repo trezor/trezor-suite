@@ -1,17 +1,18 @@
-import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 
-import {
-    isCardanoStakedOutsideEverstake,
-    isCardanoStakedWithFiveBinaries,
-    isCardanoStakingActive,
-} from './cardanoStakingUtils';
 import { type AccountsRootState } from '../../accounts/accountsReducer';
 import { selectAccountByKey, selectDeviceAccounts } from '../../accounts/accountsSelectors';
 import { selectStakeData } from '../shared/stakingSelectors';
 import { getStakingDataForNetwork } from '../shared/stakingUtils';
 import { type StakeRootState } from '../stakingReducerTypes';
+import {
+    isCardanoStakedOutsideEverstake,
+    isCardanoStakedWithFiveBinaries,
+    isCardanoStakingActive,
+    isSupportedAdaStakingNetworkSymbol,
+} from './cardanoStakingUtils';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<StakeRootState>();
 
@@ -21,7 +22,9 @@ export const selectVisibleDeviceCardanoAccountsWithStakingByNetworkSymbol = crea
         returnStableArrayIfEmpty(
             accounts.filter(
                 account =>
-                    account.visible && account.symbol === 'ada' && isCardanoStakingActive(account),
+                    account.visible &&
+                    isSupportedAdaStakingNetworkSymbol(account.symbol) &&
+                    isCardanoStakingActive(account),
             ),
         ),
 );

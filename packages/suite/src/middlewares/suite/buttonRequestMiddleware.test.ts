@@ -12,7 +12,6 @@ import {
     mockGetDebugSettings,
     mockGetThpSettings,
 } from '@suite-common/connect-init/mocks';
-import { mock } from '@suite-common/dependency-injection';
 import { deviceActions, deviceInitialState } from '@suite-common/device';
 import { firmwareInitialState } from '@suite-common/firmware';
 import { messageSystemInitialState } from '@suite-common/message-system';
@@ -30,7 +29,8 @@ import {
     observeSelectedDeviceThunk,
 } from '@suite-common/wallet-core';
 import { UI_EVENT, UI_EVENTS, UI_REQUEST, UI_REQUESTS } from '@trezor/connect';
-import { noopCreateLogger } from '@trezor/connect-common';
+import { mock } from '@trezor/dependency-injection';
+import { noopCreateLogger } from '@trezor/logger';
 
 import * as deviceSettingsActions from 'src/actions/settings/deviceSettingsActions';
 import buttonRequestMiddleware from 'src/middlewares/suite/buttonRequestMiddleware';

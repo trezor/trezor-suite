@@ -2,13 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        {
-            "path": "../../suite-common/dependency-injection"
-        },
         { "path": "../../suite-common/trading" },
-        {
-            "path": "../../suite-common/validators"
-        },
         { "path": "../atoms" },
         { "path": "../forms" },
         { "path": "../helpers" },
@@ -18,18 +12,19 @@
         { "path": "../trading-atoms" },
         { "path": "../trading-state" },
         {
+            "path": "../../packages/dependency-injection"
+        },
+        {
             "path": "../../packages/styles-native"
         },
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" },
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../test-utils" },
         { "path": "../test-utils-store" },
-        { "path": "../trading-fixtures" }
+        { "path": "../trading-fixtures" },
+        { "path": "../../packages/redux-utils" }
     ]
 }

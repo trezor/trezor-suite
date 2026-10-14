@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation, usePreventRemove } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import {
     type AccountsRootState,
     createTargets,
@@ -26,6 +25,7 @@ import {
     getUnstakeTxAmount,
     useFetchMissingTransactionFiatRates,
 } from '@suite-native/transactions';
+import { useServices } from '@trezor/dependency-injection';
 
 import { CancelEvmTransactionButton } from '../components/CancelEvmTransactionButton';
 import { TransactionDetailData } from '../components/TransactionDetailData';

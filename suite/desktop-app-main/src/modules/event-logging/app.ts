@@ -4,9 +4,7 @@ import type { ModuleInit } from '../module';
 
 export const SERVICE_NAME = 'app';
 
-export const init: ModuleInit = () => {
-    const { logger } = global;
-
+export const init: ModuleInit = ({ logger }) => {
     app.on('ready', () => {
         logger.info(SERVICE_NAME, 'Ready');
     });

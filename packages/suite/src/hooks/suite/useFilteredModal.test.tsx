@@ -10,13 +10,12 @@ import { useFilteredModal } from './useFilteredModal';
 
 type Result = ModalState | null;
 
-const Component = ({
-    params,
-    callback,
-}: {
+type ComponentProps = {
     params: Parameters<typeof useFilteredModal>;
     callback: (res: Result) => void;
-}) => {
+};
+
+const Component = ({ params, callback }: ComponentProps) => {
     const modal = useFilteredModal(...params);
     callback(modal);
 

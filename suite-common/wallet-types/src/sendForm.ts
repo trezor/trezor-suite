@@ -16,9 +16,14 @@ export type FormOptions =
 
 export type UtxoSorting = 'newestFirst' | 'oldestFirst' | 'smallestFirst' | 'largestFirst';
 
+export type TronStakingVoteAllocation = {
+    address: string;
+    votes: string;
+};
+
 export type TronStakingFormState =
     | { kind: 'freeze' | 'unstake'; resource: 'bandwidth' | 'energy' }
-    | { kind: 'vote'; votes: string }
+    | { kind: 'vote'; votes: string; allocations: TronStakingVoteAllocation[] }
     | { kind: 'withdraw' }
     | { kind: 'claim' };
 
@@ -84,6 +89,7 @@ export interface FormState {
     bitcoinLocktimeDatetime?: string;
     ethereumNonce?: string; // TODO: ethereum RBF
     ethereumAdjustGasLimit?: string; // if used, final gas limit = estimated limit * ethereumAdjustGasLimit
+    ethereumFixedGasLimit?: string; // if used, gas limit is not estimated and this value is used instead
     transactionData?: string; // used for solana serialized txn from trading api, ethereum, tron txn hex data or bitcoin psbt hex data
     destinationTag?: string; // For Ripple, Stellar, Solana, and Tron
     tronStaking?: TronStakingFormState;

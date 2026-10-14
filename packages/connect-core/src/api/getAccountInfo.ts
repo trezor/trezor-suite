@@ -55,6 +55,8 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                 { name: 'gap', type: 'number' },
                 { name: 'marker', type: 'object' },
                 { name: 'protocols', type: 'array' },
+                // An empty list is meaningful: the account watches no contract tokens yet.
+                { name: 'stellarContractTokens', type: 'array', allowEmpty: true },
                 { name: 'confirmedNonce', type: 'boolean' },
                 { name: 'privatePending', type: 'object' },
                 { name: 'defaultAccountType', type: 'string' },
@@ -93,7 +95,6 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
         this.hasBundle = hasBundle;
         this.useDevice = willUseDevice;
         this.useDeviceState = willUseDevice;
-        this.useUi = willUseDevice;
         this.confirmMissingBackup = !params.every(batch => batch.suppressBackupWarning);
         this.requiredFirmwareCoins = params.map(({ coinInfo }) => coinInfo);
     }
@@ -103,10 +104,6 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
     }
 
     get info() {
-        return 'Export account info';
-    }
-
-    get confirmation() {
         const keys: {
             [coin: string]: { coinInfo: CoinInfo; values: DerivationPath[] };
         } = {};
@@ -138,10 +135,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
             });
         });
 
-        return {
-            view: 'export-account-info' as const,
-            label: `Export info for: ${str.join('')}`,
-        };
+        return `Export info for: ${str.join('')}`;
     }
 
     async run(context: MethodContext) {
@@ -254,6 +248,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                     gap: request.gap,
                     marker: request.marker,
                     tokenAccountsPubKeys: request.tokenAccountsPubKeys,
+                    stellarContractTokens: request.stellarContractTokens,
                     protocols: request.protocols,
                     confirmedNonce: request.confirmedNonce,
                     privatePending: request.privatePending,

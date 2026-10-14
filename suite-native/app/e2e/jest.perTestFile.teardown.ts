@@ -1,5 +1,7 @@
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
+import { restoreIOSReducedMotion } from './support/reducedMotion';
+
 const TEARDOWN_TIMEOUT = 30_000;
 
 // We want to stop trezor at two places:
@@ -24,12 +26,17 @@ const teardownPromises = async () => {
 
 afterAll(async () => {
     // We don't want timed out global teardown to fail test run.
-    let timer: ReturnType<typeof setTimeout>;
+    let timer: ReturnType<typeof setTimeout> | undefined;
     const timeoutPromise = new Promise<void>(resolve => {
         timer = setTimeout(resolve, TEARDOWN_TIMEOUT);
         timer.unref?.();
     });
-    await Promise.race([teardownPromises(), timeoutPromise]);
+    try {
+        await Promise.race([teardownPromises(), timeoutPromise]);
+    } finally {
+        clearTimeout(timer);
+        restoreIOSReducedMotion();
+    }
 });
 
 beforeEach(async () => {

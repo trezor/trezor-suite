@@ -1,4 +1,4 @@
-import { createMockDeps } from '@suite-common/dependency-injection';
+import { createMockDeps } from '@trezor/dependency-injection';
 
 import { asNetworkSymbol } from './NetworkModules';
 import {

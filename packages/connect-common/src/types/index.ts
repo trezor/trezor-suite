@@ -52,6 +52,7 @@ export { AuthorizeCoinjoin } from './api/bitcoin/authorizeCoinjoin';
 export * from './api/internal/uiResponse';
 export type {
     ComposeUtxo,
+    ComposeChangeAddress,
     ComposeResultFinal,
     ComposeResult,
     ComposedInputs,

@@ -1,4 +1,4 @@
-import type { EthereumNetworkSymbol } from '@trezor/network-ethereum/constants';
+import type { EthereumNetworkSymbol } from '@trezor/network-ethereum-types';
 import type { NamedAddressResolver } from '@trezor/network-module-suite-common-types';
 
 import type { ResolveNamedAddressDep } from './ResolveNamedAddress';

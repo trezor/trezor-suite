@@ -1,6 +1,6 @@
-import { createMockDeps } from '@suite-common/dependency-injection';
 import { type AddressValidatorDep } from '@suite-common/networks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { createMockDeps } from '@trezor/dependency-injection';
 
 import { isAddressDeprecated } from './isAddressDeprecated';
 

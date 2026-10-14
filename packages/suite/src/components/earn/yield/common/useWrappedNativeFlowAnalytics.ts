@@ -2,8 +2,8 @@ import { useCallback, useEffect, useRef } from 'react';
 
 import { injectDesktopAnalytics } from '@suite/analytics';
 import { type EventInstance, events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { type EvmPendingTxStatus, type WrappedNativeFlowType } from '@suite-common/wallet-core';
+import { useServices } from '@trezor/dependency-injection';
 import { useCurrentRef } from '@trezor/react-utils';
 
 // Wrap and unwrap share one attribute schema, so one payload type serves both events.

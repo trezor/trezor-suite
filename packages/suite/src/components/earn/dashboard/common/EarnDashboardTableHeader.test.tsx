@@ -6,9 +6,11 @@ import { ThemeProvider } from 'src/support/suite/ThemeProvider';
 
 import { EarnDashboardTableHeader } from './EarnDashboardTableHeader';
 
+type TranslationProps = { id: string };
+
 jest.mock('@suite/intl', () => ({
     ...jest.requireActual('@suite/intl'),
-    Translation: ({ id }: { id: string }) => <span>{id}</span>,
+    Translation: ({ id }: TranslationProps) => <span>{id}</span>,
 }));
 
 const renderHeader = ({

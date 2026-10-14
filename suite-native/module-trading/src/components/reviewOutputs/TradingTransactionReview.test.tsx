@@ -97,7 +97,7 @@ describe('TradingTransactionReview', () => {
     it('should not display footer if transaction is not signed yet', async () => {
         const { queryByTestId } = await renderReviewOutputsContent();
 
-        expect(queryByTestId('@trading/outputs-review/footer')).not.toBeOnTheScreen();
+        expect(queryByTestId('@trading/transaction-review/footer')).not.toBeOnTheScreen();
     });
 
     it('should display footer if transaction is signed', async () => {
@@ -108,8 +108,8 @@ describe('TradingTransactionReview', () => {
             accountKey: btc1NormalAccount.key,
         });
 
-        expect(getByTestId('@trading/outputs-review/footer')).toBeOnTheScreen();
-        expect(getByTestId('@trading/outputs-review/footer/submit-button')).toHaveTextContent(
+        expect(getByTestId('@trading/transaction-review/footer')).toBeOnTheScreen();
+        expect(getByTestId('@trading/transaction-review/footer/submit-button')).toHaveTextContent(
             getTranslation('moduleTrading.tradingReviewOutputs.submitButton'),
         );
     });
@@ -123,7 +123,7 @@ describe('TradingTransactionReview', () => {
             accountKey: btc1NormalAccount.key,
         });
 
-        await userEvent.press(getByTestId('@trading/outputs-review/footer/submit-button'));
+        await userEvent.press(getByTestId('@trading/transaction-review/footer/submit-button'));
 
         expect(handleSendTransaction).toHaveBeenCalledTimes(1);
     });
@@ -137,7 +137,7 @@ describe('TradingTransactionReview', () => {
             isTransactionSendConsentRequested: false,
         });
 
-        expect(getByTestId('@trading/outputs-review/footer/submit-button')).toBeDisabled();
+        expect(getByTestId('@trading/transaction-review/footer/submit-button')).toBeDisabled();
     });
 
     it('should disable the submit button when the transaction validity deadline has passed', async () => {
@@ -148,7 +148,7 @@ describe('TradingTransactionReview', () => {
             accountKey: btc1NormalAccount.key,
         });
 
-        expect(getByTestId('@trading/outputs-review/footer/submit-button')).toBeDisabled();
+        expect(getByTestId('@trading/transaction-review/footer/submit-button')).toBeDisabled();
     });
 
     it('should display the submit button loading state while broadcasting', async () => {
@@ -160,7 +160,7 @@ describe('TradingTransactionReview', () => {
         });
 
         expect(
-            getByTestId('@trading/outputs-review/footer/submit-button/loading'),
+            getByTestId('@trading/transaction-review/footer/submit-button/loading'),
         ).toBeOnTheScreen();
     });
 
@@ -189,7 +189,7 @@ describe('TradingTransactionReview', () => {
 
         const { getByTestId } = await renderReviewOutputsContent();
 
-        expect(getByTestId('@trading/outputs-review/skeleton')).toBeOnTheScreen();
+        expect(getByTestId('@trading/transaction-review/skeleton')).toBeOnTheScreen();
     });
 
     it('renders the no-account error when the account is unknown', async () => {
@@ -200,7 +200,7 @@ describe('TradingTransactionReview', () => {
         expect(
             getByText(new RegExp(getTranslation('transactionManagement.review.outputs.noAccount'))),
         ).toBeOnTheScreen();
-        expect(queryByTestId('@trading/outputs-review/skeleton')).not.toBeOnTheScreen();
+        expect(queryByTestId('@trading/transaction-review/skeleton')).not.toBeOnTheScreen();
     });
 
     it('renders SignDataMessageReview when exchangeFlowType is sign-data', async () => {

@@ -1,5 +1,6 @@
 import { type SerializedError } from '@reduxjs/toolkit';
 import type {
+    BtcSwapComposeTemplate,
     BuyCryptoPaymentMethod,
     BuyProviderInfo,
     BuyTrade,
@@ -9,6 +10,7 @@ import type {
     ExchangeTrade,
     ExchangeTradeStatus,
     FiatCurrencyCode,
+    InfoResponse,
     SellCryptoPaymentMethod,
     SellFiatTrade,
     SellProviderInfo,
@@ -19,12 +21,7 @@ import type {
 } from 'invity-api';
 
 import { type CountryCode } from '@suite-common/geolocation';
-import {
-    type Network,
-    type NetworkConfig,
-    type NetworkDisplaySymbol,
-    type NetworkSymbol,
-} from '@suite-common/wallet-config';
+import { type Network } from '@suite-common/networks';
 import {
     type Account,
     type AccountKey,
@@ -34,12 +31,22 @@ import {
     type TokenAddress,
 } from '@suite-common/wallet-types';
 import { type PROTO, type TokenInfo } from '@trezor/connect';
+import { type SuiteCommonNetworkConfig } from '@trezor/network-module-suite-common-types';
+import { type NetworkSymbol } from '@trezor/network-module-types';
 import { type Err, type Ok, type PrimitiveType } from '@trezor/type-utils';
 
 import type * as constants from './constants';
 
 export type TradeServerEnvironment = 'production' | 'staging' | 'dev' | 'localhost';
 export type TradeServers = Record<TradeServerEnvironment, string>;
+
+export type TradingInfoConfig = {
+    btcSwapComposeTemplate?: BtcSwapComposeTemplate;
+};
+
+export type TradingInfoResponse = Omit<InfoResponse, 'config'> & {
+    config: TradingInfoConfig;
+};
 
 export type TradingBuyType = 'buy';
 export type TradingSellType = 'sell';
@@ -64,17 +71,17 @@ export type TradingTradeSellExchangeType = Exclude<TradingType, TradingBuyType>;
 
 type TradingAssetOptionBase = {
     id: CryptoId;
-    coingeckoId: NonNullable<NetworkConfig['coingeckoId']>;
-    networkName: NetworkConfig['name'];
+    coingeckoId: NonNullable<SuiteCommonNetworkConfig['coingeckoId']>;
+    networkName: SuiteCommonNetworkConfig['name'];
     networkSymbol: NetworkSymbol;
     displaySymbolName?: string;
 };
 
 export type TradingAssetOptionNativeToken = TradingAssetOptionBase & {
     isNativeToken: true;
-    name: NetworkConfig['name'];
+    name: SuiteCommonNetworkConfig['name'];
     symbol: NetworkSymbol;
-    displaySymbol: NetworkDisplaySymbol;
+    displaySymbol: SuiteCommonNetworkConfig['displaySymbol'];
     contractAddress: null | typeof constants.CONTRACT_ADDRESS_FOR_NATIVE_TOKEN;
 };
 
@@ -333,6 +340,7 @@ export type HandleExchangeRequestThunkProps = {
     network: Network;
     shouldSendInSats: boolean | undefined;
     composeRequestCallback: () => void;
+    resolveFromAddress?: () => Promise<string | undefined>;
 };
 
 export type HandleSellRequestThunkProps = {

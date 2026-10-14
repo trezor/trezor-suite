@@ -11,12 +11,12 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@suite-common/dependency-injection": "workspace:*",
         "@suite-native/analytics": "workspace:*",
         "@suite-native/storage": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*",
         "@trezor/theme": "workspace:*",
         "jotai": "2.17.1",
         "react": "19.2.3",
-        "react-native": "0.86.0"
+        "react-native": "0.86.3"
     }
 }

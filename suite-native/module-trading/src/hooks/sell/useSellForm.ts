@@ -3,8 +3,6 @@ import { useSelector } from 'react-redux';
 
 import type { SellFiatTrade } from 'invity-api';
 
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingAmountLimitProps,
     selectTradingSellQuotesRequest,
@@ -25,8 +23,11 @@ import {
     sellActions,
 } from '@suite-native/trading-state';
 import { type SellFormType, type SellFormValues } from '@suite-native/trading-types';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { sellFormValidationSchema } from '../../utils/sell/sellFormValidationSchema';
+import { type TradingFormWithMetadata } from '../general/form/tradingFormTypes';
 import { useContextForTradingForm } from '../general/form/useContextForTradingForm';
 import { useCountryChangeEffect } from '../general/form/useCountryChangeEffect';
 import { useProviderMetadataChangeEffect } from '../general/form/useProviderMetadataChangeEffect';
@@ -143,7 +144,7 @@ const useValidations = ({
     }, [generalAlertMsg, setValue]);
 };
 
-export const useSellForm = (): SellFormType => {
+export const useSellForm = (): TradingFormWithMetadata<SellFormType> => {
     const defaultValues = useSelector(selectSellFormDefaultValues);
     const limits = useSelector(selectSellAmountLimits);
     const {
@@ -161,11 +162,22 @@ export const useSellForm = (): SellFormType => {
         context,
     });
 
-    const { control } = form;
+    const { control, getValues, setValue } = form;
     const { dispatch } = useServices(injectDispatch);
+
+    useEffect(() => {
+        const defaultFiatCurrency = defaultValues.fiatCurrency;
+        if (!defaultFiatCurrency || defaultFiatCurrency === getValues('fiatCurrency')) {
+            return;
+        }
+
+        setValue('fiatCurrency', defaultFiatCurrency);
+        dispatch(sellActions.fiatCurrencyChanged());
+    }, [defaultValues.fiatCurrency, dispatch, getValues, setValue]);
 
     const onSendAssetCleared = useCallback(() => {
         form.setValue('cryptoStringAmount', undefined, { shouldValidate: true });
+        form.setValue('cryptoBaseCurrencyStringAmount', undefined);
         dispatch(sellActions.sendAssetChanged());
     }, [dispatch, form]);
 
@@ -189,12 +201,5 @@ export const useSellForm = (): SellFormType => {
     useCountryChangeEffect(control);
     useProviderMetadataChangeEffect(control, 'sell');
 
-    return form;
-};
-
-export const clearSellFormQuoteData = (form: SellFormType) => {
-    form.setValue('quote', undefined);
-    form.setValue('cryptoStringAmount', undefined, { shouldValidate: true });
-    form.setValue('fiatStringAmount', undefined, { shouldValidate: true });
-    form.setValue('generalAlert', undefined);
+    return { ...form, metadata: { maxSpendableAmount: context.maxSpendableAmount } };
 };

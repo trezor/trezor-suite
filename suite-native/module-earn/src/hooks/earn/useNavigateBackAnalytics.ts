@@ -2,8 +2,8 @@ import { useCallback, useEffect, useRef } from 'react';
 
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { type AnalyticsNativeEvents, injectNativeAnalytics } from '@suite-native/analytics';
+import { useServices } from '@trezor/dependency-injection';
 
 export const useNavigateBackAnalytics = (event: AnalyticsNativeEvents) => {
     const { analytics } = useServices(injectNativeAnalytics);

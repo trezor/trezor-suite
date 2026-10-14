@@ -14,4 +14,5 @@ export type ToastAction = {
     intent?: ButtonIntent;
     priority?: ButtonPriority;
     onClick?: () => void;
+    dataTestId?: string;
 };

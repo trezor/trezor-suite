@@ -27,8 +27,12 @@
         { "path": "../connect-mobile" },
         { "path": "../connect-web" },
         { "path": "../connect-webextension" },
+        { "path": "../dependency-injection" },
         { "path": "../device-authenticity" },
         { "path": "../icons" },
+        {
+            "path": "../../networks/network-module/network-module-types"
+        },
         { "path": "../protobuf" },
         { "path": "../schema-utils" },
         { "path": "../theme" },

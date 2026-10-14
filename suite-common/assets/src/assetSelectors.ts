@@ -1,11 +1,11 @@
 import { type DeviceRootState } from '@suite-common/device';
-import { createWeakMapSelector } from '@suite-common/redux-utils';
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getAssetName } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     selectVisibleDeviceAccountsByNetworkSymbol,
 } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
+import { createWeakMapSelector } from '@trezor/redux-utils';
 
 export type AssetsRootState = AccountsRootState & DeviceRootState;
 
@@ -40,5 +40,9 @@ export const selectAssetName = createMemoizedSelector(
         (_state: AssetsRootState, networkSymbol: NetworkSymbol) => networkSymbol,
     ],
     (token, networkSymbol) =>
-        token?.symbol ?? token?.name ?? getNetworkDisplaySymbol(networkSymbol),
+        getAssetName({
+            symbol: networkSymbol,
+            tokenName: token?.name,
+            tokenSymbol: token?.symbol,
+        }),
 );

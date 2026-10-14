@@ -11,12 +11,34 @@ export {
 export { type NetworkMetadata } from '../reduxState/NetworkMetadata';
 export {
     selectNetworkColor,
+    selectNetworkConfig,
+    selectNetworkConfigs,
     selectNetworkNamesMap,
     selectNetworkSymbolForProtocol,
     selectSupportedNetworkSymbols,
 } from '../reduxState/networksSelectors';
 export { createLoadNetworkModules, type LoadNetworkModulesDep } from './createLoadNetworkModules';
-export { createGetNetworkConfigs } from './createGetNetworkConfigs';
+export { createGetNetworkConfigs, type GetNetworkConfigsDep } from './createGetNetworkConfigs';
+export {
+    createGetNetworkByCoingeckoId,
+    type GetNetworkByCoingeckoId,
+    type GetNetworkByCoingeckoIdDep,
+    type GetNetworkByCoingeckoIdDeps,
+} from './createGetNetworkByCoingeckoId';
+export {
+    createGetIconPaths,
+    type GetIconPaths,
+    type GetIconPathsDep,
+    type GetIconPathsDeps,
+} from './createGetIconPaths';
+export type { IsSupportedNetwork, IsSupportedNetworkDep } from './IsSupportedNetwork';
+export {
+    createGetAccountSyncInterval,
+    injectGetAccountSyncInterval,
+    type GetAccountSyncInterval,
+    type GetAccountSyncIntervalDep,
+    type GetAccountSyncIntervalDeps,
+} from './createGetAccountSyncInterval';
 export { getLegacyNetworkConfigs, type LegacyNetworkConfigs } from './legacyNetworkConfig';
 // Temporary compatibility exports for wallet-config; consumers have not migrated yet.
 export {
@@ -73,3 +95,19 @@ export { createNetworkModulesCompositionRoot } from './createNetworkModulesCompo
 export type { NetworksServices, NetworksDep } from './NetworksServices';
 
 export type { Network, Networks } from './Network';
+export {
+    createNetworkIcon,
+    injectNetworkIcon,
+    injectHasNetworkIcon,
+    type HasNetworkIconDep,
+    type NetworkIconDeps,
+    type NetworkIconDep,
+} from './createNetworkIcon';
+
+export {
+    createIsWrappedNativeToken,
+    injectIsWrappedNativeToken,
+    type IsWrappedNativeToken,
+    type IsWrappedNativeTokenDeps,
+    type IsWrappedNativeTokenDep,
+} from './createIsWrappedNativeToken';

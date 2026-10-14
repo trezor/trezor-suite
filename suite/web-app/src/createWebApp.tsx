@@ -2,7 +2,7 @@ import { Provider as ReduxProvider } from 'react-redux';
 
 import { createRoot } from 'react-dom/client';
 
-import { ServicesProvider } from '@suite-common/dependency-injection';
+import { ServicesProvider } from '@trezor/dependency-injection';
 
 import { type HydrateReduxStoreDep } from 'src/reducers/createHydrateReduxStore';
 import { type SuiteReduxStoreDep } from 'src/reducers/createReduxStore';

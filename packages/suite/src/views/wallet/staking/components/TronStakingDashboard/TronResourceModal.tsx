@@ -1,13 +1,13 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { getResourceGain } from '@suite-common/wallet-core';
 import { type Account, type TronResourceType } from '@suite-common/wallet-types';
 import { getTronResources, getTronStakingInfo, sunToTrx } from '@suite-common/wallet-utils';
 import { Button, Card, Column, Divider, Icon, Modal, Row, Text, Tooltip } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { InfoIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
@@ -110,6 +110,7 @@ export const TronResourceModal = ({ account, resourceType, onClose }: TronResour
     return (
         <Modal
             width={400}
+            data-testid="@modal/tron-resource"
             heading={
                 <Translation
                     id={isEnergy ? 'TR_EARN_TRON_MY_ENERGY' : 'TR_EARN_TRON_MY_BANDWIDTH'}
@@ -124,12 +125,18 @@ export const TronResourceModal = ({ account, resourceType, onClose }: TronResour
                             priority="primary"
                             onClick={goToFreeze}
                             isDisabled={isStakingDisabled}
+                            data-testid="@modal/tron-resource/get-more-button"
                         >
                             <Translation id="TR_EARN_TRON_GET_MORE" />
                         </Button>
                     </Tooltip>
 
-                    <Button intent="neutral" priority="secondary" onClick={onClose}>
+                    <Button
+                        intent="neutral"
+                        priority="secondary"
+                        onClick={onClose}
+                        data-testid="@modal/tron-resource/close-button"
+                    >
                         <Translation id="TR_CLOSE" />
                     </Button>
                 </Row>
@@ -155,7 +162,12 @@ export const TronResourceModal = ({ account, resourceType, onClose }: TronResour
                                         }
                                     />
                                 </Text>
-                                <Text typographyStyle="body-md-strong">{total}</Text>
+                                <Text
+                                    typographyStyle="body-md-strong"
+                                    data-testid="@modal/tron-resource/total"
+                                >
+                                    {total}
+                                </Text>
                             </Row>
                             <Row justifyContent="space-between">
                                 <Text
@@ -169,6 +181,7 @@ export const TronResourceModal = ({ account, resourceType, onClose }: TronResour
                                     typographyStyle="body-sm"
                                     intent="neutral"
                                     priority="secondary"
+                                    data-testid="@modal/tron-resource/available"
                                 >
                                     {available}
                                 </Text>

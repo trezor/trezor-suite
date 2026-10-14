@@ -1,10 +1,10 @@
 import { useCallback } from 'react';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { useBottomSheetModal } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/clipboard';
 import { ReceiveAddressVerificationSource } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 
 type UseReceiveAddressCopyParams = {
     address: string;

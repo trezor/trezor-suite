@@ -1,6 +1,6 @@
 /* eslint no-console: 0 */
 
-import { WebUSB } from 'usb';
+import { usb } from 'usb-legacy';
 
 import { Log } from '@trezor/logger';
 import { protobufManager } from '@trezor/protobuf';
@@ -9,7 +9,7 @@ import * as commonProto from '@trezor/protobuf/src/definitions/messages-common_p
 import * as managementProto from '@trezor/protobuf/src/definitions/messages-management_pb';
 import * as messagesProto from '@trezor/protobuf/src/definitions/messages_pb';
 import { TrezordNode } from '@trezor/transport-bridge/src';
-import { BridgeTransport } from '@trezor/transport-common';
+import { BridgeTransport, TREZOR_USB_DESCRIPTORS } from '@trezor/transport-common';
 import { TrezorUserEnvLinkClass } from '@trezor/trezor-user-env-link';
 import { scheduleAction } from '@trezor/utils';
 
@@ -18,10 +18,6 @@ export const env = {
 };
 
 console.log('env', env);
-
-const webusb = new WebUSB({
-    allowAllDevices: true, // return all devices, not only authorized
-});
 
 /**
  * Controller based on TrezorUserEnvLink its main purpose is:
@@ -55,7 +51,7 @@ class Controller extends TrezorUserEnvLinkClass {
 
         this.startBridge = async () => {
             this.nodeBridge = new TrezordNode({
-                api: env.USE_HW ? 'usb' : 'udp',
+                api: env.USE_HW ? 'legacy' : 'udp',
                 logger: new Log('test-bridge', false),
             });
 
@@ -91,15 +87,22 @@ class Controller extends TrezorUserEnvLinkClass {
         );
 
         return scheduleAction(
-            async () => {
-                const devices = (await webusb.getDevices()).filter(d =>
-                    d.productName?.toLowerCase().includes('trezor'),
-                );
+            () => {
+                // The legacy bridge runs in this process, so count through the same usb 2.x addon
+                // (never load usb 3.x next to it, see createCore). getDeviceList() only lists
+                // devices: unlike WebUSB.getDevices() it never opens one, so it cannot close a
+                // handle the bridge holds (usb 2.x shares device objects within the process).
+                const devices = usb
+                    .getDeviceList()
+                    .filter(({ deviceDescriptor: { idVendor, idProduct } }) =>
+                        TREZOR_USB_DESCRIPTORS.some(
+                            d => d.vendorId === idVendor && d.productId === idProduct,
+                        ),
+                    );
 
-                if (devices.length === expected) {
-                    return null;
-                }
-                throw new Error('Condition not met');
+                return devices.length === expected
+                    ? Promise.resolve(null)
+                    : Promise.reject(new Error('Condition not met'));
             },
             {
                 deadline: Date.now() + 60_000,

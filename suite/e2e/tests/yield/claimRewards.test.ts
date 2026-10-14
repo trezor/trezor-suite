@@ -18,7 +18,9 @@ const CLAIM_REWARD_AMOUNT = `${YIELD_MERKL_CLAIM_REWARD.claimableUnits} ${CLAIM_
 const CLAIM_REWARD_FIAT_AMOUNT = '≈ $2.50';
 const CLAIM_MAX_FEE = '0.00010840280031 ETH';
 
-const buildEthAccountTokens = ({ withClaimedMorpho }: { withClaimedMorpho: boolean }) => [
+type BuildEthAccountTokensParams = { withClaimedMorpho: boolean };
+
+const buildEthAccountTokens = ({ withClaimedMorpho }: BuildEthAccountTokensParams) => [
     ...ETH_MOCKED_ACCOUNT.tokens.map(token =>
         token.symbol === 'USDC' ? { ...token, balance: '990000000' } : token,
     ),
@@ -160,8 +162,7 @@ test.describe('stablecoin yield claim', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
 
                 await expect(yieldFlowSection.claimedToast).toBeVisible();
                 await expect(yieldFlowSection.claimedToastMessage).toHaveTranslation(
-                    'TOAST_TX_YIELD_CLAIM',
-                    { values: { account: ethAccountName } },
+                    'TOAST_TX_CLAIM_PENDING',
                 );
                 await expect(yieldFlowSection.flowCompleteHeading).toHaveTranslation(
                     'TR_EARN_YIELD_CLAIM_COMPLETE',

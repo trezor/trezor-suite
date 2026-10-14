@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import { isDeviceAuthenticityValid } from '@suite-common/device-authenticity';
 import {
@@ -12,7 +11,6 @@ import {
     selectIsFeatureDisabled,
 } from '@suite-common/message-system';
 import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type StoredAuthenticateDeviceResult } from '@suite-common/suite-types';
 import {
     type DeviceAuthenticityCheckResult,
@@ -25,6 +23,8 @@ import { useTranslate } from '@suite-native/intl';
 import { captureSentryException, withSentryScope } from '@suite-native/sentry';
 import { useToast } from '@suite-native/toasts';
 import TrezorConnect, { type AuthenticateDeviceResult, type Response } from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 import { isArrayMember } from '@trezor/utils';
 
 type RawResult = Awaited<Response<AuthenticateDeviceResult>>;
@@ -119,6 +119,13 @@ export const useDeviceAuthenticityCheck = () => {
         [reportCheckResult, showToast, translate],
     );
 
+    const goBackIfPossible = useCallback(() => {
+        // The check may run on a screen with no previous route (e.g. the first screen of the root stack)
+        if (navigation.canGoBack()) {
+            navigation.goBack();
+        }
+    }, [navigation]);
+
     const handleError = useCallback(
         (error: string, errorCode?: string) => {
             if (isDeviceBootloaderUnlocked) {
@@ -138,7 +145,7 @@ export const useDeviceAuthenticityCheck = () => {
             switch (errorCode) {
                 case 'Failure_ActionCancelled':
                 case 'Failure_PinCancelled': // PIN entry cancelled on T3T1
-                    navigation.goBack();
+                    goBackIfPossible();
                     showToast({
                         intent: 'info',
                         message: translate('moduleDeviceSettings.authenticity.toast.canceled'),
@@ -146,7 +153,7 @@ export const useDeviceAuthenticityCheck = () => {
                     reportCheckResult('cancelled');
                     break;
                 default:
-                    navigation.goBack();
+                    goBackIfPossible();
                     showToast({
                         intent: 'critical',
                         message: translate('moduleDeviceSettings.authenticity.toast.error', {
@@ -156,7 +163,7 @@ export const useDeviceAuthenticityCheck = () => {
                     reportCheckResult('failed', error);
             }
         },
-        [isDeviceBootloaderUnlocked, navigation, reportCheckResult, showToast, translate],
+        [goBackIfPossible, isDeviceBootloaderUnlocked, reportCheckResult, showToast, translate],
     );
 
     const checkDeviceAuthenticity = useCallback(

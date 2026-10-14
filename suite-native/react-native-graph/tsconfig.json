@@ -5,6 +5,7 @@
         "noUncheckedIndexedAccess": true
     },
     "references": [
+        { "path": "../atoms" },
         { "path": "../../packages/utils" },
         { "path": "../../packages/eslint" }
     ]

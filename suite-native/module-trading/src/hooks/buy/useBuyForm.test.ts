@@ -3,8 +3,13 @@ import { Platform } from 'react-native';
 import { type Store } from '@reduxjs/toolkit';
 import type { BuyTrade, CryptoId } from 'invity-api';
 
+import { joinAmountWithSymbol } from '@suite-common/formatters';
 import { selectTradingProviderMetadata, tradingBuyActions } from '@suite-common/trading';
-import { type AccountsRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    type WalletSettingsRootState,
+    setBaseCurrency,
+} from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { act, renderHookWithStoreProvider, waitFor } from '@suite-native/test-utils-store';
 import {
@@ -21,11 +26,15 @@ import {
     mercuryoApplePayBuyQuote,
     mercuryoCreditCardBuyQuote,
 } from '@suite-native/trading-fixtures';
-import { type TradingRootState, selectTradingResidenceCountry } from '@suite-native/trading-state';
+import {
+    type TradingRootState,
+    selectBuyAmountLimits,
+    selectTradingResidenceCountry,
+} from '@suite-native/trading-state';
 import { type BuyFormType, type TradeableAsset } from '@suite-native/trading-types';
 import { PROTO } from '@trezor/connect';
 
-import { clearBuyFormQuoteData, useBuyForm } from './useBuyForm';
+import { useBuyForm } from './useBuyForm';
 import { createTradingTestStore } from '../../test-utils/tradingTestUtils';
 
 type State = TradingRootState & AccountsRootState & WalletSettingsRootState;
@@ -411,10 +420,10 @@ describe('useBuyForm', () => {
         });
 
         it.each([
-            ['0.01', false, 'Minimum is 0.1 BTC'],
-            ['3', false, 'Maximum is 2 BTC'],
-            ['10', true, 'Minimum is 10,000,000 sat'],
-            ['300000000', true, 'Maximum is 200,000,000 sat'],
+            ['0.01', false, `Minimum is ${joinAmountWithSymbol('0.1', 'BTC')}`],
+            ['3', false, `Maximum is ${joinAmountWithSymbol('2', 'BTC')}`],
+            ['10', true, `Minimum is ${joinAmountWithSymbol('10,000,000', 'sat')}`],
+            ['300000000', true, `Maximum is ${joinAmountWithSymbol('200,000,000', 'sat')}`],
         ])(
             'should display crypto error for amount %s',
             async (amount, amountInSats, expectedValue) => {
@@ -506,7 +515,11 @@ describe('useBuyForm', () => {
             const { error, invalid } = result.current.getFieldState('cryptoValue');
 
             expect(invalid).toBe(true);
-            expect(error).toEqual(expect.objectContaining({ message: 'Minimum is 0.1 BTC' }));
+            expect(error).toEqual(
+                expect.objectContaining({
+                    message: `Minimum is ${joinAmountWithSymbol('0.1', 'BTC')}`,
+                }),
+            );
         });
 
         it('should validate a token named BTC in base units when SATS are enabled', async () => {
@@ -549,7 +562,11 @@ describe('useBuyForm', () => {
             const { error, invalid } = result.current.getFieldState('cryptoValue');
 
             expect(invalid).toBe(true);
-            expect(error).toEqual(expect.objectContaining({ message: 'Maximum is 2 BTC' }));
+            expect(error).toEqual(
+                expect.objectContaining({
+                    message: `Maximum is ${joinAmountWithSymbol('2', 'BTC')}`,
+                }),
+            );
         });
 
         it('should trigger validation once limits are loaded', async () => {
@@ -703,24 +720,35 @@ describe('useBuyForm', () => {
         });
     });
 
-    describe('clearBuyFormQuoteData', () => {
-        it('should clear quote, fiatValue, cryptoValue and generalAlert data', async () => {
+    describe('on base currency change', () => {
+        it('should keep fiatCurrency and amount limits on mount', async () => {
+            const store = getInitializedStore();
+            const { result } = await renderUseTradingBuyForm(store);
+
+            expect(result.current.getValues('fiatCurrency')).toBe('usd');
+            expect(selectBuyAmountLimits(store.getState())).toBeDefined();
+        });
+
+        it('should update fiatCurrency to the new base currency', async () => {
             const store = getInitializedStore();
             const { result } = await renderUseTradingBuyForm(store);
 
             await act(() => {
-                result.current.setValue('fiatValue', '10');
-                result.current.setValue('cryptoValue', '10');
-                result.current.setValue('quote', mercuryoApplePayBuyQuote);
+                store.dispatch(setBaseCurrency('eur'));
             });
+
+            expect(result.current.getValues('fiatCurrency')).toBe('eur');
+        });
+
+        it('should clear amount limits', async () => {
+            const store = getInitializedStore();
+            await renderUseTradingBuyForm(store);
 
             await act(() => {
-                clearBuyFormQuoteData(result.current);
+                store.dispatch(setBaseCurrency('eur'));
             });
 
-            expect(result.current.getValues('quote')).toBeUndefined();
-            expect(result.current.getValues('fiatValue')).toBeUndefined();
-            expect(result.current.getValues('cryptoValue')).toBeUndefined();
+            expect(selectBuyAmountLimits(store.getState())).toBeUndefined();
         });
     });
 });

@@ -12,27 +12,27 @@
     },
     "dependencies": {
         "@suite-common/analytics-redux": "workspace:*",
-        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/message-system": "workspace:*",
-        "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
-        "@suite-common/validators": "workspace:*",
         "@suite/external-links": "workspace:*",
+        "@suite/forms": "workspace:*",
         "@suite/intl": "workspace:*",
         "@suite/router": "workspace:*",
         "@suite/settings": "workspace:*",
         "@suite/tor": "workspace:*",
         "@trezor/components": "workspace:*",
         "@trezor/connect": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*",
         "@trezor/dom-utils": "workspace:*",
         "@trezor/icons": "workspace:*",
         "@trezor/product-components": "workspace:*",
         "@trezor/react-utils": "workspace:*",
+        "@trezor/redux-utils": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/utils": "workspace:*",
         "react": "19.2.3",
         "react-redux": "9.3.0",
         "redux": "^5.0.1",
-        "styled-components": "^6.3.9"
+        "styled-components": "^6.5.3"
     }
 }

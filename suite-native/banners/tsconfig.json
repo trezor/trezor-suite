@@ -5,18 +5,12 @@
         {
             "path": "../../suite-common/analytics"
         },
-        {
-            "path": "../../suite-common/dependency-injection"
-        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/earn-stablecoin"
         },
         {
             "path": "../../suite-common/message-system"
-        },
-        {
-            "path": "../../suite-common/redux-utils"
         },
         {
             "path": "../../suite-common/wallet-config"
@@ -26,12 +20,19 @@
         },
         { "path": "../analytics" },
         { "path": "../atoms" },
+        { "path": "../feature-flags" },
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../module-earn" },
         { "path": "../navigation" },
+        { "path": "../trading-state" },
+        { "path": "../trading-types" },
         { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        { "path": "../../packages/redux-utils" },
         {
             "path": "../../packages/styles-native"
         },

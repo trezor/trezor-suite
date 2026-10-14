@@ -8,7 +8,10 @@ use hyper_tungstenite::{tungstenite::Message, HyperWebsocket};
 use hyper_util::rt::TokioIo;
 use log::info;
 use std::sync::Arc;
-use tokio::{net::TcpListener, sync::Mutex};
+use tokio::{
+    net::TcpListener,
+    sync::{broadcast::error::RecvError, Mutex},
+};
 
 use crate::server::{
     adapter_manager::{AdapterError, AdapterManager},
@@ -57,7 +60,16 @@ async fn handle_ws_connection(
     let ws_write_event = ws_write.clone();
     let ws_write_peer = peer.clone();
     let channel_message_listener = tokio::spawn(async move {
-        while let Ok(event) = receiver.recv().await {
+        loop {
+            let event = match receiver.recv().await {
+                Ok(event) => event,
+                Err(RecvError::Lagged(skipped)) => {
+                    info!("ChannelMessage listener lagged, {skipped} events skipped");
+                    continue;
+                }
+                Err(RecvError::Closed) => break,
+            };
+
             match event {
                 ChannelMessage::Notification(event) => {
                     info!("Sending notification to peer {ws_write_peer}");
@@ -65,7 +77,7 @@ async fn handle_ws_connection(
                         Ok(json) => json,
                         Err(err) => {
                             info!("Error serialize notification {err:?}");
-                            return;
+                            continue;
                         }
                     };
 
@@ -164,17 +176,17 @@ async fn handle_http_request(
         };
         tokio::spawn(async move {
             if let Err(err) = handle_ws_connection(peer.clone(), websocket, manager).await {
-                log::error!("WebSocket connection error for peer {}: {:?}", peer, err);
+                log::error!("WebSocket connection error for peer {peer}: {err:?}");
 
                 match err {
                     ServerError::WebSocket(ws_err) => {
-                        log::debug!("WebSocket protocol error: {}", ws_err);
+                        log::debug!("WebSocket protocol error: {ws_err}");
                     }
                     ServerError::Io(io_err) => {
-                        log::warn!("IO error in WebSocket connection: {}", io_err);
+                        log::warn!("IO error in WebSocket connection: {io_err}");
                     }
                     ServerError::Http(http_err) => {
-                        log::warn!("HTTP error in WebSocket connection: {}", http_err);
+                        log::warn!("HTTP error in WebSocket connection: {http_err}");
                     }
                     ServerError::ConnectionBroadcast(err) => {
                         log::warn!("ConnectionBroadcastError {err}");

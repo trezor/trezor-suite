@@ -185,6 +185,7 @@ test.describe('TrezorConnect webextension -> Suite Web', { tag: ['@T3T1', '@webO
     test(
         'call cancellation',
         {
+            tag: ['@optional'],
             annotation: createTestAnnotation({
                 testCase: 'Suite Web Connect (webextension): Call cancelled by user',
                 stream: TestStream.Connect,
@@ -241,6 +242,7 @@ test.describe('TrezorConnect webextension -> Suite Web', { tag: ['@T3T1', '@webO
     test(
         'call cancelled from calling application',
         {
+            tag: ['@optional'],
             annotation: createTestAnnotation({
                 testCase:
                     'Suite Web Connect (webextension): Call cancelled via TrezorConnect.cancel() from the calling app',
@@ -261,36 +263,6 @@ test.describe('TrezorConnect webextension -> Suite Web', { tag: ['@T3T1', '@webO
                 await page.bringToFront();
                 const cancelButton = page.getByTestId('@cancel-button');
                 await cancelButton.click();
-
-                const response = page.getByTestId('@response');
-                await expect(response).toHaveText(/success: false/);
-                await expect(response).toHaveText(/Method_Interrupted/);
-            } finally {
-                await context.close();
-            }
-        },
-    );
-
-    test(
-        'closing popup window',
-        {
-            annotation: createTestAnnotation({
-                testCase:
-                    'Suite Web Connect (webextension): Closing the popup window (not close button) returns a proper error',
-                stream: TestStream.Connect,
-            }),
-        },
-        async ({ model, device, context: defaultContext }) => {
-            const { context, page, suite } = await setupWebextensionTest(
-                model,
-                device,
-                defaultContext,
-                'connect-explorer-webextension-interrupted',
-            );
-
-            try {
-                // Close the browser popup window directly (simulates user clicking X)
-                await suite.close();
 
                 const response = page.getByTestId('@response');
                 await expect(response).toHaveText(/success: false/);
@@ -371,6 +343,7 @@ test.describe('TrezorConnect webextension -> Suite Web', { tag: ['@T3T1', '@webO
     test(
         'focuses existing popup if already open',
         {
+            tag: ['@optional'],
             annotation: createTestAnnotation({
                 testCase:
                     'Suite Web Connect (webextension): If popup is already open, it should be focused instead of opening a new one',

@@ -1,8 +1,11 @@
 import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { type DeviceRootState, selectDevices } from '@suite-common/device';
-import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
-import { notificationsActions } from '@suite-common/toast-notifications';
+import {
+    type NotificationsRootState,
+    notificationsActions,
+    selectIsEarnTransactionConfirmationNotified,
+} from '@suite-common/toast-notifications';
 import {
     type TokenDefinitionsRootState,
     selectCoinDefinitions,
@@ -20,13 +23,19 @@ import {
     formatNetworkAmount,
     getAccountTransactions,
     isAccountOutdated,
+    isDirectRpcBackendType,
     isPending,
     isTrezorConnectBackendType,
     subunitsToUnits,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
-import TrezorConnect, { type AccountInfo, type TokenInfo } from '@trezor/connect';
+import TrezorConnect, {
+    type AccountInfo,
+    type GetAccountInfo as GetAccountInfoParams,
+    type TokenInfo,
+} from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { reportWalletBalanceDebounced } from './accountBalanceAnalytics';
@@ -45,12 +54,26 @@ import {
     selectGapLimit,
 } from '../blockchain/blockchainReducer';
 import { type WalletSettingsRootState } from '../settings/walletSettingsReducer';
+import {
+    type StellarContractTokensRootState,
+    selectStellarContractTokens,
+} from '../token/stellarContractTokensSlice';
 import { transactionsActions } from '../transactions/transactionsActions';
 import { type TransactionsRootState } from '../transactions/transactionsReducerTypes';
 import {
     selectEvmPrivatePendingHint,
     selectTransactions,
 } from '../transactions/transactionsSelectors';
+
+// The cheap first request of a refresh. Blockbook reports enough in `basic` to tell that
+// something changed; a plain RPC node reports no transaction count, so there the token list is the
+// only thing that gives an incoming token transfer away.
+const getRefreshDetails = (account: Account): GetAccountInfoParams['details'] => {
+    if (account.networkType === 'solana') return 'txids';
+    if (isDirectRpcBackendType(account.backendType)) return 'tokens';
+
+    return 'basic';
+};
 
 const fetchAccountTokens = async (account: Account, payloadTokens: AccountInfo['tokens']) => {
     const tokens: TokenInfo[] = [];
@@ -148,6 +171,8 @@ type FetchAndUpdateAccountThunkParams = {
 export type FetchAndUpdateAccountThunkState = AccountsRootState &
     BlockchainRootState &
     DeviceRootState &
+    NotificationsRootState &
+    StellarContractTokensRootState &
     TokenDefinitionsRootState &
     TransactionsRootState &
     WalletSettingsRootState;
@@ -178,6 +203,10 @@ export const fetchAndUpdateAccountThunk = createThunk<
             account.networkType === 'solana'
                 ? account.tokens?.flatMap(t => t.accounts ?? []).map(a => a.publicKey)
                 : undefined;
+        const stellarContractTokens =
+            account.networkType === 'stellar'
+                ? selectStellarContractTokens(getState(), account.key)
+                : undefined;
         const gap =
             account.networkType === 'bitcoin'
                 ? selectGapLimit(getState(), account.symbol)
@@ -187,9 +216,10 @@ export const fetchAndUpdateAccountThunk = createThunk<
             coin: asCoinSymbol(account.symbol),
             identity: tryGetAccountIdentity(account),
             descriptor: account.descriptor,
-            details: account.networkType === 'solana' ? 'txids' : 'basic',
+            details: getRefreshDetails(account),
             suppressBackupWarning: true,
             tokenAccountsPubKeys,
+            stellarContractTokens,
             protocols: account.networkType === 'ethereum' ? ['erc4626'] : undefined,
             privatePending,
             gap,
@@ -224,6 +254,7 @@ export const fetchAndUpdateAccountThunk = createThunk<
             page: 1, // useful for every network except ripple and stellar
             pageSize,
             suppressBackupWarning: true,
+            stellarContractTokens,
             protocols: account.networkType === 'ethereum' ? ['erc4626'] : undefined,
             privatePending,
             gap:
@@ -270,6 +301,15 @@ export const fetchAndUpdateAccountThunk = createThunk<
             const devices = selectDevices(getState());
             const accountDevice = findAccountDevice(account, devices);
             analyze.newTransactions.forEach(tx => {
+                if (
+                    selectIsEarnTransactionConfirmationNotified(getState(), {
+                        descriptor: account.descriptor,
+                        symbol: account.symbol,
+                        txid: tx.txid,
+                    })
+                )
+                    return;
+
                 const token = tx.tokens?.[0];
 
                 const amount = token

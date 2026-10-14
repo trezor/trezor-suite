@@ -17,12 +17,18 @@ import {
     findAccountsByAddress,
     findTransactionSenderAccount,
     getAccountIdentifier,
+    getAccountSpecific,
     getBip43Type,
+    getDirectRpcHistoryState,
+    getHistoryCoveredSince,
     getNetworkAccountFeatures,
+    getOlderHistoryFrom,
     getUtxoFromSignedTransaction,
     getUtxoOutpoint,
     hasNetworkFeatures,
+    haveTokenBalancesChanged,
     isAccountOutdated,
+    isDirectRpcHistoryUnscanned,
     isTestnet,
     sortByBIP44AddressIndex,
     sortByCoin,
@@ -356,6 +362,17 @@ describe('account utils', () => {
         ).toBe(false);
     });
 
+    it('accountSearchFn matches network display symbol', () => {
+        const baseAcc = mockWalletAccount({ symbol: asNetworkSymbol('base') });
+        const arcAcc = mockWalletAccount({ symbol: asNetworkSymbol('arc') });
+        const btcAcc = mockWalletAccount({ symbol: btcSymbol });
+
+        expect(accountSearchFn(baseAcc, 'eth', { accountLabel: '' })).toBe(true);
+        expect(accountSearchFn(arcAcc, 'usdc', { accountLabel: '' })).toBe(true);
+        expect(accountSearchFn(arcAcc, 'USDC', { accountLabel: '' })).toBe(true);
+        expect(accountSearchFn(btcAcc, 'eth', { accountLabel: '' })).toBe(false);
+    });
+
     it('accountSearchFn empty tokens', () => {
         const ethAcc = mockWalletAccount({
             symbol: ethSymbol,
@@ -535,10 +552,149 @@ describe('account utils', () => {
     });
 });
 
+describe(haveTokenBalancesChanged.name, () => {
+    const contract = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
+    const fresh = (balance: string) => ({
+        standard: 'ERC20' as const,
+        contract: contract.toLowerCase(),
+        balance,
+        decimals: 6,
+    });
+    const stored = (balance: string) => mockAccountToken({ contract, decimals: 6, balance });
+
+    it('is unchanged when both sides are empty', () => {
+        expect(haveTokenBalancesChanged(undefined, undefined)).toBe(false);
+        expect(haveTokenBalancesChanged([], [])).toBe(false);
+    });
+
+    it('compares fresh subunit balances against stored unit balances', () => {
+        expect(haveTokenBalancesChanged([fresh('1500000')], [stored('1.5')])).toBe(false);
+        expect(haveTokenBalancesChanged([fresh('1500001')], [stored('1.5')])).toBe(true);
+    });
+
+    it('matches contracts regardless of case', () => {
+        expect(haveTokenBalancesChanged([{ ...fresh('1500000'), contract }], [stored('1.5')])).toBe(
+            false,
+        );
+    });
+
+    it('reports a fresh token the account does not know', () => {
+        expect(haveTokenBalancesChanged([fresh('1')], [])).toBe(true);
+    });
+
+    it('reports a held token that is no longer listed', () => {
+        expect(haveTokenBalancesChanged([], [stored('1.5')])).toBe(true);
+    });
+
+    it('ignores a stored token at zero that is no longer listed', () => {
+        expect(haveTokenBalancesChanged([], [stored('0')])).toBe(false);
+    });
+});
+
+describe(getOlderHistoryFrom.name, () => {
+    it('reads the next step back on a direct-RPC account', () => {
+        const account: Account = {
+            ...mockWalletAccount({ symbol: ethSymbol }, { misc: { olderHistoryFrom: 1000 } }),
+            backendType: 'evm-rpc',
+        };
+
+        expect(getOlderHistoryFrom(account)).toBe(1000);
+    });
+
+    it('offers nothing on a backend that serves the whole history', () => {
+        const account: Account = {
+            ...mockWalletAccount({ symbol: ethSymbol }, { misc: { olderHistoryFrom: 1000 } }),
+            backendType: 'blockbook',
+        };
+
+        expect(getOlderHistoryFrom(account)).toBeUndefined();
+    });
+});
+
+describe(getHistoryCoveredSince.name, () => {
+    it('reads how far back a direct-RPC scan reaches', () => {
+        const account: Account = {
+            ...mockWalletAccount(
+                { symbol: ethSymbol },
+                { misc: { historyCoveredSince: 1_700_000_000 } },
+            ),
+            backendType: 'evm-rpc',
+        };
+
+        expect(getHistoryCoveredSince(account)).toBe(1_700_000_000);
+    });
+
+    it('is undefined on a backend that serves the whole history', () => {
+        const account: Account = {
+            ...mockWalletAccount(
+                { symbol: ethSymbol },
+                { misc: { historyCoveredSince: 1_700_000_000 } },
+            ),
+            backendType: 'blockbook',
+        };
+
+        expect(getHistoryCoveredSince(account)).toBeUndefined();
+    });
+});
+
+describe(isDirectRpcHistoryUnscanned.name, () => {
+    const withHistory = (backendType: 'evm-rpc' | 'blockbook', total: number): Account => ({
+        ...mockWalletAccount({ symbol: ethSymbol, history: { total, unconfirmed: 0 } }),
+        backendType,
+    });
+
+    it('is true until a direct-RPC backend has scanned the account', () => {
+        expect(isDirectRpcHistoryUnscanned(withHistory('evm-rpc', -1))).toBe(true);
+        expect(isDirectRpcHistoryUnscanned(withHistory('evm-rpc', 0))).toBe(false);
+    });
+
+    it('ignores backends that report a real count', () => {
+        expect(isDirectRpcHistoryUnscanned(withHistory('blockbook', -1))).toBe(false);
+    });
+});
+
+describe(getDirectRpcHistoryState.name, () => {
+    const withHistory = (
+        backendType: 'evm-rpc' | 'blockbook',
+        total: number,
+        olderHistoryFrom?: number,
+    ): Account => ({
+        ...mockWalletAccount(
+            { symbol: ethSymbol, history: { total, unconfirmed: 0 } },
+            { misc: { olderHistoryFrom } },
+        ),
+        backendType,
+    });
+
+    it('is unscanned until a direct-RPC backend has looked at the history once', () => {
+        expect(getDirectRpcHistoryState(withHistory('evm-rpc', -1))).toBe('unscanned');
+    });
+
+    it('reports an empty recent window while older history is still reachable', () => {
+        expect(getDirectRpcHistoryState(withHistory('evm-rpc', 0, 1000))).toBe('recentWindowEmpty');
+    });
+
+    it('is not an empty window while the scanned range holds transactions, loaded or not', () => {
+        expect(getDirectRpcHistoryState(withHistory('evm-rpc', 3, 1000))).toBeUndefined();
+    });
+
+    it('is nothing special for a backend that serves the whole history', () => {
+        expect(getDirectRpcHistoryState(withHistory('blockbook', 0))).toBeUndefined();
+    });
+});
+
 describe(isAccountOutdated.name, () => {
     fixtures.isAccountOutdated.forEach(f => {
         it(f.description, () => {
             expect(isAccountOutdated(f.account, f.freshInfo)).toBe(f.result);
+        });
+    });
+});
+
+describe(getAccountSpecific.name, () => {
+    fixtures.getAccountSpecific.forEach(f => {
+        it(f.description, () => {
+            expect(getAccountSpecific(f.params)).toEqual(f.result);
         });
     });
 });

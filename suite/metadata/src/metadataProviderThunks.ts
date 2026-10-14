@@ -9,9 +9,9 @@ import {
     ProviderErrorAction,
     type Tokens,
 } from '@suite-common/metadata-types';
-import { type Dispatch, type WithServices } from '@suite-common/redux-utils';
 import { triggerWebDownloadFile } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { type Dispatch, type WithServices } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 import { createDeferred, createZip, typedObjectKeys } from '@trezor/utils';
 
@@ -242,8 +242,10 @@ export const initProvider = () => (dispatch: Dispatch) => {
     return decision.promise;
 };
 
+type SelectProviderParams = { dataType: DataType; clientId: string };
+
 const selectProvider =
-    ({ dataType, clientId }: { dataType: DataType; clientId: string }) =>
+    ({ dataType, clientId }: SelectProviderParams) =>
     (dispatch: Dispatch) => {
         dispatch({
             type: METADATA.SET_SELECTED_PROVIDER,

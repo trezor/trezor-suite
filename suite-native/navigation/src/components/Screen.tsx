@@ -1,30 +1,33 @@
-import { type ReactNode, useContext } from 'react';
+import { type ReactNode, useState } from 'react';
 import { type ScrollViewProps, View, type ViewProps } from 'react-native';
 import { SystemBars } from 'react-native-edge-to-edge';
 import { KeyboardStickyView } from 'react-native-keyboard-controller';
 import { type EdgeInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 
-import { BottomTabBarHeightContext } from '@react-navigation/bottom-tabs';
 import { useRoute } from '@react-navigation/native';
+import { type RequireOneOrNone } from 'type-fest';
 
 import { selectIsAnyBannerMessageActive } from '@suite-common/message-system';
 import { Box, useBannerAwareSafeAreaInsets } from '@suite-native/atoms';
+import { KeyboardToolbar, KeyboardToolbarHost } from '@suite-native/keyboard';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color } from '@trezor/theme';
 
+import { useAndroidNavigationBarStyle } from '../hooks/useAndroidNavigationBarStyle';
+import { useIsBottomInsetApplicable } from '../hooks/useIsBottomInsetApplicable';
 import { type DynamicScreenHeaderProps } from './DynamicHeader/DynamicScreenHeader';
 import { DynamicHeaderProvider } from './DynamicHeader/DynamicScreenHeaderContext';
 import { DynamicScrollableScreenContentHeader } from './DynamicHeader/DynamicScrollableScreenContentHeader';
 import { isScreenHeaderPropDynamic } from './DynamicHeader/dynamicHeaderUtils';
 import { ScreenContentWrapper } from './ScreenContentWrapper';
-import { useAndroidNavigationBarStyle } from '../hooks/useAndroidNavigationBarStyle';
-import { useIsKeyboardShown } from '../hooks/useIsKeyboardShown';
 
 export type ScreenProps = {
     children: ReactNode;
     header?: ReactNode;
     footer?: ReactNode;
+    keyboardToolbarComponent?: ReactNode;
+    keyboardToolbarHostName?: string;
     systemThemeStyle?: 'dark' | 'light';
     isScrollable?: boolean;
     backgroundColor?: Color;
@@ -35,7 +38,10 @@ export type ScreenProps = {
     hasBottomInset?: boolean;
     refreshControl?: ScrollViewProps['refreshControl'];
     containerStyle?: ViewProps['style'];
-};
+} & RequireOneOrNone<{
+    keyboardToolbarComponent?: ReactNode;
+    keyboardToolbarHostName?: string;
+}>;
 
 const screenContainerStyle = prepareNativeStyle<{
     backgroundColor: Color;
@@ -85,6 +91,8 @@ export const Screen = ({
     children,
     header,
     footer,
+    keyboardToolbarComponent,
+    keyboardToolbarHostName,
     refreshControl,
     containerStyle,
     systemThemeStyle,
@@ -96,18 +104,19 @@ export const Screen = ({
     isFooterKeyboardAware = true,
     hasBottomInset = true,
 }: ScreenProps) => {
+    const [keyboardToolbarHeight, setKeyboardToolbarHeight] = useState(0);
     const {
         applyStyle,
         utils: { spacings },
     } = useNativeStyles();
 
     const insets = useBannerAwareSafeAreaInsets();
-    const isKeyboardShown = useIsKeyboardShown();
+    const isBottomInsetApplicable = useIsBottomInsetApplicable();
+    const activeKeyboardToolbarHeight = keyboardToolbarComponent ? keyboardToolbarHeight : 0;
 
     const horizontalPadding = noHorizontalPadding ? 0 : spacings.sp16;
     const bottomPadding = noBottomPadding ? 0 : spacings.sp16;
-    const applyBottomInset =
-        !useContext(BottomTabBarHeightContext) && hasBottomInset && !isKeyboardShown;
+    const applyBottomInset = isBottomInsetApplicable && hasBottomInset;
     const systemBarsStyle = useAndroidNavigationBarStyle({ backgroundColor });
 
     const isMessageBannerDisplayed = useSelector(selectIsAnyBannerMessageActive);
@@ -166,10 +175,19 @@ export const Screen = ({
                 {footer && (
                     <KeyboardStickyView
                         enabled={isFooterKeyboardAware}
+                        offset={{ opened: -activeKeyboardToolbarHeight }}
                         style={applyStyle(screenFooterStyle, { insets, applyBottomInset })}
                     >
                         {footer}
                     </KeyboardStickyView>
+                )}
+                {!!keyboardToolbarComponent && !keyboardToolbarHostName && (
+                    <KeyboardToolbar onHeightChange={setKeyboardToolbarHeight}>
+                        {keyboardToolbarComponent}
+                    </KeyboardToolbar>
+                )}
+                {keyboardToolbarHostName !== undefined && !keyboardToolbarComponent && (
+                    <KeyboardToolbarHost name={keyboardToolbarHostName} />
                 )}
             </View>
         </DynamicHeaderProvider>

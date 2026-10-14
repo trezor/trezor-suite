@@ -1,6 +1,6 @@
-import { useServices } from '@suite-common/dependency-injection';
 import { injectReloadApp } from '@suite-common/suite-types';
 import { Button, Column, Divider, H2, Paragraph, Row } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { RepeatIcon } from '@trezor/icons';
 
 import { injectDb } from 'src/storage/createDb';

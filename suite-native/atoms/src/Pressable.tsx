@@ -1,9 +1,8 @@
-import { Pressable, type PressableProps } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { type PressableProps } from 'react-native';
+import { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
+import { AnimatedPressable } from './Animated/AnimatedPressable';
 import { pressTimingConfig } from './constants';
-
-export const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export const PressableOpacity = ({ onPress, style, children, ...rest }: PressableProps) => {
     const opacity = useSharedValue(1);

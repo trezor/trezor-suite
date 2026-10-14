@@ -33,13 +33,17 @@ export const injectPlatformEncryption = (services: any): PlatformEncryptionDep =
     platformEncryption: services.platformEncryption,
 });
 
+export type EncryptParams<T extends EncryptableBranded> = { value: T };
+
+export type DecryptParams<T extends EncryptableBranded> = { value: EncryptedHex<T> };
+
 /** @serviceContract */
 export interface PlatformEncryption {
-    encrypt: <T extends EncryptableBranded>(params: {
-        value: T;
-    }) => Promise<Result<EncryptedHex<T>, EncryptionError>>;
+    encrypt: <T extends EncryptableBranded>(
+        params: EncryptParams<T>,
+    ) => Promise<Result<EncryptedHex<T>, EncryptionError>>;
 
-    decrypt: <T extends EncryptableBranded>(params: {
-        value: EncryptedHex<T>;
-    }) => Promise<Result<T, DecryptionError>>;
+    decrypt: <T extends EncryptableBranded>(
+        params: DecryptParams<T>,
+    ) => Promise<Result<T, DecryptionError>>;
 }

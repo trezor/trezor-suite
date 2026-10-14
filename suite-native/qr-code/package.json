@@ -26,7 +26,7 @@
         "expo-camera": "~57.0.3",
         "expo-image-picker": "~57.0.5",
         "react": "19.2.3",
-        "react-native": "0.86.0",
+        "react-native": "0.86.3",
         "react-qr-code": "2.0.18",
         "react-redux": "9.3.0"
     }

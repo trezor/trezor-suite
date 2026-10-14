@@ -6,7 +6,6 @@ import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import {
     type YieldAccountRewards,
     type YieldAccountsRewards,
@@ -21,6 +20,7 @@ import {
     subunitsToUnits,
 } from '@suite-common/wallet-utils';
 import { CardList, Column, Icon, Modal, Row, Text, Tooltip } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { CaretRightIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
 import { typography } from '@trezor/theme';

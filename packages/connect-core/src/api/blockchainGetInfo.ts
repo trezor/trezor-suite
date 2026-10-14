@@ -32,7 +32,6 @@ export default class BlockchainGetInfo extends AbstractMethod<'blockchainGetInfo
 
         super(message, params);
         this.useDevice = false;
-        this.useUi = false;
     }
 
     get requiredPermissions(): PermissionRequest[] {

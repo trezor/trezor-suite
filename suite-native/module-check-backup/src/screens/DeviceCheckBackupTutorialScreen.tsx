@@ -3,7 +3,6 @@ import { useSharedValue } from 'react-native-reanimated';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Screen } from '@suite-native/navigation';
 import {
@@ -11,6 +10,7 @@ import {
     SwipeableWalkthroughCloseButton,
     SwipeableWalkthroughScreenHeader,
 } from '@suite-native/swipeable-walkthrough';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useHandleCheckBackupExitButtonPress } from '../components/CheckBackupScreenWithExitButton';
 import { CheckBackupTutorialStep1 } from '../components/CheckBackupTutorialStep1';

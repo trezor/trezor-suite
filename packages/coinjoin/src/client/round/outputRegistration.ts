@@ -44,7 +44,7 @@ const registerOutput = async (
         [],
         vsizeCredentials,
         round.vsizeCredentialIssuerParameters,
-        roundParameters.MaxVsizeCredentialValue,
+        roundParameters.MaxVsizeAllocationPerAlice,
         { signal, baseUrl: middlewareUrl },
     );
 

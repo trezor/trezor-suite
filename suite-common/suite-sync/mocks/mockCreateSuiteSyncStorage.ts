@@ -1,4 +1,3 @@
-import { createMockDeps, mockNotExpected } from '@suite-common/dependency-injection';
 import {
     AccountTable,
     AddressTable,
@@ -8,6 +7,7 @@ import {
     SuiteSyncTable,
     WalletTable,
 } from '@suite-common/suite-sync-storage';
+import { createMockDeps, mockNotExpected } from '@trezor/dependency-injection';
 
 const createSuiteSyncTableMock = <T extends SuiteSyncTable<any>>(methods?: Partial<T>) =>
     createMockDeps<SuiteSyncTable<InferSuiteSyncTableEntity<T>>>({

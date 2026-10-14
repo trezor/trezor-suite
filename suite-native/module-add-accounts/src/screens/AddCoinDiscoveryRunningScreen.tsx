@@ -3,9 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import type { DeviceRootState } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -29,6 +27,8 @@ import {
     type StackProps,
 } from '@suite-native/navigation';
 import { isPassphraseDiscoveryFailure } from '@suite-native/passphrase';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 export const AddCoinDiscoveryRunningScreen = ({
     route,

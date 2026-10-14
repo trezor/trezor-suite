@@ -11,8 +11,6 @@ import {
 } from '@suite-common/message-system';
 import { type NetworksRootState } from '@suite-common/networks';
 import { mockNetworksState } from '@suite-common/networks/mocks';
-import { type ReduxStoreWithThunk } from '@suite-common/redux-utils';
-import { mockActionType } from '@suite-common/redux-utils/mocks';
 import {
     type SuiteSyncDataRootState,
     type WithSuiteSyncState,
@@ -39,6 +37,7 @@ import {
     formDraftReducer,
     initialWalletSettingsState,
     phishingInitialState,
+    prepareWalletSettingsReducer,
     transactionsInitialState,
 } from '@suite-common/wallet-core';
 import { type NativeBluetoothRootState, bluetoothInitialState } from '@suite-native/bluetooth';
@@ -69,6 +68,8 @@ import {
     type NativeSendRootState,
     sendFormInitialState,
 } from '@suite-native/transaction-management';
+import { type ReduxStoreWithThunk } from '@trezor/redux-utils';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 export type { PreloadedStatePartial } from '@suite-native/test-utils-store';
 
@@ -167,7 +168,10 @@ export const createTradingTestStore = (
         tokenDefinitions: createStaticReducer(preloadedState.tokenDefinitions),
         wallet: combineReducers({
             selectedAccount: createStaticReducer(preloadedState.wallet.selectedAccount),
-            settings: createStaticReducer(preloadedState.wallet.settings),
+            settings: prepareWalletSettingsReducer({
+                actionTypes: { storageLoad: mockActionType('storageLoad') },
+                reducers: { storageLoadWalletSettings: mockReducer() },
+            }),
             accounts: createStaticReducer(preloadedState.wallet.accounts),
             fiat: createStaticReducer(preloadedState.wallet.fiat),
             fees: createStaticReducer(preloadedState.wallet.fees),

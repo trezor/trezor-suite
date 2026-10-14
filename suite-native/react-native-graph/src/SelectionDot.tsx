@@ -41,7 +41,6 @@ export function SelectionDot({
         active => {
             runOnJS(setIsActive)(active);
         },
-        [isActive, setIsActive],
     );
 
     return (

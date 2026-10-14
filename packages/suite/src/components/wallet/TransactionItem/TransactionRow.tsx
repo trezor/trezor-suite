@@ -17,6 +17,14 @@ import { type WalletAccountTransaction } from 'src/types/wallet';
 
 import { TransactionTargetLayout } from './TransactionTargetLayout';
 
+type CustomRowProps = {
+    amount: string;
+    sign: SignOperator;
+    title: ExtendedMessageDescriptor['id'];
+    transaction: WalletAccountTransaction;
+    useFiatValues?: boolean;
+};
+
 export const CustomRow = ({
     transaction,
     title,
@@ -24,13 +32,7 @@ export const CustomRow = ({
     sign,
     useFiatValues,
     ...baseLayoutProps
-}: {
-    amount: string;
-    sign: SignOperator;
-    title: ExtendedMessageDescriptor['id'];
-    transaction: WalletAccountTransaction;
-    useFiatValues?: boolean;
-}) => {
+}: CustomRowProps) => {
     const fiatCurrencyCode = useSelector(selectBaseCurrency);
     const fiatRateKey = getFiatRateKey(transaction.symbol, fiatCurrencyCode);
     const historicRate = useSelector(state =>
@@ -65,16 +67,13 @@ export const CustomRow = ({
     );
 };
 
-export const FeeRow = ({
-    fee,
-    transaction,
-    useFiatValues,
-    ...baseLayoutProps
-}: {
+type FeeRowProps = {
     fee: string;
     transaction: WalletAccountTransaction;
     useFiatValues?: boolean;
-}) => (
+};
+
+export const FeeRow = ({ fee, transaction, useFiatValues, ...baseLayoutProps }: FeeRowProps) => (
     <CustomRow
         {...baseLayoutProps}
         title="FEE"
@@ -85,14 +84,16 @@ export const FeeRow = ({
     />
 );
 
+type WithdrawalRowProps = {
+    transaction: WalletAccountTransaction;
+    useFiatValues?: boolean;
+};
+
 export const WithdrawalRow = ({
     transaction,
     useFiatValues,
     ...baseLayoutProps
-}: {
-    transaction: WalletAccountTransaction;
-    useFiatValues?: boolean;
-}) => (
+}: WithdrawalRowProps) => (
     <CustomRow
         {...baseLayoutProps}
         title="TR_TX_WITHDRAWAL"
@@ -103,14 +104,12 @@ export const WithdrawalRow = ({
     />
 );
 
-export const DepositRow = ({
-    transaction,
-    useFiatValues,
-    ...baseLayoutProps
-}: {
+type DepositRowProps = {
     transaction: WalletAccountTransaction;
     useFiatValues?: boolean;
-}) => (
+};
+
+export const DepositRow = ({ transaction, useFiatValues, ...baseLayoutProps }: DepositRowProps) => (
     <CustomRow
         {...baseLayoutProps}
         title="TR_TX_DEPOSIT"

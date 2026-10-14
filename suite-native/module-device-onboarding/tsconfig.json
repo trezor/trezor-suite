@@ -5,21 +5,15 @@
         {
             "path": "../../suite-common/analytics"
         },
-        {
-            "path": "../../suite-common/dependency-injection"
-        },
         { "path": "../../suite-common/device" },
+        {
+            "path": "../../suite-common/device-authenticity"
+        },
         {
             "path": "../../suite-common/message-system"
         },
         {
             "path": "../../suite-common/persistent-device-data"
-        },
-        {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
-            "path": "../../suite-common/suite-constants"
         },
         {
             "path": "../../suite-common/suite-types"
@@ -51,8 +45,11 @@
         {
             "path": "../../packages/connect-common"
         },
+        {
+            "path": "../../packages/dependency-injection"
+        },
         { "path": "../../packages/device-utils" },
-        { "path": "../../packages/env-utils" },
+        { "path": "../../packages/redux-utils" },
         {
             "path": "../../packages/styles-native"
         },

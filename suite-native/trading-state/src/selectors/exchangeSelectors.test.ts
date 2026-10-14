@@ -121,11 +121,11 @@ describe('exchangeSelectors', () => {
     describe('selectExchangeBuyTradeableAssets', () => {
         it('should select only coins with exchange set to true', () => {
             expect(selectExchangeBuyTradeableAssets(state)).toEqual([
+                expect.objectContaining({ cryptoId: 'bitcoin' }),
+                expect.objectContaining({ cryptoId: 'ethereum' }),
                 expect.objectContaining({
                     cryptoId: 'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
                 }),
-                expect.objectContaining({ cryptoId: 'ethereum' }),
-                expect.objectContaining({ cryptoId: 'bitcoin' }),
             ]);
         });
 
@@ -172,8 +172,8 @@ describe('exchangeSelectors', () => {
             const result = selectExchangeBuyTradeableAssets(state);
 
             expect(result).toEqual([
-                expect.objectContaining({ cryptoId: 'ethereum' }),
                 expect.objectContaining({ cryptoId: 'bitcoin' }),
+                expect.objectContaining({ cryptoId: 'ethereum' }),
             ]);
             expect(result).not.toContainEqual(
                 expect.objectContaining({ cryptoId: 'invalid-crypto-id' }),

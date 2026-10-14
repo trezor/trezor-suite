@@ -15,16 +15,23 @@ import {
     type TradeServerEnvironment,
     type TradingCountryCode,
     type TradingRootStateWithDeviceAndAccounts,
+    type TradingType,
     selectTradingProviderMetadata,
 } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import { type AccountsRootState } from '@suite-common/wallet-core';
-import { type Account, type AccountKey, asAccountDescriptor } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type AccountKey,
+    type CurrentRatesByKey,
+    asAccountDescriptor,
+} from '@suite-common/wallet-types';
 import { FeatureFlag, featureFlagsInitialState } from '@suite-native/feature-flags';
 import { appSettingsInitialState } from '@suite-native/settings';
 import {
     btcAsset,
+    ethAsset,
     getBtcAccount,
     getBuyTrade,
     getCardanoAccount,
@@ -33,18 +40,17 @@ import {
     getInitializedTradingState,
     getSellTrade,
     getWalletState,
+    usdcAsset,
 } from '@suite-native/trading-fixtures';
-import { type TradeableAsset } from '@suite-native/trading-types';
 import { type StaticSessionId } from '@trezor/device-utils';
-import { BigNumber } from '@trezor/utils';
 
 import { type TradingRootState, tradingInitialState } from '../reducers';
 import {
     selectAccountLabelWithNetworkFallback,
     selectAccountsWithTokensToSellSectionListByTradingType,
     selectActiveTradingType,
-    selectAmountInBaseFiatCurrency,
     selectEnabledTradingTypes,
+    selectFiatRateByTradeableAsset,
     selectIsAmountInputActive,
     selectIsTradingBlacklisted,
     selectIsTradingBuyEnabled,
@@ -58,6 +64,7 @@ import {
     selectTradesToWatchByAccount,
     selectTradingAccountKeyByOrderId,
     selectTradingEnvironment,
+    selectTradingFormResetRequestedFor,
     selectTradingProviderConfirmationStatus,
     selectVisibleDeviceAccountsByNetworkSymbolSorted,
 } from './commonSelectors';
@@ -96,6 +103,7 @@ const getPreloadedState = ({
     slip24,
     residence,
     countryCode,
+    formResetRequestedFor,
 }: {
     buy?: boolean;
     sell?: boolean;
@@ -106,6 +114,7 @@ const getPreloadedState = ({
     slip24?: boolean;
     residence?: boolean;
     countryCode?: TradingCountryCode | undefined;
+    formResetRequestedFor?: TradingType | undefined;
 }) => {
     const features: Feature[] = [];
     if (buy !== undefined) {
@@ -210,6 +219,7 @@ const getPreloadedState = ({
                     ...tradingInitialState.residence,
                     country: countryCode,
                 },
+                formResetRequestedFor,
             },
         },
     };
@@ -540,6 +550,18 @@ describe('commonSelectors', () => {
         });
     });
 
+    describe('selectTradingFormResetRequestedFor', () => {
+        it('should return the trading type for which a reset is requested', () => {
+            const state = getPreloadedState({ formResetRequestedFor: 'exchange' });
+            expect(selectTradingFormResetRequestedFor(state)).toBe('exchange');
+        });
+
+        it('should return undefined if no reset is requested', () => {
+            const state = getPreloadedState({ formResetRequestedFor: undefined });
+            expect(selectTradingFormResetRequestedFor(state)).toBeUndefined();
+        });
+    });
+
     describe('selectIsTradingBlacklisted', () => {
         it('should return true if trading.restrictions.blacklist feature is enabled', () => {
             const state = getPreloadedState({ blacklist: true });
@@ -557,44 +579,37 @@ describe('commonSelectors', () => {
         });
     });
 
-    describe('selectAmountInBaseFiatCurrency', () => {
+    describe('selectFiatRateByTradeableAsset', () => {
         const getStateWithRates = () => ({
             wallet: getWalletState(),
         });
 
-        it('should return undefined when symbol is not recognized', () => {
-            expect(
-                selectAmountInBaseFiatCurrency(
-                    getStateWithRates(),
-                    {} as any as TradeableAsset,
-                    '100',
-                ),
-            ).toBeUndefined();
+        it('should return undefined when asset is not set', () => {
+            expect(selectFiatRateByTradeableAsset(getStateWithRates(), undefined)).toBeUndefined();
         });
 
         it('should return undefined when rate is missing', () => {
             const state = getStateWithRates();
             state.wallet.fiat.current = {};
 
-            expect(selectAmountInBaseFiatCurrency(state, btcAsset, '100')).toBeUndefined();
+            expect(selectFiatRateByTradeableAsset(state, btcAsset)).toBeUndefined();
         });
 
-        it('should return rate', () => {
-            expect(selectAmountInBaseFiatCurrency(getStateWithRates(), btcAsset, '100')).toEqual(
-                new BigNumber('0.1'),
-            );
+        it('should return rate of native asset in base currency', () => {
+            expect(selectFiatRateByTradeableAsset(getStateWithRates(), ethAsset)).toBe(1000);
         });
 
-        it('should return undefined for invalid amount', () => {
-            expect(
-                selectAmountInBaseFiatCurrency(getStateWithRates(), btcAsset, 'not a number'),
-            ).toBeUndefined();
+        it('should return rate of token in base currency', () => {
+            expect(selectFiatRateByTradeableAsset(getStateWithRates(), usdcAsset)).toBe(0.99);
         });
 
-        it('should return 0 for zero balance', () => {
-            expect(selectAmountInBaseFiatCurrency(getStateWithRates(), btcAsset, '0')).toEqual(
-                new BigNumber('0'),
-            );
+        it('should return rate of token when stored rate key uses checksummed address', () => {
+            const state = getStateWithRates();
+            state.wallet.fiat.current = {
+                'eth-0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48-usd': { rate: 0.99, usdRate: 0.99 },
+            } as CurrentRatesByKey;
+
+            expect(selectFiatRateByTradeableAsset(state, usdcAsset)).toBe(0.99);
         });
     });
 
@@ -1011,46 +1026,6 @@ describe('commonSelectors', () => {
             expect(accountAsset?.name).toBe('Base Ethereum');
         });
 
-        it('should filter out Cardano accounts when IsCardanoSendEnabled feature flag is disabled', () => {
-            const testDeviceState: StaticSessionId = 'testDevice@x:0';
-            const cardanoAccount = {
-                ...getCardanoAccount(),
-                visible: true,
-                deviceState: testDeviceState,
-            };
-            const btcAccount = {
-                ...getBtcAccount(),
-                visible: true,
-                deviceState: testDeviceState,
-            };
-            const cleanState = getInitializedTradingState('exchange');
-
-            const stateWithDevice = {
-                networks,
-                wallet: {
-                    trading: cleanState,
-                    accounts: [cardanoAccount, btcAccount],
-                    settings: { localCurrency: 'usd', enabledNetworks: ['ada', 'btc'] },
-                    transactions: { transactions: {} },
-                },
-                device: { selectedDevice: { state: { staticSessionId: testDeviceState } } },
-                tokenDefinitions: {},
-                fiat: { rates: {}, current: 'usd' },
-                featureFlags: {
-                    ...featureFlagsInitialState,
-                    [FeatureFlag.IsCardanoSendEnabled]: false,
-                },
-            } as any;
-
-            const result = selectAccountsWithTokensToSellSectionListByTradingType(
-                stateWithDevice,
-                'exchange',
-            );
-
-            expect(result.length).toBe(1);
-            expect(result[0]?.sectionData.symbol).toBe('btc');
-        });
-
         it('should filter out accounts whose network has no tradeCryptoId', () => {
             const testDeviceState: StaticSessionId = 'test-device@x:0';
             const regtestAccount = {
@@ -1092,48 +1067,6 @@ describe('commonSelectors', () => {
 
             expect(result.length).toBe(1);
             expect(result[0]?.sectionData.symbol).toBe('btc');
-        });
-
-        it('should include Cardano accounts when IsCardanoSendEnabled feature flag is enabled', () => {
-            const testDeviceState: StaticSessionId = 'testDevice@x:0';
-            const cardanoAccount = {
-                ...getCardanoAccount(),
-                visible: true,
-                deviceState: testDeviceState,
-            };
-            const btcAccount = {
-                ...getBtcAccount(),
-                visible: true,
-                deviceState: testDeviceState,
-            };
-            const cleanState = getInitializedTradingState('exchange');
-
-            const stateWithDevice = {
-                networks,
-                wallet: {
-                    trading: cleanState,
-                    accounts: [cardanoAccount, btcAccount],
-                    settings: { localCurrency: 'usd', enabledNetworks: ['ada', 'btc'] },
-                    transactions: { transactions: {} },
-                },
-                device: { selectedDevice: { state: { staticSessionId: testDeviceState } } },
-                tokenDefinitions: {},
-                fiat: { rates: {}, current: 'usd' },
-                featureFlags: {
-                    ...featureFlagsInitialState,
-                    [FeatureFlag.IsCardanoSendEnabled]: true,
-                },
-            } as any;
-
-            const result = selectAccountsWithTokensToSellSectionListByTradingType(
-                stateWithDevice,
-                'exchange',
-            );
-
-            expect(result.length).toBe(2);
-            const symbols = result.map(section => section.sectionData.symbol);
-            expect(symbols).toContain('btc');
-            expect(symbols).toContain('ada');
         });
 
         it('should handle contractIds as case insensitive', () => {

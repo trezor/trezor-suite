@@ -1,6 +1,6 @@
-import Animated, { FadeInUp, FadeOutDown } from 'react-native-reanimated';
+import { FadeInUp, FadeOutDown } from 'react-native-reanimated';
 
-import { Box, Text } from '@suite-native/atoms';
+import { AnimatedView, Box, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type FirmwareInstallationProgressTitlesProps = {
@@ -21,7 +21,7 @@ export const FirmwareInstallationProgressTitles = ({
     const { applyStyle } = useNativeStyles();
 
     return (
-        <Animated.View
+        <AnimatedView
             entering={FadeInUp}
             exiting={FadeOutDown}
             key={title}
@@ -37,6 +37,6 @@ export const FirmwareInstallationProgressTitles = ({
                     {subtitle}
                 </Text>
             </Box>
-        </Animated.View>
+        </AnimatedView>
     );
 };

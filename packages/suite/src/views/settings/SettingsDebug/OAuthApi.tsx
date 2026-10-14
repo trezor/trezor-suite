@@ -1,9 +1,9 @@
 import { GoogleClient } from '@suite/metadata';
 import { selectOAuthServerEnvironment, suiteSettingsActions } from '@suite/settings';
-import { useServices } from '@suite-common/dependency-injection';
 import { type OAuthServerEnvironment } from '@suite-common/metadata-types';
-import { injectDispatch } from '@suite-common/redux-utils';
-import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
+import { useServices } from '@trezor/dependency-injection';
+import { SectionItem } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -24,14 +24,16 @@ export const OAuthApi = () => {
     };
 
     return (
-        <SectionItem>
-            <TextColumn
-                title="Google auth server"
-                description="Set the authorisation server url for labeling in Google Drive"
-            />
-            <ActionColumn>
-                <ActionSelect onChange={handleChange} value={selectedOption} options={options} />
-            </ActionColumn>
-        </SectionItem>
+        <SectionItem
+            title="Google auth server"
+            description="Set the authorisation server url for labeling in Google Drive"
+            actions={
+                <SectionItem.Select
+                    onChange={handleChange}
+                    value={selectedOption}
+                    options={options}
+                />
+            }
+        />
     );
 };

@@ -2,8 +2,8 @@ import { useFormState, useWatch } from 'react-hook-form';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
-import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { AMOUNT_MAX_LENGTH } from '@suite-common/wallet-core';
 import { toFiatCurrency } from '@suite-common/wallet-utils';
 import { Banner, Button, Column, Row, Text } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
@@ -83,7 +83,7 @@ export const TronUnstakeAmount = () => {
         locale,
         control,
         rules: currency === 'crypto' ? cryptoInputRules : fiatInputRules,
-        maxLength: currency === 'crypto' ? formInputsMaxLength.amount : formInputsMaxLength.fiat,
+        maxLength: AMOUNT_MAX_LENGTH,
         isDisabled,
         hasError,
         onChange: currency === 'crypto' ? onCryptoAmountChange : onFiatAmountChange,
@@ -110,11 +110,16 @@ export const TronUnstakeAmount = () => {
                 />
             </Row>
 
-            <NumberInput {...numberInputProps} />
+            <NumberInput {...numberInputProps} data-testid="@staking/tron-unstake/amount-input" />
 
             <Row justifyContent="space-between" alignItems="center" gap={8}>
                 <Row alignItems="center" gap={8}>
-                    <Text typographyStyle="body-md" intent="neutral" priority="secondary">
+                    <Text
+                        typographyStyle="body-md"
+                        intent="neutral"
+                        priority="secondary"
+                        data-testid="@staking/tron-unstake/staked-balance"
+                    >
                         <Translation id="TR_EARN_TRON_STAKED" />{' '}
                         <FormattedCryptoAmount value={stakedBalance} symbol={account.symbol} />
                     </Text>
@@ -125,6 +130,7 @@ export const TronUnstakeAmount = () => {
                         priority="secondary"
                         onClick={() => onCryptoAmountChange(stakedBalance)}
                         isDisabled={isDisabled}
+                        data-testid="@staking/tron-unstake/max-button"
                     >
                         <Translation id="TR_FRACTION_BUTTONS_MAX" />
                     </Button>
@@ -139,7 +145,11 @@ export const TronUnstakeAmount = () => {
             </Row>
 
             {!!errorMessage && (
-                <Banner intent="warning" description={<Text>{errorMessage}</Text>} />
+                <Banner
+                    intent="warning"
+                    description={<Text>{errorMessage}</Text>}
+                    data-testid="@staking/tron-unstake/amount-error"
+                />
             )}
         </Column>
     );

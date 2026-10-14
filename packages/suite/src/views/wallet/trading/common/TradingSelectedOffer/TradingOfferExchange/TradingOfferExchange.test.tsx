@@ -29,15 +29,22 @@ import { mockInitialAppState } from '../../../../../../../mocks/mockInitialAppSt
 
 const mockSendTransaction = jest.fn(() => Promise.resolve(true));
 const mockSignDataAndConfirm = jest.fn(() => Promise.resolve());
+const mockEthAccount = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
+const mockBtcAccount = mockWalletAccount({
+    symbol: asNetworkSymbol('btc'),
+});
+let mockSendAccount = mockEthAccount;
 
 jest.mock('@suite/device', () => ({
     ...jest.requireActual('@suite/device'),
     useDevice: () => ({ device: { connected: true } }),
 }));
 
+type TranslationProps = { id: string };
+
 jest.mock('@suite/intl', () => ({
     ...jest.requireActual('@suite/intl'),
-    Translation: ({ id }: { id: string }) => <span>{id}</span>,
+    Translation: ({ id }: TranslationProps) => <span>{id}</span>,
 }));
 
 jest.mock('@suite-common/trading', () => ({
@@ -49,26 +56,34 @@ jest.mock('@suite-common/trading', () => ({
 
 jest.mock('src/hooks/wallet/trading/useTradingExchangeTradeActions', () => ({
     useTradingExchangeTradeActions: () => ({
-        account: mockWalletAccount({ symbol: asNetworkSymbol('eth') }),
+        account: mockSendAccount,
         sendTransaction: mockSendTransaction,
         signDataAndConfirm: mockSignDataAndConfirm,
     }),
 }));
 
-jest.mock('./TradingOfferExchangeDetails', () => ({
-    TradingOfferExchangeDetails: () => null,
+jest.mock('src/hooks/wallet/trading/useTradingExchangeConfirmFees', () => ({
+    useTradingExchangeConfirmFees: () => ({
+        feeInfo: {},
+        composeFormState: {},
+        applySelectedFee: jest.fn(),
+    }),
 }));
 
+jest.mock('./TradingOfferExchangeDetails', () => ({
+    TradingOfferExchangeDetails: ({ networkFeeEdit }: { networkFeeEdit?: object }) => (
+        <div data-testid="network-fee">{networkFeeEdit ? 'editable' : 'fixed'}</div>
+    ),
+}));
+
+type TradingInfoItemProps = {
+    isReceive?: boolean;
+    amount?: string;
+    isAmountLoading?: boolean;
+};
+
 jest.mock('../TradingInfo/TradingInfoItem', () => ({
-    TradingInfoItem: ({
-        isReceive,
-        amount,
-        isAmountLoading,
-    }: {
-        isReceive?: boolean;
-        amount?: string;
-        isAmountLoading?: boolean;
-    }) => (
+    TradingInfoItem: ({ isReceive, amount, isAmountLoading }: TradingInfoItemProps) => (
         <div data-testid={`info-item-${isReceive ? 'receive' : 'send'}`}>
             {isAmountLoading ? 'loading' : amount}
         </div>
@@ -96,6 +111,12 @@ const SELECTED_QUOTE: ExchangeTrade = {
 const CROSS_CHAIN_QUOTE: ExchangeTrade = {
     ...SELECTED_QUOTE,
     receive: 'bitcoin' as CryptoId,
+};
+
+const BTC_DEX_QUOTE: ExchangeTrade = {
+    ...SELECTED_QUOTE,
+    send: 'bitcoin' as CryptoId,
+    dexTx: { from: 'from', to: 'to', data: 'cHNidP8B', value: '0' },
 };
 
 const SIGN_DATA_QUOTE: ExchangeTrade = {
@@ -172,6 +193,7 @@ const renderOfferExchange = ({
 describe('TradingOfferExchange', () => {
     beforeEach(() => {
         jest.clearAllMocks();
+        mockSendAccount = mockEthAccount;
     });
 
     it.each([true, false])('reviews a swap under the swap title (isDex: %s)', isDex => {
@@ -284,6 +306,19 @@ describe('TradingOfferExchange', () => {
                 slippage: undefined,
             },
         });
+    });
+
+    it('lets the user edit the network fee of an EVM swap', () => {
+        renderOfferExchange();
+
+        expect(screen.getByTestId('network-fee')).toHaveTextContent('editable');
+    });
+
+    it('shows the PSBT fee of a BTC DEX swap as fixed', () => {
+        mockSendAccount = mockBtcAccount;
+        renderOfferExchange({ selectedQuote: BTC_DEX_QUOTE });
+
+        expect(screen.getByTestId('network-fee')).toHaveTextContent('fixed');
     });
 
     it('reports continuing on the sign data step', async () => {

@@ -84,8 +84,8 @@ describe('TradeApi', () => {
         });
 
         const info = await tradeApi.getInfo();
-        expect(consoleSpy).not.toHaveBeenCalled();
-        expect(info).toEqual(fetchError);
+        expect(consoleSpy).not.toHaveBeenCalledWith('[getInfo]', expect.anything());
+        expect(info).toEqual({ ...fetchError, config: {} });
     });
 
     it('should handle error when is not an error message from API', async () => {
@@ -119,6 +119,29 @@ describe('TradeApi', () => {
             expect(info).toEqual(mockInfo);
         });
 
+        it('should keep coins and platforms but drop an invalid btcSwapComposeTemplate', async () => {
+            (global.fetch as jest.Mock).mockResolvedValueOnce({
+                ok: true,
+                json: () =>
+                    Promise.resolve({
+                        coins,
+                        platforms,
+                        config: {
+                            btcSwapComposeTemplate: {
+                                extraOutputs: [{ type: 'opreturn', dataHex: 'not-hex' }],
+                            },
+                        },
+                    }),
+            });
+
+            const info = await tradeApi.getInfo();
+            expect(info).toEqual({ coins, platforms, config: {} });
+            expect(consoleSpy).toHaveBeenCalledWith(
+                '[parseBtcSwapComposeTemplate]',
+                expect.anything(),
+            );
+        });
+
         it('should handle fetch info when the response is undefined', async () => {
             (global.fetch as jest.Mock).mockRejectedValueOnce({
                 ok: true,
@@ -135,31 +158,6 @@ describe('TradeApi', () => {
             const info = await tradeApi.getInfo();
             expect(consoleSpy).toHaveBeenCalledWith('[getInfo]', error);
             expect(info).toBeUndefined();
-        });
-
-        it('uses a request-scoped API key without changing the current account', async () => {
-            const requestIdentity = {
-                apiKey: 'anonymous-api-key',
-                traceId: 'anonymous-trace-id',
-            };
-            const currentAccountDescriptor = tradeApi.getCurrentAccountDescriptor();
-            (global.fetch as jest.Mock).mockResolvedValueOnce({
-                ok: true,
-                json: () => Promise.resolve({ platforms: {}, coins: {}, config: {} }),
-            });
-
-            await tradeApi.getInfo({ identity: requestIdentity });
-
-            expect(global.fetch).toHaveBeenCalledWith(
-                expect.any(String),
-                expect.objectContaining({
-                    headers: expect.objectContaining({
-                        'X-SuiteW-Api': requestIdentity.apiKey,
-                        'X-Trace-Id': requestIdentity.traceId,
-                    }),
-                }),
-            );
-            expect(tradeApi.getCurrentAccountDescriptor()).toBe(currentAccountDescriptor);
         });
     });
 

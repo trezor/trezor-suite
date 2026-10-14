@@ -1,11 +1,18 @@
 import { DeviceModelInternal } from '@trezor/device-utils';
 import {
+    DEFAULT_ACCOUNT_SYNC_INTERVAL,
     type Explorer,
     type SuiteCommonNetworkConfig,
     asDisplayOrderKey,
     asProtocol,
 } from '@trezor/network-module-suite-common-types';
-import { TRON_DECIMALS, type TronNetworkSymbol } from '@trezor/network-tron/constants';
+import { TRON_DECIMALS } from '@trezor/network-tron/constants';
+import type { TronNetworkSymbol } from '@trezor/network-tron-types';
+
+const syncIntervalBySymbol: Readonly<Record<TronNetworkSymbol, number>> = {
+    trx: DEFAULT_ACCOUNT_SYNC_INTERVAL / 1.5,
+    ttrx: DEFAULT_ACCOUNT_SYNC_INTERVAL,
+};
 
 const getExplorerUrls = (baseUrl: string): Explorer => ({
     base: baseUrl,
@@ -48,6 +55,7 @@ export const networkConfigBySymbol = {
         },
         coingeckoId: 'tron',
         tradeCryptoId: 'tron',
+        fiatRateCryptoId: 'tron',
         yieldXyzId: 'tron',
         caipId: 'tron:0x2b6653dc',
     },
@@ -73,3 +81,6 @@ export const networkConfigBySymbol = {
 
 export const getNetworkConfig = (symbol: TronNetworkSymbol): SuiteCommonNetworkConfig =>
     networkConfigBySymbol[symbol];
+
+export const getAccountSyncInterval = (symbol: TronNetworkSymbol): number =>
+    syncIntervalBySymbol[symbol];

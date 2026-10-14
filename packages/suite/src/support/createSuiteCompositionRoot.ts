@@ -26,7 +26,6 @@ import {
     type TransportsDep,
 } from '@suite-common/connect-init';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
-import { toGetter } from '@suite-common/dependency-injection';
 import { selectDeviceByStaticSessionId } from '@suite-common/device';
 import { type CommonServices } from '@suite-common/extra-dependencies';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
@@ -43,8 +42,10 @@ import { type GetBinFilesBaseUrlDep, type ReloadAppDep } from '@suite-common/sui
 import { type ThpHostNameDep } from '@suite-common/thp';
 import { selectTradedAccountKeys } from '@suite-common/trading';
 import { selectAccountsByDeviceState } from '@suite-common/wallet-core';
-import { type CreateLoggerDep, type GetTrezorConnectPrivilegedDep } from '@trezor/connect';
+import { type GetTrezorConnectPrivilegedDep } from '@trezor/connect';
+import { toGetter } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';
+import type { CreateLoggerDep } from '@trezor/logger';
 
 import { type SuiteReduxStore } from 'src/reducers/createReduxStore';
 import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
@@ -56,7 +57,6 @@ import { createConnectInitUIEventHooks } from './createConnectInitUIEventHooks';
 import { type AppState } from '../types/suite';
 
 const connectInitSettings: ConnectInitSettings = {
-    transportReconnect: true,
     debug: false,
     manifest: {
         email: 'info@trezor.io',
@@ -181,6 +181,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         connectInitSettings,
         connectInitDeviceEventHooks: createConnectInitDeviceEventHooks({
             dispatch: deps.dispatch,
+            bluetooth,
         }),
         connectInitUIEventHooks: createConnectInitUIEventHooks({
             dispatch: deps.dispatch,

@@ -9,7 +9,6 @@ import {
     selectSelectedDevice,
 } from '@suite-common/device';
 import { type ReceiveRootState, selectCurrentFreshAddress } from '@suite-common/receive';
-import { type Dispatch, type WithServices } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type WalletSettingsRootState,
@@ -17,6 +16,7 @@ import {
     selectAddressDisplayType,
 } from '@suite-common/wallet-core';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
+import { type Dispatch, type WithServices } from '@trezor/redux-utils';
 
 type ShowAddressThunkState = DeviceRootState &
     WalletSettingsRootState &
@@ -25,8 +25,10 @@ type ShowAddressThunkState = DeviceRootState &
 
 type ShowAddressThunkDeps = WithServices<DesktopAnalyticsDep>;
 
+type ShowAddressThunkParams = { path: string };
+
 export const showAddressThunk =
-    ({ path }: { path: string }) =>
+    ({ path }: ShowAddressThunkParams) =>
     async (
         dispatch: Dispatch,
         getState: () => ShowAddressThunkState,

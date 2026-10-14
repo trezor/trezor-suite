@@ -12,7 +12,7 @@ export const SHOULD_ROUTER_APP_START_DISCOVERY: Record<RouterApp, boolean> = {
     'earn-yield': true,
     'earn-staking': true,
 
-    start: false,
+    'apps-embedding': false,
     version: false,
     'bridge-requested': false,
     bridge: false,

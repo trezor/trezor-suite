@@ -1,6 +1,6 @@
 import { type Meta, type StoryObj } from '@storybook/react';
 
-import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
+import { asNetworkSymbol } from '@trezor/network-module-types';
 import { spacingValues } from '@trezor/theme';
 
 import {
@@ -9,10 +9,10 @@ import {
 } from './NetworkIconSet';
 import { allowedTokenIconSizes } from '../TokenIcon/tokenIconTypes';
 
-const NETWORK_1: NetworkSymbol = asNetworkSymbol('btc');
-const NETWORK_2: NetworkSymbol = asNetworkSymbol('eth');
-const NETWORK_3: NetworkSymbol = asNetworkSymbol('ltc');
-const NETWORK_4: NetworkSymbol = asNetworkSymbol('ada');
+const NETWORK_1 = asNetworkSymbol('btc');
+const NETWORK_2 = asNetworkSymbol('eth');
+const NETWORK_3 = asNetworkSymbol('ltc');
+const NETWORK_4 = asNetworkSymbol('ada');
 
 const meta: Meta<typeof NetworkIconSetComponent> = {
     title: 'NetworkIconSet',
@@ -22,7 +22,7 @@ export default meta;
 
 export const NetworkIconSet: StoryObj<NetworkIconSetProps> = {
     args: {
-        networks: [NETWORK_1, NETWORK_2, NETWORK_3, NETWORK_4],
+        isToken: true,
         size: 24,
         gap: 16,
         maxVisibleIcons: 3,
@@ -31,9 +31,13 @@ export const NetworkIconSet: StoryObj<NetworkIconSetProps> = {
         isReversed: true,
     },
     argTypes: {
+        isToken: {
+            control: 'boolean',
+        },
         networks: {
-            options: ['1', '2', '3', '4'],
+            options: ['default', '1', '2', '3', '4'],
             mapping: {
+                default: undefined,
                 '1': [NETWORK_1],
                 '2': [NETWORK_1, NETWORK_2],
                 '3': [NETWORK_1, NETWORK_2, NETWORK_3],
@@ -42,6 +46,7 @@ export const NetworkIconSet: StoryObj<NetworkIconSetProps> = {
             control: {
                 type: 'select',
                 labels: {
+                    default: 'Available networks from provider',
                     1: '1 network',
                     2: '2 networks',
                     3: '3 networks',

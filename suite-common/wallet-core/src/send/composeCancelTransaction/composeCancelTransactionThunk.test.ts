@@ -11,6 +11,8 @@ import {
 
 const initStore = () => createTestCompositionRoot<void, unknown>({}).services.store;
 
+const RECEIVE_ADDRESS = 'bcrt1qjdkgvc67dnk3930gxj2valeadsg49datkyz7tu';
+const USED_CHANGE_ADDRESS = 'bcrt1qejqxwzfld7zr6mf7ygqy5s5se5xq7vmt8ntmj0';
 const UNUSED_CHANGE_ADDRESS = 'bcrt1qte33uyyfzrdrm9nqk0uwlq9dqr6ezu2gurhree';
 
 const account: ComposeCancelTransactionThunkParams['account'] = {
@@ -19,8 +21,16 @@ const account: ComposeCancelTransactionThunkParams['account'] = {
     addresses: {
         change: [
             {
-                address: UNUSED_CHANGE_ADDRESS,
+                address: USED_CHANGE_ADDRESS,
                 path: "m/84'/1'/0'/1/0",
+                transfers: 1,
+                balance: '',
+                sent: '',
+                received: '',
+            },
+            {
+                address: UNUSED_CHANGE_ADDRESS,
+                path: "m/84'/1'/0'/1/1",
                 transfers: 0,
                 balance: '',
                 sent: '',
@@ -31,8 +41,6 @@ const account: ComposeCancelTransactionThunkParams['account'] = {
         unused: [],
     },
 };
-
-const ORIGINAL_CHANGE_ADDRESS = 'bcrt1qejqxwzfld7zr6mf7ygqy5s5se5xq7vmt8ntmj0';
 
 const transactionWithChange: Pick<WalletAccountTransaction, 'details' | 'vsize' | 'fee'> = {
     fee: '1410',
@@ -51,13 +59,13 @@ const transactionWithChange: Pick<WalletAccountTransaction, 'details' | 'vsize' 
             {
                 value: '1000000000', // Spend 10BTC
                 n: 0,
-                addresses: ['bcrt1qjdkgvc67dnk3930gxj2valeadsg49datkyz7tu'],
+                addresses: [RECEIVE_ADDRESS],
                 isAddress: true,
             },
             {
                 value: '8999998590', // Change address
                 n: 1,
-                addresses: [ORIGINAL_CHANGE_ADDRESS],
+                addresses: [USED_CHANGE_ADDRESS],
                 isAddress: true,
                 isAccountOwned: true,
             },
@@ -84,7 +92,7 @@ const transactionWithNoChange: Pick<WalletAccountTransaction, 'details' | 'vsize
             {
                 value: '8999997490',
                 n: 0,
-                addresses: ['bcrt1qjdkgvc67dnk3930gxj2valeadsg49datkyz7tu'],
+                addresses: [RECEIVE_ADDRESS],
                 isAddress: true,
             },
         ],
@@ -136,9 +144,7 @@ describe(composeCancelTransactionThunk.name, () => {
         const [call] = composeTransactionMock.mock.calls[0] ?? [];
         expect(call?.feeLevels).toStrictEqual([{ feePerUnit: '0.2' }]); // new relay fee
         expect(call?.baseFee).toBe(1410 + 1410); // sum of fees for original tx and chained txs
-        expect(call?.outputs).toStrictEqual([
-            { address: ORIGINAL_CHANGE_ADDRESS, type: 'send-max' },
-        ]);
+        expect(call?.outputs).toStrictEqual([{ address: USED_CHANGE_ADDRESS, type: 'send-max' }]);
     });
 
     it('uses first unused change address if tx has no change output (no chained transactions)', async () => {

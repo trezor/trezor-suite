@@ -15,8 +15,8 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { ServicesProvider } from '@suite-common/dependency-injection';
 import { MockedFormatterProvider } from '@suite-common/formatters/mocks';
+import { ServicesProvider } from '@trezor/dependency-injection';
 
 import { ConnectedThemeProvider } from 'src/support/suite/ConnectedThemeProvider';
 
@@ -138,6 +138,9 @@ export const actionSequence = async <A extends UserAction[]>(
 
             // NOTE: typing or clearing inputs requires extra user action for proper render
             await user.click(element);
+        } else if (action.type === 'paste') {
+            await user.click(element);
+            await user.paste(action.value ?? '');
         }
 
         // wait for compose

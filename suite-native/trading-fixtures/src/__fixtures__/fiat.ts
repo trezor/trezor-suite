@@ -1,10 +1,17 @@
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
-import type { Rate, Timestamp, WalletSettings } from '@suite-common/wallet-types';
+import type {
+    CurrentRate,
+    CurrentRatesByKey,
+    Timestamp,
+    WalletSettings,
+} from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { PROTO } from '@trezor/connect';
 
-export const createMockRate = (rate: number, symbol: NetworkSymbol): Rate => ({
+// In dollars, the dollar rate is the rate itself.
+export const createMockRate = (rate: number, symbol: NetworkSymbol): CurrentRate => ({
     rate,
+    usdRate: rate,
     lastTickerTimestamp: 1000000 as Timestamp,
     lastSuccessfulFetchTimestamp: Date.now() as Timestamp,
     isLoading: false,
@@ -12,7 +19,7 @@ export const createMockRate = (rate: number, symbol: NetworkSymbol): Rate => ({
     ticker: { symbol },
 });
 
-export const mockWalletFiatRatesAndSettings = (customRates: { [x: string]: Rate } = {}) => ({
+export const mockWalletFiatRatesAndSettings = (customRates: CurrentRatesByKey = {}) => ({
     settings: {
         localCurrency: 'usd',
         bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,

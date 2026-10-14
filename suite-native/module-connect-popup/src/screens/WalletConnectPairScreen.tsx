@@ -3,8 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { selectSessions, walletConnectDisconnectThunk } from '@suite-common/walletconnect';
 // TODO fix deep import
 // eslint-disable-next-line local-rules/no-package-deep-imports
@@ -33,6 +31,8 @@ import {
     ScreenHeader,
     type StackNavigationProps,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { ConnectAppIcon } from '../components/ConnectAppIcon';
 import { WalletConnectPairBottomSheet } from '../components/WalletConnectPairBottomSheet';

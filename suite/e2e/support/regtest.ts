@@ -1,7 +1,9 @@
 // TODO: future coinjoin-backend-link package? similar to trezor-user-env-link
 /* eslint-disable no-console */
 
-export const sendToAddress = ({ address, amount }: { address: string; amount: string }) =>
+type SendToAddressParams = { address: string; amount: string };
+
+export const sendToAddress = ({ address, amount }: SendToAddressParams) =>
     fetch('http://localhost:8081/send_to_address', {
         headers: {
             'content-type': 'application/x-www-form-urlencoded',

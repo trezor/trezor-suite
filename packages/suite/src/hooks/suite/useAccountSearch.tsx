@@ -1,8 +1,8 @@
 import { createContext, useContext, useMemo } from 'react';
 
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import {
@@ -42,7 +42,9 @@ export function useReduxAccountSearchActions() {
     );
 }
 
-export const ReduxAccountSearchProvider = ({ children }: { children: React.ReactNode }) => {
+type ReduxAccountSearchProviderProps = { children: React.ReactNode };
+
+export const ReduxAccountSearchProvider = ({ children }: ReduxAccountSearchProviderProps) => {
     const filters = useSelector(state => selectAccountSearch(state));
     const actions = useReduxAccountSearchActions();
 

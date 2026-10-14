@@ -7,10 +7,8 @@ import { D, pipe } from '@mobily/ts-belt';
 import { useNavigation } from '@react-navigation/native';
 import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { selectIsDeviceRemembered } from '@suite-common/device';
 import { injectAddressValidator, injectGetNamedAddressSupport } from '@suite-common/networks';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { getExcludedUtxos } from '@suite-common/transaction-search';
 import { type NetworkType, getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
 import {
@@ -43,7 +41,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { useAlert } from '@suite-native/alerts';
 import { useForm } from '@suite-native/forms';
-import { Translation } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 import {
     AccountDetailStackRoutes,
     AuthorizeDeviceStackRoutes,
@@ -63,7 +61,9 @@ import {
     transactionManagementActions,
     useSubscribeForSolanaBlockUpdates,
 } from '@suite-native/transaction-management';
+import { useServices } from '@trezor/dependency-injection';
 import { useDebounce } from '@trezor/react-utils';
+import { injectDispatch } from '@trezor/redux-utils';
 import { TRANSPORT_ERROR } from '@trezor/transport-common';
 
 import { selectDestinationTagFromDraft } from '../selectors';
@@ -115,6 +115,7 @@ type SendFormNavigationProp = StackToStackCompositeNavigationProps<
 export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress) => {
     const debounce = useDebounce();
     const navigation = useNavigation<SendFormNavigationProp>();
+    const { translate } = useTranslate();
     const { addressValidator, getNamedAddressSupport, dispatch } = useServices(
         injectAddressValidator,
         injectGetNamedAddressSupport,
@@ -214,7 +215,21 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
     const isResolvingNamedAddress = namedAddressMode === 'forward' && isResolving;
 
     const updateFormState = useCallback(async () => {
-        if (account && network && networkFeeInfo?.levels.length) {
+        const formValues = getValues();
+        // Unlike other networks, Cardano composes outputs without an amount, and the validation
+        // triggered below would flag the fields the user has not filled in yet. Token sends still
+        // compose such an output to show the minimum ADA it requires.
+        const isIncompleteCardanoOutput =
+            network?.networkType === 'cardano' &&
+            formValues.setMaxOutputId === undefined &&
+            !formValues.outputs.some(output => !!output.amount);
+
+        if (
+            account &&
+            network &&
+            networkFeeInfo?.levels.length &&
+            (!isIncompleteCardanoOutput || tokenContract)
+        ) {
             const response = await dispatch(
                 composeSendFormTransactionFeeLevelsThunk({
                     formState: constructFormDraft({
@@ -231,7 +246,11 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
                 }),
             );
 
-            if (isFulfilled(response)) {
+            if (isFulfilled(response) && isIncompleteCardanoOutput) {
+                dispatch(
+                    transactionManagementActions.storeFeeLevels({ feeLevels: response.payload }),
+                );
+            } else if (isFulfilled(response)) {
                 const isReserveError = pipe(
                     response.payload,
                     D.filter(
@@ -245,6 +264,22 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
                 if (isReserveError) {
                     setError('outputs.0.amount', {
                         message: `Recipient account requires minimum reserve of 1 ${getDisplaySymbol(account.symbol)} to activate.`,
+                    });
+                }
+
+                const missingTrustline = Object.values(response.payload).find(
+                    feeLevel =>
+                        feeLevel.type === 'error' &&
+                        feeLevel.error === 'TR_STELLAR_RECIPIENT_MISSING_TRUSTLINE',
+                );
+                if (missingTrustline?.type === 'error') {
+                    setError('outputs.0.amount', {
+                        message: translate(
+                            'moduleSend.outputs.recipients.stellar.missingTrustline',
+                            {
+                                symbol: missingTrustline.errorMessage?.values?.symbol ?? '',
+                            },
+                        ),
                     });
                 }
 
@@ -276,6 +311,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         }
     }, [
         accountKey,
+        translate,
         dispatch,
         getValues,
         tokenContract,

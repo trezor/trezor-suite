@@ -18,6 +18,7 @@ import {
     blockchainInitialState,
     discoveryInitialState,
     earnOnboardingInitialState,
+    earnTransactionsInitialState,
     explorerInitialState,
     feesInitialState,
     fiatRatesInitialState,
@@ -26,6 +27,7 @@ import {
     initialWalletSettingsState,
     phishingInitialState,
     stakeInitialState,
+    stellarContractTokensInitialState,
     transactionsInitialState,
 } from '@suite-common/wallet-core';
 import { walletConnectInitialState } from '@suite-common/walletconnect';
@@ -88,6 +90,7 @@ export const mockInitialAppState = (partialState?: Partial<FullAppState>): FullA
         accounts: accountsInitialState,
         earnOnboarding: earnOnboardingInitialState,
         accountsRefreshTime: accountsRefreshTimeInitialState,
+        earnTransactions: earnTransactionsInitialState,
         blockchain: blockchainInitialState,
         explorer: explorerInitialState,
         fiat: fiatRatesInitialState,
@@ -101,6 +104,7 @@ export const mockInitialAppState = (partialState?: Partial<FullAppState>): FullA
         trading: tradingInitialState,
         settings: initialWalletSettingsState,
         formDrafts: formDraftInitialState,
+        stellarContractTokens: stellarContractTokensInitialState,
     },
 
     ...partialState,

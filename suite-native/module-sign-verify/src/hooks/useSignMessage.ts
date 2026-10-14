@@ -1,7 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { signThunk } from '@suite-common/sign-verify';
 import type { Account } from '@suite-common/wallet-types';
 import { useDeviceReadyEvents } from '@suite-native/device-authorization';
@@ -10,6 +8,8 @@ import {
     RootStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 export type SignatureFormat = 'default' | 'electrum' | 'cose';
 

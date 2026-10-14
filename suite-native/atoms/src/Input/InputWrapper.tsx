@@ -1,6 +1,9 @@
 import { type ReactNode } from 'react';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { FadeIn, FadeOut } from 'react-native-reanimated';
 
+import { isTranslationKey, useTranslate } from '@suite-native/intl';
+
+import { AnimatedView } from '../Animated/AnimatedView';
 import { Box } from '../Box';
 import { Hint } from '../Hint';
 import { VStack } from '../Stack';
@@ -13,16 +16,10 @@ export type InputWrapperProps = {
     error?: string;
 };
 
-// Temperorary translation of the error messages used in the native app.
-// Should be later replaced by an implementation of a localization module.
-const errorToMessageMap: Record<string, string> = {
-    TR_REQUIRED_FIELD: 'Field is mandatory',
-    TR_EXCEEDS_MAX: 'Number of characters exceeded',
-    DATA_NOT_VALID_HEX: 'Not a valid hex',
-};
-
 export const InputWrapper = ({ children, label, hint, error }: InputWrapperProps) => {
-    const errorMessage = (error && errorToMessageMap[error]) ?? error;
+    const { translate } = useTranslate();
+
+    const errorMessage = isTranslationKey(error) ? translate(error) : error;
 
     return (
         <VStack flex={1} spacing="sp6">
@@ -35,14 +32,14 @@ export const InputWrapper = ({ children, label, hint, error }: InputWrapperProps
             {(!!error || !!hint) && (
                 <Box marginLeft="sp12">
                     {!!error && (
-                        <Animated.View entering={FadeIn} exiting={FadeOut}>
+                        <AnimatedView entering={FadeIn} exiting={FadeOut}>
                             <Hint variant="error">{errorMessage}</Hint>
-                        </Animated.View>
+                        </AnimatedView>
                     )}
                     {!!hint && (
-                        <Animated.View entering={FadeIn} exiting={FadeOut}>
+                        <AnimatedView entering={FadeIn} exiting={FadeOut}>
                             <Hint>{hint}</Hint>
-                        </Animated.View>
+                        </AnimatedView>
                     )}
                 </Box>
             )}

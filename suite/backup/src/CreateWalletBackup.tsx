@@ -7,10 +7,10 @@ import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { selectIsN4w1BackupEnabled } from '@suite/settings';
 import { hasSlip39Backup, isBackupComplete } from '@suite-common/backup';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from '@trezor/product-components';
+import { useServices } from '@trezor/dependency-injection';
+import { SectionItem } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 import { HELP_CENTER_MULTI_SHARE_BACKUP_URL } from '@trezor/urls';
 
 const DisabledWrapper = styled.div<{ $isDisabled: boolean }>`
@@ -42,26 +42,26 @@ export const CreateWalletBackup = ({ isDeviceLocked }: CreateWalletBackupProps) 
 
     return (
         <DisabledWrapper $isDisabled={!isBackupDone}>
-            <SectionItem>
-                <TextColumn
-                    title={<Translation id="TR_CREATE_NEW_WALLET_BACKUP" />}
-                    description={<Translation id="TR_CREATE_NEW_WALLET_BACKUP_DESCRIPTION" />}
-                    bottomContent={<LearnMoreButton url={HELP_CENTER_MULTI_SHARE_BACKUP_URL} />}
-                />
-                <ActionColumn>
-                    <ActionButton
+            <SectionItem
+                title={<Translation id="TR_CREATE_NEW_WALLET_BACKUP" />}
+                description={<Translation id="TR_CREATE_NEW_WALLET_BACKUP_DESCRIPTION" />}
+                bottomContent={<LearnMoreButton url={HELP_CENTER_MULTI_SHARE_BACKUP_URL} />}
+                actions={
+                    <SectionItem.Button
                         intent="brand"
                         onClick={handleClick}
                         isDisabled={isActionDisabled}
-                        isTooltipActive={isDeviceLocked}
-                        tooltipContent={
-                            <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
-                        }
+                        tooltip={{
+                            isActive: isDeviceLocked,
+                            content: (
+                                <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
+                            ),
+                        }}
                     >
                         <Translation id="TR_CREATE_NEW_WALLET_BACKUP" />
-                    </ActionButton>
-                </ActionColumn>
-            </SectionItem>
+                    </SectionItem.Button>
+                }
+            />
         </DisabledWrapper>
     );
 };

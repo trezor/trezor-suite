@@ -195,9 +195,11 @@ export const selectIsStakeConfirmingByAccountKey = (
     }
 };
 
+type SelectApyParams = { accountKey?: AccountKey; networkSymbol?: NetworkSymbol };
+
 export const selectApy = (
     state: StakeRootState,
-    { accountKey, networkSymbol }: { accountKey?: AccountKey; networkSymbol?: NetworkSymbol },
+    { accountKey, networkSymbol }: SelectApyParams,
 ) => {
     const account = selectAccountByKey(state, accountKey) ?? undefined;
 

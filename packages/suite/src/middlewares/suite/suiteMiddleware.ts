@@ -18,7 +18,6 @@ import {
     selectDevicePath,
     selectDeviceThunk,
 } from '@suite-common/device';
-import { type WithServices, createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import { isAnyDeviceEventAction } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -31,6 +30,7 @@ import {
     selectIsDeviceAutoEjectEnabled,
     startOrRestartDiscoveryThunk,
 } from '@suite-common/wallet-core';
+import { type WithServices, createMiddlewareWithExtraDeps } from '@trezor/redux-utils';
 
 import { handleProtocolRequestThunk } from 'src/actions/suite/protocolActions';
 import { desktopHandshake, setRecentlyDisconnectedDevice } from 'src/actions/suite/suiteActions';

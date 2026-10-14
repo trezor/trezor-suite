@@ -1,8 +1,4 @@
-import type {
-    Address as AccountAddress,
-    AccountAddresses,
-    Utxo as AccountUtxo,
-} from '@trezor/blockchain-link';
+import type { Address as AccountAddress, Utxo as AccountUtxo } from '@trezor/blockchain-link';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type {
     ComposeInput as ComposeInputBase,
@@ -18,12 +14,13 @@ import type { Params, Response } from '../../params';
 // @trezor/utxo-lib `composeTx` ComposeInput required fields intersects AccountUtxo
 export type ComposeUtxo = AccountUtxo & Partial<ComposeInputBase>;
 
+// Composing reads only these fields, so a full AccountAddress from getAccountInfo fits as well.
+export type ComposeChangeAddress = Pick<AccountAddress, 'address' | 'path'>;
+
 export type PrecomposeParams = ComposeParams & {
-    account: {
-        path: string;
-        addresses: AccountAddresses;
-        utxo: ComposeUtxo[];
-    };
+    path: string;
+    utxo: ComposeUtxo[];
+    changeAddress?: ComposeChangeAddress;
     feeLevels: { feePerUnit: string }[];
 };
 
@@ -41,7 +38,7 @@ export type ComposeResultError =
 export type ComposeResultFinal = ComposeResultFinalBase<
     ComposedInputs,
     ComposeOutputBase,
-    AccountAddress
+    ComposeChangeAddress
 >;
 
 export type ComposeResultNonFinal = ComposeResultNonFinalBase<ComposedInputs>;

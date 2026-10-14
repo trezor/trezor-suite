@@ -36,7 +36,12 @@ import * as splToken2022 from '@solana-program/token-2022';
 
 import { BigNumber } from '@trezor/utils';
 
-import { SOLANA_MEMO_MAX_BYTES, SYSTEM_PROGRAM_PUBLIC_KEY, tokenProgramsInfo } from '../constants';
+import {
+    SOLANA_BLOCKHASH_VALIDITY_MS,
+    SOLANA_MEMO_MAX_BYTES,
+    SYSTEM_PROGRAM_PUBLIC_KEY,
+    tokenProgramsInfo,
+} from '../constants';
 import type {
     Blockhash,
     SolanaAPI,
@@ -375,7 +380,7 @@ const preparePushTransaction = async (rawTx: string, api: SolanaAPI) => {
 
 const getSendErrorMessage = (error: any) => {
     if (isSolanaError(error, SOLANA_ERROR__BLOCK_HEIGHT_EXCEEDED)) {
-        return 'Please make sure that you submit the transaction within 1 minute after signing.';
+        return `Please make sure that you submit the transaction within ${SOLANA_BLOCKHASH_VALIDITY_MS / 1000} seconds after signing.`;
     }
     if (
         isSolanaError(error, SOLANA_ERROR__RPC_SUBSCRIPTIONS__CHANNEL_FAILED_TO_CONNECT) ||

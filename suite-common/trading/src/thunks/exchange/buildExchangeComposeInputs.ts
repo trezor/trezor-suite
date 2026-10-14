@@ -58,11 +58,13 @@ const buildDexComposeInputs = ({
         return undefined;
     }
 
-    let serializedTx: string;
-    try {
-        serializedTx = normalizeDexTransactionData({ data: dexTx.data, networkType });
-    } catch {
-        return undefined;
+    let serializedTx: string | undefined;
+    if (dexTx.data) {
+        try {
+            serializedTx = normalizeDexTransactionData({ data: dexTx.data, networkType });
+        } catch {
+            return undefined;
+        }
     }
 
     return {
@@ -71,6 +73,7 @@ const buildDexComposeInputs = ({
             dexTx,
             partnerPaymentExtraId: quote.partnerPaymentExtraId,
             serializedTx,
+            networkType,
         }),
     };
 };

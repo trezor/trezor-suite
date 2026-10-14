@@ -1,27 +1,32 @@
 import * as utils from '@trezor/blockchain-link-utils/src/stellar';
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
-import { getStellarConnection, identifyTransaction, toStroops } from '@trezor/network-stellar';
-import type { StellarAPI } from '@trezor/network-stellar/types';
+import {
+    createStellarConnection,
+    describeTransaction,
+    groupOperationsByTransaction,
+    toStroops,
+} from '@trezor/network-stellar';
+import type { StellarHorizonServer } from '@trezor/network-stellar/types';
 
 import { BlockchainLink } from '../../index';
 
 import StellarWorker from './index';
 
-const HORIZON_URL = 'https://horizon.stellar.org';
+const STELLAR_URL = 'https://xlm.trezor.io';
 
 describe('Stellar', () => {
     let blockchain: BlockchainLink;
-    let horizonServer: StellarAPI;
+    let horizonServer: StellarHorizonServer;
 
     beforeAll(async () => {
         blockchain = new BlockchainLink({
             name: 'Stellar',
             worker: StellarWorker,
-            server: [HORIZON_URL],
+            server: [STELLAR_URL],
             debug: false,
         });
-        const { api } = await getStellarConnection(HORIZON_URL);
-        horizonServer = api;
+        const { horizon } = await createStellarConnection(STELLAR_URL);
+        horizonServer = horizon;
     });
 
     it('getInfo', async () => {
@@ -67,7 +72,7 @@ describe('Stellar', () => {
         const xdr = Buffer.from(latestTx.envelope_xdr, 'base64').toString('hex');
         const result = await blockchain.pushTransaction({ hex: xdr });
         expect(result).toEqual(latestTx.hash);
-    });
+    }, 20_000);
 
     it('getAccountInfo (Basic)', async () => {
         const descriptor = 'GBSXTBPFJOJ64NSYRFE2F6P6TPMMSD45KQZH5TEWIBEAHICY6IZVGCET';
@@ -139,22 +144,32 @@ describe('Stellar', () => {
         const accountRawResp = await horizonServer.loadAccount(descriptor);
 
         const pageSize = 25;
+        const limit = pageSize * 2;
 
-        const txRawResp = await horizonServer
-            .transactions()
-            .limit(pageSize)
+        const opsRawResp = await horizonServer
+            .operations()
             .forAccount(descriptor)
-            .order('desc')
             .includeFailed(true)
+            .join('transactions')
+            .limit(limit)
+            .order('desc')
             .call();
 
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const lastRecord: (typeof txRawResp.records)[number] =
-            txRawResp.records[txRawResp.records.length - 1];
-        const expectedCursor = lastRecord.paging_token;
-        const expectedTxs = txRawResp.records
-            .map(identifyTransaction)
-            .map(record => utils.transformTransaction(record, descriptor, {}));
+        const groups = groupOperationsByTransaction(
+            opsRawResp.records,
+            opsRawResp.records.length === limit,
+        ).slice(0, pageSize);
+
+        const expectedCursor = groups[groups.length - 1]?.cursor;
+        const expectedTxs = await Promise.all(
+            groups.map(async ({ operations }) =>
+                utils.transformTransaction(
+                    describeTransaction(operations, await operations[0].transaction()),
+                    descriptor,
+                    {},
+                ),
+            ),
+        );
 
         const result = await blockchain.getAccountInfo({
             descriptor,
@@ -194,6 +209,73 @@ describe('Stellar', () => {
                 },
             ],
         });
+    });
+
+    it('Horizon decodes Stellar Asset Contract transfers', async () => {
+        // Most host-function calls move nothing; page until one carrying balance changes shows up.
+        const maxPages = 10;
+        const balanceChangesOf = (record: unknown) =>
+            (record as { asset_balance_changes?: unknown[] | null }).asset_balance_changes;
+        const decodesTransfers = (record: unknown) => {
+            const changes = balanceChangesOf(record);
+
+            return Array.isArray(changes) && changes.length > 0;
+        };
+
+        let page = await horizonServer.operations().order('desc').limit(200).call();
+        let hostFunctionOp = page.records.find(decodesTransfers);
+        for (let i = 1; !hostFunctionOp && i < maxPages; i++) {
+            page = await page.next();
+            if (!page.records.length) break;
+            hostFunctionOp = page.records.find(decodesTransfers);
+        }
+        if (!hostFunctionOp) {
+            throw new Error(
+                `No host function operation carrying asset_balance_changes found in the last ${maxPages} pages`,
+            );
+        }
+
+        (balanceChangesOf(hostFunctionOp) as unknown[]).forEach(change =>
+            expect(change).toMatchObject({
+                type: expect.any(String),
+                asset_type: expect.any(String),
+                amount: expect.any(String),
+            }),
+        );
+    }, 30_000);
+
+    it('subscribes to the ledger head', async () => {
+        const blocks: { blockHeight: number; blockHash: string }[] = [];
+        blockchain.on('block', block => blocks.push(block));
+
+        const subscribed = await blockchain.subscribe({ type: 'block' });
+        expect(subscribed).toEqual({ subscribed: true });
+
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        await blockchain.unsubscribe({ type: 'block' });
+
+        expect(blocks.length).toBeGreaterThan(0);
+        expect(blocks[0]).toEqual({
+            blockHeight: expect.any(Number),
+            blockHash: expect.any(String),
+        });
+    }, 15000);
+
+    it('joins the transaction into the operations response', async () => {
+        const descriptor = 'GBSXTBPFJOJ64NSYRFE2F6P6TPMMSD45KQZH5TEWIBEAHICY6IZVGCET';
+        const { records } = await horizonServer
+            .operations()
+            .forAccount(descriptor)
+            .join('transactions')
+            .limit(1)
+            .order('desc')
+            .call();
+
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const operation: (typeof records)[number] = records[0];
+        const joinedTx = await operation.transaction();
+
+        expect(joinedTx.hash).toBe(operation.transaction_hash);
     });
 
     afterAll(() => {

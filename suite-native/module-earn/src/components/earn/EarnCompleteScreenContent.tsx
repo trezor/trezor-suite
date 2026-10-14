@@ -1,7 +1,6 @@
 import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
     type FeedbackCategory,
@@ -9,7 +8,6 @@ import {
     buildUserFeedbackData,
     sendFeedbackThunk,
 } from '@suite-common/feedback';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type WrappedNativeFlowType, type YieldFlowType } from '@suite-common/wallet-core';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import {
@@ -26,6 +24,8 @@ import {
 import { FeedbackCard } from '@suite-native/feedback-form';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { Screen } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { type EarnFormDraftPrefix } from '../../types';

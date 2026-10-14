@@ -6,6 +6,7 @@ export type { EnsureEncryptionKeyDep } from './createEnsureEncryptionKey';
 export { createMMKVStorage, clearStorage } from './mmkvStorage';
 export type { MMKVStorageDep, MMKVStorage } from './mmkvStorage';
 export * from './atomWithUnecryptedStorage';
+export * from './isDevUtilsEnabledAtom';
 
 export * from './migrations/account/v2';
 export * from './migrations/account/v3';

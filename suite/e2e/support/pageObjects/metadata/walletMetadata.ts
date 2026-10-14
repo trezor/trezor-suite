@@ -3,6 +3,14 @@ import { expect } from '@playwright/test';
 import { MetadataBase } from './metadataBase';
 import { step } from '../../common';
 
+type ChangeLabelParams = {
+    index: number;
+    label: string;
+    confirmSuiteSync?: boolean;
+};
+
+type RemoveLabelParams = { index: number };
+
 export class WalletMetadata extends MetadataBase {
     readonly walletLabel = (index: number) => this.walletOnIndex(index).getByTestId(this.inputId);
     readonly walletOnIndex = (index: number) =>
@@ -28,15 +36,7 @@ export class WalletMetadata extends MetadataBase {
     }
 
     @step()
-    async changeLabel({
-        index,
-        label,
-        confirmSuiteSync,
-    }: {
-        index: number;
-        label: string;
-        confirmSuiteSync?: boolean;
-    }) {
+    async changeLabel({ index, label, confirmSuiteSync }: ChangeLabelParams) {
         await this.clickEditLabel(index);
         await this.fillLabelInput(label);
         if (confirmSuiteSync) {
@@ -48,7 +48,7 @@ export class WalletMetadata extends MetadataBase {
     }
 
     @step()
-    async removeLabel({ index }: { index: number }) {
+    async removeLabel({ index }: RemoveLabelParams) {
         await this.page.resetMousePosition();
         await expect(this.walletLabel(index)).toHaveText(/[A-Za-z]+/);
         await this.walletLabel(index).hover();

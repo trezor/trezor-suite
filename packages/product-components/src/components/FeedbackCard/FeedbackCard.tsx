@@ -1,7 +1,7 @@
 import { type ReactNode, useState } from 'react';
 
 import { type Rating } from '@suite-common/feedback';
-import { Card, Column, H3, IconCircle, Paragraph, Row } from '@trezor/components';
+import { Card, Column, Flex, H3, IconCircle, Paragraph, Row } from '@trezor/components';
 import { CheckIcon } from '@trezor/icons';
 
 import { FeedbackFormModal } from './FeedbackFormModal';
@@ -19,6 +19,8 @@ export type FeedbackCardProps = {
     onSubmit: (rating: Rating, description: string) => void;
     onRatingSelect?: (rating: Rating) => void;
     defaultView?: FeedbackCardView;
+    /** Puts the ratings under the heading instead of across the card from it. */
+    isStacked?: boolean;
 };
 
 export const FeedbackCard = ({
@@ -31,6 +33,7 @@ export const FeedbackCard = ({
     onSubmit,
     onRatingSelect,
     defaultView = 'form',
+    isStacked = false,
 }: FeedbackCardProps) => {
     const [rating, setRating] = useState<Rating | undefined>();
     const [feedbackText, setFeedbackText] = useState('');
@@ -76,11 +79,17 @@ export const FeedbackCard = ({
     return (
         <>
             <Card>
-                <Row gap={16} justifyContent="space-between" alignItems="center" flexWrap="wrap">
+                <Flex
+                    direction={isStacked ? 'column' : 'row'}
+                    gap={16}
+                    justifyContent={isStacked ? 'flex-start' : 'space-between'}
+                    alignItems={isStacked ? 'flex-start' : 'center'}
+                    flexWrap="wrap"
+                >
                     <H3 typographyStyle="body-md-strong">{heading}</H3>
 
                     <EmojiRatingSelector value={rating} onChange={handleRatingSelect} />
-                </Row>
+                </Flex>
             </Card>
 
             {rating !== undefined && (

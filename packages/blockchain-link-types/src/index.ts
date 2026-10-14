@@ -8,6 +8,13 @@ export type { BlockEvent, FiatRatesEvent, NotificationEvent } from './responses'
 export type { Message } from './messages';
 export type { Events } from './events';
 export * from './baseCurrency';
+export {
+    cardanoDrepInfoSchema,
+    cardanoStakingInfoSchema,
+    NON_DELEGATED_CARDANO_STAKING_INFO,
+    type CardanoDrepInfo,
+    type CardanoStakingInfo,
+} from './cardano';
 
 export type * as MessageTypes from './messages';
 export type * as ResponseTypes from './responses';

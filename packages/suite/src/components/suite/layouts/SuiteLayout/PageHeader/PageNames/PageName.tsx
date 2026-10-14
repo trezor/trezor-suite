@@ -6,16 +6,22 @@ import {
     resolveEffectiveBackgroundRouteName,
     selectRoute,
 } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
+import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useSelector } from 'src/hooks/suite';
 
 import { AccountName } from './AccountName/AccountName';
 import { AccountSubpageName } from './AccountName/AccountSubpageName';
 import { BasicName } from './BasicName';
+import { HiddenTokensName } from './HiddenTokensName';
 import { SettingsName } from './SettingsName';
 
 export const PageName = () => {
+    const isHomeTableActive = useIsExperimentVariantActive({
+        experimentId: ExperimentId.assetFirstHomeTable,
+        variant: 'B',
+    });
     const route = useSelector(selectRoute);
     const { suiteRouterHistory } = useServices(injectSuiteRouterHistory);
     const currentRoute = resolveEffectiveBackgroundRouteName(
@@ -28,6 +34,10 @@ export const PageName = () => {
     // TODO: does not work properly with foreground apps, e.g. FW update,
     // as the `route` does not indicate the current page
     // (however location.pathname does)
+    if (currentRoute === 'suite-hidden-tokens') {
+        return <HiddenTokensName />;
+    }
+
     if (currentRoute?.includes('settings')) {
         return <SettingsName />;
     }
@@ -48,6 +58,14 @@ export const PageName = () => {
         );
     }
 
+    if (currentRoute === 'apps-embedding-index') {
+        return (
+            <BasicName>
+                <Translation id="TR_APPS_EMBEDDING" />
+            </BasicName>
+        );
+    }
+
     if (selectedAccount && isAccountTabPage) {
         return <AccountName key={selectedAccount.key} selectedAccount={selectedAccount} />;
     }
@@ -56,9 +74,11 @@ export const PageName = () => {
         return <AccountSubpageName key={selectedAccount.key} selectedAccount={selectedAccount} />;
     }
 
+    // The page is the Home the home-asset table makes of it, and the Dashboard it is otherwise:
+    // the name follows what the experiment put on the page.
     return (
         <BasicName>
-            <Translation id="TR_DASHBOARD" />
+            <Translation id={isHomeTableActive ? 'TR_HOME' : 'TR_DASHBOARD'} />
         </BasicName>
     );
 };

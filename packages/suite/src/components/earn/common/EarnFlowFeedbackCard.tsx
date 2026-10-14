@@ -4,15 +4,15 @@ import {
     injectDesktopAnalytics,
 } from '@suite/analytics';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import {
     type FeedbackCategory,
     type Rating,
     buildUserFeedbackData,
     sendFeedbackThunk,
 } from '@suite-common/feedback';
-import { injectDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@trezor/dependency-injection';
 import { FeedbackCard } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 type EarnFlowFeedbackCardProps = {
     featureTitleId: TranslationKey;

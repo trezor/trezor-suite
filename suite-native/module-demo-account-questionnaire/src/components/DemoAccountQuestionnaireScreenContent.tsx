@@ -1,16 +1,22 @@
 import { useState } from 'react';
-import Animated, { FadeInDown } from 'react-native-reanimated';
+import { FadeInDown } from 'react-native-reanimated';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import {
     type DemoAccountQuestionnaireQuestion,
     type DemoAccountQuestionnaireQuestionOption,
     events,
     injectNativeAnalytics,
 } from '@suite-native/analytics';
-import { Button, HStack, ScreenFooterGradient, Text, VStack } from '@suite-native/atoms';
+import {
+    AnimatedView,
+    Button,
+    HStack,
+    ScreenFooterGradient,
+    Text,
+    VStack,
+} from '@suite-native/atoms';
 import { type IconName } from '@suite-native/icons';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import {
@@ -20,6 +26,7 @@ import {
     ScreenHeader,
     type StackNavigationProps,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 
 import { DemoAccountQuestionnaireAnswer } from './DemoAccountQuestionnaireAnswer';
 
@@ -86,14 +93,14 @@ export const DemoAccountQuestionnaireScreenContent = ({
             header={<ScreenHeader />}
             footer={
                 !!selectedOptionId && (
-                    <Animated.View entering={FadeInDown}>
+                    <AnimatedView entering={FadeInDown}>
                         <ScreenFooterGradient />
                         <VStack marginHorizontal="sp16" marginBottom="sp16">
                             <Button onPress={handleContinuePress}>
                                 <Translation id="generic.buttons.continue" />
                             </Button>
                         </VStack>
-                    </Animated.View>
+                    </AnimatedView>
                 )
             }
         >

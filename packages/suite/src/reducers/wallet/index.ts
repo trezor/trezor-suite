@@ -7,16 +7,19 @@ import {
     type AccountsRefreshTimeState,
     type AccountsState,
     type EarnOnboardingState,
+    type EarnTransactionsState,
     type ExplorerConfig,
     type FiatRatesState,
     type FormDraftState,
     type PhishingState,
     type SendState,
     type StakeState,
+    type StellarContractTokensState,
     type TransactionsState,
     type TronStakeReducerState,
     type YieldState,
     accountsRefreshTimeReducer,
+    earnTransactionsReducer,
     feesReducer,
     prepareAccountsReducer,
     prepareBlockchainReducer,
@@ -27,6 +30,7 @@ import {
     preparePhishingReducer,
     prepareSendFormReducer,
     prepareStakeReducer,
+    prepareStellarContractTokensReducer,
     prepareTransactionsReducer,
     prepareWalletSettingsReducer,
     tronStakeReducer,
@@ -47,6 +51,7 @@ import formDraftReducer from './formDraftReducer';
 import graphReducer, { type GraphState } from './graphReducer';
 
 export const transactionsReducer = prepareTransactionsReducer(extraDependencies);
+export const stellarContractTokensReducer = prepareStellarContractTokensReducer(extraDependencies);
 export const phishingReducer = preparePhishingReducer(extraDependencies);
 export const accountsReducer = prepareAccountsReducer(extraDependencies);
 export const earnOnboardingReducer = prepareEarnOnboardingReducer(extraDependencies);
@@ -67,6 +72,7 @@ export type WalletState = {
     discovery: Discovery;
     accounts: AccountsState;
     accountsRefreshTime: AccountsRefreshTimeState;
+    earnTransactions: EarnTransactionsState;
     selectedAccount: SelectedAccountStatus;
     fees: FeesState;
     blockchain: BlockchainNetworks;
@@ -79,6 +85,7 @@ export type WalletState = {
     stake: StakeState;
     settings: WalletSettings;
     stablecoinYield: YieldState;
+    stellarContractTokens: StellarContractTokensState;
     tronStake: TronStakeReducerState;
     earnOnboarding: EarnOnboardingState;
 };
@@ -95,6 +102,7 @@ export const walletReducers: Reducer<
     discovery: discoveryReducer,
     accounts: accountsReducer,
     accountsRefreshTime: accountsRefreshTimeReducer,
+    earnTransactions: earnTransactionsReducer,
     selectedAccount: selectedAccountReducer,
     fees: feesReducer,
     blockchain: blockchainReducer,
@@ -107,6 +115,7 @@ export const walletReducers: Reducer<
     stake: stakeReducer,
     settings: walletSettingsReducer,
     stablecoinYield: yieldReducer,
+    stellarContractTokens: stellarContractTokensReducer,
     tronStake: tronStakeReducer,
     earnOnboarding: earnOnboardingReducer,
 });

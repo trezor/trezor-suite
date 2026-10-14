@@ -1,3 +1,4 @@
+import { AppsEmbeddingSwitch } from '@suite/apps-embedding-demo';
 import { Translation } from '@suite/intl';
 import {
     ContextMessage,
@@ -5,14 +6,14 @@ import {
     MessageSystemDebug,
 } from '@suite/message-system';
 import { SuiteSyncSettings, suiteSyncErrorHandler } from '@suite/suite-sync';
-import { useServices } from '@suite-common/dependency-injection';
 import { Context } from '@suite-common/message-system';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
 import { type EnsureWalletSuiteSyncOnErrors } from '@suite-common/suite-sync-types';
 import { type StaticSessionId } from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';
 import { SettingsSection } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 import { breakpoints } from '@trezor/theme';
 
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
@@ -55,13 +56,15 @@ export const SettingsDebug = () => {
     const { dispatch } = useServices(injectDispatch);
     const hasContentBelowTabletWidth = useIsContentBelowBreakpoint(breakpoints.laptop);
 
+    type HandleWipeSuiteSyncLabelsErrorParams = {
+        error: EnsureWalletSuiteSyncOnErrors | SuiteSyncUpdateError;
+        deviceStaticSessionId: StaticSessionId;
+    };
+
     const handleWipeSuiteSyncLabelsError = ({
         error,
         deviceStaticSessionId,
-    }: {
-        error: EnsureWalletSuiteSyncOnErrors | SuiteSyncUpdateError;
-        deviceStaticSessionId: StaticSessionId;
-    }) => {
+    }: HandleWipeSuiteSyncLabelsErrorParams) => {
         suiteSyncErrorHandler({
             error,
             dispatch,
@@ -85,6 +88,9 @@ export const SettingsDebug = () => {
             </SettingsSection>
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Trade">
                 <TradeApi />
+            </SettingsSection>
+            <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Apps embedding">
+                <AppsEmbeddingSwitch />
             </SettingsSection>
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Earn">
                 <EarnApi />

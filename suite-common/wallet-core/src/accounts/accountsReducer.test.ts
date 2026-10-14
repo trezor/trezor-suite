@@ -1,12 +1,16 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
-import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import {
+    mockAccountToken,
+    mockWalletAccount,
+    networkSpecificDefaultStellar,
+} from '@suite-common/wallet-types/mocks';
 import { type AccountInfo } from '@trezor/connect';
 import type { Bip43Path } from '@trezor/crypto-utils';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { accountsActions } from './accountsActions';
 import { type AccountsRootState, prepareAccountsReducer } from './accountsReducer';
@@ -246,6 +250,106 @@ describe('Account Reducer', () => {
             ]);
         });
 
+        const CONTRACT_ID = 'CBI7UCH5KGSVQRO5H4SUCZUTZABCITZLRHQQZTWL2TK4RZ72TAR6IHRV';
+
+        const stellarAccount = mockWalletAccount(
+            {
+                symbol: asNetworkSymbol('xlm'),
+                deviceState: '1stTestnetAddress@device_id:0',
+            },
+            networkSpecificDefaultStellar,
+        );
+
+        const contractToken = mockAccountToken({
+            standard: 'STELLAR-CONTRACT',
+            contract: CONTRACT_ID,
+            symbol: 'DEJTRSY',
+            balance: '42',
+        });
+
+        const stellarAccountInfo: AccountInfo = {
+            descriptor: stellarAccount.descriptor,
+            balance: '1000',
+            availableBalance: '1000',
+            empty: false,
+            history: { total: 1, unconfirmed: 0, transactions: [] },
+            tokens: [],
+        };
+
+        const initStoreWithContractToken = () =>
+            initStore({
+                preloadedState: {
+                    wallet: { accounts: [{ ...stellarAccount, tokens: [contractToken] }] },
+                },
+            });
+
+        it('keeps a watched contract token when discovery reports the account without it', () => {
+            const store = initStoreWithContractToken();
+
+            store.dispatch(
+                accountsActions.createAccount(
+                    {
+                        deviceState: stellarAccount.deviceState,
+                        index: stellarAccount.index,
+                        path: stellarAccount.path as Bip43Path,
+                        accountType: stellarAccount.accountType,
+                        symbol: stellarAccount.symbol,
+                        accountInfo: { ...stellarAccountInfo, path: stellarAccount.path },
+                        visible: true,
+                    },
+                    [stellarAccount.symbol],
+                ),
+            );
+
+            expect(store.getState().wallet.accounts[0]?.tokens).toEqual([
+                expect.objectContaining({ contract: CONTRACT_ID }),
+            ]);
+        });
+
+        it('drops a contract token a targeted account fetch no longer reports', () => {
+            const store = initStoreWithContractToken();
+
+            store.dispatch(accountsActions.updateAccount(stellarAccount, stellarAccountInfo));
+
+            expect(store.getState().wallet.accounts[0]?.tokens).toEqual([]);
+        });
+
+        it('keeps a contract token the node would not answer for on a targeted fetch', () => {
+            const store = initStoreWithContractToken();
+
+            store.dispatch(
+                accountsActions.updateAccount(stellarAccount, {
+                    ...stellarAccountInfo,
+                    misc: {
+                        ...networkSpecificDefaultStellar.misc,
+                        stellarUnreadableContracts: [CONTRACT_ID],
+                    },
+                }),
+            );
+
+            expect(store.getState().wallet.accounts[0]?.tokens).toEqual([
+                expect.objectContaining({ contract: CONTRACT_ID, balance: '42' }),
+            ]);
+        });
+
+        it('still drops a contract token the node did answer for', () => {
+            const store = initStoreWithContractToken();
+
+            store.dispatch(
+                accountsActions.updateAccount(stellarAccount, {
+                    ...stellarAccountInfo,
+                    misc: {
+                        ...networkSpecificDefaultStellar.misc,
+                        stellarUnreadableContracts: [
+                            'CCW67TSZV3SSS2HXMBQ5JFGCKJNXKZM7UQUWUZPUTHXSTZLEO7SJMI75',
+                        ],
+                    },
+                }),
+            );
+
+            expect(store.getState().wallet.accounts[0]?.tokens).toEqual([]);
+        });
+
         it('adds tokens to the account via addAccountTokens', () => {
             const store = initStore({
                 preloadedState: { wallet: { accounts: [ethereumAccount] } },
@@ -258,6 +362,63 @@ describe('Account Reducer', () => {
             expect(store.getState().wallet.accounts[0]?.tokens).toEqual([
                 expect.objectContaining({ contract: WETH_ADDRESS, balance: '1.5' }),
             ]);
+        });
+    });
+
+    describe('cardano staking on update', () => {
+        const delegatedStaking = {
+            address: 'stake1uxzutrtmxwv2rf2j3hdpps66ch0jydmkr58vwgnetddcdwg32u4rc',
+            isActive: true,
+            rewards: '173289',
+            poolId: 'pool1pu5jlj4q9w9jlxeu370a3c9myx47md5j5m2str0naunn2q3lkdy',
+            drep: null,
+        };
+
+        const cardanoAccount = mockWalletAccount(
+            { symbol: asNetworkSymbol('ada') },
+            { misc: { staking: delegatedStaking } },
+        );
+
+        const accountInfo: AccountInfo = {
+            descriptor: cardanoAccount.descriptor,
+            balance: '27429803',
+            availableBalance: '27256514',
+            empty: false,
+            history: { total: 14, unconfirmed: 0, transactions: [] },
+        };
+
+        const initStoreWithCardanoAccount = () =>
+            initStore({ preloadedState: { wallet: { accounts: [cardanoAccount] } } });
+
+        it('keeps the stored staking block when the update carries none', () => {
+            const store = initStoreWithCardanoAccount();
+
+            store.dispatch(accountsActions.updateAccount(cardanoAccount, accountInfo));
+
+            expect(store.getState().wallet.accounts[0]?.misc).toEqual({
+                staking: delegatedStaking,
+            });
+        });
+
+        it('replaces the stored staking block when the update carries one', () => {
+            const store = initStoreWithCardanoAccount();
+            const deregisteredStaking = {
+                ...delegatedStaking,
+                isActive: false,
+                rewards: '0',
+                poolId: null,
+            };
+
+            store.dispatch(
+                accountsActions.updateAccount(cardanoAccount, {
+                    ...accountInfo,
+                    misc: { staking: deregisteredStaking },
+                }),
+            );
+
+            expect(store.getState().wallet.accounts[0]?.misc).toEqual({
+                staking: deregisteredStaking,
+            });
         });
     });
 });

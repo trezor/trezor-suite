@@ -1,6 +1,7 @@
 import pluginLocalRules from 'eslint-plugin-local-rules';
 
 import { areExpensiveChecksEnabled } from './expensiveChecks.mjs';
+import { allRoots } from './workspaceRoots.mjs';
 /**
  * @typedef {import('eslint').Linter.Config} Config
  */
@@ -11,7 +12,6 @@ const publishableTrezorPackages = [
     '@trezor/blockchain-link',
     '@trezor/blockchain-link-types',
     '@trezor/blockchain-link-utils',
-    '@trezor/network-bitcoin',
     '@trezor/network-cardano',
     '@trezor/network-ethereum',
     '@trezor/network-ripple',
@@ -61,25 +61,36 @@ export const localRulesConfig = [
         },
     },
     {
-        files: [
-            'suite/**/*.{js,mjs,cjs,ts,jsx,tsx}',
-            'suite-native/**/*.{js,mjs,cjs,ts,jsx,tsx}',
-            'suite-common/**/*.{js,mjs,cjs,ts,jsx,tsx}',
-        ],
+        files: [allRoots.suite, allRoots.suiteCli, allRoots.suiteNative, allRoots.suiteCommon].map(
+            root => `${root}/**/*.{js,mjs,cjs,ts,jsx,tsx}`,
+        ),
         rules: {
             'local-rules/no-package-deep-imports': [
                 'error',
                 {
-                    packageScopes: ['@suite-native', '@suite', '@suite-common', '@trezor'],
+                    packageScopes: [
+                        '@suite-native',
+                        '@suite',
+                        '@suite-cli',
+                        '@suite-common',
+                        '@trezor',
+                    ],
                     ignoredPackages: [
                         ...publishableTrezorPackages,
                         ...packagesWithSectionEntryPoints,
                     ],
                     allowedEntryPointPatterns: [
-                        // Packages expose reusable test mocks through dedicated public entry points.
-                        /^@(?:suite-native|suite|suite-common|trezor)\/[^/]+\/mocks$/,
+                        // Packages expose reusable test mocks (`/mocks`) and platform-specific React
+                        // bindings (`/react` for web and desktop, `/react-native` for native) through
+                        // dedicated public entry points.
+                        /^@(?:suite-native|suite|suite-cli|suite-common|trezor)\/[^/]+\/(?:mocks|react|react-native)$/,
+                        // Node CLI services have a dedicated public entry point.
+                        /^@suite-common\/icons\/scripts$/,
                         // Suite test setup imports global polyfills through this side-effect-only entry point.
                         /^@suite-common\/test-utils\/globalOverrides$/,
+                        // `@suite/intl` ships the translation catalogs as files next to its sources;
+                        // e2e tests import a catalog by path to assert translated text.
+                        /^@suite\/intl\/translations\/[\w-]+\.json$/,
                         // The applications import the Webpack pieces they share from this
                         // build-only entry point; it is never part of an application bundle.
                         /^@trezor\/suite\/webpack\/[\w/-]+$/,
@@ -90,9 +101,21 @@ export const localRulesConfig = [
         },
     },
     {
-        files: ['suite-common/**/*.{js,mjs,cjs,ts,jsx,tsx}'],
+        files: [`${allRoots.suiteCommon}/**/*.{js,mjs,cjs,ts,jsx,tsx}`],
         rules: {
             'local-rules/no-suite-imports-in-suite-common': 'error',
+        },
+    },
+    {
+        files: [
+            allRoots.networks,
+            `${allRoots.packages}/suite`,
+            allRoots.suite,
+            allRoots.suiteCli,
+            allRoots.suiteCommon,
+        ].map(root => `${root}/**/*.{ts,tsx}`),
+        rules: {
+            'local-rules/enforce-named-parameter-types': 'error',
         },
     },
     {
@@ -107,13 +130,7 @@ export const localRulesConfig = [
     ...(areExpensiveChecksEnabled
         ? [
               {
-                  files: [
-                      'networks/**/src/**/*.{ts,tsx}',
-                      'packages/**/src/**/*.{ts,tsx}',
-                      'suite/**/src/**/*.{ts,tsx}',
-                      'suite-common/**/src/**/*.{ts,tsx}',
-                      'suite-native/**/src/**/*.{ts,tsx}',
-                  ],
+                  files: Object.values(allRoots).map(root => `${root}/**/src/**/*.{ts,tsx}`),
                   rules: {
                       'local-rules/no-unused-intersection-members': 'error',
                   },

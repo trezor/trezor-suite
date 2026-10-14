@@ -1,8 +1,8 @@
 import { type IDBPDatabase, type IDBPTransaction, type StoreNames } from 'idb';
 
 import { idbVersionToString } from '@suite/idb-migration-utils';
-import { type DispatchDep } from '@suite-common/redux-utils';
 import { type ReloadAppDep } from '@suite-common/suite-types';
+import { type DispatchDep } from '@trezor/redux-utils';
 import SuiteDB, { type OnUpgradeFunc } from '@trezor/suite-storage';
 
 import { storageError } from 'src/actions/suite/storageLifecycleActions';
@@ -39,10 +39,20 @@ const runMigrations = async (
 
         for (const migration of MIGRATIONS) {
             if (normalizedCurrentVersion < migration.threshold) {
-                console.log(
-                    `Running migration for version ${idbVersionToString(migration.threshold)}`,
-                );
-                await migration.migrate(db, tx);
+                const versionString = idbVersionToString(migration.threshold);
+                console.log(`Running migration for version ${versionString}`);
+
+                // Log migration errors to Sentry to pinpoint WHICH migration failed. We don't have that information
+                // when we catch errors further downstream.
+                // Rethrow → explicit "DB corrupted" behavior instead of silently swallowing an inconsistent state.
+                try {
+                    await migration.migrate(db, tx);
+                } catch (err) {
+                    // IDB versions can have four segments, which activates Sentry IP-scrubbing, so replace to dashes.
+                    const sanitizedString = versionString.replace(/\./g, '-');
+                    console.error(`Storage: Migration failed for version ${sanitizedString}`, err);
+                    throw err;
+                }
             }
         }
     }

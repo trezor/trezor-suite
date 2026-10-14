@@ -3,11 +3,11 @@ import { useMemo } from 'react';
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSupportedDeviceLanguages } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type Locale } from '@suite-common/suite-types';
-import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
+import { useServices } from '@trezor/dependency-injection';
+import { SectionItem } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { changeLanguageThunk } from 'src/actions/settings/deviceSettingsActions';
 import { useSelector } from 'src/hooks/suite';
@@ -22,7 +22,9 @@ export const ChangeLanguage = ({ isDeviceLocked }: ChangeLanguageProps) => {
 
     const supportedDeviceLanguages = useSelector(selectSupportedDeviceLanguages);
 
-    const onChange = ({ value }: { value: Locale }) => {
+    type OnChangeParams = { value: Locale };
+
+    const onChange = ({ value }: OnChangeParams) => {
         dispatch(changeLanguageThunk({ device, language: value }));
     };
 
@@ -50,22 +52,23 @@ export const ChangeLanguage = ({ isDeviceLocked }: ChangeLanguageProps) => {
                     data-testid={anchorId}
                     ref={anchorRef}
                     shouldHighlight={shouldHighlight}
-                >
-                    <TextColumn title={<Translation id="TR_LANGUAGE" />} />
-                    <ActionColumn>
-                        <ActionSelect
+                    title={<Translation id="TR_LANGUAGE" />}
+                    actions={
+                        <SectionItem.Select
                             value={selectedValue}
                             options={languageOptions}
                             onChange={onChange}
                             isDisabled={isDeviceLocked}
-                            isTooltipActive={isDeviceLocked}
-                            tooltipContent={
-                                <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
-                            }
+                            tooltip={{
+                                isActive: isDeviceLocked,
+                                content: (
+                                    <Translation id="TR_SETTINGS_DEVICE_BANNER_TITLE_REMEMBERED" />
+                                ),
+                            }}
                             data-testid="@settings/device/firmware-language-select"
                         />
-                    </ActionColumn>
-                </SectionItem>
+                    }
+                />
             )}
         </Anchor>
     );

@@ -1,13 +1,14 @@
 import { type PayloadAction } from '@reduxjs/toolkit';
 
+import { DEVICE } from '@trezor/connect';
 import {
     type ActionTypesDep,
     type ReducersDep,
     createSliceWithExtraDeps,
-} from '@suite-common/redux-utils';
-import { DEVICE } from '@trezor/connect';
+} from '@trezor/redux-utils';
+import { typedObjectFromEntries } from '@trezor/utils';
 
-import { type NewContentIndicatorId } from './flagsConstants';
+import { NewContentIndicatorId } from './flagsConstants';
 
 export type FlagsState = {
     initialRun: boolean;
@@ -21,6 +22,7 @@ export type FlagsState = {
     showTS7DashboardPromoBanner: boolean;
     showDefiYieldDashboardPromoBanner: boolean;
     showETHVaultDashboardPromoBanner: boolean;
+    showTradingExperienceDashboardPromoBanner: boolean;
     showOnboardingFeedbackBanner: boolean;
     showSettingsDesktopAppPromoBanner: boolean;
     activateAssetsBannerClosed: boolean;
@@ -41,6 +43,9 @@ export type FlagsState = {
     hasSeenDisconnectTooltip: boolean;
     showNoDeviceEshopSidebarBanner: boolean;
     areNoDeviceEshopBannersDisabled: boolean;
+    // Temporary: both go with the asset-first experiment, along with the cards they dismiss.
+    homeAssetTableNewBannerClosed: boolean;
+    homeAssetTableFeedbackClosed: boolean;
     seenNewContentIndicators: Partial<Record<NewContentIndicatorId, true>>;
 };
 
@@ -64,6 +69,7 @@ export const flagsInitialState: FlagsState = {
     showTS7DashboardPromoBanner: true,
     showDefiYieldDashboardPromoBanner: true,
     showETHVaultDashboardPromoBanner: true,
+    showTradingExperienceDashboardPromoBanner: true,
     showOnboardingFeedbackBanner: false,
     showSettingsDesktopAppPromoBanner: true,
     activateAssetsBannerClosed: false,
@@ -84,7 +90,13 @@ export const flagsInitialState: FlagsState = {
     hasSeenDisconnectTooltip: false,
     showNoDeviceEshopSidebarBanner: true,
     areNoDeviceEshopBannersDisabled: false,
-    seenNewContentIndicators: {},
+    homeAssetTableNewBannerClosed: false,
+    homeAssetTableFeedbackClosed: false,
+    // In a fresh Suite, all content is new, so we don't need to distinguish individual features as "new" → mark all as seen.
+    // See the unit test, which specifies this behavior.
+    seenNewContentIndicators: typedObjectFromEntries(
+        Object.values(NewContentIndicatorId).map(indicatorId => [indicatorId, true] as const),
+    ),
 };
 
 const flagsSlice = createSliceWithExtraDeps({
@@ -132,7 +144,6 @@ export const flagsActions = flagsSlice.actions;
 export const prepareFlagsReducer = flagsSlice.prepareReducer;
 
 export const selectFlags = (state: FlagsRootState) => state.flags;
-export const selectIsInitialRun = (state: FlagsRootState) => state.flags.initialRun;
 export const selectIsTEXDashboardPromoBannerShown = (state: FlagsRootState) =>
     state.flags.showTEXDashboardPromoBanner;
 export const selectIsTS7DashboardPromoBannerShown = (state: FlagsRootState) =>
@@ -141,6 +152,8 @@ export const selectIsDefiYieldDashboardPromoBannerShown = (state: FlagsRootState
     state.flags.showDefiYieldDashboardPromoBanner;
 export const selectIsETHVaultDashboardPromoBannerShown = (state: FlagsRootState) =>
     state.flags.showETHVaultDashboardPromoBanner;
+export const selectIsTradingExperienceDashboardPromoBannerShown = (state: FlagsRootState) =>
+    state.flags.showTradingExperienceDashboardPromoBanner;
 export const selectIsOnboardingFeedbackBannerShown = (state: FlagsRootState) =>
     state.flags.showOnboardingFeedbackBanner;
 export const selectIsSettingsDesktopAppPromoBannerShown = (state: FlagsRootState) =>
@@ -159,6 +172,10 @@ export const selectAreNoDeviceEshopBannersDisabled = (state: FlagsRootState) =>
     state.flags.areNoDeviceEshopBannersDisabled;
 export const selectHasSeenDisconnectTooltip = (state: FlagsRootState) =>
     state.flags.hasSeenDisconnectTooltip;
+export const selectIsHomeAssetTableNewBannerClosed = (state: FlagsRootState) =>
+    state.flags.homeAssetTableNewBannerClosed;
+export const selectIsHomeAssetTableFeedbackClosed = (state: FlagsRootState) =>
+    state.flags.homeAssetTableFeedbackClosed;
 export const selectIsNewContentIndicatorVisible =
     (indicatorId: NewContentIndicatorId) => (state: FlagsRootState) =>
         state.flags.seenNewContentIndicators[indicatorId] !== true;

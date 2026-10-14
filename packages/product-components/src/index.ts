@@ -1,7 +1,7 @@
 export {
     isCryptoIconSymbol as isCoinSymbol,
     isNetworkIconSymbol as isNetworkSymbolWithIcon,
-} from '@suite-common/icons/src/iconUtils';
+} from '@suite-common/icons';
 export { CardList, type CardListProps } from '@trezor/components';
 export { AssetShareIndicator } from './components/AssetShareIndicator/AssetShareIndicator';
 export { ConfirmOnDevicePill } from './components/ConfirmOnDevice/ConfirmOnDevicePill';
@@ -45,14 +45,9 @@ export { QuickActionButton } from './components/QuickActionButton/QuickActionBut
 export { RelativeTime } from './components/RelativeTime/RelativeTime';
 export { RotateDeviceImage } from './components/RotateDeviceImage/RotateDeviceImage';
 export { SearchAsset } from './components/SearchAsset/SearchAsset';
-export { ActionButton } from './components/Settings/ActionButton';
-export { ActionColumn } from './components/Settings/ActionColumn';
-export { ActionSelect } from './components/Settings/ActionSelect';
-export { OutlineHighlight, type Offset } from './components/Settings/OutlineHighlight';
+export { OutlineHighlight, type Offset } from './components/OutlineHighlight/OutlineHighlight';
 export { SectionItem } from './components/Settings/SectionItem';
-export { SettingsRequirementBanner } from './components/Settings/SettingsRequirementBanner';
 export { SettingsSection } from './components/Settings/SettingsSection';
-export { TextColumn } from './components/Settings/TextColumn';
 export { SidebarBanner } from './components/SidebarBanner/SidebarBanner';
 export { StepCard } from './components/StepCard/StepCard';
 export { TokenIcon } from './components/TokenIcon/TokenIcon';
@@ -61,10 +56,11 @@ export {
     type TokenIconProps,
     type TokenIconSize,
 } from './components/TokenIcon/tokenIconTypes';
-export { shouldShowNetworkIcon } from './components/TokenIcon/tokenIconUtils';
 export * from './components/TokenIconSet/TokenIconSet';
 export { TooltipRow } from './components/TooltipRow/TooltipRow';
 export * from './components/TopAssets/TopAssets';
 export { TrezorLogo } from './components/TrezorLogo/TrezorLogo';
+export type { NetworkConfig } from './network-display/NetworkConfig';
+export { selectShouldShowNetworkIcon } from './network-display/networkDisplaySelectors';
 export { getLargeModelImagePath, getModelFrontColor } from './utils/getModelFrontColor';
 export { mapTrezorModelToFilledIcon, mapTrezorModelToIcon } from './utils/mapTrezorModelToIcon';

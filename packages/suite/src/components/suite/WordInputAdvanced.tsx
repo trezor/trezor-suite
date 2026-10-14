@@ -102,7 +102,7 @@ export const WordInputAdvanced = ({ count }: WordInputAdvancedProps) => {
     }, [backspace, count, onSubmit]);
 
     return (
-        <Column gap={16} maxWidth={380}>
+        <Column gap={16} minWidth={220} maxWidth={380}>
             <Banner
                 intent="info"
                 icon={QuestionIcon}

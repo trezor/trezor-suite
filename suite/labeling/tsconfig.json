@@ -5,18 +5,12 @@
         {
             "path": "../../suite-common/analytics"
         },
-        {
-            "path": "../../suite-common/dependency-injection"
-        },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/message-system"
         },
         {
             "path": "../../suite-common/metadata-types"
-        },
-        {
-            "path": "../../suite-common/redux-utils"
         },
         {
             "path": "../../suite-common/suite-sync"
@@ -50,10 +44,14 @@
         { "path": "../suite-sync" },
         { "path": "../../packages/components" },
         { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
         { "path": "../../packages/icons" },
         {
             "path": "../../packages/product-components"
         },
+        { "path": "../../packages/redux-utils" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" }

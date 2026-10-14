@@ -1,12 +1,13 @@
 import { type ReactElement, useCallback } from 'react';
+import type { EdgeInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 
 import { FlashList, type ListRenderItemInfo } from '@shopify/flash-list';
 
 import { type NetworksRootState } from '@suite-common/networks';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { Box } from '@suite-native/atoms';
-import { useScrollDivider } from '@suite-native/scrollview';
+import { Box, useBannerAwareSafeAreaInsets, useScrollDivider } from '@suite-native/atoms';
+import { useIsBottomInsetApplicable } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { AccountsListEmptyPlaceholder } from './AccountsListEmptyPlaceholder';
@@ -18,10 +19,6 @@ import {
 } from '../../selectors';
 import { type OnSelectAccount } from '../../types';
 
-const listStyle = prepareNativeStyle(() => ({
-    flex: 1,
-}));
-
 const DEFAULT_NETWORK_FILTER: NetworkSymbol[] = [];
 
 type AccountsListProps = {
@@ -31,8 +28,19 @@ type AccountsListProps = {
     networkFilter?: NetworkSymbol[];
     ListHeaderComponent?: ReactElement;
     ListFooterComponent?: ReactElement;
-    isScrollDividerEnabled?: boolean;
 };
+
+const contentStyle = prepareNativeStyle(({ spacings }) => ({
+    flexGrow: 1,
+    marginHorizontal: spacings.sp16,
+}));
+
+const footerStyle = prepareNativeStyle<{
+    insets: EdgeInsets;
+    isBottomInsetApplicable: boolean;
+}>((_, { insets, isBottomInsetApplicable }) => ({
+    paddingBottom: isBottomInsetApplicable ? insets.bottom : 0,
+}));
 
 export const AccountsList = ({
     onSelectAccount,
@@ -41,48 +49,50 @@ export const AccountsList = ({
     networkFilter = DEFAULT_NETWORK_FILTER,
     ListHeaderComponent,
     ListFooterComponent,
-    isScrollDividerEnabled = false,
 }: AccountsListProps) => {
+    const { scrollDivider, handleScroll } = useScrollDivider();
+
+    const insets = useBannerAwareSafeAreaInsets();
+    const isBottomInsetApplicable = useIsBottomInsetApplicable();
+    const { applyStyle } = useNativeStyles();
+
     const accountListRows = useSelector((state: NativeAccountsRootState & NetworksRootState) =>
         selectFilteredDeviceAccountListRows(state, searchValue, isSendFlow, networkFilter),
     );
-    const { applyStyle } = useNativeStyles();
-    const { scrollDivider, handleScroll } = useScrollDivider();
 
     const renderItem = useCallback(
-        ({ item, index }: ListRenderItemInfo<FilteredDeviceAccountListRow>) => (
+        ({ item }: ListRenderItemInfo<FilteredDeviceAccountListRow>) => (
             <AccountsListRow
                 {...item}
-                hasBottomSpacing={item.isLast && index < accountListRows.length - 1}
+                hasBottomSpacing={item.isLast}
                 onSelectAccount={onSelectAccount}
             />
         ),
-        [accountListRows.length, onSelectAccount],
+        [onSelectAccount],
     );
 
     return (
-        <Box flex={1}>
-            {isScrollDividerEnabled && scrollDivider}
+        <>
+            {scrollDivider}
             <FlashList
                 testID="@accountList"
-                style={applyStyle(listStyle)}
+                contentContainerStyle={applyStyle(contentStyle)}
                 data={accountListRows}
                 keyExtractor={item => item.accountKey}
                 renderItem={renderItem}
-                ListHeaderComponent={
-                    <>
-                        {ListHeaderComponent}
-                        {accountListRows.length > 0 && <Box paddingTop="sp8" />}
-                    </>
-                }
+                ListHeaderComponent={ListHeaderComponent}
                 ListEmptyComponent={
                     <AccountsListEmptyPlaceholder isFilterEmpty={!searchValue.length} />
                 }
-                ListFooterComponent={ListFooterComponent}
+                ListFooterComponent={
+                    <Box style={applyStyle(footerStyle, { insets, isBottomInsetApplicable })}>
+                        {ListFooterComponent}
+                    </Box>
+                }
                 keyboardShouldPersistTaps="handled"
                 maintainVisibleContentPosition={{ disabled: true }}
-                onScroll={isScrollDividerEnabled ? handleScroll : undefined}
+                onScroll={handleScroll}
             />
-        </Box>
+        </>
     );
 };

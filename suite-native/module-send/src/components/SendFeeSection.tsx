@@ -1,7 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
     type FeesRootState,
@@ -17,6 +15,8 @@ import { BannerInline, Box } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { updateSelectedFeeLevelThunk } from '@suite-native/send';
 import { FeeSelector } from '@suite-native/transaction-management';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 type SendFeeSectionProps = {
     accountKey: AccountKey;

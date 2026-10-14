@@ -28,17 +28,6 @@ export default class BackupDevice extends AbstractMethod<'backupDevice', PROTO.B
         return [{ permission: 'management' }];
     }
 
-    get confirmation() {
-        return {
-            view: 'device-management' as const,
-            customConfirmButton: {
-                className: 'confirm',
-                label: 'Proceed',
-            },
-            label: 'Do you want to initiate backup procedure?',
-        };
-    }
-
     async run() {
         const cmd = this.getDevice().getCommands();
         const response = await cmd.typedCall('BackupDevice', 'Success', this.params);

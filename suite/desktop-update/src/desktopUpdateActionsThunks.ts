@@ -2,8 +2,8 @@ import { type Dispatch } from 'redux';
 
 import { AppUpdateEventStatus, type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { type DesktopApiDep, type UpdateInfo } from '@suite/desktop-app-api';
-import { type WithServices } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { type WithServices } from '@trezor/redux-utils';
 
 import { getAppUpdatePayload } from './appUpdateAnalytics';
 import {
@@ -96,8 +96,10 @@ type InstallUpdateThunkDeps = WithServices<
     DesktopAnalyticsDep & DesktopApiDep<'installUpdate' | 'setAutoInstallOnAppQuit'>
 >;
 
+type InstallUpdateThunkParams = { installNow: boolean };
+
 export const installUpdateThunk =
-    ({ installNow }: { installNow: boolean }) =>
+    ({ installNow }: InstallUpdateThunkParams) =>
     (_: Dispatch, getState: () => InstallUpdateThunkState, extra: InstallUpdateThunkDeps) => {
         // eslint-disable-next-line no-restricted-syntax
         const { desktopUpdate } = getState();

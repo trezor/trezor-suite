@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { type TradingExchangeIssue, events, injectNativeAnalytics } from '@suite-native/analytics';
+import { useServices } from '@trezor/dependency-injection';
 
 export type TradingExchangeIssueAnalyticReportCallback = (
     issue: TradingExchangeIssue,

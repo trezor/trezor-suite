@@ -3,10 +3,7 @@ import { Controller } from 'react-hook-form';
 
 import { useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
-import { formInputsMaxLength } from '@suite-common/validators';
-import { updateFiatRatesThunk } from '@suite-common/wallet-core';
+import { AMOUNT_MAX_LENGTH, updateFiatRatesThunk } from '@suite-common/wallet-core';
 import {
     type BaseCurrencyOption,
     type FiatRatesResult,
@@ -20,7 +17,6 @@ import {
     findToken,
     getDecimalsForBaseCurrency,
     isLowAnonymityWarning,
-    parseBaseCurrencyToFormattedCrypto,
     parseCryptoToFormattedBaseCurrency,
 } from '@suite-common/wallet-utils';
 import {
@@ -29,7 +25,9 @@ import {
     valuablesBaseCurrencies,
 } from '@trezor/blockchain-link-types';
 import { Select } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { NumberInput } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber, typedObjectKeys } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
@@ -40,7 +38,6 @@ import { validateDecimals } from 'src/utils/suite/validation';
 type FiatInputProps = {
     output: Partial<Output>;
     outputId: number;
-    isSendMaxActive?: boolean;
     labelLeft?: React.ReactNode;
     labelHoverRight?: React.ReactNode;
     labelRight?: React.ReactNode;
@@ -49,7 +46,6 @@ type FiatInputProps = {
 export const BaseCurrencyInput = ({
     output,
     outputId,
-    isSendMaxActive,
     labelLeft,
     labelHoverRight,
     labelRight,
@@ -63,6 +59,7 @@ export const BaseCurrencyInput = ({
         control,
         setValue,
         composeTransaction,
+        getValues,
         watch,
     } = useSendFormContext();
 
@@ -82,7 +79,6 @@ export const BaseCurrencyInput = ({
     const baseCurrencyValue = getDefaultValue(baseCurrencyInputName, output.fiat || '');
     const tokenContractAddress = getDefaultValue(tokenInputName, output.token);
 
-    const cryptoAmountValue = getDefaultValue(amountInputName, '');
     const token = findToken(account.tokens, tokenContractAddress);
 
     const currencyValue = watch(currencyInputName);
@@ -93,42 +89,23 @@ export const BaseCurrencyInput = ({
         isInSats: areSatsDisplayed,
     });
 
-    const recalculate = (rate: number) => {
-        const cryptoValue = new BigNumber(cryptoAmountValue);
-        const fiatValue = new BigNumber(baseCurrencyValue);
-        const cryptoDecimals = token ? token.decimals : network.decimals;
+    const recalculate = (rate: number, selectedBaseCurrencyCode: BaseCurrencyCode) => {
+        const cryptoValue = new BigNumber(getValues(amountInputName));
 
-        if (rate && !cryptoValue.isNaN() && baseCurrencyCode !== '') {
-            const baseFormatOptions = {
+        if (rate && !cryptoValue.isNaN()) {
+            const formattedAmount = parseCryptoToFormattedBaseCurrency({
                 areSatsDisplayed,
                 symbol: network.symbol,
                 rate,
-            };
+                value: cryptoValue,
+                baseCurrencyCode: selectedBaseCurrencyCode,
+                baseCurrencyToSats: shouldSendInSats === true,
+            });
+            setValue(baseCurrencyInputName, formattedAmount || '', {
+                shouldValidate: true,
+            });
 
-            if (isSendMaxActive) {
-                const formattedAmount = parseCryptoToFormattedBaseCurrency({
-                    ...baseFormatOptions,
-                    value: cryptoValue,
-                    baseCurrencyCode,
-                    baseCurrencyToSats: shouldSendInSats === true,
-                });
-                setValue(baseCurrencyInputName, formattedAmount || '', {
-                    shouldValidate: true,
-                });
-            } else {
-                const formattedAmount = parseBaseCurrencyToFormattedCrypto({
-                    ...baseFormatOptions,
-                    value: fiatValue,
-                    isCryptoInSats: shouldSendInSats === true,
-                    areSatsDisplayed: false,
-                    cryptoDecimals,
-                });
-                setValue(amountInputName, formattedAmount || '', {
-                    shouldValidate: true,
-                });
-
-                composeTransaction(amountInputName);
-            }
+            composeTransaction(amountInputName);
         }
     };
 
@@ -222,7 +199,10 @@ export const BaseCurrencyInput = ({
                     );
 
                     if (successfulResult?.value?.rate) {
-                        recalculate(successfulResult.value.rate);
+                        recalculate(
+                            successfulResult.value.rate,
+                            selected.value as BaseCurrencyCode,
+                        );
                     }
                 }
             }}
@@ -241,7 +221,7 @@ export const BaseCurrencyInput = ({
             name={baseCurrencyInputName}
             data-testid={baseCurrencyInputName}
             defaultValue={baseCurrencyValue}
-            maxLength={formInputsMaxLength.fiat}
+            maxLength={AMOUNT_MAX_LENGTH}
             rules={rules}
             bottomText={bottomText || null}
             rightContent={

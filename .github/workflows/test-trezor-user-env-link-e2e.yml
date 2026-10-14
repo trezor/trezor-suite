@@ -33,7 +33,7 @@ jobs:
           node-version-file: ".nvmrc"
           cache: yarn
       - name: Install SafeDep PMG
-        uses: safedep/pmg@0d4f89121c773b0009cc2f2dfb578d03603263f2 # v0.29.1
+        uses: safedep/pmg@961499c36c98afbafec10a257ff27fb464073c86 # v0.30.0
         continue-on-error: true
         with:
           version: v0.19.1
@@ -44,5 +44,5 @@ jobs:
 
       - name: Run e2e tests
         run: |
-          docker run -d --network=host ghcr.io/trezor/trezor-user-env:0126ecbed6edc132a4210803707a66fd04add700
+          docker run -d --network=host ghcr.io/trezor/trezor-user-env:3eca66cae88ba0086826c519fd8df654ae5cf353
           yarn workspace @trezor/trezor-user-env-link test:e2e

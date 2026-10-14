@@ -1,6 +1,6 @@
 import * as fs from 'fs-extra';
 import { join } from 'path';
-import simpleGit from 'simple-git';
+import { simpleGit } from 'simple-git';
 
 import {
     ASSETS_DIR_DESTINATION,

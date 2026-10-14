@@ -22,7 +22,7 @@ const signWindows = async configuration => {
     const TOKEN_PASSWORD = process.env.WINDOWS_SIGN_TOKEN_PASSWORD;
 
     execSync(
-        `java -jar ../suite-desktop-core/scripts/jsign-6.0.jar --keystore ../suite-desktop-core/scripts/hardwareToken.cfg --storepass '${TOKEN_PASSWORD}' --storetype PKCS11 --tsaurl http://timestamp.digicert.com --alias "${CERTIFICATE_NAME}" "${configuration.path}"`,
+        `java -jar ../desktop-app-main/scripts/jsign-6.0.jar --keystore ../desktop-app-main/scripts/hardwareToken.cfg --storepass '${TOKEN_PASSWORD}' --storetype PKCS11 --tsaurl http://timestamp.digicert.com --alias "${CERTIFICATE_NAME}" "${configuration.path}"`,
         {
             stdio: 'inherit',
         },

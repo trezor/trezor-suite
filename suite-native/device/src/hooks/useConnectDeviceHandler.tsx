@@ -5,14 +5,12 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { bluetoothActions } from '@suite-common/bluetooth';
-import { useServices } from '@suite-common/dependency-injection';
 import {
     acquireDeviceThunk,
     selectIsAnyPhysicalDeviceConnectedViaUsb,
     selectIsDeviceAuthorized,
     selectIsDeviceThpLocked,
 } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     AuthorizeDeviceStackRoutes,
     type HomeStackParamList,
@@ -21,6 +19,8 @@ import {
     RootStackRoutes,
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     HomeStackParamList,

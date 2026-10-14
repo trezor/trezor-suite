@@ -10,13 +10,11 @@
         "type-check": "yarn g:tsc --build",
         "generate-icons": "yarn g:tsx generateIcons.mjs && yarn g:tsx generateIconFont.ts",
         "generate-icon-font": "yarn g:tsx generateIconFont.ts",
-        "download-crypto-icons": "yarn g:tsx ./scripts/downloadCryptoIcons.ts",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "yarn g:jest"
     },
     "devDependencies": {
-        "@suite-common/wallet-config": "workspace:^",
-        "@trezor/network-ethereum-suite-common": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*",
         "chalk": "^6.0.0",
         "fantasticon": "4.1.0",
         "prettier": "^3.9.6",
@@ -25,6 +23,20 @@
     },
     "dependencies": {
         "@suite-common/http-client": "workspace:^",
-        "zod": "4.3.6"
+        "@suite-common/networks": "workspace:*",
+        "@suite-common/wallet-config": "workspace:^",
+        "@trezor/logger": "workspace:*",
+        "@trezor/network-bitcoin-assets": "workspace:*",
+        "@trezor/network-cardano-assets": "workspace:*",
+        "@trezor/network-ethereum-assets": "workspace:*",
+        "@trezor/network-module-types": "workspace:*",
+        "@trezor/network-monero-assets": "workspace:*",
+        "@trezor/network-ripple-assets": "workspace:*",
+        "@trezor/network-solana-assets": "workspace:*",
+        "@trezor/network-stellar-assets": "workspace:*",
+        "@trezor/network-tezos-assets": "workspace:*",
+        "@trezor/network-tron-assets": "workspace:*",
+        "@trezor/type-utils": "workspace:*",
+        "zod": "4.6.5"
     }
 }

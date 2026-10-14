@@ -10,15 +10,17 @@ import { isNetworkWithGraphFeature } from 'src/utils/wallet/graph';
 const hasAnyAccountWithTokens = (accounts: Account[]): boolean =>
     accounts.some(account => getNetworkFeatures(account.symbol).includes('tokens'));
 
+type UseUnsupportedNetworkMessageParams = {
+    showGraphControls: boolean;
+    device?: TrezorDevice;
+    accounts: Account[];
+};
+
 export const useUnsupportedNetworkMessage = ({
     showGraphControls,
     device,
     accounts,
-}: {
-    showGraphControls: boolean;
-    device?: TrezorDevice;
-    accounts: Account[];
-}) => {
+}: UseUnsupportedNetworkMessageParams) => {
     const affectedAccounts =
         showGraphControls && !hasBitcoinOnlyFirmware(device)
             ? accounts

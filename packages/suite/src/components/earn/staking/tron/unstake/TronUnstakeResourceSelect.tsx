@@ -35,6 +35,7 @@ export const TronUnstakeResourceSelect = () => {
             </Text>
 
             <SelectBar
+                data-testid="@staking/tron-unstake/resource-select"
                 options={resourceOptions}
                 selectedOption={resourceType}
                 isDisabled={!!actions.pendingTxid}

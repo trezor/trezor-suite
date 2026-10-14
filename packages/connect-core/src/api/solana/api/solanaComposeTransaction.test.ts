@@ -34,7 +34,7 @@ const VALID_PAYLOAD = {
     serializedTx: '00aa',
     toAddress: 'recipient-base-address',
     token: {
-        mint: 'fallback-token-mint',
+        mint: 'payload-token-mint',
         program: 'spl-token',
         decimals: 6,
         accounts: [
@@ -46,8 +46,13 @@ const VALID_PAYLOAD = {
     },
 };
 
-const createMethod = (payload: Record<string, unknown> = VALID_PAYLOAD) =>
-    new SolanaComposeTransaction({ payload } as any);
+const mockDecompiledInstructions = (instructions: unknown[]) =>
+    jest.mocked(solana).mockResolvedValue({
+        getDecompiledMessage: jest.fn().mockReturnValue({ instructions }),
+    } as any);
+
+const runMethod = (payload: Record<string, unknown> = VALID_PAYLOAD) =>
+    new SolanaComposeTransaction({ payload } as any).run({ sendCoreMessage: undefined } as any);
 
 describe('solanaComposeTransaction', () => {
     beforeEach(() => {
@@ -60,27 +65,24 @@ describe('solanaComposeTransaction', () => {
         jest.clearAllMocks();
     });
 
-    it('uses transfer-checked instruction data when serializedTx can be decompiled', async () => {
-        jest.mocked(solana).mockResolvedValue({
-            getDecompiledMessage: jest.fn().mockReturnValue({
-                instructions: [
-                    {
-                        type: 'transfer-checked',
-                        parsed: {
-                            accounts: {
-                                mint: { address: 'instruction-token-mint' },
-                                destination: { address: 'instruction-destination-account' },
-                            },
-                        },
+    it('uses transfer-checked instruction for token account info of a provided serializedTx', async () => {
+        mockDecompiledInstructions([
+            {
+                type: 'transfer-checked',
+                parsed: {
+                    accounts: {
+                        mint: { address: 'instruction-token-mint' },
+                        destination: { address: 'instruction-destination-account' },
                     },
-                ],
-            }),
-        } as any);
+                },
+            },
+        ]);
 
-        expect(await createMethod().run({ sendCoreMessage: undefined } as any)).toEqual({
+        const result = await runMethod();
+
+        expect(result).toEqual({
             serializedTx: VALID_PAYLOAD.serializedTx,
             additionalInfo: {
-                newAccountProgramName: 'spl-token',
                 tokenAccountInfo: {
                     baseAddress: 'recipient-base-address',
                     tokenProgram: tokenProgramsInfo['spl-token'].publicKey,
@@ -89,47 +91,30 @@ describe('solanaComposeTransaction', () => {
                 },
             },
         });
+        expect(result.additionalInfo).not.toHaveProperty('newAccountProgramName');
     });
 
-    it('falls back to payload token data when transfer-checked instruction is missing', async () => {
-        jest.mocked(solana).mockResolvedValue({
-            getDecompiledMessage: jest.fn().mockReturnValue({
-                instructions: [{ type: 'memo' }],
-            }),
-        } as any);
+    it('omits token account info when the provided serializedTx has no transfer-checked instruction', async () => {
+        mockDecompiledInstructions([{ type: 'transfer-sol' }]);
 
-        expect(await createMethod().run({ sendCoreMessage: undefined } as any)).toEqual({
-            serializedTx: VALID_PAYLOAD.serializedTx,
-            additionalInfo: {
-                newAccountProgramName: 'spl-token',
-                tokenAccountInfo: {
-                    baseAddress: 'recipient-base-address',
-                    tokenProgram: tokenProgramsInfo['spl-token'].publicKey,
-                    tokenMint: 'fallback-token-mint',
-                    tokenAccount: 'recipient-base-address',
-                },
-            },
-        });
+        expect((await runMethod()).additionalInfo).toEqual({ tokenAccountInfo: undefined });
     });
 
-    it('falls back to payload token data when decompilation throws', async () => {
+    it('omits token account info when the provided serializedTx cannot be decompiled', async () => {
         jest.mocked(solana).mockResolvedValue({
             getDecompiledMessage: jest.fn(() => {
                 throw new Error('decode failed');
             }),
         } as any);
 
-        expect(await createMethod().run({ sendCoreMessage: undefined } as any)).toEqual({
+        expect((await runMethod()).additionalInfo).toEqual({ tokenAccountInfo: undefined });
+    });
+
+    it('returns a provided native serializedTx as is without decompiling it', async () => {
+        expect(await runMethod({ ...VALID_PAYLOAD, token: undefined })).toEqual({
             serializedTx: VALID_PAYLOAD.serializedTx,
-            additionalInfo: {
-                newAccountProgramName: 'spl-token',
-                tokenAccountInfo: {
-                    baseAddress: 'recipient-base-address',
-                    tokenProgram: tokenProgramsInfo['spl-token'].publicKey,
-                    tokenMint: 'fallback-token-mint',
-                    tokenAccount: 'recipient-base-address',
-                },
-            },
+            additionalInfo: { tokenAccountInfo: undefined },
         });
+        expect(solana).not.toHaveBeenCalled();
     });
 });

@@ -37,6 +37,10 @@ const contentContainerStyle = prepareNativeStyle<{
     paddingBottom: Math.max(insetBottom, utils.spacings.sp16),
 }));
 
+const listStyle = prepareNativeStyle(() => ({
+    flex: 1,
+}));
+
 export const keyExtractor = (item: ReceiveAccount) =>
     `${item.account.key}_${item.address?.address ?? 'address_undefined'}`;
 
@@ -90,6 +94,7 @@ export const AccountList = ({ data, symbol, onAddAccountTap, tradingType }: Acco
 
     return (
         <FlashList
+            style={applyStyle(listStyle)}
             contentContainerStyle={applyStyle(contentContainerStyle, {
                 insetBottom,
             })}

@@ -2,12 +2,12 @@ import { type ComponentType } from 'react';
 
 import { type AppProps } from 'next/app';
 
-import { ConnectExplorerAppRoot } from '../ConnectExplorerAppRoot';
-import { type ConnectExplorerReduxStore } from '../store/createConnectExplorerReduxStore';
+import { ServicesProvider } from '@trezor/dependency-injection';
 
-export type ConnectExplorerServices = {
-    store: ConnectExplorerReduxStore;
-};
+import { ConnectExplorerAppRoot } from '../ConnectExplorerAppRoot';
+import { type ConnectExplorerReduxStoreDep } from '../store/createConnectExplorerReduxStore';
+
+export type ConnectExplorerServices = ConnectExplorerReduxStoreDep;
 
 type ConnectExplorerAppDeps = {
     services: ConnectExplorerServices;
@@ -17,7 +17,9 @@ export type ConnectExplorerApp = () => ComponentType<AppProps>;
 
 export const createConnectExplorerApp = (deps: ConnectExplorerAppDeps): ConnectExplorerApp => {
     const AppWithServices = (props: AppProps) => (
-        <ConnectExplorerAppRoot {...props} store={deps.services.store} />
+        <ServicesProvider services={deps.services}>
+            <ConnectExplorerAppRoot {...props} />
+        </ServicesProvider>
     );
 
     // Next owns rendering and hydration; browser lifecycle effects run when this component mounts.

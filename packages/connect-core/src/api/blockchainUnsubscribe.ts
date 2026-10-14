@@ -46,7 +46,6 @@ export default class BlockchainUnsubscribe extends AbstractMethod<'blockchainUns
 
         super(message, params);
         this.useDevice = false;
-        this.useUi = false;
     }
 
     get requiredPermissions(): PermissionRequest[] {

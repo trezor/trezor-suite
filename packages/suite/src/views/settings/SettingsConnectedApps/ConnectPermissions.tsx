@@ -12,8 +12,6 @@ import {
     permissionIcons,
     selectConnectAppPermissions,
 } from '@suite-common/connect-popup';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     Box,
     Card,
@@ -30,6 +28,7 @@ import {
     Tooltip,
 } from '@trezor/components';
 import { type CoinSymbol, type MethodPermission, type PermissionRequest } from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
 import {
     BellSlashIcon,
     BroadcastIcon,
@@ -49,6 +48,7 @@ import {
     XCircleIcon,
 } from '@trezor/icons';
 import { NetworkIcon, isNetworkSymbolWithIcon } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
 import { ConnectProcessLabel } from 'src/components/suite/ConnectProcessLabel';
@@ -68,7 +68,9 @@ const PermissionRow = styled.div`
         opacity: 1;
         pointer-events: auto;
         transform: translateX(0);
-        transition: 200ms ease-in-out;
+        transition:
+            opacity 200ms ease-in-out,
+            transform 200ms ease-in-out;
     }
 `;
 
@@ -118,10 +120,12 @@ export const getPermissionText = (permissionType: MethodPermission | string) => 
     }
 };
 
+type GroupBadgeProps = { coin?: string };
+
 // Network icon for a coin group; falls back to a rounded-square badge that
 // mirrors NetworkIcon for the device group (no coin) or altcoins that suite has
 // no network icon for.
-const GroupBadge = ({ coin }: { coin?: string }) => {
+const GroupBadge = ({ coin }: GroupBadgeProps) => {
     const symbol = coin?.toLowerCase();
 
     if (symbol && isNetworkSymbolWithIcon(symbol)) {
@@ -141,12 +145,16 @@ const GroupBadge = ({ coin }: { coin?: string }) => {
     );
 };
 
+type PermissionIconProps = { permission: MethodPermission };
+
 // Shared so the collapsed preview and the expanded rows render identical icons.
-const PermissionIcon = ({ permission }: { permission: MethodPermission }) => (
+const PermissionIcon = ({ permission }: PermissionIconProps) => (
     <Icon as={getPermissionIcon(permission)} size={20} intent="neutral" priority="secondary" />
 );
 
-const PermissionPreview = ({ permissions }: { permissions: MethodPermission[] }) => {
+type PermissionPreviewProps = { permissions: MethodPermission[] };
+
+const PermissionPreview = ({ permissions }: PermissionPreviewProps) => {
     const shown = permissions.slice(0, PERMISSION_PREVIEW_LIMIT);
     const remaining = permissions.length - shown.length;
 

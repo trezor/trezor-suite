@@ -15,8 +15,8 @@ import {
 import { type OnSelectAccount } from '../types';
 import { AccountsList } from './AccountsList/AccountsList';
 import { AccountsListFooter } from './AccountsListFooter';
-import { AccountsListHeader } from './AccountsListHeader';
 import { NetworkFilterBottomSheet } from './NetworkFilterBottomSheet';
+import { SearchableAccountsListHeader } from './SearchableAccountsListHeader';
 
 const EMPTY_NETWORKS_FILTER: NetworkSymbol[] = [];
 
@@ -29,7 +29,7 @@ type AccountsListWithFilterProps = {
     closeAction?: () => void;
     onAddAccount?: () => void;
     isSendFlow?: boolean;
-    isScrollDividerEnabled?: boolean;
+    noHeaderPaddingTop?: boolean;
     children?: ReactNode;
 };
 
@@ -42,7 +42,7 @@ export const AccountsListWithFilter = ({
     closeAction,
     onAddAccount,
     isSendFlow,
-    isScrollDividerEnabled,
+    noHeaderPaddingTop,
     children,
 }: AccountsListWithFilterProps) => {
     const [searchValue, setSearchValue] = useState('');
@@ -102,27 +102,25 @@ export const AccountsListWithFilter = ({
 
     return (
         <>
+            <SearchableAccountsListHeader
+                title={title}
+                onSearchInputChange={setSearchValue}
+                isSearchActive={isSearchActive}
+                onSearchActiveChange={setIsSearchActive}
+                flowType={flowType}
+                closeActionType={closeActionType}
+                closeAction={closeAction}
+                onAddAccount={onAddAccount}
+                onFilterPress={isNetworkFilterVisible ? handleFilterPress : undefined}
+                activeFilterCount={filteredNetworks.length}
+                noPaddingTop={noHeaderPaddingTop}
+            />
             <AccountsList
                 onSelectAccount={handleSelectAccount}
                 searchValue={searchValue}
                 networkFilter={filteredNetworks}
                 isSendFlow={isSendFlow}
-                ListHeaderComponent={
-                    <AccountsListHeader
-                        title={title}
-                        onSearchInputChange={setSearchValue}
-                        isSearchActive={isSearchActive}
-                        onSearchActiveChange={setIsSearchActive}
-                        flowType={flowType}
-                        closeActionType={closeActionType}
-                        closeAction={closeAction}
-                        onAddAccount={onAddAccount}
-                        onFilterPress={isNetworkFilterVisible ? handleFilterPress : undefined}
-                        activeFilterCount={filteredNetworks.length}
-                    >
-                        {children}
-                    </AccountsListHeader>
-                }
+                ListHeaderComponent={<>{children}</>}
                 ListFooterComponent={
                     <AccountsListFooter
                         isSendFlow={isSendFlow}
@@ -130,7 +128,6 @@ export const AccountsListWithFilter = ({
                         onClearFilters={handleClearFilters}
                     />
                 }
-                isScrollDividerEnabled={isScrollDividerEnabled}
             />
             <NetworkFilterBottomSheet
                 ref={filterBottomSheetRef}

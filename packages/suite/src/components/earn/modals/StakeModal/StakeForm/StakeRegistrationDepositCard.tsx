@@ -25,7 +25,10 @@ export const StakeRegistrationDepositCard = ({ account }: StakeRegistrationDepos
                 <Paragraph typographyStyle="body-md">
                     <Translation id="AMOUNT" />
                 </Paragraph>
-                <Paragraph typographyStyle="body-md-strong">
+                <Paragraph
+                    typographyStyle="body-md-strong"
+                    data-testid="@modal/staking/stake-amount"
+                >
                     <Translation id="TR_STAKE_FULL_BALANCE" />
                 </Paragraph>
             </Row>
@@ -35,7 +38,12 @@ export const StakeRegistrationDepositCard = ({ account }: StakeRegistrationDepos
                     <Paragraph typographyStyle="body-md">
                         <Translation id="TR_STAKING_NEW_PROVIDER" />
                     </Paragraph>
-                    <Paragraph typographyStyle="body-md-strong">Everstake</Paragraph>
+                    <Paragraph
+                        typographyStyle="body-md-strong"
+                        data-testid="@modal/staking/new-provider"
+                    >
+                        Everstake
+                    </Paragraph>
                 </Row>
             ) : (
                 <>
@@ -68,6 +76,7 @@ export const StakeRegistrationDepositCard = ({ account }: StakeRegistrationDepos
                 intent="info"
                 icon={InfoIcon}
                 margin={{ top: 16 }}
+                data-testid="@modal/staking/funds-banner"
                 description={
                     <Translation
                         id={

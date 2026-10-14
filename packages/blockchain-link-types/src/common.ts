@@ -1,7 +1,14 @@
 import type { SocksProxyAgentOptions } from 'socks-proxy-agent';
 
+import type {
+    StellarClaimableBalanceOffer,
+    StellarContractCallData,
+    StellarOperationType,
+} from '@trezor/network-stellar/types';
+
 import type { BaseCurrencyCode } from './baseCurrency';
 import type { TokenProtocols, TronAccountExtraData, TronChainExtraData } from './blockbook-api';
+import type { CardanoStakingInfo } from './cardano';
 
 /* Shared types — canonical definitions used by both common and backend-specific modules */
 
@@ -27,7 +34,8 @@ export type TokenStandard =
     | 'SPL'
     | 'SPL-2022'
     | 'BLOCKFROST'
-    | 'STELLAR-CLASSIC';
+    | 'STELLAR-CLASSIC'
+    | 'STELLAR-CONTRACT';
 
 export type FiatRatesBySymbol = {
     [K in BaseCurrencyCode]?: number | undefined;
@@ -260,11 +268,13 @@ export interface Transaction {
     stellarSpecific?: {
         memo?: string;
         feeSource: string; // who paid the fee for the transaction
-        operationType?: 'changeTrust';
+        operationType?: StellarOperationType;
         changeTrust?: {
             assetCode: string;
             isRemoval: boolean;
         };
+        claimableBalanceOffer?: StellarClaimableBalanceOffer;
+        contractCall?: StellarContractCallData;
     };
     tronSpecific?: TronChainExtraData;
 }
@@ -355,29 +365,29 @@ export interface AccountInfo {
         contractInfo?: ContractInfo;
         stakingPools?: StakingPool[];
         addressAliases?: { [key: string]: AddressAlias };
+        /**
+         * Direct-RPC backends scan a window of blocks rather than the whole chain. This is what to
+         * send back as `from` to reach one step further back; absent once the scan has reached the
+         * first block, or before anything has been scanned.
+         */
+        olderHistoryFrom?: number;
+        /** Direct-RPC backends: unix time of the oldest block the scanned history covers. */
+        historyCoveredSince?: number;
         // XRP
         sequence?: number;
         // Stellar
         stellarSequence?: string;
         baseReserve?: string;
         reserve?: string;
+        /**
+         * Contracts whose SEP-41 balance the node did not answer for. Absent from `tokens` because
+         * it is unknown, not because the account stopped holding them.
+         */
+        stellarUnreadableContracts?: string[];
         // blockfrost
         rewards?: string;
         // ADA
-        staking?: {
-            address: string;
-            isActive: boolean;
-            rewards: string;
-            poolId: string | null;
-            drep: {
-                drep_id: string;
-                hex: string;
-                amount: string;
-                active: boolean;
-                active_epoch: number | null;
-                has_script: boolean;
-            } | null;
-        };
+        staking?: CardanoStakingInfo;
         // SOL
         owner?: string; // The Solana program owning the account
         rent?: number; // The rent required for the account to opened

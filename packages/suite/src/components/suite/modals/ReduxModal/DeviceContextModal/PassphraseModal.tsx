@@ -2,9 +2,7 @@ import { useCallback } from 'react';
 
 import { selectIsDeviceInteractionModalActive, selectModalRequestId } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectHasDevicePassphraseEntryCapability } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     cancelDiscoveryThunk,
@@ -13,6 +11,8 @@ import {
     submitPassphraseThunk,
 } from '@suite-common/wallet-core';
 import { UI_EVENTS } from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -22,7 +22,9 @@ import { DiscoveryLoader } from '../../ModalSwitcher/DiscoveryLoader';
 import { PassphraseDuplicateModal } from '../UserContextModal/PassphraseDuplicateModal';
 import { PassphraseMismatchModal } from '../UserContextModal/PassphraseMismatchModal';
 
-export const PassphraseModal = ({ device }: { device: TrezorDevice }) => {
+type PassphraseModalProps = { device: TrezorDevice };
+
+export const PassphraseModal = ({ device }: PassphraseModalProps) => {
     const discovery = useSelector(state => selectDiscoveryByDevicePath(state, device?.path));
     const requestId = useSelector(selectModalRequestId);
     const { dispatch } = useServices(injectDispatch);

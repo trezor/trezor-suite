@@ -51,7 +51,7 @@ export const AccountDetailsCard = ({ accountKey, tokenContract }: AccountDetails
                 {tokenContract ? (
                     <TokenReceiveCard contract={tokenContract} accountKey={accountKey} />
                 ) : (
-                    <AccountsListItem account={account} />
+                    <AccountsListItem account={account} shouldShowExactAmount />
                 )}
             </Card>
         </VStack>

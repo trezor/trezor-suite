@@ -4,8 +4,22 @@ import { colorVariants } from '@trezor/theme';
 import { hexToRgba } from '@trezor/utils';
 
 import { RewardsList } from './rewardList';
-import { step, toCompactAmountWithSymbol } from '../../common';
+import { step } from '../../common';
 import { expect } from '../../testExtends/customMatchers';
+
+type VerifyStakingToastParams = {
+    type: 'staked' | 'unstaked' | 'claimed';
+};
+
+type ExpectStakingAmountsParams = {
+    expected: {
+        pending: string | 'hidden';
+        staked: string | 'hidden';
+        rewards: string | 'hidden';
+        unstaking: string | 'hidden';
+    };
+    options?: { fastForward?: string; timeout?: number };
+};
 
 export class StakingSection {
     readonly rewardList: RewardsList;
@@ -16,6 +30,8 @@ export class StakingSection {
     readonly stakingTabButton: Locator;
     readonly stakingDashboardCard: Locator;
     readonly stakingEmptyCard: Locator;
+    readonly externalStakingCard: Locator;
+    readonly rewardsWarningBanner: Locator;
     readonly pendingAmount: Locator;
     readonly stakedAmount: Locator;
     readonly rewardsAmount: Locator;
@@ -58,25 +74,38 @@ export class StakingSection {
     readonly cryptoTicker: Locator;
     readonly stakedToast: Locator;
     readonly stakedToastMessage: Locator;
-    readonly stakedToastAmount: Locator;
     readonly unstakedToast: Locator;
     readonly unstakedToastMessage: Locator;
-    readonly unstakedToastAmount: Locator;
     readonly claimedToast: Locator;
     readonly claimedToastMessage: Locator;
-    readonly claimedToastAmount: Locator;
     readonly claimRewardsButton: Locator;
     readonly cardanoRewardAmount: Locator;
     readonly cardanoDepositAmount: Locator;
+    readonly stakeModalAmount: Locator;
+    readonly stakeModalNewProvider: Locator;
+    readonly stakeModalFundsBanner: Locator;
+    readonly stakeModalInfoCardHeadings: Locator;
+    readonly stakeModalInfoRowContents: Locator;
+    readonly stakeModalInfoRowSubheadings: Locator;
+    readonly votingPreferenceHeading: Locator;
+    readonly votingPreferenceOptionLabels: Locator;
     readonly cardanoModalRewardAmount: Locator;
     readonly cardanoStakedFullBalanceText: Locator;
     readonly claimWarningBanner: Locator;
+    readonly cardanoOutdatedBannerParagraph: Locator;
+    readonly cardanoOutdatedBannerUpdateProviderButton: Locator;
+    readonly newProviderCardHeader: Locator;
+    readonly newProviderCardParagraph: Locator;
+    readonly newProviderCardUpdateProviderButton: Locator;
+    readonly earnDashboardUpdateProviderButton: Locator;
 
     constructor(private readonly page: Page) {
         this.rewardList = new RewardsList(page);
         this.stakingTabButton = this.page.getByTestId('@wallet/menu/staking');
         this.stakingDashboardCard = this.page.getByTestId('@wallet/staking/card');
         this.stakingEmptyCard = this.page.getByTestId('@wallet/staking/empty-card');
+        this.externalStakingCard = this.page.getByTestId('@wallet/staking/outside-staking-card');
+        this.rewardsWarningBanner = this.page.getByTestId('@wallet/staking/rewards-warning');
         this.pendingAmount = this.page.getByTestId('@account/staking/pending');
         this.stakedAmount = this.page.getByTestId('@account/staking/staked');
         this.rewardsAmount = this.page.getByTestId('@account/staking/rewards');
@@ -136,65 +165,89 @@ export class StakingSection {
         this.cryptoTicker = this.page.getByTestId('@staking/form/crypto-input/input-addon');
         this.stakedToast = this.page.getByTestId('@toast/tx-staked');
         this.stakedToastMessage = this.page.getByTestId('@toast/tx-staked/message');
-        this.stakedToastAmount = this.page.getByTestId('@toast/tx-staked/amount');
         this.unstakedToast = this.page.getByTestId('@toast/tx-unstaked');
         this.unstakedToastMessage = this.page.getByTestId('@toast/tx-unstaked/message');
-        this.unstakedToastAmount = this.page.getByTestId('@toast/tx-unstaked/amount');
         this.claimedToast = this.page.getByTestId('@toast/tx-claimed');
         this.claimedToastMessage = this.page.getByTestId('@toast/tx-claimed/message');
-        this.claimedToastAmount = this.page.getByTestId('@toast/tx-claimed/amount');
         this.claimRewardsButton = this.page.getByTestId('@account/staking/claim-rewards-button');
         this.cardanoRewardAmount = this.page.getByTestId('@account/staking/rewards-with-symbol');
         this.cardanoDepositAmount = this.page.getByTestId(
             '@modal/staking/registration-deposit-amount-with-symbol',
+        );
+        this.stakeModalAmount = this.page.getByTestId('@modal/staking/stake-amount');
+        this.stakeModalNewProvider = this.page.getByTestId('@modal/staking/new-provider');
+        this.stakeModalFundsBanner = this.page.getByTestId('@modal/staking/funds-banner');
+        this.stakeModalInfoCardHeadings = this.page.getByTestId('@modal/staking/info-card-heading');
+        this.stakeModalInfoRowContents = this.page.modal.getByTestId('@earn/info-row/content');
+        this.stakeModalInfoRowSubheadings = this.page.modal.getByTestId(
+            '@earn/info-row/subheading',
+        );
+        this.votingPreferenceHeading = this.page.getByTestId('@staking/voting-preference/heading');
+        this.votingPreferenceOptionLabels = this.page.getByTestId(
+            '@staking/voting-preference/option-label',
         );
         this.cardanoModalRewardAmount = this.page.getByTestId(
             '@modal/claim/rewards-amount-with-symbol',
         );
         this.cardanoStakedFullBalanceText = this.page.getByTestId('@account/staking/full-balance');
         this.claimWarningBanner = this.page.getByTestId('@modal/claim/fee-warning-banner');
+        this.cardanoOutdatedBannerParagraph = this.page.getByTestId(
+            '@staking/cardano-outdated-banner/paragraph',
+        );
+        this.cardanoOutdatedBannerUpdateProviderButton = this.page.getByTestId(
+            '@staking/cardano-outdated-banner/update-provider-button',
+        );
+        this.newProviderCardHeader = this.page.getByTestId('@staking/new-provider-card/header');
+        this.newProviderCardParagraph = this.page.getByTestId(
+            '@staking/new-provider-card/paragraph',
+        );
+        this.newProviderCardUpdateProviderButton = this.page.getByTestId(
+            '@staking/new-provider-card/update-provider-button',
+        );
+        this.earnDashboardUpdateProviderButton = this.page.getByTestId(
+            '@earn/dashboard/update-provider-button',
+        );
     }
 
-    /**
-     * @param params.type - The staking toast type ('staked' | 'unstaked' | 'claimed')
-     * @param params.account - The account label shown in the toast (e.g., 'Solana #1')
-     * @param params.amount - The expected amount with symbol (e.g., '0.1 SOL')
-     */
     @step()
-    async verifyStakingToast({
-        type,
-        account,
-        amount,
-    }: {
-        type: 'staked' | 'unstaked' | 'claimed';
-        account: string;
-        amount: string;
-    }) {
+    async verifyStakingToast({ type }: VerifyStakingToastParams) {
         const toasts = {
             staked: {
                 messageLocator: this.stakedToastMessage,
-                amountLocator: this.stakedToastAmount,
-                translationKey: 'TOAST_TX_STAKED',
+                translationKey: 'TOAST_TX_STAKE_PENDING',
             },
             unstaked: {
                 messageLocator: this.unstakedToastMessage,
-                amountLocator: this.unstakedToastAmount,
-                translationKey: 'TOAST_TX_UNSTAKED',
+                translationKey: 'TOAST_TX_UNSTAKE_PENDING',
             },
             claimed: {
                 messageLocator: this.claimedToastMessage,
-                amountLocator: this.claimedToastAmount,
-                translationKey: 'TOAST_TX_CLAIMED',
+                translationKey: 'TOAST_TX_CLAIM_PENDING',
             },
         } as const;
-        const toast = toasts[type];
 
-        await expect(toast.messageLocator).toHaveTranslation(toast.translationKey, {
-            values: { account },
-        });
-        // The toast shows compact amounts, so the exact values the callers pass are reduced
-        // here rather than in each of them.
-        await expect(toast.amountLocator).toHaveText(toCompactAmountWithSymbol(amount));
+        await expect(toasts[type].messageLocator).toHaveTranslation(toasts[type].translationKey);
+    }
+
+    @step()
+    async expectExternalStakingCard({
+        amount,
+        displaySymbol,
+    }: {
+        amount: string;
+        displaySymbol: string;
+    }) {
+        const fiatAmountRegex = /\$\d{1,3}(,\d{3})*\.\d{2}/;
+
+        await expect(this.externalStakingCard).toContainTranslation(
+            'TR_OUTSIDE_STAKING_CARD_TITLE',
+        );
+        await expect(this.externalStakingCard).toContainTranslation(
+            'TR_OUTSIDE_STAKING_CARD_TEXT',
+            {
+                values: { amount, displaySymbol, fiat: fiatAmountRegex },
+            },
+        );
     }
 
     @step()
@@ -236,18 +289,7 @@ export class StakingSection {
     }
 
     @step()
-    async expectStakingAmounts({
-        expected,
-        options,
-    }: {
-        expected: {
-            pending: string | 'hidden';
-            staked: string | 'hidden';
-            rewards: string | 'hidden';
-            unstaking: string | 'hidden';
-        };
-        options?: { fastForward?: string; timeout?: number };
-    }) {
+    async expectStakingAmounts({ expected, options }: ExpectStakingAmountsParams) {
         await expect(async () => {
             if (options?.fastForward) {
                 await this.page.clock.fastForward(options.fastForward);

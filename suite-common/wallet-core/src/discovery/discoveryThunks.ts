@@ -17,11 +17,6 @@ import {
     selectEntropyCheckResultByDeviceId,
 } from '@suite-common/persistent-device-data';
 import {
-    type SuiteCompatibleThunk,
-    type WithServices,
-    createThunk,
-} from '@suite-common/redux-utils';
-import {
     type AcquiredDevice,
     type AuthorizedDevice,
     type TrezorDevice,
@@ -42,13 +37,19 @@ import TrezorConnect, {
 } from '@trezor/connect';
 import { type DiscoverAccountsProgress } from '@trezor/connect-common/src/types/api/account/discoverAccounts';
 import type { Bip43Path } from '@trezor/crypto-utils';
+import { type SuiteCompatibleThunk, type WithServices, createThunk } from '@trezor/redux-utils';
 
 import { DISCOVERY_MODULE_PREFIX, discoveryActions } from './discoveryActions';
 import { type DiscoveryRootState } from './discoveryReducer';
 import { isDiscoveryInProgress, selectDiscoveryByDevicePath } from './discoverySelectors';
+import { shouldFetchAssetsAfterDiscovery } from './discoveryUtils';
 import { type CreateAccountActionProps, accountsActions } from '../accounts/accountsActions';
 import { selectAccountsByDeviceState } from '../accounts/accountsSelectors';
-import { reportAccountInfoThunk, reportWalletBalanceThunk } from '../accounts/accountsThunks';
+import {
+    fetchAndUpdateAccountThunk,
+    reportAccountInfoThunk,
+    reportWalletBalanceThunk,
+} from '../accounts/accountsThunks';
 import {
     type WalletCoreCompoundRootState,
     selectAccountsToBeForgotten,
@@ -272,23 +273,16 @@ const applyDeviceStateErrorThunk = createThunk<
         );
     },
 );
+type CompleteDiscoveryParams = {
+    getState: () => DiscoveryReportingThunkState;
+    dispatch: ThunkDispatch<DiscoveryReportingThunkState, DiscoveryReportingDeps, UnknownAction>;
+    fetchAndSaveMetadata: SuiteCompatibleThunk<StaticSessionId>;
+};
 
 const completeDiscovery = (
     devicePath: DeviceUniquePath,
     deviceState: TrezorDeviceWithState['state'],
-    {
-        dispatch,
-        fetchAndSaveMetadata,
-        getState,
-    }: {
-        getState: () => DiscoveryReportingThunkState;
-        dispatch: ThunkDispatch<
-            DiscoveryReportingThunkState,
-            DiscoveryReportingDeps,
-            UnknownAction
-        >;
-        fetchAndSaveMetadata: SuiteCompatibleThunk<StaticSessionId>;
-    },
+    { dispatch, fetchAndSaveMetadata, getState }: CompleteDiscoveryParams,
 ) => {
     dispatch(discoveryActions.updateDiscovery({ status: 'complete' }, devicePath));
     dispatch(fetchAndSaveMetadata(deviceState.staticSessionId));
@@ -490,12 +484,18 @@ export const runDiscoveryThunk = createThunk<
                         );
                         accountQueue.splice(0, accountQueue.length);
                     }
-                    dispatch(
+                    const { account } = dispatch(
                         accountsActions.createAccount(
                             accountPayload,
                             selectSupportedNetworkSymbols(getState()),
                         ),
-                    );
+                    ).payload;
+
+                    // Discovery on a plain RPC node only learns balance and nonce; the tokens
+                    // come from a second, per-account request once the account exists.
+                    if (shouldFetchAssetsAfterDiscovery(accountPayload)) {
+                        dispatch(fetchAndUpdateAccountThunk({ accountKey: account.key }));
+                    }
                 }
 
                 dispatch(discoveryActions.updateDiscovery(discoveryPayload, device.path));

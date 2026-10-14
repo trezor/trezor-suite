@@ -45,7 +45,6 @@
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "generate:csl-asmjs": "node ./scripts/csl-asmjs/generate.js",
-        "trace:csl-asmjs": "node ./scripts/csl-asmjs/trace.js",
         "verify:csl-asmjs": "./scripts/csl-asmjs/verify.sh",
         "test:unit": "yarn g:jest --passWithNoTests",
         "type-check": "yarn g:tsc --build tsconfig.json",
@@ -53,7 +52,6 @@
     },
     "dependencies": {
         "@fivebinaries/coin-selection": "3.0.0",
-        "@trezor/utils": "workspace:*",
         "cbor": "^10.0.12"
     },
     "devDependencies": {

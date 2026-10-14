@@ -5,14 +5,8 @@
         "outDir": "libDev"
     },
     "references": [
-        {
-            "path": "../../suite-common/dependency-injection"
-        },
         { "path": "../../suite-common/device" },
         { "path": "../../suite-common/networks" },
-        {
-            "path": "../../suite-common/redux-utils"
-        },
         {
             "path": "../../suite-common/wallet-config"
         },
@@ -33,6 +27,10 @@
         { "path": "../link" },
         { "path": "../module-earn" },
         { "path": "../navigation" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        { "path": "../../packages/redux-utils" },
         {
             "path": "../../packages/styles-native"
         },

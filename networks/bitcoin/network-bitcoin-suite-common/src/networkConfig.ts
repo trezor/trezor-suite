@@ -1,10 +1,21 @@
-import type { BitcoinNetworkSymbol } from '@trezor/network-bitcoin/constants';
+import type { BitcoinNetworkSymbol } from '@trezor/network-bitcoin-types';
 import {
+    DEFAULT_ACCOUNT_SYNC_INTERVAL,
     type Explorer,
     type SuiteCommonNetworkConfig,
     asDisplayOrderKey,
     asProtocol,
 } from '@trezor/network-module-suite-common-types';
+
+const syncIntervalBySymbol: Readonly<Record<BitcoinNetworkSymbol, number>> = {
+    btc: DEFAULT_ACCOUNT_SYNC_INTERVAL,
+    test: DEFAULT_ACCOUNT_SYNC_INTERVAL,
+    regtest: DEFAULT_ACCOUNT_SYNC_INTERVAL,
+    ltc: DEFAULT_ACCOUNT_SYNC_INTERVAL,
+    doge: DEFAULT_ACCOUNT_SYNC_INTERVAL,
+    zec: DEFAULT_ACCOUNT_SYNC_INTERVAL,
+    bch: DEFAULT_ACCOUNT_SYNC_INTERVAL,
+};
 
 const getExplorerUrls = (baseUrl: string): Explorer => ({
     base: baseUrl,
@@ -53,6 +64,7 @@ export const networkConfigBySymbol = {
         },
         coingeckoId: 'bitcoin',
         tradeCryptoId: 'bitcoin',
+        fiatRateCryptoId: 'bitcoin',
         caipId: 'bip122:000000000019d6689c085ae165831e93',
         yieldXyzId: null,
     },
@@ -159,6 +171,7 @@ export const networkConfigBySymbol = {
         },
         coingeckoId: 'litecoin',
         tradeCryptoId: 'litecoin',
+        fiatRateCryptoId: 'litecoin',
         caipId: 'bip122:12a765e31ffd4059bada1e25190f6e98',
         yieldXyzId: null,
     },
@@ -178,6 +191,7 @@ export const networkConfigBySymbol = {
         accountTypes: {},
         coingeckoId: 'dogecoin',
         tradeCryptoId: 'dogecoin',
+        fiatRateCryptoId: 'dogecoin',
         caipId: 'bip122:1a91e3dace36e2be3bf030a65679fe82',
         yieldXyzId: null,
     },
@@ -197,6 +211,7 @@ export const networkConfigBySymbol = {
         accountTypes: {},
         coingeckoId: 'zcash',
         tradeCryptoId: 'zcash',
+        fiatRateCryptoId: 'zcash',
         yieldXyzId: null,
     },
     // testnets
@@ -216,9 +231,13 @@ export const networkConfigBySymbol = {
         accountTypes: {},
         coingeckoId: 'bitcoin-cash',
         tradeCryptoId: 'bitcoin-cash',
+        fiatRateCryptoId: 'bitcoin-cash',
         yieldXyzId: null,
     },
 } satisfies Readonly<Record<BitcoinNetworkSymbol, NetworkConfig>>;
 
 export const getNetworkConfig = (symbol: BitcoinNetworkSymbol): SuiteCommonNetworkConfig =>
     networkConfigBySymbol[symbol];
+
+export const getAccountSyncInterval = (symbol: BitcoinNetworkSymbol): number =>
+    syncIntervalBySymbol[symbol];

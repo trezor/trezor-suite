@@ -17,7 +17,6 @@
         "@reduxjs/toolkit": "2.12.0",
         "@suite-common/trading": "workspace:*",
         "@suite-native/atoms": "workspace:*",
-        "@suite-native/clipboard": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",
         "@suite-native/trading-state": "workspace:*",
         "@trezor/styles-native": "workspace:*",

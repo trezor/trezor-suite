@@ -6,8 +6,6 @@ import { useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 import { type BuyTrade, type CryptoId, type ExchangeTrade } from 'invity-api';
 
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { cryptoIdToNetworkAndContractAddress } from '@suite-common/trading';
 import { useAlert } from '@suite-native/alerts';
 import { AnimatedBox, Button } from '@suite-native/atoms';
@@ -23,6 +21,8 @@ import {
     StellarManageTokenStackRoutes,
 } from '@suite-native/navigation';
 import { selectExchangeSelectedReceiveAccount } from '@suite-native/trading-state';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 type NavigationProps = StackNavigationProps<RootStackParamList, RootStackRoutes.AppTabs>;
 

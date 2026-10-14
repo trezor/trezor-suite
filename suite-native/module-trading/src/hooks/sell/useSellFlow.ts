@@ -3,8 +3,6 @@ import { useSelector } from 'react-redux';
 
 import type { BankAccount, SellFiatTrade, SellFiatTradeResponse } from 'invity-api';
 
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     selectTradingSellInfo,
     selectTradingSellSelectedQuote,
@@ -13,6 +11,8 @@ import {
 } from '@suite-common/trading';
 import { buildTradingUrl, useBrowserAuth } from '@suite-native/trading-browser-auth';
 import { selectSellSelectedSendAccount } from '@suite-native/trading-state';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useTradingTransaction } from '../general/useTradingTransaction';
 

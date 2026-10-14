@@ -25,6 +25,7 @@ export const SERVICE_NAME = '@trezor/connect';
 // manifest's `appName` (see packages/suite/src/support/services.ts).
 const TRANSPORT_ID = 'Trezor Suite desktop';
 type CreateLogger = NonNullable<ConnectSettings['createLogger']>;
+type UsbImplementation = 'legacy' | 'nusb';
 
 const createTransportParams = (createLogger: ConnectSettings['createLogger']) => ({
     id: TRANSPORT_ID,
@@ -34,13 +35,21 @@ const createTransportParams = (createLogger: ConnectSettings['createLogger']) =>
 export const transportFactory = (
     t: unknown,
     createLogger?: CreateLogger,
+    usbImplementation?: UsbImplementation,
 ): ConnectSettingsTransport | undefined => {
     if (typeof t !== 'string') return t as ConnectSettingsTransport;
     switch (t) {
         case 'BridgeTransport':
             return new BridgeTransport(createTransportParams(createLogger));
         case 'NodeUsbTransport':
-            return new NodeUsbTransport(createTransportParams(createLogger));
+            // Direct-USB transport for connect running in this (main) process. Built with the
+            // persisted usb implementation so the legacy escape hatch also governs the non-bridge USB
+            // path. Startup-safe: nodeusb.ts loads only the selected native addon, on first use, and
+            // the desktop-main webpack build keeps that import lazy (externalsType 'node-commonjs').
+            return new NodeUsbTransport({
+                ...createTransportParams(createLogger),
+                usbImplementation,
+            });
         case 'UdpTransport':
             return new UdpTransport(createTransportParams(createLogger));
         default:
@@ -54,29 +63,46 @@ export const transportFactory = (
 export const getTransportsParam = (
     rawTransports?: ConnectSettings['transports'],
     createLogger?: CreateLogger,
+    usbImplementation?: UsbImplementation,
 ): ConnectSettings['transports'] => {
     const transports = rawTransports
-        ?.map(transport => transportFactory(transport, createLogger))
+        ?.map(transport => transportFactory(transport, createLogger, usbImplementation))
         .filter((transport): transport is ConnectSettingsTransport => transport !== undefined);
     const bluetooth = bluetoothModuleState.getTransport();
-    if (!bluetooth) return transports;
 
+    // An explicit non-empty selection (e.g. from the debug transport picker) is honored as-is.
     if (transports && transports.length > 0) {
-        return [...transports, bluetooth];
+        return bluetooth ? [...transports, bluetooth] : transports;
     }
 
-    // If the caller did not pass any transports, restore the Bridge default
-    // explicitly so we don't end up with a Bluetooth-only list.
-    return [bluetooth, new BridgeTransport(createTransportParams(createLogger))];
+    if (bluetooth) {
+        // No explicit transports: restore the Bridge default explicitly so we don't end up with a
+        // Bluetooth-only list (direct USB is not added to the Bluetooth fallback - unchanged).
+        return [bluetooth, new BridgeTransport(createTransportParams(createLogger))];
+    }
+
+    // No explicit transports and no Bluetooth: supply connect's [Bridge, NodeUsbTransport] default
+    // ourselves instead of letting connect-core fall back to its hardwired NodeUsbTransport(nusb), so
+    // the direct-USB transport honors the persisted usbImplementation even without a picker selection
+    // (the legacy escape hatch works by default).
+    return [
+        new BridgeTransport(createTransportParams(createLogger)),
+        new NodeUsbTransport({ ...createTransportParams(createLogger), usbImplementation }),
+    ];
 };
 
 export const initBackground: ModuleInitBackground = ({
     mainThreadEmitter,
     store,
     powerSaveBlocker,
+    logger,
 }) => {
-    const { logger } = global;
     let createLogger: ConnectSettings['createLogger'];
+
+    // Mirror the bridge's clamp (see modules/bridge.ts): an unknown/undefined persisted value falls
+    // back to the legacy (usb 2.x) default so a broken nusb binary never gates device access.
+    const getUsbImplementation = (): UsbImplementation =>
+        store.getBridgeSettings().usbImplementation === 'nusb' ? 'nusb' : 'legacy';
 
     logger.info(SERVICE_NAME, `Starting service`);
 
@@ -111,7 +137,7 @@ export const initBackground: ModuleInitBackground = ({
                 if (method === 'init') {
                     logger.info(SERVICE_NAME, `Retrieving stored firmwares`);
                     const [settings] = params;
-                    const localFirmwares = await getStoredFirmwares();
+                    const localFirmwares = await getStoredFirmwares(logger);
                     if (settings.thp) {
                         // upgrade THP hostName with codesign (dev/local) suffix
                         settings.thp.appName = APP_NAME;
@@ -126,7 +152,11 @@ export const initBackground: ModuleInitBackground = ({
                     settings.debug = settings.debug || getSwitchValue('log-level') === 'debug';
                     createLogger = (prefix: string) => initLog(prefix, !!settings.debug);
                     settings.createLogger = createLogger;
-                    settings.transports = getTransportsParam(settings.transports, createLogger);
+                    settings.transports = getTransportsParam(
+                        settings.transports,
+                        createLogger,
+                        getUsbImplementation(),
+                    );
 
                     const response = await TrezorConnect.init(settings);
                     await setProxy();
@@ -172,7 +202,11 @@ export const initBackground: ModuleInitBackground = ({
                 // fallback here would make `newTransports` defined in Core and trigger a needless
                 // SET_TRANSPORTS → resetTransports → deviceList.init on every such update.
                 if (method === 'updateConnectSettings' && params[0].transports !== undefined) {
-                    params[0].transports = getTransportsParam(params[0].transports, createLogger);
+                    params[0].transports = getTransportsParam(
+                        params[0].transports,
+                        createLogger,
+                        getUsbImplementation(),
+                    );
                 }
 
                 return (TrezorConnect[method] as any)(...params);

@@ -1,5 +1,6 @@
 import { expect as detoxExpect } from 'detox';
 
+import { joinAmountWithSymbol } from '@suite-common/formatters';
 import CS_TRANSLATIONS from '@suite-native/intl/translations/cs-CZ.json';
 import EN_TRANSLATIONS from '@suite-native/intl/translations/en-US.json';
 import { PROTO } from '@trezor/connect';
@@ -37,20 +38,20 @@ describe('App Settings - without device interactions [@noDevice]', () => {
     });
 
     it('Localization - Bitcoin Units', async () => {
-        await detoxExpect(element(by.text('0 BTC'))).toBeVisible();
+        await detoxExpect(element(by.text(joinAmountWithSymbol('0', 'BTC')))).toBeVisible();
         await onTabBar.navigateToSettings();
         await onSettings.openSection('preferences');
         await onSettings.changeBitcoinUnits(PROTO.AmountUnit.SATOSHI);
         await onTabBar.tapBackButton();
         await onTabBar.navigateToHome();
 
-        await detoxExpect(element(by.text('0 sat'))).toBeVisible();
+        await detoxExpect(element(by.text(joinAmountWithSymbol('0', 'sat')))).toBeVisible();
     });
 
     it('Localization settings persist after restarting the app', async () => {
         const fiatInCZKRegex = /^.*CZK.*$/i;
         await waitForVisible(by.text(/^.*\$.*$/i));
-        await detoxExpect(element(by.text('0 BTC'))).toBeVisible();
+        await detoxExpect(element(by.text(joinAmountWithSymbol('0', 'BTC')))).toBeVisible();
 
         await onTabBar.navigateToSettings();
         await onSettings.openSection('preferences');
@@ -60,7 +61,7 @@ describe('App Settings - without device interactions [@noDevice]', () => {
         await onTabBar.navigateToHome();
 
         await waitForVisible(by.text(fiatInCZKRegex));
-        await detoxExpect(element(by.text('0 sat'))).toBeVisible();
+        await detoxExpect(element(by.text(joinAmountWithSymbol('0', 'sat')))).toBeVisible();
 
         await device.terminateApp();
         // Rehydrate saved state without wiping storage or injecting the initial fixture again.
@@ -69,7 +70,7 @@ describe('App Settings - without device interactions [@noDevice]', () => {
         await onHome.scrollScreenToBottom();
 
         await waitForVisible(by.text(fiatInCZKRegex));
-        await detoxExpect(element(by.text('0 sat'))).toBeVisible();
+        await detoxExpect(element(by.text(joinAmountWithSymbol('0', 'sat')))).toBeVisible();
     });
 
     it('Localization - Language', async () => {

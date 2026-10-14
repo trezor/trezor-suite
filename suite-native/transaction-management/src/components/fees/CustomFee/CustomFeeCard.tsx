@@ -1,10 +1,10 @@
-import Animated, { FadeInLeft, FadeOutLeft } from 'react-native-reanimated';
+import { FadeInLeft, FadeOutLeft } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { getNetworkType } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { type AccountKey, isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
-import { Box, Button, Card, HStack, VStack } from '@suite-native/atoms';
+import { AnimatedView, Box, Button, Card, HStack, VStack } from '@suite-native/atoms';
 import { CryptoToFiatAmountFormatter, ExactCryptoAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -40,7 +40,7 @@ export const CustomFeeCard = ({ accountKey, onEdit, onCancel }: CustomFeeCardPro
     const networkType = getNetworkType(symbol);
 
     return (
-        <Animated.View entering={FadeInLeft.delay(300)} exiting={FadeOutLeft}>
+        <AnimatedView entering={FadeInLeft.delay(300)} exiting={FadeOutLeft}>
             <Card style={applyStyle(cardStyle)}>
                 <VStack spacing="sp16">
                     <VStack>
@@ -79,6 +79,6 @@ export const CustomFeeCard = ({ accountKey, onEdit, onCancel }: CustomFeeCardPro
                     </HStack>
                 </VStack>
             </Card>
-        </Animated.View>
+        </AnimatedView>
     );
 };

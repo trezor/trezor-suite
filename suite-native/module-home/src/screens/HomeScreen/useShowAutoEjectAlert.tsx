@@ -3,8 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { toggleAutoEjectThunk } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { type AutoEjectModalValue, events, injectNativeAnalytics } from '@suite-native/analytics';
@@ -17,6 +15,8 @@ import {
     setHasAutoEjectAlertBeenDisplayed,
 } from '@suite-native/settings';
 import { useToast } from '@suite-native/toasts';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { AutoEjectAnimation } from './components/AutoEjectAnimation';
 

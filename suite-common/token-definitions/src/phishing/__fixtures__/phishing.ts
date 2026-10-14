@@ -1,7 +1,15 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import type {
+    RatesByTimestamps,
+    Timestamp,
+    TokenAddress,
+    WalletAccountTransaction,
+} from '@suite-common/wallet-types';
+import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import type { TokenDefinitions } from '../../tokenDefinitionsTypes';
-import { DUST_PHISHING_THRESHOLD } from '../constants';
+import { DUST_PHISHING_THRESHOLD, DUST_PHISHING_THRESHOLD_CURRENCY } from '../constants';
 import { type TransactionWithFiatAmount } from '../types';
 
 const DUST_UNIT = new BigNumber(DUST_PHISHING_THRESHOLD).dividedBy(10);
@@ -733,7 +741,65 @@ export const isUnknownTxPhishingFixtures = [
     },
 ];
 
+const STELLAR_DEFINITIONS = {
+    coin: { error: false, isLoading: false, data: [] as string[] },
+    nft: { error: false, isLoading: false, data: [] as string[] },
+} as TokenDefinitions;
+
 export const isPhishingTransactionFixtures = [
+    {
+        testName: 'a stellar swap of lumens for an uncurated asset is not phishing',
+        transaction: {
+            symbol: 'xlm',
+            type: 'self',
+            amount: '10000000',
+            amountInFiat: '1.5',
+            tokens: [
+                {
+                    type: 'recv',
+                    amount: '2575853446',
+                    standard: 'STELLAR-CLASSIC',
+                    contract: 'ACT-GAHHULDPDVGB5WS5PH7BCGLJ7ZHECDBIIMKB62UPVDUOCHNFL7HX3FS7',
+                },
+            ],
+            internalTransfers: [],
+        } as unknown as TransactionWithFiatAmount,
+        tokenDefinitions: STELLAR_DEFINITIONS,
+        result: false,
+    },
+    {
+        testName: 'a stellar claimable balance offered by a stranger stays flagged',
+        transaction: {
+            symbol: 'xlm',
+            type: 'recv',
+            amount: '0',
+            tokens: [],
+            internalTransfers: [],
+            stellarSpecific: {
+                feeSource: 'GBUV66LXXULKASZ5FSDJEY42HUWIBDF4MWSVDBUJLZKCFYSWT5SDPOQB',
+                operationType: 'createClaimableBalance',
+                claimableBalanceOffer: { isClaimant: true, offeredAmount: '4347826' },
+            },
+        } as unknown as TransactionWithFiatAmount,
+        tokenDefinitions: STELLAR_DEFINITIONS,
+        result: true,
+    },
+    {
+        testName: 'a named stellar operation that moved nothing is not phishing',
+        transaction: {
+            symbol: 'xlm',
+            type: 'self',
+            amount: '0',
+            tokens: [],
+            internalTransfers: [],
+            stellarSpecific: {
+                feeSource: 'GBUV66LXXULKASZ5FSDJEY42HUWIBDF4MWSVDBUJLZKCFYSWT5SDPOQB',
+                operationType: 'setOptions',
+            },
+        } as unknown as TransactionWithFiatAmount,
+        tokenDefinitions: STELLAR_DEFINITIONS,
+        result: false,
+    },
     {
         testName: 'legit tx with known token',
         transaction: {
@@ -888,5 +954,49 @@ export const isPhishingTransactionFixtures = [
         } as unknown as TransactionWithFiatAmount,
         tokenDefinitions: {} as TokenDefinitions,
         result: false,
+    },
+];
+
+const CONTRACT = '0xA' as TokenAddress;
+// on the hour, so roundTimestampToNearestPastHour is a no-op and the rate lookup below hits
+const BLOCK_TIME = 1699999200 as Timestamp;
+
+// 1 whole unit of the token is worth $10
+const historicRates = {
+    [getFiatRateKey(asNetworkSymbol('eth'), DUST_PHISHING_THRESHOLD_CURRENCY, CONTRACT)]: {
+        [BLOCK_TIME]: 10,
+    },
+} as unknown as RatesByTimestamps;
+
+const transactionWithTokenDecimals = (decimals: number | undefined) =>
+    ({
+        symbol: 'eth',
+        type: 'recv',
+        amount: '0',
+        blockTime: BLOCK_TIME,
+        internalTransfers: [],
+        tokens: [{ amount: '5', contract: CONTRACT, decimals }],
+    }) as unknown as WalletAccountTransaction;
+
+export const getTransactionWithFiatAmountsFixtures = [
+    {
+        // regression: `decimals: 0` used to be read as "missing" and replaced by the network's 18,
+        // understating the amount by 10^18 and making a real transfer look like dust
+        testName: 'decimals: 0 is treated as 0 decimals, not as missing',
+        transaction: transactionWithTokenDecimals(0),
+        historicRates,
+        tokenAmountInFiat: '50', // 5 units * $10
+    },
+    {
+        testName: 'missing decimals falls back to the network decimals',
+        transaction: transactionWithTokenDecimals(undefined),
+        historicRates,
+        tokenAmountInFiat: '0.00000000000000005', // 5 wei * $10, using eth's 18 decimals
+    },
+    {
+        testName: 'reported decimals are used as-is',
+        transaction: transactionWithTokenDecimals(2),
+        historicRates,
+        tokenAmountInFiat: '0.5',
     },
 ];

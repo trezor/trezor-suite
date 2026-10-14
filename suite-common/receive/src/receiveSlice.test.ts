@@ -1,8 +1,8 @@
-import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { accountsActions } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import {
     type ReceiveAccountState,
@@ -16,18 +16,18 @@ import {
 
 const bitcoinAccount = mockWalletAccount({ symbol: asNetworkSymbol('btc') });
 const ethereumAccount = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
+type StorageLoadReceiveAccountsParams = {
+    payload: {
+        receive?: { key: string; value: ReceiveAccountState }[];
+    };
+};
+
 const extraDependencies: ReceiveSliceDeps = {
     actionTypes: { storageLoad: mockActionType('storageLoad') },
     reducers: {
         storageLoadReceiveAccounts: (
             state: ReceiveState,
-            {
-                payload,
-            }: {
-                payload: {
-                    receive?: { key: string; value: ReceiveAccountState }[];
-                };
-            },
+            { payload }: StorageLoadReceiveAccountsParams,
         ) => {
             state.accounts =
                 payload.receive?.reduce<ReceiveState['accounts']>((accounts, { key, value }) => {

@@ -40,14 +40,11 @@ export default class BlockchainSubscribeFiatRates extends AbstractMethod<
 
         super(message, params);
         this.useDevice = false;
-        this.useUi = false;
     }
 
     get requiredPermissions(): PermissionRequest[] {
         return [];
     }
-
-    init() {}
 
     async run({ sendCoreMessage }: MethodContext) {
         const backend = await initBlockchain(

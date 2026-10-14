@@ -1,6 +1,8 @@
 {
     "extends": "../../../tsconfig.base.json",
-    "compilerOptions": { "outDir": "libDev" },
+    "compilerOptions": {
+        "outDir": "libDev"
+    },
     "references": [
         {
             "path": "../../../suite-common/calldata"
@@ -8,16 +10,26 @@
         {
             "path": "../../../packages/connect-common"
         },
-        { "path": "../network-ethereum" },
+        {
+            "path": "../network-ethereum"
+        },
+        {
+            "path": "../network-ethereum-assets"
+        },
+        {
+            "path": "../network-ethereum-types"
+        },
         {
             "path": "../../network-module/network-module-suite-common-types"
         },
         {
             "path": "../../network-module/network-module-types"
         },
-        { "path": "../../../packages/utils" },
         {
-            "path": "../../../suite-common/dependency-injection"
+            "path": "../../../packages/utils"
+        },
+        {
+            "path": "../../../packages/dependency-injection"
         }
     ]
 }

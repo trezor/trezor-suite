@@ -7,11 +7,13 @@ import {
 } from 'invity-api';
 
 import { type AccountKey } from '@suite-common/wallet-types';
+import { cloneObject } from '@trezor/utils';
 
 import { TRADING_SELL_PREFIX } from '../constants';
 import {
     type TradingAmountLimitProps,
     type TradingCountryCode,
+    type TradingSellFormProps,
     type TradingSellStepType,
 } from '../types';
 
@@ -26,6 +28,7 @@ export interface SellInfo {
 export type TradingSellState = {
     sellInfo?: SellInfo;
     quotesRequest?: SellFiatTradeQuoteRequest;
+    formValues?: TradingSellFormProps;
     quotes: SellFiatTrade[];
     selectedQuote: SellFiatTrade | undefined;
     isFromRedirect: boolean;
@@ -41,6 +44,7 @@ export type TradingSellState = {
 export const sellInitialState: TradingSellState = {
     sellInfo: undefined,
     quotesRequest: undefined,
+    formValues: undefined,
     quotes: [],
     selectedQuote: undefined,
     transactionId: undefined,
@@ -67,6 +71,9 @@ const tradingSellSlice = createSlice({
         ) {
             state.quotesRequest = action.payload;
         },
+        saveFormValues(state: TradingSellState, action: PayloadAction<TradingSellFormProps>) {
+            state.formValues = cloneObject(action.payload);
+        },
         saveQuotes(state: TradingSellState, action: PayloadAction<SellFiatTrade[]>) {
             state.quotes = action.payload;
         },
@@ -89,6 +96,12 @@ const tradingSellSlice = createSlice({
         ) {
             if (action.payload !== state.tradingAccountKey) {
                 state.amountLimits = undefined;
+                state.formValues = undefined;
+            }
+            if (action.payload === undefined) {
+                state.quotes = [];
+                state.quotesRequest = undefined;
+                state.selectedQuote = undefined;
             }
             state.tradingAccountKey = action.payload;
         },
@@ -110,6 +123,7 @@ const tradingSellSlice = createSlice({
         clearQuotesAndParams(state: TradingSellState) {
             state.quotes = [];
             state.quotesRequest = undefined;
+            state.formValues = undefined;
             state.selectedQuote = undefined;
             state.amountLimits = undefined;
         },

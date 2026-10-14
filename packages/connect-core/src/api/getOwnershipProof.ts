@@ -59,18 +59,20 @@ export default class GetOwnershipProof extends AbstractMethod<
     hasBundle?: boolean;
 
     get requiredPermissions(): PermissionRequest[] {
-        return this.coinPerms('read_account_info', this.requiredFirmwareCoins);
+        const permissions = this.coinPerms('read_account_info', this.requiredFirmwareCoins);
+        // Preauthorized proofs run under the coinjoin authorization of the device session, so they
+        // share the internal tier of authorizeCoinjoin, which creates that authorization.
+        if (this.preauthorized) {
+            permissions.push(...this.coinPerms('internal', this.requiredFirmwareCoins));
+        }
+
+        return permissions;
     }
 
     get info() {
-        return 'Export ownership proof';
-    }
-
-    get confirmation() {
-        return {
-            view: 'export-address' as const,
-            label: this.params.length > 1 ? 'Export multiple ownership proofs' : this.info,
-        };
+        return this.params.length > 1
+            ? 'Export multiple ownership proofs'
+            : 'Export ownership proof';
     }
 
     async run({ sendCoreMessage }: MethodContext) {

@@ -79,8 +79,10 @@ const DEFAULT_QUOTES_REQUEST: BuyTradeQuoteRequest = {
     paymentMethod: 'bankTransfer',
 };
 
+type BuildStateParams = { quotesRequest?: BuyTradeQuoteRequest };
+
 const buildState = (
-    { quotesRequest }: { quotesRequest?: BuyTradeQuoteRequest } = {
+    { quotesRequest }: BuildStateParams = {
         quotesRequest: DEFAULT_QUOTES_REQUEST,
     },
 ): FixtureState => ({

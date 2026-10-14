@@ -2,8 +2,6 @@ import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { openDeferredModal } from '@suite/modal';
 import { events } from '@suite-common/analytics';
 import { type StablecoinYieldTxSimulationParams } from '@suite-common/earn-stablecoin';
-import { createThunk } from '@suite-common/redux-utils';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type ComposeYieldWithdrawTransactionThunkState,
     YIELD_PREFIX,
@@ -12,8 +10,10 @@ import {
     composeYieldWithdrawTransactionThunk,
     getConvertedOutputTokenBalanceToInputTokenAmount,
     isYieldWithdrawFeeError,
+    notifyEarnTransactionBroadcastThunk,
     yieldActions,
 } from '@suite-common/wallet-core';
+import { createThunk } from '@trezor/redux-utils';
 
 import {
     type SendYieldTransactionDeps,
@@ -142,11 +142,10 @@ export const submitYieldWithdrawThunk = createThunk<
             }
 
             dispatch(
-                notificationsActions.addToast({
-                    type: 'tx-yield-withdraw',
-                    descriptor: account.descriptor,
-                    symbol: account.symbol,
+                notifyEarnTransactionBroadcastThunk({
+                    account,
                     txid: result.txid,
+                    flow: 'yield-withdraw',
                 }),
             );
 

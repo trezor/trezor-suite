@@ -73,6 +73,11 @@ const representativeAssets: Partial<Record<LegacyNetworkSymbol, readonly Represe
         { symbol: 'WETH.e', contract: '0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB' },
         { symbol: 'QI', contract: '0x8729438eb15e2c8b576fcc6aecda6a148776c0f5' },
     ],
+    arc: [
+        { symbol: 'USDC', contract: '0x3600000000000000000000000000000000000000' },
+        { symbol: 'EURC', contract: '0xbEf5f6d51CB62b58e6A8f77868681825C6fe21c1' },
+        { symbol: 'cirBTC', contract: '0x171A4217b86A807A64eB94757Db6849fb4bDbAA0' },
+    ],
     sol: [
         { symbol: 'SOL' },
         { symbol: 'USDC', contract: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v' },

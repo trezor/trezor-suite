@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import { Image } from 'expo-image';
 
-import { type CryptoIconName, cryptoIcons } from '@suite-common/icons';
+import { type CryptoIconName, cryptoIcons, getNativeAssetIconSymbol } from '@suite-common/icons';
 import {
     type NetworkDisplaySymbol,
     type NetworkSymbol,
@@ -19,7 +19,7 @@ import { useAsyncMemo } from '@trezor/react-utils';
 import { type NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { MAX_FONT_SIZE_MULTIPLIER } from './Icon';
-import { NetworkIcon, networkIconSizes } from './NetworkIcon';
+import { NetworkIcon, type NetworkIconSize } from './NetworkIcon';
 
 export const tokenIconSizes = {
     tiny: 16,
@@ -32,6 +32,19 @@ export const tokenIconSizes = {
 
 export type TokenIconSize = keyof typeof tokenIconSizes;
 
+const networkIconSizeByTokenIconSize: Record<TokenIconSize, NetworkIconSize> = {
+    tiny: 8, // no better match in NetworkIconSize
+    extraSmall: 8,
+    small: 12,
+    medium: 16,
+    large: 20,
+    extraLarge: 24,
+};
+
+// The numeric fallback to 8 is not right but doesn't happen at runtime and makes TS happy.
+const getNetworkIconSize = (size: TokenIconSize | number): NetworkIconSize =>
+    typeof size === 'number' ? 8 : networkIconSizeByTokenIconSize[size];
+
 const iconStyle = prepareNativeStyle<{ width: number; height: number }>(
     (utils, { width, height }) => ({
         borderRadius: utils.borders.radii.round,
@@ -41,16 +54,14 @@ const iconStyle = prepareNativeStyle<{ width: number; height: number }>(
     }),
 );
 
-const networkWrapperStyle = prepareNativeStyle<{ size: TokenIconSize | number }>(
-    (utils, { size }) => ({
-        position: 'absolute',
-        right: 0,
-        bottom: 0,
-        borderWidth: utils.borders.widths.small,
-        borderColor: utils.colors.borderNeutral,
-        borderRadius: typeof size === 'number' ? size : networkIconSizes[size] / 3,
-    }),
-);
+const networkWrapperStyle = prepareNativeStyle<{ size: number }>((utils, { size }) => ({
+    position: 'absolute',
+    right: 0,
+    bottom: 0,
+    borderWidth: utils.borders.widths.small,
+    borderColor: utils.colors.borderNeutral,
+    borderRadius: size / 3,
+}));
 
 const tokenIconPlaceholderIconStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.surfaceFillPage,
@@ -107,6 +118,10 @@ interface TokenIconProps {
     wrappedTokenIcon?: 'token' | 'network';
 }
 
+// The icon is keyed by network symbol, but a screen reader should hear the asset's ticker.
+const getNativeAssetAccessibilityLabel = (networkSymbol: NetworkSymbol | NetworkDisplaySymbol) =>
+    isNetworkSymbol(networkSymbol) ? getNetworkDisplaySymbol(networkSymbol) : networkSymbol;
+
 const TokenIconComponent = ({
     networkSymbol,
     contractAddress,
@@ -125,6 +140,9 @@ const TokenIconComponent = ({
     // FlashList recycling reuses this instance for different assets, so the async and retry
     // state is keyed by the asset and discarded on mismatch to never render a stale icon
     const key = contractAddress ? `${networkSymbol}:${contractAddress}` : networkSymbol;
+    const accessibilityLabel = contractAddress
+        ? key
+        : getNativeAssetAccessibilityLabel(networkSymbol);
     // size is part of the source identity because it is encoded in the CDN filename
     const asyncKey = `${key}#${sizeNumber}`;
 
@@ -201,7 +219,7 @@ const TokenIconComponent = ({
         return (
             <TokenIconPlaceholder
                 placeholder={placeholderText}
-                accessibilityLabel={key}
+                accessibilityLabel={accessibilityLabel}
                 containerStyle={iconContainerStyle}
             />
         );
@@ -213,7 +231,7 @@ const TokenIconComponent = ({
                 key={imageKey}
                 source={sourceUrls[logoIndex]}
                 accessibilityHint={translate('icons.tokenIconHint')}
-                accessibilityLabel={key}
+                accessibilityLabel={accessibilityLabel}
                 recyclingKey={imageKey}
                 style={iconContainerStyle}
                 onDisplay={contractAddress ? () => setDisplayedSource(imageKey) : undefined}
@@ -262,13 +280,14 @@ export const TokenIcon = ({
         );
     }
 
-    const displaySymbol = getNetworkDisplaySymbol(networkSymbol);
-    const showForNativeToken = displaySymbol === 'ETH' && networkSymbol !== 'eth';
+    const nativeAssetIconSymbol = getNativeAssetIconSymbol(networkSymbol);
+    const isSettledOnAnotherNetwork = nativeAssetIconSymbol !== networkSymbol;
     const shouldShowNetwork =
-        showForNativeToken || contractAddress || wrappedTokenIcon === 'network';
+        isSettledOnAnotherNetwork || contractAddress || wrappedTokenIcon === 'network';
 
-    const iconSymbol = contractAddress ? networkSymbol : displaySymbol;
+    const iconSymbol = contractAddress ? networkSymbol : nativeAssetIconSymbol;
     const iconSize = typeof size === 'number' ? size : tokenIconSizes[size];
+    const networkIconSize = getNetworkIconSize(size);
 
     return (
         <View style={{ width: iconSize, height: iconSize }}>
@@ -281,7 +300,7 @@ export const TokenIcon = ({
             />
             {shouldShowNetwork && (
                 <View style={applyStyle(networkWrapperStyle, { size: iconSize })}>
-                    <NetworkIcon symbol={networkSymbol} size={size} />
+                    <NetworkIcon symbol={networkSymbol} size={networkIconSize} />
                 </View>
             )}
         </View>

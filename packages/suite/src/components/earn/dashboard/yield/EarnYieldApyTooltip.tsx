@@ -4,10 +4,10 @@ import styled from 'styled-components';
 
 import { injectDesktopAnalytics } from '@suite/analytics';
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Text, Tooltip } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 
 import { ApyValue } from 'src/views/wallet/staking/components/ApyValue';
 

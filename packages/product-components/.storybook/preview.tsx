@@ -1,9 +1,28 @@
 import React from 'react';
+import { Provider } from 'react-redux';
 
+import { configureStore } from '@reduxjs/toolkit';
 import { StoryContext, StoryFn } from '@storybook/react';
 import { ThemeProvider } from 'styled-components';
 
 import { intermediaryTheme } from '@trezor/components';
+import { type NetworkConfigState, asNetworkSymbol } from '@trezor/network-module-types';
+
+const networkConfigState: NetworkConfigState = {
+    networks: {
+        [asNetworkSymbol('btc')]: { name: 'Bitcoin', displaySymbol: 'BTC' },
+        [asNetworkSymbol('eth')]: {
+            name: 'Ethereum',
+            displaySymbol: 'ETH',
+            coingeckoId: 'ethereum',
+            features: ['tokens'],
+        },
+        [asNetworkSymbol('ltc')]: { name: 'Litecoin' },
+        [asNetworkSymbol('ada')]: { name: 'Cardano', features: ['tokens'] },
+    },
+};
+
+const store = configureStore({ reducer: () => networkConfigState });
 
 export const globalTypes = {
     mode: {
@@ -20,20 +39,22 @@ export const decorators = [
                 : { ...intermediaryTheme.dark, variant: 'dark' };
 
         return (
-            <ThemeProvider theme={theme}>
-                <div
-                    style={{
-                        padding: 32,
-                        background: theme.surfaceFillPage,
-                        color: theme.contentPrimary,
-                        boxSizing: 'border-box',
-                        height: '100vh',
-                        overflow: 'auto',
-                    }}
-                >
-                    {Story(context.args, context)}
-                </div>
-            </ThemeProvider>
+            <Provider store={store}>
+                <ThemeProvider theme={theme}>
+                    <div
+                        style={{
+                            padding: 32,
+                            background: theme.surfaceFillPage,
+                            color: theme.contentPrimary,
+                            boxSizing: 'border-box',
+                            height: '100vh',
+                            overflow: 'auto',
+                        }}
+                    >
+                        {Story(context.args, context)}
+                    </div>
+                </ThemeProvider>
+            </Provider>
         );
     },
 ];

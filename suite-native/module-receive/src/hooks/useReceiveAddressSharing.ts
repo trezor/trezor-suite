@@ -1,12 +1,12 @@
 import { useCallback } from 'react';
 import { Share } from 'react-native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { useAlert } from '@suite-native/alerts';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { useBottomSheetModal } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { ReceiveAddressVerificationSource } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 
 type UseReceiveAddressSharingParams = {
     address: string;

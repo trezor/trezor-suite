@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import Animated, {
+import {
     Easing,
     cancelAnimation,
     useAnimatedStyle,
@@ -13,6 +13,7 @@ import { Canvas, Circle, SweepGradient, vec } from '@shopify/react-native-skia';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color } from '@trezor/theme';
 
+import { AnimatedView } from './Animated/AnimatedView';
 import { ENDLESS_ANIMATION_VALUE } from './constants';
 
 export type CircularSpinnerProps = {
@@ -32,16 +33,13 @@ export const CircularSpinner = ({ size, color, width }: CircularSpinnerProps) =>
     const { applyStyle, utils } = useNativeStyles();
 
     const rotation = useSharedValue(0);
-    const animatedStyles = useAnimatedStyle(
-        () => ({
-            transform: [
-                {
-                    rotateZ: `${rotation.value}deg`,
-                },
-            ],
-        }),
-        [rotation.value],
-    );
+    const animatedStyles = useAnimatedStyle(() => ({
+        transform: [
+            {
+                rotateZ: `${rotation.value}deg`,
+            },
+        ],
+    }));
 
     useEffect(() => {
         rotation.value = withRepeat(
@@ -58,7 +56,7 @@ export const CircularSpinner = ({ size, color, width }: CircularSpinnerProps) =>
     const radius = size / 2;
 
     return (
-        <Animated.View
+        <AnimatedView
             style={[animatedStyles, applyStyle(ContainerStyle)]}
             testID="@circular-spinner"
         >
@@ -78,6 +76,6 @@ export const CircularSpinner = ({ size, color, width }: CircularSpinnerProps) =>
                     />
                 </Circle>
             </Canvas>
-        </Animated.View>
+        </AnimatedView>
     );
 };

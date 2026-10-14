@@ -3,8 +3,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { Address, copyAddressToClipboard, showCopyAddressModal } from '@suite/address';
 import { selectIsCopyAddressModalShown } from '@suite/flags';
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
 import {
     type Explorer,
@@ -21,8 +19,10 @@ import {
     isNftToken,
 } from '@suite-common/wallet-utils';
 import { Banner, Card, Column, IconButton, Link, Row, Text } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { CaretDownIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { setSendFormPrefill } from 'src/actions/suite/suiteActions';
 import { BaseCurrencyValue, FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
@@ -112,7 +112,12 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                 />
             )}
 
-            <Card type="raised" paddingType="normal" onClick={onOpenTokensModal}>
+            <Card
+                type="raised"
+                paddingType="normal"
+                onClick={onOpenTokensModal}
+                data-testid="@wallet/send/token-select"
+            >
                 <Row justifyContent="space-between" height={64}>
                     <Row justifyContent="flex-start" gap={12}>
                         {selectedToken ? (
@@ -129,7 +134,11 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                         )}
                         <Column alignItems="flex-start">
                             <Row justifyContent="flex-start">
-                                <Text intent="neutral" typographyStyle="body-md">
+                                <Text
+                                    intent="neutral"
+                                    typographyStyle="body-md"
+                                    data-testid={`@wallet/send/token-name/${outputId}`}
+                                >
                                     {selectedToken?.name ||
                                         getNetworkDisplaySymbolName(account.symbol)}
                                 </Text>
@@ -188,6 +197,7 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                                     intent="neutral"
                                                     priority="secondary"
                                                     isCopyAllowed
+                                                    data-testid={`@wallet/send/token-contract/${outputId}`}
                                                     onCopy={() => {
                                                         dispatch(
                                                             shouldShowCopyAddressModal

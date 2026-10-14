@@ -39,6 +39,7 @@ export const TradingReceiveAccountsPickerScreen = () => {
 
     return (
         <Screen
+            isScrollable={false}
             header={
                 <DynamicScreenHeader
                     title={

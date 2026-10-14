@@ -4,8 +4,6 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { isRejected } from '@reduxjs/toolkit';
 
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
     type SendRootState,
@@ -24,6 +22,8 @@ import {
     useTxValidityTimer,
 } from '@suite-native/transaction-management';
 import TrezorConnect from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useEarnSelectedPrecomposedTransaction } from './useEarnSelectedPrecomposedTransaction';
 import { useHandleEarnReviewError } from './useHandleEarnReviewError';

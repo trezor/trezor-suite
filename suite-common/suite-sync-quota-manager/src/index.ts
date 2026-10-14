@@ -6,7 +6,6 @@ export type {
     AllocateOwnerQuotaErr,
 } from './owner/createAllocateOwnerQuota';
 export type { GetOwnerHasAllowanceDep } from './owner/getOwnerHasAllowance';
-export type { FetchDep } from './quotaManagerFetch';
 export type { GetQuotaManagerUrl, GetQuotaManagerUrlDep } from './quotaManagerUrl';
 
 export {

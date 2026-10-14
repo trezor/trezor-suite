@@ -44,7 +44,7 @@ describe('ExchangeApprovalLimitCard', () => {
             symbol: asNetworkSymbol('btc'),
         });
 
-        expect(getByLabelText('btc')).toBeTruthy();
+        expect(getByLabelText('BTC')).toBeTruthy();
     });
 
     it('should render crypto icon with contract address when provided', async () => {

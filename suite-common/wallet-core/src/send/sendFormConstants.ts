@@ -6,3 +6,7 @@ export const SEND_MODULE_PREFIX = '@common/wallet-core/send';
 // stepper would not advance through them. Detected by name (not by the trading form flag) so the
 // actual payment request confirmation drives the review, regardless of feature state.
 export const PAYMENT_REQUEST_BUTTON_NAMES = ['confirm_payment_request', 'confirm_trade'];
+
+export const ADDRESS_MAX_LENGTH = 150;
+export const AMOUNT_MAX_LENGTH = 255;
+export const OP_RETURN_MAX_LENGTH = 255;

@@ -72,16 +72,16 @@ declare const uiEventPayload: Extract<
     { type: typeof UI_EVENTS.BUNDLE_PROGRESS }
 >['payload'];
 
-const uiEventMessage = createUiEventMessage(UI_EVENTS.TRANSPORT_MISSING);
-void (uiEventMessage.type satisfies typeof UI_EVENTS.TRANSPORT_MISSING);
+const uiEventMessage = createUiEventMessage(UI_EVENTS.CLOSE_UI_WINDOW);
+void (uiEventMessage.type satisfies typeof UI_EVENTS.CLOSE_UI_WINDOW);
 void (uiEventMessage.payload satisfies undefined);
 
 const uiEventMessage2 = createUiEventMessage(UI_EVENTS.BUNDLE_PROGRESS, uiEventPayload);
 void (uiEventMessage2.type satisfies typeof UI_EVENTS.BUNDLE_PROGRESS);
 void (uiEventMessage2.payload satisfies typeof uiEventPayload);
 
-// @ts-expect-error Transport missing UI event does not accept a payload.
-createUiEventMessage(UI_EVENTS.TRANSPORT_MISSING, undefined);
+// @ts-expect-error Close UI window event does not accept a payload.
+createUiEventMessage(UI_EVENTS.CLOSE_UI_WINDOW, undefined);
 
 // @ts-expect-error Bundle progress UI event requires a payload.
 createUiEventMessage(UI_EVENTS.BUNDLE_PROGRESS);

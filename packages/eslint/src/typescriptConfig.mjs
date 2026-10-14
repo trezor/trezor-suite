@@ -1,6 +1,8 @@
+import { fileURLToPath } from 'node:url';
 import tseslint from 'typescript-eslint';
 
 import { areExpensiveChecksEnabled } from './expensiveChecks.mjs';
+import { allRoots } from './workspaceRoots.mjs';
 
 // Deny importing from build artifact directories — consumers should resolve
 // through the package root, not from `lib/` or `libDev/`.
@@ -10,10 +12,10 @@ const buildArtifactPatterns = {
         'Import from the package root instead. Deep paths into "lib/" or "libDev/" target build artifacts that may not exist or may diverge from the workspace source.',
 };
 
-// Bare network packages expose sectioned entry points. Type contracts and Suite layer packages
-// keep root imports; a dash in a network name alone does not exempt a bare package.
+// Bare network packages expose sectioned entry points. Type contracts, asset packages and Suite
+// layer packages keep root imports; a dash in a network name alone does not exempt a bare package.
 const networksPackagePattern = {
-    regex: '^@trezor/(?![^/]*-(?:types|suite(?:-common|-native)?)$)network-[^/]+$',
+    regex: '^@trezor/(?![^/]*-(?:types|assets|suite(?:-common|-native)?)$)network-[^/]+$',
     message: 'Import from /constants, /runtime or /types subpath.',
 };
 
@@ -23,12 +25,12 @@ const networksPackagePattern = {
 const networksAppScopePattern = {
     group: [
         '@suite/**',
+        '@suite-cli/**',
         '@suite-common/**',
         '@suite-native/**',
-        // TODO(#32493): the last two app-scoped dependencies left under networks/. `calldata` is a
-        // `@trezor/*`-level library sitting in the wrong folder; the `mock` helper is test-only.
+        // TODO(#32493): the last app-scoped dependency left under networks/. `calldata` is a
+        // `@trezor/*`-level library sitting in the wrong folder.
         '!@suite-common/calldata',
-        '!@suite-common/dependency-injection',
     ],
     message:
         'Network packages may only depend on @trezor/* workspace packages. Take anything an app owns as an injected dependency instead.',
@@ -76,6 +78,11 @@ const electronIpcMainRestrictedImport = {
     message: 'Use the local ipcMain wrapper instead.',
 };
 
+const commonRestrictedImports = {
+    paths: [{ name: '.' }, { name: '..' }, { name: '../..' }, electronIpcMainRestrictedImport],
+    patterns: [buildArtifactPatterns, networksPackagePattern, ...connectDeepImportPatterns],
+};
+
 export const restrictedImportsPatterns = [
     buildArtifactPatterns,
     suiteInternalPatterns,
@@ -97,22 +104,7 @@ export const typescriptConfig = [
                     allow: ['_', 'error', 'resolve', 'reject', 'fetch'],
                 },
             ],
-            '@typescript-eslint/no-restricted-imports': [
-                'error',
-                {
-                    paths: [
-                        { name: '.' },
-                        { name: '..' },
-                        { name: '../..' },
-                        electronIpcMainRestrictedImport,
-                    ],
-                    patterns: [
-                        buildArtifactPatterns,
-                        networksPackagePattern,
-                        ...connectDeepImportPatterns,
-                    ],
-                },
-            ],
+            '@typescript-eslint/no-restricted-imports': ['error', commonRestrictedImports],
 
             // Additions from "plugin:@typescript-eslint/strict" (we may turn this on one day as a whole)
             '@typescript-eslint/no-useless-constructor': ['error'],
@@ -138,7 +130,51 @@ export const typescriptConfig = [
         },
     },
     {
-        files: ['networks/**/*.{js,mjs,cjs,ts,jsx,tsx}'],
+        // An absolute base also applies when a native package has its own ESLint config.
+        basePath: fileURLToPath(new URL(`../../../${allRoots.suiteNative}`, import.meta.url)),
+        files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'],
+        ignores: ['atoms/src/Animated/**'],
+        rules: {
+            '@typescript-eslint/no-restricted-imports': [
+                'error',
+                {
+                    ...commonRestrictedImports,
+                    paths: [
+                        ...commonRestrictedImports.paths,
+                        {
+                            name: 'react-native-reanimated',
+                            importNames: ['default', 'createAnimatedComponent'],
+                            allowTypeImports: true,
+                            message:
+                                'Use animated components from @suite-native/atoms so reduced motion is handled consistently. Import Reanimated hooks, animation builders and types by name.',
+                        },
+                        {
+                            name: 'lottie-react-native',
+                            importNames: ['default', 'LottieView'],
+                            allowTypeImports: true,
+                            message:
+                                'Use LottieView from @suite-native/atoms so reduced motion is handled consistently.',
+                        },
+                    ],
+                    patterns: [
+                        ...commonRestrictedImports.patterns,
+                        {
+                            group: ['react-native-reanimated/*'],
+                            message:
+                                'Use the public react-native-reanimated entry point for hooks and types, and @suite-native/atoms for animated components.',
+                        },
+                        {
+                            group: ['lottie-react-native/*'],
+                            message:
+                                'Use LottieView from @suite-native/atoms so reduced motion is handled consistently.',
+                        },
+                    ],
+                },
+            ],
+        },
+    },
+    {
+        files: [`${allRoots.networks}/**/*.{js,mjs,cjs,ts,jsx,tsx}`],
         rules: {
             '@typescript-eslint/no-restricted-imports': [
                 'error',
@@ -165,9 +201,9 @@ export const typescriptConfig = [
         },
     },
     {
-        // restrict import of suite-common and suite-native packages outside of suite
-        files: ['packages/**/*.{js,mjs,cjs,ts,jsx,tsx}'],
-        ignores: ['packages/suite*/**/*'],
+        // Suite application roots can compose shared services.
+        files: [`${allRoots.packages}/**/*.{js,mjs,cjs,ts,jsx,tsx}`],
+        ignores: [`${allRoots.packages}/suite*/**/*`],
         rules: {
             '@typescript-eslint/no-restricted-imports': [
                 'error',

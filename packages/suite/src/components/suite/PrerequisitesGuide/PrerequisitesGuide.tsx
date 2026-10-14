@@ -19,7 +19,9 @@ type PrerequisitesGuideProps = {
     showDeviceImage?: boolean;
 };
 
-const TopAnimation = ({ children }: { children: React.ReactNode }) => (
+type TopAnimationProps = { children: React.ReactNode };
+
+const TopAnimation = ({ children }: TopAnimationProps) => (
     <motion.div
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: -0 }}
@@ -30,7 +32,9 @@ const TopAnimation = ({ children }: { children: React.ReactNode }) => (
     </motion.div>
 );
 
-const BottomAnimation = ({ children }: { children: React.ReactNode }) => (
+type BottomAnimationProps = { children: React.ReactNode };
+
+const BottomAnimation = ({ children }: BottomAnimationProps) => (
     <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

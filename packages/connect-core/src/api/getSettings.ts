@@ -11,7 +11,6 @@ export default class GetSettings extends AbstractMethod<'getSettings'> {
     constructor(message: MethodMessage<'getSettings'>) {
         super(message, undefined);
         this.useDevice = false;
-        this.useUi = false;
     }
     get requiredPermissions(): PermissionRequest[] {
         return [{ permission: 'management' }];

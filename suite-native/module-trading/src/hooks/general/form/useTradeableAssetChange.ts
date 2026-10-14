@@ -2,13 +2,13 @@ import { useCallback } from 'react';
 
 import { type UnknownAction } from '@reduxjs/toolkit';
 
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type TradingType, cryptoIdToNetworkSymbol } from '@suite-common/trading';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { type FieldValues, type Path, type UseFormReturn } from '@suite-native/forms';
 import { type TradeableAsset } from '@suite-native/trading-types';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 type TradingParameter = 'cryptoFrom' | 'cryptoTo';
 
@@ -35,6 +35,12 @@ type ChangeAssetOptions = {
     shouldReportAnalytics?: boolean;
 };
 
+export type ChangeTradeableAsset = (
+    asset: TradeableAsset,
+    account?: Account,
+    options?: ChangeAssetOptions,
+) => void;
+
 export const useTradeableAssetChange = <TFieldValues extends FieldValues>({
     form,
     tradingType,
@@ -45,7 +51,7 @@ export const useTradeableAssetChange = <TFieldValues extends FieldValues>({
     getAssetTokenChangedAction,
     getSetTradingAccountKeyAction,
     collision,
-}: UseTradeableAssetChangeConfig<TFieldValues>) => {
+}: UseTradeableAssetChangeConfig<TFieldValues>): ChangeTradeableAsset => {
     const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const { setValue, getValues } = form;
 
@@ -101,7 +107,9 @@ export const useTradeableAssetChange = <TFieldValues extends FieldValues>({
                 if (collision.getCounterpartChangedAction) {
                     dispatch(collision.getCounterpartChangedAction());
                 }
-                reportParameterChanged(collision.counterpartAnalyticsParameter);
+                if (shouldReportAnalytics) {
+                    reportParameterChanged(collision.counterpartAnalyticsParameter);
+                }
             }
 
             dispatch(

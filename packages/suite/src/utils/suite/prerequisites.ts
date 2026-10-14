@@ -118,7 +118,7 @@ type IsPrerequisiteExcluded = {
 
 /**
  * Check if the prerequisite should be ignored in whole suite.
- * Note that fullscreen apps may ignore another prerequisites, e.g. 'start'.
+ * Note that fullscreen apps may ignore another prerequisites, e.g. 'onboarding'.
  * TODO: remove the fullscreenApp logic, see Preloader
  */
 export const isPrerequisiteGloballyExcluded = ({
@@ -133,6 +133,11 @@ export const isPrerequisiteGloballyExcluded = ({
 
     // Activity (notifications) page does not depend on a connected device
     if (router.app === 'notifications') {
+        return true;
+    }
+
+    // Neither does the apps embedding showcase, which only renders external sites.
+    if (router.app === 'apps-embedding') {
         return true;
     }
 

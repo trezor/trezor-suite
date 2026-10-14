@@ -1,10 +1,10 @@
 import { type GotoThunkDeps, type GotoThunkState, gotoThunk } from '@suite/router';
 import { selectDevices } from '@suite-common/device';
-import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import {
     type SetDeviceAutoEjectThunkState,
     setDeviceAutoEjectThunk,
 } from '@suite-common/wallet-core';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 
 import * as storageActions from 'src/actions/suite/storageActions';
 import { type DbDep } from 'src/storage/createDb';

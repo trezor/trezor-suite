@@ -3,6 +3,7 @@ import { type Dispatch } from '@reduxjs/toolkit';
 import { type DeviceRootState } from '@suite-common/device';
 import { type GetIsTorEnabledDep } from '@suite-common/suite-sync-types';
 import { type GetTrezorConnectDep } from '@trezor/connect-common';
+import { type FetchDep } from '@trezor/type-utils';
 
 import { createPrepareChallengeSessionFetch } from './challenge/createPrepareChallengeSessionFetch';
 import { createEnsureQuota } from './createEnsureQuota';
@@ -19,7 +20,7 @@ import { createCheckStorageByOwnerIdFetch } from './owner/createCheckStorageByOw
 import { createEnsureOwnerHasAllocatedQuota } from './owner/createEnsureOwnerHasAllocatedQuota';
 import { createTransferStorageFetch } from './owner/createTransferStorageFetch';
 import { type GetOwnerHasAllowance } from './owner/getOwnerHasAllowance';
-import { type FetchDep, createQuotaManagerFetch } from './quotaManagerFetch';
+import { createQuotaManagerFetch } from './quotaManagerFetch';
 import {
     type WithSuiteSyncQuotaManagerState,
     selectEnforceQuotaManager,

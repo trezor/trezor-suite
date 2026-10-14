@@ -6,8 +6,8 @@ import {
     type PasswordManagerState,
     type WalletLabels,
 } from '@suite-common/metadata-types';
-import { type Dispatch } from '@suite-common/redux-utils';
 import { selectAccounts } from '@suite-common/wallet-core';
+import { type Dispatch } from '@trezor/redux-utils';
 
 import {
     disableMetadata as disableMetadataAction,
@@ -49,10 +49,10 @@ export const disposeMetadataKeysThunk =
         const accounts = selectAccounts(getState());
 
         accounts.forEach(account => {
-            const updatedAccount = JSON.parse(JSON.stringify(account));
+            const { [METADATA_LABELING.ENCRYPTION_VERSION]: _disposedKeys, ...metadata } =
+                account.metadata;
 
-            delete updatedAccount.metadata[METADATA_LABELING.ENCRYPTION_VERSION];
-            dispatch(setAccountAdd(updatedAccount));
+            dispatch(setAccountAdd({ ...account, metadata }));
         });
 
         devices.forEach(device => {

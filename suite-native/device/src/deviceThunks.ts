@@ -10,7 +10,6 @@ import {
     type MessageSystemRootState,
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
-import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { type BackupType, type ReportSecurityCheckDep } from '@suite-common/suite-types';
 import { processEntropyCheckResultThunk } from '@suite-common/wallet-core';
 import {
@@ -20,6 +19,7 @@ import {
 } from '@suite-native/device-mutex';
 import TrezorConnect, { type OkWithDevice, PROTO, type Response } from '@trezor/connect';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 import { type Err, exhaustive } from '@trezor/type-utils';
 
 const NATIVE_DEVICE_MODULE_PREFIX = 'nativeDevice';

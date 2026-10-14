@@ -7,6 +7,7 @@ import { type VisiblePromoBannerKey, selectVisiblePromoBanners } from '../select
 import { DefiYieldPromoBanner } from './DefiYieldPromoBanner';
 import { EthVaultPromoBanner } from './EthVaultPromoBanner';
 import { PromoBannerCarousel } from './PromoBannerCarousel';
+import { TradingExperiencePromoBanner } from './TradingExperiencePromoBanner';
 import { TrezorSafe7PromoBanner } from './TrezorSafe7PromoBanner';
 
 //  This is needed to compensate the vertical margin of the parent component.
@@ -18,6 +19,7 @@ const BANNER_COMPONENTS: Record<VisiblePromoBannerKey, React.ReactElement> = {
     ts7: <TrezorSafe7PromoBanner />,
     'defi-yield': <DefiYieldPromoBanner />,
     'eth-vault': <EthVaultPromoBanner />,
+    'trading-experience': <TradingExperiencePromoBanner />,
 };
 
 export const PromoBanners = () => {

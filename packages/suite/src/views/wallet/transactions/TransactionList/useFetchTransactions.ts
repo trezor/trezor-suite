@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { isPhishingTransaction } from '@suite-common/token-definitions';
 import {
@@ -13,6 +11,8 @@ import {
     selectIsLoadingAccountTransactions,
     selectPhishingTransactionsContext,
 } from '@suite-common/wallet-core';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 import { getSynchronize } from '@trezor/utils';
 
 import { useDiscovery, useSelector } from 'src/hooks/suite';
@@ -147,15 +147,17 @@ export const useFetchTransactions = (
     return { fetchNext, pagesFetched, fetchPage, fetchAll, isFetching, fetchedAll };
 };
 
+type UseVisibleTransactionsParams = {
+    account: Account;
+    numberOfPagesRequested: number;
+    enableFiltering?: boolean;
+};
+
 export const useVisibleTransactions = ({
     account,
     numberOfPagesRequested,
     enableFiltering = false,
-}: {
-    account: Account;
-    numberOfPagesRequested: number;
-    enableFiltering?: boolean;
-}) => {
+}: UseVisibleTransactionsParams) => {
     const allTransactions = useSelector(state =>
         selectAccountTransactionsWithNulls(state, account.key),
     );

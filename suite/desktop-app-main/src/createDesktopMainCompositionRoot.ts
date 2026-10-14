@@ -10,8 +10,6 @@ type DesktopMainCompositionRoot = { app: DesktopMainApp };
 
 export const createDesktopMainCompositionRoot = (): DesktopMainCompositionRoot => {
     const logger = new Logger();
-    // TODO(logger-unification): remove once the logger is injected via DI everywhere.
-    global.logger = logger;
 
     const mainWindowProxy = new MainWindowProxy();
     const powerSaveBlocker = createPowerSaveBlocker({ electronPowerSaveBlocker, logger });

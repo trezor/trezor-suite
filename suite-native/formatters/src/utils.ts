@@ -14,3 +14,32 @@ export const convertTokenValueToDecimal = (
 // For values already in decimal units.
 export const asDecimalTokenAmount = (value: string | number): DecimalTokenAmount =>
     value.toString() as DecimalTokenAmount;
+
+type GetFormattedCurrencySymbolParams = {
+    locale: string;
+    currency: string;
+    isSatsValue: boolean;
+};
+
+export const getFormattedCurrencySymbol = ({
+    locale,
+    currency,
+    isSatsValue,
+}: GetFormattedCurrencySymbolParams) => {
+    if (isSatsValue) {
+        return 'sat';
+    }
+
+    const formatter = new Intl.NumberFormat(locale, {
+        style: 'currency',
+        currencyDisplay: 'symbol',
+        currency,
+        maximumFractionDigits: 0,
+    });
+
+    const formattedValue = formatter.format(0);
+    const regex = /[\s0]+/g;
+    const cleanedCurrencySymbol = formattedValue.replace(regex, '');
+
+    return cleanedCurrencySymbol;
+};

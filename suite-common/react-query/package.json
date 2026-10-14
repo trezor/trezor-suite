@@ -5,14 +5,28 @@
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
     "main": "src/index",
+    "exports": {
+        ".": {
+            "types": "./libDev/src/index.d.ts",
+            "default": "./src/index.ts"
+        },
+        "./react": {
+            "types": "./libDev/react/index.d.ts",
+            "default": "./react/index.ts"
+        },
+        "./react-native": {
+            "types": "./libDev/react-native/index.d.ts",
+            "default": "./react-native/index.ts"
+        }
+    },
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@tanstack/react-query": "5.101.4",
-        "@tanstack/react-query-devtools": "5.101.4",
+        "@tanstack/react-query": "5.103.1",
+        "@tanstack/react-query-devtools": "5.103.1",
         "react": "19.2.3"
     }
 }

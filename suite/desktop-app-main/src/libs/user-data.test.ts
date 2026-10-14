@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
+import type { ILogger } from './logger';
 import {
     clearAppData,
     open,
@@ -11,6 +12,10 @@ import {
     resolvePathInUserDataDir,
     save,
 } from './user-data';
+
+const logger: Pick<ILogger, 'error'> = {
+    error: jest.fn(),
+};
 
 jest.mock('electron', () => ({
     app: {
@@ -107,9 +112,6 @@ describe('resolvePathInUserDataDir', () => {
 describe('user-data path traversal protection', () => {
     beforeEach(() => {
         jest.clearAllMocks();
-        global.logger = {
-            error: jest.fn(),
-        } as any;
     });
 
     afterEach(() => {
@@ -117,7 +119,13 @@ describe('user-data path traversal protection', () => {
     });
 
     it('rejects file path traversal in save()', async () => {
-        const result = await save('/metadata', '../../../OtherApp/outside.txt', 'payload', 'utf-8');
+        const result = await save({
+            directory: '/metadata',
+            name: '../../../OtherApp/outside.txt',
+            content: 'payload',
+            encoding: 'utf-8',
+            logger,
+        });
 
         expect(result).toStrictEqual({
             success: false,
@@ -126,7 +134,13 @@ describe('user-data path traversal protection', () => {
     });
 
     it('rejects directory and file path traversal in save()', async () => {
-        const result = await save('../../metadata', '../outside.txt', 'payload', 'utf-8');
+        const result = await save({
+            directory: '../../metadata',
+            name: '../outside.txt',
+            content: 'payload',
+            encoding: 'utf-8',
+            logger,
+        });
 
         expect(result).toStrictEqual({
             success: false,
@@ -135,7 +149,11 @@ describe('user-data path traversal protection', () => {
     });
 
     it('rejects file path traversal in read()', async () => {
-        const result = await read('/metadata', '../../outside.txt');
+        const result = await read({
+            directory: '/metadata',
+            name: '../../outside.txt',
+            logger,
+        });
 
         expect(result).toStrictEqual({
             success: false,
@@ -144,7 +162,12 @@ describe('user-data path traversal protection', () => {
     });
 
     it('rejects file path traversal in rename()', async () => {
-        const result = await rename('/metadata', 'labels.json', '../outside.txt');
+        const result = await rename({
+            directory: '/metadata',
+            from: 'labels.json',
+            to: '../outside.txt',
+            logger,
+        });
 
         expect(result).toStrictEqual({
             success: false,
@@ -153,7 +176,7 @@ describe('user-data path traversal protection', () => {
     });
 
     it('rejects directory path traversal in readDir()', async () => {
-        const result = await readDir('../../OtherApp');
+        const result = await readDir({ directory: '../../OtherApp', logger });
 
         expect(result).toStrictEqual({
             success: false,
@@ -162,13 +185,13 @@ describe('user-data path traversal protection', () => {
     });
 
     it('allows reading user data root directory', async () => {
-        const result = await readDir('');
+        const result = await readDir({ directory: '', logger });
 
         expect(result.success).toBe(true);
     });
 
     it('rejects directory path traversal in open()', async () => {
-        const result = await open('../../OtherApp');
+        const result = await open({ directory: '../../OtherApp', logger });
 
         expect(result).toStrictEqual({
             success: false,
@@ -185,7 +208,7 @@ describe('clearAppData', () => {
     it('removes user data directory', async () => {
         const rmSpy = jest.spyOn(fs.promises, 'rm').mockResolvedValue();
 
-        const result = await clearAppData();
+        const result = await clearAppData({ logger });
 
         expect(result).toStrictEqual({ success: true });
         expect(rmSpy).toHaveBeenCalledWith('/tmp/user-data', {

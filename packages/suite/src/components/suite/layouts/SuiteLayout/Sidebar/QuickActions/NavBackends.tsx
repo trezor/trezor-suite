@@ -1,21 +1,20 @@
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type BlockchainState, selectBlockchainState } from '@suite-common/wallet-core';
 import { Box, Column, DotIndicator, Note, Row, Text } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { TokenIcon } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 import type { CustomBackend } from 'src/types/wallet';
 
-const BackendRow = ({
-    backend: { symbol, type },
-    blockchain,
-}: {
+type BackendRowProps = {
     backend: CustomBackend;
     blockchain: BlockchainState;
-}) => {
+};
+
+const BackendRow = ({ backend: { symbol, type }, blockchain }: BackendRowProps) => {
     const { dispatch } = useServices(injectDispatch);
     const chain = blockchain[symbol as keyof typeof blockchain];
 

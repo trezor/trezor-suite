@@ -1,7 +1,12 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
-import { buyQuotesNegativeMax, buyQuotesNegativeMin, tradeEndpoint } from '../../fixtures/trading';
+import {
+    buyQuotesNegativeCryptoMin,
+    buyQuotesNegativeMax,
+    buyQuotesNegativeMin,
+    tradeEndpoint,
+} from '../../fixtures/trading';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
@@ -47,6 +52,19 @@ test.describe(
                     await expect(page.getByText('Receive account')).toBeVisible();
                     await tradingPage.inputs.fiatAmount.fill('0.01');
                     await expect(page.getByText('Minimum is 96.61 EUR')).toBeVisible();
+                    await expect(tradingPage.buyBestOfferButton).toBeDisabled();
+                });
+
+                await test.step('Crypto error shows on the You get card, not You pay', async () => {
+                    await page.route(tradeEndpoint.buyQuotes, async route => {
+                        await route.fulfill({ json: buyQuotesNegativeCryptoMin });
+                    });
+                    await tradingPage.inputs.cryptoAmount.fill('0.00001');
+                    await expect(tradingPage.inputs.youGetError).toHaveTranslation(
+                        'TR_BUY_VALIDATION_ERROR_MINIMUM_CRYPTO',
+                        { values: { minimum: '0.00005 BTC' } },
+                    );
+                    await expect(tradingPage.inputs.youPayError).toBeHidden();
                     await expect(tradingPage.buyBestOfferButton).toBeDisabled();
                 });
 

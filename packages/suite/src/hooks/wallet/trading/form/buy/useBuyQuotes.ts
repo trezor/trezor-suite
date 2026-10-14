@@ -1,8 +1,6 @@
 import { type UseFormReturn } from 'react-hook-form';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch, injectGetState } from '@suite-common/redux-utils';
 import {
     TRADING_BUY_RECEIVE_ADDRESS,
     TRADING_FORM_AMOUNT_INPUT_SOURCE,
@@ -20,6 +18,8 @@ import {
     tradingActions,
 } from '@suite-common/trading';
 import { type Network } from '@suite-common/wallet-config';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch, injectGetState } from '@trezor/redux-utils';
 
 import {
     getBuyActiveAmount,

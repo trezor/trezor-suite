@@ -4,8 +4,8 @@ import { isRejected } from '@reduxjs/toolkit';
 import * as LocalAuthentication from 'expo-local-authentication';
 import type { LocalAuthenticationResult } from 'expo-local-authentication';
 
-import { type WithServices, createThunk } from '@suite-common/redux-utils';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 
 import {
     selectGoneToBackgroundAtTimestamp,

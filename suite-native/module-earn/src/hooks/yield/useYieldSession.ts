@@ -3,14 +3,14 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type YieldFlowType,
     type YieldRootState,
     selectYieldSessionByFlowKey,
     yieldActions,
 } from '@suite-common/wallet-core';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 type UseYieldSessionParams = {
     flowKey: string | null;

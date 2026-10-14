@@ -2,11 +2,11 @@ import { useMemo } from 'react';
 
 import { useDesktopTorStatus } from '@suite/tor-desktop';
 import { useWebTorStatus } from '@suite/tor-web';
-import { useServices } from '@suite-common/dependency-injection';
 import {
     injectDisconnectAllRelays,
     injectReconnectAllRelays,
 } from '@suite-common/suite-sync-types';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useTorReconnectionLifecycle } from './useTorReconnectionLifecycle';
 

@@ -1,5 +1,5 @@
 import type { SuiteCommonNetworkModule } from '@trezor/network-module-suite-common-types';
-import { isArrayMember, typedObjectValues } from '@trezor/utils';
+import { isArrayMember } from '@trezor/utils';
 
 import type { NetworkSymbol, StaticNetworkModulesDep } from './NetworkModules';
 
@@ -20,7 +20,7 @@ export const createNetworkModuleRepository = (
 ): NetworkModuleRepository => {
     const networkModuleByNetworkSymbol = new Map<NetworkSymbol, SuiteCommonNetworkModule>();
 
-    typedObjectValues(deps.networkModules).forEach(networkModule => {
+    deps.networkModules.forEach(networkModule => {
         networkModule.getSupportedNetworks().forEach(networkSymbol => {
             networkModuleByNetworkSymbol.set(networkSymbol, networkModule);
         });

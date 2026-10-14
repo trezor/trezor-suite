@@ -1,6 +1,5 @@
 import { type PayloadAction, isAnyOf } from '@reduxjs/toolkit';
 
-import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import {
     type TradeServerEnvironment,
     type TradingReducerDeps,
@@ -11,6 +10,7 @@ import {
 import { type AccountKey } from '@suite-common/wallet-types';
 import { tradingInitialState } from '@suite-native/trading-consts';
 import type { ProviderConfirmationStatus, TradingState } from '@suite-native/trading-types';
+import { createSliceWithExtraDeps } from '@trezor/redux-utils';
 
 import { TRADING_BUY, buyActions, buyReducer } from './buySlice';
 import { TRADING_EXCHANGE, exchangeActions, exchangeReducer } from './exchangeSlice';
@@ -61,6 +61,7 @@ export const tradingSlice = createSliceWithExtraDeps({
         ) => {
             state.tradingEnvironment = payload;
             state.tradeOrderIdToBeOpened = undefined;
+            state.formResetRequestedFor = undefined;
             buyReducer(state.buy, buyActions.clearState());
             exchangeReducer(state.exchange, exchangeActions.clearState());
             sellReducer(state.sell, sellActions.clearState());
@@ -70,6 +71,12 @@ export const tradingSlice = createSliceWithExtraDeps({
         },
         clearTradeOrderIdToBeOpened: (state: TradingState) => {
             state.tradeOrderIdToBeOpened = undefined;
+        },
+        requestTradingFormReset: (state: TradingState, { payload }: PayloadAction<TradingType>) => {
+            state.formResetRequestedFor = payload;
+        },
+        clearTradingFormResetRequest: (state: TradingState) => {
+            state.formResetRequestedFor = undefined;
         },
         setIsAmountInputActive: (state: TradingState, { payload }: PayloadAction<boolean>) => {
             state.isAmountInputActive = payload;

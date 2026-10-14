@@ -1,8 +1,7 @@
 import { useSelector } from 'react-redux';
 
-import { yup } from '@suite-common/validators';
 import { selectDustPhishingThreshold } from '@suite-common/wallet-core';
-import { useForm, useWatch } from '@suite-native/forms';
+import { useForm, useWatch, yup } from '@suite-native/forms';
 import { type Translate, useTranslate } from '@suite-native/intl';
 
 const validateIsEmpty = (value?: string) => {

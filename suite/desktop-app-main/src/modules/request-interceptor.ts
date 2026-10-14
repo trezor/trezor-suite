@@ -35,9 +35,7 @@ const mainThreadAllowedDomain = {
  *
  * Please note that the `interceptor` from ModuleInit api is for the Renderer process, so we don't use it here.
  */
-export const init: ModuleInit = ({ mainWindowProxy, store, mainThreadEmitter }) => {
-    const { logger } = global;
-
+export const init: ModuleInit = ({ mainWindowProxy, store, mainThreadEmitter, logger }) => {
     const requestInterceptorEventHandler = (event: InterceptedEvent): void => {
         switch (event.type) {
             case 'INTERCEPTED_REQUEST':

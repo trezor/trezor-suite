@@ -8,13 +8,7 @@
         {
             "path": "../../suite-common/bluetooth"
         },
-        {
-            "path": "../../suite-common/dependency-injection"
-        },
         { "path": "../../suite-common/device" },
-        {
-            "path": "../../suite-common/redux-utils"
-        },
         { "path": "../../suite-common/thp" },
         {
             "path": "../../suite-common/wallet-core"
@@ -37,8 +31,12 @@
         { "path": "../theme" },
         { "path": "../thp" },
         { "path": "../../packages/connect" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/env-utils" },
+        { "path": "../../packages/redux-utils" },
         {
             "path": "../../packages/styles-native"
         },

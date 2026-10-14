@@ -8,12 +8,9 @@ import {
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey, type StellarTokenInfo } from '@suite-common/wallet-types';
+import { lazyStellarTokenMetadata as lazyTokenMetadata } from '@suite-common/wallet-utils';
 import { type TokenDetailByMint } from '@trezor/blockchain-link-types';
-import { getTokenMetadata } from '@trezor/blockchain-link-utils/src/stellar';
-import { STELLAR_DECIMALS } from '@trezor/network-stellar/constants';
-import { createLazy } from '@trezor/utils';
-
-export const lazyTokenMetadata = createLazy(getTokenMetadata);
+import { STELLAR_DECIMALS, isStellarClassicAssetKey } from '@trezor/network-stellar/constants';
 
 export const useInactiveStellarTokens = (accountKey?: AccountKey) => {
     const [tokenMetadata, setTokenMetadata] = useState<TokenDetailByMint | null>(
@@ -52,29 +49,36 @@ export const useInactiveStellarTokens = (accountKey?: AccountKey) => {
     const inactiveTokens = useMemo(() => {
         const tokenAddresses = coinDefinitions?.data ?? [];
 
-        return tokenAddresses
-            .filter(contract => !activatedTokenContracts.has(contract))
-            .map((contract): StellarTokenInfo => {
-                const metadata = tokenMetadata?.[contract];
-                const symbol = contract.split('-')[0];
+        return (
+            tokenAddresses
+                // A native SEP-41 token has no trustline to activate; it is watched by contract id.
+                .filter(
+                    contract =>
+                        isStellarClassicAssetKey(contract) &&
+                        !activatedTokenContracts.has(contract),
+                )
+                .map((contract): StellarTokenInfo => {
+                    const metadata = tokenMetadata?.[contract];
+                    const symbol = contract.split('-')[0];
 
-                return {
-                    standard: 'STELLAR-CLASSIC',
-                    contract,
-                    name: metadata?.name,
-                    symbol,
-                    decimals: STELLAR_DECIMALS,
-                    homeDomain: metadata?.home_domain,
-                    rating: metadata?.rating,
-                };
-            })
-            .sort((a, b) => {
-                if (a.rating == null && b.rating == null) return 0;
-                if (a.rating == null) return 1;
-                if (b.rating == null) return -1;
+                    return {
+                        standard: 'STELLAR-CLASSIC',
+                        contract,
+                        name: metadata?.name,
+                        symbol,
+                        decimals: STELLAR_DECIMALS,
+                        homeDomain: metadata?.home_domain,
+                        rating: metadata?.rating,
+                    };
+                })
+                .sort((a, b) => {
+                    if (a.rating == null && b.rating == null) return 0;
+                    if (a.rating == null) return 1;
+                    if (b.rating == null) return -1;
 
-                return b.rating - a.rating;
-            });
+                    return b.rating - a.rating;
+                })
+        );
     }, [coinDefinitions?.data, activatedTokenContracts, tokenMetadata]);
 
     const isLoading = isCoinDefinitionsLoading || isMetadataLoading;

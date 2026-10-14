@@ -7,23 +7,12 @@ import {
     type PrecomposedTransactionFinal,
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
-import { type PROTO, type TokenInfo } from '@trezor/connect';
+import { type PROTO } from '@trezor/connect';
 import { type ERRORS as CONNECT_ERRORS } from '@trezor/connect-common/src/constants';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { type Err } from '@trezor/type-utils';
 
 export type SerializedTx = { tx: string; symbol: NetworkSymbol };
-
-export type EthTransactionData = {
-    token?: TokenInfo;
-    chainId: number;
-    to: string;
-    amount: string;
-    data?: string;
-    gasLimit: string;
-    gasPrice: string;
-    nonce: string;
-};
 
 export type TransactionType = WalletAccountTransaction['type'];
 

@@ -1,6 +1,5 @@
 import { type PayloadAction, isAnyOf } from '@reduxjs/toolkit';
 
-import { createSliceWithExtraDeps } from '@suite-common/redux-utils';
 import {
     type SendState as CommonSendState,
     type SendFormError,
@@ -12,6 +11,7 @@ import {
     signTransactionThunk,
 } from '@suite-common/wallet-core';
 import { type GeneralPrecomposedLevels } from '@suite-common/wallet-types';
+import { createSliceWithExtraDeps } from '@trezor/redux-utils';
 
 type NativeSendState = CommonSendState & {
     error: null | SendFormError;

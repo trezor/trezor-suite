@@ -3,8 +3,6 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import type { ExchangeTrade } from 'invity-api';
 
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type ApprovalStatus,
     type TradingRootState,
@@ -13,6 +11,7 @@ import {
     requiresTokenApproval,
     selectTradingExchangeDexQuoteApprovalPrefetchLoadingByQuoteId,
     selectTradingExchangeIsLoading,
+    selectTradingExchangeQuotesRequest,
     tradingExchangeActions,
 } from '@suite-common/trading';
 import { useWatch } from '@suite-native/forms';
@@ -30,9 +29,10 @@ import {
     selectExchangeSelectedSendAccount,
 } from '@suite-native/trading-state';
 import { type ExchangeFormType } from '@suite-native/trading-types';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 
-import { clearExchangeFormQuoteData } from './useExchangeForm';
 import { isFullySelectedReceiveAccount } from '../../utils/general/receiveAccountUtils';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
@@ -40,6 +40,18 @@ type NavigationProps = StackToStackCompositeNavigationProps<
     TradingStackRoutes.Trading,
     RootStackParamList
 >;
+
+/**
+ * Copies the quotes request `fromAddress` to a DEX quote, because the request is cleared before
+ * the trade is confirmed.
+ */
+const getQuoteWithRequestFromAddress = (
+    quote: ExchangeTrade,
+    requestFromAddress: string | undefined,
+): ExchangeTrade =>
+    quote.isDex && !quote.fromAddress && requestFromAddress
+        ? { ...quote, fromAddress: requestFromAddress }
+        : quote;
 
 export const useExchangeSelectQuote = (form: ExchangeFormType) => {
     const { dispatch } = useServices(injectDispatch);
@@ -56,6 +68,7 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
     );
     const sendAccount = useSelector(selectExchangeSelectedSendAccount);
     const receiveAccount = useSelector(selectExchangeSelectedReceiveAccount);
+    const quotesRequest = useSelector(selectTradingExchangeQuotesRequest);
 
     const navigation = useNavigation<NavigationProps>();
 
@@ -93,13 +106,12 @@ export const useExchangeSelectQuote = (form: ExchangeFormType) => {
             return;
         }
 
+        const quote = getQuoteWithRequestFromAddress(candidateQuote, quotesRequest?.fromAddress);
+
         await dispatch(
             exchangeThunks.selectQuoteThunk({
-                quote: candidateQuote,
-                nextStep: () => {
-                    clearExchangeFormQuoteData(form);
-                    nextStep(getApprovalStatus(candidateQuote), candidateQuote);
-                },
+                quote,
+                nextStep: () => nextStep(getApprovalStatus(quote), quote),
             }),
         );
     };

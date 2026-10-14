@@ -49,6 +49,7 @@ export type {
     OpenDeviceChannel,
 } from './api/abstract';
 export { UsbApi } from './api/usb';
+export { UsbApiLegacy } from './api/usbLegacy';
 
 export { callThpMessage, parseThpMessage, receiveThpMessage, sendThpMessage } from './thp';
 export { getBLEDescriptorModel } from './utils/descriptor';

@@ -1,7 +1,7 @@
-import Animated, { FadeInDown, LinearTransition } from 'react-native-reanimated';
+import { FadeInDown, LinearTransition } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
-import { HStack, ListItemSkeleton, Text } from '@suite-native/atoms';
+import { AnimatedView, HStack, ListItemSkeleton, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
@@ -16,7 +16,7 @@ export const DiscoveryAssetsLoader = () => {
     }
 
     return (
-        <Animated.View entering={FadeInDown} layout={LinearTransition}>
+        <AnimatedView entering={FadeInDown} layout={LinearTransition}>
             <ListItemSkeleton />
             <HStack justifyContent="center" marginBottom="sp16">
                 <Icon size="mediumLarge" name="trezorLogo" />
@@ -30,6 +30,6 @@ export const DiscoveryAssetsLoader = () => {
                     />
                 </Text>
             </HStack>
-        </Animated.View>
+        </AnimatedView>
     );
 };

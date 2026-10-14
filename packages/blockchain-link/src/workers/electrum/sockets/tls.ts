@@ -14,10 +14,13 @@ export class TlsSocket extends SocketBase {
         this.bindSocket(socket, listener);
 
         return new Promise<TLSSocket>((resolve, reject) => {
-            const errorHandler = (err: Error) => reject(err);
+            const errorHandler = (err: Error) => {
+                socket.destroy();
+                reject(err);
+            };
             socket.on('error', errorHandler);
             // The React Native implementation requires connect(options[, callback]) to be used.
-            socket.connect({ host: this.host, port: this.port }, () => {
+            socket.connect(this.connectOptions(), () => {
                 socket.removeListener('error', errorHandler);
                 resolve(socket);
             });

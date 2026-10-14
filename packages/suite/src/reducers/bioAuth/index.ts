@@ -2,7 +2,7 @@ import {
     type ActionTypesDep,
     type ReducersDep,
     createReducerWithExtraDeps,
-} from '@suite-common/redux-utils';
+} from '@trezor/redux-utils';
 
 import { bioAuthActions } from 'src/actions/suite/bioAuthActions';
 

@@ -1,15 +1,16 @@
 import { selectDefinitionsChannel, suiteSettingsActions } from '@suite/settings';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type DefinitionsChannel } from '@trezor/connect-common';
+import { useServices } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';
-import { ActionColumn, ActionSelect, SectionItem, TextColumn } from '@trezor/product-components';
+import { SectionItem } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 
 const options: { label: string; value: DefinitionsChannel }[] = [
     { label: 'Production', value: 'production' },
-    { label: 'Development', value: 'development' },
+    { label: 'Development (signed)', value: 'signed' },
+    { label: 'Development (unsigned)', value: 'development' },
     { label: 'Local', value: 'local' },
 ];
 
@@ -23,14 +24,16 @@ export const DefinitionsEnvironmentSelect = () => {
     };
 
     return (
-        <SectionItem>
-            <TextColumn
-                title="Definitions channel"
-                description={`Set the source for Ethereum network, token and clear-signing definitions. ${isDesktop() ? 'Restart' : 'Refresh'} the application to apply changes.`}
-            />
-            <ActionColumn>
-                <ActionSelect onChange={handleChange} value={selectedOption} options={options} />
-            </ActionColumn>
-        </SectionItem>
+        <SectionItem
+            title="Definitions channel"
+            description={`Set the source for Ethereum network, token and clear-signing definitions. ${isDesktop() ? 'Restart' : 'Refresh'} the application to apply changes.`}
+            actions={
+                <SectionItem.Select
+                    onChange={handleChange}
+                    value={selectedOption}
+                    options={options}
+                />
+            }
+        />
     );
 };

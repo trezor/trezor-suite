@@ -2,9 +2,7 @@ import { useCallback } from 'react';
 
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type WrappedNativeFlowType,
     type YieldFlowType,
@@ -12,6 +10,8 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { useNavigateToInitialScreen } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useShowYieldTransactionFailureAlert } from './useShowYieldTransactionFailureAlert';
 import { useYieldPendingTransaction } from './useYieldPendingTransaction';

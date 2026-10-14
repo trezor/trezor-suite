@@ -6,9 +6,7 @@ import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device'
 import { type TranslationKey } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type YieldAllowanceStatus,
     type YieldApproveModalState,
@@ -16,6 +14,8 @@ import {
     type YieldFlowFormValues,
     type YieldFlowStepId,
     type YieldFlowToken,
+    type YieldGasReserve,
+    type YieldNativeFeeStatus,
     type YieldPendingTransactionState,
     type YieldPositionFlowType,
     handleYieldApproveCancelThunk,
@@ -25,11 +25,14 @@ import {
     selectYieldSession,
     submitYieldApproveThunk,
     submitYieldRevokeThunk,
+    useYieldGasReserve,
     yieldActions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { useServices } from '@trezor/dependency-injection';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { useCurrentRef, useFreshRef } from '@trezor/react-utils';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import {
     submitYieldDepositThunk,
@@ -39,10 +42,6 @@ import { submitUnwrapNativeTokenThunk } from 'src/actions/wallet/unwrapNativeTok
 import { submitWrapNativeTokenThunk } from 'src/actions/wallet/wrapNativeTokenThunks';
 import { useSelector } from 'src/hooks/suite';
 
-import { useEnsureYieldDeviceSession } from './useEnsureYieldDeviceSession';
-import { useYieldFlowData } from './useYieldFlowData';
-import { type AmountIssue, useYieldForm } from './useYieldForm';
-import { useYieldPendingTransactionTracking } from './useYieldPendingTransactionTracking';
 import { type YieldAmountCardFiatToggleProps } from '../common/YieldAmountCard';
 import {
     type YieldApprovalAction,
@@ -51,6 +50,10 @@ import {
     isAmountGreaterThan,
     shouldInitializeYieldAllowance,
 } from '../yieldFlowUtils';
+import { useEnsureYieldDeviceSession } from './useEnsureYieldDeviceSession';
+import { useYieldFlowData } from './useYieldFlowData';
+import { type AmountIssue, useYieldForm } from './useYieldForm';
+import { useYieldPendingTransactionTracking } from './useYieldPendingTransactionTracking';
 
 type UseYieldFlowProps = {
     account: Account;
@@ -88,6 +91,8 @@ export type UseYieldFlowResult = {
     canRevokeAllowance: boolean;
     hasWrappedTokenBalance: boolean;
     amountIssues: AmountIssue[];
+    gasReserve: YieldGasReserve;
+    nativeFeeStatus: YieldNativeFeeStatus;
     isApprovalInsufficient: boolean;
     isSubmittingApprove: boolean;
     isSubmittingAction: boolean;
@@ -142,16 +147,34 @@ export const useYieldFlow = ({
     // when invoked, including before the next effect commit.
     const sessionRef = useFreshRef(session);
 
+    // Frozen into the deposit session only; the other flows do not keep a reserve aside.
+    const gasReserve = useYieldGasReserve({
+        networkSymbol: account.symbol,
+        isWrappedNativeVault: yieldFlowData.isWrappedNativeVault,
+        tokenContractAddress: token?.contractAddress,
+        flowType: flowType === 'deposit' ? flowType : undefined,
+        flowKey: flowKey || null,
+    });
+
     const {
         methods,
         liveAmount,
         maxAmount,
         setAmountInput,
         amountIssues,
+        nativeFeeStatus,
         fiatToggle,
         setMaxAmount,
         resetAmounts,
-    } = useYieldForm({ flowType, flowData: yieldFlowData, account, vault, flowKey, session });
+    } = useYieldForm({
+        flowType,
+        flowData: yieldFlowData,
+        account,
+        vault,
+        flowKey,
+        session,
+        gasReserve,
+    });
     const methodsRef = useCurrentRef(methods);
     const resetAmountsRef = useCurrentRef(resetAmounts);
 
@@ -728,6 +751,8 @@ export const useYieldFlow = ({
         canRevokeAllowance,
         hasWrappedTokenBalance,
         amountIssues,
+        gasReserve,
+        nativeFeeStatus,
         isApprovalInsufficient,
         isSubmittingApprove:
             session.approval.isSubmitting ||

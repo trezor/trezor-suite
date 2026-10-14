@@ -1,7 +1,7 @@
-import { useFormatters } from '@suite-common/formatters';
-import { type yup } from '@suite-common/validators';
+import { joinAmountWithSymbol, useFormatters } from '@suite-common/formatters';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type yup } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
 import { renderHookWithBasicProvider } from '@suite-native/test-utils';
 import type { TradingFormContext } from '@suite-native/trading-types';
@@ -225,7 +225,9 @@ describe('validationSchemes', () => {
                         buildContext({ minCrypto: '10' }),
                     ),
                 ).rejects.toThrow(
-                    getTranslation('moduleTrading.validators.min', { min: '10 USDT' }),
+                    getTranslation('moduleTrading.validators.min', {
+                        min: joinAmountWithSymbol('10', 'USDT'),
+                    }),
                 );
             });
 
@@ -237,7 +239,9 @@ describe('validationSchemes', () => {
                         buildContext({ maxCrypto: '100' }),
                     ),
                 ).rejects.toThrow(
-                    getTranslation('moduleTrading.validators.max', { max: '100 USDT' }),
+                    getTranslation('moduleTrading.validators.max', {
+                        max: joinAmountWithSymbol('100', 'USDT'),
+                    }),
                 );
             });
         });

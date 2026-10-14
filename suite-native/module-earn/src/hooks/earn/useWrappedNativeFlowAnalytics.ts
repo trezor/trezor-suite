@@ -1,10 +1,10 @@
 import { useCallback } from 'react';
 
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type WrappedNativeFlowType } from '@suite-common/wallet-core';
 import { injectNativeAnalytics } from '@suite-native/analytics';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useWrappedNativeFlowReport } from './useWrappedNativeFlowReport';
 import { getWrappedNativeMaxInteractionElement } from '../../utils/earn/wrappedNativeAnalyticsUtils';

@@ -158,7 +158,19 @@ export const createDesktopApiBridge = <R extends StrictIpcRenderer<any, IpcRende
     toggleBridge: () => ipcRenderer.invoke('bridge/toggle'),
 
     changeBridgeSettings: payload => {
-        if (validation.isObject({ doNotStartOnStartup: 'boolean' }, payload)) {
+        // Every field is optional: each Debug control (Run-on-startup, USB implementation) sends
+        // only its own field as a Partial<BridgeSettings>, and the main process merges it into
+        // the stored settings. Requiring doNotStartOnStartup here would reject the USB-only
+        // payload as 'invalid params' and silently drop it.
+        if (
+            validation.isObject(
+                {
+                    doNotStartOnStartup: ['boolean', true],
+                    usbImplementation: ['string', true],
+                },
+                payload,
+            )
+        ) {
             return ipcRenderer.invoke('bridge/change-settings', payload);
         }
 

@@ -1,9 +1,9 @@
 import React, { useEffect, useRef } from 'react';
-import Animated, { FadeInLeft, FadeOutLeft } from 'react-native-reanimated';
+import { FadeInLeft, FadeOutLeft } from 'react-native-reanimated';
 
 import { type NetworkSymbol, type NetworkType, getNetworkType } from '@suite-common/wallet-config';
 import { type AccountKey, type FormState } from '@suite-common/wallet-types';
-import { Box, Button, useBottomSheetModal } from '@suite-native/atoms';
+import { AnimatedView, Box, Button, useBottomSheetModal } from '@suite-native/atoms';
 import { useFormContext, useWatch } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 
@@ -25,7 +25,7 @@ type CustomFeeButtonProps = {
 };
 
 export const CustomFeeButton = ({ onPress }: CustomFeeButtonProps) => (
-    <Animated.View entering={FadeInLeft.delay(300)} exiting={FadeOutLeft}>
+    <AnimatedView entering={FadeInLeft.delay(300)} exiting={FadeOutLeft}>
         <Box alignSelf="center">
             <Button
                 intent="neutral"
@@ -38,7 +38,7 @@ export const CustomFeeButton = ({ onPress }: CustomFeeButtonProps) => (
                 <Translation id="transactionManagement.fees.custom.addButton" />
             </Button>
         </Box>
-    </Animated.View>
+    </AnimatedView>
 );
 
 const CustomFeeContentWrapper = ({ accountKey, formDraft, onCustomFeeSet }: CustomFeeProps) => {

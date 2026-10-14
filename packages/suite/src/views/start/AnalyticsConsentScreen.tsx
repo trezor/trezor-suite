@@ -2,8 +2,8 @@ import { type ReactNode } from 'react';
 
 import { injectDesktopAnalytics } from '@suite/analytics';
 import { TrezorLink } from '@suite/external-links';
-import { useServices } from '@suite-common/dependency-injection';
 import { Column } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { DataAnalytics } from '@trezor/product-components';
 import { DATA_TOS_URL, DOCS_ANALYTICS_URL } from '@trezor/urls';
 

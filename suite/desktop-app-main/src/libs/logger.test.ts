@@ -117,4 +117,9 @@ describe('logger', () => {
             ['WARN(test2): B'],
         ]);
     });
+    it('.log() should use the "info" level', () => {
+        const logger = new Logger('info', testOptions);
+        logger.log('test', 'A');
+        expect(spy.mock.calls).toEqual([['INFO(test): A']]);
+    });
 });

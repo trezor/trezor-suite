@@ -14,12 +14,12 @@ import {
     type MessageSystemRootState,
     selectIsFeatureDisabled,
 } from '@suite-common/message-system';
-import { createThunk } from '@suite-common/redux-utils';
 import { type ReportSecurityCheckDep } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { processEntropyCheckResultThunk } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 import { type ERRORS } from '@trezor/connect-common/src/constants';
+import { createThunk } from '@trezor/redux-utils';
 
 import {
     DEFAULT_PASSPHRASE_PROTECTION,

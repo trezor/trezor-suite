@@ -8,15 +8,15 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest:native",
+        "test:unit:watch": "yarn g:jest --watch"
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
         "@react-navigation/native": "7.1.31",
-        "@suite-common/dependency-injection": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/message-system": "workspace:*",
-        "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
@@ -32,14 +32,19 @@
         "@suite-native/labeling": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/wallet": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*",
         "@trezor/device-utils": "workspace:*",
+        "@trezor/redux-utils": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "@trezor/theme": "workspace:*",
         "jotai": "2.17.1",
         "react": "19.2.3",
-        "react-native": "0.86.0",
-        "react-native-reanimated": "4.5.0",
+        "react-native": "0.86.3",
+        "react-native-reanimated": "4.7.0",
         "react-native-safe-area-context": "~5.7.0",
         "react-redux": "9.3.0"
+    },
+    "devDependencies": {
+        "@suite-native/test-utils": "workspace:*"
     }
 }

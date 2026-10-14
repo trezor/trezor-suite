@@ -3,8 +3,8 @@ import {
     type WithBluetoothState,
     selectKnownDeviceByDeviceId,
 } from '@suite-common/bluetooth';
-import { createThunk } from '@suite-common/redux-utils';
 import { type Device } from '@trezor/connect';
+import { createThunk } from '@trezor/redux-utils';
 
 import { type DesktopBluetoothDevice } from './DesktopBluetoothDevice';
 import { bluetoothDisconnectDeviceThunk } from './bluetoothDisconnectDeviceThunk';

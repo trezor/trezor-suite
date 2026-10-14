@@ -34,3 +34,25 @@ export const getAssetByEnabledNetworksFilter =
 
         return true;
     };
+
+const DEFAULT_FIAT_CURRENCY_FALLBACK = 'usd';
+
+type GetDefaultFiatCurrencyParams = {
+    baseCurrency: string;
+    supportedFiatCurrencies: ReadonlySet<string>;
+    suggestedFiatCurrency?: string;
+};
+
+export const getDefaultFiatCurrency = ({
+    baseCurrency,
+    supportedFiatCurrencies,
+    suggestedFiatCurrency,
+}: GetDefaultFiatCurrencyParams) => {
+    const normalizedBaseCurrency = baseCurrency.toLowerCase();
+
+    if (supportedFiatCurrencies.has(normalizedBaseCurrency)) {
+        return normalizedBaseCurrency;
+    }
+
+    return (suggestedFiatCurrency || DEFAULT_FIAT_CURRENCY_FALLBACK).toLowerCase();
+};

@@ -2,12 +2,12 @@ import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type TronFlow } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Button, Column, IconCircle, Text } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { CheckIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { EarnFlowFeedbackCard } from 'src/components/earn/common/EarnFlowFeedbackCard';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
@@ -47,7 +47,9 @@ export const TronStakeComplete = ({
             <IconCircle icon={CheckIcon} intent="brand" size={isBelowMobile ? 64 : 96} />
 
             <Column gap={4}>
-                <Text typographyStyle="headline-md">{heading}</Text>
+                <Text typographyStyle="headline-md" data-testid="@staking/tron-complete/heading">
+                    {heading}
+                </Text>
                 <Text intent="neutral" priority="secondary">
                     {description}
                 </Text>
@@ -55,7 +57,12 @@ export const TronStakeComplete = ({
 
             {children}
 
-            <Button intent="neutral" priority="secondary" onClick={handleBackToOverview}>
+            <Button
+                intent="neutral"
+                priority="secondary"
+                onClick={handleBackToOverview}
+                data-testid="@staking/tron-complete/back-to-overview-button"
+            >
                 <Translation id="TR_EARN_YIELD_BACK_TO_OVERVIEW" />
             </Button>
 

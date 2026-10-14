@@ -1,10 +1,10 @@
+import type { Logger } from '@trezor/logger';
 import { TypedEmitter, arrayDistinct, arrayPartition, scheduleAction } from '@trezor/utils';
 
 import { ACCOUNT_BUSY_TIMEOUT, ROUND_PHASE_PROCESS_TIMEOUT } from '../constants';
 import { type EndRoundState, RoundPhase, SessionPhase } from '../enums';
 import { type Account } from './Account';
 import { Alice } from './Alice';
-import { type Logger } from '../types';
 import { type AccountAddress, type RegisterAccountParams } from '../types/account';
 import { type CoinjoinRoundParameters, type Round } from '../types/coordinator';
 import { type CoinjoinPrisonShape } from '../types/prison';

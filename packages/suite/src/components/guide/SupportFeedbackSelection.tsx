@@ -1,11 +1,10 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { UpdateState, selectDesktopUpdate } from '@suite/desktop-update';
 import { Translation, type TranslationKey } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { Box, CardList, Column, Icon, IconCircle, Row, Text } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';
 import {
@@ -16,6 +15,7 @@ import {
     LifebuoyIcon,
     MegaphoneIcon,
 } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 import { TREZOR_FORUM_URL } from '@trezor/urls';
 
 import { setView } from 'src/actions/suite/guideActions';
@@ -28,7 +28,9 @@ import {
 import { SupportConsentPopover } from 'src/components/guide/SupportConsentPopover';
 import { useSelector } from 'src/hooks/suite';
 
-const StatusText = ({ id }: { id: TranslationKey }) => (
+type StatusTextProps = { id: TranslationKey };
+
+const StatusText = ({ id }: StatusTextProps) => (
     <Text typographyStyle="body-sm" intent="neutral" priority="secondary" as="div">
         <Translation id={id} />
     </Text>

@@ -43,7 +43,7 @@ Cached transactions are stored in `./tests/__txcache__` directory in the same st
 
 Cached transactions are provided to test fixtures via [TX_CACHE](./__txcache__/index.js) utility.
 
-Missing tx json? use [this tool](./__txcache__/gen-reftx.js) to generate it.
+Missing tx json? use [this tool](./__txcache__/gen-reftx.ts) to generate it.
 
 ## Websocket cache
 

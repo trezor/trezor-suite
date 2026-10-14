@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { VStack } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
@@ -15,7 +14,9 @@ import {
     selectIsTradingEnabled,
     selectTradeToBeOpened,
 } from '@suite-native/trading-state';
+import { useServices } from '@trezor/dependency-injection';
 
+import { TRADING_KEYBOARD_TOOLBAR_HOST } from '../components/general/CryptoAmountKeyboardToolbar';
 import { Header } from '../components/general/Header/Header';
 import { HistoryButton, type NavigationProps } from '../components/general/HistoryButton';
 import { LegalGatewayContextMessage } from '../components/general/LegalGatewayContextMessage';
@@ -66,6 +67,7 @@ export const TradingScreen = () => {
 
     return (
         <Screen
+            keyboardToolbarHostName={TRADING_KEYBOARD_TOOLBAR_HOST}
             noHorizontalPadding
             header={
                 <>

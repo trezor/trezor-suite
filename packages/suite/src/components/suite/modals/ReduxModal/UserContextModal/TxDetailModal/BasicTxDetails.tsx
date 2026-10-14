@@ -2,8 +2,6 @@ import styled from 'styled-components';
 
 import { useExternalLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type Network } from '@suite-common/wallet-config';
 import {
@@ -29,6 +27,7 @@ import {
     Text,
     Tooltip,
 } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { copyToClipboard } from '@trezor/dom-utils';
 import {
     CalendarIcon,
@@ -41,6 +40,7 @@ import {
     WarningIcon,
 } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { FormattedDateWithBullet } from 'src/components/suite/FormattedDateWithBullet';
@@ -324,7 +324,7 @@ export const BasicTxDetails = ({
                 )}
 
                 {tx.stellarSpecific?.memo && (
-                    <Item label={<Translation id="DESTINATION_TAG_SHORT" />} icon={TagIcon}>
+                    <Item label={<Translation id="MEMO" />} icon={TagIcon}>
                         <BlurUrls text={tx.stellarSpecific.memo} />
                     </Item>
                 )}

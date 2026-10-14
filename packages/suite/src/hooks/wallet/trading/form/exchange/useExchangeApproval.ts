@@ -2,8 +2,6 @@ import { type UnknownAction } from '@reduxjs/toolkit';
 import { type DexApprovalType, type ExchangeTrade } from 'invity-api';
 import { type ThunkDispatch } from 'redux-thunk';
 
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type OpenModalDep } from '@suite-common/suite-types';
 import { exchangeThunks, tradingExchangeActions, tradingThunks } from '@suite-common/trading';
 import { type TradingRootState } from '@suite-common/trading';
@@ -12,6 +10,8 @@ import {
     type WalletSettingsRootState,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useTradingExchangeTradeRequest } from 'src/hooks/wallet/trading/form/common/useTradingExchangeTradeRequest';
 
@@ -55,13 +55,15 @@ export const useExchangeApproval = ({
             );
         };
 
+    type ConfirmApprovalParams = {
+        trade?: ExchangeTrade;
+        receiveAddress: string;
+    };
+
     const confirmApproval = async ({
         trade: approvalTrade,
         receiveAddress: approvalReceiveAddress,
-    }: {
-        trade?: ExchangeTrade;
-        receiveAddress: string;
-    }) => {
+    }: ConfirmApprovalParams) => {
         if (!account) {
             return undefined;
         }

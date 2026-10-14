@@ -1,13 +1,10 @@
-import { createIntl, createIntlCache } from 'react-intl';
-
 import test, { Locator, Page, TestInfo, expect } from '@playwright/test';
-import { isEqual, omit } from 'lodash';
+import { IntlMessageFormat } from 'intl-messageformat';
 import { readdirSync } from 'node:fs';
 import path from 'node:path';
 
 import { formatCompactCryptoAmount, isMoneyLikeToken } from '@suite-common/formatters';
 import { validJws } from '@suite-common/message-system/src/__fixtures__/messageSystemActions';
-import { type TradingCountryCode, regional } from '@suite-common/trading';
 import { getAccountDecimals } from '@suite-common/wallet-utils';
 import { BigNumber, localizeNumber, splitStringEveryNCharacters } from '@trezor/utils';
 
@@ -50,9 +47,6 @@ export function step(stepName?: string) {
     };
     /* eslint-enable @typescript-eslint/no-unsafe-function-type */
 }
-
-export const isEqualWithOmit = (param: { object1: any; object2: any; mask: string[] }) =>
-    isEqual(omit(param.object1, param.mask), omit(param.object2, param.mask));
 
 export const formatAddress = (address: string) => splitStringEveryNCharacters(address, 4).join(' ');
 
@@ -102,15 +96,6 @@ export const getVideoPath = (videoFolder: string): string | false => {
     }
 
     return path.join(videoFolder, videoFilenames[0] ?? '');
-};
-
-export const getCountryLabel = (country: TradingCountryCode) => {
-    const countryOption = regional.countriesOptionsMap.get(country);
-    if (!countryOption) {
-        throw new Error(`Country ${country} not found in the countries map`);
-    }
-
-    return countryOption.label.substring(countryOption.label.indexOf(' ') + 1);
 };
 
 type CompactAmountOptions = {
@@ -254,18 +239,6 @@ export const analyzeObject = (obj: any): any => {
     return obj;
 };
 
-export const sanitizeAndStringifyLogFields = (fields: Record<string, unknown>) =>
-    JSON.stringify(
-        Object.fromEntries(
-            Object.entries(fields).map(([key, value]) => [
-                key,
-                typeof value === 'undefined' ? 'warning: undefined' : value,
-            ]),
-        ),
-        null,
-        2,
-    );
-
 export const toADA = (lovelace: number, options?: { maxDecimals?: number }) => {
     const maxDecimals = options?.maxDecimals ?? 6;
     // A fee is rounded up, never truncated, so it is not understated. `localizeNumber`
@@ -280,8 +253,4 @@ export const toADA = (lovelace: number, options?: { maxDecimals?: number }) => {
 export const replaceTemplatesInTranslation = (
     template: string,
     values: Record<string, string | number>,
-) => {
-    const intlEn = createIntl({ locale: 'en', messages: {} }, createIntlCache());
-
-    return intlEn.formatMessage({ id: template, defaultMessage: template }, values);
-};
+) => String(new IntlMessageFormat(template, 'en').format(values));

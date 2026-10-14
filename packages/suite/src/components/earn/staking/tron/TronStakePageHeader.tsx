@@ -3,13 +3,13 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { gotoThunk, selectRouteName, selectSettingsBackRoute } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { selectTronStakeSession } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Box, Button, Column, IconButton, Row, Text } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { CaretLeftIcon, InfoIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
@@ -135,7 +135,12 @@ export const TronStakePageHeader = ({ account }: TronStakePageHeaderProps) => {
                             tooltip={{ content: <Translation id="TR_EARN_HOW_IT_WORKS" /> }}
                         />
                     ) : (
-                        <Button intent="neutral" priority="secondary" onClick={onHowItWorksClick}>
+                        <Button
+                            intent="neutral"
+                            priority="secondary"
+                            onClick={onHowItWorksClick}
+                            data-testid="@staking/tron-header/how-it-works-button"
+                        >
                             <Translation id="TR_EARN_HOW_IT_WORKS" />
                         </Button>
                     )}

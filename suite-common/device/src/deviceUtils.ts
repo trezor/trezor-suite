@@ -6,6 +6,9 @@ import type {
     TrezorDeviceWithState,
 } from '@suite-common/suite-types';
 import { type Device } from '@trezor/connect';
+import { countBytesInString } from '@trezor/utils';
+
+import { PASSPHRASE_MAX_LENGTH } from './deviceConstants';
 
 export const DeviceCancelledErr = (): DeviceCancelledErrType => ({
     type: 'DeviceCancelled' as const,
@@ -25,14 +28,15 @@ export const DeviceNotConnectedError = (
     type: 'DeviceNotConnectedError' as const,
     message: message ?? 'Device is not connected',
 });
+type ShouldDeviceBeRememberedParams = {
+    device: TrezorDevice | Device;
+    isAutoEjectEnabled?: boolean;
+};
 
 export const shouldDeviceBeRemembered = ({
     device,
     isAutoEjectEnabled = false,
-}: {
-    device: TrezorDevice | Device;
-    isAutoEjectEnabled?: boolean;
-}) => {
+}: ShouldDeviceBeRememberedParams) => {
     if (device.mode !== 'normal') return false;
 
     if (device.type !== 'acquired') return false;
@@ -50,3 +54,9 @@ export const isTrezorDeviceWithState = (
     device: TrezorDevice | undefined,
 ): device is TrezorDeviceWithState =>
     device !== undefined && device.id !== null && device.state?.staticSessionId !== undefined;
+
+export const getPassphraseMaxLength = (device: TrezorDevice | undefined) =>
+    device?.features?.max_passphrase_len ?? PASSPHRASE_MAX_LENGTH;
+
+export const getIsPassphraseTooLong = (passphrase: string, passphraseMaxLength: number) =>
+    countBytesInString(passphrase) > passphraseMaxLength;

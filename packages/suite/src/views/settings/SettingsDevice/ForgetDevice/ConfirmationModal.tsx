@@ -2,13 +2,15 @@ import { Translation } from '@suite/intl';
 import { Card, Icon, List, Modal, Paragraph } from '@trezor/components';
 import { BluetoothSlashIcon, LinkBreakIcon, ScrollIcon } from '@trezor/icons';
 
+type ConfirmationContentProps = {
+    isBluetoothDevice: boolean;
+    isBluetoothConnectedDevice: boolean;
+};
+
 const ConfirmationContent = ({
     isBluetoothDevice,
     isBluetoothConnectedDevice,
-}: {
-    isBluetoothDevice: boolean;
-    isBluetoothConnectedDevice: boolean;
-}) => (
+}: ConfirmationContentProps) => (
     <Card paddingType="normal" data-testid="@settings/device/forget/confirm-content">
         <List gap={24}>
             <List.Item
@@ -53,17 +55,19 @@ const ConfirmationContent = ({
     </Card>
 );
 
+type ConfirmationModalProps = {
+    onConfirm: () => void;
+    onCancel: () => void;
+    isBluetoothDevice: boolean;
+    isBluetoothConnectedDevice: boolean;
+};
+
 export const ConfirmationModal = ({
     onConfirm,
     onCancel,
     isBluetoothDevice,
     isBluetoothConnectedDevice,
-}: {
-    onConfirm: () => void;
-    onCancel: () => void;
-    isBluetoothDevice: boolean;
-    isBluetoothConnectedDevice: boolean;
-}) => (
+}: ConfirmationModalProps) => (
     <Modal
         onCancel={onCancel}
         heading={<Translation id="TR_FORGET_DEVICE_MODAL_HEADING" />}

@@ -2,7 +2,6 @@ import { type AsyncThunkAction } from '@reduxjs/toolkit';
 
 import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { type DeviceRootState, deviceActions, selectSelectedDevice } from '@suite-common/device';
-import { createThunk } from '@suite-common/redux-utils';
 import { type LockDeviceDep } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork } from '@suite-common/wallet-config';
@@ -32,6 +31,7 @@ import { connectCallableMethods } from '@trezor/connect-common';
 import { TypedError, serializeError } from '@trezor/connect-common/src/constants/errors';
 import { DEEPLINK_VERSION } from '@trezor/connect-common/src/data/version';
 import type { Bip43PathTemplate } from '@trezor/crypto-utils';
+import { createThunk } from '@trezor/redux-utils';
 import { resolveAfter } from '@trezor/utils';
 
 import { connectPopupActions } from './connectPopupActions';
@@ -59,6 +59,12 @@ import {
 } from './permissions';
 
 const CONNECT_POPUP_MODULE = '@common/connect-popup';
+
+// Names only, values may hold confidential data. Deeplink payloads are arbitrary parsed JSON.
+const getCallParamNames = (payload: unknown): string[] =>
+    payload && typeof payload === 'object' && !Array.isArray(payload)
+        ? Object.keys(payload).sort()
+        : [];
 
 type ConnectPopupCallThunkParams<M extends CallMethodKeys> = {
     method: M;
@@ -92,7 +98,6 @@ export const connectPopupCallInnerThunk = createThunk<
                 ...payload,
                 method,
                 __info: true,
-                __precomposed: true,
             } as CallMethodPayload);
             if (!methodInfo.success) {
                 throw methodInfo.error;
@@ -123,9 +128,7 @@ export const connectPopupCallInnerThunk = createThunk<
                 connectPopupActions.initiateCall({
                     method,
                     methodInfo: {
-                        methodTitle:
-                            methodInfoPayload.confirmation?.label ?? methodInfoPayload.info,
-                        confirmLabel: methodInfoPayload.confirmation?.customConfirmButton?.label,
+                        methodTitle: methodInfoPayload.info,
                         permissionTypes: consentPermissions,
                         useUi: methodInfoPayload.useUi,
                     },
@@ -238,13 +241,14 @@ export const connectPopupCallInnerThunk = createThunk<
             extra.services.analytics.report({
                 type: events.connectPopupCallEvent.name,
                 payload: {
-                    method,
+                    method: params.method,
                     appName: source.manifest.appName,
                     appUrl: source.manifest.appUrl,
                     appEmail: source.manifest.email,
                     npmVersion: source.manifest.npmVersion,
                     connectionType: source.type,
                     origin: source.origin,
+                    paramNames: getCallParamNames(params.payload),
                 },
             });
 
@@ -283,6 +287,7 @@ export const connectPopupCallInnerThunk = createThunk<
                     appEmail: source.manifest.email,
                     npmVersion: source.manifest.npmVersion,
                     connectionType: source.type,
+                    paramNames: getCallParamNames(params.payload),
                 },
             });
 

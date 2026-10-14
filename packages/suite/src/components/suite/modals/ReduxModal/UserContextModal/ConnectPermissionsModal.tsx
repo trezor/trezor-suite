@@ -6,10 +6,10 @@ import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { connectPopupActions, selectConnectPopupCall } from '@suite-common/connect-popup';
 import { CALL_SOURCE_WALLETCONNECT } from '@suite-common/connect-popup/src/connectPopupTypes';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { Card, Checkbox, Column, Modal, Row, Text, Tooltip } from '@trezor/components';
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { ConnectAppIcon } from 'src/components/suite/ConnectAppIcon';
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
@@ -26,7 +26,7 @@ export const ConnectPermissionsModal = () => {
     if (!popupCall || popupCall?.state !== 'permission-request') return null;
 
     const { method, methodInfo, source } = popupCall;
-    const { confirmLabel, permissionTypes } = methodInfo;
+    const { permissionTypes } = methodInfo;
 
     const rememberPayload = {
         allowedPermissions: permissionTypes,
@@ -70,7 +70,7 @@ export const ConnectPermissionsModal = () => {
                             onClick={onConfirm}
                             data-testid="@connect-permissions-modal/confirm-button"
                         >
-                            {confirmLabel || <Translation id="TR_CONFIRM" />}
+                            <Translation id="TR_CONFIRM" />
                         </Modal.Button>
                         <Modal.Button
                             intent="neutral"

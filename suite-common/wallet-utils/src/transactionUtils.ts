@@ -28,6 +28,7 @@ import {
     type TokenInfo,
     type TokenTransfer,
 } from '@trezor/connect';
+import { SOLANA_BLOCKHASH_VALIDITY_MS } from '@trezor/network-solana/constants';
 import { type Branded } from '@trezor/type-utils';
 import { BigNumber, arrayPartition, isNotNullOrUndefined, typedObjectKeys } from '@trezor/utils';
 
@@ -780,6 +781,7 @@ export const analyzeTransactions = (
 
     // make sure the known transactions are sorted properly
     const knownSorted = [...knownRest].sort(sortByBlockHeight);
+    const knownTxids = new Set(knownSorted.map(({ txid }) => txid));
     // run thru all fresh txs
     fresh.forEach((tx, i) => {
         const height = tx.blockHeight;
@@ -812,6 +814,18 @@ export const analyzeTransactions = (
                 }
                 // known tx is on the same height
                 if (kTx.blockHeight === height) {
+                    // No block hash on either side: a new txid at this height is an
+                    // addition, not a rollback.
+                    if (
+                        kTx.blockHash === undefined &&
+                        tx.blockHash === undefined &&
+                        !knownTxids.has(tx.txid)
+                    ) {
+                        addTxs.push(tx);
+                        newTxs.push(tx);
+                        break;
+                    }
+
                     firstKnownIndex = index + 1;
                     // known tx changed (rollback)
                     if (kTx.blockHash !== tx.blockHash) {
@@ -864,8 +878,22 @@ const NFT_TOKEN_STANDARDS: ReadonlySet<TokenStandard> = new Set([
     ...NFT_MULTITOKEN_STANDARDS,
 ]);
 
+/** Whether the account's own balance moved at all, in the native asset or any token. */
+export const hasValueMovement = ({
+    amount,
+    tokens,
+    internalTransfers,
+}: Pick<WalletAccountTransaction, 'amount' | 'tokens' | 'internalTransfers'>) =>
+    !new BigNumber(amount).isZero() ||
+    tokens.some(token => !new BigNumber(token.amount ?? '0').isZero()) ||
+    internalTransfers.some(transfer => !new BigNumber(transfer.amount).isZero());
+
 export const isNftToken = <T extends Pick<TokenInfo, 'standard'>>(token: T) =>
     NFT_TOKEN_STANDARDS.has(token.standard);
+
+/** A Soroban (SEP-41) contract token, as against a classic Stellar asset. */
+export const isStellarContractToken = <T extends Pick<TokenInfo, 'standard'>>(token: T) =>
+    token.standard === 'STELLAR-CONTRACT';
 
 export const isNftTokenTransfer = <T extends Pick<TokenTransfer, 'standard'>>(transfer: T) =>
     transfer.standard && NFT_TOKEN_STANDARDS.has(transfer.standard);
@@ -1247,10 +1275,11 @@ export const getTransactionWithLowestNonce = (
     );
 };
 
+const SOLANA_TX_VALIDITY_TIMEOUT_RATIO = 4 / 5;
+
 export const getTxValidityTimeoutInMs = (networkType?: NetworkType) => {
     if (networkType === 'solana') {
-        // Blockhash required in Solana tx is valid for 1 minute. Leave 15 seconds for tx confirmation.
-        return 45 * 1000;
+        return SOLANA_BLOCKHASH_VALIDITY_MS * SOLANA_TX_VALIDITY_TIMEOUT_RATIO;
     }
 
     return 0;

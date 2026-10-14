@@ -3,19 +3,19 @@ import { useFormState } from 'react-hook-form';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
-import { useServices } from '@suite-common/dependency-injection';
 import { useFormatters } from '@suite-common/formatters';
-import { injectDispatch } from '@suite-common/redux-utils';
-import { formInputsMaxLength } from '@suite-common/validators';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
+    AMOUNT_MAX_LENGTH,
     TRON_STAKING_RESERVE,
     composeTronFreezeFeeLevelsThunk,
     getStakingLimitsByNetworkSymbol,
 } from '@suite-common/wallet-core';
 import { asAmountSubunit, subunitsToUnits, toFiatCurrency } from '@suite-common/wallet-utils';
 import { Banner, Button, Column, Row, Text } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { NumberInput } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
@@ -230,7 +230,7 @@ export const TronFreezeAmount = () => {
         locale,
         control,
         rules: currency === 'crypto' ? cryptoInputRules : fiatInputRules,
-        maxLength: currency === 'crypto' ? formInputsMaxLength.amount : formInputsMaxLength.fiat,
+        maxLength: AMOUNT_MAX_LENGTH,
         isDisabled,
         hasError,
         onChange: currency === 'crypto' ? handleCryptoAmountChange : handleFiatAmountChange,
@@ -257,11 +257,16 @@ export const TronFreezeAmount = () => {
                 />
             </Row>
 
-            <NumberInput {...numberInputProps} />
+            <NumberInput {...numberInputProps} data-testid="@staking/tron-freeze/amount-input" />
 
             <Row justifyContent="space-between" alignItems="center" gap={8}>
                 <Row alignItems="center" gap={8}>
-                    <Text typographyStyle="body-md" intent="neutral" priority="secondary">
+                    <Text
+                        typographyStyle="body-md"
+                        intent="neutral"
+                        priority="secondary"
+                        data-testid="@staking/tron-freeze/available-balance"
+                    >
                         <Translation id="TR_STAKE_AVAILABLE" />
                         {': '}
                         <FormattedCryptoAmount value={availableBalance} symbol={account.symbol} />
@@ -273,6 +278,7 @@ export const TronFreezeAmount = () => {
                         priority="secondary"
                         onClick={handleSetMax}
                         isDisabled={isDisabled}
+                        data-testid="@staking/tron-freeze/max-button"
                     >
                         <Translation id="TR_FRACTION_BUTTONS_MAX" />
                     </Button>
@@ -287,12 +293,17 @@ export const TronFreezeAmount = () => {
             </Row>
 
             {!!errorMessage && (
-                <Banner intent="warning" description={<Text>{errorMessage}</Text>} />
+                <Banner
+                    intent="warning"
+                    description={<Text>{errorMessage}</Text>}
+                    data-testid="@staking/tron-freeze/amount-error"
+                />
             )}
 
             {showLeftReserveBanner && (
                 <Banner
                     intent="info"
+                    data-testid="@staking/tron-freeze/reserve-left-banner"
                     description={
                         <Translation
                             id="TR_EARN_TRON_RESERVE_LEFT_FOR_VOTING"
@@ -308,6 +319,7 @@ export const TronFreezeAmount = () => {
             {showRecommendedReserveBanner && (
                 <Banner
                     intent="info"
+                    data-testid="@staking/tron-freeze/reserve-recommended-banner"
                     description={
                         <Translation
                             id="TR_EARN_TRON_RESERVE_RECOMMENDED_FOR_VOTING"

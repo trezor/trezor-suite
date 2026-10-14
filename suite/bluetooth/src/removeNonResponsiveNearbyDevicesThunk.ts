@@ -4,7 +4,7 @@ import {
     bluetoothActions,
     selectNearbyDevices,
 } from '@suite-common/bluetooth';
-import { createThunk } from '@suite-common/redux-utils';
+import { createThunk } from '@trezor/redux-utils';
 
 import { type DesktopBluetoothDevice } from './DesktopBluetoothDevice';
 import { filterOutNonResponsiveDevices } from './filterOutNonResponsiveDevices';

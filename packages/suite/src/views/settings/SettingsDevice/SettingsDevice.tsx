@@ -8,12 +8,11 @@ import { setConnectionModal, useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { ContextMessage } from '@suite/message-system';
 import { isRecoveryInProgress } from '@suite/recovery';
-import { useServices } from '@suite-common/dependency-injection';
-import { selectIsDeviceAuthenticityCheckSupported } from '@suite-common/device';
+import { selectIsDeviceAuthenticityCheckSupported } from '@suite-common/device-authenticity';
 import { Context } from '@suite-common/message-system';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { getIsDeviceRemembered } from '@suite-common/suite-utils';
 import { Banner } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { isBitcoinOnlyDevice } from '@trezor/device-utils';
 import {
     GhostIcon,
@@ -27,6 +26,7 @@ import {
     TrezorLogoIcon,
 } from '@trezor/icons';
 import { SettingsSection } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 import { breakpoints } from '@trezor/theme';
 
 import { DeviceBanner } from 'src/components/settings/DeviceBanner';

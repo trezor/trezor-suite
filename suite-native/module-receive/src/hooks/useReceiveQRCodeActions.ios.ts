@@ -5,11 +5,11 @@ import { type ViewShotRef, captureRef } from 'react-native-view-shot';
 
 import * as Clipboard from 'expo-clipboard';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { useAlert } from '@suite-native/alerts';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { useTranslate } from '@suite-native/intl';
 import { useToast } from '@suite-native/toasts';
+import { useServices } from '@trezor/dependency-injection';
 import { exhaustive } from '@trezor/type-utils';
 
 import { saveQRCodeImageToPhotos } from '../utils/saveQRCodeImageToPhotos.ios';

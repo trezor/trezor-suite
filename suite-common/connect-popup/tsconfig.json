@@ -5,9 +5,9 @@
         { "path": "../analytics" },
         { "path": "../device" },
         { "path": "../networks" },
-        { "path": "../redux-utils" },
         { "path": "../suite-types" },
         { "path": "../toast-notifications" },
+        { "path": "../tx-simulation" },
         { "path": "../wallet-config" },
         { "path": "../wallet-core" },
         { "path": "../wallet-types" },
@@ -18,14 +18,17 @@
         },
         { "path": "../../packages/crypto-utils" },
         {
-            "path": "../../networks/solana/network-solana"
+            "path": "../../networks/solana/network-solana-types"
         },
         {
-            "path": "../../networks/stellar/network-stellar"
+            "path": "../../networks/stellar/network-stellar-types"
         },
+        { "path": "../../packages/redux-utils" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
-        { "path": "../dependency-injection" },
-        { "path": "../test-utils" }
+        { "path": "../test-utils" },
+        {
+            "path": "../../packages/dependency-injection"
+        }
     ]
 }

@@ -1,4 +1,4 @@
-import React, { type ComponentProps, Fragment } from 'react';
+import React, { type ComponentProps, Fragment, type ReactElement } from 'react';
 
 import styled, { ThemeProvider } from 'styled-components';
 
@@ -15,7 +15,7 @@ const Wrapper = styled.div.attrs<{ 'data-component'?: string }>(() => ({
     color: ${({ theme }) => theme.contentPrimary};
 `;
 
-export const StoryWrapper = (story: any) =>
+export const StoryWrapper = (story: any): ReactElement =>
     React.createElement(
         Fragment,
         null,
@@ -53,7 +53,7 @@ const Col = styled.div.attrs<{ 'data-component'?: string }>(() => ({
     }
 `;
 
-export const StoryColumn = ({ minWidth, maxWidth, children }: StoryColumnProps) =>
+export const StoryColumn = ({ minWidth, maxWidth, children }: StoryColumnProps): ReactElement =>
     React.createElement<Omit<ComponentProps<typeof Col>, 'children'>>(
         Col,
         { minWidth: minWidth || 250, maxWidth: maxWidth || 500 },

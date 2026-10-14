@@ -1,6 +1,5 @@
 import { type ReactNode } from 'react';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import {
     BottomSheetModal,
@@ -12,6 +11,7 @@ import {
 } from '@suite-native/atoms';
 import { Icon, type IconName } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { useServices } from '@trezor/dependency-injection';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 export type SheetControls = ReturnType<typeof useBottomSheetModal>;

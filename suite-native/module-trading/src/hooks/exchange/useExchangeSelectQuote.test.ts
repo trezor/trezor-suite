@@ -3,7 +3,6 @@ import React from 'react';
 import { type Store } from '@reduxjs/toolkit';
 import type { ExchangeTrade } from 'invity-api';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { tradingExchangeActions } from '@suite-common/trading';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
@@ -20,6 +19,7 @@ import {
 } from '@suite-native/trading-fixtures';
 import { type TradingRootState } from '@suite-native/trading-state';
 import { type ExchangeFormType } from '@suite-native/trading-types';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useExchangeForm } from './useExchangeForm';
 import { useExchangeSelectQuote } from './useExchangeSelectQuote';
@@ -312,6 +312,57 @@ describe('useExchangeSelectQuote', () => {
 
             expect(dispatchSpy).toHaveBeenCalledWith(
                 tradingExchangeActions.saveSelectedQuote(quote),
+            );
+        });
+
+        it.each<[string, ExchangeTrade, string | undefined]>([
+            [
+                'keep the quotes request fromAddress on a DEX quote',
+                { ...invityDexQuote, fromAddress: undefined },
+                'input-address-1;input-address-2',
+            ],
+            [
+                'not add the quotes request fromAddress to a CEX quote',
+                { ...mercuryoFixedBestQuote!, fromAddress: undefined },
+                undefined,
+            ],
+        ])('should %s', async (_, quote, expectedFromAddress) => {
+            await act(() => {
+                store.dispatch(
+                    tradingExchangeActions.saveQuoteRequest({
+                        send: quote.send!,
+                        receive: quote.receive!,
+                        sendStringAmount: '0.001',
+                        fromAddress: 'input-address-1;input-address-2',
+                    }),
+                );
+                exchangeForm.setValue('quote', quote);
+            });
+
+            const dispatchSpy = jest.spyOn(store, 'dispatch');
+            const { result } = await renderUseExchangeSelectQuote();
+            dispatchSpy.mockClear();
+
+            await act(() => {
+                result.current.selectQuote();
+            });
+
+            const [selectQuoteCall] = dispatchSpy.mock.calls;
+            const selectQuoteAction = selectQuoteCall?.[0] as unknown as {
+                payload: { nextStep: () => void; quote: ExchangeTrade };
+            };
+
+            expect(selectQuoteAction.payload.quote.fromAddress).toBe(expectedFromAddress);
+
+            await act(() => {
+                selectQuoteAction.payload.nextStep();
+            });
+
+            expect(dispatchSpy).toHaveBeenCalledWith(
+                tradingExchangeActions.saveSelectedQuote({
+                    ...quote,
+                    fromAddress: expectedFromAddress,
+                }),
             );
         });
 

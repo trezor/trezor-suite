@@ -1,7 +1,8 @@
 import { useRef, useState } from 'react';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { type NetworkSymbol, getNetwork, getNetworkType } from '@suite-common/wallet-config';
+import { AnimatedView } from '@suite-native/atoms';
 import {
     AnimatedVStack,
     BannerInline,
@@ -120,7 +121,7 @@ export const DestinationTagInput = ({ networkSymbol }: DestinationTagInputProps)
                     </HStack>
                 </AnimatedVStack>
             ) : (
-                <Animated.View entering={FadeIn} exiting={FadeOut}>
+                <AnimatedView entering={FadeIn} exiting={FadeOut}>
                     <BannerInline
                         intent="warning"
                         title={
@@ -130,7 +131,7 @@ export const DestinationTagInput = ({ networkSymbol }: DestinationTagInputProps)
                             />
                         }
                     />
-                </Animated.View>
+                </AnimatedView>
             )}
         </VStack>
     );

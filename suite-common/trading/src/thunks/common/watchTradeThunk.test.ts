@@ -1,9 +1,9 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import { type WatchExchangeTradeResponse } from 'invity-api';
 
-import { mockActionType } from '@suite-common/redux-utils/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
+import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { type WatchTradeThunkState } from './watchTradeThunk';
 import { watchTradeThunk } from './watchTradeThunk';

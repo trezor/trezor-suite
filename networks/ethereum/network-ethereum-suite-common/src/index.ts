@@ -6,6 +6,7 @@ export {
     getWrappedNativeAddress,
     getWrappedNativeSymbol,
     getWrappedNativeToken,
+    isNativeTokenWrappable,
     isWrappedNativeToken,
 } from './wrappedNativeToken';
 

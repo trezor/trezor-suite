@@ -63,7 +63,7 @@
         { "path": "../../packages/urls" },
         { "path": "../../packages/utils" },
         {
-            "path": "../../suite-common/dependency-injection"
+            "path": "../../packages/dependency-injection"
         },
         { "path": "../../packages/type-utils" }
     ]

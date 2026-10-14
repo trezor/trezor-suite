@@ -1,16 +1,18 @@
 import { openSystemSettingsThunk } from '@suite/bluetooth';
 import { Translation } from '@suite/intl';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { Modal, Paragraph } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
+
+type RemoveFromBluetoothSettingsModalProps = {
+    onCancel: () => void;
+    onGotIt: () => void;
+};
 
 export const RemoveFromBluetoothSettingsModal = ({
     onCancel,
     onGotIt,
-}: {
-    onCancel: () => void;
-    onGotIt: () => void;
-}) => {
+}: RemoveFromBluetoothSettingsModalProps) => {
     const { dispatch } = useServices(injectDispatch);
 
     const handleOpenBluetoothSettings = () => {

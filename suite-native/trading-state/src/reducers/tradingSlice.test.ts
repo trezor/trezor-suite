@@ -1,7 +1,6 @@
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { CryptoId } from 'invity-api';
 
-import { mockActionType } from '@suite-common/redux-utils/mocks';
 import {
     tradingBuyActions,
     tradingExchangeActions,
@@ -17,6 +16,7 @@ import {
     sellQuotes,
 } from '@suite-native/trading-fixtures';
 import { type ProviderConfirmationStatus, type TradingState } from '@suite-native/trading-types';
+import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { buyActions } from './buySlice';
 import { exchangeActions } from './exchangeSlice';
@@ -67,7 +67,6 @@ describe('tradingSlice', () => {
             expect(state.tradingEnvironment).toBe('dev');
             expect(state.buy).toEqual({
                 quotes: [],
-                isFromRedirect: false,
                 isLoading: false,
             });
         });
@@ -98,7 +97,6 @@ describe('tradingSlice', () => {
 
             expect(state.buy).toEqual({
                 quotes: [],
-                isFromRedirect: false,
                 isLoading: false,
             });
         });
@@ -273,6 +271,45 @@ describe('tradingSlice', () => {
             const state = actions.reduce(tradingReducer, undefined) as TradingState;
 
             expect(state.tradeOrderIdToBeOpened).toBeUndefined();
+        });
+    });
+
+    describe('formResetRequestedFor', () => {
+        it('should have undefined as initial formResetRequestedFor', () => {
+            const state = tradingReducer(undefined, { type: 'undefined_action' });
+
+            expect(state.formResetRequestedFor).toBeUndefined();
+        });
+
+        it('requestTradingFormReset should set formResetRequestedFor', () => {
+            const state = tradingReducer(
+                undefined,
+                tradingActions.requestTradingFormReset('exchange'),
+            );
+
+            expect(state.formResetRequestedFor).toBe('exchange');
+        });
+
+        it('clearTradingFormResetRequest should clear formResetRequestedFor', () => {
+            const actions = [
+                tradingActions.requestTradingFormReset('buy'),
+                tradingActions.clearTradingFormResetRequest(),
+            ];
+
+            const state = actions.reduce(tradingReducer, undefined) as TradingState;
+
+            expect(state.formResetRequestedFor).toBeUndefined();
+        });
+
+        it('setTradingEnvironment should clear formResetRequestedFor', () => {
+            const prevState: TradingState = {
+                ...tradingInitialState,
+                formResetRequestedFor: 'sell',
+            };
+
+            const state = tradingReducer(prevState, tradingActions.setTradingEnvironment('dev'));
+
+            expect(state.formResetRequestedFor).toBeUndefined();
         });
     });
 

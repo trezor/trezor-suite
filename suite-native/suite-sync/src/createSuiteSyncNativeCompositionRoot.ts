@@ -19,9 +19,9 @@ import {
     createEvoluStorageFactory,
     evoluCreateSuiteSyncOwner,
 } from '@suite-common/suite-sync-evolu';
-import { type FetchDep } from '@suite-common/suite-sync-quota-manager';
 import { type SuiteSync } from '@suite-common/suite-sync-types';
 import { type GetTrezorConnectPrivilegedDep } from '@trezor/connect';
+import { type FetchDep } from '@trezor/type-utils';
 
 type SuiteSyncNativeCompositionRootDeps = {
     getState: () => any;

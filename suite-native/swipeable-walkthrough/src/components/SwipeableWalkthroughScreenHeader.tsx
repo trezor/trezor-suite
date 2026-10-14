@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
-import Animated, { type SharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
+import { type SharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Box, IconButton } from '@suite-native/atoms';
+import { AnimatedView, Box, IconButton } from '@suite-native/atoms';
 import { ScreenHeader, useOverrideBackNavigation } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -48,7 +48,7 @@ const SwipeableWalkthroughBackButton = ({
     }));
 
     return (
-        <Animated.View style={animatedButtonStyle}>
+        <AnimatedView style={animatedButtonStyle}>
             <IconButton
                 iconName="caretLeft"
                 intent="neutral"
@@ -58,7 +58,7 @@ const SwipeableWalkthroughBackButton = ({
                 accessibilityRole="button"
                 accessibilityLabel="Go back"
             />
-        </Animated.View>
+        </AnimatedView>
     );
 };
 

@@ -5,9 +5,7 @@ const logUI = hasSwitch('log-ui');
 
 export const SERVICE_NAME = 'content';
 
-export const init: ModuleInit = ({ mainWindowProxy }) => {
-    const { logger } = global;
-
+export const init: ModuleInit = ({ logger, mainWindowProxy }) => {
     mainWindowProxy.on('init', mainWindow => {
         mainWindow.webContents.on(
             'did-fail-load',

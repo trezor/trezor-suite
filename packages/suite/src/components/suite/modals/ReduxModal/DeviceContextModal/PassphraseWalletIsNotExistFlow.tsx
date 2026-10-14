@@ -1,5 +1,3 @@
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import {
     cancelDiscoveryThunk,
@@ -7,6 +5,8 @@ import {
     startAddWalletDiscoveryThunk,
 } from '@suite-common/wallet-core';
 import { type DiscoveryStatus } from '@suite-common/wallet-types';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { EnterPassphrase } from './EnterPassphrase';
 import { PassphraseWalletBestPractices } from './PassphraseWalletBestPractices';

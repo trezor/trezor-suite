@@ -1,14 +1,12 @@
 import { type Store, combineReducers } from '@reduxjs/toolkit';
 
-import { mockActionType } from '@suite-common/redux-utils/mocks';
 import {
     type TradingCountryCode,
     type TradingCountryOption,
     type TradingCountrySubdivisionOption,
 } from '@suite-common/trading';
-import { yup } from '@suite-common/validators';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
-import { useForm } from '@suite-native/forms';
+import { useForm, yup } from '@suite-native/forms';
 import { localeReducer } from '@suite-native/intl';
 import { act } from '@suite-native/test-utils';
 import {
@@ -22,6 +20,7 @@ import {
     selectTradingResidenceCountrySubdivision,
     tradingSlice,
 } from '@suite-native/trading-state';
+import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { useCountryChangeEffect } from './useCountryChangeEffect';
 

@@ -2,10 +2,10 @@ import { useSelector } from 'react-redux';
 
 import type { ExchangeTrade } from 'invity-api';
 
-import { useServices } from '@suite-common/dependency-injection';
 import { selectTradingExchangeIsLoading } from '@suite-common/trading';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { selectGroupedExchangeQuotes } from '@suite-native/trading-state';
+import { useServices } from '@trezor/dependency-injection';
 
 import { ExchangeProviderPicker } from './ExchangeProviderPicker';
 import { useExchangeFormContext } from '../../hooks/exchange/useExchangeFormContext';

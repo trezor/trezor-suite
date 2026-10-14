@@ -3,12 +3,12 @@ import { useState } from 'react';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type Account, type TronResourceType } from '@suite-common/wallet-types';
 import { getTronResources } from '@suite-common/wallet-utils';
 import { Button, Card, Column, Icon, Row, Text, Tooltip } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { LightningIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
@@ -62,6 +62,7 @@ export const TronResourcesCard = ({ account }: TronResourcesCardProps) => {
     return (
         <Card
             paddingType="normal"
+            data-testid="@staking/tron-resources-card/container"
             header={
                 <Row gap={8} alignItems="center">
                     <Icon as={LightningIcon} size={20} />
@@ -77,6 +78,7 @@ export const TronResourcesCard = ({ account }: TronResourcesCardProps) => {
                         priority="secondary"
                         onClick={goToFreeze}
                         isDisabled={isStakingDisabled}
+                        data-testid="@staking/tron-resources-card/get-more-button"
                     >
                         <Translation id="TR_EARN_TRON_GET_MORE" />
                     </Button>
@@ -87,6 +89,7 @@ export const TronResourcesCard = ({ account }: TronResourcesCardProps) => {
                 <TronResourceRow
                     label="TR_TRON_BANDWIDTH"
                     tooltip="TR_TRON_BANDWIDTH_TOOLTIP"
+                    data-testid="@staking/tron-resources-card/bandwidth"
                     available={bandwidthAvailable}
                     total={bandwidthTotal}
                     onClick={() => setOpenResource('bandwidth')}
@@ -94,6 +97,7 @@ export const TronResourcesCard = ({ account }: TronResourcesCardProps) => {
                 <TronResourceRow
                     label="TR_TRON_ENERGY"
                     tooltip="TR_TRON_ENERGY_TOOLTIP"
+                    data-testid="@staking/tron-resources-card/energy"
                     available={energyAvailable}
                     total={energyTotal}
                     onClick={() => setOpenResource('energy')}

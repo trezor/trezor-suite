@@ -15,7 +15,6 @@ import {
     mockGetDebugSettings,
     mockGetThpSettings,
 } from '@suite-common/connect-init/mocks';
-import { mock } from '@suite-common/dependency-injection';
 import {
     type DeviceReducerState,
     acquireDeviceThunk,
@@ -29,8 +28,6 @@ import { firmwareInitialState } from '@suite-common/firmware';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { type FetchAndSaveMetadataDep } from '@suite-common/metadata-types';
 import { mockFetchAndSaveMetadata } from '@suite-common/metadata-types/mocks';
-import { type WithServices } from '@suite-common/redux-utils';
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { type LockDevice } from '@suite-common/suite-types';
 import {
     mockGetAllowPrerelease,
@@ -49,7 +46,10 @@ import {
 } from '@suite-common/wallet-core';
 import { type GetTradedAccountKeysDep } from '@suite-common/wallet-types';
 import { mockGetTradedAccountKeys } from '@suite-common/wallet-types/mocks';
-import { noopCreateLogger } from '@trezor/connect-common';
+import { mock } from '@trezor/dependency-injection';
+import { noopCreateLogger } from '@trezor/logger';
+import { type WithServices } from '@trezor/redux-utils';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { markDeviceAsRecentlyConnectedThunk } from 'src/actions/wallet/markDeviceAsRecentlyConnectedThunk';
 import suiteReducer, {

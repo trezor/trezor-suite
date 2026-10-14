@@ -3,10 +3,7 @@ import { type ReactNode, useEffect, useState } from 'react';
 import { selectHasSeenDisconnectTooltip, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { SettingsAnchor, gotoThunk } from '@suite/router';
-import { useServices } from '@suite-common/dependency-injection';
 import { selectSelectedDevice } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
-import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import * as deviceUtils from '@suite-common/suite-utils';
 import {
     Button,
@@ -18,8 +15,11 @@ import {
     Row,
     Tooltip,
 } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
+import { DEFAULT_FLAGSHIP_MODEL } from '@trezor/device';
 import { EjectIcon } from '@trezor/icons';
 import { mapTrezorModelToIcon } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import {
     addDeviceIdToSeenDisconnectNotification,
@@ -39,7 +39,9 @@ type DeviceItemProps = {
     onCancel?: ForegroundAppProps['onCancel'];
 };
 
-const ListItem = ({ children, icon }: { children: ReactNode; icon: IconComponent }) => (
+type ListItemProps = { children: ReactNode; icon: IconComponent };
+
+const ListItem = ({ children, icon }: ListItemProps) => (
     <List.Item bulletComponent={<Icon as={icon} intent="neutral" priority="secondary" size={20} />}>
         <Paragraph
             typographyStyle="body-md"

@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useRef } from 'react';
-import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated';
+import { FadeInDown, FadeOutDown } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
 import { useFocusEffect } from '@react-navigation/native';
 
 import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { AccountDetailsCard } from '@suite-native/accounts';
-import { BannerInline, Box } from '@suite-native/atoms';
+import { AnimatedView, BannerInline, Box } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -25,6 +25,10 @@ import { SendOutputsScreenFooter } from '../components/SendOutputsScreenFooter';
 import { useSendForm } from '../hooks/useSendForm';
 import { useShowDeviceDisconnectedAlert } from '../hooks/useShowDeviceDisconnectedAlert';
 import { useUtxoSelection } from '../hooks/useUtxoSelection';
+import {
+    type CardanoTokenSendRootState,
+    selectIsCardanoTokenSendAdaInsufficient,
+} from '../selectors';
 import { getOutputFieldName } from '../utils';
 
 export const SendOutputsScreen = ({
@@ -36,6 +40,9 @@ export const SendOutputsScreen = ({
     const sendForm = useSendForm(accountKey, tokenContract);
     const { totalSelectedAmount, selectedUtxos } = useUtxoSelection(accountKey);
     const feeLevels = useSelector(selectFeeLevels);
+    const isCardanoTokenSendAdaInsufficient = useSelector((state: CardanoTokenSendRootState) =>
+        selectIsCardanoTokenSendAdaInsufficient(state, accountKey, tokenContract),
+    );
 
     const isFeeReady = isFinalPrecomposedTransaction(feeLevels.normal);
     const showDeviceDisconnectedAlert = useShowDeviceDisconnectedAlert();
@@ -109,17 +116,17 @@ export const SendOutputsScreen = ({
                 <SendFeeSection
                     accountKey={accountKey}
                     tokenContract={tokenContract}
-                    isFormValid={isValid}
+                    isFormValid={isValid && !isCardanoTokenSendAdaInsufficient}
                 />
                 {isMissingUtxos ? (
-                    <Animated.View entering={FadeInDown} exiting={FadeOutDown}>
+                    <AnimatedView entering={FadeInDown} exiting={FadeOutDown}>
                         <Box padding="sp16">
                             <BannerInline
                                 intent="warning"
                                 title={<Translation id="moduleSend.coinControl.notEnoughCoins" />}
                             />
                         </Box>
-                    </Animated.View>
+                    </AnimatedView>
                 ) : (
                     isValid &&
                     isFeeReady &&

@@ -1,6 +1,6 @@
-import { useServices } from '@suite-common/dependency-injection';
 import { type NetworkSymbol, injectGetNamedAddressSupport } from '@suite-common/networks';
 import { useQuery } from '@suite-common/react-query';
+import { useServices } from '@trezor/dependency-injection';
 import { useDebouncedValue } from '@trezor/react-utils';
 
 import { getResolveMode, getResolveNamedAddressQueryOptions } from './namedAddressQuery';

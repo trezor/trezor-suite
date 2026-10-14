@@ -11,11 +11,7 @@ export default class SolanaGetAddress extends AbstractMiscGetAddress<'solanaGetA
     }
 
     get info() {
-        return this.getInfo('Solana', false);
-    }
-
-    get confirmation() {
-        return this.getConfirmation('Solana');
+        return this.getInfo('Solana');
     }
 
     async _call({ proto }: MiscGetAddressParams) {

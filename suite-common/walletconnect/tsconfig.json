@@ -8,12 +8,10 @@
         { "path": "../device" },
         { "path": "../mev" },
         { "path": "../networks" },
-        { "path": "../redux-utils" },
         { "path": "../suite-types" },
         { "path": "../suite-utils" },
         { "path": "../toast-notifications" },
         { "path": "../wallet-config" },
-        { "path": "../wallet-constants" },
         { "path": "../wallet-core" },
         { "path": "../wallet-types" },
         { "path": "../wallet-utils" },
@@ -26,6 +24,7 @@
         {
             "path": "../../networks/stellar/network-stellar"
         },
+        { "path": "../../packages/redux-utils" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }
     ]

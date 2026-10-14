@@ -1,4 +1,3 @@
-import { createThunk } from '@suite-common/redux-utils';
 import { BITCOIN_ONLY_SYMBOLS } from '@suite-common/suite-constants';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { BTC_LOCKTIME_SEQUENCE, BTC_RBF_SEQUENCE } from '@suite-common/wallet-constants';
@@ -13,6 +12,7 @@ import {
     datetimeToLocktime,
     formatNetworkAmount,
     getBitcoinComposeOutputs,
+    getUnusedChangeAddress,
     getUtxoOutpoint,
     hasNetworkFeatures,
     isRbfBumpFeeTransaction,
@@ -27,6 +27,7 @@ import TrezorConnect, {
     type SignedTransaction,
 } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
+import { createThunk } from '@trezor/redux-utils';
 import { BigNumber, isArrayMember } from '@trezor/utils';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
@@ -118,15 +119,16 @@ export const composeBitcoinTransactionFeeLevelsThunk = createThunk<
             ? account.addresses.change.filter(a => !prison[a.address])
             : account.addresses.change;
 
+        // in case of RBF use the given change address
+        const rbfChangeAddress =
+            formState.rbfParams?.type === 'bitcoin' ? formState.rbfParams.changeAddress : undefined;
+
+        const changeAddress = rbfChangeAddress ?? getUnusedChangeAddress(changeAddresses);
+
         const params: Parameters<typeof TrezorConnect.composeTransaction>[0] = {
-            account: {
-                path: account.path,
-                addresses: {
-                    ...account.addresses,
-                    change: changeAddresses,
-                },
-                utxo,
-            },
+            path: account.path,
+            utxo,
+            changeAddress,
             feeLevels: predefinedLevels,
             baseFee: formState.baseFee,
             sequence,

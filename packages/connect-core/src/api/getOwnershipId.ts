@@ -58,14 +58,9 @@ export default class GetOwnershipId extends AbstractMethod<
     }
 
     get info() {
-        return 'Export ownership id';
-    }
-
-    get confirmation() {
-        return {
-            view: 'export-address' as const,
-            label: this.params.length > 1 ? 'Export multiple ownership proof ids' : this.info,
-        };
+        return this.params.length > 1
+            ? 'Export multiple ownership proof ids'
+            : 'Export ownership id';
     }
 
     async run({ sendCoreMessage }: MethodContext) {

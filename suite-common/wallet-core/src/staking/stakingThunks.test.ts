@@ -53,13 +53,15 @@ const validationError = {
     message: 'Invalid response shape',
 } satisfies StakingBatchErrorsItem;
 
+type InitStoreParams = {
+    enabledNetworks?: NetworkSymbol[];
+    stake?: StakeState;
+};
+
 const initStore = ({
     enabledNetworks = [ethSymbol, solSymbol, adaSymbol, trxSymbol],
     stake = stakeInitialState,
-}: {
-    enabledNetworks?: NetworkSymbol[];
-    stake?: StakeState;
-} = {}) =>
+}: InitStoreParams = {}) =>
     createTestCompositionRoot<void, InitStakeDataThunkState>({
         preloadedState: {
             wallet: {

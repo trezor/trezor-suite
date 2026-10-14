@@ -5,6 +5,13 @@ export type LayoutContextPayload = {
     title?: string;
     layoutHeader?: React.ReactNode;
     layoutFooter?: React.ReactNode;
+    /**
+     * Hands the whole content area to the page: no max width, no padding and no scrolling, so the
+     * page owns a region whose size follows the window. Needed by anything painted outside the DOM
+     * — the desktop `WebContentsView` embedding host has to be told where to sit, and it can only
+     * follow a region that never scrolls out from under it.
+     */
+    isContentStatic?: boolean;
 };
 
 /**

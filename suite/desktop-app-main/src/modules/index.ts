@@ -96,7 +96,7 @@ const initModulesInner = <
     background: B,
     modules: T,
 ) => {
-    const { logger } = global;
+    const { logger } = dependencies;
 
     logger.info(
         'modules',

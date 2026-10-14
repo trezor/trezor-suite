@@ -1,6 +1,6 @@
 import type { UnknownAction } from '@reduxjs/toolkit';
 
-import { mock } from '@suite-common/dependency-injection';
+import { mock } from '@trezor/dependency-injection';
 
 import { setSuiteSyncRelayUrl } from '../suiteSyncSlice';
 import { type ChangeRelayUrlDeps, createChangeRelayUrl } from './createChangeRelayUrl';

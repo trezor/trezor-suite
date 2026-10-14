@@ -5,13 +5,13 @@ import { type LocksState, locksReducer } from '@suite/locks';
 import { type MessageSystemState, prepareMessageSystemReducer } from '@suite-common/message-system';
 import { type NetworksState } from '@suite-common/networks';
 import { mockNetworksState } from '@suite-common/networks/mocks';
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot, initPreloadedState, testMocks } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsState, prepareAccountsReducer } from '@suite-common/wallet-core';
 import { mockSetAccountAddMetadata } from '@suite-common/wallet-core/mocks';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import * as fixtures from './__fixtures__/coinjoinAccountActions';
 import * as coinjoinAccountActions from './coinjoinAccountActions';

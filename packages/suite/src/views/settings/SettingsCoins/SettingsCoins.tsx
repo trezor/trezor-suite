@@ -10,9 +10,7 @@ import { Translation } from '@suite/intl';
 import { ContextMessage } from '@suite/message-system';
 import { openModal } from '@suite/modal';
 import { selectIsTestnetNetworksEnabled } from '@suite/settings';
-import { useServices } from '@suite-common/dependency-injection';
 import { Context } from '@suite-common/message-system';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     changeCoinVisibilityThunk,
@@ -22,9 +20,11 @@ import {
     startOrRestartDiscoveryThunk,
 } from '@suite-common/wallet-core';
 import { Box, Button, Column, Switch, Text, Tooltip, motionEasing } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
 import { CoinIcon } from '@trezor/icons';
 import { SettingsSection } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 import { breakpoints } from '@trezor/theme';
 
 import { SettingsLayout } from 'src/components/settings/SettingsLayout';
@@ -150,13 +150,12 @@ export const SettingsCoins = () => {
         dispatch(openModal({ type: 'advanced-coin-settings', symbol }));
     };
 
-    const renderRightContent = ({
-        networkSymbol,
-        isEnabled,
-    }: {
+    type RenderRightContentParams = {
         networkSymbol: NetworkSymbol;
         isEnabled: boolean;
-    }) => (
+    };
+
+    const renderRightContent = ({ networkSymbol, isEnabled }: RenderRightContentParams) => (
         <Switch
             size="medium"
             isChecked={isEnabled}

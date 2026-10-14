@@ -6,10 +6,8 @@ import { b2t } from '../libs/utils';
 
 export const SERVICE_NAME = 'menu';
 
-export const init: ModuleInit = ({ mainWindowProxy }) => {
-    const { logger } = global;
-
-    Menu.setApplicationMenu(buildMainMenu(mainWindowProxy));
+export const init: ModuleInit = ({ mainWindowProxy, logger }) => {
+    Menu.setApplicationMenu(buildMainMenu({ mainWindowProxy, logger }));
     mainWindowProxy.on('init', mainWindow => {
         mainWindow.setMenuBarVisibility(false);
 

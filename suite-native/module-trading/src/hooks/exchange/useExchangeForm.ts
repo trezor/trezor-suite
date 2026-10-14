@@ -3,8 +3,6 @@ import { useSelector } from 'react-redux';
 
 import type { ExchangeTrade } from 'invity-api';
 
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type TradingExchangeAmountLimitProps,
     exchangeThunks,
@@ -27,8 +25,13 @@ import {
     selectGroupedExchangeQuotes,
 } from '@suite-native/trading-state';
 import type { ExchangeFormType, ExchangeFormValues } from '@suite-native/trading-types';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
+import { useBitcoinExchangeMaxSpendableAmount } from './useBitcoinExchangeMaxSpendableAmount';
 import { exchangeFormValidationSchema } from '../../utils/exchange/exchangeFormValidationSchema';
+import { setExchangeSendCryptoAmount } from '../../utils/exchange/exchangeSendAmountUtils';
+import { type TradingFormWithMetadata } from '../general/form/tradingFormTypes';
 import { useContextForTradingForm } from '../general/form/useContextForTradingForm';
 import { useProviderMetadataChangeEffect } from '../general/form/useProviderMetadataChangeEffect';
 import { useReceiveAccountChangeEffect } from '../general/form/useReceiveAccountChangeEffect';
@@ -218,16 +221,20 @@ const useValidations = ({
     }, [generalAlertMsg, setValue]);
 };
 
-export const useExchangeForm = () => {
+export const useExchangeForm = (): TradingFormWithMetadata<ExchangeFormType> => {
     const limits = useSelector(selectExchangeAmountLimits);
     const {
-        context,
+        context: tradingFormContext,
         setBalance,
         setSendNetworkSymbol,
         setSendAssetSymbol,
         setContractAddress,
         setAccountKey,
     } = useContextForTradingForm(limits);
+    const maxSpendableAmount = useBitcoinExchangeMaxSpendableAmount(
+        tradingFormContext.maxSpendableAmount,
+    );
+    const context = { ...tradingFormContext, maxSpendableAmount };
 
     const form = useForm<ExchangeFormValues>({
         validation: exchangeFormValidationSchema,
@@ -238,7 +245,7 @@ export const useExchangeForm = () => {
     const receiveAsset = useWatch({ control, name: 'receiveAsset' });
 
     const onSendAssetCleared = useCallback(() => {
-        setValue('sendCryptoAmount', undefined, { shouldValidate: true });
+        setExchangeSendCryptoAmount(setValue, undefined);
         dispatch(exchangeActions.sendAssetChanged());
     }, [dispatch, setValue]);
 
@@ -269,12 +276,5 @@ export const useExchangeForm = () => {
     });
     useProviderMetadataChangeEffect(control, 'exchange');
 
-    return form;
-};
-
-export const clearExchangeFormQuoteData = (form: ExchangeFormType) => {
-    form.setValue('quote', undefined);
-    form.setValue('sendCryptoAmount', undefined, { shouldValidate: true });
-    form.setValue('receiveCryptoAmount', undefined, { shouldValidate: true });
-    form.setValue('generalAlert', undefined);
+    return { ...form, metadata: { maxSpendableAmount: context.maxSpendableAmount } };
 };

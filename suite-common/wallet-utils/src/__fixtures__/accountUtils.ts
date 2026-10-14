@@ -1,8 +1,12 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { CARDANO_EVERSTAKE_DREP } from '@suite-common/wallet-constants';
-import type { AccountWithNetworkType } from '@suite-common/wallet-types';
-import { mockWalletAccount, networkSpecificDefaultCardano } from '@suite-common/wallet-types/mocks';
-import type { AccountInfo } from '@trezor/connect';
+import type { Account, AccountWithNetworkType } from '@suite-common/wallet-types';
+import {
+    mockAccountToken,
+    mockWalletAccount,
+    networkSpecificDefaultCardano,
+} from '@suite-common/wallet-types/mocks';
+import type { AccountInfo, TokenInfo } from '@trezor/connect';
 import type { Bip43Path, Bip43PathTemplate } from '@trezor/crypto-utils';
 
 export const sortByCoin = [
@@ -482,12 +486,182 @@ const drepCases: {
     },
 ];
 
-export const isAccountOutdated = drepCases.map(({ description, stored, fresh, result }) => ({
-    description: `cardano: ${description}`,
-    account: {
+const cardanoAccount = (stakingOverride: CardanoStaking) =>
+    ({
         ...mockWalletAccount({ symbol: asNetworkSymbol('ada'), history }),
-        misc: { staking: staking(stored) },
-    } as AccountWithNetworkType<'cardano'>,
-    freshInfo: { history, misc: { staking: staking(fresh) } } as AccountInfo,
-    result,
-}));
+        misc: { staking: stakingOverride },
+    }) as AccountWithNetworkType<'cardano'>;
+
+const delegatedStaking: CardanoStaking = {
+    address: 'stake1uxzutrtmxwv2rf2j3hdpps66ch0jydmkr58vwgnetddcdwg32u4rc',
+    isActive: true,
+    rewards: '173289',
+    poolId: 'pool1pu5jlj4q9w9jlxeu370a3c9myx47md5j5m2str0naunn2q3lkdy',
+    drep,
+};
+
+const cardanoOutdatedCases = [
+    ...drepCases.map(({ description, stored, fresh, result }) => ({
+        description: `cardano: ${description}`,
+        account: cardanoAccount(staking(stored)),
+        freshInfo: { history, misc: { staking: staking(fresh) } } as AccountInfo,
+        result,
+    })),
+    {
+        description: 'cardano: fresh info without a staking block leaves a delegated account as is',
+        account: cardanoAccount(delegatedStaking),
+        freshInfo: { history, misc: undefined } as AccountInfo,
+        result: false,
+    },
+    {
+        description: 'cardano: fresh info without a staking block still reacts to new transactions',
+        account: cardanoAccount(delegatedStaking),
+        freshInfo: { history: { ...history, total: history.total + 1 } } as AccountInfo,
+        result: true,
+    },
+];
+
+const notDelegatedStaking: CardanoStaking = {
+    address: '',
+    isActive: false,
+    rewards: '0',
+    poolId: null,
+    drep: null,
+};
+
+const cardanoPage = { index: 1, size: 25, total: 1 };
+
+const cardanoSpecific = (stakingResult: CardanoStaking, page?: AccountInfo['page']) => ({
+    networkType: 'cardano' as const,
+    misc: { staking: stakingResult },
+    marker: undefined,
+    stellarCursor: undefined,
+    page,
+});
+
+export const getAccountSpecific: {
+    description: string;
+    params: {
+        accountInfo: Partial<AccountInfo>;
+        networkType: 'cardano';
+        storedAccount?: Account;
+    };
+    result: ReturnType<typeof cardanoSpecific>;
+}[] = [
+    {
+        description: 'cardano: takes the staking block of the fresh info over the stored one',
+        params: {
+            accountInfo: { misc: { staking: staking(null) }, page: cardanoPage },
+            networkType: 'cardano',
+            storedAccount: cardanoAccount(delegatedStaking),
+        },
+        result: cardanoSpecific(staking(null), cardanoPage),
+    },
+    {
+        description: 'cardano: keeps the stored staking block when the fresh info has none',
+        params: {
+            accountInfo: { page: cardanoPage },
+            networkType: 'cardano',
+            storedAccount: cardanoAccount(delegatedStaking),
+        },
+        result: cardanoSpecific(delegatedStaking, cardanoPage),
+    },
+    {
+        description: 'cardano: defaults to not staking when nothing is known',
+        params: {
+            accountInfo: {},
+            networkType: 'cardano',
+        },
+        result: cardanoSpecific(notDelegatedStaking),
+    },
+    {
+        description: 'cardano: ignores a stored account of another network',
+        params: {
+            accountInfo: {},
+            networkType: 'cardano',
+            storedAccount: mockWalletAccount({ symbol: asNetworkSymbol('btc') }),
+        },
+        result: cardanoSpecific(notDelegatedStaking),
+    },
+];
+
+const USDC_CONTRACT = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+const usdcInfo = (balance: string): TokenInfo => ({
+    standard: 'ERC20',
+    contract: USDC_CONTRACT,
+    balance,
+    name: 'USD Coin',
+    symbol: 'USDC',
+    decimals: 6,
+});
+const storedUsdc = (balance: string) =>
+    mockAccountToken({ contract: USDC_CONTRACT, symbol: 'USDC', decimals: 6, balance });
+
+// The count covers only the scanned window, so an unchanged count on both sides leaves the token
+// list as the one thing that can give a token transfer away.
+const evmRpcHistory = { total: 3, unconfirmed: 0 };
+const unscannedHistory = { total: -1, unconfirmed: 0 };
+const evmAccount = (
+    backendType: 'blockbook' | 'evm-rpc',
+    tokens: AccountWithNetworkType<'ethereum'>['tokens'],
+    accountHistory = evmRpcHistory,
+) =>
+    ({
+        ...mockWalletAccount({
+            symbol: asNetworkSymbol('eth'),
+            balance: '0',
+            history: accountHistory,
+            tokens,
+        }),
+        misc: { nonce: '0' },
+        backendType,
+    }) as AccountWithNetworkType<'ethereum'>;
+const evmFreshInfo = (tokens: TokenInfo[] | undefined, freshHistory = evmRpcHistory) =>
+    ({ balance: '0', history: freshHistory, misc: { nonce: '0' }, tokens }) as AccountInfo;
+
+const evmTokenCases = [
+    {
+        description: 'direct rpc: a token the account did not have',
+        account: evmAccount('evm-rpc', []),
+        freshInfo: evmFreshInfo([usdcInfo('500')]),
+        result: true,
+    },
+    {
+        description: 'direct rpc: same token, same balance',
+        account: evmAccount('evm-rpc', [storedUsdc('0.0005')]),
+        freshInfo: evmFreshInfo([usdcInfo('500')]),
+        result: false,
+    },
+    {
+        description: 'direct rpc: token balance moved',
+        account: evmAccount('evm-rpc', [storedUsdc('0.0005')]),
+        freshInfo: evmFreshInfo([usdcInfo('700')]),
+        result: true,
+    },
+    {
+        description: 'direct rpc: held token no longer reported',
+        account: evmAccount('evm-rpc', [storedUsdc('0.0005')]),
+        freshInfo: evmFreshInfo(undefined),
+        result: true,
+    },
+    {
+        description: 'direct rpc: hand-added token at zero is not reported back',
+        account: evmAccount('evm-rpc', [storedUsdc('0')]),
+        freshInfo: evmFreshInfo(undefined),
+        result: false,
+    },
+    {
+        description: 'direct rpc: history never scanned, so its transactions were never fetched',
+        account: evmAccount('evm-rpc', [], unscannedHistory),
+        freshInfo: evmFreshInfo(undefined, unscannedHistory),
+        result: true,
+    },
+    {
+        description: 'blockbook: token list is not compared',
+        account: evmAccount('blockbook', []),
+        freshInfo: evmFreshInfo([usdcInfo('500')]),
+        result: false,
+    },
+];
+
+export const isAccountOutdated = [...cardanoOutdatedCases, ...evmTokenCases];

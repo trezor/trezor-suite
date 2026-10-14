@@ -17,7 +17,9 @@ import { isArrayMember } from '@trezor/utils';
 import { BaseCurrencyValue, HiddenPlaceholder } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 
-const FiatValueRenderComponent = ({ value }: { value: JSX.Element | null }) => {
+type FiatValueRenderComponentProps = { value: JSX.Element | null };
+
+const FiatValueRenderComponent = ({ value }: FiatValueRenderComponentProps) => {
     const discreetMode = useSelector(selectIsDiscreteModeActive);
     if (discreetMode || value === null) return value;
 

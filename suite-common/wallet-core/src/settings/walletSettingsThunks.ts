@@ -1,10 +1,10 @@
 import { type Dispatch } from '@reduxjs/toolkit';
 
 import { type NetworksRootState, selectSupportedNetworkSymbols } from '@suite-common/networks';
-import { createThunk } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import TrezorConnect, { PROTO } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
+import { createThunk } from '@trezor/redux-utils';
 
 import {
     changeCoinVisibilityEvent,

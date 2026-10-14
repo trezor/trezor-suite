@@ -2,7 +2,6 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../dependency-injection" },
         { "path": "../metadata-types" },
         { "path": "../platform-encryption" },
         { "path": "../suite-config" },
@@ -11,6 +10,9 @@
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/connect-common"
+        },
+        {
+            "path": "../../packages/dependency-injection"
         },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/protocol" },

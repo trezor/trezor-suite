@@ -4,8 +4,6 @@ import { useSelector } from 'react-redux';
 
 import { FlashList } from '@shopify/flash-list';
 
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import {
     type AccountsRootState,
@@ -13,13 +11,20 @@ import {
     fetchAndUpdateAccountThunk,
     fetchTransactionsPageThunk,
     selectAccountTransactionsFetchStatus,
+    selectAccountTransactionsWithNulls,
     selectAreAllAccountTransactionsLoaded,
     selectIsPageAlreadyFetched,
+    useDirectRpcHistoryState,
 } from '@suite-common/wallet-core';
 import { type Account, type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { type MonthKey, groupTransactionsByDate, isPending } from '@suite-common/wallet-utils';
-import { Box } from '@suite-native/atoms';
-import { useScrollDivider } from '@suite-native/scrollview';
+import {
+    type MonthKey,
+    getHistoryCoveredSince,
+    getOlderHistoryFrom,
+    groupTransactionsByDate,
+    isPending,
+} from '@suite-common/wallet-utils';
+import { Box, ListItemSkeleton, VStack, useScrollDivider } from '@suite-native/atoms';
 import {
     type TokensRootState,
     type TypedTokenTransfer,
@@ -28,16 +33,19 @@ import {
     selectAccountTransactionsWithTokenTransfers,
     selectAccountYieldTypeTransactionsWithTokenTransfers,
 } from '@suite-native/tokens';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { arrayPartition } from '@trezor/utils';
 
+import { OlderHistoryStatus } from './OlderHistoryStatus';
 import { TokenTransferListItem } from './TokenTransferListItem';
 import { TransactionListGroupTitle } from './TransactionListGroupTitle';
 import { TransactionListItem } from './TransactionListItem';
 import { TransactionsEmptyState } from './TransactionsEmptyState';
 import { TransactionsListFooter } from './TransactionsListFooter';
 import { useFetchMissingTransactionFiatRates } from '../hooks/useFetchMissingTransactionFiatRates';
-import { getNextRequestedTransactionCount } from '../utils';
+import { getNextRequestedTransactionCount, getOlderHistoryPage } from '../utils';
 
 type RenderSectionHeaderParams = {
     section: {
@@ -126,7 +134,7 @@ const renderSectionHeader = ({ section: { monthKey } }: RenderSectionHeaderParam
 
 type AccountTransactionProps = {
     listHeaderComponent: JSX.Element;
-    listEmptyComponent?: JSX.Element;
+    renderListEmptyComponent?: (state: { isRecentWindowEmpty: boolean }) => JSX.Element;
     account: Account;
     tokenContract?: TokenAddress;
     filter?: 'all' | 'staking' | 'yield';
@@ -134,7 +142,7 @@ type AccountTransactionProps = {
 
 export const TransactionList = ({
     listHeaderComponent,
-    listEmptyComponent,
+    renderListEmptyComponent,
     account,
     tokenContract,
     filter = 'all',
@@ -153,6 +161,7 @@ export const TransactionList = ({
             selectAccountTransactionsFetchStatus(state, accountKey)?.status,
     );
     const isLoadingTransactions = fetchStatus === 'loading';
+    const directRpcHistoryState = useDirectRpcHistoryState(accountKey);
     const areAllTransactionsLoaded = useSelector(
         (state: TransactionsRootState & AccountsRootState) =>
             selectAreAllAccountTransactionsLoaded(state, accountKey),
@@ -183,6 +192,7 @@ export const TransactionList = ({
     // Page 1 is requested separately until its initial fetch succeeds.
     const initialPageNumber = Math.max(1, Math.floor(transactions.length / txnsPerPage));
     const [page, setPage] = useState(initialPageNumber);
+    const [hasLoadingOlderFailed, setHasLoadingOlderFailed] = useState(false);
     const isFetchingPageRef = useRef(false);
     // The loader and footer must agree when history ends, even if cached counts differ.
     const hasMoreTransactions =
@@ -190,33 +200,53 @@ export const TransactionList = ({
         (!tokenContract || page < Math.ceil(account.history.total / txnsPerPage));
     const shouldDeferEmptyState =
         (!!tokenContract || filter === 'staking' || filter === 'yield') && hasMoreTransactions;
+    // Direct-RPC history ends at the scanned window, not the first transaction. Reaching past it is
+    // left to the button, as auto-fill would keep scanning back for a token with no transfers.
+    const olderHistoryFrom =
+        isInitialPageLoaded && !hasMoreTransactions ? getOlderHistoryFrom(account) : undefined;
+    const loadedTransactionCount = useSelector(
+        (state: TransactionsRootState) =>
+            selectAccountTransactionsWithNulls(state, accountKey).length,
+    );
 
     const { scrollDivider, handleScroll } = useScrollDivider();
 
-    const handleOnLoadMore = useCallback(async () => {
-        // Initial loading, the button, and auto-fill share this lock before React rerenders.
-        if (isFetchingPageRef.current) return;
-        isFetchingPageRef.current = true;
-        const requestedPage = isInitialPageLoaded ? page + 1 : 1;
+    const fetchPage = useCallback(
+        async (requestedPage: number, from?: number) => {
+            // Initial loading, the button, and auto-fill share this lock before React rerenders.
+            if (isFetchingPageRef.current) return;
+            isFetchingPageRef.current = true;
 
-        try {
-            await dispatch(
-                fetchTransactionsPageThunk({
-                    accountKey,
-                    page: requestedPage,
-                    perPage: txnsPerPage,
-                }),
-            ).unwrap();
-            // Record the page this request fetched, rather than incrementing potentially newer state.
-            setPage(requestedPage);
-            // A successful partial page also unlocks pagination; shared idle status does not.
-            setIsInitialPageLoaded(true);
-        } catch {
-            // TODO handle error state (show retry button or something
-        } finally {
-            isFetchingPageRef.current = false;
-        }
-    }, [dispatch, accountKey, page, txnsPerPage, isInitialPageLoaded]);
+            try {
+                await dispatch(
+                    fetchTransactionsPageThunk({
+                        accountKey,
+                        page: requestedPage,
+                        perPage: txnsPerPage,
+                        // A widened window changes what the page holds, so a cached copy is stale.
+                        forceRefetch: from !== undefined,
+                        from,
+                    }),
+                ).unwrap();
+                // Record the page this request fetched, rather than incrementing potentially newer state.
+                setPage(requestedPage);
+                // A successful partial page also unlocks pagination; shared idle status does not.
+                setIsInitialPageLoaded(true);
+                setHasLoadingOlderFailed(false);
+            } catch {
+                // Only a step back has a place to show its failure; a failed page keeps the list as it is.
+                setHasLoadingOlderFailed(from !== undefined);
+            } finally {
+                isFetchingPageRef.current = false;
+            }
+        },
+        [dispatch, accountKey, txnsPerPage],
+    );
+
+    const handleOnLoadMore = useCallback(
+        () => fetchPage(isInitialPageLoaded ? page + 1 : 1),
+        [fetchPage, isInitialPageLoaded, page],
+    );
 
     useEffect(() => {
         if (!isInitialPageLoaded) {
@@ -291,6 +321,9 @@ export const TransactionList = ({
     }, [transactions, tokenContract]);
 
     const visibleTransactionCount = data.filter(item => typeof item !== 'string').length;
+    const hasInitialScanFailed = directRpcHistoryState === 'unscanned' && fetchStatus === 'error';
+    const isHistoryUnscanned = directRpcHistoryState === 'unscanned' && !hasInitialScanFailed;
+    const historyCoveredSince = getHistoryCoveredSince(account);
     const [requestedVisibleCount, setRequestedVisibleCount] = useState<number>(txnsPerPage);
     const shouldLoadMoreTokenTransactions =
         !!tokenContract &&
@@ -316,10 +349,40 @@ export const TransactionList = ({
                 }),
             );
         }
-        handleOnLoadMore();
+        if (olderHistoryFrom !== undefined) {
+            fetchPage(getOlderHistoryPage(loadedTransactionCount, txnsPerPage), olderHistoryFrom);
+        } else {
+            handleOnLoadMore();
+        }
     };
 
     useFetchMissingTransactionFiatRates({ accountKey, isEnabled: data.length > 0 });
+
+    const getListEmptyComponent = () => {
+        if (isHistoryUnscanned) {
+            return (
+                <VStack spacing="sp8">
+                    <ListItemSkeleton />
+                    <ListItemSkeleton />
+                    <ListItemSkeleton />
+                </VStack>
+            );
+        }
+
+        if (shouldDeferEmptyState) {
+            return null;
+        }
+
+        // The list is empty here, so a reachable older window is what sets this apart from an
+        // account (or token) without any transactions.
+        const isRecentWindowEmpty = olderHistoryFrom !== undefined;
+
+        return (
+            renderListEmptyComponent?.({ isRecentWindowEmpty }) ?? (
+                <TransactionsEmptyState isRecentWindowEmpty={isRecentWindowEmpty} />
+            )
+        );
+    };
 
     const renderItem = useCallback(
         ({ item, index }: { item: TransactionListItem; index: number }) => {
@@ -362,18 +425,30 @@ export const TransactionList = ({
                 data={data}
                 renderItem={renderItem}
                 contentContainerStyle={applyStyle(sectionListContainerStyle)}
-                ListEmptyComponent={
-                    shouldDeferEmptyState
-                        ? null
-                        : (listEmptyComponent ?? <TransactionsEmptyState />)
-                }
+                ListEmptyComponent={getListEmptyComponent()}
                 ListHeaderComponent={listHeaderComponent}
                 ListFooterComponent={
                     <TransactionsListFooter
-                        hasMoreTransactions={hasMoreTransactions}
-                        isLoading={isLoadingTransactions || shouldLoadMoreTokenTransactions}
+                        hasMoreTransactions={
+                            hasMoreTransactions ||
+                            olderHistoryFrom !== undefined ||
+                            hasInitialScanFailed
+                        }
+                        isOlderHistory={olderHistoryFrom !== undefined}
+                        // The skeleton stands in for the loader until the first scan is done.
+                        isLoading={
+                            !isHistoryUnscanned &&
+                            (isLoadingTransactions || shouldLoadMoreTokenTransactions)
+                        }
                         onButtonPress={handleOnLoadMorePress}
-                    />
+                    >
+                        {(olderHistoryFrom !== undefined || hasInitialScanFailed) && (
+                            <OlderHistoryStatus
+                                historyCoveredSince={historyCoveredSince}
+                                hasLoadingFailed={hasLoadingOlderFailed || hasInitialScanFailed}
+                            />
+                        )}
+                    </TransactionsListFooter>
                 }
                 ListFooterComponentStyle={applyStyle(listFooterStyle)}
                 refreshControl={

@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { type Network, type ServerType } from '@suite-common/wallet-config';
+import { getDefaultBackendType } from '@suite-common/wallet-utils';
 import { Select } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 
@@ -47,7 +48,10 @@ const useBackendOptions = (network: Network, isDebugModeActive: boolean) => {
                         case 'electrum':
                             return isDesktop();
                         case 'evm-rpc':
-                            return isDebugModeActive;
+                            return (
+                                isDebugModeActive ||
+                                getDefaultBackendType(network.symbol) === 'evm-rpc'
+                            );
                         default:
                             return true;
                     }

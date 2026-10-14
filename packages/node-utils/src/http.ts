@@ -86,6 +86,19 @@ type BaseEvents = {
     'server/error': string;
 };
 
+type StartResult =
+    | { success: true; payload: net.AddressInfo }
+    | {
+          success: false;
+          error: 'port already in use';
+          message: string;
+      }
+    | {
+          success: false;
+          error: 'other error';
+          message: string;
+      };
+
 /**
  * Http server listening on localhost.
  */
@@ -94,8 +107,9 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
     public logger: Log;
     private routes: Route[] = [];
     private readonly emitter: TypedEmitter<BaseEvents> = this;
-    private ports: number[] = [];
-    private port: number | undefined;
+    private readonly ports: number[];
+    // The port the OS assigned when a random port (0) was requested, reused on restart.
+    private assignedRandomPort: number | undefined;
     private address: string;
     private sockets: Record<number, net.Socket> = {};
     private onConnection?: (socket: net.Socket) => void;
@@ -163,25 +177,20 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
     }
 
     public start() {
-        const port = this.port || this.ports.shift();
-        if (typeof port !== 'number') {
+        return this.startOnPort(0);
+    }
+
+    // Every start tries the ports from the first one, so a restart returns to the preferred
+    // port once it is free again.
+    private startOnPort(portIndex: number): Promise<StartResult> {
+        const requestedPort = this.ports[portIndex];
+        if (requestedPort === undefined) {
             // this should not happen
             throw new Error('There is no port available in ports array');
         }
+        const port = requestedPort === 0 ? (this.assignedRandomPort ?? 0) : requestedPort;
 
-        return new Promise<
-            | { success: true; payload: net.AddressInfo }
-            | {
-                  success: false;
-                  error: 'port already in use';
-                  message: string;
-              }
-            | {
-                  success: false;
-                  error: 'other error';
-                  message: string;
-              }
-        >(resolve => {
+        return new Promise<StartResult>(resolve => {
             let nextSocketId = 0;
             this.onConnection = socket => {
                 // Add a newly connected socket
@@ -194,14 +203,29 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
             };
             this.server.on('connection', this.onConnection);
 
+            const onListening = () => {
+                this.logger.info('Server started, listening on port: ', port);
+                const address = this.getServerAddress();
+                if (address) {
+                    this.emitter.emit('server/listening', address);
+                }
+                if (requestedPort === 0) {
+                    this.assignedRandomPort = address.port;
+                }
+
+                return resolve({ success: true, payload: address });
+            };
+
             this.onError = async e => {
+                // A failed listen() keeps its callback registered, it would fire on the next port.
+                this.server.off('listening', onListening);
                 this.server.close();
                 // @ts-expect-error - type is missing
                 const errorCode: string = e.code;
                 const portOccupied = errorCode === 'EADDRINUSE' || errorCode === 'EACCES';
 
-                if (this.ports.length) {
-                    return this.stop().then(() => this.start());
+                if (portIndex + 1 < this.ports.length) {
+                    return resolve(this.stop().then(() => this.startOnPort(portIndex + 1)));
                 }
 
                 if (portOccupied) {
@@ -229,17 +253,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
             };
             this.server.on('error', this.onError);
 
-            this.server.listen(port, this.address, undefined, () => {
-                this.logger.info('Server started, listening on port: ', port);
-                const address = this.getServerAddress();
-                if (address) {
-                    this.emitter.emit('server/listening', address);
-                }
-                // even if server was instructed to start on a random port, take the real port and save it for future use (toggling server on and off)
-                this.port = address.port;
-
-                return resolve({ success: true, payload: address });
-            });
+            this.server.listen(port, this.address, undefined, onListening);
         });
     }
 

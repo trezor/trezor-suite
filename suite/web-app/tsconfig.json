@@ -11,12 +11,6 @@
     "include": ["."],
     "references": [
         {
-            "path": "../../suite-common/dependency-injection"
-        },
-        {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/suite-utils"
         },
         { "path": "../debug" },
@@ -27,9 +21,11 @@
         { "path": "../router" },
         { "path": "../../packages/connect" },
         {
-            "path": "../../packages/connect-common"
+            "path": "../../packages/dependency-injection"
         },
         { "path": "../../packages/env-utils" },
+        { "path": "../../packages/logger" },
+        { "path": "../../packages/redux-utils" },
         { "path": "../../packages/suite" },
         {
             "path": "../../packages/transport-common"

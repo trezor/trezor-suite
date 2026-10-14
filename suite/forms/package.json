@@ -1,0 +1,21 @@
+{
+    "name": "@suite/forms",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": [
+        "src/yup.ts"
+    ],
+    "type": "module",
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@trezor/utils": "workspace:*",
+        "yup": "1.7.1"
+    }
+}

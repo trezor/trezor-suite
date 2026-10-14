@@ -1,10 +1,10 @@
 import { useCallback } from 'react';
 
 import { events } from '@suite-common/analytics';
-import { useServices } from '@suite-common/dependency-injection';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { type ActiveView } from '@suite-native/atoms';
+import { useServices } from '@trezor/dependency-injection';
 
 type UseYieldCurrencyToggleAnalyticsParams = {
     networkSymbol: NetworkSymbol | undefined;

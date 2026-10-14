@@ -53,13 +53,12 @@ const DataWrapper = styled.p<{ $isExpanded: boolean; $fadeColor: Color }>`
 
 const MAX_COLLAPSED_DATA_LENGTH = 400;
 
-const Data = ({
-    value,
-    state,
-}: {
+type DataProps = {
     value: string;
     state: TransactionReviewOutputElementProps['state'];
-}) => {
+};
+
+const Data = ({ value, state }: DataProps) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const isTooLong = value.length > MAX_COLLAPSED_DATA_LENGTH;
     const fadeColor = state === 'confirmed' ? 'elementFillNeutralSofter' : 'surfaceFillRaised';

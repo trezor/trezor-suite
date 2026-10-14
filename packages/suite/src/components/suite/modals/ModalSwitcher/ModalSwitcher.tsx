@@ -3,8 +3,8 @@ import {
     selectShowEnableSuiteSyncModal,
     updateShowEnableSuiteSyncModal,
 } from '@suite/suite-sync';
-import { useServices } from '@suite-common/dependency-injection';
-import { injectDispatch } from '@suite-common/redux-utils';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { ConnectionGlobalModalManager } from 'src/components/connection/ConnectionGlobalModalManager';
 import { ThpGlobalModalManager } from 'src/components/connection/thp/ThpGlobalModalManager';
@@ -17,7 +17,9 @@ import { ReduxModal } from '../ReduxModal/ReduxModal';
 
 type ModalParams = ReturnType<typeof usePreferredModal>;
 
-const Inner = ({ modal }: { modal: ModalParams }) => {
+type InnerProps = { modal: ModalParams };
+
+const Inner = ({ modal }: InnerProps) => {
     switch (modal.type) {
         case 'redux-modal':
             return <ReduxModal {...modal.payload} />;

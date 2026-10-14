@@ -2,6 +2,10 @@
 
 Icons for the native (mobile) app. General icon SVG sources live in `@trezor/icons` (`packages/icons/assets`).
 
+Coin and network SVGs live in `networks/<family>/network-<family>-assets/assets`.
+These packages export lazy icon loaders and filesystem-path readers through their indexes.
+`yarn generate-icons` updates the family loaders and the existing shared icon maps.
+
 ## How to add or update an icon
 
 1. Export the icon as SVG from Figma and rename it to camelCase (`Warning Circle.svg` → `warningCircle.svg`), place it in `@trezor/icons/assets`.
@@ -14,3 +18,9 @@ Icons for the native (mobile) app. General icon SVG sources live in `@trezor/ico
 3. Select the problematic segment in the _Commands_ section and fix it by running _Reverse Subpath_.
 4. Check the _Minify output_ checkbox and copy&paste the fixed path back into the SVG file.
 5. Regenerate icons with `yarn generate-icons`.
+
+## Download coin icons
+
+Run `yarn suite:cli download-crypto-icons` from the repository root. The CLI composes network modules
+and injects their configuration and asset-path capabilities into the downloader. The Node-only
+service factories are available through `@suite-common/icons/scripts`.

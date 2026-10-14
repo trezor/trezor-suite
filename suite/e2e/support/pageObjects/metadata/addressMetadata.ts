@@ -3,6 +3,14 @@ import { expect } from '@playwright/test';
 import { MetadataBase } from './metadataBase';
 import { step } from '../../common';
 
+type ChangeLabelParams = {
+    address: string;
+    label: string;
+    confirmSuiteSync?: boolean;
+};
+
+type RemoveLabelParams = { address: string };
+
 export class AddressMetadata extends MetadataBase {
     private readonly addressMetadataTestId = '@metadata/addressLabel';
 
@@ -30,15 +38,7 @@ export class AddressMetadata extends MetadataBase {
     }
 
     @step()
-    async changeLabel({
-        address,
-        label,
-        confirmSuiteSync,
-    }: {
-        address: string;
-        label: string;
-        confirmSuiteSync?: boolean;
-    }) {
+    async changeLabel({ address, label, confirmSuiteSync }: ChangeLabelParams) {
         await this.clickEditLabel(address);
         await this.fillLabelInput(label);
         if (confirmSuiteSync) {
@@ -48,7 +48,7 @@ export class AddressMetadata extends MetadataBase {
     }
 
     @step()
-    async removeLabel({ address }: { address: string }) {
+    async removeLabel({ address }: RemoveLabelParams) {
         await this.addressHoverContainer(address).hover();
         await this.deleteLabelButton(address).click();
         await this.addressHoverContainer(address).hover();

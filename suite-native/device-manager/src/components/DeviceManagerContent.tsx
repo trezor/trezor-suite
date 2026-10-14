@@ -1,12 +1,11 @@
 import { useState } from 'react';
-import { Dimensions } from 'react-native';
-import Animated, { LinearTransition } from 'react-native-reanimated';
+import { useWindowDimensions } from 'react-native';
+import { LinearTransition } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
 
-import { useServices } from '@suite-common/dependency-injection';
 import {
     PORTFOLIO_TRACKER_DEVICE_ID,
     selectDeviceStaticSessionId,
@@ -16,11 +15,10 @@ import {
     selectIsDeviceProtectedByPassphrase,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/device';
-import { injectDispatch } from '@suite-common/redux-utils';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
-import { AnimatedVStack, VStack } from '@suite-native/atoms';
+import { AnimatedScrollView, AnimatedVStack, VStack } from '@suite-native/atoms';
 import { selectShouldFactoryResetBeVisible } from '@suite-native/device';
 import {
     type AppTabsParamList,
@@ -30,7 +28,9 @@ import {
     type TabNavigationProp,
     checkIsRouteAnyOf,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
+import { injectDispatch } from '@trezor/redux-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { AddHiddenWalletButton } from './AddHiddenWalletButton';
@@ -42,7 +42,7 @@ import { DevicesToggleButton } from './DevicesToggleButton';
 import { WalletList } from './WalletList';
 import { useDeviceManager } from '../hooks/useDeviceManager';
 
-const CONTENT_MAX_HEIGHT = Dimensions.get('window').height * 0.8;
+const CONTENT_MAX_HEIGHT_RATIO = 0.8;
 const HEADER_HEIGHT = 86;
 
 const scrollViewStyle = prepareNativeStyle<{ maxHeight: number }>((utils, { maxHeight }) => ({
@@ -57,6 +57,7 @@ type NavigationProp = TabNavigationProp<AppTabsParamList, AppTabsRoutes.HomeStac
 
 export const DeviceManagerContent = () => {
     const { applyStyle, utils } = useNativeStyles();
+    const { height: windowHeight } = useWindowDimensions();
     const [isChangeDeviceRequested, setIsChangeDeviceRequested] = useState(false);
     const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
@@ -103,7 +104,7 @@ export const DeviceManagerContent = () => {
 
     // based on DeviceManagerModal header height and top offset
     const scrollViewTopOffset = insets.top + utils.spacings.sp24 + HEADER_HEIGHT;
-    const scrollViewMaxHeight = CONTENT_MAX_HEIGHT - scrollViewTopOffset;
+    const scrollViewMaxHeight = windowHeight * CONTENT_MAX_HEIGHT_RATIO - scrollViewTopOffset;
 
     // Kept visible (but disabled) while discovery runs so the button doesn't vanish mid-discovery,
     // mirroring the desktop switch-device behavior.
@@ -128,7 +129,7 @@ export const DeviceManagerContent = () => {
             }
             onClose={() => setIsChangeDeviceRequested(false)}
         >
-            <Animated.ScrollView
+            <AnimatedScrollView
                 style={applyStyle(scrollViewStyle, { maxHeight: scrollViewMaxHeight })}
                 alwaysBounceVertical={false}
                 showsVerticalScrollIndicator={false}
@@ -153,7 +154,7 @@ export const DeviceManagerContent = () => {
                         </AnimatedVStack>
                     )}
                 </VStack>
-            </Animated.ScrollView>
+            </AnimatedScrollView>
         </DeviceManagerModal>
     );
 };

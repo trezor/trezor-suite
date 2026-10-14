@@ -16,6 +16,14 @@ export const updateAll = async <
     store: T,
     update: (old: OldValueType) => StoreValue<SuiteDBSchema, T> | null | void,
 ): Promise<void> => {
+    // If a store is missing, we cannot update it. Depending on the migration, the fallback might cause inconsistent
+    // data, but there's a chance it will be just missing data → better than invalidating the whole database.
+    if (!transaction.objectStoreNames.contains(store)) {
+        console.error(`Storage: updateAll called on nonexistent store "${store}"`);
+
+        return;
+    }
+
     let cursor = await transaction.objectStore(store).openCursor();
     while (cursor) {
         const oldObj = cursor.value as OldValueType;

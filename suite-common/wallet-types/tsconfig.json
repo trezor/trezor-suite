@@ -2,7 +2,6 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../dependency-injection" },
         { "path": "../legacy-network-config" },
         { "path": "../metadata-types" },
         { "path": "../wallet-config" },
@@ -12,12 +11,15 @@
         },
         { "path": "../../packages/connect" },
         { "path": "../../packages/crypto-utils" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
         { "path": "../../packages/device-utils" },
         {
-            "path": "../../networks/solana/network-solana"
+            "path": "../../networks/solana/network-solana-types"
         },
         {
-            "path": "../../networks/stellar/network-stellar"
+            "path": "../../networks/stellar/network-stellar-types"
         },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }

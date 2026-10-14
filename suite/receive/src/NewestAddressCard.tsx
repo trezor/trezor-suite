@@ -11,14 +11,12 @@ import {
 } from '@suite/address';
 import { Translation } from '@suite/intl';
 import { getReceiveAddressForFlowEntry, getReceiveAddressToAdd } from '@suite-common/address';
-import { useServices } from '@suite-common/dependency-injection';
 import {
     type ReceiveRootState,
     receiveActions,
     selectCurrentFreshAddress,
     selectTouchedAddresses,
 } from '@suite-common/receive';
-import { injectDispatch } from '@suite-common/redux-utils';
 import {
     type AccountsRootState,
     type TransactionsRootState,
@@ -29,7 +27,9 @@ import {
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Box, Card, Divider, IconButton, Row, Text, Tooltip } from '@trezor/components';
 import { getAddressPathIndex } from '@trezor/crypto-utils';
+import { useServices } from '@trezor/dependency-injection';
 import { PlusIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { AddressCardDetail } from './AddressCardDetail';
 import {

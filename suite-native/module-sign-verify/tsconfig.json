@@ -3,19 +3,10 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
-            "path": "../../suite-common/dependency-injection"
-        },
-        {
             "path": "../../suite-common/formatters"
         },
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/sign-verify"
-        },
-        {
-            "path": "../../suite-common/validators"
         },
         {
             "path": "../../suite-common/wallet-core"
@@ -33,7 +24,14 @@
         { "path": "../forms" },
         { "path": "../intl" },
         { "path": "../navigation" },
-        { "path": "../../packages/styles-native" }
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        { "path": "../../packages/redux-utils" },
+        {
+            "path": "../../packages/styles-native"
+        },
+        { "path": "../../packages/utils" }
     ],
     "include": [".", "**/*.json"]
 }

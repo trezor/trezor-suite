@@ -1,4 +1,5 @@
 import { type GestureResponderEvent, type TextProps } from 'react-native';
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports -- This raw Animated.Text preserves the native Text style array and link-specific typography.
 import Animated, {
     interpolateColor,
     useAnimatedStyle,

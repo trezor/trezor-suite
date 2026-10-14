@@ -1,15 +1,15 @@
-import { createThunk } from '@suite-common/redux-utils';
 import type {
     Account,
     ChainedTransactions,
     WalletAccountTransaction,
 } from '@suite-common/wallet-types';
-import { getMyInputsFromTransaction } from '@suite-common/wallet-utils';
+import { getMyInputsFromTransaction, getUnusedChangeAddress } from '@suite-common/wallet-utils';
 import TrezorConnect, {
     DEFAULT_SORTING_STRATEGY,
     type PrecomposeResultFinal,
 } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
+import { createThunk } from '@trezor/redux-utils';
 
 import { SEND_MODULE_PREFIX } from '../sendFormConstants';
 import { calculateBaseFee, getRelayFee } from './calculateNewFee';
@@ -25,16 +25,17 @@ export const isComposeCancelTransactionAccount = (
 const resolveCancelAddress = (
     tx: Pick<WalletAccountTransaction, 'details'>,
     { addresses }: ComposeCancelTransactionAccount,
-): string | undefined => {
-    const firstChangeAddress = tx.details.vout.find(vout => vout.isAccountOwned)?.addresses?.[0];
-    if (firstChangeAddress) {
-        return firstChangeAddress;
-    }
+) => {
+    const usedOwnedAddresses = tx.details.vout
+        .filter(vout => vout.isAccountOwned)
+        .flatMap(vout => vout.addresses ?? []);
 
-    const firstUnused = addresses.change.find(a => !a.transfers) ?? addresses.change.at(-1);
-    if (firstUnused) {
-        return firstUnused.address;
-    }
+    return (
+        // take first change address used as an output in original transaction
+        addresses.change.find(a => usedOwnedAddresses.includes(a.address)) ??
+        // or the first unused change address, falling back to the last known one
+        getUnusedChangeAddress(addresses.change)
+    );
 };
 
 export type ComposeCancelTransactionThunkParams = {
@@ -51,22 +52,20 @@ export const composeCancelTransactionThunk = createThunk<
     `${SEND_MODULE_PREFIX}/composeCancelTransactionThunk`,
     async ({ tx, account, chainedTxs }, { rejectWithValue }) => {
         const utxo = getMyInputsFromTransaction({ tx, account });
-        const cancelAddress = resolveCancelAddress(tx, account);
+        const changeAddress = resolveCancelAddress(tx, account);
         const baseFee = calculateBaseFee(tx, chainedTxs);
         const feePerUnit = getRelayFee().toString();
         const coin = asCoinSymbol(account.symbol);
 
-        if (!cancelAddress) {
+        if (!changeAddress) {
             return rejectWithValue('No change addresses, should not happen!');
         }
 
         const response = await TrezorConnect.composeTransaction({
-            account: {
-                path: account.path,
-                addresses: account.addresses,
-                utxo,
-            },
-            outputs: [{ type: 'send-max', address: cancelAddress }],
+            path: account.path,
+            utxo,
+            changeAddress,
+            outputs: [{ type: 'send-max', address: changeAddress.address }],
             sortingStrategy: DEFAULT_SORTING_STRATEGY,
             coin,
             feeLevels: [{ feePerUnit }],

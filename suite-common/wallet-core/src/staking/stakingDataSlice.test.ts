@@ -1,11 +1,6 @@
 import { type StakingBatchDataItem } from '@suite-common/earn-staking-api';
 
-import {
-    type StakeDataState,
-    stakeDataActions,
-    stakeDataInitialState,
-    stakeDataReducer,
-} from './stakingDataSlice';
+import { type StakeDataState, stakeDataActions, stakeDataReducer } from './stakingDataSlice';
 
 const LAST_SUCCESS_AT = new Date('2026-01-01T00:00:00Z').getTime();
 const TWO_MINUTES_LATER = new Date('2026-01-01T00:02:00Z').getTime();
@@ -67,15 +62,5 @@ describe('stakeDataReducer', () => {
         expect(state.data.sol?.stats.apy).toBe(solSection.stats.apy);
         expect(state.error).toBeNull();
         expect(state.isLoading).toBe(false);
-    });
-
-    it('clears the last success timestamp on reset, because reset clears the data it describes', () => {
-        const state = stakeDataReducer(
-            stateAfterPreviousSuccess(),
-            stakeDataActions.fetchStakeDataReset(),
-        );
-
-        expect(state.lastSuccessAt).toBeNull();
-        expect(state.data).toEqual(stakeDataInitialState.data);
     });
 });

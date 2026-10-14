@@ -4,30 +4,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 import { getJUnitReportPath } from './junitReport';
-import type { Action } from './quarantine';
-import { isQuarantined } from './quarantine';
 
-type CurrentsSuite = {
-    tests: { title: string[]; tags?: string[] }[];
-};
-
-const tagQuarantinedTests = (currentsDir: string, quarantinedActions: Action[]): void => {
-    const suitePath = path.join(currentsDir, 'fullTestSuite.json');
-    const suites = JSON.parse(fs.readFileSync(suitePath, 'utf8')) as CurrentsSuite[];
-
-    suites.forEach(suite => {
-        suite.tests.forEach(test => {
-            const testTitle = test.title.at(-1) ?? '';
-            if (isQuarantined({ testTitle, titlePath: test.title }, quarantinedActions)) {
-                test.tags = [...new Set([...(test.tags ?? []), 'quarantined'])];
-            }
-        });
-    });
-
-    fs.writeFileSync(suitePath, JSON.stringify(suites));
-};
-
-export const uploadToCurrents = (projectName: string, quarantinedActions: Action[]): void => {
+export const uploadToCurrents = (projectName: string): void => {
     const reportPath = getJUnitReportPath(projectName);
     const currentsDir = path.resolve(process.cwd(), 'currents', projectName);
 
@@ -55,14 +33,6 @@ export const uploadToCurrents = (projectName: string, quarantinedActions: Action
             `yarn exec currents convert --input-format=junit --input-file="${reportPath}" --output-dir="${currentsDir}" --framework=postman --framework-version=v11.2.0`,
             { stdio: 'inherit', env: process.env },
         );
-
-        if (quarantinedActions.length > 0) {
-            try {
-                tagQuarantinedTests(currentsDir, quarantinedActions);
-            } catch (error) {
-                console.warn(`Failed to tag quarantined tests for ${projectName}:`, error);
-            }
-        }
 
         console.log(`Uploading report for ${projectName} to Currents...`);
         execSync(
