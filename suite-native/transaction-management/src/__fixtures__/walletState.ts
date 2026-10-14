@@ -3,7 +3,7 @@ import { type FiatRatesState } from '@suite-common/wallet-core';
 import {
     type Account,
     AddressDisplayOptions,
-    type RatesByKey,
+    type CurrentRatesByKey,
     type WalletSettings,
 } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
@@ -237,20 +237,24 @@ export const getWalletState = () => ({
             // ETH - USD
             'eth-usd': {
                 rate: 1000,
+                usdRate: 1000,
             },
             // BTC - USD
             'btc-usd': {
                 rate: 100000,
+                usdRate: 100000,
             },
             // SOL - USD
             'sol-usd': {
                 rate: 150,
+                usdRate: 150,
             },
             // USDC - USD
             'eth-0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48-usd': {
                 rate: 0.99,
+                usdRate: 0.99,
             },
-        } as RatesByKey,
+        } as CurrentRatesByKey,
         historic: {},
         lastWeek: {},
     } as FiatRatesState,
