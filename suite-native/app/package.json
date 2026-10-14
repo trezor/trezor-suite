@@ -38,7 +38,7 @@
     },
     "dependencies": {
         "@evolu/common": "8.11.0",
-        "@evolu/react-native": "16.0.2",
+        "@evolu/react-native": "16.0.3",
         "@exodus/patch-broken-hermes-typed-arrays": "^1.0.0-alpha.1",
         "@gorhom/bottom-sheet": "5.2.9",
         "@jest/reporters": "^29.7.0",
