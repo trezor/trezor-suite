@@ -68,6 +68,14 @@ export const initBackground: ModuleInitBackground = ({
     };
 
     const startServer = async (receiver: HttpReceiver) => {
+        // The gate is applied when it changes, so a start that happens in between would keep
+        // serving until the next change: every path that can start the server re-checks it.
+        if (messageSystem.getGate().isKillswitchActive) {
+            logger.info(SERVICE_NAME, 'Not starting server, disabled by the message system');
+
+            return { url: null };
+        }
+
         registerReceiverEvents(receiver);
 
         logger.info(SERVICE_NAME, 'Starting server');
@@ -169,12 +177,6 @@ export const initBackground: ModuleInitBackground = ({
                 logger.error(SERVICE_NAME, `Failed to apply the gate: ${err.message}`),
             );
         });
-
-        if (messageSystem.getGate().isKillswitchActive) {
-            logger.info(SERVICE_NAME, 'Not starting server, disabled by the message system');
-
-            return { url: null };
-        }
 
         return startServer(receiver);
     };

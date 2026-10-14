@@ -182,6 +182,14 @@ export const initBackground = ({
     };
 
     const startBridge = async () => {
+        // The gate is applied when it changes, so a start that happens in between would keep
+        // serving until the next change: every path that can start the bridge re-checks it.
+        if (messageSystem.getGate().isKillswitchActive) {
+            logger.info(SERVICE_NAME, 'Not starting, disabled by the message system');
+
+            return;
+        }
+
         const status = await bridge.status();
 
         if (status.service) {
@@ -243,7 +251,13 @@ export const initBackground = ({
     return { onLoad, onQuit };
 };
 
-export const init = ({ store, mainWindowProxy, mainThreadEmitter, logger }: Dependencies) => {
+export const init = ({
+    store,
+    mainWindowProxy,
+    mainThreadEmitter,
+    messageSystem,
+    logger,
+}: Dependencies) => {
     ipcMain.handle('bridge/change-settings', (_, payload: Partial<BridgeSettings>) => {
         try {
             // merge: each control (Run-on-startup, usb implementation) sends only its own field,
@@ -268,6 +282,14 @@ export const init = ({ store, mainWindowProxy, mainThreadEmitter, logger }: Depe
     });
 
     const toggleBridge = async (): Promise<InvokeResult> => {
+        // Reachable from Settings whenever the renderer has not evaluated the same killswitch, so
+        // it must not be able to bring the bridge back up behind the gate.
+        if (messageSystem.getGate().isKillswitchActive) {
+            logger.info(SERVICE_NAME, 'Not toggling, disabled by the message system');
+
+            return { success: false, error: 'DISABLED_BY_MESSAGE_SYSTEM' };
+        }
+
         const status = await handleBridgeStatus({ mainThreadEmitter, mainWindowProxy, logger });
         try {
             if (status.service) {
