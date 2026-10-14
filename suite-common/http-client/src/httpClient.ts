@@ -1,9 +1,9 @@
 import { type DefaultOptions, type FetcherOptions, type StandardSchemaV1, up } from 'up-fetch';
 import type z from 'zod';
 
-import { type GenerateRouteParams, composePathnameFromRoute } from './routeParams';
+import type { Fetch } from '@trezor/type-utils';
 
-type FetchLike = typeof globalThis.fetch;
+import { type GenerateRouteParams, composePathnameFromRoute } from './routeParams';
 
 const HTTP_CLIENT_DEFAULTS = {
     retry: {
@@ -19,9 +19,9 @@ const HTTP_CLIENT_DEFAULTS = {
      * Prevent up-fetch from rejecting them.
      */
     reject: response => !response.ok && response.status !== 0,
-} as const satisfies Partial<DefaultOptions<FetchLike, unknown, unknown>>;
+} as const satisfies Partial<DefaultOptions<Fetch, unknown, unknown>>;
 
-type HttpClientOptions = Omit<DefaultOptions<FetchLike, any, any>, 'baseUrl'> & {
+type HttpClientOptions = Omit<DefaultOptions<Fetch, any, any>, 'baseUrl'> & {
     baseUrl?: string | (() => string | Promise<string>);
 };
 
@@ -32,7 +32,7 @@ type HttpClientOptions = Omit<DefaultOptions<FetchLike, any, any>, 'baseUrl'> & 
  * `UpFetch` so default `parseResponse` / `serializeBody` types flow to each request.
  */
 export function createHttpClient({ baseUrl, ...defaultFetcherOptions }: HttpClientOptions) {
-    const fetcher = up<FetchLike, DefaultOptions<FetchLike, any, any>>(
+    const fetcher = up<Fetch, DefaultOptions<Fetch, any, any>>(
         globalThis.fetch,
         async () => ({
             ...HTTP_CLIENT_DEFAULTS,
@@ -40,8 +40,6 @@ export function createHttpClient({ baseUrl, ...defaultFetcherOptions }: HttpClie
             baseUrl: typeof baseUrl === 'function' ? await baseUrl() : baseUrl,
         }),
     );
-
-    type Fetch = typeof fetch;
 
     function createEndpointFetcher<
         T extends z.infer<Schema>,

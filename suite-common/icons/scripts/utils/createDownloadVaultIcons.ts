@@ -9,6 +9,7 @@ import type {
     NetworkMetadata,
 } from '@suite-common/networks';
 import type { NetworkSymbol } from '@trezor/network-module-types';
+import type { MkdirDep, ReadFileDep, WriteFileDep } from '@trezor/type-utils';
 
 import type {
     FetchPublishedIconDep,
@@ -27,18 +28,6 @@ import type { YieldVault } from '../schemas';
  */
 type VaultIconSource =
     { kind: 'published'; coingeckoId: string } | { kind: 'bundled'; networkSymbol: NetworkSymbol };
-
-export type WriteFile = (path: string, data: Buffer) => Promise<void>;
-
-export type WriteFileDep = { writeFile: WriteFile };
-
-export type ReadFile = (path: string) => Promise<Buffer>;
-
-export type ReadFileDep = { readFile: ReadFile };
-
-export type Mkdir = (path: string, options: { recursive: true }) => Promise<string | undefined>;
-
-export type MkdirDep = { mkdir: Mkdir };
 
 export type DownloadVaultIconsDeps = GetNetworkByCoingeckoIdDep &
     GetIconPathsDep &

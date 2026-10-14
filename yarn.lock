@@ -11772,6 +11772,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/http-client@workspace:suite-common/http-client"
   dependencies:
+    "@trezor/type-utils": "workspace:*"
     up-fetch: "npm:2.6.1"
     zod: "npm:4.6.5"
   languageName: unknown
@@ -11796,6 +11797,7 @@ __metadata:
     "@trezor/network-stellar-assets": "workspace:*"
     "@trezor/network-tezos-assets": "workspace:*"
     "@trezor/network-tron-assets": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
     chalk: "npm:^6.0.0"
     fantasticon: "npm:4.1.0"
     prettier: "npm:^3.9.6"
