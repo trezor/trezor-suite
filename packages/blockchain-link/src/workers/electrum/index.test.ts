@@ -153,7 +153,8 @@ describe('Electrum worker', () => {
     beforeEach(async () => {
         server = await createElectrumServer();
         blockchain = new BlockchainLink({
-            name: 'BTC',
+            // The cache of a network outlives the worker, each test gets its own network name.
+            name: `BTC ${expect.getState().currentTestName}`,
             worker: ElectrumWorker,
             server: [server.url],
             debug: false,
@@ -211,6 +212,50 @@ describe('Electrum worker', () => {
         expect([...server.stats.requestedTxids].sort()).toEqual(
             Array.from({ length: TX_COUNT }, (_, i) => getTxid(i)).sort(),
         );
+    });
+
+    it('lets a new worker of the network reuse the transactions of the previous one', async () => {
+        const params = { descriptor: ADDRESS, details: 'txs' as const, pageSize: TX_COUNT };
+        await blockchain.getAccountInfo(params);
+        const requestedTxids = server.stats.requestedTxids.length;
+        const next = new BlockchainLink({ ...blockchain.settings, worker: ElectrumWorker });
+
+        const info = await next.getAccountInfo(params);
+        await next.disconnect();
+        next.dispose();
+
+        expect(info.history.transactions).toHaveLength(TX_COUNT);
+        expect(server.stats.requestedTxids).toHaveLength(requestedTxids);
+    });
+
+    it('keeps the transactions of the network when the server closed the connection', async () => {
+        const params = { descriptor: ADDRESS, details: 'txs' as const, pageSize: TX_COUNT };
+        await blockchain.getAccountInfo(params);
+        const requestedTxids = server.stats.requestedTxids.length;
+        const disconnected = new Promise<void>(resolve =>
+            blockchain.once('disconnected', () => resolve()),
+        );
+
+        server.closeConnections();
+        await withTimeout(disconnected);
+        // TrezorConnect replaces the link of a closed connection with a new one.
+        blockchain.dispose();
+        blockchain = new BlockchainLink({ ...blockchain.settings, worker: ElectrumWorker });
+        const info = await blockchain.getAccountInfo(params);
+
+        expect(info.history.transactions).toHaveLength(TX_COUNT);
+        expect(server.stats.requestedTxids).toHaveLength(requestedTxids);
+    });
+
+    it('forgets the transactions of the network when disconnected on purpose', async () => {
+        const params = { descriptor: ADDRESS, details: 'txs' as const, pageSize: TX_COUNT };
+        await blockchain.getAccountInfo(params);
+        const requestedTxids = server.stats.requestedTxids.length;
+
+        await blockchain.disconnect();
+        await blockchain.getAccountInfo(params);
+
+        expect(server.stats.requestedTxids).toHaveLength(2 * requestedTxids);
     });
 
     it('reports a connection closed by the server and connects again', async () => {

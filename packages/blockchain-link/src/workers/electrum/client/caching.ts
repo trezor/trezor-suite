@@ -8,20 +8,42 @@ import { type IntervalId } from '@trezor/type-utils';
 import { ElectrumClient } from './electrum';
 import { blockheaderToBlockhash } from '../utils/transform';
 
-type Cache = {
-    [descriptor: string]: [Status, any];
-};
-
 type Statuses = {
     [scripthash: string]: Status;
 };
 
-type ConfirmedTransactions = {
-    [txid: string]: {
-        tx: ElectrumTypes.TransactionVerbose;
-        blockHeight: number;
-        fetchedAt: number;
-    };
+type ConfirmedTransaction = {
+    tx: ElectrumTypes.TransactionVerbose;
+    blockHeight: number;
+    fetchedAt: number;
+};
+
+// What was fetched from the servers of one network, so that the client of the next connection
+// (e.g. after the server closed the previous one) reuses it. It is kept in memory only.
+export type ElectrumCache = {
+    // A response for a scripthash holds while its status is the same, a raw transaction always.
+    results: Map<string, [Status, any]>;
+    // Confirmed transactions don't change with new blocks, only their confirmations do. Their
+    // block heights hold only while the tip they were counted from stays in the chain.
+    confirmedTransactions: Map<string, ConfirmedTransaction>;
+    tip?: BlockHeader;
+};
+
+export const createElectrumCache = (): ElectrumCache => ({
+    results: new Map(),
+    confirmedTransactions: new Map(),
+});
+
+const MAX_CACHED_ITEMS = 20000;
+
+const setCached = <T>(cache: Map<string, T>, key: string, value: T) => {
+    // Re-inserted, so that the least recently fetched item goes first when the cache is full.
+    cache.delete(key);
+    cache.set(key, value);
+    if (cache.size > MAX_CACHED_ITEMS) {
+        const oldestKey = cache.keys().next().value;
+        if (oldestKey !== undefined) cache.delete(oldestKey);
+    }
 };
 
 // Raw transaction of given txid never changes.
@@ -41,19 +63,21 @@ const isFollowingBlock = (last: BlockHeader | undefined, next: BlockHeader) =>
         getPrevBlockhash(next.hex) === blockheaderToBlockhash(last.hex));
 
 export class CachingElectrumClient extends ElectrumClient {
-    private readonly cache: Cache = {};
+    private readonly cache: ElectrumCache;
     private readonly statuses: Statuses = {};
+    // Verbose transactions for the current tip. Their confirmations were counted by the node of
+    // the server of this connection, which may have been ahead of the tip, so they aren't shared.
+    private readonly tipTransactions = new Map<string, [Status, any]>();
     // Identical requests already waiting for a response, e.g. a transaction which is in several
     // accounts or which is reported by notifications of several addresses at once.
     private readonly pending: { [key: string]: Promise<any> } = {};
-    // Confirmed transactions don't change with new blocks, only their confirmations do.
-    private confirmedTransactions: ConfirmedTransactions = {};
     private cached = 0;
     private total = 0;
     private logTimer: IntervalId;
 
-    constructor() {
+    constructor(cache = createElectrumCache()) {
         super();
+        this.cache = cache;
         this.logTimer = setInterval(() => {
             this.log(`Caching effectiveness: ${this.cached}/${this.total}`);
             this.log('Subscription count: ', Object.keys(this.statuses).length);
@@ -70,9 +94,14 @@ export class CachingElectrumClient extends ElectrumClient {
         return this.pending[key];
     }
 
-    private cacheRequest(status: Status, method: string, params: any[]) {
+    private cacheRequest(
+        status: Status,
+        method: string,
+        params: any[],
+        results = this.cache.results,
+    ) {
         const descriptor = [method, ...params].join(':');
-        const cached = this.cache[descriptor];
+        const cached = results.get(descriptor);
         if (cached) {
             const [cachedStatus, cachedResponse] = cached;
             if (cachedStatus === status) {
@@ -84,7 +113,7 @@ export class CachingElectrumClient extends ElectrumClient {
 
         return this.requestOnce(`${descriptor}@${status}`, async () => {
             const response = await super.request(method, ...params);
-            this.cache[descriptor] = [status, response];
+            setCached(results, descriptor, [status, response]);
 
             return response;
         });
@@ -107,14 +136,20 @@ export class CachingElectrumClient extends ElectrumClient {
     }
 
     private async getVerboseTransaction(txid: string) {
-        const confirmed = this.confirmedTransactions[txid];
-        const currentHeight = this.lastBlock?.height;
-        if (confirmed && currentHeight !== undefined) {
+        const confirmed = this.cache.confirmedTransactions.get(txid);
+        const currentTip = this.lastBlock;
+        // The tip of the cache differs only while another client of the network has moved it.
+        if (
+            confirmed &&
+            currentTip &&
+            this.cache.tip === currentTip &&
+            confirmed.blockHeight <= currentTip.height
+        ) {
             this.cached++;
 
             return {
                 ...confirmed.tx,
-                confirmations: currentHeight - confirmed.blockHeight + 1,
+                confirmations: currentTip.height - confirmed.blockHeight + 1,
             };
         }
 
@@ -125,26 +160,68 @@ export class CachingElectrumClient extends ElectrumClient {
             requestBlock.hex,
             'blockchain.transaction.get',
             [txid, true],
+            this.tipTransactions,
         );
         // It can't be told from which tip the confirmations were counted when a block arrived
         // while waiting for the response, so such a transaction is fetched again the next time.
         const { confirmations = 0 } = tx;
-        if (confirmations > 0 && this.lastBlock === requestBlock) {
-            this.confirmedTransactions[txid] = {
+        if (confirmations > 0 && this.cache.tip === requestBlock) {
+            setCached(this.cache.confirmedTransactions, txid, {
                 tx,
                 blockHeight: requestBlock.height - confirmations + 1,
                 fetchedAt: Date.now(),
-            };
+            });
         }
 
         return tx;
     }
 
-    private forgetRecentTransactions() {
-        const trustedSince = Date.now() - UNTRUSTED_BEFORE_BLOCK_MS;
-        Object.entries(this.confirmedTransactions).forEach(([txid, { fetchedAt }]) => {
-            if (fetchedAt > trustedSince) delete this.confirmedTransactions[txid];
+    private forgetTransactionsFetchedShortlyBefore(blockTime: number) {
+        const trustedSince = blockTime - UNTRUSTED_BEFORE_BLOCK_MS;
+        const { confirmedTransactions } = this.cache;
+        confirmedTransactions.forEach(({ fetchedAt }, txid) => {
+            if (fetchedAt > trustedSince) confirmedTransactions.delete(txid);
         });
+    }
+
+    private async isInChain(block: BlockHeader) {
+        if (!this.lastBlock || block.height > this.lastBlock.height) return false;
+        const header = await super
+            .request('blockchain.block.header', block.height)
+            .catch(() => undefined);
+
+        return header === block.hex;
+    }
+
+    // Blocks could have come or the chain could have been reorganized while there was no connection,
+    // and the server of the new connection may be behind or follow another chain.
+    private async checkCachedTip() {
+        const { tip } = this.cache;
+        const currentTip = this.lastBlock;
+        if (tip && currentTip && tip.hex !== currentTip.hex) {
+            const isTipInChain = isFollowingBlock(tip, currentTip) || (await this.isInChain(tip));
+            // Nothing was learned about the chain, the cache is left for the next connection.
+            if (!this.isConnected()) {
+                throw new Error('Electrum server closed the connection while connecting');
+            }
+            const { confirmedTransactions } = this.cache;
+            if (isTipInChain) {
+                // The new blocks came at some time after the last transaction was fetched.
+                const lastFetchedAt = Array.from(confirmedTransactions.values()).reduce(
+                    (latest, { fetchedAt }) => Math.max(latest, fetchedAt),
+                    0,
+                );
+                this.forgetTransactionsFetchedShortlyBefore(lastFetchedAt);
+            } else {
+                confirmedTransactions.clear();
+            }
+        }
+        this.cache.tip = this.lastBlock;
+    }
+
+    async connect(...params: Parameters<ElectrumClient['connect']>) {
+        await super.connect(...params);
+        await this.checkCachedTip();
     }
 
     async request(method: string, ...params: any[]) {
@@ -193,11 +270,12 @@ export class CachingElectrumClient extends ElectrumClient {
             }
             case 'blockchain.headers.subscribe': {
                 const blocks: BlockHeader[] = params;
+                this.tipTransactions.clear();
                 // Blocks of cached transactions may not be in the chain anymore after a reorg.
-                if (blocks.some(block => !isFollowingBlock(this.lastBlock, block))) {
-                    this.confirmedTransactions = {};
+                if (blocks.some(block => !isFollowingBlock(this.cache.tip, block))) {
+                    this.cache.confirmedTransactions.clear();
                 } else {
-                    this.forgetRecentTransactions();
+                    this.forgetTransactionsFetchedShortlyBefore(Date.now());
                 }
                 break;
             }
@@ -205,6 +283,7 @@ export class CachingElectrumClient extends ElectrumClient {
                 break;
         }
         super.response(response);
+        if (method === 'blockchain.headers.subscribe') this.cache.tip = this.lastBlock;
     }
 
     onClose() {

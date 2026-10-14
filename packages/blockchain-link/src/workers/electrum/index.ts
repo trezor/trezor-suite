@@ -4,7 +4,7 @@ import { type Without } from '@trezor/type-utils';
 import { type AddressCache, createAddressCache } from '@trezor/utxo-lib';
 
 import { BaseWorker, CONTEXT, type ContextType } from '../baseWorker';
-import { CachingElectrumClient } from './client/caching';
+import { CachingElectrumClient, type ElectrumCache, createElectrumCache } from './client/caching';
 import type { ElectrumClient } from './client/electrum';
 import * as L from './listeners';
 import * as M from './methods';
@@ -145,6 +145,18 @@ const onRequest = async <T extends Message>(
     }
 };
 
+// The cache of each network outlives its connection, so that a new connection (e.g. after
+// the server closed the previous one) doesn't fetch everything again. It's kept in memory only
+// and dropped when an open connection of the network is closed on purpose.
+const electrumCaches = new Map<string, ElectrumCache>();
+
+const getElectrumCache = (coin: string) => {
+    const cache = electrumCaches.get(coin) ?? createElectrumCache();
+    electrumCaches.set(coin, cache);
+
+    return cache;
+};
+
 class ElectrumWorker extends BaseWorker<ElectrumClient> {
     private readonly blockListener: BlockListener;
     private readonly txListener: TxListener;
@@ -160,19 +172,24 @@ class ElectrumWorker extends BaseWorker<ElectrumClient> {
         return api?.isConnected() ?? false;
     }
 
+    private getCoin() {
+        return this.settings.name ?? 'BTC';
+    }
+
     async tryConnect(url: string): Promise<ElectrumClient> {
-        const { debug, timeout, keepAlive, name } = this.settings;
+        const { debug, timeout, keepAlive } = this.settings;
 
         const socket = createSocket(url, {
             timeout,
             keepAlive,
             proxyAgent: this.proxyAgent,
         });
-        const api = new CachingElectrumClient();
+        const coin = this.getCoin();
+        const api = new CachingElectrumClient(getElectrumCache(coin));
         await api
             .connect(socket, {
                 url,
-                coin: name ?? 'BTC',
+                coin,
                 debug,
                 client: {
                     name: 'blockchain-link',
@@ -202,6 +219,8 @@ class ElectrumWorker extends BaseWorker<ElectrumClient> {
 
     disconnect() {
         if (this.api?.isConnected()) {
+            // Not closed by the server, e.g. no account of the network is left.
+            electrumCaches.delete(this.getCoin());
             this.api.close();
         }
     }
