@@ -100,7 +100,9 @@ export function Navbar({
     return (
         <div className="nextra-nav-container nx-sticky nx-top-[8px] nx-mt-[32px] nx-z-20 nx-w-full nx-bg-transparent print:nx-hidden">
             <nav className="nx-mx-auto nx-flex nx-h-[var(--nextra-navbar-height)] nx-max-w-[90rem] nx-items-start nx-justify-end nx-gap-2 nx-pl-[max(env(safe-area-inset-left),1.5rem)] nx-pr-[max(env(safe-area-inset-right),1.5rem)]">
-                <Container>
+                {/* The surface colour of this bar follows the active theme, so E2E uses it as the
+                landmark that proves a theme switch actually repainted the UI. */}
+                <Container data-testid="@explorer/navbar/container">
                     {config.logoLink ? (
                         <Anchor
                             href={typeof config.logoLink === 'string' ? config.logoLink : '/'}
@@ -200,6 +202,7 @@ export function Navbar({
                     <button
                         type="button"
                         aria-label="Menu"
+                        data-testid="@explorer/navbar/hamburger"
                         className="nextra-hamburger -nx-mr-2 nx-rounded nx-p-2 active:nx-bg-gray-400/20 md:nx-hidden"
                         onClick={() => setMenu(!menu)}
                     >

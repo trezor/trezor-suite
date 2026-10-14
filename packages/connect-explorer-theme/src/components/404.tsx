@@ -18,7 +18,7 @@ export function NotFoundPage(): ReactElement | null {
     }
 
     return (
-        <p className="nx-text-center">
+        <p className="nx-text-center" data-testid="@explorer/not-found/content">
             <Anchor
                 href={getGitIssueUrl({
                     repository: config.docsRepositoryBase,

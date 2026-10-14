@@ -5,6 +5,7 @@ import { getPagesUnderRoute } from 'nextra/context';
 import styled from 'styled-components';
 
 import { Button, Card, H3, Paragraph } from '@trezor/components';
+import { getRouteTestIdSegment } from '@trezor/connect-explorer-theme';
 import { ArrowLineUpRightIcon } from '@trezor/icons';
 
 const BottomRow = styled.div`
@@ -31,6 +32,7 @@ export default function GuideIndex(): ReactNode {
             href={page.route}
             style={{ color: 'inherit', textDecoration: 'none' }}
             key={page.route}
+            data-testid={`@explorer/guides/item/${getRouteTestIdSegment(page.route)}`}
         >
             <Card margin={{ bottom: 24 }}>
                 <H3>{page.meta?.title || page.frontMatter?.title || page.name}</H3>

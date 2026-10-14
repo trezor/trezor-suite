@@ -70,6 +70,7 @@ function HeadingLink({
                           }[Tag],
                       )
             }
+            data-testid={id ? `@explorer/content/heading/${id}` : undefined}
             {...props}
         >
             {children}
@@ -230,6 +231,7 @@ export const getComponents = ({
             // eslint-disable-next-line jsx-a11y/heading-has-content
             <h1
                 className="nx-mt-2 nx-mb-2 nx-text-4xl nx-font-bold nx-tracking-tight nx-text-slate-900 dark:nx-text-slate-100"
+                data-testid="@explorer/content/title"
                 {...props}
             />
         ),
@@ -265,7 +267,11 @@ export const getComponents = ({
         ),
         a: Link,
         table: props => (
-            <Table className={cn('nextra-scrollbar nx-mt-6 nx-p-0 first:nx-mt-0')} {...props} />
+            <Table
+                className={cn('nextra-scrollbar nx-mt-6 nx-p-0 first:nx-mt-0')}
+                data-testid="@explorer/content/table"
+                {...props}
+            />
         ),
         p: props => <p className="nx-mt-4 nx-leading-7 first:nx-mt-0" {...props} />,
         tr: Tr,
@@ -273,7 +279,13 @@ export const getComponents = ({
         td: Td,
         details: Details,
         summary: Summary,
-        pre: props => <Pre className={cn('nx-bg-neutral-500/5')} {...props} />,
+        pre: props => (
+            <Pre
+                className={cn('nx-bg-neutral-500/5')}
+                data-testid="@explorer/content/code-block"
+                {...props}
+            />
+        ),
         code: Code,
         ...components,
     };

@@ -248,6 +248,7 @@ export default function Layout({ children, ...context }: NextraThemeLayoutProps)
 
 export { useConfig, type PartialDocsThemeConfig as DocsThemeConfig };
 export { type NetworkRoute, asNetworkRoute } from './networkRoute';
+export { getRouteTestIdSegment } from './utils/route-test-id';
 export {
     type NetworkRouteToSymbolMap,
     selectNetworkRouteToSymbolMap,
