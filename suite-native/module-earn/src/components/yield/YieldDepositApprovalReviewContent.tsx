@@ -29,7 +29,7 @@ type YieldDepositApprovalReviewContentProps = {
     flowData: YieldFlowResolvedData;
     flowKey: string;
     transactionType: YieldAllowanceFormDraftTransactionType;
-    vaultTokenName: string;
+    vaultName: string;
 };
 
 export const YieldDepositApprovalReviewContent = ({
@@ -38,7 +38,7 @@ export const YieldDepositApprovalReviewContent = ({
     flowData,
     flowKey,
     transactionType,
-    vaultTokenName,
+    vaultName,
 }: YieldDepositApprovalReviewContentProps) => {
     const {
         closeSheet,
@@ -86,9 +86,9 @@ export const YieldDepositApprovalReviewContent = ({
             formState: reviewTransaction.formState,
             precomposedTransaction: reviewTransaction.precomposedTransaction,
             type: transactionType,
-            vaultName: vaultTokenName,
+            vaultName,
         });
-    }, [device, flowData.account, reviewTransaction, transactionType, vaultTokenName]);
+    }, [device, flowData.account, reviewTransaction, transactionType, vaultName]);
 
     useYieldReviewSheetAutoStart({
         closeSheet,
