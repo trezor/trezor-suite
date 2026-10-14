@@ -53,7 +53,7 @@ export class JsonRpcClient {
                 if (err) reject(err);
                 else resolve(result);
             };
-            this.send(id, request);
+            this.send([id], request);
         });
     }
 
@@ -65,12 +65,12 @@ export class JsonRpcClient {
         this.emitter.off(event, listener);
     }
 
-    protected send(id: number, message: string) {
+    protected send(ids: number[], message: string) {
         if (this.socket) {
             this.log('SENDING:', message);
             this.socket.send(`${message}\n`);
         } else {
-            this.processCallback(id, new Error('Connection not established'));
+            ids.forEach(id => this.processCallback(id, new Error('Connection not established')));
         }
     }
 

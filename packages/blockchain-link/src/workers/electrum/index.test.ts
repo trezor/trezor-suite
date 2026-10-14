@@ -158,6 +158,15 @@ describe('Electrum worker', () => {
         await server.close();
     });
 
+    it('starts with server.version and does not flood the server with requests', async () => {
+        const info = await blockchain.getAccountInfo({ descriptor: ADDRESS, details: 'txs' });
+
+        expect(info.history.transactions).toHaveLength(TX_COUNT);
+        expect(server.stats.firstMethods).toEqual(['server.version']);
+        // All the transactions of the history used to be requested at once.
+        expect(server.stats.maxWaiting).toBeLessThan(TX_COUNT);
+    });
+
     it('reports a connection closed by the server and connects again', async () => {
         await blockchain.connect();
         await blockchain.subscribe({ type: 'block' });
