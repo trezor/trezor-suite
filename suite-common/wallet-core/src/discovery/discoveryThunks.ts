@@ -412,8 +412,11 @@ export const runDiscoveryThunk = createThunk<
                 const standardWallet = selectDevices(getState()).find(
                     d => d.path === passedDevice.path && d.useEmptyPassphrase,
                 );
+                // A device with the passphrase always entered on it can't be given the empty one,
+                // it asks the user again and the same passphrase would pass for the empty one.
+                const isPassphraseAlwaysOnDevice = !!device.features.passphrase_always_on_device;
 
-                if (!standardWallet) {
+                if (!standardWallet && !isPassphraseAlwaysOnDevice) {
                     // no passphrase duplicity and no standard wallet -> check that this is not in fact empty passphrase
                     const res = await TrezorConnect.getDeviceState({
                         device: { path: passedDevice.path, useEmptyPassphrase: true },
