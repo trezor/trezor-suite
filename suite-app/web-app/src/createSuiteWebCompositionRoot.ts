@@ -13,7 +13,7 @@ import TrezorConnect from '@trezor/connect';
 import { asGetter } from '@trezor/dependency-injection';
 import { resolveConnectPath } from '@trezor/env-utils';
 import type { CreateLogger } from '@trezor/logger';
-import { createDb, createPreloadStore } from '@trezor/suite';
+import { createDb, createPreloadStore, loadSuiteAutomationTools } from '@trezor/suite';
 import { BridgeTransport } from '@trezor/transport-common';
 import { WebUsbTransport } from '@trezor/transport-web';
 
@@ -82,6 +82,14 @@ export const createSuiteWebCompositionRoot = (): SuiteWebCompositionRoot => {
     // Services need the store's dispatch/getState, while Redux thunks need those services in extra.
     // Inject them after construction to break the cycle, before the app can dispatch any actions.
     injectServicesIntoReduxExtra(services);
+
+    // A no-op unless the automation tools' gate is on.
+    loadSuiteAutomationTools({
+        store,
+        history,
+        desktopApi: suiteServices.desktopApi,
+        connect: TrezorConnect,
+    });
 
     return { app: createWebApp({ services }) };
 };

@@ -9,6 +9,8 @@ import {
     createAsyncThunk as createAsyncThunkReduxToolkit,
 } from '@reduxjs/toolkit';
 
+import { registerThunk } from './thunkRegistry';
+
 type CreateSingleInstanceThunkDispatch = ThunkDispatch<any, any, UnknownAction>;
 
 /**
@@ -107,5 +109,12 @@ export const createSingleInstanceThunk = <
     const createTypedThunk: CreateAsyncThunkFunction<ResolveSingleInstanceThunkAPI<TThunkAPI>> =
         createAsyncThunkReduxToolkit;
 
-    return createTypedThunk<TPayload, TParams>(typePrefix, wrappedPayloadCreator, options);
+    const asyncThunk = createTypedThunk<TPayload, TParams>(
+        typePrefix,
+        wrappedPayloadCreator,
+        options,
+    );
+    registerThunk(asyncThunk);
+
+    return asyncThunk;
 };

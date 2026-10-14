@@ -48,6 +48,7 @@ export {
 } from './src/support/suite/ResponsiveContext';
 export { createDb } from './src/storage/createDb';
 export { type DbDep } from './src/storage/Db';
+export { loadSuiteAutomationTools } from './src/support/automation/loadSuiteAutomationTools';
 export { selectIsWindowVisible } from './src/reducers/suite/windowReducer';
 export { reportSecurityCheck, reportToSentryThunk } from './src/utils/suite/sentry';
 export { markDeviceAsRecentlyConnectedThunk } from './src/actions/wallet/markDeviceAsRecentlyConnectedThunk';

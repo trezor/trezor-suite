@@ -7,6 +7,7 @@ This chapter contains information about tests.
 - [Playwright contribution guide](../symlink/tests/e2e-playwright-contribution-guide.md)
 - [GitHub Test Reporter](../symlink/tests/e2e-github-reporter.md)
 - [regtest](./regtest.md)
+- [automation tools](./automation-tools.md)
 - [@suite-native/test-utils](./suite-native-test-utils.md)
 - [Suite Native E2E performance](./suite-native-e2e-performance.md)
 - [Performance history](./perf-history.md)
