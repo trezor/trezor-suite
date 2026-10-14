@@ -64,6 +64,20 @@ Local `.env` setup (optional):
 
 > To set up your dev environment for a native platform (iOS/Android) follow [these additional steps](https://github.com/trezor/trezor-suite/tree/develop/suite-native/app#prerequisites).
 
+## SHA-256 certificate fingerprints:
+
+**Package ID:** io.trezor.suite
+
+**GitHub APK:**
+```
+DE:28:A3:28:8F:D1:61:D1:5A:B5:B5:6F:40:EF:CE:49:38:8A:3F:FD:FA:25:B2:D5:8B:03:73:61:8C:68:44:D1
+```
+
+**Google Play:**
+```
+7C:10:E8:FD:C9:C2:58:4B:28:2E:39:F8:9A:A5:F6:11:EA:E8:48:B8:8F:93:14:53:F8:3D:9E:90:C3:33:F6:FC
+```
+
 ## Contribute
 
 Inspired by [GitLab Contributing Guide](https://docs.gitlab.com/ee/development/contributing/)
