@@ -9,8 +9,8 @@ const exempt = ['@suite-common/calldata'];
 
 export const forbiddenDepsConfig: ForbiddenDepsConfig = {
     'forbidden-deps': [
-        { packageNamePrefix: '@suite/', reason },
-        { packageNamePrefix: '@suite-common/', except: exempt, reason },
-        { packageNamePrefix: '@suite-native/', reason },
+        { packageNamePattern: '^@suite/', reason },
+        { packageNamePattern: '^@suite-common/', except: exempt, reason },
+        { packageNamePattern: '^@suite-native/', reason },
     ],
 };

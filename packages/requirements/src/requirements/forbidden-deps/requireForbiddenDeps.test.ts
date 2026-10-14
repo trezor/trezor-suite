@@ -58,7 +58,7 @@ describe(requireForbiddenDeps.name, () => {
         writeConfig(join(context.repoRoot, 'networks'), {
             'forbidden-deps': [
                 {
-                    packageNamePrefix: '@suite-common/',
+                    packageNamePattern: '^@suite-common/',
                     except: ['@suite-common/calldata'],
                     reason: 'Below the apps.',
                 },
@@ -73,11 +73,13 @@ describe(requireForbiddenDeps.name, () => {
     it('enforces local and inherited rules together', async () => {
         writeConfig(join(context.repoRoot, 'networks'), {
             'forbidden-deps': [
-                { packageName: '@suite-common/wallet-core', reason: 'Parent policy.' },
+                { packageNamePattern: '^@suite-common/wallet-core$', reason: 'Parent policy.' },
             ],
         });
         writeConfig(context.workspaceDir, {
-            'forbidden-deps': [{ packageName: '@suite-common/calldata', reason: 'Local policy.' }],
+            'forbidden-deps': [
+                { packageNamePattern: '^@suite-common/calldata$', reason: 'Local policy.' },
+            ],
         });
 
         expect(await requireForbiddenDeps.verify(context)).toEqual([
@@ -86,15 +88,23 @@ describe(requireForbiddenDeps.name, () => {
         ]);
     });
 
-    it('reports an unknown package in an inherited policy', async () => {
+    it('allows patterns for future workspace packages', async () => {
         writeConfig(join(context.repoRoot, 'networks'), {
             'forbidden-deps': [
-                { packageName: '@suite-common/wallet-cor', reason: 'Misspelled package.' },
+                { packageNamePattern: '^@suite-common/future-network-', reason: 'Future policy.' },
             ],
         });
 
+        expect(await requireForbiddenDeps.verify(context)).toEqual([]);
+    });
+
+    it('reports an invalid dependency pattern', async () => {
+        writeConfig(context.workspaceDir, {
+            'forbidden-deps': [{ packageNamePattern: '[', reason: 'Invalid configuration.' }],
+        });
+
         expect(await requireForbiddenDeps.verify(context)).toEqual([
-            '@trezor/network-example: "@suite-common/wallet-cor" in "forbidden-deps" is not an existing workspace package.',
+            '@trezor/network-example: "[" in "forbidden-deps" is not a valid packageNamePattern regular expression.',
         ]);
     });
 
@@ -102,7 +112,9 @@ describe(requireForbiddenDeps.name, () => {
         const siblingDirectory = join(context.repoRoot, 'suite-common');
         mkdirSync(siblingDirectory);
         writeConfig(siblingDirectory, {
-            'forbidden-deps': [{ packageNamePrefix: '@suite-common/', reason: 'Another subtree.' }],
+            'forbidden-deps': [
+                { packageNamePattern: '^@suite-common/', reason: 'Another subtree.' },
+            ],
         });
 
         expect(await requireForbiddenDeps.verify(context)).toEqual([]);
@@ -110,7 +122,55 @@ describe(requireForbiddenDeps.name, () => {
 });
 
 describe(getForbiddenDependencyErrors.name, () => {
-    it('rejects an exact forbidden dependency', () => {
+    it.each([
+        'dependencies',
+        'devDependencies',
+        'peerDependencies',
+        'optionalDependencies',
+    ] as const)(
+        'rejects Suite network packages in %s while allowing generic assets and types',
+        field => {
+            const forbiddenPackages = [
+                '@trezor/network-bitcoin-suite',
+                '@trezor/network-bitcoin-suite-common',
+                '@trezor/network-bitcoin-suite-types',
+                '@trezor/network-cardano-suite-common',
+                '@trezor/network-module-suite-common-types',
+                '@trezor/network-future-family-suite-custom',
+            ];
+            const allowedPackages = [
+                '@trezor/network-bitcoin-assets',
+                '@trezor/network-bitcoin-types',
+                '@trezor/network-module-types',
+                '@trezor/network-assets-types',
+                '@trezor/network-bitcoin-suitelike',
+            ];
+            const errors = getForbiddenDependencyErrors({
+                dependencyOccurrences: [...forbiddenPackages, ...allowedPackages].map(name => ({
+                    field,
+                    name,
+                })),
+                dependencyRule: {
+                    'forbidden-deps': [
+                        {
+                            packageNamePattern: '^@trezor/network-.+-suite(?:-.+)?$',
+                            reason: 'Independent Explorer configuration.',
+                        },
+                    ],
+                },
+                workspaceName: '@trezor/connect-explorer',
+            });
+
+            expect(errors).toEqual(
+                forbiddenPackages.map(
+                    name =>
+                        `@trezor/connect-explorer: "${name}" is forbidden in ${field}. Reason: Independent Explorer configuration.`,
+                ),
+            );
+        },
+    );
+
+    it('matches only the named package when the pattern is anchored', () => {
         expect(
             getForbiddenDependencyErrors({
                 dependencyOccurrences: [
@@ -118,11 +178,15 @@ describe(getForbiddenDependencyErrors.name, () => {
                         field: 'dependencies',
                         name: '@suite-common/extra-dependencies',
                     },
+                    {
+                        field: 'dependencies',
+                        name: '@suite-common/extra-dependencies-extra',
+                    },
                 ],
                 dependencyRule: {
                     'forbidden-deps': [
                         {
-                            packageName: '@suite-common/extra-dependencies',
+                            packageNamePattern: '^@suite-common/extra-dependencies$',
                             reason: 'Redux utilities must stay domain-independent.',
                         },
                     ],
@@ -134,7 +198,7 @@ describe(getForbiddenDependencyErrors.name, () => {
         ]);
     });
 
-    it('rejects dependencies matching a forbidden package-name prefix', () => {
+    it('rejects dependencies matching a forbidden package-name pattern', () => {
         expect(
             getForbiddenDependencyErrors({
                 dependencyOccurrences: [
@@ -144,7 +208,7 @@ describe(getForbiddenDependencyErrors.name, () => {
                 dependencyRule: {
                     'forbidden-deps': [
                         {
-                            packageNamePrefix: '@suite-common/',
+                            packageNamePattern: '^@suite-common/',
                             reason: 'Redux utilities must stay domain-independent.',
                         },
                     ],
@@ -157,8 +221,8 @@ describe(getForbiddenDependencyErrors.name, () => {
     });
 });
 
-describe('forbidden package-name prefix exceptions', () => {
-    it('lets a listed package through while still rejecting the rest of the prefix', () => {
+describe('forbidden package-name pattern exceptions', () => {
+    it('lets a listed package through while still rejecting the rest of the pattern', () => {
         expect(
             getForbiddenDependencyErrors({
                 dependencyOccurrences: [
@@ -168,7 +232,7 @@ describe('forbidden package-name prefix exceptions', () => {
                 dependencyRule: {
                     'forbidden-deps': [
                         {
-                            packageNamePrefix: '@suite-common/',
+                            packageNamePattern: '^@suite-common/',
                             except: ['@suite-common/calldata'],
                             reason: 'Below the apps.',
                         },

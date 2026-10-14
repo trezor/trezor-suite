@@ -1,20 +1,10 @@
-type ForbiddenDependencyBase = {
+export type ForbiddenDependency = {
+    /** Regular expression matching dependency workspace names. */
+    readonly packageNamePattern: string;
     readonly reason: string;
-};
-
-type ExactForbiddenDependency = ForbiddenDependencyBase & {
-    readonly packageName: string;
-    readonly packageNamePrefix?: never;
-};
-
-type PrefixForbiddenDependency = ForbiddenDependencyBase & {
-    readonly packageName?: never;
-    readonly packageNamePrefix: string;
-    /** Packages matching the prefix that are allowed anyway. */
+    /** Matching packages that are allowed anyway. */
     readonly except?: ReadonlyArray<string>;
 };
-
-export type ForbiddenDependency = ExactForbiddenDependency | PrefixForbiddenDependency;
 
 export type AllowedOnlyInRule = {
     readonly packages: ReadonlyArray<string>;
