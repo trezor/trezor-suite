@@ -40,7 +40,7 @@ export interface FormProps<
      * assumption by swapping `formState` on an object whose identity stays put. A separate binding
      * sidesteps it by being a value read during this render rather than a path through `form`.
      */
-    formState: FormState<TFieldValues>;
+    formState: FormState<NoInfer<TFieldValues>>;
 
     /**
      * When given, the children are wrapped in a `form` element submitting to it.
