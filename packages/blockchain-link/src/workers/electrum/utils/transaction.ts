@@ -36,7 +36,7 @@ const parseAddresses = ({ address, addresses, type, hex }: TxOut['scriptPubKey']
     };
 };
 
-type GetVout = (txid: string, vout: number) => TransactionVerbose['vout'][number];
+type GetVout = (txid: string, vout: number) => TransactionVerbose['vout'][number] | undefined;
 type GetSpent = (txid: string, n: number) => boolean;
 type GetBlockHeight = (tx: TransactionVerbose) => number;
 
@@ -60,10 +60,11 @@ const formatTransaction =
             size,
         } = tx;
         const vinRegular = vin.filter(isNotCoinbase);
+        const prevOuts = vinRegular.map(({ txid, vout }) => getVout(txid, vout));
         const value = vout.map(({ value }) => value).reduce((a, b) => a + b, 0);
-        const valueIn = vinRegular
-            .map(({ txid, vout }) => getVout(txid, vout).value)
-            .reduce((a, b) => a + b, 0);
+        const valueIn = prevOuts.reduce((sum, prevOut) => sum + (prevOut?.value ?? 0), 0);
+        // The fee is unknown when the previous transactions of some inputs were not fetched.
+        const isValueInKnown = prevOuts.every(prevOut => prevOut !== undefined);
 
         return {
             txid,
@@ -76,17 +77,25 @@ const formatTransaction =
             blockHeight: getBlockHeight(tx),
             value: btcToSat(value),
             valueIn: btcToSat(valueIn),
-            fees: btcToSat(valueIn - value),
+            fees: isValueInKnown ? btcToSat(valueIn - value) : '0',
             vsize,
             size,
-            vin: vinRegular.map(({ txid, vout, sequence, n }, index) => ({
-                txid,
-                vout,
-                sequence,
-                n: n || index,
-                value: btcToSat(getVout(txid, vout).value),
-                ...parseAddresses(getVout(txid, vout).scriptPubKey),
-            })),
+            vin: vinRegular.map(({ txid, vout, sequence, n }, index) => {
+                const prevOut = prevOuts[index];
+
+                return {
+                    txid,
+                    vout,
+                    sequence,
+                    n: n || index,
+                    ...(prevOut
+                        ? {
+                              value: btcToSat(prevOut.value),
+                              ...parseAddresses(prevOut.scriptPubKey),
+                          }
+                        : { addresses: [], isAddress: false }),
+                };
+            }),
             vout: vout.map(({ value, n, scriptPubKey }) => ({
                 value: btcToSat(value),
                 n,
@@ -97,9 +106,18 @@ const formatTransaction =
         };
     };
 
+type GetTransactionsOptions = {
+    // The previous transactions of inputs which aren't in the history itself are needed only for
+    // the fee and the sender addresses of transactions with foreign inputs (incoming payments).
+    // Without them such inputs have no value and address and the fee of the transaction is 0, so
+    // the result fits only computations of the account's own amounts.
+    withForeignParents?: boolean;
+};
+
 export const getTransactions = async (
     client: ElectrumAPI,
     history: HistoryTx[],
+    { withForeignParents = true }: GetTransactionsOptions = {},
 ): Promise<BlockbookTransaction[]> => {
     const txids = history.map(({ tx_hash }) => tx_hash).filter(arrayDistinct);
 
@@ -110,12 +128,14 @@ export const getTransactions = async (
         txids.map(txid => client.request('blockchain.transaction.get', txid, true)),
     ).then(txs => arrayToDictionary(txs, ({ txid }) => txid));
 
+    const prevTxids = withForeignParents
+        ? Object.values(origTxs)
+              .flatMap(({ vin }) => vin.filter(isNotCoinbase).map(({ txid }) => txid))
+              .filter(arrayDistinct)
+              .filter(txid => !origTxs[txid])
+        : [];
     const prevTxs = await Promise.all(
-        Object.values(origTxs)
-            .flatMap(({ vin }) => vin.filter(isNotCoinbase).map(({ txid }) => txid))
-            .filter(arrayDistinct)
-            .filter(txid => !origTxs[txid])
-            .map(txid => client.request('blockchain.transaction.get', txid, true)),
+        prevTxids.map(txid => client.request('blockchain.transaction.get', txid, true)),
     ).then(txs => arrayToDictionary(txs, ({ txid }) => txid));
 
     /* TODO
@@ -144,22 +164,7 @@ export const getTransactions = async (
     const getSpent = (txid: string, n: number) => !unspentOutputs[txid]?.includes(n);
     */
     const getSpent = () => false;
-    const getTx = (txid: string) => {
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const origTx: (typeof origTxs)[string] = origTxs[txid];
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const prevTx: (typeof prevTxs)[string] = prevTxs[txid];
-
-        return origTx || prevTx;
-    };
-    const getVout = (txid: string, vout: number) => {
-        const tx = getTx(txid);
-        const txVouts = tx.vout;
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const v: (typeof txVouts)[number] = txVouts[vout];
-
-        return v;
-    };
+    const getVout: GetVout = (txid, vout) => (origTxs[txid] ?? prevTxs[txid])?.vout[vout];
 
     const currentHeight = client.getInfo()?.block?.height || 0;
     const historyHeights = new Map(history.map(({ tx_hash, height }) => [tx_hash, height]));

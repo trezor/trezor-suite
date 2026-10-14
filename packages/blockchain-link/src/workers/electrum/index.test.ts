@@ -71,7 +71,12 @@ const getResult = ({ method, params }: JsonRpcRequest) => {
 // and counts requests the client lets wait for a response.
 const createElectrumServer = async () => {
     const sockets: Socket[] = [];
-    const stats = { firstMethods: [] as string[], waiting: 0, maxWaiting: 0 };
+    const stats = {
+        firstMethods: [] as string[],
+        waiting: 0,
+        maxWaiting: 0,
+        requestedTxids: [] as string[],
+    };
 
     const server: Server = createServer(socket => {
         sockets.push(socket);
@@ -94,6 +99,9 @@ const createElectrumServer = async () => {
                         return;
                     }
                 }
+                requests
+                    .filter(({ method }) => method === 'blockchain.transaction.get')
+                    .forEach(({ params }) => stats.requestedTxids.push(params[0] as string));
                 stats.waiting += requests.length;
                 stats.maxWaiting = Math.max(stats.maxWaiting, stats.waiting);
                 setTimeout(() => {
@@ -159,7 +167,11 @@ describe('Electrum worker', () => {
     });
 
     it('starts with server.version and does not flood the server with requests', async () => {
-        const info = await blockchain.getAccountInfo({ descriptor: ADDRESS, details: 'txs' });
+        const info = await blockchain.getAccountInfo({
+            descriptor: ADDRESS,
+            details: 'txs',
+            pageSize: TX_COUNT,
+        });
 
         expect(info.history.transactions).toHaveLength(TX_COUNT);
         // The height comes from the history, not from confirmations counted by the node.
@@ -170,6 +182,35 @@ describe('Electrum worker', () => {
         expect(server.stats.firstMethods).toEqual(['server.version']);
         // All the transactions of the history used to be requested at once.
         expect(server.stats.maxWaiting).toBeLessThan(TX_COUNT);
+    });
+
+    it('returns a page of the history with the previous transactions of the page only', async () => {
+        const info = await blockchain.getAccountInfo({
+            descriptor: ADDRESS,
+            details: 'txs',
+            page: 2,
+            pageSize: 10,
+        });
+
+        const pageIndexes = Array.from({ length: 10 }, (_, i) => i + 10);
+        expect(info.history.transactions?.map(({ txid }) => txid)).toEqual(
+            pageIndexes.map(getTxid),
+        );
+        expect(info.page).toEqual({ index: 2, size: 10, total: TX_COUNT / 10 });
+        expect([...server.stats.requestedTxids].sort()).toEqual(
+            pageIndexes.flatMap(i => [getTxid(i), getPrevTxid(i)]).sort(),
+        );
+    });
+
+    it('computes the balance history without the previous transactions of foreign inputs', async () => {
+        const history = await blockchain.getAccountBalanceHistory({ descriptor: ADDRESS });
+
+        expect(history).toEqual([
+            expect.objectContaining({ txs: TX_COUNT, received: `${TX_COUNT * 100000}`, sent: '0' }),
+        ]);
+        expect([...server.stats.requestedTxids].sort()).toEqual(
+            Array.from({ length: TX_COUNT }, (_, i) => getTxid(i)).sort(),
+        );
     });
 
     it('reports a connection closed by the server and connects again', async () => {
