@@ -121,6 +121,9 @@ export const createMessageSystemOwner = ({
     const poller = createConfigPoller({ isMobile: false });
     const listeners = new Set<GateListener>();
     let gate = INACTIVE_GATE;
+    // In memory on purpose: a persisted fetch timestamp would make a relaunch within the fetch
+    // interval skip the startup fetch and run on a stale config, which the renderer never did.
+    let lastFetchTimestamp = 0;
     // The rollback floor, taken only from a config that verified. The persisted sequence must not
     // be used for it: the store file is user-writable, so a sequence no verified config backs
     // would make every future config look like a rollback and reject it forever.
@@ -186,13 +189,7 @@ export const createMessageSystemOwner = ({
         }
 
         const cache = store.getMessageSystemCache();
-        if (
-            !isConfigFetchDue({
-                isLocalConfig: false,
-                lastFetchTimestamp: cache?.timestamp ?? 0,
-                isMobile: false,
-            })
-        ) {
+        if (!isConfigFetchDue({ isLocalConfig: false, lastFetchTimestamp, isMobile: false })) {
             return;
         }
 
@@ -206,11 +203,13 @@ export const createMessageSystemOwner = ({
                 );
             }
 
-            store.setMessageSystemCache({
-                configJws,
-                sequence: config.sequence,
-                timestamp: Date.now(),
-            });
+            if (configJws !== cache?.configJws) {
+                // `conf` re-serialises the whole store and writes it synchronously, and the JWS
+                // alone is ~150 kB, so the unchanged config a poll normally returns must not
+                // write. Only a config that actually changed is persisted.
+                store.setMessageSystemCache({ configJws, sequence: config.sequence });
+            }
+            lastFetchTimestamp = Date.now();
             appliedSequence = config.sequence;
             applyConfig(config);
         } catch (error) {

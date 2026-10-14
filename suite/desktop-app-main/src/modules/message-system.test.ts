@@ -106,7 +106,7 @@ describe('message system owner', () => {
     it('closes the gate on a killswitch in the persisted config', () => {
         jest.mocked(verifyConfigJws).mockReturnValue(getConfig(10, [getKillswitchAction()]));
         const owner = createOwner({
-            store: createTestStore({ configJws: 'persisted-jws', sequence: 10, timestamp: 1 }),
+            store: createTestStore({ configJws: 'persisted-jws', sequence: 10 }),
         });
 
         owner.loadPersistedConfig();
@@ -122,7 +122,7 @@ describe('message system owner', () => {
         jest.mocked(verifyConfigJws).mockImplementation(() => {
             throw Error('Config authenticity is invalid');
         });
-        const store = createTestStore({ configJws: 'tampered-jws', sequence: 10, timestamp: 1 });
+        const store = createTestStore({ configJws: 'tampered-jws', sequence: 10 });
         const owner = createOwner({ store });
 
         owner.loadPersistedConfig();
@@ -141,7 +141,7 @@ describe('message system owner', () => {
         });
         // A profile carried from a dev build to a codesign one verifies against another key, so
         // its sequence may well be above the one the other channel's config is at.
-        const store = createTestStore({ configJws: 'other-key-jws', sequence: 120, timestamp: 1 });
+        const store = createTestStore({ configJws: 'other-key-jws', sequence: 120 });
         const owner = createOwner({ store });
         owner.loadPersistedConfig();
 
@@ -152,13 +152,12 @@ describe('message system owner', () => {
         expect(store.setMessageSystemCache).toHaveBeenCalledWith({
             configJws: 'stable-jws',
             sequence: 40,
-            timestamp: expect.any(Number),
         });
         expect(owner.getGate().isKillswitchActive).toBe(true);
     });
 
     it('refuses an acquired config that rolls the sequence back', async () => {
-        const store = createTestStore({ configJws: 'persisted-jws', sequence: 10, timestamp: 1 });
+        const store = createTestStore({ configJws: 'persisted-jws', sequence: 10 });
         jest.mocked(verifyConfigJws).mockReturnValue(getConfig(10, [getKillswitchAction()]));
         const owner = createOwner({ store });
         owner.loadPersistedConfig();
@@ -172,7 +171,7 @@ describe('message system owner', () => {
     });
 
     it('opens the gate again when a newer config drops the killswitch', async () => {
-        const store = createTestStore({ configJws: 'persisted-jws', sequence: 10, timestamp: 1 });
+        const store = createTestStore({ configJws: 'persisted-jws', sequence: 10 });
         jest.mocked(verifyConfigJws).mockReturnValue(getConfig(10, [getKillswitchAction()]));
         const owner = createOwner({ store });
         const listener = jest.fn();
@@ -186,7 +185,6 @@ describe('message system owner', () => {
         expect(store.setMessageSystemCache).toHaveBeenCalledWith({
             configJws: 'newer-jws',
             sequence: 11,
-            timestamp: expect.any(Number),
         });
         expect(listener).toHaveBeenCalledWith({
             isKillswitchActive: false,
@@ -195,16 +193,26 @@ describe('message system owner', () => {
     });
 
     it('does not fetch again before the fetch interval elapsed', async () => {
-        const owner = createOwner({
-            store: createTestStore({
-                configJws: 'persisted-jws',
-                sequence: 10,
-                timestamp: Date.now(),
-            }),
-        });
+        const store = createTestStore({ configJws: 'persisted-jws', sequence: 10 });
+        jest.mocked(verifyConfigJws).mockReturnValue(getConfig(10, []));
+        jest.mocked(fetchRemoteConfigJws).mockResolvedValue('persisted-jws');
+        const owner = createOwner({ store });
+        await owner.acquireRemoteConfig();
 
         await owner.acquireRemoteConfig();
 
-        expect(fetchRemoteConfigJws).not.toHaveBeenCalled();
+        expect(fetchRemoteConfigJws).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not persist a config whose JWS did not change', async () => {
+        const store = createTestStore({ configJws: 'persisted-jws', sequence: 10 });
+        jest.mocked(verifyConfigJws).mockReturnValue(getConfig(10, []));
+        const owner = createOwner({ store });
+        owner.loadPersistedConfig();
+
+        jest.mocked(fetchRemoteConfigJws).mockResolvedValue('persisted-jws');
+        await owner.acquireRemoteConfig();
+
+        expect(store.setMessageSystemCache).not.toHaveBeenCalled();
     });
 });

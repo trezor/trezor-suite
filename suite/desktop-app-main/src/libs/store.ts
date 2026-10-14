@@ -16,8 +16,6 @@ export type MessageSystemCache = {
     /** The acquired JWS, kept signed so that its authenticity is verified again on every load. */
     configJws: string;
     sequence: number;
-    /** When the config was fetched, in ms. Zero would make the next fetch due immediately. */
-    timestamp: number;
 };
 
 export class Store {
