@@ -1,9 +1,8 @@
-import { sumAddressValues } from '@trezor/blockchain-link';
 import { sortTxsFromLatest } from '@trezor/blockchain-link-utils';
 import type { Network } from '@trezor/utxo-lib';
 
 import { CoinjoinAddressController } from './CoinjoinAddressController';
-import { doesTxContainAddress, isTxConfirmed } from './backendUtils';
+import { isTxConfirmed } from './backendUtils';
 import { getAccountUtxo } from './getAccountUtxo';
 import type {
     AccountCache,
@@ -12,6 +11,7 @@ import type {
     PrederivedAddress,
     ScanAccountCheckpoint,
     Transaction,
+    VinVout,
 } from '../types/backend';
 
 const PAGE_SIZE_DEFAULT = 25;
@@ -38,20 +38,56 @@ const getDelta = ({ type, amount, fee }: Transaction) => {
 
 const sumBalance = (current: number, tx: Transaction) => current + getDelta(tx);
 
+type AddressStats = { transfers: number; sent: number; received: number };
+
+const getAddressStats = (addresses: PrederivedAddress[], transactions: Transaction[]) => {
+    const stats = new Map<string, AddressStats>(
+        addresses.map(({ address }) => [address, { transfers: 0, sent: 0, received: 0 }]),
+    );
+
+    transactions.forEach(({ details: { vin, vout } }) => {
+        const txStats = new Set<AddressStats>();
+
+        const addValues = (vinVouts: VinVout[], field: 'sent' | 'received') =>
+            vinVouts.forEach(({ addresses: vinVoutAddresses = [], value }) =>
+                vinVoutAddresses.forEach(address => {
+                    const addressStats = stats.get(address);
+                    if (!addressStats) {
+                        return;
+                    }
+
+                    addressStats[field] += value ? Number.parseFloat(value) : 0;
+                    txStats.add(addressStats);
+                }),
+            );
+
+        addValues(vin, 'sent');
+        addValues(vout, 'received');
+
+        txStats.forEach(addressStats => {
+            addressStats.transfers += 1;
+        });
+    });
+
+    return stats;
+};
+
 const enhanceAddress =
-    (transactions: Transaction[]) =>
+    (stats: Map<string, AddressStats>) =>
     ({ address, path }: PrederivedAddress): Address => {
-        const txs = transactions.filter(tx => doesTxContainAddress(address)(tx.details));
-        const sent = sumAddressValues(txs, address, tx => tx.details.vin);
-        const received = sumAddressValues(txs, address, tx => tx.details.vout);
+        const { transfers, sent, received } = stats.get(address) ?? {
+            transfers: 0,
+            sent: 0,
+            received: 0,
+        };
 
         return {
             address,
             path,
-            transfers: txs.length,
-            balance: txs.length ? (received - sent).toString() : '0',
-            sent: txs.length ? sent.toString() : '0',
-            received: txs.length ? received.toString() : '0',
+            transfers,
+            balance: (received - sent).toString(),
+            sent: sent.toString(),
+            received: received.toString(),
         };
     };
 
@@ -82,8 +118,12 @@ export const getAccountInfo = (params: GetAccountInfoParams): AccountInfo => {
         params.cache,
     );
 
-    const receive = addressController.receive.map(enhanceAddress(txsConfirmed));
-    const change = addressController.change.map(enhanceAddress(txsConfirmed));
+    const addressStats = getAddressStats(
+        addressController.receive.concat(addressController.change),
+        txsConfirmed,
+    );
+    const receive = addressController.receive.map(enhanceAddress(addressStats));
+    const change = addressController.change.map(enhanceAddress(addressStats));
 
     const addresses = {
         change,
