@@ -25,6 +25,12 @@ let
   }) {};
 
   useAndroid = builtins.getEnv "USE_ANDROID" == "1";
+  # Share the flake's Git pin so both development shells have the maintenance fix.
+  gitSource = (builtins.fromJSON (builtins.readFile ./flake.lock)).nodes.git-nixpkgs.locked;
+  gitPkgs = import (builtins.fetchTarball {
+    url = "https://github.com/${gitSource.owner}/${gitSource.repo}/archive/${gitSource.rev}.tar.gz";
+    sha256 = gitSource.narHash;
+  }) { system = builtins.currentSystem; };
   androidEnv = if useAndroid then import ./.nix/android.nix { inherit pkgs; } else {};
   extraBuildInputs = pkgs.lib.concatLists [
     (if useAndroid then [ androidEnv.jdk androidEnv.androidSdk ] ++ androidEnv.extraPackages else [jre])
@@ -35,7 +41,7 @@ in
     buildInputs = [
       bash
       jq
-      git
+      gitPkgs.git
       git-lfs
       gnupg
       mdbook
