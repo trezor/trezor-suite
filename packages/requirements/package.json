@@ -16,7 +16,7 @@
     "dependencies": {
         "@trezor/node-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "chalk": "^6.0.0",
+        "chalk": "^6.0.1",
         "semver": "^7.7.1"
     },
     "devDependencies": {
