@@ -23,7 +23,10 @@ export const initBackground: ModuleInitBackground = ({
     const initialSettings = store.getTraySettings();
 
     const state = {
-        visible: initialSettings.showOnTray,
+        // The tray is off by default, and a headless boot has no window, so the disabled state
+        // would have no way to reach the user at all: while it lasts it overrides the user's tray
+        // preference (which is itself left untouched).
+        visible: initialSettings.showOnTray || messageSystem.getGate().isKillswitchActive,
         bridgeStatus: true,
         devices: 0,
         isDisabledByMessageSystem: messageSystem.getGate().isKillswitchActive,
@@ -145,6 +148,7 @@ export const initBackground: ModuleInitBackground = ({
                 : 'Enabled by the message system',
         );
         state.isDisabledByMessageSystem = gate.isKillswitchActive;
+        state.visible = gate.isKillswitchActive || store.getTraySettings().showOnTray;
         renderTray();
     });
     mainThreadEmitter.on('module/bridge/status', (status: Status) => {
