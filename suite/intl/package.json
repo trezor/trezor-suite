@@ -33,6 +33,6 @@
     "devDependencies": {
         "@suite-common/wallet-types": "workspace:*",
         "@testing-library/dom": "^10.4.2",
-        "@testing-library/react": "^16.3.2"
+        "@testing-library/react": "^16.3.3"
     }
 }

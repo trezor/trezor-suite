@@ -12253,7 +12253,7 @@ __metadata:
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@testing-library/dom": "npm:^10.4.2"
-    "@testing-library/react": "npm:^16.3.2"
+    "@testing-library/react": "npm:^16.3.3"
     "@trezor/connect": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
     "@trezor/device-utils": "workspace:*"
@@ -12350,7 +12350,7 @@ __metadata:
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
-    "@testing-library/react": "npm:^16.3.2"
+    "@testing-library/react": "npm:^16.3.3"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
@@ -16650,7 +16650,7 @@ __metadata:
     "@suite-common/suite-utils": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@testing-library/dom": "npm:^10.4.2"
-    "@testing-library/react": "npm:^16.3.2"
+    "@testing-library/react": "npm:^16.3.3"
     "@trezor/type-utils": "workspace:^"
     "@trezor/utils": "workspace:^"
     date-fns: "npm:^4.1.0"
@@ -17083,7 +17083,7 @@ __metadata:
     "@suite-common/test-utils": "workspace:*"
     "@suite/intl": "workspace:*"
     "@testing-library/dom": "npm:^10.4.2"
-    "@testing-library/react": "npm:^16.3.2"
+    "@testing-library/react": "npm:^16.3.3"
     "@testing-library/user-event": "npm:^14.6.4"
     "@trezor/dependency-injection": "workspace:*"
     "@trezor/suite": "workspace:*"
@@ -17884,9 +17884,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/react@npm:^16.3.2":
-  version: 16.3.2
-  resolution: "@testing-library/react@npm:16.3.2"
+"@testing-library/react@npm:^16.3.3":
+  version: 16.3.3
+  resolution: "@testing-library/react@npm:16.3.3"
   dependencies:
     "@babel/runtime": "npm:^7.12.5"
   peerDependencies:
@@ -17900,7 +17900,7 @@ __metadata:
       optional: true
     "@types/react-dom":
       optional: true
-  checksum: 10/0ca88c6f672d00c2afd1bdedeff9b5382dd8157038efeb9762dc016731030075624be7106b92d2b5e5c52812faea85263e69272c14b6f8700eb48a4a8af6feef
+  checksum: 10/c330e2d8158fd0f4b059cb1cd30f74265c6e80b204cf7245c9b2c4117582d6deb985d51edb62bd1b94e79ef48a2eaba4d002278d06caf725830a8b0f475e0118
   languageName: node
   linkType: hard
 
@@ -18114,7 +18114,7 @@ __metadata:
     "@tanstack/react-virtual": "npm:^3.14.13"
     "@testing-library/dom": "npm:^10.4.2"
     "@testing-library/jest-dom": "npm:7.0.1"
-    "@testing-library/react": "npm:^16.3.2"
+    "@testing-library/react": "npm:^16.3.3"
     "@testing-library/user-event": "npm:^14.6.4"
     "@trezor/env-utils": "workspace:*"
     "@trezor/eslint": "workspace:*"
@@ -18492,7 +18492,7 @@ __metadata:
   resolution: "@trezor/dependency-injection@workspace:packages/dependency-injection"
   dependencies:
     "@reduxjs/toolkit": "npm:2.13.0"
-    "@testing-library/react": "npm:^16.3.2"
+    "@testing-library/react": "npm:^16.3.3"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     react: "npm:19.2.3"
@@ -19013,7 +19013,7 @@ __metadata:
     "@suite-common/toast-notifications": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@testing-library/dom": "npm:^10.4.2"
-    "@testing-library/react": "npm:^16.3.2"
+    "@testing-library/react": "npm:^16.3.3"
     "@testing-library/user-event": "npm:^14.6.4"
     "@trezor/asset-utils": "workspace:*"
     "@trezor/components": "workspace:*"
@@ -19091,7 +19091,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/react-utils@workspace:packages/react-utils"
   dependencies:
-    "@testing-library/react": "npm:^16.3.2"
+    "@testing-library/react": "npm:^16.3.3"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/react": "npm:19.2.14"
@@ -19422,7 +19422,7 @@ __metadata:
     "@suite/wallet": "workspace:*"
     "@tanstack/react-query": "npm:5.103.1"
     "@testing-library/jest-dom": "npm:7.0.1"
-    "@testing-library/react": "npm:^16.3.2"
+    "@testing-library/react": "npm:^16.3.3"
     "@testing-library/user-event": "npm:^14.6.4"
     "@trezor/analytics-uploader": "workspace:*"
     "@trezor/asset-utils": "workspace:*"
