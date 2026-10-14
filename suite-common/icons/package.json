@@ -36,6 +36,7 @@
         "@trezor/network-stellar-assets": "workspace:*",
         "@trezor/network-tezos-assets": "workspace:*",
         "@trezor/network-tron-assets": "workspace:*",
+        "@trezor/type-utils": "workspace:*",
         "zod": "4.6.5"
     }
 }
