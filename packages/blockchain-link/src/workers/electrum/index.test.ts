@@ -162,6 +162,11 @@ describe('Electrum worker', () => {
         const info = await blockchain.getAccountInfo({ descriptor: ADDRESS, details: 'txs' });
 
         expect(info.history.transactions).toHaveLength(TX_COUNT);
+        // The height comes from the history, not from confirmations counted by the node.
+        expect(info.history.transactions?.[0]).toMatchObject({
+            txid: getTxid(0),
+            blockHeight: 990,
+        });
         expect(server.stats.firstMethods).toEqual(['server.version']);
         // All the transactions of the history used to be requested at once.
         expect(server.stats.maxWaiting).toBeLessThan(TX_COUNT);
