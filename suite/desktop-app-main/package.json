@@ -46,7 +46,7 @@
         "@trezor/transport-common": "workspace:*",
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "chalk": "^6.0.0",
+        "chalk": "^6.0.1",
         "electron-localshortcut": "^3.2.1",
         "electron-store": "11.0.2",
         "electron-updater": "6.8.9",

@@ -11809,7 +11809,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/illustrations@workspace:suite-common/illustrations"
   dependencies:
-    chalk: "npm:^6.0.0"
+    chalk: "npm:^6.0.1"
     prettier: "npm:^3.9.6"
     svgo: "npm:^4.0.1"
   languageName: unknown
@@ -16360,7 +16360,7 @@ __metadata:
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/electron-localshortcut": "npm:^3.1.3"
-    chalk: "npm:^6.0.0"
+    chalk: "npm:^6.0.1"
     electron: "npm:43.2.0"
     electron-devtools-installer: "npm:^4.0.0"
     electron-localshortcut: "npm:^3.2.1"
@@ -19146,7 +19146,7 @@ __metadata:
   dependencies:
     "@trezor/node-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    chalk: "npm:^6.0.0"
+    chalk: "npm:^6.0.1"
     semver: "npm:^7.7.1"
     tsx: "npm:^4.21.0"
   languageName: unknown
@@ -19175,7 +19175,7 @@ __metadata:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@trezor/eslint": "workspace:*"
     "@types/semver": "npm:^7.7.0"
-    chalk: "npm:^6.0.0"
+    chalk: "npm:^6.0.1"
     cross-fetch: "npm:^4.1.0"
     fs-extra: "npm:^11.3.1"
     minimatch: "npm:^10.2.4"
@@ -19281,7 +19281,7 @@ __metadata:
     "@types/lodash": "npm:^4.17.16"
     "@walletconnect/sign-client": "npm:^2.23.10"
     "@walletconnect/types": "npm:^2.23.10"
-    chalk: "npm:^6.0.0"
+    chalk: "npm:^6.0.1"
     dotenv: "npm:17.4.2"
     fs-extra: "npm:^11.3.1"
     intl-messageformat: "npm:11.1.2"
@@ -24697,10 +24697,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chalk@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "chalk@npm:6.0.0"
-  checksum: 10/bdcb895b9c848ddbce38f38df5a10a3e272d6c04d759161789c4a2fa5a1fa78bf9eecf4eef73433a2a3be7324d6da96c3c9baf5c80862f37683cc0b890597831
+"chalk@npm:^6.0.1":
+  version: 6.0.1
+  resolution: "chalk@npm:6.0.1"
+  checksum: 10/1457692e6327f299da7d7cd6a7774fe1de25bda6c0e33791901d6762a6c0f2409bd3d92bf7695519825c2fbb405c104a0a73fd489e4e9f88af3ef2a1d97455c9
   languageName: node
   linkType: hard
 
