@@ -35,8 +35,9 @@ const initBridge = (isKillswitchActive: boolean) =>
 describe('bridge module', () => {
     it('does not toggle the bridge while the message system disabled it', async () => {
         initBridge(true);
+        const toggle = ipcHandlers['bridge/toggle'];
 
-        await expect(ipcHandlers['bridge/toggle']()).resolves.toStrictEqual({
+        await expect(toggle?.()).resolves.toStrictEqual({
             success: false,
             error: 'DISABLED_BY_MESSAGE_SYSTEM',
         });
