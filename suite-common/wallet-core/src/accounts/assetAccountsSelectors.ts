@@ -95,7 +95,6 @@ const toAssetAccount = ({
 const hasBalance = (token: TokenInfo) => new BigNumber(token.balance ?? '0').gt(0);
 
 // A collection is held when it lists its items, even where the backend reports no balance for it.
-// Items first: Blockbook reports no balance for most collections, so this rarely builds a number.
 const isNftHeld = (token: TokenInfo) =>
     (token.ids?.length ?? 0) > 0 || (token.multiTokenValues?.length ?? 0) > 0 || hasBalance(token);
 
@@ -121,12 +120,15 @@ const splitAssetAccounts = (accounts: readonly Account[]): AssetAccountsByKind =
 
         (account.tokens ?? []).forEach(token => {
             const isNft = isNftToken(token);
+            const isHeld = isNft ? isNftHeld(token) : hasBalance(token);
 
-            if (isNft ? !isNftHeld(token) : !hasBalance(token)) {
+            if (!isHeld) {
                 return;
             }
 
-            (isNft ? nftAssetAccounts : assetAccounts).push(
+            const bucket = isNft ? nftAssetAccounts : assetAccounts;
+
+            bucket.push(
                 toAssetAccount({
                     account,
                     contractAddress: token.contract as TokenAddress,
@@ -167,20 +169,26 @@ export const selectDeviceAssetAccounts = createMemoizedSelector(
     ({ assetAccounts }) => assetAccounts,
 );
 
-const haveSameEntries = <T>(left: readonly T[] | undefined, right: readonly T[] | undefined) =>
-    left === right ||
-    (left?.length === right?.length &&
-        (left ?? []).every((entry, index) => entry === right?.[index]));
+const haveSameIds = (left: readonly string[] | undefined, right: readonly string[] | undefined) => {
+    if (left === right) return true;
+    if (left === undefined || right === undefined) return false;
+    if (left.length !== right.length) return false;
+
+    return left.every((id, index) => id === right[index]);
+};
 
 const haveSameMultiTokenValues = (
     left: readonly MultiTokenValue[] | undefined,
     right: readonly MultiTokenValue[] | undefined,
-) =>
-    left === right ||
-    (left?.length === right?.length &&
-        (left ?? []).every(
-            ({ id, value }, index) => id === right?.[index]?.id && value === right?.[index]?.value,
-        ));
+) => {
+    if (left === right) return true;
+    if (left === undefined || right === undefined) return false;
+    if (left.length !== right.length) return false;
+
+    return left.every(
+        ({ id, value }, index) => id === right[index]?.id && value === right[index]?.value,
+    );
+};
 
 const haveSameNftAssetAccounts = (left: readonly AssetAccount[], right: readonly AssetAccount[]) =>
     left.length === right.length &&
@@ -192,7 +200,7 @@ const haveSameNftAssetAccounts = (left: readonly AssetAccount[], right: readonly
             held.cryptoBalance === other.cryptoBalance &&
             held.tokenInfo?.name === other.tokenInfo?.name &&
             held.tokenInfo?.symbol === other.tokenInfo?.symbol &&
-            haveSameEntries(held.tokenInfo?.ids, other.tokenInfo?.ids) &&
+            haveSameIds(held.tokenInfo?.ids, other.tokenInfo?.ids) &&
             haveSameMultiTokenValues(
                 held.tokenInfo?.multiTokenValues,
                 other.tokenInfo?.multiTokenValues,
@@ -250,8 +258,8 @@ const selectAssetAccountsByToken = createMemoizedSelector(
     groupAssetAccountsByToken,
 );
 
-// Only collections the wallet on screen holds: no other wallet's collections reach the screen.
-const selectNftAssetAccountsByToken = createMemoizedSelector(
+// Collections are only ever shown for the wallet on screen, so every NFT selector is device-scoped.
+const selectDeviceNftAssetAccountsByToken = createMemoizedSelector(
     [selectDeviceNftAssetAccounts],
     groupAssetAccountsByToken,
 );
@@ -314,8 +322,8 @@ export const selectHiddenTokenReasons = createMemoizedSelector(
 );
 
 /** Collections are hidden by the same rule as tokens, against the NFT definitions. */
-export const selectHiddenNftReasons = createMemoizedSelector(
-    [selectNftAssetAccountsByToken, selectTokenDefinitions],
+export const selectDeviceHiddenNftReasons = createMemoizedSelector(
+    [selectDeviceNftAssetAccountsByToken, selectTokenDefinitions],
     (byNetwork, tokenDefinitions) =>
         getHiddenTokenReasons({
             byNetwork,
@@ -347,8 +355,8 @@ export const selectHiddenAssetAccountKeys = createMemoizedSelector(
     getHiddenAssetAccountKeys,
 );
 
-export const selectHiddenNftAssetAccountKeys = createMemoizedSelector(
-    [selectNftAssetAccountsByToken, selectHiddenNftReasons],
+export const selectDeviceHiddenNftAssetAccountKeys = createMemoizedSelector(
+    [selectDeviceNftAssetAccountsByToken, selectDeviceHiddenNftReasons],
     getHiddenAssetAccountKeys,
 );
 
@@ -357,7 +365,7 @@ export const selectHiddenAssetAccountKeySet = createMemoizedSelector(
     (keys): ReadonlySet<AssetAccountKey> => new Set(keys),
 );
 
-export const selectHiddenNftAssetAccountKeySet = createMemoizedSelector(
-    [selectHiddenNftAssetAccountKeys],
+export const selectDeviceHiddenNftAssetAccountKeySet = createMemoizedSelector(
+    [selectDeviceHiddenNftAssetAccountKeys],
     (keys): ReadonlySet<AssetAccountKey> => new Set(keys),
 );
