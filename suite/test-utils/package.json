@@ -15,7 +15,7 @@
         "@suite-common/test-utils": "workspace:*",
         "@suite/intl": "workspace:*",
         "@testing-library/dom": "^10.4.2",
-        "@testing-library/react": "^16.3.2",
+        "@testing-library/react": "^16.3.3",
         "@testing-library/user-event": "^14.6.4",
         "@trezor/dependency-injection": "workspace:*",
         "@trezor/suite": "workspace:*",
