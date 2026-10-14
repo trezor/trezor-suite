@@ -1,6 +1,10 @@
 import { useSelector } from 'react-redux';
 
-import { selectIsDeviceBackupUnfinished, selectIsDeviceInitialized } from '@suite-common/device';
+import {
+    selectIsDeviceBackupUnfinished,
+    selectIsDeviceInBootloader,
+    selectIsDeviceInitialized,
+} from '@suite-common/device';
 import { VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
@@ -11,7 +15,10 @@ import { PassphraseCard } from '../components/PassphraseCard';
 export const BackupAndPassphraseScreen = () => {
     const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
     const isDeviceBackupUnfinished = useSelector(selectIsDeviceBackupUnfinished);
-    const isCheckBackupAvailable = isDeviceInitialized && !isDeviceBackupUnfinished;
+    const isDeviceInBootloader = useSelector(selectIsDeviceInBootloader);
+    // Backup can't be checked in bootloader mode, so only passphrase settings remain.
+    const isCheckBackupAvailable =
+        isDeviceInitialized && !isDeviceBackupUnfinished && !isDeviceInBootloader;
 
     return (
         <Screen
