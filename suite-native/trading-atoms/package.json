@@ -14,7 +14,7 @@
         "test:unit:watch": "yarn g:jest --watch"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "2.12.0",
+        "@reduxjs/toolkit": "2.13.0",
         "@suite-common/flags": "workspace:*",
         "@suite-common/icons": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",

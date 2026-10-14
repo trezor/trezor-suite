@@ -15,7 +15,7 @@
         "@gorhom/bottom-sheet": "5.2.9",
         "@mobily/ts-belt": "^3.13.1",
         "@react-navigation/native": "7.1.31",
-        "@reduxjs/toolkit": "2.12.0",
+        "@reduxjs/toolkit": "2.13.0",
         "@shopify/flash-list": "2.3.0",
         "@suite-common/address": "workspace:*",
         "@suite-common/device": "workspace:*",
