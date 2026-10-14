@@ -53,13 +53,11 @@ export const getAccountUtxo = ({
     transactions: Transaction[];
     addresses?: AccountAddresses;
 }): Utxo[] => {
-    const paths = addresses
-        ? addresses.used.concat(addresses.unused, addresses.change).reduce<AddressPaths>(
-              (prev, cur) => ({
-                  ...prev,
-                  [cur.address]: cur.path,
-              }),
-              {},
+    const paths: AddressPaths = addresses
+        ? Object.fromEntries(
+              addresses.used
+                  .concat(addresses.unused, addresses.change)
+                  .map(({ address, path }) => [address, path]),
           )
         : {};
 
