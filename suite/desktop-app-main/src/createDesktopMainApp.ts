@@ -144,12 +144,15 @@ export const createDesktopMainApp =
         initRequestInterceptor(moduleDependencies);
 
         messageSystem.loadPersistedConfig();
+        // `startPolling` acquires the config once before it starts the interval. In a headless
+        // boot that first attempt is awaited, because no window is waiting for the boot and
+        // nothing should be served before it; a separate attempt next to it would only make a
+        // failed one retry back to back and double the boot latency it is budgeted for.
         if (isHeadlessBoot) {
-            // No window is waiting for the boot here, so the config is acquired before anything is
-            // served rather than a poll interval later.
-            await messageSystem.acquireRemoteConfig();
+            await messageSystem.startPolling();
+        } else {
+            void messageSystem.startPolling();
         }
-        void messageSystem.startPolling();
 
         // Load bridge module first, it is required in both UI and daemon mode
         const { loadModules: loadBackgroundModules, quitModules: quitBackgroundModules } =
