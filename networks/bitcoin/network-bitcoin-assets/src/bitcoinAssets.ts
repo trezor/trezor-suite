@@ -1,5 +1,8 @@
 import type { NetworkAssetsModule, NetworkIconAsset } from '@trezor/network-assets-types';
-import type { BitcoinNetworkSymbol } from '@trezor/network-bitcoin-types';
+import {
+    type BitcoinNetworkSymbol,
+    supportedBitcoinNetworks,
+} from '@trezor/network-bitcoin-types';
 
 import { bitcoinCryptoIcons } from './cryptoIcons';
 import { bitcoinNetworkIcons } from './networkIcons';
@@ -131,6 +134,12 @@ const icons: Record<BitcoinAssetSymbol, NetworkIconAsset> = {
 };
 
 export const bitcoinAssets: NetworkAssetsModule<BitcoinAssetSymbol> = {
+    regenerateIcons: deps =>
+        deps.regenerateNetworkIcons({
+            family: 'bitcoin',
+            supportedNetworks: supportedBitcoinNetworks,
+            icons,
+        }),
     getIcons: symbol => icons[symbol].getIcons(),
     getIconPaths: symbol => icons[symbol].getIconPaths(),
 };

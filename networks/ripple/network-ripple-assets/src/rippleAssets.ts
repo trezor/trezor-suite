@@ -1,5 +1,8 @@
 import type { NetworkAssetsModule, NetworkIconAsset } from '@trezor/network-assets-types';
-import type { RippleNetworkSymbol } from '@trezor/network-ripple-types';
+import {
+    type RippleNetworkSymbol,
+    supportedRippleNetworks,
+} from '@trezor/network-ripple-types';
 
 import { rippleCryptoIcons } from './cryptoIcons';
 import { rippleNetworkIcons } from './networkIcons';
@@ -29,6 +32,12 @@ const icons: Record<RippleNetworkSymbol, NetworkIconAsset> = {
 };
 
 export const rippleAssets: NetworkAssetsModule<RippleNetworkSymbol> = {
+    regenerateIcons: deps =>
+        deps.regenerateNetworkIcons({
+            family: 'ripple',
+            supportedNetworks: supportedRippleNetworks,
+            icons,
+        }),
     getIcons: symbol => icons[symbol].getIcons(),
     getIconPaths: symbol => icons[symbol].getIconPaths(),
 };

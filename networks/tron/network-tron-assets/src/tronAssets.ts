@@ -1,5 +1,8 @@
 import type { NetworkAssetsModule, NetworkIconAsset } from '@trezor/network-assets-types';
-import type { TronNetworkSymbol } from '@trezor/network-tron-types';
+import {
+    type TronNetworkSymbol,
+    supportedTronNetworks,
+} from '@trezor/network-tron-types';
 
 import { tronCryptoIcons } from './cryptoIcons';
 import { tronNetworkIcons } from './networkIcons';
@@ -29,6 +32,12 @@ const icons: Record<TronNetworkSymbol, NetworkIconAsset> = {
 };
 
 export const tronAssets: NetworkAssetsModule<TronNetworkSymbol> = {
+    regenerateIcons: deps =>
+        deps.regenerateNetworkIcons({
+            family: 'tron',
+            supportedNetworks: supportedTronNetworks,
+            icons,
+        }),
     getIcons: symbol => icons[symbol].getIcons(),
     getIconPaths: symbol => icons[symbol].getIconPaths(),
 };

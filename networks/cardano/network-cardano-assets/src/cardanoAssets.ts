@@ -1,5 +1,8 @@
 import type { NetworkAssetsModule, NetworkIconAsset } from '@trezor/network-assets-types';
-import type { CardanoNetworkSymbol } from '@trezor/network-cardano-types';
+import {
+    type CardanoNetworkSymbol,
+    supportedCardanoNetworks,
+} from '@trezor/network-cardano-types';
 
 import { cardanoCryptoIcons } from './cryptoIcons';
 import { cardanoNetworkIcons } from './networkIcons';
@@ -31,6 +34,12 @@ const icons: Record<CardanoAssetSymbol, NetworkIconAsset> = {
 };
 
 export const cardanoAssets: NetworkAssetsModule<CardanoAssetSymbol> = {
+    regenerateIcons: deps =>
+        deps.regenerateNetworkIcons({
+            family: 'cardano',
+            supportedNetworks: supportedCardanoNetworks,
+            icons,
+        }),
     getIcons: symbol => icons[symbol].getIcons(),
     getIconPaths: symbol => icons[symbol].getIconPaths(),
 };

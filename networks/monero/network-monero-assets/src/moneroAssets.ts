@@ -1,5 +1,8 @@
 import type { NetworkAssetsModule, NetworkIconAsset } from '@trezor/network-assets-types';
-import type { MoneroNetworkSymbol } from '@trezor/network-monero-types';
+import {
+    type MoneroNetworkSymbol,
+    supportedMoneroNetworks,
+} from '@trezor/network-monero-types';
 
 import { moneroCryptoIcons } from './cryptoIcons';
 import { moneroNetworkIcons } from './networkIcons';
@@ -19,6 +22,12 @@ const icons: Record<MoneroNetworkSymbol, NetworkIconAsset> = {
 };
 
 export const moneroAssets: NetworkAssetsModule<MoneroNetworkSymbol> = {
+    regenerateIcons: deps =>
+        deps.regenerateNetworkIcons({
+            family: 'monero',
+            supportedNetworks: supportedMoneroNetworks,
+            icons,
+        }),
     getIcons: symbol => icons[symbol].getIcons(),
     getIconPaths: symbol => icons[symbol].getIconPaths(),
 };

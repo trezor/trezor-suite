@@ -6,6 +6,12 @@
     "references": [
         {
             "path": "../network-module-types"
+        },
+        {
+            "path": "../../../packages/type-utils"
+        },
+        {
+            "path": "../../../packages/dependency-injection"
         }
     ]
 }

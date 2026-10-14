@@ -5,6 +5,7 @@ import { type NetworkModuleDefinition, createNetworkModule } from './createNetwo
 const createTestResolver = () => {
     const definition: NetworkModuleDefinition<'aaa' | 'taaa'> = {
         icon: {
+            regenerateIcons: jest.fn(() => Promise.resolve()),
             getIcons: () => ({ coin: 'coin.svg', network: 'network.svg' }),
             getIconPaths: () => ({ coin: 'coin.svg', network: 'network.svg' }),
         },
@@ -69,6 +70,7 @@ describe('createNetworkModule account sync interval', () => {
     );
     const networkModule = createNetworkModule(['aaa', 'taaa'], {
         icon: {
+            regenerateIcons: jest.fn(() => Promise.resolve()),
             getIcons: () => ({ coin: 'coin.svg', network: 'network.svg' }),
             getIconPaths: () => ({ coin: 'coin.svg', network: 'network.svg' }),
         },

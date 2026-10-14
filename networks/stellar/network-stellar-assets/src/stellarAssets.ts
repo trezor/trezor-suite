@@ -1,5 +1,8 @@
 import type { NetworkAssetsModule, NetworkIconAsset } from '@trezor/network-assets-types';
-import type { StellarNetworkSymbol } from '@trezor/network-stellar-types';
+import {
+    type StellarNetworkSymbol,
+    supportedStellarNetworks,
+} from '@trezor/network-stellar-types';
 
 import { stellarCryptoIcons } from './cryptoIcons';
 import { stellarNetworkIcons } from './networkIcons';
@@ -29,6 +32,12 @@ const icons: Record<StellarNetworkSymbol, NetworkIconAsset> = {
 };
 
 export const stellarAssets: NetworkAssetsModule<StellarNetworkSymbol> = {
+    regenerateIcons: deps =>
+        deps.regenerateNetworkIcons({
+            family: 'stellar',
+            supportedNetworks: supportedStellarNetworks,
+            icons,
+        }),
     getIcons: symbol => icons[symbol].getIcons(),
     getIconPaths: symbol => icons[symbol].getIconPaths(),
 };

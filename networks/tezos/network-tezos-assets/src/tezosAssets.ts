@@ -1,5 +1,8 @@
 import type { NetworkAssetsModule, NetworkIconAsset } from '@trezor/network-assets-types';
-import type { TezosNetworkSymbol } from '@trezor/network-tezos-types';
+import {
+    type TezosNetworkSymbol,
+    supportedTezosNetworks,
+} from '@trezor/network-tezos-types';
 
 import { tezosCryptoIcons } from './cryptoIcons';
 import { tezosNetworkIcons } from './networkIcons';
@@ -19,6 +22,12 @@ const icons: Record<TezosNetworkSymbol, NetworkIconAsset> = {
 };
 
 export const tezosAssets: NetworkAssetsModule<TezosNetworkSymbol> = {
+    regenerateIcons: deps =>
+        deps.regenerateNetworkIcons({
+            family: 'tezos',
+            supportedNetworks: supportedTezosNetworks,
+            icons,
+        }),
     getIcons: symbol => icons[symbol].getIcons(),
     getIconPaths: symbol => icons[symbol].getIconPaths(),
 };

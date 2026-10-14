@@ -6,6 +6,11 @@ Coin and network SVGs live in `networks/<family>/network-<family>-assets/assets`
 These packages export lazy icon loaders and filesystem-path readers through their indexes.
 `yarn generate-icons` updates the family loaders and the existing shared icon maps.
 
+Asset modules expose `regenerateIcons({ regenerateNetworkIcons })` for TypeScript generation.
+The injected Node service generates each package's `cryptoIcons.ts`, `networkIcons.ts`, and
+asset mapping without rewriting SVGs. The existing `generateIcons.mjs` script supplies its
+filesystem and formatting dependencies and calls the modules in a loop.
+
 ## How to add or update an icon
 
 1. Export the icon as SVG from Figma and rename it to camelCase (`Warning Circle.svg` → `warningCircle.svg`), place it in `@trezor/icons/assets`.
