@@ -23,6 +23,7 @@
         { "path": "../locks" },
         { "path": "../router" },
         { "path": "../router-config" },
+        { "path": "../../packages/redux-utils" },
         {
             "path": "../../suite-common/message-system"
         },
@@ -36,7 +37,6 @@
         {
             "path": "../../packages/connect-common"
         },
-        { "path": "../../packages/device-utils" },
-        { "path": "../../packages/redux-utils" }
+        { "path": "../../packages/device-utils" }
     ]
 }

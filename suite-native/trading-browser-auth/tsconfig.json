@@ -24,13 +24,13 @@
         {
             "path": "../../packages/dependency-injection"
         },
-        { "path": "../../packages/redux-utils" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
         { "path": "../analytics" },
         { "path": "../test-utils" },
         { "path": "../test-utils-store" },
         { "path": "../trading-fixtures" },
-        { "path": "../transaction-management" }
+        { "path": "../transaction-management" },
+        { "path": "../../packages/redux-utils" }
     ]
 }

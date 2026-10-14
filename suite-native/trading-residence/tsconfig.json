@@ -19,6 +19,7 @@
         {
             "path": "../../packages/dependency-injection"
         },
+        { "path": "../../packages/redux-utils" },
         {
             "path": "../../suite-common/message-system"
         },
@@ -27,7 +28,6 @@
         },
         { "path": "../test-utils" },
         { "path": "../test-utils-store" },
-        { "path": "../trading-types" },
-        { "path": "../../packages/redux-utils" }
+        { "path": "../trading-types" }
     ]
 }
