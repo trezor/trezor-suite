@@ -14686,7 +14686,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/urls": "workspace:*"
     expo-clipboard: "npm:~57.0.1"
-    expo-media-library: "npm:~57.0.3"
+    expo-media-library: "npm:~57.0.5"
     react: "npm:19.2.3"
     react-native: "npm:0.86.3"
     react-native-view-shot: "npm:5.1.0"
@@ -29883,13 +29883,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-media-library@npm:~57.0.3":
-  version: 57.0.3
-  resolution: "expo-media-library@npm:57.0.3"
+"expo-media-library@npm:~57.0.5":
+  version: 57.0.5
+  resolution: "expo-media-library@npm:57.0.5"
   peerDependencies:
     expo: "*"
     react-native: "*"
-  checksum: 10/730cc8ec51544cbbf33b6c6662fca36125c489f1b93250112542979b69a7898145f87a481e1902557732a08cebe2cc49bcc3e4acb06f25c39a7ed54a80dcd2a3
+  checksum: 10/215b40fda5a41dceb6c1afef29f412b1bf4f06bc00a6e98e5560fc94cafb3663e246caf040dc1fc8f9d7c26fb0005ef45a338fc00f0fa21beb5fee75fa58087e
   languageName: node
   linkType: hard
 
