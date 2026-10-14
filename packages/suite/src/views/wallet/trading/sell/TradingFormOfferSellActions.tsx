@@ -56,7 +56,6 @@ export const TradingFormOfferSellActions = () => {
     const onSelectQuote = () => {
         if (!quote) return;
 
-        dispatch(tradingSellActions.setFormStep('PREVIEW'));
         dispatch(tradingSellActions.saveFormValues(getValues()));
         dispatch(selectSellQuoteThunk({ quote, fractionButton: helpers.fractionButton }));
     };

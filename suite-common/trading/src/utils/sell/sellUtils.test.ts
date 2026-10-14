@@ -1,7 +1,9 @@
-import { type CryptoId, type SellFiatTrade } from 'invity-api';
+import { type CryptoId, type SellFiatTrade, type SellProviderInfo } from 'invity-api';
 
 import { sellUtilsFixtures } from './__fixtures__/sellUtils';
 import { sellUtils } from './sellUtils';
+import { mockBankAccount } from '../../../mocks/mockBankAccount';
+import { mockSellFiatTrade } from '../../../mocks/mockSellFiatTrade';
 import { type TradingSellInfoSelector } from '../../selectors/tradingSelectors';
 
 describe('sellUtils', () => {
@@ -95,23 +97,22 @@ describe('sellUtils', () => {
     });
 
     describe('needToRegisterOrVerifyBankAccount', () => {
+        const bankAccountProvider: SellProviderInfo = {
+            name: 'test',
+            companyName: 'Test',
+            logo: 'test.jpg',
+            isActive: true,
+            statusUrl: 'https://test.io/sell/txs/{{orderId}}',
+            supportUrl: 'https://support.test.io',
+            tradedCoins: ['bitcoin' as CryptoId],
+            tradedFiatCurrencies: ['CZK', 'USD'],
+            type: 'Fiat',
+            supportedCountries: ['CZ'],
+            flow: 'BANK_ACCOUNT',
+            supportedSubdivisions: {},
+        };
         const sellInfo: TradingSellInfoSelector = {
-            providerInfos: {
-                test: {
-                    name: 'test',
-                    companyName: 'Test',
-                    logo: 'test.jpg',
-                    isActive: true,
-                    statusUrl: 'https://test.io/sell/txs/{{orderId}}',
-                    supportUrl: 'https://support.test.io',
-                    tradedCoins: ['bitcoin' as CryptoId],
-                    tradedFiatCurrencies: ['CZK', 'USD'],
-                    type: 'Fiat',
-                    supportedCountries: ['CZ'],
-                    flow: 'BANK_ACCOUNT',
-                    supportedSubdivisions: {},
-                },
-            },
+            providerInfos: { test: bankAccountProvider },
             supportedFiatCurrencies: new Set(),
             supportedCryptoCurrencies: new Set(),
             country: 'CZ',
@@ -184,13 +185,7 @@ describe('sellUtils', () => {
                     sellInfo,
                     quote: {
                         ...quote,
-                        bankAccounts: [
-                            {
-                                bankAccount: 'bankAccount',
-                                holder: 'holder',
-                                verified: true,
-                            },
-                        ],
+                        bankAccounts: [mockBankAccount()],
                     },
                 }),
             ).toBe(false);
@@ -214,16 +209,96 @@ describe('sellUtils', () => {
                     sellInfo,
                     quote: {
                         ...quote,
-                        bankAccounts: [
-                            {
-                                bankAccount: 'bankAccount',
-                                holder: 'holder',
-                                verified: false,
-                            },
-                        ],
+                        bankAccounts: [mockBankAccount({ verified: false })],
                     },
                 }),
             ).toBe(true);
+        });
+
+        describe('getStepForQuote', () => {
+            const verifiedBankAccount = mockBankAccount();
+
+            it('opens the bank account step when the bank account provider knows a verified account', () => {
+                expect(
+                    sellUtils.getStepForQuote({
+                        sellInfo,
+                        quote: { ...quote, bankAccounts: [verifiedBankAccount] },
+                    }),
+                ).toBe('BANK_ACCOUNT');
+            });
+
+            it.each([
+                [
+                    'the partner requests a login first',
+                    { ...quote, quoteId: undefined, bankAccounts: [verifiedBankAccount] },
+                ],
+                [
+                    'no bank account is verified',
+                    { ...quote, bankAccounts: [{ ...verifiedBankAccount, verified: false }] },
+                ],
+                ['there are no bank accounts', { ...quote, bankAccounts: undefined }],
+            ])('opens the preview when %s', (_, stepQuote) => {
+                expect(sellUtils.getStepForQuote({ sellInfo, quote: stepQuote })).toBe('PREVIEW');
+            });
+
+            it('opens the preview for a payment gate provider', () => {
+                expect(
+                    sellUtils.getStepForQuote({
+                        sellInfo: {
+                            ...sellInfo,
+                            providerInfos: {
+                                test: { ...bankAccountProvider, flow: 'PAYMENT_GATE' },
+                            },
+                        },
+                        quote: { ...quote, bankAccounts: [verifiedBankAccount] },
+                    }),
+                ).toBe('PREVIEW');
+            });
+        });
+    });
+
+    describe('findSelectedBankAccount', () => {
+        const unverified = mockBankAccount({ bankAccount: 'LT1', verified: false });
+        const verified = mockBankAccount({ bankAccount: 'LT2' });
+        const otherVerified = mockBankAccount({ bankAccount: 'LT3' });
+
+        it.each([
+            ['the picked account while the partner still lists it', 'LT3', otherVerified],
+            ['the first verified account without a pick', undefined, verified],
+            ['the first verified account when the pick is no longer listed', 'LT9', verified],
+        ])('selects %s', (_, selectedIban, expected) => {
+            expect(
+                sellUtils.findSelectedBankAccount(
+                    [unverified, verified, otherVerified],
+                    selectedIban,
+                ),
+            ).toBe(expected);
+        });
+
+        it.each([
+            ['no account is verified', [unverified]],
+            ['there are no accounts', []],
+            ['the partner sent no accounts', undefined],
+        ])('selects nothing when %s', (_, bankAccounts) => {
+            expect(sellUtils.findSelectedBankAccount(bankAccounts, undefined)).toBeUndefined();
+        });
+    });
+
+    describe('isReadyToSendCrypto', () => {
+        const trade = mockSellFiatTrade({
+            status: 'SEND_CRYPTO',
+            destinationAddress: 'destinationAddress',
+        });
+
+        it('is ready once the partner sent its payin address', () => {
+            expect(sellUtils.isReadyToSendCrypto(trade)).toBe(true);
+        });
+
+        it.each([
+            ['the partner has not requested the crypto yet', { ...trade, status: 'SUBMITTED' }],
+            ['the payin address is missing', { ...trade, destinationAddress: undefined }],
+        ] as const)('is not ready when %s', (_, notReadyTrade) => {
+            expect(sellUtils.isReadyToSendCrypto(notReadyTrade)).toBe(false);
         });
     });
 });

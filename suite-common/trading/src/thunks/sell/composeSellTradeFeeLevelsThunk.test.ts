@@ -1,24 +1,37 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
-import { type SellFiatTrade } from 'invity-api';
 
 import { prepareDeviceReducer } from '@suite-common/device';
-import { createThunk } from '@suite-common/redux-utils';
-import { mockActionType, mockReducer } from '@suite-common/redux-utils/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import {
     blockchainInitialState,
     composeSendFormTransactionFeeLevelsThunk,
     initialWalletSettingsState,
 } from '@suite-common/wallet-core';
-import { type Account, type FeesState } from '@suite-common/wallet-types';
+import {
+    type FeesState,
+    type PrecomposedLevels,
+    type PrecomposedTransaction,
+} from '@suite-common/wallet-types';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { createThunk } from '@trezor/redux-utils';
+import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
-import { type ComposeSellTradeFeeLevelsThunkState } from './composeSellTradeFeeLevelsThunk';
-import { MIN_MAX_QUOTES_HIGH } from '../../__fixtures__/sellUtils';
-import { accountEth } from '../../__fixtures__/utils';
-import { type TradingState, initialState } from '../../reducers/tradingCommonReducer';
+import {
+    type ComposeSellTradeFeeLevelsThunkProps,
+    type ComposeSellTradeFeeLevelsThunkState,
+} from './composeSellTradeFeeLevelsThunk';
+import { mockSellFiatTrade } from '../../../mocks/mockSellFiatTrade';
+import { mockSellFormValues } from '../../../mocks/mockSellFormValues';
+import {
+    type TradingComposedTransactionInfo,
+    type TradingState,
+    initialState,
+} from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
-import { type TradingSellFormProps } from '../../types';
+import { composeCryptoId } from '../../utils';
 
 import { sellThunks } from './index';
 
@@ -54,7 +67,7 @@ const tradingReducer = prepareTradingReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
 });
 
-const account = accountEth as Account;
+const account = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
 
 const fees: FeesState = {
     [account.symbol]: {
@@ -72,21 +85,44 @@ const fees: FeesState = {
 };
 const feesReducer = createReducer({ ...fees }, () => {});
 
-const composedTransactionInfo = {
-    composed: {
-        feePerByte: '10',
-        feeLimit: '1000',
-        estimatedFeeLimit: '1000',
-        fee: '1000',
-        token: undefined,
-        outputs: [],
-    },
-    selectedFee: 'normal' as const,
+const composedTransactionInfo: TradingComposedTransactionInfo = {
+    composed: { feePerByte: '10', feeLimit: '1000', estimatedFeeLimit: '1000', fee: '1000' },
+    selectedFee: 'normal',
 };
+
+const LEVEL_BASE = { totalSpent: '42000', fee: '42000', feePerByte: '2', bytes: 0, inputs: [] };
+const FINAL_LEVEL: PrecomposedTransaction = {
+    ...LEVEL_BASE,
+    type: 'final',
+    outputs: [],
+    outputsPermutation: [],
+    feeLimit: '21000',
+};
+const NONFINAL_LEVEL: PrecomposedTransaction = {
+    ...LEVEL_BASE,
+    type: 'nonfinal',
+    max: undefined,
+    feeLimit: '21000',
+};
+const ERROR_LEVEL: PrecomposedTransaction = { type: 'error', error: 'NOT-ENOUGH-FUNDS' };
+
+const QUOTE = mockSellFiatTrade({
+    orderId: 'orderId',
+    fiatStringAmount: '70',
+    cryptoCurrency: composeCryptoId('ethereum'),
+    cryptoStringAmount: '0.03',
+    destinationAddress: 'partnerPayinAddress',
+    destinationPaymentExtraId: 'destinationPaymentExtraId',
+});
+
+const FORM_PLACEHOLDER_ADDRESS = 'formPlaceholderAddress';
+
+const getFormValues = (address: string) =>
+    mockSellFormValues({ outputs: [{ ...DEFAULT_PAYMENT, address, amount: '0.03' }] });
 
 const composeMock = composeSendFormTransactionFeeLevelsThunk as unknown as jest.Mock;
 
-const mockComposedLevels = (levels: unknown) => {
+const mockComposedLevels = (levels: PrecomposedLevels) => {
     composeMock.mockImplementationOnce(
         createThunk(
             composeSendFormTransactionFeeLevelsThunk.typePrefix,
@@ -95,17 +131,12 @@ const mockComposedLevels = (levels: unknown) => {
     );
 };
 
-const getQuote = (): SellFiatTrade => {
-    const quote = MIN_MAX_QUOTES_HIGH[0];
-    if (!quote) throw new Error('Missing test fixture');
-
-    return {
-        ...quote,
-        orderId: 'orderId',
-        destinationAddress: 'partnerPayinAddress',
-        cryptoStringAmount: '0.03',
-        destinationPaymentExtraId: 'destinationPaymentExtraId',
-    };
+const mockComposeRejection = () => {
+    composeMock.mockImplementationOnce(
+        createThunk(composeSendFormTransactionFeeLevelsThunk.typePrefix, (_, { rejectWithValue }) =>
+            rejectWithValue({ error: 'fee-levels-compose-failed' }),
+        ),
+    );
 };
 
 const getStore = (tradingState?: Partial<TradingState>) =>
@@ -124,6 +155,7 @@ const getStore = (tradingState?: Partial<TradingState>) =>
                 trading: {
                     ...initialState,
                     composedTransactionInfo,
+                    sell: { ...initialState.sell, selectedQuote: QUOTE },
                     ...tradingState,
                 },
             },
@@ -131,11 +163,18 @@ const getStore = (tradingState?: Partial<TradingState>) =>
         },
     }).services.store;
 
-const getSellState = (selectedQuote: SellFiatTrade): Partial<TradingState> => ({
-    sell: { ...initialState.sell, selectedQuote },
+const getSellState = (sellState: Partial<TradingState['sell']>): Partial<TradingState> => ({
+    sell: { ...initialState.sell, selectedQuote: QUOTE, ...sellState },
 });
 
-const composeProps = { account, decimals: 18, shouldSendInSats: undefined };
+const composeProps: ComposeSellTradeFeeLevelsThunkProps = {
+    account,
+    decimals: 18,
+    shouldSendInSats: undefined,
+};
+
+const compose = (store: ReturnType<typeof getStore>) =>
+    store.dispatch(sellThunks.composeTradeFeeLevelsThunk(composeProps));
 
 describe('composeSellTradeFeeLevelsThunk', () => {
     afterEach(() => {
@@ -143,11 +182,10 @@ describe('composeSellTradeFeeLevelsThunk', () => {
     });
 
     it('composes the trade from the partner payin address and stores the selected level', async () => {
-        const store = getStore(getSellState(getQuote()));
-        const composed = { type: 'final', fee: '42000', feeLimit: '21000' };
-        mockComposedLevels({ normal: composed });
+        const store = getStore();
+        mockComposedLevels({ normal: FINAL_LEVEL });
 
-        await store.dispatch(sellThunks.composeTradeFeeLevelsThunk(composeProps));
+        await compose(store);
 
         expect(composeMock).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -166,15 +204,15 @@ describe('composeSellTradeFeeLevelsThunk', () => {
         );
         expect(store.getState().wallet.trading.composedTransactionInfo).toEqual({
             selectedFee: 'normal',
-            composed,
+            composed: FINAL_LEVEL,
         });
     });
 
     it('does not store the result of a compose that was aborted while in flight', async () => {
-        const store = getStore(getSellState(getQuote()));
-        mockComposedLevels({ normal: { type: 'final', fee: '42000', feeLimit: '21000' } });
+        const store = getStore();
+        mockComposedLevels({ normal: FINAL_LEVEL });
 
-        const request = store.dispatch(sellThunks.composeTradeFeeLevelsThunk(composeProps));
+        const request = compose(store);
         request.abort();
         await request;
         await new Promise(resolve => setTimeout(resolve, 0));
@@ -186,10 +224,10 @@ describe('composeSellTradeFeeLevelsThunk', () => {
     });
 
     it('keeps the composed transaction when the level fails to compose', async () => {
-        const store = getStore(getSellState(getQuote()));
-        mockComposedLevels({ normal: { type: 'error', error: 'NOT-ENOUGH-FUNDS' } });
+        const store = getStore();
+        mockComposedLevels({ normal: ERROR_LEVEL });
 
-        await store.dispatch(sellThunks.composeTradeFeeLevelsThunk(composeProps));
+        await compose(store);
 
         expect(store.getState().wallet.trading.composedTransactionInfo).toEqual(
             composedTransactionInfo,
@@ -197,50 +235,40 @@ describe('composeSellTradeFeeLevelsThunk', () => {
     });
 
     it('estimates with the trade form address before the partner has sent its payin address', async () => {
-        const formValues = {
-            outputs: [{ address: 'formPlaceholderAddress', amount: '0.03' }],
-        } as TradingSellFormProps;
-        const store = getStore({
-            sell: {
-                ...initialState.sell,
-                selectedQuote: { ...getQuote(), destinationAddress: undefined },
-                formValues,
-            },
-        });
-        const composed = { type: 'final', fee: '42000', feeLimit: '21000' };
-        mockComposedLevels({ normal: composed });
+        const store = getStore(
+            getSellState({
+                selectedQuote: { ...QUOTE, destinationAddress: undefined },
+                formValues: getFormValues(FORM_PLACEHOLDER_ADDRESS),
+            }),
+        );
+        mockComposedLevels({ normal: FINAL_LEVEL });
 
-        await store.dispatch(sellThunks.composeTradeFeeLevelsThunk(composeProps));
+        await compose(store);
 
         expect(composeMock).toHaveBeenCalledWith(
             expect.objectContaining({
                 formState: expect.objectContaining({
-                    outputs: [expect.objectContaining({ address: 'formPlaceholderAddress' })],
+                    outputs: [expect.objectContaining({ address: FORM_PLACEHOLDER_ADDRESS })],
                 }),
                 composeContext: expect.objectContaining({ assumeNewAccount: true }),
             }),
         );
         expect(store.getState().wallet.trading.composedTransactionInfo).toEqual({
             selectedFee: 'normal',
-            composed,
+            composed: FINAL_LEVEL,
         });
     });
 
     it('stores the nonfinal estimate composed without a recipient', async () => {
-        const formValues = {
-            outputs: [{ address: '', amount: '0.03' }],
-        } as TradingSellFormProps;
-        const store = getStore({
-            sell: {
-                ...initialState.sell,
-                selectedQuote: { ...getQuote(), destinationAddress: undefined },
-                formValues,
-            },
-        });
-        const composed = { type: 'nonfinal', fee: '42000', feeLimit: '21000' };
-        mockComposedLevels({ normal: composed });
+        const store = getStore(
+            getSellState({
+                selectedQuote: { ...QUOTE, destinationAddress: undefined },
+                formValues: getFormValues(''),
+            }),
+        );
+        mockComposedLevels({ normal: NONFINAL_LEVEL });
 
-        await store.dispatch(sellThunks.composeTradeFeeLevelsThunk(composeProps));
+        await compose(store);
 
         expect(composeMock).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -251,20 +279,15 @@ describe('composeSellTradeFeeLevelsThunk', () => {
         );
         expect(store.getState().wallet.trading.composedTransactionInfo).toEqual({
             selectedFee: 'normal',
-            composed,
+            composed: NONFINAL_LEVEL,
         });
     });
 
     it('keeps the composed transaction when the compose is rejected', async () => {
-        const store = getStore(getSellState(getQuote()));
-        composeMock.mockImplementationOnce(
-            createThunk(
-                composeSendFormTransactionFeeLevelsThunk.typePrefix,
-                (_, { rejectWithValue }) => rejectWithValue({ error: 'fee-levels-compose-failed' }),
-            ),
-        );
+        const store = getStore();
+        mockComposeRejection();
 
-        await store.dispatch(sellThunks.composeTradeFeeLevelsThunk(composeProps));
+        await compose(store);
 
         expect(store.getState().wallet.trading.composedTransactionInfo).toEqual(
             composedTransactionInfo,
@@ -273,19 +296,20 @@ describe('composeSellTradeFeeLevelsThunk', () => {
 
     it('does not compose without a stored fee level', async () => {
         const store = getStore({
-            ...getSellState(getQuote()),
             composedTransactionInfo: { composed: composedTransactionInfo.composed },
         });
 
-        await store.dispatch(sellThunks.composeTradeFeeLevelsThunk(composeProps));
+        await compose(store);
 
         expect(composeMock).not.toHaveBeenCalled();
     });
 
     it('does not compose without any address', async () => {
-        const store = getStore(getSellState({ ...getQuote(), destinationAddress: undefined }));
+        const store = getStore(
+            getSellState({ selectedQuote: { ...QUOTE, destinationAddress: undefined } }),
+        );
 
-        await store.dispatch(sellThunks.composeTradeFeeLevelsThunk(composeProps));
+        await compose(store);
 
         expect(composeMock).not.toHaveBeenCalled();
         expect(store.getState().wallet.trading.composedTransactionInfo).toEqual(

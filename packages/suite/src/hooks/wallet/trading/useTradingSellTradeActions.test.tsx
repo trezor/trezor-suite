@@ -1,4 +1,4 @@
-import type { BankAccount, CryptoId, FiatCurrencyCode, SellFiatTrade } from 'invity-api';
+import type { CryptoId, FiatCurrencyCode, SellFiatTrade } from 'invity-api';
 
 import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
@@ -7,6 +7,7 @@ import { mockGetHttpReceiverAddress } from '@suite/desktop-app-api/mocks';
 import { type SuiteRouterHistoryDep } from '@suite/router';
 import { mockSuiteRouterHistory } from '@suite/router/mocks';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
+import { mockBankAccount, mockSellFiatTrade } from '@suite-common/trading/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -61,8 +62,15 @@ jest.mock('src/actions/wallet/trading/sell/requestSellTradeThunk', () => ({
     requestSellTradeThunk: (args: unknown) => mockRequestSellTradeThunk(args),
 }));
 
+const CONFIRMED_TRADE = mockSellFiatTrade({
+    exchange: 'cexdirect',
+    orderId: 'orderId',
+    status: 'SEND_CRYPTO',
+    destinationAddress: 'destinationAddress',
+});
+
 const mockConfirmTradeThunk = jest.fn((args: unknown) =>
-    Object.assign(() => Promise.resolve(), { args }),
+    Object.assign(() => ({ unwrap: () => Promise.resolve(CONFIRMED_TRADE) }), { args }),
 );
 const mockSendTransactionThunk = jest.fn((args: unknown) =>
     Object.assign(() => ({ unwrap: () => Promise.resolve(true) }), { args }),
@@ -106,7 +114,7 @@ const QUOTES_REQUEST = {
     amountInCrypto: true,
 };
 
-const BANK_ACCOUNT = { bankAccount: 'iban', holder: 'holder', verified: true } as BankAccount;
+const BANK_ACCOUNT = mockBankAccount();
 
 type StateOverrides = {
     selectedQuote?: SellFiatTrade;
@@ -209,7 +217,7 @@ describe('useTradingSellTradeActions', () => {
         it('dispatches confirmTradeThunk with the resolved return url and active account', async () => {
             const { result } = renderActions();
 
-            await result.current.confirmTrade(BANK_ACCOUNT);
+            const confirmedTrade = await result.current.confirmTrade(BANK_ACCOUNT);
 
             expect(mockConfirmTradeThunk).toHaveBeenCalledWith(
                 expect.objectContaining({
@@ -218,13 +226,15 @@ describe('useTradingSellTradeActions', () => {
                     returnUrl: 'https://return.url',
                 }),
             );
+            expect(confirmedTrade).toBe(CONFIRMED_TRADE);
         });
 
         it('does nothing when the account is missing', async () => {
             const { result } = renderActions({ accountKey: undefined, accounts: [] });
 
-            await result.current.confirmTrade(BANK_ACCOUNT);
+            const confirmedTrade = await result.current.confirmTrade(BANK_ACCOUNT);
 
+            expect(confirmedTrade).toBeUndefined();
             expect(mockConfirmTradeThunk).not.toHaveBeenCalled();
         });
     });
