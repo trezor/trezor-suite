@@ -6,16 +6,19 @@ import { action } from 'storybook/actions';
 import * as generatedIcons from '@trezor/icons';
 
 import { modalIntents, modalWidths } from './types';
-import { Modal as ModalComponent, type ModalProps, allowedModalFrameProps } from '../../index';
+import {
+    ModalActions,
+    Modal as ModalComponent,
+    type ModalProps,
+    allowedModalFrameProps,
+} from '../../index';
 import { getFramePropsStory } from '../../utils/frameProps';
 
 const Buttons = () => (
-    <>
-        <ModalComponent.Button>Primary Action</ModalComponent.Button>
-        <ModalComponent.Button intent="neutral" priority="secondary">
-            Secondary Action
-        </ModalComponent.Button>
-    </>
+    <ModalActions
+        primaryAction={{ children: 'Primary Action', onClick: action('primaryAction') }}
+        secondaryAction={{ children: 'Secondary Action', onClick: action('secondaryAction') }}
+    />
 );
 
 const meta: Meta<typeof ModalComponent> = {
