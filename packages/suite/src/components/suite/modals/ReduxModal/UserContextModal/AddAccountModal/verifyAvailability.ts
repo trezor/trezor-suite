@@ -3,16 +3,18 @@ import { type UnavailableCapability } from '@trezor/connect';
 import { type Account } from 'src/types/wallet';
 
 type VerifyAvailabilityParams = {
-    emptyAccounts: Account[];
-    account?: Account;
+    // Accounts of one device, network and account type, sorted by index.
+    scopedAccounts: Account[];
     unavailableCapability?: UnavailableCapability;
 };
 
 export const verifyAvailability = ({
-    emptyAccounts,
-    account,
+    scopedAccounts,
     unavailableCapability,
 }: VerifyAvailabilityParams) => {
+    const emptyAccounts = scopedAccounts.filter(account => account.empty && !account.visible);
+    const account = scopedAccounts.at(-1);
+
     if (unavailableCapability === 'no-support') {
         return 'TR_ACCOUNT_TYPE_NO_SUPPORT';
     }
