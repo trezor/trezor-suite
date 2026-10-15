@@ -1,6 +1,7 @@
 import { combineReducers, isFulfilled, isRejected } from '@reduxjs/toolkit';
 
 import { selectSelectedDevice } from '@suite-common/device';
+import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -21,10 +22,16 @@ import {
     type PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import TrezorConnect from '@trezor/connect';
+import { asGetter } from '@trezor/dependency-injection';
 import { type StaticSessionId } from '@trezor/device-utils';
 
-import { pushYieldActionReviewThunk, signYieldActionReviewThunk } from './yieldTransactionThunks';
+import {
+    type PushYieldActionReviewThunkDeps,
+    pushYieldActionReviewThunk,
+    signYieldActionReviewThunk,
+} from './yieldTransactionThunks';
 
 jest.mock('@trezor/connect', () => ({
     __esModule: true,
@@ -114,6 +121,15 @@ const precomposedTransaction = {
     outputsPermutation: [0],
 } satisfies PrecomposedTransactionFinal;
 
+const services = (): PushYieldActionReviewThunkDeps['services'] => ({
+    analytics: mockNativeAnalytics(),
+    getIsWindowVisible: asGetter(() => true),
+    getTradedAccountKeys: asGetter(() => []),
+    networks: {
+        getAccountSyncInterval: mockGetAccountSyncInterval(),
+    },
+});
+
 const pushTransactionMock = TrezorConnect.pushTransaction as jest.Mock;
 const ethereumSignTransactionMock = TrezorConnect.ethereumSignTransaction as jest.Mock;
 const synchronizeSentTransactionThunkMock = synchronizeSentTransactionThunk as unknown as jest.Mock;
@@ -121,7 +137,8 @@ const selectSelectedDeviceMock = selectSelectedDevice as jest.Mock;
 
 // Other thunk dependencies are mocked; only the yield reducer is needed for review-state assertions.
 const buildStore = () =>
-    createTestCompositionRoot<void, YieldRootState>({
+    createTestCompositionRoot<PushYieldActionReviewThunkDeps, YieldRootState>({
+        services,
         reducer: combineReducers({
             wallet: combineReducers({
                 stablecoinYield: yieldReducer,
@@ -130,7 +147,7 @@ const buildStore = () =>
     }).services.store;
 
 type PrepareParams = {
-    store: TestCompositionStore<YieldRootState, void>;
+    store: TestCompositionStore<YieldRootState, PushYieldActionReviewThunkDeps>;
     flowType: YieldPositionFlowType;
     flowKey: string;
 };
@@ -169,7 +186,7 @@ const storeSignedTransaction = ({ flowType, flowKey, store }: PrepareParams) => 
 };
 
 type DispatchPushParams = {
-    store: TestCompositionStore<YieldRootState, void>;
+    store: TestCompositionStore<YieldRootState, PushYieldActionReviewThunkDeps>;
     flowType: YieldPositionFlowType;
     flowKey: string;
     flowAccount?: Account;

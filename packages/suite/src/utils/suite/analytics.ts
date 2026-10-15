@@ -1,4 +1,4 @@
-import type { SuiteReadyPayload } from '@suite/analytics';
+import type { SuiteReadyPayload, TransactionCreatedEventAction } from '@suite/analytics';
 import { type DesktopUpdateRootState } from '@suite/desktop-update';
 import {
     type LegacyLabelingVisibleRootState,
@@ -25,7 +25,7 @@ import {
     selectActiveExperimentsWithVariants,
 } from '@suite-common/message-system';
 import { type MetadataProviderType } from '@suite-common/metadata-types';
-import { type NetworksRootState } from '@suite-common/networks';
+import { type NetworkSymbol, type NetworksRootState } from '@suite-common/networks';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import {
     getBrowserName,
@@ -38,6 +38,7 @@ import {
     type WalletSettingsRootState,
     selectCustomBackends,
 } from '@suite-common/wallet-core';
+import { type FormState } from '@suite-common/wallet-types';
 import {
     getOsName,
     getPlatformLanguages,
@@ -135,5 +136,40 @@ export const getSuiteReadyPayload = async (
 
         mevProtection: state.wallet.settings.mevProtection,
         networkReserve: state.wallet.settings.networkReserve,
+    };
+};
+
+type TransactionCreatedEventPayloadParams = {
+    action: TransactionCreatedEventAction;
+    symbol: NetworkSymbol;
+    precomposedForm: FormState;
+    tokens: string;
+    txType: 'stake' | 'yield' | 'trade' | undefined;
+};
+
+export const getTransactionCreatedEventPayload = ({
+    action,
+    symbol,
+    precomposedForm,
+    tokens,
+    txType,
+}: TransactionCreatedEventPayloadParams) => {
+    const { options, selectedFee, outputs, isCoinControlEnabled, hasCoinControlBeenOpened } =
+        precomposedForm;
+
+    return {
+        action,
+        symbol,
+        tokens,
+        outputsCount: outputs.length,
+        broadcast: options.includes('broadcast'),
+        bitcoinLocktime: options.includes('bitcoinLocktime'),
+        transactionData: options.includes('transactionData'),
+        ethereumNonce: options.includes('ethereumNonce'),
+        destinationTag: options.includes('destinationTag'),
+        selectedFee: selectedFee || 'normal',
+        isCoinControlEnabled,
+        hasCoinControlBeenOpened,
+        txType,
     };
 };
