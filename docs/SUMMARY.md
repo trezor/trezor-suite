@@ -13,6 +13,8 @@
     - [Tests](./symlink/code-style-guide/tests.md)
     - [Comments](./symlink/code-style-guide/comments.md)
     - [Defensive Programming](./symlink/code-style-guide/defensive-programming.md)
+- [Architecture decision records](./adr/README.md)
+    - [ADR template](./adr/TEMPLATE.md)
 - [Analytics](./analytics/index.md)
     - [AWS](./analytics/aws.md)
     - [Sentry](./analytics/sentry.md)
