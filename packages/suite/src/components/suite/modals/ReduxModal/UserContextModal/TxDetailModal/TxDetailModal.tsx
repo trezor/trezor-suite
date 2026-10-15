@@ -8,6 +8,7 @@ import {
     selectAllPendingTransactions,
     selectTransactionByAccountKeyAndTxid,
     useEvmNonceInfo,
+    useResolveTransactionInputs,
 } from '@suite-common/wallet-core';
 import {
     type WalletAccountTransactionWithRequiredRbfParams,
@@ -113,6 +114,12 @@ export const TxDetailModal = ({
         return findChainedTransactions(tx.descriptor, tx.txid, transactions);
     }, [tx, transactions]);
 
+    // A replacement must pay the fees of the chained transactions too (BIP-125), and the fee of a
+    // transaction with foreign inputs is unknown until they are fetched.
+    const chainedTransactions = chainedTxs ? [...chainedTxs.own, ...chainedTxs.others] : [];
+    const inputsResolution = useResolveTransactionInputs(tx ? [tx, ...chainedTransactions] : []);
+    const areInputsResolved = !inputsResolution.isResolving && !inputsResolution.hasFailed;
+
     const onBackClick = () => {
         setSection('detail');
         setTab(undefined);
@@ -158,7 +165,8 @@ export const TxDetailModal = ({
             : 'ok';
     const isNonceStuck = nonceStatus !== 'ok';
 
-    const canReplaceTransaction = hasRbfParams(tx) && isTransactionBumpable(tx, networkFeatures);
+    const canReplaceTransaction =
+        hasRbfParams(tx) && isTransactionBumpable(tx, networkFeatures) && areInputsResolved;
 
     // Cancel is only offered from the account transaction list (which reflects the cancel once
     // it's broadcast). Other entry points open this modal without `showCancelButton`, so the
@@ -166,7 +174,8 @@ export const TxDetailModal = ({
     const canCancelTransaction =
         isTransactionCancellable(tx, isPending(tx), networkFeatures) &&
         !isNonceStuck &&
-        !!showCancelButton;
+        !!showCancelButton &&
+        areInputsResolved;
 
     if (section === 'bump-fee' && canReplaceTransaction && !isNonceStuck) {
         return (
