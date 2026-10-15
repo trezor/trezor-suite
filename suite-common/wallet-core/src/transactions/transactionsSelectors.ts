@@ -22,10 +22,13 @@ import type {
     WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import {
+    findTransactionSenderAccount,
+    findTransactions,
     getConfirmations,
     getErc4626Contracts,
     getEvmPrivatePendingHint,
     getFiatRateKey,
+    hasUnresolvedInputs,
     isClaimTx,
     isNftTokenTransfer,
     isPending,
@@ -41,7 +44,11 @@ import { isNotNullOrUndefined, typedObjectKeys, typedObjectValues } from '@trezo
 
 import type { TransactionsByAccount, TransactionsRootState } from './transactionsReducerTypes';
 import type { AccountsRootState } from '../accounts/accountsReducer';
-import { selectAccountByKey, selectDeviceAccounts } from '../accounts/accountsSelectors';
+import {
+    selectAccountByKey,
+    selectAccounts,
+    selectDeviceAccounts,
+} from '../accounts/accountsSelectors';
 import {
     type BlockchainRootState,
     selectBlockchainHeightBySymbol,
@@ -152,6 +159,29 @@ export const selectTransactionByAccountKeyAndTxid = createMemoizedSelector(
         const transaction = transactions.find(tx => tx?.txid === txid);
 
         return transaction ?? null;
+    },
+);
+
+/**
+ * The account of the wallet which sent a transaction (see findTransactionSenderAccount). The inputs
+ * of a transfer from another account may be unresolved in the receiving account (see
+ * hasUnresolvedInputs), then the sender is found by the copy of the transaction in its account.
+ */
+export const selectTransactionSenderAccount = createMemoizedSelector(
+    [
+        selectAccounts,
+        selectTransactions,
+        (_state, transaction: WalletAccountTransaction) => transaction,
+    ],
+    (accounts, transactions, transaction) => {
+        if (!hasUnresolvedInputs(transaction)) {
+            return findTransactionSenderAccount(transaction, accounts);
+        }
+
+        return findTransactions(transaction.txid, transactions)
+            .filter(({ tx }) => !hasUnresolvedInputs(tx))
+            .map(({ tx }) => findTransactionSenderAccount(tx, accounts))
+            .find(isNotNullOrUndefined);
     },
 );
 
