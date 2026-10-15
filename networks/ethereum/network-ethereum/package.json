@@ -42,6 +42,6 @@
         "@trezor/network-ethereum-types": "workspace:*"
     },
     "devDependencies": {
-        "viem": "^2.54.1"
+        "viem": "^2.57.2"
     }
 }
