@@ -1,13 +1,14 @@
 import { SERVICE_NAME } from './constants';
 import { activeViewContext, inAppBrowserContext } from './context';
 import { ipcMain } from '../../ipcMain';
+import { type ModuleInit } from '../module';
 import { toggleDevTools } from './services/devTools';
 import { applyBounds } from './services/dimensions';
-import { closeView, openView } from './services/webContentsView';
-import { isDevToolsEnabled } from '../../libs/dev-tools-policy';
-import { type ModuleInit } from '../module';
 import { getActiveWebContents } from './services/general';
 import { clearSession, flushPersistentSessions, followTorSettings } from './services/session';
+import { closeView, openView } from './services/webContentsView';
+import { createSerialQueue } from '../../libs/createSerialQueue';
+import { isDevToolsEnabled } from '../../libs/dev-tools-policy';
 
 export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
     // Seeded once, here, rather than in `onLoad`: that runs again after every renderer reload and
@@ -22,10 +23,16 @@ export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
         appliedProxyRules: new Map(),
     });
 
+    /**
+     * Ensures that all operations that create or destroy views are executed sequentially.
+     * This prevents race conditions where multiple opens or closes could interfere with each other.
+     */
+    const runSerially = createSerialQueue();
+
     // Tor's proxy is per session: `modules/tor.ts` re-routes Suite's own on every toggle, and the
     // sessions created here have to follow, or the embedded site would keep its clear-net route.
     const unsubscribeTorSettingsChange = store.onTorSettingsChange(torSettings => {
-        followTorSettings(torSettings, closeView).catch(error => {
+        runSerially(() => followTorSettings(torSettings, closeView)).catch(error => {
             logger.error(SERVICE_NAME, `Failed to follow the Tor settings: ${error}`);
         });
     });
@@ -41,15 +48,17 @@ export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
         openPopups: new Set(),
     });
 
-    ipcMain.handle('in-app-browser/open-view', async (_, payload) => {
-        await openView(payload);
-    });
-
-    ipcMain.handle('in-app-browser/close-view', async () => {
+    // The region itself is going away, so its geometry is no longer meaningful.
+    const closeViewAndForgetRect = async () => {
         await closeView();
-        // The region itself is going away, so its geometry is no longer meaningful.
         await activeViewContext.insert(() => ({ lastReportedRect: undefined }));
-    });
+    };
+
+    ipcMain.handle('in-app-browser/open-view', (_, payload) =>
+        runSerially(() => openView(payload)),
+    );
+
+    ipcMain.handle('in-app-browser/close-view', () => runSerially(closeViewAndForgetRect));
 
     ipcMain.handle('in-app-browser/set-bounds', async (_, bounds) => {
         await activeViewContext.insert(() => ({ lastReportedRect: bounds }));
@@ -106,30 +115,29 @@ export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
      */
     ipcMain.handle('in-app-browser/toggle-dev-tools', toggleDevTools);
 
-    ipcMain.handle('in-app-browser/clear-data', (_, entryId) => clearSession(entryId, closeView));
+    ipcMain.handle('in-app-browser/clear-data', (_, entryId) =>
+        runSerially(() => clearSession(entryId, closeView)),
+    );
 
-    mainWindowProxy.on('destroy', async () => {
-        await closeView();
-        await activeViewContext.insert(() => ({ lastReportedRect: undefined }));
-    });
+    mainWindowProxy.on('destroy', () => runSerially(closeViewAndForgetRect));
 
     return {
-        async onLoad() {
-            // Runs on every handshake, so also after a renderer reload,
-            // which drops the page that owned the view without running its cleanup.
-            await closeView();
-            await activeViewContext.insert(() => ({ lastReportedRect: undefined }));
-        },
+        // Runs on every handshake, so also after a renderer reload,
+        // which drops the page that owned the view without running its cleanup.
+        onLoad: () => runSerially(closeViewAndForgetRect),
         async onQuit() {
             // Unsubscribed first: a change landing after the reset would wait on the context forever.
             unsubscribeTorSettingsChange();
-            // Closed first, so a page gets to write its final state before the flush.
-            await closeView();
-            // Flushed before the reset: it reads the sessions from the context, and `get` on a
-            // reset context waits forever.
-            await flushPersistentSessions();
-            inAppBrowserContext.reset();
-            activeViewContext.reset();
+
+            await runSerially(async () => {
+                // Closed first, so a page gets to write its final state before the flush.
+                await closeView();
+                // Flushed before the reset: it reads the sessions from the context, and `get` on a
+                // reset context waits forever.
+                await flushPersistentSessions();
+                inAppBrowserContext.reset();
+                activeViewContext.reset();
+            });
         },
     };
 };

@@ -1,7 +1,13 @@
 import { WebContentsView } from 'electron';
 
 import { type InAppBrowserOpenPayload } from '@suite/desktop-app-api';
-import { getAppsEmbeddingCatalogEntry } from '@suite-common/apps-embedding';
+import {
+    type AppsEmbeddingCatalogEntry,
+    getAppsEmbeddingCatalogEntry,
+    getAppsEmbeddingCatalogEntryUrl,
+    getPlatformSpecificEntry,
+} from '@suite-common/apps-embedding';
+import { type Result, err, exhaustive, ok } from '@trezor/type-utils';
 import { safeParseUrl } from '@trezor/utils';
 
 import { SERVICE_NAME } from '../constants';
@@ -88,12 +94,53 @@ export async function closeView() {
     // Clearing here would leave the replacement with no geometry and permanently hidden.
 }
 
-export async function openView({
-    url,
-    redirectExternalOrigins,
-    popupExternalOrigins,
-    entryId,
-}: InAppBrowserOpenPayload) {
+type OpenTarget = {
+    url: string;
+    /** The catalog entry being opened; a custom url has none. */
+    entry: AppsEmbeddingCatalogEntry | undefined;
+    redirectExternalOrigins: string[];
+    popupExternalOrigins: string[];
+};
+
+/**
+ * What a request to open amounts to. A catalog entry is resolved from the catalog alone — the page,
+ * where it may navigate and what it may open in a window of its own — so that a renderer naming an
+ * entry cannot run a site of its own choosing in that entry's session, under allowlists of its own
+ * choosing. A custom url is taken as it is and declares nothing.
+ */
+function resolveOpenTarget(payload: InAppBrowserOpenPayload): Result<OpenTarget, string> {
+    switch (payload.kind) {
+        case 'custom-url':
+            return ok({
+                url: payload.url,
+                entry: undefined,
+                redirectExternalOrigins: [],
+                popupExternalOrigins: [],
+            });
+        case 'catalog-entry': {
+            const entry = getAppsEmbeddingCatalogEntry(payload.entryId);
+
+            // An id naming no entry is a caller inventing one. Nothing downstream should act on
+            // it: the catalog is the allowlist that keeps ids compile-time constants.
+            if (entry === undefined) {
+                return err(`"${payload.entryId}" is not a catalog entry`);
+            }
+
+            const desktopEntry = getPlatformSpecificEntry(entry, 'desktop');
+
+            return ok({
+                url: getAppsEmbeddingCatalogEntryUrl(entry, { locale: payload.locale }),
+                entry,
+                redirectExternalOrigins: desktopEntry?.redirectExternalOrigins ?? [],
+                popupExternalOrigins: desktopEntry?.popupExternalOrigins ?? [],
+            });
+        }
+        default:
+            return exhaustive(payload);
+    }
+}
+
+export async function openView(payload: InAppBrowserOpenPayload) {
     const { mainWindowProxy, logger } = await inAppBrowserContext.get();
     const mainWindow = mainWindowProxy.getInstance();
 
@@ -103,6 +150,16 @@ export async function openView({
         return;
     }
 
+    const target = resolveOpenTarget(payload);
+
+    if (!target.success) {
+        logger.error(SERVICE_NAME, `Refusing to open: ${target.error}`);
+        sendEventToRenderer(mainWindowProxy, { type: 'load-failed', error: target.error });
+
+        return;
+    }
+
+    const { url, entry, redirectExternalOrigins, popupExternalOrigins } = target.payload;
     const origin = safeParseUrl(url)?.origin;
 
     if (origin === undefined) {
@@ -113,26 +170,13 @@ export async function openView({
 
     const { clearingEntryIds } = await activeViewContext.get();
 
-    if (entryId !== undefined && clearingEntryIds.has(entryId)) {
-        logger.warn(SERVICE_NAME, `Refusing to open "${entryId}" while its data is cleared`);
+    if (entry !== undefined && clearingEntryIds.has(entry.id)) {
+        logger.warn(SERVICE_NAME, `Refusing to open "${entry.id}" while its data is cleared`);
         sendEventToRenderer(mainWindowProxy, {
             type: 'load-failed',
             url,
             error: 'the stored data of this app is still being cleared',
         });
-
-        return;
-    }
-
-    const entry = entryId === undefined ? undefined : getAppsEmbeddingCatalogEntry(entryId);
-
-    // An id naming no entry is a caller inventing one. Nothing downstream should act on it:
-    // the catalog is the allowlist that keeps ids compile-time constants.
-    if (entryId !== undefined && entry === undefined) {
-        const error = `"${entryId}" is not a catalog entry`;
-
-        logger.error(SERVICE_NAME, `Refusing to open ${url}: ${error}`);
-        sendEventToRenderer(mainWindowProxy, { type: 'load-failed', url, error });
 
         return;
     }
@@ -195,7 +239,7 @@ export async function openView({
 
     await activeViewContext.insert(() => ({
         activeView: view,
-        activeEntryId: entryId,
+        activeEntryId: entry?.id,
         allowedNavigationOrigins,
         allowedPopupOrigins: new Set(toOrigins(popupExternalOrigins)),
     }));

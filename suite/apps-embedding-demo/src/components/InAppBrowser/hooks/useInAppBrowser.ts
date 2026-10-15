@@ -1,47 +1,42 @@
 import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
-import { injectDesktopApi } from '@suite/desktop-app-api';
+import { type InAppBrowserOpenPayload, injectDesktopApi } from '@suite/desktop-app-api';
+import { selectLanguage } from '@suite/settings';
 import { type AppsEmbeddingEvent } from '@suite-common/apps-embedding';
 import { useMutation } from '@suite-common/react-query';
 import { useServices } from '@trezor/dependency-injection';
-import { type HttpsUrl } from '@trezor/type-utils';
 
 import { useInAppBrowserEvents } from './useInAppBrowserEvents';
 import { useNavigationState } from './useNavigationState';
 import { LOCAL_IPC_MUTATION_OPTIONS } from '../constants';
 
-const NO_EXTERNAL_ORIGINS: HttpsUrl[] = [];
-
 type UseAppsEmbeddingDesktopParams = {
+    /**
+     * What the bar shows until the host reports a navigation, and — only for demo purposes — the
+     * page a custom url opens. For a catalog entry the host resolves the page itself.
+     */
     targetUrl: string;
     /**
-     * Catalog entry being embedded, absent for a custom url. The host uses it to look the entry up
-     * in the catalog — whether the site keeps its data between restarts is decided there, not here.
+     * Catalog entry being embedded, absent for a custom url. The host looks the entry up in the
+     * catalog and reads everything about it from there — its page, where it may navigate, what
+     * it may open in a window of its own and whether it keeps its data between restarts — never
+     * from here.
      */
     entryId?: string;
-    /**
-     * Origins the site may navigate to besides its own. Must be a stable reference — changing it
-     * tears the native view down and opens it again.
-     */
-    redirectExternalOrigins?: HttpsUrl[];
-    /** Origins the site may open in a window of its own. Stable reference, as above. */
-    popupExternalOrigins?: HttpsUrl[];
     onEvent: (event: AppsEmbeddingEvent) => void;
 };
 
 /**
  * Drives the main-process WebContentsView host:
- * - opens the target url for the lifetime of the calling component
+ * - opens the target for the lifetime of the calling component
  * - translates the host events into the shared cross-platform event shape
  * - tracks the view's navigation state for the browser bar
  */
-export const useInAppBrowser = ({
-    targetUrl,
-    entryId,
-    redirectExternalOrigins = NO_EXTERNAL_ORIGINS,
-    popupExternalOrigins = NO_EXTERNAL_ORIGINS,
-    onEvent,
-}: UseAppsEmbeddingDesktopParams) => {
+export const useInAppBrowser = ({ targetUrl, entryId, onEvent }: UseAppsEmbeddingDesktopParams) => {
+    // An entry whose page depends on the language is resolved by the host, which has no language
+    // of its own.
+    const locale = useSelector(selectLanguage);
     const { navigationState, setNavigationState } = useNavigationState(targetUrl);
 
     const attachHostEventHandler = useInAppBrowserEvents({
@@ -64,12 +59,12 @@ export const useInAppBrowser = ({
 
         const removeHostEventHandler = attachHostEventHandler();
 
-        openInAppBrowserView({
-            url: targetUrl,
-            redirectExternalOrigins,
-            popupExternalOrigins,
-            entryId,
-        });
+        const payload: InAppBrowserOpenPayload =
+            entryId === undefined
+                ? { kind: 'custom-url', url: targetUrl }
+                : { kind: 'catalog-entry', entryId, locale };
+
+        openInAppBrowserView(payload);
 
         return () => {
             removeHostEventHandler();
@@ -78,8 +73,7 @@ export const useInAppBrowser = ({
     }, [
         targetUrl,
         entryId,
-        redirectExternalOrigins,
-        popupExternalOrigins,
+        locale,
         attachHostEventHandler,
         desktopApi,
         openInAppBrowserView,

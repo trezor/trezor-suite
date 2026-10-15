@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { type AppsEmbeddingEvent, type PlatformSpecificOfKind } from '@suite-common/apps-embedding';
 import { Button, Row, Text } from '@trezor/components';
 import { isDesktop, isWeb } from '@trezor/env-utils';
-import { type HttpsUrl } from '@trezor/type-utils';
 
 import { EmbeddingEventLog } from './EmbeddingEventLog';
 import { WebIframeEntry } from './WebIframeEntry';
@@ -47,8 +46,6 @@ type EmbeddedAppRegionProps = {
     targetUrl: string;
     entryId?: string;
     embedTitle: string;
-    redirectExternalOrigins?: HttpsUrl[];
-    popupExternalOrigins?: HttpsUrl[];
     webEntry: PlatformSpecificOfKind<'web'> | null;
     logEntries: EmbeddingLogEntry[];
     onEvent: (event: AppsEmbeddingEvent) => void;
@@ -65,8 +62,6 @@ export const EmbeddedAppRegion = ({
     targetUrl,
     entryId,
     embedTitle,
-    redirectExternalOrigins,
-    popupExternalOrigins,
     webEntry,
     logEntries,
     onEvent,
@@ -96,8 +91,6 @@ export const EmbeddedAppRegion = ({
                     isVisible={!isModalOpen}
                     targetUrl={targetUrl}
                     entryId={entryId}
-                    redirectExternalOrigins={redirectExternalOrigins}
-                    popupExternalOrigins={popupExternalOrigins}
                     onEvent={onEvent}
                 />
             )}

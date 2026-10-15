@@ -2,6 +2,7 @@ import { type ProxyConfig, type Session, WebContentsView, session } from 'electr
 
 import { type InAppBrowserOpenPayload } from '@suite/desktop-app-api';
 
+import { activeViewContext } from './context';
 import { init } from './init';
 import { type Dependencies, mainThreadEmitter } from '../module';
 import { type MockSession, mockSession } from './mocks/mockSession';
@@ -76,17 +77,12 @@ const logger = new Logger('mute');
 const TOR_PROXY_CONFIG = { proxyRules: 'socks5://127.0.0.1:9050' } satisfies ProxyConfig;
 const SYSTEM_PROXY_CONFIG = { mode: 'system' } satisfies ProxyConfig;
 
-const openPayload: InAppBrowserOpenPayload = {
-    url: 'https://app.example/',
-    redirectExternalOrigins: [],
-    popupExternalOrigins: [],
-};
+const openPayload: InAppBrowserOpenPayload = { kind: 'custom-url', url: 'https://app.example/' };
 
 const persistentOpenPayload: InAppBrowserOpenPayload = {
-    url: 'https://gpay-live-demo.web.app/',
-    redirectExternalOrigins: [],
-    popupExternalOrigins: [],
+    kind: 'catalog-entry',
     entryId: 'google-pay-demo',
+    locale: 'en-US',
 };
 
 const mockMainWindowWebContents = {
@@ -97,6 +93,8 @@ const mockMainWindowWebContents = {
 };
 
 const mockContentView = { addChildView: jest.fn(), removeChildView: jest.fn() };
+
+const flushPendingPromises = () => new Promise(resolve => setImmediate(resolve));
 
 const mockMainWindow = {
     isDestroyed: () => false,
@@ -185,13 +183,25 @@ describe('in-app browser module and the Tor settings', () => {
         await handler({}, payload);
     };
 
-    // The subscription fires and forgets; the wrapped `followTorSettings` exposes its promise.
+    const closePage = async () => {
+        const handler = mockIpcHandlers.get('in-app-browser/close-view');
+
+        if (handler === undefined) {
+            throw new Error('the close-view handler was not registered');
+        }
+
+        await handler({});
+    };
+
+    // The subscription fires and forgets, and the queue starts the follow on a later tick; the
+    // wrapped `followTorSettings` exposes its promise once it has been called.
     const changeTorSettings = async (changed: TorSettings | undefined) => {
         if (torSettingsListener === undefined) {
             throw new Error('the module did not subscribe to the Tor settings');
         }
 
         torSettingsListener(changed);
+        await flushPendingPromises();
 
         const { results } = jest.mocked(followTorSettings).mock;
         const lastResult = results[results.length - 1];
@@ -351,5 +361,54 @@ describe('in-app browser module and the Tor settings', () => {
 
         expect(inMemorySession.setProxy).toHaveBeenLastCalledWith(TOR_PROXY_CONFIG);
         expect(mockWebContents.loadURL).toHaveBeenCalledTimes(2);
+    });
+
+    // `ipcMain` does not serialize handlers, and an open is held up by the proxy before it creates
+    // its view. Whatever lands meanwhile has to wait for it, or the view it goes on to create is
+    // never taken down.
+    describe('a call landing while an open is still routing its session', () => {
+        let finishSettingProxy = () => {};
+
+        beforeEach(() => {
+            jest.mocked(inMemorySession.setProxy).mockImplementationOnce(
+                () =>
+                    new Promise<void>(resolve => {
+                        finishSettingProxy = resolve;
+                    }),
+            );
+        });
+
+        it('opens a second page only once the first is open, and takes the first down for it', async () => {
+            initModule();
+
+            const firstOpen = openPage();
+            const secondOpen = openPage({ kind: 'custom-url', url: 'https://other.example/' });
+            await flushPendingPromises();
+
+            expect(WebContentsView).not.toHaveBeenCalled();
+
+            finishSettingProxy();
+            await Promise.all([firstOpen, secondOpen]);
+
+            expect(WebContentsView).toHaveBeenCalledTimes(2);
+            expect(mockWebContents.close).toHaveBeenCalledTimes(1);
+            expect(mockContentView.removeChildView).toHaveBeenCalledTimes(1);
+            expect(mockWebContents.loadURL).toHaveBeenLastCalledWith('https://other.example/');
+        });
+
+        it('closes the page that open goes on to create', async () => {
+            initModule();
+
+            const open = openPage();
+            const close = closePage();
+            await flushPendingPromises();
+
+            finishSettingProxy();
+            await Promise.all([open, close]);
+
+            expect(WebContentsView).toHaveBeenCalledTimes(1);
+            expect(mockWebContents.close).toHaveBeenCalledTimes(1);
+            expect((await activeViewContext.get()).activeView).toBeUndefined();
+        });
     });
 });

@@ -1,4 +1,11 @@
-import { type ProxyConfig, type Session, session } from 'electron';
+import {
+    type DownloadItem,
+    type Event,
+    type ProxyConfig,
+    type Session,
+    type WebContents,
+    session,
+} from 'electron';
 
 import { getAppsEmbeddingCatalogEntry } from '@suite-common/apps-embedding';
 import { ok } from '@trezor/type-utils';
@@ -65,6 +72,20 @@ const createHandledRejection = (message: string) => {
 
 type RouteForOpenParams = {
     isPersistent: boolean;
+};
+
+const getWillDownloadListener = (created: MockSession) => {
+    const registration = jest
+        .mocked(created.on)
+        .mock.calls.find(([event]) => event === 'will-download');
+
+    if (registration === undefined) {
+        throw new Error('no will-download listener was installed');
+    }
+
+    const [, listener] = registration;
+
+    return listener;
 };
 
 describe('in-app browser sessions and Tor', () => {
@@ -162,6 +183,35 @@ describe('in-app browser sessions and Tor', () => {
             await expect(resolveSessionForOpen(getPersistentEntry())).resolves.toEqual(
                 ok(persistentSession),
             );
+        });
+
+        // A download nothing handles would get Electron's save dialog, under Suite's name.
+        it.each([
+            { name: 'the in-memory', isPersistent: false },
+            { name: 'a persistent', isPersistent: true },
+        ])('refuses a download in $name session', async ({ isPersistent }) => {
+            await resolveSessionForOpen(isPersistent ? getPersistentEntry() : undefined);
+            const created = isPersistent ? persistentSession : inMemorySession;
+            const download: Event = { preventDefault: jest.fn(), defaultPrevented: false };
+
+            getWillDownloadListener(created)(
+                download,
+                { getURL: () => 'https://app.example/statement.pdf' } as DownloadItem,
+                {} as WebContents,
+            );
+
+            expect(download.preventDefault).toHaveBeenCalledTimes(1);
+        });
+
+        it('installs the download guard once per session rather than once per open', async () => {
+            await resolveSessionForOpen(undefined);
+            await resolveSessionForOpen(undefined);
+
+            const registrations = jest
+                .mocked(inMemorySession.on)
+                .mock.calls.filter(([event]) => event === 'will-download');
+
+            expect(registrations).toHaveLength(1);
         });
     });
 
