@@ -6,6 +6,15 @@ import { isNavigationToAllowedOrigin, sendEventToRenderer } from './general';
 import { SERVICE_NAME } from '../constants';
 import { activeViewContext, inAppBrowserContext, inAppBrowserWebContentsIds } from '../context';
 
+// The window is Suite's — its icon, its menu bar, its place among Suite's windows — while the page
+// in it is not, so the title names the host of the page rather than whatever the page calls
+// itself. Undefined for a url with no host, which leaves the title as it was.
+const getPopupTitle = (url: string): string | undefined => {
+    const hostname = safeParseUrl(url)?.hostname;
+
+    return hostname === undefined || hostname === '' ? undefined : hostname;
+};
+
 export async function registerPopup(popupWindow: BrowserWindow) {
     const popupContents = popupWindow.webContents;
     // Captured now: the id cannot be read off a destroyed webContents in the `closed` handler.
@@ -65,7 +74,19 @@ export async function registerPopup(popupWindow: BrowserWindow) {
         sendEventToRenderer(mainWindowProxy, { type: 'navigation-blocked', url: details.url });
     });
 
+    // The page's own title is refused, and the host of the page shown takes its place on every
+    // committed navigation; the window opens titled that way already, see `registerPopupOpener`.
+    popupWindow.on('page-title-updated', event => {
+        event.preventDefault();
+    });
+
     popupContents.on('did-navigate', (_, navigationUrl) => {
+        const title = getPopupTitle(navigationUrl);
+
+        if (title !== undefined) {
+            popupWindow.setTitle(title);
+        }
+
         sendEventToRenderer(mainWindowProxy, { type: 'navigated', url: navigationUrl });
     });
 
@@ -91,9 +112,9 @@ export async function registerPopupOpener() {
     // `setWindowOpenHandler` can't resolve async handler,
     // therefore we must past the already resolved mainWindowProxy to the handler rather than using `inAppBrowserContext.get()` inside it.
     activeView.webContents.setWindowOpenHandler(({ url: openedUrl }) => {
-        const openedOrigin = safeParseUrl(openedUrl)?.origin;
+        const opened = safeParseUrl(openedUrl);
 
-        if (openedOrigin === undefined || !allowedPopupOrigins.has(openedOrigin)) {
+        if (opened === null || !allowedPopupOrigins.has(opened.origin)) {
             logger.warn(SERVICE_NAME, `Denied window.open for ${openedUrl}`);
             sendEventToRenderer(mainWindowProxy, {
                 type: 'window-open-attempt',
@@ -113,6 +134,7 @@ export async function registerPopupOpener() {
         return {
             action: 'allow',
             overrideBrowserWindowOptions: {
+                title: opened.hostname,
                 // A child of the Suite window: it stays above it and dies with it.
                 parent: mainWindow,
                 autoHideMenuBar: false,

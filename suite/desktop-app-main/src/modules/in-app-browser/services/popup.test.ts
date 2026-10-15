@@ -32,9 +32,14 @@ const mockPopupContents = {
     }),
 };
 
+const mockPopupWindowListeners = new Map<string, PopupListener>();
+
 const mockPopupWindow = {
     webContents: mockPopupContents,
-    on: jest.fn(),
+    on: jest.fn((event: string, listener: PopupListener) => {
+        mockPopupWindowListeners.set(event, listener);
+    }),
+    setTitle: jest.fn(),
 } as unknown as BrowserWindow;
 
 const mockMainWindowWebContents = {
@@ -53,11 +58,21 @@ const createMainWindowProxy = () => {
     return mainWindowProxy;
 };
 
-const getListener = (event: 'will-navigate' | 'will-redirect') => {
+const getListener = (event: 'will-navigate' | 'will-redirect' | 'did-navigate') => {
     const listener = mockPopupListeners.get(event);
 
     if (listener === undefined) {
         throw new Error(`${event} listener was not registered`);
+    }
+
+    return listener;
+};
+
+const getWindowListener = (event: 'page-title-updated') => {
+    const listener = mockPopupWindowListeners.get(event);
+
+    if (listener === undefined) {
+        throw new Error(`${event} window listener was not registered`);
     }
 
     return listener;
@@ -98,6 +113,7 @@ describe('registerPopup navigation guards', () => {
     beforeEach(async () => {
         jest.clearAllMocks();
         mockPopupListeners.clear();
+        mockPopupWindowListeners.clear();
 
         inAppBrowserContext.set({
             mainWindowProxy,
@@ -177,6 +193,16 @@ describe('registerPopup navigation guards', () => {
 
         expect(navigation.preventDefault).not.toHaveBeenCalled();
     });
+
+    it('titles the window after the host of the page it shows, never after the page', () => {
+        const titleUpdate: Event = { preventDefault: jest.fn(), defaultPrevented: false };
+
+        getWindowListener('page-title-updated')(titleUpdate, 'Trezor Suite', true);
+        getListener('did-navigate')({}, 'https://pay.example/sheet?session=1');
+
+        expect(titleUpdate.preventDefault).toHaveBeenCalledTimes(1);
+        expect(mockPopupWindow.setTitle).toHaveBeenCalledWith('pay.example');
+    });
 });
 
 type WindowOpenHandler = Parameters<WebContents['setWindowOpenHandler']>[0];
@@ -252,6 +278,16 @@ describe('registerPopupOpener', () => {
         expect(decision.overrideBrowserWindowOptions?.webPreferences).toMatchObject({
             disableDialogs: true,
         });
+    });
+
+    it('opens a permitted popup titled after its host', () => {
+        const decision = decideWindowOpen('https://accounts.example/signin');
+
+        if (decision.action !== 'allow') {
+            throw new Error('expected the popup to be allowed');
+        }
+
+        expect(decision.overrideBrowserWindowOptions?.title).toBe('accounts.example');
     });
 
     it('denies a popup for an origin outside the popup list', () => {
