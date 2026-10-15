@@ -37,7 +37,8 @@ test.describe('Connect Explorer navigation', () => {
 
             await sidebarPage.desktopLink(entry.testIdSegment).click();
 
-            await expect(page).toHaveURL(new RegExp(`${entry.href}/?$`));
+            const expectedPath = entry.href.replace(/\/$/, '');
+            await expect(page).toHaveURL(url => url.pathname.replace(/\/$/, '') === expectedPath);
             await expect(methodPage.title).toBeVisible();
             await expect(methodPage.playgroundBox).toBeVisible();
         },
