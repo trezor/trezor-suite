@@ -10,7 +10,9 @@ import { getConnectExplorerUrl } from '../support/helpers/connectExplorer';
  * `yarn connect:explorer` locally, needs no trezor-user-env, bridge or emulator, and reports
  * without Currents.
  */
-const { currentsFixturesEnabled: _currentsFixturesEnabled, ...baseUse } = baseConfig.use ?? {};
+// `baseConfig` is annotated as `PlaywrightTestConfig`, which erases the Currents fixture options.
+const { currentsFixturesEnabled: _currentsFixturesEnabled, ...baseUse } = (baseConfig.use ??
+    {}) as NonNullable<typeof baseConfig.use> & { currentsFixturesEnabled?: boolean };
 
 const config = defineConfig({
     ...baseConfig,
