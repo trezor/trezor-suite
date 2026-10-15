@@ -141,3 +141,6 @@ export const selectDesktopUpdateEnabled = (state: DesktopUpdateRootState) =>
 
 export const selectDesktopUpdateAllowPrerelease = (state: DesktopUpdateRootState) =>
     state.desktopUpdate.allowPrerelease;
+
+export const selectDesktopUpdateAutomaticUpdateEnabled = (state: DesktopUpdateRootState) =>
+    state.desktopUpdate.isAutomaticUpdateEnabled;
