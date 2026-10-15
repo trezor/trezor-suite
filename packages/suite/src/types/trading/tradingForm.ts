@@ -276,4 +276,5 @@ export interface TradingOfferBuyProps {
 export interface TradingSelectedOfferInfoProps extends TradingOfferCommonProps {
     selectedAccount?: Account;
     receiveAddress?: string;
+    receiveExtraField?: string;
 }

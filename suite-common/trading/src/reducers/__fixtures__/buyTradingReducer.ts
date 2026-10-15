@@ -188,6 +188,20 @@ export const buyTradingFixtures = [
         },
     },
     {
+        description: 'should set the receive address extra field',
+        initialState: buyInitialState,
+        actions: [
+            {
+                type: tradingBuyActions.setExtraField.type,
+                payload: '12345',
+            },
+        ],
+        result: {
+            ...buyInitialState,
+            extraField: '12345',
+        },
+    },
+    {
         description: 'should set trading account key',
         initialState: buyInitialState,
         actions: [

@@ -109,6 +109,7 @@ export const useTradingReceiveAddress = ({
             setHasSelectionInitialized(true);
             const { address } = getUnusedAddressFromAccount(account);
             methods.setValue('address', address, { shouldValidate: true });
+            methods.setValue('extraField', '', { shouldValidate: true });
         },
         [methods],
     );
@@ -123,10 +124,7 @@ export const useTradingReceiveAddress = ({
             setSelectedAccount(null);
             setHasSelectionInitialized(true);
             methods.setValue('address', address, { shouldValidate: true });
-
-            if (extraFieldValue !== undefined) {
-                methods.setValue('extraField', extraFieldValue, { shouldValidate: true });
-            }
+            methods.setValue('extraField', extraFieldValue ?? '', { shouldValidate: true });
         },
         [methods],
     );
@@ -310,6 +308,7 @@ export const useTradingReceiveAddress = ({
 
         if (type === 'buy') {
             dispatch(tradingBuyActions.setReceiveAddress(receiveAddress));
+            dispatch(tradingBuyActions.setExtraField(extraField));
             dispatch(tradingBuyActions.setReceiveAccountKey(receiveAccount?.key));
         }
     }, [receiveAddress, extraField, receiveAccount, type, dispatch]);
