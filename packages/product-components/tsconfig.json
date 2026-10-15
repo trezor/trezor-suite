@@ -15,7 +15,6 @@
     "references": [
         { "path": "../../suite-common/feedback" },
         { "path": "../../suite-common/icons" },
-        { "path": "../../suite-common/jsonl" },
         {
             "path": "../../suite-common/suite-types"
         },
@@ -31,6 +30,7 @@
         { "path": "../device-utils" },
         { "path": "../env-utils" },
         { "path": "../icons" },
+        { "path": "../jsonl" },
         {
             "path": "../../networks/ethereum/network-ethereum"
         },
