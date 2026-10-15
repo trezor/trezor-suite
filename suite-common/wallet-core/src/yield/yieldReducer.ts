@@ -479,6 +479,13 @@ const yieldSlice = createSlice({
             action: PayloadAction<YieldSessionActionPayload & { amount?: string }>,
         ) {
             withSession(state, action.payload, session => {
+                if (
+                    action.payload.flowType !== 'deposit' ||
+                    (session.step !== 'approve' && session.step !== 'action')
+                ) {
+                    return;
+                }
+
                 session.approval.modalState = null;
                 // The pendingTransaction is intentionally preserved — an in-flight action tx must
                 // stay tracked so its confirmation is still processed into `completeAction`.
@@ -554,11 +561,20 @@ const yieldSlice = createSlice({
                 YieldSessionActionPayload & {
                     step: WrappedNativeStepId;
                     amount?: string;
+                    txid?: string;
                 }
             >,
         ) {
             withSession(state, action.payload, session => {
-                if (session.step !== action.payload.step) {
+                // A skip (no txid) may not resolve the step while its transaction is being
+                // submitted or is still pending; a confirmation must match the pending txid.
+                const { isSubmitting, pendingTransaction } = session.action;
+                const isResolvable =
+                    action.payload.txid === undefined
+                        ? !isSubmitting && pendingTransaction === null
+                        : pendingTransaction?.txid === action.payload.txid;
+
+                if (session.step !== action.payload.step || !isResolvable) {
                     return;
                 }
 
@@ -729,10 +745,15 @@ const yieldSlice = createSlice({
             action: PayloadAction<
                 YieldSessionActionPayload & {
                     amount: string;
+                    txid: string;
                 }
             >,
         ) {
             withSession(state, action.payload, session => {
+                if (session.action.pendingTransaction?.txid !== action.payload.txid) {
+                    return;
+                }
+
                 if (session.action.review?.type === 'claim') {
                     session.result.completedRewards = session.action.review.rewards;
                 } else {
@@ -751,8 +772,15 @@ const yieldSlice = createSlice({
                 });
             });
         },
-        transactionFailed(state: YieldState, action: PayloadAction<YieldSessionActionPayload>) {
+        transactionFailed(
+            state: YieldState,
+            action: PayloadAction<YieldSessionActionPayload & { txid: string }>,
+        ) {
             withSession(state, action.payload, session => {
+                if (session.action.pendingTransaction?.txid !== action.payload.txid) {
+                    return;
+                }
+
                 session.action.pendingTransaction = null;
                 session.error = 'TR_EARN_YIELD_ERROR_TRANSACTION_FAILED';
             });

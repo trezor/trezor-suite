@@ -263,7 +263,13 @@ export const useYieldPendingTransactionTracking = ({
             }
 
             pendingStartRef.current = null;
-            dispatch(yieldActions.transactionFailed({ flowType, flowKey }));
+            dispatch(
+                yieldActions.transactionFailed({
+                    flowType,
+                    flowKey,
+                    txid: pendingTransaction.txid,
+                }),
+            );
 
             return;
         }
@@ -300,6 +306,7 @@ export const useYieldPendingTransactionTracking = ({
                     flowKey,
                     step: pendingTransaction.type,
                     amount: pendingTransaction.amount,
+                    txid: pendingTransaction.txid,
                 }),
             );
 
@@ -313,6 +320,7 @@ export const useYieldPendingTransactionTracking = ({
                         flowType,
                         flowKey,
                         amount: pendingTransaction.amount,
+                        txid: pendingTransaction.txid,
                     }),
                 );
             };

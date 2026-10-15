@@ -199,10 +199,20 @@ describe('useYieldBackNavigation', () => {
 
         act(() =>
             store.dispatch(
+                yieldActions.setPendingTx({
+                    flowType: 'deposit',
+                    flowKey: 'test-yield-flow',
+                    tx: { type: 'deposit', txid: '0xdeposittxid', amount: '1' },
+                }),
+            ),
+        );
+        act(() =>
+            store.dispatch(
                 yieldActions.completeAction({
                     flowType: 'deposit',
                     flowKey: 'test-yield-flow',
                     amount: '1',
+                    txid: '0xdeposittxid',
                 }),
             ),
         );
