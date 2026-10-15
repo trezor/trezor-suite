@@ -80,12 +80,15 @@ const buildEthereumStakingSignFormState = (
         : {}),
 });
 
-// Reads the variant the form already produced at compose time and converts it to the sign-time wei value. This avoids re-encoding the calldata at sign time.
-const readVariantFromFormValues = (
+// Reads the variant produced at compose time and converts it to the sign-time wei value, so the
+// calldata is never re-encoded at sign time. The composed fee level carries the calldata; the form
+// draft is the fallback for flows that still compose through the send form.
+const readComposedVariant = (
     formValues: StakeFormState,
+    precomposedTransaction: PrecomposedTransactionFinal,
     stakeType: BaseStakeType,
 ): EthereumStakingVariant | null => {
-    const calldata = formValues.transactionData;
+    const calldata = precomposedTransaction.transactionData || formValues.transactionData;
     const contractAddress = formValues.outputs[0]?.address;
     const composeAmount = formValues.outputs[0]?.amount;
 
@@ -141,7 +144,7 @@ export const prepareEthereumStakingContext = (
         return failed('Selected fee level is missing gas limit.');
     }
 
-    const variant = readVariantFromFormValues(formValues, stakeType);
+    const variant = readComposedVariant(formValues, precomposedTransaction, stakeType);
 
     if (!variant) {
         return failed(`Compose result for ${stakeType} is incomplete.`);

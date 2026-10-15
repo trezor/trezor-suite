@@ -2,6 +2,7 @@ import { type UnknownAction } from '@reduxjs/toolkit';
 import { type ThunkDispatch } from 'redux-thunk';
 
 import { type SelectedAccountRootState, selectFullSelectedAccount } from '@suite/account';
+import { selectSelectedDevice } from '@suite-common/device';
 import {
     type SignPreparedEthereumStakingTransactionThunkState,
     WALLET_SDK_SOURCE,
@@ -44,7 +45,11 @@ export const signTransactionThunk =
         extra: SignTransactionThunkDeps,
     ): Promise<StakeSignResult> => {
         const selectedAccount = selectFullSelectedAccount(getState());
-        if (selectedAccount.status !== 'loaded' || transactionInfo?.type !== 'final') return;
+        const device = selectSelectedDevice(getState());
+
+        if (selectedAccount.status !== 'loaded' || !device || transactionInfo?.type !== 'final') {
+            return;
+        }
 
         const { account } = selectedAccount;
         const { stakeType } = formValues;

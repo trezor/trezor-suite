@@ -91,13 +91,17 @@ export const signEthereumStakingTransactionThunk = createThunk<
             const signAction = deviceAccessResponse.payload;
 
             if (signPreparedEthereumStakingTransactionThunk.rejected.match(signAction)) {
-                if (signAction.payload?.message !== 'tx-cancelled') {
-                    console.error(
-                        `${LOG_PREFIX}: Sign transaction failed: ${signAction.payload?.message}`,
-                    );
+                const { payload } = signAction;
+
+                if (payload?.error === 'stake-live-state-invalid') {
+                    dispatch(sendFormActions.discardTransaction());
                 }
 
-                return rejectWithValue(signAction.payload);
+                if (payload?.message !== 'tx-cancelled') {
+                    console.error(`${LOG_PREFIX}: Sign transaction failed: ${payload?.message}`);
+                }
+
+                return rejectWithValue(payload);
             }
 
             if (!signPreparedEthereumStakingTransactionThunk.fulfilled.match(signAction)) {
