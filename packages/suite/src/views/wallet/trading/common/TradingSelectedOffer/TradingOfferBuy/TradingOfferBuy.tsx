@@ -1,16 +1,19 @@
+import { useSelector } from 'react-redux';
+
 import { Translation } from '@suite/intl';
 import {
+    type TradingRootState,
+    selectTradingBuyExtraField,
     selectTradingBuyInfo,
     selectTradingBuyReceiveAccountKey,
     selectTradingBuyReceiveAddress,
     selectTradingProviderCompanyName,
 } from '@suite-common/trading';
-import { selectAccountByKey } from '@suite-common/wallet-core';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { Card, Column, H2, Text } from '@trezor/components';
 import { ArrowSquareOutIcon } from '@trezor/icons';
 import { useAsyncClickHandler } from '@trezor/react-utils';
 
-import { useSelector } from 'src/hooks/suite';
 import { type TradingGetCryptoQuoteAmountProps } from 'src/types/trading/trading';
 import { type TradingOfferBuyProps } from 'src/types/trading/tradingForm';
 import { TradingFormOfferConfirmButton } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer/components/TradingFormOfferConfirmButton';
@@ -26,11 +29,12 @@ export const TradingOfferBuy = ({
 
     const buyInfo = useSelector(selectTradingBuyInfo);
     const receiveAddress = useSelector(selectTradingBuyReceiveAddress);
+    const receiveExtraField = useSelector(selectTradingBuyExtraField);
     const receiveAccountKey = useSelector(selectTradingBuyReceiveAccountKey);
     const receiveAccount = useSelector(
-        state => selectAccountByKey(state, receiveAccountKey) ?? undefined,
+        (state: AccountsRootState) => selectAccountByKey(state, receiveAccountKey) ?? undefined,
     );
-    const providerName = useSelector(state =>
+    const providerName = useSelector((state: TradingRootState) =>
         selectTradingProviderCompanyName(state, selectedQuote.exchange, 'buy'),
     );
 
@@ -67,6 +71,7 @@ export const TradingOfferBuy = ({
                         paymentMethodName={selectedQuote.paymentMethodName}
                         selectedAccount={receiveAccount}
                         receiveAddress={receiveAddress}
+                        receiveExtraField={receiveExtraField}
                     />
                     <Column gap={12}>
                         <TradingFormOfferConfirmButton

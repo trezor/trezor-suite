@@ -59,6 +59,7 @@ const SELECTED_QUOTE: BuyTrade = {
 type StateOverrides = {
     selectedQuote?: BuyTrade;
     receiveAddress?: string;
+    extraField?: string;
     isLoading?: boolean;
     accountKey?: AccountKey;
     receiveAccountKey?: AccountKey;
@@ -68,6 +69,7 @@ type StateOverrides = {
 const DEFAULTS = {
     selectedQuote: SELECTED_QUOTE,
     receiveAddress: 'bc1qreceive',
+    extraField: undefined,
     isLoading: false,
     accountKey: ACCOUNT.key,
     receiveAccountKey: undefined,
@@ -78,7 +80,15 @@ const DEFAULTS = {
 type State = GotoThunkState & TradingRootState & AccountsRootState;
 
 const buildState = (overrides: StateOverrides = {}): Pick<State, 'wallet'> => {
-    const { selectedQuote, receiveAddress, isLoading, accountKey, receiveAccountKey, accounts } = {
+    const {
+        selectedQuote,
+        receiveAddress,
+        extraField,
+        isLoading,
+        accountKey,
+        receiveAccountKey,
+        accounts,
+    } = {
         ...DEFAULTS,
         ...overrides,
     };
@@ -92,6 +102,7 @@ const buildState = (overrides: StateOverrides = {}): Pick<State, 'wallet'> => {
                     ...tradingInitialState.buy,
                     selectedQuote,
                     receiveAddress,
+                    extraField,
                     isLoading,
                     tradingAccountKey: accountKey,
                     receiveAccountKey,
@@ -192,6 +203,16 @@ describe('useTradingBuyConfirm', () => {
                     account: ACCOUNT,
                     returnUrl: expect.any(String),
                 }),
+            );
+        });
+
+        it('forwards the persisted receive address extra field', async () => {
+            const { result } = renderConfirm({ extraField: '12345' });
+
+            await result.current.confirmTrade();
+
+            expect(mockConfirmTradeThunk).toHaveBeenCalledWith(
+                expect.objectContaining({ address: 'bc1qreceive', extraField: '12345' }),
             );
         });
 
