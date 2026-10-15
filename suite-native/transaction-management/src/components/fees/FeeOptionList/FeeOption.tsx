@@ -15,11 +15,11 @@ import {
     selectConvertedNetworkFeeLevelFeePerUnit,
     selectConvertedNetworkFeeLevelTimeEstimate,
 } from '@suite-common/wallet-core';
-import {
-    type GeneralPrecomposedTransaction,
-    type GeneralPrecomposedTransactionFinal,
-    isFinalPrecomposedTransaction,
+import type {
+    GeneralPrecomposedTransaction,
+    GeneralPrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
+import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { getFeeUnits, isEip1559 } from '@suite-common/wallet-utils';
 import { AnimatedView, Box, HStack, Radio, Text, VStack } from '@suite-native/atoms';
 import {

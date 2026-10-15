@@ -1,5 +1,5 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type FormState, type TokenAddress } from '@suite-common/wallet-types';
+import type { FormState, TokenAddress } from '@suite-common/wallet-types';
 import { renderHookWithStoreProvider, waitFor } from '@suite-native/test-utils-store';
 
 import { useMaxSpendableAmount } from './useMaxSpendableAmount';
