@@ -86,6 +86,32 @@ const getTransactionsPage = (
         .then(txs => txs.map(transformTransaction))
         .then(sortTxsFromLatest);
 
+type TransactionVinVouts = { details: { vin: VinVout[]; vout: VinVout[] } };
+
+type AddressValues = { sent: number; received: number };
+
+// The sums of sumAddressValues for all the addresses at once, in one pass over the transactions.
+export const sumValuesByAddress = (transactions: TransactionVinVouts[]) => {
+    const sums = new Map<string, AddressValues>();
+    const addValues = (vinVouts: VinVout[], key: keyof AddressValues) =>
+        vinVouts.forEach(({ addresses, value }) =>
+            addresses?.forEach((address, index, all) => {
+                // An input or output listing the same address twice counts once.
+                if (all.indexOf(address) !== index) return;
+                const values = sums.get(address) ?? { sent: 0, received: 0 };
+                values[key] += value ? Number.parseFloat(value) : 0;
+                sums.set(address, values);
+            }),
+        );
+
+    transactions.forEach(({ details }) => {
+        addValues(details.vin, 'sent');
+        addValues(details.vout, 'received');
+    });
+
+    return sums;
+};
+
 export const sumAddressValues = <T>(
     transactions: T[],
     address: string,
@@ -184,31 +210,23 @@ const getAccountInfo: Api<Req, Res> = async ({ client, addressCache }, payload) 
           )
         : [];
 
-    const extendAddressInfo = ({ address, path, transfers, balance }: Address): Address => ({
-        address,
-        path,
-        transfers,
-        balance: '0',
-        sent: '0',
-        received: '0',
-        ...(['tokenBalances', 'txids', 'txs'].includes(details) && transfers
-            ? {
-                  balance,
-                  ...(hasAddressAmounts && {
-                      sent: sumAddressValues(
-                          accountTransactions,
-                          address,
-                          tx => tx.details.vin,
-                      ).toString(),
-                      received: sumAddressValues(
-                          accountTransactions,
-                          address,
-                          tx => tx.details.vout,
-                      ).toString(),
-                  }),
-              }
-            : {}),
-    });
+    const valuesByAddress = sumValuesByAddress(accountTransactions);
+
+    const extendAddressInfo = ({ address, path, transfers, balance }: Address): Address => {
+        const { sent, received } = valuesByAddress.get(address) ?? { sent: 0, received: 0 };
+
+        return {
+            address,
+            path,
+            transfers,
+            balance: '0',
+            sent: '0',
+            received: '0',
+            ...(['tokenBalances', 'txids', 'txs'].includes(details) && transfers
+                ? { balance, sent: sent.toString(), received: received.toString() }
+                : {}),
+        };
+    };
 
     return {
         descriptor,

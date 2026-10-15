@@ -1,7 +1,7 @@
-import type { ElectrumTypes } from '@trezor/blockchain-link-types';
+import type { ElectrumTypes, VinVout } from '@trezor/blockchain-link-types';
 import { createAddressCache, deriveAddresses, networks } from '@trezor/utxo-lib';
 
-import getAccountInfo from './getAccountInfo';
+import getAccountInfo, { sumAddressValues, sumValuesByAddress } from './getAccountInfo';
 import { CachingElectrumClient } from '../client/caching';
 import type { ISocket, SocketListener } from '../sockets/interface';
 import { addressToScripthash } from '../utils/transform';
@@ -265,5 +265,53 @@ describe('getAccountInfo of the Electrum worker', () => {
         expect(transactions.map(({ txid }) => txid).sort()).toEqual(
             PAGED_HISTORY.map(({ tx_hash }) => tx_hash),
         );
+    });
+});
+
+describe(sumValuesByAddress.name, () => {
+    const vinVout = (n: number, value: string | undefined, addresses: string[]): VinVout => ({
+        n,
+        value,
+        addresses,
+        isAddress: addresses.length === 1,
+    });
+
+    it('gives the same sums as sumAddressValues for every address', () => {
+        const transactions = [
+            {
+                details: {
+                    vin: [vinVout(0, '0.1', ['a']), vinVout(1, '0.2', ['b'])],
+                    // A bare multisig output listing the same address twice counts once.
+                    vout: [vinVout(0, '0.15', ['a', 'c', 'a']), vinVout(1, undefined, ['b'])],
+                },
+            },
+            {
+                details: {
+                    vin: [vinVout(0, '0.3', ['a', 'b'])],
+                    vout: [vinVout(0, '0.7', ['c']), vinVout(1, '0.05', ['a'])],
+                },
+            },
+        ];
+
+        const sums = sumValuesByAddress(transactions);
+
+        ['a', 'b', 'c', 'd'].forEach(address => {
+            expect(sums.get(address) ?? { sent: 0, received: 0 }).toEqual({
+                sent: sumAddressValues(transactions, address, tx => tx.details.vin),
+                received: sumAddressValues(transactions, address, tx => tx.details.vout),
+            });
+        });
+        expect(sums.get('a')).toEqual({ sent: 0.4, received: 0.2 });
+    });
+
+    it('adds the values in the order of the transactions', () => {
+        const transactions = ['0.1', '0.2', '0.3'].map(value => ({
+            details: { vin: [], vout: [vinVout(0, value, ['a'])] },
+        }));
+
+        expect(sumValuesByAddress(transactions).get('a')?.received).toBe(
+            sumAddressValues(transactions, 'a', tx => tx.details.vout),
+        );
+        expect(sumValuesByAddress(transactions).get('a')?.received).toBe(0.1 + 0.2 + 0.3);
     });
 });
