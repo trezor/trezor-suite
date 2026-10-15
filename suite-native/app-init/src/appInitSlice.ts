@@ -22,40 +22,6 @@ export const appInitInitialState: AppInitState = {
     connectAndBlockchainInitializationStatus: ConnectAndBlockchainInitializationStatus.Idle,
 };
 
-const initializationReadinessByStatus: Record<
-    ConnectAndBlockchainInitializationStatus,
-    { isTrezorConnectInitialized: boolean; isBlockchainInitialized: boolean }
-> = {
-    [ConnectAndBlockchainInitializationStatus.Idle]: {
-        isTrezorConnectInitialized: false,
-        isBlockchainInitialized: false,
-    },
-    [ConnectAndBlockchainInitializationStatus.Initializing]: {
-        isTrezorConnectInitialized: false,
-        isBlockchainInitialized: false,
-    },
-    [ConnectAndBlockchainInitializationStatus.Ready]: {
-        isTrezorConnectInitialized: true,
-        isBlockchainInitialized: true,
-    },
-    [ConnectAndBlockchainInitializationStatus.ConnectError]: {
-        isTrezorConnectInitialized: false,
-        isBlockchainInitialized: false,
-    },
-    [ConnectAndBlockchainInitializationStatus.BlockchainError]: {
-        isTrezorConnectInitialized: true,
-        isBlockchainInitialized: false,
-    },
-    [ConnectAndBlockchainInitializationStatus.Error]: {
-        isTrezorConnectInitialized: false,
-        isBlockchainInitialized: false,
-    },
-    [ConnectAndBlockchainInitializationStatus.Disabled]: {
-        isTrezorConnectInitialized: false,
-        isBlockchainInitialized: false,
-    },
-};
-
 const appInitSlice = createSlice({
     name: 'appInit',
     initialState: appInitInitialState,
@@ -95,16 +61,10 @@ export const selectIsAppInitFinished = (state: AppInitRootState) => state.appIni
 export const selectConnectAndBlockchainInitializationStatus = (state: AppInitRootState) =>
     state.appInit.connectAndBlockchainInitializationStatus;
 
-export const selectIsTrezorConnectInitialized = (state: AppInitRootState): boolean => {
-    const status = selectConnectAndBlockchainInitializationStatus(state);
-
-    return initializationReadinessByStatus[status].isTrezorConnectInitialized;
-};
-
 export const selectIsBlockchainInitialized = (state: AppInitRootState): boolean => {
     const status = selectConnectAndBlockchainInitializationStatus(state);
 
-    return initializationReadinessByStatus[status].isBlockchainInitialized;
+    return status === ConnectAndBlockchainInitializationStatus.Ready;
 };
 
 export const selectIsConnectAndBlockchainInitializationPending = (

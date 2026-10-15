@@ -356,8 +356,6 @@ export const TransactionList = ({
     }, [shouldLoadMoreTokenTransactions, isLoadingTransactions, handleOnLoadMore]);
 
     const handleOnLoadMorePress = () => {
-        if (!isBlockchainInitialized) return;
-
         if (tokenContract) {
             setRequestedVisibleCount(requestedCount =>
                 getNextRequestedTransactionCount({

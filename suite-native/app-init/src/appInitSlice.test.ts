@@ -4,7 +4,6 @@ import {
     selectIsAppInitFinished,
     selectIsBlockchainInitialized,
     selectIsConnectAndBlockchainInitializationPending,
-    selectIsTrezorConnectInitialized,
 } from './appInitSlice';
 import { ConnectAndBlockchainInitializationStatus } from './appTypes';
 import { applicationInitThunk } from './applicationInitThunk';
@@ -66,23 +65,6 @@ describe('appInitSlice', () => {
         );
 
         expect(state.connectAndBlockchainInitializationStatus).toBe(status);
-    });
-
-    it.each([
-        [ConnectAndBlockchainInitializationStatus.Idle, false],
-        [ConnectAndBlockchainInitializationStatus.Initializing, false],
-        [ConnectAndBlockchainInitializationStatus.Ready, true],
-        [ConnectAndBlockchainInitializationStatus.ConnectError, false],
-        [ConnectAndBlockchainInitializationStatus.BlockchainError, true],
-        [ConnectAndBlockchainInitializationStatus.Error, false],
-        [ConnectAndBlockchainInitializationStatus.Disabled, false],
-    ] as const)('reports TrezorConnect initialized in the %s state: %s', (status, expected) => {
-        const state = {
-            ...appInitInitialState,
-            connectAndBlockchainInitializationStatus: status,
-        };
-
-        expect(selectIsTrezorConnectInitialized({ appInit: state })).toBe(expected);
     });
 
     it.each([

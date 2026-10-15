@@ -84,10 +84,10 @@ export const useGraphData = ({
     );
 
     useEffect(() => {
-        if (!isBlockchainInitialized || !isEnabled || !isDeviceAuthorized) return;
+        if (!isEnabled || !isDeviceAuthorized) return;
 
         refetchGraph();
-    }, [isBlockchainInitialized, isEnabled, isDeviceAuthorized, refetchGraph]);
+    }, [isEnabled, isDeviceAuthorized, refetchGraph]);
 
     return { refetchGraph };
 };
