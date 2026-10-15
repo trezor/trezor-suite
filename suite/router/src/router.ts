@@ -2,8 +2,10 @@ import { type WalletParams as CommonWalletParams } from '@suite-common/wallet-ty
 
 import { type Route } from './route';
 import {
+    type AssetParams,
     type DashboardParams,
     decodeEarnVaultAddress,
+    parseAssetParams,
     parseDashboardParams,
     parseEarnParams,
     validateAccountRouteParams,
@@ -191,10 +193,33 @@ const validateDashboardParams = (hash: HashString): DashboardParams | undefined 
     return params;
 };
 
+// A token's contract travels in the hash; decoding keeps one with URL-unsafe characters intact.
+const decodeHashSegment = (segment?: string): string | undefined => {
+    if (segment === undefined) return undefined;
+
+    try {
+        return decodeURIComponent(segment);
+    } catch {
+        return undefined;
+    }
+};
+
+const validateAssetParams = (hash: HashString): AssetParams | undefined => {
+    const [symbol, contractAddress] = parseHash(hash);
+
+    return parseAssetParams(
+        contractAddress === undefined
+            ? { symbol }
+            : { symbol, contractAddress: decodeHashSegment(contractAddress) },
+    );
+};
+
 const getAppParams = (route: Route, hash: HashString = '') => {
     switch (route.app) {
         case 'dashboard':
-            return validateDashboardParams(hash);
+            return route.name === 'suite-asset'
+                ? validateAssetParams(hash)
+                : validateDashboardParams(hash);
         case 'earn':
             return undefined;
         case 'earn-yield':

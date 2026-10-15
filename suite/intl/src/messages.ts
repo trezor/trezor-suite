@@ -1835,6 +1835,18 @@ export const messages = defineMessages({
         defaultMessage: 'How do you like the new asset table?',
         id: 'TR_HOME_ASSET_FEEDBACK_TITLE',
     },
+    TR_ASSET_DETAIL_YOUR_BALANCE: {
+        defaultMessage: 'Your balance',
+        id: 'TR_ASSET_DETAIL_YOUR_BALANCE',
+    },
+    TR_ASSET_DETAIL_ACCOUNT_COUNT: {
+        defaultMessage: 'on {count, plural, one {# account} other {# accounts}}',
+        id: 'TR_ASSET_DETAIL_ACCOUNT_COUNT',
+    },
+    TR_ASSET_DETAIL_NO_TRANSACTIONS: {
+        defaultMessage: 'No transactions yet.',
+        id: 'TR_ASSET_DETAIL_NO_TRANSACTIONS',
+    },
     TR_HOME_ASSET_SMALL_BALANCES: {
         defaultMessage: 'Show small balances',
         id: 'TR_HOME_ASSET_SMALL_BALANCES',

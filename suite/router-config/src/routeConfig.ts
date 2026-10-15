@@ -13,6 +13,8 @@ export const walletParams = ['symbol', 'accountIndex', 'accountType'] as const;
 export const modalAppParams = ['cancelable', 'variant'] as const;
 export const dashboardParams = ['modal', 'networkSymbol'] as const;
 export const earnParams = ['symbol', 'accountIndex', 'accountType', 'vaultAddress'] as const;
+// For example #/eth/0xa0b8…eb48 for a token, #/btc for a coin
+export const assetParams = ['symbol', 'contractAddress'] as const;
 
 // Do not export, only for type-checking `routes` itself, instead use the inferred `Route` in @suite/router.
 type RouteDefinition = {
@@ -51,6 +53,12 @@ export const routes = [
         name: 'suite-hidden-tokens',
         pattern: '/hidden-tokens',
         app: 'dashboard',
+    },
+    {
+        name: 'suite-asset',
+        pattern: '/asset',
+        app: 'dashboard',
+        params: assetParams,
     },
     {
         name: 'suite-earn',

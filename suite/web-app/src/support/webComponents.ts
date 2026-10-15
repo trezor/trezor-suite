@@ -24,6 +24,11 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
             ({ HiddenTokens }) => ({ default: HiddenTokens }),
         ),
     ),
+    'suite-asset': lazy(() =>
+        import(/* webpackChunkName: "dashboard" */ 'src/views/home/AssetDetail/AssetDetail').then(
+            ({ AssetDetail }) => ({ default: AssetDetail }),
+        ),
+    ),
     'suite-earn': lazy(() =>
         import(/* webpackChunkName: "earn" */ 'src/views/earn/index').then(({ Earn }) => ({
             default: Earn,

@@ -552,6 +552,13 @@ export const selectWalletAssetDisplaySymbol = (
     isHidden?: boolean,
 ) => selectWalletAsset(state, assetKey, isHidden)?.displaySymbol;
 
+export const selectWalletAssetName = (state: HomeAssetTableState, assetKey: WalletAssetKey) =>
+    selectWalletAsset(state, assetKey)?.name;
+
+/** What the asset is worth in the chosen currency, or undefined where nothing can price it. */
+export const selectWalletAssetFiatValue = (state: HomeAssetTableState, assetKey: WalletAssetKey) =>
+    selectWalletAssetValues(state).get(assetKey)?.toFixed();
+
 export const selectWalletAssetAmount = (
     state: HomeAssetTableState,
     assetKey: WalletAssetKey,
