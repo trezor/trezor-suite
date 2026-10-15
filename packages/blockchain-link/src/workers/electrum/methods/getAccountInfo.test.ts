@@ -221,6 +221,26 @@ describe('getAccountInfo of the Electrum worker', () => {
         expect([...socket.requestedTxids].sort()).toEqual([FOREIGN_PARENT, INCOMING, OUTGOING]);
     });
 
+    it('fetches only the transactions of a later page with their previous transactions', async () => {
+        const { socket, context } = await connectClient();
+
+        const secondPage = await getAccountInfo(context, {
+            descriptor: XPUB,
+            details: 'txs',
+            page: 2,
+            pageSize: 1,
+        });
+
+        expect(secondPage.history.transactions).toMatchObject([
+            { txid: INCOMING, type: 'recv', amount: '50000000', fee: '10000' },
+        ]);
+        // Suite takes the addresses of an account from the first page only.
+        expect(secondPage.addresses?.used).toMatchObject([
+            { address: RECEIVE_ADDRESS, transfers: 2, received: '0', sent: '0' },
+        ]);
+        expect([...socket.requestedTxids].sort()).toEqual([FOREIGN_PARENT, INCOMING]);
+    });
+
     it('puts pending transactions first and splits the history into pages without gaps', async () => {
         const { context } = await connectClient();
         const getPage = (page: number) =>

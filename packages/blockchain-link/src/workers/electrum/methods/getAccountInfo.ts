@@ -172,9 +172,13 @@ const getAccountInfo: Api<Req, Res> = async ({ client, addressCache }, payload) 
     };
 
     const transformTransaction = createTransactionTransformer(addresses);
+    // Suite takes the addresses of an account from the first page only, so on the later pages their
+    // sent and received amounts stay 0 instead of fetching all the transactions of the account.
+    const hasAddressAmounts =
+        ['tokenBalances', 'txids', 'txs'].includes(details) && pageParams.page === 1;
     // All the transactions of the account are needed for the amounts of its addresses, but not
     // the previous transactions of their foreign inputs.
-    const accountTransactions = ['tokenBalances', 'txids', 'txs'].includes(details)
+    const accountTransactions = hasAddressAmounts
         ? await getTransactions(client, history, { withForeignParents: false }).then(txs =>
               txs.map(transformTransaction),
           )
@@ -190,16 +194,18 @@ const getAccountInfo: Api<Req, Res> = async ({ client, addressCache }, payload) 
         ...(['tokenBalances', 'txids', 'txs'].includes(details) && transfers
             ? {
                   balance,
-                  sent: sumAddressValues(
-                      accountTransactions,
-                      address,
-                      tx => tx.details.vin,
-                  ).toString(),
-                  received: sumAddressValues(
-                      accountTransactions,
-                      address,
-                      tx => tx.details.vout,
-                  ).toString(),
+                  ...(hasAddressAmounts && {
+                      sent: sumAddressValues(
+                          accountTransactions,
+                          address,
+                          tx => tx.details.vin,
+                      ).toString(),
+                      received: sumAddressValues(
+                          accountTransactions,
+                          address,
+                          tx => tx.details.vout,
+                      ).toString(),
+                  }),
               }
             : {}),
     });
