@@ -9,6 +9,7 @@ import {
     TRADING_EXCHANGE_FORM_DEX,
     TRADING_FORM_AMOUNT_INPUT_SOURCE,
     TRADING_FORM_OUTPUT_AMOUNT,
+    TRADING_FORM_PROVIDER_SELECT,
     TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     type TradingExchangeFormProps,
@@ -16,6 +17,7 @@ import {
     isReceiveAddressCoherent,
     selectTradingExchangeCexQuotes,
     selectTradingExchangeDexQuotes,
+    selectTradingExchangeQuotes,
     tradingActions,
     tradingExchangeActions,
 } from '@suite-common/trading';
@@ -65,6 +67,7 @@ export const useExchangeQuotes = ({
 
     const dexQuotes = useSelector(selectTradingExchangeDexQuotes);
     const cexQuotes = useSelector(selectTradingExchangeCexQuotes);
+    const quotes = useSelector(selectTradingExchangeQuotes);
 
     // Subscribe to receiveCryptoSelect so the receiveIdentityKey effect fires on receive-asset changes.
     const receiveCryptoSelect = useWatch({
@@ -153,8 +156,25 @@ export const useExchangeQuotes = ({
     ]);
 
     const exchangeType = useWatch({ control: methods.control, name: TRADING_EXCHANGE_FORM });
+    const provider = useWatch({ control: methods.control, name: TRADING_FORM_PROVIDER_SELECT });
+    const networkType = network?.networkType;
 
     useEffect(() => {
+        const [bestQuote] = quotes;
+        const canPreselectAnyQuoteType = !!bestQuote && !provider && networkType !== 'ethereum';
+
+        if (canPreselectAnyQuoteType) {
+            const bestQuoteExchangeType = bestQuote.isDex
+                ? TRADING_EXCHANGE_FORM_DEX
+                : TRADING_EXCHANGE_FORM_CEX;
+
+            if (exchangeType !== bestQuoteExchangeType) {
+                methods.setValue(TRADING_EXCHANGE_FORM, bestQuoteExchangeType);
+            }
+
+            return;
+        }
+
         const isSelectedDexButFoundOnlyCex =
             exchangeType === TRADING_EXCHANGE_FORM_DEX && !dexQuotes.length && cexQuotes.length;
         const isSelectedCexButFoundOnlyDex =
@@ -169,7 +189,7 @@ export const useExchangeQuotes = ({
         } else if (isSelectedDexButNotFoundAny) {
             methods.setValue(TRADING_EXCHANGE_FORM, TRADING_EXCHANGE_FORM_CEX);
         }
-    }, [dexQuotes, exchangeType, cexQuotes, methods]);
+    }, [quotes, dexQuotes, cexQuotes, exchangeType, provider, networkType, methods]);
 
     return {
         cexQuotes,
