@@ -23,20 +23,34 @@ const binaryExtensionByPlatformNameMap = {
     linux: '',
 };
 
+// Electron leaves the cookie store on disk in plain text by default. With the fuse, cookie values
+// are encrypted with the key Chromium keeps in the OS store (the Keychain on macOS, DPAPI on
+// Windows, the keyring or a plain-text-equivalent fallback on Linux) — the same key the app's
+// `safeStorage` already uses. The in-app browser keeps a third party's signed-in session on disk
+// for a persistent catalog entry, which is what makes this worth having. One-way: cookies written
+// before the switch are encrypted on their next write, and turning the fuse off again would leave
+// the store unreadable.
+const cookieEncryptionFuse = {
+    [FuseV1Options.EnableCookieEncryption]: true,
+};
+
 const fusesToFlipByPlatformNameMap = {
     darwin: {
         [FuseV1Options.RunAsNode]: false,
         [FuseV1Options.EnableEmbeddedAsarIntegrityValidation]: true,
         [FuseV1Options.OnlyLoadAppFromAsar]: true,
+        ...cookieEncryptionFuse,
     },
     win32: {
         [FuseV1Options.RunAsNode]: false,
         [FuseV1Options.EnableEmbeddedAsarIntegrityValidation]: true,
         [FuseV1Options.OnlyLoadAppFromAsar]: true,
+        ...cookieEncryptionFuse,
     },
     // As of Electron 39, ASAR integrity is not supported on Linux
     linux: {
         [FuseV1Options.RunAsNode]: false,
+        ...cookieEncryptionFuse,
     },
 };
 
