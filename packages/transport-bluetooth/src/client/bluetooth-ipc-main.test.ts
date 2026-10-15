@@ -76,7 +76,7 @@ describe('BluetoothIpc scan ownership', () => {
         sendMock.mockRejectedValueOnce(new Error('Adapter disabled'));
         await expect(ipc.startScan('ui')).resolves.toEqual({
             success: false,
-            error: 'Adapter disabled',
+            error: { message: 'Adapter disabled', code: 'Bluetooth_Error' },
         });
         sendMock.mockClear();
 
@@ -175,7 +175,7 @@ describe('BluetoothIpc scan ownership', () => {
 
         await expect(ipc.startScan('ui')).resolves.toEqual({
             success: false,
-            error: 'ECONNREFUSED',
+            error: { message: 'ECONNREFUSED', code: 'Bluetooth_Error' },
         });
         expect(sendMock).not.toHaveBeenCalled();
         connectSpy.mockRestore();

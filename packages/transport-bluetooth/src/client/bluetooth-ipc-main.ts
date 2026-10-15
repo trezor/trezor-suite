@@ -7,7 +7,8 @@ import type {
     BluetoothIpcApi,
     BluetoothIpcEvents,
     BluetoothIpcState,
-    IpcResponse,
+    IpcFailure,
+    IpcSuccess,
     ScanOwner,
     TrezorBluetoothSettings,
 } from './types';
@@ -47,8 +48,12 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
         );
     }
 
-    private result(error?: string): IpcResponse {
-        return error ? { success: false, error } : { success: true };
+    private failure(message: string): IpcFailure {
+        return { success: false, error: { message, code: 'Bluetooth_Error' } };
+    }
+
+    private result(): IpcSuccess<undefined> {
+        return { success: true };
     }
 
     private async connectApi() {
@@ -57,7 +62,7 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
         try {
             await this.api.connect();
         } catch (error) {
-            return this.result(error.message);
+            return this.failure(error.message);
         }
 
         const emitListUpdate = ({ devices }: { devices: BluetoothDevice[] }) => {
@@ -143,7 +148,7 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
                     console.warn('Initial stop_scan error', error);
                 });
             } catch (error) {
-                return this.result(error.message);
+                return this.failure(error.message);
             }
         }
 
@@ -157,7 +162,7 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
 
             return { success: true as const, payload: info };
         } catch (error) {
-            return { success: false as const, error };
+            return this.failure(error.message);
         }
     }
 
@@ -182,7 +187,7 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
 
                 return this.result();
             } catch (error) {
-                return this.result(error.message);
+                return this.failure(error.message);
             }
         });
     }
@@ -215,7 +220,7 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
 
                 return this.result();
             } catch (error) {
-                return this.result(error.message);
+                return this.failure(error.message);
             }
         });
     }
@@ -226,7 +231,7 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
         try {
             await this.connectApi();
         } catch (error) {
-            return this.result(error.message);
+            return this.failure(error.message);
         }
 
         // this is intentionally not wrapped in try/catch
@@ -237,7 +242,7 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
         const result = await this.api
             .send('connect_device', { id, timeout })
             .then(() => this.result())
-            .catch(error => this.result(error.message));
+            .catch(error => this.failure(error.message));
         this.api.off('device_connection_status', emitDeviceUpdate);
 
         return result;
@@ -248,7 +253,7 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
             await this.connectApi();
             await this.api.send('disconnect_device', { id });
         } catch (error) {
-            return this.result(error.message);
+            return this.failure(error.message);
         }
 
         return this.result();
@@ -259,7 +264,7 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
             await this.connectApi();
             await this.api.send('forget_device', { id });
         } catch (error) {
-            return this.result(error.message);
+            return this.failure(error.message);
         }
 
         return this.result();

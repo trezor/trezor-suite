@@ -34,7 +34,7 @@ export const bluetoothDisconnectDeviceThunk = createThunk<
             dispatch(
                 notificationsActions.addToast({
                     type: 'error',
-                    error: result.error,
+                    error: result.error.message,
                 }),
             );
         }

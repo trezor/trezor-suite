@@ -250,7 +250,7 @@ describe('createBackgroundScan', () => {
         async (method, warning) => {
             jest.mocked(bluetoothIpc[method]).mockResolvedValueOnce({
                 success: false,
-                error: 'test-error',
+                error: { message: 'test-error', code: 'Bluetooth_Error' },
             });
 
             scan.start();
