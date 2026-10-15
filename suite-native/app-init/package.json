@@ -21,7 +21,8 @@
         "@suite-common/walletconnect": "workspace:*",
         "@suite-native/analytics-redux": "workspace:*",
         "@suite-native/settings": "workspace:*",
-        "@trezor/redux-utils": "workspace:*"
+        "@trezor/redux-utils": "workspace:*",
+        "@trezor/type-utils": "workspace:*"
     },
     "devDependencies": {
         "@trezor/dependency-injection": "workspace:*"

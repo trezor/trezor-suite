@@ -11,13 +11,17 @@ import {
 } from '@suite-common/wallet-core';
 import { walletConnectInitThunk } from '@suite-common/walletconnect';
 import { type DispatchDep } from '@trezor/redux-utils';
+import { type Result, ok } from '@trezor/type-utils';
 
 import { appInitActions } from './appInitSlice';
 import {
     type ConnectAndBlockchainInitializationResult,
     ConnectAndBlockchainInitializationStatus,
 } from './appTypes';
-import { type ConnectAndBlockchainInitDep } from './connectAndBlockchainInitThunk';
+import {
+    type ConnectAndBlockchainInitDep,
+    type ConnectAndBlockchainInitError,
+} from './connectAndBlockchainInitThunk';
 
 export type PostOnboardingInitState = MessageSystemRootState & WalletSettingsRootState;
 
@@ -26,7 +30,9 @@ export type PostOnboardingInitDeps = DispatchDep &
         getState: () => PostOnboardingInitState;
     };
 
-export type PostOnboardingInit = () => Promise<ConnectAndBlockchainInitializationResult>;
+export type PostOnboardingInit = () => Promise<
+    Result<ConnectAndBlockchainInitializationResult, ConnectAndBlockchainInitError>
+>;
 
 export type PostOnboardingInitDep = { postOnboardingInit: PostOnboardingInit };
 
@@ -35,47 +41,48 @@ export const createPostOnboardingInit =
     async () => {
         deps.dispatch(appInitActions.postOnboardingInitStarted());
 
-        const initialize = async (): Promise<ConnectAndBlockchainInitializationResult> => {
-            // Do not initialize Connect or related services when message-system has an
-            // app-wide killswitch.
-            const activeKillswitchMessage = selectActiveKillswitchMessage(deps.getState());
-            if (activeKillswitchMessage) {
-                return ConnectAndBlockchainInitializationStatus.Unavailable;
-            }
-
-            const connectAndBlockchainResult = await deps.connectAndBlockchainInit();
-
-            deps.dispatch(periodicCheckTokenDefinitionsThunk());
-            deps.dispatch(initStakeDataThunk());
-
-            // These initializers could be skipped after
-            // a Connect or blockchain failure if their dependent call sites were guarded individually.
+        // Do not initialize Connect or related services when message-system has an
+        // app-wide killswitch.
+        const activeKillswitchMessage = selectActiveKillswitchMessage(deps.getState());
+        if (activeKillswitchMessage) {
             deps.dispatch(
-                periodicFetchFiatRatesThunk({
-                    rateType: 'current',
-                    localCurrency: selectBaseCurrency(deps.getState()),
-                }),
+                appInitActions.postOnboardingInitFinished(
+                    ConnectAndBlockchainInitializationStatus.Unavailable,
+                ),
             );
 
-            deps.dispatch(walletConnectInitThunk());
+            return ok(ConnectAndBlockchainInitializationStatus.Unavailable);
+        }
 
-            if (
-                connectAndBlockchainResult === ConnectAndBlockchainInitializationStatus.Unavailable
-            ) {
-                return ConnectAndBlockchainInitializationStatus.Unavailable;
-            }
+        const connectAndBlockchainResult = await deps.connectAndBlockchainInit();
 
-            return ConnectAndBlockchainInitializationStatus.Ready;
-        };
+        deps.dispatch(periodicCheckTokenDefinitionsThunk());
+        deps.dispatch(initStakeDataThunk());
 
-        // Redux Toolkit previously settled unexpected failures as rejected actions.
-        const result = await initialize().catch(
-            (): ConnectAndBlockchainInitializationResult =>
-                ConnectAndBlockchainInitializationStatus.Unavailable,
+        // These initializers could be skipped after
+        // a Connect or blockchain failure if their dependent call sites were guarded individually.
+        deps.dispatch(
+            periodicFetchFiatRatesThunk({
+                rateType: 'current',
+                localCurrency: selectBaseCurrency(deps.getState()),
+            }),
         );
-        deps.dispatch(appInitActions.postOnboardingInitFinished(result));
 
-        return result;
+        deps.dispatch(walletConnectInitThunk());
+
+        deps.dispatch(
+            appInitActions.postOnboardingInitFinished(
+                connectAndBlockchainResult.success
+                    ? ConnectAndBlockchainInitializationStatus.Ready
+                    : ConnectAndBlockchainInitializationStatus.Unavailable,
+            ),
+        );
+
+        if (!connectAndBlockchainResult.success) {
+            return connectAndBlockchainResult;
+        }
+
+        return ok(ConnectAndBlockchainInitializationStatus.Ready);
     };
 
 export const injectPostOnboardingInit = (

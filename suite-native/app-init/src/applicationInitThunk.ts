@@ -8,51 +8,57 @@ import {
     selectIsOnboardingFinished,
 } from '@suite-native/settings';
 import { type DispatchDep } from '@trezor/redux-utils';
+import { type Result, ok } from '@trezor/type-utils';
 
 import { appInitActions } from './appInitSlice';
 import { type PostOnboardingInitDep } from './postOnboardingInitThunk';
 
 export type ApplicationInitState = SettingsSliceRootState;
 
+export type PrepareCachedEnvDataError = {
+    type: 'PrepareCachedEnvDataError';
+    cause: unknown;
+};
+
 export type ApplicationInitDeps = DispatchDep &
     PostOnboardingInitDep & {
         getState: () => ApplicationInitState;
-        prepareCachedEnvData: () => Promise<void>;
+        prepareCachedEnvData: () => Promise<Result<void, PrepareCachedEnvDataError>>;
         setEarnYieldWorkerBaseUrl: (url: string) => void;
     };
 
-export type ApplicationInit = () => Promise<void>;
+export type ApplicationInit = () => Promise<Result<void, PrepareCachedEnvDataError>>;
 
 export type ApplicationInitDep = { applicationInit: ApplicationInit };
 
 export const createApplicationInit =
     (deps: ApplicationInitDeps): ApplicationInit =>
     async () => {
-        try {
-            await deps.prepareCachedEnvData();
+        const cachedEnvDataResult = await deps.prepareCachedEnvData();
+        if (!cachedEnvDataResult.success) {
+            return cachedEnvDataResult;
+        }
 
-            // Apply the earn yield worker base URL from debug settings (or the default for this build).
-            deps.setEarnYieldWorkerBaseUrl(
-                selectEarnYieldWorkerBaseUrl(deps.getState()) ?? defaultEarnYieldWorkerBaseUrl,
-            );
+        // Apply the earn yield worker base URL from debug settings (or the default for this build).
+        deps.setEarnYieldWorkerBaseUrl(
+            selectEarnYieldWorkerBaseUrl(deps.getState()) ?? defaultEarnYieldWorkerBaseUrl,
+        );
 
-            deps.dispatch(initAnalyticsThunk());
-            deps.dispatch(initMessageSystemThunk());
+        deps.dispatch(initAnalyticsThunk());
+        deps.dispatch(initMessageSystemThunk());
 
-            // Select the latest remembered device or Portfolio Tracker device.
-            await deps.dispatch(initDevicesThunk());
-            await deps.dispatch(createImportedDeviceThunk());
+        // Select the latest remembered device or Portfolio Tracker device.
+        await deps.dispatch(initDevicesThunk());
+        await deps.dispatch(createImportedDeviceThunk());
 
-            if (selectIsOnboardingFinished(deps.getState())) {
-                // Keep app bootstrap unblocked while post-onboarding initialization continues.
-                void deps.postOnboardingInit();
-            }
-        } catch {
-            // Preserve the thunk's failure behavior: leave application initialization unfinished.
-            return;
+        if (selectIsOnboardingFinished(deps.getState())) {
+            // Keep app bootstrap unblocked while post-onboarding initialization continues.
+            void deps.postOnboardingInit();
         }
 
         deps.dispatch(appInitActions.applicationInitFinished());
+
+        return ok();
     };
 
 export const injectApplicationInit = (services: ApplicationInitDep): ApplicationInitDep => ({

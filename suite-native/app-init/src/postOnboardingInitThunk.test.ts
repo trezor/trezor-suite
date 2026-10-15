@@ -1,8 +1,10 @@
 import { createMockDeps } from '@trezor/dependency-injection';
 import { createMockDispatch } from '@trezor/redux-utils/mocks';
+import { err, ok } from '@trezor/type-utils';
 
 import { appInitActions } from './appInitSlice';
 import { ConnectAndBlockchainInitializationStatus } from './appTypes';
+import { type ConnectAndBlockchainInitError } from './connectAndBlockchainInitThunk';
 import {
     type PostOnboardingInitDeps,
     type PostOnboardingInitState,
@@ -16,7 +18,10 @@ const mockPeriodicCheckTokenDefinitions = jest.fn();
 const mockInitStakeData = jest.fn();
 const mockPeriodicFetchFiatRates = jest.fn();
 const mockWalletConnectInit = jest.fn();
-let mockConnectAndBlockchainShouldReject = false;
+const connectError: ConnectAndBlockchainInitError = {
+    type: 'ConnectInitError',
+    error: { message: 'Connect init failed' },
+};
 
 jest.mock('@suite-common/message-system', () => ({
     selectActiveKillswitchMessage: () => mockSelectActiveKillswitchMessage(),
@@ -61,13 +66,7 @@ const createService = () => {
     const deps = createMockDeps<PostOnboardingInitDeps>({
         dispatch: mockDispatch.dispatch,
         getState,
-        connectAndBlockchainInit: async () => {
-            mockConnectAndBlockchainInit();
-
-            return mockConnectAndBlockchainShouldReject
-                ? ConnectAndBlockchainInitializationStatus.Unavailable
-                : ConnectAndBlockchainInitializationStatus.Ready;
-        },
+        connectAndBlockchainInit: () => mockConnectAndBlockchainInit(),
     });
 
     return { initialize: createPostOnboardingInit(deps), actions: mockDispatch.actions };
@@ -86,7 +85,7 @@ const expectFollowUpServicesToHaveStarted = () => {
 describe(createPostOnboardingInit.name, () => {
     beforeEach(() => {
         jest.clearAllMocks();
-        mockConnectAndBlockchainShouldReject = false;
+        mockConnectAndBlockchainInit.mockResolvedValue(ok());
         mockSelectActiveKillswitchMessage.mockReturnValue(undefined);
     });
 
@@ -96,7 +95,7 @@ describe(createPostOnboardingInit.name, () => {
         const { initialize } = createService();
         const result = await initialize();
 
-        expect(result).toBe(ConnectAndBlockchainInitializationStatus.Unavailable);
+        expect(result).toEqual(ok(ConnectAndBlockchainInitializationStatus.Unavailable));
         expect(mockConnectAndBlockchainInit).not.toHaveBeenCalled();
         expect(mockPeriodicCheckTokenDefinitions).not.toHaveBeenCalled();
         expect(mockInitStakeData).not.toHaveBeenCalled();
@@ -108,36 +107,34 @@ describe(createPostOnboardingInit.name, () => {
         const { initialize } = createService();
         const result = await initialize();
 
-        expect(result).toBe(ConnectAndBlockchainInitializationStatus.Ready);
+        expect(result).toEqual(ok(ConnectAndBlockchainInitializationStatus.Ready));
         expect(mockConnectAndBlockchainInit).toHaveBeenCalledTimes(1);
         expectFollowUpServicesToHaveStarted();
     });
 
     it('starts follow-up services and marks failed initialization unavailable', async () => {
-        mockConnectAndBlockchainShouldReject = true;
+        mockConnectAndBlockchainInit.mockResolvedValue(err(connectError));
 
         const { initialize } = createService();
         const result = await initialize();
 
-        expect(result).toBe(ConnectAndBlockchainInitializationStatus.Unavailable);
+        expect(result).toEqual(err(connectError));
         expect(mockConnectAndBlockchainInit).toHaveBeenCalledTimes(1);
         expectFollowUpServicesToHaveStarted();
     });
 
-    it('marks unexpected initialization failures unavailable', async () => {
-        mockSelectActiveKillswitchMessage.mockImplementationOnce(() => {
-            throw new Error('Unexpected error');
-        });
+    it('propagates the initialization error Result and marks it unavailable', async () => {
+        mockConnectAndBlockchainInit.mockResolvedValue(err(connectError));
         const { initialize, actions } = createService();
 
         const result = await initialize();
 
-        expect(result).toBe(ConnectAndBlockchainInitializationStatus.Unavailable);
-        expect(actions).toEqual([
-            appInitActions.postOnboardingInitStarted(),
+        expect(result).toEqual(err(connectError));
+        expect(actions[0]).toEqual(appInitActions.postOnboardingInitStarted());
+        expect(actions).toContainEqual(
             appInitActions.postOnboardingInitFinished(
                 ConnectAndBlockchainInitializationStatus.Unavailable,
             ),
-        ]);
+        );
     });
 });

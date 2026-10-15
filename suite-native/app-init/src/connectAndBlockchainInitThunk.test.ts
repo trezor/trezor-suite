@@ -1,7 +1,7 @@
 import { createMockDeps } from '@trezor/dependency-injection';
 import { createMockDispatch } from '@trezor/redux-utils/mocks';
+import { err, ok } from '@trezor/type-utils';
 
-import { ConnectAndBlockchainInitializationStatus } from './appTypes';
 import {
     type ConnectAndBlockchainInitDeps,
     createConnectAndBlockchainInit,
@@ -76,7 +76,7 @@ describe(createConnectAndBlockchainInit.name, () => {
     it('initializes blockchain after Connect succeeds', async () => {
         const result = await runService();
 
-        expect(result).toBe(ConnectAndBlockchainInitializationStatus.Ready);
+        expect(result).toEqual(ok());
         expect(mockConnectInit).toHaveBeenCalledTimes(1);
         expect(mockInitBlockchain).toHaveBeenCalledTimes(1);
         expect(mockInitializationOrder).toEqual(['connect', 'blockchain']);
@@ -87,7 +87,7 @@ describe(createConnectAndBlockchainInit.name, () => {
 
         const result = await runService();
 
-        expect(result).toBe(ConnectAndBlockchainInitializationStatus.Unavailable);
+        expect(result).toEqual(err({ type: 'ConnectInitError', error: { message: 'Rejected' } }));
         expect(mockInitBlockchain).not.toHaveBeenCalled();
     });
 
@@ -96,6 +96,8 @@ describe(createConnectAndBlockchainInit.name, () => {
 
         const result = await runService();
 
-        expect(result).toBe(ConnectAndBlockchainInitializationStatus.Unavailable);
+        expect(result).toEqual(
+            err({ type: 'BlockchainInitError', error: { message: 'Rejected' } }),
+        );
     });
 });

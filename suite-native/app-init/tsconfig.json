@@ -25,6 +25,7 @@
         { "path": "../../packages/redux-utils" },
         {
             "path": "../../packages/dependency-injection"
-        }
+        },
+        { "path": "../../packages/type-utils" }
     ]
 }

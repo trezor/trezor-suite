@@ -12783,6 +12783,7 @@ __metadata:
     "@suite-native/settings": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
