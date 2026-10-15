@@ -1,3 +1,4 @@
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import {
     btc1NormalAccount,
     eth1NormalAccount,
@@ -20,7 +21,10 @@ describe('TradingAccountCard', () => {
                 amount={undefined}
                 {...overrides}
             />,
-            { tradeType: 'exchange' },
+            {
+                tradeType: 'exchange',
+                services: { networks: mockNetworksServices() },
+            },
         );
 
     it('renders title', async () => {

@@ -1,5 +1,6 @@
 import { type RouteProp } from '@react-navigation/native';
 
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import {
     AppTabsRoutes,
     type RootStackParamList,
@@ -77,6 +78,11 @@ describe('TradingTradeableAssetScreen', () => {
                     navigation={navigation}
                     route={createRoute(tradingType)}
                 />,
+                {
+                    services: {
+                        networks: mockNetworksServices(),
+                    },
+                },
             );
 
             const assetElement =

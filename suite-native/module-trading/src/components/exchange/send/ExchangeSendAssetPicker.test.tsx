@@ -4,7 +4,11 @@ import type { CryptoId } from 'invity-api';
 import { deviceInitialState } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
-import { mockNetworkModuleRepository, mockNetworksState } from '@suite-common/networks/mocks';
+import {
+    mockNetworkIcon,
+    mockNetworkModuleRepository,
+    mockNetworksState,
+} from '@suite-common/networks/mocks';
 import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -124,7 +128,11 @@ describe('ExchangeSendAssetPicker', () => {
 
     const renderExchangeSendAssetPicker = async () =>
         await renderWithStoreProvider(<ExchangeSendAssetPicker />, {
-            services: { ...services, store },
+            services: {
+                ...services,
+                store,
+                networks: { networkIcon: mockNetworkIcon(), ...services.networks },
+            },
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 

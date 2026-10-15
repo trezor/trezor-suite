@@ -1,3 +1,4 @@
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { type TradingTransaction } from '@suite-common/trading';
 import { fireEvent } from '@suite-native/test-utils-store';
 import { getBuyTrade, getExchangeTrade, getSellTrade } from '@suite-native/trading-fixtures';
@@ -21,6 +22,7 @@ describe('TradeHistoryListItem', () => {
     const renderTradeHistoryListItem = async (transaction: TradingTransaction) =>
         await renderWithTradingHistoryProvider(
             <TradeHistoryListItem transaction={transaction} onPress={jest.fn()} />,
+            { services: { networks: mockNetworksServices() } },
         );
 
     it('should render a buy trade with fiat and crypto icons', async () => {
@@ -68,6 +70,7 @@ describe('TradeHistoryListItem', () => {
         const buyTrade = getBuyTrade({ status: 'SUBMITTED' });
         const { getByText } = await renderWithTradingHistoryProvider(
             <TradeHistoryListItem transaction={buyTrade} onPress={onPress} />,
+            { services: { networks: mockNetworksServices() } },
         );
 
         await fireEvent.press(getByText('$1,234.00'));

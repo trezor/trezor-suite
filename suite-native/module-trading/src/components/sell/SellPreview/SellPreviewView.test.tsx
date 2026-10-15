@@ -1,5 +1,6 @@
 import { type SellFiatTrade } from 'invity-api';
 
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { getTranslation } from '@suite-native/intl';
 import {
     banxaBankTransferSellQuote,
@@ -45,6 +46,7 @@ describe('SellPreviewView', () => {
                     },
                 },
             },
+            services: { networks: mockNetworksServices() },
         });
 
     it('renders the sell summary', async () => {

@@ -1,18 +1,28 @@
 import React from 'react';
 
-import { asNetworkSymbol, getCoingeckoId } from '@suite-common/wallet-config';
+import {
+    createIsWrappedNativeToken,
+    createNetworkIcon,
+    createNetworkModuleRepository,
+    createNetworkModulesCompositionRoot,
+} from '@suite-common/networks';
+import { mockNetworkMetadata } from '@suite-common/networks/mocks';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
-import { getAssetLogoContractAddresses } from '@suite-common/wallet-utils';
-import { act, fireEvent, renderWithBasicProvider, waitFor } from '@suite-native/test-utils';
+import { act, fireEvent, renderWithStoreProvider, waitFor } from '@suite-native/test-utils-store';
 import { getAssetLogoUrl } from '@trezor/asset-utils';
+import { mock } from '@trezor/dependency-injection';
+import type { GetTokenLogoIdentifiers } from '@trezor/network-assets-types';
 import { createDeferred } from '@trezor/utils';
 
 import { TokenIcon } from './TokenIcon';
 
-jest.mock('@suite-common/wallet-utils', () => ({
-    ...jest.requireActual('@suite-common/wallet-utils'),
-    getAssetLogoContractAddresses: jest.fn(),
-}));
+const ethSymbol = asNetworkSymbol('eth');
+const networkModules = createNetworkModulesCompositionRoot({ getTrezorConnect: mock() });
+const networkModuleRepository = createNetworkModuleRepository({ networkModules });
+const ethereumModule = networkModuleRepository.get(ethSymbol);
+const getTokenLogoIdentifiers = mock<GetTokenLogoIdentifiers>();
+ethereumModule.icon = { ...ethereumModule.icon, getTokenLogoIdentifiers };
 
 const tokenIconHint = 'Token Icon';
 const networkIconHint = 'Network Icon';
@@ -20,12 +30,11 @@ const networkIconHint = 'Network Icon';
 const contractA = '0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
 const contractB = '0xbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb';
 const btcSymbol = asNetworkSymbol('btc');
-const ethSymbol = asNetworkSymbol('eth');
 const opSymbol = asNetworkSymbol('op');
 
 const getTokenIconUrl = (contractAddress: string, size = 32) =>
     getAssetLogoUrl({
-        coingeckoId: getCoingeckoId(ethSymbol)!,
+        coingeckoId: mockNetworkMetadata.eth.coingeckoId!,
         contractAddress,
         density: 2,
         size,
@@ -33,13 +42,22 @@ const getTokenIconUrl = (contractAddress: string, size = 32) =>
 
 describe('TokenIcon', () => {
     beforeEach(() => {
-        jest.mocked(getAssetLogoContractAddresses).mockImplementation((_symbol, contract) =>
+        getTokenLogoIdentifiers.mockImplementation((_symbol, contract) =>
             contract ? [contract] : [],
         );
     });
 
     const renderTokenIcon = async (props: React.ComponentProps<typeof TokenIcon>) =>
-        await renderWithBasicProvider(<TokenIcon {...props} />);
+        await renderWithStoreProvider(<TokenIcon {...props} />, {
+            preloadedState: { networks: mockNetworkMetadata },
+            services: {
+                networks: {
+                    networkModuleRepository,
+                    networkIcon: createNetworkIcon({ networkModuleRepository }),
+                    isWrappedNativeToken: createIsWrappedNativeToken({ networkModuleRepository }),
+                },
+            },
+        });
 
     it('renders the correct icon synchronously when a recycled instance receives new props', async () => {
         const fresh = await renderTokenIcon({ tokenSymbol: ethSymbol, networkSymbol: ethSymbol });
@@ -59,8 +77,8 @@ describe('TokenIcon', () => {
     });
 
     it('shows token initials until the resolved logo is displayed', async () => {
-        (getAssetLogoContractAddresses as jest.Mock).mockImplementation(
-            (_symbol: string, contract: string) => [contract],
+        getTokenLogoIdentifiers.mockImplementation((_symbol, contract) =>
+            contract ? [contract] : [],
         );
 
         const { getByHintText, getByText, queryByText } = await renderTokenIcon({
@@ -81,9 +99,10 @@ describe('TokenIcon', () => {
 
     it('ignores a stale async url resolution that arrives after the instance was recycled', async () => {
         const deferredA = createDeferred<string[]>();
-        (getAssetLogoContractAddresses as jest.Mock).mockImplementation(
-            (_symbol: string, contract: string) =>
-                contract === contractA ? deferredA.promise : Promise.resolve([contract]),
+        getTokenLogoIdentifiers.mockImplementation((_symbol, contract) =>
+            contract === contractA
+                ? deferredA.promise
+                : Promise.resolve(contract ? [contract] : []),
         );
 
         const { getByHintText, getByText, rerender } = await renderTokenIcon({
@@ -113,7 +132,7 @@ describe('TokenIcon', () => {
     });
 
     it('shows a text placeholder when the url resolution rejects', async () => {
-        (getAssetLogoContractAddresses as jest.Mock).mockRejectedValue(new Error('failed'));
+        getTokenLogoIdentifiers.mockRejectedValue(new Error('failed'));
 
         const { queryByHintText, getByText } = await renderTokenIcon({
             networkSymbol: ethSymbol,
@@ -136,7 +155,7 @@ describe('TokenIcon', () => {
     ])(
         'keeps $initial after all logo candidates fail ($tokenSymbol)',
         async ({ tokenSymbol, initial }) => {
-            jest.mocked(getAssetLogoContractAddresses).mockReturnValue([contractA, contractB]);
+            getTokenLogoIdentifiers.mockReturnValue([contractA, contractB]);
             const { getByHintText, getByText, queryByHintText } = await renderTokenIcon({
                 networkSymbol: ethSymbol,
                 contractAddress: contractA,
@@ -159,10 +178,10 @@ describe('TokenIcon', () => {
         },
     );
 
-    it.each([{ addresses: undefined }, { addresses: [] }])(
+    it.each([{ addresses: [] }])(
         'shows initials instead of a network logo when addresses resolve to $addresses',
         async ({ addresses }) => {
-            jest.mocked(getAssetLogoContractAddresses).mockReturnValue(addresses);
+            getTokenLogoIdentifiers.mockReturnValue(addresses);
             const { getByText, queryByHintText } = await renderTokenIcon({
                 networkSymbol: ethSymbol,
                 contractAddress: contractA,
@@ -193,8 +212,8 @@ describe('TokenIcon', () => {
     });
 
     it('does not reuse retry failure state after the size changes', async () => {
-        (getAssetLogoContractAddresses as jest.Mock).mockImplementation(
-            (_symbol: string, contract: string) => Promise.resolve([contract]),
+        getTokenLogoIdentifiers.mockImplementation((_symbol, contract) =>
+            Promise.resolve(contract ? [contract] : []),
         );
 
         const { getByHintText, queryByHintText, rerender } = await renderTokenIcon({
@@ -291,8 +310,8 @@ describe('TokenIcon', () => {
         });
 
         it('keeps the wrapped-native token icon by default', async () => {
-            (getAssetLogoContractAddresses as jest.Mock).mockImplementation(
-                (_symbol: string, contract: string) => Promise.resolve([contract]),
+            getTokenLogoIdentifiers.mockImplementation((_symbol, contract) =>
+                Promise.resolve(contract ? [contract] : []),
             );
 
             const { getByHintText, getByLabelText } = await renderTokenIcon({
@@ -311,8 +330,8 @@ describe('TokenIcon', () => {
         });
 
         it('keeps the token icon for a non-wrapped token even when set to network', async () => {
-            (getAssetLogoContractAddresses as jest.Mock).mockImplementation(
-                (_symbol: string, contract: string) => Promise.resolve([contract]),
+            getTokenLogoIdentifiers.mockImplementation((_symbol, contract) =>
+                Promise.resolve(contract ? [contract] : []),
             );
 
             const { getByLabelText } = await renderTokenIcon({

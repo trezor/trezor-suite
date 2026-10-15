@@ -1,3 +1,4 @@
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { act } from '@suite-native/test-utils-store';
 import { btc1NormalAccount, mercuryoApplePayBuyQuote } from '@suite-native/trading-fixtures';
@@ -20,7 +21,11 @@ describe('BuyPreviewReceiveCard', () => {
     const renderBuyPreviewReceiveCard = async (overrides?: typeof withReceiveAccount) => {
         const result = await renderWithTradingProvider(
             <BuyPreviewReceiveCard quote={mercuryoApplePayBuyQuote} />,
-            { tradeType: 'buy', overrides },
+            {
+                tradeType: 'buy',
+                overrides,
+                services: { networks: mockNetworksServices() },
+            },
         );
         await act(() => Promise.resolve());
 

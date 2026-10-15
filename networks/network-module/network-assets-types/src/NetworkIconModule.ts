@@ -2,13 +2,21 @@ import type { NetworkSymbol } from '@trezor/network-module-types';
 
 import type { NetworkIconSource } from './NetworkAssetsModule';
 
-export type GetCryptoIcon = (symbol: string) => NetworkIconSource | undefined;
+export type GetCryptoIcon = (symbol: NetworkSymbol) => NetworkIconSource | undefined;
+
+export type GetCryptoIconDep = { getCryptoIcon: GetCryptoIcon };
 
 export type GetNetworkIcon = (symbol: NetworkSymbol) => NetworkIconSource;
 
+export type GetNetworkIconDep = { getNetworkIcon: GetNetworkIcon };
+
 export type HasCryptoIcon = (symbol: string) => boolean;
 
+export type HasCryptoIconDep = { hasCryptoIcon: HasCryptoIcon };
+
 export type HasNetworkIcon = (symbol: string) => symbol is NetworkSymbol;
+
+export type HasNetworkIconDep = { hasNetworkIcon: HasNetworkIcon };
 
 /** Returns logo lookup keys, with family-specific normalization and optional async resolution. */
 export type GetTokenLogoIdentifiers = (
@@ -16,11 +24,11 @@ export type GetTokenLogoIdentifiers = (
     contract?: string | null,
 ) => readonly string[] | Promise<readonly string[]>;
 
+export type GetTokenLogoIdentifiersDep = { getTokenLogoIdentifiers: GetTokenLogoIdentifiers };
+
 /** @serviceContract */
-export type NetworkIcon = {
-    getCryptoIcon: GetCryptoIcon;
-    getNetworkIcon: GetNetworkIcon;
-    hasCryptoIcon: HasCryptoIcon;
-    hasNetworkIcon: HasNetworkIcon;
-    getTokenLogoIdentifiers: GetTokenLogoIdentifiers;
-};
+export type NetworkIconModule = GetCryptoIconDep &
+    GetNetworkIconDep &
+    HasCryptoIconDep &
+    HasNetworkIconDep &
+    GetTokenLogoIdentifiersDep;

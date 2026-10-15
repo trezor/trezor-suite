@@ -1,14 +1,18 @@
-import type { HasNetworkIcon, NetworkIcon } from '@trezor/network-assets-types';
+import type {
+    GetCryptoIconDep,
+    GetNetworkIconDep,
+    GetTokenLogoIdentifiersDep,
+    HasNetworkIconDep,
+    NetworkIconModule,
+} from '@trezor/network-assets-types';
 
 import type { NetworkModuleRepositoryDep } from './NetworkModuleRepository';
 
 export type NetworkIconDeps = NetworkModuleRepositoryDep;
 
-export type NetworkIconDep = { networkIcon: NetworkIcon };
+export type NetworkIconDep = { networkIcon: NetworkIconModule };
 
-export type HasNetworkIconDep = { hasNetworkIcon: HasNetworkIcon };
-
-export const createNetworkIcon = (deps: NetworkIconDeps): NetworkIcon => ({
+export const createNetworkIcon = (deps: NetworkIconDeps): NetworkIconModule => ({
     getCryptoIcon: symbol => {
         if (!deps.networkModuleRepository.isSupportedNetwork(symbol)) return undefined;
 
@@ -30,6 +34,22 @@ export const createNetworkIcon = (deps: NetworkIconDeps): NetworkIcon => ({
 
 export const injectNetworkIcon = (services: { networks: NetworkIconDep }): NetworkIconDep => ({
     networkIcon: services.networks.networkIcon,
+});
+
+export const injectGetCryptoIcon = (services: { networks: NetworkIconDep }): GetCryptoIconDep => ({
+    getCryptoIcon: services.networks.networkIcon.getCryptoIcon,
+});
+
+export const injectGetNetworkIcon = (services: {
+    networks: NetworkIconDep;
+}): GetNetworkIconDep => ({
+    getNetworkIcon: services.networks.networkIcon.getNetworkIcon,
+});
+
+export const injectGetTokenLogoIdentifiers = (services: {
+    networks: NetworkIconDep;
+}): GetTokenLogoIdentifiersDep => ({
+    getTokenLogoIdentifiers: services.networks.networkIcon.getTokenLogoIdentifiers,
 });
 
 export const injectHasNetworkIcon = (services: {

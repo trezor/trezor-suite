@@ -1,5 +1,6 @@
 import type { CryptoId } from 'invity-api';
 
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { getTranslation } from '@suite-native/intl';
@@ -48,6 +49,7 @@ describe('MyAssetList', () => {
                 selectedNetworkFilter={undefined}
                 testID={testID}
             />,
+            { services: { networks: mockNetworksServices() } },
         );
 
     it('expands low-balance and non-tradeable groups independently', async () => {

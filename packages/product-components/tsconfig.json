@@ -14,28 +14,25 @@
     "include": [".", "**/*.json"],
     "references": [
         { "path": "../../suite-common/feedback" },
-        { "path": "../../suite-common/icons" },
         {
             "path": "../../suite-common/suite-types"
         },
         {
             "path": "../../suite-common/toast-notifications"
         },
-        {
-            "path": "../../suite-common/wallet-utils"
-        },
         { "path": "../asset-utils" },
         { "path": "../components" },
+        { "path": "../dependency-injection" },
         { "path": "../device" },
         { "path": "../device-utils" },
         { "path": "../env-utils" },
         { "path": "../icons" },
         { "path": "../jsonl" },
         {
-            "path": "../../networks/ethereum/network-ethereum"
+            "path": "../../networks/network-module/network-assets-types"
         },
         {
-            "path": "../../networks/ethereum/network-ethereum-types"
+            "path": "../../networks/network-module/network-module-suite-common-types"
         },
         {
             "path": "../../networks/network-module/network-module-types"

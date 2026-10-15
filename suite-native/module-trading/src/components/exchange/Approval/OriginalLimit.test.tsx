@@ -1,5 +1,6 @@
 import type { ExchangeTrade } from 'invity-api';
 
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { getWalletState } from '@suite-native/trading-fixtures';
@@ -22,6 +23,7 @@ describe('OriginalLimit', () => {
                     tradeType: 'exchange',
                 }),
             },
+            services: { networks: mockNetworksServices() },
         });
 
     beforeEach(() => {

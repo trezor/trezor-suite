@@ -1,6 +1,7 @@
 import { type Store } from '@reduxjs/toolkit';
 import type { CryptoId, ExchangeTrade } from 'invity-api';
 
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { tradingExchangeActions } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider, screen } from '@suite-native/test-utils-store';
@@ -23,7 +24,10 @@ describe('ExchangeConfirmationInfo', () => {
 
     const renderInfo = async (props: ExchangeConfirmationInfoCardProps) =>
         await renderWithStoreProvider(<ExchangeConfirmationInfo {...props} />, {
-            services: { store },
+            services: {
+                store,
+                networks: mockNetworksServices(),
+            },
         });
 
     beforeEach(() => {

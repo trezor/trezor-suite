@@ -1,5 +1,6 @@
 import { type Store } from '@reduxjs/toolkit';
 
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { selectTradingExchangeSelectedQuote, tradingExchangeActions } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider, userEvent, within } from '@suite-native/test-utils-store';
@@ -29,7 +30,12 @@ describe('LimitPicker', () => {
                     );
                 }}
             />,
-            { services: { store } },
+            {
+                services: {
+                    store,
+                    networks: mockNetworksServices(),
+                },
+            },
         );
 
     beforeEach(() => {

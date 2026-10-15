@@ -22,6 +22,9 @@ export const selectNetworkConfig: (
     (config, symbol) => (config ? { ...config, symbol } : undefined),
 );
 
+export const selectIsTestnet = (state: NetworkConfigState, networkSymbol: NetworkSymbol): boolean =>
+    state.networks?.[networkSymbol]?.testnet ?? false;
+
 export const selectNetworkConfigByCoingeckoId = (
     state: NetworkConfigState,
     coingeckoId: string,

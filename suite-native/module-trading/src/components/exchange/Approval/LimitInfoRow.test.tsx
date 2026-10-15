@@ -1,5 +1,6 @@
 import type { CryptoId } from 'invity-api';
 
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { Text } from '@suite-native/atoms';
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider, userEvent } from '@suite-native/test-utils-store';
@@ -39,6 +40,7 @@ describe('LimitInfoRow', () => {
 
         return await renderWithStoreProvider(<LimitInfoRow {...defaultProps} {...props} />, {
             preloadedState,
+            services: { networks: mockNetworksServices() },
         });
     };
 

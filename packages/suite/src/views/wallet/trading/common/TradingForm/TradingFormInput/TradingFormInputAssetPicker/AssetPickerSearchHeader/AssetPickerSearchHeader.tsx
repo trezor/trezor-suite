@@ -1,7 +1,6 @@
 import { memo, useCallback, useMemo, useRef } from 'react';
 
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
-import { isNetworkIconSymbol } from '@suite-common/icons';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     Button,
@@ -15,7 +14,7 @@ import {
     Text,
 } from '@trezor/components';
 import { CaretDownIcon, MagnifyingGlassIcon } from '@trezor/icons';
-import { NetworkIcon, TokenIcon } from '@trezor/product-components';
+import { NetworkIcon } from '@trezor/product-components';
 import { zIndices } from '@trezor/theme';
 
 const DATA_TESTID_BASE = '@asset-picker/search';
@@ -24,11 +23,7 @@ type NetworkLabelProps = { symbol: NetworkSymbol; name: string };
 
 const NetworkLabel = ({ symbol, name }: NetworkLabelProps) => (
     <Row gap={8}>
-        {isNetworkIconSymbol(symbol) ? (
-            <NetworkIcon size={20} networkSymbol={symbol} />
-        ) : (
-            <TokenIcon size={20} symbol={symbol} />
-        )}
+        <NetworkIcon size={20} networkSymbol={symbol} />
         <Text typographyStyle="body-sm" textWrap="nowrap">
             {name}
         </Text>
@@ -126,11 +121,7 @@ export const AssetPickerSearchHeader = memo(function AssetPickerSearchHeaderInne
                             height={24}
                             data-testid={`${DATA_TESTID_BASE}/filter/select-option-value/${networkFilter}`}
                         >
-                            {isNetworkIconSymbol(networkFilter) ? (
-                                <NetworkIcon size={20} networkSymbol={networkFilter} />
-                            ) : (
-                                <TokenIcon size={20} symbol={networkFilter} />
-                            )}
+                            <NetworkIcon size={20} networkSymbol={networkFilter} />
                         </Row>
                     ) : (
                         <Translation id="TR_ASSET_PICKER_NETWORK_FILTER" />

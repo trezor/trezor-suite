@@ -2,6 +2,7 @@ import { type Store } from '@reduxjs/toolkit';
 
 import { type DeviceRootState } from '@suite-common/device';
 import { type NetworksRootState } from '@suite-common/networks';
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { tradingBuyActions } from '@suite-common/trading';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
@@ -106,7 +107,13 @@ describe('BuyTradeableAssetPicker', () => {
             <Form form={form}>
                 <BuyTradeableAssetPicker />
             </Form>,
-            { services: { ...services, store } },
+            {
+                services: {
+                    ...services,
+                    store,
+                    networks: mockNetworksServices(),
+                },
+            },
         );
         await act(async () => {
             await act(() => Promise.resolve());

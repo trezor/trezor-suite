@@ -179,12 +179,10 @@ export const createGenerateIcons = (deps: GenerateIconsDeps): GenerateIcons => {
                 },
                 ...createNetworkAssetTypes('cryptoIcons', 'CryptoIconName'),
             ],
-            outputFilePath: path.join(iconsDirectory, 'src/cryptoIcons.ts'),
         },
         {
             label: 'network icons',
             assetTypes: createNetworkAssetTypes('networkIcons', 'NetworkIconName'),
-            outputFilePath: path.join(iconsDirectory, 'src/networkIcons.ts'),
         },
         {
             label: 'payment method logos',

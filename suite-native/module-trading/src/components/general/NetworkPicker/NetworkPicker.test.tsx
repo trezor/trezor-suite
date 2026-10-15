@@ -1,3 +1,4 @@
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { type Network, asNetworkSymbol } from '@suite-common/wallet-config';
 import { fireEvent, screen } from '@suite-native/test-utils-store';
 
@@ -40,6 +41,7 @@ describe('NetworkPicker', () => {
                 onSelectNetwork={onSelectNetwork}
                 testID={testID}
             />,
+            { services: { networks: mockNetworksServices() } },
         );
 
     afterEach(async () => {

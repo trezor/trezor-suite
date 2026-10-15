@@ -1,6 +1,7 @@
 import { type Store } from '@reduxjs/toolkit';
 
 import { type DeviceRootState } from '@suite-common/device';
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
@@ -79,7 +80,12 @@ describe('AccountListItem', () => {
 
         return await renderWithStoreProvider(
             <AccountListItem onPress={onPressMock} receiveAccount={receiveAccount} />,
-            { services: { store } },
+            {
+                services: {
+                    store,
+                    networks: mockNetworksServices(),
+                },
+            },
         );
     };
 

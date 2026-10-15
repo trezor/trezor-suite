@@ -41,6 +41,7 @@
     "devDependencies": {
         "@suite-common/device": "workspace:*",
         "@suite-common/message-system": "workspace:*",
+        "@suite-common/networks": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-native/test-utils": "workspace:*",

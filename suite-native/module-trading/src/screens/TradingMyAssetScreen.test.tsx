@@ -1,6 +1,7 @@
 import { type RouteProp } from '@react-navigation/native';
 import type { CryptoId } from 'invity-api';
 
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import {
@@ -76,6 +77,11 @@ describe('TradingMyAssetScreen', () => {
         async tradingType => {
             const { getByText } = await renderWithTradingProvider(
                 <TradingMyAssetScreen navigation={navigation} route={createRoute(tradingType)} />,
+                {
+                    services: {
+                        networks: mockNetworksServices(),
+                    },
+                },
             );
 
             await fireEvent.press(getByText('BTC'));

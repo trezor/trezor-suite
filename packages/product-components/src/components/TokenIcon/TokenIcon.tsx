@@ -1,8 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { isCryptoIconSymbol, isNetworkIconSymbol } from '@suite-common/icons';
-import { isWrappedNativeToken } from '@trezor/network-ethereum/constants';
-import { isSupportedEthereumNetwork } from '@trezor/network-ethereum-types';
+import { useServices } from '@trezor/dependency-injection';
 import type { NetworkConfigState } from '@trezor/network-module-types';
 
 import { NativeTokenIcon } from './NativeTokenIcon';
@@ -10,6 +8,7 @@ import { NonNativeTokenIcon } from './NonNativeTokenIcon';
 import { type TokenIconProps } from './tokenIconTypes';
 import { ZERO_ADDRESS, hasForeignNativeAsset } from './tokenIconUtils';
 import { selectNetworkConfig } from '../../network-display/networkDisplaySelectors';
+import { injectHasNetworkIcon, injectIsWrappedNativeToken } from '../../services/networkServices';
 import { NetworkIconBadge } from '../NetworkIcon/NetworkIconBadge';
 
 export const TokenIcon = ({
@@ -27,11 +26,11 @@ export const TokenIcon = ({
     'data-testid': dataTestId,
 }: TokenIconProps) => {
     const network = useSelector((state: NetworkConfigState) => selectNetworkConfig(state, symbol));
-    if (
-        wrappedTokenIcon === 'network' &&
-        isSupportedEthereumNetwork(symbol) &&
-        isWrappedNativeToken(symbol, contractAddress)
-    ) {
+    const { hasNetworkIcon, isWrappedNativeToken } = useServices(
+        injectHasNetworkIcon,
+        injectIsWrappedNativeToken,
+    );
+    if (wrappedTokenIcon === 'network' && isWrappedNativeToken(symbol, contractAddress)) {
         contractAddress = null;
     }
 
@@ -50,7 +49,7 @@ export const TokenIcon = ({
 
             if (
                 (networkSymbol !== symbol || wrappedTokenIcon === 'network') &&
-                isNetworkIconSymbol(symbol)
+                hasNetworkIcon(symbol)
             ) {
                 return (
                     <NetworkIconBadge
@@ -72,11 +71,7 @@ export const TokenIcon = ({
     const coingeckoId = network?.coingeckoId;
 
     if (!coingeckoId) {
-        if (isCryptoIconSymbol(symbol)) {
-            return <NativeTokenIcon symbol={symbol} size={size} data-testid={dataTestId} />;
-        }
-
-        return null;
+        return <NativeTokenIcon symbol={symbol} size={size} data-testid={dataTestId} />;
     }
 
     return (

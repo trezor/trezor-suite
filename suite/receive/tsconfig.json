@@ -38,6 +38,7 @@
             "path": "../../packages/product-components"
         },
         { "path": "../../packages/redux-utils" },
-        { "path": "../../packages/theme" }
+        { "path": "../../packages/theme" },
+        { "path": "../../suite-common/networks" }
     ]
 }

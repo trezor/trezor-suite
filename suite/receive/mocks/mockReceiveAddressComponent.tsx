@@ -6,6 +6,7 @@ import { render } from '@testing-library/react';
 import { ThemeProvider } from 'styled-components';
 
 import { IntlProviderForTests, Translation } from '@suite/intl';
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -45,7 +46,11 @@ export const renderReceiveComponent = (component: ReactElement) => {
             device: { selectedDevice: undefined },
         }),
     });
-    const services = { store, analytics: { report: jest.fn() } };
+    const services = {
+        store,
+        networks: mockNetworksServices(),
+        analytics: { report: jest.fn() },
+    };
 
     render(
         <Provider store={store}>

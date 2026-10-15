@@ -1,3 +1,4 @@
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
@@ -62,6 +63,7 @@ describe('AccountListAddressItem', () => {
                 isFreshAddress={isFreshAddress}
                 onPress={onPressMock}
             />,
+            { services: { networks: mockNetworksServices() } },
         );
 
     beforeEach(() => {

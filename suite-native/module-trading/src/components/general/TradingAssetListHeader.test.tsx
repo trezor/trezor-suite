@@ -1,3 +1,4 @@
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { fireEvent } from '@suite-native/test-utils-store';
 
 import { TradingAssetListHeader } from './TradingAssetListHeader';
@@ -23,6 +24,7 @@ describe('TradingAssetListHeader', () => {
                 selectedNetworkFilter={undefined}
                 testID={testID}
             />,
+            { services: { networks: mockNetworksServices() } },
         );
 
         await fireEvent.changeText(getByTestId(`${testID}/search-input`), 'ether');

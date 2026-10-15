@@ -1,3 +1,4 @@
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { eth1NormalAccount, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
@@ -41,6 +42,7 @@ describe('ExchangeApprovalDetails', () => {
             {
                 tradeType: 'exchange',
                 overrides,
+                services: { networks: mockNetworksServices() },
             },
         );
 

@@ -65,6 +65,7 @@
         "react-redux": "9.3.0"
     },
     "devDependencies": {
+        "@suite-common/networks": "workspace:*",
         "@suite-native/test-utils-store": "workspace:*",
         "@trezor/requirements": "workspace:*"
     }

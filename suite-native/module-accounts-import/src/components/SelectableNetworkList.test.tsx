@@ -1,4 +1,4 @@
-import { mockNetworksState } from '@suite-common/networks/mocks';
+import { mockNetworksServices, mockNetworksState } from '@suite-common/networks/mocks';
 import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 
@@ -18,7 +18,10 @@ describe('SelectableNetworkList', () => {
         const onSelectItem = jest.fn();
         const { getByText } = await renderWithStoreProvider(
             <SelectableNetworkList onSelectItem={onSelectItem} />,
-            { preloadedState: getMockPreloadedState(true) },
+            {
+                preloadedState: getMockPreloadedState(true),
+                services: { networks: mockNetworksServices() },
+            },
         );
 
         expect(getByText('Select a network to sync')).toBeTruthy();
@@ -29,7 +32,10 @@ describe('SelectableNetworkList', () => {
         const onSelectItem = jest.fn();
         const { getByText } = await renderWithStoreProvider(
             <SelectableNetworkList onSelectItem={onSelectItem} />,
-            { preloadedState: getMockPreloadedState(true) },
+            {
+                preloadedState: getMockPreloadedState(true),
+                services: { networks: mockNetworksServices() },
+            },
         );
 
         expect(getByText('Bitcoin')).toBeTruthy();
@@ -42,7 +48,10 @@ describe('SelectableNetworkList', () => {
         const onSelectItem = jest.fn();
         const { getByText } = await renderWithStoreProvider(
             <SelectableNetworkList onSelectItem={onSelectItem} />,
-            { preloadedState: getMockPreloadedState(true) },
+            {
+                preloadedState: getMockPreloadedState(true),
+                services: { networks: mockNetworksServices() },
+            },
         );
 
         await fireEvent.press(getByText('Bitcoin'));
@@ -55,7 +64,10 @@ describe('SelectableNetworkList', () => {
         const onSelectItem = jest.fn();
         const { getByText, queryByText } = await renderWithStoreProvider(
             <SelectableNetworkList onSelectItem={onSelectItem} />,
-            { preloadedState: getMockPreloadedState(false) },
+            {
+                preloadedState: getMockPreloadedState(false),
+                services: { networks: mockNetworksServices() },
+            },
         );
 
         expect(getByText('Select a network to sync')).toBeTruthy();
