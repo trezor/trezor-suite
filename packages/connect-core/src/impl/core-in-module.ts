@@ -231,6 +231,9 @@ export abstract class CoreInModule implements TrezorConnectCore<ConnectSettings>
     }
 
     public cancel(params?: CancelParams) {
+        // A screen can close while init() is still pending. There is no Core to receive cancel yet.
+        if (!this.coreManager.get()) return;
+
         this.handleCoreMessage(createCoreCallCancelMessage(params));
     }
 
