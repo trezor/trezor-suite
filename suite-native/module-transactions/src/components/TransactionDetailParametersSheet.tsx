@@ -7,6 +7,7 @@ import {
     selectTransactionConfirmations,
 } from '@suite-common/wallet-core';
 import { type AccountKey, type WalletAccountTransaction } from '@suite-common/wallet-types';
+import { hasUnresolvedInputs } from '@suite-common/wallet-utils';
 import { Box, Card, IconButton, Text, VStack } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/clipboard';
 import { FeeFormatter, TransactionIdFormatter } from '@suite-native/formatters';
@@ -217,7 +218,11 @@ export const TransactionDetailParametersSheet = ({
                                     'transactions.TransactionDetailScreen.parametersSheet.feeRate',
                                 )}
                             >
-                                <FeeFormatter transaction={transaction} />
+                                {hasUnresolvedInputs(transaction) ? (
+                                    translate('generic.unknown')
+                                ) : (
+                                    <FeeFormatter transaction={transaction} />
+                                )}
                             </TransactionDetailRow>
                         )}
                         {transaction.symbol === 'btc' && (

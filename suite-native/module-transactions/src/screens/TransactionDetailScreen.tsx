@@ -7,6 +7,7 @@ import {
     type AccountsRootState,
     createTargets,
     selectAccountByKey,
+    useResolveTransactionInputs,
 } from '@suite-common/wallet-core';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Button, HStack, VStack } from '@suite-native/atoms';
@@ -52,6 +53,8 @@ export const TransactionDetailScreen = ({
     });
 
     useFetchMissingTransactionFiatRates({ accountKey, isEnabled: !!transaction });
+    // The fee of a transaction with foreign inputs is unknown until they are fetched.
+    useResolveTransactionInputs(transaction ? [transaction] : []);
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
