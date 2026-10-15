@@ -8,14 +8,13 @@
     "scripts": {
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
-        "generate-icons": "yarn g:tsx generateIcons.mjs && yarn g:tsx generateIconFont.ts",
-        "generate-icon-font": "yarn g:tsx generateIconFont.ts",
+        "generate-icons": "yarn suite:cli generate-icons && yarn generate-icon-font",
+        "generate-icon-font": "yarn suite:cli generate-icon-font",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "yarn g:jest"
     },
     "devDependencies": {
         "@trezor/dependency-injection": "workspace:*",
-        "chalk": "^6.0.0",
         "fantasticon": "4.1.0",
         "prettier": "^3.9.6",
         "sharp": "^0.34.2",
