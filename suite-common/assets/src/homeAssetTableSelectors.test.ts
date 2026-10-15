@@ -12,12 +12,14 @@ import {
     selectDisplayedWalletAssetKeys,
     selectDisplayedWalletAssetKeysOfNetwork,
     selectHiddenWalletAssetKeys,
+    selectHomeAssetTotalFiatValue,
     selectHomeAssetTotals,
     selectIsHomeAssetTableFoldable,
     selectNetworkFiatValue,
     selectShownWalletAssetKeys,
     selectSmallBalanceSummary,
     selectWalletAssetAmount,
+    selectWalletAssetFiatValue,
 } from './homeAssetTableSelectors';
 
 const ALICE = 'aliceWallet@device:0' as StaticSessionId;
@@ -387,9 +389,32 @@ describe('the total over the wallet', () => {
         ],
         rates: { ...mockRate(ETH, 3000), ...mockRate(BTC, 100000) },
     });
+    const ethereumKey = getWalletAssetKey({ deviceState: ALICE, symbol: ETH });
+    const bitcoinKey = getWalletAssetKey({ deviceState: ALICE, symbol: BTC });
 
     it('adds up every asset of the wallet', () => {
         expect(selectHomeAssetTotals(state).fiatValue?.toFixed()).toBe('56000');
+        expect(selectHomeAssetTotalFiatValue(state)?.toFixed()).toBe('56000');
+    });
+
+    it('hands back the same total while its value stays the same', () => {
+        const before = selectHomeAssetTotalFiatValue(state);
+        const after = selectHomeAssetTotalFiatValue(
+            createState({
+                accounts: [
+                    mockAccount({ symbol: ETH, balance: '2' }),
+                    mockAccount({ symbol: BTC, index: 1, balance: '0.5' }),
+                ],
+                rates: { ...mockRate(ETH, 3000), ...mockRate(BTC, 100000) },
+            }),
+        );
+
+        expect(after).toBe(before);
+    });
+
+    it('prices each asset on its own', () => {
+        expect(selectWalletAssetFiatValue(state, ethereumKey)?.toFixed()).toBe('6000');
+        expect(selectWalletAssetFiatValue(state, bitcoinKey)?.toFixed()).toBe('50000');
     });
 
     it('says nothing at all while no asset of the wallet can be priced', () => {
@@ -398,6 +423,8 @@ describe('the total over the wallet', () => {
         });
 
         expect(selectHomeAssetTotals(unpriced).fiatValue).toBeUndefined();
+        expect(selectHomeAssetTotalFiatValue(unpriced)).toBeUndefined();
+        expect(selectWalletAssetFiatValue(unpriced, ethereumKey)).toBeUndefined();
     });
 
     it('says nothing about a week ago when no rate for it is known', () => {
