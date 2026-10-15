@@ -2,6 +2,8 @@ import { useCallback, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import {
+    HOME_ASSET_ROW_LIMIT,
+    getHomeAssetRowLimit,
     selectDisplayedNetworkSymbols,
     selectDisplayedWalletAssetKeys,
     selectHasShownWalletAssets,
@@ -29,8 +31,6 @@ import { HomeAssetTableFilterHeader } from './HomeAssetTableFilter';
 import { HOME_ASSET_CELL_PADDING, HOME_ASSET_COL_WIDTHS } from './homeAssetTableLayout';
 
 const NO_NETWORKS: readonly NetworkSymbol[] = [];
-/** How many rows the table shows before it folds; mobile picks its own. */
-const HOME_ASSET_ROW_LIMIT = 8;
 
 export const HomeAssetTable = () => {
     const { dispatch } = useServices(injectDispatch);
@@ -42,7 +42,7 @@ export const HomeAssetTable = () => {
         selectIsHomeAssetTableFoldable(state, HOME_ASSET_ROW_LIMIT),
     );
 
-    const rowLimit = isFoldable && !isExpanded ? HOME_ASSET_ROW_LIMIT : undefined;
+    const rowLimit = getHomeAssetRowLimit({ isFoldable, isExpanded });
 
     const assetKeys = useSelector(state => selectDisplayedWalletAssetKeys(state, rowLimit));
     const networkSymbols = useSelector(state =>

@@ -24,8 +24,10 @@ import {
     type CryptoBaseCurrencyPair,
     type Rate,
     type TokenAddress,
+    type TokenSymbol,
     areBaseCurrencyAmountsEqual,
     asBaseCurrencyAmount,
+    toTokenSymbol,
 } from '@suite-common/wallet-types';
 import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
@@ -52,7 +54,7 @@ type WalletAsset = {
     amount: string;
     displaySymbol: string;
     name: string;
-    tokenSymbol: string | undefined;
+    tokenSymbol: TokenSymbol | null;
     tokenDecimals: number | undefined;
 };
 
@@ -89,7 +91,7 @@ const groupWalletAssets = (
                 tokenName: tokenInfo?.name,
                 tokenSymbol: tokenInfo?.symbol,
             }),
-            tokenSymbol: tokenInfo?.symbol,
+            tokenSymbol: tokenInfo?.symbol === undefined ? null : toTokenSymbol(tokenInfo.symbol),
             tokenDecimals: tokenInfo?.decimals,
         });
     });
@@ -378,7 +380,7 @@ const selectAllDisplayedAssetKeys = createMemoizedSelector(
     { memoizeOptions: { resultEqualityCheck: shallowEqual } },
 );
 
-/** How many rows the table may show before it folds; each platform passes its own. */
+/** How many rows the table may show before it folds, `HOME_ASSET_ROW_LIMIT` on both platforms. */
 const selectRowLimit = (_state: HomeAssetTableState, rowLimit?: number) => rowLimit;
 
 /** Whether the table has more to show than the limit allows: a boolean, so a reorder below it is no re-render. */
@@ -582,7 +584,7 @@ export const selectWalletAssetTokenSymbol = (
     state: HomeAssetTableState,
     assetKey: WalletAssetKey,
     isHidden?: boolean,
-) => selectWalletAsset(state, assetKey, isHidden)?.tokenSymbol;
+) => selectWalletAsset(state, assetKey, isHidden)?.tokenSymbol ?? null;
 
 export const selectWalletAssetTokenDecimals = (
     state: HomeAssetTableState,
