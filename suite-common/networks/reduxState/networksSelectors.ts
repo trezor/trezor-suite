@@ -29,6 +29,11 @@ export const selectNetworkConfig = (
     symbol: NetworkSymbol,
 ): NetworkMetadata | null => state.networks?.[symbol] ?? null;
 
+export const selectNetworkCoingeckoId = (
+    state: NetworksRootState,
+    symbol: NetworkSymbol,
+): string | undefined => selectNetworkConfig(state, symbol)?.coingeckoId;
+
 export const selectNetworkConfigs = createMemoizedSelector(
     [state => state.networks],
     (networks): readonly NetworkMetadata[] =>

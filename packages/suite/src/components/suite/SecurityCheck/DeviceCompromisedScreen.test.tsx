@@ -4,6 +4,7 @@ import { type TranslationKey } from '@suite/intl';
 import { type SuiteRouterHistoryDep } from '@suite/router';
 import { mockSuiteRouterHistory } from '@suite/router/mocks';
 import { type DeviceReducerState, deviceInitialState } from '@suite-common/device';
+import { mockNetworkIcon } from '@suite-common/networks/mocks';
 import { type PersistentDeviceDataState } from '@suite-common/persistent-device-data';
 import { defaultDevicePersistentData, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import * as deviceUtils from '@suite-common/suite-utils';
@@ -15,6 +16,8 @@ import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { DeviceCompromisedScreen } from './DeviceCompromisedScreen';
 import { mockInitialAppState } from '../../../../mocks/mockInitialAppState';
+
+const networkIcon = mockNetworkIcon();
 
 jest.mock('@suite-common/tx-simulation', () => ({}));
 
@@ -195,7 +198,7 @@ describe(`${DeviceCompromisedScreen.name} component`, () => {
                 services: () => ({ suiteRouterHistory }),
             });
             const { getByText, unmount } = renderWithProviders(
-                services,
+                { ...services, networks: { networkIcon } },
                 <DeviceCompromisedScreen />,
             );
             expect(getByText(result)).not.toBeNull();

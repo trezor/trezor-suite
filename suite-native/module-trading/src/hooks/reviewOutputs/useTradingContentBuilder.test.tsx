@@ -1,5 +1,11 @@
 import type { CryptoId } from 'invity-api';
 
+import type {
+    IsWrappedNativeTokenDep,
+    NetworkIconDep,
+    NetworkModuleRepositoryDep,
+} from '@suite-common/networks';
+import { mockNetworkIcon, mockNetworkModuleRepository } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import type {
     AccountKey,
@@ -11,6 +17,18 @@ import { btc1NormalAccount } from '@suite-native/trading-fixtures';
 
 import { type ContentBuilderProps, useTradingContentBuilder } from './useTradingContentBuilder';
 import { renderWithTradingProvider } from '../../test-utils/tradingTestUtils';
+
+type ContentBuilderTestServices = {
+    networks: IsWrappedNativeTokenDep & NetworkIconDep & NetworkModuleRepositoryDep;
+};
+
+const services: ContentBuilderTestServices = {
+    networks: {
+        isWrappedNativeToken: () => false,
+        networkIcon: mockNetworkIcon(),
+        networkModuleRepository: mockNetworkModuleRepository(),
+    },
+};
 
 const mockSend: FormStateTradingCryptoCurrency = {
     cryptoId: 'bitcoin' as CryptoId,
@@ -47,9 +65,13 @@ describe('useTradingContentBuilder', () => {
     };
 
     const renderContentBuilder = async (props: Partial<ContentBuilderProps> = {}) =>
-        await renderWithTradingProvider(<ContentBuilderWrapper props={props} />, {
-            tradeType: 'exchange',
-        });
+        await renderWithTradingProvider<ContentBuilderTestServices>(
+            <ContentBuilderWrapper props={props} />,
+            {
+                tradeType: 'exchange',
+                services,
+            },
+        );
 
     it('returns undefined for non-traded_assets output type', async () => {
         const { toJSON } = await renderContentBuilder({ outputType: 'note' });

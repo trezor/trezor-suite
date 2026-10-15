@@ -1,6 +1,10 @@
 import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
-import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
-import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import type {
+    IsWrappedNativeTokenDep,
+    NetworkIconDep,
+    NetworkModuleRepositoryDep,
+} from '@suite-common/networks';
+import { mockNetworkIcon, mockNetworkModuleRepository } from '@suite-common/networks/mocks';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 
@@ -13,9 +17,17 @@ import {
     renderWithTradingProvider,
 } from '../test-utils/tradingTestUtils';
 
-const services: NativeAnalyticsDep & { networks: NetworkModuleRepositoryDep } = {
+type TradingStackNavigatorTestServices = NativeAnalyticsDep & {
+    networks: NetworkModuleRepositoryDep & NetworkIconDep & IsWrappedNativeTokenDep;
+};
+
+const services: TradingStackNavigatorTestServices = {
     analytics: mockNativeAnalytics(),
-    networks: { networkModuleRepository: mockNetworkModuleRepository() },
+    networks: {
+        networkModuleRepository: mockNetworkModuleRepository(),
+        networkIcon: mockNetworkIcon(),
+        isWrappedNativeToken: () => false,
+    },
 };
 
 const renderTradingStackNavigator = (
@@ -23,8 +35,11 @@ const renderTradingStackNavigator = (
 ) => {
     const store = createTradingTestStore({ overrides });
 
-    return renderWithTradingProvider(<TradingStackNavigator />, {
-        services: { ...services, store: { ...store, dispatch: jest.fn() } },
+    return renderWithTradingProvider<TradingStackNavigatorTestServices>(<TradingStackNavigator />, {
+        services: {
+            ...services,
+            store: { ...store, dispatch: jest.fn() },
+        },
     });
 };
 

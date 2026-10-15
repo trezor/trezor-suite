@@ -1,3 +1,4 @@
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { fireEvent, userEvent } from '@suite-native/test-utils-store';
 import {
@@ -87,6 +88,7 @@ describe('TradingHistoryScreen', () => {
             <TradingHistory onOpenTradeDetail={mockOpenTradeDetail} />,
             {
                 overrides: getOverrides(trades),
+                services: { networks: mockNetworksServices() },
             },
         );
 

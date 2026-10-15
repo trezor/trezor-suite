@@ -79,16 +79,12 @@ const flagsPlugin = (): Plugin => {
     };
 };
 
-const trezorLogosRequirePlugin = (): Plugin => ({
-    name: 'trezor-logos-require',
+const svgAssetsRequirePlugin = (): Plugin => ({
+    name: 'svg-assets-require',
     enforce: 'pre',
     transform(code, id) {
         const cleanId = id.split('?')[0] ?? id;
-        if (
-            !cleanId.includes(
-                'packages/product-components/src/components/TrezorLogo/trezorLogos.ts',
-            )
-        ) {
+        if (!/\.[cm]?[jt]sx?$/.test(cleanId)) {
             return null;
         }
 
@@ -96,6 +92,8 @@ const trezorLogosRequirePlugin = (): Plugin => ({
             /require\((['"`])([^'"`]+\.svg)\1\)/g,
             'new URL($1$2$1, import.meta.url).href',
         );
+
+        if (transformed === code) return null;
 
         return {
             code: transformed,
@@ -447,7 +445,7 @@ export default defineConfig({
         bufferPolyfillPlugin(),
         noopCoreJsPlugin(),
         guideMarkdownPlugin(),
-        trezorLogosRequirePlugin(),
+        svgAssetsRequirePlugin(),
         flagsPlugin(),
         staticAliasPlugin(),
         sessionsSharedWorkerPlugin(),

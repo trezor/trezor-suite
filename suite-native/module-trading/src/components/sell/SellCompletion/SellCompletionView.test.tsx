@@ -1,3 +1,4 @@
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { type TradingSellStepType } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
 import {
@@ -63,6 +64,7 @@ describe('SellCompletionView', () => {
             {
                 tradeType: 'sell',
                 overrides: getOverrides(formStep),
+                services: { networks: mockNetworksServices() },
             },
         );
 

@@ -72,6 +72,7 @@
             "path": "../../packages/styles-native"
         },
         { "path": "../../packages/utils" },
+        { "path": "../../suite-common/networks" },
         { "path": "../test-utils-store" },
         { "path": "../../packages/requirements" }
     ]

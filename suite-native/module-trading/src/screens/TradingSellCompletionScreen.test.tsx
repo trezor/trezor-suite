@@ -1,5 +1,6 @@
 import type { SellFiatTrade } from 'invity-api';
 
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import type { TradingTransactionSell } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
 import { act, waitFor } from '@suite-native/test-utils-store';
@@ -96,6 +97,7 @@ describe('TradingSellCompletionScreen', () => {
                     }),
                 },
             },
+            services: { networks: mockNetworksServices() },
         });
 
         await act(() => Promise.resolve());

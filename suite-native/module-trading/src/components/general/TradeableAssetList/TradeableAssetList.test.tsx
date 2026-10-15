@@ -1,3 +1,4 @@
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { fireEvent, screen } from '@suite-native/test-utils-store';
 import { adaAsset, btcAsset, usdcAsset } from '@suite-native/trading-fixtures';
@@ -21,6 +22,7 @@ describe('TradeableAssetList', () => {
                 assetBalances={new Map()}
                 {...props}
             />,
+            { services: { networks: mockNetworksServices() } },
         );
 
     afterEach(async () => {

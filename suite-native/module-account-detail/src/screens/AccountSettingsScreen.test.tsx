@@ -1,3 +1,4 @@
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { mockSuiteSync } from '@suite-common/suite-sync/mocks';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -64,7 +65,13 @@ describe('AccountSettingsScreen', () => {
                 route={buildRoute(btcAccount.key)}
                 navigation={navigationMock}
             />,
-            { preloadedState: buildPreloadedState(btcAccount), services },
+            {
+                preloadedState: buildPreloadedState(btcAccount),
+                services: {
+                    ...services,
+                    networks: mockNetworksServices(),
+                },
+            },
         );
 
         // The text appears in both the trigger button and the XpubQRCodeBottomSheet's show button.
@@ -83,7 +90,13 @@ describe('AccountSettingsScreen', () => {
                 route={buildRoute(ethAccount.key)}
                 navigation={navigationMock}
             />,
-            { preloadedState: buildPreloadedState(ethAccount), services },
+            {
+                preloadedState: buildPreloadedState(ethAccount),
+                services: {
+                    ...services,
+                    networks: mockNetworksServices(),
+                },
+            },
         );
 
         expect(

@@ -1,3 +1,4 @@
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { fireEvent } from '@suite-native/test-utils-store';
 import { btcAsset, usdcAsset } from '@suite-native/trading-fixtures';
@@ -14,6 +15,7 @@ describe('TradeableAssetListItem', () => {
     }: Partial<TradeableAssetListItemProps>) =>
         await renderWithTradingProvider(
             <TradeableAssetListItem asset={asset} balance={balance} onPress={onPress} />,
+            { services: { networks: mockNetworksServices() } },
         );
 
     it('should render with correct labels', async () => {

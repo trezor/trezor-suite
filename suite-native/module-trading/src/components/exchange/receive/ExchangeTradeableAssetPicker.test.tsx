@@ -1,6 +1,7 @@
 import { type Store } from '@reduxjs/toolkit';
 
 import { type NetworksRootState } from '@suite-common/networks';
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { tradingExchangeActions } from '@suite-common/trading';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
@@ -107,7 +108,11 @@ describe('ExchangeTradeableAssetPicker', () => {
 
     const renderTradeableAssetPicker = async () =>
         await renderWithTradingProvider(<ExchangeTradeableAssetPicker />, {
-            services: { ...services, store },
+            services: {
+                ...services,
+                store,
+                networks: mockNetworksServices(),
+            },
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 

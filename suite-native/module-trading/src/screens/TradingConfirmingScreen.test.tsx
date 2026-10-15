@@ -1,5 +1,6 @@
 import { type Store } from '@reduxjs/toolkit';
 
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import type { TransactionStatus } from '@suite-common/trading';
 import {
     selectTradingExchangeSelectedQuote,
@@ -110,7 +111,13 @@ describe('TradingConfirmingScreen', () => {
 
         return await renderWithStoreProvider(
             <TradingConfirmingScreen navigation={mockNavigation} route={mockUseRoute()} />,
-            { services: { analytics: mockNativeAnalytics(mockAnalyticsReport), store } },
+            {
+                services: {
+                    analytics: mockNativeAnalytics(mockAnalyticsReport),
+                    store,
+                    networks: mockNetworksServices(),
+                },
+            },
         );
     };
 

@@ -1,3 +1,4 @@
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
@@ -31,7 +32,10 @@ describe('TradingSellPreviewScreen', () => {
 
         return await renderWithTradingProvider(<TradingSellPreviewScreen />, {
             tradeType: 'sell',
-            services: { analytics: mockNativeAnalytics(mockAnalyticsReport) },
+            services: {
+                analytics: mockNativeAnalytics(mockAnalyticsReport),
+                networks: mockNetworksServices(),
+            },
             overrides: { wallet: { trading: tradingState } },
         });
     };

@@ -1,5 +1,6 @@
 import { type RouteProp, useNavigation } from '@react-navigation/native';
 
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { tradingBuyActions } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
 import type { RootStackParamList, RootStackRoutes } from '@suite-native/navigation';
@@ -58,7 +59,10 @@ describe('TradingReceiveAddressPickerScreen', () => {
             overrides,
         });
         const result = await renderWithStoreProvider(<TradingReceiveAddressPickerScreen />, {
-            services: { store },
+            services: {
+                store,
+                networks: mockNetworksServices(),
+            },
         });
 
         return { ...result, store };

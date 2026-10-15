@@ -3,6 +3,7 @@ import '@suite-common/test-utils/globalOverrides';
 import { screen } from '@testing-library/react';
 import { type CryptoId } from 'invity-api';
 
+import { mockNetworkIcon } from '@suite-common/networks/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type FormStateTradingCryptoCurrency } from '@suite-common/wallet-types';
@@ -15,6 +16,8 @@ import {
     type TransactionReviewOutputAssetsProps,
 } from './TransactionReviewOutputAssets';
 import { mockInitialAppState } from '../../../../../../../mocks/mockInitialAppState';
+
+const networkIcon = mockNetworkIcon();
 
 const send: FormStateTradingCryptoCurrency = {
     cryptoId: 'bitcoin' as CryptoId,
@@ -36,7 +39,7 @@ const renderAssets = (receive: TransactionReviewOutputAssetsProps['receive']) =>
     });
 
     renderWithProviders(
-        services,
+        { ...services, networks: { networkIcon } },
         <TransactionReviewOutputAssets
             title="My assets"
             state="active"

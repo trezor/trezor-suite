@@ -1,5 +1,6 @@
 import type { CryptoId } from 'invity-api';
 
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
@@ -29,6 +30,7 @@ describe('MyAssetGroup', () => {
                 testID={testID}
                 title="Low balance"
             />,
+            { services: { networks: mockNetworksServices() } },
         );
 
         expect(getByText('+1')).toBeOnTheScreen();
@@ -49,6 +51,7 @@ describe('MyAssetGroup', () => {
                 testID={testID}
                 title="Low balance"
             />,
+            { services: { networks: mockNetworksServices() } },
         );
 
         await fireEvent.press(getByTestId(`${testID}/toggle`));
@@ -70,6 +73,7 @@ describe('MyAssetGroup', () => {
                 testID="@trading/my-asset-group"
                 title="Non-tradeable"
             />,
+            { services: { networks: mockNetworksServices() } },
         );
 
         await fireEvent.press(getByText('Non-tradeable'));

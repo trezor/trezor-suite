@@ -1,6 +1,7 @@
+import { mockNetworkMetadata, mockNetworksServices } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { Text } from '@suite-native/atoms';
-import { act, fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
+import { act, fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import {
     ExchangeApprovalLimitCard,
@@ -13,13 +14,17 @@ describe('ExchangeApprovalLimitCard', () => {
     const renderExchangeApprovalLimitCard = async (
         props: Partial<ExchangeApprovalLimitCardProps>,
     ) => {
-        const res = await renderWithBasicProvider(
+        const res = await renderWithStoreProvider(
             <ExchangeApprovalLimitCard
                 title={<Text>Test limit</Text>}
                 description="Test description"
                 onChange={mockOnChange}
                 {...props}
             />,
+            {
+                preloadedState: { networks: mockNetworkMetadata },
+                services: { networks: mockNetworksServices() },
+            },
         );
         await act(async () => {
             await act(() => Promise.resolve());

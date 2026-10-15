@@ -5,6 +5,9 @@ import { type NetworkSymbol, asNetworkSymbol } from '@trezor/network-module-type
 import {
     type NetworkIconDeps,
     createNetworkIcon,
+    injectGetCryptoIcon,
+    injectGetNetworkIcon,
+    injectGetTokenLogoIdentifiers,
     injectHasNetworkIcon,
     injectNetworkIcon,
 } from './createNetworkIcon';
@@ -27,7 +30,7 @@ it.each([
     const deps = createMockDeps<NetworkIconDeps>({
         networkModuleRepository: {
             get: () => mockNetworkModule({ icon }),
-            getSupportedNetworks: null,
+            getSupportedNetworks: () => [symbol],
             isSupportedNetwork: (value): value is NetworkSymbol => value === symbol,
         },
     });
@@ -39,7 +42,8 @@ it.each([
     expect(deps.networkModuleRepository.get).toHaveBeenCalledWith(symbol);
     expect(icon.getIcons).toHaveBeenCalledWith(symbol);
     expect(icon.getTokenLogoIdentifiers).toHaveBeenCalledWith(symbol, 'contract');
-    expect(networkIcon.hasCryptoIcon).toBe(deps.networkModuleRepository.isSupportedNetwork);
+    expect(networkIcon.hasCryptoIcon(symbol)).toBe(true);
+    expect(networkIcon.hasCryptoIcon('unknown')).toBe(false);
     expect(networkIcon.hasNetworkIcon).toBe(deps.networkModuleRepository.isSupportedNetwork);
 });
 
@@ -49,7 +53,58 @@ it('exposes the composed icon dependency through its injectors', () => {
     );
 
     expect(injectNetworkIcon({ networks }).networkIcon).toBe(networks.networkIcon);
+    expect(injectGetCryptoIcon({ networks }).getCryptoIcon).toBe(
+        networks.networkIcon.getCryptoIcon,
+    );
+    expect(injectGetNetworkIcon({ networks }).getNetworkIcon).toBe(
+        networks.networkIcon.getNetworkIcon,
+    );
+    expect(injectGetTokenLogoIdentifiers({ networks }).getTokenLogoIdentifiers).toBe(
+        networks.networkIcon.getTokenLogoIdentifiers,
+    );
     expect(injectHasNetworkIcon({ networks }).hasNetworkIcon).toBe(
         networks.networkIcon.hasNetworkIcon,
     );
+});
+
+it.each([
+    { input: 'bsc', expected: 'bsc' },
+    { input: 'eth', expected: 'eth' },
+    { input: 'op', expected: 'op' },
+    { input: 'BNB', expected: undefined },
+    { input: 'bnb', expected: undefined },
+    { input: 'BSC', expected: undefined },
+    { input: 'ETH', expected: undefined },
+    { input: 'unknown', expected: undefined },
+])('resolves crypto icon $input through the service', ({ input, expected }) => {
+    const supportedNetworks = [
+        asNetworkSymbol('op'),
+        asNetworkSymbol('bsc'),
+        asNetworkSymbol('eth'),
+    ];
+    const icon = createMockDeps<NetworkAssetsModule>({
+        getIcons: symbol => ({ coin: `${symbol}.svg`, network: `${symbol}-network.svg` }),
+        getIconPaths: null,
+        getTokenLogoIdentifiers: null,
+    });
+    const networkModule = mockNetworkModule({ icon });
+    const deps = createMockDeps<NetworkIconDeps>({
+        networkModuleRepository: {
+            get: () => networkModule,
+            getSupportedNetworks: () => supportedNetworks,
+            isSupportedNetwork: (value): value is NetworkSymbol =>
+                supportedNetworks.some(symbol => symbol === value),
+        },
+    });
+    const networkIcon = createNetworkIcon(deps);
+
+    expect(networkIcon.getCryptoIcon(asNetworkSymbol(input))).toBe(
+        expected ? `${expected}.svg` : undefined,
+    );
+    expect(networkIcon.hasCryptoIcon(input)).toBe(expected !== undefined);
+    if (expected) {
+        expect(icon.getIcons).toHaveBeenCalledWith(asNetworkSymbol(expected));
+    } else {
+        expect(icon.getIcons).not.toHaveBeenCalled();
+    }
 });

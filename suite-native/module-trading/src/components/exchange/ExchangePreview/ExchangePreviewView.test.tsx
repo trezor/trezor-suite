@@ -1,3 +1,4 @@
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { within } from '@suite-native/test-utils';
 import {
@@ -73,6 +74,7 @@ describe('ExchangePreviewView', () => {
                         },
                     },
                 },
+                services: { networks: mockNetworksServices() },
             },
         );
 

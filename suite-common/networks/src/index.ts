@@ -10,6 +10,7 @@ export {
 } from '../reduxState/networksReducer';
 export { type NetworkMetadata } from '../reduxState/NetworkMetadata';
 export {
+    selectNetworkCoingeckoId,
     selectNetworkColor,
     selectNetworkConfig,
     selectNetworkConfigs,
@@ -98,11 +99,21 @@ export type { Network, Networks } from './Network';
 export {
     createNetworkIcon,
     injectNetworkIcon,
+    injectGetCryptoIcon,
+    injectGetNetworkIcon,
+    injectGetTokenLogoIdentifiers,
     injectHasNetworkIcon,
-    type HasNetworkIconDep,
     type NetworkIconDeps,
     type NetworkIconDep,
 } from './createNetworkIcon';
+
+export type {
+    GetCryptoIconDep,
+    GetNetworkIconDep,
+    GetTokenLogoIdentifiersDep,
+    HasCryptoIconDep,
+    HasNetworkIconDep,
+} from '@trezor/network-assets-types';
 
 export {
     createIsWrappedNativeToken,

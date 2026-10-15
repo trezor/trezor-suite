@@ -5,6 +5,7 @@
         {
             "path": "../../suite-common/formatters"
         },
+        { "path": "../../suite-common/networks" },
         {
             "path": "../../suite-common/tx-simulation"
         },
@@ -16,6 +17,9 @@
         },
         { "path": "../intl" },
         { "path": "../../packages/components" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
         { "path": "../../packages/icons" },
         {
             "path": "../../packages/product-components"

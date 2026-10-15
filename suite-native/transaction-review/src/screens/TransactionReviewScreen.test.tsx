@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react';
 import { View } from 'react-native';
 
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { type TransactionReviewStatefulOutput } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { Text as MockText } from '@suite-native/atoms';
@@ -100,7 +101,10 @@ describe('TransactionReviewScreen', () => {
                 sendButtonTestId={SEND_BUTTON_TEST_ID}
                 {...props}
             />,
-            { preloadedState: { wallet: mockWalletState() } },
+            {
+                preloadedState: { wallet: mockWalletState() },
+                services: { networks: mockNetworksServices() },
+            },
         );
 
     beforeEach(() => {

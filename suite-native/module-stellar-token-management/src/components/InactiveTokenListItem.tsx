@@ -1,3 +1,4 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type StellarTokenInfo } from '@suite-common/wallet-types';
 import { Box, PressableOpacity, Text } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
@@ -33,7 +34,7 @@ export const InactiveTokenListItem = ({ token, onPress }: InactiveTokenListItemP
             <Box style={applyStyle(containerStyle)}>
                 <Box style={applyStyle(iconContainerStyle)}>
                     <TokenIcon
-                        networkSymbol="xlm"
+                        networkSymbol={asNetworkSymbol('xlm')}
                         contractAddress={token.contract}
                         tokenSymbol={token.symbol || token.name}
                         size="small"

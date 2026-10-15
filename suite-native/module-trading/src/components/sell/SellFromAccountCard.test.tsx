@@ -1,3 +1,4 @@
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { banxaCreditCardSellQuote, eth1NormalAccount } from '@suite-native/trading-fixtures';
 
@@ -16,6 +17,7 @@ describe('SellFromAccountCard', () => {
                     trading: { sell: { tradingAccountKey } },
                 },
             },
+            services: { networks: mockNetworksServices() },
         });
 
     it('should render TradingAccountCard', async () => {

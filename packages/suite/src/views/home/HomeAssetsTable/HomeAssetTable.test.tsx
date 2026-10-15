@@ -3,6 +3,7 @@ import '@suite-common/test-utils/globalOverrides';
 import { screen } from '@testing-library/react';
 
 import { initialState as selectedAccountInitialState } from '@suite/account';
+import { mockNetworkIcon } from '@suite-common/networks/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -22,6 +23,8 @@ global.ResizeObserver = class MockedResizeObserver {
     unobserve = jest.fn();
     disconnect = jest.fn();
 };
+
+const networkIcon = mockNetworkIcon();
 
 const DEVICE_STATE = '1stTestnetAddress@device_id:0' as StaticSessionId;
 
@@ -85,7 +88,7 @@ describe('the home-asset table', () => {
             preloadedState: getInitialState(),
         });
 
-        renderWithProviders(services, <HomeAssetTable />);
+        renderWithProviders({ ...services, networks: { networkIcon } }, <HomeAssetTable />);
 
         expect(screen.getByTestId('@dashboard/home-asset-item/eth/coin')).toBeInTheDocument();
         expect(
@@ -99,7 +102,7 @@ describe('the home-asset table', () => {
             preloadedState: getInitialState(),
         });
 
-        renderWithProviders(services, <HomeAssetTable />);
+        renderWithProviders({ ...services, networks: { networkIcon } }, <HomeAssetTable />);
 
         const assetNames = screen
             .getAllByTestId('@dashboard/home-asset/name')
