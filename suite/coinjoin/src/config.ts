@@ -1,3 +1,4 @@
+import { isDevEnv } from '@suite-common/suite-utils';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { CoinjoinBackendSettings, CoinjoinClientSettings } from '@trezor/coinjoin';
 import {
@@ -132,6 +133,12 @@ export const getCoinjoinConfig = (
         ? ((environment && config[environment]) ??
           config[Object.keys(config)[0] as CoinjoinServerEnvironment])
         : undefined;
+    if (isDevEnv && environment && config && !config[environment]) {
+        // the fallback would silently ignore a wrong debug environment, at least report it in dev
+        console.warn(
+            `Coinjoin environment ${environment} is not configured for ${symbol}, using the default one`,
+        );
+    }
     if (!settings)
         throw new Error(`Missing settings for coinjoin network ${symbol} env ${environment}`);
 
