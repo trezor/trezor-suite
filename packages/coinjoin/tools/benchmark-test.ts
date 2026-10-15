@@ -8,7 +8,9 @@ import fetch from 'node-fetch';
 import { SocksProxyAgent } from 'socks-proxy-agent';
 import WebSocket from 'ws';
 
-const WASABI_URL = 'https://wasabiwallet.io';
+// The public wasabiwallet.io coordinator shut down, so the host to compare blockbook against has
+// to be passed in via the WASABI_URL env variable; without it only the blockbook half runs.
+const { WASABI_URL } = process.env;
 const BLOCKBOOK_URL = 'wss://staging-btc.trezor.io/websocket';
 const TIMEOUT = 20000;
 
@@ -81,10 +83,10 @@ const log = (hash: string, compressed: number, uncompressed: number) => {
     console.log(`${hash}\t${compressed}\t${uncompressed}`);
 };
 
-const filtersFromWasabi = async (hash: string) => {
+const filtersFromWasabi = async (baseUrl: string, hash: string) => {
     bytes = 0;
     const response = await fetch(
-        `${WASABI_URL}/api/v4/btc/Blockchain/filters?bestKnownBlockHash=${hash}&count=${batchSize}`,
+        `${baseUrl}/api/v4/btc/Blockchain/filters?bestKnownBlockHash=${hash}&count=${batchSize}`,
         {
             agent,
             method: 'GET',
@@ -174,18 +176,22 @@ const getWebsocket = async () => {
 (async () => {
     stripHeaders();
 
-    console.log('✅', 'Start Wasabi benchmark');
+    if (WASABI_URL) {
+        console.log('✅', 'Start Wasabi benchmark');
 
-    console.time('Wasabi filters');
+        console.time('Wasabi filters');
 
-    let batch = await filtersFromWasabi(bestKnownHash);
-    while (batch.length === batchSize) {
-        // @ts-expect-error: indexing with noUncheckedIndexedAccess
-        const lastItem: string = batch[batchSize - 1];
-        batch = await filtersFromWasabi(lastItem);
+        let wasabiBatch = await filtersFromWasabi(WASABI_URL, bestKnownHash);
+        while (wasabiBatch.length === batchSize) {
+            // @ts-expect-error: indexing with noUncheckedIndexedAccess
+            const lastItem: string = wasabiBatch[batchSize - 1];
+            wasabiBatch = await filtersFromWasabi(WASABI_URL, lastItem);
+        }
+
+        console.timeEnd('Wasabi filters');
+    } else {
+        console.log('⏭️', 'Skipping Wasabi benchmark, set WASABI_URL to run it');
     }
-
-    console.timeEnd('Wasabi filters');
 
     console.log('\n', '✅', 'Start Blockbook benchmark');
 
@@ -193,7 +199,7 @@ const getWebsocket = async () => {
 
     const filtersFromBlockbook = await getWebsocket();
 
-    batch = await filtersFromBlockbook(bestKnownHash);
+    let batch = await filtersFromBlockbook(bestKnownHash);
     while (batch.length === batchSize) {
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const lastItem: string = batch[batchSize - 1];
