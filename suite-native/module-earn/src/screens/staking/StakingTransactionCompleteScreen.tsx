@@ -61,7 +61,7 @@ export const StakingTransactionCompleteScreen = () => {
                 <Text variant="body-md" color="contentBrand">
                     <ApyValue apy={apy} />
                 </Text>
-            ) : null;
+            ) : undefined;
 
         return getTransactionCompleteRows({
             accountSymbol: account.symbol,
