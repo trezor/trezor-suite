@@ -67,6 +67,20 @@ function denyAllPermissions(inAppBrowserSession: Session, logger: ILogger): void
 }
 
 /**
+ * A download nothing handles gets Electron's own save dialog, under Suite's name, and writes
+ * wherever the user points it. Nothing the showcase embeds has a file to offer, so every download
+ * is refused outright — in the view and in its popups, which share its session.
+ * - A listener rather than a setter, so it is installed where a session is created and this runs once.
+ */
+function denyDownloads(inAppBrowserSession: Session, logger: ILogger): void {
+    inAppBrowserSession.on('will-download', (event, item) => {
+        // Read before the cancel: the item is gone from the next tick on.
+        logger.warn(SERVICE_NAME, `Denied a download from ${item.getURL()}`);
+        event.preventDefault();
+    });
+}
+
+/**
  * - Electron's default user agent adds the app name and version and an `Electron/` token to the Chrome one,
  * which tells every embedded site and tracker that the visitor runs Trezor Suite.
  * - Only those two tokens are dropped, so re-applying to an already plain user agent changes nothing.
@@ -222,6 +236,7 @@ async function getInMemorySession(): Promise<Session> {
     const inMemorySession = session.fromPartition(IN_APP_BROWSER_SESSION_PARTITION);
 
     denyAllPermissions(inMemorySession, logger);
+    denyDownloads(inMemorySession, logger);
     setPlainChromeUserAgent(inMemorySession);
     await inAppBrowserContext.insert(() => ({ inMemorySession }));
 
@@ -272,6 +287,7 @@ export async function getPersistentSession(entryId: string): Promise<Result<Sess
     }
 
     denyAllPermissions(inAppBrowserSession, logger);
+    denyDownloads(inAppBrowserSession, logger);
     setPlainChromeUserAgent(inAppBrowserSession);
     sessions.set(entryId, inAppBrowserSession);
 

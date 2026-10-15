@@ -7,6 +7,7 @@ export type MockSession = Pick<
     | 'setPermissionRequestHandler'
     | 'setPermissionCheckHandler'
     | 'setDevicePermissionHandler'
+    | 'on'
     | 'getUserAgent'
     | 'setUserAgent'
     | 'storagePath'
@@ -21,6 +22,7 @@ export const mockSession = (overrides: Partial<MockSession> = {}): MockSession =
     setPermissionRequestHandler: jest.fn(),
     setPermissionCheckHandler: jest.fn(),
     setDevicePermissionHandler: jest.fn(),
+    on: jest.fn(),
     getUserAgent: () => 'Mozilla/5.0 TrezorSuite/1.0 Chrome/1.0 Electron/43.0 Safari/537.36',
     setUserAgent: jest.fn(),
     storagePath: null,

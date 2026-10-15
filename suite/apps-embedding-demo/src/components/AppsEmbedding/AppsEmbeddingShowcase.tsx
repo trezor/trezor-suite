@@ -34,16 +34,12 @@ export const AppsEmbeddingShowcase = ({
     openCustomUrl,
     close,
     isModalOpen,
-}: AppsEmbeddingShowcaseProps) => {
-    const desktopEntry = getPlatformSpecificEntry(selectedEntry, 'desktop');
-
-    return targetUrl !== undefined ? (
+}: AppsEmbeddingShowcaseProps) =>
+    targetUrl !== undefined ? (
         <EmbeddedAppRegion
             targetUrl={targetUrl}
             entryId={selectedEntry?.id}
             embedTitle={selectedEntry?.name ?? 'Custom URL'}
-            redirectExternalOrigins={desktopEntry?.redirectExternalOrigins}
-            popupExternalOrigins={desktopEntry?.popupExternalOrigins}
             webEntry={getPlatformSpecificEntry(selectedEntry, 'web')}
             logEntries={logEntries}
             onEvent={addEvent}
@@ -65,4 +61,3 @@ export const AppsEmbeddingShowcase = ({
             </SettingsSection>
         </Column>
     );
-};

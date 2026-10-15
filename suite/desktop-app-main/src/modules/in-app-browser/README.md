@@ -12,7 +12,9 @@ The view never runs in Suite's own session:
 
 - Either it gets the shared in-memory partition, which is the default and forgets everything when the app closes,
 - Or — for a catalog entry that asks for it — a session of its own on disk under `<userData>/in-app-browser/<entry id>`, one directory per
-  entry so entries cannot read each other's cookies. Which one an entry gets is decided here from the catalog, never from the renderer's word.
+  entry so entries cannot read each other's cookies. Which one an entry gets is decided here from the catalog, never from the renderer's word —
+  and so are the entry's page and its navigation allowlists: the renderer names the entry (and the locale, for a page that depends on it), and
+  everything else is read from the catalog, so a renderer cannot run a site of its own choosing in an entry's on-disk session.
 
 Either way the request-filter and response-headers modules (both bound to the default session) do
 not apply to the embedded page, so no allowlist or CSP changes are needed for the showcase. Tor's
@@ -55,7 +57,8 @@ What the clear leaves behind:
 
 #### Navigation allowlists
 
-The page is contained by two separate allowlists, both supplied by the caller and both reported to the renderer when they refuse something:
+The page is contained by two separate allowlists, both read from the entry's desktop record in the catalog — never from the caller — and both
+reported to the renderer when they refuse something:
 
 - `redirectExternalOrigins` governs `will-navigate` and `will-redirect` — where the page may go,
   on top of the origin it was opened with, whether it navigates there itself or a server answers
@@ -71,4 +74,9 @@ The page is contained by two separate allowlists, both supplied by the caller an
     - it may move between the origins of both lists, cannot open further windows, and is destroyed with the view.
     - It also shares the view's session — including a persistent one — which Electron gives no way to change.
 
-**The page has no preload, no node integration, and no access to Suite IPC.**
+**The page has no preload, no node integration, and no access to Suite IPC.** Every permission request is denied, and so is every
+download: a download nothing handles would get Electron's own save dialog, under Suite's name, writing wherever the user points it.
+
+### One call at a time
+
+`ipcMain` runs handlers as the calls land, and an open awaits a session, the teardown of the previous view and the proxy before it creates its view, so two opens landing together would both tear down nothing and leave the first view attached to the window, loading and never closed, behind the second. Everything that creates or takes down a view — open, close, forget data, a change of the Tor settings, a renderer reload, the window going away, quit — runs through one queue in `init.ts`, so each call sees the previous one completed. The bounds and visibility handlers stay outside it: they act on whichever view is active at the time.

@@ -8,6 +8,10 @@ import {
 } from 'electron';
 
 import { type InAppBrowserOpenPayload } from '@suite/desktop-app-api';
+import {
+    getAppsEmbeddingCatalogEntry,
+    getPlatformSpecificEntry,
+} from '@suite-common/apps-embedding';
 import { err, ok } from '@trezor/type-utils';
 
 import { applyTorProxy, resolveSessionForOpen } from './session';
@@ -78,10 +82,23 @@ const createMainWindowProxy = () => {
     return mainWindowProxy;
 };
 
-const openPayload: InAppBrowserOpenPayload = {
-    url: 'https://app.example/',
-    redirectExternalOrigins: ['https://pay.example'],
-    popupExternalOrigins: [],
+const openPayload: InAppBrowserOpenPayload = { kind: 'custom-url', url: 'https://app.example/' };
+
+// The one entry that declares both allowlists, so what the host reads from the catalog shows.
+const catalogEntryPayload: InAppBrowserOpenPayload = {
+    kind: 'catalog-entry',
+    entryId: 'google-pay-demo',
+    locale: 'en-US',
+};
+
+const getCatalogEntry = (entryId: string) => {
+    const entry = getAppsEmbeddingCatalogEntry(entryId);
+
+    if (entry === undefined) {
+        throw new Error(`"${entryId}" is gone from the catalog`);
+    }
+
+    return entry;
 };
 
 const getListener = (event: 'will-navigate' | 'will-redirect' | 'did-navigate') => {
@@ -289,10 +306,10 @@ describe('openView navigation guards', () => {
         },
     );
 
-    it.each(['https://app.example/checkout', 'https://pay.example/callback?code=1'])(
+    it.each(['https://gpay-live-demo.web.app/checkout', 'https://pay.google.com/callback?code=1'])(
         'follows a main-frame redirect to %s',
         async url => {
-            await openView(openPayload);
+            await openView(catalogEntryPayload);
             const redirect = createRedirect({ url });
 
             getListener('will-redirect')(redirect);
@@ -354,11 +371,95 @@ describe('openView navigation guards', () => {
     });
 
     it('follows a navigation the page starts within the allowlist', async () => {
-        await openView(openPayload);
-        const navigation = createNavigation({ url: 'https://pay.example/checkout' });
+        await openView(catalogEntryPayload);
+        const navigation = createNavigation({ url: 'https://pay.google.com/checkout' });
 
         getListener('will-navigate')(navigation);
 
         expect(navigation.preventDefault).not.toHaveBeenCalled();
+    });
+});
+
+describe('openView targets', () => {
+    const mainWindowProxy = createMainWindowProxy();
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        mockWebContentsListeners.clear();
+
+        inAppBrowserContext.set({
+            mainWindowProxy,
+            store: {} as Store,
+            logger,
+            sessions: new Map(),
+            inMemorySession: undefined,
+            appliedProxyRules: new Map(),
+        });
+        activeViewContext.set({
+            activeView: undefined,
+            activeEntryId: undefined,
+            clearingEntryIds: new Set(),
+            lastReportedRect: undefined,
+            isVisibleRequested: true,
+            allowedNavigationOrigins: new Set(),
+            allowedPopupOrigins: new Set(),
+            openPopups: new Set(),
+        });
+    });
+
+    it('resolves the page and both allowlists of a catalog entry from the catalog', async () => {
+        const entry = getCatalogEntry('google-pay-demo');
+        const desktopEntry = getPlatformSpecificEntry(entry, 'desktop');
+        const redirectExternalOrigins = desktopEntry?.redirectExternalOrigins ?? [];
+        const popupExternalOrigins = desktopEntry?.popupExternalOrigins ?? [];
+
+        // Reading the lists from the wrong place would find none and pass without a single check.
+        expect(redirectExternalOrigins.length).toBeGreaterThan(0);
+        expect(popupExternalOrigins.length).toBeGreaterThan(0);
+
+        await openView(catalogEntryPayload);
+
+        const { activeEntryId, allowedNavigationOrigins, allowedPopupOrigins } =
+            await activeViewContext.get();
+
+        expect(resolveSessionForOpen).toHaveBeenCalledWith(entry);
+        expect(mockWebContents.loadURL).toHaveBeenCalledWith('https://gpay-live-demo.web.app/');
+        expect(activeEntryId).toBe('google-pay-demo');
+        expect(allowedNavigationOrigins).toEqual(
+            new Set(['https://gpay-live-demo.web.app', ...redirectExternalOrigins]),
+        );
+        expect(allowedPopupOrigins).toEqual(new Set(popupExternalOrigins));
+    });
+
+    it('resolves a page that depends on the locale with the locale the caller runs in', async () => {
+        await openView({ kind: 'catalog-entry', entryId: 'trezor-guides', locale: 'cs-CZ' });
+
+        expect(mockWebContents.loadURL).toHaveBeenCalledWith(
+            expect.stringMatching(/^https:\/\/[^/]+\/cs\/guides$/),
+        );
+    });
+
+    it('opens a custom url with no entry, no popup and no origin to leave for', async () => {
+        await openView(openPayload);
+
+        const { activeEntryId, allowedNavigationOrigins, allowedPopupOrigins } =
+            await activeViewContext.get();
+
+        expect(resolveSessionForOpen).toHaveBeenCalledWith(undefined);
+        expect(mockWebContents.loadURL).toHaveBeenCalledWith(openPayload.url);
+        expect(activeEntryId).toBeUndefined();
+        expect(allowedNavigationOrigins).toEqual(new Set(['https://app.example']));
+        expect(allowedPopupOrigins.size).toBe(0);
+    });
+
+    it('refuses an entry the catalog does not know, before resolving a session', async () => {
+        await openView({ kind: 'catalog-entry', entryId: 'not-in-the-catalog', locale: 'en-US' });
+
+        expect(resolveSessionForOpen).not.toHaveBeenCalled();
+        expect(WebContentsView).not.toHaveBeenCalled();
+        expect(mockMainWindowWebContents.send).toHaveBeenCalledWith('in-app-browser/event', {
+            type: 'load-failed',
+            error: '"not-in-the-catalog" is not a catalog entry',
+        });
     });
 });

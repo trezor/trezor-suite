@@ -37,7 +37,8 @@ export function useInAppBrowserEvents({ onEvent, onNavigationState }: UseHostEve
                 case 'load-failed':
                     onEventRef.current({
                         type: 'load-failed',
-                        detail: `${event.url}: ${event.error}`,
+                        detail:
+                            event.url === undefined ? event.error : `${event.url}: ${event.error}`,
                     });
                     break;
                 case 'window-open-attempt':
