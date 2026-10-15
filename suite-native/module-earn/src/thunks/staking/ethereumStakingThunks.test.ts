@@ -357,6 +357,7 @@ describe('signEthereumStakingTransactionThunk', () => {
             },
         });
         expect(ethereumSignTransactionMock).not.toHaveBeenCalled();
+        expect(store.getState().wallet.send.precomposedTx).toBeUndefined();
         errorSpy.mockRestore();
     });
 

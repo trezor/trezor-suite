@@ -13,7 +13,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey, type FormState } from '@suite-common/wallet-types';
 import { getFormDraftKey } from '@suite-common/wallet-utils';
-import { analytics } from '@suite-native/analytics';
+import { injectNativeAnalytics } from '@suite-native/analytics';
 import {
     type RootStackParamList,
     type RootStackRoutes,
@@ -22,15 +22,15 @@ import {
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
+import { useEarnReviewBackNavigation } from './useEarnReviewBackNavigation';
+import { useEarnSelectedPrecomposedTransaction } from './useEarnSelectedPrecomposedTransaction';
+import { useHandleEarnReviewError } from './useHandleEarnReviewError';
 import {
     pushSignedStakeTransactionThunk,
     signStakeTransactionThunk,
 } from '../../thunks/staking/stakingThunks';
 import { type EarnFormDraftPrefix } from '../../types';
 import { reportTransactionCreated } from '../../utils/earn/earnAnalyticsUtils';
-import { useEarnReviewBackNavigation } from './useEarnReviewBackNavigation';
-import { useEarnSelectedPrecomposedTransaction } from './useEarnSelectedPrecomposedTransaction';
-import { useHandleEarnReviewError } from './useHandleEarnReviewError';
 
 type NavigationProps = StackNavigationProps<RootStackParamList, RootStackRoutes>;
 
@@ -62,7 +62,7 @@ export const useHandleOnEarnTransactionReview = ({
 
     const isMevProtectionFeatureEnabled = useSelector(selectIsMevProtectionFeatureEnabled);
 
-    const { dispatch } = useServices(injectDispatch);
+    const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
 
     const handleSign = useCallback(async (): Promise<boolean> => {
         if (!precomposedTransaction) return false;
@@ -121,6 +121,7 @@ export const useHandleOnEarnTransactionReview = ({
         networkSymbol,
         precomposedTransaction,
         formState,
+        stakeType,
     ]);
 
     return { handleSign, handlePush, closeReview, markReviewNavigationSuccess };

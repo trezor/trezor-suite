@@ -205,7 +205,35 @@ describe('prepareEthereumStakingContext', () => {
         });
     });
 
-    it('fails when the form carries no composed calldata', () => {
+    it('prefers the calldata carried by the composed fee level', () => {
+        const result = prepare({
+            formValues: buildFormValues({ transactionData: '' }),
+            precomposedTransaction: buildPrecomposedTransaction({
+                transactionData: buildStakeData(),
+            }),
+        });
+
+        expect(result).toMatchObject({
+            ok: true,
+            context: { variant: { calldata: buildStakeData() } },
+        });
+    });
+
+    it('verifies the calldata of the composed fee level over the form value', () => {
+        const result = prepare({
+            formValues: buildFormValues({ transactionData: buildStakeData() }),
+            precomposedTransaction: buildPrecomposedTransaction({
+                transactionData: buildCalldata('stake', WALLET_SDK_SOURCE_MOBILE),
+            }),
+        });
+
+        expect(result).toMatchObject({
+            ok: false,
+            error: { message: 'Compose draft calldata failed verification.' },
+        });
+    });
+
+    it('fails when neither the composed level nor the form carries calldata', () => {
         expect(prepare({ formValues: buildFormValues({ transactionData: '' }) })).toEqual({
             ok: false,
             error: {

@@ -2,6 +2,7 @@ import { type UnknownAction } from '@reduxjs/toolkit';
 import { type ThunkDispatch } from 'redux-thunk';
 
 import { events } from '@suite/analytics';
+import { selectSelectedDevice } from '@suite-common/device';
 import {
     type SignPreparedEthereumStakingTransactionThunkState,
     WALLET_SDK_SOURCE,
@@ -15,7 +16,6 @@ import {
     type PrecomposedTransactionFinal,
     type StakeFormState,
 } from '@suite-common/wallet-types';
-
 
 import {
     type StakeSignResult,
@@ -51,7 +51,8 @@ export const signTransactionThunk =
         getState: () => SignTransactionThunkState,
         extra: SignTransactionThunkDeps,
     ): Promise<StakeSignResult> => {
-        if (transactionInfo?.type !== 'final') return;
+        const device = selectSelectedDevice(getState());
+        if (!device || transactionInfo?.type !== 'final') return;
 
         const { stakeType } = formValues;
         if (account.networkType !== 'ethereum' || !isBaseStakeType(stakeType)) return;

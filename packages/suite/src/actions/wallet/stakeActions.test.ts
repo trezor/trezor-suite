@@ -7,9 +7,13 @@ import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
+    blockchainInitialState,
+    earnTransactionsInitialState,
     getStakeFormsDefaultValues,
     initialWalletSettingsState,
+    notifyEarnTransactionBroadcastThunk,
     prepareStakeReducer,
+    pushStakeTransactionThunk,
     selectStake,
     selectStakeAccountKey,
     stakeActions,
@@ -34,18 +38,6 @@ import {
 } from './stakeActions';
 
 const mockCardanoSignTransactionThunk = jest.fn();
-const mockNotifyEarnTransactionBroadcastThunk = jest.fn();
-const mockAddFakePendingCardanoTxThunk = jest.fn();
-const mockSyncAccountsWithBlockchainThunk = jest.fn();
-
-jest.mock('@suite-common/wallet-core', () => ({
-    ...jest.requireActual('@suite-common/wallet-core'),
-    notifyEarnTransactionBroadcastThunk: (params: unknown) =>
-        mockNotifyEarnTransactionBroadcastThunk(params),
-    addFakePendingCardanoTxThunk: (params: unknown) => mockAddFakePendingCardanoTxThunk(params),
-    syncAccountsWithBlockchainThunk: (symbol: unknown) =>
-        mockSyncAccountsWithBlockchainThunk(symbol),
-}));
 
 jest.mock('./stake/stakeFormCardanoActions', () => ({
     signTransactionThunk: (params: unknown) => mockCardanoSignTransactionThunk(params),
@@ -104,6 +96,8 @@ const createStakeFlow = () => {
             messageSystem: messageSystemInitialState,
             wallet: {
                 accounts: [account],
+                blockchain: blockchainInitialState,
+                earnTransactions: earnTransactionsInitialState,
                 settings: initialWalletSettingsState,
                 stake: (actions as UnknownAction[]).reduce(stakeReducer, stakeInitialState),
                 transactions: transactionsInitialState,
@@ -143,9 +137,6 @@ describe('signTransactionThunk', () => {
         mockCardanoSignTransactionThunk.mockReturnValue(() =>
             Promise.resolve({ serializedTx: SIGNED_TX, poolDelegation: undefined }),
         );
-        mockNotifyEarnTransactionBroadcastThunk.mockReturnValue({ type: 'mock/notify' });
-        mockAddFakePendingCardanoTxThunk.mockReturnValue({ type: 'mock/addFakePendingTx' });
-        mockSyncAccountsWithBlockchainThunk.mockReturnValue({ type: 'mock/sync' });
         pushTransactionMock.mockResolvedValue({ success: true, payload: { txid: TXID } });
     });
 
@@ -162,19 +153,24 @@ describe('signTransactionThunk', () => {
     });
 
     it('signs and pushes with the given account, without a selected account in the wallet', async () => {
-        await signStakeTransaction();
+        const { actions } = await signStakeTransaction();
 
         expect(mockCardanoSignTransactionThunk).toHaveBeenCalledWith(
             expect.objectContaining({ account }),
         );
+        const pushAction = actions.find(pushStakeTransactionThunk.pending.match);
+        expect(pushAction?.meta.arg).toMatchObject({
+            accountKey: account.key,
+            stakeType: 'stake',
+            serializedTx: { tx: SIGNED_TX, symbol: 'ada' },
+        });
         expect(pushTransactionMock).toHaveBeenCalledWith({
             tx: SIGNED_TX,
             coin: 'ada',
             identity: undefined,
         });
-        expect(mockNotifyEarnTransactionBroadcastThunk).toHaveBeenCalledWith(
-            expect.objectContaining({ account, txid: TXID, flow: 'stake' }),
-        );
+        const notifyAction = actions.find(notifyEarnTransactionBroadcastThunk.pending.match);
+        expect(notifyAction?.meta.arg).toMatchObject({ account, txid: TXID, flow: 'stake' });
     });
 
     it('forgets the review account once the transaction is pushed', async () => {

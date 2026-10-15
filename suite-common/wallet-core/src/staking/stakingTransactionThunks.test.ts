@@ -216,6 +216,9 @@ describe('pushStakeTransactionThunk', () => {
 
         await push(services, { account: adaAccount, stakeType: 'change-delegate' });
 
+        expect(pushTransactionMock).toHaveBeenCalledWith(
+            expect.objectContaining({ tx: '0xsignedtx', coin: 'ada' }),
+        );
         const fakePendingAction = services.store
             .getActions()
             .find(addFakePendingCardanoTxThunk.pending.match);

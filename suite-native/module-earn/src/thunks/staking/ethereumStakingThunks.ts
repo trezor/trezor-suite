@@ -118,7 +118,7 @@ export const signEthereumStakingTransactionThunk = createThunk<
                     console.error(`${LOG_PREFIX}: Sign transaction failed: ${payload?.message}`);
                 }
 
-                return rejectWithValue(signAction.payload);
+                return rejectWithValue(payload);
             }
 
             if (!signPreparedEthereumStakingTransactionThunk.fulfilled.match(signAction)) {

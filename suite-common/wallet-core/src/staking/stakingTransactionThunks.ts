@@ -14,7 +14,6 @@ import {
 import {
     getMevProtectedTxData,
     isCardanoTx,
-    isRbfBumpFeeTransaction,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
@@ -32,6 +31,7 @@ import {
 } from '../blockchain/blockchainThunks';
 import { type EarnTransactionsRootState } from '../earn/earnTransactionsReducer';
 import { notifyEarnTransactionBroadcastThunk } from '../earn/earnTransactionsThunks';
+import { getPushTransactionError } from '../send/pushTransactionError';
 import {
     type SynchronizeSentTransactionThunkState,
     synchronizeSentTransactionThunk,
@@ -46,11 +46,7 @@ import {
     selectIsMevProtectionEnabled,
 } from '../settings/walletSettingsReducer';
 import { transactionsActions } from '../transactions/transactionsActions';
-import {
-    type ReplaceTransactionThunkState,
-    addFakePendingCardanoTxThunk,
-    replaceTransactionThunk,
-} from '../transactions/transactionsThunks';
+import { addFakePendingCardanoTxThunk } from '../transactions/transactionsThunks';
 
 const PUSH_LOG_PREFIX = 'pushStakeTransactionThunk';
 
@@ -145,7 +141,6 @@ export type PushStakeTransactionThunkParams = {
 export type PushStakeTransactionThunkState = DeviceRootState &
     EarnTransactionsRootState &
     NotificationsRootState &
-    ReplaceTransactionThunkState &
     StakeRootState &
     SynchronizeSentTransactionThunkState &
     SyncAccountsWithBlockchainThunkState &
@@ -190,26 +185,31 @@ export const pushStakeTransactionThunk = createThunk<
 
         const device = selectSelectedDevice(getState());
         const flow = stakeType === 'change-delegate' ? 'vote' : stakeType;
-        const isMevProtectionEnabled =
+        const tx =
             account.networkType === 'ethereum'
-                ? selectIsMevProtectionEnabled(getState()) && isMevProtectionFeatureEnabled
-                : false;
+                ? getMevProtectedTxData(
+                      serializedTx.symbol,
+                      serializedTx.tx,
+                      selectIsMevProtectionEnabled(getState()) && isMevProtectionFeatureEnabled,
+                  )
+                : serializedTx.tx;
 
         const sentTx = await TrezorConnect.pushTransaction({
-            tx: getMevProtectedTxData(serializedTx.symbol, serializedTx.tx, isMevProtectionEnabled),
+            tx,
             coin: asCoinSymbol(account.symbol),
             identity: tryGetAccountIdentity(account),
         });
 
         if (!sentTx.success) {
-            console.error(`${PUSH_LOG_PREFIX}: Push transaction failed.`);
+            console.error(
+                `${PUSH_LOG_PREFIX}: Push transaction failed with code: ${sentTx.error.code}`,
+            );
 
             dispatch(
                 transactionsActions.transactionBroadcastStatus({
                     account,
                     flow,
                     status: 'error',
-                    isRbf: isRbfBumpFeeTransaction(precomposedTransaction),
                 }),
             );
             dispatch(
@@ -219,22 +219,10 @@ export const pushStakeTransactionThunk = createThunk<
                 }),
             );
 
-            const isPendingConflict = sentTx.error.message.includes(
-                'could not replace existing tx',
-            );
-
-            return rejectWithValue({
-                error: isPendingConflict
-                    ? 'push-transaction-pending-conflict'
-                    : 'push-transaction-failed',
-                metadata: sentTx,
-            });
+            return rejectWithValue(getPushTransactionError(sentTx));
         }
 
         const { txid } = sentTx.payload;
-        const bumpedPrevTxid = isRbfBumpFeeTransaction(precomposedTransaction)
-            ? precomposedTransaction.prevTxid
-            : undefined;
 
         dispatch(
             notifyEarnTransactionBroadcastThunk({
@@ -242,17 +230,8 @@ export const pushStakeTransactionThunk = createThunk<
                 device,
                 txid,
                 flow,
-                stage: bumpedPrevTxid ? 'sped-up' : 'pending',
-                prevTxid: bumpedPrevTxid,
             }),
         );
-
-        if (isRbfBumpFeeTransaction(precomposedTransaction)) {
-            // notification from the backend may be delayed.
-            // modify affected transaction(s) in the reducer until the real account update occurs.
-            // this will update transaction details (like time, fee etc.)
-            dispatch(replaceTransactionThunk({ precomposedTransaction, newTxid: txid }));
-        }
 
         dispatch(
             synchronizePushedStakeTransactionThunk({

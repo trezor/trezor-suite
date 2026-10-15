@@ -2,6 +2,7 @@ import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 import { type ThunkDispatch } from 'redux-thunk';
 
 import { events } from '@suite/analytics';
+import { selectSelectedDevice } from '@suite-common/device';
 import {
     type BlockchainRootState,
     type ResolveSolanaStakingContextState,
@@ -19,7 +20,6 @@ import {
     type PrecomposedTransactionFinal,
     type StakeFormState,
 } from '@suite-common/wallet-types';
-
 
 import {
     type StakeSignResult,
@@ -66,7 +66,8 @@ export const signTransactionThunk =
         getState: () => SignTransactionThunkState,
         extra: SignTransactionThunkDeps,
     ): Promise<StakeSignResult> => {
-        if (transactionInfo?.type !== 'final') return;
+        const device = selectSelectedDevice(getState());
+        if (!device || transactionInfo?.type !== 'final') return;
         if (account.networkType !== 'solana') return;
 
         const prepared = await prepareSolanaStakingSignContext(getState(), {

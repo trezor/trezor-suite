@@ -201,7 +201,7 @@ const buildStore = ({
                     reducers: { storageLoadFormDrafts: mockReducer() },
                 }),
                 stake: (): State['wallet']['stake'] => ({}),
-                settings: () => ({
+                settings: (): State['wallet']['settings'] => ({
                     ...initialWalletSettingsState,
                     mevProtection: false,
                     addressDisplayType: AddressDisplayOptions.ORIGINAL,
@@ -562,7 +562,6 @@ describe('pushSignedStakeTransactionThunk', () => {
             accountKey: ETH_ACCOUNT_KEY,
             stakeType: 'stake',
             isMevProtectionFeatureEnabled: true,
-            stakeType: 'stake',
         });
 
         expect(
@@ -595,7 +594,6 @@ describe('pushSignedStakeTransactionThunk', () => {
             accountKey: SOL_ACCOUNT_KEY,
             stakeType: 'stake',
             isMevProtectionFeatureEnabled: true,
-            stakeType: 'stake',
         });
 
         expect(
@@ -618,7 +616,6 @@ describe('pushSignedStakeTransactionThunk', () => {
             accountKey: ETH_ACCOUNT_KEY,
             stakeType: 'stake',
             isMevProtectionFeatureEnabled: true,
-            stakeType: 'stake',
         });
 
         expect(result).toMatchObject({
@@ -655,7 +652,6 @@ describe('pushSignedStakeTransactionThunk', () => {
             accountKey: ETH_ACCOUNT_KEY,
             stakeType: 'stake',
             isMevProtectionFeatureEnabled: true,
-            stakeType: 'stake',
         });
 
         expect(result).toMatchObject({
