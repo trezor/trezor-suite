@@ -416,7 +416,7 @@ export class TradingPage {
     }
 
     @step()
-    async clickSwapDexBestOfferWithRetry() {
+    async clickSwapBestOfferWithRetry() {
         // The button is briefly enabled between two composes; a click landing on it after it re-disables is lost.
         await expect(async () => {
             if (await this.swapBestOfferButton.isVisible()) {

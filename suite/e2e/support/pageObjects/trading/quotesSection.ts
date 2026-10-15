@@ -9,6 +9,7 @@ export class TradingQuotesSection {
     readonly providerInList: Locator;
     readonly selectedProvider: Locator;
     readonly selectedProviderName: Locator;
+    readonly cexFilter: Locator;
 
     constructor(private readonly page: Page) {
         this.list = this.page.getByTestId('@trading/offers/quote');
@@ -18,6 +19,7 @@ export class TradingQuotesSection {
         this.selectedProviderName = this.selectedProvider.getByTestId(
             '@trading/offers/quote/provider',
         );
+        this.cexFilter = this.page.getByTestId('@trading/offers/filter/cex');
     }
 
     @step()
@@ -60,5 +62,24 @@ export class TradingQuotesSection {
             .first()
             .click();
         await expect(this.selectedProviderName).toHaveText(providerToSelect);
+    }
+
+    @step()
+    async chooseCexOffer(): Promise<void> {
+        await expect(this.selectedProviderName).not.toBeEmpty();
+        await this.selectedProvider.click();
+        await this.cexFilter.click();
+        await expect(this.list.first()).toBeVisible();
+
+        const [cexProvider] = (await this.providerInList.allInnerTexts()).map(name => name.trim());
+        if (!cexProvider) {
+            throw new Error('No CEX offer available');
+        }
+
+        await this.list
+            .filter({ has: this.provider.filter({ hasText: cexProvider }) })
+            .first()
+            .click();
+        await expect(this.selectedProviderName).toHaveText(cexProvider);
     }
 }
