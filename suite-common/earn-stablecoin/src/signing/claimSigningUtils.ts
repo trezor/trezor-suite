@@ -5,7 +5,7 @@ import {
     type PrecomposedTransactionFinal,
     type YieldClaimReward,
 } from '@suite-common/wallet-types';
-import { fromHex, sanitizeHex } from '@suite-common/wallet-utils';
+import { fromHex, fromIntegerString, sanitizeHex } from '@suite-common/wallet-utils';
 import { type EthereumSignTransaction } from '@trezor/connect-common';
 import { BigNumber } from '@trezor/utils';
 
@@ -82,7 +82,7 @@ type GetClaimTransactionForSigningParams = {
 
 type BuildClaimTransactionReviewParams = {
     unsignedTransaction: UnsignedClaimTransaction;
-    selectedFee: unknown;
+    selectedFee?: unknown;
     rewards: ClaimReviewReward[];
 };
 
@@ -283,16 +283,41 @@ export const getClaimTransactionForSigning = ({
     };
 };
 
+const getUnsignedClaimTransactionFee = ({
+    gasLimit,
+    gasPrice,
+    maxFeePerGas,
+    maxPriorityFeePerGas,
+}: UnsignedClaimTransaction): EvmFeeHex => {
+    const gasLimitHex = fromIntegerString(gasLimit).toHex();
+
+    if (maxFeePerGas && maxPriorityFeePerGas) {
+        return {
+            type: 'eip1559',
+            gasLimit: gasLimitHex,
+            maxFeePerGas: fromIntegerString(maxFeePerGas).toHex(),
+            maxPriorityFeePerGas: fromIntegerString(maxPriorityFeePerGas).toHex(),
+            baseFeePerGas: '0x0',
+        };
+    }
+
+    if (gasPrice) {
+        return {
+            type: 'legacy',
+            gasLimit: gasLimitHex,
+            gasPrice: fromIntegerString(gasPrice).toHex(),
+        };
+    }
+
+    throw new Error('Fee information is missing for the transaction.');
+};
+
 export const buildClaimTransactionReview = ({
     unsignedTransaction,
     selectedFee,
     rewards,
 }: BuildClaimTransactionReviewParams): BuildClaimTransactionReviewResult => {
-    const fee = parseEvmFeeHex(selectedFee);
-
-    if (!fee) {
-        throw new Error('Fee information is missing for the transaction.');
-    }
+    const fee = parseEvmFeeHex(selectedFee) ?? getUnsignedClaimTransactionFee(unsignedTransaction);
 
     assertRewardsMatchClaimCalldata({ data: unsignedTransaction.data, rewards });
 

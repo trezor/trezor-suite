@@ -31,7 +31,6 @@ import {
     pushYieldTransaction,
     signYieldTransactionOnDevice,
 } from '../../utils/earn/deviceTransactionUtils';
-import { getSelectedFeeFromUnsignedClaimTransaction } from '../../utils/yield/yieldClaimFeeUtils';
 import { buildYieldClaimRewards } from '../../utils/yield/yieldClaimReviewUtils';
 
 export const getYieldClaimFormDraftKey = (flowKey: string) => `yield-claim/${flowKey}`;
@@ -117,7 +116,6 @@ export const signYieldClaimReviewThunk = createThunk<
         try {
             transactionReview = buildClaimTransactionReview({
                 rewards: buildYieldClaimRewards(review),
-                selectedFee: getSelectedFeeFromUnsignedClaimTransaction(review.unsignedTransaction),
                 unsignedTransaction: review.unsignedTransaction,
             });
         } catch (error) {
