@@ -364,11 +364,10 @@ export default class DiscoverAccounts extends AbstractMethod<
             return { empty: 0, nonempty: 0, error };
         }
 
-        const getAccountInfo = (descriptor: string) =>
-            blockchain.getAccountInfo({ descriptor, details, pageSize, protocols, gap });
+        const getAccountInfo = (descriptor: string, level = details) =>
+            blockchain.getAccountInfo({ descriptor, details: level, pageSize, protocols, gap });
 
         let empty = 0;
-        let prefetchedInfo: Awaited<ReturnType<typeof getAccountInfo>> | undefined;
 
         let descPromise = this.getDescriptor(coinInfo, bip43, derivation, offset + index);
         descPromise.catch(() => {});
@@ -378,17 +377,16 @@ export default class DiscoverAccounts extends AbstractMethod<
                 descPromise = this.getDescriptor(coinInfo, bip43, derivation, offset + index + 1);
                 descPromise.catch(() => {});
 
-                const info = prefetchedInfo ?? (await getAccountInfo(descriptor));
-                // Suite 25.9.x let users add and use an account right after an empty one.
-                prefetchedInfo =
-                    info.empty && !singleAccount
-                        ? await descPromise
-                              .then(nextDesc => getAccountInfo(nextDesc.descriptor))
-                              .then(nextInfo => (nextInfo.empty ? undefined : nextInfo))
-                              .catch(() => undefined)
-                        : undefined;
+                const info = await getAccountInfo(descriptor);
 
-                const last = singleAccount || (info.empty && !prefetchedInfo);
+                const last =
+                    singleAccount ||
+                    (info.empty &&
+                        // Suite 25.9.x let users add and use an account right after an empty one.
+                        (await descPromise
+                            .then(nextDesc => getAccountInfo(nextDesc.descriptor, 'basic'))
+                            .then(nextAccount => nextAccount.empty)
+                            .catch(() => true)));
 
                 // eslint-disable-next-line no-nested-ternary
                 const utxo = !utxoRequired
