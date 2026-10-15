@@ -16,6 +16,7 @@ export const TradingSelectedOfferInfo = ({
     quoteAmounts,
     selectedAccount,
     receiveAddress,
+    receiveExtraField,
     paymentMethod,
     paymentMethodName,
     networkFee,
@@ -34,6 +35,7 @@ export const TradingSelectedOfferInfo = ({
                 currency={quoteAmounts?.receiveCurrency}
                 amount={quoteAmounts?.receiveAmount}
                 receiveAddress={receiveAddress}
+                receiveExtraField={receiveExtraField}
                 isReceive={type === 'buy'}
             />
 

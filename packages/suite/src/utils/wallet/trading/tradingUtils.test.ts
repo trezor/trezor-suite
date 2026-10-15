@@ -1,9 +1,11 @@
+import { getCryptoId } from '@suite-common/trading';
 import { type Network, asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { type Account } from 'src/types/wallet';
 import {
+    getBuyReceiveExtraFieldDescription,
     getComposeAddressPlaceholder,
     resolveAddressAndToken,
     tradingGetAccountLabel,
@@ -76,6 +78,34 @@ describe('trading utils', () => {
             expect(resolveAddressAndToken(option.account, option.tokenContractAddress)).toEqual(
                 result,
             );
+        });
+    });
+
+    describe('getBuyReceiveExtraFieldDescription', () => {
+        it.each([
+            [getCryptoId(asNetworkSymbol('xrp')), 'number'],
+            [getCryptoId(asNetworkSymbol('xlm')), 'text'],
+            [getCryptoId(asNetworkSymbol('xlm'), 'USDC'), 'text'],
+        ])('describes the field of %s', (cryptoId, type) => {
+            expect(getBuyReceiveExtraFieldDescription(cryptoId, 'Memo/Destination tag')).toEqual({
+                name: 'Memo/Destination tag',
+                description: 'Memo/Destination tag',
+                required: false,
+                type,
+            });
+        });
+
+        it.each([
+            ['a network without an extra field', getCryptoId(asNetworkSymbol('btc'))],
+            [
+                'a token on such a network',
+                getCryptoId(asNetworkSymbol('eth'), '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'),
+            ],
+            ['no asset', undefined],
+        ])('describes nothing for %s', (_, cryptoId) => {
+            expect(
+                getBuyReceiveExtraFieldDescription(cryptoId, 'Memo/Destination tag'),
+            ).toBeUndefined();
         });
     });
 
