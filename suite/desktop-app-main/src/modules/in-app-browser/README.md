@@ -76,6 +76,9 @@ reported to the renderer when they refuse something:
 
 **The page has no preload, no node integration, and no access to Suite IPC.** Every permission request is denied, and so is every
 download: a download nothing handles would get Electron's own save dialog, under Suite's name, writing wherever the user points it.
+Its JavaScript dialogs are disabled for the same reason: `alert`, `confirm` and `prompt` would be native message boxes parented to the
+Suite window with nothing on them to say which site is asking, so a page could dress phishing text as a dialog of Suite's own. With the
+dialogs off, `alert` returns at once and `confirm` and `prompt` answer as cancelled. The same applies to a popup.
 
 #### The local network
 

@@ -215,6 +215,14 @@ describe('openView navigation guards', () => {
         });
     });
 
+    it('opens the page with its JavaScript dialogs disabled', async () => {
+        await openView(openPayload);
+
+        expect(WebContentsView).toHaveBeenCalledWith({
+            webPreferences: expect.objectContaining({ disableDialogs: true }),
+        });
+    });
+
     it('refuses to open a page on a session that could not be routed', async () => {
         jest.mocked(applyTorProxy).mockResolvedValueOnce({
             success: false,

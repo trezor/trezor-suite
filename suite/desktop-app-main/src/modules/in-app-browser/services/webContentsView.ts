@@ -230,6 +230,9 @@ export async function openView(payload: InAppBrowserOpenPayload) {
             contextIsolation: true,
             webSecurity: true,
             allowRunningInsecureContent: false,
+            // `alert`, `confirm` and `prompt` would be native message boxes parented to the Suite
+            // window, with nothing on them to say which site is asking.
+            disableDialogs: true,
         },
     });
 

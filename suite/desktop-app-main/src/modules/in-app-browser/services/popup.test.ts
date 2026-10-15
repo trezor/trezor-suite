@@ -242,6 +242,18 @@ describe('registerPopupOpener', () => {
         expect(webPreferences).not.toHaveProperty('session');
     });
 
+    it('opens a permitted popup with its JavaScript dialogs disabled', () => {
+        const decision = decideWindowOpen('https://accounts.example/signin');
+
+        if (decision.action !== 'allow') {
+            throw new Error('expected the popup to be allowed');
+        }
+
+        expect(decision.overrideBrowserWindowOptions?.webPreferences).toMatchObject({
+            disableDialogs: true,
+        });
+    });
+
     it('denies a popup for an origin outside the popup list', () => {
         expect(decideWindowOpen('https://attacker.example/').action).toBe('deny');
     });
