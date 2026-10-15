@@ -12,6 +12,7 @@ import {
     type TradingType,
     cryptoIdToNetworkSymbol,
     getUnusedAddressFromAccount,
+    selectTradingBuyExtraField,
     selectTradingBuyReceiveAccountKey,
     selectTradingBuyReceiveAddress,
     selectTradingExchangeAccountKey,
@@ -57,11 +58,12 @@ export const useTradingReceiveAddress = ({
 
     const persistedExchangeReceiveAddress = useSelector(selectTradingExchangeReceiveAddress);
     const persistedBuyReceiveAddress = useSelector(selectTradingBuyReceiveAddress);
+    const persistedBuyExtraField = useSelector(selectTradingBuyExtraField);
 
-    const [persistedReceiveAccountKey, persistedReceiveAddress] =
+    const [persistedReceiveAccountKey, persistedReceiveAddress, persistedExtraField] =
         type === 'exchange'
-            ? [persistedExchangeReceiveAccountKey, persistedExchangeReceiveAddress]
-            : [persistedBuyReceiveAccountKey, persistedBuyReceiveAddress];
+            ? [persistedExchangeReceiveAccountKey, persistedExchangeReceiveAddress, undefined]
+            : [persistedBuyReceiveAccountKey, persistedBuyReceiveAddress, persistedBuyExtraField];
 
     const isDebug = useSelector(selectIsDebugModeActive);
 
@@ -161,10 +163,11 @@ export const useTradingReceiveAddress = ({
     ]);
 
     useEffect(() => {
-        const isNewAsset = prevCryptoIdRef.current !== cryptoId;
+        const isNewAsset =
+            prevCryptoIdRef.current !== undefined && prevCryptoIdRef.current !== cryptoId;
+        prevCryptoIdRef.current = cryptoId;
 
         if (isNewAsset) {
-            prevCryptoIdRef.current = cryptoId;
             setSelectedAccount(undefined);
             setHasSelectionInitialized(false);
             methods.setValue('address', '', { shouldValidate: false });
@@ -173,6 +176,30 @@ export const useTradingReceiveAddress = ({
 
         if (!symbol) return;
         if (hasSelectionInitialized && !isNewAsset) return;
+
+        if (
+            !isNewAsset &&
+            !persistedReceiveAccountKey &&
+            persistedReceiveAddress &&
+            canUseNonSuiteAccount
+        ) {
+            let isValidForCurrentSymbol: boolean;
+
+            try {
+                isValidForCurrentSymbol = addressValidator.isAddressValid(
+                    persistedReceiveAddress,
+                    symbol,
+                );
+            } catch {
+                isValidForCurrentSymbol = false;
+            }
+
+            if (isValidForCurrentSymbol) {
+                selectNonSuiteAddress(persistedReceiveAddress, persistedExtraField);
+
+                return;
+            }
+        }
 
         if (!hasSuiteReceiveAccount) {
             if (canUseNonSuiteAccount) {
@@ -196,25 +223,6 @@ export const useTradingReceiveAddress = ({
 
             if (matchingAccount) {
                 selectSuiteAccount(matchingAccount);
-
-                return;
-            }
-        }
-
-        if (!isNewAsset && persistedReceiveAddress && canUseNonSuiteAccount && symbol) {
-            let isValidForCurrentSymbol: boolean;
-
-            try {
-                isValidForCurrentSymbol = addressValidator.isAddressValid(
-                    persistedReceiveAddress,
-                    symbol,
-                );
-            } catch {
-                isValidForCurrentSymbol = false;
-            }
-
-            if (isValidForCurrentSymbol) {
-                selectNonSuiteAddress(persistedReceiveAddress);
 
                 return;
             }
@@ -268,6 +276,7 @@ export const useTradingReceiveAddress = ({
         suiteReceiveAccounts,
         persistedReceiveAccountKey,
         persistedReceiveAddress,
+        persistedExtraField,
         walletSelectedAccount.account?.key,
         selectSuiteAccount,
         selectNonSuiteAddress,
