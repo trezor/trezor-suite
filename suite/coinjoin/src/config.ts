@@ -77,8 +77,8 @@ export const COINJOIN_NETWORKS: PartialRecord<'btc' | 'test' | 'regtest', Server
             network: 'regtest',
             coordinatorName: 'CoinJoinCoordinatorIdentifier',
             coordinatorUrl: 'http://127.0.0.1:8081/backend/wabisabi/',
-            // backend settings
             wabisabiBackendUrl: 'http://127.0.0.1:8081/backend/',
+            // backend settings
             blockbookUrls: ['http://127.0.0.1:19121'],
             baseBlockHeight: 0,
             baseBlockHash: '0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206',

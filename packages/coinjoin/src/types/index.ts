@@ -2,7 +2,6 @@ import type { CoinjoinPrisonInmate } from './prison';
 
 interface BaseSettings {
     network: 'btc' | 'test' | 'regtest';
-    wabisabiBackendUrl?: string;
     onionDomains?: { [clearnet: string]: string };
 }
 
@@ -16,6 +15,7 @@ export interface CoinjoinBackendSettings extends BaseSettings {
 
 export interface CoinjoinClientSettings extends BaseSettings {
     coordinatorUrl?: string;
+    wabisabiBackendUrl?: string;
     coordinatorName: string; // identifier used in commitment data and ownership proof
     middlewareUrl: string;
     prison?: CoinjoinPrisonInmate[];
