@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { type ReactNode, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
@@ -48,6 +48,8 @@ type NewestAddressCardRootState = AccountsRootState &
 type NewestAddressCardProps = {
     accountKey: AccountKey;
     disabled: boolean;
+    isReceiveDisabled: boolean;
+    receiveDisabledReason: ReactNode;
     verifyingAddressPath?: string;
     onCopied: (path: string) => void;
     onVerify: (path: string) => void;
@@ -56,6 +58,8 @@ type NewestAddressCardProps = {
 export const NewestAddressCard = ({
     accountKey,
     disabled,
+    isReceiveDisabled,
+    receiveDisabledReason,
     verifyingAddressPath,
     onCopied,
     onVerify,
@@ -186,6 +190,9 @@ export const NewestAddressCard = ({
         currentFreshAddress?.address !== account.addresses?.unused[0]?.address;
 
     const getRevealDisabledReason = () => {
+        if (isReceiveDisabled) {
+            return receiveDisabledReason;
+        }
         if (isCoinjoinRevealDisallowed) {
             return <Translation id="RECEIVE_ADDRESS_COINJOIN_DISALLOW" />;
         }
@@ -232,6 +239,8 @@ export const NewestAddressCard = ({
                 item={item}
                 accountKey={accountKey}
                 disabled={disabled}
+                isReceiveDisabled={isReceiveDisabled}
+                receiveDisabledReason={receiveDisabledReason}
                 isVerifyLoading={isVerifyLoading}
                 isVerifyDisabled={isVerifyDisabled}
                 onCopied={onCopied}

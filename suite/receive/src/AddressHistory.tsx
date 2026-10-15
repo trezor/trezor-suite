@@ -1,4 +1,4 @@
-import { Fragment, useMemo } from 'react';
+import { Fragment, type ReactNode, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
@@ -32,6 +32,8 @@ type AddressHistoryRootState = AccountsRootState &
 type AddressHistoryProps = {
     accountKey: AccountKey;
     disabled: boolean;
+    isReceiveDisabled: boolean;
+    receiveDisabledReason: ReactNode;
     verifyingAddressPath?: string;
     AmountComponent: ReceiveAmountComponent;
     onCopied: (path: string) => void;
@@ -41,6 +43,8 @@ type AddressHistoryProps = {
 export const AddressHistory = ({
     accountKey,
     disabled,
+    isReceiveDisabled,
+    receiveDisabledReason,
     verifyingAddressPath,
     AmountComponent,
     onCopied,
@@ -120,6 +124,8 @@ export const AddressHistory = ({
                             item={item}
                             accountKey={accountKey}
                             disabled={disabled}
+                            isReceiveDisabled={isReceiveDisabled}
+                            receiveDisabledReason={receiveDisabledReason}
                             isVerifyLoading={isVerifyLoading}
                             isVerifyDisabled={isVerifyInProgress && !isVerifyLoading}
                             AmountComponent={AmountComponent}
