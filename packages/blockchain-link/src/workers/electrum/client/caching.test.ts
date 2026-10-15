@@ -618,6 +618,20 @@ describe('CachingElectrumClient', () => {
         expect(first.socket.getHeaderRequestCount(99)).toBe(1);
     });
 
+    it('keeps the results of an address however many raw transactions are fetched', async () => {
+        const { socket, client } = await connectClient();
+        // More than the cache keeps of one kind.
+        const txids = Array.from({ length: 20001 }, (_, i) => i.toString(16).padStart(64, '0'));
+
+        await client.request('blockchain.scripthash.get_history', SCRIPTHASH);
+        await Promise.all(
+            txids.map(txid => client.request('blockchain.transaction.get', txid, false)),
+        );
+        await client.request('blockchain.scripthash.get_history', SCRIPTHASH);
+
+        expect(socket.getRequestCount('blockchain.scripthash.get_history')).toBe(1);
+    });
+
     it('keeps raw transactions after a reorg', async () => {
         const { socket, client } = await connectClient();
 

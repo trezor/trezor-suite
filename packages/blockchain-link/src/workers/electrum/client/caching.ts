@@ -21,8 +21,11 @@ type ConfirmedTransaction = {
 // What was fetched from the servers of one network, so that the client of the next connection
 // (e.g. after the server closed the previous one) reuses it. It is kept in memory only.
 export type ElectrumCache = {
-    // A response for a scripthash holds while its status is the same, a raw transaction always.
+    // A response for a scripthash holds while its status is the same.
     results: Map<string, [Status, any]>;
+    // A raw transaction holds always. They are kept apart, so that the transactions of a big
+    // account don't push the results of its addresses out of the cache.
+    rawTransactions: Map<string, [Status, any]>;
     // Confirmed transactions don't change with new blocks, only their confirmations do. Their
     // block heights hold only while the tip they were counted from stays in the chain.
     confirmedTransactions: Map<string, ConfirmedTransaction>;
@@ -33,6 +36,7 @@ export type ElectrumCache = {
 
 export const createElectrumCache = (): ElectrumCache => ({
     results: new Map(),
+    rawTransactions: new Map(),
     confirmedTransactions: new Map(),
     headers: new Map(),
 });
@@ -283,7 +287,12 @@ export class CachingElectrumClient extends ElectrumClient {
                 const [txid, verbose] = params;
                 if (verbose) return this.getVerboseTransaction(txid);
 
-                return this.cacheRequest(RAW_TRANSACTION_STATUS, method, params);
+                return this.cacheRequest(
+                    RAW_TRANSACTION_STATUS,
+                    method,
+                    params,
+                    this.cache.rawTransactions,
+                );
             }
             case 'blockchain.block.header': {
                 const [height, cpHeight] = params;
