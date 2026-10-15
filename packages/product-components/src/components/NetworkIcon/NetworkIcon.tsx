@@ -64,12 +64,16 @@ export function NetworkIcon({
     }
 
     const iconName = getNetworkIconName(networkSymbol);
+    const src = networkIcons[iconName];
+
+    if (typeof src !== 'string') return null;
+
     const isTestnet = isTestnetNetworkIconSymbol(networkSymbol);
 
     return (
         <IconWrapper $size={size} $isTestnet={isTestnet} data-testid={dataTestId}>
             <StyledReactSVG
-                src={networkIcons[iconName]}
+                src={src}
                 beforeInjection={svg => {
                     svg.setAttribute('width', `${size}px`);
                     svg.setAttribute('height', `${size}px`);

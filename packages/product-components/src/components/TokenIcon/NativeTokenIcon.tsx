@@ -46,6 +46,8 @@ export const NativeTokenIcon = ({
 
     const src = cryptoIcons[symbol];
 
+    if (typeof src !== 'string') return null;
+
     return (
         <SvgContainer $size={size} data-testid={dataTestId}>
             <StyledReactSVG
