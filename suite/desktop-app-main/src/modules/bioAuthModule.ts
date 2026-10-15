@@ -150,7 +150,7 @@ class BioAuthWindows extends BioAuth {
 
         this.initPromise = Promise.race<Awaited<ReturnType<typeof createWinHelloManager>>>([
             createWinHelloManager({
-                resourcesPath: process.resourcesPath,
+                resourcesPath: global.resourcesPath,
                 logger: this.logger,
             }),
             new Promise<never>((_, reject) =>
