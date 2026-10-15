@@ -1,4 +1,4 @@
-import { type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import type { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { typedObjectTransformValues } from '@trezor/utils';
 
 export const createFeeLevel = (

@@ -11,11 +11,8 @@ import {
     selectAccountNetworkType,
     selectIsEip1559Fee,
 } from '@suite-common/wallet-core';
-import {
-    type AccountKey,
-    type FormState,
-    isFinalPrecomposedTransaction,
-} from '@suite-common/wallet-types';
+import type { AccountKey, FormState } from '@suite-common/wallet-types';
+import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { useFormContext, useWatch } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 import { useServices } from '@trezor/dependency-injection';

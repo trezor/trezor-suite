@@ -1,6 +1,6 @@
-import { type ReduxStoreWithThunk } from '@suite-common/redux-utils';
-import { type FeeInfo, type FormState } from '@suite-common/wallet-types';
+import type { FeeInfo, FormState } from '@suite-common/wallet-types';
 import { createStoreFromPreloadedState } from '@suite-native/test-utils-store';
+import type { ReduxStoreWithThunk } from '@trezor/redux-utils';
 
 import { BTC_ACCOUNT_KEY, getBtcAccount } from './__fixtures__/walletState';
 import {

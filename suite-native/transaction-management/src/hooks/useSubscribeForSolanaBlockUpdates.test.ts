@@ -1,4 +1,4 @@
-import { type Account } from '@suite-common/wallet-types';
+import type { Account } from '@suite-common/wallet-types';
 import { renderHook } from '@suite-native/test-utils';
 import TrezorConnect from '@trezor/connect';
 

@@ -8,12 +8,12 @@ import {
     selectAccountByKey,
     selectConvertedNetworkFeeLevelFeePerUnit,
 } from '@suite-common/wallet-core';
-import {
-    type AccountKey,
-    type FeeLevelLabel,
-    type GeneralPrecomposedTransactionFinal,
-    isFinalPrecomposedTransaction,
+import type {
+    AccountKey,
+    FeeLevelLabel,
+    GeneralPrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
+import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
 import { useFeesFetching } from './useFeesFetching';

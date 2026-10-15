@@ -10,7 +10,7 @@ import {
     pushSendFormTransactionThunk,
     signTransactionThunk,
 } from '@suite-common/wallet-core';
-import { type GeneralPrecomposedLevels } from '@suite-common/wallet-types';
+import type { GeneralPrecomposedLevels } from '@suite-common/wallet-types';
 import { createSliceWithExtraDeps } from '@trezor/redux-utils';
 
 type NativeSendState = CommonSendState & {

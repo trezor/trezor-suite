@@ -1,7 +1,7 @@
 import { Platform } from 'react-native';
 import { FadeIn, FadeOut, StretchInY, StretchOutY } from 'react-native-reanimated';
 
-import { type AccountKey } from '@suite-common/wallet-types';
+import type { AccountKey } from '@suite-common/wallet-types';
 import { AnimatedPressable, Card } from '@suite-native/atoms';
 
 import { TronFeeSummaryRow } from './TronFeeSummaryRow';

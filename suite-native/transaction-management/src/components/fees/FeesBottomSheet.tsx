@@ -1,12 +1,12 @@
 import { type MutableRefObject, type RefObject, useCallback, useState } from 'react';
 
 import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
-import {
-    type AccountKey,
-    type FeeLevelLabel,
-    type FormState,
-    type GeneralPrecomposedLevels,
-    type TokenAddress,
+import type {
+    AccountKey,
+    FeeLevelLabel,
+    FormState,
+    GeneralPrecomposedLevels,
+    TokenAddress,
 } from '@suite-common/wallet-types';
 import {
     BottomSheetModal,

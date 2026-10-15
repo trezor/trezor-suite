@@ -1,8 +1,8 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import {
-    type FeeLevelLabel,
-    type FormState,
-    type GeneralPrecomposedLevels,
+import type {
+    FeeLevelLabel,
+    FormState,
+    GeneralPrecomposedLevels,
 } from '@suite-common/wallet-types';
 import { isClearSignedEvmTradingSwapTransaction } from '@suite-common/wallet-utils';
 
