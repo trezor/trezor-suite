@@ -9,6 +9,12 @@ class HomeActions {
         await waitForVisible(by.id('@screen/Home'));
     }
 
+    async waitForDiscoveryComplete() {
+        await waitFor(element(by.id('@assets/discovery/loading')))
+            .not.toBeVisible()
+            .withTimeout(60_000);
+    }
+
     async assertIsPortfolioGraphVisible() {
         await waitForVisible(by.id('@home/portfolio/graph'));
     }
