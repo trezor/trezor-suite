@@ -76,6 +76,8 @@ reported to the renderer when they refuse something:
     - A permitted popup is registered like the view itself, so the global navigation lock in `createDesktopMainApp.ts` defers to the guard installed here rather than blocking the popup outright;
     - it may move between the origins of both lists, cannot open further windows, and is destroyed with the view.
     - It also shares the view's session — including a persistent one — which Electron gives no way to change.
+    - Its title is the host of the page it shows, never what the page sets: the window is Suite's — icon, menu bar, place among
+      Suite's windows — and a page could otherwise title it as a step of Suite's own.
 
 **The page has no preload, no node integration, and no access to Suite IPC.** Every permission request is denied, and so is every
 download: a download nothing handles would get Electron's own save dialog, under Suite's name, writing wherever the user points it.
