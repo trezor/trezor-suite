@@ -71,6 +71,7 @@ export const TradingOfferSell = ({ requestTrade, isRequestDisabled }: TradingOff
     );
     const { selectedBankAccount, selectBankAccount } = useTradingSellBankAccountSelection(
         selectedTrade?.bankAccounts,
+        trade?.data.bankAccount,
     );
 
     if (!selectedTrade || !account) {
