@@ -1,29 +1,32 @@
 import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
+import { type ThunkDispatch } from 'redux-thunk';
 
-import { type DesktopAnalyticsDep, events } from '@suite/analytics';
-import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type BlockchainRootState,
-    type WalletSettingsRootState,
-    applySolanaStakingSignature,
+    type ResolveSolanaStakingContextState,
+    type SignPreparedSolanaStakingTransactionThunkState,
+    WALLET_SDK_SOURCE,
     composeSolanaStakingTransaction,
     getSolanaStakingUserAgent,
     isEarnSigningCancelled,
-    isSupportedSolStakingNetworkSymbol,
-    prepareSolanaStakeTxData,
-    selectAddressDisplayType,
+    prepareSolanaStakingSignContext,
     selectBlockchainUrlBySymbol,
+    signPreparedSolanaStakingTransactionThunk,
 } from '@suite-common/wallet-core';
 import {
     type Account,
-    AddressDisplayOptions,
     type ComposeActionContext,
     type PrecomposedTransactionFinal,
     type StakeFormState,
 } from '@suite-common/wallet-types';
-import TrezorConnect from '@trezor/connect';
-import { type WithServices } from '@trezor/redux-utils';
+
+import { events } from '@suite/analytics';
+import {
+    type StakeSignResult,
+    type StakeSignThunkDeps,
+    handleStakeSignRejection,
+    reportStakeSignFailure,
+} from './stakeSignUtils';
 
 type ComposeTransactionThunkState = BlockchainRootState;
 
@@ -44,9 +47,10 @@ export const composeTransactionThunk =
         });
     };
 
-type SignTransactionThunkState = BlockchainRootState & DeviceRootState & WalletSettingsRootState;
+type SignTransactionThunkState = ResolveSolanaStakingContextState &
+    SignPreparedSolanaStakingTransactionThunkState;
 
-type SignTransactionThunkDeps = WithServices<DesktopAnalyticsDep>;
+type SignTransactionThunkDeps = StakeSignThunkDeps;
 
 type SignTransactionThunkParams = {
     account: Account;
@@ -57,86 +61,30 @@ type SignTransactionThunkParams = {
 export const signTransactionThunk =
     ({ account, formValues, transactionInfo }: SignTransactionThunkParams) =>
     async (
-        dispatch: Dispatch<UnknownAction>,
+        dispatch: ThunkDispatch<SignTransactionThunkState, SignTransactionThunkDeps, UnknownAction>,
         getState: () => SignTransactionThunkState,
         extra: SignTransactionThunkDeps,
-    ) => {
-        const device = selectSelectedDevice(getState());
-        if (!device || transactionInfo?.type !== 'final') {
-            return;
-        }
+    ): Promise<StakeSignResult> => {
+        if (transactionInfo?.type !== 'final') return;
+        if (account.networkType !== 'solana') return;
 
-        if (
-            account.networkType !== 'solana' ||
-            !isSupportedSolStakingNetworkSymbol(account.symbol)
-        ) {
-            return;
-        }
-
-        const blockchainUrl = selectBlockchainUrlBySymbol(getState(), account.symbol);
-        if (!blockchainUrl) {
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'sign-tx-error',
-                    error: `Blockchain backend URL not found for ${account.symbol}.`,
-                }),
-            );
-
-            return;
-        }
-
-        const addressDisplayType = selectAddressDisplayType(getState());
-
-        const txData = await prepareSolanaStakeTxData({
-            from: account.descriptor,
-            symbol: account.symbol,
-            amount: formValues.outputs[0]?.amount ?? '0',
+        const prepared = await prepareSolanaStakingSignContext(getState(), {
+            accountKey: account.key,
             stakeType: formValues.stakeType,
-            blockchainUrl,
-            userAgent: getSolanaStakingUserAgent(),
-            estimatedFee: {
-                feePerTx: transactionInfo.fee,
-                feeLimit: transactionInfo.feeLimit,
-                feePerUnit: transactionInfo.feePerByte ?? '',
-            },
+            precomposedTransaction: transactionInfo,
+            source: WALLET_SDK_SOURCE,
         });
 
-        if (!txData) {
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'sign-tx-error',
-                    error: 'Unknown stake action',
-                }),
-            );
-
-            return;
+        if (!prepared.ok) {
+            return reportStakeSignFailure(dispatch, prepared.error.message);
         }
 
-        if (!txData.success) {
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'sign-tx-error',
-                    error: txData.errorMessage,
-                }),
-            );
+        const signed = await dispatch(
+            signPreparedSolanaStakingTransactionThunk({ context: prepared.context }),
+        );
 
-            return;
-        }
-
-        const signedTx = await TrezorConnect.solanaSignTransaction({
-            device: {
-                path: device.path,
-                instance: device.instance,
-                state: device.state,
-                useEmptyPassphrase: device.useEmptyPassphrase,
-            },
-            path: account.path,
-            serializedTx: txData.txShim.serializeMessage(),
-            chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
-        });
-
-        if (!signedTx.success) {
-            if (isEarnSigningCancelled(signedTx.error)) {
+        if (signPreparedSolanaStakingTransactionThunk.rejected.match(signed)) {
+            if (isEarnSigningCancelled(signed.error)) {
                 extra.services.analytics.report({
                     type: events.transactionCancelEvent.name,
                     payload: {
@@ -147,26 +95,8 @@ export const signTransactionThunk =
                 });
             }
 
-            // catch manual error from TransactionReviewModal
-            if (signedTx.error.message === 'tx-cancelled') {
-                return;
-            }
-
-            if (signedTx.error.message !== 'tx-timeout') {
-                dispatch(
-                    notificationsActions.addToast({
-                        type: 'sign-tx-error',
-                        error: signedTx.error.message,
-                    }),
-                );
-            }
-
-            return signedTx;
+            return handleStakeSignRejection({ dispatch, error: signed.payload });
         }
 
-        return applySolanaStakingSignature({
-            txShim: txData.txShim,
-            descriptor: account.descriptor,
-            signature: signedTx.payload.signature,
-        });
+        return signed.payload.serializedTx;
     };

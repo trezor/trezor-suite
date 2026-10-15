@@ -7,6 +7,7 @@ import { type SendState, prepareSendFormReducer } from '@suite-common/wallet-cor
 import {
     type Account,
     type AccountKey,
+    AddressDisplayOptions,
     type PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
@@ -113,7 +114,7 @@ type State = {
         blockchain: Partial<Record<'sol' | 'dsol', { url: string }>>;
         fees: { sol: typeof solanaFeeBucket; dsol: typeof solanaFeeBucket };
         send: SendState;
-        settings: { mevProtection: boolean };
+        settings: { mevProtection: boolean; addressDisplayType: AddressDisplayOptions };
     };
 };
 
@@ -123,9 +124,11 @@ const buildStore = ({
         sol: { url: 'http://localhost:8899' },
         dsol: { url: 'http://localhost:8899' },
     },
+    addressDisplayType = AddressDisplayOptions.ORIGINAL,
 }: {
     accounts?: Account[];
     blockchain?: Partial<Record<'sol' | 'dsol', { url: string }>>;
+    addressDisplayType?: AddressDisplayOptions;
 } = {}) =>
     createTestCompositionRoot<WithServices<NativeAnalyticsDep>, State>({
         services: () => ({ analytics }),
@@ -149,7 +152,7 @@ const buildStore = ({
                     actionTypes: { storageLoad: mockActionType('storageLoad') },
                     reducers: { storageLoadFormDrafts: mockReducer() },
                 }),
-                settings: () => ({ mevProtection: false }),
+                settings: () => ({ mevProtection: false, addressDisplayType }),
             }),
         }),
     }).services.store;
@@ -243,10 +246,28 @@ describe('signSolanaStakingTransactionThunk', () => {
 
         expect(result).toEqual({ ok: true });
         expect(solanaSignTransactionMock).toHaveBeenCalledTimes(1);
+        expect(solanaSignTransactionMock.mock.calls[0][0].chunkify).toBe(false);
         expect(solanaTxShim.addSignature).toHaveBeenCalledWith(
             solAccount.descriptor,
             'ed25519signature',
         );
+        expect(store.getState().wallet.send.serializedTx).toEqual({
+            tx: '0xsolanasignedtx',
+            symbol: 'sol',
+        });
+    });
+
+    it('asks the device for chunked addresses when the wallet setting says so', async () => {
+        const store = buildStore({ addressDisplayType: AddressDisplayOptions.CHUNKED });
+
+        const result = await dispatchSign(store, {
+            accountKey: SOL_ACCOUNT_KEY,
+            stakeType: 'stake',
+            precomposedTransaction: buildSolanaPrecomposedTransaction(),
+        });
+
+        expect(result).toEqual({ ok: true });
+        expect(solanaSignTransactionMock.mock.calls[0][0].chunkify).toBe(true);
     });
 
     it('stamps createdTimestamp on the stored precomposed transaction (powers the validity timer)', async () => {

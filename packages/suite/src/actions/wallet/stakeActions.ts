@@ -62,6 +62,7 @@ import { getTransactionCreatedEventPayload } from 'src/utils/suite/analytics';
 import * as stakeFormCardanoActions from './stake/stakeFormCardanoActions';
 import * as stakeFormEthereumActions from './stake/stakeFormEthereumActions';
 import * as stakeFormSolanaActions from './stake/stakeFormSolanaActions';
+import { type StakeSignResult } from './stake/stakeSignUtils';
 
 type ComposeTransactionThunkState = BlockchainRootState & StakeRootState;
 
@@ -306,7 +307,7 @@ export const signTransactionThunk =
         dispatch(preserveModal());
 
         // signTransaction by Trezor
-        let serializedTx: undefined | string | Err<SerializedError>;
+        let serializedTx: StakeSignResult | Err<SerializedError>;
         if (isSupportedEthStakingNetworkSymbol(account.symbol)) {
             serializedTx = await dispatch(
                 stakeFormEthereumActions.signTransactionThunk({
@@ -346,9 +347,14 @@ export const signTransactionThunk =
         }
 
         if (typeof serializedTx !== 'string') {
-            if (serializedTx?.error?.message === 'tx-timeout') {
-                return;
-            }
+            const isTimeout =
+                serializedTx &&
+                ('reason' in serializedTx
+                    ? serializedTx.reason === 'timeout'
+                    : serializedTx.error?.message === 'tx-timeout');
+
+            if (isTimeout) return;
+
             // close modal manually since UI_EVENTS.CLOSE_UI_WINDOW was blocked
             dispatch(closeModal());
 

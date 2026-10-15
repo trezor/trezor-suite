@@ -15,6 +15,7 @@ import {
 import {
     type Account,
     type AccountKey,
+    AddressDisplayOptions,
     type BaseStakeType,
     type FormState,
     type PrecomposedTransactionFinal,
@@ -154,16 +155,18 @@ type State = {
         };
         formDrafts: Record<string, FormState>;
         send: SendState;
-        settings: { mevProtection: boolean };
+        settings: { mevProtection: boolean; addressDisplayType: AddressDisplayOptions };
     };
 };
 
 const buildStore = ({
     accounts = [ethAccount],
     formDrafts = {},
+    addressDisplayType = AddressDisplayOptions.ORIGINAL,
 }: {
     accounts?: Account[];
     formDrafts?: Record<string, FormState>;
+    addressDisplayType?: AddressDisplayOptions;
 } = {}) =>
     createTestCompositionRoot<WithServices<NativeAnalyticsDep>, State>({
         services: () => ({ analytics: mockNativeAnalytics() }),
@@ -189,7 +192,7 @@ const buildStore = ({
                     actionTypes: { storageLoad: mockActionType('storageLoad') },
                     reducers: { storageLoadFormDrafts: mockReducer() },
                 }),
-                settings: () => ({ mevProtection: false }),
+                settings: () => ({ mevProtection: false, addressDisplayType }),
             }),
         }),
     }).services.store;
@@ -247,6 +250,29 @@ describe('signEthereumStakingTransactionThunk', () => {
         // 1.5 ETH = 1.5 * 10^18 wei = 1500000000000000000 = 0x14d1120d7b160000
         expect(signCall.transaction.value).toBe('0x14d1120d7b160000');
         expect(signCall.transaction.data).toBe(buildStakeData(WALLET_SDK_SOURCE_MOBILE));
+        expect(signCall.chunkify).toBe(false);
+        expect(store.getState().wallet.send.serializedTx).toEqual({
+            tx: '0xsignedtx',
+            symbol: 'eth',
+        });
+    });
+
+    it('asks the device for chunked addresses when the wallet setting says so', async () => {
+        const store = buildStore({
+            formDrafts: {
+                [getFormDraftKey('stake', ETH_ACCOUNT_KEY)]: buildComposeFormDraft('stake', '1.5'),
+            },
+            addressDisplayType: AddressDisplayOptions.CHUNKED,
+        });
+
+        const result = await dispatchFlow(store, {
+            accountKey: ETH_ACCOUNT_KEY,
+            stakeType: 'stake',
+            precomposedTransaction: buildPrecomposedTransaction(),
+        });
+
+        expect(result).toEqual({ ok: true });
+        expect(ethereumSignTransactionMock.mock.calls[0][0].chunkify).toBe(true);
     });
 
     it('passes value=0 and unstake calldata for an unstake variant', async () => {

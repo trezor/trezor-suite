@@ -1,10 +1,21 @@
 import { combineReducers, isFulfilled, isRejected } from '@reduxjs/toolkit';
 
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
-import { type Account, type AccountKey } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type AccountKey,
+    AddressDisplayOptions,
+    type PrecomposedTransactionFinal,
+} from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 
-import { composeSolanaStakingTransactionFeeLevelsThunk } from './solanaStakingThunks';
+import {
+    type ResolveSolanaStakingContextState,
+    composeSolanaStakingTransactionFeeLevelsThunk,
+    prepareSolanaStakingSignContext,
+    signPreparedSolanaStakingTransactionThunk,
+} from './solanaStakingThunks';
 
 jest.mock('@trezor/connect', () => ({
     __esModule: true,
@@ -15,6 +26,7 @@ jest.mock('@trezor/connect', () => ({
             success: true,
             payload: { levels: [{ feePerUnit: '100000', feeLimit: '200000', feePerTx: '5000' }] },
         }),
+        solanaSignTransaction: jest.fn(),
     },
 }));
 
@@ -336,6 +348,164 @@ describe('composeSolanaStakingTransactionFeeLevelsThunk', () => {
         expect(result).toEqual({
             ok: false,
             error: { error: 'sign-transaction-failed', message: 'Solana account not found.' },
+        });
+    });
+});
+
+type SignState = {
+    device: { selectedDevice: TrezorDevice | undefined };
+    wallet: State['wallet'] & { settings: { addressDisplayType: AddressDisplayOptions } };
+};
+
+const selectedDevice = {
+    path: 'device-id:1',
+    instance: 1,
+    state: { sessionId: '1', staticSessionId: STATIC_SESSION_ID },
+    useEmptyPassphrase: true,
+} as unknown as TrezorDevice;
+
+type BuildSignStoreParams = {
+    addressDisplayType?: AddressDisplayOptions;
+    hasSelectedDevice?: boolean;
+};
+
+const buildSignStore = ({
+    addressDisplayType = AddressDisplayOptions.ORIGINAL,
+    hasSelectedDevice = true,
+}: BuildSignStoreParams = {}) =>
+    createTestCompositionRoot<void, SignState>({
+        reducer: combineReducers({
+            device: () => ({ selectedDevice: hasSelectedDevice ? selectedDevice : undefined }),
+            wallet: combineReducers({
+                accounts: () => [solAccount],
+                blockchain: (): SignState['wallet']['blockchain'] => ({
+                    sol: { url: 'http://localhost:8899' },
+                }),
+                fees: () => ({ sol: solanaFeeBucket, dsol: solanaFeeBucket }),
+                settings: () => ({ addressDisplayType }),
+            }),
+        }),
+    }).services.store;
+
+const precomposedTransaction = {
+    type: 'final',
+    feeLimit: '200000',
+    feePerByte: '100000',
+    fee: '2287880',
+    totalSpent: '1002287880',
+    outputs: [
+        { address: solAccount.descriptor, amount: '1000000000', script_type: 'PAYTOADDRESS' },
+    ],
+    bytes: 0,
+    inputs: [],
+    outputsPermutation: [0],
+} as PrecomposedTransactionFinal;
+
+const solanaSignTransactionMock = TrezorConnect.solanaSignTransaction as jest.Mock;
+
+const signPrepared = async (store: TestCompositionStore<SignState, void>) => {
+    const prepared = await prepareSolanaStakingSignContext(
+        store.getState() as unknown as ResolveSolanaStakingContextState,
+        {
+            accountKey: SOL_ACCOUNT_KEY,
+            stakeType: 'stake',
+            precomposedTransaction,
+        },
+    );
+    if (!prepared.ok) throw new Error('prepare failed');
+
+    const action = await store.dispatch(
+        signPreparedSolanaStakingTransactionThunk({ context: prepared.context }) as any,
+    );
+
+    if (isFulfilled(action)) return { ok: true as const, payload: action.payload };
+    if (isRejected(action)) return { ok: false as const, error: action.payload };
+
+    throw new Error('Unexpected dispatch outcome');
+};
+
+describe('signPreparedSolanaStakingTransactionThunk', () => {
+    beforeEach(() => {
+        solanaSignTransactionMock.mockReset();
+        solanaSignTransactionMock.mockResolvedValue({
+            success: true,
+            payload: { signature: 'ed25519signature' },
+        });
+        solanaTxShim.addSignature.mockClear();
+    });
+
+    it('signs the prepared message on the selected device and attaches the signature', async () => {
+        const store = buildSignStore();
+
+        const result = await signPrepared(store);
+
+        expect(result).toEqual({ ok: true, payload: { serializedTx: '0xsolanasignedtx' } });
+        expect(solanaSignTransactionMock).toHaveBeenCalledWith({
+            device: {
+                path: 'device-id:1',
+                instance: 1,
+                state: selectedDevice.state,
+                useEmptyPassphrase: true,
+            },
+            path: solAccount.path,
+            serializedTx: 'solanaMessage',
+            chunkify: false,
+        });
+        expect(solanaTxShim.addSignature).toHaveBeenCalledWith(
+            solAccount.descriptor,
+            'ed25519signature',
+        );
+    });
+
+    it('asks the device for chunked addresses when the wallet setting says so', async () => {
+        const store = buildSignStore({ addressDisplayType: AddressDisplayOptions.CHUNKED });
+
+        await signPrepared(store);
+
+        expect(solanaSignTransactionMock.mock.calls[0][0].chunkify).toBe(true);
+    });
+
+    it('signs without a device selection when none is selected', async () => {
+        const store = buildSignStore({ hasSelectedDevice: false });
+
+        const result = await signPrepared(store);
+
+        expect(result.ok).toBe(true);
+        expect(solanaSignTransactionMock.mock.calls[0][0].device).toBeUndefined();
+    });
+
+    it('passes the device cancellation through', async () => {
+        solanaSignTransactionMock.mockResolvedValue({
+            success: false,
+            error: { code: 'Method_Cancel', message: 'tx-cancelled' },
+        });
+        const store = buildSignStore();
+
+        expect(await signPrepared(store)).toEqual({
+            ok: false,
+            error: {
+                error: 'sign-transaction-failed',
+                errorCode: 'Method_Cancel',
+                message: 'tx-cancelled',
+            },
+        });
+        expect(solanaTxShim.addSignature).not.toHaveBeenCalled();
+    });
+
+    it('reports a validity timeout as its own rejection', async () => {
+        solanaSignTransactionMock.mockResolvedValue({
+            success: false,
+            error: { code: 'Method_Cancel', message: 'tx-timeout' },
+        });
+        const store = buildSignStore();
+
+        expect(await signPrepared(store)).toEqual({
+            ok: false,
+            error: {
+                error: 'sign-transaction-timeout',
+                errorCode: 'Method_Cancel',
+                message: 'tx-timeout',
+            },
         });
     });
 });

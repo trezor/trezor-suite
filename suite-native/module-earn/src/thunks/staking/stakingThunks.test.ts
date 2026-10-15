@@ -25,6 +25,7 @@ import {
 } from '@suite-common/wallet-core';
 import {
     type Account,
+    AddressDisplayOptions,
     type FormState,
     type PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
@@ -188,7 +189,11 @@ const buildStore = ({
                     actionTypes: { storageLoad: mockActionType('storageLoad') },
                     reducers: { storageLoadFormDrafts: mockReducer() },
                 }),
-                settings: () => ({ ...initialWalletSettingsState, mevProtection: false }),
+                settings: () => ({
+                    ...initialWalletSettingsState,
+                    mevProtection: false,
+                    addressDisplayType: AddressDisplayOptions.ORIGINAL,
+                }),
             }),
         }),
         services: () => ({

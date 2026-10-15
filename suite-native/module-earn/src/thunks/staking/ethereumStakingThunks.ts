@@ -1,32 +1,34 @@
-import { events } from '@suite-common/analytics';
-import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import {
-    type PrepareEthereumStakingContextState,
-    WALLET_SDK_SOURCE_MOBILE,
-    buildEthereumStakingSignTransaction,
-    ethereumGetCurrentNonceThunk,
+    type FormDraftRootState,
     isEarnSigningCancelled,
     prepareEthereumStakingContext,
+    type PrepareEthereumStakingContextState,
+    selectFormDraft,
     sendFormActions,
-    verifyEthereumStakingLiveStateForSign,
+    signPreparedEthereumStakingTransactionThunk,
+    type SignPreparedEthereumStakingTransactionThunkState,
+    WALLET_SDK_SOURCE_MOBILE,
 } from '@suite-common/wallet-core';
 import {
     type AccountKey,
     type BaseStakeType,
     type PrecomposedTransactionFinal,
+    type StakeFormState,
 } from '@suite-common/wallet-types';
+import { getFormDraftKey } from '@suite-common/wallet-utils';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
-import TrezorConnect from '@trezor/connect';
-import { type WithServices, createThunk } from '@trezor/redux-utils';
+import { createThunk, WithServices } from '@trezor/redux-utils';
 
+import { events } from '@suite-common/analytics';
 import { EARN_MODULE_PREFIX } from '../../constants';
 import { type SignStakeTransactionRejectValue } from '../../types';
 
 const LOG_PREFIX = 'signEthereumStakingTransactionThunk';
 
-export type SignEthereumStakingTransactionThunkState = PrepareEthereumStakingContextState &
-    DeviceRootState;
+export type SignEthereumStakingTransactionThunkState = FormDraftRootState &
+    PrepareEthereumStakingContextState &
+    SignPreparedEthereumStakingTransactionThunkState;
 
 type SignEthereumStakingTransactionThunkDeps = WithServices<NativeAnalyticsDep>;
 
@@ -48,24 +50,28 @@ export const signEthereumStakingTransactionThunk = createThunk<
         const { dispatch, getState, rejectWithValue, extra } = thunkApi;
 
         try {
+            const formValues = selectFormDraft<StakeFormState>(
+                getState(),
+                getFormDraftKey(stakeType, accountKey),
+            );
+
+            if (!formValues) {
+                const message = `Compose draft for ${stakeType} is missing.`;
+                console.error(`${LOG_PREFIX}: ${message}`);
+
+                return rejectWithValue({ error: 'sign-transaction-failed', message });
+            }
+
             const prepared = prepareEthereumStakingContext(getState(), {
                 accountKey,
                 stakeType,
                 precomposedTransaction,
+                formValues,
                 source: WALLET_SDK_SOURCE_MOBILE,
             });
             if (!prepared.ok) return rejectWithValue(prepared.error);
 
-            const { account, variant, formState } = prepared.context;
-
-            const liveState = await verifyEthereumStakingLiveStateForSign({
-                stakeType,
-                account,
-                calldata: variant.calldata,
-            });
-            if (!liveState.isValid) {
-                return rejectWithValue(liveState.error);
-            }
+            const { account, formState } = prepared.context;
 
             dispatch(
                 sendFormActions.storePrecomposedTransaction({
@@ -75,32 +81,11 @@ export const signEthereumStakingTransactionThunk = createThunk<
                 }),
             );
 
-            const deviceAccessResponse = await requestPrioritizedDeviceAccess(async () => {
-                const device = selectSelectedDevice(getState());
-
-                const { nonce } = await dispatch(
-                    ethereumGetCurrentNonceThunk({
-                        selectedAccount: account,
-                        fetchConfirmedNonce: true,
-                    }),
-                ).unwrap();
-
-                return TrezorConnect.ethereumSignTransaction({
-                    device: device
-                        ? {
-                              path: device.path,
-                              instance: device.instance,
-                              state: device.state,
-                              useEmptyPassphrase: device.useEmptyPassphrase,
-                          }
-                        : undefined,
-                    path: account.path,
-                    transaction: buildEthereumStakingSignTransaction(
-                        prepared.context,
-                        String(nonce),
-                    ),
-                });
-            });
+            const deviceAccessResponse = await requestPrioritizedDeviceAccess(() =>
+                dispatch(
+                    signPreparedEthereumStakingTransactionThunk({ context: prepared.context }),
+                ),
+            );
 
             if (!deviceAccessResponse.success) {
                 const message = `Prioritized device access or ${stakeType} preparation failed.`;
@@ -109,10 +94,10 @@ export const signEthereumStakingTransactionThunk = createThunk<
                 return rejectWithValue({ error: 'sign-transaction-failed', message });
             }
 
-            const signResponse = deviceAccessResponse.payload;
+            const signAction = deviceAccessResponse.payload;
 
-            if (!signResponse.success) {
-                if (isEarnSigningCancelled(signResponse.error)) {
+            if (signPreparedEthereumStakingTransactionThunk.rejected.match(signAction)) {
+                if (isEarnSigningCancelled(signAction.error)) {
                     extra.services.analytics.report({
                         type: events.transactionCancelEvent.name,
                         payload: {
@@ -122,24 +107,22 @@ export const signEthereumStakingTransactionThunk = createThunk<
                         },
                     });
                 }
-                if (signResponse.error.message !== 'tx-cancelled') {
+                if (signAction.payload?.message !== 'tx-cancelled') {
                     console.error(
-                        `${LOG_PREFIX}: Sign transaction failed: ${signResponse.error.message}`,
+                        `${LOG_PREFIX}: Sign transaction failed: ${signAction.payload?.message}`,
                     );
                 }
 
-                return rejectWithValue({
-                    error: 'sign-transaction-failed',
-                    errorCode: signResponse.error.code,
-                    message: signResponse.error.message,
-                });
+                return rejectWithValue(signAction.payload);
             }
 
-            const { serializedTx } = signResponse.payload;
+            if (!signPreparedEthereumStakingTransactionThunk.fulfilled.match(signAction)) {
+                return rejectWithValue(undefined);
+            }
 
             dispatch(
                 sendFormActions.storeSignedTransaction({
-                    serializedTx: { tx: serializedTx, symbol: account.symbol },
+                    serializedTx: { tx: signAction.payload.serializedTx, symbol: account.symbol },
                 }),
             );
         } catch (error) {

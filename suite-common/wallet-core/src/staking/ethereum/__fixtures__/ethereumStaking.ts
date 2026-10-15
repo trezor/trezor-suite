@@ -494,6 +494,8 @@ export const getStakeTxGasLimitFixture = [
         },
         result: {
             gasLimit: '241000', // 21000 + 220000 (reserve)
+            transactionData:
+                '0x3a29dbae0000000000000000000000000000000000000000000000000000000000000001',
             success: true,
         },
     },

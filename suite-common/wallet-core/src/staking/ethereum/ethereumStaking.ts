@@ -45,11 +45,9 @@ import {
 import { isSupportedEthStakingNetworkSymbol } from './ethereumStakingUtils';
 import {
     type EthNetwork,
+    type EthereumStakingTransactionDraft,
     type GetStakeFormsDefaultValuesParams,
     type GetStakeTxGasLimitParams,
-    type PrepareClaimEthTxParams,
-    type PrepareStakeEthTxParams,
-    type PrepareUnstakeEthTxParams,
     type StakeTxBaseArgs,
     type VerifyEthereumStakingLiveStateParams,
 } from './types';
@@ -320,6 +318,7 @@ export const stake = async ({
     symbol,
     identity,
     feeLimit,
+    source,
 }: StakeTxBaseArgs & {
     amount: string;
 }) => {
@@ -335,7 +334,7 @@ export const stake = async ({
         const { addressContractPool } =
             getEthNetworkAddresses(symbol) ??
             throwError(`Unsupported staking network symbol: ${symbol}`);
-        const data = buildStakeData();
+        const data = buildStakeData(source);
 
         // gasLimit calculation based on address, amount and data size
         // amount is essential for a proper calculation of gasLimit (via blockbook/geth)
@@ -375,6 +374,7 @@ export const unstake = async ({
     interchanges,
     symbol,
     feeLimit,
+    source,
 }: StakeTxBaseArgs & {
     amount: string;
     interchanges: number;
@@ -407,7 +407,7 @@ export const unstake = async ({
         const { addressContractPool } =
             getEthNetworkAddresses(symbol) ??
             throwError(`Unsupported staking network symbol: ${symbol}`);
-        const data = buildUnstakeData(amountWei, interchanges);
+        const data = buildUnstakeData(amountWei, interchanges, source);
 
         // gasLimit calculation based on address, amount and data size
         // amount is essential for a proper calculation of gasLimit (via blockbook/geth)
@@ -533,7 +533,7 @@ export const getStakeFormsDefaultValues = ({
 });
 
 export const transformTx = (
-    tx: any,
+    tx: EthereumStakingTransactionDraft,
     nonce: string,
     chainId: number,
     gasPrice?: string,
@@ -548,7 +548,7 @@ export const transformTx = (
         value: fromWei(tx.value).toWei('hex'),
         chainId,
         nonce: fromIntegerString(nonce).toHex(),
-        gasLimit: fromIntegerString(tx.gasLimit).toHex(),
+        gasLimit: fromIntegerString(tx.gasLimit.toString()).toHex(),
         data: sanitizeHex(tx.data),
     };
 
@@ -573,146 +573,11 @@ export const transformTx = (
     return result;
 };
 
-type PrepareStakeEthTxResponse =
-    | {
-          success: true;
-          tx: EthereumTransaction | EthereumTransactionEIP1559;
-      }
-    | {
-          success: false;
-          errorMessage: string;
-      };
-
-export const prepareStakeEthTx = async ({
-    symbol,
-    from,
-    amount,
-    gasPrice,
-    nonce,
-    chainId,
-    feeLimit,
-    maxFeePerGas,
-    maxPriorityFeePerGas,
-    identity,
-}: PrepareStakeEthTxParams): Promise<PrepareStakeEthTxResponse> => {
-    try {
-        const tx = await stake({
-            from,
-            amount,
-            symbol,
-            identity,
-            feeLimit,
-        });
-
-        const transformedTx = transformTx(
-            tx,
-            nonce,
-            chainId,
-            gasPrice,
-            maxFeePerGas,
-            maxPriorityFeePerGas,
-        );
-
-        return {
-            success: true,
-            tx: transformedTx,
-        };
-    } catch (e) {
-        console.error(e);
-
-        return {
-            success: false,
-            errorMessage: e.message,
-        };
-    }
-};
-
-export const prepareUnstakeEthTx = async ({
-    symbol,
-    from,
-    amount,
-    gasPrice,
-    nonce,
-    chainId,
-    identity,
-    interchanges = UNSTAKE_INTERCHANGES,
-    feeLimit,
-    maxFeePerGas,
-    maxPriorityFeePerGas,
-}: PrepareUnstakeEthTxParams): Promise<PrepareStakeEthTxResponse> => {
-    try {
-        const tx = await unstake({
-            from,
-            amount,
-            identity,
-            interchanges,
-            symbol,
-            feeLimit,
-        });
-
-        const transformedTx = transformTx(
-            tx,
-            nonce,
-            chainId,
-            gasPrice,
-            maxFeePerGas,
-            maxPriorityFeePerGas,
-        );
-
-        return {
-            success: true,
-            tx: transformedTx,
-        };
-    } catch (e) {
-        console.error(e);
-
-        return {
-            success: false,
-            errorMessage: e.message,
-        };
-    }
-};
-
-export const prepareClaimEthTx = async ({
-    symbol,
-    identity,
-    from,
-    gasPrice,
-    nonce,
-    chainId,
-    feeLimit,
-    maxFeePerGas,
-    maxPriorityFeePerGas,
-}: PrepareClaimEthTxParams): Promise<PrepareStakeEthTxResponse> => {
-    try {
-        const tx = await claimWithdrawRequest({ from, symbol, identity, feeLimit });
-        const transformedTx = transformTx(
-            tx,
-            nonce,
-            chainId,
-            gasPrice,
-            maxFeePerGas,
-            maxPriorityFeePerGas,
-        );
-
-        return {
-            success: true,
-            tx: transformedTx,
-        };
-    } catch (e) {
-        console.error(e);
-
-        return {
-            success: false,
-            errorMessage: e.message,
-        };
-    }
-};
-
 type GetStakeTxGasLimitResponse =
     | {
           success: true;
           gasLimit: string;
+          transactionData: string;
       }
     | {
           success: false;
@@ -725,11 +590,12 @@ export const getStakeTxGasLimit = async ({
     amount,
     symbol,
     identity,
+    source,
 }: GetStakeTxGasLimitParams): Promise<GetStakeTxGasLimitResponse> => {
     try {
         let txData;
         if (stakeType === 'stake') {
-            txData = await stake({ from, amount, symbol, identity });
+            txData = await stake({ from, amount, symbol, identity, source });
         }
         if (stakeType === 'unstake') {
             // Increase allowedInterchangeNum to enable instant unstaking.
@@ -739,6 +605,7 @@ export const getStakeTxGasLimit = async ({
                 interchanges: UNSTAKE_INTERCHANGES,
                 symbol,
                 identity,
+                source,
             });
         }
         if (stakeType === 'claim') {
@@ -752,6 +619,7 @@ export const getStakeTxGasLimit = async ({
         return {
             success: true,
             gasLimit: txData.gasLimit.toString(),
+            transactionData: txData.data,
         };
     } catch (error) {
         console.error(error);

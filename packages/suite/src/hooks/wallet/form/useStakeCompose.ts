@@ -20,6 +20,9 @@ import { type StakeContextValues } from 'src/components/earn/forms/StakeFormCont
 
 const DEFAULT_FIELD = 'outputs.0.amount';
 
+const getComposedTransactionData = (composed: PrecomposedTransaction) =>
+    'transactionData' in composed ? (composed.transactionData ?? '') : '';
+
 interface Props<TFieldValues extends StakeFormState> extends UseFormReturn<TFieldValues> {
     state?: ComposeActionContext;
     defaultField?: FieldPath<TFieldValues>;
@@ -101,11 +104,12 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
                 } else {
                     // result undefined: (FormState got errors or sendFormActions got errors)
                     // undefined result will not be processed by useEffect below, reset loader
+                    setValue('transactionData', '');
                     setLoading(false);
                 }
             }
         },
-        [state, errors, debounce, clearErrors, getValues, dispatch],
+        [state, errors, debounce, clearErrors, getValues, dispatch, setValue],
     );
 
     // update fields AFTER composedLevels change or selectedFee change (below)
@@ -153,6 +157,8 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
 
             // update feeLimit field if present (calculated from ethereum data size)
             setValue('estimatedFeeLimit', composed.estimatedFeeLimit);
+            // the calldata composed for the selected level is what gets verified and signed
+            setValue('transactionData', getComposedTransactionData(composed));
             setLoading(false);
         },
         [composeField, getValues, setValue, errors, setError, clearErrors, translationString],

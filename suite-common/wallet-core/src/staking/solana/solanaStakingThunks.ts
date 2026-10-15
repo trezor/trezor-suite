@@ -1,7 +1,9 @@
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     type Account,
     type AccountKey,
+    AddressDisplayOptions,
     type PrecomposedLevels,
     type PrecomposedTransactionFinal,
     type StakeFormState,
@@ -25,7 +27,14 @@ import {
 } from '../../blockchain/blockchainReducer';
 import { selectConvertedNetworkFeeInfo } from '../../fees/feesReducer';
 import { type FeesRootState } from '../../fees/feesSelectors';
-import { type SignTransactionError } from '../../send/sendFormTypes';
+import {
+    type SignTransactionError,
+    type SignTransactionTimeoutError,
+} from '../../send/sendFormTypes';
+import {
+    type WalletSettingsRootState,
+    selectAddressDisplayType,
+} from '../../settings/walletSettingsReducer';
 import { STAKE_MODULE_PREFIX } from '../stakingActions';
 import {
     composeSolanaStakingTransaction,
@@ -267,3 +276,59 @@ export const applySolanaStakingSignature = async ({
 
     return txShim.serialize();
 };
+
+export type SignPreparedSolanaStakingTransactionRejectValue =
+    SignTransactionError | SignTransactionTimeoutError;
+
+export type SignPreparedSolanaStakingTransactionThunkState = DeviceRootState &
+    WalletSettingsRootState;
+
+// Signs a prepared Solana staking transaction on the device and attaches the signature.
+export const signPreparedSolanaStakingTransactionThunk = createThunk<
+    { serializedTx: string },
+    { context: PreparedSolanaStakingSignContext },
+    {
+        rejectValue: SignPreparedSolanaStakingTransactionRejectValue;
+        state: SignPreparedSolanaStakingTransactionThunkState;
+    }
+>(
+    `${STAKE_MODULE_PREFIX}/signPreparedSolanaStakingTransactionThunk`,
+    async ({ context }, { getState, rejectWithValue }) => {
+        const { account, txData } = context;
+        const device = selectSelectedDevice(getState());
+        const addressDisplayType = selectAddressDisplayType(getState());
+
+        const response = await TrezorConnect.solanaSignTransaction({
+            device: device
+                ? {
+                      path: device.path,
+                      instance: device.instance,
+                      state: device.state,
+                      useEmptyPassphrase: device.useEmptyPassphrase,
+                  }
+                : undefined,
+            path: account.path,
+            serializedTx: txData.txShim.serializeMessage(),
+            chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
+        });
+
+        if (!response.success) {
+            return rejectWithValue({
+                error:
+                    response.error.message === 'tx-timeout'
+                        ? 'sign-transaction-timeout'
+                        : 'sign-transaction-failed',
+                errorCode: response.error.code,
+                message: response.error.message,
+            });
+        }
+
+        const serializedTx = await applySolanaStakingSignature({
+            txShim: txData.txShim,
+            descriptor: account.descriptor,
+            signature: response.payload.signature,
+        });
+
+        return { serializedTx };
+    },
+);
