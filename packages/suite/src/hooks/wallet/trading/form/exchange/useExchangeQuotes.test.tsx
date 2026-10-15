@@ -93,6 +93,32 @@ const SEND_CRYPTO_SELECT: TradingAssetSellOption = {
     accountKey: mockAccountKey({ descriptor: 'descriptor123', symbol: btcSymbol }),
 };
 
+const ETH_SEND_CRYPTO_SELECT: TradingAssetSellOption = {
+    id: 'ethereum' as CryptoId,
+    isNativeToken: true,
+    name: 'Ethereum',
+    coingeckoId: 'ethereum',
+    contractAddress: null,
+    symbol: ethSymbol,
+    displaySymbol: 'ETH',
+    networkName: 'Ethereum',
+    networkSymbol: ethSymbol,
+    accountKey: mockAccountKey({ descriptor: '0xsender', symbol: ethSymbol }),
+};
+
+const USDT_SEND_CRYPTO_SELECT: TradingAssetSellOption = {
+    id: 'ethereum--0xdac17f958d2ee523a2206206994597c13d831ec7' as CryptoId,
+    isNativeToken: false,
+    name: 'Tether USD',
+    coingeckoId: 'ethereum',
+    contractAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+    symbol: 'usdt',
+    displaySymbol: 'USDT',
+    networkName: 'Ethereum',
+    networkSymbol: ethSymbol,
+    accountKey: mockAccountKey({ descriptor: '0xsender', symbol: ethSymbol }),
+};
+
 const RECEIVE_CRYPTO_SELECT: TradingAssetOption = {
     id: 'ethereum' as CryptoId,
     isNativeToken: true,
@@ -382,16 +408,20 @@ describe('useExchangeQuotes', () => {
         await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(1), { timeout: 1500 });
     });
 
-    it('switches a DEX selection to CEX when only CEX quotes are available on an EVM send network', () => {
+    it('switches a DEX selection to CEX when only CEX quotes are available for an ERC-20 send asset', () => {
         const { result } = renderExchangeQuotes(
-            { ...VALID_DEFAULTS, exchangeType: TRADING_EXCHANGE_FORM_DEX },
+            {
+                ...VALID_DEFAULTS,
+                sendCryptoSelect: USDT_SEND_CRYPTO_SELECT,
+                exchangeType: TRADING_EXCHANGE_FORM_DEX,
+            },
             { network: getNetwork(ethSymbol), quotes: [CEX_QUOTE] },
         );
 
         expect(result.current.methods.getValues('exchangeType')).toBe(TRADING_EXCHANGE_FORM_CEX);
     });
 
-    it('preselects DEX when the first quote is DEX on a non-EVM send network', () => {
+    it('preselects DEX when the first quote is DEX for a non-EVM send asset', () => {
         const { result } = renderExchangeQuotes(VALID_DEFAULTS, {
             quotes: [DEX_QUOTE, CEX_QUOTE],
         });
@@ -399,7 +429,7 @@ describe('useExchangeQuotes', () => {
         expect(result.current.methods.getValues('exchangeType')).toBe(TRADING_EXCHANGE_FORM_DEX);
     });
 
-    it('preselects CEX when the first quote is CEX on a non-EVM send network', () => {
+    it('preselects CEX when the first quote is CEX for a non-EVM send asset', () => {
         const { result } = renderExchangeQuotes(
             { ...VALID_DEFAULTS, exchangeType: TRADING_EXCHANGE_FORM_DEX },
             { quotes: [CEX_QUOTE, DEX_QUOTE] },
@@ -408,11 +438,20 @@ describe('useExchangeQuotes', () => {
         expect(result.current.methods.getValues('exchangeType')).toBe(TRADING_EXCHANGE_FORM_CEX);
     });
 
-    it('keeps CEX on an EVM send network when the first quote is DEX', () => {
-        const { result } = renderExchangeQuotes(VALID_DEFAULTS, {
-            network: getNetwork(ethSymbol),
-            quotes: [DEX_QUOTE, CEX_QUOTE],
-        });
+    it('preselects DEX when the first quote is DEX for a native EVM send asset', () => {
+        const { result } = renderExchangeQuotes(
+            { ...VALID_DEFAULTS, sendCryptoSelect: ETH_SEND_CRYPTO_SELECT },
+            { network: getNetwork(ethSymbol), quotes: [DEX_QUOTE, CEX_QUOTE] },
+        );
+
+        expect(result.current.methods.getValues('exchangeType')).toBe(TRADING_EXCHANGE_FORM_DEX);
+    });
+
+    it('keeps CEX for an ERC-20 send asset when the first quote is DEX', () => {
+        const { result } = renderExchangeQuotes(
+            { ...VALID_DEFAULTS, sendCryptoSelect: USDT_SEND_CRYPTO_SELECT },
+            { network: getNetwork(ethSymbol), quotes: [DEX_QUOTE, CEX_QUOTE] },
+        );
 
         expect(result.current.methods.getValues('exchangeType')).toBe(TRADING_EXCHANGE_FORM_CEX);
     });
