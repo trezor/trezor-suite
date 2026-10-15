@@ -1,7 +1,12 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
 import type { AccountKey } from '@suite-common/wallet-types';
-import { findTransaction } from '@suite-common/wallet-utils';
+import {
+    enhanceTransaction,
+    findTransaction,
+    hasUnresolvedInputs,
+    mergeResolvedInputs,
+} from '@suite-common/wallet-utils';
 import {
     type ActionTypesDep,
     type ReducersDep,
@@ -106,7 +111,17 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
                             (existingTx.deadline && !transaction.deadline)
                         ) {
                             // pending tx got confirmed (blockHeight changed from undefined/0 to a number > 0)
-                            accountTxs[existingTxIndex] = { ...transaction };
+                            // The Electrum backend gives a confirmed transaction again without the
+                            // input values which were already resolved, so they are kept.
+                            const shouldKeepResolvedInputs =
+                                hasUnresolvedInputs(transaction) &&
+                                !hasUnresolvedInputs(existingTx);
+                            accountTxs[existingTxIndex] = shouldKeepResolvedInputs
+                                ? enhanceTransaction(
+                                      mergeResolvedInputs(transaction, existingTx),
+                                      account,
+                                  )
+                                : { ...transaction };
                         }
                     }
                 });

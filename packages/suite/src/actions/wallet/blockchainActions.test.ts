@@ -44,7 +44,19 @@ import {
     setCustomBackendThunk,
     stellarContractTokensInitialState,
 } from '@suite-common/wallet-core';
+import {
+    RESOLVED_FEE,
+    accountWithUnresolvedInputs,
+    getFullTransaction,
+    getUnresolvedTransaction,
+    resolvedForeignInput,
+} from '@suite-common/wallet-core/src/transactions/__fixtures__/unresolvedInputs';
 import { type FeesState } from '@suite-common/wallet-types';
+import {
+    enhanceTransaction,
+    hasUnresolvedInputs,
+    mergeResolvedInputs,
+} from '@suite-common/wallet-utils';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { PROTO } from '@trezor/connect';
 import { asGetter } from '@trezor/dependency-injection';
@@ -294,6 +306,39 @@ describe('Blockchain Actions', () => {
                 }
             }
         });
+    });
+
+    it('onBlock: keeps the resolved inputs of a pending transaction once it is confirmed', async () => {
+        const account = accountWithUnresolvedInputs;
+        const resolvedPending = enhanceTransaction(
+            mergeResolvedInputs(getUnresolvedTransaction(), getFullTransaction()),
+            account,
+        );
+        // The Electrum backend gives the confirmed transaction without the foreign input values.
+        const unresolvedConfirmed = getUnresolvedTransaction({ blockHeight: 100 });
+        testMocks.setTrezorConnectFixtures([
+            { success: true, payload: { history: { total: 1 } } },
+            {
+                success: true,
+                payload: { history: { total: 1, transactions: [unresolvedConfirmed] } },
+            },
+        ]);
+        const store = mockStore(
+            getInitialState({
+                accounts: [account],
+                transactions: { [account.key]: [resolvedPending] },
+            }),
+        );
+
+        await store.dispatch(onBlockMinedThunk({ coin: { shortcut: 'btc' } } as any));
+
+        const [confirmed] = store.getState().wallet.transactions.transactions[account.key] ?? [];
+        expect(confirmed).toMatchObject({
+            blockHeight: 100,
+            fee: RESOLVED_FEE,
+            details: { vin: [{ value: '5000' }, resolvedForeignInput], totalInput: '25000' },
+        });
+        expect(confirmed && hasUnresolvedInputs(confirmed)).toBe(false);
     });
 
     fixtures.customBackend.forEach(f => {

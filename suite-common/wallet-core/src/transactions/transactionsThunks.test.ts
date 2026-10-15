@@ -3,16 +3,30 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
     type PrecomposedTransactionCardanoFinal,
+    type WalletAccountTransaction,
     asAccountDescriptor,
 } from '@suite-common/wallet-types';
 import { mockWalletAccount, networkSpecificDefaultCardano } from '@suite-common/wallet-types/mocks';
+import { enhanceTransaction, hasUnresolvedInputs } from '@suite-common/wallet-utils';
+import TrezorConnect, { type AccountTransaction } from '@trezor/connect';
+import { createMockDispatch } from '@trezor/redux-utils/mocks';
 
+import {
+    RESOLVED_FEE,
+    UNRESOLVED_TXID,
+    accountWithUnresolvedInputs,
+    getFullTransaction,
+    getUnresolvedTransaction,
+    resolvedForeignInput,
+} from './__fixtures__/unresolvedInputs';
 import { transactionsActions } from './transactionsActions';
 import {
     type AddFakePendingCardanoTxThunkState,
     type AddFakePendingStellarTxThunkState,
+    type ResolveTransactionInputsThunkState,
     addFakePendingCardanoTxThunk,
     addFakePendingStellarTxThunk,
+    resolveTransactionInputsThunk,
 } from './transactionsThunks';
 
 const OWN_ADDRESS = 'addr1-own';
@@ -374,5 +388,140 @@ describe('addFakePendingStellarTxThunk', () => {
         );
 
         expect(store.getActions().find(transactionsActions.addTransaction.match)).toBeUndefined();
+    });
+});
+
+const getStoredTransaction = (transaction: AccountTransaction) =>
+    enhanceTransaction(transaction, accountWithUnresolvedInputs);
+
+const getTransactionsState = (
+    transactions: WalletAccountTransaction[],
+    transactionsAccount: Account = accountWithUnresolvedInputs,
+): ResolveTransactionInputsThunkState => ({
+    wallet: {
+        accounts: [transactionsAccount],
+        transactions: {
+            transactions: { [transactionsAccount.key]: transactions },
+            phishing: {},
+            fetchStatusDetail: {},
+        },
+    },
+});
+
+const mockGetTransactions = (transactions: AccountTransaction[]) =>
+    jest
+        .spyOn(TrezorConnect, 'blockchainGetTransactions')
+        .mockResolvedValue({ success: true, payload: transactions });
+
+describe('resolveTransactionInputsThunk', () => {
+    const params = { accountKey: accountWithUnresolvedInputs.key, txid: UNRESOLVED_TXID };
+
+    const resolveInputs = (transactions: WalletAccountTransaction[]) => {
+        const getState = () => getTransactionsState(transactions);
+        const { actions, dispatch } = createMockDispatch({ getState, extra: {} });
+        const run = () => resolveTransactionInputsThunk(params)(dispatch, getState, {}).unwrap();
+        const getReplaceActions = () =>
+            actions.filter(transactionsActions.replaceTransaction.match);
+
+        return { run, getReplaceActions };
+    };
+
+    afterEach(() => jest.restoreAllMocks());
+
+    it('replaces the transaction with the inputs and fee of the one fetched without the account', async () => {
+        const getTransactions = mockGetTransactions([getFullTransaction()]);
+        const { run, getReplaceActions } = resolveInputs([
+            getStoredTransaction(getUnresolvedTransaction()),
+        ]);
+
+        expect(await run()).toBe(true);
+
+        expect(getTransactions).toHaveBeenCalledWith({
+            coin: 'btc',
+            identity: undefined,
+            txs: [UNRESOLVED_TXID],
+        });
+        const [replaceAction] = getReplaceActions();
+        expect(replaceAction?.payload).toEqual({
+            key: accountWithUnresolvedInputs.key,
+            txid: UNRESOLVED_TXID,
+            tx: expect.objectContaining({
+                type: 'joint',
+                amount: '4000',
+                fee: RESOLVED_FEE,
+                feeRate: '5',
+            }),
+        });
+        const resolved = replaceAction?.payload.tx;
+        expect(resolved?.details.vin[1]).toEqual(resolvedForeignInput);
+        expect(resolved?.details.totalInput).toBe('25000');
+        expect(resolved && hasUnresolvedInputs(resolved)).toBe(false);
+    });
+
+    it('computes the replace-by-fee parameters again with the fee', async () => {
+        mockGetTransactions([getFullTransaction()]);
+        const stored = getStoredTransaction(getUnresolvedTransaction());
+        const { run, getReplaceActions } = resolveInputs([stored]);
+
+        await run();
+
+        expect(stored.rbfParams).toMatchObject({ baseFee: 0 });
+        expect(getReplaceActions()[0]?.payload.tx.rbfParams).toMatchObject({
+            baseFee: Number(RESOLVED_FEE),
+            utxo: [expect.objectContaining({ amount: '5000' })],
+        });
+    });
+
+    it('fetches nothing for a transaction with all input values, like one of Blockbook', async () => {
+        const getTransactions = mockGetTransactions([getFullTransaction()]);
+        const { run, getReplaceActions } = resolveInputs([
+            getStoredTransaction(getFullTransaction()),
+        ]);
+
+        expect(await run()).toBe(true);
+        expect(getTransactions).not.toHaveBeenCalled();
+        expect(getReplaceActions()).toEqual([]);
+    });
+
+    it('fetches nothing for an unknown transaction', async () => {
+        const getTransactions = mockGetTransactions([getFullTransaction()]);
+        const { run } = resolveInputs([]);
+
+        expect(await run()).toBe(false);
+        expect(getTransactions).not.toHaveBeenCalled();
+    });
+
+    it('keeps the transaction when it cannot be fetched', async () => {
+        jest.spyOn(TrezorConnect, 'blockchainGetTransactions').mockResolvedValue({
+            success: false,
+            error: { message: 'Transaction not found', code: 'Failure_UnknownCode' },
+        });
+        const { run, getReplaceActions } = resolveInputs([
+            getStoredTransaction(getUnresolvedTransaction()),
+        ]);
+
+        expect(await run()).toBe(false);
+        expect(getReplaceActions()).toEqual([]);
+    });
+
+    it('keeps the transaction when the backend gives it without the input values again', async () => {
+        mockGetTransactions([getUnresolvedTransaction()]);
+        const { run, getReplaceActions } = resolveInputs([
+            getStoredTransaction(getUnresolvedTransaction()),
+        ]);
+
+        expect(await run()).toBe(false);
+        expect(getReplaceActions()).toEqual([]);
+    });
+
+    it('fetches a transaction once for calls waiting at the same time', async () => {
+        const getTransactions = mockGetTransactions([getFullTransaction()]);
+        const { run, getReplaceActions } = resolveInputs([
+            getStoredTransaction(getUnresolvedTransaction()),
+        ]);
+
+        expect(await Promise.all([run(), run()])).toEqual([true, true]);
+        expect(getTransactions).toHaveBeenCalledTimes(1);
+        expect(getReplaceActions()).toHaveLength(1);
     });
 });
