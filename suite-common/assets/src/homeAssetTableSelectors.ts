@@ -20,9 +20,12 @@ import {
     selectLastWeekFiatRates,
 } from '@suite-common/wallet-core';
 import {
+    type BaseCurrencyAmount,
     type CryptoBaseCurrencyPair,
     type Rate,
     type TokenAddress,
+    areBaseCurrencyAmountsEqual,
+    asBaseCurrencyAmount,
 } from '@suite-common/wallet-types';
 import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
@@ -661,6 +664,15 @@ export const selectHasHiddenWalletAssets = createMemoizedSelector(
     byReason => byReason.size > 0,
 );
 
+export const selectWalletAssetFiatValue = createMemoizedSelector(
+    [selectWalletAssetValues, (_state: HomeAssetTableState, assetKey: WalletAssetKey) => assetKey],
+    (values, assetKey): BaseCurrencyAmount | undefined => {
+        const fiatValue = values.get(assetKey);
+
+        return fiatValue === undefined ? undefined : asBaseCurrencyAmount(fiatValue);
+    },
+);
+
 export type HomeAssetTotals = {
     /** Undefined while nothing the wallet holds can be priced — a total of zero would be a lie. */
     fiatValue: BigNumber | undefined;
@@ -698,4 +710,11 @@ export const selectHomeAssetTotals = createMemoizedSelector(
             weekChangePercent: weekChange.div(weekAgoFiatValue),
         };
     },
+);
+
+export const selectHomeAssetTotalFiatValue = createMemoizedSelector(
+    [selectHomeAssetTotals],
+    ({ fiatValue }): BaseCurrencyAmount | undefined =>
+        fiatValue === undefined ? undefined : asBaseCurrencyAmount(fiatValue),
+    { memoizeOptions: { resultEqualityCheck: areBaseCurrencyAmountsEqual } },
 );
