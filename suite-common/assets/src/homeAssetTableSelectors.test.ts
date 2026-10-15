@@ -20,6 +20,7 @@ import {
     selectSmallBalanceSummary,
     selectWalletAssetAmount,
     selectWalletAssetFiatValue,
+    selectWalletAssetTokenSymbol,
 } from './homeAssetTableSelectors';
 
 const ALICE = 'aliceWallet@device:0' as StaticSessionId;
@@ -459,6 +460,36 @@ describe('the total over the wallet', () => {
 
     it('says nothing about a week ago when no rate for it is known', () => {
         expect(selectHomeAssetTotals(state).weekChange).toBeUndefined();
+    });
+});
+
+describe('the ticker of an asset', () => {
+    const state = createState({
+        accounts: [
+            mockAccount({
+                tokens: [
+                    { contract: USDC_ON_ETH, balance: '1', symbol: 'USDC' },
+                    { contract: UNKNOWN_TOKEN, balance: '1' },
+                ],
+            }),
+        ],
+        shownTokens: [UNKNOWN_TOKEN],
+    });
+    const tokenKey = (contractAddress: TokenAddress) =>
+        getWalletAssetKey({ deviceState: ALICE, symbol: ETH, contractAddress });
+
+    it('is the token’s own ticker', () => {
+        expect(selectWalletAssetTokenSymbol(state, tokenKey(USDC_ON_ETH))).toBe('USDC');
+    });
+
+    it('is nothing for a token without one or for the network coin', () => {
+        expect(selectWalletAssetTokenSymbol(state, tokenKey(UNKNOWN_TOKEN))).toBeNull();
+        expect(
+            selectWalletAssetTokenSymbol(
+                state,
+                getWalletAssetKey({ deviceState: ALICE, symbol: ETH }),
+            ),
+        ).toBeNull();
     });
 });
 
