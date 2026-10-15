@@ -17,6 +17,7 @@ import { resolveDirectoryInUserDataDir } from '../../../libs/user-data';
 import { IN_APP_BROWSER_DIRECTORY, IN_APP_BROWSER_SESSION_PARTITION } from '../config';
 import { SERVICE_NAME } from '../constants';
 import { activeViewContext, inAppBrowserContext } from '../context';
+import { denyLocalNetworkRequests } from './localNetwork';
 
 /**
  * Turns an entry id into the directory that entry's session lives in.
@@ -237,6 +238,7 @@ async function getInMemorySession(): Promise<Session> {
 
     denyAllPermissions(inMemorySession, logger);
     denyDownloads(inMemorySession, logger);
+    denyLocalNetworkRequests(inMemorySession, logger);
     setPlainChromeUserAgent(inMemorySession);
     await inAppBrowserContext.insert(() => ({ inMemorySession }));
 
@@ -288,6 +290,7 @@ export async function getPersistentSession(entryId: string): Promise<Result<Sess
 
     denyAllPermissions(inAppBrowserSession, logger);
     denyDownloads(inAppBrowserSession, logger);
+    denyLocalNetworkRequests(inAppBrowserSession, logger);
     setPlainChromeUserAgent(inAppBrowserSession);
     sessions.set(entryId, inAppBrowserSession);
 

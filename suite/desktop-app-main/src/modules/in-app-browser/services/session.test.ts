@@ -203,6 +203,18 @@ describe('in-app browser sessions and Tor', () => {
             expect(download.preventDefault).toHaveBeenCalledTimes(1);
         });
 
+        // The host decides where the main frame may go; this is what keeps the page's own requests
+        // off this machine. The filter's decisions are covered next to the filter.
+        it.each([
+            { name: 'the in-memory', isPersistent: false },
+            { name: 'a persistent', isPersistent: true },
+        ])('filters the requests of $name session', async ({ isPersistent }) => {
+            await resolveSessionForOpen(isPersistent ? getPersistentEntry() : undefined);
+            const created = isPersistent ? persistentSession : inMemorySession;
+
+            expect(created.webRequest.onBeforeRequest).toHaveBeenCalledTimes(1);
+        });
+
         it('installs the download guard once per session rather than once per open', async () => {
             await resolveSessionForOpen(undefined);
             await resolveSessionForOpen(undefined);
