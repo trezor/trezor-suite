@@ -134,7 +134,6 @@ export interface TradingSellFormContextProps
 
 export type TradingExchangeConfirmTradeProps = {
     receiveAddress: string;
-    extraField?: string;
     trade?: ExchangeTrade;
     approvalFlow?: boolean;
 };
@@ -164,7 +163,6 @@ export interface TradingExchangeFormContextProps
 
     confirmTrade: ({
         receiveAddress,
-        extraField,
         trade,
     }: TradingExchangeConfirmTradeProps) => Promise<ExchangeTrade | undefined>;
     verifyAddress: TradingVerifyAccountProps;
