@@ -12,16 +12,16 @@ import {
     selectSendPrecomposedTx,
     selectSendSerializedTx,
 } from '@suite-common/wallet-core';
-import {
-    type AccountKey,
-    type FeeLevelLabel,
-    type FormDraftWithSendKeyPrefix,
-    type FormState,
-    type GeneralPrecomposedTransaction,
-    type TokenAddress,
-    type TransactionReviewOutputState,
-    type TransactionReviewStatefulOutput,
-    type TransactionReviewSummaryOutput,
+import type {
+    AccountKey,
+    FeeLevelLabel,
+    FormDraftWithSendKeyPrefix,
+    FormState,
+    GeneralPrecomposedTransaction,
+    TokenAddress,
+    TransactionReviewOutputState,
+    TransactionReviewStatefulOutput,
+    TransactionReviewSummaryOutput,
 } from '@suite-common/wallet-types';
 import {
     constructTransactionReviewOutputs,

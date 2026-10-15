@@ -1,4 +1,4 @@
-import { type FeeLevelLabel, type GeneralPrecomposedLevels } from '@suite-common/wallet-types';
+import type { FeeLevelLabel, GeneralPrecomposedLevels } from '@suite-common/wallet-types';
 
 export type GetFeeAvailabilityParams = {
     fee: string | null | undefined;

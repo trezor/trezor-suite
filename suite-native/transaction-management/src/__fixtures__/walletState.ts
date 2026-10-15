@@ -1,11 +1,7 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type FiatRatesState } from '@suite-common/wallet-core';
-import {
-    type Account,
-    AddressDisplayOptions,
-    type RatesByKey,
-    type WalletSettings,
-} from '@suite-common/wallet-types';
+import type { Account, RatesByKey, WalletSettings } from '@suite-common/wallet-types';
+import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { PROTO } from '@trezor/connect';
 

@@ -9,12 +9,12 @@ import {
     selectConvertedNetworkFeeInfo,
     selectIsEip1559Fee,
 } from '@suite-common/wallet-core';
-import {
-    type AccountKey,
-    type FeeLevelLabel,
-    type PrecomposedTransactionFinal,
-    isFinalPrecomposedTransaction,
+import type {
+    AccountKey,
+    FeeLevelLabel,
+    PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
+import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { type UseFormReturn, useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 

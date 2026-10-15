@@ -25,9 +25,6 @@
             "path": "../../suite-common/wallet-core"
         },
         {
-            "path": "../../suite-common/wallet-types"
-        },
-        {
             "path": "../../suite-common/wallet-utils"
         },
         { "path": "../alerts" },
@@ -52,6 +49,9 @@
         },
         { "path": "../../packages/theme" },
         { "path": "../../packages/utils" },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
         { "path": "../test-utils" },
         { "path": "../test-utils-store" }
     ],

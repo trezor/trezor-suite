@@ -8,7 +8,7 @@ import {
     type WalletSettingsRootState,
     initialWalletSettingsState,
 } from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
+import type { AccountKey } from '@suite-common/wallet-types';
 import { Form } from '@suite-native/forms';
 import { type LocaleSliceRootState, localeReducer } from '@suite-native/intl';
 import {

@@ -6,7 +6,7 @@ import {
     selectAccountByKey,
     selectAreFeesLoading,
 } from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
+import type { AccountKey } from '@suite-common/wallet-types';
 import { calculateTronFeeBreakdown } from '@suite-common/wallet-utils';
 import { useTranslate } from '@suite-native/intl';
 

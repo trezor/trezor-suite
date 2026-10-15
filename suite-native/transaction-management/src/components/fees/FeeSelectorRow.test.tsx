@@ -1,5 +1,5 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type FormState } from '@suite-common/wallet-types';
+import type { FormState } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 

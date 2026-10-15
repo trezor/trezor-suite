@@ -14,14 +14,14 @@ import {
     selectSendFormDraftByKey,
     sendFormActions,
 } from '@suite-common/wallet-core';
-import {
-    type AccountKey,
-    type FormState,
-    type GeneralPrecomposedTransactionFinal,
-    type PrecomposedLevels,
-    type PrecomposedLevelsCardano,
-    isFinalPrecomposedTransaction,
+import type {
+    AccountKey,
+    FormState,
+    GeneralPrecomposedTransactionFinal,
+    PrecomposedLevels,
+    PrecomposedLevelsCardano,
 } from '@suite-common/wallet-types';
+import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 
 import { transactionManagementActions } from './sendFormSlice';
 import { type FeeLevelsMaxAmount, type UpdateFeeLimitThunkParams } from './types';

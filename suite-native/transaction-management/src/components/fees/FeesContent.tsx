@@ -1,5 +1,5 @@
 import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
-import { type AccountKey, type FeeLevelLabel, type FormState } from '@suite-common/wallet-types';
+import type { AccountKey, FeeLevelLabel, FormState } from '@suite-common/wallet-types';
 import { Text, VStack } from '@suite-native/atoms';
 
 import { CustomFee } from './CustomFee/CustomFee';

@@ -11,7 +11,7 @@ import {
     pushSendFormTransactionThunk,
     signTransactionThunk,
 } from '@suite-common/wallet-core';
-import { type GeneralPrecomposedLevels } from '@suite-common/wallet-types';
+import type { GeneralPrecomposedLevels } from '@suite-common/wallet-types';
 
 type NativeSendState = CommonSendState & {
     error: null | SendFormError;

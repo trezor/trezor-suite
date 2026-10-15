@@ -1,11 +1,11 @@
 import { useCallback, useRef } from 'react';
 
 import { injectDispatch } from '@suite-common/redux-utils';
-import {
-    type AccountKey,
-    type FeeLevelLabel,
-    type FormState,
-    type TokenAddress,
+import type {
+    AccountKey,
+    FeeLevelLabel,
+    FormState,
+    TokenAddress,
 } from '@suite-common/wallet-types';
 import { useBottomSheetModal } from '@suite-native/atoms';
 import { useWatch } from '@suite-native/forms';
