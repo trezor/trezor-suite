@@ -32,6 +32,7 @@ import { NativeBluetoothTransport } from '@trezor/transport-native-bluetooth';
 import { NativeUsbTransport } from '@trezor/transport-native-usb';
 
 import { type NativeServices } from './NativeServices';
+import { createNativeStakingNotifier } from './createNativeStakingNotifier';
 import { type NativeReduxStore } from './createReduxStore';
 
 const deviceType = Device.isDevice ? 'device' : 'emulator';
@@ -100,6 +101,7 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
         ensureDelegatedIdentityKey,
         platformEncryption,
         analytics,
+        stakingNotifier: createNativeStakingNotifier({ analytics }),
         getMMKVStorage: () => deps.mmkvStorage.getMMKV(),
         reportSecurityCheck,
         reloadApp: RNRestart.restart,

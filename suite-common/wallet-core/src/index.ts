@@ -100,6 +100,7 @@ export * from './staking/solana/solanaStakingUtils';
 export * from './staking/stakingActions';
 export * from './staking/stakingDataSlice';
 export * from './staking/stakingMiddleware';
+export type * from './staking/stakingNotifier';
 export * from './staking/stakingReducer';
 export type * from './staking/stakingReducerTypes';
 export * from './staking/stakingSelectors';

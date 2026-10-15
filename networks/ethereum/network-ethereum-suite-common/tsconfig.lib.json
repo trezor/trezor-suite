@@ -1,8 +1,6 @@
 {
     "extends": "../../../tsconfig.lib.json",
-    "compilerOptions": {
-        "outDir": "./lib"
-    },
+    "compilerOptions": { "outDir": "./lib" },
     "include": ["./src"],
     "references": [
         {
@@ -11,24 +9,16 @@
         {
             "path": "../../../packages/connect-common"
         },
-        {
-            "path": "../network-ethereum"
-        },
-        {
-            "path": "../network-ethereum-assets"
-        },
-        {
-            "path": "../network-ethereum-types"
-        },
+        { "path": "../network-ethereum" },
+        { "path": "../network-ethereum-assets" },
+        { "path": "../network-ethereum-types" },
         {
             "path": "../../network-module/network-module-suite-common-types"
         },
         {
             "path": "../../network-module/network-module-types"
         },
-        {
-            "path": "../../../packages/utils"
-        },
+        { "path": "../../../packages/utils" },
         {
             "path": "../../../packages/dependency-injection"
         }

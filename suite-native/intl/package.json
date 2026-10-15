@@ -3,7 +3,9 @@
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
-    "sideEffects": ["src/i18n.ts"],
+    "sideEffects": [
+        "src/i18n.ts"
+    ],
     "main": "src/index",
     "scripts": {
         "depcheck": "yarn g:depcheck",
