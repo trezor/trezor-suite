@@ -1,4 +1,4 @@
-import { type Session } from 'electron';
+import { type Session, type WebRequest } from 'electron';
 
 export type MockSession = Pick<
     Session,
@@ -11,7 +11,9 @@ export type MockSession = Pick<
     | 'getUserAgent'
     | 'setUserAgent'
     | 'storagePath'
->;
+> & {
+    webRequest: Pick<WebRequest, 'onBeforeRequest'>;
+};
 
 /**
  * A session whose asynchronous methods resolve. In memory unless given a `storagePath`.
@@ -23,6 +25,7 @@ export const mockSession = (overrides: Partial<MockSession> = {}): MockSession =
     setPermissionCheckHandler: jest.fn(),
     setDevicePermissionHandler: jest.fn(),
     on: jest.fn(),
+    webRequest: { onBeforeRequest: jest.fn() },
     getUserAgent: () => 'Mozilla/5.0 TrezorSuite/1.0 Chrome/1.0 Electron/43.0 Safari/537.36',
     setUserAgent: jest.fn(),
     storagePath: null,

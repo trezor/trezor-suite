@@ -77,6 +77,16 @@ reported to the renderer when they refuse something:
 **The page has no preload, no node integration, and no access to Suite IPC.** Every permission request is denied, and so is every
 download: a download nothing handles would get Electron's own save dialog, under Suite's name, writing wherever the user points it.
 
+#### The local network
+
+The allowlists contain the main frame and the popups. What the page fetches, frames, scripts and sockets reach is its own business —
+except for one destination: this machine and the network it sits on, where Suite's own HTTP receiver and the Trezor Bridge answer on
+loopback. Chromium sends loopback traffic past any proxy, so Tor does not close that either. Every session this module creates therefore
+carries a `webRequest` filter (`services/localNetwork.ts`) that cancels requests to loopback, private, shared and link-local addresses in
+either IP version, however the address is spelled, and to names reserved for local use (`localhost`, `.local`, `.internal`, `home.arpa`).
+The page sees `ERR_BLOCKED_BY_CLIENT`, as for a blocked tracker. The filter judges the host in the URL: a public name that resolves to a
+local address passes, which only the resolver can see and which Chromium's own local-network checks exist for.
+
 ### One call at a time
 
 `ipcMain` runs handlers as the calls land, and an open awaits a session, the teardown of the previous view and the proxy before it creates its view, so two opens landing together would both tear down nothing and leave the first view attached to the window, loading and never closed, behind the second. Everything that creates or takes down a view — open, close, forget data, a change of the Tor settings, a renderer reload, the window going away, quit — runs through one queue in `init.ts`, so each call sees the previous one completed. The bounds and visibility handlers stay outside it: they act on whichever view is active at the time.
