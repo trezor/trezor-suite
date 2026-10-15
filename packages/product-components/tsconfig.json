@@ -20,9 +20,6 @@
             "path": "../../suite-common/suite-types"
         },
         {
-            "path": "../../suite-common/toast-notifications"
-        },
-        {
             "path": "../../suite-common/wallet-utils"
         },
         { "path": "../asset-utils" },

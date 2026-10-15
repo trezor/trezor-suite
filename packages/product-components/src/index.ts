@@ -26,7 +26,12 @@ export { LastUpdateTooltip } from './components/LastUpdateTooltip/LastUpdateTool
 export { NetworkIcon, type NetworkIconProps } from './components/NetworkIcon/NetworkIcon';
 export * from './components/NetworkIconSet/NetworkIconSet';
 export { ExchangeInfoNotification } from './components/Notifications/ExchangeInfoNotification';
-export type { TransactionNotificationType } from './components/Notifications/notificationsTypes';
+export type {
+    ExchangeInfoAmountSide,
+    ExchangeInfoAsset,
+    TransactionNotificationToken,
+    TransactionNotificationType,
+} from './components/Notifications/notificationsTypes';
 export { TransactionNotification } from './components/Notifications/TransactionNotification';
 export type { TransactionNotificationProps } from './components/Notifications/TransactionNotification';
 export { NumberInput } from './components/NumberInput/NumberInput';
