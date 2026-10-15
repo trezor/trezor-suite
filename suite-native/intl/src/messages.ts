@@ -2016,12 +2016,11 @@ export const messages = {
         accountsScreen: {
             accountsTitle: 'Accounts',
             networkFilter: {
-                showAccountsOnTitle: 'Show accounts on',
                 applyButton: 'Apply',
                 clearButton: 'Clear filter',
                 showAllButton: 'Show all',
                 accountCount: '{count, plural, one {# account} other {# accounts}}',
-                title: 'Show assets on',
+                title: 'Filter by network',
             },
             title: 'My assets',
         },
