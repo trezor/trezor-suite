@@ -1,0 +1,80 @@
+import { buildAllowance } from './builder/evm/allowance';
+import { buildApprove } from './builder/evm/approve';
+import { buildClaim } from './builder/evm/claim';
+import { buildDeposit } from './builder/evm/deposit';
+import { buildEnsAddr } from './builder/evm/ens/addr';
+import { buildEnsMulticall } from './builder/evm/ens/multicall';
+import { buildEnsResolve } from './builder/evm/ens/resolve';
+import { buildEnsReverse } from './builder/evm/ens/reverse';
+import { buildEnsText } from './builder/evm/ens/text';
+import { buildClaimWithdrawRequest } from './builder/evm/everstake/claimWithdrawRequest';
+import { buildStake } from './builder/evm/everstake/stake';
+import { buildUnstake } from './builder/evm/everstake/unstake';
+import { buildRedeem } from './builder/evm/redeem';
+import { buildTransfer } from './builder/evm/transfer';
+import { buildWethDeposit } from './builder/evm/weth/deposit';
+import { buildWethWithdraw } from './builder/evm/weth/withdraw';
+import { buildWithdraw } from './builder/evm/withdraw';
+import { EVM_ABI } from './constants/evm';
+import { createEvmDecoder } from './decoder/evm';
+
+export const Calldata = {
+    evm: {
+        erc20: {
+            allowance: { encode: buildAllowance },
+            approve: {
+                encode: buildApprove,
+                decode: createEvmDecoder(EVM_ABI.erc20.approve),
+            },
+            transfer: {
+                encode: buildTransfer,
+                decode: createEvmDecoder(EVM_ABI.erc20.transfer),
+            },
+        },
+        erc4626: {
+            deposit: {
+                encode: buildDeposit,
+                decode: createEvmDecoder(EVM_ABI.erc4626.deposit),
+            },
+            withdraw: {
+                encode: buildWithdraw,
+                decode: createEvmDecoder(EVM_ABI.erc4626.withdraw),
+            },
+            redeem: {
+                encode: buildRedeem,
+                decode: createEvmDecoder(EVM_ABI.erc4626.redeem),
+            },
+        },
+        distributor: {
+            claim: {
+                encode: buildClaim,
+                decode: createEvmDecoder(EVM_ABI.distributor.claim),
+            },
+        },
+        everstake: {
+            stake: { encode: buildStake },
+            unstake: {
+                encode: buildUnstake,
+                decode: createEvmDecoder(EVM_ABI.everstake.unstake),
+            },
+            claimWithdrawRequest: { encode: buildClaimWithdrawRequest },
+        },
+        ens: {
+            resolve: { encode: buildEnsResolve },
+            reverse: { encode: buildEnsReverse },
+            addr: { encode: buildEnsAddr },
+            text: { encode: buildEnsText },
+            multicall: { encode: buildEnsMulticall },
+        },
+        weth: {
+            deposit: {
+                encode: buildWethDeposit,
+                decode: createEvmDecoder(EVM_ABI.weth.deposit),
+            },
+            withdraw: {
+                encode: buildWethWithdraw,
+                decode: createEvmDecoder(EVM_ABI.weth.withdraw),
+            },
+        },
+    },
+} as const;

@@ -1,4 +1,4 @@
-import { NATIVE_CURRENCY, decodeClearSignedSwap } from '@suite-common/calldata';
+import { NATIVE_CURRENCY, decodeClearSignedSwap } from '@trezor/network-ethereum-suite-common';
 import { BigNumber } from '@trezor/utils';
 
 import { convertAmountSubunitsToUnits } from './amountUtils';

@@ -1,4 +1,3 @@
-import { Calldata, asEvmAddress } from '@suite-common/calldata';
 import { type EvmFeeHex, type EvmHexString, parseEvmFeeHex } from '@suite-common/schemas/src/evm';
 import {
     type FormState,
@@ -7,6 +6,7 @@ import {
 } from '@suite-common/wallet-types';
 import { fromHex, sanitizeHex } from '@suite-common/wallet-utils';
 import { type EthereumSignTransaction } from '@trezor/connect-common';
+import { Calldata, asEvmAddress } from '@trezor/network-ethereum-suite-common';
 import { BigNumber } from '@trezor/utils';
 
 export type ClaimReward = {

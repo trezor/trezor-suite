@@ -1,5 +1,5 @@
-import { Calldata } from '@suite-common/calldata';
 import { getEvmTransactionTextSignature } from '@suite-common/wallet-utils';
+import { Calldata } from '@trezor/network-ethereum-suite-common';
 
 type UnsignedYieldTx = {
     to?: string;

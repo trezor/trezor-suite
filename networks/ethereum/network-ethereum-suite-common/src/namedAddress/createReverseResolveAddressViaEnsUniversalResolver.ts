@@ -1,7 +1,6 @@
 import { BaseError, decodeFunctionResult } from 'viem';
 import { toCoinType } from 'viem/ens';
 
-import { Calldata, EVM_ABI } from '@suite-common/calldata';
 import type { EthereumNetworkSymbol } from '@trezor/network-ethereum-types';
 import { BigNumber } from '@trezor/utils';
 
@@ -9,6 +8,8 @@ import type { ReverseResolveAddress } from './ReverseResolveAddress';
 import type { CallEnsUniversalResolverDep } from './createCallEnsUniversalResolver';
 import { asHex, buildCalldata, isOffchainError, isRevertError } from './ensUniversalResolverUtils';
 import { getNamedAddressChainId } from './namedAddressUtils';
+import { Calldata } from '../calldata/calldata';
+import { EVM_ABI } from '../calldata/constants/evm';
 
 /**
  * ENSIP-11 coin type for the network's own chain, which selects the reverse namespace. viem maps

@@ -14,7 +14,6 @@
     },
     "dependencies": {
         "@suite-common/address": "workspace:*",
-        "@suite-common/calldata": "workspace:*",
         "@suite-common/fiat-services": "workspace:*",
         "@suite-common/legacy-network-config": "workspace:*",
         "@suite-common/suite-constants": "workspace:*",

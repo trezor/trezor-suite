@@ -1,5 +1,5 @@
-import { asEvmAddress } from '@suite-common/calldata';
 import { getNetwork } from '@suite-common/wallet-config';
+import { asEvmAddress } from '@trezor/network-ethereum-suite-common';
 import { createThunk } from '@trezor/redux-utils';
 
 import {

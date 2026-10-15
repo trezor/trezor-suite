@@ -13,7 +13,6 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@suite-common/calldata": "workspace:^",
         "@suite-common/earn-stablecoin-api": "workspace:^",
         "@suite-common/message-system": "workspace:^",
         "@suite-common/schemas": "workspace:^",

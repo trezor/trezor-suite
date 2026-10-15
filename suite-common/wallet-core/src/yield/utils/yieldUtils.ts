@@ -1,4 +1,3 @@
-import { Calldata, type EvmAddress } from '@suite-common/calldata';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol, getNetworkByYieldXyzId } from '@suite-common/wallet-config';
 import { type AccountKey, type EvmSelectedFee } from '@suite-common/wallet-types';
@@ -10,7 +9,11 @@ import {
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
-import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
+import {
+    Calldata,
+    type EvmAddress,
+    isWrappedNativeToken,
+} from '@trezor/network-ethereum-suite-common';
 import { BigNumber } from '@trezor/utils';
 
 import { YIELD_FLOW_AVAILABLE_STEPS } from '../yieldConstants';

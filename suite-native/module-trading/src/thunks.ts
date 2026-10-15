@@ -1,7 +1,6 @@
 import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 import { type DexApprovalType, type ExchangeTrade } from 'invity-api';
 
-import { Calldata } from '@suite-common/calldata';
 import {
     type MevProtectionRootState,
     selectIsMevProtectionFeatureEnabled,
@@ -63,6 +62,7 @@ import {
     transactionManagementActions,
 } from '@suite-native/transaction-management';
 import { type BlockbookTransaction } from '@trezor/blockchain-link-types';
+import { Calldata } from '@trezor/network-ethereum-suite-common';
 import { createThunk } from '@trezor/redux-utils';
 import { type Ok } from '@trezor/type-utils';
 

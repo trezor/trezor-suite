@@ -1,6 +1,5 @@
 import { addDays, startOfMonth } from 'date-fns';
 
-import { Calldata } from '@suite-common/calldata';
 import { type SignOperator } from '@suite-common/suite-types';
 import { type NetworkFeature, type NetworkType, getNetworkType } from '@suite-common/wallet-config';
 import {
@@ -28,6 +27,7 @@ import {
     type TokenInfo,
     type TokenTransfer,
 } from '@trezor/connect';
+import { Calldata } from '@trezor/network-ethereum-suite-common';
 import { SOLANA_BLOCKHASH_VALIDITY_MS } from '@trezor/network-solana/constants';
 import { type Branded } from '@trezor/type-utils';
 import { BigNumber, arrayPartition, isNotNullOrUndefined, typedObjectKeys } from '@trezor/utils';

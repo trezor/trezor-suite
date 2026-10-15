@@ -40,6 +40,7 @@
 !/packages/blockchain-link-types
 !/packages/blockchain-link-utils
 !/packages/bundler-security
+!/packages/calldata
 !/packages/connect
 !/packages/connect-common
 !/packages/connect-core
@@ -86,7 +87,6 @@
 !/suite-common/bip329
 !/suite-common/bip329-types
 !/suite-common/bluetooth
-!/suite-common/calldata
 !/suite-common/connect-init
 !/suite-common/connect-popup
 !/suite-common/delegated-identity-key
