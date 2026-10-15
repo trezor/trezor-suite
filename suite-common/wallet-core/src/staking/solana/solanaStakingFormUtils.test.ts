@@ -1,8 +1,9 @@
-import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type NetworkSymbol, asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     type ComposeActionContext,
     type StakeFormState,
     type StakeType,
+    asAccountDescriptor,
 } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import TrezorConnect, { type FeeLevel } from '@trezor/connect';
@@ -40,7 +41,7 @@ jest.mock('@trezor/network-solana/runtime', () => ({
 }));
 
 const SOL = asNetworkSymbol('sol');
-const DESCRIPTOR = 'SoLDeScRiPtoR1111111111111111111111111111111';
+const DESCRIPTOR = asAccountDescriptor('SoLDeScRiPtoR1111111111111111111111111111111');
 const BLOCKCHAIN_URL = 'https://solana.example';
 const USER_AGENT = 'Trezor Suite test';
 const CONNECTION = { rpc: 'connection' };
@@ -78,7 +79,7 @@ const CUSTOM_FEE_LEVEL: FeeLevel = { ...NORMAL_FEE_LEVEL, label: 'custom' };
 
 const ESTIMATED_FEE_LEVEL = { feePerUnit: '5000', feeLimit: '200000', feePerTx: '5000' };
 
-const buildComposeContext = (symbol = SOL): ComposeActionContext => ({
+const buildComposeContext = (symbol: NetworkSymbol = SOL): ComposeActionContext => ({
     account: mockWalletAccount({
         symbol,
         descriptor: DESCRIPTOR,

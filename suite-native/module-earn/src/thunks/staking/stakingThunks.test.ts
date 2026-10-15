@@ -16,6 +16,7 @@ import {
 } from '@suite-common/wallet-core';
 import {
     type Account,
+    AddressDisplayOptions,
     type FormState,
     type PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
@@ -148,7 +149,7 @@ type State = {
         formDrafts: Record<string, FormState>;
         blockchain: Record<string, unknown>;
         send: SendState;
-        settings: { mevProtection: boolean };
+        settings: { mevProtection: boolean; addressDisplayType: AddressDisplayOptions };
     };
 };
 
@@ -186,7 +187,10 @@ const buildStore = ({
                     actionTypes: { storageLoad: mockActionType('storageLoad') },
                     reducers: { storageLoadFormDrafts: mockReducer() },
                 }),
-                settings: () => ({ mevProtection: false }),
+                settings: (): State['wallet']['settings'] => ({
+                    mevProtection: false,
+                    addressDisplayType: AddressDisplayOptions.ORIGINAL,
+                }),
             }),
         }),
         services: () => ({

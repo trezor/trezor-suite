@@ -164,6 +164,7 @@ type PrecomposedTransactionNonFinal = PrecomposedTransactionConnectResponseNonFi
     memoFee?: string;
     solanaTxMeta?: SolanaTxMeta;
     isDeviceReviewOnly?: boolean;
+    transactionData?: string;
 };
 
 // base of PrecomposedTransactionFinal
@@ -184,6 +185,7 @@ type PrecomposedTransactionBase = PrecomposedTransactionConnectResponseFinal & {
     maxPriorityFeePerGas?: string;
     solanaTxMeta?: SolanaTxMeta;
     isDeviceReviewOnly?: boolean;
+    transactionData?: string;
 };
 
 // base of PrecomposedTransactionFinal

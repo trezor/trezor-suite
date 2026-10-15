@@ -8,6 +8,14 @@ export type StakeTxBaseArgs = {
     symbol: NetworkSymbol;
     identity?: string;
     feeLimit?: string;
+    source?: string;
+};
+
+export type EthereumStakingTransactionDraft = {
+    to: string;
+    value: string;
+    gasLimit: number | string;
+    data: string;
 };
 
 export interface GetStakeFormsDefaultValuesParams {
@@ -16,31 +24,13 @@ export interface GetStakeFormsDefaultValuesParams {
     amount?: string;
 }
 
-export interface PrepareStakeEthTxParams {
-    symbol: NetworkSymbol;
-    identity?: string;
-    from: string;
-    amount: string;
-    gasPrice: string | undefined;
-    nonce: string;
-    chainId: number;
-    feeLimit?: string;
-    maxFeePerGas?: string;
-    maxPriorityFeePerGas?: string;
-}
-
-export interface PrepareUnstakeEthTxParams extends PrepareStakeEthTxParams {
-    interchanges: number;
-}
-
-export type PrepareClaimEthTxParams = Omit<PrepareStakeEthTxParams, 'amount'>;
-
 export interface GetStakeTxGasLimitParams {
     stakeType: StakeType;
     from: string;
     amount: string;
     symbol: NetworkSymbol;
     identity?: string;
+    source?: string;
 }
 
 export type VerifyEthereumStakingLiveStateParams = {

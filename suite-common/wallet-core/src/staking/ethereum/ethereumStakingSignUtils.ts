@@ -3,11 +3,10 @@ import {
     type Account,
     type AccountKey,
     type BaseStakeType,
-    type FormState,
     type PrecomposedTransactionFinal,
     type StakeFormState,
 } from '@suite-common/wallet-types';
-import { fromEther, getAccountIdentity, getFormDraftKey } from '@suite-common/wallet-utils';
+import { fromEther, getAccountIdentity } from '@suite-common/wallet-utils';
 import { type FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
@@ -20,8 +19,6 @@ import {
 } from './ethereumStaking';
 import { type AccountsRootState } from '../../accounts/accountsReducer';
 import { selectAccountByKey } from '../../accounts/accountsSelectors';
-import { type FormDraftRootState } from '../../formDrafts/formDraftSlice';
-import { selectFormDraft } from '../../formDrafts/selectors';
 import { type SignTransactionError } from '../../send/sendFormTypes';
 
 const PREPARE_LOG_PREFIX = 'prepareEthereumStakingContext';
@@ -84,15 +81,13 @@ const buildEthereumStakingSignFormState = (
 });
 
 // Reads the variant the form already produced at compose time and converts it to the sign-time wei value. This avoids re-encoding the calldata at sign time.
-const readVariantFromComposeDraft = (
-    state: FormDraftRootState,
+const readVariantFromFormValues = (
+    formValues: StakeFormState,
     stakeType: BaseStakeType,
-    accountKey: AccountKey,
 ): EthereumStakingVariant | null => {
-    const draft = selectFormDraft<FormState>(state, getFormDraftKey(stakeType, accountKey));
-    const calldata = draft?.transactionData;
-    const contractAddress = draft?.outputs[0]?.address;
-    const composeAmount = draft?.outputs[0]?.amount;
+    const calldata = formValues.transactionData;
+    const contractAddress = formValues.outputs[0]?.address;
+    const composeAmount = formValues.outputs[0]?.amount;
 
     if (!calldata || !contractAddress || !composeAmount) return null;
 
@@ -108,19 +103,26 @@ const readVariantFromComposeDraft = (
     };
 };
 
-export type PrepareEthereumStakingContextState = AccountsRootState & FormDraftRootState;
+export type PrepareEthereumStakingContextState = AccountsRootState;
+
+type PrepareEthereumStakingContextParams = {
+    accountKey: AccountKey;
+    stakeType: BaseStakeType;
+    precomposedTransaction: PrecomposedTransactionFinal;
+    formValues: StakeFormState;
+    source?: string;
+};
 
 export const prepareEthereumStakingContext = (
     state: PrepareEthereumStakingContextState,
-    args: {
-        accountKey: AccountKey;
-        stakeType: BaseStakeType;
-        precomposedTransaction: PrecomposedTransactionFinal;
-        source?: string;
-    },
+    {
+        accountKey,
+        stakeType,
+        precomposedTransaction,
+        formValues,
+        source,
+    }: PrepareEthereumStakingContextParams,
 ): { ok: true; context: PreparedEthereumStakingContext } | PrepareFailure => {
-    const { accountKey, stakeType, precomposedTransaction, source } = args;
-
     const account = selectAccountByKey(state, accountKey);
     if (account?.networkType !== 'ethereum') {
         return failed('Ethereum account not found.');
@@ -139,12 +141,10 @@ export const prepareEthereumStakingContext = (
         return failed('Selected fee level is missing gas limit.');
     }
 
-    const variant = readVariantFromComposeDraft(state, stakeType, accountKey);
+    const variant = readVariantFromFormValues(formValues, stakeType);
+
     if (!variant) {
-        return failed(
-            `Compose draft for ${stakeType} is missing.`,
-            `Compose draft for ${stakeType} is missing or incomplete.`,
-        );
+        return failed(`Compose result for ${stakeType} is incomplete.`);
     }
 
     const calldataCheck = verifyEthereumStakingCalldata({
