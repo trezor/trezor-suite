@@ -17,6 +17,7 @@ import {
     type TradingExchangeFormProps,
     exchangeThunks,
     isReceiveAddressCoherent,
+    requiresErc20Approval,
     selectTradingExchangeCexQuotes,
     selectTradingExchangeDexQuotes,
     selectTradingExchangeQuotes,
@@ -157,11 +158,12 @@ export const useExchangeQuotes = ({
 
     const exchangeType = useWatch({ control: methods.control, name: TRADING_EXCHANGE_FORM });
     const provider = useWatch({ control: methods.control, name: TRADING_FORM_PROVIDER_SELECT });
-    const networkType = network?.networkType;
+    const sendCryptoId = sendCryptoSelect?.id;
 
     useEffect(() => {
         const [bestQuote] = quotes;
-        const canPreselectAnyQuoteType = !!bestQuote && !provider && networkType !== 'ethereum';
+        const canPreselectAnyQuoteType =
+            !!bestQuote && !provider && !requiresErc20Approval(sendCryptoId);
 
         if (canPreselectAnyQuoteType) {
             const bestQuoteExchangeType = bestQuote.isDex
@@ -189,7 +191,7 @@ export const useExchangeQuotes = ({
         } else if (isSelectedDexButNotFoundAny) {
             methods.setValue(TRADING_EXCHANGE_FORM, TRADING_EXCHANGE_FORM_CEX);
         }
-    }, [quotes, dexQuotes, cexQuotes, exchangeType, provider, networkType, methods]);
+    }, [quotes, dexQuotes, cexQuotes, exchangeType, provider, sendCryptoId, methods]);
 
     return {
         cexQuotes,
