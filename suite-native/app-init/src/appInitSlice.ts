@@ -1,10 +1,6 @@
-import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
-import {
-    type ConnectAndBlockchainInitializationError,
-    type ConnectAndBlockchainInitializationResult,
-    ConnectAndBlockchainInitializationStatus,
-} from './appTypes';
+import { ConnectAndBlockchainInitializationStatus } from './appTypes';
 import { applicationInitThunk } from './applicationInitThunk';
 import { postOnboardingInitThunk } from './postOnboardingInitThunk';
 
@@ -19,7 +15,7 @@ type AppInitRootState = {
 
 export const appInitInitialState: AppInitState = {
     isAppInitFinished: false,
-    connectAndBlockchainInitializationStatus: ConnectAndBlockchainInitializationStatus.Idle,
+    connectAndBlockchainInitializationStatus: ConnectAndBlockchainInitializationStatus.Pending,
 };
 
 const appInitSlice = createSlice({
@@ -30,27 +26,15 @@ const appInitSlice = createSlice({
         builder
             .addCase(postOnboardingInitThunk.pending, (state: AppInitState) => {
                 state.connectAndBlockchainInitializationStatus =
-                    ConnectAndBlockchainInitializationStatus.Initializing;
+                    ConnectAndBlockchainInitializationStatus.Pending;
             })
-            .addCase(
-                postOnboardingInitThunk.fulfilled,
-                (
-                    state: AppInitState,
-                    { payload }: PayloadAction<ConnectAndBlockchainInitializationResult>,
-                ) => {
-                    state.connectAndBlockchainInitializationStatus = payload;
-                },
-            )
-            .addCase(
-                postOnboardingInitThunk.rejected,
-                (
-                    state: AppInitState,
-                    { payload }: PayloadAction<ConnectAndBlockchainInitializationError | undefined>,
-                ) => {
-                    state.connectAndBlockchainInitializationStatus =
-                        payload ?? ConnectAndBlockchainInitializationStatus.Error;
-                },
-            )
+            .addCase(postOnboardingInitThunk.fulfilled, (state: AppInitState, { payload }) => {
+                state.connectAndBlockchainInitializationStatus = payload;
+            })
+            .addCase(postOnboardingInitThunk.rejected, (state: AppInitState) => {
+                state.connectAndBlockchainInitializationStatus =
+                    ConnectAndBlockchainInitializationStatus.Unavailable;
+            })
             .addCase(applicationInitThunk.fulfilled, (state: AppInitState) => {
                 state.isAppInitFinished = true;
             });
@@ -72,10 +56,7 @@ export const selectIsConnectAndBlockchainInitializationPending = (
 ): boolean => {
     const status = selectConnectAndBlockchainInitializationStatus(state);
 
-    return (
-        status === ConnectAndBlockchainInitializationStatus.Idle ||
-        status === ConnectAndBlockchainInitializationStatus.Initializing
-    );
+    return status === ConnectAndBlockchainInitializationStatus.Pending;
 };
 
 export const appInitReducer = appInitSlice.reducer;

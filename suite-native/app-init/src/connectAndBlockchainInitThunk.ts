@@ -17,17 +17,13 @@ export type ConnectAndBlockchainInitThunkState = ConnectInitThunkState & InitBlo
 
 export type ConnectAndBlockchainInitThunkDeps = ConnectInitThunkDeps & InitBlockchainThunkDeps;
 
-type ConnectAndBlockchainInitThunkError =
-    | ConnectAndBlockchainInitializationStatus.ConnectError
-    | ConnectAndBlockchainInitializationStatus.BlockchainError;
-
 export const connectAndBlockchainInitThunk = createThunk<
     void,
     void,
     {
         state: ConnectAndBlockchainInitThunkState;
         extra: ConnectAndBlockchainInitThunkDeps;
-        rejectValue: ConnectAndBlockchainInitThunkError;
+        rejectValue: ConnectAndBlockchainInitializationStatus.Unavailable;
     }
 >(
     `${APP_INIT_ACTION_PREFIX}/connectAndBlockchainInit`,
@@ -37,7 +33,7 @@ export const connectAndBlockchainInitThunk = createThunk<
         if (connectInitThunk.rejected.match(connectResult)) {
             console.error(`Connect init error: ${JSON.stringify(connectResult.error)}`);
 
-            return rejectWithValue(ConnectAndBlockchainInitializationStatus.ConnectError);
+            return rejectWithValue(ConnectAndBlockchainInitializationStatus.Unavailable);
         }
 
         const blockchainResult = await dispatch(initBlockchainThunk());
@@ -45,7 +41,7 @@ export const connectAndBlockchainInitThunk = createThunk<
         if (initBlockchainThunk.rejected.match(blockchainResult)) {
             console.error(`Blockchain init error: ${JSON.stringify(blockchainResult.error)}`);
 
-            return rejectWithValue(ConnectAndBlockchainInitializationStatus.BlockchainError);
+            return rejectWithValue(ConnectAndBlockchainInitializationStatus.Unavailable);
         }
     },
 );

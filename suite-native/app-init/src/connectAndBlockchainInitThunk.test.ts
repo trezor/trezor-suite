@@ -91,7 +91,7 @@ describe(connectAndBlockchainInitThunk.name, () => {
         const result = await runThunk();
 
         expect(connectAndBlockchainInitThunk.rejected.match(result)).toBe(true);
-        expect(result.payload).toBe(ConnectAndBlockchainInitializationStatus.ConnectError);
+        expect(result.payload).toBe(ConnectAndBlockchainInitializationStatus.Unavailable);
         expect(mockInitBlockchain).not.toHaveBeenCalled();
     });
 
@@ -101,6 +101,6 @@ describe(connectAndBlockchainInitThunk.name, () => {
         const result = await runThunk();
 
         expect(connectAndBlockchainInitThunk.rejected.match(result)).toBe(true);
-        expect(result.payload).toBe(ConnectAndBlockchainInitializationStatus.BlockchainError);
+        expect(result.payload).toBe(ConnectAndBlockchainInitializationStatus.Unavailable);
     });
 });

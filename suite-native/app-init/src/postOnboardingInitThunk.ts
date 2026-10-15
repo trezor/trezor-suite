@@ -24,7 +24,6 @@ import { createThunk } from '@trezor/redux-utils';
 
 import { APP_INIT_ACTION_PREFIX } from './appInitConstants';
 import {
-    type ConnectAndBlockchainInitializationError,
     type ConnectAndBlockchainInitializationResult,
     ConnectAndBlockchainInitializationStatus,
 } from './appTypes';
@@ -52,7 +51,7 @@ export const postOnboardingInitThunk = createThunk<
     {
         state: PostOnboardingInitThunkState;
         extra: PostOnboardingInitThunkDeps;
-        rejectValue: ConnectAndBlockchainInitializationError;
+        rejectValue: ConnectAndBlockchainInitializationStatus.Unavailable;
     }
 >(
     `${APP_INIT_ACTION_PREFIX}/postOnboardingInit`,
@@ -61,7 +60,7 @@ export const postOnboardingInitThunk = createThunk<
         // app-wide killswitch.
         const activeKillswitchMessage = selectActiveKillswitchMessage(getState());
         if (activeKillswitchMessage) {
-            return ConnectAndBlockchainInitializationStatus.Disabled;
+            return ConnectAndBlockchainInitializationStatus.Unavailable;
         }
 
         const connectAndBlockchainResult = await dispatch(connectAndBlockchainInitThunk());
@@ -81,10 +80,7 @@ export const postOnboardingInitThunk = createThunk<
         dispatch(walletConnectInitThunk());
 
         if (connectAndBlockchainInitThunk.rejected.match(connectAndBlockchainResult)) {
-            return rejectWithValue(
-                connectAndBlockchainResult.payload ??
-                    ConnectAndBlockchainInitializationStatus.Error,
-            );
+            return rejectWithValue(ConnectAndBlockchainInitializationStatus.Unavailable);
         }
 
         return ConnectAndBlockchainInitializationStatus.Ready;

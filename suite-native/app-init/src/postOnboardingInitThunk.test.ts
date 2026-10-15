@@ -18,7 +18,7 @@ const mockPeriodicCheckTokenDefinitions = jest.fn();
 const mockInitStakeData = jest.fn();
 const mockPeriodicFetchFiatRates = jest.fn();
 const mockWalletConnectInit = jest.fn();
-let mockConnectAndBlockchainError: string | undefined;
+let mockConnectAndBlockchainShouldReject = false;
 
 jest.mock('@suite-common/message-system', () => ({
     selectActiveKillswitchMessage: () => mockSelectActiveKillswitchMessage(),
@@ -66,8 +66,8 @@ jest.mock('./connectAndBlockchainInitThunk', () => {
             (_: void, { rejectWithValue }: MockRejectWithValueThunkApi) => {
                 mockConnectAndBlockchainInit();
 
-                return mockConnectAndBlockchainError
-                    ? rejectWithValue(mockConnectAndBlockchainError)
+                return mockConnectAndBlockchainShouldReject
+                    ? rejectWithValue('unavailable')
                     : undefined;
             },
         ),
@@ -97,7 +97,7 @@ const expectFollowUpServicesToHaveStarted = () => {
 describe(postOnboardingInitThunk.name, () => {
     beforeEach(() => {
         jest.clearAllMocks();
-        mockConnectAndBlockchainError = undefined;
+        mockConnectAndBlockchainShouldReject = false;
         mockSelectActiveKillswitchMessage.mockReturnValue(undefined);
     });
 
@@ -107,7 +107,7 @@ describe(postOnboardingInitThunk.name, () => {
         const result = await runThunk();
 
         expect(postOnboardingInitThunk.fulfilled.match(result)).toBe(true);
-        expect(result.payload).toBe(ConnectAndBlockchainInitializationStatus.Disabled);
+        expect(result.payload).toBe(ConnectAndBlockchainInitializationStatus.Unavailable);
         expect(mockConnectAndBlockchainInit).not.toHaveBeenCalled();
         expect(mockPeriodicCheckTokenDefinitions).not.toHaveBeenCalled();
         expect(mockInitStakeData).not.toHaveBeenCalled();
@@ -124,20 +124,14 @@ describe(postOnboardingInitThunk.name, () => {
         expectFollowUpServicesToHaveStarted();
     });
 
-    it.each([
-        ConnectAndBlockchainInitializationStatus.ConnectError,
-        ConnectAndBlockchainInitializationStatus.BlockchainError,
-    ] as const)(
-        'starts follow-up services and propagates initialization error: %s',
-        async error => {
-            mockConnectAndBlockchainError = error;
+    it('starts follow-up services and marks failed initialization unavailable', async () => {
+        mockConnectAndBlockchainShouldReject = true;
 
-            const result = await runThunk();
+        const result = await runThunk();
 
-            expect(postOnboardingInitThunk.rejected.match(result)).toBe(true);
-            expect(result.payload).toBe(error);
-            expect(mockConnectAndBlockchainInit).toHaveBeenCalledTimes(1);
-            expectFollowUpServicesToHaveStarted();
-        },
-    );
+        expect(postOnboardingInitThunk.rejected.match(result)).toBe(true);
+        expect(result.payload).toBe(ConnectAndBlockchainInitializationStatus.Unavailable);
+        expect(mockConnectAndBlockchainInit).toHaveBeenCalledTimes(1);
+        expectFollowUpServicesToHaveStarted();
+    });
 });

@@ -21,20 +21,20 @@ describe('appInitSlice', () => {
         expect(selectIsAppInitFinished({ appInit: state })).toBe(true);
     });
 
-    it('tracks when Connect and blockchain initialization starts', () => {
+    it('keeps Connect and blockchain initialization pending when it starts', () => {
         const state = appInitReducer(
             appInitInitialState,
             postOnboardingInitThunk.pending(requestId, undefined),
         );
 
         expect(state.connectAndBlockchainInitializationStatus).toBe(
-            ConnectAndBlockchainInitializationStatus.Initializing,
+            ConnectAndBlockchainInitializationStatus.Pending,
         );
     });
 
     it.each([
         ConnectAndBlockchainInitializationStatus.Ready,
-        ConnectAndBlockchainInitializationStatus.Disabled,
+        ConnectAndBlockchainInitializationStatus.Unavailable,
     ] as const)('tracks the fulfilled Connect and blockchain initialization result: %s', status => {
         const state = appInitReducer(
             appInitInitialState,
@@ -51,30 +51,30 @@ describe('appInitSlice', () => {
         );
 
         expect(state.connectAndBlockchainInitializationStatus).toBe(
-            ConnectAndBlockchainInitializationStatus.Error,
+            ConnectAndBlockchainInitializationStatus.Unavailable,
         );
     });
 
-    it.each([
-        ConnectAndBlockchainInitializationStatus.ConnectError,
-        ConnectAndBlockchainInitializationStatus.BlockchainError,
-    ] as const)('tracks the rejected Connect and blockchain initialization result: %s', status => {
+    it('tracks a rejected Connect and blockchain initialization as unavailable', () => {
         const state = appInitReducer(
             appInitInitialState,
-            postOnboardingInitThunk.rejected(null, requestId, undefined, status),
+            postOnboardingInitThunk.rejected(
+                null,
+                requestId,
+                undefined,
+                ConnectAndBlockchainInitializationStatus.Unavailable,
+            ),
         );
 
-        expect(state.connectAndBlockchainInitializationStatus).toBe(status);
+        expect(state.connectAndBlockchainInitializationStatus).toBe(
+            ConnectAndBlockchainInitializationStatus.Unavailable,
+        );
     });
 
     it.each([
-        [ConnectAndBlockchainInitializationStatus.Idle, false],
-        [ConnectAndBlockchainInitializationStatus.Initializing, false],
+        [ConnectAndBlockchainInitializationStatus.Pending, false],
         [ConnectAndBlockchainInitializationStatus.Ready, true],
-        [ConnectAndBlockchainInitializationStatus.ConnectError, false],
-        [ConnectAndBlockchainInitializationStatus.BlockchainError, false],
-        [ConnectAndBlockchainInitializationStatus.Error, false],
-        [ConnectAndBlockchainInitializationStatus.Disabled, false],
+        [ConnectAndBlockchainInitializationStatus.Unavailable, false],
     ] as const)('reports blockchain initialized in the %s state: %s', (status, expected) => {
         const state = {
             ...appInitInitialState,
@@ -85,13 +85,9 @@ describe('appInitSlice', () => {
     });
 
     it.each([
-        [ConnectAndBlockchainInitializationStatus.Idle, true],
-        [ConnectAndBlockchainInitializationStatus.Initializing, true],
+        [ConnectAndBlockchainInitializationStatus.Pending, true],
         [ConnectAndBlockchainInitializationStatus.Ready, false],
-        [ConnectAndBlockchainInitializationStatus.ConnectError, false],
-        [ConnectAndBlockchainInitializationStatus.BlockchainError, false],
-        [ConnectAndBlockchainInitializationStatus.Error, false],
-        [ConnectAndBlockchainInitializationStatus.Disabled, false],
+        [ConnectAndBlockchainInitializationStatus.Unavailable, false],
     ] as const)(
         'reports Connect and blockchain initialization pending in the %s state: %s',
         (status, expected) => {
