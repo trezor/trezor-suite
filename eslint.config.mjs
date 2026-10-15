@@ -36,5 +36,6 @@ export default [
     allowDevDependenciesIn([
         '**/connect-examples/**', // This must be here, connect-examples are not a package
         '**/eslint-local-rules/**', // Uses ts-node at runtime when loaded by ESLint
+        'suite-common/icons/scripts/**', // Icon scripts are development tools.
     ]),
 ];

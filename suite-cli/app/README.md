@@ -1,12 +1,6 @@
 # @suite-cli/app
 
-Suite's Node CLI entry point. Its composition root assembles network modules and injects them into
-the icon-download services.
+Suite's development-only Node CLI, run from source without building or distributing it.
+Its composition root registers commands and injects their dependencies.
 
-```sh
-yarn suite:cli --help
-yarn suite:cli download-crypto-icons
-```
-
-`download-crypto-icons` includes vault icons and writes to
-`suite-common/icons/files/cryptoIcons`.
+Run `yarn suite:cli --help` from the repository root to list available commands.

@@ -1,14 +1,7 @@
-/* eslint-disable no-console */
-import chalk from 'chalk';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { FontAssetType, OtherAssetType, generateFonts } from 'fantasticon';
-import fs, { constants } from 'fs';
-import path from 'path';
+import { MOBILE_ICON_FONT_NAME } from '../src/constants';
+import type { IconName } from '../src/icons';
 
-import { MOBILE_ICON_FONT_NAME } from './src/constants';
-import { type IconName as AllAvailableIcons } from './src/icons';
-
-const usedIcons = [
+const iconNames = [
     'arrowBendRightUp',
     'arrowCounterClockwise',
     'arrowDown',
@@ -218,57 +211,6 @@ const usedIcons = [
     'broadcast',
     'cube',
     'circuitry',
-] as const satisfies AllAvailableIcons[];
+] as const satisfies IconName[];
 
-const tempAssetsDir = path.join(__dirname, 'assetsTemp');
-const iconFontsMobileDir = path.join(__dirname, 'iconFontsMobile');
-
-(async () => {
-    console.log('Generating icon font for mobile...');
-
-    fs.rmSync(tempAssetsDir, { recursive: true, force: true });
-    fs.rmSync(iconFontsMobileDir, { recursive: true, force: true });
-
-    fs.mkdirSync(tempAssetsDir);
-
-    // copy used icons to assetsTemp
-    usedIcons.forEach(icon => {
-        fs.copyFileSync(
-            `../../packages/icons/assets/${icon}.svg`,
-            `${tempAssetsDir}/${icon}.svg`,
-            constants.COPYFILE_FICLONE,
-        );
-    });
-
-    // create iconFontsMobile folder
-    fs.mkdirSync('./iconFontsMobile');
-
-    try {
-        await generateFonts({
-            inputDir: tempAssetsDir,
-            outputDir: iconFontsMobileDir,
-            name: MOBILE_ICON_FONT_NAME,
-            fontTypes: [FontAssetType.TTF],
-            assetTypes: [OtherAssetType.JSON],
-            formatOptions: { json: { indent: 4 } },
-            templates: {},
-            pathOptions: {},
-            codepoints: {},
-            fontHeight: 300,
-            round: undefined, // --
-            descent: undefined, // Will use `svgicons2svgfont` defaults
-            normalize: false, // --
-            tag: 'i',
-            prefix: 'icon',
-            fontsUrl: undefined,
-        });
-    } catch (error) {
-        console.error(error);
-        process.exit(1);
-    }
-
-    // append newline to the end of the file to satisfy prettier
-    fs.appendFileSync(`${iconFontsMobileDir}/${MOBILE_ICON_FONT_NAME}.json`, '\n');
-
-    console.log(chalk.green('Icon font for mobile generated.'));
-})();
+export const mobileIconFontConfig = { fontName: MOBILE_ICON_FONT_NAME, iconNames };
