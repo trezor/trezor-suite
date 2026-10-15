@@ -5,7 +5,7 @@ import {
     type ApplicationInitDeps,
     type ApplicationInitState,
     createApplicationInit,
-} from './createApplicationInit';
+} from './applicationInitThunk';
 import { appInitActions } from './appInitSlice';
 import { ConnectAndBlockchainInitializationStatus } from './appTypes';
 

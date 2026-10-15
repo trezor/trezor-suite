@@ -4,10 +4,10 @@ export {
     type ApplicationInit,
     type ApplicationInitDep,
     injectApplicationInit,
-} from './createApplicationInit';
+} from './applicationInitThunk';
 export {
     type PostOnboardingInit,
     type PostOnboardingInitDep,
     injectPostOnboardingInit,
-} from './createPostOnboardingInit';
+} from './postOnboardingInitThunk';
 export { createAppInitCompositionRoot } from './createAppInitCompositionRoot';

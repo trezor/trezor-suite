@@ -7,7 +7,7 @@ import {
     type PostOnboardingInitDeps,
     type PostOnboardingInitState,
     createPostOnboardingInit,
-} from './createPostOnboardingInit';
+} from './postOnboardingInitThunk';
 
 const mockSelectActiveKillswitchMessage = jest.fn();
 const mockSelectBaseCurrency = jest.fn(() => 'usd');

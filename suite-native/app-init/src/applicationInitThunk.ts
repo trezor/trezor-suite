@@ -10,7 +10,7 @@ import {
 import { type DispatchDep } from '@trezor/redux-utils';
 
 import { appInitActions } from './appInitSlice';
-import { type PostOnboardingInitDep } from './createPostOnboardingInit';
+import { type PostOnboardingInitDep } from './postOnboardingInitThunk';
 
 export type ApplicationInitState = SettingsSliceRootState;
 

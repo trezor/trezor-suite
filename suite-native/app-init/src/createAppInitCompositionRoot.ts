@@ -6,13 +6,13 @@ import {
     type ApplicationInitDep,
     type ApplicationInitState,
     createApplicationInit,
-} from './createApplicationInit';
-import { createConnectAndBlockchainInit } from './createConnectAndBlockchainInit';
+} from './applicationInitThunk';
+import { createConnectAndBlockchainInit } from './connectAndBlockchainInitThunk';
 import {
     type PostOnboardingInitDep,
     type PostOnboardingInitState,
     createPostOnboardingInit,
-} from './createPostOnboardingInit';
+} from './postOnboardingInitThunk';
 
 export type AppInitCompositionRootDeps = DispatchDep & {
     getState: () => ApplicationInitState & PostOnboardingInitState;

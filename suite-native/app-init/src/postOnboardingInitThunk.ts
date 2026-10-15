@@ -17,7 +17,7 @@ import {
     type ConnectAndBlockchainInitializationResult,
     ConnectAndBlockchainInitializationStatus,
 } from './appTypes';
-import { type ConnectAndBlockchainInitDep } from './createConnectAndBlockchainInit';
+import { type ConnectAndBlockchainInitDep } from './connectAndBlockchainInitThunk';
 
 export type PostOnboardingInitState = MessageSystemRootState & WalletSettingsRootState;
 

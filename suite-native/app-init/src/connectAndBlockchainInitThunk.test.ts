@@ -5,7 +5,7 @@ import { ConnectAndBlockchainInitializationStatus } from './appTypes';
 import {
     type ConnectAndBlockchainInitDeps,
     createConnectAndBlockchainInit,
-} from './createConnectAndBlockchainInit';
+} from './connectAndBlockchainInitThunk';
 
 type MockRejectWithValueThunkApi = {
     rejectWithValue: (error: string) => unknown;
