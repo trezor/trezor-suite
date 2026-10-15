@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import {
     useSolStakingRewardsWarning,
     useSolanaRewardsHistory,
-} from '@suite-common/earn-staking-api/src/staking';
+} from '@suite-common/earn-staking-api';
 import {
     getStakingDataForNetwork,
     selectAccountIsStakingActive,

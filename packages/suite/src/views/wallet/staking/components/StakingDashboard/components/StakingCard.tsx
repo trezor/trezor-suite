@@ -1,8 +1,8 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { useSolanaRewardsTotal } from '@suite-common/earn-staking-api/src/staking';
-import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
+import { useSolanaRewardsTotal } from '@suite-common/earn-staking-api';
+import { EarnFlow, EarnProvider } from '@suite-common/suite-types';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     getStakingDataForNetwork,

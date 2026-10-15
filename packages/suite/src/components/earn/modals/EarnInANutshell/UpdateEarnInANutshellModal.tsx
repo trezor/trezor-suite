@@ -4,7 +4,7 @@ import {
     type EarnModalAction,
     type EarnProvider,
     type EarnYieldContext,
-} from '@suite-common/suite-types/src/staking';
+} from '@suite-common/suite-types';
 import { type Account } from '@suite-common/wallet-types';
 import { isStakingNetworkType } from '@suite-common/wallet-utils';
 import { Divider } from '@trezor/components';

@@ -75,6 +75,68 @@ const commonRestrictedImports = {
     patterns: [buildArtifactPatterns, networksPackagePattern, ...connectDeepImportPatterns],
 };
 
+const nativeRestrictedImports = {
+    ...commonRestrictedImports,
+    paths: [
+        ...commonRestrictedImports.paths,
+        {
+            name: 'react-native-reanimated',
+            importNames: ['default', 'createAnimatedComponent'],
+            allowTypeImports: true,
+            message:
+                'Use animated components from @suite-native/atoms so reduced motion is handled consistently. Import Reanimated hooks, animation builders and types by name.',
+        },
+        {
+            name: 'lottie-react-native',
+            importNames: ['default', 'LottieView'],
+            allowTypeImports: true,
+            message:
+                'Use LottieView from @suite-native/atoms so reduced motion is handled consistently.',
+        },
+    ],
+    patterns: [
+        ...commonRestrictedImports.patterns,
+        {
+            group: ['react-native-reanimated/*'],
+            message:
+                'Use the public react-native-reanimated entry point for hooks and types, and @suite-native/atoms for animated components.',
+        },
+        {
+            group: ['lottie-react-native/*'],
+            message:
+                'Use LottieView from @suite-native/atoms so reduced motion is handled consistently.',
+        },
+    ],
+};
+
+// Deep paths into Suite packages bypass their barrels and tie consumers to file layout, so the
+// staking trees refuse them. `@suite-common/schemas` has no barrel and is reached by its sections.
+const suiteCommonDeepImportPattern = {
+    group: ['@suite-common/*/src/**', '!@suite-common/schemas/src/**'],
+    message:
+        'Import from the package root instead. Deep paths into "@suite-common/*/src/**" bypass the public barrel.',
+};
+
+const withSuiteCommonDeepImportGuard = restrictedImports => ({
+    ...restrictedImports,
+    patterns: [...restrictedImports.patterns, suiteCommonDeepImportPattern],
+});
+
+const repositoryRoot = fileURLToPath(new URL('../../../', import.meta.url));
+
+const stakingTrees = {
+    suite: [
+        `${allRoots.suiteCommon}/wallet-core/src/staking/**/*.{ts,tsx}`,
+        `${allRoots.suiteCommon}/wallet-utils/src/stakingUtils.ts`,
+        `${allRoots.packages}/suite/src/actions/wallet/stake/**/*.{ts,tsx}`,
+        `${allRoots.packages}/suite/src/actions/wallet/stakeActions.ts`,
+        `${allRoots.packages}/suite/src/hooks/earn/**/*.{ts,tsx}`,
+        `${allRoots.packages}/suite/src/views/wallet/staking/**/*.{ts,tsx}`,
+        `${allRoots.packages}/suite/src/components/earn/**/*.{ts,tsx}`,
+    ],
+    native: [`${allRoots.suiteNative}/module-earn/src/**/*.{ts,tsx}`],
+};
+
 export const restrictedImportsPatterns = [
     buildArtifactPatterns,
     suiteInternalPatterns,
@@ -127,41 +189,26 @@ export const typescriptConfig = [
         files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'],
         ignores: ['atoms/src/Animated/**'],
         rules: {
+            '@typescript-eslint/no-restricted-imports': ['error', nativeRestrictedImports],
+        },
+    },
+    {
+        basePath: repositoryRoot,
+        files: stakingTrees.suite,
+        rules: {
             '@typescript-eslint/no-restricted-imports': [
                 'error',
-                {
-                    ...commonRestrictedImports,
-                    paths: [
-                        ...commonRestrictedImports.paths,
-                        {
-                            name: 'react-native-reanimated',
-                            importNames: ['default', 'createAnimatedComponent'],
-                            allowTypeImports: true,
-                            message:
-                                'Use animated components from @suite-native/atoms so reduced motion is handled consistently. Import Reanimated hooks, animation builders and types by name.',
-                        },
-                        {
-                            name: 'lottie-react-native',
-                            importNames: ['default', 'LottieView'],
-                            allowTypeImports: true,
-                            message:
-                                'Use LottieView from @suite-native/atoms so reduced motion is handled consistently.',
-                        },
-                    ],
-                    patterns: [
-                        ...commonRestrictedImports.patterns,
-                        {
-                            group: ['react-native-reanimated/*'],
-                            message:
-                                'Use the public react-native-reanimated entry point for hooks and types, and @suite-native/atoms for animated components.',
-                        },
-                        {
-                            group: ['lottie-react-native/*'],
-                            message:
-                                'Use LottieView from @suite-native/atoms so reduced motion is handled consistently.',
-                        },
-                    ],
-                },
+                withSuiteCommonDeepImportGuard(commonRestrictedImports),
+            ],
+        },
+    },
+    {
+        basePath: repositoryRoot,
+        files: stakingTrees.native,
+        rules: {
+            '@typescript-eslint/no-restricted-imports': [
+                'error',
+                withSuiteCommonDeepImportGuard(nativeRestrictedImports),
             ],
         },
     },

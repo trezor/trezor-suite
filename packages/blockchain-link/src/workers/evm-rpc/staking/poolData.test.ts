@@ -136,6 +136,20 @@ describe('getStakingPoolData', () => {
         expect(client.call).toHaveBeenCalledTimes(2);
     });
 
+    it('reads the Hoodi accounting contract on chain 560048', async () => {
+        const { client, asPublicClient } = createClient({ chainId: 560048 });
+
+        const pools = await getStakingPoolData(asPublicClient, ADDRESS);
+
+        expect(client.call).toHaveBeenCalledTimes(1);
+        expect(pools).toEqual([
+            expect.objectContaining({
+                contract: '0x6Cf2F03804b171ef9CAFC71e302CA0e08A3FDC28',
+                name: 'Everstake',
+            }),
+        ]);
+    });
+
     it('makes no contract request on a chain without a known pool', async () => {
         const { client, asPublicClient } = createClient({ chainId: 137 });
 

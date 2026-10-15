@@ -1,6 +1,6 @@
 import { FormProvider } from 'react-hook-form';
 
-import { type StakeModalFlow } from '@suite-common/suite-types/src/staking';
+import { type StakeModalFlow } from '@suite-common/suite-types';
 import { Card, Column } from '@trezor/components';
 
 import { Fees } from 'src/components/wallet/Fees/Fees';

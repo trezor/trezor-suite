@@ -6783,6 +6783,11 @@ export const messages = defineMessages({
             'Insufficient {networkDisplaySymbol} to cover the transaction fee ({feeAmount} {networkDisplaySymbol}).',
         id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE_WITH_ETH_AMOUNT',
     },
+    TR_STAKE_FEE_ESTIMATION_FAILED: {
+        defaultMessage:
+            "We couldn't estimate the network fee, so the transaction wasn't created. Try again.",
+        id: 'TR_STAKE_FEE_ESTIMATION_FAILED',
+    },
     AMOUNT_EXCEEDS_NETWORK_RESERVE: {
         defaultMessage: 'Not enough funds remaining after reserving network fees',
         id: 'AMOUNT_EXCEEDS_NETWORK_RESERVE',
