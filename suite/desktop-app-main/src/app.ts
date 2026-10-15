@@ -13,9 +13,10 @@ process.traceProcessWarnings = true;
 // @ts-expect-error using internal electron API to set suite version in dev mode correctly
 if (isDevEnv || process.env.PLAYWRIGHT_RUN) electronApp.setVersion(process.env.VERSION);
 
-global.resourcesPath = isDevEnv
-    ? path.join(__dirname, '..', 'build', 'static')
-    : process.resourcesPath;
+// Unpacked applications (development and E2E) keep their resources in `build/static`.
+global.resourcesPath = electronApp.isPackaged
+    ? process.resourcesPath
+    : path.join(__dirname, '..', 'build', 'static');
 
 const parseRemoveUserDataSwitch = () => {
     if (hasSwitch('remove-user-data-on-start')) {
