@@ -13,6 +13,7 @@ import { useSelector } from 'src/hooks/suite';
 
 import { AccountName } from './AccountName/AccountName';
 import { AccountSubpageName } from './AccountName/AccountSubpageName';
+import { AssetDetailName } from './AssetDetailName';
 import { BasicName } from './BasicName';
 import { HiddenTokensName } from './HiddenTokensName';
 import { SettingsName } from './SettingsName';
@@ -36,6 +37,10 @@ export const PageName = () => {
     // (however location.pathname does)
     if (currentRoute === 'suite-hidden-tokens') {
         return <HiddenTokensName />;
+    }
+
+    if (currentRoute === 'suite-asset') {
+        return <AssetDetailName />;
     }
 
     if (currentRoute?.includes('settings')) {

@@ -38,6 +38,27 @@ export function parseEarnParams(params: unknown): EarnParams | undefined {
     }
 }
 
+const assetParamsSchema = yup.object({
+    symbol: yup.mixed<NetworkSymbol>().required(),
+    contractAddress: yup.string().optional(),
+});
+
+export type AssetParams = yup.InferType<typeof assetParamsSchema>;
+
+export function parseAssetParams(params: unknown): AssetParams | undefined {
+    try {
+        const assetParams = assetParamsSchema.validateSync(params, {
+            abortEarly: false,
+            strict: true,
+        });
+
+        // The schema only checks that a symbol is there; a network nobody knows has no asset.
+        return getNetworkOptional(assetParams.symbol) ? assetParams : undefined;
+    } catch {
+        return undefined;
+    }
+}
+
 const dashboardParamsSchema = yup.object({
     networkSymbol: yup.mixed<NetworkSymbol>().notRequired(),
     modal: yup.mixed<NonNullable<GlobalSendReceiveType>>().oneOf(['send', 'receive']).required(),

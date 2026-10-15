@@ -4,7 +4,7 @@ import { type WalletParams as CommonWalletParams } from '@suite-common/wallet-ty
 import { type ArrayElement } from '@trezor/type-utils';
 
 import { type Route, type Routes } from './route';
-import { type DashboardParams, type EarnParams } from './routerParams';
+import { type AssetParams, type DashboardParams, type EarnParams } from './routerParams';
 
 export type SettingsBackRoute = {
     name: Route['name'];
@@ -17,6 +17,7 @@ type AppParamsTypes = {
     accountType: NonNullable<AccountType>;
     cancelable: boolean;
     vaultAddress?: string;
+    contractAddress?: string;
 };
 
 type ExtractType<T extends keyof AppParamsTypes> = {
@@ -27,10 +28,14 @@ export type ModalAppParams = {
     [key in (typeof modalAppParams)[number]]: string | boolean | undefined;
 };
 
+type AllRouteParams = CommonWalletParams &
+    EarnParams &
+    ModalAppParams &
+    DashboardParams &
+    AssetParams;
+
 export type RouteParams = {
-    [
-        K in keyof (CommonWalletParams & EarnParams & ModalAppParams & DashboardParams)
-    ]?: (CommonWalletParams & EarnParams & ModalAppParams & DashboardParams)[K];
+    [K in keyof AllRouteParams]?: AllRouteParams[K];
 };
 
 type AppWithParams<T extends { [key: string]: any }> = {

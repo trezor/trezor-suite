@@ -1,5 +1,6 @@
 import { memo } from 'react';
 
+import { gotoThunk } from '@suite/router';
 import {
     selectWalletAssetContractAddress,
     selectWalletAssetDisplaySymbol,
@@ -16,7 +17,9 @@ import {
     Text,
     TruncateWithTooltip,
 } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { TokenIcon } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { PriceTicker, TrendTicker } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
@@ -29,7 +32,10 @@ type HomeAssetRowProps = {
     assetKey: WalletAssetKey;
     hasBorderTop?: boolean;
     isHidden?: boolean;
-    /** Takes the key so the caller can hand over a stable callback, which `memo` needs to hold. */
+    /**
+     * Takes the key so the caller can hand over a stable callback, which `memo` needs to hold.
+     * Without it, the row opens the asset's detail screen.
+     */
     onSelect?: (assetKey: WalletAssetKey) => void;
     /** The asset the row stands for is appended to it, so every row has an id of its own. */
     testIdPrefix?: string;
@@ -43,6 +49,7 @@ export const HomeAssetRow = memo(function HomeAssetRow({
     testIdPrefix = '@dashboard/home-asset-item',
 }: HomeAssetRowProps) {
     const { NetworkNameFormatter } = useFormatters();
+    const { dispatch } = useServices(injectDispatch);
     const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey, isHidden));
     const contractAddress = useSelector(state =>
         selectWalletAssetContractAddress(state, assetKey, isHidden),
@@ -58,10 +65,13 @@ export const HomeAssetRow = memo(function HomeAssetRow({
         return null;
     }
 
+    const openAssetDetail = () =>
+        dispatch(gotoThunk({ routeName: 'suite-asset', params: { symbol, contractAddress } }));
+
     return (
         <Table.Row
             hasBorderTop={hasBorderTop}
-            onClick={onSelect && (() => onSelect(assetKey))}
+            onClick={onSelect ? () => onSelect(assetKey) : openAssetDetail}
             data-testid={`${testIdPrefix}/${symbol}/${contractAddress ?? 'coin'}`}
         >
             <Table.Cell padding={HOME_ASSET_CELL_PADDING.first}>
