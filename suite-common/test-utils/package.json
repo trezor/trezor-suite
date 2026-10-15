@@ -3,7 +3,10 @@
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
-    "sideEffects": ["globalOverrides/index.ts", "fakeIndexedDb/index.ts"],
+    "sideEffects": [
+        "globalOverrides/index.ts",
+        "fakeIndexedDb/index.ts"
+    ],
     "main": "src/index",
     "exports": {
         ".": {

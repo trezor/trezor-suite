@@ -1,0 +1,18 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../../suite-common/apps-embedding"
+        },
+        { "path": "../atoms" },
+        { "path": "../intl" },
+        { "path": "../navigation" },
+        { "path": "../../packages/env-utils" },
+        {
+            "path": "../../packages/styles-native"
+        },
+        { "path": "../../packages/type-utils" },
+        { "path": "../../packages/utils" }
+    ]
+}
