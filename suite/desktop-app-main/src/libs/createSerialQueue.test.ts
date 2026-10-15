@@ -1,3 +1,6 @@
+import { execFileSync } from 'child_process';
+import { join } from 'path';
+
 import { createSerialQueue } from './createSerialQueue';
 
 const flushPendingPromises = () => new Promise(resolve => setImmediate(resolve));
@@ -61,5 +64,29 @@ describe(createSerialQueue.name, () => {
 
         await expect(failing).rejects.toThrow('failed');
         await expect(following).resolves.toBe('ran');
+    });
+
+    // Jest sandboxes `process` and takes over its unhandled-rejection listeners, so the only place
+    // to observe one is a Node process of its own, importing the file as it is. The count goes out
+    // as a string: `console.log` colors a number whenever FORCE_COLOR is set, as Jest's workers set it on CI.
+    it('reports the rejection of a task whose promise nobody kept, like any other promise', () => {
+        const script = `
+            import { createSerialQueue } from ${JSON.stringify(join(__dirname, 'createSerialQueue.ts'))};
+
+            let unhandledRejections = 0;
+            process.on('unhandledRejection', () => {
+                unhandledRejections += 1;
+            });
+
+            createSerialQueue()(() => Promise.reject(new Error('dropped')));
+            setImmediate(() => process.stdout.write(String(unhandledRejections)));
+        `;
+        const output = execFileSync(
+            process.execPath,
+            ['--no-warnings', '--input-type=module', '-e', script],
+            { encoding: 'utf8' },
+        );
+
+        expect(output.trim()).toBe('1');
     });
 });
