@@ -45,6 +45,15 @@ class UnbatchedClient extends BatchingJsonRpcClient {
     protected batchingDisabled = true;
 }
 
+class UrgentMethodClient extends BatchingJsonRpcClient {
+    protected urgentMethods = ['urgent'];
+}
+
+class UnbatchedUrgentMethodClient extends BatchingJsonRpcClient {
+    protected batchingDisabled = true;
+    protected urgentMethods = ['urgent'];
+}
+
 const REQUEST_COUNT = 100;
 const BATCH_TIMEOUT_MS = 50;
 // Error of ElectrumX for a request which waited too long in its queue.
@@ -143,6 +152,82 @@ describe('BatchingJsonRpcClient', () => {
         await expect(results).resolves.toHaveLength(REQUEST_COUNT);
         expect(waitingCounts[0]).toBe(10);
         expect(socket.writes.some(message => Array.isArray(message))).toBe(false);
+        client.close();
+    });
+
+    it('sends urgent requests in a batch of their own before the waiting ones', async () => {
+        const { socket, client } = await connectClient(new UrgentMethodClient());
+        const results = Promise.all(sendRequests(client));
+        jest.advanceTimersByTime(BATCH_TIMEOUT_MS);
+        const urgentResults = Promise.all([
+            client.request('urgent', 1),
+            client.request('urgent', 2),
+        ]);
+
+        respondUntilDone(socket);
+
+        await expect(urgentResults).resolves.toHaveLength(2);
+        await expect(results).resolves.toHaveLength(REQUEST_COUNT);
+        // Right after the first requests, which were already sent.
+        expect(socket.writes[1]).toMatchObject([
+            { method: 'urgent', params: [1] },
+            { method: 'urgent', params: [2] },
+        ]);
+        client.close();
+    });
+
+    it('sends an urgent request when nothing else waits', async () => {
+        const { socket, client } = await connectClient(new UrgentMethodClient());
+        const result = client.request('urgent', 1);
+        jest.advanceTimersByTime(BATCH_TIMEOUT_MS);
+
+        respondUntilDone(socket);
+
+        await expect(result).resolves.toBeDefined();
+        expect(socket.requests).toMatchObject([{ method: 'urgent' }]);
+        client.close();
+    });
+
+    it('sends an urgent request as soon as a response frees the limit', async () => {
+        const { socket, client } = await connectClient(new UrgentMethodClient());
+        const results = Promise.all(sendRequests(client, 10));
+        jest.advanceTimersByTime(BATCH_TIMEOUT_MS);
+        const urgentResult = client.request('urgent', 1);
+
+        respondUntilDone(socket);
+
+        await expect(urgentResult).resolves.toBeDefined();
+        await expect(results).resolves.toHaveLength(10);
+        expect(socket.requests.at(-1)).toMatchObject({ method: 'urgent' });
+        client.close();
+    });
+
+    it('keeps the limit of waiting requests for urgent ones', async () => {
+        const { socket, client } = await connectClient(new UrgentMethodClient());
+        const results = Promise.all(sendRequests(client));
+        jest.advanceTimersByTime(BATCH_TIMEOUT_MS);
+        const urgentResults = Promise.all(
+            Array.from({ length: 40 }, (_, i) => client.request('urgent', i)),
+        );
+
+        const waitingCounts = respondUntilDone(socket);
+
+        await expect(urgentResults).resolves.toHaveLength(40);
+        await expect(results).resolves.toHaveLength(REQUEST_COUNT);
+        expect(Math.max(...waitingCounts)).toBeLessThanOrEqual(20);
+        client.close();
+    });
+
+    it('sends urgent requests first when batching is disabled', async () => {
+        const { socket, client } = await connectClient(new UnbatchedUrgentMethodClient());
+        const results = Promise.all(sendRequests(client));
+        const urgentResult = client.request('urgent', 1);
+
+        respondUntilDone(socket);
+
+        await expect(urgentResult).resolves.toBeDefined();
+        await expect(results).resolves.toHaveLength(REQUEST_COUNT);
+        expect(socket.requests[10]).toMatchObject({ method: 'urgent' });
         client.close();
     });
 

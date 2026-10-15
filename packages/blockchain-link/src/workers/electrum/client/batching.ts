@@ -28,6 +28,10 @@ const RECALIBRATE_COUNT = 10;
 // TODO batching should in theory improve performance
 export class BatchingJsonRpcClient extends JsonRpcClient {
     private queue: QueuedRequest[] = [];
+    // Requests of methods a user waits for, e.g. fee estimates of the send form, go before the
+    // requests waiting in the queue, such as the subscriptions of all addresses after connecting.
+    protected urgentMethods: string[] = [];
+    private urgentQueue: QueuedRequest[] = [];
     private batchTimer?: TimerId;
     private inFlight = new Map<number, number>();
     private maxInFlight = INITIAL_IN_FLIGHT;
@@ -45,7 +49,9 @@ export class BatchingJsonRpcClient extends JsonRpcClient {
     }
 
     protected send(ids: number[], message: string) {
-        ids.forEach(id => this.queue.push({ id, message }));
+        const { method } = JSON.parse(message);
+        const queue = this.urgentMethods.includes(method) ? this.urgentQueue : this.queue;
+        ids.forEach(id => queue.push({ id, message }));
         if (this.batchingDisabled) {
             this.flush();
 
@@ -59,9 +65,15 @@ export class BatchingJsonRpcClient extends JsonRpcClient {
     }
 
     private flush() {
-        while (this.queue.length && this.inFlight.size < this.maxInFlight) {
+        while (
+            (this.urgentQueue.length || this.queue.length) &&
+            this.inFlight.size < this.maxInFlight
+        ) {
             const free = this.maxInFlight - this.inFlight.size;
-            const batch = this.queue.splice(
+            // Urgent requests go in a batch of their own, as a server may answer a batch only when
+            // all of its requests are done.
+            const queue = this.urgentQueue.length ? this.urgentQueue : this.queue;
+            const batch = queue.splice(
                 0,
                 this.batchingDisabled ? 1 : Math.min(free, this.maxQueueLength),
             );
@@ -110,6 +122,7 @@ export class BatchingJsonRpcClient extends JsonRpcClient {
         if (this.batchTimer) clearTimeout(this.batchTimer);
         this.batchTimer = undefined;
         this.queue = [];
+        this.urgentQueue = [];
         this.inFlight.clear();
     }
 }

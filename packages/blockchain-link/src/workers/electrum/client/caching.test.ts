@@ -223,6 +223,24 @@ describe('CachingElectrumClient', () => {
         expect(socket.getRequestCount('blockchain.transaction.get')).toBe(2);
     });
 
+    it('sends fee estimates and broadcasts before the subscriptions waiting in the queue', async () => {
+        const { socket, client } = await connectClient();
+        const subscriptions = Array.from({ length: 100 }, (_, i) =>
+            client.request('blockchain.scripthash.subscribe', i.toString(16).padStart(64, '0')),
+        );
+        const urgent = [
+            client.request('blockchain.estimatefee', 2),
+            client.request('blockchain.transaction.broadcast', '00'),
+        ];
+
+        await Promise.all([...subscriptions, ...urgent]);
+
+        const methods = socket.requests.map(({ method }) => method);
+        const firstSubscription = methods.indexOf('blockchain.scripthash.subscribe');
+        expect(methods.indexOf('blockchain.estimatefee')).toBeLessThan(firstSubscription);
+        expect(methods.indexOf('blockchain.transaction.broadcast')).toBeLessThan(firstSubscription);
+    });
+
     it('fetches a confirmed transaction again after a reorg', async () => {
         const { socket, client } = await connectClient();
 
