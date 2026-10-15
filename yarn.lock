@@ -11282,7 +11282,7 @@ __metadata:
     "@trezor/crypto-utils": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"
-    viem: "npm:^2.54.1"
+    viem: "npm:^2.57.2"
   languageName: unknown
   linkType: soft
 
@@ -12476,7 +12476,7 @@ __metadata:
     react: "npm:19.2.3"
     react-hook-form: "npm:^7.77.0"
     react-redux: "npm:9.3.0"
-    viem: "npm:^2.54.1"
+    viem: "npm:^2.57.2"
   languageName: unknown
   linkType: soft
 
@@ -18031,7 +18031,7 @@ __metadata:
     html-webpack-plugin: "npm:5.6.8"
     socks-proxy-agent: "npm:8.0.5"
     tiny-worker: "npm:^2.3.0"
-    viem: "npm:^2.54.1"
+    viem: "npm:^2.57.2"
     webpack: "npm:5.110.1"
     worker-loader: "npm:^3.0.8"
   peerDependencies:
@@ -18051,7 +18051,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/calldata@workspace:packages/calldata"
   dependencies:
+    "@trezor/network-tron": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
+    viem: "npm:^2.57.2"
   languageName: unknown
   linkType: soft
 
@@ -18210,7 +18213,7 @@ __metadata:
     process: "npm:^0.11.10"
     stream-browserify: "npm:^3.0.0"
     tsx: "npm:^4.21.0"
-    viem: "npm:^2.54.1"
+    viem: "npm:^2.57.2"
     vite-plugin-node-polyfills: "npm:^0.26.0"
     vite-plugin-wasm: "npm:^3.6.0"
     vitest: "npm:^4.1.10"
@@ -18733,7 +18736,7 @@ __metadata:
     "@trezor/network-module-types": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    viem: "npm:^2.54.1"
+    viem: "npm:^2.57.2"
   languageName: unknown
   linkType: soft
 
@@ -18750,7 +18753,7 @@ __metadata:
   resolution: "@trezor/network-ethereum@workspace:networks/ethereum/network-ethereum"
   dependencies:
     "@trezor/network-ethereum-types": "workspace:*"
-    viem: "npm:^2.54.1"
+    viem: "npm:^2.57.2"
   languageName: unknown
   linkType: soft
 
@@ -19283,7 +19286,7 @@ __metadata:
     lodash: "npm:^4.18.1"
     tsx: "npm:^4.21.0"
     type-fest: "npm:5.5.0"
-    viem: "npm:^2.54.1"
+    viem: "npm:^2.57.2"
     xvfb-maybe: "npm:^0.2.1"
     zxing-wasm: "npm:3.0.0"
   languageName: unknown
@@ -40677,9 +40680,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ox@npm:0.14.30":
-  version: 0.14.30
-  resolution: "ox@npm:0.14.30"
+"ox@npm:0.14.45":
+  version: 0.14.45
+  resolution: "ox@npm:0.14.45"
   dependencies:
     "@adraffy/ens-normalize": "npm:^1.11.0"
     "@noble/ciphers": "npm:^1.3.0"
@@ -40694,7 +40697,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10/c58e0f989f883963152f3cf7f9ee2b0d762bb5eb3a393eee4d2fed7ecd70e3eac70653ec21d7f351e5ad299a42840e827fc6ec1f07532b9280e178556b9449c8
+  checksum: 10/44f4414d28a93cfe1f608eba7135a2fe7b153305f25b0af5fc35eb7d345ad452e47423d1045ea3a15035d130bd10874fb71be958d5ed16ad49d97114075cae58
   languageName: node
   linkType: hard
 
@@ -49420,9 +49423,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"viem@npm:^2.54.1":
-  version: 2.55.4
-  resolution: "viem@npm:2.55.4"
+"viem@npm:^2.57.2":
+  version: 2.57.2
+  resolution: "viem@npm:2.57.2"
   dependencies:
     "@noble/curves": "npm:1.9.1"
     "@noble/hashes": "npm:1.8.0"
@@ -49430,14 +49433,14 @@ __metadata:
     "@scure/bip39": "npm:1.6.0"
     abitype: "npm:1.2.3"
     isows: "npm:1.0.7"
-    ox: "npm:0.14.30"
+    ox: "npm:0.14.45"
     ws: "npm:8.21.0"
   peerDependencies:
     typescript: ">=5.0.4"
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10/c5d4a673af2cd9786842b76c29977e8e455ab3aefd50bf8c88cc8c15e4796289a81719fe2c3387f40355a1439ced879e21e2368622b1c72d983dbc37299726d2
+  checksum: 10/f730a075a0da923785741dae786d310f142c24ec226344ddba8f365367cba35142cce7c05c9019f5a5e82261eb0c99eab5894f200c0f792e9d30de843f8d3892
   languageName: node
   linkType: hard
 
