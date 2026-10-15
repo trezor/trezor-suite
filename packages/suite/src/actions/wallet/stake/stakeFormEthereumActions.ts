@@ -15,6 +15,7 @@ import {
     type WalletSettingsRootState,
     calculateStakeFormTransaction,
     composeStakingTransaction,
+    ethereumGetCurrentNonceThunk,
     getStakeTxGasLimit,
     prepareClaimEthTx,
     prepareStakeEthTx,
@@ -22,7 +23,6 @@ import {
     selectAddressDisplayType,
     stakeActions,
 } from '@suite-common/wallet-core';
-import { ethereumGetCurrentNonceThunk } from '@suite-common/wallet-core/src/send/sendFormEthereumThunks';
 import {
     AddressDisplayOptions,
     type ComposeActionContext,

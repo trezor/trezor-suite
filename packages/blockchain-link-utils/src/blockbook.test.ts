@@ -1,6 +1,7 @@
 import * as fixtures from './__fixtures__/blockbook';
 import {
     createTransactionTransformer,
+    filterEthereumInternalTransfers,
     filterTokenTransfers,
     transformAddresses,
     transformTokenInfo,
@@ -8,6 +9,16 @@ import {
 } from './blockbook';
 
 describe('blockbook/utils', () => {
+    describe('filterEthereumInternalTransfers', () => {
+        fixtures.filterEthereumInternalTransfers.forEach(f => {
+            it(f.description, () => {
+                expect(filterEthereumInternalTransfers(f.address, f.ethereumSpecific)).toEqual(
+                    f.parsed,
+                );
+            });
+        });
+    });
+
     describe('filterTokenTransfers', () => {
         fixtures.filterTokenTransfers.forEach(f => {
             it(f.description, () => {

@@ -1,6 +1,6 @@
 import { injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { type StakeModalFlow } from '@suite-common/suite-types/src/staking';
+import { type StakeModalFlow } from '@suite-common/suite-types';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';

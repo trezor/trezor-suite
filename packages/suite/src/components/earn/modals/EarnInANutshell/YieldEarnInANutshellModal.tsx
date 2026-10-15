@@ -7,7 +7,7 @@ import {
     type EarnModalAction,
     type EarnProvider,
     type EarnYieldContext,
-} from '@suite-common/suite-types/src/staking';
+} from '@suite-common/suite-types';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type YieldFlowType } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';

@@ -1,7 +1,7 @@
 import { injectDesktopAnalytics } from '@suite/analytics';
 import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
-import { EarnFlow, type StakeModalFlow } from '@suite-common/suite-types/src/staking';
+import { EarnFlow, type StakeModalFlow } from '@suite-common/suite-types';
 import {
     selectAreFeesLoading,
     selectHasRunningDiscovery,
