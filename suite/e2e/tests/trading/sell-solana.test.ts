@@ -227,9 +227,7 @@ test.describe('Trading - Sell Solana', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await test.step('Pick an offer other than the best one', async () => {
                 await tradingPage.quotes.chooseDifferentOfferIfAvailable();
-                comparedProviderName = (
-                    await tradingPage.quotes.selectedProviderName.innerText()
-                ).trim();
+                comparedProviderName = await tradingPage.quotes.selectedProviderName.innerText();
             });
 
             await test.step('Verify the trade is created with the picked provider', async () => {

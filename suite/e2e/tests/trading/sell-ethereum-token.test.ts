@@ -123,7 +123,7 @@ test.describe('Trading - Sell ETH token', { tag: ['@T3W1', '@T3T1'] }, () => {
                 );
                 // The token transfer pays its fee in ETH at the live estimate, so the modal value is
                 // the source of truth and the device only has to agree with it.
-                const reviewFee = (await devicePrompt.cryptoAmountOf('fee').innerText())?.trim();
+                const reviewFee = await devicePrompt.cryptoAmountOf('fee').innerText();
                 if (!reviewFee) {
                     throw new Error(
                         'Review fee amount was not displayed on the confirmation modal',

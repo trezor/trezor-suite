@@ -32,14 +32,12 @@ export class TradingQuotesSection {
     @step()
     async chooseDifferentOfferIfAvailable(provider?: string): Promise<void> {
         await expect(this.selectedProviderName).not.toBeEmpty();
-        const initialProvider = (await this.selectedProviderName.innerText()).trim();
+        const initialProvider = await this.selectedProviderName.innerText();
 
         await this.selectedProvider.click();
         await expect(this.list.first()).toBeVisible();
 
-        const offerProviderNames = (await this.providerInList.allInnerTexts()).map(name =>
-            name.trim(),
-        );
+        const offerProviderNames = await this.providerInList.allInnerTexts();
 
         let differentProvider: string | undefined;
         if (provider) {
