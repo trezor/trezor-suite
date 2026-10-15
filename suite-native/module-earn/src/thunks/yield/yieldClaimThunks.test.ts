@@ -1,5 +1,6 @@
 import { combineReducers, isFulfilled, isRejected } from '@reduxjs/toolkit';
 
+import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
 import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -18,10 +19,12 @@ import {
     type PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import TrezorConnect from '@trezor/connect';
+import { asGetter } from '@trezor/dependency-injection';
 import { type StaticSessionId } from '@trezor/device-utils';
 
-import { pushYieldClaimReviewThunk } from './yieldClaimThunks';
+import { type PushYieldClaimReviewThunkDeps, pushYieldClaimReviewThunk } from './yieldClaimThunks';
 
 jest.mock('@trezor/connect', () => ({
     __esModule: true,
@@ -108,12 +111,22 @@ const precomposedTransaction = {
     outputsPermutation: [0],
 } satisfies PrecomposedTransactionFinal;
 
+const services = (): PushYieldClaimReviewThunkDeps['services'] => ({
+    analytics: mockNativeAnalytics(),
+    getIsWindowVisible: asGetter(() => true),
+    getTradedAccountKeys: asGetter(() => []),
+    networks: {
+        getAccountSyncInterval: mockGetAccountSyncInterval(),
+    },
+});
+
 const pushTransactionMock = TrezorConnect.pushTransaction as jest.Mock;
 const synchronizeSentTransactionThunkMock = synchronizeSentTransactionThunk as unknown as jest.Mock;
 
 // Other thunk dependencies are mocked; only the yield reducer is needed for review-state assertions.
 const buildStore = () =>
-    createTestCompositionRoot<void, YieldRootState>({
+    createTestCompositionRoot<PushYieldClaimReviewThunkDeps, YieldRootState>({
+        services,
         reducer: combineReducers({
             wallet: combineReducers({
                 stablecoinYield: yieldReducer,
@@ -121,7 +134,9 @@ const buildStore = () =>
         }),
     }).services.store;
 
-const prepareSignedClaimReview = (store: TestCompositionStore<YieldRootState, void>) => {
+const prepareSignedClaimReview = (
+    store: TestCompositionStore<YieldRootState, PushYieldClaimReviewThunkDeps>,
+) => {
     store.dispatch(yieldActions.initSession({ flowType: 'claim', flowKey: account.key }));
     store.dispatch(
         yieldActions.storeActionReviewData({
@@ -150,7 +165,9 @@ const prepareSignedClaimReview = (store: TestCompositionStore<YieldRootState, vo
     );
 };
 
-const dispatchPush = async (store: TestCompositionStore<YieldRootState, void>) => {
+const dispatchPush = async (
+    store: TestCompositionStore<YieldRootState, PushYieldClaimReviewThunkDeps>,
+) => {
     const action = await store.dispatch(
         pushYieldClaimReviewThunk({
             account,

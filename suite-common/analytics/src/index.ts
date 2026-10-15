@@ -4,11 +4,11 @@ import { type AnalyticsSharedEvents } from './analyticsEvents';
 
 export { type AnalyticsSharedEvents } from './analyticsEvents';
 export type {
+    AnalyticsPlatform,
+    AppVersion,
     AttributeDef,
     EventDef,
     EventInstance,
-    AppVersion,
-    AnalyticsPlatform,
 } from './eventDefinition';
 export { ANALYTICS_ALLOWED_DOMAINS, validateAnalyticsEventName } from './eventNameValidation';
 export type { ValidateEventNameError } from './eventNameValidation';
@@ -21,3 +21,8 @@ export { type ReceiveEntryInteractionAction } from './events/receiveEntryInterac
 export type AnalyticsDep = {
     analytics: Analytics<AnalyticsSharedEvents>;
 };
+
+export {
+    transactionCreatedEvent,
+    type TransactionCreatedEventAction,
+} from './events/transactionCreatedEvent';

@@ -1,3 +1,4 @@
+export { promoDashboardBannerEvent, transactionCreatedEvent } from '@suite-common/analytics';
 export { accountsActionsEvent } from './accountsActionsEvent';
 export { accountsActiveStakingEvent } from './accountsActiveStakingEvent';
 export { accountsEmptyAccountReceiveEvent } from './accountsEmptyAccountReceiveEvent';
@@ -40,7 +41,6 @@ export { guideTooltipLinkNavigationEvent } from './guideTooltipLinkNavigationEve
 export { menuGuideEvent } from './menuGuideEvent';
 export { menuNotificationsToggleEvent } from './menuNotificationsToggleEvent';
 export { menuToggleDiscreetEvent } from './menuToggleDiscreetEvent';
-export { promoDashboardBannerEvent } from '@suite-common/analytics';
 export { promoDesktopEvent } from './promoDesktopEvent';
 export { promoMobileEvent } from './promoMobileEvent';
 export { promoReferralButtonEvent } from './promoReferralButtonEvent';
@@ -95,7 +95,6 @@ export { stakingNavigateEvent } from './stakingNavigateEvent';
 export { stakingStakeEvent } from './stakingStakeEvent';
 export { stakingUnstakeEvent } from './stakingUnstakeEvent';
 export { stakingUpdateProviderEvent } from './stakingUpdateProviderEvent';
-export { yieldEarnEntryEvent } from './yieldEarnEntryEvent';
 export { suiteReadyEvent } from './suiteReadyEvent';
 export { switchDeviceEjectEvent } from './switchDeviceEjectEvent';
 export { switchDeviceForgetEvent } from './switchDeviceForgetEvent';
@@ -110,6 +109,6 @@ export { tradeSellEvent } from './tradeSellEvent';
 export { tradeStatusEvent } from './tradeStatusEvent';
 export { tradingExchangeIssueEvent } from './tradingExchangeIssueEvent';
 export { transactionCancelEvent } from './transactionCancelEvent';
-export { transactionCreatedEvent } from './transactionCreatedEvent';
 export { transactionTimeoutRetryEvent } from './transactionTimeoutRetryEvent';
 export { transportTypeEvent } from './transportTypeEvent';
+export { yieldEarnEntryEvent } from './yieldEarnEntryEvent';

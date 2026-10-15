@@ -23,13 +23,15 @@ import {
     yieldActions,
 } from '@suite-common/wallet-core';
 import { type EvmSelectedFee } from '@suite-common/wallet-types';
-import { createThunk } from '@trezor/redux-utils';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 
 import { EARN_MODULE_PREFIX } from '../../constants';
 import {
     pushYieldTransaction,
     signYieldTransactionOnDevice,
 } from '../../utils/earn/deviceTransactionUtils';
+import { reportTransactionCreated } from '../../utils/earn/earnAnalyticsUtils';
 
 const YIELD_TRANSACTION_THUNK_PREFIX = `${EARN_MODULE_PREFIX}/yield-transaction`;
 
@@ -181,7 +183,8 @@ export type PushYieldActionReviewThunkState = MevProtectionRootState &
     SynchronizeSentTransactionThunkState &
     WalletSettingsRootState;
 
-export type PushYieldActionReviewThunkDeps = SynchronizeSentTransactionThunkDeps;
+export type PushYieldActionReviewThunkDeps = SynchronizeSentTransactionThunkDeps &
+    WithServices<NativeAnalyticsDep>;
 
 export const pushYieldActionReviewThunk = createThunk<
     { txid: string },
@@ -193,7 +196,7 @@ export const pushYieldActionReviewThunk = createThunk<
     }
 >(
     `${YIELD_TRANSACTION_THUNK_PREFIX}/pushActionReview`,
-    async ({ flowData, flowKey, flowType }, { dispatch, getState, rejectWithValue }) => {
+    async ({ flowData, flowKey, flowType }, { dispatch, getState, rejectWithValue, extra }) => {
         const session = selectYieldSession(getState(), flowType, flowKey);
         const txReview = selectYieldTxReview(getState());
         const { precomposedForm, precomposedTx, serializedTx } = txReview;
@@ -217,6 +220,14 @@ export const pushYieldActionReviewThunk = createThunk<
                 message: 'Transaction not found.',
             });
         }
+
+        reportTransactionCreated({
+            analytics: extra.services.analytics,
+            symbol: flowData.account.symbol,
+            precomposedTransaction: precomposedTx,
+            selectedFee: precomposedForm.selectedFee,
+            txType: 'yield',
+        });
 
         const pushResponse = await pushYieldTransaction({
             tx: serializedTx.tx,
