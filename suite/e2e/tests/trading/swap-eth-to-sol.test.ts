@@ -63,9 +63,10 @@ test.describe('Trading - Swap', { tag: ['@T3W1', '@T3T1'] }, () => {
             let providerName: string;
 
             await test.step('Confirm the Swap trade', async () => {
+                await tradingPage.quotes.chooseCexOffer();
                 receiveAmount = await tradingPage.inputs.receiveAmount.innerText();
                 await page.expectReduxObjectNotToBeEmpty('wallet.trading.composedTransactionInfo');
-                await tradingPage.swapBestOfferButton.click();
+                await tradingPage.clickSwapBestOfferWithRetry();
             });
 
             await test.step('Open modal and verify recipient on prompt and device', async () => {
