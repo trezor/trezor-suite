@@ -44,13 +44,18 @@ export const createEvoluStorageFactory =
             return Promise.resolve();
         };
 
+        const subscribeRelay = (url: string) => {
+            unuseOwner();
+            unuseOwner = evolu.useOwner(owner, [
+                deps.createOwnerWebSocketTransport({ url, ownerId: owner.id }),
+            ]);
+        };
+
         const forceResync = () => {
             if (relayUrl !== null) {
-                // Resubscribing starts full reconciliation, including previously rejected writes.
-                unuseOwner();
-                unuseOwner = evolu.useOwner(owner, [
-                    deps.createOwnerWebSocketTransport({ url: relayUrl, ownerId: owner.id }),
-                ]);
+                // Reconciles locally stored changes, including writes the relay rejected over
+                // quota, while keeping the owner registration and its open connection.
+                evolu.requestSync(owner.id);
             }
 
             return Promise.resolve();
@@ -58,8 +63,11 @@ export const createEvoluStorageFactory =
 
         const updateRelayUrl = (url: string) => {
             relayUrl = url;
+            // A different relay needs its own transport, so this resubscribes rather than
+            // asking the current connection for another sync round.
+            subscribeRelay(url);
 
-            return forceResync();
+            return Promise.resolve();
         };
 
         return {

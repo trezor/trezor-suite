@@ -11,10 +11,10 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@evolu/common": "8.10.0",
-        "@evolu/web": "patch:@evolu/web@npm%3A3.1.2#~/.yarn/patches/@evolu-web-npm-3.1.2-b0d061c39c.patch",
+        "@evolu/common": "8.11.0",
+        "@evolu/web": "patch:@evolu/web@npm%3A3.2.0#~/.yarn/patches/@evolu-web-npm-3.2.0-73c6a0e528.patch",
         "@hookform/resolvers": "^5.4.0",
-        "@reduxjs/toolkit": "2.12.0",
+        "@reduxjs/toolkit": "2.13.0",
         "@suite-common/delegated-identity-key-types": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/message-system": "workspace:*",

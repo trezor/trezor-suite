@@ -20,7 +20,7 @@
     },
     "devDependencies": {
         "@currents/playwright": "^2.5.0",
-        "@evolu/common": "8.10.0",
+        "@evolu/common": "8.11.0",
         "@noble/hashes": "^2.0.1",
         "@playwright/browser-chromium": "1.62.1",
         "@playwright/browser-firefox": "1.62.1",
@@ -75,7 +75,7 @@
         "@types/lodash": "^4.17.16",
         "@walletconnect/sign-client": "^2.23.10",
         "@walletconnect/types": "^2.23.10",
-        "chalk": "^6.0.0",
+        "chalk": "^6.0.1",
         "dotenv": "17.4.2",
         "fs-extra": "^11.3.1",
         "intl-messageformat": "11.1.2",

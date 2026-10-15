@@ -23,7 +23,7 @@
         "@formatjs/intl-getcanonicallocales": "^3.2.1",
         "@formatjs/intl-listformat": "^8.2.1",
         "@formatjs/intl-locale": "^5.2.1",
-        "@reduxjs/toolkit": "2.12.0",
+        "@reduxjs/toolkit": "2.13.0",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
         "@trezor/dependency-injection": "workspace:*",

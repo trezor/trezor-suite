@@ -16,7 +16,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@reduxjs/toolkit": "2.12.0",
+        "@reduxjs/toolkit": "2.13.0",
         "@suite-common/analytics-redux": "workspace:*",
         "@suite-common/geolocation": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
@@ -30,7 +30,7 @@
         "@trezor/utils": "workspace:*",
         "@types/semver": "^7.7.0",
         "fs-extra": "^11.3.1",
-        "json-schema-to-typescript": "^15.0.4",
+        "json-schema-to-typescript": "^16.0.0",
         "react": "19.2.3",
         "react-redux": "9.3.0",
         "semver": "^7.7.1",
