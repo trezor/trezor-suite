@@ -22,7 +22,7 @@
         "@trezor/network-module-types": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "viem": "^2.54.1"
+        "viem": "^2.57.2"
     },
     "devDependencies": {
         "@trezor/dependency-injection": "workspace:*"

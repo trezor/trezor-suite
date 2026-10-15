@@ -18,7 +18,7 @@
         "@trezor/connect": "workspace:*",
         "@trezor/crypto-utils": "workspace:*",
         "@trezor/network-module-suite-common-types": "workspace:*",
-        "viem": "^2.54.1"
+        "viem": "^2.57.2"
     },
     "devDependencies": {
         "@trezor/dependency-injection": "workspace:*"
