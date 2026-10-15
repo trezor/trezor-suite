@@ -1,7 +1,10 @@
 import styled from 'styled-components';
 
 import { injectDesktopApi } from '@suite/desktop-app-api';
-import { selectDesktopUpdateEnabled } from '@suite/desktop-update';
+import {
+    selectDesktopUpdateAutomaticUpdateEnabled,
+    selectDesktopUpdateEnabled,
+} from '@suite/desktop-update';
 import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { useServices } from '@suite-common/dependency-injection';
@@ -17,7 +20,7 @@ const PositionedSwitch = styled.div`
 export const AutomaticUpdate = () => {
     const { desktopApi } = useServices(injectDesktopApi);
     const isUpdateEnabled = useSelector(selectDesktopUpdateEnabled);
-    const isAutomaticUpdateEnabled = useSelector(selectDesktopUpdateEnabled);
+    const isAutomaticUpdateEnabled = useSelector(selectDesktopUpdateAutomaticUpdateEnabled);
 
     if (!isUpdateEnabled) {
         return null;

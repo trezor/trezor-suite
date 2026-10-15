@@ -5,6 +5,8 @@ import {
     desktopUpdateActions,
     desktopUpdateReducer,
     openEarlyAccessSetup,
+    selectDesktopUpdateAutomaticUpdateEnabled,
+    selectDesktopUpdateEnabled,
 } from './desktopUpdateReducer';
 import type { DesktopUpdateState } from './desktopUpdateReducer';
 
@@ -32,7 +34,11 @@ const fixtures: [DesktopUpdateReducerAction, Partial<DesktopUpdateState>][] = [
             allowPrerelease: true,
             isAutomaticUpdateEnabled: false,
         }),
-        { enabled: true, allowPrerelease: true },
+        { enabled: true, allowPrerelease: true, isAutomaticUpdateEnabled: false },
+    ],
+    [
+        desktopUpdateActions.setAutomaticUpdates({ isEnabled: true }),
+        { isAutomaticUpdateEnabled: true },
     ],
     [desktopUpdateActions.allowPrerelease(false), { allowPrerelease: false }],
     [desktopUpdateActions.checking(), { state: UpdateState.Checking }],
@@ -63,5 +69,18 @@ describe('desktopUpdateReducer', () => {
             lastState = desktopUpdateReducer(lastState, action);
             expect(lastState).toMatchObject(state);
         });
+    });
+
+    it('selects automatic update setting independently of update availability', () => {
+        const desktopUpdate = desktopUpdateReducer(
+            undefined,
+            createDesktopHandshakeAction({
+                allowPrerelease: false,
+                isAutomaticUpdateEnabled: false,
+            }),
+        );
+
+        expect(selectDesktopUpdateEnabled({ desktopUpdate })).toBe(true);
+        expect(selectDesktopUpdateAutomaticUpdateEnabled({ desktopUpdate })).toBe(false);
     });
 });
