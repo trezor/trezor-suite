@@ -1,20 +1,12 @@
 {
     "extends": "../../../tsconfig.base.json",
-    "compilerOptions": {
-        "outDir": "libDev"
-    },
+    "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
             "path": "../../network-module/suite-common/suite-common-types"
         },
-        {
-            "path": "../network-ripple"
-        },
-        {
-            "path": "../network-ripple-assets"
-        },
-        {
-            "path": "../network-ripple-types"
-        }
+        { "path": "../network-ripple" },
+        { "path": "../network-ripple-assets" },
+        { "path": "../network-ripple-types" }
     ]
 }

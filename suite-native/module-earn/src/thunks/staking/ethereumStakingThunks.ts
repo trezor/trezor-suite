@@ -1,13 +1,13 @@
+import { events } from '@suite-common/analytics';
 import {
     type FormDraftRootState,
-    isEarnSigningCancelled,
-    prepareEthereumStakingContext,
     type PrepareEthereumStakingContextState,
+    type SignPreparedEthereumStakingTransactionThunkState,
+    WALLET_SDK_SOURCE_MOBILE,
+    prepareEthereumStakingContext,
     selectFormDraft,
     sendFormActions,
     signPreparedEthereumStakingTransactionThunk,
-    type SignPreparedEthereumStakingTransactionThunkState,
-    WALLET_SDK_SOURCE_MOBILE,
 } from '@suite-common/wallet-core';
 import {
     type AccountKey,
@@ -18,11 +18,11 @@ import {
 import { getFormDraftKey } from '@suite-common/wallet-utils';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
-import { createThunk, WithServices } from '@trezor/redux-utils';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 
-import { events } from '@suite-common/analytics';
 import { EARN_MODULE_PREFIX } from '../../constants';
 import { type SignStakeTransactionRejectValue } from '../../types';
+import { isUserCancelledSignError } from '../../utils/earn/utils';
 
 const LOG_PREFIX = 'signEthereumStakingTransactionThunk';
 
@@ -97,7 +97,9 @@ export const signEthereumStakingTransactionThunk = createThunk<
             const signAction = deviceAccessResponse.payload;
 
             if (signPreparedEthereumStakingTransactionThunk.rejected.match(signAction)) {
-                if (isEarnSigningCancelled(signAction.error)) {
+                const { payload } = signAction;
+
+                if (isUserCancelledSignError(payload)) {
                     extra.services.analytics.report({
                         type: events.transactionCancelEvent.name,
                         payload: {
@@ -107,10 +109,13 @@ export const signEthereumStakingTransactionThunk = createThunk<
                         },
                     });
                 }
-                if (signAction.payload?.message !== 'tx-cancelled') {
-                    console.error(
-                        `${LOG_PREFIX}: Sign transaction failed: ${signAction.payload?.message}`,
-                    );
+
+                if (payload?.error === 'stake-live-state-invalid') {
+                    dispatch(sendFormActions.discardTransaction());
+                }
+
+                if (payload?.message !== 'tx-cancelled') {
+                    console.error(`${LOG_PREFIX}: Sign transaction failed: ${payload?.message}`);
                 }
 
                 return rejectWithValue(signAction.payload);

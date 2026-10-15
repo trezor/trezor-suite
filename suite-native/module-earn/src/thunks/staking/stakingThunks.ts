@@ -1,4 +1,15 @@
-import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    type PushStakeTransactionError,
+    type PushStakeTransactionThunkDeps,
+    type PushStakeTransactionThunkState,
+    type SendRootState,
+    pushStakeTransactionThunk,
+    selectAccountByKey,
+    selectPrecomposedSendForm,
+    selectSendPrecomposedTx,
+    selectSendSerializedTx,
+} from '@suite-common/wallet-core';
 import {
     type AccountKey,
     type BaseStakeType,
@@ -74,3 +85,58 @@ export const signStakeTransactionThunk = createThunk<
         message: `Staking is not supported for network type: ${account.networkType}`,
     });
 });
+
+const PUSH_LOG_PREFIX = 'pushSignedStakeTransactionThunk';
+
+export type PushSignedStakeTransactionThunkState = PushStakeTransactionThunkState & SendRootState;
+
+export type PushSignedStakeTransactionThunkDeps = PushStakeTransactionThunkDeps;
+
+// Broadcasts the staking transaction signed during the deferred sign, which the mobile review
+// flow keeps in the send slice.
+export const pushSignedStakeTransactionThunk = createThunk<
+    { txid: string },
+    { accountKey: AccountKey; stakeType: BaseStakeType; isMevProtectionFeatureEnabled: boolean },
+    {
+        rejectValue: PushStakeTransactionError;
+        state: PushSignedStakeTransactionThunkState;
+        extra: PushSignedStakeTransactionThunkDeps;
+    }
+>(
+    `${EARN_MODULE_PREFIX}/${PUSH_LOG_PREFIX}`,
+    async ({ accountKey, stakeType, isMevProtectionFeatureEnabled }, thunkApi) => {
+        const { dispatch, getState, rejectWithValue } = thunkApi;
+        const serializedTx = selectSendSerializedTx(getState());
+        const precomposedTransaction = selectSendPrecomposedTx(getState());
+        const precomposedForm = selectPrecomposedSendForm(getState());
+
+        if (!serializedTx || !precomposedTransaction) {
+            console.error(`${PUSH_LOG_PREFIX}: Signed transaction not found.`);
+
+            return rejectWithValue({
+                error: 'push-transaction-failed',
+                metadata: {
+                    success: false,
+                    error: { message: 'Transaction not found.', code: 'Failure_UnknownCode' },
+                },
+            });
+        }
+
+        const action = await dispatch(
+            pushStakeTransactionThunk({
+                accountKey,
+                stakeType,
+                serializedTx,
+                precomposedTransaction,
+                precomposedForm,
+                isMevProtectionFeatureEnabled,
+            }),
+        );
+
+        if (pushStakeTransactionThunk.fulfilled.match(action)) {
+            return action.payload;
+        }
+
+        return rejectWithValue(action.payload);
+    },
+);

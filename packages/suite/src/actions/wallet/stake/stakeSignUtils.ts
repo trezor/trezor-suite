@@ -1,12 +1,13 @@
 import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 
+import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type SignPreparedEthereumStakingTransactionRejectValue,
     type SignPreparedSolanaStakingTransactionRejectValue,
+    isEarnSigningCancelled,
 } from '@suite-common/wallet-core';
 import { type BaseStakeType, type StakeType } from '@suite-common/wallet-types';
-import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { type WithServices } from '@trezor/redux-utils';
 
 export type StakeSignThunkDeps = WithServices<DesktopAnalyticsDep>;
@@ -15,6 +16,12 @@ export type StakeSignResult = string | { reason: 'timeout' } | undefined;
 
 export const isBaseStakeType = (stakeType: StakeType): stakeType is BaseStakeType =>
     stakeType === 'stake' || stakeType === 'unstake' || stakeType === 'claim';
+
+type StakeSignRejection = { errorCode?: string; message?: string } | undefined;
+
+export const isStakeSignCancelled = (rejection: StakeSignRejection) =>
+    !!rejection &&
+    isEarnSigningCancelled({ code: rejection.errorCode, message: rejection.message });
 
 export const reportStakeSignFailure = (
     dispatch: Dispatch<UnknownAction>,

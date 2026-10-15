@@ -36,6 +36,9 @@
             "path": "../../suite-common/test-utils"
         },
         {
+            "path": "../../suite-common/toast-notifications"
+        },
+        {
             "path": "../../suite-common/token-definitions"
         },
         {

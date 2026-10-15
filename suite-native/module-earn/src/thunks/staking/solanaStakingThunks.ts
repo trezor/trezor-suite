@@ -1,8 +1,8 @@
+import { events } from '@suite-common/analytics';
 import {
     type ResolveSolanaStakingContextState,
     type SignPreparedSolanaStakingTransactionThunkState,
     WALLET_SDK_SOURCE_MOBILE,
-    isEarnSigningCancelled,
     prepareSolanaStakingSignContext,
     sendFormActions,
     signPreparedSolanaStakingTransactionThunk,
@@ -16,9 +16,9 @@ import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
 
-import { events } from '@suite-common/analytics';
 import { EARN_MODULE_PREFIX } from '../../constants';
 import { type SignStakeTransactionRejectValue } from '../../types';
+import { isUserCancelledSignError } from '../../utils/earn/utils';
 
 const SIGN_LOG_PREFIX = 'signSolanaStakingTransactionThunk';
 
@@ -81,7 +81,9 @@ export const signSolanaStakingTransactionThunk = createThunk<
             const signAction = deviceAccessResponse.payload;
 
             if (signPreparedSolanaStakingTransactionThunk.rejected.match(signAction)) {
-                if (isEarnSigningCancelled(signAction.error)) {
+                const { payload } = signAction;
+
+                if (isUserCancelledSignError(payload)) {
                     extra.services.analytics.report({
                         type: events.transactionCancelEvent.name,
                         payload: {
@@ -91,7 +93,6 @@ export const signSolanaStakingTransactionThunk = createThunk<
                         },
                     });
                 }
-                const { payload } = signAction;
 
                 if (
                     payload?.error !== 'sign-transaction-timeout' &&

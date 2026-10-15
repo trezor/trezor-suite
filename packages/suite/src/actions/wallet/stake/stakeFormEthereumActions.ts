@@ -1,11 +1,11 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 import { type ThunkDispatch } from 'redux-thunk';
 
+import { events } from '@suite/analytics';
 import {
     type SignPreparedEthereumStakingTransactionThunkState,
     WALLET_SDK_SOURCE,
     composeEthereumStakingTransaction,
-    isEarnSigningCancelled,
     prepareEthereumStakingContext,
     signPreparedEthereumStakingTransactionThunk,
 } from '@suite-common/wallet-core';
@@ -16,12 +16,13 @@ import {
     type StakeFormState,
 } from '@suite-common/wallet-types';
 
-import { events } from '@suite/analytics';
+
 import {
     type StakeSignResult,
     type StakeSignThunkDeps,
     handleStakeSignRejection,
     isBaseStakeType,
+    isStakeSignCancelled,
     reportStakeSignFailure,
 } from './stakeSignUtils';
 
@@ -72,7 +73,7 @@ export const signTransactionThunk =
         );
 
         if (signPreparedEthereumStakingTransactionThunk.rejected.match(signed)) {
-            if (isEarnSigningCancelled(signed.error)) {
+            if (isStakeSignCancelled(signed.payload)) {
                 extra.services.analytics.report({
                     type: events.transactionCancelEvent.name,
                     payload: {

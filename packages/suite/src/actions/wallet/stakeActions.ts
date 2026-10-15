@@ -13,28 +13,21 @@ import {
     selectIsMevProtectionFeatureEnabled,
 } from '@suite-common/mev';
 import { EarnFlow } from '@suite-common/suite-types';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type BlockchainRootState,
     type EthereumGetCurrentNonceThunkState,
-    type ReplaceTransactionThunkState,
+    type PushStakeTransactionThunkDeps,
+    type PushStakeTransactionThunkState,
     type StakeRootState,
-    type SyncAccountsWithBlockchainThunkDeps,
-    type SyncAccountsWithBlockchainThunkState,
     type WalletSettingsRootState,
-    addFakePendingCardanoTxThunk,
     isSupportedAdaStakingNetworkSymbol,
     isSupportedEthStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
-    notifyEarnTransactionBroadcastThunk,
-    replaceTransactionThunk,
+    pushStakeTransactionThunk,
     selectAccountByKey,
-    selectIsMevProtectionEnabled,
     selectStake,
     selectStakeAccount,
     stakeActions,
-    syncAccountsWithBlockchainThunk,
-    transactionsActions,
 } from '@suite-common/wallet-core';
 import {
     type Account,
@@ -43,16 +36,8 @@ import {
     type PrecomposedTransactionFinal,
     type StakeFormState,
     type StakeType,
-    type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
-import {
-    getMevProtectedTxData,
-    isCardanoTx,
-    isRbfBumpFeeTransaction,
-    tryGetAccountIdentity,
-} from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
-import { asCoinSymbol } from '@trezor/connect-common';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { type WithServices } from '@trezor/redux-utils';
 import { type Err } from '@trezor/type-utils';
@@ -117,15 +102,11 @@ export const cancelSignTxThunk =
         }
     };
 
-type PushTransactionThunkState = DeviceRootState &
-    MevProtectionRootState &
-    ReplaceTransactionThunkState &
-    StakeRootState &
-    SyncAccountsWithBlockchainThunkState &
-    WalletSettingsRootState;
+type PushTransactionThunkState = MevProtectionRootState & PushStakeTransactionThunkState;
 
-type PushTransactionThunkDeps = WithServices<DesktopAnalyticsDep> &
-    SyncAccountsWithBlockchainThunkDeps;
+type PushTransactionThunkDeps = WithServices<DesktopAnalyticsDep> & PushStakeTransactionThunkDeps;
+
+type PushTransactionResult = { success: true; txid: string } | { success: false };
 
 // private, called from signTransaction only
 const pushTransactionThunk =
@@ -134,138 +115,44 @@ const pushTransactionThunk =
         dispatch: ThunkDispatch<PushTransactionThunkState, PushTransactionThunkDeps, UnknownAction>,
         getState: () => PushTransactionThunkState,
         extra: PushTransactionThunkDeps,
-    ) => {
-        const { serializedTx, precomposedTx } = selectStake(getState());
+    ): Promise<PushTransactionResult | undefined> => {
+        const { serializedTx, precomposedTx, precomposedForm } = selectStake(getState());
         const account = selectStakeAccount(getState());
-        const device = selectSelectedDevice(getState());
-        const isMevProtectionEnabled = selectIsMevProtectionEnabled(getState());
         const isMevProtectionFeatureEnabled = selectIsMevProtectionFeatureEnabled(getState());
 
         if (!serializedTx || !precomposedTx || !account) return;
 
-        const txData = getMevProtectedTxData(
-            serializedTx.symbol,
-            serializedTx.tx,
-            isMevProtectionEnabled && isMevProtectionFeatureEnabled,
+        const pushed = await dispatch(
+            pushStakeTransactionThunk({
+                accountKey: account.key,
+                stakeType,
+                serializedTx,
+                precomposedTransaction: precomposedTx,
+                precomposedForm,
+                isMevProtectionFeatureEnabled,
+            }),
         );
-
-        const sentTx = await TrezorConnect.pushTransaction({
-            tx: txData,
-            coin: asCoinSymbol(account.symbol),
-            identity: tryGetAccountIdentity(account),
-        });
-
-        const flow = stakeType === 'change-delegate' ? 'vote' : stakeType;
+        const isSuccess = pushStakeTransactionThunk.fulfilled.match(pushed);
 
         // close modal regardless result
         dispatch(closeModal());
 
-        if (sentTx.success) {
-            const { txid } = sentTx.payload;
-
-            if (cardanoPoolDelegation) {
-                extra.services.analytics.report({
-                    type: events.stakingCardanoPoolDelegationEvent.name,
-                    payload: cardanoPoolDelegation,
-                });
-            }
-
-            const bumpedPrevTxid = isRbfBumpFeeTransaction(precomposedTx)
-                ? precomposedTx.prevTxid
-                : undefined;
-
-            dispatch(
-                notifyEarnTransactionBroadcastThunk({
-                    account,
-                    device,
-                    txid,
-                    flow,
-                    stage: bumpedPrevTxid ? 'sped-up' : 'pending',
-                    prevTxid: bumpedPrevTxid,
-                }),
-            );
-
-            if (isRbfBumpFeeTransaction(precomposedTx)) {
-                // notification from the backend may be delayed.
-                // modify affected transaction(s) in the reducer until the real account update occurs.
-                // this will update transaction details (like time, fee etc.)
-                dispatch(
-                    replaceTransactionThunk({
-                        precomposedTransaction: precomposedTx,
-                        newTxid: txid,
-                    }),
-                );
-            }
-
-            if (isCardanoTx(account, precomposedTx)) {
-                const base = { withdrawal: undefined, deposit: undefined };
-                let cardanoSpecific: WalletAccountTransaction['cardanoSpecific'];
-
-                switch (stakeType) {
-                    case 'stake':
-                        cardanoSpecific = { ...base, subtype: 'stake_registration' };
-                        break;
-                    case 'change-delegate':
-                        cardanoSpecific = { ...base, subtype: 'governance_delegation' };
-                        break;
-                    case 'unstake':
-                        cardanoSpecific = { ...base, subtype: 'stake_deregistration' };
-                        break;
-                    case 'claim':
-                        cardanoSpecific = { ...base, subtype: 'withdrawal' };
-                        break;
-                }
-
-                dispatch(
-                    addFakePendingCardanoTxThunk({
-                        precomposedTransaction: precomposedTx,
-                        txid,
-                        account,
-                        cardanoSpecific,
-                    }),
-                );
-
-                // The confirmed selection is spent by this transaction; keeping it would let it
-                // reach the next plan composed for this account.
-                dispatch(stakeActions.clearAccountVotingDelegation());
-            }
-
-            // notification from the backend may be delayed.
-            // modify affected account balance.
-            // TODO: make it work with ETH accounts
-
-            // there is no point in fetching account data right after tx submit
-            //  as the account will update only after the tx is confirmed
-            dispatch(syncAccountsWithBlockchainThunk(account.symbol));
-        } else {
-            dispatch(
-                transactionsActions.transactionBroadcastStatus({
-                    account,
-                    flow,
-                    status: 'error',
-                    isRbf: isRbfBumpFeeTransaction(precomposedTx),
-                }),
-            );
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'sign-tx-error',
-                    error: sentTx.error.message,
-                }),
-            );
+        if (isSuccess && cardanoPoolDelegation) {
+            extra.services.analytics.report({
+                type: events.stakingCardanoPoolDelegationEvent.name,
+                payload: cardanoPoolDelegation,
+            });
         }
 
-        dispatch(cancelSignTxThunk(sentTx.success, account));
+        dispatch(cancelSignTxThunk(isSuccess, account));
 
         // resolve sign process
-        return sentTx;
+        return isSuccess ? { success: true, txid: pushed.payload.txid } : { success: false };
     };
 
 export type SignTransactionThunkState = DeviceRootState &
     EthereumGetCurrentNonceThunkState &
-    MevProtectionRootState &
-    ReplaceTransactionThunkState &
-    StakeRootState &
-    SyncAccountsWithBlockchainThunkState &
+    PushTransactionThunkState &
     WalletSettingsRootState;
 
 export type SignTransactionThunkDeps = PushTransactionThunkDeps;
