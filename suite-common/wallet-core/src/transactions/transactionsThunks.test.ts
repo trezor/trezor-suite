@@ -23,9 +23,11 @@ import { transactionsActions } from './transactionsActions';
 import {
     type AddFakePendingCardanoTxThunkState,
     type AddFakePendingStellarTxThunkState,
+    type FetchUtxoTransactionsForAccountThunkState,
     type ResolveTransactionInputsThunkState,
     addFakePendingCardanoTxThunk,
     addFakePendingStellarTxThunk,
+    fetchUtxoTransactionsForAccountThunk,
     resolveTransactionInputsThunk,
 } from './transactionsThunks';
 
@@ -397,7 +399,7 @@ const getStoredTransaction = (transaction: AccountTransaction) =>
 const getTransactionsState = (
     transactions: WalletAccountTransaction[],
     transactionsAccount: Account = accountWithUnresolvedInputs,
-): ResolveTransactionInputsThunkState => ({
+): ResolveTransactionInputsThunkState & FetchUtxoTransactionsForAccountThunkState => ({
     wallet: {
         accounts: [transactionsAccount],
         transactions: {
@@ -523,5 +525,72 @@ describe('resolveTransactionInputsThunk', () => {
         expect(await Promise.all([run(), run()])).toEqual([true, true]);
         expect(getTransactions).toHaveBeenCalledTimes(1);
         expect(getReplaceActions()).toHaveLength(1);
+    });
+});
+
+describe('fetchUtxoTransactionsForAccountThunk', () => {
+    const confirmedTxid = 'ee'.repeat(32);
+    const newTxid = 'ff'.repeat(32);
+
+    const getUtxo = (txid: string, vout: number) => ({
+        txid,
+        vout,
+        amount: '1000',
+        blockHeight: 1,
+        address: 'bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4',
+        path: "m/84'/0'/0'/0/0",
+        confirmations: 1,
+    });
+
+    const confirmedTransaction = getStoredTransaction({
+        ...getUnresolvedTransaction({ blockHeight: 100 }),
+        txid: confirmedTxid,
+    });
+    const pendingTransaction = getStoredTransaction(getUnresolvedTransaction());
+
+    const fetchUtxoTransactions = (utxoAccount: Account) => {
+        const getState = () =>
+            getTransactionsState([confirmedTransaction, pendingTransaction], utxoAccount);
+        const { dispatch } = createMockDispatch({ getState, extra: {} });
+
+        return fetchUtxoTransactionsForAccountThunk({ accountKey: utxoAccount.key })(
+            dispatch,
+            getState,
+            {},
+        ).unwrap();
+    };
+
+    afterEach(() => jest.restoreAllMocks());
+
+    it('fetches only the transactions of the UTXOs which are not confirmed in the store', async () => {
+        const getTransactions = mockGetTransactions([]);
+
+        await fetchUtxoTransactions({
+            ...accountWithUnresolvedInputs,
+            utxo: [
+                getUtxo(confirmedTxid, 0),
+                getUtxo(UNRESOLVED_TXID, 0),
+                getUtxo(newTxid, 0),
+                getUtxo(newTxid, 1),
+            ],
+        });
+
+        expect(getTransactions).toHaveBeenCalledWith({
+            coin: 'btc',
+            txs: [UNRESOLVED_TXID, newTxid],
+            descriptor: accountWithUnresolvedInputs.descriptor,
+        });
+    });
+
+    it('fetches nothing when the transactions of all the UTXOs are confirmed in the store', async () => {
+        const getTransactions = mockGetTransactions([]);
+
+        const transactions = await fetchUtxoTransactions({
+            ...accountWithUnresolvedInputs,
+            utxo: [getUtxo(confirmedTxid, 0), getUtxo(confirmedTxid, 1)],
+        });
+
+        expect(getTransactions).not.toHaveBeenCalled();
+        expect(transactions).toEqual([confirmedTransaction, pendingTransaction]);
     });
 });

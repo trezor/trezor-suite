@@ -25,6 +25,7 @@ import {
     hasUnresolvedInputs,
     isEip1559,
     isEvmYieldTxByTextSignature,
+    isPending,
     isRbfBumpFeeTransaction,
     isTrezorConnectBackendType,
     mergeResolvedInputs,
@@ -1011,7 +1012,7 @@ type FetchUtxoTransactionsForAccountThunkParams = {
     accountKey: AccountKey;
 };
 
-type FetchUtxoTransactionsForAccountThunkState = AccountsRootState & TransactionsRootState;
+export type FetchUtxoTransactionsForAccountThunkState = AccountsRootState & TransactionsRootState;
 
 export const fetchUtxoTransactionsForAccountThunk = createSingleInstanceThunk<
     FetchUtxoTransactionsForAccountThunkParams,
@@ -1028,13 +1029,23 @@ export const fetchUtxoTransactionsForAccountThunk = createSingleInstanceThunk<
             throw new Error(`Account not found: ${accountKey}`);
         }
 
-        if (account.utxo === undefined || account.utxo.length === 0) {
+        // Coin control needs only the time of a transaction, which doesn't change once confirmed.
+        const confirmedTxids = new Set(
+            selectAccountTransactions(getState(), accountKey)
+                .filter(tx => !isPending(tx))
+                .map(tx => tx.txid),
+        );
+        const txids = [...new Set(account.utxo?.map(utxo => utxo.txid))].filter(
+            txid => !confirmedTxids.has(txid),
+        );
+
+        if (txids.length === 0) {
             return selectAccountTransactions(getState(), accountKey);
         }
 
         const result = await TrezorConnect.blockchainGetTransactions({
             coin: asCoinSymbol(account.symbol),
-            txs: account.utxo.map(utxo => utxo.txid),
+            txs: txids,
             descriptor: account.descriptor,
         });
 
