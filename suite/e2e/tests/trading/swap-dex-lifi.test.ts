@@ -106,7 +106,7 @@ test.describe('Trading - DEX swap (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
                 await expect(tradingPage.quotes.selectedProviderName).toHaveText(dexProvider);
                 await tradingPage.quotes.waitForSync();
 
-                await tradingPage.clickSwapDexBestOfferWithRetry();
+                await tradingPage.clickSwapBestOfferWithRetry();
             });
 
             await test.step('Read the standard fee on the review step', async () => {
