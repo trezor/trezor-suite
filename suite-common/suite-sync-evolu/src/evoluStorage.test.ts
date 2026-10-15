@@ -53,13 +53,13 @@ describe(createEvoluStorageFactory.name, () => {
                         ...result.value,
                         send: data => {
                             const sent = result.value.send(data);
-                            // Every subscription change is one message to the relay: [0] the
-                            // first sync request, [1] the unsubscribe forceResync sends when it
-                            // drops that subscription, [2] the resync's own sync request, [3]
-                            // the unsubscribe from dispose. Counting them is how the test waits
-                            // for [0] and [2], the two requests it compares below.
+                            // The relay sees one message per sync round: [0] the first sync
+                            // request, [1] the one forceResync asks for over the same
+                            // subscription, [2] the unsubscribe from dispose. Counting them is
+                            // how the test waits for [0] and [1], the two requests it compares
+                            // below.
                             if (createWebSocket.sentMessages.length === 1) firstSync.resolve();
-                            if (createWebSocket.sentMessages.length === 3) nextSync.resolve();
+                            if (createWebSocket.sentMessages.length === 2) nextSync.resolve();
 
                             return sent;
                         },
@@ -74,8 +74,9 @@ describe(createEvoluStorageFactory.name, () => {
         await storage.forceResync();
         await nextSync.promise;
 
-        // Unsubscribing and subscribing again must send a fresh sync request to the same relay.
-        expect(createWebSocket.sentMessages[2]).toEqual(createWebSocket.sentMessages[0]);
+        // The resync must reach the same relay over the subscription it already holds: dropping
+        // that subscription would leave the relay with no subscriber to retry the writes to.
+        expect(createWebSocket.sentMessages[1]).toEqual(createWebSocket.sentMessages[0]);
         await storage.dispose();
     });
 
