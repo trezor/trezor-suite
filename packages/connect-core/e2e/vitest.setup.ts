@@ -33,6 +33,12 @@ globalThis.TestUtils = {
     },
 };
 
+// Use the bundled firmware release config instead of fetching it from data.trezor.io on every init.
+vi.mock(import('../src/data/firmwareInfo'), async importOriginal => ({
+    ...(await importOriginal()),
+    getRemoteFirmwareConfig: () => Promise.resolve(null),
+}));
+
 // Mock coins.json for WS cache mode in Node.
 // Browser handles this via wsCacheTransformPlugin in vitest.config.ts.
 if (typeof window === 'undefined' && process.env.TESTS_USE_WS_CACHE === 'true') {
