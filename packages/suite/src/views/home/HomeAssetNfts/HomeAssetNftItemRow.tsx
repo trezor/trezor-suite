@@ -14,11 +14,8 @@ type HomeAssetNftItemRowProps = {
     item: NftItem;
 };
 
-export const HomeAssetNftItemRow = memo(function HomeAssetNftItemRow({
-    assetKey,
-    item: { id, amount },
-}: HomeAssetNftItemRowProps) {
-    return (
+export const HomeAssetNftItemRow = memo(
+    ({ assetKey, item: { id, amount } }: HomeAssetNftItemRowProps) => (
         <Table.Row
             hasBorderTop={false}
             isHighlightedOnHover={false}
@@ -43,8 +40,10 @@ export const HomeAssetNftItemRow = memo(function HomeAssetNftItemRow({
                 </Row>
             </Table.Cell>
         </Table.Row>
-    );
-});
+    ),
+);
+
+HomeAssetNftItemRow.displayName = 'HomeAssetNftItemRow';
 
 type HomeAssetNftMoreItemsRowProps = {
     count: number;
