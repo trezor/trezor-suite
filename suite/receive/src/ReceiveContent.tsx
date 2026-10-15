@@ -27,7 +27,7 @@ export type ReceiveContentProps = {
 
 export const ReceiveContent = ({ account, locked, AmountComponent }: ReceiveContentProps) => {
     const { dispatch } = useServices(injectDispatch);
-    const { isReceiveDisabled } = useReceiveDisabled();
+    const { isReceiveDisabled, receiveDisabledTooltipContent } = useReceiveDisabled();
 
     // Copying an address is the entry point to verification, so the cards report the copied path
     // here and the prompt offers to verify that exact address.
@@ -36,8 +36,6 @@ export const ReceiveContent = ({ account, locked, AmountComponent }: ReceiveCont
     // Which address is being confirmed on the device, shared by the cards so the verifying button
     // shows a spinner while the others are disabled.
     const [verifyingAddressPath, setVerifyingAddressPath] = useState<string | undefined>();
-
-    const disabled = locked || isReceiveDisabled;
 
     const supportsTokens = useMemo(
         () => getNetworkFeatures(account.symbol).includes('tokens'),
@@ -111,7 +109,9 @@ export const ReceiveContent = ({ account, locked, AmountComponent }: ReceiveCont
 
             <NewestAddressCard
                 accountKey={account.key}
-                disabled={disabled}
+                disabled={locked}
+                isReceiveDisabled={isReceiveDisabled}
+                receiveDisabledReason={receiveDisabledTooltipContent}
                 verifyingAddressPath={verifyingAddressPath}
                 onCopied={setPromptedAddressPath}
                 onVerify={handleVerifyAddress}
@@ -119,7 +119,9 @@ export const ReceiveContent = ({ account, locked, AmountComponent }: ReceiveCont
 
             <AddressHistory
                 accountKey={account.key}
-                disabled={disabled}
+                disabled={locked}
+                isReceiveDisabled={isReceiveDisabled}
+                receiveDisabledReason={receiveDisabledTooltipContent}
                 verifyingAddressPath={verifyingAddressPath}
                 AmountComponent={AmountComponent}
                 onCopied={setPromptedAddressPath}
