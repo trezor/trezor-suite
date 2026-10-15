@@ -132,6 +132,8 @@ export async function registerPopupOpener() {
                     contextIsolation: true,
                     webSecurity: true,
                     allowRunningInsecureContent: false,
+                    // As in the view: a native message box with no site on it, under Suite's name.
+                    disableDialogs: true,
                 },
             },
         };
