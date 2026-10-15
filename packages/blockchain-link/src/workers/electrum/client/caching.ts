@@ -26,17 +26,20 @@ export type ElectrumCache = {
     // Confirmed transactions don't change with new blocks, only their confirmations do. Their
     // block heights hold only while the tip they were counted from stays in the chain.
     confirmedTransactions: Map<string, ConfirmedTransaction>;
+    // Block headers by height, which hold only while the tip stays in the chain too.
+    headers: Map<number, string>;
     tip?: BlockHeader;
 };
 
 export const createElectrumCache = (): ElectrumCache => ({
     results: new Map(),
     confirmedTransactions: new Map(),
+    headers: new Map(),
 });
 
 const MAX_CACHED_ITEMS = 20000;
 
-const setCached = <T>(cache: Map<string, T>, key: string, value: T) => {
+const setCached = <K, T>(cache: Map<K, T>, key: K, value: T) => {
     // Re-inserted, so that the least recently fetched item goes first when the cache is full.
     cache.delete(key);
     cache.set(key, value);
@@ -179,6 +182,35 @@ export class CachingElectrumClient extends ElectrumClient {
         return tx;
     }
 
+    private async getBlockHeader(height: number): Promise<string> {
+        const cached = this.cache.headers.get(height);
+        const currentTip = this.lastBlock;
+        // Like a confirmed transaction, only a header below the tip of this chain is reused.
+        if (
+            cached !== undefined &&
+            currentTip &&
+            this.cache.tip === currentTip &&
+            height <= currentTip.height
+        ) {
+            this.cached++;
+
+            return cached;
+        }
+
+        const requestBlock = this.lastBlock;
+        const header: string = await this.requestOnce(
+            `blockchain.block.header:${height}@${requestBlock?.hex}`,
+            () => super.request('blockchain.block.header', height),
+        );
+        // The header of a block the server hasn't announced yet may be replaced before it is, and
+        // it can't be told which chain a header came from when a block arrived while waiting.
+        if (requestBlock && height <= requestBlock.height && this.cache.tip === requestBlock) {
+            setCached(this.cache.headers, height, header);
+        }
+
+        return header;
+    }
+
     private forgetTransactionsFetchedShortlyBefore(blockTime: number) {
         const trustedSince = blockTime - UNTRUSTED_BEFORE_BLOCK_MS;
         const { confirmedTransactions } = this.cache;
@@ -217,6 +249,7 @@ export class CachingElectrumClient extends ElectrumClient {
                 this.forgetTransactionsFetchedShortlyBefore(lastFetchedAt);
             } else {
                 confirmedTransactions.clear();
+                this.cache.headers.clear();
             }
         }
         this.cache.tip = this.lastBlock;
@@ -252,6 +285,12 @@ export class CachingElectrumClient extends ElectrumClient {
 
                 return this.cacheRequest(RAW_TRANSACTION_STATUS, method, params);
             }
+            case 'blockchain.block.header': {
+                const [height, cpHeight] = params;
+                // A header with a merkle proof to a checkpoint is not cached.
+                if (cpHeight === undefined) return this.getBlockHeader(height);
+                break;
+            }
             case 'blockchain.scripthash.subscribe': {
                 const [scripthash] = params;
 
@@ -285,6 +324,7 @@ export class CachingElectrumClient extends ElectrumClient {
                 // Blocks of cached transactions may not be in the chain anymore after a reorg.
                 if (blocks.some(block => !isFollowingBlock(this.cache.tip, block))) {
                     this.cache.confirmedTransactions.clear();
+                    this.cache.headers.clear();
                 } else {
                     this.forgetTransactionsFetchedShortlyBefore(Date.now());
                 }

@@ -135,6 +135,12 @@ class MockSocket implements ISocket {
     getRequestCount(method: string) {
         return this.requests.filter(request => request.method === method).length;
     }
+
+    getHeaderRequestCount(height: number) {
+        return this.requests.filter(
+            ({ method, params }) => method === 'blockchain.block.header' && params[0] === height,
+        ).length;
+    }
 }
 
 const clients: CachingElectrumClient[] = [];
@@ -470,6 +476,156 @@ describe('CachingElectrumClient', () => {
         const tx = await first.client.request('blockchain.transaction.get', TXID, true);
 
         expect(tx.confirmations).toBe(0);
+    });
+
+    it('fetches the header of a block once', async () => {
+        const { socket, client } = await connectClient();
+        socket.chain = [createBlock(99)];
+
+        const headers = await Promise.all([
+            client.request('blockchain.block.header', 99),
+            client.request('blockchain.block.header', 99),
+        ]);
+        socket.notifyBlock(createBlock(101, socket.tip));
+        const header = await client.request('blockchain.block.header', 99);
+
+        expect([...headers, header]).toEqual([99, 99, 99].map(() => socket.chain[0]?.hex));
+        expect(socket.getRequestCount('blockchain.block.header')).toBe(1);
+    });
+
+    it('fetches a header with a proof to a checkpoint every time', async () => {
+        const { socket, client } = await connectClient();
+        socket.chain = [createBlock(99)];
+
+        await client.request('blockchain.block.header', 99, 100);
+        await client.request('blockchain.block.header', 99, 100);
+
+        expect(socket.getRequestCount('blockchain.block.header')).toBe(2);
+    });
+
+    it('fetches a header again after a reorg', async () => {
+        const { socket, client } = await connectClient();
+        socket.chain = [createBlock(99)];
+
+        await client.request('blockchain.block.header', 99);
+        socket.notifyBlock(createBlock(101));
+        await client.request('blockchain.block.header', 99);
+
+        expect(socket.getRequestCount('blockchain.block.header')).toBe(2);
+    });
+
+    it('does not keep the header of a block the server has not announced yet', async () => {
+        const { socket, client } = await connectClient();
+        const announced = createBlock(101, socket.tip);
+        // The server has another block 101 at first, e.g. with another nonce.
+        socket.chain = [{ height: 101, hex: `${announced.hex.slice(0, -8)}ffffffff` }];
+
+        await client.request('blockchain.block.header', 101);
+        socket.chain = [];
+        socket.notifyBlock(announced);
+        const header = await client.request('blockchain.block.header', 101);
+
+        expect(header).toBe(announced.hex);
+        expect(socket.getRequestCount('blockchain.block.header')).toBe(2);
+    });
+
+    it('does not keep a header which came after a block', async () => {
+        const { socket, client } = await connectClient();
+        socket.chain = [createBlock(99)];
+        socket.onRequest = method => {
+            if (method === 'blockchain.block.header') {
+                socket.onRequest = undefined;
+                socket.notifyBlock(createBlock(101, socket.tip));
+            }
+        };
+
+        await client.request('blockchain.block.header', 99);
+        await client.request('blockchain.block.header', 99);
+
+        expect(socket.getRequestCount('blockchain.block.header')).toBe(2);
+    });
+
+    it('does not reuse a header request sent before a reorg', async () => {
+        const { socket, client } = await connectClient();
+        const replaced = createBlock(99, createBlock(98));
+        socket.chain = [createBlock(99)];
+        let afterReorg: Promise<string> | undefined;
+        // The server announces a reorg while the first request waits, but answers it from the chain
+        // it read before. The next request gets the replaced block.
+        socket.onRequest = method => {
+            if (method === 'blockchain.block.header') {
+                socket.onRequest = () => {
+                    socket.chain = [replaced];
+                };
+                socket.notifyBlock(createBlock(101));
+                afterReorg = client.request('blockchain.block.header', 99);
+            }
+        };
+
+        await client.request('blockchain.block.header', 99);
+        const header = await afterReorg;
+        const cached = await client.request('blockchain.block.header', 99);
+
+        expect([header, cached]).toEqual([replaced.hex, replaced.hex]);
+        expect(socket.getRequestCount('blockchain.block.header')).toBe(2);
+    });
+
+    it('lets the client of the next connection reuse headers when the chain only grew', async () => {
+        const cache = createElectrumCache();
+        const previous = await connectClient(cache);
+        previous.socket.chain = [createBlock(99)];
+        await previous.client.request('blockchain.block.header', 99);
+        previous.client.close();
+
+        const socket = new MockSocket();
+        socket.chain = [createBlock(99), previous.socket.tip];
+        socket.tip = createBlock(101, previous.socket.tip);
+        const { client } = await connectClient(cache, socket);
+        await client.request('blockchain.block.header', 99);
+
+        expect(socket.getRequestCount('blockchain.block.header')).toBe(0);
+    });
+
+    it('fetches headers again when the chain changed while disconnected', async () => {
+        const cache = createElectrumCache();
+        const previous = await connectClient(cache);
+        previous.socket.chain = [createBlock(99)];
+        await previous.client.request('blockchain.block.header', 99);
+        previous.client.close();
+
+        // Block 100 was replaced.
+        const socket = new MockSocket();
+        socket.chain = [createBlock(99), createBlock(100, createBlock(99))];
+        socket.tip = createBlock(101, socket.chain[1]);
+        const { client } = await connectClient(cache, socket);
+        await client.request('blockchain.block.header', 99);
+
+        expect(socket.getHeaderRequestCount(99)).toBe(1);
+    });
+
+    it('does not use headers fetched on the chain of another client', async () => {
+        const cache = createElectrumCache();
+        const first = await connectClient(cache);
+        first.socket.chain = [createBlock(99)];
+        const socket = new MockSocket();
+        socket.chain = [createBlock(99)];
+        socket.tip = createBlock(100, createBlock(99));
+        const second = await connectClient(cache, socket);
+        await second.client.request('blockchain.block.header', 99);
+
+        await first.client.request('blockchain.block.header', 99);
+
+        expect(first.socket.getHeaderRequestCount(99)).toBe(1);
+    });
+
+    it('keeps raw transactions after a reorg', async () => {
+        const { socket, client } = await connectClient();
+
+        await client.request('blockchain.transaction.get', TXID, false);
+        socket.notifyBlock(createBlock(101));
+        await client.request('blockchain.transaction.get', TXID, false);
+
+        expect(socket.getRequestCount('blockchain.transaction.get')).toBe(1);
     });
 
     it('fetches a confirmed transaction again after a reorg', async () => {
