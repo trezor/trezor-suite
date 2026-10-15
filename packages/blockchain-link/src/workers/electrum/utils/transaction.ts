@@ -347,11 +347,15 @@ const getBlockHeaders = (client: ElectrumAPI, heights: number[]) =>
     ).then(headers => new Map(headers.map(header => [header.height, header])));
 
 type GetTransactionsOptions = {
-    // The previous transactions of inputs which aren't in the history itself are needed only for
-    // the fee and the sender addresses of transactions with foreign inputs (incoming payments).
-    // Without them such inputs have no value and address and the fee of the transaction is 0, so
-    // the result fits only computations of the account's own amounts.
+    // The previous transactions of inputs which aren't in the history of the account are needed
+    // only for the fee and the sender addresses of transactions with foreign inputs (incoming
+    // payments). Without them such inputs have no value and address and the fee of the
+    // transaction is 0, while the amounts of the account stay exact.
     withForeignParents?: boolean;
+    // The whole history of the account when only a part of it is fetched, e.g. a page. An input
+    // spends an output of the account only when its previous transaction paid the account, so the
+    // previous transactions in the history are fetched even without the foreign ones.
+    accountTxids?: ReadonlySet<string>;
     // The headers of the blocks are needed only for their time and hash. Without them a confirmed
     // transaction has its height and confirmations only.
     withBlocks?: boolean;
@@ -362,7 +366,7 @@ type GetTransactionsOptions = {
 export const getTransactions = async (
     client: ElectrumAPI,
     history: HistoryTx[],
-    { withForeignParents = true, withBlocks = true }: GetTransactionsOptions = {},
+    { withForeignParents = true, accountTxids, withBlocks = true }: GetTransactionsOptions = {},
 ): Promise<BlockbookTransaction[]> => {
     const heights = new Map(history.map(({ tx_hash, height }) => [tx_hash, height]));
     const blockHeights = withBlocks
@@ -371,12 +375,11 @@ export const getTransactions = async (
 
     const getTransactionsWithParents = async () => {
         const origTxs = await getRawTransactions(client, [...heights.keys()]);
-        const prevTxids = withForeignParents
-            ? Object.values(origTxs)
-                  .flatMap(({ inputs }) => inputs.map(({ txid }) => txid))
-                  .filter(arrayDistinct)
-                  .filter(txid => !origTxs[txid])
-            : [];
+        const prevTxids = Object.values(origTxs)
+            .flatMap(({ inputs }) => inputs.map(({ txid }) => txid))
+            .filter(arrayDistinct)
+            .filter(txid => !origTxs[txid])
+            .filter(txid => withForeignParents || !!accountTxids?.has(txid));
         const prevTxs = await getRawTransactions(client, prevTxids);
 
         return { origTxs, prevTxs };

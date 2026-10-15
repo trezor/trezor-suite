@@ -75,14 +75,20 @@ const getHistoryPage = (history: HistoryTx[], { page, pageSize }: PageParams) =>
         )
         .slice((page - 1) * pageSize, page * pageSize);
 
-// Only the transactions of the page are fetched with the previous transactions of their inputs.
+// Only the transactions of the page are fetched, with the previous transactions of their inputs
+// which are in the history. Those of foreign inputs are left out, as an incoming payment can have
+// dozens of them, so the fee of such a transaction is unknown until it is fetched by getTransaction
+// without a descriptor.
 const getTransactionsPage = (
     client: ElectrumAPI,
     history: HistoryTx[],
     pageParams: PageParams,
     transformTransaction: ReturnType<typeof createTransactionTransformer>,
 ) =>
-    getTransactions(client, getHistoryPage(history, pageParams))
+    getTransactions(client, getHistoryPage(history, pageParams), {
+        withForeignParents: false,
+        accountTxids: new Set(history.map(({ tx_hash }) => tx_hash)),
+    })
         .then(txs => txs.map(transformTransaction))
         .then(sortTxsFromLatest);
 

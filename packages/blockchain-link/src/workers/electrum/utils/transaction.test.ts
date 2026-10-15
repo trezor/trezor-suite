@@ -366,6 +366,44 @@ describe('transactions of the Electrum worker', () => {
         });
     });
 
+    it('fetches the previous transactions in the history of the account without the foreign ones', async () => {
+        const ownParent = createRawTransaction({
+            outputs: [{ script: P2WPKH_SCRIPT, value: 3000 }],
+        });
+        const foreignParent = createRawTransaction({
+            outputs: [{ script: P2PKH_SCRIPT, value: 2000 }],
+        });
+        const tx = createRawTransaction({
+            inputs: [
+                { txid: ownParent.txid, vout: 0, witness: ['00'] },
+                { txid: foreignParent.txid, vout: 0, scriptSig: '00' },
+            ],
+            outputs: [{ script: P2TR_SCRIPT, value: 4500 }],
+        });
+        const { socket, client } = await connectClient(
+            createServer([ownParent, foreignParent, tx]),
+        );
+
+        const [formatted] = await getTransactions(client, [{ tx_hash: tx.txid, height: 999 }], {
+            withForeignParents: false,
+            accountTxids: new Set([ownParent.txid, tx.txid]),
+        });
+
+        const requestedTxids = socket
+            .getRequests('blockchain.transaction.get')
+            .map(({ params }) => params[0]);
+        expect(requestedTxids.sort()).toEqual([ownParent.txid, tx.txid].sort());
+        expect(formatted).toMatchObject({
+            valueIn: '3000',
+            fees: '0',
+            vin: [
+                { txid: ownParent.txid, value: '3000', isAddress: true },
+                { txid: foreignParent.txid, addresses: [], isAddress: false },
+            ],
+        });
+        expect(formatted?.vin[1]).not.toHaveProperty('value');
+    });
+
     it('counts a block the server has not announced yet as confirmed once', async () => {
         const output = { script: P2WPKH_SCRIPT, value: 1000 };
         const tx = createRawTransaction({ outputs: [output] });

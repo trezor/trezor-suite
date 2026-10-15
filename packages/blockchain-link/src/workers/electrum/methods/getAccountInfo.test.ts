@@ -112,7 +112,44 @@ const PAGED_HISTORY = PAGED_TRANSACTIONS.map(({ txid }, index) => ({
     height: PAGED_HEIGHTS[index] ?? 0,
 }));
 
-const transactions = [FOREIGN_PARENT, INCOMING, OUTGOING, ...PAGED_TRANSACTIONS];
+// An address beyond the gap limit of the account, whose payment is on the second page of its
+// history, after a newer transaction. The payment spends an output of an incoming transaction.
+const LATER_PAGE_ADDRESS = getAddress('receive', 2000);
+const LATER_PAGE_FOREIGN_PARENT = createTransaction({
+    inputs: [],
+    outputs: [{ value: 100000000, address: FOREIGN_ADDRESS }],
+    coinbase: '10',
+});
+const LATER_PAGE_INCOMING = createTransaction({
+    inputs: [{ txid: LATER_PAGE_FOREIGN_PARENT.txid, vout: 0 }],
+    outputs: [
+        { value: 60000000, address: LATER_PAGE_ADDRESS },
+        { value: 39990000, address: FOREIGN_ADDRESS },
+    ],
+});
+const LATER_PAGE_OUTGOING = createTransaction({
+    inputs: [{ txid: LATER_PAGE_INCOMING.txid, vout: 0 }],
+    outputs: [
+        { value: 50000000, address: FOREIGN_ADDRESS },
+        { value: 9990000, address: LATER_PAGE_ADDRESS },
+    ],
+});
+const LATER_PAGE_NEWEST = createTransaction({
+    inputs: [],
+    outputs: [{ value: 10000000, address: LATER_PAGE_ADDRESS }],
+    coinbase: '11',
+});
+
+const transactions = [
+    FOREIGN_PARENT,
+    INCOMING,
+    OUTGOING,
+    ...PAGED_TRANSACTIONS,
+    LATER_PAGE_FOREIGN_PARENT,
+    LATER_PAGE_INCOMING,
+    LATER_PAGE_OUTGOING,
+    LATER_PAGE_NEWEST,
+];
 
 const histories: Record<string, { tx_hash: string; height: number }[]> = {
     [addressToScripthash(RECEIVE_ADDRESS, networks.bitcoin)]: [
@@ -123,6 +160,11 @@ const histories: Record<string, { tx_hash: string; height: number }[]> = {
         { tx_hash: OUTGOING.txid, height: 101 },
     ],
     [addressToScripthash(PAGED_ADDRESS, networks.bitcoin)]: PAGED_HISTORY,
+    [addressToScripthash(LATER_PAGE_ADDRESS, networks.bitcoin)]: [
+        { tx_hash: LATER_PAGE_INCOMING.txid, height: 110 },
+        { tx_hash: LATER_PAGE_OUTGOING.txid, height: 111 },
+        { tx_hash: LATER_PAGE_NEWEST.txid, height: 112 },
+    ],
 };
 
 class MockSocket implements ISocket {
@@ -200,7 +242,7 @@ describe('getAccountInfo of the Electrum worker', () => {
         clients.splice(0).forEach(client => client.close());
     });
 
-    it('fetches the previous transactions of foreign inputs only for the requested page', async () => {
+    it('fetches no previous transactions of foreign inputs for the requested page', async () => {
         const { socket, context } = await connectClient();
 
         const firstPage = await getAccountInfo(context, {
@@ -234,16 +276,16 @@ describe('getAccountInfo of the Electrum worker', () => {
             pageSize: 1,
         });
 
+        // The fee of an incoming payment is unknown without the previous transaction of its input.
         expect(secondPage.history.transactions).toMatchObject([
-            { txid: INCOMING.txid, type: 'recv', amount: '50000000', fee: '10000' },
+            { txid: INCOMING.txid, type: 'recv', amount: '50000000', fee: '0' },
         ]);
-        expect([...socket.requestedTxids].sort()).toEqual(
-            [FOREIGN_PARENT.txid, INCOMING.txid, OUTGOING.txid].sort(),
-        );
+        expect(secondPage.history.transactions?.[0]?.details.vin[0]).not.toHaveProperty('value');
+        expect([...socket.requestedTxids].sort()).toEqual([INCOMING.txid, OUTGOING.txid].sort());
         expect(socket.requestedHeaders).toEqual([101, 100]);
     });
 
-    it('fetches only the transactions of a later page with their previous transactions', async () => {
+    it('fetches only the transactions of a later page', async () => {
         const { socket, context } = await connectClient();
 
         const secondPage = await getAccountInfo(context, {
@@ -254,14 +296,37 @@ describe('getAccountInfo of the Electrum worker', () => {
         });
 
         expect(secondPage.history.transactions).toMatchObject([
-            { txid: INCOMING.txid, type: 'recv', amount: '50000000', fee: '10000' },
+            { txid: INCOMING.txid, type: 'recv', amount: '50000000', fee: '0' },
         ]);
         // Suite takes the addresses of an account from the first page only.
         expect(secondPage.addresses?.used).toMatchObject([
             { address: RECEIVE_ADDRESS, transfers: 2, received: '0', sent: '0' },
         ]);
+        expect(socket.requestedTxids).toEqual([INCOMING.txid]);
+    });
+
+    it('gives a payment of a later page with the values of the inputs of the account', async () => {
+        const { socket, context } = await connectClient();
+
+        const secondPage = await getAccountInfo(context, {
+            descriptor: LATER_PAGE_ADDRESS,
+            details: 'txs',
+            page: 2,
+            pageSize: 1,
+        });
+
+        expect(secondPage.history.transactions).toMatchObject([
+            {
+                txid: LATER_PAGE_OUTGOING.txid,
+                type: 'sent',
+                amount: '50000000',
+                fee: '10000',
+                blockTime: 111,
+            },
+        ]);
+        // The previous transaction of the input is in the history, the one before it is not.
         expect([...socket.requestedTxids].sort()).toEqual(
-            [FOREIGN_PARENT.txid, INCOMING.txid].sort(),
+            [LATER_PAGE_INCOMING.txid, LATER_PAGE_OUTGOING.txid].sort(),
         );
     });
 

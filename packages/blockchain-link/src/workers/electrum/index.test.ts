@@ -37,7 +37,6 @@ const prevTransactions = Array.from({ length: TX_COUNT }, (_, i) =>
 );
 const transactions = prevTransactions.map(({ txid }) => createTransaction({ prevTxid: txid }));
 const getTxid = (index: number) => transactions[index]?.txid ?? '';
-const getPrevTxid = (index: number) => prevTransactions[index]?.txid ?? '';
 const rawTransactions = new Map(
     [...transactions, ...prevTransactions].map(({ txid, hex }) => [txid, hex]),
 );
@@ -213,7 +212,7 @@ describe('Electrum worker', () => {
         expect(server.stats.maxWaiting).toBeLessThan(TX_COUNT);
     });
 
-    it('returns a page of the history with the previous transactions of the page only', async () => {
+    it('returns a page of the history without the previous transactions of foreign inputs', async () => {
         const info = await blockchain.getAccountInfo({
             descriptor: ADDRESS,
             details: 'txs',
@@ -226,9 +225,7 @@ describe('Electrum worker', () => {
             pageIndexes.map(getTxid),
         );
         expect(info.page).toEqual({ index: 2, size: 10, total: TX_COUNT / 10 });
-        expect([...server.stats.requestedTxids].sort()).toEqual(
-            pageIndexes.flatMap(i => [getTxid(i), getPrevTxid(i)]).sort(),
-        );
+        expect([...server.stats.requestedTxids].sort()).toEqual(pageIndexes.map(getTxid).sort());
     });
 
     it('computes the balance history without the previous transactions of foreign inputs', async () => {
