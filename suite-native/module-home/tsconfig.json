@@ -5,8 +5,14 @@
         {
             "path": "../../suite-common/analytics"
         },
+        {
+            "path": "../../suite-common/assets"
+        },
         { "path": "../../suite-common/device" },
         { "path": "../../suite-common/feedback" },
+        {
+            "path": "../../suite-common/formatters"
+        },
         {
             "path": "../../suite-common/message-system"
         },
@@ -25,6 +31,9 @@
         {
             "path": "../../suite-common/wallet-core"
         },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
         { "path": "../accounts" },
         { "path": "../alerts" },
         { "path": "../analytics" },
@@ -42,6 +51,7 @@
         { "path": "../firmware" },
         { "path": "../formatters" },
         { "path": "../graph" },
+        { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },
