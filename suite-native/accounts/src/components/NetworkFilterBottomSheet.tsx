@@ -7,15 +7,17 @@ import { type NetworksRootState } from '@suite-common/networks';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     BottomSheetModal,
+    Box,
     Button,
     Card,
     CheckBox,
     HStack,
     PressableOpacity,
+    ScreenFooterGradient,
     Text,
     VStack,
 } from '@suite-native/atoms';
-import { TokenIcon } from '@suite-native/icons';
+import { NetworkIcon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
 
 import { type NativeAccountsRootState, selectNetworkFilterOptions } from '../selectors';
@@ -74,29 +76,35 @@ export const NetworkFilterBottomSheet = forwardRef(
         return (
             <BottomSheetModal
                 ref={ref}
-                title={translate(
-                    'moduleAccountManagement.accountsScreen.networkFilter.showAccountsOnTitle',
-                )}
+                title={translate('moduleAccountManagement.accountsScreen.networkFilter.title')}
                 isCloseDisplayed
                 onDismiss={handleDismiss}
                 footer={
-                    <VStack spacing="sp12" paddingHorizontal="sp16" paddingBottom="sp16">
-                        <Button onPress={handleConfirmSelection}>
-                            <Translation id="moduleAccountManagement.accountsScreen.networkFilter.applyButton" />
-                        </Button>
-                        <Button intent="neutral" priority="secondary" onPress={handleClear}>
-                            <Translation id="moduleAccountManagement.accountsScreen.networkFilter.clearButton" />
-                        </Button>
-                    </VStack>
+                    <>
+                        <ScreenFooterGradient />
+                        <VStack spacing="sp12" paddingHorizontal="sp16" paddingBottom="sp16">
+                            <Button onPress={handleConfirmSelection}>
+                                <Translation id="moduleAccountManagement.accountsScreen.networkFilter.applyButton" />
+                            </Button>
+                            <Button intent="neutral" priority="secondary" onPress={handleClear}>
+                                <Translation id="moduleAccountManagement.accountsScreen.networkFilter.clearButton" />
+                            </Button>
+                        </VStack>
+                    </>
                 }
             >
                 <VStack spacing="sp12" paddingBottom="sp16">
                     {options.map(({ symbol, accountCount }) => (
                         <PressableOpacity key={symbol} onPress={() => handleSelectNetwork(symbol)}>
-                            <Card noShadow>
-                                <HStack alignItems="center" spacing="sp16">
-                                    <TokenIcon tokenSymbol={symbol} networkSymbol={symbol} />
-                                    <VStack flex={1} spacing={0}>
+                            <Card noPadding noShadow>
+                                <HStack
+                                    marginHorizontal="sp16"
+                                    marginVertical="sp12"
+                                    alignItems="center"
+                                    spacing="sp16"
+                                >
+                                    <NetworkIcon symbol={symbol} size={32} />
+                                    <Box flex={1}>
                                         <Text variant="body-md-strong">
                                             {getNetwork(symbol).name}
                                         </Text>
@@ -106,7 +114,7 @@ export const NetworkFilterBottomSheet = forwardRef(
                                                 values={{ count: accountCount }}
                                             />
                                         </Text>
-                                    </VStack>
+                                    </Box>
                                     <CheckBox
                                         isChecked={pendingSelection.includes(symbol)}
                                         onChange={() => handleSelectNetwork(symbol)}
