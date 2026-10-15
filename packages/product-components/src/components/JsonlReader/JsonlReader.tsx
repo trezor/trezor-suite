@@ -3,7 +3,6 @@ import { type ChangeEvent, type ReactNode, useId, useRef, useState } from 'react
 import styled from 'styled-components';
 import type { ObjectSchema } from 'yup';
 
-import { type ParseJsonlError, parseJsonl } from '@suite-common/jsonl';
 import {
     Button,
     type ButtonProps,
@@ -15,6 +14,7 @@ import {
     pickFormCellProps,
 } from '@trezor/components';
 import { FileTextIcon } from '@trezor/icons';
+import type { ParseJsonlError } from '@trezor/jsonl';
 import { type Result, err, exhaustive, ok } from '@trezor/type-utils';
 
 export const allowedJsonlReaderFrameProps = [
@@ -153,6 +153,7 @@ export const JsonlReader = <T extends Record<string, unknown> = Record<string, u
             return;
         }
 
+        const { parseJsonl } = await import('@trezor/jsonl');
         const parsedDataResult = parseJsonl(fileContentResult.payload, schema);
 
         if (!parsedDataResult.success) {

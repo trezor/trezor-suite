@@ -32,6 +32,8 @@ export class MetadataPage {
     readonly suiteSyncBannerDismissButton: Locator;
     readonly outOfQuotaBanner: Locator;
     readonly outOfQuotaBannerDismissButton: Locator;
+    readonly exportBip329LabelsButton: Locator;
+    readonly importBip329LabelsInput: Locator;
 
     constructor(
         private readonly page: Page,
@@ -63,6 +65,10 @@ export class MetadataPage {
         this.outOfQuotaBanner = page.getByTestId('@notification/suite-sync-out-of-quota');
         this.outOfQuotaBannerDismissButton = page.getByTestId(
             '@notification/suite-sync-out-of-quota/dismiss',
+        );
+        this.exportBip329LabelsButton = page.getByTestId('@wallets/details/export-label-bip329');
+        this.importBip329LabelsInput = page.getByTestId(
+            '@wallets/details/import-label-bip329/input',
         );
     }
 

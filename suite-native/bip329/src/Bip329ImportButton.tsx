@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { File } from 'expo-file-system';
 
 import { bip329LabelSchema, injectBip329 } from '@suite-common/bip329-types';
-import { parseJsonl } from '@suite-common/jsonl';
 import { type AccountDescriptor } from '@suite-common/wallet-types';
 import { Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -53,6 +52,7 @@ export const Bip329ImportButton = ({
             return;
         }
 
+        const { parseJsonl } = await import('@trezor/jsonl');
         const parsed = parseJsonl(content, bip329LabelSchema);
 
         if (!parsed.success) {

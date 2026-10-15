@@ -6,7 +6,6 @@
         {
             "path": "../../suite-common/bip329-types"
         },
-        { "path": "../../suite-common/jsonl" },
         {
             "path": "../../suite-common/suite-sync"
         },
@@ -26,6 +25,7 @@
             "path": "../../packages/dependency-injection"
         },
         { "path": "../../packages/device-utils" },
+        { "path": "../../packages/jsonl" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }
     ]
