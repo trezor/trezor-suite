@@ -34,6 +34,20 @@ const QUOTES: ExchangeTrade[] = [
     { exchange: 'provider-1', send: 'bitcoin' as CryptoId, receive: 'ethereum' as CryptoId },
 ];
 
+const DEX_QUOTE: ExchangeTrade = {
+    exchange: 'dex-provider',
+    send: 'bitcoin' as CryptoId,
+    receive: 'ethereum' as CryptoId,
+    isDex: true,
+};
+
+const CEX_QUOTE: ExchangeTrade = {
+    exchange: 'cex-provider',
+    send: 'bitcoin' as CryptoId,
+    receive: 'ethereum' as CryptoId,
+    isDex: false,
+};
+
 const mockAbort = jest.fn();
 const mockHandleRequest = jest.fn((payload: unknown) => {
     const thunk = () => ({ abort: mockAbort, unwrap: () => Promise.resolve(QUOTES) });
@@ -45,9 +59,6 @@ const mockAddressValidator = {
     getAddressType: jest.fn(),
     isAddressValid: jest.fn(() => true),
 };
-
-let mockDexQuotes: ExchangeTrade[] = [];
-let mockCexQuotes: ExchangeTrade[] = [];
 
 jest.mock('@suite-common/trading', () => {
     const actual = jest.requireActual('@suite-common/trading');
@@ -66,8 +77,6 @@ jest.mock('@suite-common/trading', () => {
                 return actual.tradingExchangeActions.saveSelectedQuote(payload);
             },
         },
-        selectTradingExchangeDexQuotes: () => mockDexQuotes,
-        selectTradingExchangeCexQuotes: () => mockCexQuotes,
     };
 });
 
@@ -145,9 +154,10 @@ const renderExchangeQuotes = (
         receiveAddress?: string;
         receiveAccountKey?: ReturnType<typeof mockAccountKey>;
         receiveAccountSymbol?: NetworkSymbol;
+        quotes?: ExchangeTrade[];
     } = {},
 ) => {
-    const { receiveAddress, receiveAccountKey, receiveAccountSymbol } = options;
+    const { receiveAddress, receiveAccountKey, receiveAccountSymbol, quotes = [] } = options;
     const network = 'network' in options ? options.network : getNetwork(btcSymbol);
     const report = jest.fn();
     const { services } = createTestCompositionRoot<
@@ -158,6 +168,7 @@ const renderExchangeQuotes = (
             wallet: {
                 trading: {
                     quoteRefetchingState: { status: 'idle', lastFetchTimestamp: null },
+                    exchange: { quotes },
                 },
             },
         },
@@ -203,8 +214,6 @@ describe('useExchangeQuotes', () => {
         mockHandleRequest.mockClear();
         mockAbort.mockClear();
         mockSaveSelectedQuote.mockClear();
-        mockDexQuotes = [];
-        mockCexQuotes = [];
     });
 
     it('dispatches a quotes request after the debounce when the form is valid', async () => {
@@ -373,19 +382,47 @@ describe('useExchangeQuotes', () => {
         await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(1), { timeout: 1500 });
     });
 
-    it('switches a DEX selection to CEX when only CEX quotes are available', async () => {
-        mockCexQuotes = QUOTES;
-        mockDexQuotes = [];
+    it('switches a DEX selection to CEX when only CEX quotes are available on an EVM send network', () => {
+        const { result } = renderExchangeQuotes(
+            { ...VALID_DEFAULTS, exchangeType: TRADING_EXCHANGE_FORM_DEX },
+            { network: getNetwork(ethSymbol), quotes: [CEX_QUOTE] },
+        );
 
-        const { result } = renderExchangeQuotes({
-            ...VALID_DEFAULTS,
-            exchangeType: TRADING_EXCHANGE_FORM_DEX,
+        expect(result.current.methods.getValues('exchangeType')).toBe(TRADING_EXCHANGE_FORM_CEX);
+    });
+
+    it('preselects DEX when the first quote is DEX on a non-EVM send network', () => {
+        const { result } = renderExchangeQuotes(VALID_DEFAULTS, {
+            quotes: [DEX_QUOTE, CEX_QUOTE],
         });
 
-        await waitFor(() =>
-            expect(result.current.methods.getValues('exchangeType')).toBe(
-                TRADING_EXCHANGE_FORM_CEX,
-            ),
+        expect(result.current.methods.getValues('exchangeType')).toBe(TRADING_EXCHANGE_FORM_DEX);
+    });
+
+    it('preselects CEX when the first quote is CEX on a non-EVM send network', () => {
+        const { result } = renderExchangeQuotes(
+            { ...VALID_DEFAULTS, exchangeType: TRADING_EXCHANGE_FORM_DEX },
+            { quotes: [CEX_QUOTE, DEX_QUOTE] },
         );
+
+        expect(result.current.methods.getValues('exchangeType')).toBe(TRADING_EXCHANGE_FORM_CEX);
+    });
+
+    it('keeps CEX on an EVM send network when the first quote is DEX', () => {
+        const { result } = renderExchangeQuotes(VALID_DEFAULTS, {
+            network: getNetwork(ethSymbol),
+            quotes: [DEX_QUOTE, CEX_QUOTE],
+        });
+
+        expect(result.current.methods.getValues('exchangeType')).toBe(TRADING_EXCHANGE_FORM_CEX);
+    });
+
+    it('keeps the exchange type of an explicitly selected provider when the first quote is of the other type', () => {
+        const { result } = renderExchangeQuotes(
+            { ...VALID_DEFAULTS, provider: CEX_QUOTE.exchange },
+            { quotes: [DEX_QUOTE, CEX_QUOTE] },
+        );
+
+        expect(result.current.methods.getValues('exchangeType')).toBe(TRADING_EXCHANGE_FORM_CEX);
     });
 });
