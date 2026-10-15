@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
+import { injectGetCalldata } from '@suite-common/networks';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -39,6 +40,8 @@ import { useSolanaStakingLimit } from '../../hooks/staking/useSolanaStakingLimit
 import { buildEarnComposeFormState } from '../../utils/earn/utils';
 
 export const StakingClaimReviewScreen = () => {
+    const { analytics, getCalldata } = useServices(injectNativeAnalytics, injectGetCalldata);
+
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.StakingClaimReview>>();
     const navigation =
         useNavigation<
@@ -73,7 +76,11 @@ export const StakingClaimReviewScreen = () => {
 
         // Ethereum claims via calldata, Solana via the claimable amount.
         if (account.networkType === 'ethereum') {
-            return buildEarnComposeFormState(contractAddress, '0', buildClaimWithdrawRequestData());
+            return buildEarnComposeFormState(
+                contractAddress,
+                '0',
+                buildClaimWithdrawRequestData(getCalldata(symbol)),
+            );
         }
 
         if (account.networkType === 'solana') {
@@ -81,7 +88,7 @@ export const StakingClaimReviewScreen = () => {
         }
 
         return buildEarnComposeFormState(contractAddress, '0', '');
-    }, [account, claimableAmount]);
+    }, [account, claimableAmount, getCalldata, symbol]);
 
     const { formDraft, formDraftKey, isFeeUnavailable, isPrecomposeError, updateFeeLevelThunk } =
         useComposeEarnFees({
@@ -93,7 +100,6 @@ export const StakingClaimReviewScreen = () => {
     const { isLimitExceeded: isAccountLimitExceeded, formattedAmount: claimableLimitAmount } =
         useSolanaStakingLimit({ accountKey, type: 'claim', amount: claimableAmount });
 
-    const { analytics } = useServices(injectNativeAnalytics);
     const registerNavigateBackAnalytics = useNavigateBackAnalytics({
         type: events.stakingClaimEvent.name,
         payload: {

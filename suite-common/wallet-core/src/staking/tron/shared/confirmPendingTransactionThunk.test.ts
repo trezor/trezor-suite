@@ -1,4 +1,6 @@
 import { type AnalyticsSharedEvents } from '@suite-common/analytics';
+import { type GetCalldataThunkDeps } from '@suite-common/networks';
+import { mockGetCalldata } from '@suite-common/networks/mocks';
 import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { mockGetTradedAccountKeys } from '@suite-common/wallet-types/mocks';
@@ -34,11 +36,12 @@ type Store = TestCompositionStore<
 
 const initStore = (): Store =>
     createTestCompositionRoot<
-        ConfirmTronPendingTransactionThunkDeps,
+        ConfirmTronPendingTransactionThunkDeps & GetCalldataThunkDeps,
         ConfirmTronPendingTransactionThunkState
     >({
         preloadedState: {},
         services: () => ({
+            networks: { getCalldata: mockGetCalldata() },
             analytics: mockAnalytics<AnalyticsSharedEvents>(),
             getTradedAccountKeys: mockGetTradedAccountKeys(),
         }),

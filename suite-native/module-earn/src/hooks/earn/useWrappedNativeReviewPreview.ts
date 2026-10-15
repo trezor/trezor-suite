@@ -2,9 +2,11 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectSelectedDevice } from '@suite-common/device';
+import { injectGetCalldata } from '@suite-common/networks';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type WrappedNativeFlowType, type YieldFlowDisplayToken } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { useServices } from '@trezor/dependency-injection';
 import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import { buildYieldReviewPreview } from '../../utils/yield/yieldReviewOutputUtils';
@@ -22,6 +24,8 @@ export const useWrappedNativeReviewPreview = ({
     flowType,
     unsignedTransaction,
 }: UseWrappedNativeReviewPreviewParams) => {
+    const { getCalldata } = useServices(injectGetCalldata);
+
     const device = useSelector(selectSelectedDevice);
     const wrappedNative = account ? getWrappedNativeToken(account.symbol) : undefined;
 
@@ -50,14 +54,14 @@ export const useWrappedNativeReviewPreview = ({
             return null;
         }
 
-        return buildYieldReviewPreview({
+        return buildYieldReviewPreview(getCalldata(account?.symbol), {
             account,
             device,
             review: { amount, unsignedTransaction },
             reviewToken: spentToken,
             type: flowType,
         });
-    }, [account, amount, device, flowType, spentToken, unsignedTransaction]);
+    }, [account, amount, device, flowType, spentToken, unsignedTransaction, getCalldata]);
 
     return { preview, spentToken };
 };

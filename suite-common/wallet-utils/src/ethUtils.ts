@@ -6,7 +6,8 @@ import {
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import { type EthereumSpecific, type TokenInfo } from '@trezor/blockchain-link-types';
-import { Calldata, isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
+import { type Calldata, getEvmCalldata } from '@trezor/calldata';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -55,27 +56,36 @@ type WrappedNativeTxParams = {
 
 // deposit() (0xd0e30db0) is a generic selector shared by many contracts, so the selector alone is
 // not enough — the target must also be the chain's wrapped-native contract.
-export const isWrapNativeTx = ({ networkSymbol, to, data }: WrappedNativeTxParams): boolean =>
+export const isWrapNativeTx = (
+    networkCalldata: Calldata | undefined,
+    { networkSymbol, to, data }: WrappedNativeTxParams,
+): boolean =>
     isWrappedNativeToken(networkSymbol, to) &&
-    Calldata.evm.weth.deposit.decode(data ?? undefined) !== null;
+    (networkCalldata?.evm?.weth.deposit.decode(data ?? undefined) ?? null) !== null;
 
-export const isUnwrapNativeTx = ({ networkSymbol, to, data }: WrappedNativeTxParams): boolean =>
+export const isUnwrapNativeTx = (
+    networkCalldata: Calldata | undefined,
+    { networkSymbol, to, data }: WrappedNativeTxParams,
+): boolean =>
     isWrappedNativeToken(networkSymbol, to) &&
-    Calldata.evm.weth.withdraw.decode(data ?? undefined) !== null;
+    (networkCalldata?.evm?.weth.withdraw.decode(data ?? undefined) ?? null) !== null;
 
-export const getEvmTransactionTextSignature = (data?: string): EvmTransactionPurpose => {
+export const getEvmTransactionTextSignature = (
+    networkCalldata: Calldata | undefined,
+    data?: string,
+): EvmTransactionPurpose => {
     if (!data) return '';
 
-    if (Calldata.evm.erc20.transfer.decode(data)) return 'transfer';
+    if (networkCalldata?.evm?.erc20.transfer.decode(data) ?? null) return 'transfer';
 
-    const approve = Calldata.evm.erc20.approve.decode(data);
+    const approve = networkCalldata?.evm?.erc20.approve.decode(data) ?? null;
     if (approve) return approve.amount === 0n ? 'revoke' : 'approve';
 
-    if (Calldata.evm.erc4626.deposit.decode(data)) return 'deposit';
-    if (Calldata.evm.erc4626.withdraw.decode(data)) return 'withdraw';
-    if (Calldata.evm.erc4626.redeem.decode(data)) return 'redeem';
+    if (networkCalldata?.evm?.erc4626.deposit.decode(data) ?? null) return 'deposit';
+    if (networkCalldata?.evm?.erc4626.withdraw.decode(data) ?? null) return 'withdraw';
+    if (networkCalldata?.evm?.erc4626.redeem.decode(data) ?? null) return 'redeem';
 
-    if (Calldata.evm.distributor.claim.decode(data)) return 'claim';
+    if (networkCalldata?.evm?.distributor.claim.decode(data) ?? null) return 'claim';
 
     return 'unknown';
 };
@@ -86,15 +96,14 @@ export const getEvmTransactionTextSignature = (data?: string): EvmTransactionPur
  * transaction target — the WETH deposit()/withdraw() selectors are shared by many contracts,
  * so they only count when the target is the chain's wrapped-native contract.
  */
-export const getEvmTransactionPurpose = ({
-    networkSymbol,
-    to,
-    data,
-}: WrappedNativeTxParams): EvmTransactionPurpose => {
-    if (isWrapNativeTx({ networkSymbol, to, data })) return 'wrap';
-    if (isUnwrapNativeTx({ networkSymbol, to, data })) return 'unwrap';
+export const getEvmTransactionPurpose = (
+    networkCalldata: Calldata | undefined,
+    { networkSymbol, to, data }: WrappedNativeTxParams,
+): EvmTransactionPurpose => {
+    if (isWrapNativeTx(networkCalldata, { networkSymbol, to, data })) return 'wrap';
+    if (isUnwrapNativeTx(networkCalldata, { networkSymbol, to, data })) return 'unwrap';
 
-    return getEvmTransactionTextSignature(data ?? undefined);
+    return getEvmTransactionTextSignature(networkCalldata, data ?? undefined);
 };
 
 type GetPrecomposedTxWithAccountTokenParams = {
@@ -109,14 +118,12 @@ type GetPrecomposedTxWithAccountTokenParams = {
  * presents the call as a zero-value payment to the token contract. When the account holds the
  * token, decode the transfer here so the review shows it like an unknown-token send.
  */
-export const getPrecomposedTxWithAccountToken = ({
-    precomposedTx,
-    contract,
-    data,
-    accountTokens,
-}: GetPrecomposedTxWithAccountTokenParams): PrecomposedTransactionFinal => {
+export const getPrecomposedTxWithAccountToken = (
+    networkCalldata: Calldata | undefined,
+    { precomposedTx, contract, data, accountTokens }: GetPrecomposedTxWithAccountTokenParams,
+): PrecomposedTransactionFinal => {
     const [output] = precomposedTx.outputs;
-    const transfer = Calldata.evm.erc20.transfer.decode(data);
+    const transfer = networkCalldata?.evm?.erc20.transfer.decode(data) ?? null;
     const token = contract
         ? accountTokens?.find(
               accountToken => accountToken.contract.toLowerCase() === contract.toLowerCase(),
@@ -139,8 +146,11 @@ export const getPrecomposedTxWithAccountToken = ({
 };
 
 // Amount (in wei) unwrapped by a WETH withdraw(uint256) call, or null when data is not one.
-export const getUnwrapAmountByEthereumDataHex = (data?: string): string | null =>
-    Calldata.evm.weth.withdraw.decode(data)?.wad.toString() ?? null;
+export const getUnwrapAmountByEthereumDataHex = (
+    networkCalldata: Calldata | undefined,
+    data?: string,
+): string | null =>
+    (networkCalldata?.evm?.weth.withdraw.decode(data) ?? null)?.wad.toString() ?? null;
 
 /**
  * The chain's wrapped-native (WETH) contract address when the transaction touches it. The contract
@@ -160,6 +170,7 @@ export const getWrappedNativeTxTarget = (
 
 /** Classifies an EVM transaction as a native wrap/unwrap for display. */
 export const getNativeWrapTxKind = (
+    networkCalldata: Calldata | undefined,
     transaction: WalletAccountTransaction,
 ): 'wrap' | 'unwrap' | undefined => {
     const { symbol } = transaction;
@@ -167,17 +178,19 @@ export const getNativeWrapTxKind = (
     const to = getWrappedNativeTxTarget(transaction);
 
     if (!to) return undefined;
-    if (isWrapNativeTx({ networkSymbol: symbol, to, data })) return 'wrap';
-    if (isUnwrapNativeTx({ networkSymbol: symbol, to, data })) return 'unwrap';
+    if (isWrapNativeTx(networkCalldata, { networkSymbol: symbol, to, data })) return 'wrap';
+    if (isUnwrapNativeTx(networkCalldata, { networkSymbol: symbol, to, data })) return 'unwrap';
 
     return undefined;
 };
 
-export const isEvmApprovalTx = (data?: string): boolean =>
-    Calldata.evm.erc20.approve.decode(data) !== null;
+export const isEvmApprovalTx = (networkCalldata: Calldata | undefined, data?: string): boolean =>
+    (networkCalldata?.evm?.erc20.approve.decode(data) ?? null) !== null;
 
-export const getErc20ApproveSpender = (data?: string): string | undefined =>
-    Calldata.evm.erc20.approve.decode(data)?.spender;
+export const getErc20ApproveSpender = (
+    networkCalldata: Calldata | undefined,
+    data?: string,
+): string | undefined => (networkCalldata?.evm?.erc20.approve.decode(data) ?? null)?.spender;
 
 export type EvmApprovalPurpose = Extract<EvmTransactionPurpose, 'approve' | 'revoke'>;
 
@@ -192,8 +205,11 @@ export const isEvmYieldTxByTextSignature = (textSignature?: EvmTransactionPurpos
  * DeFi yield flow transactions: vault deposit/withdraw/redeem, rewards claim, and the native
  * wrap/unwrap steps of the deposit/withdraw flows.
  */
-export const isYieldTypeTx = (transaction: WalletAccountTransaction): boolean => {
-    const purpose = getEvmTransactionPurpose({
+export const isYieldTypeTx = (
+    networkCalldata: Calldata | undefined,
+    transaction: WalletAccountTransaction,
+): boolean => {
+    const purpose = getEvmTransactionPurpose(networkCalldata, {
         networkSymbol: transaction.symbol,
         to: getWrappedNativeTxTarget(transaction),
         data: transaction.ethereumSpecific?.data,
@@ -218,11 +234,13 @@ interface BuildTransactionDataParams {
     spender: string;
 }
 
-// TODO: drop this wrapper and migrate callers to `Calldata.evm.erc20.approve.encode` directly.
-export const buildApprovalTransactionData = ({
-    amount: rawAmount,
-    spender: rawSpender,
-}: BuildTransactionDataParams): string => {
+// TODO: drop this wrapper and migrate callers to the injected calldata approval encoder directly.
+export const buildApprovalTransactionData = (
+    networkCalldata: Calldata | undefined,
+    { amount: rawAmount, spender: rawSpender }: BuildTransactionDataParams,
+): string => {
+    const Calldata = getEvmCalldata(networkCalldata);
+
     const result = Calldata.evm.erc20.approve.encode({
         spender: rawSpender,
         amount: new BigNumber(rawAmount),

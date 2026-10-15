@@ -1,5 +1,6 @@
+import { type GetCalldataThunkDeps } from '@suite-common/networks';
 import { getNetwork } from '@suite-common/wallet-config';
-import { asEvmAddress } from '@trezor/network-ethereum-suite-common';
+import { getEvmCalldata } from '@trezor/calldata';
 import { createThunk } from '@trezor/redux-utils';
 
 import {
@@ -40,10 +41,11 @@ export const composeYieldWithdrawTransactionThunk = createThunk<
     ComposeYieldWithdrawTransactionPayload,
     {
         state: ComposeYieldWithdrawTransactionThunkState;
+        extra: GetCalldataThunkDeps;
     }
 >(
     `${YIELD_PREFIX}/thunk/composeWithdrawTransaction`,
-    async ({ flowData, amount, flowType }, { dispatch }) => {
+    async ({ flowData, amount, flowType }, { dispatch, extra }) => {
         const { account, vault } = flowData;
 
         if (account.networkType !== 'ethereum') {
@@ -66,15 +68,20 @@ export const composeYieldWithdrawTransactionThunk = createThunk<
             return { type: 'error', reason: 'vault-chain-mismatch' } as const;
         }
 
-        const ownerAddress = asEvmAddress(account.descriptor);
+        const ownerAddress = getEvmCalldata(
+            extra.services.networks.getCalldata(flowData.account.symbol),
+        ).asEvmAddress(account.descriptor);
 
-        const calldata = buildYieldWithdrawCalldata({
-            amount,
-            flowData,
-            ownerAddress,
-            receiverAddress: ownerAddress,
-            flowType,
-        });
+        const calldata = buildYieldWithdrawCalldata(
+            extra.services.networks.getCalldata(flowData.account.symbol),
+            {
+                amount,
+                flowData,
+                ownerAddress,
+                receiverAddress: ownerAddress,
+                flowType,
+            },
+        );
 
         return await dispatch(
             composeYieldEvmTransactionThunk({ account, to: vaultAddress, data: calldata }),

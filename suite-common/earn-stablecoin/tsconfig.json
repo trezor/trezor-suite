@@ -4,13 +4,18 @@
     "references": [
         { "path": "../earn-stablecoin-api" },
         { "path": "../message-system" },
+        { "path": "../networks" },
         { "path": "../schemas" },
         { "path": "../wallet-config" },
         { "path": "../wallet-core" },
         { "path": "../wallet-types" },
         { "path": "../wallet-utils" },
+        { "path": "../../packages/calldata" },
         {
             "path": "../../packages/connect-common"
+        },
+        {
+            "path": "../../packages/dependency-injection"
         },
         {
             "path": "../../networks/ethereum/network-ethereum-suite-common"

@@ -23,6 +23,7 @@
         { "path": "../../packages/redux-utils" },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" },
+        { "path": "../../suite-common/networks" },
         {
             "path": "../../suite-common/test-utils"
         },

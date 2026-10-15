@@ -48,6 +48,7 @@ import {
     isRbfBumpFeeTransaction,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
+import { type Calldata } from '@trezor/calldata';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
@@ -63,12 +64,18 @@ import * as stakeFormSolanaActions from './stake/stakeFormSolanaActions';
 type ComposeTransactionThunkState = BlockchainRootState & SelectedAccountRootState & StakeRootState;
 
 export const composeTransaction =
-    (formValues: StakeFormState, formState: ComposeActionContext) =>
+    (
+        networkCalldata: Calldata | undefined,
+        formValues: StakeFormState,
+        formState: ComposeActionContext,
+    ) =>
     (dispatch: ThunkDispatch<ComposeTransactionThunkState, unknown, UnknownAction>) => {
         const { account } = formState;
 
         if (isSupportedEthStakingNetworkSymbol(account.symbol)) {
-            return dispatch(stakeFormEthereumActions.composeTransaction(formValues, formState));
+            return dispatch(
+                stakeFormEthereumActions.composeTransaction(networkCalldata, formValues, formState),
+            );
         }
 
         if (isSupportedSolStakingNetworkSymbol(account.symbol)) {
@@ -269,7 +276,11 @@ type SignTransactionThunkState = DeviceRootState &
 type SignTransactionThunkDeps = PushTransactionThunkDeps;
 
 export const signTransactionThunk =
-    (formValues: StakeFormState, transactionInfo: PrecomposedTransactionFinal) =>
+    (
+        networkCalldata: Calldata | undefined,
+        formValues: StakeFormState,
+        transactionInfo: PrecomposedTransactionFinal,
+    ) =>
     async (
         dispatch: ThunkDispatch<SignTransactionThunkState, SignTransactionThunkDeps, UnknownAction>,
         getState: () => SignTransactionThunkState,
@@ -301,7 +312,11 @@ export const signTransactionThunk =
         let serializedTx: undefined | string | Err<SerializedError>;
         if (isSupportedEthStakingNetworkSymbol(account.symbol)) {
             serializedTx = await dispatch(
-                stakeFormEthereumActions.signTransactionThunk(formValues, enhancedTxInfo),
+                stakeFormEthereumActions.signTransactionThunk(
+                    networkCalldata,
+                    formValues,
+                    enhancedTxInfo,
+                ),
             );
         }
 

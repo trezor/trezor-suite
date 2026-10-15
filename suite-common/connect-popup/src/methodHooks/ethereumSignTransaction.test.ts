@@ -1,3 +1,4 @@
+import { mockGetCalldata } from '@suite-common/networks/mocks';
 import { getNetwork } from '@suite-common/wallet-config';
 import { sendFormActions } from '@suite-common/wallet-core';
 import { type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
@@ -7,6 +8,8 @@ import TrezorConnect from '@trezor/connect';
 import { connectPopupActions } from '../connectPopupActions';
 import { getPermissionDeferred } from '../connectPopupPromiseManager';
 import { ethereumSignTransaction } from './ethereumSignTransaction';
+
+const getCalldata = mockGetCalldata();
 
 const TOKEN_CONTRACT = '0x128cC466B61f542da60c70e3aA11c10e19B84EDB';
 const RECIPIENT = '0x000000000000000000000000000000000000abcd';
@@ -46,6 +49,7 @@ const runPreCallHook = (chainId: number) => {
     });
 
     const run = ethereumSignTransaction.preCallHook({
+        getCalldata,
         method: 'ethereumSignTransaction',
         payload: {
             path: "m/44'/60'/0'/0/0",
@@ -77,6 +81,7 @@ const runTokenTransferPreCallHook = async () => {
     const dispatch = jest.fn(action => action);
 
     await ethereumSignTransaction.preCallHook({
+        getCalldata,
         method: 'ethereumSignTransaction',
         payload: {
             path: "m/44'/60'/0'/0/0",

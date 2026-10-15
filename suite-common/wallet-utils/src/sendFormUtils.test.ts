@@ -2,6 +2,7 @@ import { asNetworkSymbol, getNetwork, networksCollection } from '@suite-common/w
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type FeeLevel } from '@trezor/connect';
+import { getEthereumCalldata } from '@trezor/network-ethereum-suite-common';
 import { BigNumber } from '@trezor/utils';
 
 import * as fixtures from './__fixtures__/sendFormUtils';
@@ -22,13 +23,15 @@ import {
     restoreOrigOutputsOrder,
 } from './sendFormUtils';
 
+const networkCalldata = getEthereumCalldata();
+
 const btcSymbol = asNetworkSymbol('btc');
 const ethSymbol = asNetworkSymbol('eth');
 
 describe('sendForm utils', () => {
     fixtures.prepareEthereumTransaction.forEach(f => {
         it(`prepareEthereumTransaction: ${f.description}`, () => {
-            expect(prepareEthereumTransaction(f.txInfo)).toEqual(f.result);
+            expect(prepareEthereumTransaction(networkCalldata, f.txInfo)).toEqual(f.result);
         });
     });
 

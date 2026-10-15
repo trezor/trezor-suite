@@ -38,6 +38,7 @@
         {
             "path": "../../packages/blockchain-link-utils"
         },
+        { "path": "../../packages/calldata" },
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/connect-common"
@@ -70,9 +71,6 @@
         },
         {
             "path": "../../networks/tron/network-tron"
-        },
-        {
-            "path": "../../networks/tron/network-tron-suite-common"
         },
         { "path": "../../packages/protobuf" },
         { "path": "../../packages/react-utils" },

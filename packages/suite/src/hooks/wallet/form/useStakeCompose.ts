@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { type FieldPath, type UseFormReturn } from 'react-hook-form';
 
 import { isTranslationKey, useTranslation } from '@suite/intl';
+import { injectGetCalldata } from '@suite-common/networks';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import {
     type ComposeActionContext,
@@ -42,7 +43,7 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
     const [composeField, setComposeField] = useState<string | undefined>(undefined);
     const { translationString } = useTranslation();
 
-    const { dispatch } = useServices(injectDispatch);
+    const { dispatch, getCalldata } = useServices(injectDispatch, injectGetCalldata);
 
     // actions
     const debounce = useDebounce();
@@ -78,7 +79,9 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
 
                 const values = getValues();
 
-                return dispatch(composeTransaction(values, state));
+                return dispatch(
+                    composeTransaction(getCalldata(state?.account.symbol), values, state),
+                );
             }).catch(error => {
                 // The compose thunk reaches TrezorConnect, whose rejection messages may embed the
                 // composed account payload. `composeRequest` is fired without a `.catch` from the
@@ -105,7 +108,7 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
                 }
             }
         },
-        [state, errors, debounce, clearErrors, getValues, dispatch],
+        [state, errors, debounce, clearErrors, getValues, dispatch, getCalldata],
     );
 
     // update fields AFTER composedLevels change or selectedFee change (below)

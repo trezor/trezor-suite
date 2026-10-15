@@ -1,3 +1,5 @@
+import { type GetCalldataThunkDeps } from '@suite-common/networks';
+import { mockGetCalldata } from '@suite-common/networks/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type Account, type FormState } from '@suite-common/wallet-types';
@@ -31,7 +33,7 @@ const enhance = (
 ) => {
     const [major_version, minor_version, patch_version] = firmwareVersion;
     const { store } = createTestCompositionRoot<
-        EnhancePrecomposedTransactionThunkDeps,
+        EnhancePrecomposedTransactionThunkDeps & GetCalldataThunkDeps,
         EnhancePrecomposedTransactionThunkState
     >({
         preloadedState: {
@@ -43,7 +45,10 @@ const enhance = (
                 }),
             },
         } as EnhancePrecomposedTransactionThunkState,
-        services: () => ({ getDebugSettings: asGetter(() => ({ definitionsChannel })) }),
+        services: () => ({
+            networks: { getCalldata: mockGetCalldata() },
+            getDebugSettings: asGetter(() => ({ definitionsChannel })),
+        }),
     }).services;
 
     return store

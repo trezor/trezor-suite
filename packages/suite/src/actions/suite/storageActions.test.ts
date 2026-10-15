@@ -26,17 +26,18 @@ import {
     wireEnabledNetworksMock,
 } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import * as discoveryActions from '@suite-common/wallet-core';
 import {
     type ChangeCoinVisibilityThunkState,
     blockchainInitialState,
     changeCoinVisibilityThunk,
     transactionsActions,
 } from '@suite-common/wallet-core';
-import * as discoveryActions from '@suite-common/wallet-core';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getAccountIdentifier, getAccountTransactions } from '@suite-common/wallet-utils';
 import { type StaticSessionId, asWalletDescriptor } from '@trezor/device-utils';
+import { getEthereumCalldata } from '@trezor/network-ethereum-suite-common';
 import { type WithServices } from '@trezor/redux-utils';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
@@ -72,6 +73,8 @@ import {
     type SaveWalletSettingsThunkState,
 } from './storageActions';
 import { createInMemoryDbMock } from '../../../mocks/createInMemoryDbMock';
+
+const networkCalldata = getEthereumCalldata();
 
 const btcSymbol = asNetworkSymbol('btc');
 const ltcSymbol = asNetworkSymbol('ltc');
@@ -444,8 +447,20 @@ describe('Storage actions', () => {
         );
 
         // add txs
-        store.dispatch(transactionsActions.addTransaction({ transactions: [tx1], account: acc1 }));
-        store.dispatch(transactionsActions.addTransaction({ transactions: [tx2], account: acc2 }));
+        store.dispatch(
+            transactionsActions.addTransaction({
+                networkCalldata: networkCalldata,
+                transactions: [tx1],
+                account: acc1,
+            }),
+        );
+        store.dispatch(
+            transactionsActions.addTransaction({
+                networkCalldata: networkCalldata,
+                transactions: [tx2],
+                account: acc2,
+            }),
+        );
 
         // remember devices
         await store.dispatch(storageActions.rememberDeviceThunk(dev1));
@@ -530,8 +545,20 @@ describe('Storage actions', () => {
         );
 
         // add txs
-        store.dispatch(transactionsActions.addTransaction({ transactions: [tx1], account: acc1 }));
-        store.dispatch(transactionsActions.addTransaction({ transactions: [tx2], account: acc2 }));
+        store.dispatch(
+            transactionsActions.addTransaction({
+                networkCalldata: networkCalldata,
+                transactions: [tx1],
+                account: acc1,
+            }),
+        );
+        store.dispatch(
+            transactionsActions.addTransaction({
+                networkCalldata: networkCalldata,
+                transactions: [tx2],
+                account: acc2,
+            }),
+        );
 
         // store in db
         await store.dispatch(storageActions.rememberDeviceThunk(dev1));

@@ -5,6 +5,7 @@ import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { selectRouteName } from '@suite/router';
 import type { DeviceRootState } from '@suite-common/device';
+import { injectGetCalldata } from '@suite-common/networks';
 import {
     type SerializedTx,
     selectIsTxOutputInternal,
@@ -109,14 +110,21 @@ export const TransactionReviewModalBodyInner = ({
     setIsSending,
     hasTxReviewExpired,
 }: TransactionReviewModalBodyInnerProps) => {
-    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
+    const { analytics, dispatch, getCalldata } = useServices(
+        injectDesktopAnalytics,
+        injectDispatch,
+        injectGetCalldata,
+    );
     const [areDetailsVisible, setAreDetailsVisible] = useState(false);
     const { symbol, networkType } = account;
     const { options } = precomposedForm;
     const { serializedTx } = txInfoState;
     const routeName = useSelector(selectRouteName);
 
-    const isApprovalTx = isEvmApprovalTx(precomposedForm.transactionData);
+    const isApprovalTx = isEvmApprovalTx(
+        getCalldata(account?.symbol),
+        precomposedForm.transactionData,
+    );
     // A contract call's single "address" row is the contract, not a payment recipient, so the
     // step-back heuristic below must not treat its ConfirmOutput as a re-confirmed output. A vault
     // deposit otherwise matches every condition and walks the review backwards mid-signing.
@@ -212,7 +220,7 @@ export const TransactionReviewModalBodyInner = ({
     });
 
     const actionTranslation = (source: 'heading' | 'button') =>
-        getTransactionReviewModalActionTranslation({
+        getTransactionReviewModalActionTranslation(getCalldata(account?.symbol), {
             symbol,
             stakeType,
             precomposedForm,

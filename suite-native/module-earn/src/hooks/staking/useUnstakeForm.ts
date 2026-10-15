@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
+import { injectGetCalldata } from '@suite-common/networks';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -19,6 +20,7 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { fromEther, isPositiveBalance } from '@suite-common/wallet-utils';
 import { useForm, useWatch } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
+import { useServices } from '@trezor/dependency-injection';
 import { BigNumber } from '@trezor/utils';
 
 import { useApproximateInstantUnstakeAmount } from './useApproximateInstantUnstakeAmount';
@@ -29,6 +31,8 @@ import { unstakeFormValidationSchema } from '../../utils/staking/unstakeFormSche
 import { useComposeEarnFees } from '../earn/useComposeEarnFees';
 
 export const useUnstakeForm = (accountKey: AccountKey) => {
+    const { getCalldata } = useServices(injectGetCalldata);
+
     const { translate } = useTranslate();
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -78,9 +82,14 @@ export const useUnstakeForm = (accountKey: AccountKey) => {
         return buildEarnComposeFormState(
             getEthereumStakingAddressByType(account.symbol, 'unstake'),
             '0',
-            buildUnstakeData(amountWei, UNSTAKE_INTERCHANGES, WALLET_SDK_SOURCE_MOBILE),
+            buildUnstakeData(
+                getCalldata(account?.symbol),
+                amountWei,
+                UNSTAKE_INTERCHANGES,
+                WALLET_SDK_SOURCE_MOBILE,
+            ),
         );
-    }, [account, isValid, amountValue]);
+    }, [account, isValid, amountValue, getCalldata]);
 
     const { formDraft, formDraftKey, isFeeUnavailable, isPrecomposeError, updateFeeLevelThunk } =
         useComposeEarnFees({

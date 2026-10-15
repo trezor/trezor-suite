@@ -122,3 +122,12 @@ export {
     type IsWrappedNativeTokenDeps,
     type IsWrappedNativeTokenDep,
 } from './createIsWrappedNativeToken';
+
+export {
+    createGetCalldata,
+    injectGetCalldata,
+    type GetCalldata,
+    type GetCalldataDep,
+    type GetCalldataDeps,
+} from './createGetCalldata';
+export type { GetCalldataThunkDeps } from './createGetCalldata';

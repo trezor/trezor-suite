@@ -1,3 +1,4 @@
+import { type GetCalldataThunkDeps } from '@suite-common/networks';
 import { WETH_DEPOSIT_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { enhanceTokens } from '@suite-common/wallet-utils';
@@ -65,10 +66,11 @@ export const composeYieldWrapTransactionThunk = createThunk<
     ComposeYieldWrapTransactionPayload,
     {
         state: ComposeYieldWrapTransactionThunkState;
+        extra: GetCalldataThunkDeps;
     }
 >(
     `${YIELD_WRAP_THUNK_PREFIX}/composeWrapTransaction`,
-    async ({ account, token, wrapAmount }, { dispatch }) => {
+    async ({ account, token, wrapAmount }, { dispatch, extra }) => {
         if (account.networkType !== 'ethereum') {
             return { type: 'error', reason: 'unsupported-network' } as const;
         }
@@ -79,10 +81,13 @@ export const composeYieldWrapTransactionThunk = createThunk<
             return { type: 'error', reason: 'not-wrapped-native' } as const;
         }
 
-        const { data, value } = buildYieldWrapTransactionData({
-            wrapAmount,
-            decimals: token.decimals,
-        });
+        const { data, value } = buildYieldWrapTransactionData(
+            extra.services.networks.getCalldata(account.symbol),
+            {
+                wrapAmount,
+                decimals: token.decimals,
+            },
+        );
 
         return await dispatch(
             composeYieldEvmTransactionThunk({
@@ -220,10 +225,11 @@ export const composeYieldUnwrapTransactionThunk = createThunk<
     ComposeYieldUnwrapTransactionPayload,
     {
         state: ComposeYieldUnwrapTransactionThunkState;
+        extra: GetCalldataThunkDeps;
     }
 >(
     `${YIELD_WRAP_THUNK_PREFIX}/composeUnwrapTransaction`,
-    async ({ account, token, unwrapAmount }, { dispatch }) => {
+    async ({ account, token, unwrapAmount }, { dispatch, extra }) => {
         if (account.networkType !== 'ethereum') {
             return { type: 'error', reason: 'unsupported-network' } as const;
         }
@@ -234,10 +240,13 @@ export const composeYieldUnwrapTransactionThunk = createThunk<
             return { type: 'error', reason: 'not-wrapped-native' } as const;
         }
 
-        const { data } = buildYieldUnwrapTransactionData({
-            unwrapAmount,
-            decimals: token.decimals,
-        });
+        const { data } = buildYieldUnwrapTransactionData(
+            extra.services.networks.getCalldata(account.symbol),
+            {
+                unwrapAmount,
+                decimals: token.decimals,
+            },
+        );
 
         return await dispatch(
             composeYieldEvmTransactionThunk({

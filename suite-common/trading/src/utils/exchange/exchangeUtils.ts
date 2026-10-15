@@ -18,6 +18,7 @@ import {
     tokenSupportsIncreasingAllowance,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
+import { type Calldata } from '@trezor/calldata';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { exhaustive } from '@trezor/type-utils';
@@ -180,16 +181,19 @@ export const getApprovalStatus = (candidateQuote?: ExchangeTrade): ApprovalStatu
     return 'needs_approval';
 };
 
-export const getDexEstimationData = (quote: ExchangeTrade): string | undefined => {
+export const getDexEstimationData = (
+    networkCalldata: Calldata | undefined,
+    quote: ExchangeTrade,
+): string | undefined => {
     if (!quote.dexTx?.data) {
         return undefined;
     }
 
     if (getApprovalStatus(quote) === 'needs_revoke') {
-        const spender = getErc20ApproveSpender(quote.dexTx.data);
+        const spender = getErc20ApproveSpender(networkCalldata, quote.dexTx.data);
         if (spender) {
             try {
-                return buildApprovalTransactionData({ spender, amount: '0' });
+                return buildApprovalTransactionData(networkCalldata, { spender, amount: '0' });
             } catch {
                 return quote.dexTx.data;
             }

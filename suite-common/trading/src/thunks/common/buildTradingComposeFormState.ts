@@ -9,6 +9,7 @@ import {
     type FormStateTrading,
 } from '@suite-common/wallet-types';
 import { isEvmApprovalTx } from '@suite-common/wallet-utils';
+import { type Calldata } from '@trezor/calldata';
 
 import { type TradingComposedTransactionInfo } from '../../reducers/tradingCommonReducer';
 
@@ -26,30 +27,40 @@ export type BuildTradingComposeFormStateParams = {
     tradingFormState: FormStateTrading;
 };
 
-const getShouldIncludeToken = ({
-    account,
-    device,
-    transactionData,
-}: Pick<BuildTradingComposeFormStateParams, 'account' | 'device' | 'transactionData'>) =>
+const getShouldIncludeToken = (
+    networkCalldata: Calldata | undefined,
+    {
+        account,
+        device,
+        transactionData,
+    }: Pick<BuildTradingComposeFormStateParams, 'account' | 'device' | 'transactionData'>,
+) =>
     !transactionData ||
-    (isApprovalFlowSupported(device) && isEvmApprovalTx(transactionData)) ||
+    (isApprovalFlowSupported(device) && isEvmApprovalTx(networkCalldata, transactionData)) ||
     getNetwork(account.symbol).networkType === 'solana';
 
-export const buildTradingComposeFormState = ({
-    account,
-    device,
-    address,
-    amount,
-    destinationTag,
-    transactionData,
-    ethereumAdjustGasLimit,
-    setMaxOutputId,
-    composed,
-    selectedFee,
-    tradingFormState,
-}: BuildTradingComposeFormStateParams): FormState => {
+export const buildTradingComposeFormState = (
+    networkCalldata: Calldata | undefined,
+    {
+        account,
+        device,
+        address,
+        amount,
+        destinationTag,
+        transactionData,
+        ethereumAdjustGasLimit,
+        setMaxOutputId,
+        composed,
+        selectedFee,
+        tradingFormState,
+    }: BuildTradingComposeFormStateParams,
+): FormState => {
     const options: FormOptions[] = ['broadcast'];
-    const shouldIncludeToken = getShouldIncludeToken({ account, device, transactionData });
+    const shouldIncludeToken = getShouldIncludeToken(networkCalldata, {
+        account,
+        device,
+        transactionData,
+    });
 
     return {
         ...DEFAULT_VALUES,

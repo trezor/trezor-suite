@@ -2,6 +2,7 @@ import {
     type EvmTransactionPurpose,
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
+import { type Calldata } from '@trezor/calldata';
 
 import { getEvmTransactionPurpose, getWrappedNativeTxTarget } from './ethUtils';
 import { isPending, isSignedByAccount } from './transactionUtils';
@@ -51,9 +52,10 @@ export const findTrackedEvmTransaction = ({
 };
 
 export const getConfirmedEvmTransactionPurpose = (
+    networkCalldata: Calldata | undefined,
     transaction: WalletAccountTransaction,
 ): EvmTransactionPurpose =>
-    getEvmTransactionPurpose({
+    getEvmTransactionPurpose(networkCalldata, {
         networkSymbol: transaction.symbol,
         to: getWrappedNativeTxTarget(transaction),
         data: transaction.ethereumSpecific?.data,
@@ -65,11 +67,10 @@ type GetEvmPendingTxStatusParams = {
     expectedPurpose: EvmTransactionPurpose;
 };
 
-export const getEvmPendingTxStatus = ({
-    txid,
-    trackedTransaction,
-    expectedPurpose,
-}: GetEvmPendingTxStatusParams): EvmPendingTxStatus | null => {
+export const getEvmPendingTxStatus = (
+    networkCalldata: Calldata | undefined,
+    { txid, trackedTransaction, expectedPurpose }: GetEvmPendingTxStatusParams,
+): EvmPendingTxStatus | null => {
     if (!txid) return null;
 
     if (!trackedTransaction || isPending(trackedTransaction.transaction)) {
@@ -81,7 +82,8 @@ export const getEvmPendingTxStatus = ({
     // merely reuses the nonce.
     const didOperationChange =
         trackedTransaction.isReplacement &&
-        getConfirmedEvmTransactionPurpose(trackedTransaction.transaction) !== expectedPurpose;
+        getConfirmedEvmTransactionPurpose(networkCalldata, trackedTransaction.transaction) !==
+            expectedPurpose;
 
     if (trackedTransaction.transaction.type === 'failed' || didOperationChange) {
         return 'failed';

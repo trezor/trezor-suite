@@ -1,6 +1,7 @@
 import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { USER_CANCELLED_ERROR_CODES } from '@suite-common/earn-stablecoin';
-import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
+import { type GetCalldataThunkDeps } from '@suite-common/networks';
+import { mockGetAccountSyncInterval, mockGetCalldata } from '@suite-common/networks/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -88,13 +89,16 @@ const rewards = [{}] as Parameters<typeof claimMerklRewardsThunk>[0]['rewards'];
 
 const dispatchClaim = (report: jest.Mock) => {
     const { store } = createTestCompositionRoot<
-        ClaimMerklRewardsThunkDeps,
+        ClaimMerklRewardsThunkDeps & GetCalldataThunkDeps,
         ClaimMerklRewardsThunkState
     >({
         preloadedState: {},
         services: () => ({
             analytics: mockAnalytics(report),
-            networks: { getAccountSyncInterval: mockGetAccountSyncInterval() },
+            networks: {
+                ...{ getAccountSyncInterval: mockGetAccountSyncInterval() },
+                getCalldata: mockGetCalldata(),
+            },
             getIsWindowVisible: asGetter(() => true),
             getTradedAccountKeys: asGetter(() => []),
         }),

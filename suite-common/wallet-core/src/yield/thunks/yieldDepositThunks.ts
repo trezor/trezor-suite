@@ -1,10 +1,11 @@
+import { type GetCalldataThunkDeps } from '@suite-common/networks';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     asAmountUnit,
     tokenSupportsIncreasingAllowance,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
-import { asEvmAddress } from '@trezor/network-ethereum-suite-common';
+import { getEvmCalldata } from '@trezor/calldata';
 import { createThunk } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -67,10 +68,11 @@ export const composeYieldDepositTransactionThunk = createThunk<
     ComposeYieldDepositTransactionPayload,
     {
         state: ComposeYieldDepositTransactionThunkState;
+        extra: GetCalldataThunkDeps;
     }
 >(
     `${YIELD_DEPOSIT_THUNK_PREFIX}/composeDepositTransaction`,
-    async ({ flowData, amount }, { dispatch }) => {
+    async ({ flowData, amount }, { dispatch, extra }) => {
         const { account, token, vault } = flowData;
 
         if (account.networkType !== 'ethereum') {
@@ -89,12 +91,15 @@ export const composeYieldDepositTransactionThunk = createThunk<
             return { type: 'error', reason: 'missing-deposit-params' } as const;
         }
 
-        const allowanceSubunits = await fetchAllowance({
-            owner: account.descriptor,
-            spender,
-            tokenContractAddress,
-            coin: account.symbol,
-        });
+        const allowanceSubunits = await fetchAllowance(
+            extra.services.networks.getCalldata(flowData.account.symbol),
+            {
+                owner: account.descriptor,
+                spender,
+                tokenContractAddress,
+                coin: account.symbol,
+            },
+        );
         const requestSubunits = unitsToSubunits({
             value: asAmountUnit(new BigNumber(requestAmount)),
             decimals: token.decimals,
@@ -115,13 +120,18 @@ export const composeYieldDepositTransactionThunk = createThunk<
             return { type: 'error', reason: 'vault-chain-mismatch' } as const;
         }
 
-        const ownerAddress = asEvmAddress(account.descriptor);
-        const calldata = buildYieldDepositCalldata({
-            amount: requestAmount,
-            flowData,
-            ownerAddress,
-            receiverAddress: ownerAddress,
-        });
+        const ownerAddress = getEvmCalldata(
+            extra.services.networks.getCalldata(flowData.account.symbol),
+        ).asEvmAddress(account.descriptor);
+        const calldata = buildYieldDepositCalldata(
+            extra.services.networks.getCalldata(flowData.account.symbol),
+            {
+                amount: requestAmount,
+                flowData,
+                ownerAddress,
+                receiverAddress: ownerAddress,
+            },
+        );
 
         const composeResult = await dispatch(
             composeYieldEvmTransactionThunk({

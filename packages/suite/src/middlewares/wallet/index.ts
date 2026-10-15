@@ -3,6 +3,7 @@ import type { MiddlewareAPI } from 'redux';
 import { coinjoinMiddleware } from '@suite/coinjoin';
 import { prepareDiscoveryMiddleware } from '@suite/discovery';
 import { prepareConnectPopupMiddleware } from '@suite-common/connect-popup';
+import { type GetCalldataThunkDeps } from '@suite-common/networks';
 import { prepareSuiteSyncMiddleware } from '@suite-common/suite-sync';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import {
@@ -28,9 +29,10 @@ import graphMiddleware from './graphMiddleware';
 import { replaceByFeeErrorMiddleware } from './replaceByFeeErrorMiddleware';
 import { prepareStorageMiddleware } from './storageMiddleware';
 import { tradingMiddleware } from './tradingMiddleware';
-import walletMiddleware from './walletMiddleware';
+import { prepareWalletMiddleware } from './walletMiddleware';
 
-export type GetWalletMiddlewaresDeps = WalletConnectMiddlewareDeps &
+export type GetWalletMiddlewaresDeps = GetCalldataThunkDeps &
+    WalletConnectMiddlewareDeps &
     TokenDefinitionsMiddlewareDeps & {
         services: SuiteSyncDep & DbDep;
     };
@@ -42,7 +44,7 @@ export const getWalletMiddlewares = (
     prepareBlockchainSubscriptionMiddleware(getExtra),
     prepareAccountsMiddleware(getExtra),
     prepareEarnTransactionsMiddleware(getExtra),
-    walletMiddleware,
+    prepareWalletMiddleware(getExtra),
     prepareDiscoveryMiddleware(getExtra),
     prepareFiatRatesMiddleware(getExtra),
     prepareTokenDefinitionsMiddleware(getExtra),

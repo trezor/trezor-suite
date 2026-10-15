@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { injectGetCalldata } from '@suite-common/networks';
 import {
     type TradingComposedTransactionInfo,
     buildExchangeComposeInputs,
@@ -31,7 +32,7 @@ import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/us
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 
 export const useTradingExchangeConfirmFees = (account: Account | undefined) => {
-    const { dispatch } = useServices(injectDispatch);
+    const { dispatch, getCalldata } = useServices(injectDispatch, injectGetCalldata);
 
     const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
     const trade = useSelector(selectTradingExchangeActiveTrade);
@@ -100,7 +101,7 @@ export const useTradingExchangeConfirmFees = (account: Account | undefined) => {
             return undefined;
         }
 
-        return buildTradingComposeFormState({
+        return buildTradingComposeFormState(getCalldata(account?.symbol), {
             account,
             device,
             ...composeInputs.recomposeInputs,
@@ -127,6 +128,7 @@ export const useTradingExchangeConfirmFees = (account: Account | undefined) => {
         selectedQuote,
         selectedTrade,
         shouldSendInSats,
+        getCalldata,
     ]);
 
     const applySelectedFee = (composedTransactionInfo: TradingComposedTransactionInfo) => {

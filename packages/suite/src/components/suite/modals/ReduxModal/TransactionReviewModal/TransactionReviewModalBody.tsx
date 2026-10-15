@@ -6,6 +6,7 @@ import { closeModal, preserveModalOnTxTimeout } from '@suite/modal';
 import { selectRouterUrl } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { useYieldVaultName } from '@suite-common/earn-stablecoin';
+import { injectGetCalldata } from '@suite-common/networks';
 import { selectTradingExchangeSelectedQuote } from '@suite-common/trading';
 import { selectYieldTxReview } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
@@ -44,7 +45,11 @@ export const TransactionReviewModalBody = ({
     precomposedForm,
     isRbfConfirmedError,
 }: TransactionReviewModalBodyProps) => {
-    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
+    const { analytics, dispatch, getCalldata } = useServices(
+        injectDesktopAnalytics,
+        injectDispatch,
+        injectGetCalldata,
+    );
     const account = useSelector(selectAccountIncludingChosenInTrading);
     const device = useSelector(selectSelectedDevice);
     const yieldTxReview = useSelector(selectYieldTxReview);
@@ -100,7 +105,7 @@ export const TransactionReviewModalBody = ({
 
     const decreaseOutputId = getDecreaseOutputId(precomposedTx, precomposedForm);
 
-    const outputs = constructTransactionReviewOutputsOptional({
+    const outputs = constructTransactionReviewOutputsOptional(getCalldata(account?.symbol), {
         account,
         decreaseOutputId,
         device,

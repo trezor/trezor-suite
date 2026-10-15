@@ -1,5 +1,6 @@
 import { type AnalyticsDep, events } from '@suite-common/analytics';
-import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
+import { type GetCalldataThunkDeps } from '@suite-common/networks';
+import { mockGetAccountSyncInterval, mockGetCalldata } from '@suite-common/networks/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { asNetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -56,11 +57,17 @@ const token: YieldFlowDisplayToken & { contractAddress: string } = {
 };
 
 const buildStore = (report?: jest.Mock) =>
-    createTestCompositionRoot<UnwrapNativeTokenThunkDeps, UnwrapNativeTokenThunkState>({
+    createTestCompositionRoot<
+        UnwrapNativeTokenThunkDeps & GetCalldataThunkDeps,
+        UnwrapNativeTokenThunkState
+    >({
         preloadedState: {},
         services: () => ({
             analytics: mockAnalytics(report),
-            networks: { getAccountSyncInterval: mockGetAccountSyncInterval() },
+            networks: {
+                ...{ getAccountSyncInterval: mockGetAccountSyncInterval() },
+                getCalldata: mockGetCalldata(),
+            },
             getIsWindowVisible: asGetter(() => true),
             getTradedAccountKeys: asGetter(() => []),
         }),

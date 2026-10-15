@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { isFulfilled } from '@reduxjs/toolkit';
 
+import { injectGetCalldata } from '@suite-common/networks';
 import {
     type FeesRootState,
     type FormDraftRootState,
@@ -67,7 +68,7 @@ export const useYieldAllowanceFees = ({
     isEnabled,
     transaction,
 }: UseYieldAllowanceFeesParams) => {
-    const { dispatch } = useServices(injectDispatch);
+    const { dispatch, getCalldata } = useServices(injectDispatch, injectGetCalldata);
     const debounce = useDebounce();
     const [isComposingAllowanceFee, setIsComposingAllowanceFee] = useState(false);
     const formDraftKey = useMemo(
@@ -126,10 +127,13 @@ export const useYieldAllowanceFees = ({
                 transaction: allowanceTransaction,
             } = composeAllowanceFeeParams;
             const { allowanceAmount, modalState } = allowanceTransaction;
-            const data = buildApprovalTransactionData({
-                amount: allowanceAmount,
-                spender: modalState.spender,
-            });
+            const data = buildApprovalTransactionData(
+                getCalldata(allowanceFlowData.account.symbol),
+                {
+                    amount: allowanceAmount,
+                    spender: modalState.spender,
+                },
+            );
             const feeResponse = await dispatch(
                 composeAllowanceTransactionThunk({
                     account: allowanceFlowData.account,
@@ -174,7 +178,7 @@ export const useYieldAllowanceFees = ({
         } finally {
             setIsComposingAllowanceFee(false);
         }
-    }, [composeAllowanceFeeParams, customFee, dispatch, selectedFee]);
+    }, [composeAllowanceFeeParams, customFee, dispatch, selectedFee, getCalldata, flowData]);
 
     useEffect(() => {
         setIsComposingAllowanceFee(composeAllowanceFeeParams !== null);

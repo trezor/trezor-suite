@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { isRejected } from '@reduxjs/toolkit';
 
+import { injectGetCalldata } from '@suite-common/networks';
 import { sendFormActions } from '@suite-common/wallet-core';
 import {
     type AccountKey,
@@ -48,7 +49,7 @@ export const useHandleOnDeviceTransactionReview = ({
     tokenContract,
     transaction,
 }: HandleOnDeviceTransactionReviewProps) => {
-    const { dispatch } = useServices(injectDispatch);
+    const { dispatch, getCalldata } = useServices(injectDispatch, injectGetCalldata);
     const navigation = useNavigation<NavigationProps>();
     const { showAlert } = useAlert();
 
@@ -56,7 +57,7 @@ export const useHandleOnDeviceTransactionReview = ({
     const handleCommonSignRejection = useHandleCommonSignRejection({ accountKey, tokenContract });
 
     const isTransactionReviewInProgress = useSelector((state: TransactionReviewOutputsState) =>
-        selectIsTransactionReviewInProgress(state, 'send', accountKey, tokenContract),
+        selectIsTransactionReviewInProgress(state, 'send', accountKey, tokenContract, getCalldata),
     );
 
     useEffect(() => {

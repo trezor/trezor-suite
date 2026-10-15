@@ -1,5 +1,5 @@
 import { getEvmTransactionTextSignature } from '@suite-common/wallet-utils';
-import { Calldata } from '@trezor/network-ethereum-suite-common';
+import { type Calldata } from '@trezor/calldata';
 
 type UnsignedYieldTx = {
     to?: string;
@@ -12,8 +12,11 @@ type UnsignedYieldTx = {
  * - for approve/revoke the vault is the ERC20 `spender` decoded from the calldata
  *   (the call target is the token contract, not the vault).
  */
-export const getMatchAddress = <Tx extends UnsignedYieldTx>(unsignedTx: Tx): string | undefined => {
-    switch (getEvmTransactionTextSignature(unsignedTx.data)) {
+export const getMatchAddress = <Tx extends UnsignedYieldTx>(
+    networkCalldata: Calldata | undefined,
+    unsignedTx: Tx,
+): string | undefined => {
+    switch (getEvmTransactionTextSignature(networkCalldata, unsignedTx.data)) {
         case 'deposit':
         case 'withdraw':
         case 'redeem':
@@ -21,7 +24,7 @@ export const getMatchAddress = <Tx extends UnsignedYieldTx>(unsignedTx: Tx): str
 
         case 'approve':
         case 'revoke': {
-            return Calldata.evm.erc20.approve.decode(unsignedTx.data)?.spender;
+            return (networkCalldata?.evm?.erc20.approve.decode(unsignedTx.data) ?? null)?.spender;
         }
         default:
             return undefined;

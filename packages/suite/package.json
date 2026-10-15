@@ -147,6 +147,7 @@
         "@trezor/asset-utils": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/blockchain-link-utils": "workspace:*",
+        "@trezor/calldata": "workspace:*",
         "@trezor/coinjoin": "workspace:*",
         "@trezor/components": "workspace:*",
         "@trezor/connect": "workspace:*",

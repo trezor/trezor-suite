@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useFocusEffect } from '@react-navigation/native';
 
+import { injectGetCalldata } from '@suite-common/networks';
 import { Box, Text, VStack } from '@suite-native/atoms';
 import {
     ConfirmOnTrezorWrapper,
@@ -20,6 +21,7 @@ import {
     selectIsReceiveAddressOutputConfirmed,
     selectIsTransactionReviewInProgress,
 } from '@suite-native/transaction-management';
+import { useServices } from '@trezor/dependency-injection';
 
 import { AddressReviewEnsPreview } from '../components/AddressReviewEnsPreview';
 import { AddressReviewStepList } from '../components/AddressReviewStepList';
@@ -28,15 +30,23 @@ export const SendAddressReviewScreen = ({
     route,
     navigation,
 }: StackProps<SendStackParamList, SendStackRoutes.SendAddressReview>) => {
+    const { getCalldata } = useServices(injectGetCalldata);
+
     const { confirmOnTrezorRef, revealConfirmOnTrezorSheet, currentHeaderHeight } =
         useConfirmOnTrezorController();
     const { accountKey, tokenContract } = route.params;
     const isAddressConfirmed = useSelector((state: TransactionReviewOutputsState) =>
-        selectIsReceiveAddressOutputConfirmed(state, 'send', accountKey, tokenContract),
+        selectIsReceiveAddressOutputConfirmed(
+            state,
+            'send',
+            accountKey,
+            tokenContract,
+            getCalldata,
+        ),
     );
 
     const isTransactionReviewInProgress = useSelector((state: TransactionReviewOutputsState) =>
-        selectIsTransactionReviewInProgress(state, 'send', accountKey, tokenContract),
+        selectIsTransactionReviewInProgress(state, 'send', accountKey, tokenContract, getCalldata),
     );
 
     useFocusEffect(

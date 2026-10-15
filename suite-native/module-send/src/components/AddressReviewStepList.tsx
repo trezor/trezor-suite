@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { useFocusEffect, useRoute } from '@react-navigation/native';
 import { useSetAtom } from 'jotai';
 
+import { injectGetCalldata } from '@suite-common/networks';
 import { Button, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
@@ -18,6 +19,7 @@ import {
     selectIsTransactionReviewInProgress,
 } from '@suite-native/transaction-management';
 import { LIST_VERTICAL_SPACING, useActiveStepOffset } from '@suite-native/transaction-review';
+import { useServices } from '@trezor/dependency-injection';
 
 import { AddressOriginHelpButton } from './AddressOriginHelpButton';
 import { AddressReviewStep } from './AddressReviewStep';
@@ -30,6 +32,8 @@ const NUMBER_OF_STEPS = 3;
 type RouteProps = StackProps<SendStackParamList, SendStackRoutes.SendAddressReview>['route'];
 
 export const AddressReviewStepList = () => {
+    const { getCalldata } = useServices(injectGetCalldata);
+
     const route = useRoute<RouteProps>();
     const { accountKey, tokenContract, transaction } = route.params;
 
@@ -42,7 +46,7 @@ export const AddressReviewStepList = () => {
     });
     const setWasAppLeftDuringReview = useSetAtom(wasAppLeftDuringReviewAtom);
     const isTransactionReviewInProgress = useSelector((state: TransactionReviewOutputsState) =>
-        selectIsTransactionReviewInProgress(state, 'send', accountKey, tokenContract),
+        selectIsTransactionReviewInProgress(state, 'send', accountKey, tokenContract, getCalldata),
     );
 
     useFocusEffect(

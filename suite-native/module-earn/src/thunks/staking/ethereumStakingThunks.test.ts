@@ -1,6 +1,8 @@
 import { combineReducers, isFulfilled, isRejected } from '@reduxjs/toolkit';
 
 import { type MessageSystemState, messageSystemInitialState } from '@suite-common/message-system';
+import { type GetCalldataThunkDeps } from '@suite-common/networks';
+import { mockGetCalldata } from '@suite-common/networks/mocks';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import {
@@ -21,9 +23,12 @@ import {
 } from '@suite-common/wallet-types';
 import { getFormDraftKey } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
+import { getEthereumCalldata } from '@trezor/network-ethereum-suite-common';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { signEthereumStakingTransactionThunk } from './ethereumStakingThunks';
+
+const networkCalldata = getEthereumCalldata();
 
 jest.mock('@trezor/connect', () => ({
     __esModule: true,
@@ -105,15 +110,16 @@ const buildPrecomposedTransaction = (
     }) as PrecomposedTransactionFinal;
 
 const buildCalldataForKind = (kind: BaseStakeType): string => {
-    if (kind === 'stake') return buildStakeData(WALLET_SDK_SOURCE_MOBILE);
+    if (kind === 'stake') return buildStakeData(networkCalldata, WALLET_SDK_SOURCE_MOBILE);
     if (kind === 'unstake')
         return buildUnstakeData(
+            networkCalldata,
             '1500000000000000000',
             UNSTAKE_INTERCHANGES,
             WALLET_SDK_SOURCE_MOBILE,
         );
 
-    return buildClaimWithdrawRequestData();
+    return buildClaimWithdrawRequestData(networkCalldata);
 };
 
 const buildComposeFormDraft = (kind: BaseStakeType, amount: string): FormState =>
@@ -162,7 +168,8 @@ const buildStore = ({
     accounts?: Account[];
     formDrafts?: Record<string, FormState>;
 } = {}) =>
-    createTestCompositionRoot<void, State>({
+    createTestCompositionRoot<GetCalldataThunkDeps, State>({
+        services: () => ({ networks: { getCalldata: mockGetCalldata() } }),
         reducer: combineReducers({
             device: (): { selectedDevice: TrezorDevice } => ({
                 selectedDevice: {
@@ -242,7 +249,9 @@ describe('signEthereumStakingTransactionThunk', () => {
         expect(signCall.transaction.to).toBe(POOL_ADDRESS);
         // 1.5 ETH = 1.5 * 10^18 wei = 1500000000000000000 = 0x14d1120d7b160000
         expect(signCall.transaction.value).toBe('0x14d1120d7b160000');
-        expect(signCall.transaction.data).toBe(buildStakeData(WALLET_SDK_SOURCE_MOBILE));
+        expect(signCall.transaction.data).toBe(
+            buildStakeData(networkCalldata, WALLET_SDK_SOURCE_MOBILE),
+        );
     });
 
     it('passes value=0 and unstake calldata for an unstake variant', async () => {
@@ -268,7 +277,12 @@ describe('signEthereumStakingTransactionThunk', () => {
         expect(signCall.transaction.to).toBe(POOL_ADDRESS);
         expect(signCall.transaction.value).toBe('0x0');
         expect(signCall.transaction.data).toBe(
-            buildUnstakeData('1500000000000000000', UNSTAKE_INTERCHANGES, WALLET_SDK_SOURCE_MOBILE),
+            buildUnstakeData(
+                networkCalldata,
+                '1500000000000000000',
+                UNSTAKE_INTERCHANGES,
+                WALLET_SDK_SOURCE_MOBILE,
+            ),
         );
     });
 
@@ -291,7 +305,7 @@ describe('signEthereumStakingTransactionThunk', () => {
         const signCall = ethereumSignTransactionMock.mock.calls[0][0];
         expect(signCall.transaction.to).toBe(ACCOUNTING_ADDRESS);
         expect(signCall.transaction.value).toBe('0x0');
-        expect(signCall.transaction.data).toBe(buildClaimWithdrawRequestData());
+        expect(signCall.transaction.data).toBe(buildClaimWithdrawRequestData(networkCalldata));
     });
 
     it('rejects an unstake when the live staked balance dropped below the requested amount', async () => {

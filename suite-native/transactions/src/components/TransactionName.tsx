@@ -1,11 +1,13 @@
 import { redactNumericalSubstring, useDiscreetMode } from '@suite-common/discreet-mode';
 import { useFormatters } from '@suite-common/formatters';
+import { injectGetCalldata } from '@suite-common/networks';
 import { type TronTxContractType } from '@suite-common/wallet-constants';
 import { getTxStakeType } from '@suite-common/wallet-core';
 import { type StakeType, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { getNativeWrapTxKind, hasValueMovement } from '@suite-common/wallet-utils';
 import { Text, type TextProps } from '@suite-native/atoms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
+import { useServices } from '@trezor/dependency-injection';
 import {
     type StellarOperationLabel,
     getStellarOperationLabel,
@@ -133,6 +135,8 @@ const getTronTransactionMessage = (transaction: WalletAccountTransaction) => {
 };
 
 export const TransactionName = ({ transaction, isPending, ...textProps }: TransactionNameProps) => {
+    const { getCalldata } = useServices(injectGetCalldata);
+
     const { CryptoAmountFormatter: cryptoAmountFormatter } = useFormatters();
     const { isDiscreetMode } = useDiscreetMode();
     const ethName = transaction.ethereumSpecific?.parsedData?.name;
@@ -148,7 +152,7 @@ export const TransactionName = ({ transaction, isPending, ...textProps }: Transa
 
     // WETH wrap/unwrap get their own label (with the amount) instead of the generic contract-call
     // method name ("deposit"/"withdraw") that the indexer parses.
-    const wrapKind = getNativeWrapTxKind(transaction);
+    const wrapKind = getNativeWrapTxKind(getCalldata(transaction.symbol), transaction);
     if (wrapKind) {
         return <WrapTransactionName transaction={transaction} kind={wrapKind} {...textProps} />;
     }

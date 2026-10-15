@@ -2,6 +2,7 @@ import { G } from '@mobily/ts-belt';
 import { isRejected } from '@reduxjs/toolkit';
 
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { type GetCalldataThunkDeps } from '@suite-common/networks';
 import { type OnModalCancelDep } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
@@ -49,7 +50,6 @@ import {
 import { getSolanaTokenDefinition } from '@trezor/connect-core/src/api/solana/solanaDefinitions';
 import { type Getter } from '@trezor/dependency-injection';
 import { getFirmwareVersionArray } from '@trezor/device-utils';
-import { Calldata } from '@trezor/network-ethereum-suite-common';
 import { type ActionsFromAsyncThunk, createThunk } from '@trezor/redux-utils';
 import { type Ok, exhaustive } from '@trezor/type-utils';
 import { BigNumber, cloneObject, typedObjectEntries } from '@trezor/utils';
@@ -471,7 +471,7 @@ export const pushSendFormTransactionThunk = createThunk<
     {
         rejectValue: PushTransactionError;
         state: PushSendFormTransactionThunkState;
-        extra: PushSendFormTransactionThunkDeps;
+        extra: PushSendFormTransactionThunkDeps & GetCalldataThunkDeps;
     }
 >(
     `${SEND_MODULE_PREFIX}/pushSendFormTransactionThunk`,
@@ -521,7 +521,10 @@ export const pushSendFormTransactionThunk = createThunk<
                   .toString()
             : '0';
 
-        const evmApprovalData = Calldata.evm.erc20.approve.decode(precomposedForm?.transactionData);
+        const evmApprovalData =
+            extra.services.networks
+                .getCalldata(selectedAccount.symbol)
+                ?.approve?.decode?.(precomposedForm?.transactionData) ?? null;
         const bumpedPrevTxid = isRbfBumpFeeTransaction(precomposedTransaction)
             ? precomposedTransaction.prevTxid
             : undefined;
@@ -850,7 +853,7 @@ export const enhancePrecomposedTransactionThunk = createThunk<
     {
         rejectValue: string;
         state: EnhancePrecomposedTransactionThunkState;
-        extra: EnhancePrecomposedTransactionThunkDeps;
+        extra: EnhancePrecomposedTransactionThunkDeps & GetCalldataThunkDeps;
     }
 >(
     `${SEND_MODULE_PREFIX}/enhancePrecomposedTransactionThunk`,
@@ -902,7 +905,10 @@ export const enhancePrecomposedTransactionThunk = createThunk<
         // Contract calldata (e.g. DEX swap) must not carry `token` on the precomposed object:
         // signing uses prepareEthereumTransaction, which would replace calldata with an ERC-20
         // transfer if `token` is set.
-        const sig = getEvmTransactionTextSignature(formValues.transactionData);
+        const sig = getEvmTransactionTextSignature(
+            extra.services.networks.getCalldata(selectedAccount.symbol),
+            formValues.transactionData,
+        );
         if (
             selectedAccount.networkType === 'ethereum' &&
             formValues.transactionData &&

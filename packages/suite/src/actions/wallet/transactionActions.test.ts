@@ -11,8 +11,11 @@ import {
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getAccountTransactions } from '@suite-common/wallet-utils';
+import { getEthereumCalldata } from '@trezor/network-ethereum-suite-common';
 
 import { transactionsReducer } from 'src/reducers/wallet';
+
+const networkCalldata = getEthereumCalldata();
 
 const btcSymbol = asNetworkSymbol('btc');
 
@@ -35,6 +38,7 @@ describe('Transaction Actions', () => {
         const account = mockWalletAccount({ symbol: btcSymbol });
         store.dispatch(
             transactionsActions.addTransaction({
+                networkCalldata: networkCalldata,
                 transactions: [getWalletTransaction()],
                 account,
                 page: 1,

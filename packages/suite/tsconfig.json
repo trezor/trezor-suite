@@ -228,6 +228,7 @@
         { "path": "../asset-utils" },
         { "path": "../blockchain-link-types" },
         { "path": "../blockchain-link-utils" },
+        { "path": "../calldata" },
         { "path": "../coinjoin" },
         { "path": "../components" },
         { "path": "../connect" },

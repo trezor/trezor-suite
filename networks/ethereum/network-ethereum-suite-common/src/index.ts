@@ -28,3 +28,5 @@ export {
     type DecodedClearSignedSwap,
     type ClearSignedSwapLeg,
 } from './calldata/clearSigningSwap';
+
+export { getEthereumCalldata } from './getEthereumCalldata';

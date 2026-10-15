@@ -6,6 +6,7 @@
         {
             "path": "../../suite-common/message-system"
         },
+        { "path": "../../suite-common/networks" },
         {
             "path": "../../suite-common/suite-sync"
         },
@@ -20,6 +21,9 @@
         },
         {
             "path": "../../suite-common/wallet-core"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
         },
         {
             "path": "../../suite-common/wallet-utils"
@@ -47,9 +51,6 @@
         },
         { "path": "../../packages/theme" },
         { "path": "../../packages/utils" },
-        {
-            "path": "../../suite-common/wallet-types"
-        },
         { "path": "../test-utils" },
         { "path": "../test-utils-store" }
     ],

@@ -2,6 +2,7 @@ import { useCallback, useEffect } from 'react';
 import { type UseFormReturn, useWatch } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
+import { injectGetCalldata } from '@suite-common/networks';
 import {
     TRADING_EXCHANGE_FORM_DEX,
     TRADING_FORM_OUTPUT_ADDRESS,
@@ -50,7 +51,7 @@ export const useExchangeDexQuote = ({
     sendCryptoSelect,
     composeRequest,
 }: UseExchangeDexQuoteProps) => {
-    const { dispatch } = useServices(injectDispatch);
+    const { dispatch, getCalldata } = useServices(injectDispatch, injectGetCalldata);
     const { setValue, control } = methods;
 
     const [transactionData, outputAddress, ethereumAdjustGasLimit, ethereumFixedGasLimit] =
@@ -129,15 +130,30 @@ export const useExchangeDexQuote = ({
 
         const { dexTx } = quote;
 
-        setValue('transactionData', getDexEstimationData(quote) ?? '');
+        setValue(
+            'transactionData',
+            getDexEstimationData(getCalldata(account?.symbol), quote) ?? '',
+        );
         setValue(TRADING_FORM_OUTPUT_ADDRESS, dexTx.to);
         setValue('ethereumAdjustGasLimit', ETHEREUM_ADJUST_GAS_LIMIT);
         setValue('ethereumFixedGasLimit', undefined);
-    }, [quote, exchangeType, sendCryptoSelect, isFormLoading, isLoadingQuote, setValue]);
+    }, [
+        quote,
+        exchangeType,
+        sendCryptoSelect,
+        isFormLoading,
+        isLoadingQuote,
+        setValue,
+        getCalldata,
+        account,
+    ]);
 
     const fetchFeesAndComposeRef = useCurrentRef(fetchFeesAndCompose);
     // Fetch fees when the transaction to estimate changes shape.
-    const transactionShape = getEvmTransactionTextSignature(transactionData);
+    const transactionShape = getEvmTransactionTextSignature(
+        getCalldata(account?.symbol),
+        transactionData,
+    );
     useEffect(() => {
         fetchFeesAndComposeRef.current();
     }, [

@@ -4,12 +4,14 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { selectSelectedDevice } from '@suite-common/device';
+import { injectGetCalldata } from '@suite-common/networks';
 import { type YieldRootState, selectYieldSessionByFlowKey } from '@suite-common/wallet-core';
 import {
     type StackNavigationProps,
     type YieldStackParamList,
     YieldStackRoutes,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 
 import { EarnDeviceConnectionGuard } from '../../components/earn/EarnDeviceConnectionGuard';
 import { YieldDepositReviewContent } from '../../components/yield/YieldDepositReviewContent';
@@ -23,6 +25,8 @@ type NavigationProps = StackNavigationProps<
 >;
 
 export const YieldDepositReviewScreen = () => {
+    const { getCalldata } = useServices(injectGetCalldata);
+
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
     const yieldFlowData = useYieldFlowData(route.params);
@@ -48,14 +52,14 @@ export const YieldDepositReviewScreen = () => {
             return null;
         }
 
-        return buildYieldReviewPreview({
+        return buildYieldReviewPreview(getCalldata(flowData?.account.symbol), {
             device,
             flowData,
             review,
             type: 'deposit',
             vaultName,
         });
-    }, [device, flowData, review, vaultName]);
+    }, [device, flowData, review, vaultName, getCalldata]);
 
     useEffect(() => {
         if (resolutionStatus !== 'resolved') {

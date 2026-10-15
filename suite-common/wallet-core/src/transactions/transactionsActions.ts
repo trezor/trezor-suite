@@ -6,6 +6,7 @@ import {
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import { enhanceTransaction } from '@suite-common/wallet-utils';
+import { type Calldata } from '@trezor/calldata';
 import { type AccountTransaction } from '@trezor/connect';
 
 export const TRANSACTIONS_MODULE_PREFIX = '@common/wallet-core/transactions';
@@ -31,6 +32,7 @@ const markTransactionAsNotScam = createAction(
 );
 
 type AddTransactionActionProps = {
+    networkCalldata: Calldata | undefined;
     transactions: (AccountTransaction & Partial<WalletAccountTransaction>)[];
     account: Account;
     page?: number;
@@ -49,13 +51,14 @@ type AddTransactionActionResult = {
 const addTransaction = createAction(
     `${TRANSACTIONS_MODULE_PREFIX}/addTransaction`,
     ({
+        networkCalldata,
         transactions,
         account,
         page,
         perPage,
     }: AddTransactionActionProps): AddTransactionActionResult => ({
         payload: {
-            transactions: transactions.map(t => enhanceTransaction(t, account)),
+            transactions: transactions.map(t => enhanceTransaction(networkCalldata, t, account)),
             account,
             page,
             perPage,

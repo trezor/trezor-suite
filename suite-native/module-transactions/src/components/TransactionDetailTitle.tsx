@@ -1,3 +1,4 @@
+import { injectGetCalldata } from '@suite-common/networks';
 import { getNativeWrapTxKind } from '@suite-common/wallet-utils';
 import { Text } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
@@ -9,6 +10,7 @@ import {
     WrapTransactionName,
     getUnstakeTxAmount,
 } from '@suite-native/transactions';
+import { useServices } from '@trezor/dependency-injection';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const titleTextStyle = prepareNativeStyle(_ => ({
@@ -28,9 +30,11 @@ export const TransactionDetailTitle = ({
     isPending,
     tokenTransfer,
 }: TransactionDetailTitleProps) => {
+    const { getCalldata } = useServices(injectGetCalldata);
+
     const { applyStyle } = useNativeStyles();
     const unstakeAmount = getUnstakeTxAmount(transaction);
-    const wrapKind = getNativeWrapTxKind(transaction);
+    const wrapKind = getNativeWrapTxKind(getCalldata(transaction.symbol), transaction);
 
     if (unstakeAmount !== undefined) {
         return (

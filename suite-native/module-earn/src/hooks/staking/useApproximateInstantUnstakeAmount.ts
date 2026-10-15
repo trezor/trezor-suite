@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 
+import { injectGetCalldata } from '@suite-common/networks';
 import { useQuery } from '@suite-common/react-query';
 import {
     type AccountsRootState,
@@ -9,11 +10,14 @@ import {
     simulateUnstake,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { useServices } from '@trezor/dependency-injection';
 import { BigNumber, resolveAfter } from '@trezor/utils';
 
 const DEBOUNCE_MS = 300;
 
 export const useApproximateInstantUnstakeAmount = (accountKey: AccountKey, amount: string) => {
+    const { getCalldata } = useServices(injectGetCalldata);
+
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -43,7 +47,7 @@ export const useApproximateInstantUnstakeAmount = (accountKey: AccountKey, amoun
                     return null;
                 }
 
-                const result = await simulateUnstake({
+                const result = await simulateUnstake(getCalldata(account?.symbol), {
                     amount,
                     from: descriptor,
                     symbol,

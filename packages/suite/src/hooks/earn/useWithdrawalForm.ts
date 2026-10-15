@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import { useForm, useWatch } from 'react-hook-form';
 import { useDebounce } from 'react-use';
 
+import { injectGetCalldata } from '@suite-common/networks';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     getStakeFormsDefaultValues,
@@ -52,7 +53,7 @@ type UseWithdrawalFormProps = {
 };
 
 export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): WithdrawalContextValues => {
-    const { dispatch } = useServices(injectDispatch);
+    const { dispatch, getCalldata } = useServices(injectDispatch, injectGetCalldata);
     const [approximatedInstantEthAmount, setApproximatedInstantEthAmount] = useState<string | null>(
         null,
     );
@@ -133,7 +134,7 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
         }
 
         const simulateUnstakeAmount = async () => {
-            const approximatedEthAmount = await simulateUnstake({
+            const approximatedEthAmount = await simulateUnstake(getCalldata(account?.symbol), {
                 amount: cryptoInput,
                 from: account.descriptor,
                 symbol: account.symbol,
@@ -142,7 +143,7 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
         };
 
         simulateUnstakeAmount();
-    }, [account.symbol, account.descriptor, formState.errors, values]);
+    }, [account.symbol, account.descriptor, formState.errors, values, getCalldata, account]);
 
     useEffect(() => {
         if (!isChanged(defaultValues, values)) {
@@ -274,7 +275,9 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
         if (composedTx?.type === 'final') {
             try {
-                const result = await dispatch(signTransactionThunk(values, composedTx));
+                const result = await dispatch(
+                    signTransactionThunk(getCalldata(account?.symbol), values, composedTx),
+                );
 
                 if (result?.success) {
                     clearForm();
@@ -287,7 +290,7 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
                 console.warn('Stake signing failed', error instanceof Error ? error.name : error);
             }
         }
-    }, [getValues, composedLevels, dispatch, clearForm, selectedFee]);
+    }, [getValues, composedLevels, dispatch, clearForm, selectedFee, getCalldata, account]);
 
     return {
         ...methods,

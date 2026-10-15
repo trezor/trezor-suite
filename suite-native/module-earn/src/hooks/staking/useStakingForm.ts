@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
+import { injectGetCalldata } from '@suite-common/networks';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
@@ -14,12 +15,15 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { useForm, useWatch } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
+import { useServices } from '@trezor/dependency-injection';
 
 import { type EarnFormValues, earnFormValidationSchema } from '../../utils/earn/earnFormSchema';
 import { buildEarnComposeFormState } from '../../utils/earn/utils';
 import { useComposeEarnFees } from '../earn/useComposeEarnFees';
 
 export const useStakingForm = (accountKey: AccountKey) => {
+    const { getCalldata } = useServices(injectGetCalldata);
+
     const { translate } = useTranslate();
     const { CryptoAmountFormatter } = useFormatters();
     const account = useSelector((state: AccountsRootState) =>
@@ -65,9 +69,9 @@ export const useStakingForm = (accountKey: AccountKey) => {
         return buildEarnComposeFormState(
             getEthereumStakingAddressByType(account.symbol, 'stake'),
             amountValue,
-            buildStakeData(WALLET_SDK_SOURCE_MOBILE),
+            buildStakeData(getCalldata(account?.symbol), WALLET_SDK_SOURCE_MOBILE),
         );
-    }, [account, isValid, amountValue]);
+    }, [account, isValid, amountValue, getCalldata]);
 
     const { formDraft, formDraftKey, isFeeUnavailable, isPrecomposeError, updateFeeLevelThunk } =
         useComposeEarnFees({

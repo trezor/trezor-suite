@@ -1,5 +1,6 @@
 import { Translation, useTranslation } from '@suite/intl';
 import { isApprovalFlowSupported, selectSelectedDevice } from '@suite-common/device';
+import { injectGetCalldata } from '@suite-common/networks';
 import { type NetworkType } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -19,6 +20,8 @@ import {
     isTestnet,
 } from '@suite-common/wallet-utils';
 import type { TokenInfo } from '@trezor/blockchain-link-types';
+import { type Calldata } from '@trezor/calldata';
+import { useServices } from '@trezor/dependency-injection';
 import { BigNumber } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
@@ -44,25 +47,31 @@ interface GetLinesParams {
     tronResourceLabel: string;
 }
 
-const getLines = ({
-    device,
-    networkType,
-    precomposedTx,
-    precomposedForm,
-    isRbfAction,
-    stakeType,
-    nativeToken,
-    isClearSignedTradingSwap,
-    isClearSignedWrapUnwrap,
-    isTronStakeFreeze,
-    tronResourceLabel,
-}: GetLinesParams): OutputElementLine[] => {
+const getLines = (
+    networkCalldata: Calldata | undefined,
+    {
+        device,
+        networkType,
+        precomposedTx,
+        precomposedForm,
+        isRbfAction,
+        stakeType,
+        nativeToken,
+        isClearSignedTradingSwap,
+        isClearSignedWrapUnwrap,
+        isTronStakeFreeze,
+        tronResourceLabel,
+    }: GetLinesParams,
+): OutputElementLine[] => {
     const isUpdatedSendFlow = getIsUpdatedSendFlow(device);
     const isUpdatedEthereumSendFlow = getIsUpdatedEthereumSendFlow(device, networkType, stakeType);
     const isEthereum = networkType === 'ethereum';
     const isSolana = networkType === 'solana';
     const showAmountWithoutFee = isEthereum || isSolana;
-    const evmTxType = getEvmTransactionTextSignature(precomposedForm.transactionData);
+    const evmTxType = getEvmTransactionTextSignature(
+        networkCalldata,
+        precomposedForm.transactionData,
+    );
     const isYieldOrClaimOperation = isEvmYieldTxByTextSignature(evmTxType) || evmTxType === 'claim';
 
     const feeLabelId = ((network: NetworkType) => {
@@ -133,7 +142,8 @@ const getLines = ({
 
         const isFeeOnly =
             isUnknownStakingValue ||
-            (isEvmApprovalTx(precomposedForm.transactionData) && isApprovalFlowSupported(device)) ||
+            (isEvmApprovalTx(networkCalldata, precomposedForm.transactionData) &&
+                isApprovalFlowSupported(device)) ||
             isYieldOrClaimOperation ||
             // A clear-signed wrap/unwrap already confirms the amount on its own row, and the
             // device leaves it off its summary screen for the same reason.
@@ -201,6 +211,8 @@ export const TransactionReviewTotalOutput = ({
     stakeType,
     isRbf,
 }: TransactionReviewTotalOutputProps) => {
+    const { getCalldata } = useServices(injectGetCalldata);
+
     const device = useSelector(selectSelectedDevice);
     const { translationString } = useTranslation();
 
@@ -223,20 +235,26 @@ export const TransactionReviewTotalOutput = ({
             ? precomposedTx.nativeToken
             : undefined;
     const isFiatVisible = !isTestnet(account.symbol) && account.accountType !== 'placeholder';
-    const isClearSignedTradingSwap = isClearSignedEvmTradingSwapTransaction({
-        account,
-        device,
-        precomposedTx,
-        transactionData: precomposedForm.transactionData,
-        trading: precomposedForm.trading,
-    });
-    const isClearSignedWrapUnwrap = isClearSignedWrappedNativeTransaction({
-        account,
-        device,
-        precomposedTx,
-        transactionData: precomposedForm.transactionData,
-    });
-    const lines = getLines({
+    const isClearSignedTradingSwap = isClearSignedEvmTradingSwapTransaction(
+        getCalldata(account?.symbol),
+        {
+            account,
+            device,
+            precomposedTx,
+            transactionData: precomposedForm.transactionData,
+            trading: precomposedForm.trading,
+        },
+    );
+    const isClearSignedWrapUnwrap = isClearSignedWrappedNativeTransaction(
+        getCalldata(account?.symbol),
+        {
+            account,
+            device,
+            precomposedTx,
+            transactionData: precomposedForm.transactionData,
+        },
+    );
+    const lines = getLines(getCalldata(account?.symbol), {
         device,
         networkType,
         precomposedTx,

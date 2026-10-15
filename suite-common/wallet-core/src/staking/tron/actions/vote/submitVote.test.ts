@@ -1,5 +1,7 @@
 import { captureException, withScope } from '@sentry/core';
 
+import { type GetCalldataThunkDeps } from '@suite-common/networks';
+import { mockGetCalldata } from '@suite-common/networks/mocks';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -79,7 +81,8 @@ const buildAccount = (overrides?: Partial<Account>): Account =>
     }) as unknown as Account;
 
 const initStore = () =>
-    createTestCompositionRoot<void, AddFakePendingTronTxThunkState>({
+    createTestCompositionRoot<GetCalldataThunkDeps, AddFakePendingTronTxThunkState>({
+        services: () => ({ networks: { getCalldata: mockGetCalldata() } }),
         preloadedState: {
             wallet: {
                 blockchain: { [trxSymbol]: { blockHeight: 100 } },

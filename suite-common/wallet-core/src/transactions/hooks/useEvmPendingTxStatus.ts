@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import { injectGetCalldata } from '@suite-common/networks';
 import { type Account, type EvmTransactionPurpose } from '@suite-common/wallet-types';
 import {
     type EvmPendingTxStatus,
@@ -34,7 +35,7 @@ export const useEvmPendingTxStatus = (
     expectedPurpose: EvmTransactionPurpose,
     persistedNonce?: number,
 ): EvmPendingTxTracking => {
-    const { dispatch } = useServices(injectDispatch);
+    const { dispatch, getCalldata } = useServices(injectDispatch, injectGetCalldata);
 
     const transactions = useSelector((state: TransactionsRootState) =>
         selectAccountTransactions(state, account?.key ?? null),
@@ -70,7 +71,11 @@ export const useEvmPendingTxStatus = (
     const pollIntervalMs = getPollIntervalMs(feeInfo?.blockTime);
 
     const status = account
-        ? getEvmPendingTxStatus({ txid, trackedTransaction, expectedPurpose })
+        ? getEvmPendingTxStatus(getCalldata(account?.symbol), {
+              txid,
+              trackedTransaction,
+              expectedPurpose,
+          })
         : null;
 
     useEffect(() => {

@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useFocusEffect } from '@react-navigation/native';
 
+import { injectGetCalldata } from '@suite-common/networks';
 import { Text, VStack } from '@suite-native/atoms';
 import {
     ConfirmOnTrezorWrapper,
@@ -19,6 +20,7 @@ import {
     selectIsDestinationTagOutputConfirmed,
     selectIsTransactionReviewInProgress,
 } from '@suite-native/transaction-management';
+import { useServices } from '@trezor/dependency-injection';
 
 import { ReviewDestinationTagCard } from '../components/ReviewDestinationTagCard';
 import { useHandleOnDeviceTransactionReview } from '../hooks/useHandleOnDeviceTransactionReview';
@@ -27,16 +29,24 @@ export const SendDestinationTagReviewScreen = ({
     route,
     navigation,
 }: StackProps<SendStackParamList, SendStackRoutes.SendDestinationTagReview>) => {
+    const { getCalldata } = useServices(injectGetCalldata);
+
     const { accountKey, tokenContract, destinationTag, transaction } = route.params;
     const [hasReviewAlreadyStarted, setHasReviewAlreadyStarted] = useState(false);
 
     const { confirmOnTrezorRef, currentHeaderHeight } = useConfirmOnTrezorController();
 
     const isTransactionReviewInProgress = useSelector((state: TransactionReviewOutputsState) =>
-        selectIsTransactionReviewInProgress(state, 'send', accountKey, tokenContract),
+        selectIsTransactionReviewInProgress(state, 'send', accountKey, tokenContract, getCalldata),
     );
     const isDestinationTagConfirmed = useSelector((state: TransactionReviewOutputsState) =>
-        selectIsDestinationTagOutputConfirmed(state, 'send', accountKey, tokenContract),
+        selectIsDestinationTagOutputConfirmed(
+            state,
+            'send',
+            accountKey,
+            tokenContract,
+            getCalldata,
+        ),
     );
 
     const handleOnDeviceTransactionReview = useHandleOnDeviceTransactionReview({

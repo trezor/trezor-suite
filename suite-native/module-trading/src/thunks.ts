@@ -5,6 +5,7 @@ import {
     type MevProtectionRootState,
     selectIsMevProtectionFeatureEnabled,
 } from '@suite-common/mev';
+import { type GetCalldataThunkDeps } from '@suite-common/networks';
 import {
     type TradingExchangeType,
     type TradingSellType,
@@ -62,7 +63,6 @@ import {
     transactionManagementActions,
 } from '@suite-native/transaction-management';
 import { type BlockbookTransaction } from '@trezor/blockchain-link-types';
-import { Calldata } from '@trezor/network-ethereum-suite-common';
 import { createThunk } from '@trezor/redux-utils';
 import { type Ok } from '@trezor/type-utils';
 
@@ -271,12 +271,16 @@ export type ComposeEvmApprovalFeeLevelsThunkState = TokensRootState & FormDraftR
 export const composeEvmApprovalFeeLevelsThunk = createThunk<
     PrecomposedLevels,
     ComposeEvmApprovalFeeLevelsThunkParams,
-    { rejectValue: string; state: ComposeEvmApprovalFeeLevelsThunkState }
+    {
+        rejectValue: string;
+        state: ComposeEvmApprovalFeeLevelsThunkState;
+        extra: GetCalldataThunkDeps;
+    }
 >(
     `${NATIVE_TRADING_EXCHANGE_THUNK_PREFIX}/composeEvmApprovalFeeLevels`,
     async (
         { quote, account, feeInfo, selectedFeeLevel = 'normal', customFee, approvalTypeOverride },
-        { dispatch, getState, rejectWithValue, fulfillWithValue },
+        { dispatch, getState, rejectWithValue, fulfillWithValue, extra },
     ) => {
         try {
             const { dexTx, send, sendStringAmount, approvalType: quoteApprovalType } = quote;
@@ -285,7 +289,10 @@ export const composeEvmApprovalFeeLevelsThunk = createThunk<
                 return rejectWithValue('DEX quote with dexTx data is required');
             }
 
-            const approvalData = Calldata.evm.erc20.approve.decode(dexTx.data);
+            const approvalData =
+                extra.services.networks
+                    .getCalldata(account?.symbol)
+                    ?.approve?.decode?.(dexTx.data) ?? null;
             const spender = approvalData?.spender;
             if (!spender) {
                 return rejectWithValue('Could not extract spender from dexTx data');
@@ -313,10 +320,13 @@ export const composeEvmApprovalFeeLevelsThunk = createThunk<
                 return rejectWithValue('Could not compute allowance amount');
             }
 
-            const data = buildApprovalTransactionData({
-                amount: allowanceAmount,
-                spender,
-            });
+            const data = buildApprovalTransactionData(
+                extra.services.networks.getCalldata(account?.symbol),
+                {
+                    amount: allowanceAmount,
+                    spender,
+                },
+            );
 
             const response = await dispatch(
                 composeAllowanceTransactionThunk({

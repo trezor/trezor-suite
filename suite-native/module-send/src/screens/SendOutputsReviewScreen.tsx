@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 import { useAtomValue } from 'jotai';
 
+import { injectGetCalldata } from '@suite-common/networks';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { useConfirmOnTrezorController } from '@suite-native/confirm-on-trezor';
 import {
@@ -39,7 +40,7 @@ export const SendOutputsReviewScreen = ({ route }: SendOutputsReviewScreenProps)
     const { accountKey, tokenContract } = route.params;
 
     const navigation = useNavigation();
-    const { dispatch } = useServices(injectDispatch);
+    const { dispatch, getCalldata } = useServices(injectDispatch, injectGetCalldata);
 
     const wasAppLeftDuringReview = useAtomValue(wasAppLeftDuringReviewAtom);
 
@@ -69,12 +70,18 @@ export const SendOutputsReviewScreen = ({ route }: SendOutputsReviewScreenProps)
 
     const reviewOutputs =
         useSelector((state: TransactionReviewOutputsState) =>
-            selectTransactionReviewOutputsFromDraft(state, 'send', accountKey, tokenContract),
+            selectTransactionReviewOutputsFromDraft(
+                state,
+                'send',
+                accountKey,
+                tokenContract,
+                getCalldata,
+            ),
         ) || undefined;
 
     const summaryOutput =
         useSelector((state: TransactionReviewOutputsState) =>
-            selectReviewSummaryOutput(state, 'send', accountKey, tokenContract),
+            selectReviewSummaryOutput(state, 'send', accountKey, tokenContract, getCalldata),
         ) || undefined;
 
     const { isSummaryItemEnabled, isSlidingOverlayEnabled } = getTransactionReviewNetworkOptions(

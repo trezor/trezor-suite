@@ -3,6 +3,8 @@ import { useForm } from 'react-hook-form';
 import { act, waitFor } from '@testing-library/react';
 import { type CryptoId, type ExchangeTrade } from 'invity-api';
 
+import { type GetCalldataThunkDeps } from '@suite-common/networks';
+import { mockGetCalldata } from '@suite-common/networks/mocks';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import {
     TRADING_EXCHANGE_FORM_CEX,
@@ -14,8 +16,11 @@ import { toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { buildApprovalTransactionData } from '@suite-common/wallet-utils';
+import { getEthereumCalldata } from '@trezor/network-ethereum-suite-common';
 
 import { useExchangeDexQuote } from './useExchangeDexQuote';
+
+const networkCalldata = getEthereumCalldata();
 
 const mockUpdateFeeInfo = jest.fn(() => () => ({ unwrap: () => Promise.resolve() }));
 
@@ -141,7 +146,8 @@ const renderExchangeDexQuote = ({
     isFormLoading = false,
     isLoadingQuote = false,
 }: RenderExchangeDexQuoteParams) => {
-    const { services } = createTestCompositionRoot<void, unknown>({
+    const { services } = createTestCompositionRoot<GetCalldataThunkDeps, unknown>({
+        services: () => ({ networks: { getCalldata: mockGetCalldata() } }),
         preloadedState: {
             wallet: { trading: { exchange: { quotes } } },
         },
@@ -312,11 +318,14 @@ describe('useExchangeDexQuote', () => {
 
     it('recomposes when an approval transaction changes to a revoke transaction', async () => {
         const spender = '0x1231deb6f5749ef6ce6943a275a1d3e7486f4eae';
-        const approvalTransactionData = buildApprovalTransactionData({
+        const approvalTransactionData = buildApprovalTransactionData(networkCalldata, {
             spender,
             amount: '9475047',
         });
-        const revokeTransactionData = buildApprovalTransactionData({ spender, amount: '0' });
+        const revokeTransactionData = buildApprovalTransactionData(networkCalldata, {
+            spender,
+            amount: '0',
+        });
         const { result } = renderExchangeDexQuote({
             defaultValues: buildDefaults(),
         });

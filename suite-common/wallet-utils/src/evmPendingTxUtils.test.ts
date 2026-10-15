@@ -1,8 +1,13 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
-import { getWrappedNativeAddress } from '@trezor/network-ethereum-suite-common';
+import {
+    getWrappedNativeAddress,
+    getEthereumCalldata,
+} from '@trezor/network-ethereum-suite-common';
 
 import { findTrackedEvmTransaction, getEvmPendingTxStatus } from './evmPendingTxUtils';
+
+const networkCalldata = getEthereumCalldata();
 
 const wrappedNativeAddress = getWrappedNativeAddress(asNetworkSymbol('eth'))!;
 const vaultAddress = '0x58d97b57bb95320f9a05dc918aef65434969c2b2';
@@ -146,7 +151,7 @@ describe('EVM pending transaction tracking', () => {
 
     it('stays pending while the transaction is not mined', () => {
         expect(
-            getEvmPendingTxStatus({
+            getEvmPendingTxStatus(networkCalldata, {
                 txid: 'original',
                 trackedTransaction: {
                     transaction: createTransaction({
@@ -163,7 +168,7 @@ describe('EVM pending transaction tracking', () => {
 
     it('stays pending while nothing is tracked yet', () => {
         expect(
-            getEvmPendingTxStatus({
+            getEvmPendingTxStatus(networkCalldata, {
                 txid: 'original',
                 trackedTransaction: undefined,
                 expectedPurpose: 'deposit',
@@ -175,7 +180,7 @@ describe('EVM pending transaction tracking', () => {
         const replacement = createTransaction({ txid: 'replacement', nonce: 7 });
 
         expect(
-            getEvmPendingTxStatus({
+            getEvmPendingTxStatus(networkCalldata, {
                 txid: 'original',
                 trackedTransaction: { transaction: replacement, isReplacement: true },
                 expectedPurpose: 'wrap',
@@ -191,7 +196,7 @@ describe('EVM pending transaction tracking', () => {
         });
 
         expect(
-            getEvmPendingTxStatus({
+            getEvmPendingTxStatus(networkCalldata, {
                 txid: 'original',
                 trackedTransaction: { transaction: cancellation, isReplacement: true },
                 expectedPurpose: 'wrap',
@@ -205,7 +210,7 @@ describe('EVM pending transaction tracking', () => {
         const opaque = createTransaction({ txid: 'deposit', nonce: 7, data: '0xdeadbeef' });
 
         expect(
-            getEvmPendingTxStatus({
+            getEvmPendingTxStatus(networkCalldata, {
                 txid: 'deposit',
                 trackedTransaction: { transaction: opaque, isReplacement: false },
                 expectedPurpose: 'deposit',
@@ -222,7 +227,7 @@ describe('EVM pending transaction tracking', () => {
         });
 
         expect(
-            getEvmPendingTxStatus({
+            getEvmPendingTxStatus(networkCalldata, {
                 txid: 'deposit',
                 trackedTransaction: { transaction: deposit, isReplacement: false },
                 expectedPurpose: 'deposit',
@@ -239,7 +244,7 @@ describe('EVM pending transaction tracking', () => {
         });
 
         expect(
-            getEvmPendingTxStatus({
+            getEvmPendingTxStatus(networkCalldata, {
                 txid: 'deposit',
                 trackedTransaction: { transaction: cancellation, isReplacement: true },
                 expectedPurpose: 'deposit',
@@ -254,7 +259,7 @@ describe('EVM pending transaction tracking', () => {
         } as WalletAccountTransaction;
 
         expect(
-            getEvmPendingTxStatus({
+            getEvmPendingTxStatus(networkCalldata, {
                 txid: 'deposit',
                 trackedTransaction: { transaction: reverted, isReplacement: false },
                 expectedPurpose: 'deposit',
@@ -263,6 +268,8 @@ describe('EVM pending transaction tracking', () => {
     });
 
     it('resolves to no status without a tracked txid', () => {
-        expect(getEvmPendingTxStatus({ txid: null, expectedPurpose: 'deposit' })).toBeNull();
+        expect(
+            getEvmPendingTxStatus(networkCalldata, { txid: null, expectedPurpose: 'deposit' }),
+        ).toBeNull();
     });
 });

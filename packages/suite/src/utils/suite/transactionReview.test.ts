@@ -3,8 +3,11 @@ import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants'
 import { type FormState } from '@suite-common/wallet-types';
 import { buildApprovalTransactionData } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
+import { getEthereumCalldata } from '@trezor/network-ethereum-suite-common';
 
 import { getTransactionReviewModalActionTranslation } from './transactionReview';
+
+const networkCalldata = getEthereumCalldata();
 
 const TOKEN_CONTRACT = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
 const SPENDER = '0x1231deb6f5749ef6ce6943a275a1d3e7486f4eae';
@@ -39,7 +42,7 @@ const getTranslation = ({
     routeName,
     isBumpFeeRbfAction = false,
 }: GetTranslationParams) =>
-    getTransactionReviewModalActionTranslation({
+    getTransactionReviewModalActionTranslation(networkCalldata, {
         symbol: asNetworkSymbol('eth'),
         stakeType: null,
         precomposedForm,
@@ -53,7 +56,10 @@ const getTranslation = ({
 describe('getTransactionReviewModalActionTranslation', () => {
     it('describes an approval signed outside of any trading or earn form state', () => {
         const precomposedForm = getFormState({
-            transactionData: buildApprovalTransactionData({ amount: '1000000', spender: SPENDER }),
+            transactionData: buildApprovalTransactionData(networkCalldata, {
+                amount: '1000000',
+                spender: SPENDER,
+            }),
         });
 
         expect(getTranslation({ precomposedForm, approvalToken: usdc, source: 'heading' })).toEqual(
@@ -69,7 +75,10 @@ describe('getTransactionReviewModalActionTranslation', () => {
 
     it('describes a revocation', () => {
         const precomposedForm = getFormState({
-            transactionData: buildApprovalTransactionData({ amount: '0', spender: SPENDER }),
+            transactionData: buildApprovalTransactionData(networkCalldata, {
+                amount: '0',
+                spender: SPENDER,
+            }),
         });
 
         expect(getTranslation({ precomposedForm, approvalToken: usdc, source: 'heading' })).toEqual(
@@ -85,7 +94,10 @@ describe('getTransactionReviewModalActionTranslation', () => {
 
     it('falls back to the symbol-less title when the approved token is unknown', () => {
         const precomposedForm = getFormState({
-            transactionData: buildApprovalTransactionData({ amount: '1000000', spender: SPENDER }),
+            transactionData: buildApprovalTransactionData(networkCalldata, {
+                amount: '1000000',
+                spender: SPENDER,
+            }),
         });
 
         expect(
@@ -95,7 +107,10 @@ describe('getTransactionReviewModalActionTranslation', () => {
 
     it('keeps describing a fee bump of a pending approval as a replacement', () => {
         const precomposedForm = getFormState({
-            transactionData: buildApprovalTransactionData({ amount: '1000000', spender: SPENDER }),
+            transactionData: buildApprovalTransactionData(networkCalldata, {
+                amount: '1000000',
+                spender: SPENDER,
+            }),
         });
 
         expect(

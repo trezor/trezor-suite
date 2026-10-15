@@ -1,5 +1,6 @@
 import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { type DeviceRootState, selectDevices } from '@suite-common/device';
+import { type GetCalldataThunkDeps } from '@suite-common/networks';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import {
     type NotificationsRootState,
@@ -182,10 +183,13 @@ export type FetchAndUpdateAccountThunkDeps = WithServices<AnalyticsDep & GetTrad
 export const fetchAndUpdateAccountThunk = createThunk<
     void,
     FetchAndUpdateAccountThunkParams,
-    { state: FetchAndUpdateAccountThunkState; extra: FetchAndUpdateAccountThunkDeps }
+    {
+        state: FetchAndUpdateAccountThunkState;
+        extra: FetchAndUpdateAccountThunkDeps & GetCalldataThunkDeps;
+    }
 >(
     `${ACCOUNTS_MODULE_PREFIX}/fetchAndUpdateAccountThunk`,
-    async ({ accountKey }, { dispatch, getState }) => {
+    async ({ accountKey }, { dispatch, getState, extra }) => {
         const account = selectAccountByKey(getState(), accountKey);
 
         if (!account || account.failed || account.accountType === 'placeholder') return;
@@ -292,6 +296,7 @@ export const fetchAndUpdateAccountThunk = createThunk<
 
                 dispatch(
                     transactionsActions.addTransaction({
+                        networkCalldata: extra.services.networks.getCalldata(account.symbol),
                         transactions: enrichedAdd.reverse(),
                         account,
                     }),

@@ -20,6 +20,7 @@ import {
     asBaseCurrencyAmount,
 } from '@suite-common/wallet-types';
 import type { BaseCurrencyCode, TokenStandard } from '@trezor/blockchain-link-types';
+import { type Calldata } from '@trezor/calldata';
 import {
     type AccountAddress,
     type AccountTransaction,
@@ -27,7 +28,6 @@ import {
     type TokenInfo,
     type TokenTransfer,
 } from '@trezor/connect';
-import { Calldata } from '@trezor/network-ethereum-suite-common';
 import { SOLANA_BLOCKHASH_VALIDITY_MS } from '@trezor/network-solana/constants';
 import { type Branded } from '@trezor/type-utils';
 import { BigNumber, arrayPartition, isNotNullOrUndefined, typedObjectKeys } from '@trezor/utils';
@@ -1001,6 +1001,7 @@ export const replaceEthereumSpecific = (
 };
 
 const getEthereumRbfParams = (
+    networkCalldata: Calldata | undefined,
     tx: AccountTransaction,
     account: Account,
 ): RbfTransactionParamsEthereum | undefined => {
@@ -1025,7 +1026,7 @@ const getEthereumRbfParams = (
     // ignore empty calldata represented as '0x'
     const transactionData = !data || data === '0x' ? '' : data;
 
-    const txSignature = getEvmTransactionTextSignature(transactionData);
+    const txSignature = getEvmTransactionTextSignature(networkCalldata, transactionData);
 
     // @ts-expect-error: indexing with noUncheckedIndexedAccess
     const firstVout: (typeof vout)[number] = vout[0];
@@ -1055,7 +1056,7 @@ const getEthereumRbfParams = (
         }
         case 'approve':
         case 'revoke': {
-            const approvalData = Calldata.evm.erc20.approve.decode(data);
+            const approvalData = networkCalldata?.evm?.erc20.approve.decode(data) ?? null;
             const amount = approvalData?.amount.toString() ?? '0';
 
             const token = account.tokens?.find(t => t.contract === toAddress);
@@ -1172,6 +1173,7 @@ const getBitcoinRbfParams = (
 };
 
 export const getRbfParams = (
+    networkCalldata: Calldata | undefined,
     tx: AccountTransaction,
     account: Account,
 ): WalletAccountTransaction['rbfParams'] => {
@@ -1179,7 +1181,7 @@ export const getRbfParams = (
         case 'bitcoin':
             return getBitcoinRbfParams(tx, account);
         case 'ethereum':
-            return getEthereumRbfParams(tx, account);
+            return getEthereumRbfParams(networkCalldata, tx, account);
         default:
             return undefined;
     }
@@ -1215,6 +1217,7 @@ const enhanceTokenTransfers = (
  * @returns {WalletAccountTransaction}
  */
 export const enhanceTransaction = (
+    networkCalldata: Calldata | undefined,
     origTx: AccountTransaction,
     account: Account,
 ): WalletAccountTransaction => ({
@@ -1223,7 +1226,7 @@ export const enhanceTransaction = (
     symbol: account.symbol,
     ...origTx,
     tokens: enhanceTokenTransfers(origTx.tokens, account.symbol),
-    rbfParams: getRbfParams(origTx, account),
+    rbfParams: getRbfParams(networkCalldata, origTx, account),
     hex: (origTx.blockHeight ?? 0) <= 0 && origTx.rbf ? origTx.hex : undefined, // store tx hex **only** for pending transactions (used by rbf)
 });
 

@@ -1,3 +1,4 @@
+import { type GetCalldataDep } from './createGetCalldata';
 import type { IsSupportedNetworkDep } from './IsSupportedNetwork';
 import type { NetworkModuleRepositoryDep } from './NetworkModuleRepository';
 import type { AddressValidatorDep } from './createAddressValidator';
@@ -10,7 +11,8 @@ import type { IsWrappedNativeTokenDep } from './createIsWrappedNativeToken';
 import type { LoadNetworkModulesDep } from './createLoadNetworkModules';
 import type { NetworkIconDep } from './createNetworkIcon';
 
-export type NetworksServices = NetworkIconDep &
+export type NetworksServices = GetCalldataDep &
+    NetworkIconDep &
     GetIconPathsDep &
     IsSupportedNetworkDep &
     IsWrappedNativeTokenDep &

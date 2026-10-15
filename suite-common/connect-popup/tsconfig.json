@@ -12,6 +12,7 @@
         { "path": "../wallet-core" },
         { "path": "../wallet-types" },
         { "path": "../wallet-utils" },
+        { "path": "../../packages/calldata" },
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/connect-common"

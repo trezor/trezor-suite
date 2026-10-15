@@ -1,4 +1,5 @@
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { type GetCalldataThunkDeps } from '@suite-common/networks';
 import {
     type PrepareEthereumStakingContextState,
     WALLET_SDK_SOURCE_MOBILE,
@@ -7,6 +8,7 @@ import {
     prepareEthereumStakingContext,
     sendFormActions,
     verifyEthereumStakingLiveStateForSign,
+    selectAccountByKey,
 } from '@suite-common/wallet-core';
 import {
     type AccountKey,
@@ -35,6 +37,7 @@ export const signEthereumStakingTransactionThunk = createThunk<
     {
         rejectValue: SignStakeTransactionRejectValue;
         state: SignEthereumStakingTransactionThunkState;
+        extra: GetCalldataThunkDeps;
     }
 >(
     `${EARN_MODULE_PREFIX}/${LOG_PREFIX}`,
@@ -42,21 +45,32 @@ export const signEthereumStakingTransactionThunk = createThunk<
         const { dispatch, getState, rejectWithValue } = thunkApi;
 
         try {
-            const prepared = prepareEthereumStakingContext(getState(), {
-                accountKey,
-                stakeType,
-                precomposedTransaction,
-                source: WALLET_SDK_SOURCE_MOBILE,
-            });
+            const prepared = prepareEthereumStakingContext(
+                thunkApi.extra.services.networks.getCalldata(
+                    selectAccountByKey(getState(), accountKey)?.symbol,
+                ),
+                getState(),
+                {
+                    accountKey,
+                    stakeType,
+                    precomposedTransaction,
+                    source: WALLET_SDK_SOURCE_MOBILE,
+                },
+            );
             if (!prepared.ok) return rejectWithValue(prepared.error);
 
             const { account, variant, formState } = prepared.context;
 
-            const liveState = await verifyEthereumStakingLiveStateForSign({
-                stakeType,
-                account,
-                calldata: variant.calldata,
-            });
+            const liveState = await verifyEthereumStakingLiveStateForSign(
+                thunkApi.extra.services.networks.getCalldata(
+                    selectAccountByKey(getState(), accountKey)?.symbol,
+                ),
+                {
+                    stakeType,
+                    account,
+                    calldata: variant.calldata,
+                },
+            );
             if (!liveState.isValid) {
                 return rejectWithValue(liveState.error);
             }

@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { selectSelectedDevice } from '@suite-common/device';
+import { injectGetCalldata } from '@suite-common/networks';
 import {
     type FormDraftRootState,
     type YieldActionReviewState,
@@ -19,6 +20,7 @@ import {
     type YieldStackParamList,
     YieldStackRoutes,
 } from '@suite-native/navigation';
+import { useServices } from '@trezor/dependency-injection';
 
 import { EarnDeviceConnectionGuard } from '../../components/earn/EarnDeviceConnectionGuard';
 import { YieldWithdrawReviewContent } from '../../components/yield/YieldWithdrawReviewContent';
@@ -42,6 +44,8 @@ const isYieldWithdrawScreenReview = (
 ): actionReview is YieldWithdrawScreenReview => actionReview?.type === flowType;
 
 export const YieldWithdrawReviewScreen = () => {
+    const { getCalldata } = useServices(injectGetCalldata);
+
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
 
@@ -76,7 +80,7 @@ export const YieldWithdrawReviewScreen = () => {
             return null;
         }
 
-        return buildYieldReviewPreview({
+        return buildYieldReviewPreview(getCalldata(flowData?.account.symbol), {
             device,
             flowData,
             review,
@@ -85,7 +89,7 @@ export const YieldWithdrawReviewScreen = () => {
             type: 'withdraw',
             vaultName,
         });
-    }, [device, flowData, review, reviewToken, selectedFee, vaultName]);
+    }, [device, flowData, review, reviewToken, selectedFee, vaultName, getCalldata]);
 
     useEffect(() => {
         if (resolutionStatus !== 'resolved') {

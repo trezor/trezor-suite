@@ -1,9 +1,9 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
-import { type MiddlewareAPI, type Dispatch as ReduxDispatch } from 'redux';
 
 import { selectSelectedAccountKey } from '@suite/account';
 import { routerLocationChange, selectRouteName } from '@suite/router';
 import { deviceActions } from '@suite-common/device';
+import { type GetCalldataThunkDeps } from '@suite-common/networks';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { tradingActions } from '@suite-common/trading';
 import {
@@ -19,111 +19,111 @@ import {
     syncAccountsWithBlockchainThunk,
     transactionsActions,
 } from '@suite-common/wallet-core';
-import { type Dispatch } from '@trezor/redux-utils';
+import { createMiddlewareWithExtraDeps } from '@trezor/redux-utils';
 
 import { updateWindowVisibility } from 'src/actions/suite/windowActions';
 import * as selectedAccountActions from 'src/actions/wallet/selectedAccountActions';
 import * as tradingCommonActions from 'src/actions/wallet/trading/tradingCommonActions';
 import type { AppState } from 'src/types/suite';
 
-const walletMiddleware =
-    (api: MiddlewareAPI<Dispatch, AppState>) =>
-    (next: ReduxDispatch<UnknownAction>) =>
-    (action: UnknownAction): UnknownAction => {
-        const prevState = api.getState();
+export const prepareWalletMiddleware = createMiddlewareWithExtraDeps<
+    GetCalldataThunkDeps,
+    UnknownAction,
+    AppState
+>((action, { dispatch, next, getState, extra }) => {
+    const prevState = getState();
 
-        if (deviceActions.forgetDevice.match(action)) {
-            const deviceState = action.payload.device.state?.staticSessionId;
-            const accountsToRemove = api
-                .getState()
-                .wallet.accounts.filter(a => a.deviceState === deviceState);
-            api.dispatch(accountsActions.removeAccount(accountsToRemove));
-        }
+    if (deviceActions.forgetDevice.match(action)) {
+        const deviceState = action.payload.device.state?.staticSessionId;
+        const accountsToRemove = getState().wallet.accounts.filter(
+            a => a.deviceState === deviceState,
+        );
+        dispatch(accountsActions.removeAccount(accountsToRemove));
+    }
 
-        // propagate action to reducers, this needs to happen before addTransaction is dispatched because it needs to have account in redux already
-        next(action);
+    // propagate action to reducers, this needs to happen before addTransaction is dispatched because it needs to have account in redux already
+    next(action);
 
-        if (accountsActions.createAccount.match(action)) {
-            // gather transactions from account.create action
-            const { account } = action.payload;
-            api.dispatch(
-                transactionsActions.addTransaction({
-                    transactions: account.history.transactions || [],
-                    account,
-                    page: 1,
-                    perPage: getTxsPerPage(account.networkType),
-                }),
-            );
-        }
+    if (accountsActions.createAccount.match(action)) {
+        // gather transactions from account.create action
+        const { account } = action.payload;
+        dispatch(
+            transactionsActions.addTransaction({
+                networkCalldata: extra.services.networks.getCalldata(account.symbol),
+                transactions: account.history.transactions || [],
+                account,
+                page: 1,
+                perPage: getTxsPerPage(account.networkType),
+            }),
+        );
+    }
 
-        // Update custom backends
-        if (blockchainActions.setBackend.match(action)) {
-            api.dispatch(setCustomBackendThunk(action.payload.symbol));
-        }
+    // Update custom backends
+    if (blockchainActions.setBackend.match(action)) {
+        dispatch(setCustomBackendThunk(action.payload.symbol));
+    }
 
-        /**
-         * Make sure to update pending txs for visible accounts when the window is focused again.
-         * Else the tx hangs there even though it has already been confirmed in the blockchain.
-         * - Updating only specific account doesn't trigger update of receiver account balance / txs.
-         */
-        if (
-            updateWindowVisibility.match(action) &&
-            action.payload.isVisible &&
-            !prevState.window.isVisible
-        ) {
-            const state = api.getState();
-            const visibleNetworks = new Set(selectAllNetworkSymbolsOfVisibleAccounts(state));
-            const networksWithPendingTxs = selectNetworksWithPendingTxs(state);
+    /**
+     * Make sure to update pending txs for visible accounts when the window is focused again.
+     * Else the tx hangs there even though it has already been confirmed in the blockchain.
+     * - Updating only specific account doesn't trigger update of receiver account balance / txs.
+     */
+    if (
+        updateWindowVisibility.match(action) &&
+        action.payload.isVisible &&
+        !prevState.window.isVisible
+    ) {
+        const state = getState();
+        const visibleNetworks = new Set(selectAllNetworkSymbolsOfVisibleAccounts(state));
+        const networksWithPendingTxs = selectNetworksWithPendingTxs(state);
 
-            Array.from(networksWithPendingTxs)
-                .filter(symbol => visibleNetworks.has(symbol))
-                .forEach(symbol => {
-                    api.dispatch(syncAccountsWithBlockchainThunk(symbol));
-                });
-        }
+        Array.from(networksWithPendingTxs)
+            .filter(symbol => visibleNetworks.has(symbol))
+            .forEach(symbol => {
+                dispatch(syncAccountsWithBlockchainThunk(symbol));
+            });
+    }
 
-        const prevRouter = prevState.router;
-        const nextRouter = api.getState().router;
-        let resetReducers = action.type === deviceActions.selectDevice.type;
+    const prevRouter = prevState.router;
+    const nextRouter = getState().router;
+    let resetReducers = action.type === deviceActions.selectDevice.type;
 
-        if (
-            deviceActions.forgetDevice.match(action) &&
-            prevState.wallet.selectedAccount.account?.deviceState ===
-                action.payload.device.state?.staticSessionId
-        ) {
-            // if currently selected account is related to forgotten device
-            resetReducers = true;
-        }
+    if (
+        deviceActions.forgetDevice.match(action) &&
+        prevState.wallet.selectedAccount.account?.deviceState ===
+            action.payload.device.state?.staticSessionId
+    ) {
+        // if currently selected account is related to forgotten device
+        resetReducers = true;
+    }
 
-        if (prevRouter.app === 'wallet' && action.type === routerLocationChange.type) {
-            // leaving wallet app or switching between accounts
-            resetReducers =
-                (nextRouter.app !== 'wallet' && !nextRouter.route?.isForegroundApp) ||
-                (nextRouter.app === 'wallet' && nextRouter.hash !== prevRouter.hash);
-        }
-        if (resetReducers) {
-            api.dispatch(accountsActions.disposeAccount());
-            api.dispatch(sendFormActions.dispose());
-            api.dispatch(tradingActions.setVerifiedAddress(undefined));
-            api.dispatch(stakeActions.dispose());
-            api.dispatch(stakeActions.clearAccountVotingDelegation());
-        }
+    if (prevRouter.app === 'wallet' && action.type === routerLocationChange.type) {
+        // leaving wallet app or switching between accounts
+        resetReducers =
+            (nextRouter.app !== 'wallet' && !nextRouter.route?.isForegroundApp) ||
+            (nextRouter.app === 'wallet' && nextRouter.hash !== prevRouter.hash);
+    }
+    if (resetReducers) {
+        dispatch(accountsActions.disposeAccount());
+        dispatch(sendFormActions.dispose());
+        dispatch(tradingActions.setVerifiedAddress(undefined));
+        dispatch(stakeActions.dispose());
+        dispatch(stakeActions.clearAccountVotingDelegation());
+    }
 
-        if (action.type === WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS) {
-            const nextSelectedAccountKey = selectSelectedAccountKey(api.getState());
-            const suiteRouteName = selectRouteName(api.getState());
-            api.dispatch(
-                convertSendFormDraftsBtcAmountUnitsThunk({
-                    selectedAccountKey: nextSelectedAccountKey,
-                    isOnSendPage: suiteRouteName === 'wallet-send',
-                }),
-            );
-            api.dispatch(tradingCommonActions.convertDraftsThunk());
-        }
+    if (action.type === WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS) {
+        const nextSelectedAccountKey = selectSelectedAccountKey(getState());
+        const suiteRouteName = selectRouteName(getState());
+        dispatch(
+            convertSendFormDraftsBtcAmountUnitsThunk({
+                selectedAccountKey: nextSelectedAccountKey,
+                isOnSendPage: suiteRouteName === 'wallet-send',
+            }),
+        );
+        dispatch(tradingCommonActions.convertDraftsThunk());
+    }
 
-        api.dispatch(selectedAccountActions.syncSelectedAccountThunk(action));
+    dispatch(selectedAccountActions.syncSelectedAccountThunk(action));
 
-        return action;
-    };
-
-export default walletMiddleware;
+    return action;
+});

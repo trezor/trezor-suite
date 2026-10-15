@@ -1,7 +1,9 @@
 import { useMemo } from 'react';
 
 import { useGetVaultByAddress } from '@suite-common/earn-stablecoin-api';
+import { injectGetCalldata } from '@suite-common/networks';
 import { type Account, type FormState } from '@suite-common/wallet-types';
+import { useServices } from '@trezor/dependency-injection';
 
 import { getMatchAddress } from '../utils/getMatchAddress';
 
@@ -20,6 +22,8 @@ export const useYieldVaultName = ({
     account,
     precomposedForm,
 }: UseYieldVaultNameParams): string | undefined => {
+    const { getCalldata } = useServices(injectGetCalldata);
+
     const networkType = account?.networkType;
     const outputs = precomposedForm?.outputs;
     const transactionData = precomposedForm?.transactionData;
@@ -28,11 +32,11 @@ export const useYieldVaultName = ({
             return undefined;
         }
 
-        return getMatchAddress({
+        return getMatchAddress(getCalldata(account?.symbol), {
             to: outputs?.[0]?.address,
             data: transactionData,
         });
-    }, [networkType, outputs, transactionData]);
+    }, [networkType, outputs, transactionData, getCalldata, account]);
 
     const { data: vault } = useGetVaultByAddress({ enabled, outputToken });
 

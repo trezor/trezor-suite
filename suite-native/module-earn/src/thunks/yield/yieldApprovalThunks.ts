@@ -1,3 +1,4 @@
+import { type GetCalldataThunkDeps } from '@suite-common/networks';
 import {
     type FormDraftRootState,
     REVOKE_ALLOWANCE_AMOUNT,
@@ -105,12 +106,16 @@ export type PrepareYieldAllowanceReviewTransactionThunkState = FormDraftRootStat
 export const prepareYieldAllowanceReviewTransactionThunk = createThunk<
     void,
     PrepareYieldAllowanceReviewTransactionParams,
-    { rejectValue: string; state: PrepareYieldAllowanceReviewTransactionThunkState }
+    {
+        rejectValue: string;
+        state: PrepareYieldAllowanceReviewTransactionThunkState;
+        extra: GetCalldataThunkDeps;
+    }
 >(
     `${EARN_MODULE_PREFIX}/prepareYieldAllowanceReviewTransactionThunk`,
     (
         { amount, approvalLimitType, flowData, flowKey, transactionType, tokenContract },
-        { dispatch, getState, rejectWithValue },
+        { dispatch, getState, rejectWithValue, extra },
     ) => {
         dispatch(sendFormActions.discardTransaction());
 
@@ -148,10 +153,13 @@ export const prepareYieldAllowanceReviewTransactionThunk = createThunk<
             return rejectWithValue('Allowance review amount is not ready.');
         }
 
-        const data = buildApprovalTransactionData({
-            amount: allowanceAmount ?? '',
-            spender: modalState.spender,
-        });
+        const data = buildApprovalTransactionData(
+            extra.services.networks.getCalldata(flowData.account.symbol),
+            {
+                amount: allowanceAmount ?? '',
+                spender: modalState.spender,
+            },
+        );
         const formState = buildYieldAllowanceFormState({
             approvalModalState: modalState,
             data,

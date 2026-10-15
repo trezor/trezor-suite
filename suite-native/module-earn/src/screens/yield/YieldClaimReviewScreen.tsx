@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import { selectSelectedDevice } from '@suite-common/device';
+import { injectGetCalldata } from '@suite-common/networks';
 import {
     type AccountsRootState,
     type YieldRootState,
@@ -29,7 +30,7 @@ type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoute
 export const YieldClaimReviewScreen = () => {
     const route = useRoute<RouteProps>();
     const navigation = useNavigation<NavigationProps>();
-    const { dispatch } = useServices(injectDispatch);
+    const { dispatch, getCalldata } = useServices(injectDispatch, injectGetCalldata);
     const { accountKey } = route.params;
     const device = useSelector(selectSelectedDevice);
     const account = useSelector((state: AccountsRootState) =>
@@ -45,13 +46,13 @@ export const YieldClaimReviewScreen = () => {
             return null;
         }
 
-        return buildYieldReviewPreview({
+        return buildYieldReviewPreview(getCalldata(account?.symbol), {
             account,
             device,
             review,
             type: 'claim',
         });
-    }, [account, device, review]);
+    }, [account, device, review, getCalldata]);
 
     useEffect(() => {
         if (!account) {

@@ -1,6 +1,7 @@
 import { createMockDeps } from '@trezor/dependency-injection';
 import type { NetworkSymbol } from '@trezor/network-module-types';
 
+import { mockGetCalldata } from './mockGetCalldata';
 import { mockNetworkIcon } from './mockNetworkIcon';
 import { getMockNetworkMetadata, mockNetworkMetadata } from './mockNetworkMetadata';
 import { mockNetworkModule } from './mockNetworkModule';
@@ -29,6 +30,7 @@ export const mockNetworksServices = (
         });
 
     return createMockDeps<NetworksServices>({
+        getCalldata: overrides.getCalldata ?? mockGetCalldata(),
         networkIcon:
             overrides.networkIcon ??
             mockNetworkIcon({

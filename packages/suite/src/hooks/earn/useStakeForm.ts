@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import { useForm, useWatch } from 'react-hook-form';
 import { useDebounce } from 'react-use';
 
+import { injectGetCalldata } from '@suite-common/networks';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     getMaxStakeAmount,
@@ -46,7 +47,7 @@ type UseStakeFormProps = {
 };
 
 export const useStakeForm = ({ account }: UseStakeFormProps): StakeContextValues => {
-    const { dispatch } = useServices(injectDispatch);
+    const { dispatch, getCalldata } = useServices(injectDispatch, injectGetCalldata);
     const network = getNetwork(account.symbol);
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
@@ -367,7 +368,9 @@ export const useStakeForm = ({ account }: UseStakeFormProps): StakeContextValues
         if (composedTx?.type === 'final') {
             setIsLoading(true);
             try {
-                const result = await dispatch(signTransactionThunk(values, composedTx));
+                const result = await dispatch(
+                    signTransactionThunk(getCalldata(account?.symbol), values, composedTx),
+                );
 
                 if (result?.success) {
                     clearForm();
@@ -383,7 +386,7 @@ export const useStakeForm = ({ account }: UseStakeFormProps): StakeContextValues
                 setIsLoading(false);
             }
         }
-    }, [getValues, composedLevels, dispatch, clearForm, selectedFee]);
+    }, [getValues, composedLevels, dispatch, clearForm, selectedFee, getCalldata, account]);
 
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
     const closeConfirmModal = () => {

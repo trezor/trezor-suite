@@ -24,6 +24,7 @@ import {
     constructTransactionReviewOutputs,
     getEvmTransactionTextSignature,
 } from '@suite-common/wallet-utils';
+import { type Calldata } from '@trezor/calldata';
 import { exhaustive } from '@trezor/type-utils';
 
 import { getSelectedFeeFromUnsignedClaimTransaction } from './yieldClaimFeeUtils';
@@ -225,9 +226,13 @@ export const isYieldApprovalReviewPurpose = (
     evmTransactionPurpose === 'approve' || evmTransactionPurpose === 'revoke';
 
 const getYieldReviewEvmTransactionPurpose = (
+    networkCalldata: Calldata | undefined,
     formState: FormState,
 ): YieldReviewEvmTransactionPurpose => {
-    const evmTransactionPurpose = getEvmTransactionTextSignature(formState.transactionData);
+    const evmTransactionPurpose = getEvmTransactionTextSignature(
+        networkCalldata,
+        formState.transactionData,
+    );
 
     switch (evmTransactionPurpose) {
         case 'approve':
@@ -244,18 +249,22 @@ const getYieldReviewEvmTransactionPurpose = (
     }
 };
 
-const buildYieldReviewPreviewResult = ({
-    account,
-    availableRewards,
-    device,
-    evmTransactionPurposeOverride,
-    formState,
-    precomposedTransaction,
-    vaultName,
-}: BuildYieldReviewPreviewBaseParams): YieldReviewPreview => {
+const buildYieldReviewPreviewResult = (
+    networkCalldata: Calldata | undefined,
+    {
+        account,
+        availableRewards,
+        device,
+        evmTransactionPurposeOverride,
+        formState,
+        precomposedTransaction,
+        vaultName,
+    }: BuildYieldReviewPreviewBaseParams,
+): YieldReviewPreview => {
     const evmTransactionPurpose =
-        evmTransactionPurposeOverride ?? getYieldReviewEvmTransactionPurpose(formState);
-    const outputs = constructTransactionReviewOutputs({
+        evmTransactionPurposeOverride ??
+        getYieldReviewEvmTransactionPurpose(networkCalldata, formState);
+    const outputs = constructTransactionReviewOutputs(networkCalldata, {
         account,
         availableRewards,
         decreaseOutputId: undefined,
@@ -284,6 +293,7 @@ const buildYieldReviewPreviewResult = ({
 };
 
 export const buildYieldReviewPreview = (
+    networkCalldata: Calldata | undefined,
     params: BuildYieldReviewPreviewParams,
 ): YieldReviewPreview | null => {
     try {
@@ -299,7 +309,7 @@ export const buildYieldReviewPreview = (
                     },
                 );
 
-                return buildYieldReviewPreviewResult({
+                return buildYieldReviewPreviewResult(networkCalldata, {
                     account: params.flowData.account,
                     device: params.device,
                     formState,
@@ -318,7 +328,7 @@ export const buildYieldReviewPreview = (
                     },
                 );
 
-                return buildYieldReviewPreviewResult({
+                return buildYieldReviewPreviewResult(networkCalldata, {
                     account: params.flowData.account,
                     device: params.device,
                     formState,
@@ -328,7 +338,7 @@ export const buildYieldReviewPreview = (
             }
             case 'claim': {
                 const { availableRewards, formState, precomposedTransaction } =
-                    buildClaimTransactionReview({
+                    buildClaimTransactionReview(networkCalldata, {
                         rewards: buildYieldClaimRewards(params.review),
                         selectedFee: getSelectedFeeFromUnsignedClaimTransaction(
                             params.review.unsignedTransaction,
@@ -336,7 +346,7 @@ export const buildYieldReviewPreview = (
                         unsignedTransaction: params.review.unsignedTransaction,
                     });
 
-                return buildYieldReviewPreviewResult({
+                return buildYieldReviewPreviewResult(networkCalldata, {
                     account: params.account,
                     availableRewards,
                     device: params.device,
@@ -356,7 +366,7 @@ export const buildYieldReviewPreview = (
                     },
                 );
 
-                return buildYieldReviewPreviewResult({
+                return buildYieldReviewPreviewResult(networkCalldata, {
                     account: params.account,
                     device: params.device,
                     evmTransactionPurposeOverride: params.type,
@@ -366,7 +376,7 @@ export const buildYieldReviewPreview = (
             }
             case 'approve':
             case 'revoke':
-                return buildYieldReviewPreviewResult({
+                return buildYieldReviewPreviewResult(networkCalldata, {
                     account: params.account,
                     device: params.device,
                     formState: params.formState,

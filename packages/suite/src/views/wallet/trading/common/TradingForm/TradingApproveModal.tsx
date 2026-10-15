@@ -3,6 +3,7 @@ import { useCallback, useMemo } from 'react';
 import { type CryptoId, type DexApprovalType } from 'invity-api';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { injectGetCalldata } from '@suite-common/networks';
 import {
     selectTradingExchangeProviders,
     selectTradingExchangeSelectedQuote,
@@ -10,7 +11,6 @@ import {
     tradeApi,
 } from '@suite-common/trading';
 import { useServices } from '@trezor/dependency-injection';
-import { Calldata } from '@trezor/network-ethereum-suite-common';
 
 import { ApproveModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/AllowanceModals/ApproveModal';
 import { useSelector } from 'src/hooks/suite';
@@ -29,7 +29,7 @@ export const TradingApproveModal = ({ amount, cryptoId }: TradingApproveModalPro
     const { state } = useAllowanceContext();
     const context = useTradingFormContext();
     const account = useSelector(reduxState => selectTradingSendAccount(reduxState, context.type));
-    const { analytics } = useServices(injectDesktopAnalytics);
+    const { analytics, getCalldata } = useServices(injectDesktopAnalytics, injectGetCalldata);
     const getCryptoInfo = useTradingExchangeCryptoAndProviderInfo();
     const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
     const providersInfo = useSelector(selectTradingExchangeProviders);
@@ -91,12 +91,13 @@ export const TradingApproveModal = ({ amount, cryptoId }: TradingApproveModalPro
         const exchange = selectedQuote?.exchange;
         const provider = exchange ? providersInfo?.[exchange] : null;
 
-        const approvalData = Calldata.evm.erc20.approve.decode(selectedQuote?.dexTx?.data);
+        const approvalData =
+            getCalldata(account?.symbol)?.approve?.decode?.(selectedQuote?.dexTx?.data) ?? null;
         const spender = approvalData?.spender ?? null;
         const preapprovedAmount = selectedQuote?.preapprovedStringAmount;
 
         return provider && spender ? { provider, spender, preapprovedAmount } : null;
-    }, [context, providersInfo, selectedQuote]);
+    }, [context, providersInfo, selectedQuote, getCalldata, account]);
 
     const { provider, spender, preapprovedAmount } =
         useModalLastValidParams(approveParams, state.isApproveModalOpen) ?? {};

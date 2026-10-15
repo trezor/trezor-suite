@@ -86,6 +86,7 @@
         {
             "path": "../../packages/blockchain-link-types"
         },
+        { "path": "../../packages/calldata" },
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/connect-common"

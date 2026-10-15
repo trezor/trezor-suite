@@ -2,6 +2,7 @@ import type { Dispatch } from '@reduxjs/toolkit';
 
 import type { NetworkSuiteCommonModuleApi } from '@trezor/network-module-suite-common-types';
 
+import { createGetCalldata } from './createGetCalldata';
 import { createNetworkModuleRepository } from './NetworkModuleRepository';
 import type { NetworksServices } from './NetworksServices';
 import { createAddressValidator } from './createAddressValidator';
@@ -30,6 +31,7 @@ export const createNetworksCompositionRoot = (
     });
 
     return {
+        getCalldata: createGetCalldata({ networkModuleRepository }),
         getIconPaths: createGetIconPaths({ networkModuleRepository }),
         isSupportedNetwork: networkModuleRepository.isSupportedNetwork,
         networkIcon: createNetworkIcon({ networkModuleRepository }),

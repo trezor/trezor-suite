@@ -1,10 +1,12 @@
 import { redactNumericalSubstring, useDiscreetMode } from '@suite-common/discreet-mode';
 import { useFormatters } from '@suite-common/formatters';
+import { injectGetCalldata } from '@suite-common/networks';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { getUnwrapAmountByEthereumDataHex } from '@suite-common/wallet-utils';
 import { Text, type TextProps } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+import { useServices } from '@trezor/dependency-injection';
 import { getWrappedNativeSymbol } from '@trezor/network-ethereum-suite-common';
 
 type WrapTransactionNameProps = TextProps & {
@@ -21,6 +23,8 @@ export const WrapTransactionName = ({
     kind,
     ...textProps
 }: WrapTransactionNameProps) => {
+    const { getCalldata } = useServices(injectGetCalldata);
+
     const { CryptoAmountFormatter: cryptoAmountFormatter } = useFormatters();
     const { isDiscreetMode } = useDiscreetMode();
 
@@ -29,7 +33,10 @@ export const WrapTransactionName = ({
     const subunits =
         kind === 'wrap'
             ? transaction.amount
-            : getUnwrapAmountByEthereumDataHex(transaction.ethereumSpecific?.data);
+            : getUnwrapAmountByEthereumDataHex(
+                  getCalldata(transaction.symbol),
+                  transaction.ethereumSpecific?.data,
+              );
 
     const wrappedSymbol = getWrappedNativeSymbol(symbol) ?? getNetworkDisplaySymbol(symbol);
 

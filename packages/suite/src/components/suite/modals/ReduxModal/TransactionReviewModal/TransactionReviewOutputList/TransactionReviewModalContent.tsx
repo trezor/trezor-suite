@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { injectGetCalldata } from '@suite-common/networks';
 import { selectTradingExchangeSelectedQuote } from '@suite-common/trading';
 import {
     type SerializedTx,
@@ -22,6 +23,7 @@ import {
     isRbfTransaction,
 } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -58,6 +60,8 @@ export const TransactionReviewModalContent = ({
     isSending,
     isRbfConfirmedError,
 }: TransactionReviewModalContentProps) => {
+    const { getCalldata } = useServices(injectGetCalldata);
+
     const { symbol, networkType } = account;
     const device = useSelector(selectSelectedDevice);
     const swapSlippage = useSelector(selectTradingExchangeSelectedQuote)?.swapSlippage;
@@ -80,7 +84,7 @@ export const TransactionReviewModalContent = ({
 
     const outputs = useMemo(
         () =>
-            constructTransactionReviewOutputsOptional({
+            constructTransactionReviewOutputsOptional(getCalldata(account?.symbol), {
                 account,
                 availableRewards,
                 decreaseOutputId,
@@ -99,6 +103,7 @@ export const TransactionReviewModalContent = ({
             precomposedTx,
             vaultName,
             swapSlippage,
+            getCalldata,
         ],
     );
 

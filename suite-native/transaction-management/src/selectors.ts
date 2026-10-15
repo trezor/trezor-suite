@@ -1,6 +1,7 @@
 import { A, pipe } from '@mobily/ts-belt';
 
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { type GetCalldata } from '@suite-common/networks';
 import {
     type AccountsRootState,
     type FormDraftRootState,
@@ -108,6 +109,13 @@ export const selectTransactionReviewOutputs = createSendMemoizedSelector(
         selectAccountByKey,
         selectSelectedDevice,
         selectIsTransactionAlreadySigned,
+        (
+            _state: TransactionReviewOutputsState,
+            _accountKey: AccountKey,
+            _tokenContract?: TokenAddress,
+            _precomposedForm?: FormState | null,
+            getCalldata?: GetCalldata,
+        ) => getCalldata,
     ],
     (
         sendReviewButtonRequests,
@@ -116,6 +124,7 @@ export const selectTransactionReviewOutputs = createSendMemoizedSelector(
         account,
         device,
         isTransactionAlreadySigned,
+        getCalldata,
     ) => {
         if (!account || !device || !precomposedForm || !precomposedTx) {
             return null;
@@ -123,7 +132,7 @@ export const selectTransactionReviewOutputs = createSendMemoizedSelector(
 
         const decreaseOutputId = getDecreaseOutputId(precomposedTx, precomposedForm);
 
-        const outputs = constructTransactionReviewOutputs({
+        const outputs = constructTransactionReviewOutputs(getCalldata?.(account.symbol), {
             account,
             decreaseOutputId,
             device,
@@ -163,10 +172,11 @@ export const selectTransactionReviewOutputsFromDraft = (
     prefix: FormDraftWithSendKeyPrefix,
     accountKey: AccountKey,
     tokenContract?: TokenAddress,
+    getCalldata?: GetCalldata,
 ) => {
     const formDraft = selectFormDraftByPrefix(state, prefix, accountKey, tokenContract);
 
-    return selectTransactionReviewOutputs(state, accountKey, tokenContract, formDraft);
+    return selectTransactionReviewOutputs(state, accountKey, tokenContract, formDraft, getCalldata);
 };
 
 export const selectIsTransactionReviewInProgress = (
@@ -174,12 +184,14 @@ export const selectIsTransactionReviewInProgress = (
     prefix: FormDraftWithSendKeyPrefix,
     accountKey: AccountKey,
     tokenContract?: TokenAddress,
+    getCalldata?: GetCalldata,
 ) => {
     const outputs = selectTransactionReviewOutputsFromDraft(
         state,
         prefix,
         accountKey,
         tokenContract,
+        getCalldata,
     );
 
     return isNotNullOrUndefined(outputs) && A.isNotEmpty(outputs);
@@ -190,12 +202,14 @@ export const selectIsDestinationTagOutputConfirmed = (
     prefix: FormDraftWithSendKeyPrefix,
     accountKey: AccountKey,
     tokenContract?: TokenAddress,
+    getCalldata?: GetCalldata,
 ) => {
     const outputs = selectTransactionReviewOutputsFromDraft(
         state,
         prefix,
         accountKey,
         tokenContract,
+        getCalldata,
     );
     if (!outputs) {
         return false;
@@ -213,12 +227,14 @@ export const selectIsReceiveAddressOutputConfirmed = (
     prefix: FormDraftWithSendKeyPrefix,
     accountKey: AccountKey,
     tokenContract?: TokenAddress,
+    getCalldata?: GetCalldata,
 ) => {
     const outputs = selectTransactionReviewOutputsFromDraft(
         state,
         prefix,
         accountKey,
         tokenContract,
+        getCalldata,
     );
     if (!outputs) {
         return false;
@@ -241,6 +257,7 @@ export const selectReviewSummaryOutputState = (
     prefix: FormDraftWithSendKeyPrefix,
     accountKey: AccountKey,
     tokenContract?: TokenAddress,
+    getCalldata?: GetCalldata,
 ): TransactionReviewOutputState => {
     const isTransactionAlreadySigned = selectIsTransactionAlreadySigned(state);
 
@@ -253,6 +270,7 @@ export const selectReviewSummaryOutputState = (
         prefix,
         accountKey,
         tokenContract,
+        getCalldata,
     );
 
     if (reviewOutputs && A.all(reviewOutputs, output => output.state === 'success')) {
@@ -287,10 +305,16 @@ export const selectIsClearSignedTradingSwap = createSendMemoizedSelector(
             prefix: FormDraftWithSendKeyPrefix,
         ) => selectFormDraftByPrefix(state, prefix, accountKey),
         selectSendPrecomposedTx,
+        (
+            _state: TransactionReviewOutputsState,
+            _accountKey: AccountKey,
+            _prefix: FormDraftWithSendKeyPrefix,
+            getCalldata?: GetCalldata,
+        ) => getCalldata,
     ],
-    (account, device, formDraft, precomposedTx) => {
+    (account, device, formDraft, precomposedTx, getCalldata) => {
         if (account && device && formDraft && precomposedTx) {
-            return isClearSignedEvmTradingSwapTransaction({
+            return isClearSignedEvmTradingSwapTransaction(getCalldata?.(account.symbol), {
                 account,
                 device,
                 precomposedTx,

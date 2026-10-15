@@ -1,5 +1,6 @@
 import { selectFullSelectedAccount } from '@suite/account';
 import { gotoThunk } from '@suite/router';
+import { injectGetCalldata } from '@suite-common/networks';
 import {
     cancelSignSendFormTransactionThunk,
     selectPrecomposedSendForm,
@@ -43,7 +44,7 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
     const sendPrecomposedForm = useSelector(selectPrecomposedSendForm);
     const stakePrecomposedForm = useSelector(selectStakePrecomposedForm);
     const selectedAccount = useSelector(selectFullSelectedAccount);
-    const { dispatch } = useServices(injectDispatch);
+    const { dispatch, getCalldata } = useServices(injectDispatch, injectGetCalldata);
 
     const getReviewSource = (): {
         txInfoState: TxInfoState;
@@ -108,6 +109,7 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
         dispatch(stakeActions.dispose());
         await dispatch(
             signTransactionThunk(
+                getCalldata(selectedAccount?.account?.symbol),
                 stake.precomposedForm!,
                 stake.precomposedTx as PrecomposedTransactionFinal,
             ),

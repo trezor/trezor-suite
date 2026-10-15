@@ -8,6 +8,7 @@ import {
     type StakeFormState,
 } from '@suite-common/wallet-types';
 import { fromEther, getAccountIdentity, getFormDraftKey } from '@suite-common/wallet-utils';
+import { type Calldata } from '@trezor/calldata';
 import { type FeeLevel } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
@@ -111,6 +112,7 @@ const readVariantFromComposeDraft = (
 export type PrepareEthereumStakingContextState = AccountsRootState & FormDraftRootState;
 
 export const prepareEthereumStakingContext = (
+    networkCalldata: Calldata | undefined,
     state: PrepareEthereumStakingContextState,
     args: {
         accountKey: AccountKey;
@@ -147,7 +149,7 @@ export const prepareEthereumStakingContext = (
         );
     }
 
-    const calldataCheck = verifyEthereumStakingCalldata({
+    const calldataCheck = verifyEthereumStakingCalldata(networkCalldata, {
         stakeType,
         calldata: variant.calldata,
         source,
@@ -196,13 +198,10 @@ interface VerifyEthereumStakingLiveStateForSignProps {
 
 // Re-checks the on-chain staking state right before signing (e.g. that the unstake
 // amount is still withdrawable), so a stale compose result cannot be signed.
-export const verifyEthereumStakingLiveStateForSign = async ({
-    stakeType,
-    account,
-    calldata,
-}: VerifyEthereumStakingLiveStateForSignProps): Promise<
-    { isValid: true } | { isValid: false; error: StakeLiveStateInvalidError }
-> => {
+export const verifyEthereumStakingLiveStateForSign = async (
+    networkCalldata: Calldata | undefined,
+    { stakeType, account, calldata }: VerifyEthereumStakingLiveStateForSignProps,
+): Promise<{ isValid: true } | { isValid: false; error: StakeLiveStateInvalidError }> => {
     const liveState = await verifyEthereumStakingLiveState({
         stakeType,
         from: account.descriptor,
@@ -210,7 +209,7 @@ export const verifyEthereumStakingLiveStateForSign = async ({
         identity: getAccountIdentity(account),
         amount:
             stakeType === 'unstake'
-                ? (getUnstakeAmountFromCalldata(calldata) ?? undefined)
+                ? (getUnstakeAmountFromCalldata(networkCalldata, calldata) ?? undefined)
                 : undefined,
     });
 

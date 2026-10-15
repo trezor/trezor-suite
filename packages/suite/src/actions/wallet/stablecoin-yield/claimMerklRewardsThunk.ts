@@ -12,6 +12,7 @@ import {
 import { type YieldAccountsRewards } from '@suite-common/earn-stablecoin-api';
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
+import { type GetCalldataThunkDeps } from '@suite-common/networks';
 import { getEarnYieldClaimContractAddress, getNetwork } from '@suite-common/wallet-config';
 import {
     type EthereumGetCurrentNonceThunkState,
@@ -82,7 +83,7 @@ type ClaimMerklRewardsThunkDeps = SynchronizeSentTransactionThunkDeps & {
 export const claimMerklRewardsThunk = createThunk<
     { txid: string } | null | undefined,
     ClaimMerklRewardsParams,
-    { state: ClaimMerklRewardsThunkState; extra: ClaimMerklRewardsThunkDeps }
+    { state: ClaimMerklRewardsThunkState; extra: ClaimMerklRewardsThunkDeps & GetCalldataThunkDeps }
 >(
     `${YIELD_PREFIX}/thunk/claimMerklRewards`,
     async ({ account, flowKey, rewards }, { dispatch, getState, extra }) => {
@@ -130,10 +131,13 @@ export const claimMerklRewardsThunk = createThunk<
         );
 
         try {
-            const claimCalldata = buildClaimCalldata({
-                senderAddress: account.descriptor,
-                rewards,
-            });
+            const claimCalldata = buildClaimCalldata(
+                extra.services.networks.getCalldata(account.symbol),
+                {
+                    senderAddress: account.descriptor,
+                    rewards,
+                },
+            );
 
             const estimatedFeeLevelTask = estimateYieldFeeLevel({
                 coin: account.symbol,
@@ -206,7 +210,7 @@ export const claimMerklRewardsThunk = createThunk<
             }
 
             const { formState, precomposedTransaction, availableRewards, transactionForSigning } =
-                buildClaimTransactionReview({
+                buildClaimTransactionReview(extra.services.networks.getCalldata(account.symbol), {
                     unsignedTransaction: unsignedClaimTx,
                     selectedFee: userAcceptedTxSimulation.selectedFee,
                     rewards,

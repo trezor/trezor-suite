@@ -1,8 +1,10 @@
 import { useMemo } from 'react';
 
+import { injectGetCalldata } from '@suite-common/networks';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type YieldFlowResolvedData } from '@suite-common/wallet-core';
 import { TransactionReviewScreen } from '@suite-native/transaction-review';
+import { useServices } from '@trezor/dependency-injection';
 
 import { YieldTransactionReviewSummaryCard } from './YieldTransactionReviewSummaryCard';
 import { useYieldApprovalReview } from '../../hooks/yield/useYieldApprovalReview';
@@ -40,6 +42,8 @@ export const YieldDepositApprovalReviewContent = ({
     transactionType,
     vaultName,
 }: YieldDepositApprovalReviewContentProps) => {
+    const { getCalldata } = useServices(injectGetCalldata);
+
     const {
         closeSheet,
         confirmOnTrezorRef,
@@ -80,7 +84,7 @@ export const YieldDepositApprovalReviewContent = ({
             return null;
         }
 
-        return buildYieldReviewPreview({
+        return buildYieldReviewPreview(getCalldata(flowData.account.symbol), {
             account: flowData.account,
             device,
             formState: reviewTransaction.formState,
@@ -88,7 +92,15 @@ export const YieldDepositApprovalReviewContent = ({
             type: transactionType,
             vaultName,
         });
-    }, [device, flowData.account, reviewTransaction, transactionType, vaultName]);
+    }, [
+        device,
+        flowData.account,
+        reviewTransaction,
+        transactionType,
+        vaultName,
+        getCalldata,
+        flowData,
+    ]);
 
     useYieldReviewSheetAutoStart({
         closeSheet,

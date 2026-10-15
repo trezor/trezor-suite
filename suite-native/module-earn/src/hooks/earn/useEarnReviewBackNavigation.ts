@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { CommonActions, StackActions, useNavigation } from '@react-navigation/native';
 
+import { injectGetCalldata } from '@suite-common/networks';
 import {
     type AccountsRootState,
     cancelSignSendFormTransactionThunk,
@@ -29,14 +30,15 @@ export const useEarnReviewBackNavigation = (
     formType: EarnFormDraftPrefix,
     accountKey: AccountKey,
 ) => {
+    const { dispatch, getCalldata } = useServices(injectDispatch, injectGetCalldata);
+
     const isTransactionReviewInProgress = useSelector((state: TransactionReviewOutputsState) =>
-        selectIsTransactionReviewInProgress(state, formType, accountKey),
+        selectIsTransactionReviewInProgress(state, formType, accountKey, undefined, getCalldata),
     );
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
 
-    const { dispatch } = useServices(injectDispatch);
     const navigation = useNavigation();
     const showReviewCancellationAlert = useShowReviewCancellationAlert();
 

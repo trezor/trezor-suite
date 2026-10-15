@@ -1,3 +1,5 @@
+import { type GetCalldataThunkDeps } from '@suite-common/networks';
+import { mockGetCalldata } from '@suite-common/networks/mocks';
 import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -87,7 +89,8 @@ const precomposedTransaction: PrecomposedTransaction = {
 const BLOCK_HEIGHT = 100;
 
 const initStore = () =>
-    createTestCompositionRoot<void, AddFakePendingCardanoTxThunkState>({
+    createTestCompositionRoot<GetCalldataThunkDeps, AddFakePendingCardanoTxThunkState>({
+        services: () => ({ networks: { getCalldata: mockGetCalldata() } }),
         preloadedState: {
             wallet: {
                 blockchain: { ada: { blockHeight: BLOCK_HEIGHT } },
@@ -281,7 +284,8 @@ describe('addFakePendingStellarTxThunk', () => {
     };
 
     const initStellarStore = () =>
-        createTestCompositionRoot<void, AddFakePendingStellarTxThunkState>({
+        createTestCompositionRoot<GetCalldataThunkDeps, AddFakePendingStellarTxThunkState>({
+            services: () => ({ networks: { getCalldata: mockGetCalldata() } }),
             preloadedState: { wallet: { blockchain: { xlm: { blockHeight: BLOCK_HEIGHT } } } },
         }).services.store;
 

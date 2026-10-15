@@ -3,6 +3,7 @@ import {
     isApprovalFlowSupported,
     selectSelectedDevice,
 } from '@suite-common/device';
+import { type GetCalldataThunkDeps } from '@suite-common/networks';
 import { type EvmGasParamsGwei } from '@suite-common/schemas/src/evm';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -275,19 +276,26 @@ type ComposeEthereumTransactionFeeLevelsThunkState = DeviceRootState & Transacti
 export const composeEthereumTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevels,
     ComposeTransactionThunkArguments,
-    { rejectValue: ComposeFeeLevelsError; state: ComposeEthereumTransactionFeeLevelsThunkState }
+    {
+        rejectValue: ComposeFeeLevelsError;
+        state: ComposeEthereumTransactionFeeLevelsThunkState;
+        extra: GetCalldataThunkDeps;
+    }
 >(
     `${SEND_MODULE_PREFIX}/composeEthereumTransactionFeeLevelsThunk`,
     async (
         { formState, composeContext, isNetworkReserveEnabled = false },
-        { dispatch, rejectWithValue, getState },
+        { dispatch, rejectWithValue, getState, extra },
     ) => {
         const device = selectSelectedDevice(getState());
 
         const { account, network, feeInfo } = composeContext;
         const { transactionData } = formState;
 
-        const isApproveTx = isEvmApprovalTx(transactionData);
+        const isApproveTx = isEvmApprovalTx(
+            extra.services.networks.getCalldata(composeContext.account.symbol),
+            transactionData,
+        );
         const { outputs } = formState;
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const firstOutput: (typeof outputs)[number] = outputs[0];
@@ -360,13 +368,16 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
                     : ETH_TRANSFER_BACKUP_GAS_LIMIT,
             );
 
-            reportEthereumFeeEstimationFailed({
-                account,
-                formState,
-                tokenInfo,
-                estimateTarget: ethereumEstimateFeeParams.to,
-                error: estimatedFee.error,
-            });
+            reportEthereumFeeEstimationFailed(
+                extra.services.networks.getCalldata(composeContext.account.symbol),
+                {
+                    account,
+                    formState,
+                    tokenInfo,
+                    estimateTarget: ethereumEstimateFeeParams.to,
+                    error: estimatedFee.error,
+                },
+            );
 
             dispatch(
                 notificationsActions.addToast({
@@ -579,12 +590,13 @@ export const signEthereumSendFormTransactionThunk = createThunk<
     {
         rejectValue: SignTransactionError;
         state: SignEthereumSendFormTransactionThunkState;
+        extra: GetCalldataThunkDeps;
     }
 >(
     `${SEND_MODULE_PREFIX}/signEthereumSendFormTransactionThunk`,
     async (
         { formState, precomposedTransaction, selectedAccount, device, paymentRequests },
-        { dispatch, getState, rejectWithValue },
+        { dispatch, getState, rejectWithValue, extra },
     ) => {
         const network = getNetwork(selectedAccount.symbol);
 
@@ -628,20 +640,23 @@ export const signEthereumSendFormTransactionThunk = createThunk<
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const firstSignOutput: (typeof signOutputs)[number] = signOutputs[0];
         // transform to TrezorConnect.ethereumSignTransaction params
-        const transaction = prepareEthereumTransaction({
-            token: precomposedTransaction.token,
-            chainId: network.chainId,
-            // Use the resolved onchain address for a named input (e.g. ENS), otherwise the raw input.
-            to: firstSignOutput.resolvedAddress ?? firstSignOutput.address,
-            amount: firstSignOutput.amount,
-            data: formState.transactionData,
-            gasLimit: precomposedTransaction.feeLimit || '',
-            maxFeePerGas: precomposedTransaction.maxFeePerGas,
-            maxPriorityFeePerGas: precomposedTransaction.maxPriorityFeePerGas,
-            gasPrice: precomposedTransaction.feePerByte,
-            nonce,
-            payment_req: paymentRequests?.[0],
-        });
+        const transaction = prepareEthereumTransaction(
+            extra.services.networks.getCalldata(selectedAccount.symbol),
+            {
+                token: precomposedTransaction.token,
+                chainId: network.chainId,
+                // Use the resolved onchain address for a named input (e.g. ENS), otherwise the raw input.
+                to: firstSignOutput.resolvedAddress ?? firstSignOutput.address,
+                amount: firstSignOutput.amount,
+                data: formState.transactionData,
+                gasLimit: precomposedTransaction.feeLimit || '',
+                maxFeePerGas: precomposedTransaction.maxFeePerGas,
+                maxPriorityFeePerGas: precomposedTransaction.maxPriorityFeePerGas,
+                gasPrice: precomposedTransaction.feePerByte,
+                nonce,
+                payment_req: paymentRequests?.[0],
+            },
+        );
 
         const response = await TrezorConnect.ethereumSignTransaction({
             device: {

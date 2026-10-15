@@ -1,6 +1,7 @@
 import { createContext, useCallback, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 
+import { injectGetCalldata } from '@suite-common/networks';
 import {
     getStakeFormsDefaultValues,
     getStakingContractAddress,
@@ -35,7 +36,7 @@ type UseChangeDelegateFormsProps = {
 export const useChangeDelegateForm = ({
     selectedAccount,
 }: UseChangeDelegateFormsProps): ChangeDelegateContextValues => {
-    const { dispatch } = useServices(injectDispatch);
+    const { dispatch, getCalldata } = useServices(injectDispatch, injectGetCalldata);
 
     const { account, network } = selectedAccount;
 
@@ -120,13 +121,19 @@ export const useChangeDelegateForm = ({
         const values = getValues();
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
         if (composedTx?.type === 'final') {
-            const result = await dispatch(signTransactionThunk(values, composedTx));
+            const result = await dispatch(
+                signTransactionThunk(
+                    getCalldata(selectedAccount.account.symbol),
+                    values,
+                    composedTx,
+                ),
+            );
 
             if (result?.success) {
                 clearForm();
             }
         }
-    }, [getValues, composedLevels, dispatch, clearForm, selectedFee]);
+    }, [getValues, composedLevels, dispatch, clearForm, selectedFee, getCalldata, selectedAccount]);
 
     return {
         ...methods,

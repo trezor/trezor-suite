@@ -7,6 +7,7 @@ import {
     asAccountDescriptor,
 } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { getEthereumCalldata } from '@trezor/network-ethereum-suite-common';
 
 import * as fixtures from './__fixtures__/transactionUtils';
 import {
@@ -37,6 +38,8 @@ import {
     parseTransactionMonthKey,
     sumTransactions,
 } from './transactionUtils';
+
+const networkCalldata = getEthereumCalldata();
 
 const ethSymbol = asNetworkSymbol('eth');
 const btcSymbol = asNetworkSymbol('btc');
@@ -608,7 +611,9 @@ describe('transaction utils', () => {
     describe('enhanceTransaction', () => {
         fixtures.enhanceTransaction.forEach(f => {
             it('enhances transaction', () => {
-                expect(enhanceTransaction(f.tx as any, f.account)).toEqual(f.result);
+                expect(enhanceTransaction(networkCalldata, f.tx as any, f.account)).toEqual(
+                    f.result,
+                );
             });
         });
     });
@@ -616,7 +621,9 @@ describe('transaction utils', () => {
     describe('getRbfParams', () => {
         fixtures.getRbfParams.forEach(f => {
             it(f.description, () => {
-                expect(getRbfParams(f.tx as any, f.account as any)).toEqual(f.result);
+                expect(getRbfParams(networkCalldata, f.tx as any, f.account as any)).toEqual(
+                    f.result,
+                );
             });
         });
 
@@ -627,7 +634,7 @@ describe('transaction utils', () => {
                 tokenAmount: '500000000',
             });
 
-            expect(getRbfParams(transaction, ethereumAccount)).toEqual({
+            expect(getRbfParams(networkCalldata, transaction, ethereumAccount)).toEqual({
                 type: 'ethereum',
                 txid: transaction.txid,
                 outputs: [
@@ -653,7 +660,7 @@ describe('transaction utils', () => {
                 tokenAmount: '1000000',
             });
 
-            expect(getRbfParams(transaction, ethereumAccount)?.outputs).toEqual([
+            expect(getRbfParams(networkCalldata, transaction, ethereumAccount)?.outputs).toEqual([
                 {
                     type: 'payment',
                     address: CONTRACT_ADDRESS,

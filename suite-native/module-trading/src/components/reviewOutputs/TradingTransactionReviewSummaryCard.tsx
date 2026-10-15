@@ -1,6 +1,7 @@
 import { type LayoutChangeEvent, View } from 'react-native';
 import { useSelector } from 'react-redux';
 
+import { injectGetCalldata } from '@suite-common/networks';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { type SendRootState, selectSendPrecomposedTx } from '@suite-common/wallet-core';
 import {
@@ -22,6 +23,7 @@ import {
     TransactionReviewOutputItemValues,
     isNonCardanoNetworkWithTokens,
 } from '@suite-native/transaction-review';
+import { useServices } from '@trezor/dependency-injection';
 import { BigNumber } from '@trezor/utils';
 
 export interface TradingTransactionReviewSummaryCardProps {
@@ -103,10 +105,12 @@ export const TradingTransactionReviewSummaryCard = ({
     flowType,
     prefix,
 }: TradingTransactionReviewSummaryCardProps) => {
+    const { getCalldata } = useServices(injectGetCalldata);
+
     const { translate } = useTranslate();
 
     const isClearSignedTradingSwap = useSelector((state: TransactionReviewOutputsState) =>
-        selectIsClearSignedTradingSwap(state, accountKey, prefix),
+        selectIsClearSignedTradingSwap(state, accountKey, prefix, getCalldata),
     );
     const composedTokenContract = useSelector(
         (state: SendRootState) => selectSendPrecomposedTx(state)?.token?.contract,

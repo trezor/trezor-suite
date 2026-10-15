@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
 import type { DeviceRootState } from '@suite-common/device';
-import { injectGetNamedAddressSupport } from '@suite-common/networks';
+import { injectGetNamedAddressSupport, injectGetCalldata } from '@suite-common/networks';
 import { selectAccounts, selectSendFormReviewLastButtonCode } from '@suite-common/wallet-core';
 import type {
     FormState,
@@ -86,7 +86,10 @@ export const TransactionReviewOutputList = ({
     const outputRefs = useRef<(HTMLDivElement | null)[]>([]);
     const totalOutputRef = useRef<HTMLDivElement | null>(null);
     const accounts = useSelector(selectAccounts);
-    const { getNamedAddressSupport } = useServices(injectGetNamedAddressSupport);
+    const { getNamedAddressSupport, getCalldata } = useServices(
+        injectGetNamedAddressSupport,
+        injectGetCalldata,
+    );
     const { networkType, symbol } = account;
     const namedAddress = getNamedAddressSupport(symbol);
     const isMultirecipient =
@@ -110,12 +113,15 @@ export const TransactionReviewOutputList = ({
 
     const isStaking = stakeType;
 
-    const isApprovalTx = isEvmApprovalTx(precomposedForm.transactionData);
+    const isApprovalTx = isEvmApprovalTx(
+        getCalldata(account?.symbol),
+        precomposedForm.transactionData,
+    );
 
     // Resolved from the full context, not the calldata alone, so a WETH deposit()/withdraw() is
     // classified as wrap/unwrap — the review rows for those mirror the device's clear-signing
     // screens and need to know which of the two it is.
-    const evmTxType = getEvmTransactionPurpose({
+    const evmTxType = getEvmTransactionPurpose(getCalldata(account?.symbol), {
         networkSymbol: symbol,
         to: precomposedTx.outputs.find(o => 'address' in o && typeof o.address === 'string')
             ?.address,

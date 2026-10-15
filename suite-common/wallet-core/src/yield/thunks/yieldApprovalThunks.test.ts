@@ -1,5 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
+import { type GetCalldataThunkDeps } from '@suite-common/networks';
+import { mockGetCalldata } from '@suite-common/networks/mocks';
 import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
@@ -51,7 +53,8 @@ const WRAPPED_AMOUNT = '0.2';
 const toSubunits = (weth: string) => new BigNumber(weth).shiftedBy(18);
 
 const initStore = () =>
-    createTestCompositionRoot<void, InitYieldAllowanceThunkState>({
+    createTestCompositionRoot<GetCalldataThunkDeps, InitYieldAllowanceThunkState>({
+        services: () => ({ networks: { getCalldata: mockGetCalldata() } }),
         reducer: combineReducers({
             wallet: combineReducers({ stablecoinYield: yieldReducer }),
         }),

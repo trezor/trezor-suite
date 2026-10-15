@@ -1,5 +1,5 @@
+import { type Calldata, getTronCalldata } from '@trezor/calldata';
 import { type TokenInfo } from '@trezor/connect';
-import { Calldata } from '@trezor/network-tron-suite-common';
 import { BigNumber } from '@trezor/utils';
 
 type CalldataResult = { data: string } | { data: null } | { error: string };
@@ -10,14 +10,12 @@ type ResolveCalldataParams = {
     userCallDataHex: string;
 };
 
-export const resolveCalldata = ({
-    token,
-    outputAddress,
-    amountInSubunits,
-    userCallDataHex,
-}: ResolveCalldataParams): CalldataResult => {
+export const resolveCalldata = (
+    networkCalldata: Calldata | undefined,
+    { token, outputAddress, amountInSubunits, userCallDataHex }: ResolveCalldataParams,
+): CalldataResult => {
     if (token) {
-        const result = Calldata.tron.trc20.transfer.encode({
+        const result = getTronCalldata(networkCalldata).tron.trc20.transfer.encode({
             to: outputAddress,
             amount: new BigNumber(amountInSubunits),
         });

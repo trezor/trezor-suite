@@ -11,6 +11,7 @@ import {
     type BlockchainEstimatedFee,
     type BlockchainEstimatedFeeLevel,
 } from '@trezor/connect-common/src/types/api/blockchain/blockchainEstimateFee';
+import { getEthereumCalldata } from '@trezor/network-ethereum-suite-common';
 import { type Err, type Ok, type Result } from '@trezor/type-utils';
 
 import {
@@ -60,6 +61,8 @@ import {
     type StakeTxBaseArgs,
 } from './types';
 
+const networkCalldata = getEthereumCalldata();
+
 const ethSymbol = asNetworkSymbol('eth');
 
 describe('transformTx', () => {
@@ -100,14 +103,16 @@ describe('stake', () => {
     stakeFixture.forEach(test => {
         it(test.description, async () => {
             mockTrezorConnect(test);
-            const result = await stake(test.args as StakeTxArgs);
+            const result = await stake(networkCalldata, test.args as StakeTxArgs);
             expect(result).toEqual(test.result);
         });
     });
     stakeFailedFixture.forEach(test => {
         it(test.description, async () => {
             mockTrezorConnect(test);
-            await expect(stake(test.args as StakeTxArgs)).rejects.toThrow(test.result);
+            await expect(stake(networkCalldata, test.args as StakeTxArgs)).rejects.toThrow(
+                test.result,
+            );
         });
     });
 });
@@ -121,14 +126,16 @@ describe('unstake', () => {
     unstakeFixture.forEach(test => {
         it(test.description, async () => {
             mockTrezorConnect(test);
-            const result = await unstake(test.args as UnstakeTxArgs);
+            const result = await unstake(networkCalldata, test.args as UnstakeTxArgs);
             expect(result).toEqual(test.result);
         });
     });
     unstakeFailedFixture.forEach(test => {
         it(test.description, async () => {
             mockTrezorConnect(test);
-            await expect(unstake(test.args as UnstakeTxArgs)).rejects.toThrow(test.result);
+            await expect(unstake(networkCalldata, test.args as UnstakeTxArgs)).rejects.toThrow(
+                test.result,
+            );
         });
     });
 });
@@ -137,16 +144,19 @@ describe('claim', () => {
     claimFixture.forEach(test => {
         it(test.description, async () => {
             mockTrezorConnect(test);
-            const result = await claimWithdrawRequest(test.args as StakeTxBaseArgs);
+            const result = await claimWithdrawRequest(
+                networkCalldata,
+                test.args as StakeTxBaseArgs,
+            );
             expect(result).toEqual(test.result);
         });
     });
     claimFailedFixture.forEach(test => {
         it(test.description, async () => {
             mockTrezorConnect(test);
-            await expect(claimWithdrawRequest(test.args as StakeTxBaseArgs)).rejects.toThrow(
-                test.result,
-            );
+            await expect(
+                claimWithdrawRequest(networkCalldata, test.args as StakeTxBaseArgs),
+            ).rejects.toThrow(test.result);
         });
     });
 });
@@ -179,7 +189,10 @@ describe('getStakeTxGasLimit', () => {
     getStakeTxGasLimitFixture.forEach(test => {
         it(test.description, async () => {
             mockTrezorConnect(test);
-            const result = await getStakeTxGasLimit(test.args as GetStakeTxGasLimitParams);
+            const result = await getStakeTxGasLimit(
+                networkCalldata,
+                test.args as GetStakeTxGasLimitParams,
+            );
             expect(result).toEqual(test.result);
         });
     });
@@ -284,7 +297,7 @@ describe('simulateUnstake', () => {
             jest.spyOn(TrezorConnect, 'blockchainEvmRpcCall').mockImplementation(() =>
                 Promise.resolve(test.blockchainEvmRpcCallResult as BlockchainEvmRpcCallResult),
             );
-            const result = await simulateUnstake({
+            const result = await simulateUnstake(networkCalldata, {
                 ...test.args,
                 symbol: test.args.symbol ? asNetworkSymbol(test.args.symbol) : test.args.symbol,
             } as unknown as SimulateUnstakeArgs);
@@ -358,14 +371,19 @@ describe('validateEthereumClaimLiveState', () => {
 
 describe('getUnstakeAmountFromCalldata', () => {
     it('recovers the ether amount encoded in unstake calldata', () => {
-        expect(getUnstakeAmountFromCalldata(buildUnstakeData('1500000000000000000', 5))).toBe(
-            '1.5',
-        );
+        expect(
+            getUnstakeAmountFromCalldata(
+                networkCalldata,
+                buildUnstakeData(networkCalldata, '1500000000000000000', 5),
+            ),
+        ).toBe('1.5');
     });
 
     it('returns null for calldata that is not an unstake call', () => {
-        expect(getUnstakeAmountFromCalldata(buildStakeData())).toBeNull();
-        expect(getUnstakeAmountFromCalldata('0x1234')).toBeNull();
+        expect(
+            getUnstakeAmountFromCalldata(networkCalldata, buildStakeData(networkCalldata)),
+        ).toBeNull();
+        expect(getUnstakeAmountFromCalldata(networkCalldata, '0x1234')).toBeNull();
     });
 });
 

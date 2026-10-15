@@ -6,10 +6,14 @@ import { tronAssets } from '@trezor/network-tron-assets';
 import { supportedTronNetworks } from '@trezor/network-tron-types';
 
 import { tronValidator } from './addressValidator/tronAddressValidator';
+import { getTronCalldata } from './getTronCalldata';
 import { getAccountSyncInterval, getNetworkConfig } from './networkConfig';
 
 export const createTronSuiteCommonNetworkModule = (): SuiteCommonNetworkModule =>
     createNetworkModule(supportedTronNetworks, {
+        get calldata() {
+            return getTronCalldata();
+        },
         icon: tronAssets,
         addressValidator: tronValidator,
         getNetworkConfig,

@@ -43,6 +43,7 @@ import {
     baseCurrencies,
     isBaseCurrencyCode,
 } from '@trezor/blockchain-link-types';
+import { type Calldata } from '@trezor/calldata';
 import {
     type ComposeOutput,
     type EthereumTransaction,
@@ -186,6 +187,7 @@ export const getGasLimitWithBuffer = (estimatedGasLimit: string | undefined) => 
 };
 
 export const prepareEthereumTransaction = (
+    networkCalldata: Calldata | undefined,
     txInfo: EthTransactionData,
 ): EthereumTransaction | EthereumTransactionEIP1559 => {
     let result: EthereumTransaction | EthereumTransactionEIP1559;
@@ -222,7 +224,7 @@ export const prepareEthereumTransaction = (
     }
 
     if (txInfo.token) {
-        const isApprovalTx = isEvmApprovalTx(txInfo.data);
+        const isApprovalTx = isEvmApprovalTx(networkCalldata, txInfo.data);
 
         if (txInfo.data && txInfo.data !== '0x' && !isApprovalTx) {
             result.data = sanitizeHex(txInfo.data);

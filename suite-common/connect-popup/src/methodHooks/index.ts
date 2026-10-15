@@ -1,3 +1,4 @@
+import { type GetCalldataDep } from '@suite-common/networks';
 import type { CallMethodKeys } from '@trezor/connect';
 
 import { addressConfirmationModalHooks } from './addressConfirmation';
@@ -35,7 +36,9 @@ export const validateCallHooks = <M extends CallMethodKeys>(
     selectAccountHooks.validateHook(params);
 };
 
-export const preCallHooks = async <M extends CallMethodKeys>(params: PreCallHookParams<M>) => {
+export const preCallHooks = async <M extends CallMethodKeys>(
+    params: PreCallHookParams<M> & GetCalldataDep,
+) => {
     await bitcoinSignTransaction.preCallHook(params);
     await solanaSignTransaction.preCallHook(params);
     await stellarSignTransaction.preCallHook(params);

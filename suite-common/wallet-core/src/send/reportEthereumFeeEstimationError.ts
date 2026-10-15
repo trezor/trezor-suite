@@ -2,6 +2,7 @@ import { captureException, withScope } from '@sentry/core';
 
 import { type Account, type FormState } from '@suite-common/wallet-types';
 import { isEvmApprovalTx } from '@suite-common/wallet-utils';
+import { type Calldata } from '@trezor/calldata';
 import { type TokenInfo } from '@trezor/connect';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
 
@@ -18,14 +19,17 @@ const reportedSignatures = new Set<string>();
 /**
  * Reports an error when Ethereum fee estimation fails.
  */
-export const reportEthereumFeeEstimationFailed = ({
-    account,
-    formState,
-    tokenInfo,
-    estimateTarget,
-    error,
-}: ReportEthereumFeeEstimationFailedParams): void => {
-    const isApproveTx = isEvmApprovalTx(formState.transactionData);
+export const reportEthereumFeeEstimationFailed = (
+    networkCalldata: Calldata | undefined,
+    {
+        account,
+        formState,
+        tokenInfo,
+        estimateTarget,
+        error,
+    }: ReportEthereumFeeEstimationFailedParams,
+): void => {
+    const isApproveTx = isEvmApprovalTx(networkCalldata, formState.transactionData);
     const isTokenTransfer = !!tokenInfo;
     const isDexFlow = !!formState.ethereumAdjustGasLimit;
     const toIsSelf = estimateTarget === account.descriptor;

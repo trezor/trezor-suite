@@ -2,6 +2,7 @@ import { type AsyncThunkAction } from '@reduxjs/toolkit';
 
 import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { type DeviceRootState, deviceActions, selectSelectedDevice } from '@suite-common/device';
+import { type GetCalldataThunkDeps } from '@suite-common/networks';
 import { type LockDeviceDep } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork } from '@suite-common/wallet-config';
@@ -85,7 +86,10 @@ export type ConnectPopupCallThunkDeps = ConnectPopupCallInnerThunkDeps;
 export const connectPopupCallInnerThunk = createThunk<
     void,
     ConnectPopupCallThunkParams<CallMethodKeys>,
-    { state: ConnectPopupCallInnerThunkState; extra: ConnectPopupCallInnerThunkDeps }
+    {
+        state: ConnectPopupCallInnerThunkState;
+        extra: ConnectPopupCallInnerThunkDeps & GetCalldataThunkDeps;
+    }
 >(
     `${CONNECT_POPUP_MODULE}/callThunk`,
     async ({ source, ...params }, { dispatch, getState, extra }) => {
@@ -192,6 +196,7 @@ export const connectPopupCallInnerThunk = createThunk<
             const txSigningPrecomposed: PrecomposedTransactionFinal | undefined =
                 methodInfoPayload.precomposed;
             const modifiedPayload = await preCallHooks({
+                getCalldata: extra.services.networks.getCalldata,
                 method,
                 payload,
                 dispatch,

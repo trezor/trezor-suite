@@ -7,6 +7,7 @@ import {
 import { type FormState, type StakeFormState } from '@suite-common/wallet-types';
 import { getEvmTransactionPurpose } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
+import { type Calldata } from '@trezor/calldata';
 import { getWrappedNativeSymbol } from '@trezor/network-ethereum-suite-common';
 
 type GetTransactionReviewModalActionTranslationParams = {
@@ -21,18 +22,21 @@ type GetTransactionReviewModalActionTranslationParams = {
     source: 'heading' | 'button';
 };
 
-export const getTransactionReviewModalActionTranslation = ({
-    symbol,
-    stakeType,
-    precomposedForm,
-    approvalToken,
-    routeName,
-    isBumpFeeRbfAction,
-    isCancelRbfAction,
-    isSending,
-    source,
-}: GetTransactionReviewModalActionTranslationParams): ExtendedMessageDescriptor => {
-    const txPurpose = getEvmTransactionPurpose({
+export const getTransactionReviewModalActionTranslation = (
+    networkCalldata: Calldata | undefined,
+    {
+        symbol,
+        stakeType,
+        precomposedForm,
+        approvalToken,
+        routeName,
+        isBumpFeeRbfAction,
+        isCancelRbfAction,
+        isSending,
+        source,
+    }: GetTransactionReviewModalActionTranslationParams,
+): ExtendedMessageDescriptor => {
+    const txPurpose = getEvmTransactionPurpose(networkCalldata, {
         networkSymbol: symbol,
         to: precomposedForm.outputs?.[0]?.address,
         data: precomposedForm.transactionData,

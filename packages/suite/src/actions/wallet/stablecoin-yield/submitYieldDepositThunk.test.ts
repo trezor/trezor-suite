@@ -1,6 +1,7 @@
 import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { events } from '@suite-common/analytics';
-import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
+import { type GetCalldataThunkDeps } from '@suite-common/networks';
+import { mockGetAccountSyncInterval, mockGetCalldata } from '@suite-common/networks/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -65,13 +66,16 @@ const flowData = {
 
 const dispatchDeposit = (report: jest.Mock) => {
     const { store } = createTestCompositionRoot<
-        SubmitYieldDepositThunkDeps,
+        SubmitYieldDepositThunkDeps & GetCalldataThunkDeps,
         SubmitYieldDepositThunkState
     >({
         preloadedState: {},
         services: () => ({
             analytics: mockAnalytics(report),
-            networks: { getAccountSyncInterval: mockGetAccountSyncInterval() },
+            networks: {
+                ...{ getAccountSyncInterval: mockGetAccountSyncInterval() },
+                getCalldata: mockGetCalldata(),
+            },
             getIsWindowVisible: asGetter(() => true),
             getTradedAccountKeys: asGetter(() => []),
         }),

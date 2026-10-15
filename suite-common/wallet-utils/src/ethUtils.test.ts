@@ -5,7 +5,8 @@ import {
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import { mockAccountToken } from '@suite-common/wallet-types/mocks';
-import { Calldata, asEvmAddress } from '@trezor/network-ethereum-suite-common';
+import { getEvmCalldata } from '@trezor/calldata';
+import { getEthereumCalldata } from '@trezor/network-ethereum-suite-common';
 import { BigNumber } from '@trezor/utils';
 
 import {
@@ -25,9 +26,13 @@ import {
     strip,
 } from './ethUtils';
 
+const networkCalldata = getEthereumCalldata();
+
 const ethSymbol = asNetworkSymbol('eth');
 
-const VALID_CLAIM_ADDRESS = asEvmAddress('0x1111111111111111111111111111111111111111');
+const VALID_CLAIM_ADDRESS = getEvmCalldata(networkCalldata).asEvmAddress(
+    '0x1111111111111111111111111111111111111111',
+);
 
 describe('eth utils', () => {
     it('padLeftEven', () => {
@@ -75,13 +80,13 @@ describe('eth utils', () => {
 
     describe('getEvmTransactionTextSignature', () => {
         it('should return "" when data is undefined or empty string', () => {
-            expect(getEvmTransactionTextSignature(undefined)).toBe('');
-            expect(getEvmTransactionTextSignature('')).toBe('');
+            expect(getEvmTransactionTextSignature(networkCalldata, undefined)).toBe('');
+            expect(getEvmTransactionTextSignature(networkCalldata, '')).toBe('');
         });
 
         it('should return "transfer" for non-approval transaction data', () => {
             const randomData = '0xa9059cbb000000000000000000000000742d35cc6634c0532925a3b8d40e5';
-            expect(getEvmTransactionTextSignature(randomData)).toBe('unknown');
+            expect(getEvmTransactionTextSignature(networkCalldata, randomData)).toBe('unknown');
         });
 
         it('should return "approval" for approve transaction with non-zero amount', () => {
@@ -90,7 +95,7 @@ describe('eth utils', () => {
                 '000000000000000000000000742d35cc6634c0532925a3b8d40e592e43a73654' + // spender
                 '0000000000000000000000000000000000000000000000000de0b6b3a7640000'; // amount (32 bytes) - 1 ETH in wei
 
-            expect(getEvmTransactionTextSignature(approveData)).toBe('approve');
+            expect(getEvmTransactionTextSignature(networkCalldata, approveData)).toBe('approve');
         });
 
         it('should return "revoke" for approve transaction with zero amount', () => {
@@ -99,7 +104,7 @@ describe('eth utils', () => {
                 '000000000000000000000000742d35cc6634c0532925a3b8d40e592e43a73654' + // spender
                 '0000000000000000000000000000000000000000000000000000000000000000'; // amount (32 bytes) - 0
 
-            expect(getEvmTransactionTextSignature(revokeData)).toBe('revoke');
+            expect(getEvmTransactionTextSignature(networkCalldata, revokeData)).toBe('revoke');
         });
 
         it('should return "approval" for maximum uint256 approval', () => {
@@ -108,21 +113,23 @@ describe('eth utils', () => {
                 '000000000000000000000000742d35cc6634c0532925a3b8d40e592e43a73654' + // spender
                 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'; // max uint256
 
-            expect(getEvmTransactionTextSignature(maxApprovalData)).toBe('approve');
+            expect(getEvmTransactionTextSignature(networkCalldata, maxApprovalData)).toBe(
+                'approve',
+            );
         });
 
         it('should return "unknown" for data that starts with approve selector but is too short', () => {
             const shortData = '0x095ea7b3';
-            expect(getEvmTransactionTextSignature(shortData)).toBe('unknown');
+            expect(getEvmTransactionTextSignature(networkCalldata, shortData)).toBe('unknown');
         });
 
         it('keeps WETH wrap calldata "unknown" — classifying it needs the tx target', () => {
-            expect(getEvmTransactionTextSignature('0xd0e30db0')).toBe('unknown');
+            expect(getEvmTransactionTextSignature(networkCalldata, '0xd0e30db0')).toBe('unknown');
         });
 
         it('should return "unknown" for data that starts with approve selector but has invalid parameters', () => {
             const invalidData = '0x095ea7b3' + '000000000000000000000000742d35cc';
-            expect(getEvmTransactionTextSignature(invalidData)).toBe('unknown');
+            expect(getEvmTransactionTextSignature(networkCalldata, invalidData)).toBe('unknown');
         });
 
         it('should handle data without 0x prefix', () => {
@@ -131,7 +138,9 @@ describe('eth utils', () => {
                 '000000000000000000000000742d35cc6634c0532925a3b8d40e592e43a73654' +
                 '0000000000000000000000000000000000000000000000000de0b6b3a7640000';
 
-            expect(getEvmTransactionTextSignature(dataWithoutPrefix)).toBe('approve');
+            expect(getEvmTransactionTextSignature(networkCalldata, dataWithoutPrefix)).toBe(
+                'approve',
+            );
         });
 
         it('should handle uppercase hex data', () => {
@@ -140,7 +149,7 @@ describe('eth utils', () => {
                 '000000000000000000000000742D35CC6634C0532925A3B8D40E592E43A73654' +
                 '0000000000000000000000000000000000000000000000000000000000000000';
 
-            expect(getEvmTransactionTextSignature(uppercaseData)).toBe('revoke');
+            expect(getEvmTransactionTextSignature(networkCalldata, uppercaseData)).toBe('revoke');
         });
 
         it('should return "unknown" text signature for unknown method call', () => {
@@ -149,7 +158,7 @@ describe('eth utils', () => {
                 '000000000000000000000000742d35cc6634c0532925a3b8d40e592e43a73654' +
                 '0000000000000000000000000000000000000000000000000de0b6b3a7640000';
 
-            expect(getEvmTransactionTextSignature(similarData)).toBe('unknown');
+            expect(getEvmTransactionTextSignature(networkCalldata, similarData)).toBe('unknown');
         });
 
         it('returns "transfer" for valid transfer call', () => {
@@ -157,15 +166,15 @@ describe('eth utils', () => {
                 '0xa9059cbb' +
                 '000000000000000000000000742d35cc6634c0532925a3b8d40e592e43a73654' +
                 '00000000000000000000000000000000000000000000000000000000000003e8';
-            expect(getEvmTransactionTextSignature(data)).toBe('transfer');
+            expect(getEvmTransactionTextSignature(networkCalldata, data)).toBe('transfer');
         });
 
         it('returns "unknown" for selector-only transfer (too short)', () => {
-            expect(getEvmTransactionTextSignature('0xa9059cbb')).toBe('unknown');
+            expect(getEvmTransactionTextSignature(networkCalldata, '0xa9059cbb')).toBe('unknown');
         });
 
         it('returns "unknown" for "0x" input (not empty but no known selector)', () => {
-            expect(getEvmTransactionTextSignature('0x')).toBe('unknown');
+            expect(getEvmTransactionTextSignature(networkCalldata, '0x')).toBe('unknown');
         });
 
         it('returns "unknown" for random data not matching known selectors', () => {
@@ -173,7 +182,7 @@ describe('eth utils', () => {
                 '0x12345678' +
                 '0000000000000000000000001111111111111111111111111111111111111111' +
                 '0000000000000000000000000000000000000000000000000000000000000001';
-            expect(getEvmTransactionTextSignature(random)).toBe('unknown');
+            expect(getEvmTransactionTextSignature(networkCalldata, random)).toBe('unknown');
         });
 
         it('handles uppercase without 0x prefix for transfer', () => {
@@ -181,10 +190,12 @@ describe('eth utils', () => {
                 'A9059CBB' +
                 '000000000000000000000000742D35CC6634C0532925A3B8D40E592E43A73654' +
                 '00000000000000000000000000000000000000000000000000000000000003E8';
-            expect(getEvmTransactionTextSignature(upperNoPrefix)).toBe('transfer');
+            expect(getEvmTransactionTextSignature(networkCalldata, upperNoPrefix)).toBe('transfer');
         });
 
         it('returns "claim" for valid distributor claim call', () => {
+            const Calldata = getEvmCalldata(networkCalldata);
+
             const claimData = Calldata.evm.distributor.claim.encode(
                 {
                     users: [VALID_CLAIM_ADDRESS],
@@ -195,7 +206,9 @@ describe('eth utils', () => {
                 { sender: VALID_CLAIM_ADDRESS },
             ).data;
 
-            expect(getEvmTransactionTextSignature(claimData ?? undefined)).toBe('claim');
+            expect(getEvmTransactionTextSignature(networkCalldata, claimData ?? undefined)).toBe(
+                'claim',
+            );
         });
     });
 
@@ -208,14 +221,14 @@ describe('eth utils', () => {
 
         it('classifies WETH calldata as wrap/unwrap when the target is the wrapped-native contract', () => {
             expect(
-                getEvmTransactionPurpose({
+                getEvmTransactionPurpose(networkCalldata, {
                     networkSymbol: ethSymbol,
                     to: WETH,
                     data: WRAP_DATA,
                 }),
             ).toBe('wrap');
             expect(
-                getEvmTransactionPurpose({
+                getEvmTransactionPurpose(networkCalldata, {
                     networkSymbol: ethSymbol,
                     to: WETH,
                     data: UNWRAP_DATA,
@@ -225,7 +238,7 @@ describe('eth utils', () => {
 
         it('keeps WETH calldata "unknown" for a non-wrapped-native target', () => {
             expect(
-                getEvmTransactionPurpose({
+                getEvmTransactionPurpose(networkCalldata, {
                     networkSymbol: ethSymbol,
                     to: OTHER,
                     data: WRAP_DATA,
@@ -240,7 +253,7 @@ describe('eth utils', () => {
                 '0000000000000000000000000000000000000000000000000de0b6b3a7640000';
 
             expect(
-                getEvmTransactionPurpose({
+                getEvmTransactionPurpose(networkCalldata, {
                     networkSymbol: ethSymbol,
                     to: OTHER,
                     data: approveData,
@@ -249,7 +262,7 @@ describe('eth utils', () => {
         });
 
         it('returns "unknown" for selector-only claim (too short)', () => {
-            expect(getEvmTransactionTextSignature('0x71ee95c0')).toBe('unknown');
+            expect(getEvmTransactionTextSignature(networkCalldata, '0x71ee95c0')).toBe('unknown');
         });
     });
 
@@ -265,9 +278,9 @@ describe('eth utils', () => {
             '0000000000000000000000009ea3721b5bf3b64b4418c38b603154d2d597fae3';
 
         const wrap = (to: string | null, data: string | null) =>
-            isWrapNativeTx({ networkSymbol: ethSymbol, to, data });
+            isWrapNativeTx(networkCalldata, { networkSymbol: ethSymbol, to, data });
         const unwrap = (to: string | null, data: string | null) =>
-            isUnwrapNativeTx({ networkSymbol: ethSymbol, to, data });
+            isUnwrapNativeTx(networkCalldata, { networkSymbol: ethSymbol, to, data });
 
         it('isWrapNativeTx detects deposit() to the wrapped-native contract', () => {
             expect(wrap(WETH, DEPOSIT)).toBe(true);
@@ -300,13 +313,15 @@ describe('eth utils', () => {
         });
 
         it('getUnwrapAmountByEthereumDataHex returns the wad amount for withdraw()', () => {
-            expect(getUnwrapAmountByEthereumDataHex(WITHDRAW)).toBe('1000000000000000000');
+            expect(getUnwrapAmountByEthereumDataHex(networkCalldata, WITHDRAW)).toBe(
+                '1000000000000000000',
+            );
         });
 
         it('getUnwrapAmountByEthereumDataHex returns null for non-withdraw data', () => {
-            expect(getUnwrapAmountByEthereumDataHex(DEPOSIT)).toBe(null);
-            expect(getUnwrapAmountByEthereumDataHex('0xdeadbeef')).toBe(null);
-            expect(getUnwrapAmountByEthereumDataHex(undefined)).toBe(null);
+            expect(getUnwrapAmountByEthereumDataHex(networkCalldata, DEPOSIT)).toBe(null);
+            expect(getUnwrapAmountByEthereumDataHex(networkCalldata, '0xdeadbeef')).toBe(null);
+            expect(getUnwrapAmountByEthereumDataHex(networkCalldata, undefined)).toBe(null);
         });
     });
 
@@ -332,30 +347,42 @@ describe('eth utils', () => {
 
         it('detects a wrap when the WETH contract is the value target', () => {
             expect(
-                getNativeWrapTxKind(tx({ targets: [{ addresses: [WETH] }], data: DEPOSIT })),
+                getNativeWrapTxKind(
+                    networkCalldata,
+                    tx({ targets: [{ addresses: [WETH] }], data: DEPOSIT }),
+                ),
             ).toBe('wrap');
         });
 
         it('detects an unwrap when the WETH contract is the internal ETH sender', () => {
             expect(
-                getNativeWrapTxKind(tx({ internalTransfers: [{ from: WETH }], data: WITHDRAW })),
+                getNativeWrapTxKind(
+                    networkCalldata,
+                    tx({ internalTransfers: [{ from: WETH }], data: WITHDRAW }),
+                ),
             ).toBe('unwrap');
         });
 
         it('ignores a deposit() to a non-WETH contract', () => {
             expect(
-                getNativeWrapTxKind(tx({ targets: [{ addresses: [OTHER] }], data: DEPOSIT })),
+                getNativeWrapTxKind(
+                    networkCalldata,
+                    tx({ targets: [{ addresses: [OTHER] }], data: DEPOSIT }),
+                ),
             ).toBeUndefined();
         });
 
         it('ignores a WETH interaction with an unrelated selector', () => {
             expect(
-                getNativeWrapTxKind(tx({ targets: [{ addresses: [WETH] }], data: '0xdeadbeef' })),
+                getNativeWrapTxKind(
+                    networkCalldata,
+                    tx({ targets: [{ addresses: [WETH] }], data: '0xdeadbeef' }),
+                ),
             ).toBeUndefined();
         });
 
         it('returns undefined without a WETH target or data', () => {
-            expect(getNativeWrapTxKind(tx({}))).toBeUndefined();
+            expect(getNativeWrapTxKind(networkCalldata, tx({}))).toBeUndefined();
         });
     });
 
@@ -386,12 +413,14 @@ describe('eth utils', () => {
             }) as unknown as WalletAccountTransaction;
 
         it('detects ERC-4626 vault deposit/withdraw/redeem transactions', () => {
-            expect(isYieldTypeTx(tx({ data: ERC4626_DEPOSIT }))).toBe(true);
-            expect(isYieldTypeTx(tx({ data: ERC4626_WITHDRAW }))).toBe(true);
-            expect(isYieldTypeTx(tx({ data: ERC4626_REDEEM }))).toBe(true);
+            expect(isYieldTypeTx(networkCalldata, tx({ data: ERC4626_DEPOSIT }))).toBe(true);
+            expect(isYieldTypeTx(networkCalldata, tx({ data: ERC4626_WITHDRAW }))).toBe(true);
+            expect(isYieldTypeTx(networkCalldata, tx({ data: ERC4626_REDEEM }))).toBe(true);
         });
 
         it('detects a distributor rewards claim transaction', () => {
+            const Calldata = getEvmCalldata(networkCalldata);
+
             const claimData = Calldata.evm.distributor.claim.encode(
                 {
                     users: [VALID_CLAIM_ADDRESS],
@@ -402,27 +431,33 @@ describe('eth utils', () => {
                 { sender: VALID_CLAIM_ADDRESS },
             ).data;
 
-            expect(isYieldTypeTx(tx({ data: claimData ?? undefined }))).toBe(true);
+            expect(isYieldTypeTx(networkCalldata, tx({ data: claimData ?? undefined }))).toBe(true);
         });
 
         it('detects the native wrap/unwrap steps of the yield flows', () => {
             expect(
-                isYieldTypeTx(tx({ targets: [{ addresses: [WETH] }], data: WETH_DEPOSIT })),
+                isYieldTypeTx(
+                    networkCalldata,
+                    tx({ targets: [{ addresses: [WETH] }], data: WETH_DEPOSIT }),
+                ),
             ).toBe(true);
             expect(
-                isYieldTypeTx(tx({ internalTransfers: [{ from: WETH }], data: WETH_WITHDRAW })),
+                isYieldTypeTx(
+                    networkCalldata,
+                    tx({ internalTransfers: [{ from: WETH }], data: WETH_WITHDRAW }),
+                ),
             ).toBe(true);
         });
 
         it('ignores WETH selectors when the target is not the wrapped-native contract', () => {
-            expect(isYieldTypeTx(tx({ data: WETH_DEPOSIT }))).toBe(false);
-            expect(isYieldTypeTx(tx({ data: WETH_WITHDRAW }))).toBe(false);
+            expect(isYieldTypeTx(networkCalldata, tx({ data: WETH_DEPOSIT }))).toBe(false);
+            expect(isYieldTypeTx(networkCalldata, tx({ data: WETH_WITHDRAW }))).toBe(false);
         });
 
         it('ignores other transactions', () => {
-            expect(isYieldTypeTx(tx({ data: TRANSFER }))).toBe(false);
-            expect(isYieldTypeTx(tx({ data: '0xdeadbeef' }))).toBe(false);
-            expect(isYieldTypeTx(tx({}))).toBe(false);
+            expect(isYieldTypeTx(networkCalldata, tx({ data: TRANSFER }))).toBe(false);
+            expect(isYieldTypeTx(networkCalldata, tx({ data: '0xdeadbeef' }))).toBe(false);
+            expect(isYieldTypeTx(networkCalldata, tx({}))).toBe(false);
         });
     });
 
@@ -462,7 +497,7 @@ describe('eth utils', () => {
         const VALID_SPENDER = '0x742d35Cc6634C0532925a3b844Bc454e4438f44e';
 
         it('builds correct calldata for a valid approval', () => {
-            const result = buildApprovalTransactionData({
+            const result = buildApprovalTransactionData(networkCalldata, {
                 amount: '1000000000000000000',
                 spender: VALID_SPENDER,
             });
@@ -475,7 +510,7 @@ describe('eth utils', () => {
         });
 
         it('builds correct calldata for zero amount (revoke)', () => {
-            const result = buildApprovalTransactionData({
+            const result = buildApprovalTransactionData(networkCalldata, {
                 amount: '0',
                 spender: VALID_SPENDER,
             });
@@ -489,7 +524,7 @@ describe('eth utils', () => {
 
         it('builds correct calldata for max uint256 (infinite approval)', () => {
             const maxUint256Decimal = new BigNumber(UINT256_MAX).toString(10);
-            const result = buildApprovalTransactionData({
+            const result = buildApprovalTransactionData(networkCalldata, {
                 amount: maxUint256Decimal,
                 spender: VALID_SPENDER,
             });
@@ -506,7 +541,9 @@ describe('eth utils', () => {
             ['non-hex characters', '0xZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ'],
             ['empty string', ''],
         ])('throws for invalid spender address (%s)', (_, spender) => {
-            expect(() => buildApprovalTransactionData({ amount: '1000', spender })).toThrow();
+            expect(() =>
+                buildApprovalTransactionData(networkCalldata, { amount: '1000', spender }),
+            ).toThrow();
         });
 
         it.each([
@@ -516,18 +553,18 @@ describe('eth utils', () => {
             ['exceeds uint256 max', new BigNumber(UINT256_MAX).plus(1).toString(10)],
         ])('throws for invalid amount (%s)', (_, amount) => {
             expect(() =>
-                buildApprovalTransactionData({ amount, spender: VALID_SPENDER }),
+                buildApprovalTransactionData(networkCalldata, { amount, spender: VALID_SPENDER }),
             ).toThrow();
         });
 
         it('produces calldata that the calldata decoder can decode', () => {
             const amount = '1000000000000000000';
-            const calldata = buildApprovalTransactionData({
+            const calldata = buildApprovalTransactionData(networkCalldata, {
                 amount,
                 spender: VALID_SPENDER,
             });
 
-            const decoded = Calldata.evm.erc20.approve.decode(calldata);
+            const decoded = networkCalldata?.evm?.erc20.approve.decode(calldata) ?? null;
 
             expect(decoded).not.toBeNull();
             expect(decoded?.spender).toBe(VALID_SPENDER.toLowerCase());
@@ -567,7 +604,7 @@ describe('eth utils', () => {
         });
 
         it('decodes a transfer of an account token connect has no definition for', () => {
-            const result = getPrecomposedTxWithAccountToken({
+            const result = getPrecomposedTxWithAccountToken(networkCalldata, {
                 precomposedTx: buildContractCallPrecomposedTx(),
                 contract: TOKEN_CONTRACT,
                 data: TRANSFER_DATA,
@@ -584,7 +621,7 @@ describe('eth utils', () => {
         });
 
         it('accepts 0x-prefixed calldata', () => {
-            const result = getPrecomposedTxWithAccountToken({
+            const result = getPrecomposedTxWithAccountToken(networkCalldata, {
                 precomposedTx: buildContractCallPrecomposedTx(),
                 contract: TOKEN_CONTRACT,
                 data: `0x${TRANSFER_DATA}`,
@@ -605,7 +642,7 @@ describe('eth utils', () => {
             };
 
             expect(
-                getPrecomposedTxWithAccountToken({
+                getPrecomposedTxWithAccountToken(networkCalldata, {
                     precomposedTx,
                     contract: TOKEN_CONTRACT,
                     data: TRANSFER_DATA,
@@ -622,7 +659,12 @@ describe('eth utils', () => {
             const precomposedTx = buildContractCallPrecomposedTx();
 
             expect(
-                getPrecomposedTxWithAccountToken({ precomposedTx, contract, data, accountTokens }),
+                getPrecomposedTxWithAccountToken(networkCalldata, {
+                    precomposedTx,
+                    contract,
+                    data,
+                    accountTokens,
+                }),
             ).toBe(precomposedTx);
         });
 
@@ -633,7 +675,7 @@ describe('eth utils', () => {
             };
 
             expect(
-                getPrecomposedTxWithAccountToken({
+                getPrecomposedTxWithAccountToken(networkCalldata, {
                     precomposedTx,
                     contract: TOKEN_CONTRACT,
                     data: TRANSFER_DATA,

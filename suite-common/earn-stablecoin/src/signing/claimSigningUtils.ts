@@ -5,8 +5,8 @@ import {
     type YieldClaimReward,
 } from '@suite-common/wallet-types';
 import { fromHex, sanitizeHex } from '@suite-common/wallet-utils';
+import { type Calldata, getEvmCalldata } from '@trezor/calldata';
 import { type EthereumSignTransaction } from '@trezor/connect-common';
-import { Calldata, asEvmAddress } from '@trezor/network-ethereum-suite-common';
 import { BigNumber } from '@trezor/utils';
 
 export type ClaimReward = {
@@ -127,11 +127,11 @@ const getClaimFeeData = (fee: EvmFeeHex) => {
     };
 };
 
-const assertRewardsMatchClaimCalldata = ({
-    data,
-    rewards,
-}: AssertRewardsMatchClaimCalldataParams) => {
-    const decodedClaim = Calldata.evm.distributor.claim.decode(data);
+const assertRewardsMatchClaimCalldata = (
+    networkCalldata: Calldata | undefined,
+    { data, rewards }: AssertRewardsMatchClaimCalldataParams,
+) => {
+    const decodedClaim = networkCalldata?.evm?.distributor.claim.decode(data) ?? null;
 
     if (!decodedClaim) {
         throw new Error('Failed to decode claim transaction data.');
@@ -149,7 +149,13 @@ const assertRewardsMatchClaimCalldata = ({
     }
 };
 
-export const buildClaimCalldata = ({ senderAddress, rewards }: BuildClaimCalldataParams) => {
+export const buildClaimCalldata = (
+    networkCalldata: Calldata | undefined,
+    { senderAddress, rewards }: BuildClaimCalldataParams,
+) => {
+    const Calldata = getEvmCalldata(networkCalldata);
+    const { asEvmAddress } = Calldata;
+
     const sender = asEvmAddress(senderAddress);
     const claimResult = Calldata.evm.distributor.claim.encode(
         {
@@ -283,18 +289,17 @@ export const getClaimTransactionForSigning = ({
     };
 };
 
-export const buildClaimTransactionReview = ({
-    unsignedTransaction,
-    selectedFee,
-    rewards,
-}: BuildClaimTransactionReviewParams): BuildClaimTransactionReviewResult => {
+export const buildClaimTransactionReview = (
+    networkCalldata: Calldata | undefined,
+    { unsignedTransaction, selectedFee, rewards }: BuildClaimTransactionReviewParams,
+): BuildClaimTransactionReviewResult => {
     const fee = parseEvmFeeHex(selectedFee);
 
     if (!fee) {
         throw new Error('Fee information is missing for the transaction.');
     }
 
-    assertRewardsMatchClaimCalldata({ data: unsignedTransaction.data, rewards });
+    assertRewardsMatchClaimCalldata(networkCalldata, { data: unsignedTransaction.data, rewards });
 
     return {
         ...buildClaimReviewState({

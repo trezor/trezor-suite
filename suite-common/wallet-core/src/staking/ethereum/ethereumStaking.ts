@@ -19,6 +19,7 @@ import {
     sanitizeHex,
     secondsToDays,
 } from '@suite-common/wallet-utils';
+import { type Calldata, type VerifyIssue, getEvmCalldata } from '@trezor/calldata';
 import TrezorConnect, {
     type EthereumTransaction,
     type EthereumTransactionEIP1559,
@@ -26,12 +27,6 @@ import TrezorConnect, {
 } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { type BlockchainEstimatedFee } from '@trezor/connect-common/src/types/api/blockchain/blockchainEstimateFee';
-import {
-    Calldata,
-    EVM_ABI,
-    Verifier,
-    type VerifyIssue,
-} from '@trezor/network-ethereum-suite-common';
 import { type Ok, type PartialRecord, exhaustive } from '@trezor/type-utils';
 import { BigNumber, throwError } from '@trezor/utils';
 
@@ -72,7 +67,13 @@ const verifyCalldata = (label: string, result: { isValid: boolean; issues: Verif
     }
 };
 
-export const buildStakeData = (source: string = WALLET_SDK_SOURCE) => {
+export const buildStakeData = (
+    networkCalldata: Calldata | undefined,
+    source: string = WALLET_SDK_SOURCE,
+) => {
+    const Calldata = getEvmCalldata(networkCalldata);
+    const { Verifier } = Calldata;
+
     const data = encodeCalldata(
         'stake',
         Calldata.evm.everstake.stake.encode({ source: new BigNumber(source) }),
@@ -83,10 +84,14 @@ export const buildStakeData = (source: string = WALLET_SDK_SOURCE) => {
 };
 
 export const buildUnstakeData = (
+    networkCalldata: Calldata | undefined,
     amountWei: string,
     interchanges: number,
     source: string = WALLET_SDK_SOURCE,
 ) => {
+    const Calldata = getEvmCalldata(networkCalldata);
+    const { Verifier } = Calldata;
+
     const data = encodeCalldata(
         'unstake',
         Calldata.evm.everstake.unstake.encode({
@@ -107,7 +112,10 @@ export const buildUnstakeData = (
     return data;
 };
 
-export const buildClaimWithdrawRequestData = () => {
+export const buildClaimWithdrawRequestData = (networkCalldata: Calldata | undefined) => {
+    const Calldata = getEvmCalldata(networkCalldata);
+    const { Verifier } = Calldata;
+
     const data = encodeCalldata(
         'claimWithdrawRequest',
         Calldata.evm.everstake.claimWithdrawRequest.encode({}),
@@ -123,18 +131,21 @@ type VerifyEthereumStakingCalldataParams = {
 };
 
 // Re-verifies calldata that was produced at compose time. Returns the Verifier issues so callers can fail with a specific message instead of throwing. For unstake the user-typed amount is not persisted in the form draft, so only the function selector and the SDK `source` field are checked — enough to reject calldata that targets a different function or wasn't produced by our SDK.
-export const verifyEthereumStakingCalldata = ({
-    stakeType,
-    calldata,
-    source = WALLET_SDK_SOURCE,
-}: VerifyEthereumStakingCalldataParams): { isValid: boolean; issues: VerifyIssue[] } => {
+export const verifyEthereumStakingCalldata = (
+    networkCalldata: Calldata | undefined,
+    { stakeType, calldata, source = WALLET_SDK_SOURCE }: VerifyEthereumStakingCalldataParams,
+): { isValid: boolean; issues: VerifyIssue[] } => {
     const data = calldata as `0x${string}`;
     const sourceBigInt = BigInt(source);
 
     if (stakeType === 'stake') {
+        const { Verifier } = getEvmCalldata(networkCalldata);
+
         return Verifier.evm.everstake.stake(data, { source: sourceBigInt });
     }
     if (stakeType === 'unstake') {
+        const { Verifier } = getEvmCalldata(networkCalldata);
+
         return Verifier.evm.everstake.unstake(
             data,
             { value: 0n, allowedInterchangeNum: 0, source: sourceBigInt },
@@ -142,6 +153,8 @@ export const verifyEthereumStakingCalldata = ({
         );
     }
     if (stakeType === 'claim') {
+        const { Verifier } = getEvmCalldata(networkCalldata);
+
         return Verifier.evm.everstake.claimWithdrawRequest(data, {});
     }
 
@@ -239,8 +252,11 @@ export const validateEthereumClaimLiveState = (
     return VALID_LIVE_STATE;
 };
 
-export const getUnstakeAmountFromCalldata = (calldata: string): string | null => {
-    const decoded = Calldata.evm.everstake.unstake.decode(calldata);
+export const getUnstakeAmountFromCalldata = (
+    networkCalldata: Calldata | undefined,
+    calldata: string,
+): string | null => {
+    const decoded = networkCalldata?.evm?.everstake.unstake.decode(calldata) ?? null;
     if (!decoded) {
         return null;
     }
@@ -314,15 +330,18 @@ export const getAdjustedGasLimitConsumption = (estimatedFee: Ok<BlockchainEstima
         .integerValue(BigNumber.ROUND_DOWN)
         .toNumber();
 
-export const stake = async ({
-    from,
-    amount,
-    symbol,
-    identity,
-    feeLimit,
-}: StakeTxBaseArgs & {
-    amount: string;
-}) => {
+export const stake = async (
+    networkCalldata: Calldata | undefined,
+    {
+        from,
+        amount,
+        symbol,
+        identity,
+        feeLimit,
+    }: StakeTxBaseArgs & {
+        amount: string;
+    },
+) => {
     const amountWei = fromEther(amount).toWei();
 
     if (new BigNumber(amount).lt(MIN_ETH_AMOUNT_FOR_STAKING)) {
@@ -335,7 +354,7 @@ export const stake = async ({
         const { addressContractPool } =
             getEthNetworkAddresses(symbol) ??
             throwError(`Unsupported staking network symbol: ${symbol}`);
-        const data = buildStakeData();
+        const data = buildStakeData(networkCalldata);
 
         // gasLimit calculation based on address, amount and data size
         // amount is essential for a proper calculation of gasLimit (via blockbook/geth)
@@ -368,17 +387,20 @@ export const stake = async ({
     }
 };
 
-export const unstake = async ({
-    from,
-    amount,
-    identity,
-    interchanges,
-    symbol,
-    feeLimit,
-}: StakeTxBaseArgs & {
-    amount: string;
-    interchanges: number;
-}) => {
+export const unstake = async (
+    networkCalldata: Calldata | undefined,
+    {
+        from,
+        amount,
+        identity,
+        interchanges,
+        symbol,
+        feeLimit,
+    }: StakeTxBaseArgs & {
+        amount: string;
+        interchanges: number;
+    },
+) => {
     try {
         const accountInfo = await TrezorConnect.getAccountInfo({
             coin: asCoinSymbol(symbol),
@@ -407,7 +429,7 @@ export const unstake = async ({
         const { addressContractPool } =
             getEthNetworkAddresses(symbol) ??
             throwError(`Unsupported staking network symbol: ${symbol}`);
-        const data = buildUnstakeData(amountWei, interchanges);
+        const data = buildUnstakeData(networkCalldata, amountWei, interchanges);
 
         // gasLimit calculation based on address, amount and data size
         // amount is essential for a proper calculation of gasLimit (via blockbook/geth)
@@ -439,12 +461,10 @@ export const unstake = async ({
     }
 };
 
-export const claimWithdrawRequest = async ({
-    from,
-    symbol,
-    identity,
-    feeLimit,
-}: StakeTxBaseArgs) => {
+export const claimWithdrawRequest = async (
+    networkCalldata: Calldata | undefined,
+    { from, symbol, identity, feeLimit }: StakeTxBaseArgs,
+) => {
     try {
         const accountInfo = await TrezorConnect.getAccountInfo({
             coin: asCoinSymbol(symbol),
@@ -466,7 +486,7 @@ export const claimWithdrawRequest = async ({
         const { addressContractAccounting } =
             getEthNetworkAddresses(symbol) ??
             throwError(`Unsupported staking network symbol: ${symbol}`);
-        const data = buildClaimWithdrawRequestData();
+        const data = buildClaimWithdrawRequestData(networkCalldata);
 
         // gasLimit calculation based on address, amount and data size
         // amount is essential for a proper calculation of gasLimit (via blockbook/geth)
@@ -583,20 +603,23 @@ type PrepareStakeEthTxResponse =
           errorMessage: string;
       };
 
-export const prepareStakeEthTx = async ({
-    symbol,
-    from,
-    amount,
-    gasPrice,
-    nonce,
-    chainId,
-    feeLimit,
-    maxFeePerGas,
-    maxPriorityFeePerGas,
-    identity,
-}: PrepareStakeEthTxParams): Promise<PrepareStakeEthTxResponse> => {
+export const prepareStakeEthTx = async (
+    networkCalldata: Calldata | undefined,
+    {
+        symbol,
+        from,
+        amount,
+        gasPrice,
+        nonce,
+        chainId,
+        feeLimit,
+        maxFeePerGas,
+        maxPriorityFeePerGas,
+        identity,
+    }: PrepareStakeEthTxParams,
+): Promise<PrepareStakeEthTxResponse> => {
     try {
-        const tx = await stake({
+        const tx = await stake(networkCalldata, {
             from,
             amount,
             symbol,
@@ -627,21 +650,24 @@ export const prepareStakeEthTx = async ({
     }
 };
 
-export const prepareUnstakeEthTx = async ({
-    symbol,
-    from,
-    amount,
-    gasPrice,
-    nonce,
-    chainId,
-    identity,
-    interchanges = UNSTAKE_INTERCHANGES,
-    feeLimit,
-    maxFeePerGas,
-    maxPriorityFeePerGas,
-}: PrepareUnstakeEthTxParams): Promise<PrepareStakeEthTxResponse> => {
+export const prepareUnstakeEthTx = async (
+    networkCalldata: Calldata | undefined,
+    {
+        symbol,
+        from,
+        amount,
+        gasPrice,
+        nonce,
+        chainId,
+        identity,
+        interchanges = UNSTAKE_INTERCHANGES,
+        feeLimit,
+        maxFeePerGas,
+        maxPriorityFeePerGas,
+    }: PrepareUnstakeEthTxParams,
+): Promise<PrepareStakeEthTxResponse> => {
     try {
-        const tx = await unstake({
+        const tx = await unstake(networkCalldata, {
             from,
             amount,
             identity,
@@ -673,19 +699,27 @@ export const prepareUnstakeEthTx = async ({
     }
 };
 
-export const prepareClaimEthTx = async ({
-    symbol,
-    identity,
-    from,
-    gasPrice,
-    nonce,
-    chainId,
-    feeLimit,
-    maxFeePerGas,
-    maxPriorityFeePerGas,
-}: PrepareClaimEthTxParams): Promise<PrepareStakeEthTxResponse> => {
+export const prepareClaimEthTx = async (
+    networkCalldata: Calldata | undefined,
+    {
+        symbol,
+        identity,
+        from,
+        gasPrice,
+        nonce,
+        chainId,
+        feeLimit,
+        maxFeePerGas,
+        maxPriorityFeePerGas,
+    }: PrepareClaimEthTxParams,
+): Promise<PrepareStakeEthTxResponse> => {
     try {
-        const tx = await claimWithdrawRequest({ from, symbol, identity, feeLimit });
+        const tx = await claimWithdrawRequest(networkCalldata, {
+            from,
+            symbol,
+            identity,
+            feeLimit,
+        });
         const transformedTx = transformTx(
             tx,
             nonce,
@@ -719,21 +753,18 @@ type GetStakeTxGasLimitResponse =
           error: PrecomposedLevels; // TODO: wrong error
       };
 
-export const getStakeTxGasLimit = async ({
-    stakeType,
-    from,
-    amount,
-    symbol,
-    identity,
-}: GetStakeTxGasLimitParams): Promise<GetStakeTxGasLimitResponse> => {
+export const getStakeTxGasLimit = async (
+    networkCalldata: Calldata | undefined,
+    { stakeType, from, amount, symbol, identity }: GetStakeTxGasLimitParams,
+): Promise<GetStakeTxGasLimitResponse> => {
     try {
         let txData;
         if (stakeType === 'stake') {
-            txData = await stake({ from, amount, symbol, identity });
+            txData = await stake(networkCalldata, { from, amount, symbol, identity });
         }
         if (stakeType === 'unstake') {
             // Increase allowedInterchangeNum to enable instant unstaking.
-            txData = await unstake({
+            txData = await unstake(networkCalldata, {
                 from,
                 amount,
                 interchanges: UNSTAKE_INTERCHANGES,
@@ -742,7 +773,7 @@ export const getStakeTxGasLimit = async ({
             });
         }
         if (stakeType === 'claim') {
-            txData = await claimWithdrawRequest({ from, symbol, identity });
+            txData = await claimWithdrawRequest(networkCalldata, { from, symbol, identity });
         }
 
         if (!txData) {
@@ -878,12 +909,15 @@ export const getChangedInternalTx = (
     return internalTransfer ?? null;
 };
 
-export const simulateUnstake = async ({
-    amount,
-    from,
-    symbol,
-    source = WALLET_SDK_SOURCE,
-}: StakeTxBaseArgs & { amount: string; source?: string }) => {
+export const simulateUnstake = async (
+    networkCalldata: Calldata | undefined,
+    {
+        amount,
+        from,
+        symbol,
+        source = WALLET_SDK_SOURCE,
+    }: StakeTxBaseArgs & { amount: string; source?: string },
+) => {
     if (!isSupportedEthStakingNetworkSymbol(symbol)) return null;
     if (!amount || !from || !symbol) return null;
 
@@ -892,7 +926,7 @@ export const simulateUnstake = async ({
     const { addressContractPool } = ethAddresses;
 
     const amountWei = fromEther(amount).toWei();
-    const data = buildUnstakeData(amountWei, UNSTAKE_INTERCHANGES, source);
+    const data = buildUnstakeData(networkCalldata, amountWei, UNSTAKE_INTERCHANGES, source);
 
     const transactionData = await TrezorConnect.blockchainEvmRpcCall({
         coin: asCoinSymbol(symbol),
@@ -904,6 +938,7 @@ export const simulateUnstake = async ({
     if (!transactionData.success) {
         throw new Error(transactionData.error.message);
     }
+    const { EVM_ABI } = getEvmCalldata(networkCalldata);
 
     const unstakeFromPendingValue = decodeFunctionResult({
         abi: EVM_ABI.everstake.unstake,

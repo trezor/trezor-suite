@@ -37,6 +37,7 @@ import {
     fromGwei,
     getAccountIdentity,
 } from '@suite-common/wallet-utils';
+import { type Calldata } from '@trezor/calldata';
 import TrezorConnect, { type FeeLevel } from '@trezor/connect';
 import { type WithServices } from '@trezor/redux-utils';
 
@@ -70,7 +71,12 @@ const calculateStakingTransaction = (
 };
 
 export const composeTransaction =
-    (formValues: StakeFormState, formState: ComposeActionContext) => async () => {
+    (
+        networkCalldata: Calldata | undefined,
+        formValues: StakeFormState,
+        formState: ComposeActionContext,
+    ) =>
+    async () => {
         const { account, feeInfo } = formState;
         if (!account || !feeInfo) return;
 
@@ -80,7 +86,7 @@ export const composeTransaction =
 
         // gasLimit calculation based on account.descriptor and amount
         const { stakeType } = formValues;
-        const stakeTxGasLimit = await getStakeTxGasLimit({
+        const stakeTxGasLimit = await getStakeTxGasLimit(networkCalldata, {
             stakeType,
             from: account.descriptor,
             amount,
@@ -129,7 +135,11 @@ type SignTransactionThunkState = DeviceRootState &
 type SignTransactionThunkDeps = WithServices<DesktopAnalyticsDep>;
 
 export const signTransactionThunk =
-    (formValues: StakeFormState, transactionInfo: PrecomposedTransactionFinal) =>
+    (
+        networkCalldata: Calldata | undefined,
+        formValues: StakeFormState,
+        transactionInfo: PrecomposedTransactionFinal,
+    ) =>
     async (
         dispatch: ThunkDispatch<SignTransactionThunkState, SignTransactionThunkDeps, UnknownAction>,
         getState: () => SignTransactionThunkState,
@@ -165,7 +175,7 @@ export const signTransactionThunk =
         if (stakeType === 'stake') {
             const amount = formValues.outputs[0]?.amount ?? '0';
 
-            txData = await prepareStakeEthTx({
+            txData = await prepareStakeEthTx(networkCalldata, {
                 symbol: account.symbol,
                 from: account.descriptor,
                 identity,
@@ -181,7 +191,7 @@ export const signTransactionThunk =
         if (stakeType === 'unstake') {
             const amount = formValues.outputs[0]?.amount ?? '0';
 
-            txData = await prepareUnstakeEthTx({
+            txData = await prepareUnstakeEthTx(networkCalldata, {
                 symbol: account.symbol,
                 from: account.descriptor,
                 identity,
@@ -196,7 +206,7 @@ export const signTransactionThunk =
             });
         }
         if (stakeType === 'claim') {
-            txData = await prepareClaimEthTx({
+            txData = await prepareClaimEthTx(networkCalldata, {
                 symbol: account.symbol,
                 from: account.descriptor,
                 identity,

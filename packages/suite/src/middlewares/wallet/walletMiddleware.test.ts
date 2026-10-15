@@ -18,10 +18,11 @@ import {
 } from '@suite-common/wallet-core';
 import { type WalletSettings, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockGetTradedAccountKeys, mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { getEthereumCalldata } from '@trezor/network-ethereum-suite-common';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { updateWindowVisibility } from 'src/actions/suite/windowActions';
-import walletMiddleware from 'src/middlewares/wallet/walletMiddleware';
+import { prepareWalletMiddleware } from 'src/middlewares/wallet/walletMiddleware';
 import {
     type WalletState,
     accountsReducer,
@@ -30,6 +31,8 @@ import {
 } from 'src/reducers/wallet';
 
 import * as fixtures from './__fixtures__/walletMiddleware';
+
+const ethereumCalldata = getEthereumCalldata();
 
 const sendFormReducer = prepareSendFormReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
@@ -117,7 +120,9 @@ const getInitialState = ({
 const mockStore = (preloadedState: State) =>
     createTestCompositionRoot<SyncAccountsWithBlockchainThunkDeps, State>({
         middleware: [
-            walletMiddleware,
+            prepareWalletMiddleware(() => ({
+                services: { networks: { getCalldata: () => ethereumCalldata } },
+            })),
             prepareBlockchainMiddleware(() => ({})),
             prepareBlockchainSubscriptionMiddleware(() => ({})),
         ],

@@ -9,11 +9,8 @@ import {
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
-import {
-    Calldata,
-    type EvmAddress,
-    isWrappedNativeToken,
-} from '@trezor/network-ethereum-suite-common';
+import { type Calldata, type EvmAddress, getEvmCalldata } from '@trezor/calldata';
+import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { BigNumber } from '@trezor/utils';
 
 import { YIELD_FLOW_AVAILABLE_STEPS } from '../yieldConstants';
@@ -170,13 +167,10 @@ export const getYieldWithdrawInputToken = ({
 }: GetYieldWithdrawInputTokenParams): YieldFlowDisplayToken =>
     flowType === 'redeem' ? flowData.receiptToken : flowData.token;
 
-export const buildYieldWithdrawCalldata = ({
-    amount,
-    flowData,
-    ownerAddress,
-    receiverAddress,
-    flowType,
-}: BuildYieldWithdrawCalldataParams) => {
+export const buildYieldWithdrawCalldata = (
+    networkCalldata: Calldata | undefined,
+    { amount, flowData, ownerAddress, receiverAddress, flowType }: BuildYieldWithdrawCalldataParams,
+) => {
     const isRedeem = flowType === 'redeem';
     const inputToken = getYieldWithdrawInputToken({ flowData, flowType });
     const amountSubunits = unitsToSubunits({
@@ -185,7 +179,7 @@ export const buildYieldWithdrawCalldata = ({
     });
 
     const builderResult = isRedeem
-        ? Calldata.evm.erc4626.redeem.encode(
+        ? getEvmCalldata(networkCalldata).evm.erc4626.redeem.encode(
               {
                   shares: amountSubunits,
                   receiver: receiverAddress,
@@ -193,7 +187,7 @@ export const buildYieldWithdrawCalldata = ({
               },
               { sender: ownerAddress },
           )
-        : Calldata.evm.erc4626.withdraw.encode(
+        : getEvmCalldata(networkCalldata).evm.erc4626.withdraw.encode(
               {
                   assets: amountSubunits,
                   receiver: receiverAddress,
@@ -211,16 +205,15 @@ export const buildYieldWithdrawCalldata = ({
     return builderResult.data;
 };
 
-export const buildYieldDepositCalldata = ({
-    amount,
-    flowData,
-    ownerAddress,
-    receiverAddress,
-}: BuildYieldDepositCalldataParams) => {
+export const buildYieldDepositCalldata = (
+    networkCalldata: Calldata | undefined,
+    { amount, flowData, ownerAddress, receiverAddress }: BuildYieldDepositCalldataParams,
+) => {
     const amountSubunits = unitsToSubunits({
         value: asAmountUnit(new BigNumber(amount)),
         decimals: flowData.token.decimals,
     });
+    const Calldata = getEvmCalldata(networkCalldata);
 
     const builderResult = Calldata.evm.erc4626.deposit.encode(
         {
@@ -320,10 +313,12 @@ type BuildYieldWrapTransactionDataParams = {
 };
 
 // WETH `deposit()` carries the wrapped amount in the transaction value, not in calldata.
-export const buildYieldWrapTransactionData = ({
-    wrapAmount,
-    decimals,
-}: BuildYieldWrapTransactionDataParams) => {
+export const buildYieldWrapTransactionData = (
+    networkCalldata: Calldata | undefined,
+    { wrapAmount, decimals }: BuildYieldWrapTransactionDataParams,
+) => {
+    const Calldata = getEvmCalldata(networkCalldata);
+
     const builderResult = Calldata.evm.weth.deposit.encode({});
 
     if (!builderResult.isValid || !builderResult.data) {
@@ -346,16 +341,19 @@ type BuildYieldUnwrapTransactionDataParams = {
     decimals: number;
 };
 
-export const buildYieldUnwrapTransactionData = ({
-    unwrapAmount,
-    decimals,
-}: BuildYieldUnwrapTransactionDataParams) => {
+export const buildYieldUnwrapTransactionData = (
+    networkCalldata: Calldata | undefined,
+    { unwrapAmount, decimals }: BuildYieldUnwrapTransactionDataParams,
+) => {
     const wadSubunits = unitsToSubunits({
         value: asAmountUnit(new BigNumber(unwrapAmount)),
         decimals,
     });
+    const Calldata = getEvmCalldata(networkCalldata);
 
-    const builderResult = Calldata.evm.weth.withdraw.encode({ wad: wadSubunits });
+    const builderResult = Calldata.evm.weth.withdraw.encode({
+        wad: wadSubunits,
+    });
 
     if (!builderResult.isValid || !builderResult.data) {
         const issues = builderResult.errors.map(issue => issue.code).join(', ');

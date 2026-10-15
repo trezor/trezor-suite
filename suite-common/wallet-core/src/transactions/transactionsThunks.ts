@@ -1,3 +1,4 @@
+import { type GetCalldataThunkDeps } from '@suite-common/networks';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import {
     type Account,
@@ -98,10 +99,11 @@ export const replaceTransactionThunk = createThunk<
     ReplaceTransactionThunkParams,
     {
         state: ReplaceTransactionThunkState;
+        extra: GetCalldataThunkDeps;
     }
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/replaceTransactionThunk`,
-    ({ precomposedTransaction, newTxid }, { getState, dispatch }) => {
+    ({ precomposedTransaction, newTxid }, { getState, dispatch, extra }) => {
         if (!isRbfBumpFeeTransaction(precomposedTransaction)) return; // ignore if it's not a replacement tx
 
         const walletTransactions = selectTransactions(getState());
@@ -122,6 +124,7 @@ export const replaceTransactionThunk = createThunk<
             if (signedTransaction) {
                 // bitcoin-like: profile transaction for affected account
                 newTx = enhanceTransaction(
+                    extra.services.networks.getCalldata(origTx.symbol),
                     blockbookUtils.transformTransaction(
                         signedTransaction,
                         affectedAccount.addresses,
@@ -146,7 +149,11 @@ export const replaceTransactionThunk = createThunk<
                     delete newTx.rbfParams;
                 } else {
                     // update tx rbfParams
-                    newTx.rbfParams = getRbfParams(newTx, affectedAccount);
+                    newTx.rbfParams = getRbfParams(
+                        extra.services.networks.getCalldata(origTx.symbol),
+                        newTx,
+                        affectedAccount,
+                    );
                 }
             }
 
@@ -172,10 +179,10 @@ type AddFakePendingTxThunkState = AccountsRootState & BlockchainRootState & Send
 export const addFakePendingTxThunk = createThunk<
     void,
     AddFakePendingTransactionParams,
-    { state: AddFakePendingTxThunkState }
+    { state: AddFakePendingTxThunkState; extra: GetCalldataThunkDeps }
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
-    ({ precomposedTransaction, account }, { dispatch, getState, rejectWithValue }) => {
+    ({ precomposedTransaction, account }, { dispatch, getState, rejectWithValue, extra }) => {
         const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol);
         const accounts = selectAccounts(getState());
         const signedTransaction = selectSendSignedTx(getState());
@@ -220,6 +227,9 @@ export const addFakePendingTxThunk = createThunk<
                 const prependingTx = { ...affectedAccountTransaction, deadline: blockHeight + 2 };
                 dispatch(
                     transactionsActions.addTransaction({
+                        networkCalldata: extra.services.networks.getCalldata(
+                            affectedAccount.symbol,
+                        ),
                         transactions: [prependingTx],
                         account: affectedAccount,
                     }),
@@ -399,12 +409,13 @@ export const addFakePendingEvmTxThunk = createThunk<
     AddFakePendingEvmTxThunkParams,
     {
         state: AddFakePendingEvmTxThunkState;
+        extra: GetCalldataThunkDeps;
     }
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
     async (
         { precomposedTransaction, precomposedForm, txid, account, ethereumNonce },
-        { dispatch, getState },
+        { dispatch, getState, extra },
     ) => {
         if (
             account.networkType !== 'ethereum' ||
@@ -435,7 +446,10 @@ export const addFakePendingEvmTxThunk = createThunk<
 
         const deadline = FAKE_TX_TTL_SECONDS / rawFeeInfo!.blockTime;
 
-        const sig = getEvmTransactionTextSignature(precomposedForm.transactionData);
+        const sig = getEvmTransactionTextSignature(
+            extra.services.networks.getCalldata(account?.symbol),
+            precomposedForm.transactionData,
+        );
         const transfersToken =
             !precomposedForm.transactionData ||
             sig === 'transfer' ||
@@ -452,7 +466,13 @@ export const addFakePendingEvmTxThunk = createThunk<
             deadline,
         });
 
-        dispatch(transactionsActions.addTransaction({ transactions: [fakeTx], account }));
+        dispatch(
+            transactionsActions.addTransaction({
+                networkCalldata: extra.services.networks.getCalldata(account.symbol),
+                transactions: [fakeTx],
+                account,
+            }),
+        );
     },
 );
 
@@ -474,7 +494,7 @@ export type AddFakePendingCardanoTxThunkState = BlockchainRootState;
 export const addFakePendingCardanoTxThunk = createThunk<
     void,
     AddFakePendingCardanoTxThunkParams,
-    { state: AddFakePendingCardanoTxThunkState }
+    { state: AddFakePendingCardanoTxThunkState; extra: GetCalldataThunkDeps }
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
     (
@@ -484,7 +504,7 @@ export const addFakePendingCardanoTxThunk = createThunk<
             account,
             cardanoSpecific,
         },
-        { dispatch, getState },
+        { dispatch, getState, extra },
     ) => {
         const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol);
 
@@ -600,7 +620,13 @@ export const addFakePendingCardanoTxThunk = createThunk<
             deadline: blockHeight + Math.ceil(FAKE_TX_TTL_SECONDS / CARDANO_BLOCK_TIME_SECONDS),
         };
 
-        dispatch(transactionsActions.addTransaction({ transactions: [fakeTx], account }));
+        dispatch(
+            transactionsActions.addTransaction({
+                networkCalldata: extra.services.networks.getCalldata(account.symbol),
+                transactions: [fakeTx],
+                account,
+            }),
+        );
     },
 );
 
@@ -620,12 +646,12 @@ export type AddFakePendingTronTxThunkState = BlockchainRootState & FeesRootState
 export const addFakePendingTronTxThunk = createThunk<
     void,
     AddFakePendingTronTxThunkParams,
-    { state: AddFakePendingTronTxThunkState }
+    { state: AddFakePendingTronTxThunkState; extra: GetCalldataThunkDeps }
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
     (
         { txid, account, amount, fee, type, target, tokens, tronSpecific },
-        { dispatch, getState },
+        { dispatch, getState, extra },
     ) => {
         if (account.networkType !== 'tron') return;
 
@@ -666,7 +692,13 @@ export const addFakePendingTronTxThunk = createThunk<
             },
             deadline,
         };
-        dispatch(transactionsActions.addTransaction({ transactions: [fakeTx], account }));
+        dispatch(
+            transactionsActions.addTransaction({
+                networkCalldata: extra.services.networks.getCalldata(account.symbol),
+                transactions: [fakeTx],
+                account,
+            }),
+        );
     },
 );
 
@@ -683,10 +715,10 @@ export type AddFakePendingStellarTxThunkState = BlockchainRootState;
 export const addFakePendingStellarTxThunk = createThunk<
     void,
     AddFakePendingStellarTxThunkParams,
-    { state: AddFakePendingStellarTxThunkState }
+    { state: AddFakePendingStellarTxThunkState; extra: GetCalldataThunkDeps }
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
-    ({ precomposedTransaction, memo, txid, account }, { dispatch, getState }) => {
+    ({ precomposedTransaction, memo, txid, account }, { dispatch, getState, extra }) => {
         if (account.networkType !== 'stellar') return;
 
         const [output] = precomposedTransaction.outputs;
@@ -748,7 +780,13 @@ export const addFakePendingStellarTxThunk = createThunk<
             deadline: blockHeight + Math.ceil(FAKE_TX_TTL_SECONDS / STELLAR_LEDGER_CLOSE_SECONDS),
         };
 
-        dispatch(transactionsActions.addTransaction({ transactions: [fakeTx], account }));
+        dispatch(
+            transactionsActions.addTransaction({
+                networkCalldata: extra.services.networks.getCalldata(account.symbol),
+                transactions: [fakeTx],
+                account,
+            }),
+        );
     },
 );
 
@@ -826,10 +864,10 @@ type AddFakePendingSolanaSendTxThunkState = BlockchainRootState;
 export const addFakePendingSolanaSendTxThunk = createThunk<
     void,
     AddFakePendingSolanaSendTxThunkParams,
-    { state: AddFakePendingSolanaSendTxThunkState }
+    { state: AddFakePendingSolanaSendTxThunkState; extra: GetCalldataThunkDeps }
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
-    ({ precomposedTransaction, txid, account }, { dispatch, getState }) => {
+    ({ precomposedTransaction, txid, account }, { dispatch, getState, extra }) => {
         if (account.networkType !== 'solana') return;
 
         const [output] = precomposedTransaction.outputs;
@@ -890,7 +928,13 @@ export const addFakePendingSolanaSendTxThunk = createThunk<
             },
             deadline: blockHeight + Math.ceil(FAKE_TX_TTL_SECONDS / SOLANA_BLOCK_TIME_SECONDS),
         };
-        dispatch(transactionsActions.addTransaction({ transactions: [fakeTx], account }));
+        dispatch(
+            transactionsActions.addTransaction({
+                networkCalldata: extra.services.networks.getCalldata(account.symbol),
+                transactions: [fakeTx],
+                account,
+            }),
+        );
     },
 );
 
@@ -922,10 +966,11 @@ export const fetchTransactionsPageThunk = createThunk<
     FetchTransactionsPageThunkParams,
     {
         state: FetchTransactionsPageThunkState;
+        extra: GetCalldataThunkDeps;
     }
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/fetchTransactionsPageThunk`,
-    async ({ accountKey, page, perPage, forceRefetch, from }, { dispatch, getState }) => {
+    async ({ accountKey, page, perPage, forceRefetch, from }, { dispatch, getState, extra }) => {
         const account = selectAccountByKey(getState(), accountKey);
         if (!account) {
             throw new Error(`Account not found: ${accountKey}`);
@@ -986,6 +1031,7 @@ export const fetchTransactionsPageThunk = createThunk<
 
             dispatch(
                 transactionsActions.addTransaction({
+                    networkCalldata: extra.services.networks.getCalldata(updatedAccount.symbol),
                     transactions: updatedTransactions,
                     account: updatedAccount,
                     page,
@@ -1013,12 +1059,12 @@ type FetchUtxoTransactionsForAccountThunkState = AccountsRootState & Transaction
 export const fetchUtxoTransactionsForAccountThunk = createSingleInstanceThunk<
     FetchUtxoTransactionsForAccountThunkParams,
     WalletAccountTransaction[],
-    { state: FetchUtxoTransactionsForAccountThunkState }
+    { state: FetchUtxoTransactionsForAccountThunkState; extra: GetCalldataThunkDeps }
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/fetchUtxoTransactionsForAccountThunk`,
     async (
         { accountKey }: FetchUtxoTransactionsForAccountThunkParams,
-        { dispatch, getState, signal },
+        { dispatch, getState, signal, extra },
     ) => {
         const account = selectAccountByKey(getState(), accountKey);
         if (!account) {
@@ -1045,6 +1091,7 @@ export const fetchUtxoTransactionsForAccountThunk = createSingleInstanceThunk<
 
         dispatch(
             transactionsActions.addTransaction({
+                networkCalldata: extra.services.networks.getCalldata(account.symbol),
                 transactions: result.payload,
                 account,
             }),

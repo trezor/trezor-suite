@@ -1,6 +1,8 @@
 import { createAction, isFulfilled, isRejected } from '@reduxjs/toolkit';
 
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
+import { type GetCalldataThunkDeps } from '@suite-common/networks';
+import { mockGetCalldata } from '@suite-common/networks/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -77,7 +79,7 @@ const mevEnabledMock = selectIsMevProtectionEnabled as unknown as jest.Mock;
 const mevFeatureMock = selectIsMevProtectionFeatureEnabled as unknown as jest.Mock;
 const dispatchCancel = () => {
     const { store } = createTestCompositionRoot<
-        PushSendFormTransactionThunkDeps,
+        PushSendFormTransactionThunkDeps & GetCalldataThunkDeps,
         SignAndPushEvmCancelTransactionThunkState
     >({
         extra: {
@@ -85,9 +87,12 @@ const dispatchCancel = () => {
         },
         services: () => ({
             analytics: mockNativeAnalytics(),
-            networks: createMockDeps<PushSendFormTransactionThunkDeps['services']['networks']>({
-                getAccountSyncInterval: null,
-            }),
+            networks: {
+                ...createMockDeps<PushSendFormTransactionThunkDeps['services']['networks']>({
+                    getAccountSyncInterval: null,
+                }),
+                getCalldata: mockGetCalldata(),
+            },
             getIsWindowVisible: asGetter(() => true),
             getTradedAccountKeys: asGetter(() => []),
         }),

@@ -1,3 +1,4 @@
+import { type GetCalldataThunkDeps } from '@suite-common/networks';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type PrecomposedLevels } from '@suite-common/wallet-types';
@@ -34,10 +35,14 @@ type ComposeTronTransactionFeeLevelsThunkState = void;
 export const composeTronTransactionFeeLevelsThunk = createThunk<
     PrecomposedLevels,
     ComposeTransactionThunkArguments,
-    { rejectValue: ComposeFeeLevelsError; state: ComposeTronTransactionFeeLevelsThunkState }
+    {
+        rejectValue: ComposeFeeLevelsError;
+        state: ComposeTronTransactionFeeLevelsThunkState;
+        extra: GetCalldataThunkDeps;
+    }
 >(
     `${SEND_MODULE_PREFIX}/composeTronTransactionFeeLevelsThunk`,
-    async ({ formState, composeContext }, { dispatch, rejectWithValue }) => {
+    async ({ formState, composeContext }, { dispatch, rejectWithValue, extra }) => {
         const { account, network } = composeContext;
 
         if (account.networkType !== 'tron') {
@@ -93,12 +98,15 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
             ? formState.transactionData.replace(/^0x/, '')
             : '';
 
-        const calldata = resolveCalldata({
-            token,
-            outputAddress: to,
-            amountInSubunits: amountForEstimation,
-            userCallDataHex,
-        });
+        const calldata = resolveCalldata(
+            extra.services.networks.getCalldata(composeContext.account.symbol),
+            {
+                token,
+                outputAddress: to,
+                amountInSubunits: amountForEstimation,
+                userCallDataHex,
+            },
+        );
 
         if ('error' in calldata) {
             return rejectWithValue({
@@ -205,10 +213,17 @@ type SignTronSendFormTransactionThunkState = void;
 export const signTronSendFormTransactionThunk = createThunk<
     { serializedTx: string },
     SignTransactionThunkArguments,
-    { rejectValue: SignTransactionError; state: SignTronSendFormTransactionThunkState }
+    {
+        rejectValue: SignTransactionError;
+        state: SignTronSendFormTransactionThunkState;
+        extra: GetCalldataThunkDeps;
+    }
 >(
     `${SEND_MODULE_PREFIX}/signTronSendFormTransactionThunk`,
-    async ({ formState, precomposedTransaction, selectedAccount, device }, { rejectWithValue }) => {
+    async (
+        { formState, precomposedTransaction, selectedAccount, device },
+        { rejectWithValue, extra },
+    ) => {
         if (selectedAccount.networkType !== 'tron') {
             return rejectWithValue({
                 error: 'sign-transaction-failed',
@@ -264,12 +279,15 @@ export const signTronSendFormTransactionThunk = createThunk<
             });
         }
 
-        const calldata = resolveCalldata({
-            token,
-            outputAddress: output.address,
-            amountInSubunits,
-            userCallDataHex,
-        });
+        const calldata = resolveCalldata(
+            extra.services.networks.getCalldata(selectedAccount.symbol),
+            {
+                token,
+                outputAddress: output.address,
+                amountInSubunits,
+                userCallDataHex,
+            },
+        );
 
         if ('error' in calldata) {
             return rejectWithValue({

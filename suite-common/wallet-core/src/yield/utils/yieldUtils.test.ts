@@ -1,6 +1,7 @@
 import type { YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { Calldata, asEvmAddress } from '@trezor/network-ethereum-suite-common';
+import { getEvmCalldata } from '@trezor/calldata';
+import { getEthereumCalldata } from '@trezor/network-ethereum-suite-common';
 
 import type { YieldPendingTransactionState } from '../yieldTypes';
 import {
@@ -23,7 +24,11 @@ import {
     splitYieldPendingTransaction,
 } from './yieldUtils';
 
-const ACCOUNT_DESCRIPTOR = asEvmAddress('0x9ea3721b5bf3b64b4418c38b603154d2d597fae3');
+const networkCalldata = getEthereumCalldata();
+
+const ACCOUNT_DESCRIPTOR = getEvmCalldata(networkCalldata).asEvmAddress(
+    '0x9ea3721b5bf3b64b4418c38b603154d2d597fae3',
+);
 const VAULT_ADDRESS = '0x58d97b57bb95320f9a05dc918aef65434969c2b2';
 const ethSymbol = asNetworkSymbol('eth');
 
@@ -58,7 +63,7 @@ const RESERVE = '0.005';
 describe('yieldUtils', () => {
     describe('buildYieldWithdrawCalldata', () => {
         it('builds ERC4626 withdraw calldata for asset input', () => {
-            const calldata = buildYieldWithdrawCalldata({
+            const calldata = buildYieldWithdrawCalldata(networkCalldata, {
                 amount: '10',
                 flowData,
                 ownerAddress: ACCOUNT_DESCRIPTOR,
@@ -66,7 +71,7 @@ describe('yieldUtils', () => {
                 flowType: 'withdraw',
             });
 
-            expect(Calldata.evm.erc4626.withdraw.decode(calldata)).toEqual({
+            expect(networkCalldata?.evm?.erc4626.withdraw.decode(calldata) ?? null).toEqual({
                 assets: 10_000_000n,
                 owner: ACCOUNT_DESCRIPTOR.toLowerCase(),
                 receiver: ACCOUNT_DESCRIPTOR.toLowerCase(),
@@ -74,7 +79,7 @@ describe('yieldUtils', () => {
         });
 
         it('builds ERC4626 redeem calldata for shares input', () => {
-            const calldata = buildYieldWithdrawCalldata({
+            const calldata = buildYieldWithdrawCalldata(networkCalldata, {
                 amount: '10',
                 flowData,
                 ownerAddress: ACCOUNT_DESCRIPTOR,
@@ -82,7 +87,7 @@ describe('yieldUtils', () => {
                 flowType: 'redeem',
             });
 
-            expect(Calldata.evm.erc4626.redeem.decode(calldata)).toEqual({
+            expect(networkCalldata?.evm?.erc4626.redeem.decode(calldata) ?? null).toEqual({
                 shares: 10_000_000_000_000_000_000n,
                 owner: ACCOUNT_DESCRIPTOR.toLowerCase(),
                 receiver: ACCOUNT_DESCRIPTOR.toLowerCase(),
@@ -91,7 +96,7 @@ describe('yieldUtils', () => {
 
         it('throws when calldata cannot be encoded', () => {
             expect(() =>
-                buildYieldWithdrawCalldata({
+                buildYieldWithdrawCalldata(networkCalldata, {
                     amount: '10',
                     flowData,
                     ownerAddress: 'not-an-address' as unknown as Parameters<
@@ -228,14 +233,14 @@ describe('yieldUtils', () => {
 
     describe('buildYieldDepositCalldata', () => {
         it('builds ERC4626 deposit calldata', () => {
-            const calldata = buildYieldDepositCalldata({
+            const calldata = buildYieldDepositCalldata(networkCalldata, {
                 amount: '10',
                 flowData,
                 ownerAddress: ACCOUNT_DESCRIPTOR,
                 receiverAddress: ACCOUNT_DESCRIPTOR,
             });
 
-            expect(Calldata.evm.erc4626.deposit.decode(calldata)).toEqual({
+            expect(networkCalldata?.evm?.erc4626.deposit.decode(calldata) ?? null).toEqual({
                 assets: 10_000_000n,
                 receiver: ACCOUNT_DESCRIPTOR.toLowerCase(),
             });
@@ -243,7 +248,7 @@ describe('yieldUtils', () => {
 
         it('throws when calldata cannot be encoded', () => {
             expect(() =>
-                buildYieldDepositCalldata({
+                buildYieldDepositCalldata(networkCalldata, {
                     amount: '0',
                     flowData,
                     ownerAddress: ACCOUNT_DESCRIPTOR,
@@ -330,7 +335,9 @@ describe('yieldUtils', () => {
 
     describe('buildYieldWrapTransactionData', () => {
         it('encodes the WETH deposit() selector and carries the amount in the value', () => {
-            expect(buildYieldWrapTransactionData({ wrapAmount: '1', decimals: 18 })).toEqual({
+            expect(
+                buildYieldWrapTransactionData(networkCalldata, { wrapAmount: '1', decimals: 18 }),
+            ).toEqual({
                 data: '0xd0e30db0',
                 value: '0xde0b6b3a7640000',
             });
@@ -339,16 +346,22 @@ describe('yieldUtils', () => {
 
     describe('buildYieldUnwrapTransactionData', () => {
         it('encodes WETH withdraw(uint256) calldata for the amount', () => {
-            const { data } = buildYieldUnwrapTransactionData({ unwrapAmount: '1', decimals: 18 });
+            const { data } = buildYieldUnwrapTransactionData(networkCalldata, {
+                unwrapAmount: '1',
+                decimals: 18,
+            });
 
-            expect(Calldata.evm.weth.withdraw.decode(data)).toEqual({
+            expect(networkCalldata?.evm?.weth.withdraw.decode(data) ?? null).toEqual({
                 wad: 1_000_000_000_000_000_000n,
             });
         });
 
         it('throws for a zero amount', () => {
             expect(() =>
-                buildYieldUnwrapTransactionData({ unwrapAmount: '0', decimals: 18 }),
+                buildYieldUnwrapTransactionData(networkCalldata, {
+                    unwrapAmount: '0',
+                    decimals: 18,
+                }),
             ).toThrow('Failed to encode WETH withdraw calldata');
         });
     });

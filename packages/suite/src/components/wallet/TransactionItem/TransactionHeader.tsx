@@ -1,5 +1,6 @@
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { redactNumericalSubstring, useDiscreetMode } from '@suite-common/discreet-mode';
+import { injectGetCalldata } from '@suite-common/networks';
 import { getNetworkDisplaySymbol, isNetworkSymbol } from '@suite-common/wallet-config';
 import { type TronTxContractType } from '@suite-common/wallet-constants';
 import {
@@ -14,6 +15,7 @@ import {
     hasValueMovement,
 } from '@suite-common/wallet-utils';
 import { type AccountTransaction } from '@trezor/connect';
+import { useServices } from '@trezor/dependency-injection';
 import {
     type StellarOperationLabel,
     getStellarOperationLabel,
@@ -146,6 +148,8 @@ const getTronTransactionMessageId = (transaction: WalletAccountTransaction) => {
 };
 
 export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderProps) => {
+    const { getCalldata } = useServices(injectGetCalldata);
+
     const { translationString } = useTranslation();
     const { isDiscreetMode } = useDiscreetMode();
 
@@ -161,7 +165,7 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
     // ("deposit"/"withdraw") that the indexer parses. The wrapped-token amount isn't obvious from
     // the transaction row, so it's spelled out while the native side stays a bare symbol
     // ("Wrap ETH into 0.1 WETH" / "Unwrap 0.1 WETH to ETH", see trezor/trezor-suite#30552).
-    const wrapKind = getNativeWrapTxKind(transaction);
+    const wrapKind = getNativeWrapTxKind(getCalldata(transaction.symbol), transaction);
     if (wrapKind) {
         return (
             <Translation

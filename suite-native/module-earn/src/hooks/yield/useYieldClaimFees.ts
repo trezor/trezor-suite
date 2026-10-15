@@ -6,6 +6,7 @@ import {
     buildClaimCalldata,
     buildUnsignedClaimTransaction,
 } from '@suite-common/earn-stablecoin';
+import { injectGetCalldata } from '@suite-common/networks';
 import { type EvmHexString } from '@suite-common/schemas/src/evm';
 import { getEarnYieldClaimContractAddress, getNetwork } from '@suite-common/wallet-config';
 import {
@@ -86,7 +87,7 @@ const getClaimFormDraft = ({
 });
 
 export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFeesParams) => {
-    const { dispatch } = useServices(injectDispatch);
+    const { dispatch, getCalldata } = useServices(injectDispatch, injectGetCalldata);
     const debounce = useDebounce();
     const requestIdRef = useRef(0);
     const [baseContext, setBaseContext] = useState<ClaimFeeBaseContext | null>(null);
@@ -150,7 +151,7 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
             return {
                 account: accountRewards.account,
                 chainId: network.chainId,
-                claimCalldata: buildClaimCalldata({
+                claimCalldata: buildClaimCalldata(getCalldata(accountRewards?.account.symbol), {
                     senderAddress: accountRewards.account.descriptor,
                     rewards: accountRewards.rewards,
                 }),
@@ -160,7 +161,7 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
         } catch {
             return null;
         }
-    }, [accountRewards, isEnabled]);
+    }, [accountRewards, isEnabled, getCalldata]);
 
     const prepareClaimFee = useCallback(
         async (

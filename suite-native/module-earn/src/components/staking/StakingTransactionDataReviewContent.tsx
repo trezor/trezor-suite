@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import { injectGetCalldata } from '@suite-common/networks';
 import {
     type AccountsRootState,
     type StakeRootState,
@@ -23,6 +24,7 @@ import {
     selectReviewSummaryOutput,
 } from '@suite-native/transaction-management';
 import { TransactionReviewScreen, TxValidityTimer } from '@suite-native/transaction-review';
+import { useServices } from '@trezor/dependency-injection';
 
 import { useEarnAccountLabel } from '../../hooks/earn/useEarnAccountLabel';
 import { useEarnPendingTransactionSheet } from '../../hooks/earn/useEarnPendingTransactionSheet';
@@ -79,6 +81,8 @@ export const StakingTransactionDataReviewContent = ({
     amount,
     stakeType,
 }: StakingTransactionDataReviewContentProps) => {
+    const { getCalldata } = useServices(injectGetCalldata);
+
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -96,7 +100,7 @@ export const StakingTransactionDataReviewContent = ({
     const precomposedTransaction = useEarnSelectedPrecomposedTransaction(stakeType, accountKey);
 
     const summaryOutput = useSelector((state: TransactionReviewOutputsState) =>
-        selectReviewSummaryOutput(state, stakeType, accountKey),
+        selectReviewSummaryOutput(state, stakeType, accountKey, undefined, getCalldata),
     );
 
     const { confirmOnTrezorRef, revealConfirmOnTrezorSheet, closeSheet } =

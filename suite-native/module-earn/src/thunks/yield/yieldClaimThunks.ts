@@ -4,6 +4,7 @@ import {
     type MevProtectionRootState,
     selectIsMevProtectionFeatureEnabled,
 } from '@suite-common/mev';
+import { type GetCalldataThunkDeps } from '@suite-common/networks';
 import {
     type FormDraftRootState,
     type SynchronizeSentTransactionThunkDeps,
@@ -97,10 +98,14 @@ export type SignYieldClaimReviewThunkState = DeviceRootState &
 export const signYieldClaimReviewThunk = createThunk<
     { serializedTx: string },
     SignYieldClaimReviewThunkPayload,
-    { rejectValue: YieldClaimSignTransactionError; state: SignYieldClaimReviewThunkState }
+    {
+        rejectValue: YieldClaimSignTransactionError;
+        state: SignYieldClaimReviewThunkState;
+        extra: GetCalldataThunkDeps;
+    }
 >(
     `${EARN_MODULE_PREFIX}/signYieldClaimReviewThunk`,
-    async ({ account, flowKey }, { dispatch, getState, rejectWithValue }) => {
+    async ({ account, flowKey }, { dispatch, getState, rejectWithValue, extra }) => {
         const session = selectYieldSession(getState(), 'claim', flowKey);
         const {
             action: { review },
@@ -117,11 +122,16 @@ export const signYieldClaimReviewThunk = createThunk<
         let transactionReview: ReturnType<typeof buildClaimTransactionReview>;
 
         try {
-            transactionReview = buildClaimTransactionReview({
-                rewards: buildYieldClaimRewards(review),
-                selectedFee: getSelectedFeeFromUnsignedClaimTransaction(review.unsignedTransaction),
-                unsignedTransaction: review.unsignedTransaction,
-            });
+            transactionReview = buildClaimTransactionReview(
+                extra.services.networks.getCalldata(account?.symbol),
+                {
+                    rewards: buildYieldClaimRewards(review),
+                    selectedFee: getSelectedFeeFromUnsignedClaimTransaction(
+                        review.unsignedTransaction,
+                    ),
+                    unsignedTransaction: review.unsignedTransaction,
+                },
+            );
         } catch (error) {
             const message =
                 error instanceof Error ? error.message : 'Unsupported yield claim payload.';

@@ -7,6 +7,7 @@ import {
 } from '@trezor/network-module-suite-common-types';
 
 import { ethereumValidator } from './addressValidator/ethereumAddressValidator';
+import { getEthereumCalldata } from './getEthereumCalldata';
 import {
     type EthereumNamedAddressResolverCompositionRootDeps,
     createEthereumNamedAddressResolverCompositionRoot,
@@ -24,6 +25,9 @@ export const createEthereumSuiteCommonNetworkModule = (
         createEthereumNamedAddressResolverCompositionRoot(deps);
 
     return createNetworkModule(supportedEthereumNetworks, {
+        get calldata() {
+            return getEthereumCalldata();
+        },
         icon: {
             ...ethereumAssets,
             getTokenLogoIdentifiers: (_symbol, contract) => [contract.toLowerCase()],

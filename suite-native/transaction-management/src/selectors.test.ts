@@ -1,3 +1,4 @@
+import { mockGetCalldata } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import type {
     FeeLevelLabel,
@@ -23,6 +24,8 @@ import {
     selectTransactionReviewOutputs,
 } from './selectors';
 import { type NativeSendRootState } from './sendFormSlice';
+
+const getCalldata = mockGetCalldata();
 
 const btcSymbol = asNetworkSymbol('btc');
 
@@ -233,7 +236,12 @@ describe('transaction-management selectors', () => {
 
         it('returns false when account is missing', () => {
             const state = buildClearSignedTradingSwapState({ includeAccount: false });
-            const result = selectIsClearSignedTradingSwap(state, ETH_ACCOUNT_KEY, PREFIX);
+            const result = selectIsClearSignedTradingSwap(
+                state,
+                ETH_ACCOUNT_KEY,
+                PREFIX,
+                getCalldata,
+            );
 
             expect(result).toBe(false);
             expect(isClearSignedEvmTradingSwapTransaction).not.toHaveBeenCalled();
@@ -241,7 +249,12 @@ describe('transaction-management selectors', () => {
 
         it('returns false when device is missing', () => {
             const state = buildClearSignedTradingSwapState({ includeDevice: false });
-            const result = selectIsClearSignedTradingSwap(state, ETH_ACCOUNT_KEY, PREFIX);
+            const result = selectIsClearSignedTradingSwap(
+                state,
+                ETH_ACCOUNT_KEY,
+                PREFIX,
+                getCalldata,
+            );
 
             expect(result).toBe(false);
             expect(isClearSignedEvmTradingSwapTransaction).not.toHaveBeenCalled();
@@ -249,7 +262,12 @@ describe('transaction-management selectors', () => {
 
         it('returns false when formDraft is missing for the prefix', () => {
             const state = buildClearSignedTradingSwapState({ includeFormDraft: false });
-            const result = selectIsClearSignedTradingSwap(state, ETH_ACCOUNT_KEY, PREFIX);
+            const result = selectIsClearSignedTradingSwap(
+                state,
+                ETH_ACCOUNT_KEY,
+                PREFIX,
+                getCalldata,
+            );
 
             expect(result).toBe(false);
             expect(isClearSignedEvmTradingSwapTransaction).not.toHaveBeenCalled();
@@ -257,7 +275,12 @@ describe('transaction-management selectors', () => {
 
         it('returns false when precomposedTx is missing', () => {
             const state = buildClearSignedTradingSwapState({ includePrecomposedTx: false });
-            const result = selectIsClearSignedTradingSwap(state, ETH_ACCOUNT_KEY, PREFIX);
+            const result = selectIsClearSignedTradingSwap(
+                state,
+                ETH_ACCOUNT_KEY,
+                PREFIX,
+                getCalldata,
+            );
 
             expect(result).toBe(false);
             expect(isClearSignedEvmTradingSwapTransaction).not.toHaveBeenCalled();
@@ -267,7 +290,12 @@ describe('transaction-management selectors', () => {
             (isClearSignedEvmTradingSwapTransaction as jest.Mock).mockReturnValueOnce(true);
 
             const state = buildClearSignedTradingSwapState();
-            const result = selectIsClearSignedTradingSwap(state, ETH_ACCOUNT_KEY, PREFIX);
+            const result = selectIsClearSignedTradingSwap(
+                state,
+                ETH_ACCOUNT_KEY,
+                PREFIX,
+                getCalldata,
+            );
 
             expect(result).toBe(true);
             expect(isClearSignedEvmTradingSwapTransaction).toHaveBeenCalledTimes(1);
@@ -275,7 +303,12 @@ describe('transaction-management selectors', () => {
 
         it('returns false when all data is present but the transaction is not clear-signed', () => {
             const state = buildClearSignedTradingSwapState();
-            const result = selectIsClearSignedTradingSwap(state, ETH_ACCOUNT_KEY, PREFIX);
+            const result = selectIsClearSignedTradingSwap(
+                state,
+                ETH_ACCOUNT_KEY,
+                PREFIX,
+                getCalldata,
+            );
 
             expect(result).toBe(false);
             expect(isClearSignedEvmTradingSwapTransaction).toHaveBeenCalledTimes(1);
@@ -352,7 +385,13 @@ describe('transaction-management selectors', () => {
             const state = buildState([]);
 
             expect(
-                selectTransactionReviewOutputs(state, BTC_ACCOUNT_KEY, undefined, null),
+                selectTransactionReviewOutputs(
+                    state,
+                    BTC_ACCOUNT_KEY,
+                    undefined,
+                    null,
+                    getCalldata,
+                ),
             ).toBeNull();
         });
 
@@ -360,7 +399,13 @@ describe('transaction-management selectors', () => {
             const state = buildState([{ code: 'ButtonRequest_ConfirmOutput' }]);
 
             expect(
-                selectTransactionReviewOutputs(state, BTC_ACCOUNT_KEY, undefined, precomposedForm),
+                selectTransactionReviewOutputs(
+                    state,
+                    BTC_ACCOUNT_KEY,
+                    undefined,
+                    precomposedForm,
+                    getCalldata,
+                ),
             ).toEqual([
                 { type: 'address', value: 'addr', state: 'active' },
                 { type: 'amount', value: '1', state: 'active' },
@@ -374,6 +419,7 @@ describe('transaction-management selectors', () => {
                 BTC_ACCOUNT_KEY,
                 undefined,
                 precomposedForm,
+                getCalldata,
             );
 
             // A dispatch produces a new top-level state reference while the relevant slices
@@ -384,6 +430,7 @@ describe('transaction-management selectors', () => {
                 BTC_ACCOUNT_KEY,
                 undefined,
                 precomposedForm,
+                getCalldata,
             );
 
             expect(second).toBe(first);
@@ -392,7 +439,13 @@ describe('transaction-management selectors', () => {
 
         it('recomputes when the send review button request count changes', () => {
             const state = buildState([{ code: 'ButtonRequest_ConfirmOutput' }]);
-            selectTransactionReviewOutputs(state, BTC_ACCOUNT_KEY, undefined, precomposedForm);
+            selectTransactionReviewOutputs(
+                state,
+                BTC_ACCOUNT_KEY,
+                undefined,
+                precomposedForm,
+                getCalldata,
+            );
 
             // A new button request arrives on the same device — only the button requests change.
             const nextState = {
@@ -407,7 +460,13 @@ describe('transaction-management selectors', () => {
                     },
                 },
             } as unknown as TransactionReviewOutputsState;
-            selectTransactionReviewOutputs(nextState, BTC_ACCOUNT_KEY, undefined, precomposedForm);
+            selectTransactionReviewOutputs(
+                nextState,
+                BTC_ACCOUNT_KEY,
+                undefined,
+                precomposedForm,
+                getCalldata,
+            );
 
             expect(mockConstructTransactionReviewOutputs).toHaveBeenCalledTimes(2);
             expect(mockGetTransactionReviewOutputState).toHaveBeenCalledWith(expect.any(Number), 2);

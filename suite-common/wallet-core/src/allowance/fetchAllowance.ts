@@ -1,8 +1,8 @@
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { asAmountSubunit } from '@suite-common/wallet-utils';
+import { type Calldata, getEvmCalldata } from '@trezor/calldata';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
-import { Calldata } from '@trezor/network-ethereum-suite-common';
 import { BigNumber } from '@trezor/utils';
 
 const ALLOWANCE_FETCH_TIMEOUT_MS = 15_000;
@@ -14,13 +14,16 @@ type FetchAllowanceParams = {
     coin: NetworkSymbol;
 };
 
-export const fetchAllowance = async ({
-    owner,
-    spender,
-    tokenContractAddress,
-    coin,
-}: FetchAllowanceParams) => {
-    const allowanceCalldata = Calldata.evm.erc20.allowance.encode({ owner, spender });
+export const fetchAllowance = async (
+    networkCalldata: Calldata | undefined,
+    { owner, spender, tokenContractAddress, coin }: FetchAllowanceParams,
+) => {
+    const Calldata = getEvmCalldata(networkCalldata);
+
+    const allowanceCalldata = Calldata.evm.erc20.allowance.encode({
+        owner,
+        spender,
+    });
 
     if (!allowanceCalldata.data) {
         throw new Error('Allowance calldata could not be built.');

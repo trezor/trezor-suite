@@ -1,6 +1,7 @@
 import { createContext, useCallback, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 
+import { injectGetCalldata } from '@suite-common/networks';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     getStakeFormsDefaultValues,
@@ -30,7 +31,7 @@ type UseClaimFormsProps = {
 };
 
 export const useClaimForm = ({ account }: UseClaimFormsProps): ClaimContextValues => {
-    const { dispatch } = useServices(injectDispatch);
+    const { dispatch, getCalldata } = useServices(injectDispatch, injectGetCalldata);
 
     const baseCurrencyCode = useSelector(selectBaseCurrency);
 
@@ -130,7 +131,9 @@ export const useClaimForm = ({ account }: UseClaimFormsProps): ClaimContextValue
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
         if (composedTx?.type === 'final') {
             try {
-                const result = await dispatch(signTransactionThunk(values, composedTx));
+                const result = await dispatch(
+                    signTransactionThunk(getCalldata(account?.symbol), values, composedTx),
+                );
 
                 if (result?.success) {
                     clearForm();
@@ -143,7 +146,7 @@ export const useClaimForm = ({ account }: UseClaimFormsProps): ClaimContextValue
                 console.warn('Stake signing failed', error instanceof Error ? error.name : error);
             }
         }
-    }, [getValues, composedLevels, dispatch, clearForm, selectedFee]);
+    }, [getValues, composedLevels, dispatch, clearForm, selectedFee, getCalldata, account]);
 
     const { calculateFeeAndDeposit, withdrawingAvailable } = useCardanoStaking();
     const isClaimingDisabled = !withdrawingAvailable.status;

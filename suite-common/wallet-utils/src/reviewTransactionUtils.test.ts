@@ -11,8 +11,9 @@ import {
     type StakeFormState,
 } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { getEvmCalldata } from '@trezor/calldata';
 import type { TokenInfo } from '@trezor/connect';
-import { Calldata, asEvmAddress } from '@trezor/network-ethereum-suite-common';
+import { getEthereumCalldata } from '@trezor/network-ethereum-suite-common';
 import { BigNumber } from '@trezor/utils';
 
 import { buildApprovalTransactionData, getPrecomposedTxWithAccountToken } from './ethUtils';
@@ -23,6 +24,8 @@ import {
     isClearSignedWrappedNativeTransaction,
     isDeviceReviewOnlyTransaction,
 } from './reviewTransactionUtils';
+
+const networkCalldata = getEthereumCalldata();
 
 const ethSymbol = asNetworkSymbol('eth');
 const bscSymbol = asNetworkSymbol('bsc');
@@ -47,11 +50,17 @@ const CLAIM_DATA = '0x33986ffa';
 
 // Merkl distributor claim(address[],address[],uint256[],bytes32[][]) — DeFi yield rewards claim
 const MERKL_DISTRIBUTOR = '0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae';
-const YIELD_CLAIM_SENDER = asEvmAddress('0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3');
-const YIELD_CLAIM_DATA = Calldata.evm.distributor.claim.encode(
+const YIELD_CLAIM_SENDER = getEvmCalldata(networkCalldata).asEvmAddress(
+    '0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3',
+);
+const YIELD_CLAIM_DATA = getEvmCalldata(networkCalldata).evm.distributor.claim.encode(
     {
         users: [YIELD_CLAIM_SENDER],
-        tokens: [asEvmAddress('0x58D97B57BB95320F9a05dC918Aef65434969c2B2')],
+        tokens: [
+            getEvmCalldata(networkCalldata).asEvmAddress(
+                '0x58D97B57BB95320F9a05dC918Aef65434969c2B2',
+            ),
+        ],
         amounts: [new BigNumber('848795999565318')],
         proofs: [['0xd8f0361b28675e4ac82f066f7abdaaffaa6e0fbd418f60dca41ae70656edd18b']],
     },
@@ -59,11 +68,11 @@ const YIELD_CLAIM_DATA = Calldata.evm.distributor.claim.encode(
 ).data!;
 
 const ERC20_APPROVE_SPENDER = '0x0000000000000000000000000000000000001234';
-const ERC20_APPROVE_DATA = buildApprovalTransactionData({
+const ERC20_APPROVE_DATA = buildApprovalTransactionData(networkCalldata, {
     amount: '1',
     spender: ERC20_APPROVE_SPENDER,
 });
-const ERC20_REVOKE_DATA = buildApprovalTransactionData({
+const ERC20_REVOKE_DATA = buildApprovalTransactionData(networkCalldata, {
     amount: '0',
     spender: ERC20_APPROVE_SPENDER,
 });
@@ -200,7 +209,7 @@ describe('isClearSignedEvmTradingSwapTransaction', () => {
     const device = buildUpdatedDevice();
 
     it('returns true for clear-signed exchange swap transaction', () => {
-        const result = isClearSignedEvmTradingSwapTransaction({
+        const result = isClearSignedEvmTradingSwapTransaction(networkCalldata, {
             account,
             device,
             precomposedTx: buildPrecomposedTx(LIFI_DIAMOND),
@@ -212,7 +221,7 @@ describe('isClearSignedEvmTradingSwapTransaction', () => {
     });
 
     it('returns false for clear-signed approve in exchange flow', () => {
-        const result = isClearSignedEvmTradingSwapTransaction({
+        const result = isClearSignedEvmTradingSwapTransaction(networkCalldata, {
             account,
             device,
             precomposedTx: buildPrecomposedTx('0x0000000000000000000000000000000000001234'),
@@ -224,7 +233,7 @@ describe('isClearSignedEvmTradingSwapTransaction', () => {
     });
 
     it('returns false outside trading exchange flow', () => {
-        const result = isClearSignedEvmTradingSwapTransaction({
+        const result = isClearSignedEvmTradingSwapTransaction(networkCalldata, {
             account,
             device,
             precomposedTx: buildPrecomposedTx('0x0000000000000000000000000000000000001234'),
@@ -241,7 +250,7 @@ describe('isClearSignedEvmTradingSwapTransaction', () => {
             unavailableCapabilities: { evmClearSigning: 'no-support' },
         } as TrezorDevice;
 
-        const result = isClearSignedEvmTradingSwapTransaction({
+        const result = isClearSignedEvmTradingSwapTransaction(networkCalldata, {
             account,
             device: deviceWithoutClearSigning,
             precomposedTx: buildPrecomposedTx(LIFI_DIAMOND),
@@ -261,7 +270,7 @@ describe('isClearSignedWrappedNativeTransaction', () => {
         { op: 'wrap', transactionData: WETH_DEPOSIT_DATA },
         { op: 'unwrap', transactionData: WETH_WITHDRAW_DATA },
     ])('returns true for a canonical WETH $op', ({ transactionData }) => {
-        const result = isClearSignedWrappedNativeTransaction({
+        const result = isClearSignedWrappedNativeTransaction(networkCalldata, {
             account,
             device,
             precomposedTx: buildPrecomposedTransaction({ to: WETH_MAINNET }),
@@ -272,7 +281,7 @@ describe('isClearSignedWrappedNativeTransaction', () => {
     });
 
     it('returns false for a wrapped native the firmware does not clear-sign (WBNB on BSC)', () => {
-        const result = isClearSignedWrappedNativeTransaction({
+        const result = isClearSignedWrappedNativeTransaction(networkCalldata, {
             account: buildEthereumAccount({ symbol: bscSymbol }),
             device,
             precomposedTx: buildPrecomposedTransaction({ to: WBNB_BSC }),
@@ -283,7 +292,7 @@ describe('isClearSignedWrappedNativeTransaction', () => {
     });
 
     it('returns false when the device cannot clear-sign', () => {
-        const result = isClearSignedWrappedNativeTransaction({
+        const result = isClearSignedWrappedNativeTransaction(networkCalldata, {
             account,
             device: mockSuiteDevice(
                 { unavailableCapabilities: { evmClearSigning: 'no-support' } },
@@ -302,7 +311,7 @@ describe('isClearSignedWrappedNativeTransaction', () => {
     ])(
         'returns false on fw $version, which advertises clear signing but blind-signs WETH',
         ({ firmware }) => {
-            const result = isClearSignedWrappedNativeTransaction({
+            const result = isClearSignedWrappedNativeTransaction(networkCalldata, {
                 // No unavailableCapabilities: evmClearSigning is genuinely available from 2.12.1,
                 // yet the WETH definition only ships in 2.12.4.
                 account,
@@ -316,7 +325,7 @@ describe('isClearSignedWrappedNativeTransaction', () => {
     );
 
     it('returns false for an unrelated contract call to the WETH address', () => {
-        const result = isClearSignedWrappedNativeTransaction({
+        const result = isClearSignedWrappedNativeTransaction(networkCalldata, {
             account,
             device,
             precomposedTx: buildPrecomposedTransaction({ to: WETH_MAINNET }),
@@ -352,7 +361,7 @@ describe('constructTransactionReviewOutputs', () => {
     const device = buildUpdatedDevice();
 
     it('renders the provider and reward tokens for a clear-signed rewards claim', () => {
-        const outputs = constructTransactionReviewOutputs({
+        const outputs = constructTransactionReviewOutputs(networkCalldata, {
             account,
             availableRewards: [],
             device,
@@ -368,7 +377,7 @@ describe('constructTransactionReviewOutputs', () => {
     });
 
     it('renders the contract and raw data rows for a rewards claim on firmware without clear signing', () => {
-        const outputs = constructTransactionReviewOutputs({
+        const outputs = constructTransactionReviewOutputs(networkCalldata, {
             account,
             device: buildDeviceWithoutClearSigning(),
             decreaseOutputId: undefined,
@@ -383,7 +392,7 @@ describe('constructTransactionReviewOutputs', () => {
     });
 
     it('renders the legacy address and raw data rows for a rewards claim on Model One', () => {
-        const outputs = constructTransactionReviewOutputs({
+        const outputs = constructTransactionReviewOutputs(networkCalldata, {
             account,
             device: buildModelOneDevice(),
             decreaseOutputId: undefined,
@@ -403,7 +412,7 @@ describe('constructTransactionReviewOutputs', () => {
             const sellAccount = mockWalletAccount({ symbol: asNetworkSymbol(symbol) });
             const trading = buildSellTrading();
             trading.send.symbol = sellAccount.symbol;
-            const outputs = constructTransactionReviewOutputs({
+            const outputs = constructTransactionReviewOutputs(networkCalldata, {
                 account: sellAccount,
                 device,
                 decreaseOutputId: undefined,
@@ -426,7 +435,7 @@ describe('constructTransactionReviewOutputs', () => {
     );
 
     it('keeps provider before traded assets for a SLIP-24 exchange', () => {
-        const outputs = constructTransactionReviewOutputs({
+        const outputs = constructTransactionReviewOutputs(networkCalldata, {
             account,
             device,
             decreaseOutputId: undefined,
@@ -440,7 +449,7 @@ describe('constructTransactionReviewOutputs', () => {
     });
 
     it('renders regular transaction outputs for a sell without SLIP-24', () => {
-        const outputs = constructTransactionReviewOutputs({
+        const outputs = constructTransactionReviewOutputs(networkCalldata, {
             account,
             device,
             decreaseOutputId: undefined,
@@ -459,7 +468,7 @@ describe('constructTransactionReviewOutputs', () => {
     });
 
     it('renders swap-specific outputs only for clear-signed exchange swap', () => {
-        const outputs = constructTransactionReviewOutputs({
+        const outputs = constructTransactionReviewOutputs(networkCalldata, {
             account,
             device,
             decreaseOutputId: undefined,
@@ -489,7 +498,7 @@ describe('constructTransactionReviewOutputs', () => {
             patch_version: 0,
         });
 
-        const outputs = constructTransactionReviewOutputs({
+        const outputs = constructTransactionReviewOutputs(networkCalldata, {
             account,
             device: oldFirmwareDevice,
             decreaseOutputId: undefined,
@@ -509,7 +518,7 @@ describe('constructTransactionReviewOutputs', () => {
         const ONEINCH_ROUTER = '0x111111125421cA6dc452d289314280a0f8842A65';
         const UNOSWAP_DATA = `0x83800a8e${'00'.repeat(32 * 4)}`; // unoswap selector
 
-        const outputs = constructTransactionReviewOutputs({
+        const outputs = constructTransactionReviewOutputs(networkCalldata, {
             account,
             device,
             decreaseOutputId: undefined,
@@ -532,7 +541,7 @@ describe('constructTransactionReviewOutputs', () => {
     });
 
     it('does not render swap-specific outputs for approve transaction in exchange flow', () => {
-        const outputs = constructTransactionReviewOutputs({
+        const outputs = constructTransactionReviewOutputs(networkCalldata, {
             account,
             device,
             decreaseOutputId: undefined,
@@ -567,7 +576,7 @@ describe('constructTransactionReviewOutputs', () => {
     ])(
         'renders a single address output for a clear-signed $stakeType transaction',
         ({ transactionData }) => {
-            const outputs = constructTransactionReviewOutputs({
+            const outputs = constructTransactionReviewOutputs(networkCalldata, {
                 account,
                 device,
                 decreaseOutputId: undefined,
@@ -587,7 +596,7 @@ describe('constructTransactionReviewOutputs', () => {
             stakeType: 'stake',
         };
 
-        const outputs = constructTransactionReviewOutputs({
+        const outputs = constructTransactionReviewOutputs(networkCalldata, {
             account,
             device,
             decreaseOutputId: undefined,
@@ -606,7 +615,7 @@ describe('constructTransactionReviewOutputs', () => {
             patch_version: 0,
         });
 
-        const outputs = constructTransactionReviewOutputs({
+        const outputs = constructTransactionReviewOutputs(networkCalldata, {
             account,
             device: oldFirmwareDevice,
             decreaseOutputId: undefined,
@@ -628,7 +637,7 @@ describe('constructTransactionReviewOutputs', () => {
     ])(
         'does not render unknown token contract before supported $transactionType rows',
         ({ transactionData }) => {
-            const outputs = constructTransactionReviewOutputs({
+            const outputs = constructTransactionReviewOutputs(networkCalldata, {
                 account,
                 decreaseOutputId: undefined,
                 device,
@@ -663,7 +672,7 @@ describe('constructTransactionReviewOutputs', () => {
         { op: 'wrap', transactionData: WETH_DEPOSIT_DATA },
         { op: 'unwrap', transactionData: WETH_WITHDRAW_DATA },
     ])('mirrors the four device screens for a clear-signed WETH $op', ({ transactionData, op }) => {
-        const outputs = constructTransactionReviewOutputs({
+        const outputs = constructTransactionReviewOutputs(networkCalldata, {
             account,
             device,
             decreaseOutputId: undefined,
@@ -688,7 +697,7 @@ describe('constructTransactionReviewOutputs', () => {
     });
 
     it('renders the blind-signing rows for a WETH wrap on firmware without clear signing', () => {
-        const outputs = constructTransactionReviewOutputs({
+        const outputs = constructTransactionReviewOutputs(networkCalldata, {
             account,
             device: mockSuiteDevice(
                 { unavailableCapabilities: { evmClearSigning: 'update-required' } },
@@ -718,7 +727,7 @@ describe('constructTransactionReviewOutputs', () => {
         )
             .toString(16)
             .padStart(64, '0')}`;
-        const precomposedTx = getPrecomposedTxWithAccountToken({
+        const precomposedTx = getPrecomposedTxWithAccountToken(networkCalldata, {
             precomposedTx: {
                 type: 'final',
                 inputs: [],
@@ -739,7 +748,7 @@ describe('constructTransactionReviewOutputs', () => {
         });
 
         it('renders it like an unknown-token send', () => {
-            const outputs = constructTransactionReviewOutputs({
+            const outputs = constructTransactionReviewOutputs(networkCalldata, {
                 account,
                 device,
                 decreaseOutputId: undefined,
@@ -754,7 +763,7 @@ describe('constructTransactionReviewOutputs', () => {
         });
 
         it('shows the decoded recipient on pre-2.6.0 firmware', () => {
-            const outputs = constructTransactionReviewOutputs({
+            const outputs = constructTransactionReviewOutputs(networkCalldata, {
                 account,
                 device: mockSuiteDevice(undefined, {
                     major_version: 2,
@@ -774,7 +783,7 @@ describe('constructTransactionReviewOutputs', () => {
 
     it('treats plain 0x calldata as a regular transfer', () => {
         const recipient = '0x000000000000000000000000000000000000abcd';
-        const outputs = constructTransactionReviewOutputs({
+        const outputs = constructTransactionReviewOutputs(networkCalldata, {
             account,
             device,
             decreaseOutputId: undefined,
@@ -798,7 +807,7 @@ describe('constructTransactionReviewOutputs', () => {
     });
 
     it('keeps the raw data row for a wrapped native the firmware does not clear-sign (WBNB on BSC)', () => {
-        const outputs = constructTransactionReviewOutputs({
+        const outputs = constructTransactionReviewOutputs(networkCalldata, {
             account: buildEthereumAccount({ symbol: bscSymbol }),
             device,
             decreaseOutputId: undefined,
@@ -814,7 +823,7 @@ describe('constructTransactionReviewOutputs', () => {
     });
 
     it('renders one tron-vote line per representative with its own vote count', () => {
-        const outputs = constructTransactionReviewOutputs({
+        const outputs = constructTransactionReviewOutputs(networkCalldata, {
             account: mockWalletAccount({ symbol: asNetworkSymbol('trx') }),
             device,
             decreaseOutputId: undefined,

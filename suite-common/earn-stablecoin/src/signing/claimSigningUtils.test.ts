@@ -1,9 +1,13 @@
+import { getEthereumCalldata } from '@trezor/network-ethereum-suite-common';
+
 import {
     buildClaimCalldata,
     buildClaimTransactionReview,
     buildUnsignedClaimTransaction,
+    type ClaimReward,
 } from './claimSigningUtils';
-import type { ClaimReward } from './claimSigningUtils';
+
+const networkCalldata = getEthereumCalldata();
 
 const SENDER = '0x9eA3721B5Bf3b64b4418c38B603154d2D597FAE3';
 const CLAIM_CONTRACT = '0x3Ef3D8bA38EBe18DB133cEc108f4D14CE00Dd9Ae';
@@ -19,7 +23,7 @@ const createReward = (tokenAddress = TOKEN): ClaimReward => ({
     },
 });
 
-const CLAIM_CALLDATA = buildClaimCalldata({
+const CLAIM_CALLDATA = buildClaimCalldata(networkCalldata, {
     senderAddress: SENDER,
     rewards: [createReward()],
 });
@@ -37,7 +41,7 @@ const unsignedTransaction = {
 describe('claimSigningUtils', () => {
     it('builds Merkl claim calldata for claimable rewards', () => {
         expect(
-            buildClaimCalldata({
+            buildClaimCalldata(networkCalldata, {
                 senderAddress: SENDER,
                 rewards: [createReward()],
             }),
@@ -46,7 +50,7 @@ describe('claimSigningUtils', () => {
 
     it('propagates Merkl claim calldata validation errors', () => {
         expect(() =>
-            buildClaimCalldata({
+            buildClaimCalldata(networkCalldata, {
                 senderAddress: SENDER,
                 rewards: [createReward('0x0000000000000000000000000000000000000000')],
             }),
@@ -100,7 +104,7 @@ describe('claimSigningUtils', () => {
     });
 
     it('builds EIP-1559 review state and signing payload', () => {
-        const result = buildClaimTransactionReview({
+        const result = buildClaimTransactionReview(networkCalldata, {
             unsignedTransaction,
             selectedFee: {
                 type: 'eip1559',
@@ -142,7 +146,7 @@ describe('claimSigningUtils', () => {
     });
 
     it('builds legacy review state and signing payload', () => {
-        const result = buildClaimTransactionReview({
+        const result = buildClaimTransactionReview(networkCalldata, {
             unsignedTransaction,
             selectedFee: {
                 type: 'legacy',
@@ -185,7 +189,7 @@ describe('claimSigningUtils', () => {
         } as const;
 
         expect(() =>
-            buildClaimTransactionReview({
+            buildClaimTransactionReview(networkCalldata, {
                 unsignedTransaction,
                 selectedFee,
                 rewards: [createReward('0x1111111111111111111111111111111111111111')],
@@ -193,7 +197,7 @@ describe('claimSigningUtils', () => {
         ).toThrow('Claim rewards do not match the claim transaction data.');
 
         expect(() =>
-            buildClaimTransactionReview({
+            buildClaimTransactionReview(networkCalldata, {
                 unsignedTransaction,
                 selectedFee,
                 rewards: [createReward(), createReward()],
@@ -203,7 +207,7 @@ describe('claimSigningUtils', () => {
 
     it('throws when the claim transaction data cannot be decoded', () => {
         expect(() =>
-            buildClaimTransactionReview({
+            buildClaimTransactionReview(networkCalldata, {
                 unsignedTransaction: { ...unsignedTransaction, data: '0xabc' },
                 selectedFee: {
                     type: 'eip1559',
@@ -219,7 +223,7 @@ describe('claimSigningUtils', () => {
 
     it('throws when selected fee data is missing or incomplete', () => {
         expect(() =>
-            buildClaimTransactionReview({
+            buildClaimTransactionReview(networkCalldata, {
                 unsignedTransaction,
                 selectedFee: null,
                 rewards: [createReward()],
@@ -227,7 +231,7 @@ describe('claimSigningUtils', () => {
         ).toThrow('Fee information is missing for the transaction.');
 
         expect(() =>
-            buildClaimTransactionReview({
+            buildClaimTransactionReview(networkCalldata, {
                 unsignedTransaction,
                 selectedFee: {
                     type: 'eip1559',

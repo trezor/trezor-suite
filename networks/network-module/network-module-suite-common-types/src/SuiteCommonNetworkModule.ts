@@ -1,3 +1,4 @@
+import { type Calldata } from '@trezor/calldata';
 import type { NetworkAssetsModule } from '@trezor/network-assets-types';
 import type { NetworkSymbol } from '@trezor/network-module-types';
 
@@ -7,6 +8,7 @@ import type { NamedAddressResolver } from './NamedAddressResolver';
 import type { SuiteCommonNetworkConfig } from './SuiteCommonNetworkConfig';
 
 export type SuiteCommonNetworkModule = {
+    calldata?: Calldata;
     icon: NetworkAssetsModule;
     addressValidator: AddressValidator<NetworkSymbol>;
     isWrappedNativeToken?: IsWrappedNativeToken<NetworkSymbol>;

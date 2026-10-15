@@ -1,6 +1,8 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { deviceInitialState } from '@suite-common/device';
+import { type GetCalldataThunkDeps } from '@suite-common/networks';
+import { mockGetCalldata } from '@suite-common/networks/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import {
     createNotificationsReducer,
@@ -11,6 +13,7 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type AccountTransaction } from '@trezor/connect';
+import { getEthereumCalldata } from '@trezor/network-ethereum-suite-common';
 
 import {
     type EarnTransactionsMiddlewareState,
@@ -23,6 +26,8 @@ import {
 } from './earnTransactionsReducer';
 import { mockEarnTransactionsState, mockTrackedEarnTransaction } from '../../mocks';
 import { transactionsActions } from '../transactions/transactionsActions';
+
+const networkCalldata = getEthereumCalldata();
 
 const account = mockWalletAccount({
     symbol: asNetworkSymbol('eth'),
@@ -50,7 +55,8 @@ const createTransaction = (
 const { reducer: notificationsReducer } = createNotificationsReducer();
 
 const initStore = (trackedTransactions: TrackedEarnTransaction[]) =>
-    createTestCompositionRoot<void, EarnTransactionsMiddlewareState>({
+    createTestCompositionRoot<GetCalldataThunkDeps, EarnTransactionsMiddlewareState>({
+        services: () => ({ networks: { getCalldata: mockGetCalldata() } }),
         middleware: [prepareEarnTransactionsMiddleware(() => ({}))],
         reducer: {
             wallet: combineReducers({ earnTransactions: earnTransactionsReducer }),
@@ -76,6 +82,7 @@ describe('prepareEarnTransactionsMiddleware', () => {
 
         store.dispatch(
             transactionsActions.addTransaction({
+                networkCalldata: networkCalldata,
                 account,
                 transactions: [createTransaction('tx1')],
             }),
@@ -103,6 +110,7 @@ describe('prepareEarnTransactionsMiddleware', () => {
 
         store.dispatch(
             transactionsActions.addTransaction({
+                networkCalldata: networkCalldata,
                 account,
                 transactions: [createTransaction('tx1')],
             }),
@@ -120,6 +128,7 @@ describe('prepareEarnTransactionsMiddleware', () => {
 
         store.dispatch(
             transactionsActions.addTransaction({
+                networkCalldata: networkCalldata,
                 account,
                 transactions: [createTransaction('tx1', { blockHeight: undefined })],
             }),
@@ -138,6 +147,7 @@ describe('prepareEarnTransactionsMiddleware', () => {
 
         store.dispatch(
             transactionsActions.addTransaction({
+                networkCalldata: networkCalldata,
                 account,
                 transactions: [createTransaction('tx1', { type: 'failed' })],
             }),
@@ -153,8 +163,20 @@ describe('prepareEarnTransactionsMiddleware', () => {
         ]);
         const transactions = [createTransaction('tx1')];
 
-        store.dispatch(transactionsActions.addTransaction({ account, transactions }));
-        store.dispatch(transactionsActions.addTransaction({ account, transactions }));
+        store.dispatch(
+            transactionsActions.addTransaction({
+                networkCalldata: networkCalldata,
+                account,
+                transactions,
+            }),
+        );
+        store.dispatch(
+            transactionsActions.addTransaction({
+                networkCalldata: networkCalldata,
+                account,
+                transactions,
+            }),
+        );
 
         expect(getToastPayloads(store)).toHaveLength(1);
     });
@@ -166,6 +188,7 @@ describe('prepareEarnTransactionsMiddleware', () => {
 
         store.dispatch(
             transactionsActions.addTransaction({
+                networkCalldata: networkCalldata,
                 account,
                 transactions: [createTransaction('tx9')],
             }),

@@ -24,9 +24,12 @@ import { getFormDraftKey } from '@suite-common/wallet-utils';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import TrezorConnect from '@trezor/connect';
 import { type StaticSessionId } from '@trezor/device-utils';
+import { getEthereumCalldata } from '@trezor/network-ethereum-suite-common';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { signStakeTransactionThunk } from './stakingThunks';
+
+const networkCalldata = getEthereumCalldata();
 
 jest.mock('@trezor/connect', () => ({
     __esModule: true,
@@ -223,7 +226,7 @@ const buildEthStakeFormDraft = (): FormState =>
             },
         ],
         options: ['transactionData'],
-        transactionData: buildStakeData(WALLET_SDK_SOURCE_MOBILE),
+        transactionData: buildStakeData(networkCalldata, WALLET_SDK_SOURCE_MOBILE),
         isCoinControlEnabled: false,
         hasCoinControlBeenOpened: false,
         selectedUtxos: [],

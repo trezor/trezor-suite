@@ -1,6 +1,7 @@
 import { isRejected } from '@reduxjs/toolkit';
 
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { type GetCalldataThunkDeps } from '@suite-common/networks';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type ComposeSendFormTransactionFeeLevelsThunkState,
@@ -52,6 +53,7 @@ export const composeTradingTransactionThunk = createThunk<
     {
         rejectValue: TradingSendRejectedProps;
         state: ComposeTradingTransactionThunkState;
+        extra: GetCalldataThunkDeps;
     }
 >(
     `${TRADING_THUNK_PREFIX}/composeTradingTransaction`,
@@ -68,7 +70,7 @@ export const composeTradingTransactionThunk = createThunk<
             tradingFormState,
             assumeNewAccount,
         },
-        { dispatch, getState, rejectWithValue, fulfillWithValue },
+        { dispatch, getState, rejectWithValue, fulfillWithValue, extra },
     ) => {
         const { composed, selectedFee } = selectTradingComposedTransactionInfo(getState());
         const network = getNetwork(account.symbol);
@@ -84,19 +86,22 @@ export const composeTradingTransactionThunk = createThunk<
             });
         }
 
-        const formState = buildTradingComposeFormState({
-            account,
-            device,
-            address,
-            amount,
-            destinationTag,
-            transactionData,
-            ethereumAdjustGasLimit,
-            setMaxOutputId,
-            composed,
-            selectedFee,
-            tradingFormState,
-        });
+        const formState = buildTradingComposeFormState(
+            extra.services.networks.getCalldata(account?.symbol),
+            {
+                account,
+                device,
+                address,
+                amount,
+                destinationTag,
+                transactionData,
+                ethereumAdjustGasLimit,
+                setMaxOutputId,
+                composed,
+                selectedFee,
+                tradingFormState,
+            },
+        );
 
         const composeContext = { account, network, feeInfo, assumeNewAccount };
 

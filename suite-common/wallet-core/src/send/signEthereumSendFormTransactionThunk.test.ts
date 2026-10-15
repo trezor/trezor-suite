@@ -1,3 +1,5 @@
+import { type GetCalldataThunkDeps } from '@suite-common/networks';
+import { mockGetCalldata } from '@suite-common/networks/mocks';
 import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import {
     AddressDisplayOptions,
@@ -35,7 +37,8 @@ const formState = (overrides?: Partial<FormState>): FormState =>
     }) as unknown as FormState;
 
 const initStore = (txs = confirmedNonces(6)) =>
-    createTestCompositionRoot<void, SignEthereumSendFormTransactionThunkState>({
+    createTestCompositionRoot<GetCalldataThunkDeps, SignEthereumSendFormTransactionThunkState>({
+        services: () => ({ networks: { getCalldata: mockGetCalldata() } }),
         preloadedState: {
             wallet: {
                 transactions: { transactions: { [ethAccount.key]: txs } },

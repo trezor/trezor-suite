@@ -1,3 +1,5 @@
+import { type GetCalldataThunkDeps } from '@suite-common/networks';
+import { mockGetCalldata } from '@suite-common/networks/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
@@ -45,7 +47,9 @@ function assertComposed(
 }
 
 const dispatchCompose = (feeEstimationRecipient?: string, assumeNewAccount?: boolean) => {
-    const { store } = createTestCompositionRoot<void, unknown>({}).services;
+    const { store } = createTestCompositionRoot<GetCalldataThunkDeps, unknown>({
+        services: () => ({ networks: { getCalldata: mockGetCalldata() } }),
+    }).services;
 
     return store
         .dispatch(

@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import { useSelector } from 'react-redux';
 
+import { injectGetCalldata } from '@suite-common/networks';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { ErrorMessage } from '@suite-native/atoms';
@@ -14,6 +15,7 @@ import {
     selectTransactionReviewOutputsFromDraft,
 } from '@suite-native/transaction-management';
 import { TransactionReviewScreen } from '@suite-native/transaction-review';
+import { useServices } from '@trezor/dependency-injection';
 
 import { ReviewOutputsSkeleton } from './ReviewOutputsSkeleton';
 import { SignDataMessageReview } from './SignDataMessageReview';
@@ -58,6 +60,8 @@ export const TradingTransactionReview = memo(
         isDexExchange,
         exchangeFlowType,
     }: TradingTransactionReviewProps) => {
+        const { getCalldata } = useServices(injectGetCalldata);
+
         const {
             isTransactionAlreadySigned,
             confirmOnTrezorRef,
@@ -98,12 +102,18 @@ export const TradingTransactionReview = memo(
 
         const reviewOutputs =
             useSelector((state: TransactionReviewOutputsState) =>
-                selectTransactionReviewOutputsFromDraft(state, prefix, accountKey, tokenContract),
+                selectTransactionReviewOutputsFromDraft(
+                    state,
+                    prefix,
+                    accountKey,
+                    tokenContract,
+                    getCalldata,
+                ),
             ) || undefined;
 
         const summaryOutput =
             useSelector((state: TransactionReviewOutputsState) =>
-                selectReviewSummaryOutput(state, prefix, accountKey, tokenContract),
+                selectReviewSummaryOutput(state, prefix, accountKey, tokenContract, getCalldata),
             ) || undefined;
 
         // The button resolves the send consent the in-flight sign-and-send

@@ -1,4 +1,8 @@
+import { getEthereumCalldata } from '@trezor/network-ethereum-suite-common';
+
 import { getClearSignedSwapAmounts } from './clearSignedSwapUtils';
+
+const networkCalldata = getEthereumCalldata();
 
 const USDC = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
 const WBTC = '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599';
@@ -17,7 +21,7 @@ describe(getClearSignedSwapAmounts.name, () => {
     describe('full swap', () => {
         it('formats both legs with the matched tokens decimals', () => {
             expect(
-                getClearSignedSwapAmounts({
+                getClearSignedSwapAmounts(networkCalldata, {
                     transactionData: SWAP_USDC_WBTC,
                     send: { contractAddress: USDC, decimals: 6 },
                     receive: { contractAddress: WBTC, decimals: 8 },
@@ -26,7 +30,7 @@ describe(getClearSignedSwapAmounts.name, () => {
         });
 
         it('omits the receive amount when the decoded token does not match the resolved token', () => {
-            const result = getClearSignedSwapAmounts({
+            const result = getClearSignedSwapAmounts(networkCalldata, {
                 transactionData: SWAP_USDC_WBTC,
                 send: { contractAddress: USDC, decimals: 6 },
                 receive: { contractAddress: WETH, decimals: 18 },
@@ -38,7 +42,7 @@ describe(getClearSignedSwapAmounts.name, () => {
 
         it('returns undefined when no leg matches (resolved native vs ERC-20 calldata token)', () => {
             expect(
-                getClearSignedSwapAmounts({
+                getClearSignedSwapAmounts(networkCalldata, {
                     transactionData: SWAP_USDC_WBTC,
                     send: { decimals: 18 },
                 }),
@@ -49,7 +53,7 @@ describe(getClearSignedSwapAmounts.name, () => {
     describe('partial swap', () => {
         it('formats the send leg only (unoswap), never a receive amount', () => {
             expect(
-                getClearSignedSwapAmounts({
+                getClearSignedSwapAmounts(networkCalldata, {
                     transactionData: UNOSWAP_WETH_01,
                     send: { contractAddress: WETH, decimals: 18 },
                     receive: { contractAddress: WETH, decimals: 18 },
@@ -59,7 +63,7 @@ describe(getClearSignedSwapAmounts.name, () => {
 
         it('formats a native send leg from tx value (ethUnoswap)', () => {
             expect(
-                getClearSignedSwapAmounts({
+                getClearSignedSwapAmounts(networkCalldata, {
                     transactionData: ETH_UNOSWAP,
                     value: 0x71afd498d0000n, // 0.002 ETH
                     send: { decimals: 18 },
@@ -76,7 +80,7 @@ describe(getClearSignedSwapAmounts.name, () => {
         ])(
             'returns undefined send amount for %s decimals (no throw, no NaN)',
             (_label, decimals) => {
-                const result = getClearSignedSwapAmounts({
+                const result = getClearSignedSwapAmounts(networkCalldata, {
                     transactionData: SWAP_USDC_WBTC,
                     send: { contractAddress: USDC, decimals },
                     receive: { contractAddress: WBTC, decimals: 8 },
@@ -88,7 +92,7 @@ describe(getClearSignedSwapAmounts.name, () => {
 
         it('returns undefined rather than "0" when decimals underflow a nonzero amount', () => {
             expect(
-                getClearSignedSwapAmounts({
+                getClearSignedSwapAmounts(networkCalldata, {
                     transactionData: SWAP_USDC_WBTC,
                     send: { contractAddress: USDC, decimals: 30 },
                 })?.sendAmount,
@@ -99,7 +103,7 @@ describe(getClearSignedSwapAmounts.name, () => {
     describe('non-swap', () => {
         it('returns undefined for non-clear-signed calldata', () => {
             expect(
-                getClearSignedSwapAmounts({
+                getClearSignedSwapAmounts(networkCalldata, {
                     transactionData: '0xdeadbeef',
                     send: { contractAddress: USDC, decimals: 6 },
                 }),

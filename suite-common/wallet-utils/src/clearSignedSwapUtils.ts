@@ -1,4 +1,4 @@
-import { NATIVE_CURRENCY, decodeClearSignedSwap } from '@trezor/network-ethereum-suite-common';
+import { NATIVE_CURRENCY, type Calldata } from '@trezor/calldata';
 import { BigNumber } from '@trezor/utils';
 
 import { convertAmountSubunitsToUnits } from './amountUtils';
@@ -55,13 +55,13 @@ type GetClearSignedSwapAmountsParams = {
     receive?: ClearSignedSwapTokenMeta;
 };
 
-export const getClearSignedSwapAmounts = ({
-    transactionData,
-    value,
-    send,
-    receive,
-}: GetClearSignedSwapAmountsParams): ClearSignedSwapAmounts | undefined => {
-    const decoded = decodeClearSignedSwap(transactionData, value);
+export const getClearSignedSwapAmounts = (
+    networkCalldata: Calldata | undefined,
+    { transactionData, value, send, receive }: GetClearSignedSwapAmountsParams,
+): ClearSignedSwapAmounts | undefined => {
+    const decoded = networkCalldata?.evm
+        ? networkCalldata.decodeClearSignedSwap(transactionData, value)
+        : undefined;
     if (!decoded) {
         return undefined;
     }

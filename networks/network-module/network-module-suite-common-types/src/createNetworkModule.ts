@@ -1,3 +1,4 @@
+import { type Calldata } from '@trezor/calldata';
 import type { NetworkAssetsModule } from '@trezor/network-assets-types';
 import { type NetworkSymbol, asNetworkSymbols } from '@trezor/network-module-types';
 import { isArrayMember } from '@trezor/utils';
@@ -15,6 +16,7 @@ import type { SuiteCommonNetworkModule } from './SuiteCommonNetworkModule';
  * `createNetworkModule` narrows behavior calls at the boundary; the repository routes icon calls.
  */
 export type NetworkModuleDefinition<TSymbol extends string> = {
+    calldata?: Calldata;
     icon: NetworkAssetsModule<TSymbol>;
     addressValidator: AddressValidator<TSymbol>;
     isWrappedNativeToken?: IsWrappedNativeToken<TSymbol>;
@@ -57,6 +59,9 @@ export const createNetworkModule = <TSymbol extends string>(
     const { isWrappedNativeToken } = definition;
 
     return {
+        get calldata() {
+            return definition.calldata;
+        },
         icon: definition.icon,
         isWrappedNativeToken: isWrappedNativeToken
             ? (symbol, contract) => isWrappedNativeToken(narrow(symbol), contract)

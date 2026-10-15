@@ -1,5 +1,5 @@
 import { selectSelectedDevice } from '@suite-common/device';
-import { selectSupportedNetworkSymbols } from '@suite-common/networks';
+import { selectSupportedNetworkSymbols, type GetCalldataDep } from '@suite-common/networks';
 import { isEvmTxSimulationSupported } from '@suite-common/tx-simulation';
 import { asNetworkSymbol, getNetworkByEvmChainId } from '@suite-common/wallet-config';
 import {
@@ -9,12 +9,12 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account, type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { getPrecomposedTxWithAccountToken } from '@suite-common/wallet-utils';
-import TrezorConnect from '@trezor/connect';
-import type {
-    CallMethodKeys,
-    EthereumSignTransaction,
-    EthereumSignTypedData,
-    MethodInfo,
+import { type Calldata } from '@trezor/calldata';
+import TrezorConnect, {
+    type CallMethodKeys,
+    type EthereumSignTransaction,
+    type EthereumSignTypedData,
+    type MethodInfo,
 } from '@trezor/connect';
 import { getSerializedPath, validatePath } from '@trezor/connect-common';
 import type { Bip43Path } from '@trezor/crypto-utils';
@@ -32,11 +32,10 @@ type _storePrecomposedTransactionParams = {
     account: Account;
 };
 
-const _storePrecomposedTransaction = ({
-    typedPayload,
-    txSigningPrecomposed,
-    account,
-}: _storePrecomposedTransactionParams) =>
+const _storePrecomposedTransaction = (
+    networkCalldata: Calldata | undefined,
+    { typedPayload, txSigningPrecomposed, account }: _storePrecomposedTransactionParams,
+) =>
     sendFormActions.storePrecomposedTransaction({
         formState: {
             // Can be left empty, not used in tx review modal
@@ -55,7 +54,7 @@ const _storePrecomposedTransaction = ({
                 ? parseInt(typedPayload.transaction.nonce, 16).toString()
                 : typedPayload.transaction.nonce,
         },
-        precomposedTransaction: getPrecomposedTxWithAccountToken({
+        precomposedTransaction: getPrecomposedTxWithAccountToken(networkCalldata, {
             precomposedTx: txSigningPrecomposed,
             contract: typedPayload.transaction.to,
             data: typedPayload.transaction.data,
@@ -64,13 +63,14 @@ const _storePrecomposedTransaction = ({
     });
 
 const preCallHook = async <M extends CallMethodKeys>({
+    getCalldata,
     method,
     payload,
     getState,
     dispatch,
     txSigningPrecomposed,
     source,
-}: PreCallHookParams<M>) => {
+}: PreCallHookParams<M> & GetCalldataDep) => {
     try {
         // Parse common parameters (path, chainId) from payload
         let path: Bip43Path;
@@ -121,7 +121,7 @@ const preCallHook = async <M extends CallMethodKeys>({
 
         if (method === 'ethereumSignTransaction' && txSigningPrecomposed) {
             dispatch(
-                _storePrecomposedTransaction({
+                _storePrecomposedTransaction(getCalldata(selectedAccount.symbol), {
                     typedPayload: payload as any as EthereumSignTransaction,
                     txSigningPrecomposed,
                     account: selectedAccount,
@@ -183,7 +183,7 @@ const preCallHook = async <M extends CallMethodKeys>({
                 txSigningPrecomposed = (methodInfo.payload as any as MethodInfo).precomposed;
                 if (txSigningPrecomposed)
                     dispatch(
-                        _storePrecomposedTransaction({
+                        _storePrecomposedTransaction(getCalldata(selectedAccount.symbol), {
                             typedPayload,
                             txSigningPrecomposed,
                             account: selectedAccount,

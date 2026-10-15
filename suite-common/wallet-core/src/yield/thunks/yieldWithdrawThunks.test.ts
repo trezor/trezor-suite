@@ -1,5 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
+import { type GetCalldataThunkDeps } from '@suite-common/networks';
+import { mockGetCalldata } from '@suite-common/networks/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type FeeInfo, asAccountDescriptor } from '@suite-common/wallet-types';
@@ -74,7 +76,8 @@ const ethFeeInfo: FeeInfo = {
 };
 
 const initStore = () =>
-    createTestCompositionRoot<void, ComposeYieldWithdrawTransactionThunkState>({
+    createTestCompositionRoot<GetCalldataThunkDeps, ComposeYieldWithdrawTransactionThunkState>({
+        services: () => ({ networks: { getCalldata: mockGetCalldata() } }),
         reducer: combineReducers({
             wallet: combineReducers({
                 accounts: () => accountsInitialState,

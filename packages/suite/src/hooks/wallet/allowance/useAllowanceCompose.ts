@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { isFulfilled } from '@reduxjs/toolkit';
 import { useMutation } from '@tanstack/react-query';
 
+import { injectGetCalldata } from '@suite-common/networks';
 import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants';
 import {
     type ComposeAllowanceTransactionThunkParams,
@@ -43,7 +44,7 @@ export const useAllowanceCompose = ({
     amount,
     token,
 }: UseAllowanceComposeParams) => {
-    const { dispatch } = useServices(injectDispatch);
+    const { dispatch, getCalldata } = useServices(injectDispatch, injectGetCalldata);
     const debounce = useDebounce();
 
     const { networkType, symbol } = account;
@@ -69,8 +70,8 @@ export const useAllowanceCompose = ({
     const methodsRef = useCurrentRef(methods);
 
     const data = useMemo(
-        () => buildApprovalTransactionData({ amount, spender }),
-        [amount, spender],
+        () => buildApprovalTransactionData(getCalldata(account?.symbol), { amount, spender }),
+        [amount, spender, getCalldata, account],
     );
 
     const { mutate, isPending: isComposing } = useMutation({

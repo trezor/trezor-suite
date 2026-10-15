@@ -68,6 +68,7 @@
         "@suite-native/transactions": "workspace:*",
         "@suite-native/tx-simulation": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
+        "@trezor/calldata": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/connect-common": "workspace:*",
         "@trezor/dependency-injection": "workspace:*",

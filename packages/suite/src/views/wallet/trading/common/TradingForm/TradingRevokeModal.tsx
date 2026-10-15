@@ -3,6 +3,7 @@ import { useCallback, useMemo } from 'react';
 import { type CryptoId } from 'invity-api';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { injectGetCalldata } from '@suite-common/networks';
 import {
     selectTradingExchangeProviders,
     selectTradingExchangeSelectedQuote,
@@ -10,7 +11,6 @@ import {
     tradeApi,
 } from '@suite-common/trading';
 import { useServices } from '@trezor/dependency-injection';
-import { Calldata } from '@trezor/network-ethereum-suite-common';
 
 import { RevokeModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/AllowanceModals/RevokeModal';
 import { useSelector } from 'src/hooks/suite';
@@ -28,7 +28,7 @@ export const TradingRevokeModal = ({ cryptoId }: TradingRevokeModalProps) => {
     const { state } = useAllowanceContext();
     const context = useTradingFormContext();
     const account = useSelector(reduxState => selectTradingSendAccount(reduxState, context.type));
-    const { analytics } = useServices(injectDesktopAnalytics);
+    const { analytics, getCalldata } = useServices(injectDesktopAnalytics, injectGetCalldata);
     const getCryptoInfo = useTradingExchangeCryptoAndProviderInfo();
     const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
     const providersInfo = useSelector(selectTradingExchangeProviders);
@@ -75,14 +75,14 @@ export const TradingRevokeModal = ({ cryptoId }: TradingRevokeModalProps) => {
         const provider = exchange ? providersInfo?.[exchange] : null;
 
         const dexTxData = selectedQuote?.dexTx?.data;
-        const approvalData = Calldata.evm.erc20.approve.decode(dexTxData);
+        const approvalData = getCalldata(account?.symbol)?.approve?.decode?.(dexTxData) ?? null;
         const spender = approvalData?.spender ?? null;
 
         const preapprovedAmount = selectedQuote?.preapprovedStringAmount;
         const approveAmount = selectedQuote?.sendStringAmount;
 
         return provider && spender ? { provider, spender, preapprovedAmount, approveAmount } : null;
-    }, [context, providersInfo, selectedQuote]);
+    }, [context, providersInfo, selectedQuote, getCalldata, account]);
 
     const { provider, spender, preapprovedAmount, approveAmount } =
         useModalLastValidParams(revokeParams, state.isRevokeModalOpen) ?? {};

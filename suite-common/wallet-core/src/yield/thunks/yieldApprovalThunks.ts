@@ -1,5 +1,6 @@
 import { type Dispatch } from '@reduxjs/toolkit';
 
+import { type GetCalldataThunkDeps } from '@suite-common/networks';
 import {
     asAmountUnit,
     subunitsToUnits,
@@ -222,12 +223,12 @@ export type InitYieldAllowanceThunkState = YieldRootState;
 export const initYieldAllowanceThunk = createThunk<
     void,
     InitYieldAllowancePayload,
-    { state: InitYieldAllowanceThunkState }
+    { state: InitYieldAllowanceThunkState; extra: GetCalldataThunkDeps }
 >(
     `${YIELD_THUNK_PREFIX}/initAllowance`,
     async (
         { flowKey, flowType, flowData, shouldSkipApprovalStep = true },
-        { dispatch, getState },
+        { dispatch, getState, extra },
     ) => {
         dispatch(yieldActions.startInitializingAllowance({ flowType, flowKey }));
 
@@ -241,12 +242,15 @@ export const initYieldAllowanceThunk = createThunk<
                 );
             }
 
-            const allowanceSubunits = await fetchAllowance({
-                owner: flowData.account.descriptor,
-                spender,
-                tokenContractAddress,
-                coin: flowData.account.symbol,
-            });
+            const allowanceSubunits = await fetchAllowance(
+                extra.services.networks.getCalldata(flowData.account.symbol),
+                {
+                    owner: flowData.account.descriptor,
+                    spender,
+                    tokenContractAddress,
+                    coin: flowData.account.symbol,
+                },
+            );
             const fetchedAmount = subunitsToUnits({
                 value: allowanceSubunits,
                 decimals: flowData.token.decimals,
@@ -316,9 +320,13 @@ export const submitYieldRevokeThunk = createThunk<
     dispatch(yieldActions.finishSubmittingApproval({ flowType, flowKey }));
 });
 
-export const submitYieldApproveThunk = createThunk<void, SubmitYieldApprovePayload, void>(
+export const submitYieldApproveThunk = createThunk<
+    void,
+    SubmitYieldApprovePayload,
+    { extra: GetCalldataThunkDeps }
+>(
     `${YIELD_THUNK_PREFIX}/submitApprove`,
-    async ({ flowKey, flowType, flowData, amount }, { dispatch }) => {
+    async ({ flowKey, flowType, flowData, amount }, { dispatch, extra }) => {
         const requestAmount = getApprovalRequestAmount({
             flowType,
             amount,
@@ -343,12 +351,15 @@ export const submitYieldApproveThunk = createThunk<void, SubmitYieldApprovePaylo
                 return;
             }
 
-            const allowanceSubunits = await fetchAllowance({
-                owner: flowData.account.descriptor,
-                spender,
-                tokenContractAddress,
-                coin: flowData.account.symbol,
-            });
+            const allowanceSubunits = await fetchAllowance(
+                extra.services.networks.getCalldata(flowData.account.symbol),
+                {
+                    owner: flowData.account.descriptor,
+                    spender,
+                    tokenContractAddress,
+                    coin: flowData.account.symbol,
+                },
+            );
             const requestSubunits = unitsToSubunits({
                 value: asAmountUnit(new BigNumber(requestAmount)),
                 decimals: flowData.token.decimals,

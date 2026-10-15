@@ -1,5 +1,6 @@
 import { type BtcSwapComposeTemplate, type CryptoId } from 'invity-api';
 
+import { mockGetCalldata } from '@suite-common/networks/mocks';
 import { type Network } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { buildApprovalTransactionData } from '@suite-common/wallet-utils';
@@ -16,6 +17,8 @@ import {
     requiresTokenApproval,
     tokenSupportsIncreasingAllowance,
 } from './exchangeUtils';
+
+const networkCalldata = mockGetCalldata()('eth');
 
 jest.mock('@trezor/connect', () => ({
     composeTransaction: jest.fn(),
@@ -327,7 +330,10 @@ describe('tokenSupportsIncreasingAllowance', () => {
 
 describe('getDexEstimationData', () => {
     const spender = '0x1231deb6f5749ef6ce6943a275a1d3e7486f4eae';
-    const approveData = buildApprovalTransactionData({ spender, amount: '9475047' });
+    const approveData = buildApprovalTransactionData(networkCalldata, {
+        spender,
+        amount: '9475047',
+    });
 
     const buildDexTx = (data: string) => ({
         from: '0x9cd02a26cd336d0fe784fb7995f6e5c9e3776258',
@@ -346,8 +352,10 @@ describe('getDexEstimationData', () => {
             dexTx: buildDexTx(approveData),
         };
 
-        const result = getDexEstimationData(quote);
-        expect(result).toBe(buildApprovalTransactionData({ spender, amount: '0' }));
+        const result = getDexEstimationData(networkCalldata, quote);
+        expect(result).toBe(
+            buildApprovalTransactionData(networkCalldata, { spender, amount: '0' }),
+        );
         expect(result).not.toBe(approveData);
     });
 
@@ -361,7 +369,7 @@ describe('getDexEstimationData', () => {
             dexTx: buildDexTx(approveData),
         };
 
-        expect(getDexEstimationData(quote)).toBe(approveData);
+        expect(getDexEstimationData(networkCalldata, quote)).toBe(approveData);
     });
 
     it('returns undefined when the quote has no dexTx', () => {
@@ -371,7 +379,7 @@ describe('getDexEstimationData', () => {
             send: USDT_CRYPTO_ID,
         };
 
-        expect(getDexEstimationData(quote)).toBeUndefined();
+        expect(getDexEstimationData(networkCalldata, quote)).toBeUndefined();
     });
 });
 
