@@ -9,6 +9,7 @@ import type { ElectrumClient } from './client/electrum';
 import * as L from './listeners';
 import * as M from './methods';
 import { createSocket } from './sockets';
+import { forgetParsedTransactions } from './utils';
 
 type BlockListener = ReturnType<typeof L.blockListener>;
 type TxListener = ReturnType<typeof L.txListener>;
@@ -221,6 +222,8 @@ class ElectrumWorker extends BaseWorker<ElectrumClient> {
         if (this.api?.isConnected()) {
             // Not closed by the server, e.g. no account of the network is left.
             electrumCaches.delete(this.getCoin());
+            const network = this.api.getInfo()?.network;
+            if (network) forgetParsedTransactions(network);
             this.api.close();
         }
     }

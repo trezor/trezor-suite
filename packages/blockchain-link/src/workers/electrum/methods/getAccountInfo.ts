@@ -203,11 +203,12 @@ const getAccountInfo: Api<Req, Res> = async ({ client, addressCache }, payload) 
     const hasAddressAmounts =
         ['tokenBalances', 'txids', 'txs'].includes(details) && pageParams.page === 1;
     // All the transactions of the account are needed for the amounts of its addresses, but not
-    // the previous transactions of their foreign inputs.
+    // the previous transactions of their foreign inputs nor their blocks.
     const accountTransactions = hasAddressAmounts
-        ? await getTransactions(client, history, { withForeignParents: false }).then(txs =>
-              txs.map(transformTransaction),
-          )
+        ? await getTransactions(client, history, {
+              withForeignParents: false,
+              withBlocks: false,
+          }).then(txs => txs.map(transformTransaction))
         : [];
 
     const valuesByAddress = sumValuesByAddress(accountTransactions);

@@ -1,15 +1,13 @@
 import type { MessageTypes, ResponseTypes } from '@trezor/blockchain-link-types';
 import { transformTransaction } from '@trezor/blockchain-link-utils/src/blockbook';
 
-import { type Api, getTransactions } from '../utils';
+import { type Api, getTransactionByTxid } from '../utils';
 
 type Req = MessageTypes.GetTransaction;
 type Res = ResponseTypes.GetTransaction;
 
 const getTransaction: Api<Req, Res> = async ({ client, addressCache }, { txid, descriptor }) => {
-    const txs = await getTransactions(client, [{ tx_hash: txid, height: -1 }]);
-    // @ts-expect-error: indexing with noUncheckedIndexedAccess
-    const tx: (typeof txs)[number] = txs[0];
+    const tx = await getTransactionByTxid(client, txid);
 
     const addresses = descriptor
         ? {

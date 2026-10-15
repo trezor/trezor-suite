@@ -1,7 +1,8 @@
 import { type AddressInfo, type Server, type Socket, createServer } from 'net';
 
-import type { ElectrumTypes } from '@trezor/blockchain-link-types';
+import { Transaction, address, networks } from '@trezor/utxo-lib';
 
+import { addressToScripthash } from './utils/transform';
 import { BlockchainLink } from '../../index';
 
 import ElectrumWorker from './index';
@@ -9,36 +10,44 @@ import ElectrumWorker from './index';
 type JsonRpcRequest = { id: number; method: string; params: unknown[] };
 
 const ADDRESS = 'bc1qannfxke2tfd4l7vhepehpvt05y83v3qsf6nfkk';
+const SCRIPTHASH = addressToScripthash(ADDRESS, networks.bitcoin);
 const TX_COUNT = 100;
 const RESPONSE_DELAY_MS = 5;
+const BLOCK_TIME = 1;
 
-const getTxid = (index: number) => index.toString(16).padStart(64, '0');
-const getPrevTxid = (index: number) => (index + TX_COUNT).toString(16).padStart(64, '0');
+type CreateTransactionParams = { prevTxid?: string; coinbase?: string };
 
-const createTransaction = (txid: string, prevTxid?: string): ElectrumTypes.TransactionVerbose => ({
-    txid,
-    hash: txid,
-    hex: '00',
-    blockhash: 'bb'.repeat(32),
-    version: 2,
-    size: 100,
-    vsize: 100,
-    weight: 400,
-    locktime: 0,
-    confirmations: 10,
-    time: 1,
-    blocktime: 1,
-    vin: prevTxid
-        ? [{ txid: prevTxid, vout: 0, sequence: 0xffffffff, scriptSig: {}, txinwitness: [] }]
-        : [{ coinbase: '00', sequence: 0 }],
-    vout: [
-        {
-            value: 0.001,
-            n: 0,
-            scriptPubKey: { asm: '', hex: '00', address: ADDRESS, type: 'witness_v0_keyhash' },
-        },
-    ],
-});
+// A transaction paying 100000 satoshi to ADDRESS, from the output of the previous one.
+const createTransaction = ({ prevTxid, coinbase = '00' }: CreateTransactionParams) => {
+    const tx = new Transaction();
+    tx.ins.push({
+        hash: prevTxid ? Buffer.from(prevTxid, 'hex').reverse() : Buffer.alloc(32),
+        index: prevTxid ? 0 : 0xffffffff,
+        script: prevTxid ? Buffer.alloc(0) : Buffer.from(coinbase, 'hex'),
+        sequence: 0xffffffff,
+        witness: prevTxid ? [Buffer.alloc(72)] : [],
+    });
+    tx.outs.push({ script: address.toOutputScript(ADDRESS, networks.bitcoin), value: '100000' });
+
+    return { txid: tx.getId(), hex: tx.toHex() };
+};
+
+const prevTransactions = Array.from({ length: TX_COUNT }, (_, i) =>
+    createTransaction({ coinbase: i.toString(16).padStart(4, '0') }),
+);
+const transactions = prevTransactions.map(({ txid }) => createTransaction({ prevTxid: txid }));
+const getTxid = (index: number) => transactions[index]?.txid ?? '';
+const getPrevTxid = (index: number) => prevTransactions[index]?.txid ?? '';
+const rawTransactions = new Map(
+    [...transactions, ...prevTransactions].map(({ txid, hex }) => [txid, hex]),
+);
+
+const createHeader = () => {
+    const header = Buffer.alloc(80);
+    header.writeUInt32LE(BLOCK_TIME, 68);
+
+    return header.toString('hex');
+};
 
 const getResult = ({ method, params }: JsonRpcRequest) => {
     switch (method) {
@@ -46,6 +55,8 @@ const getResult = ({ method, params }: JsonRpcRequest) => {
             return ['MockElectrum 1.0', '1.4'];
         case 'blockchain.headers.subscribe':
             return { height: 1000, hex: '00'.repeat(80) };
+        case 'blockchain.block.header':
+            return createHeader();
         case 'blockchain.scripthash.subscribe':
             return 'status';
         case 'blockchain.scripthash.get_balance':
@@ -55,13 +66,8 @@ const getResult = ({ method, params }: JsonRpcRequest) => {
                 tx_hash: getTxid(i),
                 height: 990 - i,
             }));
-        case 'blockchain.transaction.get': {
-            const index = parseInt(params[0] as string, 16);
-
-            return index < TX_COUNT
-                ? createTransaction(getTxid(index), getPrevTxid(index))
-                : createTransaction(getPrevTxid(index - TX_COUNT));
-        }
+        case 'blockchain.transaction.get':
+            return rawTransactions.get(params[0] as string);
         default:
             return null;
     }
@@ -76,6 +82,7 @@ const createElectrumServer = async () => {
         waiting: 0,
         maxWaiting: 0,
         requestedTxids: [] as string[],
+        verboseRequests: 0,
     };
 
     const server: Server = createServer(socket => {
@@ -101,7 +108,10 @@ const createElectrumServer = async () => {
                 }
                 requests
                     .filter(({ method }) => method === 'blockchain.transaction.get')
-                    .forEach(({ params }) => stats.requestedTxids.push(params[0] as string));
+                    .forEach(({ params }) => {
+                        stats.requestedTxids.push(params[0] as string);
+                        if (params[1]) stats.verboseRequests++;
+                    });
                 stats.waiting += requests.length;
                 stats.maxWaiting = Math.max(stats.maxWaiting, stats.waiting);
                 setTimeout(() => {
@@ -128,13 +138,28 @@ const createElectrumServer = async () => {
         };
         sockets.at(-1)?.write(`${JSON.stringify(notification)}\n`);
     };
+    const notifyStatus = (scripthash: string, status: string) => {
+        const notification = {
+            jsonrpc: '2.0',
+            method: 'blockchain.scripthash.subscribe',
+            params: [scripthash, status],
+        };
+        sockets.at(-1)?.write(`${JSON.stringify(notification)}\n`);
+    };
     const close = () => {
         closeConnections();
 
         return new Promise(resolve => server.close(resolve));
     };
 
-    return { url: `127.0.0.1:${port}:t`, stats, closeConnections, notifyBlock, close };
+    return {
+        url: `127.0.0.1:${port}:t`,
+        stats,
+        closeConnections,
+        notifyBlock,
+        notifyStatus,
+        close,
+    };
 };
 
 const withTimeout = <T>(promise: Promise<T>, ms = 2000) => {
@@ -162,6 +187,7 @@ describe('Electrum worker', () => {
     });
 
     afterEach(async () => {
+        jest.restoreAllMocks();
         await blockchain.disconnect();
         blockchain.dispose();
         await server.close();
@@ -175,11 +201,13 @@ describe('Electrum worker', () => {
         });
 
         expect(info.history.transactions).toHaveLength(TX_COUNT);
-        // The height comes from the history, not from confirmations counted by the node.
+        // The height comes from the history, the time from the header of its block.
         expect(info.history.transactions?.[0]).toMatchObject({
             txid: getTxid(0),
             blockHeight: 990,
+            blockTime: BLOCK_TIME,
         });
+        expect(server.stats.verboseRequests).toBe(0);
         expect(server.stats.firstMethods).toEqual(['server.version']);
         // All the transactions of the history used to be requested at once.
         expect(server.stats.maxWaiting).toBeLessThan(TX_COUNT);
@@ -253,9 +281,25 @@ describe('Electrum worker', () => {
         const requestedTxids = server.stats.requestedTxids.length;
 
         await blockchain.disconnect();
+        const parse = jest.spyOn(Transaction, 'fromHex');
         await blockchain.getAccountInfo(params);
 
         expect(server.stats.requestedTxids).toHaveLength(2 * requestedTxids);
+        // The parsed transactions of the network are forgotten too.
+        expect(parse).toHaveBeenCalledTimes(requestedTxids);
+    });
+
+    it('notifies a new transaction of a subscribed address with the block of its history', async () => {
+        await blockchain.subscribe({ type: 'addresses', addresses: [ADDRESS] });
+        const notification = new Promise(resolve => blockchain.once('notification', resolve));
+
+        server.notifyStatus(SCRIPTHASH, 'new status');
+
+        await expect(withTimeout(notification)).resolves.toMatchObject({
+            descriptor: ADDRESS,
+            tx: { txid: getTxid(0), blockHeight: 990, blockTime: BLOCK_TIME },
+        });
+        expect(server.stats.verboseRequests).toBe(0);
     });
 
     it('reports a connection closed by the server and connects again', async () => {
