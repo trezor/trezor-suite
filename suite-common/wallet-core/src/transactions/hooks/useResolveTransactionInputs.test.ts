@@ -80,17 +80,26 @@ const renderResolveTransactionInputs = (transactions: WalletAccountTransaction[]
     };
 };
 
+// A test failing before it answers would leave the request shared by the single-instance thunk
+// pending for the next tests, so a pending response is answered after each test anyway.
+let respondPending: (() => void) | undefined;
+
 describe(useResolveTransactionInputs.name, () => {
-    afterEach(() => jest.restoreAllMocks());
+    afterEach(async () => {
+        respondPending?.();
+        respondPending = undefined;
+        await new Promise(resolve => setTimeout(resolve, 0));
+        jest.restoreAllMocks();
+    });
 
     it('resolves the inputs of a transaction and tells when they are being fetched', async () => {
-        let respond = () => {};
         const getTransactions = jest
             .spyOn(TrezorConnect, 'blockchainGetTransactions')
             .mockImplementation(
                 () =>
                     new Promise(resolve => {
-                        respond = () => resolve({ success: true, payload: [getFullTransaction()] });
+                        respondPending = () =>
+                            resolve({ success: true, payload: [getFullTransaction()] });
                     }),
             );
         const { result, getStoredTransactions } = renderResolveTransactionInputs([
@@ -99,7 +108,7 @@ describe(useResolveTransactionInputs.name, () => {
 
         expect(result.current).toEqual({ isResolving: true, hasFailed: false });
 
-        respond();
+        respondPending?.();
 
         await waitFor(() => expect(result.current.isResolving).toBe(false));
         expect(result.current.hasFailed).toBe(false);
@@ -124,6 +133,18 @@ describe(useResolveTransactionInputs.name, () => {
 
         expect(result.current).toEqual({ isResolving: false, hasFailed: true });
         expect(getTransactions).toHaveBeenCalledTimes(1);
+    });
+
+    it('tells when fetching the inputs throws', async () => {
+        jest.spyOn(TrezorConnect, 'blockchainGetTransactions').mockRejectedValue(
+            new Error('Connection closed'),
+        );
+        const { result } = renderResolveTransactionInputs([
+            getStoredTransaction(getUnresolvedTransaction()),
+        ]);
+
+        await waitFor(() => expect(result.current.hasFailed).toBe(true));
+        expect(result.current.isResolving).toBe(false);
     });
 
     it('fetches nothing for transactions with all input values', () => {

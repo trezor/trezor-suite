@@ -25,6 +25,7 @@ const getAddress = (type: 'receive' | 'change', index: number) => {
 };
 const RECEIVE_ADDRESS = getAddress('receive', 0);
 const CHANGE_ADDRESS = getAddress('change', 0);
+const SECOND_CHANGE_ADDRESS = getAddress('change', 1);
 // An address of the account beyond its gap limit, so not in the history the worker discovers.
 const UNDISCOVERED_ADDRESS = getAddress('receive', 3000);
 // Public test vector of BIP173.
@@ -160,7 +161,31 @@ const UNDISCOVERED = createTransaction(
     102,
 );
 
-const transactions = [FOREIGN_PARENT, INCOMING, OUTGOING, UNDISCOVERED_PARENT, UNDISCOVERED];
+// An output of a change address which is not in the history of any receive address, spent later.
+const CHANGE_PAYMENT = createTransaction(
+    {
+        inputs: [{ txid: FOREIGN_PARENT.txid, vout: 0 }],
+        outputs: [{ value: 40000, address: SECOND_CHANGE_ADDRESS }],
+    },
+    103,
+);
+const CHANGE_SPENT = createTransaction(
+    {
+        inputs: [{ txid: CHANGE_PAYMENT.txid, vout: 0 }],
+        outputs: [{ value: 35000, address: FOREIGN_ADDRESS }],
+    },
+    104,
+);
+
+const transactions = [
+    FOREIGN_PARENT,
+    INCOMING,
+    OUTGOING,
+    UNDISCOVERED_PARENT,
+    UNDISCOVERED,
+    CHANGE_PAYMENT,
+    CHANGE_SPENT,
+];
 
 const histories: Record<string, { tx_hash: string; height: number }[]> = {
     [addressToScripthash(RECEIVE_ADDRESS, networks.bitcoin)]: [
@@ -169,6 +194,10 @@ const histories: Record<string, { tx_hash: string; height: number }[]> = {
     ],
     [addressToScripthash(CHANGE_ADDRESS, networks.bitcoin)]: [
         { tx_hash: OUTGOING.txid, height: OUTGOING.height },
+    ],
+    [addressToScripthash(SECOND_CHANGE_ADDRESS, networks.bitcoin)]: [
+        { tx_hash: CHANGE_PAYMENT.txid, height: CHANGE_PAYMENT.height },
+        { tx_hash: CHANGE_SPENT.txid, height: CHANGE_SPENT.height },
     ],
     [addressToScripthash(UNDISCOVERED_ADDRESS, networks.bitcoin)]: [
         { tx_hash: UNDISCOVERED.txid, height: UNDISCOVERED.height },
@@ -306,6 +335,18 @@ describe('getTransaction of the Electrum worker', () => {
         });
         expect(socket.verboseTxids).toEqual([]);
         expect([...socket.rawTxids].sort()).toEqual([INCOMING.txid, OUTGOING.txid].sort());
+    });
+
+    it('fetches a payment from a change address with the previous transaction of its input', async () => {
+        const { socket, context } = await connectClient();
+
+        const tx = await getTransaction(context, { txid: CHANGE_SPENT.txid, descriptor: XPUB });
+
+        expect(tx).toMatchObject({ type: 'sent', amount: '35000', fee: '5000' });
+        expect(socket.verboseTxids).toEqual([]);
+        expect([...socket.rawTxids].sort()).toEqual(
+            [CHANGE_PAYMENT.txid, CHANGE_SPENT.txid].sort(),
+        );
     });
 
     it('fetches a transaction which is not in the history with all its previous transactions', async () => {

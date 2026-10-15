@@ -202,8 +202,28 @@ const queryCancelButton = () =>
 const mockGetTransactions = (response: () => Promise<unknown>) =>
     jest.mocked(TrezorConnect.blockchainGetTransactions).mockImplementation(response as never);
 
+// A test failing before it answers would leave the request shared by the single-instance thunk
+// pending for the next tests, so a pending response is answered after each test anyway.
+let respondPending: (() => void) | undefined;
+
+const mockPendingGetTransactions = (payload: AccountTransaction[]) => {
+    mockGetTransactions(
+        () =>
+            new Promise(resolve => {
+                respondPending = () => resolve({ success: true, payload });
+            }),
+    );
+
+    return () => respondPending?.();
+};
+
 describe('TxDetailModal', () => {
-    afterEach(() => jest.clearAllMocks());
+    afterEach(async () => {
+        respondPending?.();
+        respondPending = undefined;
+        await waitForRender();
+        jest.clearAllMocks();
+    });
 
     it('offers to bump the fee of a transaction without unresolved chained transactions', () => {
         renderTxDetailModal([sentTransaction]);
@@ -214,13 +234,7 @@ describe('TxDetailModal', () => {
     });
 
     it('offers to bump the fee only once the fees of the chained transactions are known', async () => {
-        let respond = () => {};
-        mockGetTransactions(
-            () =>
-                new Promise(resolve => {
-                    respond = () => resolve({ success: true, payload: [fullChainedTransaction] });
-                }),
-        );
+        const respond = mockPendingGetTransactions([fullChainedTransaction]);
 
         renderTxDetailModal([chainedTransaction, sentTransaction]);
 
@@ -259,14 +273,7 @@ describe('TxDetailModal', () => {
 
     describe('fee rate of a transaction with foreign inputs', () => {
         it('shows a spinner until the inputs are fetched', async () => {
-            let respond = () => {};
-            mockGetTransactions(
-                () =>
-                    new Promise(resolve => {
-                        respond = () =>
-                            resolve({ success: true, payload: [fullChainedTransaction] });
-                    }),
-            );
+            const respond = mockPendingGetTransactions([fullChainedTransaction]);
 
             renderTxDetailModal([chainedTransaction, sentTransaction], CHAINED_TXID);
 

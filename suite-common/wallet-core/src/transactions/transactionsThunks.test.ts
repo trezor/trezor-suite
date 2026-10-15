@@ -526,6 +526,25 @@ describe('resolveTransactionInputsThunk', () => {
         expect(getTransactions).toHaveBeenCalledTimes(1);
         expect(getReplaceActions()).toHaveLength(1);
     });
+
+    it('completes the transaction as it is once fetched, e.g. confirmed meanwhile', async () => {
+        let storedTransactions = [getStoredTransaction(getUnresolvedTransaction())];
+        const confirmed = getStoredTransaction(getUnresolvedTransaction({ blockHeight: 100 }));
+        jest.spyOn(TrezorConnect, 'blockchainGetTransactions').mockImplementation(() => {
+            storedTransactions = [confirmed];
+
+            return Promise.resolve({ success: true, payload: [getFullTransaction()] });
+        });
+        const getState = () => getTransactionsState(storedTransactions);
+        const { actions, dispatch } = createMockDispatch({ getState, extra: {} });
+
+        await resolveTransactionInputsThunk(params)(dispatch, getState, {}).unwrap();
+
+        const [replaceAction] = actions.filter(transactionsActions.replaceTransaction.match);
+        expect(replaceAction?.payload.tx).toMatchObject({ blockHeight: 100, fee: RESOLVED_FEE });
+        // A confirmed transaction can't be replaced anymore.
+        expect(replaceAction?.payload.tx.rbfParams).toBeUndefined();
+    });
 });
 
 describe('fetchUtxoTransactionsForAccountThunk', () => {
