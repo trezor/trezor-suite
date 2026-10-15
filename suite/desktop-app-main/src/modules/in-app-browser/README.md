@@ -10,7 +10,9 @@ so a single `ResizeObserver` in the renderer sees every layout change that reach
 
 The view never runs in Suite's own session:
 
-- Either it gets the shared in-memory partition, which is the default and forgets everything when the app closes,
+- Either it gets the shared in-memory partition, which is the default and is emptied whenever a page is closed: every non-persistent entry
+  and every custom url opens into the same partition, so a site opened later cannot read what an earlier one left behind, and nothing of it
+  survives Suite closing either,
 - Or — for a catalog entry that asks for it — a session of its own on disk under `<userData>/in-app-browser/<entry id>`, one directory per
   entry so entries cannot read each other's cookies. Which one an entry gets is decided here from the catalog, never from the renderer's word —
   and so are the entry's page and its navigation allowlists: the renderer names the entry (and the locale, for a page that depends on it), and
@@ -26,7 +28,8 @@ a live page whose session cannot follow a toggle is closed. While Tor is off a s
 system proxy, Electron's default. WebRTC would still send STUN requests over plain UDP past any proxy,
 so the view and its popups are pinned to proxied transports. What no proxy undoes is history, which is
 worth weighing before marking an entry persistent: a cookie jar filled while Tor was off is re-sent
-through Tor once it is on, tying the two visits together.
+through Tor once it is on, tying the two visits together. The in-memory partition is emptied with every
+close, so there the two visits are tied together only while a page stays open across the toggle.
 
 ### Persistent sessions on disk
 

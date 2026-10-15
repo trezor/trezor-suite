@@ -26,13 +26,18 @@ jest.mock('../../ipcMain', () => ({
     },
 }));
 
+// Flipped by `close()`, as Electron destroys a closed page, and reset by each new view.
+let isMockWebContentsDestroyed = false;
+
 const mockWebContents = {
     id: 7,
     on: jest.fn(),
     once: jest.fn(),
     loadURL: jest.fn(() => Promise.resolve()),
-    isDestroyed: () => false,
-    close: jest.fn(),
+    isDestroyed: () => isMockWebContentsDestroyed,
+    close: jest.fn(() => {
+        isMockWebContentsDestroyed = true;
+    }),
     closeDevTools: jest.fn(),
     setWebRTCIPHandlingPolicy: jest.fn(),
     setWindowOpenHandler: jest.fn(),
@@ -41,7 +46,11 @@ const mockWebContents = {
 };
 
 jest.mock('electron', () => ({
-    WebContentsView: jest.fn(() => ({ webContents: mockWebContents, setVisible: jest.fn() })),
+    WebContentsView: jest.fn(() => {
+        isMockWebContentsDestroyed = false;
+
+        return { webContents: mockWebContents, setVisible: jest.fn() };
+    }),
     session: { fromPartition: jest.fn(), fromPath: jest.fn() },
 }));
 
@@ -361,6 +370,26 @@ describe('in-app browser module and the Tor settings', () => {
 
         expect(inMemorySession.setProxy).toHaveBeenLastCalledWith(TOR_PROXY_CONFIG);
         expect(mockWebContents.loadURL).toHaveBeenCalledTimes(2);
+    });
+
+    it('empties the in-memory session when the page is closed', async () => {
+        initModule();
+        await openPage();
+
+        await closePage();
+
+        expect(inMemorySession.clearStorageData).toHaveBeenCalledTimes(1);
+        expect(inMemorySession.clearData).toHaveBeenCalledTimes(1);
+    });
+
+    it('leaves the persistent session of a closed entry alone', async () => {
+        initModule();
+        await openPage(persistentOpenPayload);
+
+        await closePage();
+
+        expect(persistentSession.clearStorageData).not.toHaveBeenCalled();
+        expect(persistentSession.clearData).not.toHaveBeenCalled();
     });
 
     // `ipcMain` does not serialize handlers, and an open is held up by the proxy before it creates

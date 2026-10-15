@@ -90,9 +90,10 @@ export type AppsEmbeddingCatalogEntry = {
 
               /**
                * Whether the site keeps its cookies, localStorage, IndexedDB, cache and service
-               * workers between Suite restarts. Off by default: an entry that has no reason to be
-               * remembered is cheaper to reason about, and the showcase is mostly about first-load
-               * behavior.
+               * workers between visits and Suite restarts. Off by default, in which case everything
+               * the site stored is forgotten the moment it is closed: an entry that has no reason
+               * to be remembered is cheaper to reason about, and the showcase is mostly about
+               * first-load behavior.
                *
                * Only the desktop host can honour it: it gives such an entry a session of its own on
                * disk, one directory per entry, so entries cannot read each other's cookies. The

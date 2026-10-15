@@ -13,6 +13,7 @@ import { ok } from '@trezor/type-utils';
 import {
     applyTorProxy,
     followTorSettings,
+    forgetInMemorySessionData,
     getTorProxyRules,
     resolveSessionForOpen,
 } from './session';
@@ -224,6 +225,46 @@ describe('in-app browser sessions and Tor', () => {
                 .mock.calls.filter(([event]) => event === 'will-download');
 
             expect(registrations).toHaveLength(1);
+        });
+    });
+
+    describe('forgetInMemorySessionData', () => {
+        it('does nothing before the in-memory session exists, and does not create it', async () => {
+            await forgetInMemorySessionData();
+
+            expect(session.fromPartition).not.toHaveBeenCalled();
+        });
+
+        it('closes the connections of the in-memory session and clears its storage before its data', async () => {
+            await resolveSessionForOpen(undefined);
+
+            await forgetInMemorySessionData();
+
+            const [storageCleared] = jest.mocked(inMemorySession.clearStorageData).mock
+                .invocationCallOrder;
+            const [dataCleared] = jest.mocked(inMemorySession.clearData).mock.invocationCallOrder;
+
+            expect(inMemorySession.closeAllConnections).toHaveBeenCalledTimes(1);
+            expect(storageCleared ?? Infinity).toBeLessThan(dataCleared ?? -Infinity);
+        });
+
+        it('leaves the persistent sessions alone', async () => {
+            await resolveSessionForOpen(getPersistentEntry());
+            await resolveSessionForOpen(undefined);
+
+            await forgetInMemorySessionData();
+
+            expect(persistentSession.clearStorageData).not.toHaveBeenCalled();
+            expect(persistentSession.clearData).not.toHaveBeenCalled();
+        });
+
+        it('resolves when the data could not be cleared', async () => {
+            await resolveSessionForOpen(undefined);
+            jest.mocked(inMemorySession.clearStorageData).mockImplementationOnce(() =>
+                createHandledRejection('storage service down'),
+            );
+
+            await expect(forgetInMemorySessionData()).resolves.toBeUndefined();
         });
     });
 
