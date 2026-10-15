@@ -1,6 +1,5 @@
 import { shallowEqual } from 'react-redux';
 
-import { createWeakMapSelector, returnStableArrayIfEmpty } from '@suite-common/redux-utils';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AssetAccount,
@@ -13,6 +12,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
+import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 
 import {
     groupAssetAccountsByAssetKey,
@@ -122,9 +122,6 @@ const selectHiddenNftCollections = createMemoizedSelector(
     ({ hidden }) => groupNftCollections(hidden),
 );
 
-// Names are user-facing, so they sort in locale order; one collator serves every comparison.
-const collectionNameCollator = new Intl.Collator();
-
 const getSortedCollectionKeys = (
     collections: ReadonlyMap<WalletAssetKey, NftCollection>,
     enabledNetworks: readonly NetworkSymbol[],
@@ -132,7 +129,7 @@ const getSortedCollectionKeys = (
     returnStableArrayIfEmpty(
         [...collections.values()]
             .filter(collection => enabledNetworks.includes(collection.symbol))
-            .toSorted((left, right) => collectionNameCollator.compare(left.name, right.name))
+            .toSorted((left, right) => left.name.localeCompare(right.name))
             .map(collection => collection.assetKey),
     );
 
