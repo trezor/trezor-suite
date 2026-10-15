@@ -1,8 +1,9 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-import { ConnectAndBlockchainInitializationStatus } from './appTypes';
-import { applicationInitThunk } from './applicationInitThunk';
-import { postOnboardingInitThunk } from './postOnboardingInitThunk';
+import {
+    type ConnectAndBlockchainInitializationResult,
+    ConnectAndBlockchainInitializationStatus,
+} from './appTypes';
 
 type AppInitState = {
     isAppInitFinished: boolean;
@@ -21,23 +22,20 @@ export const appInitInitialState: AppInitState = {
 const appInitSlice = createSlice({
     name: 'appInit',
     initialState: appInitInitialState,
-    reducers: {},
-    extraReducers: builder => {
-        builder
-            .addCase(postOnboardingInitThunk.pending, (state: AppInitState) => {
-                state.connectAndBlockchainInitializationStatus =
-                    ConnectAndBlockchainInitializationStatus.Pending;
-            })
-            .addCase(postOnboardingInitThunk.fulfilled, (state: AppInitState, { payload }) => {
-                state.connectAndBlockchainInitializationStatus = payload;
-            })
-            .addCase(postOnboardingInitThunk.rejected, (state: AppInitState) => {
-                state.connectAndBlockchainInitializationStatus =
-                    ConnectAndBlockchainInitializationStatus.Unavailable;
-            })
-            .addCase(applicationInitThunk.fulfilled, (state: AppInitState) => {
-                state.isAppInitFinished = true;
-            });
+    reducers: {
+        postOnboardingInitStarted: (state: AppInitState) => {
+            state.connectAndBlockchainInitializationStatus =
+                ConnectAndBlockchainInitializationStatus.Pending;
+        },
+        postOnboardingInitFinished: (
+            state: AppInitState,
+            { payload }: PayloadAction<ConnectAndBlockchainInitializationResult>,
+        ) => {
+            state.connectAndBlockchainInitializationStatus = payload;
+        },
+        applicationInitFinished: (state: AppInitState) => {
+            state.isAppInitFinished = true;
+        },
     },
 });
 
@@ -60,3 +58,5 @@ export const selectIsConnectAndBlockchainInitializationPending = (
 };
 
 export const appInitReducer = appInitSlice.reducer;
+
+export const appInitActions = appInitSlice.actions;

@@ -4,6 +4,7 @@ import {
     type MessageSystemRootState,
     messageSystemInitialState,
 } from '@suite-common/message-system';
+import { type PostOnboardingInit } from '@suite-native/app-init';
 import { type FeatureFlagsRootState, featureFlagsReducer } from '@suite-native/feature-flags';
 import { getTranslation } from '@suite-native/intl';
 import { OnboardingStackRoutes } from '@suite-native/navigation';
@@ -13,6 +14,7 @@ import {
     renderWithStoreProvider,
     userEvent,
 } from '@suite-native/test-utils-store';
+import { mock } from '@trezor/dependency-injection';
 
 import { BiometricsScreen, type BiometricsScreenProps } from './BiometricsScreen';
 
@@ -20,6 +22,7 @@ type State = FeatureFlagsRootState & MessageSystemRootState;
 
 const mockNavigate = jest.fn();
 const mockNavigationDispatch = jest.fn();
+const mockPostOnboardingInit = mock<PostOnboardingInit>();
 const mockRoute = {
     key: 'BiometricsScreen',
     name: OnboardingStackRoutes.Biometrics,
@@ -35,16 +38,6 @@ jest.mock('@react-navigation/native', () => ({
     useRoute: () => mockRoute,
 }));
 
-// Stub out postOnboardingInit so exiting the onboarding flow does not dispatch
-// initStakeDataThunk, which calls up-fetch and throws in the jsdom test env
-// because the global Request constructor is not available.
-jest.mock('@suite-native/app-init', () => ({
-    ...jest.requireActual('@suite-native/app-init'),
-    postOnboardingInitThunk: () => ({
-        type: 'postOnboardingInitMock',
-    }),
-}));
-
 describe('BiometricsScreen', () => {
     let store: Store<State>;
 
@@ -56,7 +49,7 @@ describe('BiometricsScreen', () => {
                 }
                 route={mockRoute}
             />,
-            { services: { store } },
+            { services: { store, postOnboardingInit: mockPostOnboardingInit } },
         );
 
     beforeEach(() => {

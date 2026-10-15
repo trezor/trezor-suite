@@ -1,4 +1,13 @@
 export * from './appInitSlice';
 export * from './appTypes';
-export { applicationInitThunk } from './applicationInitThunk';
-export { postOnboardingInitThunk } from './postOnboardingInitThunk';
+export {
+    type ApplicationInit,
+    type ApplicationInitDep,
+    injectApplicationInit,
+} from './createApplicationInit';
+export {
+    type PostOnboardingInit,
+    type PostOnboardingInitDep,
+    injectPostOnboardingInit,
+} from './createPostOnboardingInit';
+export { createAppInitCompositionRoot } from './createAppInitCompositionRoot';

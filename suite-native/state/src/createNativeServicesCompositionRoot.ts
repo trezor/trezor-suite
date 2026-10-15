@@ -11,6 +11,7 @@ import { createNativePlatformEncryption } from '@suite-common/platform-encryptio
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import { selectAllLabelsForAccount, selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { analytics } from '@suite-native/analytics';
+import { createAppInitCompositionRoot } from '@suite-native/app-init';
 import {
     rerunFwAuthenticityChecksThunk,
     selectShouldRetryFirmwareRevisionCheckError,
@@ -94,6 +95,7 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
     const logger = createLogger('native-transport');
 
     return {
+        ...createAppInitCompositionRoot({ dispatch: deps.dispatch, getState: deps.getState }),
         networks,
         suiteSync,
         bip329,

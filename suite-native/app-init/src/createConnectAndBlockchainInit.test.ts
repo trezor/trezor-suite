@@ -1,11 +1,11 @@
+import { createMockDeps } from '@trezor/dependency-injection';
 import { createMockDispatch } from '@trezor/redux-utils/mocks';
 
 import { ConnectAndBlockchainInitializationStatus } from './appTypes';
 import {
-    type ConnectAndBlockchainInitThunkDeps,
-    type ConnectAndBlockchainInitThunkState,
-    connectAndBlockchainInitThunk,
-} from './connectAndBlockchainInitThunk';
+    type ConnectAndBlockchainInitDeps,
+    createConnectAndBlockchainInit,
+} from './createConnectAndBlockchainInit';
 
 type MockRejectWithValueThunkApi = {
     rejectWithValue: (error: string) => unknown;
@@ -53,17 +53,14 @@ jest.mock('@suite-common/wallet-core', () => {
     };
 });
 
-const runThunk = () => {
-    const getState = jest.fn<ConnectAndBlockchainInitThunkState, []>();
-    const { dispatch } = createMockDispatch<
-        ConnectAndBlockchainInitThunkState,
-        ConnectAndBlockchainInitThunkDeps
-    >({ getState });
+const runService = () => {
+    const { dispatch } = createMockDispatch({ getState: () => undefined });
+    const deps = createMockDeps<ConnectAndBlockchainInitDeps>({ dispatch });
 
-    return dispatch(connectAndBlockchainInitThunk());
+    return createConnectAndBlockchainInit(deps)();
 };
 
-describe(connectAndBlockchainInitThunk.name, () => {
+describe(createConnectAndBlockchainInit.name, () => {
     beforeEach(() => {
         jest.clearAllMocks();
         jest.spyOn(console, 'error').mockImplementation(() => undefined);
@@ -77,9 +74,9 @@ describe(connectAndBlockchainInitThunk.name, () => {
     });
 
     it('initializes blockchain after Connect succeeds', async () => {
-        const result = await runThunk();
+        const result = await runService();
 
-        expect(connectAndBlockchainInitThunk.fulfilled.match(result)).toBe(true);
+        expect(result).toBe(ConnectAndBlockchainInitializationStatus.Ready);
         expect(mockConnectInit).toHaveBeenCalledTimes(1);
         expect(mockInitBlockchain).toHaveBeenCalledTimes(1);
         expect(mockInitializationOrder).toEqual(['connect', 'blockchain']);
@@ -88,19 +85,17 @@ describe(connectAndBlockchainInitThunk.name, () => {
     it('does not initialize blockchain after Connect fails', async () => {
         mockConnectInitShouldReject = true;
 
-        const result = await runThunk();
+        const result = await runService();
 
-        expect(connectAndBlockchainInitThunk.rejected.match(result)).toBe(true);
-        expect(result.payload).toBe(ConnectAndBlockchainInitializationStatus.Unavailable);
+        expect(result).toBe(ConnectAndBlockchainInitializationStatus.Unavailable);
         expect(mockInitBlockchain).not.toHaveBeenCalled();
     });
 
     it('reports blockchain initialization failure', async () => {
         mockInitBlockchainShouldReject = true;
 
-        const result = await runThunk();
+        const result = await runService();
 
-        expect(connectAndBlockchainInitThunk.rejected.match(result)).toBe(true);
-        expect(result.payload).toBe(ConnectAndBlockchainInitializationStatus.Unavailable);
+        expect(result).toBe(ConnectAndBlockchainInitializationStatus.Unavailable);
     });
 });

@@ -12774,7 +12774,6 @@ __metadata:
   dependencies:
     "@reduxjs/toolkit": "npm:2.12.0"
     "@suite-common/connect-init": "workspace:*"
-    "@suite-common/device": "workspace:*"
     "@suite-common/earn-stablecoin-api": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
@@ -12782,6 +12781,7 @@ __metadata:
     "@suite-common/walletconnect": "workspace:*"
     "@suite-native/analytics-redux": "workspace:*"
     "@suite-native/settings": "workspace:*"
+    "@trezor/dependency-injection": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
   languageName: unknown
   linkType: soft

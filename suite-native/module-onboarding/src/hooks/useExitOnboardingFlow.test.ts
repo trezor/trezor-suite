@@ -1,5 +1,6 @@
 import { type Store } from '@reduxjs/toolkit';
 
+import { type PostOnboardingInit } from '@suite-native/app-init';
 import { HomeStackRoutes, RootStackRoutes } from '@suite-native/navigation';
 import {
     type SettingsSliceRootState,
@@ -12,10 +13,12 @@ import {
     createStaticReducer,
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
+import { mock } from '@trezor/dependency-injection';
 
 import { useExitOnboardingFlow } from './useExitOnboardingFlow';
 
 const mockNavigationDispatch = jest.fn();
+const mockPostOnboardingInit = mock<PostOnboardingInit>();
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
@@ -24,18 +27,13 @@ jest.mock('@react-navigation/native', () => ({
     }),
 }));
 
-jest.mock('@suite-native/app-init', () => ({
-    ...jest.requireActual('@suite-native/app-init'),
-    postOnboardingInitThunk: () => ({
-        type: 'postOnboardingInitMock',
-    }),
-}));
-
 describe('useExitOnboardingFlow', () => {
     let store: Store<SettingsSliceRootState>;
 
     const renderUseExitOnboardingFlow = async () =>
-        await renderHookWithStoreProvider(() => useExitOnboardingFlow(), { services: { store } });
+        await renderHookWithStoreProvider(() => useExitOnboardingFlow(), {
+            services: { store, postOnboardingInit: mockPostOnboardingInit },
+        });
 
     beforeEach(() => {
         store = createLightStore({
@@ -68,9 +66,7 @@ describe('useExitOnboardingFlow', () => {
 
         // assert that onboarding finished action was dispatched
         expect(dispatchSpy).toHaveBeenCalledWith(setIsOnboardingFinished());
-        expect(dispatchSpy).toHaveBeenCalledWith(
-            expect.objectContaining({ type: 'postOnboardingInitMock' }),
-        );
+        expect(mockPostOnboardingInit).toHaveBeenCalledTimes(1);
 
         // assert that navigation.reset was dispatched to navigate to AppTabs -> Home
         expect(mockNavigationDispatch).toHaveBeenCalledTimes(1);

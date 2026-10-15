@@ -5,7 +5,6 @@
         {
             "path": "../../suite-common/connect-init"
         },
-        { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/earn-stablecoin-api"
         },
@@ -23,6 +22,9 @@
         },
         { "path": "../analytics-redux" },
         { "path": "../settings" },
-        { "path": "../../packages/redux-utils" }
+        { "path": "../../packages/redux-utils" },
+        {
+            "path": "../../packages/dependency-injection"
+        }
     ]
 }

@@ -14,7 +14,6 @@
     "dependencies": {
         "@reduxjs/toolkit": "2.12.0",
         "@suite-common/connect-init": "workspace:*",
-        "@suite-common/device": "workspace:*",
         "@suite-common/earn-stablecoin-api": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/token-definitions": "workspace:*",
@@ -23,5 +22,8 @@
         "@suite-native/analytics-redux": "workspace:*",
         "@suite-native/settings": "workspace:*",
         "@trezor/redux-utils": "workspace:*"
+    },
+    "devDependencies": {
+        "@trezor/dependency-injection": "workspace:*"
     }
 }

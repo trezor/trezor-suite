@@ -1,11 +1,13 @@
+import { createMockDeps } from '@trezor/dependency-injection';
 import { createMockDispatch } from '@trezor/redux-utils/mocks';
 
 import {
-    type ApplicationInitThunkDeps,
-    type ApplicationInitThunkState,
-    applicationInitThunk,
-} from './applicationInitThunk';
-import { postOnboardingInitThunk } from './postOnboardingInitThunk';
+    type ApplicationInitDeps,
+    type ApplicationInitState,
+    createApplicationInit,
+} from './createApplicationInit';
+import { appInitActions } from './appInitSlice';
+import { ConnectAndBlockchainInitializationStatus } from './appTypes';
 
 const mockPrepareCachedEnvData = jest.fn();
 const mockInitMessageSystem = jest.fn();
@@ -35,7 +37,6 @@ jest.mock('@suite-common/message-system', () => {
     const { createThunk } = jest.requireActual('@trezor/redux-utils');
 
     return {
-        prepareCachedEnvData: () => mockPrepareCachedEnvData(),
         initMessageSystemThunk: createThunk('@test/initMessageSystem', () =>
             mockInitMessageSystem(),
         ),
@@ -66,30 +67,25 @@ jest.mock('@suite-native/settings', () => ({
     selectIsOnboardingFinished: () => mockSelectIsOnboardingFinished(),
 }));
 
-jest.mock('./postOnboardingInitThunk', () => {
-    const { createThunk } = jest.requireActual('@trezor/redux-utils');
-
-    return {
-        postOnboardingInitThunk: createThunk('@test/postOnboardingInit', () =>
-            mockPostOnboardingInit(),
-        ),
-    };
-});
-
-const createThunkDependencies = () => {
-    const getState = jest.fn<ApplicationInitThunkState, []>();
-    const mockDispatch = createMockDispatch<ApplicationInitThunkState, ApplicationInitThunkDeps>({
+const createServiceDependencies = () => {
+    const getState = jest.fn<ApplicationInitState, []>();
+    const mockDispatch = createMockDispatch({ getState });
+    const deps = createMockDeps<ApplicationInitDeps>({
+        dispatch: mockDispatch.dispatch,
         getState,
+        prepareCachedEnvData: () => mockPrepareCachedEnvData(),
+        setEarnYieldWorkerBaseUrl: value => mockSetEarnYieldWorkerBaseUrl(value),
+        postOnboardingInit: () => mockPostOnboardingInit(),
     });
 
-    return { ...mockDispatch, getState };
+    return { ...mockDispatch, deps };
 };
 
-describe(applicationInitThunk.name, () => {
+describe(createApplicationInit.name, () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockPrepareCachedEnvData.mockResolvedValue(undefined);
-        mockPostOnboardingInit.mockResolvedValue(undefined);
+        mockPostOnboardingInit.mockResolvedValue(ConnectAndBlockchainInitializationStatus.Ready);
         mockSelectEarnYieldWorkerBaseUrl.mockReturnValue(undefined);
         mockSelectIsOnboardingFinished.mockReturnValue(true);
     });
@@ -97,34 +93,42 @@ describe(applicationInitThunk.name, () => {
     it('fulfills without waiting for post-onboarding initialization', async () => {
         const postOnboardingInitDeferred = createDeferredPromise();
         mockPostOnboardingInit.mockReturnValue(postOnboardingInitDeferred.promise);
-        const { actions, dispatch, onDispatch } = createThunkDependencies();
-        const postOnboardingInitFinished = onDispatch((action, resolve) => {
-            if (postOnboardingInitThunk.fulfilled.match(action)) {
-                resolve();
-            }
-        });
+        const { actions, deps } = createServiceDependencies();
 
-        const result = await dispatch(applicationInitThunk());
+        await createApplicationInit(deps)();
 
-        expect(applicationInitThunk.fulfilled.match(result)).toBe(true);
+        expect(actions).toContainEqual(appInitActions.applicationInitFinished());
         expect(mockInitDevices).toHaveBeenCalledTimes(1);
         expect(mockCreateImportedDevice).toHaveBeenCalledTimes(1);
         expect(mockPostOnboardingInit).toHaveBeenCalledTimes(1);
         expect(actions).not.toContainEqual(
-            expect.objectContaining({ type: postOnboardingInitThunk.fulfilled.type }),
+            appInitActions.postOnboardingInitFinished(
+                ConnectAndBlockchainInitializationStatus.Ready,
+            ),
         );
 
         postOnboardingInitDeferred.resolve();
-        await postOnboardingInitFinished;
+        await postOnboardingInitDeferred.promise;
     });
 
     it('skips post-onboarding initialization until onboarding is finished', async () => {
         mockSelectIsOnboardingFinished.mockReturnValue(false);
-        const { dispatch } = createThunkDependencies();
+        const { actions, deps } = createServiceDependencies();
 
-        const result = await dispatch(applicationInitThunk());
+        await createApplicationInit(deps)();
 
-        expect(applicationInitThunk.fulfilled.match(result)).toBe(true);
+        expect(actions).toContainEqual(appInitActions.applicationInitFinished());
+        expect(mockPostOnboardingInit).not.toHaveBeenCalled();
+    });
+
+    it('leaves the application unfinished when initialization fails', async () => {
+        mockPrepareCachedEnvData.mockRejectedValue(new Error('Unexpected error'));
+        const { actions, deps } = createServiceDependencies();
+
+        await createApplicationInit(deps)();
+
+        expect(actions).not.toContainEqual(appInitActions.applicationInitFinished());
+        expect(mockInitDevices).not.toHaveBeenCalled();
         expect(mockPostOnboardingInit).not.toHaveBeenCalled();
     });
 });

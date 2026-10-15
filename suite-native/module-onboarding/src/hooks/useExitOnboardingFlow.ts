@@ -1,18 +1,18 @@
 import { CommonActions, useNavigation } from '@react-navigation/native';
 
-import { postOnboardingInitThunk } from '@suite-native/app-init';
+import { injectPostOnboardingInit } from '@suite-native/app-init';
 import { HomeStackRoutes, RootStackRoutes } from '@suite-native/navigation';
 import { setIsOnboardingFinished } from '@suite-native/settings';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 export const useExitOnboardingFlow = () => {
-    const { dispatch } = useServices(injectDispatch);
+    const { dispatch, postOnboardingInit } = useServices(injectDispatch, injectPostOnboardingInit);
     const navigation = useNavigation();
 
     return () => {
         dispatch(setIsOnboardingFinished());
-        dispatch(postOnboardingInitThunk());
+        void postOnboardingInit();
 
         // TODO: COSMETIC IMPROVEMENT: redirect to home only if there is no device connected. In case of device connected,
         // the redirect is handled in useHandleDeviceConnection hook. in reaction to the `setIsOnboardingFinished` call.

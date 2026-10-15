@@ -3,7 +3,6 @@ import { type ComponentType } from 'react';
 import * as Sentry from '@sentry/react-native';
 import * as SplashScreen from 'expo-splash-screen';
 
-import { applicationInitThunk } from '@suite-native/app-init';
 import { configureNetInfo } from '@suite-native/connection-status';
 import {
     type HydrateReduxStoreDep,
@@ -29,7 +28,7 @@ export const createNativeApp = (deps: NativeAppDeps): NativeApp => {
     const initialize = async () => {
         await deps.services.hydrateReduxStore();
         deps.services.networks.loadNetworkModules();
-        await deps.services.store.dispatch(applicationInitThunk());
+        await deps.services.applicationInit();
     };
 
     return () => {

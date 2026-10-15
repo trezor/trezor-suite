@@ -1,15 +1,13 @@
+import { createMockDeps } from '@trezor/dependency-injection';
 import { createMockDispatch } from '@trezor/redux-utils/mocks';
 
+import { appInitActions } from './appInitSlice';
 import { ConnectAndBlockchainInitializationStatus } from './appTypes';
 import {
-    type PostOnboardingInitThunkDeps,
-    type PostOnboardingInitThunkState,
-    postOnboardingInitThunk,
-} from './postOnboardingInitThunk';
-
-type MockRejectWithValueThunkApi = {
-    rejectWithValue: (error: string) => unknown;
-};
+    type PostOnboardingInitDeps,
+    type PostOnboardingInitState,
+    createPostOnboardingInit,
+} from './createPostOnboardingInit';
 
 const mockSelectActiveKillswitchMessage = jest.fn();
 const mockSelectBaseCurrency = jest.fn(() => 'usd');
@@ -57,31 +55,22 @@ jest.mock('@suite-common/walletconnect', () => {
     };
 });
 
-jest.mock('./connectAndBlockchainInitThunk', () => {
-    const { createThunk } = jest.requireActual('@trezor/redux-utils');
+const createService = () => {
+    const getState = jest.fn<PostOnboardingInitState, []>();
+    const mockDispatch = createMockDispatch({ getState });
+    const deps = createMockDeps<PostOnboardingInitDeps>({
+        dispatch: mockDispatch.dispatch,
+        getState,
+        connectAndBlockchainInit: async () => {
+            mockConnectAndBlockchainInit();
 
-    return {
-        connectAndBlockchainInitThunk: createThunk(
-            '@test/connectAndBlockchainInit',
-            (_: void, { rejectWithValue }: MockRejectWithValueThunkApi) => {
-                mockConnectAndBlockchainInit();
+            return mockConnectAndBlockchainShouldReject
+                ? ConnectAndBlockchainInitializationStatus.Unavailable
+                : ConnectAndBlockchainInitializationStatus.Ready;
+        },
+    });
 
-                return mockConnectAndBlockchainShouldReject
-                    ? rejectWithValue('unavailable')
-                    : undefined;
-            },
-        ),
-    };
-});
-
-const runThunk = () => {
-    const getState = jest.fn<PostOnboardingInitThunkState, []>();
-    const { dispatch } = createMockDispatch<
-        PostOnboardingInitThunkState,
-        PostOnboardingInitThunkDeps
-    >({ getState });
-
-    return dispatch(postOnboardingInitThunk());
+    return { initialize: createPostOnboardingInit(deps), actions: mockDispatch.actions };
 };
 
 const expectFollowUpServicesToHaveStarted = () => {
@@ -94,7 +83,7 @@ const expectFollowUpServicesToHaveStarted = () => {
     expect(mockWalletConnectInit).toHaveBeenCalledTimes(1);
 };
 
-describe(postOnboardingInitThunk.name, () => {
+describe(createPostOnboardingInit.name, () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockConnectAndBlockchainShouldReject = false;
@@ -104,10 +93,10 @@ describe(postOnboardingInitThunk.name, () => {
     it('disables initialization when the app-wide killswitch is active', async () => {
         mockSelectActiveKillswitchMessage.mockReturnValue({});
 
-        const result = await runThunk();
+        const { initialize } = createService();
+        const result = await initialize();
 
-        expect(postOnboardingInitThunk.fulfilled.match(result)).toBe(true);
-        expect(result.payload).toBe(ConnectAndBlockchainInitializationStatus.Unavailable);
+        expect(result).toBe(ConnectAndBlockchainInitializationStatus.Unavailable);
         expect(mockConnectAndBlockchainInit).not.toHaveBeenCalled();
         expect(mockPeriodicCheckTokenDefinitions).not.toHaveBeenCalled();
         expect(mockInitStakeData).not.toHaveBeenCalled();
@@ -116,10 +105,10 @@ describe(postOnboardingInitThunk.name, () => {
     });
 
     it('starts follow-up services after Connect and blockchain initialization', async () => {
-        const result = await runThunk();
+        const { initialize } = createService();
+        const result = await initialize();
 
-        expect(postOnboardingInitThunk.fulfilled.match(result)).toBe(true);
-        expect(result.payload).toBe(ConnectAndBlockchainInitializationStatus.Ready);
+        expect(result).toBe(ConnectAndBlockchainInitializationStatus.Ready);
         expect(mockConnectAndBlockchainInit).toHaveBeenCalledTimes(1);
         expectFollowUpServicesToHaveStarted();
     });
@@ -127,11 +116,28 @@ describe(postOnboardingInitThunk.name, () => {
     it('starts follow-up services and marks failed initialization unavailable', async () => {
         mockConnectAndBlockchainShouldReject = true;
 
-        const result = await runThunk();
+        const { initialize } = createService();
+        const result = await initialize();
 
-        expect(postOnboardingInitThunk.rejected.match(result)).toBe(true);
-        expect(result.payload).toBe(ConnectAndBlockchainInitializationStatus.Unavailable);
+        expect(result).toBe(ConnectAndBlockchainInitializationStatus.Unavailable);
         expect(mockConnectAndBlockchainInit).toHaveBeenCalledTimes(1);
         expectFollowUpServicesToHaveStarted();
+    });
+
+    it('marks unexpected initialization failures unavailable', async () => {
+        mockSelectActiveKillswitchMessage.mockImplementationOnce(() => {
+            throw new Error('Unexpected error');
+        });
+        const { initialize, actions } = createService();
+
+        const result = await initialize();
+
+        expect(result).toBe(ConnectAndBlockchainInitializationStatus.Unavailable);
+        expect(actions).toEqual([
+            appInitActions.postOnboardingInitStarted(),
+            appInitActions.postOnboardingInitFinished(
+                ConnectAndBlockchainInitializationStatus.Unavailable,
+            ),
+        ]);
     });
 });
