@@ -249,6 +249,18 @@ describe('Status', () => {
             status.stop();
         }));
 
+    it('Status without coordinatorUrl does not start and does not send any request', async () => {
+        (coordinatorRequest as jest.Mock).mockClear();
+        status = new Status({ ...server?.requestOptions, coordinatorUrl: undefined });
+
+        await expect(status.start()).resolves.toMatchObject({
+            success: false,
+            error: 'Coordinator url is not set',
+        });
+        expect(coordinatorRequest).toHaveBeenCalledTimes(0); // no polling of an empty base url
+        expect(status.enabled).toBe(false);
+    });
+
     it('Status start attempts, keep lifecycle regardless of failed requests', async () => {
         jest.spyOn(STATUS_TIMEOUT, 'registered', 'get').mockReturnValue(250 as any);
 
