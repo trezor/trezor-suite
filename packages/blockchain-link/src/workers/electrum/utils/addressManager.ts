@@ -1,5 +1,5 @@
 import type { AccountAddresses, SubscriptionAccountInfo } from '@trezor/blockchain-link-types/src';
-import { arrayDistinct, isNotUndefined, objectPartition } from '@trezor/utils';
+import { isNotUndefined, objectPartition } from '@trezor/utils';
 import type { Network } from '@trezor/utxo-lib';
 
 import { addressToScripthash } from './transform';
@@ -17,20 +17,24 @@ const addressesFromAccounts = (array: (AccountAddresses | undefined)[]) =>
 export const createAddressManager = (getNetwork: () => Network | undefined) => {
     let subscribedAddrs: AddressMap = {};
     let subscribedAccs: AccountMap = {};
+    // Reverse indexes of the maps above, so that a notification of a scripthash finds its address
+    // and account without scanning all of them.
+    const addressByScripthash = new Map<string, string>();
+    const accountByAddress = new Map<string, string>();
 
     const addAddresses = (addresses: string[]) => {
-        const toAdd = addresses.filter(arrayDistinct).filter(addr => !subscribedAddrs[addr]);
+        const toAdd = [...new Set(addresses)].filter(addr => !subscribedAddrs[addr]);
         const network = getNetwork();
+        // Converted first, so that an invalid address leaves nothing of the batch subscribed.
+        const added = toAdd.map(addr => ({ addr, scripthash: addressToScripthash(addr, network) }));
 
-        subscribedAddrs = toAdd.reduce<AddressMap>(
-            (dic, addr) => ({
-                ...dic,
-                [addr]: addressToScripthash(addr, network),
-            }),
-            subscribedAddrs,
-        );
+        added.forEach(({ addr, scripthash }) => {
+            subscribedAddrs[addr] = scripthash;
+            // Forms of one address (e.g. bech32 in upper case) share the scripthash, the first stays.
+            if (!addressByScripthash.has(scripthash)) addressByScripthash.set(scripthash, addr);
+        });
 
-        return toAdd.map(addr => subscribedAddrs[addr]).filter((addr): addr is string => !!addr);
+        return added.map(({ scripthash }) => scripthash);
     };
 
     const removeAddresses = (addresses?: string[]) => {
@@ -40,19 +44,27 @@ export const createAddressManager = (getNetwork: () => Network | undefined) => {
 
         subscribedAddrs = toPreserve;
 
+        Object.entries(toRemove).forEach(([addr, scripthash]) => {
+            if (addressByScripthash.get(scripthash) === addr)
+                addressByScripthash.delete(scripthash);
+        });
+
         return Object.values(toRemove);
     };
 
     const addAccounts = (accounts: SubscriptionAccountInfo[]) => {
         const toAdd = accounts.filter(acc => !subscribedAccs[acc.descriptor]);
+        toAdd.forEach(({ descriptor, addresses }) => {
+            subscribedAccs[descriptor] = addresses || { change: [], used: [], unused: [] };
+        });
 
-        subscribedAccs = toAdd.reduce<AccountMap>(
-            (dic, acc) => ({
-                ...dic,
-                [acc.descriptor]: acc.addresses || { change: [], used: [], unused: [] },
-            }),
-            subscribedAccs,
-        );
+        // Indexed by the addresses kept for each account, e.g. the later entry of an account listed
+        // twice. Accounts don't share addresses, if they did, an address would stay with the first.
+        new Set(toAdd.map(({ descriptor }) => descriptor)).forEach(descriptor => {
+            addressesFromAccounts([subscribedAccs[descriptor]]).forEach(addr => {
+                if (!accountByAddress.has(addr)) accountByAddress.set(addr, descriptor);
+            });
+        });
 
         const addresses = addressesFromAccounts(toAdd.map(acc => acc.addresses));
 
@@ -69,26 +81,25 @@ export const createAddressManager = (getNetwork: () => Network | undefined) => {
 
         subscribedAccs = toPreserve;
 
-        const addresses = addressesFromAccounts(Object.values(toRemove));
+        Object.entries(toRemove).forEach(([descriptor, accountAddresses]) => {
+            addressesFromAccounts([accountAddresses]).forEach(addr => {
+                if (accountByAddress.get(addr) === descriptor) accountByAddress.delete(addr);
+            });
+        });
 
-        return removeAddresses(addresses);
+        return removeAddresses(addressesFromAccounts(Object.values(toRemove)));
     };
 
     const getCount = () => Object.keys(subscribedAddrs).length;
 
     const getInfo = (scripthash: string) => {
-        const [address, _sh] =
-            Object.entries(subscribedAddrs).find(([_addr, sh]) => sh === scripthash) || [];
+        const address = addressByScripthash.get(scripthash);
         if (!address) return { descriptor: scripthash };
-        const [account, addresses] =
-            Object.entries(subscribedAccs).find(
-                ([_acc, { change, unused, used }]) =>
-                    !!change.concat(used, unused).find(ad => ad.address === address),
-            ) || [];
+        const account = accountByAddress.get(address);
 
         return {
             descriptor: account || address,
-            addresses,
+            addresses: account ? subscribedAccs[account] : undefined,
         };
     };
 
