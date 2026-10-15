@@ -48,6 +48,7 @@ type Props = UseFormReturn<FormState> & {
 // This hook should be used only as a sub-hook of `useSendForm`
 export const useSendFormCompose = ({
     getValues,
+    getErrors,
     setValue,
     setError,
     formState: { errors, isDirty },
@@ -111,7 +112,7 @@ export const useSendFormCompose = ({
             // update request id
             composeRequestID.current++;
             // clear errors from previous compose process
-            const composeErrors = findComposeErrors(errors);
+            const composeErrors = findComposeErrors(getErrors());
             if (composeErrors.length > 0) {
                 clearErrors(composeErrors);
             }
@@ -123,7 +124,8 @@ export const useSendFormCompose = ({
             // store current request ID before async debounced process and compare it later. see explanation below
             const resultID = composeRequestID.current;
             const result = await debounce(() => {
-                if (Object.keys(errors).length > 0) {
+                // Validation errors can change while this request is debounced.
+                if (Object.keys(getErrors()).length > 0) {
                     return Promise.resolve(undefined);
                 }
 
@@ -164,7 +166,7 @@ export const useSendFormCompose = ({
             debounce,
             dispatch,
             setLoading,
-            errors,
+            getErrors,
             clearErrors,
             getValues,
             account,
