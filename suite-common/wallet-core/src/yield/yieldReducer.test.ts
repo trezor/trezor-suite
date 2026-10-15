@@ -343,10 +343,18 @@ describe('yieldReducer', () => {
             'moves a wrapped-native %s from action to unwrap',
             flowType => {
                 const state = yieldReducer(
-                    initSession(flowType, true),
+                    yieldReducer(
+                        initSession(flowType, true),
+                        yieldActions.setPendingTx({
+                            flowType,
+                            flowKey: FLOW_KEY,
+                            tx: { type: flowType, txid: '0xwithdrawtxid', amount: '10' },
+                        }),
+                    ),
                     yieldActions.completeAction({
                         flowType,
                         flowKey: FLOW_KEY,
+                        txid: '0xwithdrawtxid',
                         amount: '10',
                     }),
                 );
@@ -357,10 +365,18 @@ describe('yieldReducer', () => {
 
         it('stores the unwrapped amount and completes the flow', () => {
             const actionCompleteState = yieldReducer(
-                initSession('withdraw', true),
+                yieldReducer(
+                    initSession('withdraw', true),
+                    yieldActions.setPendingTx({
+                        flowType: 'withdraw',
+                        flowKey: FLOW_KEY,
+                        tx: { type: 'withdraw', txid: '0xwithdrawtxid', amount: '10' },
+                    }),
+                ),
                 yieldActions.completeAction({
                     flowType: 'withdraw',
                     flowKey: FLOW_KEY,
+                    txid: '0xwithdrawtxid',
                     amount: '10',
                 }),
             );
@@ -498,15 +514,23 @@ describe('yieldReducer', () => {
         it('completes deposit from the action step', () => {
             const state = yieldReducer(
                 yieldReducer(
-                    initSession('deposit'),
-                    yieldActions.skipApprovalStep({
+                    yieldReducer(
+                        initSession('deposit'),
+                        yieldActions.skipApprovalStep({
+                            flowType: 'deposit',
+                            flowKey: FLOW_KEY,
+                        }),
+                    ),
+                    yieldActions.setPendingTx({
                         flowType: 'deposit',
                         flowKey: FLOW_KEY,
+                        tx: { type: 'deposit', txid: '0xdeposittxid', amount: '10' },
                     }),
                 ),
                 yieldActions.completeAction({
                     flowType: 'deposit',
                     flowKey: FLOW_KEY,
+                    txid: '0xdeposittxid',
                     amount: '10',
                 }),
             );
@@ -517,15 +541,231 @@ describe('yieldReducer', () => {
 
         it('completes claim from the action step', () => {
             const state = yieldReducer(
-                initSession('claim'),
+                yieldReducer(
+                    initSession('claim'),
+                    yieldActions.setPendingTx({
+                        flowType: 'claim',
+                        flowKey: FLOW_KEY,
+                        tx: { type: 'claim', txid: '0xclaimtxid', amount: '0' },
+                    }),
+                ),
                 yieldActions.completeAction({
                     flowType: 'claim',
                     flowKey: FLOW_KEY,
+                    txid: '0xclaimtxid',
                     amount: '0',
                 }),
             );
 
             expect(getSession(state, 'claim')?.step).toBe('complete');
+        });
+
+        it('ignores a completion reported for another transaction', () => {
+            const pending = yieldReducer(
+                yieldReducer(
+                    initSession('deposit'),
+                    yieldActions.skipApprovalStep({
+                        flowType: 'deposit',
+                        flowKey: FLOW_KEY,
+                    }),
+                ),
+                yieldActions.setPendingTx({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                    tx: { type: 'deposit', txid: '0xdeposittxid', amount: '10' },
+                }),
+            );
+            const state = yieldReducer(
+                pending,
+                yieldActions.completeAction({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                    txid: '0xothertxid',
+                    amount: '10',
+                }),
+            );
+
+            expect(getSession(state, 'deposit')?.step).toBe('action');
+            expect(getSession(state, 'deposit')?.action.pendingTransaction?.txid).toBe(
+                '0xdeposittxid',
+            );
+        });
+
+        it('ignores a failure reported for another transaction', () => {
+            const pending = yieldReducer(
+                initSession('claim'),
+                yieldActions.setPendingTx({
+                    flowType: 'claim',
+                    flowKey: FLOW_KEY,
+                    tx: { type: 'claim', txid: '0xclaimtxid', amount: '0' },
+                }),
+            );
+            const state = yieldReducer(
+                pending,
+                yieldActions.transactionFailed({
+                    flowType: 'claim',
+                    flowKey: FLOW_KEY,
+                    txid: '0xothertxid',
+                }),
+            );
+
+            expect(getSession(state, 'claim')?.action.pendingTransaction?.txid).toBe('0xclaimtxid');
+            expect(getSession(state, 'claim')?.error).toBeNull();
+        });
+
+        it('ignores a wrap-step skip while the wrap transaction is pending', () => {
+            const pending = yieldReducer(
+                initSession('deposit', true),
+                yieldActions.setPendingTx({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                    tx: { type: 'wrap', txid: '0xwraptxid', amount: '1' },
+                }),
+            );
+            const skipped = yieldReducer(
+                pending,
+                yieldActions.resolveWrappedNativeStep({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                    step: 'wrap',
+                }),
+            );
+            const confirmed = yieldReducer(
+                pending,
+                yieldActions.resolveWrappedNativeStep({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                    step: 'wrap',
+                    txid: '0xwraptxid',
+                    amount: '1',
+                }),
+            );
+
+            expect(getSession(skipped, 'deposit')?.step).toBe('wrap');
+            expect(getSession(skipped, 'deposit')?.action.pendingTransaction?.txid).toBe(
+                '0xwraptxid',
+            );
+            expect(getSession(confirmed, 'deposit')?.step).toBe('approve');
+            expect(getSession(confirmed, 'deposit')?.action.pendingTransaction).toBeNull();
+        });
+
+        it('ignores a wrap-step skip while the wrap transaction is being submitted', () => {
+            const state = yieldReducer(
+                yieldReducer(
+                    initSession('deposit', true),
+                    yieldActions.startSubmittingWrappedNative({
+                        flowType: 'deposit',
+                        flowKey: FLOW_KEY,
+                    }),
+                ),
+                yieldActions.resolveWrappedNativeStep({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                    step: 'wrap',
+                }),
+            );
+
+            expect(getSession(state, 'deposit')?.step).toBe('wrap');
+        });
+
+        it.each(['withdraw', 'redeem', 'claim'] as const)(
+            'ignores modify mode in the %s flow',
+            flowType => {
+                const state = yieldReducer(
+                    initSession(flowType),
+                    yieldActions.enterModifyMode({
+                        flowType,
+                        flowKey: FLOW_KEY,
+                    }),
+                );
+
+                expect(getSession(state, flowType)?.step).toBe('action');
+            },
+        );
+
+        it('ignores modify mode once the deposit completed', () => {
+            const completed = yieldReducer(
+                yieldReducer(
+                    approveConfirmed(),
+                    yieldActions.setPendingTx({
+                        flowType: 'deposit',
+                        flowKey: FLOW_KEY,
+                        tx: { type: 'deposit', txid: '0xdeposittxid', amount: '100' },
+                    }),
+                ),
+                yieldActions.completeAction({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                    txid: '0xdeposittxid',
+                    amount: '100',
+                }),
+            );
+            const state = yieldReducer(
+                completed,
+                yieldActions.enterModifyMode({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                }),
+            );
+
+            expect(getSession(state, 'deposit')?.step).toBe('complete');
+        });
+
+        it('ignores a wrap confirmation for a transaction that is no longer pending', () => {
+            const state = yieldReducer(
+                initSession('deposit', true),
+                yieldActions.resolveWrappedNativeStep({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                    step: 'wrap',
+                    txid: '0xwraptxid',
+                    amount: '1',
+                }),
+            );
+
+            expect(getSession(state, 'deposit')?.step).toBe('wrap');
+            expect(getSession(state, 'deposit')?.result.wrappedAmount).toBeNull();
+        });
+
+        it('enters modify mode from the approve step', () => {
+            const state = yieldReducer(
+                initSession('deposit'),
+                yieldActions.enterModifyMode({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                    amount: '5',
+                }),
+            );
+
+            expect(getSession(state, 'deposit')?.step).toBe('approve');
+            expect(getSession(state, 'deposit')?.approval.origin).toBe('modify');
+            expect(getSession(state, 'deposit')?.action.amount).toBe('5');
+        });
+
+        it('enters modify mode while the deposit is being submitted', () => {
+            const state = yieldReducer(
+                yieldReducer(
+                    yieldReducer(
+                        initSession('deposit'),
+                        yieldActions.skipApprovalStep({
+                            flowType: 'deposit',
+                            flowKey: FLOW_KEY,
+                        }),
+                    ),
+                    yieldActions.startSubmittingAction({
+                        flowType: 'deposit',
+                        flowKey: FLOW_KEY,
+                        amount: '5',
+                    }),
+                ),
+                yieldActions.enterModifyMode({
+                    flowType: 'deposit',
+                    flowKey: FLOW_KEY,
+                }),
+            );
+
+            expect(getSession(state, 'deposit')?.step).toBe('approve');
+            expect(getSession(state, 'deposit')?.approval.origin).toBe('modify');
         });
 
         it('returns deposit to the approve step when entering modify mode', () => {
@@ -662,6 +902,7 @@ describe('yieldReducer', () => {
                     yieldActions.completeAction({
                         flowType: 'deposit',
                         flowKey: FLOW_KEY,
+                        txid: '0xdeposittxid',
                         amount: '100',
                     }),
                 ),

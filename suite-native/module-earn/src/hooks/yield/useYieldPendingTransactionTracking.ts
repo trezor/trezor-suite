@@ -240,7 +240,9 @@ export const useYieldPendingTransactionTracking = ({
 
         if (pendingTxStatus === 'failed') {
             reportResolution('error');
-            dispatch(yieldActions.transactionFailed(sessionParams));
+            dispatch(
+                yieldActions.transactionFailed({ ...sessionParams, txid: pendingTransaction.txid }),
+            );
 
             return;
         }
@@ -252,6 +254,7 @@ export const useYieldPendingTransactionTracking = ({
                     ...sessionParams,
                     step: pendingTransaction.type,
                     amount: pendingTransaction.amount,
+                    txid: pendingTransaction.txid,
                 }),
             );
 
@@ -289,6 +292,7 @@ export const useYieldPendingTransactionTracking = ({
                             yieldActions.completeAction({
                                 ...sessionParams,
                                 amount: pendingTransaction.amount,
+                                txid: pendingTransaction.txid,
                             }),
                         );
                     }
@@ -306,6 +310,7 @@ export const useYieldPendingTransactionTracking = ({
                 yieldActions.completeAction({
                     ...sessionParams,
                     amount: pendingTransaction.amount,
+                    txid: pendingTransaction.txid,
                 }),
             );
 
