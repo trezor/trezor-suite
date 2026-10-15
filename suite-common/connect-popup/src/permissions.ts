@@ -7,6 +7,7 @@ import {
     asCoinSymbol,
     isCoinSymbol,
 } from '@trezor/connect';
+import { isArrayMember } from '@trezor/utils';
 import { unique } from '@trezor/utils/src/unique';
 
 import { type ConnectCallSource } from './connectPopupTypes';
@@ -107,7 +108,7 @@ export const groupPermissionsByCoin = (permissions: PermissionRequest[]): Groupe
 // Runtime guard narrowing the untrusted `permission` value against the imported grantable set,
 // mirroring `isCoinSymbol` for coins.
 const isGrantablePermission = (value: string): value is PermissionRequest['permission'] =>
-    (GRANTABLE_PERMISSIONS as readonly string[]).includes(value);
+    isArrayMember(value, GRANTABLE_PERMISSIONS);
 
 // Sanitize the host-declared `requestedPermissions`: drop entries whose permission is not
 // grantable, `push_tx` on deeplinks, and unknown coins; lowercase each `coin` to its `CoinSymbol`.

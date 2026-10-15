@@ -18,7 +18,7 @@ import {
     type TronAccountExtraData,
     type TronStakingInfo,
 } from '@trezor/blockchain-link-types';
-import { BigNumber } from '@trezor/utils';
+import { BigNumber, isArrayMember } from '@trezor/utils';
 
 import { asAmountSubunit } from './AmountTypes';
 import { formatNetworkAmount, subunitsToUnits } from './amountUtils';
@@ -32,7 +32,7 @@ import { fromWei } from './ethConverter';
 export const secondsToDays = (seconds: number) => Math.round(seconds / 60 / 60 / 24);
 
 export const isStakingNetworkType = (type: NetworkType): type is StakingNetworkType =>
-    (STAKING_TYPES as readonly string[]).includes(type);
+    isArrayMember(type, STAKING_TYPES);
 
 export const isStakingSymbol = (
     symbol: NetworkSymbol,
