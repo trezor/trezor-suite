@@ -1,11 +1,12 @@
 import { type SerializedError } from '@reduxjs/toolkit';
 
-import { connectInitThunk } from '@suite-common/connect-init';
-import { initBlockchainThunk } from '@suite-common/wallet-core';
-import { type DispatchDep } from '@trezor/redux-utils';
 import { type Result, err, ok } from '@trezor/type-utils';
 
-export type ConnectAndBlockchainInitDeps = DispatchDep;
+export type ConnectAndBlockchainInitDeps = {
+    connectInit: () => Promise<Result<void, SerializedError>>;
+    initBlockchain: () => Promise<Result<void, SerializedError>>;
+    logError: (message: string) => void;
+};
 
 export type ConnectAndBlockchainInitError =
     | { type: 'ConnectInitError'; error: SerializedError }
@@ -20,10 +21,10 @@ export type ConnectAndBlockchainInitDep = {
 export const createConnectAndBlockchainInit =
     (deps: ConnectAndBlockchainInitDeps): ConnectAndBlockchainInit =>
     async () => {
-        const connectResult = await deps.dispatch(connectInitThunk());
+        const connectResult = await deps.connectInit();
 
-        if (connectInitThunk.rejected.match(connectResult)) {
-            console.error(`Connect init error: ${JSON.stringify(connectResult.error)}`);
+        if (!connectResult.success) {
+            deps.logError(`Connect init error: ${JSON.stringify(connectResult.error)}`);
 
             return err<ConnectAndBlockchainInitError>({
                 type: 'ConnectInitError',
@@ -31,10 +32,10 @@ export const createConnectAndBlockchainInit =
             });
         }
 
-        const blockchainResult = await deps.dispatch(initBlockchainThunk());
+        const blockchainResult = await deps.initBlockchain();
 
-        if (initBlockchainThunk.rejected.match(blockchainResult)) {
-            console.error(`Blockchain init error: ${JSON.stringify(blockchainResult.error)}`);
+        if (!blockchainResult.success) {
+            deps.logError(`Blockchain init error: ${JSON.stringify(blockchainResult.error)}`);
 
             return err<ConnectAndBlockchainInitError>({
                 type: 'BlockchainInitError',

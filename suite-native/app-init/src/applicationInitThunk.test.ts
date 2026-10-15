@@ -1,169 +1,113 @@
 import { createMockDeps } from '@trezor/dependency-injection';
-import { createMockDispatch } from '@trezor/redux-utils/mocks';
 import { type Result, err, ok } from '@trezor/type-utils';
 
 import {
     type ApplicationInitDeps,
-    type ApplicationInitState,
     type PrepareCachedEnvDataError,
     createApplicationInit,
 } from './applicationInitThunk';
-import { appInitActions } from './appInitSlice';
 import { ConnectAndBlockchainInitializationStatus } from './appTypes';
-import { createAppInitCompositionRoot } from './createAppInitCompositionRoot';
-import { type PostOnboardingInitState } from './postOnboardingInitThunk';
 
-const mockPrepareCachedEnvData = jest.fn();
-const mockInitMessageSystem = jest.fn();
-const mockInitAnalytics = jest.fn();
-const mockInitDevices = jest.fn();
-const mockCreateImportedDevice = jest.fn();
-const mockPostOnboardingInit = jest.fn();
-const mockSetEarnYieldWorkerBaseUrl = jest.fn();
-const mockSelectEarnYieldWorkerBaseUrl = jest.fn();
-const mockSelectIsOnboardingFinished = jest.fn();
-
-const createDeferredPromise = () => {
-    let resolve = () => {};
-    const promise = new Promise<Result<ConnectAndBlockchainInitializationStatus.Ready>>(
-        promiseResolve => {
-            resolve = () => promiseResolve(ok(ConnectAndBlockchainInitializationStatus.Ready));
-        },
-    );
+const createDeferredPromise = <Value>() => {
+    let resolve: (value: Value) => void = () => {};
+    const promise = new Promise<Value>(promiseResolve => {
+        resolve = promiseResolve;
+    });
 
     return { promise, resolve };
 };
 
-jest.mock('@suite-common/connect-init', () => ({ connectInitThunk: jest.fn() }));
-jest.mock('@suite-common/token-definitions', () => ({
-    periodicCheckTokenDefinitionsThunk: jest.fn(),
-}));
-jest.mock('@suite-common/walletconnect', () => ({ walletConnectInitThunk: jest.fn() }));
-
-jest.mock('@suite-common/earn-stablecoin-api', () => ({
-    defaultEarnYieldWorkerBaseUrl: 'https://default.invalid',
-    earnYieldWorkerBaseUrl: { set: (value: string) => mockSetEarnYieldWorkerBaseUrl(value) },
-}));
-
-jest.mock('@suite-common/message-system', () => {
-    const { createThunk } = jest.requireActual('@trezor/redux-utils');
-
-    return {
-        prepareCachedEnvData: () => mockPrepareCachedEnvData(),
-        initMessageSystemThunk: createThunk('@test/initMessageSystem', () =>
-            mockInitMessageSystem(),
-        ),
-    };
-});
-
-jest.mock('@suite-common/wallet-core', () => {
-    const { createThunk } = jest.requireActual('@trezor/redux-utils');
-
-    return {
-        initDevicesThunk: createThunk('@test/initDevices', () => mockInitDevices()),
-        createImportedDeviceThunk: createThunk('@test/createImportedDevice', () =>
-            mockCreateImportedDevice(),
-        ),
-    };
-});
-
-jest.mock('@suite-native/analytics-redux', () => {
-    const { createThunk } = jest.requireActual('@trezor/redux-utils');
-
-    return {
-        initAnalyticsThunk: createThunk('@test/initAnalytics', () => mockInitAnalytics()),
-    };
-});
-
-jest.mock('@suite-native/settings', () => ({
-    selectEarnYieldWorkerBaseUrl: () => mockSelectEarnYieldWorkerBaseUrl(),
-    selectIsOnboardingFinished: () => mockSelectIsOnboardingFinished(),
-}));
-
-const createServiceDependencies = () => {
-    const getState = jest.fn<ApplicationInitState & PostOnboardingInitState, []>();
-    const mockDispatch = createMockDispatch({ getState });
-    const deps = createMockDeps<ApplicationInitDeps>({
-        dispatch: mockDispatch.dispatch,
-        getState,
-        prepareCachedEnvData: () => mockPrepareCachedEnvData(),
-        setEarnYieldWorkerBaseUrl: value => mockSetEarnYieldWorkerBaseUrl(value),
-        postOnboardingInit: () => mockPostOnboardingInit(),
+const createDeps = () =>
+    createMockDeps<ApplicationInitDeps>({
+        prepareCachedEnvData: () => Promise.resolve(ok()),
+        defaultEarnYieldWorkerBaseUrl: 'https://earn.trezor.io/yield',
+        getEarnYieldWorkerBaseUrl: () => undefined,
+        setEarnYieldWorkerBaseUrl: () => {},
+        initAnalytics: () => {},
+        initMessageSystem: () => {},
+        initDevices: () => Promise.resolve(),
+        createImportedDevice: () => Promise.resolve(),
+        getIsOnboardingFinished: () => true,
+        postOnboardingInit: () =>
+            Promise.resolve(ok(ConnectAndBlockchainInitializationStatus.Ready)),
+        onApplicationInitFinished: () => {},
     });
-
-    return { ...mockDispatch, deps, getState };
-};
 
 describe(createApplicationInit.name, () => {
-    beforeEach(() => {
-        jest.clearAllMocks();
-        mockPrepareCachedEnvData.mockResolvedValue(ok());
-        mockPostOnboardingInit.mockResolvedValue(
-            ok(ConnectAndBlockchainInitializationStatus.Ready),
-        );
-        mockSelectEarnYieldWorkerBaseUrl.mockReturnValue(undefined);
-        mockSelectIsOnboardingFinished.mockReturnValue(true);
-    });
-
-    it('fulfills without waiting for post-onboarding initialization', async () => {
-        const postOnboardingInitDeferred = createDeferredPromise();
-        mockPostOnboardingInit.mockReturnValue(postOnboardingInitDeferred.promise);
-        const { actions, deps } = createServiceDependencies();
+    it('finishes without waiting for post-onboarding initialization', async () => {
+        const postOnboardingInitDeferred =
+            createDeferredPromise<Result<ConnectAndBlockchainInitializationStatus.Ready>>();
+        const deps = createDeps();
+        deps.postOnboardingInit.mockReturnValue(postOnboardingInitDeferred.promise);
 
         const result = await createApplicationInit(deps)();
 
         expect(result).toEqual(ok());
-        expect(actions).toContainEqual(appInitActions.applicationInitFinished());
-        expect(mockInitDevices).toHaveBeenCalledTimes(1);
-        expect(mockCreateImportedDevice).toHaveBeenCalledTimes(1);
-        expect(mockPostOnboardingInit).toHaveBeenCalledTimes(1);
-        expect(actions).not.toContainEqual(
-            appInitActions.postOnboardingInitFinished(
-                ConnectAndBlockchainInitializationStatus.Ready,
-            ),
+        expect(deps.onApplicationInitFinished).toHaveBeenCalledTimes(1);
+        expect(deps.initDevices).toHaveBeenCalledTimes(1);
+        expect(deps.createImportedDevice).toHaveBeenCalledTimes(1);
+        expect(deps.postOnboardingInit).toHaveBeenCalledTimes(1);
+        expect(deps.setEarnYieldWorkerBaseUrl).toHaveBeenCalledWith(
+            deps.defaultEarnYieldWorkerBaseUrl,
         );
 
-        postOnboardingInitDeferred.resolve();
+        postOnboardingInitDeferred.resolve(ok(ConnectAndBlockchainInitializationStatus.Ready));
         await postOnboardingInitDeferred.promise;
     });
 
     it('skips post-onboarding initialization until onboarding is finished', async () => {
-        mockSelectIsOnboardingFinished.mockReturnValue(false);
-        const { actions, deps } = createServiceDependencies();
+        const deps = createDeps();
+        deps.getIsOnboardingFinished.mockReturnValue(false);
 
         const result = await createApplicationInit(deps)();
 
         expect(result).toEqual(ok());
-        expect(actions).toContainEqual(appInitActions.applicationInitFinished());
-        expect(mockPostOnboardingInit).not.toHaveBeenCalled();
+        expect(deps.onApplicationInitFinished).toHaveBeenCalledTimes(1);
+        expect(deps.postOnboardingInit).not.toHaveBeenCalled();
     });
 
-    it('leaves the application unfinished when initialization fails', async () => {
+    it('leaves the application unfinished when cache preparation fails', async () => {
         const error: PrepareCachedEnvDataError = {
             type: 'PrepareCachedEnvDataError',
             cause: new Error('Cache preparation failed'),
         };
-        mockPrepareCachedEnvData.mockResolvedValue(err(error));
-        const { actions, deps } = createServiceDependencies();
+        const deps = createDeps();
+        deps.prepareCachedEnvData.mockResolvedValue(err(error));
 
         const result = await createApplicationInit(deps)();
 
         expect(result).toEqual(err(error));
-        expect(actions).not.toContainEqual(appInitActions.applicationInitFinished());
-        expect(mockInitDevices).not.toHaveBeenCalled();
-        expect(mockPostOnboardingInit).not.toHaveBeenCalled();
+        expect(deps.onApplicationInitFinished).not.toHaveBeenCalled();
+        expect(deps.initAnalytics).not.toHaveBeenCalled();
+        expect(deps.initMessageSystem).not.toHaveBeenCalled();
+        expect(deps.initDevices).not.toHaveBeenCalled();
+        expect(deps.postOnboardingInit).not.toHaveBeenCalled();
     });
 
-    it('converts a legacy cache-preparation rejection into an error Result at composition', async () => {
-        const cause = new Error('Cache preparation failed');
-        mockPrepareCachedEnvData.mockRejectedValue(cause);
-        const { dispatch, getState, actions } = createServiceDependencies();
-        const services = createAppInitCompositionRoot({ dispatch, getState });
+    it('uses the earn yield worker URL from debug settings', async () => {
+        const deps = createDeps();
+        deps.getEarnYieldWorkerBaseUrl.mockReturnValue('http://localhost:3001/yield');
 
-        const result = await services.applicationInit();
+        await createApplicationInit(deps)();
 
-        expect(result).toEqual(err({ type: 'PrepareCachedEnvDataError', cause }));
-        expect(actions).not.toContainEqual(appInitActions.applicationInitFinished());
-        expect(mockInitDevices).not.toHaveBeenCalled();
+        expect(deps.setEarnYieldWorkerBaseUrl).toHaveBeenCalledWith('http://localhost:3001/yield');
+    });
+
+    it('selects the remembered device before creating the imported device', async () => {
+        const devicesDeferred = createDeferredPromise<void>();
+        const deps = createDeps();
+        deps.initDevices.mockReturnValue(devicesDeferred.promise);
+
+        const initialization = createApplicationInit(deps)();
+        await Promise.resolve();
+
+        expect(deps.createImportedDevice).not.toHaveBeenCalled();
+        expect(deps.onApplicationInitFinished).not.toHaveBeenCalled();
+
+        devicesDeferred.resolve();
+        await initialization;
+
+        expect(deps.createImportedDevice).toHaveBeenCalledTimes(1);
+        expect(deps.onApplicationInitFinished).toHaveBeenCalledTimes(1);
     });
 });

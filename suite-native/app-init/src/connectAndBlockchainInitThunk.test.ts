@@ -1,103 +1,64 @@
+import { type SerializedError } from '@reduxjs/toolkit';
+
 import { createMockDeps } from '@trezor/dependency-injection';
-import { createMockDispatch } from '@trezor/redux-utils/mocks';
-import { err, ok } from '@trezor/type-utils';
+import { type Result, err, ok } from '@trezor/type-utils';
 
 import {
     type ConnectAndBlockchainInitDeps,
     createConnectAndBlockchainInit,
 } from './connectAndBlockchainInitThunk';
 
-type MockRejectWithValueThunkApi = {
-    rejectWithValue: (error: string) => unknown;
-};
-
-const mockConnectInit = jest.fn();
-const mockInitBlockchain = jest.fn();
-const mockInitializationOrder: string[] = [];
-let mockConnectInitShouldReject = false;
-let mockInitBlockchainShouldReject = false;
-
-jest.mock('@suite-common/connect-init', () => {
-    const { createThunk } = jest.requireActual('@trezor/redux-utils');
-
-    return {
-        connectInitThunk: createThunk(
-            '@test/connectInit',
-            (_: void, { rejectWithValue }: MockRejectWithValueThunkApi) => {
-                mockConnectInit();
-                mockInitializationOrder.push('connect');
-
-                return mockConnectInitShouldReject
-                    ? rejectWithValue('connect-init-error')
-                    : undefined;
-            },
-        ),
-    };
-});
-
-jest.mock('@suite-common/wallet-core', () => {
-    const { createThunk } = jest.requireActual('@trezor/redux-utils');
-
-    return {
-        initBlockchainThunk: createThunk(
-            '@test/initBlockchain',
-            (_: void, { rejectWithValue }: MockRejectWithValueThunkApi) => {
-                mockInitBlockchain();
-                mockInitializationOrder.push('blockchain');
-
-                return mockInitBlockchainShouldReject
-                    ? rejectWithValue('blockchain-init-error')
-                    : undefined;
-            },
-        ),
-    };
-});
-
-const runService = () => {
-    const { dispatch } = createMockDispatch({ getState: () => undefined });
-    const deps = createMockDeps<ConnectAndBlockchainInitDeps>({ dispatch });
-
-    return createConnectAndBlockchainInit(deps)();
-};
+const createDeps = () =>
+    createMockDeps<ConnectAndBlockchainInitDeps>({
+        connectInit: () => Promise.resolve(ok()),
+        initBlockchain: () => Promise.resolve(ok()),
+        logError: () => {},
+    });
 
 describe(createConnectAndBlockchainInit.name, () => {
-    beforeEach(() => {
-        jest.clearAllMocks();
-        jest.spyOn(console, 'error').mockImplementation(() => undefined);
-        mockInitializationOrder.length = 0;
-        mockConnectInitShouldReject = false;
-        mockInitBlockchainShouldReject = false;
-    });
-
-    afterEach(() => {
-        jest.restoreAllMocks();
-    });
-
     it('initializes blockchain after Connect succeeds', async () => {
-        const result = await runService();
+        let finishConnect = () => {};
+        const connectResult = new Promise<Result<void, SerializedError>>(resolve => {
+            finishConnect = () => resolve(ok());
+        });
+        const deps = createDeps();
+        deps.connectInit.mockReturnValue(connectResult);
+
+        const initialization = createConnectAndBlockchainInit(deps)();
+
+        expect(deps.connectInit).toHaveBeenCalledTimes(1);
+        expect(deps.initBlockchain).not.toHaveBeenCalled();
+
+        finishConnect();
+        const result = await initialization;
 
         expect(result).toEqual(ok());
-        expect(mockConnectInit).toHaveBeenCalledTimes(1);
-        expect(mockInitBlockchain).toHaveBeenCalledTimes(1);
-        expect(mockInitializationOrder).toEqual(['connect', 'blockchain']);
+        expect(deps.initBlockchain).toHaveBeenCalledTimes(1);
+        expect(deps.logError).not.toHaveBeenCalled();
     });
 
     it('does not initialize blockchain after Connect fails', async () => {
-        mockConnectInitShouldReject = true;
+        const error: SerializedError = { message: 'Connect init failed' };
+        const deps = createDeps();
+        deps.connectInit.mockResolvedValue(err(error));
 
-        const result = await runService();
+        const result = await createConnectAndBlockchainInit(deps)();
 
-        expect(result).toEqual(err({ type: 'ConnectInitError', error: { message: 'Rejected' } }));
-        expect(mockInitBlockchain).not.toHaveBeenCalled();
+        expect(result).toEqual(err({ type: 'ConnectInitError', error }));
+        expect(deps.initBlockchain).not.toHaveBeenCalled();
+        expect(deps.logError).toHaveBeenCalledWith(`Connect init error: ${JSON.stringify(error)}`);
     });
 
     it('reports blockchain initialization failure', async () => {
-        mockInitBlockchainShouldReject = true;
+        const error: SerializedError = { message: 'Blockchain init failed' };
+        const deps = createDeps();
+        deps.initBlockchain.mockResolvedValue(err(error));
 
-        const result = await runService();
+        const result = await createConnectAndBlockchainInit(deps)();
 
-        expect(result).toEqual(
-            err({ type: 'BlockchainInitError', error: { message: 'Rejected' } }),
+        expect(result).toEqual(err({ type: 'BlockchainInitError', error }));
+        expect(deps.logError).toHaveBeenCalledWith(
+            `Blockchain init error: ${JSON.stringify(error)}`,
         );
     });
 });

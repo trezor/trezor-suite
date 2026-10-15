@@ -9,6 +9,9 @@
             "path": "../../suite-common/earn-stablecoin-api"
         },
         {
+            "path": "../../suite-common/earn-stablecoin-defs"
+        },
+        {
             "path": "../../suite-common/message-system"
         },
         {
@@ -26,6 +29,9 @@
         {
             "path": "../../packages/dependency-injection"
         },
-        { "path": "../../packages/type-utils" }
+        { "path": "../../packages/type-utils" },
+        {
+            "path": "../../packages/blockchain-link-types"
+        }
     ]
 }
