@@ -1,9 +1,3 @@
-import {
-    Calldata,
-    type ClearSigningCoverage,
-    getEvmClearSignedSwapCoverage,
-    isEvmClearSigningTx,
-} from '@suite-common/calldata';
 import { EVM_SPENDER_LABELS } from '@suite-common/suite-constants';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { EARN_YIELD_CLAIM_PROVIDER, getNetwork } from '@suite-common/wallet-config';
@@ -21,7 +15,13 @@ import {
 } from '@suite-common/wallet-types';
 import type { CardanoOutput } from '@trezor/connect';
 import { getFirmwareVersion, getFirmwareVersionArray } from '@trezor/device-utils';
-import { getWrappedNativeSymbol } from '@trezor/network-ethereum-suite-common';
+import {
+    Calldata,
+    type ClearSigningCoverage,
+    getEvmClearSignedSwapCoverage,
+    getWrappedNativeSymbol,
+    isEvmClearSigningTx,
+} from '@trezor/network-ethereum-suite-common';
 import { BigNumber, versionUtils } from '@trezor/utils';
 
 import { datetimeToLocktime } from './bitcoinUtils';

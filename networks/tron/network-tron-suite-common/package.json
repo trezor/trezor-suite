@@ -14,10 +14,13 @@
     "dependencies": {
         "@noble/hashes": "^2.0.1",
         "@scure/base": "^2.0.0",
+        "@trezor/calldata": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/network-module-suite-common-types": "workspace:*",
         "@trezor/network-tron": "workspace:*",
         "@trezor/network-tron-assets": "workspace:*",
-        "@trezor/network-tron-types": "workspace:*"
+        "@trezor/network-tron-types": "workspace:*",
+        "@trezor/type-utils": "workspace:*",
+        "@trezor/utils": "workspace:*"
     }
 }

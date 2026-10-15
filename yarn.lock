@@ -11387,17 +11387,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/calldata@workspace:*, @suite-common/calldata@workspace:^, @suite-common/calldata@workspace:suite-common/calldata":
-  version: 0.0.0-use.local
-  resolution: "@suite-common/calldata@workspace:suite-common/calldata"
-  dependencies:
-    "@trezor/network-tron": "workspace:*"
-    "@trezor/type-utils": "workspace:*"
-    "@trezor/utils": "workspace:*"
-    viem: "npm:^2.54.1"
-  languageName: unknown
-  linkType: soft
-
 "@suite-common/connect-init@workspace:*, @suite-common/connect-init@workspace:suite-common/connect-init":
   version: 0.0.0-use.local
   resolution: "@suite-common/connect-init@workspace:suite-common/connect-init"
@@ -11582,7 +11571,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/earn-stablecoin@workspace:suite-common/earn-stablecoin"
   dependencies:
-    "@suite-common/calldata": "workspace:^"
     "@suite-common/earn-stablecoin-api": "workspace:^"
     "@suite-common/message-system": "workspace:^"
     "@suite-common/schemas": "workspace:^"
@@ -12436,7 +12424,6 @@ __metadata:
     "@sentry/core": "npm:10.69.0"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/bluetooth": "workspace:*"
-    "@suite-common/calldata": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/earn-stablecoin-api": "workspace:*"
     "@suite-common/earn-staking-api": "workspace:*"
@@ -12478,6 +12465,7 @@ __metadata:
     "@trezor/network-solana-types": "workspace:*"
     "@trezor/network-stellar": "workspace:*"
     "@trezor/network-tron": "workspace:*"
+    "@trezor/network-tron-suite-common": "workspace:*"
     "@trezor/protobuf": "workspace:*"
     "@trezor/react-utils": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
@@ -12519,7 +12507,6 @@ __metadata:
   resolution: "@suite-common/wallet-utils@workspace:suite-common/wallet-utils"
   dependencies:
     "@suite-common/address": "workspace:*"
-    "@suite-common/calldata": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/legacy-network-config": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
@@ -14872,7 +14859,6 @@ __metadata:
     "@react-navigation/native-stack": "npm:7.12.0"
     "@reduxjs/toolkit": "npm:2.13.0"
     "@shopify/flash-list": "npm:2.3.0"
-    "@suite-common/calldata": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/discreet-mode": "workspace:*"
     "@suite-common/formatters": "workspace:*"
@@ -14939,6 +14925,7 @@ __metadata:
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
+    "@trezor/network-ethereum-suite-common": "workspace:*"
     "@trezor/network-module-types": "workspace:*"
     "@trezor/react-utils": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
@@ -18060,6 +18047,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/calldata@workspace:*, @trezor/calldata@workspace:packages/calldata":
+  version: 0.0.0-use.local
+  resolution: "@trezor/calldata@workspace:packages/calldata"
+  dependencies:
+    "@trezor/utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@trezor/coinjoin@workspace:*, @trezor/coinjoin@workspace:packages/coinjoin":
   version: 0.0.0-use.local
   resolution: "@trezor/coinjoin@workspace:packages/coinjoin"
@@ -18728,7 +18723,7 @@ __metadata:
   resolution: "@trezor/network-ethereum-suite-common@workspace:networks/ethereum/network-ethereum-suite-common"
   dependencies:
     "@noble/hashes": "npm:^2.0.1"
-    "@suite-common/calldata": "workspace:*"
+    "@trezor/calldata": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
     "@trezor/network-ethereum": "workspace:*"
@@ -18736,6 +18731,7 @@ __metadata:
     "@trezor/network-ethereum-types": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/network-module-types": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     viem: "npm:^2.54.1"
   languageName: unknown
@@ -18955,11 +18951,14 @@ __metadata:
   dependencies:
     "@noble/hashes": "npm:^2.0.1"
     "@scure/base": "npm:^2.0.0"
+    "@trezor/calldata": "workspace:*"
     "@trezor/device-utils": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"
     "@trezor/network-tron": "workspace:*"
     "@trezor/network-tron-assets": "workspace:*"
     "@trezor/network-tron-types": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -19320,7 +19319,6 @@ __metadata:
     "@suite-common/bip329": "workspace:*"
     "@suite-common/bip329-types": "workspace:*"
     "@suite-common/bluetooth": "workspace:*"
-    "@suite-common/calldata": "workspace:*"
     "@suite-common/connect-init": "workspace:*"
     "@suite-common/connect-popup": "workspace:*"
     "@suite-common/delegated-identity-key": "workspace:*"

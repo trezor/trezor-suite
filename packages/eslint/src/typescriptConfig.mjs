@@ -23,15 +23,7 @@ const networksPackagePattern = {
 // round. Of the workspace scopes only `@trezor/*` is below them, so it is the only one they may
 // depend on. Anything an app owns reaches a network module through dependency injection instead.
 const networksAppScopePattern = {
-    group: [
-        '@suite/**',
-        '@suite-cli/**',
-        '@suite-common/**',
-        '@suite-native/**',
-        // TODO(#32493): the last app-scoped dependency left under networks/. `calldata` is a
-        // `@trezor/*`-level library sitting in the wrong folder.
-        '!@suite-common/calldata',
-    ],
+    group: ['@suite/**', '@suite-cli/**', '@suite-common/**', '@suite-native/**'],
     message:
         'Network packages may only depend on @trezor/* workspace packages. Take anything an app owns as an injected dependency instead.',
 };

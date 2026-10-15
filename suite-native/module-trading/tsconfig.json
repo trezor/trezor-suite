@@ -2,7 +2,6 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../../suite-common/calldata" },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/formatters"
@@ -85,6 +84,9 @@
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/dependency-injection"
+        },
+        {
+            "path": "../../networks/ethereum/network-ethereum-suite-common"
         },
         { "path": "../../packages/react-utils" },
         { "path": "../../packages/redux-utils" },

@@ -3,7 +3,6 @@ import { useCallback, useMemo } from 'react';
 import { type CryptoId } from 'invity-api';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { Calldata } from '@suite-common/calldata';
 import {
     selectTradingExchangeProviders,
     selectTradingExchangeSelectedQuote,
@@ -11,6 +10,7 @@ import {
     tradeApi,
 } from '@suite-common/trading';
 import { useServices } from '@trezor/dependency-injection';
+import { Calldata } from '@trezor/network-ethereum-suite-common';
 
 import { RevokeModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/AllowanceModals/RevokeModal';
 import { useSelector } from 'src/hooks/suite';

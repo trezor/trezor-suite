@@ -1,23 +1,20 @@
 {
     "extends": "../../../tsconfig.base.json",
-    "compilerOptions": {
-        "outDir": "libDev"
-    },
+    "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../../../packages/calldata" },
         {
             "path": "../../../packages/device-utils"
         },
         {
             "path": "../../network-module/network-module-suite-common-types"
         },
+        { "path": "../network-tron" },
+        { "path": "../network-tron-assets" },
+        { "path": "../network-tron-types" },
         {
-            "path": "../network-tron"
+            "path": "../../../packages/type-utils"
         },
-        {
-            "path": "../network-tron-assets"
-        },
-        {
-            "path": "../network-tron-types"
-        }
+        { "path": "../../../packages/utils" }
     ]
 }

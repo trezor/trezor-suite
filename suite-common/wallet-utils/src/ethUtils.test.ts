@@ -1,4 +1,3 @@
-import { Calldata, asEvmAddress } from '@suite-common/calldata';
 import { UINT256_MAX } from '@suite-common/suite-constants';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -6,6 +5,7 @@ import {
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import { mockAccountToken } from '@suite-common/wallet-types/mocks';
+import { Calldata, asEvmAddress } from '@trezor/network-ethereum-suite-common';
 import { BigNumber } from '@trezor/utils';
 
 import {

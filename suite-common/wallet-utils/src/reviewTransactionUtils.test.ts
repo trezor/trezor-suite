@@ -1,4 +1,3 @@
-import { Calldata, asEvmAddress } from '@suite-common/calldata';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { EARN_YIELD_CLAIM_PROVIDER, asNetworkSymbol } from '@suite-common/wallet-config';
@@ -13,6 +12,7 @@ import {
 } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import type { TokenInfo } from '@trezor/connect';
+import { Calldata, asEvmAddress } from '@trezor/network-ethereum-suite-common';
 import { BigNumber } from '@trezor/utils';
 
 import { buildApprovalTransactionData, getPrecomposedTxWithAccountToken } from './ethUtils';

@@ -1,10 +1,10 @@
-import { asEvmAddress } from '@suite-common/calldata';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     asAmountUnit,
     tokenSupportsIncreasingAllowance,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
+import { asEvmAddress } from '@trezor/network-ethereum-suite-common';
 import { createThunk } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
