@@ -174,6 +174,11 @@ export const modalReducer = (state: State = initialState, action: UnknownAction)
     }
 
     if (isUiEventOfType(action, UI_EVENTS.CLOSE_UI_WINDOW)) {
+        // A pending device call must not dismiss the prompt Electron is awaiting before quitting.
+        if (state.context === MODAL_CONTEXT_USER && state.payload.type === 'auto-start-before-quit') {
+            return state;
+        }
+
         if (
             state.context === MODAL_CONTEXT_DEVICE ||
             state.context === MODAL_CONTEXT_DEVICE_CONFIRMATION
