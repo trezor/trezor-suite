@@ -14,7 +14,7 @@ import {
 } from '@suite-common/apps-embedding';
 import { err, ok } from '@trezor/type-utils';
 
-import { applyTorProxy, resolveSessionForOpen } from './session';
+import { applyTorProxy, forgetInMemorySessionData, resolveSessionForOpen } from './session';
 import { closeView, openView } from './webContentsView';
 import { Logger } from '../../../libs/logger';
 import { MainWindowProxy } from '../../../libs/main-window-proxy';
@@ -25,24 +25,46 @@ import { activeViewContext, inAppBrowserContext } from '../context';
 type WebContentsListener = (...args: unknown[]) => void;
 
 const mockWebContentsListeners = new Map<string, WebContentsListener>();
+const mockWebContentsOnceListeners: [string, WebContentsListener][] = [];
+
+// Flipped by `close()`, as Electron destroys a closed page, and reset by each new view.
+let isMockWebContentsDestroyed = false;
 
 const mockWebContents = {
     id: 7,
     on: jest.fn((event: string, listener: WebContentsListener) => {
         mockWebContentsListeners.set(event, listener);
     }),
-    once: jest.fn(),
+    once: jest.fn((event: string, listener: WebContentsListener) => {
+        mockWebContentsOnceListeners.push([event, listener]);
+    }),
     loadURL: jest.fn(() => Promise.resolve()),
-    isDestroyed: () => false,
-    close: jest.fn(),
+    isDestroyed: () => isMockWebContentsDestroyed,
+    close: jest.fn(() => {
+        isMockWebContentsDestroyed = true;
+    }),
     closeDevTools: jest.fn(),
     setWebRTCIPHandlingPolicy: jest.fn(),
     getURL: () => 'https://app.example/',
     navigationHistory: { canGoBack: () => false, canGoForward: () => false },
 };
 
+// What Electron does once a closed page has gone: the WebContents reports itself destroyed.
+const fireDestroyed = () => {
+    isMockWebContentsDestroyed = true;
+    mockWebContentsOnceListeners
+        .filter(([event]) => event === 'destroyed')
+        .forEach(([, listener]) => listener());
+};
+
+const flushPendingPromises = () => new Promise(resolve => setImmediate(resolve));
+
 jest.mock('electron', () => ({
-    WebContentsView: jest.fn(() => ({ webContents: mockWebContents, setVisible: jest.fn() })),
+    WebContentsView: jest.fn(() => {
+        isMockWebContentsDestroyed = false;
+
+        return { webContents: mockWebContents, setVisible: jest.fn() };
+    }),
 }));
 
 const mockOpenSession = { storagePath: null } as Session;
@@ -50,6 +72,7 @@ const mockOpenSession = { storagePath: null } as Session;
 jest.mock('./session', () => ({
     resolveSessionForOpen: jest.fn(() => Promise.resolve(ok(mockOpenSession))),
     applyTorProxy: jest.fn(() => Promise.resolve(ok())),
+    forgetInMemorySessionData: jest.fn(() => Promise.resolve()),
 }));
 
 jest.mock('./popup', () => ({
@@ -156,6 +179,7 @@ describe('openView navigation guards', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockWebContentsListeners.clear();
+        mockWebContentsOnceListeners.length = 0;
 
         inAppBrowserContext.set({
             mainWindowProxy,
@@ -287,6 +311,52 @@ describe('openView navigation guards', () => {
         );
     });
 
+    it('empties the in-memory session once the closed page is gone, not before', async () => {
+        await openView(openPayload);
+        // Asked to go, the page reports it only later — as Electron does.
+        mockWebContents.close.mockImplementationOnce(() => {});
+
+        const closing = closeView();
+        await flushPendingPromises();
+
+        expect(mockWebContents.close).toHaveBeenCalledTimes(1);
+        expect(forgetInMemorySessionData).not.toHaveBeenCalled();
+
+        fireDestroyed();
+        await closing;
+
+        expect(forgetInMemorySessionData).toHaveBeenCalledTimes(1);
+    });
+
+    it('empties the in-memory session anyway when the closed page never reports itself gone', async () => {
+        jest.useFakeTimers();
+
+        try {
+            await openView(openPayload);
+            mockWebContents.close.mockImplementationOnce(() => {});
+
+            const closing = closeView();
+            await jest.advanceTimersByTimeAsync(1000);
+            await closing;
+
+            expect(forgetInMemorySessionData).toHaveBeenCalledTimes(1);
+        } finally {
+            jest.useRealTimers();
+        }
+    });
+
+    it('empties the in-memory session before the next open creates its view', async () => {
+        await openView(openPayload);
+
+        await openView(openPayload);
+
+        expect(
+            getInvocationOrder(jest.mocked(forgetInMemorySessionData).mock.invocationCallOrder, 0),
+        ).toBeLessThan(
+            getInvocationOrder(jest.mocked(WebContentsView).mock.invocationCallOrder, 1),
+        );
+    });
+
     it('blocks a main-frame server-side redirect to an origin outside the allowlist', async () => {
         await openView(openPayload);
         const redirect = createRedirect({ url: 'https://attacker.example/landing' });
@@ -394,6 +464,7 @@ describe('openView targets', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockWebContentsListeners.clear();
+        mockWebContentsOnceListeners.length = 0;
 
         inAppBrowserContext.set({
             mainWindowProxy,

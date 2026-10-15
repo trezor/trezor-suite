@@ -4,6 +4,8 @@ export type MockSession = Pick<
     Session,
     | 'setProxy'
     | 'closeAllConnections'
+    | 'clearStorageData'
+    | 'clearData'
     | 'setPermissionRequestHandler'
     | 'setPermissionCheckHandler'
     | 'setDevicePermissionHandler'
@@ -21,6 +23,8 @@ export type MockSession = Pick<
 export const mockSession = (overrides: Partial<MockSession> = {}): MockSession => ({
     setProxy: jest.fn(() => Promise.resolve()),
     closeAllConnections: jest.fn(() => Promise.resolve()),
+    clearStorageData: jest.fn(() => Promise.resolve()),
+    clearData: jest.fn(() => Promise.resolve()),
     setPermissionRequestHandler: jest.fn(),
     setPermissionCheckHandler: jest.fn(),
     setDevicePermissionHandler: jest.fn(),

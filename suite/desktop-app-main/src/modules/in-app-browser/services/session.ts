@@ -339,6 +339,33 @@ export async function flushPersistentSessions() {
     await Promise.allSettled(tasks);
 }
 
+/**
+ * Empties the shared in-memory session — cookies, DOM storage, IndexedDB, service workers, the
+ * caches and the HSTS and auth state `clearData` sweeps — so that it carries nothing from one visit
+ * into the next: a site opened without `persistSession` keeps its state for as long as it is open
+ * and not a moment longer, and a site opened later in the same run of Suite cannot read what an
+ * earlier one left behind. Called by `closeView` once the page is gone. A failure is logged rather
+ * than thrown: the view is closed either way.
+ */
+export async function forgetInMemorySessionData(): Promise<void> {
+    const { inMemorySession, logger } = await inAppBrowserContext.get();
+
+    // Nothing has been opened yet, and nothing is created just to be emptied.
+    if (inMemorySession === undefined) {
+        return;
+    }
+
+    try {
+        await inMemorySession.closeAllConnections();
+        // Before `clearData()`, as in `clearSession`: the storage sweep only runs while it still
+        // finds the buckets.
+        await inMemorySession.clearStorageData();
+        await inMemorySession.clearData();
+    } catch (error) {
+        logger.error(SERVICE_NAME, `Failed to forget the data of the in-memory session: ${error}`);
+    }
+}
+
 export async function clearSession(
     entryId: string,
     onCloseView: () => Promise<void>,

@@ -1,3 +1,5 @@
+import { type WebContents } from 'electron';
+
 import { type InAppBrowserHostEvent } from '@suite/desktop-app-api';
 import { safeParseUrl } from '@trezor/utils';
 
@@ -14,6 +16,30 @@ export const isNavigationToAllowedOrigin = (url: string, allowedOrigins: Set<str
 
     return origin !== undefined && allowedOrigins.has(origin);
 };
+
+// How long a closed page gets to go away before its session is emptied anyway. `destroyed`
+// normally follows `close()` within milliseconds; the bound only keeps the queue of calls from
+// waiting on a page that never reports it.
+const CLOSED_PAGE_TIMEOUT_MS = 1000;
+
+/**
+ * Resolves once `webContents` has been destroyed, or after [CLOSED_PAGE_TIMEOUT_MS] at the latest.
+ */
+export const waitUntilDestroyed = (webContents: WebContents) =>
+    new Promise<void>(resolve => {
+        if (webContents.isDestroyed()) {
+            resolve();
+
+            return;
+        }
+
+        const timeout = setTimeout(resolve, CLOSED_PAGE_TIMEOUT_MS);
+
+        webContents.once('destroyed', () => {
+            clearTimeout(timeout);
+            resolve();
+        });
+    });
 
 export async function getActiveWebContents() {
     const { activeView } = await activeViewContext.get();

@@ -13,9 +13,14 @@ import { safeParseUrl } from '@trezor/utils';
 import { SERVICE_NAME } from '../constants';
 import { activeViewContext, inAppBrowserContext, inAppBrowserWebContentsIds } from '../context';
 import { handleZoomChanged } from './dimensions';
-import { getActiveWebContents, isNavigationToAllowedOrigin, sendEventToRenderer } from './general';
+import {
+    getActiveWebContents,
+    isNavigationToAllowedOrigin,
+    sendEventToRenderer,
+    waitUntilDestroyed,
+} from './general';
 import { registerPopup, registerPopupOpener } from './popup';
-import { applyTorProxy, resolveSessionForOpen } from './session';
+import { applyTorProxy, forgetInMemorySessionData, resolveSessionForOpen } from './session';
 
 // Unparsable entries are dropped rather than rejecting the whole open call: an allowlist that
 // cannot be parsed can only ever widen nothing.
@@ -88,6 +93,17 @@ export async function closeView() {
         allowedPopupOrigins: new Set(),
         opensPopupInSystemBrowser: false,
     }));
+
+    // `close()` only asks the page to go: its unload handlers still run and may write to its
+    // storage until the WebContents is destroyed. The in-memory session is emptied once it is
+    // gone, so that nothing lands after the clear — and before this call returns, so that the
+    // next open, queued behind it, starts on an empty session instead of losing its own fresh
+    // state to a late clear.
+    if (liveWebContents) {
+        await waitUntilDestroyed(liveWebContents);
+    }
+
+    await forgetInMemorySessionData();
 
     // `lastReportedRect` deliberately survives: switching sites tears the view down and builds
     // a new one, while the renderer's region stays exactly where it was and so never resizes.
