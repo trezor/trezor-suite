@@ -1,26 +1,31 @@
+import { useSelector } from 'react-redux';
+
 import type { ExchangeTrade } from 'invity-api';
 
 import { useDevice } from '@suite/device';
 import { type TranslationKey, useTranslation } from '@suite/intl';
 import { selectHasExperimentalFeature } from '@suite/settings';
-import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
+import { type DeviceRootState } from '@suite-common/device';
+import {
+    Feature,
+    type MessageSystemRootState,
+    selectIsFeatureEnabled,
+} from '@suite-common/message-system';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type TradingSignAndPushSendFormTransactionProps,
     exchangeThunks,
     isSendRejectedError,
     isSilentSendRejection,
-    selectTradingExchange,
     selectTradingExchangeActiveTrade,
     selectTradingExchangeSelectedQuote,
     selectTradingIsSlip24Allowed,
 } from '@suite-common/trading';
-import { selectAccountByKey } from '@suite-common/wallet-core';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
-import { useSelector } from 'src/hooks/suite';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import { useTradingExchangeTradeRequest } from 'src/hooks/wallet/trading/form/common/useTradingExchangeTradeRequest';
 import { useTradingFormAccount } from 'src/hooks/wallet/trading/form/useTradingFormAccount';
@@ -34,11 +39,10 @@ export const useTradingExchangeTradeActions = () => {
 
     const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
     const trade = useSelector(selectTradingExchangeActiveTrade);
-    const { extraField } = useSelector(selectTradingExchange);
 
     const { account: formAccount } = useTradingFormAccount('exchange');
     const tradeSendAccount = useSelector(
-        state => selectAccountByKey(state, trade?.sendAccountKey) ?? undefined,
+        (state: AccountsRootState) => selectAccountByKey(state, trade?.sendAccountKey) ?? undefined,
     );
     const account = tradeSendAccount ?? formAccount;
 
@@ -48,11 +52,11 @@ export const useTradingExchangeTradeActions = () => {
     const exchangeCryptoId = (trade?.data ?? selectedQuote)?.send;
     const decimals = getAssetDecimals({ accountKey: account?.key, cryptoId: exchangeCryptoId });
 
-    const isSlip24FeatureEnabled = useSelector(state =>
+    const isSlip24FeatureEnabled = useSelector((state: MessageSystemRootState) =>
         selectIsFeatureEnabled(state, Feature.trading.slip24, true),
     );
     const isSlip24ExperimentalFeatureEnabled = useSelector(selectHasExperimentalFeature('slip24'));
-    const isSlip24Active = useSelector(state =>
+    const isSlip24Active = useSelector((state: DeviceRootState) =>
         account
             ? selectTradingIsSlip24Allowed(
                   state,
@@ -68,7 +72,6 @@ export const useTradingExchangeTradeActions = () => {
         receiveAddress,
         trade: confirmedTrade,
         approvalFlow,
-        ...props
     }: TradingExchangeConfirmTradeProps): Promise<ExchangeTrade | undefined> => {
         if (!account) {
             return undefined;
@@ -88,7 +91,6 @@ export const useTradingExchangeTradeActions = () => {
                 returnUrl,
                 receiveAddress,
                 account,
-                extraField: props.extraField ?? extraField,
                 trade: confirmedTrade,
                 approvalFlow,
                 triggerAnalyticsTradeConfirmation,

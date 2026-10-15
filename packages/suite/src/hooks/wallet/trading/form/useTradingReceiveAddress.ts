@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
+import { useSelector } from 'react-redux';
 
 import { type CryptoId } from 'invity-api';
 
@@ -19,14 +20,17 @@ import {
     tradingBuyActions,
     tradingExchangeActions,
 } from '@suite-common/trading';
-import { selectAccountByKey, selectAccounts } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    selectAccountByKey,
+    selectAccounts,
+} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { filterReceiveAccounts } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
-import { useSelector } from 'src/hooks/suite';
 import { type TradingVerifyFormProps } from 'src/types/trading/tradingVerify';
 
 import { useAccountAddressDictionary } from '../../useAccounts';
@@ -74,7 +78,9 @@ export const useTradingReceiveAddress = ({
 
     const prevCryptoIdRef = useRef<CryptoId | undefined>(undefined);
 
-    const receiveAccount = useSelector(state => selectAccountByKey(state, selectedAccount?.key));
+    const receiveAccount = useSelector((state: AccountsRootState) =>
+        selectAccountByKey(state, selectedAccount?.key),
+    );
     const supportedNetworks = useSelector(selectSupportedNetworkSymbols);
 
     const isSupportedNetwork = [...supportedMainnets, ...supportedTestnets].some(
@@ -299,7 +305,6 @@ export const useTradingReceiveAddress = ({
     useEffect(() => {
         if (type === 'exchange') {
             dispatch(tradingExchangeActions.setReceiveAddress(receiveAddress));
-            dispatch(tradingExchangeActions.setExtraField(extraField));
             dispatch(tradingExchangeActions.setReceiveAccountKey(receiveAccount?.key));
         }
 

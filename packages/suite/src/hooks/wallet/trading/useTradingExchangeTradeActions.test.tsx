@@ -100,19 +100,16 @@ type StateOverrides = {
     selectedQuote?: ExchangeTrade | undefined;
     accountKey?: Account['key'] | undefined;
     accounts?: Account[];
-    extraField?: string | undefined;
 };
 
 const buildState = (overrides: StateOverrides = {}) => {
     const selectedQuote = 'selectedQuote' in overrides ? overrides.selectedQuote : SELECTED_QUOTE;
     const accountKey = 'accountKey' in overrides ? overrides.accountKey : ACCOUNT.key;
     const accounts = 'accounts' in overrides ? overrides.accounts : [ACCOUNT];
-    const extraField = 'extraField' in overrides ? overrides.extraField : undefined;
 
     const overridesForExchange = {
         selectedQuote,
         tradingAccountKey: accountKey,
-        extraField,
     };
 
     return {
@@ -229,7 +226,6 @@ describe('useTradingExchangeTradeActions', () => {
 
             const confirmed = await result.current.confirmTrade({
                 receiveAddress: '0xReceiveAddress',
-                extraField: 'destination-tag',
                 trade: SELECTED_QUOTE,
             });
 
@@ -239,7 +235,6 @@ describe('useTradingExchangeTradeActions', () => {
                 {
                     account: Account;
                     receiveAddress: string;
-                    extraField?: string;
                     trade?: ExchangeTrade;
                     returnUrl: string;
                 },
@@ -247,23 +242,8 @@ describe('useTradingExchangeTradeActions', () => {
 
             expect(args.account).toBe(ACCOUNT);
             expect(args.receiveAddress).toBe('0xReceiveAddress');
-            expect(args.extraField).toBe('destination-tag');
             expect(args.trade).toBe(SELECTED_QUOTE);
             expect(args.returnUrl).toBe('https://return.url');
-        });
-
-        it('falls back to the stored extraField when the caller does not pass one', async () => {
-            const { result } = renderActions({ extraField: 'destination-tag' });
-
-            await result.current.confirmTrade({
-                receiveAddress: '0xReceiveAddress',
-                trade: SELECTED_QUOTE,
-            });
-
-            expect(mockConfirmTradeThunk).toHaveBeenCalledTimes(1);
-            const [args] = mockConfirmTradeThunk.mock.calls[0] as [{ extraField?: string }];
-
-            expect(args.extraField).toBe('destination-tag');
         });
 
         it('forwards the approvalFlow flag to confirmTradeThunk', async () => {
