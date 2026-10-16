@@ -8,7 +8,7 @@
             "path": "../../../packages/device-utils"
         },
         {
-            "path": "../../network-module/common/common-types"
+            "path": "../../network-module/suite-common/suite-common-types"
         },
         {
             "path": "../network-solana-assets"

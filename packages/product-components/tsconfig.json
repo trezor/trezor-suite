@@ -29,7 +29,7 @@
             "path": "../../networks/network-module/network-assets-types"
         },
         {
-            "path": "../../networks/network-module/common/common-types"
+            "path": "../../networks/network-module/suite-common/suite-common-types"
         },
         {
             "path": "../../networks/network-module/network-module-types"
