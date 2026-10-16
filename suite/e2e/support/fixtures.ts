@@ -2,10 +2,12 @@
 import type { Page } from '@playwright/test';
 
 import { checkEvoluRelayServerRunning } from '@suite-common/e2e-evolu-client';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import type { PerfMetrics } from '@trezor/perf-e2e';
 
 import { AnalyticsFixture, AnalyticsHelper } from './analytics';
 import { AnvilFork } from './anvil';
+import type { AnvilForkOptions } from './anvilNetworks';
 import { ClipboardFixture } from './clipboard';
 import { isDesktopProject } from './common';
 import { databaseTabFixture } from './databaseTabFixture';
@@ -69,6 +71,7 @@ type Fixtures = {
     tradingStore: TradingStoreFixture;
     metadataMock: MetadataMock;
     blockbookMock: BlockbookMock;
+    anvilFork: AnvilForkOptions;
     anvil: AnvilFork;
     firmwareReleaseConfigMock: FirmwareReleaseConfigMock;
     solanaStakingMock: SolanaStakingMock;
@@ -166,8 +169,9 @@ const test = suiteBaseTest.extend<Fixtures>({
         await use(blockbookMock);
         blockbookMock.stop();
     },
-    anvil: async ({}, use) => {
-        const anvil = new AnvilFork();
+    anvilFork: [{ symbol: asNetworkSymbol('eth') }, { option: true }],
+    anvil: async ({ anvilFork }, use) => {
+        const anvil = new AnvilFork(anvilFork);
         await anvil.start();
         await use(anvil);
         await anvil.stop();

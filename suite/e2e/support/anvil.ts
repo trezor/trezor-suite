@@ -1,10 +1,18 @@
 import { type ChildProcess, spawn } from 'node:child_process';
 import { createServer } from 'node:net';
 import {
+    type Abi,
     type Address,
+    type ContractFunctionArgs,
+    type ContractFunctionName,
+    type EncodeFunctionDataParameters,
+    type Hash,
     type Hex,
+    type ReadContractParameters,
+    type ReadContractReturnType,
     createTestClient,
     encodeAbiParameters,
+    encodeFunctionData,
     erc20Abi,
     http,
     keccak256,
@@ -13,11 +21,9 @@ import {
     walletActions,
 } from 'viem';
 
+import { type AnvilForkConfig, type AnvilForkOptions, getAnvilForkConfig } from './anvilNetworks';
 import { step } from './common';
-
-// Public endpoint, so no secret is needed in CI. ANVIL_FORK_URL points a local run elsewhere.
-const DEFAULT_FORK_URL = 'https://eth-mainnet.g.alchemy.com/public';
-const ETHEREUM_CHAIN_ID = 1;
+import type { NetworkToEnable } from './pageObjects/settings/settingsPage';
 
 const STARTUP_TIMEOUT_MS = 60_000;
 const STARTUP_POLL_INTERVAL_MS = 250;
@@ -29,7 +35,8 @@ const MAX_BALANCE_SLOT_PROBE = 20;
 
 // Holds tokens only between the storage write and the transfer in `fundErc20`.
 const ERC20_FUNDER_ADDRESS = '0x000000000000000000000000000000000000f00d';
-const FUNDER_GAS_BALANCE = 10n ** 18n;
+// Given to an impersonated account that has nothing to pay gas with.
+const GAS_TOP_UP = 10n ** 18n;
 
 const getFreePort = () =>
     new Promise<number>((resolve, reject) => {
@@ -53,18 +60,48 @@ const createAnvilClient = (url: string) =>
         .extend(publicActions)
         .extend(walletActions);
 
+type AnvilClient = ReturnType<typeof createAnvilClient>;
+
 const getMappingSlot = (key: Address, slot: number) =>
     keccak256(encodeAbiParameters([{ type: 'address' }, { type: 'uint256' }], [key, BigInt(slot)]));
 
+const getAnvilArgs = (config: AnvilForkConfig, port: number) => [
+    '--fork-url',
+    config.forkUrl,
+    ...(config.blockNumber !== undefined ? ['--fork-block-number', `${config.blockNumber}`] : []),
+    ...(config.baseFeePerGas !== undefined ? ['--base-fee', `${config.baseFeePerGas}`] : []),
+    ...(config.automine ? [] : ['--no-mining']),
+    '--chain-id',
+    `${config.chainId}`,
+    '--host',
+    '127.0.0.1',
+    '--port',
+    `${port}`,
+    // Public endpoints rate-limit; back off instead of failing the forked read.
+    '--retries',
+    '10',
+    '--fork-retry-backoff',
+    '1000',
+];
+
+type SendTransactionAsParams = { to: Address; value?: bigint; data?: Hex };
+
 /**
- * Local Anvil fork of Ethereum mainnet. Suite connects to it as a custom `evm-rpc` backend, so
+ * Local Anvil fork of an EVM network. Suite connects to it as a custom `evm-rpc` backend, so
  * signed transactions are really executed and the resulting chain state can be asserted.
  */
 export class AnvilFork {
+    private readonly config: AnvilForkConfig;
+    private automine: boolean;
     private process: ChildProcess | undefined;
-    private client: ReturnType<typeof createAnvilClient> | undefined;
+    private client: AnvilClient | undefined;
     private port: number | undefined;
     private output = '';
+
+    constructor(options: AnvilForkOptions) {
+        this.config = getAnvilForkConfig(options);
+        this.automine = this.config.automine;
+    }
 
     get url() {
         if (this.port === undefined) {
@@ -72,6 +109,11 @@ export class AnvilFork {
         }
 
         return `http://127.0.0.1:${this.port}`;
+    }
+
+    /** Pass to `settingsPage.changeNetworks` to connect Suite to this fork. */
+    get networkToEnable(): NetworkToEnable {
+        return { symbol: this.config.symbol, backend: { type: 'evm-rpc', url: this.url } };
     }
 
     private get rpc() {
@@ -89,27 +131,11 @@ export class AnvilFork {
     @step()
     async start() {
         this.port = await getFreePort();
-        const forkBlockNumber = process.env.ANVIL_FORK_BLOCK_NUMBER;
-        const args = [
-            '--fork-url',
-            process.env.ANVIL_FORK_URL ?? DEFAULT_FORK_URL,
-            ...(forkBlockNumber ? ['--fork-block-number', forkBlockNumber] : []),
-            '--chain-id',
-            `${ETHEREUM_CHAIN_ID}`,
-            '--host',
-            '127.0.0.1',
-            '--port',
-            `${this.port}`,
-            // The public endpoint rate-limits; back off instead of failing the forked read.
-            '--retries',
-            '10',
-            '--fork-retry-backoff',
-            '1000',
-        ];
-
-        const anvilProcess = spawn(process.env.ANVIL_BIN ?? 'anvil', args, {
-            stdio: ['ignore', 'pipe', 'pipe'],
-        });
+        const anvilProcess = spawn(
+            process.env.ANVIL_BIN ?? 'anvil',
+            getAnvilArgs(this.config, this.port),
+            { stdio: ['ignore', 'pipe', 'pipe'] },
+        );
         this.process = anvilProcess;
         anvilProcess.stdout?.on('data', chunk => this.appendOutput(chunk));
         anvilProcess.stderr?.on('data', chunk => this.appendOutput(chunk));
@@ -133,7 +159,7 @@ export class AnvilFork {
             }
             try {
                 const chainId = await this.rpc.getChainId();
-                if (chainId === ETHEREUM_CHAIN_ID) return;
+                if (chainId === this.config.chainId) return;
             } catch {
                 // Not listening yet, the fork is still being set up.
             }
@@ -156,7 +182,9 @@ export class AnvilFork {
         await exited;
     }
 
-    // No @step on methods taking a bigint: the decorator serializes arguments with JSON.stringify.
+    // Accounts
+
+    @step()
     async setBalance(address: Address, value: bigint) {
         await this.rpc.setBalance({ address, value });
     }
@@ -167,6 +195,18 @@ export class AnvilFork {
 
     getTransactionCount(address: Address) {
         return this.rpc.getTransactionCount({ address });
+    }
+
+    // Contracts and tokens
+
+    readContract<
+        const TAbi extends Abi | readonly unknown[],
+        TFunctionName extends ContractFunctionName<TAbi, 'pure' | 'view'>,
+        const TArgs extends ContractFunctionArgs<TAbi, 'pure' | 'view', TFunctionName>,
+    >(
+        params: ReadContractParameters<TAbi, TFunctionName, TArgs>,
+    ): Promise<ReadContractReturnType<TAbi, TFunctionName, TArgs>> {
+        return this.rpc.readContract(params);
     }
 
     readErc20Balance(token: Address, holder: Address) {
@@ -197,30 +237,20 @@ export class AnvilFork {
     }
 
     /**
-     * Sends `amount` of an ERC-20 token to `holder` in a real `transfer`. On Ethereum the evm-rpc
-     * backend finds an account's tokens only through their `Transfer` logs, so a balance written
-     * straight into storage would stay invisible to Suite.
+     * Sends `amount` of an ERC-20 token to `holder` in a real `transfer`. The evm-rpc backend finds
+     * an account's tokens only through their `Transfer` logs, so a balance written straight into
+     * storage would stay invisible to Suite.
      */
+    @step()
     async fundErc20(token: Address, holder: Address, amount: bigint) {
         await this.dealErc20(token, ERC20_FUNDER_ADDRESS, amount);
-        await this.setBalance(ERC20_FUNDER_ADDRESS, FUNDER_GAS_BALANCE);
-        await this.rpc.impersonateAccount({ address: ERC20_FUNDER_ADDRESS });
-        try {
-            const hash = await this.rpc.writeContract({
-                account: ERC20_FUNDER_ADDRESS,
-                chain: null,
-                address: token,
-                abi: erc20Abi,
-                functionName: 'transfer',
-                args: [holder, amount],
-            });
-            const receipt = await this.rpc.waitForTransactionReceipt({ hash });
-            if (receipt.status !== 'success') {
-                throw new Error(`Funding ${holder} with token ${token} reverted`);
-            }
-        } finally {
-            await this.rpc.stopImpersonatingAccount({ address: ERC20_FUNDER_ADDRESS });
-        }
+
+        return this.writeContractAs(ERC20_FUNDER_ADDRESS, {
+            address: token,
+            abi: erc20Abi,
+            functionName: 'transfer',
+            args: [holder, amount],
+        });
     }
 
     /**
@@ -242,5 +272,116 @@ export class AnvilFork {
         }
 
         throw new Error(`Could not find the balance slot of token ${token}`);
+    }
+
+    // Acting as other accounts
+
+    /**
+     * Sends a transaction from any address without its key, e.g. an incoming transfer to the
+     * account under test or a protocol action. An account with no balance gets gas money first.
+     * With automine on, resolves once the transaction is mined and fails if it reverted; with
+     * automine off, resolves as soon as it is in the mempool.
+     */
+    @step()
+    async sendTransactionAs(from: Address, { to, value, data }: SendTransactionAsParams) {
+        if ((await this.getBalance(from)) === 0n) {
+            await this.setBalance(from, GAS_TOP_UP);
+        }
+
+        await this.rpc.impersonateAccount({ address: from });
+        try {
+            const hash = await this.rpc.sendTransaction({
+                account: from,
+                chain: null,
+                to,
+                value,
+                data,
+            });
+            if (this.automine) {
+                const receipt = await this.rpc.waitForTransactionReceipt({ hash });
+                if (receipt.status !== 'success') {
+                    throw new Error(`Transaction ${hash} from ${from} to ${to} reverted`);
+                }
+            }
+
+            return hash;
+        } finally {
+            await this.rpc.stopImpersonatingAccount({ address: from });
+        }
+    }
+
+    @step()
+    sendNativeAs(from: Address, to: Address, value: bigint) {
+        return this.sendTransactionAs(from, { to, value });
+    }
+
+    // No @step: it would print the whole ABI; the step comes from sendTransactionAs.
+    writeContractAs<
+        const TAbi extends Abi | readonly unknown[],
+        TFunctionName extends ContractFunctionName<TAbi>,
+    >(
+        from: Address,
+        {
+            address,
+            value,
+            ...call
+        }: EncodeFunctionDataParameters<TAbi, TFunctionName> & { address: Address; value?: bigint },
+    ) {
+        return this.sendTransactionAs(from, {
+            to: address,
+            value,
+            data: encodeFunctionData(call as EncodeFunctionDataParameters),
+        });
+    }
+
+    // Mining and time
+
+    /** With automine off, transactions Suite broadcasts stay pending until `mine()`. */
+    @step()
+    async setAutomine(enabled: boolean) {
+        await this.rpc.setAutomine(enabled);
+        this.automine = enabled;
+    }
+
+    @step()
+    async mine(blocks = 1) {
+        await this.rpc.mine({ blocks });
+    }
+
+    async getPendingTransactionHashes(): Promise<Hash[]> {
+        const { pending } = await this.rpc.getTxpoolContent();
+
+        return Object.values(pending).flatMap(byNonce =>
+            Object.values(byNonce).map(transaction => transaction.hash),
+        );
+    }
+
+    /** Removes a pending transaction from the mempool, as if the network never picked it up. */
+    @step()
+    async dropTransaction(hash: Hash) {
+        await this.rpc.dropTransaction({ hash });
+    }
+
+    /** Moves chain time forward and mines a block, so the next block carries the new time. */
+    @step()
+    async increaseTime(seconds: number) {
+        await this.rpc.increaseTime({ seconds });
+        await this.mine();
+    }
+
+    @step()
+    async setNextBlockBaseFee(baseFeePerGas: bigint) {
+        await this.rpc.setNextBlockBaseFeePerGas({ baseFeePerGas });
+    }
+
+    // Snapshots
+
+    snapshot() {
+        return this.rpc.snapshot();
+    }
+
+    @step()
+    async revert(id: Hex) {
+        await this.rpc.revert({ id });
     }
 }
