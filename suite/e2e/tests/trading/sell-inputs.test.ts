@@ -1,7 +1,7 @@
 import type { SellFiatTradeQuoteRequest } from 'invity-api';
 
-import { messages } from '@suite/intl';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { messages } from '@suite-lego/intl';
 import { TestStream } from '@trezor/e2e-utils';
 import { BigNumber, localizeNumber } from '@trezor/utils';
 

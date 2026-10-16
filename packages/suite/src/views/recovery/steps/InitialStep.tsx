@@ -1,7 +1,7 @@
 import { useDevice } from '@suite/device';
 import { LearnMoreButton } from '@suite/external-links';
-import { Translation, type TranslationKey } from '@suite/intl';
 import { getCheckBackupUrl } from '@suite-common/suite-utils';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { Card, Paragraph, StepList } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/device-utils';
 

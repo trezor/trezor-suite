@@ -1,5 +1,5 @@
-import { Translation, type TranslationId } from '@suite/intl';
 import { type YieldFlowCompleteValue } from '@suite-common/wallet-core';
+import { Translation, type TranslationId } from '@suite-lego/intl';
 import { Column, Icon, Row, Text } from '@trezor/components';
 import { ArrowDownIcon, ArrowRightIcon } from '@trezor/icons';
 

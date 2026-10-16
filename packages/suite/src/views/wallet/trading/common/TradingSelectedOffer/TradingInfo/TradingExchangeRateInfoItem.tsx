@@ -1,4 +1,4 @@
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { InfoItem, Text, Tooltip } from '@trezor/components';
 
 type TradingExchangeRateInfoItemProps = {

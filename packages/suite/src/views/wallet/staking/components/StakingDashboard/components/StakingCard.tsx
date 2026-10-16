@@ -1,5 +1,4 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useSolanaRewardsTotal } from '@suite-common/earn-staking-api/src/staking';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
@@ -15,6 +14,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { isPending } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import {
     Badge,
     Button,

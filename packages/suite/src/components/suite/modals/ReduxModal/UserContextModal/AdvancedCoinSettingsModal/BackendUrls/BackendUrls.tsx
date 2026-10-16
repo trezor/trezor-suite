@@ -1,6 +1,6 @@
-import { Translation } from '@suite/intl';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBlockchainUrlBySymbol } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Button, Column, DotIndicator, Input, List, Row, Text } from '@trezor/components';
 import { PlusIcon, TrashIcon } from '@trezor/icons';
 

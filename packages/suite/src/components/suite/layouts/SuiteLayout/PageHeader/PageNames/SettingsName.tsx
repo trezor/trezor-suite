@@ -1,5 +1,5 @@
 import { useDebugModeActivator } from '@suite/debug';
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 
 import { BasicName } from './BasicName';
 

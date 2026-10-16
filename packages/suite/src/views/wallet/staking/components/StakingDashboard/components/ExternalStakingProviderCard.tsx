@@ -1,6 +1,6 @@
-import { Translation } from '@suite/intl';
 import { type NetworkSymbol, getDisplaySymbol } from '@suite-common/wallet-config';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Banner } from '@trezor/components';
 import { PuzzlePieceIcon } from '@trezor/icons';
 import { BigNumber } from '@trezor/utils';

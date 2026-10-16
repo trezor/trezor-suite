@@ -1,10 +1,10 @@
-import { type TranslationKey } from '@suite/intl';
 import {
     type TradingType,
     selectTradingProviderCompanyName,
     selectTradingSendAccount,
 } from '@suite-common/trading';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { type TranslationKey } from '@suite-lego/intl';
 import { type IconComponent } from '@trezor/components';
 import { ArrowSquareOutIcon } from '@trezor/icons';
 

@@ -4,8 +4,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectIsManualPairingRequired, selectIsUnpairingDevice } from '@suite/bluetooth';
-import { Translation } from '@suite/intl';
 import { selectAdapterStatus, selectIsDeviceOsUnpairingRequired } from '@suite-common/bluetooth';
+import { Translation } from '@suite-lego/intl';
 import {
     Box,
     Button,

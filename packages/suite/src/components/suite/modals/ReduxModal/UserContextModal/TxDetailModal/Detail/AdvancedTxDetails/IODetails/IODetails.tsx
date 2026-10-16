@@ -1,6 +1,6 @@
-import { Translation } from '@suite/intl';
 import { selectAccountNetworkType, selectIsPhishingTransaction } from '@suite-common/wallet-core';
 import { type WalletAccountTransaction, createAccountKey } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Column, Divider } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';

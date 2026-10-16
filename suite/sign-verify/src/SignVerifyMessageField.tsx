@@ -1,6 +1,6 @@
 import { type UseFormRegisterReturn } from 'react-hook-form';
 
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { MAX_LENGTH_MESSAGE } from '@suite-common/sign-verify';
 import { Box, Switch, Textarea } from '@trezor/components';
 

@@ -1,6 +1,6 @@
-import { Translation } from '@suite/intl';
 import { type AssetFiatBalance } from '@suite-common/assets';
 import { type RatesByKey } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Table } from '@trezor/components';
 

@@ -1,10 +1,10 @@
 import { useState } from 'react';
 
 import { LearnMoreButton } from '@suite/external-links';
-import { Translation, type TranslationKey } from '@suite/intl';
 import { getPassphraseMaxLength, selectDeviceModel } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { selectDiscoveryByDevicePath } from '@suite-common/wallet-core';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { Card, Collapsible, Column, H3, H4, Icon, Paragraph, Row, Text } from '@trezor/components';
 import { HashIcon, LightbulbIcon, PasswordIcon, WarningIcon } from '@trezor/icons';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';

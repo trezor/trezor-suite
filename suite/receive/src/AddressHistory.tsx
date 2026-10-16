@@ -5,7 +5,6 @@ import {
     type SelectAddressLabelsForAccountState,
     selectAddressLabelsForAccount,
 } from '@suite/address';
-import { Translation } from '@suite/intl';
 import {
     type ReceiveRootState,
     selectCurrentFreshAddress,
@@ -18,6 +17,7 @@ import {
     selectPendingAccountAddresses,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Box, Card, Divider, Text } from '@trezor/components';
 
 import { AddressHistoryRow } from './AddressHistoryRow';

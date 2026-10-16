@@ -12,7 +12,7 @@
         },
         { "path": "../analytics" },
         { "path": "../external-links" },
-        { "path": "../intl" },
+        { "path": "../../suite-lego/intl" },
         { "path": "../nfc" },
         { "path": "../router" },
         { "path": "../settings" },

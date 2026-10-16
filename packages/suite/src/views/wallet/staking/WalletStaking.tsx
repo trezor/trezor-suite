@@ -1,6 +1,6 @@
 import { selectFullSelectedAccount } from '@suite/account';
-import { Translation } from '@suite/intl';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { WarningIcon } from '@trezor/icons';
 
 import { AccountExceptionLayout, WalletLayout } from 'src/components/wallet';

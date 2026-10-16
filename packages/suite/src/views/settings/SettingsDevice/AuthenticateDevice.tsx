@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { LearnMoreButton } from '@suite/external-links';
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { SectionItem } from '@trezor/product-components';
 import { HELP_CENTER_DEVICE_AUTHENTICATION } from '@trezor/urls';
 

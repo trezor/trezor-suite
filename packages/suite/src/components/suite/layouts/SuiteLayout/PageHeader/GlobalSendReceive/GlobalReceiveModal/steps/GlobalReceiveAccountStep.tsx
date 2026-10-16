@@ -1,6 +1,6 @@
-import { Translation } from '@suite/intl';
 import { type TradingAssetOption } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { CardList, Column, Text } from '@trezor/components';
 
 import { AssetsModal } from 'src/components/suite/asset-picker/components';

@@ -1,5 +1,5 @@
-import { Translation } from '@suite/intl';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
+import { Translation } from '@suite-lego/intl';
 import { Modal } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';

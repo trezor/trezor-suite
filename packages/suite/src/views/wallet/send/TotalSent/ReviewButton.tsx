@@ -3,9 +3,9 @@ import { useWatch } from 'react-hook-form';
 import styled from 'styled-components';
 
 import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
-import { Translation } from '@suite/intl';
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { isLowAnonymityWarning } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import {
     Banner,
     Button,

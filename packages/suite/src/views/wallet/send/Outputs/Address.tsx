@@ -3,7 +3,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectIsDebugModeActive } from '@suite/debug';
 import { useDevice } from '@suite/device';
-import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
 import { selectIsMetadataEnabled } from '@suite/metadata';
 import { openDeferredModal } from '@suite/modal';
@@ -36,6 +35,7 @@ import {
     convertAmountSubunitsToUnits,
     isProgramDerivedAccount,
 } from '@suite-common/wallet-utils';
+import { Translation, type TranslationKey, useTranslation } from '@suite-lego/intl';
 import { Icon, IconButton, Input, Link, Row, Text } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';

@@ -4,9 +4,9 @@ import {
     type ConfirmKey,
     backupDeviceThunk,
 } from '@suite/backup';
-import { Translation } from '@suite/intl';
 import { selectIsDeviceLocked } from '@suite/locks';
 import { selectSelectedDevice } from '@suite-common/device';
+import { Translation } from '@suite-lego/intl';
 import { Badge, Column, Modal, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

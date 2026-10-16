@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 
 import styled from 'styled-components';
 
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Button, Modal } from '@trezor/components';
 import { resolveStaticPath } from '@trezor/env-utils';
 import { XIcon } from '@trezor/icons';

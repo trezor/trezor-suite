@@ -3,7 +3,7 @@ import { type JSX } from 'react';
 import styled, { css } from 'styled-components';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { H3, IconButton, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { ArrowLeftIcon, XIcon } from '@trezor/icons';

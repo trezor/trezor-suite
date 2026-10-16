@@ -1,4 +1,3 @@
-import { Translation } from '@suite/intl';
 import {
     EarnFlow,
     type EarnModalAction,
@@ -7,6 +6,7 @@ import {
 } from '@suite-common/suite-types/src/staking';
 import { type Account } from '@suite-common/wallet-types';
 import { isStakingNetworkType } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Divider } from '@trezor/components';
 
 import { EarnInANutshellModalLayout } from './components/EarnInANutshellModalLayout';

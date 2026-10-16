@@ -1,6 +1,6 @@
-import { messages } from '@suite/intl';
 import { cryptoIdToNetworkSymbol } from '@suite-common/trading';
 import { type NetworkSymbol, asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { messages } from '@suite-lego/intl';
 import { TestStream } from '@trezor/e2e-utils';
 import { localizeNumber } from '@trezor/utils';
 

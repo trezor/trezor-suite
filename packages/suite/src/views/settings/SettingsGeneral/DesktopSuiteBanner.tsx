@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useExternalLink } from '@suite/external-links';
 import { setFlag } from '@suite/flags';
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Box, Button, H2, Icon, IconButton, Image, Paragraph, Row } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { useServices } from '@trezor/dependency-injection';

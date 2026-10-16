@@ -6,7 +6,6 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { isCoinjoinSupportedSymbol } from '@suite/coinjoin';
 import { useDevice } from '@suite/device';
 import { selectFlags } from '@suite/flags';
-import { Translation } from '@suite/intl';
 import { ContextMessage } from '@suite/message-system';
 import { openModal } from '@suite/modal';
 import { selectIsTestnetNetworksEnabled } from '@suite/settings';
@@ -19,6 +18,7 @@ import {
     selectShowRediscoverButton,
     startOrRestartDiscoveryThunk,
 } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Box, Button, Column, Switch, Text, Tooltip, motionEasing } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';

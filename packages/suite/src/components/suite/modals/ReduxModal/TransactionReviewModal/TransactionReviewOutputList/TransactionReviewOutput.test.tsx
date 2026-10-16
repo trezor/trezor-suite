@@ -2,7 +2,7 @@ import '@suite-common/test-utils/globalOverrides';
 
 import { screen, within } from '@testing-library/react';
 
-import { messages } from '@suite/intl';
+import { messages } from '@suite-lego/intl';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';

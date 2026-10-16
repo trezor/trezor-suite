@@ -2,9 +2,9 @@ import { type ReactNode } from 'react';
 
 import { selectBackup, selectBackupStatus } from '@suite/backup';
 import { TrezorLink } from '@suite/external-links';
-import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
+import { Translation } from '@suite-lego/intl';
 import { Column, Image, Modal, Text } from '@trezor/components';
 import { CheckIcon, WarningIcon } from '@trezor/icons';
 import { HELP_CENTER_RECOVERY_ISSUES_URL } from '@trezor/urls';

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Button, H2, Image, Paragraph } from '@trezor/components';
 
 const Wrapper = styled.div`

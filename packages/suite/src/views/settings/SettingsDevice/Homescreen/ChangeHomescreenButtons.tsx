@@ -1,6 +1,6 @@
 import { useDevice } from '@suite/device';
-import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { Translation } from '@suite-lego/intl';
 import { Button, ButtonGroup, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { type DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-utils';

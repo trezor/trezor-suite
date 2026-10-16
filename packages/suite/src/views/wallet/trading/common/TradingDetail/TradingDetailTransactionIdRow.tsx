@@ -1,5 +1,5 @@
-import { Translation } from '@suite/intl';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { InfoItem } from '@trezor/components';
 
 import { type Account } from 'src/types/wallet';

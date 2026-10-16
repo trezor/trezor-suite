@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
 
 import { selectAddressLabelsForAccount } from '@suite/address';
-import { Translation, useTranslation } from '@suite/intl';
 import { normalizeForSearch } from '@suite-common/suite-utils';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import { type Address } from '@trezor/blockchain-link-types';
 import { Column, Modal } from '@trezor/components';
 import { SearchAsset } from '@trezor/product-components';

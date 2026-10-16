@@ -1,4 +1,4 @@
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Column, Row, TextButton } from '@trezor/components';
 
 import { useFeesContext } from '../../context/FeesContext';

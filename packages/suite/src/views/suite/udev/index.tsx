@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
 import { useExternalLink } from '@suite/external-links';
-import { Translation } from '@suite/intl';
 import { getOsFamily, getUserAgent } from '@suite-common/suite-utils';
+import { Translation } from '@suite-lego/intl';
 import { Column, Modal, Paragraph, Select, Spinner } from '@trezor/components';
 import { DATA_URL, HELP_CENTER_UDEV_URL } from '@trezor/urls';
 

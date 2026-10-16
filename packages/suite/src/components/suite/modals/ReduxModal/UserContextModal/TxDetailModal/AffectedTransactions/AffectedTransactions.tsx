@@ -1,5 +1,5 @@
-import { Translation } from '@suite/intl';
 import { type ChainedTransactions } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Card, Column, Row, Table, Text, TextButton } from '@trezor/components';
 
 import { AffectedTransactionItem } from './AffectedTransactionItem';

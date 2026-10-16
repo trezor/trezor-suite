@@ -1,7 +1,6 @@
 import type { ExchangeTrade } from 'invity-api';
 
 import { useDevice } from '@suite/device';
-import { type TranslationKey, useTranslation } from '@suite/intl';
 import { selectHasExperimentalFeature } from '@suite/settings';
 import { Feature, selectIsFeatureEnabled } from '@suite-common/message-system';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -16,6 +15,7 @@ import {
     selectTradingIsSlip24Allowed,
 } from '@suite-common/trading';
 import { selectAccountByKey } from '@suite-common/wallet-core';
+import { type TranslationKey, useTranslation } from '@suite-lego/intl';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 

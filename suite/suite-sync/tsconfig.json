@@ -37,7 +37,7 @@
         { "path": "../analytics" },
         { "path": "../debug" },
         { "path": "../firmware-upgrade" },
-        { "path": "../intl" },
+        { "path": "../../suite-lego/intl" },
         { "path": "../router" },
         { "path": "../tor" },
         { "path": "../../packages/components" },

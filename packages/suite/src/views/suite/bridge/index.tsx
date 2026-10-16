@@ -1,5 +1,5 @@
-import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
+import { Translation } from '@suite-lego/intl';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { AppWindowIcon, CaretLeftIcon } from '@trezor/icons';

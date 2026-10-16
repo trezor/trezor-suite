@@ -2,8 +2,8 @@ import { useState } from 'react';
 
 import { openSystemSettingsThunk, selectIsUnpairingDevice } from '@suite/bluetooth';
 import { toggleConnectionModal } from '@suite/device';
-import { Translation } from '@suite/intl';
 import { bluetoothActions } from '@suite-common/bluetooth';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Column, H3, Modal, Paragraph, Spinner } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

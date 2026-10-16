@@ -2,7 +2,6 @@ import { type ReactNode } from 'react';
 
 import { Address } from '@suite/address';
 import { useExternalLink } from '@suite/external-links';
-import { Translation } from '@suite/intl';
 import {
     type NetworkSymbol,
     type NetworkSymbolExtended,
@@ -11,6 +10,7 @@ import {
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
 import { selectExplorer } from '@suite-common/wallet-core';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { type AnonymitySet } from '@trezor/blockchain-link-types';
 import { Column, Icon, Link, Row, Text, Tooltip } from '@trezor/components';
 import { ChangeIcon, WalletIcon } from '@trezor/icons';

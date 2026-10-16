@@ -1,7 +1,7 @@
-import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { type YieldFlowCompleteRewardItem } from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount, toTokenSymbol } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Column, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 

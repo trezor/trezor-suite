@@ -1,6 +1,5 @@
 import { type UseControllerProps } from 'react-hook-form';
 
-import { type TranslationFunction } from '@suite/intl';
 import { type Formatter } from '@suite-common/formatters';
 import { type Account } from '@suite-common/wallet-types';
 import {
@@ -8,6 +7,7 @@ import {
     getDecimalsForBaseCurrency,
     getNetworkReserve,
 } from '@suite-common/wallet-utils';
+import { type TranslationFunction } from '@suite-lego/intl';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 

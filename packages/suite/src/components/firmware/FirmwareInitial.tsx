@@ -4,8 +4,8 @@ import {
     FirmwareWipeWarning,
     useFirmwareDesktopUpdate,
 } from '@suite/firmware-upgrade';
-import { Translation } from '@suite/intl';
 import { getFwUpdateVersion } from '@suite-common/suite-utils';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Card, Column } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';

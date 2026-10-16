@@ -1,4 +1,3 @@
-import { type TranslationKey } from '@suite/intl';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import {
     type NotificationEntry,
@@ -6,6 +5,7 @@ import {
     createNotificationsReducer,
     notificationsActions,
 } from '@suite-common/toast-notifications';
+import { type TranslationKey } from '@suite-lego/intl';
 
 import { PROTOCOL } from 'src/actions/suite/constants';
 import protocolReducer, { type ProtocolState } from 'src/reducers/suite/protocolReducer';

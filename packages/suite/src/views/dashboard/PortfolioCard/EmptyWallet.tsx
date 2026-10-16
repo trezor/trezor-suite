@@ -2,10 +2,10 @@ import styled from 'styled-components';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectIsOnboardingFeedbackBannerShown, setFlag } from '@suite/flags';
-import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Box, Button, Column, H3, Illustration, Paragraph, Row } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { ArrowDownIcon, CurrencyCircleDollarIcon } from '@trezor/icons';

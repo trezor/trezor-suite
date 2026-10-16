@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 
-import { Translation } from '@suite/intl';
 import { selectModal, selectModalRequestId } from '@suite/modal';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { selectDeviceButtonRequests, selectSelectedDevice } from '@suite-common/device';
+import { Translation } from '@suite-lego/intl';
 import { Button, Column } from '@trezor/components';
 import TrezorConnect, { UI_RESPONSE } from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';

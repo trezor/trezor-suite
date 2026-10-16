@@ -1,9 +1,9 @@
 import { useSelector } from 'react-redux';
 
-import { Translation, useTranslation } from '@suite/intl';
 import { type DeviceRootState, selectDeviceByStaticSessionId } from '@suite-common/device';
 import { injectTurnOnSuiteSync } from '@suite-common/suite-sync-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import { Card, Column, Icon, List, Modal, Paragraph } from '@trezor/components';
 import { type StaticSessionId } from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';

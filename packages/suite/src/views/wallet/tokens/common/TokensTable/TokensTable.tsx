@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 
-import { Translation } from '@suite/intl';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { type TokenInfo, type TokenManagementAction } from '@suite-common/token-definitions';
 import { tradingThunks } from '@suite-common/trading';
 import { type Network } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Card, Paragraph, Table } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { type ReceiveRootState, selectTouchedAddresses } from '@suite-common/receive';
 import { type Account } from '@suite-common/wallet-types';
 import { Input } from '@trezor/components';

@@ -1,4 +1,4 @@
-import { type TranslationFunction } from '@suite/intl';
+import { type TranslationFunction } from '@suite-lego/intl';
 import { type ToastAction, type ToastIntent } from '@trezor/components';
 
 import { type ToastNotificationVariant } from 'src/types/suite';

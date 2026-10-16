@@ -1,4 +1,4 @@
-import { Translation, type TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { Card, Column, Modal, Row, Text } from '@trezor/components';
 
 const STEPS: TranslationKey[] = [

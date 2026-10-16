@@ -5,7 +5,7 @@
     "references": [
         { "path": "../../suite-common/feedback" },
         { "path": "../experimental" },
-        { "path": "../intl" },
+        { "path": "../../suite-lego/intl" },
         { "path": "../../packages/components" },
         {
             "path": "../../packages/dependency-injection"

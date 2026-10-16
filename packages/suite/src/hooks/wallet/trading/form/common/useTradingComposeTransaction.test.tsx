@@ -27,8 +27,8 @@ const BTC_PLACEHOLDER = 'btc-placeholder-address';
 const SOL_PLACEHOLDER = 'sol-placeholder-address';
 const EXTERNAL_ADDRESS = 'external-address-set-meanwhile';
 
-jest.mock('@suite/intl', () => ({
-    ...jest.requireActual('@suite/intl'),
+jest.mock('@suite-lego/intl', () => ({
+    ...jest.requireActual('@suite-lego/intl'),
     useTranslation: () => ({ translationString: (id: string) => id }),
 }));
 

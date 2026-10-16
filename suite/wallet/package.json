@@ -14,7 +14,7 @@
         "@suite-common/message-system": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
-        "@suite/intl": "workspace:*",
+        "@suite-lego/intl": "workspace:*",
         "@suite/metadata": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",

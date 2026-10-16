@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
+import { Translation } from '@suite-lego/intl';
 import { type StaticSessionId } from '@trezor/connect';
 import { SectionItem } from '@trezor/product-components';
 

@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 
-import { useTranslation } from '@suite/intl';
 import { type Account } from '@suite-common/wallet-types';
+import { useTranslation } from '@suite-lego/intl';
 import { type Address as AddressType } from '@trezor/blockchain-link-types';
 import { Column, Modal, Text } from '@trezor/components';
 import { SearchAsset } from '@trezor/product-components';

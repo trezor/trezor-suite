@@ -1,7 +1,7 @@
-import { Translation } from '@suite/intl';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectAccountIsStakingActive, selectBaseCurrency } from '@suite-common/wallet-core';
 import { isTestnet } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Column, Icon, Paragraph, Row, Skeleton, Text } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';

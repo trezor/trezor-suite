@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 
-import { Translation } from '@suite/intl';
 import type { YieldPendingTransactionState } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Button, Column, Row } from '@trezor/components';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';

@@ -2,9 +2,9 @@ import { useState } from 'react';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { LearnMoreButton } from '@suite/external-links';
-import { Translation } from '@suite/intl';
 import { isAdditionalShamirBackupInProgress } from '@suite-common/backup';
 import { selectSelectedDevice } from '@suite-common/device';
+import { Translation } from '@suite-lego/intl';
 import { Modal, type ModalProps } from '@trezor/components';
 import TrezorConnect, { PROTO } from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';

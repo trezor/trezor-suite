@@ -3,7 +3,6 @@ import { IntlMessageFormat } from 'intl-messageformat';
 import { diff } from 'jest-diff';
 import { escapeRegExp, isEqualWith, isRegExp } from 'lodash';
 
-import { type TranslationKey, messages } from '@suite/intl';
 import { toChecksumAddress } from '@suite-common/address';
 import {
     createAddressValidator,
@@ -11,6 +10,7 @@ import {
     createNetworkModulesCompositionRoot,
 } from '@suite-common/networks';
 import { type Account } from '@suite-common/wallet-types';
+import { type TranslationKey, messages } from '@suite-lego/intl';
 import { mockGetTrezorConnect } from '@trezor/network-module-suite-common-types/mocks';
 import { Model } from '@trezor/trezor-user-env-link';
 

@@ -5,7 +5,6 @@ import {
     type SellTradeStatus,
 } from 'invity-api';
 
-import { type TranslationKey } from '@suite/intl';
 import {
     type TradingTradeType,
     type TradingTransaction,
@@ -13,6 +12,7 @@ import {
     getTradeOperationData,
     sellUtils,
 } from '@suite-common/trading';
+import { type TranslationKey } from '@suite-lego/intl';
 import { type IconCircleIntent, type IconComponent } from '@trezor/components';
 import { CheckIcon, SpinnerGapIcon, WarningIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';

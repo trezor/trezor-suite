@@ -1,7 +1,7 @@
 import { Address } from '@suite/address';
-import type { TranslationKey } from '@suite/intl';
-import { Translation } from '@suite/intl';
 import type { YieldPendingTransactionState } from '@suite-common/wallet-core';
+import type { TranslationKey } from '@suite-lego/intl';
+import { Translation } from '@suite-lego/intl';
 import {
     PENDING_TRANSACTION_TIME_ESTIMATE_SECONDS,
     PendingTransactionInfo,

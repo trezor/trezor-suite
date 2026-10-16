@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
-import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import {
     TRADING_FORM_OUTPUT_AMOUNT,
@@ -17,6 +16,7 @@ import {
 } from '@suite-common/trading';
 import { useFetchFees } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Box, Column, Row, Skeleton, Text, Tooltip } from '@trezor/components';
 
 import { useIsFeeRefetchDisabled } from 'src/components/wallet/Fees/CollapsibleFees/hooks/useIsFeeRefetchDisabled';

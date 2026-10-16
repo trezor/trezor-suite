@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 
-import { Translation, type TranslationKey } from '@suite/intl';
 import {
     type RewardDtoV2,
     type TokenDtoV2,
@@ -8,6 +7,7 @@ import {
 } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { getApyPercent } from '@suite-common/wallet-utils';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { Column, Divider, Icon, Row, Text } from '@trezor/components';
 import { ChartLineIcon } from '@trezor/icons';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';

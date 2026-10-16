@@ -2,7 +2,6 @@ import { useRef } from 'react';
 import { useSelector } from 'react-redux';
 
 import { injectDesktopAnalytics } from '@suite/analytics';
-import { Translation } from '@suite/intl';
 import {
     type ReceiveEntryInteractionAction,
     events as sharedEvents,
@@ -11,6 +10,7 @@ import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { type TradeableAssetBalances, type TradingAssetOption } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Column, Link, SubTabs } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

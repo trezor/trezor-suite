@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
-import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { resolveStellarContractId } from '@suite-common/wallet-utils';
+import { Translation, type TranslationKey, useTranslation } from '@suite-lego/intl';
 import { Button, Column, Input, Modal, Row, Text } from '@trezor/components';
 import stellar from '@trezor/network-stellar/runtime';
 

@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
+import { Translation } from '@suite-lego/intl';
 import { Switch, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { SectionItem } from '@trezor/product-components';

@@ -1,5 +1,5 @@
-import { Translation } from '@suite/intl';
 import { type TradingProviderInfo, selectTradingProviderMetadata } from '@suite-common/trading';
+import { Translation } from '@suite-lego/intl';
 import { Column, Link, Text } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';

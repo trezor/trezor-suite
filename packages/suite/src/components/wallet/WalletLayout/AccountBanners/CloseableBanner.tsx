@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Banner, type BannerProps, Column, type Margin, Text } from '@trezor/components';
 import { ShareNetworkIcon } from '@trezor/icons';
 

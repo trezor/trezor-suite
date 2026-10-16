@@ -23,7 +23,7 @@ const networksPackagePattern = {
 // round. Of the workspace scopes only `@trezor/*` is below them, so it is the only one they may
 // depend on. Anything an app owns reaches a network module through dependency injection instead.
 const networksAppScopePattern = {
-    group: ['@suite/**', '@suite-cli/**', '@suite-common/**', '@suite-native/**'],
+    group: ['@suite/**', '@suite-cli/**', '@suite-common/**', '@suite-lego/**', '@suite-native/**'],
     message:
         'Network packages may only depend on @trezor/* workspace packages. Take anything an app owns as an injected dependency instead.',
 };
@@ -186,6 +186,30 @@ export const typescriptConfig = [
                             regex: '^@trezor/connect(?!-common(?:/|$))',
                             message:
                                 'Network modules must receive Connect through dependency injection. Import contracts from @trezor/connect-common.',
+                        },
+                    ],
+                },
+            ],
+        },
+    },
+    {
+        files: [`${allRoots.suiteLego}/**/*.{js,mjs,cjs,ts,jsx,tsx}`],
+        rules: {
+            '@typescript-eslint/no-restricted-imports': [
+                'error',
+                {
+                    ...commonRestrictedImports,
+                    patterns: [
+                        ...commonRestrictedImports.patterns,
+                        {
+                            group: ['@suite/**', '@suite-cli/**', '@suite-native/**'],
+                            message:
+                                'Reusable Suite modules must receive application dependencies through injection.',
+                        },
+                        {
+                            regex: '^@trezor/connect(?!-common(?:/|$))',
+                            message:
+                                'Receive Connect through dependency injection and import contracts from @trezor/connect-common.',
                         },
                     ],
                 },

@@ -1,7 +1,7 @@
-import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 
 import { useStakingRate } from 'src/hooks/earn/useStakingRate';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';

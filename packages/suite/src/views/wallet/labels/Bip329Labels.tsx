@@ -2,7 +2,6 @@ import { type ReactElement } from 'react';
 
 import { useAccountLabel } from '@suite/account';
 import { LearnMoreButton } from '@suite/external-links';
-import { Translation } from '@suite/intl';
 import { selectIsMetadataEnabled } from '@suite/metadata';
 import { suiteSyncErrorHandler } from '@suite/suite-sync';
 import { shouldDisplayExportImportBip329Labels } from '@suite-common/bip329';
@@ -10,6 +9,7 @@ import { type Bip329Label, bip329LabelSchema, injectBip329 } from '@suite-common
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type Account } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import {
     Button,
     ButtonGroup,

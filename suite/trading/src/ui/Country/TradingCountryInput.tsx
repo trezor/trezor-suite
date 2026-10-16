@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
-import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { getCountryFlag } from '@suite-common/flags';
 import { type TradingCountryCode, getDefaultCountry } from '@suite-common/trading';
+import { Translation, type TranslationKey, useTranslation } from '@suite-lego/intl';
 import { Flag, GhostContainer, Icon, Row, Skeleton, Text } from '@trezor/components';
 import { CaretRightIcon } from '@trezor/icons';
 

@@ -1,4 +1,3 @@
-import { Translation } from '@suite/intl';
 import {
     selectBaseCurrency,
     selectHistoricFiatRates,
@@ -18,6 +17,7 @@ import {
     isTxFeePaid,
     roundTimestampToNearestPastHour,
 } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Table, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 

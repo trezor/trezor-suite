@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 import { useIntl } from 'react-intl';
 
-import { Translation, messages } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { ThpPairingCodeEntry } from '@suite/thp';
+import { Translation, messages } from '@suite-lego/intl';
 import { Column } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { PlugsConnectedIcon } from '@trezor/icons';

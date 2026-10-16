@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { openSystemSettingsThunk } from '@suite/bluetooth';
 import { TrezorLink } from '@suite/external-links';
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Button, Column, Modal } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { LaptopIcon, TrezorSafe7Icon } from '@trezor/icons';

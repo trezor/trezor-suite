@@ -3,12 +3,12 @@ import { memo, useCallback } from 'react';
 import { type ExchangeTrade } from 'invity-api';
 import styled from 'styled-components';
 
-import { Translation } from '@suite/intl';
 import {
     type TradingTradeType,
     selectTradingExchangeProviders,
     selectTradingProvidersByTradeType,
 } from '@suite-common/trading';
+import { Translation } from '@suite-lego/intl';
 import { CardList, Column, Skeleton, Text } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';

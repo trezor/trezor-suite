@@ -2,7 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../intl" },
+        { "path": "../../suite-lego/intl" },
         { "path": "../onboarding-components" },
         { "path": "../../packages/components" },
         { "path": "../../packages/icons" }

@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
-import { Translation } from '@suite/intl';
 import { selectIsTorLoading } from '@suite/tor';
+import { Translation } from '@suite-lego/intl';
 import { H3, Modal, Paragraph } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 import { TorBrowserIcon } from '@trezor/icons';

@@ -1,4 +1,4 @@
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { InfoItem, Text } from '@trezor/components';
 
 import { FormattedCryptoAmount } from 'src/components/suite';

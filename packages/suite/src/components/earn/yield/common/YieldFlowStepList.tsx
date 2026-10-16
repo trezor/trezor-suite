@@ -2,8 +2,8 @@ import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { Translation } from '@suite/intl';
 import { type YieldFlowStepId } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Column, IconCircle, Row, StepList, Text } from '@trezor/components';
 import { CaretLeftIcon } from '@trezor/icons';
 

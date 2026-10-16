@@ -1,4 +1,4 @@
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Grid } from '@trezor/components';
 import { RecoverySeedFilledIcon, TrezorModelOneFilledIcon } from '@trezor/icons';
 

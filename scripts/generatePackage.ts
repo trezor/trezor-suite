@@ -31,6 +31,11 @@ const scopes = {
         templatePath: 'package-template/',
         templatePackageJson: templatePackageJsonWeb,
     },
+    '@suite-lego': {
+        path: 'suite-lego/',
+        templatePath: 'package-template/',
+        templatePackageJson: templatePackageJsonWeb,
+    },
     '@trezor': {
         path: 'packages/',
         templatePath: 'package-template/',

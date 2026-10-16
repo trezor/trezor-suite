@@ -1,5 +1,5 @@
-import { Translation } from '@suite/intl';
 import { type CrossChainAssetDiff, getNetworkByBlockaidChain } from '@suite-common/tx-simulation';
+import { Translation } from '@suite-lego/intl';
 import { IconCircle, Row } from '@trezor/components';
 import { CoinsIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';

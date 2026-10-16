@@ -1,5 +1,4 @@
 import { injectDesktopAnalytics } from '@suite/analytics';
-import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useYieldOpportunity } from '@suite-common/earn-stablecoin-api';
 import {
@@ -12,6 +11,7 @@ import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type YieldFlowType } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getApyPercent, isStakingNetworkType } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Divider } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';

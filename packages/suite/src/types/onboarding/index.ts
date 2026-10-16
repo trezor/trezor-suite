@@ -1,4 +1,4 @@
-import { type TranslationKey } from '@suite/intl';
+import { type TranslationKey } from '@suite-lego/intl';
 import { type DeviceModelInternal, type FirmwareType } from '@trezor/device-utils';
 import { type FirmwareVersionString } from '@trezor/device-utils/src/types';
 

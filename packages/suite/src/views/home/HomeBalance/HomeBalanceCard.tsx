@@ -1,7 +1,7 @@
-import { Translation } from '@suite/intl';
 import { selectHomeAssetTotals } from '@suite-common/assets';
 import { useFormatters } from '@suite-common/formatters';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Card, Column, Row, Skeleton, Text } from '@trezor/components';
 import { type BigNumber } from '@trezor/utils';
 

@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { Address, copyAddressToClipboard, showCopyAddressModal } from '@suite/address';
 import { RedactNumericalValue } from '@suite/discreet-mode';
 import { selectIsCopyAddressModalShown } from '@suite/flags';
-import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import {
     DefinitionType,
@@ -20,6 +19,7 @@ import {
     getNftContractExplorerUrl,
     getNftExplorerUrl,
 } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import {
     Badge,
     Button,

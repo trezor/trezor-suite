@@ -1,12 +1,12 @@
 import { type ReactNode } from 'react';
 
-import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import {
     selectIsDeviceBackedUp,
     selectSelectedDevice,
     selectSelectedDeviceLabelOrName,
 } from '@suite-common/device';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Card, Checkbox, Column, H4, Modal, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { WarningIcon } from '@trezor/icons';

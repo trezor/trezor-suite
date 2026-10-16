@@ -1,4 +1,4 @@
-import { type TranslationFunction } from '@suite/intl';
+import { type TranslationFunction } from '@suite-lego/intl';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
 import { getFiatInputRules } from './tradingFormInputFiatCryptoRules';

@@ -1,12 +1,12 @@
 import { motion } from 'framer-motion';
 
-import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
     deviceNeedsAttention,
     getStatus,
     shouldDisplayInitialWarningIcon,
 } from '@suite-common/suite-utils';
+import { Translation } from '@suite-lego/intl';
 import { Column, Illustration, Paragraph, Text, motionEasing } from '@trezor/components';
 
 import { getMessageId } from 'src/components/suite/getMessageId';

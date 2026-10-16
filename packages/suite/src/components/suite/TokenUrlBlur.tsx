@@ -1,4 +1,4 @@
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { BlurUrls, type BlurUrlsProps } from '@trezor/components';
 import { type OptionalKey } from '@trezor/type-utils';
 

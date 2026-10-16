@@ -1,7 +1,6 @@
 import { memo, useMemo } from 'react';
 import { useFormContext } from 'react-hook-form';
 
-import { type TranslationKey, useTranslation } from '@suite/intl';
 import {
     type TRADING_FORM_CRYPTO_CURRENCY_SELECT,
     type TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT,
@@ -12,6 +11,7 @@ import {
     selectTradingLoadingAndTimestamp,
 } from '@suite-common/trading';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { type TranslationKey, useTranslation } from '@suite-lego/intl';
 import { Button } from '@trezor/components';
 import { CaretDownIcon } from '@trezor/icons';
 

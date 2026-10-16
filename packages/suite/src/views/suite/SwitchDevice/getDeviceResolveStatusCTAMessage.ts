@@ -1,5 +1,5 @@
-import { type TranslationKey } from '@suite/intl';
 import { type getStatus } from '@suite-common/suite-utils';
+import { type TranslationKey } from '@suite-lego/intl';
 
 export const getDeviceResolveStatusCTAMessage = (
     deviceStatus: ReturnType<typeof getStatus>,

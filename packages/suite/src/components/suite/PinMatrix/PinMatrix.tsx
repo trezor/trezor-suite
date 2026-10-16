@@ -1,8 +1,8 @@
 import { useCallback, useEffect } from 'react';
 
 import { useExternalLink } from '@suite/external-links';
-import { Translation } from '@suite/intl';
 import { PIN_MAX_LENGTH } from '@suite-common/device';
+import { Translation } from '@suite-lego/intl';
 import {
     Banner,
     Button,

@@ -1,4 +1,3 @@
-import { type ExtendedMessageDescriptor } from '@suite/intl';
 import {
     type NetworkSymbol,
     getDisplaySymbol,
@@ -6,6 +5,7 @@ import {
 } from '@suite-common/wallet-config';
 import { type FormState, type StakeFormState } from '@suite-common/wallet-types';
 import { getEvmTransactionPurpose } from '@suite-common/wallet-utils';
+import { type ExtendedMessageDescriptor } from '@suite-lego/intl';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { getWrappedNativeSymbol } from '@trezor/network-ethereum-suite-common';
 

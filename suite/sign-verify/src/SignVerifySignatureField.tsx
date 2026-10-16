@@ -1,6 +1,6 @@
 import { type UseFormRegisterReturn } from 'react-hook-form';
 
-import { useTranslation } from '@suite/intl';
+import { useTranslation } from '@suite-lego/intl';
 import { MAX_LENGTH_SIGNATURE } from '@suite-common/sign-verify';
 import { Input } from '@trezor/components';
 

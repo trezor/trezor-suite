@@ -1,9 +1,9 @@
 import { injectDesktopAnalytics } from '@suite/analytics';
-import { Translation } from '@suite/intl';
 import { type StakeModalFlow } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Grid, Modal } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 

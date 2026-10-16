@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { useTranslation } from '@suite/intl';
+import { useTranslation } from '@suite-lego/intl';
 
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { useLayout } from 'src/hooks/suite';

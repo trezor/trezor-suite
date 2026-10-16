@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
-import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { Translation } from '@suite-lego/intl';
 import { Box, Icon, Row, ShortcutBadge, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { PlusIcon } from '@trezor/icons';

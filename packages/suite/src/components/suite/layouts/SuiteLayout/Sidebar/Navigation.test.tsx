@@ -35,8 +35,8 @@ import { mockInitialAppState } from '../../../../../../mocks/mockInitialAppState
 
 type TranslationMockProps = { id: string };
 
-jest.mock('@suite/intl', () => ({
-    ...jest.requireActual('@suite/intl'),
+jest.mock('@suite-lego/intl', () => ({
+    ...jest.requireActual('@suite-lego/intl'),
     Translation: ({ id }: TranslationMockProps) => <span>{id}</span>,
 }));
 

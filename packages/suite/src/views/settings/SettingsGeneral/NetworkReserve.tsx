@@ -1,9 +1,9 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { LearnMoreButton } from '@suite/external-links';
-import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { getNetworksWithNativeTokenReserve } from '@suite-common/wallet-config';
 import { selectIsNetworkReserveEnabled, setNetworkReserve } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Column, Switch } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { InfoIcon } from '@trezor/icons';

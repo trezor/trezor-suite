@@ -1,6 +1,6 @@
-import { Translation } from '@suite/intl';
 import { type AccountType, type NetworkType } from '@suite-common/wallet-config';
 import { getAccountTypeName } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Badge, type BadgeSize } from '@trezor/components';
 import type { Bip43Path } from '@trezor/crypto-utils';
 

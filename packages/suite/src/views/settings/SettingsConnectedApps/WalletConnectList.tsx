@@ -1,10 +1,10 @@
-import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import {
     getSessionNetworks,
     selectSessions,
     walletConnectDisconnectThunk,
 } from '@suite-common/walletconnect';
+import { Translation } from '@suite-lego/intl';
 import { Badge, Card, Column, Dropdown, H3, Row, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import {

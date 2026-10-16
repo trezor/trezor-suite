@@ -5,8 +5,8 @@ import {
     type AuthenticityChecksRootState,
     selectIsFirmwareAuthenticityCheckEnabledAndHardFailed,
 } from '@suite/authenticity-checks';
-import { Translation } from '@suite/intl';
 import { selectIsDeviceBackupUnfinished } from '@suite-common/device';
+import { Translation } from '@suite-lego/intl';
 import { Tooltip } from '@trezor/components';
 
 export const useReceiveDisabled = () => {

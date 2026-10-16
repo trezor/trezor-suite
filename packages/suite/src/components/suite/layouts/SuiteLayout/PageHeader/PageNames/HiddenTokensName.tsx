@@ -1,5 +1,5 @@
-import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
+import { Translation } from '@suite-lego/intl';
 import { IconButton, Row } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { CaretLeftIcon } from '@trezor/icons';

@@ -1,11 +1,11 @@
 import { type ReactNode } from 'react';
 
-import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import {
     type TradingProviderInfo,
     type TradingTradeType,
     type TradingType,
 } from '@suite-common/trading';
+import { Translation, type TranslationKey, useTranslation } from '@suite-lego/intl';
 import { Column, type StepListItemState } from '@trezor/components';
 
 import { translationKeys } from 'src/utils/wallet/trading/tradingUtils';

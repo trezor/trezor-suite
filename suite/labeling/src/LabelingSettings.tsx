@@ -5,7 +5,6 @@ import { type OptionProps } from 'react-select';
 import { injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { LearnMoreButton } from '@suite/external-links';
-import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import {
     metadataLabelingActions,
     metadataThunks,
@@ -23,6 +22,7 @@ import {
     selectSuiteSyncInteraction,
 } from '@suite-common/suite-sync';
 import { injectTurnOffSuiteSync, injectTurnOnSuiteSync } from '@suite-common/suite-sync-types';
+import { Translation, type TranslationKey, useTranslation } from '@suite-lego/intl';
 import { Banner, Box, Column, LoadingContent, SelectOption, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { InfoIcon } from '@trezor/icons';

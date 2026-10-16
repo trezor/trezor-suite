@@ -4,10 +4,10 @@ import { motion, useAnimation } from 'framer-motion';
 import styled from 'styled-components';
 
 import { AccountTypeBadge, useAccountLabel } from '@suite/account';
-import { useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { useTranslation } from '@suite-lego/intl';
 import { Column, H2, Row, Text, motionEasing } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 

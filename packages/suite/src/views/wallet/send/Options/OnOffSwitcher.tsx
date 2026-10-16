@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 
 const Wrapper = styled.div`
     display: flex;

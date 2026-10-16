@@ -1,6 +1,6 @@
 import { FirmwareProgressBar, useFirmwareDesktopUpdate } from '@suite/firmware-upgrade';
-import { Translation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
+import { Translation } from '@suite-lego/intl';
 import { Card, Column, Paragraph } from '@trezor/components';
 import { CircuitryIcon } from '@trezor/icons';
 

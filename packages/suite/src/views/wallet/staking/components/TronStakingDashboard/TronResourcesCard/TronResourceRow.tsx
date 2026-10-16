@@ -1,4 +1,4 @@
-import { Translation, type TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { Box, ProgressBar, Row, Text, TextButton, Tooltip } from '@trezor/components';
 
 interface TronResourceRowProps {

@@ -3,7 +3,6 @@ import { useCallback } from 'react';
 import { injectDesktopAnalytics } from '@suite/analytics';
 import { type DesktopBluetoothDevice } from '@suite/bluetooth';
 import { selectConnectingDevices } from '@suite/bluetooth';
-import { Translation, type TranslationKey } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import {
     type DeviceBluetoothConnectionStatusType,
@@ -11,6 +10,7 @@ import {
     selectKnownDevices,
     selectNearbyDevices,
 } from '@suite-common/bluetooth';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { Button, Row } from '@trezor/components';
 import { type BluetoothDeviceId } from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';

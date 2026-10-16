@@ -1,5 +1,4 @@
 import { TrezorLink } from '@suite/external-links';
-import { Translation, type TranslationKey } from '@suite/intl';
 import { selectRecoveryWordRequestInputType } from '@suite/modal';
 import { OnboardingCard } from '@suite/onboarding-components';
 import {
@@ -13,6 +12,7 @@ import {
 } from '@suite/recovery';
 import { selectSelectedDevice } from '@suite-common/device';
 import { isDeviceWithButtonOnlyNoTouchscreen } from '@suite-common/suite-utils';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { Badge, Banner, Column } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { DeviceModelInternal } from '@trezor/device-utils';

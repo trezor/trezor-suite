@@ -1,8 +1,8 @@
 import { useWatch } from 'react-hook-form';
 
-import { Translation } from '@suite/intl';
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Note } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 

@@ -18,6 +18,7 @@
             "suite-native/*",
             "suite-common/*",
             "suite/*",
+            "suite-lego/*",
             "scripts"
         ]
     },
@@ -43,7 +44,7 @@
         "type-check:all": "yarn nx run-many --target=type-check",
         "test:unit": "yarn nx affected --target=test:unit",
         "test:unit:suite": "yarn nx affected --target=test:unit --exclude='@suite-native/*'",
-        "test:unit:native": "yarn nx affected --target=test:unit --exclude='@trezor/*,@suite/*,@suite-common/*,@suite-native/module-trading,@suite-native/trading-*'",
+        "test:unit:native": "yarn nx affected --target=test:unit --exclude='@trezor/*,@suite/*,@suite-lego/*,@suite-common/*,@suite-native/module-trading,@suite-native/trading-*'",
         "test:unit:native:trading": "yarn nx affected --target=test:unit --exclude='*,!@suite-native/module-trading,!@suite-native/trading-*'",
         "test:unit:all": "yarn nx run-many --target=test:unit",
         "test:stylelint-rules": "node --test stylelint-local-rules/*.test.mjs",

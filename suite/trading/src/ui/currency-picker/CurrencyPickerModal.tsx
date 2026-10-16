@@ -1,5 +1,5 @@
-import { Translation, useTranslation } from '@suite/intl';
 import { getFiatCurrencyFlag } from '@suite-common/flags';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import {
     CardList,
     Column,

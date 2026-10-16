@@ -4,7 +4,7 @@ import { AnimatePresence, type MotionProps, motion } from 'framer-motion';
 import styled from 'styled-components';
 
 import { coinjoinAccountUpdateAnonymity } from '@suite/coinjoin';
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Icon, motionEasing } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { UserIcon, UsersFourIcon, UsersIcon, UsersThreeIcon } from '@trezor/icons';

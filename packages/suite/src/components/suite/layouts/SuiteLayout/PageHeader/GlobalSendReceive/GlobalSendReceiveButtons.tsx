@@ -1,6 +1,6 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { Translation } from '@suite/intl';
 import { type GlobalSendReceiveType } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { ButtonGroup, type ButtonProps } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { ArrowDownIcon, ArrowUpIcon } from '@trezor/icons';

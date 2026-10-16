@@ -1,4 +1,3 @@
-import { Translation } from '@suite/intl';
 import {
     selectTradingBuyInfo,
     selectTradingBuyReceiveAccountKey,
@@ -6,6 +5,7 @@ import {
     selectTradingProviderCompanyName,
 } from '@suite-common/trading';
 import { selectAccountByKey } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Card, Column, H2, Text } from '@trezor/components';
 import { ArrowSquareOutIcon } from '@trezor/icons';
 import { useAsyncClickHandler } from '@trezor/react-utils';
