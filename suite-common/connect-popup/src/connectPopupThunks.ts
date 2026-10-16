@@ -68,6 +68,14 @@ import {
 
 const CONNECT_POPUP_MODULE = '@common/connect-popup';
 
+// After these errors the popup stays open so that the user can reconnect or switch the device and
+// retry. The caller has not been answered yet.
+export const isDeviceReconnectError = (code: string | undefined) =>
+    code === 'Device_NotFound' ||
+    code === 'Device_Disconnected' ||
+    code === 'Device_UsedElsewhere' ||
+    code === 'Device_InvalidState';
+
 // Names only, values may hold confidential data. Deeplink payloads are arbitrary parsed JSON.
 const getCallParamNames = (payload: unknown): string[] =>
     payload && typeof payload === 'object' && !Array.isArray(payload)
@@ -278,13 +286,7 @@ export const connectPopupCallInnerThunk = createThunk<
                 dispatch(connectPopupActions.setError(serializeError(error)));
 
                 // don't return error, allow user to reconnect device
-                if (
-                    error?.code === 'Device_NotFound' ||
-                    error?.code === 'Device_Disconnected' ||
-                    error?.code === 'Device_UsedElsewhere' ||
-                    error?.code === 'Device_InvalidState'
-                )
-                    return;
+                if (isDeviceReconnectError(error?.code)) return;
             }
 
             extra.services.analytics.report({
@@ -1142,4 +1144,22 @@ export const connectPopupCancelThunk = createThunk<
         success: false,
         error: serializeError(TypedError('Method_Interrupted')),
     });
+});
+
+export type ConnectPopupFinishCallThunkState = ConnectPopupStateRootState;
+
+// Closing the popup of a call that ended with a device error answers its caller with that error.
+// Otherwise the caller never gets a response and every popup call queued after it keeps waiting.
+export const connectPopupFinishCallThunk = createThunk<
+    void,
+    void,
+    { state: ConnectPopupFinishCallThunkState }
+>(`${CONNECT_POPUP_MODULE}/finishCallThunk`, (_, { dispatch, getState }) => {
+    const activeCall = selectConnectPopupCall(getState());
+
+    if (activeCall?.state === 'call-error' && isDeviceReconnectError(activeCall.error.code)) {
+        getPopupCallDeferred().resolve({ success: false, error: activeCall.error });
+    }
+
+    dispatch(connectPopupActions.finishCall());
 });
