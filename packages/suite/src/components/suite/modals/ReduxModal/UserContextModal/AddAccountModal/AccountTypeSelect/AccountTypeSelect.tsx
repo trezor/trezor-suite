@@ -33,12 +33,19 @@ const AccountTypeSelectComponent = ({
         }) as const;
     type Option = ReturnType<typeof buildAccountTypeOption>;
 
+    // The Add account list is the only place that spells out the former name of the Privacy
+    // account type, so returning coinjoin users still recognize it.
+    const getAccountTypeNameId = (account: NetworkAccount) =>
+        account.accountType === 'coinjoin'
+            ? 'TR_ACCOUNT_TYPE_PRIVACY_ADD_ACCOUNT_NAME'
+            : getAccountTypeName({
+                  path: account.bip43Path,
+                  accountType: account.accountType,
+                  networkType,
+              });
+
     const formatLabel = (option: Option) => {
-        const accountTypeName = getAccountTypeName({
-            path: option.value.bip43Path,
-            accountType: option.value.accountType,
-            networkType,
-        });
+        const accountTypeName = getAccountTypeNameId(option.value);
 
         return (
             <Row alignItems="baseline" gap={8}>
