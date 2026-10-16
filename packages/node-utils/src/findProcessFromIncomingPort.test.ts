@@ -48,8 +48,10 @@ describe('findProcessFromIncomingPort', () => {
     });
 });
 
-describe('findProcessFromIncomingPort by port number alone', () => {
+describe('findProcessFromIncomingPort for an accepted connection', () => {
     const realPlatform = process.platform;
+    // The server side of a connection from 127.0.0.1:40000 to 127.0.0.1:21335.
+    const connection = { remoteAddress: '127.0.0.1', localAddress: '127.0.0.1', localPort: 21335 };
 
     // Answers each spawned command with the output of the first matching prefix.
     const mockCommands = (outputs: [string, string][]) =>
@@ -76,7 +78,7 @@ describe('findProcessFromIncomingPort by port number alone', () => {
         jest.restoreAllMocks();
     });
 
-    test('attributes the connection to the first socket using its port number, not to its client end', async () => {
+    test('attributes the connection to the process at its client end, not to another process using the same port number', async () => {
         setPlatform('linux');
         const lsofLine = (command: string, pid: number, name: string) =>
             `${command} ${pid} user 18u IPv4 207199 0t0 TCP ${name}`;
@@ -97,10 +99,97 @@ describe('findProcessFromIncomingPort by port number alone', () => {
             ['cat /proc/', '/usr/bin/client\0'],
         ]);
 
-        const processInfo = await findProcessFromIncomingPort(40000, true);
+        const processInfo = await findProcessFromIncomingPort(40000, true, connection);
 
-        // `other-tool` merely listens on another address of the same port number, while the
-        // client of the connection to 127.0.0.1:21335 is pid 300.
-        expect(processInfo?.pid).toBe('100');
+        expect(processInfo?.pid).toBe('300');
+    });
+
+    test('matches an IPv4-mapped IPv6 address as the plain IPv4 form lsof prints', async () => {
+        setPlatform('linux');
+        mockCommands([
+            [
+                'lsof',
+                [
+                    'COMMAND PID USER FD TYPE DEVICE SIZE/OFF NODE NAME',
+                    'client 300 user 18u IPv4 207199 0t0 TCP 127.0.0.1:40000->127.0.0.1:21335 (ESTABLISHED)',
+                ].join('\n'),
+            ],
+            ['cat /proc/', '/usr/bin/client\0'],
+        ]);
+
+        const processInfo = await findProcessFromIncomingPort(40000, true, {
+            remoteAddress: '::ffff:127.0.0.1',
+            localAddress: '::ffff:127.0.0.1',
+            localPort: 21335,
+        });
+
+        expect(processInfo?.pid).toBe('300');
+    });
+
+    test('matches a connection over IPv6 loopback', async () => {
+        setPlatform('linux');
+        mockCommands([
+            [
+                'lsof',
+                [
+                    'COMMAND PID USER FD TYPE DEVICE SIZE/OFF NODE NAME',
+                    'client 300 user 18u IPv6 207199 0t0 TCP [::1]:40000->[::1]:21335 (ESTABLISHED)',
+                ].join('\n'),
+            ],
+            ['cat /proc/', '/usr/bin/client\0'],
+        ]);
+
+        const processInfo = await findProcessFromIncomingPort(40000, true, {
+            remoteAddress: '::1',
+            localAddress: '::1',
+            localPort: 21335,
+        });
+
+        expect(processInfo?.pid).toBe('300');
+    });
+
+    test('reports no process when no socket is at the client end of the connection', async () => {
+        setPlatform('linux');
+        mockCommands([
+            [
+                'lsof',
+                [
+                    'COMMAND PID USER FD TYPE DEVICE SIZE/OFF NODE NAME',
+                    // Only Suite's own end of the connection is visible.
+                    `suite ${process.pid} user 18u IPv4 207199 0t0 TCP 127.0.0.1:21335->127.0.0.1:40000 (ESTABLISHED)`,
+                ].join('\n'),
+            ],
+        ]);
+
+        await expect(findProcessFromIncomingPort(40000, true, connection)).resolves.toBeUndefined();
+    });
+
+    test('reports no process for a socket that does not name both endpoints', async () => {
+        setPlatform('linux');
+        const spawn = mockCommands([]);
+
+        await expect(
+            findProcessFromIncomingPort(40000, true, { localAddress: '127.0.0.1' }),
+        ).resolves.toBeUndefined();
+        expect(spawn).not.toHaveBeenCalled();
+    });
+
+    test('attributes the connection to the process at its client end on Windows', async () => {
+        setPlatform('win32');
+        mockCommands([
+            [
+                'netstat',
+                [
+                    '  TCP    0.0.0.0:40000      0.0.0.0:0          LISTENING       100',
+                    '  TCP    127.0.0.1:21335    127.0.0.1:40000    ESTABLISHED     200',
+                    '  TCP    127.0.0.1:40000    127.0.0.1:21335    ESTABLISHED     300',
+                ].join('\n'),
+            ],
+            ['powershell', JSON.stringify({ FileName: 'C:\\client.exe', ProductName: 'Client' })],
+        ]);
+
+        const processInfo = await findProcessFromIncomingPort(40000, true, connection);
+
+        expect(processInfo?.pid).toBe('300');
     });
 });
