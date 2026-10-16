@@ -14,7 +14,23 @@ interface IpcRenderer {
     invoke: (channel: string, ...args: any[]) => Promise<any>;
 }
 
-const createIpcProxyApi = (ipcRenderer: IpcRenderer, validChannels: string[]): IpcProxyApi => {
+// APIs callers may rely on rejections, other channels relies on resolve `{ success: false }` shape.
+// - '*' allows rejection of every method of the channel.
+// - string[] the list of methods allowed to reject for a specific channel.
+type Rejectable = '*' | string[];
+type AllowedToReject = Record<string, Rejectable | undefined>;
+
+const isAllowedToReject = (channelName: string, method: string, all: AllowedToReject) => {
+    const allowed = all[channelName];
+
+    return allowed && (allowed === '*' || allowed.includes(method));
+};
+
+const createIpcProxyApi = (
+    ipcRenderer: IpcRenderer,
+    validChannels: string[],
+    allowedToReject: AllowedToReject = {},
+): IpcProxyApi => {
     let requestId = 0;
 
     const validateChannel = (channelName: string): true => {
@@ -40,8 +56,16 @@ const createIpcProxyApi = (ipcRenderer: IpcRenderer, validChannels: string[]): I
                 // success/failure is wrapped in object. see ipcProxyHandler
                 if (response.success) {
                     resolve(response.payload);
-                } else {
+                } else if (isAllowedToReject(channelName, method, allowedToReject)) {
                     reject(response.error);
+                } else {
+                    resolve({
+                        success: false,
+                        error: {
+                            message: response.error?.message ?? String(response.error),
+                            code: 'IPC_PROXY_ERROR',
+                        },
+                    });
                 }
             });
             ipcRenderer.send(`${channelName}/${instanceId}/request`, [responseEvent, method, args]);
@@ -83,10 +107,15 @@ const createIpcProxyApi = (ipcRenderer: IpcRenderer, validChannels: string[]): I
 
 interface IpcProxyGeneratorOptions {
     proxyName?: string; // needs to be also set in `createIpcProxy` if changed here (see ./proxy)
+    allowedToReject?: AllowedToReject;
 }
 
 export const exposeIpcProxy = (
     ipcRenderer: IpcRenderer,
     validChannels: string[] = [],
     options: IpcProxyGeneratorOptions = {},
-) => [options.proxyName || 'ipcProxy', createIpcProxyApi(ipcRenderer, validChannels)] as const;
+) =>
+    [
+        options.proxyName || 'ipcProxy',
+        createIpcProxyApi(ipcRenderer, validChannels, options.allowedToReject),
+    ] as const;

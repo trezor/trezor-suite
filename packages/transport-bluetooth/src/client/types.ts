@@ -76,9 +76,9 @@ export type DeviceConnectionStatus =
           error: string;
       };
 
-type Success<P> = P extends undefined ? { success: true } : { success: true; payload: P };
-type Failure = { success: false; error: string };
-export type IpcResponse<P = undefined> = Success<P> | Failure;
+export type IpcSuccess<P> = P extends undefined ? { success: true } : { success: true; payload: P };
+export type IpcFailure = { success: false; error: { message: string; code: string } };
+export type IpcResponse<P = undefined> = IpcSuccess<P> | IpcFailure;
 
 export interface BluetoothIpcEvents {
     'adapter-event': BluetoothAdapterState;
