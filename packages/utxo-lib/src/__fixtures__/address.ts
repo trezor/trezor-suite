@@ -197,7 +197,7 @@ export default {
             },
             {
                 address: 'tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3q0sL5k7',
-                exception: 'lowercase or uppercase',
+                exception: 'mixed-case string not allowed',
             },
             {
                 address: 'tb1pw508d6qejxtdg4y5r3zarquvzkan',
