@@ -138,6 +138,7 @@ type AccountTransactionProps = {
     account: Account;
     tokenContract?: TokenAddress;
     filter?: 'all' | 'staking' | 'yield';
+    onRefresh?: () => Promise<unknown>;
 };
 
 export const TransactionList = ({
@@ -146,6 +147,7 @@ export const TransactionList = ({
     account,
     tokenContract,
     filter = 'all',
+    onRefresh,
 }: AccountTransactionProps) => {
     const accountKey = account.key;
     const { dispatch } = useServices(injectDispatch);
@@ -267,13 +269,14 @@ export const TransactionList = ({
                         forceRefetch: true,
                     }),
                 ),
+                onRefresh?.(),
             ]);
         } catch {
             // Do nothing
         }
         // It's usually too fast so loading indicator only flashes for a moment, which is not nice
         setTimeout(() => setIsRefreshing(false), 1500);
-    }, [dispatch, accountKey, txnsPerPage]);
+    }, [dispatch, accountKey, txnsPerPage, onRefresh]);
 
     const data = useMemo((): TransactionListItem[] => {
         // groupTransactionsByDate now sorts also pending transactions, if they have blockTime set.
