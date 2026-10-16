@@ -208,6 +208,18 @@ const parseFixtures: ParseFixture[] = [
             hash: null,
         },
     },
+    {
+        description: 'absolute target with a non-special scheme and no path',
+        input: 'foo://bar',
+        expected: {
+            protocol: 'foo:',
+            hostname: 'bar',
+            pathname: '',
+            query: {},
+            search: null,
+            hash: null,
+        },
+    },
 ];
 
 type FormatFixture = {
