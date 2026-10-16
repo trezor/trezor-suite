@@ -39,9 +39,11 @@ export const convertTaprootXpub = ({ xpub, direction }: ConvertTaprootXpubParams
 export type CanonicalDescriptor = string & Branded<'CanonicalDescriptor'>;
 
 /**
- * Normalizes any descriptor to the canonical (`'`) form. Idempotent and total: descriptors
- * that are already canonical, and every non-taproot descriptor (addresses, plain xpubs), pass
- * through unchanged because {@link convertTaprootXpub} only rewrites a bracketed derivation path.
+ * Normalizes a descriptor with a single bracketed key origin to the canonical (`'`) form.
+ * Idempotent and total: already-canonical descriptors and values without a key origin (addresses,
+ * plain xpubs) pass through unchanged. So do inputs {@link convertTaprootXpub} cannot parse — an
+ * unclosed bracket, or more than one key origin as in a multisig descriptor — which makes the brand
+ * a "this went through the normalizer" marker rather than a parse guarantee.
  */
 export const toCanonicalDescriptor = (descriptor: string): CanonicalDescriptor =>
     (convertTaprootXpub({ xpub: descriptor, direction: 'h-to-apostrophe' }) ??
