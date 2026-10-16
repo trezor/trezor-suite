@@ -11,8 +11,8 @@ import {
 } from '../../../test-utils/tradingTestUtils';
 
 describe('SellFiatAmountInput', () => {
-    const renderFiatAmountInput = async (form: SellFormType) =>
-        await renderWithTradingProvider(
+    const renderFiatAmountInput = (form: SellFormType) =>
+        renderWithTradingProvider(
             <Form form={form}>
                 <SellFiatAmountInput />
             </Form>,

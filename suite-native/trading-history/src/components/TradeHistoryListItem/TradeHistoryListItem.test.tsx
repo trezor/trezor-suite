@@ -19,8 +19,8 @@ jest.mock('@suite-native/trading-atoms', () => {
 });
 
 describe('TradeHistoryListItem', () => {
-    const renderTradeHistoryListItem = async (transaction: TradingTransaction) =>
-        await renderWithTradingHistoryProvider(
+    const renderTradeHistoryListItem = (transaction: TradingTransaction) =>
+        renderWithTradingHistoryProvider(
             <TradeHistoryListItem transaction={transaction} onPress={jest.fn()} />,
             { services: { networks: mockNetworksServices() } },
         );

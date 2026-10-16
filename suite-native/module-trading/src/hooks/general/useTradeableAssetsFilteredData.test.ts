@@ -33,8 +33,8 @@ const mockAssets: TradeableAsset[] = [
 ];
 
 describe('useTradeableAssetsFilteredData', () => {
-    const renderUseTradeableAssetsFilteredData = async () =>
-        await renderHook(() => useTradeableAssetsFilteredData({ assets: mockAssets }));
+    const renderUseTradeableAssetsFilteredData = () =>
+        renderHook(() => useTradeableAssetsFilteredData({ assets: mockAssets }));
 
     it('should return all assets when no filter is applied', async () => {
         const { result } = await renderUseTradeableAssetsFilteredData();

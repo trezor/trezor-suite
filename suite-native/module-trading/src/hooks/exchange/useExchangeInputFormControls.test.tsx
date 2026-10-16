@@ -9,8 +9,8 @@ import { renderHookWithTradingProvider } from '../../test-utils/tradingTestUtils
 describe('useExchangeInputFormControls', () => {
     let form: ExchangeFormType;
 
-    const renderUseExchangeInputFormControls = async () =>
-        await renderHookWithBasicProvider(() => useExchangeInputFormControls(), {
+    const renderUseExchangeInputFormControls = () =>
+        renderHookWithBasicProvider(() => useExchangeInputFormControls(), {
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 

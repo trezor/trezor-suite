@@ -68,12 +68,12 @@ const createControlsMockValue = (overrides: Record<string, unknown> = {}) => ({
 });
 
 describe('TradingTransactionReview', () => {
-    const renderReviewOutputsContent = async (
+    const renderReviewOutputsContent = (
         props: Partial<Omit<TradingTransactionReviewProps, 'exchangeFlowType' | 'tradingType'>> & {
             exchangeFlowType?: TradingTransactionReviewProps['exchangeFlowType'];
         } = {},
     ) =>
-        await renderWithTradingProvider(
+        renderWithTradingProvider(
             <TradingTransactionReview
                 orderId="ORDER_ID"
                 accountKey={mockAccountKey({ descriptor: 'accountKey' })}

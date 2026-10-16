@@ -6,8 +6,8 @@ import { renderWithBasicProvider } from '@suite-native/test-utils';
 import { FeeLabelTranslation } from './FeeLabelTranslation';
 
 describe('FeeLabelTranslation', () => {
-    const renderFeeLabelTranslation = async (networkType: NetworkType) =>
-        await renderWithBasicProvider(
+    const renderFeeLabelTranslation = (networkType: NetworkType) =>
+        renderWithBasicProvider(
             <Text>
                 <FeeLabelTranslation networkType={networkType} />
             </Text>,

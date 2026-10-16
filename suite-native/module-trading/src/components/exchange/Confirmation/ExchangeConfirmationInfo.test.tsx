@@ -22,8 +22,8 @@ const testQuote = exchangeQuotes[0];
 describe('ExchangeConfirmationInfo', () => {
     let store: Store<State>;
 
-    const renderInfo = async (props: ExchangeConfirmationInfoCardProps) =>
-        await renderWithStoreProvider(<ExchangeConfirmationInfo {...props} />, {
+    const renderInfo = (props: ExchangeConfirmationInfoCardProps) =>
+        renderWithStoreProvider(<ExchangeConfirmationInfo {...props} />, {
             services: {
                 store,
                 networks: mockNetworksServices(),

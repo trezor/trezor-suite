@@ -49,8 +49,8 @@ jest.mock('@suite-native/app-init', () => ({
 describe('BiometricsScreen', () => {
     let store: Store<State>;
 
-    const renderBiometricsScreen = async () =>
-        await renderWithStoreProvider(
+    const renderBiometricsScreen = () =>
+        renderWithStoreProvider(
             <BiometricsScreen
                 navigation={
                     { navigate: mockNavigate } as unknown as BiometricsScreenProps['navigation']

@@ -9,10 +9,8 @@ import { TradingAccountCard } from './TradingAccountCard';
 import { renderWithTradingProvider } from '../../test-utils/tradingTestUtils';
 
 describe('TradingAccountCard', () => {
-    const renderCard = async (
-        overrides: Partial<React.ComponentProps<typeof TradingAccountCard>> = {},
-    ) =>
-        await renderWithTradingProvider(
+    const renderCard = (overrides: Partial<React.ComponentProps<typeof TradingAccountCard>> = {}) =>
+        renderWithTradingProvider(
             <TradingAccountCard
                 title="From"
                 account={eth1NormalAccount}

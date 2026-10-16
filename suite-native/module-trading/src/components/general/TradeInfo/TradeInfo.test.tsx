@@ -30,10 +30,10 @@ describe('TradeInfo', () => {
         tradingType: 'exchange' as TradingExchangeType | TradingSellType,
     };
 
-    const renderTradeInfo = async (props = {}) => {
+    const renderTradeInfo = (props = {}) => {
         const finalProps = { ...defaultProps, ...props };
 
-        return await renderWithTradingProvider(<TradeInfo {...finalProps} />);
+        return renderWithTradingProvider(<TradeInfo {...finalProps} />);
     };
 
     beforeEach(() => {

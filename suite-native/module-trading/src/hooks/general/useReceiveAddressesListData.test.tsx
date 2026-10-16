@@ -36,8 +36,8 @@ describe('useReceiveAddressesListData', () => {
         wallet: { accounts: [btc1NormalAccount] },
     };
 
-    const renderUseReceiveAddressesListData = async (searchQuery = '') =>
-        await renderHookWithTradingProvider(
+    const renderUseReceiveAddressesListData = (searchQuery = '') =>
+        renderHookWithTradingProvider(
             ({ query }) =>
                 useReceiveAddressesListData({
                     accountKey: btc1NormalAccount.key,

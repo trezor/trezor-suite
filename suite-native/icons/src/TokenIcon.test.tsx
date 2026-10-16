@@ -47,8 +47,8 @@ describe('TokenIcon', () => {
         );
     });
 
-    const renderTokenIcon = async (props: React.ComponentProps<typeof TokenIcon>) =>
-        await renderWithStoreProvider(<TokenIcon {...props} />, {
+    const renderTokenIcon = (props: React.ComponentProps<typeof TokenIcon>) =>
+        renderWithStoreProvider(<TokenIcon {...props} />, {
             preloadedState: { networks: mockNetworkMetadata },
             services: {
                 networks: {

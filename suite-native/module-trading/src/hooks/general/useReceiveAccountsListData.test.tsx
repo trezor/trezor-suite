@@ -26,11 +26,11 @@ describe('useReceiveAccountsListData', () => {
         wallet: { accounts },
     };
 
-    const renderUseReceiveAccountsListData = async (
+    const renderUseReceiveAccountsListData = (
         symbol: NetworkSymbol,
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = defaultOverrides,
     ) =>
-        await renderHookWithTradingProvider(
+        renderHookWithTradingProvider(
             ({ networkSymbol }) => useReceiveAccountsListData({ symbol: networkSymbol }),
             { overrides, initialProps: { networkSymbol: symbol } },
         );

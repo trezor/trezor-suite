@@ -8,8 +8,8 @@ import {
 } from './PaymentMethodTranslation';
 
 describe('PaymentMethodTranslation', () => {
-    const renderPaymentMethodTranslation = async (props: PaymentMethodTranslationProps) =>
-        await renderWithBasicProvider(
+    const renderPaymentMethodTranslation = (props: PaymentMethodTranslationProps) =>
+        renderWithBasicProvider(
             <Text>
                 <PaymentMethodTranslation {...props} />
             </Text>,

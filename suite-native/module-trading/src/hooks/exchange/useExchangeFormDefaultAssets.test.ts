@@ -70,8 +70,8 @@ const createAccountSection = (account: Account, cryptoIds: CryptoId[]) => ({
 describe('useExchangeFormDefaultAssets', () => {
     let store: Store<State>;
 
-    const renderExchangeFormWithDefaults = async () =>
-        await renderHookWithStoreProvider(
+    const renderExchangeFormWithDefaults = () =>
+        renderHookWithStoreProvider(
             () => {
                 const form = useExchangeForm();
                 useExchangeFormDefaultAssets(form);

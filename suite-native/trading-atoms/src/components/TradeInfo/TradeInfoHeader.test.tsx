@@ -6,8 +6,8 @@ import { renderWithBasicProvider } from '@suite-native/test-utils';
 import { TradeInfoHeader } from './TradeInfoHeader';
 
 describe('TradeInfoHeader', () => {
-    const renderTradeInfoRow = async (title: string, props = {}) =>
-        await renderWithBasicProvider(<TradeInfoHeader title={title} {...props} />);
+    const renderTradeInfoRow = (title: string, props = {}) =>
+        renderWithBasicProvider(<TradeInfoHeader title={title} {...props} />);
 
     it('should render title', async () => {
         const { getByText } = await renderTradeInfoRow('Test Title', {});

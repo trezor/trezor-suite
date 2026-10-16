@@ -8,8 +8,8 @@ import {
 import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
 
 describe('ProviderSheetSectionHeader', () => {
-    const renderProviderSheetSectionHeader = async (props: ProviderSheetSectionHeaderProps) =>
-        await renderWithTradingProvider(<ProviderSheetSectionHeader {...props} />);
+    const renderProviderSheetSectionHeader = (props: ProviderSheetSectionHeaderProps) =>
+        renderWithTradingProvider(<ProviderSheetSectionHeader {...props} />);
 
     it.each<[QuotesCategory, string]>([
         ['fixed', getTranslation('moduleTrading.providerSheet.fixed.titleOffers')],

@@ -3,8 +3,8 @@ import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 import { FiatCurrencyListItem, type FiatCurrencyListItemProps } from './FiatCurrencyListItem';
 
 describe('FiatCurrencyListItem', () => {
-    const renderFiatCurrencyListItem = async (props: Partial<FiatCurrencyListItemProps>) =>
-        await renderWithBasicProvider(
+    const renderFiatCurrencyListItem = (props: Partial<FiatCurrencyListItemProps>) =>
+        renderWithBasicProvider(
             <FiatCurrencyListItem
                 label="LABEL"
                 displayValue="DISPLAY_VALUE"

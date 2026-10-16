@@ -16,8 +16,8 @@ describe('LimitPicker', () => {
     let store: Store<State>;
     const mockOnApprovalTypeChange = jest.fn();
 
-    const renderLimitPicker = async () =>
-        await renderWithStoreProvider(
+    const renderLimitPicker = () =>
+        renderWithStoreProvider(
             <LimitPicker
                 onApprovalTypeChange={approvalType => {
                     mockOnApprovalTypeChange(approvalType);

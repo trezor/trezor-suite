@@ -4,8 +4,8 @@ import { renderWithBasicProvider } from '@suite-native/test-utils';
 import { TradingTypeDisabled, type TradingTypeDisabledProps } from './TradingTypeDisabled';
 
 describe('TradingTypeDisabled', () => {
-    const renderTradingTypeDisabled = async (props: TradingTypeDisabledProps) =>
-        await renderWithBasicProvider(<TradingTypeDisabled {...props} />);
+    const renderTradingTypeDisabled = (props: TradingTypeDisabledProps) =>
+        renderWithBasicProvider(<TradingTypeDisabled {...props} />);
 
     it.each<[TradingType, string]>([
         ['buy', 'Buy disabled'],

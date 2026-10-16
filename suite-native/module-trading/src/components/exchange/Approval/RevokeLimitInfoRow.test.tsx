@@ -11,10 +11,10 @@ import {
 } from '../../../test-utils/tradingTestUtils';
 
 describe('RevokeLimitInfoRow', () => {
-    const renderRevokeLimitInfoRow = async (
+    const renderRevokeLimitInfoRow = (
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        await renderWithTradingProvider(<RevokeLimitInfoRow />, {
+        renderWithTradingProvider(<RevokeLimitInfoRow />, {
             tradeType: 'exchange',
             overrides,
             services: { networks: mockNetworksServices() },

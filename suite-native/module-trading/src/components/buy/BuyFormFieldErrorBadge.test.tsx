@@ -29,12 +29,12 @@ describe('BuyFormFieldErrorBadge', () => {
         return result.current;
     };
 
-    const renderBuyFormFieldErrorBadge = async (
+    const renderBuyFormFieldErrorBadge = (
         props: BuyFormFieldErrorBadgeProps,
         form: BuyFormType,
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        await renderWithTradingProvider(<BuyFormFieldErrorBadge {...props} />, {
+        renderWithTradingProvider(<BuyFormFieldErrorBadge {...props} />, {
             overrides,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });

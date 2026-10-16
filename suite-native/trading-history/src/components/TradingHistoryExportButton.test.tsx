@@ -48,12 +48,12 @@ const getOverrides = (
 });
 
 describe('TradingHistoryExportButton', () => {
-    const renderExportButton = async ({
+    const renderExportButton = ({
         trades = [getBuyTrade({ status: 'SUCCESS' })],
     }: {
         trades?: TradingTestPreloadedState['wallet']['trading']['trades'];
     } = {}) =>
-        await renderWithTradingHistoryProvider(<TradingHistoryExportButton />, {
+        renderWithTradingHistoryProvider(<TradingHistoryExportButton />, {
             overrides: getOverrides(trades),
         });
 

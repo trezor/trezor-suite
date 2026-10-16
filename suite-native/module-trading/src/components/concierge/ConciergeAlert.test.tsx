@@ -74,7 +74,7 @@ const mockConciergeForm = ({
     } as unknown as ReturnType<typeof useFormContext<ConciergeAlertFormValues>>);
 };
 
-const renderConciergeAlert = async ({
+const renderConciergeAlert = ({
     tradingType = 'buy',
     values,
     errors,
@@ -85,7 +85,7 @@ const renderConciergeAlert = async ({
 } = {}) => {
     mockConciergeForm({ errors, values });
 
-    return await renderWithTradingProvider(<ConciergeAlert tradingType={tradingType} />, {
+    return renderWithTradingProvider(<ConciergeAlert tradingType={tradingType} />, {
         tradeType: tradingType,
     });
 };

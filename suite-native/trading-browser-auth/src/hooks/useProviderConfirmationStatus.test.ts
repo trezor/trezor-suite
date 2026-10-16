@@ -29,8 +29,8 @@ const FAIL_CONFIRMATION_TIMEOUT_MS = 85_000;
 describe('useProviderConfirmationStatus', () => {
     let store: Store<State>;
 
-    const renderUseProviderConfirmationStatus = async () =>
-        await renderHookWithStoreProvider(() => useProviderConfirmationStatus(), {
+    const renderUseProviderConfirmationStatus = () =>
+        renderHookWithStoreProvider(() => useProviderConfirmationStatus(), {
             services: { store },
         });
 

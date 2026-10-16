@@ -41,8 +41,8 @@ describe('useSendAccountChangeEffect', () => {
         }),
     } as const;
 
-    const renderUseSendAccountChangeEffect = async () =>
-        await renderHookWithStoreProvider(
+    const renderUseSendAccountChangeEffect = () =>
+        renderHookWithStoreProvider(
             () => {
                 useSendAccountChangeEffect(
                     setValue,

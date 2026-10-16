@@ -34,8 +34,8 @@ jest.mock('@suite-native/app-init', () => ({
 describe('useExitOnboardingFlow', () => {
     let store: Store<SettingsSliceRootState>;
 
-    const renderUseExitOnboardingFlow = async () =>
-        await renderHookWithStoreProvider(() => useExitOnboardingFlow(), { services: { store } });
+    const renderUseExitOnboardingFlow = () =>
+        renderHookWithStoreProvider(() => useExitOnboardingFlow(), { services: { store } });
 
     beforeEach(() => {
         store = createLightStore({

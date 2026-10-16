@@ -4,8 +4,7 @@ import { renderWithBasicProvider } from '@suite-native/test-utils';
 import { NoProvidersPlaceholder } from './NoProvidersPlaceholder';
 
 describe('NoProvidersPlaceholder', () => {
-    const renderNoProvidersPlaceholder = async () =>
-        await renderWithBasicProvider(<NoProvidersPlaceholder />);
+    const renderNoProvidersPlaceholder = () => renderWithBasicProvider(<NoProvidersPlaceholder />);
 
     it('should render text and icon with label', async () => {
         const { getByLabelText, getByText } = await renderNoProvidersPlaceholder();

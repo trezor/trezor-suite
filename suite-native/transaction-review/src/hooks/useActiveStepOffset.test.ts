@@ -8,8 +8,8 @@ describe('useActiveStepOffset', () => {
     const getLayoutEvent = (height: number) =>
         ({ nativeEvent: { layout: { height } } }) as LayoutChangeEvent;
 
-    const renderUseReviewOutputItemListHeights = async (initialActiveStep: number) =>
-        await renderHookWithBasicProvider(({ activeStep }) => useActiveStepOffset(activeStep), {
+    const renderUseReviewOutputItemListHeights = (initialActiveStep: number) =>
+        renderHookWithBasicProvider(({ activeStep }) => useActiveStepOffset(activeStep), {
             initialProps: { activeStep: initialActiveStep },
         });
 

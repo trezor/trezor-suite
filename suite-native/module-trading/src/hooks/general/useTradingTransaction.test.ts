@@ -158,11 +158,10 @@ describe('useTradingTransaction', () => {
         });
     };
 
-    const renderUseTradingTransaction = async ({ store }: { store: Store<State> }) =>
-        await renderHookWithTradingProvider(
-            () => useTradingTransaction({ tradeType: 'exchange' }),
-            { services: { store } },
-        );
+    const renderUseTradingTransaction = ({ store }: { store: Store<State> }) =>
+        renderHookWithTradingProvider(() => useTradingTransaction({ tradeType: 'exchange' }), {
+            services: { store },
+        });
 
     beforeEach(() => {
         jest.clearAllMocks();

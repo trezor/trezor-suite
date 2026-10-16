@@ -22,10 +22,10 @@ describe('TradingEnvironmentWarning', () => {
         }),
     } as const;
 
-    const renderTradingEnvironmentWarning = async (
+    const renderTradingEnvironmentWarning = (
         tradingEnvironment: TradingState['tradingEnvironment'],
     ) =>
-        await renderWithStoreProvider(<TradingEnvironmentWarning />, {
+        renderWithStoreProvider(<TradingEnvironmentWarning />, {
             services: {
                 store: createLightStore({
                     reducer,

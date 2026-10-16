@@ -33,12 +33,12 @@ jest.mock('@suite-common/discreet-mode', () => ({
 }));
 
 describe('AccountsListTokenItem', () => {
-    const renderAccountsListTokenItem = async ({
+    const renderAccountsListTokenItem = ({
         showFiatValue,
     }: {
         showFiatValue?: boolean;
     } = {}) =>
-        await renderWithStoreProvider(
+        renderWithStoreProvider(
             <AccountsListTokenItem
                 token={mockToken}
                 account={mockAccount}

@@ -53,11 +53,8 @@ const createAccount = (
 describe('AccountListAddressItem', () => {
     const onPressMock = jest.fn();
 
-    const renderAccountListAddressItem = async (
-        receiveAccount: ReceiveAccount,
-        isFreshAddress = false,
-    ) =>
-        await renderWithTradingProvider(
+    const renderAccountListAddressItem = (receiveAccount: ReceiveAccount, isFreshAddress = false) =>
+        renderWithTradingProvider(
             <AccountListAddressItem
                 receiveAccount={receiveAccount}
                 isFreshAddress={isFreshAddress}

@@ -34,8 +34,8 @@ const defaultMessageSystem = {
 };
 
 describe('TradingLocationOnboardingScreen', () => {
-    const renderTradingLocationScreen = async () =>
-        await renderWithStoreProvider(<TradingLocationScreen />, {
+    const renderTradingLocationScreen = () =>
+        renderWithStoreProvider(<TradingLocationScreen />, {
             preloadedState: {
                 messageSystem: defaultMessageSystem,
                 wallet: {

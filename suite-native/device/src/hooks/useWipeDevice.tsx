@@ -43,9 +43,7 @@ export const useWipeDevice = () => {
 
         navigation.navigate(DeviceSettingsStackRoutes.WipeDeviceStack);
 
-        const response = await requestPrioritizedDeviceAccess(
-            async () => await dispatch(wipeDeviceThunk()),
-        );
+        const response = await requestPrioritizedDeviceAccess(() => dispatch(wipeDeviceThunk()));
 
         if (response.success && isFulfilled(response.payload)) {
             analytics.report({

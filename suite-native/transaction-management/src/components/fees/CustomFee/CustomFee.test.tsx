@@ -60,7 +60,7 @@ describe('CustomFee', () => {
         return result.current;
     };
 
-    const renderCustomFee = async ({
+    const renderCustomFee = ({
         form,
         props,
     }: {
@@ -85,7 +85,7 @@ describe('CustomFee', () => {
             formDraft: mockFormDraft,
         };
 
-        return await renderWithStoreProvider(<CustomFee {...finalProps} />, {
+        return renderWithStoreProvider(<CustomFee {...finalProps} />, {
             preloadedState: defaultState,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });

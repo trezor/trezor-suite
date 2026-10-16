@@ -10,8 +10,8 @@ jest.mock('../hooks/useTradingDebugModeFlag', () => ({
 }));
 
 describe('DebugModeView', () => {
-    const renderDebugModeView = async () =>
-        await renderWithBasicProvider(
+    const renderDebugModeView = () =>
+        renderWithBasicProvider(
             <DebugModeView>
                 <Text>TEST TEXT</Text>
             </DebugModeView>,

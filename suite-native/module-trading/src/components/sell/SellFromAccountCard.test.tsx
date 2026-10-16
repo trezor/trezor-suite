@@ -6,11 +6,11 @@ import { SellFromAccountCard, type SellFromAccountCardProps } from './SellFromAc
 import { renderWithTradingProvider } from '../../test-utils/tradingTestUtils';
 
 describe('SellFromAccountCard', () => {
-    const renderSellFromAccountCard = async (
+    const renderSellFromAccountCard = (
         props: Partial<SellFromAccountCardProps> = {},
         tradingAccountKey = eth1NormalAccount.key,
     ) =>
-        await renderWithTradingProvider(<SellFromAccountCard {...props} />, {
+        renderWithTradingProvider(<SellFromAccountCard {...props} />, {
             tradeType: 'sell',
             overrides: {
                 wallet: {

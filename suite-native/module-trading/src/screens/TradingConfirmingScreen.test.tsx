@@ -101,7 +101,7 @@ const mockUseAllowanceTxTracking = useAllowanceTxTracking as jest.Mock;
 describe('TradingConfirmingScreen', () => {
     let store: Store<State>;
 
-    const renderScreen = async (
+    const renderScreen = (
         routeProps: Partial<RootStackParamList[RootStackRoutes.TradingConfirming]> = {},
     ) => {
         routeParams = {
@@ -109,7 +109,7 @@ describe('TradingConfirmingScreen', () => {
             ...routeProps,
         };
 
-        return await renderWithStoreProvider(
+        return renderWithStoreProvider(
             <TradingConfirmingScreen navigation={mockNavigation} route={mockUseRoute()} />,
             {
                 services: {

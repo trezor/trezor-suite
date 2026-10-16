@@ -29,8 +29,8 @@ describe('FeeSelectorRow', () => {
         jest.clearAllMocks();
     });
 
-    const renderRow = async ({ isReadOnly }: { isReadOnly?: boolean } = {}) =>
-        await renderWithStoreProvider(
+    const renderRow = ({ isReadOnly }: { isReadOnly?: boolean } = {}) =>
+        renderWithStoreProvider(
             <FeeSelectorRow
                 accountKey={BTC_ACCOUNT_KEY}
                 updateThunk={noopThunk}

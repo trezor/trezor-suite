@@ -11,8 +11,8 @@ jest.mock('../hooks/useProviderConfirmationStatus', () => ({
 }));
 
 describe('ProviderConfirmationStatusInfo', () => {
-    const renderProviderConfirmationStatusInfo = async (onConfirmationComplete?: jest.Mock) =>
-        await renderWithBasicProvider(
+    const renderProviderConfirmationStatusInfo = (onConfirmationComplete?: jest.Mock) =>
+        renderWithBasicProvider(
             <ProviderConfirmationStatusInfo
                 companyName="MoonPay"
                 onConfirmationComplete={onConfirmationComplete}

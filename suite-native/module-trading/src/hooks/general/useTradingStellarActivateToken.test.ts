@@ -63,7 +63,7 @@ const TOKEN_CONTRACT = 'USDC-GA123';
 const stellarAccount = mockWalletAccount({ symbol: asNetworkSymbol('xlm') });
 const ACCOUNT_KEY = stellarAccount.key;
 
-const renderUseTradingStellarActivateToken = async (options?: {
+const renderUseTradingStellarActivateToken = (options?: {
     quote?: ExchangeTrade | BuyTrade;
     receiveCryptoId?: CryptoId;
     buttonTestId?: string;
@@ -79,7 +79,7 @@ const renderUseTradingStellarActivateToken = async (options?: {
     });
     store.dispatch = mockDispatch;
 
-    return await renderHookWithStoreProvider(
+    return renderHookWithStoreProvider(
         () =>
             useTradingStellarActivateToken({
                 quote: options?.quote,

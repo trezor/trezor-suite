@@ -55,11 +55,11 @@ const buildPreloadedState = (
     },
 });
 
-const renderUseTransactionDetails = async (
+const renderUseTransactionDetails = (
     params: Parameters<typeof useTransactionDetails>[0],
     transactions?: WalletAccountTransaction[],
 ) =>
-    await renderHookWithStoreProvider(() => useTransactionDetails(params), {
+    renderHookWithStoreProvider(() => useTransactionDetails(params), {
         preloadedState: buildPreloadedState(transactions),
     });
 

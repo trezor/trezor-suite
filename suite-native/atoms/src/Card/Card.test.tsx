@@ -5,13 +5,13 @@ import { renderWithBasicProvider } from '@suite-native/test-utils';
 import { Card, type CardProps } from './Card';
 
 describe('Card', () => {
-    const renderComponent = async (props: Omit<CardProps, 'children'>) => {
+    const renderComponent = (props: Omit<CardProps, 'children'>) => {
         const cardProps = {
             children: <Text>hello</Text>,
             ...props,
         } as CardProps;
 
-        return await renderWithBasicProvider(<Card {...cardProps} />);
+        return renderWithBasicProvider(<Card {...cardProps} />);
     };
 
     it('should render children prop', async () => {

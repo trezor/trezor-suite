@@ -39,10 +39,10 @@ const otcData = {
     ],
 } as TradingOTC;
 
-const renderConciergeTabContent = async (
+const renderConciergeTabContent = (
     overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
 ) =>
-    await renderWithTradingProvider(<ConciergeTabContent />, {
+    renderWithTradingProvider(<ConciergeTabContent />, {
         overrides,
         services,
     });

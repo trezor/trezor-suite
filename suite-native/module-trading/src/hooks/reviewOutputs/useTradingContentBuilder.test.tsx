@@ -64,8 +64,8 @@ describe('useTradingContentBuilder', () => {
         return <>{contentBuilder({ ...baseProps, ...props })}</>;
     };
 
-    const renderContentBuilder = async (props: Partial<ContentBuilderProps> = {}) =>
-        await renderWithTradingProvider<ContentBuilderTestServices>(
+    const renderContentBuilder = (props: Partial<ContentBuilderProps> = {}) =>
+        renderWithTradingProvider<ContentBuilderTestServices>(
             <ContentBuilderWrapper props={props} />,
             {
                 tradeType: 'exchange',

@@ -5,7 +5,7 @@ import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-sto
 import { NoAccountsComponent } from './NoAccountsComponent';
 
 describe('NoAccountsComponent', () => {
-    const renderNoAccountsComponent = async ({
+    const renderNoAccountsComponent = ({
         isConnected,
         id,
         onActivateAccount = jest.fn(),
@@ -14,7 +14,7 @@ describe('NoAccountsComponent', () => {
         id?: string;
         onActivateAccount?: () => void;
     }) =>
-        await renderWithStoreProvider(
+        renderWithStoreProvider(
             <NoAccountsComponent
                 symbol={asNetworkSymbol('btc')}
                 onActivateAccount={onActivateAccount}

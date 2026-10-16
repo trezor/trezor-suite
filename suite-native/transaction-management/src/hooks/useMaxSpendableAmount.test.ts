@@ -50,7 +50,7 @@ describe('useMaxSpendableAmount', () => {
         selectedUtxos: [],
     };
 
-    const renderUseMaxSpendableAmount = async ({
+    const renderUseMaxSpendableAmount = ({
         accountKey,
         tokenContract,
         formState,
@@ -58,7 +58,7 @@ describe('useMaxSpendableAmount', () => {
         symbol,
         assumeNewAccount,
     }: Parameters<typeof useMaxSpendableAmount>[0]) =>
-        await renderHookWithStoreProvider(
+        renderHookWithStoreProvider(
             () =>
                 useMaxSpendableAmount({
                     accountKey,

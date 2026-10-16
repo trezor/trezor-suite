@@ -72,13 +72,13 @@ describe('AccountListItem', () => {
 
     let store: Store<State>;
 
-    const renderAccountListItem = async (
+    const renderAccountListItem = (
         receiveAccount: ReceiveAccount,
         overrides: PreloadedStatePartial<State> = defaultOverrides,
     ) => {
         store = createTradingTestStore({ overrides });
 
-        return await renderWithStoreProvider(
+        return renderWithStoreProvider(
             <AccountListItem onPress={onPressMock} receiveAccount={receiveAccount} />,
             {
                 services: {

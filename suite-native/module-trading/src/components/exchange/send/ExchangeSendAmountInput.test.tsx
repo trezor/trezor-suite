@@ -39,12 +39,12 @@ describe('ExchangeSendAmountInput', () => {
         },
     };
 
-    const renderCryptoAmountInput = async (
+    const renderCryptoAmountInput = (
         props: Partial<ExchangeSendAmountInputProps>,
         form: ExchangeFormType,
         extraOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        await renderWithTradingProvider(
+        renderWithTradingProvider(
             <Form form={form}>
                 <ExchangeSendAmountInput onSelectAsset={jest.fn()} {...props} />
             </Form>,

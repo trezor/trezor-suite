@@ -14,8 +14,8 @@ describe('useFeesForm', () => {
         defaultFeePerUnit: '20000000000', // 20 gwei
     };
 
-    const renderUseFeesForm = async (props: UseFeesFormProps = mockProps) =>
-        await renderHookWithStoreProvider(() => useFeesForm(props), {
+    const renderUseFeesForm = (props: UseFeesFormProps = mockProps) =>
+        renderHookWithStoreProvider(() => useFeesForm(props), {
             preloadedState: {
                 wallet: {
                     fees: {},

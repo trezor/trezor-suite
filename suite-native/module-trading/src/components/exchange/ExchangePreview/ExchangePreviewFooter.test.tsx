@@ -73,10 +73,10 @@ describe('ExchangePreviewFooter', () => {
         },
     };
 
-    const renderExchangePreviewFooter = async (
+    const renderExchangePreviewFooter = (
         extraOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        await renderWithTradingProvider(
+        renderWithTradingProvider(
             <ExchangePreviewFooter
                 isContinueDisabled={false}
                 onSignTransactionNavigation={jest.fn()}

@@ -106,8 +106,8 @@ describe('useExchangeSelectQuote', () => {
         });
     };
 
-    const renderExchangeForm = async () =>
-        await renderHookWithStoreProvider(() => useExchangeForm(), {
+    const renderExchangeForm = () =>
+        renderHookWithStoreProvider(() => useExchangeForm(), {
             services: { ...services, store },
         });
 
