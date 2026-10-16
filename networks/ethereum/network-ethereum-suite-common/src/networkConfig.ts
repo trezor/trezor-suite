@@ -426,7 +426,7 @@ export const networkConfigBySymbol = {
     },
     arc: {
         color: '#2775ca',
-        displayOrder: asDisplayOrderKey('aNV'),
+        displayOrder: asDisplayOrderKey('a9V'),
         protocols: [asProtocol('arc')],
         displaySymbol: 'USDC',
         displaySymbolName: 'USDC',
