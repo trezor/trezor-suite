@@ -7,7 +7,7 @@ import { Box } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     type AssetsStackParamList,
-    AssetsStackRoutes,
+    type AssetsStackRoutes,
     Screen,
     ScreenHeader,
     type StackNavigationProps,
@@ -36,7 +36,9 @@ export const AssetDetailScreen = () => {
     return (
         <Screen
             header={
-                <ScreenHeader title={<Translation id="moduleAssets.assetDetailScreen.headerTitle" />} />
+                <ScreenHeader
+                    title={<Translation id="moduleAssets.assetDetailScreen.headerTitle" />}
+                />
             }
             isScrollable={false}
             noHorizontalPadding
