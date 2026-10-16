@@ -2,8 +2,8 @@
 
 show_help() {
     cat << EOF
-Usage: $(basename "$0") [PR] [PLATFORM]
-       $(basename "$0") [PLATFORM]
+Usage: $(basename "$0") [PR] [PLATFORM] [OPTIONS]
+       $(basename "$0") [PLATFORM] [OPTIONS]
 
 Generate a Slack-formatted PR message with stats and copy it to clipboard.
 
@@ -15,7 +15,11 @@ PLATFORM options:
     common, c       Use common icon (:commie:)
     desktop, d      Use desktop icon (:desktop_computer:) [default]
     yanas, y        Use Yanas TM icon (:typical-yanas:)
-    --help, -h      Show this help message
+
+OPTIONS:
+    -i, --icon NAME Add an extra emoji (repeatable). NAME may be with or
+                    without colons (cherries or :cherries:).
+    -h, --help      Show this help message
 
 Environment variables:
     DEFAULT_SLACK_PR_ICON    Override the default icon (e.g., ":rocket:")
@@ -25,6 +29,8 @@ Examples:
     $(basename "$0") mobile
     $(basename "$0") 12345
     $(basename "$0") 12345 mobile
+    $(basename "$0") 12345 mobile -i cherries
+    $(basename "$0") 12345 mobile -i cherries -i rocket
     $(basename "$0") https://github.com/trezor/trezor-suite/pull/12345 m
     DEFAULT_SLACK_PR_ICON=":bug:" $(basename "$0") 12345
 
@@ -93,19 +99,90 @@ is_platform() {
     esac
 }
 
-get_pr_reference_argument() {
-    if is_platform "$1"; then
-        return
+format_emoji() {
+    local name="$1"
+
+    if [[ -z "$name" ]]; then
+        return 1
     fi
 
-    echo "$1"
+    if [[ "$name" == :* && "$name" == *: ]]; then
+        echo "$name"
+    else
+        echo ":${name}:"
+    fi
 }
 
-get_platform_argument() {
-    if is_platform "$1"; then
-        echo "$1"
+# Parses CLI args into globals:
+#   PARSED_PR_REFERENCE, PARSED_PLATFORM, PARSED_EXTRA_EMOJIS (space-separated)
+parse_arguments() {
+    PARSED_PR_REFERENCE=""
+    PARSED_PLATFORM=""
+    PARSED_EXTRA_EMOJIS=""
+
+    local positional=()
+    local emoji
+
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            -h | --help)
+                show_help
+                return 2
+                ;;
+            -i | --icon)
+                if [[ -z "${2:-}" || "$2" == -* ]]; then
+                    echo -e "\033[0;31mError: $1 requires an emoji name.\033[0m
+Use -h option for more info." >&2
+                    return 1
+                fi
+                if ! emoji=$(format_emoji "$2"); then
+                    echo -e "\033[0;31mError: Invalid emoji name for $1.\033[0m
+Use -h option for more info." >&2
+                    return 1
+                fi
+                PARSED_EXTRA_EMOJIS="${PARSED_EXTRA_EMOJIS}${PARSED_EXTRA_EMOJIS:+ }$emoji"
+                shift 2
+                ;;
+            --icon=*)
+                if ! emoji=$(format_emoji "${1#*=}"); then
+                    echo -e "\033[0;31mError: Invalid emoji name for --icon.\033[0m
+Use -h option for more info." >&2
+                    return 1
+                fi
+                PARSED_EXTRA_EMOJIS="${PARSED_EXTRA_EMOJIS}${PARSED_EXTRA_EMOJIS:+ }$emoji"
+                shift
+                ;;
+            --)
+                shift
+                positional+=("$@")
+                break
+                ;;
+            -*)
+                echo -e "\033[0;31mError: Unknown option '$1'.\033[0m
+Use -h option for more info." >&2
+                return 1
+                ;;
+            *)
+                positional+=("$1")
+                shift
+                ;;
+        esac
+    done
+
+    local first="${positional[0]:-}"
+    local second="${positional[1]:-}"
+
+    if [[ ${#positional[@]} -gt 2 ]]; then
+        echo -e "\033[0;31mError: Too many arguments.\033[0m
+Use -h option for more info." >&2
+        return 1
+    fi
+
+    if is_platform "$first"; then
+        PARSED_PLATFORM="$first"
     else
-        echo "$2"
+        PARSED_PR_REFERENCE="$first"
+        PARSED_PLATFORM="$second"
     fi
 }
 
@@ -172,7 +249,8 @@ Use -h option for more info" >&2
 build_slack_message() {
     local pr_json="$1"
     local icon="$2"
-    local title url deletions additions changed_files small_pr_emoji
+    local extra_emojis="${3:-}"
+    local title url deletions additions changed_files small_pr_emoji icons
 
     title=$(echo "$pr_json" | jq -r ".title")
     url=$(echo "$pr_json" | jq -r ".url")
@@ -185,7 +263,12 @@ build_slack_message() {
         small_pr_emoji=":pinching_hand: "
     fi
 
-    echo ":new-pull-request: $icon ${small_pr_emoji}${title}
+    icons="$icon"
+    if [[ -n "$extra_emojis" ]]; then
+        icons="$icon $extra_emojis"
+    fi
+
+    echo ":new-pull-request: $icons ${small_pr_emoji}${title}
 $url
 :heavy_plus_sign: $additions :heavy_minus_sign: $deletions :file_folder: $changed_files"
 }
@@ -218,17 +301,20 @@ $result
 }
 
 main() {
-    if [[ "$1" == "--help" || "$1" == "-h" ]]; then
-        show_help
+    local parse_status=0
+    parse_arguments "$@" || parse_status=$?
+    if [[ $parse_status -eq 2 ]]; then
         return 0
+    elif [[ $parse_status -ne 0 ]]; then
+        return 1
     fi
 
     check_jq_available || return 1
     check_gh_available || return 1
 
     local pr_reference platform icon pr_json result
-    pr_reference=$(get_pr_reference_argument "$1")
-    platform=$(get_platform_argument "$1" "$2")
+    pr_reference="$PARSED_PR_REFERENCE"
+    platform="$PARSED_PLATFORM"
 
     if ! pr_reference=$(resolve_pr_reference "$pr_reference"); then
         return 1
@@ -240,7 +326,7 @@ main() {
         return 1
     fi
 
-    result=$(build_slack_message "$pr_json" "$icon")
+    result=$(build_slack_message "$pr_json" "$icon" "$PARSED_EXTRA_EMOJIS")
     print_result "$result"
 
     if copy_to_clipboard "$result"; then
