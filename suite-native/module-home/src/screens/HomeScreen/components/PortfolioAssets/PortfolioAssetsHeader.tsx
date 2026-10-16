@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { Box, Divider, Text, VStack } from '@suite-native/atoms';
-import { PromoBanners, selectVisiblePromoBanners } from '@suite-native/banners';
+import { PromoBanners, selectHasVisiblePromoBanners } from '@suite-native/banners';
 import { Translation } from '@suite-native/intl';
 
 import { HomescreenAlerts } from '../HomescreenAlerts';
@@ -9,7 +9,7 @@ import { PortfolioActionButtons } from './PortfolioActionButtons';
 import { PortfolioBalance } from './PortfolioBalance';
 
 export const PortfolioAssetsHeader = () => {
-    const hasPromoBanners = useSelector(selectVisiblePromoBanners).length > 0;
+    const hasPromoBanners = useSelector(selectHasVisiblePromoBanners);
 
     return (
         <VStack spacing={0} testID="@home/portfolio-assets/header">

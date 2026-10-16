@@ -378,7 +378,7 @@ const selectAllDisplayedAssetKeys = createMemoizedSelector(
     { memoizeOptions: { resultEqualityCheck: shallowEqual } },
 );
 
-/** How many rows the table may show before it folds; each platform passes its own. */
+/** How many rows the table may show before it folds, `HOME_ASSET_ROW_LIMIT` on both platforms. */
 const selectRowLimit = (_state: HomeAssetTableState, rowLimit?: number) => rowLimit;
 
 /** Whether the table has more to show than the limit allows: a boolean, so a reorder below it is no re-render. */

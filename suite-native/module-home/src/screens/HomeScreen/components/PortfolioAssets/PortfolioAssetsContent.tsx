@@ -4,58 +4,25 @@ import { useSelector } from 'react-redux';
 import { FlashList } from '@shopify/flash-list';
 
 import {
+    HOME_ASSET_ROW_LIMIT,
     type HomeAssetTableState,
+    getHomeAssetRowLimit,
     selectDisplayedWalletAssetKeys,
     selectHasShownWalletAssets,
     selectIsHomeAssetTableFoldable,
 } from '@suite-common/assets';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
-import { Box, Divider, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import { Box, Divider, useBottomSheetModal } from '@suite-native/atoms';
 
 import { PortfolioAssetListItem } from './PortfolioAssetListItem';
-import { PortfolioAssetsHeader } from './PortfolioAssetsHeader';
-import { PortfolioAssetsSectionHeader } from './PortfolioAssetsSectionHeader';
-import { PortfolioAssetsShowMoreButton } from './PortfolioAssetsShowMoreButton';
+import { PortfolioAssetsListFooter } from './PortfolioAssetsListFooter';
+import { PortfolioAssetsListHeader } from './PortfolioAssetsListHeader';
 import { PortfolioAssetsViewOptionsSheet } from './PortfolioAssetsViewOptionsSheet';
-
-const HOME_ASSET_ROW_LIMIT = 8;
 
 const getAssetKey = (assetKey: WalletAssetKey) => assetKey;
 
 const renderAsset = ({ item }: { item: WalletAssetKey }) => (
     <PortfolioAssetListItem assetKey={item} />
-);
-
-type PortfolioAssetsListHeaderProps = {
-    hasAssets: boolean;
-    onViewOptionsPress: () => void;
-};
-
-const PortfolioAssetsListHeader = ({
-    hasAssets,
-    onViewOptionsPress,
-}: PortfolioAssetsListHeaderProps) => (
-    <>
-        <PortfolioAssetsHeader />
-        {hasAssets && <PortfolioAssetsSectionHeader onViewOptionsPress={onViewOptionsPress} />}
-    </>
-);
-
-type PortfolioAssetsListFooterProps = {
-    isExpanded: boolean;
-    onShowMorePress: () => void;
-};
-
-const PortfolioAssetsListFooter = ({
-    isExpanded,
-    onShowMorePress,
-}: PortfolioAssetsListFooterProps) => (
-    <>
-        <Divider />
-        <VStack alignItems="center" paddingVertical="sp12">
-            <PortfolioAssetsShowMoreButton isExpanded={isExpanded} onPress={onShowMorePress} />
-        </VStack>
-    </>
 );
 
 export const PortfolioAssetsContent = () => {
@@ -64,7 +31,7 @@ export const PortfolioAssetsContent = () => {
     const isFoldable = useSelector((state: HomeAssetTableState) =>
         selectIsHomeAssetTableFoldable(state, HOME_ASSET_ROW_LIMIT),
     );
-    const rowLimit = isFoldable && !isExpanded ? HOME_ASSET_ROW_LIMIT : undefined;
+    const rowLimit = getHomeAssetRowLimit({ isFoldable, isExpanded });
     const assetKeys = useSelector((state: HomeAssetTableState) =>
         selectDisplayedWalletAssetKeys(state, rowLimit),
     );
