@@ -1,4 +1,4 @@
-import { type LocaleInfo } from '@suite-common/suite-types';
+import { type LocaleInfo } from '@suite-common/locale';
 
 export const DEFAULT_LOCALE = 'en-US';
 export type LocaleCode = `${string}-${string}`;

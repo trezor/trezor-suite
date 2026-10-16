@@ -4,7 +4,7 @@ import { act, render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ThemeProvider } from 'styled-components';
 
-import { type Locale } from '@suite-common/suite-types';
+import { type Locale } from '@suite-common/locale';
 import { intermediaryTheme } from '@trezor/components';
 
 import { NumberInput } from './NumberInput';
@@ -13,7 +13,11 @@ const onChangeMock = jest.fn();
 
 const styleMock = jest.fn(() => ({}));
 
-const InputWithForm = ({ locale }: { locale: Locale }) => {
+type InputWithFormProps = {
+    locale: Locale;
+};
+
+const InputWithForm = ({ locale }: InputWithFormProps) => {
     const { control } = useForm({
         defaultValues: {
             input: '',
@@ -34,8 +38,8 @@ const InputWithForm = ({ locale }: { locale: Locale }) => {
     );
 };
 
-const renderInput = (language: Locale) => {
-    const { getByTestId } = render(<InputWithForm locale={language} />);
+const renderInput = (locale: Locale) => {
+    const { getByTestId } = render(<InputWithForm locale={locale} />);
     const input = getByTestId('number-input') as HTMLInputElement;
 
     return input;

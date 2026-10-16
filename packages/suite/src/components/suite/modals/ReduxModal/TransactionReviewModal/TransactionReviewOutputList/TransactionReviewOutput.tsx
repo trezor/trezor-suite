@@ -8,7 +8,8 @@ import {
 } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { isApprovalFlowSupported, selectSelectedDevice } from '@suite-common/device';
-import { type Locale, type TrezorDevice } from '@suite-common/suite-types';
+import { type Locale } from '@suite-common/locale';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { type NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
 import { selectAccounts } from '@suite-common/wallet-core';

@@ -7,11 +7,9 @@ import {
     type RerunFwAuthenticityChecksCall,
     type ShouldRetryFirmwareRevisionCheckError,
 } from '../src/firmware';
-import { type GetLanguageDep } from '../src/languages';
 
 export const mockGetAllowPrerelease = (): GetAllowPrerelease => asGetter(() => false);
 export const mockGetBinFilesBaseUrl = (): GetBinFilesBaseUrl => asGetter(() => '/bin');
-export const mockGetLanguage = (): GetLanguageDep['getLanguage'] => asGetter(() => 'en');
 export const mockReportSecurityCheck = (): ReportSecurityCheck => () => {};
 export const mockShouldRetryFirmwareRevisionCheckError =
     (): ShouldRetryFirmwareRevisionCheckError => asGetter(() => false);

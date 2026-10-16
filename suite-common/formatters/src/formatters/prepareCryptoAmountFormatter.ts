@@ -1,7 +1,7 @@
 import { pipe } from '@mobily/ts-belt';
 
 import { redactNumericalSubstring } from '@suite-common/discreet-mode';
-import { LANGUAGES, type Locale } from '@suite-common/suite-types';
+import { LANGUAGES, type Locale } from '@suite-common/locale';
 import {
     type NetworkSymbol,
     getNetwork,

@@ -57,6 +57,7 @@
         "@suite-common/flags": "workspace:*",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/geolocation": "workspace:*",
+        "@suite-common/locale": "workspace:*",
         "@suite-common/logger": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/metadata-types": "workspace:*",

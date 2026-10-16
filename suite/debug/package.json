@@ -12,7 +12,7 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.13.0",
-        "@suite-common/suite-types": "workspace:*",
+        "@suite-common/locale": "workspace:*",
         "@suite/desktop-app-api": "workspace:*",
         "@suite/intl": "workspace:*",
         "@suite/settings": "workspace:*",

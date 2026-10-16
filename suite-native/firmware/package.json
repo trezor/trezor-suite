@@ -16,6 +16,7 @@
         "@shopify/react-native-skia": "2.6.2",
         "@suite-common/device": "workspace:*",
         "@suite-common/firmware": "workspace:*",
+        "@suite-common/locale": "workspace:*",
         "@suite-common/message-system": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
