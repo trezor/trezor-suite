@@ -4,6 +4,7 @@ import {
     type Account,
     type AccountWithNetworkType,
     type TokenAddress,
+    asAccountDescriptor,
 } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
@@ -66,7 +67,7 @@ const mockAccount = ({
 }: MockAccountParams = {}): Account =>
     mockWalletAccount(
         {
-            descriptor: `descriptor_${index}_${symbol}_${deviceState}`,
+            descriptor: asAccountDescriptor(`descriptor_${index}_${symbol}_${deviceState}`),
             deviceState,
             symbol,
             index,
@@ -115,6 +116,7 @@ const createState = ({
         coin: { data: knownTokens, hide: hiddenTokens, show: shownTokens },
     };
 
+    // These selectors only need the fields provided by this fixture.
     return {
         device: { selectedDevice: { state: { staticSessionId: ALICE } } },
         wallet: {
@@ -132,7 +134,7 @@ const createState = ({
             [ETH]: { symbol: ETH, name: 'Ethereum' },
             [POL]: { symbol: POL, name: 'Polygon PoS' },
         },
-    } as AssetsRootState;
+    } as unknown as AssetsRootState;
 };
 
 const selectHomeAssetRowKeys = (state: AssetsRootState) => selectShownWalletAssetKeys(state);

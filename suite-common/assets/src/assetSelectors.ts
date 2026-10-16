@@ -154,9 +154,8 @@ const selectPartitionedAssetAccounts = createAssetsSelector(
     },
 );
 
-const selectWalletAssets = createAssetsSelector(
-    [selectPartitionedAssetAccounts],
-    ({ shown }) => toWalletAssets(shown),
+const selectWalletAssets = createAssetsSelector([selectPartitionedAssetAccounts], ({ shown }) =>
+    toWalletAssets(shown),
 );
 
 const selectHiddenWalletAssets = createAssetsSelector(
@@ -601,11 +600,8 @@ export const selectNetworkFiatValue = createAssetsSelector(
     (worth, symbol) => worth.get(symbol)?.toFixed(),
 );
 
-const selectWalletAsset = (
-    state: AssetsRootState,
-    assetKey: WalletAssetKey,
-    isHidden = false,
-) => (isHidden ? selectHiddenWalletAssets(state) : selectWalletAssets(state)).get(assetKey);
+const selectWalletAsset = (state: AssetsRootState, assetKey: WalletAssetKey, isHidden = false) =>
+    (isHidden ? selectHiddenWalletAssets(state) : selectWalletAssets(state)).get(assetKey);
 
 export const selectWalletAssetSymbol = (
     state: AssetsRootState,

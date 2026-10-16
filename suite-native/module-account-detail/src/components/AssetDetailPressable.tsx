@@ -1,8 +1,8 @@
 import { type ReactNode } from 'react';
 import { Pressable } from 'react-native';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
-import { useSelector } from 'react-redux';
 
 import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
 import {
