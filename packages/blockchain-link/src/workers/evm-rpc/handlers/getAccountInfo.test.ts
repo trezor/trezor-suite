@@ -86,6 +86,7 @@ const createRequest = ({
     tokenBalance,
     multicallReads,
     watched = true,
+    transactionReadError,
 }: {
     details?: MessageTypes.GetAccountInfo['payload']['details'];
     page?: number;
@@ -101,6 +102,8 @@ const createRequest = ({
     multicallReads?: Entry[];
     /** Suite subscribes an account once it takes it on; discovery candidates are not subscribed. */
     watched?: boolean;
+    /** Rejects every transaction read with this. */
+    transactionReadError?: Error;
 }) => {
     if (watched) {
         state.addAccounts([{ descriptor: ME }]);
@@ -117,18 +120,20 @@ const createRequest = ({
             : Promise.resolve({ data: encodeUint(tokenBalance) });
     });
     const getTransaction = jest.fn(({ hash }: { hash: string }) =>
-        Promise.resolve({
-            hash,
-            from: OTHER,
-            to: ME,
-            value: 5n,
-            nonce: 1,
-            gas: 21000n,
-            gasPrice: 1n,
-            input: '0x',
-            blockHash: '0xb',
-            blockNumber: BigInt(LATEST),
-        }),
+        transactionReadError
+            ? Promise.reject(transactionReadError)
+            : Promise.resolve({
+                  hash,
+                  from: OTHER,
+                  to: ME,
+                  value: 5n,
+                  nonce: 1,
+                  gas: 21000n,
+                  gasPrice: 1n,
+                  input: '0x',
+                  blockHash: '0xb',
+                  blockNumber: BigInt(LATEST),
+              }),
     );
     const getTransactionReceipt = jest.fn(() =>
         Promise.resolve({
@@ -559,5 +564,44 @@ describe(`${getAccountInfo.name} discovery cost`, () => {
 
         expect(candidate.rpcRequest).toHaveBeenCalled();
         expect(info.history.total).toBe(1);
+    });
+});
+
+describe(`${getAccountInfo.name} under a rate limit`, () => {
+    const rateLimitError = () => Object.assign(new Error('rate limit exceeded'), { code: -32005 });
+
+    it('says so when the rate limit left the answer incomplete', async () => {
+        const { payload } = createRequest({
+            details: 'txs',
+            logs: () => [nativeLog(LATEST, `0x${'a'.repeat(64)}`)],
+            transactionReadError: rateLimitError(),
+        });
+
+        const { payload: info } = await getAccountInfo(payload);
+
+        expect(info.misc?.isRateLimited).toBe(true);
+    });
+
+    it('says nothing about a complete answer', async () => {
+        const { payload } = createRequest({
+            details: 'txs',
+            logs: () => [nativeLog(LATEST, `0x${'a'.repeat(64)}`)],
+        });
+
+        const { payload: info } = await getAccountInfo(payload);
+
+        expect(info.misc?.isRateLimited).toBeUndefined();
+    });
+
+    it('does not blame the rate limit for a read that failed for another reason', async () => {
+        const { payload } = createRequest({
+            details: 'txs',
+            logs: () => [nativeLog(LATEST, `0x${'a'.repeat(64)}`)],
+            transactionReadError: new Error('transaction not found'),
+        });
+
+        const { payload: info } = await getAccountInfo(payload);
+
+        expect(info.misc?.isRateLimited).toBeUndefined();
     });
 });

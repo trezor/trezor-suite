@@ -16,10 +16,10 @@ const topic = (address: string) => `0x${address.slice(2).toLowerCase().padStart(
 const txid = (seed: string) => `0x${seed.padStart(64, '0')}`;
 const NEW_TX = txid('abc1');
 
-const transferLog = (from: string, to: string, txid: string, blockNumber = 500) => ({
+const transferLog = (from: string, to: string, txid: string, blockNumber = 500, value = 5) => ({
     address: TOKEN.toLowerCase(),
     topics: [TRANSFER_TOPIC, topic(from), topic(to)],
-    data: `0x${'0'.repeat(63)}5`,
+    data: `0x${value.toString(16).padStart(64, '0')}`,
     blockNumber: `0x${blockNumber.toString(16)}`,
     transactionHash: txid,
     transactionIndex: '0x0',
@@ -130,6 +130,15 @@ describe(detectAccountChanges.name, () => {
         expect([...getDescriptorHistory(state, ACCOUNT_A).tokenContracts]).toEqual([
             TOKEN.toLowerCase(),
         ]);
+    });
+
+    it('does not discover a token contract from a transfer that moved nothing', async () => {
+        const state = subscribed(ACCOUNT_A);
+        const { client } = createClient([transferLog(ACCOUNT_A, OTHER, NEW_TX, 500, 0)]);
+
+        await detectAccountChanges(client, state, 500, 510);
+
+        expect([...getDescriptorHistory(state, ACCOUNT_A).tokenContracts]).toEqual([]);
     });
 
     it('leaves the scanned bounds alone — that meaning belongs to syncHistory', async () => {
