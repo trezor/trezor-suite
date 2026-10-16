@@ -32,6 +32,8 @@ const cardContentStyle = prepareNativeStyle(_ => ({
     alignItems: 'flex-start',
 }));
 
+const pressableStyle = prepareNativeStyle(() => ({ flex: 1 }));
+
 interface YourPositionCardProps {
     account: Account;
     token: TokenInfoBranded | null;
@@ -63,8 +65,8 @@ export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
         : null;
 
     return (
-        <AssetDetailPressable assetKey={assetKey}>
-            <Card style={applyStyle(cardStyle)} noShadow>
+        <Card style={applyStyle(cardStyle)} noShadow>
+            <AssetDetailPressable assetKey={assetKey} style={applyStyle(pressableStyle)}>
                 <HStack alignItems="center" flex={1}>
                     <Box marginRight="sp6">
                         <TokenIcon
@@ -78,20 +80,9 @@ export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
 
                     <HStack alignItems="center" justifyContent="space-between" flex={1}>
                         <Box style={applyStyle(cardContentStyle)}>
-                            <HStack>
-                                <Text variant="body-sm-strong" color="contentPrimary">
-                                    {tokenSymbol}
-                                </Text>
-
-                                {yieldBadge && account && (
-                                    <YieldBadge
-                                        apy={yieldBadge.apy}
-                                        variant={yieldBadgeVariant}
-                                        vaultId={yieldBadge.vaultId ?? ''}
-                                        account={account}
-                                    />
-                                )}
-                            </HStack>
+                            <Text variant="body-sm-strong" color="contentPrimary">
+                                {tokenSymbol}
+                            </Text>
 
                             <Text variant="body-sm" color="contentSecondary" numberOfLines={1}>
                                 {tokenName}
@@ -144,7 +135,17 @@ export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
                         </Box>
                     </HStack>
                 </HStack>
-            </Card>
-        </AssetDetailPressable>
+            </AssetDetailPressable>
+            {yieldBadge && account && (
+                <Box marginLeft="sp6" justifyContent="center">
+                    <YieldBadge
+                        apy={yieldBadge.apy}
+                        variant={yieldBadgeVariant}
+                        vaultId={yieldBadge.vaultId ?? ''}
+                        account={account}
+                    />
+                </Box>
+            )}
+        </Card>
     );
 };

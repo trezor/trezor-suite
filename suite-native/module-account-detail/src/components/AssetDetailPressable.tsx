@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react';
-import { Pressable } from 'react-native';
+import { Pressable, type StyleProp, type ViewStyle } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -21,9 +21,10 @@ import {
 type AssetDetailPressableProps = {
     assetKey: WalletAssetKey;
     children: ReactNode;
+    style?: StyleProp<ViewStyle>;
 };
 
-export const AssetDetailPressable = ({ assetKey, children }: AssetDetailPressableProps) => {
+export const AssetDetailPressable = ({ assetKey, children, style }: AssetDetailPressableProps) => {
     const navigation = useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
     const isAssetFirstHomeTableEnabled = useIsExperimentVariantActive({
         experimentId: ExperimentId.assetFirstHomeTable,
@@ -51,7 +52,7 @@ export const AssetDetailPressable = ({ assetKey, children }: AssetDetailPressabl
     };
 
     return (
-        <Pressable accessibilityRole="button" onPress={handlePress}>
+        <Pressable accessibilityRole="button" onPress={handlePress} style={style}>
             {children}
         </Pressable>
     );
