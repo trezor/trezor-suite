@@ -8,8 +8,18 @@ import { supportedStellarNetworks } from '@trezor/network-stellar-types';
 import { stellarValidator } from './addressValidator/stellarAddressValidator';
 import { getStellarTokenLogoAddresses } from './getStellarTokenLogoAddresses';
 import { getAccountSyncInterval, getNetworkConfig } from './networkConfig';
+import {
+    type StellarWalletConnectAdapterDeps,
+    createStellarWalletConnectAdapter,
+} from './walletConnect/createStellarWalletConnectAdapter';
 
-export const createStellarSuiteCommonNetworkModule = (): SuiteCommonNetworkModule =>
+type StellarSuiteCommonNetworkModuleDeps = StellarWalletConnectAdapterDeps;
+
+type StellarSuiteCommonNetworkModule = SuiteCommonNetworkModule;
+
+export const createStellarSuiteCommonNetworkModule = (
+    deps: StellarSuiteCommonNetworkModuleDeps,
+): StellarSuiteCommonNetworkModule =>
     createNetworkModule(supportedStellarNetworks, {
         icon: {
             ...stellarAssets,
@@ -17,6 +27,7 @@ export const createStellarSuiteCommonNetworkModule = (): SuiteCommonNetworkModul
                 symbol === 'xlm' ? getStellarTokenLogoAddresses(contract) : [contract],
         },
         addressValidator: stellarValidator,
+        walletConnectAdapter: createStellarWalletConnectAdapter(deps),
         getNetworkConfig,
         getAccountSyncInterval,
     });

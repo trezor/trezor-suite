@@ -1,22 +1,6 @@
-import { type AsyncThunk } from '@reduxjs/toolkit';
-import { type WalletKitTypes } from '@reown/walletkit';
 import type { ProposalTypes } from '@walletconnect/types';
 
 import { type Account } from '@suite-common/wallet-types';
-
-export interface WalletConnectAdapter {
-    networkType: string;
-    namespaceId: string;
-    methods: string[];
-    requestThunk: AsyncThunk<any, { event: WalletKitTypes.SessionRequest }, any>;
-    getNamespace: (accounts: Account[]) => Record<string, WalletConnectNamespace>;
-    processNamespaces: (
-        accounts: Account[],
-        networks: PendingConnectionProposalNetwork[],
-        namespaces: ProposalTypes.RequiredNamespaces,
-        required: boolean,
-    ) => void;
-}
 
 export interface WalletConnectNamespace {
     chains: string[];
