@@ -1,71 +1,25 @@
-import { type RouterState } from '@suite/router';
+import { createRouterStateMock, createRouterStateMockForRoute } from '@suite/router/mocks';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { type WalletParams } from '@suite-common/wallet-types';
 
-type Route = RouterState['route'];
-
-const TRADING_BUY_ROUTE = {
-    anchor: undefined,
-    app: 'wallet',
-    hash: '',
-    search: '',
-    loaded: true,
-    params: undefined,
-    pathname: '/accounts/coinmarket/buy',
-    route: {
-        name: 'wallet-trading-buy',
-        pattern: '/accounts/coinmarket/buy',
-        app: 'wallet',
-    } as Route,
-    settingsBackRoute: { name: 'wallet-index', params: undefined },
-} as RouterState;
-
-const TRADING_SELL_ROUTE = {
-    anchor: undefined,
-    app: 'wallet',
-    hash: '',
-    search: '',
-    loaded: true,
-    params: undefined,
-    pathname: '/accounts/coinmarket/sell',
-    route: {
-        name: 'wallet-trading-sell',
-        pattern: '/accounts/coinmarket/sell',
-        app: 'wallet',
-    } as Route,
-    settingsBackRoute: { name: 'wallet-index', params: undefined },
-} as RouterState;
-
-const TRADING_EXCHANGE_ROUTE = {
-    anchor: undefined,
-    app: 'wallet',
-    hash: '#/btc/0/normal',
-    search: '',
-    loaded: true,
-    params: { symbol: 'btc', accountIndex: 0, accountType: 'normal' },
-    pathname: '/accounts/coinmarket/exchange',
-    route: {
-        name: 'wallet-trading-exchange',
-        pattern: '/accounts/coinmarket/exchange',
-        app: 'wallet',
-    } as Route,
-    settingsBackRoute: { name: 'wallet-index', params: undefined },
-} as RouterState;
-
-const DEFAULT_ROUTE = {
-    loaded: false,
-    pathname: '/',
-    hash: '',
-    search: '',
-    app: 'unknown',
-    route: undefined,
-    params: undefined,
-    settingsBackRoute: {
-        name: 'suite-index',
-    },
-} as RouterState;
+const BTC_ACCOUNT_PARAMS: WalletParams = {
+    symbol: asNetworkSymbol('btc'),
+    accountIndex: 0,
+    accountType: 'normal',
+};
 
 export const tradingMiddlewareFixtures = {
-    TRADING_BUY_ROUTE,
-    TRADING_SELL_ROUTE,
-    TRADING_EXCHANGE_ROUTE,
-    DEFAULT_ROUTE,
+    TRADING_BUY_ROUTE: createRouterStateMockForRoute('wallet-trading-buy'),
+    TRADING_SELL_ROUTE: createRouterStateMockForRoute('wallet-trading-sell'),
+    TRADING_EXCHANGE_ROUTE: createRouterStateMockForRoute(
+        'wallet-trading-exchange',
+        BTC_ACCOUNT_PARAMS,
+    ),
+    TRADING_EXCHANGE_CONFIRM_ROUTE: createRouterStateMockForRoute(
+        'wallet-trading-exchange-confirm',
+        BTC_ACCOUNT_PARAMS,
+    ),
+    TRADING_REDIRECT_ROUTE: createRouterStateMockForRoute('wallet-trading-redirect'),
+    WALLET_INDEX_ROUTE: createRouterStateMockForRoute('wallet-index', BTC_ACCOUNT_PARAMS),
+    DEFAULT_ROUTE: createRouterStateMock(),
 };
