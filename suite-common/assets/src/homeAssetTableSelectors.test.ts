@@ -1,6 +1,13 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { getWalletAssetKey } from '@suite-common/wallet-core';
-import { type Account, type TokenAddress } from '@suite-common/wallet-types';
+import { mockFiatRatesApiState } from '@suite-common/wallet-core/mocks';
+import {
+    type Account,
+    type Rate,
+    type RatesByKey,
+    type TokenAddress,
+    asTimestamp,
+} from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { type StaticSessionId } from '@trezor/device-utils';
@@ -63,6 +70,21 @@ const mockAccount = ({
         tokens,
     }) as unknown as Account;
 
+const createRate = (
+    symbol: Account['symbol'],
+    rate: number,
+    contract: TokenAddress | undefined,
+    usdRate: number | undefined,
+): Rate & { usdRate?: number } => ({
+    rate,
+    usdRate,
+    lastTickerTimestamp: asTimestamp(0),
+    lastSuccessfulFetchTimestamp: asTimestamp(0),
+    isLoading: false,
+    error: null,
+    ticker: { symbol, tokenAddress: contract },
+});
+
 // A current rate carries the dollar rate too; in dollars the two are the same number.
 const mockRate = (
     symbol: Account['symbol'],
@@ -70,14 +92,14 @@ const mockRate = (
     contract?: TokenAddress,
     currency: BaseCurrencyCode = 'usd',
     usdRate: number | undefined = currency === 'usd' ? rate : undefined,
-) => ({
-    [getFiatRateKey(symbol, currency, contract)]: { rate, usdRate },
+): RatesByKey => ({
+    [getFiatRateKey(symbol, currency, contract)]: createRate(symbol, rate, contract, usdRate),
 });
 
 type MockStateParams = {
     accounts: Account[];
     enabledNetworks?: Account['symbol'][];
-    rates?: Record<string, { rate: number; usdRate?: number }>;
+    rates?: RatesByKey;
     knownTokens?: TokenAddress[];
     hiddenTokens?: TokenAddress[];
     areSmallBalancesShown?: boolean;
@@ -108,8 +130,9 @@ const createState = ({
                 localCurrency,
                 areHomeAssetSmallBalancesShown: areSmallBalancesShown,
             },
-            fiat: { current: rates, lastWeek: {}, historic: {} },
+            fiat: { historic: {} },
         },
+        fiatRatesApi: mockFiatRatesApiState({ current: rates }),
         tokenDefinitions: { [ETH]: definitions, [POL]: definitions, [DSOL]: definitions },
         networks: {
             [BTC]: { symbol: BTC, name: 'Bitcoin' },
@@ -355,19 +378,23 @@ describe('the work a rate write costs', () => {
         selectHomeAssetTotals(state);
 
         // What a fetch of some other ticker writes: a new fiat state, every price the same.
-        const touched = {
+        const touched: HomeAssetTableState = {
             ...state,
-            wallet: {
-                ...state.wallet,
-                fiat: {
-                    ...state.wallet.fiat,
-                    current: {
-                        ...state.wallet.fiat.current,
-                        [getFiatRateKey(POL, 'usd')]: { rate: 1, usdRate: 1, isLoading: true },
-                    },
+            fiatRatesApi: {
+                ...state.fiatRatesApi,
+                queries: {
+                    ...state.fiatRatesApi.queries,
+                    ...mockFiatRatesApiState({
+                        current: {
+                            [getFiatRateKey(POL, 'usd')]: {
+                                ...createRate(POL, 1, undefined, 1),
+                                isLoading: true,
+                            },
+                        },
+                    }).queries,
                 },
             },
-        } as unknown as HomeAssetTableState;
+        };
         const times = jest.spyOn(BigNumber.prototype, 'times');
 
         selectDisplayedWalletAssetKeys(touched);

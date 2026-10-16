@@ -1,4 +1,7 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { fiatRatesApi } from '@suite-common/wallet-core';
+import { mockFiatRatesApiState } from '@suite-common/wallet-core/mocks';
+import { asTimestamp } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { Text } from '@suite-native/atoms';
@@ -56,16 +59,28 @@ describe('FiatAmountInput', () => {
                 bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
                 enabledNetworks: [ethSymbol],
             },
-            fiat: {
-                current: {
-                    [getFiatRateKey(ethSymbol, BASE_CURRENCY)]: { rate: RATE },
+            fiat: { historic: {} },
+        },
+        fiatRatesApi: mockFiatRatesApiState({
+            current: {
+                [getFiatRateKey(ethSymbol, BASE_CURRENCY)]: {
+                    rate: RATE,
+                    lastTickerTimestamp: asTimestamp(0),
+                    lastSuccessfulFetchTimestamp: asTimestamp(Date.now()),
+                    isLoading: false,
+                    error: null,
+                    ticker: { symbol: ethSymbol },
                 },
             },
-        },
+        }),
         tokenDefinitions: {},
     };
 
-    const renderInput = () => renderWithStoreProvider(<TestForm />, { preloadedState });
+    const renderInput = () =>
+        renderWithStoreProvider(<TestForm />, {
+            preloadedState,
+            middleware: [fiatRatesApi.middleware],
+        });
 
     it('fills the crypto amount from the entered fiat amount', async () => {
         await renderInput();

@@ -1,7 +1,11 @@
 import { type Store } from '@reduxjs/toolkit';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type FeesRootState } from '@suite-common/wallet-core';
+import {
+    type FeesRootState,
+    type FiatRatesApiRootState,
+    fiatRatesApi,
+} from '@suite-common/wallet-core';
 import { Form, useForm, yup } from '@suite-native/forms';
 import {
     createStoreFromPreloadedState,
@@ -11,10 +15,10 @@ import {
 
 import { FeeOption } from './FeeOption';
 import { createFeeLevel } from '../../../__fixtures__/feeLevels';
-import { getWalletState } from '../../../__fixtures__/walletState';
+import { getFiatRatesApiState, getWalletState } from '../../../__fixtures__/walletState';
 import { type NativeSupportedPredefinedFeeLevel } from '../../../types';
 
-type State = FeesRootState;
+type State = FeesRootState & FiatRatesApiRootState;
 
 // Create a simple validation schema for testing
 const testValidationSchema = yup.object({
@@ -72,6 +76,7 @@ describe('FeeOption', () => {
 
     const getPreloadedState = (): State => ({
         wallet: getWalletState(),
+        fiatRatesApi: getFiatRatesApiState(),
     });
 
     const renderFeeOption = async (props = {}) => {
@@ -82,12 +87,12 @@ describe('FeeOption', () => {
             <TestFormWrapper>
                 <FeeOption {...finalProps} />
             </TestFormWrapper>,
-            { services: { store }, preloadedState: getPreloadedState() },
+            { services: { store } },
         );
     };
 
     beforeEach(() => {
-        store = createStoreFromPreloadedState(getPreloadedState());
+        store = createStoreFromPreloadedState(getPreloadedState(), [fiatRatesApi.middleware]);
 
         // Default mock implementations
         mockSelectConvertedNetworkFeeLevelTimeEstimate.mockReturnValue('~10 minutes');

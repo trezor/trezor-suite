@@ -43,17 +43,22 @@ const createUsdcToken = (contract: TokenAddress, balance: string) =>
         balance,
     });
 
-const createState = (accounts: Account[], rates: CurrentRatesByKey = {}): TestState => ({
-    wallet: {
-        accounts,
-        ...mockWalletFiatRatesAndSettings(rates),
-    },
-    device: {
-        ...deviceInitialState,
-        devices: [SELECTED_DEVICE],
-        selectedDevice: SELECTED_DEVICE,
-    },
-});
+const createState = (accounts: Account[], rates: CurrentRatesByKey = {}): TestState => {
+    const { wallet, fiatRatesApi } = mockWalletFiatRatesAndSettings(rates);
+
+    return {
+        wallet: {
+            accounts,
+            ...wallet,
+        },
+        fiatRatesApi,
+        device: {
+            ...deviceInitialState,
+            devices: [SELECTED_DEVICE],
+            selectedDevice: SELECTED_DEVICE,
+        },
+    };
+};
 
 describe('selectTradeableAssetBalances', () => {
     it('aggregates native and token balances across visible accounts', () => {

@@ -1,5 +1,6 @@
 import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
 import { mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { fiatRatesApi } from '@suite-common/wallet-core';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { Form } from '@suite-native/forms';
@@ -46,6 +47,7 @@ describe('SellSendBaseCurrencyAmountInput', () => {
             <SellSendBaseCurrencyAmountInput showAssetsScreen={showAssetsScreenMock} />,
             {
                 wrapper: ({ children }) => <Form form={form}>{children}</Form>,
+                middleware: [fiatRatesApi.middleware],
                 preloadedState,
                 services,
             },

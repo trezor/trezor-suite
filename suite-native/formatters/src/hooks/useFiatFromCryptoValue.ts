@@ -6,6 +6,7 @@ import {
     type FiatRatesRootState,
     selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
+    useFiatRate,
 } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { getFiatRateKey, isTestnet, toFiatCurrency } from '@suite-common/wallet-utils';
@@ -34,6 +35,7 @@ export const useFiatFromCryptoValue = ({
 }: useFiatFromCryptoValueParams) => {
     const fiatCurrencyCode = useSelector(selectBaseCurrency);
     const fiatRateKey = getFiatRateKey(symbol, fiatCurrencyCode, tokenAddress);
+    useFiatRate({ ticker: { symbol, tokenAddress }, isDisabled: useHistoricRate });
     const currentRate = useSelector((state: FiatRatesRootState) =>
         selectFiatRatesByFiatRateKey(state, fiatRateKey),
     );

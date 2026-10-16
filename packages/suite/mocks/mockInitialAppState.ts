@@ -16,6 +16,7 @@ import { type MetadataState } from '@suite-common/metadata-types';
 import { persistentDeviceDataInitialState } from '@suite-common/persistent-device-data';
 import { receiveInitialState } from '@suite-common/receive';
 import { quotaManagerInitialState } from '@suite-common/suite-sync-quota-manager';
+import { mockFiatRatesApiState } from '@suite-common/wallet-core/mocks';
 
 import { type OnboardingState } from 'src/reducers/onboarding/onboardingReducer';
 import { type AppState } from 'src/reducers/store';
@@ -76,6 +77,7 @@ export const mockInitialAppState: AppState = {
     receive: receiveInitialState,
     persistentDeviceData: persistentDeviceDataInitialState,
     wallet: walletReducers(undefined, { type: '@@INIT' }),
+    fiatRatesApi: mockFiatRatesApiState(),
     desktopUpdate: desktopUpdateInitialState,
     router: {
         loaded: true,

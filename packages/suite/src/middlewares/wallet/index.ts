@@ -10,11 +10,11 @@ import {
     prepareTokenDefinitionsMiddleware,
 } from '@suite-common/token-definitions';
 import {
+    fiatRatesApi,
     prepareAccountsMiddleware,
     prepareBlockchainMiddleware,
     prepareBlockchainSubscriptionMiddleware,
     prepareEarnTransactionsMiddleware,
-    prepareFiatRatesMiddleware,
     prepareStakeMiddleware,
 } from '@suite-common/wallet-core';
 import {
@@ -44,7 +44,7 @@ export const getWalletMiddlewares = (
     prepareEarnTransactionsMiddleware(getExtra),
     walletMiddleware,
     prepareDiscoveryMiddleware(getExtra),
-    prepareFiatRatesMiddleware(getExtra),
+    fiatRatesApi.middleware,
     prepareTokenDefinitionsMiddleware(getExtra),
     prepareStakeMiddleware(getExtra),
     prepareStorageMiddleware(getExtra),

@@ -1,10 +1,16 @@
+import { fiatRatesApi } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { TransactionReviewOutputItemValues } from './TransactionReviewOutputItemValues';
-import { ETH_ACCOUNT_KEY, USDC_CONTRACT, mockWalletState } from '../__fixtures__/walletState';
+import {
+    ETH_ACCOUNT_KEY,
+    USDC_CONTRACT,
+    mockReviewFiatRatesApiState,
+    mockWalletState,
+} from '../__fixtures__/walletState';
 
 const ONE_ETH = '1000000000000000000';
 const ONE_USDC = '1000000';
@@ -26,7 +32,13 @@ describe('TransactionReviewOutputItemValues', () => {
                 value={value}
                 translationKey="transactionManagement.review.outputs.summary.totalAmount"
             />,
-            { preloadedState: { wallet: mockWalletState() } },
+            {
+                preloadedState: {
+                    wallet: mockWalletState(),
+                    fiatRatesApi: mockReviewFiatRatesApiState(),
+                },
+                middleware: [fiatRatesApi.middleware],
+            },
         );
 
     it('should render the translated row label', async () => {

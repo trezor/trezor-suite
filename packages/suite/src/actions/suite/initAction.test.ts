@@ -55,17 +55,14 @@ import {
 import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import {
     type InitBlockchainThunkDeps,
-    type PeriodicFetchFiatRatesThunkDeps,
     feesActions,
-    fetchFiatRatesThunk,
     initBlockchainThunk,
     initDevicesThunk,
     initStakeDataThunk,
     periodicCheckStakeDataThunk,
-    periodicFetchFiatRatesThunk,
+    prefetchFiatRatesThunk,
     preloadFeeInfoThunk,
     stakeDataActions,
-    updateMissingTxFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import {
     type WalletConnectInitThunkDeps,
@@ -179,16 +176,8 @@ const fixtures: Fixture[] = [
             initTokenDefinitionsThunk.pending.type,
             initTokenDefinitionsThunk.fulfilled.type,
             periodicCheckTokenDefinitionsThunk.fulfilled.type,
-            periodicFetchFiatRatesThunk.pending.type,
-            fetchFiatRatesThunk.pending.type,
-            fetchFiatRatesThunk.fulfilled.type,
-            periodicFetchFiatRatesThunk.fulfilled.type,
-            periodicFetchFiatRatesThunk.pending.type,
-            fetchFiatRatesThunk.pending.type,
-            fetchFiatRatesThunk.fulfilled.type,
-            periodicFetchFiatRatesThunk.fulfilled.type,
-            updateMissingTxFiatRatesThunk.pending.type,
-            updateMissingTxFiatRatesThunk.fulfilled.type,
+            prefetchFiatRatesThunk.pending.type,
+            prefetchFiatRatesThunk.pending.type,
             routerInitThunk.pending.type,
             onLocationChangeThunk.pending.type,
             routerLocationChange.type,
@@ -230,16 +219,8 @@ const fixtures: Fixture[] = [
             initTokenDefinitionsThunk.pending.type,
             initTokenDefinitionsThunk.fulfilled.type,
             periodicCheckTokenDefinitionsThunk.fulfilled.type,
-            periodicFetchFiatRatesThunk.pending.type,
-            fetchFiatRatesThunk.pending.type,
-            fetchFiatRatesThunk.fulfilled.type,
-            periodicFetchFiatRatesThunk.fulfilled.type,
-            periodicFetchFiatRatesThunk.pending.type,
-            fetchFiatRatesThunk.pending.type,
-            fetchFiatRatesThunk.fulfilled.type,
-            periodicFetchFiatRatesThunk.fulfilled.type,
-            updateMissingTxFiatRatesThunk.pending.type,
-            updateMissingTxFiatRatesThunk.fulfilled.type,
+            prefetchFiatRatesThunk.pending.type,
+            prefetchFiatRatesThunk.pending.type,
             routerInitThunk.pending.type,
             onLocationChangeThunk.pending.type,
             routerLocationChange.type,
@@ -298,7 +279,6 @@ type InitActionTestDeps = ConnectInitThunkDeps &
     GotoThunkDeps &
     InitBlockchainThunkDeps &
     InitTokenDefinitionsThunkDeps &
-    PeriodicFetchFiatRatesThunkDeps &
     WalletConnectInitThunkDeps &
     WithServices<InitThunkDesktopApiDep>;
 

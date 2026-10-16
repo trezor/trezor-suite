@@ -13,8 +13,16 @@ import {
     type YieldSessionState,
     initialStablecoinYieldSessionState,
 } from '@suite-common/wallet-core';
-import { toTokenSymbol } from '@suite-common/wallet-types';
+import { mockFiatRatesApiState } from '@suite-common/wallet-core/mocks';
+import {
+    type Rate,
+    type TokenAddress,
+    asTimestamp,
+    toTokenAddress,
+    toTokenSymbol,
+} from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { type WithServices } from '@trezor/redux-utils';
 
 import { type AppState } from 'src/reducers/store';
@@ -114,16 +122,29 @@ const createMockSession = (): YieldSessionState => ({
 
 let mockSession = createMockSession();
 
+const ethSymbol = asNetworkSymbol('eth');
+const tokenAddress = toTokenAddress(TOKEN_ADDRESS);
+
+const mockEthRate = (rateTokenAddress?: TokenAddress): Rate => ({
+    rate: ETH_RATE,
+    lastTickerTimestamp: asTimestamp(0),
+    lastSuccessfulFetchTimestamp: asTimestamp(0),
+    isLoading: false,
+    error: null,
+    ticker: { symbol: ethSymbol, tokenAddress: rateTokenAddress },
+});
+
 const getMockState = () => ({
     wallet: {
         settings: { localCurrency: 'usd' },
-        fiat: {
-            current: {
-                'eth-usd': { rate: ETH_RATE },
-                [`eth-${TOKEN_ADDRESS}-usd`]: { rate: ETH_RATE },
-            },
-        },
+        fiat: { historic: {} },
     },
+    fiatRatesApi: mockFiatRatesApiState({
+        current: {
+            [getFiatRateKey(ethSymbol, 'usd')]: mockEthRate(),
+            [getFiatRateKey(ethSymbol, 'usd', tokenAddress)]: mockEthRate(tokenAddress),
+        },
+    }),
 });
 
 const createTestServices = () =>

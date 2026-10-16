@@ -34,6 +34,7 @@ import {
     type PhishingRootState,
     type TransactionsRootState,
     type WalletSettingsRootState,
+    fiatRatesApi,
     formDraftReducer,
     initialWalletSettingsState,
     phishingInitialState,
@@ -61,7 +62,7 @@ import {
     renderHookWithStoreProvider,
     renderWithStoreProvider,
 } from '@suite-native/test-utils-store';
-import { getWalletState } from '@suite-native/trading-fixtures';
+import { getFiatRatesApiState, getWalletState } from '@suite-native/trading-fixtures';
 import { type TradingRootState, tradingSlice } from '@suite-native/trading-state';
 import {
     type NativeSendRootState,
@@ -82,6 +83,7 @@ const createBaseTradingPreloadedState = (tradeType: TradingType): TradingTestPre
         device: deviceInitialState,
         discreetMode: { isActive: false },
         deviceAuthorization: deviceAuthorizationInitialState,
+        fiatRatesApi: getFiatRatesApiState(),
         geolocation: geolocationInitialState,
         featureFlags: featureFlagsInitialState,
         locale: localeInitialState,
@@ -157,6 +159,7 @@ export const createTradingTestStore = (
         discreetMode: createStaticReducer(preloadedState.discreetMode),
         deviceAuthorization: createStaticReducer(preloadedState.deviceAuthorization),
         featureFlags: createStaticReducer(preloadedState.featureFlags),
+        fiatRatesApi: createStaticReducer(preloadedState.fiatRatesApi),
         geolocation: createStaticReducer(preloadedState.geolocation),
         locale: createStaticReducer(preloadedState.locale),
         messageSystem: createStaticReducer(preloadedState.messageSystem),
@@ -183,7 +186,7 @@ export const createTradingTestStore = (
         }),
     } as const;
 
-    return configureStore({
+    const store = configureStore({
         reducer,
         preloadedState,
         middleware: getDefaultMiddleware =>
@@ -191,8 +194,13 @@ export const createTradingTestStore = (
                 thunk: { extraArgument: {} },
                 serializableCheck: false,
                 immutableCheck: false,
-            }),
+            }).concat(fiatRatesApi.middleware),
     });
+    // RTK Query registers its middleware on the first action. Do it before tests subscribe to
+    // the store, so that they observe only the actions they dispatch.
+    store.dispatch({ type: '@test/trading-test-store-init' });
+
+    return store;
 };
 
 export const renderWithTradingProvider = <TServices extends object>(

@@ -3,12 +3,16 @@ import { Controller } from 'react-hook-form';
 
 import { useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
-import { AMOUNT_MAX_LENGTH, updateFiatRatesThunk } from '@suite-common/wallet-core';
+import {
+    AMOUNT_MAX_LENGTH,
+    fiatRatesApi,
+    getFiatRateMaxAgeInSeconds,
+    useFiatRate,
+} from '@suite-common/wallet-core';
 import {
     type BaseCurrencyOption,
-    type FiatRatesResult,
     type Output,
-    type Timestamp,
+    type TickerId,
     type TokenAddress,
 } from '@suite-common/wallet-types';
 import {
@@ -83,6 +87,19 @@ export const BaseCurrencyInput = ({
 
     const currencyValue = watch(currencyInputName);
     const baseCurrencyCode = currencyValue.value;
+
+    const ticker: TickerId = {
+        symbol: account.symbol,
+        tokenAddress: token?.contract as TokenAddress | undefined,
+        protocols: token?.protocols,
+    };
+
+    // Keeps the rate of the sent asset in the selected currency fresh while the form is shown.
+    useFiatRate({
+        ticker,
+        baseCurrencyCode: baseCurrencyCode || undefined,
+        isDisabled: !baseCurrencyCode,
+    });
 
     const baseCurrencyDecimals = getDecimalsForBaseCurrency({
         code: baseCurrencyCode,
@@ -173,37 +190,18 @@ export const BaseCurrencyInput = ({
                 onChange(selected);
 
                 // Get (fresh) fiat rates for newly selected currency
-                const updateFiatRatesResult = await dispatch(
-                    updateFiatRatesThunk({
-                        tickers: [
-                            {
-                                symbol: account.symbol,
-                                tokenAddress: token?.contract as TokenAddress,
-                                protocols: token?.protocols,
-                            },
-                        ],
-                        baseCurrencyCode: selected.value as BaseCurrencyCode,
-                        rateType: 'current',
-                        fetchAttemptTimestamp: Date.now() as Timestamp,
-                    }),
+                const { data: fiatRate } = await dispatch(
+                    fiatRatesApi.endpoints.getCurrentFiatRate.initiate(
+                        { ticker, baseCurrencyCode: selected.value as BaseCurrencyCode },
+                        {
+                            subscribe: false,
+                            forceRefetch: getFiatRateMaxAgeInSeconds('current'),
+                        },
+                    ),
                 );
 
-                if (updateFiatRatesResult.meta.requestStatus === 'fulfilled') {
-                    // not type-safe and should be addressed in the future
-                    const fiatRates =
-                        updateFiatRatesResult.payload as PromiseSettledResult<FiatRatesResult>[];
-
-                    const successfulResult = fiatRates.find(
-                        (result): result is PromiseFulfilledResult<FiatRatesResult> =>
-                            result.status === 'fulfilled',
-                    );
-
-                    if (successfulResult?.value?.rate) {
-                        recalculate(
-                            successfulResult.value.rate,
-                            selected.value as BaseCurrencyCode,
-                        );
-                    }
+                if (fiatRate?.rate) {
+                    recalculate(fiatRate.rate, selected.value as BaseCurrencyCode);
                 }
             }}
         />

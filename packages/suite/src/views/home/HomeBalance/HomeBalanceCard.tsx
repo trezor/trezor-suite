@@ -1,6 +1,7 @@
 import { Translation } from '@suite/intl';
 import { selectHomeAssetTotals } from '@suite-common/assets';
 import { useFormatters } from '@suite-common/formatters';
+import { useAccountsFiatRates } from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Card, Column, Row, Skeleton, Text } from '@trezor/components';
 import { type BigNumber } from '@trezor/utils';
@@ -39,6 +40,8 @@ const WeekChange = ({ weekChange, weekChangePercent }: WeekChangeProps) => {
 };
 
 export const HomeBalanceCard = () => {
+    useAccountsFiatRates();
+    useAccountsFiatRates({ rateType: 'lastWeek' });
     const { isDiscoveryRunning } = useDiscovery();
     const { fiatValue, weekChange, weekChangePercent } = useSelector(selectHomeAssetTotals);
 

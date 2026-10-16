@@ -8,6 +8,7 @@ import {
     selectFiatRatesByFiatRateKey,
     selectIsAmountInSats,
     selectIsBaseCurrencyInSats,
+    useFiatRate,
 } from '@suite-common/wallet-core';
 import {
     type BaseCurrencyAmount,
@@ -47,6 +48,10 @@ export const useCryptoFiatConverters = ({
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const isBaseCurrencyInSats = useSelector(selectIsBaseCurrencyInSats);
     const fiatRateKey = getFiatRateKey(symbolHelper, baseCurrencyCode, tokenContract);
+    useFiatRate({
+        ticker: symbol ? { symbol, tokenAddress: tokenContract } : undefined,
+        isDisabled: useHistoricRate,
+    });
     const currentRate = useSelector((state: FiatRatesRootState) =>
         selectFiatRatesByFiatRateKey(state, fiatRateKey),
     );

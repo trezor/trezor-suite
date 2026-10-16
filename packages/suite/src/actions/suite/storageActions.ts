@@ -52,7 +52,7 @@ import {
     type AccountsRootState,
     type BlockchainRootState,
     type EarnOnboardingRootState,
-    type FiatRatesRootState,
+    type FiatRatesHistoricRootState,
     type FormDraftRootState,
     type PhishingRootState,
     type PhishingState,
@@ -591,7 +591,7 @@ export const savePhishingMetadataThunk =
 export type RememberDeviceThunkState = AccountsRootState &
     CoinjoinRootState &
     EarnOnboardingRootState &
-    FiatRatesRootState &
+    FiatRatesHistoricRootState &
     FormDraftRootState &
     ReceiveRootState &
     SendRootState &

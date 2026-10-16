@@ -1,7 +1,9 @@
 import { type CryptoId } from 'invity-api';
 
+import { cleanup, waitFor } from '@suite-common/test-utils';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
-import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { fiatRatesApi, initialWalletSettingsState } from '@suite-common/wallet-core';
+import { mockFiatRatesApiState } from '@suite-common/wallet-core/mocks';
 import { type CurrentRate, type Timestamp } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 
@@ -35,27 +37,42 @@ const createMockRate = (rate: number, symbol: NetworkSymbol = btcSymbol): Curren
     },
 });
 
-const getPreloadedState = () => {
+type PreloadedState = TradingTestStateWithWalletSettings & {
+    fiatRatesApi?: ReturnType<typeof mockFiatRatesApiState>;
+};
+
+const getPreloadedState = (): PreloadedState => {
     const btcRate = createMockRate(50000);
     const fiatRateKey = getFiatRateKey(btcSymbol, 'usd');
 
-    return createTestStateWithWalletSettings({
-        fiat: {
-            current: {
-                [fiatRateKey]: btcRate,
-            },
-            lastWeek: {},
-            historic: {},
-        },
-    });
+    return {
+        ...createTestStateWithWalletSettings(),
+        fiatRatesApi: mockFiatRatesApiState({ current: { [fiatRateKey]: btcRate } }),
+    };
 };
+
+const stores: { dispatch: (action: ReturnType<typeof fiatRatesApi.util.resetApiState>) => void }[] =
+    [];
 
 const renderUseTradingFiatValues = (
     props: TradingFiatRatesProps,
-    preloadedState: TradingTestStateWithWalletSettings = createTestStateWithWalletSettings(),
-) => renderHookWithTradingStore(() => useTradingFiatValues(props), { preloadedState });
+    preloadedState: PreloadedState = createTestStateWithWalletSettings(),
+) => {
+    const rendered = renderHookWithTradingStore(() => useTradingFiatValues(props), {
+        preloadedState,
+    });
+    stores.push(rendered.services.store);
+
+    return rendered;
+};
 
 describe('useTradingFiatValues', () => {
+    afterEach(() => {
+        // Unmount first, so that mounted hooks do not refetch the reset cache.
+        cleanup();
+        stores.splice(0).forEach(store => store.dispatch(fiatRatesApi.util.resetApiState()));
+    });
+
     describe('returns null when required parameters are missing', () => {
         it('should return null when cryptoId is undefined', () => {
             const { result } = renderUseTradingFiatValues({
@@ -118,19 +135,15 @@ describe('useTradingFiatValues', () => {
             const ethRate = createMockRate(3000, ethSymbol);
             const fiatRateKey = getFiatRateKey(ethSymbol, 'eur');
 
-            const preloadedState = createTestStateWithWalletSettings({
-                settings: {
-                    ...initialWalletSettingsState,
-                    localCurrency: 'eur',
-                },
-                fiat: {
-                    current: {
-                        [fiatRateKey]: ethRate,
+            const preloadedState = {
+                ...createTestStateWithWalletSettings({
+                    settings: {
+                        ...initialWalletSettingsState,
+                        localCurrency: 'eur',
                     },
-                    lastWeek: {},
-                    historic: {},
-                },
-            });
+                }),
+                fiatRatesApi: mockFiatRatesApiState({ current: { [fiatRateKey]: ethRate } }),
+            };
 
             const { result } = renderUseTradingFiatValues(
                 {
@@ -165,26 +178,47 @@ describe('useTradingFiatValues', () => {
 
     describe('handles fiat rate unavailability', () => {
         it('should return null fiatValue when rate is not available', () => {
-            const preloadedState = createTestStateWithWalletSettings({
-                fiat: {
-                    current: {},
-                    lastWeek: {},
-                    historic: {},
-                },
+            const { result } = renderUseTradingFiatValues({
+                cryptoId: BITCOIN_CRYPTO_ID,
+                fiatCurrency: 'usd',
+                amount: '1',
             });
-
-            const { result } = renderUseTradingFiatValues(
-                {
-                    cryptoId: BITCOIN_CRYPTO_ID,
-                    fiatCurrency: 'usd',
-                    amount: '1',
-                },
-                preloadedState,
-            );
 
             expect(result.current).not.toBeNull();
             expect(result.current?.fiatValue).toBeNull();
-            expect(result.current?.fiatRate).toBeUndefined();
+            expect(result.current?.fiatRate?.rate).toBeUndefined();
+        });
+    });
+
+    describe('subscribes to the fiat rate', () => {
+        it('should request a fresh rate of the asset in the chosen fiat currency', async () => {
+            const { services } = renderUseTradingFiatValues({
+                cryptoId: BITCOIN_CRYPTO_ID,
+                fiatCurrency: 'eur',
+                amount: '1',
+            });
+
+            await waitFor(() =>
+                expect(
+                    services.store.getState().fiatRatesApi.queries['getCurrentFiatRate(btc-eur)']
+                        ?.originalArgs,
+                ).toEqual({
+                    ticker: { symbol: btcSymbol, tokenAddress: undefined, protocols: undefined },
+                    baseCurrencyCode: 'eur',
+                    forceFetchToken: true,
+                    skipCache: true,
+                }),
+            );
+        });
+
+        it('should not request a rate without a fiat currency', () => {
+            const { services } = renderUseTradingFiatValues({
+                cryptoId: BITCOIN_CRYPTO_ID,
+                fiatCurrency: undefined,
+                amount: '1',
+            });
+
+            expect(services.store.getState().fiatRatesApi.queries).toEqual({});
         });
     });
 

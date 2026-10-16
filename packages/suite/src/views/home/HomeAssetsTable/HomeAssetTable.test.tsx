@@ -7,6 +7,8 @@ import { mockNetworkIcon } from '@suite-common/networks/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { fiatRatesApi } from '@suite-common/wallet-core';
+import { mockFiatRatesApiState } from '@suite-common/wallet-core/mocks';
 import { type CurrentRate, type TokenAddress } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
@@ -71,21 +73,21 @@ const getInitialState = (): AppState => ({
             enabledNetworks: [BTC, ETH],
             localCurrency: 'usd',
         },
-        fiat: {
-            ...mockInitialAppState.wallet.fiat,
-            current: {
-                [getFiatRateKey(ETH, 'usd')]: mockRate(3000),
-                [getFiatRateKey(BTC, 'usd')]: mockRate(100000),
-                [getFiatRateKey(ETH, 'usd', USDC_ON_ETH)]: mockRate(1),
-            },
-        },
     },
+    fiatRatesApi: mockFiatRatesApiState({
+        current: {
+            [getFiatRateKey(ETH, 'usd')]: mockRate(3000),
+            [getFiatRateKey(BTC, 'usd')]: mockRate(100000),
+            [getFiatRateKey(ETH, 'usd', USDC_ON_ETH)]: mockRate(1),
+        },
+    }),
 });
 
 describe('the home-asset table', () => {
     it('shows one row per asset and network, with the network it is held on', () => {
         const { services } = createTestCompositionRoot<void, AppState>({
             preloadedState: getInitialState(),
+            middleware: [fiatRatesApi.middleware],
         });
 
         renderWithProviders({ ...services, networks: { networkIcon } }, <HomeAssetTable />);
@@ -100,6 +102,7 @@ describe('the home-asset table', () => {
     it('puts the most valuable asset first', () => {
         const { services } = createTestCompositionRoot<void, AppState>({
             preloadedState: getInitialState(),
+            middleware: [fiatRatesApi.middleware],
         });
 
         renderWithProviders({ ...services, networks: { networkIcon } }, <HomeAssetTable />);

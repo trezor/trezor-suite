@@ -8,6 +8,9 @@ import { events } from '@suite-common/analytics';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type YieldFlowFormValues } from '@suite-common/wallet-core';
+import { mockFiatRatesApiState } from '@suite-common/wallet-core/mocks';
+import { type Rate, asTimestamp } from '@suite-common/wallet-types';
+import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { type WithServices } from '@trezor/redux-utils';
 
 import { type AppState } from 'src/reducers/store';
@@ -17,11 +20,23 @@ import { useYieldFiatInput } from './useYieldFiatInput';
 const ETH_RATE = 3333.35;
 const ethSymbol = asNetworkSymbol('eth');
 
+const ETH_USD_RATE: Rate = {
+    rate: ETH_RATE,
+    lastTickerTimestamp: asTimestamp(0),
+    lastSuccessfulFetchTimestamp: asTimestamp(0),
+    isLoading: false,
+    error: null,
+    ticker: { symbol: ethSymbol },
+};
+
 const mockState = {
     wallet: {
         settings: { localCurrency: 'usd' },
-        fiat: { current: { 'eth-usd': { rate: ETH_RATE } } },
+        fiat: { historic: {} },
     },
+    fiatRatesApi: mockFiatRatesApiState({
+        current: { [getFiatRateKey(ethSymbol, 'usd')]: ETH_USD_RATE },
+    }),
 };
 
 const mockReport = jest.fn();

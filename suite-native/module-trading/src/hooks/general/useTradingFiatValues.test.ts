@@ -27,15 +27,16 @@ jest.mock('@suite-common/fiat-services', () => ({
 
 const getOverrides = (
     walletOverrides: Record<string, unknown> = {},
-): PreloadedStatePartial<TradingTestPreloadedState> => ({
-    wallet: {
-        ...mockWalletFiatRatesAndSettings({
-            [getFiatRateKey(asNetworkSymbol('eth'), 'usd', usdcAsset.contractAddress!)]:
-                createMockRate(1, asNetworkSymbol('eth')),
-        }),
-        ...walletOverrides,
-    },
-});
+): PreloadedStatePartial<TradingTestPreloadedState> => {
+    const { wallet, fiatRatesApi } = mockWalletFiatRatesAndSettings({
+        [getFiatRateKey(asNetworkSymbol('eth'), 'usd', usdcAsset.contractAddress!)]: createMockRate(
+            1,
+            asNetworkSymbol('eth'),
+        ),
+    });
+
+    return { wallet: { ...wallet, ...walletOverrides }, fiatRatesApi };
+};
 
 const renderUseTradingFiatValues = async (
     amount: string | undefined,

@@ -10,7 +10,9 @@ import { type CryptoId } from 'invity-api';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type TradingAssetOption, type TradingBuyFormProps } from '@suite-common/trading';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
+import { mockFiatRatesApiState } from '@suite-common/wallet-core/mocks';
 import { type Rate, asTimestamp } from '@suite-common/wallet-types';
+import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { intermediaryTheme } from '@trezor/components';
 import { PROTO } from '@trezor/connect';
@@ -165,16 +167,14 @@ const renderBaseCurrencyAmount = ({
                     localCurrency,
                     bitcoinAmountUnit,
                 },
-                fiat: {
-                    ...mockInitialAppState.wallet.fiat,
-                    current: {
-                        ...mockInitialAppState.wallet.fiat.current,
-                        'btc-usd': { ...BTC_USD_RATE, rate: btcUsdRate },
-                        'eth-btc': ETH_BTC_RATE,
-                        'eth-usd': ETH_USD_RATE,
-                    },
-                },
             },
+            fiatRatesApi: mockFiatRatesApiState({
+                current: {
+                    [getFiatRateKey(BTC_SYMBOL, 'usd')]: { ...BTC_USD_RATE, rate: btcUsdRate },
+                    [getFiatRateKey(ETH_SYMBOL, 'btc')]: ETH_BTC_RATE,
+                    [getFiatRateKey(ETH_SYMBOL, 'usd')]: ETH_USD_RATE,
+                },
+            }),
         },
     });
 

@@ -1,10 +1,15 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { fiatRatesApi } from '@suite-common/wallet-core';
 import type { FormState } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { FeeSelectorRow } from './FeeSelectorRow';
-import { BTC_ACCOUNT_KEY, getWalletState } from '../../__fixtures__/walletState';
+import {
+    BTC_ACCOUNT_KEY,
+    getFiatRatesApiState,
+    getWalletState,
+} from '../../__fixtures__/walletState';
 
 const noopThunk = jest.fn();
 const mockOpenModal = jest.fn();
@@ -23,6 +28,7 @@ const btcSymbol = asNetworkSymbol('btc');
 describe('FeeSelectorRow', () => {
     const getPreloadedState = () => ({
         wallet: getWalletState(),
+        fiatRatesApi: getFiatRatesApiState(),
     });
 
     beforeEach(() => {
@@ -38,7 +44,7 @@ describe('FeeSelectorRow', () => {
                 formDraft={null}
                 isReadOnly={isReadOnly}
             />,
-            { preloadedState: getPreloadedState() },
+            { preloadedState: getPreloadedState(), middleware: [fiatRatesApi.middleware] },
         );
 
     it('should render the fee row with its testID for a Bitcoin account', async () => {
@@ -83,7 +89,7 @@ describe('FeeSelectorRow', () => {
                 selectedFee="normal"
                 formDraft={null}
             />,
-            { preloadedState: getPreloadedState() },
+            { preloadedState: getPreloadedState(), middleware: [fiatRatesApi.middleware] },
         );
 
         expect(toJSON()).toBeNull();
@@ -105,6 +111,7 @@ describe('FeeSelectorRow', () => {
                     },
                 },
             },
+            fiatRatesApi: getFiatRatesApiState(),
         };
 
         const { queryByTestId, getByText } = await renderWithStoreProvider(
@@ -114,7 +121,7 @@ describe('FeeSelectorRow', () => {
                 selectedFee="normal"
                 formDraft={{} as FormState}
             />,
-            { preloadedState },
+            { preloadedState, middleware: [fiatRatesApi.middleware] },
         );
 
         expect(queryByTestId('@transactionManagement/fee-selector-row')).toBeNull();

@@ -17,6 +17,7 @@ import {
     selectTickerFromAccounts,
 } from './fiatRatesSelectors';
 import { type FiatRatesRootState } from './fiatRatesTypes';
+import { mockFiatRatesApiState } from '../../mocks/mockFiatRatesApiState';
 import { type AccountsRootState } from '../accounts/accountsReducer';
 
 const STANDARD_WALLET_SSID = 'standardWallet@device_id:0' as const;
@@ -58,7 +59,7 @@ const getState = (
 ): State =>
     ({
         wallet: {
-            fiat: { current: {}, lastWeek: {}, historic: {} },
+            fiat: { historic: {} },
             accounts,
         },
         tokenDefinitions: {
@@ -140,7 +141,7 @@ describe('selectHistoricFiatRatesByTimestamp', () => {
                 historic: { [BTC_USD]: { [HOUR_ALIGNED_TIMESTAMP]: HISTORIC_RATE } },
             },
         },
-    } as unknown as FiatRatesRootState;
+    } as FiatRatesRootState;
 
     it('returns the historic rate for the timestamp rounded to the nearest past hour', () => {
         const timestampWithinSameHour = (HOUR_ALIGNED_TIMESTAMP + 1800) as Timestamp;
@@ -183,7 +184,26 @@ describe('selectCurrentFiatRatesByFiatRateKeys', () => {
     const xrpRate = createRate(1);
 
     const getCurrentRatesState = (current: Partial<Record<CryptoBaseCurrencyPair, Rate>>) =>
-        ({ wallet: { fiat: { current, lastWeek: {}, historic: {} } } }) as FiatRatesRootState;
+        ({
+            fiatRatesApi: mockFiatRatesApiState({ current }),
+            wallet: { fiat: { historic: {} } },
+        }) as FiatRatesRootState;
+
+    // Replaces one cache entry and keeps the others, as RTK Query does when one rate is refetched.
+    const withCurrentRate = (
+        state: FiatRatesRootState,
+        fiatRateKey: CryptoBaseCurrencyPair,
+        rate: Rate,
+    ): FiatRatesRootState => ({
+        ...state,
+        fiatRatesApi: {
+            ...state.fiatRatesApi,
+            queries: {
+                ...state.fiatRatesApi.queries,
+                ...mockFiatRatesApiState({ current: { [fiatRateKey]: rate } }).queries,
+            },
+        },
+    });
 
     it('returns only the rates for the provided fiat rate keys', () => {
         const state = getCurrentRatesState({
@@ -207,18 +227,16 @@ describe('selectCurrentFiatRatesByFiatRateKeys', () => {
     });
 
     it('returns an empty object when fiat rates are not loaded yet', () => {
-        const state = { wallet: {} } as FiatRatesRootState;
+        const state = getCurrentRatesState({});
 
         expect(selectCurrentFiatRatesByFiatRateKeys(state, [BTC_USD])).toEqual({});
     });
 
     it('keeps the same reference when unrelated rates change', () => {
-        const first = selectCurrentFiatRatesByFiatRateKeys(
-            getCurrentRatesState({ [BTC_USD]: btcRate, [XRP_USD]: xrpRate }),
-            [BTC_USD],
-        );
+        const state = getCurrentRatesState({ [BTC_USD]: btcRate, [XRP_USD]: xrpRate });
+        const first = selectCurrentFiatRatesByFiatRateKeys(state, [BTC_USD]);
         const second = selectCurrentFiatRatesByFiatRateKeys(
-            getCurrentRatesState({ [BTC_USD]: btcRate, [XRP_USD]: createRate(2) }),
+            withCurrentRate(state, XRP_USD, createRate(2)),
             [BTC_USD],
         );
 
@@ -226,31 +244,24 @@ describe('selectCurrentFiatRatesByFiatRateKeys', () => {
     });
 
     it('keeps the same reference across recreated state and keys arrays', () => {
-        const first = selectCurrentFiatRatesByFiatRateKeys(
-            getCurrentRatesState({ [BTC_USD]: btcRate, [ETH_USD]: ethRate }),
-            [BTC_USD, ETH_USD],
-        );
-        const second = selectCurrentFiatRatesByFiatRateKeys(
-            getCurrentRatesState({ [BTC_USD]: btcRate, [ETH_USD]: ethRate }),
-            [BTC_USD, ETH_USD],
-        );
+        const state = getCurrentRatesState({ [BTC_USD]: btcRate, [ETH_USD]: ethRate });
+        const first = selectCurrentFiatRatesByFiatRateKeys(state, [BTC_USD, ETH_USD]);
+        const second = selectCurrentFiatRatesByFiatRateKeys({ ...state }, [BTC_USD, ETH_USD]);
 
         expect(second).toBe(first);
     });
 
     it('returns a new reference when a requested rate changes', () => {
-        const first = selectCurrentFiatRatesByFiatRateKeys(
-            getCurrentRatesState({ [BTC_USD]: btcRate }),
-            [BTC_USD],
-        );
+        const state = getCurrentRatesState({ [BTC_USD]: btcRate });
+        const first = selectCurrentFiatRatesByFiatRateKeys(state, [BTC_USD]);
         const updatedBtcRate = createRate(50000);
         const second = selectCurrentFiatRatesByFiatRateKeys(
-            getCurrentRatesState({ [BTC_USD]: updatedBtcRate }),
+            withCurrentRate(state, BTC_USD, updatedBtcRate),
             [BTC_USD],
         );
 
         expect(second).not.toBe(first);
-        expect(second[BTC_USD]).toBe(updatedBtcRate);
+        expect(second[BTC_USD]).toEqual(updatedBtcRate);
     });
 
     it('returns different references for different key sets sharing a rate', () => {
@@ -285,20 +296,17 @@ describe('selectCurrentFiatRatesByFiatRateKeys', () => {
             selectCurrentFiatRatesByFiatRateKeys(state, [ETH_USDC_LOWERCASE_USD])[
                 ETH_USDC_LOWERCASE_USD
             ],
-        ).toBe(exactRate);
+        ).toEqual(exactRate);
     });
 
     it('keeps the same reference when a case-insensitive match is unchanged', () => {
-        const usdcRate = createRate(1);
-        const first = selectCurrentFiatRatesByFiatRateKeys(
-            getCurrentRatesState({ [ETH_USDC_CHECKSUMMED_USD]: usdcRate, [BTC_USD]: btcRate }),
-            [ETH_USDC_LOWERCASE_USD],
-        );
+        const state = getCurrentRatesState({
+            [ETH_USDC_CHECKSUMMED_USD]: createRate(1),
+            [BTC_USD]: btcRate,
+        });
+        const first = selectCurrentFiatRatesByFiatRateKeys(state, [ETH_USDC_LOWERCASE_USD]);
         const second = selectCurrentFiatRatesByFiatRateKeys(
-            getCurrentRatesState({
-                [ETH_USDC_CHECKSUMMED_USD]: usdcRate,
-                [BTC_USD]: createRate(50000),
-            }),
+            withCurrentRate(state, BTC_USD, createRate(50000)),
             [ETH_USDC_LOWERCASE_USD],
         );
 

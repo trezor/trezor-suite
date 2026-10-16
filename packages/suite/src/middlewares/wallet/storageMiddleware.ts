@@ -47,15 +47,17 @@ import { tokenDefinitionsActions } from '@suite-common/token-definitions/src/tok
 import { tradingActions } from '@suite-common/trading';
 import {
     type AccountsRootState,
-    type FiatRatesRootState,
+    type FiatRatesHistoricRootState,
     type WalletSettingsRootState,
     accountsActions,
     blockchainActions,
     changeNetworks,
     earnOnboardingActions,
     explorerActions,
+    fiatRatesApi,
     phishingActions,
     selectAccountByKey,
+    selectAccounts,
     selectAccountsByDeviceState,
     selectHistoricFiatRates,
     selectIsDeviceAutoEjectEnabled,
@@ -70,7 +72,6 @@ import {
     setSuspiciousTransactionsFilter,
     stellarContractTokensActions,
     transactionsActions,
-    updateTxsFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { findAccountDevice, isAccountSuccessful } from '@suite-common/wallet-utils';
@@ -99,7 +100,7 @@ type StorageMiddlewareDeps = WithServices<DbDep>;
 
 export type StorageMiddlewareState = AccountsRootState &
     DeviceRootState &
-    FiatRatesRootState &
+    FiatRatesHistoricRootState &
     WalletSettingsRootState &
     FlagsRootState &
     SuiteSettingsRootState & {
@@ -123,6 +124,15 @@ type RememberedDeviceSaveParams<TAction> = {
 type RememberedDeviceSaveDeps = DbDep & {
     dispatch: Dispatch;
     getState: () => StorageMiddlewareState;
+};
+
+const saveAccountHistoricRates = (deps: RememberedDeviceSaveDeps, accountKey: AccountKey) => {
+    storageActions.removeAccountHistoricRates(deps, accountKey);
+
+    const historicRates = selectHistoricFiatRates(deps.getState());
+    if (historicRates) {
+        deps.dispatch(storageActions.saveAccountHistoricRatesThunk(accountKey, historicRates));
+    }
 };
 
 type RememberedDeviceHandler = {
@@ -252,30 +262,10 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
         },
     }),
     defineRememberedDeviceHandler({
-        match: [
-            transactionsActions.removeTransaction.match,
-            updateTxsFiatRatesThunk.fulfilled.match,
-        ],
-        getDevice: (action, state) => {
-            const { account } = action.payload;
-
-            return account ? getDeviceByAccountKey(account.key, state) : undefined;
-        },
+        match: [transactionsActions.removeTransaction.match],
+        getDevice: (action, state) => getDeviceByAccountKey(action.payload.account.key, state),
         save: ({ action }, deps) => {
-            const { account } = action.payload;
-
-            if (!account) {
-                return;
-            }
-
-            storageActions.removeAccountHistoricRates(deps, account.key);
-
-            const historicRates = selectHistoricFiatRates(deps.getState());
-            if (historicRates) {
-                deps.dispatch(
-                    storageActions.saveAccountHistoricRatesThunk(account.key, historicRates),
-                );
-            }
+            saveAccountHistoricRates(deps, action.payload.account.key);
         },
     }),
     defineRememberedDeviceHandler({
@@ -607,6 +597,26 @@ export const prepareStorageMiddleware = createMiddlewareWithExtraDeps<
         api.dispatch(storageActions.saveMetadataSettingsThunk());
     } else if (setDebugSettings.match(action)) {
         api.dispatch(storageActions.saveCoinjoinDebugSettingsThunk());
+    } else if (fiatRatesApi.endpoints.getHistoricFiatRates.matchFulfilled(action)) {
+        // Not a rememberedDeviceHandlers entry: historic rates of a coin or token are shared by
+        // all accounts of its network, so the remembered-device check is applied per account.
+        const { symbol } = action.meta.arg.originalArgs.ticker;
+        const state = api.getState();
+        selectAccounts(state)
+            .filter(account => account.symbol === symbol)
+            .forEach(account => {
+                const device = findAccountDevice(account, selectDevices(state));
+                if (device && getIsDeviceRemembered(device)) {
+                    saveAccountHistoricRates(
+                        {
+                            db: api.extra.services.db,
+                            dispatch: api.dispatch,
+                            getState: api.getState,
+                        },
+                        account.key,
+                    );
+                }
+            });
     } else if (clientOnPrisonEvent.match(action)) {
         // Not a rememberedDeviceHandlers entry: unlike those handlers (one action ->
         // one device), this one action affects multiple accounts on potentially

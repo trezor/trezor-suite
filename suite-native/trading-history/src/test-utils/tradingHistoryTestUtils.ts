@@ -26,7 +26,7 @@ import {
     mergePreloadedState,
     renderWithStoreProvider,
 } from '@suite-native/test-utils-store';
-import { getWalletState } from '@suite-native/trading-fixtures';
+import { getFiatRatesApiState, getWalletState } from '@suite-native/trading-fixtures';
 import { type TradingRootState } from '@suite-native/trading-state';
 
 export type { PreloadedStatePartial } from '@suite-native/test-utils-store';
@@ -40,6 +40,7 @@ const createBaseTradingPreloadedState = (): TradingTestPreloadedState => ({
     locale: localeInitialState,
     messageSystem: messageSystemInitialState,
     suiteSyncData: initialSuiteSyncDataState,
+    fiatRatesApi: getFiatRatesApiState(),
     wallet: {
         ...getWalletState({ tradeType: 'buy' }),
     },

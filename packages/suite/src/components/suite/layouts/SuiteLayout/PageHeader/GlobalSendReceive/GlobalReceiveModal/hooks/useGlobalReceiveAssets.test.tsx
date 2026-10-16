@@ -13,6 +13,7 @@ import {
     fetchRankedTokenDefinitions,
 } from '@suite-common/token-definitions';
 import { getMainnets } from '@suite-common/wallet-config';
+import { mockFiatRatesApiState } from '@suite-common/wallet-core/mocks';
 import { FirmwareType } from '@trezor/device-utils';
 
 import { type AppState } from 'src/reducers/store';
@@ -43,6 +44,7 @@ const renderAssets = (
             device: { devices: [], selectedDevice: mockSuiteDevice({ firmwareType }) },
             networks: Object.fromEntries(getMainnets().map(network => [network.symbol, network])),
             wallet: { accounts: [], settings: { enabledNetworks: [], localCurrency: 'usd' } },
+            fiatRatesApi: mockFiatRatesApiState(),
         },
     });
     const rendered = renderHookWithStoreProvider(useGlobalReceiveAssets, {

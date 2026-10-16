@@ -6,27 +6,22 @@ import {
     getSupportedDefinitionTypes,
     getTokenDefinitionThunk,
     periodicCheckTokenDefinitionsThunk,
-    selectFilterKnownTokens,
     selectNetworkTokenDefinitions,
 } from '@suite-common/token-definitions';
 import { type AccountType, type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type BlockchainRootState,
-    type UpdateFiatRatesThunkState,
     accountsActions,
     selectAccountsByNetworkAndDeviceState,
     selectNetworkBlockchainInfo,
-    updateFiatRatesThunk,
 } from '@suite-common/wallet-core';
-import { type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
 import {
     getAccountIdentity,
     getBackendFromSettings,
     shouldUseIdentities,
 } from '@suite-common/wallet-utils';
 import { isNetworkWithTokens } from '@suite-native/tokens';
-import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import TrezorConnect, { type AccountInfo } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import type { Bip43Path } from '@trezor/crypto-utils';
@@ -123,15 +118,16 @@ export const importAccountThunk = createThunk<
     },
 );
 
-type GetAccountInfoThunkState = UpdateFiatRatesThunkState;
+type GetAccountInfoThunkState = TokenDefinitionsRootState;
 
+// Fiat rates of the imported account are not fetched here, the screens showing them subscribe.
 export const getAccountInfoThunk = createThunk<
     AccountInfo,
-    { symbol: NetworkSymbol; baseCurrencyCode: BaseCurrencyCode; xpubAddress: string },
+    { symbol: NetworkSymbol; xpubAddress: string },
     { rejectValue: string; state: GetAccountInfoThunkState }
 >(
     `${ACCOUNTS_IMPORT_MODULE_PREFIX}/getAccountInfo`,
-    async ({ symbol, baseCurrencyCode, xpubAddress }, { dispatch, rejectWithValue, getState }) => {
+    async ({ symbol, xpubAddress }, { dispatch, rejectWithValue, getState }) => {
         // Connect requires apostrophe in Taproot descriptors thus a conversion is necessary.
         const taprootXpubWithApostrophes = convertTaprootXpub({
             xpub: xpubAddress,
@@ -139,32 +135,18 @@ export const getAccountInfoThunk = createThunk<
         });
 
         try {
-            const [fetchedAccountInfo] = await Promise.all([
-                TrezorConnect.getAccountInfo({
-                    coin: asCoinSymbol(symbol),
-                    identity: shouldUseIdentities(symbol)
-                        ? getAccountIdentity({
-                              deviceState: PORTFOLIO_TRACKER_DEVICE_STATE,
-                          })
-                        : undefined,
-                    descriptor: taprootXpubWithApostrophes ?? xpubAddress,
-                    details: 'txs',
-                    suppressBackupWarning: true,
-                    protocols: getNetworkType(symbol) === 'ethereum' ? ['erc4626'] : undefined,
-                }),
-                dispatch(
-                    updateFiatRatesThunk({
-                        tickers: [
-                            {
-                                symbol,
-                            },
-                        ],
-                        rateType: 'current',
-                        baseCurrencyCode,
-                        fetchAttemptTimestamp: Date.now() as Timestamp,
-                    }),
-                ),
-            ]);
+            const fetchedAccountInfo = await TrezorConnect.getAccountInfo({
+                coin: asCoinSymbol(symbol),
+                identity: shouldUseIdentities(symbol)
+                    ? getAccountIdentity({
+                          deviceState: PORTFOLIO_TRACKER_DEVICE_STATE,
+                      })
+                    : undefined,
+                descriptor: taprootXpubWithApostrophes ?? xpubAddress,
+                details: 'txs',
+                suppressBackupWarning: true,
+                protocols: getNetworkType(symbol) === 'ethereum' ? ['erc4626'] : undefined,
+            });
 
             if (fetchedAccountInfo?.success) {
                 const tokenDefinitions = selectNetworkTokenDefinitions(getState(), symbol);
@@ -183,27 +165,6 @@ export const getAccountInfoThunk = createThunk<
                     });
                     await Promise.all(promises);
                 }
-                // fetch fiat rates for all tokens of newly discovered account
-                // Even that there is check in updateFiatRatesThunk, it is better to do it here and do not dispatch thunk at all because it has some overhead and sometimes there could be lot of tokens
-                const knownTokens = selectFilterKnownTokens(
-                    getState(),
-                    symbol,
-                    fetchedAccountInfo.payload.tokens ?? [],
-                );
-
-                const tickers = knownTokens.map(token => ({
-                    symbol,
-                    tokenAddress: token.contract as TokenAddress,
-                }));
-
-                dispatch(
-                    updateFiatRatesThunk({
-                        tickers,
-                        rateType: 'current',
-                        baseCurrencyCode,
-                        fetchAttemptTimestamp: Date.now() as Timestamp,
-                    }),
-                );
 
                 return fetchedAccountInfo.payload;
             } else {

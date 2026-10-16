@@ -1,9 +1,10 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { fiatRatesApi } from '@suite-common/wallet-core';
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { FeeSummaryRow, type FeeSummaryRowProps } from './FeeSummaryRow';
-import { getWalletState } from '../../__fixtures__/walletState';
+import { getFiatRatesApiState, getWalletState } from '../../__fixtures__/walletState';
 
 const btcSymbol = asNetworkSymbol('btc');
 const ethSymbol = asNetworkSymbol('eth');
@@ -18,11 +19,13 @@ const defaultProps: FeeSummaryRowProps = {
 describe('FeeSummaryRow', () => {
     const getPreloadedState = () => ({
         wallet: getWalletState(),
+        fiatRatesApi: getFiatRatesApiState(),
     });
 
     const renderRow = async (props: Partial<FeeSummaryRowProps> = {}) =>
         await renderWithStoreProvider(<FeeSummaryRow {...defaultProps} {...props} />, {
             preloadedState: getPreloadedState(),
+            middleware: [fiatRatesApi.middleware],
         });
 
     it('should render fee label for bitcoin', async () => {

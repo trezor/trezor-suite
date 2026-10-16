@@ -1,22 +1,18 @@
-import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
     type FiatRatesRootState,
     type WalletSettingsRootState,
     selectBaseCurrency,
-    updateFiatRatesThunk,
+    useFiatRate,
 } from '@suite-common/wallet-core';
-import { type Timestamp } from '@suite-common/wallet-types';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { selectFiatRateByTradeableAsset } from '@suite-native/trading-state';
 import { type TradeableAsset } from '@suite-native/trading-types';
-import { useServices } from '@trezor/dependency-injection';
-import { injectDispatch } from '@trezor/redux-utils';
 
 type UseTradeableAssetFiatRateOptions = {
-    // Fetches the current rate when the asset or base currency changes. Only needed for assets the
-    // wallet may not hold, the wallet keeps rates of its own assets up to date.
+    // Subscribes to a fresh current rate of the asset in the base currency. Only needed for assets
+    // the wallet may not hold, rates of its own assets are subscribed to by the wallet views.
     shouldFetchCurrentRate?: boolean;
 };
 
@@ -29,27 +25,15 @@ export const useTradeableAssetFiatRate = (
         selectFiatRateByTradeableAsset(state, asset),
     );
 
-    const { dispatch } = useServices(injectDispatch);
-
     const symbol = getSymbolFromTradeableAsset(asset);
-    const contractAddress = asset?.contractAddress;
 
-    useEffect(() => {
-        if (!shouldFetchCurrentRate || !symbol) {
-            return;
-        }
-
-        dispatch(
-            updateFiatRatesThunk({
-                tickers: [{ symbol, tokenAddress: contractAddress }],
-                baseCurrencyCode: baseCurrency,
-                rateType: 'current',
-                fetchAttemptTimestamp: Date.now() as Timestamp,
-                forceFetchToken: true,
-                skipCache: true,
-            }),
-        );
-    }, [baseCurrency, contractAddress, dispatch, shouldFetchCurrentRate, symbol]);
+    useFiatRate({
+        ticker: symbol ? { symbol, tokenAddress: asset?.contractAddress } : undefined,
+        baseCurrencyCode: baseCurrency,
+        forceFetchToken: true,
+        skipCache: true,
+        isDisabled: !shouldFetchCurrentRate,
+    });
 
     return rate;
 };

@@ -23,14 +23,12 @@ import {
     type InitBlockchainThunkDeps,
     type InitBlockchainThunkState,
     type InitStakeDataThunkState,
-    type PeriodicFetchFiatRatesThunkDeps,
-    type PeriodicFetchFiatRatesThunkState,
+    type PrefetchFiatRatesThunkState,
     createImportedDeviceThunk,
     initBlockchainThunk,
     initDevicesThunk,
     initStakeDataThunk,
-    periodicFetchFiatRatesThunk,
-    selectBaseCurrency,
+    prefetchFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import {
     type WalletConnectInitThunkDeps,
@@ -56,14 +54,13 @@ type PostOnboardingInitThunkState = ConnectInitThunkState &
     InitBlockchainThunkState &
     InitTokenDefinitionsThunkState &
     InitStakeDataThunkState &
-    PeriodicFetchFiatRatesThunkState &
+    PrefetchFiatRatesThunkState &
     CreateImportedDeviceThunkState &
     WalletConnectInitThunkState;
 
 type PostOnboardingInitThunkDeps = ConnectInitThunkDeps &
     InitBlockchainThunkDeps &
     InitTokenDefinitionsThunkDeps &
-    PeriodicFetchFiatRatesThunkDeps &
     WalletConnectInitThunkDeps;
 
 export const postOnboardingInitThunk = createThunk<
@@ -91,12 +88,8 @@ export const postOnboardingInitThunk = createThunk<
     dispatch(periodicCheckTokenDefinitionsThunk());
     dispatch(initStakeDataThunk());
 
-    dispatch(
-        periodicFetchFiatRatesThunk({
-            rateType: 'current',
-            localCurrency: selectBaseCurrency(getState()),
-        }),
-    );
+    // The screens showing fiat rates keep them fresh, this only warms up the cache.
+    dispatch(prefetchFiatRatesThunk({ rateType: 'current' }));
 
     // Create Portfolio Tracker device if it doesn't exist
     dispatch(createImportedDeviceThunk());

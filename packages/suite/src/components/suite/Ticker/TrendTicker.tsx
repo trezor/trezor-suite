@@ -2,7 +2,12 @@ import styled from 'styled-components';
 
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { selectBaseCurrency, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
+import {
+    createStableTickerId,
+    selectBaseCurrency,
+    selectFiatRatesByFiatRateKey,
+    useFiatRate,
+} from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { Skeleton } from '@trezor/components';
@@ -35,6 +40,9 @@ export const TrendTicker = ({
     const shouldAnimate = useSelector(selectShouldAnimateLoadingSkeleton);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const fiatRateKey = getFiatRateKey(symbol, baseCurrencyCode, contractAddress);
+    const ticker = createStableTickerId(symbol, contractAddress);
+    useFiatRate({ ticker });
+    useFiatRate({ ticker, rateType: 'lastWeek' });
     const lastWeekRate = useSelector(state =>
         selectFiatRatesByFiatRateKey(state, fiatRateKey, 'lastWeek'),
     );

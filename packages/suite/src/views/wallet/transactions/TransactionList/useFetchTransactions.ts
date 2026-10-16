@@ -6,10 +6,12 @@ import {
     fetchAllTransactionsForAccountThunk,
     fetchTransactionsPageThunk,
     selectAccountTotalTransactions,
+    selectAccountTransactions,
     selectAccountTransactionsWithNulls,
     selectActiveDustPhishingThreshold,
     selectIsLoadingAccountTransactions,
     selectPhishingTransactionsContext,
+    useHistoricFiatRates,
 } from '@suite-common/wallet-core';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -161,6 +163,9 @@ export const useVisibleTransactions = ({
     const allTransactions = useSelector(state =>
         selectAccountTransactionsWithNulls(state, account.key),
     );
+    const loadedTransactions = useSelector(state => selectAccountTransactions(state, account.key));
+    // The fiat values of the listed transactions and the dust phishing filter need historic rates.
+    useHistoricFiatRates({ accountKey: account.key, transactions: loadedTransactions });
     const { isDiscoveryRunning } = useDiscovery();
 
     const {

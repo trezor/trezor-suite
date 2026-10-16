@@ -4,11 +4,12 @@ import {
 } from '@suite-common/token-definitions';
 import { advancedSearchTransactions } from '@suite-common/transaction-search';
 import {
-    type FiatRatesRootState,
+    type FetchMissingHistoricFiatRatesThunkState,
     TRANSACTIONS_MODULE_PREFIX,
     type TransactionsRootState,
     type WalletSettingsRootState,
     createSimpleTargetId,
+    fetchMissingHistoricFiatRatesThunk,
     selectAccountTransactionsMarkedAsNotScam,
     selectBaseCurrency,
     selectHistoricFiatRates,
@@ -31,7 +32,7 @@ type ExportTransactionsThunkParams = {
     searchQuery: string;
 };
 
-type ExportTransactionsThunkState = FiatRatesRootState &
+type ExportTransactionsThunkState = FetchMissingHistoricFiatRatesThunkState &
     SelectAccountLabelsForSearchState &
     TokenDefinitionsRootState &
     TransactionsRootState &
@@ -47,8 +48,11 @@ export const exportTransactionsThunk = createThunk<
     { state: ExportTransactionsThunkState; extra: ExportTransactionsThunkDeps }
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/exportTransactions`,
-    async ({ account, defaultAccountName, type, searchQuery }, { getState, extra }) => {
+    async ({ account, defaultAccountName, type, searchQuery }, { dispatch, getState, extra }) => {
         const { services } = extra;
+        // The exported fiat values need historic rates also of the transactions not listed yet.
+        await dispatch(fetchMissingHistoricFiatRatesThunk({ accountKey: account.key }));
+
         // Get state of transactions
         const allTransactions = selectTransactions(getState());
         const historicFiatRates = selectHistoricFiatRates(getState());

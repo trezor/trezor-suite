@@ -1,6 +1,6 @@
 import { type ReactElement } from 'react';
 
-import { type Store } from '@reduxjs/toolkit';
+import { type Middleware, type Store } from '@reduxjs/toolkit';
 import {
     type RenderHookOptions,
     type RenderHookResult,
@@ -15,6 +15,8 @@ import { createStoreFromPreloadedState } from './createStoreFromPreloadedState';
 
 export type RenderOptionsExtended<TServices extends object = object> = RenderOptions & {
     preloadedState?: object;
+    /** Appended to the middleware of the store created from `preloadedState`. */
+    middleware?: Middleware[];
     services?: TServices & { store?: Store };
 };
 
@@ -23,6 +25,8 @@ export type RenderHookOptionsExtended<
     TServices extends object = object,
 > = RenderHookOptions<Props> & {
     preloadedState?: object;
+    /** Appended to the middleware of the store created from `preloadedState`. */
+    middleware?: Middleware[];
     services?: TServices & { store?: Store };
 };
 
@@ -30,6 +34,7 @@ export const renderWithStoreProvider = async <TServices extends object>(
     element: ReactElement,
     {
         preloadedState,
+        middleware,
         services,
         wrapper: Wrapper,
         ...options
@@ -37,7 +42,7 @@ export const renderWithStoreProvider = async <TServices extends object>(
 ): Promise<RenderResult> => {
     const resolvedServices = {
         ...services,
-        store: services?.store ?? createStoreFromPreloadedState(preloadedState),
+        store: services?.store ?? createStoreFromPreloadedState(preloadedState, middleware),
     };
 
     return await render(element, {
@@ -58,6 +63,7 @@ export const renderHookWithStoreProvider = async <
     callback: (props: Props) => Result,
     {
         preloadedState,
+        middleware,
         services,
         wrapper: Wrapper,
         ...options
@@ -65,7 +71,7 @@ export const renderHookWithStoreProvider = async <
 ): Promise<RenderHookResult<Result, Props>> => {
     const resolvedServices = {
         ...services,
-        store: services?.store ?? createStoreFromPreloadedState(preloadedState),
+        store: services?.store ?? createStoreFromPreloadedState(preloadedState, middleware),
     };
 
     return await renderHook(callback, {

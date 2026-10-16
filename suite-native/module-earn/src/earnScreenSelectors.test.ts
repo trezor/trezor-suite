@@ -4,6 +4,7 @@ import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { FIVE_BINARIES_POOLS, asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import { fiatRatesInitialState, initialWalletSettingsState } from '@suite-common/wallet-core';
+import { mockFiatRatesApiState } from '@suite-common/wallet-core/mocks';
 import {
     type Account,
     type CryptoBaseCurrencyPair,
@@ -112,6 +113,21 @@ const networksState = mockNetworksState(mockGetSupportedNetworks());
 const getRecomputations = (selector: unknown): number =>
     (selector as { recomputations: () => number }).recomputations();
 
+// The same rates map to the same cache, as the RTK Query cache stays unchanged between renders.
+const fiatRatesApiStates = new WeakMap<
+    CurrentRatesByKey,
+    ReturnType<typeof mockFiatRatesApiState>
+>();
+const getFiatRatesApiState = (currentFiatRates: CurrentRatesByKey) => {
+    const cachedState = fiatRatesApiStates.get(currentFiatRates);
+    if (cachedState) return cachedState;
+
+    const fiatRatesApiState = mockFiatRatesApiState({ current: currentFiatRates });
+    fiatRatesApiStates.set(currentFiatRates, fiatRatesApiState);
+
+    return fiatRatesApiState;
+};
+
 const createState = (
     accounts: Account[],
     currentFiatRates: CurrentRatesByKey = {},
@@ -125,8 +141,9 @@ const createState = (
     wallet: {
         accounts,
         settings: initialWalletSettingsState,
-        fiat: { ...fiatRatesInitialState, current: currentFiatRates },
+        fiat: fiatRatesInitialState,
     },
+    fiatRatesApi: getFiatRatesApiState(currentFiatRates),
     appSettings: appSettingsInitialState,
 });
 

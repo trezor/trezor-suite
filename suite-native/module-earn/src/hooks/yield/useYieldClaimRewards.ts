@@ -9,7 +9,7 @@ import {
 import {
     selectBaseCurrency,
     selectCurrentFiatRates,
-    useMissingRateTickersQuery,
+    useFiatRates,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 
@@ -37,15 +37,16 @@ export const useYieldClaimRewards = ({ account }: UseYieldClaimRewardsParams) =>
         waitForMerklToResolveClaim,
     } = useGetMerklRewards(merklRewardsQueryEntries);
 
-    const { chainsRewardsWithFiat, missingRateTickers } = useExtendMerklRewardsWithFiat({
+    const { chainsRewardsWithFiat, rateTickers } = useExtendMerklRewardsWithFiat({
         chainsRewards,
         baseCurrency: fiatCurrency,
         currentFiatRates,
     });
 
-    const missingRateTickersQuery = useMissingRateTickersQuery({
-        missingRateTickers,
+    const fiatRatesQuery = useFiatRates({
+        tickers: rateTickers,
         baseCurrencyCode: fiatCurrency,
+        forceFetchToken: true,
     });
 
     const accountRewards: StablecoinYieldAccountRewards | null = useMemo(() => {
@@ -69,7 +70,7 @@ export const useYieldClaimRewards = ({ account }: UseYieldClaimRewardsParams) =>
     return useMemo(
         () => ({
             accountRewards,
-            isClaimRewardsFiatLoading: missingRateTickersQuery.isLoading,
+            isClaimRewardsFiatLoading: fiatRatesQuery.isLoading,
             isClaimRewardsLoading: merklRewardsQueryEntries.length > 0 && isMerklRewardsLoading,
             waitForMerklToResolveClaim: waitForClaimRewardsToResolve,
         }),
@@ -77,7 +78,7 @@ export const useYieldClaimRewards = ({ account }: UseYieldClaimRewardsParams) =>
             accountRewards,
             isMerklRewardsLoading,
             merklRewardsQueryEntries.length,
-            missingRateTickersQuery.isLoading,
+            fiatRatesQuery.isLoading,
             waitForClaimRewardsToResolve,
         ],
     );

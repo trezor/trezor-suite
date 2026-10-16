@@ -1,18 +1,47 @@
 import { type TradingType } from '@suite-common/trading';
-import { type FiatRatesState, type SendState } from '@suite-common/wallet-core';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { type SendState } from '@suite-common/wallet-core';
+import { mockFiatRatesApiState } from '@suite-common/wallet-core/mocks';
 import {
     type Account,
-    type CurrentRatesByKey,
     type WalletSettings,
     asAccountDescriptor,
+    toTokenAddress,
 } from '@suite-common/wallet-types';
+import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { PROTO } from '@trezor/connect';
 import { type StaticSessionId } from '@trezor/device-utils';
 
 import { getBaseAccount, getBtcAccount, getEthAccount, getSolAccount } from './account';
 import { btc1NormalAccount, eth1NormalAccount, eth2legacyAccount } from './accounts';
+import { createMockRate } from './fiat';
 import { createPrecomposedLevels } from './precomposedTransaction';
 import { getInitializedTradingState } from './tradingState';
+
+const ethSymbol = asNetworkSymbol('eth');
+const usdcContract = toTokenAddress('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
+
+/**
+ * Current fiat rates matching the accounts of `getWalletState`, as the `fiatRatesApi` root state.
+ */
+export const getFiatRatesApiState = () =>
+    mockFiatRatesApiState({
+        current: {
+            [getFiatRateKey(ethSymbol, 'usd')]: createMockRate(1000, ethSymbol),
+            [getFiatRateKey(asNetworkSymbol('btc'), 'usd')]: createMockRate(
+                0.001,
+                asNetworkSymbol('btc'),
+            ),
+            [getFiatRateKey(asNetworkSymbol('sol'), 'usd')]: createMockRate(
+                150,
+                asNetworkSymbol('sol'),
+            ),
+            [getFiatRateKey(ethSymbol, 'usd', usdcContract)]: {
+                ...createMockRate(0.99, ethSymbol),
+                ticker: { symbol: ethSymbol, tokenAddress: usdcContract },
+            },
+        },
+    });
 
 type GetWalletStateParams = {
     bitcoinAmountUnit?: PROTO.AmountUnit;
@@ -35,32 +64,7 @@ export const getWalletState = ({
             localCurrency: 'usd',
             bitcoinAmountUnit,
         } as WalletSettings,
-        fiat: {
-            current: {
-                // ETH - USD
-                'eth-usd': {
-                    rate: 1000,
-                    usdRate: 1000,
-                },
-                // BTC - USD
-                'btc-usd': {
-                    rate: 0.001,
-                    usdRate: 0.001,
-                },
-                // SOL - USD
-                'sol-usd': {
-                    rate: 150,
-                    usdRate: 150,
-                },
-                // USDC - USD
-                'eth-0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48-usd': {
-                    rate: 0.99,
-                    usdRate: 0.99,
-                },
-            } as CurrentRatesByKey,
-            historic: {},
-            lastWeek: {},
-        } as FiatRatesState,
+        fiat: { historic: {} },
         accounts: [
             getBtcAccount({ ...accountOverrides, descriptor: asAccountDescriptor('btc1normal') }),
             getBtcAccount({ ...accountOverrides, descriptor: asAccountDescriptor('btc2legacy') }),

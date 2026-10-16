@@ -7,6 +7,7 @@ import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { type SuiteRouterHistoryDep } from '@suite/router';
 import { mockSuiteRouterHistory } from '@suite/router/mocks';
 import { createTestCompositionRoot, initPreloadedState } from '@suite-common/test-utils';
+import { fiatRatesApi } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { type ServerInfo } from '@trezor/blockchain-link-types';
 import TrezorConnect from '@trezor/connect';
@@ -150,6 +151,7 @@ describe('useRbfForm hook', () => {
                 AppState
             >({
                 reducer: rootReducer,
+                middleware: [fiatRatesApi.middleware],
                 preloadedState: initPreloadedState({
                     rootReducer,
                     partialState: {

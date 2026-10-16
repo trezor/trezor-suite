@@ -12,7 +12,7 @@ import {
     createStableFiatRateKeys,
     selectBaseCurrency,
     selectCurrentFiatRatesByFiatRateKeys,
-    useMissingRateTickersQuery,
+    useFiatRates,
 } from '@suite-common/wallet-core';
 import { type CryptoBaseCurrencyPair, toTokenAddress } from '@suite-common/wallet-types';
 import { getContractAddressForNetworkSymbol, getFiatRateKey } from '@suite-common/wallet-utils';
@@ -53,13 +53,13 @@ export const useClaimRewardsWithFiat = () => {
         selectCurrentFiatRatesByFiatRateKeys(state, rewardFiatRateKeys),
     );
 
-    const { chainsRewardsWithFiat, missingRateTickers } = useExtendMerklRewardsWithFiat({
+    const { chainsRewardsWithFiat, rateTickers } = useExtendMerklRewardsWithFiat({
         chainsRewards,
         baseCurrency,
         currentFiatRates,
     });
 
-    useMissingRateTickersQuery({ missingRateTickers, baseCurrencyCode: baseCurrency });
+    useFiatRates({ tickers: rateTickers, baseCurrencyCode: baseCurrency, forceFetchToken: true });
 
     return {
         claimRewardsWithFiat: chainsRewardsWithFiat,

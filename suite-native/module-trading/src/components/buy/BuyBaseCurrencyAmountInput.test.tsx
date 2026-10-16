@@ -19,7 +19,7 @@ import {
 
 jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
-    updateFiatRatesThunk: jest.fn(() => ({ type: 'mockUpdateFiatRates' })),
+    useFiatRate: jest.fn(),
 }));
 
 jest.mock('@react-navigation/native', () => ({

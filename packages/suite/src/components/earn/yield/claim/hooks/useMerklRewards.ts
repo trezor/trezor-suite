@@ -11,7 +11,7 @@ import {
 import {
     selectBaseCurrency,
     selectCurrentFiatRates,
-    useMissingRateTickersQuery,
+    useFiatRates,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 
@@ -21,7 +21,7 @@ type YieldRewardsAccounts = (Account | undefined) | (Account | undefined)[];
 
 /**
  * - Fetches Merkl rewards from provided chain/address query entries.
- * - Extends Merkl rewards with fiat rates (and fetches missing rate tickers).
+ * - Extends Merkl rewards with fiat rates (and subscribes to the rates of the reward tokens).
  */
 export function useMerklRewards(accounts: YieldRewardsAccounts) {
     const resolvedAccounts = useMemo<Account[]>(() => {
@@ -37,7 +37,7 @@ export function useMerklRewards(accounts: YieldRewardsAccounts) {
 
     const baseCurrency = useSelector(selectBaseCurrency);
     const currentFiatRates = useSelector(selectCurrentFiatRates);
-    const { chainsRewardsWithFiat, missingRateTickers } = useExtendMerklRewardsWithFiat({
+    const { chainsRewardsWithFiat, rateTickers } = useExtendMerklRewardsWithFiat({
         chainsRewards: merklRewardsQuery.data,
         baseCurrency,
         currentFiatRates,
@@ -47,9 +47,10 @@ export function useMerklRewards(accounts: YieldRewardsAccounts) {
         accounts: resolvedAccounts,
     });
 
-    const missingRateTickersQuery = useMissingRateTickersQuery({
-        missingRateTickers,
+    const fiatRatesQuery = useFiatRates({
+        tickers: rateTickers,
         baseCurrencyCode: baseCurrency,
+        forceFetchToken: true,
     });
 
     const totalRewardsToClaim = useTotalClaimableRewardsAmountOfAccounts(accountsRewards);
@@ -65,6 +66,6 @@ export function useMerklRewards(accounts: YieldRewardsAccounts) {
                 },
             },
         },
-        missingRateTickersQuery,
+        fiatRatesQuery,
     };
 }

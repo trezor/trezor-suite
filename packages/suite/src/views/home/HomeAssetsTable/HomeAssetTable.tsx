@@ -13,6 +13,7 @@ import {
     selectHomeAssetsTableGrouping,
     setAreHomeAssetSmallBalancesShown,
     setHomeAssetsTableGrouping,
+    useAccountsFiatRates,
 } from '@suite-common/wallet-core';
 import { type HomeAssetsTableGrouping } from '@suite-common/wallet-types';
 import { Card, Table } from '@trezor/components';
@@ -33,6 +34,8 @@ const NO_NETWORKS: readonly NetworkSymbol[] = [];
 const HOME_ASSET_ROW_LIMIT = 8;
 
 export const HomeAssetTable = () => {
+    useAccountsFiatRates();
+    useAccountsFiatRates({ rateType: 'lastWeek' });
     const { dispatch } = useServices(injectDispatch);
     const [isExpanded, setIsExpanded] = useState(false);
     const grouping = useSelector(selectHomeAssetsTableGrouping);

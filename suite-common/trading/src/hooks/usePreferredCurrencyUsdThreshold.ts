@@ -6,7 +6,7 @@ import {
     type FiatRatesRootState,
     selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
-    useMissingRateTickersQuery,
+    useFiatRates,
 } from '@suite-common/wallet-core';
 import {
     type BaseCurrencyAmount,
@@ -19,7 +19,6 @@ import { BigNumber } from '@trezor/utils';
 
 const USD_ASSET_THRESHOLD = new BigNumber('0.1');
 const BTC_TICKERS: TickerId[] = [{ symbol: asNetworkSymbol('btc') }];
-const NO_MISSING_TICKERS: TickerId[] = [];
 
 type PreferredCurrencyUsdThresholdRootState = FiatRatesRootState;
 type CalculatePreferredCurrencyUsdThresholdParams = {
@@ -56,18 +55,19 @@ export const usePreferredCurrencyUsdThreshold = () => {
         selectFiatRatesByFiatRateKey(state, getFiatRateKey(asNetworkSymbol('btc'), baseCurrency)),
     )?.rate;
 
-    const isBtcUsdRateMissing = baseCurrency !== 'usd' && btcUsdRate === undefined;
-    const isBtcBaseCurrencyRateMissing =
-        baseCurrency !== 'usd' && btcBaseCurrencyRate === undefined;
+    // The USD threshold needs no rates, other currencies convert it through the BTC rates.
+    const isUsdBaseCurrency = baseCurrency === 'usd';
 
-    useMissingRateTickersQuery({
-        missingRateTickers: isBtcUsdRateMissing ? BTC_TICKERS : NO_MISSING_TICKERS,
+    useFiatRates({
+        tickers: BTC_TICKERS,
         baseCurrencyCode: 'usd',
+        isDisabled: isUsdBaseCurrency,
     });
 
-    useMissingRateTickersQuery({
-        missingRateTickers: isBtcBaseCurrencyRateMissing ? BTC_TICKERS : NO_MISSING_TICKERS,
+    useFiatRates({
+        tickers: BTC_TICKERS,
         baseCurrencyCode: baseCurrency,
+        isDisabled: isUsdBaseCurrency,
     });
 
     return useMemo(

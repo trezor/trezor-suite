@@ -9,6 +9,7 @@ import {
     selectBaseCurrency,
     selectCurrentFiatRates,
     selectEnabledNetworks,
+    useAccountsFiatRates,
 } from '@suite-common/wallet-core';
 import { isAccountFailed } from '@suite-common/wallet-utils';
 import {
@@ -44,6 +45,7 @@ import { PortfolioCardHeader } from './PortfolioCardHeader';
 import { UnsupportedAssetsMessage, useUnsupportedNetworkMessage } from './UnsupportedAssetsMessage';
 
 export const PortfolioCard = memo(() => {
+    useAccountsFiatRates();
     const currentFiatRates = useSelector(selectCurrentFiatRates);
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const { discovery, isDiscoveryRunning } = useDiscovery();

@@ -30,6 +30,7 @@ import {
     stellarContractTokensInitialState,
     transactionsInitialState,
 } from '@suite-common/wallet-core';
+import { mockFiatRatesApiState } from '@suite-common/wallet-core/mocks';
 import { walletConnectInitialState } from '@suite-common/walletconnect';
 import { bannerFlagsInitialState } from '@suite-native/banners';
 import { biometricsSliceInitialState } from '@suite-native/biometrics';
@@ -67,6 +68,7 @@ export const mockInitialAppState = (partialState?: Partial<FullAppState>): FullA
     deviceAuthorization: deviceAuthorizationInitialState,
     deviceOnboarding: deviceOnboardingSliceInitialState,
     featureFlags: featureFlagsInitialState,
+    fiatRatesApi: mockFiatRatesApiState(),
     firmware: firmwareInitialState,
     geolocation: geolocationInitialState,
     graph: graphInitialState,

@@ -1,4 +1,5 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { fiatRatesApi } from '@suite-common/wallet-core';
 import type { FormState } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { Form, useForm, yup } from '@suite-native/forms';
@@ -7,7 +8,7 @@ import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { FeesContent, type FeesContentProps } from './FeesContent';
 import { createFeeLevels } from '../../__fixtures__/feeLevels';
-import { getWalletState } from '../../__fixtures__/walletState';
+import { getFiatRatesApiState, getWalletState } from '../../__fixtures__/walletState';
 
 const btcSymbol = asNetworkSymbol('btc');
 const ethSymbol = asNetworkSymbol('eth');
@@ -59,6 +60,7 @@ describe('FeesContent', () => {
 
     const getPreloadedState = () => ({
         wallet: getWalletState(),
+        fiatRatesApi: getFiatRatesApiState(),
     });
 
     const renderFeesContent = async (props: Partial<FeesContentProps> = {}) => {
@@ -70,6 +72,7 @@ describe('FeesContent', () => {
             </TestFormWrapper>,
             {
                 preloadedState: getPreloadedState(),
+                middleware: [fiatRatesApi.middleware],
             },
         );
     };

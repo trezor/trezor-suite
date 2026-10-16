@@ -1,9 +1,10 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { fiatRatesApi } from '@suite-common/wallet-core';
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { TronFeeSummaryRow, type TronFeeSummaryRowProps } from './TronFeeSummaryRow';
-import { getWalletState } from '../../../__fixtures__/walletState';
+import { getFiatRatesApiState, getWalletState } from '../../../__fixtures__/walletState';
 
 const trxSymbol = asNetworkSymbol('trx');
 
@@ -20,11 +21,13 @@ const defaultProps: TronFeeSummaryRowProps = {
 describe('TronFeeSummaryRow', () => {
     const getPreloadedState = () => ({
         wallet: getWalletState(),
+        fiatRatesApi: getFiatRatesApiState(),
     });
 
     const renderRow = async (props: Partial<TronFeeSummaryRowProps> = {}) =>
         await renderWithStoreProvider(<TronFeeSummaryRow {...defaultProps} {...props} />, {
             preloadedState: getPreloadedState(),
+            middleware: [fiatRatesApi.middleware],
         });
 
     it('should render the non-adjustable Tron fee label by default', async () => {

@@ -6,6 +6,7 @@ import { type CryptoId } from 'invity-api';
 import { mockNetworkIcon } from '@suite-common/networks/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { fiatRatesApi } from '@suite-common/wallet-core';
 import { type FormStateTradingCryptoCurrency } from '@suite-common/wallet-types';
 
 import { type AppState } from 'src/reducers/store';
@@ -36,6 +37,7 @@ const cryptoReceive: FormStateTradingCryptoCurrency = {
 const renderAssets = (receive: TransactionReviewOutputAssetsProps['receive']) => {
     const { services } = createTestCompositionRoot<void, AppState>({
         preloadedState: mockInitialAppState,
+        middleware: [fiatRatesApi.middleware],
     });
 
     renderWithProviders(

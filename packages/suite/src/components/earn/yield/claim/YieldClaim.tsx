@@ -59,10 +59,10 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
     const isClaimFirmwareOutdated = !isYieldSupported(device, { flowType: 'claim' });
 
     const ensureDeviceSession = useEnsureYieldDeviceSession({ flowType: 'claim', flowKey });
-    const { merklRewardsQuery, missingRateTickersQuery } = useMerklRewards(account);
+    const { merklRewardsQuery, fiatRatesQuery } = useMerklRewards(account);
     const accountRewards: YieldAccountRewards | undefined =
         merklRewardsQuery.data?.accountsRewards[0];
-    const isRewardsLoading = merklRewardsQuery.isLoading || missingRateTickersQuery.isLoading;
+    const isRewardsLoading = merklRewardsQuery.isLoading || fiatRatesQuery.isLoading;
 
     const currentStep = claimSession.step === 'complete' ? 'complete' : 'action';
 

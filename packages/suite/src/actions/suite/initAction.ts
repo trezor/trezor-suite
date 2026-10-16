@@ -36,16 +36,12 @@ import {
     type InitBlockchainThunkDeps,
     type InitBlockchainThunkState,
     type InitStakeDataThunkState,
-    type PeriodicFetchFiatRatesThunkDeps,
-    type PeriodicFetchFiatRatesThunkState,
-    type UpdateMissingTxFiatRatesThunkState,
+    type PrefetchFiatRatesThunkState,
     type WalletSettingsRootState,
     initBlockchainThunk,
     initDevicesThunk,
     periodicCheckStakeDataThunk,
-    periodicFetchFiatRatesThunk,
-    selectBaseCurrency,
-    updateMissingTxFiatRatesThunk,
+    prefetchFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import {
     type WalletConnectInitThunkDeps,
@@ -70,10 +66,9 @@ export type InitThunkState = ConnectInitThunkState &
     InitTokenDefinitionsThunkState &
     MessageSystemRootState &
     MetadataRootState &
-    PeriodicFetchFiatRatesThunkState &
+    PrefetchFiatRatesThunkState &
     SuiteRootState &
     SuiteSettingsRootState &
-    UpdateMissingTxFiatRatesThunkState &
     WalletConnectInitThunkState &
     WalletSettingsRootState;
 
@@ -81,7 +76,6 @@ type InitThunkDeps = ConnectInitThunkDeps &
     GotoThunkDeps &
     InitBlockchainThunkDeps &
     InitTokenDefinitionsThunkDeps &
-    PeriodicFetchFiatRatesThunkDeps &
     WalletConnectInitThunkDeps &
     WithServices<InitThunkDesktopApiDep>;
 
@@ -102,7 +96,6 @@ export const initThunk =
     ) => {
         const status = selectSuiteLifecycleStatus(getState());
         const language = selectLanguage(getState());
-        const localCurrency = selectBaseCurrency(getState());
         const { enableAutoupdateOnNextRun } = selectFlags(getState());
 
         if (status !== 'initial') return;
@@ -163,40 +156,27 @@ export const initThunk =
         // 8. fetch token definitions (has to be fetched before fiat rates)
         await dispatch(periodicCheckTokenDefinitionsThunk());
 
-        // 9. init periodic fetching of fiat rates
-        await dispatch(
-            periodicFetchFiatRatesThunk({
-                rateType: 'current',
-                localCurrency,
-            }),
-        );
-        await dispatch(
-            periodicFetchFiatRatesThunk({
-                rateType: 'lastWeek',
-                localCurrency,
-            }),
-        );
+        // 9. prefetch fiat rates of the stored accounts, the views showing them keep them fresh
+        dispatch(prefetchFiatRatesThunk({ rateType: 'current' }));
+        dispatch(prefetchFiatRatesThunk({ rateType: 'lastWeek' }));
 
-        // 10. fetch rates for transactions with missing rates
-        await dispatch(updateMissingTxFiatRatesThunk({ localCurrency }));
-
-        // 11. dispatch initial location change
+        // 10. dispatch initial location change
         dispatch(routerInitThunk());
 
-        // 12. fetch metadata. metadata is not saved together with other data in storage.
+        // 11. fetch metadata. metadata is not saved together with other data in storage.
         // historically it was saved in indexedDB together with devices and accounts and we did not need to load them
         // immediately after suite start.
         dispatch(metadataLabelingActions.fetchAndSaveMetadataForAllDevicesThunk());
 
-        // 13. start fetching staking data if needed, does need to be waited
+        // 12. start fetching staking data if needed, does need to be waited
         dispatch(periodicCheckStakeDataThunk());
 
-        // 14. init wallet connect
+        // 13. init wallet connect
         dispatch(walletConnectActions.walletConnectInitThunk());
-        // 15. bio auth
+        // 14. bio auth
         if (isDesktop()) {
             dispatch(bioAuthThunks.initBioAuthThunk());
         }
-        // 16. backend connected, suite is ready to use
+        // 15. backend connected, suite is ready to use
         dispatch(onSuiteReady());
     };

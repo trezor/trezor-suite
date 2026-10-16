@@ -1,4 +1,5 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { fiatRatesApi } from '@suite-common/wallet-core';
 import type { AccountKey, FormState } from '@suite-common/wallet-types';
 import { Form } from '@suite-native/forms';
 import { getTranslation } from '@suite-native/intl';
@@ -13,6 +14,7 @@ import { CustomFee } from './CustomFee';
 import {
     BTC_ACCOUNT_KEY,
     ETH_ACCOUNT_KEY,
+    getFiatRatesApiState,
     getWalletState,
 } from '../../../__fixtures__/walletState';
 import { type FeesFormType } from '../../../feesFormSchema';
@@ -43,6 +45,7 @@ describe('CustomFee', () => {
 
     const defaultState = {
         wallet: getWalletState(),
+        fiatRatesApi: getFiatRatesApiState(),
     };
 
     const renderUseFeesForm = async (accountKey: AccountKey = ETH_ACCOUNT_KEY) => {
@@ -54,6 +57,7 @@ describe('CustomFee', () => {
                 }),
             {
                 preloadedState: defaultState,
+                middleware: [fiatRatesApi.middleware],
             },
         );
 
@@ -87,6 +91,7 @@ describe('CustomFee', () => {
 
         return await renderWithStoreProvider(<CustomFee {...finalProps} />, {
             preloadedState: defaultState,
+            middleware: [fiatRatesApi.middleware],
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
     };

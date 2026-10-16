@@ -14,3 +14,6 @@ export const REFETCH_INTERVAL = {
     current: 3 * ONE_MINUTE_IN_MS,
     lastWeek: ONE_HOUR_IN_MS,
 } satisfies Record<RateTypeWithoutHistoric, number>;
+
+// Keeps a large portfolio from flooding the rate providers at once, e.g. while accounts are discovered.
+export const FIAT_RATES_FETCH_CONCURRENCY = 4;

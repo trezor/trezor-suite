@@ -5,7 +5,7 @@ import {
     type ResolvedYieldFlowData,
     getResolvedYieldFlowData,
     selectBaseCurrency,
-    useMissingRateTickersQuery,
+    useFiatRates,
 } from '@suite-common/wallet-core';
 import { type TickerId, toTokenAddress } from '@suite-common/wallet-types';
 
@@ -25,7 +25,7 @@ export const useYieldFlowData = ({
 
     const { token } = yieldFlowData;
 
-    const missingRateTickers = useMemo(() => {
+    const tokenTickers = useMemo(() => {
         if (!token?.contractAddress) return [];
 
         const tickerId = {
@@ -36,9 +36,9 @@ export const useYieldFlowData = ({
         return [tickerId];
     }, [token]);
 
-    // The deposited token (e.g. WETH) is often not held by the user, so the balance-driven fiat
-    // rate fetch skips it. Force-fetch the token's rate so the approximate fiat value can render.
-    useMissingRateTickersQuery({ baseCurrencyCode, missingRateTickers });
+    // The deposited token (e.g. WETH) is often not held by the user and may have no known coin
+    // definition. Force-fetch the token's rate so the approximate fiat value can render.
+    useFiatRates({ tickers: tokenTickers, baseCurrencyCode, forceFetchToken: true });
 
     return yieldFlowData;
 };

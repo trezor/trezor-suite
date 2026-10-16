@@ -1,4 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
+import { setupListeners } from '@reduxjs/toolkit/query';
 
 import { MODAL_OPEN_USER_CONTEXT } from '@suite/modal';
 import { type ExtraDependenciesStatic } from '@suite-common/extra-dependencies';
@@ -52,6 +53,9 @@ export const createReduxStore = (deps: ReduxStoreDeps): ReduxStore => {
                 .concat(getCustomMiddleware(getExtra)),
         devTools,
     });
+
+    // Lets polled RTK Query subscriptions, e.g. fiat rates, pause while the window is hidden.
+    setupListeners(store.dispatch);
 
     return {
         store,

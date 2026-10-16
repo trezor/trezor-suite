@@ -6,6 +6,7 @@ import {
     type FeesRootState,
     type FiatRatesRootState,
     type WalletSettingsRootState,
+    fiatRatesApi,
     initialWalletSettingsState,
 } from '@suite-common/wallet-core';
 import type { AccountKey } from '@suite-common/wallet-types';
@@ -23,7 +24,11 @@ import {
 
 import { FeeOptionsList, type FeeOptionsListProps } from './FeeOptionsList';
 import { createFeeLevel, createFeeLevels } from '../../../__fixtures__/feeLevels';
-import { ETH_ACCOUNT_KEY, getWalletState } from '../../../__fixtures__/walletState';
+import {
+    ETH_ACCOUNT_KEY,
+    getFiatRatesApiState,
+    getWalletState,
+} from '../../../__fixtures__/walletState';
 import { useFeesForm } from '../../../hooks/fees/useFeesForm';
 import { type NativeSendRootState, sendFormInitialState } from '../../../sendFormSlice';
 
@@ -73,6 +78,7 @@ describe('FeeOptionsList', () => {
 
     const reducer = {
         locale: localeReducer,
+        fiatRatesApi: createStaticReducer(getFiatRatesApiState()),
         wallet: combineReducers({
             settings: createStaticReducer(initialWalletSettingsState),
             accounts: createStaticReducer(defaultWalletState.accounts),
@@ -86,6 +92,7 @@ describe('FeeOptionsList', () => {
         createLightStore({
             reducer,
             preloadedState,
+            middleware: [fiatRatesApi.middleware],
         });
 
     const renderUseFeesForm = async (

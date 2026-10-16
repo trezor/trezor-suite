@@ -1,5 +1,6 @@
 import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
 import { mockNetworkIcon, mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { fiatRatesApi } from '@suite-common/wallet-core';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { Form } from '@suite-native/forms';
@@ -55,6 +56,7 @@ describe('ExchangeCard', () => {
 
     const renderExchangeCard = async () =>
         await renderWithStoreProvider(<ExchangeCard isAmountInputActive={false} />, {
+            middleware: [fiatRatesApi.middleware],
             preloadedState,
             services: {
                 ...services,
@@ -138,6 +140,7 @@ describe('ExchangeCard', () => {
         const { getByText, queryByText } = await renderWithStoreProvider(
             <ExchangeCard isAmountInputActive={false} />,
             {
+                middleware: [fiatRatesApi.middleware],
                 preloadedState: satsPreloadedState,
                 services: {
                     ...services,

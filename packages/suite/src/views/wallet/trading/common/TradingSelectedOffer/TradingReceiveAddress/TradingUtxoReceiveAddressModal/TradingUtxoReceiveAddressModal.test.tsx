@@ -9,7 +9,7 @@ import { createSuiteSyncAddressId } from '@suite-common/suite-sync-storage';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { fiatRatesApi, initialWalletSettingsState } from '@suite-common/wallet-core';
 import { type Account, asAccountDescriptor, createAccountKey } from '@suite-common/wallet-types';
 import { type Address } from '@trezor/blockchain-link-types';
 import { type WalletDescriptor } from '@trezor/device-utils';
@@ -149,6 +149,7 @@ const renderModal = () => {
         AppState
     >({
         preloadedState: buildState(),
+        middleware: [fiatRatesApi.middleware],
         services: () => ({ networks: { addressValidator: mockAddressValidator() } }),
     });
 

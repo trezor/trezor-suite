@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 
-import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { type SpinnerLoadingState } from '@suite-native/atoms';
 import {
     type AccountsImportStackParamList,
@@ -32,7 +30,6 @@ export const AccountImportLoadingScreen = ({
     const { dispatch } = useServices(injectDispatch);
     const showImportError = useShowImportError(networkSymbol, navigation);
     const [accountInfo, setAccountInfo] = useState<AccountInfo | null>(null);
-    const baseCurrencyCode = useSelector(selectBaseCurrency);
     const [error, setError] = useState<string>();
     const [accountInfoFetchResult, setAccountInfoFetchResult] =
         useState<SpinnerLoadingState>('idle');
@@ -42,7 +39,7 @@ export const AccountImportLoadingScreen = ({
     const fetchAccountInfo = useCallback(async () => {
         try {
             const response = await dispatch(
-                getAccountInfoThunk({ symbol: networkSymbol, baseCurrencyCode, xpubAddress }),
+                getAccountInfoThunk({ symbol: networkSymbol, xpubAddress }),
             ).unwrap();
 
             if (response) {
@@ -53,7 +50,7 @@ export const AccountImportLoadingScreen = ({
             setError(response);
             setAccountInfoFetchResult('error');
         }
-    }, [dispatch, baseCurrencyCode, networkSymbol, xpubAddress]);
+    }, [dispatch, networkSymbol, xpubAddress]);
 
     const safelyShowImportError = useCallback(
         async (onRetry?: () => Promise<void>) => {

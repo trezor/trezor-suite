@@ -30,6 +30,7 @@ import {
     type TokenDefinitionsState,
     prepareTokenDefinitionsReducer,
 } from '@suite-common/token-definitions';
+import { type FiatRatesApiRootState, fiatRatesApi } from '@suite-common/wallet-core';
 import { isCodesignBuild } from '@trezor/env-utils';
 
 import { suiteSyncQuotaManagerSlice } from 'src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
@@ -59,26 +60,27 @@ const suiteSyncQuotaManagerReducer = suiteSyncQuotaManagerSlice.prepareReducer(e
 const receiveReducer = prepareReceiveReducer(extraDependencies);
 const persistentDeviceDataReducer = preparePersistentDeviceDataReducer(extraDependencies);
 
-export type AppState = SuiteReducersState & {
-    networks: NetworksState;
-    onboarding: OnboardingState;
-    receive: ReceiveState;
-    wallet: WalletState;
-    recovery: RecoveryState;
-    firmware: FirmwareUpdateState;
-    backup: BackupState;
-    desktop: DesktopState;
-    bioAuth: BioAuthState;
-    tokenDefinitions: Partial<TokenDefinitionsState>;
-    bluetooth: DesktopBluetoothState;
-    thp: ThpState;
-    suiteSync: DesktopSuiteSyncState;
-    suiteSyncQuotaManager: SuiteSyncQuotaManagerState;
-    suiteSyncData: SuiteSyncDataState;
-    geolocation: GeolocationState;
-    globalSendReceiveFilters: GlobalSendReceiveFiltersState;
-    persistentDeviceData: PersistentDeviceDataState;
-};
+export type AppState = SuiteReducersState &
+    FiatRatesApiRootState & {
+        networks: NetworksState;
+        onboarding: OnboardingState;
+        receive: ReceiveState;
+        wallet: WalletState;
+        recovery: RecoveryState;
+        firmware: FirmwareUpdateState;
+        backup: BackupState;
+        desktop: DesktopState;
+        bioAuth: BioAuthState;
+        tokenDefinitions: Partial<TokenDefinitionsState>;
+        bluetooth: DesktopBluetoothState;
+        thp: ThpState;
+        suiteSync: DesktopSuiteSyncState;
+        suiteSyncQuotaManager: SuiteSyncQuotaManagerState;
+        suiteSyncData: SuiteSyncDataState;
+        geolocation: GeolocationState;
+        globalSendReceiveFilters: GlobalSendReceiveFiltersState;
+        persistentDeviceData: PersistentDeviceDataState;
+    };
 
 export type SuiteRootReducer = Reducer<AppState, UnknownAction, Partial<AppState>>;
 
@@ -102,6 +104,7 @@ export const rootReducer: SuiteRootReducer = combineReducers({
     geolocation: geolocationReducer,
     globalSendReceiveFilters: globalSendReceiveFiltersReducer,
     persistentDeviceData: persistentDeviceDataReducer,
+    [fiatRatesApi.reducerPath]: fiatRatesApi.reducer,
 } satisfies ReducersMapObject<AppState, never, Record<keyof AppState, never>>);
 
 const loggerExcludedActions = [addLog.type];

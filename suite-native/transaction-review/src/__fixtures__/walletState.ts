@@ -1,5 +1,6 @@
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { type FiatRatesState } from '@suite-common/wallet-core';
+import { mockFiatRatesApiState } from '@suite-common/wallet-core/mocks';
 import {
     type Account,
     AddressDisplayOptions,
@@ -127,15 +128,14 @@ const mockRatesByKey = (rates: CurrentRate[]): CurrentRatesByKey =>
         }),
     );
 
-const mockFiatRatesState = (): FiatRatesState => ({
-    current: mockRatesByKey([
-        mockRate(asNetworkSymbol('eth'), 1000),
-        mockRate(asNetworkSymbol('btc'), 100000),
-        mockRate(asNetworkSymbol('eth'), 0.99, USDC_CONTRACT),
-    ]),
-    lastWeek: {},
-    historic: {},
-});
+export const mockReviewFiatRatesApiState = () =>
+    mockFiatRatesApiState({
+        current: mockRatesByKey([
+            mockRate(asNetworkSymbol('eth'), 1000),
+            mockRate(asNetworkSymbol('btc'), 100000),
+            mockRate(asNetworkSymbol('eth'), 0.99, USDC_CONTRACT),
+        ]),
+    });
 
 export const mockWalletState = () => ({
     // Only the currency and address display mode are read by the review
@@ -144,7 +144,7 @@ export const mockWalletState = () => ({
         localCurrency: LOCAL_CURRENCY,
         addressDisplayType: AddressDisplayOptions.CHUNKED,
     } as WalletSettings,
-    fiat: mockFiatRatesState(),
+    fiat: { historic: {} } satisfies FiatRatesState,
     accounts: [mockEthAccount(), mockBtcAccount(), mockAdaAccount()],
     transactions: {
         transactions: {},

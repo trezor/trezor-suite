@@ -1,3 +1,4 @@
+import { fiatRatesApi } from '@suite-common/wallet-core';
 import { act, renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { btcAsset, ethAsset, mockWalletFiatRatesAndSettings } from '@suite-native/trading-fixtures';
 
@@ -11,13 +12,12 @@ jest.mock('@suite-common/fiat-services', () => ({
 jest.mock('./CryptoToFiatValueBadge', () => jest.requireActual('./CryptoToFiatValueBadge'));
 
 describe('CryptoToFiatValueBadge', () => {
-    const getPreloadedState = () => ({
-        wallet: mockWalletFiatRatesAndSettings(),
-    });
+    const getPreloadedState = () => mockWalletFiatRatesAndSettings();
 
     const renderCryptoToFiatValueBadge = async (props: CryptoToFiatValueBadgeProps) => {
         const res = await renderWithStoreProvider(<CryptoToFiatValueBadge {...props} />, {
             preloadedState: getPreloadedState(),
+            middleware: [fiatRatesApi.middleware],
         });
 
         // await mocked loading of rates

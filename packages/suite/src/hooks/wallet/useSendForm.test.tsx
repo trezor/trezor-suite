@@ -38,7 +38,7 @@ import {
     initPreloadedState,
     testMocks,
 } from '@suite-common/test-utils';
-import { type SendState } from '@suite-common/wallet-core';
+import { type SendState, fiatRatesApi } from '@suite-common/wallet-core';
 import {
     type FormState,
     type GetTradedAccountKeysDep,
@@ -164,6 +164,7 @@ const createTestServices = ({
     return createTestCompositionRoot<SendFormTestDeps, SendFormTestState>({
         extra: { actions: extraActions },
         reducer: rootReducer,
+        middleware: [fiatRatesApi.middleware],
         preloadedState,
         // NOTE: this action contains `decision` callback which is not serializable
         serializableCheck: { ignoredActions: ['@modal/open-user-context'] },

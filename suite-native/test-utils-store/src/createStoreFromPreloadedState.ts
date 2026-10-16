@@ -1,4 +1,4 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { type Middleware, configureStore } from '@reduxjs/toolkit';
 
 import { mergeDeepObject } from '@trezor/utils';
 
@@ -11,9 +11,13 @@ import { createStaticReducer } from './createStaticReducer';
  * This is useful for tests that only *read* from the store (most render
  * and hook tests). Tests that *dispatch* actions that should mutate state
  * must use `createLightStore` with real reducers instead.
+ *
+ * `middleware` is appended to the default middleware, e.g. the middleware of an RTK Query API
+ * whose hooks the rendered components use.
  */
 export const createStoreFromPreloadedState = <TState extends object = object>(
     preloadedState?: TState,
+    middleware: Middleware[] = [],
 ) => {
     const defaultState = {
         discreetMode: { isActive: false },
@@ -27,9 +31,11 @@ export const createStoreFromPreloadedState = <TState extends object = object>(
     const merged = mergeDeepObject(defaultState, preloadedState ?? {}) as TState &
         typeof defaultState;
 
-    return configureStore<typeof merged>({
+    return configureStore({
         reducer: createStaticReducer(merged),
         middleware: getDefaultMiddleware =>
-            getDefaultMiddleware({ serializableCheck: false, immutableCheck: false }),
+            getDefaultMiddleware({ serializableCheck: false, immutableCheck: false }).concat(
+                middleware,
+            ),
     });
 };

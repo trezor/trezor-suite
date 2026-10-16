@@ -20,23 +20,27 @@ import {
 } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
-import { type AccountsRootState } from '@suite-common/wallet-core';
+import { type AccountsRootState, type FiatRatesRootState } from '@suite-common/wallet-core';
+import { mockFiatRatesApiState } from '@suite-common/wallet-core/mocks';
 import {
     type Account,
     type AccountKey,
-    type CurrentRatesByKey,
     asAccountDescriptor,
+    toTokenAddress,
 } from '@suite-common/wallet-types';
+import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { featureFlagsInitialState } from '@suite-native/feature-flags';
 import { appSettingsInitialState } from '@suite-native/settings';
 import {
     btcAsset,
+    createMockRate,
     ethAsset,
     getBtcAccount,
     getBuyTrade,
     getCardanoAccount,
     getEthAccount,
     getExchangeTrade,
+    getFiatRatesApiState,
     getInitializedTradingState,
     getSellTrade,
     getWalletState,
@@ -584,8 +588,9 @@ describe('commonSelectors', () => {
     });
 
     describe('selectFiatRateByTradeableAsset', () => {
-        const getStateWithRates = () => ({
+        const getStateWithRates = (fiatRatesApi = getFiatRatesApiState()) => ({
             wallet: getWalletState(),
+            fiatRatesApi,
         });
 
         it('should return undefined when asset is not set', () => {
@@ -593,8 +598,7 @@ describe('commonSelectors', () => {
         });
 
         it('should return undefined when rate is missing', () => {
-            const state = getStateWithRates();
-            state.wallet.fiat.current = {};
+            const state = getStateWithRates(mockFiatRatesApiState());
 
             expect(selectFiatRateByTradeableAsset(state, btcAsset)).toBeUndefined();
         });
@@ -608,22 +612,33 @@ describe('commonSelectors', () => {
         });
 
         it('should return rate of token when stored rate key uses checksummed address', () => {
-            const state = getStateWithRates();
-            state.wallet.fiat.current = {
-                'eth-0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48-usd': { rate: 0.99, usdRate: 0.99 },
-            } as CurrentRatesByKey;
+            const ethSymbol = asNetworkSymbol('eth');
+            const checksummedUsdcContract = toTokenAddress(
+                '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+            );
+            const state = getStateWithRates(
+                mockFiatRatesApiState({
+                    current: {
+                        [getFiatRateKey(ethSymbol, 'usd', checksummedUsdcContract)]: createMockRate(
+                            0.99,
+                            ethSymbol,
+                        ),
+                    },
+                }),
+            );
 
             expect(selectFiatRateByTradeableAsset(state, usdcAsset)).toBe(0.99);
         });
     });
 
     describe('selectAccountsWithTokensToSellSectionListByTradingType', () => {
-        let state: TradingRootState & AccountsRootState & NetworksRootState;
+        let state: TradingRootState & AccountsRootState & NetworksRootState & FiatRatesRootState;
 
         beforeEach(() => {
             state = {
                 networks,
                 wallet: getWalletState({ tradeType: 'exchange' }),
+                fiatRatesApi: getFiatRatesApiState(),
             };
         });
 
@@ -658,7 +673,7 @@ describe('commonSelectors', () => {
                 },
                 device: { selectedDevice: { state: { staticSessionId: testDeviceState } } },
                 tokenDefinitions: {},
-                fiat: { rates: {}, current: 'usd' },
+                fiatRatesApi: mockFiatRatesApiState(),
                 featureFlags: featureFlagsInitialState,
             } as any;
 
@@ -698,7 +713,7 @@ describe('commonSelectors', () => {
                 },
                 device: { selectedDevice: { state: { staticSessionId: testDeviceState } } },
                 tokenDefinitions: {},
-                fiat: { rates: {}, current: 'usd' },
+                fiatRatesApi: mockFiatRatesApiState(),
                 featureFlags: featureFlagsInitialState,
             } as any;
 
@@ -762,7 +777,7 @@ describe('commonSelectors', () => {
                         },
                     },
                 },
-                fiat: { rates: {}, current: 'usd' },
+                fiatRatesApi: mockFiatRatesApiState(),
             } as any;
 
             const result = selectAccountsWithTokensToSellSectionListByTradingType(
@@ -820,7 +835,7 @@ describe('commonSelectors', () => {
                         },
                     },
                 },
-                fiat: { rates: {}, current: 'usd' },
+                fiatRatesApi: mockFiatRatesApiState(),
             } as any;
 
             const result = selectAccountsWithTokensToSellSectionListByTradingType(
@@ -876,7 +891,7 @@ describe('commonSelectors', () => {
                         },
                     },
                 },
-                fiat: { rates: {}, current: 'usd' },
+                fiatRatesApi: mockFiatRatesApiState(),
             } as any;
 
             const result = selectAccountsWithTokensToSellSectionListByTradingType(
@@ -920,7 +935,7 @@ describe('commonSelectors', () => {
                 },
                 device: { selectedDevice: { state: { staticSessionId: testDeviceState } } },
                 tokenDefinitions: {}, // No token definitions
-                fiat: { rates: {}, current: 'usd' },
+                fiatRatesApi: mockFiatRatesApiState(),
             } as any;
 
             const result = selectAccountsWithTokensToSellSectionListByTradingType(
@@ -955,7 +970,7 @@ describe('commonSelectors', () => {
                 },
                 device: { selectedDevice: { state: { staticSessionId: testDeviceState } } },
                 tokenDefinitions: {},
-                fiat: { rates: {}, current: 'usd' },
+                fiatRatesApi: mockFiatRatesApiState(),
             } as any;
 
             const result = selectAccountsWithTokensToSellSectionListByTradingType(
@@ -988,7 +1003,7 @@ describe('commonSelectors', () => {
                 },
                 device: { selectedDevice: { state: { staticSessionId: testDeviceState } } },
                 tokenDefinitions: {},
-                fiat: { rates: {}, current: 'usd' },
+                fiatRatesApi: mockFiatRatesApiState(),
             } as any;
 
             const result = selectAccountsWithTokensToSellSectionListByTradingType(
@@ -1017,7 +1032,7 @@ describe('commonSelectors', () => {
                 wallet: getWalletState({ tradeType: 'exchange', deviceState: testDeviceState }),
                 device: { selectedDevice: { state: { staticSessionId: testDeviceState } } },
                 tokenDefinitions: {},
-                fiat: { rates: {}, current: 'usd' },
+                fiatRatesApi: mockFiatRatesApiState(),
             } as any;
 
             const result = selectAccountsWithTokensToSellSectionListByTradingType(
@@ -1060,7 +1075,7 @@ describe('commonSelectors', () => {
                 },
                 device: { selectedDevice: { state: { staticSessionId: testDeviceState } } },
                 tokenDefinitions: {},
-                fiat: { rates: {}, current: 'usd' },
+                fiatRatesApi: mockFiatRatesApiState(),
                 featureFlags: featureFlagsInitialState,
             } as any;
 
@@ -1116,7 +1131,7 @@ describe('commonSelectors', () => {
                         },
                     },
                 },
-                fiat: { rates: {}, current: 'usd' },
+                fiatRatesApi: mockFiatRatesApiState(),
             } as any;
 
             const result = selectAccountsWithTokensToSellSectionListByTradingType(
@@ -1199,7 +1214,7 @@ describe('commonSelectors', () => {
                         },
                     },
                 },
-                fiat: { rates: {}, current: 'usd' },
+                fiatRatesApi: mockFiatRatesApiState(),
             } as any;
 
             const result = selectAccountsWithTokensToSellSectionListByTradingType(
@@ -1262,7 +1277,7 @@ describe('commonSelectors', () => {
                         },
                     },
                 },
-                fiat: { rates: {}, current: 'usd' },
+                fiatRatesApi: mockFiatRatesApiState(),
             } as any;
 
             const result = selectAccountsWithTokensToSellSectionListByTradingType(

@@ -15,6 +15,7 @@ import {
     type AccountsRootState,
     type WalletSettingsRootState,
     feesInitialState,
+    fiatRatesApi,
     initialWalletSettingsState,
 } from '@suite-common/wallet-core';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
@@ -35,6 +36,7 @@ import {
     btcAsset,
     getBtcAccount,
     getEthAccount,
+    getFiatRatesApiState,
     getInitializedTradingState,
     getWalletState,
 } from '@suite-native/trading-fixtures';
@@ -147,6 +149,7 @@ describe('ExchangeSendAssetPicker', () => {
                     mockNetworksState([asNetworkSymbol('btc'), asNetworkSymbol('eth')]),
                 ),
                 discreetMode: createStaticReducer({ isActive: false }),
+                fiatRatesApi: createStaticReducer(getFiatRatesApiState()),
                 locale: localeReducer,
                 device: createStaticReducer(deviceInitialState),
                 featureFlags: createStaticReducer(featureFlagsInitialState),
@@ -165,6 +168,7 @@ describe('ExchangeSendAssetPicker', () => {
                 }),
             },
             preloadedState: getPreloadedState(),
+            middleware: [fiatRatesApi.middleware],
         });
         const { result } = await renderExchangeForm();
         form = result.current;

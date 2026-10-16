@@ -5,6 +5,7 @@ import { screen, within } from '@testing-library/react';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
+import { fiatRatesApi } from '@suite-common/wallet-core';
 import {
     type FormState,
     type FormStateTrading,
@@ -65,6 +66,7 @@ const renderTotalOutput = (symbol: NetworkSymbol, trading?: FormStateTrading) =>
             ...mockInitialAppState,
             device: { ...mockInitialAppState.device, selectedDevice: device },
         },
+        middleware: [fiatRatesApi.middleware],
     });
 
     renderWithProviders(

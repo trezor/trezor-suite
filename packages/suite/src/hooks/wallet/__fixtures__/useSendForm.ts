@@ -18,14 +18,18 @@ import {
     prepareSendFormReducer,
     stakeInitialState,
 } from '@suite-common/wallet-core';
+import { mockFiatRatesApiState } from '@suite-common/wallet-core/mocks';
 import {
     type FeesState,
     type FormState,
+    type Rate,
     type SelectedAccountStatus,
     type SendFormDraftKey,
     asAccountDescriptor,
+    asTimestamp,
 } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { PROTO } from '@trezor/connect';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 import { type DeepPartial } from '@trezor/type-utils';
@@ -273,6 +277,19 @@ const DEFAULT_FEES: FeesState = {
     },
 };
 
+const mockRate = (
+    symbol: string,
+    lastTickerTimestamp: number,
+    lastSuccessfulFetchTimestamp: number,
+): Rate => ({
+    error: null,
+    isLoading: false,
+    lastTickerTimestamp: asTimestamp(lastTickerTimestamp),
+    lastSuccessfulFetchTimestamp: asTimestamp(lastSuccessfulFetchTimestamp),
+    rate: 1,
+    ticker: { symbol: asNetworkSymbol(symbol) },
+});
+
 // - default selectedAccount needs to be explicitly passed from test. merging default with custom will override custom
 // - default fees needs to be explicitly passed from test. merge Arrays will add items, not replace them
 // [typescript-performace]: Keep this explicit type to prevent TypeScript from expanding the
@@ -281,6 +298,45 @@ const DEFAULT_FEES: FeesState = {
 export const getRootReducer: any = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEES) =>
     combineReducers({
         networks: networksReducer,
+        fiatRatesApi: createReducer(
+            mockFiatRatesApiState({
+                current: {
+                    [getFiatRateKey(asNetworkSymbol('btc'), 'usd')]: mockRate(
+                        'btc',
+                        1693235607743000,
+                        1693235607743,
+                    ),
+                    [getFiatRateKey(asNetworkSymbol('eth'), 'usd')]: mockRate(
+                        'eth',
+                        169323560946000,
+                        1693235609465,
+                    ),
+                    [getFiatRateKey(asNetworkSymbol('xrp'), 'usd')]: mockRate(
+                        'xrp',
+                        1693235609467000,
+                        1693235609467,
+                    ),
+                },
+                lastWeek: {
+                    [getFiatRateKey(asNetworkSymbol('btc'), 'usd')]: mockRate(
+                        'btc',
+                        1693235707743000,
+                        1693235707743,
+                    ),
+                    [getFiatRateKey(asNetworkSymbol('eth'), 'usd')]: mockRate(
+                        'eth',
+                        1693235709465000,
+                        1693235709465,
+                    ),
+                    [getFiatRateKey(asNetworkSymbol('xrp'), 'usd')]: mockRate(
+                        'xrp',
+                        1693235709467000,
+                        1693235709467,
+                    ),
+                },
+            }),
+            () => ({}),
+        ),
         suite: createReducer(
             {
                 online: true,
@@ -343,75 +399,7 @@ export const getRootReducer: any = (selectedAccount = BTC_ACCOUNT, fees = DEFAUL
                 () => ({}),
             ),
             fees: createReducer(fees, () => ({})),
-            fiat: createReducer(
-                {
-                    current: {
-                        'btc-usd': {
-                            error: null,
-                            isLoading: false,
-                            lastTickerTimestamp: 1693235607743000,
-                            fetchFetchAttemptTimestamp: 1693235607743,
-                            rate: 1,
-                            ticker: {
-                                symbol: 'btc',
-                            },
-                        },
-                        'eth-usd': {
-                            error: null,
-                            isLoading: false,
-                            lastTickerTimestamp: 169323560946000,
-                            fetchFetchAttemptTimestamp: 1693235609465,
-                            rate: 1,
-                            ticker: {
-                                symbol: 'eth',
-                            },
-                        },
-                        'xrp-usd': {
-                            error: null,
-                            isLoading: false,
-                            lastTickerTimestamp: 1693235609467000,
-                            fetchFetchAttemptTimestamp: 1693235609467,
-                            rate: 1,
-                            ticker: {
-                                symbol: 'xrp',
-                            },
-                        },
-                    },
-                    lastWeek: {
-                        'btc-usd': {
-                            error: null,
-                            isLoading: false,
-                            lastTickerTimestamp: 1693235707743000,
-                            fetchFetchAttemptTimestamp: 1693235707743,
-                            rate: 1,
-                            ticker: {
-                                symbol: 'btc',
-                            },
-                        },
-                        'eth-usd': {
-                            error: null,
-                            isLoading: false,
-                            lastTickerTimestamp: 1693235709465000,
-                            fetchFetchAttemptTimestamp: 1693235709465,
-                            rate: 1,
-                            ticker: {
-                                symbol: 'eth',
-                            },
-                        },
-                        'xrp-usd': {
-                            error: null,
-                            isLoading: false,
-                            lastTickerTimestamp: 1693235709467000,
-                            fetchFetchAttemptTimestamp: 1693235709467,
-                            rate: 1,
-                            ticker: {
-                                symbol: 'xrp',
-                            },
-                        },
-                    },
-                },
-                () => ({}),
-            ),
+            fiat: createReducer({ historic: {} }, () => ({})),
             transactions: createReducer(
                 {
                     transactions: {},

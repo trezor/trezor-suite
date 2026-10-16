@@ -1,12 +1,16 @@
 import { A, F, pipe } from '@mobily/ts-belt';
+import { QueryStatus } from '@reduxjs/toolkit/query';
 
 import {
     type TokenDefinitionsRootState,
     selectIsSpecificCoinDefinitionKnown,
+    selectTokenDefinitions,
 } from '@suite-common/token-definitions';
 import { type NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
 import {
     type CryptoBaseCurrencyPair,
+    type CurrentFiatRatesResult,
+    type CurrentRate,
     type CurrentRatesByKey,
     type Rate,
     type RateTypeWithoutHistoric,
@@ -15,6 +19,7 @@ import {
     type TickerId,
     type Timestamp,
     type TokenAddress,
+    asTimestamp,
 } from '@suite-common/wallet-types';
 import {
     getFiatRateKeyFromTicker,
@@ -22,10 +27,16 @@ import {
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { createWeakMapSelector, weakMapMemoize } from '@trezor/redux-utils';
+import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { MAX_AGE } from './fiatRatesConstants';
-import { type FiatRatesRootState } from './fiatRatesTypes';
+import {
+    type FiatRateEndpointName,
+    type FiatRateQueryArgs,
+    type FiatRatesApiRootState,
+    getFiatRateKeyFromQueryCacheKey,
+} from './fiatRatesApi';
+import { type FiatRatesHistoricRootState, type FiatRatesRootState } from './fiatRatesTypes';
 import { type AccountsRootState } from '../accounts/accountsReducer';
 import { selectAccounts } from '../accounts/accountsSelectors';
 
@@ -54,8 +65,79 @@ const createStableRatesByKey = weakMapMemoize(
         }, {}),
 );
 
-export const selectCurrentFiatRates = (state: FiatRatesRootState): CurrentRatesByKey | undefined =>
-    state.wallet.fiat?.['current'];
+type FiatRatesApiQueries = FiatRatesRootState['fiatRatesApi']['queries'];
+type FiatRatesApiQueryEntry = NonNullable<FiatRatesApiQueries[string]>;
+
+// Every cache entry maps to one rate object, so it stays referentially stable until the entry
+// itself changes, e.g. while other rates resolve during discovery.
+const getRateFromQueryEntry = weakMapMemoize((entry: FiatRatesApiQueryEntry): CurrentRate => {
+    const { ticker } = entry.originalArgs as unknown as FiatRateQueryArgs;
+    // Last week rates have no dollar rate, but they share the shape of the current ones otherwise.
+    const data = entry.data as CurrentFiatRatesResult | undefined;
+    const rateStatus = {
+        lastTickerTimestamp: data?.lastTickerTimestamp ?? asTimestamp(0),
+        lastSuccessfulFetchTimestamp: asTimestamp(entry.fulfilledTimeStamp ?? 0),
+        isLoading: entry.status === QueryStatus.pending,
+        error: entry.status === QueryStatus.rejected ? String(entry.error) : null,
+        ticker,
+    };
+
+    return data ? { ...data, ...rateStatus } : rateStatus;
+});
+
+const getRatesByKeyFromQueries = (
+    queries: FiatRatesApiQueries,
+    endpointName: FiatRateEndpointName,
+): CurrentRatesByKey =>
+    Object.entries(queries).reduce<CurrentRatesByKey>((ratesByKey, [queryCacheKey, entry]) => {
+        if (entry?.endpointName !== endpointName || entry.status === QueryStatus.uninitialized) {
+            return ratesByKey;
+        }
+
+        const fiatRateKey = getFiatRateKeyFromQueryCacheKey(endpointName, queryCacheKey);
+        ratesByKey[fiatRateKey] = getRateFromQueryEntry(entry);
+
+        return ratesByKey;
+    }, {});
+
+const selectFiatRatesApiQueries = (state: FiatRatesApiRootState): FiatRatesApiQueries =>
+    state.fiatRatesApi.queries;
+
+/**
+ * Whether some of the given cached rates are being fetched for the first time, or are not
+ * requested yet.
+ */
+export const selectIsSomeFiatRateQueryLoading = (
+    state: FiatRatesApiRootState,
+    queryCacheKeys: readonly string[],
+) => {
+    const queries = selectFiatRatesApiQueries(state);
+
+    return queryCacheKeys.some(queryCacheKey => {
+        const entry = queries[queryCacheKey];
+
+        return !entry || (entry.status === QueryStatus.pending && entry.data === undefined);
+    });
+};
+
+/**
+ * Whether some of the given cached rates are being fetched, for the first time or again.
+ */
+export const selectIsSomeFiatRateQueryFetching = (
+    state: FiatRatesApiRootState,
+    queryCacheKeys: readonly string[],
+) => {
+    const queries = selectFiatRatesApiQueries(state);
+
+    return queryCacheKeys.some(
+        queryCacheKey => queries[queryCacheKey]?.status === QueryStatus.pending,
+    );
+};
+
+export const selectCurrentFiatRates = createMemoizedSelector(
+    [selectFiatRatesApiQueries],
+    (queries): CurrentRatesByKey => getRatesByKeyFromQueries(queries, 'getCurrentFiatRate'),
+);
 
 const getRatesByLowerCasedKey = weakMapMemoize(
     (currentFiatRates: RatesByKey) =>
@@ -63,18 +145,12 @@ const getRatesByLowerCasedKey = weakMapMemoize(
 );
 
 const getCurrentFiatRate = (
-    currentFiatRates: RatesByKey | undefined,
+    currentFiatRates: CurrentRatesByKey,
     fiatRateKey: CryptoBaseCurrencyPair,
-): Rate | undefined => {
-    if (!currentFiatRates) {
-        return undefined;
-    }
-
-    return (
-        currentFiatRates[fiatRateKey] ??
-        getRatesByLowerCasedKey(currentFiatRates).get(fiatRateKey.toLowerCase())
-    );
-};
+): CurrentRate | undefined =>
+    currentFiatRates[fiatRateKey] ??
+    (getRatesByLowerCasedKey(currentFiatRates).get(fiatRateKey.toLowerCase()) as
+        CurrentRate | undefined);
 
 export const selectCurrentFiatRatesByFiatRateKeys = createMemoizedSelector(
     [
@@ -92,22 +168,33 @@ export const selectCurrentFiatRatesByFiatRateKeys = createMemoizedSelector(
 export const selectCurrentFiatRateByKey = (
     state: FiatRatesRootState,
     fiatRateKey: CryptoBaseCurrencyPair,
-): Rate | undefined => getCurrentFiatRate(selectCurrentFiatRates(state), fiatRateKey);
+): CurrentRate | undefined => getCurrentFiatRate(selectCurrentFiatRates(state), fiatRateKey);
 
-export const selectLastWeekFiatRates = (state: FiatRatesRootState): RatesByKey | undefined =>
-    state.wallet.fiat?.['lastWeek'];
+export const selectLastWeekFiatRates = createMemoizedSelector(
+    [selectFiatRatesApiQueries],
+    (queries): RatesByKey => getRatesByKeyFromQueries(queries, 'getLastWeekFiatRate'),
+);
 
-export const selectHistoricFiatRates = (state: FiatRatesRootState): RatesByTimestamps =>
+export const selectHistoricFiatRates = (state: FiatRatesHistoricRootState): RatesByTimestamps =>
     state.wallet.fiat.historic;
 
 export const selectFiatRatesByFiatRateKey = (
     state: FiatRatesRootState,
     fiatRateKey: CryptoBaseCurrencyPair,
     rateType: RateTypeWithoutHistoric = 'current',
-): Rate | undefined => state.wallet.fiat?.[rateType]?.[fiatRateKey];
+): Rate | undefined => {
+    switch (rateType) {
+        case 'current':
+            return selectCurrentFiatRates(state)[fiatRateKey];
+        case 'lastWeek':
+            return selectLastWeekFiatRates(state)[fiatRateKey];
+        default:
+            return exhaustive(rateType);
+    }
+};
 
 export const selectHistoricFiatRatesByTimestamp = (
-    state: FiatRatesRootState,
+    state: FiatRatesHistoricRootState,
     fiatRateKey: CryptoBaseCurrencyPair,
     timestamp: Timestamp | undefined,
 ): number | undefined => {
@@ -139,77 +226,52 @@ export const selectIsTickerLoading = (
     return selectIsFiatRateLoading(state, fiatRateKey, rateType);
 };
 
-export const selectShouldUpdateFiatRate = (
-    state: FiatRatesRootState,
-    currentTimestamp: Timestamp,
-    fiatRateKey: CryptoBaseCurrencyPair,
-    rateType: RateTypeWithoutHistoric = 'current',
-) => {
-    const currentRate = selectFiatRatesByFiatRateKey(state, fiatRateKey, rateType);
+type SelectTickerFromAccountsState = TokenDefinitionsRootState & AccountsRootState;
 
-    if (!currentRate) {
-        return true;
-    }
+const createTickerSelector = createWeakMapSelector.withTypes<SelectTickerFromAccountsState>();
 
-    const { lastSuccessfulFetchTimestamp } = currentRate;
-
-    return currentTimestamp - lastSuccessfulFetchTimestamp > MAX_AGE[rateType];
-};
-
-export const selectTickerFromAccounts = (
-    state: FiatRatesRootState & TokenDefinitionsRootState & AccountsRootState,
-): TickerId[] => {
-    // Use accounts of all remembered devices/wallets, not just the selected one, so that
-    // token fiat rates are fetched for every wallet. Otherwise tokens that exist only on a
-    // non-selected wallet (e.g. a passphrase wallet) never get a rate fetched on launch.
-    const accounts = selectAccounts(state);
-
-    return pipe(
-        accounts,
-        A.map((account): TickerId[] => [
-            {
-                symbol: account.symbol,
-            },
-            ...(account.tokens || [])
-                .filter(token => new BigNumber(token.balance ?? '0').gt(0))
-                .map(
-                    token =>
-                        ({
-                            symbol: account.symbol,
-                            tokenAddress: token.contract as TokenAddress,
-                            protocols: token.protocols,
-                        }) satisfies TickerId,
-                ),
-        ]),
-        A.flat,
-        A.filter(
-            ticker =>
-                !ticker.tokenAddress ||
-                !getNetworkFeatures(ticker.symbol).includes('coin-definitions') ||
-                selectIsSpecificCoinDefinitionKnown(state, ticker.symbol, ticker.tokenAddress),
+/**
+ * Tickers of all accounts and their tokens with a balance. Tokens of networks with coin definitions
+ * are included only when they are known.
+ */
+export const selectTickerFromAccounts = createTickerSelector(
+    [selectAccounts, selectTokenDefinitions],
+    (accounts, tokenDefinitions): TickerId[] =>
+        // Use accounts of all remembered devices/wallets, not just the selected one, so that
+        // token fiat rates are fetched for every wallet. Otherwise tokens that exist only on a
+        // non-selected wallet (e.g. a passphrase wallet) never get a rate fetched on launch.
+        pipe(
+            accounts,
+            A.map((account): TickerId[] => [
+                {
+                    symbol: account.symbol,
+                },
+                ...(account.tokens || [])
+                    .filter(token => new BigNumber(token.balance ?? '0').gt(0))
+                    .map(
+                        token =>
+                            ({
+                                symbol: account.symbol,
+                                tokenAddress: token.contract as TokenAddress,
+                                protocols: token.protocols,
+                            }) satisfies TickerId,
+                    ),
+            ]),
+            A.flat,
+            A.filter(
+                ticker =>
+                    !ticker.tokenAddress ||
+                    !getNetworkFeatures(ticker.symbol).includes('coin-definitions') ||
+                    selectIsSpecificCoinDefinitionKnown(
+                        { tokenDefinitions },
+                        ticker.symbol,
+                        ticker.tokenAddress,
+                    ),
+            ),
+            A.uniqBy(ticker =>
+                ticker.tokenAddress ? `${ticker.symbol}-${ticker.tokenAddress}` : ticker.symbol,
+            ),
+            A.sortBy(ticker => (ticker.tokenAddress ? 1 : 0)),
+            F.toMutable,
         ),
-        A.uniqBy(ticker =>
-            ticker.tokenAddress ? `${ticker.symbol}-${ticker.tokenAddress}` : ticker.symbol,
-        ),
-        A.sortBy(ticker => (ticker.tokenAddress ? 1 : 0)),
-        F.toMutable,
-    );
-};
-
-export const selectTickersToBeUpdated = (
-    state: FiatRatesRootState & TokenDefinitionsRootState & AccountsRootState,
-    currentTimestamp: Timestamp,
-    fiatCurrency: BaseCurrencyCode,
-    rateType: RateTypeWithoutHistoric,
-): TickerId[] => {
-    const tickers = selectTickerFromAccounts(state);
-
-    return tickers.filter(ticker => {
-        const fiatRateKey = getFiatRateKeyFromTicker(ticker, fiatCurrency);
-
-        return (
-            selectShouldUpdateFiatRate(state, currentTimestamp, fiatRateKey, rateType) &&
-            !selectIsTickerLoading(state, ticker, fiatCurrency, rateType)
-        );
-    });
-};
+);

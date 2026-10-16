@@ -1,4 +1,5 @@
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
+import { mockFiatRatesApiState } from '@suite-common/wallet-core/mocks';
 import type {
     CurrentRate,
     CurrentRatesByKey,
@@ -20,11 +21,14 @@ export const createMockRate = (rate: number, symbol: NetworkSymbol): CurrentRate
 });
 
 export const mockWalletFiatRatesAndSettings = (customRates: CurrentRatesByKey = {}) => ({
-    settings: {
-        localCurrency: 'usd',
-        bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
-    } as WalletSettings,
-    fiat: {
+    wallet: {
+        settings: {
+            localCurrency: 'usd',
+            bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
+        } as WalletSettings,
+        fiat: { historic: {} },
+    },
+    fiatRatesApi: mockFiatRatesApiState({
         current: {
             [getFiatRateKey(asNetworkSymbol('btc'), 'usd')]: createMockRate(
                 50000,
@@ -32,7 +36,5 @@ export const mockWalletFiatRatesAndSettings = (customRates: CurrentRatesByKey = 
             ),
             ...customRates,
         },
-        lastWeek: {},
-        historic: {},
-    },
+    }),
 });

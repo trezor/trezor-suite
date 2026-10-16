@@ -11,8 +11,10 @@ import {
     renderHookWithStoreProvider,
 } from '@suite-common/test-utils';
 import {
+    type FiatRatesApiRootState,
     type FiatRatesState,
     type WalletSettingsState,
+    fiatRatesApi,
     initialWalletSettingsState,
 } from '@suite-common/wallet-core';
 
@@ -43,7 +45,7 @@ export type TradingTestStateWithWalletSettings = {
     };
 };
 
-type State = {
+type State = FiatRatesApiRootState & {
     networks: NetworksState;
     wallet: {
         trading: TradingState;
@@ -54,7 +56,8 @@ type State = {
 
 type RenderHookWithTradingStoreOptions<Props> = RenderHookOptions<Props> & {
     preloadedState?: (Partial<TradingTestStateWithWalletSettings> | Partial<TradingTestState>) &
-        Partial<NetworksRootState>;
+        Partial<NetworksRootState> &
+        Partial<FiatRatesApiRootState>;
 };
 
 /**
@@ -89,8 +92,6 @@ export const createTestStateWithWalletSettings = (
         trading: initialState,
         settings: initialWalletSettingsState,
         fiat: {
-            current: {},
-            lastWeek: {},
             historic: {},
         },
         ...overrides,
@@ -202,18 +203,14 @@ export const renderHookWithTradingStore = <Result, Props = unknown>(
     const { services } = createTestCompositionRoot<void, State>({
         reducer: combineReducers({
             networks: networksReducer,
+            [fiatRatesApi.reducerPath]: fiatRatesApi.reducer,
             wallet: combineReducers({
                 trading: tradingCommonReducer,
                 settings: (state = { localCurrency: 'usd' }) => state,
-                fiat: (
-                    state = {
-                        current: {},
-                        lastWeek: {},
-                        historic: {},
-                    },
-                ) => state,
+                fiat: (state = { historic: {} }) => state,
             }),
         }),
+        middleware: [fiatRatesApi.middleware],
         preloadedState: preloadedState || createTradingTestState(),
     });
 

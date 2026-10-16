@@ -5,7 +5,10 @@ import {
     type MessageSystemRootState,
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
-import { selectHasUnseenNonPhishingTransactionNotifications } from '@suite-common/wallet-core';
+import {
+    selectHasUnseenNonPhishingTransactionNotifications,
+    useNotifiedTransactionsHistoricFiatRates,
+} from '@suite-common/wallet-core';
 import { ActivityCenterButton } from '@suite-native/activity-center';
 import { HStack, ScreenHeaderWrapper } from '@suite-native/atoms';
 
@@ -21,6 +24,7 @@ export const DeviceManagerScreenHeader = ({
     const isActivityCenterEnabled = useSelector((state: MessageSystemRootState) =>
         selectIsFeatureEnabled(state, Feature.activityCenter, true),
     );
+    useNotifiedTransactionsHistoricFiatRates();
     const hasUnseenNotifications = useSelector(selectHasUnseenNonPhishingTransactionNotifications);
 
     return (

@@ -1,3 +1,4 @@
+import { fiatRatesApi } from '@suite-common/wallet-core';
 import type { AccountKey } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { Form } from '@suite-native/forms';
@@ -12,6 +13,7 @@ import { CustomFeeCard, type CustomFeeCardProps } from './CustomFeeCard';
 import {
     BTC_ACCOUNT_KEY,
     ETH_ACCOUNT_KEY,
+    getFiatRatesApiState,
     getWalletState,
 } from '../../../__fixtures__/walletState';
 import { type FeesFormType } from '../../../feesFormSchema';
@@ -26,6 +28,7 @@ describe('CustomFeeCard', () => {
 
     const defaultState = {
         wallet: getWalletState(),
+        fiatRatesApi: getFiatRatesApiState(),
     };
 
     const renderUseFeesForm = async (accountKey: AccountKey = ETH_ACCOUNT_KEY) => {
@@ -37,6 +40,7 @@ describe('CustomFeeCard', () => {
                 }),
             {
                 preloadedState: defaultState,
+                middleware: [fiatRatesApi.middleware],
             },
         );
 
@@ -54,6 +58,7 @@ describe('CustomFeeCard', () => {
 
         return await renderWithStoreProvider(<CustomFeeCard {...finalProps} />, {
             preloadedState: defaultState,
+            middleware: [fiatRatesApi.middleware],
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
     };

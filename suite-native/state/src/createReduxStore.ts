@@ -1,12 +1,15 @@
+import { AppState } from 'react-native';
+
 import { type Middleware, configureStore } from '@reduxjs/toolkit';
+import { setupListeners } from '@reduxjs/toolkit/query';
 
 import { type ExtraDependenciesStatic } from '@suite-common/extra-dependencies';
 import { logsMiddleware } from '@suite-common/logger';
 import { prepareSuiteSyncMiddleware } from '@suite-common/suite-sync';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import {
+    fiatRatesApi,
     prepareBlockchainSubscriptionMiddleware,
-    prepareFiatRatesMiddleware,
     preparePushNotificationMiddleware,
 } from '@suite-common/wallet-core';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
@@ -67,7 +70,7 @@ const getMiddlewares = (getExtra: () => GetMiddlewaresDeps | null) => {
         messageSystemMiddleware,
         blockchainMiddleware,
         prepareBlockchainSubscriptionMiddleware(getExtra),
-        prepareFiatRatesMiddleware(getExtra),
+        fiatRatesApi.middleware,
         prepareDeviceMiddleware(getExtra),
         prepareDiscoveryMiddleware(getExtra),
         sendFormMiddleware,
@@ -127,6 +130,15 @@ export const createReduxStore = (deps: ReduxStoreDeps): ReduxStore => {
         devTools: false, // Rozenite DevTools will be used instead of default browser dev tools.
         enhancers: getDefaultEnhancers =>
             getDefaultEnhancers().concat(getRozeniteDevToolsEnhancers()),
+    });
+
+    // Lets polled RTK Query subscriptions, e.g. fiat rates, pause while the app is in background.
+    setupListeners(store.dispatch, (dispatch, { onFocus, onFocusLost }) => {
+        const subscription = AppState.addEventListener('change', appState => {
+            dispatch(appState === 'active' ? onFocus() : onFocusLost());
+        });
+
+        return () => subscription.remove();
     });
 
     return {

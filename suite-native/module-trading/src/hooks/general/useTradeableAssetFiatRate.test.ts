@@ -1,4 +1,4 @@
-import { updateFiatRatesThunk } from '@suite-common/wallet-core';
+import { useFiatRate } from '@suite-common/wallet-core';
 import { renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import { ethAsset, usdcAsset } from '@suite-native/trading-fixtures';
 import { type TradeableAsset } from '@suite-native/trading-types';
@@ -8,7 +8,7 @@ import { createTradingPreloadedState } from '../../test-utils/tradingTestUtils';
 
 jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
-    updateFiatRatesThunk: jest.fn(() => ({ type: 'mockUpdateFiatRates' })),
+    useFiatRate: jest.fn(),
 }));
 
 describe('useTradeableAssetFiatRate', () => {
@@ -22,7 +22,7 @@ describe('useTradeableAssetFiatRate', () => {
         );
 
     beforeEach(() => {
-        jest.mocked(updateFiatRatesThunk).mockClear();
+        jest.mocked(useFiatRate).mockClear();
     });
 
     it.each([
@@ -34,29 +34,30 @@ describe('useTradeableAssetFiatRate', () => {
         expect(result.current).toBe(expectedRate);
     });
 
-    it('should not fetch the rate by default', async () => {
+    it('should not subscribe to the rate by default', async () => {
         await renderTradeableAssetFiatRate(ethAsset);
 
-        expect(updateFiatRatesThunk).not.toHaveBeenCalled();
+        expect(useFiatRate).toHaveBeenLastCalledWith(expect.objectContaining({ isDisabled: true }));
     });
 
-    it('should fetch the current rate of the asset in base currency when requested', async () => {
+    it('should subscribe to a fresh current rate of the asset in base currency when requested', async () => {
         await renderTradeableAssetFiatRate(usdcAsset, true);
 
-        expect(updateFiatRatesThunk).toHaveBeenCalledWith(
-            expect.objectContaining({
-                tickers: [{ symbol: 'eth', tokenAddress: usdcAsset.contractAddress }],
-                baseCurrencyCode: 'usd',
-                rateType: 'current',
-                forceFetchToken: true,
-            }),
-        );
+        expect(useFiatRate).toHaveBeenLastCalledWith({
+            ticker: { symbol: 'eth', tokenAddress: usdcAsset.contractAddress },
+            baseCurrencyCode: 'usd',
+            forceFetchToken: true,
+            skipCache: true,
+            isDisabled: false,
+        });
     });
 
-    it('should not fetch the rate when asset is not selected', async () => {
+    it('should not subscribe to any rate when asset is not selected', async () => {
         const { result } = await renderTradeableAssetFiatRate(undefined, true);
 
         expect(result.current).toBeUndefined();
-        expect(updateFiatRatesThunk).not.toHaveBeenCalled();
+        expect(useFiatRate).toHaveBeenLastCalledWith(
+            expect.objectContaining({ ticker: undefined }),
+        );
     });
 });

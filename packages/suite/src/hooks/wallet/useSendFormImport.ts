@@ -3,13 +3,8 @@ import { useEffect, useState } from 'react';
 import { openDeferredModal } from '@suite/modal';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
-import { updateFiatRatesThunk } from '@suite-common/wallet-core';
-import {
-    type FiatRatesResult,
-    type Output,
-    type RatesByKey,
-    type Timestamp,
-} from '@suite-common/wallet-types';
+import { fiatRatesApi } from '@suite-common/wallet-core';
+import { type Output, type RatesByKey } from '@suite-common/wallet-types';
 import {
     convertAmountSubunitsToUnits,
     convertAmountUnitsToSubunits,
@@ -71,23 +66,20 @@ export const useSendFormImport = ({
                 rates.push({ currency, rate: fiatRate?.rate });
             } else {
                 // fetch fiat rate for new currencies in the csv
-                const updateFiatRatesResult = await dispatch(
-                    updateFiatRatesThunk({
-                        tickers: [
+                try {
+                    const fetchedFiatRate = await dispatch(
+                        fiatRatesApi.endpoints.getCurrentFiatRate.initiate(
                             {
-                                symbol: network.symbol,
+                                ticker: { symbol: network.symbol },
+                                baseCurrencyCode: currency as BaseCurrencyCode,
                             },
-                        ],
-                        baseCurrencyCode: currency as BaseCurrencyCode,
-                        rateType: 'current',
-                        fetchAttemptTimestamp: Date.now() as Timestamp,
-                    }),
-                );
+                            { subscribe: false },
+                        ),
+                    ).unwrap();
 
-                if (updateFiatRatesResult.meta.requestStatus === 'fulfilled') {
-                    const fiatRate = updateFiatRatesResult.payload as FiatRatesResult;
-
-                    rates.push({ currency, rate: fiatRate?.rate });
+                    rates.push({ currency, rate: fetchedFiatRate.rate });
+                } catch {
+                    // The amount of an item in a currency without a rate cannot be converted.
                 }
             }
         }

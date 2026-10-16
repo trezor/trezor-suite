@@ -9,3 +9,4 @@ export {
     mockYieldVault,
 } from './mockResolvedYieldFlowData';
 export { mockYieldSessionState } from './mockYieldSessionState';
+export { mockFiatRatesApiState } from './mockFiatRatesApiState';

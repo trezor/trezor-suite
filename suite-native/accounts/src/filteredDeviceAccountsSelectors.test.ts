@@ -5,6 +5,7 @@ import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
+import { mockFiatRatesApiState } from '@suite-common/wallet-core/mocks';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId, asWalletDescriptor } from '@trezor/device-utils';
@@ -127,8 +128,6 @@ const createState = (accounts: Account[]): NativeAccountsRootState & NetworksRoo
             ],
         },
         fiat: {
-            current: {},
-            lastWeek: {},
             historic: {},
         },
         transactions: {
@@ -165,6 +164,7 @@ const createState = (accounts: Account[]): NativeAccountsRootState & NetworksRoo
         },
     },
     tokenDefinitions: {},
+    fiatRatesApi: mockFiatRatesApiState(),
 });
 
 const stateAccounts = [

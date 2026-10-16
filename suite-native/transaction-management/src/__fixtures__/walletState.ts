@@ -1,8 +1,9 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type FiatRatesState } from '@suite-common/wallet-core';
-import type { Account, CurrentRatesByKey, WalletSettings } from '@suite-common/wallet-types';
-import { AddressDisplayOptions } from '@suite-common/wallet-types';
+import { mockFiatRatesApiState } from '@suite-common/wallet-core/mocks';
+import type { Account, CurrentRate, TickerId, WalletSettings } from '@suite-common/wallet-types';
+import { AddressDisplayOptions, asTimestamp, toTokenAddress } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { PROTO } from '@trezor/connect';
 
 import { createFeeLevels } from './feeLevels';
@@ -222,38 +223,46 @@ export const getSolAccount = () =>
         },
     }) as unknown as Account;
 
+const ethSymbol = asNetworkSymbol('eth');
+
+// In dollars, the dollar rate is the rate itself.
+const mockRate = (rate: number, ticker: TickerId): CurrentRate => ({
+    rate,
+    usdRate: rate,
+    lastTickerTimestamp: asTimestamp(0),
+    lastSuccessfulFetchTimestamp: asTimestamp(Date.now()),
+    isLoading: false,
+    error: null,
+    ticker,
+});
+
+export const getFiatRatesApiState = () => {
+    const usdcContract = toTokenAddress('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48');
+
+    return mockFiatRatesApiState({
+        current: {
+            [getFiatRateKey(ethSymbol, 'usd')]: mockRate(1000, { symbol: ethSymbol }),
+            [getFiatRateKey(asNetworkSymbol('btc'), 'usd')]: mockRate(100000, {
+                symbol: asNetworkSymbol('btc'),
+            }),
+            [getFiatRateKey(asNetworkSymbol('sol'), 'usd')]: mockRate(150, {
+                symbol: asNetworkSymbol('sol'),
+            }),
+            [getFiatRateKey(ethSymbol, 'usd', usdcContract)]: mockRate(0.99, {
+                symbol: ethSymbol,
+                tokenAddress: usdcContract,
+            }),
+        },
+    });
+};
+
 export const getWalletState = () => ({
     settings: {
         localCurrency: 'usd',
         bitcoinAmountUnit: PROTO.AmountUnit.BITCOIN,
         addressDisplayType: AddressDisplayOptions.CHUNKED,
     } as WalletSettings,
-    fiat: {
-        current: {
-            // ETH - USD
-            'eth-usd': {
-                rate: 1000,
-                usdRate: 1000,
-            },
-            // BTC - USD
-            'btc-usd': {
-                rate: 100000,
-                usdRate: 100000,
-            },
-            // SOL - USD
-            'sol-usd': {
-                rate: 150,
-                usdRate: 150,
-            },
-            // USDC - USD
-            'eth-0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48-usd': {
-                rate: 0.99,
-                usdRate: 0.99,
-            },
-        } as CurrentRatesByKey,
-        historic: {},
-        lastWeek: {},
-    } as FiatRatesState,
+    fiat: { historic: {} },
     accounts: [getEthAccount(), getBtcAccount(), getSolAccount()] as Account[],
     send: {
         feeLevels: createFeeLevels({

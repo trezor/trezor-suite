@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import type { CryptoId } from 'invity-api';
@@ -6,16 +6,12 @@ import type { CryptoId } from 'invity-api';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type FiatRatesRootState,
+    fiatRatesApi,
     selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
-    updateFiatRatesThunk,
+    useFiatRate,
 } from '@suite-common/wallet-core';
-import {
-    type FiatRatesResult,
-    type Rate,
-    type Timestamp,
-    type TokenAddress,
-} from '@suite-common/wallet-types';
+import { type FiatRatesResult, type Rate, type TokenAddress } from '@suite-common/wallet-types';
 import {
     convertAmountUnitsToSubunits,
     getFiatRateKey,
@@ -96,45 +92,41 @@ export const useTradingFiatValues = ({
             if (!value) return null;
             const tokenAddress = currentTokenAddress ?? contractAddress;
 
-            const updateFiatRatesResult = await dispatch(
-                updateFiatRatesThunk({
-                    tickers: [
+            try {
+                return await dispatch(
+                    fiatRatesApi.endpoints.getCurrentFiatRate.initiate(
                         {
-                            symbol,
-                            tokenAddress: isNativeToken ? undefined : tokenAddress,
-                            protocols: isErc4626 ? ['erc4626'] : undefined,
+                            ticker: {
+                                symbol: symbolForFiat,
+                                tokenAddress: isNativeToken ? undefined : tokenAddress,
+                                protocols: isErc4626 ? ['erc4626'] : undefined,
+                            },
+                            baseCurrencyCode: value,
+                            forceFetchToken: true,
+                            skipCache: true,
                         },
-                    ],
-                    baseCurrencyCode: value,
-                    rateType: 'current',
-                    fetchAttemptTimestamp: Date.now() as Timestamp,
-                    forceFetchToken: true,
-                    skipCache: true,
-                }),
-            );
-
-            if (updateFiatRatesResult.meta.requestStatus === 'fulfilled') {
-                const fiatRates =
-                    updateFiatRatesResult.payload as PromiseSettledResult<FiatRatesResult>[];
-
-                const successfulResult = fiatRates.find(
-                    (result): result is PromiseFulfilledResult<FiatRatesResult> =>
-                        result.status === 'fulfilled',
-                );
-
-                return successfulResult?.value ?? null;
+                        { subscribe: false, forceRefetch: true },
+                    ),
+                ).unwrap();
+            } catch {
+                return null;
             }
-
-            return null;
         },
-        [contractAddress, dispatch, symbol, isNativeToken, isErc4626],
+        [contractAddress, dispatch, symbolForFiat, isNativeToken, isErc4626],
     );
 
-    useEffect(() => {
-        if (!fiatCurrency) return;
-
-        fiatRatesUpdater(fiatCurrency);
-    }, [fiatCurrency, fiatRatesUpdater]);
+    // Trading needs a fresh rate of the asset, also for tokens without a known coin definition.
+    useFiatRate({
+        ticker: {
+            symbol: symbolForFiat,
+            tokenAddress: contractAddress,
+            protocols: isErc4626 ? ['erc4626'] : undefined,
+        },
+        baseCurrencyCode: fiatCurrency,
+        forceFetchToken: true,
+        skipCache: true,
+        isDisabled: !fiatCurrency,
+    });
 
     if (!amount || !fiatCurrency || !network) return null;
 

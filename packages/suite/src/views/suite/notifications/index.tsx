@@ -9,6 +9,7 @@ import {
 import {
     selectHasUnseenNonPhishingTransactionNotifications,
     selectNonPhishingTransactionNotifications,
+    useNotifiedTransactionsHistoricFiatRates,
 } from '@suite-common/wallet-core';
 import { Card, CollapsibleBox, Column, Dot, Row } from '@trezor/components';
 
@@ -31,6 +32,7 @@ type NotificationsViewState = {
 const selectSuiteNotifications = (state: NotificationsViewState) => state.notifications;
 
 const NotificationsView = () => {
+    useNotifiedTransactionsHistoricFiatRates();
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const [selectedTab, setSelectedTab] = useState<ActivityTab>('transactions');
 

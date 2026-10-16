@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 
 import { useMutation } from '@tanstack/react-query';
@@ -12,7 +12,7 @@ import {
     type YieldFlowFormValues,
     selectBaseCurrency,
     useEvmPendingTxStatus,
-    useMissingRateTickersQuery,
+    useFiatRates,
 } from '@suite-common/wallet-core';
 import { type Account, toTokenAddress } from '@suite-common/wallet-types';
 import { Column, Text } from '@trezor/components';
@@ -106,13 +106,16 @@ export const UnwrapNativeToken = ({
     const nativeSymbol = getNetworkDisplaySymbol(account.symbol);
 
     const baseCurrency = useSelector(selectBaseCurrency);
-    // The wrapped-native token (WETH) is not held as a balance, so its fiat rate is not fetched by
-    // the balance-driven path. Force-fetch it so the approximate fiat value can render.
-    useMissingRateTickersQuery({
+    // The wrapped-native token (WETH) is not held as a balance and may have no known coin
+    // definition. Force-fetch its rate so the approximate fiat value can render.
+    const wrappedTokenTickers = useMemo(
+        () => [{ symbol: account.symbol, tokenAddress: toTokenAddress(tokenContractAddress) }],
+        [account.symbol, tokenContractAddress],
+    );
+    useFiatRates({
+        tickers: wrappedTokenTickers,
         baseCurrencyCode: baseCurrency,
-        missingRateTickers: [
-            { symbol: account.symbol, tokenAddress: toTokenAddress(tokenContractAddress) },
-        ],
+        forceFetchToken: true,
     });
     const wrappedToken: YieldFlowDisplayToken & { contractAddress: string } = {
         networkSymbol: account.symbol,

@@ -47,7 +47,9 @@ function extendMerklRewardsWithFiat(
         });
     };
 
-    const missingRateTickers: TickerId[] = [];
+    // All tickers whose rates the rewards need, not only the missing ones, so that subscribers keep
+    // them fresh instead of dropping each rate once it arrives.
+    const rateTickers: TickerId[] = [];
     const chainsRewardsWithFiat = chainsRewards
         .map(({ chainId, rewards, ...rest }) => {
             const network = getNetworkByEvmChainId(chainId);
@@ -80,8 +82,8 @@ function extendMerklRewardsWithFiat(
                 const rate = currentFiatRates?.[fiatRateKey]?.rate;
                 const ticker = getTickerFromFiatRateKey(fiatRateKey);
 
-                if (rate === undefined && ticker) {
-                    missingRateTickers.push(ticker);
+                if (ticker) {
+                    rateTickers.push(ticker);
                 }
 
                 return {
@@ -106,7 +108,7 @@ function extendMerklRewardsWithFiat(
 
     return {
         chainsRewardsWithFiat,
-        missingRateTickers,
+        rateTickers,
     };
 }
 

@@ -103,7 +103,7 @@ export const EarnYieldTable = () => {
         shouldScrollWholeSection && routerAnchor ? routerAnchor : EarnAnchor.Yield,
     );
 
-    const { merklRewardsQuery, missingRateTickersQuery } = useMerklRewards(yieldAccounts);
+    const { merklRewardsQuery, fiatRatesQuery } = useMerklRewards(yieldAccounts);
     const { accountsRewards } = merklRewardsQuery.data;
     const isClaimDisabled =
         claimMessageSystem.isDisabled ||
@@ -117,7 +117,7 @@ export const EarnYieldTable = () => {
         !isYieldOpportunitiesLoading &&
         !isYieldOpportunitiesError &&
         merklRewardsQuery.isSuccess &&
-        !missingRateTickersQuery.isLoading;
+        !fiatRatesQuery.isLoading;
 
     useEffect(() => {
         if (!isReadyToReport || hasFiredReadyEventRef.current) {
@@ -185,7 +185,7 @@ export const EarnYieldTable = () => {
                         <>
                             <EarnYieldClaimRewardsBanner
                                 rewards={merklRewardsQuery}
-                                isFiatRateLoading={missingRateTickersQuery.isLoading}
+                                isFiatRateLoading={fiatRatesQuery.isLoading}
                                 isClaimDisabled={isClaimDisabled}
                                 claimDisabledTooltip={
                                     claimMessageSystem.isDisabled

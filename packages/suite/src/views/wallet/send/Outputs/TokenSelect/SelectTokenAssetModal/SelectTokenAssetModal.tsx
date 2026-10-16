@@ -1,8 +1,8 @@
 import { useCallback, useRef, useState } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
-import { updateFiatRatesThunk } from '@suite-common/wallet-core';
-import { type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
+import { fiatRatesApi, getFiatRateMaxAgeInSeconds } from '@suite-common/wallet-core';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Box, Divider } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -102,19 +102,19 @@ export function SelectTokenAssetModal({
 
             onModalClose();
 
+            // The modal is closed already, so the rate is fetched imperatively before composing.
             await dispatch(
-                updateFiatRatesThunk({
-                    tickers: [
-                        {
+                fiatRatesApi.endpoints.getCurrentFiatRate.initiate(
+                    {
+                        ticker: {
                             symbol: account.symbol,
-                            tokenAddress: (newlySelectedToken?.contract || '') as TokenAddress,
+                            tokenAddress: newlySelectedToken?.contract as TokenAddress | undefined,
                             protocols: newlySelectedToken?.protocols,
                         },
-                    ],
-                    baseCurrencyCode: currencyValue.value as BaseCurrencyCode,
-                    rateType: 'current',
-                    fetchAttemptTimestamp: Date.now() as Timestamp,
-                }),
+                        baseCurrencyCode: currencyValue.value as BaseCurrencyCode,
+                    },
+                    { subscribe: false, forceRefetch: getFiatRateMaxAgeInSeconds('current') },
+                ),
             );
             // Clear errors in Amount input.
             clearErrors(amountInputName);

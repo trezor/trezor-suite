@@ -1,5 +1,6 @@
 import { type NetworkModuleRepositoryDep } from '@suite-common/networks';
 import { mockNetworkIcon, mockNetworkModuleRepository } from '@suite-common/networks/mocks';
+import { fiatRatesApi } from '@suite-common/wallet-core';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { Form } from '@suite-native/forms';
@@ -61,6 +62,7 @@ describe('ExchangeForm', () => {
                 ...services,
                 networks: { networkIcon: mockNetworkIcon(), ...services.networks },
             },
+            middleware: [fiatRatesApi.middleware],
             preloadedState: {
                 ...defaultPreloadedState,
                 wallet: {

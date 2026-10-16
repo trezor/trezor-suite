@@ -1,3 +1,5 @@
+import { fiatRatesApi } from '@suite-common/wallet-core';
+import { mockFiatRatesApiState } from '@suite-common/wallet-core/mocks';
 import { type Account } from '@suite-common/wallet-types';
 import { Form, useForm } from '@suite-native/forms';
 import {
@@ -59,7 +61,11 @@ const renderAlert = async (account: Account, amountValue: string) => {
         form,
         ...(await renderWithStoreProvider(
             <SolanaUnstakeAmountBoundsAlert account={account} amountValue={amountValue} />,
-            { wrapper: ({ children }) => <Form form={form}>{children}</Form> },
+            {
+                preloadedState: { fiatRatesApi: mockFiatRatesApiState() },
+                middleware: [fiatRatesApi.middleware],
+                wrapper: ({ children }) => <Form form={form}>{children}</Form>,
+            },
         )),
     };
 };

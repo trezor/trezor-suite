@@ -1,5 +1,3 @@
-import { A, D, pipe } from '@mobily/ts-belt';
-
 import { type DeviceRootState } from '@suite-common/device';
 import {
     type NotificationsRootState,
@@ -14,28 +12,17 @@ import {
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import type {
-    Account,
-    AccountKey,
-    Timestamp,
-    TokenAddress,
-    WalletAccountTransaction,
-} from '@suite-common/wallet-types';
+import type { Account, AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
     getConfirmations,
-    getErc4626Contracts,
     getEvmPrivatePendingHint,
-    getFiatRateKey,
     isClaimTx,
-    isNftTokenTransfer,
     isPending,
     isStakeTx,
     isStakeTypeTx,
     isUnstakeTx,
     isYieldTypeTx,
-    roundTimestampToNearestPastHour,
 } from '@suite-common/wallet-utils';
-import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { isNotNullOrUndefined, typedObjectKeys, typedObjectValues } from '@trezor/utils';
 
@@ -47,7 +34,7 @@ import {
     selectBlockchainHeightBySymbol,
 } from '../blockchain/blockchainReducer';
 import { selectHistoricFiatRates } from '../fiat-rates/fiatRatesSelectors';
-import type { FiatRatesRootState } from '../fiat-rates/fiatRatesTypes';
+import type { FiatRatesHistoricRootState } from '../fiat-rates/fiatRatesTypes';
 import { type PhishingRootState } from '../phishing/phishingReducerTypes';
 import { selectActiveDustPhishingThreshold } from '../phishing/phishingSelectors';
 import { isCardanoStakingTx } from '../staking/cardano/cardanoStakingUtils';
@@ -59,7 +46,7 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<
 >();
 
 const createPhishingContextMemoizedSelector = createWeakMapSelector.withTypes<
-    TokenDefinitionsRootState & TransactionsRootState & FiatRatesRootState
+    TokenDefinitionsRootState & TransactionsRootState & FiatRatesHistoricRootState
 >();
 
 export const selectIsLoadingAccountTransactions = (
@@ -222,7 +209,7 @@ export const selectIsPhishingTransaction = (
     state: TokenDefinitionsRootState &
         TransactionsRootState &
         AccountsRootState &
-        FiatRatesRootState &
+        FiatRatesHistoricRootState &
         PhishingRootState,
     txid: string,
     accountKey: AccountKey,
@@ -374,72 +361,12 @@ export const selectAccountTransactionsFromNowUntilTimestamp = createMemoizedSele
         ),
 );
 
-export const selectTransactionsWithMissingRates = (
-    state: FiatRatesRootState & TransactionsRootState & AccountsRootState,
-    localCurrency: BaseCurrencyCode,
-    accountKey?: AccountKey,
-) => {
-    const transactions = selectTransactions(state);
-    const historicFiatRates = selectHistoricFiatRates(state);
-
-    const accountTransactions: WalletAccountTransaction[] =
-        accountKey && transactions[accountKey] ? transactions[accountKey] : [];
-    const scopedTransactions: Record<string, WalletAccountTransaction[]> = accountKey
-        ? { [accountKey]: accountTransactions }
-        : transactions;
-
-    return pipe(
-        scopedTransactions,
-        D.mapWithKey((key, txs) => {
-            const account = selectAccountByKey(state, key as AccountKey);
-            const erc4626Contracts = getErc4626Contracts(account?.tokens);
-
-            return {
-                account,
-                txs: txs.filter(tx => {
-                    const fiatRateKey = getFiatRateKey(tx.symbol, localCurrency);
-                    const roundedTimestamp = roundTimestampToNearestPastHour(
-                        tx.blockTime as Timestamp,
-                    );
-                    const historicRate = historicFiatRates?.[fiatRateKey]?.[roundedTimestamp];
-
-                    const isMissingTokenRate = tx.tokens
-                        .filter(
-                            token =>
-                                !isNftTokenTransfer(token) &&
-                                !erc4626Contracts.has(token.contract.toLowerCase()),
-                        )
-                        .some(token => {
-                            const tokenFiatRateKey = getFiatRateKey(
-                                tx.symbol,
-                                localCurrency,
-                                token.contract as TokenAddress,
-                            );
-                            const historicTokenRate =
-                                historicFiatRates?.[tokenFiatRateKey]?.[roundedTimestamp];
-
-                            return historicTokenRate === undefined || historicTokenRate === 0;
-                        });
-
-                    return historicRate === undefined || historicRate === 0 || isMissingTokenRate;
-                }),
-            };
-        }),
-        D.filter(({ account, txs }) => !!account && !!txs.length),
-        D.values,
-        A.filter(value => !!value),
-    ) as {
-        account: Account;
-        txs: WalletAccountTransaction[];
-    }[];
-};
-
 const createPhishingNotificationsSelector = createWeakMapSelector.withTypes<
     NotificationsRootState &
         TokenDefinitionsRootState &
         TransactionsRootState &
         AccountsRootState &
-        FiatRatesRootState &
+        FiatRatesHistoricRootState &
         PhishingRootState &
         DeviceRootState
 >();
