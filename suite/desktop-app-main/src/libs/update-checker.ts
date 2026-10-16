@@ -4,13 +4,6 @@ import { createMessage, readKey, readSignature, verify } from 'openpgp';
 
 import { removeTrailingSlashes, serializeError } from '@trezor/utils';
 
-const signingKey = process.env.APP_PUBKEY;
-
-// This will prevent the auto-updater from loading if the pubkey is not defined
-if (signingKey === undefined) {
-    throw new Error('APP_PUBKEY is undefined.');
-}
-
 type GetSignatureFileProps = { feedURL: string; originalUpdateFileName: string };
 
 const GET_SIGNATURE_TIMEOUT = 10_000; // [ms]
@@ -40,11 +33,21 @@ export const getSignatureFile = async ({
     }
 };
 
-type VerifySignatureProps = { downloadedFile: string; signatureFile: string };
+type VerifySignatureProps = {
+    downloadedFile: string;
+    signatureFile: string;
+    signingKey: string;
+    readFile: (path: string) => Promise<Uint8Array>;
+};
 
-export const verifySignature = async ({ downloadedFile, signatureFile }: VerifySignatureProps) => {
+export const verifySignature = async ({
+    downloadedFile,
+    signatureFile,
+    signingKey,
+    readFile,
+}: VerifySignatureProps) => {
     // Read downloaded file and create message to verify
-    const file = await fs.promises.readFile(downloadedFile);
+    const file = await readFile(downloadedFile);
     const message = await createMessage({ binary: file });
 
     // Load pubkey and signature
@@ -74,18 +77,24 @@ export const verifySignature = async ({ downloadedFile, signatureFile }: VerifyS
 
 type CreateVerifyUpdateFileParams = {
     feedURL: string;
+    signingKey: string;
     onVerifyStart?: () => void;
 };
 
 export const createVerifyUpdateFile =
-    ({ feedURL, onVerifyStart }: CreateVerifyUpdateFileParams): VerifyUpdateFile =>
+    ({ feedURL, signingKey, onVerifyStart }: CreateVerifyUpdateFileParams): VerifyUpdateFile =>
     async ({ updateFilePath, originalUpdateFileName }) => {
         onVerifyStart?.();
 
         try {
             const signatureFile = await getSignatureFile({ originalUpdateFileName, feedURL });
 
-            await verifySignature({ downloadedFile: updateFilePath, signatureFile });
+            await verifySignature({
+                downloadedFile: updateFilePath,
+                signatureFile,
+                signingKey,
+                readFile: fs.promises.readFile,
+            });
 
             return { response: 'success' };
         } catch (error) {

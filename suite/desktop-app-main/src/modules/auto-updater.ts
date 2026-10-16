@@ -34,6 +34,13 @@ const disableUpdater = hasSwitch('disable-updater');
 const preReleaseFlag = hasSwitch('pre-release');
 const customFeedURL = getSwitchValue('updater-url');
 
+const signingKey = process.env.APP_PUBKEY;
+
+// This will prevent the auto-updater from loading if the pubkey is not defined
+if (signingKey === undefined) {
+    throw new Error('APP_PUBKEY is undefined.');
+}
+
 type GetFeedURLParams = {
     allowPrerelease?: boolean;
     logger: ILogger;
@@ -108,6 +115,7 @@ export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
     const setVerifyUpdateFile = () => {
         autoUpdater.verifyUpdateFile = createVerifyUpdateFile({
             feedURL,
+            signingKey,
             onVerifyStart: () => {
                 logger.info(SERVICE_NAME, 'Verifying downloaded update signature');
                 mainWindowProxy.getInstance()?.webContents.send('update/downloading', {
