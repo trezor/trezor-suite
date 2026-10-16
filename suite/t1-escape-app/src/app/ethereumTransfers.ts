@@ -166,6 +166,7 @@ export const createEthereumTransfers = (context: EthereumTransfersContext): Ethe
 
         const prepared = await prepareEthereumSweep({
             backend: getChainBackend(account.chain),
+            ledger,
             account,
             destination,
         });

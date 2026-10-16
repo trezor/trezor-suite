@@ -74,7 +74,12 @@ const setup = async ({
         nonce: '3',
     });
 
-    const prepared = await prepareEthereumSweep({ backend, account, destination: DESTINATION });
+    const prepared = await prepareEthereumSweep({
+        backend,
+        ledger,
+        account,
+        destination: DESTINATION,
+    });
     if (!prepared.success || !prepared.payload.plan) throw new Error('the plan must compose');
 
     const sign = (plan: EthereumSweepPlan = prepared.payload.plan!) =>

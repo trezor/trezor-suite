@@ -53,6 +53,19 @@ describe('composeEthereumSweep', () => {
         });
     });
 
+    it('adds one wei per burned attempt to the gas price, which moves the amount too', () => {
+        const retry = compose({ attempt: 2 });
+
+        expect(retry).toMatchObject({
+            success: true,
+            payload: {
+                gasPrice: '24000000002',
+                fee: '504000000042000',
+                amount: '999495999999958000',
+            },
+        });
+    });
+
     it('uses the chain id of the account chain', () => {
         const classic = compose({ account: { ...ACCOUNT, chain: 'ethereum-classic', slip44: 61 } });
 

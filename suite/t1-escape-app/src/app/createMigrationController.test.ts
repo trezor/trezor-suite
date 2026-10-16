@@ -1159,6 +1159,33 @@ describe('migration controller', () => {
             expect(device.countCalls('EthereumSignTx')).toBe(2);
         });
 
+        it('keeps a rejected transfer signable when the gas price does not move', async () => {
+            const { controller, device, getEthereumTransfers, reachEthereumTransfers } = setup({
+                deviceParams: { isOutputRejected: true },
+                amounts: [],
+                fundedEthereum: [{ ethereumChain: 'ethereum', balance: ONE_ETHER }],
+            });
+            await reachEthereumTransfers();
+
+            // The backend reports the same balance, nonce and gas price for every attempt, so
+            // only the wei added per burned attempt keeps the plans apart.
+            await controller.signTransfer(getEthereumTransfers()[0]!.key);
+            expect(getEthereumTransfers()[0]).toMatchObject({
+                stage: 'ready',
+                plan: { gasPrice: '24000000001' },
+            });
+
+            await controller.signTransfer(getEthereumTransfers()[0]!.key);
+
+            // The second attempt reached the device instead of being refused as already attempted.
+            expect(device.countCalls('EthereumSignTx')).toBe(2);
+            expect(getEthereumTransfers()[0]).toMatchObject({
+                stage: 'ready',
+                error: { type: 'failure', code: 'Failure_ActionCancelled' },
+                plan: { gasPrice: '24000000002' },
+            });
+        });
+
         it('replaces a transfer rejected on the device with one composed afresh', async () => {
             const { controller, chain, device, getEthereumTransfers, reachEthereumTransfers } =
                 setup({
@@ -1177,7 +1204,8 @@ describe('migration controller', () => {
             expect(second).toMatchObject({
                 stage: 'ready',
                 error: { type: 'failure', code: 'Failure_ActionCancelled' },
-                plan: { gasPrice: '36000000000' },
+                // The new estimate plus the margin, plus one wei for the burned attempt.
+                plan: { gasPrice: '36000000001' },
             });
             expect(second?.key).not.toBe(first?.key);
             expect(second?.plan?.amount).not.toBe(first?.plan?.amount);
