@@ -1,4 +1,6 @@
 import { type DeviceRootState } from '@suite-common/device';
+import { asNetworkSymbol } from '@suite-common/networks';
+import { testMocks } from '@suite-common/test-utils';
 import {
     type NotificationsRootState,
     type TransactionNotification,
@@ -7,22 +9,26 @@ import {
     DUST_PHISHING_THRESHOLD,
     type TokenDefinitionsRootState,
 } from '@suite-common/token-definitions';
+import { type TronTxContractType } from '@suite-common/wallet-constants';
 import {
     type Account,
     type AccountKey,
     type TokenAddress,
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
+import { transactionsInitialState } from './transactionsReducer';
 import { type TransactionsRootState } from './transactionsReducerTypes';
 import {
+    selectAccountStakeTypeTransactions,
     selectEvmPrivatePendingHint,
     selectHasUnseenNonPhishingTransactionNotifications,
     selectNonPhishingTransactionNotifications,
     selectTransactionsWithMissingRates,
 } from './transactionsSelectors';
-import { type AccountsRootState } from '../accounts/accountsReducer';
+import { type AccountsRootState, accountsInitialState } from '../accounts/accountsReducer';
 import { type FiatRatesRootState } from '../fiat-rates/fiatRatesTypes';
 import { type PhishingRootState } from '../phishing/phishingReducerTypes';
 
@@ -228,5 +234,57 @@ describe('selectNonPhishingTransactionNotifications', () => {
 
         expect(selectNonPhishingTransactionNotifications(state)).toEqual([receivedNotification]);
         expect(selectHasUnseenNonPhishingTransactionNotifications(state)).toBe(true);
+    });
+});
+
+describe('selectAccountStakeTypeTransactions', () => {
+    const TRON_ACCOUNT_KEY = mockAccountKey({ symbol: asNetworkSymbol('trx') });
+
+    const tronTx = (contractType: TronTxContractType) =>
+        testMocks.getWalletTransaction({
+            txid: `tron-${contractType}`,
+            symbol: asNetworkSymbol('trx'),
+            type: 'self',
+            tronSpecific: { contractType },
+        });
+
+    const getTronState = (transactions: WalletAccountTransaction[]): TransactionsRootState => ({
+        wallet: {
+            transactions: {
+                ...transactionsInitialState,
+                transactions: { [TRON_ACCOUNT_KEY]: transactions },
+            },
+            accounts: accountsInitialState,
+        },
+    });
+
+    it('keeps Tron staking transactions', () => {
+        const state = getTronState([
+            tronTx('FreezeBalanceV2Contract'),
+            tronTx('UnfreezeBalanceV2Contract'),
+            tronTx('VoteWitnessContract'),
+            tronTx('WithdrawExpireUnfreezeContract'),
+            tronTx('WithdrawBalanceContract'),
+        ]);
+
+        expect(
+            selectAccountStakeTypeTransactions(state, TRON_ACCOUNT_KEY).map(tx => tx.txid),
+        ).toEqual([
+            'tron-FreezeBalanceV2Contract',
+            'tron-UnfreezeBalanceV2Contract',
+            'tron-VoteWitnessContract',
+            'tron-WithdrawExpireUnfreezeContract',
+            'tron-WithdrawBalanceContract',
+        ]);
+    });
+
+    it('omits Tron transactions that are not staking operations', () => {
+        const state = getTronState([
+            tronTx('TransferContract'),
+            tronTx('TriggerSmartContract'),
+            tronTx('DelegateResourceContract'),
+        ]);
+
+        expect(selectAccountStakeTypeTransactions(state, TRON_ACCOUNT_KEY)).toEqual([]);
     });
 });
