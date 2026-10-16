@@ -15,17 +15,11 @@
         {
             "path": "../../../packages/device-utils"
         },
-        {
-            "path": "../network-assets-types"
-        },
-        {
-            "path": "../network-module-types"
-        },
+        { "path": "../network-assets-types" },
+        { "path": "../network-module-types" },
         {
             "path": "../../../packages/type-utils"
         },
-        {
-            "path": "../../../packages/utils"
-        }
+        { "path": "../../../packages/utils" }
     ]
 }
