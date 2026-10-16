@@ -13,6 +13,7 @@ import type { SearchResult } from '../types';
 import { Anchor } from './anchor';
 import { Input } from './input';
 import { renderComponent, renderString } from '../utils/render';
+import { getRouteTestIdSegment } from '../utils/route-test-id';
 
 type SearchProps = {
     className?: string;
@@ -223,6 +224,7 @@ export function Search({
                         <Anchor
                             className="nx-block nx-scroll-m-12 nx-px-2.5 nx-py-2"
                             href={route}
+                            data-testid={`@explorer/search/result/${getRouteTestIdSegment(route)}`}
                             data-index={i}
                             onFocus={handleActive}
                             onMouseMove={handleActive}
@@ -248,6 +250,7 @@ export function Search({
 
             <Input
                 ref={input}
+                data-testid="@explorer/search/input"
                 value={value}
                 onChange={e => {
                     const inputValue = e.target.value;
@@ -278,6 +281,7 @@ export function Search({
                 leaveTo="nx-opacity-0"
             >
                 <ul
+                    data-testid="@explorer/search/results"
                     className={cn(
                         'nextra-scrollbar',
                         // Using bg-white as background-color when the browser didn't support backdrop-filter

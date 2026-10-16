@@ -119,6 +119,7 @@ export function Sidebar({
                 onClick={() => setMenu(false)}
             />
             <Container
+                data-testid="@explorer/sidebar/container"
                 className={cn(
                     'nextra-sidebar-container nx-flex nx-flex-col',
                     'md:nx-shrink-0 motion-reduce:nx-transform-none',
@@ -156,6 +157,7 @@ export function Sidebar({
                                 <Collapse isOpen={showSidebar} horizontal>
                                     <Menu
                                         className="nextra-menu-desktop max-md:nx-hidden"
+                                        data-testid="@explorer/sidebar/menu-desktop"
                                         // The sidebar menu, shows only the docs directories.
                                         directories={docsDirectories}
                                         // When the viewport size is larger than `md`, hide the anchors in
@@ -168,6 +170,7 @@ export function Sidebar({
                             {mounted && window.innerWidth < 768 && (
                                 <Menu
                                     className="nextra-menu-mobile md:nx-hidden"
+                                    data-testid="@explorer/sidebar/menu-mobile"
                                     // The mobile dropdown menu, shows all the directories.
                                     directories={fullDirectories}
                                     // Always show the anchor links on mobile (`md`).
@@ -208,6 +211,7 @@ export function Sidebar({
                         )}
                         {config.sidebar.toggleButton && (
                             <button
+                                data-testid="@explorer/sidebar/toggle-button"
                                 title={showSidebar ? 'Hide sidebar' : 'Show sidebar'}
                                 className="max-md:nx-hidden nx-h-7 nx-rounded-md nx-transition-colors nx-text-gray-600 dark:nx-text-gray-400 nx-px-2 hover:nx-bg-gray-100 hover:nx-text-gray-900 dark:hover:nx-bg-primary-100/5 dark:hover:nx-text-gray-50"
                                 onClick={() => {

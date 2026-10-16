@@ -131,6 +131,7 @@ export const ApiPlayground = ({ options }: ApiPlaygroundProps) => {
                                 <SelectWrapper>
                                     <Select
                                         label="Select method"
+                                        data-testid="@explorer/playground/method-select"
                                         value={{
                                             value: selectedOption,
                                             label: options[selectedOption]?.title ?? '',

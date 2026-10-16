@@ -27,6 +27,7 @@ export function BackToTop({ className }: { className?: string }): ReactElement {
         <button
             ref={ref}
             aria-hidden="true"
+            data-testid="@explorer/back-to-top/button"
             onClick={scrollToTop}
             className={cn(
                 'nx-flex nx-items-center nx-gap-1.5 nx-transition nx-opacity-0',
