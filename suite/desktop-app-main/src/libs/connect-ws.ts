@@ -182,13 +182,23 @@ export const exposeConnectWs = ({
                 return;
             }
             if (message.type === POPUP.HANDSHAKE) {
+                // A call without a valid manifest is dropped without a response, so acknowledging
+                // the handshake would leave the client waiting and hold the connection slot.
+                const handshakeManifest = parseManifest(message.payload.settings.manifest);
+                if (!handshakeManifest) {
+                    logger.warn(LOG_PREFIX, 'connection closed: invalid handshake manifest');
+                    req.socket.destroy();
+
+                    return;
+                }
+
                 const filterSelf = !process.env.PLAYWRIGHT_RUN; // ignore own process, unless testing
                 processOnPort = await findProcessFromIncomingPort(port, filterSelf).catch(() => {
                     logger.error(LOG_PREFIX, 'findProcessFromIncomingPort failed');
 
                     return undefined;
                 });
-                manifest = parseManifest(message.payload.settings.manifest);
+                manifest = handshakeManifest;
                 version = parseVersion(message.payload.settings.version);
                 requestedPermissions = message.payload.settings.requestedPermissions;
                 isHandshakeDone = true;
