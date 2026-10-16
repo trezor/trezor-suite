@@ -22,6 +22,7 @@ export type Status = {
 export type BaseProcessOptions = {
     startupCooldown?: number;
     stopKillWait?: number;
+    maxKillAttempts?: number;
     autoRestart?: number;
     env?: Record<string, string | undefined>;
     stdio?: IOType;
@@ -209,8 +210,16 @@ export abstract class BaseProcess {
             this.process.kill();
 
             let timeout = 0;
+            let sigkillAttempts = 0;
+            const maxKillAttempts = 5;
             const interval = setInterval(() => {
-                if (!this.process || this.process.killed) {
+                // `process.killed` only indicates that the signal was sent, so also check the
+                // actual exit state.
+                const isKilled =
+                    this.process?.killed &&
+                    (this.process.exitCode != null || this.process.signalCode != null);
+
+                if (!this.process || isKilled) {
                     this.logger.info(this.logTopic, 'Killed successfully');
                     clearInterval(interval);
                     this.process = null;
@@ -222,9 +231,18 @@ export abstract class BaseProcess {
                 if (this.options.stopKillWait && timeout < this.options.stopKillWait) {
                     this.logger.info(this.logTopic, 'Still alive, checking again...');
                     timeout++;
-                } else {
+                } else if (sigkillAttempts < maxKillAttempts) {
                     this.logger.info(this.logTopic, 'Still alive, going for the SIGKILL');
+                    sigkillAttempts++;
                     this.process.kill('SIGKILL');
+                } else {
+                    this.logger.error(
+                        this.logTopic,
+                        'Process did not exit after SIGKILL, giving up...',
+                    );
+                    clearInterval(interval);
+                    this.process = null;
+                    resolve();
                 }
             }, 1000);
         });
