@@ -8,7 +8,7 @@ import {
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { isNftToken } from '@suite-common/wallet-utils';
-import { type MultiTokenValue, type TokenInfo } from '@trezor/blockchain-link-types';
+import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { type StaticSessionId } from '@trezor/device-utils';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { type Branded } from '@trezor/type-utils';
@@ -169,53 +169,9 @@ export const selectDeviceAssetAccounts = createMemoizedSelector(
     ({ assetAccounts }) => assetAccounts,
 );
 
-const haveSameIds = (left: readonly string[] | undefined, right: readonly string[] | undefined) => {
-    if (left === right) return true;
-    if (left === undefined || right === undefined) return false;
-    if (left.length !== right.length) return false;
-
-    return left.every((id, index) => id === right[index]);
-};
-
-const haveSameMultiTokenValues = (
-    left: readonly MultiTokenValue[] | undefined,
-    right: readonly MultiTokenValue[] | undefined,
-) => {
-    if (left === right) return true;
-    if (left === undefined || right === undefined) return false;
-    if (left.length !== right.length) return false;
-
-    return left.every(
-        ({ id, value }, index) => id === right[index]?.id && value === right[index]?.value,
-    );
-};
-
-const haveSameNftAssetAccounts = (left: readonly AssetAccount[], right: readonly AssetAccount[]) =>
-    left.length === right.length &&
-    left.every((held, index) => {
-        const other = right[index];
-
-        return (
-            held.assetAccountKey === other?.assetAccountKey &&
-            held.cryptoBalance === other.cryptoBalance &&
-            held.tokenInfo?.name === other.tokenInfo?.name &&
-            held.tokenInfo?.symbol === other.tokenInfo?.symbol &&
-            haveSameIds(held.tokenInfo?.ids, other.tokenInfo?.ids) &&
-            haveSameMultiTokenValues(
-                held.tokenInfo?.multiTokenValues,
-                other.tokenInfo?.multiTokenValues,
-            )
-        );
-    });
-
-/**
- * Every balance refresh hands out new token objects, but a collection rarely changes, so a write
- * that leaves every collection as it was keeps the previous list and spares everything built on it.
- */
 export const selectDeviceNftAssetAccounts = createMemoizedSelector(
     [selectDeviceAssetAccountsByKind],
     ({ nftAssetAccounts }) => nftAssetAccounts,
-    { memoizeOptions: { resultEqualityCheck: haveSameNftAssetAccounts } },
 );
 
 type AssetAccountsByContract = ReadonlyMap<TokenAddress, readonly AssetAccount[]>;

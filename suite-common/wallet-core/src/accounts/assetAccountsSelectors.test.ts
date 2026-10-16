@@ -444,24 +444,4 @@ describe('the collections the selectors keep apart', () => {
 
         expect(selectDeviceHiddenNftReasons(state).get(ETH)?.get(PUNKS)).toBe('hiddenByUser');
     });
-
-    it('keeps the collections a balance refresh leaves as they were', () => {
-        const stateWith = (balance: string) =>
-            createState({
-                accounts: [mockAccount({ balance, tokens: [{ ...punks }] })],
-            });
-
-        expect(selectDeviceNftAssetAccounts(stateWith('2'))).toBe(
-            selectDeviceNftAssetAccounts(stateWith('1')),
-        );
-    });
-
-    it('hands out new collections once an item moves', () => {
-        const before = createState({ accounts: [mockAccount({ tokens: [punks] })] });
-        const after = createState({
-            accounts: [mockAccount({ tokens: [{ ...punks, ids: ['1'] }] })],
-        });
-
-        expect(selectDeviceNftAssetAccounts(after)).not.toBe(selectDeviceNftAssetAccounts(before));
-    });
 });

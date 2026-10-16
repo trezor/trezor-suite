@@ -207,17 +207,6 @@ describe('what the section leaves out', () => {
 });
 
 describe('what a write leaves alone', () => {
-    it('hands back the same items when only a balance moves', () => {
-        const stateWith = (balance: string) =>
-            createState({
-                accounts: [mockAccount({ balance, tokens: [erc721(PUNKS, 'CryptoPunks', ['1'])] })],
-            });
-
-        expect(selectNftCollectionItems(stateWith('2'), punksOnEth)).toBe(
-            selectNftCollectionItems(stateWith('1'), punksOnEth),
-        );
-    });
-
     it('hands back the same keys when only a balance moves', () => {
         const before = createState({
             accounts: [
