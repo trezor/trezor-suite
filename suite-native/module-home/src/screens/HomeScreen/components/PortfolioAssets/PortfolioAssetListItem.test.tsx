@@ -1,3 +1,4 @@
+import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { getWalletAssetKey } from '@suite-common/wallet-core';
 import { type Account, type TokenAddress } from '@suite-common/wallet-types';
@@ -76,6 +77,7 @@ const createPreloadedState = (accounts: Account[]) => ({
 });
 
 const preloadedState = createPreloadedState([bitcoinAccount, polygonAccount]);
+const services = { networks: mockNetworksServices() };
 
 describe('PortfolioAssetListItem', () => {
     beforeEach(() => {
@@ -85,6 +87,7 @@ describe('PortfolioAssetListItem', () => {
     it('renders a token with its ticker, network, fiat value and balance', async () => {
         await renderWithStoreProvider(<PortfolioAssetListItem assetKey={usdcOnPolygonKey} />, {
             preloadedState,
+            services,
         });
 
         expect(screen.getByText('USDC')).toBeTruthy();
@@ -96,6 +99,7 @@ describe('PortfolioAssetListItem', () => {
     it('does not label the balance of a token without a ticker as the network coin', async () => {
         await renderWithStoreProvider(<PortfolioAssetListItem assetKey={namelessOnPolygonKey} />, {
             preloadedState,
+            services,
         });
 
         expect(screen.getByText(/^50(\.00)?$/)).toBeTruthy();
@@ -105,6 +109,7 @@ describe('PortfolioAssetListItem', () => {
     it('renders a network coin with its ticker, network, fiat value and balance', async () => {
         await renderWithStoreProvider(<PortfolioAssetListItem assetKey={bitcoinKey} />, {
             preloadedState,
+            services,
         });
 
         expect(screen.getByText('BTC')).toBeTruthy();
@@ -116,6 +121,7 @@ describe('PortfolioAssetListItem', () => {
     it('opens the asset detail of the token when pressed', async () => {
         await renderWithStoreProvider(<PortfolioAssetListItem assetKey={usdcOnPolygonKey} />, {
             preloadedState,
+            services,
         });
 
         fireEvent.press(screen.getByTestId(`@home/portfolio-assets/asset/pol/${USDC_CONTRACT}`));
@@ -129,6 +135,7 @@ describe('PortfolioAssetListItem', () => {
     it('opens the asset detail of the network coin when pressed', async () => {
         await renderWithStoreProvider(<PortfolioAssetListItem assetKey={bitcoinKey} />, {
             preloadedState,
+            services,
         });
 
         fireEvent.press(screen.getByTestId('@home/portfolio-assets/asset/btc/coin'));
