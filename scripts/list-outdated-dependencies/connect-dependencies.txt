@@ -13,6 +13,8 @@
 @scure/bip39
 @sinclair/typebox
 @sinclair/typebox-codegen
+@size-limit/esbuild
+@size-limit/file
 @types/bytebuffer
 @types/chrome
 @types/jws
@@ -68,6 +70,7 @@ remark-gemoji
 remark-gfm
 scroll-into-view-if-needed
 semver
+size-limit
 socks-proxy-agent
 stream-browserify
 swr
