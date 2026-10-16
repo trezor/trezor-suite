@@ -1,4 +1,4 @@
-import { type CryptoId } from 'invity-api';
+import { type BuyTradeQuoteRequest, type CryptoId } from 'invity-api';
 import { combineReducers } from 'redux';
 
 import { type SelectedAccountState, selectedAccountReducer } from '@suite/account';
@@ -6,10 +6,10 @@ import { MODAL_CONTEXT_NONE, type State as ModalState, modalReducer } from '@sui
 import {
     type LocationChangePayload,
     type RouterState,
-    getRoute,
     routerLocationChange,
     routerReducer,
 } from '@suite/router';
+import { getRequiredRoute } from '@suite/router/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import {
     type TradingState,
@@ -72,18 +72,6 @@ interface Args {
     modal?: ModalState;
 }
 
-const getRequiredRoute = <TName extends NonNullable<LocationChangePayload['route']>['name']>(
-    name: TName,
-) => {
-    const route = getRoute(name);
-
-    if (!route) {
-        throw new Error(`Missing route ${name}`);
-    }
-
-    return route as Extract<NonNullable<LocationChangePayload['route']>, { name: TName }>;
-};
-
 type State = {
     wallet: {
         trading: Partial<TradingState>;
@@ -116,7 +104,7 @@ const getInitialState = ({ trading, selectedAccount, router }: Args = {}): State
             },
         },
     },
-    router: router ?? routerReducer(tradingMiddlewareFixtures.DEFAULT_ROUTE, { type: 'init' }),
+    router: router ?? tradingMiddlewareFixtures.DEFAULT_ROUTE,
     modal: modalReducer({ context: MODAL_CONTEXT_NONE }, { type: 'init' }),
 });
 
@@ -193,9 +181,7 @@ describe('tradingMiddleware', () => {
                     modalAccountKey: mockedModalAccountKey,
                     modalCryptoId: mockedModalCryptoId,
                 },
-                router: routerReducer(tradingMiddlewareFixtures.TRADING_SELL_ROUTE, {
-                    type: 'init',
-                }),
+                router: tradingMiddlewareFixtures.TRADING_SELL_ROUTE,
             }),
         );
 
@@ -259,7 +245,7 @@ describe('tradingMiddleware', () => {
                         key: 'descriptor' as AccountKey, // Todo: create properly via `createAccountKey()`
                     },
                 },
-                router: routerReducer(routeDefault, { type: 'init' }),
+                router: routeDefault,
             }),
         );
 
@@ -267,6 +253,142 @@ describe('tradingMiddleware', () => {
 
         expect(store.getState().wallet.trading.prefilledFromAccount).toEqual(result);
     });
+
+    it('should keep trading account keys when route is changed between non-trading routes', () => {
+        const boundAccountKey = mockAccountKey({ descriptor: 'boundaccountkey' });
+        const store = initStore(
+            getInitialState({
+                trading: {
+                    ...initialState,
+                    buy: { ...initialState.buy, tradingAccountKey: boundAccountKey },
+                    sell: { ...initialState.sell, tradingAccountKey: boundAccountKey },
+                    exchange: { ...initialState.exchange, tradingAccountKey: boundAccountKey },
+                },
+                router: tradingMiddlewareFixtures.WALLET_INDEX_ROUTE,
+            }),
+        );
+
+        store.dispatch(routerLocationChange({ ...tradingMiddlewareFixtures.DEFAULT_ROUTE }));
+
+        const { buy, sell, exchange } = store.getState().wallet.trading;
+
+        expect([buy.tradingAccountKey, sell.tradingAccountKey, exchange.tradingAccountKey]).toEqual(
+            [boundAccountKey, boundAccountKey, boundAccountKey],
+        );
+    });
+
+    it('should reset trading account keys when a trading form is entered from outside the trading section', () => {
+        const boundAccountKey = mockAccountKey({ descriptor: 'boundaccountkey' });
+        const prefilledAccountKey = mockAccountKey({ descriptor: 'prefilledaccountkey' });
+        const store = initStore(
+            getInitialState({
+                trading: {
+                    ...initialState,
+                    exchange: { ...initialState.exchange, tradingAccountKey: boundAccountKey },
+                    prefilledFromAccount: { key: prefilledAccountKey, cryptoId: undefined },
+                },
+                router: tradingMiddlewareFixtures.WALLET_INDEX_ROUTE,
+            }),
+        );
+
+        store.dispatch(
+            routerLocationChange({ ...tradingMiddlewareFixtures.TRADING_EXCHANGE_ROUTE }),
+        );
+
+        const { exchange, prefilledFromAccount } = store.getState().wallet.trading;
+
+        expect(exchange.tradingAccountKey).toBeUndefined();
+        expect(prefilledFromAccount.key).toBe(prefilledAccountKey);
+    });
+
+    it('should keep trading account keys when a confirm route is entered from outside the trading section', () => {
+        const boundAccountKey = mockAccountKey({ descriptor: 'boundaccountkey' });
+        const store = initStore(
+            getInitialState({
+                trading: {
+                    ...initialState,
+                    exchange: { ...initialState.exchange, tradingAccountKey: boundAccountKey },
+                },
+                router: tradingMiddlewareFixtures.WALLET_INDEX_ROUTE,
+            }),
+        );
+
+        store.dispatch(
+            routerLocationChange({ ...tradingMiddlewareFixtures.TRADING_EXCHANGE_CONFIRM_ROUTE }),
+        );
+
+        expect(store.getState().wallet.trading.exchange.tradingAccountKey).toBe(boundAccountKey);
+    });
+
+    it('should reset trading account keys when the trading redirect is entered from outside the trading section', () => {
+        const boundAccountKey = mockAccountKey({ descriptor: 'boundaccountkey' });
+        const store = initStore(
+            getInitialState({
+                trading: {
+                    ...initialState,
+                    exchange: { ...initialState.exchange, tradingAccountKey: boundAccountKey },
+                },
+                router: tradingMiddlewareFixtures.WALLET_INDEX_ROUTE,
+            }),
+        );
+
+        store.dispatch(
+            routerLocationChange({ ...tradingMiddlewareFixtures.TRADING_REDIRECT_ROUTE }),
+        );
+
+        expect(store.getState().wallet.trading.exchange.tradingAccountKey).toBeUndefined();
+    });
+
+    it('should keep the quote request prepared by the trading redirect when the form is entered', () => {
+        const prefilledAccountKey = mockAccountKey({ descriptor: 'prefilledaccountkey' });
+        const quotesRequest: BuyTradeQuoteRequest = {
+            wantCrypto: false,
+            fiatCurrency: 'EUR',
+            receiveCurrency: 'bitcoin' as CryptoId,
+            fiatStringAmount: '10',
+            country: 'CZ',
+        };
+        const store = initStore(
+            getInitialState({
+                trading: {
+                    ...initialState,
+                    buy: { ...initialState.buy, quotesRequest },
+                    prefilledFromAccount: { key: prefilledAccountKey, cryptoId: undefined },
+                },
+                router: tradingMiddlewareFixtures.TRADING_REDIRECT_ROUTE,
+            }),
+        );
+
+        store.dispatch(routerLocationChange({ ...tradingMiddlewareFixtures.TRADING_BUY_ROUTE }));
+
+        expect(store.getState().wallet.trading.buy.quotesRequest).toEqual(quotesRequest);
+        expect(store.getState().wallet.trading.buy.tradingAccountKey).toBe(prefilledAccountKey);
+    });
+
+    it.each([
+        ['sell' as const, 'buy' as const, tradingMiddlewareFixtures.TRADING_BUY_ROUTE],
+        ['buy' as const, 'sell' as const, tradingMiddlewareFixtures.TRADING_SELL_ROUTE],
+    ])(
+        'should not carry the %s account key over to %s when the form is entered from outside the trading section',
+        (source, target, route) => {
+            const boundAccountKey = mockAccountKey({ descriptor: 'boundaccountkey' });
+            const trading: TradingState = {
+                ...initialState,
+                [source]: { ...initialState[source], tradingAccountKey: boundAccountKey },
+            };
+            const store = initStore(
+                getInitialState({
+                    trading,
+                    router: tradingMiddlewareFixtures.WALLET_INDEX_ROUTE,
+                }),
+            );
+
+            store.dispatch(routerLocationChange({ ...route }));
+
+            expect(store.getState().wallet.trading[target].tradingAccountKey).toBeUndefined();
+            expect(store.getState().wallet.trading[source].tradingAccountKey).toBeUndefined();
+        },
+    );
 
     it.each([
         ['buy' as const, tradingMiddlewareFixtures.TRADING_BUY_ROUTE],
