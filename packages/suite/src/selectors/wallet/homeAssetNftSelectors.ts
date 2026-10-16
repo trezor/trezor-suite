@@ -1,5 +1,10 @@
 import { shallowEqual } from 'react-redux';
 
+import {
+    groupAssetAccountsByAssetKey,
+    partitionAssetAccounts,
+    sumAssetAccounts,
+} from '@suite-common/assets';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AssetAccount,
@@ -13,12 +18,6 @@ import {
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
-
-import {
-    groupAssetAccountsByAssetKey,
-    partitionAssetAccounts,
-    sumAssetAccounts,
-} from './homeAssetTableUtils';
 
 export type HomeAssetNftState = AssetAccountsRootState & WalletSettingsRootState;
 

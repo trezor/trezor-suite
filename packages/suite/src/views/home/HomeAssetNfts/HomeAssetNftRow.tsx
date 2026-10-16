@@ -1,7 +1,6 @@
 import { memo } from 'react';
 
 import { Translation } from '@suite/intl';
-import { selectNftCollection } from '@suite-common/assets';
 import { useFormatters } from '@suite-common/formatters';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { Badge, Icon, Row, Table, Text } from '@trezor/components';
@@ -9,6 +8,7 @@ import { CaretDownIcon, CaretRightIcon } from '@trezor/icons';
 import { NetworkIcon } from '@trezor/product-components';
 
 import { useSelector } from 'src/hooks/suite';
+import { selectNftCollection } from 'src/selectors/wallet/homeAssetNftSelectors';
 import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
 
 import { HOME_ASSET_CELL_PADDING } from '../HomeAssetsTable/homeAssetTableLayout';
