@@ -1,6 +1,7 @@
 import { blockfrostUtils } from '@trezor/blockchain-link-utils';
 import { err, ok } from '@trezor/type-utils';
 
+import { TokenStructureType } from '../../src/tokenDefinitionsTypes';
 import { REQUEST_RETRIES, REQUEST_TIMEOUT_MS } from '../constants';
 
 jest.mock('@trezor/blockchain-link-utils', () => ({
@@ -19,7 +20,7 @@ global.fetch = fetchMock as unknown as typeof fetch;
 // The API clients capture `globalThis.fetch` when the module under test is first evaluated, so the
 // mock above has to be installed before that happens — hence the require instead of a top-level
 // import, which would be hoisted above the assignment.
-const { fetchAllCoins, getContractAddress } =
+const { buildCoinDataForPlatform, fetchAllCoins, getContractAddress } =
     require('./fetchCoins') as typeof import('./fetchCoins');
 
 // up-fetch hands `fetch` a Request instance rather than a URL string.
@@ -387,5 +388,59 @@ describe('fetchAllCoins', () => {
 
         await expect(fetchAllCoins()).rejects.toThrow('COINGECKO_API_KEY is not set');
         expect(fetchMock).not.toHaveBeenCalled();
+    });
+});
+
+describe(buildCoinDataForPlatform.name, () => {
+    const usdc = 'USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN';
+    const issuer = 'GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN';
+    const homeDomain = 'centre.io';
+    const coin = { id: 'usd-coin', symbol: 'usdc', name: 'USDC', platforms: { stellar: usdc } };
+
+    const mockStellarServices = (stellarToml: string) => {
+        fetchMock.mockImplementation((request: Request) => {
+            if (request.url === `https://horizon.stellar.org/accounts/${issuer}`) {
+                return Promise.resolve(
+                    new Response(JSON.stringify({ home_domain: homeDomain }), {
+                        status: 200,
+                        headers: { 'Content-Type': 'application/json' },
+                    }),
+                );
+            }
+            if (request.url === `https://${homeDomain}/.well-known/stellar.toml`) {
+                return Promise.resolve(new Response(stellarToml, { status: 200 }));
+            }
+
+            return Promise.resolve(new Response('Not Found', { status: 404 }));
+        });
+    };
+
+    beforeEach(() => {
+        fetchMock.mockReset();
+    });
+
+    // TOML allows 64-bit integers, so an issuer may publish a supply that a JavaScript number
+    // cannot hold exactly; that must not make the whole file unreadable.
+    it('should verify the home domain when stellar.toml has an integer beyond the safe range', async () => {
+        mockStellarServices(
+            [
+                '[[CURRENCIES]]',
+                'code = "USDC"',
+                `issuer = "${issuer}"`,
+                'max_number = 100000000000000000',
+            ].join('\n'),
+        );
+
+        const result = await buildCoinDataForPlatform(
+            [coin],
+            'stellar',
+            TokenStructureType.ADVANCED,
+        );
+
+        expect(result).toEqual({
+            data: { [usdc]: { symbol: 'usdc', name: 'USDC', home_domain: homeDomain } },
+            failedLookups: [],
+            uncheckedEnrichments: [],
+        });
     });
 });
