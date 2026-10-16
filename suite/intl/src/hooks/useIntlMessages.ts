@@ -1,5 +1,5 @@
+import { type Locale } from '@suite-common/locale';
 import { desktopQueryKeys, keepPreviousData, useQuery } from '@suite-common/react-query';
-import type { Locale } from '@suite-common/suite-types';
 
 import enMessages from '../../translations/en-US.json';
 

@@ -4,9 +4,9 @@ import {
     type FirmwareUpdateThunkState,
     prepareFirmwareReducer,
 } from '@suite-common/firmware';
+import { mockGetLanguage } from '@suite-common/locale/mocks';
 import {
     mockGetBinFilesBaseUrl,
-    mockGetLanguage,
     mockReportSecurityCheck,
     mockSuiteDevice,
 } from '@suite-common/suite-types/mocks';

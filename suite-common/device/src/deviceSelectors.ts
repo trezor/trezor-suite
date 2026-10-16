@@ -1,9 +1,8 @@
 import { A, pipe } from '@mobily/ts-belt';
 
+import { LANGUAGES, type Locale } from '@suite-common/locale';
 import {
     type BackupType,
-    LANGUAGES,
-    type Locale,
     type TrezorDevice,
     type TrezorDeviceWithState,
 } from '@suite-common/suite-types';

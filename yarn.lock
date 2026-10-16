@@ -11493,6 +11493,7 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:2.13.0"
+    "@suite-common/locale": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
@@ -11611,6 +11612,7 @@ __metadata:
     "@suite-common/analytics": "workspace:*"
     "@suite-common/bip329-types": "workspace:*"
     "@suite-common/delegated-identity-key-types": "workspace:*"
+    "@suite-common/locale": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/networks": "workspace:*"
     "@suite-common/platform-encryption": "workspace:*"
@@ -11682,6 +11684,7 @@ __metadata:
   dependencies:
     "@reduxjs/toolkit": "npm:2.13.0"
     "@suite-common/device": "workspace:*"
+    "@suite-common/locale": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/thp": "workspace:*"
     "@trezor/connect": "workspace:*"
@@ -11709,6 +11712,7 @@ __metadata:
     "@formatjs/intl": "npm:4.1.2"
     "@mobily/ts-belt": "npm:^3.13.1"
     "@suite-common/discreet-mode": "workspace:*"
+    "@suite-common/locale": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -11809,6 +11813,14 @@ __metadata:
     "@trezor/network-solana-suite-common": "workspace:*"
     "@trezor/network-stellar-suite-common": "workspace:*"
     "@trezor/network-tron-suite-common": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@suite-common/locale@workspace:*, @suite-common/locale@workspace:suite-common/locale":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/locale@workspace:suite-common/locale"
+  dependencies:
+    "@trezor/dependency-injection": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -12509,6 +12521,7 @@ __metadata:
     "@suite-common/address": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/legacy-network-config": "workspace:*"
+    "@suite-common/locale": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
@@ -12722,6 +12735,7 @@ __metadata:
   dependencies:
     "@suite-common/analytics": "workspace:*"
     "@suite-common/feedback": "workspace:*"
+    "@suite-common/locale": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/trading": "workspace:*"
@@ -13528,6 +13542,7 @@ __metadata:
     "@shopify/react-native-skia": "npm:2.6.2"
     "@suite-common/device": "workspace:*"
     "@suite-common/firmware": "workspace:*"
+    "@suite-common/locale": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
@@ -13729,7 +13744,7 @@ __metadata:
     "@formatjs/intl-listformat": "npm:^8.2.1"
     "@formatjs/intl-locale": "npm:^5.2.1"
     "@reduxjs/toolkit": "npm:2.13.0"
-    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/locale": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
@@ -14351,7 +14366,7 @@ __metadata:
     "@suite-common/analytics": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/device-authenticity": "workspace:*"
-    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/locale": "workspace:*"
     "@suite-common/thp": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/alerts": "workspace:*"
@@ -16265,7 +16280,7 @@ __metadata:
   resolution: "@suite/debug@workspace:suite/debug"
   dependencies:
     "@reduxjs/toolkit": "npm:2.13.0"
-    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/locale": "workspace:*"
     "@suite/desktop-app-api": "workspace:*"
     "@suite/intl": "workspace:*"
     "@suite/settings": "workspace:*"
@@ -16631,8 +16646,8 @@ __metadata:
   dependencies:
     "@crowdin/cli": "npm:4.13.0"
     "@formatjs/cli": "npm:6.12.2"
+    "@suite-common/locale": "workspace:*"
     "@suite-common/react-query": "workspace:*"
-    "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@testing-library/dom": "npm:^10.4.2"
@@ -16974,8 +16989,8 @@ __metadata:
     "@reduxjs/toolkit": "npm:2.13.0"
     "@suite-common/earn-stablecoin-api": "workspace:*"
     "@suite-common/earn-stablecoin-defs": "workspace:*"
+    "@suite-common/locale": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
-    "@suite-common/suite-types": "workspace:*"
     "@suite-common/trading": "workspace:*"
     "@suite/desktop-app-api": "workspace:*"
     "@suite/experimental": "workspace:*"
@@ -19011,7 +19026,7 @@ __metadata:
     "@storybook/react": "npm:^10.3.4"
     "@storybook/react-webpack5": "npm:^10.3.4"
     "@suite-common/feedback": "workspace:*"
-    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/locale": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
     "@testing-library/dom": "npm:^10.4.2"
     "@testing-library/react": "npm:^16.3.3"
@@ -19336,6 +19351,7 @@ __metadata:
     "@suite-common/flags": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/geolocation": "workspace:*"
+    "@suite-common/locale": "workspace:*"
     "@suite-common/logger": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"

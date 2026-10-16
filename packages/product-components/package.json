@@ -20,7 +20,7 @@
     },
     "dependencies": {
         "@suite-common/feedback": "workspace:*",
-        "@suite-common/suite-types": "workspace:*",
+        "@suite-common/locale": "workspace:*",
         "@suite-common/toast-notifications": "workspace:*",
         "@trezor/asset-utils": "workspace:*",
         "@trezor/components": "workspace:*",

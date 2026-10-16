@@ -1,4 +1,4 @@
-import { LANGUAGES, type Locale } from '@suite-common/suite-types';
+import { LANGUAGES, type Locale } from '@suite-common/locale';
 import { getPlatformLanguages } from '@trezor/env-utils';
 import { typedObjectKeys } from '@trezor/utils';
 

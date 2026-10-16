@@ -15,6 +15,7 @@
         "@suite-common/analytics": "workspace:*",
         "@suite-common/bip329-types": "workspace:*",
         "@suite-common/delegated-identity-key-types": "workspace:*",
+        "@suite-common/locale": "workspace:*",
         "@suite-common/metadata-types": "workspace:*",
         "@suite-common/networks": "workspace:*",
         "@suite-common/platform-encryption": "workspace:*",

@@ -14,9 +14,7 @@
     "include": [".", "**/*.json"],
     "references": [
         { "path": "../../suite-common/feedback" },
-        {
-            "path": "../../suite-common/suite-types"
-        },
+        { "path": "../../suite-common/locale" },
         {
             "path": "../../suite-common/toast-notifications"
         },

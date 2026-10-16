@@ -7,7 +7,7 @@ import {
     selectShowTranslationKeys,
     suiteSettingsActions,
 } from '@suite/settings';
-import { LANGUAGES, type Locale } from '@suite-common/suite-types';
+import { LANGUAGES, type Locale } from '@suite-common/locale';
 import { KEYBOARD_CODE } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

@@ -111,6 +111,7 @@
 !/suite-common/http-client
 !/suite-common/icons
 !/suite-common/legacy-network-config
+!/suite-common/locale
 !/suite-common/logger
 !/suite-common/message-system
 !/suite-common/metadata-types

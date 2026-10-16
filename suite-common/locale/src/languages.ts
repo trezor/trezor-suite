@@ -48,6 +48,8 @@ export const LANGUAGES = {
 
 export type Locale = keyof typeof LANGUAGES;
 
+export type GetLanguage = Getter<[], string>;
+
 export type GetLanguageDep = {
-    getLanguage: Getter<[], string>;
+    getLanguage: GetLanguage;
 };

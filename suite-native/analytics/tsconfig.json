@@ -6,6 +6,7 @@
             "path": "../../suite-common/analytics"
         },
         { "path": "../../suite-common/feedback" },
+        { "path": "../../suite-common/locale" },
         {
             "path": "../../suite-common/suite-constants"
         },

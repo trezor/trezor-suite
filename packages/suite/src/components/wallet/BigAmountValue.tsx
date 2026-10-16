@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { selectLanguage } from '@suite/settings';
 import { redactNumericalSubstring, useShouldRedactNumbers } from '@suite-common/discreet-mode';
-import { type Locale } from '@suite-common/suite-types';
+import { type Locale } from '@suite-common/locale';
 import { Row, Text } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';

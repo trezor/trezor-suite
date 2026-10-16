@@ -1,7 +1,7 @@
 import type { Locale as DateFnsLocale } from 'date-fns';
 
+import { type Locale as SuiteLocale } from '@suite-common/locale';
 import { desktopQueryKeys, useQuery } from '@suite-common/react-query';
-import { type Locale as SuiteLocale } from '@suite-common/suite-types';
 
 type DateFnsLocaleLoader = () => Promise<DateFnsLocale>;
 
