@@ -1,0 +1,81 @@
+name: "Reusable Publish Performance History"
+
+# Publishes one run's performance history to S3. See docs/tests/perf-history.md.
+# The caller sets `needs`, `if`, `permissions` and `concurrency`; `timeout-minutes` is an input
+# because a reusable-workflow caller cannot set it.
+on:
+  workflow_call:
+    inputs:
+      workspace:
+        description: "Yarn workspace to focus before publishing."
+        required: true
+        type: string
+      artifact-pattern:
+        description: "Pattern matching the shards' uploaded performance artifacts."
+        required: true
+        type: string
+      publish-command:
+        description: "Command that turns the downloaded artifacts into an upload bundle."
+        required: true
+        type: string
+      timeout-minutes:
+        description: "Job timeout."
+        required: false
+        default: 10
+        type: number
+
+jobs:
+  publish:
+    name: Publish performance history
+    runs-on: ubuntu-latest
+    timeout-minutes: ${{ inputs.timeout-minutes }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn workspaces focus ${{ inputs.workspace }}
+
+      - name: Download performance artifacts
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          pattern: ${{ inputs.artifact-pattern }}
+          path: perf-artifacts
+
+      - name: Build the upload bundle
+        env:
+          PERF_ARTIFACTS_DIR: ${{ github.workspace }}/perf-artifacts
+          PERF_BUNDLE_DIR: ${{ github.workspace }}/perf-upload
+          PERF_PR_NUMBER: ${{ github.event.pull_request.number }}
+          PERF_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          PERF_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          PERF_SEAL_BASELINE: ${{ github.event_name != 'pull_request' }}
+        run: ${{ inputs.publish-command }}
+
+      - name: Configure AWS credentials
+        if: ${{ hashFiles('perf-upload/**') != '' }}
+        uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6
+        with:
+          role-to-assume: arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy
+          aws-region: eu-central-1
+
+      # Artifacts before the index lines that reference them.
+      - name: Upload the bundle
+        if: ${{ hashFiles('perf-upload/**') != '' }}
+        env:
+          BUNDLE: ${{ github.workspace }}/perf-upload
+          DESTINATION: s3://dev.suite.sldev.cz/e2e/perf/v1
+        run: |
+          set -euo pipefail
+          if [ -d "$BUNDLE/runs" ]; then
+            aws s3 cp --recursive --no-progress "$BUNDLE/runs/" "$DESTINATION/runs/"
+          fi
+          aws s3 cp --recursive --no-progress --exclude "runs/*" "$BUNDLE/" "$DESTINATION/"
