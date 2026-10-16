@@ -33,6 +33,34 @@ Suite has no default coordinator for Bitcoin and Testnet. Coinjoin works only in
     >
     > The bundled `WalletWasabi.WabiSabiClientLibrary` scoring binary runs for every Privacy account regardless of the override, because anonymity scores decide what the account may spend.
 
+## Spending restrictions of a Privacy account
+
+Coins that went through a coinjoin round should not be combined with coins that did not, so the
+account can hold back the low-anonymity ones from automatic coin selection. That restriction is
+derived, not assumed: `selectCoinjoinSpendingRestrictionByAccountKey` reports one of three states.
+
+- `unrestricted` — the account synced, its anonymity set is complete, it has no `joint` transaction
+  and no score above 1. There is nothing to keep apart, so the account behaves like a target
+  anonymity of 1: no utxo is excluded, no anonymity confirmation is asked and no banner shows. This
+  is what a newly created, never mixed account gets.
+- `restricted` — utxos below the stored `setup.targetAnonymity` (5 by default) stay out of
+  automatic coin selection and remain spendable through coin control plus its confirmation
+  checkbox. The account shows the explanatory banner.
+- `restricted-incomplete-data` — the same, except the scores cannot be trusted (the account has not
+  synced, or the local scoring binary did not deliver). Sending is blocked with an error that names
+  the restrictions switch; receiving and rescan keep working.
+
+The switch in account Details (`src/views/wallet/details/SpendingRestrictions.tsx`) stores a
+per-account override on the coinjoin account, which wins over the derivation in both directions and
+is the escape hatch out of the blocking state; turning it off asks for an explicit confirmation,
+because automatic coin selection may then combine coins that can be linked on-chain. While mixing
+is enabled the switch is forced on and read-only. A target anonymity stored by the old slider is
+honoured: 1 keeps the account unrestricted, a raised target keeps it restricted.
+
+The spending path reads `selectEffectiveTargetAnonymityByAccountKey`, which is 1 while the account
+is unrestricted and the stored target otherwise, so `getExcludedUtxos` needs no change. Mixing
+surfaces keep reading the stored target through `selectTargetAnonymityByAccountKey`.
+
 ## Development
 
 For development and e2e purposes you can use local version of coinjoin backend (`Regtest` only).
