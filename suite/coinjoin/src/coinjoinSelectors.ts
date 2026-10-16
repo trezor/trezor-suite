@@ -9,13 +9,18 @@ import {
     selectIsFeatureDisabled,
 } from '@suite-common/message-system';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
+import {
+    type AccountsRootState,
+    type TransactionsRootState,
+    selectAccountByKey,
+    selectAccountTransactions,
+} from '@suite-common/wallet-core';
+import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { getInputSize, getOutputSize } from '@trezor/coinjoin';
 import { createWeakMapSelector } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { type CoinjoinState } from './coinjoinTypes';
+import { type CoinjoinSpendingRestriction, type CoinjoinState } from './coinjoinTypes';
 import {
     breakdownCoinjoinBalance,
     calculateAnonymityProgress,
@@ -93,6 +98,28 @@ export const selectSessionByAccountKey = (state: CoinjoinRootState, accountKey: 
     return coinjoinAccount?.session;
 };
 
+// Mixing is the one thing a privacy account cannot do on its own: the public coordinators shut down,
+// so there is nothing to register rounds with unless a tester passes a coordinator at startup
+// through `--state.wallet.coinjoin.debug.coinjoinConfigOverride.<symbol>.coordinatorUrl=<url>`
+// (see docs/features/coinjoin.md). That state patch is never persisted, so the opt-in lasts for a
+// single launch. The message-system flag stays usable as a remote kill switch on top of it.
+// Every mixing surface and every coordinator interaction keys off this predicate.
+export const selectIsMixingEnabled = (
+    state: CoinjoinRootState & MessageSystemRootState,
+    symbol: NetworkSymbol,
+) =>
+    !!selectCoinjoinDebug(state)?.coinjoinConfigOverride?.[symbol]?.coordinatorUrl &&
+    !selectIsFeatureDisabled(state, Feature.coinjoin);
+
+export const selectIsMixingEnabledByAccountKey = (
+    state: AccountsRootState & CoinjoinRootState & MessageSystemRootState,
+    accountKey: AccountKey | null,
+) => {
+    const account = selectAccountByKey(state, accountKey);
+
+    return !!account && selectIsMixingEnabled(state, account.symbol);
+};
+
 export const selectTargetAnonymityByAccountKey = (
     state: CoinjoinRootState,
     accountKey: AccountKey | null,
@@ -101,6 +128,90 @@ export const selectTargetAnonymityByAccountKey = (
     if (!coinjoinAccount) return;
 
     return coinjoinAccount.setup?.targetAnonymity ?? DEFAULT_TARGET_ANONYMITY;
+};
+
+/**
+ * The anonymity score of every utxo is needed to tell a mixed coin from an unmixed one. A missing
+ * score means the local scoring binary did not deliver, not that the coin is unmixed, so an account
+ * with an incomplete set cannot be proven safe to spend without restrictions. An account with no
+ * utxos at all is complete, not unknown.
+ */
+const hasAnonymitySetError = (account: Account) =>
+    !account.utxo?.every(({ address }) => account.addresses?.anonymitySet?.[address] !== undefined);
+
+const getMaxAnonymity = (account: Account) =>
+    Object.values(account.addresses?.anonymitySet ?? {}).reduce<number>(
+        (max, anonymity) => Math.max(max, anonymity ?? 1),
+        1,
+    );
+
+/**
+ * Spending restrictions only make sense for an account that was able to mix. They are derived from
+ * on-chain data: an account that never took part in a coinjoin has nothing to keep apart, so its
+ * coins stay available to automatic coin selection. Anything else is restricted, as is an account
+ * whose data does not prove otherwise yet.
+ *
+ * The per-account override wins over the derivation and is the documented escape hatch out of the
+ * blocking `restricted-incomplete-data` state. While mixing is enabled the restriction is forced
+ * on, because mixed and unmixed coins of a live session must not be combined.
+ */
+export const selectCoinjoinSpendingRestrictionByAccountKey = (
+    state: AccountsRootState & CoinjoinRootState & MessageSystemRootState & TransactionsRootState,
+    accountKey: AccountKey | null,
+): CoinjoinSpendingRestriction => {
+    const account = selectAccountByKey(state, accountKey);
+    const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
+
+    if (!account || !coinjoinAccount || account.backendType !== 'coinjoin') {
+        return 'unrestricted';
+    }
+
+    const isDataComplete = account.status === 'ready' && !hasAnonymitySetError(account);
+    const restricted = isDataComplete ? 'restricted' : 'restricted-incomplete-data';
+
+    if (selectIsMixingEnabled(state, account.symbol)) {
+        return restricted;
+    }
+
+    const { areSpendingRestrictionsEnabled } = coinjoinAccount;
+    if (areSpendingRestrictionsEnabled !== undefined) {
+        return areSpendingRestrictionsEnabled ? restricted : 'unrestricted';
+    }
+
+    // A target stored by the anonymity slider of the discontinued mixing setup is honoured: the
+    // minimum of 1 was the old way to opt out of the restriction, a raised target the old way in.
+    const storedTargetAnonymity = coinjoinAccount.setup?.targetAnonymity;
+    if (storedTargetAnonymity !== undefined) {
+        if (storedTargetAnonymity <= 1) return 'unrestricted';
+        if (storedTargetAnonymity > DEFAULT_TARGET_ANONYMITY) return restricted;
+    }
+
+    if (!isDataComplete) {
+        return 'restricted-incomplete-data';
+    }
+
+    const hasJointTransaction = selectAccountTransactions(state, accountKey).some(
+        ({ type }) => type === 'joint',
+    );
+
+    return hasJointTransaction || getMaxAnonymity(account) > 1 ? 'restricted' : 'unrestricted';
+};
+
+/**
+ * Target anonymity as the spending path has to see it: an unrestricted account behaves like a
+ * target of 1, which leaves `getExcludedUtxos` and the coin control UI unchanged. Mixing surfaces
+ * keep reading the stored target through `selectTargetAnonymityByAccountKey`.
+ */
+export const selectEffectiveTargetAnonymityByAccountKey = (
+    state: AccountsRootState & CoinjoinRootState & MessageSystemRootState & TransactionsRootState,
+    accountKey: AccountKey | null,
+) => {
+    const targetAnonymity = selectTargetAnonymityByAccountKey(state, accountKey);
+    if (targetAnonymity === undefined) return;
+
+    return selectCoinjoinSpendingRestrictionByAccountKey(state, accountKey) === 'unrestricted'
+        ? 1
+        : targetAnonymity;
 };
 
 export const selectCurrentCoinjoinBalanceBreakdown = (
@@ -181,15 +292,19 @@ export const selectCurrentCoinjoinSession = (
     return session;
 };
 
+// Spending-path selector, hence the effective target rather than the stored one.
 export const selectCurrentTargetAnonymity = (
-    state: CoinjoinRootState & SelectedAccountRootState,
+    state: AccountsRootState &
+        CoinjoinRootState &
+        MessageSystemRootState &
+        SelectedAccountRootState &
+        TransactionsRootState,
 ) => {
     const selectedAccount = selectSelectedAccount(state);
-    const targetAnonymity = selectedAccount
-        ? selectTargetAnonymityByAccountKey(state, selectedAccount.key)
-        : undefined;
 
-    return targetAnonymity;
+    return selectedAccount
+        ? selectEffectiveTargetAnonymityByAccountKey(state, selectedAccount.key)
+        : undefined;
 };
 
 const isRoundPhaseCritical = (roundPhase?: number) => (roundPhase ?? 0) > 0;
@@ -358,13 +473,7 @@ export const selectHasAnonymitySetError = (state: SelectedAccountRootState) => {
         return false;
     }
 
-    const { addresses, utxo: utxos } = selectedAccount;
-
-    const hasFaultyAnonymitySet = !utxos?.every(
-        ({ address }) => addresses?.anonymitySet?.[address] !== undefined,
-    );
-
-    return hasFaultyAnonymitySet;
+    return hasAnonymitySetError(selectedAccount);
 };
 
 export const selectCoinjoinSessionBlockerByAccountKey = (
@@ -526,28 +635,6 @@ export const selectCurrentSessionDeadlineInfo = (
 // Return true if it's not explicitly set to false in the message-system config.
 export const selectIsPublic = (state: MessageSystemRootState) =>
     selectFeatureConfig(state, Feature.coinjoin)?.isPublic !== false;
-
-// Mixing is the one thing a privacy account cannot do on its own: the public coordinators shut down,
-// so there is nothing to register rounds with unless a tester passes a coordinator at startup
-// through `--state.wallet.coinjoin.debug.coinjoinConfigOverride.<symbol>.coordinatorUrl=<url>`
-// (see docs/features/coinjoin.md). That state patch is never persisted, so the opt-in lasts for a
-// single launch. The message-system flag stays usable as a remote kill switch on top of it.
-// Every mixing surface and every coordinator interaction keys off this predicate.
-export const selectIsMixingEnabled = (
-    state: CoinjoinRootState & MessageSystemRootState,
-    symbol: NetworkSymbol,
-) =>
-    !!selectCoinjoinDebug(state)?.coinjoinConfigOverride?.[symbol]?.coordinatorUrl &&
-    !selectIsFeatureDisabled(state, Feature.coinjoin);
-
-export const selectIsMixingEnabledByAccountKey = (
-    state: AccountsRootState & CoinjoinRootState & MessageSystemRootState,
-    accountKey: AccountKey | null,
-) => {
-    const account = selectAccountByKey(state, accountKey);
-
-    return !!account && selectIsMixingEnabled(state, account.symbol);
-};
 
 export const selectIsSessionAutostopped = (state: CoinjoinRootState, accountKey: AccountKey) => {
     const currentState = selectSessionByAccountKey(state, accountKey);
