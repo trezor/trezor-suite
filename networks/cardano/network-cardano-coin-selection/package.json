@@ -2,6 +2,10 @@
     "name": "@trezor/network-cardano-coin-selection",
     "version": "1.0.0",
     "description": "Cardano coin selection algorithms (vendored fork of @fivebinaries/coin-selection)",
+    "author": "Trezor <info@trezor.io>",
+    "contributors": [
+        "fivebinaries.com (original author of @fivebinaries/coin-selection)"
+    ],
     "repository": {
         "type": "git",
         "url": "git://github.com/trezor/trezor-suite.git"
@@ -39,7 +43,8 @@
     },
     "files": [
         "lib/",
-        "CHANGELOG.md"
+        "CHANGELOG.md",
+        "LICENSE.md"
     ],
     "scripts": {
         "depcheck": "yarn g:depcheck",
@@ -49,7 +54,7 @@
         "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../../scripts/publish/replace-imports.sh ./lib"
     },
     "dependencies": {
-        "@emurgo/cardano-serialization-lib-browser": "^13.2.0",
+        "@emurgo/cardano-serialization-lib-browser": "13.2.0",
         "@emurgo/cardano-serialization-lib-nodejs": "13.2.0"
     }
 }

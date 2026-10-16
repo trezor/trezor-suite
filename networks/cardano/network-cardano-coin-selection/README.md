@@ -3,6 +3,22 @@
 Minimal implementation of Cardano coin selection algorithms (see [CIP-2](https://cips.cardano.org/cips/cip2/)) developed solely for Trezor Suite.
 Under the hood it leverages Cardano Serialization Lib via WASM module.
 
+## Origin
+
+This package is a fork of [`@fivebinaries/coin-selection`](https://github.com/fivebinaries/coin-selection)
+version 3.0.0 (commit `a4c5578`), vendored because the upstream package is no longer maintained.
+It is licensed under the Apache License 2.0, see [LICENSE.md](./LICENSE.md).
+
+Changes from upstream:
+
+- Protocol parameters (`minFeeA`, `minFeeB`, `keyDeposit`, `poolDeposit`, `coinsPerUtxoByte`,
+  `maxValueSize`, `maxTxSize`) are passed in through `Options.protocolParams` instead of being
+  compiled in. `DEFAULT_PROTOCOL_PARAMS` keeps the previous constants as a fallback.
+- Separate `./runtime` and `./types` entry points.
+- Build, lint and test setup follows the monorepo conventions: TypeScript sources are consumed
+  directly, tests are co-located with the sources and fixtures live in `mocks/`.
+- Formatting and lint-driven style changes with no behaviour change.
+
 ## Features
 
 - Final tx plan: Compose transaction plan for given inputs (shelley utxos only), certificates (support for stake (de)registration and delegation), withdrawals,...
