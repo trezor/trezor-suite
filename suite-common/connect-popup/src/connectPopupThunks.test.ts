@@ -6,15 +6,21 @@ import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { accountsInitialState } from '@suite-common/wallet-core';
 import * as walletUtils from '@suite-common/wallet-utils';
-import { mock } from '@trezor/dependency-injection';
+import TrezorConnect, { type CallMethodAnyResponse } from '@trezor/connect';
+import { mock, mockNotExpected } from '@trezor/dependency-injection';
 import { type WithServices } from '@trezor/redux-utils';
 import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { connectPopupActions } from './connectPopupActions';
+import { getPermissionDeferred, getPopupCallDeferred } from './connectPopupPromiseManager';
 import { prepareConnectPopupReducer, selectConnectPopupCallWithState } from './connectPopupReducer';
 import {
+    type ConnectPopupCallThunkDeps,
+    type ConnectPopupCallThunkState,
     type ConnectPopupLoadSelectAccountPageThunkState,
+    connectPopupCallThunk,
     connectPopupLoadSelectAccountPageThunk,
+    connectPopupVerifyAddressThunk,
 } from './connectPopupThunks';
 
 // prepareNewAccountPayload is the device round-trip the load thunk awaits — exactly once on the
@@ -238,5 +244,126 @@ describe('connectPopupLoadSelectAccountPageThunk — concurrent loads', () => {
         const candidates =
             selectConnectPopupCallWithState(store.getState(), 'select-account')?.candidates ?? [];
         expect(candidates.map(c => c.address)).toEqual(['ADDR_ONLY']);
+    });
+});
+
+const initCallStore = () =>
+    createTestCompositionRoot<ConnectPopupCallThunkDeps, ConnectPopupCallThunkState>({
+        services: () => ({
+            analytics: {
+                init: mockNotExpected('init'),
+                enable: mockNotExpected('enable'),
+                disable: mockNotExpected('disable'),
+                isEnabled: mockNotExpected('isEnabled'),
+                setUrl: mockNotExpected('setUrl'),
+                setLoggerEnabled: mockNotExpected('setLoggerEnabled'),
+                report: mock(),
+            },
+            lockDevice: mock<LockDevice>(),
+        }),
+        reducer: combineReducers({
+            connectPopup: connectPopupReducer,
+            device: (state: DeviceReducerState = fakeDeviceState) => state,
+        }),
+        preloadedState: {
+            connectPopup: { activeCall: undefined, permissions: [] },
+            device: fakeDeviceState,
+        },
+    }).services.store;
+
+const waitFor = async (condition: () => boolean) => {
+    for (let i = 0; i < 50 && !condition(); i++) {
+        await new Promise(resolve => setTimeout(resolve, 0));
+    }
+    expect(condition()).toBe(true);
+};
+
+const mockConnectCall = () =>
+    jest.spyOn(TrezorConnect, 'call').mockImplementation(params =>
+        Promise.resolve(
+            '__info' in params
+                ? ({
+                      success: true,
+                      payload: { info: 'Get address', requiredPermissions: [], useUi: true },
+                  } as Awaited<CallMethodAnyResponse>)
+                : {
+                      success: true,
+                      payload: { address: 'address', path: [], serializedPath: "m/84'/0'/0'/0/0" },
+                  },
+        ),
+    );
+
+const source = {
+    type: 'web',
+    origin: 'https://example.com',
+    manifest: { appName: 'Test app' },
+} as const;
+
+const selectedWallet = {
+    path: fakeDevice.path,
+    instance: fakeDevice.instance,
+    state: fakeDevice.state,
+    useEmptyPassphrase: fakeDevice.useEmptyPassphrase,
+};
+
+describe('connectPopupCallThunk', () => {
+    afterEach(() => jest.restoreAllMocks());
+
+    it('rejects a call whose payload names another wallet than the one selected in Suite', async () => {
+        mockConnectCall();
+        const store = initCallStore();
+        const response = getPopupCallDeferred(true).promise;
+
+        store.dispatch(
+            connectPopupCallThunk({
+                method: 'getAddress',
+                payload: { path: "m/84'/0'/0'/0/0", device: { instance: 2 } },
+                source,
+            }),
+        );
+        await waitFor(
+            () => store.getState().connectPopup.activeCall?.state === 'permission-request',
+        );
+        store.dispatch(connectPopupActions.approvePermissions());
+        getPermissionDeferred().resolve();
+
+        await expect(response).resolves.toEqual({
+            success: false,
+            error: expect.objectContaining({ code: 'Method_InvalidParameter' }),
+        });
+        // Only the `__info` round-trip ran, the device was never asked.
+        const deviceCalls = jest
+            .mocked(TrezorConnect.call)
+            .mock.calls.filter(([params]) => !('__info' in params));
+        expect(deviceCalls).toEqual([]);
+    });
+
+    it('runs the call and its address check on the whole selected wallet when the payload names it', async () => {
+        mockConnectCall();
+        // Never settles: the user exports the address without confirming it on the device.
+        jest.spyOn(TrezorConnect, 'getAddress').mockImplementation(() => new Promise(() => {}));
+        const store = initCallStore();
+        const getCallState = () => store.getState().connectPopup.activeCall?.state;
+
+        const call = store.dispatch(
+            connectPopupCallThunk({
+                method: 'getAddress',
+                payload: { path: "m/84'/0'/0'/0/0", device: { path: fakeDevice.path } },
+                source,
+            }),
+        );
+        await waitFor(() => getCallState() === 'permission-request');
+        store.dispatch(connectPopupActions.approvePermissions());
+        await waitFor(() => getCallState() === 'address-confirmation');
+        store.dispatch(connectPopupVerifyAddressThunk({ index: 0 }));
+        getPermissionDeferred().resolve();
+        await call;
+
+        expect(TrezorConnect.call).toHaveBeenLastCalledWith(
+            expect.objectContaining({ device: selectedWallet }),
+        );
+        expect(TrezorConnect.getAddress).toHaveBeenCalledWith(
+            expect.objectContaining({ device: selectedWallet, showOnTrezor: true }),
+        );
     });
 });
