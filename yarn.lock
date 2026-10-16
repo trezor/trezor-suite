@@ -10927,9 +10927,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@stellar/stellar-sdk@npm:17.1.0":
-  version: 17.1.0
-  resolution: "@stellar/stellar-sdk@npm:17.1.0"
+"@stellar/stellar-sdk@npm:17.2.1":
+  version: 17.2.1
+  resolution: "@stellar/stellar-sdk@npm:17.2.1"
   dependencies:
     "@exodus/bytes": "npm:^1.15.1"
     "@noble/ed25519": "npm:^3.1.0"
@@ -10944,8 +10944,10 @@ __metadata:
     smol-toml: "npm:^1.6.1"
     uint8array-extras: "npm:^1.5.0"
   bin:
+    stellar-contract-bindings-typescript: bin/stellar-contract-bindings-typescript
     stellar-js: bin/stellar-js
-  checksum: 10/8158e7d263e0c4e70d9296fdebca01e2f0c40b4120a05b34e410f9094d3f148ac2916ed9990683530c47165863c9cf0ca15b84ca866c0bad6c80ea3813c4549c
+    stellar-sdk: bin/stellar-js
+  checksum: 10/a74765f2e704bf79f6949f9aba90327dca2df30d3ef7825443b109789c847602b3fdf164dc6ae029fb3d7233bac8f0753f0a1b2d6b176acdb2e31af42fd30f42
   languageName: node
   linkType: hard
 
@@ -18137,7 +18139,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link@workspace:packages/blockchain-link"
   dependencies:
-    "@stellar/stellar-sdk": "npm:17.1.0"
+    "@stellar/stellar-sdk": "npm:17.2.1"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"
     "@trezor/e2e-utils": "workspace:*"
@@ -19041,7 +19043,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/network-stellar@workspace:networks/stellar/network-stellar"
   dependencies:
-    "@stellar/stellar-sdk": "npm:17.1.0"
+    "@stellar/stellar-sdk": "npm:17.2.1"
     "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
