@@ -134,18 +134,14 @@ const getUnreservedNpmPackages = async (packageNames: string[]) => {
 
 const bumpConnect = async () => {
     try {
-        // connect-plugin-ethereum is deprecated in 10.x (its hashing logic was
-        // inlined into @trezor/connect). The 10.x release is a stub and the
-        // package source is frozen — no need to auto-bump it on every connect
-        // release. Keep it removed from this list unless the stub itself changes.
-        // TODO The same applies to connect-plugin-stellar.
-        const mainPackages = [
-            'connect-plugin-stellar',
-            'connect-webextension',
-            'connect-mobile',
-            'connect-web',
-            'connect',
-        ];
+        // connect-plugin-ethereum and connect-plugin-stellar are deprecated in
+        // 10.x (their logic moved into @trezor/connect). Both 10.x releases are
+        // stubs and the package sources are frozen — no need to auto-bump them
+        // on every connect release. Neither is reachable from the publish dep
+        // closure in `get-connect-dependencies-to-release.ts` either, so a bump
+        // would land in git and never reach npm. Keep them removed from this
+        // list unless a stub itself changes.
+        const mainPackages = ['connect-webextension', 'connect-mobile', 'connect-web', 'connect'];
 
         const results = await Promise.all(
             mainPackages.map(async pkg => {
