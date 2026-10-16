@@ -4480,6 +4480,28 @@ export const messages = defineMessages({
         id: 'TR_PRIVACY_ACCOUNT_RESTRICTIONS_OFF_BUTTON',
         defaultMessage: 'Turn restrictions off',
     },
+    TR_PRIVACY_ACCOUNT_RESTRICTIONS_BANNER_TITLE: {
+        id: 'TR_PRIVACY_ACCOUNT_RESTRICTIONS_BANNER_TITLE',
+        defaultMessage: 'Some coins are set aside',
+    },
+    TR_PRIVACY_ACCOUNT_RESTRICTIONS_BANNER_DESCRIPTION: {
+        id: 'TR_PRIVACY_ACCOUNT_RESTRICTIONS_BANNER_DESCRIPTION',
+        defaultMessage:
+            'Coins that went through a coinjoin round are kept apart from the rest of this account, so automatic coin selection skips them. You can still spend them by picking them with coin control, or turn coin restrictions off in account details.',
+    },
+    TR_PRIVACY_ACCOUNT_SPENDING_BLOCKED_TITLE: {
+        id: 'TR_PRIVACY_ACCOUNT_SPENDING_BLOCKED_TITLE',
+        defaultMessage: "Can't tell this account's coins apart",
+    },
+    TR_PRIVACY_ACCOUNT_SPENDING_BLOCKED_DESCRIPTION: {
+        id: 'TR_PRIVACY_ACCOUNT_SPENDING_BLOCKED_DESCRIPTION',
+        defaultMessage:
+            'Scoring the coins of this account failed, so Suite cannot tell which of them went through a coinjoin round. The score comes from a program bundled with Suite, which an antivirus or an unsupported system may have stopped. Rescan the account in account details, or turn coin restrictions off there to send anyway.',
+    },
+    TR_PRIVACY_ACCOUNT_SPENDING_BLOCKED_BUTTON: {
+        id: 'TR_PRIVACY_ACCOUNT_SPENDING_BLOCKED_BUTTON',
+        defaultMessage: 'Go to account details',
+    },
     TOAST_QR_INCORRECT_ADDRESS: {
         id: 'TOAST_QR_INCORRECT_ADDRESS',
         defaultMessage: 'QR code contains invalid address for this account',

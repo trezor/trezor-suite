@@ -19,6 +19,7 @@ import { CardanoLegacyBanner } from './CardanoLegacyBanner';
 import { DeviceUnavailable } from './DeviceUnavailable';
 import { EvmExplanationBanner } from './EvmExplanationBanner';
 import { ReserveBanner } from './ReserveBanner';
+import { SpendingRestrictionsBanner } from './SpendingRestrictionsBanner';
 import { StakingBanner } from './StakingBanner';
 import { StellarLimitedHistoryBanner } from './StellarLimitedHistoryBanner';
 import { TaprootBanner } from './TaprootBanner';
@@ -59,6 +60,7 @@ export const AccountBanners = ({ account }: AccountBannersProps) => {
             <ReserveBanner account={account} />
             <AccountImported account={account} />
             <AccountOutOfSync account={account} />
+            <SpendingRestrictionsBanner account={account} />
             <EvmExplanationBanner account={account} />
             <TaprootBanner account={account} />
             <CardanoLegacyBanner account={account} />
