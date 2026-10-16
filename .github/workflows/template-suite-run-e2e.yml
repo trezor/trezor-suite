@@ -190,6 +190,14 @@ jobs:
         run: |
           yarn workspace @trezor/suite-e2e exec playwright install-deps
 
+      # Provides `anvil` for the tests that run Suite against a local Ethereum mainnet fork.
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@908c540300062bd5a7e473851cdb4282204cee09 # v1.9.1
+        with:
+          version: v1.5.1
+          # The fork follows the latest mainnet block, so cached RPC responses are never reused.
+          cache: false
+
       - name: Build Message System Config
         shell: bash
         run: |
