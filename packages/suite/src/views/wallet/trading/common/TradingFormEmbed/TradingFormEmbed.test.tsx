@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 
 import { type UnknownAction } from '@reduxjs/toolkit';
 import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import {
@@ -21,6 +22,7 @@ import {
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { mock } from '@trezor/dependency-injection';
 import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { useMessageSystemTrading } from 'src/hooks/suite/useMessageSystemTrading';
@@ -88,9 +90,10 @@ const previousAccountKey = mockAccountKey({ descriptor: 'previousaccount' });
 
 type RenderEmbedParams = {
     type: TradingType;
+    onTypeChange?: (type: TradingType) => void;
 };
 
-const renderEmbed = ({ type }: RenderEmbedParams) => {
+const renderEmbed = ({ type, onTypeChange }: RenderEmbedParams) => {
     const preloadedState = {
         ...mockInitialAppState,
         wallet: {
@@ -127,7 +130,7 @@ const renderEmbed = ({ type }: RenderEmbedParams) => {
 
     renderWithProviders(
         services,
-        <TradingFormEmbed type={type} account={HOST_ACCOUNT} />,
+        <TradingFormEmbed type={type} account={HOST_ACCOUNT} onTypeChange={onTypeChange} />,
     );
 
     return services.store;
@@ -170,5 +173,20 @@ describe('TradingFormEmbed', () => {
         expect(screen.queryByTestId('trading-form-wrapper/sell')).not.toBeInTheDocument();
         expect(store.getState().wallet.trading.sell.tradingAccountKey).toBe(previousAccountKey);
         expect(store.getState().wallet.trading.sell.transactionId).toBe('stale-order');
+    });
+
+    it('renders no type tabs without a type change handler', () => {
+        renderEmbed({ type: 'buy' });
+
+        expect(screen.queryByTestId('@trading/menu/wallet-trading-buy')).not.toBeInTheDocument();
+    });
+
+    it('lets the host switch the type through the tabs', async () => {
+        const onTypeChange = mock<(type: TradingType) => void>();
+        renderEmbed({ type: 'buy', onTypeChange });
+
+        await userEvent.click(screen.getByTestId('@trading/menu/wallet-trading-sell'));
+
+        expect(onTypeChange).toHaveBeenCalledWith('sell');
     });
 });
