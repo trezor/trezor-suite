@@ -42,7 +42,7 @@ import {
     getPermissionDeferred,
     isStartedPopupCallAborted,
     registerStartedPopupCall,
-    resolveActiveOrLatestPopupCall,
+    resolveCancelledPopupCall,
     resolvePopupCall,
     unregisterStartedPopupCall,
 } from './connectPopupPromiseManager';
@@ -1192,10 +1192,8 @@ export const connectPopupCancelThunk = createThunk<
     // it, while the call that is starting right now reaches Redux only after its `__info`
     // round-trip, so for that one the record of started calls is the only source.
     const startedCall = getCancelledStartedPopupCall(callId);
-    const scopedCallId =
-        callId ||
-        (activeCall?.state !== 'finished' ? activeCall?.callId : undefined) ||
-        startedCall?.callId;
+    const cancelledStoredCall = activeCall?.state !== 'finished' ? activeCall : undefined;
+    const scopedCallId = callId || cancelledStoredCall?.callId || startedCall?.callId;
     if (scopedCallId) {
         // Core ignores a callId it has no method for, e.g. a call that has not reached it yet.
         abortStartedPopupCall(scopedCallId);
@@ -1214,8 +1212,11 @@ export const connectPopupCancelThunk = createThunk<
     // deferred — which may not happen reliably (e.g. the device
     // interrupt doesn't complete, or the Suite popup tab closes
     // before RESPONSE_EVENT is sent).
-    resolveActiveOrLatestPopupCall(activeCall?.responseId, {
-        success: false,
-        error: serializeError(TypedError('Method_Interrupted')),
-    });
+    // Answer the call this cancel ends, which is not necessarily the most recently started one:
+    // that can be a different call, freshly started, which keeps running.
+    resolveCancelledPopupCall(
+        [cancelledStoredCall?.responseId, startedCall?.responseId],
+        { fallbackToLatest: !callId },
+        { success: false, error: serializeError(TypedError('Method_Interrupted')) },
+    );
 });
