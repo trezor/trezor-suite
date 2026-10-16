@@ -2,7 +2,12 @@ import { type ActionCreatorWithPayload, type ActionCreatorWithoutPayload } from 
 
 import { type RequestEnableTorResponse } from '@suite-common/suite-config';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type Account, type AddressType, type EvmSelectedFee } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type AccountKey,
+    type AddressType,
+    type EvmSelectedFee,
+} from '@suite-common/wallet-types';
 import { type UI_EVENTS } from '@trezor/connect';
 import { type Deferred } from '@trezor/utils';
 
@@ -126,6 +131,10 @@ export type UserContextPayload =
     | {
           type: 'coinjoin-success';
           relatedAccountKey: string;
+      }
+    | {
+          type: 'coinjoin-disable-spending-restrictions';
+          relatedAccountKey: AccountKey;
       }
     | {
           type: 'more-rounds-needed';

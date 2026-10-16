@@ -17,6 +17,8 @@ export const accountsActionsEvent: EventDef<Attributes, EventType.AccountsAction
         action: {
             description: `The wallet route navigated to, or \`add-token\` when the Add token button is clicked. Observed values include:
 - \`add-token\`: Add token button clicked
+- \`spending-restrictions-off\`: coin restrictions of a privacy account turned off
+- \`spending-restrictions-on\`: coin restrictions of a privacy account turned on
 - \`wallet-details\`: account details tab
 - \`wallet-index\`: account overview/index
 - \`wallet-nfts\`: NFTs tab
@@ -28,7 +30,13 @@ export const accountsActionsEvent: EventDef<Attributes, EventType.AccountsAction
 - \`wallet-trading-buy\`: trading buy tab
 - \`wallet-trading-exchange\`: trading exchange tab
 - \`wallet-trading-sell\`: trading sell tab`,
-            changelog: [{ version: '23.12.0', notes: 'added' }],
+            changelog: [
+                { version: '23.12.0', notes: 'added' },
+                {
+                    version: '26.11.0',
+                    notes: 'added the `spending-restrictions-on`/`spending-restrictions-off` values',
+                },
+            ],
         },
         symbol: {
             description:

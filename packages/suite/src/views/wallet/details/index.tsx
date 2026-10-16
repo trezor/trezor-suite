@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react';
 
 import { AccountTypeBadge, selectFullSelectedAccount } from '@suite/account';
+import { selectIsMixingEnabledByAccountKey } from '@suite/coinjoin';
 import { useDevice } from '@suite/device';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation, type TranslationKey } from '@suite/intl';
@@ -20,6 +21,7 @@ import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/Cont
 import { AccountNonce } from './AccountNonce';
 import { CoinjoinLogs } from './CoinjoinLogs';
 import { RescanAccount } from './RescanAccount';
+import { SpendingRestrictions } from './SpendingRestrictions';
 import { Bip329Labels } from '../labels/Bip329Labels';
 
 type DetailsRowProps = {
@@ -59,6 +61,9 @@ const DetailsRow = ({ title, description, learnMoreUrl, children }: DetailsRowPr
 const Details = () => {
     const { device, isLocked } = useDevice();
     const selectedAccount = useSelector(selectFullSelectedAccount);
+    const isMixingEnabled = useSelector(state =>
+        selectIsMixingEnabledByAccountKey(state, selectedAccount.account?.key ?? null),
+    );
     const { isReceiveDisabled, ReceiveDisabledWrapper } = useReceiveDisabled();
 
     const { dispatch } = useServices(injectDispatch);
@@ -141,14 +146,32 @@ const Details = () => {
                             </DetailsRow>
                         )
                     ) : (
-                        <DetailsRow
-                            title="TR_COINJOIN_ACCOUNT_RESCAN_TITLE"
-                            description={
-                                <Translation id="TR_COINJOIN_ACCOUNT_RESCAN_DESCRIPTION" />
-                            }
-                        >
-                            <RescanAccount account={account} />
-                        </DetailsRow>
+                        <>
+                            <DetailsRow
+                                title="TR_PRIVACY_ACCOUNT_RESTRICTIONS_TITLE"
+                                description={
+                                    <>
+                                        <Translation id="TR_PRIVACY_ACCOUNT_RESTRICTIONS_DESC" />
+                                        {isMixingEnabled && (
+                                            <>
+                                                {' '}
+                                                <Translation id="TR_PRIVACY_ACCOUNT_RESTRICTIONS_READ_ONLY_DESC" />
+                                            </>
+                                        )}
+                                    </>
+                                }
+                            >
+                                <SpendingRestrictions account={account} />
+                            </DetailsRow>
+                            <DetailsRow
+                                title="TR_COINJOIN_ACCOUNT_RESCAN_TITLE"
+                                description={
+                                    <Translation id="TR_COINJOIN_ACCOUNT_RESCAN_DESCRIPTION" />
+                                }
+                            >
+                                <RescanAccount account={account} />
+                            </DetailsRow>
+                        </>
                     )}
                     {account.networkType === 'ethereum' && (
                         <DetailsRow

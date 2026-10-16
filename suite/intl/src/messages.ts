@@ -4450,6 +4450,36 @@ export const messages = defineMessages({
         defaultMessage:
             "On June 1st, 2024, the coinjoin feature was deactivated. Your Privacy account and funds remain accessible, but you can't start new coinjoin rounds.",
     },
+    TR_PRIVACY_ACCOUNT_RESTRICTIONS_TITLE: {
+        id: 'TR_PRIVACY_ACCOUNT_RESTRICTIONS_TITLE',
+        defaultMessage: 'Coin restrictions',
+    },
+    TR_PRIVACY_ACCOUNT_RESTRICTIONS_DESC: {
+        id: 'TR_PRIVACY_ACCOUNT_RESTRICTIONS_DESC',
+        defaultMessage:
+            'Coins that went through a coinjoin round are kept apart from the rest of this account, so that automatic coin selection never combines them. Turn restrictions off to spend all coins of this account together.',
+    },
+    TR_PRIVACY_ACCOUNT_RESTRICTIONS_READ_ONLY_DESC: {
+        id: 'TR_PRIVACY_ACCOUNT_RESTRICTIONS_READ_ONLY_DESC',
+        defaultMessage: 'Restrictions stay on while a coordinator is configured for this coin.',
+    },
+    TR_PRIVACY_ACCOUNT_RESTRICTIONS_OFF_TITLE: {
+        id: 'TR_PRIVACY_ACCOUNT_RESTRICTIONS_OFF_TITLE',
+        defaultMessage: 'Turn coin restrictions off?',
+    },
+    TR_PRIVACY_ACCOUNT_RESTRICTIONS_OFF_DESCRIPTION: {
+        id: 'TR_PRIVACY_ACCOUNT_RESTRICTIONS_OFF_DESCRIPTION',
+        defaultMessage:
+            'Coins that went through a coinjoin round and coins that did not can then be combined in one transaction. Anyone looking at the blockchain can link them to each other.',
+    },
+    TR_PRIVACY_ACCOUNT_RESTRICTIONS_OFF_CHECKBOX: {
+        id: 'TR_PRIVACY_ACCOUNT_RESTRICTIONS_OFF_CHECKBOX',
+        defaultMessage: 'I understand that combining these coins can link them to each other.',
+    },
+    TR_PRIVACY_ACCOUNT_RESTRICTIONS_OFF_BUTTON: {
+        id: 'TR_PRIVACY_ACCOUNT_RESTRICTIONS_OFF_BUTTON',
+        defaultMessage: 'Turn restrictions off',
+    },
     TOAST_QR_INCORRECT_ADDRESS: {
         id: 'TOAST_QR_INCORRECT_ADDRESS',
         defaultMessage: 'QR code contains invalid address for this account',
