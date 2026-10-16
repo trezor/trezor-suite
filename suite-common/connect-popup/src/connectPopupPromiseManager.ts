@@ -71,17 +71,26 @@ export const resolvePopupCall = (responseId: string | undefined, response: Popup
     if (responseId) popupCallDeferreds.get(responseId)?.resolve(response);
 };
 
+type ResolveCancelledPopupCallOptions = { fallbackToLatest: boolean };
+
 /**
- * Settles the active call while it is still pending, otherwise the most recently started call. A
- * cancel uses it to reach a call that has not become the active one yet, or one that ended without
- * a response (e.g. a device error the user closed).
+ * Settles the deferred of the call a cancel ends. Tries the callers the call can belong to in the
+ * given order, skipping the ones that have already been answered. `fallbackToLatest` then settles
+ * the most recently started call: only a cancel that names no call may do that, and it is the only
+ * way to reach a call that ended without a response (e.g. a device error the user closed, whose
+ * stored call is gone by then). A cancel that names a call must never settle a different one,
+ * which may be a freshly started call that keeps running.
  */
-export const resolveActiveOrLatestPopupCall = (
-    activeResponseId: string | undefined,
+export const resolveCancelledPopupCall = (
+    responseIds: (string | undefined)[],
+    { fallbackToLatest }: ResolveCancelledPopupCallOptions,
     response: PopupCallResponse,
 ) => {
-    const activeDeferred = activeResponseId ? popupCallDeferreds.get(activeResponseId) : undefined;
-    (activeDeferred ?? latestPopupCall)?.resolve(response);
+    const deferred = responseIds
+        .map(responseId => (responseId ? popupCallDeferreds.get(responseId) : undefined))
+        .find(candidate => candidate !== undefined);
+
+    (deferred ?? (fallbackToLatest ? latestPopupCall : undefined))?.resolve(response);
 };
 
 // Popup calls that have started, keyed by the callId a cancel names. A call is registered before
