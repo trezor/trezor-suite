@@ -32,7 +32,7 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Install SafeDep PMG
-        uses: safedep/pmg@961499c36c98afbafec10a257ff27fb464073c86 # v0.30.0
+        uses: safedep/pmg@0fa0fa1b4bc279f45d40d77764a0833ecf58824b # v0.31.0
         continue-on-error: true
         with:
           version: v0.19.1
