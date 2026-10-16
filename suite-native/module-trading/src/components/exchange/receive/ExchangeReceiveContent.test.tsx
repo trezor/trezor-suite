@@ -90,4 +90,16 @@ describe('ExchangeReceiveContent', () => {
         expect(getByText(getTranslation('moduleTrading.tradingScreen.balance'))).toBeOnTheScreen();
         expect(getByText('- ' + usdcAsset.symbol)).toBeOnTheScreen();
     });
+
+    it('should render base currency placeholder when no quote is loaded', async () => {
+        await act(() => {
+            form.setValue('sendAsset', usdcAsset);
+            form.setValue('receiveAsset', btcAsset);
+        });
+        const { getByText, queryByText } = await renderExchangeReceiveContent();
+
+        expect(getByText('$')).toBeOnTheScreen();
+        expect(getByText('0.0')).toBeOnTheScreen();
+        expect(queryByText(new RegExp(btcAsset.cryptoId))).not.toBeOnTheScreen();
+    });
 });
