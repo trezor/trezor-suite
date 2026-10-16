@@ -2,6 +2,8 @@ export const ACCOUNT_UPDATE_TARGET_ANONYMITY = '@coinjoin/account-update-target-
 export const ACCOUNT_UPDATE_MAX_MING_FEE = '@coinjoin/account-update-max-mining-fee' as const;
 export const ACCOUNT_TOGGLE_SKIP_ROUNDS = '@coinjoin/account-toggle-skip-rounds' as const;
 export const ACCOUNT_UPDATE_SETUP_OPTION = '@coinjoin/account-update-setup-option' as const;
+export const ACCOUNT_UPDATE_SPENDING_RESTRICTIONS =
+    '@coinjoin/account-update-spending-restrictions' as const;
 export const ACCOUNT_AUTHORIZE = '@coinjoin/account-authorize' as const;
 export const ACCOUNT_AUTHORIZE_SUCCESS = '@coinjoin/account-authorize-success' as const;
 export const ACCOUNT_AUTHORIZE_FAILED = '@coinjoin/account-authorize-failed' as const;

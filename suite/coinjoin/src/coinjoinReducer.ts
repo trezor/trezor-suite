@@ -110,6 +110,15 @@ const updateSetupOption = (
     }
 };
 
+const updateSpendingRestrictions = (
+    draft: CoinjoinState,
+    payload: ExtractActionPayload<typeof COINJOIN.ACCOUNT_UPDATE_SPENDING_RESTRICTIONS>,
+) => {
+    const account = getAccount(draft, payload.accountKey);
+    if (!account) return;
+    account.areSpendingRestrictionsEnabled = payload.areSpendingRestrictionsEnabled;
+};
+
 const updateTargetAnonymity = (
     draft: CoinjoinState,
     payload: ExtractActionPayload<typeof COINJOIN.ACCOUNT_UPDATE_TARGET_ANONYMITY>,
@@ -478,6 +487,9 @@ export const coinjoinReducer = (
                 break;
             case COINJOIN.ACCOUNT_UPDATE_SETUP_OPTION:
                 updateSetupOption(draft, action.payload);
+                break;
+            case COINJOIN.ACCOUNT_UPDATE_SPENDING_RESTRICTIONS:
+                updateSpendingRestrictions(draft, action.payload);
                 break;
             case COINJOIN.ACCOUNT_UPDATE_TARGET_ANONYMITY:
                 updateTargetAnonymity(draft, action.payload);

@@ -88,6 +88,14 @@ export const coinjoinAccountUpdateSetupOption = createAction(
     }),
 );
 
+// Scope-5 override of the derived spending restriction, persisted per account.
+export const coinjoinAccountUpdateSpendingRestrictions = createAction(
+    COINJOIN.ACCOUNT_UPDATE_SPENDING_RESTRICTIONS,
+    (accountKey: string, areSpendingRestrictionsEnabled: boolean) => ({
+        payload: { accountKey, areSpendingRestrictionsEnabled },
+    }),
+);
+
 export const coinjoinAccountSetLiquidityClue = createAction(
     COINJOIN.ACCOUNT_SET_LIQUIDITY_CLUE,
     (accountKey: string, rawLiquidityClue: CoinjoinAccount['rawLiquidityClue']) => ({
@@ -168,6 +176,7 @@ export const isCoinjoinAccountPersistenceAction = isAnyOf(
     coinjoinClientActions.coinjoinAccountUnregister,
     coinjoinAccountUpdateSetupOption,
     coinjoinAccountUpdateAnonymity,
+    coinjoinAccountUpdateSpendingRestrictions,
     coinjoinAccountUpdateMaxMiningFee,
     coinjoinAccountToggleSkipRounds,
 );
@@ -177,6 +186,7 @@ export type CoinjoinAccountAction = ReturnType<
     | typeof coinjoinAccountUpdateMaxMiningFee
     | typeof coinjoinAccountToggleSkipRounds
     | typeof coinjoinAccountUpdateSetupOption
+    | typeof coinjoinAccountUpdateSpendingRestrictions
     | typeof coinjoinAccountSetLiquidityClue
     | typeof coinjoinAccountAuthorize
     | typeof coinjoinAccountAuthorizeSuccess
