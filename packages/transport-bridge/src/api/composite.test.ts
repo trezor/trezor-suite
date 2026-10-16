@@ -29,6 +29,8 @@ const mockApi = (descriptors: DescriptorApiLevel[]) => {
         closeDevice: jest.fn(() => Promise.resolve({ success: true as const, payload: undefined })),
         read: jest.fn(() => Promise.resolve({ success: true as const, payload: Buffer.alloc(64) })),
         write: jest.fn(() => Promise.resolve({ success: true as const, payload: undefined })),
+        // Stands in for the mutex of `AbstractApi`, one per api instance.
+        runInIsolation: jest.fn((_params: unknown, fn: () => unknown) => Promise.resolve(fn())),
         listen: jest.fn(),
         dispose: jest.fn(),
     };
@@ -159,6 +161,21 @@ describe(CompositeApi.name, () => {
         expect(usb.methods.write).toHaveBeenCalledWith(USB_T2_PATH, packet, undefined);
         expect(usb.methods.read).toHaveBeenCalledWith(USB_T2_PATH, undefined);
         expect(usb.methods.closeDevice).toHaveBeenCalledWith(USB_T2_PATH, undefined);
+    });
+
+    it('isolates the calls of a device within the api that serves it', async () => {
+        const { composite, usb, hid } = setup();
+        await composite.enableHid();
+        const lock = { read: true, write: true };
+
+        expect(await composite.runInIsolation({ lock, path: HID_PATH }, () => 'hid')).toBe('hid');
+        expect(await composite.runInIsolation({ lock, path: USB_T2_PATH }, () => 'usb')).toBe(
+            'usb',
+        );
+
+        // Separate mutexes: a confirmation on the HID Trezor One holds up no USB device.
+        expect(hid.methods.runInIsolation).toHaveBeenCalledTimes(1);
+        expect(usb.methods.runInIsolation).toHaveBeenCalledTimes(1);
     });
 
     it('keeps the devices of one api listed when the other one fails to enumerate', async () => {

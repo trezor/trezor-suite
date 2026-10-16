@@ -55,6 +55,8 @@ const mockApi = (descriptors: DescriptorApiLevel[]) => {
                 Promise.resolve({ success: true, payload: FEATURES_PACKET }),
         ),
         write: jest.fn(() => Promise.resolve({ success: true as const, payload: undefined })),
+        // Stands in for the isolation of `AbstractApi`, one mutex per api instance.
+        runInIsolation: jest.fn((_params: unknown, fn: () => unknown) => Promise.resolve(fn())),
         listen: jest.fn(),
         dispose: jest.fn(),
     };

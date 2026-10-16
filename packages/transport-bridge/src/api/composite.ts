@@ -6,7 +6,7 @@ import {
     DEVICE_TYPE,
     type DescriptorApiLevel,
     TRANSPORT_ERROR as ERRORS,
-    type PathInternal,
+    PathInternal,
     error,
     success,
 } from '@trezor/transport-common';
@@ -184,6 +184,17 @@ export class CompositeApi extends AbstractApi {
 
         return this.usbApi.closeDevice(path, options);
     }
+
+    /**
+     * Isolates the calls of a device within the api that serves it, instead of letting both
+     * backends share one mutex. A confirmation on a HID Trezor One takes as long as the user
+     * needs, and no call of a USB device may wait behind it.
+     */
+    public runInIsolation: AbstractApi['runInIsolation'] = (params, fn) =>
+        (isHidPath(PathInternal(params.path))
+            ? (this.hidApi ?? this.usbApi)
+            : this.usbApi
+        ).runInIsolation(params, fn);
 
     public read(
         ...[path, options]: AbstractApiArgs<'read'>
