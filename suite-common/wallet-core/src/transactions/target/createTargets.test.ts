@@ -37,9 +37,16 @@ const makeInternalTransfer = (overrides: Partial<InternalTransfer> = {}): Intern
     ...overrides,
 });
 
-const account: Pick<Account, 'descriptor' | 'symbol'> = {
+const account: Pick<Account, 'descriptor' | 'symbol' | 'networkType'> = {
     descriptor: asAccountDescriptor('0xMyAddress'),
     symbol: asNetworkSymbol('eth'),
+    networkType: 'ethereum',
+};
+
+const cardanoAccount: Pick<Account, 'descriptor' | 'symbol' | 'networkType'> = {
+    descriptor: asAccountDescriptor('addr1MyAddress'),
+    symbol: asNetworkSymbol('ada'),
+    networkType: 'cardano',
 };
 
 describe(createTargets.name, () => {
@@ -73,7 +80,7 @@ describe(createTargets.name, () => {
         });
     });
 
-    it('maps token transfers to TokenTarget entries, filtering out "self" type', () => {
+    it('maps token transfers to TokenTarget entries, including "self" type', () => {
         const tokens = [
             makeTokenTransfer({ type: 'sent', contract: '0xA' }),
             makeTokenTransfer({ type: 'self', contract: '0xB' }),
@@ -85,23 +92,22 @@ describe(createTargets.name, () => {
             account,
         });
 
-        expect(result).toHaveLength(2);
-        expect(result[0]).toEqual({
-            type: 'token',
-            targetId: 'token-0xA',
-            payload: tokens[0],
-        });
-        expect(result[1]).toEqual({
-            type: 'token',
-            targetId: 'token-0xC',
-            payload: tokens[2],
-        });
+        expect(result).toEqual([
+            { type: 'token', targetId: 'token-0xA', payload: tokens[0] },
+            { type: 'token', targetId: 'token-0xB', payload: tokens[1] },
+            { type: 'token', targetId: 'token-0xC', payload: tokens[2] },
+        ]);
     });
 
-    it('excludes all token transfers when all have type "self"', () => {
+    it('keeps a "self" NFT transfer, so a sent-to-self NFT is not hidden', () => {
         const tokens = [
-            makeTokenTransfer({ type: 'self', contract: '0xA' }),
-            makeTokenTransfer({ type: 'self', contract: '0xB' }),
+            makeTokenTransfer({
+                type: 'self',
+                standard: 'ERC721',
+                amount: '14600',
+                from: '0xMyAddress',
+                to: '0xMyAddress',
+            }),
         ];
 
         const result = createTargets({
@@ -109,7 +115,23 @@ describe(createTargets.name, () => {
             account,
         });
 
-        expect(result).toEqual([]);
+        expect(result).toEqual([
+            { type: 'token', targetId: 'token-0xContractA', payload: tokens[0] },
+        ]);
+    });
+
+    it('filters out "self" token transfers on Cardano', () => {
+        const tokens = [
+            makeTokenTransfer({ type: 'self', contract: 'policyA' }),
+            makeTokenTransfer({ type: 'sent', contract: 'policyB' }),
+        ];
+
+        const result = createTargets({
+            transaction: { targets: [], tokens, internalTransfers: [] },
+            account: cardanoAccount,
+        });
+
+        expect(result).toEqual([{ type: 'token', targetId: 'token-policyB', payload: tokens[1] }]);
     });
 
     it('maps internal transfers to InternalTarget entries', () => {
