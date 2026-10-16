@@ -1,5 +1,5 @@
-import { Translation } from '@suite/intl';
 import { type Network } from '@suite-common/wallet-config';
+import { Translation } from '@suite-lego/intl';
 import { Table } from '@trezor/components';
 
 import { BaseCurrencyValue } from 'src/components/suite';

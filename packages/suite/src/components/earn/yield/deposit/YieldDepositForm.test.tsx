@@ -27,8 +27,8 @@ jest.mock('@trezor/components', () => ({
     Column: ({ children }: PropsWithChildren) => <div>{children}</div>,
     Text: ({ children }: PropsWithChildren) => <span>{children}</span>,
 }));
-jest.mock('@suite/intl', () => ({
-    ...jest.requireActual('@suite/intl'),
+jest.mock('@suite-lego/intl', () => ({
+    ...jest.requireActual('@suite-lego/intl'),
     Translation: () => null,
 }));
 jest.mock('@suite-common/formatters', () => ({

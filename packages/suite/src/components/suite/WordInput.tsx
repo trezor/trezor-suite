@@ -1,8 +1,8 @@
 import { memo } from 'react';
 import { createFilter } from 'react-select';
 
-import { useTranslation } from '@suite/intl';
 import { selectModalRequestId } from '@suite/modal';
+import { useTranslation } from '@suite-lego/intl';
 import { Select, type SelectRef } from '@trezor/components';
 import TrezorConnect, { UI_RESPONSE } from '@trezor/connect';
 import { bip39EnglishWordlist } from '@trezor/crypto-utils';

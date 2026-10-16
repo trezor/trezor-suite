@@ -1,10 +1,10 @@
 import { type ReactNode } from 'react';
 
 import { injectDesktopAnalytics } from '@suite/analytics';
-import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { events } from '@suite-common/analytics';
 import { type Rating } from '@suite-common/feedback';
+import { Translation } from '@suite-lego/intl';
 import { Button, Card, Column, Divider, Icon, IconCircle, Row, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { CheckCircleFilledIcon, CheckIcon } from '@trezor/icons';

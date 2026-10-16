@@ -17,7 +17,7 @@
         },
         { "path": "../analytics" },
         { "path": "../desktop-app-api" },
-        { "path": "../intl" },
+        { "path": "../../suite-lego/intl" },
         { "path": "../router" },
         { "path": "../../packages/components" },
         {

@@ -3,7 +3,7 @@ import FocusLock from 'react-focus-lock';
 
 import styled, { useTheme } from 'styled-components';
 
-import { Translation, useTranslation } from '@suite/intl';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import {
     Box,
     ButtonGroup,

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Column, Illustration, Modal, Paragraph } from '@trezor/components';
 import TrezorConnect, { DEVICE, DEVICE_EVENT, type DeviceEventMessage } from '@trezor/connect';
 

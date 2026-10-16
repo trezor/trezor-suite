@@ -61,9 +61,13 @@ export const localRulesConfig = [
         },
     },
     {
-        files: [allRoots.suite, allRoots.suiteCli, allRoots.suiteNative, allRoots.suiteCommon].map(
-            root => `${root}/**/*.{js,mjs,cjs,ts,jsx,tsx}`,
-        ),
+        files: [
+            allRoots.suite,
+            allRoots.suiteLego,
+            allRoots.suiteCli,
+            allRoots.suiteNative,
+            allRoots.suiteCommon,
+        ].map(root => `${root}/**/*.{js,mjs,cjs,ts,jsx,tsx}`),
         rules: {
             'local-rules/no-package-deep-imports': [
                 'error',
@@ -71,6 +75,7 @@ export const localRulesConfig = [
                     packageScopes: [
                         '@suite-native',
                         '@suite',
+                        '@suite-lego',
                         '@suite-cli',
                         '@suite-common',
                         '@trezor',
@@ -83,14 +88,14 @@ export const localRulesConfig = [
                         // Packages expose reusable test mocks (`/mocks`) and platform-specific React
                         // bindings (`/react` for web and desktop, `/react-native` for native) through
                         // dedicated public entry points.
-                        /^@(?:suite-native|suite|suite-cli|suite-common|trezor)\/[^/]+\/(?:mocks|react|react-native)$/,
+                        /^@(?:suite-native|suite|suite-lego|suite-cli|suite-common|trezor)\/[^/]+\/(?:mocks|react|react-native)$/,
                         // Node CLI services have a dedicated public entry point.
                         /^@suite-common\/icons\/scripts$/,
                         // Suite test setup imports global polyfills through this side-effect-only entry point.
                         /^@suite-common\/test-utils\/globalOverrides$/,
-                        // `@suite/intl` ships the translation catalogs as files next to its sources;
+                        // `@suite-lego/intl` ships the translation catalogs as files next to its sources;
                         // e2e tests import a catalog by path to assert translated text.
-                        /^@suite\/intl\/translations\/[\w-]+\.json$/,
+                        /^@suite-lego\/intl\/translations\/[\w-]+\.json$/,
                         // The applications import the Webpack pieces they share from this
                         // build-only entry point; it is never part of an application bundle.
                         /^@trezor\/suite\/webpack\/[\w/-]+$/,
@@ -111,6 +116,7 @@ export const localRulesConfig = [
             allRoots.networks,
             `${allRoots.packages}/suite`,
             allRoots.suite,
+            allRoots.suiteLego,
             allRoots.suiteCli,
             allRoots.suiteCommon,
         ].map(root => `${root}/**/*.{ts,tsx}`),

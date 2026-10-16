@@ -1,6 +1,6 @@
 import { selectIsDebugModeActive } from '@suite/debug';
 import { injectDesktopApi } from '@suite/desktop-app-api';
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Card, Column } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { SectionItem } from '@trezor/product-components';

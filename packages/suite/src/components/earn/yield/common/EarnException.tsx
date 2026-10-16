@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 
-import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
+import { Translation } from '@suite-lego/intl';
 import { type IconCircleIntent, type IconComponent } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { WarningIcon } from '@trezor/icons';

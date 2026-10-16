@@ -1,6 +1,5 @@
 import { type ExchangeTrade } from 'invity-api';
 
-import { Translation } from '@suite/intl';
 import { ExperimentId, ExperimentWrapper } from '@suite-common/message-system';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import {
@@ -14,6 +13,7 @@ import {
 import { networksCollection } from '@suite-common/wallet-config';
 import { selectIsMevProtectionEnabled } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Card, Column, InfoItem, Text, Tooltip } from '@trezor/components';
 
 import { BannerPoints } from 'src/components/wallet/WalletLayout/AccountBanners/BannerPoints';

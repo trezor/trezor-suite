@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Image, Row, Text } from '@trezor/components';
 
 import { EARN_PROVIDER_METADATA, type EarnProviderId } from './providerMetadata';

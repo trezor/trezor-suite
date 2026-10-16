@@ -3,11 +3,11 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { type CryptoId } from 'invity-api';
 
 import { useDevice } from '@suite/device';
-import { useTranslation } from '@suite/intl';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type TradingAssetOption } from '@suite-common/trading';
 import { activateNetworkWithDiscoveryThunk } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { useTranslation } from '@suite-lego/intl';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 

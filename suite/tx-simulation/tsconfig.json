@@ -15,7 +15,7 @@
         {
             "path": "../../suite-common/wallet-types"
         },
-        { "path": "../intl" },
+        { "path": "../../suite-lego/intl" },
         { "path": "../../packages/components" },
         {
             "path": "../../packages/dependency-injection"

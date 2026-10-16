@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 
-import { Translation } from '@suite/intl';
 import { useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
 import { TokenManagementAction, selectCoinDefinitions } from '@suite-common/token-definitions';
 import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { isErc4626, isTestnet, sortTokensByName } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 
 import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';

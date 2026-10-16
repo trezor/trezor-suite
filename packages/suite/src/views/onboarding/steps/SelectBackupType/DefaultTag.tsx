@@ -1,4 +1,4 @@
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Badge, Text } from '@trezor/components';
 
 import { useLayoutSize } from 'src/hooks/suite';

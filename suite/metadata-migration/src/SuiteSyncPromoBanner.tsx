@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { Translation } from '@suite/intl';
 import {
     type LegacyLabelingVisibleRootState,
     selectIsLegacyLabelingVisible,
@@ -16,6 +15,7 @@ import {
     type WithSuiteSyncAndDeviceState,
     selectSuiteSyncInteraction,
 } from '@suite-common/suite-sync';
+import { Translation } from '@suite-lego/intl';
 import { ArrowsClockwiseIcon } from '@trezor/icons';
 import { SidebarBanner } from '@trezor/product-components';
 

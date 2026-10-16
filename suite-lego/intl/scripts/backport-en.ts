@@ -19,8 +19,8 @@ import { typedObjectKeys } from '@trezor/utils';
 import { messages } from '../src/messages';
 
 const root = path.join(__dirname, '../../../');
-const targetPath = path.join(root, 'suite/intl/src/messages.ts');
-const sourcePath = path.join(root, 'suite/intl/translations/en-US.json');
+const targetPath = path.join(root, 'suite-lego/intl/src/messages.ts');
+const sourcePath = path.join(root, 'suite-lego/intl/translations/en-US.json');
 
 const source: Record<string, string> = JSON.parse(fs.readFileSync(sourcePath, 'utf8'));
 

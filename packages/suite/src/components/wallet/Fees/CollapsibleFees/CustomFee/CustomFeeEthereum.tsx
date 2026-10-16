@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 import { useFormContext, useFormState } from 'react-hook-form';
 
-import { Translation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { type FormState } from '@suite-common/wallet-types';
 import { isEip1559 } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Text } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';

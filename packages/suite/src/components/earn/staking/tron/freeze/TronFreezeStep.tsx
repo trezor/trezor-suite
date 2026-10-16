@@ -1,6 +1,6 @@
 import { FormProvider } from 'react-hook-form';
 
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Card, Column, Divider } from '@trezor/components';
 
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';

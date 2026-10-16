@@ -2,13 +2,13 @@ import { type PropsWithChildren, useMemo } from 'react';
 
 import styled from 'styled-components';
 
-import { Translation } from '@suite/intl';
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import {
     calculateTronFeeBreakdown,
     convertAmountSubunitsToUnits,
     formatNetworkAmount,
 } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Card, Column, InfoItem, Skeleton } from '@trezor/components';
 
 import { FormattedCryptoAmount } from 'src/components/suite';

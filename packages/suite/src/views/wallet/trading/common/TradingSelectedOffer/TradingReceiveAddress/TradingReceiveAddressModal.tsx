@@ -1,12 +1,12 @@
 import { useForm, useWatch } from 'react-hook-form';
 
-import { Translation, useTranslation } from '@suite/intl';
 import { openDeferredModal } from '@suite/modal';
 import { injectAddressValidator, selectNetworkSymbolForProtocol } from '@suite-common/networks';
 import { cryptoIdToNetwork, useTradingUtils } from '@suite-common/trading';
 import { parseTransferUri } from '@suite-common/transfer-uri';
 import { isNetworkSymbol } from '@suite-common/wallet-config';
 import { isHexValid, isInteger } from '@suite-common/wallet-utils';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import { Banner, Button, Column, Icon, Input, Modal, Row } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { QrCodeIcon } from '@trezor/icons';

@@ -1,11 +1,11 @@
 import { LearnMoreButton } from '@suite/external-links';
-import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import {
     selectAreDeviceMetaChecksEnabled,
     selectIsFirmwareHashCheckEnabled,
     selectIsFirmwareRevisionCheckEnabled,
 } from '@suite/settings';
+import { Translation } from '@suite-lego/intl';
 import { useServices } from '@trezor/dependency-injection';
 import { SectionItem } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';

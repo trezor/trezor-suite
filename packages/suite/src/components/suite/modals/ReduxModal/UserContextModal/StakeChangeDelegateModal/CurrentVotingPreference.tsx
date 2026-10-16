@@ -1,7 +1,7 @@
-import { Translation } from '@suite/intl';
 import { CARDANO_EVERSTAKE_DREP } from '@suite-common/wallet-constants';
 import { CARDANO_ALWAYS_ABSTAIN_DREP_ID, getCardanoAccountDrepId } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Card, Column, IconCircle, Row, Text } from '@trezor/components';
 import { CheckCircleIcon } from '@trezor/icons';
 

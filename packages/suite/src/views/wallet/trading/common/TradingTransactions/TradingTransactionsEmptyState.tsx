@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux';
 
-import { Translation } from '@suite/intl';
 import { gotoThunk, selectRouteName, selectSettingsBackRoute } from '@suite/router';
 import { selectTradingActiveSection } from '@suite-common/trading';
+import { Translation } from '@suite-lego/intl';
 import { Button, Column, H2, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

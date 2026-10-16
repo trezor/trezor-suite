@@ -1,6 +1,6 @@
-import { Translation } from '@suite/intl';
 import { formatTronApr } from '@suite-common/earn-staking-api';
 import { isApyAvailable } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Icon, Paragraph, Row } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 

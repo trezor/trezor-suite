@@ -1,11 +1,11 @@
 import { useState } from 'react';
 
-import { Translation } from '@suite/intl';
 import { selectHasExperimentalFeature } from '@suite/settings';
 import { selectIsTorEnabled } from '@suite/tor';
 import { TorModal, type TorResult, toggleTorThunk } from '@suite/tor-desktop';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectNetworkExplorers } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import {
     Badge,
     Banner,

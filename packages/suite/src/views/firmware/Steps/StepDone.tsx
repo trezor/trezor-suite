@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Modal } from '@trezor/components';
 
 import { FirmwareInstallation } from 'src/components/firmware/FirmwareInstallation';

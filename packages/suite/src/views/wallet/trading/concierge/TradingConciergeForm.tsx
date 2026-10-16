@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 
-import { Translation } from '@suite/intl';
 import { type TradingCountryInputProps } from '@suite/trading';
 import {
     type OtcProviderType,
@@ -8,6 +7,7 @@ import {
     isCountryCode,
     useFetchOtc,
 } from '@suite-common/trading';
+import { Translation } from '@suite-lego/intl';
 import { Button, Card, Column } from '@trezor/components';
 
 import { TradingConciergeCountryInput } from './TradingConciergeCountryInput';

@@ -1,9 +1,9 @@
 import { Address } from '@suite/address';
 import { useExternalLink } from '@suite/external-links';
-import { Translation } from '@suite/intl';
 import { type TransactionSimulation } from '@suite-common/tx-simulation';
 import { type Network, getExplorerUrl } from '@suite-common/wallet-config';
 import { selectExplorer } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { CollapsibleBox, Column, H4, Link, Row, Text } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';

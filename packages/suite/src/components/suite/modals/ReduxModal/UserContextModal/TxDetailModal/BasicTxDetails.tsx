@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
 import { useExternalLink } from '@suite/external-links';
-import { Translation } from '@suite/intl';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type Network } from '@suite-common/wallet-config';
 import {
@@ -12,6 +11,7 @@ import {
     isEip1559,
     isPending,
 } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import {
     Card,
     Divider,

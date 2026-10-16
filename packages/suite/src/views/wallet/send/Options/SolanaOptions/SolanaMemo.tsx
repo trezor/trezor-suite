@@ -1,4 +1,4 @@
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Card, Column, H4, IconButton, Row, Textarea, Tooltip } from '@trezor/components';
 import { XIcon } from '@trezor/icons';
 import { SOLANA_MEMO_MAX_BYTES } from '@trezor/network-solana/constants';

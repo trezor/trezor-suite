@@ -1,5 +1,5 @@
-import { Translation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
+import { Translation } from '@suite-lego/intl';
 import { Row } from '@trezor/components';
 import { ArrowLeftIcon, TrezorBackupIcon } from '@trezor/icons';
 

@@ -1,8 +1,8 @@
 import { type ReactNode } from 'react';
 
-import { Translation } from '@suite/intl';
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { type FirmwareStatus } from '@suite-common/suite-types';
+import { Translation } from '@suite-lego/intl';
 import { Modal, Tooltip } from '@trezor/components';
 import { unique } from '@trezor/utils';
 

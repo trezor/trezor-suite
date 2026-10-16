@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
 import { selectSelectedAccount } from '@suite/account';
-import { Translation } from '@suite/intl';
 import { gotoThunk, selectRouteName } from '@suite/router';
 import { isBech32AddressUppercase } from '@suite-common/address';
 import { selectNetworkSymbolForProtocol } from '@suite-common/networks';
@@ -12,6 +11,7 @@ import {
     getNetworkDisplaySymbolName,
 } from '@suite-common/wallet-config';
 import { selectDeviceAccountsByNetworkSymbol } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { TokenIcon } from '@trezor/product-components';

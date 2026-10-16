@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 
-import { Translation } from '@suite/intl';
 import { type TradingUtilsProvidersProps, tradeApi } from '@suite-common/trading';
+import { Translation } from '@suite-lego/intl';
 import { Column, Image, Row } from '@trezor/components';
 import { type SpacingValue } from '@trezor/theme';
 

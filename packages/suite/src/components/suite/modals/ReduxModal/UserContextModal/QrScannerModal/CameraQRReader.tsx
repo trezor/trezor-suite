@@ -4,7 +4,7 @@ import { useZxing } from 'react-zxing';
 import styled from 'styled-components';
 
 import { LearnMoreButton } from '@suite/external-links';
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Card, Column, Icon, Paragraph, Row } from '@trezor/components';
 import { QrCodeIcon } from '@trezor/icons';
 import { HELP_CENTER_QR_CODE_URL } from '@trezor/urls';

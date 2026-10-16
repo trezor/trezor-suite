@@ -22,8 +22,8 @@ jest.mock('@trezor/dependency-injection', () => ({
     ...jest.requireActual('@trezor/dependency-injection'),
     useServices: () => ({ analytics: mockAnalytics }),
 }));
-jest.mock('@suite/intl', () => ({
-    ...jest.requireActual('@suite/intl'),
+jest.mock('@suite-lego/intl', () => ({
+    ...jest.requireActual('@suite-lego/intl'),
     Translation: () => null,
 }));
 jest.mock('@trezor/components', () => ({

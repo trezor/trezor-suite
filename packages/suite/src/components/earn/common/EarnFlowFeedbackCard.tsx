@@ -4,13 +4,13 @@ import {
     injectDesktopAnalytics,
 } from '@suite/analytics';
 import { FeedbackCard } from '@suite/feature-feedback';
-import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import {
     type FeedbackCategory,
     type Rating,
     buildUserFeedbackData,
     sendFeedbackThunk,
 } from '@suite-common/feedback';
+import { Translation, type TranslationKey, useTranslation } from '@suite-lego/intl';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 

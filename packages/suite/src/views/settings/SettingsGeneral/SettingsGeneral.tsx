@@ -2,7 +2,6 @@ import { type ReactNode } from 'react';
 
 import { selectDesktopUpdate } from '@suite/desktop-update';
 import { selectIsSettingsDesktopAppPromoBannerShown } from '@suite/flags';
-import { Translation } from '@suite/intl';
 import { LabelingSettings } from '@suite/labeling';
 import { ContextMessage } from '@suite/message-system';
 import { selectIsLegacyLabelingVisible, selectSelectedProviderForLabels } from '@suite/metadata';
@@ -14,6 +13,7 @@ import {
     selectEnabledNetworks,
     selectIsNetworkReserveSettingsVisible,
 } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { isDesktop, isLinux, isWeb } from '@trezor/env-utils';
 import {
     AppWindowIcon,

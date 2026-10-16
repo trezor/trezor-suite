@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 
 import { AccountLabel } from '@suite/account';
-import { Translation } from '@suite/intl';
 import { onReceiveAccount } from '@suite/modal';
 import { isNetworkSymbol } from '@suite-common/wallet-config';
 import { selectAccounts } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Card, Column, Icon, Modal, Row, Skeleton, SubTabs, Table } from '@trezor/components';
 import { type UiRequestSelectAccount } from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';

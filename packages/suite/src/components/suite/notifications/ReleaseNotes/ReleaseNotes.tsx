@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { getReleaseUrl } from '@suite/github';
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Badge, Card, Paragraph, Row, TextButton } from '@trezor/components';
 
 import { MarkdownWithComponents } from 'src/components/suite';

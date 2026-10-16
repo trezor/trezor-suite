@@ -1,7 +1,7 @@
 import { type MouseEventHandler } from 'react';
 
 import { useDevice } from '@suite/device';
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { isDesktop } from '@trezor/env-utils';
 import { TrezorBodyIcon } from '@trezor/icons';
 

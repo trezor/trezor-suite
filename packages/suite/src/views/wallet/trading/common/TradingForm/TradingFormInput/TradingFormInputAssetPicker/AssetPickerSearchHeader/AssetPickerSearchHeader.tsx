@@ -1,7 +1,7 @@
 import { memo, useCallback, useMemo, useRef } from 'react';
 
-import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { Translation, type TranslationKey, useTranslation } from '@suite-lego/intl';
 import {
     Button,
     type DropdownMenuItemProps,

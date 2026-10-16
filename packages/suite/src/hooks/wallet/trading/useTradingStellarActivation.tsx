@@ -1,7 +1,7 @@
 import type { CryptoId } from 'invity-api';
 
-import { Translation } from '@suite/intl';
 import { type Account } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Button } from '@trezor/components';
 import { breakpoints } from '@trezor/theme';
 

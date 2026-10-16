@@ -1,6 +1,6 @@
-import { Translation } from '@suite/intl';
 import { selectNftDefinitions } from '@suite-common/token-definitions';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Column, H3 } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';

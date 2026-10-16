@@ -2,7 +2,7 @@ import { memo, useMemo } from 'react';
 
 import { type CryptoId } from 'invity-api';
 
-import { type TranslationKey } from '@suite/intl';
+import { type TranslationKey } from '@suite-lego/intl';
 
 import { useTradingAssetPickerModal } from 'src/hooks/wallet/trading/form/common/useTradingAssetPickerModal';
 

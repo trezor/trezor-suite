@@ -14,9 +14,9 @@ import {
 } from '@floating-ui/react';
 import styled from 'styled-components';
 
-import { Translation, type TranslationKey } from '@suite/intl';
 import { selectDeviceDefaultBackupType } from '@suite-common/device';
 import { type BackupType } from '@suite-common/suite-types';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { Banner, Text } from '@trezor/components';
 
 import { useLayoutSize, useSelector } from 'src/hooks/suite';

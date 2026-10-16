@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 
-import { Translation, type TranslationKey } from '@suite/intl';
 import { type SuiteSyncInteraction } from '@suite-common/suite-sync';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { Text, Tooltip } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 

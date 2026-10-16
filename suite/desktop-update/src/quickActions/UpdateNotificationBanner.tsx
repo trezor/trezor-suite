@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux';
 
-import { Translation, type TranslationKey } from '@suite/intl';
 import { type DeviceRootState } from '@suite-common/device';
 import { type DiscoveryRootState, selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { useServices } from '@trezor/dependency-injection';
 import { SidebarBanner } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';

@@ -1,7 +1,7 @@
 import { useDevice } from '@suite/device';
 import { setFlag } from '@suite/flags';
-import { Translation } from '@suite/intl';
 import { SettingsAnchor, gotoThunk } from '@suite/router';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';

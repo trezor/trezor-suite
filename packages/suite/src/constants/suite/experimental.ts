@@ -1,10 +1,10 @@
 import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 
 import type { ExperimentalFeature } from '@suite/experimental';
-import { type ExtendedMessageDescriptor } from '@suite/intl';
 import { type Route } from '@suite/router';
 import { networksCollection } from '@suite-common/wallet-config';
 import { blockchainActions } from '@suite-common/wallet-core';
+import { type ExtendedMessageDescriptor } from '@suite-lego/intl';
 import { isDesktop } from '@trezor/env-utils';
 import {
     EXPERIMENTAL_PASSWORD_MANAGER_KB_URL,

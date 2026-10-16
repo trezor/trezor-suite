@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import {
     phishingActions,
     selectDustPhishingIsEnabled,
     selectDustPhishingThreshold,
 } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Input, Row, Switch, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { SectionItem } from '@trezor/product-components';

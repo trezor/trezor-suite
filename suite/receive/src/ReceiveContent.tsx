@@ -1,12 +1,12 @@
 import { useMemo, useState } from 'react';
 
-import { Translation } from '@suite/intl';
 import {
     getNetwork,
     getNetworkDisplaySymbol,
     getNetworkFeatures,
 } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Column, H2, Icon, Row, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { InfoIcon } from '@trezor/icons';

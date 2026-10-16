@@ -1,6 +1,6 @@
-import { Translation } from '@suite/intl';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Column } from '@trezor/components';
 
 import { TronStakeContext } from './TronStakeContext';

@@ -1,4 +1,4 @@
-import { type TranslationKey } from '@suite/intl';
+import { type TranslationKey } from '@suite-lego/intl';
 import { Collapsible, Row } from '@trezor/components';
 import { CaretDownIcon } from '@trezor/icons';
 import { type TypographyStyle } from '@trezor/theme';

@@ -1,8 +1,8 @@
 import { selectCoinjoinSessionBlockerByAccountKey } from '@suite/coinjoin';
-import { useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { Feature, selectFeatureMessageContent } from '@suite-common/message-system';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { useTranslation } from '@suite-lego/intl';
 
 import { useSelector } from 'src/hooks/suite';
 

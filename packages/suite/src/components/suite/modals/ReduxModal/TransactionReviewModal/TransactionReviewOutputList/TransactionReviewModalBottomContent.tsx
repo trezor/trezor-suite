@@ -3,7 +3,6 @@ import {
     events,
     injectDesktopAnalytics,
 } from '@suite/analytics';
-import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -17,6 +16,7 @@ import {
     isRbfCancelTransaction,
     isRbfTransaction,
 } from '@suite-common/wallet-utils';
+import { type ExtendedMessageDescriptor, Translation } from '@suite-lego/intl';
 import { Modal } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { copyToClipboard, download } from '@trezor/dom-utils';

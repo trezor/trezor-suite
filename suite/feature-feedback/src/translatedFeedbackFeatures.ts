@@ -1,5 +1,5 @@
 import { type FeedbackFeatureName } from '@suite/experimental';
-import { type TranslationKey } from '@suite/intl';
+import { type TranslationKey } from '@suite-lego/intl';
 
 /**
  * Maps a feature that can collect feedback to the translation key of its generic product name.

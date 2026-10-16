@@ -1,7 +1,7 @@
-import { Translation } from '@suite/intl';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { TRON_FLOW_STEPS, type TronStakeStepId } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Column, StepList, type StepListItemState, Text } from '@trezor/components';
 
 import { TronStakeContext } from './TronStakeContext';

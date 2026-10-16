@@ -1,6 +1,6 @@
-import { Translation } from '@suite/intl';
 import { selectRouteName } from '@suite/router';
 import { getNetwork } from '@suite-common/wallet-config';
+import { Translation } from '@suite-lego/intl';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 

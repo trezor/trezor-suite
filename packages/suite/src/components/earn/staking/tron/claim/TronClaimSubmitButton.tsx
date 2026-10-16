@@ -1,12 +1,12 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
-import { Translation, useTranslation } from '@suite/intl';
 import {
     getTronStakingRewards,
     isTronClaimSupported,
     selectHasRunningDiscovery,
 } from '@suite-common/wallet-core';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import { Button, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { BigNumber } from '@trezor/utils';

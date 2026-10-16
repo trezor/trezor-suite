@@ -1,8 +1,8 @@
 import { type SellFiatTrade, type SellProviderInfo } from 'invity-api';
 
-import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { tradingThunks } from '@suite-common/trading';
+import { Translation } from '@suite-lego/intl';
 import { Button, Illustration } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

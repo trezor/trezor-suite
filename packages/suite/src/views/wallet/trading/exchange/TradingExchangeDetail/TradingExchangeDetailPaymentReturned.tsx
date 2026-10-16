@@ -1,9 +1,9 @@
 import { type ExchangeProviderInfo, type ExchangeTrade } from 'invity-api';
 
-import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { tradingThunks } from '@suite-common/trading';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Button } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

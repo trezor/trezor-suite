@@ -1,7 +1,7 @@
 import { type ExchangeKYCType } from 'invity-api';
 import styled from 'styled-components';
 
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Icon, Row, Text, Tooltip } from '@trezor/components';
 import { DetectiveIcon, IdentificationCardIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';

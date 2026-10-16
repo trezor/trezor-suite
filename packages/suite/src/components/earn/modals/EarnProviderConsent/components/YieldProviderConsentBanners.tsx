@@ -1,6 +1,6 @@
-import { Translation } from '@suite/intl';
 import { type NetworkType } from '@suite-common/wallet-config';
 import { isStakingNetworkType } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Banner } from '@trezor/components';
 import { FileFilledIcon, ShieldWarningFilledIcon, WarningCircleFilledIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';

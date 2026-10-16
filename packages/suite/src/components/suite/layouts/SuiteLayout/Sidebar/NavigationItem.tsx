@@ -2,8 +2,8 @@ import { type MouseEvent } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { type ExtendedMessageDescriptor, Translation, type TranslationKey } from '@suite/intl';
 import { type Route, gotoThunk, selectRouteName } from '@suite/router';
+import { type ExtendedMessageDescriptor, Translation, type TranslationKey } from '@suite-lego/intl';
 import {
     Badge,
     Icon,

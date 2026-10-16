@@ -1,5 +1,5 @@
-import { Translation } from '@suite/intl';
 import { type TxSimulationAction } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 
 interface TxSimulationTitleProps {
     method: TxSimulationAction['method'];

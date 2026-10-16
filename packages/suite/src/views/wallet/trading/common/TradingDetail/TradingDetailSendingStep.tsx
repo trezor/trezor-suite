@@ -1,9 +1,9 @@
-import { Translation, type TranslationKey } from '@suite/intl';
 import { formatDurationStrict } from '@suite-common/suite-utils';
 import { type TradingComposedTransactionInfo } from '@suite-common/trading';
 import { getNetwork } from '@suite-common/wallet-config';
 import { selectRawNetworkFeeInfo } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { Column, InfoItem, type StepListItemState } from '@trezor/components';
 
 import { useConnectedDateFnsLocale, useSelector } from 'src/hooks/suite';

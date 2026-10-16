@@ -2,7 +2,7 @@ import { type ReactNode, useState } from 'react';
 
 import { type ExchangeTrade } from 'invity-api';
 
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Button, Column, Row, Switch } from '@trezor/components';
 
 import { useGuideOpenNode } from 'src/hooks/guide';

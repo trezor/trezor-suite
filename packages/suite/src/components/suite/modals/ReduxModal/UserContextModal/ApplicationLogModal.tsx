@@ -3,8 +3,8 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 import { injectDesktopAnalytics } from '@suite/analytics';
-import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
+import { Translation } from '@suite-lego/intl';
 import {
     Card,
     Column,

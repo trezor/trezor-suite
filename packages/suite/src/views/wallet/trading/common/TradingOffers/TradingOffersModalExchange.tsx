@@ -3,7 +3,6 @@ import { useFormContext } from 'react-hook-form';
 
 import { type ExchangeTrade } from 'invity-api';
 
-import { Translation } from '@suite/intl';
 import {
     TRADING_EXCHANGE_FORM,
     TRADING_EXCHANGE_FORM_CEX,
@@ -13,6 +12,7 @@ import {
     type TradingTradeType,
     selectGroupedExchangeQuotes,
 } from '@suite-common/trading';
+import { Translation } from '@suite-lego/intl';
 import { Box, Column, Modal, SubTabs } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 

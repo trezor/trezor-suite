@@ -3,9 +3,9 @@ import { Fragment, type ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { useExternalLink } from '@suite/external-links';
-import { Translation, type TranslationKey } from '@suite/intl';
 import { type NetworkSymbol, getExplorerUrl } from '@suite-common/wallet-config';
 import { type ExplorerState, selectExplorer } from '@suite-common/wallet-core';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { InfoItem, Link, Paragraph } from '@trezor/components';
 import type {
     StellarAuthorizedCallData,

@@ -1,9 +1,9 @@
 import { AccountLabel } from '@suite/account';
 import { injectDesktopAnalytics } from '@suite/analytics';
-import { Translation, type TranslationKey } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { type WrappedNativeFlowType } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { Column, IconButton, Row, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { CaretLeftIcon } from '@trezor/icons';

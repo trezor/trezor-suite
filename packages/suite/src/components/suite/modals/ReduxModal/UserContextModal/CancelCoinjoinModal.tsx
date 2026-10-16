@@ -1,6 +1,6 @@
 import { selectSelectedAccount } from '@suite/account';
 import { stopCoinjoinSessionThunk } from '@suite/coinjoin';
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { ArrowsInIcon } from '@trezor/icons';

@@ -2,7 +2,6 @@ import '@suite-common/test-utils/globalOverrides';
 
 import { screen, within } from '@testing-library/react';
 
-import { messages } from '@suite/intl';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
@@ -12,6 +11,7 @@ import {
     type TransactionReviewOutput as TransactionReviewOutputType,
 } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { messages } from '@suite-lego/intl';
 
 import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';

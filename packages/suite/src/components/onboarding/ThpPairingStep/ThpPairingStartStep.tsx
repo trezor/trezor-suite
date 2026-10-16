@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 
-import { Translation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { startThpSessionThunk } from '@suite/thp';
+import { Translation } from '@suite-lego/intl';
 import { useServices } from '@trezor/dependency-injection';
 import { PlugsConnectedIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';

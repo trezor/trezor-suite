@@ -11,7 +11,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@suite/intl": "workspace:*",
+        "@suite-lego/intl": "workspace:*",
         "@suite/onboarding-components": "workspace:*",
         "@trezor/components": "workspace:*",
         "@trezor/icons": "workspace:*",

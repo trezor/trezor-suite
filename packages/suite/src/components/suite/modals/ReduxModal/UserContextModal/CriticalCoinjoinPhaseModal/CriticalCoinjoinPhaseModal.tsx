@@ -1,6 +1,6 @@
 import { selectCoinjoinAccountByKey } from '@suite/coinjoin';
-import { Translation } from '@suite/intl';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Card, Column, Divider, LoadingContent, Modal } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 

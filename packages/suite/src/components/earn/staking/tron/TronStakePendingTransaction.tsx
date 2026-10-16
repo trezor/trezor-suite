@@ -1,8 +1,8 @@
 import { type ReactNode } from 'react';
 
 import { Address } from '@suite/address';
-import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
+import { Translation } from '@suite-lego/intl';
 import { useServices } from '@trezor/dependency-injection';
 import {
     PENDING_TRANSACTION_TIME_ESTIMATE_SECONDS,

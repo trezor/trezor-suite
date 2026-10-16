@@ -1,7 +1,7 @@
-import { type TranslationFunction } from '@suite/intl';
 import { getNetwork, isSingleAccountType } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { getTitleForCoinjoinAccount } from '@suite-common/wallet-utils';
+import { type TranslationFunction } from '@suite-lego/intl';
 
 type GetDefaultAccountLabelParams = Pick<Account, 'accountType' | 'symbol' | 'index'>;
 

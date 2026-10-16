@@ -6,13 +6,13 @@ import {
     selectIsDiscoveryEntropyCheckEnabledAndUndismissedFailed,
     selectIsEntropyCheckEnabledAndFailed,
 } from '@suite/authenticity-checks';
-import type { TranslationKey } from '@suite/intl';
 import {
     selectIsFirmwareAuthenticityCheckDismissed,
     selectSelectedDevice,
     selectWasFwHashCheckOtherErrorLastTime,
 } from '@suite-common/device';
 import type { SkippedHashCheckError } from '@suite-common/firmware-authenticity';
+import type { TranslationKey } from '@suite-lego/intl';
 import { Card } from '@trezor/components';
 import type { FirmwareHashCheckError } from '@trezor/connect';
 

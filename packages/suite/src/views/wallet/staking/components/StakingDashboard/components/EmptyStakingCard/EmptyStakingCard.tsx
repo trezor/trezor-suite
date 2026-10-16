@@ -1,8 +1,8 @@
 import { selectSelectedAccount } from '@suite/account';
-import { Translation } from '@suite/intl';
 import { ContextMessage } from '@suite/message-system';
 import { Context } from '@suite-common/message-system';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Button, Card, Column, Grid, H3, Paragraph, Tooltip } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
 

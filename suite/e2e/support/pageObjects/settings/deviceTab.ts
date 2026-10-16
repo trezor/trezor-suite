@@ -1,6 +1,6 @@
 import { Locator, Page } from '@playwright/test';
 
-import { TranslationKey } from '@suite/intl';
+import { TranslationKey } from '@suite-lego/intl';
 
 import { step } from '../../common';
 import { expect } from '../../testExtends/customMatchers';

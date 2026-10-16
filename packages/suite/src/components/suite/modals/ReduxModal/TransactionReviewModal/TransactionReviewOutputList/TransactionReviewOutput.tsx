@@ -1,11 +1,5 @@
 import { type ReactNode } from 'react';
 
-import {
-    Translation,
-    type TranslationFunction,
-    type TranslationKey,
-    useTranslation,
-} from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { isApprovalFlowSupported, selectSelectedDevice } from '@suite-common/device';
 import { type Locale } from '@suite-common/locale';
@@ -29,6 +23,12 @@ import {
     isEvmApprovalTxByTextSignature,
     isTestnet,
 } from '@suite-common/wallet-utils';
+import {
+    Translation,
+    type TranslationFunction,
+    type TranslationKey,
+    useTranslation,
+} from '@suite-lego/intl';
 import type { TokenInfo } from '@trezor/blockchain-link-types';
 import { getWrappedNativeSymbol } from '@trezor/network-ethereum-suite-common';
 import { exhaustive } from '@trezor/type-utils';

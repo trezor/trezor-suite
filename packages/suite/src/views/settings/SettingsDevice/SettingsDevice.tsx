@@ -5,12 +5,12 @@ import {
     MultiShareBackup,
 } from '@suite/backup';
 import { setConnectionModal, useDevice } from '@suite/device';
-import { Translation } from '@suite/intl';
 import { ContextMessage } from '@suite/message-system';
 import { isRecoveryInProgress } from '@suite/recovery';
 import { selectIsDeviceAuthenticityCheckSupported } from '@suite-common/device-authenticity';
 import { Context } from '@suite-common/message-system';
 import { getIsDeviceRemembered } from '@suite-common/suite-utils';
+import { Translation } from '@suite-lego/intl';
 import { Banner } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { isBitcoinOnlyDevice } from '@trezor/device-utils';

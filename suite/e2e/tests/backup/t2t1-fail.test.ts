@@ -1,6 +1,6 @@
 import { escapeRegExp } from 'lodash';
 
-import { messages } from '@suite/intl';
+import { messages } from '@suite-lego/intl';
 import { TestStream } from '@trezor/e2e-utils';
 import { HELP_CENTER_RECOVERY_ISSUES_URL } from '@trezor/urls';
 

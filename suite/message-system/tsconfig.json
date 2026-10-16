@@ -14,7 +14,7 @@
         },
         { "path": "../external-links" },
         { "path": "../forms" },
-        { "path": "../intl" },
+        { "path": "../../suite-lego/intl" },
         { "path": "../router" },
         { "path": "../settings" },
         { "path": "../tor" },

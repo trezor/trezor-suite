@@ -1,6 +1,6 @@
-import { Translation } from '@suite/intl';
 import type { YieldFlowDisplayToken } from '@suite-common/wallet-core';
 import { isAllowanceUnlimited } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Spinner, Text } from '@trezor/components';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';

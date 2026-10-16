@@ -3,7 +3,6 @@ import { type FieldErrors, useFormContext, useWatch } from 'react-hook-form';
 
 import { useTheme } from 'styled-components';
 
-import { useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import {
     TRADING_FORM_AMOUNT_INPUT_SOURCE,
@@ -15,6 +14,7 @@ import {
 } from '@suite-common/trading';
 import { AMOUNT_MAX_LENGTH } from '@suite-common/wallet-core';
 import { getDecimalsForBaseCurrency } from '@suite-common/wallet-utils';
+import { useTranslation } from '@suite-lego/intl';
 import { type BaseCurrencyCode, isFiatBaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Skeleton } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';

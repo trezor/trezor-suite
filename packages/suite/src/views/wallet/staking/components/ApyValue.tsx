@@ -1,5 +1,5 @@
-import { Translation } from '@suite/intl';
 import { isApyAvailable } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 
 interface ApyValueProps {
     apy?: number | null;

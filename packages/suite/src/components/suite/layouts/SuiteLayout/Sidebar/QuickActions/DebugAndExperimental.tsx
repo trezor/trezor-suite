@@ -1,8 +1,8 @@
 import { selectIsDebugModeActive } from '@suite/debug';
 import { selectDesktopUpdateAllowPrerelease } from '@suite/desktop-update';
-import { Translation } from '@suite/intl';
 import { SettingsAnchor, gotoThunk } from '@suite/router';
 import { selectIsExperimentalEnabled } from '@suite/settings';
+import { Translation } from '@suite-lego/intl';
 import { Box, Column, Icon } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { AtomIcon, CheckIcon, DotOutlineFilledIcon, StarFourIcon } from '@trezor/icons';

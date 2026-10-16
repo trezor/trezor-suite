@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 
 import { HiddenPlaceholder } from '@suite/discreet-mode';
-import { Translation } from '@suite/intl';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { TokenAddress } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { LastUpdateTooltip } from '@trezor/product-components';
 import { typography } from '@trezor/theme';
 

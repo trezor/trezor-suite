@@ -6,8 +6,8 @@ import { ThemeProvider, useTheme } from 'styled-components';
 import { injectDesktopAnalytics } from '@suite/analytics';
 import { useExternalLink } from '@suite/external-links';
 import { setFlag } from '@suite/flags';
-import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
+import { Translation } from '@suite-lego/intl';
 import {
     Box,
     Button,

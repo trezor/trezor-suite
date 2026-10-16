@@ -25,7 +25,7 @@
             "path": "../../suite-common/wallet-types"
         },
         { "path": "../account" },
-        { "path": "../intl" },
+        { "path": "../../suite-lego/intl" },
         { "path": "../labeling" },
         { "path": "../metadata" },
         { "path": "../modal" },

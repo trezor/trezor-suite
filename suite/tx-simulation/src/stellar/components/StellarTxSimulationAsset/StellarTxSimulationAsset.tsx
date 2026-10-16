@@ -1,6 +1,6 @@
-import { Translation } from '@suite/intl';
 import { type StellarAssetDiff, getStellarAssetDiffLabel } from '@suite-common/tx-simulation';
 import { type Network } from '@suite-common/wallet-config';
+import { Translation } from '@suite-lego/intl';
 import { Row } from '@trezor/components';
 
 import { StellarTxSimulationAssetLogo } from './StellarTxSimulationAssetLogo';

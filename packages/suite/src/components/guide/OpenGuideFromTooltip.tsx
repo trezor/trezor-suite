@@ -1,6 +1,6 @@
 import { type MouseEvent } from 'react';
 
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { TextButton } from '@trezor/components';
 import { LightbulbIcon } from '@trezor/icons';
 

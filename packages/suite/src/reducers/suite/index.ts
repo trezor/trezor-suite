@@ -6,7 +6,6 @@ import { type DesktopDeviceState, prepareDesktopDeviceReducer } from '@suite/dev
 import { type FeedbackFeatureName } from '@suite/experimental';
 import { featureFeedbackReducer } from '@suite/feature-feedback';
 import { type FlagsState, prepareFlagsReducer } from '@suite/flags';
-import { type TranslationKey } from '@suite/intl';
 import { type LocksState, locksReducer } from '@suite/locks';
 import { metadataReducer } from '@suite/metadata';
 import { type State as ModalState, modalReducer as modal } from '@suite/modal';
@@ -25,6 +24,7 @@ import {
     createNotificationsReducer,
 } from '@suite-common/toast-notifications';
 import { type WalletConnectState, prepareWalletConnectReducer } from '@suite-common/walletconnect';
+import { type TranslationKey } from '@suite-lego/intl';
 
 import { extraDependencies } from 'src/support/extraDependencies';
 

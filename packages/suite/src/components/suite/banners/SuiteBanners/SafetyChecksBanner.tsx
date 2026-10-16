@@ -1,5 +1,5 @@
-import { Translation } from '@suite/intl';
 import { SettingsAnchor, gotoThunk } from '@suite/router';
+import { Translation } from '@suite-lego/intl';
 import { Banner } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { XIcon } from '@trezor/icons';

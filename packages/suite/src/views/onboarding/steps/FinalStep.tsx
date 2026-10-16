@@ -1,6 +1,6 @@
-import { Translation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { selectDeviceName } from '@suite-common/device';
+import { Translation } from '@suite-lego/intl';
 import { CheckIcon } from '@trezor/icons';
 
 import { useOnboarding, useSelector } from 'src/hooks/suite';

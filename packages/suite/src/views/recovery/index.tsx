@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useIntl } from 'react-intl';
 
 import { useDevice } from '@suite/device';
-import { Translation, messages } from '@suite/intl';
 import { MODAL_CONTEXT_DEVICE, selectModal, selectModalRequestId } from '@suite/modal';
 import {
     type RecoveryInputType,
@@ -15,6 +14,7 @@ import {
 } from '@suite/recovery';
 import { selectDeviceButtonRequests, usePin } from '@suite-common/device';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
+import { Translation, messages } from '@suite-lego/intl';
 import { Box, H2, Image, Modal, Paragraph } from '@trezor/components';
 import TrezorConnect, { UI_REQUESTS } from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';

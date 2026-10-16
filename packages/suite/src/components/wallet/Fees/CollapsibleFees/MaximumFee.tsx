@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
-import { Translation } from '@suite/intl';
 import { type FeesRootState, selectAreFeesLoading } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Column, LoadingContent, Skeleton, Text } from '@trezor/components';
 import { type TypographyStyle } from '@trezor/theme';
 

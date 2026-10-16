@@ -1,6 +1,6 @@
-import { Translation } from '@suite/intl';
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import { type Account, type WalletAccountTransaction } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Column, Divider, InfoItem, Row, Skeleton, Text } from '@trezor/components';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';

@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import styled from 'styled-components';
 
 import { selectSelectedAccount } from '@suite/account';
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Button } from '@trezor/components';
 
 import { PoweredByBadge } from 'src/components/earn';

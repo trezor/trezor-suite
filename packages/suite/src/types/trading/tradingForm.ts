@@ -5,7 +5,6 @@ import { type UnknownAction } from '@reduxjs/toolkit';
 import type { BuyTrade, ExchangeTrade, FiatCurrencyCode } from 'invity-api';
 import { type ThunkDispatch } from 'redux-thunk';
 
-import type { TranslationKey } from '@suite/intl';
 import { type OpenModalDep } from '@suite-common/suite-types';
 import type {
     TRADING_FORM_CRYPTO_CURRENCY_SELECT,
@@ -38,6 +37,7 @@ import {
     type PrecomposedLevels,
     type PrecomposedLevelsCardano,
 } from '@suite-common/wallet-types';
+import type { TranslationKey } from '@suite-lego/intl';
 import { type FeeLevel } from '@trezor/connect';
 
 import { type useTradingReceiveAddress } from 'src/hooks/wallet/trading/form/useTradingReceiveAddress';

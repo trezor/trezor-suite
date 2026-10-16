@@ -2,7 +2,7 @@ import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Box, Button, Column, Flex, IconButton, Text } from '@trezor/components';
 import { XIcon } from '@trezor/icons';
 import { type Color } from '@trezor/theme';
