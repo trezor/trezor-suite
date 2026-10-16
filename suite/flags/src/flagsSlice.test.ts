@@ -98,6 +98,7 @@ describe('flagsSlice', () => {
         expect(store.getState().flags.seenNewContentIndicators).toEqual({
             [NewContentIndicatorId.Earn26_8]: true,
             [NewContentIndicatorId.Swap26_10]: true,
+            [NewContentIndicatorId.ReferAFriend26_10]: true,
         });
     });
 

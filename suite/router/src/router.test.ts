@@ -123,6 +123,17 @@ describe('router', () => {
     });
 
     describe('getAppWithParams', () => {
+        it('resolves the Refer a Friend page without wallet parameters', () => {
+            expect(getAppWithParams({ pathname: '/refer-a-friend' })).toEqual({
+                app: 'refer-a-friend',
+                route: {
+                    name: 'suite-refer-a-friend',
+                    pattern: '/refer-a-friend',
+                    app: 'refer-a-friend',
+                },
+                params: undefined,
+            });
+        });
         it('wallet params validation', () => {
             const resp = {
                 app: 'wallet',

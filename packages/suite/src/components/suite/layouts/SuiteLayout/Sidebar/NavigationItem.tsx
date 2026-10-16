@@ -149,6 +149,7 @@ const NavItem = ({
                 onClick={handleClick}
                 data-testid={navigationItemTestId}
                 type="button"
+                aria-current={isItemActive ? 'page' : undefined}
             >
                 <StatusBadge
                     isShown={isIconIndicatorShown}

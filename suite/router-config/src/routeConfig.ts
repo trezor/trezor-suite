@@ -58,6 +58,11 @@ export const routes = [
         app: 'earn',
     },
     {
+        name: 'suite-refer-a-friend',
+        pattern: '/refer-a-friend',
+        app: 'refer-a-friend',
+    },
+    {
         name: 'earn-yield-deposit',
         pattern: '/earn/yield/deposit',
         app: 'earn-yield',
