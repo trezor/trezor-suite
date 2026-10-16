@@ -54,10 +54,16 @@ export const permissionIcons = {
     internal: 'cube',
 } as const satisfies Record<PermissionRequest['permission'], string>;
 
+// `granted` comes from a persisted remembered-app record. The reducer's storageLoad case drops
+// records whose `allowedPermissions` is not an array, but that case never runs on native
+// (redux-persist rehydrates instead), so a malformed record reaches this comparison — see
+// SUITE-NATIVE-4PR. Treat it as covering nothing: the user is prompted again rather than a call
+// being silently approved against a grant list we cannot read.
 export const permissionsAreCovered = (
     requested: PermissionRequest[],
     granted: PermissionRequest[],
 ): boolean =>
+    Array.isArray(granted) &&
     requested.every(req =>
         granted.some(g => g.permission === req.permission && g.coin === req.coin),
     );
