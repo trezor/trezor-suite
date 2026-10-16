@@ -1,3 +1,5 @@
+import { useSelector } from 'react-redux';
+
 import { type CryptoId } from 'invity-api';
 
 import { AccountLabel } from '@suite/account';
@@ -11,7 +13,6 @@ import { Card, Column, Row, Skeleton, Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 
 import { BaseCurrencyValue } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
 import { type TradingPayGetLabelType } from 'src/types/trading/trading';
 import { TradingCryptoAmount } from 'src/views/wallet/trading/common/TradingCryptoAmount';
 
@@ -23,6 +24,7 @@ type TradingInfoItemProps = {
     isAmountLoading?: boolean;
     isReceive?: boolean;
     receiveAddress?: string;
+    receiveExtraField?: string;
 };
 
 export const TradingInfoItem = ({
@@ -33,6 +35,7 @@ export const TradingInfoItem = ({
     amount,
     isAmountLoading,
     receiveAddress,
+    receiveExtraField,
 }: TradingInfoItemProps) => {
     const shouldAnimateSkeleton = useSelector(selectShouldAnimateLoadingSkeleton);
     const { translationString } = useTranslation();
@@ -93,6 +96,16 @@ export const TradingInfoItem = ({
                     </Text>
                 )}
             </Row>
+            {isExternalAddress && receiveExtraField && (
+                <Row justifyContent="flex-end" gap={4}>
+                    <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
+                        <Translation id="DESTINATION_TAG" />
+                    </Text>
+                    <Text typographyStyle="body-sm" data-testid={`${testIdPrefix}-extra-field`}>
+                        {receiveExtraField}
+                    </Text>
+                </Row>
+            )}
             {id !== currency ? (
                 <Skeleton width="100%" height={75} />
             ) : (

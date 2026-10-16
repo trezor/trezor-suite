@@ -30,7 +30,6 @@ import {
 
 export type TradingExchangeConfirmTradeProps = {
     receiveAddress: string;
-    extraField?: string;
     trade?: ExchangeTrade;
     approvalFlow?: boolean;
     nextStep: () => void;
@@ -140,7 +139,6 @@ export const useExchangeFlow = ({ flowType }: UseExchangeFlowProps = {}) => {
     const confirmTrade = useCallback(
         async ({
             receiveAddress,
-            extraField,
             trade,
             approvalFlow,
             nextStep,
@@ -163,7 +161,6 @@ export const useExchangeFlow = ({ flowType }: UseExchangeFlowProps = {}) => {
                     returnUrl,
                     receiveAddress,
                     account: sendAccount,
-                    extraField,
                     trade,
                     approvalFlow,
                     triggerAnalyticsTradeConfirmation,

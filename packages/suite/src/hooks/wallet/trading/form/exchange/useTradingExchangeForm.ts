@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
+import { useSelector } from 'react-redux';
 
 import {
     TRADING_EXCHANGE_FORM,
@@ -9,6 +10,7 @@ import {
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     type TradingExchangeAmountLimitProps,
     type TradingExchangeFormProps,
+    type TradingFormAccountRootState,
     hasEip712SignDataType,
     selectTradingComposedTransactionInfo,
     selectTradingExchangeAmountLimits,
@@ -26,7 +28,6 @@ import { type Account } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
 import { useSolanaSubscribeBlocks } from 'src/hooks/wallet/form/useSolanaSubscribeBlocks';
 import { useTradingAmountUnitSync } from 'src/hooks/wallet/trading/form/common/useTradingAmountUnitSync';
 import { useTradingComposeTransaction } from 'src/hooks/wallet/trading/form/common/useTradingComposeTransaction';
@@ -58,7 +59,9 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     const composedTransactionInfo = useSelector(selectTradingComposedTransactionInfo);
     const { tradingAccountKey: accountKey, cryptoId } = useTradingFormAccount(type);
 
-    const account = useSelector(state => selectTradingSendAccount(state, type));
+    const account = useSelector((state: TradingFormAccountRootState) =>
+        selectTradingSendAccount(state, type),
+    );
 
     const [showReserveBanner, setShowReserveBanner] = useState<boolean>(false);
     const [isApproval, setIsApproval] = useState<boolean>(false);
@@ -98,9 +101,9 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
     const tradingReceiveAddress = useTradingReceiveAddress({
         type: 'exchange',
         cryptoId: receiveCryptoSelect?.id,
-        nonSuiteAccount: !selectedQuote?.tags?.includes('noExternalAddress'),
+        nonSuiteAccount: false,
     });
-    const { receiveAddress, extraField } = tradingReceiveAddress;
+    const { receiveAddress } = tradingReceiveAddress;
     const isReceiveAddressFormValid =
         Object.keys(tradingReceiveAddress.form.formState.errors).length === 0;
 
@@ -192,7 +195,6 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
         useExchangeApproval({
             account,
             receiveAddress,
-            extraField,
         });
 
     const { confirmTrade } = useTradingExchangeTradeActions();

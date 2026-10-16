@@ -1,5 +1,7 @@
+import { type CoinExtraField, type CryptoId } from 'invity-api';
+
 import { type ExtendedMessageDescriptor } from '@suite/intl';
-import type { TradingType } from '@suite-common/trading';
+import { type TradingType, cryptoIdToNetwork } from '@suite-common/trading';
 import { type Network, type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
     type Output,
@@ -224,4 +226,21 @@ export const getTradingFirstOutput = (outputs: Output[] | undefined) => {
     const tokenAddress = token as TokenAddress | null;
 
     return { amount, token, tokenAddress };
+};
+
+export const getBuyReceiveExtraFieldDescription = (
+    cryptoId: CryptoId | undefined,
+    name: string,
+): CoinExtraField | undefined => {
+    const networkType = cryptoIdToNetwork(cryptoId)?.networkType;
+
+    if (networkType === 'ripple') {
+        return { name, description: name, required: false, type: 'number' };
+    }
+
+    if (networkType === 'stellar') {
+        return { name, description: name, required: false, type: 'text' };
+    }
+
+    return undefined;
 };
