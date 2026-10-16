@@ -130,6 +130,13 @@ describe('rememberAppPermissions', () => {
             expect(store.getState().connectPopup.permissions).toEqual([otherApp]);
         },
     );
+
+    it('does not remember permissions for an app with the origin null', () => {
+        const store = initStore();
+        store.dispatch(connectPopupActions.rememberAppPermissions({ ...app, origin: 'null' }));
+
+        expect(store.getState().connectPopup.permissions).toEqual([]);
+    });
 });
 
 describe('connectPopupLoadSelectAccountPageThunk — concurrent loads', () => {
