@@ -441,6 +441,16 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
 
         const { protocol, hostname, pathname, query } = parseRequestUrl(request.url);
 
+        if (!pathname) {
+            const msg = `url ${request.url} has no usable pathname`;
+            this.emitter.emit('server/error', msg);
+            this.logger.warn(msg);
+            response.statusCode = 400;
+            response.end();
+
+            return;
+        }
+
         if (query) {
             for (const key in query) {
                 if (Object.prototype.hasOwnProperty.call(query, key) && query[key] !== undefined) {
@@ -466,13 +476,6 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
         }
         request.url = formatRequestUrl({ protocol, hostname, pathname, query });
 
-        if (!pathname) {
-            const msg = `url ${request.url} could not be parsed`;
-            this.emitter.emit('server/error', msg);
-            this.logger.warn(msg);
-
-            return;
-        }
         this.logger.info(`Handling request for ${request.method} ${pathname}`);
 
         const route = this.findBestMatchingRoute(pathname, request.method);

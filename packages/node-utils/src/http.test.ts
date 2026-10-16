@@ -449,6 +449,25 @@ describe('HttpServer', () => {
         expect(res.status).toEqual(403);
     });
 
+    test('request target that cannot be parsed', async () => {
+        await server.start();
+        const address = server.getServerAddress();
+        const res = await fetch(`http://${address.address}:${address.port}//[`);
+        expect(res.status).toEqual(400);
+    });
+
+    test('request target starting with // is not routed', async () => {
+        const handler = jest.fn((_request, response) => {
+            response.end('ok');
+        });
+        server.get('/enumerate', [handler]);
+        await server.start();
+        const address = server.getServerAddress();
+        const res = await fetch(`http://${address.address}:${address.port}//enumerate`);
+        expect(res.status).toEqual(400);
+        expect(handler).not.toHaveBeenCalled();
+    });
+
     test('any registered route is active  by default and can be deactivated', async () => {
         const handler = jest.fn((_request, response) => {
             response.end('ok');
