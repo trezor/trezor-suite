@@ -12,7 +12,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 
-export const EarnApi = () => {
+export const EarnYieldApi = () => {
     const { dispatch } = useServices(injectDispatch);
     const storedValue = useSelector(selectEarnYieldWorkerBaseUrl);
     const options = useMemo(
@@ -31,8 +31,11 @@ export const EarnApi = () => {
         earnYieldWorkerBaseUrl.set(item.value);
 
         // We need somehow to invalidate current Yield API state so it re-fetches with the new base URL.
-        // Since this is debug setting, the easiest way is to just reload the app.
-        globalThis.location.reload();
+        // Since this is debug setting, the easiest way is to just reload the app, with a slight delay
+        // to let the browser save the settings first.
+        setTimeout(() => {
+            globalThis.location.reload();
+        }, 100);
     };
 
     return (
@@ -44,6 +47,7 @@ export const EarnApi = () => {
                     onChange={handleChange}
                     value={selectedValue}
                     options={options}
+                    menuAlign="end"
                 />
             }
         />

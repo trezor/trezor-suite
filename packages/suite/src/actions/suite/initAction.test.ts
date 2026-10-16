@@ -198,7 +198,6 @@ const fixtures: Fixture[] = [
             stakeDataActions.fetchStakeDataRequest.type,
             walletConnectInitThunk.pending.type,
             onSuiteReady.type,
-            stakeDataActions.fetchStakeDataFailure.type,
         ],
     },
     {
@@ -248,7 +247,6 @@ const fixtures: Fixture[] = [
             stakeDataActions.fetchStakeDataRequest.type,
             walletConnectInitThunk.pending.type,
             onSuiteReady.type,
-            stakeDataActions.fetchStakeDataFailure.type,
         ],
     },
     {
