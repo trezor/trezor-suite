@@ -6,14 +6,21 @@ import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { accountsInitialState } from '@suite-common/wallet-core';
 import * as walletUtils from '@suite-common/wallet-utils';
+import { TypedError, serializeError } from '@trezor/connect-common/src/constants/errors';
 import { mock } from '@trezor/dependency-injection';
 import { type WithServices } from '@trezor/redux-utils';
 import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { connectPopupActions } from './connectPopupActions';
-import { prepareConnectPopupReducer, selectConnectPopupCallWithState } from './connectPopupReducer';
+import { getPopupCallDeferred } from './connectPopupPromiseManager';
+import {
+    prepareConnectPopupReducer,
+    selectConnectPopupCall,
+    selectConnectPopupCallWithState,
+} from './connectPopupReducer';
 import {
     type ConnectPopupLoadSelectAccountPageThunkState,
+    connectPopupFinishCallThunk,
     connectPopupLoadSelectAccountPageThunk,
 } from './connectPopupThunks';
 
@@ -238,5 +245,19 @@ describe('connectPopupLoadSelectAccountPageThunk — concurrent loads', () => {
         const candidates =
             selectConnectPopupCallWithState(store.getState(), 'select-account')?.candidates ?? [];
         expect(candidates.map(c => c.address)).toEqual(['ADDR_ONLY']);
+    });
+});
+
+describe('connectPopupFinishCallThunk', () => {
+    it('answers a call that ended with a device error when its popup is closed', async () => {
+        const store = initStore();
+        const deferred = getPopupCallDeferred(true);
+        const error = serializeError(TypedError('Device_Disconnected'));
+        store.dispatch(connectPopupActions.setError(error));
+
+        store.dispatch(connectPopupFinishCallThunk());
+
+        await expect(deferred.promise).resolves.toEqual({ success: false, error });
+        expect(selectConnectPopupCall(store.getState())?.state).toBe('finished');
     });
 });
