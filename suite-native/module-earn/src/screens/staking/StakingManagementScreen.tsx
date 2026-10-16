@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
@@ -38,10 +38,12 @@ export const StakingManagementScreen = () => {
         dispatch(fetchAllTransactionsForAccountThunk({ accountKey, noLoading: true }));
     }, [accountKey, dispatch]);
 
-    // Screen mounts are the only stake-data refresh path after app init.
+    const refreshStakeData = useCallback(() => dispatch(initStakeDataThunk()), [dispatch]);
+
+    // Screen mounts and pull-to-refresh are the only stake-data refresh paths after app init.
     useEffect(() => {
-        dispatch(initStakeDataThunk());
-    }, [dispatch]);
+        refreshStakeData();
+    }, [refreshStakeData]);
 
     const listHeaderComponent = useMemo(
         () => <StakingManagementListHeader accountKey={accountKey} />,
@@ -67,6 +69,7 @@ export const StakingManagementScreen = () => {
                     ) : (
                         <TransactionList
                             account={account}
+                            onRefresh={refreshStakeData}
                             listHeaderComponent={listHeaderComponent}
                             filter="staking"
                         />
