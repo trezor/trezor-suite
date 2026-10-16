@@ -152,6 +152,20 @@ export const init: ModuleInit = ({
             const port = coinjoinMiddleware.getPort();
             // override default url in coinjoin settings
             settings.middlewareUrl = coinjoinMiddleware.getUrl();
+
+            // The scoring binary has to run whenever a privacy account is active, not only while
+            // mixing, because anonymity scores decide what the account may spend. Starting it here
+            // decouples it from the `enable` call below, which only happens with a coordinator
+            // configured. A failed start must not reject the instance: without scores the account
+            // ends up restricted, which the user can resolve, while a missing client would stop the
+            // account from synchronizing at all.
+            logger.debug(SERVICE_NAME, `${CLIENT_CHANNEL} binary start on port ${port}`);
+            try {
+                await synchronize(() => coinjoinMiddleware.start());
+            } catch (err) {
+                logger.error(SERVICE_NAME, `Start failed: ${err.message}`);
+            }
+
             const client = new CoinjoinClient(settings);
             client.on('log', ({ level, payload }) => {
                 if (level === 'error') {
@@ -165,6 +179,8 @@ export const init: ModuleInit = ({
                 onRequest: async (method, params) => {
                     logger.debug(SERVICE_NAME, `${CLIENT_CHANNEL} call ${method}`);
                     if (method === 'enable') {
+                        // Retry for the mixing path, where a missing binary is fatal and worth a
+                        // toast. `start` is a no-op when the service is already running.
                         logger.debug(
                             SERVICE_NAME,
                             `${CLIENT_CHANNEL} binary enable on port ${port}`,

@@ -8,6 +8,7 @@ import {
     selectFeatureConfig,
     selectIsFeatureDisabled,
 } from '@suite-common/message-system';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { getInputSize, getOutputSize } from '@trezor/coinjoin';
@@ -525,6 +526,28 @@ export const selectCurrentSessionDeadlineInfo = (
 // Return true if it's not explicitly set to false in the message-system config.
 export const selectIsPublic = (state: MessageSystemRootState) =>
     selectFeatureConfig(state, Feature.coinjoin)?.isPublic !== false;
+
+// Mixing is the one thing a privacy account cannot do on its own: the public coordinators shut down,
+// so there is nothing to register rounds with unless a tester passes a coordinator at startup
+// through `--state.wallet.coinjoin.debug.coinjoinConfigOverride.<symbol>.coordinatorUrl=<url>`
+// (see docs/features/coinjoin.md). That state patch is never persisted, so the opt-in lasts for a
+// single launch. The message-system flag stays usable as a remote kill switch on top of it.
+// Every mixing surface and every coordinator interaction keys off this predicate.
+export const selectIsMixingEnabled = (
+    state: CoinjoinRootState & MessageSystemRootState,
+    symbol: NetworkSymbol,
+) =>
+    !!selectCoinjoinDebug(state)?.coinjoinConfigOverride?.[symbol]?.coordinatorUrl &&
+    !selectIsFeatureDisabled(state, Feature.coinjoin);
+
+export const selectIsMixingEnabledByAccountKey = (
+    state: AccountsRootState & CoinjoinRootState & MessageSystemRootState,
+    accountKey: AccountKey | null,
+) => {
+    const account = selectAccountByKey(state, accountKey);
+
+    return !!account && selectIsMixingEnabled(state, account.symbol);
+};
 
 export const selectIsSessionAutostopped = (state: CoinjoinRootState, accountKey: AccountKey) => {
     const currentState = selectSessionByAccountKey(state, accountKey);

@@ -278,8 +278,11 @@ export const saveCoinjoinDebugSettingsThunk =
         extra: SaveCoinjoinDebugSettingsThunkDeps,
     ) => {
         if (!extra.services.db.isAccessible()) return;
-        const debug = selectCoinjoinDebug(getState());
-        extra.services.db.addItem('coinjoinDebugSettings', debug || {}, 'debug', true);
+        // A coordinator override is an opt-in for a single launch, passed through a `--state` patch
+        // (see docs/features/coinjoin.md). Persisting it would silently keep mixing enabled after a
+        // restart, bypassing that opt-in, so it is dropped on the way to the database.
+        const { coinjoinConfigOverride: _, ...debug } = selectCoinjoinDebug(getState()) ?? {};
+        extra.services.db.addItem('coinjoinDebugSettings', debug, 'debug', true);
     };
 
 type SaveThpCredentialsThunkState = ThpRootState;

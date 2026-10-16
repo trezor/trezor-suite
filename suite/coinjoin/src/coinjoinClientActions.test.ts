@@ -56,6 +56,12 @@ const walletSettingsReducer = prepareWalletSettingsReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
     reducers: { storageLoadWalletSettings: mockReducer() },
 });
+// Mixing, and with it every coordinator interaction, is only enabled when a coordinator url is
+// patched into the debug state at startup, see selectIsMixingEnabled.
+const MIXING_ENABLED_DEBUG = {
+    coinjoinConfigOverride: { btc: { coordinatorUrl: 'https://coordinator.example/wabisabi/' } },
+};
+
 const btcSymbol = asNetworkSymbol('btc');
 const testSymbol = asNetworkSymbol('test');
 const regtestSymbol = asNetworkSymbol('regtest');
@@ -259,6 +265,10 @@ describe('coinjoinClientActions', () => {
         const cli1 = await store.dispatch(initCoinjoinServiceThunk(btcSymbol));
         const cli2 = await store.dispatch(initCoinjoinServiceThunk(btcSymbol));
         expect(cli1).toEqual(cli2);
+        // The client is created for anonymity scoring, but without a coordinator override it is
+        // never enabled, so it does not reach out to a coordinator.
+        expect(cli1?.client.enable).not.toHaveBeenCalled();
+        expect(store.getState().wallet.coinjoin.clients[btcSymbol]?.status).toBe('unavailable');
         expect(spy.mock.calls[0]?.[0]).toMatchObject({
             symbol: 'btc',
             prison: [
@@ -293,8 +303,17 @@ describe('coinjoinClientActions', () => {
         expect(cli).toBe(undefined);
     });
 
+    it('initCoinjoinServiceThunk enables the client when a coordinator is patched in', async () => {
+        const store = initStore({ coinjoin: { debug: MIXING_ENABLED_DEBUG } } as any); // partial required state
+
+        const cli = await store.dispatch(initCoinjoinServiceThunk(btcSymbol));
+
+        expect(cli?.client.enable).toHaveBeenCalledTimes(1);
+        expect(store.getState().wallet.coinjoin.clients[btcSymbol]?.status).toBe('loaded');
+    });
+
     it('initCoinjoinServiceThunk and errors to enable', async () => {
-        const store = initStore();
+        const store = initStore({ coinjoin: { debug: MIXING_ENABLED_DEBUG } } as any); // partial required state
         const spy = jest.spyOn(CoinjoinService, 'createInstance').mockImplementationOnce(
             () =>
                 ({
@@ -310,7 +329,12 @@ describe('coinjoinClientActions', () => {
 
     fixtures.clientEvents.forEach(f => {
         it(`CoinjoinClient events: ${f.description}`, async () => {
-            const store = initStore(f.state as Wallet);
+            const state = f.state as Wallet;
+            // Client events are only subscribed to on the mixing path.
+            const store = initStore({
+                ...state,
+                coinjoin: { ...state.coinjoin, debug: MIXING_ENABLED_DEBUG },
+            } as any); // partial required state
 
             const cli = await store.dispatch(initCoinjoinServiceThunk(btcSymbol));
             cli?.client.emit(f.event as any, f.params);

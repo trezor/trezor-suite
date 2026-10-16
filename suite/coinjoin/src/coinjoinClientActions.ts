@@ -3,11 +3,7 @@ import { createAction } from '@reduxjs/toolkit';
 import { type LocksRootState, selectIsDeviceLocked } from '@suite/locks';
 import { type ModalRootState, closeModal, openModal, selectModal } from '@suite/modal';
 import { type DeviceRootState, selectDevices } from '@suite-common/device';
-import {
-    Feature,
-    type MessageSystemRootState,
-    selectIsFeatureDisabled,
-} from '@suite-common/message-system';
+import { type MessageSystemRootState } from '@suite-common/message-system';
 import { getDeviceInstances } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -41,6 +37,7 @@ import {
     selectCoinjoinAccounts,
     selectCoinjoinClients,
     selectCoinjoinDebug,
+    selectIsMixingEnabled,
     selectRoundsDurationInHours,
     selectRoundsLeftByAccountKey,
     selectRoundsNeededByAccountKey,
@@ -746,13 +743,10 @@ export const initCoinjoinServiceThunk =
             return knownService;
         }
 
-        const isCoinjoinDisabledByFeatureFlag = selectIsFeatureDisabled(
-            getState(),
-            Feature.coinjoin,
-        );
+        const isMixingEnabled = selectIsMixingEnabled(getState(), symbol);
         // retry if client was not enabled properly until now
         if (knownService && knownClient?.status === 'unavailable') {
-            if (!isCoinjoinDisabledByFeatureFlag) {
+            if (isMixingEnabled) {
                 const status = await knownService.client.enable();
                 if (status.success) {
                     dispatch(clientEnableSuccess(symbol, status));
@@ -807,7 +801,9 @@ export const initCoinjoinServiceThunk =
                 prison,
                 settings: { ...config, ...debug?.coinjoinConfigOverride?.[symbol] },
             });
-            if (isCoinjoinDisabledByFeatureFlag) {
+            // Without mixing the client is still needed for anonymity scoring, but it must not
+            // talk to a coordinator, so `enable` (status polling, round registration) is skipped.
+            if (!isMixingEnabled) {
                 dispatch(clientEnableFailed(symbol));
 
                 return service;
