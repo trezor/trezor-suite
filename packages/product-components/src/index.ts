@@ -12,9 +12,9 @@ export { DropZone, type DropZoneProps } from './components/DropZone/DropZone';
 export { EditableText, type EditableTextProps } from './components/EditableText/EditableText';
 export {
     EmojiRatingSelector,
+    type EmojiRatingSelectorOption,
     type EmojiRatingSelectorProps,
 } from './components/EmojiRatingSelector/EmojiRatingSelector';
-export { FeedbackCard, type FeedbackCardProps } from './components/FeedbackCard/FeedbackCard';
 export { FeeRate } from './components/FeeRate/FeeRate';
 export { InputWithOptions } from './components/InputWithOptions/InputWithOptions';
 export * from './components/JsonlReader/JsonlReader';

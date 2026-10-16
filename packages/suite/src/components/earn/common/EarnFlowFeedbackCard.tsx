@@ -3,6 +3,7 @@ import {
     feedbackSentEvent,
     injectDesktopAnalytics,
 } from '@suite/analytics';
+import { FeedbackCard } from '@suite/feature-feedback';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import {
     type FeedbackCategory,
@@ -11,7 +12,6 @@ import {
     sendFeedbackThunk,
 } from '@suite-common/feedback';
 import { useServices } from '@trezor/dependency-injection';
-import { FeedbackCard } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
 type EarnFlowFeedbackCardProps = {

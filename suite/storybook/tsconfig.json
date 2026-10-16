@@ -1,0 +1,19 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "include": ["."],
+    "references": [
+        { "path": "../feature-feedback" },
+        { "path": "../../packages/components" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        {
+            "path": "../../networks/network-module/network-module-types"
+        },
+        {
+            "path": "../../packages/product-components"
+        },
+        { "path": "../../packages/eslint" }
+    ]
+}

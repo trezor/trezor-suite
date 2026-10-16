@@ -16557,6 +16557,7 @@ __metadata:
   resolution: "@suite/feature-feedback@workspace:suite/feature-feedback"
   dependencies:
     "@reduxjs/toolkit": "npm:2.13.0"
+    "@storybook/react": "npm:^10.3.4"
     "@suite-common/feedback": "workspace:*"
     "@suite/experimental": "workspace:*"
     "@suite/intl": "workspace:*"
@@ -16569,6 +16570,7 @@ __metadata:
     "@types/react": "npm:19.2.14"
     react: "npm:19.2.3"
     react-redux: "npm:9.3.0"
+    storybook: "npm:^10.3.4"
     styled-components: "npm:^6.5.3"
   languageName: unknown
   linkType: soft
@@ -17026,6 +17028,35 @@ __metadata:
     react-hook-form: "npm:^7.77.0"
     react-redux: "npm:9.3.0"
     redux: "npm:^5.0.1"
+  languageName: unknown
+  linkType: soft
+
+"@suite/storybook@workspace:suite/storybook":
+  version: 0.0.0-use.local
+  resolution: "@suite/storybook@workspace:suite/storybook"
+  dependencies:
+    "@babel/preset-env": "npm:7.29.7"
+    "@babel/preset-react": "npm:^7.29.7"
+    "@babel/preset-typescript": "npm:^7.29.7"
+    "@reduxjs/toolkit": "npm:2.13.0"
+    "@storybook/addon-docs": "npm:^10.3.4"
+    "@storybook/addon-links": "npm:^10.3.4"
+    "@storybook/react": "npm:^10.3.4"
+    "@storybook/react-webpack5": "npm:^10.3.4"
+    "@suite/feature-feedback": "workspace:*"
+    "@trezor/components": "workspace:*"
+    "@trezor/dependency-injection": "workspace:*"
+    "@trezor/eslint": "workspace:*"
+    "@trezor/network-module-types": "workspace:*"
+    "@trezor/product-components": "workspace:*"
+    "@types/node": "npm:22.13.10"
+    "@types/react": "npm:19.2.14"
+    babel-loader: "npm:^10.1.1"
+    react: "npm:19.2.3"
+    react-dom: "npm:19.2.3"
+    react-redux: "npm:9.3.0"
+    storybook: "npm:^10.3.4"
+    styled-components: "npm:^6.5.3"
   languageName: unknown
   linkType: soft
 
@@ -19017,15 +19048,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/product-components@workspace:packages/product-components"
   dependencies:
-    "@babel/preset-env": "npm:7.29.7"
-    "@babel/preset-react": "npm:^7.29.7"
-    "@babel/preset-typescript": "npm:^7.29.7"
-    "@reduxjs/toolkit": "npm:2.13.0"
-    "@storybook/addon-docs": "npm:^10.3.4"
-    "@storybook/addon-links": "npm:^10.3.4"
     "@storybook/react": "npm:^10.3.4"
-    "@storybook/react-webpack5": "npm:^10.3.4"
-    "@suite-common/feedback": "workspace:*"
     "@suite-common/locale": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
     "@testing-library/dom": "npm:^10.4.2"
@@ -19049,7 +19072,6 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@types/react": "npm:19.2.14"
     "@types/zxcvbn": "npm:4.4.5"
-    babel-loader: "npm:^10.1.1"
     framer-motion: "npm:^12.33.0"
     postcss-styled-syntax: "npm:^0.7.1"
     qrcode.react: "npm:^4.2.0"

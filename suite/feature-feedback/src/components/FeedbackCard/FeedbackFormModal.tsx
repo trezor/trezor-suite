@@ -1,9 +1,8 @@
 import { type ReactNode } from 'react';
 
-import { type Rating } from '@suite-common/feedback';
+import { type Rating, ratingOptions } from '@suite-common/feedback';
 import { Column, Modal, Paragraph, Textarea } from '@trezor/components';
-
-import { EmojiRatingSelector } from '../EmojiRatingSelector/EmojiRatingSelector';
+import { EmojiRatingSelector } from '@trezor/product-components';
 
 export type FeedbackFormModalProps = {
     heading: ReactNode;
@@ -48,7 +47,7 @@ export const FeedbackFormModal = ({
         }
     >
         <Column gap={16}>
-            <EmojiRatingSelector value={rating} onChange={onRatingSelect} />
+            <EmojiRatingSelector options={ratingOptions} value={rating} onChange={onRatingSelect} />
 
             {description && <Paragraph typographyStyle="body-sm">{description}</Paragraph>}
 

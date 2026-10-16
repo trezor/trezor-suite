@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 
-import { type Rating, ratingOptions } from '@suite-common/feedback';
 import { Row, commonFocusStyles } from '@trezor/components';
 import { typography } from '@trezor/theme';
 
@@ -32,19 +31,26 @@ const Item = styled.button<{ $isSelected: boolean }>`
     }
 `;
 
-export type EmojiRatingSelectorProps = {
-    value: Rating | undefined;
-    onChange: (rating: Rating) => void;
+export type EmojiRatingSelectorOption<TValue extends string> = {
+    id: TValue;
+    emoji: string;
+};
+
+export type EmojiRatingSelectorProps<TValue extends string> = {
+    value: TValue | undefined;
+    options: ReadonlyArray<EmojiRatingSelectorOption<TValue>>;
+    onChange: (value: TValue) => void;
     'data-testid'?: string;
 };
 
-export const EmojiRatingSelector = ({
+export const EmojiRatingSelector = <TValue extends string>({
     value,
+    options,
     onChange,
     'data-testid': dataTestId,
-}: EmojiRatingSelectorProps) => (
+}: EmojiRatingSelectorProps<TValue>) => (
     <Row gap={8} flexWrap="wrap" data-testid={dataTestId}>
-        {ratingOptions.map(({ id, emoji }) => (
+        {options.map(({ id, emoji }) => (
             <Item
                 key={id}
                 $isSelected={value === id}

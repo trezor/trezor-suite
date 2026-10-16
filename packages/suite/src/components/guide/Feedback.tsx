@@ -11,6 +11,7 @@ import {
     type FeedbackType,
     type Rating,
     buildUserFeedbackData,
+    ratingOptions,
     sendFeedbackThunk,
 } from '@suite-common/feedback';
 import { Box, Button, CollapsibleBox, Select, Textarea } from '@trezor/components';
@@ -178,6 +179,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
                     <Box margin={{ bottom: 12 }}>
                         <GuideSectionHeadline id="TR_GUIDE_FEEDBACK_RATING_HEADLINE" />
                         <EmojiRatingSelector
+                            options={ratingOptions}
                             value={rating}
                             onChange={setRating}
                             data-testid="@guide/feedback/suggestion"

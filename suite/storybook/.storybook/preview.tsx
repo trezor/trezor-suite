@@ -8,7 +8,7 @@ import { ThemeProvider } from 'styled-components';
 import { intermediaryTheme } from '@trezor/components';
 import { ServicesProvider } from '@trezor/dependency-injection';
 
-import { storyServices, storyState } from '../src/components/TokenIcon/storyFixtures';
+import { storyServices, storyState } from './fixtures';
 
 const services = {
     ...storyServices,
