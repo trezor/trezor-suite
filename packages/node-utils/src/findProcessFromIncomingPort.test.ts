@@ -1,5 +1,6 @@
 import childProcess, { type ChildProcess } from 'child_process';
 import { EventEmitter } from 'events';
+import { promises as fs } from 'fs';
 import net from 'net';
 
 import { findProcessFromIncomingPort } from './findProcessFromIncomingPort';
@@ -96,12 +97,69 @@ describe('findProcessFromIncomingPort for an accepted connection', () => {
                     lsofLine('client', 300, '127.0.0.1:40000->127.0.0.1:21335 (ESTABLISHED)'),
                 ].join('\n'),
             ],
-            ['cat /proc/', '/usr/bin/client\0'],
         ]);
+        jest.spyOn(fs, 'readlink').mockResolvedValue('/usr/bin/client');
 
         const processInfo = await findProcessFromIncomingPort(40000, true, connection);
 
         expect(processInfo?.pid).toBe('300');
+    });
+
+    test('identifies a Linux process by its executable, not by the argv[0] it was started with', async () => {
+        setPlatform('linux');
+        const spawn = mockCommands([
+            [
+                'lsof',
+                'node 300 user 18u IPv4 207199 0t0 TCP 127.0.0.1:40000->127.0.0.1:21335 (ESTABLISHED)',
+            ],
+            // Answered so that an implementation reading argv[0] reports a different path
+            // instead of failing to spawn at all.
+            ['cat /proc/300/cmdline', '/usr/bin/google-chrome\0script.js\0'],
+        ]);
+        jest.spyOn(fs, 'readlink').mockResolvedValue('/usr/local/bin/node');
+
+        const processInfo = await findProcessFromIncomingPort(40000, true, connection);
+
+        expect(processInfo?.fullPath).toBe('/usr/local/bin/node');
+        // Only lsof is asked, so argv[0] is never consulted.
+        expect(spawn).toHaveBeenCalledTimes(1);
+    });
+
+    test('identifies a Linux process whose executable was replaced by the path it was installed at', async () => {
+        setPlatform('linux');
+        mockCommands([
+            [
+                'lsof',
+                'client 300 user 18u IPv4 207199 0t0 TCP 127.0.0.1:40000->127.0.0.1:21335 (ESTABLISHED)',
+            ],
+        ]);
+        jest.spyOn(fs, 'readlink').mockResolvedValue('/usr/bin/client (deleted)');
+
+        const processInfo = await findProcessFromIncomingPort(40000, true, connection);
+
+        expect(processInfo?.fullPath).toBe('/usr/bin/client');
+    });
+
+    test('keeps the Linux process lsof named when its executable cannot be read', async () => {
+        setPlatform('linux');
+        mockCommands([
+            [
+                'lsof',
+                'client 300 user 18u IPv4 207199 0t0 TCP 127.0.0.1:40000->127.0.0.1:21335 (ESTABLISHED)',
+            ],
+        ]);
+        jest.spyOn(fs, 'readlink').mockRejectedValue(
+            new Error("EACCES: permission denied, readlink '/proc/300/exe'"),
+        );
+
+        const processInfo = await findProcessFromIncomingPort(40000, true, connection);
+
+        expect(processInfo).toEqual({
+            name: 'client',
+            pid: '300',
+            fullPath: '',
+            warning: true,
+        });
     });
 
     test('matches an IPv4-mapped IPv6 address as the plain IPv4 form lsof prints', async () => {
@@ -114,8 +172,8 @@ describe('findProcessFromIncomingPort for an accepted connection', () => {
                     'client 300 user 18u IPv4 207199 0t0 TCP 127.0.0.1:40000->127.0.0.1:21335 (ESTABLISHED)',
                 ].join('\n'),
             ],
-            ['cat /proc/', '/usr/bin/client\0'],
         ]);
+        jest.spyOn(fs, 'readlink').mockResolvedValue('/usr/bin/client');
 
         const processInfo = await findProcessFromIncomingPort(40000, true, {
             remoteAddress: '::ffff:127.0.0.1',
@@ -136,8 +194,8 @@ describe('findProcessFromIncomingPort for an accepted connection', () => {
                     'client 300 user 18u IPv6 207199 0t0 TCP [::1]:40000->[::1]:21335 (ESTABLISHED)',
                 ].join('\n'),
             ],
-            ['cat /proc/', '/usr/bin/client\0'],
         ]);
+        jest.spyOn(fs, 'readlink').mockResolvedValue('/usr/bin/client');
 
         const processInfo = await findProcessFromIncomingPort(40000, true, {
             remoteAddress: '::1',
