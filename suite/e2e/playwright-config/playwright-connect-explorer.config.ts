@@ -17,6 +17,12 @@ const { currentsFixturesEnabled: _currentsFixturesEnabled, ...baseUse } = (baseC
 const config = defineConfig({
     ...baseConfig,
     testDir: '../tests/connect-explorer',
+    /*
+     * A cold `yarn connect:explorer` compiles each route on first request, which overruns
+     * Playwright's 5 s `expect` default and still fits the 90 s local test timeout. The deployed
+     * preview is a static export and is not affected.
+     */
+    expect: { timeout: 1000 * 30 },
     reporter: process.env.GITHUB_ACTION
         ? [['list'], ['github'], ['html', { open: 'never' }]]
         : [['list'], ['html', { open: 'never' }]],
