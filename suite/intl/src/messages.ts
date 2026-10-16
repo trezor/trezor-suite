@@ -3166,7 +3166,7 @@ export const messages = defineMessages({
         dynamic: true,
     },
     TR_ACCOUNT_TYPE_COINJOIN: {
-        defaultMessage: 'Coinjoin',
+        defaultMessage: 'Privacy',
         id: 'TR_ACCOUNT_TYPE_COINJOIN',
         dynamic: true,
     },
@@ -3296,17 +3296,17 @@ export const messages = defineMessages({
         defaultMessage: 'This transaction is on a testnet network',
         id: 'TR_NETWORK_TESTNET',
     },
-    TR_NETWORK_COINJOIN_BITCOIN: {
-        defaultMessage: 'Coinjoin',
-        id: 'TR_NETWORK_COINJOIN_BITCOIN',
+    TR_NETWORK_PRIVACY_BITCOIN: {
+        defaultMessage: 'Privacy',
+        id: 'TR_NETWORK_PRIVACY_BITCOIN',
     },
-    TR_NETWORK_COINJOIN_BITCOIN_TESTNET: {
-        defaultMessage: 'Coinjoin Testnet',
-        id: 'TR_NETWORK_COINJOIN_BITCOIN_TESTNET',
+    TR_NETWORK_PRIVACY_BITCOIN_TESTNET: {
+        defaultMessage: 'Privacy Testnet',
+        id: 'TR_NETWORK_PRIVACY_BITCOIN_TESTNET',
     },
-    TR_NETWORK_COINJOIN_BITCOIN_REGTEST: {
-        defaultMessage: 'Coinjoin Regtest',
-        id: 'TR_NETWORK_COINJOIN_BITCOIN_REGTEST',
+    TR_NETWORK_PRIVACY_BITCOIN_REGTEST: {
+        defaultMessage: 'Privacy Regtest',
+        id: 'TR_NETWORK_PRIVACY_BITCOIN_REGTEST',
     },
     TR_SOLANA_DEVNET_SHORTCUT_WARNING: {
         defaultMessage:
@@ -4425,18 +4425,24 @@ export const messages = defineMessages({
         defaultMessage: 'BIP44, Base58',
         dynamic: true,
     },
-    TR_ACCOUNT_TYPE_SLIP25_NAME: {
-        id: 'TR_ACCOUNT_TYPE_SLIP25_NAME',
-        defaultMessage: 'Coinjoin',
+    TR_ACCOUNT_TYPE_PRIVACY_NAME: {
+        id: 'TR_ACCOUNT_TYPE_PRIVACY_NAME',
+        defaultMessage: 'Privacy',
+    },
+    TR_ACCOUNT_TYPE_PRIVACY_ADD_ACCOUNT_NAME: {
+        id: 'TR_ACCOUNT_TYPE_PRIVACY_ADD_ACCOUNT_NAME',
+        defaultMessage: 'Privacy account (previously coinjoin)',
+        description:
+            'Name of the SLIP25 account type in the Add account dialog, where returning users need to recognize it by its former name.',
     },
     TR_ACCOUNT_TYPE_SLIP25_TECH: {
         id: 'TR_ACCOUNT_TYPE_SLIP25_TECH',
         defaultMessage: 'SLIP25, P2TR, Bech32m',
     },
-    TR_ACCOUNT_TYPE_SLIP25_DESC: {
-        id: 'TR_ACCOUNT_TYPE_SLIP25_DESC',
+    TR_ACCOUNT_TYPE_PRIVACY_DESC: {
+        id: 'TR_ACCOUNT_TYPE_PRIVACY_DESC',
         defaultMessage:
-            "On June 1st, 2024, the coinjoin feature was deactivated. Your coinjoin account and funds remain accessible, but you won't be able to initiate new coinjoin rounds.",
+            "On June 1st, 2024, the coinjoin feature was deactivated. Your Privacy account and funds remain accessible, but you can't start new coinjoin rounds.",
     },
     TOAST_QR_INCORRECT_ADDRESS: {
         id: 'TOAST_QR_INCORRECT_ADDRESS',
