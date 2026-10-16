@@ -28,7 +28,7 @@ test.describe('Send ETH on a mainnet fork', { tag: ['@T3W1', '@T3T1'] }, () => {
         await page.clock.install();
         await onboardingPage.completeOnboarding();
         await settingsPage.changeNetworks({
-            enableNetworks: [{ symbol: ethSymbol, backend: { type: 'evm-rpc', url: anvil.url } }],
+            enableNetworks: [anvil.networkToEnable],
         });
         await walletPage.openAccount({ symbol: ethSymbol });
     });

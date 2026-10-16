@@ -37,7 +37,7 @@ test.describe('stablecoin yield on a mainnet fork', { tag: ['@webOnly', '@T3W1',
         // Vault metadata and the Blockaid simulation stay mocked; the transactions are real.
         await yieldMock.start();
         await settingsPage.changeNetworks({
-            enableNetworks: [{ symbol: ethSymbol, backend: { type: 'evm-rpc', url: anvil.url } }],
+            enableNetworks: [anvil.networkToEnable],
         });
     });
 
