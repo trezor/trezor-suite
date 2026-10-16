@@ -9,7 +9,7 @@
         { "path": "../wallet-types" },
         { "path": "../../packages/connect" },
         {
-            "path": "../../networks/network-module/network-module-suite-common-types"
+            "path": "../../networks/network-module/common/common-types"
         },
         { "path": "../../packages/redux-utils" }
     ]

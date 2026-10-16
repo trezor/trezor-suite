@@ -12,7 +12,7 @@
             "path": "../network-bitcoin-types"
         },
         {
-            "path": "../../network-module/network-module-suite-common-types"
+            "path": "../../network-module/common/common-types"
         },
         {
             "path": "../../../packages/utils"

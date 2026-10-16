@@ -10,7 +10,7 @@
         { "path": "../network-ethereum-assets" },
         { "path": "../network-ethereum-types" },
         {
-            "path": "../../network-module/network-module-suite-common-types"
+            "path": "../../network-module/common/common-types"
         },
         {
             "path": "../../network-module/network-module-types"

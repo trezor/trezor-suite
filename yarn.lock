@@ -18800,9 +18800,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/network-module-suite-common-types@workspace:*, @trezor/network-module-suite-common-types@workspace:networks/network-module/network-module-suite-common-types":
+"@trezor/network-module-suite-common-types@workspace:*, @trezor/network-module-suite-common-types@workspace:networks/network-module/common/common-types":
   version: 0.0.0-use.local
-  resolution: "@trezor/network-module-suite-common-types@workspace:networks/network-module/network-module-suite-common-types"
+  resolution: "@trezor/network-module-suite-common-types@workspace:networks/network-module/common/common-types"
   dependencies:
     "@trezor/connect-common": "workspace:*"
     "@trezor/crypto-utils": "workspace:*"

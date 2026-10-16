@@ -11,6 +11,7 @@
     "workspaces": {
         "packages": [
             "networks/*/*",
+            "networks/*/*/*",
             "packages/*",
             "packages/connect-examples/*",
             "suite-cli/*",
