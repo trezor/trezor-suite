@@ -6,6 +6,7 @@ import { events } from '@suite-common/analytics';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     getYieldFlowStepSequence,
+    getYieldVaultContractAddress,
     getYieldWithdrawInputToken,
     splitYieldPendingTransaction,
     useFetchFees,
@@ -17,6 +18,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { useIsFeeRefetchDisabled } from 'src/components/wallet/Fees/CollapsibleFees/hooks/useIsFeeRefetchDisabled';
 import { useMessageSystemWrappedNative } from 'src/hooks/suite/useMessageSystemWrappedNative';
+import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
 
 import { useYieldWithdrawContext } from './useYieldWithdrawContext';
 import { YieldActionStep } from '../common/YieldActionStep';
@@ -63,6 +65,14 @@ export const YieldWithdrawForm = () => {
         variant: unwrapDisabledVariant,
     } = useMessageSystemWrappedNative('unwrap');
 
+    const {
+        isDisabled,
+        content: disabledContent,
+        variant: disabledVariant,
+    } = useMessageSystemYield('withdraw', {
+        vaultContractAddress: getYieldVaultContractAddress(vault),
+    });
+
     const { actionPendingTransaction: withdrawPendingTransaction } = splitYieldPendingTransaction(
         pendingTransaction,
         flowType,
@@ -100,6 +110,8 @@ export const YieldWithdrawForm = () => {
     const shouldCheckUnwrapAmount = !isAmountInvalidDecimals && !unwrapPendingTransaction;
 
     const handleOnWithdraw = () => {
+        if (isDisabled) return;
+
         const apyBreakdown = getApyBreakdown(vault.rewardRate?.components);
         analytics.report({
             type: events.yieldWithdrawEvent.name,
@@ -118,6 +130,8 @@ export const YieldWithdrawForm = () => {
     };
 
     const handleOnUnwrap = () => {
+        if (isDisabled) return;
+
         analytics.report({
             type: events.yieldWithdrawEvent.name,
             payload: {
@@ -230,6 +244,14 @@ export const YieldWithdrawForm = () => {
                             <Translation id="TR_EARN_YIELD_WITHDRAW_TITLE" />
                         </Text>
 
+                        {isDisabled && (
+                            <YieldDisabledBanner
+                                type="withdraw"
+                                content={disabledContent}
+                                variant={disabledVariant}
+                            />
+                        )}
+
                         {errorMessage && (
                             <Banner
                                 intent="warning"
@@ -259,6 +281,7 @@ export const YieldWithdrawForm = () => {
                                     }
                                     warning={getWithdrawWarning()}
                                     isDisabled={
+                                        isDisabled ||
                                         hasBlockingAmountIssue ||
                                         isSubmittingAction ||
                                         !!withdrawPendingTransaction
@@ -268,7 +291,7 @@ export const YieldWithdrawForm = () => {
                                     unitToggle={
                                         // Switching flow mid-submit can dispose its session before
                                         // the pending transaction is stored.
-                                        !isSubmittingAction
+                                        !isDisabled && !isSubmittingAction
                                             ? {
                                                   otherTokenSymbol: otherUnitTokenSymbol,
                                                   onClick: handleToggleWithdrawInputUnit,
@@ -317,7 +340,7 @@ export const YieldWithdrawForm = () => {
                                         onMaxClick={() => setMaxAmount(token.balance)}
                                         isSubmitting={isSubmittingAction}
                                         isSubmitDisabled={
-                                            isUnwrapDisabled || hasBlockingAmountIssue
+                                            isDisabled || isUnwrapDisabled || hasBlockingAmountIssue
                                         }
                                         warning={
                                             shouldCheckUnwrapAmount && isAmountTooHigh ? (
@@ -326,7 +349,7 @@ export const YieldWithdrawForm = () => {
                                         }
                                         pendingTransaction={unwrapPendingTransaction}
                                         onSubmit={handleOnUnwrap}
-                                        onSkip={handleOnSkipUnwrap}
+                                        onSkip={isDisabled ? undefined : handleOnSkipUnwrap}
                                         onPendingTxClick={openPendingTransaction}
                                     />
                                 </Column>

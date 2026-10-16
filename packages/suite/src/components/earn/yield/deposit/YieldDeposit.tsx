@@ -38,12 +38,16 @@ export const YieldDeposit = ({ account, vault }: YieldDepositProps) => {
     // Every step — the allowance read, the approval, the deposit calldata — needs this address,
     // so without it the flow can only fail, and even the allowance retry never succeeds.
     const hasVaultTokenContract = !!yieldDepositContextValues.token.contractAddress;
+    // A flow that is already signing or has broadcast keeps its form, so the pending transaction
+    // and the completion stay visible after the feature is disabled remotely.
+    const isFormHidden =
+        !hasVaultTokenContract || (isDisabled && !yieldDepositContextValues.hasTransactionActivity);
 
     return (
         <AllowanceContext.Provider value={allowanceContextValue}>
             <Column gap={24}>
                 <ContextMessage context={Context.getEarnYield('deposit')} />
-                {isDisabled || !hasVaultTokenContract ? (
+                {isFormHidden ? (
                     <YieldDisabledBanner
                         type="deposit"
                         content={isDisabled ? content : undefined}

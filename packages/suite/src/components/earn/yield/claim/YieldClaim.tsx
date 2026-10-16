@@ -11,6 +11,7 @@ import { type YieldAccountRewards } from '@suite-common/earn-stablecoin-api';
 import { Context } from '@suite-common/message-system';
 import {
     YIELD_FLOW_AVAILABLE_STEPS,
+    hasYieldSessionTransactionActivity,
     isYieldSupported,
     selectYieldSession,
     selectYieldTxReview,
@@ -55,6 +56,10 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
         claimSession.action.isSubmitting ||
         (!!yieldTxReview.precomposedTx && yieldTxReview.accountKey === account.key);
     const isClaiming = isClaimSubmitting || !!claimSession.action.pendingTransaction;
+    // A flow that is already signing or has broadcast keeps its form, so the pending transaction
+    // and the completion stay visible after the feature is disabled remotely.
+    const isFormHidden =
+        isDisabled && !isClaimSubmitting && !hasYieldSessionTransactionActivity(claimSession);
     const isDeviceConnected = !!device?.connected && device.available;
     const isClaimFirmwareOutdated = !isYieldSupported(device, { flowType: 'claim' });
 
@@ -82,7 +87,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
     });
 
     const handleClaim = async () => {
-        if (!accountRewards) return;
+        if (!accountRewards || isDisabled) return;
 
         if (isClaimFirmwareOutdated) {
             openFirmwareModal();
@@ -166,12 +171,14 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
                         <Text typographyStyle="headline-md" data-testid="@yield/claim/heading">
                             <Translation id="TR_EARN_YIELD_CLAIM_REWARDS" />
                         </Text>
+
+                        {isDisabled && (
+                            <YieldDisabledBanner type="claim" content={content} variant={variant} />
+                        )}
                     </>
                 )}
 
-                {isDisabled && currentStep !== 'complete' ? (
-                    <YieldDisabledBanner type="claim" content={content} variant={variant} />
-                ) : (
+                {!isFormHidden && (
                     <YieldFlowStepList
                         sequence={YIELD_FLOW_AVAILABLE_STEPS.claim}
                         currentStep={currentStep}
@@ -218,6 +225,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
                                             size="large"
                                             width="100%"
                                             isDisabled={
+                                                isDisabled ||
                                                 isRewardsLoading ||
                                                 !accountRewards?.rewards.length ||
                                                 isClaiming

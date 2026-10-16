@@ -225,6 +225,18 @@ export const isYieldSessionResumable = (session: YieldSessionState | undefined):
     return session.hasBroadcastTransaction && session.step !== 'complete';
 };
 
+/**
+ * Whether the session is signing, awaiting or has already broadcast a transaction, including a
+ * flow that completed. A remotely disabled flow in this state keeps its form rendered, so the
+ * pending transaction and the completion stay visible; only an untouched flow collapses to the
+ * disabled banner.
+ */
+export const hasYieldSessionTransactionActivity = (session: YieldSessionState): boolean =>
+    session.hasBroadcastTransaction ||
+    session.approval.isSubmitting ||
+    session.approval.modalState !== null ||
+    session.action.isSubmitting;
+
 const withSession = (
     state: YieldState,
     { flowType, flowKey }: YieldSessionActionPayload,
