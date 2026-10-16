@@ -46,7 +46,6 @@ export interface SuiteSettingsState {
     };
     language: Locale;
     torOnionLinks: boolean;
-    isCoinjoinReceiveWarningHidden: boolean;
     isDesktopSuitePromoHidden: boolean;
     debug: DebugModeOptions;
     autodetect: AutodetectSettings;
@@ -79,7 +78,6 @@ export const suiteSettingsInitialState: SuiteSettingsState = {
     },
     language: 'en-US',
     torOnionLinks: isWeb(),
-    isCoinjoinReceiveWarningHidden: false,
     isDesktopSuitePromoHidden: false,
     enabledSecurityChecks: {
         deviceAuthenticity: true,
@@ -164,12 +162,6 @@ const suiteSettingsSlice = createSliceWithExtraDeps({
         },
         setOnionLinks: (state: SuiteSettingsState, { payload }: PayloadAction<boolean>) => {
             state.torOnionLinks = payload;
-        },
-        setCoinjoinReceiveWarningHidden: (
-            state: SuiteSettingsState,
-            { payload }: PayloadAction<boolean>,
-        ) => {
-            state.isCoinjoinReceiveWarningHidden = payload;
         },
         toggleDeviceAuthenticityCheck: (
             state: SuiteSettingsState,

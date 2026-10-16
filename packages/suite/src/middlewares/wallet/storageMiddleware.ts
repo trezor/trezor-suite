@@ -25,7 +25,6 @@ import {
     selectDeviceByState,
     selectDeviceByStaticSessionId,
     selectDevices,
-    selectSelectedDevice,
 } from '@suite-common/device';
 import { discreetModeActions } from '@suite-common/discreet-mode';
 import { firmwareActions } from '@suite-common/firmware';
@@ -295,13 +294,6 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
         },
     }),
     defineRememberedDeviceHandler({
-        match: [suiteSettingsActions.setCoinjoinReceiveWarningHidden.match],
-        getDevice: (_action, state) => selectSelectedDevice(state),
-        save: (_params, deps) => {
-            deps.dispatch(storageActions.saveSuiteSettingsThunk());
-        },
-    }),
-    defineRememberedDeviceHandler({
         match: [accountGraphSuccess.match, accountGraphFail.match],
         getDevice: (action, state) =>
             selectDevices(state).find(
@@ -380,10 +372,7 @@ export const prepareStorageMiddleware = createMiddlewareWithExtraDeps<
 
     if (accountsActions.removeAccount.match(action)) {
         action.payload.forEach(
-            storageActions.removeAccountWithDependencies({
-                db: api.extra.services.db,
-                getState: api.getState,
-            }),
+            storageActions.removeAccountWithDependencies({ db: api.extra.services.db }),
         );
     }
 

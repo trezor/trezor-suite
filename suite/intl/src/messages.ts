@@ -10111,10 +10111,6 @@ export const messages = defineMessages({
         id: 'TR_COINJOIN_STEP_3_DESCRIPTION',
         defaultMessage: "Your coins will be mixed with other peoples' to achieve privacy",
     },
-    TR_COINJOIN_CEX_WARNING: {
-        id: 'TR_COINJOIN_CEX_WARNING',
-        defaultMessage: 'Exchanges may not serve you if you use coinjoin.',
-    },
     TR_ZERO_PHISHING_TOOLTIP: {
         id: 'TR_ZERO_PHISHING_TOOLTIP',
         defaultMessage:
@@ -10225,15 +10221,6 @@ export const messages = defineMessages({
     TR_ERROR: {
         id: 'TR_ERROR',
         defaultMessage: 'Error',
-    },
-    TR_COINJOIN_RECEIVE_WARNING_TITLE: {
-        id: 'TR_COINJOIN_RECEIVE_WARNING_TITLE',
-        defaultMessage: 'Good to know',
-    },
-    TR_UNECO_COINJOIN_RECEIVE_WARNING: {
-        id: 'TR_UNECO_COINJOIN_RECEIVE_WARNING',
-        defaultMessage:
-            'You can receive funds into this account and use it just like any other. However, be aware that the coinjoin feature will be discontinued as of June 1st, 2024.',
     },
     TR_UNECO_COINJOIN_AGREE: {
         id: 'TR_UNECO_COINJOIN_AGREE',
