@@ -34,16 +34,22 @@ describe('http receiver', () => {
             const address = receiver.getServerAddress();
             if (!address) return; // ts-stuff
 
-            const activated = receiver.activateRoute(path);
+            // Token-less routes such as `/status` are always active; activating them here
+            // would hide a regression that deactivates them.
+            const activated = tokenParam ? receiver.activateRoute(path) : undefined;
+            if (tokenParam && !activated) {
+                throw new Error(`Failed to activate ${path}`);
+            }
             expect(spy).toHaveBeenLastCalledWith('server/listening', {
                 port: startResult.payload.port,
                 address: '127.0.0.1',
                 family: 'IPv4',
             });
 
-            const tokenQuery = activated ? `${tokenParam}=${activated.token}` : '';
-            const separator = search ? '&' : '?';
-            const url = `http://${address.address}:${address.port}${path}${search}${separator}${tokenQuery}`;
+            const tokenQuery = activated
+                ? `${search ? '&' : '?'}${tokenParam}=${activated.token}`
+                : '';
+            const url = `http://${address.address}:${address.port}${path}${search}${tokenQuery}`;
 
             const response = await fetch(url, { method });
 
@@ -85,15 +91,25 @@ describe('http receiver', () => {
         }
     });
 
-    it('rejects request without token (auto-deactivated route)', async () => {
+    it.each([
+        { path: '/oauth', tokenParam: 'state' },
+        { path: '/buy-redirect', tokenParam: 'token' },
+        { path: '/buy-post', tokenParam: 'token' },
+        { path: '/sell-redirect', tokenParam: 'token' },
+        { path: '/exchange-redirect', tokenParam: 'token' },
+    ])('$path rejects an activated request without a valid token', async ({ path, tokenParam }) => {
         const receiver = createHttpReceiver({ logger, port: 0 });
         try {
             const startResult = await receiver.start();
             if (!startResult.success) throw new Error('start failed');
             const address = receiver.getServerAddress();
-            // /buy-redirect is registered but never activated → 404
-            const res = await fetch(`http://${address.address}:${address.port}/buy-redirect?p=foo`);
-            expect(res.status).toEqual(404);
+            // The route must be active, otherwise the 404 comes from the inactive-route check
+            // and the token gate is never reached.
+            expect(receiver.activateRoute(path)).toBeDefined();
+
+            const url = `http://${address.address}:${address.port}${path}?p=foo`;
+            expect((await fetch(url)).status).toEqual(404);
+            expect((await fetch(`${url}&${tokenParam}=invalid`)).status).toEqual(404);
         } finally {
             await receiver.stop();
         }
