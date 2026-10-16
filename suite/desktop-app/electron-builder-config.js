@@ -31,6 +31,8 @@ module.exports = {
         '!build/static/**/{favicon,icons,bin,browsers}', // copied as extraResources instead, some are platform-specific
         // usb-legacy is usb@2.17.0, which ships the whole libusb source tree next to its prebuilds.
         '!node_modules/usb-legacy/**/{libusb,libusb_config,src}', // exclude files unnecessary for runtime
+        // node-hid ships the hidapi source tree next to its prebuilds.
+        '!node_modules/node-hid/**/{hidapi,src}',
         '!node_modules/@trezor/**', // no @trezor package is a runtime dependency of this app; webpack bundles them.
     ],
     extraResources: [
