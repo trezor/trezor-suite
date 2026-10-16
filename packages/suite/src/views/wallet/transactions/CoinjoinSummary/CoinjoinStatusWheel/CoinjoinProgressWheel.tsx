@@ -11,10 +11,10 @@ import {
     startCoinjoinSessionThunk,
     stopCoinjoinSessionThunk,
 } from '@suite/coinjoin';
-import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

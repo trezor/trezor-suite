@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 
 import { TrezorLink } from '@suite/external-links';
-import { Translation } from '@suite/intl';
 import { type AccountType, type Network } from '@suite-common/wallet-config';
 import { type ChainedTransactions, createAccountKey } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { typography } from '@trezor/theme';
 
 import { TransactionItem } from 'src/components/wallet/TransactionItem/TransactionItem';

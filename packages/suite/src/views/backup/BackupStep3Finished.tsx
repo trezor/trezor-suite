@@ -1,5 +1,5 @@
 import { type BackupState, canContinue } from '@suite/backup';
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Modal, Paragraph } from '@trezor/components';
 
 import { useOnboarding } from 'src/hooks/suite';

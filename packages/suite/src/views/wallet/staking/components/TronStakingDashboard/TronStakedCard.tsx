@@ -1,7 +1,6 @@
 import { useState } from 'react';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { getTronVotedApr, useTronStakingStats } from '@suite-common/earn-staking-api';
 import {
@@ -11,6 +10,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getTronAccountTotalStakingBalance } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import {
     Button,
     Card,

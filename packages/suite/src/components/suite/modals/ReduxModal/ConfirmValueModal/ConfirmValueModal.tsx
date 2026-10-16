@@ -4,7 +4,6 @@ import { AccountLabel } from '@suite/account';
 import { Address, selectAddressLabel } from '@suite/address';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
-import { Translation, useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
 import { selectIsMetadataEnabled } from '@suite/metadata';
 import { MODAL_CONTEXT_USER, selectModalContext } from '@suite/modal';
@@ -14,6 +13,7 @@ import { getDeviceInternalModel } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import {
     Banner,
     Box,

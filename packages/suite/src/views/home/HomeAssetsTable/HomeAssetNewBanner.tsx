@@ -1,5 +1,5 @@
 import { selectIsHomeAssetTableNewBannerClosed, setFlag } from '@suite/flags';
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Box, Column, IconButton, IconCircle, Row, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { LightningIcon, XIcon } from '@trezor/icons';

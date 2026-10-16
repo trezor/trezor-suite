@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Translation, type TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { CardList, Column, Image, Row, Text } from '@trezor/components';
 import { TokenIcon, type TokenIconProps } from '@trezor/product-components';
 

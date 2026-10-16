@@ -1,8 +1,8 @@
 import { Locator, Page } from '@playwright/test';
 import type { ExchangeTrade } from 'invity-api';
 
-import { messages } from '@suite/intl';
 import type { TradingCountryCode } from '@suite-common/trading';
+import { messages } from '@suite-lego/intl';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
 import { TradingApprovalModal } from './approvalModal';

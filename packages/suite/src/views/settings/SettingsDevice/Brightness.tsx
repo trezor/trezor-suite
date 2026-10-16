@@ -1,6 +1,6 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import TrezorConnect from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
 import { SectionItem } from '@trezor/product-components';

@@ -1,5 +1,5 @@
-import { Translation } from '@suite/intl';
 import { isCrossChainTrade, selectTradingExchangeSelectedQuote } from '@suite-common/trading';
+import { Translation } from '@suite-lego/intl';
 import { Icon, Row, Spinner, Text } from '@trezor/components';
 import { ShieldCheckIcon } from '@trezor/icons';
 

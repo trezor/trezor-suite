@@ -1,6 +1,6 @@
-import { Translation } from '@suite/intl';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { convertAmountSubunitsToUnits, isNftTokenTransfer } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { type TokenTransfer } from '@trezor/blockchain-link-types';
 import { Column, H4 } from '@trezor/components';
 

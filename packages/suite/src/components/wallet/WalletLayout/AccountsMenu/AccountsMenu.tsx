@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
-import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
+import { Translation } from '@suite-lego/intl';
 import { Column, useScrollShadow } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';

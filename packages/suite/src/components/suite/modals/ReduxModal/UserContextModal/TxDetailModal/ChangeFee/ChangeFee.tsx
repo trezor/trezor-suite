@@ -1,10 +1,10 @@
 import { type ReactNode } from 'react';
 import { FormProvider } from 'react-hook-form';
 
-import { Translation } from '@suite/intl';
 import { type NetworkType, getNetwork } from '@suite-common/wallet-config';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { formatNetworkAmount, isEip1559 } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Card, Divider, InfoItem, Row, Text } from '@trezor/components';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';

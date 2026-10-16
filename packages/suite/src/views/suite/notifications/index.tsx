@@ -1,7 +1,6 @@
 import { useState } from 'react';
 
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
-import { Translation, type TranslationKey } from '@suite/intl';
 import {
     type NotificationsState,
     isTransactionNotification,
@@ -10,6 +9,7 @@ import {
     selectHasUnseenNonPhishingTransactionNotifications,
     selectNonPhishingTransactionNotifications,
 } from '@suite-common/wallet-core';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { Card, CollapsibleBox, Column, Dot, Row } from '@trezor/components';
 
 import {

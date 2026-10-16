@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { Translation } from '@suite/intl';
 import { selectIsTorError, selectTorBootstrap, torActions } from '@suite/tor';
 import { TorStatus } from '@suite/tor-types';
+import { Translation } from '@suite-lego/intl';
 import {
     Banner,
     Card,

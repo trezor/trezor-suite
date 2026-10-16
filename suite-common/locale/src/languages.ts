@@ -13,7 +13,7 @@ export type LocaleInfo = {
  * Note that Suite Native does not yet have full parity, so it has its own list: suite-native/intl/src/languages.ts
  * Meanwhile, Firmware is sourced remotely, and so are its lists of available languages (see trezor/data repository).
  *
- * If you are adding language, add it to suite/intl/package.json translations:download script too
+ * If you are adding language, add it to suite-lego/intl/package.json translations:download script too
  */
 export const LANGUAGES = {
     'en-US': { icon: '🇬🇧', name: 'English', en: 'English', type: 'official' },

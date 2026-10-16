@@ -1,7 +1,7 @@
-import { useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountDescriptor, createAccountKey } from '@suite-common/wallet-types';
+import { useTranslation } from '@suite-lego/intl';
 import { Text } from '@trezor/components';
 import { type StaticSessionId } from '@trezor/device-utils';
 import { type TypographyStyle } from '@trezor/theme';

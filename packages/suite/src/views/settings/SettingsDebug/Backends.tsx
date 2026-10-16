@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 
-import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectEnabledNetworks, selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
 import { type ConnectionStatus } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Button } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { SectionItem, TokenIcon } from '@trezor/product-components';

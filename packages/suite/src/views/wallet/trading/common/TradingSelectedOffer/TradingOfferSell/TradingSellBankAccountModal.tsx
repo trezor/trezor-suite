@@ -1,7 +1,7 @@
 import { type BankAccount } from 'invity-api';
 
-import { Translation } from '@suite/intl';
 import { sellUtils } from '@suite-common/trading';
+import { Translation } from '@suite-lego/intl';
 import { Badge, Column, Modal, RadioCard, Row, Text } from '@trezor/components';
 import { ArrowSquareOutIcon, CheckIcon } from '@trezor/icons';
 import { useAsyncClickHandler } from '@trezor/react-utils';

@@ -2,9 +2,9 @@ import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { Translation } from '@suite/intl';
 import { TRAFFIC_LIGHT_DEFAULT_OFFSET } from '@suite/macos';
 import { MODAL_CONTEXT_USER } from '@suite/modal';
+import { Translation } from '@suite-lego/intl';
 import { Box, Button, Column, Row } from '@trezor/components';
 import { isDesktop, isMacOs } from '@trezor/env-utils';
 import { XIcon } from '@trezor/icons';

@@ -1,7 +1,7 @@
 import { type MouseEvent, type ReactNode } from 'react';
 
-import { Translation } from '@suite/intl';
 import { type NetworkType } from '@suite-common/wallet-config';
+import { Translation } from '@suite-lego/intl';
 import { Button, Tooltip } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
 

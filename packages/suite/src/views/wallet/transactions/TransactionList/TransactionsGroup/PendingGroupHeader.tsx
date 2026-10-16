@@ -1,4 +1,4 @@
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { InfoSegments, Text } from '@trezor/components';
 
 type PendingGroupHeaderProps = { txsCount: number };

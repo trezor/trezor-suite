@@ -1,4 +1,4 @@
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Badge } from '@trezor/components';
 import { CheckCircleIcon, WarningCircleIcon } from '@trezor/icons';
 

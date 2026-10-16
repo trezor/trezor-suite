@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import { Translation } from '@suite/intl';
 import {
     type OtcProviderType,
     type TradingCountryCode,
     getOtcProvidersByCountry,
     useFetchOtc,
 } from '@suite-common/trading';
+import { Translation } from '@suite-lego/intl';
 import {
     Banner,
     CardList,

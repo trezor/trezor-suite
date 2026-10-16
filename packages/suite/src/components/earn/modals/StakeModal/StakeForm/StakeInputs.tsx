@@ -1,10 +1,10 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { useFormatters } from '@suite-common/formatters';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { AMOUNT_MAX_LENGTH, getStakingLimitsByNetworkSymbol } from '@suite-common/wallet-core';
 import { type StakeFormState } from '@suite-common/wallet-types';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import { Banner, Column, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { InputWithOptions } from '@trezor/product-components';

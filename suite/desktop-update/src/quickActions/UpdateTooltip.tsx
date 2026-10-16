@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
-import { Translation, type TranslationKey } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { Column, Icon } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';

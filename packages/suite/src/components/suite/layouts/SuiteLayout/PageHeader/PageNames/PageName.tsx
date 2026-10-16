@@ -1,5 +1,4 @@
 import { selectSelectedAccount } from '@suite/account';
-import { Translation } from '@suite/intl';
 import {
     injectSuiteRouterHistory,
     isAccountTabRoute,
@@ -7,6 +6,7 @@ import {
     selectRoute,
 } from '@suite/router';
 import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
+import { Translation } from '@suite-lego/intl';
 import { useServices } from '@trezor/dependency-injection';
 
 import { useSelector } from 'src/hooks/suite';

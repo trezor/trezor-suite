@@ -1,11 +1,11 @@
 import { type ReactElement, type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useDebounce } from 'react-use';
 
-import { Translation } from '@suite/intl';
 import { findAnchorTransactionPage, selectRouterAnchor } from '@suite/router';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { advancedSearchTransactions } from '@suite-common/transaction-search';
 import { groupTransactionsByDate, isPending } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Column } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

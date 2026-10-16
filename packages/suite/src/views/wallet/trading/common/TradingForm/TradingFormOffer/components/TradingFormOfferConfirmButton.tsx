@@ -1,4 +1,4 @@
-import { Translation, type TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { Button, type IconComponent } from '@trezor/components';
 import { breakpoints } from '@trezor/theme';
 

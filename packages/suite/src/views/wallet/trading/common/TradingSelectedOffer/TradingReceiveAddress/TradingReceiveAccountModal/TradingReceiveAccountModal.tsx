@@ -1,5 +1,5 @@
-import { Translation } from '@suite/intl';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { CardList, Column, Modal, Row } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';

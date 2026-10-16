@@ -1,6 +1,6 @@
-import { Translation } from '@suite/intl';
 import { selectModalRequestId } from '@suite/modal';
 import { selectDeviceButtonRequests, usePin } from '@suite-common/device';
+import { Translation } from '@suite-lego/intl';
 import { Modal } from '@trezor/components';
 import { ConfirmOnDevicePill } from '@trezor/product-components';
 

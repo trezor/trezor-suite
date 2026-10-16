@@ -1,5 +1,5 @@
-import { Translation } from '@suite/intl';
 import type { YieldFlowDisplayToken } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Card, IconButton, Row, Text } from '@trezor/components';
 import { XIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';

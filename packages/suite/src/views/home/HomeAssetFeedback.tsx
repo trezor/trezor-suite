@@ -2,13 +2,13 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { FeedbackCard } from '@suite/feature-feedback';
 import { selectIsHomeAssetTableFeedbackClosed, setFlag } from '@suite/flags';
-import { Translation } from '@suite/intl';
 import { selectShownWalletAssetKeys } from '@suite-common/assets';
 import { type Rating, buildUserFeedbackData, sendFeedbackThunk } from '@suite-common/feedback';
 import {
     formatExperimentVariantsForAnalytics,
     selectActiveExperimentsWithVariants,
 } from '@suite-common/message-system';
+import { Translation } from '@suite-lego/intl';
 import { Box, GhostContainer, Icon } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { XIcon } from '@trezor/icons';

@@ -1,5 +1,5 @@
-import type { TranslationKey } from '@suite/intl';
 import type { NetworkFeature } from '@suite-common/wallet-config';
+import type { TranslationKey } from '@suite-lego/intl';
 
 export const getCoinLabel = (
     features: NetworkFeature[],

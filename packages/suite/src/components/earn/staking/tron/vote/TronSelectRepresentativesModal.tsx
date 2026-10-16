@@ -2,10 +2,10 @@ import { useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
-import { Translation, useTranslation } from '@suite/intl';
 import { type TrxStats } from '@suite-common/earn-staking-api';
 import { injectAddressValidator } from '@suite-common/networks';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import {
     Button,
     Card,

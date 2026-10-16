@@ -1,5 +1,5 @@
-import { Translation, type TranslationKey } from '@suite/intl';
 import { EarnAnchor, isEarnYieldRowAnchor, selectRouterAnchor, useAnchor } from '@suite/router';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { Banner } from '@trezor/components';
 
 import { DashboardSection } from 'src/components/dashboard';

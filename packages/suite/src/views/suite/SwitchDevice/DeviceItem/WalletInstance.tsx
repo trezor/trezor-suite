@@ -1,7 +1,6 @@
 import { useState } from 'react';
 
 import { selectFullSelectedAccount } from '@suite/account';
-import { Translation, useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
 import { selectIsLegacyLabelingVisible, selectLabelingValueBeingEdited } from '@suite/metadata';
 import { SuiteSyncWalletDebug } from '@suite/suite-sync';
@@ -15,6 +14,7 @@ import {
     selectCurrentFiatRates,
 } from '@suite-common/wallet-core';
 import { getAllAccounts } from '@suite-common/wallet-utils';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import {
     Box,
     Card,

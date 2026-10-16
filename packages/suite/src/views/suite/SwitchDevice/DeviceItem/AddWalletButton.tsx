@@ -1,11 +1,11 @@
 import { useState } from 'react';
 
-import { Translation } from '@suite/intl';
 import { selectIsDeviceOrUiLocked } from '@suite/locks';
 import { closeModalAppThunk, gotoThunk } from '@suite/router';
 import { selectDeviceThunk } from '@suite-common/device';
 import { selectIsAnyNetworkEnabled, startAddWalletDiscoveryThunk } from '@suite-common/wallet-core';
 import { WalletType } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Button, Card, Column, IconButton, Row, Text, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { FolderOpenIcon, PlusCircleFilledIcon, PlusIcon, XIcon } from '@trezor/icons';

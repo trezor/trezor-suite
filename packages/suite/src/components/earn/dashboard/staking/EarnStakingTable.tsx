@@ -1,8 +1,8 @@
-import { Translation } from '@suite/intl';
 import { ContextMessage } from '@suite/message-system';
 import { EarnAnchor, useAnchor } from '@suite/router';
 import { Context } from '@suite-common/message-system';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { Translation } from '@suite-lego/intl';
 import { Button, Card, Column, Table } from '@trezor/components';
 import { OutlineHighlight } from '@trezor/product-components';
 

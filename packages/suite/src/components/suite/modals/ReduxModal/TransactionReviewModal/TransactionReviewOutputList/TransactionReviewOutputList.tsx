@@ -2,7 +2,6 @@ import { useEffect, useRef } from 'react';
 
 import styled from 'styled-components';
 
-import { Translation } from '@suite/intl';
 import type { DeviceRootState } from '@suite-common/device';
 import { injectGetNamedAddressSupport } from '@suite-common/networks';
 import { selectAccounts, selectSendFormReviewLastButtonCode } from '@suite-common/wallet-core';
@@ -19,6 +18,7 @@ import {
     isEvmApprovalTx,
     isEvmYieldTxByTextSignature,
 } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Column, H4 } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 

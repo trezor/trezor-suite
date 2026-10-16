@@ -1,6 +1,6 @@
 import { FormattedList } from 'react-intl';
 
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import {
     CoinVerticalIcon,
     CoinsIcon,

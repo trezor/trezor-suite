@@ -1,11 +1,11 @@
 import { type ReactNode } from 'react';
 
 import { type DesktopAnalyticsDep, events, injectDesktopAnalytics } from '@suite/analytics';
-import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { type Account } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { type IconComponent, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import {

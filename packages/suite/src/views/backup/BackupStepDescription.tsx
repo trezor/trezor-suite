@@ -1,5 +1,5 @@
 import { selectBackupStatus } from '@suite/backup';
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { isArrayMember } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';

@@ -1,9 +1,9 @@
 import { type ReactNode } from 'react';
 
-import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { type TronFlow } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Button, Column, IconCircle, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { CheckIcon } from '@trezor/icons';

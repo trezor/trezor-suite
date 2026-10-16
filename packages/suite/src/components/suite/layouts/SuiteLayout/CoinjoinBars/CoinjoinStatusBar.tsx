@@ -2,11 +2,11 @@ import styled, { css } from 'styled-components';
 
 import { selectRoundsDurationInHours, selectSessionProgressByAccountKey } from '@suite/coinjoin';
 import { type CoinjoinSession } from '@suite/coinjoin';
-import { Translation } from '@suite/intl';
 import { gotoThunk, selectRouterParams } from '@suite/router';
 import { selectDeviceThunk, selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey, type WalletParams } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { ProgressPie } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

@@ -1,5 +1,5 @@
-import { Translation } from '@suite/intl';
 import { type TrxStats } from '@suite-common/earn-staking-api';
+import { Translation } from '@suite-lego/intl';
 
 import { formatApr, getRepresentativeApr } from '../utils/voteUtils';
 

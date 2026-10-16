@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-import { Translation, type TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { Banner as BaseBanner, Card, Checkbox, Column, Text } from '@trezor/components';
 
 export interface TxSimulationBannerProps {

@@ -6,7 +6,7 @@ import {
     getAccountProgressHandle,
     isCoinjoinSupportedSymbol,
 } from '@suite/coinjoin';
-import { type TranslationKey } from '@suite/intl';
+import { type TranslationKey } from '@suite-lego/intl';
 import { type ScanProgressInfo } from '@trezor/coinjoin';
 
 import { useSelector } from 'src/hooks/suite';

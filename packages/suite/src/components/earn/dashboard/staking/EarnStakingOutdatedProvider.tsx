@@ -1,5 +1,5 @@
-import { Translation } from '@suite/intl';
 import { isApyAvailable } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Icon, Paragraph, Row } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 

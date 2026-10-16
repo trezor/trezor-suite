@@ -1,11 +1,11 @@
 import { useDevice } from '@suite/device';
-import { Translation } from '@suite/intl';
 import {
     cancelDiscoveryThunk,
     startAddWalletDiscoveryThunk,
     switchToDuplicatedWalletThunk,
 } from '@suite-common/wallet-core';
 import { type DiscoveryStatus } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Button, Column, H3, Text, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

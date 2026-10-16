@@ -1,7 +1,6 @@
 import React, { type ReactNode } from 'react';
 
 import { TrezorLink } from '@suite/external-links';
-import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import {
     type VotingDelegationOption,
     selectVotingDelegationOption,
@@ -9,6 +8,7 @@ import {
     validateCardanoDrep,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { Translation, type TranslationKey, useTranslation } from '@suite-lego/intl';
 import {
     Badge,
     type BadgeIntent,

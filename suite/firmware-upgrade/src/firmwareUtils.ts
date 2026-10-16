@@ -1,7 +1,7 @@
 import { satisfies, valid } from 'semver';
 
-import { type ExtendedMessageDescriptor } from '@suite/intl';
 import { type TrezorDevice } from '@suite-common/suite-types';
+import { type ExtendedMessageDescriptor } from '@suite-lego/intl';
 import { FirmwareType } from '@trezor/connect';
 import { DeviceModelInternal, getFirmwareVersion } from '@trezor/device-utils';
 

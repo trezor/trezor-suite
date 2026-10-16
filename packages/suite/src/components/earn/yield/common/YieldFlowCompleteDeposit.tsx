@@ -1,7 +1,7 @@
-import { Translation } from '@suite/intl';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type YieldFlowCompleteValue } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Divider, Row, Text } from '@trezor/components';
 
 import { EarnYieldApyTooltip } from 'src/components/earn/dashboard/yield/EarnYieldApyTooltip';

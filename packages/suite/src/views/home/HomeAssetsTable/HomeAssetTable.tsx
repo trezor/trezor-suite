@@ -1,6 +1,5 @@
 import { useCallback, useState } from 'react';
 
-import { Translation } from '@suite/intl';
 import {
     HOME_ASSET_ROW_LIMIT,
     getHomeAssetRowLimit,
@@ -17,6 +16,7 @@ import {
     setHomeAssetsTableGrouping,
 } from '@suite-common/wallet-core';
 import { type HomeAssetsTableGrouping } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Card, Table } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

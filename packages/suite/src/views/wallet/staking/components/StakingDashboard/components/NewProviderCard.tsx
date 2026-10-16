@@ -1,9 +1,9 @@
-import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { isCardanoStakedWithFiveBinaries, selectPoolStatsApy } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { InfoIcon } from '@trezor/icons';

@@ -269,9 +269,9 @@ jobs:
       - name: Msg-system Config Validation
         run: yarn workspace @suite-common/message-system validate-config
       - name: Translation Duplicates
-        run: yarn workspace @suite/intl translations:list-duplicates
+        run: yarn workspace @suite-lego/intl translations:list-duplicates
       - name: Translation Unused
-        run: yarn workspace @suite/intl translations:list-unused
+        run: yarn workspace @suite-lego/intl translations:list-unused
       - name: Check mobile translation source changes
         uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4
         id: native-intl-changes

@@ -3,7 +3,6 @@ import { useCallback, useEffect } from 'react';
 import { injectDesktopAnalytics } from '@suite/analytics';
 import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
 import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
-import { Translation, useTranslation } from '@suite/intl';
 import { ContextMessage } from '@suite/message-system';
 import { openModal } from '@suite/modal';
 import { events } from '@suite-common/analytics';
@@ -17,6 +16,7 @@ import {
     yieldActions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import { Banner, Button, Card, Column, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { WarningIcon } from '@trezor/icons';

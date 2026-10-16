@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { selectSelectedAccount } from '@suite/account';
-import { Translation } from '@suite/intl';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { getChangedInternalTx, getInstantStakeType } from '@suite-common/wallet-core';
 import { type StakeType, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { fromWei } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Banner } from '@trezor/components';
 import { type InternalTransfer } from '@trezor/connect';
 import { LightningIcon } from '@trezor/icons';

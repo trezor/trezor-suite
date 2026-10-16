@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useFormState } from 'react-hook-form';
 
-import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { useFormatters } from '@suite-common/formatters';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -12,6 +11,7 @@ import {
     getStakingLimitsByNetworkSymbol,
 } from '@suite-common/wallet-core';
 import { asAmountSubunit, subunitsToUnits, toFiatCurrency } from '@suite-common/wallet-utils';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import { Banner, Button, Column, Row, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { NumberInput } from '@trezor/product-components';

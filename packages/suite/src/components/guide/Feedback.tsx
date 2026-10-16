@@ -4,7 +4,6 @@ import styled from 'styled-components';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
-import { Translation } from '@suite/intl';
 import { selectRouter } from '@suite/router';
 import {
     type FeedbackCategory,
@@ -14,6 +13,7 @@ import {
     ratingOptions,
     sendFeedbackThunk,
 } from '@suite-common/feedback';
+import { Translation } from '@suite-lego/intl';
 import { Box, Button, CollapsibleBox, Select, Textarea } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { EmojiRatingSelector } from '@trezor/product-components';

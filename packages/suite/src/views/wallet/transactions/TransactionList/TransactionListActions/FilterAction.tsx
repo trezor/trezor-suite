@@ -1,7 +1,6 @@
 import { type ReactNode } from 'react';
 
 import { selectFlags, setFlag } from '@suite/flags';
-import { Translation } from '@suite/intl';
 import { selectHasActiveModal } from '@suite/modal';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -9,6 +8,7 @@ import {
     setSuspiciousTransactionsFilter,
 } from '@suite-common/wallet-core';
 import { type SuspiciousTransactionsFilter } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import {
     Badge,
     Box,

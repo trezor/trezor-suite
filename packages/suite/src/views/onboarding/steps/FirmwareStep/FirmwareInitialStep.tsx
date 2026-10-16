@@ -7,10 +7,10 @@ import {
     FirmwareWipeWarning,
     useFirmwareDesktopUpdate,
 } from '@suite/firmware-upgrade';
-import { Translation, useTranslation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { selectDevices } from '@suite-common/device';
 import { type AcquiredDevice } from '@suite-common/suite-types';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import { type ButtonProps, Card, Column, Link, Note, Row, Tooltip } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
 import { DeviceModelInternal, isBitcoinOnlyDevice } from '@trezor/device-utils';

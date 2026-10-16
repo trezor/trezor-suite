@@ -1,6 +1,6 @@
-import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { IconCircle, Link } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { ShuffleIcon } from '@trezor/icons';

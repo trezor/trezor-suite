@@ -1,7 +1,7 @@
 import { selectFullSelectedAccount } from '@suite/account';
-import { useTranslation } from '@suite/intl';
 import { selectIsLabelingAvailable } from '@suite/metadata';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { useTranslation } from '@suite-lego/intl';
 
 import { useSelector } from 'src/hooks/suite';
 

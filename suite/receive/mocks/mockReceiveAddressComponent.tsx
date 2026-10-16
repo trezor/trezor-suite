@@ -5,11 +5,11 @@ import { configureStore } from '@reduxjs/toolkit';
 import { render } from '@testing-library/react';
 import { ThemeProvider } from 'styled-components';
 
-import { IntlProviderForTests, Translation } from '@suite/intl';
 import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { IntlProviderForTests, Translation } from '@suite-lego/intl';
 import { intermediaryTheme } from '@trezor/components';
 import { ServicesProvider } from '@trezor/dependency-injection';
 

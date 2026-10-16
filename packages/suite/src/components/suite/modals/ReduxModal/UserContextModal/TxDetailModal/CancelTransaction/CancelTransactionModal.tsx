@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 
-import { Translation } from '@suite/intl';
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import {
     composeCancelTransactionThunk,
@@ -15,6 +14,7 @@ import {
     type WalletAccountTransactionWithRequiredRbfParams,
 } from '@suite-common/wallet-types';
 import { type PendingEvmNonceStatus } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Column, Modal } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

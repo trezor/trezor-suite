@@ -1,5 +1,5 @@
-import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
+import { Translation } from '@suite-lego/intl';
 import { useServices } from '@trezor/dependency-injection';
 import { CloudIcon, GearIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';

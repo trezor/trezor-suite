@@ -1,8 +1,8 @@
 import { useDevice } from '@suite/device';
 import { getSuiteFirmwareTypeString } from '@suite/firmware-upgrade';
-import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor, gotoThunk } from '@suite/router';
 import { firmwareActions } from '@suite-common/firmware';
+import { Translation } from '@suite-lego/intl';
 import { Button } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import {

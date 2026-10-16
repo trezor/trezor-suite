@@ -1,12 +1,12 @@
 import { type ReactNode } from 'react';
 
-import { useTranslation } from '@suite/intl';
 import {
     type TradingExchangeType,
     selectTradingComposedTransactionInfo,
     selectTradingDisplayComposedFee,
 } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
+import { useTranslation } from '@suite-lego/intl';
 
 import { useSelector } from 'src/hooks/suite';
 import { useTradingDetailContext } from 'src/hooks/wallet/trading/useTradingDetail';

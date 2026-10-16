@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
-import { Translation, useTranslation } from '@suite/intl';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import {
     Card,
     Column,

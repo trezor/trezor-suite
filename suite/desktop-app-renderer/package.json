@@ -17,6 +17,7 @@
     "dependencies": {
         "@sentry/electron": "^7.16.0",
         "@suite-common/react-query": "workspace:*",
+        "@suite-lego/intl": "workspace:*",
         "@suite/analytics": "workspace:*",
         "@suite/bluetooth": "workspace:*",
         "@suite/debug": "workspace:*",
@@ -25,7 +26,6 @@
         "@suite/desktop-update": "workspace:*",
         "@suite/flags": "workspace:*",
         "@suite/github": "workspace:*",
-        "@suite/intl": "workspace:*",
         "@suite/platform-encryption-electron": "workspace:*",
         "@suite/router": "workspace:*",
         "@suite/sentry": "workspace:*",

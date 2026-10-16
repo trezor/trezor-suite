@@ -2,7 +2,6 @@ import { useSelector } from 'react-redux';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
-import { Translation } from '@suite/intl';
 import {
     type TradingRootState,
     selectTradingComposedTransactionInfo,
@@ -18,6 +17,7 @@ import {
 } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Card, Column, H2, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { ArrowSquareOutIcon } from '@trezor/icons';

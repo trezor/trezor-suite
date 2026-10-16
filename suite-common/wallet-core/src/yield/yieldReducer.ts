@@ -26,7 +26,7 @@ import {
     type YieldPositionFlowType,
 } from './yieldTypes';
 
-// Message ids must exist in the desktop `suite/intl` messages — the desktop app renders
+// Message ids must exist in the desktop `suite-lego/intl` messages — the desktop app renders
 // `session.error` directly via `<Translation>`.
 export type YieldTranslationKey =
     | 'TR_EARN_YIELD_ERROR_CLAIM_REVIEW_MISMATCH'

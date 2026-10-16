@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 
-import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
 import type { NotificationEntry } from '@suite-common/toast-notifications';
+import { type ExtendedMessageDescriptor, Translation } from '@suite-lego/intl';
 import {
     Button,
     type ButtonProps,

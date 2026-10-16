@@ -2,8 +2,8 @@ import { useForm, useWatch } from 'react-hook-form';
 
 import styled, { css } from 'styled-components';
 
-import { Translation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
+import { Translation } from '@suite-lego/intl';
 import { Button, Row } from '@trezor/components';
 import { CaretLeftIcon, CaretRightIcon } from '@trezor/icons';
 import { NumberInput } from '@trezor/product-components';

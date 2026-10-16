@@ -1,6 +1,6 @@
 import { type ReactNode, useRef } from 'react';
 
-import { type TranslationKey, useTranslation } from '@suite/intl';
+import { type TranslationKey, useTranslation } from '@suite-lego/intl';
 import { Column, Skeleton } from '@trezor/components';
 import { type PrimitiveType, exhaustive } from '@trezor/type-utils';
 

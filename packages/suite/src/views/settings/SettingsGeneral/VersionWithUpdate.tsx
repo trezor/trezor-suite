@@ -8,9 +8,9 @@ import {
 } from '@suite/desktop-update';
 import { useExternalLink } from '@suite/external-links';
 import { getReleaseUrl } from '@suite/github';
-import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { isDevEnv } from '@suite-common/suite-utils';
+import { Translation } from '@suite-lego/intl';
 import { Button, Row } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';

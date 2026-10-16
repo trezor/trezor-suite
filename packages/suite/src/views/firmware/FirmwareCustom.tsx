@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { useFirmwareDesktopUpdate } from '@suite/firmware-upgrade';
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 
 import { FirmwareLowBatteryModal } from 'src/components/firmware/FirmwareLowBatteryModal';
 import { SelectCustomFirmware } from 'src/components/firmware/SelectCustomFirmware';

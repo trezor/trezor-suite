@@ -1,4 +1,3 @@
-import { Translation, useTranslation } from '@suite/intl';
 import { isApprovalFlowSupported, selectSelectedDevice } from '@suite-common/device';
 import { type NetworkType } from '@suite-common/wallet-config';
 import {
@@ -18,6 +17,7 @@ import {
     isEvmYieldTxByTextSignature,
     isTestnet,
 } from '@suite-common/wallet-utils';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import type { TokenInfo } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 

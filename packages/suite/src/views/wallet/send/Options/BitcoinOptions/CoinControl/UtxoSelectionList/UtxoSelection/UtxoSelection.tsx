@@ -1,7 +1,6 @@
 import { type MouseEventHandler, type ReactNode } from 'react';
 
 import { Address, selectAddressLabel } from '@suite/address';
-import { Translation, useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
 import {
     selectIsLegacyLabelingVisible,
@@ -12,6 +11,7 @@ import { selectIsSuiteSyncEnabled, selectSuiteSyncOutputLabels } from '@suite-co
 import { type SuiteSyncOutput } from '@suite-common/suite-sync-storage';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { formatNetworkAmount, isSameUtxo } from '@suite-common/wallet-utils';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import {
     Checkbox,
     Column,

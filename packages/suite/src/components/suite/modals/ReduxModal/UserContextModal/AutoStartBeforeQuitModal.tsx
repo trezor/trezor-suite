@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { injectDesktopApi } from '@suite/desktop-app-api';
-import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
+import { Translation } from '@suite-lego/intl';
 import { Card, Checkbox, Column, Modal, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

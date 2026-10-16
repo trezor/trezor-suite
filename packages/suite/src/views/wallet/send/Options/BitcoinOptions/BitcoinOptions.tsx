@@ -1,6 +1,6 @@
 import { useWatch } from 'react-hook-form';
 
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Button, Column, Row, Tooltip } from '@trezor/components';
 import { CircleDashedIcon, PlusIcon } from '@trezor/icons';
 

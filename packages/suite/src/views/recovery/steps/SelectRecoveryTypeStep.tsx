@@ -1,5 +1,5 @@
-import { Translation } from '@suite/intl';
 import { type RecoveryInputType, recoveryInputTypes } from '@suite/recovery';
+import { Translation } from '@suite-lego/intl';
 import { Card, Column, Grid, H4, Icon, Paragraph, RadioCard, Row } from '@trezor/components';
 import { RecoverySeedFilledIcon, TrezorModelOneFilledIcon } from '@trezor/icons';
 

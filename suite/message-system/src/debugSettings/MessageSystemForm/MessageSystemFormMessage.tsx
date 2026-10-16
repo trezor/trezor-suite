@@ -1,12 +1,12 @@
 import { useCallback, useState } from 'react';
 
-import { useTranslation } from '@suite/intl';
 import {
     CATEGORY_OPTIONS,
     messageSystemActions,
     useConditionControls,
     useMessageSystemMessageForm,
 } from '@suite-common/message-system';
+import { useTranslation } from '@suite-lego/intl';
 import { Column, Modal, Row } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

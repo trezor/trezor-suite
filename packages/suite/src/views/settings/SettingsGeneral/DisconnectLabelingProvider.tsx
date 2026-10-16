@@ -1,10 +1,10 @@
-import { Translation } from '@suite/intl';
 import {
     disconnectProviderThunk,
     selectMetadata,
     selectSelectedProviderForLabels,
 } from '@suite/metadata';
 import { Anchor, SettingsAnchor } from '@suite/router';
+import { Translation } from '@suite-lego/intl';
 import { useServices } from '@trezor/dependency-injection';
 import { SectionItem } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';

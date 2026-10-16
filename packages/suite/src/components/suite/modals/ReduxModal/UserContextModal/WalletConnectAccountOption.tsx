@@ -2,11 +2,11 @@ import { memo } from 'react';
 
 import { AccountLabel } from '@suite/account';
 import { Address } from '@suite/address';
-import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { selectAccountTokens, selectBaseCurrency } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { BASE_CURRENCY_ZERO, isUtxoBased } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Badge, Column, Row, Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 

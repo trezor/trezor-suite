@@ -4,10 +4,10 @@ import { type CryptoId, type DexApprovalType } from 'invity-api';
 
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { useDevice } from '@suite/device';
-import { Translation, type TranslationKey } from '@suite/intl';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { isAllowanceUnlimited } from '@suite-common/wallet-utils';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import {
     Banner,
     Card,

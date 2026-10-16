@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
-import { useDateFnsLocale } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
+import { useDateFnsLocale } from '@suite-lego/intl';
 
 export const useConnectedDateFnsLocale = () => {
     const locale = useSelector(selectLanguage);

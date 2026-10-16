@@ -1,8 +1,8 @@
-import { Translation } from '@suite/intl';
 import { SettingsAnchor, gotoThunk } from '@suite/router';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectIsNetworkReserveEnabled } from '@suite-common/wallet-core';
 import { getNetworkReserve } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Banner } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

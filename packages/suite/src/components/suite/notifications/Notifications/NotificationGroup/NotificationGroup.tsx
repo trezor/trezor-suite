@@ -1,5 +1,5 @@
-import { Translation, type TranslationKey } from '@suite/intl';
 import { getSeenAndUnseenNotifications } from '@suite-common/toast-notifications';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { Column, H2, H4, IconCircle, Paragraph } from '@trezor/components';
 import { BellZIcon } from '@trezor/icons';
 

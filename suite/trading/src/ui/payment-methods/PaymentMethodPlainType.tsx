@@ -1,8 +1,8 @@
-import { Translation } from '@suite/intl';
 import {
     TRADING_DEFAULT_PAYMENT_METHOD,
     type TradingPaymentMethodType,
 } from '@suite-common/trading';
+import { Translation } from '@suite-lego/intl';
 import { Text } from '@trezor/components';
 
 interface PaymentMethodPlainTypeProps {

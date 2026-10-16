@@ -1,12 +1,12 @@
 import { type UseFormSetValue } from 'react-hook-form';
 
-import { Translation, useTranslation } from '@suite/intl';
 import {
     TRADING_FORM_COUNTRY_SUBDIVISION_SELECT,
     type TradingCountryOption,
     type TradingCountrySubdivisionOption,
     useCountrySubdivisionFilteredData,
 } from '@suite-common/trading';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import { CardList, Column, Icon, Input, Modal, Paragraph, Text } from '@trezor/components';
 import { MagnifyingGlassIcon } from '@trezor/icons';
 

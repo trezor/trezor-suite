@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Button, Icon, Paragraph, Row, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { isMacOs } from '@trezor/env-utils';

@@ -3,8 +3,8 @@ import { useIntl } from 'react-intl';
 
 import { type ExchangeTrade } from 'invity-api';
 
-import { Translation } from '@suite/intl';
 import { formatSlippagePercent } from '@suite-common/trading';
+import { Translation } from '@suite-lego/intl';
 import { InfoItem, Text, TextButton, Tooltip } from '@trezor/components';
 import { PencilSimpleIcon } from '@trezor/icons';
 

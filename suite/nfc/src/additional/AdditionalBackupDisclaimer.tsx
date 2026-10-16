@@ -1,6 +1,6 @@
 import { type Dispatch, type SetStateAction } from 'react';
 
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Card, Checkbox, Column, H4, Paragraph } from '@trezor/components';
 
 type AdditionalBackupDisclaimerProps = {

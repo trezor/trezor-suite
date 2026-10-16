@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
-import { Translation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
+import { Translation } from '@suite-lego/intl';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 

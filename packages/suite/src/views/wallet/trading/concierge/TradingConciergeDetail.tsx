@@ -1,5 +1,5 @@
 import { selectIsDeviceCompromised } from '@suite/authenticity-checks';
-import { Translation, type TranslationId } from '@suite/intl';
+import { Translation, type TranslationId } from '@suite-lego/intl';
 import {
     Card,
     Column,

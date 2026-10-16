@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react';
 
-import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { selectAllAccountsToList } from '@suite-common/wallet-core';
@@ -12,6 +11,7 @@ import {
     switchSelectedAccountThunk,
     walletConnectActions,
 } from '@suite-common/walletconnect';
+import { Translation } from '@suite-lego/intl';
 import { Column, Modal, type Option, Select } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

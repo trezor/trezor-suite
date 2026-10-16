@@ -1,8 +1,8 @@
-import { Translation } from '@suite/intl';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { CARDANO_STAKING_REGISTRATION_DEPOSIT } from '@suite-common/wallet-constants';
 import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Card, Paragraph, Row } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
 

@@ -2,7 +2,6 @@ import { useMemo } from 'react';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectFlags, setFlag } from '@suite/flags';
-import { Translation } from '@suite/intl';
 import { gotoThunk, selectRouter } from '@suite/router';
 import { useFormatters } from '@suite-common/formatters';
 import { type NetworkType, getDisplaySymbol } from '@suite-common/wallet-config';
@@ -15,6 +14,7 @@ import {
     selectAccountIsStakingActive,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Banner } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { PiggyBankIcon, XIcon } from '@trezor/icons';

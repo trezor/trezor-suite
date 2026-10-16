@@ -1,6 +1,6 @@
-import { Translation } from '@suite/intl';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Column, InfoItem, Paragraph } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';

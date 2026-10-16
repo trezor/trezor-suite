@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 
 import { injectDesktopAnalytics } from '@suite/analytics';
-import { Translation, type TranslationKey } from '@suite/intl';
 import { EarnAnchor, gotoThunk } from '@suite/router';
 import { events as sharedEvents } from '@suite-common/analytics';
 import { type Account } from '@suite-common/wallet-types';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { Badge, type BadgeProps, commonFocusStyles } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { TrendUpIcon } from '@trezor/icons';

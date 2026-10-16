@@ -1,4 +1,3 @@
-import { type TranslationKey } from '@suite/intl';
 import { type AnalyticsSharedEvents } from '@suite-common/analytics';
 import { type DeviceRootState, deviceInitialState } from '@suite-common/device';
 import { type NetworksRootState } from '@suite-common/networks';
@@ -45,6 +44,7 @@ import {
     stellarContractTokensInitialState,
 } from '@suite-common/wallet-core';
 import { type FeesState } from '@suite-common/wallet-types';
+import { type TranslationKey } from '@suite-lego/intl';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { PROTO } from '@trezor/connect';
 import { asGetter } from '@trezor/dependency-injection';

@@ -4,9 +4,9 @@ import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 import { type ThunkDispatch } from 'redux-thunk';
 
 import { useDevice } from '@suite/device';
-import { Translation, type TranslationKey } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { H3, Modal, Paragraph, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { ShieldWarningIcon } from '@trezor/icons';

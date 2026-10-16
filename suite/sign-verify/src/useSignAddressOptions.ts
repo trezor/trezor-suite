@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 
-import { type ExtendedMessageDescriptor, useTranslation } from '@suite/intl';
 import { type Account, type ReceiveInfo } from '@suite-common/wallet-types';
 import { getStakingPath } from '@suite-common/wallet-utils';
+import { type ExtendedMessageDescriptor, useTranslation } from '@suite-lego/intl';
 
 export type AddressItem = {
     label: string;

@@ -12,7 +12,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@suite/intl": "workspace:*",
+        "@suite-lego/intl": "workspace:*",
         "@suite/settings": "workspace:*",
         "@suite/tor": "workspace:*",
         "@trezor/components": "workspace:*",

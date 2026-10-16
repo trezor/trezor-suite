@@ -2,7 +2,7 @@ import React from 'react';
 
 import styled from 'styled-components';
 
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Badge, Banner, Button, Text } from '@trezor/components';
 import { HourglassIcon, RepeatIcon } from '@trezor/icons';
 import { useClickCooldown } from '@trezor/react-utils';

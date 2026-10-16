@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
-import { Translation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { ThpPairingFailedForFirmwareInstallation, startThpSessionThunk } from '@suite/thp';
+import { Translation } from '@suite-lego/intl';
 import { Column, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { PlugsConnectedIcon } from '@trezor/icons';

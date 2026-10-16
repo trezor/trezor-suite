@@ -1,4 +1,4 @@
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Button, Column, Divider, H2, Image, Paragraph, Row } from '@trezor/components';
 
 import { SecurityCheckLayout } from '../../suite/SecurityCheck/components/SecurityCheckLayout';

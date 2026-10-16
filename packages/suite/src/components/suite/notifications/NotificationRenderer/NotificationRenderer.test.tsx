@@ -1,13 +1,12 @@
-import '@suite-common/test-utils/globalOverrides';
-
 import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
-import { Translation, type TranslationKey } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { mockNetworkIcon } from '@suite-common/networks/mocks';
 import { createTestCompositionRoot, fireEvent, screen } from '@suite-common/test-utils';
+import '@suite-common/test-utils/globalOverrides';
 import { type NotificationEntry } from '@suite-common/toast-notifications';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { PiggyBankIcon } from '@trezor/icons';
 
 import { type AppState } from 'src/reducers/store';

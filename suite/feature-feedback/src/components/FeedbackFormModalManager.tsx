@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type FeedbackFeatureName, experimentalFeedbackFeatureSet } from '@suite/experimental';
-import { Translation, useTranslation } from '@suite/intl';
 import {
     type FeatureFeedbackRootState,
     type Rating,
@@ -10,6 +9,7 @@ import {
     selectPendingFeedbackFeature,
     sendFeedbackThunk,
 } from '@suite-common/feedback';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import { useServices } from '@trezor/dependency-injection';
 import { SmileyIcon } from '@trezor/icons';
 import { SidebarBanner } from '@trezor/product-components';

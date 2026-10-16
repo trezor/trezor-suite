@@ -1,5 +1,5 @@
 import { useDevice } from '@suite/device';
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Modal } from '@trezor/components';
 
 type LowBatteryModalProps = {

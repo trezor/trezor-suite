@@ -4,7 +4,7 @@ import { act, renderHook, waitFor } from '@testing-library/react';
 
 import { isWeb } from '@trezor/env-utils';
 
-jest.mock('@suite/intl', () => ({
+jest.mock('@suite-lego/intl', () => ({
     Translation: ({ id }: any) => id,
 }));
 

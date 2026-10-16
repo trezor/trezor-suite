@@ -1,4 +1,4 @@
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { BasicName } from 'src/components/suite/layouts/SuiteLayout/PageHeader/PageNames/BasicName';

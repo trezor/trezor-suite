@@ -1,12 +1,12 @@
 import { useSelector } from 'react-redux';
 
 import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
-import { useTranslation } from '@suite/intl';
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import {
     type WithSuiteSyncAndDeviceState,
     selectSuiteSyncInteraction,
 } from '@suite-common/suite-sync';
+import { useTranslation } from '@suite-lego/intl';
 import { type StaticSessionId } from '@trezor/connect';
 import { exhaustive } from '@trezor/type-utils';
 

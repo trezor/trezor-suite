@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { Translation } from '@suite/intl';
 import { useWalletLabel } from '@suite/wallet';
 import { type TrezorDevice } from '@suite-common/suite-types';
+import { Translation } from '@suite-lego/intl';
 import { TOOLTIP_DELAY_LONG, TruncateWithTooltip } from '@trezor/components';
 import { LinkBreakIcon, LinkIcon } from '@trezor/icons';
 

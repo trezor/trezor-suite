@@ -2,7 +2,6 @@ import { memo, useMemo } from 'react';
 
 import { useDevice } from '@suite/device';
 import { selectFlags, setFlag } from '@suite/flags';
-import { Translation } from '@suite/intl';
 import { networksCollection } from '@suite-common/wallet-config';
 import {
     selectAllAccountsToList,
@@ -11,6 +10,7 @@ import {
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
 import { isAccountFailed } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import {
     Card,
     Collapsible,

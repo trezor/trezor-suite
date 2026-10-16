@@ -1,4 +1,4 @@
-import { TranslationKey } from '@suite/intl';
+import { TranslationKey } from '@suite-lego/intl';
 
 export type TradeStatusPhase = {
     status: string;

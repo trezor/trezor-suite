@@ -1,7 +1,7 @@
-import { Translation } from '@suite/intl';
 import { type EarnFlow } from '@suite-common/suite-types/src/staking';
 import { selectPoolStatsApy } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { CollapsibleBox, Column, H3 } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';

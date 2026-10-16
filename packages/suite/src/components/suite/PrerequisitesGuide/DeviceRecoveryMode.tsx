@@ -1,8 +1,8 @@
 import { type MouseEventHandler } from 'react';
 
 import { useDevice } from '@suite/device';
-import { Translation } from '@suite/intl';
 import { selectRecoveryStatus } from '@suite/recovery';
+import { Translation } from '@suite-lego/intl';
 import { Banner } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { TrezorBodyIcon } from '@trezor/icons';

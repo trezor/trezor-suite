@@ -1,8 +1,8 @@
 import { useDevice } from '@suite/device';
 import { LearnMoreButton } from '@suite/external-links';
-import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor, gotoThunk } from '@suite/router';
 import { getCheckBackupUrl } from '@suite-common/suite-utils';
+import { Translation } from '@suite-lego/intl';
 import { useServices } from '@trezor/dependency-injection';
 import { SectionItem } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';

@@ -1,5 +1,4 @@
 import { HiddenPlaceholder } from '@suite/discreet-mode';
-import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { getTxAnchor, gotoThunk, selectRouteName, selectRouterApp } from '@suite/router';
 import { selectDeviceThunk, selectDevices, selectSelectedDevice } from '@suite-common/device';
@@ -17,6 +16,7 @@ import {
     getConfirmations,
     isStakeTypeTx,
 } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Row } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import {

@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectIsPublic } from '@suite/coinjoin';
 import { selectIsDebugModeActive } from '@suite/debug';
-import { Translation } from '@suite/intl';
 import { preserveModal } from '@suite/modal';
 import { selectIsTestnetNetworksEnabled } from '@suite/settings';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
@@ -23,6 +22,7 @@ import {
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
 import { getAvailableAccountTypes, prepareNewAccountPayload } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Box, Column, Icon, Modal, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';

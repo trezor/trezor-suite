@@ -1,5 +1,5 @@
 import { useDevice } from '@suite/device';
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { ArrowsClockwiseIcon, TrezorBodyIcon } from '@trezor/icons';
 
 import { TroubleshootingTips } from 'src/components/suite/troubleshooting/TroubleshootingTips';

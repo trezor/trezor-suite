@@ -1,6 +1,6 @@
 import { HiddenPlaceholder } from '@suite/discreet-mode';
-import { Translation } from '@suite/intl';
 import { type TokenSymbol } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Column, Paragraph } from '@trezor/components';
 
 import { EarnRewardsAmount } from '../common/EarnRewardsAmount';

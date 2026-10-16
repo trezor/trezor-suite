@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
-import { Translation } from '@suite/intl';
 import {
     TRADING_FORM_PAYMENT_METHOD_SELECT,
     TRADING_FORM_PROVIDER_SELECT,
@@ -9,6 +8,7 @@ import {
     type TradingTradeType,
     selectTradingSellOfferQuotes,
 } from '@suite-common/trading';
+import { Translation } from '@suite-lego/intl';
 import { Box, Modal } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';

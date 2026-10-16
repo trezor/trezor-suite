@@ -1,6 +1,6 @@
-import { type TranslationKey } from '@suite/intl';
 import { type Account, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
+import { type TranslationKey } from '@suite-lego/intl';
 import { BigNumber } from '@trezor/utils';
 
 import { useCancelTxContext } from 'src/hooks/wallet/useCancelTxContext';

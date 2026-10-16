@@ -1,5 +1,5 @@
-import { Translation } from '@suite/intl';
 import { type WordCount, wordCounts } from '@suite/recovery';
+import { Translation } from '@suite-lego/intl';
 import { Card, Column, Grid, H4, Paragraph, RadioCard } from '@trezor/components';
 
 type SelectWordCountStepProps = {

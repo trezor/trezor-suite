@@ -1,6 +1,6 @@
-import { Translation } from '@suite/intl';
 import { selectAccountIsStakingActive } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Column, Row, TextButton } from '@trezor/components';
 import { QuestionIcon } from '@trezor/icons';
 

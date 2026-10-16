@@ -1,6 +1,6 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { useTranslation } from '@suite/intl';
 import { useDiscreetMode } from '@suite-common/discreet-mode';
+import { useTranslation } from '@suite-lego/intl';
 import { Row, ShortcutBadge } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { EyeIcon, EyeSlashIcon } from '@trezor/icons';

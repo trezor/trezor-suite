@@ -2,8 +2,8 @@ import { type ReactNode, forwardRef } from 'react';
 
 import styled, { css } from 'styled-components';
 
-import { Translation } from '@suite/intl';
 import { type BackupType } from '@suite-common/suite-types';
+import { Translation } from '@suite-lego/intl';
 import { Icon, Radio, Row, Text, Tooltip, variables } from '@trezor/components';
 import { CaretDownIcon, RecoverySeedIcon } from '@trezor/icons';
 
