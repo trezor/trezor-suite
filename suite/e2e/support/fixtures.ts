@@ -5,6 +5,7 @@ import { checkEvoluRelayServerRunning } from '@suite-common/e2e-evolu-client';
 import type { PerfMetrics } from '@trezor/perf-e2e';
 
 import { AnalyticsFixture, AnalyticsHelper } from './analytics';
+import { AnvilFork } from './anvil';
 import { ClipboardFixture } from './clipboard';
 import { isDesktopProject } from './common';
 import { databaseTabFixture } from './databaseTabFixture';
@@ -68,6 +69,7 @@ type Fixtures = {
     tradingStore: TradingStoreFixture;
     metadataMock: MetadataMock;
     blockbookMock: BlockbookMock;
+    anvil: AnvilFork;
     firmwareReleaseConfigMock: FirmwareReleaseConfigMock;
     solanaStakingMock: SolanaStakingMock;
     tradingMock: TradingMock;
@@ -163,6 +165,12 @@ const test = suiteBaseTest.extend<Fixtures>({
         const blockbookMock = new BlockbookMock();
         await use(blockbookMock);
         blockbookMock.stop();
+    },
+    anvil: async ({}, use) => {
+        const anvil = new AnvilFork();
+        await anvil.start();
+        await use(anvil);
+        await anvil.stop();
     },
     firmwareReleaseConfigMock: async ({ page, device }, use) => {
         const firmwareReleaseConfigMock = new FirmwareReleaseConfigMock(page, device);
