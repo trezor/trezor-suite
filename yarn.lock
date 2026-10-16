@@ -12385,7 +12385,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     ajv: "npm:^8.20.0"
     jws: "npm:^4.0.1"
-    toml: "npm:^4.1.2"
+    toml: "npm:^5.0.0"
     zod: "npm:4.6.5"
   languageName: unknown
   linkType: soft
@@ -47267,10 +47267,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"toml@npm:^4.1.2":
-  version: 4.1.2
-  resolution: "toml@npm:4.1.2"
-  checksum: 10/a873b3b5a0f78f599819a09fa0ebb3e05db527e88b3a66440109fd75eb855bc040ec942ca992636c4489ea1cd81a91e087674095cce224d3fb062f551b5277bb
+"toml@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "toml@npm:5.0.0"
+  checksum: 10/552aab0eee603c3590ecd51bbe861acaeacd328bf936aced185697fd1658b58aff2a5a1932b38f544fee27c47a0c24a5ea430ef80516d562b6488e391cc98b9a
   languageName: node
   linkType: hard
 
