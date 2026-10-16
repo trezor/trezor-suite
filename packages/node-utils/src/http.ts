@@ -442,7 +442,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
         const { protocol, hostname, pathname, query } = parseRequestUrl(request.url);
 
         if (!pathname) {
-            const msg = `url ${request.url} could not be parsed`;
+            const msg = `url ${request.url} has no usable pathname`;
             this.emitter.emit('server/error', msg);
             this.logger.warn(msg);
             response.statusCode = 400;
