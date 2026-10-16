@@ -84,6 +84,44 @@ export const resolveActiveOrLatestPopupCall = (
     (activeDeferred ?? latestPopupCall)?.resolve(response);
 };
 
+// Popup calls that have started, keyed by the callId a cancel names. A call is registered before
+// its `__info` round-trip, i.e. before it reaches Redux as the active call, so that a cancel can
+// reach it during that window — the stored call is then still the call before it, which lingers as
+// `finished` until the modal teardown clears it.
+type StartedPopupCall = { callId: string; responseId: string | undefined; aborted: boolean };
+
+const startedPopupCalls = new Map<string, StartedPopupCall>();
+// The call that started most recently, which a cancel without a callId falls back to.
+let latestStartedPopupCall: StartedPopupCall | undefined;
+
+export const registerStartedPopupCall = (callId: string, responseId: string | undefined) => {
+    const startedCall: StartedPopupCall = { callId, responseId, aborted: false };
+    startedPopupCalls.set(callId, startedCall);
+    latestStartedPopupCall = startedCall;
+};
+
+export const unregisterStartedPopupCall = (callId: string) => {
+    startedPopupCalls.delete(callId);
+    if (latestStartedPopupCall?.callId === callId) latestStartedPopupCall = undefined;
+};
+
+/** The started call a cancel ends: the one it names, or the latest one when it names none. */
+export const getCancelledStartedPopupCall = (callId: string | undefined) =>
+    callId ? startedPopupCalls.get(callId) : latestStartedPopupCall;
+
+/**
+ * Marks a started call as cancelled. Core can only abort a call it already has a method for, so a
+ * call that is still in its `__info` round-trip or waiting for the device is ended by this flag,
+ * which its thunk checks before it asks the device.
+ */
+export const abortStartedPopupCall = (callId: string) => {
+    const startedCall = startedPopupCalls.get(callId);
+    if (startedCall) startedCall.aborted = true;
+};
+
+export const isStartedPopupCallAborted = (callId: string) =>
+    !!startedPopupCalls.get(callId)?.aborted;
+
 // Deferred for the permission request
 const permissionDeferredWrapper = createDeferredWrapper('popup-permission');
 export const getPermissionDeferred: GetDeferred<void> = permissionDeferredWrapper.getDeferred;
