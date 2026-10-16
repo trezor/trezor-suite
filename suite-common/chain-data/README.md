@@ -225,24 +225,60 @@ Sui is the next family. It needs no change to the contracts above:
   through `send.getFeeInfo`.
 
 Still to edit for any new family: the `networkType` branches in the transaction review modal and
-`buttonRequestMiddleware`, and `wallet-utils` (roadmap phase 7).
+`buttonRequestMiddleware`, and `wallet-utils` (roadmap phase 9).
 
 ## Roadmap
 
-| #   | Phase                                                                                                                   | Exit criterion                                           |
-| --- | ----------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
-| 1   | Staking (Ethereum, Solana, Cardano, Tron) and token values in the totals                                                | Flagged total equals the legacy total                    |
-| 2   | Sync: invalidator wired to Connect block and notification events; `network.subscribe`; legacy refresh off when flagged  | No double fetching; `NETWORK_SYNC_INTERVALS` removed     |
-| 3   | Discovery: `network.discoverAccounts` returns chain accounts; Redux persists identities only (`PortfolioAccount` slice) | Redux accounts hold no balances or tokens                |
-| 4   | Transactions: list, detail, notifications done; export, graph, staking and send readers remain                          | Redux transactions slice is legacy only                  |
-| 5   | Send: desktop send pipeline and EVM nonce done; staking, yield, WalletConnect and native remain                         | No network-type switches in `sendFormThunks`             |
-| 6   | Done: every network family is a chain network                                                                           | The composition switch is exhaustive                     |
-| 7   | Remove network-type switches from `wallet-utils` and the other hotspots                                                 | Lint bans network-type branching outside composition     |
-| 8   | Persistence for remembered wallets, with the same consent as Redux storage                                              | A remembered wallet works offline without Redux balances |
-| 9   | Native: `createNativeChainNetworks` from the same factories                                                             | The mobile account list reads chain data                 |
-| 10  | Remove the flag, Redux balance fields, fiat-rate thunks and `useTotalFiatBalance`                                       | The legacy path is gone                                  |
-| 11  | Runtime networks: tokens and history over JSON-RPC, their own account pages                                             | A runtime network reads like a built-in one              |
+Phases 1–3 come first: they finish what the read and send paths already started. Each phase ends
+when its exit criterion holds.
 
-Known gap carried into phase 2: changing only a backend URL keeps the cache scope, so the
-composition must call `createChainQueryInvalidator(...).onBackendChanged(symbol)` when it rebuilds
-a network.
+0. **Land it.** Split the branch into reviewable PRs in commit order: contracts and reads, history,
+   send, data-driven EVM networks, runtime networks with the state outside Redux, and the nonce.
+   Each stays behind `queryChainData`.
+   _Exit:_ every PR merged with the flag off by default and the legacy path unchanged.
+1. **Close the partial paths.**
+    - Sync: wire `createChainQueryInvalidator` to Connect's block and notification events, add
+      `network.subscribe`, and turn the Redux refresh off under the flag. Changing only a backend
+      URL keeps the cache scope, so the composition must call `onBackendChanged(symbol)` when it
+      rebuilds a network.
+    - RBF and cancel: the replacement's params and the replaced transaction's gas come from chain
+      history; cancel and allowance compose through `network.send`.
+    - The trading re-compose goes through `network.send`; coin control reads the chain account's
+      UTXOs.
+    - The networks' deps stop reading Redux: Solana block info, the Stellar backend URL, block
+      height and confirmations come from the network.
+
+    _Exit:_ the chain networks' deps take nothing from Redux; no double fetching;
+    `NETWORK_SYNC_INTERVALS` removed.
+
+2. **Direct-RPC history.** The custom-RPC EVM network gets `getTransactions` over Connect's evm-rpc
+   worker, with the recent window and older-history loading the store path has
+   (`LoadOlderHistory`, `getOlderHistoryFrom`), threaded through
+   `AccountTransactionsSource.fetchPage` and `useChainAccountTransactions`. Arc, which has no
+   Blockbook, is the first consumer.
+   _Exit:_ an RPC-backed account lists the same history under the flag as without it.
+3. **Totals and assets.** Staking and token values in the totals, the wallet switcher total, the
+   sidebar token and staking rows, the tokens tab and the send and receive asset pickers.
+   _Exit:_ the flagged total equals the legacy total.
+4. **History readers.** Export, the graph, search over the whole history and the "not a scam"
+   marks.
+   _Exit:_ the Redux transactions slice is legacy only.
+5. **Earn and integrations on `network.send`.** Staking views and transactions, yield (with its
+   earn toasts), WalletConnect and Connect popup signing.
+   _Exit:_ no network-type switches in `sendFormThunks`.
+6. **Discovery and identities.** `network.discoverAccounts` returns chain accounts; a
+   `PortfolioAccount` slice persists identities only. Receive and addresses follow; CoinJoin
+   accounts stay on Redux.
+   _Exit:_ Redux accounts hold no balances or tokens.
+7. **Persistence** for remembered wallets, with the same consent as Redux storage.
+   _Exit:_ a remembered wallet works offline without Redux balances.
+8. **Native.** `createNativeChainNetworks` from the same factories.
+   _Exit:_ the mobile account list reads chain data.
+9. **No network-type branching** in `wallet-utils`, the transaction review modal and
+   `buttonRequestMiddleware`.
+   _Exit:_ the lint rule bans network-type branching outside the composition.
+10. **New families and runtime networks.** Sui, per [Adding Sui](#adding-sui). Runtime networks
+    gain tokens, history, fiat rates, account pages, custom fees, replacement and MEV protection.
+    _Exit:_ a runtime network reads like a built-in one.
+11. **Remove the flag**, the Redux balance fields, the fiat-rate thunks and `useTotalFiatBalance`.
+    _Exit:_ the legacy path is gone.
