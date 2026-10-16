@@ -187,8 +187,8 @@ export const exposeConnectWs = ({
                     port,
                     filterSelf,
                     req.socket,
-                ).catch(() => {
-                    logger.error(LOG_PREFIX, 'findProcessFromIncomingPort failed');
+                ).catch(error => {
+                    logger.error(LOG_PREFIX, `findProcessFromIncomingPort failed: ${error}`);
 
                     return undefined;
                 });
@@ -215,7 +215,12 @@ export const exposeConnectWs = ({
             } else if (message.type === CORE_CALL) {
                 if (!processOnPort) {
                     // ts check, should be set
-                    logger.error(LOG_PREFIX, 'processOnPort result not found');
+                    // The endpoints tell a lookup that matched no socket apart from one that
+                    // could not run, so an lsof or netstat format difference is diagnosable.
+                    logger.error(
+                        LOG_PREFIX,
+                        `processOnPort result not found for ${ip}:${port} -> ${req.socket.localAddress}:${req.socket.localPort}`,
+                    );
 
                     if (!isLinux()) {
                         // we ignore missing process on linux because of AppImage/Flatpak sandboxing
