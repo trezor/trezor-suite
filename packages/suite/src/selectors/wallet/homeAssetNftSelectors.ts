@@ -5,23 +5,87 @@ import {
     partitionAssetAccounts,
     sumAssetAccounts,
 } from '@suite-common/assets';
+import { selectTokenDefinitions } from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AssetAccount,
+    type AssetAccountKey,
     type AssetAccountsRootState,
     type WalletAssetKey,
     type WalletSettingsRootState,
-    selectDeviceHiddenNftAssetAccountKeySet,
-    selectDeviceNftAssetAccounts,
+    getAssetAccountKey,
+    getTokens,
+    getWalletAssetKey,
     selectEnabledNetworks,
+    selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
-import { type TokenAddress } from '@suite-common/wallet-types';
+import { type Account, type TokenAddress } from '@suite-common/wallet-types';
+import { isNftToken } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
+import { BigNumber } from '@trezor/utils';
 
 export type HomeAssetNftState = AssetAccountsRootState & WalletSettingsRootState;
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<HomeAssetNftState>();
+
+// A collection is held when it lists its items, even where the backend reports no balance for it.
+const isNftHeld = ({ ids, multiTokenValues, balance }: TokenInfo) =>
+    (ids?.length ?? 0) > 0 ||
+    (multiTokenValues?.length ?? 0) > 0 ||
+    new BigNumber(balance ?? '0').gt(0);
+
+const toNftAssetAccount = (account: Account, token: TokenInfo): AssetAccount => {
+    const contractAddress = token.contract as TokenAddress;
+
+    return {
+        assetAccountKey: getAssetAccountKey({ accountKey: account.key, contractAddress }),
+        accountKey: account.key,
+        assetKey: getWalletAssetKey({
+            deviceState: account.deviceState,
+            symbol: account.symbol,
+            contractAddress,
+        }),
+        deviceState: account.deviceState,
+        symbol: account.symbol,
+        contractAddress,
+        cryptoBalance: token.balance ?? '0',
+        tokenInfo: token,
+    };
+};
+
+const selectNftAssetAccounts = createMemoizedSelector([selectVisibleDeviceAccounts], accounts =>
+    returnStableArrayIfEmpty(
+        accounts.flatMap(account =>
+            (account.tokens ?? [])
+                .filter(token => isNftToken(token) && isNftHeld(token))
+                .map(token => toNftAssetAccount(account, token)),
+        ),
+    ),
+);
+
+/** Hidden by the same rule as on the account's NFT tab: hidden by the user, or not recognized. */
+const selectHiddenNftAssetAccountKeySet = createMemoizedSelector(
+    [selectNftAssetAccounts, selectTokenDefinitions],
+    (assetAccounts, tokenDefinitions): ReadonlySet<AssetAccountKey> => {
+        const hidden = new Set<AssetAccountKey>();
+
+        assetAccounts.forEach(({ assetAccountKey, symbol, tokenInfo }) => {
+            const { shownWithBalance } = getTokens({
+                tokens: tokenInfo === undefined ? [] : [tokenInfo],
+                symbol,
+                tokenDefinitions: tokenDefinitions?.[symbol]?.nft,
+                isNft: true,
+            });
+
+            if (shownWithBalance.length === 0) {
+                hidden.add(assetAccountKey);
+            }
+        });
+
+        return hidden;
+    },
+);
 
 export type NftItem = {
     id: string;
@@ -86,7 +150,7 @@ const groupNftCollections = (
 };
 
 const selectPartitionedNftAssetAccounts = createMemoizedSelector(
-    [selectDeviceNftAssetAccounts, selectDeviceHiddenNftAssetAccountKeySet],
+    [selectNftAssetAccounts, selectHiddenNftAssetAccountKeySet],
     partitionAssetAccounts,
 );
 

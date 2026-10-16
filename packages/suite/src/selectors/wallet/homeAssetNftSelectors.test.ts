@@ -204,6 +204,15 @@ describe('what the section leaves out', () => {
         expect(selectShownNftCollectionKeys(state)).toEqual([]);
         expect(selectHiddenNftCollectionKeys(state)).toEqual([]);
     });
+
+    it('leaves out a collection that holds nothing', () => {
+        const state = createState({
+            accounts: [mockAccount({ tokens: [erc721(PUNKS, 'CryptoPunks', [])] })],
+        });
+
+        expect(selectShownNftCollectionKeys(state)).toEqual([]);
+        expect(selectShownNftCollectionCount(state)).toBe(0);
+    });
 });
 
 describe('what a write leaves alone', () => {
