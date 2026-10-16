@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react';
 import { type AccessibilityRole } from 'react-native';
 
+import { type RepresentativeAsset } from '@suite-common/token-definitions';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Box, Card, PressableOpacity } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -14,6 +15,7 @@ type NetworkListItemProps = {
     onPress: () => void;
     accessibilityRole: AccessibilityRole;
     testID: string;
+    representativeAssets?: readonly RepresentativeAsset[];
 };
 
 const wrapperStyle = prepareNativeStyle(utils => ({
@@ -32,6 +34,7 @@ export const NetworkListItem = ({
     onPress,
     accessibilityRole,
     testID,
+    representativeAssets,
 }: NetworkListItemProps) => {
     const { applyStyle } = useNativeStyles();
 
@@ -49,7 +52,11 @@ export const NetworkListItem = ({
                     {isTestnet ? (
                         <TestnetNetworkListItemContent network={network} accessory={accessory} />
                     ) : (
-                        <MainnetNetworkListItemContent network={network} accessory={accessory} />
+                        <MainnetNetworkListItemContent
+                            network={network}
+                            accessory={accessory}
+                            representativeAssets={representativeAssets}
+                        />
                     )}
                 </Box>
             </PressableOpacity>

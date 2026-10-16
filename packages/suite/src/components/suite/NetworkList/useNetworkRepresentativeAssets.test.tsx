@@ -1,6 +1,6 @@
 import { type PropsWithChildren } from 'react';
 
-import { QueryClient, QueryClientProvider, desktopQueryKeys } from '@suite-common/react-query';
+import { QueryClient, QueryClientProvider, commonQueryKeys } from '@suite-common/react-query';
 import { renderHook, waitFor } from '@suite-common/test-utils';
 import {
     type RankedTokenStructure,
@@ -52,7 +52,7 @@ describe('useNetworkRepresentativeAssets', () => {
 
     it('reuses the catalogue cache shared with Global Receive without another request', () => {
         const queryClient = new QueryClient();
-        queryClient.setQueryData(desktopQueryKeys.rankedTokenDefinitions(), definitions);
+        queryClient.setQueryData(commonQueryKeys.rankedTokenDefinitions(), definitions);
         const { result, unmount } = renderAssets([ethereum], true, queryClient);
 
         expect(result.current.get(ethereum.symbol)).toHaveLength(2);
@@ -78,7 +78,7 @@ describe('useNetworkRepresentativeAssets', () => {
         const { result, unmount, queryClient } = renderAssets();
         await waitFor(() =>
             expect(
-                queryClient.getQueryState(desktopQueryKeys.rankedTokenDefinitions())?.status,
+                queryClient.getQueryState(commonQueryKeys.rankedTokenDefinitions())?.status,
             ).toBe('error'),
         );
 

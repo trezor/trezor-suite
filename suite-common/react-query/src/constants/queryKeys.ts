@@ -1,6 +1,7 @@
 import type { AllowedQueryKey } from '../types';
 
 export const commonQueryKeys = {
+    rankedTokenDefinitions: () => ['ranked-token-definitions'],
     networkTxSimulation: (input?: any) => ['network-tx-simulation', input],
     dappScan: (url?: string) => ['dapp-scan', url],
     validatorsQueue: (accountKey: string | undefined, timestamp?: number) => [
@@ -55,7 +56,6 @@ export const desktopQueryKeys = {
     dateFnsLocale: (language: string) => ['date-fns-locale', language],
     intlMessages: (locale: string) => ['intl-messages', locale],
     defaultUrls: (symbol: string) => ['default-urls', symbol],
-    rankedTokenDefinitions: () => ['ranked-token-definitions'],
     proxyImage: (src?: string) => ['proxy-image', src],
     inactiveTokens: (symbol: string, accountKey?: string) =>
         accountKey ? ['inactive-tokens', symbol, accountKey] : ['inactive-tokens', symbol],

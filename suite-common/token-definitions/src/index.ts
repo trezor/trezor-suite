@@ -1,4 +1,5 @@
 export * from './fetchRankedTokenDefinitions';
+export * from './networkRepresentativeAssets';
 export * from './phishing';
 export * from './phishing/constants';
 export type * from './phishing/types';

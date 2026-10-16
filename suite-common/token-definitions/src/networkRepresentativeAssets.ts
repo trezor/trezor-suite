@@ -1,9 +1,11 @@
-import { type RankedTokenStructure } from '@suite-common/token-definitions';
-import {
-    type Network,
-    type NetworkSymbol,
-    type RepresentativeAsset,
-} from '@suite-common/wallet-config';
+import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
+
+import { type RankedTokenStructure } from './tokenDefinitionsTypes';
+
+export type RepresentativeAsset = {
+    symbol: string;
+    contract?: string;
+};
 
 export const MAX_REPRESENTATIVE_ASSETS = 5;
 

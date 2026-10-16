@@ -1,11 +1,13 @@
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { type NetworkSymbol, type RepresentativeAsset } from '@suite-common/wallet-config';
+import {
+    MAX_REPRESENTATIVE_ASSETS,
+    type RepresentativeAsset,
+} from '@suite-common/token-definitions';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Row, Text, Tooltip } from '@trezor/components';
 import { TokenIconSet } from '@trezor/product-components';
-
-import { MAX_REPRESENTATIVE_ASSETS } from './networkRepresentativeAssets';
 
 const ICON_SIZE = 24;
 

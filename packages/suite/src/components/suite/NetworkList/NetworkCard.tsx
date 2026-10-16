@@ -1,7 +1,8 @@
 import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
-import { type NetworkSymbol, type RepresentativeAsset } from '@suite-common/wallet-config';
+import { type RepresentativeAsset } from '@suite-common/token-definitions';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Box, Card, Column, IconButton, Row, StatusBadge, Text } from '@trezor/components';
 import { SlidersIcon } from '@trezor/icons';
 import { NetworkIcon } from '@trezor/product-components';

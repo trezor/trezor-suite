@@ -1,14 +1,15 @@
 import { useMemo } from 'react';
 
-import { desktopQueryKeys, useQuery } from '@suite-common/react-query';
-import { fetchRankedTokenDefinitions } from '@suite-common/token-definitions';
+import { commonQueryKeys, useQuery } from '@suite-common/react-query';
+import {
+    buildNetworkRepresentativeAssets,
+    fetchRankedTokenDefinitions,
+} from '@suite-common/token-definitions';
 import { type Network } from '@suite-common/wallet-config';
-
-import { buildNetworkRepresentativeAssets } from './networkRepresentativeAssets';
 
 export const useNetworkRepresentativeAssets = (networks: readonly Network[], isEnabled = true) => {
     const { data: definitions } = useQuery({
-        queryKey: desktopQueryKeys.rankedTokenDefinitions(),
+        queryKey: commonQueryKeys.rankedTokenDefinitions(),
         queryFn: ({ signal }) => fetchRankedTokenDefinitions({ signal }),
         enabled:
             isEnabled &&

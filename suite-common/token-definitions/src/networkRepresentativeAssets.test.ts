@@ -1,10 +1,10 @@
-import { type RankedTokenStructure } from '@suite-common/token-definitions';
 import { getMainnets, getNetwork } from '@suite-common/wallet-config';
 
 import {
     MAX_REPRESENTATIVE_ASSETS,
     buildNetworkRepresentativeAssets,
 } from './networkRepresentativeAssets';
+import { type RankedTokenStructure } from './tokenDefinitionsTypes';
 
 const ethereum = getNetwork('eth');
 const solana = getNetwork('sol');
