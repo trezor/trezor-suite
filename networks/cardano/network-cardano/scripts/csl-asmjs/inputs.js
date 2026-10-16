@@ -39,14 +39,14 @@ export const readInputs = (scriptDir, require) => {
     const glueDir = path.dirname(
         require.resolve('@emurgo/cardano-serialization-lib-asmjs/cardano_serialization_lib_bg.js'),
     );
-    const coinSelectionLibDir = path.join(
-        path.dirname(require.resolve('@fivebinaries/coin-selection/package.json')),
-        'lib/cjs',
+    // The package entry point is src/index.ts, so this is the TypeScript source directory.
+    const coinSelectionSrcDir = path.dirname(
+        require.resolve('@trezor/network-cardano-coin-selection'),
     );
     const glueSource = patchGlue(
         fs.readFileSync(path.join(glueDir, 'cardano_serialization_lib_bg.js'), 'utf8'),
     );
-    const reachableExports = findReachableExports(coinSelectionLibDir, glueSource);
+    const reachableExports = findReachableExports(coinSelectionSrcDir, glueSource);
     const entrySource = fs.readFileSync(path.join(glueDir, 'cardano_serialization_lib.js'));
     const binaryenVersion = require('binaryen/package.json').version;
 

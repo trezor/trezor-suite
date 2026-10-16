@@ -2,5 +2,9 @@
     "extends": "../../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "include": ["src", "scripts", "**/*.json"],
-    "references": []
+    "references": [
+        {
+            "path": "../network-cardano-coin-selection"
+        }
+    ]
 }

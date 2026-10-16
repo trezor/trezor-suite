@@ -234,6 +234,10 @@ export class Blockchain {
         return this.link.estimateFee(request);
     }
 
+    getCardanoProtocolParameters() {
+        return this.link.getCardanoProtocolParameters();
+    }
+
     subscribeBlocks() {
         // set block listener if it wasn't set before
         if (this.link.listenerCount('block') === 0) {

@@ -270,6 +270,7 @@
 /networks/cardano/*
 !/networks/cardano/network-cardano
 !/networks/cardano/network-cardano-assets
+!/networks/cardano/network-cardano-coin-selection
 !/networks/cardano/network-cardano-suite-common
 !/networks/cardano/network-cardano-types
 /networks/ethereum/*
