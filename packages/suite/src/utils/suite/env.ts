@@ -29,7 +29,9 @@ export const submitRequestForm = async (
         const search = new URLSearchParams();
         if (address.token) search.set('token', address.token);
         search.set('a', formAction);
-        Object.entries(fields).forEach(([k, v]) => search.set(k, v));
+        // The receiver reads the first `token` and `a`, so partner fields are appended
+        // after them; `set` would let a partner field of the same name replace them.
+        Object.entries(fields).forEach(([k, v]) => search.append(k, v));
         window.open(`${address.url}?${search.toString()}`, '_blank');
     } else {
         const form = document.createElement('form');
