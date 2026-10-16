@@ -15,7 +15,8 @@ import { BigNumber } from '@trezor/utils';
 
 import { Sign } from 'src/components/suite/Sign';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
+
+import { TokenUrlBlur } from './TokenUrlBlur';
 
 const MAX_TOKEN_DISPLAYED_DECIMALS = 18;
 
@@ -146,7 +147,7 @@ export const FormattedCryptoAmount = ({
             {formattedSymbol && (
                 <>
                     {' '}
-                    <BlurUrls text={formattedSymbol} />
+                    <TokenUrlBlur text={formattedSymbol} />
                 </>
             )}
         </span>
