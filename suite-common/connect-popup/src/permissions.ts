@@ -73,6 +73,13 @@ export const isSameConnectApp = (app: ConnectCallSource, source: ConnectCallSour
     app.origin === source.origin &&
     app.process?.fullPath === source.process?.fullPath;
 
+/**
+ * Permissions are remembered only for a caller that can be told apart from others, not for the
+ * origin `null` that browsers send for every sandboxed or local page.
+ */
+export const canRememberPermissions = (source: ConnectCallSource): boolean =>
+    source.origin !== 'null';
+
 export const groupPermissionsByCoin = (permissions: PermissionRequest[]): GroupedPermissions[] => {
     const order: (CoinSymbol | undefined)[] = [];
     const byCoin = new Map<CoinSymbol | undefined, PermissionRequest['permission'][]>();
