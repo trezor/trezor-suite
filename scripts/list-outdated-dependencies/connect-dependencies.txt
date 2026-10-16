@@ -81,6 +81,7 @@ ws
 xvfb-maybe
 @types/cors
 @vitest/browser-playwright
+@vitest/coverage-v8
 vitest
 rollup-plugin-dts
 rollup
