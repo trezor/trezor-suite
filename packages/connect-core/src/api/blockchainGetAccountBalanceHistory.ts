@@ -1,6 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/blockchain/BlockchainGetAccountBalanceHistory.js
 
 import type { CoinInfo, PermissionRequest } from '@trezor/connect-common';
+import { toCanonicalDescriptor } from '@trezor/utils';
 
 import type { MethodContext, MethodMessage, Payload } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
@@ -63,6 +64,11 @@ export default class BlockchainGetAccountBalanceHistory extends AbstractMethod<
             this.params.identity,
         );
 
-        return backend.getAccountBalanceHistory(this.params.request);
+        // Blockbook rejects taproot descriptors that use `h` for hardened parts, so the backend
+        // receives the canonical form of the caller-supplied descriptor.
+        return backend.getAccountBalanceHistory({
+            ...this.params.request,
+            descriptor: toCanonicalDescriptor(this.params.request.descriptor),
+        });
     }
 }
