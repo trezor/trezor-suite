@@ -37,6 +37,7 @@ import TrezorConnect, {
 } from '@trezor/connect';
 import { type DiscoverAccountsProgress } from '@trezor/connect-common/src/types/api/account/discoverAccounts';
 import type { Bip43Path } from '@trezor/crypto-utils';
+import { isSameWallet } from '@trezor/device-utils';
 import { type SuiteCompatibleThunk, type WithServices, createThunk } from '@trezor/redux-utils';
 
 import { DISCOVERY_MODULE_PREFIX, discoveryActions } from './discoveryActions';
@@ -91,12 +92,14 @@ function assertStaticSessionId(
     }
 }
 
-const deviceStateEqualTo = (first: DeviceState) => {
-    const firstParsed = first.staticSessionId?.split(':')[0];
-
-    return (second?: DeviceState) =>
-        firstParsed ? firstParsed === second?.staticSessionId?.split(':')[0] : false;
-};
+// Two states belong to the same wallet when their `walletDescriptor` matches. Neither the
+// `deviceId` nor the `instance` part of the static session id is compared: connect reports a fresh
+// `deviceId` after the device was wiped and recovered with the same seed, and the instance is a
+// host-side number a newly added hidden wallet always gets anew.
+const deviceStateEqualTo = (first: DeviceState) => (second?: DeviceState) =>
+    !!first.staticSessionId &&
+    !!second?.staticSessionId &&
+    isSameWallet(first.staticSessionId, second.staticSessionId);
 
 type ApplyDeviceStatesThunkState = DeviceRootState & WalletSettingsRootState;
 

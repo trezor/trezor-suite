@@ -75,6 +75,13 @@ export const parseStaticSessionId = (input: StaticSessionId): ParsedStaticSessio
     };
 };
 
+// Two static session ids describe the same wallet when their `walletDescriptor` matches.
+// `deviceId` is excluded: wiping and recovering the same seed mints a fresh hardware `device_id`
+// while the wallet is unchanged. `instance` is excluded too: it is a host-side number that can
+// differ across reconnects of the same wallet.
+export const isSameWallet = (first: StaticSessionId, second: StaticSessionId): boolean =>
+    parseStaticSessionId(first).walletDescriptor === parseStaticSessionId(second).walletDescriptor;
+
 export const createStaticSessionId = (parts: StaticSessionIdParts): StaticSessionId => {
     const result = `${parts.walletDescriptor}@${parts.deviceId}:${parts.instance}`;
     // Round-trip the result through the validator so a malformed `parts` (negative or
