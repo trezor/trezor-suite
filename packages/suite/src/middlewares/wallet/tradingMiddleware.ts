@@ -30,7 +30,7 @@ export const tradingMiddleware =
         const nextState = api.getState();
 
         const isRouteChange = action.type === routerLocationChange.type;
-        let activeSection = selectTradingActiveSection(state);
+        let activeSection = selectTradingActiveSection(nextState);
 
         if (isRouteChange) {
             const routeName = nextState.router.route?.name;
@@ -117,7 +117,8 @@ export const tradingMiddleware =
         // after an account change in the Sell or Swap update the tradeApiKey based on the account
         const isForSettingAccountKey =
             tradingExchangeActions.setTradingAccountKey.type === action.type ||
-            tradingSellActions.setTradingAccountKey.type === action.type;
+            tradingSellActions.setTradingAccountKey.type === action.type ||
+            (tradingActions.bindTradingAccount.match(action) && action.payload.type !== 'buy');
         const account = selectTradingAccountAccordingActiveSection(
             nextState,
             activeSection,
