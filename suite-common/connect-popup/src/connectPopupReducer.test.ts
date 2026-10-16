@@ -48,4 +48,12 @@ describe('rememberAppPermissions', () => {
             expect(rememberApps(app, otherApp).permissions).toEqual([otherApp]);
         },
     );
+
+    it('remembers permissions for an app with the origin null', () => {
+        const nullOriginApp = { ...app, origin: 'null' };
+
+        // Documents the bug: browsers send the origin `null` for every sandboxed or local
+        // page, so this grant is reused for any other such page.
+        expect(rememberApps(nullOriginApp).permissions).toEqual([nullOriginApp]);
+    });
 });
