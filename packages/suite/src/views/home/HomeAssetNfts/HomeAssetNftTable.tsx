@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 
 import { Translation } from '@suite/intl';
 import {
+    type NftCollectionItems,
     type NftItem,
     selectHiddenNftCollectionKeys,
     selectNftCollectionItems,
@@ -38,7 +39,7 @@ type NftListItem = { height: number; assetKey: WalletAssetKey } & (
     | { kind: 'more'; count: number }
 );
 
-const NO_ITEMS: readonly NftItem[] = [];
+const NO_ITEMS: NftCollectionItems = { items: [], totalCount: 0 };
 
 type HomeAssetNftTableProps = {
     isHidden: boolean;
@@ -55,7 +56,7 @@ export const HomeAssetNftTable = ({ isHidden }: HomeAssetNftTableProps) => {
     const openItems = useSelector(state =>
         assetKeys.map(assetKey =>
             openKeys.has(assetKey)
-                ? (selectNftCollectionItems(state, assetKey, isHidden) ?? NO_ITEMS)
+                ? (selectNftCollectionItems(state, assetKey, isHidden, NFT_ITEMS_LIMIT) ?? NO_ITEMS)
                 : NO_ITEMS,
         ),
     );
@@ -67,7 +68,7 @@ export const HomeAssetNftTable = ({ isHidden }: HomeAssetNftTableProps) => {
                 assetKey,
                 height: NFT_COLLECTION_ROW_HEIGHT,
             };
-            const nftItems = openItems[collectionIndex] ?? NO_ITEMS;
+            const { items: nftItems, totalCount } = openItems[collectionIndex] ?? NO_ITEMS;
 
             if (nftItems.length === 0) {
                 return [collection];
@@ -75,7 +76,7 @@ export const HomeAssetNftTable = ({ isHidden }: HomeAssetNftTableProps) => {
 
             const collectionRows: NftListItem[] = [
                 collection,
-                ...nftItems.slice(0, NFT_ITEMS_LIMIT).map((item, index): NftListItem => ({
+                ...nftItems.map((item, index): NftListItem => ({
                     kind: 'item',
                     assetKey,
                     item,
@@ -83,7 +84,7 @@ export const HomeAssetNftTable = ({ isHidden }: HomeAssetNftTableProps) => {
                     height: NFT_ITEM_ROW_HEIGHT,
                 })),
             ];
-            const notListedCount = nftItems.length - NFT_ITEMS_LIMIT;
+            const notListedCount = totalCount - nftItems.length;
 
             if (notListedCount > 0) {
                 collectionRows.push({

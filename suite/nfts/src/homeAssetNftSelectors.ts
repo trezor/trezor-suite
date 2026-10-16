@@ -87,32 +87,49 @@ export type NftItem = {
     amount: string;
 };
 
+export type NftCollectionItems = {
+    items: readonly NftItem[];
+    totalCount: number;
+};
+
+/** Only primitives, so a row reading it stays shallow-equal while its collection is unchanged. */
 export type NftCollection = {
     assetKey: WalletAssetKey;
     symbol: NetworkSymbol;
     contractAddress: TokenAddress;
     name: string;
-    /** The collection as each account holds it; its items are built only once a row asks for them. */
-    tokens: readonly TokenInfo[];
     hasListedItems: boolean;
     /** Where the backend lists no items, what is held is the balance. */
     itemCount: number;
 };
 
-const getNftItems = ({ ids, multiTokenValues }: TokenInfo): NftItem[] => [
-    ...(ids ?? []).map(id => ({ id, amount: '1' })),
-    ...(multiTokenValues ?? []).flatMap(({ id, value }) =>
-        id === undefined ? [] : [{ id, amount: value ?? '1' }],
-    ),
-];
+type HoldingsByKey = ReadonlyMap<WalletAssetKey, readonly [NftHolding, ...NftHolding[]]>;
 
 const countNftItems = ({ ids, multiTokenValues }: TokenInfo) =>
     (ids?.length ?? 0) +
     (multiTokenValues ?? []).reduce((count, { id }) => (id === undefined ? count : count + 1), 0);
 
-const groupNftCollections = (
-    holdings: readonly NftHolding[],
-): ReadonlyMap<WalletAssetKey, NftCollection> => {
+// Spam collections can list thousands of items, so only as many as are shown get built.
+const getNftItems = (held: readonly NftHolding[], limit: number): NftCollectionItems => {
+    const items: NftItem[] = [];
+    let totalCount = 0;
+
+    held.forEach(({ token: { ids, multiTokenValues } }) => {
+        (ids ?? []).forEach(id => {
+            totalCount++;
+            if (items.length < limit) items.push({ id, amount: '1' });
+        });
+        (multiTokenValues ?? []).forEach(({ id, value }) => {
+            if (id === undefined) return;
+            totalCount++;
+            if (items.length < limit) items.push({ id, amount: value ?? '1' });
+        });
+    });
+
+    return { items, totalCount };
+};
+
+const groupNftHoldings = (holdings: readonly NftHolding[]): HoldingsByKey => {
     const byKey = new Map<WalletAssetKey, [NftHolding, ...NftHolding[]]>();
 
     holdings.forEach(holding => {
@@ -125,14 +142,20 @@ const groupNftCollections = (
         }
     });
 
+    return byKey;
+};
+
+const toNftCollections = (byKey: HoldingsByKey): ReadonlyMap<WalletAssetKey, NftCollection> => {
     const collections = new Map<WalletAssetKey, NftCollection>();
 
     byKey.forEach((held, assetKey) => {
         const [{ symbol, contractAddress, token }] = held;
-        const tokens = held.map(holding => holding.token);
-        const listedItemCount = tokens.reduce((count, item) => count + countNftItems(item), 0);
-        const balance = tokens.reduce(
-            (sum, item) => sum.plus(item.balance ?? '0'),
+        const listedItemCount = held.reduce(
+            (count, holding) => count + countNftItems(holding.token),
+            0,
+        );
+        const balance = held.reduce(
+            (sum, holding) => sum.plus(holding.token.balance ?? '0'),
             new BigNumber(0),
         );
 
@@ -141,7 +164,6 @@ const groupNftCollections = (
             symbol,
             contractAddress,
             name: token.name || token.symbol || contractAddress,
-            tokens,
             hasListedItems: listedItemCount > 0,
             itemCount: listedItemCount > 0 ? listedItemCount : balance.toNumber(),
         });
@@ -164,13 +186,20 @@ export const selectHiddenNftCollectionCount = createMemoizedSelector(
     ({ hidden }) => countCollections(hidden),
 );
 
-const selectNftCollections = createMemoizedSelector([selectPartitionedNftHoldings], ({ shown }) =>
-    groupNftCollections(shown),
+const selectNftHoldingsByKey = createMemoizedSelector([selectPartitionedNftHoldings], ({ shown }) =>
+    groupNftHoldings(shown),
 );
 
-const selectHiddenNftCollections = createMemoizedSelector(
+const selectHiddenNftHoldingsByKey = createMemoizedSelector(
     [selectPartitionedNftHoldings],
-    ({ hidden }) => groupNftCollections(hidden),
+    ({ hidden }) => groupNftHoldings(hidden),
+);
+
+const selectNftCollections = createMemoizedSelector([selectNftHoldingsByKey], toNftCollections);
+
+const selectHiddenNftCollections = createMemoizedSelector(
+    [selectHiddenNftHoldingsByKey],
+    toNftCollections,
 );
 
 const getSortedCollectionKeys = (
@@ -194,7 +223,6 @@ export const selectHiddenNftCollectionKeys = createMemoizedSelector(
     { memoizeOptions: { resultEqualityCheck: shallowEqual } },
 );
 
-/** One collection, as a row reads it: the same object until that collection changes. */
 export const selectNftCollection = (
     state: HomeAssetNftState,
     assetKey: WalletAssetKey,
@@ -202,14 +230,19 @@ export const selectNftCollection = (
 ): NftCollection | undefined =>
     (isHidden ? selectHiddenNftCollections(state) : selectNftCollections(state)).get(assetKey);
 
-const selectNftCollectionTokens = (
+const selectNftCollectionHoldings = (
     state: HomeAssetNftState,
     assetKey: WalletAssetKey,
-    isHidden?: boolean,
-) => selectNftCollection(state, assetKey, isHidden)?.tokens;
+    isHidden: boolean,
+) => (isHidden ? selectHiddenNftHoldingsByKey(state) : selectNftHoldingsByKey(state)).get(assetKey);
 
-/** Built only for a collection that is open, and kept until what it holds changes. */
+/** Built only for an open collection, kept until what it holds changes. */
 export const selectNftCollectionItems = createMemoizedSelector(
-    [selectNftCollectionTokens],
-    (tokens): readonly NftItem[] | undefined => tokens?.flatMap(getNftItems),
+    [
+        selectNftCollectionHoldings,
+        (_state: HomeAssetNftState, _assetKey: WalletAssetKey, _isHidden: boolean, limit: number) =>
+            limit,
+    ],
+    (held, limit): NftCollectionItems | undefined =>
+        held === undefined ? undefined : getNftItems(held, limit),
 );

@@ -21,6 +21,8 @@ const ETH = asNetworkSymbol('eth');
 const POL = asNetworkSymbol('pol');
 const SEPOLIA = asNetworkSymbol('tsep');
 
+const ITEMS_LIMIT = 50;
+
 const PUNKS = '0x00000000000000000000000000000000000000a1' as TokenAddress;
 const APES = '0x00000000000000000000000000000000000000a2' as TokenAddress;
 const SCAM_DROP = '0x00000000000000000000000000000000000000a3' as TokenAddress;
@@ -114,10 +116,13 @@ describe('the collections the section lists', () => {
         expect(selectShownNftCollectionKeys(state)).toEqual([punksOnEth]);
         expect(selectHiddenNftCollectionKeys(state)).toEqual([]);
         expect(selectNftCollection(state, punksOnEth)?.name).toBe('CryptoPunks');
-        expect(selectNftCollectionItems(state, punksOnEth)).toEqual([
-            { id: '1492', amount: '1' },
-            { id: '4820', amount: '1' },
-        ]);
+        expect(selectNftCollectionItems(state, punksOnEth, false, ITEMS_LIMIT)).toEqual({
+            items: [
+                { id: '1492', amount: '1' },
+                { id: '4820', amount: '1' },
+            ],
+            totalCount: 2,
+        });
     });
 
     it('counts each item of a multi-token collection as many times as it is held', () => {
@@ -125,7 +130,10 @@ describe('the collections the section lists', () => {
             accounts: [mockAccount({ tokens: [erc1155(APES, 'Apes', [{ id: '7', value: '3' }])] })],
         });
 
-        expect(selectNftCollectionItems(state, apesOnEth)).toEqual([{ id: '7', amount: '3' }]);
+        expect(selectNftCollectionItems(state, apesOnEth, false, ITEMS_LIMIT)).toEqual({
+            items: [{ id: '7', amount: '3' }],
+            totalCount: 1,
+        });
     });
 
     it('gathers a collection held by several accounts into one row', () => {
@@ -149,7 +157,10 @@ describe('the collections the section lists', () => {
             ],
         });
 
-        expect(selectNftCollectionItems(state, punksOnEth)).toEqual([]);
+        expect(selectNftCollectionItems(state, punksOnEth, false, ITEMS_LIMIT)).toEqual({
+            items: [],
+            totalCount: 0,
+        });
         expect(selectNftCollection(state, punksOnEth)?.itemCount).toBe(3);
     });
 
@@ -247,6 +258,31 @@ describe('what a write leaves alone', () => {
         });
 
         expect(selectShownNftCollectionKeys(after)).toBe(selectShownNftCollectionKeys(before));
+    });
+
+    it('hands back an equal collection when only a balance moves', () => {
+        const stateWith = (balance: string) =>
+            createState({
+                accounts: [mockAccount({ balance, tokens: [erc721(PUNKS, 'CryptoPunks', ['1'])] })],
+            });
+
+        expect(selectNftCollection(stateWith('2'), punksOnEth)).toEqual(
+            selectNftCollection(stateWith('1'), punksOnEth),
+        );
+    });
+});
+
+describe('what an open collection builds', () => {
+    it('builds only as many items as are shown and counts the rest', () => {
+        const ids = Array.from({ length: 60 }, (_, index) => String(index));
+        const state = createState({
+            accounts: [mockAccount({ tokens: [erc721(PUNKS, 'CryptoPunks', ids)] })],
+        });
+
+        const result = selectNftCollectionItems(state, punksOnEth, false, ITEMS_LIMIT);
+
+        expect(result?.items).toHaveLength(ITEMS_LIMIT);
+        expect(result?.totalCount).toBe(60);
     });
 });
 
