@@ -1,11 +1,21 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": { "outDir": "libDev" },
+    "compilerOptions": {
+        "outDir": "libDev"
+    },
     "references": [
-        { "path": "../../suite-common/icons" },
-        { "path": "../../suite-common/networks" },
-        { "path": "../../packages/connect" },
-        { "path": "../../packages/logger" },
+        {
+            "path": "../../suite-common/icons"
+        },
+        {
+            "path": "../../suite-common/networks"
+        },
+        {
+            "path": "../../packages/connect"
+        },
+        {
+            "path": "../../packages/logger"
+        },
         {
             "path": "../../networks/network-module/network-module-suite-common-types"
         }

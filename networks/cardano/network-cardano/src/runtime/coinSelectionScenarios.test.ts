@@ -1,4 +1,4 @@
-import { coinSelection, trezorUtils } from '@fivebinaries/coin-selection';
+import { coinSelection, trezorUtils } from '@trezor/network-cardano-coin-selection/runtime';
 
 import { smokeScenarios, witnesses } from './__fixtures__/coinSelectionParity.fixture';
 

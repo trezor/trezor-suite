@@ -1,5 +1,9 @@
 // Parity cases use largest-first selection only; random-improve is not deterministic.
-import type { CoinSelectionError, trezorUtils, types } from '@fivebinaries/coin-selection';
+import type {
+    CoinSelectionError,
+    trezorUtils,
+} from '@trezor/network-cardano-coin-selection/runtime';
+import type * as types from '@trezor/network-cardano-coin-selection/types';
 
 const BASE_ADDRESS =
     'addr1q84sh2j72ux0l03fxndjnhctdg7hcppsaejafsa84vh7lwgmcs5wgus8qt4atk45lvt4xfxpjtwfhdmvchdf2m3u3hlsd5tq5r';

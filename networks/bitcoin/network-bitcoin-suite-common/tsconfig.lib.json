@@ -1,13 +1,21 @@
 {
     "extends": "../../../tsconfig.lib.json",
-    "compilerOptions": { "outDir": "./lib" },
+    "compilerOptions": {
+        "outDir": "./lib"
+    },
     "include": ["./src"],
     "references": [
-        { "path": "../network-bitcoin-assets" },
-        { "path": "../network-bitcoin-types" },
+        {
+            "path": "../network-bitcoin-assets"
+        },
+        {
+            "path": "../network-bitcoin-types"
+        },
         {
             "path": "../../network-module/network-module-suite-common-types"
         },
-        { "path": "../../../packages/utils" }
+        {
+            "path": "../../../packages/utils"
+        }
     ]
 }
