@@ -1,1 +1,4 @@
-export { createBitcoinSuiteNetworkModule } from './BitcoinSuiteNetworkModule';
+export {
+    type BitcoinSuiteNetworkModuleDeps,
+    createBitcoinSuiteNetworkModule,
+} from './BitcoinSuiteNetworkModule';

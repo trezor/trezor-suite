@@ -1,4 +1,4 @@
-import { type ExtendedMessageDescriptor } from '@suite/intl';
+import { type ExtendedMessageDescriptor } from '@suite-lego/intl';
 
 export type SignVerifyPage = 'sign' | 'verify';
 

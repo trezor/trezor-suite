@@ -1,4 +1,3 @@
-import { type SignVerifyRootState } from '@suite/sign-verify';
 import { type AnalyticsSharedEvents, events } from '@suite-common/analytics';
 import { deviceInitialState } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
@@ -8,6 +7,7 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
+import { type SignVerifyRootState } from '@trezor/network-module-suite-sign-verify';
 
 import { createBitcoinSignVerifyActions } from './bitcoinSignVerifyActions';
 

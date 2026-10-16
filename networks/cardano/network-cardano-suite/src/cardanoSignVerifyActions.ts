@@ -1,15 +1,6 @@
 import { type Dispatch } from 'redux';
 
 import { type AnalyticsDep } from '@suite-common/analytics';
-import {
-    type SignVerifyRootState,
-    asError,
-    getFailureAttributes,
-    getSignVerifyStateParams,
-    notifyError,
-    notifySignSuccess,
-    reportSignMessage,
-} from '@suite/sign-verify';
 import { type AccountWithNetworkType } from '@suite-common/wallet-types';
 import {
     getAddressParameters,
@@ -19,8 +10,17 @@ import {
     getStakingPath,
 } from '@suite-common/wallet-utils';
 import { type GetTrezorConnectDep, getSerializedPath } from '@trezor/connect-common';
-import { type WithServices } from '@trezor/redux-utils';
+import {
+    type SignVerifyRootState,
+    asError,
+    getFailureAttributes,
+    getSignVerifyStateParams,
+    notifyError,
+    notifySignSuccess,
+    reportSignMessage,
+} from '@trezor/network-module-suite-sign-verify';
 import { MessagesSchema } from '@trezor/protobuf';
+import { type WithServices } from '@trezor/redux-utils';
 
 export type CardanoSignVerifyConnectDep = GetTrezorConnectDep<'cardanoSignMessage'>;
 

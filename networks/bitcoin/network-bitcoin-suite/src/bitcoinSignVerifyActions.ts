@@ -1,6 +1,8 @@
 import { type Dispatch } from 'redux';
 
 import { type AnalyticsDep } from '@suite-common/analytics';
+import { type Account } from '@suite-common/wallet-types';
+import { type GetTrezorConnectDep, asCoinSymbol } from '@trezor/connect-common';
 import {
     type SignVerifyRootState,
     type VerifyMessageResult,
@@ -14,9 +16,7 @@ import {
     notifyVerifySuccess,
     reportSignMessage,
     reportVerifyMessage,
-} from '@suite/sign-verify';
-import { type Account } from '@suite-common/wallet-types';
-import { type GetTrezorConnectDep, asCoinSymbol } from '@trezor/connect-common';
+} from '@trezor/network-module-suite-sign-verify';
 import { type WithServices } from '@trezor/redux-utils';
 
 import { getHasSelectableSignatureFormat } from './getHasSelectableSignatureFormat';

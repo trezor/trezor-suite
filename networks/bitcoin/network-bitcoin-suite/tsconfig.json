@@ -6,16 +6,7 @@
             "path": "../../../suite-common/analytics"
         },
         {
-            "path": "../../../packages/dependency-injection"
-        },
-        {
             "path": "../../../suite-common/receive"
-        },
-        {
-            "path": "../../../packages/redux-utils"
-        },
-        {
-            "path": "../../../suite/forms"
         },
         {
             "path": "../../../suite-common/wallet-config"
@@ -23,21 +14,28 @@
         {
             "path": "../../../suite-common/wallet-types"
         },
-        { "path": "../../../suite/device" },
-        { "path": "../../../suite/intl" },
-        { "path": "../../../suite/sign-verify" },
+        { "path": "../../../suite-lego/intl" },
         {
             "path": "../../../packages/components"
         },
         {
             "path": "../../../packages/connect-common"
         },
+        {
+            "path": "../../../packages/dependency-injection"
+        },
         { "path": "../network-bitcoin-types" },
         {
-            "path": "../../network-module/network-module-suite-types"
+            "path": "../../network-module/suite/sign-verify"
+        },
+        {
+            "path": "../../network-module/suite/suite-types"
         },
         {
             "path": "../../network-module/network-module-types"
+        },
+        {
+            "path": "../../../packages/redux-utils"
         },
         {
             "path": "../../../suite-common/device"

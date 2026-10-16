@@ -1,5 +1,6 @@
 import { saveAs } from 'file-saver';
 
+import { Address } from '@suite/address';
 import { type DesktopAnalyticsDep, createAnalytics } from '@suite/analytics';
 import { selectShouldRetryFirmwareRevisionCheckError } from '@suite/authenticity-checks';
 import { type BluetoothDep, createBluetoothCompositionRoot } from '@suite/bluetooth';
@@ -11,10 +12,7 @@ import {
     type MetadataMigrationDep,
     createMetadataMigrationCompositionRoot,
 } from '@suite/metadata-migration';
-import {
-    type SuiteNetworkModuleRepositoryDep,
-    createSuiteNetworkModuleRepository,
-} from '@suite/networks';
+import { createSuiteNetworksCompositionRoot } from '@suite/networks';
 import {
     type HistoryDep,
     type SuiteRouterHistoryDep,
@@ -50,13 +48,8 @@ import { type GetTrezorConnectPrivilegedDep } from '@trezor/connect';
 import { toGetter } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';
 import type { CreateLoggerDep } from '@trezor/logger';
-import { createBitcoinSuiteNetworkModule } from '@trezor/network-bitcoin-suite';
-import { createCardanoSuiteNetworkModule } from '@trezor/network-cardano-suite';
-import { createEthereumSuiteNetworkModule } from '@trezor/network-ethereum-suite';
-import { createRippleSuiteNetworkModule } from '@trezor/network-ripple-suite';
-import { createSolanaSuiteNetworkModule } from '@trezor/network-solana-suite';
-import { createStellarSuiteNetworkModule } from '@trezor/network-stellar-suite';
-import { createTronSuiteNetworkModule } from '@trezor/network-tron-suite';
+import { type SignVerifyAddressDep } from '@trezor/network-module-suite-sign-verify';
+import { type SuiteNetworkModuleRepositoryDep } from '@trezor/network-module-suite-types';
 
 import { type SuiteReduxStore } from 'src/reducers/createReduxStore';
 import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
@@ -84,6 +77,7 @@ export type SuiteServices = CommonServices &
     DesktopAnalyticsDep &
     MetadataMigrationDep &
     SuiteNetworkModuleRepositoryDep &
+    SignVerifyAddressDep &
     SuiteRouterHistoryDep &
     TransportsDep &
     BluetoothDep;
@@ -159,16 +153,8 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         getTrezorConnect: deps.getTrezorConnect,
         dispatch: deps.dispatch,
     });
-    const suiteNetworkModuleRepository = createSuiteNetworkModuleRepository({
-        suiteNetworkModules: {
-            bitcoin: createBitcoinSuiteNetworkModule({ getTrezorConnect: deps.getTrezorConnect }),
-            ethereum: createEthereumSuiteNetworkModule({ getTrezorConnect: deps.getTrezorConnect }),
-            cardano: createCardanoSuiteNetworkModule({ getTrezorConnect: deps.getTrezorConnect }),
-            ripple: createRippleSuiteNetworkModule(),
-            solana: createSolanaSuiteNetworkModule(),
-            stellar: createStellarSuiteNetworkModule(),
-            tron: createTronSuiteNetworkModule(),
-        },
+    const { suiteNetworkModuleRepository } = createSuiteNetworksCompositionRoot({
+        getTrezorConnect: deps.getTrezorConnect,
     });
 
     const createTransports: CreateTransports = transports => {
@@ -189,6 +175,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         desktopApi: deps.desktopApi,
         networks,
         suiteNetworkModuleRepository,
+        signVerifyAddress: Address,
         suiteSync,
         bip329,
         migrateLegacyLabelsToSuiteSync,

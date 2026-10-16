@@ -15,7 +15,7 @@ const buildArtifactPatterns = {
 // Bare network packages expose sectioned entry points. Type contracts, asset packages and Suite
 // layer packages keep root imports; a dash in a network name alone does not exempt a bare package.
 const networksPackagePattern = {
-    regex: '^@trezor/(?![^/]*-(?:types|assets|suite(?:-common|-native)?)$)network-[^/]+$',
+    regex: '^@trezor/(?!network-module-suite(?:-|$))(?![^/]*-(?:types|assets|suite(?:-common|-native)?)$)network-[^/]+$',
     message: 'Import from /constants, /runtime or /types subpath.',
 };
 
@@ -193,7 +193,11 @@ export const typescriptConfig = [
         },
     },
     {
-        files: [`${allRoots.suiteLego}/**/*.{js,mjs,cjs,ts,jsx,tsx}`],
+        files: [
+            `${allRoots.networks}/*/*-suite/**/*.{js,mjs,cjs,ts,jsx,tsx}`,
+            `${allRoots.networks}/network-module/suite/**/*.{js,mjs,cjs,ts,jsx,tsx}`,
+            `${allRoots.suiteLego}/**/*.{js,mjs,cjs,ts,jsx,tsx}`,
+        ],
         rules: {
             '@typescript-eslint/no-restricted-imports': [
                 'error',
