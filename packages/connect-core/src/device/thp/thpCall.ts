@@ -12,12 +12,7 @@ const ALLOWED_RESPONSE_TYPES = {
     ThpHandshakeInitRequest: ['ThpHandshakeInitResponse'],
     ThpHandshakeCompletionRequest: ['ThpHandshakeCompletionResponse'],
     ThpPairingRequest: ['ThpPairingRequestApproved'],
-    ThpSelectMethod: [
-        'ThpCodeEntryCommitment',
-        'ThpEndResponse',
-        'ThpPairingRequestApproved',
-        'ThpPairingPreparationsFinished',
-    ],
+    ThpSelectMethod: ['ThpCodeEntryCommitment', 'ThpEndResponse', 'ThpPairingPreparationsFinished'],
     ThpCodeEntryChallenge: ['ThpCodeEntryCpaceTrezor'],
     ThpCodeEntryCpaceHostTag: ['ThpCodeEntrySecret'],
     ThpQrCodeTag: ['ThpQrCodeSecret'],
