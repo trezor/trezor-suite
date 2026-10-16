@@ -19,6 +19,7 @@ const DEVICE_STATE = 'aliceWallet@device:0' as StaticSessionId;
 const BTC = asNetworkSymbol('btc');
 const POL = asNetworkSymbol('pol');
 const USDC_CONTRACT = '0x2791bca1f2de4661ed88a30c99a7a9449aa84174' as TokenAddress;
+const NAMELESS_CONTRACT = '0x0000000000000000000000000000000000000bad' as TokenAddress;
 
 const bitcoinAccount = mockWalletAccount({
     symbol: BTC,
@@ -36,6 +37,12 @@ const polygonAccount = mockWalletAccount({
             decimals: 6,
             balance: '720',
         }),
+        mockAccountToken({
+            contract: NAMELESS_CONTRACT,
+            symbol: undefined,
+            decimals: 18,
+            balance: '50',
+        }),
     ],
 });
 
@@ -44,6 +51,11 @@ const usdcOnPolygonKey = getWalletAssetKey({
     deviceState: DEVICE_STATE,
     symbol: POL,
     contractAddress: USDC_CONTRACT,
+});
+const namelessOnPolygonKey = getWalletAssetKey({
+    deviceState: DEVICE_STATE,
+    symbol: POL,
+    contractAddress: NAMELESS_CONTRACT,
 });
 
 const createPreloadedState = (accounts: Account[]) => ({
@@ -58,7 +70,9 @@ const createPreloadedState = (accounts: Account[]) => ({
             lastWeek: {},
         },
     },
-    tokenDefinitions: { [POL]: { coin: { data: [USDC_CONTRACT], hide: [], show: [] } } },
+    tokenDefinitions: {
+        [POL]: { coin: { data: [USDC_CONTRACT, NAMELESS_CONTRACT], hide: [], show: [] } },
+    },
 });
 
 const preloadedState = createPreloadedState([bitcoinAccount, polygonAccount]);
@@ -77,6 +91,15 @@ describe('PortfolioAssetListItem', () => {
         expect(screen.getByText('Polygon PoS')).toBeTruthy();
         expect(screen.getByText('$720.00')).toBeTruthy();
         expect(screen.getByText(/^720(\.00)? USDC$/)).toBeTruthy();
+    });
+
+    it('does not label the balance of a token without a ticker as the network coin', async () => {
+        await renderWithStoreProvider(<PortfolioAssetListItem assetKey={namelessOnPolygonKey} />, {
+            preloadedState,
+        });
+
+        expect(screen.getByText(/^50(\.00)?$/)).toBeTruthy();
+        expect(screen.queryByText(/POL$/)).toBeNull();
     });
 
     it('renders a network coin with its ticker, network, fiat value and balance', async () => {

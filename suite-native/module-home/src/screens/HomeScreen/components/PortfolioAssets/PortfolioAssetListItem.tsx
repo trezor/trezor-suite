@@ -14,7 +14,7 @@ import {
 } from '@suite-common/assets';
 import { useFormatters } from '@suite-common/formatters';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
-import { areBaseCurrencyAmountsEqual, toTokenSymbol } from '@suite-common/wallet-types';
+import { areBaseCurrencyAmountsEqual } from '@suite-common/wallet-types';
 import { Box, HStack, PressableOpacity, Text, VStack } from '@suite-native/atoms';
 import {
     BaseCurrencyAmountFormatter,
@@ -115,10 +115,10 @@ export const PortfolioAssetListItem = ({ assetKey }: PortfolioAssetListItemProps
                             <NetworkNameFormatter value={symbol} />
                         </Text>
                     </Box>
-                    {tokenSymbol ? (
+                    {contractAddress ? (
                         <CompactTokenAmountFormatter
                             value={asDecimalTokenAmount(amount)}
-                            tokenSymbol={toTokenSymbol(tokenSymbol)}
+                            tokenSymbol={tokenSymbol}
                             tokenDecimals={tokenDecimals}
                             variant="body-xs"
                             color="contentTertiary"
