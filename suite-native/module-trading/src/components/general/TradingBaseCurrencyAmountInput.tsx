@@ -1,28 +1,19 @@
 import { type Ref } from 'react';
 import { type Insets, type TextInput } from 'react-native';
-import { useSelector } from 'react-redux';
 
-import {
-    AMOUNT_MAX_LENGTH,
-    selectBaseCurrency,
-    selectIsBaseCurrencyInSats,
-} from '@suite-common/wallet-core';
-import { getDecimalsForBaseCurrency } from '@suite-common/wallet-utils';
-import { getFormattedCurrencySymbol } from '@suite-native/formatters';
+import { AMOUNT_MAX_LENGTH } from '@suite-common/wallet-core';
 import { decimalTransformer } from '@suite-native/helpers';
-import { selectLocale, useTranslate } from '@suite-native/intl';
+import { useTranslate } from '@suite-native/intl';
 import { nativeSpacings } from '@trezor/theme';
 
 import { AmountInput, type AmountInputProps } from './Input/AmountInput';
+import { useBaseCurrencyAmountPlaceholder } from '../../hooks/general/useBaseCurrencyAmountPlaceholder';
 
 const BASE_CURRENCY_AMOUNT_INPUT_HIT_SLOP: Insets = {
     top: nativeSpacings.sp8,
     bottom: nativeSpacings.sp8,
     left: nativeSpacings.sp20,
 };
-
-const getBaseCurrencyPlaceholder = (baseCurrencyDecimals: number) =>
-    baseCurrencyDecimals > 0 ? '0.0' : '0';
 
 export type TradingBaseCurrencyAmountInputProps = {
     value?: string;
@@ -51,21 +42,9 @@ export const TradingBaseCurrencyAmountInput = ({
     ref,
     hitSlop = BASE_CURRENCY_AMOUNT_INPUT_HIT_SLOP,
 }: TradingBaseCurrencyAmountInputProps) => {
-    const locale = useSelector(selectLocale);
-    const baseCurrency = useSelector(selectBaseCurrency);
-    const isBaseCurrencyInSats = useSelector(selectIsBaseCurrencyInSats);
-
     const { translate } = useTranslate();
-
-    const baseCurrencyLabel = getFormattedCurrencySymbol({
-        locale,
-        currency: baseCurrency,
-        isSatsValue: isBaseCurrencyInSats,
-    });
-    const baseCurrencyDecimals = getDecimalsForBaseCurrency({
-        code: baseCurrency,
-        isInSats: isBaseCurrencyInSats,
-    });
+    const { baseCurrencyLabel, baseCurrencyDecimals, placeholder } =
+        useBaseCurrencyAmountPlaceholder();
 
     return (
         <AmountInput
@@ -74,7 +53,7 @@ export const TradingBaseCurrencyAmountInput = ({
             prefix={baseCurrencyLabel}
             size="small"
             value={value ?? ''}
-            placeholder={getBaseCurrencyPlaceholder(baseCurrencyDecimals)}
+            placeholder={placeholder}
             hasError={hasError}
             editable={isEditable}
             inputTransformer={decimalTransformer}
