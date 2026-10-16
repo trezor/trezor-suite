@@ -32,9 +32,10 @@ export const convertTaprootXpub = ({ xpub, direction }: ConvertTaprootXpubParams
 };
 
 /**
- * A taproot-capable account descriptor in the canonical form Suite and blockbook use
- * internally: hardened path parts are written with `'` (apostrophe), never firmware's `h`.
- * Mint one only through {@link toCanonicalDescriptor}.
+ * Any value accepted as a backend `descriptor` — an account descriptor, an xpub or a plain
+ * address — in the canonical form Suite and blockbook use internally: where the value has hardened
+ * path parts, they are written with `'` (apostrophe), never firmware's `h`. Values without a
+ * derivation path are canonical as-is. Mint one only through {@link toCanonicalDescriptor}.
  */
 export type CanonicalDescriptor = string & Branded<'CanonicalDescriptor'>;
 
