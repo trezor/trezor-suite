@@ -61,11 +61,11 @@ test.describe.skip('Account send', { tag: ['@group=manual'] }, () => {
     );
 
     test(
-        'Multiple recipients, QR scan and import recipients',
+        'Multiple recipients and import recipients',
         {
             annotation: createTestAnnotation({
                 testCase:
-                    'Verifies sending to multiple recipients, scanning a QR code and importing recipients from a file.',
+                    'Verifies sending to multiple recipients and importing recipients from a file.',
                 prerequisites: [
                     'Seeded Trezor device',
                     'Connected Trezor Suite',
@@ -77,8 +77,6 @@ test.describe.skip('Account send', { tag: ['@group=manual'] }, () => {
                     'Click "Add recipient" and confirm a second recipient form is added',
                     'Fill both recipients and confirm the total amount and fee reflect all outputs',
                     'Remove a recipient and confirm the totals update',
-                    'Use the QR scan button and scan an address QR code',
-                    'Confirm the address (and amount, if encoded) is filled into the form',
                     'Use "Import recipients" and load the CSV file',
                     'Confirm all recipients from the file are added with correct addresses and amounts',
                     'Sign the multi-recipient transaction and confirm all outputs on the device',
