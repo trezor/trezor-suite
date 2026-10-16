@@ -8,6 +8,7 @@ import { selectIsDebugModeActive } from '@suite/debug';
 import { useDevice } from '@suite/device';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
+import { useGlobalReceiveAssets } from '@suite-common/receive';
 import { type TradingAssetOption } from '@suite-common/trading';
 import { selectAccounts, selectEnabledNetworks } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -20,7 +21,6 @@ import { AddAccountModal } from 'src/components/suite/modals/ReduxModal/UserCont
 import { useDiscovery } from 'src/hooks/suite';
 import { globalSendReceiveFiltersSelectors } from 'src/slices/wallet/globalSendReceiveFilters';
 
-import { useGlobalReceiveAssets } from './hooks/useGlobalReceiveAssets';
 import { GlobalReceiveAccountStep } from './steps/GlobalReceiveAccountStep';
 import { GlobalReceiveNetworkSetupStep } from './steps/GlobalReceiveNetworkSetupStep';
 import { GlobalReceiveSearchStep } from './steps/GlobalReceiveSearchStep';

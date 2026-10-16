@@ -4,11 +4,13 @@ import { useSelector } from 'react-redux';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { desktopQueryKeys, useQuery } from '@suite-common/react-query';
 import { fetchRankedTokenDefinitions } from '@suite-common/token-definitions';
-import { type TradeableAssetBalances, type TradingAssetOption } from '@suite-common/trading';
+import {
+    type TradeableAssetBalances,
+    type TradingAssetOption,
+    selectTradeableAssetBalances,
+} from '@suite-common/trading';
 import { type NetworkSymbol, getMainnets } from '@suite-common/wallet-config';
 import { selectDeviceSupportedNetworks } from '@suite-common/wallet-core';
-
-import { selectTradeableAssetBalances } from 'src/selectors/wallet/tradeableAssetBalancesSelectors';
 
 import { buildGlobalReceiveAssetOptions } from '../globalReceiveAssetUtils';
 

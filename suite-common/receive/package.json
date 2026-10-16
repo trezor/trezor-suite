@@ -13,11 +13,21 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.13.0",
+        "@suite-common/device": "workspace:*",
+        "@suite-common/networks": "workspace:*",
+        "@suite-common/react-query": "workspace:*",
+        "@suite-common/suite-types": "workspace:*",
+        "@suite-common/suite-utils": "workspace:*",
+        "@suite-common/test-utils": "workspace:*",
+        "@suite-common/token-definitions": "workspace:*",
+        "@suite-common/trading": "workspace:*",
+        "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
-        "@trezor/redux-utils": "workspace:*"
-    },
-    "devDependencies": {
-        "@suite-common/wallet-config": "workspace:^"
+        "@trezor/device-utils": "workspace:*",
+        "@trezor/redux-utils": "workspace:*",
+        "@trezor/utils": "workspace:*",
+        "react": "19.2.3",
+        "react-redux": "9.3.0"
     }
 }

@@ -1,5 +1,3 @@
-import { type CryptoId } from 'invity-api';
-
 import { type RankedTokenStructure } from '@suite-common/token-definitions';
 import {
     type TradeableAssetBalance,
@@ -15,6 +13,9 @@ import {
     getGlobalReceiveAssetDescriptionValues,
     getGlobalReceiveAssetSections,
 } from './globalReceiveAssetUtils';
+
+// Assets are keyed by the trade API's id type; read it off the option rather than importing invity.
+type CryptoId = TradingAssetOption['id'];
 
 type CreateAssetParams = {
     id: string;
