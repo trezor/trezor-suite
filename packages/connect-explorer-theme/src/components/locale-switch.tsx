@@ -6,7 +6,7 @@ import { GlobeIcon } from 'nextra/icons';
 
 import { Select } from '@trezor/components';
 
-import { useConfig } from '../contexts/useConfig';
+import { useThemeConfig } from '../contexts/theme-config';
 
 interface LocaleSwitchProps {
     lite?: boolean;
@@ -14,10 +14,10 @@ interface LocaleSwitchProps {
 }
 
 export function LocaleSwitch({ lite, className }: LocaleSwitchProps): ReactElement | null {
-    const config = useConfig();
+    const themeConfig = useThemeConfig();
     const { locale, asPath } = useRouter();
 
-    const options = config.i18n;
+    const options = themeConfig.i18n;
     if (!options.length) return null;
 
     const selected = options.find(l => locale === l.locale);
@@ -36,15 +36,15 @@ export function LocaleSwitch({ lite, className }: LocaleSwitchProps): ReactEleme
             value={{
                 value: selected?.locale || '',
                 label: (
-                    <span className="nx-flex nx-items-center nx-gap-2">
+                    <span className="_flex _items-center _gap-2">
                         <GlobeIcon />
-                        <span className={lite ? 'nx-hidden' : ''}>{selected?.text}</span>
+                        <span className={lite ? '_hidden' : ''}>{selected?.name}</span>
                     </span>
                 ),
             }}
             options={options.map(l => ({
                 value: l.locale,
-                label: l.text,
+                label: l.name,
             }))}
         />
     );
