@@ -95,20 +95,7 @@ const processCodeEntry = async (device: IDevice, value: string) => {
     return codeEntrySecret;
 };
 
-const processThpPairingResponse = (
-    device: IDevice,
-    payload: UiResponseThpPairingTag['payload'],
-) => {
-    if ('selectedMethod' in payload) {
-        // change pairing method
-        const selectedMethod = protocolThp.getThpPairingMethod(payload.selectedMethod);
-        device.getThpState()?.setPairingMethod(selectedMethod);
-
-        return thpCall(device, 'ThpSelectMethod', {
-            selected_pairing_method: selectedMethod,
-        });
-    }
-
+const processThpPairingResponse = (device: IDevice, payload: { tag: string }) => {
     const selectedMethod = device.getThpState()?.pairingMethod;
     if (selectedMethod === ThpPairingMethod.QrCode) {
         return processQrCodeTag(device, payload.tag);
@@ -123,6 +110,51 @@ const processThpPairingResponse = (
     }
 
     throw ERRORS.TypedError('Device_ThpPairingMethodsException');
+};
+
+// Handles the ThpSelectMethod response that arrives both during initial pairing (thpPairing)
+// and after a mid-flow method change (waitForPairingTag). Sets up per-method state so the
+// caller can proceed to waitForPairingTag.
+const applySelectMethodResponse = async (
+    device: IDevice,
+    response: protocolThp.ThpMessageResponse<
+        | 'ThpCodeEntryCommitment'
+        | 'ThpPairingPreparationsFinished'
+        | 'ThpEndResponse'
+        | 'ThpPairingRequestApproved'
+    >,
+) => {
+    const thpState = device.getThpState();
+    if (!thpState?.handshakeCredentials) {
+        throw ERRORS.TypedError('Device_ThpStateMissing');
+    }
+
+    if (response.type === 'ThpCodeEntryCommitment') {
+        const codeEntryChallenge = Buffer.from(randomBytes(32));
+        const handshakeCommitment = Buffer.from(response.message.commitment, 'hex');
+        thpState.updateHandshakeCredentials({ handshakeCommitment, codeEntryChallenge });
+
+        const codeEntryCpace = await thpCall(device, 'ThpCodeEntryChallenge', {
+            challenge: codeEntryChallenge.toString('hex'),
+        });
+        thpState.updateHandshakeCredentials({
+            trezorCpacePublicKey: Buffer.from(
+                codeEntryCpace.message.cpace_trezor_public_key,
+                'hex',
+            ),
+        });
+    } else if (response.type === 'ThpPairingPreparationsFinished') {
+        if (thpState.pairingMethod === ThpPairingMethod.NFC) {
+            thpState.setNfcSecret(Buffer.from(randomBytes(16)));
+        }
+    } else {
+        // ThpEndResponse is in the ThpSelectMethod allowed-response set but must never bypass
+        // the pairing ceremony — reject it here.
+        throw ERRORS.TypedError(
+            'Device_InvalidState',
+            `Unexpected response type: ${response.type}`,
+        );
+    }
 };
 
 const waitForPairingCancel = (device: IDevice) => {
@@ -212,6 +244,22 @@ const waitForPairingTag = async (device: IDevice) => {
     // node-bridge + usb: abort received on client side of http request resolves faster than server. result with "device call in progress"
     await resolveAfter(500);
 
+    if ('selectedMethod' in pairingResponse) {
+        // User changed the pairing method. Send the new ThpSelectMethod to the device, set up
+        // per-method state (CodeEntry challenge, NFC secret), then re-enter this function so the
+        // ceremony for the newly selected method is completed before credential issuance.
+        const selectedMethod = protocolThp.getThpPairingMethod(pairingResponse.selectedMethod);
+        thpState.setPairingMethod(selectedMethod);
+
+        const response = await thpCall(device, 'ThpSelectMethod', {
+            selected_pairing_method: selectedMethod,
+        });
+        await applySelectMethodResponse(device, response);
+
+        // re-enter to collect the tag for the newly selected method
+        return waitForPairingTag(device);
+    }
+
     return processThpPairingResponse(device, pairingResponse).catch(e => {
         // catch pairing tag mismatch
         // DataError since 2.10.0 https://github.com/trezor/trezor-firmware/commit/b0c3be9b1d95946471ebdab27918a3f652cf11e9
@@ -297,47 +345,18 @@ export const thpPairing = async (device: IDevice) => {
 
     // selected_pairing_method === ThpPairingMethod.SkipPairing
     if (selectMethod.type === 'ThpEndResponse') {
+        if (thpState.pairingMethod !== protocolThp.ThpPairingMethod.SkipPairing) {
+            throw ERRORS.TypedError('Device_ThpPairingMethodsException');
+        }
         thpState.setIsPaired(true);
         device.getThpState()?.setPhase('paired');
 
         return;
     }
 
-    // State HP2
-    if (selectMethod.type === 'ThpCodeEntryCommitment') {
-        // store handshakeCommitment and validate later in `processCodeEntry`
-        const codeEntryChallenge = Buffer.from(randomBytes(32));
-        const handshakeCommitment = Buffer.from(selectMethod.message.commitment, 'hex');
-        thpState.updateHandshakeCredentials({
-            handshakeCommitment,
-            codeEntryChallenge,
-        });
-
-        // State HP3a
-        const codeEntryCpace = await thpCall(device, 'ThpCodeEntryChallenge', {
-            challenge: codeEntryChallenge.toString('hex'),
-        });
-
-        thpState.updateHandshakeCredentials({
-            trezorCpacePublicKey: Buffer.from(
-                codeEntryCpace.message.cpace_trezor_public_key,
-                'hex',
-            ),
-        });
-
-        // State HP4 -> HP5
-        await waitForPairingTag(device);
-    }
-
-    if (selectMethod.type === 'ThpPairingPreparationsFinished') {
-        if (thpState.pairingMethod === protocolThp.ThpPairingMethod.NFC) {
-            // generate random secret and store it
-            thpState.setNfcSecret(Buffer.from(randomBytes(16)));
-        }
-
-        // State HP6 and HP7
-        await waitForPairingTag(device);
-    }
+    // State HP2, HP3a, HP6
+    await applySelectMethodResponse(device, selectMethod);
+    await waitForPairingTag(device);
 
     // State HC0
     // generate new credentials and send
