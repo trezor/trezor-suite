@@ -5,14 +5,14 @@ import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { type StaticSessionId } from '@trezor/device-utils';
 
 import {
-    type HomeAssetNftState,
+    type NftState,
     selectHiddenNftCollectionCount,
     selectHiddenNftCollectionKeys,
     selectNftCollection,
     selectNftCollectionItems,
     selectShownNftCollectionCount,
     selectShownNftCollectionKeys,
-} from './homeAssetNftSelectors';
+} from './nftSelectors';
 
 const ALICE = 'aliceWallet@device:0' as StaticSessionId;
 const BOB = 'bobWallet@device:1' as StaticSessionId;
@@ -86,7 +86,7 @@ const createState = ({
     enabledNetworks = [ETH, POL],
     knownCollections = [PUNKS, APES],
     hiddenCollections = [],
-}: MockStateParams): HomeAssetNftState => {
+}: MockStateParams): NftState => {
     const definitions = {
         coin: { data: [USDC_ON_ETH], hide: [], show: [] },
         nft: { data: knownCollections, hide: hiddenCollections, show: [] },
@@ -96,7 +96,7 @@ const createState = ({
         device: { selectedDevice: { state: { staticSessionId: ALICE } } },
         wallet: { accounts, settings: { enabledNetworks } },
         tokenDefinitions: { [ETH]: definitions, [POL]: definitions },
-    } as unknown as HomeAssetNftState;
+    } as unknown as NftState;
 };
 
 const punksOnEth = getWalletAssetKey({ deviceState: ALICE, symbol: ETH, contractAddress: PUNKS });

@@ -17,9 +17,9 @@ import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-export type HomeAssetNftState = AssetAccountsRootState & WalletSettingsRootState;
+export type NftState = AssetAccountsRootState & WalletSettingsRootState;
 
-const createMemoizedSelector = createWeakMapSelector.withTypes<HomeAssetNftState>();
+const createMemoizedSelector = createWeakMapSelector.withTypes<NftState>();
 
 /** One account's holding of one collection. */
 type NftHolding = {
@@ -224,14 +224,14 @@ export const selectHiddenNftCollectionKeys = createMemoizedSelector(
 );
 
 export const selectNftCollection = (
-    state: HomeAssetNftState,
+    state: NftState,
     assetKey: WalletAssetKey,
     isHidden = false,
 ): NftCollection | undefined =>
     (isHidden ? selectHiddenNftCollections(state) : selectNftCollections(state)).get(assetKey);
 
 const selectNftCollectionHoldings = (
-    state: HomeAssetNftState,
+    state: NftState,
     assetKey: WalletAssetKey,
     isHidden: boolean,
 ) => (isHidden ? selectHiddenNftHoldingsByKey(state) : selectNftHoldingsByKey(state)).get(assetKey);
@@ -240,8 +240,7 @@ const selectNftCollectionHoldings = (
 export const selectNftCollectionItems = createMemoizedSelector(
     [
         selectNftCollectionHoldings,
-        (_state: HomeAssetNftState, _assetKey: WalletAssetKey, _isHidden: boolean, limit: number) =>
-            limit,
+        (_state: NftState, _assetKey: WalletAssetKey, _isHidden: boolean, limit: number) => limit,
     ],
     (held, limit): NftCollectionItems | undefined =>
         held === undefined ? undefined : getNftItems(held, limit),

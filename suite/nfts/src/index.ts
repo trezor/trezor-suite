@@ -1,1 +1,2 @@
-export * from './homeAssetNftSelectors';
+export { Nfts } from './components/Nfts';
+export * from './nftSelectors';

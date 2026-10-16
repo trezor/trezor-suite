@@ -1,13 +1,16 @@
-import { useState } from 'react';
+import { type ComponentType, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
-import { selectHiddenNftCollectionCount, selectShownNftCollectionCount } from '@suite/nfts';
-import { selectIsNftSectionEnabled } from '@suite/settings';
+import { type SuiteSettingsRootState, selectIsNftSectionEnabled } from '@suite/settings';
 import { Card, Collapsible, Column, Row, SubTabs, Text } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
-
-import { HomeAssetNftTable } from './HomeAssetNftTable';
+import { NftTable } from './NftTable';
+import {
+    type NftState,
+    selectHiddenNftCollectionCount,
+    selectShownNftCollectionCount,
+} from '../nftSelectors';
 
 type NftTab = 'shown' | 'hidden';
 
@@ -30,14 +33,19 @@ const getOpenTab = ({ chosenTab, shownCount, hiddenCount }: GetOpenTabParams): N
     return chosenTab;
 };
 
-export const HomeAssetNfts = () => {
+type NftsProps = {
+    /** Renders a collection's name; spam names often carry links, which the app blurs. */
+    CollectionName: ComponentType<{ text: string }>;
+};
+
+export const Nfts = ({ CollectionName }: NftsProps) => {
     const isNftSectionEnabled = useSelector(selectIsNftSectionEnabled);
     // Users who did not turn NFTs on must not pay for gathering them. The collapsed section reads
     // only the counts; the collections themselves are gathered by the table once it is open.
-    const shownCount = useSelector(state =>
+    const shownCount = useSelector((state: NftState & SuiteSettingsRootState) =>
         isNftSectionEnabled ? selectShownNftCollectionCount(state) : 0,
     );
-    const hiddenCount = useSelector(state =>
+    const hiddenCount = useSelector((state: NftState & SuiteSettingsRootState) =>
         isNftSectionEnabled ? selectHiddenNftCollectionCount(state) : 0,
     );
     const [chosenTab, setChosenTab] = useState<NftTab>('shown');
@@ -102,7 +110,7 @@ export const HomeAssetNfts = () => {
                             </Text>
                         </Row>
 
-                        <HomeAssetNftTable isHidden={tab === 'hidden'} />
+                        <NftTable isHidden={tab === 'hidden'} CollectionName={CollectionName} />
                     </Column>
                 </Collapsible.Content>
             </Collapsible>

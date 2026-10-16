@@ -1,30 +1,30 @@
-import { useCallback, useMemo, useState } from 'react';
+import { type ComponentType, useCallback, useMemo, useState } from 'react';
+import { shallowEqual, useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
-import {
-    type NftCollectionItems,
-    type NftItem,
-    selectHiddenNftCollectionKeys,
-    selectNftCollectionItems,
-    selectShownNftCollectionKeys,
-} from '@suite/nfts';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { Divider, Table, VirtualizedList } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 
-import { useSelector } from 'src/hooks/suite';
-
-import { HomeAssetNftItemRow, HomeAssetNftMoreItemsRow } from './HomeAssetNftItemRow';
-import { HomeAssetNftRow } from './HomeAssetNftRow';
+import { NftItemRow, NftMoreItemsRow } from './NftItemRow';
+import { NftRow } from './NftRow';
 import {
+    NFT_CELL_PADDING,
     NFT_COLLECTION_ROW_HEIGHT,
     NFT_COL_WIDTHS,
     NFT_ITEM_ROW_HEIGHT,
     NFT_LIST_MAX_HEIGHT,
     NFT_MORE_ROW_HEIGHT,
     NFT_SEPARATOR_HEIGHT,
-} from './homeAssetNftLayout';
-import { HOME_ASSET_CELL_PADDING } from '../HomeAssetsTable/homeAssetTableLayout';
+} from './nftLayout';
+import {
+    type NftCollectionItems,
+    type NftItem,
+    type NftState,
+    selectHiddenNftCollectionKeys,
+    selectNftCollectionItems,
+    selectShownNftCollectionKeys,
+} from '../nftSelectors';
 
 // Spam collections can list thousands of items; past this many, one line says how many more.
 const NFT_ITEMS_LIMIT = 50;
@@ -41,24 +41,28 @@ type NftListItem = { height: number; assetKey: WalletAssetKey } & (
 
 const NO_ITEMS: NftCollectionItems = { items: [], totalCount: 0 };
 
-type HomeAssetNftTableProps = {
+type NftTableProps = {
     isHidden: boolean;
+    CollectionName: ComponentType<{ text: string }>;
 };
 
-export const HomeAssetNftTable = ({ isHidden }: HomeAssetNftTableProps) => {
+export const NftTable = ({ isHidden, CollectionName }: NftTableProps) => {
     const assetKeys = useSelector(
         isHidden ? selectHiddenNftCollectionKeys : selectShownNftCollectionKeys,
     );
     const [openKeys, setOpenKeys] = useState<ReadonlySet<WalletAssetKey>>(() => new Set());
 
-    // Only an open collection has its items built. `useSelector` compares with `shallowEqual` by
-    // default, so this array stays the same while no open collection's items change.
-    const openItems = useSelector(state =>
-        assetKeys.map(assetKey =>
-            openKeys.has(assetKey)
-                ? (selectNftCollectionItems(state, assetKey, isHidden, NFT_ITEMS_LIMIT) ?? NO_ITEMS)
-                : NO_ITEMS,
-        ),
+    // Only an open collection has its items built, and `shallowEqual` keeps this array the same
+    // while no open collection's items change.
+    const openItems = useSelector(
+        (state: NftState) =>
+            assetKeys.map(assetKey =>
+                openKeys.has(assetKey)
+                    ? (selectNftCollectionItems(state, assetKey, isHidden, NFT_ITEMS_LIMIT) ??
+                      NO_ITEMS)
+                    : NO_ITEMS,
+            ),
+        shallowEqual,
     );
 
     const { items, listHeight } = useMemo(() => {
@@ -138,22 +142,23 @@ export const HomeAssetNftTable = ({ isHidden }: HomeAssetNftTableProps) => {
             switch (row.kind) {
                 case 'collection':
                     return (
-                        <HomeAssetNftRow
+                        <NftRow
                             assetKey={row.assetKey}
                             isHidden={isHidden}
                             isOpen={openKeys.has(row.assetKey)}
                             onToggle={toggleCollection}
+                            CollectionName={CollectionName}
                         />
                     );
                 case 'item':
-                    return <HomeAssetNftItemRow assetKey={row.assetKey} item={row.item} />;
+                    return <NftItemRow assetKey={row.assetKey} item={row.item} />;
                 case 'more':
-                    return <HomeAssetNftMoreItemsRow count={row.count} />;
+                    return <NftMoreItemsRow count={row.count} />;
                 default:
                     return exhaustive(row);
             }
         },
-        [isHidden, openKeys, toggleCollection],
+        [isHidden, openKeys, toggleCollection, CollectionName],
     );
 
     // A row cannot sit in the virtualizer's positioned boxes on its own, so each gets a one-row table;
@@ -177,10 +182,10 @@ export const HomeAssetNftTable = ({ isHidden }: HomeAssetNftTableProps) => {
             <Table colWidths={NFT_COL_WIDTHS}>
                 <Table.Header>
                     <Table.Row>
-                        <Table.Cell padding={HOME_ASSET_CELL_PADDING.first}>
+                        <Table.Cell padding={NFT_CELL_PADDING.first}>
                             <Translation id="TR_HOME_ASSET_NFT_COLLECTION" />
                         </Table.Cell>
-                        <Table.Cell align="end" padding={HOME_ASSET_CELL_PADDING.last}>
+                        <Table.Cell align="end" padding={NFT_CELL_PADDING.last}>
                             <Translation id="TR_NETWORK_TITLE" />
                         </Table.Cell>
                     </Table.Row>

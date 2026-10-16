@@ -1,9 +1,11 @@
 import { memo } from 'react';
 
+import { Nfts } from '@suite/nfts';
 import { Column } from '@trezor/components';
 
+import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
+
 import { HomeAssetFeedback } from './HomeAssetFeedback';
-import { HomeAssetNfts } from './HomeAssetNfts/HomeAssetNfts';
 import { HomeAssetTable } from './HomeAssetsTable/HomeAssetTable';
 import { HomeBalanceCard } from './HomeBalance/HomeBalanceCard';
 import { DashboardPromoBanner } from '../dashboard/DashboardPromoBanner/DashboardPromoBanner';
@@ -13,7 +15,7 @@ export const HomeAssetDashboard = memo(() => (
         <HomeBalanceCard />
         <DashboardPromoBanner />
         <HomeAssetTable />
-        <HomeAssetNfts />
+        <Nfts CollectionName={BlurUrls} />
         <HomeAssetFeedback />
     </Column>
 ));
