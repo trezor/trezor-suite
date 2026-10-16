@@ -1,4 +1,4 @@
-import { type ComponentType, useState } from 'react';
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
@@ -33,12 +33,7 @@ const getOpenTab = ({ chosenTab, shownCount, hiddenCount }: GetOpenTabParams): N
     return chosenTab;
 };
 
-type NftsProps = {
-    /** Renders a collection's name; spam names often carry links, which the app blurs. */
-    CollectionName: ComponentType<{ text: string }>;
-};
-
-export const Nfts = ({ CollectionName }: NftsProps) => {
+export const Nfts = () => {
     const isNftSectionEnabled = useSelector(selectIsNftSectionEnabled);
     // Users who did not turn NFTs on must not pay for gathering them. The collapsed section reads
     // only the counts; the collections themselves are gathered by the table once it is open.
@@ -110,7 +105,7 @@ export const Nfts = ({ CollectionName }: NftsProps) => {
                             </Text>
                         </Row>
 
-                        <NftTable isHidden={tab === 'hidden'} CollectionName={CollectionName} />
+                        <NftTable isHidden={tab === 'hidden'} />
                     </Column>
                 </Collapsible.Content>
             </Collapsible>

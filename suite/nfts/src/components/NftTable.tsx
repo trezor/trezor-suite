@@ -1,4 +1,4 @@
-import { type ComponentType, useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
@@ -43,10 +43,9 @@ const NO_ITEMS: NftCollectionItems = { items: [], totalCount: 0 };
 
 type NftTableProps = {
     isHidden: boolean;
-    CollectionName: ComponentType<{ text: string }>;
 };
 
-export const NftTable = ({ isHidden, CollectionName }: NftTableProps) => {
+export const NftTable = ({ isHidden }: NftTableProps) => {
     const assetKeys = useSelector(
         isHidden ? selectHiddenNftCollectionKeys : selectShownNftCollectionKeys,
     );
@@ -147,7 +146,6 @@ export const NftTable = ({ isHidden, CollectionName }: NftTableProps) => {
                             isHidden={isHidden}
                             isOpen={openKeys.has(row.assetKey)}
                             onToggle={toggleCollection}
-                            CollectionName={CollectionName}
                         />
                     );
                 case 'item':
@@ -158,7 +156,7 @@ export const NftTable = ({ isHidden, CollectionName }: NftTableProps) => {
                     return exhaustive(row);
             }
         },
-        [isHidden, openKeys, toggleCollection, CollectionName],
+        [isHidden, openKeys, toggleCollection],
     );
 
     // A row cannot sit in the virtualizer's positioned boxes on its own, so each gets a one-row table;
