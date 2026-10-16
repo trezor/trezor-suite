@@ -304,10 +304,13 @@ export const getRootReducer: any = (selectedAccount = BTC_ACCOUNT, fees = DEFAUL
             send: sendFormReducer,
             accounts: createReducer(
                 [
-                    BTC_ACCOUNT.account,
-                    ETH_ACCOUNT.account,
-                    XRP_ACCOUNT.account,
-                    SOL_ACCOUNT.account,
+                    // The account variant a fixture selects wins over the default of the same key,
+                    // so that selectors resolving the account by key (the coinjoin spending
+                    // restriction among them) see the account the form actually renders.
+                    selectedAccount.account,
+                    ...[BTC_ACCOUNT, ETH_ACCOUNT, XRP_ACCOUNT, SOL_ACCOUNT]
+                        .map(({ account }) => account)
+                        .filter((account: any) => account.key !== selectedAccount.account?.key),
                 ],
                 () => ({}),
             ),
@@ -799,12 +802,18 @@ export const setMax: any[] = [
                 account: {
                     ...BTC_ACCOUNT.account,
                     accountType: 'coinjoin',
+                    backendType: 'coinjoin',
+                    status: 'ready',
                     addresses: {
                         ...BTC_ACCOUNT.account!.addresses,
+                        // A complete set with scores above 1 keeps the account restricted.
                         anonymitySet: {
-                            AA: 0,
+                            AA: 1,
                             BB: 50,
+                            CC: 1,
                             DD: 50,
+                            EE: 1,
+                            'should-never-be-used': 1,
                         },
                     },
                 },
@@ -812,8 +821,8 @@ export const setMax: any[] = [
             coinjoin: {
                 accounts: [
                     {
-                        targetAnonymity: 50,
                         key: 'xpub-btc-1stTestnetAddress@device_id:0',
+                        setup: { targetAnonymity: 50 },
                     },
                 ],
             },
@@ -860,6 +869,68 @@ export const setMax: any[] = [
                 // only utxos with enough anonymity are used in TrezorConnect.composeTransaction
                 // see sendFormBitcoinThunks
                 utxo: [UTXO.BB, UTXO.DD],
+            },
+        },
+    },
+    {
+        description: 'setMax: a never mixed privacy account spends all of its utxos',
+        store: {
+            selectedAccount: {
+                ...BTC_ACCOUNT,
+                account: {
+                    ...BTC_ACCOUNT.account,
+                    accountType: 'coinjoin',
+                    backendType: 'coinjoin',
+                    status: 'ready',
+                    addresses: {
+                        ...BTC_ACCOUNT.account!.addresses,
+                        // Nothing ever mixed, so the account is unrestricted and the stored target
+                        // anonymity of 5 does not exclude anything.
+                        anonymitySet: {
+                            AA: 1,
+                            BB: 1,
+                            CC: 1,
+                            DD: 1,
+                            EE: 1,
+                            'should-never-be-used': 1,
+                        },
+                    },
+                },
+            },
+            coinjoin: {
+                accounts: [{ key: 'xpub-btc-1stTestnetAddress@device_id:0' }],
+            },
+        },
+        actions: [
+            {
+                type: 'hover',
+                element: 'outputs.0.amount',
+            },
+            {
+                type: 'click',
+                element: 'outputs.0.setMax',
+                result: {
+                    composeTransactionCalls: 1,
+                    composeTransactionParams: {
+                        outputs: [{ type: 'send-max-noaddress' }],
+                    },
+                },
+            },
+        ],
+        connect: {
+            success: true,
+            payload: [
+                {
+                    type: 'nonfinal',
+                    max: '31249999500',
+                },
+            ],
+        },
+        finalResult: {
+            composeTransactionCalls: 1,
+            composeTransactionParams: {
+                // no utxo is held back for its anonymity
+                utxo: Object.values(UTXO),
             },
         },
     },

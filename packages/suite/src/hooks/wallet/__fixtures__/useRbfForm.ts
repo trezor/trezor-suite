@@ -973,6 +973,8 @@ export const composeAndSign: ComposeAndSignFixture[] = [
                 ...BTC_CJ_ACCOUNT,
                 account: {
                     ...BTC_CJ_ACCOUNT.account,
+                    backendType: 'coinjoin',
+                    status: 'ready',
                     utxo: [
                         {
                             amount: '30000',
@@ -994,7 +996,11 @@ export const composeAndSign: ComposeAndSignFixture[] = [
                 },
             },
             coinjoin: {
-                accounts: [{ key: BTC_CJ_ACCOUNT.account!.key }],
+                // The restrictions switch of this account is on, so its unmixed utxos stay out of
+                // automatic coin selection.
+                accounts: [
+                    { key: BTC_CJ_ACCOUNT.account!.key, areSpendingRestrictionsEnabled: true },
+                ],
             },
         },
         tx: PREPARE_TX({
