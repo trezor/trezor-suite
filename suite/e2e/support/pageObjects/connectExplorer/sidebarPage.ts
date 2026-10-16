@@ -29,8 +29,12 @@ export class SidebarPage {
     readonly miscellaneousSection: Locator;
     readonly coinSelect: Locator;
     readonly themeSwitch: Locator;
+    // Entries read off the rendered tree already carry a test-ID segment, routes do not, so the
+    // segment-taking locator is the primitive and the route-taking one converts on top of it.
+    readonly desktopLinkBySegment = (testIdSegment: string): Locator =>
+        this.desktopMenu.getByTestId(`@explorer/sidebar/link/${testIdSegment}`);
     readonly desktopLink = (route: string): Locator =>
-        this.desktopMenu.getByTestId(`@explorer/sidebar/link/${getRouteTestIdSegment(route)}`);
+        this.desktopLinkBySegment(getRouteTestIdSegment(route));
     readonly mobileLink = (route: string): Locator =>
         this.mobileMenu.getByTestId(`@explorer/sidebar/link/${getRouteTestIdSegment(route)}`);
     readonly folder = (route: string): Locator =>
