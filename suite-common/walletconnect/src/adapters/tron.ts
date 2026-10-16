@@ -149,6 +149,7 @@ const tronRequestThunk = createThunk<
             const device = selectSelectedDevice(getState());
             const { origin } = event.verifyContext.verified;
 
+            const deferred = trezorConnectPopupActions.createPopupCallDeferred();
             dispatch(
                 trezorConnectPopupActions.connectPopupCallThunk({
                     method: 'tronSignTransaction',
@@ -170,11 +171,13 @@ const tronRequestThunk = createThunk<
                             appIcon: session.peer.metadata.icons?.[0],
                         },
                     },
+                    responseId: deferred.id,
                 }),
             );
 
-            const response = (await trezorConnectPopupActions.getPopupCallDeferred(true)
-                .promise) as Result<CallMethodResponse<'tronSignTransaction'>>;
+            const response = (await deferred.promise) as Result<
+                CallMethodResponse<'tronSignTransaction'>
+            >;
 
             if (!response.success || !response.payload.signature) {
                 console.error('tron_signTransaction error', response);
