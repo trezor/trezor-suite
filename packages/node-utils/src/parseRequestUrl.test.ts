@@ -184,6 +184,30 @@ const parseFixtures: ParseFixture[] = [
             hash: null,
         },
     },
+    {
+        description: 'origin-form target whose leading // the URL parser reads as an authority',
+        input: '//enumerate',
+        expected: {
+            protocol: null,
+            hostname: null,
+            pathname: null,
+            query: {},
+            search: null,
+            hash: null,
+        },
+    },
+    {
+        description: 'origin-form target with an authority and a path',
+        input: '//example.com/status',
+        expected: {
+            protocol: null,
+            hostname: null,
+            pathname: null,
+            query: {},
+            search: null,
+            hash: null,
+        },
+    },
 ];
 
 type FormatFixture = {
