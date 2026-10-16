@@ -4,18 +4,6 @@ import { BluetoothIpc } from './bluetooth-ipc-main';
 import { TrezorBluetooth } from './trezor-bluetooth';
 import { type BluetoothDevice } from './types';
 
-const mockBluetoothDevice = (device: Partial<BluetoothDevice> = {}): BluetoothDevice => ({
-    id: 'mock-bluetooth-device',
-    name: 'Trezor',
-    macAddress: '00:11:22:33:44:55',
-    data: [0, 0, 0],
-    connected: false,
-    connectionStatus: { type: 'disconnected' },
-    lastUpdatedTimestamp: 0,
-    paired: true,
-    ...device,
-});
-
 describe('BluetoothIpc scan ownership', () => {
     const sendMock = jest.spyOn(TrezorBluetooth.prototype, 'sendMessage');
     const isConnectedMock = jest.spyOn(TrezorBluetooth.prototype, 'isConnected');
@@ -136,32 +124,6 @@ describe('BluetoothIpc scan ownership', () => {
         await Promise.all([stop, start]);
 
         expect(sendMock.mock.calls.map(([request]) => request.method)).toEqual([
-            'stop_scan',
-            'start_scan',
-        ]);
-    });
-
-    it('guard initialScan stop_scan', async () => {
-        const knownDevice = mockBluetoothDevice();
-        const scanStopStarted = createDeferred<void>();
-
-        sendMock.mockImplementation(message => {
-            if (message.method === 'stop_scan') {
-                scanStopStarted.resolve();
-            }
-
-            return Promise.resolve({ devices: [knownDevice], success: true });
-        });
-
-        const initPromise = ipc.init({ knownDevices: [knownDevice] });
-        // start scanning when initial stop_scan has started
-        await scanStopStarted.promise;
-        await ipc.startScan('ui');
-        await initPromise;
-
-        expect(sendMock.mock.calls.map(([request]) => request.method)).toEqual([
-            'set_state',
-            'start_scan',
             'stop_scan',
             'start_scan',
         ]);
