@@ -35,14 +35,8 @@ import {
 } from '@suite-common/wallet-utils';
 import { type BlockbookTransaction } from '@trezor/blockchain-link-types';
 import TrezorConnect, { type PROTO } from '@trezor/connect';
-import {
-    type DefinitionsChannel,
-    asCoinSymbol,
-    getDefinitionsVersionForFirmware,
-    getEthereumDefinitionsBaseUrl,
-} from '@trezor/connect-common';
+import { type DefinitionsChannel, asCoinSymbol } from '@trezor/connect-common';
 import { type Getter } from '@trezor/dependency-injection';
-import { getFirmwareVersionArray } from '@trezor/device-utils';
 import { createPrepareEvmForReview } from '@trezor/network-ethereum-suite-common';
 import {
     type PrepareForReview,
@@ -89,7 +83,11 @@ import {
     type SignTransactionError,
     type SignTransactionTimeoutError,
 } from './sendFormTypes';
-import { createIsEvmTokenDefinitionKnown, isSolanaTokenDefinitionKnown } from './tokenDefinitions';
+import {
+    createIsEvmTokenDefinitionKnown,
+    getDeviceEthereumDefinitionsBaseUrl,
+    isSolanaTokenDefinitionKnown,
+} from './tokenDefinitions';
 import { accountsActions } from '../accounts/accountsActions';
 import { type AccountsRootState } from '../accounts/accountsReducer';
 import { selectAccountByKey } from '../accounts/accountsSelectors';
@@ -963,10 +961,8 @@ export const enhancePrecomposedTransactionThunk = createThunk<
             await enhancePrecomposedTransaction(params, {
                 // Probe the same definitions Connect will send to the device.
                 getEvmDefinitionsBaseUrl: () =>
-                    getEthereumDefinitionsBaseUrl(
-                        getDefinitionsVersionForFirmware(
-                            getFirmwareVersionArray(device) ?? undefined,
-                        ),
+                    getDeviceEthereumDefinitionsBaseUrl(
+                        device,
                         extra.services.getDebugSettings().definitionsChannel,
                     ),
             });

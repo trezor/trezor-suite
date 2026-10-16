@@ -210,7 +210,11 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
     const getChainPendingSends = createReadChainPendingSends({ queryClient });
 
     const createChainNetworks = createDesktopChainNetworks({
-        ...createWalletChainSendDeps({ dispatch: deps.dispatch, getState: deps.getState }),
+        ...createWalletChainSendDeps({
+            dispatch: deps.dispatch,
+            getState: deps.getState,
+            getDefinitionsChannel: () => selectDebugSettings(deps.getState()).definitionsChannel,
+        }),
         getChainPendingSends,
         getTrezorConnect: deps.getTrezorConnect,
         getNetworkConfig: networks.getNetworkConfig,

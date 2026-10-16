@@ -4,6 +4,7 @@ import {
     selectSelectedDevice,
 } from '@suite-common/device';
 import { datetimeToLocktime, resolveStellarContractId } from '@suite-common/wallet-utils';
+import type { DefinitionsChannel } from '@trezor/connect-common';
 import type { BitcoinSendAppDeps } from '@trezor/network-bitcoin-suite-common';
 import type { EvmSendAppDeps } from '@trezor/network-ethereum-suite-common';
 import type { ChainSendAccount } from '@trezor/network-module-suite-common-types';
@@ -11,7 +12,11 @@ import type { SolanaSendAppDeps } from '@trezor/network-solana-suite-common';
 import type { StellarSendAppDeps } from '@trezor/network-stellar-suite-common';
 
 import { handleEvmFeeEstimationFailure } from './reportEthereumFeeEstimationError';
-import { isEvmTokenDefinitionKnown, isSolanaTokenDefinitionKnown } from './tokenDefinitions';
+import {
+    createIsEvmTokenDefinitionKnown,
+    getDeviceEthereumDefinitionsBaseUrl,
+    isSolanaTokenDefinitionKnown,
+} from './tokenDefinitions';
 import { type AccountsRootState } from '../accounts/accountsReducer';
 import { selectAccounts } from '../accounts/accountsSelectors';
 import {
@@ -30,6 +35,9 @@ export type WalletChainSendDepsState = AccountsRootState &
 export type CreateWalletChainSendDepsParams = {
     dispatch: (action: any) => any;
     getState: () => WalletChainSendDepsState;
+
+    /** The channel Connect takes token definitions from (debug settings); production when unset. */
+    getDefinitionsChannel: () => DefinitionsChannel | undefined;
 };
 
 // EVM networks resolve the nonce themselves, from their backend and the pending sends.
@@ -45,6 +53,7 @@ export type WalletChainSendDeps = BitcoinSendAppDeps &
 export const createWalletChainSendDeps = ({
     dispatch,
     getState,
+    getDefinitionsChannel,
 }: CreateWalletChainSendDepsParams): WalletChainSendDeps => {
     const getWalletAccount = (account: ChainSendAccount) =>
         selectAccounts(getState()).find(
@@ -63,7 +72,13 @@ export const createWalletChainSendDeps = ({
         },
         getStellarBackendUrl: symbol => selectBlockchainUrl(getState(), symbol),
         resolveStellarContractId,
-        isEvmTokenDefinitionKnown,
+        // Probe the same definitions Connect will send to the selected device.
+        isEvmTokenDefinitionKnown: createIsEvmTokenDefinitionKnown(() =>
+            getDeviceEthereumDefinitionsBaseUrl(
+                selectSelectedDevice(getState()),
+                getDefinitionsChannel(),
+            ),
+        ),
         isSolanaTokenDefinitionKnown,
         getSolanaBlockInfo: symbol => {
             const { blockhash, blockHeight } = selectBlockchainBlockInfoBySymbol(
