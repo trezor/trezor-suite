@@ -39,18 +39,18 @@ jobs:
       - name: Install dependencies
         run: |
           echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
-          yarn workspaces focus @trezor/components @trezor/product-components
+          yarn install --immutable
 
       - name: Build storybook
         env:
           ASSET_PREFIX: /components/develop
         run: |
           yarn workspace @trezor/components storybook-build
-      - name: Build product-components storybook
+      - name: Build Suite storybook
         env:
           ASSET_PREFIX: /product-components/develop
         run: |
-          yarn workspace @trezor/product-components storybook-build
+          yarn workspace @suite/storybook storybook-build
 
       - name: Upload suite storybook to dev.suite.sldev.cz
         env:
@@ -58,4 +58,4 @@ jobs:
           PRODUCT_COMPONENTS_DEPLOY_PATH: s3://dev.suite.sldev.cz/product-components/develop
         run: |
           aws s3 sync --delete ./packages/components/.build-storybook ${COMPONENTS_DEPLOY_PATH}
-          aws s3 sync --delete ./packages/product-components/.build-storybook ${PRODUCT_COMPONENTS_DEPLOY_PATH}
+          aws s3 sync --delete ./suite/storybook/.build-storybook ${PRODUCT_COMPONENTS_DEPLOY_PATH}

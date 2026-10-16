@@ -1,5 +1,6 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
+import { FeedbackCard } from '@suite/feature-feedback';
 import { selectIsHomeAssetTableFeedbackClosed, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { selectShownWalletAssetKeys } from '@suite-common/assets';
@@ -11,7 +12,6 @@ import {
 import { Box, GhostContainer, Icon } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { XIcon } from '@trezor/icons';
-import { FeedbackCard } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';

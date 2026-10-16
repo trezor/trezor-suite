@@ -1,11 +1,11 @@
 import { type ReactNode, useState } from 'react';
 
-import { type Rating } from '@suite-common/feedback';
+import { type Rating, ratingOptions } from '@suite-common/feedback';
 import { Card, Column, Flex, H3, IconCircle, Paragraph, Row } from '@trezor/components';
 import { CheckIcon } from '@trezor/icons';
+import { EmojiRatingSelector } from '@trezor/product-components';
 
 import { FeedbackFormModal } from './FeedbackFormModal';
-import { EmojiRatingSelector } from '../EmojiRatingSelector/EmojiRatingSelector';
 
 type FeedbackCardView = 'form' | 'success';
 
@@ -88,7 +88,11 @@ export const FeedbackCard = ({
                 >
                     <H3 typographyStyle="body-md-strong">{heading}</H3>
 
-                    <EmojiRatingSelector value={rating} onChange={handleRatingSelect} />
+                    <EmojiRatingSelector
+                        options={ratingOptions}
+                        value={rating}
+                        onChange={handleRatingSelect}
+                    />
                 </Flex>
             </Card>
 

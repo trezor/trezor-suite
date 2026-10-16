@@ -2,7 +2,7 @@ import { create } from 'storybook/theming/create';
 
 const common = {
     fontBase: 'TT Satoshi',
-    brandTitle: 'Product Components',
+    brandTitle: 'Suite Storybook',
 };
 
 export const lightTheme = create({

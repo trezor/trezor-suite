@@ -7,6 +7,7 @@ import {
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
+import { FeedbackCard } from '@suite/feature-feedback';
 import { Translation } from '@suite/intl';
 import { type Rating, buildUserFeedbackData, sendFeedbackThunk } from '@suite-common/feedback';
 import { selectCountryCode } from '@suite-common/geolocation';
@@ -16,7 +17,6 @@ import {
 } from '@suite-common/message-system';
 import { type TradingType } from '@suite-common/trading';
 import { useServices } from '@trezor/dependency-injection';
-import { FeedbackCard } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
