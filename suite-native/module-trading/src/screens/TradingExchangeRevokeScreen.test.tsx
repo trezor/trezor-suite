@@ -8,7 +8,7 @@ import { getTranslation } from '@suite-native/intl';
 import {
     type RootStackParamList,
     RootStackRoutes,
-    useNavigationRemoveActionInterceptor,
+    useNavigationBackListener,
 } from '@suite-native/navigation';
 import { eth1NormalAccount, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
 import { type TradingRootState } from '@suite-native/trading-state';
@@ -21,21 +21,18 @@ type State = TradingRootState;
 const mockShowSheet = jest.fn();
 const mockHideSheet = jest.fn();
 const mockConfirmApproval = jest.fn().mockResolvedValue({});
-const mockNavigationDispatch = jest.fn();
 
 jest.mock('@suite-native/navigation', () => ({
     ...jest.requireActual('@suite-native/navigation'),
-    useNavigationRemoveActionInterceptor: jest.fn(),
+    useNavigationBackListener: jest.fn(),
 }));
 
-const mockedUseNavigationRemoveActionInterceptor = jest.mocked(
-    useNavigationRemoveActionInterceptor,
-);
+const mockedUseNavigationBackListener = jest.mocked(useNavigationBackListener);
 
-const triggerPreventNavigationRemove = (action: NavigationAction = { type: 'GO_BACK' }) => {
-    const params = mockedUseNavigationRemoveActionInterceptor.mock.calls.at(-1)?.[0];
+const triggerNavigationBack = (action: NavigationAction = { type: 'GO_BACK' }) => {
+    const params = mockedUseNavigationBackListener.mock.calls.at(-1)?.[0];
 
-    params?.onInterceptedAction?.(action);
+    params?.onBack(action);
 };
 
 jest.mock('../hooks/exchange/Approval/useApprovalFlow', () => ({
@@ -96,10 +93,7 @@ describe('TradingExchangeRevokeScreen', () => {
 
     const renderScreen = async (params: Record<string, unknown> = {}) => {
         const result = await renderWithTradingProvider(
-            <TradingExchangeRevokeScreen
-                route={{ params } as any}
-                navigation={{ dispatch: mockNavigationDispatch } as any}
-            />,
+            <TradingExchangeRevokeScreen route={{ params } as any} navigation={{} as any} />,
             {
                 services: { analytics: mockNativeAnalytics(mockAnalyticsReport), store },
                 tradeType: 'exchange',
@@ -176,11 +170,10 @@ describe('TradingExchangeRevokeScreen', () => {
 
         const backAction: NavigationAction = { type: 'GO_BACK' };
 
-        triggerPreventNavigationRemove(backAction);
+        triggerNavigationBack(backAction);
 
         const selectedQuote = selectTradingExchangeSelectedQuote(store.getState());
         expect(selectedQuote).toBeUndefined();
-        expect(mockNavigationDispatch).toHaveBeenCalledWith(backAction);
     });
 
     it('should render low limit info alert when shouldIncreaseLimit is true', async () => {
@@ -218,7 +211,7 @@ describe('TradingExchangeRevokeScreen', () => {
             store.dispatch(tradingExchangeActions.saveSelectedQuote(testQuote));
             await renderScreen();
 
-            triggerPreventNavigationRemove({ type: 'GO_BACK' });
+            triggerNavigationBack({ type: 'GO_BACK' });
 
             expect(mockAnalyticsReport).toHaveBeenCalledWith({
                 type: events.tradingExchangeEvent.name,
