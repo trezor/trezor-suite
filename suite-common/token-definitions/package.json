@@ -34,7 +34,7 @@
         "@trezor/eslint": "workspace:*",
         "ajv": "^8.20.0",
         "jws": "^4.0.1",
-        "toml": "^4.1.2",
+        "toml": "^5.0.0",
         "zod": "4.6.5"
     }
 }

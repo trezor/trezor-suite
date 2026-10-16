@@ -1,14 +1,10 @@
 {
     "extends": "../../../tsconfig.base.json",
-    "compilerOptions": {
-        "outDir": "libDev"
-    },
+    "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
             "path": "../../network-module/network-assets-types"
         },
-        {
-            "path": "../network-ethereum-types"
-        }
+        { "path": "../network-ethereum-types" }
     ]
 }

@@ -1962,12 +1962,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@blockaid/client@npm:1.5.0":
-  version: 1.5.0
-  resolution: "@blockaid/client@npm:1.5.0"
+"@blockaid/client@npm:1.8.0":
+  version: 1.8.0
+  resolution: "@blockaid/client@npm:1.8.0"
   bin:
     blockaid-client: bin/cli
-  checksum: 10/1a743064ffe7b7f665b29ef8cf138709d5571e659f4bf77a01a8993292e51bf9bb1386360fa3101e7ba65821a819ea269908ceb800f4f9ba90ef33a8a43a422e
+  checksum: 10/73c2834cd9abca8c73ea53f0b1e5caa4c11067c79b6ce699e7cb2a3d3e4a5d030acd76ff07393b050c3503ff9b25cb04c51157d999dff9990c849ab1621cf3e1
   languageName: node
   linkType: hard
 
@@ -6341,7 +6341,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/curves@npm:1.9.7, @noble/curves@npm:^1.0.0, @noble/curves@npm:~1.9.0":
+"@noble/curves@npm:1.9.7, @noble/curves@npm:~1.9.0":
   version: 1.9.7
   resolution: "@noble/curves@npm:1.9.7"
   dependencies:
@@ -6350,7 +6350,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/curves@npm:^2.0.1, @noble/curves@npm:~2.2.0":
+"@noble/curves@npm:2.4.0, @noble/curves@npm:^2.0.1":
+  version: 2.4.0
+  resolution: "@noble/curves@npm:2.4.0"
+  dependencies:
+    "@noble/hashes": "npm:2.4.0"
+  checksum: 10/9d9c592c500a6248068200ce46e1bde5e4df03c4162a528397f7a5f02c885a0408dc20d365e6224b63efef3fc3ea26fc1c9c8338d602fc78991feadb2e425968
+  languageName: node
+  linkType: hard
+
+"@noble/curves@npm:~2.2.0":
   version: 2.2.0
   resolution: "@noble/curves@npm:2.2.0"
   dependencies:
@@ -6380,7 +6389,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/hashes@npm:1.8.0, @noble/hashes@npm:^1.0.0, @noble/hashes@npm:^1.2.0, @noble/hashes@npm:^1.6.0, @noble/hashes@npm:^1.8.0, @noble/hashes@npm:~1.8.0":
+"@noble/hashes@npm:1.8.0, @noble/hashes@npm:^1.2.0, @noble/hashes@npm:^1.6.0, @noble/hashes@npm:^1.8.0, @noble/hashes@npm:~1.8.0":
   version: 1.8.0
   resolution: "@noble/hashes@npm:1.8.0"
   checksum: 10/474b7f56bc6fb2d5b3a42132561e221b0ea4f91e590f4655312ca13667840896b34195e2b53b7f097ec080a1fdd3b58d902c2a8d0fbdf51d2e238b53808a177e
@@ -9058,21 +9067,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@scure/base@npm:1.2.6, @scure/base@npm:^1.1.3, @scure/base@npm:~1.2.5":
+"@scure/base@npm:1.2.6, @scure/base@npm:~1.2.5":
   version: 1.2.6
   resolution: "@scure/base@npm:1.2.6"
   checksum: 10/c1a7bd5e0b0c8f94c36fbc220f4a67cc832b00e2d2065c7d8a404ed81ab1c94c5443def6d361a70fc382db3496e9487fb9941728f0584782b274c18a4bed4187
   languageName: node
   linkType: hard
 
-"@scure/base@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@scure/base@npm:2.0.0"
-  checksum: 10/8fb86024f22e9c532d513b8df8a672252e58bd5695920ce646162287f0accd38e89cab58722a738b3d247b5dcf7760362ae2d82d502be7e62a555f5d98f8a110
+"@scure/base@npm:2.4.0, @scure/base@npm:^2.0.0":
+  version: 2.4.0
+  resolution: "@scure/base@npm:2.4.0"
+  checksum: 10/acf3f04119fdba33365e387110edc01585616fe81e96b1b9685fc2e3970736c204613f94614d7b8f4a63d1d31b8b155405eed0ac7afb27d57cdaaf5ea76eb857
   languageName: node
   linkType: hard
 
-"@scure/bip32@npm:1.7.0, @scure/bip32@npm:^1.3.1, @scure/bip32@npm:^1.7.0":
+"@scure/bip32@npm:1.7.0, @scure/bip32@npm:^1.7.0":
   version: 1.7.0
   resolution: "@scure/bip32@npm:1.7.0"
   dependencies:
@@ -9083,7 +9092,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@scure/bip39@npm:1.6.0, @scure/bip39@npm:^1.2.1, @scure/bip39@npm:^1.5.1, @scure/bip39@npm:^1.6.0":
+"@scure/bip32@npm:^2.0.1":
+  version: 2.4.0
+  resolution: "@scure/bip32@npm:2.4.0"
+  dependencies:
+    "@noble/curves": "npm:2.4.0"
+    "@noble/hashes": "npm:2.4.0"
+    "@scure/base": "npm:2.4.0"
+  checksum: 10/433010a5e29b3983877e472d6ebc90472a6fcab37c90f0ae9a4524cc702ad3de17298da4bc3239fe31e17328e9cf97cf11e14406c247449e451ba8d4e4dcf30f
+  languageName: node
+  linkType: hard
+
+"@scure/bip39@npm:1.6.0, @scure/bip39@npm:^1.5.1, @scure/bip39@npm:^1.6.0":
   version: 1.6.0
   resolution: "@scure/bip39@npm:1.6.0"
   dependencies:
@@ -9093,7 +9113,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@scure/bip39@npm:^2.3.0":
+"@scure/bip39@npm:^2.0.1, @scure/bip39@npm:^2.3.0":
   version: 2.4.0
   resolution: "@scure/bip39@npm:2.4.0"
   dependencies:
@@ -10832,9 +10852,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@stellar/stellar-sdk@npm:17.1.0":
-  version: 17.1.0
-  resolution: "@stellar/stellar-sdk@npm:17.1.0"
+"@stellar/stellar-sdk@npm:17.2.1":
+  version: 17.2.1
+  resolution: "@stellar/stellar-sdk@npm:17.2.1"
   dependencies:
     "@exodus/bytes": "npm:^1.15.1"
     "@noble/ed25519": "npm:^3.1.0"
@@ -10849,8 +10869,10 @@ __metadata:
     smol-toml: "npm:^1.6.1"
     uint8array-extras: "npm:^1.5.0"
   bin:
+    stellar-contract-bindings-typescript: bin/stellar-contract-bindings-typescript
     stellar-js: bin/stellar-js
-  checksum: 10/8158e7d263e0c4e70d9296fdebca01e2f0c40b4120a05b34e410f9094d3f148ac2916ed9990683530c47165863c9cf0ca15b84ca866c0bad6c80ea3813c4549c
+    stellar-sdk: bin/stellar-js
+  checksum: 10/a74765f2e704bf79f6949f9aba90327dca2df30d3ef7825443b109789c847602b3fdf164dc6ae029fb3d7233bac8f0753f0a1b2d6b176acdb2e31af42fd30f42
   languageName: node
   linkType: hard
 
@@ -11252,7 +11274,7 @@ __metadata:
     "@trezor/crypto-utils": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
     "@trezor/network-module-suite-common-types": "workspace:*"
-    viem: "npm:^2.54.1"
+    viem: "npm:^2.57.2"
   languageName: unknown
   linkType: soft
 
@@ -12278,7 +12300,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     ajv: "npm:^8.20.0"
     jws: "npm:^4.0.1"
-    toml: "npm:^4.1.2"
+    toml: "npm:^5.0.0"
     zod: "npm:4.6.5"
   languageName: unknown
   linkType: soft
@@ -12358,7 +12380,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/tx-simulation@workspace:suite-common/tx-simulation"
   dependencies:
-    "@blockaid/client": "npm:1.5.0"
+    "@blockaid/client": "npm:1.8.0"
     "@scure/base": "npm:^2.0.0"
     "@suite-common/react-query": "workspace:^"
     "@suite-common/wallet-config": "workspace:^"
@@ -12458,7 +12480,7 @@ __metadata:
     react: "npm:19.2.3"
     react-hook-form: "npm:^7.77.0"
     react-redux: "npm:9.3.0"
-    viem: "npm:^2.54.1"
+    viem: "npm:^2.57.2"
   languageName: unknown
   linkType: soft
 
@@ -18019,7 +18041,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link@workspace:packages/blockchain-link"
   dependencies:
-    "@stellar/stellar-sdk": "npm:17.1.0"
+    "@stellar/stellar-sdk": "npm:17.2.1"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"
     "@trezor/e2e-utils": "workspace:*"
@@ -18038,7 +18060,7 @@ __metadata:
     html-webpack-plugin: "npm:5.6.8"
     socks-proxy-agent: "npm:8.0.5"
     tiny-worker: "npm:^2.3.0"
-    viem: "npm:^2.54.1"
+    viem: "npm:^2.57.2"
     webpack: "npm:5.110.1"
     worker-loader: "npm:^3.0.8"
   peerDependencies:
@@ -18217,7 +18239,7 @@ __metadata:
     process: "npm:^0.11.10"
     stream-browserify: "npm:^3.0.0"
     tsx: "npm:^4.21.0"
-    viem: "npm:^2.54.1"
+    viem: "npm:^2.57.2"
     vite-plugin-node-polyfills: "npm:^0.26.0"
     vite-plugin-wasm: "npm:^3.6.0"
     vitest: "npm:^4.1.10"
@@ -18740,7 +18762,7 @@ __metadata:
     "@trezor/network-module-types": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    viem: "npm:^2.54.1"
+    viem: "npm:^2.57.2"
   languageName: unknown
   linkType: soft
 
@@ -18757,7 +18779,7 @@ __metadata:
   resolution: "@trezor/network-ethereum@workspace:networks/ethereum/network-ethereum"
   dependencies:
     "@trezor/network-ethereum-types": "workspace:*"
-    viem: "npm:^2.54.1"
+    viem: "npm:^2.57.2"
   languageName: unknown
   linkType: soft
 
@@ -18834,7 +18856,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/network-ripple@workspace:networks/ripple/network-ripple"
   dependencies:
-    xrpl: "npm:4.6.0"
+    xrpl: "npm:5.3.0"
   languageName: unknown
   linkType: soft
 
@@ -18921,7 +18943,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/network-stellar@workspace:networks/stellar/network-stellar"
   dependencies:
-    "@stellar/stellar-sdk": "npm:17.1.0"
+    "@stellar/stellar-sdk": "npm:17.2.1"
     "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
@@ -19281,7 +19303,7 @@ __metadata:
     lodash: "npm:^4.18.1"
     tsx: "npm:^4.21.0"
     type-fest: "npm:5.5.0"
-    viem: "npm:^2.54.1"
+    viem: "npm:^2.57.2"
     xvfb-maybe: "npm:^0.2.1"
     zxing-wasm: "npm:3.0.0"
   languageName: unknown
@@ -22139,24 +22161,31 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@xrplf/isomorphic@npm:^1.0.0, @xrplf/isomorphic@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "@xrplf/isomorphic@npm:1.0.1"
+"@xrplf/isomorphic@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "@xrplf/isomorphic@npm:1.0.2"
   dependencies:
-    "@noble/hashes": "npm:^1.0.0"
+    "@noble/hashes": "npm:^2.0.1"
     eventemitter3: "npm:5.0.1"
-    ws: "npm:^8.13.0"
-  checksum: 10/2d24f0631528be2611c2d41beb97e2f89623d2613e14292e306d96fb6c7f0e044a33f1d93a5e609cdde9f49ea5debd2ca855ddb387ae8aba1aa21358f10df941
+    ws: "npm:^8.20.0"
+  checksum: 10/9478a457a10fe2f8cc10563e4daec2164a024897066a47bb6517300f6905133ff43ab8bc1eb4a055e59affb48f51687919a961b394fbe788b078eeb68419bd9c
   languageName: node
   linkType: hard
 
-"@xrplf/secret-numbers@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@xrplf/secret-numbers@npm:2.0.0"
+"@xrplf/mpt-crypto@npm:^0.1.1":
+  version: 0.1.1
+  resolution: "@xrplf/mpt-crypto@npm:0.1.1"
+  checksum: 10/7e1cda95378808617532452e6447ba1b902bfc243eb5bee7c56461d914826f835653a80c20f63659411e264a43ee8ac57fa574b769d1a01f16cb13a42fcfb895
+  languageName: node
+  linkType: hard
+
+"@xrplf/secret-numbers@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@xrplf/secret-numbers@npm:3.0.0"
   dependencies:
-    "@xrplf/isomorphic": "npm:^1.0.1"
-    ripple-keypairs: "npm:^2.0.0"
-  checksum: 10/fe10014dd3d0751c47be14e4ed78f900a01ad3a70639cf61d0b3a6f11b2a68bba8c14a74bfe80142bce00636a2fc2ff2e287c3fc8ad7ba28a4c34fe5f048a761
+    "@xrplf/isomorphic": "npm:^1.0.2"
+    ripple-keypairs: "npm:^3.0.0"
+  checksum: 10/d4b0cbef4f06a30dd1050463987eead13c7868894eb95e29cdda66d02d54c997f1ef1f91c641309bd0fa9ead116d640dd4b8574a5523ef882c90a826d77f13ae
   languageName: node
   linkType: hard
 
@@ -23804,17 +23833,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"bignumber.js@npm:^10.0.2":
+  version: 10.0.2
+  resolution: "bignumber.js@npm:10.0.2"
+  checksum: 10/20a77090e3ce830d3e4c267f27d0fc8a26e1eaa6d2ced1e5354edae2a8b0a1613c29f84725130110d9dd8e36929b15f1f0d92a265b585e62e442955aeb1cfe87
+  languageName: node
+  linkType: hard
+
 "bignumber.js@npm:^11.1.4":
   version: 11.1.5
   resolution: "bignumber.js@npm:11.1.5"
   checksum: 10/79a5ff40e2459497f4e4023a305ac134cda2ff97f2f4c97847b55f552ea2dae1e9e2330df0f05c2f3fcf63f469bbff35dabe44ca444a23ecb3c900779672c30f
-  languageName: node
-  linkType: hard
-
-"bignumber.js@npm:^9.0.0":
-  version: 9.3.1
-  resolution: "bignumber.js@npm:9.3.1"
-  checksum: 10/1be0372bf0d6d29d0a49b9e6a9cefbd54dad9918232ad21fcd4ec39030260773abf0c76af960c6b3b98d3115a3a71e61c6a111812d1395040a039cfa178e0245
   languageName: node
   linkType: hard
 
@@ -40484,9 +40513,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ox@npm:0.14.30":
-  version: 0.14.30
-  resolution: "ox@npm:0.14.30"
+"ox@npm:0.14.45":
+  version: 0.14.45
+  resolution: "ox@npm:0.14.45"
   dependencies:
     "@adraffy/ens-normalize": "npm:^1.11.0"
     "@noble/ciphers": "npm:^1.3.0"
@@ -40501,7 +40530,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10/c58e0f989f883963152f3cf7f9ee2b0d762bb5eb3a393eee4d2fed7ecd70e3eac70653ec21d7f351e5ad299a42840e827fc6ec1f07532b9280e178556b9449c8
+  checksum: 10/44f4414d28a93cfe1f608eba7135a2fe7b153305f25b0af5fc35eb7d345ad452e47423d1045ea3a15035d130bd10874fb71be958d5ed16ad49d97114075cae58
   languageName: node
   linkType: hard
 
@@ -44141,35 +44170,35 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ripple-address-codec@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "ripple-address-codec@npm:5.0.0"
+"ripple-address-codec@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "ripple-address-codec@npm:5.0.1"
   dependencies:
-    "@scure/base": "npm:^1.1.3"
-    "@xrplf/isomorphic": "npm:^1.0.0"
-  checksum: 10/e8e274c7181789cfbd4659cfaa2e65ac7615ebdb49a72515b957e4dbadba1b9398aa7635834f45e729a820af20dfa77569ac033e66aff2763f02a4db7943a60e
+    "@scure/base": "npm:^2.0.0"
+    "@xrplf/isomorphic": "npm:^1.0.2"
+  checksum: 10/b9e752c45c140ff4f64bff18d3712d473dc491eaf045fcc9da9d82fbfb88ad1f85642ab636af45400c1d3d0325d430cc272cd7e5e55227858d2e4818ef66813b
   languageName: node
   linkType: hard
 
-"ripple-binary-codec@npm:^2.7.0":
-  version: 2.7.0
-  resolution: "ripple-binary-codec@npm:2.7.0"
+"ripple-binary-codec@npm:^2.11.0":
+  version: 2.11.0
+  resolution: "ripple-binary-codec@npm:2.11.0"
   dependencies:
-    "@xrplf/isomorphic": "npm:^1.0.1"
-    bignumber.js: "npm:^9.0.0"
-    ripple-address-codec: "npm:^5.0.0"
-  checksum: 10/6d3d71a1b9d1eee41139b25128f113cade954432550382eef1304f9ffec5fe66561345013da0ac610a0fe272c19f0df1d275fb0821939db280c37c9208e83410
+    "@xrplf/isomorphic": "npm:^1.0.2"
+    bignumber.js: "npm:^10.0.2"
+    ripple-address-codec: "npm:^5.0.1"
+  checksum: 10/aec7c14e917d3ea3698d49776bf5c2d3ce3ddf340a4bd850d2caf755fd231d1a67bf9c679da1993c6abceb549c035fe94f37594d82f5d89daeaf05a7ecff0edc
   languageName: node
   linkType: hard
 
-"ripple-keypairs@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "ripple-keypairs@npm:2.0.0"
+"ripple-keypairs@npm:^3.0.0, ripple-keypairs@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "ripple-keypairs@npm:3.1.0"
   dependencies:
-    "@noble/curves": "npm:^1.0.0"
-    "@xrplf/isomorphic": "npm:^1.0.0"
-    ripple-address-codec: "npm:^5.0.0"
-  checksum: 10/401ade8b179b8693f9689457346a5f0b5b7d789bb88613f27917c2a1ef907edc23bb1902ba5e8158dcd303e462f160e39897047fb778227af2dc6fab8897f503
+    "@noble/curves": "npm:^2.0.1"
+    "@xrplf/isomorphic": "npm:^1.0.2"
+    ripple-address-codec: "npm:^5.0.1"
+  checksum: 10/b788370aa32ddd641c0b30b69e107ac93ad8b1d58fbe44f35a58971e616cf762cbac12b000d74a9ec2da7f5d9d14514c1907944abe1ddbc83c5a4ff4b0f03c61
   languageName: node
   linkType: hard
 
@@ -47274,10 +47303,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"toml@npm:^4.1.2":
-  version: 4.1.2
-  resolution: "toml@npm:4.1.2"
-  checksum: 10/a873b3b5a0f78f599819a09fa0ebb3e05db527e88b3a66440109fd75eb855bc040ec942ca992636c4489ea1cd81a91e087674095cce224d3fb062f551b5277bb
+"toml@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "toml@npm:5.0.0"
+  checksum: 10/552aab0eee603c3590ecd51bbe861acaeacd328bf936aced185697fd1658b58aff2a5a1932b38f544fee27c47a0c24a5ea430ef80516d562b6488e391cc98b9a
   languageName: node
   linkType: hard
 
@@ -49174,9 +49203,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"viem@npm:^2.54.1":
-  version: 2.55.4
-  resolution: "viem@npm:2.55.4"
+"viem@npm:^2.57.2":
+  version: 2.57.2
+  resolution: "viem@npm:2.57.2"
   dependencies:
     "@noble/curves": "npm:1.9.1"
     "@noble/hashes": "npm:1.8.0"
@@ -49184,14 +49213,14 @@ __metadata:
     "@scure/bip39": "npm:1.6.0"
     abitype: "npm:1.2.3"
     isows: "npm:1.0.7"
-    ox: "npm:0.14.30"
+    ox: "npm:0.14.45"
     ws: "npm:8.21.0"
   peerDependencies:
     typescript: ">=5.0.4"
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10/c5d4a673af2cd9786842b76c29977e8e455ab3aefd50bf8c88cc8c15e4796289a81719fe2c3387f40355a1439ced879e21e2368622b1c72d983dbc37299726d2
+  checksum: 10/f730a075a0da923785741dae786d310f142c24ec226344ddba8f365367cba35142cce7c05c9019f5a5e82261eb0c99eab5894f200c0f792e9d30de843f8d3892
   languageName: node
   linkType: hard
 
@@ -50178,9 +50207,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:^8.11.0, ws@npm:^8.12.1, ws@npm:^8.13.0, ws@npm:^8.18.0, ws@npm:^8.18.3, ws@npm:^8.19.0, ws@npm:^8.20.0, ws@npm:^8.21.0, ws@npm:^8.21.3":
-  version: 8.22.0
-  resolution: "ws@npm:8.22.0"
+"ws@npm:^8.11.0, ws@npm:^8.12.1, ws@npm:^8.18.0, ws@npm:^8.18.3, ws@npm:^8.19.0, ws@npm:^8.20.0, ws@npm:^8.21.0, ws@npm:^8.21.3":
+  version: 8.21.3
+  resolution: "ws@npm:8.21.3"
   peerDependencies:
     bufferutil: ^4.0.1
     utf-8-validate: ">=5.0.2"
@@ -50189,7 +50218,7 @@ __metadata:
       optional: true
     utf-8-validate:
       optional: true
-  checksum: 10/ed771c2766bdb5724a66872f60ffc1a39f06e1a5bc8849f453c273e97c91a40ed5a224f06dc0e22f44b4a9e03938bf746fc5938d6887433cc0f4c416237d3b10
+  checksum: 10/8856922c26fd2d106931c16310d9a0bc2d6d37ed8771352bfa0d2a36df0ab5cb1f6528c6db8213f3333cf4ce93925e56f13604df0454cb0d4289fef922bebcdd
   languageName: node
   linkType: hard
 
@@ -50292,21 +50321,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"xrpl@npm:4.6.0":
-  version: 4.6.0
-  resolution: "xrpl@npm:4.6.0"
+"xrpl@npm:5.3.0":
+  version: 5.3.0
+  resolution: "xrpl@npm:5.3.0"
   dependencies:
-    "@scure/bip32": "npm:^1.3.1"
-    "@scure/bip39": "npm:^1.2.1"
-    "@xrplf/isomorphic": "npm:^1.0.1"
-    "@xrplf/secret-numbers": "npm:^2.0.0"
-    bignumber.js: "npm:^9.0.0"
+    "@scure/bip32": "npm:^2.0.1"
+    "@scure/bip39": "npm:^2.0.1"
+    "@xrplf/isomorphic": "npm:^1.0.2"
+    "@xrplf/mpt-crypto": "npm:^0.1.1"
+    "@xrplf/secret-numbers": "npm:^3.0.0"
+    bignumber.js: "npm:^10.0.2"
     eventemitter3: "npm:^5.0.1"
     fast-json-stable-stringify: "npm:^2.1.0"
-    ripple-address-codec: "npm:^5.0.0"
-    ripple-binary-codec: "npm:^2.7.0"
-    ripple-keypairs: "npm:^2.0.0"
-  checksum: 10/4e6564b82c98b9530ce9ecd490d917290c83461d04cc516840300e2c101dc33ddaf27934a17ab6f8487bb816b7555b83d73c741ed88c787185e32517644f1f55
+    ripple-address-codec: "npm:^5.0.1"
+    ripple-binary-codec: "npm:^2.11.0"
+    ripple-keypairs: "npm:^3.1.0"
+  checksum: 10/95b26c10c40a931dc8377315358427403fdc8e42810bee1866ab9f70928110448a8819392013cd05b064a34e4b55c7a9fa7be13063ac01c095893321911e728d
   languageName: node
   linkType: hard
 

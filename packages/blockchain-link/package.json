@@ -67,7 +67,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "devDependencies": {
-        "@stellar/stellar-sdk": "17.1.0",
+        "@stellar/stellar-sdk": "17.2.1",
         "@trezor/e2e-utils": "workspace:*",
         "@trezor/eslint": "workspace:*",
         "@trezor/type-utils": "workspace:*",
@@ -90,7 +90,7 @@
         "@trezor/websocket-client": "workspace:*",
         "@types/web": "^0.0.345",
         "socks-proxy-agent": "8.0.5",
-        "viem": "^2.54.1"
+        "viem": "^2.57.2"
     },
     "peerDependencies": {
         "tslib": "^2.6.2"
