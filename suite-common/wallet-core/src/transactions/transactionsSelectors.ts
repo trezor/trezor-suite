@@ -52,6 +52,7 @@ import { type PhishingRootState } from '../phishing/phishingReducerTypes';
 import { selectActiveDustPhishingThreshold } from '../phishing/phishingSelectors';
 import { isCardanoStakingTx } from '../staking/cardano/cardanoStakingUtils';
 import { isAccountStakingActive } from '../staking/shared/stakingUtils';
+import { isTronStakingTx } from '../staking/tron/tronStakingUtils';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<
     TransactionsRootState & AccountsRootState
@@ -251,7 +252,8 @@ export const selectAccountStakeTypeTransactions = createMemoizedSelector(
                 tx =>
                     isStakeTypeTx(tx?.ethereumSpecific?.parsedData?.methodId) ||
                     !!tx?.solanaSpecific?.stakeOperation?.type ||
-                    isCardanoStakingTx(tx),
+                    isCardanoStakingTx(tx) ||
+                    isTronStakingTx(tx),
             ),
         ),
 );
