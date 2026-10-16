@@ -10,7 +10,6 @@ import {
     UNKNOWN_PROCESS,
     connectPopupCallThunk,
     connectPopupCancelThunk,
-    getPopupCallDeferred,
     queuePopupCall,
     selectConnectPopupCall,
     selectIsConnectAppSilentModeByOrigin,
@@ -109,13 +108,15 @@ export const useConnectPopupDesktop = () => {
                 }
 
                 queuedPopupCalls.current.add(params);
-                await queuePopupCall();
+                const deferred = await queuePopupCall();
                 const isCanceled = !queuedPopupCalls.current.delete(params);
 
                 // Removed by a cancel while queued: don't open the popup or start a device flow
                 // for a client that already gave up.
                 if (isCanceled) {
                     const error = serializeError(TypedError('Method_Cancel'));
+                    // Settle the call so that the calls queued after it can start.
+                    deferred.resolve({ success: false, error });
                     desktopApi.connectPopupResponse({
                         success: false,
                         error,
@@ -126,7 +127,6 @@ export const useConnectPopupDesktop = () => {
                     return;
                 }
 
-                const deferred = getPopupCallDeferred(true);
                 const isMcp = params.sourceType === CALL_SOURCE_MCP;
                 dispatch(
                     connectPopupCallThunk({
@@ -148,6 +148,7 @@ export const useConnectPopupDesktop = () => {
                                   requestedPermissions: params.requestedPermissions as
                                       PermissionRequest[] | undefined,
                               },
+                        responseId: deferred.id,
                     }),
                 );
                 activePopupCall.current = params;
