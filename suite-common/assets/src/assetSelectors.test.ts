@@ -577,6 +577,7 @@ describe('the networks the table can be grouped by', () => {
         expect(selectNetworkFiatValue(state, ETH)).toBeUndefined();
     });
 });
+
 describe('the tokens the table leaves out', () => {
     const stateWithBitcoinBalance = (balance: string) =>
         createState({

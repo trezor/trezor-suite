@@ -276,6 +276,7 @@ const byValue =
         }
 
         const worth = (assetKey: WalletAssetKey) => values.get(assetKey) ?? ZERO_FIAT_VALUE;
+
         // `comparedTo` is typed to answer null for a NaN side, which `toFiatCurrency` rules out.
         return worth(right).comparedTo(worth(left)) ?? 0;
     };

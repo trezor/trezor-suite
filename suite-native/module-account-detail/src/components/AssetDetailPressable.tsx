@@ -2,9 +2,15 @@ import { type ReactNode } from 'react';
 import { Pressable } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
 
 import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
-import { type WalletAssetKey } from '@suite-common/wallet-core';
+import {
+    type AssetAccountsRootState,
+    type WalletAssetKey,
+    selectDeviceAssetAccounts,
+    selectHiddenAssetAccountKeySet,
+} from '@suite-common/wallet-core';
 import {
     AssetsStackRoutes,
     type RootStackParamList,
@@ -23,8 +29,19 @@ export const AssetDetailPressable = ({ assetKey, children }: AssetDetailPressabl
         experimentId: ExperimentId.assetFirstHomeTable,
         variant: 'B',
     });
+    const assetAccounts = useSelector((state: AssetAccountsRootState) =>
+        selectDeviceAssetAccounts(state),
+    );
+    const hiddenAssetAccountKeys = useSelector((state: AssetAccountsRootState) =>
+        selectHiddenAssetAccountKeySet(state),
+    );
+    const hasShownAsset = assetAccounts.some(
+        assetAccount =>
+            assetAccount.assetKey === assetKey &&
+            !hiddenAssetAccountKeys.has(assetAccount.assetAccountKey),
+    );
 
-    if (!isAssetFirstHomeTableEnabled) return children;
+    if (!isAssetFirstHomeTableEnabled || !hasShownAsset) return children;
 
     const handlePress = () => {
         navigation.navigate(RootStackRoutes.AssetsStack, {

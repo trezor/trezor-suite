@@ -6,8 +6,11 @@ import { useNavigation } from '@react-navigation/native';
 import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
 import {
     type AccountsRootState,
+    type AssetAccountsRootState,
     getWalletAssetKey,
     selectAccountByKey,
+    selectDeviceAssetAccounts,
+    selectHiddenAssetAccountKeySet,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
@@ -121,6 +124,12 @@ export const AccountOverviewTabContent = ({
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
+    const assetAccounts = useSelector((state: AssetAccountsRootState) =>
+        selectDeviceAssetAccounts(state),
+    );
+    const hiddenAssetAccountKeys = useSelector((state: AssetAccountsRootState) =>
+        selectHiddenAssetAccountKeySet(state),
+    );
     const isAssetDetailFeatureEnabled = useIsExperimentVariantActive({
         experimentId: ExperimentId.assetFirstHomeTable,
         variant: 'B',
@@ -130,6 +139,7 @@ export const AccountOverviewTabContent = ({
         ({ tokenContract, tokenSymbol }) => {
             if (flowType === 'send') {
                 if (!account) return;
+
                 analytics.report({
                     type: events.sendFlowEnteredEvent.name,
                     payload: {
@@ -143,29 +153,51 @@ export const AccountOverviewTabContent = ({
                     screen: SendStackRoutes.SendOutputs,
                     params: { accountKey, tokenContract },
                 });
-            } else if (isAssetDetailFeatureEnabled && account) {
-                navigation.navigate(RootStackRoutes.AssetsStack, {
-                    screen: AssetsStackRoutes.AssetDetail,
-                    params: {
-                        assetKey: getWalletAssetKey({
-                            deviceState: account.deviceState,
-                            symbol: account.symbol,
-                            contractAddress: tokenContract,
-                        }),
-                    },
-                });
-            } else {
-                navigation.navigate(RootStackRoutes.AccountDetailStack, {
-                    screen: AccountDetailStackRoutes.AccountDetail,
-                    params: {
-                        accountKey,
-                        tokenContract,
-                        closeActionType: 'back',
-                    },
-                });
+
+                return;
             }
+
+            if (isAssetDetailFeatureEnabled && account) {
+                const assetKey = getWalletAssetKey({
+                    deviceState: account.deviceState,
+                    symbol: account.symbol,
+                    contractAddress: tokenContract,
+                });
+                const hasShownAsset = assetAccounts.some(
+                    assetAccount =>
+                        assetAccount.assetKey === assetKey &&
+                        !hiddenAssetAccountKeys.has(assetAccount.assetAccountKey),
+                );
+
+                if (hasShownAsset) {
+                    navigation.navigate(RootStackRoutes.AssetsStack, {
+                        screen: AssetsStackRoutes.AssetDetail,
+                        params: { assetKey },
+                    });
+
+                    return;
+                }
+            }
+
+            navigation.navigate(RootStackRoutes.AccountDetailStack, {
+                screen: AccountDetailStackRoutes.AccountDetail,
+                params: {
+                    accountKey,
+                    tokenContract,
+                    closeActionType: 'back',
+                },
+            });
         },
-        [flowType, isAssetDetailFeatureEnabled, account, accountKey, analytics, navigation],
+        [
+            flowType,
+            isAssetDetailFeatureEnabled,
+            account,
+            assetAccounts,
+            hiddenAssetAccountKeys,
+            accountKey,
+            analytics,
+            navigation,
+        ],
     );
 
     return (
