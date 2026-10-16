@@ -567,7 +567,7 @@ export const mockNetworkMetadata: Readonly<Record<MockNetworkSymbol, NetworkMeta
     },
     arc: {
         symbol: asNetworkSymbol('arc'),
-        displayOrder: asDisplayOrderKey('aNV'),
+        displayOrder: asDisplayOrderKey('a9V'),
         bip43Path: "m/44'/60'/0'/0/i",
         accountTypes: {},
         features: [],
