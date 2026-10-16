@@ -80,19 +80,13 @@ export const initBackground: ModuleInitBackground = ({
         // when httpReceiver was asked to provide current address for given pathname
         ipcMain.handle('server/request-address', (_, pathname) => {
             try {
-                // Use deeplink URLs for trading redirects on macOS/Windows only
+                // Use deeplink URLs for trading redirects on macOS/Windows only.
+                // The HTTP route is bypassed entirely, so no token is needed.
                 if (isArrayMember(pathname, TRADING_REDIRECT_PATHS) && (isMacOs() || isWindows())) {
-                    receiver.activateRoute(pathname);
-
-                    return `trezorsuite:/${pathname}`;
+                    return { url: `trezorsuite:/${pathname}`, token: '' };
                 }
 
-                const address = receiver.getRouteAddress(pathname);
-                if (address) {
-                    receiver.activateRoute(pathname);
-                }
-
-                return address;
+                return receiver.activateRoute(pathname);
             } catch (e) {
                 logger.error(SERVICE_NAME, `Failed to get address: ${e.message}`);
             }
