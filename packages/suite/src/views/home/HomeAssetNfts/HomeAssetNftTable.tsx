@@ -9,6 +9,7 @@ import {
 } from '@suite-common/assets';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { Divider, Table, VirtualizedList } from '@trezor/components';
+import { exhaustive } from '@trezor/type-utils';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -126,6 +127,8 @@ export const HomeAssetNftTable = ({ isHidden }: HomeAssetNftTableProps) => {
                 return `${row.assetKey}/${row.index}/${row.item.id}`;
             case 'more':
                 return `${row.assetKey}/more`;
+            default:
+                return exhaustive(row);
         }
     }, []);
 
@@ -145,6 +148,8 @@ export const HomeAssetNftTable = ({ isHidden }: HomeAssetNftTableProps) => {
                     return <HomeAssetNftItemRow assetKey={row.assetKey} item={row.item} />;
                 case 'more':
                     return <HomeAssetNftMoreItemsRow count={row.count} />;
+                default:
+                    return exhaustive(row);
             }
         },
         [isHidden, openKeys, toggleCollection],
