@@ -17,6 +17,8 @@ export * from './components/animations/LottieAnimation';
 export { recolorLottieAnimation } from './components/animations/recolorLottieAnimation';
 export * from './components/Flag/Flag';
 export { Badge, type BadgeProps, type BadgeSize, type BadgeIntent } from './components/Badge/Badge';
+export * from './components/BlurUrls/BlurUrls';
+export * from './components/BlurUrls/BlurWrapper';
 export * from './components/buttons/ButtonGroup/ButtonGroup';
 export { Button, type ButtonProps, type ButtonIntent } from './components/buttons/Button/Button';
 export { IconButton, type IconButtonProps } from './components/buttons/IconButton/IconButton';

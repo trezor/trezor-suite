@@ -1,16 +1,16 @@
-import { Fragment } from 'react';
+import { Fragment, type ReactNode } from 'react';
 
-import { Translation } from '@suite/intl';
-import { Tooltip } from '@trezor/components';
 import { extractUrlsFromText } from '@trezor/utils';
 
-import { BlurWrapper } from 'src/components/wallet/TransactionItem/TransactionItemBlurWrapper';
+import { BlurWrapper } from './BlurWrapper';
+import { Tooltip } from '../Tooltip/Tooltip';
 
-interface BlurUrlsProps {
+export type BlurUrlsProps = {
     text?: string;
-}
+    tooltipContent: ReactNode;
+};
 
-export const BlurUrls = ({ text }: BlurUrlsProps) => {
+export const BlurUrls = ({ text, tooltipContent }: BlurUrlsProps) => {
     if (!text) return null;
 
     const { textParts, urls } = extractUrlsFromText(text);
@@ -19,7 +19,7 @@ export const BlurUrls = ({ text }: BlurUrlsProps) => {
         <Fragment key={index}>
             {part}
             {index < urls.length && (
-                <Tooltip display="inline-block" content={<Translation id="TR_URL_IN_TOKEN" />}>
+                <Tooltip display="inline-block" content={tooltipContent}>
                     <BlurWrapper $isBlurred>{urls[index]}</BlurWrapper>
                 </Tooltip>
             )}

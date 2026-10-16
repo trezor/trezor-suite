@@ -44,12 +44,12 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { FormattedDateWithBullet } from 'src/components/suite/FormattedDateWithBullet';
+import { TokenUrlBlur } from 'src/components/suite/TokenUrlBlur';
 import { FeeRate } from 'src/components/wallet/Fees/FeeRate';
 import { TransactionHeader } from 'src/components/wallet/TransactionItem/TransactionHeader';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { type WalletAccountTransaction } from 'src/types/wallet';
 import { getTransactionIcon } from 'src/utils/wallet/transactionIconUtils';
-import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
 
 const IconWrapper = styled.div`
     display: flex;
@@ -325,13 +325,13 @@ export const BasicTxDetails = ({
 
                 {tx.stellarSpecific?.memo && (
                     <Item label={<Translation id="MEMO" />} icon={TagIcon}>
-                        <BlurUrls text={tx.stellarSpecific.memo} />
+                        <TokenUrlBlur text={tx.stellarSpecific.memo} />
                     </Item>
                 )}
 
                 {tx.solanaSpecific?.memo && (
                     <Item label={<Translation id="MEMO" />} icon={TagIcon}>
-                        <BlurUrls text={tx.solanaSpecific.memo} />
+                        <TokenUrlBlur text={tx.solanaSpecific.memo} />
                     </Item>
                 )}
 

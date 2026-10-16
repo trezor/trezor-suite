@@ -19,8 +19,8 @@ import {
 import { TokenIcon } from '@trezor/product-components';
 
 import { PriceTicker, TrendTicker } from 'src/components/suite';
+import { TokenUrlBlur } from 'src/components/suite/TokenUrlBlur';
 import { useSelector } from 'src/hooks/suite';
-import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
 
 import { HomeAssetBalance } from './HomeAssetBalance';
 import { HOME_ASSET_CELL_PADDING, HOME_ASSET_LINE_GAP } from './homeAssetTableLayout';
@@ -81,7 +81,7 @@ export const HomeAssetRow = memo(function HomeAssetRow({
                             data-testid="@dashboard/home-asset/name"
                         >
                             <TruncateWithTooltip delayShow={TOOLTIP_DELAY_LONG}>
-                                <BlurUrls text={tokenSymbol ?? displaySymbol} />
+                                <TokenUrlBlur text={tokenSymbol ?? displaySymbol} />
                             </TruncateWithTooltip>
                         </Text>
                         <Text intent="neutral" priority="secondary" typographyStyle="body-sm">

@@ -26,10 +26,10 @@ import {
     PriceTicker,
     TrendTicker,
 } from 'src/components/suite';
+import { TokenUrlBlur } from 'src/components/suite/TokenUrlBlur';
 import { StellarManageTokenModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/StellarManageTokenModal';
 import { useSelector } from 'src/hooks/suite';
 
-import { BlurUrls } from '../BlurUrls';
 import { TokenRowActions } from './TokenRowActions';
 import { useTokenYieldBadge } from './hooks/useTokenYieldBadge';
 import type { TokensTableType } from './types';
@@ -112,7 +112,7 @@ export const TokenRow = ({
                             size={24}
                             shouldTryToFetch={isTokenKnown}
                         />
-                        {isTokenKnown ? token.name : <BlurUrls text={token.name} />}
+                        {isTokenKnown ? token.name : <TokenUrlBlur text={token.name} />}
                         {yieldBadge && (
                             <YieldBadge
                                 apy={yieldBadge.apy}
