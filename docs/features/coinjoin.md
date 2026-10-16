@@ -25,6 +25,8 @@ Suite has no default coordinator for Bitcoin and Testnet. Coinjoin works only in
 
 1. Open the Privacy account. The override is what reveals mixing: `selectIsMixingEnabled` keys off the presence of `coordinatorUrl` in `wallet.coinjoin.debug.coinjoinConfigOverride[symbol]`, and every mixing surface and coordinator interaction keys off that one selector. The message-system `coinjoin` feature flag still works as a remote kill switch on top of it.
 
+    > With the override in place the account grows a **Mixing** tab (`wallet-mixing`, `src/views/wallet/mixing`) holding the status wheel and privacy balance breakdown, the explanation of the process and the anonymity setup; the anonymize subpage (`wallet-anonymize`) is reachable from it. Without the override both routes redirect to the account overview, which then renders a plain balance and history.
+
     > The override is deliberately per-launch. A `--state` patch dispatches no action, and the coordinator override is stripped before the debug settings reach the `coinjoinDebugSettings` database store, so restarting without the argument hides mixing again. Do not write it through `setDebugSettings`.
     >
     > Regtest carries a localhost coordinator in `COINJOIN_NETWORKS`, but a configured coordinator is not an override: pass `--state.wallet.coinjoin.debug.coinjoinConfigOverride.regtest.coordinatorUrl=http://127.0.0.1:8081/backend/wabisabi/` to mix on Regtest too.
