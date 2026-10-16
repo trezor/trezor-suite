@@ -13,7 +13,7 @@ jest.mock('child_process', () => ({
 }));
 
 const TOPIC = 'process-test';
-const MAX_SIGKILL_ATTEMPTS = 5;
+const MAX_SIGKILL_ATTEMPTS = 3;
 
 class FakeChildProcess extends ChildProcess {
     override killed = false;
@@ -302,7 +302,10 @@ describe('BaseProcess.stop', () => {
     describe('when the process never exits', () => {
         it('gives up after the maximum number of SIGKILL attempts, logs an error and resolves', async () => {
             const logger = createLogger();
-            const testProcess = new TestProcess({ stopKillWait: 2 }, logger);
+            const testProcess = new TestProcess(
+                { stopKillWait: 2, maxKillAttempts: MAX_SIGKILL_ATTEMPTS },
+                logger,
+            );
             const child = new FakeChildProcess();
             testProcess.attach(child);
 
@@ -322,7 +325,10 @@ describe('BaseProcess.stop', () => {
         });
 
         it('sends exactly one SIGTERM and the maximum number of SIGKILLs', async () => {
-            const testProcess = new TestProcess({ stopKillWait: 2 });
+            const testProcess = new TestProcess({
+                stopKillWait: 2,
+                maxKillAttempts: MAX_SIGKILL_ATTEMPTS,
+            });
             const child = new FakeChildProcess();
             testProcess.attach(child);
 
@@ -337,7 +343,10 @@ describe('BaseProcess.stop', () => {
         });
 
         it('stops polling after giving up', async () => {
-            const testProcess = new TestProcess({ stopKillWait: 1 });
+            const testProcess = new TestProcess({
+                stopKillWait: 1,
+                maxKillAttempts: MAX_SIGKILL_ATTEMPTS,
+            });
             const child = new FakeChildProcess();
             testProcess.attach(child);
 

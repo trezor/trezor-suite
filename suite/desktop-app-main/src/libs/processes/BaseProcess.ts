@@ -15,6 +15,7 @@ export type Status = {
 /**
  * [startupCooldown] Cooldown before being able to run start again (seconds).
  * [stopKillWait] How long to wait before killing the process on stop (seconds).
+ * [maxKillAttempts] How many SIGKILLs to send before giving up.
  * [autoRestart] Seconds to wait before auto-restarting the process (seconds). 0 = off.
  * [env] additional env variables.
  * [stdio] inherit process stdio. doesn't work on windows, "inherit" works on linux/macos
@@ -28,9 +29,12 @@ export type BaseProcessOptions = {
     stdio?: IOType;
 };
 
+const DEFAULT_MAX_KILL_ATTEMPTS = 5;
+
 const defaultOptions: BaseProcessOptions = {
     startupCooldown: 0,
     stopKillWait: 10,
+    maxKillAttempts: DEFAULT_MAX_KILL_ATTEMPTS,
     autoRestart: 2,
 } as const;
 
@@ -211,7 +215,7 @@ export abstract class BaseProcess {
 
             let timeout = 0;
             let sigkillAttempts = 0;
-            const maxKillAttempts = 5;
+            const maxKillAttempts = this.options.maxKillAttempts ?? DEFAULT_MAX_KILL_ATTEMPTS;
             const interval = setInterval(() => {
                 // `process.killed` only indicates that the signal was sent, so also check the
                 // actual exit state.
