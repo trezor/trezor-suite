@@ -1,5 +1,10 @@
+/**
+ * @jest-environment jsdom
+ */
 import { type PropsWithChildren } from 'react';
 
+import { type DeviceRootState } from '@suite-common/device';
+import { type NetworksRootState } from '@suite-common/networks';
 import { QueryClient, QueryClientProvider, desktopQueryKeys } from '@suite-common/react-query';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import {
@@ -13,9 +18,12 @@ import {
     fetchRankedTokenDefinitions,
 } from '@suite-common/token-definitions';
 import { getMainnets } from '@suite-common/wallet-config';
+import {
+    type AccountsRootState,
+    type FiatRatesRootState,
+    type WalletSettingsRootState,
+} from '@suite-common/wallet-core';
 import { FirmwareType } from '@trezor/device-utils';
-
-import { type AppState } from 'src/reducers/store';
 
 import { useGlobalReceiveAssets } from './useGlobalReceiveAssets';
 
@@ -23,6 +31,13 @@ jest.mock('@suite-common/token-definitions', () => ({
     ...jest.requireActual('@suite-common/token-definitions'),
     fetchRankedTokenDefinitions: jest.fn(),
 }));
+
+// The hook selects device, accounts, fiat rates and settings state only — none of it app-layer.
+type TestRootState = DeviceRootState &
+    AccountsRootState &
+    FiatRatesRootState &
+    NetworksRootState &
+    WalletSettingsRootState;
 
 const definitions: RankedTokenStructure = [
     {
@@ -38,7 +53,7 @@ const renderAssets = (
     firmwareType = FirmwareType.Universal,
     queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } }),
 ) => {
-    const { services } = createTestCompositionRoot<void, AppState>({
+    const { services } = createTestCompositionRoot<void, TestRootState>({
         preloadedState: {
             device: { devices: [], selectedDevice: mockSuiteDevice({ firmwareType }) },
             networks: Object.fromEntries(getMainnets().map(network => [network.symbol, network])),

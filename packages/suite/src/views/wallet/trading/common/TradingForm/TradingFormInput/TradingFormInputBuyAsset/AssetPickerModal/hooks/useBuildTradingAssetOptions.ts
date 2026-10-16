@@ -8,13 +8,13 @@ import {
     buildTradeableAssetSearchIndex,
     filterTradeableAssetsBySearch,
     orderTradeableAssetsByOwnership,
+    selectTradeableAssetBalances,
     usePreferredCurrencyUsdThreshold,
     useTradingAssets,
 } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 
 import { useSelector } from 'src/hooks/suite';
-import { selectTradeableAssetBalances } from 'src/selectors/wallet/tradeableAssetBalancesSelectors';
 
 import { useAssetsContext } from '../../../TradingFormInputAssetPicker';
 

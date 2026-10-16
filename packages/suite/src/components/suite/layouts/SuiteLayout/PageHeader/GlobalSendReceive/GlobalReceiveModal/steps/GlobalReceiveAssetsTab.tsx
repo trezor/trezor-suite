@@ -3,6 +3,11 @@ import { useSelector } from 'react-redux';
 
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey } from '@suite/intl';
+import {
+    type GlobalReceiveAssetCatalogStatus,
+    buildGlobalReceiveAssetSearchIndex,
+    getGlobalReceiveAssetSections,
+} from '@suite-common/receive';
 import { type TradeableAssetBalances, type TradingAssetOption } from '@suite-common/trading';
 import { Button, Column, H4, Link, Paragraph, Row, Skeleton } from '@trezor/components';
 
@@ -11,11 +16,6 @@ import { globalSendReceiveFiltersSelectors } from 'src/slices/wallet/globalSendR
 
 import { GlobalReceiveAssetList } from '../components/GlobalReceiveAssetList';
 import { GLOBAL_RECEIVE_LIST_HEIGHT } from '../constants';
-import {
-    buildGlobalReceiveAssetSearchIndex,
-    getGlobalReceiveAssetSections,
-} from '../globalReceiveAssetUtils';
-import { type GlobalReceiveAssetCatalogStatus } from '../hooks/useGlobalReceiveAssets';
 
 const getAssetDisabledMessage = (
     isDeviceConnected: boolean | undefined,

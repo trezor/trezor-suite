@@ -1,6 +1,7 @@
 import { type RefObject, useCallback, useMemo } from 'react';
 
 import { Translation, type TranslationKey } from '@suite/intl';
+import { type GlobalReceiveAssetListItem } from '@suite-common/receive';
 import { type TradingAssetOption } from '@suite-common/trading';
 import { TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
@@ -18,7 +19,6 @@ import {
 } from 'src/components/suite/asset-picker/constants';
 
 import { GLOBAL_RECEIVE_LIST_HEIGHT, GLOBAL_RECEIVE_LIST_MIN_HEIGHT } from '../constants';
-import { type GlobalReceiveAssetListItem } from '../globalReceiveAssetUtils';
 
 type GlobalReceiveListItem =
     | { type: 'group-label'; label: 'TR_MY_ASSETS' | 'TR_GLOBAL_RECEIVE_ALL_ASSETS' }

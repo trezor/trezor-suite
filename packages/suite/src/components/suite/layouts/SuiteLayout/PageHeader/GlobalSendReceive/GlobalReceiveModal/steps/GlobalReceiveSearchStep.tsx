@@ -8,6 +8,7 @@ import {
     events as sharedEvents,
 } from '@suite-common/analytics';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
+import { type GlobalReceiveAssetCatalogStatus } from '@suite-common/receive';
 import { type TradeableAssetBalances, type TradingAssetOption } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
@@ -22,7 +23,6 @@ import { globalSendReceiveFiltersActions } from 'src/slices/wallet/globalSendRec
 import { AssetSearchWithNetworkFilter } from '../../AssetSearchWithNetworkFilter/AssetSearchWithNetworkFilter';
 import { GLOBAL_RECEIVE_MODAL_HEIGHT } from '../constants';
 import { GlobalReceiveAccountsTab } from './GlobalReceiveAccountsTab';
-import { type GlobalReceiveAssetCatalogStatus } from '../hooks/useGlobalReceiveAssets';
 import { type GlobalReceiveTab } from '../types';
 import { GlobalReceiveAssetsTab } from './GlobalReceiveAssetsTab';
 

@@ -1,7 +1,6 @@
 import { Translation } from '@suite/intl';
+import { getGlobalReceiveAssetDescriptionValues } from '@suite-common/receive';
 import { type TradingAssetOption } from '@suite-common/trading';
-
-import { getGlobalReceiveAssetDescriptionValues } from '../globalReceiveAssetUtils';
 
 type GlobalReceiveAssetDescriptionProps = {
     asset: TradingAssetOption | undefined;
