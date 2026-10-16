@@ -261,6 +261,8 @@ type ConnectPopupCallError = {
 
 type ConnectPopupCallMeta = {
     callId?: string;
+    // Id of the deferred that receives the response of this call.
+    responseId?: string;
 };
 
 type ConnectPopupCallDeviceMeta = {

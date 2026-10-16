@@ -14,7 +14,7 @@ import { type WithServices } from '@trezor/redux-utils';
 import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { connectPopupActions } from './connectPopupActions';
-import { getPopupCallDeferred } from './connectPopupPromiseManager';
+import { createPopupCallDeferred } from './connectPopupPromiseManager';
 import {
     prepareConnectPopupReducer,
     selectConnectPopupCall,
@@ -91,7 +91,9 @@ const connectPopupReducer = prepareConnectPopupReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
 });
 
-const initStore = () =>
+type InitStoreParams = { responseId?: string };
+
+const initStore = ({ responseId }: InitStoreParams = {}) =>
     createTestCompositionRoot<
         WithServices<LockDeviceDep>,
         ConnectPopupLoadSelectAccountPageThunkState
@@ -103,7 +105,7 @@ const initStore = () =>
             wallet: (state = { accounts: accountsInitialState }) => state,
         }),
         preloadedState: {
-            connectPopup: { activeCall: selectAccountState, permissions: [] },
+            connectPopup: { activeCall: { ...selectAccountState, responseId }, permissions: [] },
             device: fakeDeviceState,
             wallet: { accounts: accountsInitialState },
         },
@@ -278,8 +280,8 @@ describe('connectPopupLoadSelectAccountPageThunk — concurrent loads', () => {
 
 describe('connectPopupFinishCallThunk', () => {
     it('answers a call that ended with a device error when its popup is closed', async () => {
-        const store = initStore();
-        const deferred = getPopupCallDeferred(true);
+        const deferred = createPopupCallDeferred();
+        const store = initStore({ responseId: deferred.id });
         const error = serializeError(TypedError('Device_Disconnected'));
         store.dispatch(connectPopupActions.setError(error));
 
@@ -317,9 +319,13 @@ describe('connectPopupCallInnerThunk', () => {
                 lockDevice: mock(),
             },
         };
-        const deferred = getPopupCallDeferred(true);
+        const deferred = createPopupCallDeferred();
 
-        await connectPopupCallInnerThunk(params)(dispatch, jest.fn(), extra);
+        await connectPopupCallInnerThunk({ ...params, responseId: deferred.id })(
+            dispatch,
+            jest.fn(),
+            extra,
+        );
 
         return { dispatch, deferred, ...extra.services, report: extra.services.analytics.report };
     };
