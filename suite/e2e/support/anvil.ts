@@ -10,6 +10,7 @@ import {
     keccak256,
     numberToHex,
     publicActions,
+    walletActions,
 } from 'viem';
 
 import { step } from './common';
@@ -25,6 +26,10 @@ const OUTPUT_TAIL_LENGTH = 4_000;
 // Solidity places `mapping(address => uint256) balances` at the slot of its declaration, which
 // differs per token; the probe covers the usual range (USDC keeps balances at slot 9).
 const MAX_BALANCE_SLOT_PROBE = 20;
+
+// Holds tokens only between the storage write and the transfer in `fundErc20`.
+const ERC20_FUNDER_ADDRESS = '0x000000000000000000000000000000000000f00d';
+const FUNDER_GAS_BALANCE = 10n ** 18n;
 
 const getFreePort = () =>
     new Promise<number>((resolve, reject) => {
@@ -44,7 +49,9 @@ const getFreePort = () =>
     });
 
 const createAnvilClient = (url: string) =>
-    createTestClient({ mode: 'anvil', transport: http(url) }).extend(publicActions);
+    createTestClient({ mode: 'anvil', transport: http(url) })
+        .extend(publicActions)
+        .extend(walletActions);
 
 const getMappingSlot = (key: Address, slot: number) =>
     keccak256(encodeAbiParameters([{ type: 'address' }, { type: 'uint256' }], [key, BigInt(slot)]));
@@ -180,11 +187,47 @@ export class AnvilFork {
         });
     }
 
+    async readErc20Metadata(token: Address) {
+        const [symbol, decimals] = await Promise.all([
+            this.rpc.readContract({ address: token, abi: erc20Abi, functionName: 'symbol' }),
+            this.rpc.readContract({ address: token, abi: erc20Abi, functionName: 'decimals' }),
+        ]);
+
+        return { symbol, decimals };
+    }
+
+    /**
+     * Sends `amount` of an ERC-20 token to `holder` in a real `transfer`. On Ethereum the evm-rpc
+     * backend finds an account's tokens only through their `Transfer` logs, so a balance written
+     * straight into storage would stay invisible to Suite.
+     */
+    async fundErc20(token: Address, holder: Address, amount: bigint) {
+        await this.dealErc20(token, ERC20_FUNDER_ADDRESS, amount);
+        await this.setBalance(ERC20_FUNDER_ADDRESS, FUNDER_GAS_BALANCE);
+        await this.rpc.impersonateAccount({ address: ERC20_FUNDER_ADDRESS });
+        try {
+            const hash = await this.rpc.writeContract({
+                account: ERC20_FUNDER_ADDRESS,
+                chain: null,
+                address: token,
+                abi: erc20Abi,
+                functionName: 'transfer',
+                args: [holder, amount],
+            });
+            const receipt = await this.rpc.waitForTransactionReceipt({ hash });
+            if (receipt.status !== 'success') {
+                throw new Error(`Funding ${holder} with token ${token} reverted`);
+            }
+        } finally {
+            await this.rpc.stopImpersonatingAccount({ address: ERC20_FUNDER_ADDRESS });
+        }
+    }
+
     /**
      * Sets an ERC-20 balance by writing the token's balance mapping directly, as Foundry's `deal`
      * does. The mapping slot is found by probing; slots that turn out wrong are restored.
      */
-    async dealErc20(token: Address, holder: Address, amount: bigint) {
+    private async dealErc20(token: Address, holder: Address, amount: bigint) {
         const value = numberToHex(amount, { size: 32 });
 
         for (let slot = 0; slot <= MAX_BALANCE_SLOT_PROBE; slot++) {

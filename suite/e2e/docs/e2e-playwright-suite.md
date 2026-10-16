@@ -15,7 +15,7 @@ _Note: All paths below are relative to the root of trezor-suite repository, if n
 
 ### Ethereum mainnet fork (Anvil)
 
-Tests that use the `anvil` fixture (e.g. `wallet/send-eth-anvil.test.ts`) start a fresh `anvil` fork of Ethereum mainnet for each test and connect Suite to it as a custom `evm-rpc` backend, so signed transactions are executed on the fork. See `support/anvil.ts` for helpers that fund accounts and read chain state.
+Tests that use the `anvil` fixture (e.g. `wallet/send-eth-anvil.test.ts`, `yield/deposit-anvil.test.ts`) start a fresh `anvil` fork of Ethereum mainnet for each test and connect Suite to it as a custom `evm-rpc` backend, so signed transactions are executed on the fork. See `support/anvil.ts` for helpers that fund accounts and read chain state.
 
 Optional environment variables:
 
