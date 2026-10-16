@@ -424,6 +424,10 @@ export const prepareStorageMiddleware = createMiddlewareWithExtraDeps<
             messageSystemActions.fetchSuccessUpdate,
             messageSystemActions.dismissMessage,
             messageSystemActions.setConfigSource,
+            messageSystemActions.addMessage,
+            messageSystemActions.removeMessage,
+            messageSystemActions.addExperiment,
+            messageSystemActions.removeExperiment,
         )(action)
     ) {
         api.dispatch(storageActions.saveMessageSystemThunk());
