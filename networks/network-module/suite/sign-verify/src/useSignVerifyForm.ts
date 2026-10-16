@@ -9,13 +9,14 @@ import {
 } from 'react-hook-form';
 
 import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 
-import { yup } from '@suite/forms';
 import { type AddressValidator, injectAddressValidator } from '@suite-common/networks';
 import { MAX_LENGTH_MESSAGE } from '@suite-common/sign-verify';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
+import { isHex } from '@trezor/utils';
 
 type SignVerifyContext = {
     addressValidator: AddressValidator;
@@ -37,10 +38,13 @@ export const signVerifyBaseSchema = {
     message: yup
         .string()
         .max(MAX_LENGTH_MESSAGE, 'TR_TOO_LONG')
-        .required()
+        .required('TR_REQUIRED_FIELD')
         .when('hex', {
             is: true,
-            then: schema => schema.isHex(),
+            then: schema =>
+                schema.test('isHex', 'DATA_NOT_VALID_HEX', value =>
+                    isHex(value, { prefix: 'optional', allowEmpty: false }),
+                ),
         }),
     address: yup
         .string()
@@ -52,16 +56,16 @@ export const signVerifyBaseSchema = {
                 options.context?.symbol &&
                 options.context.addressValidator.isAddressValid(value, options.context.symbol),
         )
-        .required(),
+        .required('TR_REQUIRED_FIELD'),
     path: yup.string().when('$isSignPage', {
         is: true,
-        then: schema => schema.required(),
+        then: schema => schema.required('TR_REQUIRED_FIELD'),
     }),
     signature: yup.string().when('$isSignPage', {
         is: false,
-        then: schema => schema.required(),
+        then: schema => schema.required('TR_REQUIRED_FIELD'),
     }),
-    hex: yup.boolean().required(),
+    hex: yup.boolean().required('TR_REQUIRED_FIELD'),
 };
 
 export const SIGN_VERIFY_BASE_DEFAULT_VALUES: SignVerifyBaseFields = {

@@ -1,20 +1,13 @@
+import type {
+    SuiteNetworkModule,
+    SuiteNetworkModuleRepository,
+} from '@trezor/network-module-suite-types';
 import type { NetworkSymbol } from '@trezor/network-module-types';
-import type { SuiteNetworkModule } from '@trezor/network-module-suite-types';
 import { isArrayMember, typedObjectValues } from '@trezor/utils';
 
 import type { StaticSuiteNetworkModulesDep } from './SuiteNetworkModules';
 
 export type SuiteNetworkModuleRepositoryDeps = StaticSuiteNetworkModulesDep;
-
-export type SuiteNetworkModuleRepository = {
-    get: (symbol: NetworkSymbol) => SuiteNetworkModule;
-    getSupportedNetworks: () => readonly NetworkSymbol[];
-    isSupportedNetwork: (symbol: string) => symbol is NetworkSymbol;
-};
-
-export type SuiteNetworkModuleRepositoryDep = {
-    suiteNetworkModuleRepository: SuiteNetworkModuleRepository;
-};
 
 export const createSuiteNetworkModuleRepository = (
     deps: SuiteNetworkModuleRepositoryDeps,
@@ -44,9 +37,3 @@ export const createSuiteNetworkModuleRepository = (
             isArrayMember(symbol, supportedNetworks),
     };
 };
-
-export const injectSuiteNetworkModuleRepository = (
-    services: any,
-): SuiteNetworkModuleRepositoryDep => ({
-    suiteNetworkModuleRepository: services.suiteNetworkModuleRepository,
-});

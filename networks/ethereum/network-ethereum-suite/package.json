@@ -14,20 +14,19 @@
     "dependencies": {
         "@suite-common/analytics": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
-        "@suite/device": "workspace:*",
-        "@suite/forms": "workspace:*",
-        "@suite/intl": "workspace:*",
-        "@suite/sign-verify": "workspace:*",
+        "@suite-lego/intl": "workspace:*",
         "@trezor/components": "workspace:*",
         "@trezor/connect-common": "workspace:*",
         "@trezor/dependency-injection": "workspace:*",
         "@trezor/network-ethereum-types": "workspace:*",
+        "@trezor/network-module-suite-sign-verify": "workspace:*",
         "@trezor/network-module-suite-types": "workspace:*",
         "@trezor/network-module-types": "workspace:*",
         "@trezor/redux-utils": "workspace:*",
         "react": "19.2.3",
         "react-hook-form": "^7.77.0",
-        "redux": "^5.0.1"
+        "redux": "^5.0.1",
+        "yup": "1.7.1"
     },
     "devDependencies": {
         "@suite-common/device": "workspace:*",

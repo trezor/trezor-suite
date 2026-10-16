@@ -12,7 +12,7 @@
             "path": "../../networks/ethereum/network-ethereum-suite"
         },
         {
-            "path": "../../networks/network-module/network-module-suite-types"
+            "path": "../../networks/network-module/suite/suite-types"
         },
         {
             "path": "../../networks/network-module/network-module-types"

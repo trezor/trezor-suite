@@ -1,9 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 import { type FieldError } from 'react-hook-form';
 
-import { useDevice } from '@suite/device';
-import { yup } from '@suite/forms';
-import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
+import * as yup from 'yup';
+
+import { type Account } from '@suite-common/wallet-types';
+import { Translation, type TranslationKey, useTranslation } from '@suite-lego/intl';
+import { Button, Card, Column } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import {
     SIGN_VERIFY_BASE_DEFAULT_VALUES,
     SignVerifyAddressField,
@@ -16,10 +19,7 @@ import {
     signVerifyBaseSchema,
     useSignVerifyCopyValue,
     useSignVerifyForm,
-} from '@suite/sign-verify';
-import { type Account } from '@suite-common/wallet-types';
-import { Button, Card, Column } from '@trezor/components';
-import { useServices } from '@trezor/dependency-injection';
+} from '@trezor/network-module-suite-sign-verify';
 import { type SignVerifyProps } from '@trezor/network-module-suite-types';
 import { injectDispatch } from '@trezor/redux-utils';
 
@@ -30,6 +30,7 @@ const ethereumSignVerifySchema: yup.ObjectSchema<SignVerifyBaseFields> =
     yup.object(signVerifyBaseSchema);
 
 type EthereumSignVerifyFormProps = {
+    isDeviceLocked: boolean;
     account: Account;
     actions: EthereumSignVerifyActions;
     page: SignVerifyPage;
@@ -37,6 +38,7 @@ type EthereumSignVerifyFormProps = {
 };
 
 const EthereumSignVerifyForm = ({
+    isDeviceLocked,
     account,
     actions,
     page,
@@ -74,7 +76,6 @@ const EthereumSignVerifyForm = ({
 
     const signAddresses = useMemo(() => getEthereumSignAddresses(account), [account]);
 
-    const { isLocked } = useDevice();
     const { translationString } = useTranslation();
     const copyValue = useSignVerifyCopyValue();
 
@@ -186,7 +187,7 @@ const EthereumSignVerifyForm = ({
                     <Button
                         type="submit"
                         intent="brand"
-                        isDisabled={isLocked()}
+                        isDisabled={isDeviceLocked}
                         isLoading={isSubmitting}
                         data-testid="@sign-verify/submit"
                         minWidth={200}
@@ -203,7 +204,11 @@ type EthereumSignVerifyProps = SignVerifyProps & {
     actions: EthereumSignVerifyActions;
 };
 
-export const EthereumSignVerify = ({ account, actions }: EthereumSignVerifyProps) => {
+export const EthereumSignVerify = ({
+    account,
+    actions,
+    isDeviceLocked,
+}: EthereumSignVerifyProps) => {
     const [page, setPage] = useState<SignVerifyPage>('sign');
 
     return (
@@ -213,6 +218,7 @@ export const EthereumSignVerify = ({ account, actions }: EthereumSignVerifyProps
             key={`${page}-${account.key}`}
             account={account}
             actions={actions}
+            isDeviceLocked={isDeviceLocked}
             page={page}
             onPageChange={setPage}
         />

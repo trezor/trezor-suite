@@ -1,1 +1,4 @@
-export { createEthereumSuiteNetworkModule } from './EthereumSuiteNetworkModule';
+export {
+    type EthereumSuiteNetworkModuleDeps,
+    createEthereumSuiteNetworkModule,
+} from './EthereumSuiteNetworkModule';

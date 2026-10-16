@@ -1,12 +1,12 @@
-import { asNetworkSymbols } from '@trezor/network-module-types';
 import type { SuiteNetworkModule } from '@trezor/network-module-suite-types';
+import { asNetworkSymbols } from '@trezor/network-module-types';
 
 import { createSuiteNetworkModuleRepository } from './SuiteNetworkModuleRepository';
 import type { SuiteNetworkModules } from './SuiteNetworkModules';
 
 const signVerify = {
     Component: () => null,
-    title: 'TR_NAV_SIGN_VERIFY',
+    canVerify: true,
 } as NonNullable<SuiteNetworkModule['signVerify']>;
 
 const createModule = (

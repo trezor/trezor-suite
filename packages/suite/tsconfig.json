@@ -204,6 +204,7 @@
             "path": "../../suite/metadata-migration"
         },
         { "path": "../../suite/modal" },
+        { "path": "../../suite/networks" },
         { "path": "../../suite/nfc" },
         {
             "path": "../../suite/onboarding-components"
@@ -251,6 +252,12 @@
             "path": "../../networks/network-module/suite-common/suite-common-types"
         },
         {
+            "path": "../../networks/network-module/suite/sign-verify"
+        },
+        {
+            "path": "../../networks/network-module/suite/suite-types"
+        },
+        {
             "path": "../../networks/ripple/network-ripple"
         },
         {
@@ -272,14 +279,6 @@
         { "path": "../urls" },
         { "path": "../utils" },
         { "path": "../bundler-security" },
-        { "path": "../eslint" },
-        { "path": "../../suite/networks" },
-        { "path": "../../networks/bitcoin/network-bitcoin-suite" },
-        { "path": "../../networks/cardano/network-cardano-suite" },
-        { "path": "../../networks/ethereum/network-ethereum-suite" },
-        { "path": "../../networks/ripple/network-ripple-suite" },
-        { "path": "../../networks/solana/network-solana-suite" },
-        { "path": "../../networks/stellar/network-stellar-suite" },
-        { "path": "../../networks/tron/network-tron-suite" }
+        { "path": "../eslint" }
     ]
 }

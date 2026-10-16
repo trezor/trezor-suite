@@ -2,9 +2,13 @@ import { useEffect, useState } from 'react';
 import { type FieldError, useController } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
-import { useDevice } from '@suite/device';
-import { yup } from '@suite/forms';
+import * as yup from 'yup';
+
+import { type ReceiveRootState, selectTouchedAddresses } from '@suite-common/receive';
+import { type Account } from '@suite-common/wallet-types';
 import { Translation, type TranslationKey, useTranslation } from '@suite-lego/intl';
+import { Button, Card, Column } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import {
     FormatSwitch,
     SIGN_VERIFY_BASE_DEFAULT_VALUES,
@@ -18,11 +22,7 @@ import {
     signVerifyBaseSchema,
     useSignVerifyCopyValue,
     useSignVerifyForm,
-} from '@suite/sign-verify';
-import { type ReceiveRootState, selectTouchedAddresses } from '@suite-common/receive';
-import { type Account } from '@suite-common/wallet-types';
-import { Button, Card, Column } from '@trezor/components';
-import { useServices } from '@trezor/dependency-injection';
+} from '@trezor/network-module-suite-sign-verify';
 import { type SignVerifyProps } from '@trezor/network-module-suite-types';
 import { injectDispatch } from '@trezor/redux-utils';
 
@@ -45,6 +45,7 @@ const DEFAULT_VALUES: BitcoinSignVerifyFields = {
 };
 
 type BitcoinSignVerifyFormProps = {
+    isDeviceLocked: boolean;
     account: Account;
     actions: BitcoinSignVerifyActions;
     page: SignVerifyPage;
@@ -52,6 +53,7 @@ type BitcoinSignVerifyFormProps = {
 };
 
 const BitcoinSignVerifyForm = ({
+    isDeviceLocked,
     account,
     actions,
     page,
@@ -90,7 +92,6 @@ const BitcoinSignVerifyForm = ({
         selectTouchedAddresses(state, account.key),
     );
 
-    const { isLocked } = useDevice();
     const { translationString } = useTranslation();
     const copyValue = useSignVerifyCopyValue();
 
@@ -227,7 +228,7 @@ const BitcoinSignVerifyForm = ({
                     <Button
                         type="submit"
                         intent="brand"
-                        isDisabled={isLocked()}
+                        isDisabled={isDeviceLocked}
                         isLoading={isSubmitting}
                         data-testid="@sign-verify/submit"
                         minWidth={200}
@@ -244,7 +245,7 @@ type BitcoinSignVerifyProps = SignVerifyProps & {
     actions: BitcoinSignVerifyActions;
 };
 
-export const BitcoinSignVerify = ({ account, actions }: BitcoinSignVerifyProps) => {
+export const BitcoinSignVerify = ({ account, actions, isDeviceLocked }: BitcoinSignVerifyProps) => {
     const [page, setPage] = useState<SignVerifyPage>('sign');
 
     return (
@@ -254,6 +255,7 @@ export const BitcoinSignVerify = ({ account, actions }: BitcoinSignVerifyProps) 
             key={`${page}-${account.key}`}
             account={account}
             actions={actions}
+            isDeviceLocked={isDeviceLocked}
             page={page}
             onPageChange={setPage}
         />

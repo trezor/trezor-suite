@@ -1,6 +1,6 @@
 import { supportedEthereumNetworks } from '@trezor/network-ethereum-types';
-import { asNetworkSymbols } from '@trezor/network-module-types';
 import type { SuiteNetworkModule } from '@trezor/network-module-suite-types';
+import { asNetworkSymbols } from '@trezor/network-module-types';
 
 import { EthereumSignVerify } from './EthereumSignVerify';
 import {
@@ -18,7 +18,7 @@ export const createEthereumSuiteNetworkModule = (
     return {
         signVerify: {
             Component: props => <EthereumSignVerify {...props} actions={actions} />,
-            title: 'TR_NAV_SIGN_VERIFY',
+            canVerify: true,
         },
         getSupportedNetworks: () => asNetworkSymbols(supportedEthereumNetworks),
     };
