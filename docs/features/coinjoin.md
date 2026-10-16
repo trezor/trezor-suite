@@ -1,5 +1,10 @@
 # Coinjoin service is suite
 
+Coinjoin was discontinued on 1 June 2024 and the public coordinators are gone. The account type
+lives on as the **Privacy** account, which discovers, synchronizes and spends without any Wasabi
+infrastructure, so mixing is hidden by default: Suite shows the mixing surfaces only when a
+coordinator is passed at startup, as described below.
+
 ## Testing against a public coordinator
 
 Suite has no default coordinator for Bitcoin and Testnet. Coinjoin works only in the desktop app with Tor enabled, and signing needs firmware 2.7.2 or newer, or 1.13.0 or newer on Trezor Model One.
@@ -17,6 +22,14 @@ Suite has no default coordinator for Bitcoin and Testnet. Coinjoin works only in
     > Override both urls. Without `wabisabiBackendUrl` the coordinator version is not requested and Suite reports stub values, so the debug panel links to a non-existent WalletWasabi build and the zkSNACKs legal documents version you agree to is a constant instead of the one the coordinator publishes.
     >
     > The main process whitelists only the coordinator host and its subdomains, so the backend url has to live there too. A sibling host (`api.example.com` next to `coord.example.com`) is blocked with `Request blocked, not whitelisted domain`.
+
+1. Open the Privacy account. The override is what reveals mixing: `selectIsMixingEnabled` keys off the presence of `coordinatorUrl` in `wallet.coinjoin.debug.coinjoinConfigOverride[symbol]`, and every mixing surface and coordinator interaction keys off that one selector. The message-system `coinjoin` feature flag still works as a remote kill switch on top of it.
+
+    > The override is deliberately per-launch. A `--state` patch dispatches no action, and the coordinator override is stripped before the debug settings reach the `coinjoinDebugSettings` database store, so restarting without the argument hides mixing again. Do not write it through `setDebugSettings`.
+    >
+    > Regtest carries a localhost coordinator in `COINJOIN_NETWORKS`, but a configured coordinator is not an override: pass `--state.wallet.coinjoin.debug.coinjoinConfigOverride.regtest.coordinatorUrl=http://127.0.0.1:8081/backend/wabisabi/` to mix on Regtest too.
+    >
+    > The bundled `WalletWasabi.WabiSabiClientLibrary` scoring binary runs for every Privacy account regardless of the override, because anonymity scores decide what the account may spend.
 
 ## Development
 

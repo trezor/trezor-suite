@@ -72,6 +72,12 @@ const CJ_ACCOUNT = {
 
 const SESSION = { signedRounds: [] as string[], maxRounds: 10 };
 
+// Starting a session talks to a coordinator, which only happens while mixing is enabled, i.e. when
+// a coordinator url is patched into the debug state at startup, see selectIsMixingEnabled.
+const MIXING_ENABLED_DEBUG = {
+    coinjoinConfigOverride: { btc: { coordinatorUrl: 'https://coordinator.example/wabisabi/' } },
+};
+
 export const createCoinjoinAccount: CreateCoinjoinAccountFixture[] = [
     {
         description: 'unsupported coinjoin client',
@@ -106,7 +112,7 @@ export const createCoinjoinAccount: CreateCoinjoinAccountFixture[] = [
         result: {
             actions: [
                 COINJOIN.CLIENT_ENABLE,
-                COINJOIN.CLIENT_ENABLE_SUCCESS,
+                COINJOIN.CLIENT_ENABLE_FAILED,
                 COINJOIN.ACCOUNT_PRELOADING,
                 notificationsActions.addToast.type,
                 COINJOIN.CLIENT_DISABLE,
@@ -140,7 +146,7 @@ export const createCoinjoinAccount: CreateCoinjoinAccountFixture[] = [
         result: {
             actions: [
                 COINJOIN.CLIENT_ENABLE,
-                COINJOIN.CLIENT_ENABLE_SUCCESS,
+                COINJOIN.CLIENT_ENABLE_FAILED,
                 COINJOIN.ACCOUNT_PRELOADING,
                 notificationsActions.addToast.type,
                 COINJOIN.CLIENT_DISABLE,
@@ -182,7 +188,7 @@ export const createCoinjoinAccount: CreateCoinjoinAccountFixture[] = [
         result: {
             actions: [
                 COINJOIN.CLIENT_ENABLE,
-                COINJOIN.CLIENT_ENABLE_SUCCESS,
+                COINJOIN.CLIENT_ENABLE_FAILED,
                 COINJOIN.ACCOUNT_PRELOADING,
                 accountsActions.createAccount.type,
                 COINJOIN.ACCOUNT_DISCOVERY_RESET,
@@ -221,6 +227,7 @@ export const startCoinjoinSession: StartCoinjoinSessionFixture[] = [
         state: {
             coinjoin: {
                 accounts: [CJ_ACCOUNT],
+                debug: MIXING_ENABLED_DEBUG,
             },
         },
         params: ACCOUNT,
@@ -247,6 +254,7 @@ export const startCoinjoinSession: StartCoinjoinSessionFixture[] = [
         state: {
             coinjoin: {
                 accounts: [CJ_ACCOUNT],
+                debug: MIXING_ENABLED_DEBUG,
             },
         },
         params: ACCOUNT,
@@ -306,6 +314,7 @@ export const restoreCoinjoinAccounts: RestoreCoinjoinAccountsFixture[] = [
             ],
             coinjoin: {
                 clients: {},
+                debug: MIXING_ENABLED_DEBUG,
                 accounts: [
                     { key: 'account-2', symbol: 'regtest', session: { ...SESSION, paused: true } },
                     { key: 'account-B', symbol: 'regtest', session: { ...SESSION, paused: true } },

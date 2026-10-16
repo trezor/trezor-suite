@@ -1,4 +1,4 @@
-import { coinjoinReducer } from '@suite/coinjoin';
+import { coinjoinReducer, setDebugSettings } from '@suite/coinjoin';
 import { type DesktopDeviceRootState, prepareDesktopDeviceReducer } from '@suite/device';
 import {
     NewContentIndicatorId,
@@ -279,6 +279,36 @@ describe('Storage actions', () => {
         expect(store.getState().wallet.settings.localCurrency).toEqual('czk');
         // compare stored settings object with one in the reducer
         expect(store.getState().wallet.settings).toEqual(settings);
+    });
+
+    it('does not persist the per-launch coinjoin coordinator override', async () => {
+        const initialState = getInitialState();
+        const store = mockStore(db, {
+            ...initialState,
+            wallet: {
+                ...initialState.wallet,
+                coinjoin: {
+                    ...initialState.wallet.coinjoin,
+                    // A startup `--state` patch dispatches no action, it only preloads the state.
+                    debug: {
+                        coinjoinConfigOverride: {
+                            [btcSymbol]: {
+                                coordinatorUrl: 'https://coordinator.example/wabisabi/',
+                            },
+                        },
+                    },
+                },
+            },
+        });
+
+        await store.dispatch(
+            setDebugSettings({ coinjoinServerEnvironment: { [btcSymbol]: 'public' } }),
+        );
+
+        expect(store.getState().wallet.coinjoin.debug?.coinjoinConfigOverride).toBeDefined();
+        expect(await db.getItemByPK('coinjoinDebugSettings', 'debug')).toEqual({
+            coinjoinServerEnvironment: { [btcSymbol]: 'public' },
+        });
     });
 
     it('should ignore stored enabled networks unknown to this build', async () => {
