@@ -64,12 +64,17 @@ export const calculateStakeFormTransaction = (
         throw new Error('Missing amount for non send-max output');
     }
 
+    if (estimatedFee?.success === false) {
+        const error = 'TR_STAKE_FEE_ESTIMATION_FAILED';
+
+        return { type: 'error', error, errorMessage: { id: error } } as const;
+    }
+
     const totalSpent = new BigNumber(calculateTotal(amount, feeInBaseUnits));
 
     if (
         new BigNumber(feeInBaseUnits).gt(availableBalance) ||
-        (compareWithAmount && totalSpent.isGreaterThan(availableBalance)) ||
-        estimatedFee?.success === false
+        (compareWithAmount && totalSpent.isGreaterThan(availableBalance))
     ) {
         const error = 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE';
 

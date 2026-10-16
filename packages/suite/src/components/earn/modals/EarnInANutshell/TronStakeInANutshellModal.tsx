@@ -1,7 +1,7 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { useTronStakingStats } from '@suite-common/earn-staking-api';
-import { type EarnModalAction } from '@suite-common/suite-types/src/staking';
+import { type EarnModalAction } from '@suite-common/suite-types';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { supportedTronNetworkSymbols } from '@suite-common/wallet-types';
 import { Divider, StepList } from '@trezor/components';

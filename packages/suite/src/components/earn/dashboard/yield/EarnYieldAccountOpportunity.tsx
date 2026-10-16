@@ -6,7 +6,7 @@ import { gotoThunk } from '@suite/router';
 import { events as sharedEvents } from '@suite-common/analytics';
 import { selectSelectedDevice } from '@suite-common/device';
 import { useFormatters } from '@suite-common/formatters';
-import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
+import { EarnFlow, EarnProvider } from '@suite-common/suite-types';
 import {
     getTradingPrefilledFromAccountData,
     toTokenCryptoId,

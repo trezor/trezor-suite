@@ -3,19 +3,21 @@ import { combineReducers, isFulfilled, isRejected } from '@reduxjs/toolkit';
 import { type MessageSystemState, messageSystemInitialState } from '@suite-common/message-system';
 import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { mockGetIsWindowVisible, mockOnModalCancel } from '@suite-common/suite-types/mocks';
+import { mockGetIsWindowVisible } from '@suite-common/suite-types/mocks';
 import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
+import { createNotificationsReducer } from '@suite-common/toast-notifications';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
-    type PushStakeTransactionThunkDeps,
     type SendState,
     WALLET_SDK_SOURCE_MOBILE,
     buildStakeData,
+    earnTransactionsReducer,
     prepareSendFormReducer,
-    pushStakeTransactionThunk,
 } from '@suite-common/wallet-core';
+import { mockStakingNotifier } from '@suite-common/wallet-core/mocks';
 import {
     type Account,
+    AddressDisplayOptions,
     type FormState,
     type PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
@@ -26,7 +28,11 @@ import TrezorConnect from '@trezor/connect';
 import { type StaticSessionId } from '@trezor/device-utils';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
-import { signStakeTransactionThunk } from './stakingThunks';
+import {
+    type PushSignedStakeTransactionThunkDeps,
+    pushSignedStakeTransactionThunk,
+    signStakeTransactionThunk,
+} from './stakingThunks';
 
 jest.mock('@trezor/connect', () => ({
     __esModule: true,
@@ -134,12 +140,16 @@ const solAccount: Account = {
     visible: true,
 } as unknown as Account;
 
+const { reducer: notificationsReducer } = createNotificationsReducer();
+
 // These Ethereum and Solana cases share deliberately sparse wallet slices and one test store.
 type State = {
     device: { selectedDevice: TrezorDevice };
     messageSystem: MessageSystemState;
+    notifications: ReturnType<typeof notificationsReducer>;
     wallet: {
         accounts: Account[];
+        earnTransactions: ReturnType<typeof earnTransactionsReducer>;
         transactions: {
             transactions: Record<never, never>;
             phishing: Record<never, never>;
@@ -147,8 +157,10 @@ type State = {
         };
         formDrafts: Record<string, FormState>;
         blockchain: Record<string, unknown>;
+        fees: Record<never, never>;
         send: SendState;
-        settings: { mevProtection: boolean };
+        stake: { resolvedEthereumNonce?: string };
+        settings: { mevProtection: boolean; addressDisplayType: AddressDisplayOptions };
     };
 };
 
@@ -161,8 +173,7 @@ const buildStore = ({
     formDrafts?: Record<string, FormState>;
     blockchain?: Record<string, unknown>;
 } = {}) =>
-    createTestCompositionRoot<PushStakeTransactionThunkDeps, State>({
-        extra: { actions: { onModalCancel: mockOnModalCancel() } },
+    createTestCompositionRoot<PushSignedStakeTransactionThunkDeps, State>({
         reducer: combineReducers({
             device: (): { selectedDevice: TrezorDevice } => ({
                 selectedDevice: {
@@ -173,8 +184,10 @@ const buildStore = ({
                 } as unknown as TrezorDevice,
             }),
             messageSystem: () => messageSystemInitialState,
+            notifications: notificationsReducer,
             wallet: combineReducers({
                 accounts: () => accounts,
+                earnTransactions: earnTransactionsReducer,
                 transactions: () => ({
                     transactions: {},
                     phishing: {},
@@ -182,14 +195,20 @@ const buildStore = ({
                 }),
                 formDrafts: () => formDrafts,
                 blockchain: () => blockchain,
+                fees: () => ({}),
                 send: prepareSendFormReducer({
                     actionTypes: { storageLoad: mockActionType('storageLoad') },
                     reducers: { storageLoadFormDrafts: mockReducer() },
                 }),
-                settings: () => ({ mevProtection: false }),
+                stake: (): State['wallet']['stake'] => ({}),
+                settings: (): State['wallet']['settings'] => ({
+                    mevProtection: false,
+                    addressDisplayType: AddressDisplayOptions.ORIGINAL,
+                }),
             }),
         }),
         services: () => ({
+            stakingNotifier: mockStakingNotifier(),
             analytics: mockNativeAnalytics(),
             networks: { getAccountSyncInterval: mockGetAccountSyncInterval() },
             getIsWindowVisible: mockGetIsWindowVisible(),
@@ -256,7 +275,7 @@ const solanaSignTransactionMock = TrezorConnect.solanaSignTransaction as jest.Mo
 const pushTransactionMock = TrezorConnect.pushTransaction as jest.Mock;
 
 const dispatchDispatcher = async (
-    store: TestCompositionStore<State, PushStakeTransactionThunkDeps>,
+    store: TestCompositionStore<State, PushSignedStakeTransactionThunkDeps>,
     args: Parameters<typeof signStakeTransactionThunk>[0],
 ) => {
     const action = await store.dispatch(signStakeTransactionThunk(args) as any);
@@ -266,10 +285,10 @@ const dispatchDispatcher = async (
 };
 
 const dispatchPush = async (
-    store: TestCompositionStore<State, PushStakeTransactionThunkDeps>,
-    args: Parameters<typeof pushStakeTransactionThunk>[0],
+    store: TestCompositionStore<State, PushSignedStakeTransactionThunkDeps>,
+    args: Parameters<typeof pushSignedStakeTransactionThunk>[0],
 ) => {
-    const action = await store.dispatch(pushStakeTransactionThunk(args) as any);
+    const action = await store.dispatch(pushSignedStakeTransactionThunk(args) as any);
     if (isFulfilled(action)) return { ok: true as const, txid: action.payload.txid };
     if (isRejected(action)) return { ok: false as const, error: action.payload };
     throw new Error('Unexpected dispatch outcome');
@@ -414,9 +433,9 @@ describe('signStakeTransactionThunk', () => {
     });
 });
 
-// Integration coverage of the shared wallet-core push thunk against the mobile deferred
-// sign flow (sign stores the transaction, push broadcasts it).
-describe('pushStakeTransactionThunk', () => {
+// Integration coverage of the mobile push wrapper over the shared wallet-core push thunk against
+// the deferred sign flow (sign stores the transaction, push broadcasts it).
+describe('pushSignedStakeTransactionThunk', () => {
     it('broadcasts the transaction signed during a deferred sign', async () => {
         const store = buildStore({
             formDrafts: {
@@ -434,6 +453,7 @@ describe('pushStakeTransactionThunk', () => {
 
         const result = await dispatchPush(store, {
             accountKey: ETH_ACCOUNT_KEY,
+            stakeType: 'stake',
             isMevProtectionFeatureEnabled: true,
         });
 
@@ -457,6 +477,7 @@ describe('pushStakeTransactionThunk', () => {
 
         const result = await dispatchPush(store, {
             accountKey: SOL_ACCOUNT_KEY,
+            stakeType: 'stake',
             isMevProtectionFeatureEnabled: true,
         });
 
@@ -464,18 +485,22 @@ describe('pushStakeTransactionThunk', () => {
         expect(pushTransactionMock).toHaveBeenCalledTimes(1);
     });
 
-    it('rejects when the account is not found', async () => {
+    it('rejects when no signed transaction is stored', async () => {
         const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
-        const store = buildStore({ accounts: [] });
+        const store = buildStore();
 
         const result = await dispatchPush(store, {
             accountKey: ETH_ACCOUNT_KEY,
+            stakeType: 'stake',
             isMevProtectionFeatureEnabled: true,
         });
 
-        expect(result).toEqual({
+        expect(result).toMatchObject({
             ok: false,
-            error: { error: 'sign-transaction-failed', message: 'Account not found.' },
+            error: {
+                error: 'push-transaction-failed',
+                metadata: { error: { message: 'Transaction not found.' } },
+            },
         });
         expect(pushTransactionMock).not.toHaveBeenCalled();
         errorSpy.mockRestore();
@@ -502,6 +527,7 @@ describe('pushStakeTransactionThunk', () => {
 
         const result = await dispatchPush(store, {
             accountKey: ETH_ACCOUNT_KEY,
+            stakeType: 'stake',
             isMevProtectionFeatureEnabled: true,
         });
 

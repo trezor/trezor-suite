@@ -1,8 +1,4 @@
-import {
-    EarnFlow,
-    type EarnProvider,
-    type EarnYieldContext,
-} from '@suite-common/suite-types/src/staking';
+import { EarnFlow, type EarnProvider, type EarnYieldContext } from '@suite-common/suite-types';
 import { type Account } from '@suite-common/wallet-types';
 import { exhaustive } from '@trezor/type-utils';
 

@@ -1,4 +1,4 @@
-import { EarnProvider } from '@suite-common/suite-types/src/staking';
+import { EarnProvider } from '@suite-common/suite-types';
 import { exhaustive } from '@trezor/type-utils';
 
 export const getEarnProviderName = (provider: EarnProvider): string => {

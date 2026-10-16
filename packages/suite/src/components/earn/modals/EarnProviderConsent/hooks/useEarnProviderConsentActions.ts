@@ -6,7 +6,7 @@ import {
     type EarnModalAction,
     type EarnProvider,
     type EarnYieldContext,
-} from '@suite-common/suite-types/src/staking';
+} from '@suite-common/suite-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     earnOnboardingActions,

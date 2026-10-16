@@ -1,8 +1,6 @@
 {
     "extends": "../../../tsconfig.lib.json",
-    "compilerOptions": {
-        "outDir": "./lib"
-    },
+    "compilerOptions": { "outDir": "./lib" },
     "include": ["./src"],
     "references": [
         {
@@ -11,14 +9,8 @@
         {
             "path": "../../network-module/network-module-suite-common-types"
         },
-        {
-            "path": "../network-tron"
-        },
-        {
-            "path": "../network-tron-assets"
-        },
-        {
-            "path": "../network-tron-types"
-        }
+        { "path": "../network-tron" },
+        { "path": "../network-tron-assets" },
+        { "path": "../network-tron-types" }
     ]
 }

@@ -54,6 +54,7 @@ import { type ActionsFromAsyncThunk, createThunk } from '@trezor/redux-utils';
 import { type Ok, exhaustive } from '@trezor/type-utils';
 import { BigNumber, cloneObject, typedObjectEntries } from '@trezor/utils';
 
+import { getPushTransactionError } from './pushTransactionError';
 import { sendFormActions } from './sendFormActions';
 import {
     composeBitcoinTransactionFeeLevelsThunk,
@@ -626,16 +627,7 @@ export const pushSendFormTransactionThunk = createThunk<
             return fulfillWithValue(pushTxResponse);
         }
 
-        const isPendingConflict = pushTxResponse.error.message.includes(
-            'could not replace existing tx',
-        );
-
-        return rejectWithValue({
-            error: isPendingConflict
-                ? 'push-transaction-pending-conflict'
-                : 'push-transaction-failed',
-            metadata: pushTxResponse,
-        });
+        return rejectWithValue(getPushTransactionError(pushTxResponse));
     },
 );
 

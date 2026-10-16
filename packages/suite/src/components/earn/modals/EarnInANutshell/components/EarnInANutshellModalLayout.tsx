@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 
 import { Translation } from '@suite/intl';
-import { type EarnModalAction } from '@suite-common/suite-types/src/staking';
+import { type EarnModalAction } from '@suite-common/suite-types';
 import { Modal } from '@trezor/components';
 
 type EarnInANutshellModalLayoutProps = {

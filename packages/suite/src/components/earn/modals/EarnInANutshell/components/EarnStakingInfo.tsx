@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { EarnFlow } from '@suite-common/suite-types/src/staking';
+import { EarnFlow } from '@suite-common/suite-types';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     CARDANO_ACTIVATION_PERIOD_MAX_DAYS,

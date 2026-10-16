@@ -179,3 +179,60 @@ for (const filename of [
         );
     });
 }
+
+const suiteCommonDeepImport = "import { EarnFlow } from '@suite-common/suite-types/src/staking';";
+
+for (const filename of [
+    `${repositoryRoot}suite-common/wallet-core/src/staking/shared/stakingUtils.ts`,
+    `${repositoryRoot}suite-common/wallet-utils/src/stakingUtils.ts`,
+    `${repositoryRoot}packages/suite/src/actions/wallet/stakeActions.ts`,
+    `${repositoryRoot}packages/suite/src/actions/wallet/stake/stakeFormEthereumActions.ts`,
+    `${repositoryRoot}packages/suite/src/hooks/earn/useStakeForm.ts`,
+    `${repositoryRoot}packages/suite/src/views/wallet/staking/components/StakingCard.tsx`,
+    `${repositoryRoot}packages/suite/src/components/earn/modals/StakeModal.tsx`,
+    `${repositoryRoot}suite-native/module-earn/src/hooks/staking/useStakingForm.ts`,
+]) {
+    test(`rejects deep Suite package imports in the staking tree file ${filename}`, async () => {
+        const errors = await lintRestrictedImports({ code: suiteCommonDeepImport, filename });
+        assert.equal(errors.length, 1);
+        assert.match(errors[0].message, /bypass the public barrel/);
+    });
+
+    test(`allows package root and mock imports in the staking tree file ${filename}`, async () => {
+        assert.deepEqual(
+            await lintRestrictedImports({
+                code: "import { EarnFlow } from '@suite-common/suite-types'; import { mockWalletAccount } from '@suite-common/wallet-types/mocks'; import { type EvmHexString } from '@suite-common/schemas/src/evm';",
+                filename,
+            }),
+            [],
+        );
+    });
+}
+
+test('keeps the native component restrictions in the mobile staking tree', async () => {
+    const errors = await lintRestrictedImports({
+        code: "import Animated from 'react-native-reanimated';",
+        filename: `${repositoryRoot}suite-native/module-earn/src/hooks/staking/useStakingForm.ts`,
+    });
+    assert.equal(errors.length, 1);
+    assert.match(errors[0].message, /@suite-native\/atoms/);
+});
+
+test('applies the staking tree guard when a package loads the config from its own directory', async () => {
+    const errors = await lintRestrictedImports({
+        code: suiteCommonDeepImport,
+        filename: `${repositoryRoot}packages/suite/src/components/earn/modals/StakeModal.tsx`,
+        instance: createEslint(`${repositoryRoot}packages/suite`),
+    });
+    assert.equal(errors.length, 1);
+});
+
+test('does not guard deep Suite package imports outside the staking trees', async () => {
+    assert.deepEqual(
+        await lintRestrictedImports({
+            code: suiteCommonDeepImport,
+            filename: `${repositoryRoot}packages/suite/src/views/earn/yield/useEarnLayout.tsx`,
+        }),
+        [],
+    );
+});

@@ -1,4 +1,5 @@
 export { mockSetAccountAddMetadata } from './mockSetAccountAddMetadata';
+export { mockStakingNotifier } from './mockStakingNotifier';
 export {
     mockEarnTransactionsState,
     mockTrackedEarnTransaction,

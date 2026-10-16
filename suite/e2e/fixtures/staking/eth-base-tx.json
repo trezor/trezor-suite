@@ -12,7 +12,7 @@
         {
             "value": "100000000000000000",
             "n": 0,
-            "addresses": ["0xAFA848357154a6a624686b348303EF9a13F63264"],
+            "addresses": ["0x7967AcFc9EB46cA2d20076B61B05e224F2d0B8b3"],
             "isAddress": true
         }
     ],
@@ -44,13 +44,13 @@
             {
                 "type": 0,
                 "from": "0x02a9d3637126923De9369557CD9673aae46666Fd",
-                "to": "0x66cb3AeD024740164EBcF04e292dB09b5B63A2e1",
+                "to": "0xCDd543223b6ef6CE26E7f80F7837c5C1A88aF683",
                 "value": "55324575000000000"
             },
             {
                 "type": 0,
-                "from": "0xAFA848357154a6a624686b348303EF9a13F63264",
-                "to": "0x66cb3AeD024740164EBcF04e292dB09b5B63A2e1",
+                "from": "0x7967AcFc9EB46cA2d20076B61B05e224F2d0B8b3",
+                "to": "0xCDd543223b6ef6CE26E7f80F7837c5C1A88aF683",
                 "value": "100000000000000000"
             }
         ]

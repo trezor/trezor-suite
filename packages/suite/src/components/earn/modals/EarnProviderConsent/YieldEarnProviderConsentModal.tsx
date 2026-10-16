@@ -2,11 +2,7 @@ import { injectDesktopAnalytics } from '@suite/analytics';
 import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
-import {
-    EarnFlow,
-    type EarnProvider,
-    type EarnYieldContext,
-} from '@suite-common/suite-types/src/staking';
+import { EarnFlow, type EarnProvider, type EarnYieldContext } from '@suite-common/suite-types';
 import { selectTradingCoinSymbolByCryptoId, toTokenCryptoId } from '@suite-common/trading';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';

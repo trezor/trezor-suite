@@ -2,6 +2,8 @@ import type {
     AccountAddresses,
     BlockbookAccountInfo,
     BlockbookTransaction,
+    EthereumSpecific,
+    InternalTransfer,
     TokenInfo,
     Transaction,
 } from '@trezor/blockchain-link-types';
@@ -1335,3 +1337,129 @@ export const transformTransaction: {
 ];
 
 export const sortedTxs = [...'abcdefghij'].map(txid => ({ txid }));
+
+const MAINNET_STAKING_POOL = '0xD523794C879D9eC028960a231F866758e405bE34';
+const MAINNET_WITHDRAW_TREASURY = '0x19449f0f696703Aa3b1485DfA2d855F33659397a';
+const HOODI_STAKING_POOL = '0x7967AcFc9EB46cA2d20076B61B05e224F2d0B8b3';
+const HOODI_WITHDRAW_TREASURY = '0xCDd543223b6ef6CE26E7f80F7837c5C1A88aF683';
+const HOLESKY_STAKING_POOL = '0xAFA848357154a6a624686b348303EF9a13F63264';
+const HOLESKY_WITHDRAW_TREASURY = '0x66cb3AeD024740164EBcF04e292dB09b5B63A2e1';
+
+export const filterEthereumInternalTransfers: {
+    description: string;
+    address: string | undefined;
+    ethereumSpecific: BlockbookTransaction['ethereumSpecific'];
+    parsed: InternalTransfer[];
+}[] = [
+    {
+        description: 'returns nothing without an account address',
+        address: undefined,
+        ethereumSpecific: {
+            internalTransfers: [{ type: 0, from: 'A', to: 'B', value: '1' }],
+        } as unknown as EthereumSpecific,
+        parsed: [],
+    },
+    {
+        description: 'returns nothing without internal transfers',
+        address: 'A',
+        ethereumSpecific: { internalTransfers: [] } as unknown as EthereumSpecific,
+        parsed: [],
+    },
+    {
+        description: 'classifies transfers of the account address',
+        address: 'A',
+        ethereumSpecific: {
+            internalTransfers: [
+                { type: 0, from: 'A', to: 'B', value: '1' },
+                { type: 0, from: 'B', to: 'A', value: '2' },
+                { type: 0, from: 'A', to: 'A', value: '3' },
+            ],
+        } as unknown as EthereumSpecific,
+        parsed: [
+            { type: 'sent', amount: '1', from: 'A', to: 'B' },
+            { type: 'recv', amount: '2', from: 'B', to: 'A' },
+            { type: 'self', amount: '3', from: 'A', to: 'A' },
+        ],
+    },
+    {
+        description: 'drops contract creation and destruction transfers',
+        address: 'A',
+        ethereumSpecific: {
+            internalTransfers: [
+                { type: 1, from: 'A', to: 'B', value: '1' },
+                { type: 2, from: 'B', to: 'A', value: '2' },
+            ],
+        } as unknown as EthereumSpecific,
+        parsed: [],
+    },
+    {
+        description: 'drops transfers between other addresses',
+        address: 'A',
+        ethereumSpecific: {
+            internalTransfers: [{ type: 0, from: 'B', to: 'C', value: '1' }],
+        } as unknown as EthereumSpecific,
+        parsed: [],
+    },
+    {
+        description: 'keeps the mainnet Everstake instant stake transfer as external',
+        address: 'A',
+        ethereumSpecific: {
+            internalTransfers: [
+                {
+                    type: 0,
+                    from: MAINNET_STAKING_POOL,
+                    to: MAINNET_WITHDRAW_TREASURY,
+                    value: '1',
+                },
+            ],
+        } as unknown as EthereumSpecific,
+        parsed: [
+            {
+                type: 'external',
+                amount: '1',
+                from: MAINNET_STAKING_POOL,
+                to: MAINNET_WITHDRAW_TREASURY,
+            },
+        ],
+    },
+    {
+        description: 'keeps the Hoodi Everstake instant stake transfer as external',
+        address: 'A',
+        ethereumSpecific: {
+            internalTransfers: [
+                { type: 0, from: HOODI_STAKING_POOL, to: HOODI_WITHDRAW_TREASURY, value: '1' },
+            ],
+        } as unknown as EthereumSpecific,
+        parsed: [
+            {
+                type: 'external',
+                amount: '1',
+                from: HOODI_STAKING_POOL,
+                to: HOODI_WITHDRAW_TREASURY,
+            },
+        ],
+    },
+    {
+        description: 'drops transfers of the retired Holesky Everstake deployment',
+        address: 'A',
+        ethereumSpecific: {
+            internalTransfers: [
+                {
+                    type: 0,
+                    from: HOLESKY_STAKING_POOL,
+                    to: HOLESKY_WITHDRAW_TREASURY,
+                    value: '1',
+                },
+            ],
+        } as unknown as EthereumSpecific,
+        parsed: [],
+    },
+    {
+        description: 'drops a transfer from the pool to a non-treasury address',
+        address: 'A',
+        ethereumSpecific: {
+            internalTransfers: [{ type: 0, from: MAINNET_STAKING_POOL, to: 'B', value: '1' }],
+        } as unknown as EthereumSpecific,
+        parsed: [],
+    },
+];

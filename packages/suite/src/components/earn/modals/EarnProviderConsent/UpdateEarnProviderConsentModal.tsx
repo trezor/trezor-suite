@@ -1,9 +1,5 @@
 import { Translation } from '@suite/intl';
-import {
-    EarnFlow,
-    type EarnProvider,
-    type EarnYieldContext,
-} from '@suite-common/suite-types/src/staking';
+import { EarnFlow, type EarnProvider, type EarnYieldContext } from '@suite-common/suite-types';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 
