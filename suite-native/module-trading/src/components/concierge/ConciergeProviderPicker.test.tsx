@@ -53,15 +53,13 @@ const ConciergeProviderPickerWrapper = ({ country = 'CZ' }: { country?: TradingC
     );
 };
 
-const renderConciergeProviderPicker = async (props?: { country?: TradingCountryCode }) => {
+const renderConciergeProviderPicker = (props?: { country?: TradingCountryCode }) => {
     mockUseFetchOtc.mockReturnValue({
         data: otcData,
         isLoading: false,
     } as unknown as ReturnType<typeof useFetchOtc>);
 
-    return await renderWithBasicProvider(
-        <ConciergeProviderPickerWrapper country={props?.country} />,
-    );
+    return renderWithBasicProvider(<ConciergeProviderPickerWrapper country={props?.country} />);
 };
 
 describe('ConciergeProviderPicker', () => {

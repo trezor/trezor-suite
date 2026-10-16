@@ -4,8 +4,8 @@ import { renderWithBasicProvider } from '@suite-native/test-utils';
 import { FeeOptionErrorMessage } from './FeeOptionErrorMessage';
 
 describe('FeeOptionErrorMessage', () => {
-    const renderFeeOptionErrorMessage = async (isVisible: boolean) =>
-        await renderWithBasicProvider(<FeeOptionErrorMessage isVisible={isVisible} />);
+    const renderFeeOptionErrorMessage = (isVisible: boolean) =>
+        renderWithBasicProvider(<FeeOptionErrorMessage isVisible={isVisible} />);
 
     it('should render error message when visible', async () => {
         const { getByText, queryByTestId } = await renderFeeOptionErrorMessage(true);

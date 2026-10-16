@@ -45,8 +45,8 @@ const cancelNavigationTarget = {
     name: RootStackRoutes.TransactionDetailStack,
 } as unknown as NavigateParameters<RootStackParamList>;
 
-const renderGuardedSign = async (sign: () => Promise<void>) =>
-    await renderHookWithStoreProvider(() => useDeviceGuardedSign({ sign, cancelNavigationTarget }));
+const renderGuardedSign = (sign: () => Promise<void>) =>
+    renderHookWithStoreProvider(() => useDeviceGuardedSign({ sign, cancelNavigationTarget }));
 
 describe('useDeviceGuardedSign', () => {
     beforeEach(() => {

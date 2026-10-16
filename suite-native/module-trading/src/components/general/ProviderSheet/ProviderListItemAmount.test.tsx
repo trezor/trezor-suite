@@ -52,10 +52,10 @@ const sellAmountInCryptoOverrides: PreloadedStatePartial<TradingTestPreloadedSta
 };
 
 describe('ProviderListItemAmount', () => {
-    const renderProviderListItemAmount = async (
+    const renderProviderListItemAmount = (
         quote: TradingTradeType,
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = overridesWithQuotes,
-    ) => await renderWithTradingProvider(<ProviderListItemAmount quote={quote} />, { overrides });
+    ) => renderWithTradingProvider(<ProviderListItemAmount quote={quote} />, { overrides });
 
     it('should render the received amount when the user entered the "from" amount', async () => {
         const { getByText } = await renderProviderListItemAmount(mercuryoApplePayBuyQuote);

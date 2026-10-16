@@ -48,14 +48,14 @@ describe('ExchangeReceiveContent', () => {
         },
     });
 
-    const renderForm = async () =>
-        await renderHookWithStoreProvider(() => useExchangeForm(), {
+    const renderForm = () =>
+        renderHookWithStoreProvider(() => useExchangeForm(), {
             preloadedState,
             services,
         });
 
-    const renderExchangeReceiveContent = async () =>
-        await renderWithStoreProvider(<ExchangeReceiveContent />, {
+    const renderExchangeReceiveContent = () =>
+        renderWithStoreProvider(<ExchangeReceiveContent />, {
             preloadedState,
             services: {
                 ...services,

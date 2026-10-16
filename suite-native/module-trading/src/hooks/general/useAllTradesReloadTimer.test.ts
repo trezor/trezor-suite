@@ -62,8 +62,8 @@ describe('useAllTradesReloadTimer', () => {
             },
         });
 
-    const renderUseAllTradesReloadTimer = async (store: Store<State>) =>
-        await renderHookWithTradingProvider(() => useAllTradesReloadTimer(), {
+    const renderUseAllTradesReloadTimer = (store: Store<State>) =>
+        renderHookWithTradingProvider(() => useAllTradesReloadTimer(), {
             services: { store },
         });
 

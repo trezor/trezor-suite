@@ -7,8 +7,8 @@ import { ExchangeSlippagePicker } from './ExchangeSlippagePicker';
 import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
 
 describe('ExchangeSlippagePicker', () => {
-    const renderExchangeSlippagePicker = async (quote: ExchangeTrade | undefined) =>
-        await renderWithTradingProvider(
+    const renderExchangeSlippagePicker = (quote: ExchangeTrade | undefined) =>
+        renderWithTradingProvider(
             <ExchangeSlippagePicker quote={quote} onSlippageConfirmed={jest.fn()} />,
             {
                 tradeType: 'exchange',

@@ -18,19 +18,16 @@ const reportMock = jest.fn();
 const services: NativeAnalyticsDep = { analytics: mockNativeAnalytics(reportMock) };
 
 describe('TradingDetailFeedback', () => {
-    const renderTradingDetailFeedback = async (
+    const renderTradingDetailFeedback = (
         props: Partial<Parameters<typeof TradingDetailFeedback>[0]> = {},
     ) =>
-        await renderWithTradingHistoryProvider(
-            <TradingDetailFeedback type="exchange" {...props} />,
-            {
-                services,
-                overrides: {
-                    geolocation: { countryCode: 'CZ' },
-                    analytics: { instanceId: 'test-instance' },
-                },
+        renderWithTradingHistoryProvider(<TradingDetailFeedback type="exchange" {...props} />, {
+            services,
+            overrides: {
+                geolocation: { countryCode: 'CZ' },
+                analytics: { instanceId: 'test-instance' },
             },
-        );
+        });
 
     beforeEach(() => {
         sendFeedbackActionMock.mockClear();

@@ -43,8 +43,8 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 describe('ExchangeTab', () => {
-    const renderExchangeTab = async () =>
-        await renderWithTradingProvider(<ExchangeTab />, {
+    const renderExchangeTab = () =>
+        renderWithTradingProvider(<ExchangeTab />, {
             services: {
                 ...services,
                 networks: { networkIcon: mockNetworkIcon(), ...services.networks },

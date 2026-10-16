@@ -12,8 +12,8 @@ jest.mock('@trezor/react-utils', () => ({
 }));
 
 describe('useReloadTimer', () => {
-    const renderUseReloadTimer = async (initialEnabled: boolean = true) =>
-        await renderHook<ReturnType<typeof useReloadTimer>, { isEnabled: boolean }>(
+    const renderUseReloadTimer = (initialEnabled: boolean = true) =>
+        renderHook<ReturnType<typeof useReloadTimer>, { isEnabled: boolean }>(
             ({ isEnabled }) => useReloadTimer({ isEnabled }),
             {
                 initialProps: { isEnabled: initialEnabled },

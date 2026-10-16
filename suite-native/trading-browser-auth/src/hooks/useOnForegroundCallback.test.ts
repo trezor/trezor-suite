@@ -25,8 +25,8 @@ describe('useOnForegroundCallback', () => {
     const mockCallback = jest.fn();
     const appStateSpy = jest.spyOn(AppState, 'addEventListener');
 
-    const renderUseOnFocusCallback = async () =>
-        await renderHookWithBasicProvider(() => useOnForegroundCallback(mockCallback), {});
+    const renderUseOnFocusCallback = () =>
+        renderHookWithBasicProvider(() => useOnForegroundCallback(mockCallback), {});
 
     beforeEach(() => {
         jest.clearAllMocks();

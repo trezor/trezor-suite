@@ -58,8 +58,8 @@ const createParams = (overrides: Record<string, unknown> = {}) => ({
 
 type HookParams = ReturnType<typeof createParams>;
 
-const renderReview = async (params: HookParams, { isDeviceConnected = true } = {}) =>
-    await renderHookWithStoreProvider((props: HookParams) => useEarnTransactionReview(props), {
+const renderReview = (params: HookParams, { isDeviceConnected = true } = {}) =>
+    renderHookWithStoreProvider((props: HookParams) => useEarnTransactionReview(props), {
         preloadedState: { device: { selectedDevice: { connected: isDeviceConnected } } },
         initialProps: params,
     });

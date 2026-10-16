@@ -9,10 +9,10 @@ import { renderHookWithTradingProvider } from '../../test-utils/tradingTestUtils
 describe('useBuyInputFormControls', () => {
     let form: BuyFormType;
 
-    const renderBuyFormHook = async () => await renderHookWithTradingProvider(() => useBuyForm());
+    const renderBuyFormHook = () => renderHookWithTradingProvider(() => useBuyForm());
 
-    const renderUseBuyInputFormControls = async (name: 'fiatValue' | 'cryptoValue' = 'fiatValue') =>
-        await renderHookWithBasicProvider(() => useBuyInputFormControls(name), {
+    const renderUseBuyInputFormControls = (name: 'fiatValue' | 'cryptoValue' = 'fiatValue') =>
+        renderHookWithBasicProvider(() => useBuyInputFormControls(name), {
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 

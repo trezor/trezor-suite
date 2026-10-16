@@ -41,8 +41,8 @@ jest.mock('@react-navigation/native', () => ({
 }));
 
 describe('TradingTabContent', () => {
-    const renderTradingTabContent = async (isBlacklisted: boolean = false) =>
-        await renderWithTradingProvider(<TradingTabContent />, {
+    const renderTradingTabContent = (isBlacklisted: boolean = false) =>
+        renderWithTradingProvider(<TradingTabContent />, {
             services: {
                 ...services,
                 networks: { networkIcon: mockNetworkIcon(), ...services.networks },

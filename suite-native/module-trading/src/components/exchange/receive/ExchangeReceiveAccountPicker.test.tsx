@@ -59,8 +59,8 @@ describe('ExchangeReceiveAccountPicker', () => {
         return result.current;
     };
 
-    const renderPicker = async (overrides: PreloadedStatePartial<TradingTestPreloadedState> = {}) =>
-        await renderWithTradingProvider(<ExchangeReceiveAccountPicker />, {
+    const renderPicker = (overrides: PreloadedStatePartial<TradingTestPreloadedState> = {}) =>
+        renderWithTradingProvider(<ExchangeReceiveAccountPicker />, {
             tradeType: 'exchange',
             overrides: mergeDeepObject(baseOverrides, overrides),
             wrapper: ({ children }) => <Form form={exchangeForm}>{children}</Form>,

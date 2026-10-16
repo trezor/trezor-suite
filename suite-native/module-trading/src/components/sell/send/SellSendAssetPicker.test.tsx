@@ -97,13 +97,13 @@ describe('SellSendAssetPicker', () => {
         },
     ];
 
-    const renderSellForm = async () =>
-        await renderHookWithStoreProvider(() => useSellForm(), {
+    const renderSellForm = () =>
+        renderHookWithStoreProvider(() => useSellForm(), {
             services: { ...services, store },
         });
 
-    const renderSellSendAssetPicker = async () =>
-        await renderWithStoreProvider(<SellSendAssetPicker />, {
+    const renderSellSendAssetPicker = () =>
+        renderWithStoreProvider(<SellSendAssetPicker />, {
             services: {
                 ...services,
                 store,

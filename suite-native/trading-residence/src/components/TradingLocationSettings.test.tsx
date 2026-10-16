@@ -54,8 +54,8 @@ describe('TradingLocationSettings', () => {
             },
         });
 
-    const renderTradingLocationSettings = async (props: TradingLocationSettingsProps) =>
-        await renderWithStoreProvider(<TradingLocationSettings {...props} />, {
+    const renderTradingLocationSettings = (props: TradingLocationSettingsProps) =>
+        renderWithStoreProvider(<TradingLocationSettings {...props} />, {
             services: { store },
         });
 

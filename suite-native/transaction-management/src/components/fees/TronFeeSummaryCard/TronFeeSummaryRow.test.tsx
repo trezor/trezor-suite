@@ -22,8 +22,8 @@ describe('TronFeeSummaryRow', () => {
         wallet: getWalletState(),
     });
 
-    const renderRow = async (props: Partial<TronFeeSummaryRowProps> = {}) =>
-        await renderWithStoreProvider(<TronFeeSummaryRow {...defaultProps} {...props} />, {
+    const renderRow = (props: Partial<TronFeeSummaryRowProps> = {}) =>
+        renderWithStoreProvider(<TronFeeSummaryRow {...defaultProps} {...props} />, {
             preloadedState: getPreloadedState(),
         });
 

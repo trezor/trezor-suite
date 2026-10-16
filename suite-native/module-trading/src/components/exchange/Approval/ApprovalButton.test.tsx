@@ -31,8 +31,8 @@ const ethAccountKey = mockAccountKey({ symbol: asNetworkSymbol('eth'), descripto
 describe('ApprovalButton', () => {
     let store: Store<State>;
 
-    const renderApprovalButton = async (props: Partial<ApprovalButtonProps>) =>
-        await renderWithStoreProvider(<ApprovalButton flowType="approve" isReady {...props} />, {
+    const renderApprovalButton = (props: Partial<ApprovalButtonProps>) =>
+        renderWithStoreProvider(<ApprovalButton flowType="approve" isReady {...props} />, {
             services: { analytics: mockNativeAnalytics(mockAnalyticsReport), store },
         });
 

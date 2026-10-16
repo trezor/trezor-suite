@@ -38,8 +38,8 @@ const baseState = {
 const services: NativeAnalyticsDep = { analytics: mockNativeAnalytics() };
 
 describe('AppTabNavigator', () => {
-    const renderTabs = async (overrides: Record<string, unknown> = {}) =>
-        await renderWithStoreProvider(<AppTabNavigator />, {
+    const renderTabs = (overrides: Record<string, unknown> = {}) =>
+        renderWithStoreProvider(<AppTabNavigator />, {
             preloadedState: mergePreloadedState(baseState, overrides),
             services,
         });

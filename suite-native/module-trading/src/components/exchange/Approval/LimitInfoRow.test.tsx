@@ -17,10 +17,7 @@ describe('LimitInfoRow', () => {
         onPress: jest.fn(),
     };
 
-    const renderLimitInfoRow = async (
-        props: Partial<LimitInfoRowProps> = {},
-        quoteOverrides = {},
-    ) => {
+    const renderLimitInfoRow = (props: Partial<LimitInfoRowProps> = {}, quoteOverrides = {}) => {
         const walletState = getWalletState({ tradeType: 'exchange' });
         const preloadedState = {
             wallet: {
@@ -38,7 +35,7 @@ describe('LimitInfoRow', () => {
             },
         };
 
-        return await renderWithStoreProvider(<LimitInfoRow {...defaultProps} {...props} />, {
+        return renderWithStoreProvider(<LimitInfoRow {...defaultProps} {...props} />, {
             preloadedState,
             services: { networks: mockNetworksServices() },
         });

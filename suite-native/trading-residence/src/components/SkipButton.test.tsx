@@ -8,8 +8,8 @@ import { SkipButton, type SkipButtonProps } from './SkipButton';
 const mockAnalyticsReport = jest.fn();
 
 describe('SkipButton', () => {
-    const renderSkipButton = async (props: Partial<SkipButtonProps>) =>
-        await renderWithBasicProvider(<SkipButton onPress={jest.fn()} {...props} />, {
+    const renderSkipButton = (props: Partial<SkipButtonProps>) =>
+        renderWithBasicProvider(<SkipButton onPress={jest.fn()} {...props} />, {
             services: { analytics: mockNativeAnalytics(mockAnalyticsReport) },
         });
 

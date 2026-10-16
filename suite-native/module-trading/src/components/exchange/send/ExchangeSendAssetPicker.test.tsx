@@ -121,13 +121,13 @@ describe('ExchangeSendAssetPicker', () => {
         },
     });
 
-    const renderExchangeForm = async () =>
-        await renderHookWithStoreProvider(() => useExchangeForm(), {
+    const renderExchangeForm = () =>
+        renderHookWithStoreProvider(() => useExchangeForm(), {
             services: { ...services, store },
         });
 
-    const renderExchangeSendAssetPicker = async () =>
-        await renderWithStoreProvider(<ExchangeSendAssetPicker />, {
+    const renderExchangeSendAssetPicker = () =>
+        renderWithStoreProvider(<ExchangeSendAssetPicker />, {
             services: {
                 ...services,
                 store,

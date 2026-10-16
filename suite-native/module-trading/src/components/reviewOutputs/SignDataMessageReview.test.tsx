@@ -56,10 +56,10 @@ const baseOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {
     },
 };
 
-const renderSignDataMessageReview = async (
+const renderSignDataMessageReview = (
     overrides: PreloadedStatePartial<TradingTestPreloadedState> = baseOverrides,
 ) =>
-    await renderWithTradingProvider(<SignDataMessageReview />, {
+    renderWithTradingProvider(<SignDataMessageReview />, {
         tradeType: 'exchange',
         overrides,
     });

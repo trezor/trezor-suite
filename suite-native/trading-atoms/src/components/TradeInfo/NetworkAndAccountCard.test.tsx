@@ -30,8 +30,8 @@ describe('NetworkAndAccountCard', () => {
         }),
     } as const;
 
-    const renderNetworkAndAccountCard = async (props: Partial<NetworkAndAccountCardProps>) =>
-        await renderWithStoreProvider(
+    const renderNetworkAndAccountCard = (props: Partial<NetworkAndAccountCardProps>) =>
+        renderWithStoreProvider(
             <NetworkAndAccountCard title="TITLE" account={btc1NormalAccount} {...props} />,
             {
                 services: {

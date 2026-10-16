@@ -4,8 +4,8 @@ import { act, fireEvent, renderWithBasicProvider } from '@suite-native/test-util
 import { ServerOffline, type ServerOfflineProps } from './ServerOffline';
 
 describe('ServerOffline', () => {
-    const renderServerOffline = async (props: Partial<ServerOfflineProps>) =>
-        await renderWithBasicProvider(<ServerOffline onRetryPress={jest.fn()} {...props} />);
+    const renderServerOffline = (props: Partial<ServerOfflineProps>) =>
+        renderWithBasicProvider(<ServerOffline onRetryPress={jest.fn()} {...props} />);
 
     it('should call onRetryPress when "Try again" button is pressed', async () => {
         const retryPressMock = jest.fn();

@@ -33,10 +33,10 @@ const services: NativeAnalyticsDep = {
 describe('SellReceiveMethodPicker', () => {
     let form: SellFormType;
 
-    const renderSellReceiveMethodPicker = async (
+    const renderSellReceiveMethodPicker = (
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        await renderWithStoreProvider(<SellReceiveMethodPicker />, {
+        renderWithStoreProvider(<SellReceiveMethodPicker />, {
             preloadedState: createTradingPreloadedState({ tradeType: 'sell', overrides }),
             services,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,

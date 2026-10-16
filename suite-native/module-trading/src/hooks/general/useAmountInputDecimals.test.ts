@@ -24,10 +24,8 @@ jest.mock('@suite-native/tokens', () => ({
 }));
 
 describe('useAmountInputDecimals', () => {
-    const renderUseAmountInputDecimals = async (
-        account?: Account,
-        contractAddress?: TokenAddress,
-    ) => await renderHookWithStoreProvider(() => useAmountInputDecimals(account, contractAddress));
+    const renderUseAmountInputDecimals = (account?: Account, contractAddress?: TokenAddress) =>
+        renderHookWithStoreProvider(() => useAmountInputDecimals(account, contractAddress));
 
     beforeEach(() => {
         jest.clearAllMocks();

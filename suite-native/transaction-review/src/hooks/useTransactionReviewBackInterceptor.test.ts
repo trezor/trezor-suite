@@ -22,11 +22,11 @@ jest.mock('@suite-native/transaction-management', () => ({
 }));
 
 describe('useTransactionReviewBackInterceptor', () => {
-    const renderInterceptor = async ({
+    const renderInterceptor = ({
         isEnabled,
         onReviewCanceled = jest.fn(),
     }: { isEnabled?: boolean; onReviewCanceled?: () => void } = {}) =>
-        await renderHookWithBasicProvider(() =>
+        renderHookWithBasicProvider(() =>
             useTransactionReviewBackInterceptor({ isEnabled, onReviewCanceled }),
         );
 

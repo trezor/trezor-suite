@@ -78,11 +78,11 @@ describe('PaymentMethodListItem', () => {
         },
     };
 
-    const renderPaymentMethodListItem = async (
+    const renderPaymentMethodListItem = (
         props: Partial<PaymentMethodListItemProps<any>>,
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = defaultOverrides,
     ) =>
-        await renderWithTradingProvider(
+        renderWithTradingProvider(
             <PaymentMethodListItem
                 quote={mercuryoApplePayBuyQuote}
                 onPress={jest.fn()}

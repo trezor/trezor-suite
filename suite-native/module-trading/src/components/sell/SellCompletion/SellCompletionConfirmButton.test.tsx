@@ -17,8 +17,8 @@ jest.mock('@react-navigation/native', () => ({
 const ethAccountKey = mockAccountKey({ symbol: asNetworkSymbol('eth'), descriptor: 'eth1normal' });
 
 describe('SellCompletionConfirmButton', () => {
-    const renderSellCompletionButton = async (precomposedTx: Record<string, unknown> | undefined) =>
-        await renderWithTradingProvider(
+    const renderSellCompletionButton = (precomposedTx: Record<string, unknown> | undefined) =>
+        renderWithTradingProvider(
             <SellCompletionConfirmButton quote={banxaCreditCardSellQuote} />,
             {
                 tradeType: 'sell',

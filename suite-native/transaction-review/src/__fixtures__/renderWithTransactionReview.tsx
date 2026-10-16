@@ -17,14 +17,14 @@ type RenderWithTransactionReviewOptions = {
     preloadedState?: object;
 };
 
-export const renderWithTransactionReview = async (
+export const renderWithTransactionReview = (
     element: ReactElement,
     {
         providerProps = {},
         preloadedState = { wallet: mockWalletState() },
     }: RenderWithTransactionReviewOptions = {},
 ): Promise<RenderResult> =>
-    await renderWithStoreProvider(
+    renderWithStoreProvider(
         <TransactionReviewProvider
             accountKey={ETH_ACCOUNT_KEY}
             titleTranslationId="moduleSend.review.outputs.title"

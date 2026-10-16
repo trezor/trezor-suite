@@ -10,8 +10,8 @@ import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils'
 describe('TradeableAssetList', () => {
     const defaultAssets: TradeableAsset[] = [btcAsset, usdcAsset, adaAsset];
 
-    const renderTradeableAssetList = async (props: Partial<TradeableAssetListProps>) =>
-        await renderWithTradingProvider(
+    const renderTradeableAssetList = (props: Partial<TradeableAssetListProps>) =>
+        renderWithTradingProvider(
             <TradeableAssetList
                 assets={defaultAssets}
                 onAssetSelect={jest.fn()}

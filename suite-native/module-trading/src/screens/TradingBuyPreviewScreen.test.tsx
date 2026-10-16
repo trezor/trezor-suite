@@ -25,7 +25,7 @@ describe('TradingBuyPreviewScreen', () => {
         jest.clearAllMocks();
     });
 
-    const renderTradingBuyPreviewScreen = async ({
+    const renderTradingBuyPreviewScreen = ({
         providerMetadata,
         selectedQuote,
     }: {
@@ -36,7 +36,7 @@ describe('TradingBuyPreviewScreen', () => {
         tradingState.currentProviderMetadata = providerMetadata;
         tradingState.buy.selectedQuote = selectedQuote;
 
-        return await renderWithTradingProvider(<TradingBuyPreviewScreen />, {
+        return renderWithTradingProvider(<TradingBuyPreviewScreen />, {
             tradeType: 'buy',
             services: {
                 analytics: mockNativeAnalytics(mockAnalyticsReport),

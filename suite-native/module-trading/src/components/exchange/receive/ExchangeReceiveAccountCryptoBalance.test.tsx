@@ -34,8 +34,8 @@ describe('ExchangeReceiveAccountCryptoBalance', () => {
         return result.current;
     };
 
-    const renderComponent = async () =>
-        await renderWithStoreProvider(<ExchangeReceiveAccountCryptoBalance />, {
+    const renderComponent = () =>
+        renderWithStoreProvider(<ExchangeReceiveAccountCryptoBalance />, {
             preloadedState,
             wrapper: ({ children }) => <Form form={exchangeForm}>{children}</Form>,
         });

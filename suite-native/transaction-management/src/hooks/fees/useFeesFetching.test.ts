@@ -38,7 +38,7 @@ describe('useFeesFetching', () => {
         ...overrides,
     });
 
-    const renderUseFeesFetching = async ({
+    const renderUseFeesFetching = ({
         store,
         networkSymbol,
         isRefetchDisabled = false,
@@ -47,10 +47,9 @@ describe('useFeesFetching', () => {
         networkSymbol?: NetworkSymbol;
         isRefetchDisabled?: boolean;
     }) =>
-        await renderHookWithStoreProvider(
-            () => useFeesFetching({ networkSymbol, isRefetchDisabled }),
-            { services: { store } },
-        );
+        renderHookWithStoreProvider(() => useFeesFetching({ networkSymbol, isRefetchDisabled }), {
+            services: { store },
+        });
 
     beforeEach(() => {
         jest.clearAllMocks();

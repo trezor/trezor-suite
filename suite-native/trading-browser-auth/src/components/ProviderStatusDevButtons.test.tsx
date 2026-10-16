@@ -23,8 +23,8 @@ type State = TradingRootState;
 describe('ProviderStatusDevButtons', () => {
     let store: Store<State>;
 
-    const renderProviderStatusDevButtons = async () =>
-        await renderWithStoreProvider(<ProviderStatusDevButtons />, { services: { store } });
+    const renderProviderStatusDevButtons = () =>
+        renderWithStoreProvider(<ProviderStatusDevButtons />, { services: { store } });
 
     beforeEach(() => {
         store = createLightStore({

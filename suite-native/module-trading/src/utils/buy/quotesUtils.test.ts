@@ -29,8 +29,8 @@ const networkConfigs = [
 describe('quotesUtils', () => {
     let form: BuyFormType;
 
-    const renderUseTradingBuyForm = async () =>
-        await renderHookWithStoreProvider(() => useBuyForm(), {
+    const renderUseTradingBuyForm = () =>
+        renderHookWithStoreProvider(() => useBuyForm(), {
             preloadedState: {
                 networks: mockNetworksState(mockGetSupportedNetworks()),
                 device: deviceInitialState,

@@ -14,10 +14,8 @@ describe('CountrySubdivisionListItem', () => {
         name: 'California',
     } satisfies TradingCountrySubdivisionOption;
 
-    const renderCountrySubdivisionListItem = async (
-        props: Partial<CountrySubdivisionListItemProps>,
-    ) =>
-        await renderWithBasicProvider(
+    const renderCountrySubdivisionListItem = (props: Partial<CountrySubdivisionListItemProps>) =>
+        renderWithBasicProvider(
             <CountrySubdivisionListItem onPress={jest.fn()} {...subdivisionData} {...props} />,
         );
 

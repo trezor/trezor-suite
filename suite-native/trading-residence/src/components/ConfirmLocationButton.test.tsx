@@ -103,8 +103,8 @@ const LocationFormWithCountrySubdivisionPickerControls = ({
 describe('ConfirmLocationButton', () => {
     let store: Store<State>;
 
-    const renderConfirmLocationButton = async (props: Partial<ConfirmLocationButtonProps>) =>
-        await renderWithStoreProvider(<ConfirmLocationButton afterConfirm={jest.fn} {...props} />, {
+    const renderConfirmLocationButton = (props: Partial<ConfirmLocationButtonProps>) =>
+        renderWithStoreProvider(<ConfirmLocationButton afterConfirm={jest.fn} {...props} />, {
             wrapper: LocationForm,
             services: { analytics: mockNativeAnalytics(mockAnalyticsReport), store },
         });

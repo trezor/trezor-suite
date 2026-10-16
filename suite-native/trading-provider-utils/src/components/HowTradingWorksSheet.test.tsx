@@ -14,8 +14,8 @@ const mockCloseModal = jest.fn();
 describe('HowTradingWorksSheet', () => {
     const mockOpenLink = jest.spyOn(Linking, 'openURL');
 
-    const renderHowTradingWorksSheet = async () =>
-        await renderWithBasicProvider(
+    const renderHowTradingWorksSheet = () =>
+        renderWithBasicProvider(
             <HowTradingWorksSheet
                 ref={createRef<BottomSheetModalMethods>()}
                 closeModal={mockCloseModal}

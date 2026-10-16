@@ -52,15 +52,14 @@ describe('BuyForm', () => {
         },
     };
 
-    const renderFormHook = async (
-        overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
-    ) => await renderHookWithTradingProvider(() => useBuyForm(), { overrides, services });
+    const renderFormHook = (overrides: PreloadedStatePartial<TradingTestPreloadedState> = {}) =>
+        renderHookWithTradingProvider(() => useBuyForm(), { overrides, services });
 
-    const renderBuyForm = async (
+    const renderBuyForm = (
         overrides: PreloadedStatePartial<TradingTestPreloadedState>,
         form: BuyFormType,
     ) =>
-        await renderWithTradingProvider(<BuyForm />, {
+        renderWithTradingProvider(<BuyForm />, {
             overrides,
             services: {
                 ...services,

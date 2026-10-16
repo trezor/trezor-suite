@@ -16,8 +16,8 @@ type HookProps = {
     setAccountKey: (accountKey: AccountKey | undefined) => void;
 };
 describe('useSendAccountAssetBalance', () => {
-    const renderUseSendAccountAssetBalance = async (initialProps: HookProps) =>
-        await renderHookWithStoreProvider(
+    const renderUseSendAccountAssetBalance = (initialProps: HookProps) =>
+        renderHookWithStoreProvider(
             ({
                 sendAccount,
                 sendAsset,

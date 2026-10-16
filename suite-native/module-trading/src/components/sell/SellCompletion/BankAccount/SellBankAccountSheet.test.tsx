@@ -8,8 +8,8 @@ describe('SellBankAccountSheet', () => {
     const mockCloseModal = jest.fn();
     const mockRef = { current: null };
 
-    const renderBankAccountSheet = async (props = {}) =>
-        await renderWithBasicProvider(
+    const renderBankAccountSheet = (props = {}) =>
+        renderWithBasicProvider(
             <SellBankAccountSheet
                 ref={mockRef}
                 bankAccounts={bankAccounts}

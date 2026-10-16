@@ -87,7 +87,7 @@ export const createMMKVStorage = (deps: MMKVStorageDeps): MMKVStorage => {
     };
 
     return {
-        getMMKV: async () => await ensureMMKV(),
+        getMMKV: () => ensureMMKV(),
         setItem: async (key, value) => {
             (await ensureMMKV()).set(key, value);
 

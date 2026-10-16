@@ -52,8 +52,8 @@ describe('BuyReceiveAccountPicker', () => {
         return result.current;
     };
 
-    const renderPicker = async (overrides: PreloadedStatePartial<TradingTestPreloadedState> = {}) =>
-        await renderWithTradingProvider(<BuyReceiveAccountPicker />, {
+    const renderPicker = (overrides: PreloadedStatePartial<TradingTestPreloadedState> = {}) =>
+        renderWithTradingProvider(<BuyReceiveAccountPicker />, {
             tradeType: 'buy',
             overrides,
             wrapper: ({ children }) => <Form form={buyForm}>{children}</Form>,

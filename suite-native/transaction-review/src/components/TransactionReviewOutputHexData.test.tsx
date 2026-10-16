@@ -17,8 +17,8 @@ const showLessLabel = getTranslation(
 );
 
 describe('TransactionReviewOutputHexData', () => {
-    const renderHexData = async (value: string) =>
-        await renderWithBasicProvider(<TransactionReviewOutputHexData value={value} />);
+    const renderHexData = (value: string) =>
+        renderWithBasicProvider(<TransactionReviewOutputHexData value={value} />);
 
     beforeEach(() => {
         jest.clearAllMocks();

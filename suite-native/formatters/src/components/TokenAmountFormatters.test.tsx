@@ -20,10 +20,8 @@ jest.mock('@suite-common/discreet-mode', () => ({
 // Both formatters expect `value` in human-readable units; base-unit amounts must be converted
 // by the caller.
 describe('ExactTokenAmountFormatter', () => {
-    const renderExactTokenAmountFormatter = async (
-        props: Partial<ExactTokenAmountFormatterProps>,
-    ) =>
-        await renderWithBasicProvider(
+    const renderExactTokenAmountFormatter = (props: Partial<ExactTokenAmountFormatterProps>) =>
+        renderWithBasicProvider(
             <ExactTokenAmountFormatter
                 tokenSymbol={'USDC' as TokenSymbol}
                 value={asDecimalTokenAmount('1234.56')}
@@ -57,10 +55,8 @@ describe('ExactTokenAmountFormatter', () => {
 });
 
 describe('CompactTokenAmountFormatter', () => {
-    const renderCompactTokenAmountFormatter = async (
-        props: Partial<CompactTokenAmountFormatterProps>,
-    ) =>
-        await renderWithBasicProvider(
+    const renderCompactTokenAmountFormatter = (props: Partial<CompactTokenAmountFormatterProps>) =>
+        renderWithBasicProvider(
             <CompactTokenAmountFormatter
                 tokenSymbol={'USDC' as TokenSymbol}
                 value={asDecimalTokenAmount('1234.56')}

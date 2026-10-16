@@ -5,8 +5,8 @@ import { unverifiedBankAccount, verifiedBankAccount } from '@suite-native/tradin
 import { BANK_ACCOUNT_ITEM_TEST_ID, SellBankAccountItem } from './SellBankAccountItem';
 
 describe('SellBankAccountItem', () => {
-    const renderBankAccountItem = async (props = {}) =>
-        await renderWithBasicProvider(
+    const renderBankAccountItem = (props = {}) =>
+        renderWithBasicProvider(
             <SellBankAccountItem
                 bankAccount={verifiedBankAccount}
                 accessoryType="none"

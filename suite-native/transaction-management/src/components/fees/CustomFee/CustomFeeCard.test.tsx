@@ -43,7 +43,7 @@ describe('CustomFeeCard', () => {
         return result.current;
     };
 
-    const renderCustomFeeCard = async ({
+    const renderCustomFeeCard = ({
         form,
         props,
     }: {
@@ -52,7 +52,7 @@ describe('CustomFeeCard', () => {
     }) => {
         const finalProps = { ...defaultProps, ...props };
 
-        return await renderWithStoreProvider(<CustomFeeCard {...finalProps} />, {
+        return renderWithStoreProvider(<CustomFeeCard {...finalProps} />, {
             preloadedState: defaultState,
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });

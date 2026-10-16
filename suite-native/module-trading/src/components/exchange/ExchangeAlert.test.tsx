@@ -20,13 +20,13 @@ describe('ExchangeAlert', () => {
         wallet: getWalletState({ tradeType: 'exchange' }),
     };
 
-    const renderFormHook = async () =>
-        await renderHookWithStoreProvider(() => useExchangeForm(), {
+    const renderFormHook = () =>
+        renderHookWithStoreProvider(() => useExchangeForm(), {
             preloadedState,
         });
 
-    const renderTradingAlert = async () =>
-        await renderWithBasicProvider(<ExchangeAlert />, {
+    const renderTradingAlert = () =>
+        renderWithBasicProvider(<ExchangeAlert />, {
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 

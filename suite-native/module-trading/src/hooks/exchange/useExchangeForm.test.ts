@@ -84,8 +84,8 @@ const accountDeviceState = btc1NormalAccount.deviceState;
 describe('useExchangeForm', () => {
     let store: Store<State>;
 
-    const renderUseExchangeForm = async () =>
-        await renderHookWithStoreProvider(() => useExchangeForm(), { services: { store } });
+    const renderUseExchangeForm = () =>
+        renderHookWithStoreProvider(() => useExchangeForm(), { services: { store } });
 
     const getInitializedStore = (bitcoinAmountUnit = PROTO.AmountUnit.BITCOIN) =>
         createTradingTestStore({

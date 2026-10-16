@@ -54,7 +54,7 @@ describe('CustomFeeInputs', () => {
         return result.current;
     };
 
-    const renderCustomFeeInputs = async ({
+    const renderCustomFeeInputs = ({
         form,
         props,
     }: {
@@ -63,7 +63,7 @@ describe('CustomFeeInputs', () => {
     }) => {
         const finalProps = { ...defaultProps, ...props };
 
-        return await renderWithStoreProvider(<CustomFeeInputs {...finalProps} />, {
+        return renderWithStoreProvider(<CustomFeeInputs {...finalProps} />, {
             preloadedState: defaultState,
             services: { store },
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,

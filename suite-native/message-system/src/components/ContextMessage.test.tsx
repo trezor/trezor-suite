@@ -66,14 +66,14 @@ describe('ContextMessage', () => {
         dismissedMessages: [],
     };
 
-    const render = async ({
+    const render = ({
         context,
         preloadedState,
     }: {
         context: ContextDomain;
         preloadedState?: any;
     }) =>
-        await renderWithStoreProvider(
+        renderWithStoreProvider(
             <ContextMessage context={context} accessibilityHint={contextActionId} />,
             {
                 preloadedState: { messageSystem: emptyMessageSystem, ...preloadedState },

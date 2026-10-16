@@ -20,8 +20,8 @@ describe('FeeSummaryRow', () => {
         wallet: getWalletState(),
     });
 
-    const renderRow = async (props: Partial<FeeSummaryRowProps> = {}) =>
-        await renderWithStoreProvider(<FeeSummaryRow {...defaultProps} {...props} />, {
+    const renderRow = (props: Partial<FeeSummaryRowProps> = {}) =>
+        renderWithStoreProvider(<FeeSummaryRow {...defaultProps} {...props} />, {
             preloadedState: getPreloadedState(),
         });
 

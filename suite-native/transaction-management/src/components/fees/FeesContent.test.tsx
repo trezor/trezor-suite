@@ -61,10 +61,10 @@ describe('FeesContent', () => {
         wallet: getWalletState(),
     });
 
-    const renderFeesContent = async (props: Partial<FeesContentProps> = {}) => {
+    const renderFeesContent = (props: Partial<FeesContentProps> = {}) => {
         const finalProps = { ...defaultProps, ...props };
 
-        return await renderWithStoreProvider(
+        return renderWithStoreProvider(
             <TestFormWrapper>
                 <FeesContent {...finalProps} />
             </TestFormWrapper>,

@@ -38,8 +38,8 @@ describe('ExchangeTab', () => {
         }));
     });
 
-    const renderExchangeTab = async () =>
-        await renderWithTradingProvider(<ExchangeTabContent />, {
+    const renderExchangeTab = () =>
+        renderWithTradingProvider(<ExchangeTabContent />, {
             services: {
                 ...services,
                 networks: { networkIcon: mockNetworkIcon(), ...services.networks },

@@ -25,8 +25,8 @@ jest.mock('@suite-native/alerts', () => ({
 describe('useTradingOutputsReviewErrorAlert', () => {
     let store: Store<State>;
 
-    const renderUseTradingOutputsReviewErrorAlert = async () =>
-        await renderHookWithTradingProvider(() => useTradingOutputsReviewErrorAlert(), {
+    const renderUseTradingOutputsReviewErrorAlert = () =>
+        renderHookWithTradingProvider(() => useTradingOutputsReviewErrorAlert(), {
             services: { store },
         });
 

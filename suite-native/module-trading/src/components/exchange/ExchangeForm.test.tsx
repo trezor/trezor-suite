@@ -48,14 +48,14 @@ describe('ExchangeForm', () => {
         },
     });
 
-    const renderForm = async () =>
-        await renderHookWithStoreProvider(() => useExchangeForm(), {
+    const renderForm = () =>
+        renderHookWithStoreProvider(() => useExchangeForm(), {
             preloadedState: defaultPreloadedState,
             services,
         });
 
-    const renderExchangeForm = async () =>
-        await renderWithStoreProvider(<ExchangeForm />, {
+    const renderExchangeForm = () =>
+        renderWithStoreProvider(<ExchangeForm />, {
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
             services: {
                 ...services,

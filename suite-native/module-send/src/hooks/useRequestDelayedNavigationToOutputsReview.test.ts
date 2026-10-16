@@ -22,8 +22,8 @@ jest.mock('@react-navigation/native', () => ({
 const accountKey = mockAccountKey({ descriptor: 'accountKey' });
 
 describe('useRequestDelayedNavigationToOutputsReview', () => {
-    const renderUseRequestDelayedNavigationToOutputsReview = async () =>
-        await renderHookWithStoreProvider(() =>
+    const renderUseRequestDelayedNavigationToOutputsReview = () =>
+        renderHookWithStoreProvider(() =>
             useRequestDelayedNavigationToOutputsReview({
                 accountKey,
                 tokenContract: 'tokenContract' as TokenAddress,

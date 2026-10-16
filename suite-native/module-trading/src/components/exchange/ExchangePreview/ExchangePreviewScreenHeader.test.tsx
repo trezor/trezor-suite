@@ -11,8 +11,8 @@ jest.mock('../../../hooks/exchange/useDexExchangeTxSimulation', () => ({
 
 const mockUseDexExchangeTxSimulation = jest.mocked(useDexExchangeTxSimulation);
 
-const renderExchangePreviewScreenHeader = async () =>
-    await renderWithTradingProvider(<ExchangePreviewScreenHeader />, { tradeType: 'exchange' });
+const renderExchangePreviewScreenHeader = () =>
+    renderWithTradingProvider(<ExchangePreviewScreenHeader />, { tradeType: 'exchange' });
 
 describe('ExchangePreviewScreenHeader', () => {
     beforeEach(() => {

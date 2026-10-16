@@ -35,12 +35,12 @@ const TestWrapper = ({
     );
 };
 
-const renderSlippageSummary = async ({
+const renderSlippageSummary = ({
     slippage,
     quote,
     receiveAmount,
 }: RenderSlippageSummaryOptions = {}) =>
-    await renderWithSlippageTestProvider(
+    renderWithSlippageTestProvider(
         <TestWrapper slippage={slippage} receiveAmount={receiveAmount} />,
         { quote },
     );

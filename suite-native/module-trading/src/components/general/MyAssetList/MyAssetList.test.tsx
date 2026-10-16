@@ -38,8 +38,8 @@ const section: MyAssetsSection = {
 describe('MyAssetList', () => {
     const testID = '@trading/sell/send-asset-screen';
 
-    const renderList = async (assets: MyAssetsSection[] = [section]) =>
-        await renderWithTradingProvider(
+    const renderList = (assets: MyAssetsSection[] = [section]) =>
+        renderWithTradingProvider(
             <MyAssetList
                 assets={assets}
                 onAssetSelect={jest.fn()}

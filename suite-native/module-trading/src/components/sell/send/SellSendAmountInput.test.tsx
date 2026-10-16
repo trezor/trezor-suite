@@ -28,12 +28,12 @@ jest.mock('../../../hooks/general/useAmountInputDecimals', () => ({
 }));
 
 describe('SellSendAmountInput', () => {
-    const renderCryptoAmountInput = async (
+    const renderCryptoAmountInput = (
         props: Partial<SellSendAmountInputProps>,
         form: SellFormType,
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        await renderWithTradingProvider(
+        renderWithTradingProvider(
             <Form form={form}>
                 <SellSendAmountInput showAssetsScreen={jest.fn()} {...props} />
             </Form>,

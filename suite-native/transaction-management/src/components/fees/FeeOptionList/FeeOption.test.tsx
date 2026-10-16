@@ -74,11 +74,11 @@ describe('FeeOption', () => {
         wallet: getWalletState(),
     });
 
-    const renderFeeOption = async (props = {}) => {
+    const renderFeeOption = (props = {}) => {
         const finalProps = { ...defaultProps, ...props };
         mockOnSelectedFeeLevel = finalProps.onSelectedFeeLevel;
 
-        return await renderWithStoreProvider(
+        return renderWithStoreProvider(
             <TestFormWrapper>
                 <FeeOption {...finalProps} />
             </TestFormWrapper>,

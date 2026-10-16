@@ -48,8 +48,8 @@ describe('BuyTab', () => {
         (selectIsTradingBuyEnabled as jest.Mock).mockReturnValue(true);
     });
 
-    const renderBuyTab = async (overrides?: PreloadedStatePartial<TradingTestPreloadedState>) =>
-        await renderWithTradingProvider(<BuyTab />, {
+    const renderBuyTab = (overrides?: PreloadedStatePartial<TradingTestPreloadedState>) =>
+        renderWithTradingProvider(<BuyTab />, {
             overrides,
             services: {
                 ...services,

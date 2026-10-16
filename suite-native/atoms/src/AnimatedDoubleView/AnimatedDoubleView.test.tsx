@@ -4,8 +4,8 @@ import { Box } from '../Box';
 import { AnimatedDoubleView, type AnimatedDoubleViewProps } from './AnimatedDoubleView';
 
 describe('AnimatedDoubleView', () => {
-    const renderAnimatedDoubleView = async (props: Partial<AnimatedDoubleViewProps>) =>
-        await renderWithBasicProvider(
+    const renderAnimatedDoubleView = (props: Partial<AnimatedDoubleViewProps>) =>
+        renderWithBasicProvider(
             <AnimatedDoubleView
                 renderPrimary={() => <Box accessibilityLabel="PRIMARY_VIEW" />}
                 renderSecondary={() => <Box accessibilityLabel="SECONDARY_VIEW" />}
