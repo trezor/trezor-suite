@@ -194,7 +194,8 @@ export abstract class AbstractApi extends TypedEmitter<{
 
         try {
             // note: await is needed here
-            return await this.synchronize(fn);
+            // synchronize per path so that devices don't block each other
+            return await this.synchronize(fn, path);
         } catch (err) {
             // this should never happen, incorrectly handled error on api level. fn should not throw.
             this.logger?.error('transport: abstract api: runInIsolation error', err);
