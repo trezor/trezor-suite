@@ -417,6 +417,36 @@ describe('the total over the wallet', () => {
         expect(selectWalletAssetFiatValue(state, bitcoinKey)?.toFixed()).toBe('50000');
     });
 
+    it('counts what is staked into the asset and the total', () => {
+        const staked = createState({
+            accounts: [
+                {
+                    ...mockAccount({ symbol: ETH, balance: '1' }),
+                    networkType: 'ethereum',
+                    misc: {
+                        stakingPools: [
+                            {
+                                name: 'Everstake',
+                                autocompoundBalance: '2000000000000000000',
+                                pendingBalance: '0',
+                                pendingDepositedBalance: '0',
+                                withdrawTotalAmount: '0',
+                                claimableAmount: '0',
+                                depositedBalance: '0',
+                                restakedReward: '0',
+                            },
+                        ],
+                    },
+                } as Account,
+            ],
+            rates: mockRate(ETH, 3000),
+        });
+
+        expect(selectWalletAssetAmount(staked, ethereumKey)).toBe('3');
+        expect(selectWalletAssetFiatValue(staked, ethereumKey)?.toFixed()).toBe('9000');
+        expect(selectHomeAssetTotalFiatValue(staked)?.toFixed()).toBe('9000');
+    });
+
     it('says nothing at all while no asset of the wallet can be priced', () => {
         const unpriced = createState({
             accounts: [mockAccount({ symbol: ETH, balance: '2' })],
