@@ -162,6 +162,14 @@ const renderStatusPage = (status?: HttpReceiverStatus) => {
 </html>`;
 };
 
+/**
+ * Ports the built-in HTTP server tries, in order. A fallback range is used
+ * because the well-known default (21335) is occasionally already taken — most
+ * often by a stale or second Suite instance — which would otherwise disable
+ * OAuth labeling (Dropbox/Google) and the Invity redirects for that session.
+ */
+const HTTP_RECEIVER_PORTS = [21335, 21336, 21337, 21338, 21339];
+
 type CreateHttpReceiverParams = {
     logger: ILogger;
     port?: number;
@@ -173,7 +181,11 @@ export const createHttpReceiver = ({ logger, ...options }: CreateHttpReceiverPar
     // Note that if we override the `address` to something else than 127.0.0.1 or localhost, it might break google oauth
     const httpReceiver = new HttpServer<Events>({
         logger: convertILoggerToLog(logger, { serviceName: 'http-receiver' }),
-        port: options?.port ?? 21335,
+        // Honor an explicitly requested port (`0` in unit tests binds a random free
+        // port); otherwise fall back across a small range so a single occupied port
+        // — typically a stale/second Suite instance holding 21335 — doesn't leave the
+        // OAuth (Dropbox/Google) and Invity redirect endpoints unreachable.
+        ...(options?.port !== undefined ? { port: options.port } : { ports: HTTP_RECEIVER_PORTS }),
     });
 
     httpReceiver.use([
