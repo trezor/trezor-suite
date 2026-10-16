@@ -8,10 +8,10 @@ export const TradingBaseCurrencyAmountPlaceholder = () => {
 
     return (
         <HStack spacing="sp2" alignItems="center">
-            <Text variant="body-sm" color="contentDisabled">
+            <Text variant="body-sm" color="contentSecondary">
                 {baseCurrencyLabel}
             </Text>
-            <Text variant="body-sm" color="contentDisabled">
+            <Text variant="body-sm" color="contentSecondary">
                 {placeholder}
             </Text>
         </HStack>
