@@ -1,5 +1,6 @@
 import { selectSelectedAccount } from '@suite/account';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { selectIsMixingEnabledByAccountKey } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { selectRouterParams } from '@suite/router';
 import { selectIsNftSectionEnabled } from '@suite/settings';
@@ -17,6 +18,9 @@ export const AccountNavigation = () => {
     const account = useSelector(selectSelectedAccount);
     const routerParams = useSelector(selectRouterParams) as WalletParams;
     const enabledNftSection = useSelector(selectIsNftSectionEnabled);
+    const isMixingEnabled = useSelector(state =>
+        selectIsMixingEnabledByAccountKey(state, account?.key ?? null),
+    );
     const network = getNetworkOptional(routerParams?.symbol);
     const goToWithAnalytics = useGoToWithAnalytics(account);
 
@@ -72,6 +76,18 @@ export const AccountNavigation = () => {
             title: <Translation id="TR_NAV_STAKING" />,
             isHidden: !hasNetworkFeatures(account, 'staking'),
             'data-testid': '@wallet/menu/staking',
+        },
+        {
+            id: 'wallet-mixing',
+            callback: () => {
+                goToWithAnalytics({ routeName: 'wallet-mixing', preserveParams: true });
+            },
+            title: <Translation id="TR_NAV_MIXING" />,
+            // Mixing is opt-in per launch through a coordinator URL state patch, see
+            // docs/features/coinjoin.md.
+            isHidden: account?.backendType !== 'coinjoin' || !isMixingEnabled,
+            activeRoutes: ['wallet-mixing', 'wallet-anonymize'],
+            'data-testid': '@wallet/menu/wallet-mixing',
         },
         {
             id: 'wallet-details',
