@@ -3296,6 +3296,12 @@ export const messages = defineMessages({
         description: 'Title of the coinjoin setup page.',
         id: 'TR_NAV_ANONYMIZE',
     },
+    TR_NAV_MIXING: {
+        defaultMessage: 'Mixing',
+        description:
+            'Title of the account tab holding the mixing UI, shown only when a coordinator URL is passed at startup.',
+        id: 'TR_NAV_MIXING',
+    },
     TR_INCLUDING_TOKENS: {
         defaultMessage: 'Including tokens',
         id: 'TR_INCLUDING_TOKENS',

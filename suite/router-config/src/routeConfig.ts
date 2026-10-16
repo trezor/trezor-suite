@@ -412,6 +412,12 @@ export const routes = [
     },
 
     {
+        name: 'wallet-mixing',
+        pattern: '/accounts/mixing',
+        app: 'wallet',
+        params: walletParams,
+    },
+    {
         name: 'wallet-anonymize',
         pattern: '/accounts/anonymize',
         app: 'wallet',
