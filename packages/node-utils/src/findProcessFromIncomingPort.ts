@@ -1,4 +1,5 @@
 import { spawn } from 'child_process';
+import { promises as fs } from 'fs';
 
 function spawnAndCollectStdout(command: string): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -40,6 +41,10 @@ type IncomingConnection = {
 
 // IPv4 address mapped into IPv6, which lsof and netstat print in its plain IPv4 form.
 const IPV4_MAPPED_IPV6 = /^::ffff:(\d{1,3}(?:\.\d{1,3}){3})$/;
+
+// How the kernel renders /proc/<pid>/exe of a process whose executable has been unlinked or
+// replaced, as an upgrade of a running app does.
+const DELETED_EXE_SUFFIX = / \(deleted\)$/;
 
 // Endpoint as lsof and netstat print it, with IPv6 addresses in brackets.
 const formatEndpoint = (address: string, port: number) => {
@@ -124,13 +129,21 @@ export async function findProcessFromIncomingPort(
                         return { name: sanitizedName, pid, fullPath, warning: true };
                     }
                 } else {
-                    const fullPathCommand = `cat /proc/${pid}/cmdline`;
-                    const fullPathRaw = await spawnAndCollectStdout(fullPathCommand);
-                    const fullPath = fullPathRaw.split('\0')[0] ?? '';
-                    const trimmedFullPath = fullPath.trim();
+                    // The executable the kernel runs, not the argv[0] the process was started
+                    // with. Reading it needs ptrace-level access to the target, which a process
+                    // of another user or a non-dumpable one denies; the socket still belongs to
+                    // the process lsof named, only its path stays unknown.
+                    const exe = await fs.readlink(`/proc/${pid}/exe`).catch(() => undefined);
+                    if (exe === undefined) {
+                        return { name: sanitizedName, pid, fullPath: '', warning: true };
+                    }
+
+                    // The path is the identity of the app, so a replaced binary keeps the one it
+                    // was installed at.
+                    const fullPath = exe.replace(DELETED_EXE_SUFFIX, '');
                     // Binaries can be all over the place on Linux, so we don't check the path
 
-                    return { name: sanitizedName, pid, fullPath: trimmedFullPath };
+                    return { name: sanitizedName, pid, fullPath };
                 }
             }
 
