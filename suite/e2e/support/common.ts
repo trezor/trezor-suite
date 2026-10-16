@@ -37,7 +37,14 @@ export function step(stepName?: string) {
             if (result instanceof Promise) {
                 const name =
                     stepName || `${this.constructor.name + '.' + (context.name as string)}`;
-                const params = args.map((arg: any) => JSON.stringify(arg)).join(', '); // Serialize arguments
+                // JSON.stringify throws on bigint, which on-chain amounts are.
+                const params = args
+                    .map((arg: any) =>
+                        JSON.stringify(arg, (_key, value) =>
+                            typeof value === 'bigint' ? `${value}n` : value,
+                        ),
+                    )
+                    .join(', ');
 
                 return test.step(`${name}(${params})`, async () => await result);
             }
