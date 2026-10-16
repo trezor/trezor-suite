@@ -47,12 +47,13 @@ describe('PortfolioBalance', () => {
         expect(screen.queryByTestId('@home/portfolio-assets/total-balance')).toBeNull();
     });
 
-    it('shows no total when nothing can be priced', async () => {
+    it('shows a zero total when nothing can be priced', async () => {
         await renderWithStoreProvider(<PortfolioBalance />, {
             preloadedState: createPreloadedState({ rates: {} }),
         });
 
-        expect(screen.queryByTestId('@home/portfolio-assets/total-balance')).toBeNull();
+        expect(screen.getByTestId('@home/portfolio-assets/total-balance')).toBeTruthy();
+        expect(screen.getByText('0')).toBeTruthy();
     });
 
     it('shows the total of the shown assets', async () => {

@@ -1,17 +1,23 @@
+import { useSelector } from 'react-redux';
+
+import { selectHasShownWalletAssets } from '@suite-common/assets';
+
 import { PortfolioAssetsHeader } from './PortfolioAssetsHeader';
 import { PortfolioAssetsSectionHeader } from './PortfolioAssetsSectionHeader';
 
 type PortfolioAssetsListHeaderProps = {
-    hasAssets: boolean;
     onViewOptionsPress: () => void;
 };
 
 export const PortfolioAssetsListHeader = ({
-    hasAssets,
     onViewOptionsPress,
-}: PortfolioAssetsListHeaderProps) => (
-    <>
-        <PortfolioAssetsHeader />
-        {hasAssets && <PortfolioAssetsSectionHeader onViewOptionsPress={onViewOptionsPress} />}
-    </>
-);
+}: PortfolioAssetsListHeaderProps) => {
+    const hasAssets = useSelector(selectHasShownWalletAssets);
+
+    return (
+        <>
+            <PortfolioAssetsHeader />
+            {hasAssets && <PortfolioAssetsSectionHeader onViewOptionsPress={onViewOptionsPress} />}
+        </>
+    );
+};

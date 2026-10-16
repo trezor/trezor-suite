@@ -6,10 +6,7 @@ import { FlashList } from '@shopify/flash-list';
 import {
     HOME_ASSET_ROW_LIMIT,
     type HomeAssetTableState,
-    getHomeAssetRowLimit,
     selectDisplayedWalletAssetKeys,
-    selectHasShownWalletAssets,
-    selectIsHomeAssetTableFoldable,
 } from '@suite-common/assets';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { Box, Divider, useBottomSheetModal } from '@suite-native/atoms';
@@ -27,11 +24,8 @@ const renderAsset = ({ item }: { item: WalletAssetKey }) => (
 
 export const PortfolioAssetsContent = () => {
     const [isExpanded, setIsExpanded] = useState(false);
-    const hasAssets = useSelector(selectHasShownWalletAssets);
-    const isFoldable = useSelector((state: HomeAssetTableState) =>
-        selectIsHomeAssetTableFoldable(state, HOME_ASSET_ROW_LIMIT),
-    );
-    const rowLimit = getHomeAssetRowLimit({ isFoldable, isExpanded });
+    // Capping a list no longer than the limit leaves it whole, so no foldability check is needed.
+    const rowLimit = isExpanded ? undefined : HOME_ASSET_ROW_LIMIT;
     const assetKeys = useSelector((state: HomeAssetTableState) =>
         selectDisplayedWalletAssetKeys(state, rowLimit),
     );
@@ -47,19 +41,12 @@ export const PortfolioAssetsContent = () => {
                 renderItem={renderAsset}
                 keyExtractor={getAssetKey}
                 ItemSeparatorComponent={Divider}
-                ListHeaderComponent={
-                    <PortfolioAssetsListHeader
-                        hasAssets={hasAssets}
-                        onViewOptionsPress={openModal}
-                    />
-                }
+                ListHeaderComponent={<PortfolioAssetsListHeader onViewOptionsPress={openModal} />}
                 ListFooterComponent={
-                    isFoldable ? (
-                        <PortfolioAssetsListFooter
-                            isExpanded={isExpanded}
-                            onShowMorePress={toggleIsExpanded}
-                        />
-                    ) : null
+                    <PortfolioAssetsListFooter
+                        isExpanded={isExpanded}
+                        onShowMorePress={toggleIsExpanded}
+                    />
                 }
             />
             <PortfolioAssetsViewOptionsSheet bottomSheetRef={bottomSheetRef} />
