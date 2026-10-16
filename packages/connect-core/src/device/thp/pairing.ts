@@ -118,10 +118,7 @@ const processThpPairingResponse = (device: IDevice, payload: { tag: string }) =>
 const applySelectMethodResponse = async (
     device: IDevice,
     response: protocolThp.ThpMessageResponse<
-        | 'ThpCodeEntryCommitment'
-        | 'ThpPairingPreparationsFinished'
-        | 'ThpEndResponse'
-        | 'ThpPairingRequestApproved'
+        'ThpCodeEntryCommitment' | 'ThpPairingPreparationsFinished' | 'ThpEndResponse'
     >,
 ) => {
     const thpState = device.getThpState();
