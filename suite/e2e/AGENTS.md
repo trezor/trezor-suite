@@ -11,3 +11,4 @@ Apart from [top-level AGENTS.md](../../AGENTS.md), the following skills are mand
 - [Await & Retry Strategy](skills/retries/SKILL.md) – Playwright auto-waiting, custom polling, Redux waits, flakiness prevention
 - [Test Tagging](skills/tagging/SKILL.md) – Device models, platforms, execution scope, project filtering
 - [Agentic Test Creation](skills/agentic-test-creation/SKILL.md) – Mandatory discovery-first workflow for writing new tests from user stories
+- [Forked Chain](skills/forked-chain/SKILL.md) – Anvil EVM forks: the `anvil` fixture, funding, mining and time control, driving a fork by hand. Mandatory when a test uses the `anvil` fixture
