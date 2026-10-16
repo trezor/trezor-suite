@@ -6,6 +6,8 @@
     },
     "include": ["./src"],
     "references": [
-        { "path": "../../../packages/utils" }
+        {
+            "path": "../../../packages/utils"
+        }
     ]
 }

@@ -2,17 +2,14 @@ interface Logger {
     debug: (...args: unknown[]) => void;
 }
 
-const myFormat = ({
-    level,
-    args,
-    label,
-    timestamp,
-}: {
+type FormatParams = {
     level: string;
     args: unknown[];
     label: string;
     timestamp: string | undefined;
-}): unknown[] => {
+};
+
+const myFormat = ({ level, args, label, timestamp }: FormatParams): unknown[] => {
     if (timestamp) {
         return [`${timestamp} [${label}] ${level}:`, ...args];
     }

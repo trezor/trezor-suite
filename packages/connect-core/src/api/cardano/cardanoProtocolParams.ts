@@ -69,6 +69,7 @@ export const getCardanoProtocolParams = async ({
 }: GetCardanoProtocolParamsParams): Promise<ProtocolParams> => {
     const coinInfo = getCoinInfoOrThrow(testnet ? 'tada' : 'ada');
 
+    // tADA has no blockchain_link in coins.json, so testnet always composes with the defaults.
     try {
         assertBackendSupported(coinInfo);
     } catch {
