@@ -712,6 +712,66 @@ export const getConfirmations = (
     height: number,
 ) => (tx.blockHeight && tx.blockHeight > 0 ? height - tx.blockHeight + 1 : 0);
 
+type TransactionInput = AccountTransaction['details']['vin'][number];
+
+// An input of a coinbase transaction spends no previous output, so it has no value to miss.
+const isInputWithoutValue = ({ txid, coinbase, value }: TransactionInput) =>
+    !!txid && !coinbase && value === undefined;
+
+/**
+ * Whether the value of some input of a bitcoin-like transaction is unknown. The Electrum backend
+ * leaves out the previous transactions of inputs which aren't the account's, so such inputs of
+ * an incoming transaction have no value and address and its fee is unknown (0) until the
+ * transaction is completed by `mergeResolvedInputs`. Blockbook always gives the input values.
+ */
+export const hasUnresolvedInputs = ({
+    symbol,
+    details,
+}: Pick<WalletAccountTransaction, 'symbol' | 'details'>) =>
+    getNetworkType(symbol) === 'bitcoin' && !!details?.vin?.some(isInputWithoutValue);
+
+/**
+ * Completes the inputs without a value (see `hasUnresolvedInputs`) and the fee of a transaction
+ * from the same transaction fetched with all its previous transactions. What the transaction means
+ * for the account (type, amount, targets) is kept, as the full one is fetched without the account.
+ */
+export const mergeResolvedInputs = <T extends AccountTransaction>(
+    stored: T,
+    full: AccountTransaction,
+): T => {
+    if (
+        stored.txid !== full.txid ||
+        !stored.details.vin.some(isInputWithoutValue) ||
+        full.details.vin.some(isInputWithoutValue)
+    ) {
+        return stored;
+    }
+
+    const vin = stored.details.vin.map((input, index) => {
+        const fullInput = full.details.vin[index];
+        const isSameInput =
+            fullInput?.txid === input.txid && (fullInput?.vout ?? 0) === (input.vout ?? 0);
+        if (!isInputWithoutValue(input) || !fullInput || !isSameInput) return input;
+
+        return {
+            ...input,
+            value: fullInput.value,
+            addresses: fullInput.addresses && [...fullInput.addresses],
+            isAddress: fullInput.isAddress,
+        };
+    });
+
+    // The full transaction has other inputs, so it is not the same transaction.
+    if (vin.some(isInputWithoutValue)) return stored;
+
+    return {
+        ...stored,
+        fee: full.fee,
+        feeRate: full.feeRate,
+        details: { ...stored.details, vin, totalInput: full.details.totalInput },
+    };
+};
+
 // inner private type, it's pointless to move it outside of this file
 interface Analyze {
     newTransactions: AccountTransaction[];

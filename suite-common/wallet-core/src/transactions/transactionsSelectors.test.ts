@@ -7,19 +7,25 @@ import {
     DUST_PHISHING_THRESHOLD,
     type TokenDefinitionsRootState,
 } from '@suite-common/token-definitions';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
     type AccountKey,
     type TokenAddress,
     type WalletAccountTransaction,
+    asAccountDescriptor,
 } from '@suite-common/wallet-types';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { enhanceTransaction } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
+import { type AccountTransaction } from '@trezor/connect';
 
 import { type TransactionsRootState } from './transactionsReducerTypes';
 import {
     selectEvmPrivatePendingHint,
     selectHasUnseenNonPhishingTransactionNotifications,
     selectNonPhishingTransactionNotifications,
+    selectTransactionSenderAccount,
     selectTransactionsWithMissingRates,
 } from './transactionsSelectors';
 import { type AccountsRootState } from '../accounts/accountsReducer';
@@ -228,5 +234,109 @@ describe('selectNonPhishingTransactionNotifications', () => {
 
         expect(selectNonPhishingTransactionNotifications(state)).toEqual([receivedNotification]);
         expect(selectHasUnseenNonPhishingTransactionNotifications(state)).toBe(true);
+    });
+});
+
+describe('selectTransactionSenderAccount', () => {
+    // Public test vectors of BIP173 and of the addresses of utxo-lib.
+    const SENDER_ADDRESS = 'bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4';
+    const RECEIVER_ADDRESS = '3LRW7jeCvQCRdPF8S3yUCfRAx4eqXFmdcr';
+    const FOREIGN_ADDRESS = '1BgGZ9tcN4rm9KBzDn7KprQz87SZ26SAMH';
+
+    const getBitcoinAccount = (descriptor: string, address: string) =>
+        mockWalletAccount({
+            symbol: asNetworkSymbol('btc'),
+            descriptor: asAccountDescriptor(descriptor),
+            addresses: {
+                change: [],
+                used: [{ address, path: '', transfers: 1, balance: '0', sent: '0', received: '0' }],
+                unused: [],
+            },
+        });
+
+    const senderAccount = getBitcoinAccount('zpubSender', SENDER_ADDRESS);
+    const receiverAccount = getBitcoinAccount('zpubReceiver', RECEIVER_ADDRESS);
+
+    type TransactionInput = AccountTransaction['details']['vin'][number];
+
+    const getTransfer = (
+        type: AccountTransaction['type'],
+        input: TransactionInput,
+    ): AccountTransaction => ({
+        type,
+        txid: 'cc'.repeat(32),
+        blockHeight: 100,
+        amount: '9000',
+        fee: '1000',
+        targets: [],
+        tokens: [],
+        internalTransfers: [],
+        details: {
+            vin: [input],
+            vout: [{ n: 0, addresses: [RECEIVER_ADDRESS], isAddress: true, value: '9000' }],
+            size: 200,
+            totalInput: input.value ?? '0',
+            totalOutput: '9000',
+        },
+    });
+
+    const parentOutput = { txid: 'aa'.repeat(32), vout: 0, n: 0 };
+    const senderInput: TransactionInput = {
+        ...parentOutput,
+        addresses: [SENDER_ADDRESS],
+        isAddress: true,
+        value: '10000',
+    };
+    // The Electrum backend gives the receiving account the input of the sender without its value.
+    const unresolvedInput: TransactionInput = { ...parentOutput, addresses: [], isAddress: false };
+
+    const sent = enhanceTransaction(getTransfer('sent', senderInput), senderAccount);
+    const unresolvedReceived = enhanceTransaction(
+        getTransfer('recv', unresolvedInput),
+        receiverAccount,
+    );
+
+    const getSenderState = (
+        transactions: Record<AccountKey, WalletAccountTransaction[]>,
+    ): TransactionsRootState & AccountsRootState => ({
+        wallet: {
+            accounts: [senderAccount, receiverAccount],
+            transactions: { transactions, phishing: {}, fetchStatusDetail: {} },
+        },
+    });
+
+    it('finds the sender of a transaction by the addresses of its inputs', () => {
+        const received = enhanceTransaction(getTransfer('recv', senderInput), receiverAccount);
+        const state = getSenderState({ [receiverAccount.key]: [received] });
+
+        expect(selectTransactionSenderAccount(state, received)).toBe(senderAccount);
+    });
+
+    it('finds the sender of a transaction with unresolved inputs by its copy in the sender account', () => {
+        const state = getSenderState({
+            [senderAccount.key]: [sent],
+            [receiverAccount.key]: [unresolvedReceived],
+        });
+
+        expect(selectTransactionSenderAccount(state, unresolvedReceived)).toBe(senderAccount);
+    });
+
+    it('finds no sender of a transaction with unresolved inputs from outside the wallet', () => {
+        const state = getSenderState({ [receiverAccount.key]: [unresolvedReceived] });
+        const foreignSent = enhanceTransaction(
+            getTransfer('sent', { ...senderInput, addresses: [FOREIGN_ADDRESS] }),
+            senderAccount,
+        );
+
+        expect(selectTransactionSenderAccount(state, unresolvedReceived)).toBeUndefined();
+        expect(
+            selectTransactionSenderAccount(
+                getSenderState({
+                    [senderAccount.key]: [foreignSent],
+                    [receiverAccount.key]: [unresolvedReceived],
+                }),
+                unresolvedReceived,
+            ),
+        ).toBeUndefined();
     });
 });

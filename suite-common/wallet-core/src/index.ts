@@ -132,6 +132,7 @@ export * from './tokens/tokenSelectors';
 export * from './tokens/tokenUtils';
 export * from './transactions/hooks/useDirectRpcHistoryState';
 export * from './transactions/hooks/useEvmPendingTxStatus';
+export * from './transactions/hooks/useResolveTransactionInputs';
 export * from './transactions/target/createTargets';
 export type * from './transactions/target/Target';
 export * from './transactions/transactionsActions';

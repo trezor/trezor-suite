@@ -451,8 +451,8 @@ export const enhanceAddresses = (
         }
         case 'bitcoin': {
             // Pending txs (for counting recently used change addresses) are only
-            // on first page of Blockbook getAccountInfo responses (moreover, electrum & coinjoin
-            // backends always return page.index = 1)
+            // on first page of Blockbook and Electrum getAccountInfo responses (moreover, coinjoin
+            // backend always returns page.index = 1)
             if (page?.index !== 1) return oldAddresses ?? addresses;
 
             const pendingTxs = transactions.filter(({ blockHeight = 0 }) => blockHeight <= 0);

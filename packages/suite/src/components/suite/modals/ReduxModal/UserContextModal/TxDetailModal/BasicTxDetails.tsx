@@ -8,7 +8,6 @@ import {
     type PendingEvmNonceStatus,
     fromWei,
     getEffectiveGasPrice,
-    getFeeRate,
     isEip1559,
     isPending,
 } from '@suite-common/wallet-utils';
@@ -50,6 +49,8 @@ import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
 import { type WalletAccountTransaction } from 'src/types/wallet';
 import { getTransactionIcon } from 'src/utils/wallet/transactionIconUtils';
 import { BlurUrls } from 'src/views/wallet/tokens/common/BlurUrls';
+
+import { TransactionFeeRate } from './TransactionFeeRate';
 
 const IconWrapper = styled.div`
     display: flex;
@@ -190,13 +191,7 @@ export const BasicTxDetails = ({
                 {/* Fee level */}
                 {network.networkType === 'bitcoin' && (
                     <Item label={<Translation id="TR_FEE_RATE" />} icon={ReceiptIcon}>
-                        {/* tx.feeRate was added in @trezor/blockchain-link 2.1.5 meaning that users
-                            might have locally saved old transactions without this field. since we
-                            cant reliably migrate this data, we are keeping old way of displaying feeRate in place */}
-                        <FeeRate
-                            feeRate={tx?.feeRate ? tx.feeRate : getFeeRate(tx)}
-                            networkType="bitcoin"
-                        />
+                        <TransactionFeeRate tx={tx} />
                     </Item>
                 )}
 

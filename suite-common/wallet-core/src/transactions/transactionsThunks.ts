@@ -22,10 +22,13 @@ import {
     getRbfParams,
     getTronResources,
     getUtxoOutpoint,
+    hasUnresolvedInputs,
     isEip1559,
     isEvmYieldTxByTextSignature,
+    isPending,
     isRbfBumpFeeTransaction,
     isTrezorConnectBackendType,
+    mergeResolvedInputs,
     replaceEthereumSpecific,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
@@ -50,6 +53,7 @@ import {
     selectAreAllAccountTransactionsLoaded,
     selectAreAllAccountTransactionsLoadedFromNowUntilTimestamp,
     selectIsPageAlreadyFetched,
+    selectTransactionByAccountKeyAndTxid,
     selectTransactions,
 } from './transactionsSelectors';
 import { accountsActions } from '../accounts/accountsActions';
@@ -1008,7 +1012,7 @@ type FetchUtxoTransactionsForAccountThunkParams = {
     accountKey: AccountKey;
 };
 
-type FetchUtxoTransactionsForAccountThunkState = AccountsRootState & TransactionsRootState;
+export type FetchUtxoTransactionsForAccountThunkState = AccountsRootState & TransactionsRootState;
 
 export const fetchUtxoTransactionsForAccountThunk = createSingleInstanceThunk<
     FetchUtxoTransactionsForAccountThunkParams,
@@ -1025,13 +1029,23 @@ export const fetchUtxoTransactionsForAccountThunk = createSingleInstanceThunk<
             throw new Error(`Account not found: ${accountKey}`);
         }
 
-        if (account.utxo === undefined || account.utxo.length === 0) {
+        // Coin control needs only the time of a transaction, which doesn't change once confirmed.
+        const confirmedTxids = new Set(
+            selectAccountTransactions(getState(), accountKey)
+                .filter(tx => !isPending(tx))
+                .map(tx => tx.txid),
+        );
+        const txids = [...new Set(account.utxo?.map(utxo => utxo.txid))].filter(
+            txid => !confirmedTxids.has(txid),
+        );
+
+        if (txids.length === 0) {
             return selectAccountTransactions(getState(), accountKey);
         }
 
         const result = await TrezorConnect.blockchainGetTransactions({
             coin: asCoinSymbol(account.symbol),
-            txs: account.utxo.map(utxo => utxo.txid),
+            txs: txids,
             descriptor: account.descriptor,
         });
 
@@ -1051,6 +1065,69 @@ export const fetchUtxoTransactionsForAccountThunk = createSingleInstanceThunk<
         );
 
         return selectAccountTransactions(getState(), accountKey);
+    },
+);
+
+type ResolveTransactionInputsThunkParams = {
+    accountKey: AccountKey;
+    txid: string;
+};
+
+export type ResolveTransactionInputsThunkState = AccountsRootState & TransactionsRootState;
+
+/**
+ * Completes a transaction whose inputs the backend left without values (see hasUnresolvedInputs),
+ * e.g. for the fee of an incoming transaction shown in its detail. Resolves to whether the
+ * transaction has all its input values.
+ */
+export const resolveTransactionInputsThunk = createSingleInstanceThunk<
+    ResolveTransactionInputsThunkParams,
+    boolean,
+    { state: ResolveTransactionInputsThunkState }
+>(
+    `${TRANSACTIONS_MODULE_PREFIX}/resolveTransactionInputsThunk`,
+    async ({ accountKey, txid }, { dispatch, getState }) => {
+        const account = selectAccountByKey(getState(), accountKey);
+        const transaction = selectTransactionByAccountKeyAndTxid(getState(), accountKey, txid);
+
+        if (!account || !transaction) return false;
+        if (!hasUnresolvedInputs(transaction)) return true;
+
+        // Without a descriptor the backend gives the transaction with all its previous ones.
+        const response = await TrezorConnect.blockchainGetTransactions({
+            coin: asCoinSymbol(account.symbol),
+            identity: tryGetAccountIdentity(account),
+            txs: [txid],
+        });
+        const fullTransaction = response.success ? response.payload[0] : undefined;
+
+        // The transaction may have changed while it was fetched, e.g. it was confirmed.
+        const currentAccount = selectAccountByKey(getState(), accountKey);
+        const currentTransaction = selectTransactionByAccountKeyAndTxid(
+            getState(),
+            accountKey,
+            txid,
+        );
+
+        if (!fullTransaction || !currentAccount || !currentTransaction) return false;
+        if (!hasUnresolvedInputs(currentTransaction)) return true;
+
+        const resolvedTransaction = enhanceTransaction(
+            mergeResolvedInputs(currentTransaction, fullTransaction),
+            currentAccount,
+        );
+
+        if (hasUnresolvedInputs(resolvedTransaction)) return false;
+
+        dispatch(
+            transactionsActions.replaceTransaction({
+                key: accountKey,
+                txid,
+                tx: resolvedTransaction,
+            }),
+        );
+
+        return true;
     },
 );
 

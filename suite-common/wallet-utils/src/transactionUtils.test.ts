@@ -29,10 +29,12 @@ import {
     groupJointTransactions,
     groupTokensTransactionsByContractAddress,
     groupTransactionsByDate,
+    hasUnresolvedInputs,
     isPending,
     isSignedByAccount,
     isTransactionBumpable,
     isTransactionCancellable,
+    mergeResolvedInputs,
     parseTransactionDateKey,
     parseTransactionMonthKey,
     sumTransactions,
@@ -190,6 +192,92 @@ const buildCancelRbfTx = (): GeneralPrecomposedTransactionFinal =>
 
 const buildNonRbfTx = (): GeneralPrecomposedTransactionFinal =>
     ({}) as unknown as GeneralPrecomposedTransactionFinal;
+
+type TransactionInput = WalletAccountTransaction['details']['vin'][number];
+
+const FOREIGN_PARENT_TXID = 'c894b064beb2f9be4b0d64cffcd89da2e8dc6decac399f5617323a303e07e4e1';
+const OWN_PARENT_TXID = 'ab'.repeat(32);
+
+// An input whose previous transaction pays an address of the account, which is always in the
+// history of the account, so even the Electrum backend gives its value.
+const ownInput: TransactionInput = {
+    txid: OWN_PARENT_TXID,
+    vout: 0,
+    sequence: 4294967293,
+    n: 0,
+    addresses: ['tb1q4s560ew83wcd6lcjg7uku9qlx4p6gwh74q4jap'],
+    isAddress: true,
+    isAccountOwned: true,
+    value: '5000',
+};
+
+// A foreign input as the Electrum backend gives it without the previous transaction of the input.
+const unresolvedForeignInput: TransactionInput = {
+    txid: FOREIGN_PARENT_TXID,
+    vout: 1,
+    sequence: 4294967293,
+    n: 1,
+    addresses: [],
+    isAddress: false,
+};
+
+const resolvedForeignInput: TransactionInput = {
+    ...unresolvedForeignInput,
+    addresses: ['tb1q4nytpy37cuz8yndtfqpau4nzsva0jh787ny3yg'],
+    isAddress: true,
+    value: '80720012',
+};
+
+type GetJointTransactionParams = {
+    foreignInput: TransactionInput;
+    fee: string;
+    feeRate: string;
+    totalInput: string;
+};
+
+// A pending transaction spending an output of the account together with a foreign output.
+const getJointTransaction = ({
+    foreignInput,
+    fee,
+    feeRate,
+    totalInput,
+}: GetJointTransactionParams) =>
+    getWalletTransaction({
+        symbol: asNetworkSymbol('test'),
+        type: 'joint',
+        amount: '-4000',
+        fee,
+        feeRate,
+        blockHeight: -1,
+        details: {
+            ...getWalletTransaction().details,
+            vin: [ownInput, foreignInput],
+            totalInput,
+        },
+    });
+
+const unresolvedJointTransaction = getJointTransaction({
+    foreignInput: unresolvedForeignInput,
+    fee: '0',
+    feeRate: '0',
+    totalInput: '5000',
+});
+
+// The same transaction fetched without the account, so only its inputs and fee are meaningful.
+const fullJointTransaction = getWalletTransaction({
+    symbol: asNetworkSymbol('test'),
+    type: 'unknown',
+    amount: '80719868',
+    fee: '5144',
+    feeRate: '22.86',
+    blockHeight: -1,
+    targets: [],
+    details: {
+        ...getWalletTransaction().details,
+        vin: [{ ...ownInput, isAccountOwned: undefined }, resolvedForeignInput],
+        totalInput: '80725012',
+    },
+});
 
 describe('transaction utils', () => {
     describe('parseTransactionDateKey', () => {
@@ -1265,6 +1353,150 @@ describe('transaction utils', () => {
 
         it('returns undefined when the form is missing', () => {
             expect(getDecreaseOutputId(buildBumpFeeRbfTx(true), undefined)).toBeUndefined();
+        });
+    });
+
+    describe('hasUnresolvedInputs', () => {
+        it('is true when an input of a bitcoin transaction has no value of its spent output', () => {
+            expect(hasUnresolvedInputs(unresolvedJointTransaction)).toBe(true);
+            expect(
+                hasUnresolvedInputs(
+                    getWalletTransaction({
+                        type: 'recv',
+                        details: {
+                            ...getWalletTransaction().details,
+                            vin: [unresolvedForeignInput],
+                        },
+                    }),
+                ),
+            ).toBe(true);
+        });
+
+        it('is false when every input has its value, like in every transaction of Blockbook', () => {
+            expect(hasUnresolvedInputs(getWalletTransaction())).toBe(false);
+            expect(hasUnresolvedInputs(fullJointTransaction)).toBe(false);
+            expect(
+                hasUnresolvedInputs(
+                    getJointTransaction({
+                        foreignInput: { ...resolvedForeignInput, value: '0' },
+                        fee: '0',
+                        feeRate: '0',
+                        totalInput: '5000',
+                    }),
+                ),
+            ).toBe(false);
+        });
+
+        it.each<{ description: string; vin: TransactionInput[] }>([
+            {
+                description: 'Blockbook with the coinbase data',
+                vin: [{ n: 0, isAddress: false, coinbase: '03a0bb0d0004' }],
+            },
+            {
+                description: 'Blockbook with a zero value',
+                vin: [{ n: 0, isAddress: false, value: '0' }],
+            },
+            { description: 'Blockbook without a value', vin: [{ n: 0, isAddress: false }] },
+            {
+                description: 'a backend giving the null outpoint with the coinbase data',
+                vin: [{ n: 0, txid: '00'.repeat(32), isAddress: false, coinbase: '03a0bb0d' }],
+            },
+            // The Electrum backend gives a coinbase transaction no spending inputs at all.
+            { description: 'Electrum', vin: [] },
+        ])('is false for a coinbase transaction of $description', ({ vin }) => {
+            const coinbaseTransaction = getWalletTransaction({
+                type: 'recv',
+                details: { ...getWalletTransaction().details, vin, totalInput: '0' },
+            });
+
+            expect(hasUnresolvedInputs(coinbaseTransaction)).toBe(false);
+        });
+
+        it('is false for transactions of networks other than bitcoin-like ones', () => {
+            expect(hasUnresolvedInputs(getOwnEvmTransaction({ nonce: 1 }))).toBe(false);
+            expect(
+                hasUnresolvedInputs(
+                    getWalletTransaction({
+                        symbol: ethSymbol,
+                        details: {
+                            ...getWalletTransaction().details,
+                            vin: [unresolvedForeignInput],
+                        },
+                    }),
+                ),
+            ).toBe(false);
+        });
+    });
+
+    describe('mergeResolvedInputs', () => {
+        it('takes the values of the foreign inputs and the fee from the full transaction', () => {
+            const merged = mergeResolvedInputs(unresolvedJointTransaction, fullJointTransaction);
+
+            expect(merged).toEqual({
+                ...unresolvedJointTransaction,
+                fee: '5144',
+                feeRate: '22.86',
+                details: {
+                    ...unresolvedJointTransaction.details,
+                    vin: [ownInput, resolvedForeignInput],
+                    totalInput: '80725012',
+                },
+            });
+            expect(hasUnresolvedInputs(merged)).toBe(false);
+        });
+
+        it('keeps what the transaction means for the account', () => {
+            const merged = mergeResolvedInputs(unresolvedJointTransaction, fullJointTransaction);
+
+            expect(merged).toMatchObject({
+                type: 'joint',
+                amount: '-4000',
+                targets: unresolvedJointTransaction.targets,
+            });
+            // The own input keeps the ownership the full transaction doesn't know about.
+            expect(merged.details.vin[0]).toBe(ownInput);
+        });
+
+        it('does not change a transaction whose inputs all have values', () => {
+            const blockbookTransaction = getWalletTransaction();
+
+            expect(mergeResolvedInputs(blockbookTransaction, fullJointTransaction)).toBe(
+                blockbookTransaction,
+            );
+            expect(
+                mergeResolvedInputs(fullJointTransaction, {
+                    ...fullJointTransaction,
+                    fee: '1',
+                }),
+            ).toBe(fullJointTransaction);
+        });
+
+        it.each([
+            { description: 'another transaction', full: { txid: 'ff'.repeat(32) } },
+            {
+                description: 'a full transaction without the values',
+                full: { fee: '0', details: unresolvedJointTransaction.details },
+            },
+            {
+                description: 'another output spent by the input',
+                full: {
+                    details: {
+                        ...fullJointTransaction.details,
+                        vin: [ownInput, { ...resolvedForeignInput, vout: 0 }],
+                    },
+                },
+            },
+            {
+                description: 'fewer inputs',
+                full: { details: { ...fullJointTransaction.details, vin: [ownInput] } },
+            },
+        ])('does not take anything from $description', ({ full }) => {
+            expect(
+                mergeResolvedInputs(unresolvedJointTransaction, {
+                    ...fullJointTransaction,
+                    ...full,
+                }),
+            ).toBe(unresolvedJointTransaction);
         });
     });
 });

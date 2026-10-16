@@ -11,7 +11,7 @@ import {
     selectHistoricFiatRatesByTimestamp,
 } from '@suite-common/wallet-core';
 import { type Timestamp, type WalletAccountTransaction } from '@suite-common/wallet-types';
-import { getFiatRateKey } from '@suite-common/wallet-utils';
+import { getFiatRateKey, hasUnresolvedInputs } from '@suite-common/wallet-utils';
 import { Card, Table, Td, Text, Th, Tr, VStack } from '@suite-native/atoms';
 import {
     CryptoToFiatAmountFormatter,
@@ -20,6 +20,7 @@ import {
 import { Translation, useTranslate } from '@suite-native/intl';
 
 import { TransactionDetailSheet } from './TransactionDetailSheet';
+import { TransactionDetailUnknownValue } from './TransactionDetailUnknownValue';
 
 type TransactionDetailValuesSheetProps = {
     transaction: WalletAccountTransaction;
@@ -80,6 +81,8 @@ export const TransactionDetailValuesSheet = ({
 }: TransactionDetailValuesSheetProps) => {
     const { translate } = useTranslate();
 
+    // The input values of a transaction with foreign inputs are unknown until they are fetched.
+    const areInputValuesUnknown = hasUnresolvedInputs(transaction);
     // Fallback to transaction.amount if totalInput is 0, which is the case for XRP transactions
     const totalInput =
         transaction.details.totalInput === '0'
@@ -121,24 +124,32 @@ export const TransactionDetailValuesSheet = ({
                                 <Translation id="transactions.TransactionDetailScreen.valuesSheet.input" />
                             </Th>
                             <Td>
-                                <CryptoToFiatAmountFormatter
-                                    variant="body-sm"
-                                    value={totalInput}
-                                    symbol={transaction.symbol}
-                                    historicRate={historicRate}
-                                    useHistoricRate
-                                    numberOfLines={1}
-                                    adjustsFontSizeToFit
-                                />
+                                {areInputValuesUnknown ? (
+                                    <TransactionDetailUnknownValue />
+                                ) : (
+                                    <CryptoToFiatAmountFormatter
+                                        variant="body-sm"
+                                        value={totalInput}
+                                        symbol={transaction.symbol}
+                                        historicRate={historicRate}
+                                        useHistoricRate
+                                        numberOfLines={1}
+                                        adjustsFontSizeToFit
+                                    />
+                                )}
                             </Td>
                             <Td>
-                                <CryptoToFiatAmountFormatter
-                                    variant="body-sm"
-                                    value={totalInput}
-                                    symbol={transaction.symbol}
-                                    numberOfLines={1}
-                                    adjustsFontSizeToFit
-                                />
+                                {areInputValuesUnknown ? (
+                                    <TransactionDetailUnknownValue />
+                                ) : (
+                                    <CryptoToFiatAmountFormatter
+                                        variant="body-sm"
+                                        value={totalInput}
+                                        symbol={transaction.symbol}
+                                        numberOfLines={1}
+                                        adjustsFontSizeToFit
+                                    />
+                                )}
                             </Td>
                         </Tr>
                         <Tr>
@@ -146,24 +157,32 @@ export const TransactionDetailValuesSheet = ({
                                 <Translation id="transactions.TransactionDetailScreen.valuesSheet.fee" />
                             </Th>
                             <Td>
-                                <CryptoToFiatAmountFormatter
-                                    variant="body-sm"
-                                    value={transaction.fee}
-                                    symbol={transaction.symbol}
-                                    historicRate={historicRate}
-                                    useHistoricRate
-                                    numberOfLines={1}
-                                    adjustsFontSizeToFit
-                                />
+                                {areInputValuesUnknown ? (
+                                    <TransactionDetailUnknownValue />
+                                ) : (
+                                    <CryptoToFiatAmountFormatter
+                                        variant="body-sm"
+                                        value={transaction.fee}
+                                        symbol={transaction.symbol}
+                                        historicRate={historicRate}
+                                        useHistoricRate
+                                        numberOfLines={1}
+                                        adjustsFontSizeToFit
+                                    />
+                                )}
                             </Td>
                             <Td>
-                                <CryptoToFiatAmountFormatter
-                                    variant="body-sm"
-                                    value={transaction.fee}
-                                    symbol={transaction.symbol}
-                                    numberOfLines={1}
-                                    adjustsFontSizeToFit
-                                />
+                                {areInputValuesUnknown ? (
+                                    <TransactionDetailUnknownValue />
+                                ) : (
+                                    <CryptoToFiatAmountFormatter
+                                        variant="body-sm"
+                                        value={transaction.fee}
+                                        symbol={transaction.symbol}
+                                        numberOfLines={1}
+                                        adjustsFontSizeToFit
+                                    />
+                                )}
                             </Td>
                         </Tr>
                         <Tr>

@@ -22,10 +22,12 @@ import {
     findAccountDevice,
     formatNetworkAmount,
     getAccountTransactions,
+    hasUnresolvedInputs,
     isAccountOutdated,
     isDirectRpcBackendType,
     isPending,
     isTrezorConnectBackendType,
+    mergeResolvedInputs,
     subunitsToUnits,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
@@ -289,10 +291,23 @@ export const fetchAndUpdateAccountThunk = createThunk<
 
                     return fakeMatch ? { ...freshTx, tokens: fakeMatch.tokens } : freshTx;
                 });
+                // The Electrum backend gives a confirmed transaction again without the input values
+                // which were resolved while it was pending (see hasUnresolvedInputs), and that
+                // pending transaction was removed above, so the values are kept here.
+                const addWithResolvedInputs = enrichedAdd.map(freshTx => {
+                    if (
+                        !hasUnresolvedInputs({ symbol: account.symbol, details: freshTx.details })
+                    ) {
+                        return freshTx;
+                    }
+                    const knownTx = accountTxs.find(tx => tx?.txid === freshTx.txid);
+
+                    return knownTx ? mergeResolvedInputs(freshTx, knownTx) : freshTx;
+                });
 
                 dispatch(
                     transactionsActions.addTransaction({
-                        transactions: enrichedAdd.reverse(),
+                        transactions: addWithResolvedInputs.reverse(),
                         account,
                     }),
                 );

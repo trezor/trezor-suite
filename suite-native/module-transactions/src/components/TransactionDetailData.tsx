@@ -19,7 +19,6 @@ import {
 import { type AccountKey, type Timestamp } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { BannerFull, Box, Card, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
-import { CryptoToFiatAmountFormatter, ExactCryptoAmountFormatter } from '@suite-native/formatters';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
@@ -28,6 +27,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { useNativeStyles } from '@trezor/styles-native';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 
+import { TransactionDetailFee } from './TransactionDetailFee';
 import { TransactionDetailIncludedCoins } from './TransactionDetailIncludedCoins';
 import { TransactionDetailRow } from './TransactionDetailRow';
 import { TransactionDetailSheets } from './TransactionDetailSheets';
@@ -162,27 +162,10 @@ export const TransactionDetailData = ({
             <Card borderColor="borderNeutral" style={applyStyle(cardStyle)}>
                 <VStack spacing="sp24">
                     <TransactionDetailRow title={translate('transactions.detail.feeLabel')}>
-                        <Box alignItems="flex-end">
-                            <ExactCryptoAmountFormatter
-                                value={transaction.fee}
-                                symbol={transaction.symbol}
-                                variant="body-sm"
-                                color="contentPrimary"
-                                isBalance={false}
-                            />
-                            {historicRate !== undefined && historicRate !== 0 && (
-                                <Box flexDirection="row">
-                                    <CryptoToFiatAmountFormatter
-                                        value={transaction.fee}
-                                        symbol={transaction.symbol}
-                                        historicRate={historicRate}
-                                        useHistoricRate
-                                        variant="body-sm"
-                                        color="contentSecondary"
-                                    />
-                                </Box>
-                            )}
-                        </Box>
+                        <TransactionDetailFee
+                            transaction={transaction}
+                            historicRate={historicRate}
+                        />
                     </TransactionDetailRow>
                     {transactionBlockTime && (
                         <>

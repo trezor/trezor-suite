@@ -1,13 +1,13 @@
 import type {
     Address,
     ElectrumAPI,
+    ElectrumHistoryTx as HistoryTx,
     MessageTypes,
     ResponseTypes,
-    Transaction,
     VinVout,
 } from '@trezor/blockchain-link-types';
 import { sortTxsFromLatest } from '@trezor/blockchain-link-utils';
-import { transformTransaction } from '@trezor/blockchain-link-utils/src/blockbook';
+import { createTransactionTransformer } from '@trezor/blockchain-link-utils/src/blockbook';
 import { discovery } from '@trezor/utxo-lib';
 
 import {
@@ -51,12 +51,72 @@ const getBalances =
             }),
         );
 
-const getPagination = (perPage: number, txs: Transaction[]) => ({
-    index: 1,
-    // Intentionally incorrect as Electrum backend doesn't support pagination yet but Suite needs total page count
-    size: perPage,
-    total: Math.ceil(txs.length / perPage),
+type PageParams = {
+    page: number;
+    pageSize: number;
+};
+
+const getPagination = (history: HistoryTx[], { page, pageSize }: PageParams) => ({
+    index: page,
+    size: pageSize,
+    total: Math.ceil(history.length / pageSize),
 });
+
+const getHistoryHeight = ({ height }: HistoryTx) => (height > 0 ? height : Number.MAX_SAFE_INTEGER);
+
+// Pending transactions first and then the latest blocks first, like sortTxsFromLatest, so that
+// the pages follow each other. The history doesn't tell children from parents within a block, so
+// the transactions of a block are split between pages by txid and ordered only within a page.
+const getHistoryPage = (history: HistoryTx[], { page, pageSize }: PageParams) =>
+    [...history]
+        .sort(
+            (a, b) =>
+                getHistoryHeight(b) - getHistoryHeight(a) || a.tx_hash.localeCompare(b.tx_hash),
+        )
+        .slice((page - 1) * pageSize, page * pageSize);
+
+// Only the transactions of the page are fetched, with the previous transactions of their inputs
+// which are in the history. Those of foreign inputs are left out, as an incoming payment can have
+// dozens of them, so the fee of such a transaction is unknown until it is fetched by getTransaction
+// without a descriptor.
+const getTransactionsPage = (
+    client: ElectrumAPI,
+    history: HistoryTx[],
+    pageParams: PageParams,
+    transformTransaction: ReturnType<typeof createTransactionTransformer>,
+) =>
+    getTransactions(client, getHistoryPage(history, pageParams), {
+        withForeignParents: false,
+        accountTxids: new Set(history.map(({ tx_hash }) => tx_hash)),
+    })
+        .then(txs => txs.map(transformTransaction))
+        .then(sortTxsFromLatest);
+
+type TransactionVinVouts = { details: { vin: VinVout[]; vout: VinVout[] } };
+
+type AddressValues = { sent: number; received: number };
+
+// The sums of sumAddressValues for all the addresses at once, in one pass over the transactions.
+export const sumValuesByAddress = (transactions: TransactionVinVouts[]) => {
+    const sums = new Map<string, AddressValues>();
+    const addValues = (vinVouts: VinVout[], key: keyof AddressValues) =>
+        vinVouts.forEach(({ addresses, value }) =>
+            addresses?.forEach((address, index, all) => {
+                // An input or output listing the same address twice counts once.
+                if (all.indexOf(address) !== index) return;
+                const values = sums.get(address) ?? { sent: 0, received: 0 };
+                values[key] += value ? Number.parseFloat(value) : 0;
+                sums.set(address, values);
+            }),
+        );
+
+    transactions.forEach(({ details }) => {
+        addValues(details.vin, 'sent');
+        addValues(details.vout, 'received');
+    });
+
+    return sums;
+};
 
 export const sumAddressValues = <T>(
     transactions: T[],
@@ -72,7 +132,8 @@ export const sumAddressValues = <T>(
         .reduce((a, b) => a + b, 0);
 
 const getAccountInfo: Api<Req, Res> = async ({ client, addressCache }, payload) => {
-    const { descriptor, details = 'basic', pageSize = PAGE_SIZE_DEFAULT, gap } = payload;
+    const { descriptor, details = 'basic', page = 1, pageSize = PAGE_SIZE_DEFAULT, gap } = payload;
+    const pageParams = { page: Math.max(1, page), pageSize: Math.max(1, pageSize) };
     const network = client.getInfo()?.network;
 
     const parsed = tryGetScripthash(descriptor, network);
@@ -89,9 +150,12 @@ const getAccountInfo: Api<Req, Res> = async ({ client, addressCache }, payload) 
 
         const transactions =
             details === 'txs'
-                ? await getTransactions(client, history)
-                      .then(txs => txs.map(tx => transformTransaction(tx, descriptor)))
-                      .then(sortTxsFromLatest)
+                ? await getTransactionsPage(
+                      client,
+                      history,
+                      pageParams,
+                      createTransactionTransformer(descriptor),
+                  )
                 : undefined;
 
         return {
@@ -104,7 +168,7 @@ const getAccountInfo: Api<Req, Res> = async ({ client, addressCache }, payload) 
                 unconfirmed: historyUnconfirmed,
                 transactions,
             },
-            page: details === 'txs' ? getPagination(pageSize, transactions ?? []) : undefined,
+            page: details === 'txs' ? getPagination(history, pageParams) : undefined,
         };
     }
     const discover = discoverAddress(client);
@@ -139,31 +203,37 @@ const getAccountInfo: Api<Req, Res> = async ({ client, addressCache }, payload) 
         used: receive.filter(recv => recv.history.length).map(transformAddressInfo),
     };
 
-    const transactions = ['tokenBalances', 'txids', 'txs'].includes(details)
-        ? await getTransactions(client, history)
-              .then(txs => txs.map(tx => transformTransaction(tx, addresses)))
-              .then(sortTxsFromLatest)
+    const transformTransaction = createTransactionTransformer(addresses);
+    // Suite takes the addresses of an account from the first page only, so on the later pages their
+    // sent and received amounts stay 0 instead of fetching all the transactions of the account.
+    const hasAddressAmounts =
+        ['tokenBalances', 'txids', 'txs'].includes(details) && pageParams.page === 1;
+    // All the transactions of the account are needed for the amounts of its addresses, but not
+    // the previous transactions of their foreign inputs nor their blocks.
+    const accountTransactions = hasAddressAmounts
+        ? await getTransactions(client, history, {
+              withForeignParents: false,
+              withBlocks: false,
+          }).then(txs => txs.map(transformTransaction))
         : [];
 
-    const extendAddressInfo = ({ address, path, transfers, balance }: Address): Address => ({
-        address,
-        path,
-        transfers,
-        balance: '0',
-        sent: '0',
-        received: '0',
-        ...(['tokenBalances', 'txids', 'txs'].includes(details) && transfers
-            ? {
-                  balance,
-                  sent: sumAddressValues(transactions, address, tx => tx.details.vin).toString(),
-                  received: sumAddressValues(
-                      transactions,
-                      address,
-                      tx => tx.details.vout,
-                  ).toString(),
-              }
-            : {}),
-    });
+    const valuesByAddress = sumValuesByAddress(accountTransactions);
+
+    const extendAddressInfo = ({ address, path, transfers, balance }: Address): Address => {
+        const { sent, received } = valuesByAddress.get(address) ?? { sent: 0, received: 0 };
+
+        return {
+            address,
+            path,
+            transfers,
+            balance: '0',
+            sent: '0',
+            received: '0',
+            ...(['tokenBalances', 'txids', 'txs'].includes(details) && transfers
+                ? { balance, sent: sent.toString(), received: received.toString() }
+                : {}),
+        };
+    };
 
     return {
         descriptor,
@@ -173,7 +243,10 @@ const getAccountInfo: Api<Req, Res> = async ({ client, addressCache }, payload) 
         history: {
             total: history.length - historyUnconfirmed,
             unconfirmed: historyUnconfirmed,
-            transactions: details === 'txs' ? transactions : undefined,
+            transactions:
+                details === 'txs'
+                    ? await getTransactionsPage(client, history, pageParams, transformTransaction)
+                    : undefined,
         },
         addresses:
             details !== 'basic'
@@ -183,7 +256,7 @@ const getAccountInfo: Api<Req, Res> = async ({ client, addressCache }, payload) 
                       used: addresses.used.map(extendAddressInfo),
                   }
                 : undefined,
-        page: details === 'txs' ? getPagination(pageSize, transactions) : undefined,
+        page: details === 'txs' ? getPagination(history, pageParams) : undefined,
     };
 };
 

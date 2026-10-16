@@ -1,10 +1,7 @@
-import { useMemo } from 'react';
-
 import { Address, selectAddressLabelsForAccount } from '@suite/address';
 import { Translation } from '@suite/intl';
-import { selectAccounts } from '@suite-common/wallet-core';
+import { selectTransactionSenderAccount } from '@suite-common/wallet-core';
 import type { AccountKey } from '@suite-common/wallet-types';
-import { findTransactionSenderAccount } from '@suite-common/wallet-utils';
 import { type ArrayElement } from '@trezor/type-utils';
 
 import { AccountLabelForOwnAddress } from 'src/components/suite/labeling/AccountLabelForOwnAddress';
@@ -32,13 +29,10 @@ export const TargetAddressLabel = ({
             deviceStaticId: transaction.deviceState,
         }),
     );
-    const accounts = useSelector(selectAccounts);
-
     // Targets of a received transaction hold the account's own receiving address, so the sender is
     // resolved instead — a transfer from a sibling account shows its label, like token transfers do.
-    const senderAccount = useMemo(
-        () => (type === 'recv' ? findTransactionSenderAccount(transaction, accounts) : undefined),
-        [type, transaction, accounts],
+    const senderAccount = useSelector(state =>
+        type === 'recv' ? selectTransactionSenderAccount(state, transaction) : undefined,
     );
 
     if (isLocalTarget) {
