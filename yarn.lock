@@ -18178,10 +18178,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/calldata@workspace:packages/calldata"
   dependencies:
-    "@trezor/network-tron": "workspace:*"
-    "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    viem: "npm:^2.57.2"
   languageName: unknown
   linkType: soft
 

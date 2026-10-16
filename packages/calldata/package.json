@@ -12,9 +12,6 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@trezor/network-tron": "workspace:*",
-        "@trezor/type-utils": "workspace:*",
-        "@trezor/utils": "workspace:*",
-        "viem": "^2.57.2"
+        "@trezor/utils": "workspace:*"
     }
 }
