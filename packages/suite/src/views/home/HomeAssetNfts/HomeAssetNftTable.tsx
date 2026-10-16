@@ -1,17 +1,17 @@
 import { useCallback, useMemo, useState } from 'react';
 
 import { Translation } from '@suite/intl';
-import { type WalletAssetKey } from '@suite-common/wallet-core';
-import { Divider, Table, VirtualizedList } from '@trezor/components';
-import { exhaustive } from '@trezor/type-utils';
-
-import { useSelector } from 'src/hooks/suite';
 import {
     type NftItem,
     selectHiddenNftCollectionKeys,
     selectNftCollectionItems,
     selectShownNftCollectionKeys,
-} from 'src/selectors/wallet/homeAssetNftSelectors';
+} from '@suite/nfts';
+import { type WalletAssetKey } from '@suite-common/wallet-core';
+import { Divider, Table, VirtualizedList } from '@trezor/components';
+import { exhaustive } from '@trezor/type-utils';
+
+import { useSelector } from 'src/hooks/suite';
 
 import { HomeAssetNftItemRow, HomeAssetNftMoreItemsRow } from './HomeAssetNftItemRow';
 import { HomeAssetNftRow } from './HomeAssetNftRow';

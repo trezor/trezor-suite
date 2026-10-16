@@ -44,7 +44,7 @@ type AssetAccountKeyParams = {
     contractAddress: TokenAddress | undefined;
 };
 
-export const getAssetAccountKey = ({
+const getAssetAccountKey = ({
     accountKey,
     contractAddress,
 }: AssetAccountKeyParams): AssetAccountKey =>

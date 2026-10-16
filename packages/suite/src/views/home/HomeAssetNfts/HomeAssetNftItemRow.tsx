@@ -1,11 +1,10 @@
 import { memo } from 'react';
 
 import { Translation } from '@suite/intl';
+import { type NftItem } from '@suite/nfts';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { Badge, IconCircle, Row, Table, Text } from '@trezor/components';
 import { PictureFrameIcon } from '@trezor/icons';
-
-import { type NftItem } from 'src/selectors/wallet/homeAssetNftSelectors';
 
 import { NFT_ITEM_ICON_SIZE } from './homeAssetNftLayout';
 import { HOME_ASSET_CELL_PADDING } from '../HomeAssetsTable/homeAssetTableLayout';

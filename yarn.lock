@@ -16856,6 +16856,23 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/nfts@workspace:*, @suite/nfts@workspace:suite/nfts":
+  version: 0.0.0-use.local
+  resolution: "@suite/nfts@workspace:suite/nfts"
+  dependencies:
+    "@suite-common/token-definitions": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
+    "@trezor/blockchain-link-types": "workspace:*"
+    "@trezor/device-utils": "workspace:*"
+    "@trezor/redux-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
+    react-redux: "npm:9.3.0"
+  languageName: unknown
+  linkType: soft
+
 "@suite/onboarding-components@workspace:*, @suite/onboarding-components@workspace:suite/onboarding-components":
   version: 0.0.0-use.local
   resolution: "@suite/onboarding-components@workspace:suite/onboarding-components"
@@ -19441,6 +19458,7 @@ __metadata:
     "@suite/metadata-migration": "workspace:*"
     "@suite/modal": "workspace:*"
     "@suite/nfc": "workspace:*"
+    "@suite/nfts": "workspace:*"
     "@suite/onboarding-components": "workspace:*"
     "@suite/receive": "workspace:*"
     "@suite/recovery": "workspace:*"

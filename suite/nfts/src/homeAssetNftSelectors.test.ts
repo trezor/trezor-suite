@@ -19,6 +19,7 @@ const BOB = 'bobWallet@device:1' as StaticSessionId;
 
 const ETH = asNetworkSymbol('eth');
 const POL = asNetworkSymbol('pol');
+const SEPOLIA = asNetworkSymbol('tsep');
 
 const PUNKS = '0x00000000000000000000000000000000000000a1' as TokenAddress;
 const APES = '0x00000000000000000000000000000000000000a2' as TokenAddress;
@@ -184,6 +185,23 @@ describe('the collections the section hides', () => {
         expect(selectHiddenNftCollectionKeys(state)).toEqual([apesOnEth, scamOnEth]);
         expect(selectNftCollection(state, scamOnEth, true)?.name).toBe('Claim your reward');
         expect(selectNftCollection(state, scamOnEth)?.name).toBeUndefined();
+    });
+
+    it('shows what a network without NFT definitions holds, as its NFT tab does', () => {
+        const state = createState({
+            accounts: [
+                mockAccount({
+                    symbol: SEPOLIA,
+                    tokens: [erc721(SCAM_DROP, 'Claim your reward', ['3'])],
+                }),
+            ],
+            enabledNetworks: [SEPOLIA],
+        });
+
+        expect(selectShownNftCollectionKeys(state)).toEqual([
+            getWalletAssetKey({ deviceState: ALICE, symbol: SEPOLIA, contractAddress: SCAM_DROP }),
+        ]);
+        expect(selectHiddenNftCollectionKeys(state)).toEqual([]);
     });
 });
 

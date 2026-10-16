@@ -1,14 +1,11 @@
 import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { selectHiddenNftCollectionCount, selectShownNftCollectionCount } from '@suite/nfts';
 import { selectIsNftSectionEnabled } from '@suite/settings';
 import { Card, Collapsible, Column, Row, SubTabs, Text } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
-import {
-    selectHiddenNftCollectionCount,
-    selectShownNftCollectionCount,
-} from 'src/selectors/wallet/homeAssetNftSelectors';
 
 import { HomeAssetNftTable } from './HomeAssetNftTable';
 

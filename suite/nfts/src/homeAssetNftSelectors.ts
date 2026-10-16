@@ -1,25 +1,17 @@
 import { shallowEqual } from 'react-redux';
 
-import {
-    groupAssetAccountsByAssetKey,
-    partitionAssetAccounts,
-    sumAssetAccounts,
-} from '@suite-common/assets';
 import { selectTokenDefinitions } from '@suite-common/token-definitions';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    type AssetAccount,
-    type AssetAccountKey,
     type AssetAccountsRootState,
     type WalletAssetKey,
     type WalletSettingsRootState,
-    getAssetAccountKey,
     getTokens,
     getWalletAssetKey,
     selectEnabledNetworks,
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
-import { type Account, type TokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress } from '@suite-common/wallet-types';
 import { isNftToken } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
@@ -29,61 +21,64 @@ export type HomeAssetNftState = AssetAccountsRootState & WalletSettingsRootState
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<HomeAssetNftState>();
 
+/** One account's holding of one collection. */
+type NftHolding = {
+    assetKey: WalletAssetKey;
+    symbol: NetworkSymbol;
+    contractAddress: TokenAddress;
+    token: TokenInfo;
+};
+
 // A collection is held when it lists its items, even where the backend reports no balance for it.
 const isNftHeld = ({ ids, multiTokenValues, balance }: TokenInfo) =>
     (ids?.length ?? 0) > 0 ||
     (multiTokenValues?.length ?? 0) > 0 ||
     new BigNumber(balance ?? '0').gt(0);
 
-const toNftAssetAccount = (account: Account, token: TokenInfo): AssetAccount => {
-    const contractAddress = token.contract as TokenAddress;
-
-    return {
-        assetAccountKey: getAssetAccountKey({ accountKey: account.key, contractAddress }),
-        accountKey: account.key,
-        assetKey: getWalletAssetKey({
-            deviceState: account.deviceState,
-            symbol: account.symbol,
-            contractAddress,
-        }),
-        deviceState: account.deviceState,
-        symbol: account.symbol,
-        contractAddress,
-        cryptoBalance: token.balance ?? '0',
-        tokenInfo: token,
-    };
+type PartitionedNftHoldings = {
+    shown: readonly NftHolding[];
+    hidden: readonly NftHolding[];
 };
 
-const selectNftAssetAccounts = createMemoizedSelector([selectVisibleDeviceAccounts], accounts =>
-    returnStableArrayIfEmpty(
-        accounts.flatMap(account =>
-            (account.tokens ?? [])
-                .filter(token => isNftToken(token) && isNftHeld(token))
-                .map(token => toNftAssetAccount(account, token)),
-        ),
-    ),
-);
-
 /** Hidden by the same rule as on the account's NFT tab: hidden by the user, or not recognized. */
-const selectHiddenNftAssetAccountKeySet = createMemoizedSelector(
-    [selectNftAssetAccounts, selectTokenDefinitions],
-    (assetAccounts, tokenDefinitions): ReadonlySet<AssetAccountKey> => {
-        const hidden = new Set<AssetAccountKey>();
+const selectPartitionedNftHoldings = createMemoizedSelector(
+    [selectVisibleDeviceAccounts, selectTokenDefinitions, selectEnabledNetworks],
+    (accounts, tokenDefinitions, enabledNetworks): PartitionedNftHoldings => {
+        const shown: NftHolding[] = [];
+        const hidden: NftHolding[] = [];
 
-        assetAccounts.forEach(({ assetAccountKey, symbol, tokenInfo }) => {
+        accounts.forEach(({ deviceState, symbol, tokens }) => {
+            if (!enabledNetworks.includes(symbol)) {
+                return;
+            }
+
+            const nftTokens = (tokens ?? []).filter(token => isNftToken(token) && isNftHeld(token));
+
+            if (nftTokens.length === 0) {
+                return;
+            }
+
             const { shownWithBalance } = getTokens({
-                tokens: tokenInfo === undefined ? [] : [tokenInfo],
+                tokens: nftTokens,
                 symbol,
                 tokenDefinitions: tokenDefinitions?.[symbol]?.nft,
                 isNft: true,
             });
+            const shownTokens = new Set(shownWithBalance);
 
-            if (shownWithBalance.length === 0) {
-                hidden.add(assetAccountKey);
-            }
+            nftTokens.forEach(token => {
+                const contractAddress = token.contract as TokenAddress;
+
+                (shownTokens.has(token) ? shown : hidden).push({
+                    assetKey: getWalletAssetKey({ deviceState, symbol, contractAddress }),
+                    symbol,
+                    contractAddress,
+                    token,
+                });
+            });
         });
 
-        return hidden;
+        return { shown: returnStableArrayIfEmpty(shown), hidden: returnStableArrayIfEmpty(hidden) };
     },
 );
 
@@ -116,94 +111,85 @@ const countNftItems = ({ ids, multiTokenValues }: TokenInfo) =>
     (multiTokenValues ?? []).reduce((count, { id }) => (id === undefined ? count : count + 1), 0);
 
 const groupNftCollections = (
-    assetAccounts: readonly AssetAccount[],
+    holdings: readonly NftHolding[],
 ): ReadonlyMap<WalletAssetKey, NftCollection> => {
+    const byKey = new Map<WalletAssetKey, [NftHolding, ...NftHolding[]]>();
+
+    holdings.forEach(holding => {
+        const held = byKey.get(holding.assetKey);
+
+        if (held === undefined) {
+            byKey.set(holding.assetKey, [holding]);
+        } else {
+            held.push(holding);
+        }
+    });
+
     const collections = new Map<WalletAssetKey, NftCollection>();
 
-    groupAssetAccountsByAssetKey(assetAccounts).forEach((held, assetKey) => {
-        const [{ symbol, contractAddress, tokenInfo }] = held;
-
-        if (contractAddress === undefined || tokenInfo === undefined) {
-            return;
-        }
-
-        const tokens = held.flatMap(assetAccount =>
-            assetAccount.tokenInfo === undefined ? [] : [assetAccount.tokenInfo],
+    byKey.forEach((held, assetKey) => {
+        const [{ symbol, contractAddress, token }] = held;
+        const tokens = held.map(holding => holding.token);
+        const listedItemCount = tokens.reduce((count, item) => count + countNftItems(item), 0);
+        const balance = tokens.reduce(
+            (sum, item) => sum.plus(item.balance ?? '0'),
+            new BigNumber(0),
         );
-        const listedItemCount = tokens.reduce((count, token) => count + countNftItems(token), 0);
 
         collections.set(assetKey, {
             assetKey,
             symbol,
             contractAddress,
-            name: tokenInfo.name ?? tokenInfo.symbol ?? contractAddress,
+            name: token.name || token.symbol || contractAddress,
             tokens,
             hasListedItems: listedItemCount > 0,
-            itemCount:
-                listedItemCount > 0
-                    ? listedItemCount
-                    : sumAssetAccounts(held).cryptoBalance.toNumber(),
+            itemCount: listedItemCount > 0 ? listedItemCount : balance.toNumber(),
         });
     });
 
     return collections;
 };
 
-const selectPartitionedNftAssetAccounts = createMemoizedSelector(
-    [selectNftAssetAccounts, selectHiddenNftAssetAccountKeySet],
-    partitionAssetAccounts,
-);
-
-const countCollections = (
-    assetAccounts: readonly AssetAccount[],
-    enabledNetworks: readonly NetworkSymbol[],
-) =>
-    new Set(
-        assetAccounts
-            .filter(assetAccount => enabledNetworks.includes(assetAccount.symbol))
-            .map(assetAccount => assetAccount.assetKey),
-    ).size;
+const countCollections = (holdings: readonly NftHolding[]) =>
+    new Set(holdings.map(holding => holding.assetKey)).size;
 
 // The counts skip gathering, items and sorting, so a collapsed section pays only for the split.
 export const selectShownNftCollectionCount = createMemoizedSelector(
-    [selectPartitionedNftAssetAccounts, selectEnabledNetworks],
-    ({ shown }, enabledNetworks) => countCollections(shown, enabledNetworks),
+    [selectPartitionedNftHoldings],
+    ({ shown }) => countCollections(shown),
 );
 
 export const selectHiddenNftCollectionCount = createMemoizedSelector(
-    [selectPartitionedNftAssetAccounts, selectEnabledNetworks],
-    ({ hidden }, enabledNetworks) => countCollections(hidden, enabledNetworks),
+    [selectPartitionedNftHoldings],
+    ({ hidden }) => countCollections(hidden),
 );
 
-const selectNftCollections = createMemoizedSelector(
-    [selectPartitionedNftAssetAccounts],
-    ({ shown }) => groupNftCollections(shown),
+const selectNftCollections = createMemoizedSelector([selectPartitionedNftHoldings], ({ shown }) =>
+    groupNftCollections(shown),
 );
 
 const selectHiddenNftCollections = createMemoizedSelector(
-    [selectPartitionedNftAssetAccounts],
+    [selectPartitionedNftHoldings],
     ({ hidden }) => groupNftCollections(hidden),
 );
 
 const getSortedCollectionKeys = (
     collections: ReadonlyMap<WalletAssetKey, NftCollection>,
-    enabledNetworks: readonly NetworkSymbol[],
 ): readonly WalletAssetKey[] =>
     returnStableArrayIfEmpty(
         [...collections.values()]
-            .filter(collection => enabledNetworks.includes(collection.symbol))
             .toSorted((left, right) => left.name.localeCompare(right.name))
             .map(collection => collection.assetKey),
     );
 
 export const selectShownNftCollectionKeys = createMemoizedSelector(
-    [selectNftCollections, selectEnabledNetworks],
+    [selectNftCollections],
     getSortedCollectionKeys,
     { memoizeOptions: { resultEqualityCheck: shallowEqual } },
 );
 
 export const selectHiddenNftCollectionKeys = createMemoizedSelector(
-    [selectHiddenNftCollections, selectEnabledNetworks],
+    [selectHiddenNftCollections],
     getSortedCollectionKeys,
     { memoizeOptions: { resultEqualityCheck: shallowEqual } },
 );
