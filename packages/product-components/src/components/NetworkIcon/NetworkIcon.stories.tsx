@@ -29,7 +29,12 @@ export const All: StoryObj = {
                 padding={{ vertical: 32 }}
             >
                 {networkOptions.map(({ symbol: networkSymbol }) => (
-                    <Column key={networkSymbol} justifyContent="center" alignItems="center" gap={12}>
+                    <Column
+                        key={networkSymbol}
+                        justifyContent="center"
+                        alignItems="center"
+                        gap={12}
+                    >
                         {hasNetworkIcon(networkSymbol) && (
                             <NetworkIcon networkSymbol={networkSymbol} size={40} />
                         )}
