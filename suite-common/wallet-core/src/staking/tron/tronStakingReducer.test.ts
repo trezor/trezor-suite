@@ -5,6 +5,7 @@ import { initialTronStakeTxReview, tronStakeActions, tronStakeReducer } from './
 
 const KEY = 'account-1' as AccountKey;
 const FLOW = 'stake' as const;
+const FREEZE = { amount: '10', resourceType: 'energy' } as const;
 
 const PRECOMPOSED_TX = {
     type: 'final',
@@ -214,6 +215,113 @@ describe('tronStakeReducer', () => {
         expect(state.sessions[KEY]?.[FLOW]?.pendingTxid).toBeNull();
         expect(state.sessions[KEY]?.[FLOW]?.error).toEqual({ kind: 'confirmation-failed' });
         expect(state.sessions[KEY]?.[FLOW]?.step).toBe('freeze');
+    });
+
+    it('submitFinished records the freeze details', () => {
+        const state = tronStakeReducer(
+            undefined,
+            tronStakeActions.submitFinished({
+                accountKey: KEY,
+                flow: FLOW,
+                txid: 'abc123',
+                freeze: FREEZE,
+            }),
+        );
+
+        expect(state.sessions[KEY]?.[FLOW]?.freeze).toEqual(FREEZE);
+    });
+
+    it('submitFinished without freeze details keeps the recorded freeze', () => {
+        const frozen = tronStakeReducer(
+            undefined,
+            tronStakeActions.submitFinished({
+                accountKey: KEY,
+                flow: FLOW,
+                txid: 'abc123',
+                freeze: FREEZE,
+            }),
+        );
+        const atVote = tronStakeReducer(
+            frozen,
+            tronStakeActions.pendingTransactionConfirmed({
+                accountKey: KEY,
+                flow: FLOW,
+                txid: 'abc123',
+            }),
+        );
+        const state = tronStakeReducer(
+            atVote,
+            tronStakeActions.submitFinished({ accountKey: KEY, flow: FLOW, txid: 'vote123' }),
+        );
+
+        expect(state.sessions[KEY]?.[FLOW]?.freeze).toEqual(FREEZE);
+    });
+
+    it('pendingTransactionFailed on the freeze step clears the freeze details', () => {
+        const pending = tronStakeReducer(
+            undefined,
+            tronStakeActions.submitFinished({
+                accountKey: KEY,
+                flow: FLOW,
+                txid: 'abc123',
+                freeze: FREEZE,
+            }),
+        );
+        const state = tronStakeReducer(
+            pending,
+            tronStakeActions.pendingTransactionFailed({ accountKey: KEY, flow: FLOW }),
+        );
+
+        expect(state.sessions[KEY]?.[FLOW]?.freeze).toBeNull();
+    });
+
+    it('pendingTransactionFailed on the vote step keeps the freeze details', () => {
+        const frozen = tronStakeReducer(
+            undefined,
+            tronStakeActions.submitFinished({
+                accountKey: KEY,
+                flow: FLOW,
+                txid: 'abc123',
+                freeze: FREEZE,
+            }),
+        );
+        const atVote = tronStakeReducer(
+            frozen,
+            tronStakeActions.pendingTransactionConfirmed({
+                accountKey: KEY,
+                flow: FLOW,
+                txid: 'abc123',
+            }),
+        );
+        const pendingVote = tronStakeReducer(
+            atVote,
+            tronStakeActions.submitFinished({ accountKey: KEY, flow: FLOW, txid: 'vote123' }),
+        );
+        const state = tronStakeReducer(
+            pendingVote,
+            tronStakeActions.pendingTransactionFailed({ accountKey: KEY, flow: FLOW }),
+        );
+
+        expect(state.sessions[KEY]?.[FLOW]?.freeze).toEqual(FREEZE);
+        expect(state.sessions[KEY]?.[FLOW]?.step).toBe('vote');
+    });
+
+    it('reset clears the freeze details', () => {
+        const frozen = tronStakeReducer(
+            undefined,
+            tronStakeActions.submitFinished({
+                accountKey: KEY,
+                flow: FLOW,
+                txid: 'abc123',
+                freeze: FREEZE,
+            }),
+        );
+        const state = tronStakeReducer(
+            frozen,
+            tronStakeActions.reset({ accountKey: KEY, flow: FLOW }),
+        );
+
+        expect(state.sessions[KEY]?.[FLOW]?.freeze).toBeNull();
     });
 
     it('keeps sessions isolated per account', () => {
