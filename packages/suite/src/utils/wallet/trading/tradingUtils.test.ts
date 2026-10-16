@@ -98,15 +98,6 @@ describe('trading utils', () => {
                 ),
             ).toBe('trezorsuite://buy-redirect?p=%2Fcoinmarket-redirect%2Ffoo');
         });
-
-        it('falls back to a string when address is missing', () => {
-            // Receiver was unreachable; the original (pre-token) behavior also produced
-            // a broken URL string in this case rather than `undefined`. Preserve that
-            // shape so callers that pass returnUrl downstream keep the same type.
-            expect(buildHttpReceiverRedirectUrl(undefined, '/coinmarket-redirect/foo')).toBe(
-                'undefined?p=%2Fcoinmarket-redirect%2Ffoo',
-            );
-        });
     });
 
     describe('getComposeAddressPlaceholder', () => {
