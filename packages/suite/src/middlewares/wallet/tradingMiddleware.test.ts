@@ -16,6 +16,7 @@ import {
     initialState,
     prepareTradingReducer,
     tradeApi,
+    tradingActions,
     tradingExchangeActions,
     tradingSellActions,
 } from '@suite-common/trading';
@@ -342,4 +343,33 @@ describe('tradingMiddleware', () => {
             'btc-descriptor',
         );
     });
+
+    it.each([
+        ['exchange' as const, 1],
+        ['sell' as const, 1],
+        ['buy' as const, 0],
+    ])(
+        'should create new invity API key when the %s section is bound to an account',
+        (type, calls) => {
+            const store = initStore(
+                getInitialState({
+                    trading: {
+                        ...initialState,
+                    },
+                    router: {
+                        ...getInitialState().router,
+                    },
+                }),
+            );
+
+            store.dispatch(
+                tradingActions.bindTradingAccount({
+                    type,
+                    accountKey: 'btc-descriptor' as AccountKey,
+                }),
+            );
+
+            expect(tradeApi.createApiKey).toHaveBeenCalledTimes(calls);
+        },
+    );
 });
