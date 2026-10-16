@@ -11,12 +11,14 @@ import { Column } from '@trezor/components';
 import { useMessageSystemTrading } from 'src/hooks/suite/useMessageSystemTrading';
 import { TradingBuyFormWrapper } from 'src/views/wallet/trading/buy/TradingBuyFormWrapper';
 import { TradingDisabled } from 'src/views/wallet/trading/common/TradingDisabled';
+import { TradingTypeTabs } from 'src/views/wallet/trading/common/TradingTypeTabs/TradingTypeTabs';
 import { TradingExchangeFormWrapper } from 'src/views/wallet/trading/exchange/TradingExchangeFormWrapper';
 import { TradingSellFormWrapper } from 'src/views/wallet/trading/sell/TradingSellFormWrapper';
 
 type TradingFormEmbedProps = {
     type: TradingType;
     account: Account;
+    onTypeChange?: (type: TradingType) => void;
 };
 
 const formWrapperByType: Record<TradingType, ComponentType> = {
@@ -25,19 +27,22 @@ const formWrapperByType: Record<TradingType, ComponentType> = {
     exchange: TradingExchangeFormWrapper,
 };
 
-const TradingFormEmbedForm = ({ type, account }: TradingFormEmbedProps) => {
+const TradingFormEmbedForm = ({ type, account }: Omit<TradingFormEmbedProps, 'onTypeChange'>) => {
     const isBoundToAccount = useBoundTradingAccount(type, account);
     const FormWrapper = formWrapperByType[type];
 
     return isBoundToAccount && <FormWrapper key={account.key} />;
 };
 
-export const TradingFormEmbed = ({ type, account }: TradingFormEmbedProps) => {
+export const TradingFormEmbed = ({ type, account, onTypeChange }: TradingFormEmbedProps) => {
     const isDeviceCompromised = useSelector(selectIsDeviceCompromised);
     const { isDisabled, content } = useMessageSystemTrading(type);
 
     return (
-        <Column gap={16} alignItems="stretch" minWidth={400}>
+        <Column gap={16} width="100%" maxWidth={400} alignSelf="center" alignItems="stretch">
+            {onTypeChange && (
+                <TradingTypeTabs activeType={type} size="large" onTypeChange={onTypeChange} />
+            )}
             <ContextMessage context={Context.getTrading(type)} />
             {isDisabled || isDeviceCompromised ? (
                 <TradingDisabled type={type} content={content} />
