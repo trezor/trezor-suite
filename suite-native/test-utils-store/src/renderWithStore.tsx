@@ -26,7 +26,7 @@ export type RenderHookOptionsExtended<
     services?: TServices & { store?: Store };
 };
 
-export const renderWithStoreProvider = async <TServices extends object>(
+export const renderWithStoreProvider = <TServices extends object>(
     element: ReactElement,
     {
         preloadedState,
@@ -40,7 +40,7 @@ export const renderWithStoreProvider = async <TServices extends object>(
         store: services?.store ?? createStoreFromPreloadedState(preloadedState),
     };
 
-    return await render(element, {
+    return render(element, {
         wrapper: ({ children }) => (
             <StoreProviderForTests services={resolvedServices}>
                 {Wrapper ? <Wrapper>{children}</Wrapper> : children}
@@ -50,7 +50,7 @@ export const renderWithStoreProvider = async <TServices extends object>(
     });
 };
 
-export const renderHookWithStoreProvider = async <
+export const renderHookWithStoreProvider = <
     Result = unknown,
     Props = unknown,
     TServices extends object = object,
@@ -68,7 +68,7 @@ export const renderHookWithStoreProvider = async <
         store: services?.store ?? createStoreFromPreloadedState(preloadedState),
     };
 
-    return await renderHook(callback, {
+    return renderHook(callback, {
         wrapper: ({ children }) => (
             <StoreProviderForTests services={resolvedServices}>
                 {Wrapper ? <Wrapper>{children}</Wrapper> : children}
