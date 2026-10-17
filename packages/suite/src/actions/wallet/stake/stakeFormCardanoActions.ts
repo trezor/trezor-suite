@@ -23,16 +23,15 @@ import {
     type VotingDelegationOption,
     calculateStakeFormTransaction,
     composeStakingTransaction,
+    decodeCardanoDrepId,
     getCardanoAccountPoolId,
     hasCardanoLiveVoteDelegation,
     isCardanoStakedWithEverstake,
     isCardanoWithdrawalBlockedByMissingDrep,
     isEarnSigningCancelled,
-    parseDrepBech32,
     selectBestCardanoPool,
     selectCardanoPoolsInfo,
     selectStakeVotingDelegation,
-    validateCardanoDrep,
 } from '@suite-common/wallet-core';
 import {
     type Account,
@@ -124,12 +123,12 @@ const calculateTransaction = (
 
 const getConfirmedVoteDrep = (
     confirmedOption: VotingDelegationOption | undefined,
-): { type: PROTO.CardanoDRepType; hex?: string } => {
+): { type: PROTO.CardanoDRepType; hex?: string } | null => {
     switch (confirmedOption?.type) {
         case 'another_drep':
-            return parseDrepBech32(confirmedOption.drepId);
+            return decodeCardanoDrepId(confirmedOption.drepId);
         case 'everstake':
-            return parseDrepBech32(CARDANO_EVERSTAKE_DREP.bech32);
+            return { type: PROTO.CardanoDRepType.KEY_HASH, hex: CARDANO_EVERSTAKE_DREP.hex };
         case 'abstain':
         case 'current':
         case undefined:
@@ -199,15 +198,13 @@ export const prepareTxPlan = async ({
         confirmedOption?.type === 'current' && hasCardanoLiveVoteDelegation(account);
 
     if ((action === 'delegate' || action === 'voteDelegate') && !isKeepingCurrentVote) {
-        const isVotingToAnotherDrep = confirmedOption?.type === 'another_drep';
+        const dRep = getConfirmedVoteDrep(confirmedOption);
 
-        if (isVotingToAnotherDrep && !validateCardanoDrep(confirmedOption.drepId)) {
+        if (dRep === null) {
             return null;
         }
 
-        certificates.push(
-            ...getVotingCertificates(stakingPath, getConfirmedVoteDrep(confirmedOption)),
-        );
+        certificates.push(...getVotingCertificates(stakingPath, dRep));
     }
 
     if (action === 'deregister') {
