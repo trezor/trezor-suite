@@ -16,6 +16,11 @@ import {
     type ConnectPopupLoadSelectAccountPageThunkState,
     connectPopupLoadSelectAccountPageThunk,
 } from './connectPopupThunks';
+import {
+    type AppRememberedPermission,
+    CALL_SOURCE_DESKTOP_WS,
+    CALL_SOURCE_MCP,
+} from './connectPopupTypes';
 
 // prepareNewAccountPayload is the device round-trip the load thunk awaits — exactly once on the
 // manual address-phase path these tests exercise (the account-index path loops it per row). Mocking
@@ -91,6 +96,41 @@ const initStore = () =>
             wallet: { accounts: accountsInitialState },
         },
     }).services.store;
+
+describe('rememberAppPermissions', () => {
+    const appProcess = { name: 'App', fullPath: '/usr/bin/app', warning: false };
+    const app: AppRememberedPermission = {
+        type: CALL_SOURCE_DESKTOP_WS,
+        origin: 'https://example.com',
+        process: appProcess,
+        manifest: { appName: 'App' },
+        allowedPermissions: [{ permission: 'read_address' }],
+    };
+
+    it.each<[string, AppRememberedPermission]>([
+        [
+            'another process',
+            {
+                ...app,
+                process: { ...appProcess, fullPath: '/usr/bin/other' },
+                allowedPermissions: [{ permission: 'sign' }],
+            },
+        ],
+        [
+            'another source type',
+            { ...app, type: CALL_SOURCE_MCP, allowedPermissions: [{ permission: 'sign' }] },
+        ],
+    ])(
+        'replaces, never extends, the permissions remembered for %s of the same origin',
+        (_, otherApp) => {
+            const store = initStore();
+            store.dispatch(connectPopupActions.rememberAppPermissions(app));
+            store.dispatch(connectPopupActions.rememberAppPermissions(otherApp));
+
+            expect(store.getState().connectPopup.permissions).toEqual([otherApp]);
+        },
+    );
+});
 
 describe('connectPopupLoadSelectAccountPageThunk — concurrent loads', () => {
     beforeEach(() => {
