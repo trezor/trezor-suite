@@ -20,6 +20,7 @@ import {
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
 import { isWeb } from '@trezor/env-utils';
+import { BigNumber } from '@trezor/utils';
 
 import { MAX_CONTENT_WIDTH } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
@@ -119,7 +120,13 @@ export const SuiteBanners = ({ isOnboarding, fill }: SuiteBannersProps) => {
     } else if (legacyBridgeDetected) {
         banner = <BridgeDeprecated />;
         priority = 30;
-    } else if (accounts.some(account => isCardanoStakedWithFiveBinaries(account))) {
+    } else if (
+        accounts.some(
+            account =>
+                isCardanoStakedWithFiveBinaries(account) &&
+                new BigNumber(account.availableBalance).gt(0),
+        )
+    ) {
         banner = <CardanoOutdatedStakingBanner />;
         priority = 20;
     } else if (deviceStaticSessionId !== null && isSuiteSyncBannerVisible) {
