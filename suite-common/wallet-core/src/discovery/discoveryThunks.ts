@@ -14,6 +14,8 @@ import { type FetchAndSaveMetadataDep } from '@suite-common/metadata-types';
 import { type NetworksRootState, selectSupportedNetworkSymbols } from '@suite-common/networks';
 import {
     type PersistentDeviceDataRootState,
+    type ProcessDiscoveryEntropyCheckThunkDeps,
+    processDiscoveryEntropyCheckThunk,
     selectEntropyCheckResultByDeviceId,
 } from '@suite-common/persistent-device-data';
 import {
@@ -34,6 +36,7 @@ import TrezorConnect, {
     UI_EVENTS,
     UI_RESPONSE,
     type UiEventBundleProgress,
+    type UiEventDiscoveryEntropyCheck,
 } from '@trezor/connect';
 import { type DiscoverAccountsProgress } from '@trezor/connect-common/src/types/api/account/discoverAccounts';
 import type { Bip43Path } from '@trezor/crypto-utils';
@@ -70,6 +73,8 @@ type DiscoveryReportingThunkState = TokenDefinitionsRootState &
 type DiscoveryReportingDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep>;
 
 type ProgressEvent = UiEventBundleProgress<DiscoverAccountsProgress>['payload'];
+
+type DiscoveryEntropyCheckEvent = UiEventDiscoveryEntropyCheck['payload'];
 
 function assertDeviceIsAuthorized(device?: TrezorDevice): asserts device is AuthorizedDevice {
     if (!device?.state?.staticSessionId) {
@@ -315,9 +320,10 @@ type RunDiscoveryParams = {
 
 export type RunDiscoveryThunkState = DiscoveryReportingThunkState;
 
-export type RunDiscoveryThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep> & {
-    thunks: FetchAndSaveMetadataDep;
-};
+export type RunDiscoveryThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep> &
+    ProcessDiscoveryEntropyCheckThunkDeps & {
+        thunks: FetchAndSaveMetadataDep;
+    };
 
 export const runDiscoveryThunk = createThunk<
     void,
@@ -504,7 +510,23 @@ export const runDiscoveryThunk = createThunk<
                 dispatch(discoveryActions.updateDiscovery(discoveryPayload, device.path));
             };
 
+            const discoveredDevice = device;
+            // assertDeviceIsAcquired is already called on `device`, but device is initialized with let. TODO fix.
+            assertDeviceIsAcquired(discoveredDevice);
+            const onDiscoveryEntropyCheck = ({
+                device: checkedDevice,
+                success,
+                path,
+            }: DiscoveryEntropyCheckEvent) => {
+                // Ignore events from discoveries running concurrently on other devices.
+                if (checkedDevice.id !== discoveredDevice.id) return;
+                dispatch(
+                    processDiscoveryEntropyCheckThunk({ device: discoveredDevice, success, path }),
+                );
+            };
+
             TrezorConnect.on(UI_EVENTS.BUNDLE_PROGRESS, onBundleProgress);
+            TrezorConnect.on(UI_EVENTS.DISCOVERY_ENTROPY_CHECK, onDiscoveryEntropyCheck);
 
             // NOTE: sync set discovery status to progress to make sure that there aren't some hanging states
             // before asnyc onBundleProgress is called which sets progress
@@ -529,6 +551,7 @@ export const runDiscoveryThunk = createThunk<
             });
 
             TrezorConnect.off(UI_EVENTS.BUNDLE_PROGRESS, onBundleProgress);
+            TrezorConnect.off(UI_EVENTS.DISCOVERY_ENTROPY_CHECK, onDiscoveryEntropyCheck);
 
             if (!isDiscoveryInProgress(selectDiscoveryByDevicePath(getState(), device.path))) {
                 return;
@@ -693,7 +716,8 @@ export const startDiscoveryThunk = createThunk<
 
 export type RunAdditionalDiscoveryThunkState = RunDiscoveryThunkState;
 
-export type RunAdditionalDiscoveryThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep>;
+export type RunAdditionalDiscoveryThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep> &
+    ProcessDiscoveryEntropyCheckThunkDeps;
 
 export const runAdditionalDiscoveryThunk = createThunk<
     void,
@@ -780,7 +804,18 @@ export const runAdditionalDiscoveryThunk = createThunk<
             dispatch(discoveryActions.updateDiscovery(discoveryPayload, device.path));
         };
 
+        const onDiscoveryEntropyCheck = ({
+            device: checkedDevice,
+            success,
+            path,
+        }: DiscoveryEntropyCheckEvent) => {
+            // Ignore events from discoveries running concurrently on other devices.
+            if (checkedDevice.id !== device.id) return;
+            dispatch(processDiscoveryEntropyCheckThunk({ device, success, path }));
+        };
+
         TrezorConnect.on(UI_EVENTS.BUNDLE_PROGRESS, onBundleProgress);
+        TrezorConnect.on(UI_EVENTS.DISCOVERY_ENTROPY_CHECK, onDiscoveryEntropyCheck);
 
         // have Connect check the discovered account with persisted xpub hashes, but those are valid only for standard wallet
         const entropyCheckResult = selectEntropyCheckResultByDeviceId(getState(), device.id);
@@ -800,6 +835,7 @@ export const runAdditionalDiscoveryThunk = createThunk<
         });
 
         TrezorConnect.off(UI_EVENTS.BUNDLE_PROGRESS, onBundleProgress);
+        TrezorConnect.off(UI_EVENTS.DISCOVERY_ENTROPY_CHECK, onDiscoveryEntropyCheck);
 
         dispatch(
             discoveryActions.updateDiscovery(

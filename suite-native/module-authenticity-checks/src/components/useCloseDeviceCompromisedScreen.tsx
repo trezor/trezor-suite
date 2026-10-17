@@ -8,7 +8,7 @@ import {
     selectSelectedDevice,
 } from '@suite-common/device';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
-import { selectIsAnyNetworkEnabled } from '@suite-common/wallet-core';
+import { ejectAllWalletsThunk, selectIsAnyNetworkEnabled } from '@suite-common/wallet-core';
 import { selectIsDeviceSetupSupported } from '@suite-native/device';
 import {
     AuthorizeDeviceStackRoutes,
@@ -31,7 +31,9 @@ type NavigationProps = StackToStackCompositeNavigationProps<
  * Functionality to navigate to the appropriate next screen based on the current state, because navigation
  * to the Device Compromised screen can occur inbetween different flows.
  */
-export const useCloseDeviceCompromisedScreen = () => {
+export const useCloseDeviceCompromisedScreen = ({
+    dismissedCheck = 'firmware-authenticity',
+}: { dismissedCheck?: 'firmware-authenticity' | 'entropy-discovery' } = {}) => {
     const { dispatch } = useServices(injectDispatch);
 
     const navigation = useNavigation<NavigationProps>();
@@ -43,7 +45,12 @@ export const useCloseDeviceCompromisedScreen = () => {
     const device = useSelector(selectSelectedDevice);
 
     const dismissCheck = () => {
-        if (device?.id) {
+        if (!device?.id) return;
+        if (dismissedCheck === 'entropy-discovery') {
+            dispatch(deviceActions.dismissDiscoveryEntropyCheck(device.id));
+            // The device returned a wrong xpub, so nothing it has ever returned can be trusted. See the thunk description.
+            dispatch(ejectAllWalletsThunk({ device }));
+        } else {
             dispatch(deviceActions.dismissFirmwareAuthenticityCheck(device.id));
         }
     };
