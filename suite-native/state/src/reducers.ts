@@ -358,7 +358,13 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
 
     const devicePersistedReducer = preparePersistReducer({
         reducer: deviceReducer,
-        persistedKeys: ['devices'],
+        persistedKeys: [
+            'devices',
+            // Legacy key, no longer part of DeviceState. Kept whitelisted so the `devices` persistor does not drop it
+            // from storage before the `persistentDeviceData` v1 migration reads it. Though the race condition is
+            // unlikely, because redux-persists drops keys on rehydration = after migrations.
+            'persistentDeviceData' as any,
+        ],
         key: 'devices',
         version: 5,
         transforms: [devicePersistTransform],
