@@ -45,12 +45,106 @@ export const getCardanoAccountPoolId = (account?: Account) => {
     return poolId || null;
 };
 
+const DREP_HASH_LENGTH = 28;
+const DREP_CIP129_PAYLOAD_LENGTH = DREP_HASH_LENGTH + 1;
+// https://cips.cardano.org/cip/CIP-0129: DRep key type 0010 joined with credential type 0010 / 0011
+const DREP_CIP129_KEY_HASH_HEADER = 0x22;
+const DREP_CIP129_SCRIPT_HASH_HEADER = 0x23;
+
+export type CardanoDrepCredential = {
+    type: PROTO.CardanoDRepType.KEY_HASH | PROTO.CardanoDRepType.SCRIPT_HASH;
+    hex: string;
+};
+
+const decodeDrepCip129Payload = (bytes: Uint8Array): CardanoDrepCredential | null => {
+    const hex = Buffer.from(bytes.subarray(1)).toString('hex');
+
+    switch (bytes[0]) {
+        case DREP_CIP129_KEY_HASH_HEADER:
+            return { type: PROTO.CardanoDRepType.KEY_HASH, hex };
+        case DREP_CIP129_SCRIPT_HASH_HEADER:
+            return { type: PROTO.CardanoDRepType.SCRIPT_HASH, hex };
+        default:
+            return null;
+    }
+};
+
+// https://cips.cardano.org/cip/CIP-0105#drep-keys-1
+const decodeDrepCip105Payload = (
+    bytes: Uint8Array,
+    prefix: string,
+): CardanoDrepCredential | null => {
+    if (bytes.length !== DREP_HASH_LENGTH) return null;
+
+    const hex = Buffer.from(bytes).toString('hex');
+
+    switch (prefix) {
+        case 'drep':
+        case 'drep_vkh':
+            return { type: PROTO.CardanoDRepType.KEY_HASH, hex };
+        case 'drep_script':
+            return { type: PROTO.CardanoDRepType.SCRIPT_HASH, hex };
+        default:
+            return null;
+    }
+};
+
+export const decodeCardanoDrepId = (drepId: string): CardanoDrepCredential | null => {
+    try {
+        const { prefix, bytes } = bech32.decodeToBytes(drepId);
+
+        return prefix === 'drep' && bytes.length === DREP_CIP129_PAYLOAD_LENGTH
+            ? decodeDrepCip129Payload(bytes)
+            : decodeDrepCip105Payload(bytes, prefix);
+    } catch {
+        return null;
+    }
+};
+
+export const validateCardanoDrep = (drepId: string) => decodeCardanoDrepId(drepId) !== null;
+
+const encodeCardanoDrepIdCip129 = ({ type, hex }: CardanoDrepCredential) => {
+    const header =
+        type === PROTO.CardanoDRepType.KEY_HASH
+            ? DREP_CIP129_KEY_HASH_HEADER
+            : DREP_CIP129_SCRIPT_HASH_HEADER;
+
+    return bech32.encode(
+        'drep',
+        bech32.toWords(Uint8Array.from([header, ...Buffer.from(hex, 'hex')])),
+    );
+};
+
+export const normalizeCardanoDrepId = (drepId: string) => {
+    const credential = decodeCardanoDrepId(drepId);
+
+    return credential === null ? null : encodeCardanoDrepIdCip129(credential);
+};
+
+export const areCardanoDrepIdsEqual = (drepIdA?: string | null, drepIdB?: string | null) => {
+    if (!drepIdA || !drepIdB) return false;
+    if (drepIdA === drepIdB) return true;
+
+    const normalizedDrepIdA = normalizeCardanoDrepId(drepIdA);
+
+    return normalizedDrepIdA !== null && normalizedDrepIdA === normalizeCardanoDrepId(drepIdB);
+};
+
 export const getCardanoAccountDrepId = (account?: Account) => {
     if (account?.networkType !== 'cardano') return null;
 
-    const drepId = account.misc?.staking?.drep?.drep_id;
+    const drep = account.misc?.staking?.drep;
+    if (!drep?.drep_id) return null;
 
-    return drepId || null;
+    const credential = decodeCardanoDrepId(drep.drep_id);
+    // Predefined ids (`drep_always_abstain`, `drep_always_no_confidence`) are not bech32.
+    if (credential === null) return drep.drep_id;
+
+    // A legacy `drep1…` id spells key and script hashes alike; the backend flag tells them apart.
+    return encodeCardanoDrepIdCip129({
+        ...credential,
+        type: drep.has_script ? PROTO.CardanoDRepType.SCRIPT_HASH : credential.type,
+    });
 };
 
 export const hasCardanoLiveVoteDelegation = (account?: Account) =>
@@ -143,69 +237,6 @@ export const selectBestCardanoPool = (pools?: AdaPools['pools'], currentPoolId?:
         hex: poolBech32ToHex(bestPool.id),
         bech32: bestPool.id,
     };
-};
-
-export const validateCardanoDrep = (drepId: string): boolean => {
-    try {
-        const { prefix, words } = bech32.decode(drepId as `${string}1${string}`);
-        if (prefix !== 'drep' && prefix !== 'drep_script') return false;
-
-        const bytes = bech32.fromWords(words);
-        if (bytes.length !== 28 && bytes.length !== 29) return false;
-
-        if (prefix === 'drep_script' && bytes.length !== 28) return false;
-
-        return true;
-    } catch {
-        return false;
-    }
-};
-
-// https://cips.cardano.org/cip/CIP-0129
-const parseDrepCip129 = (bytes: number[]) => {
-    const header = bytes[0];
-    const hex = Buffer.from(bytes.slice(1)).toString('hex');
-
-    switch (header) {
-        case 0x22:
-            return { type: PROTO.CardanoDRepType.KEY_HASH, hex };
-        case 0x23:
-            return { type: PROTO.CardanoDRepType.SCRIPT_HASH, hex };
-        default:
-            throw new Error(`Unsupported DRep id CIP-129 header: ${header}`);
-    }
-};
-
-// https://cips.cardano.org/cip/CIP-0105#drep-keys-1
-// Legacy
-const parseDrepCip105 = (bytes: number[], prefix: string) => {
-    const hex = Buffer.from(bytes).toString('hex');
-
-    switch (prefix) {
-        case 'drep':
-            return { type: PROTO.CardanoDRepType.KEY_HASH, hex };
-        case 'drep_script':
-            return { type: PROTO.CardanoDRepType.SCRIPT_HASH, hex };
-        default:
-            throw new Error(`Unsupported DRep id CIP-105 prefix: ${prefix}`);
-    }
-};
-
-export const parseDrepBech32 = (drepId: string): { type: PROTO.CardanoDRepType; hex: string } => {
-    if (!validateCardanoDrep(drepId)) throw new Error('Not a DRep bech32');
-
-    const { words, prefix } = bech32.decode(drepId as `${string}1${string}`);
-    const bytes = Array.from(bech32.fromWords(words));
-
-    if (bytes.length === 28) {
-        return parseDrepCip105(bytes, prefix);
-    }
-
-    if (bytes.length === 29) {
-        return parseDrepCip129(bytes);
-    }
-
-    throw new Error(`Unsupported DRep payload length: ${bytes.length}`);
 };
 
 type CardanoSpecific = NonNullable<WalletAccountTransaction['cardanoSpecific']>;
