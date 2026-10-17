@@ -125,6 +125,7 @@
         "@suite/metadata-migration": "workspace:*",
         "@suite/modal": "workspace:*",
         "@suite/nfc": "workspace:*",
+        "@suite/nfts": "workspace:*",
         "@suite/onboarding-components": "workspace:*",
         "@suite/receive": "workspace:*",
         "@suite/recovery": "workspace:*",

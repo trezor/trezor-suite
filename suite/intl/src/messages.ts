@@ -1794,6 +1794,27 @@ export const messages = defineMessages({
         defaultMessage: 'By networks',
         id: 'TR_HOME_ASSET_GROUPING_NETWORKS',
     },
+    TR_HOME_ASSET_NFT_SUMMARY: {
+        defaultMessage:
+            '{collections, plural, one {# collection} other {# collections}}{hidden, plural, =0 {} other { · # hidden}}',
+        id: 'TR_HOME_ASSET_NFT_SUMMARY',
+    },
+    TR_HOME_ASSET_NFT_VIEW_ONLY: {
+        defaultMessage: 'View-only · Not included in total',
+        id: 'TR_HOME_ASSET_NFT_VIEW_ONLY',
+    },
+    TR_HOME_ASSET_NFT_ITEMS: {
+        defaultMessage: '{count, plural, one {# item} other {# items}}',
+        id: 'TR_HOME_ASSET_NFT_ITEMS',
+    },
+    TR_HOME_ASSET_NFT_MORE_ITEMS: {
+        defaultMessage: '{count, plural, one {+# more item} other {+# more items}}',
+        id: 'TR_HOME_ASSET_NFT_MORE_ITEMS',
+    },
+    TR_HOME_ASSET_NFT_COLLECTION: {
+        defaultMessage: 'Collection',
+        id: 'TR_HOME_ASSET_NFT_COLLECTION',
+    },
     TR_HOME_ASSET_BANNER_TITLE: {
         defaultMessage: 'New! A simpler view of your assets',
         id: 'TR_HOME_ASSET_BANNER_TITLE',
