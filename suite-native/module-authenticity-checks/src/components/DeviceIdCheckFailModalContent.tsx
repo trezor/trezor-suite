@@ -7,13 +7,19 @@ import { DeviceCompromisedModalContent } from './DeviceCompromisedModalContent';
 import { useCloseFirmwareChecksFailScreen } from './useCloseFirmwareChecksFailScreen';
 
 export const DeviceIdCheckFailModalContent = () => {
-    const { handleClose } = useCloseFirmwareChecksFailScreen();
+    const { canClose, handleClose } = useCloseFirmwareChecksFailScreen();
 
     return (
         <DeviceCompromisedModalContent
             contactSupportUrl={TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_MOBILE_URL}
-            screenHeaderContent={<ScreenHeader closeActionType="close" closeAction={handleClose} />}
-            closeButtonContent={<CloseButton handleClose={handleClose} />}
+            screenHeaderContent={
+                canClose ? (
+                    <ScreenHeader closeActionType="close" closeAction={handleClose} />
+                ) : (
+                    <ScreenHeader leftIcon={null} />
+                )
+            }
+            closeButtonContent={canClose ? <CloseButton handleClose={handleClose} /> : null}
             subtitleContent={
                 <Translation id="moduleAuthenticityChecks.deviceCompromised.subtitle.deviceId" />
             }
