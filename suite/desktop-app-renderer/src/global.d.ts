@@ -5,7 +5,7 @@ declare global {
 
     interface Window {
         TrezorConnectIpcChannel?: TrezorConnectIpcChannel; // Electron API
-        desktopFlags?: { exposeStore?: boolean };
+        desktopFlags?: { exposeStore?: boolean; drivers?: boolean };
         cspNonce: string;
     }
 }

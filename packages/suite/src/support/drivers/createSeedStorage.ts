@@ -1,4 +1,4 @@
-import { type SeedStorage } from '@suite/automation-tools';
+import { type SeedStorage } from '@suite/drivers';
 import { type DeviceRootState, selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type AccountsRootState, selectAccounts } from '@suite-common/wallet-core';
@@ -25,8 +25,10 @@ export const createSeedStorage =
     (deps: SeedStorageDeps): SeedStorage =>
     async ({ storage, selectedDevice }) => {
         const defaults = createEmptyStoragePayload();
-        const filledKeys = Object.keys(defaults).filter(key => !(key in storage));
-        const unknownKeys = Object.keys(storage).filter(key => !(key in defaults));
+        const isStorageLoadKey = (key: string): key is keyof StorageLoadPayload =>
+            Object.hasOwn(defaults, key);
+        const filledKeys = Object.keys(defaults).filter(key => !Object.hasOwn(storage, key));
+        const unknownKeys = Object.keys(storage).filter(key => !isStorageLoadKey(key));
         // The gated automation host supplies the slices shaped as the database rows Suite reads,
         // so the payload is trusted here like a `@storage/load` built from IndexedDB.
         const payload: StorageLoadPayload = {

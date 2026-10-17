@@ -1,35 +1,25 @@
 import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
 
-import {
-    type AutomationToolsState,
-    createAutomationTools,
-    registerToolDiscovery,
-} from '@suite/automation-tools';
+import { type DriversState, createDrivers, registerToolDiscovery } from '@suite/drivers';
 import { type GotoThunkDeps, type HistoryDep } from '@suite/router';
 import { type DeviceRootState, selectDeviceThunk } from '@suite-common/device';
 import { type AccountsRootState } from '@suite-common/wallet-core';
-import { toGetter } from '@trezor/dependency-injection';
 
-import { type SuiteRootState } from 'src/reducers/suite/suiteReducer';
-import { selectSuiteLifecycleStatus } from 'src/selectors/suite/suiteSelectors';
 import { createEmptyStoragePayload } from 'src/storage/createEmptyStoragePayload';
 
 import { createSeedStorage } from './createSeedStorage';
 
-type SuiteAutomationStoreState = SuiteRootState &
-    AccountsRootState &
-    DeviceRootState &
-    AutomationToolsState;
+type SuiteDriversStoreState = AccountsRootState & DeviceRootState & DriversState;
 
-/** The part of the app store the tools read and dispatch through. */
-export type SuiteAutomationStore = {
-    getState: () => SuiteAutomationStoreState;
-    dispatch: ThunkDispatch<SuiteAutomationStoreState, GotoThunkDeps, UnknownAction>;
+/** The part of the app store the drivers read and dispatch through. */
+export type SuiteDriversStore = {
+    getState: () => SuiteDriversStoreState;
+    dispatch: ThunkDispatch<SuiteDriversStoreState, GotoThunkDeps, UnknownAction>;
 };
 
-export type SuiteAutomationToolsDeps = HistoryDep & {
-    store: SuiteAutomationStore;
-    /** Live objects `suite.services` hands out; the tools never call them. */
+export type SuiteDriversDeps = HistoryDep & {
+    store: SuiteDriversStore;
+    /** Live objects `suite.services` hands out; the drivers never call them. */
     desktopApi: unknown;
     /** The TrezorConnect the app calls: @trezor/connect on web, @trezor/connect-electron on desktop. */
     connect: unknown;
@@ -39,9 +29,9 @@ export type SuiteAutomationToolsDeps = HistoryDep & {
  * Registers the gated `suite` tool group for chrome-devtools-mcp and the perf rig. Returns the
  * function that removes the listener again.
  */
-export const registerSuiteAutomationTools = (deps: SuiteAutomationToolsDeps) =>
+export const registerSuiteDrivers = (deps: SuiteDriversDeps) =>
     registerToolDiscovery(
-        createAutomationTools({
+        createDrivers({
             store: deps.store,
             services: {
                 store: deps.store,
@@ -49,7 +39,6 @@ export const registerSuiteAutomationTools = (deps: SuiteAutomationToolsDeps) =>
                 desktopApi: deps.desktopApi,
                 history: deps.history,
             },
-            getLifecycleStatus: toGetter(deps.store.getState, selectSuiteLifecycleStatus),
             getStorageDefaults: createEmptyStoragePayload,
             seedStorage: createSeedStorage({
                 dispatch: deps.store.dispatch,

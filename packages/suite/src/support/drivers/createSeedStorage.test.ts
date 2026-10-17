@@ -39,7 +39,9 @@ describe(createSeedStorage.name, () => {
             accounts: 1,
             devices: 1,
             selectedDevice: true,
-            filledKeys: Object.keys(createEmptyStoragePayload()).filter(key => !(key in storage)),
+            filledKeys: Object.keys(createEmptyStoragePayload()).filter(
+                key => !Object.hasOwn(storage, key),
+            ),
             unknownKeys: [],
         });
     });

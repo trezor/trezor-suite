@@ -9,15 +9,34 @@ import { mock } from '@trezor/dependency-injection';
 import { createThunk } from '@trezor/redux-utils';
 
 import {
-    AUTOMATION_TOOLS_VERSION,
-    type AutomationToolsDeps,
+    DRIVERS_VERSION,
+    type DriversDeps,
     type SeedStorage,
-    createAutomationTools,
-} from './createAutomationTools';
-import { PERF_HOOK_GLOBAL_KEY, type SuiteAutomationPerfHook } from './perfHook';
-import { type Tool } from './types';
+    createDrivers,
+} from './createDrivers';
+import { PERF_HOOK_GLOBAL_KEY, type SuiteDriversPerfHook } from './perfHook';
+import { type DiscoveredTool } from './types';
 
-type PerfWindow = Window & { [PERF_HOOK_GLOBAL_KEY]?: SuiteAutomationPerfHook };
+type PerfWindow = Window & { [PERF_HOOK_GLOBAL_KEY]?: SuiteDriversPerfHook };
+type UserTimingLike = { getEntriesByName?: Performance['getEntriesByName'] };
+
+// jsdom has no User Timing: the lifecycle marks the tools observe come from this stub.
+const stubMarks = (startTimes: Record<string, number>) => {
+    (performance as UserTimingLike).getEntriesByName = mock<Performance['getEntriesByName']>(
+        (name, type) =>
+            type === 'mark' && Object.hasOwn(startTimes, name)
+                ? [
+                      {
+                          name,
+                          entryType: 'mark',
+                          startTime: startTimes[name],
+                          duration: 0,
+                          toJSON: () => ({}),
+                      },
+                  ]
+                : [],
+    );
+};
 
 const createTestStore = () => {
     const extra: GotoThunkDeps = { services: { suiteRouterHistory: mockSuiteRouterHistory() } };
@@ -41,13 +60,9 @@ const liveServices = {
     history: { location: { pathname: '/' } },
 };
 
-const createDeps = (
-    store: TestStore,
-    overrides: Partial<AutomationToolsDeps> = {},
-): AutomationToolsDeps => ({
+const createDeps = (store: TestStore, overrides: Partial<DriversDeps> = {}): DriversDeps => ({
     store,
     services: { store, ...liveServices },
-    getLifecycleStatus: () => 'ready',
     getStorageDefaults: () => ({ accounts: [], devices: [] }),
     seedStorage: mock<SeedStorage>(() =>
         Promise.resolve({
@@ -62,8 +77,8 @@ const createDeps = (
     ...overrides,
 });
 
-const getTool = (deps: AutomationToolsDeps, name: string): Tool => {
-    const tool = createAutomationTools(deps).tools.find(candidate => candidate.name === name);
+const getTool = (deps: DriversDeps, name: string): DiscoveredTool => {
+    const tool = createDrivers(deps).tools.find(candidate => candidate.name === name);
     if (!tool) {
         throw new Error(`missing tool ${name}`);
     }
@@ -74,24 +89,23 @@ const getTool = (deps: AutomationToolsDeps, name: string): Tool => {
 const settingsRoute = routes.find(route => route.name === 'settings-index');
 
 const echoThunk = createThunk<{ echoed: unknown }, { value: unknown }, void>(
-    '@test/automation/echo',
+    '@test/drivers/echo',
     ({ value }) => ({ echoed: value }),
 );
 
-describe(createAutomationTools.name, () => {
+describe(createDrivers.name, () => {
     afterEach(() => {
         document.body.innerHTML = '';
         delete (window as PerfWindow)[PERF_HOOK_GLOBAL_KEY];
+        delete (performance as UserTimingLike).getEntriesByName;
     });
 
-    it('describes the versioned group with dotted, unique, closed-schema tools', () => {
-        const group = createAutomationTools(createDeps(createTestStore()));
+    it('describes the versioned group with dotted, unique tools and closed draft-07 schemas', () => {
+        const group = createDrivers(createDeps(createTestStore()));
         const names = group.tools.map(tool => tool.name);
 
         expect(group.name).toBe('suite');
-        expect(group.description).toBe(
-            `Trezor Suite automation tools v${AUTOMATION_TOOLS_VERSION}`,
-        );
+        expect(group.description).toBe(`Trezor Suite drivers v${DRIVERS_VERSION}`);
         expect(names).toEqual([
             'suite.ready',
             'suite.build',
@@ -108,57 +122,67 @@ describe(createAutomationTools.name, () => {
         ]);
         expect(new Set(names).size).toBe(names.length);
         group.tools.forEach(tool => {
-            expect(tool.inputSchema).toMatchObject({ type: 'object', additionalProperties: false });
+            expect(tool.inputSchema).toMatchObject({
+                $schema: 'http://json-schema.org/draft-07/schema#',
+                type: 'object',
+                additionalProperties: false,
+            });
         });
     });
 
+    it('refuses a call with a key its schema does not know', () => {
+        const deps = createDeps(createTestStore());
+
+        expect(() => getTool(deps, 'suite.state').execute({ path: 'router', depth: 1 })).toThrow(
+            'suite.state: ✖ Unrecognized key: "depth"',
+        );
+    });
+
     describe('suite.ready', () => {
-        it('is ready once the lifecycle is ready, the router loaded and no loading screen shows', async () => {
+        it('is ready once the interactive lifecycle mark exists and answers every mark', async () => {
             const deps = createDeps(createTestStore());
+            stubMarks({});
 
             expect(getTool(deps, 'suite.ready').execute({})).toEqual({
                 ready: false,
-                lifecycle: 'ready',
-                routerLoaded: false,
+                marks: { 'suite:init': null, 'suite:ready': null, 'suite:interactive': null },
                 route: null,
-                loadingScreen: false,
             });
 
+            stubMarks({ 'suite:init': 1200.5, 'suite:ready': 3800 });
+
+            expect(getTool(deps, 'suite.ready').execute({})).toMatchObject({
+                ready: false,
+                marks: { 'suite:init': 1200.5, 'suite:ready': 3800, 'suite:interactive': null },
+            });
+
+            stubMarks({ 'suite:init': 1200.5, 'suite:ready': 3800, 'suite:interactive': 4200 });
             await getTool(deps, 'suite.goto').execute({ routeName: 'settings-index' });
 
             expect(getTool(deps, 'suite.ready').execute({})).toEqual({
                 ready: true,
-                lifecycle: 'ready',
-                routerLoaded: true,
+                marks: { 'suite:init': 1200.5, 'suite:ready': 3800, 'suite:interactive': 4200 },
                 route: 'settings-index',
-                loadingScreen: false,
-            });
-
-            document.body.innerHTML = '<div data-testid="@suite/loading"></div>';
-
-            expect(getTool(deps, 'suite.ready').execute({})).toMatchObject({
-                ready: false,
-                loadingScreen: true,
             });
         });
 
-        it('is not ready while the lifecycle is still loading', () => {
-            const deps = createDeps(createTestStore(), { getLifecycleStatus: () => 'loading' });
+        it('is not ready without User Timing', () => {
+            const deps = createDeps(createTestStore());
 
             expect(getTool(deps, 'suite.ready').execute({})).toMatchObject({
                 ready: false,
-                lifecycle: 'loading',
+                marks: { 'suite:interactive': null },
             });
         });
     });
 
-    it('suite.build identifies the build and the tools version', () => {
+    it('suite.build identifies the build and the drivers version', () => {
         expect(getTool(createDeps(createTestStore()), 'suite.build').execute({})).toEqual({
             commit: '',
             version: '',
             suiteType: 'desktop',
             codesign: false,
-            toolsVersion: AUTOMATION_TOOLS_VERSION,
+            driversVersion: DRIVERS_VERSION,
         });
     });
 
@@ -181,12 +205,12 @@ describe(createAutomationTools.name, () => {
             ).resolves.toEqual({ route: null, locked: true });
         });
 
-        it('rejects an unknown route', async () => {
+        it('rejects an unknown route', () => {
             const deps = createDeps(createTestStore());
 
-            await expect(
-                getTool(deps, 'suite.goto').execute({ routeName: 'nowhere' }),
-            ).rejects.toThrow('suite.goto: unknown route "nowhere"');
+            expect(() => getTool(deps, 'suite.goto').execute({ routeName: 'nowhere' })).toThrow(
+                'suite.goto: ✖ unknown route "nowhere"\n  → at routeName',
+            );
         });
     });
 
@@ -196,31 +220,38 @@ describe(createAutomationTools.name, () => {
 
             await expect(
                 getTool(deps, 'suite.thunk').execute({
-                    typePrefix: '@test/automation/echo',
+                    typePrefix: '@test/drivers/echo',
                     arg: { value: 42 },
                 }),
             ).resolves.toMatchObject({ type: echoThunk.fulfilled.type, payload: { echoed: 42 } });
+        });
+
+        it('takes any JSON value as the argument', () => {
+            const { inputSchema } = getTool(createDeps(createTestStore()), 'suite.thunk');
+
+            expect(inputSchema).toMatchObject({ required: ['typePrefix'] });
+            expect(inputSchema.properties?.arg).not.toHaveProperty('type');
         });
 
         it('names the thunks registered under the same namespace for an unknown prefix', () => {
             const deps = createDeps(createTestStore());
 
             expect(() =>
-                getTool(deps, 'suite.thunk').execute({ typePrefix: '@test/automation/missing' }),
+                getTool(deps, 'suite.thunk').execute({ typePrefix: '@test/drivers/missing' }),
             ).toThrow(
-                'suite.thunk: no thunk is registered as "@test/automation/missing"; registered under @test/automation/: @test/automation/echo',
+                'suite.thunk: no thunk is registered as "@test/drivers/missing"; registered under @test/drivers/: @test/drivers/echo',
             );
         });
     });
 
     describe('suite.dispatch', () => {
-        it('dispatches a plain action', () => {
+        it('dispatches a plain action, extra keys included', () => {
             const store = createTestStore();
             const deps = createDeps(store);
 
             expect(
                 getTool(deps, 'suite.dispatch').execute({
-                    action: { type: lockUI.type, payload: true },
+                    action: { type: lockUI.type, payload: true, meta: { origin: 'test' } },
                 }),
             ).toEqual({ ok: true });
             expect(selectIsRouterOrUiLocked(store.getState())).toBe(true);
@@ -230,7 +261,7 @@ describe(createAutomationTools.name, () => {
             const deps = createDeps(createTestStore());
 
             expect(() => getTool(deps, 'suite.dispatch').execute({ action: {} })).toThrow(
-                'suite.dispatch: "type" must be a string',
+                /suite\.dispatch: .*→ at action\.type/s,
             );
         });
     });
@@ -266,7 +297,7 @@ describe(createAutomationTools.name, () => {
         expect(tool.execute({ name: 'desktopApi' })).toBe(liveServices.desktopApi);
         expect(tool.execute({ name: 'history' })).toBe(liveServices.history);
         expect(() => tool.execute({ name: 'db' })).toThrow(
-            'suite.services: unknown service "db"; one of store, connect, desktopApi, history',
+            /suite\.services: .*expected one of "store"\|"connect"\|"desktopApi"\|"history"/,
         );
     });
 
@@ -295,7 +326,7 @@ describe(createAutomationTools.name, () => {
             const deps = createDeps(createTestStore());
 
             expect(() => getTool(deps, 'suite.seed').execute({})).toThrow(
-                'suite.seed: "storage" must be an object',
+                /suite\.seed: .*→ at storage/s,
             );
         });
     });
@@ -306,6 +337,7 @@ describe(createAutomationTools.name, () => {
 
             expect(getTool(deps, 'suite.perf').execute({ action: 'read' })).toEqual({
                 installed: false,
+                wrapped: false,
                 renderers: 0,
                 commits: 0,
                 longTasks: null,
@@ -313,18 +345,20 @@ describe(createAutomationTools.name, () => {
         });
 
         it('reads, windows and resets the early hook counts', () => {
-            const hook: SuiteAutomationPerfHook = {
+            const hook: SuiteDriversPerfHook = {
+                wrapped: true,
                 renderers: 1,
                 commits: 3,
                 commitTimes: [10, 20, 30],
                 longTasks: 2,
-                reset: mock<SuiteAutomationPerfHook['reset']>(() => undefined),
+                reset: mock<SuiteDriversPerfHook['reset']>(() => undefined),
             };
             (window as PerfWindow)[PERF_HOOK_GLOBAL_KEY] = hook;
             const tool = getTool(createDeps(createTestStore()), 'suite.perf');
 
             expect(tool.execute({ action: 'read' })).toEqual({
                 installed: true,
+                wrapped: true,
                 renderers: 1,
                 commits: 3,
                 longTasks: 2,
@@ -338,9 +372,7 @@ describe(createAutomationTools.name, () => {
                 commits: 0,
             });
             expect(hook.reset).toHaveBeenCalledTimes(1);
-            expect(() => tool.execute({ action: 'clear' })).toThrow(
-                'suite.perf: "action" must be read or reset',
-            );
+            expect(() => tool.execute({ action: 'clear' })).toThrow(/suite\.perf: .*→ at action/s);
         });
     });
 

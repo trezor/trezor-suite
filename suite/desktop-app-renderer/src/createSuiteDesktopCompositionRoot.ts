@@ -1,7 +1,7 @@
 import { createMemoryHistory } from 'history';
 
-import { isAutomationToolsEnabled } from '@suite/automation-tools';
 import { createElectronDesktopApi } from '@suite/desktop-app-api-electron';
+import { isDriversEnabled } from '@suite/drivers';
 import { createElectronPlatformEncryption } from '@suite/platform-encryption-electron';
 import TrezorConnect from '@trezor/connect-electron';
 import { toGetter } from '@trezor/dependency-injection';
@@ -10,7 +10,6 @@ import { createHydrateReduxStore } from 'src/reducers/createHydrateReduxStore';
 import { createReduxStore } from 'src/reducers/createReduxStore';
 import { rootReducer } from 'src/reducers/store';
 import { createDb } from 'src/storage/createDb';
-import { registerSuiteAutomationTools } from 'src/support/automation/registerSuiteAutomationTools';
 import { createSuiteServicesCompositionRoot } from 'src/support/createSuiteCompositionRoot';
 import { extraDependencies } from 'src/support/extraDependencies';
 import { createPreloadStore } from 'src/support/suite/createPreloadStore';
@@ -66,13 +65,19 @@ export const createSuiteDesktopCompositionRoot = (): SuiteDesktopCompositionRoot
     // Inject them after construction to break the cycle, before the app can dispatch any actions.
     injectServicesIntoReduxExtra(services);
 
-    if (isAutomationToolsEnabled()) {
-        registerSuiteAutomationTools({
-            store,
-            history,
-            desktopApi: suiteServices.desktopApi,
-            connect: TrezorConnect,
-        });
+    if (isDriversEnabled()) {
+        // A chunk of its own: the drivers and what only they need stay out of the boot bundle
+        // of a real user's session.
+        import(/* webpackChunkName: "drivers" */ 'src/support/drivers/registerSuiteDrivers')
+            .then(({ registerSuiteDrivers }) =>
+                registerSuiteDrivers({
+                    store,
+                    history,
+                    desktopApi: suiteServices.desktopApi,
+                    connect: TrezorConnect,
+                }),
+            )
+            .catch(error => console.error('Suite drivers failed to load', error));
     }
 
     return { app: createDesktopApp({ desktopApi, services }) };

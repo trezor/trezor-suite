@@ -51,8 +51,8 @@ const rendererConfig: webpack.Configuration = {
     target: `browserslist:${browserslistConfigPath}`,
     entry: {
         main: [
-            // Installs the automation perf hook before react-dom evaluates; a no-op unless gated.
-            path.join(repoRoot, 'suite/automation-tools/src/earlyPerfHook.ts'),
+            // Installs the drivers' perf hook before react-dom evaluates; a no-op unless gated.
+            path.join(repoRoot, 'suite/drivers/src/earlyPerfHook.ts'),
             path.join(rendererDir, 'src', 'index.tsx'),
         ],
     },

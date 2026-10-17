@@ -13,9 +13,9 @@
         {
             "path": "../../suite-common/suite-utils"
         },
-        { "path": "../automation-tools" },
         { "path": "../debug" },
         { "path": "../desktop-app-api" },
+        { "path": "../drivers" },
         {
             "path": "../platform-encryption-webauthn"
         },

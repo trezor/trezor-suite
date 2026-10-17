@@ -16180,21 +16180,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite/automation-tools@workspace:*, @suite/automation-tools@workspace:suite/automation-tools":
-  version: 0.0.0-use.local
-  resolution: "@suite/automation-tools@workspace:suite/automation-tools"
-  dependencies:
-    "@reduxjs/toolkit": "npm:2.12.0"
-    "@suite/locks": "workspace:*"
-    "@suite/modal": "workspace:*"
-    "@suite/router": "workspace:*"
-    "@suite/router-config": "workspace:*"
-    "@trezor/dependency-injection": "workspace:*"
-    "@trezor/env-utils": "workspace:*"
-    "@trezor/redux-utils": "workspace:*"
-  languageName: unknown
-  linkType: soft
-
 "@suite/backup@workspace:*, @suite/backup@workspace:suite/backup":
   version: 0.0.0-use.local
   resolution: "@suite/backup@workspace:suite/backup"
@@ -16411,12 +16396,12 @@ __metadata:
     "@suite-common/react-query": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
     "@suite/analytics": "workspace:*"
-    "@suite/automation-tools": "workspace:*"
     "@suite/bluetooth": "workspace:*"
     "@suite/debug": "workspace:*"
     "@suite/desktop-app-api": "workspace:*"
     "@suite/desktop-app-api-electron": "workspace:*"
     "@suite/desktop-update": "workspace:*"
+    "@suite/drivers": "workspace:*"
     "@suite/flags": "workspace:*"
     "@suite/github": "workspace:*"
     "@suite/intl": "workspace:*"
@@ -16542,6 +16527,23 @@ __metadata:
     react: "npm:19.2.3"
     react-redux: "npm:9.3.0"
     styled-components: "npm:^6.5.3"
+  languageName: unknown
+  linkType: soft
+
+"@suite/drivers@workspace:*, @suite/drivers@workspace:suite/drivers":
+  version: 0.0.0-use.local
+  resolution: "@suite/drivers@workspace:suite/drivers"
+  dependencies:
+    "@reduxjs/toolkit": "npm:2.12.0"
+    "@suite/locks": "workspace:*"
+    "@suite/modal": "workspace:*"
+    "@suite/router": "workspace:*"
+    "@suite/router-config": "workspace:*"
+    "@suite/suite-lifecycle": "workspace:*"
+    "@trezor/dependency-injection": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
+    "@trezor/redux-utils": "workspace:*"
+    zod: "npm:4.6.5"
   languageName: unknown
   linkType: soft
 
@@ -17284,9 +17286,9 @@ __metadata:
     "@suite-common/flags": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
-    "@suite/automation-tools": "workspace:*"
     "@suite/debug": "workspace:*"
     "@suite/desktop-app-api": "workspace:*"
+    "@suite/drivers": "workspace:*"
     "@suite/platform-encryption-webauthn": "workspace:*"
     "@suite/router": "workspace:*"
     "@suite/router-config": "workspace:*"
@@ -19396,7 +19398,6 @@ __metadata:
     "@suite/app-assets": "workspace:*"
     "@suite/apps-embedding-demo": "workspace:*"
     "@suite/authenticity-checks": "workspace:*"
-    "@suite/automation-tools": "workspace:*"
     "@suite/backup": "workspace:*"
     "@suite/bluetooth": "workspace:*"
     "@suite/coinjoin": "workspace:*"
@@ -19406,6 +19407,7 @@ __metadata:
     "@suite/device": "workspace:*"
     "@suite/discovery": "workspace:*"
     "@suite/discreet-mode": "workspace:*"
+    "@suite/drivers": "workspace:*"
     "@suite/experimental": "workspace:*"
     "@suite/external-links": "workspace:*"
     "@suite/feature-feedback": "workspace:*"

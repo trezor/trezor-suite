@@ -17,12 +17,12 @@
             "path": "../../suite-common/react-query"
         },
         { "path": "../analytics" },
-        { "path": "../automation-tools" },
         { "path": "../bluetooth" },
         { "path": "../debug" },
         { "path": "../desktop-app-api" },
         { "path": "../desktop-app-api-electron" },
         { "path": "../desktop-update" },
+        { "path": "../drivers" },
         { "path": "../flags" },
         { "path": "../github" },
         { "path": "../intl" },

@@ -1,19 +1,17 @@
 import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { createMemoryHistory } from 'history';
 
-import { TOOL_DISCOVERY_EVENT, type ToolGroup } from '@suite/automation-tools';
+import { TOOL_DISCOVERY_EVENT, type ToolGroup } from '@suite/drivers';
 import { locksReducer } from '@suite/locks';
 import { modalReducer } from '@suite/modal';
 import { type GotoThunkDeps, routerReducer } from '@suite/router';
 import { mockSuiteRouterHistory } from '@suite/router/mocks';
-import { onSuiteReady } from '@suite/suite-lifecycle';
 import { type DeviceReducerState, deviceInitialState } from '@suite-common/device';
 import { type AccountsRootState } from '@suite-common/wallet-core';
 
-import suiteReducer from 'src/reducers/suite/suiteReducer';
 import { createEmptyStoragePayload } from 'src/storage/createEmptyStoragePayload';
 
-import { registerSuiteAutomationTools } from './registerSuiteAutomationTools';
+import { registerSuiteDrivers } from './registerSuiteDrivers';
 
 type DiscoveryEvent = CustomEvent & { respondWith?: (group: ToolGroup) => void };
 
@@ -22,7 +20,6 @@ const createTestStore = () => {
 
     return configureStore({
         reducer: combineReducers({
-            suite: suiteReducer,
             router: routerReducer,
             locks: locksReducer,
             modal: modalReducer,
@@ -33,6 +30,13 @@ const createTestStore = () => {
             getDefaultMiddleware({ thunk: { extraArgument: extra }, serializableCheck: false }),
     });
 };
+
+const createDeps = () => ({
+    store: createTestStore(),
+    history: createMemoryHistory(),
+    connect: { getAccountInfo: () => undefined },
+    desktopApi: { appRestart: () => undefined },
+});
 
 const discover = () => {
     const groups: ToolGroup[] = [];
@@ -54,30 +58,25 @@ const getTool = (group: ToolGroup | undefined, name: string) => {
     return tool;
 };
 
-describe(registerSuiteAutomationTools.name, () => {
+describe(registerSuiteDrivers.name, () => {
     it('answers the discovery event with the suite group wired to the store and services', async () => {
-        const store = createTestStore();
-        const history = createMemoryHistory();
-        const connect = { getAccountInfo: () => undefined };
-        const desktopApi = { appRestart: () => undefined };
+        const deps = createDeps();
+        const { store, history, connect, desktopApi } = deps;
 
-        const unregister = registerSuiteAutomationTools({ store, history, connect, desktopApi });
+        const unregister = registerSuiteDrivers(deps);
         const [group] = discover();
 
         expect(group?.name).toBe('suite');
-        expect(getTool(group, 'suite.ready').execute({})).toMatchObject({
+        expect(getTool(group, 'suite.ready').execute({})).toEqual({
             ready: false,
-            lifecycle: 'initial',
-            routerLoaded: false,
+            marks: { 'suite:init': null, 'suite:ready': null, 'suite:interactive': null },
+            route: null,
         });
 
-        store.dispatch(onSuiteReady());
         await getTool(group, 'suite.goto').execute({ routeName: 'settings-index' });
 
         expect(getTool(group, 'suite.ready').execute({})).toMatchObject({
-            ready: true,
-            lifecycle: 'ready',
-            routerLoaded: true,
+            ready: false,
             route: 'settings-index',
         });
         expect(getTool(group, 'suite.services').execute({ name: 'store' })).toBe(store);

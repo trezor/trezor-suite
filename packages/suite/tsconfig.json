@@ -171,9 +171,6 @@
         {
             "path": "../../suite/authenticity-checks"
         },
-        {
-            "path": "../../suite/automation-tools"
-        },
         { "path": "../../suite/backup" },
         { "path": "../../suite/bluetooth" },
         { "path": "../../suite/coinjoin" },
@@ -183,6 +180,7 @@
         { "path": "../../suite/device" },
         { "path": "../../suite/discovery" },
         { "path": "../../suite/discreet-mode" },
+        { "path": "../../suite/drivers" },
         { "path": "../../suite/experimental" },
         { "path": "../../suite/external-links" },
         {

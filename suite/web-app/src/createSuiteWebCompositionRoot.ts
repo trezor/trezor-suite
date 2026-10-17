@@ -1,6 +1,6 @@
 import { createBrowserHistory } from 'history';
 
-import { isAutomationToolsEnabled } from '@suite/automation-tools';
+import { isDriversEnabled } from '@suite/drivers';
 import { createWebauthnPlatformEncryption } from '@suite/platform-encryption-webauthn';
 import TrezorConnect from '@trezor/connect';
 import { asGetter } from '@trezor/dependency-injection';
@@ -13,7 +13,6 @@ import { createHydrateReduxStore } from 'src/reducers/createHydrateReduxStore';
 import { createReduxStore } from 'src/reducers/createReduxStore';
 import { rootReducer } from 'src/reducers/store';
 import { createDb } from 'src/storage/createDb';
-import { registerSuiteAutomationTools } from 'src/support/automation/registerSuiteAutomationTools';
 import { createConnectLoggerFactory } from 'src/support/createConnectLoggerFactory';
 import { createSuiteServicesCompositionRoot } from 'src/support/createSuiteCompositionRoot';
 import { extraDependencies } from 'src/support/extraDependencies';
@@ -81,13 +80,19 @@ export const createSuiteWebCompositionRoot = (): SuiteWebCompositionRoot => {
     // Inject them after construction to break the cycle, before the app can dispatch any actions.
     injectServicesIntoReduxExtra(services);
 
-    if (isAutomationToolsEnabled()) {
-        registerSuiteAutomationTools({
-            store,
-            history,
-            desktopApi: suiteServices.desktopApi,
-            connect: TrezorConnect,
-        });
+    if (isDriversEnabled()) {
+        // A chunk of its own: the drivers and what only they need stay out of the boot bundle
+        // of a real user's session.
+        import(/* webpackChunkName: "drivers" */ 'src/support/drivers/registerSuiteDrivers')
+            .then(({ registerSuiteDrivers }) =>
+                registerSuiteDrivers({
+                    store,
+                    history,
+                    desktopApi: suiteServices.desktopApi,
+                    connect: TrezorConnect,
+                }),
+            )
+            .catch(error => console.error('Suite drivers failed to load', error));
     }
 
     return { app: createWebApp({ services }) };

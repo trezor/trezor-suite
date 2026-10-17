@@ -7,7 +7,7 @@ This chapter contains information about tests.
 - [Playwright contribution guide](../symlink/tests/e2e-playwright-contribution-guide.md)
 - [GitHub Test Reporter](../symlink/tests/e2e-github-reporter.md)
 - [regtest](./regtest.md)
-- [automation tools](./automation-tools.md)
+- [drivers](./drivers.md)
 - [@suite-native/test-utils](./suite-native-test-utils.md)
 - [@suite-common/test-utils](./suite-common-test-utils.md)
 

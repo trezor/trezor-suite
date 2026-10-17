@@ -17,6 +17,7 @@ export type SuiteSwitch =
     | 'remove-user-data-on-start'
     | 'expose-connect-ws'
     | 'expose-store'
+    | 'drivers'
     | 'offline-mode'
     | 'state'; // very special handling, see `./app-utils.ts`
 
