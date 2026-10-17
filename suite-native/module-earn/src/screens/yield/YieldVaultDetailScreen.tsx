@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
+import { useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
 import {
     type AccountsRootState,
     fetchAllTransactionsForAccountThunk,
@@ -31,6 +32,8 @@ export const YieldVaultDetailScreen = () => {
         selectAccountTokenInfo(state, accountKey, tokenContract),
     );
 
+    const { refetch: refetchYieldOpportunities } = useAllYieldOpportunities();
+
     useEffect(() => {
         dispatch(fetchAllTransactionsForAccountThunk({ accountKey, noLoading: true }));
     }, [accountKey, dispatch]);
@@ -50,6 +53,7 @@ export const YieldVaultDetailScreen = () => {
             >
                 <TransactionList
                     account={account}
+                    onRefresh={refetchYieldOpportunities}
                     listHeaderComponent={
                         <YieldVaultDetailScreenContent account={account} yieldToken={yieldToken} />
                     }
