@@ -5,7 +5,6 @@ import {
     type ManifestPartial,
     connectPopupCallThunk,
     connectPopupCancelThunk,
-    getPopupCallDeferred,
     queuePopupCall,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
@@ -108,8 +107,7 @@ export const useConnectPopup = (
                 }
 
                 setResponseSent(false);
-                await queuePopupCall();
-                const deferred = getPopupCallDeferred(true);
+                const deferred = await queuePopupCall();
                 const { method, ...params } = event.payload;
                 dispatch(
                     connectPopupCallThunk({
@@ -121,6 +119,7 @@ export const useConnectPopup = (
                             manifest: manifest.current,
                             requestedPermissions: requestedPermissions.current,
                         },
+                        responseId: deferred.id,
                     }),
                 );
 
