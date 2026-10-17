@@ -1,4 +1,5 @@
 import { spawn } from 'child_process';
+import { promises as fs } from 'fs';
 
 function spawnAndCollectStdout(command: string): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -95,13 +96,11 @@ export async function findProcessFromIncomingPort(
                         return { name: sanitizedName, pid, fullPath, warning: true };
                     }
                 } else {
-                    const fullPathCommand = `cat /proc/${pid}/cmdline`;
-                    const fullPathRaw = await spawnAndCollectStdout(fullPathCommand);
-                    const fullPath = fullPathRaw.split('\0')[0] ?? '';
-                    const trimmedFullPath = fullPath.trim();
+                    // The executable the kernel runs, not the argv[0] the process was started with.
+                    const fullPath = await fs.readlink(`/proc/${pid}/exe`);
                     // Binaries can be all over the place on Linux, so we don't check the path
 
-                    return { name: sanitizedName, pid, fullPath: trimmedFullPath };
+                    return { name: sanitizedName, pid, fullPath };
                 }
             }
 

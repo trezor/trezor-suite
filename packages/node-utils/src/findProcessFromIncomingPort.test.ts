@@ -1,5 +1,6 @@
 import childProcess, { type ChildProcess } from 'child_process';
 import { EventEmitter } from 'events';
+import { promises as fs } from 'fs';
 import net from 'net';
 
 import { findProcessFromIncomingPort } from './findProcessFromIncomingPort';
@@ -96,12 +97,28 @@ describe('findProcessFromIncomingPort for an accepted connection', () => {
                     lsofLine('client', 300, '127.0.0.1:40000->127.0.0.1:21335 (ESTABLISHED)'),
                 ].join('\n'),
             ],
-            ['cat /proc/', '/usr/bin/client\0'],
         ]);
+        jest.spyOn(fs, 'readlink').mockResolvedValue('/usr/bin/client');
 
         const processInfo = await findProcessFromIncomingPort(40000, true, connection);
 
         expect(processInfo?.pid).toBe('300');
+    });
+
+    test('identifies a Linux process by its executable, not by the argv[0] it was started with', async () => {
+        setPlatform('linux');
+        mockCommands([
+            [
+                'lsof',
+                'node 300 user 18u IPv4 207199 0t0 TCP 127.0.0.1:40000->127.0.0.1:21335 (ESTABLISHED)',
+            ],
+            ['cat /proc/300/cmdline', '/usr/bin/google-chrome\0script.js\0'],
+        ]);
+        jest.spyOn(fs, 'readlink').mockResolvedValue('/usr/local/bin/node');
+
+        const processInfo = await findProcessFromIncomingPort(40000, true, connection);
+
+        expect(processInfo?.fullPath).toBe('/usr/local/bin/node');
     });
 
     test('attributes the connection to the process at its client end on Windows', async () => {
