@@ -1,7 +1,7 @@
 import { type RefObject, useCallback, useMemo } from 'react';
 
-import { Translation, type TranslationKey } from '@suite/intl';
 import { type TradingAssetOption } from '@suite-common/trading';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 

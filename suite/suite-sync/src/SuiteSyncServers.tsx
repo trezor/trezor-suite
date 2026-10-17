@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { Translation } from '@suite/intl';
 import { selectSuiteSyncCustomRelayUrl } from '@suite-common/suite-sync';
+import { Translation } from '@suite-lego/intl';
 import { SectionItem } from '@trezor/product-components';
 
 import { SelectSuiteSyncServer } from './SelectSuiteSyncServer';

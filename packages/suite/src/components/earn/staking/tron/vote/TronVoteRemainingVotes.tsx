@@ -1,7 +1,7 @@
 import { useWatch } from 'react-hook-form';
 
-import { Translation } from '@suite/intl';
 import { getTotalVotes } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Text } from '@trezor/components';
 
 import { useTronStakeContext } from '../TronStakeContext';

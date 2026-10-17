@@ -2,10 +2,10 @@ import styled from 'styled-components';
 
 import { injectDesktopAnalytics } from '@suite/analytics';
 import { HiddenPlaceholder } from '@suite/discreet-mode';
-import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useFormatters } from '@suite-common/formatters';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Row, Skeleton, Text, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { HandCoinsIcon, InfoIcon } from '@trezor/icons';

@@ -1,4 +1,4 @@
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Box, Row, Tabs } from '@trezor/components';
 
 import { OutcomeBadge } from './OutcomeBadge';

@@ -1,8 +1,8 @@
 import { type MouseEvent, type ReactNode } from 'react';
 
-import { Translation } from '@suite/intl';
 import { type SelectAccountCandidate } from '@suite-common/connect-popup';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config/src/utils';
+import { Translation } from '@suite-lego/intl';
 import {
     Badge,
     Button,

@@ -1,5 +1,4 @@
 import { useDevice } from '@suite/device';
-import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
@@ -7,6 +6,7 @@ import {
     selectHasRunningDiscovery,
     startOrRestartDiscoveryThunk,
 } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Button, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

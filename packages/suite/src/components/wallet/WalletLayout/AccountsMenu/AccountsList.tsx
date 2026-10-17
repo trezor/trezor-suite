@@ -2,7 +2,6 @@ import { type ReactNode, type RefObject, memo, useCallback, useMemo } from 'reac
 
 import { getDefaultAccountLabel } from '@suite/account';
 import { selectCoinjoinIsPreloading } from '@suite/coinjoin';
-import { Translation, useTranslation } from '@suite/intl';
 import { selectAccountLabelsLegacy } from '@suite/metadata';
 import { type RouteParams, selectRouterParams } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
@@ -11,6 +10,7 @@ import { selectTokenDefinitions } from '@suite-common/token-definitions';
 import { getTokens, selectAllAccountsToList } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { accountSearchFn, getAccountTypeName } from '@suite-common/wallet-utils';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { type BaseItemProps, VirtualizedList } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';

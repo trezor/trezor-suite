@@ -1,9 +1,9 @@
 import { getUnixTime } from 'date-fns';
 import styled from 'styled-components';
 
-import { Translation } from '@suite/intl';
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Button, Card, Column, Row } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { RepeatIcon } from '@trezor/icons';

@@ -1,6 +1,6 @@
 import { selectFlags, setFlag } from '@suite/flags';
-import { Translation } from '@suite/intl';
 import { type Account } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 

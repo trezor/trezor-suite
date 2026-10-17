@@ -1,9 +1,9 @@
-import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { getNetworkDecimalsWithFallback } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 

@@ -1,4 +1,4 @@
-import { type TranslationFunction } from '@suite/intl';
+import { type TranslationFunction } from '@suite-lego/intl';
 
 export type CustomFeeBasicProps = {
     composedFeePerByte: string | undefined;

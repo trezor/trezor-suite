@@ -1,4 +1,3 @@
-import { type TranslationFunction } from '@suite/intl';
 import { type Formatter, type Formatters } from '@suite-common/formatters';
 import {
     getDisplaySymbol,
@@ -16,6 +15,7 @@ import {
     networkAmountToSmallestUnit,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
+import { type TranslationFunction } from '@suite-lego/intl';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 

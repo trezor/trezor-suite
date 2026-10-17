@@ -2,13 +2,13 @@ import { type Dispatch, type SetStateAction, useEffect } from 'react';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectIsDebugModeActive } from '@suite/debug';
-import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type Route, gotoThunk, selectRouteName } from '@suite/router';
 import { selectCoinDefinitions, selectNftDefinitions } from '@suite-common/token-definitions';
 import { type NetworkType } from '@suite-common/wallet-config';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { isErc4626 } from '@suite-common/wallet-utils';
+import { Translation, type TranslationKey, useTranslation } from '@suite-lego/intl';
 import {
     Button,
     Icon,

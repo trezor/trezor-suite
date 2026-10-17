@@ -2,11 +2,11 @@ import { useSelector } from 'react-redux';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { LearnMoreButton } from '@suite/external-links';
-import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { selectIsN4w1BackupEnabled } from '@suite/settings';
 import { doesSupportMultiShare } from '@suite-common/backup';
 import { selectSelectedDevice } from '@suite-common/device';
+import { Translation } from '@suite-lego/intl';
 import { useServices } from '@trezor/dependency-injection';
 import { SectionItem } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';

@@ -1,7 +1,7 @@
 import styled, { useTheme } from 'styled-components';
 
-import { Translation, type TranslationKey } from '@suite/intl';
 import { type FirmwareOperationStatus } from '@suite-common/firmware';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { Box, Column, ProgressBar, Row, Text } from '@trezor/components';
 
 import { useFirmwareDesktopUpdate } from './useFirmwareDesktopUpdate';

@@ -1,6 +1,6 @@
 import { TrezorLink } from '@suite/external-links';
-import { Translation } from '@suite/intl';
 import { type TrezorDevice } from '@suite-common/suite-types';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Button, Column, H3, Icon, List, Paragraph, Text } from '@trezor/components';
 import { CopyIcon, EyeSlashIcon, NewspaperIcon, WarningCircleIcon } from '@trezor/icons';
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';

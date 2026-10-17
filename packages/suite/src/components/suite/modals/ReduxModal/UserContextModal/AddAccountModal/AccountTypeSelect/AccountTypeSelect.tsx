@@ -1,12 +1,12 @@
 import { memo } from 'react';
 
-import { Translation } from '@suite/intl';
 import {
     type NetworkAccount,
     type NetworkSymbol,
     type NetworkType,
 } from '@suite-common/wallet-config';
 import { getAccountTypeName, getAccountTypeTech } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Column, Paragraph, Row, Select, Text } from '@trezor/components';
 
 import { AccountTypeDescription } from './AccountTypeDescription';

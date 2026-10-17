@@ -1,9 +1,9 @@
 import { useExternalLink } from '@suite/external-links';
-import { Translation } from '@suite/intl';
 import { type Explorer } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
 import { selectExplorer } from '@suite-common/wallet-core';
 import { isUtxoBased } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { CloudIcon } from '@trezor/icons';
 
 import { AccountExceptionLayout } from 'src/components/wallet';

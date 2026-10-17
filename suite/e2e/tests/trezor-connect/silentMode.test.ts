@@ -1,6 +1,6 @@
 import { ElectronApplication, Page } from '@playwright/test';
 
-import { messages } from '@suite/intl';
+import { messages } from '@suite-lego/intl';
 import TrezorConnect from '@trezor/connect-web';
 import { TestStream } from '@trezor/e2e-utils';
 

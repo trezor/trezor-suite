@@ -1,10 +1,10 @@
 import { useState } from 'react';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { selectDevices } from '@suite-common/device';
 import { selectIsDeviceAutoEjectEnabled } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Modal, Switch } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { SectionItem } from '@trezor/product-components';

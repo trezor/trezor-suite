@@ -1,7 +1,6 @@
 import { type FiatCurrencyCode } from 'invity-api';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { selectLanguage } from '@suite/settings';
 import {
@@ -12,6 +11,7 @@ import {
 } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Column, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

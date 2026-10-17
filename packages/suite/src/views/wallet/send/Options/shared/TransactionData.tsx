@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
-import { Translation, useTranslation } from '@suite/intl';
 import { isHexValid } from '@suite-common/wallet-utils';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import { Card, Column, H4, IconButton, Row, Textarea, Tooltip } from '@trezor/components';
 import { XIcon } from '@trezor/icons';
 

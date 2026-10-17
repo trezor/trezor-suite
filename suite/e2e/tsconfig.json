@@ -62,7 +62,7 @@
         { "path": "../debug" },
         { "path": "../desktop-app" },
         { "path": "../flags" },
-        { "path": "../intl" },
+        { "path": "../../suite-lego/intl" },
         { "path": "../labeling" },
         { "path": "../metadata" },
         { "path": "../router-config" },

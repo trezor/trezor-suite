@@ -1,8 +1,8 @@
 import { type ReactNode, useMemo } from 'react';
 
-import { Translation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { type ExchangeIssue } from '@suite-common/trading';
+import { Translation } from '@suite-lego/intl';
 import { Banner, List } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 

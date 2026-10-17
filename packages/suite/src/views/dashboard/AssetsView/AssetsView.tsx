@@ -2,7 +2,6 @@ import styled from 'styled-components';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectFlags, setFlag } from '@suite/flags';
-import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type AssetFiatBalance } from '@suite-common/assets';
 import {
@@ -28,6 +27,7 @@ import {
     getFiatRateKey,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import type { BaseCurrencyCode, TokenInfo } from '@trezor/blockchain-link-types';
 import {
     Button,

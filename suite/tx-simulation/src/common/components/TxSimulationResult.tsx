@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Card, Column, H4, Row, Text } from '@trezor/components';
 
 interface TxSimulationResultProps {

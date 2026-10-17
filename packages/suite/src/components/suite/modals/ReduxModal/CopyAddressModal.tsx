@@ -1,9 +1,9 @@
 import { useState } from 'react';
 
 import { setFlag } from '@suite/flags';
-import { Translation } from '@suite/intl';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type AddressType } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Card, Checkbox, H2, Modal, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { copyToClipboard } from '@trezor/dom-utils';

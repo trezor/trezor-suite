@@ -7,7 +7,7 @@ import {
     useState,
 } from 'react';
 
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Collapsible, Column, H3, IconButton, Row, Text } from '@trezor/components';
 import { CaretDownIcon, CaretUpIcon } from '@trezor/icons';
 import { useCurrentRef } from '@trezor/react-utils';

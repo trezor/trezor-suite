@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { type UpdateInfo, injectDesktopApi } from '@suite/desktop-app-api';
 import { downloadThunk } from '@suite/desktop-update';
 import { selectFlags, setFlag } from '@suite/flags';
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Card, Checkbox, Column, H4, Modal, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

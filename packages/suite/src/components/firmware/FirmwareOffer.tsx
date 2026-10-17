@@ -1,12 +1,12 @@
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { getSuiteFirmwareTypeString, useFirmwareDesktopUpdate } from '@suite/firmware-upgrade';
-import { Translation, useTranslation } from '@suite/intl';
 import { selectUseDevkit } from '@suite-common/firmware';
 import {
     getChangelogUrl,
     getFwUpdateVersion,
     parseFirmwareChangelog,
 } from '@suite-common/suite-utils';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import { Column, Icon, Row, Text, TextButton, Tooltip } from '@trezor/components';
 import { type FirmwareType } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';

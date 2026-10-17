@@ -1,7 +1,6 @@
 import { useSelector } from 'react-redux';
 
 import { selectIsDebugModeActive } from '@suite/debug';
-import { Translation } from '@suite/intl';
 import {
     type SuiteSyncRelayConnection,
     selectIsSuiteSyncEnabled,
@@ -9,6 +8,7 @@ import {
     selectLastSuiteSyncRelayDisconnectedTimestamp,
     selectSuiteSyncRelayConnectionStatuses,
 } from '@suite-common/suite-sync';
+import { Translation } from '@suite-lego/intl';
 import { Column, Row, Text } from '@trezor/components';
 import { ArrowsClockwiseIcon, CheckIcon, CircleIcon } from '@trezor/icons';
 import { QuickActionButton, RelativeTime } from '@trezor/product-components';

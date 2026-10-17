@@ -1,7 +1,5 @@
-import '@suite-common/test-utils/globalOverrides';
-
-import { type TranslationKey } from '@suite/intl';
 import { type SuiteRouterHistoryDep } from '@suite/router';
+
 import { mockSuiteRouterHistory } from '@suite/router/mocks';
 import { type DeviceReducerState, deviceInitialState } from '@suite-common/device';
 import { mockNetworkIcon } from '@suite-common/networks/mocks';
@@ -9,6 +7,8 @@ import { type PersistentDeviceDataState } from '@suite-common/persistent-device-
 import { defaultDevicePersistentData, mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
+import '@suite-common/test-utils/globalOverrides';
+import { type TranslationKey } from '@suite-lego/intl';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
 import { type AppState } from 'src/reducers/store';
@@ -24,8 +24,8 @@ jest.mock('@suite-common/tx-simulation', () => ({}));
 // !!! Must be a stable reference, else it will break some hooks / memoization and causes inf. re-renders
 const translationStringMock = (id: string) => id;
 
-jest.mock('@suite/intl', () => ({
-    ...jest.requireActual('@suite/intl'),
+jest.mock('@suite-lego/intl', () => ({
+    ...jest.requireActual('@suite-lego/intl'),
     Translation: ({ id }: any) => <span data-testid={id}>{id}</span>,
     useTranslation: () => ({ translationString: translationStringMock }),
 }));

@@ -1,4 +1,4 @@
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { H3, Modal } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 

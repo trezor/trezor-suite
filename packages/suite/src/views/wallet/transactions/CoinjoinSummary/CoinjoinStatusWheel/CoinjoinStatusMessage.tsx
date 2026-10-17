@@ -4,8 +4,8 @@ import {
     selectCurrentCoinjoinWheelStates,
     selectCurrentSessionDeadlineInfo,
 } from '@suite/coinjoin';
-import { Translation } from '@suite/intl';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { typography } from '@trezor/theme';
 
 import { CountdownTimer } from 'src/components/suite';

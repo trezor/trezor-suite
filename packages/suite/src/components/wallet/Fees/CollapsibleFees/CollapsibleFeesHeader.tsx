@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 
-import { Translation, type TranslationKey } from '@suite/intl';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { isTronAccountActivation } from '@suite-common/wallet-utils';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { Row, Text, TextButton, Tooltip } from '@trezor/components';
 import { type TypographyStyle } from '@trezor/theme';
 import { HELP_CENTER_TRANSACTION_FEES_URL } from '@trezor/urls';

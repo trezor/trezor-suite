@@ -1,4 +1,4 @@
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Card, Modal } from '@trezor/components';
 
 import { HomescreenGallery } from 'src/components/suite/HomescreenGallery';

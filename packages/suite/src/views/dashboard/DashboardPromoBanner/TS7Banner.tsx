@@ -1,5 +1,5 @@
 import { useExternalLink } from '@suite/external-links';
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Image } from '@trezor/components';
 import { DASHBOARD_BANNER_TS7_URL } from '@trezor/urls';
 

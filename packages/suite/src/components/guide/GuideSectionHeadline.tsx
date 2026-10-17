@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-import { Translation, type TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { Paragraph } from '@trezor/components';
 
 type GuideSectionHeadlineProps = {

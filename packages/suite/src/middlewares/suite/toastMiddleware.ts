@@ -1,5 +1,5 @@
-import { type TranslationKey } from '@suite/intl';
 import { type NotificationEntry, notificationsActions } from '@suite-common/toast-notifications';
+import { type TranslationKey } from '@suite-lego/intl';
 import { createMiddleware } from '@trezor/redux-utils';
 
 import { dismissToast, showToast } from 'src/components/suite';

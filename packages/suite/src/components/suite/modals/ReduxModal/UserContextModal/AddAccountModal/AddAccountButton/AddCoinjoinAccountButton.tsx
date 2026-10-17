@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { createCoinjoinAccountThunk } from '@suite/coinjoin';
-import { Translation } from '@suite/intl';
 import { openDeferredModal, openModal } from '@suite/modal';
 import { selectIsTorEnabled } from '@suite/tor';
 import { toggleTorThunk } from '@suite/tor-desktop';
@@ -11,6 +10,7 @@ import { RequestEnableTorResponse } from '@suite-common/suite-config';
 import { isDevEnv } from '@suite-common/suite-utils';
 import { type Network, type NetworkAccount, type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectAccounts } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { useServices } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';
 import { injectDispatch } from '@trezor/redux-utils';

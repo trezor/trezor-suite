@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useWatch } from 'react-hook-form';
 
-import { Translation, useTranslation } from '@suite/intl';
 import { getEthereumRbfFeeInfo, selectAccountTransactions } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
 import {
@@ -12,6 +11,7 @@ import {
     isPending,
     isSignedByAccount,
 } from '@suite-common/wallet-utils';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import { Card, Column, H4, IconButton, Input, Note, Row, TextButton } from '@trezor/components';
 import { InfoIcon, WarningIcon, XIcon } from '@trezor/icons';
 import { ETHEREUM_NONCE_MAX_DIGITS } from '@trezor/network-ethereum/constants';

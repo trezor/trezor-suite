@@ -7,7 +7,6 @@ import { useDevice } from '@suite/device';
 import { useExternalLink } from '@suite/external-links';
 import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { selectIsCopyAddressModalShown, selectIsUnhideTokenModalShown } from '@suite/flags';
-import { Translation, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
 import { events as sharedEvents } from '@suite-common/analytics';
@@ -43,6 +42,7 @@ import {
     isErc4626,
     isStellarContractToken,
 } from '@suite-common/wallet-utils';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import {
     Button,
     ButtonGroup,

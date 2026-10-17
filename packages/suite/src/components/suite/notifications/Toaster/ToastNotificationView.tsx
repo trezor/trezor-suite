@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 
-import { type ExtendedMessageDescriptor, Translation, useTranslation } from '@suite/intl';
 import { type NotificationEntry, notificationsActions } from '@suite-common/toast-notifications';
+import { type ExtendedMessageDescriptor, Translation, useTranslation } from '@suite-lego/intl';
 import { type IconComponent, Toast } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

@@ -1,8 +1,8 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { UpdateState, selectDesktopUpdate } from '@suite/desktop-update';
-import { Translation, type TranslationKey } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import { isDevEnv } from '@suite-common/suite-utils';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { Box, CardList, Column, Icon, IconCircle, Row, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { getFirmwareVersion } from '@trezor/device-utils';

@@ -2,8 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { Translation, useTranslation } from '@suite/intl';
 import { getIsPassphraseTooLong } from '@suite-common/device';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import {
     Box,
     Button,

@@ -3,9 +3,9 @@ import { useMemo } from 'react';
 import styled from 'styled-components';
 
 import { selectIsDebugModeActive } from '@suite/debug';
-import { Translation } from '@suite/intl';
 import { type Network, type ServerType } from '@suite-common/wallet-config';
 import { getDefaultBackendType } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Select } from '@trezor/components';
 import { isDesktop } from '@trezor/env-utils';
 

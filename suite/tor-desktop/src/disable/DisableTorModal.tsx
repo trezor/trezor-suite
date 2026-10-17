@@ -1,7 +1,7 @@
 import { type ReactNode, useState } from 'react';
 
-import { Translation } from '@suite/intl';
 import { type BackendType, type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Button, Card, Column, H3, Modal, Paragraph, Row } from '@trezor/components';
 import { GearIcon, TorBrowserIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';

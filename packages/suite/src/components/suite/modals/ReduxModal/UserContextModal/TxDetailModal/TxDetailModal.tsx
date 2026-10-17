@@ -1,6 +1,5 @@
 import { useMemo, useRef, useState } from 'react';
 
-import { Translation } from '@suite/intl';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     getInstantStakeType,
@@ -21,6 +20,7 @@ import {
     isTransactionBumpable,
     isTransactionCancellable,
 } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Modal } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';

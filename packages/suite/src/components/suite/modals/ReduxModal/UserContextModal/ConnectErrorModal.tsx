@@ -1,10 +1,10 @@
-import { Translation } from '@suite/intl';
 import {
     connectPopupActions,
     connectPopupCallInnerThunk,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
+import { Translation } from '@suite-lego/intl';
 import { Card, Column, H3, Icon, Modal, Paragraph, Row } from '@trezor/components';
 import { UI_EVENTS } from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';

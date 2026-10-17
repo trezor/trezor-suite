@@ -1,6 +1,5 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
-import { useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
 import { events as sharedEvents } from '@suite-common/analytics';
@@ -14,6 +13,7 @@ import {
 } from '@suite-common/trading';
 import { getYieldVaultContractAddress, isYieldSupported } from '@suite-common/wallet-core';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
+import { useTranslation } from '@suite-lego/intl';
 import { Card, Column, Icon, Row, Table } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { ArrowDownIcon, ArrowRightIcon } from '@trezor/icons';

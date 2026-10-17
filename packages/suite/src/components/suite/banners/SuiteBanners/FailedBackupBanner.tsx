@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { useDevice } from '@suite/device';
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Banner } from '@trezor/components';
 import { isDeviceInBootloaderMode } from '@trezor/device-utils';
 

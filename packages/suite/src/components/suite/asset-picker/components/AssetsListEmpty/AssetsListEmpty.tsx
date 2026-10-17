@@ -1,11 +1,11 @@
 import { type ReactNode } from 'react';
 
-import { Translation, type TranslationKey } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectNetworkSymbolForProtocol } from '@suite-common/networks';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { Button, Column, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

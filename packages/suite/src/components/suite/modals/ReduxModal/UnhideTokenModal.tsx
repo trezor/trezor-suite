@@ -2,12 +2,12 @@ import { useState } from 'react';
 
 import { selectSelectedAccount } from '@suite/account';
 import { setFlag } from '@suite/flags';
-import { Translation } from '@suite/intl';
 import {
     DefinitionType,
     TokenManagementAction,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
+import { Translation } from '@suite-lego/intl';
 import { Card, Checkbox, H2, Modal, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { WarningIcon } from '@trezor/icons';

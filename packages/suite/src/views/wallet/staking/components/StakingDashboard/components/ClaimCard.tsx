@@ -2,13 +2,13 @@ import { useMemo } from 'react';
 
 import { selectSelectedAccount } from '@suite/account';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import {
     getStakingDataForNetwork,
     selectAccountClaimTransactions,
 } from '@suite-common/wallet-core';
 import { isPending } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Button, Card, Column, InfoItem, Paragraph, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { ChecksIcon, InfoIcon, LightningIcon, SpinnerGapIcon } from '@trezor/icons';

@@ -1,7 +1,7 @@
 import { LearnMoreButton } from '@suite/external-links';
-import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { selectIsDeviceAuthenticityCheckEnabled } from '@suite/settings';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Column } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { InfoIcon } from '@trezor/icons';

@@ -1,6 +1,6 @@
 import { useExternalLink } from '@suite/external-links';
-import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
+import { Translation } from '@suite-lego/intl';
 import { Column, H3, Link, Modal, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { WarningIcon } from '@trezor/icons';

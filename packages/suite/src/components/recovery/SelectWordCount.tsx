@@ -1,5 +1,5 @@
-import { Translation } from '@suite/intl';
 import { type WordCount } from '@suite/recovery';
+import { Translation } from '@suite-lego/intl';
 import { Grid } from '@trezor/components';
 
 import { OnboardingOption } from 'src/components/onboarding/OnboardingOption';

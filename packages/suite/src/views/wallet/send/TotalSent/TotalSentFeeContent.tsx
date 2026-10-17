@@ -1,4 +1,3 @@
-import { useTranslation } from '@suite/intl';
 import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { type GeneralPrecomposedTransaction, type TokenAddress } from '@suite-common/wallet-types';
@@ -7,6 +6,7 @@ import {
     convertAmountSubunitsToUnits,
     formatNetworkAmount,
 } from '@suite-common/wallet-utils';
+import { useTranslation } from '@suite-lego/intl';
 import { Column, Text } from '@trezor/components';
 import { type TokenInfo } from '@trezor/connect';
 

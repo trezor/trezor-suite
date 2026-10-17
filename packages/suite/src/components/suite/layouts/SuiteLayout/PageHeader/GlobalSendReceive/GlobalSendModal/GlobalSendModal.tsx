@@ -1,10 +1,10 @@
 import { useCallback, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
-import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import { sendFormActions } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { Box, Divider } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';

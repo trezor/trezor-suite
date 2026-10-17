@@ -1,11 +1,11 @@
 import { useDevice } from '@suite/device';
-import { Translation, type TranslationKey } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { acquireDeviceThunk, selectDeviceThunk } from '@suite-common/device';
 import {
     type DeviceStatus as ConnectedDeviceStatus,
     type getStatus,
 } from '@suite-common/suite-utils';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { Banner, type BannerIntent } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

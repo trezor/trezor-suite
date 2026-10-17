@@ -2,7 +2,6 @@ import { type ReactNode, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectIsDebugModeActive } from '@suite/debug';
-import { Translation, type TranslationKey } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { selectDeviceButtonRequests, selectSelectedDevice } from '@suite-common/device';
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
@@ -10,6 +9,7 @@ import {
     type PersistentDeviceDataRootState,
     selectDeviceAuthenticityByDeviceId,
 } from '@suite-common/persistent-device-data';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { Card, Column, Grid, Icon, type IconComponent, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { CpuIcon, ListChecksIcon, ShieldCheckIcon } from '@trezor/icons';

@@ -3,7 +3,6 @@ import { FormProvider, useForm, useWatch } from 'react-hook-form';
 
 import { selectSelectedAccount } from '@suite/account';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { Translation, useTranslation } from '@suite/intl';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     DefinitionType,
@@ -19,6 +18,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account, type FormState } from '@suite-common/wallet-types';
 import { formatNetworkAmount, getConvertedOrDefaultFeeInfo } from '@suite-common/wallet-utils';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import { Banner, Button, Column, Modal, Row, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { SpinnerIcon, WarningIcon } from '@trezor/icons';

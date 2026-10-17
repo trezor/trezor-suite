@@ -1,7 +1,7 @@
-import { Translation } from '@suite/intl';
 import { getPassphraseMaxLength, selectDeviceModel } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { selectDiscoveryByDevicePath } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Column, H3 } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
 

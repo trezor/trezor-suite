@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 
-import { Translation } from '@suite/intl';
 import { selectBlockchainHeightBySymbol } from '@suite-common/wallet-core';
 import { datetimeToLocktime } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Card, Column, IconButton, Row, Select, Tooltip } from '@trezor/components';
 import { XIcon } from '@trezor/icons';
 

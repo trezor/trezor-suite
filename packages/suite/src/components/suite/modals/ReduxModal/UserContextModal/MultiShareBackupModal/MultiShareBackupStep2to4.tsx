@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 
 import { TrezorLink } from '@suite/external-links';
-import { Translation, type TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import {
     Card,
     Flex,

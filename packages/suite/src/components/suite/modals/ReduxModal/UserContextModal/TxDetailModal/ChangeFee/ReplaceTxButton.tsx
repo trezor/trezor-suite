@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
 import { useDevice } from '@suite/device';
-import { Translation } from '@suite/intl';
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Modal } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';

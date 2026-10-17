@@ -1,6 +1,6 @@
-import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { getCountryFlag } from '@suite-common/flags';
 import { type TradingCountryCode, useCountryFilteredData } from '@suite-common/trading';
+import { Translation, type TranslationKey, useTranslation } from '@suite-lego/intl';
 import { Column, Flag, Icon, Input, Modal, Paragraph, Row } from '@trezor/components';
 import { MagnifyingGlassIcon } from '@trezor/icons';
 import { CardList } from '@trezor/product-components';

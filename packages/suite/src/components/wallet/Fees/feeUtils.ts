@@ -1,6 +1,6 @@
-import { type TranslationKey } from '@suite/intl';
 import { type NetworkType } from '@suite-common/wallet-config';
 import { type PrecomposedLevels, type PrecomposedLevelsCardano } from '@suite-common/wallet-types';
+import { type TranslationKey } from '@suite-lego/intl';
 
 type FeeNetworkParams = {
     networkType: NetworkType;

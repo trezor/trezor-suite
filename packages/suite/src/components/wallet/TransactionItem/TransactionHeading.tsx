@@ -1,10 +1,10 @@
-import { Translation } from '@suite/intl';
 import { type PhishingDetectorId } from '@suite-common/token-definitions';
 import {
     isSupportedEthStakingNetworkSymbol,
     selectIsSuspiciousTransactionsBlurringEnabled,
 } from '@suite-common/wallet-core';
 import { getTxHeaderSymbol } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { BlurWrapper, Row, TextButton, Tooltip } from '@trezor/components';
 import { HELP_CENTER_ZERO_VALUE_ATTACKS } from '@trezor/urls';
 

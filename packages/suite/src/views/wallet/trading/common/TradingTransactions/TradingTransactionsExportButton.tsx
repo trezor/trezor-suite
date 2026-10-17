@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
-import { Translation } from '@suite/intl';
 import { selectDeviceHasTradingTrades } from '@suite-common/trading';
+import { Translation } from '@suite-lego/intl';
 import { Button, Tooltip } from '@trezor/components';
 import { DownloadSimpleIcon } from '@trezor/icons';
 

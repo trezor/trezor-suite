@@ -1,11 +1,11 @@
 import { useMemo, useState } from 'react';
 import { useWatch } from 'react-hook-form';
 
-import { Translation, useTranslation } from '@suite/intl';
 import {
     TRADING_FORM_COUNTRY_SUBDIVISION_SELECT,
     type TradingCountryOption,
 } from '@suite-common/trading';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import { GhostContainer, Icon, Row, Text } from '@trezor/components';
 import { CaretRightIcon } from '@trezor/icons';
 

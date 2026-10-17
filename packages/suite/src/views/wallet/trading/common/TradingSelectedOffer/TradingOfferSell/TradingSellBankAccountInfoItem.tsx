@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { type BankAccount } from 'invity-api';
 
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { InfoItem, Text, TextButton } from '@trezor/components';
 import { PencilSimpleIcon } from '@trezor/icons';
 

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Input, Row, SelectBar } from '@trezor/components';
 
 type DelimiterFormProps = {

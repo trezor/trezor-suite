@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
-import { useTranslation } from '@suite/intl';
 import type { TrezorDevice } from '@suite-common/suite-types';
+import { useTranslation } from '@suite-lego/intl';
 
 import { type SelectWalletLabelState, selectWalletLabel } from './selectWalletLabel';
 

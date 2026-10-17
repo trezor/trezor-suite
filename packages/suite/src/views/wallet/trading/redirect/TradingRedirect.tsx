@@ -7,9 +7,9 @@ import {
 } from 'invity-api';
 import styled from 'styled-components';
 
-import { Translation } from '@suite/intl';
 import { selectRouter } from '@suite/router';
 import { updateFeeInfoThunk } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { type FeeLevel } from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

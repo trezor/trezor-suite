@@ -41,7 +41,7 @@ const LEGIT_BIG_FILES = new Set<string>([
     'suite-common/message-system/libDev/files/config.v1.d.ts',
     'suite-native/intl/libDev/src/messages.d.ts',
     'suite-native/intl/libDev/src/Translate.d.ts',
-    'suite/intl/libDev/src/messages.d.ts',
+    'suite-lego/intl/libDev/src/messages.d.ts',
 ]);
 
 // Existing violations to fix incrementally. The requirement reports entries once they can be removed.

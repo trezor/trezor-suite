@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 
-import { Translation } from '@suite/intl';
 import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
+import { Translation } from '@suite-lego/intl';
 import { Button, Column, Row, Text, Tooltip } from '@trezor/components';
 
 import { NetworkList } from 'src/components/suite/NetworkList/NetworkList';

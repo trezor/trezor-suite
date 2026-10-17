@@ -8,7 +8,7 @@
         {
             "path": "../../suite-common/test-utils"
         },
-        { "path": "../intl" },
+        { "path": "../../suite-lego/intl" },
         {
             "path": "../../packages/dependency-injection"
         },

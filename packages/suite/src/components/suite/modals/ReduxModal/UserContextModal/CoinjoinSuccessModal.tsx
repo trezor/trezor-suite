@@ -1,8 +1,8 @@
-import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { gotoThunk, selectRouterParams } from '@suite/router';
 import { selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey, type WalletParams } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Column, H3, Modal, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { ArrowsInIcon } from '@trezor/icons';

@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 
-import { Translation } from '@suite/intl';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
+import { Translation } from '@suite-lego/intl';
 import { IconButton, Row, TOOLTIP_DELAY_LONG } from '@trezor/components';
 import { CaretLeftIcon, XIcon } from '@trezor/icons';
 

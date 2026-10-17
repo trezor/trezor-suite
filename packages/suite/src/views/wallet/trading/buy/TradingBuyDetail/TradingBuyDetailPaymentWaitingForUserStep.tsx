@@ -1,6 +1,6 @@
 import { type BuyTrade } from 'invity-api';
 
-import { Translation, type TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { Paragraph, type StepListItemState } from '@trezor/components';
 
 import { TradingDetailStep } from 'src/views/wallet/trading/common/TradingDetail/TradingDetailStep';

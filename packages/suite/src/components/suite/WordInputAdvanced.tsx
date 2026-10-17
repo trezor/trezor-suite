@@ -1,8 +1,8 @@
 import { useCallback, useEffect } from 'react';
 
 import { useExternalLink } from '@suite/external-links';
-import { Translation } from '@suite/intl';
 import { selectModalRequestId } from '@suite/modal';
+import { Translation } from '@suite-lego/intl';
 import {
     Banner,
     Button,

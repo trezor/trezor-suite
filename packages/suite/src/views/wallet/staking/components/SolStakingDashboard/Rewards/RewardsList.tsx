@@ -1,8 +1,8 @@
 import React, { useRef } from 'react';
 
-import { Translation } from '@suite/intl';
 import { type SolanaRewardsHistory } from '@suite-common/earn-staking-api/src/staking';
 import { formatNetworkAmount, isTestnet } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Card, Column, Grid, IconCircle, Row, Text } from '@trezor/components';
 import { PiggyBankIcon } from '@trezor/icons';
 

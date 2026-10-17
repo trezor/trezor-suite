@@ -1,8 +1,8 @@
 import { type ReactNode } from 'react';
 
-import { Translation } from '@suite/intl';
 import { type MetadataProviderType } from '@suite-common/metadata-types';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Column, H3, Modal, Paragraph } from '@trezor/components';
 import { DropboxLogoFilledIcon, GoogleDriveLogoFilledIcon, TagIcon } from '@trezor/icons';
 

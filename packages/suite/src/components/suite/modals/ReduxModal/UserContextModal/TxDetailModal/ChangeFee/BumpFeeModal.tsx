@@ -1,4 +1,3 @@
-import { Translation } from '@suite/intl';
 import { selectTransactionConfirmations } from '@suite-common/wallet-core';
 import {
     type Account,
@@ -6,6 +5,7 @@ import {
     type WalletAccountTransactionWithRequiredRbfParams,
 } from '@suite-common/wallet-types';
 import { type PendingEvmNonceStatus } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Modal } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';

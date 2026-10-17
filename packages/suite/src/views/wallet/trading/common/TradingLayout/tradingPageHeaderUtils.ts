@@ -1,6 +1,6 @@
-import { type TranslationKey } from '@suite/intl';
 import { type Route } from '@suite/router';
 import { type TradingType } from '@suite-common/trading';
+import { type TranslationKey } from '@suite-lego/intl';
 
 type TradingRoute = Route['name'];
 

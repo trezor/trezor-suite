@@ -7,7 +7,7 @@ import {
     useRef,
 } from 'react';
 
-import { useTranslation } from '@suite/intl';
+import { useTranslation } from '@suite-lego/intl';
 import { Icon, Input, KEYBOARD_CODE } from '@trezor/components';
 import { MagnifyingGlassIcon } from '@trezor/icons';
 

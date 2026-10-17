@@ -2,11 +2,11 @@ import { useCallback, useState } from 'react';
 
 import { canContinue, selectBackup } from '@suite/backup';
 import { useDevice } from '@suite/device';
-import { Translation } from '@suite/intl';
 import { CreateNfcBackup, NoNfcTags } from '@suite/nfc';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { gotoThunk } from '@suite/router';
 import { selectIsDeviceBackupRequired, selectSelectedDevice } from '@suite-common/device';
+import { Translation } from '@suite-lego/intl';
 import { Badge, Column } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { CheckIcon, TrezorBackupIcon, WalletIcon, WarningIcon } from '@trezor/icons';

@@ -3,12 +3,12 @@ import { type MouseEvent } from 'react';
 import { injectDesktopAnalytics } from '@suite/analytics';
 import { selectIsDebugModeActive } from '@suite/debug';
 import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
-import { Translation, useTranslation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { events } from '@suite-common/analytics';
 import { selectSelectedDevice } from '@suite-common/device';
 import { getNetworkType } from '@suite-common/wallet-config';
 import { isWrappedNativeFlowSupported } from '@suite-common/wallet-core';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import { Button, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import {

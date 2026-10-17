@@ -1,4 +1,4 @@
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Card, Column, H3, H4, StepList, Text } from '@trezor/components';
 
 import { TransactionReviewOutputTimer } from './TransactionReviewOutputTimer';

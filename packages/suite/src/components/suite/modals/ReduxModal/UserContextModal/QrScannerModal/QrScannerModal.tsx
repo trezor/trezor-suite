@@ -1,7 +1,7 @@
 import { Suspense, lazy, useCallback } from 'react';
 
-import { Translation } from '@suite/intl';
 import { type UserContextPayload } from '@suite-common/suite-types';
+import { Translation } from '@suite-lego/intl';
 import { Column, Modal, type ModalProps, Row, Spinner, SubTabs } from '@trezor/components';
 import { CameraIcon, ImageIcon } from '@trezor/icons';
 

@@ -1,4 +1,3 @@
-import { type TranslationId } from '@suite/intl';
 import { type TokenDefinitionsState } from '@suite-common/token-definitions';
 import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
 import { type GetTokensOutputType, getTokens } from '@suite-common/wallet-core';
@@ -9,6 +8,7 @@ import {
     type TokenAddress,
 } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
+import { type TranslationId } from '@suite-lego/intl';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { type TokenInfo } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';

@@ -1,4 +1,4 @@
-import { type TranslationKey } from '@suite/intl';
+import { type TranslationKey } from '@suite-lego/intl';
 import { type DeviceModelInternal } from '@trezor/device-utils';
 
 const howToGetFromBootloaderInstructionsMap: Record<DeviceModelInternal, TranslationKey | null> = {

@@ -1,10 +1,10 @@
-import { Translation } from '@suite/intl';
 import {
     type TradingProviderInfo,
     type TradingTradeType,
     getStatusUrl,
     tradeApi,
 } from '@suite-common/trading';
+import { Translation } from '@suite-lego/intl';
 import { Row, TextButton, type TextButtonProps } from '@trezor/components';
 import { ArrowSquareOutIcon } from '@trezor/icons';
 

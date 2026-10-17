@@ -1,5 +1,4 @@
 import { AppsEmbeddingSwitch } from '@suite/apps-embedding-demo';
-import { Translation } from '@suite/intl';
 import {
     ContextMessage,
     MessageSystemConfigSourceSelect,
@@ -9,6 +8,7 @@ import { SuiteSyncSettings, suiteSyncErrorHandler } from '@suite/suite-sync';
 import { Context } from '@suite-common/message-system';
 import { type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
 import { type EnsureWalletSuiteSyncOnErrors } from '@suite-common/suite-sync-types';
+import { Translation } from '@suite-lego/intl';
 import { type StaticSessionId } from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';

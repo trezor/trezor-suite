@@ -3,7 +3,6 @@ import { type ReactNode } from 'react';
 import { type CryptoId } from 'invity-api';
 
 import { Address } from '@suite/address';
-import { Translation } from '@suite/intl';
 import { getFiatCurrencyFlag } from '@suite-common/flags';
 import { useFormatters } from '@suite-common/formatters';
 import { selectTradingCoinSymbolByCryptoId, toTokenCryptoId } from '@suite-common/trading';
@@ -14,6 +13,7 @@ import {
     type TokenAddress,
     asBaseCurrencyAmount,
 } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Card, Column, Divider, Flag, H4, InfoItem, Row, Text } from '@trezor/components';
 import { TokenIcon, selectShouldShowNetworkIcon } from '@trezor/product-components';
 import { BigNumber, localizeNumber } from '@trezor/utils';

@@ -1,6 +1,6 @@
 import { LearnMoreButton } from '@suite/external-links';
-import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
+import { Translation } from '@suite-lego/intl';
 import { SectionItem } from '@trezor/product-components';
 import { HELP_CENTER_RECOVERY_ISSUES_URL } from '@trezor/urls';
 

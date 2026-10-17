@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Card, Column, H4, Paragraph, Text } from '@trezor/components';
 import { getWeakRandomInt } from '@trezor/utils';
 

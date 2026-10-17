@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 
 import { selectFullSelectedAccount } from '@suite/account';
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Tooltip } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';

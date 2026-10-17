@@ -2,9 +2,9 @@ import * as semver from 'semver';
 
 import { useDevice } from '@suite/device';
 import { useFirmwareDesktopUpdate } from '@suite/firmware-upgrade';
-import { Translation, type TranslationKey } from '@suite/intl';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { Column, H2, Modal, Paragraph, Row, StepList } from '@trezor/components';
 import { type Device } from '@trezor/connect';
 import { DeviceModelInternal, getFirmwareVersion } from '@trezor/device-utils';

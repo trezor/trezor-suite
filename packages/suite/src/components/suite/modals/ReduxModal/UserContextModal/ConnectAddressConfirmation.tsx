@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 
 import { useDevice } from '@suite/device';
-import { Translation } from '@suite/intl';
 import {
     connectPopupActions,
     connectPopupVerifyAddressThunk,
@@ -9,6 +8,7 @@ import {
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
+import { Translation } from '@suite-lego/intl';
 import { Badge, Button, Card, Column, H3, Icon, Modal, Paragraph, Row } from '@trezor/components';
 import { TypedError } from '@trezor/connect-common/src/constants/errors';
 import { useServices } from '@trezor/dependency-injection';

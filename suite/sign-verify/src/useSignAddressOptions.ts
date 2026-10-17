@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { type ExtendedMessageDescriptor, useTranslation } from '@suite/intl';
+import { type ExtendedMessageDescriptor, useTranslation } from '@suite-lego/intl';
 import { type Account, type ReceiveInfo } from '@suite-common/wallet-types';
 import { getStakingPath } from '@suite-common/wallet-utils';
 

@@ -1,6 +1,6 @@
-import { Translation } from '@suite/intl';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { CALL_SOURCE_WALLETCONNECT } from '@suite-common/connect-popup/src/connectPopupTypes';
+import { Translation } from '@suite-lego/intl';
 import { Row, Text } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';

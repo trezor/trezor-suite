@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { Translation } from '@suite/intl';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import * as deviceUtils from '@suite-common/suite-utils';
+import { Translation } from '@suite-lego/intl';
 import { RepeatIcon } from '@trezor/icons';
 
 import { getDeviceResolveStatusCTAMessage } from '../getDeviceResolveStatusCTAMessage';

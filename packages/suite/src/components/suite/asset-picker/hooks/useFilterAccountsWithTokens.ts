@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 
 import { getDefaultAccountLabel } from '@suite/account';
-import { useTranslation } from '@suite/intl';
 import { selectAccountLabelsLegacy } from '@suite/metadata';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { accountSearchFn, isTokenMatchesSearch } from '@suite-common/wallet-utils';
+import { useTranslation } from '@suite-lego/intl';
 
 import { useSelector } from 'src/hooks/suite';
 

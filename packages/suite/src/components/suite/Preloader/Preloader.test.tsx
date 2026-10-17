@@ -61,8 +61,8 @@ window.ResizeObserver = ResizeObserverMock;
 // !!! Must be a stable reference, else it will break some hooks / memoization and causes inf. re-renders
 const translationStringMock = (id: string) => id;
 
-jest.mock('@suite/intl', () => ({
-    ...jest.requireActual('@suite/intl'),
+jest.mock('@suite-lego/intl', () => ({
+    ...jest.requireActual('@suite-lego/intl'),
     Translation: ({ id }: any) => <span data-testid={id}>{id}</span>,
     useTranslation: () => ({ translationString: translationStringMock }),
 }));

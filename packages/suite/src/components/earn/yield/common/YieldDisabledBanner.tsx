@@ -1,8 +1,8 @@
 import { type ReactNode } from 'react';
 
-import { Translation } from '@suite/intl';
 import { type Variant } from '@suite-common/suite-types';
 import type { WrappedNativeFlowType, YieldFlowType } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Banner } from '@trezor/components';
 
 type YieldDisabledBannerProps = {

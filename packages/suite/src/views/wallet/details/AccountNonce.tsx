@@ -1,6 +1,6 @@
-import { Translation } from '@suite/intl';
 import { useEvmNonceInfo } from '@suite-common/wallet-core';
 import { type AccountWithNetworkType } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Paragraph, Skeleton } from '@trezor/components';
 
 type AccountNonceProps = {

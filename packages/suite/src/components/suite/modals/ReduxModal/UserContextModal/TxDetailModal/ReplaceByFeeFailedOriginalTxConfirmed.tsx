@@ -1,6 +1,6 @@
-import { Translation, type TranslationKey } from '@suite/intl';
 import { type NetworkType } from '@suite-common/wallet-config';
 import { type RbfTransactionType } from '@suite-common/wallet-types';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { Box, Card, Column, IconCircle, Text, TextButton } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 import {

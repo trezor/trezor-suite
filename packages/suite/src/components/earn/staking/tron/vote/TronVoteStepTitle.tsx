@@ -1,6 +1,6 @@
 import { useWatch } from 'react-hook-form';
 
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Column, Row, Text } from '@trezor/components';
 
 import { TronVoteRemainingVotes } from './TronVoteRemainingVotes';

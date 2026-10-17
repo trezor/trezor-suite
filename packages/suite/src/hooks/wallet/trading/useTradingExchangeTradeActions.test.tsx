@@ -16,8 +16,8 @@ jest.mock('@suite/device', () => ({
     useDevice: () => ({ device: { connected: true } }),
 }));
 
-jest.mock('@suite/intl', () => ({
-    ...jest.requireActual('@suite/intl'),
+jest.mock('@suite-lego/intl', () => ({
+    ...jest.requireActual('@suite-lego/intl'),
     useTranslation: () => ({ translationString: (id: string) => id }),
 }));
 

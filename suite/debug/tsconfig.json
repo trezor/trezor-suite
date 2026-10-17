@@ -4,7 +4,7 @@
     "references": [
         { "path": "../../suite-common/locale" },
         { "path": "../desktop-app-api" },
-        { "path": "../intl" },
+        { "path": "../../suite-lego/intl" },
         { "path": "../settings" },
         { "path": "../../packages/components" },
         {

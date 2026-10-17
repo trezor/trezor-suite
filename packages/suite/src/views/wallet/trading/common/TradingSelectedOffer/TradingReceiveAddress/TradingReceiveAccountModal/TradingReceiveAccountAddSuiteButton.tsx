@@ -1,9 +1,9 @@
 import { setConnectionModal, setConnectionMode } from '@suite/device';
-import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { selectSelectedDevice } from '@suite-common/device';
 import { cryptoIdToNetworkSymbol } from '@suite-common/trading';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Button } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { PlusIcon } from '@trezor/icons';

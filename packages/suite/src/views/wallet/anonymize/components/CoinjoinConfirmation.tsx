@@ -8,8 +8,8 @@ import {
     selectStartCoinjoinSessionArguments,
     startCoinjoinSessionThunk,
 } from '@suite/coinjoin';
-import { Translation } from '@suite/intl';
 import { type Account } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Button, Card, H3, Note, Paragraph, Tooltip, variables } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { CircuitryIcon, ClockIcon, LockKeyIcon } from '@trezor/icons';

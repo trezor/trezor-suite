@@ -3,7 +3,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { selectIsActivateAssetsBannerClosed, setFlag } from '@suite/flags';
-import { Translation } from '@suite/intl';
 import { preserveModal, removePreserveModal } from '@suite/modal';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -11,6 +10,7 @@ import {
     selectEnabledNetworks,
     startOrRestartDiscoveryThunk,
 } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Column, Modal, Switch, motionEasing } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { InfoIcon } from '@trezor/icons';

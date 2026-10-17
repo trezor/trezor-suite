@@ -2,9 +2,9 @@ import { Fragment } from 'react';
 
 import styled from 'styled-components';
 
-import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Grid, Row, Text, Tooltip } from '@trezor/components';
 import { TokenIconSet } from '@trezor/product-components';

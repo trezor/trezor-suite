@@ -1,5 +1,5 @@
 import { TrezorLink } from '@suite/external-links';
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 
 import { useOpenSuiteDesktop } from 'src/hooks/suite/useOpenSuiteDesktop';
 

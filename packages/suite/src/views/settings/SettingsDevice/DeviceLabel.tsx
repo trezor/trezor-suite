@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
 import { FormProvider } from 'react-hook-form';
 
-import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
+import { Translation } from '@suite-lego/intl';
 import { SectionItem } from '@trezor/product-components';
 
 import { ChangeDeviceLabelForm } from 'src/components/suite/ChangeDeviceLabelForm';

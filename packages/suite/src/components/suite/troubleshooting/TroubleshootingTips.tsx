@@ -1,6 +1,6 @@
 import { type ReactNode, useState } from 'react';
 
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Banner, type BannerIntent, Box, Button, Column, Modal } from '@trezor/components';
 import { QuestionIcon } from '@trezor/icons';
 

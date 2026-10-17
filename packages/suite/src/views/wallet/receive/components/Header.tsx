@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
-import { Translation } from '@suite/intl';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { Translation } from '@suite-lego/intl';
 import { H2, Paragraph } from '@trezor/components';
 
 import { type Account } from 'src/types/wallet';

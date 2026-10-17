@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { type UpdateProgress } from '@suite/desktop-app-api';
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Column, H3, Modal, Paragraph, ProgressBar, Text } from '@trezor/components';
 import { DownloadIcon } from '@trezor/icons';
 import { bytesToHumanReadable } from '@trezor/utils';

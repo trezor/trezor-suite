@@ -1,4 +1,3 @@
-import { type TranslationKey } from '@suite/intl';
 import {
     type TradingComposedTransactionInfo,
     type TradingProviderInfo,
@@ -6,6 +5,7 @@ import {
 } from '@suite-common/trading';
 import { type NetworkType } from '@suite-common/wallet-config';
 import { type FeeInfo } from '@suite-common/wallet-types';
+import { type TranslationKey } from '@suite-lego/intl';
 import { type StepListItemState } from '@trezor/components';
 
 export type DetailHeaderMessages = { title: TranslationKey; description: TranslationKey };

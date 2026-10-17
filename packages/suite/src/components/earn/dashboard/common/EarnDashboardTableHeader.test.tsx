@@ -8,8 +8,8 @@ import { EarnDashboardTableHeader } from './EarnDashboardTableHeader';
 
 type TranslationProps = { id: string };
 
-jest.mock('@suite/intl', () => ({
-    ...jest.requireActual('@suite/intl'),
+jest.mock('@suite-lego/intl', () => ({
+    ...jest.requireActual('@suite-lego/intl'),
     Translation: ({ id }: TranslationProps) => <span>{id}</span>,
 }));
 

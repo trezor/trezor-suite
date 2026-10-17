@@ -2,9 +2,9 @@ import { useRef } from 'react';
 
 import { type DexApprovalType } from 'invity-api';
 
-import { Translation, type TranslationKey } from '@suite/intl';
 import { type NetworkSymbol, getDisplaySymbol } from '@suite-common/wallet-config';
 import { type AmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import {
     CardList,

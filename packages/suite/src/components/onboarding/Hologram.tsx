@@ -1,9 +1,9 @@
 import { useRef } from 'react';
 
 import { TrezorLink } from '@suite/external-links';
-import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import { getPackagingUrl } from '@suite-common/suite-utils';
+import { Translation } from '@suite-lego/intl';
 import { Column, Image, Paragraph, Row } from '@trezor/components';
 import { DEFAULT_FLAGSHIP_MODEL } from '@trezor/device';
 import { DeviceModelInternal } from '@trezor/device-utils';

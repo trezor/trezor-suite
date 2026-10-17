@@ -1,4 +1,4 @@
-import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
+import { type ExtendedMessageDescriptor, Translation } from '@suite-lego/intl';
 import { Banner, Paragraph, Text } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 

@@ -1,10 +1,10 @@
 import { type ReactNode, useState } from 'react';
 
 import { injectDesktopAnalytics } from '@suite/analytics';
-import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics-redux';
 import { selectSupportChatUrl } from '@suite-common/support';
+import { Translation } from '@suite-lego/intl';
 import { Button, Card, Checkbox, Column, Paragraph, Popover, variables } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { ArrowLineUpRightIcon } from '@trezor/icons';

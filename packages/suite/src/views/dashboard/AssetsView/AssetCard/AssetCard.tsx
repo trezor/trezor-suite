@@ -1,5 +1,4 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import { type AssetFiatBalance } from '@suite-common/assets';
@@ -8,6 +7,7 @@ import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectAnyAccountIsStakingActive, useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { type Account, type RatesByKey } from '@suite-common/wallet-types';
 import { type AmountUnit } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Card, Column, Icon, InfoItem, Note, Row, Skeleton, Text } from '@trezor/components';
 import { type TokenInfo } from '@trezor/connect';

@@ -1,10 +1,10 @@
-import { messages } from '@suite/intl';
 import { mnemonic12Fixtures } from '@suite-common/e2e-evolu-client';
 import {
     DEFAULT_ACCOUNT_INCREMENT_SIZE_QUOTA,
     DEFAULT_DEVICE_SIZE_QUOTA,
 } from '@suite-common/suite-sync-quota-manager';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { messages } from '@suite-lego/intl';
 import { TestStream } from '@trezor/e2e-utils';
 
 import { AccountLabelId } from '../../../support/enums/accountLabelId';

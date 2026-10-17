@@ -1,7 +1,7 @@
 import { FormProvider, useWatch } from 'react-hook-form';
 
-import { Translation } from '@suite/intl';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Card, Column, Divider, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 

@@ -1,6 +1,6 @@
-import { Translation } from '@suite/intl';
 import { onReceiveConfirmationThunk } from '@suite/modal';
 import { SettingsAnchor, gotoThunk } from '@suite/router';
+import { Translation } from '@suite-lego/intl';
 import { H2, Modal, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { WarningIcon } from '@trezor/icons';

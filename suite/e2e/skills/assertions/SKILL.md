@@ -20,7 +20,7 @@ MUST_NOT: Compare against untranslated strings (use translation key validation)
 
 Apply in this order:
 
-1. **Translations** (references from translation definitions in `suite/intl/src/messages.ts`)
+1. **Translations** (references from translation definitions in `suite-lego/intl/src/messages.ts`)
 
     ```typescript
     await expect(header).toHaveTranslation('TR_SEND_TITLE');

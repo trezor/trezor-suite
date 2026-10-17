@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-import { Translation, type TranslationKey, isTranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey, isTranslationKey } from '@suite-lego/intl';
 import { Row, Text, type TextProps } from '@trezor/components';
 
 export type AssetGroupLabelProps = {

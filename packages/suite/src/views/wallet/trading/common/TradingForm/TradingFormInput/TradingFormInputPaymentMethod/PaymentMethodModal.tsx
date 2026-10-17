@@ -1,12 +1,12 @@
 import { useCallback } from 'react';
 import { type UseFormSetValue } from 'react-hook-form';
 
-import { Translation, type TranslationKey } from '@suite/intl';
 import {
     TRADING_FORM_PAYMENT_METHOD_SELECT,
     TRADING_FORM_PROVIDER_SELECT,
     selectTradingQuotesPerPaymentMethodByType,
 } from '@suite-common/trading';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { Modal } from '@trezor/components';
 import { CardList } from '@trezor/product-components';
 

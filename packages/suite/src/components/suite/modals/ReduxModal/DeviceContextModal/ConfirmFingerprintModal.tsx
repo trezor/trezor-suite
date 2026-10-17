@@ -1,6 +1,6 @@
 import { Fingerprint } from '@suite/firmware-upgrade';
-import { Translation } from '@suite/intl';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
+import { Translation } from '@suite-lego/intl';
 import { Card, Modal } from '@trezor/components';
 import { getDeviceColorVariant } from '@trezor/device-utils';
 import { ConfirmOnDevicePill } from '@trezor/product-components';

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { type FieldError } from 'react-hook-form';
 
 import { useDevice } from '@suite/device';
-import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
+import { Translation, type TranslationKey, useTranslation } from '@suite-lego/intl';
 import {
     getHasSelectableSignatureFormat,
     isVerifySupported,

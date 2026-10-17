@@ -1,10 +1,10 @@
 import { selectFullSelectedAccount } from '@suite/account';
-import { Translation } from '@suite/intl';
 import {
     selectAccountStakeTypeTransactions,
     selectAccountTransactionsWithNulls,
     selectAreAllTransactionsLoaded,
 } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 
 import { useSelector } from 'src/hooks/suite';
 import { TransactionList } from 'src/views/wallet/transactions/TransactionList/TransactionList';
