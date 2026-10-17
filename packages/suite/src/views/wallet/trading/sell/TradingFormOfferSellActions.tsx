@@ -18,6 +18,11 @@ import { TradingFormOfferOTC } from 'src/views/wallet/trading/common/TradingForm
 import { useTradingFormOfferCommon } from 'src/views/wallet/trading/common/TradingForm/TradingFormOffer/hooks/useTradingFormOfferCommon';
 
 export const TradingFormOfferSellActions = () => {
+    // React Compiler: `watch` keeps one identity for the form's whole life, so a compiled
+    // render-time read of it freezes on the first render. Remove once these reads move to
+    // `useWatch` or out of render.
+    'use no memo';
+
     const { dispatch } = useServices(injectDispatch);
     const context = useTradingFormContext<'sell'>();
     const {

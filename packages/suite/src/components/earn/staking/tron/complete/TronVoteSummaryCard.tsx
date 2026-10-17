@@ -8,6 +8,11 @@ import { parseVoteCount } from '../utils/voteUtils';
 import { TronVoteAllocationTable } from '../vote/TronVoteAllocationTable';
 
 export const TronVoteSummaryCard = () => {
+    // React Compiler: `getValues` keeps one identity for the form's whole life, so a compiled
+    // render-time read of it freezes on the first render. Remove once these reads move to
+    // `useWatch` or out of render.
+    'use no memo';
+
     const { form, representatives } = useTronStakeContext();
 
     const allocations = form.methods

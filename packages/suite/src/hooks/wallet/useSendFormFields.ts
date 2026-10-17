@@ -1,3 +1,11 @@
+'use no memo';
+
+// `getDefaultValue` below is a plain closure over react-hook-form's `getValues`, which is
+// referentially stable for the component's whole life (`useForm()` returns a `useRef` payload).
+// The React Compiler would therefore stabilise `getDefaultValue` itself, freezing the imperative
+// form reads in all of its consumers on their first-render values. Opting this file out keeps
+// today's fresh-function-per-render semantics. Remove only once those consumers read the form
+// through `useWatch` instead of calling `getDefaultValue()` during render.
 import { useCallback } from 'react';
 import { type FieldPath, type UseFormReturn } from 'react-hook-form';
 
