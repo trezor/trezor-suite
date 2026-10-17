@@ -2,7 +2,7 @@ import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 import { type MiddlewareAPI } from 'redux';
 
 import { selectFullSelectedAccount } from '@suite/account';
-import { routerLocationChange } from '@suite/router';
+import { type Route, routerLocationChange, selectRouteName } from '@suite/router';
 import {
     selectTradingAccountAccordingActiveSection,
     selectTradingAccountKeyByTradeType,
@@ -18,11 +18,30 @@ import {
 
 import { type AppState } from 'src/types/suite';
 
+const TRADING_ENTRY_ROUTES: Route['name'][] = [
+    'wallet-trading-buy',
+    'wallet-trading-sell',
+    'wallet-trading-exchange',
+    'wallet-trading-redirect',
+];
+
+const isTradingSectionRoute = (routeName: Route['name'] | undefined): boolean =>
+    !!routeName && TRADING_ENTRY_ROUTES.some(entryRoute => routeName.startsWith(entryRoute));
+
+const isTradingEntryRoute = (routeName: Route['name'] | undefined): boolean =>
+    !!routeName && TRADING_ENTRY_ROUTES.includes(routeName);
+
+const resetTradingAccountKeys = (dispatch: Dispatch<UnknownAction>) => {
+    dispatch(tradingExchangeActions.setTradingAccountKey(undefined));
+    dispatch(tradingBuyActions.setTradingAccountKey(undefined));
+    dispatch(tradingSellActions.setTradingAccountKey(undefined));
+};
+
 export const tradingMiddleware =
     (api: MiddlewareAPI<Dispatch<UnknownAction>, AppState>) =>
     (next: Dispatch<UnknownAction>) =>
     (action: UnknownAction): UnknownAction => {
-        const state = api.getState();
+        const prevState = api.getState();
 
         next(action);
 
@@ -30,10 +49,10 @@ export const tradingMiddleware =
         const nextState = api.getState();
 
         const isRouteChange = action.type === routerLocationChange.type;
-        let activeSection = selectTradingActiveSection(state);
+        let activeSection = selectTradingActiveSection(nextState);
 
         if (isRouteChange) {
-            const routeName = nextState.router.route?.name;
+            const routeName = selectRouteName(nextState);
             const isTradingRoute = !!routeName?.includes('wallet-trading');
             const isBuyForm = routeName === 'wallet-trading-buy';
             const isBuy = !!routeName?.startsWith('wallet-trading-buy');
@@ -43,7 +62,6 @@ export const tradingMiddleware =
                 'wallet-trading-exchange',
                 'wallet-trading-exchange-confirm',
             ].some(name => name === routeName);
-            const isExchangeTransactionDetail = routeName === 'wallet-trading-exchange-detail';
             const nextModalAccountKey = selectTradingModalAccountKey(nextState);
             const prefilledFromAccount = selectTradingPrefilledFromAccount(nextState);
 
@@ -53,6 +71,14 @@ export const tradingMiddleware =
                 api.dispatch(tradingActions.setModalCryptoCurrency(undefined));
             }
 
+            const hasEnteredTradingSection =
+                !isTradingSectionRoute(selectRouteName(prevState)) &&
+                isTradingEntryRoute(routeName);
+
+            if (hasEnteredTradingSection) {
+                resetTradingAccountKeys(api.dispatch);
+            }
+
             if (isBuyForm) {
                 activeSection = 'buy';
                 api.dispatch(tradingActions.setTradingActiveSection(activeSection));
@@ -60,7 +86,7 @@ export const tradingMiddleware =
                 if (prefilledFromAccount.key) {
                     api.dispatch(tradingBuyActions.setTradingAccountKey(prefilledFromAccount.key));
                     api.dispatch(tradingBuyActions.setReceiveAccountKey(prefilledFromAccount.key));
-                } else {
+                } else if (!hasEnteredTradingSection) {
                     // When switching from sell tab, carry over the sell account key
                     const sellAccountKey = selectTradingAccountKeyByTradeType(nextState, 'sell');
                     if (sellAccountKey) {
@@ -79,7 +105,7 @@ export const tradingMiddleware =
                 api.dispatch(tradingSellActions.saveTransactionId(undefined));
                 if (prefilledFromAccount.key) {
                     api.dispatch(tradingSellActions.setTradingAccountKey(prefilledFromAccount.key));
-                } else {
+                } else if (!hasEnteredTradingSection) {
                     // When switching from buy tab, carry over the buy account key
                     const buyAccountKey = selectTradingAccountKeyByTradeType(nextState, 'buy');
                     if (buyAccountKey) {
@@ -98,13 +124,12 @@ export const tradingMiddleware =
                 api.dispatch(tradingExchangeActions.saveTransactionId(undefined));
             }
 
-            const isInTradingSection =
-                isBuy || isSell || isExchangeCreationFlow || isExchangeTransactionDetail;
+            const hasLeftTradingSection =
+                isTradingSectionRoute(selectRouteName(prevState)) &&
+                !isTradingSectionRoute(routeName);
 
-            if (!isInTradingSection) {
-                api.dispatch(tradingExchangeActions.setTradingAccountKey(undefined));
-                api.dispatch(tradingBuyActions.setTradingAccountKey(undefined));
-                api.dispatch(tradingSellActions.setTradingAccountKey(undefined));
+            if (hasLeftTradingSection) {
+                resetTradingAccountKeys(api.dispatch);
                 api.dispatch(
                     tradingActions.setTradingFromPrefilledAccount({
                         key: undefined,
@@ -117,11 +142,12 @@ export const tradingMiddleware =
         // after an account change in the Sell or Swap update the tradeApiKey based on the account
         const isForSettingAccountKey =
             tradingExchangeActions.setTradingAccountKey.type === action.type ||
-            tradingSellActions.setTradingAccountKey.type === action.type;
+            tradingSellActions.setTradingAccountKey.type === action.type ||
+            (tradingActions.bindTradingAccount.match(action) && action.payload.type !== 'buy');
         const account = selectTradingAccountAccordingActiveSection(
             nextState,
             activeSection,
-            selectFullSelectedAccount(state),
+            selectFullSelectedAccount(prevState),
         );
 
         if (isForSettingAccountKey && account) {

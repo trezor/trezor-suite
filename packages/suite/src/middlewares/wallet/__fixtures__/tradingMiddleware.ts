@@ -50,6 +50,54 @@ const TRADING_EXCHANGE_ROUTE = {
     settingsBackRoute: { name: 'wallet-index', params: undefined },
 } as RouterState;
 
+const TRADING_EXCHANGE_CONFIRM_ROUTE = {
+    anchor: undefined,
+    app: 'wallet',
+    hash: '#/btc/0/normal',
+    search: '',
+    loaded: true,
+    params: { symbol: 'btc', accountIndex: 0, accountType: 'normal' },
+    pathname: '/accounts/coinmarket/exchange/confirm',
+    route: {
+        name: 'wallet-trading-exchange-confirm',
+        pattern: '/accounts/coinmarket/exchange/confirm',
+        app: 'wallet',
+    } as Route,
+    settingsBackRoute: { name: 'wallet-index', params: undefined },
+} as RouterState;
+
+const TRADING_REDIRECT_ROUTE = {
+    anchor: undefined,
+    app: 'wallet',
+    hash: '',
+    search: '',
+    loaded: true,
+    params: undefined,
+    pathname: '/coinmarket-redirect',
+    route: {
+        name: 'wallet-trading-redirect',
+        pattern: '/coinmarket-redirect',
+        app: 'wallet',
+    } as Route,
+    settingsBackRoute: { name: 'suite-index', params: undefined },
+} as RouterState;
+
+const WALLET_INDEX_ROUTE = {
+    anchor: undefined,
+    app: 'wallet',
+    hash: '#/btc/0/normal',
+    search: '',
+    loaded: true,
+    params: { symbol: 'btc', accountIndex: 0, accountType: 'normal' },
+    pathname: '/accounts',
+    route: {
+        name: 'wallet-index',
+        pattern: '/accounts',
+        app: 'wallet',
+    } as Route,
+    settingsBackRoute: { name: 'suite-index', params: undefined },
+} as RouterState;
+
 const DEFAULT_ROUTE = {
     loaded: false,
     pathname: '/',
@@ -67,5 +115,8 @@ export const tradingMiddlewareFixtures = {
     TRADING_BUY_ROUTE,
     TRADING_SELL_ROUTE,
     TRADING_EXCHANGE_ROUTE,
+    TRADING_EXCHANGE_CONFIRM_ROUTE,
+    TRADING_REDIRECT_ROUTE,
+    WALLET_INDEX_ROUTE,
     DEFAULT_ROUTE,
 };

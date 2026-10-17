@@ -1,4 +1,4 @@
-import { type CryptoId } from 'invity-api';
+import { type BuyTradeQuoteRequest, type CryptoId } from 'invity-api';
 import { combineReducers } from 'redux';
 
 import { type SelectedAccountState, selectedAccountReducer } from '@suite/account';
@@ -16,6 +16,7 @@ import {
     initialState,
     prepareTradingReducer,
     tradeApi,
+    tradingActions,
     tradingExchangeActions,
     tradingSellActions,
 } from '@suite-common/trading';
@@ -267,6 +268,154 @@ describe('tradingMiddleware', () => {
         expect(store.getState().wallet.trading.prefilledFromAccount).toEqual(result);
     });
 
+    it('should keep trading account keys when route is changed between non-trading routes', () => {
+        const boundAccountKey = mockAccountKey({ descriptor: 'boundaccountkey' });
+        const store = initStore(
+            getInitialState({
+                trading: {
+                    ...initialState,
+                    buy: { ...initialState.buy, tradingAccountKey: boundAccountKey },
+                    sell: { ...initialState.sell, tradingAccountKey: boundAccountKey },
+                    exchange: { ...initialState.exchange, tradingAccountKey: boundAccountKey },
+                },
+                router: routerReducer(tradingMiddlewareFixtures.WALLET_INDEX_ROUTE, {
+                    type: 'init',
+                }),
+            }),
+        );
+
+        store.dispatch(routerLocationChange({ ...tradingMiddlewareFixtures.DEFAULT_ROUTE }));
+
+        const { buy, sell, exchange } = store.getState().wallet.trading;
+
+        expect([buy.tradingAccountKey, sell.tradingAccountKey, exchange.tradingAccountKey]).toEqual(
+            [boundAccountKey, boundAccountKey, boundAccountKey],
+        );
+    });
+
+    it('should reset trading account keys when a trading form is entered from outside the trading section', () => {
+        const boundAccountKey = mockAccountKey({ descriptor: 'boundaccountkey' });
+        const prefilledAccountKey = mockAccountKey({ descriptor: 'prefilledaccountkey' });
+        const store = initStore(
+            getInitialState({
+                trading: {
+                    ...initialState,
+                    exchange: { ...initialState.exchange, tradingAccountKey: boundAccountKey },
+                    prefilledFromAccount: { key: prefilledAccountKey, cryptoId: undefined },
+                },
+                router: routerReducer(tradingMiddlewareFixtures.WALLET_INDEX_ROUTE, {
+                    type: 'init',
+                }),
+            }),
+        );
+
+        store.dispatch(
+            routerLocationChange({ ...tradingMiddlewareFixtures.TRADING_EXCHANGE_ROUTE }),
+        );
+
+        const { exchange, prefilledFromAccount } = store.getState().wallet.trading;
+
+        expect(exchange.tradingAccountKey).toBeUndefined();
+        expect(prefilledFromAccount.key).toBe(prefilledAccountKey);
+    });
+
+    it('should keep trading account keys when a confirm route is entered from outside the trading section', () => {
+        const boundAccountKey = mockAccountKey({ descriptor: 'boundaccountkey' });
+        const store = initStore(
+            getInitialState({
+                trading: {
+                    ...initialState,
+                    exchange: { ...initialState.exchange, tradingAccountKey: boundAccountKey },
+                },
+                router: routerReducer(tradingMiddlewareFixtures.WALLET_INDEX_ROUTE, {
+                    type: 'init',
+                }),
+            }),
+        );
+
+        store.dispatch(
+            routerLocationChange({ ...tradingMiddlewareFixtures.TRADING_EXCHANGE_CONFIRM_ROUTE }),
+        );
+
+        expect(store.getState().wallet.trading.exchange.tradingAccountKey).toBe(boundAccountKey);
+    });
+
+    it('should reset trading account keys when the trading redirect is entered from outside the trading section', () => {
+        const boundAccountKey = mockAccountKey({ descriptor: 'boundaccountkey' });
+        const store = initStore(
+            getInitialState({
+                trading: {
+                    ...initialState,
+                    exchange: { ...initialState.exchange, tradingAccountKey: boundAccountKey },
+                },
+                router: routerReducer(tradingMiddlewareFixtures.WALLET_INDEX_ROUTE, {
+                    type: 'init',
+                }),
+            }),
+        );
+
+        store.dispatch(
+            routerLocationChange({ ...tradingMiddlewareFixtures.TRADING_REDIRECT_ROUTE }),
+        );
+
+        expect(store.getState().wallet.trading.exchange.tradingAccountKey).toBeUndefined();
+    });
+
+    it('should keep the quote request prepared by the trading redirect when the form is entered', () => {
+        const prefilledAccountKey = mockAccountKey({ descriptor: 'prefilledaccountkey' });
+        const quotesRequest: BuyTradeQuoteRequest = {
+            wantCrypto: false,
+            fiatCurrency: 'EUR',
+            receiveCurrency: 'bitcoin' as CryptoId,
+            fiatStringAmount: '10',
+            country: 'CZ',
+        };
+        const store = initStore(
+            getInitialState({
+                trading: {
+                    ...initialState,
+                    buy: { ...initialState.buy, quotesRequest },
+                    prefilledFromAccount: { key: prefilledAccountKey, cryptoId: undefined },
+                },
+                router: routerReducer(tradingMiddlewareFixtures.TRADING_REDIRECT_ROUTE, {
+                    type: 'init',
+                }),
+            }),
+        );
+
+        store.dispatch(routerLocationChange({ ...tradingMiddlewareFixtures.TRADING_BUY_ROUTE }));
+
+        expect(store.getState().wallet.trading.buy.quotesRequest).toEqual(quotesRequest);
+        expect(store.getState().wallet.trading.buy.tradingAccountKey).toBe(prefilledAccountKey);
+    });
+
+    it.each([
+        ['sell' as const, 'buy' as const, tradingMiddlewareFixtures.TRADING_BUY_ROUTE],
+        ['buy' as const, 'sell' as const, tradingMiddlewareFixtures.TRADING_SELL_ROUTE],
+    ])(
+        'should not carry the %s account key over to %s when the form is entered from outside the trading section',
+        (source, target, route) => {
+            const boundAccountKey = mockAccountKey({ descriptor: 'boundaccountkey' });
+            const trading: TradingState = {
+                ...initialState,
+                [source]: { ...initialState[source], tradingAccountKey: boundAccountKey },
+            };
+            const store = initStore(
+                getInitialState({
+                    trading,
+                    router: routerReducer(tradingMiddlewareFixtures.WALLET_INDEX_ROUTE, {
+                        type: 'init',
+                    }),
+                }),
+            );
+
+            store.dispatch(routerLocationChange({ ...route }));
+
+            expect(store.getState().wallet.trading[target].tradingAccountKey).toBeUndefined();
+            expect(store.getState().wallet.trading[source].tradingAccountKey).toBeUndefined();
+        },
+    );
+
     it.each([
         ['buy' as const, tradingMiddlewareFixtures.TRADING_BUY_ROUTE],
         ['sell' as const, tradingMiddlewareFixtures.TRADING_SELL_ROUTE],
@@ -342,4 +491,33 @@ describe('tradingMiddleware', () => {
             'btc-descriptor',
         );
     });
+
+    it.each([
+        ['exchange' as const, 1],
+        ['sell' as const, 1],
+        ['buy' as const, 0],
+    ])(
+        'should create new invity API key when the %s section is bound to an account',
+        (type, calls) => {
+            const store = initStore(
+                getInitialState({
+                    trading: {
+                        ...initialState,
+                    },
+                    router: {
+                        ...getInitialState().router,
+                    },
+                }),
+            );
+
+            store.dispatch(
+                tradingActions.bindTradingAccount({
+                    type,
+                    accountKey: 'btc-descriptor' as AccountKey,
+                }),
+            );
+
+            expect(tradeApi.createApiKey).toHaveBeenCalledTimes(calls);
+        },
+    );
 });

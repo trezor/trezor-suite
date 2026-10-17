@@ -2,6 +2,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { getProviderMetadataFixture } from './__fixtures__/providerMetadata';
@@ -14,10 +15,17 @@ import { prepareTradingReducer } from './tradingReducer';
 import { buyThunks } from '../thunks/buy';
 import { exchangeThunks } from '../thunks/exchange';
 import { sellThunks } from '../thunks/sell';
+import { type TradingAmountLimitProps, type TradingType } from '../types';
 
 const tradingReducer = prepareTradingReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
 });
+
+const sectionActions = {
+    buy: tradingBuyActions,
+    sell: tradingSellActions,
+    exchange: tradingExchangeActions,
+} satisfies Record<TradingType, unknown>;
 
 describe('Testing trading reducer', () => {
     tradingFixtures.forEach(f => {
@@ -207,6 +215,69 @@ describe('Testing trading reducer', () => {
                 expect(store.getState().wallet.trading.currentProviderMetadata).toEqual(
                     providerMetadata,
                 );
+            });
+
+            describe('bindTradingAccount', () => {
+                const previousAccountKey = mockAccountKey({ descriptor: 'previousaccount' });
+                const hostAccountKey = mockAccountKey({ descriptor: 'hostaccount' });
+                const amountLimits: TradingAmountLimitProps = { currency: 'BTC' };
+
+                const fillSection = (type: TradingType, accountKey: AccountKey) => {
+                    store.dispatch(sectionActions[type].setTradingAccountKey(accountKey));
+                    store.dispatch(sectionActions[type].setAmountLimits(amountLimits));
+                    store.dispatch(sectionActions[type].saveTransactionId('stale-order'));
+                };
+
+                it.each<TradingType>(['buy', 'sell', 'exchange'])(
+                    'binds the %s section to another account and drops the previous form state',
+                    type => {
+                        fillSection(type, previousAccountKey);
+
+                        store.dispatch(
+                            tradingActions.bindTradingAccount({ type, accountKey: hostAccountKey }),
+                        );
+
+                        expect(store.getState().wallet.trading.activeSection).toBe(type);
+                        expect(store.getState().wallet.trading[type]).toEqual(
+                            expect.objectContaining({
+                                tradingAccountKey: hostAccountKey,
+                                transactionId: undefined,
+                                amountLimits: undefined,
+                            }),
+                        );
+                    },
+                );
+
+                it('binds the buy receive account as well', () => {
+                    store.dispatch(
+                        tradingActions.bindTradingAccount({
+                            type: 'buy',
+                            accountKey: hostAccountKey,
+                        }),
+                    );
+
+                    expect(store.getState().wallet.trading.buy.receiveAccountKey).toBe(
+                        hostAccountKey,
+                    );
+                });
+
+                it('keeps the form state when the same account is bound again', () => {
+                    fillSection('sell', hostAccountKey);
+
+                    store.dispatch(
+                        tradingActions.bindTradingAccount({
+                            type: 'sell',
+                            accountKey: hostAccountKey,
+                        }),
+                    );
+
+                    expect(store.getState().wallet.trading.sell).toEqual(
+                        expect.objectContaining({
+                            transactionId: undefined,
+                            amountLimits,
+                        }),
+                    );
+                });
             });
         });
 
