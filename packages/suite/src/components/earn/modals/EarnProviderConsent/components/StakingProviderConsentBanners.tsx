@@ -41,6 +41,33 @@ export const StakingProviderConsentBanners = ({
                 </>
             );
         case 'cardano':
+            return (
+                <>
+                    <Banner
+                        icon={FileFilledIcon}
+                        intent="info"
+                        description={
+                            <Translation
+                                id="TR_EARN_BY_STAKING_YOU_CAN_EARN_REWARDS"
+                                values={{
+                                    networkDisplaySymbol: displaySymbol,
+                                    t: text => <strong>{text}</strong>,
+                                }}
+                            />
+                        }
+                    />
+                    <Banner
+                        icon={ShieldWarningFilledIcon}
+                        intent="info"
+                        description={
+                            <Translation
+                                id="TR_EARN_CARDANO_STAKE_STAYS_IN_WALLET"
+                                values={{ symbol: displaySymbol }}
+                            />
+                        }
+                    />
+                </>
+            );
         case 'solana':
             return (
                 <>
