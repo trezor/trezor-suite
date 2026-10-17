@@ -8,7 +8,7 @@ inputs:
     description: "Currents API key used to fetch quarantine actions"
     required: true
   project_name:
-    description: "Project name to filter results to a single project (e.g. 'web', 'desktop'). Omit to list all projects."
+    description: "Project name to filter results (e.g. 'web', 'desktop', or 'native' for combined iOS and Android). Omit to list all projects."
     required: false
     default: ""
 
@@ -24,16 +24,24 @@ runs:
       shell: bash
       env:
         CURRENTS_API_KEY: ${{ inputs.currents_api_key }}
+        PROJECT_NAME: ${{ inputs.project_name }}
       run: |
-        PROJECT_ARGS=()
-        if [ -n "${{ inputs.project_name }}" ]; then
-          PROJECT_ARGS+=(--project "${{ inputs.project_name }}")
+        if [ "$PROJECT_NAME" = "native" ]; then
+          PROJECT_NAMES=(ios android)
+        else
+          PROJECT_NAMES=("$PROJECT_NAME")
         fi
         # npx used because `yarn` does not run in this action; the pinned version may be updated if it changes in root package.json
         npm i -g tsx@4.21.0
-        npx tsx@4.21.0 \
-          "${{ github.workspace }}/packages/e2e-utils/src/quarantineBot/index.ts" \
-          --list "${PROJECT_ARGS[@]}" > "${{ runner.temp }}/quarantine.json"
+        for PROJECT in "${PROJECT_NAMES[@]}"; do
+          PROJECT_ARGS=()
+          if [ -n "$PROJECT" ]; then
+            PROJECT_ARGS+=(--project "$PROJECT")
+          fi
+          npx tsx@4.21.0 \
+            "${{ github.workspace }}/packages/e2e-utils/src/quarantineBot/index.ts" \
+            --list "${PROJECT_ARGS[@]}" > "${{ runner.temp }}/quarantine-${PROJECT:-all}.json"
+        done
 
     - name: Update PR description with quarantine list
       uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
@@ -41,10 +49,30 @@ runs:
         github-token: ${{ inputs.github_token }}
         script: |
           const fs = require('fs');
-          const raw = fs.readFileSync('${{ runner.temp }}/quarantine.json', 'utf8');
-          const report = JSON.parse(raw);
-
           const projectName = '${{ inputs.project_name }}';
+          const isNative = projectName === 'native';
+          const reportDirectory = '${{ runner.temp }}';
+          const readReport = name => {
+            const raw = fs.readFileSync(`${reportDirectory}/quarantine-${name || 'all'}.json`, 'utf8');
+            return JSON.parse(raw);
+          };
+
+          let report;
+          if (isNative) {
+            const platforms = [
+              { name: 'ios', label: '🍎 iOS' },
+              { name: 'android', label: '🤖 Android' },
+            ];
+            const tests = platforms.flatMap(platform =>
+              readReport(platform.name).flatMap(project =>
+                project.tests.map(test => ({ ...test, platform: platform.label }))
+              )
+            );
+            report = [{ projectLabel: 'Trezor Suite Native', tests }];
+          } else {
+            report = readReport(projectName);
+          }
+
           const suffix = projectName ? `:${projectName}` : '';
           const START_MARKER = `<!-- QUARANTINE-LIST${suffix}:START -->`;
           const END_MARKER   = `<!-- QUARANTINE-LIST${suffix}:END -->`;
@@ -68,12 +96,13 @@ runs:
             } else {
               lines.push(`<details><summary>${summary}</summary>`);
               lines.push('');
-              lines.push('| Test | Type |');
-              lines.push('|------|------|');
+              lines.push(isNative ? '| Test | Type | Platform |' : '| Test | Type |');
+              lines.push(isNative ? '|------|------|----------|' : '|------|------|');
               for (const t of project.tests) {
                 const type = t.isAutoQuarantine ? '🤖 auto' : '🙋 manual';
                 const name = t.name.replace(/\|/g, '\\|');
-                lines.push(`| ${name} | ${type} |`);
+                const platformCell = isNative ? ` ${t.platform} |` : '';
+                lines.push(`| ${name} | ${type} |${platformCell}`);
               }
               lines.push('');
               lines.push('</details>');
