@@ -31,9 +31,10 @@ export const CardanoVotingPreference = ({ account }: CardanoVotingPreferenceProp
 
     if (account.networkType !== 'cardano') return null;
 
-    const options = accountVotingDelegation
-        ? [KEEP_CURRENT_OPTION, ...VOTING_PREFERENCE_OPTIONS]
-        : VOTING_PREFERENCE_OPTIONS;
+    const options =
+        accountVotingDelegation?.type === 'current'
+            ? [KEEP_CURRENT_OPTION, ...VOTING_PREFERENCE_OPTIONS]
+            : VOTING_PREFERENCE_OPTIONS;
 
     return (
         <VotingPreferenceCard

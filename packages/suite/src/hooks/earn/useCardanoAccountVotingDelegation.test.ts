@@ -3,7 +3,7 @@ import { act, renderHook } from '@testing-library/react';
 
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { CARDANO_EVERSTAKE_DREP } from '@suite-common/wallet-constants';
+import { CARDANO_EVERSTAKE_DREP, CARDANO_LEGACY_TREZOR_DREP } from '@suite-common/wallet-constants';
 import { DEFAULT_VOTING_OPTION, stakeActions, stakeInitialState } from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 
@@ -20,6 +20,8 @@ import { mockInitialAppState } from '../../../mocks/mockInitialAppState';
 // Not the Everstake DRep: its legacy spelling normalises to CARDANO_EVERSTAKE_DREP.
 const CUSTOM_DREP_ID = 'drep1g2d3y3skgr806wj2ryhhc5ca3akx6vmppde87jq7kgknjmv589e';
 const PREDEFINED_DREP_ID = 'drep_always_abstain';
+// CIP-105 spelling of CARDANO_LEGACY_TREZOR_DREP, as an older backend reports it.
+const LEGACY_TREZOR_DREP_CIP105 = 'drep1000002hneyj7jl9y95m0zxdsg6dp9n9y59lvlm7xjqp4qh2jx7h';
 const ACCOUNT_KEY = 'ada-account-key' as AccountKey;
 const OTHER_ACCOUNT_KEY = 'other-ada-account-key' as AccountKey;
 
@@ -64,6 +66,24 @@ describe('useCardanoAccountVotingDelegation', () => {
         );
 
         expect(result.current).toEqual({ type: 'current' });
+    });
+
+    it('moves the legacy Trezor DRep to Everstake instead of keeping it', () => {
+        const { result } = renderHook(() =>
+            useCardanoAccountVotingDelegation(
+                createCardanoAccount(CARDANO_LEGACY_TREZOR_DREP.bech32),
+            ),
+        );
+
+        expect(result.current).toEqual({ type: 'everstake' });
+    });
+
+    it('recognises the legacy Trezor DRep in its CIP-105 spelling', () => {
+        const { result } = renderHook(() =>
+            useCardanoAccountVotingDelegation(createCardanoAccount(LEGACY_TREZOR_DREP_CIP105)),
+        );
+
+        expect(result.current).toEqual({ type: 'everstake' });
     });
 
     it('keeps a predefined DRep, which no vote delegation certificate can express', () => {
@@ -143,6 +163,19 @@ describe('useSeededCardanoVotingDelegation', () => {
             stakeActions.setAccountVotingDelegation({
                 accountKey: ACCOUNT_KEY,
                 option: { type: 'current' },
+            }),
+        ]);
+    });
+
+    it('seeds Everstake for an account still voting with the legacy Trezor DRep', () => {
+        const { getActions } = renderSeededHook(
+            createCardanoAccount(CARDANO_LEGACY_TREZOR_DREP.bech32),
+        );
+
+        expect(getActions()).toEqual([
+            stakeActions.setAccountVotingDelegation({
+                accountKey: ACCOUNT_KEY,
+                option: { type: 'everstake' },
             }),
         ]);
     });

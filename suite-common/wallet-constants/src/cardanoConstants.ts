@@ -21,3 +21,11 @@ export const CARDANO_EVERSTAKE_DREP = {
     hex: 'ce179dfd95a1a136666945aee81a784b0d96541ffcbc6a3b4cfa71eb',
     bech32: 'drep1yt8p080ajks6zdnxd9z6a6q60p9sm9j5rl7tc63mfna8r6cnp4wr3',
 };
+
+// The DRep the rewards-withdrawal modal offered Trezor-pool stakers from 12/2024 to 9/2025, served by the
+// retired `trezor-cardano-mainnet.blockfrost.io/api/v0/dreps/` endpoint. Delegations to it are moved to
+// Everstake instead of being kept.
+export const CARDANO_LEGACY_TREZOR_DREP = {
+    hex: '7bdef7aaf3c925e97ca42d36f119b0469a12cca4a17ecfefc6900350',
+    bech32: 'drep1yfaaaaa270yjt6tu5skndugekprf5ykv5jshanl0c6gqx5qpstskf',
+};

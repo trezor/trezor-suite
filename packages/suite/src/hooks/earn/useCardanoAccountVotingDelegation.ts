@@ -1,8 +1,10 @@
 import { useEffect, useMemo } from 'react';
 
+import { CARDANO_LEGACY_TREZOR_DREP } from '@suite-common/wallet-constants';
 import {
     DEFAULT_VOTING_OPTION,
     type VotingDelegationOption,
+    getCardanoAccountDrepId,
     hasCardanoLiveVoteDelegation,
     selectStakeVotingDelegation,
     stakeActions,
@@ -17,11 +19,15 @@ export const useCardanoAccountVotingDelegation = (
     account: Account,
 ): VotingDelegationOption | undefined => {
     const hasLiveVoteDelegation = hasCardanoLiveVoteDelegation(account);
+    const isLegacyTrezorDrep =
+        hasLiveVoteDelegation &&
+        getCardanoAccountDrepId(account) === CARDANO_LEGACY_TREZOR_DREP.bech32;
 
-    return useMemo(
-        () => (hasLiveVoteDelegation ? { type: 'current' } : undefined),
-        [hasLiveVoteDelegation],
-    );
+    return useMemo(() => {
+        if (!hasLiveVoteDelegation) return undefined;
+
+        return isLegacyTrezorDrep ? { type: 'everstake' } : { type: 'current' };
+    }, [hasLiveVoteDelegation, isLegacyTrezorDrep]);
 };
 
 export const useSeededCardanoVotingDelegation = (
