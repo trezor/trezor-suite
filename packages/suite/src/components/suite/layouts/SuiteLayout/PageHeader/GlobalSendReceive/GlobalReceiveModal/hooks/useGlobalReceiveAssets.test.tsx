@@ -1,6 +1,6 @@
 import { type PropsWithChildren } from 'react';
 
-import { QueryClient, QueryClientProvider, desktopQueryKeys } from '@suite-common/react-query';
+import { QueryClient, QueryClientProvider, commonQueryKeys } from '@suite-common/react-query';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import {
     act,
@@ -108,7 +108,7 @@ describe('useGlobalReceiveAssets', () => {
         act(() => result.current.retry());
         await waitFor(() => expect(result.current.catalogStatus).toBe('ready'));
         expect(fetchRankedTokenDefinitions).toHaveBeenCalledTimes(2);
-        expect(queryClient.getQueryData(desktopQueryKeys.rankedTokenDefinitions())).toEqual(
+        expect(queryClient.getQueryData(commonQueryKeys.rankedTokenDefinitions())).toEqual(
             definitions,
         );
         unmount();

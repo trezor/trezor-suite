@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
-import { desktopQueryKeys, useQuery } from '@suite-common/react-query';
+import { commonQueryKeys, useQuery } from '@suite-common/react-query';
 import { fetchRankedTokenDefinitions } from '@suite-common/token-definitions';
 import { type TradeableAssetBalances, type TradingAssetOption } from '@suite-common/trading';
 import { type NetworkSymbol, getMainnets } from '@suite-common/wallet-config';
@@ -44,7 +44,7 @@ export const useGlobalReceiveAssets = (): UseGlobalReceiveAssetsReturn => {
         isFetching,
         refetch,
     } = useQuery({
-        queryKey: desktopQueryKeys.rankedTokenDefinitions(),
+        queryKey: commonQueryKeys.rankedTokenDefinitions(),
         queryFn: ({ signal }) => fetchRankedTokenDefinitions({ signal }),
         enabled: !isBitcoinOnlyFirmware,
         staleTime: Infinity,

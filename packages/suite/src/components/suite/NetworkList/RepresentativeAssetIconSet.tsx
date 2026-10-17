@@ -1,7 +1,11 @@
 import styled from 'styled-components';
 
 import { Translation } from '@suite/intl';
-import { type NetworkSymbol, getRepresentativeAssets } from '@suite-common/wallet-config';
+import {
+    MAX_REPRESENTATIVE_ASSETS,
+    type RepresentativeAsset,
+} from '@suite-common/token-definitions';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Row, Text, Tooltip } from '@trezor/components';
 import { TokenIconSet } from '@trezor/product-components';
 
@@ -23,12 +27,11 @@ const MoreBadge = styled.div`
 
 type RepresentativeAssetIconSetProps = {
     symbol: NetworkSymbol;
+    assets?: readonly RepresentativeAsset[];
 };
 
-export const RepresentativeAssetIconSet = ({ symbol }: RepresentativeAssetIconSetProps) => {
-    const representativeAssets = getRepresentativeAssets(symbol);
-
-    if (representativeAssets.length === 0) {
+export const RepresentativeAssetIconSet = ({ symbol, assets }: RepresentativeAssetIconSetProps) => {
+    if (!assets?.length) {
         return null;
     }
 
@@ -38,13 +41,13 @@ export const RepresentativeAssetIconSet = ({ symbol }: RepresentativeAssetIconSe
                 <TokenIconSet
                     size={ICON_SIZE}
                     gap={20}
-                    maxVisibleIcons={5}
+                    maxVisibleIcons={MAX_REPRESENTATIVE_ASSETS}
                     isReversed={false}
                     isCountVisible={false}
                     symbol={symbol}
-                    tokens={representativeAssets}
+                    tokens={assets}
                 />
-                {representativeAssets.length > 1 && (
+                {assets.length > 1 && (
                     <MoreBadge>
                         <Text typographyStyle="body-xs" intent="neutral" priority="secondary">
                             +<Translation id="TR_MORE" />
