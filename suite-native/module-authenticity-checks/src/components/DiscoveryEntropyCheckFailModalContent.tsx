@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
-import { selectSelectedDevice } from '@suite-common/device';
-import { startDiscoveryThunk } from '@suite-common/wallet-core';
+import { deviceActions, selectSelectedDevice } from '@suite-common/device';
+import { ejectAllWalletsThunk, startDiscoveryThunk } from '@suite-common/wallet-core';
 import { Translation } from '@suite-native/intl';
 import { ScreenHeader } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
@@ -16,11 +16,17 @@ import { useCloseDeviceCompromisedScreen } from './useCloseDeviceCompromisedScre
 export const DiscoveryEntropyCheckFailModalContent = () => {
     const device = useSelector(selectSelectedDevice);
     const { dispatch } = useServices(injectDispatch);
-    const { handleClose } = useCloseDeviceCompromisedScreen({
-        dismissedCheck: 'entropy-discovery',
-    });
-    const closeAndRerunDiscovery = () => {
-        handleClose();
+    const { handleClose: closeScreen } = useCloseDeviceCompromisedScreen();
+
+    const handleClose = () => {
+        if (device?.id) {
+            dispatch(deviceActions.dismissDiscoveryEntropyCheck(device.id));
+            // The device returned a wrong xpub, so nothing it has ever returned can be trusted. See the thunk description.
+            dispatch(ejectAllWalletsThunk({ device }));
+        }
+
+        closeScreen();
+
         if (!device) return;
         // Force rerun all discovery (not using `startOrRestartDiscoveryThunk`, we don't want to skip already discovered).
         // If the device returns correct xpubs, it may clear the flagged bip44 paths.
@@ -36,10 +42,8 @@ export const DiscoveryEntropyCheckFailModalContent = () => {
     return (
         <DeviceCompromisedModalContent
             contactSupportUrl={HELP_CENTER_ENTROPY_CHECK_URL}
-            screenHeaderContent={
-                <ScreenHeader closeActionType="close" closeAction={closeAndRerunDiscovery} />
-            }
-            closeButtonContent={<CloseButton handleClose={closeAndRerunDiscovery} />}
+            screenHeaderContent={<ScreenHeader closeActionType="close" closeAction={handleClose} />}
+            closeButtonContent={<CloseButton handleClose={handleClose} />}
             subtitleContent={
                 <Translation id="moduleAuthenticityChecks.deviceCompromised.subtitle.entropy" />
             }

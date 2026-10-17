@@ -2,13 +2,9 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import {
-    deviceActions,
-    selectIsDeviceInitialized,
-    selectSelectedDevice,
-} from '@suite-common/device';
+import { selectIsDeviceInitialized, selectSelectedDevice } from '@suite-common/device';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
-import { ejectAllWalletsThunk, selectIsAnyNetworkEnabled } from '@suite-common/wallet-core';
+import { selectIsAnyNetworkEnabled } from '@suite-common/wallet-core';
 import { selectIsDeviceSetupSupported } from '@suite-native/device';
 import {
     AuthorizeDeviceStackRoutes,
@@ -18,8 +14,6 @@ import {
     type StackToStackCompositeNavigationProps,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
-import { useServices } from '@trezor/dependency-injection';
-import { injectDispatch } from '@trezor/redux-utils';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     RootStackParamList,
@@ -31,11 +25,7 @@ type NavigationProps = StackToStackCompositeNavigationProps<
  * Functionality to navigate to the appropriate next screen based on the current state, because navigation
  * to the Device Compromised screen can occur inbetween different flows.
  */
-export const useCloseDeviceCompromisedScreen = ({
-    dismissedCheck = 'firmware-authenticity',
-}: { dismissedCheck?: 'firmware-authenticity' | 'entropy-discovery' } = {}) => {
-    const { dispatch } = useServices(injectDispatch);
-
+export const useCloseDeviceCompromisedScreen = () => {
     const navigation = useNavigation<NavigationProps>();
     const navigateToInitialScreen = useNavigateToInitialScreen();
 
@@ -44,20 +34,7 @@ export const useCloseDeviceCompromisedScreen = ({
     const isAnyNetworkEnabled = useSelector(selectIsAnyNetworkEnabled);
     const device = useSelector(selectSelectedDevice);
 
-    const dismissCheck = () => {
-        if (!device?.id) return;
-        if (dismissedCheck === 'entropy-discovery') {
-            dispatch(deviceActions.dismissDiscoveryEntropyCheck(device.id));
-            // The device returned a wrong xpub, so nothing it has ever returned can be trusted. See the thunk description.
-            dispatch(ejectAllWalletsThunk({ device }));
-        } else {
-            dispatch(deviceActions.dismissFirmwareAuthenticityCheck(device.id));
-        }
-    };
-
     const handleClose = () => {
-        dismissCheck();
-
         if (!isDeviceInitialized && isDeviceSetupSupported) {
             navigation.popTo(RootStackRoutes.DeviceOnboardingStack, {
                 screen: DeviceOnboardingStackRoutes.UninitializedDeviceLanding,
