@@ -245,12 +245,17 @@ type ConnectPopupCallError = {
     error: ConnectSerializedError;
 };
 
+type ConnectPopupCallMeta = {
+    callId?: string;
+};
+
 type ConnectPopupCallDeviceMeta = {
     // Device the call runs on, so cancel can clear its button requests.
     devicePath?: DeviceUniquePath;
 };
 
 export type ConnectPopupCall = (ConnectPopupCallLoaded | ConnectPopupCallError) &
+    ConnectPopupCallMeta &
     ConnectPopupCallDeviceMeta;
 
 export type ConnectPopupCallWithState<
