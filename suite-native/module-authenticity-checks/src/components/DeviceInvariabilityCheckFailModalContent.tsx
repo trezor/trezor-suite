@@ -4,10 +4,10 @@ import { TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_MOBILE_URL } from '@trezor/urls
 
 import { CloseButton } from './CloseButton';
 import { DeviceCompromisedModalContent } from './DeviceCompromisedModalContent';
-import { useCloseDeviceCompromisedScreen } from './useCloseDeviceCompromisedScreen';
+import { useCloseFirmwareChecksFailScreen } from './useCloseFirmwareChecksFailScreen';
 
 export const DeviceInvariabilityCheckFailModalContent = () => {
-    const { handleClose } = useCloseDeviceCompromisedScreen();
+    const { handleClose } = useCloseFirmwareChecksFailScreen();
 
     return (
         <DeviceCompromisedModalContent
