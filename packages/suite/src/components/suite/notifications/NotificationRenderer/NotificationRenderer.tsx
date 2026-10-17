@@ -21,6 +21,7 @@ import { useSelector } from 'src/hooks/suite';
 import { ActionRenderer } from './ActionRenderer';
 import { AutoEjectRenderer } from './AutoEjectRenderer';
 import { CoinProtocolRenderer } from './CoinProtocolRenderer';
+import { DeviceConnectedRenderer } from './DeviceConnectedRenderer';
 import { EarnTransactionRenderer } from './EarnTransactionRenderer';
 import { ExchangeInfoRenderer } from './ExchangeInfoRenderer';
 import { TransactionRenderer } from './TransactionRenderer';
@@ -580,6 +581,9 @@ export const NotificationRenderer = ({
                 message: 'TR_COINJOIN_INTERRUPTED_ERROR',
                 values: { error: notification.error },
             });
+
+        case 'device-connected':
+            return <DeviceConnectedRenderer render={render} notification={notification} />;
 
         // Events:
         case AUTH_DEVICE:
