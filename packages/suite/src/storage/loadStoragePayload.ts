@@ -2,7 +2,9 @@ import { getSupportedNetworks } from '@suite-common/wallet-config';
 
 import { type Db } from './createDb';
 
-export const loadStoragePayload = async (db: Db) => {
+export type StoragePayloadDb = Pick<Db, 'getItemByPK' | 'getItemsExtended' | 'getItemsWithKeys'>;
+
+export const loadStoragePayload = async (db: StoragePayloadDb) => {
     // Load state from database in parallel using Promise.all
     const [
         suiteSettings,

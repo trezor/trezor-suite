@@ -23,6 +23,7 @@
         "@suite/desktop-app-api": "workspace:*",
         "@suite/desktop-app-api-electron": "workspace:*",
         "@suite/desktop-update": "workspace:*",
+        "@suite/drivers": "workspace:*",
         "@suite/flags": "workspace:*",
         "@suite/github": "workspace:*",
         "@suite/intl": "workspace:*",

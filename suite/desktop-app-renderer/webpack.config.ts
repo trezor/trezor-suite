@@ -49,7 +49,13 @@ const browserslistConfigPath = path.resolve(rendererDir, 'browserslist');
 
 const rendererConfig: webpack.Configuration = {
     target: `browserslist:${browserslistConfigPath}`,
-    entry: { main: [path.join(rendererDir, 'src', 'index.tsx')] },
+    entry: {
+        main: [
+            // Installs the drivers' perf hook before react-dom evaluates; a no-op unless gated.
+            path.join(repoRoot, 'suite/drivers/src/earlyPerfHook.ts'),
+            path.join(rendererDir, 'src', 'index.tsx'),
+        ],
+    },
     output: {
         path: buildDir,
         publicPath: 'auto',

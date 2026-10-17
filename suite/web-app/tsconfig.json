@@ -15,6 +15,7 @@
         },
         { "path": "../debug" },
         { "path": "../desktop-app-api" },
+        { "path": "../drivers" },
         {
             "path": "../platform-encryption-webauthn"
         },

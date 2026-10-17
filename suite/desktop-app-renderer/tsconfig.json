@@ -22,6 +22,7 @@
         { "path": "../desktop-app-api" },
         { "path": "../desktop-app-api-electron" },
         { "path": "../desktop-update" },
+        { "path": "../drivers" },
         { "path": "../flags" },
         { "path": "../github" },
         { "path": "../intl" },

@@ -22,7 +22,11 @@ const DEV_PORT = 8000;
 const webConfig: webpack.Configuration = {
     target: `browserslist:${browserslistConfigPath}`,
     entry: {
-        main: [path.join(baseDir, 'src', 'index.ts')],
+        main: [
+            // Installs the drivers' perf hook before react-dom evaluates; a no-op unless gated.
+            path.join(repoRoot, 'suite/drivers/src/earlyPerfHook.ts'),
+            path.join(baseDir, 'src', 'index.ts'),
+        ],
         'sessions-background-sharedworker': {
             filename: 'js/workers/[name].js',
             import: path.join(

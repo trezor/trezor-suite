@@ -22,7 +22,7 @@ import {
     suiteSettingsActions,
     suiteSettingsInitialState,
 } from '@suite/settings';
-import { onSuiteInit, onSuiteReady } from '@suite/suite-lifecycle';
+import { SuiteLifecycleMark, onSuiteInit, onSuiteReady } from '@suite/suite-lifecycle';
 import { type ConnectInitThunkDeps, connectInitThunk } from '@suite-common/connect-init';
 import {
     mockConnectInitDeviceEventHooks,
@@ -142,6 +142,7 @@ const getInitialState = (): InitThunkState => ({
 type Fixture = {
     description: string;
     actions: string[];
+    marks: SuiteLifecycleMark[];
     options: {
         initialPath?: string;
         expectedApp?: InitThunkState['router']['app'];
@@ -152,6 +153,7 @@ type Fixture = {
 const fixtures: Fixture[] = [
     {
         description: 'Successful normal run',
+        marks: [SuiteLifecycleMark.Init, SuiteLifecycleMark.Ready],
         options: {
             initialPath: '/accounts',
             expectedApp: 'wallet',
@@ -203,6 +205,7 @@ const fixtures: Fixture[] = [
     },
     {
         description: 'Successful non-existent path',
+        marks: [SuiteLifecycleMark.Init, SuiteLifecycleMark.Ready],
         options: {
             initialPath: '/foo-bar',
             expectedApp: 'unknown',
@@ -253,6 +256,7 @@ const fixtures: Fixture[] = [
     },
     {
         description: 'TrezorConnect.init throws',
+        marks: [SuiteLifecycleMark.Init],
         options: {
             trezorConnectError: 'is broken',
             initialPath: '/version',
@@ -348,7 +352,18 @@ const initStore = (state: InitThunkState) => {
 };
 
 describe('Suite init thunk', () => {
-    fixtures.forEach(({ description, options, actions }) => {
+    // jsdom has no User Timing; the marks land in this stub.
+    const performanceMark = mock<Performance['mark']>();
+
+    beforeAll(() => {
+        performance.mark = performanceMark;
+    });
+
+    beforeEach(() => {
+        performanceMark.mockClear();
+    });
+
+    fixtures.forEach(({ description, options, actions, marks }) => {
         it(description, async () => {
             const { store, suiteRouterHistory } = initStore(getInitialState());
 
@@ -371,6 +386,7 @@ describe('Suite init thunk', () => {
             }
 
             expect(store.getActions().map(({ type }) => type)).toEqual(actions);
+            expect(performanceMark.mock.calls.map(([name]) => name)).toEqual(marks);
 
             if (options?.expectedApp) {
                 expect(store.getState().router.app).toEqual(options.expectedApp);

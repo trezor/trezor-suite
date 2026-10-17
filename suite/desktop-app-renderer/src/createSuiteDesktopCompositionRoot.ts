@@ -1,6 +1,7 @@
 import { createMemoryHistory } from 'history';
 
 import { createElectronDesktopApi } from '@suite/desktop-app-api-electron';
+import { isDriversEnabled } from '@suite/drivers';
 import { createElectronPlatformEncryption } from '@suite/platform-encryption-electron';
 import TrezorConnect from '@trezor/connect-electron';
 import { toGetter } from '@trezor/dependency-injection';
@@ -63,6 +64,21 @@ export const createSuiteDesktopCompositionRoot = (): SuiteDesktopCompositionRoot
     // Services need the store's dispatch/getState, while Redux thunks need those services in extra.
     // Inject them after construction to break the cycle, before the app can dispatch any actions.
     injectServicesIntoReduxExtra(services);
+
+    if (isDriversEnabled()) {
+        // A chunk of its own: the drivers and what only they need stay out of the boot bundle
+        // of a real user's session.
+        import(/* webpackChunkName: "drivers" */ 'src/support/drivers/registerSuiteDrivers')
+            .then(({ registerSuiteDrivers }) =>
+                registerSuiteDrivers({
+                    store,
+                    history,
+                    desktopApi: suiteServices.desktopApi,
+                    connect: TrezorConnect,
+                }),
+            )
+            .catch(error => console.error('Suite drivers failed to load', error));
+    }
 
     return { app: createDesktopApp({ desktopApi, services }) };
 };

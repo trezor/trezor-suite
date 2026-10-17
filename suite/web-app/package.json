@@ -20,6 +20,7 @@
         "@suite-common/suite-utils": "workspace:*",
         "@suite/debug": "workspace:*",
         "@suite/desktop-app-api": "workspace:*",
+        "@suite/drivers": "workspace:*",
         "@suite/platform-encryption-webauthn": "workspace:*",
         "@suite/router": "workspace:*",
         "@trezor/connect": "workspace:*",
