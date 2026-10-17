@@ -18,7 +18,7 @@ import {
     Screen,
     ScreenHeader,
     type StackProps,
-    useNavigationRemoveActionInterceptor,
+    useNavigationBackListener,
 } from '@suite-native/navigation';
 import { useExchangeAnalyticsStepReport } from '@suite-native/trading-analytics';
 import { useServices } from '@trezor/dependency-injection';
@@ -37,7 +37,6 @@ type TradingExchangeRevokeScreenProps = StackProps<
 
 const TradingExchangeRevokeScreenContent = ({
     route: { params },
-    navigation,
 }: TradingExchangeRevokeScreenProps) => {
     const { shouldIncreaseLimit } = params;
     const { dispatch } = useServices(injectDispatch);
@@ -110,11 +109,10 @@ const TradingExchangeRevokeScreenContent = ({
         };
     }, [quote, isReady, dispatch, confirmApproval, reportToAnalytics]);
 
-    useNavigationRemoveActionInterceptor({
-        onInterceptedAction: action => {
+    useNavigationBackListener({
+        onBack: () => {
             dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
             reportToAnalytics('cancel');
-            navigation.dispatch(action);
         },
     });
 
