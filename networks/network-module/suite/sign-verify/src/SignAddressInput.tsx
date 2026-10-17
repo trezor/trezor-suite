@@ -1,10 +1,12 @@
 import { type ReactNode } from 'react';
 
-import { Address } from '@suite/address';
-import { type Account, type ReceiveInfo } from '@suite-common/wallet-types';
+import { type Account } from '@suite-common/wallet-types';
 import { isUtxoBased } from '@suite-common/wallet-utils';
 import { Box, Row, Select, type SelectProps, Text } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 
+import { injectSignVerifyAddress } from './SignVerifyAddress';
+import { type SignAddresses } from './types';
 import { type AddressItem, useSignAddressOptions } from './useSignAddressOptions';
 
 const optionToAddress = (option: AddressItem | null) =>
@@ -22,17 +24,18 @@ const singleAddressComponents = { ...wrappedValueComponents, DropdownIndicator: 
 
 type SignAddressInputProps = {
     account?: Account;
-    touchedAddresses: ReceiveInfo[];
+    signAddresses: SignAddresses;
 } & SelectProps;
 
 export const SignAddressInput = ({
     account,
-    touchedAddresses,
+    signAddresses,
     value,
     onChange,
     ...selectProps
 }: SignAddressInputProps) => {
-    const { getValue, groupedOptions } = useSignAddressOptions(account, touchedAddresses);
+    const { signVerifyAddress: Address } = useServices(injectSignVerifyAddress);
+    const { getValue, groupedOptions } = useSignAddressOptions(signAddresses);
 
     const hasMultipleAddresses = !!account && isUtxoBased(account);
 

@@ -1,0 +1,60 @@
+{
+    "extends": "../../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../../../suite-common/analytics"
+        },
+        {
+            "path": "../../../suite-common/receive"
+        },
+        {
+            "path": "../../../suite-common/wallet-types"
+        },
+        {
+            "path": "../../../suite-common/wallet-utils"
+        },
+        { "path": "../../../suite-lego/intl" },
+        {
+            "path": "../../../packages/components"
+        },
+        {
+            "path": "../../../packages/connect-common"
+        },
+        {
+            "path": "../../../packages/dependency-injection"
+        },
+        { "path": "../network-cardano-types" },
+        {
+            "path": "../../network-module/suite/sign-verify"
+        },
+        {
+            "path": "../../network-module/suite/suite-types"
+        },
+        {
+            "path": "../../network-module/network-module-types"
+        },
+        { "path": "../../../packages/protobuf" },
+        {
+            "path": "../../../packages/redux-utils"
+        },
+        {
+            "path": "../../../suite-common/device"
+        },
+        {
+            "path": "../../../suite-common/suite-types"
+        },
+        {
+            "path": "../../../suite-common/test-utils"
+        },
+        {
+            "path": "../../../suite-common/wallet-config"
+        },
+        {
+            "path": "../../../suite-common/wallet-core"
+        },
+        {
+            "path": "../../../packages/analytics-uploader"
+        }
+    ]
+}

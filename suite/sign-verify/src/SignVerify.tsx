@@ -1,42 +1,42 @@
-import { type ReactNode, useState } from 'react';
+import { type ComponentType } from 'react';
+import { useSelector } from 'react-redux';
 
+import { selectFullSelectedAccount } from '@suite/account';
 import { useDevice } from '@suite/device';
-import { isVerifySupported } from '@suite-common/sign-verify';
-import { type Network } from '@suite-common/wallet-config';
-import { type Account } from '@suite-common/wallet-types';
+import { useServices } from '@trezor/dependency-injection';
+import { injectSuiteNetworkModuleRepository } from '@trezor/network-module-suite-types';
 
-import { SignVerifyForm } from './SignVerifyForm';
-import { type SignVerifyPage } from './types';
-
-type SignVerifyShellProps = {
-    title: 'TR_NAV_SIGN_VERIFY' | 'TR_SIGN_MESSAGE';
-    isDeviceConnected: boolean | undefined;
-    children: ReactNode;
-};
+import { type SignVerifyLayoutProps } from './SignVerifyLayoutProps';
 
 type SignVerifyProps = {
-    account: Account;
-    network?: Network;
-    renderShell: (props: SignVerifyShellProps) => ReactNode;
+    LayoutComponent: ComponentType<SignVerifyLayoutProps>;
 };
 
-export const SignVerify = ({ account, network, renderShell }: SignVerifyProps) => {
-    const [page, setPage] = useState<SignVerifyPage>('sign');
-    const { device } = useDevice();
+export const SignVerify = ({ LayoutComponent }: SignVerifyProps) => {
+    const selectedAccount = useSelector(selectFullSelectedAccount);
+    const { suiteNetworkModuleRepository } = useServices(injectSuiteNetworkModuleRepository);
+    const { device, isLocked } = useDevice();
+    const { account } = selectedAccount;
 
-    return renderShell({
-        title: isVerifySupported(account) ? 'TR_NAV_SIGN_VERIFY' : 'TR_SIGN_MESSAGE',
-        isDeviceConnected: device?.connected && device?.available,
-        children: (
-            // Each tab of each account is a form of its own: keying it throws away everything the
-            // previous one was in the middle of, including the outcome it had reached.
-            <SignVerifyForm
-                key={`${page}-${account.key}`}
-                account={account}
-                network={network}
-                page={page}
-                onPageChange={setPage}
-            />
-        ),
-    });
+    if (account === undefined) {
+        return null;
+    }
+
+    const { signVerify } = suiteNetworkModuleRepository.get(account.symbol);
+
+    if (signVerify === null) {
+        return null;
+    }
+
+    const { Component, canVerify } = signVerify;
+
+    return (
+        <LayoutComponent
+            account={selectedAccount}
+            title={canVerify ? 'TR_NAV_SIGN_VERIFY' : 'TR_SIGN_MESSAGE'}
+            isDeviceConnected={Boolean(device?.connected && device?.available)}
+        >
+            <Component account={account} isDeviceLocked={isLocked()} />
+        </LayoutComponent>
+    );
 };
