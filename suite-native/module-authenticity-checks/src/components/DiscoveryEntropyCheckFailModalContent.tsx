@@ -18,16 +18,18 @@ export const DiscoveryEntropyCheckFailModalContent = () => {
     const { dispatch } = useServices(injectDispatch);
     const { handleClose: closeScreen } = useCloseDeviceCompromisedScreen();
 
+    // Should always be true, but if not, fail-closed by not allowing to dismiss the failed check.
+    const canClose = typeof device?.id === 'string';
+
     const handleClose = () => {
-        if (device?.id) {
-            dispatch(deviceActions.dismissDiscoveryEntropyCheck(device.id));
-            // The device returned a wrong xpub, so nothing it has ever returned can be trusted. See the thunk description.
-            dispatch(ejectAllWalletsThunk({ device }));
-        }
+        if (!device?.id) return;
+
+        dispatch(deviceActions.dismissDiscoveryEntropyCheck(device.id));
+        // The device returned a wrong xpub, so nothing it has ever returned can be trusted. See the thunk description.
+        dispatch(ejectAllWalletsThunk({ device }));
 
         closeScreen();
 
-        if (!device) return;
         // Force rerun all discovery (not using `startOrRestartDiscoveryThunk`, we don't want to skip already discovered).
         // If the device returns correct xpubs, it may clear the flagged bip44 paths.
         dispatch(
@@ -42,8 +44,14 @@ export const DiscoveryEntropyCheckFailModalContent = () => {
     return (
         <DeviceCompromisedModalContent
             contactSupportUrl={HELP_CENTER_ENTROPY_CHECK_URL}
-            screenHeaderContent={<ScreenHeader closeActionType="close" closeAction={handleClose} />}
-            closeButtonContent={<CloseButton handleClose={handleClose} />}
+            screenHeaderContent={
+                canClose ? (
+                    <ScreenHeader closeActionType="close" closeAction={handleClose} />
+                ) : (
+                    <ScreenHeader leftIcon={null} />
+                )
+            }
+            closeButtonContent={canClose ? <CloseButton handleClose={handleClose} /> : null}
             subtitleContent={
                 <Translation id="moduleAuthenticityChecks.deviceCompromised.subtitle.entropy" />
             }
