@@ -101,6 +101,7 @@ const createExtra = (): ActivateNetworkWithDiscoveryThunkDeps => ({
     services: {
         analytics: mockAnalytics<AnalyticsSharedEvents>(),
         getTradedAccountKeys: mockGetTradedAccountKeys(),
+        reportSecurityCheck: jest.fn(),
     },
 });
 

@@ -98,6 +98,7 @@ type FixtureState = {
     router?: RouterStateOverrides;
     thp?: Partial<ThpState>;
     discovery?: Discovery;
+    persistentDeviceData?: PersistentDeviceDataState;
 };
 
 type FixtureStep = {
@@ -131,6 +132,10 @@ const selectedDevice = mockSuiteDevice({
 
 if (!isDeviceAcquired(selectedDevice)) {
     throw `${mockSuiteDevice.name}() must return an AcquiredDevice here.`;
+}
+const selectedDeviceId = selectedDevice.id;
+if (selectedDeviceId === null) {
+    throw `${mockSuiteDevice.name}() must return a device with id here.`;
 }
 const compromisedDevice: AcquiredDevice = {
     ...selectedDevice,

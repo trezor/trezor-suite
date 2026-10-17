@@ -80,6 +80,8 @@ export const UI_EVENTS = {
     BUTTON_REQUEST: 'ui-event_button_request',
     /** Progress update for bundled (multi-call) operations */
     BUNDLE_PROGRESS: 'ui-event_bundle_progress',
+    /** Result of the entropy check of an account xpub during discoverAccounts */
+    DISCOVERY_ENTROPY_CHECK: 'ui-event_discovery_entropy_check',
     /** Signal to close the UI popup/modal window */
     CLOSE_UI_WINDOW: 'ui-event_close_ui_window',
 } as const;
@@ -167,6 +169,15 @@ export interface UiEventBundleProgress<R> {
     };
 }
 
+export interface UiEventDiscoveryEntropyCheck {
+    type: typeof UI_EVENTS.DISCOVERY_ENTROPY_CHECK;
+    payload: {
+        device: Device;
+        success: boolean;
+        path: string;
+    };
+}
+
 export interface UiEventFirmwareProgress {
     type: typeof UI_EVENTS.FIRMWARE_PROGRESS;
     payload: {
@@ -223,6 +234,7 @@ export type UiEvent =
     | UiEventButtonRequest
     | UiEventUnexpectedDeviceMode
     | UiEventBundleProgress<any>
+    | UiEventDiscoveryEntropyCheck
     | UiEventFirmwareProgress
     | UiEventFirmwareProgressUnexpectedDelay
     | UiEventFirmwareTypeChanged
