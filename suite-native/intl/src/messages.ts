@@ -124,6 +124,14 @@ export const messages = {
     },
     moduleHome: {
         totalBalance: 'Total balance',
+        assets: {
+            title: 'Assets',
+            showMore: 'Show more',
+            showLess: 'Show less',
+            viewOptionsSheet: {
+                title: 'View options',
+            },
+        },
         graphIgnoredNetworks:
             "{networksString} and all related tokens are included in your portfolio balance, but aren't currently supported in the graph.",
         emptyState: {

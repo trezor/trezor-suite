@@ -1,22 +1,55 @@
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
+
 import { FlashList } from '@shopify/flash-list';
 
-import { Box } from '@suite-native/atoms';
+import {
+    HOME_ASSET_ROW_LIMIT,
+    type HomeAssetTableState,
+    selectDisplayedWalletAssetKeys,
+} from '@suite-common/assets';
+import { type WalletAssetKey } from '@suite-common/wallet-core';
+import { Box, Divider, useBottomSheetModal } from '@suite-native/atoms';
 
-import { type PortfolioAssetItem, PortfolioAssetListItem } from './PortfolioAssetListItem';
-import { PortfolioAssetsHeader } from './PortfolioAssetsHeader';
+import { PortfolioAssetListItem } from './PortfolioAssetListItem';
+import { PortfolioAssetsListFooter } from './PortfolioAssetsListFooter';
+import { PortfolioAssetsListHeader } from './PortfolioAssetsListHeader';
+import { PortfolioAssetsViewOptionsSheet } from './PortfolioAssetsViewOptionsSheet';
 
-const PORTFOLIO_ASSET_ITEMS: readonly PortfolioAssetItem[] = [];
+const getAssetKey = (assetKey: WalletAssetKey) => assetKey;
 
-export const PortfolioAssetsContent = () => (
-    <Box flex={1}>
-        <FlashList
-            testID="@home/portfolio-assets"
-            data={PORTFOLIO_ASSET_ITEMS}
-            renderItem={PortfolioAssetListItem}
-            keyExtractor={item => item.id}
-            ListHeaderComponent={PortfolioAssetsHeader}
-            ListEmptyComponent={null}
-            ListFooterComponent={null}
-        />
-    </Box>
+const renderAsset = ({ item }: { item: WalletAssetKey }) => (
+    <PortfolioAssetListItem assetKey={item} />
 );
+
+export const PortfolioAssetsContent = () => {
+    const [isExpanded, setIsExpanded] = useState(false);
+    // Capping a list no longer than the limit leaves it whole, so no foldability check is needed.
+    const rowLimit = isExpanded ? undefined : HOME_ASSET_ROW_LIMIT;
+    const assetKeys = useSelector((state: HomeAssetTableState) =>
+        selectDisplayedWalletAssetKeys(state, rowLimit),
+    );
+    const { bottomSheetRef, openModal } = useBottomSheetModal();
+
+    const toggleIsExpanded = () => setIsExpanded(previous => !previous);
+
+    return (
+        <Box flex={1}>
+            <FlashList
+                testID="@home/portfolio-assets"
+                data={assetKeys}
+                renderItem={renderAsset}
+                keyExtractor={getAssetKey}
+                ItemSeparatorComponent={Divider}
+                ListHeaderComponent={<PortfolioAssetsListHeader onViewOptionsPress={openModal} />}
+                ListFooterComponent={
+                    <PortfolioAssetsListFooter
+                        isExpanded={isExpanded}
+                        onShowMorePress={toggleIsExpanded}
+                    />
+                }
+            />
+            <PortfolioAssetsViewOptionsSheet bottomSheetRef={bottomSheetRef} />
+        </Box>
+    );
+};
