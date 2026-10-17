@@ -1,7 +1,7 @@
 import { Translation } from '@suite/intl';
 import {
-    connectPopupActions,
     connectPopupCallInnerThunk,
+    connectPopupFinishCallThunk,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
@@ -29,7 +29,7 @@ export const ConnectSelectDeviceModal = () => {
     const isLoading = isDiscoveryRunning;
 
     const onCancel = () => {
-        dispatch(connectPopupActions.finishCall());
+        dispatch(connectPopupFinishCallThunk());
     };
     const onResume = () => {
         if (popupCall?.state === 'call-error')
@@ -84,7 +84,7 @@ export const ConnectErrorModal = () => {
     const handleOpenSuite = useOpenSuiteDesktop();
 
     const onFinish = () => {
-        dispatch(connectPopupActions.finishCall());
+        dispatch(connectPopupFinishCallThunk());
     };
 
     if (!popupCall || (popupCall?.state !== 'error' && popupCall?.state !== 'call-error'))
