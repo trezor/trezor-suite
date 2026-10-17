@@ -15,14 +15,18 @@ export const useCloseFirmwareChecksFailScreen = () => {
     const device = useSelector(selectSelectedDevice);
     const { handleClose: closeScreen } = useCloseDeviceCompromisedScreen();
 
+    // Should always be true, but if not, fail-closed by not allowing to dismiss the failed check.
+    const deviceId = device?.id;
+    const canClose = typeof deviceId === 'string' && deviceId.length > 0; // matches `getIsDeviceIdValid`
+
     const handleClose = () => {
-        if (device?.id) {
-            dispatch(deviceActions.dismissFirmwareAuthenticityCheck(device.id));
-        }
+        if (!canClose) return;
+        dispatch(deviceActions.dismissFirmwareAuthenticityCheck(deviceId));
         closeScreen();
     };
 
     return {
+        canClose,
         handleClose,
     };
 };
