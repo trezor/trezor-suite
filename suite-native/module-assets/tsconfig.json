@@ -4,9 +4,6 @@
     "references": [
         { "path": "../../suite-common/assets" },
         {
-            "path": "../../suite-common/wallet-config"
-        },
-        {
             "path": "../../suite-common/wallet-types"
         },
         { "path": "../assets" },

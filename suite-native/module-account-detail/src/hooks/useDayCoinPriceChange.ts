@@ -1,6 +1,6 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
-import { useAssetPriceQuery } from '@suite-native/assets';
+import { useAssetPriceData } from '@suite-native/assets';
 
 type UseDayCoinPriceChangeProps = {
     symbol?: NetworkSymbol | null;
@@ -14,7 +14,7 @@ export const useDayCoinPriceChange = ({
     isErc4626Token,
 }: UseDayCoinPriceChangeProps) => {
     const { price, sevenDayPercentageChange, isLoading, underlyingAssetContract } =
-        useAssetPriceQuery({
+        useAssetPriceData({
             networkSymbol: symbol,
             tokenContract,
             isErc4626Token,

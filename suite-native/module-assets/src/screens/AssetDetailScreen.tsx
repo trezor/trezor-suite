@@ -1,3 +1,6 @@
+import { useEffect, useRef } from 'react';
+
+import { useNavigation } from '@react-navigation/native';
 import { FlashList } from '@shopify/flash-list';
 
 import { Box } from '@suite-native/atoms';
@@ -7,17 +10,28 @@ import {
     type AssetsStackRoutes,
     Screen,
     ScreenHeader,
-    type StackProps,
+    type StackNavigationProps,
 } from '@suite-native/navigation';
 
 import { AssetDetailHeader } from '../components/AssetDetailHeader';
+import { useAssetDetailAsset } from '../hooks/useAssetDetailAsset';
 
 const ASSET_DETAIL_ITEMS: readonly never[] = [];
 
-export const AssetDetailScreen = ({
-    route,
-}: StackProps<AssetsStackParamList, AssetsStackRoutes.AssetDetail>) => {
-    const { networkSymbol, tokenContract } = route.params;
+export const AssetDetailScreen = () => {
+    const navigation =
+        useNavigation<StackNavigationProps<AssetsStackParamList, AssetsStackRoutes.AssetDetail>>();
+    const { networkSymbol } = useAssetDetailAsset();
+    const hasShownAsset = useRef(false);
+
+    useEffect(() => {
+        if (networkSymbol !== undefined) {
+            hasShownAsset.current = true;
+        } else if (hasShownAsset.current) {
+            hasShownAsset.current = false;
+            navigation.goBack();
+        }
+    }, [navigation, networkSymbol]);
 
     return (
         <Screen
@@ -33,12 +47,7 @@ export const AssetDetailScreen = ({
                 <FlashList
                     data={ASSET_DETAIL_ITEMS}
                     renderItem={() => null}
-                    ListHeaderComponent={
-                        <AssetDetailHeader
-                            networkSymbol={networkSymbol}
-                            tokenContract={tokenContract}
-                        />
-                    }
+                    ListHeaderComponent={<AssetDetailHeader />}
                     ListEmptyComponent={null}
                     ListFooterComponent={null}
                 />

@@ -59,9 +59,10 @@ export const AssetPriceCard = ({ accountKey, tokenContract }: AssetPriceCardProp
 
     const tokenName = token?.name ?? token?.symbol ?? getNetworkDisplaySymbol(networkSymbol);
 
-    const priceContract = isErc4626Token ? underlyingAssetContract : tokenContract;
+    const priceContract = isErc4626Token
+        ? (underlyingAssetContract ?? tokenContract)
+        : tokenContract;
     const isCoinPrice = !priceContract || isWrappedNativeToken(networkSymbol, priceContract);
-    const isUnderlyingAssetResolving = isErc4626Token && underlyingAssetContract === null;
 
     return (
         <VStack marginHorizontal="sp16">
@@ -99,7 +100,7 @@ export const AssetPriceCard = ({ accountKey, tokenContract }: AssetPriceCardProp
                             value={currentValue}
                             variant="body-sm-strong"
                             isDiscreetText={false}
-                            isLoading={isLoading || isUnderlyingAssetResolving}
+                            isLoading={isLoading}
                             numberOfLines={1}
                             adjustsFontSizeToFit
                             maximumFractionDigits={isCoinPrice ? 2 : 8}
