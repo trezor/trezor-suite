@@ -48,11 +48,11 @@ describe('ExchangePreviewContinueButton', () => {
         },
     };
 
-    const renderExchangePreviewContinueButton = async (
+    const renderExchangePreviewContinueButton = (
         props: Partial<ExchangePreviewContinueButtonProps> = {},
         extraOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        await renderWithTradingProvider(
+        renderWithTradingProvider(
             <ExchangePreviewContinueButton
                 isDisabled={false}
                 onSignTransactionNavigation={jest.fn()}

@@ -25,7 +25,7 @@ jest.mock('@suite-native/discovery', () => ({
 describe('NetworkPicker', () => {
     const testID = '@trading/test/network-picker';
 
-    const renderNetworkPicker = async ({
+    const renderNetworkPicker = ({
         networkFilterMode,
         selectedNetwork,
         onSelectNetwork = jest.fn(),
@@ -34,7 +34,7 @@ describe('NetworkPicker', () => {
         selectedNetwork?: Network['symbol'];
         onSelectNetwork?: jest.Mock;
     } = {}) =>
-        await renderWithTradingProvider(
+        renderWithTradingProvider(
             <NetworkPicker
                 networkFilterMode={networkFilterMode}
                 selectedNetwork={selectedNetwork}

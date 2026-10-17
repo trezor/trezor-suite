@@ -35,7 +35,7 @@ describe('SubTabs', () => {
         ({ colors } = result.current.utils);
     });
 
-    const renderSubTabs = async ({
+    const renderSubTabs = ({
         onChange = jest.fn(),
         paddingHorizontal,
         size = 'normal',
@@ -46,7 +46,7 @@ describe('SubTabs', () => {
         size?: 'normal' | 'large';
         value?: string;
     } = {}) =>
-        await renderWithBasicProvider(
+        renderWithBasicProvider(
             <SubTabs
                 items={items}
                 onChange={onChange}

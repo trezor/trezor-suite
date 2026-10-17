@@ -18,9 +18,8 @@ jest.mock('./useShowReviewCancellationAlert', () => ({
 }));
 
 describe('useOutputsReviewBackInterceptor', () => {
-    const renderUseOutputsReviewBackInterceptor = async (
-        onReviewCanceled: () => void = jest.fn(),
-    ) => await renderHookWithBasicProvider(() => useOutputsReviewBackInterceptor(onReviewCanceled));
+    const renderUseOutputsReviewBackInterceptor = (onReviewCanceled: () => void = jest.fn()) =>
+        renderHookWithBasicProvider(() => useOutputsReviewBackInterceptor(onReviewCanceled));
 
     beforeEach(() => {
         jest.clearAllMocks();

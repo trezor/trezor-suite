@@ -17,8 +17,8 @@ jest.mock('@trezor/react-utils', () => {
 });
 
 describe('SearchInputWithCancel', () => {
-    const renderSearchInputWithCancel = async (props: Partial<BottomSheetSearchInputProps>) =>
-        await renderWithBasicProvider(
+    const renderSearchInputWithCancel = (props: Partial<BottomSheetSearchInputProps>) =>
+        renderWithBasicProvider(
             <BottomSheetSearchInputWithCancel onChange={jest.fn()} {...props} />,
         );
 

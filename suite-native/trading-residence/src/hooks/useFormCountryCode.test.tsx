@@ -18,8 +18,8 @@ import { useLocationForm } from './useLocationForm';
 import { type TradingLocationFormType } from '../types/tradingLocationForm';
 
 describe('useFormCountryCode', () => {
-    const renderLocationForm = async () =>
-        await renderHookWithStoreProvider(() => useLocationForm(), {
+    const renderLocationForm = () =>
+        renderHookWithStoreProvider(() => useLocationForm(), {
             services: {
                 store: createLightStore({
                     reducer: {
@@ -35,8 +35,8 @@ describe('useFormCountryCode', () => {
             },
         });
 
-    const renderUseFormCountryCode = async (locationForm: TradingLocationFormType) =>
-        await renderHookWithBasicProvider(() => useFormCountryCode(), {
+    const renderUseFormCountryCode = (locationForm: TradingLocationFormType) =>
+        renderHookWithBasicProvider(() => useFormCountryCode(), {
             wrapper: ({ children }) => <Form form={locationForm}>{children}</Form>,
         });
 

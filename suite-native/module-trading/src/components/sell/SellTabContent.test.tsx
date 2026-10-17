@@ -40,8 +40,8 @@ describe('SellTabContent', () => {
         }));
     });
 
-    const renderSellTabContent = async () =>
-        await renderWithTradingProvider(<SellTabContent />, {
+    const renderSellTabContent = () =>
+        renderWithTradingProvider(<SellTabContent />, {
             services: {
                 ...services,
                 networks: { networkIcon: mockNetworkIcon(), ...services.networks },

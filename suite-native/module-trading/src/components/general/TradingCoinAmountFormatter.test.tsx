@@ -9,10 +9,10 @@ import {
 } from './TradingCoinAmountFormatter';
 
 describe('TradingCoinAmountFormatter', () => {
-    const renderTradingCoinAmountFormatter = async (
+    const renderTradingCoinAmountFormatter = (
         props: Partial<TradingCoinAmountFormatterProps> = {},
     ) =>
-        await renderWithStoreProvider(<TradingCoinAmountFormatter {...props} />, {
+        renderWithStoreProvider(<TradingCoinAmountFormatter {...props} />, {
             preloadedState: { wallet: getWalletState() },
         });
 

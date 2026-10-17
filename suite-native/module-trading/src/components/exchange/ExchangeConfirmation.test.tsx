@@ -65,8 +65,8 @@ describe('ExchangeConfirmation', () => {
             cancelConsent: jest.fn(),
         });
 
-    const renderConfirmation = async () =>
-        await renderWithTradingProvider(<ExchangeConfirmation />, {
+    const renderConfirmation = () =>
+        renderWithTradingProvider(<ExchangeConfirmation />, {
             tradeType: 'exchange',
             overrides: baseOverrides,
             wrapper: ({ children }) => <Form form={exchangeForm}>{children}</Form>,

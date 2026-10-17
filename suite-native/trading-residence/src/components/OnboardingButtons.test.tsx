@@ -26,8 +26,8 @@ describe('OnboardingButtons', () => {
     let store: Store<State>;
     const services: NativeAnalyticsDep = { analytics: mockNativeAnalytics() };
 
-    const renderOnboardingButtons = async (props: OnboardingButtonsProps) =>
-        await renderWithStoreProvider(<OnboardingButtons {...props} />, {
+    const renderOnboardingButtons = (props: OnboardingButtonsProps) =>
+        renderWithStoreProvider(<OnboardingButtons {...props} />, {
             wrapper: LocationForm,
             services: { ...services, store },
         });

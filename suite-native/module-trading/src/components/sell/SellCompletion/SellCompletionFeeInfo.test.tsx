@@ -13,12 +13,12 @@ jest.mock('../../general/TradeInfo/TradeFeeInfoRow', () => {
 });
 
 describe('SellCompletionFeeInfo', () => {
-    const renderSellCompletionFeeInfo = async (
+    const renderSellCompletionFeeInfo = (
         props: Partial<SellCompletionFeeInfoProps> = {},
         tradingAccountKey: AccountKey = eth1NormalAccount.key,
         providerConfirmationStatus: ProviderConfirmationStatus = 'confirmation_success',
     ) =>
-        await renderWithTradingProvider(<SellCompletionFeeInfo isTxnError={false} {...props} />, {
+        renderWithTradingProvider(<SellCompletionFeeInfo isTxnError={false} {...props} />, {
             tradeType: 'sell',
             overrides: {
                 wallet: {

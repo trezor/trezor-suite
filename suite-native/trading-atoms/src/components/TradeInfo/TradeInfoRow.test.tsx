@@ -6,8 +6,8 @@ import { renderWithBasicProvider, userEvent } from '@suite-native/test-utils';
 import { TradeInfoRow } from './TradeInfoRow';
 
 describe('TradeInfoRow', () => {
-    const renderTradeInfoRow = async (props: Partial<ComponentProps<typeof TradeInfoRow>> = {}) =>
-        await renderWithBasicProvider(<TradeInfoRow {...props}>{props.children}</TradeInfoRow>);
+    const renderTradeInfoRow = (props: Partial<ComponentProps<typeof TradeInfoRow>> = {}) =>
+        renderWithBasicProvider(<TradeInfoRow {...props}>{props.children}</TradeInfoRow>);
 
     it('should render children content', async () => {
         const { getByText } = await renderTradeInfoRow({ children: <Text>Test Content</Text> });

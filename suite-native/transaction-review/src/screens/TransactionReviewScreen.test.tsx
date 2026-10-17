@@ -87,8 +87,8 @@ const txValidityFlow: TransactionReviewTxValidityFlow = {
 type ScreenProps = Partial<React.ComponentProps<typeof TransactionReviewScreen>>;
 
 describe('TransactionReviewScreen', () => {
-    const renderScreen = async (props: ScreenProps = {}) =>
-        await renderWithStoreProvider(
+    const renderScreen = (props: ScreenProps = {}) =>
+        renderWithStoreProvider(
             <TransactionReviewScreen
                 accountKey={ETH_ACCOUNT_KEY}
                 reviewOutputs={reviewOutputs}

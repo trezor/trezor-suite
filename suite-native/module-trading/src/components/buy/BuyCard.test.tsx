@@ -38,13 +38,11 @@ describe('BuyCard', () => {
         featureFlags: createTradingFeatureFlags(),
     };
 
-    const renderForm = async () =>
-        await renderHookWithTradingProvider(() => useBuyForm(), { overrides, services });
+    const renderForm = () =>
+        renderHookWithTradingProvider(() => useBuyForm(), { overrides, services });
 
-    const renderBuyCard = async (
-        extraOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
-    ) =>
-        await renderWithTradingProvider(<BuyCard isAmountInputActive={false} />, {
+    const renderBuyCard = (extraOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {}) =>
+        renderWithTradingProvider(<BuyCard isAmountInputActive={false} />, {
             overrides: { ...overrides, ...extraOverrides },
             services: {
                 ...services,

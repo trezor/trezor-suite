@@ -13,8 +13,8 @@ import { SellPreviewView } from './SellPreviewView';
 import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
 
 describe('SellPreviewView', () => {
-    const renderSellPreviewView = async (quote: SellFiatTrade = banxaBankTransferSellQuote) =>
-        await renderWithTradingProvider(<SellPreviewView quote={quote} />, {
+    const renderSellPreviewView = (quote: SellFiatTrade = banxaBankTransferSellQuote) =>
+        renderWithTradingProvider(<SellPreviewView quote={quote} />, {
             tradeType: 'sell',
             overrides: {
                 wallet: {

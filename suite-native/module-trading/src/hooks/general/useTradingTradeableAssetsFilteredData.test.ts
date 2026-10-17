@@ -20,8 +20,8 @@ jest.mock('../exchange/useExchangeFormContext', () => ({
 }));
 
 describe('useTradingTradeableAssetsFilteredData', () => {
-    const renderUseTradingTradeableAssetsFilteredData = async () =>
-        await renderHookWithTradingProvider(
+    const renderUseTradingTradeableAssetsFilteredData = () =>
+        renderHookWithTradingProvider(
             () => useTradingTradeableAssetsFilteredData(selectExchangeBuyTradeableAssets),
             { tradeType: 'exchange' },
         );

@@ -62,13 +62,13 @@ describe('useFocusedValueWatch', () => {
         },
     };
 
-    const renderForm = async () =>
-        await renderHookWithStoreProvider(() => useBuyForm(), {
+    const renderForm = () =>
+        renderHookWithStoreProvider(() => useBuyForm(), {
             preloadedState,
         });
 
-    const renderUseFocusedValueWatch = async () =>
-        await renderHookWithStoreProvider(({ control }) => useFocusedValueWatch(control), {
+    const renderUseFocusedValueWatch = () =>
+        renderHookWithStoreProvider(({ control }) => useFocusedValueWatch(control), {
             initialProps: { control: form.control },
             services: { store },
         });

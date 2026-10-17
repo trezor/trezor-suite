@@ -37,8 +37,8 @@ describe('useReceiveAccountChangeEffect', () => {
         }),
     } as const;
 
-    const renderUseReceiveAccountChangeEffect = async () =>
-        await renderHookWithStoreProvider(
+    const renderUseReceiveAccountChangeEffect = () =>
+        renderHookWithStoreProvider(
             () => useReceiveAccountChangeEffect(setValue, selectExchangeSelectedReceiveAccount),
             { services: { store } },
         );

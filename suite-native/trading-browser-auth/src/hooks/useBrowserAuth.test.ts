@@ -64,8 +64,8 @@ jest.mock('./useOnForegroundCallback', () => ({
 describe('useBrowserAuth', () => {
     let store: Store<State>;
 
-    const renderUseBrowserAuth = async (tradingType: TradingType = 'sell') =>
-        await renderHookWithStoreProvider(() => useBrowserAuth(tradingType), {
+    const renderUseBrowserAuth = (tradingType: TradingType = 'sell') =>
+        renderHookWithStoreProvider(() => useBrowserAuth(tradingType), {
             services: { ...services, store },
         });
 

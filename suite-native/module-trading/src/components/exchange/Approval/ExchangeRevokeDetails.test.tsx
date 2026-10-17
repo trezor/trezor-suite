@@ -24,10 +24,10 @@ describe('ExchangeRevokeDetails', () => {
         },
     };
 
-    const renderExchangeRevokeDetails = async (
+    const renderExchangeRevokeDetails = (
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = defaultOverrides,
     ) =>
-        await renderWithTradingProvider(<ExchangeRevokeDetails exchange="mercuryo" />, {
+        renderWithTradingProvider(<ExchangeRevokeDetails exchange="mercuryo" />, {
             tradeType: 'exchange',
             overrides,
             services: { networks: mockNetworksServices() },

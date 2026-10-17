@@ -8,12 +8,12 @@ import { TradeableAssetListItem, type TradeableAssetListItemProps } from './Trad
 import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
 
 describe('TradeableAssetListItem', () => {
-    const renderComponent = async ({
+    const renderComponent = ({
         onPress = jest.fn(),
         asset = btcAsset,
         balance,
     }: Partial<TradeableAssetListItemProps>) =>
-        await renderWithTradingProvider(
+        renderWithTradingProvider(
             <TradeableAssetListItem asset={asset} balance={balance} onPress={onPress} />,
             { services: { networks: mockNetworksServices() } },
         );

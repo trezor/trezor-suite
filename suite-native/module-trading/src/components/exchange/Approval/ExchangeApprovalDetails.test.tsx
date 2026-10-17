@@ -31,10 +31,10 @@ describe('ExchangeApprovalDetails', () => {
         },
     };
 
-    const renderExchangeApprovalDetails = async (
+    const renderExchangeApprovalDetails = (
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = defaultOverrides,
     ) =>
-        await renderWithTradingProvider(
+        renderWithTradingProvider(
             <ExchangeApprovalDetails
                 exchange="mercuryo"
                 onApprovalTypeChange={mockOnApprovalTypeChange}

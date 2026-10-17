@@ -5,14 +5,14 @@ import { getWalletState } from '@suite-native/trading-fixtures';
 import { ProviderInfoRow, type ProviderInfoRowProps } from './ProviderInfoRow';
 
 describe('ProviderInfoRow', () => {
-    const renderProviderInfoRow = async (props: Partial<ProviderInfoRowProps> = {}) => {
+    const renderProviderInfoRow = (props: Partial<ProviderInfoRowProps> = {}) => {
         const preloadedState = {
             wallet: getWalletState({
                 tradeType: 'exchange',
             }),
         };
 
-        return await renderWithStoreProvider(
+        return renderWithStoreProvider(
             <ProviderInfoRow exchange="mercuryo" tradingType="exchange" {...props} />,
             {
                 preloadedState,

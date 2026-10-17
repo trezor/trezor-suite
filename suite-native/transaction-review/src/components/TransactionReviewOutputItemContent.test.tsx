@@ -47,11 +47,8 @@ const output = (
 ) => ({ type, value, state }) as TransactionReviewStatefulOutput;
 
 describe('TransactionReviewOutputItemContent', () => {
-    const renderContent = async (
-        reviewOutput: TransactionReviewStatefulOutput,
-        providerProps = {},
-    ) =>
-        await renderWithTransactionReview(
+    const renderContent = (reviewOutput: TransactionReviewStatefulOutput, providerProps = {}) =>
+        renderWithTransactionReview(
             <MockText testID={CONTENT_TEST_ID}>
                 <TransactionReviewOutputItemContent output={reviewOutput} />
             </MockText>,

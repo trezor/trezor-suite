@@ -26,8 +26,8 @@ describe('useExchangeIssue', () => {
         mockUseCommonExchangeIssue.mockReturnValue(exchangeIssue);
     });
 
-    const renderUseExchangeIssue = async (isRemoteFeatureEnabled?: boolean) =>
-        await renderHookWithTradingProvider(() => useExchangeIssue(), {
+    const renderUseExchangeIssue = (isRemoteFeatureEnabled?: boolean) =>
+        renderHookWithTradingProvider(() => useExchangeIssue(), {
             tradeType: 'exchange',
             overrides: {
                 ...(isRemoteFeatureEnabled === undefined

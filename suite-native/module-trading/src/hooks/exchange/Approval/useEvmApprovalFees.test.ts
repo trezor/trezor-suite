@@ -76,11 +76,11 @@ describe('useEvmApprovalFees', () => {
             overrides: mergeDeepObject(baseOverrides, extraOverrides),
         });
 
-    const renderUseEvmApprovalFees = async (
+    const renderUseEvmApprovalFees = (
         store: Store<State>,
         params?: Parameters<typeof useEvmApprovalFees>[0],
     ) =>
-        await renderHookWithStoreProvider(() => useEvmApprovalFees(params), {
+        renderHookWithStoreProvider(() => useEvmApprovalFees(params), {
             services: { store },
         });
 

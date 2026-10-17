@@ -35,11 +35,11 @@ describe('SellBankAccountPicker', () => {
         },
     });
 
-    const renderPicker = async (
+    const renderPicker = (
         props: ComponentProps<typeof SellBankAccountPicker>,
         overrides: PreloadedStatePartial<TradingTestPreloadedState>,
     ) =>
-        await renderWithTradingProvider(<SellBankAccountPicker {...props} />, {
+        renderWithTradingProvider(<SellBankAccountPicker {...props} />, {
             tradeType: 'sell',
             overrides,
         });

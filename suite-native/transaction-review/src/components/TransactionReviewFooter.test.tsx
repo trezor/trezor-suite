@@ -43,14 +43,14 @@ const mockWalletStateWithTransaction = (txid: string) => {
 };
 
 describe('TransactionReviewFooter', () => {
-    const renderFooter = async (
+    const renderFooter = (
         providerProps: TransactionReviewTestProviderProps = {},
         {
             isSendButtonDisabled,
             preloadedState,
         }: { isSendButtonDisabled?: boolean; preloadedState?: object } = {},
     ) =>
-        await renderWithTransactionReview(
+        renderWithTransactionReview(
             <TransactionReviewFooter isSendButtonDisabled={isSendButtonDisabled} />,
             {
                 providerProps: {

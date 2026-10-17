@@ -3,8 +3,8 @@ import { renderWithBasicProvider } from '@suite-native/test-utils';
 import { IconWithSpinner, type IconWithSpinnerProps } from './IconWithSpinner';
 
 describe('IconWithSpinner', () => {
-    const renderIconWithSpinner = async (props: Partial<IconWithSpinnerProps> = {}) =>
-        await renderWithBasicProvider(<IconWithSpinner iconName="check" {...props} />);
+    const renderIconWithSpinner = (props: Partial<IconWithSpinnerProps> = {}) =>
+        renderWithBasicProvider(<IconWithSpinner iconName="check" {...props} />);
 
     it('should render spinner when isInProgress is true by default', async () => {
         const { getByTestId } = await renderIconWithSpinner();

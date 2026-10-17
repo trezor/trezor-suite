@@ -26,8 +26,8 @@ describe('useDexExchangeTxSimulation', () => {
         mockUseCommonDexExchangeTxSimulation.mockReturnValue(simulation);
     });
 
-    const renderUseDexExchangeTxSimulation = async (isRemoteFeatureEnabled?: boolean) =>
-        await renderHookWithTradingProvider(() => useDexExchangeTxSimulation(), {
+    const renderUseDexExchangeTxSimulation = (isRemoteFeatureEnabled?: boolean) =>
+        renderHookWithTradingProvider(() => useDexExchangeTxSimulation(), {
             tradeType: 'exchange',
             overrides: {
                 ...(isRemoteFeatureEnabled === undefined

@@ -11,13 +11,13 @@ describe('SellAlert', () => {
     let form: SellFormType;
     const preloadedState = { wallet: getWalletState({ tradeType: 'sell' }) };
 
-    const renderFormHook = async () =>
-        await renderHookWithStoreProvider(() => useSellForm(), {
+    const renderFormHook = () =>
+        renderHookWithStoreProvider(() => useSellForm(), {
             preloadedState,
         });
 
-    const renderTradingAlert = async () =>
-        await renderWithBasicProvider(<SellAlert />, {
+    const renderTradingAlert = () =>
+        renderWithBasicProvider(<SellAlert />, {
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
         });
 

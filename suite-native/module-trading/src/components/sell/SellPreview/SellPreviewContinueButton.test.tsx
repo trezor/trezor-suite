@@ -20,8 +20,8 @@ describe('SellPreviewContinueButton', () => {
         jest.clearAllMocks();
     });
 
-    const renderButton = async (withRequiredState = true) =>
-        await renderWithTradingProvider(<SellPreviewContinueButton companyName="Banxa" />, {
+    const renderButton = (withRequiredState = true) =>
+        renderWithTradingProvider(<SellPreviewContinueButton companyName="Banxa" />, {
             services,
             tradeType: 'sell',
             overrides: withRequiredState

@@ -10,11 +10,11 @@ import {
 import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
 
 describe('ExchangeToAccountTradePreviewCard', () => {
-    const renderExchangeToAccountTradePreviewCard = async (
+    const renderExchangeToAccountTradePreviewCard = (
         props: Partial<ExchangeToAccountTradePreviewCardProps> = {},
         receiveAccountKey = btc1NormalAccount.key,
     ) =>
-        await renderWithTradingProvider(<ExchangeToAccountTradePreviewCard {...props} />, {
+        renderWithTradingProvider(<ExchangeToAccountTradePreviewCard {...props} />, {
             tradeType: 'exchange',
             overrides: {
                 wallet: {

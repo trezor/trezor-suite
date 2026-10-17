@@ -21,10 +21,10 @@ describe('ExchangeSendAmountErrorBadge', () => {
         },
     };
 
-    const renderExchangeSendAmountErrorBadge = async (
+    const renderExchangeSendAmountErrorBadge = (
         extraOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        await renderWithTradingProvider(<ExchangeSendAmountErrorBadge />, {
+        renderWithTradingProvider(<ExchangeSendAmountErrorBadge />, {
             tradeType: 'exchange',
             overrides: { ...baseOverrides, ...extraOverrides },
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,

@@ -10,8 +10,8 @@ const getPreloadedState = (swapSlippage: string | undefined) => {
     return { wallet: { trading } };
 };
 
-const renderUseReceiveAmountMultiplier = async (swapSlippage: string | undefined) =>
-    await renderHookWithStoreProvider(() => useReceiveAmountMultiplier(), {
+const renderUseReceiveAmountMultiplier = (swapSlippage: string | undefined) =>
+    renderHookWithStoreProvider(() => useReceiveAmountMultiplier(), {
         preloadedState: getPreloadedState(swapSlippage),
     });
 

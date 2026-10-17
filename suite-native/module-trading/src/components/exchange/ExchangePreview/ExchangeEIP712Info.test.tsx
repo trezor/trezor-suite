@@ -7,11 +7,11 @@ import { ExchangeEIP712Info, type ExchangeEIP712InfoProps } from './ExchangeEIP7
 import { renderWithTradingProvider } from '../../../test-utils/tradingTestUtils';
 
 describe('ExchangeEIP712Info', () => {
-    const renderExchangeEIP712Info = async (
+    const renderExchangeEIP712Info = (
         exchange: string,
         children?: ExchangeEIP712InfoProps['children'],
     ) =>
-        await renderWithTradingProvider(
+        renderWithTradingProvider(
             <ExchangeEIP712Info exchange={exchange}>{children}</ExchangeEIP712Info>,
             {
                 tradeType: 'exchange',

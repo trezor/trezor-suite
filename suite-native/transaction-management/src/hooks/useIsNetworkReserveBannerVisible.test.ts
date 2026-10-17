@@ -38,8 +38,8 @@ describe('useIsNetworkReserveBannerVisible', () => {
         });
     });
 
-    const renderHook = async (params: Parameters<typeof useIsNetworkReserveBannerVisible>[0]) =>
-        await renderHookWithStoreProvider(() => useIsNetworkReserveBannerVisible(params), {
+    const renderHook = (params: Parameters<typeof useIsNetworkReserveBannerVisible>[0]) =>
+        renderHookWithStoreProvider(() => useIsNetworkReserveBannerVisible(params), {
             services: { store },
         });
 

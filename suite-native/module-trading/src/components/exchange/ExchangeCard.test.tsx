@@ -47,14 +47,14 @@ describe('ExchangeCard', () => {
         },
     });
 
-    const renderForm = async () =>
-        await renderHookWithStoreProvider(() => useExchangeForm(), {
+    const renderForm = () =>
+        renderHookWithStoreProvider(() => useExchangeForm(), {
             preloadedState,
             services,
         });
 
-    const renderExchangeCard = async () =>
-        await renderWithStoreProvider(<ExchangeCard isAmountInputActive={false} />, {
+    const renderExchangeCard = () =>
+        renderWithStoreProvider(<ExchangeCard isAmountInputActive={false} />, {
             preloadedState,
             services: {
                 ...services,

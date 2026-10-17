@@ -13,8 +13,8 @@ describe('useIsTradingAvailableForForm', () => {
         { [residenceDomain]: { allowedCountries: ['PL', 'US'] } },
     );
 
-    const renderUseIsTradingAvailableForForm = async (preloadedState: Record<string, unknown>) =>
-        await renderHookWithStoreProvider(() => useIsTradingAvailableForForm(), {
+    const renderUseIsTradingAvailableForForm = (preloadedState: Record<string, unknown>) =>
+        renderHookWithStoreProvider(() => useIsTradingAvailableForForm(), {
             wrapper: LocationForm,
             preloadedState,
         });

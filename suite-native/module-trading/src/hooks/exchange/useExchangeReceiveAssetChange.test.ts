@@ -22,8 +22,8 @@ describe('useExchangeReceiveAssetChange', () => {
     let store: Store<TradingRootState>;
     let dispatchSpy: jest.SpyInstance;
 
-    const renderExchangeReceiveAssetChange = async () =>
-        await renderHookWithStoreProvider(
+    const renderExchangeReceiveAssetChange = () =>
+        renderHookWithStoreProvider(
             () => {
                 const { context } = useContextForTradingForm(undefined);
                 const form = useForm<ExchangeFormValues>({

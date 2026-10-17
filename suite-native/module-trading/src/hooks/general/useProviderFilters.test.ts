@@ -12,8 +12,8 @@ type UseProviderFilterProps = {
     shouldShowFilters?: boolean;
 };
 describe('useProviderFilters', () => {
-    const renderUseProviderFilters = async (initialProps: UseProviderFilterProps) =>
-        await renderHookWithBasicProvider(
+    const renderUseProviderFilters = (initialProps: UseProviderFilterProps) =>
+        renderHookWithBasicProvider(
             ({ quotes = EMPTY_GROUPED_EXCHANGE_QUOTES_BY_RATE_TYPE, shouldShowFilters = true }) =>
                 useProviderFilters(quotes, shouldShowFilters),
             {

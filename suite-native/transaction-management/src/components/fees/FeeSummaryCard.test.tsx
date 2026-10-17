@@ -22,8 +22,8 @@ describe('FeeSummaryCard', () => {
         wallet: getWalletState(),
     });
 
-    const renderCard = async (props: Partial<typeof defaultProps> = {}) =>
-        await renderWithStoreProvider(<FeeSummaryCard {...defaultProps} {...props} />, {
+    const renderCard = (props: Partial<typeof defaultProps> = {}) =>
+        renderWithStoreProvider(<FeeSummaryCard {...defaultProps} {...props} />, {
             preloadedState: getPreloadedState(),
         });
 

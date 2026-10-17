@@ -42,20 +42,18 @@ const services: NativeAnalyticsDep & { networks: NetworkModuleRepositoryDep } = 
 };
 
 describe('SellForm', () => {
-    const renderFormHook = async (
-        overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
-    ) =>
-        await renderHookWithTradingProvider(() => useSellForm(), {
+    const renderFormHook = (overrides: PreloadedStatePartial<TradingTestPreloadedState> = {}) =>
+        renderHookWithTradingProvider(() => useSellForm(), {
             services,
             tradeType: 'sell',
             overrides,
         });
 
-    const renderSellForm = async (
+    const renderSellForm = (
         overrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
         form: SellFormType,
     ) =>
-        await renderWithTradingProvider(<SellForm />, {
+        renderWithTradingProvider(<SellForm />, {
             services: {
                 ...services,
                 networks: { networkIcon: mockNetworkIcon(), ...services.networks },

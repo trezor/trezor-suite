@@ -16,8 +16,8 @@ jest.mock('@suite-common/trading', () => ({
 }));
 
 describe('OriginalLimit', () => {
-    const renderOriginalLimit = async () =>
-        await renderWithStoreProvider(<OriginalLimit />, {
+    const renderOriginalLimit = () =>
+        renderWithStoreProvider(<OriginalLimit />, {
             preloadedState: {
                 wallet: getWalletState({
                     tradeType: 'exchange',

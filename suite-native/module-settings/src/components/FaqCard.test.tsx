@@ -21,8 +21,8 @@ const defaultPreloadedState = {
 };
 
 describe('FaqCard', () => {
-    const renderFaqCard = async (preloadedState = {}) =>
-        await renderWithStoreProvider(<FaqCard />, {
+    const renderFaqCard = (preloadedState = {}) =>
+        renderWithStoreProvider(<FaqCard />, {
             preloadedState: { ...defaultPreloadedState, ...preloadedState },
         });
 

@@ -7,8 +7,8 @@ import { renderWithBasicProvider } from '@suite-native/test-utils';
 import { TransactionReviewOutputItemLabel } from './TransactionReviewOutputItemLabel';
 
 describe('TransactionReviewOutputItemLabel', () => {
-    const renderLabel = async (type: TransactionReviewOutputType, networkType?: NetworkType) =>
-        await renderWithBasicProvider(
+    const renderLabel = (type: TransactionReviewOutputType, networkType?: NetworkType) =>
+        renderWithBasicProvider(
             <Text testID="label">
                 <TransactionReviewOutputItemLabel type={type} networkType={networkType} />
             </Text>,

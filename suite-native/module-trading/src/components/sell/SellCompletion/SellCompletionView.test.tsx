@@ -50,11 +50,11 @@ describe('SellCompletionView', () => {
         },
     });
 
-    const renderSellCompletionView = async (
+    const renderSellCompletionView = (
         props: Partial<SellCompletionViewProps> = {},
         formStep?: TradingSellStepType,
     ) =>
-        await renderWithTradingProvider(
+        renderWithTradingProvider(
             <SellCompletionView
                 quote={banxaBankTransferSellQuote}
                 txnErrorString={null}

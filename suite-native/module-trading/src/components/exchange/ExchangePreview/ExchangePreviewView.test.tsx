@@ -44,8 +44,8 @@ describe('ExchangePreviewView', () => {
         });
     });
 
-    const renderExchangePreviewView = async (props: Partial<ExchangePreviewViewProps> = {}) =>
-        await renderWithTradingProvider(
+    const renderExchangePreviewView = (props: Partial<ExchangePreviewViewProps> = {}) =>
+        renderWithTradingProvider(
             <ExchangePreviewView
                 quote={mercuryoFixedWorstQuote}
                 txnErrorString={null}

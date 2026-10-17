@@ -45,8 +45,8 @@ describe('ReceiveAddressActions', () => {
     const addressPath = "m/84'/0'/0'/0/0";
     const mockUseNavigation = jest.mocked(useNavigation);
 
-    const renderActions = async (isDeviceVerificationEnabled = true) =>
-        await renderWithBasicProvider(
+    const renderActions = (isDeviceVerificationEnabled = true) =>
+        renderWithBasicProvider(
             <ReceiveAddressInteractionsProvider
                 accountKey={accountKey}
                 address={address}

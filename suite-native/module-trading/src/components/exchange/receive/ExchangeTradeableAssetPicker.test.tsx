@@ -106,8 +106,8 @@ describe('ExchangeTradeableAssetPicker', () => {
         return result.current;
     };
 
-    const renderTradeableAssetPicker = async () =>
-        await renderWithTradingProvider(<ExchangeTradeableAssetPicker />, {
+    const renderTradeableAssetPicker = () =>
+        renderWithTradingProvider(<ExchangeTradeableAssetPicker />, {
             services: {
                 ...services,
                 store,

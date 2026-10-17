@@ -26,13 +26,13 @@ const mockedUseNavigationRemoveActionInterceptor = jest.mocked(
     useNavigationRemoveActionInterceptor,
 );
 
-const renderUseNavigationRemoveInterceptorAlert = async ({
+const renderUseNavigationRemoveInterceptorAlert = ({
     onRemoveConfirmed = jest.fn(),
     onStayConfirmed,
     shouldPrevent,
     alertOptions,
 }: RenderUseNavigationRemoveInterceptorAlertOptions = {}) =>
-    await renderHookWithBasicProvider(() =>
+    renderHookWithBasicProvider(() =>
         useNavigationRemoveInterceptorAlert({
             onRemoveConfirmed,
             onStayConfirmed,

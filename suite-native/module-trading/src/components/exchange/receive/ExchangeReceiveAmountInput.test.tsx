@@ -29,10 +29,10 @@ describe('ExchangeReceiveAmountInput', () => {
         featureFlags: featureFlagsInitialState,
     };
 
-    const renderExchangeReceiveAmountInput = async (
+    const renderExchangeReceiveAmountInput = (
         extraOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {},
     ) =>
-        await renderWithTradingProvider(<ExchangeReceiveAmountInput />, {
+        renderWithTradingProvider(<ExchangeReceiveAmountInput />, {
             tradeType: 'exchange',
             overrides: { ...baseOverrides, ...extraOverrides },
             wrapper: ({ children }) => <Form form={form}>{children}</Form>,
