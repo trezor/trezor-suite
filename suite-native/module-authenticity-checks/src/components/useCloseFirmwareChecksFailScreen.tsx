@@ -1,6 +1,10 @@
 import { useSelector } from 'react-redux';
 
-import { deviceActions, selectSelectedDevice } from '@suite-common/device';
+import {
+    deviceActions,
+    selectIsDeviceInitialized,
+    selectSelectedDevice,
+} from '@suite-common/device';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
@@ -13,13 +17,16 @@ import { useCloseDeviceCompromisedScreen } from './useCloseDeviceCompromisedScre
 export const useCloseFirmwareChecksFailScreen = () => {
     const { dispatch } = useServices(injectDispatch);
     const device = useSelector(selectSelectedDevice);
+    const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
     const { handleClose: closeScreen } = useCloseDeviceCompromisedScreen();
 
-    // Should always be true, but if not, fail-closed by not allowing to dismiss the failed check.
-    const canClose = typeof device?.id === 'string';
+    // Device id should always be present, but if not, fail-closed by not allowing to dismiss the failed check.
+    // For an initialized device, the check must be dismissible for emergency access to wallet.
+    // But if it hasn't been initialized yet, there's no point in onboarding such a device (creating a wallet).
+    const canClose = typeof device?.id === 'string' && isDeviceInitialized;
 
     const handleClose = () => {
-        if (!device?.id) return;
+        if (!device?.id || !isDeviceInitialized) return;
 
         dispatch(deviceActions.dismissFirmwareAuthenticityCheck(device.id));
         closeScreen();
