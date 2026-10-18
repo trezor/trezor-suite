@@ -4,8 +4,8 @@ import pluginJs from '@eslint/js';
  */
 
 /**
- * Cast bans for the result of `Object.keys/entries/values(...) as …` — steer them to the
- * typedObject* helpers. Exported separately so packages that switch the rest of
+ * Cast bans for the result of `Object.keys/entries/values/fromEntries(...) as …` — steer them to
+ * the typedObject* helpers. Exported separately so packages that switch the rest of
  * `no-restricted-syntax` off can still opt back into just these selectors.
  */
 export const noCastedObjectHelpersSyntax = [
@@ -26,6 +26,12 @@ export const noCastedObjectHelpersSyntax = [
             "TSAsExpression[expression.type='CallExpression'][expression.callee.type='MemberExpression'][expression.callee.object.name='Object'][expression.callee.property.name='values']",
         message:
             'Use typedObjectValues from @trezor/utils instead of casting the result of Object.values(). The `as` assertion just re-spells the value type, which typedObjectValues provides safely.',
+    },
+    {
+        selector:
+            "TSAsExpression[expression.type='CallExpression'][expression.callee.type='MemberExpression'][expression.callee.object.name='Object'][expression.callee.property.name='fromEntries']",
+        message:
+            'Use typedObjectFromEntries from @trezor/utils instead of casting the result of Object.fromEntries(). The `as` assertion only checks that the types overlap, while typedObjectFromEntries derives the result type from the entry tuples.',
     },
 ];
 
