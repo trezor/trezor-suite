@@ -90,7 +90,8 @@ Result with only one public key
         chainCode: string,            // BIP-32 serialization format
         childNum: number,             // BIP-32 serialization format
         publicKey: string,            // BIP-32 serialization format
-        fingerprint: number,          // BIP-32 serialization format
+        fingerprint: number,          // BIP-32 serialization format: fingerprint of the parent node, not the master key
+        rootFingerprint?: number,     // master (root) key fingerprint as uint32, since Connect 10.0.0. See below
         depth: number,                // BIP-32 serialization format
         descriptor?: string,          // BIP-380 descriptor. Not available for model One
         displayablePublicKey: string, // canonical user-facing form: xpubSegwit ?? xpub (SLIP-132 form matching the requested scriptType — e.g. ypub/zpub for SegWit, tr(...) descriptor for Taproot)
@@ -107,6 +108,16 @@ Result with only one public key
 > Both describe the same key; the multipath form is what host-side wallets need
 > to derive both external and change addresses.
 
+> **`fingerprint` vs. `rootFingerprint`.** `fingerprint` is the parent
+> fingerprint stored in the BIP-32 serialization of the returned node. It is
+> the same for every account under one parent (e.g. all `m/84'/0'/x'`
+> accounts) and equals the master fingerprint only for depth-1 nodes. For the
+> master fingerprint, e.g. the key origin `[xxxxxxxx/84'/0'/0']` of a
+> descriptor or a PSBT `BIP32_DERIVATION` entry, use `rootFingerprint`,
+> available since Connect 10.0.0. Both are `uint32` numbers; the usual
+> 8-character hex form is `rootFingerprint.toString(16).padStart(8, '0')`,
+> which matches the key origin in `descriptor`.
+
 [Read more about BIP32 serialization format](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki#Serialization_format)
 
 Result with bundle of public keys
@@ -115,9 +126,9 @@ Result with bundle of public keys
 {
     success: true,
     payload: [
-        { path, serializedPath, xpub, xpubSegwit?, chainCode, childNum, publicKey, fingerprint, depth, descriptor, displayablePublicKey }, // account 1
-        { path, serializedPath, xpub, xpubSegwit?, chainCode, childNum, publicKey, fingerprint, depth, descriptor, displayablePublicKey }, // account 2
-        { path, serializedPath, xpub, xpubSegwit?, chainCode, childNum, publicKey, fingerprint, depth, descriptor, displayablePublicKey }  // account 3
+        { path, serializedPath, xpub, xpubSegwit?, chainCode, childNum, publicKey, fingerprint, rootFingerprint?, depth, descriptor, displayablePublicKey }, // account 1
+        { path, serializedPath, xpub, xpubSegwit?, chainCode, childNum, publicKey, fingerprint, rootFingerprint?, depth, descriptor, displayablePublicKey }, // account 2
+        { path, serializedPath, xpub, xpubSegwit?, chainCode, childNum, publicKey, fingerprint, rootFingerprint?, depth, descriptor, displayablePublicKey }  // account 3
     ]
 }
 ```
