@@ -1,5 +1,7 @@
 import { type BuyTrade, type Coins, type CryptoId, type SellFiatTrade } from 'invity-api';
 
+import { typedObjectFromEntries } from '@trezor/utils';
+
 import coins from '../__fixtures__/coins.json';
 import { type TradingRootState, initialState } from '../reducers/tradingCommonReducer';
 import {
@@ -277,9 +279,9 @@ describe('tradeHistoryExportUtils', () => {
         });
 
         it('uses the injected translated labels for the header row', () => {
-            const czLabels = Object.fromEntries(
-                TRADING_HISTORY_CSV_COLUMNS.map(column => [column, `cs:${column}`]),
-            ) as TradingHistoryCsvColumnLabels;
+            const czLabels: TradingHistoryCsvColumnLabels = typedObjectFromEntries(
+                TRADING_HISTORY_CSV_COLUMNS.map(column => [column, `cs:${column}`] as const),
+            );
 
             const [headerRow] = buildTradingHistoryCsv(czLabels)([], resolvers).split('\n');
 

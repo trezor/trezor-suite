@@ -1,3 +1,5 @@
+import { typedObjectEntries, typedObjectFromEntries } from '@trezor/utils';
+
 import { type Colors } from './colors';
 import { type CSSColor } from './types';
 
@@ -20,9 +22,11 @@ export type BoxShadow = keyof typeof boxShadows;
 export type BoxShadows = Record<BoxShadow, string>;
 
 export const mapBoxShadowsToCSS = (theme: Colors): Record<BoxShadow, string> =>
-    Object.fromEntries(
-        Object.entries(boxShadows).map(([name, getBoxShadow]) => [name, getBoxShadow(theme)]),
-    ) as Record<BoxShadow, string>;
+    typedObjectFromEntries(
+        typedObjectEntries(boxShadows).map(
+            ([name, getBoxShadow]) => [name, getBoxShadow(theme)] as const,
+        ),
+    );
 
 interface NativeBoxShadowDefinition {
     elevation: number;

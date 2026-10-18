@@ -5,6 +5,7 @@ import {
     type FormState,
     type PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
+import { typedObjectFromEntries } from '@trezor/utils';
 
 import {
     TRON_FLOWS,
@@ -51,9 +52,9 @@ export const createTronStakeSession = (flow: TronFlow): TronStakeState => ({
     pendingTxid: null,
 });
 
-const initialTronStakeSessions = Object.fromEntries(
-    TRON_FLOWS.map(flow => [flow, Object.freeze(createTronStakeSession(flow))]),
-) as Record<TronFlow, TronStakeState>;
+const initialTronStakeSessions: Record<TronFlow, TronStakeState> = typedObjectFromEntries(
+    TRON_FLOWS.map(flow => [flow, Object.freeze(createTronStakeSession(flow))] as const),
+);
 
 export const getInitialTronStakeSession = (flow: TronFlow): TronStakeState =>
     initialTronStakeSessions[flow];

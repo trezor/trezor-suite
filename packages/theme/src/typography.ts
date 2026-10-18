@@ -123,6 +123,7 @@ const prepareTypography = (): TypographyStyles =>
     }) as TypographyStyles;
 
 const prepareNativeTypography = (): NativeTypographyStyles =>
+    // eslint-disable-next-line no-restricted-syntax -- the entries never include `inherit`, which `NativeTypographyStyles` requires; typing them exposes the gap.
     Object.fromEntries(
         Object.entries(typographyStylesBase).map(([styleName, value]) => {
             // Android doesn't support fontWeight
