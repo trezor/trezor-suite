@@ -16,10 +16,24 @@ type ApiMethods<Api> = {
 
 type ApiUnion<Api> = ApiMethods<Api>[Exclude<keyof Api, keyof EventEmitter>];
 
-interface IpcProxyInstance<Api extends EventEmitterApi> {
+type ApiMethodName<Api> = Parameters<ApiUnion<Api>>[0];
+
+// A method returning `any` would collapse the whole failure union to `any`
+type ExtractFailure<Response> = 0 extends 1 & Response
+    ? never
+    : Extract<Response, { success: false }>;
+
+type ApiFailure<Api> = {
+    [K in keyof Api]: Api[K] extends (...args: any[]) => infer Result
+        ? ExtractFailure<Awaited<Result>>
+        : never;
+}[Exclude<keyof Api, keyof EventEmitter>];
+
+export interface IpcProxyInstance<Api extends EventEmitterApi> {
     onRequest: (
         ...args: Parameters<ApiUnion<Api>>
     ) => Promise<(...params: any[]) => any> | ((...params: any[]) => any);
+    onRequestError?: (method: ApiMethodName<Api>, error: unknown) => ApiFailure<Api> | undefined;
     onAddListener?: NonNullable<EventEmitterApi['on']>; // NOTE: should be NonNullable<Api['on']> but it doesn't work with connect
     onRemoveListener?: NonNullable<Api['removeAllListeners']>;
 }
@@ -82,9 +96,8 @@ export const createIpcProxyHandler = <Api extends EventEmitterApi>(
     // Handle creation event from proxy-generator and creates actual interface instance
     ipcMain.handle(`${channel}/create`, async (_, [instancePrefix, constructorParams]) => {
         debug?.info(SERVICE_NAME, `Create ipc chanel ${instancePrefix}`);
-        const { onRequest, onAddListener, onRemoveListener } = await onCreateInstance(
-            ...constructorParams,
-        );
+        const { onRequest, onRequestError, onAddListener, onRemoveListener } =
+            await onCreateInstance(...constructorParams);
         if (onAddListener) {
             ipcMain.on(
                 `${instancePrefix}/add-listener`,
@@ -119,11 +132,21 @@ export const createIpcProxyHandler = <Api extends EventEmitterApi>(
                     payload,
                 });
             } catch (error) {
-                // catch runtime error
-                reply(responseEvent, {
-                    success: false,
-                    error,
-                });
+                const method = params[0] as ApiMethodName<Api>;
+                const errorPayload = onRequestError?.(method, error);
+                if (errorPayload) {
+                    // custom catch runtime error
+                    reply(responseEvent, {
+                        success: true,
+                        payload: errorPayload,
+                    });
+                } else {
+                    // default catch runtime error
+                    reply(responseEvent, {
+                        success: false,
+                        error,
+                    });
+                }
             }
         });
     });

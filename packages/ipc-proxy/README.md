@@ -64,6 +64,10 @@ const unregisterProxy = createIpcProxyHandler<MyClass>(
                     }
                     return (myClassInstance[method] as any)(...params);
                 },
+                // runtime error in onRequest, see "Handling runtime errors" below
+                onRequestError: (method, error) => {
+                    return { success: false, error: { message: String(error), code: 'MY_CODE' } };
+                },
                 // event listener requests
                 onAddListener: (eventName, listener) => {
                     return myClassInstance.on(eventName, listener);
@@ -108,3 +112,15 @@ const getData = async () => {
 
 
 ```
+
+### Handling runtime errors
+
+If `onRequest` throws (a bug in the handler or in the underlying API), the proxy method **rejects** by default.
+This is unexpected for APIs which report errors as values (`{ success: false, ... }`) and never reject, where an unhandled rejection in the renderer would be a bug of its own.
+
+Implement the optional `onRequestError` to keep such APIs from rejecting:
+
+- It is called in the main context with the method name (same as the first argument of `onRequest`) and the thrown error.
+- Return a failure in the shape the API itself returns. The type is extracted from the API, as the union of the `{ success: false }` results of all its methods, so any other shape is a TypeScript error. Methods returning `any` are ignored, otherwise they would make the check meaningless.
+- The request then resolves with the returned failure instead of rejecting.
+- Return `undefined` to keep the default behavior (rejection). Use it for methods where a rejection is intended.
