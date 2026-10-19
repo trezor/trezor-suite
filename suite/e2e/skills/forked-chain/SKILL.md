@@ -31,12 +31,14 @@ test.use({
     anvilFork: { symbol: asNetworkSymbol('base') },
 });
 
-test.beforeEach(async ({ anvil, onboardingPage, settingsPage }) => {
+test.beforeEach(async ({ anvil, onboardingPage, settingsPage, walletPage }) => {
     // Fund before discovery, so Suite finds the account with its balance.
     await anvil.setBalance(OWNER_ADDRESS, parseEther('1'));
     await anvil.fundErc20(USDC_CONTRACT, OWNER_ADDRESS, parseUnits('1000', 6));
     await onboardingPage.completeOnboarding();
     await settingsPage.changeNetworks({ enableNetworks: [anvil.networkToEnable] });
+    // Loads the account's transactions and tokens, which discovery skips on evm-rpc.
+    await walletPage.openAccount({ symbol: asNetworkSymbol('base') });
 });
 ```
 
@@ -44,11 +46,14 @@ test.beforeEach(async ({ anvil, onboardingPage, settingsPage }) => {
 
 Suite offers the `evm-rpc` backend type only in debug mode (unless it is the network's default), so `changeNetworks` turns debug mode on whenever it is given an `evm-rpc` backend.
 
+On `evm-rpc`, discovery loads only an account's balance and nonce. Its transactions and tokens, found by scanning `Transfer` logs, load when the account is opened. Until then Suite shows no tokens, so the Earn dashboard offers "Buy" instead of "Deposit now", for example.
+
 ## Core Rules
 
 MUST: Request `anvil` as a fixture and configure it with `test.use({ anvilFork })`. Never construct `AnvilFork` in a test.
 MUST: Connect Suite with `anvil.networkToEnable`. Do not build the backend object by hand.
 MUST: Start from a clean address: a mnemonic generated for the test (comment why, as in `tests/yield/deposit-anvil.test.ts`). Shared seeds carry real mainnet balances, tokens and allowances into the fork. When a shared seed is unavoidable, assert deltas, not absolute values.
+MUST: Open the account (`walletPage.openAccount`) before a flow that depends on its tokens or history (Earn, staking, token send). Discovery on evm-rpc does not load them.
 MUST: Fund ERC-20 tokens with `fundErc20`. It sends a real `transfer`, and the evm-rpc backend discovers an account's tokens only from `Transfer` logs.
 MUST: Assert outcomes on chain (`expect.poll(() => anvil.readErc20Balance(...))`) **and** in Suite.
 MUST: Read chain-dependent values (fees, share amounts, symbols) from Suite or from the fork at runtime (e.g. `devicePrompt.cryptoAmountWithSymbolOf('fee').innerText()`, `anvil.readErc20Metadata`).
