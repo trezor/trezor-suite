@@ -4,6 +4,7 @@ import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-u
 
 import { type AccountsRootState } from '../../accounts/accountsReducer';
 import { selectAccountByKey, selectDeviceAccounts } from '../../accounts/accountsSelectors';
+import { selectAccountTransactions } from '../../transactions/transactionsSelectors';
 import { getStakingDataForNetwork } from '../shared/stakingUtils';
 import { type StakeRootState } from '../stakingReducerTypes';
 import {
@@ -17,6 +18,7 @@ import {
     getTronAvailableVotingPower,
     getTronPendingUnstakeBalance,
     getTronTotalVotingPower,
+    getTronUnstakingBatchesWithResource,
     getTronVotes,
     getTronWithdrawableBalance,
     isTronStakingActive,
@@ -87,6 +89,16 @@ export const selectTronPendingUnstakeBalanceByAccountKey = (
 
     return getTronPendingUnstakeBalance(account);
 };
+
+export const selectTronUnstakingBatchesByAccountKey = createMemoizedSelector(
+    [selectAccountByKey, selectAccountTransactions],
+    (account, transactions) =>
+        returnStableArrayIfEmpty(
+            account?.networkType === 'tron'
+                ? getTronUnstakingBatchesWithResource({ account, transactions })
+                : [],
+        ),
+);
 
 export const selectTronVotesByAccountKey = (state: AccountsRootState, accountKey: AccountKey) => {
     const account = selectAccountByKey(state, accountKey);
