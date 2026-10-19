@@ -5,7 +5,6 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
     playwright-web-flake.url = "github:pietdevries94/playwright-web-flake/1.62.1";
-    old-gcc-nixpkgs.url = "github:NixOS/nixpkgs/a78ed5cbdd5427c30ca02a47ce6cccc9b7d17de4"; # For GCC 10.2.0
   };
 
   outputs =
@@ -14,17 +13,13 @@
       nixpkgs,
       flake-utils,
       playwright-web-flake,
-      old-gcc-nixpkgs,
       ...
     }:
     flake-utils.lib.eachDefaultSystem (
       system:
       let
         overlay = final: prev: {
-          inherit (playwright-web-flake.packages.${system}) playwright-test playwright-driver;
-
-          # Override GCC with older version
-          gccPkgs = import old-gcc-nixpkgs { system = prev.system; };
+          inherit (playwright-web-flake.packages.${system}) playwright-driver;
         };
 
         pkgs = import nixpkgs {
@@ -54,24 +49,14 @@
           pkgs.python3Packages.pip
           electron
           pkgs.pkg-config
-          pkgs.pixman # build dependencies for node-canvas
-          pkgs.cairo # build dependencies for node-canvas
-          pkgs.giflib # build dependencies for node-canvas
-          pkgs.libjpeg # build dependencies for node-canvas
-          pkgs.libpng # build dependencies for node-canvas
-          pkgs.librsvg # build dependencies for node-canvas
-          pkgs.pango # build dependencies for node-canvas
           pkgs.shellcheck
-          pkgs.playwright-test # From playwright-web-flake
           pkgs.vips
         ]
         ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
           pkgs.nsis
           pkgs.p7zip
-          pkgs.openjpeg
           pkgs.osslsigncode
           pkgs.squashfsTools
-          pkgs.gccPkgs.gcc # Older GCC
           pkgs.udev # used by node_module: usb
         ];
 

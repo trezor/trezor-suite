@@ -19,7 +19,7 @@ in
 rec {
   androidSdk = androidComposition.androidsdk;
   jdk = pkgs.jdk17;
-  extraPackages = [ pkgs.nix-ld pkgs.aapt ];
+  extraPackages = [ pkgs.aapt ];
 
   nixLdHook = ''
     export NIX_LD="${pkgs.stdenv.cc.bintools.dynamicLinker}"
