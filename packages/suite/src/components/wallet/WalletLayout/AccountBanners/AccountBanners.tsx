@@ -55,7 +55,7 @@ export const AccountBanners = ({ account }: AccountBannersProps) => {
                 )}
             <BackendDisconnected />
             <DeviceUnavailable />
-            <TorDisconnected />
+            <TorDisconnected accountType={account?.accountType} />
             <ReserveBanner account={account} />
             <AccountImported account={account} />
             <AccountOutOfSync account={account} />

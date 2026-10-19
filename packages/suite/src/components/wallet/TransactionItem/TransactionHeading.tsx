@@ -35,6 +35,7 @@ const getPhishingTooltipTranslationId = (detectorId?: PhishingDetectorId) => {
 
 type TransactionHeadingProps = {
     transaction: WalletAccountTransaction;
+    accountDescriptor: string | undefined;
     isPending: boolean;
     isPhishingTransaction: boolean;
     phishingDetectorId?: PhishingDetectorId;
@@ -43,6 +44,7 @@ type TransactionHeadingProps = {
 
 export const TransactionHeading = ({
     transaction,
+    accountDescriptor,
     isPending,
     isPhishingTransaction,
     phishingDetectorId,
@@ -81,7 +83,11 @@ export const TransactionHeading = ({
                 <Row gap={4} data-testid={`${dataTestBase}/heading`}>
                     <TransactionHeader transaction={transaction} isPending={isPending} />
                     {isSupportedEthStakingNetworkSymbol(transaction.symbol) && (
-                        <InstantStakeBadge transaction={transaction} symbol={symbol} />
+                        <InstantStakeBadge
+                            transaction={transaction}
+                            accountDescriptor={accountDescriptor}
+                            symbol={symbol}
+                        />
                     )}
                 </Row>
             </BlurWrapper>

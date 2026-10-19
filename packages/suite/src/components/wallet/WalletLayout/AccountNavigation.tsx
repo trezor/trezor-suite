@@ -1,9 +1,9 @@
-import { selectSelectedAccount } from '@suite/account';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { selectRouterParams } from '@suite/router';
 import { selectIsNftSectionEnabled } from '@suite/settings';
 import { getNetworkOptional } from '@suite-common/wallet-config';
+import { type Account } from '@suite-common/wallet-types';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
 
@@ -12,9 +12,12 @@ import { useGoToWithAnalytics } from 'src/components/suite/layouts/SuiteLayout/P
 import { useSelector } from 'src/hooks/suite';
 import { type WalletParams } from 'src/types/wallet';
 
-export const AccountNavigation = () => {
+type AccountNavigationProps = {
+    account?: Account;
+};
+
+export const AccountNavigation = ({ account }: AccountNavigationProps) => {
     const { analytics } = useServices(injectDesktopAnalytics);
-    const account = useSelector(selectSelectedAccount);
     const routerParams = useSelector(selectRouterParams) as WalletParams;
     const enabledNftSection = useSelector(selectIsNftSectionEnabled);
     const network = getNetworkOptional(routerParams?.symbol);
