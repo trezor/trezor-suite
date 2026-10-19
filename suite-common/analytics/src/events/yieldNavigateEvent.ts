@@ -49,6 +49,10 @@ export const yieldNavigateEvent: EventDef<Attributes, EventType.YieldNavigate> =
     changelog: [
         { version: '26.5.0', notes: 'added' },
         { version: '26.7.1', notes: 'moved to suite-common, reported from mobile as well' },
+        {
+            version: '26.11.0',
+            notes: 'Desktop returns to Earn via the page back button, sidebar and browser history report cancel for unfinished deposit/withdraw/claim flows and continue after completion.',
+        },
     ],
 
     attributes: {

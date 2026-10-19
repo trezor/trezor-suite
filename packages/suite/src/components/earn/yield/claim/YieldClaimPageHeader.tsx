@@ -1,40 +1,24 @@
 import { AccountLabel } from '@suite/account';
-import { injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
-import { gotoThunk } from '@suite/router';
-import { events } from '@suite-common/analytics';
 import { type Account } from '@suite-common/wallet-types';
 import { IconButton, Row } from '@trezor/components';
-import { useServices } from '@trezor/dependency-injection';
 import { CaretLeftIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';
-import { injectDispatch } from '@trezor/redux-utils';
 
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { BasicName } from 'src/components/suite/layouts/SuiteLayout/PageHeader/PageNames/BasicName';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
+
+import { useYieldBackNavigation } from '../hooks/useYieldBackNavigation';
 
 type YieldClaimPageHeaderProps = {
     account?: Account;
 };
 
 export const YieldClaimPageHeader = ({ account }: YieldClaimPageHeaderProps) => {
-    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { isBelowMobile } = useLayoutSize();
 
-    const onBackClick = () => {
-        analytics.report({
-            type: events.yieldNavigateEvent.name,
-            payload: {
-                action: 'continue',
-                from: `claim-form`,
-                to: 'earn-dashboard',
-                networkSymbol: account?.symbol,
-            },
-        });
-
-        dispatch(gotoThunk({ routeName: 'suite-earn' }));
-    };
+    const onBackClick = useYieldBackNavigation({ flowType: 'claim', account });
 
     return (
         <PageHeader>

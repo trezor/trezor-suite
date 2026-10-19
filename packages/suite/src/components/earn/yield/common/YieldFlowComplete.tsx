@@ -33,19 +33,7 @@ export const YieldFlowComplete = ({
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { isBelowMobile } = useLayoutSize();
 
-    const handleBackToOverview = () => {
-        analytics.report({
-            type: events.yieldNavigateEvent.name,
-            payload: {
-                action: 'continue',
-                from: `${type}-form`,
-                to: 'earn-dashboard',
-                vaultId,
-            },
-        });
-
-        dispatch(gotoThunk({ routeName: 'suite-earn' }));
-    };
+    const handleBackToOverview = () => dispatch(gotoThunk({ routeName: 'suite-earn' }));
 
     const handleFeedbackSubmit = (rating: Rating) => {
         analytics.report({

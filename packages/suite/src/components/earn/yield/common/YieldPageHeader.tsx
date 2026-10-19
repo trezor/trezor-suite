@@ -4,7 +4,7 @@ import { AccountLabel } from '@suite/account';
 import { injectDesktopAnalytics } from '@suite/analytics';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { type EarnParams, gotoThunk } from '@suite/router';
+import { type EarnParams } from '@suite/router';
 import { events } from '@suite-common/analytics';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import {
@@ -24,6 +24,8 @@ import { belowBreakpoint, breakpoints } from '@trezor/theme';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { useLayoutSize } from 'src/hooks/suite/useLayoutSize';
+
+import { useYieldBackNavigation } from '../hooks/useYieldBackNavigation';
 
 const HeaderLayout = styled.div`
     display: grid;
@@ -114,27 +116,11 @@ export const YieldPageHeader = ({
     const isHowItWorksVisible = !isInvalid;
     const hasVaultIdentity = !isInvalid && !!account && !!vaultName;
 
-    const onBackClick = () => {
-        analytics.report({
-            type: events.yieldNavigateEvent.name,
-            payload: {
-                action: 'continue',
-                from: (() => {
-                    switch (analyticsStep) {
-                        case 'yield-deposit':
-                            return 'deposit-form';
-                        case 'yield-withdraw':
-                            return 'withdraw-form';
-                    }
-                })(),
-                to: 'earn-dashboard',
-                networkSymbol: account?.symbol,
-                vaultId: vault?.id,
-            },
-        });
-
-        dispatch(gotoThunk({ routeName: 'suite-earn' }));
-    };
+    const onBackClick = useYieldBackNavigation({
+        flowType: analyticsStep === 'yield-deposit' ? 'deposit' : 'withdraw',
+        account,
+        vault,
+    });
 
     const onHowItWorksClick = () => {
         if (!account || !vault) {
