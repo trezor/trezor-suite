@@ -138,10 +138,11 @@ export const thpHandshake = async (device: IDevice, unlockPin = false) => {
         );
     }
 
-    thpState.setIsPaired(completionState !== 0);
+    const isPaired = completionState !== 0;
+    thpState.setIsPaired(isPaired);
     thpState.setPhase('pairing');
 
-    if (handshakeCredentials.credentials?.autoconnect || completionState === 2) {
+    if ((isPaired && handshakeCredentials.credentials?.autoconnect) || completionState === 2) {
         // State HC1 -> HC2 pairing complete
         // finish pairing. device is ready to communicate without further interaction
         await thpCall(device, 'ThpEndRequest', {});
