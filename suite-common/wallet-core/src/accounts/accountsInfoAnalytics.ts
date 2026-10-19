@@ -1,12 +1,11 @@
 import { type TokenDefinition } from '@suite-common/token-definitions';
 import { type Account } from '@suite-common/wallet-types';
-import {
-    getAccountTotalStakingBalance,
-    getAccountsWithSomeTransactionHistory,
-} from '@suite-common/wallet-utils';
-import { BigNumber } from '@trezor/utils';
+import { getAccountsWithSomeTransactionHistory } from '@suite-common/wallet-utils';
 
-import { getStakingProvidersForAnalytics } from '../staking/shared/stakingUtils';
+import {
+    getStakingProvidersForAnalytics,
+    hasAccountStakedForAnalytics,
+} from '../staking/shared/stakingUtils';
 import { getAccountAnalyticsTokenSymbols } from '../tokens/tokenUtils';
 
 export const isAccountActiveForAnalytics = (account: Account) =>
@@ -20,7 +19,7 @@ export const getAccountInfoAnalyticsPayload = (
     network: account.symbol,
     accountType: account.accountType,
     index: account.index,
-    hasStaked: new BigNumber(getAccountTotalStakingBalance(account) || 0).gt(0),
+    hasStaked: hasAccountStakedForAnalytics(account),
     hasTraded,
     tokenSymbols: getAccountAnalyticsTokenSymbols(account, tokenDefinitions),
     stakingProviders: getStakingProvidersForAnalytics([account]),

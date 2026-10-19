@@ -18,7 +18,13 @@ export const accountsInfoEvent: EventDef<Attributes, EventType.AccountsInfo> = {
     name: EventType.AccountsInfo,
     descriptionTrigger:
         'Fired right after discovery of account (new accounts) or after account update. Unique attributes are network + index + accountType',
-    changelog: [{ version: '26.7.0', notes: 'added' }],
+    changelog: [
+        { version: '26.7.0', notes: 'added' },
+        {
+            version: '26.11.0',
+            notes: 'include external Solana delegations in hasStaked and exclude empty Solana delegations from stakingProviders',
+        },
+    ],
 
     attributes: {
         network: {
@@ -36,7 +42,8 @@ export const accountsInfoEvent: EventDef<Attributes, EventType.AccountsInfo> = {
         },
         hasStaked: {
             changelog: [{ version: '26.7.0', notes: 'added' }],
-            description: 'Whether the account has an active staking position',
+            description:
+                'Whether the account currently has a non-zero staking balance, not whether it has ever staked. Includes external Solana delegations and ETH/SOL positions pending stake, unstake or claim; TRX counts frozen stake only. DeFi vault positions are not included',
         },
         hasTraded: {
             changelog: [{ version: '26.7.0', notes: 'added' }],
@@ -50,7 +57,7 @@ export const accountsInfoEvent: EventDef<Attributes, EventType.AccountsInfo> = {
         stakingProviders: {
             changelog: [{ version: '26.7.0', notes: 'added' }],
             description:
-                'List of staking providers detected for this account (e.g., `everstake`, `fivebinaries`, `luganodes`, `p2p.org`)',
+                'List of staking providers detected for current staking positions (e.g., `everstake`, `fivebinaries`, `luganodes`, `p2p.org`); unrecognized providers are reported as `unknown`, never as addresses. External Solana delegations are included; emptied Solana delegations are excluded. Frozen TRX without assigned votes has an empty provider list',
         },
     },
 };

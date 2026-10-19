@@ -351,12 +351,22 @@ export const getStakingContractAddress = (account: Account, stakeType: StakeType
     }
 };
 
+export const hasAccountStakedForAnalytics = (account: Account): boolean => {
+    if (account.networkType === 'solana') {
+        return [
+            ...(account.misc?.solStakingAccounts ?? []),
+            ...(account.misc?.solExternalStakingAccounts ?? []),
+        ].some(stakingAccount => new BigNumber(stakingAccount.stake ?? '0').gt(0));
+    }
+
+    return new BigNumber(getAccountTotalStakingBalance(account) ?? '0').gt(0);
+};
+
 export const getStakingProvidersForAnalytics = (accounts: Account[]): string[] => {
     const providers = new Set<string>();
 
     accounts.forEach(account => {
-        const stakingBalance = getAccountTotalStakingBalance(account);
-        if (!stakingBalance || new BigNumber(stakingBalance).lte(0)) {
+        if (!hasAccountStakedForAnalytics(account)) {
             return;
         }
 
@@ -381,7 +391,10 @@ export const getStakingProvidersForAnalytics = (accounts: Account[]): string[] =
                     ...(account.misc?.solStakingAccounts ?? []),
                     ...(account.misc?.solExternalStakingAccounts ?? []),
                 ].forEach(stakingAccount => {
-                    if (stakingAccount.voterPubkey) {
+                    if (
+                        stakingAccount.voterPubkey &&
+                        new BigNumber(stakingAccount.stake ?? '0').gt(0)
+                    ) {
                         const provider = getStakingProviderBySolanaVoterPubkey(
                             stakingAccount.voterPubkey,
                         );
