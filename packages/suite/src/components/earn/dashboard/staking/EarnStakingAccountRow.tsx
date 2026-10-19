@@ -141,16 +141,6 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         }
 
         dispatch(
-            gotoThunk({
-                routeName: 'wallet-staking',
-                params: {
-                    symbol: account.symbol,
-                    accountIndex: account.index,
-                    accountType: account.accountType,
-                },
-            }),
-        );
-        dispatch(
             openModal({
                 type: 'earn-in-a-nutshell',
                 flow: EarnFlow.Stake,
@@ -168,16 +158,6 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
             return;
         }
 
-        dispatch(
-            gotoThunk({
-                routeName: 'wallet-staking',
-                params: {
-                    symbol: account.symbol,
-                    accountIndex: account.index,
-                    accountType: account.accountType,
-                },
-            }),
-        );
         dispatch(openModal({ type: 'claim', account }));
 
         analytics.report({

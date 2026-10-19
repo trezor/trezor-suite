@@ -34,7 +34,7 @@ import {
     selectVisibleDeviceEthereumAccountsWithStakingByNetworkSymbol,
 } from './ethereum/ethereumStakingSelectors';
 import { getEthereumCryptoBalanceWithStaking } from './ethereum/ethereumStakingUtils';
-import { selectPoolStatsApy, selectStake } from './shared/stakingSelectors';
+import { selectPoolStatsApy, selectStake, selectStakeAccountKey } from './shared/stakingSelectors';
 import { getUnstakingPeriodInDays } from './shared/stakingUtils';
 import {
     selectExpectedRewardsForEpoch,
@@ -408,3 +408,11 @@ export const selectVotingDelegationOption = (
 
 export const selectStakePrecomposedForm = (state: StakeRootState) =>
     selectStake(state).precomposedForm;
+
+export const selectStakeAccount = (state: StakeRootState): Account | undefined => {
+    const accountKey = selectStakeAccountKey(state);
+
+    if (!accountKey) return undefined;
+
+    return selectAccountByKey(state, accountKey) ?? undefined;
+};

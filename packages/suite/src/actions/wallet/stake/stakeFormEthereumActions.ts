@@ -1,11 +1,10 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 import { type ThunkDispatch } from 'redux-thunk';
 
-import { type SelectedAccountRootState, selectFullSelectedAccount } from '@suite/account';
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     type EthereumGetCurrentNonceThunkState,
     MIN_ETH_AMOUNT_FOR_STAKING,
@@ -25,6 +24,7 @@ import {
 } from '@suite-common/wallet-core';
 import { ethereumGetCurrentNonceThunk } from '@suite-common/wallet-core/src/send/sendFormEthereumThunks';
 import {
+    type Account,
     AddressDisplayOptions,
     type ComposeActionContext,
     type ExternalOutput,
@@ -124,24 +124,27 @@ export const composeTransaction =
 
 type SignTransactionThunkState = DeviceRootState &
     EthereumGetCurrentNonceThunkState &
-    SelectedAccountRootState &
     WalletSettingsRootState;
 
 type SignTransactionThunkDeps = WithServices<DesktopAnalyticsDep>;
 
+type SignTransactionThunkParams = {
+    account: Account;
+    formValues: StakeFormState;
+    transactionInfo: PrecomposedTransactionFinal;
+};
+
 export const signTransactionThunk =
-    (formValues: StakeFormState, transactionInfo: PrecomposedTransactionFinal) =>
+    ({ account, formValues, transactionInfo }: SignTransactionThunkParams) =>
     async (
         dispatch: ThunkDispatch<SignTransactionThunkState, SignTransactionThunkDeps, UnknownAction>,
         getState: () => SignTransactionThunkState,
         extra: SignTransactionThunkDeps,
     ) => {
-        const selectedAccount = selectFullSelectedAccount(getState());
         const device = selectSelectedDevice(getState());
-        if (selectedAccount.status !== 'loaded' || !device || transactionInfo?.type !== 'final')
-            return;
+        if (!device || transactionInfo?.type !== 'final') return;
 
-        const { account, network } = selectedAccount;
+        const network = getNetwork(account.symbol);
         if (account.networkType !== 'ethereum' || !network.chainId) return;
 
         const addressDisplayType = selectAddressDisplayType(getState());

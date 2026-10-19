@@ -1,6 +1,5 @@
 import { useCallback, useState } from 'react';
 
-import { selectSelectedAccount } from '@suite/account';
 import {
     hasPendingStakeTypeTransaction,
     isCardanoWithdrawalBlockedByMissingDrep,
@@ -8,6 +7,7 @@ import {
     selectStakeVotingDelegation,
 } from '@suite-common/wallet-core';
 import {
+    type Account,
     type ActionAvailability,
     type ActionUnavailableReason,
     type CardanoAction,
@@ -41,16 +41,16 @@ const getActionAvailability = (txPlan: PrecomposedTransactionCardano): ActionAva
     }
 };
 
-export const useCardanoStaking = (): CardanoStaking => {
-    const account = useSelector(selectSelectedAccount);
+type UseCardanoStakingParams = {
+    account: Account;
+};
 
-    const isCardano = account?.networkType === 'cardano';
+export const useCardanoStaking = ({ account }: UseCardanoStakingParams): CardanoStaking => {
+    const isCardano = account.networkType === 'cardano';
 
     const cardanoPools = useSelector(selectCardanoPoolsInfo);
     const votingDelegation = useSelector(selectStakeVotingDelegation);
-    const hasPendingTx = useSelector(state =>
-        account ? hasPendingStakeTypeTransaction(state, account.key) : false,
-    );
+    const hasPendingTx = useSelector(state => hasPendingStakeTypeTransaction(state, account.key));
 
     const [deposit, setDeposit] = useState<undefined | string>(undefined);
     const [fee, setFee] = useState<undefined | string>(undefined);
@@ -69,13 +69,11 @@ export const useCardanoStaking = (): CardanoStaking => {
     const { rewards: rewardsAmount } = isCardano ? account.misc.staking : {};
 
     const isStakingDisabled =
-        (account?.availableBalance === '0' || !delegatingAvailable.status || hasPendingTx) &&
+        (account.availableBalance === '0' || !delegatingAvailable.status || hasPendingTx) &&
         !loading;
 
     const calculateFeeAndDeposit = useCallback(
         async (action: CardanoAction) => {
-            if (!account) return;
-
             if (
                 (action === 'withdrawal' || action === 'deregister') &&
                 isCardanoWithdrawalBlockedByMissingDrep(account)
@@ -119,7 +117,7 @@ export const useCardanoStaking = (): CardanoStaking => {
     );
 
     // TODO: improve this hook for non-cardano accounts
-    if (account?.networkType !== 'cardano') {
+    if (!isCardano) {
         return {
             isStakingDisabled: true,
             deposit: undefined,

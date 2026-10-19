@@ -120,13 +120,15 @@ export const useChangeDelegateForm = ({
         const values = getValues();
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
         if (composedTx?.type === 'final') {
-            const result = await dispatch(signTransactionThunk(values, composedTx));
+            const result = await dispatch(
+                signTransactionThunk({ account, formValues: values, transactionInfo: composedTx }),
+            );
 
             if (result?.success) {
                 clearForm();
             }
         }
-    }, [getValues, composedLevels, dispatch, clearForm, selectedFee]);
+    }, [getValues, composedLevels, dispatch, account, clearForm, selectedFee]);
 
     return {
         ...methods,

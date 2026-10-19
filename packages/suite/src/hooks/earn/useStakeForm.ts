@@ -367,7 +367,13 @@ export const useStakeForm = ({ account }: UseStakeFormProps): StakeContextValues
         if (composedTx?.type === 'final') {
             setIsLoading(true);
             try {
-                const result = await dispatch(signTransactionThunk(values, composedTx));
+                const result = await dispatch(
+                    signTransactionThunk({
+                        account,
+                        formValues: values,
+                        transactionInfo: composedTx,
+                    }),
+                );
 
                 if (result?.success) {
                     clearForm();
@@ -383,7 +389,7 @@ export const useStakeForm = ({ account }: UseStakeFormProps): StakeContextValues
                 setIsLoading(false);
             }
         }
-    }, [getValues, composedLevels, dispatch, clearForm, selectedFee]);
+    }, [getValues, composedLevels, dispatch, account, clearForm, selectedFee]);
 
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
     const closeConfirmModal = () => {
@@ -398,7 +404,7 @@ export const useStakeForm = ({ account }: UseStakeFormProps): StakeContextValues
         }
     };
 
-    const { isStakingDisabled, calculateFeeAndDeposit } = useCardanoStaking();
+    const { isStakingDisabled, calculateFeeAndDeposit } = useCardanoStaking({ account });
 
     useEffect(() => {
         calculateFeeAndDeposit('delegate');
