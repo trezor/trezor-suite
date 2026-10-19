@@ -13,11 +13,12 @@ import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking
 
 interface TronWithdrawReadyBannerProps {
     account: Account;
+    nowSeconds: number;
 }
 
-export const TronWithdrawReadyBanner = ({ account }: TronWithdrawReadyBannerProps) => {
+export const TronWithdrawReadyBanner = ({ account, nowSeconds }: TronWithdrawReadyBannerProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
-    const withdrawableAmount = getTronWithdrawableBalance(account);
+    const withdrawableAmount = getTronWithdrawableBalance(account, nowSeconds);
 
     const { isWithdrawingDisabled, withdrawingMessageContent } = useMessageSystemStaking(
         account.symbol,

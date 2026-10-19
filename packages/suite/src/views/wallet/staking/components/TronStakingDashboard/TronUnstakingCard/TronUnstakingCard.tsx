@@ -14,14 +14,19 @@ const COL_WIDTHS = [HUG_CONTENT_COL_WIDTH, HUG_CONTENT_COL_WIDTH, {}];
 
 type TronUnstakingCardProps = {
     account: Account;
+    nowSeconds: number;
 };
 
-export const TronUnstakingCard = ({ account }: TronUnstakingCardProps) => {
+export const TronUnstakingCard = ({ account, nowSeconds }: TronUnstakingCardProps) => {
     const batches = useSelector(state =>
         selectTronUnstakingBatchesByAccountKey(state, account.key),
     );
 
-    const pendingBatches = getTronPendingUnstakingBatches({ batches, symbol: account.symbol });
+    const pendingBatches = getTronPendingUnstakingBatches({
+        batches,
+        symbol: account.symbol,
+        nowSeconds,
+    });
 
     if (pendingBatches.length === 0) return null;
 

@@ -236,6 +236,10 @@ describe('Tron unstaking balances', () => {
             expect(getTronWithdrawableBalance(accountWithBatches)).toBe('4');
         });
 
+        it('uses the given time instead of the current one', () => {
+            expect(getTronWithdrawableBalance(accountWithBatches, NOW_SECONDS + 100)).toBe('10');
+        });
+
         it('treats a batch expiring exactly now as withdrawable', () => {
             const account = buildTronAccount({
                 stakingInfo: buildStakingInfo({
@@ -249,6 +253,10 @@ describe('Tron unstaking balances', () => {
     describe('getTronPendingUnstakeBalance', () => {
         it('sums only batches that have not yet expired', () => {
             expect(getTronPendingUnstakeBalance(accountWithBatches)).toBe('6');
+        });
+
+        it('uses the given time instead of the current one', () => {
+            expect(getTronPendingUnstakeBalance(accountWithBatches, NOW_SECONDS + 100)).toBe('0');
         });
     });
 });
