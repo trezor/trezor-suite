@@ -1,9 +1,10 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import { type CryptoId, type ExchangeTradeSigned } from 'invity-api';
 
-import { deviceInitialState } from '@suite-common/device';
+import { type DeviceReducerState, deviceInitialState } from '@suite-common/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { mockActionType } from '@suite-common/redux-utils/mocks';
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { type Account, type GeneralPrecomposedTransaction } from '@suite-common/wallet-types';
@@ -217,7 +218,10 @@ describe('createPaymentRequestsThunk', () => {
     const createMockStore = (preloadedState = {}) =>
         createTestCompositionRoot<void, CreatePaymentRequestsThunkState>({
             reducer: combineReducers({
-                device: () => deviceInitialState,
+                device: (): DeviceReducerState => ({
+                    ...deviceInitialState,
+                    selectedDevice: { path: 'device-path', instance: 0 } as unknown as TrezorDevice,
+                }),
                 wallet: combineReducers({
                     accounts: () => [mockAccount],
                     settings: () => initialWalletSettingsState,
