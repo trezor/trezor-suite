@@ -12,8 +12,8 @@ import { isCodesignBuild } from '@trezor/env-utils';
 import {
     ASSOCIATED_TOKEN_PROGRAM_PUBLIC_KEY,
     COMPUTE_BUDGET_PROGRAM_ID,
-    MEMO_PROGRAM_PUBLIC_KEY,
     MEMO_PROGRAM_PUBLIC_KEY_V1,
+    MEMO_V3_PROGRAM_PUBLIC_KEY,
     SERUM_ASSET_OWNER_PHANTOM_DEPLOYMENT_PROGRAM_ID,
     SERUM_ASSET_OWNER_PROGRAM_ID,
     STAKE_PROGRAM_PUBLIC_KEY,
@@ -282,7 +282,7 @@ const isUnknownProgramInstruction = (
         // some wallets use Serum's Assert Owner program during SPL transfer transactions
         SERUM_ASSET_OWNER_PROGRAM_ID,
         SERUM_ASSET_OWNER_PHANTOM_DEPLOYMENT_PROGRAM_ID,
-        MEMO_PROGRAM_PUBLIC_KEY,
+        MEMO_V3_PROGRAM_PUBLIC_KEY,
         MEMO_PROGRAM_PUBLIC_KEY_V1,
     ].includes(instruction.programId);
 
@@ -492,7 +492,7 @@ export const getTxType = (
             isArrayMember(instruction.parsed.type, tokenTransferInstructionTypes) ||
             (instruction.program === 'system' && instruction.parsed.type === 'advanceNonce') ||
             isInstructionCreatingTokenAccount(instruction) ||
-            instruction.programId === MEMO_PROGRAM_PUBLIC_KEY ||
+            instruction.programId === MEMO_V3_PROGRAM_PUBLIC_KEY ||
             instruction.programId === MEMO_PROGRAM_PUBLIC_KEY_V1,
     );
 
@@ -826,7 +826,7 @@ const getMemo = (tx: SolanaValidParsedTxWithMeta): string | undefined => {
     const memos = tx.transaction.message.instructions
         .filter(
             ix =>
-                ix.programId === MEMO_PROGRAM_PUBLIC_KEY ||
+                ix.programId === MEMO_V3_PROGRAM_PUBLIC_KEY ||
                 ix.programId === MEMO_PROGRAM_PUBLIC_KEY_V1,
         )
         .map(ix => ('parsed' in ix ? (ix.parsed as unknown) : undefined))
