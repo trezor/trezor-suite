@@ -6,7 +6,7 @@ import { createServer } from '../../mocks/server';
 let server: Awaited<ReturnType<typeof createServer>>;
 
 // create simplified transaction
-const generateTx = (vin: any[], vout: any[]) => {
+const generateTx = (vin: any[], vout: any[], type?: string) => {
     const mapVinVout = (v: any) => ({
         isAddress: typeof v.isAddress === 'boolean' ? v.isAddress : true,
         addresses: [v.address],
@@ -15,6 +15,7 @@ const generateTx = (vin: any[], vout: any[]) => {
     });
 
     return {
+        type,
         details: {
             vin: vin.map(mapVinVout),
             vout: vout.map(mapVinVout),
@@ -111,6 +112,29 @@ describe('analyzeTransactions', () => {
                     },
                 ],
             ),
+            // The liquidity clue is derived from the most recent coinjoin in the history, so the
+            // history needs one to exercise it at all.
+            generateTx(
+                [
+                    {
+                        address: 'bcrt1plc2ree0z9a9vew23updksagk2mvlwc2g3ft8zuj24l406dpqtlpqap8xz8',
+                        value: 1030000,
+                        isAccountOwned: true,
+                    },
+                ],
+                [
+                    {
+                        address: 'bcrt1plc2ree0z9a9vew23updksagk2mvlwc2g3ft8zuj24l406dpqtlpqap8xz8',
+                        value: 1000000,
+                        isAccountOwned: true,
+                    },
+                    {
+                        address: 'bcrt1p9ytmgr8evl2efv5eenxxz6tnppsmf3ekxsfwl8afpht7wnxrxdmq2yz4p0',
+                        value: 20000,
+                    },
+                ],
+                'joint',
+            ),
         ];
 
         const response = await analyzeTransactions(txHistory, {
@@ -121,5 +145,8 @@ describe('analyzeTransactions', () => {
             bcrt1p9av3jgcyjkwlh6gevvdn95a6vzyfqz962ulm57fc9mjuptg0usls0qvqvk: 1,
             bcrt1pksq9t85p4lect9ra8frvsn3f358lpkwtmlcgcup8aqaxcvnr4ylqglgdfp: 2, // occurred twice => greater anonymity
         });
+        // Computed locally from the coinjoin's outputs. The own 1000000 output still reaches the
+        // clue and outweighs the foreign 20000; narrowing it to foreign outputs is a follow-up.
+        expect(response.rawLiquidityClue).toBe(1000000);
     });
 });

@@ -1,10 +1,15 @@
+import {
+    type AnalyzeExternalVinVout,
+    type AnalyzeInternalVinVout,
+    type RawLiquidityClue,
+    initLiquidityClue,
+} from '@trezor/coinjoin-analysis';
 import type { Logger } from '@trezor/logger';
 import { arrayPartition } from '@trezor/utils';
 import { type Network, address as addressBjs } from '@trezor/utxo-lib';
 
 import * as middleware from './middleware';
 import { type EnhancedVinVout, type Transaction } from '../types/backend';
-import { type AnalyzeExternalVinVout, type AnalyzeInternalVinVout } from '../types/middleware';
 
 interface AnalyzeTransactionsOptions {
     network: Network;
@@ -15,7 +20,7 @@ interface AnalyzeTransactionsOptions {
 
 export interface AnalyzeTransactionsResult {
     anonymityScores: Record<string, number> | undefined;
-    rawLiquidityClue: middleware.RawLiquidityClue;
+    rawLiquidityClue: RawLiquidityClue;
 }
 
 const transformVinVout = (vinvout: EnhancedVinVout, network: Network) => {
@@ -43,19 +48,16 @@ const isInternal = (
 const getRawLiquidityClue = (
     transactions: Transaction[],
     options: AnalyzeTransactionsOptions,
-): Promise<middleware.RawLiquidityClue> => {
+): RawLiquidityClue => {
     // find most recent coinjoin transaction in history
     const cjTx = transactions.find(tx => tx.type === 'joint');
-    if (!cjTx) return Promise.resolve(null);
+    if (!cjTx) return null;
     const externalAmounts = cjTx.details.vout
         .flatMap(vout => transformVinVout(vout, options.network))
         .filter(vout => !('address' in vout))
         .map(o => Number(o.Value));
 
-    return middleware.initLiquidityClue(externalAmounts, {
-        baseUrl: options.middlewareUrl,
-        signal: options.signal,
-    });
+    return initLiquidityClue(externalAmounts);
 };
 
 /**
@@ -116,6 +118,6 @@ export const analyzeTransactions = async <T extends keyof AnalyzeTransactionsRes
                 : undefined,
         rawLiquidityClue:
             !sections || sections.includes('rawLiquidityClue' as T)
-                ? await getRawLiquidityClue(transactions, options)
+                ? getRawLiquidityClue(transactions, options)
                 : undefined,
     }) as AnalyzeTransactionsResult;
