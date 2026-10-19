@@ -66,6 +66,12 @@ The action also outputs the test files the PR added, modified or renamed (`edite
 - Empty spec list: `playwright-*-pr.config.ts`. Full run. `@skipOnPR` and `@optional` are excluded, except `@optional` tests in files the PR edited (passed as `E2E_EDITED_SPECS`).
 - Non-empty spec list: `playwright-*-pr-all.config.ts`. Only the listed files run. `@skipOnPR` is excluded, `@optional` is not.
 
+### Connect Explorer job
+
+`run-e2e-connect-explorer-tests` runs the device-free suite in `tests/connect-explorer/` with `playwright-connect-explorer.config.ts` against the explorer preview that `build-connect` deploys to `https://dev.suite.sldev.cz/connect/<branch>/`. It ignores the spec list, needs no trezor-user-env and reports without Currents: failures show as job annotations, and a failed run uploads the Playwright HTML report as an artifact. The Suite configs above never select these tests, because they carry no device tag.
+
+The job only runs when `connect-explorer-affected` finds a relevant change: Nx lists `@trezor/connect-explorer` as affected (the explorer or any of its workspace dependencies changed), or the PR touches `tests/connect-explorer/`, the e2e framework (`suite/e2e/` outside `tests/`) or this workflow.
+
 ## Nightly and FW canary pipelines
 
 ### Description and usage
