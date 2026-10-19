@@ -139,31 +139,35 @@ export const YieldEarnInANutshellModal = ({
     };
 
     const handleOnAction = () => {
-        analytics.report({
-            type: events.yieldNavigateEvent.name,
-            payload: {
-                action: 'continue',
-                from: 'deposit-in-a-nutshell-modal',
-                to: 'deposit-legal-modal',
-                networkSymbol: account.symbol,
-                vaultId: vault?.id,
-            },
-        });
+        if (actionType !== 'close') {
+            analytics.report({
+                type: events.yieldNavigateEvent.name,
+                payload: {
+                    action: 'continue',
+                    from: 'deposit-in-a-nutshell-modal',
+                    to: 'deposit-legal-modal',
+                    networkSymbol: account.symbol,
+                    vaultId: vault?.id,
+                },
+            });
+        }
 
         handleAction();
     };
 
     const handleOnCancel = () => {
-        analytics.report({
-            type: events.yieldNavigateEvent.name,
-            payload: {
-                action: 'cancel',
-                from: 'deposit-in-a-nutshell-modal',
-                to: 'deposit-in-a-nutshell-modal',
-                networkSymbol: account.symbol,
-                vaultId: vault?.id,
-            },
-        });
+        if (actionType !== 'close') {
+            analytics.report({
+                type: events.yieldNavigateEvent.name,
+                payload: {
+                    action: 'cancel',
+                    from: 'deposit-in-a-nutshell-modal',
+                    to: 'deposit-in-a-nutshell-modal',
+                    networkSymbol: account.symbol,
+                    vaultId: vault?.id,
+                },
+            });
+        }
 
         onCancelClick();
     };
