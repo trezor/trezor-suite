@@ -42,6 +42,8 @@ test.beforeEach(async ({ anvil, onboardingPage, settingsPage }) => {
 
 `anvilFork` options: `symbol`, `forkUrl`, `blockNumber`, `automine` (default `true`) and `baseFeePerGas`.
 
+Suite offers the `evm-rpc` backend type only in debug mode (unless it is the network's default), so `changeNetworks` turns debug mode on whenever it is given an `evm-rpc` backend.
+
 ## Core Rules
 
 MUST: Request `anvil` as a fixture and configure it with `test.use({ anvilFork })`. Never construct `AnvilFork` in a test.
@@ -86,7 +88,7 @@ await anvil.setNextBlockBaseFee(parseGwei('50')); // fee spikes, deterministic f
 
 ## Acting as other accounts
 
-Any address can send without its key; an account with no balance gets gas money first:
+Any address can send without its key. An account that cannot cover value plus gas is topped up first; mainnet addresses often hold dust, so this is not limited to empty ones:
 
 ```typescript
 await anvil.sendNativeAs(SENDER, OWNER_ADDRESS, parseEther('0.1')); // incoming transfer
