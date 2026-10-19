@@ -80,6 +80,7 @@ import {
     MIN_TRON_BALANCE_FOR_FEE_BUFFER,
     MIN_TRON_BALANCE_FOR_STAKING,
     MIN_TRON_FOR_WITHDRAWALS,
+    TRON_UNFREEZE_DELAY_DAYS,
 } from '../tron/tronStakingConstants';
 import {
     getTronStakingRewards,
@@ -279,8 +280,7 @@ export const getUnstakingPeriodInDays = (
     }
 
     if (networkType === 'tron') {
-        // TODO: move to constants
-        return 14;
+        return TRON_UNFREEZE_DELAY_DAYS;
     }
 
     if (typeof withdrawTime !== 'number' || typeof exitTime !== 'number') {

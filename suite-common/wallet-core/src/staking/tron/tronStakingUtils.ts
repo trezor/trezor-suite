@@ -20,7 +20,7 @@ import {
 import { getFirmwareVersionArray } from '@trezor/device-utils';
 import { BigNumber, isArrayMember, versionUtils } from '@trezor/utils';
 
-import { TRON_STAKING_CONTRACT_TYPES } from './tronStakingConstants';
+import { TRON_STAKING_CONTRACT_TYPES, TRON_UNFREEZE_DELAY_DAYS } from './tronStakingConstants';
 
 export function isSupportedTronStakingNetworkSymbol(
     symbol: NetworkSymbol,
@@ -95,7 +95,7 @@ const sumUnstakingBatchesSun = (
 export const getTronUnstakingBalance = (account: Account): string =>
     sumUnstakingBatchesSun(account, () => true);
 
-export const TRON_UNFREEZE_DELAY_SECONDS = 14 * 24 * 60 * 60;
+export const TRON_UNFREEZE_DELAY_SECONDS = TRON_UNFREEZE_DELAY_DAYS * 24 * 60 * 60;
 
 // Blockbook floors the expiry to seconds and a pending transaction added by Suite carries its
 // broadcast time instead of the block time, so the match allows some slack.
@@ -213,17 +213,15 @@ export const getTronPendingUnstakingBatches = ({
             resource: batch.resource,
         }));
 
-export const getTronWithdrawableBalance = (account: Account): string => {
-    const nowSeconds = Date.now() / 1000;
+export const getTronWithdrawableBalance = (
+    account: Account,
+    nowSeconds: number = Date.now() / 1000,
+): string => sumUnstakingBatchesSun(account, batch => batch.expireTime <= nowSeconds);
 
-    return sumUnstakingBatchesSun(account, batch => batch.expireTime <= nowSeconds);
-};
-
-export const getTronPendingUnstakeBalance = (account: Account): string => {
-    const nowSeconds = Date.now() / 1000;
-
-    return sumUnstakingBatchesSun(account, batch => batch.expireTime > nowSeconds);
-};
+export const getTronPendingUnstakeBalance = (
+    account: Account,
+    nowSeconds: number = Date.now() / 1000,
+): string => sumUnstakingBatchesSun(account, batch => batch.expireTime > nowSeconds);
 
 export const getTronVotes = (account?: Account): TronVote[] =>
     getTronStakingInfo(account)?.votes ?? [];
