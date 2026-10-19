@@ -690,9 +690,6 @@ export const messages = {
             methodCanceled: 'Call canceled by user.',
             unknownError: 'Unknown error occurred ({code}).',
         },
-        bottomSheets: {
-            confirmOnDeviceMessage: 'Go to your device and verify the details of the operation.',
-        },
         trezorConnect: {
             title: 'Trezor Connect',
             forget: 'Forget',
@@ -784,7 +781,6 @@ export const messages = {
             cta: 'Create wallet backup',
             continue: 'Continue anyway',
         },
-        confirmOnDeviceSheetTitle: 'Confirm on Trezor',
         toasts: {
             firmwareRevisionCheckOtherError: "Firmware authenticity check couldn't be performed.",
         },

@@ -8,11 +8,12 @@ import { connectPopupActions, selectConnectPopupCall } from '@suite-common/conne
 // eslint-disable-next-line local-rules/no-package-deep-imports
 import { type ConnectPopupCall } from '@suite-common/connect-popup/src/connectPopupTypes';
 import {
+    selectDeviceButtonRequests,
     selectIsDeviceConnectedAndAuthorized,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/device';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
-import { Box, Loader } from '@suite-native/atoms';
+import { Box } from '@suite-native/atoms';
 import { DeviceManager } from '@suite-native/device-manager';
 import { Translation } from '@suite-native/intl';
 import { Screen } from '@suite-native/navigation';
@@ -20,8 +21,9 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { AddressConfirmation } from '../components/AddressConfirmation';
-import { ButtonRequestsOverlay } from '../components/ButtonRequestsOverlay';
+import { ConnectConfirmOnTrezor } from '../components/ConnectConfirmOnTrezor';
 import { ConnectErrorMessage } from '../components/ConnectErrorMessage';
+import { ConnectLoader } from '../components/ConnectLoader';
 import { PermissionConfirmation } from '../components/PermissionConfirmation';
 import { TxSimulation } from '../components/TxSimulation';
 
@@ -34,6 +36,7 @@ export const ConnectPopupScreen = () => {
     const validDevice = deviceConnectedAndAuthorized && !isPortfolioTrackerDevice;
     const discoveryActive = useSelector(selectHasRunningDiscovery);
     const popupCall = useSelector(selectConnectPopupCall);
+    const buttonRequests = useSelector(selectDeviceButtonRequests);
     const [addressConfirmation, setAddressConfirmation] = useState<
         (ConnectPopupCall & { state: 'address-confirmation' }) | null
     >();
@@ -60,8 +63,7 @@ export const ConnectPopupScreen = () => {
     const mainView = useMemo(() => {
         if (discoveryActive) {
             return (
-                <Loader
-                    size="large"
+                <ConnectLoader
                     title={
                         <Translation id="moduleConnectPopup.connectionStatus.discoveryRunning" />
                     }
@@ -71,8 +73,7 @@ export const ConnectPopupScreen = () => {
 
         if (!validDevice) {
             return (
-                <Loader
-                    size="large"
+                <ConnectLoader
                     title={<Translation id="moduleConnectPopup.errors.deviceNotConnected" />}
                 />
             );
@@ -94,13 +95,16 @@ export const ConnectPopupScreen = () => {
             return <ConnectErrorMessage />;
         }
 
+        if (buttonRequests.length > 0) {
+            return <ConnectConfirmOnTrezor />;
+        }
+
         return (
-            <Loader
-                size="large"
+            <ConnectLoader
                 title={<Translation id="moduleConnectPopup.connectionStatus.loading" />}
             />
         );
-    }, [validDevice, popupCall, discoveryActive]);
+    }, [validDevice, popupCall, discoveryActive, buttonRequests]);
 
     return (
         <Screen>
@@ -116,8 +120,6 @@ export const ConnectPopupScreen = () => {
             >
                 {mainView}
             </Box>
-
-            <ButtonRequestsOverlay />
         </Screen>
     );
 };
