@@ -51,7 +51,7 @@ export const yieldNavigateEvent: EventDef<Attributes, EventType.YieldNavigate> =
         { version: '26.7.1', notes: 'moved to suite-common, reported from mobile as well' },
         {
             version: '26.11.0',
-            notes: 'Desktop returns to Earn via the page back button, sidebar and browser history report cancel for unfinished deposit/withdraw/claim flows and continue after completion. Mobile also tracks POP_TO_TOP exits and excludes background screens removed with the stack.',
+            notes: 'Desktop returns to Earn via the page back button, sidebar and browser history report cancel for unfinished deposit/withdraw/claim flows and continue after completion. Mobile also tracks POP_TO_TOP exits and excludes background screens removed with the stack. Dismissing desktop info-only education no longer emits deposit funnel navigation.',
         },
     ],
 
