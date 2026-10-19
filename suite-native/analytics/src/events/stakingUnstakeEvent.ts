@@ -15,7 +15,13 @@ export const stakingUnstakeEvent: EventDef<Attributes, EventType.StakingUnstake>
     name: EventType.StakingUnstake,
     descriptionTrigger:
         'User navigates through the unstaking flow, with tracking at each step of the process',
-    changelog: [{ version: '26.4.1', notes: 'added' }],
+    changelog: [
+        { version: '26.4.1', notes: 'added' },
+        {
+            version: '26.11.0',
+            notes: 'Form cancellation reports the latest selected crypto/fiat currency.',
+        },
+    ],
     attributes: {
         action: {
             changelog: [{ version: '26.4.1', notes: 'added' }],
