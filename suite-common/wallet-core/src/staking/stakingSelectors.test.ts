@@ -11,6 +11,7 @@ import {
     selectApy,
     selectCanClaimByAccountKey,
     selectClaimableAmountByAccountKey,
+    selectStakeAccount,
     selectStakeVotingDelegation,
     selectStakedBalanceByAccountKey,
     selectTotalStakePendingByAccountKey,
@@ -439,5 +440,30 @@ describe('selectStakeVotingDelegation', () => {
         };
 
         expect(selectStakeVotingDelegation(state)).toBeUndefined();
+    });
+});
+
+describe('selectStakeAccount', () => {
+    const adaAccount = createAdaAccount({ isActive: true, rewards: '0' });
+
+    const getStateInReview = (accountKey?: AccountKey): StakeRootState => ({
+        device: { devices: [], buttonRequestsByPath: {} },
+        wallet: {
+            stake: { ...stakeInitialState, accountKey },
+            accounts: [adaAccount, etcAccount],
+            transactions: { transactions: {}, phishing: {}, fetchStatusDetail: {} },
+        },
+    });
+
+    it('returns the account the transaction in review was composed for', () => {
+        expect(selectStakeAccount(getStateInReview(ada1Key))).toBe(adaAccount);
+    });
+
+    it('returns undefined when no transaction is in review', () => {
+        expect(selectStakeAccount(getStateInReview())).toBeUndefined();
+    });
+
+    it('returns undefined when the account is no longer known', () => {
+        expect(selectStakeAccount(getStateInReview(nonExistentKey))).toBeUndefined();
     });
 });

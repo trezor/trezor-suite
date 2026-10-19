@@ -130,7 +130,13 @@ export const useClaimForm = ({ account }: UseClaimFormsProps): ClaimContextValue
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
         if (composedTx?.type === 'final') {
             try {
-                const result = await dispatch(signTransactionThunk(values, composedTx));
+                const result = await dispatch(
+                    signTransactionThunk({
+                        account,
+                        formValues: values,
+                        transactionInfo: composedTx,
+                    }),
+                );
 
                 if (result?.success) {
                     clearForm();
@@ -143,9 +149,9 @@ export const useClaimForm = ({ account }: UseClaimFormsProps): ClaimContextValue
                 console.warn('Stake signing failed', error instanceof Error ? error.name : error);
             }
         }
-    }, [getValues, composedLevels, dispatch, clearForm, selectedFee]);
+    }, [getValues, composedLevels, dispatch, account, clearForm, selectedFee]);
 
-    const { calculateFeeAndDeposit, withdrawingAvailable } = useCardanoStaking();
+    const { calculateFeeAndDeposit, withdrawingAvailable } = useCardanoStaking({ account });
     const isClaimingDisabled = !withdrawingAvailable.status;
 
     useEffect(() => {

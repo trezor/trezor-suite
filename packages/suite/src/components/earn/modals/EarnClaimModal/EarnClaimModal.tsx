@@ -70,7 +70,9 @@ export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     // cardano specific logic
-    const { calculateFeeAndDeposit, withdrawingAvailable, fee, rewards } = useCardanoStaking();
+    const { calculateFeeAndDeposit, withdrawingAvailable, fee, rewards } = useCardanoStaking({
+        account,
+    });
     const isCardanoDrepDelegationRequired =
         isCardanoNetworkType &&
         !withdrawingAvailable.status &&

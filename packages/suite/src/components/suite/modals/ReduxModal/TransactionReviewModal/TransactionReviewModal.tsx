@@ -5,6 +5,7 @@ import {
     selectPrecomposedSendForm,
     selectSend,
     selectStake,
+    selectStakeAccount,
     selectStakePrecomposedForm,
     selectTronStakeTxReview,
     selectYieldTxReview,
@@ -42,6 +43,7 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
     const tronStakeTxReview = useSelector(selectTronStakeTxReview);
     const sendPrecomposedForm = useSelector(selectPrecomposedSendForm);
     const stakePrecomposedForm = useSelector(selectStakePrecomposedForm);
+    const stakeAccount = useSelector(selectStakeAccount);
     const selectedAccount = useSelector(selectFullSelectedAccount);
     const { dispatch } = useServices(injectDispatch);
 
@@ -105,12 +107,16 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
     };
 
     const handleStakeTx = async () => {
+        if (!stakeAccount) return;
+
         dispatch(stakeActions.dispose());
+
         await dispatch(
-            signTransactionThunk(
-                stake.precomposedForm!,
-                stake.precomposedTx as PrecomposedTransactionFinal,
-            ),
+            signTransactionThunk({
+                account: stakeAccount,
+                formValues: stake.precomposedForm!,
+                transactionInfo: stake.precomposedTx as PrecomposedTransactionFinal,
+            }),
         );
     };
 

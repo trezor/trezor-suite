@@ -489,7 +489,6 @@ describe('composeTransactionThunk', () => {
         };
         const state = {
             wallet: {
-                selectedAccount: { status: 'loaded', account, network },
                 stake: {
                     votingDelegation: { accountKey: account.key, option },
                     data: { data: {} },

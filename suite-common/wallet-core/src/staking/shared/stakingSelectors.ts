@@ -8,6 +8,8 @@ export const selectStake = (state: StakeRootState) => state.wallet.stake;
 
 export const selectStakeData = (state: StakeRootState) => selectStake(state).data.data;
 
+export const selectStakeAccountKey = (state: StakeRootState) => selectStake(state).accountKey;
+
 interface SelectPoolStatsApyProps {
     account?: Account;
     networkSymbol?: NetworkSymbol;

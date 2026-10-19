@@ -1,6 +1,5 @@
 import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
 
-import { type SelectedAccountRootState, selectFullSelectedAccount } from '@suite/account';
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -17,6 +16,7 @@ import {
     selectBlockchainUrlBySymbol,
 } from '@suite-common/wallet-core';
 import {
+    type Account,
     AddressDisplayOptions,
     type ComposeActionContext,
     type PrecomposedTransactionFinal,
@@ -25,16 +25,12 @@ import {
 import TrezorConnect from '@trezor/connect';
 import { type WithServices } from '@trezor/redux-utils';
 
-type ComposeTransactionThunkState = BlockchainRootState & SelectedAccountRootState;
+type ComposeTransactionThunkState = BlockchainRootState;
 
 export const composeTransactionThunk =
     (formValues: StakeFormState, formState: ComposeActionContext) =>
     async (_: Dispatch<UnknownAction>, getState: () => ComposeTransactionThunkState) => {
-        const selectedAccount = selectFullSelectedAccount(getState());
-
-        if (selectedAccount.status !== 'loaded') return;
-
-        const { account } = selectedAccount;
+        const { account } = formState;
         if (account.networkType !== 'solana') return;
 
         const blockchainUrl = selectBlockchainUrlBySymbol(getState(), account.symbol);
@@ -48,28 +44,28 @@ export const composeTransactionThunk =
         });
     };
 
-type SignTransactionThunkState = BlockchainRootState &
-    DeviceRootState &
-    SelectedAccountRootState &
-    WalletSettingsRootState;
+type SignTransactionThunkState = BlockchainRootState & DeviceRootState & WalletSettingsRootState;
 
 type SignTransactionThunkDeps = WithServices<DesktopAnalyticsDep>;
 
+type SignTransactionThunkParams = {
+    account: Account;
+    formValues: StakeFormState;
+    transactionInfo: PrecomposedTransactionFinal;
+};
+
 export const signTransactionThunk =
-    (formValues: StakeFormState, transactionInfo: PrecomposedTransactionFinal) =>
+    ({ account, formValues, transactionInfo }: SignTransactionThunkParams) =>
     async (
         dispatch: Dispatch<UnknownAction>,
         getState: () => SignTransactionThunkState,
         extra: SignTransactionThunkDeps,
     ) => {
-        const selectedAccount = selectFullSelectedAccount(getState());
-
         const device = selectSelectedDevice(getState());
-        if (selectedAccount.status !== 'loaded' || !device || transactionInfo?.type !== 'final') {
+        if (!device || transactionInfo?.type !== 'final') {
             return;
         }
 
-        const { account } = selectedAccount;
         if (
             account.networkType !== 'solana' ||
             !isSupportedSolStakingNetworkSymbol(account.symbol)

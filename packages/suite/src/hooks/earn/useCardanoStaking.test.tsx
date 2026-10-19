@@ -3,7 +3,7 @@ import { act } from '@testing-library/react';
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { stakeInitialState } from '@suite-common/wallet-core';
-import { type Account } from '@suite-common/wallet-types';
+import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import TrezorConnect from '@trezor/connect';
 
@@ -67,18 +67,18 @@ const mockAccountWithRewardsButNoDrep = (): Account =>
         },
     );
 
-const renderCardanoStaking = (account: Account) => {
+const renderCardanoStaking = (account: Account, selectedAccount: Account = account) => {
     const { services } = createTestCompositionRoot<void, AppState>({
         preloadedState: {
             wallet: {
-                selectedAccount: { account },
+                selectedAccount: { account: selectedAccount },
                 stake: stakeInitialState,
                 transactions: { transactions: {} },
             },
         },
     });
 
-    return renderHookWithStoreProvider(() => useCardanoStaking(), { services });
+    return renderHookWithStoreProvider(() => useCardanoStaking({ account }), { services });
 };
 
 describe('useCardanoStaking', () => {
@@ -102,6 +102,35 @@ describe('useCardanoStaking', () => {
         expect(result.current.isStakingDisabled).toBe(false);
         expect(result.current.fee).toBe('174301');
         expect(result.current.deposit).toBe('2000000');
+    });
+
+    it('composes for the given account, not for the one selected in the wallet', async () => {
+        cardanoComposeTransactionMock.mockResolvedValue({
+            success: true,
+            payload: [{ type: 'final', fee: '174301', deposit: '2000000' }],
+        });
+        const account = mockNeverStakedAccount();
+        const selectedAccount = mockWalletAccount(
+            {
+                symbol: asNetworkSymbol('ada'),
+                descriptor: asAccountDescriptor('selectedAdaDescriptor'),
+                availableBalance: '0',
+                addresses: { change: [CHANGE_ADDRESS], used: [], unused: [] },
+                utxo: [],
+            },
+            { misc: { staking: { isActive: false } } },
+        );
+
+        const { result } = renderCardanoStaking(account, selectedAccount);
+
+        await act(() => result.current.calculateFeeAndDeposit('delegate'));
+
+        expect(cardanoComposeTransactionMock).toHaveBeenCalledWith(
+            expect.objectContaining({
+                account: expect.objectContaining({ descriptor: account.descriptor }),
+            }),
+        );
+        expect(result.current.isStakingDisabled).toBe(false);
     });
 
     it('keeps staking unavailable when the composed delegation is not final', async () => {
