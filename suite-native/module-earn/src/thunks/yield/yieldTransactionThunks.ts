@@ -225,7 +225,7 @@ export const pushYieldActionReviewThunk = createThunk<
             analytics: extra.services.analytics,
             symbol: flowData.account.symbol,
             precomposedTransaction: precomposedTx,
-            selectedFee: precomposedForm.selectedFee,
+            formState: precomposedForm,
             txType: 'yield',
         });
 

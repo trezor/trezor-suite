@@ -168,7 +168,7 @@ export const pushWrappedNativeTokenThunk = createThunk<
             analytics: extra.services.analytics,
             symbol: account.symbol,
             precomposedTransaction: signedTransaction.precomposedTransaction,
-            selectedFee: signedTransaction.formState.selectedFee,
+            formState: signedTransaction.formState,
             txType: 'yield',
         });
 

@@ -53,10 +53,8 @@ export const useHandleOnEarnTransactionReview = ({
         selectAccountNetworkSymbol(state, accountKey),
     );
 
-    const selectedFee = useSelector(
-        (state: FormDraftRootState) =>
-            selectFormDraft<FormState>(state, getFormDraftKey(stakeType, accountKey))
-                ?.selectedFee ?? 'normal',
+    const formState = useSelector((state: FormDraftRootState) =>
+        selectFormDraft<FormState>(state, getFormDraftKey(stakeType, accountKey)),
     );
 
     const isMevProtectionFeatureEnabled = useSelector(selectIsMevProtectionFeatureEnabled);
@@ -84,12 +82,12 @@ export const useHandleOnEarnTransactionReview = ({
     }, [accountKey, dispatch, handleReviewError, precomposedTransaction, stakeType]);
 
     const handlePush = useCallback(async (): Promise<string | undefined> => {
-        if (networkSymbol && precomposedTransaction) {
+        if (networkSymbol && precomposedTransaction && formState) {
             reportTransactionCreated({
                 analytics,
                 symbol: networkSymbol,
                 precomposedTransaction,
-                selectedFee,
+                formState,
                 txType: 'stake',
             });
         }
@@ -124,7 +122,7 @@ export const useHandleOnEarnTransactionReview = ({
         networkSymbol,
         stakeType,
         precomposedTransaction,
-        selectedFee,
+        formState,
     ]);
 
     return { handleSign, handlePush, closeReview, markReviewNavigationSuccess };
