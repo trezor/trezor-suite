@@ -225,6 +225,13 @@ impl TrezorDevice {
         }
     }
 
+    pub fn is_paired(&self) -> bool {
+        match self.props.lock() {
+            Ok(p) => p.paired,
+            Err(_) => false,
+        }
+    }
+
     pub fn set_is_paired(&self, value: bool) {
         if let Ok(mut props) = self.props.lock() {
             props.paired = value;
