@@ -309,13 +309,6 @@ export const signAndPushSendFormTransactionThunk = createThunk<
             }),
         );
 
-        extra.services.analytics.report({
-            type: events.sendConfirmedOnDeviceEvent.name,
-            payload: {
-                assetSymbol: selectedAccount.symbol,
-            },
-        });
-
         if (isRejected(signResponse)) {
             // Do not close the modal, as we need that modal to display the error state.
             if (signResponse.payload?.message === RBF_ERROR_ALREADY_MINED) {
@@ -356,6 +349,13 @@ export const signAndPushSendFormTransactionThunk = createThunk<
 
             return;
         }
+
+        extra.services.analytics.report({
+            type: events.sendConfirmedOnDeviceEvent.name,
+            payload: {
+                assetSymbol: selectedAccount.symbol,
+            },
+        });
 
         // Open a deferred modal and get the decision
         const isPushConfirmed = await dispatch(openDeferredModal({ type: 'review-transaction' }));

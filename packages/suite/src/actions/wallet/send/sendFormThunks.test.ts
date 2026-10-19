@@ -1,3 +1,4 @@
+import { events } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { closeModal } from '@suite/modal';
 import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
@@ -97,7 +98,13 @@ const cancelEvents = () =>
         .mock.calls.map(([event]) => event)
         .filter(event => event.type === 'transaction/cancel');
 
-describe('Earn allowance cancellation in the shared Send flow', () => {
+const confirmedEvents = () =>
+    jest
+        .mocked(analytics.report)
+        .mock.calls.map(([event]) => event)
+        .filter(event => event.type === events.sendConfirmedOnDeviceEvent.name);
+
+describe('Send device confirmation and Earn allowance cancellation', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockIsYieldTransaction = true;
@@ -119,6 +126,12 @@ describe('Earn allowance cancellation in the shared Send flow', () => {
 
     it('reports one cancellation when a signed Earn approval or revoke review is closed', async () => {
         await send();
+        expect(confirmedEvents()).toEqual([
+            {
+                type: events.sendConfirmedOnDeviceEvent.name,
+                payload: { assetSymbol: 'eth' },
+            },
+        ]);
         expect(cancelEvents()).toEqual([
             {
                 type: 'transaction/cancel',
@@ -145,6 +158,7 @@ describe('Earn allowance cancellation in the shared Send flow', () => {
                 },
             ]);
             expect(mockOpenReview).not.toHaveBeenCalled();
+            expect(confirmedEvents()).toEqual([]);
         },
     );
 
@@ -160,12 +174,14 @@ describe('Earn allowance cancellation in the shared Send flow', () => {
         await send();
         expect(cancelEvents()).toEqual([]);
         expect(mockOpenReview).not.toHaveBeenCalled();
+        expect(confirmedEvents()).toEqual([]);
     });
 
     it('does not classify a regular Send review cancellation as Earn', async () => {
         mockIsYieldTransaction = false;
         await send();
         expect(cancelEvents()).toEqual([]);
+        expect(confirmedEvents()).toHaveLength(1);
     });
 
     it('does not classify a regular Send signing rejection as Earn', async () => {
@@ -179,5 +195,6 @@ describe('Earn allowance cancellation in the shared Send flow', () => {
         );
         await send();
         expect(cancelEvents()).toEqual([]);
+        expect(confirmedEvents()).toEqual([]);
     });
 });
