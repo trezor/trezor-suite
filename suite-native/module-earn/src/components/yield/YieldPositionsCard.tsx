@@ -28,8 +28,12 @@ import { useYieldOpportunities } from '../../hooks/yield/useYieldOpportunities';
 export const YieldPositionsCard = () => {
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
 
-    const { yieldOpportunities, isLoading: isYieldOpportunitiesLoading } = useYieldOpportunities();
-    const { claimRewardsWithFiat, isClaimLoading } = useClaimRewardsWithFiat();
+    const {
+        yieldOpportunities,
+        isLoading: isYieldOpportunitiesLoading,
+        isError: isYieldOpportunitiesError,
+    } = useYieldOpportunities();
+    const { claimRewardsWithFiat, isClaimLoading, isClaimError } = useClaimRewardsWithFiat();
 
     const positions = useSelector((state: EarnListRootState) =>
         selectYieldListItems(state, yieldOpportunities),
@@ -48,6 +52,7 @@ export const YieldPositionsCard = () => {
     useReportYieldDashboardReadyEvent({
         yieldOpportunities,
         isLoading: isYieldOpportunitiesLoading || isClaimLoading,
+        isError: isYieldOpportunitiesError || isClaimError,
         positionsCount: positions.length,
         claimItemsCount: claimItems.length,
     });

@@ -11,6 +11,7 @@ import { type EarnListRootState, selectYieldPromoListItems } from '../../earnScr
 type UseReportYieldDashboardReadyEventProps = {
     yieldOpportunities: YieldDtoV2[];
     isLoading: boolean;
+    isError: boolean;
     positionsCount: number;
     claimItemsCount: number;
 };
@@ -18,6 +19,7 @@ type UseReportYieldDashboardReadyEventProps = {
 export const useReportYieldDashboardReadyEvent = ({
     yieldOpportunities,
     isLoading,
+    isError,
     positionsCount,
     claimItemsCount,
 }: UseReportYieldDashboardReadyEventProps) => {
@@ -30,7 +32,7 @@ export const useReportYieldDashboardReadyEvent = ({
     const hasReportedYieldDashboardReadyRef = useRef(false);
 
     useEffect(() => {
-        if (hasReportedYieldDashboardReadyRef.current || isLoading) return;
+        if (hasReportedYieldDashboardReadyRef.current || isLoading || isError) return;
 
         hasReportedYieldDashboardReadyRef.current = true;
 
@@ -42,5 +44,5 @@ export const useReportYieldDashboardReadyEvent = ({
                 availableVaultCount: vaults.length,
             },
         });
-    }, [analytics, vaults.length, isLoading, positionsCount, claimItemsCount]);
+    }, [analytics, vaults.length, isLoading, isError, positionsCount, claimItemsCount]);
 };

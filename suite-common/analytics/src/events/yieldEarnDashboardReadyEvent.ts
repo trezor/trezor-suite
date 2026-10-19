@@ -16,6 +16,10 @@ export const yieldEarnDashboardReadyEvent: EventDef<Attributes, EventType.YieldE
         changelog: [
             { version: '26.5.2', notes: 'added' },
             { version: '26.7.1', notes: 'moved to suite-common, reported from mobile as well' },
+            {
+                version: '26.11.0',
+                notes: 'Mobile waits for successful opportunities and claim rewards requests instead of reporting empty data after API errors.',
+            },
         ],
 
         attributes: {
