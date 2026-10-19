@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
@@ -46,9 +46,9 @@ export const UnstakeFlowScreen = () => {
         selectAccountNetworkSymbol(state, accountKey),
     );
     const { analytics } = useServices(injectNativeAnalytics);
-    const currencyRef = useRef<'crypto' | 'fiat' | undefined>(undefined);
+    const [currency, setCurrency] = useState<'crypto' | 'fiat' | undefined>(undefined);
     const handleCurrencyChange = useCallback((activeView: ActiveView) => {
-        currencyRef.current = activeView === 'primary' ? 'crypto' : 'fiat';
+        setCurrency(activeView === 'primary' ? 'crypto' : 'fiat');
     }, []);
     const registerNavigateBackAnalytics = useNavigateBackAnalytics({
         type: events.stakingUnstakeEvent.name,
@@ -56,7 +56,7 @@ export const UnstakeFlowScreen = () => {
             action: 'cancel',
             step: 'unstake-form-modal',
             networkSymbol: networkSymbol ?? undefined,
-            currency: currencyRef.current,
+            currency,
         },
     });
 
@@ -98,7 +98,7 @@ export const UnstakeFlowScreen = () => {
                 action: 'continue',
                 step: 'unstake-form-modal',
                 networkSymbol: networkSymbol ?? undefined,
-                currency: currencyRef.current,
+                currency,
             },
         });
 
