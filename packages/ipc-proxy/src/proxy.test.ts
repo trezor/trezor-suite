@@ -3,6 +3,7 @@ import { EventEmitter } from 'events';
 import { createIpcProxy } from './proxy';
 import { exposeIpcProxy } from './proxy-generator';
 import { createIpcProxyHandler } from './proxy-handler';
+import type { IpcProxyInstance } from './proxy-handler';
 import { exposeInMainWorld, ipcMain, ipcRenderer } from '../mocks/mockedElectron';
 
 class TestApi extends EventEmitter {
@@ -188,6 +189,101 @@ describe('proxy', () => {
         unregister();
 
         expect(ipcMain.eventNames().length).toEqual(0);
+    });
+
+    describe('onRequestError', () => {
+        type Failure = { success: false; error: { message: string; code: string } };
+        type Response = { success: true; payload: number } | Failure;
+
+        class FailingApi extends EventEmitter {
+            run(): Promise<Response> {
+                return Promise.resolve({ success: true, payload: 1 });
+            }
+            other(): Promise<Response> {
+                return Promise.resolve({ success: true, payload: 2 });
+            }
+            // `any` must not widen the failure type of the other methods
+            untyped(): Promise<any> {
+                return Promise.resolve();
+            }
+        }
+
+        const requestError = new Error('request failed');
+
+        const setupProxy = (
+            channelName: string,
+            onRequestError: IpcProxyInstance<FailingApi>['onRequestError'],
+        ) => {
+            exposeInMainWorld(
+                ...exposeIpcProxy(ipcRenderer, [channelName], {
+                    proxyName: 'onRequestErrorIpcProxy',
+                }),
+            );
+            createIpcProxyHandler<FailingApi>(ipcMain, channelName, {
+                onCreateInstance: () => ({
+                    onRequest: () => {
+                        throw requestError;
+                    },
+                    onRequestError,
+                }),
+            });
+
+            return createIpcProxy<FailingApi>(channelName, { proxyName: 'onRequestErrorIpcProxy' });
+        };
+
+        it('resolves with the failure returned by onRequestError', async () => {
+            const failure: Failure = {
+                success: false,
+                error: { message: 'custom', code: 'C' },
+            };
+            const proxy = await setupProxy('CustomFailure', () => failure);
+
+            await expect(proxy.run()).resolves.toEqual(failure);
+        });
+
+        it('passes the method name and thrown error to onRequestError', async () => {
+            const onRequestError = jest.fn(() => undefined);
+            const proxy = await setupProxy('Arguments', onRequestError);
+
+            await proxy.other().catch(() => {});
+
+            expect(onRequestError).toHaveBeenCalledTimes(1);
+            expect(onRequestError).toHaveBeenCalledWith('other', requestError);
+        });
+
+        it('rejects when onRequestError returns undefined', async () => {
+            const proxy = await setupProxy('Rejection', () => undefined);
+
+            await expect(proxy.run()).rejects.toThrow('request failed');
+        });
+
+        it('rejects when onRequestError is not implemented', async () => {
+            const proxy = await setupProxy('NotImplemented', undefined);
+
+            await expect(proxy.run()).rejects.toThrow('request failed');
+        });
+
+        it('is typed by the method name and the failure shape of the api', () => {
+            createIpcProxyHandler<FailingApi>(ipcMain, 'Types', {
+                onCreateInstance: () => ({
+                    onRequest: () => () => {},
+                    onRequestError: method => {
+                        // @ts-expect-error not a method of the api
+                        if (method === 'unknownMethod') return undefined;
+
+                        return { success: false, error: { message: 'ok', code: 'C' } };
+                    },
+                }),
+            });
+
+            createIpcProxyHandler<FailingApi>(ipcMain, 'Types', {
+                onCreateInstance: () => ({
+                    onRequest: () => () => {},
+                    // @ts-expect-error failure shape differs from the api
+                    onRequestError: () => ({ success: false, wrong: 'shape' }),
+                }),
+            });
+        });
     });
 
     // CURRENTLY LEAKS — see PR #27978 for the fix.
