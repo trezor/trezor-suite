@@ -29,6 +29,7 @@
         "@trezor/blockchain-link": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/blockchain-link-utils": "workspace:*",
+        "@trezor/coinjoin-analysis": "workspace:*",
         "@trezor/eslint": "workspace:*",
         "@trezor/logger": "workspace:*",
         "@trezor/type-utils": "workspace:*",
