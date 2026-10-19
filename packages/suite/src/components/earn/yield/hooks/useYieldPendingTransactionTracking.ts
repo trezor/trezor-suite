@@ -17,7 +17,7 @@ import { getApyBreakdown } from '@suite-common/wallet-utils';
 import { type Analytics } from '@trezor/analytics-uploader';
 import { useServices } from '@trezor/dependency-injection';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
-import { useCurrentRef } from '@trezor/react-utils';
+import { useCurrentRef, useFreshRef } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
@@ -204,6 +204,8 @@ export const useYieldPendingTransactionTracking = ({
     // Fallback start time per pending txid for pending transactions stored without submittedAt.
     const pendingStartRef = useRef<{ txid: string; startedAt: number } | null>(null);
     const pendingTxid = pendingTransaction?.txid;
+    const pendingTxidRef = useFreshRef(pendingTxid);
+    const reportedClaimTxidRef = useRef<string | null>(null);
 
     useEffect(() => {
         if (pendingTxid && pendingStartRef.current?.txid !== pendingTxid) {
@@ -223,6 +225,16 @@ export const useYieldPendingTransactionTracking = ({
     useEffect(() => {
         if (!pendingTransaction || pendingTxStatus === null || pendingTxStatus === 'pending') {
             return;
+        }
+
+        if (
+            pendingTransaction.type === 'claim' &&
+            flowType === 'claim' &&
+            pendingTxStatus === 'confirmed'
+        ) {
+            if (reportedClaimTxidRef.current === pendingTransaction.txid) return;
+
+            reportedClaimTxidRef.current = pendingTransaction.txid;
         }
 
         const resolution = getResolutionEventType(pendingTransaction.type, flowType);
@@ -300,16 +312,19 @@ export const useYieldPendingTransactionTracking = ({
                 return;
             }
 
-            analytics.report({
-                type: events.yieldClaimEvent.name,
-                payload: {
-                    action: 'continue',
-                    type: 'success',
-                    networkSymbol: account.symbol,
-                },
-            });
+            const completeClaimAction = async () => {
+                try {
+                    await waitForMerklToResolveClaim();
+                } catch {
+                    // Merkl can lag behind an already confirmed claim transaction.
+                } finally {
+                    if (pendingTxidRef.current === pendingTransaction.txid) {
+                        completeAction();
+                    }
+                }
+            };
 
-            waitForMerklToResolveClaim().then(completeAction);
+            void completeClaimAction();
 
             return;
         }
@@ -325,6 +340,7 @@ export const useYieldPendingTransactionTracking = ({
         account.symbol,
         vault,
         waitForMerklToResolveClaim,
+        pendingTxidRef,
     ]);
 
     // Emit `leftPending` if the component unmounts while a tx is still unresolved.

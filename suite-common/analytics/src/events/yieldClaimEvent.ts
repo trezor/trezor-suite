@@ -18,6 +18,10 @@ export const yieldClaimEvent: EventDef<Attributes, EventType.YieldClaim> = {
     changelog: [
         { version: '26.5.0', notes: 'added' },
         { version: '26.7.1', notes: 'moved to suite-common, reported from mobile as well' },
+        {
+            version: '26.11.0',
+            notes: 'Desktop reports one success per confirmed claim transaction while waiting for Merkl.',
+        },
     ],
 
     attributes: {
