@@ -8,8 +8,10 @@ import {
     type DiscoveryStatus,
 } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { FirmwareType } from '@trezor/connect';
 
 import { blockchainInitialState } from './blockchain/blockchainReducer';
+import { selectSupportedNetworkByDevice } from './device/deviceSelectors';
 import {
     type WalletCoreCompoundRootState,
     selectDiscoveryAccountsParam,
@@ -197,5 +199,36 @@ describe(selectShouldRediscover.name, () => {
                 device,
             ),
         ).toBe(false);
+    });
+});
+
+describe(selectSupportedNetworkByDevice.name, () => {
+    const networks = ['btc', 'test', 'regtest', 'eth', 'arc'].map(asNetworkSymbol);
+
+    it('keeps only bitcoin networks for a bitcoin-only device saved before a network was added', () => {
+        const device = mockSuiteDevice({
+            firmwareType: FirmwareType.BitcoinOnly,
+            unavailableCapabilities: { eth: 'no-capability' },
+        });
+
+        expect(selectSupportedNetworkByDevice(device, networks)).toEqual([
+            'btc',
+            'test',
+            'regtest',
+        ]);
+    });
+
+    it('trusts the capability map for a universal device', () => {
+        const device = mockSuiteDevice({
+            firmwareType: FirmwareType.Universal,
+            unavailableCapabilities: { eth: 'no-capability' },
+        });
+
+        expect(selectSupportedNetworkByDevice(device, networks)).toEqual([
+            'btc',
+            'test',
+            'regtest',
+            'arc',
+        ]);
     });
 });
