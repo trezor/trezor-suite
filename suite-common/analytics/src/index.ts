@@ -26,3 +26,5 @@ export {
     transactionCreatedEvent,
     type TransactionCreatedEventAction,
 } from './events/transactionCreatedEvent';
+
+export { transactionCancelEvent } from './events/transactionCancelEvent';
