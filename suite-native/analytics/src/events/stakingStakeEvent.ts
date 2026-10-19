@@ -15,7 +15,13 @@ export const stakingStakeEvent: EventDef<Attributes, EventType.StakingStake> = {
     name: EventType.StakingStake,
     descriptionTrigger:
         'User navigates through the staking flow to stake cryptocurrency, with tracking at each step including educational modals and form submission',
-    changelog: [{ version: '26.4.1', notes: 'added' }],
+    changelog: [
+        { version: '26.4.1', notes: 'added' },
+        {
+            version: '26.11.0',
+            notes: 'Form cancellation reports the latest selected crypto/fiat currency.',
+        },
+    ],
     attributes: {
         action: {
             changelog: [{ version: '26.4.1', notes: 'added' }],
