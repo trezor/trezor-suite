@@ -18,6 +18,10 @@ import {
 import { reportTronVoteTxId } from '../../shared/reportTronVoteTxId';
 import { signTronContract } from '../../shared/signTronContract';
 import { tronStakeActions } from '../../tronStakingReducer';
+import { submitTronClaimThunk } from '../claim/submitClaim';
+import { submitTronFreezeThunk } from '../freeze/submitFreeze';
+import { submitTronUnstakeThunk } from '../unstake/submitUnstake';
+import { submitTronWithdrawThunk } from '../withdraw/submitWithdraw';
 
 jest.mock('@sentry/core', () => ({ captureException: jest.fn(), withScope: jest.fn() }));
 jest.mock('@trezor/connect', () => {
@@ -374,4 +378,91 @@ describe('submitTronVoteThunk', () => {
             }),
         ]);
     });
+});
+
+describe('Tron signing cancellation analytics', () => {
+    const submissions = [
+        [
+            'vote',
+            () =>
+                submitTronVoteThunk({
+                    account: buildAccount(),
+                    device,
+                    flow: FLOW,
+                    allocations: ALLOCATIONS,
+                    requestPushApproval: jest.fn(),
+                }),
+        ],
+        [
+            'stake',
+            () =>
+                submitTronFreezeThunk({
+                    account: buildAccount(),
+                    device,
+                    amount: '1',
+                    resourceType: 'energy',
+                    requestPushApproval: jest.fn(),
+                }),
+        ],
+        [
+            'unstake',
+            () =>
+                submitTronUnstakeThunk({
+                    account: buildAccount(),
+                    device,
+                    amount: '1',
+                    resourceType: 'bandwidth',
+                    requestPushApproval: jest.fn(),
+                }),
+        ],
+        [
+            'claim',
+            () =>
+                submitTronClaimThunk({
+                    account: buildAccount(),
+                    device,
+                    requestPushApproval: jest.fn(),
+                }),
+        ],
+        [
+            'withdraw',
+            () =>
+                submitTronWithdrawThunk({
+                    account: buildAccount(),
+                    device,
+                    requestPushApproval: jest.fn(),
+                }),
+        ],
+    ] as const;
+
+    it.each(submissions)('reports a signing cancellation once for %s', async (_, submit) => {
+        signTronContractMock.mockResolvedValue({ error: { kind: 'cancelled' } });
+        const store = initStore();
+
+        await store.dispatch(submit());
+
+        expect(signTronContractMock).toHaveBeenCalledTimes(1);
+        expect(analytics.report).toHaveBeenCalledTimes(1);
+        expect(analytics.report).toHaveBeenCalledWith({
+            type: 'transaction/cancel',
+            payload: { txType: 'stake', networkSymbol: 'trx', stage: 'signing' },
+        });
+        expect(pushTransactionMock).not.toHaveBeenCalled();
+    });
+
+    it.each(submissions)(
+        'does not report cancellation for a %s signing failure',
+        async (_, submit) => {
+            signTronContractMock.mockResolvedValue({
+                error: { kind: 'sign-failed', message: 'disconnected' },
+            });
+            const store = initStore();
+
+            await store.dispatch(submit());
+
+            expect(signTronContractMock).toHaveBeenCalledTimes(1);
+            expect(analytics.report).not.toHaveBeenCalled();
+            expect(pushTransactionMock).not.toHaveBeenCalled();
+        },
+    );
 });

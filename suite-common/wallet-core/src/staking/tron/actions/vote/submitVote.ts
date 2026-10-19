@@ -128,10 +128,20 @@ export const submitTronVoteThunk = createThunk<
                 account,
                 device,
                 contract,
-                analytics: extra.services.analytics,
             });
 
             if ('error' in signResult) {
+                if (signResult.error.kind === 'cancelled') {
+                    extra.services.analytics.report({
+                        type: events.transactionCancelEvent.name,
+                        payload: {
+                            txType: 'stake',
+                            networkSymbol: account.symbol,
+                            stage: 'signing',
+                        },
+                    });
+                }
+
                 dispatch(
                     tronStakeActions.submitFinished({ accountKey, flow, error: signResult.error }),
                 );

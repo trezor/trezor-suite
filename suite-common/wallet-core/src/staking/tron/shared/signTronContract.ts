@@ -1,4 +1,3 @@
-import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type Account } from '@suite-common/wallet-types';
 import { getAccountIdentity } from '@suite-common/wallet-utils';
@@ -23,7 +22,6 @@ type TronStakeContract =
 
 type SignTronContractResult = { serializedTx: string; txid: string } | { error: TronStakeError };
 type SignTronContractParams = {
-    analytics: AnalyticsDep['analytics'];
     account: Account;
     device: TrezorDevice;
     contract: TronStakeContract;
@@ -31,7 +29,6 @@ type SignTronContractParams = {
 
 export const signTronContract = async ({
     account,
-    analytics,
     device,
     contract,
 }: SignTronContractParams): Promise<SignTronContractResult> => {
@@ -75,11 +72,6 @@ export const signTronContract = async ({
 
     if (!signed.success) {
         if (isEarnSigningCancelled(signed.error)) {
-            analytics.report({
-                type: events.transactionCancelEvent.name,
-                payload: { txType: 'stake', networkSymbol: account.symbol, stage: 'signing' },
-            });
-
             return { error: { kind: 'cancelled' } };
         }
 

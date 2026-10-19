@@ -1,14 +1,10 @@
-import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { isEarnSigningCancelled } from '@suite-common/wallet-core';
 import { type Account, AddressDisplayOptions } from '@suite-common/wallet-types';
 import { getAccountIdentity, getMevProtectedTxData } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 
 type SignYieldTransactionOnDeviceParams = {
-    analytics: AnalyticsDep['analytics'];
-    networkSymbol: string;
     device: TrezorDevice;
     path: string;
     transaction: Parameters<typeof TrezorConnect.ethereumSignTransaction>[0]['transaction'];
@@ -16,15 +12,13 @@ type SignYieldTransactionOnDeviceParams = {
 };
 
 /** Device-signing ceremony shared by the earn thunks (yield actions, claim, wrap/unwrap). */
-export const signYieldTransactionOnDevice = async ({
-    analytics,
-    networkSymbol,
+export const signYieldTransactionOnDevice = ({
     device,
     path,
     transaction,
     addressDisplayType,
-}: SignYieldTransactionOnDeviceParams) => {
-    const response = await TrezorConnect.ethereumSignTransaction({
+}: SignYieldTransactionOnDeviceParams) =>
+    TrezorConnect.ethereumSignTransaction({
         device: {
             path: device.path,
             instance: device.instance,
@@ -35,15 +29,6 @@ export const signYieldTransactionOnDevice = async ({
         transaction,
         chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
     });
-    if (!response.success && isEarnSigningCancelled(response.error)) {
-        analytics.report({
-            type: events.transactionCancelEvent.name,
-            payload: { txType: 'yield', networkSymbol, stage: 'signing' },
-        });
-    }
-
-    return response;
-};
 
 type PushYieldTransactionParams = {
     tx: string;

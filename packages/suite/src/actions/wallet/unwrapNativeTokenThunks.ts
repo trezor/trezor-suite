@@ -127,7 +127,6 @@ export const submitUnwrapNativeTokenThunk = createThunk<
             }
 
             const sendResult = await sendYieldTransaction({
-                analytics: extra.services.analytics,
                 account,
                 amount: unwrapAmount,
                 token,
@@ -144,6 +143,15 @@ export const submitUnwrapNativeTokenThunk = createThunk<
             // Unlike the main yield transactions, a cancelled unwrap is reported: the unwrap-step
             // failure values documented on the withdraw event include user rejections.
             if (sendResult.status === 'cancelled') {
+                extra.services.analytics.report({
+                    type: events.transactionCancelEvent.name,
+                    payload: {
+                        txType: 'yield',
+                        networkSymbol: account.symbol,
+                        stage: sendResult.stage,
+                    },
+                });
+
                 reportError('submit-failed');
 
                 return undefined;

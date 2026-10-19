@@ -118,7 +118,6 @@ export const submitYieldDepositThunk = createThunk<
             const { selectedFee } = userAcceptedTxSimulation;
 
             const sendResult = await sendYieldTransaction({
-                analytics: extra.services.analytics,
                 account: flowData.account,
                 amount,
                 token: flowData.token,
@@ -134,6 +133,15 @@ export const submitYieldDepositThunk = createThunk<
 
             // A deliberate user cancel — not reported as a failure.
             if (sendResult.status === 'cancelled') {
+                extra.services.analytics.report({
+                    type: events.transactionCancelEvent.name,
+                    payload: {
+                        txType: 'yield',
+                        networkSymbol: flowData.account.symbol,
+                        stage: sendResult.stage,
+                    },
+                });
+
                 return;
             }
 

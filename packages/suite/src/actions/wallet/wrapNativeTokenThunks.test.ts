@@ -29,7 +29,7 @@ const mockOpenDeferredModal = jest.fn();
 const mockSendYieldTransaction = jest.fn();
 
 const mockSentResult = (txid: string) => ({ status: 'sent' as const, txid, fee: '31500000000' });
-const mockCancelledResult = { status: 'cancelled' as const };
+const mockCancelledResult = { status: 'cancelled' as const, stage: 'signing' as const };
 
 type WrapNativeTokenThunkDeps = SendYieldTransactionDeps & WithServices<AnalyticsDep>;
 type WrapNativeTokenThunkState = ComposeYieldWrapTransactionThunkState & SendYieldTransactionState;
@@ -80,6 +80,19 @@ const dispatchWrap = (report: jest.Mock) =>
         .unwrap();
 
 describe('submitWrapNativeTokenThunk', () => {
+    it.each(['signing', 'review'] as const)('reports a cancellation at %s', async stage => {
+        const report = jest.fn();
+        mockSendYieldTransaction.mockResolvedValue({ status: 'cancelled', stage });
+        mockOpenDeferredModal.mockImplementation(
+            () => () => Promise.resolve({ value: true, resolve: jest.fn(), selectedFee: null }),
+        );
+        await dispatchWrap(report);
+        expect(report).toHaveBeenCalledWith({
+            type: 'transaction/cancel',
+            payload: { txType: 'yield', networkSymbol: 'eth', stage },
+        });
+    });
+
     beforeAll(() => {
         // The thunk logs every caught failure; the expected ones would clutter the test output.
         jest.spyOn(console, 'error').mockImplementation();

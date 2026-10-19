@@ -1,7 +1,6 @@
 import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
 
 import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
-import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { buildStablecoinYieldTransactionReview } from '@suite-common/earn-stablecoin';
 import { type MessageSystemRootState } from '@suite-common/message-system';
@@ -68,10 +67,10 @@ type SendYieldTransactionDispatch = ThunkDispatch<
 
 // Genuine failures are thrown — a returned `cancelled` is always the user backing out on purpose.
 export type SendYieldTransactionResult =
-    { status: 'sent'; txid: string; fee: string } | { status: 'cancelled' };
+    | { status: 'sent'; txid: string; fee: string }
+    | { status: 'cancelled'; stage: 'signing' | 'review' };
 
 export type SendYieldTransactionParams = {
-    analytics: AnalyticsDep['analytics'];
     account: Account;
     amount: string;
     token: YieldFlowDisplayToken;
@@ -85,7 +84,6 @@ export type SendYieldTransactionParams = {
 
 export const sendYieldTransaction = async ({
     account,
-    analytics,
     amount,
     token,
     unsignedTransaction,
@@ -151,12 +149,7 @@ export const sendYieldTransaction = async ({
 
             const { code } = signingResponse.error;
             if (isEarnSigningCancelled(signingResponse.error)) {
-                analytics.report({
-                    type: events.transactionCancelEvent.name,
-                    payload: { txType: 'yield', networkSymbol: account.symbol, stage: 'signing' },
-                });
-
-                return { status: 'cancelled' };
+                return { status: 'cancelled', stage: 'signing' };
             }
 
             throw new Error(`${code}: ${signingResponse.error.message}`, { cause: code });
@@ -174,12 +167,7 @@ export const sendYieldTransaction = async ({
         const isPushConfirmed = await dispatch(openDeferredModal({ type: 'review-transaction' }));
 
         if (!isPushConfirmed) {
-            analytics.report({
-                type: events.transactionCancelEvent.name,
-                payload: { txType: 'yield', networkSymbol: account.symbol, stage: 'review' },
-            });
-
-            return { status: 'cancelled' };
+            return { status: 'cancelled', stage: 'review' };
         }
 
         const isMevProtectionEnabled = selectIsMevProtectionEnabled(getState());
