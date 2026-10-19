@@ -61,7 +61,7 @@ runs:
           if (isNative) {
             const platforms = [
               { name: 'ios', label: '🍎 iOS' },
-              { name: 'android', label: '🤖 Android' },
+              { name: 'android', label: 'android' },
             ];
             const tests = platforms.flatMap(platform =>
               readReport(platform.name).flatMap(project =>
@@ -100,7 +100,10 @@ runs:
               lines.push(isNative ? '|------|------|----------|' : '|------|------|');
               for (const t of project.tests) {
                 const type = t.isAutoQuarantine ? '🤖 auto' : '🙋 manual';
-                const name = t.name.replace(/\|/g, '\\|');
+                // GitHub still links \@ and &#64;, so break mentions with a zero-width space.
+                const name = t.name
+                  .replace(/\|/g, '\\|')
+                  .replace(/@/g, '@&#8203;');
                 const platformCell = isNative ? ` ${t.platform} |` : '';
                 lines.push(`| ${name} | ${type} |${platformCell}`);
               }
