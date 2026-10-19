@@ -1,7 +1,7 @@
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { testMocks } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type Account } from '@suite-common/wallet-types';
+import { type Account, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import {
     type TronAccountExtraData,
     type TronStakingInfo,
@@ -12,14 +12,17 @@ import { type Features } from '@trezor/connect';
 
 import {
     TRON_REWARD_CLAIM_COOLDOWN_SECONDS,
+    TRON_UNFREEZE_DELAY_SECONDS,
     getResourceGain,
     getTronAvailableVotingPower,
     getTronCryptoBalanceWithStaking,
     getTronPendingUnstakeBalance,
+    getTronPendingUnstakingBatches,
     getTronRewardClaimCooldownEndsAt,
     getTronStakingRewards,
     getTronTotalVotingPower,
     getTronUnstakingBalance,
+    getTronUnstakingBatchesWithResource,
     getTronVotes,
     getTronWithdrawableBalance,
     isSupportedTronStakingNetworkSymbol,
@@ -247,6 +250,234 @@ describe('Tron unstaking balances', () => {
         it('sums only batches that have not yet expired', () => {
             expect(getTronPendingUnstakeBalance(accountWithBatches)).toBe('6');
         });
+    });
+});
+
+type BuildUnfreezeTxParams = {
+    unstakeAmount: string;
+    blockTime: number;
+    resource?: string;
+};
+
+const buildUnfreezeTx = ({
+    unstakeAmount,
+    blockTime,
+    resource,
+}: BuildUnfreezeTxParams): WalletAccountTransaction =>
+    testMocks.getWalletTransaction({
+        symbol: asNetworkSymbol('trx'),
+        blockTime,
+        tronSpecific: {
+            contractType: 'UnfreezeBalanceV2Contract',
+            operation: 'unstake',
+            resource,
+            unstakeAmount,
+        },
+    });
+
+describe('getTronUnstakingBatchesWithResource', () => {
+    const expireTime = NOW_SECONDS + 100;
+    const unfreezeBlockTime = expireTime - TRON_UNFREEZE_DELAY_SECONDS;
+
+    it('returns an empty array when there is no stakingInfo', () => {
+        expect(
+            getTronUnstakingBatchesWithResource({
+                account: buildTronAccount(),
+                transactions: [],
+            }),
+        ).toEqual([]);
+    });
+
+    it('matches a batch to the unfreeze transaction with the same amount one unfreeze delay before expiry', () => {
+        const account = buildTronAccount({
+            stakingInfo: buildStakingInfo({
+                unstakingBatches: [buildBatch(String(5 * TRX), expireTime)],
+            }),
+        });
+        const transactions = [
+            buildUnfreezeTx({
+                unstakeAmount: String(5 * TRX),
+                blockTime: unfreezeBlockTime,
+                resource: 'energy',
+            }),
+        ];
+
+        expect(getTronUnstakingBatchesWithResource({ account, transactions })).toEqual([
+            { amount: String(5 * TRX), expireTime, resource: 'energy' },
+        ]);
+    });
+
+    it('treats a missing resource on the unfreeze transaction as bandwidth', () => {
+        const account = buildTronAccount({
+            stakingInfo: buildStakingInfo({
+                unstakingBatches: [buildBatch(String(5 * TRX), expireTime)],
+            }),
+        });
+        const transactions = [
+            buildUnfreezeTx({ unstakeAmount: String(5 * TRX), blockTime: unfreezeBlockTime }),
+        ];
+
+        expect(getTronUnstakingBatchesWithResource({ account, transactions })).toEqual([
+            { amount: String(5 * TRX), expireTime, resource: 'bandwidth' },
+        ]);
+    });
+
+    it('accepts the upper-case resource of a pending transaction created by Suite', () => {
+        const account = buildTronAccount({
+            stakingInfo: buildStakingInfo({
+                unstakingBatches: [buildBatch(String(5 * TRX), expireTime)],
+            }),
+        });
+        const transactions = [
+            buildUnfreezeTx({
+                unstakeAmount: String(5 * TRX),
+                blockTime: unfreezeBlockTime + 5,
+                resource: 'ENERGY',
+            }),
+        ];
+
+        expect(getTronUnstakingBatchesWithResource({ account, transactions })).toEqual([
+            { amount: String(5 * TRX), expireTime, resource: 'energy' },
+        ]);
+    });
+
+    it('leaves the resource undefined when no unfreeze transaction matches the amount', () => {
+        const account = buildTronAccount({
+            stakingInfo: buildStakingInfo({
+                unstakingBatches: [buildBatch(String(5 * TRX), expireTime)],
+            }),
+        });
+        const transactions = [
+            buildUnfreezeTx({
+                unstakeAmount: String(7 * TRX),
+                blockTime: unfreezeBlockTime,
+                resource: 'energy',
+            }),
+        ];
+
+        expect(getTronUnstakingBatchesWithResource({ account, transactions })).toEqual([
+            { amount: String(5 * TRX), expireTime, resource: undefined },
+        ]);
+    });
+
+    it('ignores an older unfreeze transaction with the same amount whose expiry does not match', () => {
+        const account = buildTronAccount({
+            stakingInfo: buildStakingInfo({
+                unstakingBatches: [buildBatch(String(5 * TRX), expireTime)],
+            }),
+        });
+        const transactions = [
+            buildUnfreezeTx({
+                unstakeAmount: String(5 * TRX),
+                blockTime: unfreezeBlockTime - 30 * 24 * 60 * 60,
+                resource: 'energy',
+            }),
+        ];
+
+        expect(getTronUnstakingBatchesWithResource({ account, transactions })).toEqual([
+            { amount: String(5 * TRX), expireTime, resource: undefined },
+        ]);
+    });
+
+    it('does not reuse one unfreeze transaction for two batches with the same amount', () => {
+        const laterExpireTime = expireTime + 600;
+        const account = buildTronAccount({
+            stakingInfo: buildStakingInfo({
+                unstakingBatches: [
+                    buildBatch(String(5 * TRX), laterExpireTime),
+                    buildBatch(String(5 * TRX), expireTime),
+                ],
+            }),
+        });
+        const transactions = [
+            buildUnfreezeTx({
+                unstakeAmount: String(5 * TRX),
+                blockTime: unfreezeBlockTime + 600,
+                resource: 'energy',
+            }),
+            buildUnfreezeTx({
+                unstakeAmount: String(5 * TRX),
+                blockTime: unfreezeBlockTime,
+                resource: 'bandwidth',
+            }),
+        ];
+
+        expect(getTronUnstakingBatchesWithResource({ account, transactions })).toEqual([
+            { amount: String(5 * TRX), expireTime, resource: 'bandwidth' },
+            { amount: String(5 * TRX), expireTime: laterExpireTime, resource: 'energy' },
+        ]);
+    });
+
+    it('ignores transactions that are not Stake 2.0 unfreezes', () => {
+        const account = buildTronAccount({
+            stakingInfo: buildStakingInfo({
+                unstakingBatches: [buildBatch(String(5 * TRX), expireTime)],
+            }),
+        });
+        const transactions = [
+            testMocks.getWalletTransaction({
+                symbol: asNetworkSymbol('trx'),
+                blockTime: unfreezeBlockTime,
+                tronSpecific: {
+                    contractType: 'FreezeBalanceV2Contract',
+                    operation: 'freeze',
+                    resource: 'energy',
+                    stakeAmount: String(5 * TRX),
+                },
+            }),
+        ];
+
+        expect(getTronUnstakingBatchesWithResource({ account, transactions })).toEqual([
+            { amount: String(5 * TRX), expireTime, resource: undefined },
+        ]);
+    });
+});
+
+describe('getTronPendingUnstakingBatches', () => {
+    const DAY = 24 * 60 * 60;
+
+    it('converts pending batches to TRX with the number of days left, rounded up', () => {
+        const batches = [
+            { amount: String(2 * TRX), expireTime: NOW_SECONDS + 1, resource: 'energy' as const },
+            {
+                amount: String(3 * TRX),
+                expireTime: NOW_SECONDS + 6 * DAY,
+                resource: 'bandwidth' as const,
+            },
+            { amount: String(4 * TRX), expireTime: NOW_SECONDS + 6 * DAY + 1, resource: undefined },
+        ];
+
+        expect(
+            getTronPendingUnstakingBatches({
+                batches,
+                symbol: asNetworkSymbol('trx'),
+                nowSeconds: NOW_SECONDS,
+            }),
+        ).toEqual([
+            { amount: '2', daysLocked: 1, resource: 'energy' },
+            { amount: '3', daysLocked: 6, resource: 'bandwidth' },
+            { amount: '4', daysLocked: 7, resource: undefined },
+        ]);
+    });
+
+    it('skips batches that are already withdrawable', () => {
+        const batches = [
+            { amount: String(1 * TRX), expireTime: NOW_SECONDS - 10, resource: 'energy' as const },
+            { amount: String(2 * TRX), expireTime: NOW_SECONDS, resource: 'bandwidth' as const },
+            {
+                amount: String(3 * TRX),
+                expireTime: NOW_SECONDS + 10,
+                resource: 'bandwidth' as const,
+            },
+        ];
+
+        expect(
+            getTronPendingUnstakingBatches({
+                batches,
+                symbol: asNetworkSymbol('trx'),
+                nowSeconds: NOW_SECONDS,
+            }),
+        ).toEqual([{ amount: '3', daysLocked: 1, resource: 'bandwidth' }]);
     });
 });
 

@@ -10,7 +10,7 @@ import { useSelector } from 'src/hooks/suite';
 
 import { TronResourcesCard } from './TronResourcesCard/TronResourcesCard';
 import { TronStakedCard } from './TronStakedCard';
-import { TronUnstakingCard } from './TronUnstakingCard';
+import { TronUnstakingCard } from './TronUnstakingCard/TronUnstakingCard';
 import { TronVotingRewardsCard } from './TronVotingRewardsCard';
 import { TronWithdrawReadyBanner } from './TronWithdrawReadyBanner';
 import { EmptyStakingCard } from '../StakingDashboard/components/EmptyStakingCard/EmptyStakingCard';
@@ -38,8 +38,8 @@ export const TronStakingDashboard = ({ selectedAccount }: TronStakingDashboardPr
                     margin={{ horizontal: 'auto' }}
                 >
                     <TronWithdrawReadyBanner account={account} />
-                    <TronUnstakingCard account={account} />
                     <TronVotingRewardsCard account={account} />
+                    <TronUnstakingCard account={account} />
                     <TronStakedCard account={account} />
                     <TronResourcesCard account={account} />
                     <Row justifyContent="center" padding={{ vertical: 20 }}>

@@ -11668,7 +11668,11 @@ export const messages = defineMessages({
     },
     TR_EARN_TRON_UNSTAKING: {
         id: 'TR_EARN_TRON_UNSTAKING',
-        defaultMessage: 'Unstaking (~{days} days)',
+        defaultMessage: 'Unstaking',
+    },
+    TR_EARN_TRON_UNSTAKING_DAYS_LOCKED: {
+        id: 'TR_EARN_TRON_UNSTAKING_DAYS_LOCKED',
+        defaultMessage: '{days, plural, one {# day} other {# days}} locked',
     },
     TR_EARN_TRON_VOTING_REWARDS: {
         id: 'TR_EARN_TRON_VOTING_REWARDS',
