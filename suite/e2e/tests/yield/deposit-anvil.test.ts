@@ -31,17 +31,18 @@ test.describe('stablecoin yield on a mainnet fork', { tag: ['@webOnly', '@T3W1',
     test.use({ deviceSetup: { mnemonic } });
 
     test.beforeEach(async ({ anvil, onboardingPage, settingsPage, walletPage, yieldMock }) => {
+        // Native balance before discovery, so Suite finds the account.
         await anvil.setBalance(ownerAddress, parseEther('1'));
-        await anvil.fundErc20(USDC_CONTRACT, ownerAddress, fundedUsdc);
         await onboardingPage.completeOnboarding();
         // Vault metadata and the Blockaid simulation stay mocked; the transactions are real.
         await yieldMock.start();
         await settingsPage.changeNetworks({
             enableNetworks: [anvil.networkToEnable],
         });
-        // On evm-rpc, discovery loads only balance and nonce; opening the account scans its history,
-        // which is how Suite learns about the USDC the Earn dashboard offers to deposit.
         await walletPage.openAccount({ symbol: ethSymbol });
+        // USDC only once Suite watches the account: on evm-rpc it learns about tokens from Transfer
+        // logs in new blocks, while its scan of older blocks goes through the fork's upstream RPC.
+        await anvil.fundErc20(USDC_CONTRACT, ownerAddress, fundedUsdc);
     });
 
     test(
@@ -72,6 +73,10 @@ test.describe('stablecoin yield on a mainnet fork', { tag: ['@webOnly', '@T3W1',
                     .accountLabel({ symbol: ethSymbol, type: 'normal', atIndex: 0 })
                     .innerText();
                 await expect(yieldSection.accountLabel(usdcPrime.id)).toHaveText(ethAccountName);
+                // The worker polls for new transfers every 10 s in real time, out of page.clock's reach.
+                await expect(yieldSection.depositNowButton(usdcPrime.id)).toBeVisible({
+                    timeout: 30_000,
+                });
                 await yieldSection.clickDepositNow(usdcPrime.id);
                 await earnNutshellModal.continueButton.click();
                 await yieldConsentModal.acknowledgeCheckbox.click();
