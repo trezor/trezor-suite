@@ -32,7 +32,6 @@ export type FirmwareUpdateStartType = 'normal' | 'retry';
 export type FirmwareUpdateLocation = 'settings' | 'onboarding' | null;
 
 export type StakingClaimStep = Extract<EarnAnalyticsStep, 'staking-dashboard' | 'claim-form-modal'>;
-export type StakingConfirmAction = 'stake' | 'unstake' | 'claim';
 export type StakingNavigateFrom =
     | 'earn/staking-inactive'
     | 'earn/staking-active'

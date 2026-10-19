@@ -110,7 +110,6 @@ export enum EventType {
     StakingCardanoPoolDelegation = 'staking/cardano-pool-delegation',
     StakingChangeDelegate = 'staking/change-delegate',
     StakingClaim = 'staking/claim',
-    StakingConfirm = 'staking/confirm',
     StakingNavigate = 'staking/navigate',
     StakingStake = 'staking/stake',
     StakingUnstake = 'staking/unstake',

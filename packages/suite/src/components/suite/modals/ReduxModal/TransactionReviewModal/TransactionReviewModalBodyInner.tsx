@@ -297,7 +297,6 @@ export const TransactionReviewModalBodyInner = ({
                             txInfoState={txInfoState}
                             actionTranslation={actionTranslation('button')}
                             hasTxReviewExpired={hasTxReviewExpired}
-                            stakeType={stakeType || undefined}
                             isRbfConfirmedError={isRbfConfirmedError}
                             account={account}
                             precomposedForm={precomposedForm}

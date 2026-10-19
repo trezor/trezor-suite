@@ -1,3 +1,4 @@
+import { type FormState } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
@@ -7,7 +8,7 @@ import { useHandleOnEarnTransactionReview } from './useHandleOnEarnTransactionRe
 
 const mockAnalytics = mockNativeAnalytics();
 const mockDispatch = jest.fn();
-const mockForm = { outputs: [], options: [], selectedFee: 'normal' };
+let mockForm: Pick<FormState, 'options' | 'selectedFee'> | undefined;
 const mockPrecomposed = { type: 'final', outputs: [] };
 const mockHandleReviewError = jest.fn();
 
@@ -41,9 +42,15 @@ jest.mock('./useHandleEarnReviewError', () => ({
 
 beforeEach(() => jest.clearAllMocks());
 
-it.each(['fulfilled', 'rejected'] as const)(
-    'reports confirmation before a %s broadcast result, once per send attempt',
-    async requestStatus => {
+it.each([
+    [true, 'fulfilled'],
+    [false, 'fulfilled'],
+    [true, 'rejected'],
+    [false, 'rejected'],
+] as const)(
+    'reports confirmation with draft=%s before a %s broadcast result, once per send attempt',
+    async (hasDraft, requestStatus) => {
+        mockForm = hasDraft ? { options: ['ethereumNonce'], selectedFee: 'custom' } : undefined;
         const broadcast = createDeferred<unknown>();
         mockDispatch.mockReturnValue(broadcast.promise);
         const { result } = await renderHookWithStoreProvider(() =>
@@ -54,12 +61,24 @@ it.each(['fulfilled', 'rejected'] as const)(
             send = result.current.handlePush();
         });
         const confirmations = () =>
-            mockAnalytics.report.mock.calls.filter(([event]) => event.type === 'staking/confirm');
+            mockAnalytics.report.mock.calls.filter(
+                ([event]) => event.type === 'transaction-created',
+            );
         expect(confirmations()).toHaveLength(1);
-        expect(confirmations()[0]?.[0]).toEqual({
-            type: 'staking/confirm',
-            payload: { action: 'stake', networkSymbol: 'eth' },
+        expect(confirmations()[0]?.[0]).toMatchObject({
+            type: 'transaction-created',
+            payload: {
+                action: 'sent',
+                txType: 'stake',
+                symbol: 'eth',
+                ethereumNonce: hasDraft,
+                transactionData: false,
+                bitcoinLocktime: false,
+                destinationTag: false,
+                selectedFee: hasDraft ? 'custom' : 'normal',
+            },
         });
+        expect(mockAnalytics.report).toHaveBeenCalledTimes(1);
         await act(async () => {
             broadcast.resolve({
                 type: `push/${requestStatus}`,
@@ -72,5 +91,6 @@ it.each(['fulfilled', 'rejected'] as const)(
             await send;
         });
         expect(confirmations()).toHaveLength(1);
+        expect(mockAnalytics.report).toHaveBeenCalledTimes(1);
     },
 );

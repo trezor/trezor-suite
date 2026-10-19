@@ -133,7 +133,6 @@ export enum EventType {
     // eslint-disable-next-line local-rules/analytics-event-name
     SettingsDiscreetToggle = 'settings/discreet_toggle',
     StakingClaim = 'staking/claim',
-    StakingConfirm = 'staking/confirm',
     StakingNavigate = 'staking/navigate',
     StakingStake = 'staking/stake',
     StakingUnstake = 'staking/unstake',
