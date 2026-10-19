@@ -47,6 +47,7 @@ describe('sendDexTransactionThunk', () => {
             receive: quoteNotTyped.receive as CryptoId,
             receiveAddress: 'receiveAddress',
             orderId: 'orderId',
+            isDex: true,
             dexTx: {
                 from: 'from',
                 to: 'to',
@@ -93,7 +94,7 @@ describe('sendDexTransactionThunk', () => {
     describe('should return error', () => {
         it.each([
             ['when selectedQuote is undefined', { selectedQuote: undefined }],
-            ['when selectedQuote has not dexTx', { selectedQuote: {} }],
+            ['when selectedQuote has neither dexTx nor sendAddress', { selectedQuote: {} }],
             ['when selectedQuote has not receiveAddress', { selectedQuote: { dexTx: {} } }],
             [
                 'when selectedQuote status is not APPROVAL_REQ or CONFIRM',
@@ -108,6 +109,8 @@ describe('sendDexTransactionThunk', () => {
                 exchangeThunks.sendDexTransactionThunk({
                     account,
                     returnUrl,
+                    decimals: 18,
+                    shouldSendInSats: false,
                     nextStep: jest.fn(),
                     triggerAnalyticsTradeConfirmation: jest.fn(),
                     processResponseData: jest.fn(),
@@ -163,6 +166,8 @@ describe('sendDexTransactionThunk', () => {
                 exchangeThunks.sendDexTransactionThunk({
                     account,
                     returnUrl,
+                    decimals: 18,
+                    shouldSendInSats: false,
                     nextStep: jest.fn(),
                     triggerAnalyticsTradeConfirmation: jest.fn(),
                     processResponseData: jest.fn(),
@@ -204,6 +209,8 @@ describe('sendDexTransactionThunk', () => {
             exchangeThunks.sendDexTransactionThunk({
                 account,
                 returnUrl,
+                decimals: 18,
+                shouldSendInSats: false,
                 nextStep,
                 triggerAnalyticsTradeConfirmation: jest.fn(),
                 processResponseData: jest.fn(),
@@ -266,6 +273,8 @@ describe('sendDexTransactionThunk', () => {
             exchangeThunks.sendDexTransactionThunk({
                 account: solanaAccount,
                 returnUrl,
+                decimals: 9,
+                shouldSendInSats: false,
                 nextStep: jest.fn(),
                 triggerAnalyticsTradeConfirmation: jest.fn(),
                 processResponseData: jest.fn(),
@@ -305,6 +314,8 @@ describe('sendDexTransactionThunk', () => {
             exchangeThunks.sendDexTransactionThunk({
                 account: solanaAccount,
                 returnUrl,
+                decimals: 9,
+                shouldSendInSats: false,
                 nextStep: jest.fn(),
                 triggerAnalyticsTradeConfirmation: jest.fn(),
                 processResponseData: jest.fn(),
@@ -317,6 +328,55 @@ describe('sendDexTransactionThunk', () => {
         expect(recomposeArgs).toEqual(
             expect.objectContaining({ address: 'to', amount: 'value', transactionData: undefined }),
         );
+    });
+
+    it('should compose a transfer to sendAddress when the dex quote has no dexTx', async () => {
+        const { store, returnUrl, account } = getMocks({
+            selectedQuote: {
+                ...getQuote(),
+                dexTx: undefined,
+                status: 'CONFIRM',
+                sendAddress: 'depositAddress',
+                sendStringAmount: '20.047681',
+            } as TradingExchangeState['selectedQuote'],
+        });
+
+        (tradingThunks.recomposeAndSignTxThunk as unknown as jest.Mock) = jest
+            .fn()
+            .mockImplementation(
+                createThunk('@trading/thunk/recomposeAndSignTx', (_, { fulfillWithValue }) =>
+                    fulfillWithValue({ success: true, payload: { txid: 'txid' } }),
+                ),
+            );
+        (confirmExchangeTradeThunk as unknown as jest.Mock).mockImplementation(
+            createThunk('@trading-exchange/thunk/confirmTrade', () => undefined),
+        );
+
+        const result = await store.dispatch(
+            exchangeThunks.sendDexTransactionThunk({
+                account,
+                returnUrl,
+                decimals: 6,
+                shouldSendInSats: false,
+                nextStep: jest.fn(),
+                triggerAnalyticsTradeConfirmation: jest.fn(),
+                processResponseData: jest.fn(),
+                signAndPushSendFormTransaction: jest.fn(),
+            }),
+        );
+        const [recomposeArgs] = (tradingThunks.recomposeAndSignTxThunk as unknown as jest.Mock).mock
+            .calls[0];
+
+        expect(result.meta.requestStatus).toEqual('fulfilled');
+        expect(recomposeArgs).toEqual(
+            expect.objectContaining({
+                address: 'depositAddress',
+                amount: '20.047681',
+                destinationTag: 'partnerPaymentExtraId',
+            }),
+        );
+        expect(recomposeArgs.transactionData).toBeUndefined();
+        expect(recomposeArgs.ethereumAdjustGasLimit).toBeUndefined();
     });
 
     it('should not recalculate the custom fee limit for a bitcoin PSBT', async () => {
@@ -337,6 +397,8 @@ describe('sendDexTransactionThunk', () => {
             exchangeThunks.sendDexTransactionThunk({
                 account: accountBtc as Account,
                 returnUrl,
+                decimals: 8,
+                shouldSendInSats: false,
                 nextStep: jest.fn(),
                 triggerAnalyticsTradeConfirmation: jest.fn(),
                 processResponseData: jest.fn(),
@@ -379,6 +441,8 @@ describe('sendDexTransactionThunk', () => {
             exchangeThunks.sendDexTransactionThunk({
                 account,
                 returnUrl,
+                decimals: 18,
+                shouldSendInSats: false,
                 nextStep,
                 triggerAnalyticsTradeConfirmation: jest.fn(),
                 processResponseData: jest.fn(),
