@@ -1277,7 +1277,7 @@
   "TR_EARN_YIELD_DEPOSIT_DISABLED": "入金は現在無効になっています。",
   "TR_EARN_YIELD_DEPOSIT_INTO_VAULT_SUB": "{supplySymbol} を保管庫に預け入れる",
   "TR_EARN_YIELD_DEPOSIT_TO": "入金先",
-  "TR_EARN_YIELD_EARN_REWARDS_EACH_BLOCK": "{vaultSymbol}の保有量は変わりませんが、その価値はブロックごとに増加します",
+  "TR_EARN_YIELD_EARN_REWARDS_EACH_BLOCK": "{vaultSymbol}の​​保有量は変わりませんが、その価値はブロックごとに増加します",
   "TR_EARN_YIELD_ERROR_CLAIM_REVIEW_MISMATCH": "報酬の受け取り内容がトランザクションの詳細と一致しなかったため、署名は行われませんでした。もう一度お試しください。",
   "TR_EARN_YIELD_ERROR_FEE_ESTIMATION": "ネットワーク手数料が見積もれなかったため、トランザクションは作成されませんでした。もう一度お試しください。",
   "TR_EARN_YIELD_ERROR_GENERIC": "エラーが発生しました。再試行してください。",

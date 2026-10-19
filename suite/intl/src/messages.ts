@@ -836,12 +836,12 @@ export const messages = defineMessages({
         id: 'TR_EXCHANGE_CENTRALIZED_EXCHANGE',
     },
     TR_TRADING_EXCHANGE_FIXED_OFFERS_HEADING: {
-        defaultMessage: 'Fixed-rate CEX',
+        defaultMessage: 'Fixed-rate offers',
         id: 'TR_TRADING_EXCHANGE_FIXED_OFFERS_HEADING',
         dynamic: true,
     },
     TR_TRADING_EXCHANGE_FLOAT_OFFERS_HEADING: {
-        defaultMessage: 'Floating-rate CEX',
+        defaultMessage: 'Floating-rate offers',
         id: 'TR_TRADING_EXCHANGE_FLOAT_OFFERS_HEADING',
         dynamic: true,
     },
