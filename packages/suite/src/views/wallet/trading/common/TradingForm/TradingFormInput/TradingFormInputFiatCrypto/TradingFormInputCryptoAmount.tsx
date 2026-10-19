@@ -5,7 +5,7 @@ import { useTheme } from 'styled-components';
 
 import { useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
-import { useFormatters } from '@suite-common/formatters';
+import { truncateCryptoAmount, useFormatters } from '@suite-common/formatters';
 import {
     TRADING_FORM_AMOUNT_INPUT_SOURCE,
     TRADING_FORM_AMOUNT_IN_CRYPTO,
@@ -191,12 +191,16 @@ const TradingFormInputCryptoAmountContent = ({
             return;
         }
 
+        const truncatedCryptoAmount = truncateCryptoAmount(
+            new BigNumber(quoteCryptoAmount),
+            decimals,
+        );
         const filledAmount = isInSats
             ? unitsToSubunits({
-                  value: asAmountUnit(new BigNumber(quoteCryptoAmount)),
+                  value: asAmountUnit(truncatedCryptoAmount),
                   decimals,
               }).toFixed()
-            : quoteCryptoAmount;
+            : truncatedCryptoAmount.toFixed();
 
         if (filledAmount === getValues(cryptoInputName)) {
             return;

@@ -28,6 +28,7 @@ import { TradingFormInputCryptoAmount } from './TradingFormInputCryptoAmount';
 import { mockInitialAppState } from '../../../../../../../../mocks/mockInitialAppState';
 
 const mockUseTradingFormContext = jest.fn();
+let mockQuoteCryptoAmount = '0.03615612';
 
 jest.mock('src/hooks/wallet/trading/form/useTradingCommonForm', () => ({
     useTradingFormContext: () => mockUseTradingFormContext(),
@@ -42,7 +43,7 @@ jest.mock('src/views/wallet/trading/common/hooks/useTradingQuoteAmounts', () => 
         amountInCrypto: false,
         sendAmount: '100',
         sendCurrency: 'USD',
-        receiveAmount: '0.03615612',
+        receiveAmount: mockQuoteCryptoAmount,
         receiveCurrency: undefined,
     }),
 }));
@@ -54,6 +55,7 @@ jest.mock('@suite-common/trading', () => ({
 
 const BTC_SYMBOL = asNetworkSymbol('btc');
 const ETH_SYMBOL = asNetworkSymbol('eth');
+const XRP_SYMBOL = asNetworkSymbol('xrp');
 
 const BITCOIN_ASSET: TradingAssetOption = {
     id: 'bitcoin' as CryptoId,
@@ -84,6 +86,18 @@ const BITCOIN_SELL_ASSET: TradingAssetSellOption = {
     accountKey: BTC_ACCOUNT.key,
 };
 
+const XRP_ASSET: TradingAssetOption = {
+    id: 'ripple' as CryptoId,
+    isNativeToken: true,
+    name: 'XRP',
+    coingeckoId: 'ripple',
+    contractAddress: null,
+    symbol: XRP_SYMBOL,
+    displaySymbol: 'XRP',
+    networkName: 'XRP',
+    networkSymbol: XRP_SYMBOL,
+};
+
 type TradingFormTestHarnessProps = { asset: TradingAssetOption };
 
 const TradingFormTestHarness = ({ asset }: TradingFormTestHarnessProps) => {
@@ -109,12 +123,17 @@ const TradingFormTestHarness = ({ asset }: TradingFormTestHarnessProps) => {
     });
 
     return (
-        <TradingFormInputCryptoAmount
-            cryptoInputName="cryptoInput"
-            fiatInputName="fiatInput"
-            cryptoSelectName="cryptoSelect"
-            isInSats={asset.networkSymbol === 'btc'}
-        />
+        <>
+            <TradingFormInputCryptoAmount
+                cryptoInputName="cryptoInput"
+                fiatInputName="fiatInput"
+                cryptoSelectName="cryptoSelect"
+                isInSats={asset.networkSymbol === 'btc'}
+            />
+            <output data-testid="form-validity">
+                {methods.formState.isValid ? 'valid' : 'invalid'}
+            </output>
+        </>
     );
 };
 
@@ -182,6 +201,33 @@ const renderCryptoAmount = (asset: TradingAssetOption) => {
 };
 
 describe('TradingFormInputCryptoAmount', () => {
+    beforeEach(() => {
+        mockQuoteCryptoAmount = '0.03615612';
+    });
+
+    it.each([
+        ['365.32229800', '365.322298'],
+        ['365.32229899', '365.322298'],
+    ])('fills a valid XRP amount from quote %s as %s', async (quoteAmount, expectedAmount) => {
+        mockQuoteCryptoAmount = quoteAmount;
+        renderCryptoAmount(XRP_ASSET);
+
+        await waitFor(() => {
+            expect(screen.getByTestId('@trading/form/crypto-input')).toHaveValue(expectedAmount);
+            expect(screen.getByTestId('form-validity')).toHaveTextContent(/^valid$/);
+        });
+    });
+
+    it('truncates fractional sats when filling the bought BTC amount', async () => {
+        mockQuoteCryptoAmount = '0.0361561299';
+        renderCryptoAmount(BITCOIN_ASSET);
+
+        await waitFor(() => {
+            expect(screen.getByTestId('@trading/form/crypto-input')).toHaveValue('3,615,612');
+            expect(screen.getByTestId('form-validity')).toHaveTextContent(/^valid$/);
+        });
+    });
+
     it('fills the bought amount from the quote in sats when buying BTC with sats displayed', async () => {
         renderCryptoAmount(BITCOIN_ASSET);
 
