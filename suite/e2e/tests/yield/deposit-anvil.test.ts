@@ -30,7 +30,7 @@ const CONFIRMATION_TIMEOUT = 60_000;
 test.describe('stablecoin yield on a mainnet fork', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({ deviceSetup: { mnemonic } });
 
-    test.beforeEach(async ({ anvil, onboardingPage, settingsPage, yieldMock }) => {
+    test.beforeEach(async ({ anvil, onboardingPage, settingsPage, walletPage, yieldMock }) => {
         await anvil.setBalance(ownerAddress, parseEther('1'));
         await anvil.fundErc20(USDC_CONTRACT, ownerAddress, fundedUsdc);
         await onboardingPage.completeOnboarding();
@@ -39,6 +39,9 @@ test.describe('stablecoin yield on a mainnet fork', { tag: ['@webOnly', '@T3W1',
         await settingsPage.changeNetworks({
             enableNetworks: [anvil.networkToEnable],
         });
+        // On evm-rpc, discovery loads only balance and nonce; opening the account scans its history,
+        // which is how Suite learns about the USDC the Earn dashboard offers to deposit.
+        await walletPage.openAccount({ symbol: ethSymbol });
     });
 
     test(
