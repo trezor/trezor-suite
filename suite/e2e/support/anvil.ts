@@ -35,7 +35,7 @@ const MAX_BALANCE_SLOT_PROBE = 20;
 
 // Holds tokens only between the storage write and the transfer in `fundErc20`.
 const ERC20_FUNDER_ADDRESS = '0x000000000000000000000000000000000000f00d';
-// Given to an impersonated account that has nothing to pay gas with.
+// Gas reserve given to an impersonated account whose balance cannot cover a transaction.
 const GAS_TOP_UP = 10n ** 18n;
 
 const getFreePort = () =>
@@ -278,14 +278,17 @@ export class AnvilFork {
 
     /**
      * Sends a transaction from any address without its key, e.g. an incoming transfer to the
-     * account under test or a protocol action. An account with no balance gets gas money first.
+     * account under test or a protocol action. An account that cannot cover value plus gas is
+     * topped up first.
      * With automine on, resolves once the transaction is mined and fails if it reverted; with
      * automine off, resolves as soon as it is in the mempool.
      */
     @step()
     async sendTransactionAs(from: Address, { to, value, data }: SendTransactionAsParams) {
-        if ((await this.getBalance(from)) === 0n) {
-            await this.setBalance(from, GAS_TOP_UP);
+        // Mainnet addresses often hold dust, so an empty balance is not the only one that falls short.
+        const required = (value ?? 0n) + GAS_TOP_UP;
+        if ((await this.getBalance(from)) < required) {
+            await this.setBalance(from, required);
         }
 
         await this.rpc.impersonateAccount({ address: from });
