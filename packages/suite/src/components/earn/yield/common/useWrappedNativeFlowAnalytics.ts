@@ -66,7 +66,11 @@ export const useWrappedNativeFlowAnalytics = ({
     }, [txid]);
 
     useEffect(() => {
-        if (hasReportedResolutionRef.current || (status !== 'confirmed' && status !== 'failed')) {
+        if (
+            !txid ||
+            hasReportedResolutionRef.current ||
+            (status !== 'confirmed' && status !== 'failed')
+        ) {
             return;
         }
 
@@ -84,14 +88,18 @@ export const useWrappedNativeFlowAnalytics = ({
                       durationMs,
                   },
         );
-    }, [status, networkSymbol, report]);
+    }, [status, networkSymbol, report, txid]);
 
-    const latestRef = useCurrentRef({ status, networkSymbol });
+    const latestRef = useCurrentRef({ status, networkSymbol, txid });
 
     useEffect(
         () => () => {
             const snapshot = latestRef.current;
-            if (hasReportedResolutionRef.current || snapshot.status !== 'pending') {
+            if (
+                !snapshot.txid ||
+                hasReportedResolutionRef.current ||
+                snapshot.status !== 'pending'
+            ) {
                 return;
             }
 
