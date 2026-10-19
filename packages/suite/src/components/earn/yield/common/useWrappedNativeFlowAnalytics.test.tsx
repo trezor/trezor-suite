@@ -153,4 +153,36 @@ describe('useWrappedNativeFlowAnalytics', () => {
         );
         expect(leftPendingReports).toHaveLength(0);
     });
+
+    it.each(['wrap', 'unwrap'] as const)(
+        'reports a new %s transaction even if its resolved status is unchanged',
+        flowType => {
+            const props: Props = { ...pendingWrap, flowType, status: 'confirmed' };
+            const { rerender } = renderFlowAnalytics(props);
+
+            rerender({ ...props, txid: '0xsecond-broadcast' });
+
+            expect(mockReport).toHaveBeenCalledTimes(2);
+            expect(mockReport).toHaveBeenLastCalledWith({
+                type: `yield/${flowType}`,
+                payload: expect.objectContaining({ type: 'success' }),
+            });
+        },
+    );
+
+    it.each(['wrap', 'unwrap'] as const)(
+        'does not report a %s resolution without a broadcast transaction',
+        flowType => {
+            const { unmount } = renderFlowAnalytics({
+                ...pendingWrap,
+                flowType,
+                status: 'confirmed',
+                txid: null,
+            });
+
+            unmount();
+
+            expect(mockReport).not.toHaveBeenCalled();
+        },
+    );
 });

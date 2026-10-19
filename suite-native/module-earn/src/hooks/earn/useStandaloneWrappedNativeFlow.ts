@@ -68,6 +68,7 @@ export const useStandaloneWrappedNativeFlow = ({
         networkSymbol,
         status: pendingStatus,
         txid: pendingParam?.txid ?? null,
+        submittedAt: pendingParam?.submittedAt,
     });
 
     const pendingTransaction: YieldPendingTransactionState | null = useMemo(
