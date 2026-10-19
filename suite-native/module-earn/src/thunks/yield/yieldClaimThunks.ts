@@ -94,13 +94,19 @@ export type SignYieldClaimReviewThunkState = DeviceRootState &
     YieldRootState &
     WalletSettingsRootState;
 
+type SignYieldClaimReviewThunkDeps = WithServices<NativeAnalyticsDep>;
+
 export const signYieldClaimReviewThunk = createThunk<
     { serializedTx: string },
     SignYieldClaimReviewThunkPayload,
-    { rejectValue: YieldClaimSignTransactionError; state: SignYieldClaimReviewThunkState }
+    {
+        rejectValue: YieldClaimSignTransactionError;
+        state: SignYieldClaimReviewThunkState;
+        extra: SignYieldClaimReviewThunkDeps;
+    }
 >(
     `${EARN_MODULE_PREFIX}/signYieldClaimReviewThunk`,
-    async ({ account, flowKey }, { dispatch, getState, rejectWithValue }) => {
+    async ({ account, flowKey }, { dispatch, getState, rejectWithValue, extra }) => {
         const session = selectYieldSession(getState(), 'claim', flowKey);
         const {
             action: { review },
@@ -148,6 +154,8 @@ export const signYieldClaimReviewThunk = createThunk<
         );
 
         const signingResponse = await signYieldTransactionOnDevice({
+            analytics: extra.services.analytics,
+            networkSymbol: account.symbol,
             device,
             path: account.path,
             transaction: transactionForSigning,

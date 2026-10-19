@@ -63,15 +63,21 @@ export type SignYieldActionReviewThunkState = DeviceRootState &
     YieldRootState &
     WalletSettingsRootState;
 
+type SignYieldActionReviewThunkDeps = WithServices<NativeAnalyticsDep>;
+
 export const signYieldActionReviewThunk = createThunk<
     { serializedTx: string },
     YieldActionReviewThunkPayload,
-    { rejectValue: YieldSignTransactionError; state: SignYieldActionReviewThunkState }
+    {
+        rejectValue: YieldSignTransactionError;
+        state: SignYieldActionReviewThunkState;
+        extra: SignYieldActionReviewThunkDeps;
+    }
 >(
     `${YIELD_TRANSACTION_THUNK_PREFIX}/signActionReview`,
     async (
         { flowData, flowKey, flowType, reviewToken, selectedFee },
-        { dispatch, getState, rejectWithValue },
+        { dispatch, getState, rejectWithValue, extra },
     ) => {
         const session = selectYieldSession(getState(), flowType, flowKey);
         const {
@@ -134,6 +140,8 @@ export const signYieldActionReviewThunk = createThunk<
         );
 
         const signingResponse = await signYieldTransactionOnDevice({
+            analytics: extra.services.analytics,
+            networkSymbol: flowData.account.symbol,
             device,
             path: flowData.account.path,
             transaction: transactionForSigning,

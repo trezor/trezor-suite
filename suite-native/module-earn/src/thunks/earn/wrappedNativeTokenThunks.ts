@@ -74,13 +74,22 @@ export type SignWrappedNativeTokenThunkState = DeviceRootState & WalletSettingsR
  * carried in the payload and the signed transaction is returned to the caller instead of being
  * stored in the yield session.
  */
+type SignWrappedNativeTokenThunkDeps = WithServices<NativeAnalyticsDep>;
+
 export const signWrappedNativeTokenThunk = createThunk<
     SignedWrappedNativeTokenTransaction,
     SignWrappedNativeTokenPayload,
-    { rejectValue: WrappedNativeTokenSignError; state: SignWrappedNativeTokenThunkState }
+    {
+        rejectValue: WrappedNativeTokenSignError;
+        state: SignWrappedNativeTokenThunkState;
+        extra: SignWrappedNativeTokenThunkDeps;
+    }
 >(
     `${WRAPPED_NATIVE_TOKEN_THUNK_PREFIX}/sign`,
-    async ({ account, token, amount, unsignedTransaction }, { getState, rejectWithValue }) => {
+    async (
+        { account, token, amount, unsignedTransaction },
+        { getState, rejectWithValue, extra },
+    ) => {
         const device = selectSelectedDevice(getState());
 
         if (!device || account.networkType !== 'ethereum') {
@@ -121,6 +130,8 @@ export const signWrappedNativeTokenThunk = createThunk<
         const addressDisplayType = selectAddressDisplayType(getState());
 
         const signingResponse = await signYieldTransactionOnDevice({
+            analytics: extra.services.analytics,
+            networkSymbol: account.symbol,
             device,
             path: account.path,
             transaction: transactionForSigning,

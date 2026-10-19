@@ -28,6 +28,7 @@ import {
     hasCardanoLiveVoteDelegation,
     isCardanoStakedWithEverstake,
     isCardanoWithdrawalBlockedByMissingDrep,
+    isEarnSigningCancelled,
     parseDrepBech32,
     selectBestCardanoPool,
     selectCardanoPoolsInfo,
@@ -516,13 +517,16 @@ export const signTransactionThunk =
         });
 
         if (!signedTx.success) {
-            extra.services.analytics.report({
-                type: events.transactionCancelEvent.name,
-                payload: {
-                    txType: 'stake',
-                    networkSymbol: account.symbol,
-                },
-            });
+            if (isEarnSigningCancelled(signedTx.error)) {
+                extra.services.analytics.report({
+                    type: events.transactionCancelEvent.name,
+                    payload: {
+                        txType: 'stake',
+                        networkSymbol: account.symbol,
+                        stage: 'signing',
+                    },
+                });
+            }
 
             // catch manual error from TransactionReviewModal
             if (signedTx.error.message === 'tx-cancelled') {

@@ -17,6 +17,7 @@ import {
     accountsActions,
     prepareSendFormReducer,
     stakeInitialState,
+    yieldReducer,
 } from '@suite-common/wallet-core';
 import {
     type FeesState,
@@ -302,6 +303,7 @@ export const getRootReducer: any = (selectedAccount = BTC_ACCOUNT, fees = DEFAUL
         device: createReducer({ selectedDevice: DEVICE, devices: [DEVICE] }, () => {}),
         wallet: combineReducers({
             send: sendFormReducer,
+            stablecoinYield: yieldReducer,
             accounts: createReducer(
                 [
                     BTC_ACCOUNT.account,

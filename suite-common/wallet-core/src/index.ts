@@ -165,3 +165,5 @@ export * from './yield/yieldTypes';
 // Named re-export, not `export *`: the .tsx this hook reaches must stay prunable from the Electron
 // main bundle, whose webpack resolves .ts/.js only.
 export { useResolveNamedAddress } from './named-address/useResolveNamedAddress';
+
+export { isEarnSigningCancelled } from './earn/earnTransactionAnalytics';

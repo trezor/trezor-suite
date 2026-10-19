@@ -127,6 +127,7 @@ export const submitUnwrapNativeTokenThunk = createThunk<
             }
 
             const sendResult = await sendYieldTransaction({
+                analytics: extra.services.analytics,
                 account,
                 amount: unwrapAmount,
                 token,

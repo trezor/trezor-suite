@@ -10,6 +10,7 @@ import {
     applySolanaStakingSignature,
     composeSolanaStakingTransaction,
     getSolanaStakingUserAgent,
+    isEarnSigningCancelled,
     isSupportedSolStakingNetworkSymbol,
     prepareSolanaStakeTxData,
     selectAddressDisplayType,
@@ -139,13 +140,16 @@ export const signTransactionThunk =
         });
 
         if (!signedTx.success) {
-            extra.services.analytics.report({
-                type: events.transactionCancelEvent.name,
-                payload: {
-                    txType: 'stake',
-                    networkSymbol: account.symbol,
-                },
-            });
+            if (isEarnSigningCancelled(signedTx.error)) {
+                extra.services.analytics.report({
+                    type: events.transactionCancelEvent.name,
+                    payload: {
+                        txType: 'stake',
+                        networkSymbol: account.symbol,
+                        stage: 'signing',
+                    },
+                });
+            }
 
             // catch manual error from TransactionReviewModal
             if (signedTx.error.message === 'tx-cancelled') {

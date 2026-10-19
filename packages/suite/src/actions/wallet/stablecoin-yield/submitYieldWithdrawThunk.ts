@@ -123,6 +123,7 @@ export const submitYieldWithdrawThunk = createThunk<
             const reviewToken = flowType === 'redeem' ? flowData.receiptToken : flowData.token;
 
             const result = await sendYieldTransaction({
+                analytics: extra.services.analytics,
                 account,
                 amount,
                 token: reviewToken,

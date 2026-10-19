@@ -25,11 +25,14 @@ import {
     type ReplaceTransactionThunkState,
     type SendRootState,
     type SignTransactionThunkState,
+    type YieldRootState,
     cancelSignSendFormTransactionThunk,
     enhancePrecomposedTransactionThunk,
+    isEarnSigningCancelled,
     pushSendFormTransactionThunk,
     replaceTransactionThunk,
     selectIsMevProtectionEnabled,
+    selectIsYieldTransactionInReview,
     selectPrecomposedSendForm,
     selectSendFormDrafts,
     sendFormActions,
@@ -245,15 +248,16 @@ type SignAndPushSendFormTransactionThunkParams = {
     paymentRequests?: PROTO.PaymentRequest[];
 };
 
-type SignAndPushSendFormTransactionThunkState = ApplySendFormMetadataLabelsThunkState &
+export type SignAndPushSendFormTransactionThunkState = ApplySendFormMetadataLabelsThunkState &
     CancelSignSendFormTransactionThunkState &
     EnhancePrecomposedTransactionThunkState &
     MessageSystemRootState &
     PushSendFormTransactionThunkState &
     SignTransactionThunkState &
-    UpdateRbfLabelsThunkState;
+    UpdateRbfLabelsThunkState &
+    YieldRootState;
 
-type SignAndPushSendFormTransactionThunkDeps = ApplySendFormMetadataLabelsThunkDeps &
+export type SignAndPushSendFormTransactionThunkDeps = ApplySendFormMetadataLabelsThunkDeps &
     CancelSignSendFormTransactionThunkDeps &
     PushSendFormTransactionThunkDeps &
     UpdateRbfLabelsThunkDeps &
@@ -275,6 +279,7 @@ export const signAndPushSendFormTransactionThunk = createThunk<
         const device = selectSelectedDevice(getState());
         if (!device || !selectedAccount) return;
 
+        const isYieldTransaction = selectIsYieldTransactionInReview(getState());
         const enhancedPrecomposedTransaction = await dispatch(
             enhancePrecomposedTransactionThunk({
                 transactionFormValues: formState,
@@ -328,6 +333,23 @@ export const signAndPushSendFormTransactionThunk = createThunk<
                 };
             }
 
+            if (
+                isYieldTransaction &&
+                isEarnSigningCancelled({
+                    code: signResponse.payload?.errorCode,
+                    message: signResponse.payload?.message,
+                })
+            ) {
+                extra.services.analytics.report({
+                    type: events.transactionCancelEvent.name,
+                    payload: {
+                        txType: 'yield',
+                        networkSymbol: selectedAccount.symbol,
+                        stage: 'signing',
+                    },
+                });
+            }
+
             // Close the modal manually since UI_EVENTS.CLOSE_UI_WINDOW was
             // blocked by preserveModal() above.
             dispatch(closeModal());
@@ -339,6 +361,17 @@ export const signAndPushSendFormTransactionThunk = createThunk<
         const isPushConfirmed = await dispatch(openDeferredModal({ type: 'review-transaction' }));
 
         if (!isPushConfirmed) {
+            if (isYieldTransaction) {
+                extra.services.analytics.report({
+                    type: events.transactionCancelEvent.name,
+                    payload: {
+                        txType: 'yield',
+                        networkSymbol: selectedAccount.symbol,
+                        stage: 'review',
+                    },
+                });
+            }
+
             return;
         }
 

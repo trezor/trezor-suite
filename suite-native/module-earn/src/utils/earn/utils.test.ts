@@ -1,4 +1,4 @@
-import { getEarnReviewErrorReaction } from './utils';
+import { getEarnReviewErrorReaction, isUserCancelledSignError } from './utils';
 
 describe('getEarnReviewErrorReaction', () => {
     it('ignores a validity-timer timeout so the expired alert keeps the review screen open', () => {
@@ -49,5 +49,21 @@ describe('getEarnReviewErrorReaction', () => {
                 message: 'Max Amount For Unstake 1',
             }),
         ).toBe('signFailed');
+    });
+});
+
+describe('isUserCancelledSignError', () => {
+    it('does not treat validity expiration as user cancellation', () => {
+        expect(
+            isUserCancelledSignError({ errorCode: 'Method_Cancel', message: 'tx-timeout' }),
+        ).toBe(false);
+    });
+    it('recognizes an intentional cancellation', () => {
+        expect(
+            isUserCancelledSignError({
+                errorCode: 'Failure_ActionCancelled',
+                message: 'cancelled',
+            }),
+        ).toBe(true);
     });
 });

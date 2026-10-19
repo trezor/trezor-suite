@@ -20,7 +20,10 @@ import {
     type PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
 import { getFormDraftKey } from '@suite-common/wallet-utils';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import TrezorConnect from '@trezor/connect';
+import { type WithServices } from '@trezor/redux-utils';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { signEthereumStakingTransactionThunk } from './ethereumStakingThunks';
@@ -162,7 +165,8 @@ const buildStore = ({
     accounts?: Account[];
     formDrafts?: Record<string, FormState>;
 } = {}) =>
-    createTestCompositionRoot<void, State>({
+    createTestCompositionRoot<WithServices<NativeAnalyticsDep>, State>({
+        services: () => ({ analytics: mockNativeAnalytics() }),
         reducer: combineReducers({
             device: (): { selectedDevice: TrezorDevice } => ({
                 selectedDevice: {
@@ -195,7 +199,7 @@ const pushTransactionMock = TrezorConnect.pushTransaction as jest.Mock;
 const getAccountInfoMock = TrezorConnect.getAccountInfo as jest.Mock;
 
 const dispatchFlow = async (
-    store: TestCompositionStore<State, void>,
+    store: TestCompositionStore<State, WithServices<NativeAnalyticsDep>>,
     args: Parameters<typeof signEthereumStakingTransactionThunk>[0],
 ) => {
     const action = await store.dispatch(signEthereumStakingTransactionThunk(args) as any);
