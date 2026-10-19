@@ -18541,6 +18541,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/coinjoin-analysis@workspace:packages/coinjoin-analysis":
+  version: 0.0.0-use.local
+  resolution: "@trezor/coinjoin-analysis@workspace:packages/coinjoin-analysis"
+  languageName: unknown
+  linkType: soft
+
 "@trezor/coinjoin@workspace:*, @trezor/coinjoin@workspace:packages/coinjoin":
   version: 0.0.0-use.local
   resolution: "@trezor/coinjoin@workspace:packages/coinjoin"
