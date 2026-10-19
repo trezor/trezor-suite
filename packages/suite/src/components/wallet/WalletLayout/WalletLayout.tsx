@@ -1,6 +1,7 @@
 import { type ReactNode, useRef } from 'react';
 
 import { type TranslationKey, useTranslation } from '@suite/intl';
+import { type Account } from '@suite-common/wallet-types';
 import { Column, Skeleton } from '@trezor/components';
 import { type PrimitiveType, exhaustive } from '@trezor/type-utils';
 
@@ -16,13 +17,14 @@ import { CoinjoinAccountDiscovery } from './CoinjoinAccountDiscovery/CoinjoinAcc
 
 type WalletPageHeaderProps = {
     balanceSectionRef: React.RefObject<HTMLDivElement | null>;
+    account?: Account;
     isSubpage?: boolean;
 };
 
-const WalletPageHeader = ({ balanceSectionRef, isSubpage }: WalletPageHeaderProps) => (
+const WalletPageHeader = ({ balanceSectionRef, account, isSubpage }: WalletPageHeaderProps) => (
     <AccountHeaderProvider balanceSectionRef={balanceSectionRef}>
         <PageHeader />
-        {!isSubpage && <AccountNavigation />}
+        {!isSubpage && <AccountNavigation account={account} />}
     </AccountHeaderProvider>
 );
 
@@ -83,7 +85,11 @@ export const WalletLayout = ({
 
     useLayout(
         l10nTitle,
-        <WalletPageHeader balanceSectionRef={balanceSectionRef} isSubpage={isSubpage} />,
+        <WalletPageHeader
+            balanceSectionRef={balanceSectionRef}
+            account={account.account}
+            isSubpage={isSubpage}
+        />,
     );
 
     return (

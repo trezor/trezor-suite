@@ -2,7 +2,6 @@ import { memo } from 'react';
 
 import styled from 'styled-components';
 
-import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { AccountTransactionBaseAnchor, useAnchor } from '@suite/router';
@@ -74,7 +73,7 @@ export const TransactionItem = memo(
     }: TransactionItemProps) => {
         const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(transaction.symbol);
 
-        const account = useSelector(selectSelectedAccount) || null;
+        const account = useSelector(state => selectAccountByKey(state, accountKey));
 
         const networkFeatures = network.accountTypes[accountType]?.features ?? network.features;
 
@@ -85,7 +84,7 @@ export const TransactionItem = memo(
 
         const { type } = transaction;
 
-        const allOutputs = account !== null ? createTargets({ transaction, account }) : [];
+        const allOutputs = account ? createTargets({ transaction, account }) : [];
 
         const fee = formatNetworkAmount(transaction.fee, transaction.symbol);
         const showFeeRow = isTxFeePaid(transaction);
@@ -99,9 +98,7 @@ export const TransactionItem = memo(
         // sync state, so a stuck/gapped nonce is found using the account's real confirmed nonce as
         // the counting base instead of local data that can itself be incomplete or stale — see
         // useEvmNonceInfo.
-        const rawNonceAccount = useSelector(state => selectAccountByKey(state, accountKey));
-        const nonceAccount =
-            rawNonceAccount?.networkType === 'ethereum' ? rawNonceAccount : undefined;
+        const nonceAccount = account?.networkType === 'ethereum' ? account : undefined;
         const { nonceInfo: fetchedNonceInfo } = useEvmNonceInfo(nonceAccount);
 
         const evmNonce =
@@ -181,6 +178,7 @@ export const TransactionItem = memo(
                         heading={
                             <TransactionHeading
                                 transaction={transaction}
+                                accountDescriptor={account?.descriptor}
                                 isPending={isPending}
                                 isPhishingTransaction={isPhishingTransaction}
                                 phishingDetectorId={phishingDetectorId}

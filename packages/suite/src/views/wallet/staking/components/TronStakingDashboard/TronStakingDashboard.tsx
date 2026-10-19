@@ -54,7 +54,7 @@ export const TronStakingDashboard = ({ selectedAccount }: TronStakingDashboardPr
                     </Row>
                 </Column>
             ) : (
-                <EmptyStakingCard />
+                <EmptyStakingCard account={account} />
             )}
         </WalletLayout>
     );

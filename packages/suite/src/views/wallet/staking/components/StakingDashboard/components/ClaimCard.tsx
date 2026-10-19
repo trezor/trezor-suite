@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 
-import { selectSelectedAccount } from '@suite/account';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
@@ -8,6 +7,7 @@ import {
     getStakingDataForNetwork,
     selectAccountClaimTransactions,
 } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 import { isPending } from '@suite-common/wallet-utils';
 import { Button, Card, Column, InfoItem, Paragraph, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -18,28 +18,25 @@ import { BaseCurrencyValue, FormattedCryptoAmount } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
-export const ClaimCard = () => {
+type ClaimCardProps = {
+    account: Account;
+};
+
+export const ClaimCard = ({ account }: ClaimCardProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
-    const selectedAccount = useSelector(selectSelectedAccount);
-    const claimTxs = useSelector(state =>
-        selectAccountClaimTransactions(state, selectedAccount?.key || null),
-    );
-    const { isClaimingDisabled, claimingMessageContent } = useMessageSystemStaking(
-        selectedAccount?.symbol,
-    );
+    const claimTxs = useSelector(state => selectAccountClaimTransactions(state, account.key));
+    const { isClaimingDisabled, claimingMessageContent } = useMessageSystemStaking(account.symbol);
 
     const isClaimPending = useMemo(() => claimTxs.some(tx => isPending(tx)), [claimTxs]);
 
-    const { canClaim = false, claimableAmount = '0' } =
-        getStakingDataForNetwork(selectedAccount) ?? {};
-    const isClaimButtonDisabled = isClaimingDisabled || !selectedAccount;
+    const { canClaim = false, claimableAmount = '0' } = getStakingDataForNetwork(account) ?? {};
 
     const openClaimModal = () => {
-        if (!isClaimButtonDisabled) {
+        if (!isClaimingDisabled) {
             dispatch(
                 openModal({
                     type: 'claim',
-                    account: selectedAccount,
+                    account,
                 }),
             );
 
@@ -48,13 +45,13 @@ export const ClaimCard = () => {
                 payload: {
                     action: 'continue',
                     step: 'staking-dashboard',
-                    networkSymbol: selectedAccount?.symbol,
+                    networkSymbol: account.symbol,
                 },
             });
         }
     };
 
-    if (!canClaim || !selectedAccount?.symbol) return null;
+    if (!canClaim) return null;
 
     const content = (
         <>
@@ -62,14 +59,14 @@ export const ClaimCard = () => {
                 <FormattedCryptoAmount
                     data-testid="@staking/can-claim"
                     value={claimableAmount}
-                    symbol={selectedAccount?.symbol}
+                    symbol={account.symbol}
                 />
             </Paragraph>
             <Paragraph typographyStyle="body-sm" intent="neutral" priority="secondary">
                 <BaseCurrencyValue
                     showApproximationIndicator
                     amount={claimableAmount}
-                    symbol={selectedAccount?.symbol}
+                    symbol={account.symbol}
                 />
             </Paragraph>
         </>
@@ -99,8 +96,8 @@ export const ClaimCard = () => {
                 <Tooltip content={claimingMessageContent}>
                     <Button
                         onClick={openClaimModal}
-                        isDisabled={isClaimButtonDisabled}
-                        iconLeft={isClaimButtonDisabled ? InfoIcon : undefined}
+                        isDisabled={isClaimingDisabled}
+                        iconLeft={isClaimingDisabled ? InfoIcon : undefined}
                         data-testid="@account/staking/claim-button"
                     >
                         <Translation id="TR_STAKE_CLAIM" />

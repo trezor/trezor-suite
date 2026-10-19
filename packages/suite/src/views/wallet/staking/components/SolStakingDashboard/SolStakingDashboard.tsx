@@ -103,7 +103,7 @@ export const SolStakingDashboard = ({ selectedAccount }: SolStakingDashboardProp
                                     {shouldShowWarning && <StakingRewardsWarning />}
 
                                     <Grid columns={isBelowLaptop || !canClaim ? 1 : 2} gap={12}>
-                                        <ClaimCard />
+                                        <ClaimCard account={account} />
                                         <Flex direction={canClaim ? 'column' : 'row'} gap={12}>
                                             <ApyCard apy={apy} />
                                             <PayoutCardFrequencyRewards
@@ -128,7 +128,7 @@ export const SolStakingDashboard = ({ selectedAccount }: SolStakingDashboardProp
                     ) : (
                         <Column alignItems="normal" gap={12}>
                             {externalStakingProviderCard}
-                            <EmptyStakingCard />
+                            <EmptyStakingCard account={account} />
                         </Column>
                     )}
                 </Column>

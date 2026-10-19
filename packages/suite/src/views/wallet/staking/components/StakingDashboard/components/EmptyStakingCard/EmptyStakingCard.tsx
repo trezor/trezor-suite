@@ -1,8 +1,8 @@
-import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { ContextMessage } from '@suite/message-system';
 import { Context } from '@suite-common/message-system';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 import { Button, Card, Column, Grid, H3, Paragraph, Tooltip } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
 
@@ -15,11 +15,14 @@ import { EmptyStakingCardFeature } from './EmptyStakingCardFeature';
 import { getNetworkVariant, useStakingCardContent } from './useEmptyStakingCardContent';
 import { useEmptyStakingCardData } from './useEmptyStakingCardData';
 
-export const EmptyStakingCard = () => {
-    const { isBelowLaptop } = useLayoutSize();
-    const account = useSelector(selectSelectedAccount);
+type EmptyStakingCardProps = {
+    account: Account;
+};
 
-    const { stakingMessageContent } = useMessageSystemStaking(account?.symbol);
+export const EmptyStakingCard = ({ account }: EmptyStakingCardProps) => {
+    const { isBelowLaptop } = useLayoutSize();
+
+    const { stakingMessageContent } = useMessageSystemStaking(account.symbol);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
     const variant = getNetworkVariant(account);

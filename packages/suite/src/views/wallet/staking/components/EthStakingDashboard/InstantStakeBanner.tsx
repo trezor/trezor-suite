@@ -1,16 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { selectSelectedAccount } from '@suite/account';
 import { Translation } from '@suite/intl';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { getChangedInternalTx, getInstantStakeType } from '@suite-common/wallet-core';
-import { type StakeType, type WalletAccountTransaction } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type StakeType,
+    type WalletAccountTransaction,
+} from '@suite-common/wallet-types';
 import { fromWei } from '@suite-common/wallet-utils';
 import { Banner } from '@trezor/components';
 import { type InternalTransfer } from '@trezor/connect';
 import { LightningIcon } from '@trezor/icons';
-
-import { useSelector } from 'src/hooks/suite';
 
 const getSubheadingTranslationId = (stakeType: StakeType) => {
     if (stakeType === 'stake') return 'TR_EARN_INSTANTLY_STAKED';
@@ -25,17 +26,19 @@ const getHeadingTranslationId = (stakeType: StakeType) => {
 };
 
 interface InstantStakeBannerProps {
+    account: Account;
     txs: WalletAccountTransaction[];
     daysToAddToPool?: number;
     daysToUnstake?: number;
 }
 
 export const InstantStakeBanner = ({
+    account,
     txs,
     daysToAddToPool,
     daysToUnstake,
 }: InstantStakeBannerProps) => {
-    const { descriptor: address, symbol } = useSelector(selectSelectedAccount) || {};
+    const { descriptor: address, symbol } = account;
 
     const [instantStakeTransfer, setInstantStakeTransfer] = useState<InternalTransfer | null>(null);
     const [isBannerShown, setIsBannerShown] = useState<boolean>(false);
@@ -43,7 +46,6 @@ export const InstantStakeBanner = ({
     const prevTxs = useRef(txs);
 
     useEffect(() => {
-        if (!address || !symbol) return;
         const changedInternalTx = getChangedInternalTx(prevTxs.current, txs, address, symbol);
 
         if (changedInternalTx) {
@@ -54,7 +56,7 @@ export const InstantStakeBanner = ({
         prevTxs.current = txs;
     }, [txs, address, symbol]);
 
-    if (!isBannerShown || !instantStakeTransfer || !symbol || !address) return null;
+    if (!isBannerShown || !instantStakeTransfer) return null;
 
     const closeBanner = () => {
         setIsBannerShown(false);
