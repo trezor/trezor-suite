@@ -14,7 +14,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey, type FormState } from '@suite-common/wallet-types';
 import { getFormDraftKey } from '@suite-common/wallet-utils';
-import { events, injectNativeAnalytics } from '@suite-native/analytics';
+import { injectNativeAnalytics } from '@suite-native/analytics';
 import {
     type RootStackParamList,
     type RootStackRoutes,
@@ -82,23 +82,15 @@ export const useHandleOnEarnTransactionReview = ({
     }, [accountKey, dispatch, handleReviewError, precomposedTransaction, stakeType]);
 
     const handlePush = useCallback(async (): Promise<string | undefined> => {
-        if (networkSymbol && precomposedTransaction && formState) {
+        if (networkSymbol && precomposedTransaction) {
             reportTransactionCreated({
                 analytics,
                 symbol: networkSymbol,
                 precomposedTransaction,
-                formState,
+                formState: formState ?? { options: [] },
                 txType: 'stake',
             });
         }
-
-        analytics.report({
-            type: events.stakingConfirmEvent.name,
-            payload: {
-                action: stakeType,
-                networkSymbol: networkSymbol ?? undefined,
-            },
-        });
 
         const response = await dispatch(
             pushStakeTransactionThunk({ accountKey, isMevProtectionFeatureEnabled }),
@@ -120,7 +112,6 @@ export const useHandleOnEarnTransactionReview = ({
         handleReviewError,
         isMevProtectionFeatureEnabled,
         networkSymbol,
-        stakeType,
         precomposedTransaction,
         formState,
     ]);

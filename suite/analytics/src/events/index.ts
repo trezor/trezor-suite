@@ -94,7 +94,6 @@ export { settingsTorOnionLinksEvent } from './settingsTorOnionLinksEvent';
 export { stakingCardanoPoolDelegationEvent } from './stakingCardanoPoolDelegationEvent';
 export { stakingChangeDelegateEvent } from './stakingChangeDelegateEvent';
 export { stakingClaimEvent } from './stakingClaimEvent';
-export { stakingConfirmEvent } from './stakingConfirmEvent';
 export { stakingNavigateEvent } from './stakingNavigateEvent';
 export { stakingStakeEvent } from './stakingStakeEvent';
 export { stakingUnstakeEvent } from './stakingUnstakeEvent';

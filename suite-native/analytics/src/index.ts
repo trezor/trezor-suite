@@ -8,7 +8,6 @@ export type {
     FirmwareUpdateStartType,
     FirmwareUpdateStuckedState,
     StakingClaimStep,
-    StakingConfirmAction,
     StakingNavigateFrom,
     StakingStakeStep,
     StakingUnstakeStep,

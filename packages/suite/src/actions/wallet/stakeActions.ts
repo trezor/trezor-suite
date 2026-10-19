@@ -239,11 +239,6 @@ const pushTransactionThunk =
                     error: sentTx.error.message,
                 }),
             );
-
-            extra.services.analytics.report({
-                type: events.stakingConfirmEvent.name,
-                payload: { action: stakeType, networkSymbol: account.symbol, success: false },
-            });
         }
 
         dispatch(cancelSignTxThunk(sentTx.success, account));
@@ -360,11 +355,6 @@ export const signTransactionThunk =
                     tokens: '',
                     txType: 'stake',
                 }),
-            });
-
-            extra.services.analytics.report({
-                type: events.stakingConfirmEvent.name,
-                payload: { action: formValues.stakeType, networkSymbol: account.symbol },
             });
 
             return dispatch(pushTransactionThunk(formValues.stakeType, cardanoPoolDelegation));

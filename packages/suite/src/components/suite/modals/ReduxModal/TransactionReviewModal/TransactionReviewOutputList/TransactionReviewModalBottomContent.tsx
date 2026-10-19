@@ -11,14 +11,12 @@ import {
     type FormState,
     type RbfTransactionType,
     type TransactionReviewOutput,
-    type TronStakingFormState,
 } from '@suite-common/wallet-types';
 import {
     getTxValidityTimeoutInMs,
     isRbfCancelTransaction,
     isRbfTransaction,
 } from '@suite-common/wallet-utils';
-import { type StakeType } from '@trezor/blockchain-link-types';
 import { Modal } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { copyToClipboard, download } from '@trezor/dom-utils';
@@ -35,17 +33,6 @@ const mapRbfTypeToReporting: Record<RbfTransactionType, TransactionCreatedEventA
     cancel: 'canceled',
 };
 
-const mapTronStakingKindToConfirmAction: Record<
-    TronStakingFormState['kind'],
-    'stake' | 'unstake' | 'claim' | 'change-delegate' | 'withdraw'
-> = {
-    freeze: 'stake',
-    vote: 'change-delegate',
-    unstake: 'unstake',
-    withdraw: 'withdraw',
-    claim: 'claim',
-};
-
 type TransactionReviewModalBottomContentProps = {
     decision: Deferred<boolean, string | number | undefined> | undefined;
     isSending: boolean;
@@ -55,7 +42,6 @@ type TransactionReviewModalBottomContentProps = {
     txInfoState: TxInfoState;
     actionTranslation: ExtendedMessageDescriptor;
     hasTxReviewExpired: boolean;
-    stakeType?: StakeType;
     isRbfConfirmedError?: boolean;
     account: Account;
     precomposedForm: FormState;
@@ -72,7 +58,6 @@ export const TransactionReviewModalBottomContent = ({
     txInfoState,
     actionTranslation,
     hasTxReviewExpired,
-    stakeType,
     account,
     precomposedForm,
     outputs,
@@ -121,18 +106,6 @@ export const TransactionReviewModalBottomContent = ({
                     ? mapRbfTypeToReporting[precomposedTx.rbfType]
                     : 'sent',
             );
-
-            const stakingConfirmAction =
-                stakeType ??
-                (precomposedForm.tronStaking &&
-                    mapTronStakingKindToConfirmAction[precomposedForm.tronStaking.kind]);
-
-            if (stakingConfirmAction) {
-                return analytics.report({
-                    type: events.stakingConfirmEvent.name,
-                    payload: { action: stakingConfirmAction, networkSymbol: symbol },
-                });
-            }
         }
     };
 
