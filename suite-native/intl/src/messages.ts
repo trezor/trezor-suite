@@ -88,7 +88,7 @@ export const messages = {
                 required: 'Field is mandatory',
             },
             string: {
-                max: 'Number of characters exceeded',
+                max: 'Character limit exceeded',
             },
         },
     },
@@ -2021,7 +2021,7 @@ export const messages = {
                 clearButton: 'Clear filter',
                 showAllButton: 'Show all',
                 accountCount: '{count, plural, one {# account} other {# accounts}}',
-                title: 'Show assets on',
+                title: 'Filter by network',
             },
             title: 'My assets',
         },
@@ -3892,12 +3892,12 @@ export const messages = {
         providerSheet: {
             title: 'Providers',
             fixed: {
-                title: 'Fixed-rate CEX',
+                title: 'Fixed-rate offers',
                 titleOffers: 'Fixed-rate offers',
                 description: 'Lock in your rate for 15 minutes by paying a higher fee.',
             },
             float: {
-                title: 'Floating-rate CEX',
+                title: 'Floating-rate offers',
                 titleOffers: 'Floating-rate offers',
                 description: 'Get an estimated rate that may adjust with real-time market changes.',
             },
@@ -4020,7 +4020,7 @@ export const messages = {
             amountLabel: 'You get',
             amountNotAvailableAlert: {
                 title: 'Not available yet',
-                description: "For now, swaps only let you enter the amount you're paying.",
+                description: "Currently, swaps only let you enter the amount you're paying.",
             },
         },
         fiatCurrencySheet: {
