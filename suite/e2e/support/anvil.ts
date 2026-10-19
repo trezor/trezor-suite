@@ -38,6 +38,11 @@ const ERC20_FUNDER_ADDRESS = '0x000000000000000000000000000000000000f00d';
 // Gas reserve given to an impersonated account whose balance cannot cover a transaction.
 const GAS_TOP_UP = 10n ** 18n;
 
+// Suite's evm-rpc worker reads Transfer logs only this many blocks behind the tip (TIP_LAG_BLOCKS in
+// packages/blockchain-link/src/workers/evm-rpc/history/constants.ts), and an automining fork adds no
+// block until the next transaction, so a transfer in the newest block would stay unseen.
+const SUITE_LOG_LAG_BLOCKS = 2;
+
 const getFreePort = () =>
     new Promise<number>((resolve, reject) => {
         const server = createServer();
@@ -280,7 +285,8 @@ export class AnvilFork {
      * Sends a transaction from any address without its key, e.g. an incoming transfer to the
      * account under test or a protocol action. An account that cannot cover value plus gas is
      * topped up first.
-     * With automine on, resolves once the transaction is mined and fails if it reverted; with
+     * With automine on, resolves once the transaction is mined and fails if it reverted, then mines
+     * past the lag at which Suite reads logs, so Suite's live watcher reports the transfer. With
      * automine off, resolves as soon as it is in the mempool.
      */
     @step()
@@ -305,6 +311,7 @@ export class AnvilFork {
                 if (receipt.status !== 'success') {
                     throw new Error(`Transaction ${hash} from ${from} to ${to} reverted`);
                 }
+                await this.mine(SUITE_LOG_LAG_BLOCKS);
             }
 
             return hash;
