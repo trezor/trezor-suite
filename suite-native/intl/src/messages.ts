@@ -2384,6 +2384,10 @@ export const messages = {
             headerTitle: 'Asset details',
             balanceSection: {
                 title: 'Your balance',
+                accountCount: 'on {count, plural, one {# account} other {# accounts}}',
+                asset: 'Asset',
+                available: 'Available',
+                staking: 'Staking',
             },
         },
     },

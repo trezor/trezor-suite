@@ -11,28 +11,31 @@ import { useQuery } from '@suite-common/react-query';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type BlockchainRootState,
+    type FiatRatesRootState,
     selectBaseCurrency,
+    selectFiatRatesByFiatRateKey,
     selectIsElectrumBackendSelected,
+    useMissingRateTickersQuery,
 } from '@suite-common/wallet-core';
 import {
     type BaseCurrencyAmount,
+    type TickerId,
     type TokenAddress,
     asBaseCurrencyAmount,
 } from '@suite-common/wallet-types';
-import { isErc4626 } from '@suite-common/wallet-utils';
+import { getFiatRateKey, isErc4626, isTestnet } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 const UNIX_DAY = 24 * 60 * 60;
-const REFRESH_INTERVAL = 30_000;
+const HISTORICAL_PRICE_REFRESH_INTERVAL = 60 * 60 * 1000;
+const NO_MISSING_RATE_TICKERS: TickerId[] = [];
 
-type AssetPriceQueryData = {
-    price: BaseCurrencyAmount | null;
+type AssetHistoricalPriceQueryData = {
     weekAgoPrice: number | null;
     underlyingAssetContract: TokenAddress | null;
 };
 
-const NULL_ASSET_PRICE_QUERY_DATA: AssetPriceQueryData = {
-    price: null,
+const NULL_ASSET_HISTORICAL_PRICE_QUERY_DATA: AssetHistoricalPriceQueryData = {
     weekAgoPrice: null,
     underlyingAssetContract: null,
 };
@@ -48,27 +51,50 @@ export type UseAssetPriceParams = {
     tokenContract?: TokenAddress;
 };
 
-export type UseAssetPriceQueryParams = UseAssetPriceParams & {
+export type UseAssetPriceDataParams = UseAssetPriceParams & {
     isErc4626Token?: boolean;
 };
 
-export const useAssetPriceQuery = ({
+export const useAssetPriceData = ({
     networkSymbol,
     tokenContract,
     isErc4626Token,
-}: UseAssetPriceQueryParams) => {
+}: UseAssetPriceDataParams) => {
     const fiatCurrencyCode = useSelector(selectBaseCurrency);
     const isElectrumBackend = useSelector((state: BlockchainRootState) =>
         selectIsElectrumBackendSelected(state, networkSymbol ?? asNetworkSymbol('btc')),
     );
+    const fiatRateKey = networkSymbol
+        ? getFiatRateKey(networkSymbol, fiatCurrencyCode, tokenContract)
+        : null;
+    const currentFiatRate = useSelector((state: FiatRatesRootState) =>
+        fiatRateKey ? selectFiatRatesByFiatRateKey(state, fiatRateKey) : undefined,
+    );
+    const currentFiatRateValue = currentFiatRate?.rate ?? null;
+
+    const missingRateTickers: TickerId[] =
+        !networkSymbol || currentFiatRateValue !== null || isTestnet(networkSymbol)
+            ? NO_MISSING_RATE_TICKERS
+            : [
+                  {
+                      symbol: networkSymbol,
+                      tokenAddress: tokenContract,
+                      protocols: isErc4626Token ? ['erc4626'] : undefined,
+                  },
+              ];
+
+    const { isLoading: isMissingRateLoading } = useMissingRateTickersQuery({
+        missingRateTickers,
+        baseCurrencyCode: fiatCurrencyCode,
+    });
 
     // Block book does not have historical data for tokens of other networks than ETH.
     const isCoingeckoForce = tokenContract && networkSymbol !== 'eth';
 
-    const { data, isLoading } = useQuery<AssetPriceQueryData>({
+    const { data, isLoading: isHistoricalPriceLoading } = useQuery<AssetHistoricalPriceQueryData>({
         enabled: !!networkSymbol,
         queryKey: [
-            'asset-price',
+            'asset-historical-price',
             networkSymbol,
             tokenContract,
             isErc4626Token,
@@ -76,18 +102,17 @@ export const useAssetPriceQuery = ({
             isElectrumBackend,
             isCoingeckoForce,
         ],
-        refetchInterval: REFRESH_INTERVAL,
+        staleTime: HISTORICAL_PRICE_REFRESH_INTERVAL,
+        refetchInterval: HISTORICAL_PRICE_REFRESH_INTERVAL,
         queryFn: async () => {
-            if (!networkSymbol) return NULL_ASSET_PRICE_QUERY_DATA;
+            if (!networkSymbol) return NULL_ASSET_HISTORICAL_PRICE_QUERY_DATA;
 
-            const currentTimestamp = getUnixTime(Date.now());
-            const weekAgoTimestamp = currentTimestamp - 7 * UNIX_DAY;
+            const weekAgoTimestamp = getUnixTime(Date.now()) - 7 * UNIX_DAY;
 
             try {
                 // Rate providers have no tickers for ERC4626 vault share tokens, so fetch the
-                // rates of the underlying asset instead and scale them by the vault exchange
-                // rate. Both timestamps use the current exchange rate, because historical
-                // share-to-asset ratios are not available.
+                // rate of the underlying asset instead and scale it by the current vault exchange
+                // rate because historical share-to-asset ratios are not available.
                 const underlyingAsset =
                     isErc4626Token && tokenContract
                         ? await fetchErc4626UnderlyingAsset({
@@ -96,52 +121,40 @@ export const useAssetPriceQuery = ({
                           })
                         : null;
 
-                const timestampedFiatRates = await getFiatRatesForTimestamps(
+                const weekAgoFiatRates = await getFiatRatesForTimestamps(
                     {
                         symbol: networkSymbol,
                         tokenAddress: underlyingAsset?.contract ?? tokenContract,
                     },
-                    [weekAgoTimestamp, currentTimestamp],
+                    [weekAgoTimestamp],
                     fiatCurrencyCode,
                     isElectrumBackend,
                     isCoingeckoForce,
                 );
 
-                const tickers = timestampedFiatRates?.tickers ?? [];
-                const weekAgo = tickers.find(ticker => ticker.ts === weekAgoTimestamp);
-                const today = tickers.find(ticker => ticker.ts === currentTimestamp);
-                const weekAgoRate = weekAgo?.rates[fiatCurrencyCode];
-                const currentRate = today?.rates[fiatCurrencyCode];
-                const { weekAgoPrice, currentPrice } = underlyingAsset
-                    ? {
-                          weekAgoPrice: toVaultSharePrice(
-                              weekAgoRate,
-                              underlyingAsset.exchangeRate,
-                          ),
-                          currentPrice: toVaultSharePrice(
-                              currentRate,
-                              underlyingAsset.exchangeRate,
-                          ),
-                      }
-                    : { weekAgoPrice: weekAgoRate, currentPrice: currentRate };
-
-                const price =
-                    currentPrice !== undefined
-                        ? asBaseCurrencyAmount(new BigNumber(currentPrice))
-                        : null;
+                const weekAgoRate = weekAgoFiatRates?.tickers[0]?.rates[fiatCurrencyCode];
+                const weekAgoPrice = underlyingAsset
+                    ? toVaultSharePrice(weekAgoRate, underlyingAsset.exchangeRate)
+                    : weekAgoRate;
 
                 return {
-                    price,
                     weekAgoPrice: weekAgoPrice ?? null,
                     underlyingAssetContract: underlyingAsset?.contract ?? null,
                 };
-            } catch {
-                return NULL_ASSET_PRICE_QUERY_DATA;
+            } catch (error) {
+                console.warn('Failed to fetch historical asset price.', error);
+
+                return NULL_ASSET_HISTORICAL_PRICE_QUERY_DATA;
             }
         },
     });
 
-    const { price, weekAgoPrice, underlyingAssetContract } = data ?? NULL_ASSET_PRICE_QUERY_DATA;
+    const price =
+        currentFiatRateValue !== null
+            ? asBaseCurrencyAmount(new BigNumber(currentFiatRateValue))
+            : null;
+    const { weekAgoPrice, underlyingAssetContract } =
+        data ?? NULL_ASSET_HISTORICAL_PRICE_QUERY_DATA;
 
     const sevenDayValueChange =
         price !== null && weekAgoPrice !== null
@@ -156,7 +169,7 @@ export const useAssetPriceQuery = ({
         price,
         sevenDayValueChange,
         sevenDayPercentageChange,
-        isLoading,
+        isLoading: currentFiatRate?.isLoading || isMissingRateLoading || isHistoricalPriceLoading,
         underlyingAssetContract,
     };
 };
@@ -165,7 +178,7 @@ export const useAssetPrice = ({ networkSymbol, tokenContract }: UseAssetPricePar
     const token = useSelector((state: AssetsRootState) =>
         networkSymbol ? selectAssetTokenInfo(state, networkSymbol, tokenContract) : null,
     );
-    const { price, sevenDayValueChange, sevenDayPercentageChange } = useAssetPriceQuery({
+    const { price, sevenDayValueChange, sevenDayPercentageChange } = useAssetPriceData({
         networkSymbol,
         tokenContract,
         isErc4626Token: isErc4626(token),

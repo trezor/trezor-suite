@@ -8,6 +8,7 @@ import { AmountText } from './AmountText';
 
 export type TokenAmountFormatterCommonProps = {
     tokenSymbol: TokenSymbol | null;
+    withSymbol?: boolean;
     isDiscreetText?: boolean;
     isPhishingTransaction?: boolean;
 } & FormatterProps<DecimalTokenAmount> &
@@ -24,6 +25,7 @@ export type BaseTokenAmountFormatterProps = TokenAmountFormatterCommonProps & {
 export const BaseTokenAmountFormatter = ({
     value,
     tokenSymbol,
+    withSymbol = true,
     isDiscreetText = true,
     tokenDecimals,
     maxDisplayedDecimals,
@@ -40,6 +42,7 @@ export const BaseTokenAmountFormatter = ({
     const { CryptoAmountFormatter: formatter } = useFormatters();
     const formattedValue = formatter.format(decimalValue, {
         symbol: tokenSymbol ?? undefined,
+        withSymbol,
         maxDisplayedDecimals,
         formatStyle,
         tokenDecimals,

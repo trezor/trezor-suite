@@ -128,7 +128,7 @@ describe('PortfolioAssetListItem', () => {
 
         expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.AssetsStack, {
             screen: AssetsStackRoutes.AssetDetail,
-            params: { networkSymbol: 'pol', tokenContract: USDC_CONTRACT },
+            params: { assetKey: usdcOnPolygonKey },
         });
     });
 
@@ -142,7 +142,7 @@ describe('PortfolioAssetListItem', () => {
 
         expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.AssetsStack, {
             screen: AssetsStackRoutes.AssetDetail,
-            params: { networkSymbol: 'btc', tokenContract: undefined },
+            params: { assetKey: bitcoinKey },
         });
     });
 });

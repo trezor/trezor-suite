@@ -6,6 +6,7 @@ import { type CryptoAmountFormatterProps } from './cryptoAmountFormatterTypes';
 
 export type ExactCryptoAmountFormatterProps = CryptoAmountFormatterProps & {
     maxDisplayedDecimals?: number;
+    withSymbol?: boolean;
 };
 
 // This should be used without a nearby fiat value or when exact precision matters.
@@ -14,6 +15,7 @@ export const ExactCryptoAmountFormatter = ({
     symbol,
     isBalance = true,
     maxDisplayedDecimals,
+    withSymbol = true,
     ...otherProps
 }: ExactCryptoAmountFormatterProps) => {
     const { CryptoAmountFormatter: formatter } = useFormatters();
@@ -27,6 +29,7 @@ export const ExactCryptoAmountFormatter = ({
                   isBalance,
                   maxDisplayedDecimals: resolvedMaxDisplayedDecimals,
                   symbol,
+                  withSymbol,
                   isEllipsisAppended: false,
               });
 

@@ -1,15 +1,12 @@
-import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { AssetPriceChange, useAssetPrice } from '@suite-native/assets';
 import { VStack } from '@suite-native/atoms';
 import { BaseCurrencyAmountHeaderFormatter } from '@suite-native/formatters';
 
-type AssetDetailPriceProps = {
-    networkSymbol: NetworkSymbol;
-    tokenContract?: TokenAddress;
-};
+import { useAssetDetailAsset } from '../hooks/useAssetDetailAsset';
 
-export const AssetDetailPrice = ({ networkSymbol, tokenContract }: AssetDetailPriceProps) => {
+export const AssetDetailPrice = () => {
+    const { networkSymbol, tokenContract } = useAssetDetailAsset();
+
     const { price, sevenDayValueChange, sevenDayPercentageChange } = useAssetPrice({
         networkSymbol,
         tokenContract,

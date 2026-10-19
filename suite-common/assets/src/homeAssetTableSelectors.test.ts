@@ -19,7 +19,11 @@ import {
     selectShownWalletAssetKeys,
     selectSmallBalanceSummary,
     selectWalletAssetAmount,
+    selectWalletAssetAvailableAmount,
     selectWalletAssetFiatValue,
+    selectWalletAssetHasStaking,
+    selectWalletAssetName,
+    selectWalletAssetStakingAmount,
     selectWalletAssetTokenSymbol,
 } from './homeAssetTableSelectors';
 
@@ -304,6 +308,7 @@ describe('the rows the table is given', () => {
 
         expect(selectWalletAssetAmount(before, ethereumKey)).toBe('1');
         expect(selectWalletAssetAmount(after, ethereumKey)).toBe('2');
+        expect(selectWalletAssetName(after, ethereumKey)).toBe('Ethereum');
         expect(keysAfter).toBe(keysBefore);
     });
 
@@ -422,7 +427,11 @@ describe('the total over the wallet', () => {
         const staked = createState({
             accounts: [
                 {
-                    ...mockAccount({ symbol: ETH, balance: '1' }),
+                    ...mockAccount({
+                        symbol: ETH,
+                        balance: '1',
+                        tokens: [{ contract: USDC_ON_ETH, balance: '10', symbol: 'USDC' }],
+                    }),
                     networkType: 'ethereum',
                     misc: {
                         stakingPools: [
@@ -444,8 +453,21 @@ describe('the total over the wallet', () => {
         });
 
         expect(selectWalletAssetAmount(staked, ethereumKey)).toBe('3');
+        expect(selectWalletAssetStakingAmount(staked, ethereumKey)).toBe('2');
+        expect(selectWalletAssetAvailableAmount(staked, ethereumKey)).toBe('1');
+        expect(selectWalletAssetHasStaking(staked, ethereumKey)).toBe(true);
         expect(selectWalletAssetFiatValue(staked, ethereumKey)?.toFixed()).toBe('9000');
         expect(selectHomeAssetTotalFiatValue(staked)?.toFixed()).toBe('9000');
+
+        const tokenKey = getWalletAssetKey({
+            deviceState: ALICE,
+            symbol: ETH,
+            contractAddress: USDC_ON_ETH,
+        });
+
+        expect(selectWalletAssetStakingAmount(staked, tokenKey)).toBe('0');
+        expect(selectWalletAssetAvailableAmount(staked, tokenKey)).toBe('10');
+        expect(selectWalletAssetHasStaking(staked, tokenKey)).toBe(false);
     });
 
     it('says nothing at all while no asset of the wallet can be priced', () => {

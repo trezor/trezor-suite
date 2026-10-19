@@ -1,4 +1,5 @@
 import { getDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
+import { getWalletAssetKey } from '@suite-common/wallet-core';
 import { type Account, type TokenInfoBranded, type TokenSymbol } from '@suite-common/wallet-types';
 import { Box, Card, HStack, Text } from '@suite-native/atoms';
 import {
@@ -12,6 +13,7 @@ import { TokenIcon } from '@suite-native/icons';
 import { YieldBadge } from '@suite-native/module-earn';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import { AssetDetailPressable } from './AssetDetailPressable';
 import { useYourPositionCardYieldBadge } from '../hooks/useYourPositionCardYieldBadge';
 
 const cardStyle = prepareNativeStyle(utils => ({
@@ -29,6 +31,8 @@ const cardContentStyle = prepareNativeStyle(_ => ({
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
 }));
+
+const pressableStyle = prepareNativeStyle(() => ({ flex: 1 }));
 
 interface YourPositionCardProps {
     account: Account;
@@ -51,91 +55,97 @@ export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
     const tokenSymbol = token?.symbol ?? getDisplaySymbol(symbol);
     const tokenName = token?.name ?? getNetworkDisplaySymbolName(symbol);
     const balance = token?.balance ?? account?.formattedBalance ?? '0';
+    const assetKey = getWalletAssetKey({
+        deviceState: account.deviceState,
+        symbol,
+        contractAddress: token?.contract,
+    });
     const tokenAmountSymbol = token?.symbol
         ? (getDisplaySymbol(token.symbol) as TokenSymbol)
         : null;
 
     return (
         <Card style={applyStyle(cardStyle)} noShadow>
-            <HStack alignItems="center" flex={1}>
-                <Box marginRight="sp6">
-                    <TokenIcon
-                        networkSymbol={symbol}
-                        contractAddress={token?.contract}
-                        tokenSymbol={token?.symbol || token?.name}
-                        showNetworkIcon
-                        size="medium"
-                    />
-                </Box>
+            <AssetDetailPressable assetKey={assetKey} style={applyStyle(pressableStyle)}>
+                <HStack alignItems="center" flex={1}>
+                    <Box marginRight="sp6">
+                        <TokenIcon
+                            networkSymbol={symbol}
+                            contractAddress={token?.contract}
+                            tokenSymbol={token?.symbol || token?.name}
+                            showNetworkIcon
+                            size="medium"
+                        />
+                    </Box>
 
-                <HStack alignItems="center" justifyContent="space-between" flex={1}>
-                    <Box style={applyStyle(cardContentStyle)}>
-                        <HStack>
+                    <HStack alignItems="center" justifyContent="space-between" flex={1}>
+                        <Box style={applyStyle(cardContentStyle)}>
                             <Text variant="body-sm-strong" color="contentPrimary">
                                 {tokenSymbol}
                             </Text>
 
-                            {yieldBadge && account && (
-                                <YieldBadge
-                                    apy={yieldBadge.apy}
-                                    variant={yieldBadgeVariant}
-                                    vaultId={yieldBadge.vaultId ?? ''}
-                                    account={account}
+                            <Text variant="body-sm" color="contentSecondary" numberOfLines={1}>
+                                {tokenName}
+                            </Text>
+                        </Box>
+
+                        <Box alignItems="flex-end" flexShrink={1}>
+                            {token ? (
+                                <TokenToFiatAmountFormatter
+                                    symbol={symbol}
+                                    value={balance}
+                                    contract={token.contract}
+                                    numberOfLines={1}
+                                    adjustsFontSizeToFit
+                                    variant="body-sm-strong"
+                                    color="contentPrimary"
+                                />
+                            ) : (
+                                <CryptoToFiatAmountFormatter
+                                    value={balance}
+                                    symbol={symbol}
+                                    isBalance={true}
+                                    numberOfLines={1}
+                                    adjustsFontSizeToFit
+                                    variant="body-sm-strong"
                                 />
                             )}
-                        </HStack>
 
-                        <Text variant="body-sm" color="contentSecondary" numberOfLines={1}>
-                            {tokenName}
-                        </Text>
-                    </Box>
-
-                    <Box alignItems="flex-end" flexShrink={1}>
-                        {token ? (
-                            <TokenToFiatAmountFormatter
-                                symbol={symbol}
-                                value={balance}
-                                contract={token.contract}
-                                numberOfLines={1}
-                                adjustsFontSizeToFit
-                                variant="body-sm-strong"
-                                color="contentPrimary"
-                            />
-                        ) : (
-                            <CryptoToFiatAmountFormatter
-                                value={balance}
-                                symbol={symbol}
-                                isBalance={true}
-                                numberOfLines={1}
-                                adjustsFontSizeToFit
-                                variant="body-sm-strong"
-                            />
-                        )}
-
-                        {token ? (
-                            <ExactTokenAmountFormatter
-                                value={asDecimalTokenAmount(token.balance ?? '0')}
-                                tokenSymbol={tokenAmountSymbol}
-                                maxDisplayedDecimals={token.decimals}
-                                numberOfLines={1}
-                                adjustsFontSizeToFit
-                                variant="body-sm"
-                                color="contentSecondary"
-                            />
-                        ) : (
-                            <ExactCryptoAmountFormatter
-                                value={balance}
-                                symbol={symbol}
-                                isBalance={true}
-                                numberOfLines={1}
-                                adjustsFontSizeToFit
-                                variant="body-sm"
-                                color="contentSecondary"
-                            />
-                        )}
-                    </Box>
+                            {token ? (
+                                <ExactTokenAmountFormatter
+                                    value={asDecimalTokenAmount(token.balance ?? '0')}
+                                    tokenSymbol={tokenAmountSymbol}
+                                    maxDisplayedDecimals={token.decimals}
+                                    numberOfLines={1}
+                                    adjustsFontSizeToFit
+                                    variant="body-sm"
+                                    color="contentSecondary"
+                                />
+                            ) : (
+                                <ExactCryptoAmountFormatter
+                                    value={balance}
+                                    symbol={symbol}
+                                    isBalance={true}
+                                    numberOfLines={1}
+                                    adjustsFontSizeToFit
+                                    variant="body-sm"
+                                    color="contentSecondary"
+                                />
+                            )}
+                        </Box>
+                    </HStack>
                 </HStack>
-            </HStack>
+            </AssetDetailPressable>
+            {yieldBadge && account && (
+                <Box marginLeft="sp6" justifyContent="center">
+                    <YieldBadge
+                        apy={yieldBadge.apy}
+                        variant={yieldBadgeVariant}
+                        vaultId={yieldBadge.vaultId ?? ''}
+                        account={account}
+                    />
+                </Box>
+            )}
         </Card>
     );
 };

@@ -80,7 +80,7 @@ export const PortfolioAssetListItem = ({ assetKey }: PortfolioAssetListItemProps
     const handlePress = () =>
         navigation.navigate(RootStackRoutes.AssetsStack, {
             screen: AssetsStackRoutes.AssetDetail,
-            params: { networkSymbol: symbol, tokenContract: contractAddress },
+            params: { assetKey },
         });
 
     return (

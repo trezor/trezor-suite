@@ -15,6 +15,9 @@
         },
         { "path": "../../suite-common/graph" },
         {
+            "path": "../../suite-common/message-system"
+        },
+        {
             "path": "../../suite-common/suite-sync"
         },
         {

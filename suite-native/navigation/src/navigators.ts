@@ -4,6 +4,7 @@ import { type RequireAllOrNone } from 'type-fest';
 import { type BackupType } from '@suite-common/suite-types';
 import { type TradingType } from '@suite-common/trading';
 import { type AccountType, type NetworkSymbol } from '@suite-common/wallet-config';
+import { type WalletAssetKey } from '@suite-common/wallet-core';
 import {
     type Account,
     type AccountKey,
@@ -100,10 +101,7 @@ export type SignAndVerifyStackParamList = {
 };
 
 export type AssetsStackParamList = {
-    [AssetsStackRoutes.AssetDetail]: {
-        networkSymbol: NetworkSymbol;
-        tokenContract?: TokenAddress;
-    };
+    [AssetsStackRoutes.AssetDetail]: { assetKey: WalletAssetKey };
 };
 
 export type EarnStackParamList = {

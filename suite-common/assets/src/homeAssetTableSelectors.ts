@@ -18,6 +18,7 @@ import {
     selectHiddenAssetAccountKeySet,
     selectHiddenTokenReasons,
     selectLastWeekFiatRates,
+    selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
 import {
     type BaseCurrencyAmount,
@@ -29,7 +30,11 @@ import {
     asBaseCurrencyAmount,
     toTokenSymbol,
 } from '@suite-common/wallet-types';
-import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
+import {
+    getAccountTotalStakingBalance,
+    getFiatRateKey,
+    toFiatCurrency,
+} from '@suite-common/wallet-utils';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
@@ -48,6 +53,7 @@ const ZERO = new BigNumber(0);
 
 type WalletAsset = {
     assetKey: WalletAssetKey;
+    accountCount: number;
     symbol: NetworkSymbol;
     contractAddress: TokenAddress | undefined;
     cryptoBalance: BigNumber;
@@ -81,6 +87,7 @@ const groupWalletAssets = (
 
         assets.set(assetKey, {
             assetKey,
+            accountCount: new Set(held.map(({ accountKey }) => accountKey)).size,
             symbol,
             contractAddress,
             cryptoBalance,
@@ -574,11 +581,57 @@ export const selectWalletAssetDisplaySymbol = (
     isHidden?: boolean,
 ) => selectWalletAsset(state, assetKey, isHidden)?.displaySymbol;
 
+export const selectWalletAssetName = (
+    state: HomeAssetTableState,
+    assetKey: WalletAssetKey,
+    isHidden?: boolean,
+) => selectWalletAsset(state, assetKey, isHidden)?.name;
+
 export const selectWalletAssetAmount = (
     state: HomeAssetTableState,
     assetKey: WalletAssetKey,
     isHidden?: boolean,
 ) => selectWalletAsset(state, assetKey, isHidden)?.amount;
+
+export const selectWalletAssetAccountCount = (
+    state: HomeAssetTableState,
+    assetKey: WalletAssetKey,
+    isHidden?: boolean,
+) => selectWalletAsset(state, assetKey, isHidden)?.accountCount;
+
+export const selectWalletAssetStakingAmount = createMemoizedSelector(
+    [selectVisibleDeviceAccounts, selectWalletAssetSymbol, selectWalletAssetContractAddress],
+    (accounts, networkSymbol, contractAddress) => {
+        if (
+            networkSymbol === undefined ||
+            networkSymbol === 'ada' ||
+            contractAddress !== undefined
+        ) {
+            return '0';
+        }
+
+        return accounts
+            .reduce((total, account) => {
+                if (account.symbol !== networkSymbol) return total;
+
+                return total.plus(getAccountTotalStakingBalance(account) ?? 0);
+            }, new BigNumber(0))
+            .toFixed();
+    },
+);
+
+export const selectWalletAssetAvailableAmount = createMemoizedSelector(
+    [selectWalletAssetAmount, selectWalletAssetStakingAmount],
+    (totalAmount, stakingAmount) =>
+        totalAmount === undefined
+            ? undefined
+            : new BigNumber(totalAmount).minus(stakingAmount).toFixed(),
+);
+
+export const selectWalletAssetHasStaking = createMemoizedSelector(
+    [selectWalletAssetStakingAmount],
+    stakingAmount => new BigNumber(stakingAmount).gt(0),
+);
 
 export const selectWalletAssetTokenSymbol = (
     state: HomeAssetTableState,
