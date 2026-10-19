@@ -1,15 +1,18 @@
+import { BigNumber } from '@trezor/utils';
+
 export const formatCryptoAmountAsAmount = (
-    amount: number,
-    baseAmount: number,
+    amount: number | BigNumber,
+    baseAmount: number | BigNumber,
     decimals = 8,
 ): string => {
+    const baseAmountBigNumber = new BigNumber(baseAmount);
     let digits = 4;
 
-    if (baseAmount < 1) {
+    if (baseAmountBigNumber.lt(1)) {
         digits = 6;
     }
 
-    if (baseAmount < 0.01) {
+    if (baseAmountBigNumber.lt(0.01)) {
         digits = decimals;
     }
 
