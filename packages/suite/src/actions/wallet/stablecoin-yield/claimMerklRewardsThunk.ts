@@ -7,7 +7,6 @@ import {
     buildClaimCalldata,
     buildClaimTransactionReview,
     buildUnsignedClaimTransaction,
-    isUserCancelledSignErrorCode,
 } from '@suite-common/earn-stablecoin';
 import { type YieldAccountsRewards } from '@suite-common/earn-stablecoin-api';
 import { type MessageSystemRootState } from '@suite-common/message-system';
@@ -22,6 +21,7 @@ import {
     type YieldEstimatedFeeLevel,
     estimateYieldFeeLevel,
     getYieldClaimRewardsSnapshot,
+    isEarnSigningCancelled,
     notifyEarnTransactionBroadcastThunk,
     selectAddressDisplayType,
     selectIsMevProtectionEnabled,
@@ -261,7 +261,16 @@ export const claimMerklRewardsThunk = createThunk<
                     dispatch(closeModal());
 
                     const { code } = signingResponse.error;
-                    if (isUserCancelledSignErrorCode(code)) {
+                    if (isEarnSigningCancelled(signingResponse.error)) {
+                        extra.services.analytics.report({
+                            type: events.transactionCancelEvent.name,
+                            payload: {
+                                txType: 'yield',
+                                networkSymbol: account.symbol,
+                                stage: 'signing',
+                            },
+                        });
+
                         return null;
                     }
 
@@ -282,6 +291,15 @@ export const claimMerklRewardsThunk = createThunk<
                 );
 
                 if (!isPushConfirmed) {
+                    extra.services.analytics.report({
+                        type: events.transactionCancelEvent.name,
+                        payload: {
+                            txType: 'yield',
+                            networkSymbol: account.symbol,
+                            stage: 'review',
+                        },
+                    });
+
                     return null;
                 }
 

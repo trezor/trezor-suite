@@ -188,6 +188,14 @@ export const useYieldApprovalReview = ({
                 isUserCancelledSignError(signTransactionResponse.payload) ||
                 wasReviewCancelledByUser()
             ) {
+                analytics.report({
+                    type: events.transactionCancelEvent.name,
+                    payload: {
+                        txType: 'yield',
+                        networkSymbol: flowData.account.symbol,
+                        stage: 'signing',
+                    },
+                });
                 reportApprovalReviewEvent({ action: 'cancel' });
 
                 return 'cancelled';
@@ -203,6 +211,7 @@ export const useYieldApprovalReview = ({
 
         return 'signed';
     }, [
+        analytics,
         dispatch,
         flowData.account,
         handleReviewError,

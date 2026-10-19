@@ -9,7 +9,10 @@ import {
     type AccountKey,
     type PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import TrezorConnect from '@trezor/connect';
+import { type WithServices } from '@trezor/redux-utils';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { signSolanaStakingTransactionThunk } from './solanaStakingThunks';
@@ -69,6 +72,8 @@ jest.mock('@suite-native/device-mutex', () => ({
     }),
 }));
 
+const analytics = mockNativeAnalytics();
+
 const STATIC_SESSION_ID = '1stTestnetAddress@device_id:0';
 const SOL_ACCOUNT_KEY = 'sol1' as AccountKey;
 
@@ -122,7 +127,8 @@ const buildStore = ({
     accounts?: Account[];
     blockchain?: Partial<Record<'sol' | 'dsol', { url: string }>>;
 } = {}) =>
-    createTestCompositionRoot<void, State>({
+    createTestCompositionRoot<WithServices<NativeAnalyticsDep>, State>({
+        services: () => ({ analytics }),
         reducer: combineReducers({
             device: (): { selectedDevice: TrezorDevice } => ({
                 selectedDevice: {
@@ -165,7 +171,7 @@ const solanaSignTransactionMock = TrezorConnect.solanaSignTransaction as jest.Mo
 const blockchainGetInfoMock = TrezorConnect.blockchainGetInfo as jest.Mock;
 
 const dispatchSign = async (
-    store: TestCompositionStore<State, void>,
+    store: TestCompositionStore<State, WithServices<NativeAnalyticsDep>>,
     args: Parameters<typeof signSolanaStakingTransactionThunk>[0],
 ) => {
     const action = await store.dispatch(signSolanaStakingTransactionThunk(args) as any);
@@ -314,6 +320,10 @@ describe('signSolanaStakingTransactionThunk', () => {
 
         expect(result.ok).toBe(false);
         expect((result as { error: { message: string } }).error.message).toBe('tx-cancelled');
+        expect(analytics.report).toHaveBeenCalledWith({
+            type: 'transaction/cancel',
+            payload: { txType: 'stake', networkSymbol: 'sol', stage: 'signing' },
+        });
     });
 
     it('rejects with sign-transaction-timeout when the validity timer cancels the sign', async () => {

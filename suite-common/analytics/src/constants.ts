@@ -24,6 +24,8 @@ export enum EventType {
     SettingsTestnetNetworksToggle = 'settings/testnet-networks-toggle',
     // eslint-disable-next-line local-rules/analytics-event-name
     SuiteSyncLabelCreated = 'suite-sync/label',
+
+    TransactionCancel = 'transaction/cancel',
     // eslint-disable-next-line local-rules/analytics-event-name
     TransactionCreated = 'transaction-created',
     WalletConnectInit = 'wallet-connect/init',

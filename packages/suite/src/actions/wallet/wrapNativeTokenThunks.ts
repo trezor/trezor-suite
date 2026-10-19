@@ -137,6 +137,7 @@ export const submitWrapNativeTokenThunk = createThunk<
             const network = getNetwork(account.symbol);
 
             const sendResult = await sendYieldTransaction({
+                analytics: extra.services.analytics,
                 account,
                 amount: wrapAmount,
                 token: {

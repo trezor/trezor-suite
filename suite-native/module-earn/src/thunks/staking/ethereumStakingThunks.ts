@@ -1,9 +1,11 @@
+import { events } from '@suite-common/analytics';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import {
     type PrepareEthereumStakingContextState,
     WALLET_SDK_SOURCE_MOBILE,
     buildEthereumStakingSignTransaction,
     ethereumGetCurrentNonceThunk,
+    isEarnSigningCancelled,
     prepareEthereumStakingContext,
     sendFormActions,
     verifyEthereumStakingLiveStateForSign,
@@ -13,9 +15,10 @@ import {
     type BaseStakeType,
     type PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
+import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import TrezorConnect from '@trezor/connect';
-import { createThunk } from '@trezor/redux-utils';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 
 import { EARN_MODULE_PREFIX } from '../../constants';
 import { type SignStakeTransactionRejectValue } from '../../types';
@@ -24,6 +27,8 @@ const LOG_PREFIX = 'signEthereumStakingTransactionThunk';
 
 export type SignEthereumStakingTransactionThunkState = PrepareEthereumStakingContextState &
     DeviceRootState;
+
+type SignEthereumStakingTransactionThunkDeps = WithServices<NativeAnalyticsDep>;
 
 export const signEthereumStakingTransactionThunk = createThunk<
     void,
@@ -35,11 +40,12 @@ export const signEthereumStakingTransactionThunk = createThunk<
     {
         rejectValue: SignStakeTransactionRejectValue;
         state: SignEthereumStakingTransactionThunkState;
+        extra: SignEthereumStakingTransactionThunkDeps;
     }
 >(
     `${EARN_MODULE_PREFIX}/${LOG_PREFIX}`,
     async ({ accountKey, stakeType, precomposedTransaction }, thunkApi) => {
-        const { dispatch, getState, rejectWithValue } = thunkApi;
+        const { dispatch, getState, rejectWithValue, extra } = thunkApi;
 
         try {
             const prepared = prepareEthereumStakingContext(getState(), {
@@ -106,6 +112,16 @@ export const signEthereumStakingTransactionThunk = createThunk<
             const signResponse = deviceAccessResponse.payload;
 
             if (!signResponse.success) {
+                if (isEarnSigningCancelled(signResponse.error)) {
+                    extra.services.analytics.report({
+                        type: events.transactionCancelEvent.name,
+                        payload: {
+                            txType: 'stake',
+                            networkSymbol: account.symbol,
+                            stage: 'signing',
+                        },
+                    });
+                }
                 if (signResponse.error.message !== 'tx-cancelled') {
                     console.error(
                         `${LOG_PREFIX}: Sign transaction failed: ${signResponse.error.message}`,

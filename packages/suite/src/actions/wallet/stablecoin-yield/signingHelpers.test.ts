@@ -1,3 +1,4 @@
+import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { USER_CANCELLED_ERROR_CODES } from '@suite-common/earn-stablecoin';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -49,6 +50,8 @@ jest.mock('@suite-common/mev', () => ({
     selectIsMevProtectionFeatureEnabled: () => false,
 }));
 
+const analytics = mockDesktopAnalytics();
+
 const account = mockWalletAccount({ symbol: asNetworkSymbol('eth') }) as Account;
 
 // Only openDeferredModal needs a real return value; every other dispatched action is recorded
@@ -78,6 +81,7 @@ const sendTransaction = ({ isReviewModalConfirmed = true } = {}) =>
         dispatch: createDispatch(isReviewModalConfirmed),
         getState: () => ({}) as unknown as SendYieldTransactionState,
         selectedFee: null,
+        analytics,
     });
 
 describe('sendYieldTransaction', () => {
@@ -120,6 +124,11 @@ describe('sendYieldTransaction', () => {
             });
 
             await expect(sendTransaction()).resolves.toEqual({ status: 'cancelled' });
+            expect(analytics.report).toHaveBeenCalledTimes(1);
+            expect(analytics.report).toHaveBeenCalledWith({
+                type: 'transaction/cancel',
+                payload: { txType: 'yield', networkSymbol: 'eth', stage: 'signing' },
+            });
         },
     );
 
@@ -128,6 +137,10 @@ describe('sendYieldTransaction', () => {
             status: 'cancelled',
         });
         expect(TrezorConnect.pushTransaction).not.toHaveBeenCalled();
+        expect(analytics.report).toHaveBeenCalledWith({
+            type: 'transaction/cancel',
+            payload: { txType: 'yield', networkSymbol: 'eth', stage: 'review' },
+        });
     });
 
     it('throws with the connect code as cause for other signing failures', async () => {
@@ -139,6 +152,7 @@ describe('sendYieldTransaction', () => {
         await expect(sendTransaction()).rejects.toMatchObject({
             cause: 'Failure_FirmwareError',
         });
+        expect(analytics.report).not.toHaveBeenCalled();
     });
 
     it('returns sent with the txid and the precomposed fee after broadcast', async () => {
@@ -147,5 +161,6 @@ describe('sendYieldTransaction', () => {
             txid: '0xtxid',
             fee: '31500000000',
         });
+        expect(analytics.report).not.toHaveBeenCalled();
     });
 });

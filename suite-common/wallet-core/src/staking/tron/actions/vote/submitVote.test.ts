@@ -1,10 +1,13 @@
 import { captureException, withScope } from '@sentry/core';
 
+import { type AnalyticsDep, type AnalyticsSharedEvents } from '@suite-common/analytics';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
+import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import TrezorConnect from '@trezor/connect';
+import { type WithServices } from '@trezor/redux-utils';
 import { createDeferred } from '@trezor/utils';
 
 import { submitTronVoteThunk } from './submitVote';
@@ -32,6 +35,8 @@ jest.mock('@trezor/connect', () => {
 });
 jest.mock('../../shared/reportTronVoteTxId', () => ({ reportTronVoteTxId: jest.fn() }));
 jest.mock('../../shared/signTronContract', () => ({ signTronContract: jest.fn() }));
+
+const analytics = mockAnalytics<AnalyticsSharedEvents>();
 
 const ACCOUNT_KEY = 'tron-account' as AccountKey;
 const ACCOUNT_ADDRESS = 'TVDGpn4hCSzJ5nkHPLetk8KQBtwaTppnkr';
@@ -79,7 +84,8 @@ const buildAccount = (overrides?: Partial<Account>): Account =>
     }) as unknown as Account;
 
 const initStore = () =>
-    createTestCompositionRoot<void, AddFakePendingTronTxThunkState>({
+    createTestCompositionRoot<WithServices<AnalyticsDep>, AddFakePendingTronTxThunkState>({
+        services: () => ({ analytics }),
         preloadedState: {
             wallet: {
                 blockchain: { [trxSymbol]: { blockHeight: 100 } },
@@ -91,7 +97,7 @@ const initStore = () =>
 const ALLOCATIONS = [{ address: REPRESENTATIVE_ADDRESS, count: 10 }];
 
 const submitVote = (
-    store: TestCompositionStore<AddFakePendingTronTxThunkState, void>,
+    store: TestCompositionStore<AddFakePendingTronTxThunkState, WithServices<AnalyticsDep>>,
     account = buildAccount(),
     requestPushApproval = () => Promise.resolve(true),
 ) =>
@@ -106,7 +112,7 @@ const submitVote = (
     );
 
 const getSubmitFinishedActions = (
-    store: TestCompositionStore<AddFakePendingTronTxThunkState, void>,
+    store: TestCompositionStore<AddFakePendingTronTxThunkState, WithServices<AnalyticsDep>>,
 ) => store.getActions().filter(tronStakeActions.submitFinished.match);
 
 beforeEach(() => {
@@ -172,6 +178,10 @@ describe('submitTronVoteThunk', () => {
 
         expect(reportTronVoteTxIdMock).not.toHaveBeenCalled();
         expect(pushTransactionMock).not.toHaveBeenCalled();
+        expect(analytics.report).toHaveBeenCalledWith({
+            type: 'transaction/cancel',
+            payload: { txType: 'stake', networkSymbol: 'trx', stage: 'review' },
+        });
         expect(getSubmitFinishedActions(store)).toEqual([
             tronStakeActions.submitFinished({
                 accountKey: ACCOUNT_KEY,

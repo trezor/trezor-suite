@@ -1,11 +1,9 @@
 import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
 
 import { closeModal, openDeferredModal, preserveModal } from '@suite/modal';
+import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
-import {
-    buildStablecoinYieldTransactionReview,
-    isUserCancelledSignErrorCode,
-} from '@suite-common/earn-stablecoin';
+import { buildStablecoinYieldTransactionReview } from '@suite-common/earn-stablecoin';
 import { type MessageSystemRootState } from '@suite-common/message-system';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import {
@@ -14,6 +12,7 @@ import {
     type WalletSettingsRootState,
     type YieldFlowDisplayToken,
     type YieldFlowType,
+    isEarnSigningCancelled,
     selectAddressDisplayType,
     selectIsMevProtectionEnabled,
     synchronizeSentTransactionThunk,
@@ -72,6 +71,7 @@ export type SendYieldTransactionResult =
     { status: 'sent'; txid: string; fee: string } | { status: 'cancelled' };
 
 export type SendYieldTransactionParams = {
+    analytics: AnalyticsDep['analytics'];
     account: Account;
     amount: string;
     token: YieldFlowDisplayToken;
@@ -85,6 +85,7 @@ export type SendYieldTransactionParams = {
 
 export const sendYieldTransaction = async ({
     account,
+    analytics,
     amount,
     token,
     unsignedTransaction,
@@ -149,7 +150,12 @@ export const sendYieldTransaction = async ({
             dispatch(closeModal());
 
             const { code } = signingResponse.error;
-            if (isUserCancelledSignErrorCode(code)) {
+            if (isEarnSigningCancelled(signingResponse.error)) {
+                analytics.report({
+                    type: events.transactionCancelEvent.name,
+                    payload: { txType: 'yield', networkSymbol: account.symbol, stage: 'signing' },
+                });
+
                 return { status: 'cancelled' };
             }
 
@@ -168,6 +174,11 @@ export const sendYieldTransaction = async ({
         const isPushConfirmed = await dispatch(openDeferredModal({ type: 'review-transaction' }));
 
         if (!isPushConfirmed) {
+            analytics.report({
+                type: events.transactionCancelEvent.name,
+                payload: { txType: 'yield', networkSymbol: account.symbol, stage: 'review' },
+            });
+
             return { status: 'cancelled' };
         }
 

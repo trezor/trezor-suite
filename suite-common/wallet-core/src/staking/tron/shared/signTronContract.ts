@@ -1,3 +1,4 @@
+import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type Account } from '@suite-common/wallet-types';
 import { getAccountIdentity } from '@suite-common/wallet-utils';
@@ -5,6 +6,7 @@ import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import * as tronUtils from '@trezor/network-tron/utils';
 
+import { isEarnSigningCancelled } from '../../../earn/earnTransactionAnalytics';
 import { type TronClaimContract } from '../actions/claim/claimContract';
 import { type TronFreezeContract } from '../actions/freeze/freezeContract';
 import { type TronUnstakeContract } from '../actions/unstake/unstakeContract';
@@ -21,6 +23,7 @@ type TronStakeContract =
 
 type SignTronContractResult = { serializedTx: string; txid: string } | { error: TronStakeError };
 type SignTronContractParams = {
+    analytics: AnalyticsDep['analytics'];
     account: Account;
     device: TrezorDevice;
     contract: TronStakeContract;
@@ -28,6 +31,7 @@ type SignTronContractParams = {
 
 export const signTronContract = async ({
     account,
+    analytics,
     device,
     contract,
 }: SignTronContractParams): Promise<SignTronContractResult> => {
@@ -70,9 +74,12 @@ export const signTronContract = async ({
     });
 
     if (!signed.success) {
-        const { code } = signed.error;
+        if (isEarnSigningCancelled(signed.error)) {
+            analytics.report({
+                type: events.transactionCancelEvent.name,
+                payload: { txType: 'stake', networkSymbol: account.symbol, stage: 'signing' },
+            });
 
-        if (code === 'Failure_ActionCancelled' || code === 'Method_Cancel') {
             return { error: { kind: 'cancelled' } };
         }
 

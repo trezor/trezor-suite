@@ -796,6 +796,7 @@ export const signTransactionThunk = createThunk<
             if (message === 'tx-cancelled') {
                 return rejectWithValue({
                     error: 'sign-transaction-failed',
+                    errorCode: 'Method_Cancel',
                     message: 'User canceled the signing process.',
                 });
             }

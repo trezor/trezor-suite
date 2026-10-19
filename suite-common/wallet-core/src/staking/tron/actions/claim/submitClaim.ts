@@ -1,8 +1,9 @@
+import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { asAmountUnit, getAccountIdentity, unitsToSubunits } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
-import { createThunk } from '@trezor/redux-utils';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { buildClaimContract, buildClaimReviewForm } from './claimContract';
@@ -27,13 +28,18 @@ interface SubmitClaimThunkArguments extends ClaimThunkArguments {
 
 type SubmitTronClaimThunkState = AddFakePendingTronTxThunkState;
 
+type SubmitTronClaimThunkDeps = WithServices<AnalyticsDep>;
+
 export const submitTronClaimThunk = createThunk<
     void,
     SubmitClaimThunkArguments,
-    { state: SubmitTronClaimThunkState }
+    { state: SubmitTronClaimThunkState; extra: SubmitTronClaimThunkDeps }
 >(
     `${TRON_STAKE_MODULE}/submitTronClaimThunk`,
-    async ({ account, device, requestPushApproval, onSigningStart, onSettled }, { dispatch }) => {
+    async (
+        { account, device, requestPushApproval, onSigningStart, onSettled },
+        { dispatch, extra },
+    ) => {
         const { key: accountKey } = account;
         const flow: TronFlow = 'claim';
 
@@ -93,7 +99,12 @@ export const submitTronClaimThunk = createThunk<
 
             onSigningStart?.();
 
-            const signResult = await signTronContract({ account, device, contract });
+            const signResult = await signTronContract({
+                account,
+                device,
+                contract,
+                analytics: extra.services.analytics,
+            });
 
             if ('error' in signResult) {
                 dispatch(
@@ -112,6 +123,10 @@ export const submitTronClaimThunk = createThunk<
             const isPushApproved = await requestPushApproval();
 
             if (!isPushApproved) {
+                extra.services.analytics.report({
+                    type: events.transactionCancelEvent.name,
+                    payload: { txType: 'stake', networkSymbol: account.symbol, stage: 'review' },
+                });
                 dispatch(
                     tronStakeActions.submitFinished({
                         accountKey,

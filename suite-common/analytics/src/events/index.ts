@@ -54,3 +54,4 @@ export { yieldNavigateEvent } from './yieldNavigateEvent';
 export { yieldUnwrapEvent } from './yieldUnwrapEvent';
 export { yieldWithdrawEvent } from './yieldWithdrawEvent';
 export { yieldWrapEvent } from './yieldWrapEvent';
+export { transactionCancelEvent } from './transactionCancelEvent';

@@ -376,4 +376,9 @@ export const signTransactionThunk =
             // push tx to the network
             return dispatch(pushTransactionThunk(formValues.stakeType));
         }
+
+        extra.services.analytics.report({
+            type: events.transactionCancelEvent.name,
+            payload: { txType: 'stake', networkSymbol: account.symbol, stage: 'review' },
+        });
     };
