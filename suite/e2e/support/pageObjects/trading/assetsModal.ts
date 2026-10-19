@@ -27,7 +27,6 @@ export class TradingAssetPicker {
         this.page
             .getByTestId(`@asset-picker/search/filter/select-option-value/${network}`)
             .locator('svg');
-    readonly globalAddAccountButton: Locator;
 
     // buy and sell options
     readonly sellOption = (params: SellAccountParams & { tokenSymbol?: string }) =>
@@ -43,7 +42,6 @@ export class TradingAssetPicker {
     readonly buyAssetOption = (assetCryptoId: CryptoId) =>
         this.page.getByTestId(`@asset-picker/buy/option/asset/${assetCryptoId}`);
 
-    // send and receive options
     readonly sendOption = (params: {
         accountSymbol: NetworkSymbol;
         accountType: string;
@@ -55,14 +53,6 @@ export class TradingAssetPicker {
                 params.tokenSymbol ? `/token/${params.tokenSymbol}` : ''
             }`,
         );
-    readonly receiveOption = (params: {
-        accountSymbol: NetworkSymbol;
-        accountType: string;
-        index: number;
-    }) =>
-        this.page.getByTestId(
-            `@global-receive-account/${params.accountType}/${params.accountSymbol}/${params.index}`,
-        );
 
     constructor(private readonly page: Page) {
         this.openSellModal = this.page.getByTestId('@trading/sell/asset-picker');
@@ -72,7 +62,6 @@ export class TradingAssetPicker {
         this.sendReceiveNetworkFilterSelect = this.page.getByTestId(
             '@asset-picker/search/filter/input',
         );
-        this.globalAddAccountButton = this.page.getByTestId('@global-send-receive/add-account');
     }
 
     @step()
