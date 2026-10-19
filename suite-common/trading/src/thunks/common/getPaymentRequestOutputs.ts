@@ -1,8 +1,10 @@
 import { type PaymentRequestOutput } from 'invity-api';
 
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import type { Network } from '@suite-common/wallet-config';
-import { type GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { type Account, type GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
+import { asCoinSymbol } from '@trezor/connect-common';
 import solana from '@trezor/network-solana/runtime';
 import { createThunk } from '@trezor/redux-utils';
 
@@ -13,17 +15,23 @@ import {
     formatSlip24SendAmountByNetwork,
 } from '../../utils/signature/signatureUtils';
 
+export type GetPaymentRequestOutputsThunkState = DeviceRootState;
+
 export const getPaymentRequestOutputsThunk = createThunk<
     PaymentRequestOutput[],
     {
+        account: Account;
         network: Network;
         composedLevels: GeneralPrecomposedTransactionFinal;
         destinationTag?: string;
     },
-    { rejectValue: TradingSendRejectedProps }
+    { rejectValue: TradingSendRejectedProps; state: GetPaymentRequestOutputsThunkState }
 >(
     `${TRADING_THUNK_PREFIX}/getPaymentRequestOutputs`,
-    async ({ network, composedLevels, destinationTag }, { rejectWithValue, fulfillWithValue }) => {
+    async (
+        { account, network, composedLevels, destinationTag },
+        { getState, rejectWithValue, fulfillWithValue },
+    ) => {
         const outputs: PaymentRequestOutput[] = [];
 
         for (const output of composedLevels.outputs) {
@@ -65,8 +73,22 @@ export const getPaymentRequestOutputsThunk = createThunk<
             }
 
             if ('address_n' in output && output.address_n) {
+                const device = selectSelectedDevice(getState());
+
+                if (!device) {
+                    return rejectWithValue({
+                        type: 'sign-tx-error',
+                        error: {
+                            id: 'TR_DEVICE_NOT_CONNECTED',
+                        },
+                    });
+                }
+
                 const getAddress = await TrezorConnect.getAddress({
+                    device,
                     path: output.address_n,
+                    coin: asCoinSymbol(account.symbol),
+                    unlockPath: account.unlockPath,
                     showOnTrezor: false,
                     keepSession: true,
                 });

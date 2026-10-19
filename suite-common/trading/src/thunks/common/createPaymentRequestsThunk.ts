@@ -13,7 +13,10 @@ import { createThunk } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 
 import { type GetNonceThunkState, getNonceThunk } from './getNonce';
-import { getPaymentRequestOutputsThunk } from './getPaymentRequestOutputs';
+import {
+    type GetPaymentRequestOutputsThunkState,
+    getPaymentRequestOutputsThunk,
+} from './getPaymentRequestOutputs';
 import { type GetPurchaseAddressThunkState, getPurchaseAddressThunk } from './getPurchaseAddress';
 import { type GetRefundAddressThunkState, getRefundAddressThunk } from './getRefundAddress';
 import { TRADING_THUNK_PREFIX } from '../../constants';
@@ -46,6 +49,7 @@ type CreateSignatureThunkProps = {
 
 export type CreatePaymentRequestsThunkState = AccountsRootState &
     GetNonceThunkState &
+    GetPaymentRequestOutputsThunkState &
     GetPurchaseAddressThunkState &
     GetRefundAddressThunkState &
     TradingRootState;
@@ -112,6 +116,7 @@ export const createPaymentRequestsThunk = createThunk<
 
                 const outputs = await dispatch(
                     getPaymentRequestOutputsThunk({
+                        account,
                         network: sendNetwork,
                         composedLevels,
                         destinationTag,
@@ -222,6 +227,7 @@ export const createPaymentRequestsThunk = createThunk<
 
                 const outputs = await dispatch(
                     getPaymentRequestOutputsThunk({
+                        account,
                         network: sendNetwork,
                         composedLevels,
                         destinationTag,
