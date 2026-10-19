@@ -32,13 +32,13 @@ test.use({
 });
 
 test.beforeEach(async ({ anvil, onboardingPage, settingsPage, walletPage }) => {
-    // Fund before discovery, so Suite finds the account with its balance.
+    // Native balance before discovery, so Suite finds the account.
     await anvil.setBalance(OWNER_ADDRESS, parseEther('1'));
-    await anvil.fundErc20(USDC_CONTRACT, OWNER_ADDRESS, parseUnits('1000', 6));
     await onboardingPage.completeOnboarding();
     await settingsPage.changeNetworks({ enableNetworks: [anvil.networkToEnable] });
-    // Loads the account's transactions and tokens, which discovery skips on evm-rpc.
     await walletPage.openAccount({ symbol: asNetworkSymbol('base') });
+    // Tokens once Suite watches the account, so its live watcher reports the Transfer.
+    await anvil.fundErc20(USDC_CONTRACT, OWNER_ADDRESS, parseUnits('1000', 6));
 });
 ```
 
@@ -46,14 +46,18 @@ test.beforeEach(async ({ anvil, onboardingPage, settingsPage, walletPage }) => {
 
 Suite offers the `evm-rpc` backend type only in debug mode (unless it is the network's default), so `changeNetworks` turns debug mode on whenever it is given an `evm-rpc` backend.
 
-On `evm-rpc`, discovery loads only an account's balance and nonce. Its transactions and tokens, found by scanning `Transfer` logs, load when the account is opened. Until then Suite shows no tokens, so the Earn dashboard offers "Buy" instead of "Deposit now", for example.
+How Suite's `evm-rpc` worker sees the fork decides the order of setup:
+
+- Discovery loads only an account's balance and nonce, so the native balance must be there first.
+- Tokens are known only from `Transfer` logs. A live watcher polls every 10 s, in real time, for logs in blocks mined since the account was subscribed, and reports them to Suite. Its scan of older blocks goes through the fork's upstream RPC, which is slow and rate-limited, so do not rely on it. Fund tokens after `changeNetworks` and `openAccount`, then wait for Suite with an explicit timeout (e.g. `toBeVisible({ timeout: 30_000 })`); `page.clock` does not speed the worker up.
+- The worker reads logs 2 blocks behind the tip, and an automining fork mines no block until the next transaction. With automine on, `AnvilFork` therefore mines 2 extra blocks after each transaction it sends itself. Until those blocks exist, Suite shows no tokens: the Earn dashboard offers "Buy" instead of "Deposit now", for example.
 
 ## Core Rules
 
 MUST: Request `anvil` as a fixture and configure it with `test.use({ anvilFork })`. Never construct `AnvilFork` in a test.
 MUST: Connect Suite with `anvil.networkToEnable`. Do not build the backend object by hand.
 MUST: Start from a clean address: a mnemonic generated for the test (comment why, as in `tests/yield/deposit-anvil.test.ts`). Shared seeds carry real mainnet balances, tokens and allowances into the fork. When a shared seed is unavoidable, assert deltas, not absolute values.
-MUST: Open the account (`walletPage.openAccount`) before a flow that depends on its tokens or history (Earn, staking, token send). Discovery on evm-rpc does not load them.
+MUST: Fund native balance before `changeNetworks`, and ERC-20 tokens after `changeNetworks` and `walletPage.openAccount`, then wait for Suite to show them.
 MUST: Fund ERC-20 tokens with `fundErc20`. It sends a real `transfer`, and the evm-rpc backend discovers an account's tokens only from `Transfer` logs.
 MUST: Assert outcomes on chain (`expect.poll(() => anvil.readErc20Balance(...))`) **and** in Suite.
 MUST: Read chain-dependent values (fees, share amounts, symbols) from Suite or from the fork at runtime (e.g. `devicePrompt.cryptoAmountWithSymbolOf('fee').innerText()`, `anvil.readErc20Metadata`).
@@ -105,7 +109,7 @@ const id = await anvil.snapshot();
 await anvil.revert(id);
 ```
 
-With automine on, these calls resolve once the transaction is mined, and throw if it reverted. With automine off they resolve with the hash as soon as it is in the mempool.
+With automine on, these calls resolve once the transaction is mined and 2 more blocks follow it (for the worker's log lag), and throw if it reverted. With automine off they resolve with the hash as soon as it is in the mempool; `mine()` is then up to the test.
 
 ## Determinism and limits
 
