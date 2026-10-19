@@ -38,8 +38,7 @@ test.describe('General settings', { tag: ['@T3W1', '@T3T1'] }, () => {
 
             await test.step('Change fiat currency to EUR', async () => {
                 await settingsPage.navigateTo('application');
-                await page.getByTestId('@settings/fiat-select/input').click();
-                await page.getByTestId(`@settings/fiat-select/option/${Currency.EUR}`).click();
+                await settingsPage.changeFiatCurrency(Currency.EUR);
 
                 const settingsGeneralChangeFiatEvent = analytics.findAnalyticsEventByType<
                     ExtractByEventType<(typeof events.settingsGeneralChangeFiatEvent)['name']>
