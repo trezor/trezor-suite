@@ -207,8 +207,8 @@ export const YieldDepositForm = () => {
         analytics.report({
             type: events.yieldDepositEvent.name,
             payload: {
-                type: 'approve',
-                action: 'cancel',
+                type: 'approve-skipped',
+                action: 'continue',
                 networkSymbol: token.networkSymbol,
                 vaultId: vault.id,
             },

@@ -41,6 +41,10 @@ export const yieldDepositEvent: EventDef<Attributes, EventType.YieldDeposit> = {
         { version: '26.7.1', notes: 'moved to suite-common, reported from mobile as well' },
         { version: '26.8.0', notes: 'added wrap transaction events' },
         { version: '26.9.0', notes: 'added pre-broadcast wrap-step failures' },
+        {
+            version: '26.11.0',
+            notes: 'Reusing an existing allowance reports approve-skipped/continue, including automatic skips on desktop and mobile; explicit desktop skips no longer report approve/cancel.',
+        },
     ],
 
     attributes: {
