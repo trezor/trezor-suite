@@ -60,7 +60,6 @@ const DEFAULT = {
         };
     },
     'get-outputs-amounts': { OutputAmounts: [] },
-    'init-liquidity-clue': { RawLiquidityClue: null },
     'update-liquidity-clue': { RawLiquidityClue: null },
     'get-liquidity-clue': { LiquidityClue: 1 },
     // payment request server

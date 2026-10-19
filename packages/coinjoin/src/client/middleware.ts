@@ -114,16 +114,6 @@ export const getAnonymityScores = async (
     return data.Results;
 };
 
-export const initLiquidityClue = async (ExternalAmounts: number[], options: RequestOptions) => {
-    const data = await request<{ RawLiquidityClue: RawLiquidityClue }>(
-        'init-liquidity-clue',
-        { ExternalAmounts },
-        options,
-    );
-
-    return data.RawLiquidityClue;
-};
-
 export const updateLiquidityClue = async (
     rawLiquidityClue: RawLiquidityClue,
     MaxSuggestedAmount: number,
