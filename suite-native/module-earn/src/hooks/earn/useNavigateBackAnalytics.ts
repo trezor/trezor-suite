@@ -22,11 +22,13 @@ export const useNavigateBackAnalytics = (event: AnalyticsNativeEvents) => {
         () =>
             navigation.addListener('beforeRemove', e => {
                 // Native-stack dismissals (iOS swipe-back, native header back) dispatch POP,
-                // while JS navigation.goBack() dispatches GO_BACK.
+                // while JS navigation.goBack() dispatches GO_BACK. Closing a yield stack uses POP_TO_TOP.
                 const isBackRemoval =
-                    e.data.action.type === 'GO_BACK' || e.data.action.type === 'POP';
+                    e.data.action.type === 'GO_BACK' ||
+                    e.data.action.type === 'POP' ||
+                    e.data.action.type === 'POP_TO_TOP';
 
-                if (isBackRemoval && !hasContinuedRef.current) {
+                if (isBackRemoval && navigation.isFocused() && !hasContinuedRef.current) {
                     analytics.report(eventRef.current);
                 }
             }),
