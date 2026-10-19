@@ -1,12 +1,13 @@
 import { type Dispatch } from '@reduxjs/toolkit';
 
+import { type AnalyticsDep, events } from '@suite-common/analytics';
 import {
     asAmountUnit,
     subunitsToUnits,
     tokenSupportsIncreasingAllowance,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
-import { createThunk } from '@trezor/redux-utils';
+import { type WithServices, createThunk } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { fetchAllowance } from '../../allowance/fetchAllowance';
@@ -219,15 +220,17 @@ export const handleYieldApproveCancelThunk = createThunk<void, YieldSessionPaylo
 
 export type InitYieldAllowanceThunkState = YieldRootState;
 
+export type InitYieldAllowanceThunkDeps = WithServices<AnalyticsDep>;
+
 export const initYieldAllowanceThunk = createThunk<
     void,
     InitYieldAllowancePayload,
-    { state: InitYieldAllowanceThunkState }
+    { state: InitYieldAllowanceThunkState; extra: InitYieldAllowanceThunkDeps }
 >(
     `${YIELD_THUNK_PREFIX}/initAllowance`,
     async (
         { flowKey, flowType, flowData, shouldSkipApprovalStep = true },
-        { dispatch, getState },
+        { dispatch, getState, extra },
     ) => {
         dispatch(yieldActions.startInitializingAllowance({ flowType, flowKey }));
 
@@ -281,8 +284,22 @@ export const initYieldAllowanceThunk = createThunk<
                       )
                     : amount !== '0';
 
-                if (allowanceCoversRequest) {
+                if (
+                    allowanceCoversRequest &&
+                    selectYieldSession(getState(), flowType, flowKey).step === 'approve'
+                ) {
                     dispatch(yieldActions.skipApprovalStep({ flowType, flowKey }));
+                    if (flowType === 'deposit') {
+                        extra.services.analytics.report({
+                            type: events.yieldDepositEvent.name,
+                            payload: {
+                                type: 'approve-skipped',
+                                action: 'continue',
+                                networkSymbol: flowData.account.symbol,
+                                vaultId: flowData.vault.id,
+                            },
+                        });
+                    }
                 }
             }
         } catch (error) {

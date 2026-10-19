@@ -1,14 +1,24 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
+import { type AnalyticsDep, type AnalyticsSharedEvents } from '@suite-common/analytics';
 import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { asAmountSubunit } from '@suite-common/wallet-utils';
+import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
+import { type WithServices } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { type InitYieldAllowanceThunkState, initYieldAllowanceThunk } from './yieldApprovalThunks';
 import { fetchAllowance } from '../../allowance/fetchAllowance';
-import { yieldActions, yieldReducer } from '../yieldReducer';
+import {
+    getYieldSessionKey,
+    initialStablecoinYieldSessionState,
+    initialStablecoinYieldState,
+    yieldActions,
+    yieldReducer,
+} from '../yieldReducer';
 import { selectYieldSession } from '../yieldSelectors';
 import { type YieldFlowResolvedData } from '../yieldTypes';
 
@@ -48,26 +58,32 @@ const flowData = {
 
 // 0.2 WETH in subunits (18 decimals) — the amount the user just wrapped.
 const WRAPPED_AMOUNT = '0.2';
-const toSubunits = (weth: string) => new BigNumber(weth).shiftedBy(18);
+const toSubunits = (weth: string) => asAmountSubunit(new BigNumber(weth).shiftedBy(18));
 
-const initStore = () =>
-    createTestCompositionRoot<void, InitYieldAllowanceThunkState>({
+const analytics = mockAnalytics<AnalyticsSharedEvents>();
+
+const initStore = (preloadedState?: InitYieldAllowanceThunkState) =>
+    createTestCompositionRoot<WithServices<AnalyticsDep>, InitYieldAllowanceThunkState>({
+        services: () => ({ analytics }),
+        preloadedState,
         reducer: combineReducers({
             wallet: combineReducers({ stablecoinYield: yieldReducer }),
         }),
     }).services.store;
 
-const getStep = (store: TestCompositionStore<InitYieldAllowanceThunkState, void>) =>
-    selectYieldSession(store.getState(), 'deposit', FLOW_KEY).step;
+const getStep = (
+    store: TestCompositionStore<InitYieldAllowanceThunkState, WithServices<AnalyticsDep>>,
+) => selectYieldSession(store.getState(), 'deposit', FLOW_KEY).step;
 
-const getApproval = (store: TestCompositionStore<InitYieldAllowanceThunkState, void>) =>
-    selectYieldSession(store.getState(), 'deposit', FLOW_KEY).approval;
+const getApproval = (
+    store: TestCompositionStore<InitYieldAllowanceThunkState, WithServices<AnalyticsDep>>,
+) => selectYieldSession(store.getState(), 'deposit', FLOW_KEY).approval;
 
 // Seed a wrapped-native deposit session sitting on the `approve` step, with the
 // just-wrapped amount stored in `session.action.amount` (mirrors the wrap→approve
 // transition produced by resolveWrappedNativeStep after the wrap tx confirms).
 const seedWrappedDepositAtApprove = (
-    store: TestCompositionStore<InitYieldAllowanceThunkState, void>,
+    store: TestCompositionStore<InitYieldAllowanceThunkState, WithServices<AnalyticsDep>>,
     amount: string,
 ) => {
     store.dispatch(
@@ -92,6 +108,88 @@ describe('initYieldAllowanceThunk', () => {
         jest.clearAllMocks();
     });
 
+    it.each([false, true])(
+        'reports automatically reusing an allowance once (wrapped native: %s)',
+        async wrappedNative => {
+            jest.mocked(fetchAllowance).mockResolvedValue(toSubunits('0.3'));
+            const store = initStore();
+            if (wrappedNative) {
+                seedWrappedDepositAtApprove(store, WRAPPED_AMOUNT);
+            } else {
+                store.dispatch(
+                    yieldActions.initSession({ flowType: 'deposit', flowKey: FLOW_KEY }),
+                );
+            }
+
+            await store
+                .dispatch(
+                    initYieldAllowanceThunk({ flowType: 'deposit', flowKey: FLOW_KEY, flowData }),
+                )
+                .unwrap();
+
+            expect(getStep(store)).toBe('action');
+            expect(analytics.report).toHaveBeenCalledTimes(1);
+            expect(analytics.report).toHaveBeenCalledWith({
+                type: 'yield/deposit',
+                payload: {
+                    type: 'approve-skipped',
+                    action: 'continue',
+                    networkSymbol: 'eth',
+                    vaultId: flowData.vault.id,
+                },
+            });
+        },
+    );
+
+    it.each(['withdraw', 'redeem', 'claim'] as const)(
+        'does not report a deposit approval skip for the %s flow',
+        async flowType => {
+            jest.mocked(fetchAllowance).mockResolvedValue(toSubunits('0.3'));
+            const store = initStore({
+                wallet: {
+                    stablecoinYield: {
+                        ...initialStablecoinYieldState,
+                        [flowType]: {
+                            [getYieldSessionKey(FLOW_KEY)]: initialStablecoinYieldSessionState,
+                        },
+                    },
+                },
+            });
+
+            const request = { flowType, flowKey: FLOW_KEY, flowData };
+            // @ts-expect-error Exercise the runtime guard without widening the deposit-only API.
+            await store.dispatch(initYieldAllowanceThunk(request)).unwrap();
+
+            const session = selectYieldSession(store.getState(), flowType, FLOW_KEY);
+            expect(session.approval.allowanceStatus).toBe('loaded');
+            expect(session.approval.allowanceAmount).toBe('0.3');
+            expect(session.approval.isSkipped).toBe(true);
+            expect(analytics.report).not.toHaveBeenCalled();
+        },
+    );
+
+    it('reports one automatic skip when concurrent allowance reads finish', async () => {
+        jest.mocked(fetchAllowance).mockResolvedValue(toSubunits('0.3'));
+        const store = initStore();
+        seedWrappedDepositAtApprove(store, WRAPPED_AMOUNT);
+
+        await Promise.all([
+            store
+                .dispatch(
+                    initYieldAllowanceThunk({ flowType: 'deposit', flowKey: FLOW_KEY, flowData }),
+                )
+                .unwrap(),
+            store
+                .dispatch(
+                    initYieldAllowanceThunk({ flowType: 'deposit', flowKey: FLOW_KEY, flowData }),
+                )
+                .unwrap(),
+        ]);
+
+        expect(getStep(store)).toBe('action');
+        expect(analytics.report).toHaveBeenCalledTimes(1);
+    });
+
     it('keeps the approve step when a dust allowance is smaller than the wrapped amount (#30551)', async () => {
         // Leftover dust allowance, far below the 0.2 WETH just wrapped.
         (fetchAllowance as jest.Mock).mockResolvedValue(new BigNumber('1000'));
@@ -105,6 +203,7 @@ describe('initYieldAllowanceThunk', () => {
             .unwrap();
 
         expect(getStep(store)).toBe('approve');
+        expect(analytics.report).not.toHaveBeenCalled();
     });
 
     it('skips the approve step when the allowance already covers the wrapped amount', async () => {
@@ -161,6 +260,7 @@ describe('initYieldAllowanceThunk', () => {
             .unwrap();
 
         expect(getStep(store)).toBe('approve');
+        expect(analytics.report).not.toHaveBeenCalled();
     });
 
     it('holds the step when skipping is opted out of, even on a covering allowance', async () => {
@@ -182,6 +282,7 @@ describe('initYieldAllowanceThunk', () => {
 
         expect(getStep(store)).toBe('approve');
         expect(getApproval(store).allowanceAmount).toBe('0.3');
+        expect(analytics.report).not.toHaveBeenCalled();
     });
 
     it('refreshes the allowance on the action step without moving the flow', async () => {
@@ -215,6 +316,7 @@ describe('initYieldAllowanceThunk', () => {
         expect(getStep(store)).toBe('action');
         expect(getApproval(store).allowanceStatus).toBe('loaded');
         expect(getApproval(store).allowanceAmount).toBe('0.3');
+        expect(analytics.report).not.toHaveBeenCalled();
     });
 
     it('records an error and rethrows when the allowance cannot be read', async () => {
@@ -236,5 +338,6 @@ describe('initYieldAllowanceThunk', () => {
         expect(getApproval(store).allowanceStatus).toBe('error');
         expect(getApproval(store).allowanceAmount).toBeNull();
         expect(getStep(store)).toBe('approve');
+        expect(analytics.report).not.toHaveBeenCalled();
     });
 });
