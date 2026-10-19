@@ -1,4 +1,3 @@
-import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { USER_CANCELLED_ERROR_CODES } from '@suite-common/earn-stablecoin';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -50,8 +49,6 @@ jest.mock('@suite-common/mev', () => ({
     selectIsMevProtectionFeatureEnabled: () => false,
 }));
 
-const analytics = mockDesktopAnalytics();
-
 const account = mockWalletAccount({ symbol: asNetworkSymbol('eth') }) as Account;
 
 // Only openDeferredModal needs a real return value; every other dispatched action is recorded
@@ -81,15 +78,9 @@ const sendTransaction = ({ isReviewModalConfirmed = true } = {}) =>
         dispatch: createDispatch(isReviewModalConfirmed),
         getState: () => ({}) as unknown as SendYieldTransactionState,
         selectedFee: null,
-        analytics,
     });
 
 describe('sendYieldTransaction', () => {
-    beforeAll(() => {
-        // The helper logs every failure it rethrows; the expected ones would clutter the output.
-        jest.spyOn(console, 'error').mockImplementation();
-    });
-
     beforeEach(() => {
         jest.clearAllMocks();
         mockBuildStablecoinYieldTransactionReview.mockReturnValue({
@@ -123,11 +114,9 @@ describe('sendYieldTransaction', () => {
                 error: { code, message: 'cancelled by user' },
             });
 
-            await expect(sendTransaction()).resolves.toEqual({ status: 'cancelled' });
-            expect(analytics.report).toHaveBeenCalledTimes(1);
-            expect(analytics.report).toHaveBeenCalledWith({
-                type: 'transaction/cancel',
-                payload: { txType: 'yield', networkSymbol: 'eth', stage: 'signing' },
+            await expect(sendTransaction()).resolves.toEqual({
+                status: 'cancelled',
+                stage: 'signing',
             });
         },
     );
@@ -135,15 +124,13 @@ describe('sendYieldTransaction', () => {
     it('returns cancelled when the review modal is declined before broadcast', async () => {
         await expect(sendTransaction({ isReviewModalConfirmed: false })).resolves.toEqual({
             status: 'cancelled',
+            stage: 'review',
         });
         expect(TrezorConnect.pushTransaction).not.toHaveBeenCalled();
-        expect(analytics.report).toHaveBeenCalledWith({
-            type: 'transaction/cancel',
-            payload: { txType: 'yield', networkSymbol: 'eth', stage: 'review' },
-        });
     });
 
     it('throws with the connect code as cause for other signing failures', async () => {
+        jest.spyOn(console, 'error').mockImplementation();
         jest.spyOn(TrezorConnect, 'ethereumSignTransaction').mockResolvedValue({
             success: false,
             error: { code: 'Failure_FirmwareError', message: 'firmware error' },
@@ -152,7 +139,6 @@ describe('sendYieldTransaction', () => {
         await expect(sendTransaction()).rejects.toMatchObject({
             cause: 'Failure_FirmwareError',
         });
-        expect(analytics.report).not.toHaveBeenCalled();
     });
 
     it('returns sent with the txid and the precomposed fee after broadcast', async () => {
@@ -161,6 +147,5 @@ describe('sendYieldTransaction', () => {
             txid: '0xtxid',
             fee: '31500000000',
         });
-        expect(analytics.report).not.toHaveBeenCalled();
     });
 });

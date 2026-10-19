@@ -1,3 +1,4 @@
+import { events } from '@suite-common/analytics';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { buildClaimTransactionReview } from '@suite-common/earn-stablecoin';
 import {
@@ -11,6 +12,7 @@ import {
     type WalletSettingsRootState,
     type YieldRootState,
     formDraftActions,
+    isEarnSigningCancelled,
     isYieldTxReviewForFlow,
     selectAddressDisplayType,
     selectDeepCopyOfFormDraft,
@@ -154,8 +156,6 @@ export const signYieldClaimReviewThunk = createThunk<
         );
 
         const signingResponse = await signYieldTransactionOnDevice({
-            analytics: extra.services.analytics,
-            networkSymbol: account.symbol,
             device,
             path: account.path,
             transaction: transactionForSigning,
@@ -163,6 +163,13 @@ export const signYieldClaimReviewThunk = createThunk<
         });
 
         if (!signingResponse.success) {
+            if (isEarnSigningCancelled(signingResponse.error)) {
+                extra.services.analytics.report({
+                    type: events.transactionCancelEvent.name,
+                    payload: { txType: 'yield', networkSymbol: account.symbol, stage: 'signing' },
+                });
+            }
+
             return rejectWithValue({
                 error: 'sign-transaction-failed',
                 errorCode: signingResponse.error.code,

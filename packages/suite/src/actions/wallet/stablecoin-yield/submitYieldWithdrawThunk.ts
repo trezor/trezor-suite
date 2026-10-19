@@ -123,7 +123,6 @@ export const submitYieldWithdrawThunk = createThunk<
             const reviewToken = flowType === 'redeem' ? flowData.receiptToken : flowData.token;
 
             const result = await sendYieldTransaction({
-                analytics: extra.services.analytics,
                 account,
                 amount,
                 token: reviewToken,
@@ -139,6 +138,15 @@ export const submitYieldWithdrawThunk = createThunk<
 
             // A deliberate user cancel — not reported as a failure.
             if (result.status === 'cancelled') {
+                extra.services.analytics.report({
+                    type: events.transactionCancelEvent.name,
+                    payload: {
+                        txType: 'yield',
+                        networkSymbol: account.symbol,
+                        stage: result.stage,
+                    },
+                });
+
                 return;
             }
 

@@ -1,13 +1,10 @@
-import { type AnalyticsSharedEvents } from '@suite-common/analytics';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
-import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import TrezorConnect from '@trezor/connect';
 
 import { signTronContract } from './signTronContract';
 
-const analytics = mockAnalytics<AnalyticsSharedEvents>();
 const account = mockWalletAccount({ symbol: asNetworkSymbol('trx') });
 const device = mockSuiteDevice();
 
@@ -29,30 +26,21 @@ it.each([
     'WithdrawBalanceContract',
     'WithdrawExpireUnfreezeContract',
     'VoteWitnessContract',
-] as const)(
-    'reports one cancellation for %s without broadcasting or sending private data',
-    async type => {
-        jest.spyOn(TrezorConnect, 'tronSignTransaction').mockResolvedValue({
-            success: false,
-            error: {
-                code: 'Failure_ActionCancelled',
-                message: 'private error with address and amount',
-            },
-        });
-        const result = await signTronContract({
-            account,
-            device,
-            analytics,
-            contract: { type, parameter: { value: {} } } as never,
-        });
-        expect(result).toEqual({ error: { kind: 'cancelled' } });
-        expect(analytics.report).toHaveBeenCalledTimes(1);
-        expect(analytics.report).toHaveBeenCalledWith({
-            type: 'transaction/cancel',
-            payload: { txType: 'stake', networkSymbol: 'trx', stage: 'signing' },
-        });
-    },
-);
+] as const)('classifies device rejection for %s as cancelled', async type => {
+    jest.spyOn(TrezorConnect, 'tronSignTransaction').mockResolvedValue({
+        success: false,
+        error: {
+            code: 'Failure_ActionCancelled',
+            message: 'private error with address and amount',
+        },
+    });
+    const result = await signTronContract({
+        account,
+        device,
+        contract: { type, parameter: { value: {} } } as never,
+    });
+    expect(result).toEqual({ error: { kind: 'cancelled' } });
+});
 
 it.each([
     { code: 'Failure_PinCancelled', message: 'cancelled', expected: true },
@@ -64,11 +52,12 @@ it.each([
         success: false,
         error: { code, message },
     } as never);
-    await signTronContract({
+    const result = await signTronContract({
         account,
         device,
-        analytics,
         contract: { type: 'VoteWitnessContract', parameter: { value: {} } } as never,
     });
-    expect(analytics.report).toHaveBeenCalledTimes(expected ? 1 : 0);
+    expect(result).toEqual({
+        error: expected ? { kind: 'cancelled' } : { kind: 'sign-failed', message },
+    });
 });

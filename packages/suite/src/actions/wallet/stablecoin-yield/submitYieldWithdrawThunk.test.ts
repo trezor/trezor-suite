@@ -22,7 +22,7 @@ const mockOpenDeferredModal = jest.fn();
 const mockSendYieldTransaction = jest.fn();
 
 const mockSentResult = (txid: string) => ({ status: 'sent' as const, txid, fee: '31500000000' });
-const mockCancelledResult = { status: 'cancelled' as const };
+const mockCancelledResult = { status: 'cancelled' as const, stage: 'signing' as const };
 
 type SubmitYieldWithdrawThunkDeps = SendYieldTransactionDeps & { services: DesktopAnalyticsDep };
 type SubmitYieldWithdrawThunkState = ComposeYieldWithdrawTransactionThunkState &
@@ -217,5 +217,18 @@ describe('submitYieldWithdrawThunk', () => {
         expect(
             store.getActions().find(action => action.type === yieldActions.setError.type)?.payload,
         ).toMatchObject({ error: 'TR_EARN_YIELD_ERROR_GENERIC' });
+    });
+
+    it.each(['signing', 'review'] as const)('reports a cancellation at %s', async stage => {
+        const report = jest.fn();
+        mockSendYieldTransaction.mockResolvedValue({ status: 'cancelled', stage });
+        mockOpenDeferredModal.mockImplementation(
+            () => () => Promise.resolve({ value: true, resolve: jest.fn(), selectedFee: null }),
+        );
+        await dispatchWithdraw(report);
+        expect(report).toHaveBeenCalledWith({
+            type: 'transaction/cancel',
+            payload: { txType: 'yield', networkSymbol: 'eth', stage },
+        });
     });
 });
