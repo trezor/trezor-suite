@@ -317,6 +317,55 @@ describe('selectRound', () => {
         expect(result).toBeUndefined();
     });
 
+    it('LiquidityClue handed to select-inputs-for-round is computed locally', async () => {
+        const liquidityClues: unknown[] = [];
+        server?.addListener('test-request', ({ url, data, resolve }) => {
+            if (url.endsWith('/select-inputs-for-round')) {
+                liquidityClues.push(data.LiquidityClue);
+                resolve({ Indices: [] });
+            }
+            resolve();
+        });
+
+        await selectInputsForRound({
+            aliceGenerator,
+            roundCandidates: [
+                createCoinjoinRound([], {
+                    ...server?.requestOptions,
+                    statusRound: { Id: '01' },
+                    roundParameters: {
+                        MaxSuggestedAmount: 1000000,
+                    },
+                }),
+            ],
+            accountCandidates: [
+                {
+                    ...ACCOUNT,
+                    accountKey: 'account-below-the-cap',
+                    rawLiquidityClue: 20000,
+                    utxos: [{ outpoint: 'AA', amount: 20000, anonymityLevel: 1 }],
+                },
+                {
+                    ...ACCOUNT,
+                    accountKey: 'account-above-the-cap',
+                    rawLiquidityClue: 2000000,
+                    utxos: [{ outpoint: 'BA', amount: 20000, anonymityLevel: 1 }],
+                },
+                {
+                    ...ACCOUNT,
+                    accountKey: 'account-without-a-clue',
+                    rawLiquidityClue: null,
+                    utxos: [{ outpoint: 'CA', amount: 20000, anonymityLevel: 1 }],
+                },
+            ],
+            options: server?.requestOptions,
+        });
+
+        // The clue below MaxSuggestedAmount is passed through, the one above it and the missing one
+        // are both capped at MaxSuggestedAmount.
+        expect(liquidityClues).toEqual([20000, 1000000, 1000000]);
+    });
+
     it('Skipping round when selected utxo effective value < allowedOutputAmounts.min', async () => {
         const spy = jest.fn();
         server?.addListener('test-request', ({ url, resolve }) => {

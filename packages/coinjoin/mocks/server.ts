@@ -60,7 +60,6 @@ const DEFAULT = {
         };
     },
     'get-outputs-amounts': { OutputAmounts: [] },
-    'get-liquidity-clue': { LiquidityClue: 1 },
     // payment request server
     'payment-request': {
         recipient_name: 'trezor.io',
