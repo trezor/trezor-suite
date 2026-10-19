@@ -1,4 +1,8 @@
-export { promoDashboardBannerEvent, transactionCreatedEvent } from '@suite-common/analytics';
+export {
+    promoDashboardBannerEvent,
+    transactionCancelEvent,
+    transactionCreatedEvent,
+} from '@suite-common/analytics';
 export { accountsActionsEvent } from './accountsActionsEvent';
 export { accountsActiveStakingEvent } from './accountsActiveStakingEvent';
 export { accountsEmptyAccountReceiveEvent } from './accountsEmptyAccountReceiveEvent';
@@ -108,7 +112,6 @@ export { tradeReceivedQuotesEvent } from './tradeReceivedQuotesEvent';
 export { tradeSellEvent } from './tradeSellEvent';
 export { tradeStatusEvent } from './tradeStatusEvent';
 export { tradingExchangeIssueEvent } from './tradingExchangeIssueEvent';
-export { transactionCancelEvent } from './transactionCancelEvent';
 export { transactionTimeoutRetryEvent } from './transactionTimeoutRetryEvent';
 export { transportTypeEvent } from './transportTypeEvent';
 export { yieldEarnEntryEvent } from './yieldEarnEntryEvent';
