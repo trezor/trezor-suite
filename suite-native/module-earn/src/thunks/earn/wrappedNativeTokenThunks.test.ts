@@ -49,7 +49,7 @@ const signedTransaction: SignedWrappedNativeTokenTransaction = {
         fee: '0',
         outputs: [{ address: '0x0000000000000000000000000000000000000001', amount: '0' }],
     } as unknown as PrecomposedTransactionFinal,
-    formState: { selectedFee: 'custom' } as unknown as FormState,
+    formState: { selectedFee: 'custom', options: ['transactionData'] } as unknown as FormState,
 };
 
 const pushTransactionMock = TrezorConnect.pushTransaction as jest.Mock;

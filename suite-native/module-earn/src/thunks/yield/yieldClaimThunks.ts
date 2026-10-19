@@ -239,7 +239,7 @@ export const pushYieldClaimReviewThunk = createThunk<
             analytics: extra.services.analytics,
             symbol: account.symbol,
             precomposedTransaction: precomposedTx,
-            selectedFee: precomposedForm.selectedFee,
+            formState: precomposedForm,
             txType: 'yield',
         });
 

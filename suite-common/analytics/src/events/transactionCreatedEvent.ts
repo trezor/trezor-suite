@@ -36,7 +36,7 @@ export const transactionCreatedEvent: EventDef<Attributes, EventType.Transaction
         { version: '25.4.0', notes: 'txType added' },
         {
             version: '26.11.0',
-            notes: 'moved to suite-common and reported from mobile for staking and yield; txType gets `yield` and `stake` now also covers Tron and Cardano',
+            notes: 'moved to suite-common and reported from mobile for staking and yield with transaction options from the signing form; txType gets `yield` and `stake` now also covers Tron and Cardano',
         },
     ],
     possibleImprovements: 'rename to `accounts/transaction-created`',
@@ -66,19 +66,21 @@ export const transactionCreatedEvent: EventDef<Attributes, EventType.Transaction
         },
         bitcoinLocktime: {
             changelog: [{ version: '1.9.0', notes: 'added' }],
-            description: 'Whether the Bitcoin transaction includes a locktime/timelock parameter',
+            description: 'Whether the Bitcoin locktime option is enabled in the signing form',
         },
         transactionData: {
             changelog: [{ version: '1.9.0', notes: 'added' }],
-            description: 'Whether the transaction includes additional data payload',
+            description:
+                'Whether the transaction-data option is enabled in the signing form (including contract calls for mobile Earn)',
         },
         ethereumNonce: {
             changelog: [{ version: '1.9.0', notes: 'added' }],
-            description: 'Whether the transaction includes an Ethereum nonce field',
+            description:
+                'Whether the custom Ethereum nonce option is enabled in the signing form; an automatically assigned nonce does not set this flag',
         },
         destinationTag: {
             changelog: [{ version: '1.9.0', notes: 'added' }],
-            description: 'Whether the transaction includes a destination tag',
+            description: 'Whether the destination-tag option is enabled in the signing form',
         },
         selectedFee: {
             changelog: [{ version: '1.9.0', notes: 'added' }],

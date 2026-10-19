@@ -225,7 +225,7 @@ export const useYieldApprovalReview = ({
                 analytics,
                 symbol: flowData.account.symbol,
                 precomposedTransaction: reviewTransaction.precomposedTransaction,
-                selectedFee: reviewTransaction.formState.selectedFee,
+                formState: reviewTransaction.formState,
                 txType: 'yield',
             });
         }
