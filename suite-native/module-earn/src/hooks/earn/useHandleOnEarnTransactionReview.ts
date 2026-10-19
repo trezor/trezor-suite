@@ -92,19 +92,19 @@ export const useHandleOnEarnTransactionReview = ({
             });
         }
 
+        analytics.report({
+            type: events.stakingConfirmEvent.name,
+            payload: {
+                action: stakeType,
+                networkSymbol: networkSymbol ?? undefined,
+            },
+        });
+
         const response = await dispatch(
             pushStakeTransactionThunk({ accountKey, isMevProtectionFeatureEnabled }),
         );
 
         if (isFulfilled(response)) {
-            analytics.report({
-                type: events.stakingConfirmEvent.name,
-                payload: {
-                    action: stakeType,
-                    networkSymbol: networkSymbol ?? undefined,
-                },
-            });
-
             return response.payload.txid;
         }
 

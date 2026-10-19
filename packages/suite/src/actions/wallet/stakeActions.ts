@@ -220,11 +220,6 @@ const pushTransactionThunk =
                     }),
                 );
 
-                extra.services.analytics.report({
-                    type: events.stakingConfirmEvent.name,
-                    payload: { action: stakeType, networkSymbol: account.symbol },
-                });
-
                 // The confirmed selection is spent by this transaction; keeping it would let it
                 // reach the next plan composed for this account.
                 dispatch(stakeActions.clearAccountVotingDelegation());
@@ -365,6 +360,11 @@ export const signTransactionThunk =
                     tokens: '',
                     txType: 'stake',
                 }),
+            });
+
+            extra.services.analytics.report({
+                type: events.stakingConfirmEvent.name,
+                payload: { action: formValues.stakeType, networkSymbol: account.symbol },
             });
 
             return dispatch(pushTransactionThunk(formValues.stakeType, cardanoPoolDelegation));

@@ -10,8 +10,15 @@ type Attributes = {
 
 export const stakingConfirmEvent: EventDef<Attributes, EventType.StakingConfirm> = {
     name: EventType.StakingConfirm,
-    descriptionTrigger: 'A stake/unstake/claim transaction is created and sent to the blockchain',
-    changelog: [{ version: '25.4.0', notes: 'added' }],
+    descriptionTrigger:
+        'The user confirms sending a signed staking transaction, before waiting for the broadcast result. This records a send attempt, not successful broadcast or on-chain confirmation',
+    changelog: [
+        {
+            version: '26.11.0',
+            notes: 'Send attempts are reported immediately on all staking networks; no broadcast wait. Clarified attempt versus failure semantics.',
+        },
+        { version: '25.4.0', notes: 'added' },
+    ],
 
     attributes: {
         action: {
@@ -29,7 +36,7 @@ export const stakingConfirmEvent: EventDef<Attributes, EventType.StakingConfirm>
         success: {
             changelog: [{ version: '26.8.0', notes: 'added' }],
             description:
-                'Set to `false` when the signed staking transaction fails to broadcast to the blockchain; absent otherwise',
+                'Absent on the immediate send-attempt event. A later broadcast failure emits an additional event with `success=false`; exclude those from send-attempt counts. Absence does not prove broadcast success',
         },
     },
 };
