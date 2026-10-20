@@ -6,12 +6,12 @@ import { getTradeOperationData } from '@suite-native/trading-quote-utils';
 import { selectTradingResidenceCountry } from '@suite-native/trading-state';
 
 import { TradingHistoryDetailStatusStepper } from './TradeStatusStepper/TradingHistoryDetailStatusStepper';
+import { TradingHistoryDetailAfterTradeExperiment } from './TradingHistoryDetailAfterTradeExperiment';
 import { TradingHistoryDetailBuyPaymentBanner } from './TradingHistoryDetailBuyPaymentBanner';
 import { TradingHistoryDetailInfo } from './TradingHistoryDetailInfo';
 import { TradingHistoryDetailStatusAction } from './TradingHistoryDetailStatusAction';
 import { TradingHistoryDetailSupportBanner } from './TradingHistoryDetailSupportBanner';
 import { tradingHistoryDetailLayoutTransition } from '../../utils/tradingHistoryDetailAnimations';
-import { TradingDetailFeedback } from '../TradeHistoryListItem/TradingDetailFeedback';
 
 type TradingHistoryDetailProps = {
     orderId: string;
@@ -42,7 +42,7 @@ export const TradingHistoryDetail = ({ orderId }: TradingHistoryDetailProps) => 
                     <TradingHistoryDetailBuyPaymentBanner trade={trade} />
                 )}
 
-                <TradingDetailFeedback
+                <TradingHistoryDetailAfterTradeExperiment
                     type={trade.tradeType}
                     status={trade.data.status}
                     provider={trade.data.exchange}
