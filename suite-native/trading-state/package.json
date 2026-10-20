@@ -30,6 +30,8 @@
         "@suite-native/accounts": "workspace:*",
         "@suite-native/config": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",
+        "@suite-native/finprom": "workspace:*",
+        "@suite-native/intl": "workspace:*",
         "@suite-native/labeling": "workspace:*",
         "@suite-native/sentry": "workspace:*",
         "@suite-native/settings": "workspace:*",
