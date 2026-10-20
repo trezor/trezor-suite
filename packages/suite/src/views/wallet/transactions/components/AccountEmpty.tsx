@@ -1,4 +1,5 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { selectIsFinpromRestricted } from '@suite/finprom';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
@@ -7,12 +8,16 @@ import {
     getNetworkDisplaySymbol,
     getNetworkFeatures,
 } from '@suite-common/wallet-config';
+import { type ButtonProps } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { ArrowDownIcon, ArrowsLeftRightIcon, CurrencyCircleDollarIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { AccountExceptionLayout } from 'src/components/wallet';
+import { useSelector } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
+
+type AccountExceptionAction = { key: string } & ButtonProps;
 
 interface AccountEmptyProps {
     account: Account;
@@ -20,6 +25,7 @@ interface AccountEmptyProps {
 
 export const AccountEmpty = ({ account }: AccountEmptyProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
+    const isFinpromRestricted = useSelector(selectIsFinpromRestricted);
 
     const isTokensNetwork = getNetworkFeatures(account.symbol).includes('tokens');
 
@@ -54,6 +60,32 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
         });
     };
 
+    const buyAction: AccountExceptionAction = {
+        'data-testid': '@accounts/empty-account/buy',
+        key: '1',
+        onClick: handleNavigateToBuyPage,
+        iconLeft: CurrencyCircleDollarIcon,
+        size: 'medium',
+        children: isTokensNetwork ? (
+            <Translation id="TR_BUY" />
+        ) : (
+            <Translation id="TR_BUY_NETWORK" values={{ networkDisplaySymbol: displaySymbol }} />
+        ),
+    };
+
+    const receiveAction: AccountExceptionAction = {
+        'data-testid': '@accounts/empty-account/receive',
+        key: '2',
+        onClick: handleNavigateToReceivePage,
+        iconLeft: ArrowDownIcon,
+        size: 'medium',
+        children: isTokensNetwork ? (
+            <Translation id="TR_RECEIVE" />
+        ) : (
+            <Translation id="TR_RECEIVE_NETWORK" values={{ networkDisplaySymbol: displaySymbol }} />
+        ),
+    };
+
     return (
         <AccountExceptionLayout
             data-testid="@accounts/empty-account"
@@ -61,50 +93,27 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
             description={
                 isTokensNetwork ? (
                     <Translation
-                        id="TR_ACCOUNT_WITH_TOKENS_IS_EMPTY_DESCRIPTION"
+                        id={
+                            isFinpromRestricted
+                                ? 'TR_ACCOUNT_WITH_TOKENS_IS_EMPTY_RECEIVE_DESCRIPTION'
+                                : 'TR_ACCOUNT_WITH_TOKENS_IS_EMPTY_DESCRIPTION'
+                        }
                         values={{ networkName, networkDisplaySymbol: displaySymbol }}
                     />
                 ) : (
                     <Translation
-                        id="TR_ACCOUNT_IS_EMPTY_DESCRIPTION"
+                        id={
+                            isFinpromRestricted
+                                ? 'TR_ACCOUNT_IS_EMPTY_RECEIVE_DESCRIPTION'
+                                : 'TR_ACCOUNT_IS_EMPTY_DESCRIPTION'
+                        }
                         values={{ network: displaySymbol }}
                     />
                 )
             }
             icon={ArrowsLeftRightIcon}
             iconVariant="neutral"
-            actions={[
-                {
-                    'data-testid': '@accounts/empty-account/buy',
-                    key: '1',
-                    onClick: handleNavigateToBuyPage,
-                    iconLeft: CurrencyCircleDollarIcon,
-                    size: 'medium',
-                    children: isTokensNetwork ? (
-                        <Translation id="TR_BUY" />
-                    ) : (
-                        <Translation
-                            id="TR_BUY_NETWORK"
-                            values={{ networkDisplaySymbol: displaySymbol }}
-                        />
-                    ),
-                },
-                {
-                    'data-testid': '@accounts/empty-account/receive',
-                    key: '2',
-                    onClick: handleNavigateToReceivePage,
-                    iconLeft: ArrowDownIcon,
-                    size: 'medium',
-                    children: isTokensNetwork ? (
-                        <Translation id="TR_RECEIVE" />
-                    ) : (
-                        <Translation
-                            id="TR_RECEIVE_NETWORK"
-                            values={{ networkDisplaySymbol: displaySymbol }}
-                        />
-                    ),
-                },
-            ]}
+            actions={isFinpromRestricted ? [receiveAction] : [buyAction, receiveAction]}
         />
     );
 };
