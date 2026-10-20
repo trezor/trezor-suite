@@ -4974,6 +4974,7 @@ export const messages = {
             btcOnlyFirmwareDescription:
                 'Swapping is not available with Bitcoin-only firmware. Switch to universal firmware to enable.',
             notAvailableInCountryTitle: 'Trading is not yet available in your country',
+            restrictedTitle: 'Trading is not available in your region',
         },
         providerLogo: 'Provider logo',
         quotesLoadingLabel: 'Searching for your best offer...',

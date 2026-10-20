@@ -63,6 +63,7 @@ import {
     TradingMyAssetScreen,
     TradingReceiveAccountsPickerScreen,
     TradingReceiveAddressPickerScreen,
+    TradingRestrictedGuard,
     TradingSellCompletionScreen,
     TradingSellPreviewScreen,
     TradingSellTransactionReviewScreen,
@@ -183,7 +184,11 @@ export const RootStackNavigator = () => {
                 component={StakingClaimReviewScreen}
             />
             {/* Trading screens */}
-            <RootStack.Group>
+            <RootStack.Group
+                screenLayout={({ children }) => (
+                    <TradingRestrictedGuard>{children}</TradingRestrictedGuard>
+                )}
+            >
                 <RootStack.Screen
                     options={{ title: RootStackRoutes.TradingExchangePreview }}
                     name={RootStackRoutes.TradingExchangePreview}
