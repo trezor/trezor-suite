@@ -1179,6 +1179,18 @@ export const messages = defineMessages({
         defaultMessage: 'You get',
         id: 'TR_TRADING_YOU_GET',
     },
+    TR_TRADING_SWITCH_ASSETS: {
+        defaultMessage: 'Switch assets',
+        id: 'TR_TRADING_SWITCH_ASSETS',
+    },
+    TR_TRADING_SWITCH_ASSETS_INACTIVE_NETWORK_TITLE: {
+        defaultMessage: 'Pay with another asset',
+        id: 'TR_TRADING_SWITCH_ASSETS_INACTIVE_NETWORK_TITLE',
+    },
+    TR_TRADING_SWITCH_ASSETS_INACTIVE_NETWORK_DESCRIPTION: {
+        defaultMessage: 'To pay with it, turn on {network} first so Suite can check your balance.',
+        id: 'TR_TRADING_SWITCH_ASSETS_INACTIVE_NETWORK_DESCRIPTION',
+    },
     TR_TRADING_SWAP_RECEIVE_AMOUNT_TOOLTIP: {
         defaultMessage: "For now, swaps only let you enter the amount you're paying.",
         id: 'TR_TRADING_SWAP_RECEIVE_AMOUNT_TOOLTIP',

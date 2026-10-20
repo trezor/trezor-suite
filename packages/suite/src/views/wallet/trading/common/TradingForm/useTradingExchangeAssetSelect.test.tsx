@@ -272,4 +272,114 @@ describe('useTradingExchangeAssetSelect', () => {
         expect(result.current.methods.getValues('outputs.0.amount')).toBe('1');
         expect(result.current.methods.getValues('receiveCryptoSelect')).toEqual(ETH_ASSET);
     });
+
+    it('switches the assets and keeps each one on its account', () => {
+        const { result, onCryptoCurrencyChange, getActions } = renderAssetSelect(
+            buildDefaults({
+                sendCryptoSelect: asSellOption(BTC_ASSET, BTC_ACCOUNT_KEY),
+                receiveCryptoSelect: ETH_ASSET,
+            }),
+        );
+
+        act(() => {
+            result.current.handlers.handleAssetsSwitch({
+                receiveAccountKey: ETH_ACCOUNT_KEY,
+            });
+        });
+
+        expect(onCryptoCurrencyChange).toHaveBeenCalledWith(
+            asSellOption(ETH_ASSET, ETH_ACCOUNT_KEY),
+        );
+        expect(result.current.methods.getValues('receiveCryptoSelect')).toEqual(BTC_ASSET);
+        expect(getActions()).toContainEqual(
+            tradingExchangeActions.setReceiveAccountKey(BTC_ACCOUNT_KEY),
+        );
+    });
+
+    it('keeps the typed amount and drops the quotes of the switched pair', () => {
+        const { result, getActions } = renderAssetSelect(
+            buildDefaults({
+                sendCryptoSelect: asSellOption(BTC_ASSET, BTC_ACCOUNT_KEY),
+                receiveCryptoSelect: ETH_ASSET,
+                amount: '1',
+            }),
+        );
+
+        act(() => {
+            result.current.handlers.handleAssetsSwitch({
+                receiveAccountKey: ETH_ACCOUNT_KEY,
+            });
+        });
+
+        expect(result.current.methods.getValues('outputs.0.amount')).toBe('1');
+        expect(result.current.methods.getValues('provider')).toBeUndefined();
+        expect(getActions()).toContainEqual({ type: tradingExchangeActions.clearQuotes.type });
+    });
+
+    it('moves the quoted receive amount into you pay', () => {
+        const { result } = renderAssetSelect(
+            buildDefaults({
+                sendCryptoSelect: asSellOption(BTC_ASSET, BTC_ACCOUNT_KEY),
+                receiveCryptoSelect: ETH_ASSET,
+                amount: '1',
+            }),
+        );
+
+        act(() => {
+            result.current.handlers.handleAssetsSwitch({
+                receiveAccountKey: ETH_ACCOUNT_KEY,
+                payAmount: '0.5',
+            });
+        });
+
+        expect(result.current.methods.getValues('outputs.0.amount')).toBe('0.5');
+        expect(result.current.methods.getValues('amountInCrypto')).toBe(true);
+        expect(result.current.methods.getValues('amountInputSource')).toBe('crypto');
+    });
+
+    it('moves the pay asset to you get and leaves you pay empty without a receive account', () => {
+        const { result, onCryptoCurrencyChange, getActions } = renderAssetSelect({
+            ...buildDefaults({
+                sendCryptoSelect: asSellOption(BTC_ASSET, BTC_ACCOUNT_KEY),
+                receiveCryptoSelect: ETH_ASSET,
+                amount: '1',
+            }),
+            transactionData: '0xa9059cbb',
+        });
+
+        act(() => {
+            result.current.handlers.handleAssetsSwitch({});
+        });
+
+        expect(onCryptoCurrencyChange).not.toHaveBeenCalled();
+        expect(result.current.methods.getValues('sendCryptoSelect')).toBeUndefined();
+        expect(result.current.methods.getValues('receiveCryptoSelect')).toEqual(BTC_ASSET);
+        expect(result.current.methods.getValues('outputs.0.amount')).toBe('1');
+        expect(result.current.methods.getValues('outputs.0.fiat')).toBe('');
+        expect(result.current.methods.getValues('setMaxOutputId')).toBeUndefined();
+        expect(result.current.methods.getValues('transactionData')).toBe('');
+        expect(getActions()).toContainEqual(
+            tradingExchangeActions.setReceiveAccountKey(BTC_ACCOUNT_KEY),
+        );
+        expect(getActions()).toContainEqual({ type: tradingExchangeActions.clearQuotes.type });
+    });
+
+    it('does not switch without a receive asset', () => {
+        const { result, onCryptoCurrencyChange, getActions } = renderAssetSelect(
+            buildDefaults({
+                sendCryptoSelect: asSellOption(BTC_ASSET, BTC_ACCOUNT_KEY),
+                amount: '1',
+            }),
+        );
+
+        act(() => {
+            result.current.handlers.handleAssetsSwitch({
+                receiveAccountKey: ETH_ACCOUNT_KEY,
+            });
+        });
+
+        expect(onCryptoCurrencyChange).not.toHaveBeenCalled();
+        expect(result.current.methods.getValues('outputs.0.amount')).toBe('1');
+        expect(getActions()).toEqual([]);
+    });
 });
