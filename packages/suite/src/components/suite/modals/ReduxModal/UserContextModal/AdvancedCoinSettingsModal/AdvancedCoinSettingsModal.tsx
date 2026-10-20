@@ -6,6 +6,7 @@ import { selectIsTorEnabled } from '@suite/tor';
 import { TorModal, type TorResult, toggleTorThunk } from '@suite/tor-desktop';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectNetworkExplorers } from '@suite-common/wallet-core';
+import { isCustomEvmNetworkSymbol } from '@suite-common/wallet-types';
 import {
     Badge,
     Banner,
@@ -29,6 +30,7 @@ import { useSelector } from 'src/hooks/suite';
 import { BackendUrls } from './BackendUrls/BackendUrls';
 import { BackendTypeSelect } from './CustomBackends/BackendTypeSelect';
 import ConnectionInfo from './CustomBackends/ConnectionInfo';
+import { DisableCustomNetworkCard } from './DisableCustomNetworkCard';
 import { ExplorerConfigForm } from './ExplorerConfigForm';
 
 type AdvancedCoinSettingsModalProps = {
@@ -213,6 +215,10 @@ export const AdvancedCoinSettingsModal = ({
                 <CollapsibleBox heading={<Translation id="SETTINGS_ADV_COIN_CONN_INFO_TITLE" />}>
                     <ConnectionInfo symbol={symbol} />
                 </CollapsibleBox>
+
+                {isCustomEvmNetworkSymbol(symbol) && (
+                    <DisableCustomNetworkCard symbol={symbol} onDisabled={onCancel} />
+                )}
             </Column>
         </Modal>
     );

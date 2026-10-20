@@ -19520,6 +19520,7 @@ __metadata:
     styled-components: "npm:^6.5.3"
     stylelint: "npm:^17.1.1"
     stylelint-config-standard: "npm:^40.0.0"
+    viem: "npm:^2.54.1"
     vm-browserify: "npm:^1.1.2"
     webpack: "npm:5.110.1"
     webpack-bundle-analyzer: "npm:^5.3.1"

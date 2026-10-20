@@ -105,4 +105,8 @@ export const EXPERIMENTAL_FEATURES: Record<ExperimentalFeature, ExperimentalFeat
             }
         },
     },
+    'custom-evm-networks': {
+        title: { id: 'TR_EXPERIMENTAL_CUSTOM_EVM_NETWORKS' },
+        description: { id: 'TR_EXPERIMENTAL_CUSTOM_EVM_NETWORKS_DESCRIPTION' },
+    },
 };

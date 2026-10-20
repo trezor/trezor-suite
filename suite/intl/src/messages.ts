@@ -6169,6 +6169,85 @@ export const messages = defineMessages({
         defaultMessage:
             'Allow your Trezor to scan wallet addresses beyond the default 20 unused addresses during recovery if transactions are missing.',
     },
+    TR_EXPERIMENTAL_CUSTOM_EVM_NETWORKS: {
+        id: 'TR_EXPERIMENTAL_CUSTOM_EVM_NETWORKS',
+        defaultMessage: 'Custom EVM networks',
+    },
+    TR_EXPERIMENTAL_CUSTOM_EVM_NETWORKS_DESCRIPTION: {
+        id: 'TR_EXPERIMENTAL_CUSTOM_EVM_NETWORKS_DESCRIPTION',
+        defaultMessage:
+            'Add EVM networks that Trezor Suite does not support yet and use them with your own RPC endpoint.',
+    },
+    TR_ADD_CUSTOM_NETWORK: {
+        id: 'TR_ADD_CUSTOM_NETWORK',
+        defaultMessage: 'Add custom network',
+    },
+    TR_SUPPORTED_EVM_NETWORKS: {
+        id: 'TR_SUPPORTED_EVM_NETWORKS',
+        defaultMessage: 'Supported EVM networks',
+    },
+    TR_ADD_NETWORK_HEADING: {
+        id: 'TR_ADD_NETWORK_HEADING',
+        defaultMessage: 'Add {networkName} network',
+    },
+    TR_RPC_URLS: {
+        id: 'TR_RPC_URLS',
+        defaultMessage: 'RPC URL(s)',
+    },
+    TR_USE_CUSTOM_RPC_URL: {
+        id: 'TR_USE_CUSTOM_RPC_URL',
+        defaultMessage: 'Use custom URL…',
+    },
+    TR_CUSTOM_RPC_URL: {
+        id: 'TR_CUSTOM_RPC_URL',
+        defaultMessage: 'Custom RPC URL',
+    },
+    TR_CHAIN_ID: {
+        id: 'TR_CHAIN_ID',
+        defaultMessage: 'Chain ID',
+    },
+    TR_CURRENCY_SYMBOL: {
+        id: 'TR_CURRENCY_SYMBOL',
+        defaultMessage: 'Currency symbol',
+    },
+    TR_CURRENCY_NAME: {
+        id: 'TR_CURRENCY_NAME',
+        defaultMessage: 'Currency name',
+    },
+    TR_BLOCK_EXPLORER_URL: {
+        id: 'TR_BLOCK_EXPLORER_URL',
+        defaultMessage: 'Block Explorer URL',
+    },
+    TR_CUSTOM_NETWORK_NOTE: {
+        id: 'TR_CUSTOM_NETWORK_NOTE',
+        defaultMessage:
+            'Your Trezor may show this network as unknown when you sign a transaction. On networks that do not log native transfers, incoming native transfers may be missing from your transaction history.',
+    },
+    TR_CUSTOM_NETWORKS_LOAD_ERROR: {
+        id: 'TR_CUSTOM_NETWORKS_LOAD_ERROR',
+        defaultMessage: 'The list of networks could not be loaded.',
+    },
+    TR_CUSTOM_NETWORK_ALREADY_EXISTS: {
+        id: 'TR_CUSTOM_NETWORK_ALREADY_EXISTS',
+        defaultMessage: 'This network has already been added.',
+    },
+    TR_NETWORK_ADDED_TOAST: {
+        id: 'TR_NETWORK_ADDED_TOAST',
+        defaultMessage: '{networkName} network added',
+    },
+    TR_DISABLE_NETWORK: {
+        id: 'TR_DISABLE_NETWORK',
+        defaultMessage: 'Disable network',
+    },
+    TR_DISABLE_NETWORK_DESCRIPTION: {
+        id: 'TR_DISABLE_NETWORK_DESCRIPTION',
+        defaultMessage:
+            'The network will be removed from the Networks tab. Your funds stay on the blockchain.',
+    },
+    TR_DISABLE: {
+        id: 'TR_DISABLE',
+        defaultMessage: 'Disable',
+    },
     TR_EXPERIMENTAL_MCP_SERVER: {
         id: 'TR_EXPERIMENTAL_MCP_SERVER',
         defaultMessage: 'MCP server',

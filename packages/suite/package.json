@@ -204,7 +204,8 @@
         "redux-logger": "^3.0.6",
         "redux-thunk": "^3.1.0",
         "semver": "^7.7.1",
-        "styled-components": "^6.5.3"
+        "styled-components": "^6.5.3",
+        "viem": "^2.54.1"
     },
     "devDependencies": {
         "@pmmmwh/react-refresh-webpack-plugin": "^0.6.2",

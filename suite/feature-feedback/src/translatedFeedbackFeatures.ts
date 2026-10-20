@@ -13,4 +13,5 @@ export const translatedFeedbackFeatures: Record<FeedbackFeatureName, Translation
     'gap-limit': 'TR_EXPERIMENTAL_GAP_LIMIT',
     'suite-sync': 'TR_EXPERIMENTAL_SUITE_SYNC_TITLE',
     'stablecoin-yield': 'TR_EARN_DEFI_YIELD_TITLE',
+    'custom-evm-networks': 'TR_EXPERIMENTAL_CUSTOM_EVM_NETWORKS',
 };

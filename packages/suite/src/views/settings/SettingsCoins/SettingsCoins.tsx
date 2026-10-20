@@ -9,7 +9,7 @@ import { selectFlags } from '@suite/flags';
 import { Translation } from '@suite/intl';
 import { ContextMessage } from '@suite/message-system';
 import { openModal } from '@suite/modal';
-import { selectIsTestnetNetworksEnabled } from '@suite/settings';
+import { selectHasExperimentalFeature, selectIsTestnetNetworksEnabled } from '@suite/settings';
 import { Context } from '@suite-common/message-system';
 import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -68,6 +68,9 @@ export const SettingsCoins = () => {
         selectShowRediscoverButton(state, device),
     );
     const useTestnetNetworks = useSelector(selectIsTestnetNetworksEnabled);
+    const areCustomEvmNetworksEnabled = useSelector(
+        selectHasExperimentalFeature('custom-evm-networks'),
+    );
 
     const allSearchableNetworks = useMemo(
         () => [
@@ -150,6 +153,10 @@ export const SettingsCoins = () => {
         dispatch(openModal({ type: 'advanced-coin-settings', symbol }));
     };
 
+    const onAddCustomNetwork = () => {
+        dispatch(openModal({ type: 'add-custom-network' }));
+    };
+
     type RenderRightContentParams = {
         networkSymbol: NetworkSymbol;
         isEnabled: boolean;
@@ -207,6 +214,9 @@ export const SettingsCoins = () => {
                         searchQuery={searchQuery}
                         onSearchChange={handleSearchChange}
                         onSearchClear={handleSearchClear}
+                        onAddNetworkClick={
+                            areCustomEvmNetworksEnabled ? onAddCustomNetwork : undefined
+                        }
                     />
                     {hasNoSearchResults ? (
                         <NoNetworkSearchResults />

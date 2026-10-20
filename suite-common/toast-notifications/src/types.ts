@@ -131,6 +131,11 @@ type AccountAddedNotification = {
     networkName: string;
 };
 
+type CustomNetworkAddedNotification = {
+    type: 'custom-network-added';
+    networkName: string;
+};
+
 type AccountsDiscoveredNotification = {
     type: 'accounts-discovered';
     count: number;
@@ -265,6 +270,7 @@ export type ToastPayload<TranslationKey extends UnknownTranslationKey = UnknownT
     | YieldWithdrawTransactionNotification
     | YieldClaimTransactionNotification
     | AccountAddedNotification
+    | CustomNetworkAddedNotification
     | AccountsDiscoveredNotification
     | {
           type: 'cannot-open-bluetooth-settings-error';
