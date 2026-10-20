@@ -88,6 +88,12 @@ export const selectNetworkBackends = createMemoizedSelector(
         ),
 );
 
+export const selectConnectingBackends = createMemoizedSelector(
+    [selectNetworkBackends],
+    networkBackends =>
+        returnStableArrayIfEmpty(networkBackends.filter(({ status }) => status === 'connecting')),
+);
+
 // a backend that is still connecting is not reported: it may be slow, e.g. behind Tor
 const isUnreachableCustomBackend = ({ isCustom, status }: NetworkBackend) =>
     isCustom && status === 'failed';
