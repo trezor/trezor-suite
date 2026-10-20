@@ -33,6 +33,7 @@ import {
     selectStake,
     stakeActions,
     syncAccountsWithBlockchainThunk,
+    transactionsActions,
 } from '@suite-common/wallet-core';
 import {
     type Account,
@@ -152,6 +153,8 @@ const pushTransactionThunk =
             identity: tryGetAccountIdentity(account),
         });
 
+        const flow = stakeType === 'change-delegate' ? 'vote' : stakeType;
+
         // close modal regardless result
         dispatch(closeModal());
 
@@ -174,7 +177,7 @@ const pushTransactionThunk =
                     account,
                     device,
                     txid,
-                    flow: stakeType === 'change-delegate' ? 'vote' : stakeType,
+                    flow,
                     stage: bumpedPrevTxid ? 'sped-up' : 'pending',
                     prevTxid: bumpedPrevTxid,
                 }),
@@ -233,6 +236,14 @@ const pushTransactionThunk =
             //  as the account will update only after the tx is confirmed
             dispatch(syncAccountsWithBlockchainThunk(account.symbol));
         } else {
+            dispatch(
+                transactionsActions.transactionBroadcastStatus({
+                    account,
+                    flow,
+                    status: 'error',
+                    isRbf: isRbfBumpFeeTransaction(precomposedTx),
+                }),
+            );
             dispatch(
                 notificationsActions.addToast({
                     type: 'sign-tx-error',

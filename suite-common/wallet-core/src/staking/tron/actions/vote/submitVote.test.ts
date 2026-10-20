@@ -11,6 +11,7 @@ import { type WithServices } from '@trezor/redux-utils';
 import { createDeferred } from '@trezor/utils';
 
 import { submitTronVoteThunk } from './submitVote';
+import { transactionsActions } from '../../../../transactions/transactionsActions';
 import {
     type AddFakePendingTronTxThunkState,
     addFakePendingTronTxThunk,
@@ -221,6 +222,12 @@ describe('submitTronVoteThunk', () => {
 
         await submitVote(store);
 
+        expect(
+            store
+                .getActions()
+                .filter(transactionsActions.transactionBroadcastStatus.match)
+                .map(action => action.payload),
+        ).toEqual([{ account: buildAccount(), flow: FLOW, status: 'error' }]);
         expect(captureExceptionMock).toHaveBeenCalledTimes(1);
         expect(scope.setTag).toHaveBeenCalledWith(
             'error.code',

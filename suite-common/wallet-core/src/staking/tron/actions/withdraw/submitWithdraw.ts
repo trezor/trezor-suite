@@ -9,6 +9,7 @@ import { BigNumber } from '@trezor/utils';
 import { type WithdrawThunkArguments, composeTronWithdrawFeeLevelsThunk } from './composeWithdraw';
 import { buildWithdrawContract, buildWithdrawReviewForm } from './withdrawContract';
 import { notifyEarnTransactionBroadcastThunk } from '../../../../earn/earnTransactionsThunks';
+import { transactionsActions } from '../../../../transactions/transactionsActions';
 import {
     type AddFakePendingTronTxThunkState,
     addFakePendingTronTxThunk,
@@ -155,6 +156,13 @@ export const submitTronWithdrawThunk = createThunk<
             });
 
             if (!pushResult.success) {
+                dispatch(
+                    transactionsActions.transactionBroadcastStatus({
+                        account,
+                        flow,
+                        status: 'error',
+                    }),
+                );
                 dispatch(
                     tronStakeActions.submitFinished({
                         accountKey,
