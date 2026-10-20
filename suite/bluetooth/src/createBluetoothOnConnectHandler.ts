@@ -1,26 +1,13 @@
-import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
-
 import { selectKnownDeviceByDeviceId } from '@suite-common/bluetooth';
-import { type WithServices } from '@suite-common/redux-utils';
 import { type Device } from '@trezor/connect';
 
-import { type BackgroundScan } from './bluetoothBackgroundScan';
-import { type BluetoothDep } from './createBluetooth';
 import type { BluetoothDisconnectDevice } from './createBluetoothDisconnectDevice';
 import { type WithBluetoothRootState } from './desktopBluetoothReducer';
 
 type BluetoothOnConnectHandlerRootState = WithBluetoothRootState;
 
-type BluetoothOnConnectHandlerThunkDispatch = ThunkDispatch<
-    BluetoothOnConnectHandlerRootState,
-    WithServices<BluetoothDep>,
-    UnknownAction
->;
-
 type BluetoothOnConnectHandlerDeps = {
     getState: () => BluetoothOnConnectHandlerRootState;
-    dispatch: BluetoothOnConnectHandlerThunkDispatch;
-    backgroundScan: BackgroundScan;
     disconnectDevice: BluetoothDisconnectDevice;
 };
 

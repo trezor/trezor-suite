@@ -2,7 +2,7 @@ import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
 
 import { type DesktopDeviceRootState } from '@suite/device';
 import { bluetoothActions, selectKnownDevices } from '@suite-common/bluetooth';
-import { type WithServices } from '@suite-common/redux-utils';
+import { type WithServices } from '@trezor/redux-utils';
 
 import { type DesktopBluetoothDevice } from './DesktopBluetoothDevice';
 import { type BackgroundScan } from './bluetoothBackgroundScan';

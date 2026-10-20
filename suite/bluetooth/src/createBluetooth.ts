@@ -1,9 +1,9 @@
-import type { BackgroundScan } from './bluetoothBackgroundScan';
+import { type BackgroundScan } from './bluetoothBackgroundScan';
 import { type BluetoothConnectDevice } from './createBluetoothConnectDevice';
 import { type BluetoothDisconnectDevice } from './createBluetoothDisconnectDevice';
-import type { BluetoothOnConnectHandler } from './createBluetoothOnConnectHandler';
-import type { BluetoothScan } from './createBluetoothScan';
-import type { BluetoothUnpair } from './createBluetoothUnpair';
+import { type BluetoothOnConnectHandler } from './createBluetoothOnConnectHandler';
+import { type BluetoothScan } from './createBluetoothScan';
+import { type BluetoothUnpair } from './createBluetoothUnpair';
 
 type BluetoothDeps = {
     bluetoothInit: () => Promise<void>;

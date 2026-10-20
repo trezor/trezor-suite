@@ -3,23 +3,17 @@ import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
 import { type DesktopDeviceRootState } from '@suite/device';
 import { type ForgetBluetoothDeviceThunkParams, bluetoothActions } from '@suite-common/bluetooth';
 import { selectSelectedDevice } from '@suite-common/device';
-import { type WithServices } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect from '@trezor/connect';
 import { bluetoothIpc } from '@trezor/transport-bluetooth';
 
 import { type BackgroundScan } from './bluetoothBackgroundScan';
-import { type BluetoothDep } from './createBluetooth';
 import { type BluetoothDisconnectDevice } from './createBluetoothDisconnectDevice';
 import { type WithBluetoothRootState, setIsUnpairingDevice } from './desktopBluetoothReducer';
 
 type BluetoothUnpairRootState = WithBluetoothRootState & DesktopDeviceRootState;
 
-type BluetoothUnpairThunkDispatch = ThunkDispatch<
-    BluetoothUnpairRootState,
-    WithServices<BluetoothDep>,
-    UnknownAction
->;
+type BluetoothUnpairThunkDispatch = ThunkDispatch<BluetoothUnpairRootState, unknown, UnknownAction>;
 
 type BluetoothUnpairDeps = {
     getState: () => BluetoothUnpairRootState;
