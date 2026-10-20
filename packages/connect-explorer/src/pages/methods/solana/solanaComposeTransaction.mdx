@@ -29,7 +29,6 @@ export const paramDescriptions = {
         "The recipient's already existing token accounts for `mint`, an empty array if there are none. Used to reuse an existing associated token account instead of creating one.",
     blockHash: 'Recent Block hash',
     lastValidBlockHeight: 'Recent Block height',
-    coin: '"SOL" for mainnet (default), "DSOL" for devnet',
 };
 
 ## Solana: Compose transaction
@@ -61,7 +60,6 @@ TrezorConnect.solanaComposeTransaction({
     amount: '0.1',
     blockHash: '...',
     lastValidBlockHeight: 123456,
-    coin: 'SOL',
 });
 ```
 
@@ -88,7 +86,6 @@ TrezorConnect.solanaComposeTransaction({
     },
     blockHash: '...',
     lastValidBlockHeight: 123456,
-    coin: 'SOL',
 });
 ```
 
