@@ -1,37 +1,24 @@
 import { type ReactNode } from 'react';
 
-import styled from 'styled-components';
-
 import { Translation } from '@suite/intl';
 import { type TradingUtilsProvidersProps, tradeApi } from '@suite-common/trading';
-import { Column, Image } from '@trezor/components';
+import { Column, Image, Row } from '@trezor/components';
+import { type SpacingValue } from '@trezor/theme';
 
 type TradingUtilsProviderProps = {
     exchange?: string;
-    className?: string;
     providers?: TradingUtilsProvidersProps;
     subtitle?: ReactNode;
     iconMaxHeight?: number;
+    gap?: SpacingValue;
 };
-
-const Wrapper = styled.div`
-    display: grid;
-    grid-template-columns: 2rem auto;
-    align-items: center;
-    gap: 12px;
-`;
-
-const TradingIconWrapper = styled.div`
-    display: flex;
-    justify-content: center;
-`;
 
 export const TradingUtilsProvider = ({
     exchange,
     providers,
-    className,
     subtitle,
     iconMaxHeight = 24,
+    gap = 12,
 }: TradingUtilsProviderProps) => {
     const provider = providers && exchange ? providers[exchange] : null;
     const providerName = provider?.brandName ?? provider?.companyName;
@@ -47,8 +34,8 @@ export const TradingUtilsProvider = ({
     );
 
     return (
-        <Wrapper className={className}>
-            <TradingIconWrapper>
+        <Row gap={gap}>
+            <Row width={iconMaxHeight} flex="none" justifyContent="center">
                 {!!provider?.logo && (
                     <Image
                         imageSrc={tradeApi.getProviderLogoUrl(provider.logo)}
@@ -56,7 +43,7 @@ export const TradingUtilsProvider = ({
                         borderRadius={4}
                     />
                 )}
-            </TradingIconWrapper>
+            </Row>
             {subtitle ? (
                 <Column alignItems="flex-start" gap={0}>
                     {name}
@@ -65,6 +52,6 @@ export const TradingUtilsProvider = ({
             ) : (
                 name
             )}
-        </Wrapper>
+        </Row>
     );
 };

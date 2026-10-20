@@ -81,8 +81,12 @@ export const TradingSelectedOfferProvider = () => {
                 borderRadius={0}
                 isDisabled={form.state.isFormLoading}
             >
-                <Row alignItems="center" justifyContent="space-between" padding={20}>
-                    <Text typographyStyle="body-md" intent="neutral" priority="secondary">
+                <Row
+                    alignItems="center"
+                    justifyContent="space-between"
+                    padding={{ vertical: 20, horizontal: 16 }}
+                >
+                    <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                         <Translation id="TR_TRADING_PROVIDER" />
                     </Text>
                     <Row gap={16}>
@@ -91,15 +95,17 @@ export const TradingSelectedOfferProvider = () => {
                                 <Skeleton animate />
                             ) : (
                                 <>
-                                    <Text typographyStyle="body-md" as="div">
+                                    <Text typographyStyle="body-sm" as="div">
                                         <TradingUtilsProvider
                                             providers={providers}
                                             exchange={quote.exchange}
+                                            iconMaxHeight={20}
+                                            gap={8}
                                         />
                                     </Text>
                                     <Icon
                                         as={CaretRightIcon}
-                                        size={20}
+                                        size={16}
                                         intent="neutral"
                                         priority="secondary"
                                     />

@@ -43,12 +43,10 @@ const TradingFormInputPaymentMethodValueContent = ({
         <Row gap={16}>
             <Row gap={8} alignItems="center">
                 <PaymentMethodIcon paymentMethod={paymentMethod} size={20} />
-                <Text typographyStyle={hasPaymentMethods ? 'body-md' : undefined}>
-                    {displayLabel}
-                </Text>
+                <Text typographyStyle="body-sm">{displayLabel}</Text>
             </Row>
             {hasPaymentMethods && (
-                <Icon as={CaretRightIcon} size={20} intent="neutral" priority="secondary" />
+                <Icon as={CaretRightIcon} size={16} intent="neutral" priority="secondary" />
             )}
         </Row>
     );
@@ -104,9 +102,9 @@ export const TradingFormInputPaymentMethod = ({
                     borderRadius={0}
                     data-testid="@trading/form/payment-method-select"
                 >
-                    <Row justifyContent="space-between" padding={20}>
+                    <Row justifyContent="space-between" padding={{ vertical: 20, horizontal: 16 }}>
                         <Text
-                            typographyStyle="body-md"
+                            typographyStyle="body-sm"
                             align="start"
                             data-testid="@trading/form/payment-method-select/value"
                             intent="neutral"
