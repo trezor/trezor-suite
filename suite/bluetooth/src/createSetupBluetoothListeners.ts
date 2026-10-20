@@ -37,18 +37,17 @@ export const createSetupBluetoothListeners =
         });
 
         bluetoothIpc.on('device-list-update', nearbyDevicesIpc => {
-            const nearbyDevices = nearbyDevicesIpc.map(fromBluetoothDevice);
-
-            const remappedKnownDevices = remapKnownDevices({
+            const { knownDevices, nearbyDevices } = remapKnownDevices({
                 knownDevices: deps.getKnownDevices(),
-                nearbyDevices,
+                nearbyDevices: nearbyDevicesIpc.map(fromBluetoothDevice),
             });
 
             deps.dispatch(
                 bluetoothActions.knownDevicesUpdateAction({
-                    knownDevices: remappedKnownDevices,
+                    knownDevices,
                 }),
             );
+
             deps.backgroundScan.restartIfNeeded();
 
             deps.dispatch(
