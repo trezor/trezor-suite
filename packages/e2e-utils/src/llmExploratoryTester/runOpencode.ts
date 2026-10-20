@@ -35,7 +35,7 @@ type RunOpencodeOptions = {
 
 type Server = {
     client: OpencodeClient;
-    signal: AbortSignal;
+    abortSignal: AbortSignal;
     stopServer: () => void;
 };
 
@@ -43,6 +43,7 @@ type Session = {
     client: OpencodeClient;
     sessionId: string;
     budgetGuard: BudgetGuard;
+    abortSignal: AbortSignal;
 };
 
 type Turn = {
@@ -88,7 +89,7 @@ async function startServer(timeoutMs: number): Promise<Server> {
         server = created.server;
         log(`OpenCode server: ${server.url}`);
 
-        return { client: created.client, signal: abort.signal, stopServer };
+        return { client: created.client, abortSignal: abort.signal, stopServer };
     } catch (e) {
         stopServer();
         throw e;
@@ -213,8 +214,9 @@ async function watchUntilIdle(
 }
 
 async function subscribeToEvents(session: Session) {
-    const { client } = session;
-    const { stream } = await client.event.subscribe();
+    const { client, abortSignal } = session;
+    // Without the signal the SDK reconnects forever once the timeout kills the server.
+    const { stream } = await client.event.subscribe({}, { signal: abortSignal });
     const first = await stream.next();
 
     if (first.done || first.value.type !== 'server.connected') {
@@ -272,13 +274,14 @@ export async function runOpencode({
     timeoutMs,
     maxBudgetUsd,
 }: RunOpencodeOptions): Promise<TestResult> {
-    const { client, signal, stopServer } = await startServer(timeoutMs);
+    const { client, abortSignal, stopServer } = await startServer(timeoutMs);
     try {
         const budgetGuard = new BudgetGuard(maxBudgetUsd);
         const session: Session = {
             client,
             sessionId: await createSession(client),
             budgetGuard,
+            abortSignal,
         };
         await runTurn(session, { prompt });
         const verdict = await requestVerdict(session);
@@ -289,7 +292,7 @@ export async function runOpencode({
 
         return verdict;
     } catch (e) {
-        if (signal.aborted) {
+        if (abortSignal.aborted) {
             throw new Error(`OpenCode timed out after ${timeoutMs / 60_000} min`, { cause: e });
         }
         throw e;
