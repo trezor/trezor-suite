@@ -1,5 +1,5 @@
 name: "[Build] suite-web"
-# this action is for building and deploying the web app to dev.suite.sldev.cz/suite-web/develop/web after code is pushed to develop.
+# builds and deploys the web app to dev.suite.sldev.cz/suite-web/<branch>/web on pushes to develop and on PRs to feature and release/* branches; PRs to develop are deployed by test-suite-web-desktop-e2e-pr.yml.
 
 permissions:
   id-token: write # for fetching the OIDC token
@@ -22,8 +22,20 @@ on:
       - ".github/workflows/template*"
       - "**.md"
   pull_request:
-    paths:
-      - .github/workflows/build-suite-web.yml
+    branches-ignore:
+      - develop
+      - "release-native/**"
+      - "release-message-system-*"
+    paths-ignore:
+      - "suite-native/**"
+      - "packages/connect*/**"
+      - "packages/react-native-usb/**"
+      - ".github/workflows/connect*"
+      - ".github/workflows/suite-native*"
+      - ".github/workflows/build-desktop*"
+      - ".github/workflows/release*"
+      - ".github/workflows/template*"
+      - "**.md"
   workflow_dispatch:
 
 concurrency:
@@ -75,7 +87,7 @@ jobs:
         env:
           ASSET_PREFIX: /suite-web/${{ steps.extract_branch.outputs.branch }}/web
           DESKTOP_APP_NAME: "Trezor-Suite"
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_AUTH_TOKEN: ${{ github.event_name != 'pull_request' && secrets.SENTRY_AUTH_TOKEN || '' }}
         run: |
           yarn message-system-sign-config
           yarn workspace @suite/app-assets build:lib
