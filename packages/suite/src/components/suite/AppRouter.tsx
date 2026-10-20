@@ -11,6 +11,7 @@ import {
 import { useServices } from '@trezor/dependency-injection';
 
 import { useSelector } from 'src/hooks/suite';
+import { TradingRouteGuard } from 'src/views/wallet/trading/common/TradingRouteGuard';
 
 type AppRouterProps = {
     components: Record<PageName, ComponentType>;
@@ -40,7 +41,11 @@ export const AppRouter = memo(({ components }: AppRouterProps) => {
     const componentToRender =
         componentName && (components as Record<string, ComponentType>)[componentName];
     if (componentToRender) {
-        return createElement(componentToRender);
+        return (
+            <TradingRouteGuard routeName={componentName}>
+                {createElement(componentToRender)}
+            </TradingRouteGuard>
+        );
     }
 
     // Fallback to index if unknown
