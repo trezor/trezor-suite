@@ -25,6 +25,7 @@ export enum EventType {
     // eslint-disable-next-line local-rules/analytics-event-name
     SuiteSyncLabelCreated = 'suite-sync/label',
 
+    TransactionBroadcastStatus = 'transaction/broadcast-status',
     TransactionCancel = 'transaction/cancel',
     // eslint-disable-next-line local-rules/analytics-event-name
     TransactionCreated = 'transaction-created',

@@ -33,8 +33,8 @@ import {
     isEvmApprovalTxByTextSignature,
     isEvmYieldTxByTextSignature,
     isExchangeTradingForm,
-    isRbfBumpFeeTransaction,
     isRbfCancelTransaction,
+    isRbfTransaction,
     subunitsToUnits,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
@@ -100,10 +100,9 @@ import {
     syncAccountsWithBlockchainThunk,
 } from '../blockchain/blockchainThunks';
 import {
-    type EarnTransactionsRootState,
-    selectTrackedEarnTransaction,
-} from '../earn/earnTransactionsReducer';
-import { notifyEarnTransactionBroadcastThunk } from '../earn/earnTransactionsThunks';
+    type HandleEarnTransactionReplacementThunkState,
+    handleEarnTransactionReplacementThunk,
+} from '../earn/earnTransactionsThunks';
 import { type FeesRootState } from '../fees/feesReducer';
 import {
     type WalletSettingsRootState,
@@ -458,7 +457,7 @@ export const synchronizeSentTransactionThunk = createThunk<
     },
 );
 
-export type PushSendFormTransactionThunkState = EarnTransactionsRootState &
+export type PushSendFormTransactionThunkState = HandleEarnTransactionReplacementThunkState &
     SynchronizeSentTransactionThunkState;
 
 export type PushSendFormTransactionThunkDeps = {
@@ -522,12 +521,16 @@ export const pushSendFormTransactionThunk = createThunk<
             : '0';
 
         const evmApprovalData = Calldata.evm.erc20.approve.decode(precomposedForm?.transactionData);
-        const bumpedPrevTxid = isRbfBumpFeeTransaction(precomposedTransaction)
-            ? precomposedTransaction.prevTxid
-            : undefined;
-        const spedUpEarnTransaction = bumpedPrevTxid
-            ? selectTrackedEarnTransaction(getState(), selectedAccount.key, bumpedPrevTxid)
-            : undefined;
+        const hasEarnToast =
+            isRbfTransaction(precomposedTransaction) &&
+            (await dispatch(
+                handleEarnTransactionReplacementThunk({
+                    account: selectedAccount,
+                    device,
+                    precomposedTransaction,
+                    txid: pushTxResponse.success ? pushTxResponse.payload.txid : null,
+                }),
+            ).unwrap());
 
         if (pushTxResponse.success) {
             const { txid } = pushTxResponse.payload;
@@ -570,18 +573,7 @@ export const pushSendFormTransactionThunk = createThunk<
                         style: { maxWidth: 'auto' },
                     }),
                 );
-            } else if (spedUpEarnTransaction) {
-                dispatch(
-                    notifyEarnTransactionBroadcastThunk({
-                        account: selectedAccount,
-                        device,
-                        txid,
-                        flow: spedUpEarnTransaction.flow,
-                        stage: 'sped-up',
-                        prevTxid: bumpedPrevTxid,
-                    }),
-                );
-            } else {
+            } else if (!hasEarnToast) {
                 // The token amount, or the total amount without the fee, in main units.
                 const sentAmount = token
                     ? subunitsToUnits({

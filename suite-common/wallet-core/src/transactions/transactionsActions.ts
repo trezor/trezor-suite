@@ -1,5 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
+import { type events } from '@suite-common/analytics';
 import {
     type Account,
     type AccountKey,
@@ -9,6 +10,17 @@ import { enhanceTransaction } from '@suite-common/wallet-utils';
 import { type AccountTransaction } from '@trezor/connect';
 
 export const TRANSACTIONS_MODULE_PREFIX = '@common/wallet-core/transactions';
+
+type TransactionBroadcastStatusPayload = {
+    account: Account;
+    flow: events.TransactionBroadcastStatusFlow;
+    isCancellation?: boolean;
+    isRbf?: boolean;
+} & ({ status: 'success'; txid: string } | { status: 'error' });
+
+const transactionBroadcastStatus = createAction<TransactionBroadcastStatusPayload>(
+    `${TRANSACTIONS_MODULE_PREFIX}/transactionBroadcastStatus`,
+);
 
 const resetTransaction = createAction(
     `${TRANSACTIONS_MODULE_PREFIX}/resetTransaction`,
@@ -64,6 +76,7 @@ const addTransaction = createAction(
 );
 
 export const transactionsActions = {
+    transactionBroadcastStatus,
     addTransaction,
     replaceTransaction,
     removeTransaction,
