@@ -280,14 +280,8 @@ describe('api/usb', () => {
         expect(listener).toHaveBeenCalledTimes(1);
         expect(listener).toHaveBeenCalledWith([]);
     });
-    // CURRENTLY SERIALIZES EVERYTHING — runInIsolation guards the api with a
-    // single global mutex, so a long call on one device (e.g. signing awaiting
-    // on-device confirmation) blocks every call/receive on all other devices
-    // for its whole duration. trezord-go served devices independently.
-    //
-    // This test pins the current broken behavior; the assertion on the other
-    // path flips when the fix lands.
-    it('runInIsolation serializes across paths: a busy path blocks every other path', async () => {
+
+    it('runInIsolation isolates per path: other paths run in parallel, same path serializes', async () => {
         const api = new UsbApi({ usbInterface: createUsbMock() });
 
         const blocker = createDeferred();
@@ -305,19 +299,15 @@ describe('api/usb', () => {
             },
         );
 
-        // an operation on another device queues behind it instead of running
-        const path2Call = api.runInIsolation(
-            { lock: { read: true, write: true }, path: '2' },
-            () => ({
+        // an operation on another device must not queue behind it
+        const path2 = await Promise.race([
+            api.runInIsolation({ lock: { read: true, write: true }, path: '2' }, () => ({
                 success: true as const,
                 payload: 'path2',
-            }),
-        );
-        const path2 = await Promise.race([
-            path2Call,
+            })),
             new Promise(resolve => setTimeout(() => resolve('blocked'), 100)),
         ]);
-        expect(path2).toBe('blocked');
+        expect(path2).toEqual({ success: true, payload: 'path2' });
 
         // while an operation on the same path (non-conflicting lock) still serializes
         const path1Again = api.runInIsolation(
@@ -331,7 +321,6 @@ describe('api/usb', () => {
 
         blocker.resolve(undefined);
         await path1;
-        await path2Call;
         await path1Again;
         expect(order).toEqual(['path1-start', 'path1-end', 'path1-again']);
     });
