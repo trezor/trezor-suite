@@ -1,13 +1,18 @@
 import { type ReactNode } from 'react';
+import { useSelector } from 'react-redux';
 
 import styled from 'styled-components';
 
+import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import { TRAFFIC_LIGHT_DEFAULT_OFFSET } from '@suite/macos';
 import { MODAL_CONTEXT_USER } from '@suite/modal';
+import { gotoThunk } from '@suite/router';
 import { Box, Button, Column, Row } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { isDesktop, isMacOs } from '@trezor/env-utils';
 import { XIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 
 import { GuideButton, GuideRouter } from 'src/components/guide';
@@ -35,6 +40,10 @@ type OnboardingContentProps = {
 
 const OnboardingContent = ({ children }: OnboardingContentProps) => {
     const { onCancelHandler } = useOnboardingCancelButtonContext();
+    const isDebugModeActive = useSelector(selectIsDebugModeActive);
+    const { dispatch } = useServices(injectDispatch);
+
+    const goToSettings = () => dispatch(gotoThunk({ routeName: 'settings-index' }));
 
     return (
         <Column gap={40}>
@@ -42,6 +51,18 @@ const OnboardingContent = ({ children }: OnboardingContentProps) => {
                 <Row justifyContent="space-between">
                     <SmallDeviceItem />
                     <Row gap={12}>
+                        {isDebugModeActive ? (
+                            <Button
+                                intent="neutral"
+                                priority="secondary"
+                                size="small"
+                                onClick={goToSettings}
+                            >
+                                <DebugOnlyBadge>
+                                    <Translation id="TR_SETTINGS" />
+                                </DebugOnlyBadge>
+                            </Button>
+                        ) : null}
                         <Button
                             intent="neutral"
                             priority="secondary"
