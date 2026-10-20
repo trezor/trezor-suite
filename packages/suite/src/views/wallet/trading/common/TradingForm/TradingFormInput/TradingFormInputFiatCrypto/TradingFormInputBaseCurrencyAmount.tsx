@@ -229,14 +229,14 @@ export const TradingFormInputBaseCurrencyAmount = ({
             <Text
                 typographyStyle="body-sm"
                 intent={hasError ? 'critical' : 'neutral'}
-                priority="primary"
-                isDisabled={!hasError && !baseCurrencyAmount}
+                priority={hasError || baseCurrencyAmount ? 'primary' : 'secondary'}
                 data-testid="@trading/form/base-currency-label"
             >
                 {currencyLabel}
             </Text>
             <NumberInput
                 isClean
+                placeholderColor="contentSecondary"
                 size="small"
                 flex="1"
                 name={BASE_CURRENCY_AMOUNT_FIELD}

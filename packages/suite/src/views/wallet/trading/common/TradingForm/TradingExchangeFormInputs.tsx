@@ -199,7 +199,8 @@ export const TradingExchangeFormInputs = () => {
                                     />
                                 ) : (
                                     <Text
-                                        isDisabled={!receiveAmount}
+                                        intent="neutral"
+                                        priority={receiveAmount ? 'primary' : 'secondary'}
                                         data-testid="@trading/form/receive-amount"
                                     >
                                         <span style={receiveAmountStyle}>

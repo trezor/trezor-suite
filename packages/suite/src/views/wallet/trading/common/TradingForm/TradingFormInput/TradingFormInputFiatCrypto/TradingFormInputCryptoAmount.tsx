@@ -231,6 +231,7 @@ const TradingFormInputCryptoAmountContent = ({
     return (
         <NumberInput
             isClean
+            placeholderColor="contentSecondary"
             flex="1"
             name={cryptoInputName}
             placeholder={TRADING_AMOUNT_PLACEHOLDER}
