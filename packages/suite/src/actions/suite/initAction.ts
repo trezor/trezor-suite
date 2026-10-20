@@ -4,11 +4,14 @@ import { type ThunkDispatch } from 'redux-thunk';
 import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { type FlagsRootState, selectFlags, setFlag } from '@suite/flags';
 import { type MetadataRootState, metadataLabelingActions } from '@suite/metadata';
+import { openModal } from '@suite/modal';
 import {
     type GotoThunkDeps,
     type GotoThunkState,
+    gotoThunk,
     initialRedirectionThunk,
     routerInitThunk,
+    selectRouteName,
 } from '@suite/router';
 import {
     type SuiteSettingsRootState,
@@ -56,10 +59,19 @@ import {
 import * as walletConnectActions from '@suite-common/walletconnect';
 import { isDesktop } from '@trezor/env-utils';
 import { type WithServices } from '@trezor/redux-utils';
+import { resolveAfter } from '@trezor/utils';
 
 import * as bioAuthThunks from 'src/actions/suite/bioAuthThunks';
+import { BACKENDS_INIT_TIMEOUT_MS, BACKENDS_POLL_INTERVAL_MS } from 'src/constants/suite/backends';
 import { type SuiteRootState } from 'src/reducers/suite/suiteReducer';
-import { selectSuiteLifecycleStatus } from 'src/selectors/suite/suiteSelectors';
+import {
+    selectHasConnectedNetworkBackend,
+    selectUnreachableCustomBackendSymbol,
+} from 'src/selectors/suite/backendSelectors';
+import {
+    selectIsSuiteOnline,
+    selectSuiteLifecycleStatus,
+} from 'src/selectors/suite/suiteSelectors';
 
 import { setSuiteError } from './suiteActions';
 
@@ -159,32 +171,72 @@ export const initThunk =
         }
 
         // 7. init backends
-        await dispatch(initBlockchainThunk())
+        const backendsInitialized = dispatch(initBlockchainThunk())
             .unwrap()
             .catch(err => console.error(err));
 
-        // 8. fetch token definitions (has to be fetched before fiat rates)
-        await dispatch(periodicCheckTokenDefinitionsThunk());
+        // Blockbook rates go through the backend connection, so they wait for the custom backends to be set.
+        const initRates = async () => {
+            // 8. fetch token definitions (has to be fetched before fiat rates)
+            await dispatch(periodicCheckTokenDefinitionsThunk());
 
-        // 9. init periodic fetching of fiat rates
-        await dispatch(
-            periodicFetchFiatRatesThunk({
-                rateType: 'current',
-                localCurrency,
-            }),
-        );
-        await dispatch(
-            periodicFetchFiatRatesThunk({
-                rateType: 'lastWeek',
-                localCurrency,
-            }),
-        );
+            // 9. init periodic fetching of fiat rates
+            await dispatch(
+                periodicFetchFiatRatesThunk({
+                    rateType: 'current',
+                    localCurrency,
+                }),
+            );
+            await dispatch(
+                periodicFetchFiatRatesThunk({
+                    rateType: 'lastWeek',
+                    localCurrency,
+                }),
+            );
 
-        // 10. fetch rates for transactions with missing rates
-        await dispatch(updateMissingTxFiatRatesThunk({ localCurrency }));
+            // 10. fetch rates for transactions with missing rates
+            await dispatch(updateMissingTxFiatRatesThunk({ localCurrency }));
+        };
+
+        // A connected network means the custom backends are already set; past the timeout, wait for them anyway.
+        const waitForConnectedNetwork = async (signal: AbortSignal) => {
+            while (!signal.aborted && !selectHasConnectedNetworkBackend(getState())) {
+                await resolveAfter(BACKENDS_POLL_INTERVAL_MS, signal).catch(() => {});
+            }
+            if (!selectHasConnectedNetworkBackend(getState())) await backendsInitialized;
+        };
+
+        // One working network is enough to use Suite; the others keep connecting in the background.
+        // When none works, the timeout still lets the user reach settings to fix the backend.
+        const backendsAbort = new AbortController();
+        await Promise.race([
+            Promise.race([backendsInitialized, waitForConnectedNetwork(backendsAbort.signal)]).then(
+                initRates,
+            ),
+            resolveAfter(BACKENDS_INIT_TIMEOUT_MS, backendsAbort.signal).catch(() => {}),
+        ]);
+        backendsAbort.abort();
 
         // 11. dispatch initial location change
         dispatch(routerInitThunk());
+
+        // offline, the custom backend is not the problem
+        const unreachableCustomBackendSymbol =
+            selectIsSuiteOnline(getState()) && !selectHasConnectedNetworkBackend(getState())
+                ? selectUnreachableCustomBackendSymbol(getState())
+                : undefined;
+        if (unreachableCustomBackendSymbol) {
+            await dispatch(gotoThunk({ routeName: 'settings-coins' }));
+            // a router lock keeps the user where they are, so do not open the modal over it
+            if (selectRouteName(getState()) === 'settings-coins') {
+                dispatch(
+                    openModal({
+                        type: 'advanced-coin-settings',
+                        symbol: unreachableCustomBackendSymbol,
+                    }),
+                );
+            }
+        }
 
         // 12. fetch metadata. metadata is not saved together with other data in storage.
         // historically it was saved in indexedDB together with devices and accounts and we did not need to load them
