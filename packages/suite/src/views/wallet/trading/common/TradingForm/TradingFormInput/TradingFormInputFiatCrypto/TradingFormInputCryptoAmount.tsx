@@ -226,7 +226,8 @@ const TradingFormInputCryptoAmountContent = ({
         trigger([cryptoInputName]);
     }, [cryptoInputName, trigger, validationAccount.key]);
 
-    const isDerivedAmountLoading = !amountInCrypto && context.form.state.isFormLoading;
+    const isDerivedAmountLoading =
+        !amountInCrypto && !context.isAmountEmpty && context.form.state.isFormLoading;
 
     return (
         <NumberInput

@@ -417,12 +417,12 @@ export class TradingPage {
 
     @step()
     async clickSwapBestOfferWithRetry() {
-        // The button is briefly enabled between two composes; a click landing on it after it re-disables is lost.
+        // The button also disappears during composition, so wait for the confirmation panel.
         await expect(async () => {
             if (await this.swapBestOfferButton.isVisible()) {
                 await this.swapBestOfferButton.click({ timeout: 5_000 });
             }
-            await expect(this.swapBestOfferButton).toBeHidden({ timeout: 5_000 });
+            await expect(this.confirmation.section).toBeVisible({ timeout: 5_000 });
         }).toPass({ timeout: 30_000 });
     }
 

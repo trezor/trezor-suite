@@ -148,7 +148,8 @@ const TradingFormInputFiatContent = ({
         }
     }, [amountLimits, fiatInputName, trigger]);
 
-    const isDerivedAmountLoading = !!amountInCrypto && context.form.state.isFormLoading;
+    const isDerivedAmountLoading =
+        !!amountInCrypto && !context.isAmountEmpty && context.form.state.isFormLoading;
 
     return (
         <NumberInput
