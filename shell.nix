@@ -56,7 +56,7 @@ in
       shellcheck
       vips
     ] ++ extraBuildInputs
-      ++ lib.optionals stdenv.isLinux [
+      ++ lib.optionals stdenv.hostPlatform.isLinux [
       nsis openjpeg osslsigncode p7zip squashfsTools gccPkgs.gcc # binaries used by node_module: electron-builder
       udev  # used by node_module: usb
     ];
@@ -71,9 +71,9 @@ in
       export PATH="$PATH:$CURDIR/node_modules/.bin"
       export ELECTRON_BUILDER_CACHE="$CURDIR/.cache/electron-builder"
      '' + lib.optionalString useAndroid androidEnv.shellHook
-        + lib.optionalString stdenv.isDarwin ''
+        + lib.optionalString stdenv.hostPlatform.isDarwin ''
       export ELECTRON_OVERRIDE_DIST_PATH="${electron}/Applications/"
-    '' + lib.optionalString stdenv.isLinux ''
+    '' + lib.optionalString stdenv.hostPlatform.isLinux ''
       export ELECTRON_OVERRIDE_DIST_PATH="${electron}/bin/"
       export ELECTRON_DISABLE_SANDBOX=1
       export npm_config_build_from_source=true  # tell yarn to not download binaries, but build from source

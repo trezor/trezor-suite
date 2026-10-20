@@ -24,7 +24,7 @@
           inherit (playwright-web-flake.packages.${system}) playwright-test playwright-driver;
 
           # Override GCC with older version
-          gccPkgs = import old-gcc-nixpkgs { system = prev.system; };
+          gccPkgs = import old-gcc-nixpkgs { inherit system; };
         };
 
         pkgs = import nixpkgs {
@@ -65,7 +65,7 @@
           pkgs.playwright-test # From playwright-web-flake
           pkgs.vips
         ]
-        ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
+        ++ pkgs.lib.optionals pkgs.stdenv.hostPlatform.isLinux [
           pkgs.nsis
           pkgs.p7zip
           pkgs.openjpeg
@@ -85,10 +85,10 @@
           export PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS=true
           export PLAYWRIGHT_BROWSERS_PATH="${pkgs.playwright-driver.browsers}"
         ''
-        + pkgs.lib.optionalString pkgs.stdenv.isDarwin ''
+        + pkgs.lib.optionalString pkgs.stdenv.hostPlatform.isDarwin ''
           export ELECTRON_OVERRIDE_DIST_PATH="${electron}/Applications/"
         ''
-        + pkgs.lib.optionalString pkgs.stdenv.isLinux ''
+        + pkgs.lib.optionalString pkgs.stdenv.hostPlatform.isLinux ''
           export ELECTRON_OVERRIDE_DIST_PATH="${electron}/bin/"
           export npm_config_build_from_source=true
         '';
