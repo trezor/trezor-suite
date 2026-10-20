@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import semver from 'semver';
 
-import { getTrezorPackageDir } from './trezor-package-path.js';
+import { getTrezorPackageDir } from './trezor-package-path.ts';
 
 const args = process.argv.slice(2);
 

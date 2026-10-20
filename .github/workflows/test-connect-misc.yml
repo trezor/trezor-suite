@@ -17,6 +17,7 @@ on:
       - "packages/connect/**"
       - "scripts/ci/helpers.ts"
       - "scripts/ci/pack-packages.ts"
+      - "scripts/ci/trezor-package-path.ts"
       - "scripts/publish/**"
       - "packages/connect-install-smoke/**"
       - ".github/workflows/test-connect-misc.yml"

@@ -45,6 +45,6 @@ runs:
     - name: Publish to NPM
       shell: bash
       run: |
-        cd "$(node ./scripts/ci/trezor-package-path.js "${{ inputs.packageName }}")"
+        cd "$(node ./scripts/ci/trezor-package-path.ts "${{ inputs.packageName }}")"
         yarn build:lib
         yarn npm publish --tag ${{ inputs.deploymentType }} --access public --provenance
