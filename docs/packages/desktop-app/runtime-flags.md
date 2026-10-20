@@ -29,4 +29,5 @@ Available flags:
 | `--remove-user-data-on-start` | Removes user data directory on start (used for E2E testing)                                                                                                                            |
 | `--expose-connect-ws`         | Expose Connect websocket even on production build                                                                                                                                      |
 | `--expose-store`              | Expose Redux store as window.store in the Renderer process.                                                                                                                            |
+| `--automation-tools`          | With `--expose-store`, answer `devtoolstooldiscovery` in the Renderer process with the [automation tools](../../tests/automation-tools.md).                                            |
 | `--offline-mode`              | Experimental test-only flag to disable all network connection (both Renderer and Main process). Use at your own risk! Note it does **not** control subprocesses (e.g. tor, coinjoin).  |

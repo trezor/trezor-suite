@@ -1,0 +1,30 @@
+{
+    "name": "@suite/automation-tools",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": [
+        "src/earlyPerfHook.ts"
+    ],
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@reduxjs/toolkit": "2.13.0",
+        "@suite/router": "workspace:*",
+        "@suite/router-config": "workspace:*",
+        "@suite/suite-lifecycle": "workspace:*",
+        "@trezor/env-utils": "workspace:*",
+        "@trezor/redux-utils": "workspace:*",
+        "zod": "4.6.5"
+    },
+    "devDependencies": {
+        "@suite/locks": "workspace:*",
+        "@suite/modal": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*"
+    }
+}
