@@ -1,11 +1,12 @@
-import { BottomSheetModal, type BottomSheetModalRef, Text } from '@suite-native/atoms';
+import { BottomSheetModal, type BottomSheetModalRef, Box, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
+
+import { PortfolioAssetsGroupingOptions } from './PortfolioAssetsGroupingOptions';
 
 type PortfolioAssetsViewOptionsSheetProps = {
     bottomSheetRef: BottomSheetModalRef;
 };
 
-// TODO: the view options themselves come in a follow-up (#32746).
 export const PortfolioAssetsViewOptionsSheet = ({
     bottomSheetRef,
 }: PortfolioAssetsViewOptionsSheetProps) => (
@@ -14,8 +15,13 @@ export const PortfolioAssetsViewOptionsSheet = ({
         title={<Translation id="moduleHome.assets.viewOptionsSheet.title" />}
         isCloseDisplayed
     >
-        <Text variant="body-sm" color="contentSecondary">
-            TBD: view options will be added in a follow-up.
-        </Text>
+        <VStack spacing="sp8">
+            <Box paddingHorizontal="sp4">
+                <Text variant="body-xs" color="contentTertiary">
+                    <Translation id="moduleHome.assets.viewOptionsSheet.groupBy" />
+                </Text>
+            </Box>
+            <PortfolioAssetsGroupingOptions />
+        </VStack>
     </BottomSheetModal>
 );

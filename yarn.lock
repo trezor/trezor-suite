@@ -14802,6 +14802,7 @@ __metadata:
   dependencies:
     "@react-navigation/native": "npm:7.1.31"
     "@react-navigation/native-stack": "npm:7.12.0"
+    "@reduxjs/toolkit": "npm:2.13.0"
     "@shopify/flash-list": "npm:2.3.0"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/assets": "workspace:*"
@@ -14849,6 +14850,7 @@ __metadata:
     "@trezor/styles-native": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/urls": "workspace:*"
+    "@trezor/utils": "workspace:*"
     jotai: "npm:2.17.1"
     react: "npm:19.2.3"
     react-native: "npm:0.86.3"

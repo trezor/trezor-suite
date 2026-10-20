@@ -497,7 +497,7 @@ const selectSortedNetworkSymbols = createMemoizedSelector(
         ),
     { memoizeOptions: { resultEqualityCheck: shallowEqual } },
 );
-const selectCappedAssetKeysByNetwork = createMemoizedSelector(
+export const selectCappedAssetKeysByNetwork = createMemoizedSelector(
     [selectSortedNetworkSymbols, selectDisplayedAssetKeysByNetwork, selectRowLimit],
     (symbols, byNetwork, rowLimit): ReadonlyMap<NetworkSymbol, readonly WalletAssetKey[]> => {
         if (rowLimit === undefined) {
