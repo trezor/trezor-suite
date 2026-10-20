@@ -17,9 +17,24 @@ const DUMMY_BASE = 'http://example.invalid';
  * Uses the WHATWG URL API for splitting the URL into pathname/search/hash, and
  * `querystring.parse` for query-string decoding (preserving the same semantics as
  * the legacy `url.parse(requestUrl, true)` — `+` is decoded as space, `%20` likewise).
+ *
+ * Returns a null `pathname` for request targets that node's http parser accepts but
+ * `new URL()` rejects, such as `//[`, so the caller can reject the request.
  */
 export const parseRequestUrl = (requestUrl: string): ParsedRequestUrl => {
-    const parsed = new URL(requestUrl, DUMMY_BASE);
+    let parsed: URL;
+    try {
+        parsed = new URL(requestUrl, DUMMY_BASE);
+    } catch {
+        return {
+            protocol: null,
+            hostname: null,
+            pathname: null,
+            query: {},
+            search: null,
+            hash: null,
+        };
+    }
 
     const isAbsolute = /^[a-z][a-z\d+\-.]*:\/\//i.test(requestUrl);
 
