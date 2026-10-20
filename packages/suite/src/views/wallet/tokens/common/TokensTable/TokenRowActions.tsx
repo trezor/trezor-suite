@@ -5,6 +5,7 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectIsDeviceCompromised } from '@suite/authenticity-checks';
 import { useDevice } from '@suite/device';
 import { useExternalLink } from '@suite/external-links';
+import { selectIsFinpromRestricted } from '@suite/finprom';
 import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
 import { selectIsCopyAddressModalShown, selectIsUnhideTokenModalShown } from '@suite/flags';
 import { Translation, useTranslation } from '@suite/intl';
@@ -118,6 +119,7 @@ const TokenRowBasicActions = ({
     const { address: unusedAddress } = getUnusedAddressFromAccount(account);
 
     const { coins } = useSelector(selectTradingInfo);
+    const isFinpromRestricted = useSelector(selectIsFinpromRestricted);
     const isDeviceLocked = isLocked(true);
     const isDeviceCompromised = useSelector(selectIsDeviceCompromised);
 
@@ -432,6 +434,7 @@ const TokenRowBasicActions = ({
                         icon: CurrencyCircleDollarIcon,
                         onClick: onBuyButtonClick,
                         isDisabled: !canBuyToken,
+                        isHidden: isFinpromRestricted,
                     },
                     {
                         label: <Translation id="TR_TRADING_SELL" />,
@@ -439,13 +442,14 @@ const TokenRowBasicActions = ({
                         icon: CurrencyCircleDollarIcon,
                         onClick: onSellButtonClick,
                         isDisabled: token.balance === '0' || !canSellToken,
+                        isHidden: isFinpromRestricted,
                     },
                     {
                         label: <Translation id="TR_TRADING_SWAP" />,
                         'data-testid': '@trading/tokens/swap-button',
                         icon: RepeatIcon,
                         onClick: onSwapButtonClick,
-                        isHidden: type === 'defi' ? false : !isBelowTablet,
+                        isHidden: isFinpromRestricted || (type === 'defi' ? false : !isBelowTablet),
                         isDisabled: !canSwapToken,
                     },
                     {
@@ -536,7 +540,7 @@ const TokenRowBasicActions = ({
                 ]}
             />
 
-            {type !== 'defi' && !isBelowTablet && (
+            {type !== 'defi' && !isBelowTablet && !isFinpromRestricted && (
                 <IconButton
                     isDisabled={!canSwapToken}
                     key="swap"
