@@ -4,6 +4,7 @@ import { openModal } from '@suite/modal';
 import { getTxAnchor, gotoThunk, selectRouteName, selectRouterApp } from '@suite/router';
 import { selectDeviceThunk, selectDevices, selectSelectedDevice } from '@suite-common/device';
 import {
+    classifyEthereumStakingTransaction,
     selectAccounts,
     selectNetworkBlockchainInfo,
     selectTransactions,
@@ -15,7 +16,6 @@ import {
     findTransaction,
     getAccountTransactions,
     getConfirmations,
-    isStakeTypeTx,
 } from '@suite-common/wallet-utils';
 import { Row } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -55,9 +55,8 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
     const tx = findTransaction(txid, accountTxs);
     const accountDevice = findAccountDevice(account, devices);
     const confirmations = tx ? getConfirmations(tx, blockchain.blockHeight) : 0;
-    const destinationRoute = isStakeTypeTx(tx?.ethereumSpecific?.parsedData?.methodId)
-        ? 'wallet-staking'
-        : 'wallet-index';
+    const destinationRoute =
+        tx && classifyEthereumStakingTransaction(tx) ? 'wallet-staking' : 'wallet-index';
     const isTradingRoute = !!routeName?.includes('wallet-trading');
     // Keep the user inside the yield flow: the toast action navigates away (goto) which makes
     // users think the approve step is the whole transaction. Mirror the trading behavior above.

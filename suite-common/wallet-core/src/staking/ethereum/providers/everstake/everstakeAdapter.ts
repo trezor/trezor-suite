@@ -8,6 +8,11 @@ import {
     previewEverstakeUnstake,
 } from './everstakePlan';
 import { deriveEverstakePosition } from './everstakePosition';
+import {
+    classifyEverstakeCalldata,
+    classifyEverstakeInternalTransfer,
+    classifyEverstakeTransaction,
+} from './everstakeTransactions';
 
 export const everstakeAdapter: EthereumStakingProviderAdapter = {
     id: 'everstake',
@@ -19,4 +24,7 @@ export const everstakeAdapter: EthereumStakingProviderAdapter = {
     verifyStep: ({ label, data }, source) => verifyEverstakeCalldata(label, data, source),
     validateLiveState: validateEverstakeStepLiveState,
     previewUnstake: previewEverstakeUnstake,
+    classifyCalldata: classifyEverstakeCalldata,
+    classifyTransaction: classifyEverstakeTransaction,
+    classifyInternalTransfer: classifyEverstakeInternalTransfer,
 };

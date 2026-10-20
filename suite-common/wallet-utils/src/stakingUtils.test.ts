@@ -11,6 +11,7 @@ import {
     getTronAccountTotalStakingBalance,
     getTronResources,
     getTronStakingInfo,
+    getTxStakeNameByDataHex,
 } from './stakingUtils';
 
 const TRX = 1_000_000;
@@ -129,5 +130,19 @@ describe('getTronAccountTotalStakingBalance', () => {
             stakingInfo: buildStakingInfo({ stakedBalance: String(5 * TRX) }),
         });
         expect(getTronAccountTotalStakingBalance(account)).toBe('5');
+    });
+});
+
+describe(getTxStakeNameByDataHex.name, () => {
+    it('reads the Everstake operation from the calldata selector', () => {
+        expect(getTxStakeNameByDataHex('0x3a29dbae' + '00'.repeat(32))).toBe('stake');
+        expect(getTxStakeNameByDataHex('76ec871c' + '00'.repeat(96))).toBe('unstake');
+        expect(getTxStakeNameByDataHex('0x33986ffa')).toBe('claim');
+    });
+
+    it('is null for other calldata', () => {
+        expect(getTxStakeNameByDataHex('0xa9059cbb' + '00'.repeat(64))).toBeNull();
+        expect(getTxStakeNameByDataHex(undefined)).toBeNull();
+        expect(getTxStakeNameByDataHex('')).toBeNull();
     });
 });

@@ -4,20 +4,7 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StakingPool } from '@trezor/blockchain-link-types';
 import { EVERSTAKE_CONTRACTS } from '@trezor/network-ethereum/staking';
 
-import { getUnstakeAmountByEthereumDataHexFixtures } from './__fixtures__/ethereumStakingUtils';
-import {
-    getEthereumCryptoBalanceWithStaking,
-    getUnstakeAmountByEthereumDataHex,
-} from './ethereumStakingUtils';
-
-describe('getUnstakeAmountByEthereumDataHex', () => {
-    getUnstakeAmountByEthereumDataHexFixtures.forEach(f => {
-        it(f.description, () => {
-            const result = getUnstakeAmountByEthereumDataHex(f.transactionData);
-            expect(result).toBe(f.expectedAmountWei);
-        });
-    });
-});
+import { getEthereumCryptoBalanceWithStaking } from './ethereumStakingUtils';
 
 const everstakePool: StakingPool = {
     name: 'Everstake',

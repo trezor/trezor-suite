@@ -24,11 +24,9 @@ import {
     getAccountTotalStakingBalance,
     getTronAccountTotalStakingBalance,
     isPending,
-    isStakeTypeTx,
     isStakingNetworkType,
     isStakingSymbol,
     secondsToDays,
-    signatureToStakeTypeMap,
     subunitsToUnits,
 } from '@suite-common/wallet-utils';
 import {
@@ -60,6 +58,7 @@ import {
     isSupportedAdaStakingNetworkSymbol,
     subtypeToStakeTypeMap,
 } from '../cardano/cardanoStakingUtils';
+import { classifyEthereumStakingTransaction } from '../ethereum/ethereumStakingTransactions';
 import { isSupportedEthStakingNetworkSymbol } from '../ethereum/ethereumStakingUtils';
 import {
     DEFAULT_ETHEREUM_STAKING_PROVIDER_ID,
@@ -451,11 +450,11 @@ export const getStakingProvidersForAnalytics = (accounts: Account[]): string[] =
     return Array.from(providers);
 };
 
-export const getTxStakeType = (tx: WalletAccountTransaction) => {
-    const signature = tx?.ethereumSpecific?.parsedData?.methodId;
+export const getTxStakeType = (tx: WalletAccountTransaction): StakeType | undefined => {
+    const ethereumStaking = classifyEthereumStakingTransaction(tx);
 
-    if (signature) {
-        return signatureToStakeTypeMap[signature];
+    if (ethereumStaking) {
+        return ethereumStaking.type;
     }
 
     if (tx?.solanaSpecific?.stakeOperation) {
@@ -479,7 +478,7 @@ export const isStakingTransaction = (transaction: WalletAccountTransaction) => {
     }
 
     // Ethereum staking transactions
-    if (isStakeTypeTx(transaction.ethereumSpecific?.parsedData?.methodId)) {
+    if (classifyEthereumStakingTransaction(transaction)) {
         return true;
     }
 

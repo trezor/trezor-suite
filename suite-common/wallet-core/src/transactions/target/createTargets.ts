@@ -7,18 +7,13 @@ import {
 } from '@trezor/blockchain-link-types';
 
 import { type InternalTarget, type SimpleTarget, type Target, type TokenTarget } from './Target';
-import { getInstantStakeType } from '../../staking/ethereum/providers/everstake/everstakeTransactions';
+import { isEthereumInternalTransferHidden } from '../../staking/ethereum/ethereumStakingTransactions';
 
 // Filter out internal transfers that are instant staking transactions
 const filteredInternalTransfers = (
     internalTransfers: InternalTransfer[],
     account: Pick<Account, 'descriptor' | 'symbol'>,
-) =>
-    internalTransfers.filter(t => {
-        const stakeType = getInstantStakeType(t, account.descriptor, account.symbol);
-
-        return stakeType !== 'stake';
-    });
+) => internalTransfers.filter(transfer => !isEthereumInternalTransferHidden(transfer, account));
 
 type CreateCombineTargetsParams = {
     transaction: Pick<Transaction, 'targets' | 'tokens' | 'internalTransfers'>;

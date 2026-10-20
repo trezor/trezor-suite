@@ -20,7 +20,7 @@ import {
     type TronStakingInfo,
 } from '@trezor/blockchain-link-types';
 import {
-    EVERSTAKE_SELECTORS,
+    type EverstakeOperation,
     getEverstakeOperationBySelector,
 } from '@trezor/network-ethereum/staking';
 import { BigNumber } from '@trezor/utils';
@@ -141,39 +141,26 @@ export const getAccountTotalStakingBalance = (account: Account) =>
         ? STAKING_BALANCE_BY_TYPE[account.networkType]?.(account)
         : null;
 
-export const signatureToStakeTypeMap: { [key: string]: StakeType } = {
-    [EVERSTAKE_SELECTORS.stake]: 'stake',
-    [EVERSTAKE_SELECTORS.unstake]: 'unstake',
-    [EVERSTAKE_SELECTORS.claimWithdrawRequest]: 'claim',
-};
-
-export const isStakeTx = (signature: string | undefined) =>
-    getEverstakeOperationBySelector(signature) === 'stake';
-
-export const isUnstakeTx = (signature: string | undefined) =>
-    getEverstakeOperationBySelector(signature) === 'unstake';
-
-export const isClaimTx = (signature: string | undefined) =>
-    getEverstakeOperationBySelector(signature) === 'claimWithdrawRequest';
-
-export const isStakeTypeTx = (signature: string | undefined) =>
-    isStakeTx(signature) || isUnstakeTx(signature) || isClaimTx(signature);
-
 export const getSignatureByEthereumDataHex = (dataHex: string) => {
     const cleanHex = dataHex.startsWith('0x') ? dataHex.slice(2) : dataHex;
 
     return `0x${cleanHex.slice(0, 8)}`;
 };
 
+const EVERSTAKE_OPERATION_TO_STAKE_TYPE: Record<EverstakeOperation, StakeType> = {
+    stake: 'stake',
+    unstake: 'unstake',
+    claimWithdrawRequest: 'claim',
+};
+
+// Selector-only read for review screens of drafts that carry raw calldata; the provider-aware
+// classification lives in wallet-core.
 export const getTxStakeNameByDataHex = (dataHex: string | undefined): StakeType | null => {
     if (!dataHex) return null;
-    const signature = getSignatureByEthereumDataHex(dataHex);
 
-    if (!isStakeTypeTx(signature)) return null;
-    // @ts-expect-error: indexing with noUncheckedIndexedAccess
-    const stakeType: StakeType = signatureToStakeTypeMap[signature];
+    const operation = getEverstakeOperationBySelector(getSignatureByEthereumDataHex(dataHex));
 
-    return stakeType;
+    return operation ? EVERSTAKE_OPERATION_TO_STAKE_TYPE[operation] : null;
 };
 
 const isStakeForm = (form: FormState | StakeFormState): form is StakeFormState =>

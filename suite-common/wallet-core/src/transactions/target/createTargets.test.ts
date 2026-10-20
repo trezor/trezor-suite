@@ -139,7 +139,7 @@ describe(createTargets.name, () => {
     it('filters out internal transfers that are instant staking transactions', () => {
         // An instant stake transfer goes from addressContractPool to addressContractWithdrawTreasury.
         // For eth mainnet the pool address is used as `from` and withdraw treasury as `to`.
-        // getInstantStakeType returns 'stake' for such transfers, so they should be excluded.
+        // the classifier marks such transfers as an instant stake, so they should be excluded.
         // We use a regular internal transfer that won't match staking addresses.
         const regularTransfer = makeInternalTransfer({
             from: '0xRegularFrom',

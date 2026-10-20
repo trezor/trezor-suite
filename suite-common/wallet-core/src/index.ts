@@ -86,6 +86,7 @@ export * from './staking/ethereum/ethereumStakingLiveState';
 export * from './staking/ethereum/ethereumStakingSelectors';
 export * from './staking/ethereum/ethereumStakingSignUtils';
 export * from './staking/ethereum/ethereumStakingThunks';
+export * from './staking/ethereum/ethereumStakingTransactions';
 export * from './staking/ethereum/ethereumStakingUtils';
 export * from './staking/ethereum/providers/ethereumStakingProviders';
 export type * from './staking/ethereum/providers/types';

@@ -1,52 +1,73 @@
-import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type StakeType, type WalletAccountTransaction } from '@suite-common/wallet-types';
-import { isPending } from '@suite-common/wallet-utils';
-import { type InternalTransfer } from '@trezor/connect';
+import { type BaseStakeType, type WalletAccountTransaction } from '@suite-common/wallet-types';
+import { getSignatureByEthereumDataHex } from '@suite-common/wallet-utils';
+import { type InternalTransfer } from '@trezor/blockchain-link-types';
+import {
+    type EverstakeOperation,
+    getEverstakeOperationBySelector,
+} from '@trezor/network-ethereum/staking';
 
+import { type StakingTransferAccount, type StakingTxClassification } from '../types';
+import { getUnstakeAmountWeiFromCalldata } from './everstakeCalldata';
+import { STAKE_GAS_LIMIT_RESERVE } from './everstakeConstants';
 import { getEverstakeContractsBySymbol } from './everstakeContracts';
 
-export const getInstantStakeType = (
-    internalTransfer: Pick<InternalTransfer, 'from' | 'to'>,
-    address?: string,
-    symbol?: NetworkSymbol,
-): StakeType | null => {
-    if (!address || !symbol) return null;
-
-    const contracts = getEverstakeContractsBySymbol(symbol);
-    if (!contracts) return null;
-
-    const { from, to } = internalTransfer;
-    const { pool, withdrawTreasury } = contracts;
-
-    if (from === pool && to === withdrawTreasury) return 'stake';
-    if (from === pool && to === address) return 'unstake';
-    if (from === withdrawTreasury && to === address) return 'claim';
-
-    return null;
+const OPERATION_TO_STAKE_TYPE: Record<EverstakeOperation, BaseStakeType> = {
+    stake: 'stake',
+    unstake: 'unstake',
+    claimWithdrawRequest: 'claim',
 };
 
-export const getChangedInternalTx = (
-    prevTxs: WalletAccountTransaction[],
-    currentTxs: WalletAccountTransaction[],
-    selectedAccountAddress?: string,
-    symbol?: NetworkSymbol,
-): InternalTransfer | null => {
-    if (!selectedAccountAddress || !symbol) return null;
+const classify = (selector: string | undefined, data?: string): StakingTxClassification | null => {
+    const operation = getEverstakeOperationBySelector(selector);
+    if (!operation) return null;
 
-    const prevPendingTxs = prevTxs.filter(tx => isPending(tx));
-    const currentSentTxs = currentTxs.filter(
-        tx => tx.type === 'sent' && tx.internalTransfers.length > 0,
-    );
+    const type = OPERATION_TO_STAKE_TYPE[operation];
+    const amount = type === 'unstake' && data ? getUnstakeAmountWeiFromCalldata(data) : null;
 
-    const changedTx = currentSentTxs.find(currTx =>
-        prevPendingTxs.some(prevTx => currTx.txid === prevTx.txid),
-    );
+    return {
+        providerId: 'everstake',
+        type,
+        ...(amount ? { amount } : {}),
+        gasReserve: STAKE_GAS_LIMIT_RESERVE,
+    };
+};
 
-    if (!changedTx) return null;
+export const classifyEverstakeCalldata = (data: string | undefined) =>
+    data ? classify(getSignatureByEthereumDataHex(data), data) : null;
 
-    const internalTransfer = changedTx.internalTransfers.find(internalTx =>
-        getInstantStakeType(internalTx, selectedAccountAddress, symbol),
-    );
+// Blockbook parses the selector into parsedData; the raw data covers backends that do not.
+export const classifyEverstakeTransaction = (tx: WalletAccountTransaction) => {
+    const { ethereumSpecific } = tx;
+    if (!ethereumSpecific) return null;
 
-    return internalTransfer ?? null;
+    const { parsedData, data } = ethereumSpecific;
+    const selector =
+        parsedData?.methodId ?? (data ? getSignatureByEthereumDataHex(data) : undefined);
+
+    return classify(selector, data);
+};
+
+// Instant operations settle through internal transfers between the pool, the withdraw treasury
+// and the account rather than through the account's own transaction.
+export const classifyEverstakeInternalTransfer = (
+    { from, to }: Pick<InternalTransfer, 'from' | 'to'>,
+    { descriptor, symbol }: StakingTransferAccount,
+): BaseStakeType | null => {
+    const contracts = getEverstakeContractsBySymbol(symbol);
+    if (!contracts) return null;
+    const { pool, withdrawTreasury } = contracts;
+
+    if (from === pool && to === withdrawTreasury) {
+        return 'stake';
+    }
+
+    if (from === pool && to === descriptor) {
+        return 'unstake';
+    }
+
+    if (from === withdrawTreasury && to === descriptor) {
+        return 'claim';
+    }
+
+    return null;
 };

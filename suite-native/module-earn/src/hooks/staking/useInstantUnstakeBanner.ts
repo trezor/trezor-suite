@@ -6,8 +6,8 @@ import {
     type AccountsRootState,
     type StakeRootState,
     type TransactionsRootState,
-    getChangedInternalTx,
-    getInstantStakeType,
+    classifyEthereumInternalTransfer,
+    findChangedEthereumStakingInternalTransfer,
     isSupportedEthStakingNetworkSymbol,
     selectAccountByKey,
     selectAccountTransactions,
@@ -51,8 +51,16 @@ export const useInstantUnstakeBanner = (
             return;
         }
 
-        const transfer = getChangedInternalTx(prevTxs.current, txs, descriptor, symbol);
-        if (transfer && getInstantStakeType(transfer, descriptor, symbol) === 'unstake') {
+        const transferAccount = { descriptor, symbol };
+        const transfer = findChangedEthereumStakingInternalTransfer(
+            prevTxs.current,
+            txs,
+            transferAccount,
+        );
+        if (
+            transfer &&
+            classifyEthereumInternalTransfer(transfer, transferAccount)?.type === 'unstake'
+        ) {
             setAmount(formatNetworkAmount(transfer.amount ?? '0', symbol, false));
             setIsVisible(true);
         }

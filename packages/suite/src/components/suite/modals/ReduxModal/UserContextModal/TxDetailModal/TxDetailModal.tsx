@@ -3,7 +3,7 @@ import { useMemo, useRef, useState } from 'react';
 import { Translation } from '@suite/intl';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
-    getInstantStakeType,
+    isEthereumInternalTransferHidden,
     selectAccountByKey,
     selectAllPendingTransactions,
     selectTransactionByAccountKeyAndTxid,
@@ -82,11 +82,9 @@ export const TxDetailModal = ({
     const filteredInternalTransfers = useMemo(() => {
         if (!resolvedTx) return [];
 
-        return resolvedTx.internalTransfers.filter(t => {
-            const stakeType = getInstantStakeType(t, descriptor, symbol);
-
-            return stakeType !== 'stake';
-        });
+        return resolvedTx.internalTransfers.filter(
+            transfer => !isEthereumInternalTransferHidden(transfer, { descriptor, symbol }),
+        );
     }, [resolvedTx, descriptor, symbol]);
 
     const tx = useMemo(() => {

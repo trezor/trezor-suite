@@ -39,7 +39,6 @@ import {
     getEvmNonceInfo,
     getEvmNonceInfoFromConfirmedNonce,
     getExternalComposeOutput,
-    getTxStakeNameByDataHex,
     isEip1559,
     isEvmApprovalTx,
     prepareEthereumTransaction,
@@ -65,7 +64,7 @@ import {
     type WalletSettingsRootState,
     selectAddressDisplayType,
 } from '../settings/walletSettingsReducer';
-import { STAKE_GAS_LIMIT_RESERVE } from '../staking/ethereum/providers/everstake/everstakeConstants';
+import { classifyEthereumStakingCalldata } from '../staking/ethereum/ethereumStakingTransactions';
 import { type TransactionsRootState } from '../transactions/transactionsReducerTypes';
 import {
     selectAccountTransactions,
@@ -385,9 +384,12 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
         }
 
         // increase gas limit for staking, this flow is used only during bump fee
-        const isStakeEthTx = !!getTxStakeNameByDataHex(formState.transactionData);
-        if (isStakeEthTx) {
-            customFeeLimit = customFeeLimit.plus(STAKE_GAS_LIMIT_RESERVE);
+        const stakingStep = classifyEthereumStakingCalldata(
+            account.symbol,
+            formState.transactionData,
+        );
+        if (stakingStep) {
+            customFeeLimit = customFeeLimit.plus(stakingStep.gasReserve);
         }
 
         // FeeLevels are read-only

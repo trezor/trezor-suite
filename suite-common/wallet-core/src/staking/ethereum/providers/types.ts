@@ -1,5 +1,11 @@
 import { type NetworkSymbol, type StakingProviderId } from '@suite-common/wallet-config';
-import { type Account, type BaseStakeType, type StakingLimits } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type BaseStakeType,
+    type StakingLimits,
+    type WalletAccountTransaction,
+} from '@suite-common/wallet-types';
+import { type InternalTransfer } from '@trezor/blockchain-link-types';
 import { type VerifyIssue } from '@trezor/network-ethereum-suite-common';
 
 import { type StakingPosition } from '../../positions/positionsTypes';
@@ -56,6 +62,16 @@ export type StakingStepCalldata = Pick<StakingTxStep, 'label' | 'data'>;
 
 export type StakingCalldataVerification = { isValid: boolean; issues: VerifyIssue[] };
 
+export type StakingTxClassification = {
+    providerId: StakingProviderId;
+    type: BaseStakeType;
+    /** In subunits, like the transaction's own amounts; present where the calldata carries it. */
+    amount?: string;
+    gasReserve: number;
+};
+
+export type StakingTransferAccount = { descriptor: string; symbol: NetworkSymbol };
+
 export type StakingUnstakePreviewParams = {
     amount: string;
     from: string;
@@ -84,4 +100,13 @@ export type EthereumStakingProviderAdapter = {
         context: StakingLiveStateContext,
     ) => Promise<EthereumStakingLiveStateValidation>;
     previewUnstake?: (params: StakingUnstakePreviewParams) => Promise<string | null>;
+    /** Classifies calldata by its function selector alone, for drafts and fee bumps. */
+    classifyCalldata: (data: string | undefined) => StakingTxClassification | null;
+    /** Maps a wallet transaction to an operation of this provider, or null. */
+    classifyTransaction: (tx: WalletAccountTransaction) => StakingTxClassification | null;
+    /** Maps an internal transfer between the provider's contracts and the account to an operation, or null. */
+    classifyInternalTransfer: (
+        transfer: Pick<InternalTransfer, 'from' | 'to'>,
+        account: StakingTransferAccount,
+    ) => BaseStakeType | null;
 };

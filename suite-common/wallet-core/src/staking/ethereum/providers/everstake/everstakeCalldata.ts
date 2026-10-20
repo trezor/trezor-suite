@@ -99,10 +99,14 @@ export const verifyEverstakeCalldata = (
     }
 };
 
-export const getUnstakeAmountFromCalldata = (calldata: string): string | null => {
+export const getUnstakeAmountWeiFromCalldata = (calldata: string): string | null => {
     const decoded = Calldata.evm.everstake.unstake.decode(calldata);
 
-    if (!decoded) return null;
+    return decoded ? `${decoded.value}` : null;
+};
 
-    return fromWei(`${decoded.value}`).toEther();
+export const getUnstakeAmountFromCalldata = (calldata: string): string | null => {
+    const amountWei = getUnstakeAmountWeiFromCalldata(calldata);
+
+    return amountWei ? fromWei(amountWei).toEther() : null;
 };

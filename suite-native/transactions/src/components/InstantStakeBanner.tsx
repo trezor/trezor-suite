@@ -3,10 +3,14 @@ import { useSelector } from 'react-redux';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
-    getInstantStakeType,
+    classifyEthereumInternalTransfer,
     selectAccountByKey,
 } from '@suite-common/wallet-core';
-import { type AccountKey, type WalletAccountTransaction } from '@suite-common/wallet-types';
+import {
+    type AccountKey,
+    type BaseStakeType,
+    type WalletAccountTransaction,
+} from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Box, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
@@ -40,13 +44,18 @@ export const InstantStakeBanner = ({ accountKey, transaction }: InstantStakeBann
     if (!address || !symbol) return null;
 
     const stakeResult = transaction.internalTransfers
-        .map(internalTx => ({ internalTx, type: getInstantStakeType(internalTx, address, symbol) }))
+        .map(internalTx => ({
+            internalTx,
+            type:
+                classifyEthereumInternalTransfer(internalTx, { descriptor: address, symbol })
+                    ?.type ?? null,
+        }))
         .find(({ type }) => type !== null);
 
     const internalTransfer = stakeResult?.internalTx;
     const stakeType = stakeResult?.type ?? null;
 
-    if (!internalTransfer || !stakeType || stakeType === 'change-delegate') return null;
+    if (!internalTransfer || !stakeType) return null;
 
     const amount = formatNetworkAmount(internalTransfer.amount ?? '0', symbol, false);
     const displaySymbol = getNetworkDisplaySymbol(symbol);
@@ -55,7 +64,7 @@ export const InstantStakeBanner = ({ accountKey, transaction }: InstantStakeBann
         stake: translate('earn.instantStakeBanner.stakedTitle', { amount, displaySymbol }),
         unstake: translate('earn.instantStakeBanner.unstakedTitle', { amount, displaySymbol }),
         claim: translate('earn.instantStakeBanner.claimedTitle', { amount, displaySymbol }),
-    } satisfies Record<Exclude<typeof stakeType, 'change-delegate'>, string>;
+    } satisfies Record<BaseStakeType, string>;
 
     const label = labelMap[stakeType];
 

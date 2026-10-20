@@ -3,12 +3,11 @@ import { A, F, pipe } from '@mobily/ts-belt';
 import { type SignValue } from '@suite-common/suite-types';
 import {
     type Target as ProcessedTarget,
+    classifyEthereumStakingTransaction,
     createSimpleTargetId,
     getTxStakeType,
-    getUnstakeAmountByEthereumDataHex,
 } from '@suite-common/wallet-core';
 import { type TransactionType, type WalletAccountTransaction } from '@suite-common/wallet-types';
-import { getTxStakeNameByDataHex } from '@suite-common/wallet-utils';
 import { type EnhancedVinVout, type Target } from '@trezor/blockchain-link-types';
 import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
 
@@ -69,8 +68,7 @@ const transactionTypeToSignValueMap = {
 export const getTransactionValueSign = (transactionType: TransactionType) =>
     transactionTypeToSignValueMap[transactionType];
 
-const resolveStakeType = (tx: WalletAccountTransaction) =>
-    getTxStakeType(tx) ?? getTxStakeNameByDataHex(tx.ethereumSpecific?.data);
+const resolveStakeType = (tx: WalletAccountTransaction) => getTxStakeType(tx);
 
 export const groupTargetOutputs = (outputs: ProcessedTarget[]): ProcessedTarget[] => {
     const targetOutputs = outputs.filter(
@@ -98,7 +96,7 @@ export const getUnstakeTxAmount = (tx: WalletAccountTransaction) => {
         return tx.solanaSpecific.stakeOperation.amount;
     }
 
-    return getUnstakeAmountByEthereumDataHex(tx.ethereumSpecific?.data) ?? undefined;
+    return classifyEthereumStakingTransaction(tx)?.amount;
 };
 
 type GetNextRequestedTransactionCountParams = {

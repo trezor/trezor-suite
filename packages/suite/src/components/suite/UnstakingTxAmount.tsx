@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 
-import { getUnstakeAmountByEthereumDataHex } from '@suite-common/wallet-core';
+import { classifyEthereumStakingTransaction } from '@suite-common/wallet-core';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
-import { asAmountSubunit, isUnstakeTx, subunitsToUnits } from '@suite-common/wallet-utils';
+import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { FormattedCryptoAmount } from './FormattedCryptoAmount';
@@ -12,7 +12,7 @@ interface UnstakingTxAmountProps {
 }
 
 export const UnstakingTxAmount = ({ transaction }: UnstakingTxAmountProps) => {
-    const { ethereumSpecific, solanaSpecific, tronSpecific, symbol } = transaction;
+    const { solanaSpecific, tronSpecific, symbol } = transaction;
 
     const unstakeAmount = useMemo(() => {
         if (tronSpecific?.unstakeAmount) return tronSpecific.unstakeAmount;
@@ -21,12 +21,13 @@ export const UnstakingTxAmount = ({ transaction }: UnstakingTxAmountProps) => {
             return solanaSpecific.stakeOperation.amount ?? '0';
         }
 
-        if (isUnstakeTx(ethereumSpecific?.parsedData?.methodId)) {
-            return getUnstakeAmountByEthereumDataHex(ethereumSpecific?.data);
+        const ethereumStaking = classifyEthereumStakingTransaction(transaction);
+        if (ethereumStaking?.type === 'unstake') {
+            return ethereumStaking.amount;
         }
 
         return undefined;
-    }, [ethereumSpecific, solanaSpecific, tronSpecific]);
+    }, [transaction, solanaSpecific, tronSpecific]);
 
     if (!unstakeAmount) return null;
 

@@ -26,12 +26,8 @@ import {
     getErc4626Contracts,
     getEvmPrivatePendingHint,
     getFiatRateKey,
-    isClaimTx,
     isNftTokenTransfer,
     isPending,
-    isStakeTx,
-    isStakeTypeTx,
-    isUnstakeTx,
     isYieldTypeTx,
     roundTimestampToNearestPastHour,
 } from '@suite-common/wallet-utils';
@@ -50,9 +46,8 @@ import { selectHistoricFiatRates } from '../fiat-rates/fiatRatesSelectors';
 import type { FiatRatesRootState } from '../fiat-rates/fiatRatesTypes';
 import { type PhishingRootState } from '../phishing/phishingReducerTypes';
 import { selectActiveDustPhishingThreshold } from '../phishing/phishingSelectors';
-import { isCardanoStakingTx } from '../staking/cardano/cardanoStakingUtils';
-import { isAccountStakingActive } from '../staking/shared/stakingUtils';
-import { isTronStakingTx } from '../staking/tron/tronStakingUtils';
+import { classifyEthereumStakingTransaction } from '../staking/ethereum/ethereumStakingTransactions';
+import { isAccountStakingActive, isStakingTransaction } from '../staking/shared/stakingUtils';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<
     TransactionsRootState & AccountsRootState
@@ -246,16 +241,7 @@ export const selectIsPhishingTransaction = (
 
 export const selectAccountStakeTypeTransactions = createMemoizedSelector(
     [selectAccountTransactions],
-    transactions =>
-        returnStableArrayIfEmpty(
-            transactions.filter(
-                tx =>
-                    isStakeTypeTx(tx?.ethereumSpecific?.parsedData?.methodId) ||
-                    !!tx?.solanaSpecific?.stakeOperation?.type ||
-                    isCardanoStakingTx(tx) ||
-                    isTronStakingTx(tx),
-            ),
-        ),
+    transactions => returnStableArrayIfEmpty(transactions.filter(isStakingTransaction)),
 );
 
 export const selectAccountYieldTypeTransactions = createMemoizedSelector(
@@ -272,7 +258,7 @@ export const selectAccountStakeTransactions = createMemoizedSelector(
     [selectAccountTransactions],
     transactions =>
         returnStableArrayIfEmpty(
-            transactions.filter(tx => isStakeTx(tx?.ethereumSpecific?.parsedData?.methodId)),
+            transactions.filter(tx => classifyEthereumStakingTransaction(tx)?.type === 'stake'),
         ),
 );
 
@@ -280,7 +266,7 @@ export const selectAccountUnstakeTransactions = createMemoizedSelector(
     [selectAccountTransactions],
     transactions =>
         returnStableArrayIfEmpty(
-            transactions.filter(tx => isUnstakeTx(tx?.ethereumSpecific?.parsedData?.methodId)),
+            transactions.filter(tx => classifyEthereumStakingTransaction(tx)?.type === 'unstake'),
         ),
 );
 
@@ -288,7 +274,7 @@ export const selectAccountClaimTransactions = createMemoizedSelector(
     [selectAccountTransactions],
     transactions =>
         returnStableArrayIfEmpty(
-            transactions.filter(tx => isClaimTx(tx?.ethereumSpecific?.parsedData?.methodId)),
+            transactions.filter(tx => classifyEthereumStakingTransaction(tx)?.type === 'claim'),
         ),
 );
 
@@ -302,8 +288,8 @@ export const selectAnyAccountIsStakingActive = createMemoizedSelector(
     (transactions, accounts) =>
         accounts.some(account => {
             const accountTransactions = transactions[account.key] ?? [];
-            const claimTransactions = accountTransactions.filter(tx =>
-                isClaimTx(tx?.ethereumSpecific?.parsedData?.methodId),
+            const claimTransactions = accountTransactions.filter(
+                tx => classifyEthereumStakingTransaction(tx)?.type === 'claim',
             );
 
             return isAccountStakingActive(account, claimTransactions);

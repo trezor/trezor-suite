@@ -1,5 +1,6 @@
 import { Translation } from '@suite/intl';
 import {
+    classifyEthereumStakingTransaction,
     selectBaseCurrency,
     selectHistoricFiatRates,
     selectHistoricFiatRatesByTimestamp,
@@ -14,7 +15,6 @@ import {
     getContractAddressForNetworkSymbol,
     getFiatRateKey,
     getTxOperation,
-    isStakeTypeTx,
     isTxFeePaid,
     roundTimestampToNearestPastHour,
 } from '@suite-common/wallet-utils';
@@ -51,8 +51,9 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
     const cardanoWithdrawal = formatCardanoWithdrawal(tx);
     const cardanoDeposit = formatCardanoDeposit(tx);
 
-    const txSignature = tx.ethereumSpecific?.parsedData?.methodId;
-    const isStakeType = isStakeTypeTx(txSignature) || tx?.solanaSpecific?.stakeOperation?.type; // ethereum or solana staking tx
+    // ethereum or solana staking tx
+    const isStakeType =
+        !!classifyEthereumStakingTransaction(tx) || !!tx?.solanaSpecific?.stakeOperation?.type;
     const isStakeTypeTxNoAmount = isStakeType && amount.eq(0);
 
     const getAmountSignValue = () => {
