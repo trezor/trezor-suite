@@ -1,10 +1,10 @@
 import { useIntl } from 'react-intl';
 
 import { selectSelectedAccount } from '@suite/account';
-import { messages } from '@suite/intl';
 import { type MODAL_CONTEXT_DEVICE } from '@suite/modal';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
+import { messages } from '@suite-lego/intl';
 import TrezorConnect, { UI_EVENTS, UI_REQUESTS } from '@trezor/connect';
 
 import { useSelector } from 'src/hooks/suite';

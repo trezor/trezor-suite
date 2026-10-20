@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 
 import type { CryptoId } from 'invity-api';
 
-import { Translation } from '@suite/intl';
 import {
     requiresTokenApproval,
     selectIsTradingNetworkFeeMissing,
@@ -11,6 +10,7 @@ import {
     tradingExchangeActions,
 } from '@suite-common/trading';
 import { isAmountTooHigh } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Button } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

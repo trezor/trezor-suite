@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 
 import { useDevice } from '@suite/device';
-import { Translation, type TranslationKey } from '@suite/intl';
 import {
     selectIsDeviceAuthenticityCheckEnabled,
     selectIsUnlockedBootloaderAllowed,
 } from '@suite/settings';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { StepList, type StepListItemState, Text } from '@trezor/components';
 
 import { useOnboarding, useSelector } from 'src/hooks/suite';

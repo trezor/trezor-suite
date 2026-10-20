@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { type DesktopBluetoothDevice } from '@suite/bluetooth';
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Card, Modal, Row, Text } from '@trezor/components';
 
 import { BluetoothDeviceComponent } from './BluetoothDeviceComponent';

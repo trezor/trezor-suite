@@ -1,4 +1,3 @@
-import { Translation } from '@suite/intl';
 import {
     selectWalletAssetContractAddress,
     selectWalletAssetDisplaySymbol,
@@ -10,6 +9,7 @@ import {
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
 import { type HiddenTokenReason, type WalletAssetKey } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { H3, Modal, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

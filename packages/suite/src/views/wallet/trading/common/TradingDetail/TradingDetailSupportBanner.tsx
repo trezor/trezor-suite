@@ -1,5 +1,5 @@
-import { Translation } from '@suite/intl';
 import { type TradingProviderInfo } from '@suite-common/trading';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Link } from '@trezor/components';
 
 import { getTradingProviderName } from 'src/views/wallet/trading/common/TradingDetail/utils';

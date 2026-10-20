@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
-import { Translation, useTranslation } from '@suite/intl';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { walletConnectPairThunk } from '@suite-common/walletconnect';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import { Button, Input, Modal } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { PlusIcon } from '@trezor/icons';

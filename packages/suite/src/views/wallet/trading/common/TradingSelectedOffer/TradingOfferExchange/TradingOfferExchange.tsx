@@ -2,7 +2,6 @@ import { useSelector } from 'react-redux';
 
 import { type TradeExchangeAction, events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
-import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import {
     Feature,
@@ -23,6 +22,7 @@ import {
     useExchangeIssue,
 } from '@suite-common/trading';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Button, Card, Column, H2 } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { useAsyncClickHandler } from '@trezor/react-utils';

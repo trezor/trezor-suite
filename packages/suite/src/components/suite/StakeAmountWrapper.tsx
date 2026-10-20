@@ -2,8 +2,8 @@ import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
+import { Translation } from '@suite-lego/intl';
 import { TOOLTIP_DELAY_NONE, TOOLTIP_DELAY_NORMAL, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

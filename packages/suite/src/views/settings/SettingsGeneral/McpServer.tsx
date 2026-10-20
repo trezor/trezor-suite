@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { injectDesktopApi } from '@suite/desktop-app-api';
 import { LearnMoreButton } from '@suite/external-links';
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Column, Modal, SelectBar } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { copyToClipboard } from '@trezor/dom-utils';

@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 import { useIntl } from 'react-intl';
 
-import { Translation, messages } from '@suite/intl';
 import { MODAL_CONTEXT_DEVICE, selectModal, selectModalRequestId } from '@suite/modal';
 import {
     getPassphraseMaxLength,
@@ -9,6 +8,7 @@ import {
     selectHasDevicePassphraseEntryCapability,
     selectSelectedDevice,
 } from '@suite-common/device';
+import { Translation, messages } from '@suite-lego/intl';
 import { Column, H3, Paragraph } from '@trezor/components';
 import TrezorConnect, { UI_REQUESTS, UI_RESPONSE } from '@trezor/connect';
 

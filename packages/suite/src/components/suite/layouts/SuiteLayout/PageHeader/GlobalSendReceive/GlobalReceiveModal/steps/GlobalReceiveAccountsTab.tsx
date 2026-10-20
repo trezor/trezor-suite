@@ -1,6 +1,6 @@
 import { useDevice } from '@suite/device';
-import { Translation } from '@suite/intl';
 import { type Account } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Column, H4, IconCircle, Paragraph, Row, Text } from '@trezor/components';
 import { PlusIcon } from '@trezor/icons';
 

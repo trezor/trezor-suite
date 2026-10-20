@@ -1,5 +1,5 @@
 import { setBluetoothDeviceNeedsManualPairing } from '@suite/bluetooth';
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Modal, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

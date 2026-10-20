@@ -1,4 +1,4 @@
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Card, Icon, List, Modal, Paragraph } from '@trezor/components';
 import { DeviceMobileIcon, TagIcon } from '@trezor/icons';
 

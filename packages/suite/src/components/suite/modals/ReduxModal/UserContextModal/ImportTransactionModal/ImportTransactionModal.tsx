@@ -1,9 +1,9 @@
 import { type ReactNode, useState } from 'react';
 
-import { Translation } from '@suite/intl';
 import { type UserContextPayload } from '@suite-common/suite-types';
 import { networksCollection } from '@suite-common/wallet-config';
 import { parseCSV } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Card, CollapsibleBox, Column, Modal, Tabs, Text, Textarea } from '@trezor/components';
 import { FileCsvIcon } from '@trezor/icons';
 import { DropZone } from '@trezor/product-components';

@@ -1,4 +1,4 @@
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Column, Modal, Paragraph } from '@trezor/components';
 import { TorBrowserIcon } from '@trezor/icons';
 

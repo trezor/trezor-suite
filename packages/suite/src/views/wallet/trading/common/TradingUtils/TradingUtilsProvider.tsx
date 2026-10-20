@@ -2,8 +2,8 @@ import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { Translation } from '@suite/intl';
 import { type TradingUtilsProvidersProps, tradeApi } from '@suite-common/trading';
+import { Translation } from '@suite-lego/intl';
 import { Column, Image } from '@trezor/components';
 
 type TradingUtilsProviderProps = {

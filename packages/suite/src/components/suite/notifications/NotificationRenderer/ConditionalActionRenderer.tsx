@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-import { type ExtendedMessageDescriptor } from '@suite/intl';
+import { type ExtendedMessageDescriptor } from '@suite-lego/intl';
 import { Paragraph } from '@trezor/components';
 
 import type { NotificationRendererProps } from 'src/components/suite';

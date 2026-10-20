@@ -1,6 +1,5 @@
 import { type UseFormSetValue } from 'react-hook-form';
 
-import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { useGetCountryName } from '@suite/trading';
 import { getCountryFlag } from '@suite-common/flags';
 import {
@@ -10,6 +9,7 @@ import {
     tradingThunks,
     useCountryFilteredData,
 } from '@suite-common/trading';
+import { Translation, type TranslationKey, useTranslation } from '@suite-lego/intl';
 import { Column, Flag, Icon, Input, Modal, Paragraph, Row } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { MagnifyingGlassIcon } from '@trezor/icons';

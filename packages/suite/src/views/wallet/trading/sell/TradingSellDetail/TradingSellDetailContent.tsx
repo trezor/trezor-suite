@@ -1,8 +1,8 @@
 import { type ReactNode } from 'react';
 
-import { Translation, useTranslation } from '@suite/intl';
 import { type TradingSellType, selectTradingComposedTransactionInfo } from '@suite-common/trading';
 import { selectAccounts } from '@suite-common/wallet-core';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import { Paragraph } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';

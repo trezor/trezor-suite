@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
 import { useDevice } from '@suite/device';
-import { Translation } from '@suite/intl';
 import { type Account } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Modal } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

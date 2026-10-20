@@ -3,7 +3,6 @@ import { FormProvider, useForm, useWatch } from 'react-hook-form';
 
 import { useMutation } from '@tanstack/react-query';
 
-import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -15,6 +14,7 @@ import {
     useMissingRateTickersQuery,
 } from '@suite-common/wallet-core';
 import { type Account, toTokenAddress } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Column, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

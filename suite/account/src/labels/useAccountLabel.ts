@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
-import { useTranslation } from '@suite/intl';
 import { type Account } from '@suite-common/wallet-types';
+import { useTranslation } from '@suite-lego/intl';
 
 import { getDefaultAccountLabel } from './getDefaultAccountLabel';
 import { type SelectAccountLabelState, selectAccountLabel } from './selectAccountLabel';

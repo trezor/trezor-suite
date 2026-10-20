@@ -1,8 +1,8 @@
 import { useRef } from 'react';
 
-import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { type HomeAssetGrouping, selectSmallBalanceSummary } from '@suite-common/assets';
+import { Translation } from '@suite-lego/intl';
 import {
     GhostContainer,
     Icon,

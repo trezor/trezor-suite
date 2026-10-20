@@ -1,6 +1,6 @@
 import { useDevice } from '@suite/device';
-import { Translation } from '@suite/intl';
 import { startOrRestartDiscoveryThunk } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { useServices } from '@trezor/dependency-injection';
 import { RepeatIcon, WarningIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';

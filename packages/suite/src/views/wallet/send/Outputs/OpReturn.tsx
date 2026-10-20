@@ -1,8 +1,8 @@
 import { type ChangeEvent } from 'react';
 
-import { Translation, useTranslation } from '@suite/intl';
 import { OP_RETURN_MAX_LENGTH } from '@suite-common/wallet-core';
 import { isHexValid } from '@suite-common/wallet-utils';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import { Column, Flex, IconButton, Row, Text, Textarea, Tooltip } from '@trezor/components';
 import { XIcon } from '@trezor/icons';
 

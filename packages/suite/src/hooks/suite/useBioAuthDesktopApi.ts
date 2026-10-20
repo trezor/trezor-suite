@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import { useTranslation } from '@suite/intl';
+import { useTranslation } from '@suite-lego/intl';
 import { useServices } from '@trezor/dependency-injection';
 import { isMacOs } from '@trezor/env-utils';
 import { injectDispatch } from '@trezor/redux-utils';

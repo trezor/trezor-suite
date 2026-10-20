@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { Translation } from '@suite/intl';
 import type { PasswordEntry as PasswordEntryType } from '@suite-common/metadata-types';
+import { Translation } from '@suite-lego/intl';
 import { Button, Column, H3, Modal, Paragraph } from '@trezor/components';
 import TrezorConnect, { type DeviceUniquePath } from '@trezor/connect';
 import { PencilIcon, TrashIcon } from '@trezor/icons';

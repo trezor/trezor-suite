@@ -1,6 +1,6 @@
 import { FormattedList } from 'react-intl';
 
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Icon, InfoItem, Tooltip } from '@trezor/components';
 import { CheckIcon, XIcon } from '@trezor/icons';
 

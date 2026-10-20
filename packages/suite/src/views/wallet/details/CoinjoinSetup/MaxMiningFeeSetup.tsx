@@ -3,8 +3,8 @@ import {
     selectDefaultMaxMiningFeeByAccountKey,
     selectFeeRateMedianByAccountKey,
 } from '@suite/coinjoin';
-import { Translation } from '@suite/intl';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 

@@ -3,9 +3,9 @@ import { useWatch } from 'react-hook-form';
 
 import styled from 'styled-components';
 
-import { Translation } from '@suite/intl';
 import { type NetworkType } from '@suite-common/wallet-config';
 import { sendFormActions } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Button, Dropdown, type DropdownMenuItemProps, Switch, Text } from '@trezor/components';
 import { FADE_IN } from '@trezor/components/src/config/animations';
 import { useServices } from '@trezor/dependency-injection';

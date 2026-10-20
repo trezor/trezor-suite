@@ -1,5 +1,5 @@
-import { messages } from '@suite/intl';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { messages } from '@suite-lego/intl';
 import { TestCategory, TestPriority, TestStream } from '@trezor/e2e-utils';
 
 import { expect, test } from '../../../support/fixtures';

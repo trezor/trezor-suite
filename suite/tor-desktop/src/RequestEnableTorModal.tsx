@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { Translation } from '@suite/intl';
 import { selectIsTorEnabled, selectIsTorLoading } from '@suite/tor';
 import { RequestEnableTorResponse } from '@suite-common/suite-config';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Modal } from '@trezor/components';
 import { TorBrowserIcon } from '@trezor/icons';
 

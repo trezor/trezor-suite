@@ -1,6 +1,6 @@
 import { type CSSProperties } from 'react';
 
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { type FractionButtonProps } from '@trezor/components';
 import { typographyStylesBase } from '@trezor/theme';
 import { clamp } from '@trezor/utils';

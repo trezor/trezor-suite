@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import { selectIsAddAccountNetworksBannerClosed, setFlag } from '@suite/flags';
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Banner } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { GraduationCapIcon } from '@trezor/icons';

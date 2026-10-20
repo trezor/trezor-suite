@@ -1,4 +1,4 @@
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 
 export const getApyRate = (apyRate: number): number =>
     Number.isFinite(apyRate) ? apyRate : Number.NEGATIVE_INFINITY;

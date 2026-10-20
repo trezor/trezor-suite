@@ -1,8 +1,8 @@
 import { type ReactNode, useMemo } from 'react';
 import { type RefCallBack } from 'react-hook-form';
 
-import { Translation } from '@suite/intl';
 import { type Explorer } from '@suite-common/wallet-config';
+import { Translation } from '@suite-lego/intl';
 import { Button, Column, InfoItem, Input, Row, Text } from '@trezor/components';
 import { ChangeIcon } from '@trezor/icons';
 import { typedObjectKeys } from '@trezor/utils';

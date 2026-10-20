@@ -1,6 +1,6 @@
 import { Fragment, type JSX } from 'react';
 
-import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
+import { type ExtendedMessageDescriptor, Translation } from '@suite-lego/intl';
 import { Icon, Row, Text } from '@trezor/components';
 import { CaretRightIcon } from '@trezor/icons';
 

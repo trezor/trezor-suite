@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 
 import { useDevice } from '@suite/device';
-import { Translation } from '@suite/intl';
 import { EntryForm, PasswordsList, TagsList, getNextId, usePasswords } from '@suite/metadata';
+import { Translation } from '@suite-lego/intl';
 import { Button } from '@trezor/components';
 import { PencilIcon } from '@trezor/icons';
 import { SectionItem } from '@trezor/product-components';

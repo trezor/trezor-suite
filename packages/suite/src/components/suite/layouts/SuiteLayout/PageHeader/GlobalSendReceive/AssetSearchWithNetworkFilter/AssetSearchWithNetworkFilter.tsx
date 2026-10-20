@@ -1,11 +1,11 @@
 import { type RefObject, memo, useMemo } from 'react';
 
-import { type TranslationKey, useTranslation } from '@suite/intl';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { selectNetworkSymbolForProtocol } from '@suite-common/networks';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectEnabledNetworks } from '@suite-common/wallet-core';
 import { type GlobalSendReceiveType } from '@suite-common/wallet-types';
+import { type TranslationKey, useTranslation } from '@suite-lego/intl';
 import { SearchAsset } from '@trezor/product-components';
 
 import { useListScrollReset } from 'src/components/suite/asset-picker/hooks';

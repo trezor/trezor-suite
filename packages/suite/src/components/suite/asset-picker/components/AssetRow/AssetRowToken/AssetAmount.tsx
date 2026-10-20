@@ -1,7 +1,7 @@
-import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Column, Text } from '@trezor/components';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';

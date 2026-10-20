@@ -2,11 +2,11 @@ import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { Translation } from '@suite/intl';
 import {
     selectRememberedHiddenWalletsCount,
     selectRememberedStandardWalletsCount,
 } from '@suite-common/device';
+import { Translation } from '@suite-lego/intl';
 import { Box, Button, Column, Divider, Row, SvgImage, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { isWeb } from '@trezor/env-utils';

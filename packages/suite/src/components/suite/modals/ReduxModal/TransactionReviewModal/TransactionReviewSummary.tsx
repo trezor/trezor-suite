@@ -1,6 +1,5 @@
 import { AccountLabel } from '@suite/account';
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
-import { Translation } from '@suite/intl';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { formatDurationStrict } from '@suite-common/suite-utils';
 import { type NetworkType, getNetwork } from '@suite-common/wallet-config';
@@ -12,6 +11,7 @@ import {
     type StakeType,
 } from '@suite-common/wallet-types';
 import { asAmountUnit, getFee, unitsToSubunits } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Box, IconButton, Note, Row, Text } from '@trezor/components';
 import { BroadcastIcon, ClockIcon, ComputerTowerIcon, InfoIcon, ReceiptIcon } from '@trezor/icons';
 import { TokenIcon } from '@trezor/product-components';

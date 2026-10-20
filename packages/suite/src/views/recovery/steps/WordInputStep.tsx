@@ -1,4 +1,4 @@
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Card, Column, Paragraph } from '@trezor/components';
 import { QuestionIcon } from '@trezor/icons';
 

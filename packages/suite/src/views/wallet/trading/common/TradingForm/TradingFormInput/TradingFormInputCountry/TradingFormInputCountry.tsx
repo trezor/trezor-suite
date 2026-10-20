@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { type Control, useWatch } from 'react-hook-form';
 
-import { Translation, useTranslation } from '@suite/intl';
 import { useGetCountryName } from '@suite/trading';
 import { getCountryFlag } from '@suite-common/flags';
 import { TRADING_FORM_COUNTRY_SELECT } from '@suite-common/trading';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import { Flag, GhostContainer, Icon, Row, Text } from '@trezor/components';
 import { CaretRightIcon } from '@trezor/icons';
 

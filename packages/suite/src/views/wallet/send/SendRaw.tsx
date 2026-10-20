@@ -1,7 +1,6 @@
 import { useForm, useWatch } from 'react-hook-form';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { Translation, useTranslation } from '@suite/intl';
 import { selectIsMevProtectionFeatureEnabled } from '@suite-common/mev';
 import {
     pushSendFormRawTransactionThunk,
@@ -9,6 +8,7 @@ import {
     sendFormActions,
 } from '@suite-common/wallet-core';
 import { isHexValid, tryGetAccountIdentity } from '@suite-common/wallet-utils';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import { Button, Card, H3, IconButton, Row, Textarea, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { XIcon } from '@trezor/icons';

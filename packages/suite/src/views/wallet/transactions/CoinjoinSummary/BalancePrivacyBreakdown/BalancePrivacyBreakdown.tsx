@@ -5,8 +5,8 @@ import {
     selectCurrentCoinjoinBalanceBreakdown,
     selectCurrentCoinjoinSession,
 } from '@suite/coinjoin';
-import { Translation } from '@suite/intl';
 import { isZero } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Icon } from '@trezor/components';
 import { CheckIcon, PauseIcon, ShuffleIcon, XIcon } from '@trezor/icons';
 

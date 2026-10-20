@@ -1,4 +1,3 @@
-import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { redactNumericalSubstring, useDiscreetMode } from '@suite-common/discreet-mode';
 import { getNetworkDisplaySymbol, isNetworkSymbol } from '@suite-common/wallet-config';
 import { type TronTxContractType } from '@suite-common/wallet-constants';
@@ -13,6 +12,7 @@ import {
     getTxHeaderSymbol,
     hasValueMovement,
 } from '@suite-common/wallet-utils';
+import { Translation, type TranslationKey, useTranslation } from '@suite-lego/intl';
 import { type AccountTransaction } from '@trezor/connect';
 import {
     type StellarOperationLabel,

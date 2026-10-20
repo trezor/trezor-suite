@@ -1,8 +1,8 @@
-import { Translation } from '@suite/intl';
 import { getFiatCurrencyFlag } from '@suite-common/flags';
 import { useFormatters } from '@suite-common/formatters';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { getDecimalsForBaseCurrency } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { isFiatBaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Column, Flag, Row, Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';

@@ -1,4 +1,3 @@
-import { messages } from '@suite/intl';
 import {
     createAccountRowId,
     createOwnerIdFromSecret,
@@ -8,6 +7,7 @@ import {
 import { asSuiteSyncOwnerSecretHex } from '@suite-common/suite-sync-storage';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { messages } from '@suite-lego/intl';
 import { asWalletDescriptor } from '@trezor/device-utils';
 import { TestStream } from '@trezor/e2e-utils';
 

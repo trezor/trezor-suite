@@ -1,4 +1,4 @@
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { CloudIcon } from '@trezor/icons';
 
 import { AccountExceptionLayout } from 'src/components/wallet';

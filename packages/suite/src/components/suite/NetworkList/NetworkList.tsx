@@ -1,10 +1,10 @@
 import { type ReactNode } from 'react';
 
 import { useDevice } from '@suite/device';
-import { Translation } from '@suite/intl';
 import { getCoinUnavailabilityMessage } from '@suite-common/suite-utils';
 import { type Network, type NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBlockchainState } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Column, Tooltip } from '@trezor/components';
 import { getFirmwareVersion, isDeviceInBootloaderMode } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';

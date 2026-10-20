@@ -1,4 +1,3 @@
-import { Translation } from '@suite/intl';
 import {
     selectResolvedEthereumNonce,
     selectStake,
@@ -7,6 +6,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { getFee, hasEip1559MaxPriorityFee, isEip1559 } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Note, Text } from '@trezor/components';
 import { CheckCircleIcon, GasPumpIcon } from '@trezor/icons';
 

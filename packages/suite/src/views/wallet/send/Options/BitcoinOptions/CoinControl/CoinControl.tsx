@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 
 import { selectCurrentTargetAnonymity } from '@suite/coinjoin';
-import { Translation } from '@suite/intl';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { filterAndCategorizeUtxos } from '@suite-common/transaction-search';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import { fetchUtxoTransactionsForAccountThunk } from '@suite-common/wallet-core';
 import { convertAmountUnitsToSubunits, formatNetworkAmount } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import {
     Banner,
     Card,

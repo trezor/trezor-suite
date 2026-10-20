@@ -1,9 +1,9 @@
 import { type MouseEvent } from 'react';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
+import { Translation } from '@suite-lego/intl';
 import { Banner } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { DeviceModelInternal } from '@trezor/device-utils';

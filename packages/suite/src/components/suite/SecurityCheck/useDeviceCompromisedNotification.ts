@@ -1,13 +1,13 @@
 import { useEffect } from 'react';
 
 import { useDevice } from '@suite/device';
-import { type TranslationKey } from '@suite/intl';
 import {
     type RevisionCheckErrorWithNotification,
     getIsRevisionCheckErrorWithNotification,
 } from '@suite-common/firmware-authenticity';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { type TranslationKey } from '@suite-lego/intl';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 

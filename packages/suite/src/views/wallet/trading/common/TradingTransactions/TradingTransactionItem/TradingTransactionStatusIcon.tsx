@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { useTranslation } from '@suite/intl';
+import { useTranslation } from '@suite-lego/intl';
 import { IconCircle } from '@trezor/components';
 
 import { type TradingTransactionStatusData } from './tradingTransactionItemUtils';

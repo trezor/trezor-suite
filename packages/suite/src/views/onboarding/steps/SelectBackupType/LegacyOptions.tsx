@@ -1,5 +1,5 @@
-import { Translation } from '@suite/intl';
 import { type BackupType } from '@suite-common/suite-types';
+import { Translation } from '@suite-lego/intl';
 import { Tooltip } from '@trezor/components';
 
 import { DefaultTag } from './DefaultTag';

@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import { Controller } from 'react-hook-form';
 
-import { useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { AMOUNT_MAX_LENGTH, updateFiatRatesThunk } from '@suite-common/wallet-core';
 import {
@@ -19,6 +18,7 @@ import {
     isLowAnonymityWarning,
     parseCryptoToFormattedBaseCurrency,
 } from '@suite-common/wallet-utils';
+import { useTranslation } from '@suite-lego/intl';
 import {
     type BaseCurrencyCode,
     fiatBaseCurrencies,

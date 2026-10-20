@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { injectDesktopApi } from '@suite/desktop-app-api';
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Card, Column, H3, Modal, Paragraph, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { StarFourIcon } from '@trezor/icons';

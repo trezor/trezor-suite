@@ -4,7 +4,6 @@ import { AccountLabel } from '@suite/account';
 import { injectDesktopAnalytics } from '@suite/analytics';
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { HiddenPlaceholder } from '@suite/discreet-mode';
-import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import {
     type YieldAccountRewards,
@@ -19,6 +18,7 @@ import {
     compareAccountsByCoin,
     subunitsToUnits,
 } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { CardList, Column, Icon, Modal, Row, Text, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { CaretRightIcon } from '@trezor/icons';

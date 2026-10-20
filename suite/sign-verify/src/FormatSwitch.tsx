@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Box, Row, SelectBar, Text, Tooltip } from '@trezor/components';
 
 const FORMAT_SWITCH_WIDTH = 360;

@@ -2,7 +2,6 @@ import styled, { type DefaultTheme } from 'styled-components';
 
 import { Address } from '@suite/address';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import {
     type TradingExchangeType,
@@ -15,6 +14,7 @@ import {
     useTradingUtils,
 } from '@suite-common/trading';
 import { selectAreFeesLoading, selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Button, Column } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { WarningIcon } from '@trezor/icons';

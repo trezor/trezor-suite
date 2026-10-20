@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
-import { Translation, type TranslationKey } from '@suite/intl';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { Column, InfoItem, Paragraph } from '@trezor/components';
 
 import { StellarContractCallRows } from './StellarContractCallRows';

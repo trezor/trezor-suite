@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 
-import { Translation } from '@suite/intl';
 import { useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
 import { TokenManagementAction, selectCoinDefinitions } from '@suite-common/token-definitions';
 import { selectBaseCurrency, selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { isErc4626, sortTokensByName } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Column } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';

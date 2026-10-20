@@ -43,7 +43,7 @@ jobs:
         with:
           version: v0.19.1
       - name: Install dependencies
-        run: yarn workspaces focus trezor-suite @suite/intl @suite-native/intl
+        run: yarn workspaces focus trezor-suite @suite-lego/intl @suite-native/intl
 
       - name: Set source branch
         run: echo "SOURCE_BRANCH=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
@@ -67,15 +67,15 @@ jobs:
       - name: Run crowdin sync [desktop]
         if: github.event.inputs.platform == 'desktop'
         run: |
-          yarn workspace @suite/intl translations:download --token=${{ secrets.CROWDIN_PERSONAL_TOKEN }}
-          yarn workspace @suite/intl translations:backport-en
+          yarn workspace @suite-lego/intl translations:download --token=${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+          yarn workspace @suite-lego/intl translations:backport-en
           if [ "${{ github.event.inputs.remove_unused_translations }}" = "true" ]; then
-            yarn workspace @suite/intl translations:list-unused --cleanup
+            yarn workspace @suite-lego/intl translations:list-unused --cleanup
           fi
-          yarn workspace @suite/intl translations:format
-          yarn workspace @suite/intl translations:extract
-          cat suite/intl/translations/master.json
-          yarn workspace @suite/intl translations:upload --token=${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+          yarn workspace @suite-lego/intl translations:format
+          yarn workspace @suite-lego/intl translations:extract
+          cat suite-lego/intl/translations/master.json
+          yarn workspace @suite-lego/intl translations:upload --token=${{ secrets.CROWDIN_PERSONAL_TOKEN }}
 
       - name: Run crowdin sync [mobile]
         if: github.event.inputs.platform == 'mobile'

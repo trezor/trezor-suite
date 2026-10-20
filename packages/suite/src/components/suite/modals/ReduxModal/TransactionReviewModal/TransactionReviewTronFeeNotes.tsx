@@ -1,6 +1,6 @@
-import { useTranslation } from '@suite/intl';
 import { type GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { calculateTronFeeBreakdown } from '@suite-common/wallet-utils';
+import { useTranslation } from '@suite-lego/intl';
 import { Note } from '@trezor/components';
 import { ReceiptIcon } from '@trezor/icons';
 

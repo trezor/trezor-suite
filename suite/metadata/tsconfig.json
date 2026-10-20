@@ -50,7 +50,7 @@
         { "path": "../analytics" },
         { "path": "../desktop-app-api" },
         { "path": "../device" },
-        { "path": "../intl" },
+        { "path": "../../suite-lego/intl" },
         { "path": "../settings" },
         { "path": "../../packages/components" },
         { "path": "../../packages/connect" },

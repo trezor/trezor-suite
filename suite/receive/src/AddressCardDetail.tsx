@@ -3,11 +3,11 @@ import { useSelector } from 'react-redux';
 
 import { Address, AddressLabeling, copyAddressToClipboard } from '@suite/address';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { Translation } from '@suite/intl';
 import { type ReceiveRootState, selectCurrentFreshAddress } from '@suite-common/receive';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { isUtxoBased } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Box, Button, Column, Grid, Row, Text, Tooltip, useMediaQuery } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { CopyIcon, ShareNetworkIcon, ShieldCheckIcon } from '@trezor/icons';

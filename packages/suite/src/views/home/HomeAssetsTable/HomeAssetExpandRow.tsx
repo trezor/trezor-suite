@@ -1,4 +1,4 @@
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Button, Table } from '@trezor/components';
 
 type HomeAssetExpandRowProps = {

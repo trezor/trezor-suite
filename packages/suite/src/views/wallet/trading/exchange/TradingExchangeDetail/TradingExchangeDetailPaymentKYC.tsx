@@ -1,7 +1,7 @@
 import { type ExchangeProviderInfo, type ExchangeTrade } from 'invity-api';
 
-import { Translation } from '@suite/intl';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Button, IconCircle } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 

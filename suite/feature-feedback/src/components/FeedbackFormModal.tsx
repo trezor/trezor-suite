@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
 import { type FeedbackFeatureName } from '@suite/experimental';
-import { Translation, useTranslation } from '@suite/intl';
 import { type Rating, ratingOptions } from '@suite-common/feedback';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import { Card, Column, Modal, Paragraph, Textarea } from '@trezor/components';
 import { EmojiRatingSelector } from '@trezor/product-components';
 

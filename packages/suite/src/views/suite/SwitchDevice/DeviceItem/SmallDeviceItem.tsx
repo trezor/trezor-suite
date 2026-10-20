@@ -1,6 +1,6 @@
-import { Translation } from '@suite/intl';
 import { selectDeviceLabelOrNameById, selectSelectedDevice } from '@suite-common/device';
 import { getDeviceInternalModel } from '@suite-common/suite-utils';
+import { Translation } from '@suite-lego/intl';
 import { Image, Row } from '@trezor/components';
 import { LinkBreakIcon, LinkIcon } from '@trezor/icons';
 

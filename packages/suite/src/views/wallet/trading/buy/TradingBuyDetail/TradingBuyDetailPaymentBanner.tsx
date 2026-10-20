@@ -1,7 +1,7 @@
 import { type BuyProviderInfo, type BuyTrade } from 'invity-api';
 
-import { Translation } from '@suite/intl';
 import { getStatusUrl } from '@suite-common/trading';
+import { Translation } from '@suite-lego/intl';
 import { Banner } from '@trezor/components';
 import { ArrowSquareOutIcon } from '@trezor/icons';
 

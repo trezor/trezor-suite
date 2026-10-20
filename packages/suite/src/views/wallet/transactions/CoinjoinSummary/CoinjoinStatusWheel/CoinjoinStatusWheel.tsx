@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
 import { selectCurrentCoinjoinWheelStates, stopCoinjoinSessionThunk } from '@suite/coinjoin';
-import { Translation } from '@suite/intl';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Button, Card, Column } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { StopIcon } from '@trezor/icons';

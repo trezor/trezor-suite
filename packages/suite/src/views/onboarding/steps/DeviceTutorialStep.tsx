@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { useIntl } from 'react-intl';
 
-import { Translation, messages } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { selectDeviceButtonRequests, selectSelectedDevice } from '@suite-common/device';
+import { Translation, messages } from '@suite-lego/intl';
 import TrezorConnect from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
 import { DEFAULT_FLAGSHIP_MODEL } from '@trezor/device';

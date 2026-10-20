@@ -5,9 +5,9 @@ import {
     selectCoinjoinAccountByKey,
     selectCoinjoinClient,
 } from '@suite/coinjoin';
-import { useTranslation } from '@suite/intl';
 import { type Account } from '@suite-common/wallet-types';
 import { getUtxoOutpoint } from '@suite-common/wallet-utils';
+import { useTranslation } from '@suite-lego/intl';
 import { type AccountUtxo } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 

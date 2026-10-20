@@ -1,5 +1,5 @@
-import { type TranslationKey } from '@suite/intl';
 import { type SuiteSyncUserFacingErrorType } from '@suite-common/suite-sync-types';
+import { type TranslationKey } from '@suite-lego/intl';
 
 export const suiteSyncErrorTranslationKeyMap: Record<SuiteSyncUserFacingErrorType, TranslationKey> =
     {

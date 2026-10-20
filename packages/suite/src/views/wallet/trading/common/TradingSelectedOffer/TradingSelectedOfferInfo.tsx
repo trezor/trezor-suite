@@ -1,4 +1,4 @@
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Column } from '@trezor/components';
 
 import type { TradingSelectedOfferInfoProps } from 'src/types/trading/tradingForm';

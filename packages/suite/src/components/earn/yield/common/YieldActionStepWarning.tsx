@@ -1,4 +1,4 @@
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Button, Column, Text } from '@trezor/components';
 
 type YieldFeeReserveNotice = { amount: string; nativeSymbol: string };

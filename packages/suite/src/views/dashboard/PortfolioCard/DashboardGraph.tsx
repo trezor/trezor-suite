@@ -3,11 +3,11 @@ import { memo, useCallback, useEffect, useState } from 'react';
 import { getUnixTime } from 'date-fns';
 import styled from 'styled-components';
 
-import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import { calcTicks, calcTicksFromData } from '@suite-common/suite-utils';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { BASE_CURRENCY_ZERO } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Box, Button } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { RepeatIcon } from '@trezor/icons';

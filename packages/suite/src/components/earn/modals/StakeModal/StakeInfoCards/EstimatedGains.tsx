@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react';
 
-import { Translation } from '@suite/intl';
 import {
     calculateGains,
     getNetworkAdjustedStakingBalance,
     selectPoolStatsApy,
 } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Column, Grid, Image, Paragraph, Text } from '@trezor/components';
 
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';

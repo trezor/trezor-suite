@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import { Translation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { useFormatters } from '@suite-common/formatters';
 import {
@@ -12,6 +11,7 @@ import {
 } from '@suite-common/trading';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { localizePercentage } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Text } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';

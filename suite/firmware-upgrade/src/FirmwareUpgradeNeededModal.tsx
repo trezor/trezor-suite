@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux';
 
-import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
+import { Translation } from '@suite-lego/intl';
 import { Card, Modal, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

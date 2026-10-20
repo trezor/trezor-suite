@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Box, Column, IconCircle, useMediaQuery } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { CommandIcon, LifebuoyIcon } from '@trezor/icons';

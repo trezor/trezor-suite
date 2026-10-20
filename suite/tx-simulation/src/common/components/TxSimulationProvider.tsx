@@ -1,4 +1,4 @@
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Link, Text } from '@trezor/components';
 
 export function TxSimulationProvider() {

@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
 import { AccountLabel } from '@suite/account';
-import { Translation } from '@suite/intl';
 import { type DeviceRootState, selectDeviceButtonRequests } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import {
@@ -15,6 +14,7 @@ import {
     selectDeviceAccounts,
 } from '@suite-common/wallet-core';
 import { findAccountsByAddress } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Card, Column, DotIndicator, H4, Modal, Row } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { ConfirmOnDevicePill, TokenIcon } from '@trezor/product-components';

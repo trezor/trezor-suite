@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 
-import { useTranslation } from '@suite/intl';
 import { Labeling } from '@suite/labeling';
 import {
     selectIsLegacyLabelingVisible,
@@ -25,6 +24,7 @@ import {
     getTxOperation,
     isNftTokenTransfer,
 } from '@suite-common/wallet-utils';
+import { useTranslation } from '@suite-lego/intl';
 import { Icon } from '@trezor/components';
 import { TagFilledIcon } from '@trezor/icons';
 import { returnStableArrayIfEmpty } from '@trezor/redux-utils';

@@ -9,7 +9,6 @@ import {
     selectAddressLabelsForAccount,
     selectLabeledUnusedAddresses,
 } from '@suite/address';
-import { Translation } from '@suite/intl';
 import { getReceiveAddressForFlowEntry, getReceiveAddressToAdd } from '@suite-common/address';
 import {
     type ReceiveRootState,
@@ -25,6 +24,7 @@ import {
     selectPendingAccountAddresses,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Box, Card, Divider, IconButton, Row, Text, Tooltip } from '@trezor/components';
 import { getAddressPathIndex } from '@trezor/crypto-utils';
 import { useServices } from '@trezor/dependency-injection';

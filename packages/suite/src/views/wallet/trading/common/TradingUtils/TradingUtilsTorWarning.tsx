@@ -1,7 +1,7 @@
-import { Translation, type TranslationKey } from '@suite/intl';
 import { SettingsAnchor, gotoThunk } from '@suite/router';
 import { selectIsTorEnabled } from '@suite/tor';
 import { type TradingType } from '@suite-common/trading';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { Banner, Column } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

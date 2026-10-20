@@ -5,7 +5,7 @@
         {
             "path": "../../suite-common/suite-types"
         },
-        { "path": "../intl" },
+        { "path": "../../suite-lego/intl" },
         { "path": "../../packages/components" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },

@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useWatch } from 'react-hook-form';
 
-import { Translation } from '@suite/intl';
 import { getTotalVotes } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Button, Card, Column, Row } from '@trezor/components';
 
 import { TronReassignVotesModal } from './TronReassignVotesModal';

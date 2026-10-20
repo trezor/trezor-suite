@@ -1,7 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
-import { Translation } from '@suite/intl';
 import { type TradingComposedTransactionInfo } from '@suite-common/trading';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
@@ -10,6 +9,7 @@ import {
     type FormState,
     type GeneralPrecomposedTransaction,
 } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Column, Modal } from '@trezor/components';
 import { WarningCircleIcon } from '@trezor/icons';
 

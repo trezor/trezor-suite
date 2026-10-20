@@ -1,8 +1,8 @@
 import { selectFullSelectedAccount } from '@suite/account';
-import { Translation } from '@suite/intl';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBlockchainState } from '@suite-common/wallet-core';
 import { isTrezorConnectBackendType, tryGetAccountIdentity } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Banner } from '@trezor/components';
 
 import { useBackendReconnection } from 'src/hooks/settings/backends';

@@ -2,8 +2,8 @@ import { useMemo } from 'react';
 
 import styled from 'styled-components';
 
-import { Translation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
+import { Translation } from '@suite-lego/intl';
 import { Card, Column, H3, Icon, LottieAnimation, ProgressBar } from '@trezor/components';
 import { StarFourIcon } from '@trezor/icons';
 import { typography, typographyStylesBase } from '@trezor/theme';

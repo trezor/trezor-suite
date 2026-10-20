@@ -1,7 +1,7 @@
 import { type UseFormRegisterReturn } from 'react-hook-form';
 
-import { useTranslation } from '@suite/intl';
 import { MAX_LENGTH_SIGNATURE } from '@suite-common/sign-verify';
+import { useTranslation } from '@suite-lego/intl';
 import { Input } from '@trezor/components';
 
 import { CopyFieldButton } from './CopyFieldButton';

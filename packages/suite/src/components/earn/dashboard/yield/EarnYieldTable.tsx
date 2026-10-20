@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { injectDesktopAnalytics } from '@suite/analytics';
-import { Translation } from '@suite/intl';
 import { ContextMessage } from '@suite/message-system';
 import {
     EarnAnchor,
@@ -19,6 +18,7 @@ import {
 import { Context } from '@suite-common/message-system';
 import { NORMAL_ACCOUNT_TYPE } from '@suite-common/wallet-config';
 import { selectVisibleDeviceAccounts } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Button, Card, Column, Table } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

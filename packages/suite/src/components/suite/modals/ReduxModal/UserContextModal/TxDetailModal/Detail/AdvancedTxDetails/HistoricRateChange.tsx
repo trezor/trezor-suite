@@ -1,5 +1,4 @@
 import { HiddenPlaceholder } from '@suite/discreet-mode';
-import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { type NetworkSymbol, type NetworkSymbolExtended } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
@@ -9,6 +8,7 @@ import {
     asBaseCurrencyAmount,
 } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Column, Row, Text, Tooltip } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 

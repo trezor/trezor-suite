@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { type UseFormReturn, useWatch } from 'react-hook-form';
 
-import { isTranslationKey, useTranslation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
     TRADING_EXCHANGE_FROM_ADDRESS,
@@ -29,6 +28,7 @@ import {
     getConvertedOrDefaultFeeInfo,
     subunitsToUnits,
 } from '@suite-common/wallet-utils';
+import { isTranslationKey, useTranslation } from '@suite-lego/intl';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';

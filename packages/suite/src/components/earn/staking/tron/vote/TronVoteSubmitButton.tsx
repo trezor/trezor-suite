@@ -2,8 +2,8 @@ import { useWatch } from 'react-hook-form';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
-import { Translation } from '@suite/intl';
 import { getTotalVotes, selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Button, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { InfoIcon } from '@trezor/icons';

@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { FormProvider } from 'react-hook-form';
 
-import { Translation } from '@suite/intl';
 import { type UserContextModalType } from '@suite/modal';
 import {
     TxSimulationError,
@@ -18,6 +17,7 @@ import {
     useTxSimulation,
 } from '@suite-common/tx-simulation';
 import { type Account, type TxSimulationAction } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Card, Column, Modal } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 import { BigNumber } from '@trezor/utils';

@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { LearnMoreButton } from '@suite/external-links';
-import { Translation } from '@suite/intl';
 import {
     AdditionalBackupDisclaimer,
     AdditionalBackupSteps,
@@ -12,6 +11,7 @@ import { selectIsN4w1BackupEnabled } from '@suite/settings';
 import { isAdditionalShamirBackupInProgress } from '@suite-common/backup';
 import { selectSelectedDevice } from '@suite-common/device';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { Translation } from '@suite-lego/intl';
 import { Modal } from '@trezor/components';
 import TrezorConnect, { PROTO } from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';

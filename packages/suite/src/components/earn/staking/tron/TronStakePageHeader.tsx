@@ -1,10 +1,10 @@
 import { AccountLabel } from '@suite/account';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { Translation, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { gotoThunk, selectRouteName, selectSettingsBackRoute } from '@suite/router';
 import { selectTronStakeSession } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import { Box, Button, Column, IconButton, Row, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { CaretLeftIcon, InfoIcon } from '@trezor/icons';

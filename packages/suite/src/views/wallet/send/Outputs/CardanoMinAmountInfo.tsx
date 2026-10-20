@@ -1,10 +1,10 @@
-import { Translation } from '@suite/intl';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     getCardanoTokenSendMinAdaAmount,
     isCardanoTokenSendAdaInsufficient,
     subunitsToUnits,
 } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Banner, InfoItem, Text, Tooltip } from '@trezor/components';
 
 import { FormattedCryptoAmount } from 'src/components/suite';

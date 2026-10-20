@@ -1,4 +1,3 @@
-import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
 import { type SignOperator } from '@suite-common/suite-types';
 import { selectBaseCurrency, selectHistoricFiatRatesByTimestamp } from '@suite-common/wallet-core';
 import { type Timestamp } from '@suite-common/wallet-types';
@@ -9,6 +8,7 @@ import {
     getCardanoStakingSignValue,
     getFiatRateKey,
 } from '@suite-common/wallet-utils';
+import { type ExtendedMessageDescriptor, Translation } from '@suite-lego/intl';
 import { BigNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue, FormattedCryptoAmount, Sign } from 'src/components/suite';

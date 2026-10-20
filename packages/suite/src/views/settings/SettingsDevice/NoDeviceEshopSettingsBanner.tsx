@@ -3,9 +3,9 @@ import styled from 'styled-components';
 import { injectDesktopAnalytics } from '@suite/analytics';
 import { useExternalLink } from '@suite/external-links';
 import { type FlagsRootState, selectAreNoDeviceEshopBannersDisabled } from '@suite/flags';
-import { Translation, type TranslationKey } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { type DeviceRootState, selectPhysicalDeviceWallets } from '@suite-common/device';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import {
     Button,
     Card,

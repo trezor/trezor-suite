@@ -1,7 +1,7 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { Translation, type TranslationKey } from '@suite/intl';
 import { type Route, gotoThunk } from '@suite/router';
 import { type TradingType, tradingThunks } from '@suite-common/trading';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { Box, type IconComponent, SubTabs } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { MinusIcon, PlusIcon, RepeatIcon } from '@trezor/icons';

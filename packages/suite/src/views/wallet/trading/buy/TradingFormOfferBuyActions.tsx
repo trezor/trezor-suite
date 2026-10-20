@@ -1,10 +1,10 @@
-import { Translation } from '@suite/intl';
 import {
     selectTradingBuyReceiveAccountKey,
     selectTradingBuyReceiveAddress,
     tradingBuyActions,
 } from '@suite-common/trading';
 import { selectAccountByKey } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Button } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

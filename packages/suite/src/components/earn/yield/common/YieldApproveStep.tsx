@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react';
 
-import { Translation } from '@suite/intl';
 import type {
     YieldFlowDisplayToken,
     YieldPendingTransactionState,
 } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Button, Column, Row } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';

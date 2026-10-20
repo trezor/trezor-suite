@@ -25,7 +25,7 @@
         { "path": "../analytics" },
         { "path": "../authenticity-checks" },
         { "path": "../device" },
-        { "path": "../intl" },
+        { "path": "../../suite-lego/intl" },
         { "path": "../labeling" },
         { "path": "../modal" },
         { "path": "../../packages/components" },

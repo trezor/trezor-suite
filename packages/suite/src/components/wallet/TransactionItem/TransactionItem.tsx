@@ -3,7 +3,6 @@ import { memo } from 'react';
 import styled from 'styled-components';
 
 import { selectSelectedAccount } from '@suite/account';
-import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { AccountTransactionBaseAnchor, useAnchor } from '@suite/router';
 import { type AccountType, type Network } from '@suite-common/wallet-config';
@@ -23,6 +22,7 @@ import {
     isTransactionCancellable,
     isTxFeePaid,
 } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Button, Icon, Row, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { GaugeIcon, WarningIcon, XIcon } from '@trezor/icons';

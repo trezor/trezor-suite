@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { yup } from '@suite/forms';
-import { useTranslation } from '@suite/intl';
 import {
     type ValidateError,
     getDefaultExperiment,
@@ -13,6 +12,7 @@ import {
     validateExperimentForm,
 } from '@suite-common/message-system';
 import { type Experiments } from '@suite-common/suite-types';
+import { useTranslation } from '@suite-lego/intl';
 import { Button, Column, Row } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

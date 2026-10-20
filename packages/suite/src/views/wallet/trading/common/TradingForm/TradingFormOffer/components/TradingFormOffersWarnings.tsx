@@ -1,5 +1,5 @@
-import { Translation } from '@suite/intl';
 import { isCountrySubdivisionEmpty } from '@suite-common/trading';
+import { Translation } from '@suite-lego/intl';
 import { Card, Paragraph } from '@trezor/components';
 
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';

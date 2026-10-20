@@ -1,6 +1,6 @@
-import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
 import { UNIT_LABELS, UNIT_OPTIONS } from '@suite-common/suite-constants';
+import { Translation } from '@suite-lego/intl';
 import { type PROTO } from '@trezor/connect';
 import { SectionItem } from '@trezor/product-components';
 
