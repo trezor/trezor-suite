@@ -207,7 +207,7 @@
         "styled-components": "^6.5.3"
     },
     "devDependencies": {
-        "@pmmmwh/react-refresh-webpack-plugin": "^0.6.2",
+        "@pmmmwh/react-refresh-webpack-plugin": "^0.6.3",
         "@sentry/webpack-plugin": "^5.4.0",
         "@testing-library/jest-dom": "7.0.1",
         "@testing-library/react": "^16.3.3",
@@ -234,7 +234,7 @@
         "jest-watch-typeahead": "3.0.1",
         "lodash-es": "^4.18.1",
         "lottie-web": "^5.10.2",
-        "minimizer-webpack-plugin": "5.10.0",
+        "minimizer-webpack-plugin": "5.13.0",
         "postcss-styled-syntax": "^0.7.1",
         "raw-loader": "^4.0.2",
         "react-refresh": "^0.19.0",
@@ -242,8 +242,8 @@
         "stylelint": "^17.16.0",
         "stylelint-config-standard": "^40.0.0",
         "vm-browserify": "^1.1.2",
-        "webpack": "5.110.1",
-        "webpack-bundle-analyzer": "^5.3.1",
+        "webpack": "5.111.1",
+        "webpack-bundle-analyzer": "^5.4.0",
         "webpack-plugin-serve": "^1.6.0"
     }
 }
