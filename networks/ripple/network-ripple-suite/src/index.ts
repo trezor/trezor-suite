@@ -1,0 +1,1 @@
+export { createRippleSuiteNetworkModule } from './RippleSuiteNetworkModule';

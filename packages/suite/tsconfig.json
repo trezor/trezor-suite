@@ -204,6 +204,7 @@
             "path": "../../suite/metadata-migration"
         },
         { "path": "../../suite/modal" },
+        { "path": "../../suite/networks" },
         { "path": "../../suite/nfc" },
         {
             "path": "../../suite/onboarding-components"
@@ -249,6 +250,12 @@
         },
         {
             "path": "../../networks/network-module/suite-common/suite-common-types"
+        },
+        {
+            "path": "../../networks/network-module/suite/sign-verify"
+        },
+        {
+            "path": "../../networks/network-module/suite/suite-types"
         },
         {
             "path": "../../networks/ripple/network-ripple"

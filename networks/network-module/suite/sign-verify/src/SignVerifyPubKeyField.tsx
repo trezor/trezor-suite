@@ -1,54 +1,48 @@
 import { type UseFormRegisterReturn } from 'react-hook-form';
 
-import { MAX_LENGTH_SIGNATURE } from '@suite-common/sign-verify';
 import { useTranslation } from '@suite-lego/intl';
 import { Input } from '@trezor/components';
 
 import { CopyFieldButton } from './CopyFieldButton';
 
-type SignVerifySignatureFieldProps = {
-    signature?: string;
-    isSignPage: boolean;
+type SignVerifyPubKeyFieldProps = {
+    pubKey?: string;
     isCompleted: boolean;
     hasError: boolean;
     errorMessage?: string;
-    registration: UseFormRegisterReturn<'signature'>;
+    registration: UseFormRegisterReturn;
     onCopy: (value: string) => void;
 };
 
-export const SignVerifySignatureField = ({
-    signature,
-    isSignPage,
+export const SignVerifyPubKeyField = ({
+    pubKey,
     isCompleted,
     hasError,
     errorMessage,
     registration,
     onCopy,
-}: SignVerifySignatureFieldProps) => {
+}: SignVerifyPubKeyFieldProps) => {
     const { translationString } = useTranslation();
     const { ref, ...field } = registration;
 
     return (
         <Input
-            label={translationString('TR_SIGNATURE')}
-            maxLength={MAX_LENGTH_SIGNATURE}
+            label={translationString('TR_PUBLIC_KEY')}
             type="text"
-            readOnly={isSignPage || isCompleted}
-            isDisabled={isSignPage && !signature?.length}
-            placeholder={
-                isSignPage ? translationString('TR_SIGNATURE_AFTER_SIGNING_PLACEHOLDER') : undefined
-            }
+            readOnly
+            isDisabled={!pubKey?.length}
+            placeholder={translationString('TR_SIGNATURE_AFTER_SIGNING_PLACEHOLDER')}
             hasError={hasError}
             bottomText={errorMessage}
             rightContent={
                 isCompleted ? (
                     <CopyFieldButton
-                        onClick={() => onCopy(signature || '')}
-                        data-testid="@sign-verify/copy-signature"
+                        onClick={() => onCopy(pubKey || '')}
+                        data-testid="@sign-verify/copy-pubkey"
                     />
                 ) : undefined
             }
-            data-testid="@sign-verify/signature"
+            data-testid="@sign-verify/pubKey"
             innerRef={ref}
             {...field}
         />

@@ -1,0 +1,1 @@
+export { createTronSuiteNetworkModule } from './TronSuiteNetworkModule';
