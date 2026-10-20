@@ -7195,6 +7195,14 @@ export const messages = defineMessages({
         id: 'TR_NEWEST_FIRST',
         defaultMessage: 'Newest first',
     },
+    TR_LOADING_TAKES_LONGER_THAN_EXPECTED: {
+        id: 'TR_LOADING_TAKES_LONGER_THAN_EXPECTED',
+        defaultMessage: 'Loading is taking longer than expected.',
+    },
+    TR_LOADING_WAITING_FOR_BACKENDS: {
+        id: 'TR_LOADING_WAITING_FOR_BACKENDS',
+        defaultMessage: 'Waiting for: {backends}',
+    },
     TR_LOADING_TRANSACTION_DETAILS: {
         id: 'TR_LOADING_TRANSACTION_DETAILS',
         defaultMessage: 'Loading transaction details...',

@@ -4,6 +4,7 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { walletReducers } from 'src/reducers/wallet';
 
 import {
+    selectConnectingBackends,
     selectHasConnectedNetworkBackend,
     selectUnreachableCustomBackendSymbol,
 } from './backendSelectors';
@@ -49,6 +50,25 @@ const withBlockchain = (
             [symbol]: { ...state.wallet.blockchain[symbol], ...blockchain },
         },
     },
+});
+
+describe('selectConnectingBackends', () => {
+    it('lists networks with accounts that are neither connected nor failed, with their custom URLs', () => {
+        expect(selectConnectingBackends(createState())).toEqual([
+            { symbol: btc, customUrls: [customUrl], isCustom: true, status: 'connecting' },
+            { symbol: ltc, customUrls: [], isCustom: false, status: 'connecting' },
+        ]);
+    });
+
+    it('leaves out connected and failed networks', () => {
+        const state = withBlockchain(
+            withBlockchain(createState(), 'btc', { connected: true }),
+            'ltc',
+            { error: 'connect failed' },
+        );
+
+        expect(selectConnectingBackends(state)).toEqual([]);
+    });
 });
 
 describe('selectHasConnectedNetworkBackend', () => {
