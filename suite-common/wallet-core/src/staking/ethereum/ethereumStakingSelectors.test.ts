@@ -132,7 +132,7 @@ describe('ethereumStakingSelectors', () => {
         const createState = (nextRewardPayout?: number) =>
             buildStakeState({
                 eth: nextRewardPayout
-                    ? { stats: { apy: 0, nextRewardPayout }, validators: {} }
+                    ? { everstake: { stats: { apy: 0, nextRewardPayout }, validators: {} } }
                     : undefined,
             });
 

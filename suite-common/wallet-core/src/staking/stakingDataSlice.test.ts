@@ -10,12 +10,18 @@ const solSection = {
     stats: { apy: 7.5 },
 } satisfies StakingBatchDataItem;
 
+const ethSection = {
+    symbol: 'eth',
+    stats: { apy: 3.1, nextRewardPayout: 7200 },
+    validators: { activationTime: 100, addingDelay: 200 },
+} satisfies StakingBatchDataItem;
+
 const stateAfterPreviousSuccess = (): StakeDataState => ({
     error: null,
     isLoading: false,
     lastSuccessAt: LAST_SUCCESS_AT,
     data: {
-        eth: { stats: { apy: 3.08, nextRewardPayout: 3600 }, validators: {} },
+        eth: { everstake: { stats: { apy: 3.08, nextRewardPayout: 3600 }, validators: {} } },
         sol: { stats: { apy: 6.24 } },
         ada: { pools: [{ apy: 2.4, saturation: 80.77, id: 'pool1' }] },
     },
@@ -62,5 +68,26 @@ describe('stakeDataReducer', () => {
         expect(state.data.sol?.stats.apy).toBe(solSection.stats.apy);
         expect(state.error).toBeNull();
         expect(state.isLoading).toBe(false);
+    });
+
+    it('keys the Ethereum figures by provider and drops the networks it does not store', () => {
+        const state = stakeDataReducer(
+            { ...stateAfterPreviousSuccess(), isLoading: true },
+            stakeDataActions.fetchStakeDataSuccess([
+                ethSection,
+                { symbol: 'trx', representatives: [] },
+            ]),
+        );
+
+        expect(state.data).toEqual({
+            eth: {
+                everstake: {
+                    stats: ethSection.stats,
+                    validators: ethSection.validators,
+                },
+            },
+            sol: undefined,
+            ada: undefined,
+        });
     });
 });

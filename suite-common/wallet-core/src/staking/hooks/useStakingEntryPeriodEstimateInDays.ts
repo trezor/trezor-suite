@@ -6,14 +6,18 @@ import {
     hasStakeInPendingDepositedState,
     isSupportedEthStakingNetworkSymbol,
 } from '../ethereum/ethereumStakingUtils';
-import { DAYS_TO_ADD_TO_POOL_DEFAULT } from '../ethereum/providers/everstake/everstakeConstants';
-import { getDaysToAddToPool } from '../ethereum/providers/everstake/everstakeTimelines';
+import {
+    DEFAULT_ETHEREUM_STAKING_PROVIDER_ID,
+    getEthereumStakingAdapter,
+} from '../ethereum/providers/ethereumStakingProviders';
 import { isSupportedSolStakingNetworkSymbol } from '../solana/solanaStakingUtils';
 
 type UseStakingEntryPeriodEstimateInDaysParams = {
     account: Account | null;
     stakeTxs: WalletAccountTransaction[];
 };
+
+const NO_UNSTAKE_TXS: WalletAccountTransaction[] = [];
 
 export const useStakingEntryPeriodEstimateInDays = ({
     account,
@@ -35,5 +39,11 @@ export const useStakingEntryPeriodEstimateInDays = ({
 
     if (isSolana) return SOLANA_EPOCH_DAYS;
 
-    return getDaysToAddToPool(stakeTxs, validatorQueueData) ?? DAYS_TO_ADD_TO_POOL_DEFAULT;
+    const adapter = getEthereumStakingAdapter(DEFAULT_ETHEREUM_STAKING_PROVIDER_ID);
+    const { entryDays } = adapter.timelines(
+        { validators: validatorQueueData },
+        { stakeTxs, unstakeTxs: NO_UNSTAKE_TXS },
+    );
+
+    return entryDays ?? adapter.timelineDefaults.entryDays;
 };

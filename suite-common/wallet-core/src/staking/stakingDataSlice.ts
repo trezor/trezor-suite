@@ -1,6 +1,10 @@
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 import { type StakingBatch, type StakingBatchDataItem } from '@suite-common/earn-staking-api';
+import { exhaustive } from '@trezor/type-utils';
+
+import { type EthereumStatsByProvider } from './ethereum/ethereumStakingStats';
+import { mapEverstakeBatchItem } from './ethereum/providers/everstake/everstakeStats';
 
 export type StakeDataState = {
     error: null | string;
@@ -12,7 +16,7 @@ export type StakeDataState = {
     lastSuccessAt: null | number;
 
     data: {
-        eth: Omit<Extract<StakingBatchDataItem, { symbol: 'eth' }>, 'symbol'> | undefined;
+        eth: EthereumStatsByProvider | undefined;
         sol: Omit<Extract<StakingBatchDataItem, { symbol: 'sol' }>, 'symbol'> | undefined;
         ada: Omit<Extract<StakingBatchDataItem, { symbol: 'ada' }>, 'symbol'> | undefined;
     };
@@ -42,17 +46,28 @@ const stakeDataSlice = createSlice({
             state.isLoading = false;
             state.lastSuccessAt = Date.now();
 
-            const data = action.payload.reduce<StakeDataState['data']>(
+            state.data = action.payload.reduce<StakeDataState['data']>(
                 (acc, item) => {
-                    // @ts-expect-error
-                    acc[item.symbol] = item;
+                    switch (item.symbol) {
+                        case 'eth':
+                            acc.eth = mapEverstakeBatchItem(item);
+                            break;
+                        case 'sol':
+                            acc.sol = item;
+                            break;
+                        case 'ada':
+                            acc.ada = item;
+                            break;
+                        case 'trx':
+                            break;
+                        default:
+                            exhaustive(item);
+                    }
 
                     return acc;
                 },
-                {} as StakeDataState['data'],
+                { eth: undefined, sol: undefined, ada: undefined },
             );
-
-            state.data = data;
         },
         fetchStakeDataFailure: (state, action: PayloadAction<string>) => {
             state.error = action.payload;

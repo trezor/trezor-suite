@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { Translation } from '@suite/intl';
 import {
-    BACKUP_REWARD_PAYOUT_DAYS,
+    getEthereumStakingTimelineDefaults,
     getLegacyStakingDataForNetwork,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -46,7 +46,9 @@ export const PayoutCardNextRewards = ({
                     {payout === undefined ? (
                         <Translation
                             id="TR_STAKE_MAX_REWARD_DAYS"
-                            values={{ count: BACKUP_REWARD_PAYOUT_DAYS }}
+                            values={{
+                                count: getEthereumStakingTimelineDefaults().rewardPayoutDays,
+                            }}
                         />
                     ) : (
                         <Translation id="TR_STAKE_DAYS" values={{ count: payout }} />

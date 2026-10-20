@@ -7,7 +7,7 @@ import {
 
 import { DEFAULT_VOTING_OPTION } from './cardano/cardanoStakingConstants';
 import { type AccountVotingDelegation } from './cardano/cardanoStakingTypes';
-import { getStakeFormsDefaultValues } from './ethereum/ethereumStaking';
+import { getStakeFormsDefaultValues } from './ethereum/ethereumStakingFormUtils';
 import { stakeActions } from './stakingActions';
 import { prepareStakeReducer, stakeInitialState } from './stakingReducer';
 import type { StakeState } from './stakingReducerTypes';

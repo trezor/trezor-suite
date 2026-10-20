@@ -14,6 +14,7 @@ import {
     type EthereumStakingLiveStateValidation,
     type ReadEthereumStakingPools,
 } from '../ethereumStakingLiveState';
+import { type EthereumProviderStats } from '../ethereumStakingStats';
 
 export type EthereumStakingAccount = Account & { networkType: 'ethereum' };
 
@@ -72,6 +73,29 @@ export type StakingTxClassification = {
 
 export type StakingTransferAccount = { descriptor: string; symbol: NetworkSymbol };
 
+export type StakingTimelineContext = {
+    stakeTxs: WalletAccountTransaction[];
+    unstakeTxs: WalletAccountTransaction[];
+};
+
+export type StakingTimelines = {
+    /** Days until the account's pending stake starts earning; unknown without a pending stake or an estimate. */
+    entryDays?: number;
+    /** Days until the account's requested unstake can be claimed; unknown without an estimate. */
+    exitDays?: number;
+    /** Days a new stake needs before it earns; unknown without an estimate. */
+    initialEntryDays?: number;
+    /** Days an unstake takes, with the provider's fallback when there is no estimate. */
+    exitPeriodDays: number;
+    /** Days until the next reward payout; null when unknown. */
+    nextRewardPayoutDays: number | null;
+};
+
+export type StakingTimelineDefaults = {
+    entryDays: number;
+    rewardPayoutDays: number;
+};
+
 export type StakingUnstakePreviewParams = {
     amount: string;
     from: string;
@@ -83,6 +107,12 @@ export type EthereumStakingProviderAdapter = {
     readonly id: StakingProviderId;
     readonly limits: StakingLimits;
     readonly contributesToNativeBalance: boolean;
+    readonly timelineDefaults: StakingTimelineDefaults;
+    /** Entry, exit and payout estimates from the provider's stats and the account's staking transactions. */
+    timelines: (
+        stats: EthereumProviderStats | undefined,
+        context: StakingTimelineContext,
+    ) => StakingTimelines;
     /** Sync part of the position from account data alone; null when the account holds nothing with this provider. */
     derivePosition: (account: Account) => StakingPosition | null;
     /** Encodes the step of an operation without any chain read; null on a network without a deployment. */

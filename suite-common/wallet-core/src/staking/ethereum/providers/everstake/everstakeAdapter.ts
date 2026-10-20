@@ -8,6 +8,7 @@ import {
     previewEverstakeUnstake,
 } from './everstakePlan';
 import { deriveEverstakePosition } from './everstakePosition';
+import { EVERSTAKE_TIMELINE_DEFAULTS, getEverstakeTimelines } from './everstakeTimelines';
 import {
     classifyEverstakeCalldata,
     classifyEverstakeInternalTransfer,
@@ -18,6 +19,8 @@ export const everstakeAdapter: EthereumStakingProviderAdapter = {
     id: 'everstake',
     limits: EVERSTAKE_STAKING_LIMITS,
     contributesToNativeBalance: true,
+    timelineDefaults: EVERSTAKE_TIMELINE_DEFAULTS,
+    timelines: getEverstakeTimelines,
     derivePosition: deriveEverstakePosition,
     buildStep: buildEverstakeStep,
     planOperation: planEverstakeOperation,

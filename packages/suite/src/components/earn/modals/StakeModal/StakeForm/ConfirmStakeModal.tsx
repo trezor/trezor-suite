@@ -6,9 +6,9 @@ import { openModal } from '@suite/modal';
 import { EarnFlow, type StakeModalFlow } from '@suite-common/suite-types';
 import { type NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
-    getDaysToAddToPoolInitial,
+    getEthereumStakingTimelineDefaults,
     getStakingHelpCenterLink,
-    selectEthereumValidatorsQueue,
+    selectEthereumEntryPeriodInDays,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Banner, Card, Checkbox, Column, Modal } from '@trezor/components';
@@ -43,9 +43,9 @@ export const ConfirmStakeModal = ({
 }: ConfirmStakeModalProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const [hasAgreed, setHasAgreed] = useState(false);
-    const validatorsQueue = useSelector(selectEthereumValidatorsQueue);
+    const entryPeriodInDays = useSelector(selectEthereumEntryPeriodInDays);
 
-    const daysToAddToPool = getDaysToAddToPoolInitial(validatorsQueue);
+    const daysToAddToPool = entryPeriodInDays ?? getEthereumStakingTimelineDefaults().entryDays;
 
     const isDisabled = !hasAgreed || isLoading;
 

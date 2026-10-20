@@ -29,9 +29,9 @@ import {
     selectEthereumIsStakePendingByAccountKey,
     selectEthereumRewardsBalanceByAccountKey,
     selectEthereumStakedBalanceByAccountKey,
+    selectEthereumStakingTimelines,
     selectEthereumTotalStakePendingByAccountKey,
     selectEthereumUnstakingBalanceByAccountKey,
-    selectEthereumValidatorsQueue,
     selectVisibleDeviceEthereumAccountsWithStakingByNetworkSymbol,
 } from './ethereum/ethereumStakingSelectors';
 import { getEthereumCryptoBalanceWithStaking } from './ethereum/ethereumStakingUtils';
@@ -360,9 +360,11 @@ export const selectUnstakingPeriodInDaysByAccountKey = (
 
     if (!account || !isStakingSymbol(account.symbol)) return null;
 
-    const validatorsQueueData = selectEthereumValidatorsQueue(state);
+    if (account.networkType === 'ethereum') {
+        return selectEthereumStakingTimelines(state, accountKey).exitPeriodDays;
+    }
 
-    return getUnstakingPeriodInDays(account.networkType, validatorsQueueData);
+    return getUnstakingPeriodInDays(account.networkType);
 };
 
 export const selectEntryPeriodInDaysBySymbol = (

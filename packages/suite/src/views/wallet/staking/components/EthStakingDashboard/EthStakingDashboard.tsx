@@ -2,9 +2,9 @@ import { useEffect, useMemo } from 'react';
 
 import { useEthereumValidatorsQueue } from '@suite-common/earn-staking-api';
 import {
+    DEFAULT_ETHEREUM_STAKING_PROVIDER_ID,
     fetchAllTransactionsForAccountThunk,
-    getDaysToAddToPool,
-    getDaysToUnstake,
+    getEthereumStakingAdapter,
     hasStakeInPendingDepositedState,
     selectAccountIsStakingActive,
     selectAccountStakeTransactions,
@@ -70,8 +70,11 @@ export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProp
 
     const txs = useMemo(() => [...stakeTxs, ...unstakeTxs], [stakeTxs, unstakeTxs]);
 
-    const daysToAddToPool = getDaysToAddToPool(stakeTxs, validatorQueueData);
-    const daysToUnstake = getDaysToUnstake(unstakeTxs, validatorQueueData);
+    // The queue estimate for the pending stake is fetched for its own block time, so the timelines
+    // are built from it rather than from the periodic stats.
+    const { entryDays: daysToAddToPool, exitDays: daysToUnstake } = getEthereumStakingAdapter(
+        DEFAULT_ETHEREUM_STAKING_PROVIDER_ID,
+    ).timelines({ validators: validatorQueueData }, { stakeTxs, unstakeTxs });
 
     const canClaim = useSelector(state => selectCanClaimByAccountKey(state, accountKey));
 

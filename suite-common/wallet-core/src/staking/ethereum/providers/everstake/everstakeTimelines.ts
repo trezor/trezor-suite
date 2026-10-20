@@ -1,8 +1,26 @@
 import { type EthValidatorsQueue } from '@suite-common/earn-staking-api';
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { secondsToDays } from '@suite-common/wallet-utils';
+import { BigNumber } from '@trezor/utils';
 
-import { DAYS_TO_ADD_TO_POOL_DEFAULT } from './everstakeConstants';
+import { type EverstakeEthereumStats } from '../../ethereumStakingStats';
+import {
+    type StakingTimelineContext,
+    type StakingTimelineDefaults,
+    type StakingTimelines,
+} from '../types';
+import {
+    BACKUP_REWARD_PAYOUT_DAYS,
+    DAYS_TO_ADD_TO_POOL_DEFAULT,
+    UNSTAKING_ETH_PERIOD,
+} from './everstakeConstants';
+
+export const EVERSTAKE_TIMELINE_DEFAULTS: StakingTimelineDefaults = {
+    entryDays: DAYS_TO_ADD_TO_POOL_DEFAULT,
+    rewardPayoutDays: BACKUP_REWARD_PAYOUT_DAYS,
+};
+
+const atLeastOneDay = (daysToWait: number) => (daysToWait <= 0 ? 1 : daysToWait);
 
 export const getDaysToAddToPool = (
     stakeTxs: WalletAccountTransaction[],
@@ -25,9 +43,8 @@ export const getDaysToAddToPool = (
 
     const secondsToWait =
         lastTxBlockTime + validatorsQueue.addingDelay + validatorsQueue.activationTime - now;
-    const daysToWait = secondsToDays(secondsToWait);
 
-    return daysToWait <= 0 ? 1 : daysToWait;
+    return atLeastOneDay(secondsToDays(secondsToWait));
 };
 
 export const getDaysToUnstake = (
@@ -43,21 +60,50 @@ export const getDaysToUnstake = (
 
     const secondsToWait =
         lastTxBlockTime + validatorsQueue.withdrawTime + (validatorsQueue?.exitTime || 0) - now;
-    const daysToWait = secondsToDays(secondsToWait);
 
-    return daysToWait <= 0 ? 1 : daysToWait;
+    return atLeastOneDay(secondsToDays(secondsToWait));
 };
 
-export const getDaysToAddToPoolInitial = (validatorsQueue?: EthValidatorsQueue | null) => {
+export const getEverstakeInitialEntryDays = (validatorsQueue?: EthValidatorsQueue | null) => {
     if (
         validatorsQueue?.addingDelay === undefined ||
         validatorsQueue?.activationTime === undefined
     ) {
-        return DAYS_TO_ADD_TO_POOL_DEFAULT;
+        return undefined;
     }
 
     const secondsToWait = validatorsQueue.addingDelay + validatorsQueue.activationTime;
-    const daysToWait = secondsToDays(secondsToWait);
 
-    return daysToWait <= 0 ? 1 : daysToWait;
+    return atLeastOneDay(secondsToDays(secondsToWait));
+};
+
+export const getEverstakeExitPeriodInDays = (validatorsQueue?: EthValidatorsQueue | null) => {
+    const { withdrawTime, exitTime } = validatorsQueue ?? {};
+
+    if (typeof withdrawTime !== 'number' || typeof exitTime !== 'number') {
+        return UNSTAKING_ETH_PERIOD;
+    }
+
+    return secondsToDays(new BigNumber(withdrawTime).plus(exitTime).toNumber());
+};
+
+export const getEverstakeNextRewardPayoutDays = (stats: EverstakeEthereumStats | undefined) => {
+    const nextRewardPayout = stats?.stats?.nextRewardPayout;
+
+    return nextRewardPayout ? Math.max(1, secondsToDays(nextRewardPayout)) : null;
+};
+
+export const getEverstakeTimelines = (
+    stats: EverstakeEthereumStats | undefined,
+    { stakeTxs, unstakeTxs }: StakingTimelineContext,
+): StakingTimelines => {
+    const validators = stats?.validators;
+
+    return {
+        entryDays: getDaysToAddToPool(stakeTxs, validators),
+        exitDays: getDaysToUnstake(unstakeTxs, validators),
+        initialEntryDays: getEverstakeInitialEntryDays(validators),
+        exitPeriodDays: getEverstakeExitPeriodInDays(validators),
+        nextRewardPayoutDays: getEverstakeNextRewardPayoutDays(stats),
+    };
 };

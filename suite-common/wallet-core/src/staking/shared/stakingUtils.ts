@@ -26,7 +26,6 @@ import {
     isPending,
     isStakingNetworkType,
     isStakingSymbol,
-    secondsToDays,
     subunitsToUnits,
 } from '@suite-common/wallet-utils';
 import {
@@ -64,8 +63,8 @@ import {
     DEFAULT_ETHEREUM_STAKING_PROVIDER_ID,
     getEthereumStakingAdapter,
 } from '../ethereum/providers/ethereumStakingProviders';
-import { UNSTAKING_ETH_PERIOD } from '../ethereum/providers/everstake/everstakeConstants';
 import { getEverstakeContractAddressByStakeType } from '../ethereum/providers/everstake/everstakeContracts';
+import { getEverstakeExitPeriodInDays } from '../ethereum/providers/everstake/everstakeTimelines';
 import { deriveEthereumStakingPositions } from '../positions/deriveStakingPositions';
 import {
     getSolStakingAccountsInfo,
@@ -291,13 +290,10 @@ export const getUnstakingPeriodInDays = (
         return TRON_UNFREEZE_DELAY_DAYS;
     }
 
-    if (typeof withdrawTime !== 'number' || typeof exitTime !== 'number') {
-        return UNSTAKING_ETH_PERIOD;
-    }
-
-    const unstakingPeriodInSeconds = new BigNumber(withdrawTime).plus(exitTime).toNumber();
-
-    return secondsToDays(unstakingPeriodInSeconds);
+    return getEverstakeExitPeriodInDays({
+        withdrawTime: withdrawTime ?? undefined,
+        exitTime: exitTime ?? undefined,
+    });
 };
 
 export const getStakingHelpCenterLink = (networkType?: NetworkType) => {
