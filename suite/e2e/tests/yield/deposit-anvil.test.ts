@@ -1,4 +1,4 @@
-import { formatUnits, parseEther, parseUnits } from 'viem';
+import { parseEther, parseUnits } from 'viem';
 
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
@@ -26,6 +26,8 @@ const YIELD_USDC_VAULT_DISPLAY_NAME = ['Trezor Steakhouse', '\n', 'USDC Prime Va
 // Suite learns about confirmations by polling, so the clock is moved on until it sees one.
 const CONFIRMATION_FAST_FORWARD = '00:30';
 const CONFIRMATION_TIMEOUT = 60_000;
+// 10 USDC at the mocked pricePerShare (1.005607422297114), as tests/yield/deposit.test.ts shows it.
+const MOCKED_PRICE_RECEIVED_SHARES = '9.944238455556494028';
 
 test.describe('stablecoin yield on a mainnet fork', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({ deviceSetup: { mnemonic } });
@@ -230,8 +232,7 @@ test.describe('stablecoin yield on a mainnet fork', { tag: ['@webOnly', '@T3W1',
                 expect(sharesAfter, 'vault should mint shares for the deposit').toBeGreaterThan(
                     sharesBefore,
                 );
-                const { symbol, decimals } =
-                    await anvil.readErc20Metadata(YIELD_USDC_VAULT_ADDRESS);
+                const { symbol } = await anvil.readErc20Metadata(YIELD_USDC_VAULT_ADDRESS);
 
                 await expect(async () => {
                     await page.clock.fastForward(CONFIRMATION_FAST_FORWARD);
@@ -247,8 +248,11 @@ test.describe('stablecoin yield on a mainnet fork', { tag: ['@webOnly', '@T3W1',
                 await expect(yieldFlowSection.flowCompleteTransferInputAmount).toHaveText(
                     `${depositAmount} USDC`,
                 );
+                // Suite estimates the received shares before signing, from the vault's price per
+                // share in the (mocked) yield metadata, so this follows yieldMock, not the minted
+                // amount asserted on chain above. The symbol is the vault's own, read from chain.
                 await expect(yieldFlowSection.flowCompleteTransferOutputAmount).toHaveText(
-                    `${formatUnits(sharesAfter - sharesBefore, decimals)} ${symbol}`,
+                    `${MOCKED_PRICE_RECEIVED_SHARES} ${symbol}`,
                 );
             });
 
