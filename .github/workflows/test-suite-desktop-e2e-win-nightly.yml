@@ -1,0 +1,294 @@
+name: "[Test] suite desktop e2e on Windows (POC)"
+
+# POC: Playwright + Electron on a hosted Windows runner, trezor-user-env inside WSL2 from a rootfs
+# exported out of its Docker image. Reuses the nightly desktop build and a previously exported rootfs
+# so that an iteration pays only for the Windows job.
+on:
+  workflow_dispatch:
+    inputs:
+      rootfs-run-id:
+        description: "Run id of an earlier run of this workflow whose tenv-rootfs artifact to reuse. Empty exports a fresh one."
+        required: false
+        default: ""
+        type: string
+      build-run-id:
+        description: "Run id of a nightly e2e run to take desktop-app-build-e2e from. Empty takes the latest nightly."
+        required: false
+        default: ""
+        type: string
+      tenv-image:
+        description: "trezor-user-env image to export when rootfs-run-id is empty"
+        required: false
+        default: "ghcr.io/trezor/trezor-user-env:latest"
+        type: string
+      test:
+        description: "Spec path relative to suite/e2e"
+        required: false
+        default: "tests/settings/general.test.ts"
+        type: string
+      project:
+        description: "Playwright project of playwright-desktop.config.ts"
+        required: false
+        default: "T3W1"
+        type: string
+      wsl-networking:
+        description: "WSL networking mode (nat | mirrored)"
+        required: false
+        default: "nat"
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  prepare-rootfs:
+    name: Export trezor-user-env rootfs
+    if: inputs.rootfs-run-id == ''
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Export image filesystem
+        run: |
+          docker pull --quiet "${{ inputs.tenv-image }}"
+          CID=$(docker create "${{ inputs.tenv-image }}")
+          docker export "$CID" | gzip -1 > tenv-rootfs.tar.gz
+          docker rm "$CID"
+          ls -la tenv-rootfs.tar.gz
+
+      - name: Upload rootfs
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: tenv-rootfs
+          path: tenv-rootfs.tar.gz
+          retention-days: 7
+          compression-level: 0
+
+  e2e-windows:
+    name: Run e2e on Windows
+    needs: prepare-rootfs
+    if: always() && (needs.prepare-rootfs.result == 'success' || needs.prepare-rootfs.result == 'skipped')
+    runs-on: windows-2025
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: pwsh
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TENV_DIR: D:\tenv
+      TENV_DOWNLOAD_DIR: D:\tenv-download
+      WSL_UTF8: 1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+
+      # actions/cache does not save when the job fails; POC iterations fail by design, so restore/save pair.
+      - name: Restore node_modules
+        id: node-modules-cache
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
+        with:
+          path: |
+            node_modules
+            .yarn/install-state.gz
+          key: node_modules-suite-e2e-v2-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+
+      - name: Restore Playwright browsers
+        id: playwright-cache
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
+        with:
+          path: ~\AppData\Local\ms-playwright
+          key: playwright-browsers-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+
+      - name: Restore Electron binary
+        id: electron-cache
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
+        with:
+          path: ~\AppData\Local\electron\Cache
+          key: electron-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+
+      - name: Install e2e workspace
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
+        run: yarn workspaces focus @trezor/suite-e2e
+
+      - name: Save node_modules
+        if: always() && steps.node-modules-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
+        with:
+          path: |
+            node_modules
+            .yarn/install-state.gz
+          key: node_modules-suite-e2e-v2-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+
+      # Desktop fixtures still open a Chromium context, so the headless shell must be present.
+      - name: Install Playwright Chromium
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: yarn workspace @trezor/suite-e2e exec playwright install chromium
+
+      - name: Save Playwright browsers
+        if: always() && steps.playwright-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
+        with:
+          path: ~\AppData\Local\ms-playwright
+          key: playwright-browsers-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+
+      - name: Build message system config
+        run: yarn message-system-sign-config
+
+      - name: Download desktop build
+        run: |
+          $runId = "${{ inputs.build-run-id }}"
+          if (-not $runId) {
+            $runId = gh run list --repo ${{ github.repository }} --workflow test-suite-web-desktop-e2e-nightly.yml --limit 1 --json databaseId --jq '.[0].databaseId'
+          }
+          Write-Host "Taking desktop-app-build-e2e from run $runId"
+          gh run download $runId --repo ${{ github.repository }} -n desktop-app-build-e2e -D artifact-download
+          tar -xzf artifact-download\app-build.tar.gz -C suite\desktop-app
+          Get-ChildItem suite\desktop-app\dist, suite\desktop-app\build | Select-Object -First 10
+
+      - name: Download rootfs
+        run: |
+          $runId = "${{ inputs.rootfs-run-id }}"
+          if (-not $runId) { $runId = "${{ github.run_id }}" }
+          Write-Host "Taking tenv-rootfs from run $runId"
+          gh run download $runId --repo ${{ github.repository }} -n tenv-rootfs -D $env:TENV_DOWNLOAD_DIR
+          Get-ChildItem $env:TENV_DOWNLOAD_DIR
+
+      - name: WSL diagnostics
+        continue-on-error: true
+        run: |
+          wsl --version
+          wsl --status
+          Get-PSDrive -PSProvider FileSystem | Format-Table Name, Used, Free
+
+      - name: Configure WSL networking
+        if: inputs.wsl-networking == 'mirrored'
+        run: |
+          Set-Content -Path "$env:USERPROFILE\.wslconfig" -Value "[wsl2]`nnetworkingMode=mirrored`n"
+          wsl --shutdown
+
+      - name: Import rootfs into WSL
+        run: |
+          wsl --import trezor-user-env $env:TENV_DIR "$env:TENV_DOWNLOAD_DIR\tenv-rootfs.tar.gz" --version 2
+          Remove-Item "$env:TENV_DOWNLOAD_DIR\tenv-rootfs.tar.gz"
+          wsl --list --verbose
+          wsl -d trezor-user-env -- bash -lc "id && uname -a && ls /trezor-user-env | head"
+
+      # One step for the whole lifetime: processes launched by a step do not survive it on the Windows
+      # runner, and a Linux process started through wsl.exe dies with its wsl.exe client.
+      - name: Start trezor-user-env, probe loopback, run Playwright test
+        env:
+          GITHUB_ACTION: true
+          PASSPHRASE: ${{ secrets.E2E_TEST_PASSPHRASE }}
+        run: |
+          wsl -d trezor-user-env -- mkdir -p /trezor-user-env/logs/screens
+          # Single-string argument list: an array is joined without quotes and bash -lc would get only "uv".
+          $proc = Start-Process wsl -ArgumentList '-d trezor-user-env --cd /trezor-user-env -- env PYTHONUNBUFFERED=1 uv run python src/main.py' -NoNewWindow -PassThru -RedirectStandardOutput tenv.out.log -RedirectStandardError tenv.err.log
+          $deadline = (Get-Date).AddSeconds(240)
+          $ready = $false
+          while ((Get-Date) -lt $deadline) {
+            if ($proc.HasExited) {
+              Write-Host "::error::trezor-user-env process exited with code $($proc.ExitCode)"
+              Get-Content tenv.out.log, tenv.err.log
+              exit 1
+            }
+            try {
+              $resp = Invoke-WebRequest -UseBasicParsing -Uri http://127.0.0.1:9002/ -TimeoutSec 3
+              if ($resp.StatusCode -eq 200) { $ready = $true; break }
+            } catch {}
+            Start-Sleep -Seconds 3
+          }
+          if (-not $ready) {
+            Write-Host "::error::trezor-user-env dashboard not reachable from Windows on 127.0.0.1:9002"
+            Get-Content tenv.out.log, tenv.err.log
+            wsl -d trezor-user-env -- netstat -ltnp
+            exit 1
+          }
+          Write-Host "trezor-user-env reachable from Windows loopback (PowerShell)"
+
+          Write-Host "::group::Loopback diagnostics from Node"
+          wsl --list --running
+          wsl -d trezor-user-env -- pgrep -af src/main.py
+          curl.exe -s -m 5 -o NUL -w "curl.exe dashboard: %{http_code}`n" http://127.0.0.1:9002/
+          $probe = @'
+          const http = require('http');
+          const paths = [process.cwd() + '/packages/trezor-user-env-link', process.cwd()];
+          const load = name => require(require.resolve(name, { paths }));
+          const step = (label, fn) =>
+              fn().then(
+                  r => console.log(`OK   ${label}: ${r}`),
+                  e => console.log(`FAIL ${label}: ${e && (e.code || '')} ${e && e.message}`),
+              );
+          const httpGet = url =>
+              new Promise((resolve, reject) => {
+                  http.get(url, res => {
+                      res.resume();
+                      resolve(`status ${res.statusCode}`);
+                  }).on('error', reject);
+              });
+          const wsProbe = () =>
+              new Promise((resolve, reject) => {
+                  const WebSocket = load('ws');
+                  const w = new WebSocket('ws://127.0.0.1:9001/');
+                  const t = setTimeout(() => reject(new Error('no welcome message in 10s')), 10000);
+                  w.on('message', m => {
+                      clearTimeout(t);
+                      w.close();
+                      resolve(m.toString().slice(0, 60));
+                  });
+                  w.on('error', e => {
+                      clearTimeout(t);
+                      reject(e);
+                  });
+              });
+          (async () => {
+              console.log(`node ${process.version} ${process.platform} ${process.arch}`);
+              await step('http.get 127.0.0.1:9002', () => httpGet('http://127.0.0.1:9002/'));
+              await step('global fetch 127.0.0.1:9002', () => fetch('http://127.0.0.1:9002/').then(r => `status ${r.status}`));
+              await step('cross-fetch 127.0.0.1:9002', () => load('cross-fetch')('http://127.0.0.1:9002/').then(r => `status ${r.status}`));
+              await step('ws 127.0.0.1:9001', wsProbe);
+          })();
+          '@
+          Set-Content -Path loopback-probe.js -Value $probe
+          node loopback-probe.js
+          Write-Host "::endgroup::"
+
+          Push-Location suite/e2e
+          yarn playwright test --config=./playwright-config/playwright-desktop.config.ts ${{ inputs.test }} --project=${{ inputs.project }} '--reporter=list,html'
+          $testExitCode = $LASTEXITCODE
+          Pop-Location
+
+          Write-Host "::group::Collect trezor-user-env logs"
+          New-Item -ItemType Directory -Force -Path tenv-logs | Out-Null
+          Copy-Item tenv.out.log, tenv.err.log tenv-logs -ErrorAction SilentlyContinue
+          wsl -d trezor-user-env -- bash -c "mkdir -p /trezor-user-env/logs; ls -la /trezor-user-env/logs; tar -czf /tmp/tenv-logs.tar.gz -C /trezor-user-env logs"
+          wsl -d trezor-user-env -- cat /tmp/tenv-logs.tar.gz > tenv-logs\tenv-internal-logs.tar.gz
+          if (-not $proc.HasExited) { Stop-Process -Id $proc.Id -Force -ErrorAction SilentlyContinue }
+          wsl --shutdown
+          Write-Host "::endgroup::"
+          exit $testExitCode
+
+      - name: Save Electron binary
+        if: always() && steps.electron-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
+        with:
+          path: ~\AppData\Local\electron\Cache
+          key: electron-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: win-e2e-poc-results
+          path: |
+            suite/e2e/playwright-report
+            suite/e2e/test-results
+            tenv-logs
+          if-no-files-found: warn
+          retention-days: 7
