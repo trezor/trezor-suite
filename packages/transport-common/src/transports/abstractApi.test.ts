@@ -333,6 +333,44 @@ describe('Usb', () => {
             });
         });
 
+        // CURRENTLY LEAKS — releaseSync runs releaseIntent + closeDevice but
+        // never releaseDone, so the session taken by releaseIntent is never
+        // cleared in the sessions background and the lock releaseIntent took
+        // is only freed by its 4s safety-net timer. Device.disconnect() uses
+        // releaseSync, and on the TRANSPORT.STOPPED path the descriptor still
+        // exists, so the leak hits a background that keeps running for other
+        // clients.
+        //
+        // This test pins the current broken behavior; the assertion flips when
+        // the fix lands.
+        it('releaseSync does not complete the release (releaseDone is never called)', async () => {
+            const { transport } = await initTest();
+            await transport.enumerate();
+            const acquireRes = await transport.acquire({
+                input: { path: PathPublic('1'), previous: null },
+            });
+            expect(acquireRes).toEqual({ success: true, payload: '1' });
+
+            transport.releaseSync(Session('1'));
+            // releaseSync is fire-and-forget; give its releaseIntent ->
+            // closeDevice chain time to settle
+            await new Promise(resolve => setTimeout(resolve, 10));
+
+            // the session stayed committed, so acquiring the device again fails
+            const reacquireRes = await transport.acquire({
+                input: { path: PathPublic('1'), previous: null },
+            });
+            expect(reacquireRes).toEqual({
+                success: false,
+                error: { code: 'wrong previous session' },
+            });
+
+            // cleanup: the lock releaseIntent took is still queued in the
+            // sessions background with its 4s safety-net timer; drop it so the
+            // test does not hold the runner open
+            (transport as any).sessionsClient.dispose();
+        });
+
         // CURRENTLY LEAKS — see PR #27978 for the fix.
         //
         // AbstractApiTransport.listen() registers three event handlers (one on the api emitter,
