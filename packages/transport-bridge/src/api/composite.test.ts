@@ -60,6 +60,10 @@ const setup = () => {
 };
 
 describe(CompositeApi.name, () => {
+    afterEach(() => {
+        jest.useRealTimers();
+    });
+
     it('does not load the HID api until it is enabled', async () => {
         const { composite, createHidApi } = setup();
 
@@ -111,13 +115,20 @@ describe(CompositeApi.name, () => {
         expect(usb.methods.openDevice).toHaveBeenCalledWith(USB_T2_PATH, undefined);
     });
 
-    it('tries to load the HID api again after a failed attempt', async () => {
+    it('tries to load the HID api again after a failed attempt, but not on every call', async () => {
+        jest.useFakeTimers();
         const { composite, createHidApi } = setup();
         createHidApi.mockImplementationOnce(() => {
             throw new Error('Cannot find module node-hid');
         });
 
         expect(await composite.enableHid()).toBe(false);
+        // Suite keeps requesting, and a broken addon must not cost a load attempt per request.
+        expect(await composite.enableHid()).toBe(false);
+        expect(createHidApi).toHaveBeenCalledTimes(1);
+
+        jest.advanceTimersByTime(60_000);
+
         expect(await composite.enableHid()).toBe(true);
         expect(await composite.enableHid()).toBe(true);
         expect(createHidApi).toHaveBeenCalledTimes(2);

@@ -312,7 +312,12 @@ export class TrezordNode {
                         this.hidAllowedResponses.add(res);
                         // The first request of a client allowed to use HID loads the HID
                         // backend, so that its very first enumeration already lists the device.
-                        this.core.enableHid().then(() => next(req, res));
+                        // A rejection must not leave the request without a response. The
+                        // activation reports a failure as `false` and rejects for nothing today.
+                        this.core
+                            .enableHid()
+                            .catch(() => false)
+                            .then(() => next(req, res));
                     } else if (isOriginAllowed) {
                         next(req, res);
                     } else {

@@ -13,6 +13,10 @@ import {
 
 import { isHidPath } from './hid';
 
+// A failed activation is retried, but not once per request of the allowed origin: on a machine
+// with a broken addon every single one of them would pay for a fresh native load attempt.
+const HID_RETRY_INTERVAL = 30_000;
+
 type CompositeApiParams = Omit<AbstractApiConstructorParams, 'type'> & {
     usbApi: AbstractApi;
     /** Called at most once, when the HID backend is enabled. May throw. */
@@ -31,6 +35,7 @@ export class CompositeApi extends AbstractApi {
     private readonly createHidApi: () => AbstractApi;
     private hidApi?: AbstractApi;
     private hidActivation?: Promise<boolean>;
+    private lastHidFailure = 0;
     private usbDescriptors: DescriptorApiLevel[] = [];
     private hidDescriptors: DescriptorApiLevel[] = [];
 
@@ -48,13 +53,18 @@ export class CompositeApi extends AbstractApi {
 
     /**
      * Loads the HID backend. It is not loaded at startup so that a broken native addon cannot
-     * affect users who never need it. Success is final, a failed attempt is repeated by the
-     * next call.
+     * affect users who never need it. Success is final, a failed attempt is repeated by a later
+     * call, at most once per `HID_RETRY_INTERVAL`.
      */
     public enableHid() {
+        if (!this.hidActivation && Date.now() - this.lastHidFailure < HID_RETRY_INTERVAL) {
+            return Promise.resolve(false);
+        }
+
         this.hidActivation ??= this.activateHid().then(isEnabled => {
             if (!isEnabled) {
                 this.hidActivation = undefined;
+                this.lastHidFailure = Date.now();
             }
 
             return isEnabled;
