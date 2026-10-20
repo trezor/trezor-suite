@@ -3,6 +3,8 @@ import { type ChangeEvent } from 'react';
 import { type Meta, type StoryObj } from '@storybook/react';
 import { useArgs } from 'storybook/preview-api';
 
+import { colorVariants } from '@trezor/theme';
+
 import { Input as InputComponent, type InputProps, allowedInputFrameProps } from './Input';
 import { getFramePropsStory } from '../../../utils/frameProps';
 import { inputSizes } from '../types';
@@ -43,6 +45,10 @@ const meta: Meta<typeof InputComponent> = {
         },
         isClean: {
             control: { type: 'boolean' },
+        },
+        placeholderColor: {
+            control: { type: 'select' },
+            options: Object.keys(colorVariants.standard),
         },
         ...getFramePropsStory(allowedInputFrameProps).argTypes,
     },
