@@ -1,0 +1,21 @@
+{
+    "name": "@suite/finprom",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "type": "module",
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@suite-common/finprom": "workspace:*",
+        "@suite-common/locale": "workspace:*",
+        "@suite-common/message-system": "workspace:*",
+        "@suite/settings": "workspace:*"
+    }
+}
