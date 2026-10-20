@@ -5,11 +5,11 @@ import {
     fetchAllTransactionsForAccountThunk,
     getDaysToAddToPool,
     getDaysToUnstake,
-    getStakingDataForNetwork,
     hasStakeInPendingDepositedState,
     selectAccountIsStakingActive,
     selectAccountStakeTransactions,
     selectAccountUnstakeTransactions,
+    selectCanClaimByAccountKey,
     selectEthereumNextRewardPayout,
     selectHasRunningDiscovery,
     selectPoolStatsApy,
@@ -73,7 +73,7 @@ export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProp
     const daysToAddToPool = getDaysToAddToPool(stakeTxs, validatorQueueData);
     const daysToUnstake = getDaysToUnstake(unstakeTxs, validatorQueueData);
 
-    const { canClaim = false } = getStakingDataForNetwork(account) ?? {};
+    const canClaim = useSelector(state => selectCanClaimByAccountKey(state, accountKey));
 
     const isStakingActive = useSelector(state => selectAccountIsStakingActive(state, account.key));
 

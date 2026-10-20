@@ -4,13 +4,14 @@ import { useDebounce } from 'react-use';
 
 import { getNetwork } from '@suite-common/wallet-config';
 import {
+    DEFAULT_ETHEREUM_STAKING_PROVIDER_ID,
+    getEthereumStakingAdapter,
     getStakeFormsDefaultValues,
     getStakingContractAddress,
     getStakingDataForNetwork,
     selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
     selectRawNetworkFeeInfo,
-    simulateUnstake,
     useFormDraft,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -133,12 +134,15 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
         }
 
         const simulateUnstakeAmount = async () => {
-            const approximatedEthAmount = await simulateUnstake({
+            const { previewUnstake } = getEthereumStakingAdapter(
+                DEFAULT_ETHEREUM_STAKING_PROVIDER_ID,
+            );
+            const approximatedEthAmount = await previewUnstake?.({
                 amount: cryptoInput,
                 from: account.descriptor,
                 symbol: account.symbol,
             });
-            setApproximatedInstantEthAmount(approximatedEthAmount);
+            setApproximatedInstantEthAmount(approximatedEthAmount ?? null);
         };
 
         simulateUnstakeAmount();

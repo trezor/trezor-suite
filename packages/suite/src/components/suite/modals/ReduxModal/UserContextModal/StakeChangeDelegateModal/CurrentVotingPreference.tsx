@@ -1,4 +1,5 @@
 import { Translation } from '@suite/intl';
+import { getStakingProvider } from '@suite-common/wallet-config';
 import { CARDANO_EVERSTAKE_DREP } from '@suite-common/wallet-constants';
 import { CARDANO_ALWAYS_ABSTAIN_DREP_ID, getCardanoAccountDrepId } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -21,7 +22,7 @@ export const CurrentVotingPreference = ({ account }: CurrentVotingPreferenceProp
             case CARDANO_ALWAYS_ABSTAIN_DREP_ID:
                 return <Translation id="TR_STAKING_VOTE_ABSTAIN" />;
             case CARDANO_EVERSTAKE_DREP.bech32:
-                return 'Everstake';
+                return getStakingProvider('everstake').name;
             default:
                 return <Translation id="TR_STAKE_PROVIDER_UNKNOWN" />;
         }

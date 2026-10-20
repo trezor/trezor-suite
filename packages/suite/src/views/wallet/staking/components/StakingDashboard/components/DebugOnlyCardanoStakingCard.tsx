@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
-import { EVERSTAKE_POOL_NAMES } from '@suite-common/wallet-config';
+import { EVERSTAKE_POOL_NAMES, getStakingProvider } from '@suite-common/wallet-config';
 import {
     getCardanoAccountPoolId,
     isCardanoStakedWithEverstake,
@@ -51,8 +51,10 @@ export const DebugOnlyCardanoStakingCard = ({ account }: DebugOnlyCardanoStaking
                     >
                         <ParagraphWrapper>
                             <Paragraph typographyStyle="body-xs">
-                                {isStakedWithEverstake ? 'Everstake' : ''}
-                                {isStakedWithFiveBinaries ? 'FiveBinaries' : ''}
+                                {isStakedWithEverstake ? getStakingProvider('everstake').name : ''}
+                                {isStakedWithFiveBinaries
+                                    ? getStakingProvider('fivebinaries').name
+                                    : ''}
                                 {!isStakedWithEverstake && !isStakedWithFiveBinaries
                                     ? 'Unknown'
                                     : ''}
