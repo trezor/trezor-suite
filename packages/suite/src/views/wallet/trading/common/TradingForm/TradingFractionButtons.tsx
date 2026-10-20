@@ -12,14 +12,14 @@ import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingC
 import { type TradingAllFormProps } from 'src/types/trading/tradingForm';
 import { isTradingSellContext } from 'src/utils/wallet/trading/tradingTypingUtils';
 
-import { TRADING_FORM_CARD_COMPONENT } from './TradingFormCard';
+import { TRADING_FORM_SECTION_COMPONENT } from './TradingFormSection';
 import { generateFractionButtons } from './tradingFormInputsUtils';
 
 const FractionButtonsContainer = styled.div`
     opacity: 0;
     transition: opacity 0.15s ease-in-out;
 
-    [data-component='${TRADING_FORM_CARD_COMPONENT}']:hover &,
+    [data-component='${TRADING_FORM_SECTION_COMPONENT}']:hover &,
     &:focus-within {
         opacity: 1;
     }

@@ -2,6 +2,8 @@ import { type ReactNode } from 'react';
 
 import { Badge, Column, Row, Text } from '@trezor/components';
 
+export const TRADING_FORM_SECTION_COMPONENT = 'TradingFormSection';
+
 type TradingFormSectionProps = {
     title?: ReactNode;
     errorMessage?: string;
@@ -20,6 +22,7 @@ export const TradingFormSection = ({
         padding={{ horizontal: 20, vertical: 16 }}
         alignItems="stretch"
         data-testid={dataTestId}
+        data-component={TRADING_FORM_SECTION_COMPONENT}
     >
         {!!title && (
             <Row gap={8} justifyContent="space-between" alignItems="center">
