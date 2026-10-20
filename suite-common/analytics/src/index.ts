@@ -33,6 +33,7 @@ export {
 } from './events/transactionCreatedEvent';
 
 export { transactionCancelEvent } from './events/transactionCancelEvent';
+export { getTransactionCreatedEventPayload } from './utils/getTransactionCreatedEventPayload';
 
 export { yieldEarnEntryEvent } from './events/yieldEarnEntryEvent';
 export { earnTilePressedEvent } from './events/earnTilePressedEvent';

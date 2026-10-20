@@ -7,6 +7,7 @@ import {
     events,
 } from '@suite/analytics';
 import { closeModal, openDeferredModal, openModal, preserveModal } from '@suite/modal';
+import { getTransactionCreatedEventPayload } from '@suite-common/analytics';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import {
     type MevProtectionRootState,
@@ -56,8 +57,6 @@ import { asCoinSymbol } from '@trezor/connect-common';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { type WithServices } from '@trezor/redux-utils';
 import { type Err } from '@trezor/type-utils';
-
-import { getTransactionCreatedEventPayload } from 'src/utils/suite/analytics';
 
 import * as stakeFormCardanoActions from './stake/stakeFormCardanoActions';
 import * as stakeFormEthereumActions from './stake/stakeFormEthereumActions';
@@ -380,7 +379,7 @@ export const signTransactionThunk =
                 type: events.transactionCreatedEvent.name,
                 payload: getTransactionCreatedEventPayload({
                     action: 'sent',
-                    symbol: account.symbol,
+                    account,
                     precomposedForm: formValues,
                     tokens: '',
                     txType: 'stake',

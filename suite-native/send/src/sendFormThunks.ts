@@ -1,5 +1,6 @@
 import { isRejected } from '@reduxjs/toolkit';
 
+import { getTransactionCreatedEventPayload, events as sharedEvents } from '@suite-common/analytics';
 import { type DeviceRootState, deviceActions, selectSelectedDevice } from '@suite-common/device';
 import {
     type MevProtectionRootState,
@@ -277,6 +278,16 @@ export const sendTransactionThunk = createThunk<
                     hasDestinationTag: isNotNullOrUndefined(formValues.destinationTag),
                     wasAppLeftDuringReview,
                 },
+            });
+
+            extra.services.analytics.report({
+                type: sharedEvents.transactionCreatedEvent.name,
+                payload: getTransactionCreatedEventPayload({
+                    action: 'sent',
+                    account: selectedAccount,
+                    precomposedForm: formValues,
+                    tokens: tokenSymbol ?? '',
+                }),
             });
         }
 

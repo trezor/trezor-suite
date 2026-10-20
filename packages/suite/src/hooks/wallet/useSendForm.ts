@@ -151,8 +151,9 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
 
     // used in "loadDraft" useEffect and "importTransaction" callback
     const getLoadedValues = useCallback(
-        (loadedState?: Partial<FormState>) => ({
+        (loadedState?: Partial<FormState>): FormState => ({
             ...getDefaultValues(localCurrencyOption, networkType),
+            txType: 'send',
             ...loadedState,
         }),
         [localCurrencyOption, networkType],

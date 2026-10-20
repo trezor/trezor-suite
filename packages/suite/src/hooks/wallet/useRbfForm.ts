@@ -243,6 +243,7 @@ const useRbfState = ({ account, rbfParams, chainedTxs }: UseRbfProps): RbfState 
             shouldSendInSats,
             formValues: {
                 ...DEFAULT_VALUES,
+                txType: 'send',
                 outputs,
                 selectedFee: undefined,
                 setMaxOutputId,

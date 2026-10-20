@@ -1,3 +1,6 @@
+import { type AccountType } from '@suite-common/wallet-config';
+import { type FormStateTxType } from '@suite-common/wallet-types';
+
 import { EventType } from '../constants';
 import type { AttributeDef, EventDef } from '../eventDefinition';
 
@@ -24,19 +27,22 @@ type Attributes = {
     isCoinControlEnabled: AttributeDef<boolean>;
     hasCoinControlBeenOpened: AttributeDef<boolean>;
 
-    txType?: AttributeDef<'trade' | 'stake' | 'yield'>;
+    txType?: AttributeDef<FormStateTxType>;
+
+    accountIndex?: AttributeDef<number>;
+    accountType?: AttributeDef<AccountType>;
 };
 
 export const transactionCreatedEvent: EventDef<Attributes, EventType.TransactionCreated> = {
     name: EventType.TransactionCreated,
     descriptionTrigger:
-        'When transaction is sent (Review & Send), replaced (Bump fee), copied (Broadcast option in send form is off), downloaded (Broadcast option in send form is off), or canceled (Cancelling TX and sending back to the users wallet). Mobile reports it only for staking and yield transactions, when the send is confirmed; a plain mobile send reports `send/transaction_dispatched`',
+        'When transaction is sent (Review & Send), replaced (Bump fee), copied (Broadcast option in send form is off), downloaded (Broadcast option in send form is off), or canceled (Cancelling TX and sending back to the users wallet). Mobile reports it for staking, yield and send transactions, when the send is confirmed; a plain mobile send additionally reports `send/transaction_dispatched`',
     changelog: [
         { version: '1.9.0', notes: 'added' },
         { version: '25.4.0', notes: 'txType added' },
         {
             version: '26.11.0',
-            notes: 'moved to suite-common and reported from mobile for staking and yield with transaction options from the signing form; txType gets `yield` and `stake` now also covers Tron and Cardano',
+            notes: 'moved to suite-common and reported from mobile for staking, yield and send with transaction options from the signing form; txType gets `yield` and `send`, `stake` now also covers Tron and Cardano; accountIndex and accountType added for send',
         },
     ],
     possibleImprovements: 'rename to `accounts/transaction-created`',
@@ -110,11 +116,21 @@ export const transactionCreatedEvent: EventDef<Attributes, EventType.Transaction
                 { version: '25.4.0', notes: 'added' },
                 {
                     version: '26.11.0',
-                    notes: 'added `yield`; `stake` now also covers Tron and Cardano',
+                    notes: 'added `yield` and `send`; `stake` now also covers Tron and Cardano',
                 },
             ],
             description:
-                '`trade` for trading, `stake` for staking on any network, `yield` for every transaction of a yield flow including its approve, revoke, wrap and unwrap steps, so one yield action can emit several events',
+                '`send` for a transaction from the send form including bump fee and cancel, `trade` for trading, `stake` for staking on any network, `yield` for every transaction of a yield flow including its approve, revoke, wrap and unwrap steps, so one yield action can emit several events. Undefined for a trading allowance approve or revoke',
+        },
+        accountIndex: {
+            changelog: [{ version: '26.11.0', notes: 'added' }],
+            description:
+                'The 0-based account index within its network and account type, the same as `index` in `accounts/info`; only when `txType` is `send`',
+        },
+        accountType: {
+            changelog: [{ version: '26.11.0', notes: 'added' }],
+            description:
+                'The account type (`normal`, `segwit`, `legacy`, `taproot`, `coinjoin`, `ledger`), the same as in `accounts/info`; only when `txType` is `send`',
         },
     },
 };
