@@ -5,7 +5,9 @@ import { walletReducers } from 'src/reducers/wallet';
 
 import {
     selectConnectingBackends,
+    selectCustomBackendsStatus,
     selectHasConnectedNetworkBackend,
+    selectIsCustomBackendUnreachable,
     selectUnreachableCustomBackendSymbol,
 } from './backendSelectors';
 
@@ -68,6 +70,91 @@ describe('selectConnectingBackends', () => {
         );
 
         expect(selectConnectingBackends(state)).toEqual([]);
+    });
+});
+
+describe('selectIsCustomBackendUnreachable', () => {
+    it('is true for a custom backend that failed to connect', () => {
+        expect(
+            selectIsCustomBackendUnreachable(
+                withBlockchain(createState(), 'btc', { error: 'connect failed' }),
+                btc,
+            ),
+        ).toBe(true);
+    });
+
+    it('is false while the custom backend is still connecting', () => {
+        expect(selectIsCustomBackendUnreachable(createState(), btc)).toBe(false);
+    });
+
+    it('is false for a network on the default backend', () => {
+        expect(selectIsCustomBackendUnreachable(createState(), ltc)).toBe(false);
+    });
+
+    it('is false once the custom backend is connected', () => {
+        expect(
+            selectIsCustomBackendUnreachable(
+                withBlockchain(createState(), 'btc', { connected: true }),
+                btc,
+            ),
+        ).toBe(false);
+    });
+
+    it('is false for a network without accounts, whose idle connection was closed', () => {
+        const state = withBlockchain(createState(), 'eth', {
+            backends: { selected: 'blockbook', urls: { blockbook: ['https://eth.example'] } },
+            error: 'Backend disconnected',
+        });
+
+        expect(selectIsCustomBackendUnreachable(state, eth)).toBe(false);
+    });
+
+    it('is false for a network whose only account does not sync through Trezor Connect', () => {
+        const state = withBlockchain(createState(), 'btc', { error: 'connect failed' });
+        const coinjoinOnlyState = {
+            wallet: {
+                ...state.wallet,
+                accounts: [
+                    {
+                        ...mockWalletAccount({ symbol: btc }),
+                        backendType: 'coinjoin' as const,
+                        status: 'ready' as const,
+                    },
+                ],
+            },
+        };
+
+        expect(selectIsCustomBackendUnreachable(coinjoinOnlyState, btc)).toBe(false);
+    });
+});
+
+describe('selectCustomBackendsStatus', () => {
+    it('is connecting while the custom backend has neither connected nor failed', () => {
+        expect(selectCustomBackendsStatus(createState())).toBe('connecting');
+    });
+
+    it('is connected once the custom backend connects', () => {
+        expect(
+            selectCustomBackendsStatus(withBlockchain(createState(), 'btc', { connected: true })),
+        ).toBe('connected');
+    });
+
+    it('is failed when the custom backend failed to connect', () => {
+        expect(
+            selectCustomBackendsStatus(
+                withBlockchain(createState(), 'btc', { error: 'connect failed' }),
+            ),
+        ).toBe('failed');
+    });
+
+    it('ignores default backends', () => {
+        const state = withBlockchain(
+            withBlockchain(createState(), 'btc', { connected: true }),
+            'ltc',
+            { error: 'connect failed' },
+        );
+
+        expect(selectCustomBackendsStatus(state)).toBe('connected');
     });
 });
 

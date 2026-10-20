@@ -326,10 +326,13 @@ export const getRootReducer: any = (selectedAccount = BTC_ACCOUNT, fees = DEFAUL
             ),
             blockchain: createReducer(
                 {
-                    btc: {},
-                    eth: {},
-                    xrp: {},
-                    sol: { blockHash: 'BuKJXfBwb5BUXK7wACFCBpTHKyzcSfnAXG2NpyHJQhcX' },
+                    btc: { backends: {} },
+                    eth: { backends: {} },
+                    xrp: { backends: {} },
+                    sol: {
+                        blockHash: 'BuKJXfBwb5BUXK7wACFCBpTHKyzcSfnAXG2NpyHJQhcX',
+                        backends: {},
+                    },
                 },
                 () => ({}),
             ),

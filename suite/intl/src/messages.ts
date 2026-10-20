@@ -7386,6 +7386,14 @@ export const messages = defineMessages({
         id: 'TR_BACKENDS',
         defaultMessage: 'backend',
     },
+    TR_CUSTOM_BACKEND_UNREACHABLE: {
+        id: 'TR_CUSTOM_BACKEND_UNREACHABLE',
+        defaultMessage: "Can't connect to your custom server",
+    },
+    TR_CUSTOM_BACKEND_UNREACHABLE_DESCRIPTION: {
+        id: 'TR_CUSTOM_BACKEND_UNREACHABLE_DESCRIPTION',
+        defaultMessage: 'Check the server address, or switch back to the default Trezor servers.',
+    },
     TR_CUSTOM_SERVERS: {
         id: 'TR_CUSTOM_SERVERS',
         defaultMessage: 'Custom servers',

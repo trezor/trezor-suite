@@ -109,3 +109,23 @@ export const selectHasConnectedNetworkBackend = (
 export const selectUnreachableCustomBackendSymbol = (
     state: AccountsRootState & BlockchainRootState & WalletSettingsRootState,
 ) => selectNetworkBackends(state).find(isUnreachableCustomBackend)?.symbol;
+
+export const selectIsCustomBackendUnreachable = (
+    state: AccountsRootState & BlockchainRootState & WalletSettingsRootState,
+    symbol: NetworkSymbol,
+) =>
+    selectNetworkBackends(state).some(
+        backend => backend.symbol === symbol && isUnreachableCustomBackend(backend),
+    );
+
+export const selectCustomBackendsStatus = (
+    state: AccountsRootState & BlockchainRootState & WalletSettingsRootState,
+): BackendConnectionStatus => {
+    const statuses = selectNetworkBackends(state)
+        .filter(({ isCustom }) => isCustom)
+        .map(({ status }) => status);
+
+    if (statuses.includes('failed')) return 'failed';
+
+    return statuses.includes('connecting') ? 'connecting' : 'connected';
+};
