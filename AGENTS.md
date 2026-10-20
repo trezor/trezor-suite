@@ -52,7 +52,8 @@ and killing development servers are not routine prerequisites.
 ## Architecture and code map
 
 This is a Yarn workspaces monorepo orchestrated by Nx. `package.json` also includes `networks/*/*`,
-`packages/connect-examples/*` and `scripts` workspaces. Read package names from manifests, not paths.
+`networks/network-module/*/*`, `packages/connect-examples/*` and `scripts` workspaces. Read package
+names from manifests, not paths.
 
 - `packages/` (`@trezor/*`): Reusable libraries: `connect` SDK,
   `connect-web`/`connect-webextension`/`connect-mobile` entry points, `transport*`,

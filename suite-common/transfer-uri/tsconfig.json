@@ -5,7 +5,7 @@
         { "path": "../networks" },
         { "path": "../wallet-config" },
         {
-            "path": "../../networks/network-module/network-module-suite-common-types"
+            "path": "../../networks/network-module/suite-common/suite-common-types"
         },
         { "path": "../../packages/type-utils" },
         { "path": "../../packages/utils" }
