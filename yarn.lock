@@ -15466,6 +15466,7 @@ __metadata:
   resolution: "@suite-native/send@workspace:suite-native/send"
   dependencies:
     "@reduxjs/toolkit": "npm:2.13.0"
+    "@suite-common/analytics": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/mev": "workspace:*"
     "@suite-common/test-utils": "workspace:*"

@@ -28,3 +28,4 @@ export {
 } from './events/transactionCreatedEvent';
 
 export { transactionCancelEvent } from './events/transactionCancelEvent';
+export { getTransactionCreatedEventPayload } from './utils/getTransactionCreatedEventPayload';
