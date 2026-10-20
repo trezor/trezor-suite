@@ -50,7 +50,7 @@ type TradingFormInputBaseCurrencyAmountProps = Pick<
     TradingFormInputFiatCryptoProps,
     'cryptoInputName' | 'fiatInputName'
 > & {
-    symbol: NetworkSymbol;
+    symbol?: NetworkSymbol;
     tokenAddress?: TokenAddress;
     decimals?: number;
     isInSats?: boolean;
@@ -69,13 +69,14 @@ export const TradingFormInputBaseCurrencyAmount = ({
     const baseCurrency = useSelector(selectBaseCurrency);
     const isBaseCurrencyInSats = useSelector(selectIsBaseCurrencyInSats);
     const isNativeToken = !tokenAddress || tokenAddress === CONTRACT_ADDRESS_FOR_NATIVE_TOKEN;
-    const rate = useSelector(
-        (state: FiatRatesRootState) =>
-            selectFiatRatesByFiatRateKey(
-                state,
-                getFiatRateKey(symbol, baseCurrency, isNativeToken ? undefined : tokenAddress),
-                'current',
-            )?.rate,
+    const rate = useSelector((state: FiatRatesRootState) =>
+        symbol
+            ? selectFiatRatesByFiatRateKey(
+                  state,
+                  getFiatRateKey(symbol, baseCurrency, isNativeToken ? undefined : tokenAddress),
+                  'current',
+              )?.rate
+            : undefined,
     );
 
     const context = useTradingFormContext();
@@ -98,7 +99,7 @@ export const TradingFormInputBaseCurrencyAmount = ({
         control: baseCurrencyForm.control,
         name: BASE_CURRENCY_AMOUNT_FIELD,
     });
-    const assetKey = `${symbol}:${tokenAddress ?? ''}`;
+    const assetKey = `${symbol ?? ''}:${tokenAddress ?? ''}`;
     const typedRef = useRef<{ cryptoAmount: string; assetKey: string } | undefined>(undefined);
 
     const currencyLabel = useMemo(() => {
@@ -117,7 +118,7 @@ export const TradingFormInputBaseCurrencyAmount = ({
 
     const baseCurrencyAmountFromCrypto = useMemo(() => {
         const formattedAmount =
-            cryptoAmount && rate
+            cryptoAmount && rate && symbol
                 ? parseCryptoToFormattedBaseCurrency({
                       areSatsDisplayed: isBaseCurrencyInSats,
                       baseCurrencyToSats: isInSats,
