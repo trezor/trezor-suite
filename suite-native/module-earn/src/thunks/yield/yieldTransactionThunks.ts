@@ -22,6 +22,7 @@ import {
     selectYieldSession,
     selectYieldTxReview,
     synchronizeSentTransactionThunk,
+    transactionsActions,
     yieldActions,
 } from '@suite-common/wallet-core';
 import { type EvmSelectedFee } from '@suite-common/wallet-types';
@@ -257,6 +258,16 @@ export const pushYieldActionReviewThunk = createThunk<
         });
 
         dispatch(yieldActions.discardTransaction());
+
+        dispatch(
+            transactionsActions.transactionBroadcastStatus({
+                account: flowData.account,
+                flow: `yield-${flowType}`,
+                ...(pushResponse.success
+                    ? ({ status: 'success', txid: pushResponse.payload.txid } as const)
+                    : ({ status: 'error' } as const)),
+            }),
+        );
 
         if (!pushResponse.success) {
             return rejectWithValue({

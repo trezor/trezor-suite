@@ -16,6 +16,7 @@ import {
     selectYieldSession,
     sendFormActions,
     signTransactionThunk,
+    transactionsActions,
 } from '@suite-common/wallet-core';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
@@ -246,6 +247,16 @@ export const useYieldApprovalReview = ({
             }),
         );
 
+        dispatch(
+            transactionsActions.transactionBroadcastStatus({
+                account: flowData.account,
+                flow: transactionType,
+                ...(isRejected(pushResponse)
+                    ? ({ status: 'error' } as const)
+                    : ({ status: 'success', txid: pushResponse.payload.payload.txid } as const)),
+            }),
+        );
+
         if (isRejected(pushResponse)) {
             setIsSendingApproval(false);
             reportApprovalReviewEvent({ errorMessage: 'push-failed' });
@@ -266,6 +277,7 @@ export const useYieldApprovalReview = ({
         isSendingApproval,
         reportApprovalReviewEvent,
         reviewTransaction,
+        transactionType,
     ]);
 
     // Fired when the pushed transaction appears in the transactions store; the

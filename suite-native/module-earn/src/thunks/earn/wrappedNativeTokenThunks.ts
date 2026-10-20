@@ -17,6 +17,7 @@ import {
     selectIsMevProtectionEnabled,
     synchronizeSentTransactionThunk,
     trackWrappedNativeTokenThunk,
+    transactionsActions,
 } from '@suite-common/wallet-core';
 import {
     type Account,
@@ -197,6 +198,16 @@ export const pushWrappedNativeTokenThunk = createThunk<
                 selectIsMevProtectionEnabled(getState()) &&
                 selectIsMevProtectionFeatureEnabled(getState()),
         });
+
+        dispatch(
+            transactionsActions.transactionBroadcastStatus({
+                account,
+                flow: flowType,
+                ...(pushResponse.success
+                    ? ({ status: 'success', txid: pushResponse.payload.txid } as const)
+                    : ({ status: 'error' } as const)),
+            }),
+        );
 
         if (!pushResponse.success) {
             return rejectWithValue({

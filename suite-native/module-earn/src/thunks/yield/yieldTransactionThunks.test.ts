@@ -13,6 +13,7 @@ import {
     selectYieldSession,
     selectYieldTxReview,
     synchronizeSentTransactionThunk,
+    transactionsActions,
     yieldActions,
     yieldReducer,
 } from '@suite-common/wallet-core';
@@ -226,6 +227,35 @@ describe('pushYieldActionReviewThunk', () => {
     afterEach(() => {
         jest.restoreAllMocks();
     });
+
+    it.each(
+        (['deposit', 'withdraw', 'redeem'] as const).flatMap(flowType =>
+            [true, false].map(success => ({ flowType, success })),
+        ),
+    )(
+        'registers the $flowType broadcast outcome (success: $success)',
+        async ({ flowType, success }) => {
+            const store = buildStore();
+            prepareActionReview({ store, flowType, flowKey: FLOW_KEY });
+            storeSignedTransaction({ store, flowType, flowKey: FLOW_KEY });
+            pushTransactionMock.mockResolvedValue(
+                success
+                    ? { success: true, payload: { txid: 'status-txid' } }
+                    : { success: false, error: { message: 'backend-private-details' } },
+            );
+            await dispatchPush({ store, flowType, flowKey: FLOW_KEY });
+            const outcomes = store
+                .getActions()
+                .filter(transactionsActions.transactionBroadcastStatus.match);
+            expect(outcomes.map(action => action.payload)).toEqual([
+                {
+                    account,
+                    flow: `yield-${flowType}`,
+                    ...(success ? { status: 'success', txid: 'status-txid' } : { status: 'error' }),
+                },
+            ]);
+        },
+    );
 
     it('pushes the signed deposit tx and stores pending deposit metadata', async () => {
         const store = buildStore();

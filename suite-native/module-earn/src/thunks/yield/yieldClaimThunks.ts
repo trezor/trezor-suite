@@ -20,6 +20,7 @@ import {
     selectYieldSession,
     selectYieldTxReview,
     synchronizeSentTransactionThunk,
+    transactionsActions,
     yieldActions,
 } from '@suite-common/wallet-core';
 import { type Account, type FormState } from '@suite-common/wallet-types';
@@ -267,6 +268,16 @@ export const pushYieldClaimReviewThunk = createThunk<
         });
 
         dispatch(yieldActions.discardTransaction());
+
+        dispatch(
+            transactionsActions.transactionBroadcastStatus({
+                account,
+                flow: 'merkl-claim',
+                ...(pushResponse.success
+                    ? ({ status: 'success', txid: pushResponse.payload.txid } as const)
+                    : ({ status: 'error' } as const)),
+            }),
+        );
 
         if (!pushResponse.success) {
             return rejectWithValue({
