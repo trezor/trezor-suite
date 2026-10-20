@@ -9,6 +9,7 @@ import {
     type EarnModalAction,
     type EarnProvider,
     type EarnYieldContext,
+    getEarnProviderId,
 } from '@suite-common/suite-types';
 import {
     getEarnOpportunityKey,
@@ -65,7 +66,7 @@ export const EarnInANutshellModal = ({
     const opportunity =
         flow === EarnFlow.Yield
             ? getYieldEarnOpportunityKey(yieldContext?.vaultAddress)
-            : getEarnOpportunityKey({ type: 'staking', provider });
+            : getEarnOpportunityKey({ type: 'staking', provider: getEarnProviderId(provider) });
     const isConfirmed = useSelector(state =>
         selectIsEarnOnboardingConfirmed(state, account.key, opportunity),
     );

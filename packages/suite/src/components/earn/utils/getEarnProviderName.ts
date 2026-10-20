@@ -1,13 +1,5 @@
-import { EarnProvider } from '@suite-common/suite-types';
-import { exhaustive } from '@trezor/type-utils';
+import { type EarnProvider, getEarnProviderId } from '@suite-common/suite-types';
+import { getEarnProvider } from '@suite-common/wallet-config';
 
-export const getEarnProviderName = (provider: EarnProvider): string => {
-    switch (provider) {
-        case EarnProvider.Everstake:
-            return 'Everstake';
-        case EarnProvider.Morpho:
-            return 'Morpho';
-        default:
-            return exhaustive(provider);
-    }
-};
+export const getEarnProviderName = (provider: EarnProvider): string =>
+    getEarnProvider(getEarnProviderId(provider)).name;

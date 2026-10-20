@@ -1,6 +1,7 @@
 import { type PayloadAction } from '@reduxjs/toolkit';
 
 import { deviceActions } from '@suite-common/device';
+import { type EarnProviderId } from '@suite-common/wallet-config';
 import { type AccountKey, type EarnOpportunityKey } from '@suite-common/wallet-types';
 import {
     type ActionTypesDep,
@@ -11,7 +12,7 @@ import {
 import { accountsActions } from './accountsActions';
 
 type EarnOpportunity =
-    { type: 'staking'; provider: string } | { type: 'yield'; vaultAddress: string };
+    { type: 'staking'; provider: EarnProviderId } | { type: 'yield'; vaultAddress: string };
 
 export const getEarnOpportunityKey = (opportunity: EarnOpportunity): EarnOpportunityKey =>
     opportunity.type === 'staking'

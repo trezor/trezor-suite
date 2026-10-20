@@ -63,7 +63,7 @@ describe('earn onboarding', () => {
             getEarnOpportunityKey({ type: 'yield', vaultAddress: '0xabc' }),
         );
         expect(opportunity).not.toBe(
-            getEarnOpportunityKey({ type: 'staking', provider: 'another-provider' }),
+            getEarnOpportunityKey({ type: 'staking', provider: 'fivebinaries' }),
         );
     });
 });

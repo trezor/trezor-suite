@@ -2,7 +2,7 @@ import {
     type NetworkSymbol,
     type NetworkType,
     getStakingProviderByCardanoPoolId,
-    getStakingProviderByEthereumPoolName,
+    getStakingProviderByEthereumContract,
     getStakingProviderBySolanaVoterPubkey,
     getStakingProviderByTronSrAddress,
 } from '@suite-common/wallet-config';
@@ -377,7 +377,10 @@ export const getStakingProvidersForAnalytics = (accounts: Account[]): string[] =
         switch (account.networkType) {
             case 'ethereum':
                 account.misc?.stakingPools?.forEach(pool => {
-                    const provider = getStakingProviderByEthereumPoolName(pool.name);
+                    const provider = getStakingProviderByEthereumContract(
+                        account.symbol,
+                        pool.contract,
+                    );
                     if (provider) {
                         providers.add(provider.id);
                     } else {

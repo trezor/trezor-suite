@@ -1,3 +1,7 @@
+import {
+    EARN_PROVIDERS,
+    type EarnProviderId as RegistryEarnProviderId,
+} from '@suite-common/wallet-config';
 import { type ImageType } from '@trezor/components';
 
 type ProviderMetadata = {
@@ -6,17 +10,20 @@ type ProviderMetadata = {
     logo: ImageType;
 };
 
-export const EARN_PROVIDER_METADATA = {
-    everstake: {
-        name: 'Everstake',
-        companyName: 'Everstake',
-        logo: 'EVERSTAKE_LOGO',
-    },
-    morpho: {
-        name: 'Morpho',
-        companyName: 'Morpho',
-        logo: 'MORPHO_LOGO',
-    },
-} as const satisfies Record<string, ProviderMetadata>;
+const PROVIDER_LOGOS = {
+    everstake: 'EVERSTAKE_LOGO',
+    morpho: 'MORPHO_LOGO',
+} as const satisfies Partial<Record<RegistryEarnProviderId, ImageType>>;
 
-export type EarnProviderId = keyof typeof EARN_PROVIDER_METADATA;
+export type EarnProviderId = keyof typeof PROVIDER_LOGOS;
+
+const toProviderMetadata = (id: EarnProviderId): ProviderMetadata => {
+    const { name, companyName } = EARN_PROVIDERS[id];
+
+    return { name, companyName, logo: PROVIDER_LOGOS[id] };
+};
+
+export const EARN_PROVIDER_METADATA: Readonly<Record<EarnProviderId, ProviderMetadata>> = {
+    everstake: toProviderMetadata('everstake'),
+    morpho: toProviderMetadata('morpho'),
+};

@@ -1,5 +1,10 @@
 import { Translation } from '@suite/intl';
-import { EarnFlow, type EarnProvider, type EarnYieldContext } from '@suite-common/suite-types';
+import {
+    EarnFlow,
+    type EarnProvider,
+    type EarnYieldContext,
+    getEarnProviderId,
+} from '@suite-common/suite-types';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { getEarnOpportunityKey, selectIsEarnOnboardingConfirmed } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -37,7 +42,7 @@ export const StakingEarnProviderConsentModal = ({
         selectIsEarnOnboardingConfirmed(
             state,
             account.key,
-            getEarnOpportunityKey({ type: 'staking', provider }),
+            getEarnOpportunityKey({ type: 'staking', provider: getEarnProviderId(provider) }),
         ),
     );
 

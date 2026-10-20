@@ -6,6 +6,7 @@ import {
     type EarnModalAction,
     type EarnProvider,
     type EarnYieldContext,
+    getEarnProviderId,
 } from '@suite-common/suite-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
@@ -58,7 +59,7 @@ export const useEarnProviderConsentActions = ({
         const opportunity =
             flow === EarnFlow.Yield
                 ? getYieldEarnOpportunityKey(yieldContext?.vaultAddress)
-                : getEarnOpportunityKey({ type: 'staking', provider });
+                : getEarnOpportunityKey({ type: 'staking', provider: getEarnProviderId(provider) });
 
         if (opportunity) {
             dispatch(

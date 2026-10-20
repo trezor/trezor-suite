@@ -6,6 +6,9 @@
         { "path": "../legacy-network-config" },
         { "path": "../networks" },
         {
+            "path": "../../networks/ethereum/network-ethereum"
+        },
+        {
             "path": "../../networks/network-module/network-module-types"
         },
         {

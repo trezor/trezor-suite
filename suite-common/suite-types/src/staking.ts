@@ -1,3 +1,5 @@
+import { type EarnProviderId } from '@suite-common/wallet-config';
+
 export enum EarnFlow {
     Stake = 'stake',
     Yield = 'yield',
@@ -10,6 +12,15 @@ export enum EarnProvider {
     Everstake = 'everstake',
     Morpho = 'morpho',
 }
+
+// Transitional bridge to the registry id space until the enum is removed.
+const EARN_PROVIDER_IDS: Record<EarnProvider, EarnProviderId> = {
+    [EarnProvider.Everstake]: 'everstake',
+    [EarnProvider.Morpho]: 'morpho',
+};
+
+export const getEarnProviderId = (provider: EarnProvider): EarnProviderId =>
+    EARN_PROVIDER_IDS[provider];
 
 export type EarnYieldContext = {
     id: string;
