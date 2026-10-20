@@ -1,6 +1,5 @@
 import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
 
-import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { bluetoothActions } from '@suite-common/bluetooth';
 import { type WithServices } from '@trezor/redux-utils';
 import { type BluetoothDevice, bluetoothIpc } from '@trezor/transport-bluetooth';
@@ -9,13 +8,13 @@ import { type DesktopBluetoothDevice, fromBluetoothDevice } from './DesktopBluet
 import { bluetoothAdapterEventThunk } from './bluetoothAdapterEventThunk';
 import { type BackgroundScan } from './bluetoothBackgroundScan';
 import { type BluetoothDep } from './createBluetooth';
+import type { OpenSystemSettings } from './createOpenSystemSettings';
 import { fixLinuxManufacturerData } from './fixLinuxManufacturerData';
-import { openSystemSettingsThunk } from './openSystemSettingsThunk';
 import { remapKnownDevices } from './remapKnownDevices';
 
 type SetupBluetoothListenersThunkDispatch = ThunkDispatch<
     unknown,
-    WithServices<DesktopApiDep<'openSystemSettings'> & BluetoothDep>,
+    WithServices<BluetoothDep>,
     UnknownAction
 >;
 
@@ -23,6 +22,7 @@ type SetupBluetoothListenersDeps = {
     getKnownDevices: () => DesktopBluetoothDevice[];
     dispatch: SetupBluetoothListenersThunkDispatch;
     backgroundScan: BackgroundScan;
+    openSystemSettings: OpenSystemSettings;
 };
 
 type SetupBluetoothListeners = () => void;
@@ -68,9 +68,7 @@ export const createSetupBluetoothListeners =
         });
 
         bluetoothIpc.on('open-bluetooth-settings', async ({ id }) => {
-            const settingsOpened = await deps
-                .dispatch(openSystemSettingsThunk({ type: 'bluetooth' }))
-                .unwrap();
+            const settingsOpened = await deps.openSystemSettings('bluetooth');
             if (!settingsOpened.success) {
                 // stop here and disconnect the device (abort pairing before it starts)
                 // this should throw BluetoothSettingsMissing error in current connection process

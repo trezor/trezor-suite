@@ -16,6 +16,7 @@ import { type DesktopBluetoothDevice } from './DesktopBluetoothDevice';
 import { createBackgroundScan } from './bluetoothBackgroundScan';
 import { type Bluetooth, type BluetoothDep, createBluetooth } from './createBluetooth';
 import { createBluetoothInit } from './createBluetoothInit';
+import { createOpenSystemSettings } from './createOpenSystemSettings';
 import { createSetupBluetoothAutoReconnect } from './createSetupBluetoothAutoReconnect';
 import { createSetupBluetoothListeners } from './createSetupBluetoothListeners';
 import { type WithBluetoothRootState } from './desktopBluetoothReducer';
@@ -23,11 +24,9 @@ import { selectConnectingDevices } from './desktopBluetoothSelectors';
 
 type CompositionRootState = WithBluetoothRootState & DesktopDeviceRootState & FirmwareRootState;
 
-type CompositionRootThunkDispatch = WithServices<
-    DesktopApiDep<'openSystemSettings'> & BluetoothDep
->;
+type CompositionRootThunkDispatch = WithServices<BluetoothDep>;
 
-type CompositionRootDeps = {
+type CompositionRootDeps = DesktopApiDep<'openSystemSettings'> & {
     getState: () => CompositionRootState;
     dispatch: ThunkDispatch<CompositionRootState, CompositionRootThunkDispatch, UnknownAction>;
 };
@@ -35,6 +34,7 @@ type CompositionRootDeps = {
 export const createBluetoothCompositionRoot = (deps: CompositionRootDeps): Bluetooth => {
     const getAdapterStatus = toGetter(deps.getState, selectAdapterStatus);
     const getKnownDevices = toGetter(deps.getState, selectKnownDevices<DesktopBluetoothDevice>);
+    const openSystemSettings = createOpenSystemSettings(deps);
 
     const backgroundScan = createBackgroundScan({
         getAdapterStatus,
@@ -45,6 +45,7 @@ export const createBluetoothCompositionRoot = (deps: CompositionRootDeps): Bluet
         getKnownDevices,
         dispatch: deps.dispatch,
         backgroundScan,
+        openSystemSettings,
     });
 
     const setupBluetoothAutoReconnect = createSetupBluetoothAutoReconnect({
@@ -68,5 +69,6 @@ export const createBluetoothCompositionRoot = (deps: CompositionRootDeps): Bluet
     return createBluetooth({
         bluetoothInit,
         backgroundScan,
+        openSystemSettings,
     });
 };

@@ -104,6 +104,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
     const bluetooth = createBluetoothCompositionRoot({
         dispatch: deps.dispatch,
         getState: deps.getState,
+        desktopApi: deps.desktopApi,
     });
 
     const getCurrentAccountLabels = toGetter(deps.getState, selectAllLabelsForAccount);
