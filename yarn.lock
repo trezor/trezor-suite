@@ -16893,7 +16893,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite/finprom@workspace:suite/finprom":
+"@suite/finprom@workspace:*, @suite/finprom@workspace:suite/finprom":
   version: 0.0.0-use.local
   resolution: "@suite/finprom@workspace:suite/finprom"
   dependencies:
@@ -19813,6 +19813,7 @@ __metadata:
     "@suite/experimental": "workspace:*"
     "@suite/external-links": "workspace:*"
     "@suite/feature-feedback": "workspace:*"
+    "@suite/finprom": "workspace:*"
     "@suite/firmware-upgrade": "workspace:*"
     "@suite/flags": "workspace:*"
     "@suite/forms": "workspace:*"
