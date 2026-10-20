@@ -12,6 +12,8 @@ export const mockTrackedEarnTransaction = (
     accountKey: mockAccountKey(),
     txid: 'mockTxid',
     flow: 'stake',
+    isCancellation: false,
+    isRbf: false,
     ...overrides,
 });
 

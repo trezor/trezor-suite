@@ -12,7 +12,12 @@ import {
     getYieldSessionKey,
     initialStablecoinYieldSessionState,
 } from './yieldReducer';
-import { YIELD_FLOW_TYPES, type YieldFlowType, type YieldGasReserve } from './yieldTypes';
+import {
+    YIELD_FLOW_TYPES,
+    type YieldApproveModalState,
+    type YieldFlowType,
+    type YieldGasReserve,
+} from './yieldTypes';
 
 const createFeesMemoizedSelector = createWeakMapSelector.withTypes<FeesRootState>();
 
@@ -43,21 +48,16 @@ export const selectYieldTxReview = (state: YieldRootState): YieldTxReviewState =
     state.wallet.stablecoinYield.txReview;
 
 /**
- * Whether the transaction currently being reviewed belongs to a yield flow. The allowance
- * transactions are composed by the shared send form, so their calldata is indistinguishable from
- * a trading approval — the open approval modal is what tells the two apart.
+ * The send form handles both trading and yield approvals. The open yield modal identifies
+ * the owner and approval type without decoding calldata.
  */
-export const selectIsYieldTransactionInReview = (state: YieldRootState): boolean => {
-    if (selectYieldTxReview(state).precomposedTx) {
-        return true;
-    }
+export const selectYieldApprovalInReview = (state: YieldRootState): YieldApproveModalState | null =>
+    YIELD_FLOW_TYPES.flatMap(flowType => Object.values(selectYield(state)[flowType])).find(
+        session => session.approval.modalState !== null,
+    )?.approval.modalState ?? null;
 
-    return YIELD_FLOW_TYPES.some(flowType =>
-        Object.values(selectYield(state)[flowType]).some(
-            session => session.approval.modalState !== null,
-        ),
-    );
-};
+export const selectIsYieldTransactionInReview = (state: YieldRootState): boolean =>
+    !!selectYieldTxReview(state).precomposedTx || !!selectYieldApprovalInReview(state);
 
 export const selectYieldGasReserve = createFeesMemoizedSelector(
     [
