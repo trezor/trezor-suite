@@ -197,6 +197,27 @@ describe(HidApi.name, () => {
             expect(logged).not.toContain('SERIAL-NUMBER');
         });
 
+        it('leaves a serial number too short to identify a device out of the redaction', async () => {
+            const logger = { error: jest.fn(), info: jest.fn(), debug: jest.fn() };
+            const nodeHid = {
+                devicesAsync: jest.fn(() =>
+                    Promise.resolve([mockNodeHidDevice({ serialNumber: '0' })]),
+                ),
+                HIDAsync: {
+                    open: jest.fn(() => Promise.reject(new Error('cannot open, error 50'))),
+                },
+            } satisfies NodeHid;
+            // @ts-expect-error: a minimal logger is enough here
+            const api = new HidApi({ nodeHid, logger });
+            const enumeration = await api.enumerate();
+            const path = enumeration.success ? enumeration.payload[0]?.path : undefined;
+
+            await api.openDevice(path ?? PathInternal('missing'));
+
+            const logged = logger.error.mock.calls.map(([message]) => String(message)).join('\n');
+            expect(logged).toContain('open failed: cannot open, error 50');
+        });
+
         it('fails for an unknown path', async () => {
             const { api } = await setup();
 

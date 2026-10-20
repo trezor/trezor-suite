@@ -36,6 +36,9 @@ const MAX_DISCARDED_REPORTS = 64;
 const UNNUMBERED_REPORT_ID = Buffer.from([0x00]);
 // A continuation-like packet without a message header, which the firmware ignores.
 const REPORT_ID_PROBE = Buffer.concat([Buffer.from('?'), Buffer.alloc(63, 0xff)]);
+// A shorter string identifies neither a device nor a port, while blanking it out would corrupt
+// every logged message that happens to contain it.
+const MIN_SECRET_LENGTH = 8;
 
 type HidHandle = {
     read: (timeout?: number) => Promise<Buffer | undefined>;
@@ -130,7 +133,7 @@ export class HidApi extends AbstractApi {
             const systemPaths = new Map<PathInternal, string>();
             devices.forEach(device => {
                 [device.path, device.serialNumber].forEach(secret => {
-                    if (secret) this.secrets.add(secret);
+                    if (secret && secret.length >= MIN_SECRET_LENGTH) this.secrets.add(secret);
                 });
                 if (device.path && isWireInterface(device)) {
                     systemPaths.set(createPath(device.path), device.path);
