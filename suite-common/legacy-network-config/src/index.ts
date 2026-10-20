@@ -1,4 +1,5 @@
 export { networks, type LegacyNetworkSymbol } from './networksConfig';
+export { registerLegacyNetwork, unregisterLegacyNetwork } from './runtimeNetworks';
 export {
     TREZOR_CONNECT_BACKENDS,
     type AccountType,

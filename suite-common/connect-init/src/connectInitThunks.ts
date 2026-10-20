@@ -22,6 +22,7 @@ import {
     defaultTrezorUIEventHandlerThunk,
     deviceConnectThunk,
     isScopedCallId,
+    selectCustomEvmNetworks,
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
 import TrezorConnect, {
@@ -190,6 +191,12 @@ export const connectInitThunk = createThunk<
         thp.hostName = thpHostName;
     }
 
+    const customEvmNetworks = selectCustomEvmNetworks(getState());
+    const isCustomEvmNetwork = (coin: string) =>
+        customEvmNetworks.some(({ symbol }) => symbol === coin);
+    // Connect cannot know a custom network before it is registered below, so those are declared after.
+    const enabledNetworks = selectEnabledNetworks(getState());
+
     try {
         await TrezorConnect.init({
             ...connectInitSettings,
@@ -202,9 +209,9 @@ export const connectInitThunk = createThunk<
             firmwareChannel: selectEffectiveFirmwareChannel(getState(), getAllowPrerelease()),
             definitionsChannel,
             // Suite's enabled coins, declared to Connect one-way (Suite is the source of truth).
-            enabledNetworks: selectEnabledNetworks(getState()).map(coin => ({
-                coin: asCoinSymbol(coin),
-            })),
+            enabledNetworks: enabledNetworks
+                .filter(coin => !isCustomEvmNetwork(coin))
+                .map(coin => ({ coin: asCoinSymbol(coin) })),
         });
     } catch (error) {
         let formattedError: string;
@@ -214,5 +221,44 @@ export const connectInitThunk = createThunk<
             formattedError = error.code ? `${error.code}: ${error.message}` : error.message;
         }
         throw new Error(formattedError, { cause: error });
+    }
+
+    // Connect forgets runtime-registered networks on every start. A network that fails to register
+    // must not take the whole initialization down, it just stays unusable until the next start.
+    const registrations = await Promise.all(
+        customEvmNetworks.map(async definition => {
+            try {
+                const result = await TrezorConnect.blockchainRegisterEvmNetwork({
+                    symbol: definition.symbol,
+                    name: definition.name,
+                    chainId: definition.chainId,
+                    rpcUrls: definition.rpcUrls,
+                    testnet: definition.testnet,
+                });
+
+                if (!result.success) {
+                    console.warn(
+                        `Custom network ${definition.symbol} not registered`,
+                        result.error,
+                    );
+                }
+
+                return result.success;
+            } catch (error) {
+                console.warn(`Custom network ${definition.symbol} not registered`, error);
+
+                return false;
+            }
+        }),
+    );
+
+    const enabledCustomCoins = customEvmNetworks
+        .filter(
+            (definition, index) =>
+                registrations[index] && enabledNetworks.includes(definition.symbol),
+        )
+        .map(definition => ({ coin: asCoinSymbol(definition.symbol) }));
+    if (enabledCustomCoins.length > 0) {
+        await TrezorConnect.updateConnectSettings({ enabledNetworks: enabledCustomCoins });
     }
 });

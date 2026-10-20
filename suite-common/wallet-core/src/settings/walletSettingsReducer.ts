@@ -19,6 +19,7 @@ import {
 
 import * as walletSettingsActions from './walletSettingsActions';
 import { WALLET_SETTINGS } from './walletSettingsConstants';
+import { customEvmNetworksActions } from '../customNetworks/customEvmNetworksActions';
 
 export type WalletSettingsState = WalletSettings;
 
@@ -60,6 +61,7 @@ export const walletSettingsPersistedWhitelist: Array<keyof WalletSettingsState> 
     'areHomeAssetSmallBalancesShown',
     'isHomeAssetTableNewBannerClosed',
     'isHomeAssetTableFeedbackClosed',
+    'customEvmNetworks',
 ];
 
 export type WalletSettingsReducerDeps = ActionTypesDep<'storageLoad'> &
@@ -136,6 +138,26 @@ export const prepareWalletSettingsReducer = createReducerWithExtraDeps(
                 state.homeAssetsTableGrouping = action.payload;
             },
         );
+        builder.addCase(customEvmNetworksActions.registered, (state, action) => {
+            const { definition } = action.payload;
+            const customEvmNetworks = (state.customEvmNetworks ??= []);
+            const index = customEvmNetworks.findIndex(({ symbol }) => symbol === definition.symbol);
+
+            if (index === -1) {
+                customEvmNetworks.push(definition);
+            } else {
+                customEvmNetworks[index] = definition;
+            }
+        });
+        builder.addCase(customEvmNetworksActions.unregistered, (state, action) => {
+            const { symbol } = action.payload;
+
+            state.customEvmNetworks = (state.customEvmNetworks ?? []).filter(
+                definition => definition.symbol !== symbol,
+            );
+            state.enabledNetworks = state.enabledNetworks.filter(enabled => enabled !== symbol);
+            delete state.suspiciousTransactionsFilter[symbol];
+        });
         builder.addCase(
             walletSettingsActions.setAreHomeAssetSmallBalancesShown.type,
             (

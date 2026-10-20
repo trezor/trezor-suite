@@ -15,6 +15,8 @@ it('loads only registered networks and takes their metadata from the module', ()
             getSupportedNetworks: () => [asNetworkSymbol('btc')],
             get: null,
             isSupportedNetwork: null,
+            register: null,
+            unregister: null,
         },
         getNetworkConfig: () => config,
     });
@@ -32,6 +34,8 @@ it('preserves display order without mutating registered networks on Hermes', () 
             getSupportedNetworks: () => supportedNetworks,
             get: null,
             isSupportedNetwork: null,
+            register: null,
+            unregister: null,
         },
         getNetworkConfig: getMockNetworkMetadata,
     });
@@ -100,6 +104,8 @@ it('orders networks with the same display order key by symbol', () => {
             getSupportedNetworks: () => [asNetworkSymbol('eth'), asNetworkSymbol('btc')],
             get: null,
             isSupportedNetwork: null,
+            register: null,
+            unregister: null,
         },
         getNetworkConfig: symbol => ({
             ...getMockNetworkMetadata(symbol),

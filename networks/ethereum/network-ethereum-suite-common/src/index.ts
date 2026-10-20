@@ -1,4 +1,10 @@
 export { createEthereumSuiteCommonNetworkModule } from './createEthereumSuiteCommonNetworkModule';
+export {
+    buildCustomEvmNetworkConfig,
+    createCustomEvmNetworkModule,
+    type CustomEvmNetworkConfigParams,
+    type CustomEvmNetworkModuleParams,
+} from './customEvmNetwork';
 
 // These exports are temporary migration aids. Once network modularization is complete,
 // wrapped-native token configuration shall remain private to the Ethereum network module.
