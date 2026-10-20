@@ -19,16 +19,16 @@ const rememberApps = (...apps: AppRememberedPermission[]) =>
         connectPopupInitialState,
     );
 
-describe('rememberAppPermissions', () => {
-    const appProcess = { name: 'App', fullPath: '/usr/bin/app', warning: false };
-    const app: AppRememberedPermission = {
-        type: CALL_SOURCE_DESKTOP_WS,
-        origin: 'https://example.com',
-        process: appProcess,
-        manifest: { appName: 'App' },
-        allowedPermissions: [{ permission: 'read_address' }],
-    };
+const appProcess = { name: 'App', fullPath: '/usr/bin/app', warning: false };
+const app: AppRememberedPermission = {
+    type: CALL_SOURCE_DESKTOP_WS,
+    origin: 'https://example.com',
+    process: appProcess,
+    manifest: { appName: 'App' },
+    allowedPermissions: [{ permission: 'read_address' }],
+};
 
+describe('rememberAppPermissions', () => {
     it.each<[string, AppRememberedPermission]>([
         [
             'another process',
