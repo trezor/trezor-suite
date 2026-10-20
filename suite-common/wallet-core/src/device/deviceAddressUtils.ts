@@ -23,6 +23,8 @@ type GetPublicKeyForNetworkTypeParams = {
     showOnTrezor?: boolean;
     // Only meaningful for `cardano`.
     derivationType?: PROTO.CardanoDerivationType;
+    // Correlation token of the call this export belongs to, so a scoped cancel can abort it.
+    callId?: string;
 };
 
 // Single entry point for "show/derive the public key on-device", used both by regular account
@@ -36,12 +38,14 @@ export const getPublicKeyForNetworkType = ({
     coin,
     showOnTrezor = true,
     derivationType,
+    callId,
 }: GetPublicKeyForNetworkTypeParams) => {
     const params = {
         device,
         path,
         coin: coin === undefined ? undefined : asCoinSymbol(coin),
         showOnTrezor,
+        callId,
     };
 
     switch (networkType) {
@@ -76,6 +80,8 @@ type GetAddressForNetworkTypeParams = {
     // Required to resolve `cardano` — omitted callers (e.g. a bare candidate with no derived
     // Account) get the same "not defined" error as a genuinely unsupported network.
     cardano?: CardanoAddressForNetworkTypeParams;
+    // Correlation token of the call this address check belongs to, so a scoped cancel can abort it.
+    callId?: string;
 };
 
 // Single entry point for "show/derive an address on-device". `getAddress` only understands
@@ -89,6 +95,7 @@ export const getAddressForNetworkType = ({
     chunkify = false,
     unlockPath,
     cardano,
+    callId,
 }: GetAddressForNetworkTypeParams) => {
     const params = {
         device,
@@ -97,6 +104,7 @@ export const getAddressForNetworkType = ({
         coin: coin === undefined ? undefined : asCoinSymbol(coin),
         chunkify,
         showOnTrezor,
+        callId,
     };
 
     switch (networkType) {
@@ -109,7 +117,7 @@ export const getAddressForNetworkType = ({
                 return methodNotDefinedError('getAddress');
             }
 
-            return TrezorConnect.cardanoGetAddress({ device, chunkify, ...cardano });
+            return TrezorConnect.cardanoGetAddress({ device, chunkify, callId, ...cardano });
         case 'ripple':
             return TrezorConnect.rippleGetAddress(params);
         case 'bitcoin':
