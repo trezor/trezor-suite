@@ -212,9 +212,13 @@ export abstract class AbstractApiTransport extends AbstractTransport {
     }
 
     public releaseSync(session: Session) {
-        // Obviously not sync as was advertised. Also looks a bit weird but should be the same as before.
-        this.sessionsClient.releaseIntent({ session }).then(res => {
-            if (res.success) this.api.closeDevice(res.payload.path, { channel: 'read' });
+        // fire-and-forget variant of release(); releaseDone must still run,
+        // otherwise the lock taken by releaseIntent is never freed
+        this.sessionsClient.releaseIntent({ session }).then(async res => {
+            if (res.success) {
+                await this.api.closeDevice(res.payload.path, { channel: 'read' });
+                await this.sessionsClient.releaseDone({ path: res.payload.path });
+            }
         });
     }
 
