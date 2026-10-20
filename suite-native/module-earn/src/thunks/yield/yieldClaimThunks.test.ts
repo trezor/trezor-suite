@@ -10,6 +10,7 @@ import {
     selectYieldSession,
     selectYieldTxReview,
     synchronizeSentTransactionThunk,
+    transactionsActions,
     yieldActions,
     yieldReducer,
 } from '@suite-common/wallet-core';
@@ -194,6 +195,27 @@ describe('pushYieldClaimReviewThunk', () => {
 
     afterEach(() => {
         jest.restoreAllMocks();
+    });
+
+    it.each([true, false])('registers the broadcast outcome (success: %s)', async success => {
+        const store = buildStore();
+        prepareSignedClaimReview(store);
+        pushTransactionMock.mockResolvedValue(
+            success
+                ? { success: true, payload: { txid: 'status-txid' } }
+                : { success: false, error: { message: 'backend-private-details' } },
+        );
+        await dispatchPush(store);
+        const outcomes = store
+            .getActions()
+            .filter(transactionsActions.transactionBroadcastStatus.match);
+        expect(outcomes.map(action => action.payload)).toEqual([
+            {
+                account,
+                flow: 'merkl-claim',
+                ...(success ? { status: 'success', txid: 'status-txid' } : { status: 'error' }),
+            },
+        ]);
     });
 
     it('pushes the signed claim tx and stores pending claim metadata', async () => {

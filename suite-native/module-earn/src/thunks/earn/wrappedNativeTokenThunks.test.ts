@@ -1,7 +1,7 @@
 import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
 import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { accountsActions } from '@suite-common/wallet-core';
+import { accountsActions, transactionsActions } from '@suite-common/wallet-core';
 import {
     type Account,
     type FormState,
@@ -86,6 +86,29 @@ describe('pushWrappedNativeTokenThunk', () => {
             success: true,
             payload: { txid: '0xpushedtxid' },
         });
+    });
+
+    it.each([true, false])('registers the broadcast outcome (success: %s)', async success => {
+        const store = buildStore(account);
+
+        pushTransactionMock.mockResolvedValue(
+            success
+                ? { success: true, payload: { txid: 'status-txid' } }
+                : { success: false, error: { message: 'backend-private-details' } },
+        );
+        await store.dispatch(
+            pushWrappedNativeTokenThunk({ account, flowType: 'unwrap', signedTransaction }),
+        );
+        const outcomes = store
+            .getActions()
+            .filter(transactionsActions.transactionBroadcastStatus.match);
+        expect(outcomes.map(action => action.payload)).toEqual([
+            {
+                account,
+                flow: 'unwrap',
+                ...(success ? { status: 'success', txid: 'status-txid' } : { status: 'error' }),
+            },
+        ]);
     });
 
     it('tracks the wrapped native token after a successful wrap', async () => {
