@@ -1,7 +1,7 @@
 {
     "version": 1,
     "timestamp": "2026-10-22T12:00:00+00:00",
-    "sequence": 162,
+    "sequence": 163,
     "actions": [
         {
             "conditions": [
@@ -1668,7 +1668,7 @@
                 {
                     "environment": {
                         "desktop": "*",
-                        "mobile": "!",
+                        "mobile": ">=26.11.1",
                         "web": "*"
                     }
                 }
@@ -2082,7 +2082,7 @@
                 {
                     "environment": {
                         "desktop": "*",
-                        "mobile": "!",
+                        "mobile": ">=26.11.1",
                         "web": "*"
                     }
                 }
