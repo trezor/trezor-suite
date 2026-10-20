@@ -1,22 +1,17 @@
 import { useSelector } from 'react-redux';
 
+import { type RouteProp, useRoute } from '@react-navigation/native';
+
 import { type AssetsRootState, selectAssetName } from '@suite-common/assets';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type TokenAddress } from '@suite-common/wallet-types';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
+import type { AssetsStackParamList, AssetsStackRoutes } from '@suite-native/navigation';
 
 import { AssetDetailPrice } from './AssetDetailPrice';
 
-type AssetDetailPriceSectionProps = {
-    networkSymbol: NetworkSymbol;
-    tokenContract?: TokenAddress;
-};
-
-export const AssetDetailPriceSection = ({
-    networkSymbol,
-    tokenContract,
-}: AssetDetailPriceSectionProps) => {
+export const AssetDetailPriceSection = () => {
+    const { networkSymbol, tokenContract } =
+        useRoute<RouteProp<AssetsStackParamList, AssetsStackRoutes.AssetDetail>>().params;
     const assetName = useSelector((state: AssetsRootState) =>
         selectAssetName(state, networkSymbol, tokenContract),
     );

@@ -1,6 +1,6 @@
 import { shallowEqual } from 'react-redux';
 
-import { type DeviceRootState } from '@suite-common/device';
+import { type DeviceRootState, selectDeviceStaticSessionId } from '@suite-common/device';
 import { type NetworksRootState, selectNetworkNamesMap } from '@suite-common/networks';
 import { type NetworkSymbol, getAssetName, getDisplaySymbol } from '@suite-common/wallet-config';
 import {
@@ -10,6 +10,7 @@ import {
     type HiddenTokenReason,
     type WalletAssetKey,
     type WalletSettingsRootState,
+    getWalletAssetKey,
     selectAreHomeAssetSmallBalancesShown,
     selectBaseCurrency,
     selectCurrentFiatRates,
@@ -18,6 +19,7 @@ import {
     selectHiddenAssetAccountKeySet,
     selectHiddenTokenReasons,
     selectLastWeekFiatRates,
+    selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
 import {
     type BaseCurrencyAmount,
@@ -29,7 +31,12 @@ import {
     asBaseCurrencyAmount,
     toTokenSymbol,
 } from '@suite-common/wallet-types';
-import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
+import {
+    getAccountTotalStakingBalance,
+    getFiatRateKey,
+    isPositiveBalance,
+    toFiatCurrency,
+} from '@suite-common/wallet-utils';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
@@ -56,6 +63,7 @@ type WalletAsset = {
     name: string;
     tokenSymbol: TokenSymbol | null;
     tokenDecimals: number | undefined;
+    accountCount: number;
 };
 
 const groupWalletAssets = (
@@ -93,6 +101,8 @@ const groupWalletAssets = (
             }),
             tokenSymbol: tokenInfo?.symbol === undefined ? null : toTokenSymbol(tokenInfo.symbol),
             tokenDecimals: tokenInfo?.decimals,
+            accountCount: held.filter(assetAccount => isPositiveBalance(assetAccount.cryptoBalance))
+                .length,
         });
     });
 
@@ -552,43 +562,120 @@ export const selectNetworkFiatValue = createMemoizedSelector(
 
 const selectWalletAsset = (
     state: HomeAssetTableState,
-    assetKey: WalletAssetKey,
+    assetKey: WalletAssetKey | undefined,
     isHidden = false,
-) => (isHidden ? selectHiddenWalletAssets(state) : selectWalletAssets(state)).get(assetKey);
+) =>
+    assetKey === undefined
+        ? undefined
+        : (isHidden ? selectHiddenWalletAssets(state) : selectWalletAssets(state)).get(assetKey);
+
+export const selectWalletAssetKey = createMemoizedSelector(
+    [
+        selectDeviceStaticSessionId,
+        (_state: HomeAssetTableState, networkSymbol: NetworkSymbol) => networkSymbol,
+        (
+            _state: HomeAssetTableState,
+            _networkSymbol: NetworkSymbol,
+            tokenContract?: TokenAddress,
+        ) => tokenContract,
+    ],
+    (deviceState, networkSymbol, tokenContract) =>
+        deviceState === null
+            ? undefined
+            : getWalletAssetKey({
+                  deviceState,
+                  symbol: networkSymbol,
+                  contractAddress: tokenContract,
+              }),
+);
 
 export const selectWalletAssetSymbol = (
     state: HomeAssetTableState,
-    assetKey: WalletAssetKey,
+    assetKey: WalletAssetKey | undefined,
     isHidden?: boolean,
 ) => selectWalletAsset(state, assetKey, isHidden)?.symbol;
 
 export const selectWalletAssetContractAddress = (
     state: HomeAssetTableState,
-    assetKey: WalletAssetKey,
+    assetKey: WalletAssetKey | undefined,
     isHidden?: boolean,
 ) => selectWalletAsset(state, assetKey, isHidden)?.contractAddress;
 
 export const selectWalletAssetDisplaySymbol = (
     state: HomeAssetTableState,
-    assetKey: WalletAssetKey,
+    assetKey: WalletAssetKey | undefined,
     isHidden?: boolean,
 ) => selectWalletAsset(state, assetKey, isHidden)?.displaySymbol;
 
 export const selectWalletAssetAmount = (
     state: HomeAssetTableState,
-    assetKey: WalletAssetKey,
+    assetKey: WalletAssetKey | undefined,
     isHidden?: boolean,
 ) => selectWalletAsset(state, assetKey, isHidden)?.amount;
 
+export const selectWalletAssetAccountCount = (
+    state: HomeAssetTableState,
+    assetKey: WalletAssetKey | undefined,
+    isHidden?: boolean,
+) => selectWalletAsset(state, assetKey, isHidden)?.accountCount ?? 0;
+
+export const selectWalletAssetStakingAmount = createMemoizedSelector(
+    [selectVisibleDeviceAccounts, selectWalletAssetSymbol, selectWalletAssetContractAddress],
+    (accounts, networkSymbol, contractAddress) => {
+        // Cardano delegates the spendable account balance itself, so it cannot be split into
+        // separate available and staked amounts like the other staking networks.
+        if (
+            networkSymbol === undefined ||
+            networkSymbol === 'ada' ||
+            contractAddress !== undefined
+        ) {
+            return '0';
+        }
+
+        return accounts
+            .reduce(
+                (total, account) =>
+                    account.symbol === networkSymbol
+                        ? total.plus(getAccountTotalStakingBalance(account) ?? 0)
+                        : total,
+                new BigNumber(0),
+            )
+            .toFixed();
+    },
+);
+
+export const selectWalletAssetStakingRatio = createMemoizedSelector(
+    [selectWalletAssetAmount, selectWalletAssetStakingAmount],
+    (totalAmount, stakingAmount) => {
+        if (
+            totalAmount === undefined ||
+            !isPositiveBalance(totalAmount) ||
+            !isPositiveBalance(stakingAmount)
+        ) {
+            return undefined;
+        }
+
+        return Number(stakingAmount) / Number(totalAmount);
+    },
+);
+
+export const selectWalletAssetAvailableAmount = createMemoizedSelector(
+    [selectWalletAssetAmount, selectWalletAssetStakingAmount],
+    (totalAmount, stakingAmount) =>
+        totalAmount === undefined
+            ? undefined
+            : new BigNumber(totalAmount).minus(stakingAmount).toFixed(),
+);
+
 export const selectWalletAssetTokenSymbol = (
     state: HomeAssetTableState,
-    assetKey: WalletAssetKey,
+    assetKey: WalletAssetKey | undefined,
     isHidden?: boolean,
 ) => selectWalletAsset(state, assetKey, isHidden)?.tokenSymbol ?? null;
 
 export const selectWalletAssetTokenDecimals = (
     state: HomeAssetTableState,
-    assetKey: WalletAssetKey,
+    assetKey: WalletAssetKey | undefined,
     isHidden?: boolean,
 ) => selectWalletAsset(state, assetKey, isHidden)?.tokenDecimals;
 
@@ -667,8 +754,15 @@ export const selectHasHiddenWalletAssets = createMemoizedSelector(
 );
 
 export const selectWalletAssetFiatValue = createMemoizedSelector(
-    [selectWalletAssetValues, (_state: HomeAssetTableState, assetKey: WalletAssetKey) => assetKey],
+    [
+        selectWalletAssetValues,
+        (_state: HomeAssetTableState, assetKey: WalletAssetKey | undefined) => assetKey,
+    ],
     (values, assetKey): BaseCurrencyAmount | undefined => {
+        if (assetKey === undefined) {
+            return undefined;
+        }
+
         const fiatValue = values.get(assetKey);
 
         return fiatValue === undefined ? undefined : asBaseCurrencyAmount(fiatValue);

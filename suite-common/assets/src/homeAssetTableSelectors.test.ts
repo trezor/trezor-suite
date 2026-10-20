@@ -18,8 +18,12 @@ import {
     selectNetworkFiatValue,
     selectShownWalletAssetKeys,
     selectSmallBalanceSummary,
+    selectWalletAssetAccountCount,
     selectWalletAssetAmount,
+    selectWalletAssetAvailableAmount,
     selectWalletAssetFiatValue,
+    selectWalletAssetStakingAmount,
+    selectWalletAssetStakingRatio,
     selectWalletAssetTokenSymbol,
 } from './homeAssetTableSelectors';
 
@@ -418,7 +422,28 @@ describe('the total over the wallet', () => {
         expect(selectWalletAssetFiatValue(state, bitcoinKey)?.toFixed()).toBe('50000');
     });
 
-    it('counts what is staked into the asset and the total', () => {
+    it('counts only the accounts that hold the selected asset', () => {
+        const tokenKey = getWalletAssetKey({
+            deviceState: ALICE,
+            symbol: ETH,
+            contractAddress: USDC_ON_ETH,
+        });
+        const stateWithThreeEthereumAccounts = createState({
+            accounts: [
+                mockAccount({
+                    symbol: ETH,
+                    tokens: [{ contract: USDC_ON_ETH, balance: '1', symbol: 'USDC' }],
+                }),
+                mockAccount({ symbol: ETH, index: 1 }),
+                mockAccount({ symbol: ETH, index: 2 }),
+            ],
+        });
+
+        expect(selectWalletAssetAccountCount(stateWithThreeEthereumAccounts, tokenKey)).toBe(1);
+        expect(selectWalletAssetAccountCount(stateWithThreeEthereumAccounts, ethereumKey)).toBe(3);
+    });
+
+    it('separates available from staked, pending, and withdrawing balances', () => {
         const staked = createState({
             accounts: [
                 {
@@ -428,7 +453,25 @@ describe('the total over the wallet', () => {
                         stakingPools: [
                             {
                                 name: 'Everstake',
-                                autocompoundBalance: '2000000000000000000',
+                                autocompoundBalance: '1000000000000000000',
+                                pendingBalance: '500000000000000000',
+                                pendingDepositedBalance: '250000000000000000',
+                                withdrawTotalAmount: '250000000000000000',
+                                claimableAmount: '0',
+                                depositedBalance: '0',
+                                restakedReward: '0',
+                            },
+                        ],
+                    },
+                } as Account,
+                {
+                    ...mockAccount({ symbol: ETH, index: 1, balance: '10', isVisible: false }),
+                    networkType: 'ethereum',
+                    misc: {
+                        stakingPools: [
+                            {
+                                name: 'Everstake',
+                                autocompoundBalance: '10000000000000000000',
                                 pendingBalance: '0',
                                 pendingDepositedBalance: '0',
                                 withdrawTotalAmount: '0',
@@ -444,6 +487,9 @@ describe('the total over the wallet', () => {
         });
 
         expect(selectWalletAssetAmount(staked, ethereumKey)).toBe('3');
+        expect(selectWalletAssetAvailableAmount(staked, ethereumKey)).toBe('1');
+        expect(selectWalletAssetStakingAmount(staked, ethereumKey)).toBe('2');
+        expect(selectWalletAssetStakingRatio(staked, ethereumKey)).toBeCloseTo(2 / 3);
         expect(selectWalletAssetFiatValue(staked, ethereumKey)?.toFixed()).toBe('9000');
         expect(selectHomeAssetTotalFiatValue(staked)?.toFixed()).toBe('9000');
     });
