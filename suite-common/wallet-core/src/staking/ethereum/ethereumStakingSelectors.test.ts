@@ -12,7 +12,6 @@ import {
     selectEthereumNextRewardPayout,
     selectEthereumRewardsBalanceByAccountKey,
     selectEthereumStakedBalanceByAccountKey,
-    selectEthereumStakingPoolByAccountKey,
     selectEthereumTotalStakePendingByAccountKey,
 } from './ethereumStakingSelectors';
 import { type StakeDataState, stakeDataInitialState } from '../stakingDataSlice';
@@ -25,7 +24,6 @@ const ethSymbol = asNetworkSymbol('eth');
 const eth1Key = mockAccountKey({ symbol: ethSymbol, descriptor: 'eth1' });
 const eth2Key = mockAccountKey({ symbol: ethSymbol, descriptor: 'eth2' });
 const eth3Key = mockAccountKey({ symbol: ethSymbol, descriptor: 'eth3' });
-const nonExistentKey = mockAccountKey({ descriptor: 'nonExistent' });
 
 const ethAccountWithStaking: Account = {
     symbol: 'eth',
@@ -38,7 +36,7 @@ const ethAccountWithStaking: Account = {
         stakingPools: [
             {
                 name: 'Everstake',
-                contract: '0x456',
+                contract: '0x7a7f0b3c23C23a31cFcb0c44709be70d4D545c6e',
                 autocompoundBalance: '1000000000000000000',
                 claimableAmount: '500000000000000000',
                 depositedBalance: '2000000000000000000',
@@ -71,7 +69,7 @@ const ethAccountWithPendingStake: Account = {
         stakingPools: [
             {
                 name: 'Everstake',
-                contract: '0xabc',
+                contract: '0xD523794C879D9eC028960a231F866758e405bE34',
                 autocompoundBalance: '0',
                 claimableAmount: '0',
                 depositedBalance: '0',
@@ -148,44 +146,6 @@ describe('ethereumStakingSelectors', () => {
 
         it('returns rounded day value for payout values over 1 day', () => {
             expect(selectEthereumNextRewardPayout(createState(2.2 * 24 * 60 * 60))).toBe(2);
-        });
-    });
-
-    describe('selectEthereumStakingPoolByAccountKey', () => {
-        it('should return staking pool for account with staking', () => {
-            const testState = getTestState([ethAccountWithStaking]);
-
-            const result = selectEthereumStakingPoolByAccountKey(testState, eth1Key);
-
-            expect(result).toEqual({
-                name: 'Everstake',
-                contract: '0x456',
-                autocompoundBalance: '1',
-                claimableAmount: '0.5',
-                depositedBalance: '2',
-                pendingBalance: '0.1',
-                pendingDepositedBalance: '0',
-                restakedReward: '0.05',
-                withdrawTotalAmount: '0.5',
-                totalPendingStakeBalance: '0.1',
-                canClaim: true,
-            });
-        });
-
-        it('should return undefined for account without staking', () => {
-            const testState = getTestState([ethAccountWithoutStaking]);
-
-            const result = selectEthereumStakingPoolByAccountKey(testState, eth2Key);
-
-            expect(result).toBeUndefined();
-        });
-
-        it('should return null for non-existent account', () => {
-            const testState = getTestState([ethAccountWithStaking]);
-
-            const result = selectEthereumStakingPoolByAccountKey(testState, nonExistentKey);
-
-            expect(result).toBeNull();
         });
     });
 

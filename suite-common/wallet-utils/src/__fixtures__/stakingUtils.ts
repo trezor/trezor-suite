@@ -1,97 +1,78 @@
-export const getAccountEverstakeStakingPoolFixtures = [
+import { EVERSTAKE_CONTRACTS } from '@trezor/network-ethereum/staking';
+
+const EVERSTAKE_POOL = {
+    name: 'Everstake',
+    contract: EVERSTAKE_CONTRACTS[1].accounting,
+    autocompoundBalance: '1000000000000000000', // 1 Ether in wei
+    claimableAmount: '500000000000000000', // 0.5 Ether in wei
+    depositedBalance: '3000000000000000000', // 3 Ether in wei
+    pendingBalance: '100000000000000000', // 0.1 Ether in wei
+    pendingDepositedBalance: '200000000000000000', // 0.2 Ether in wei
+    restakedReward: '150000000000000000', // 0.15 Ether in wei
+    withdrawTotalAmount: '500000000000000000', // 0.5 Ether in wei
+};
+
+const UNKNOWN_POOL = {
+    name: 'TrezorPool',
+    contract: '0x624087DD1904ab122A32878Ce9e933C7071F53B9',
+    autocompoundBalance: '1000000000000000000',
+    claimableAmount: '0',
+    depositedBalance: '0',
+    pendingBalance: '0',
+    pendingDepositedBalance: '0',
+    restakedReward: '0',
+    withdrawTotalAmount: '0',
+};
+
+export const getEthereumAccountStakingPoolsFixtures = [
     {
-        description: 'Ethereum network with Everstake pool and small balances',
+        description: 'Ethereum account with a pool of a known pooled provider',
         account: {
+            symbol: 'eth',
+            networkType: 'ethereum',
+            misc: { stakingPools: [EVERSTAKE_POOL] },
+        },
+        expected: [EVERSTAKE_POOL],
+    },
+    {
+        description: 'matches the pool contract regardless of address case',
+        account: {
+            symbol: 'eth',
             networkType: 'ethereum',
             misc: {
                 stakingPools: [
-                    {
-                        name: 'Everstake',
-                        autocompoundBalance: '1000000000000000000', // 1 Ether in wei
-                        claimableAmount: '500000000000000000', // 0.5 Ether in wei
-                        depositedBalance: '3000000000000000000', // 3 Ether in wei
-                        pendingBalance: '100000000000000000', // 0.1 Ether in wei
-                        pendingDepositedBalance: '200000000000000000', // 0.2 Ether in wei
-                        restakedReward: '150000000000000000', // 0.15 Ether in wei
-                        withdrawTotalAmount: '500000000000000000', // 0.5 Ether in wei
-                    },
+                    { ...EVERSTAKE_POOL, contract: EVERSTAKE_CONTRACTS[1].pool.toLowerCase() },
                 ],
             },
         },
-        expected: {
-            name: 'Everstake',
-            autocompoundBalance: '1', // Ether
-            claimableAmount: '0.5', // Ether
-            depositedBalance: '3', // Ether
-            pendingBalance: '0.1', // Ether
-            pendingDepositedBalance: '0.2', // Ether
-            restakedReward: '0.15', // Ether
-            withdrawTotalAmount: '0.5', // Ether
-            totalPendingStakeBalance: '0.3', // 0.1 + 0.2 Ether
-            canClaim: true,
-        },
+        expected: [{ ...EVERSTAKE_POOL, contract: EVERSTAKE_CONTRACTS[1].pool.toLowerCase() }],
     },
     {
-        description: 'Ethereum network with Everstake pool and extremely large balances',
+        description: 'ignores a pool of an unknown contract',
         account: {
+            symbol: 'eth',
             networkType: 'ethereum',
-            misc: {
-                stakingPools: [
-                    {
-                        name: 'Everstake',
-                        autocompoundBalance: '1000000000000000000000', // 1000 Ether in wei
-                        claimableAmount: '50000000000000000000000', // 50,000 Ether in wei
-                        depositedBalance: '30000000000000000000000', // 30,000 Ether in wei
-                        pendingBalance: '1000000000000000000000', // 1000 Ether in wei
-                        pendingDepositedBalance: '2000000000000000000000', // 2000 Ether in wei
-                        restakedReward: '150000000000000000000', // 150 Ether in wei
-                        withdrawTotalAmount: '50000000000000000000000', // 50,000 Ether in wei
-                    },
-                ],
-            },
+            misc: { stakingPools: [UNKNOWN_POOL, EVERSTAKE_POOL] },
         },
-        expected: {
-            name: 'Everstake',
-            autocompoundBalance: '1000', // Ether
-            claimableAmount: '50000', // Ether
-            depositedBalance: '30000', // Ether
-            pendingBalance: '1000', // Ether
-            pendingDepositedBalance: '2000', // Ether
-            restakedReward: '150', // Ether
-            withdrawTotalAmount: '50000', // Ether
-            totalPendingStakeBalance: '3000', // 1000 + 2000 Ether
-            canClaim: true,
-        },
+        expected: [EVERSTAKE_POOL],
     },
     {
-        description: 'Ethereum network without Everstake pool',
+        description: 'ignores a mainnet pool reported on another network',
         account: {
+            symbol: 'thod',
             networkType: 'ethereum',
-            misc: {
-                stakingPools: [
-                    {
-                        name: 'TrezorPool',
-                        autocompoundBalance: '1000000000000000000',
-                    },
-                ],
-            },
+            misc: { stakingPools: [EVERSTAKE_POOL] },
         },
-        expected: undefined,
+        expected: [],
     },
     {
-        description: 'Non-Ethereum network with Everstake pool',
+        description: 'Non-Ethereum network with a pool',
         account: {
+            symbol: 'btc',
             networkType: 'bitcoin',
-            misc: {
-                stakingPools: [
-                    {
-                        name: 'Everstake',
-                        autocompoundBalance: '1000000000000000000',
-                    },
-                ],
-            },
+            misc: { stakingPools: [EVERSTAKE_POOL] },
         },
-        expected: undefined,
+        expected: [],
     },
 ];
 
@@ -99,11 +80,13 @@ export const getEthAccountTotalStakingBalanceFixtures = [
     {
         description: 'Ethereum account with valid Everstake pool',
         account: {
+            symbol: 'eth',
             networkType: 'ethereum',
             misc: {
                 stakingPools: [
                     {
                         name: 'Everstake',
+                        contract: EVERSTAKE_CONTRACTS[1].accounting,
                         autocompoundBalance: '1000000000000000000', // 1 Ether in wei
                         claimableAmount: '500000000000000000', // 0.5 Ether in wei
                         depositedBalance: '3000000000000000000', // 3 Ether in wei
@@ -120,11 +103,13 @@ export const getEthAccountTotalStakingBalanceFixtures = [
     {
         description: 'Ethereum account with zero balances',
         account: {
+            symbol: 'eth',
             networkType: 'ethereum',
             misc: {
                 stakingPools: [
                     {
                         name: 'Everstake',
+                        contract: EVERSTAKE_CONTRACTS[1].accounting,
                         autocompoundBalance: '0',
                         claimableAmount: '0',
                         depositedBalance: '0',
@@ -141,6 +126,7 @@ export const getEthAccountTotalStakingBalanceFixtures = [
     {
         description: 'Ethereum account without Everstake pool',
         account: {
+            symbol: 'eth',
             networkType: 'ethereum',
             misc: {
                 stakingPools: [],

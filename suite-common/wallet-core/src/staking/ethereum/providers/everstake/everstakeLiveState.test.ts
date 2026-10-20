@@ -1,12 +1,26 @@
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { type StakingPool } from '@trezor/blockchain-link-types';
+import { EVERSTAKE_CONTRACTS } from '@trezor/network-ethereum/staking';
+
 import { buildStakeData, buildUnstakeData } from './everstakeCalldata';
 import {
     validateEverstakeClaimLiveState,
     validateEverstakeStepLiveState,
     validateEverstakeUnstakeLiveState,
 } from './everstakeLiveState';
-import { type EthereumStakingPoolRead } from '../../ethereumStakingLiveState';
+import { type EthereumStakingPoolsRead } from '../../ethereumStakingLiveState';
 
-const readPool = (read: EthereumStakingPoolRead) => jest.fn(() => Promise.resolve(read));
+const account = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
+
+const everstakePool = (pool: Partial<StakingPool>) =>
+    ({ contract: EVERSTAKE_CONTRACTS[1].accounting, ...pool }) as StakingPool;
+
+const createContext = (read: EthereumStakingPoolsRead) => {
+    const readStakingPools = jest.fn(() => Promise.resolve(read));
+
+    return { context: { account, readStakingPools }, readStakingPools };
+};
 
 describe(validateEverstakeUnstakeLiveState.name, () => {
     it('is valid when the autocompound balance covers the requested amount', () => {
@@ -76,59 +90,83 @@ describe(validateEverstakeClaimLiveState.name, () => {
 
 describe(validateEverstakeStepLiveState.name, () => {
     it('is valid for stake without reading the pool', async () => {
-        const read = readPool({ success: true, stakingPool: undefined });
+        const { context, readStakingPools } = createContext({ success: true, stakingPools: [] });
 
         await expect(
-            validateEverstakeStepLiveState({ label: 'stake', data: buildStakeData() }, read),
+            validateEverstakeStepLiveState({ label: 'stake', data: buildStakeData() }, context),
         ).resolves.toEqual({ isValid: true });
-        expect(read).not.toHaveBeenCalled();
+        expect(readStakingPools).not.toHaveBeenCalled();
     });
 
     it('validates an unstake against the amount carried by the calldata', async () => {
-        const read = readPool({
+        const { context, readStakingPools } = createContext({
             success: true,
-            stakingPool: { autocompoundBalance: '2000000000000000000' },
+            stakingPools: [everstakePool({ autocompoundBalance: '2000000000000000000' })],
         });
 
         await expect(
             validateEverstakeStepLiveState(
                 { label: 'unstake', data: buildUnstakeData('1500000000000000000', 5) },
-                read,
+                context,
             ),
         ).resolves.toEqual({ isValid: true });
-        expect(read).toHaveBeenCalledTimes(1);
+        expect(readStakingPools).toHaveBeenCalledTimes(1);
     });
 
-    it('is invalid for an unstake whose calldata carries no amount', async () => {
-        const read = readPool({
+    it('ignores pools of other contracts', async () => {
+        const { context } = createContext({
             success: true,
-            stakingPool: { autocompoundBalance: '2000000000000000000' },
+            stakingPools: [
+                everstakePool({
+                    contract: '0x624087DD1904ab122A32878Ce9e933C7071F53B9',
+                    autocompoundBalance: '2000000000000000000',
+                }),
+            ],
         });
 
         await expect(
-            validateEverstakeStepLiveState({ label: 'unstake', data: buildStakeData() }, read),
+            validateEverstakeStepLiveState(
+                { label: 'unstake', data: buildUnstakeData('1500000000000000000', 5) },
+                context,
+            ),
+        ).resolves.toEqual({
+            isValid: false,
+            reason: { code: 'AUTOCOMPOUND_BALANCE_MISSING' },
+        });
+    });
+
+    it('is invalid for an unstake whose calldata carries no amount', async () => {
+        const { context } = createContext({
+            success: true,
+            stakingPools: [everstakePool({ autocompoundBalance: '2000000000000000000' })],
+        });
+
+        await expect(
+            validateEverstakeStepLiveState({ label: 'unstake', data: buildStakeData() }, context),
         ).resolves.toEqual({ isValid: false, reason: { code: 'MISSING_UNSTAKE_AMOUNT' } });
     });
 
     it('validates a claim against the withdraw request', async () => {
-        const read = readPool({
+        const { context } = createContext({
             success: true,
-            stakingPool: {
-                withdrawTotalAmount: '100000000000000000',
-                claimableAmount: '100000000000000000',
-            },
+            stakingPools: [
+                everstakePool({
+                    withdrawTotalAmount: '100000000000000000',
+                    claimableAmount: '100000000000000000',
+                }),
+            ],
         });
 
         await expect(
-            validateEverstakeStepLiveState({ label: 'claim', data: '0x33986ffa' }, read),
+            validateEverstakeStepLiveState({ label: 'claim', data: '0x33986ffa' }, context),
         ).resolves.toEqual({ isValid: true });
     });
 
     it('is invalid when the pool cannot be read', async () => {
-        const read = readPool({ success: false, message: 'Account info error' });
+        const { context } = createContext({ success: false, message: 'Account info error' });
 
         await expect(
-            validateEverstakeStepLiveState({ label: 'claim', data: '0x33986ffa' }, read),
+            validateEverstakeStepLiveState({ label: 'claim', data: '0x33986ffa' }, context),
         ).resolves.toEqual({
             isValid: false,
             reason: { code: 'ACCOUNT_INFO_FAILED', message: 'Account info error' },

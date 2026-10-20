@@ -39,7 +39,7 @@ const ethAccountWithClaimableStake = {
         stakingPools: [
             {
                 name: 'Everstake',
-                contract: '0x456',
+                contract: '0x7a7f0b3c23C23a31cFcb0c44709be70d4D545c6e',
                 autocompoundBalance: '1000000000000000000',
                 claimableAmount: '500000000000000000',
                 depositedBalance: '2000000000000000000',

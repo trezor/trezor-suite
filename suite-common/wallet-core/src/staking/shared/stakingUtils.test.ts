@@ -65,9 +65,9 @@ describe(getStakingProvidersForAnalytics.name, () => {
         expect(getStakingProvidersForAnalytics([account])).toEqual(['everstake']);
     });
 
-    it('reports an unknown Ethereum pool contract as unknown', () => {
+    it('does not count a pool of an unknown contract as staking', () => {
         const account = createEthereumStakingAccount('0x624087DD1904ab122A32878Ce9e933C7071F53B9');
 
-        expect(getStakingProvidersForAnalytics([account])).toEqual(['unknown']);
+        expect(getStakingProvidersForAnalytics([account])).toEqual([]);
     });
 });

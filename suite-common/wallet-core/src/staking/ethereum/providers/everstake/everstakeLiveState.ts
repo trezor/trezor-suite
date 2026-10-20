@@ -3,13 +3,13 @@ import { exhaustive } from '@trezor/type-utils';
 import {
     type EthereumStakingLiveStateValidation,
     type EthereumStakingPoolLiveState,
-    type ReadEthereumStakingPool,
     VALID_ETHEREUM_STAKING_LIVE_STATE,
     invalidEthereumStakingLiveState,
     weiToEtherBigNumber,
 } from '../../ethereumStakingLiveState';
-import { type StakingStepCalldata } from '../types';
+import { type StakingLiveStateContext, type StakingStepCalldata } from '../types';
 import { getUnstakeAmountFromCalldata } from './everstakeCalldata';
+import { findEverstakeStakingPool } from './everstakePosition';
 
 export const validateEverstakeUnstakeLiveState = (
     stakingPool: EthereumStakingPoolLiveState | undefined,
@@ -60,13 +60,13 @@ export const validateEverstakeClaimLiveState = (
 // claim read the pool once and validate against the amount carried by the calldata.
 export const validateEverstakeStepLiveState = async (
     { label, data }: StakingStepCalldata,
-    readStakingPool: ReadEthereumStakingPool,
+    { account, readStakingPools }: StakingLiveStateContext,
 ): Promise<EthereumStakingLiveStateValidation> => {
     if (label === 'stake') {
         return VALID_ETHEREUM_STAKING_LIVE_STATE;
     }
 
-    const read = await readStakingPool();
+    const read = await readStakingPools();
 
     if (!read.success) {
         return invalidEthereumStakingLiveState({
@@ -75,6 +75,8 @@ export const validateEverstakeStepLiveState = async (
         });
     }
 
+    const stakingPool = findEverstakeStakingPool(account.symbol, read.stakingPools);
+
     switch (label) {
         case 'unstake': {
             const amount = getUnstakeAmountFromCalldata(data);
@@ -82,10 +84,10 @@ export const validateEverstakeStepLiveState = async (
                 return invalidEthereumStakingLiveState({ code: 'MISSING_UNSTAKE_AMOUNT' });
             }
 
-            return validateEverstakeUnstakeLiveState(read.stakingPool, amount);
+            return validateEverstakeUnstakeLiveState(stakingPool, amount);
         }
         case 'claim':
-            return validateEverstakeClaimLiveState(read.stakingPool);
+            return validateEverstakeClaimLiveState(stakingPool);
         default:
             return exhaustive(label);
     }

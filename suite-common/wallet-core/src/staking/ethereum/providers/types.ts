@@ -2,10 +2,11 @@ import { type NetworkSymbol, type StakingProviderId } from '@suite-common/wallet
 import { type Account, type BaseStakeType, type StakingLimits } from '@suite-common/wallet-types';
 import { type VerifyIssue } from '@trezor/network-ethereum-suite-common';
 
+import { type StakingPosition } from '../../positions/positionsTypes';
 import {
     type EthereumStakingLiveStateReason,
     type EthereumStakingLiveStateValidation,
-    type ReadEthereumStakingPool,
+    type ReadEthereumStakingPools,
 } from '../ethereumStakingLiveState';
 
 export type EthereumStakingAccount = Account & { networkType: 'ethereum' };
@@ -30,7 +31,12 @@ export type StakingTxPlan = {
 export type StakingPlanContext = {
     account: Account;
     source: string;
-    readStakingPool: ReadEthereumStakingPool;
+    readStakingPools: ReadEthereumStakingPools;
+};
+
+export type StakingLiveStateContext = {
+    account: Account;
+    readStakingPools: ReadEthereumStakingPools;
 };
 
 export type StakingPlanError =
@@ -56,6 +62,8 @@ export type EthereumStakingProviderAdapter = {
     readonly id: StakingProviderId;
     readonly limits: StakingLimits;
     readonly contributesToNativeBalance: boolean;
+    /** Sync part of the position from account data alone; null when the account holds nothing with this provider. */
+    derivePosition: (account: Account) => StakingPosition | null;
     planOperation: (
         request: StakingOperationRequest,
         context: StakingPlanContext,
@@ -63,7 +71,7 @@ export type EthereumStakingProviderAdapter = {
     verifyStep: (step: StakingStepCalldata, source: string) => StakingCalldataVerification;
     validateLiveState: (
         step: StakingStepCalldata,
-        readStakingPool: ReadEthereumStakingPool,
+        context: StakingLiveStateContext,
     ) => Promise<EthereumStakingLiveStateValidation>;
     previewUnstake?: (params: StakingUnstakePreviewParams) => Promise<string | null>;
 };

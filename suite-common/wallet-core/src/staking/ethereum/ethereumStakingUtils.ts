@@ -6,12 +6,13 @@ import {
 } from '@suite-common/wallet-types';
 import {
     fromHex,
-    getAccountEverstakeStakingPool,
     getEthAccountTotalStakingBalance,
     getSignatureByEthereumDataHex,
     isUnstakeTx,
 } from '@suite-common/wallet-utils';
 import { BigNumber, isArrayMember } from '@trezor/utils';
+
+import { deriveEthereumStakingPositions } from '../positions/deriveStakingPositions';
 
 export const getEthereumCryptoBalanceWithStaking = (account: Account) => {
     const stakingBalance = getEthAccountTotalStakingBalance(account);
@@ -42,14 +43,13 @@ export const getUnstakeAmountByEthereumDataHex = (dataHex?: string) => {
 export const hasStakeInPendingDepositedState = (account: Account) => {
     if (account?.networkType !== 'ethereum') return false;
 
-    const pool = getAccountEverstakeStakingPool(account);
-    if (!pool) return false;
+    const position = deriveEthereumStakingPositions(account).find(
+        ({ details }) => details.providerId === 'everstake',
+    );
 
-    const { pendingDepositedBalance, pendingBalance } = pool;
+    if (!position) return false;
 
-    if (new BigNumber(pendingDepositedBalance).gt(0) && new BigNumber(pendingBalance).lte(0)) {
-        return true;
-    }
+    const { pendingDepositedBalance, pendingBalance } = position.details.pool;
 
-    return false;
+    return new BigNumber(pendingDepositedBalance).gt(0) && new BigNumber(pendingBalance).lte(0);
 };

@@ -1,16 +1,16 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import TrezorConnect from '@trezor/connect';
 
-import { readEthereumStakingPool } from './ethereumStakingLiveState';
+import { readEthereumStakingPools } from './ethereumStakingLiveState';
 
 const ethSymbol = asNetworkSymbol('eth');
 
-describe(readEthereumStakingPool.name, () => {
+describe(readEthereumStakingPools.name, () => {
     afterEach(() => {
         jest.restoreAllMocks();
     });
 
-    it('reads the first staking pool of the account', async () => {
+    it('reads the staking pools of the account', async () => {
         const getAccountInfo = jest.spyOn(TrezorConnect, 'getAccountInfo').mockResolvedValue({
             success: true,
             payload: {
@@ -19,10 +19,10 @@ describe(readEthereumStakingPool.name, () => {
         } as unknown as Awaited<ReturnType<typeof TrezorConnect.getAccountInfo>>);
 
         await expect(
-            readEthereumStakingPool({ symbol: ethSymbol, descriptor: '0xabc', identity: '0' }),
+            readEthereumStakingPools({ symbol: ethSymbol, descriptor: '0xabc', identity: '0' }),
         ).resolves.toEqual({
             success: true,
-            stakingPool: { autocompoundBalance: '2000000000000000000' },
+            stakingPools: [{ autocompoundBalance: '2000000000000000000' }],
         });
         expect(getAccountInfo).toHaveBeenCalledWith({
             coin: 'eth',
@@ -39,7 +39,7 @@ describe(readEthereumStakingPool.name, () => {
         } as unknown as Awaited<ReturnType<typeof TrezorConnect.getAccountInfo>>);
 
         await expect(
-            readEthereumStakingPool({ symbol: ethSymbol, descriptor: '0xabc' }),
+            readEthereumStakingPools({ symbol: ethSymbol, descriptor: '0xabc' }),
         ).resolves.toEqual({ success: false, message: 'Account info error' });
     });
 });

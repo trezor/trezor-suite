@@ -1,13 +1,14 @@
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { type StakingPool } from '@trezor/blockchain-link-types';
 import TrezorConnect, { type OkWithDevice } from '@trezor/connect';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
 import { EVERSTAKE_CONTRACTS } from '@trezor/network-ethereum/staking';
 import { type Err } from '@trezor/type-utils';
 
 import { WALLET_SDK_SOURCE, WALLET_SDK_SOURCE_MOBILE } from '../../../shared/stakingConstants';
-import { type EthereumStakingPoolRead } from '../../ethereumStakingLiveState';
+import { type EthereumStakingPoolsRead } from '../../ethereumStakingLiveState';
 import { type StakingPlanContext, type StakingUnstakePreviewParams } from '../types';
 import { simulateUnstakeFixture } from './__fixtures__/everstake';
 import {
@@ -20,13 +21,21 @@ import { planEverstakeOperation, previewEverstakeUnstake } from './everstakePlan
 
 const FROM = asAccountDescriptor('0xfB0bc552ab5Fa1971E8530852753c957e29eEEFC');
 
+const everstakePool = (pool: Partial<StakingPool>): StakingPool =>
+    ({ contract: EVERSTAKE_CONTRACTS[1].accounting, ...pool }) as StakingPool;
+
+const withPool = (pool: Partial<StakingPool>): EthereumStakingPoolsRead => ({
+    success: true,
+    stakingPools: [everstakePool(pool)],
+});
+
 const createContext = (
-    read: EthereumStakingPoolRead = { success: true, stakingPool: undefined },
+    read: EthereumStakingPoolsRead = { success: true, stakingPools: [] },
     symbol: NetworkSymbol = asNetworkSymbol('eth'),
-): StakingPlanContext & { readStakingPool: jest.Mock } => ({
+): StakingPlanContext & { readStakingPools: jest.Mock } => ({
     account: mockWalletAccount({ symbol, descriptor: FROM }),
     source: WALLET_SDK_SOURCE,
-    readStakingPool: jest.fn(() => Promise.resolve(read)),
+    readStakingPools: jest.fn(() => Promise.resolve(read)),
 });
 
 describe(planEverstakeOperation.name, () => {
@@ -51,7 +60,7 @@ describe(planEverstakeOperation.name, () => {
                 ],
             },
         });
-        expect(context.readStakingPool).not.toHaveBeenCalled();
+        expect(context.readStakingPools).not.toHaveBeenCalled();
     });
 
     it('attributes the calldata to the planning app', async () => {
@@ -77,10 +86,7 @@ describe(planEverstakeOperation.name, () => {
     });
 
     it('plans an unstake once the live pool balance covers the amount', async () => {
-        const context = createContext({
-            success: true,
-            stakingPool: { autocompoundBalance: '2000000000000000000' },
-        });
+        const context = createContext(withPool({ autocompoundBalance: '2000000000000000000' }));
 
         const result = await planEverstakeOperation({ type: 'unstake', amount: '0.1' }, context);
 
@@ -93,16 +99,13 @@ describe(planEverstakeOperation.name, () => {
                 gasReserve: STAKE_GAS_LIMIT_RESERVE,
             },
         ]);
-        expect(context.readStakingPool).toHaveBeenCalledTimes(1);
+        expect(context.readStakingPools).toHaveBeenCalledTimes(1);
     });
 
     it('rejects an unstake above the live pool balance', async () => {
         const result = await planEverstakeOperation(
             { type: 'unstake', amount: '0.1' },
-            createContext({
-                success: true,
-                stakingPool: { autocompoundBalance: '100000000000000' },
-            }),
+            createContext(withPool({ autocompoundBalance: '100000000000000' })),
         );
 
         expect(result).toEqual({
@@ -132,13 +135,12 @@ describe(planEverstakeOperation.name, () => {
     it('plans a claim against the accounting contract once the request is filled', async () => {
         const result = await planEverstakeOperation(
             { type: 'claim' },
-            createContext({
-                success: true,
-                stakingPool: {
+            createContext(
+                withPool({
                     withdrawTotalAmount: '100000000000000000',
                     claimableAmount: '100000000000000000',
-                },
-            }),
+                }),
+            ),
         );
 
         expect(result.success && result.plan.steps).toEqual([
@@ -155,10 +157,9 @@ describe(planEverstakeOperation.name, () => {
     it('rejects a claim before the withdraw request is filled', async () => {
         const result = await planEverstakeOperation(
             { type: 'claim' },
-            createContext({
-                success: true,
-                stakingPool: { withdrawTotalAmount: '200000000000000000', claimableAmount: '1' },
-            }),
+            createContext(
+                withPool({ withdrawTotalAmount: '200000000000000000', claimableAmount: '1' }),
+            ),
         );
 
         expect(result).toEqual({

@@ -482,6 +482,7 @@ describe('the total over the wallet', () => {
                         stakingPools: [
                             {
                                 name: 'Everstake',
+                                contract: '0x7a7f0b3c23C23a31cFcb0c44709be70d4D545c6e',
                                 autocompoundBalance: '1000000000000000000',
                                 pendingBalance: '500000000000000000',
                                 pendingDepositedBalance: '250000000000000000',

@@ -5,7 +5,6 @@ import { BigNumber } from '@trezor/utils';
 
 import { createEvmRead } from '../../../../evm/evmRead';
 import { WALLET_SDK_SOURCE } from '../../../shared/stakingConstants';
-import { isSupportedEthStakingNetworkSymbol } from '../../ethereumStakingUtils';
 import {
     type StakingOperationRequest,
     type StakingPlanContext,
@@ -28,6 +27,7 @@ import {
     validateEverstakeClaimLiveState,
     validateEverstakeUnstakeLiveState,
 } from './everstakeLiveState';
+import { findEverstakeStakingPool } from './everstakePosition';
 
 const planned = (operation: StakingOperationRequest, step: StakingTxStep): StakingPlanResult => ({
     success: true,
@@ -36,7 +36,7 @@ const planned = (operation: StakingOperationRequest, step: StakingTxStep): Staki
 
 export const planEverstakeOperation = async (
     request: StakingOperationRequest,
-    { account, source, readStakingPool }: StakingPlanContext,
+    { account, source, readStakingPools }: StakingPlanContext,
 ): Promise<StakingPlanResult> => {
     const contracts = getEverstakeContractsBySymbol(account.symbol);
 
@@ -65,7 +65,7 @@ export const planEverstakeOperation = async (
             });
         }
         case 'unstake': {
-            const read = await readStakingPool();
+            const read = await readStakingPools();
 
             if (!read.success) {
                 return {
@@ -77,7 +77,10 @@ export const planEverstakeOperation = async (
                 };
             }
 
-            const validation = validateEverstakeUnstakeLiveState(read.stakingPool, request.amount);
+            const validation = validateEverstakeUnstakeLiveState(
+                findEverstakeStakingPool(account.symbol, read.stakingPools),
+                request.amount,
+            );
 
             if (!validation.isValid) {
                 return {
@@ -99,7 +102,7 @@ export const planEverstakeOperation = async (
             });
         }
         case 'claim': {
-            const read = await readStakingPool();
+            const read = await readStakingPools();
 
             if (!read.success) {
                 return {
@@ -111,7 +114,9 @@ export const planEverstakeOperation = async (
                 };
             }
 
-            const validation = validateEverstakeClaimLiveState(read.stakingPool);
+            const validation = validateEverstakeClaimLiveState(
+                findEverstakeStakingPool(account.symbol, read.stakingPools),
+            );
 
             if (!validation.isValid) {
                 return {
@@ -141,7 +146,6 @@ export const previewEverstakeUnstake = async ({
     symbol,
     source = WALLET_SDK_SOURCE,
 }: StakingUnstakePreviewParams): Promise<string | null> => {
-    if (!isSupportedEthStakingNetworkSymbol(symbol)) return null;
     if (!amount || !from || !symbol) return null;
 
     const contracts = getEverstakeContractsBySymbol(symbol);

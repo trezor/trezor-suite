@@ -21,7 +21,7 @@ import { asCoinSymbol } from '@trezor/connect-common';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { readEthereumStakingPool } from './ethereumStakingLiveState';
+import { readEthereumStakingPools } from './ethereumStakingLiveState';
 import {
     DEFAULT_ETHEREUM_STAKING_PROVIDER_ID,
     getEthereumStakingAdapter,
@@ -227,8 +227,8 @@ export const composeEthereumStakingTransaction = async ({
     const planned = await adapter.planOperation(request, {
         account,
         source,
-        readStakingPool: () =>
-            readEthereumStakingPool({
+        readStakingPools: () =>
+            readEthereumStakingPools({
                 symbol: account.symbol,
                 descriptor: account.descriptor,
                 identity,

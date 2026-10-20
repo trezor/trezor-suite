@@ -58,23 +58,22 @@ export const getEthereumStakingLiveStateErrorMessage = (
 
 export const weiToEtherBigNumber = (wei: string) => fromWei(wei).toEther('bignumber');
 
-export type EthereumStakingPoolRead =
-    | { success: true; stakingPool: EthereumStakingPoolLiveState | undefined }
-    | { success: false; message: string };
+export type EthereumStakingPoolsRead =
+    { success: true; stakingPools: StakingPool[] } | { success: false; message: string };
 
-export type ReadEthereumStakingPool = () => Promise<EthereumStakingPoolRead>;
+export type ReadEthereumStakingPools = () => Promise<EthereumStakingPoolsRead>;
 
-type ReadEthereumStakingPoolParams = {
+type ReadEthereumStakingPoolsParams = {
     symbol: NetworkSymbol;
     descriptor: string;
     identity?: string;
 };
 
-export const readEthereumStakingPool = async ({
+export const readEthereumStakingPools = async ({
     symbol,
     descriptor,
     identity,
-}: ReadEthereumStakingPoolParams): Promise<EthereumStakingPoolRead> => {
+}: ReadEthereumStakingPoolsParams): Promise<EthereumStakingPoolsRead> => {
     const accountInfo = await TrezorConnect.getAccountInfo({
         coin: asCoinSymbol(symbol),
         identity,
@@ -86,5 +85,5 @@ export const readEthereumStakingPool = async ({
         return { success: false, message: accountInfo.error.message };
     }
 
-    return { success: true, stakingPool: accountInfo.payload?.misc?.stakingPools?.[0] };
+    return { success: true, stakingPools: accountInfo.payload?.misc?.stakingPools ?? [] };
 };

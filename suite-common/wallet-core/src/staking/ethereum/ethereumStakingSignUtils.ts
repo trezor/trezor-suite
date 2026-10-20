@@ -22,7 +22,7 @@ import { BigNumber } from '@trezor/utils';
 
 import {
     getEthereumStakingLiveStateErrorMessage,
-    readEthereumStakingPool,
+    readEthereumStakingPools,
 } from './ethereumStakingLiveState';
 import {
     DEFAULT_ETHEREUM_STAKING_PROVIDER_ID,
@@ -221,12 +221,17 @@ export const verifyEthereumStakingLiveStateForSign = async ({
 > => {
     const adapter = getEthereumStakingAdapter(DEFAULT_ETHEREUM_STAKING_PROVIDER_ID);
 
-    const liveState = await adapter.validateLiveState({ label: stakeType, data: calldata }, () =>
-        readEthereumStakingPool({
-            symbol: account.symbol,
-            descriptor: account.descriptor,
-            identity: getAccountIdentity(account),
-        }),
+    const liveState = await adapter.validateLiveState(
+        { label: stakeType, data: calldata },
+        {
+            account,
+            readStakingPools: () =>
+                readEthereumStakingPools({
+                    symbol: account.symbol,
+                    descriptor: account.descriptor,
+                    identity: getAccountIdentity(account),
+                }),
+        },
     );
 
     if (!liveState.isValid) {

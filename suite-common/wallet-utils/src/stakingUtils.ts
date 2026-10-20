@@ -5,16 +5,17 @@ import {
     STAKING_TYPES,
     type StakingNetworkSymbol,
     type StakingNetworkType,
+    getStakingProviderByEthereumContract,
 } from '@suite-common/wallet-config';
 import {
     type Account,
     type FormState,
     type StakeFormState,
     type StakeType,
-    type StakingPoolExtended,
 } from '@suite-common/wallet-types';
 import {
     type SolanaStakingAccount,
+    type StakingPool,
     type TronAccountExtraData,
     type TronStakingInfo,
 } from '@trezor/blockchain-link-types';
@@ -43,48 +44,31 @@ export const isStakingSymbol = (
 ): symbol is NetworkSymbol & StakingNetworkSymbol =>
     (STAKING_SYMBOLS as readonly string[]).includes(symbol);
 
-const getEverstakePool = (account?: Account) => {
-    if (account?.networkType !== 'ethereum') {
-        return undefined;
-    }
+// Pools of known pooled providers, located by contract address. Liquid positions live in the
+// token balance and never add to the native balance.
+export const getEthereumAccountStakingPools = (account?: Account): StakingPool[] => {
+    if (account?.networkType !== 'ethereum') return [];
 
-    return account?.misc?.stakingPools?.find(pool => pool.name === 'Everstake');
+    return (account.misc?.stakingPools ?? []).filter(
+        pool =>
+            getStakingProviderByEthereumContract(account.symbol, pool.contract)?.ethereum?.kind ===
+            'pooled',
+    );
 };
 
-export const getAccountEverstakeStakingPool = (
-    account?: Account,
-): StakingPoolExtended | undefined => {
-    const pool = getEverstakePool(account);
+const getStakingPoolTotalBalance = (pool: StakingPool) =>
+    fromWei(
+        new BigNumber(pool.autocompoundBalance)
+            .plus(pool.pendingBalance)
+            .plus(pool.pendingDepositedBalance)
+            .plus(pool.withdrawTotalAmount)
+            .toString(),
+    ).toEther('bignumber');
 
-    if (!pool) return undefined;
-
-    return {
-        ...pool,
-        autocompoundBalance: fromWei(pool.autocompoundBalance).toEther(),
-        claimableAmount: fromWei(pool.claimableAmount).toEther(),
-        depositedBalance: fromWei(pool.depositedBalance).toEther(),
-        pendingBalance: fromWei(pool.pendingBalance).toEther(),
-        pendingDepositedBalance: fromWei(pool.pendingDepositedBalance).toEther(),
-        restakedReward: fromWei(pool.restakedReward).toEther(),
-        withdrawTotalAmount: fromWei(pool.withdrawTotalAmount).toEther(),
-        totalPendingStakeBalance: fromWei(
-            new BigNumber(pool.pendingBalance).plus(pool.pendingDepositedBalance).toString(),
-        ).toEther(),
-        canClaim:
-            new BigNumber(pool.claimableAmount).gt(0) &&
-            new BigNumber(pool.withdrawTotalAmount).eq(pool.claimableAmount),
-    };
-};
-
-export const getEthAccountTotalStakingBalance = (account?: Account) => {
-    const pool = getAccountEverstakeStakingPool(account);
-
-    return new BigNumber(pool?.autocompoundBalance ?? '0')
-        .plus(pool?.pendingBalance ?? '0')
-        .plus(pool?.pendingDepositedBalance ?? '0')
-        .plus(pool?.withdrawTotalAmount ?? '0')
+export const getEthAccountTotalStakingBalance = (account?: Account) =>
+    getEthereumAccountStakingPools(account)
+        .reduce((total, pool) => total.plus(getStakingPoolTotalBalance(pool)), new BigNumber(0))
         .toFixed();
-};
 
 export const calculateTotalSolStakingBalance = (stakingAccounts: SolanaStakingAccount[]) => {
     if (!stakingAccounts?.length) return null;

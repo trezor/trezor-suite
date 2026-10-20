@@ -131,7 +131,7 @@ test.describe('ETH unstaking and claim', { tag: ['@T3W1', '@T3T1'] }, () => {
                     unconfirmedTxs: 0,
                     stakingPools: [
                         {
-                            contract: '0x624087DD1904ab122A32878Ce9e933C7071F53B9',
+                            contract: '0x7a7f0b3c23C23a31cFcb0c44709be70d4D545c6e',
                             name: 'Everstake',
                             pendingBalance: '100000000000000000000',
                             pendingDepositedBalance: '200000000000000000000',
@@ -163,7 +163,7 @@ test.describe('ETH unstaking and claim', { tag: ['@T3W1', '@T3T1'] }, () => {
                     unconfirmedTxs: 0,
                     stakingPools: [
                         {
-                            contract: '0x624087DD1904ab122A32878Ce9e933C7071F53B9',
+                            contract: '0x7a7f0b3c23C23a31cFcb0c44709be70d4D545c6e',
                             name: 'Everstake',
                             pendingBalance: '100000000000000000000',
                             pendingDepositedBalance: '200000000000000000000',
@@ -227,7 +227,7 @@ test.describe('ETH unstaking and claim', { tag: ['@T3W1', '@T3T1'] }, () => {
                     unconfirmedTxs: 0,
                     stakingPools: [
                         {
-                            contract: '0x624087DD1904ab122A32878Ce9e933C7071F53B9',
+                            contract: '0x7a7f0b3c23C23a31cFcb0c44709be70d4D545c6e',
                             name: 'Everstake',
                             pendingBalance: '100000000000000000000',
                             pendingDepositedBalance: '200000000000000000000',

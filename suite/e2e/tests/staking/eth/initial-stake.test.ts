@@ -27,7 +27,7 @@ test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
             nonce: '0',
             stakingPools: [
                 {
-                    contract: '0x624087DD1904ab122A32878Ce9e933C7071F53B9',
+                    contract: '0x7a7f0b3c23C23a31cFcb0c44709be70d4D545c6e',
                     name: 'Everstake',
                     pendingBalance: '0',
                     pendingDepositedBalance: '0',
@@ -136,7 +136,7 @@ test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                     nonTokenTxs: 1,
                     stakingPools: [
                         {
-                            contract: '0x624087DD1904ab122A32878Ce9e933C7071F53B9',
+                            contract: '0x7a7f0b3c23C23a31cFcb0c44709be70d4D545c6e',
                             name: 'Everstake',
                             pendingBalance: '100204158497493752', // increased by staked amount
                             pendingDepositedBalance: '0',
@@ -176,7 +176,7 @@ test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                     unconfirmedTxs: 0,
                     stakingPools: [
                         {
-                            contract: '0x624087DD1904ab122A32878Ce9e933C7071F53B9',
+                            contract: '0x7a7f0b3c23C23a31cFcb0c44709be70d4D545c6e',
                             name: 'Everstake',
                             pendingBalance: '0', // lowered by confirmation
                             pendingDepositedBalance: '100204158497493752', // increased by confirmation
@@ -207,7 +207,7 @@ test.describe('ETH staking', { tag: ['@T3W1', '@T3T1'] }, () => {
                 blockbookMock.updateAccountState({
                     stakingPools: [
                         {
-                            contract: '0x624087DD1904ab122A32878Ce9e933C7071F53B9',
+                            contract: '0x7a7f0b3c23C23a31cFcb0c44709be70d4D545c6e',
                             name: 'Everstake',
                             pendingBalance: '0',
                             pendingDepositedBalance: '0', // lowered by activation

@@ -51,6 +51,7 @@ const VALID_LIVE_STAKING_POOL = {
         misc: {
             stakingPools: [
                 {
+                    contract: '0x7a7f0b3c23C23a31cFcb0c44709be70d4D545c6e',
                     autocompoundBalance: '2000000000000000000',
                     withdrawTotalAmount: '100000000000000000',
                     claimableAmount: '100000000000000000',
@@ -330,7 +331,12 @@ describe('signEthereumStakingTransactionThunk', () => {
             success: true,
             payload: {
                 misc: {
-                    stakingPools: [{ autocompoundBalance: '1000000000000000000' }],
+                    stakingPools: [
+                        {
+                            contract: '0x7a7f0b3c23C23a31cFcb0c44709be70d4D545c6e',
+                            autocompoundBalance: '1000000000000000000',
+                        },
+                    ],
                 },
             },
         });
@@ -369,6 +375,7 @@ describe('signEthereumStakingTransactionThunk', () => {
                 misc: {
                     stakingPools: [
                         {
+                            contract: '0x7a7f0b3c23C23a31cFcb0c44709be70d4D545c6e',
                             withdrawTotalAmount: '200000000000000000',
                             claimableAmount: '100000000000000000',
                         },

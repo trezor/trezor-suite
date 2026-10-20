@@ -21,7 +21,7 @@ import {
 } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
-    getAccountEverstakeStakingPool,
+    fromWei,
     getAccountTotalStakingBalance,
     getTronAccountTotalStakingBalance,
     isPending,
@@ -70,6 +70,7 @@ import {
     UNSTAKING_ETH_PERIOD,
 } from '../ethereum/providers/everstake/everstakeConstants';
 import { getEverstakeContractAddressByStakeType } from '../ethereum/providers/everstake/everstakeContracts';
+import { deriveEthereumStakingPositions } from '../positions/deriveStakingPositions';
 import {
     getSolStakingAccountsInfo,
     isSupportedSolStakingNetworkSymbol,
@@ -183,8 +184,26 @@ export const getStakingDataForNetwork = (
     if (!account || !isStakingNetworkType(account.networkType)) return;
 
     switch (account.networkType) {
-        case 'ethereum':
-            return getAccountEverstakeStakingPool(account);
+        case 'ethereum': {
+            const position = deriveEthereumStakingPositions(account).find(
+                ({ details }) => details.providerId === 'everstake',
+            );
+            if (!position) return;
+
+            const { pool } = position.details;
+
+            return {
+                autocompoundBalance: fromWei(pool.autocompoundBalance).toEther(),
+                claimableAmount: position.claimable,
+                depositedBalance: position.staked,
+                pendingBalance: fromWei(pool.pendingBalance).toEther(),
+                pendingDepositedBalance: fromWei(pool.pendingDepositedBalance).toEther(),
+                totalPendingStakeBalance: position.pendingStake,
+                restakedReward: position.rewards ?? '',
+                withdrawTotalAmount: position.unstaking,
+                canClaim: position.canClaim,
+            };
+        }
         case 'solana': {
             const {
                 canClaimSol,

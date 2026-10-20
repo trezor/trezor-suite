@@ -2,12 +2,12 @@ import { type Account } from '@suite-common/wallet-types';
 import { type TronStakingInfo, type TronUnstakingBatch } from '@trezor/blockchain-link-types';
 
 import {
-    getAccountEverstakeStakingPoolFixtures,
     getEthAccountTotalStakingBalanceFixtures,
+    getEthereumAccountStakingPoolsFixtures,
 } from './__fixtures__/stakingUtils';
 import {
-    getAccountEverstakeStakingPool,
     getEthAccountTotalStakingBalance,
+    getEthereumAccountStakingPools,
     getTronAccountTotalStakingBalance,
     getTronResources,
     getTronStakingInfo,
@@ -68,10 +68,10 @@ const buildNonTronAccount = (): Account =>
         misc: {},
     }) as unknown as Account;
 
-describe('getAccountEverstakeStakingPool', () => {
-    getAccountEverstakeStakingPoolFixtures.forEach(({ description, account, expected }) => {
+describe('getEthereumAccountStakingPools', () => {
+    getEthereumAccountStakingPoolsFixtures.forEach(({ description, account, expected }) => {
         it(description, () => {
-            const result = getAccountEverstakeStakingPool(account as unknown as Account);
+            const result = getEthereumAccountStakingPools(account as unknown as Account);
             expect(result).toEqual(expected);
         });
     });
