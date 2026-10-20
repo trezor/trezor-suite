@@ -7,6 +7,7 @@ import {
     type PrecomposedTransaction,
     type StakeFormState,
     type StakeType,
+    type StakingLimits,
 } from '@suite-common/wallet-types';
 import {
     calculateTotalGasCost,
@@ -26,11 +27,6 @@ import {
     DEFAULT_ETHEREUM_STAKING_PROVIDER_ID,
     getEthereumStakingAdapter,
 } from './providers/ethereumStakingProviders';
-import {
-    MIN_ETH_AMOUNT_FOR_STAKING,
-    MIN_ETH_BALANCE_FOR_STAKING,
-    MIN_ETH_FOR_WITHDRAWALS,
-} from './providers/everstake/everstakeConstants';
 import { type StakingOperationRequest, type StakingTxStep } from './providers/types';
 import { type GetStakeFormsDefaultValuesParams } from './types';
 import {
@@ -152,34 +148,42 @@ const toStakingOperationRequest = (
     }
 };
 
-const calculateEthereumStakeTransaction = (
-    availableBalance: string,
-    output: ExternalOutput,
-    feeLevel: FeeLevel,
-    compareWithAmount: boolean,
-    symbol: NetworkSymbol,
-): PrecomposedTransaction => {
-    const totalGasCostInWei = calculateTotalGasCost(
-        fromGwei(feeLevel.maxFeePerGas || feeLevel.feePerUnit).toWei(),
-        feeLevel.feeLimit,
-    );
+const createEthereumStakeTransactionCalculator =
+    (limits: StakingLimits) =>
+    (
+        availableBalance: string,
+        output: ExternalOutput,
+        feeLevel: FeeLevel,
+        compareWithAmount: boolean,
+        symbol: NetworkSymbol,
+    ): PrecomposedTransaction => {
+        const totalGasCostInWei = calculateTotalGasCost(
+            fromGwei(feeLevel.maxFeePerGas || feeLevel.feePerUnit).toWei(),
+            feeLevel.feeLimit,
+        );
 
-    const stakingParams = {
-        feeInBaseUnits: totalGasCostInWei,
-        minBalanceForStakingInBaseUnits: fromEther(MIN_ETH_BALANCE_FOR_STAKING.toString()).toWei(),
-        minAmountForStakingInBaseUnits: fromEther(MIN_ETH_AMOUNT_FOR_STAKING.toString()).toWei(),
-        minAmountForWithdrawalInBaseUnits: fromEther(MIN_ETH_FOR_WITHDRAWALS.toString()).toWei(),
+        const stakingParams = {
+            feeInBaseUnits: totalGasCostInWei,
+            minBalanceForStakingInBaseUnits: fromEther(
+                limits.MIN_BALANCE_FOR_STAKING.toString(),
+            ).toWei(),
+            minAmountForStakingInBaseUnits: fromEther(
+                limits.MIN_AMOUNT_FOR_STAKING.toString(),
+            ).toWei(),
+            minAmountForWithdrawalInBaseUnits: fromEther(
+                limits.MIN_FOR_WITHDRAWALS.toString(),
+            ).toWei(),
+        };
+
+        return calculateStakeFormTransaction(
+            availableBalance,
+            output,
+            feeLevel,
+            compareWithAmount,
+            symbol,
+            stakingParams,
+        );
     };
-
-    return calculateStakeFormTransaction(
-        availableBalance,
-        output,
-        feeLevel,
-        compareWithAmount,
-        symbol,
-        stakingParams,
-    );
-};
 
 const attachTransactionData = (
     composed: PrecomposedLevels,
@@ -285,7 +289,7 @@ export const composeEthereumStakingTransaction = async ({
         formValues,
         composeContext,
         predefinedLevels,
-        calculateEthereumStakeTransaction,
+        createEthereumStakeTransactionCalculator(adapter.limits),
         undefined,
         customFeeLimit,
     );

@@ -9,7 +9,6 @@ import {
 import {
     CARDANO_EPOCH_DAYS,
     CARDANO_STAKING_REGISTRATION_DEPOSIT,
-    MIN_ETH_BALANCE_FOR_FEE_BUFFER,
 } from '@suite-common/wallet-constants';
 import {
     type Account,
@@ -63,12 +62,10 @@ import {
 } from '../cardano/cardanoStakingUtils';
 import { isSupportedEthStakingNetworkSymbol } from '../ethereum/ethereumStakingUtils';
 import {
-    MAX_ETH_AMOUNT_FOR_STAKING,
-    MIN_ETH_AMOUNT_FOR_STAKING,
-    MIN_ETH_BALANCE_FOR_STAKING,
-    MIN_ETH_FOR_WITHDRAWALS,
-    UNSTAKING_ETH_PERIOD,
-} from '../ethereum/providers/everstake/everstakeConstants';
+    DEFAULT_ETHEREUM_STAKING_PROVIDER_ID,
+    getEthereumStakingAdapter,
+} from '../ethereum/providers/ethereumStakingProviders';
+import { UNSTAKING_ETH_PERIOD } from '../ethereum/providers/everstake/everstakeConstants';
 import { getEverstakeContractAddressByStakeType } from '../ethereum/providers/everstake/everstakeContracts';
 import { deriveEthereumStakingPositions } from '../positions/deriveStakingPositions';
 import {
@@ -108,14 +105,7 @@ export const getStakingLimitsByNetworkSymbol = (
     switch (symbol) {
         case 'thod':
         case 'eth':
-            return {
-                MIN_AMOUNT_FOR_STAKING: MIN_ETH_AMOUNT_FOR_STAKING,
-                MIN_AMOUNT_FOR_STAKING_DASHBOARD: MIN_ETH_AMOUNT_FOR_STAKING,
-                MAX_AMOUNT_FOR_STAKING: MAX_ETH_AMOUNT_FOR_STAKING,
-                MIN_FOR_WITHDRAWALS: MIN_ETH_FOR_WITHDRAWALS,
-                MIN_BALANCE_FOR_FEE_BUFFER: MIN_ETH_BALANCE_FOR_FEE_BUFFER,
-                MIN_BALANCE_FOR_STAKING: MIN_ETH_BALANCE_FOR_STAKING,
-            };
+            return getEthereumStakingAdapter(DEFAULT_ETHEREUM_STAKING_PROVIDER_ID).limits;
 
         case 'dsol':
         case 'sol':
