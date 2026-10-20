@@ -1,6 +1,6 @@
-import { type TranslationKey } from '@suite/intl';
 import { type EarnTransactionStage } from '@suite-common/toast-notifications';
 import { type EarnTransactionToastType } from '@suite-common/wallet-core';
+import { type TranslationKey } from '@suite-lego/intl';
 import { PiggyBankIcon } from '@trezor/icons';
 
 import type { NotificationRendererProps } from 'src/components/suite/notifications/NotificationRenderer/NotificationRenderer';

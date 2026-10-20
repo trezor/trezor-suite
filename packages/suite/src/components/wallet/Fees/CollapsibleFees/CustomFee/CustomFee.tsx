@@ -1,5 +1,5 @@
-import { Translation, useTranslation } from '@suite/intl';
 import { getFeeUnits, isInteger } from '@suite-common/wallet-utils';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import { Column, Row, Text } from '@trezor/components';
 
 import { CurrentFee } from './CurrentFee';

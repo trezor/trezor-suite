@@ -8,11 +8,11 @@ import {
     selectRegisteredUtxosByAccountKey,
     selectTargetAnonymityByAccountKey,
 } from '@suite/coinjoin';
-import { Translation } from '@suite/intl';
 import { selectIsMetadataProviderConnected } from '@suite/metadata';
 import { selectRouteName } from '@suite/router';
 import { selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { selectBaseCurrency, selectFees, selectSendRaw } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Column } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 

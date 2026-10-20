@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
-import { Translation } from '@suite/intl';
 import { type TrxStats } from '@suite-common/earn-staking-api';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Card, Column, Input, Modal, Table, Text } from '@trezor/components';
 
 import { TronRepresentativeApr } from './TronRepresentativeApr';

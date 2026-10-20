@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 import { useFormContext, useFormState } from 'react-hook-form';
 
-import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { type FormState } from '@suite-common/wallet-types';
 import { isInteger } from '@suite-common/wallet-utils';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import { NumberInput } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 

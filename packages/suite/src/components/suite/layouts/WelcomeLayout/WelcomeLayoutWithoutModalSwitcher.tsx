@@ -2,8 +2,8 @@ import { type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { Translation } from '@suite/intl';
 import { TrafficLightOffset } from '@suite/macos';
+import { Translation } from '@suite-lego/intl';
 import { Column, Modal, Row, variables } from '@trezor/components';
 
 import { GuideButton, GuideRouter } from 'src/components/guide';

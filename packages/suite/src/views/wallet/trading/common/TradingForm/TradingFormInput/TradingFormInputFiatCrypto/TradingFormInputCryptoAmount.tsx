@@ -3,7 +3,6 @@ import { type FieldErrors, type UseFormReturn, useWatch } from 'react-hook-form'
 
 import { useTheme } from 'styled-components';
 
-import { useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { useFormatters } from '@suite-common/formatters';
 import {
@@ -25,6 +24,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { asAmountUnit, unitsToSubunits } from '@suite-common/wallet-utils';
+import { useTranslation } from '@suite-lego/intl';
 import { Skeleton } from '@trezor/components';
 import { NumberInput } from '@trezor/product-components';
 import { useDidUpdate } from '@trezor/react-utils';

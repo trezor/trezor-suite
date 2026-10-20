@@ -1,5 +1,5 @@
-import { Translation } from '@suite/intl';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { Translation } from '@suite-lego/intl';
 import { Column, Icon, Table, Text } from '@trezor/components';
 import { PiggyBankFilledIcon } from '@trezor/icons';
 

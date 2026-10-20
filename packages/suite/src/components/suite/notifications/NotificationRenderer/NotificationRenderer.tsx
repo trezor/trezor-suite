@@ -2,16 +2,16 @@ import { type ComponentType, type JSX } from 'react';
 
 import { type ErrorCode } from 'invity-api';
 
+import { TRADING_ERROR_MESSAGE } from '@suite/trading';
+import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
+import { AUTH_DEVICE, type NotificationEntry } from '@suite-common/toast-notifications';
+import { getTradingErrorDisplay } from '@suite-common/trading';
 import {
     type ExtendedMessageDescriptor,
     Translation,
     type TranslationKey,
     useTranslation,
-} from '@suite/intl';
-import { TRADING_ERROR_MESSAGE } from '@suite/trading';
-import { selectSelectedDeviceLabelOrName } from '@suite-common/device';
-import { AUTH_DEVICE, type NotificationEntry } from '@suite-common/toast-notifications';
-import { getTradingErrorDisplay } from '@suite-common/trading';
+} from '@suite-lego/intl';
 import { DEVICE } from '@trezor/connect';
 import { ArrowDownIcon, ArrowUpIcon, CheckIcon, GearIcon, TorBrowserIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';

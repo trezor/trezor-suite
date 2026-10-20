@@ -8,10 +8,10 @@ import {
     selectIsNoDeviceEshopSidebarBannerShown,
     setFlag,
 } from '@suite/flags';
-import { Translation } from '@suite/intl';
 import { type RouterRootState, selectRouterApp } from '@suite/router';
 import { events } from '@suite-common/analytics';
 import { type DeviceRootState, selectPhysicalDeviceWallets } from '@suite-common/device';
+import { Translation } from '@suite-lego/intl';
 import { Image } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { SidebarBanner } from '@trezor/product-components';

@@ -2,7 +2,7 @@ import { type Dispatch, type ReactNode, type SetStateAction } from 'react';
 
 import { useDevice } from '@suite/device';
 import { validateFirmware } from '@suite/firmware-upgrade';
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Button, Row, StepList } from '@trezor/components';
 import { DropZone } from '@trezor/product-components';
 import { GITHUB_FW_BINARIES_URL } from '@trezor/urls';

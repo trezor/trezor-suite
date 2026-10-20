@@ -1,9 +1,9 @@
 import { useState } from 'react';
 
-import { Translation } from '@suite/intl';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { fetchTransactionsPageThunk } from '@suite-common/wallet-core';
 import { getHistoryCoveredSince, getOlderHistoryFrom } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Button, Column, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

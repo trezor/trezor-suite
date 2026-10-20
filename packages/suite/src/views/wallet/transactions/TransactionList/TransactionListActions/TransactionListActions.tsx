@@ -1,10 +1,10 @@
 import { type Dispatch, type SetStateAction, useCallback, useEffect, useState } from 'react';
 
-import { useTranslation } from '@suite/intl';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { hasNetworkPotentialFraudTransactions } from '@suite-common/token-definitions';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { useTranslation } from '@suite-lego/intl';
 import { Icon, Input } from '@trezor/components';
 import { Row } from '@trezor/components/src/components/Flex/Flex';
 import { useServices } from '@trezor/dependency-injection';

@@ -1,5 +1,5 @@
-import { Translation } from '@suite/intl';
 import { selectIsTestnetNetworksEnabled, suiteSettingsActions } from '@suite/settings';
+import { Translation } from '@suite-lego/intl';
 import { Switch } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { SectionItem } from '@trezor/product-components';

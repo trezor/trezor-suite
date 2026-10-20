@@ -1,8 +1,8 @@
 import { type ReactNode, useCallback, useMemo, useState } from 'react';
 
-import { Translation } from '@suite/intl';
 import { selectHiddenWalletAssetKeys } from '@suite-common/assets';
 import { type HiddenTokenReason, type WalletAssetKey } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Card, Column, Divider, Table, Text, VirtualizedList } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';

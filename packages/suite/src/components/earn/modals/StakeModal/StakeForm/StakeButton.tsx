@@ -1,6 +1,5 @@
 import { injectDesktopAnalytics } from '@suite/analytics';
 import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
-import { Translation } from '@suite/intl';
 import { EarnFlow, type StakeModalFlow } from '@suite-common/suite-types/src/staking';
 import {
     selectAreFeesLoading,
@@ -8,6 +7,7 @@ import {
     selectVotingDelegationOption,
     validateCardanoDrep,
 } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Modal, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { InfoIcon } from '@trezor/icons';

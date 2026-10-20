@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { Translation, type TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { Card, H4, Paragraph, motionEasing } from '@trezor/components';
 
 const PHRASES: TranslationKey[] = [

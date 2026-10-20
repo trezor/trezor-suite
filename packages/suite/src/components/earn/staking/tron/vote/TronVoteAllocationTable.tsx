@@ -1,5 +1,5 @@
-import { Translation } from '@suite/intl';
 import { type TrxStats } from '@suite-common/earn-staking-api';
+import { Translation } from '@suite-lego/intl';
 import { Table, Text, TextButton } from '@trezor/components';
 import { PencilIcon } from '@trezor/icons';
 

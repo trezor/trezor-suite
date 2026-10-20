@@ -1,8 +1,8 @@
 import { injectDesktopAnalytics } from '@suite/analytics';
 import { HiddenPlaceholder } from '@suite/discreet-mode';
-import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { type WrapTransactionAsset } from '@suite-common/toast-notifications';
+import { Translation } from '@suite-lego/intl';
 import { useServices } from '@trezor/dependency-injection';
 import { ExchangeInfoNotification } from '@trezor/product-components';
 

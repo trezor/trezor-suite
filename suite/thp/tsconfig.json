@@ -11,7 +11,7 @@
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../device" },
-        { "path": "../intl" },
+        { "path": "../../suite-lego/intl" },
         { "path": "../../packages/components" },
         { "path": "../../packages/connect" },
         {

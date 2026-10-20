@@ -5,12 +5,12 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { type ExchangeTrade } from 'invity-api';
 
 import { yup } from '@suite/forms';
-import { Translation, useTranslation } from '@suite/intl';
 import {
     type SlippageFormValues,
     TRADING_SETTINGS_MAX_SLIPPAGE_PERCENTAGE_DEFAULT,
     getSlippageFormValidationSchema,
 } from '@suite-common/trading';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import { Banner, Column, Modal } from '@trezor/components';
 
 import { useTradingExchangeTradeActions } from 'src/hooks/wallet/trading/useTradingExchangeTradeActions';

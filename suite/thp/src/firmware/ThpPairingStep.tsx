@@ -1,9 +1,9 @@
 import { type ReactNode, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
-import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectThpStep } from '@suite-common/thp';
+import { Translation } from '@suite-lego/intl';
 import { Column, Image, Modal } from '@trezor/components';
 
 import { ThpCodeEntryStep } from './ThpCodeEntryStep';

@@ -1,5 +1,5 @@
-import { Translation } from '@suite/intl';
 import { type TradingAssetOption } from '@suite-common/trading';
+import { Translation } from '@suite-lego/intl';
 
 import { getGlobalReceiveAssetDescriptionValues } from '../globalReceiveAssetUtils';
 

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Card, Icon, variables } from '@trezor/components';
 import { ArrowsInIcon, CoinsIcon, QuestionIcon, TrezorBackupIcon } from '@trezor/icons';
 import { typography } from '@trezor/theme';

@@ -1,5 +1,5 @@
-import { Translation } from '@suite/intl';
 import { getTronWithdrawableBalance } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Card, Column, Row, Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 

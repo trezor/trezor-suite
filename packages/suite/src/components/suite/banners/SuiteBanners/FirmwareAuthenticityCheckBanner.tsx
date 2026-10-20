@@ -2,12 +2,12 @@ import {
     selectFirmwareHashCheckErrorIfEnabled,
     selectFirmwareRevisionCheckErrorIfEnabled,
 } from '@suite/authenticity-checks';
-import { Translation, type TranslationKey } from '@suite/intl';
 import { selectWasFwHashCheckOtherErrorLastTime } from '@suite-common/device';
 import {
     type SkippedHashCheckError,
     type SkippedRevisionCheckError,
 } from '@suite-common/firmware-authenticity';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { Banner } from '@trezor/components';
 import { type FirmwareHashCheckError, type FirmwareRevisionCheckError } from '@trezor/connect';
 import { TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL } from '@trezor/urls';

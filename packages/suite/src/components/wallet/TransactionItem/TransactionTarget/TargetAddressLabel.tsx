@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 
 import { Address, selectAddressLabelsForAccount } from '@suite/address';
-import { Translation } from '@suite/intl';
 import { selectAccounts } from '@suite-common/wallet-core';
 import type { AccountKey } from '@suite-common/wallet-types';
 import { findTransactionSenderAccount } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { type ArrayElement } from '@trezor/type-utils';
 
 import { AccountLabelForOwnAddress } from 'src/components/suite/labeling/AccountLabelForOwnAddress';

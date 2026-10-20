@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { type FieldError } from 'react-hook-form';
 
 import { useDevice } from '@suite/device';
-import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import {
     getHasSelectableSignatureFormat,
     isVerifySupported,
@@ -11,6 +10,7 @@ import {
 } from '@suite-common/sign-verify';
 import { type Network } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
+import { Translation, type TranslationKey, useTranslation } from '@suite-lego/intl';
 import { Button, Card, Column } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

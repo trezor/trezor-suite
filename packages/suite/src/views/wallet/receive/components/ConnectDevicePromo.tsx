@@ -1,7 +1,7 @@
 import { type JSX } from 'react';
 
-import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
+import { Translation } from '@suite-lego/intl';
 import { Banner } from '@trezor/components';
 import { DEFAULT_FLAGSHIP_MODEL } from '@trezor/device';
 import { mapTrezorModelToIcon } from '@trezor/product-components';

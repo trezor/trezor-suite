@@ -1,5 +1,5 @@
 import { type CoinjoinSession } from '@suite/coinjoin';
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { RoundPhase } from '@trezor/coinjoin';
 import { Column, StepList, type StepListItemState, Text } from '@trezor/components';
 

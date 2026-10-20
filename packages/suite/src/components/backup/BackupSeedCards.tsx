@@ -1,5 +1,5 @@
 import { type ConfirmKey, backupActions, selectBackup } from '@suite/backup';
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Card, Checkbox, Column, Grid, Icon, Paragraph, Row } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { AnchorIcon, KeyIcon, PencilLineIcon } from '@trezor/icons';

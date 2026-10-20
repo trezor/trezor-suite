@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
 import { selectFlags, setFlag } from '@suite/flags';
-import { Translation } from '@suite/intl';
 import { getBip43Type } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 

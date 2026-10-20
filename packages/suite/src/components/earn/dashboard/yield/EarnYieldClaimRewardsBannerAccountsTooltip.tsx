@@ -4,9 +4,9 @@ import styled from 'styled-components';
 
 import { AccountLabel } from '@suite/account';
 import { HiddenPlaceholder } from '@suite/discreet-mode';
-import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { Grid, Icon, Row, Text, Tooltip } from '@trezor/components';
 import { WalletIcon } from '@trezor/icons';

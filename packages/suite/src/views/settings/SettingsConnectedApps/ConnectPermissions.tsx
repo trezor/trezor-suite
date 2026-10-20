@@ -3,7 +3,6 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 import { selectIsDebugModeActive } from '@suite/debug';
-import { Translation, useTranslation } from '@suite/intl';
 import {
     PERMISSION_PREVIEW_LIMIT,
     connectPopupActions,
@@ -13,6 +12,7 @@ import {
     selectConnectAppPermissions,
 } from '@suite-common/connect-popup';
 import { injectHasNetworkIcon } from '@suite-common/networks';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import {
     Box,
     Card,

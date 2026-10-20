@@ -17,8 +17,8 @@ import { mockInitialAppState } from '../../../../../../../mocks/mockInitialAppSt
 
 type TranslationProps = { id: string; values?: { percent?: string } };
 
-jest.mock('@suite/intl', () => ({
-    ...jest.requireActual('@suite/intl'),
+jest.mock('@suite-lego/intl', () => ({
+    ...jest.requireActual('@suite-lego/intl'),
     Translation: ({ id, values }: TranslationProps) => (
         <span>{values?.percent ? `${id} ${values.percent}` : id}</span>
     ),

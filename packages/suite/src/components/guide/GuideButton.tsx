@@ -4,7 +4,7 @@ import { FreeFocusInside } from 'react-focus-lock';
 import type { LottieRef } from 'lottie-react';
 import styled, { useTheme } from 'styled-components';
 
-import { Translation, useTranslation } from '@suite/intl';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import {
     LottieAnimation,
     Row,

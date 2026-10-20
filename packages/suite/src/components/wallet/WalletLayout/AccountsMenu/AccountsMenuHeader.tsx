@@ -2,10 +2,10 @@ import { useState } from 'react';
 
 import styled from 'styled-components';
 
-import { Translation } from '@suite/intl';
 import { selectIsCoinsFilterVisible, suiteSettingsActions } from '@suite/settings';
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectAllAccountsToList, selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Box, Column, Divider, Icon, Row, Skeleton, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { FunnelSimpleIcon } from '@trezor/icons';

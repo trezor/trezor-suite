@@ -1,7 +1,6 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { useDevice } from '@suite/device';
 import { FirmwareUpgradeNeededModal } from '@suite/firmware-upgrade';
-import { Translation, useTranslation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import {
     getTronRewardClaimCooldownEndsAt,
@@ -10,6 +9,7 @@ import {
     isTronRewardClaimOnCooldown,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import {
     Box,
     Button,

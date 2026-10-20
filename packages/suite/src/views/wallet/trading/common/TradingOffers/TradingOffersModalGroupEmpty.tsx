@@ -1,4 +1,4 @@
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { CardList, Icon, Row, Text } from '@trezor/components';
 import { ProhibitIcon } from '@trezor/icons';
 

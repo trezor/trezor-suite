@@ -11,7 +11,7 @@
         {
             "path": "../../suite-common/suite-types"
         },
-        { "path": "../intl" },
+        { "path": "../../suite-lego/intl" },
         { "path": "../metadata" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },

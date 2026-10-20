@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
-import { Translation } from '@suite/intl';
 import { useMutation } from '@suite-common/react-query';
+import { Translation } from '@suite-lego/intl';
 import { Card, Column, Icon, Paragraph, Row, ShortcutBadge, Spinner } from '@trezor/components';
 import { QrCodeIcon, WarningIcon } from '@trezor/icons';
 import { DropZone } from '@trezor/product-components';

@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 
-import { Translation } from '@suite/intl';
 import { TrafficLightOffset } from '@suite/macos';
 import {
     CALL_SOURCE_WALLETCONNECT,
@@ -8,6 +7,7 @@ import {
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
 import { selectSelectedDevice } from '@suite-common/device';
+import { Translation } from '@suite-lego/intl';
 import { Box, Icon, Row, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { CaretCircleDownIcon, PlugsIcon, WalletConnectIcon } from '@trezor/icons';

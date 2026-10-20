@@ -24,7 +24,7 @@
         { "path": "../desktop-update" },
         { "path": "../flags" },
         { "path": "../github" },
-        { "path": "../intl" },
+        { "path": "../../suite-lego/intl" },
         {
             "path": "../platform-encryption-electron"
         },

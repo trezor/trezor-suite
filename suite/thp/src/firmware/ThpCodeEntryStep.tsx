@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Card, Column, Modal, Text } from '@trezor/components';
 
 import { ThpPairingCodeEntry } from '../connection/ThpPairingCodeEntry';

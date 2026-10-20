@@ -2,10 +2,10 @@ import { type CryptoId } from 'invity-api';
 
 import { AccountLabel } from '@suite/account';
 import { Address } from '@suite/address';
-import { Translation, useTranslation } from '@suite/intl';
 import { cryptoIdToNetworkSymbolAndContractAddress, useTradingAssets } from '@suite-common/trading';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import { Column, Row, Skeleton, Text } from '@trezor/components';
 import { TokenIcon } from '@trezor/product-components';
 

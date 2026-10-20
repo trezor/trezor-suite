@@ -1,4 +1,4 @@
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Modal } from '@trezor/components';
 
 import { SecurityCheckButton } from 'src/components/suite/SecurityCheck/components/SecurityCheckButton';

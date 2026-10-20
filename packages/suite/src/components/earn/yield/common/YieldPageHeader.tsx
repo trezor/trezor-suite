@@ -2,7 +2,6 @@ import styled from 'styled-components';
 
 import { AccountLabel } from '@suite/account';
 import { injectDesktopAnalytics } from '@suite/analytics';
-import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type EarnParams } from '@suite/router';
 import { events } from '@suite-common/analytics';
@@ -14,6 +13,7 @@ import {
 } from '@suite-common/suite-types/src/staking';
 import { getYieldVaultContractAddress } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { Translation, type TranslationKey, useTranslation } from '@suite-lego/intl';
 import { Button, IconButton, Row, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { CaretLeftIcon, InfoIcon } from '@trezor/icons';

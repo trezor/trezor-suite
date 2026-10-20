@@ -3,12 +3,12 @@ import { useFormContext } from 'react-hook-form';
 
 import { type ExchangeTrade } from 'invity-api';
 
-import { Translation, type TranslationKey } from '@suite/intl';
 import {
     type SlippageFormValues,
     selectTradingExchangeReceiveAccountKey,
     useTradingUtils,
 } from '@suite-common/trading';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { Column, Divider, Row, Text, TextButton } from '@trezor/components';
 import { ArrowLineUpRightIcon } from '@trezor/icons';
 import { TREZOR_TRADING_DEX_SLIPPAGE_URL } from '@trezor/urls';

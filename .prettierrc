@@ -25,7 +25,7 @@
             }
         },
         {
-            "files": ["suite/intl/translations/*.json"],
+            "files": ["suite-lego/intl/translations/*.json"],
             "options": {
                 "tabWidth": 2
             }

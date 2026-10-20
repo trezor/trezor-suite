@@ -1,7 +1,7 @@
 import { type MouseEventHandler } from 'react';
 
-import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
+import { Translation } from '@suite-lego/intl';
 import { Banner } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { ArrowsClockwiseIcon } from '@trezor/icons';

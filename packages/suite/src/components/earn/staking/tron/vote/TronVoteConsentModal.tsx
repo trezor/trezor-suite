@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { TrezorLink } from '@suite/external-links';
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Card, Checkbox, Column, Modal } from '@trezor/components';
 import { FileFilledIcon, ShieldWarningFilledIcon } from '@trezor/icons';
 import { type Deferred } from '@trezor/utils';

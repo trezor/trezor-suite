@@ -1,6 +1,6 @@
-import { Translation } from '@suite/intl';
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { getFeeUnits } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Text } from '@trezor/components';
 
 import { BaseCurrencyValue } from 'src/components/suite';

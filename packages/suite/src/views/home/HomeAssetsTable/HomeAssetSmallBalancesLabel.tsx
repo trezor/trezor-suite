@@ -1,7 +1,7 @@
-import { Translation } from '@suite/intl';
 import { selectSmallBalanceSummary } from '@suite-common/assets';
 import { useFormatters } from '@suite-common/formatters';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Column, Text } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';

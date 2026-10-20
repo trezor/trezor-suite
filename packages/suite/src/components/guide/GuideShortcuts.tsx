@@ -1,6 +1,6 @@
 import { selectIsDebugModeActive } from '@suite/debug';
-import { Translation } from '@suite/intl';
 import { selectIsDeviceProtectedByPassphrase } from '@suite-common/device';
+import { Translation } from '@suite-lego/intl';
 import {
     Box,
     CardList,

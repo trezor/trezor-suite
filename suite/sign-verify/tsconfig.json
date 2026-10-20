@@ -19,10 +19,10 @@
         {
             "path": "../../suite-common/wallet-utils"
         },
+        { "path": "../../suite-lego/intl" },
         { "path": "../address" },
         { "path": "../device" },
         { "path": "../forms" },
-        { "path": "../intl" },
         { "path": "../../packages/components" },
         {
             "path": "../../packages/dependency-injection"

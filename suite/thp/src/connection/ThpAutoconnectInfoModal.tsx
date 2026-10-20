@@ -1,9 +1,9 @@
 import { useState } from 'react';
 
 import { useDevice } from '@suite/device';
-import { Translation } from '@suite/intl';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { startThpAutoconnectThunk, thpActions } from '@suite-common/thp';
+import { Translation } from '@suite-lego/intl';
 import { Card, Modal, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

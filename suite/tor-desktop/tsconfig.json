@@ -18,7 +18,7 @@
         { "path": "../analytics" },
         { "path": "../desktop-app-api" },
         { "path": "../external-links" },
-        { "path": "../intl" },
+        { "path": "../../suite-lego/intl" },
         { "path": "../modal" },
         { "path": "../router" },
         { "path": "../tor" },

@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { Translation } from '@suite/intl';
 import {
     MetadataProviderSelectionModal,
     connectProviderThunk,
@@ -13,6 +12,7 @@ import { selectSelectedDevice } from '@suite-common/device';
 import { type MetadataProviderType } from '@suite-common/metadata-types';
 import { injectEnsureWalletSuiteSyncOn } from '@suite-common/suite-sync-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { Translation } from '@suite-lego/intl';
 import { type StaticSessionId } from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
 import { parseStaticSessionId } from '@trezor/device-utils';

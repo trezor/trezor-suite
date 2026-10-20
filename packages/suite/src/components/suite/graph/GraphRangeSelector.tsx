@@ -10,7 +10,7 @@ import {
     subYears,
 } from 'date-fns';
 
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import {
     Popover,
     type PopoverPlacement,

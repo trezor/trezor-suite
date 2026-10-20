@@ -1,6 +1,5 @@
 import { FormProvider } from 'react-hook-form';
 
-import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { getDisplaySymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
@@ -8,6 +7,7 @@ import {
     getStakingDataForNetwork,
     getStakingHelpCenterLink,
 } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Card, Column, InfoItem, Link, Tooltip } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 

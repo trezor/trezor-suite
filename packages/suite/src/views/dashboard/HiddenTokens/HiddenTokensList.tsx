@@ -1,5 +1,5 @@
-import { Translation } from '@suite/intl';
 import { selectHasHiddenWalletAssets } from '@suite-common/assets';
+import { Translation } from '@suite-lego/intl';
 import { Column, Text } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';

@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Button, Tooltip } from '@trezor/components';
 import { InfoIcon } from '@trezor/icons';
 

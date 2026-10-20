@@ -1,8 +1,8 @@
 import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
-import { IntlProvider } from '@suite/intl';
 import { selectLanguage, selectShowTranslationKeys } from '@suite/settings';
+import { IntlProvider } from '@suite-lego/intl';
 
 type ConnectedIntlProviderProps = {
     children: ReactNode;

@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Card, Column, Row, Text, TextButton } from '@trezor/components';
 import { HELP_CENTER_CANCEL_TRANSACTION } from '@trezor/urls';
 

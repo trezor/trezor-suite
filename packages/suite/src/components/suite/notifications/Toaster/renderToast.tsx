@@ -1,5 +1,5 @@
-import { type TranslationKey } from '@suite/intl';
 import { type NotificationEntry } from '@suite-common/toast-notifications';
+import { type TranslationKey } from '@suite-lego/intl';
 
 import { ToastNotificationView } from './ToastNotificationView';
 import { NotificationRenderer } from '../NotificationRenderer/NotificationRenderer';

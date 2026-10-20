@@ -1,4 +1,4 @@
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Paragraph, StepList } from '@trezor/components';
 
 type AdditionalBackupStep = 'verify-ownership' | 'backup';

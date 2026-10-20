@@ -3,11 +3,11 @@ import { type ReactNode, useState } from 'react';
 import styled, { css } from 'styled-components';
 
 import { Address } from '@suite/address';
-import { Translation } from '@suite/intl';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { convertAmountSubunitsToUnits, formatNetworkAmount } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Box, Card, Column, H4, InfoItem, Note, Row, Text, TextButton } from '@trezor/components';
 import { type TokenInfo } from '@trezor/connect';
 import { CaretDownIcon, CaretUpIcon } from '@trezor/icons';

@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 
-import { Translation } from '@suite/intl';
 import { type Network } from '@suite-common/wallet-config';
+import { Translation } from '@suite-lego/intl';
 import { type ButtonProps, Modal, Tooltip } from '@trezor/components';
 
 type AddButtonProps = Partial<ButtonProps> & {

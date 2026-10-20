@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { type ExtendedMessageDescriptor, Translation, useTranslation } from '@suite/intl';
 import { type TradingTypeWithConcierge } from '@suite-common/trading';
+import { type ExtendedMessageDescriptor, Translation, useTranslation } from '@suite-lego/intl';
 import { Banner } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 

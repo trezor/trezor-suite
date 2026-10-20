@@ -1,7 +1,7 @@
 import { memo, useCallback, useState } from 'react';
 
-import { Translation, type TranslationKey } from '@suite/intl';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { Column } from '@trezor/components';
 
 import {

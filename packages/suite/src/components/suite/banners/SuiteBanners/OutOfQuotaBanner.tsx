@@ -1,10 +1,10 @@
 import { useExternalLink } from '@suite/external-links';
-import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
     noQuotaLeftWarningDismissed,
     selectShouldDisplayOutOfQuotaAlert,
 } from '@suite-common/suite-sync-quota-manager';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Button, IconButton } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { InfoIcon, XIcon } from '@trezor/icons';

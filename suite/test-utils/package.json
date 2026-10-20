@@ -13,7 +13,7 @@
     "dependencies": {
         "@suite-common/formatters": "workspace:*",
         "@suite-common/test-utils": "workspace:*",
-        "@suite/intl": "workspace:*",
+        "@suite-lego/intl": "workspace:*",
         "@testing-library/dom": "^10.4.2",
         "@testing-library/react": "^16.3.3",
         "@testing-library/user-event": "^14.6.7",

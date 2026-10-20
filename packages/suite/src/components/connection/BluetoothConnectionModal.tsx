@@ -1,7 +1,7 @@
 import { injectDesktopAnalytics } from '@suite/analytics';
 import { selectConnectingDevices } from '@suite/bluetooth';
-import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
+import { Translation } from '@suite-lego/intl';
 import { Modal } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 

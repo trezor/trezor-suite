@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
-import { Translation } from '@suite/intl';
 import { type GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Card, Column, InfoItem, Text } from '@trezor/components';
 
 const Pre = styled.pre`

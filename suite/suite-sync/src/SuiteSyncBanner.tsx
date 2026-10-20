@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { selectIsDeviceConnected } from '@suite-common/device';
 import { type MessageSystemRootState } from '@suite-common/message-system';
@@ -10,6 +9,7 @@ import {
     selectSuiteSyncInteraction,
 } from '@suite-common/suite-sync';
 import { injectEnsureWalletSuiteSyncOn } from '@suite-common/suite-sync-types';
+import { Translation } from '@suite-lego/intl';
 import { Banner } from '@trezor/components';
 import { type StaticSessionId } from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';

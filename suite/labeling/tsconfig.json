@@ -37,7 +37,7 @@
         { "path": "../device" },
         { "path": "../external-links" },
         { "path": "../feature-feedback" },
-        { "path": "../intl" },
+        { "path": "../../suite-lego/intl" },
         { "path": "../metadata" },
         { "path": "../router" },
         { "path": "../settings" },

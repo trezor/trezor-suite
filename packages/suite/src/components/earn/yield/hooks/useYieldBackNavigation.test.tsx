@@ -38,7 +38,7 @@ jest.mock('src/hooks/suite/useLayoutSize', () => ({
 jest.mock('src/components/earn/common/EarnFlowFeedbackCard', () => ({
     EarnFlowFeedbackCard: () => null,
 }));
-jest.mock('@suite/intl', () => ({ Translation: () => null }));
+jest.mock('@suite-lego/intl', () => ({ Translation: () => null }));
 jest.mock('@trezor/components', () => {
     const Container = ({ children }: PropsWithChildren) => <div>{children}</div>;
 

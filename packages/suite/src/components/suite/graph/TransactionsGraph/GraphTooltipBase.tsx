@@ -3,7 +3,7 @@ import { type JSX, useEffect } from 'react';
 import { type TooltipProps } from 'recharts';
 import styled, { ThemeProvider } from 'styled-components';
 
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Row, Text, intermediaryTheme } from '@trezor/components';
 
 import { FormattedDate } from 'src/components/suite/FormattedDate';

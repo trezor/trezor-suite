@@ -1,6 +1,5 @@
 import { useStore } from 'react-redux';
 
-import { type TranslationFunction, useTranslation } from '@suite/intl';
 import { triggerWebDownloadFile } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -9,6 +8,7 @@ import {
     prepareTradingHistoryCsv,
     selectDeviceTradingTradesOrderedByDate,
 } from '@suite-common/trading';
+import { type TranslationFunction, useTranslation } from '@suite-lego/intl';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 

@@ -5,7 +5,6 @@ import {
     type SellFiatTrade,
 } from 'invity-api';
 
-import { type ExtendedMessageDescriptor } from '@suite/intl';
 import type {
     TradingBuyInfoSelector,
     TradingBuyType,
@@ -20,6 +19,7 @@ import type {
     TradingType,
 } from '@suite-common/trading';
 import { type Account } from '@suite-common/wallet-types';
+import { type ExtendedMessageDescriptor } from '@suite-lego/intl';
 import { type TokenIconProps } from '@trezor/product-components';
 
 export type TradingTradeBuySellType = Exclude<TradingType, TradingExchangeType>;

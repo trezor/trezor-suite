@@ -1,5 +1,4 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
 import { useFormatters } from '@suite-common/formatters';
@@ -18,6 +17,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { getAccountTotalStakingBalance, isPending } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Card, Column, Icon, Paragraph, Row, Table, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { ArrowDownIcon, ArrowRightIcon } from '@trezor/icons';

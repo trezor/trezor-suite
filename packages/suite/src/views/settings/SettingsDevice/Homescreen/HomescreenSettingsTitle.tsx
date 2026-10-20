@@ -1,5 +1,5 @@
 import { LearnMoreButton } from '@suite/external-links';
-import { Translation, useTranslation } from '@suite/intl';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import { Column, Paragraph } from '@trezor/components';
 import { type DeviceModelInternal } from '@trezor/device-utils';
 import { HOMESCREEN_EDITOR_URL } from '@trezor/urls';

@@ -1,9 +1,9 @@
 import { type MouseEventHandler } from 'react';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { Translation } from '@suite/intl';
 import { deviceActions } from '@suite-common/device';
 import { type AcquiredDevice } from '@suite-common/suite-types';
+import { Translation } from '@suite-lego/intl';
 import { Box, Button, H4, Paragraph, Row } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { EjectIcon } from '@trezor/icons';

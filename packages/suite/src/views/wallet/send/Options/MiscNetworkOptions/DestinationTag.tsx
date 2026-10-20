@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 
-import { Translation, useTranslation } from '@suite/intl';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { U_INT_32 } from '@suite-common/wallet-constants';
 import { findToken, isInteger, isStellarContractToken } from '@suite-common/wallet-utils';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import { Banner, Button, Card, Column, Input, Note, Row, Switch } from '@trezor/components';
 import { WarningIcon } from '@trezor/icons';
 import { RIPPLE_DESTINATION_TAG_MAX_DIGITS } from '@trezor/network-ripple/constants';

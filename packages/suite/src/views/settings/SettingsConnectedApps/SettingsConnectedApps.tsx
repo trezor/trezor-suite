@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
-import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
+import { Translation } from '@suite-lego/intl';
 import { Column, Icon, Row, SubTabs } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { TrezorLogoIcon, WalletConnectIcon } from '@trezor/icons';

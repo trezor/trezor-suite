@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { injectDesktopApi } from '@suite/desktop-app-api';
-import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
+import { Translation } from '@suite-lego/intl';
 import { Card, Column, H3, H4, Modal, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';

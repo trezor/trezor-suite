@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { useTranslation } from '@suite/intl';
 import { isOnionUrl } from '@suite/tor';
 import {
     type NetworkSymbol,
@@ -13,6 +12,7 @@ import {
 } from '@suite-common/wallet-config';
 import { blockchainActions, selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
 import { type BackendSettings } from '@suite-common/wallet-types';
+import { useTranslation } from '@suite-lego/intl';
 import TrezorConnect from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

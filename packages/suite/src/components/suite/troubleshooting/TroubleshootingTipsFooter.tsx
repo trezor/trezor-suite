@@ -1,5 +1,5 @@
 import { useExternalLink } from '@suite/external-links';
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Button, Flex, Text, useMediaQuery, variables } from '@trezor/components';
 import { TREZOR_SUPPORT_DEVICE_URL } from '@trezor/urls';
 

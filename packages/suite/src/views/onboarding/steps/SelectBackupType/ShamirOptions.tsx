@@ -1,8 +1,8 @@
 import { satisfies } from 'semver';
 
-import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type BackupType } from '@suite-common/suite-types';
+import { Translation } from '@suite-lego/intl';
 import { Badge, Tooltip } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 

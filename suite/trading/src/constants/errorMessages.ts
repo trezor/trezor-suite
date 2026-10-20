@@ -1,6 +1,6 @@
 import type { ErrorCode } from 'invity-api';
 
-import { type TranslationKey } from '@suite/intl';
+import { type TranslationKey } from '@suite-lego/intl';
 
 export const TRADING_ERROR_MESSAGE: Record<
     ErrorCode,

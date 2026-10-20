@@ -14,8 +14,8 @@
     "dependencies": {
         "@reduxjs/toolkit": "2.13.0",
         "@suite-common/feedback": "workspace:*",
+        "@suite-lego/intl": "workspace:*",
         "@suite/experimental": "workspace:*",
-        "@suite/intl": "workspace:*",
         "@trezor/components": "workspace:*",
         "@trezor/dependency-injection": "workspace:*",
         "@trezor/icons": "workspace:*",

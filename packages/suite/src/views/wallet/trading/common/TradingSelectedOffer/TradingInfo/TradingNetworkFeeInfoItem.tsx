@@ -1,9 +1,9 @@
 import { useState } from 'react';
 
-import { Translation } from '@suite/intl';
 import { type TradingComposedTransactionInfo } from '@suite-common/trading';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account, type FeeInfo, type FormState } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { InfoItem, Text, TextButton, Tooltip } from '@trezor/components';
 import { PencilSimpleIcon } from '@trezor/icons';
 

@@ -2,7 +2,7 @@ import { Fragment, type ReactNode } from 'react';
 
 import styled from 'styled-components';
 
-import { Translation, type TranslationKey } from '@suite/intl';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { Collapsible, Row, Text } from '@trezor/components';
 import { CaretUpDownIcon, CaretUpDownReverseIcon } from '@trezor/icons';
 import { TokenIconSet, type TokenIconSetToken } from '@trezor/product-components';

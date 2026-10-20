@@ -1,10 +1,10 @@
 import { type ReactNode, useEffect, useState } from 'react';
 
 import { selectHasSeenDisconnectTooltip, setFlag } from '@suite/flags';
-import { Translation } from '@suite/intl';
 import { SettingsAnchor, gotoThunk } from '@suite/router';
 import { selectSelectedDevice } from '@suite-common/device';
 import * as deviceUtils from '@suite-common/suite-utils';
+import { Translation } from '@suite-lego/intl';
 import {
     Button,
     Column,

@@ -1,5 +1,5 @@
-import { Translation } from '@suite/intl';
 import { type Account } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Flex } from '@trezor/components';
 
 import { useLayoutSize } from 'src/hooks/suite';

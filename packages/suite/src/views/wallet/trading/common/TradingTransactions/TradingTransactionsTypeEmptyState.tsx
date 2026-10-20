@@ -1,5 +1,5 @@
-import { Translation, type TranslationKey } from '@suite/intl';
 import { type TradingType } from '@suite-common/trading';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { Button, Card, Column, H3 } from '@trezor/components';
 import { exhaustive } from '@trezor/type-utils';
 

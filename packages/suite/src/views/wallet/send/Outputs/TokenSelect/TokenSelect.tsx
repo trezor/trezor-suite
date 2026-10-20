@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { Address, copyAddressToClipboard, showCopyAddressModal } from '@suite/address';
 import { selectIsCopyAddressModalShown } from '@suite/flags';
-import { Translation } from '@suite/intl';
 import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
 import {
     type Explorer,
@@ -18,6 +17,7 @@ import {
     isErc4626,
     isNftToken,
 } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Card, Column, IconButton, Link, Row, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { CaretDownIcon } from '@trezor/icons';

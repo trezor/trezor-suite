@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
 import { useDevice } from '@suite/device';
-import { Translation } from '@suite/intl';
 import { Anchor, SettingsAnchor } from '@suite/router';
+import { Translation } from '@suite-lego/intl';
 import { isDeviceInBootloaderMode } from '@trezor/device-utils';
 import { SectionItem } from '@trezor/product-components';
 

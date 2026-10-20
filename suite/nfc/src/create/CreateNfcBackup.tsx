@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
-import { Translation } from '@suite/intl';
 import { OnboardingCard } from '@suite/onboarding-components';
+import { Translation } from '@suite-lego/intl';
 import { Card, Column, Text } from '@trezor/components';
 import { CaretLeftIcon, TrezorBackupIcon } from '@trezor/icons';
 

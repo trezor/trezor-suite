@@ -1,5 +1,4 @@
 import { LearnMoreButton } from '@suite/external-links';
-import { Translation } from '@suite/intl';
 import {
     type AccountType,
     type NetworkSymbol,
@@ -7,6 +6,7 @@ import {
     getNetwork,
 } from '@suite-common/wallet-config';
 import { getAccountTypeDesc, getAccountTypeUrl } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Column, Paragraph } from '@trezor/components';
 import type { Bip43PathTemplate } from '@trezor/crypto-utils';
 

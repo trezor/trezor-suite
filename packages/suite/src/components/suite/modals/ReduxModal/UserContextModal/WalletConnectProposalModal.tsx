@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
 import { TxSimulationBanner } from '@suite/tx-simulation/src/common';
@@ -17,6 +16,7 @@ import {
     sessionProposalRejectThunk,
 } from '@suite-common/walletconnect';
 import { type PendingConnectionProposalNetwork } from '@suite-common/walletconnect/src/walletConnectTypes';
+import { Translation } from '@suite-lego/intl';
 import {
     Badge,
     Banner,

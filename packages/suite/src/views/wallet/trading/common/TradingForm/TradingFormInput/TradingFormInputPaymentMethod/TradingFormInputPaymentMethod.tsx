@@ -2,7 +2,6 @@ import { useState } from 'react';
 import type { ReactNode } from 'react';
 import { useWatch } from 'react-hook-form';
 
-import { Translation, useTranslation } from '@suite/intl';
 import { PaymentMethodIcon } from '@suite/trading';
 import {
     TRADING_FORM_PAYMENT_METHOD_SELECT,
@@ -11,6 +10,7 @@ import {
     selectTradingPaymentMethodsByType,
     selectTradingSelectedPaymentMethodByType,
 } from '@suite-common/trading';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import { GhostContainer, Icon, Row, Skeleton, Text } from '@trezor/components';
 import { CaretRightIcon } from '@trezor/icons';
 

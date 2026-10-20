@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 
 import styled from 'styled-components';
 
-import { Translation, useTranslation } from '@suite/intl';
 import type { GuideCategory } from '@suite-common/suite-types';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import { Box, CardList, Icon, Input, Paragraph, Spinner } from '@trezor/components';
 import { MagnifyingGlassIcon } from '@trezor/icons';
 import { typography } from '@trezor/theme';

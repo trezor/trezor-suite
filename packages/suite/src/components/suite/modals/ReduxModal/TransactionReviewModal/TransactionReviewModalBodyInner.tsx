@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { Translation } from '@suite/intl';
 import { closeModal } from '@suite/modal';
 import { selectRouteName } from '@suite/router';
 import type { DeviceRootState } from '@suite-common/device';
@@ -28,6 +27,7 @@ import {
     isRbfBumpFeeTransaction,
     isRbfCancelTransaction,
 } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Modal, Row } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

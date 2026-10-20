@@ -1,5 +1,5 @@
 import { useFirmwareDesktopUpdate } from '@suite/firmware-upgrade';
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { FirmwareType } from '@trezor/connect';
 
 import { FirmwareInitial } from 'src/components/firmware/FirmwareInitial';

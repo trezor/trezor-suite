@@ -73,7 +73,7 @@ jobs:
       - name: Unit Tests - Suite, Connect, Common
         run: yarn test:unit:all --exclude='@suite-native/*' -- --silent
       - name: Unit Tests - Native
-        run: yarn test:unit:all --exclude='@trezor/*,@suite/*,@suite-common/*' -- --silent
+        run: yarn test:unit:all --exclude='@trezor/*,@suite/*,@suite-lego/*,@suite-common/*' -- --silent
 
   test-fuzz:
     # Randomized property/fuzz tests are excluded from the unit suite and run

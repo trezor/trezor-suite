@@ -1,6 +1,6 @@
-import { Translation, type TranslationKey } from '@suite/intl';
 import { PaymentMethodType } from '@suite/trading';
 import type { TradingPaymentMethodType } from '@suite-common/trading';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { InfoItem, Text } from '@trezor/components';
 
 type TradingPaymentMethodInfoItemProps = {

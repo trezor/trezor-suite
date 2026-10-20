@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 
 import { Address } from '@suite/address';
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Card, Column, GhostContainer, Icon, Row, Text } from '@trezor/components';
 import { CaretRightIcon } from '@trezor/icons';
 

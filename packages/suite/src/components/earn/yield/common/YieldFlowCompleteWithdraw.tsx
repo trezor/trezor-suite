@@ -1,5 +1,5 @@
-import { Translation } from '@suite/intl';
 import { type YieldFlowCompleteValue } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 
 import { YieldFlowComplete } from './YieldFlowComplete';
 import { YieldFlowTransferRow } from './YieldFlowTransferRow';

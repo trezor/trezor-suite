@@ -1,12 +1,12 @@
 import { useState } from 'react';
 
-import { Translation } from '@suite/intl';
 import { hasNetworkPotentialFraudTransactions } from '@suite-common/token-definitions';
 import {
     selectAreAllTransactionsLoaded,
     selectIsHideSuspiciousTransactions,
     useDirectRpcHistoryState,
 } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Card, Column, Text } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';

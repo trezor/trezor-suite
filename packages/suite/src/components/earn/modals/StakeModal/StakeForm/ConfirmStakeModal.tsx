@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react';
 
 import { injectDesktopAnalytics } from '@suite/analytics';
-import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { EarnFlow, type StakeModalFlow } from '@suite-common/suite-types/src/staking';
 import { type NetworkType, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -11,6 +10,7 @@ import {
     selectEthereumValidatorsQueue,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Card, Checkbox, Column, Modal } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { ClockIcon, HandIcon } from '@trezor/icons';

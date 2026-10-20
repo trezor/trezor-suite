@@ -1,7 +1,6 @@
 import { type ReactNode } from 'react';
 
 import { TrezorLink } from '@suite/external-links';
-import { Translation } from '@suite/intl';
 import { selectIsDeviceRemembered } from '@suite-common/device';
 import { type PhishingDetectorId } from '@suite-common/token-definitions';
 import { type Explorer, getNetwork } from '@suite-common/wallet-config';
@@ -16,6 +15,7 @@ import {
 } from '@suite-common/wallet-core';
 import { createAccountKey } from '@suite-common/wallet-types';
 import { type PendingEvmNonceStatus } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Button, Column, Modal, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';

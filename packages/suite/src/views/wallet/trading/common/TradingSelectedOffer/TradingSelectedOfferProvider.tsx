@@ -1,11 +1,11 @@
 import { type ComponentType, type ReactNode, useCallback, useState } from 'react';
 
-import { Translation } from '@suite/intl';
 import {
     type TradingType,
     selectTradingProvidersByTradeType,
     useProviderMetadataChangeEffect,
 } from '@suite-common/trading';
+import { Translation } from '@suite-lego/intl';
 import { Column, GhostContainer, Icon, Row, Skeleton, Text } from '@trezor/components';
 import { CaretRightIcon } from '@trezor/icons';
 

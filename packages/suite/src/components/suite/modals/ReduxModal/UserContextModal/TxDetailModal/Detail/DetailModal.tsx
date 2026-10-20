@@ -1,4 +1,3 @@
-import { Translation } from '@suite/intl';
 import { type Explorer, getNetwork } from '@suite-common/wallet-config';
 import { getExplorerUrl } from '@suite-common/wallet-config/src/getExplorerUrls';
 import { selectAccountByKey, selectExplorer } from '@suite-common/wallet-core';
@@ -9,6 +8,7 @@ import {
     createAccountKey,
 } from '@suite-common/wallet-types';
 import { type PendingEvmNonceStatus } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Modal } from '@trezor/components';
 import { GaugeIcon, XIcon } from '@trezor/icons';
 

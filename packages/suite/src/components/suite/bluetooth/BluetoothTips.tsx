@@ -1,7 +1,7 @@
 import { type ReactNode } from 'react';
 
 import { type DesktopBluetoothDevice } from '@suite/bluetooth';
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Box, Button, Card, Column, H3, Row, Text } from '@trezor/components';
 
 import { TroubleshootingTipsList } from '../troubleshooting/TroubleshootingTipsList';

@@ -1,6 +1,6 @@
-import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type BlockchainState, selectBlockchainState } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Box, Column, DotIndicator, Note, Row, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { TokenIcon } from '@trezor/product-components';

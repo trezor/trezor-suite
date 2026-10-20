@@ -2,9 +2,9 @@ import { type ReactElement } from 'react';
 
 import { getUnixTime } from 'date-fns';
 
-import { Translation, useTranslation } from '@suite/intl';
 import { getCurrentUTCDatetime, parseUTCdatetime } from '@suite-common/suite-utils';
 import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import { Input, Row, Text } from '@trezor/components';
 
 import { useSendFormContext } from 'src/hooks/wallet';

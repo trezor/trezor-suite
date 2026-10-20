@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useExternalLink } from '@suite/external-links';
-import { Translation } from '@suite/intl';
 import { type Route, gotoThunk } from '@suite/router';
 import { selectLanguage } from '@suite/settings';
 import {
@@ -11,6 +10,7 @@ import {
     selectActiveKillswitchMessage,
 } from '@suite-common/message-system';
 import { injectReloadApp } from '@suite-common/suite-types';
+import { Translation } from '@suite-lego/intl';
 import { Column, H2, Modal, Paragraph } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';

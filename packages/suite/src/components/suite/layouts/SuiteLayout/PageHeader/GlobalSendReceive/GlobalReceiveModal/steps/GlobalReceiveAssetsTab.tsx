@@ -2,8 +2,8 @@ import { type RefObject, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useDevice } from '@suite/device';
-import { Translation, type TranslationKey } from '@suite/intl';
 import { type TradeableAssetBalances, type TradingAssetOption } from '@suite-common/trading';
+import { Translation, type TranslationKey } from '@suite-lego/intl';
 import { Button, Column, H4, Link, Paragraph, Row, Skeleton } from '@trezor/components';
 
 import { useDiscovery } from 'src/hooks/suite';

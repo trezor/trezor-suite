@@ -1,4 +1,3 @@
-import { type ExtendedMessageDescriptor } from '@suite/intl';
 import type { TradingType } from '@suite-common/trading';
 import { type Network, type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
@@ -8,6 +7,7 @@ import {
     type TokenAddress,
 } from '@suite-common/wallet-types';
 import { asAmountSubunit, substituteBip43Path, subunitsToUnits } from '@suite-common/wallet-utils';
+import { type ExtendedMessageDescriptor } from '@suite-lego/intl';
 import TrezorConnect, { type FeeLevel, type TokenInfo } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { exhaustive } from '@trezor/type-utils';

@@ -1,4 +1,4 @@
-import { type TranslationKey } from '@suite/intl';
+import { type TranslationKey } from '@suite-lego/intl';
 import { type FeeLevel } from '@trezor/connect';
 
 export const feeLevelTranslationMap = {

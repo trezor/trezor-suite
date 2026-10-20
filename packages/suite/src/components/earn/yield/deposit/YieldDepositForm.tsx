@@ -1,5 +1,4 @@
 import { injectDesktopAnalytics } from '@suite/analytics';
-import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { useFormatters } from '@suite-common/formatters';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
@@ -10,6 +9,7 @@ import {
     useFetchFees,
 } from '@suite-common/wallet-core';
 import { getApyBreakdown } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Banner, Column, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 

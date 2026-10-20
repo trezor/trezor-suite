@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react';
 
-import { Translation } from '@suite/intl';
 import type {
     YieldFlowDisplayToken,
     YieldPendingTransactionState,
     YieldPositionFlowType,
 } from '@suite-common/wallet-core';
+import { Translation } from '@suite-lego/intl';
 import { Button, Column } from '@trezor/components';
 
 import {

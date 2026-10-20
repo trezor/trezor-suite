@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 import { useFormState } from 'react-hook-form';
 
 import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
-import { Translation } from '@suite/intl';
 import { formatDurationStrict } from '@suite-common/suite-utils';
 import { selectAreFeesLoading } from '@suite-common/wallet-core';
 import { type FormState } from '@suite-common/wallet-types';
 import { getFeeUnits, isEip1559 } from '@suite-common/wallet-utils';
+import { Translation } from '@suite-lego/intl';
 import { Grid, Row, Text } from '@trezor/components';
 
 import { BaseCurrencyValue } from 'src/components/suite';

@@ -1,8 +1,8 @@
 import { useCallback } from 'react';
 
 import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device';
-import { useTranslation } from '@suite/intl';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { useTranslation } from '@suite-lego/intl';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 

@@ -1,7 +1,7 @@
 import { useDevice } from '@suite/device';
-import { Translation, useTranslation } from '@suite/intl';
 import { Anchor, SettingsAnchor, gotoThunk } from '@suite/router';
 import { getChangelogUrl } from '@suite-common/suite-utils';
+import { Translation, useTranslation } from '@suite-lego/intl';
 import { Button, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { getFirmwareVersion } from '@trezor/device-utils';

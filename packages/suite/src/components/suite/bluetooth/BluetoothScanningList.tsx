@@ -1,5 +1,5 @@
-import { Translation } from '@suite/intl';
 import { selectScanStatus } from '@suite-common/bluetooth';
+import { Translation } from '@suite-lego/intl';
 
 import { useSelector } from 'src/hooks/suite';
 

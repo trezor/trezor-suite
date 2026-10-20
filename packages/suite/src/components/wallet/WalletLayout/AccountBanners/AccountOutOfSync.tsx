@@ -1,4 +1,4 @@
-import { Translation } from '@suite/intl';
+import { Translation } from '@suite-lego/intl';
 import { Banner } from '@trezor/components';
 
 import type { Account } from 'src/types/wallet/index';
