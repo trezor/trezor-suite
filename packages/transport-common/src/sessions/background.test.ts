@@ -244,15 +244,10 @@ describe('sessions', () => {
         await client1.acquireDone({ path: PathPublic('2'), abort: true });
     });
 
-    // CURRENTLY DROPS SUCH DEVICES — descriptors and pathInternalPathPublicMap
-    // are plain objects keyed by raw USB serial numbers, so a (hostile or
-    // broken) device presenting a serial that collides with an
-    // Object.prototype member reads as already registered and never makes it
-    // into the dictionary.
-    //
-    // This test pins the current broken behavior; both assertions flip when the
-    // fix lands.
-    test('descriptor paths colliding with Object.prototype keys are dropped', async () => {
+    // paths are raw USB serial numbers, so a (hostile or broken) device can
+    // present a serial colliding with an Object.prototype member; such a device
+    // must still register and go through the acquire/release lifecycle
+    test('descriptor paths colliding with Object.prototype keys', async () => {
         const client1 = new SessionsClient(background);
         await client1.handshake();
 
@@ -266,17 +261,23 @@ describe('sessions', () => {
         const sessions = await client1.getSessions();
         expect(sessions).toMatchObject({
             success: true,
-            payload: { descriptors: [] },
+            payload: { descriptors: [{ path: '1' }, { path: '2' }] },
         });
 
         const acquireIntent = await client1.acquireIntent({
             path: PathPublic('1'),
             previous: null,
         });
-        expect(acquireIntent).toMatchObject({
-            success: false,
-            error: { code: 'device not found' },
-        });
+        expect(acquireIntent).toMatchObject({ success: true, payload: { path: 'toString' } });
+        await client1.acquireDone({ path: PathPublic('1') });
+
+        const releaseIntent = await client1.releaseIntent({ session: Session('1') });
+        expect(releaseIntent).toMatchObject({ success: true, payload: { path: 'toString' } });
+        const releaseDone = await client1.releaseDone({ path: PathInternal('toString') });
+        expect(releaseDone).toMatchObject({ success: true });
+
+        // and nothing leaked into the global prototype
+        expect((Object.prototype as any).session).toBeUndefined();
     });
 
     test('acquireDone with abort releases the lock without committing a session', async () => {
