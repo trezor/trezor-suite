@@ -211,12 +211,24 @@ export abstract class BaseProcess {
             }
 
             this.logger.info(this.logTopic, 'Stopping process');
-            this.process.kill();
+            const child = this.process;
+
+            // The interval below is the SIGKILL escalation ladder, resolving on `close` avoids waiting for its next tick.
+            // eslint-disable-next-line prefer-const
+            let interval: ReturnType<typeof setTimeout> | undefined;
+            const onClose = () => {
+                this.logger.info(this.logTopic, 'Killed successfully');
+                clearInterval(interval);
+                this.process = null;
+                resolve();
+            };
+            child.once('close', onClose);
+            child.kill();
 
             let timeout = 0;
             let sigkillAttempts = 0;
             const maxKillAttempts = this.options.maxKillAttempts ?? DEFAULT_MAX_KILL_ATTEMPTS;
-            const interval = setInterval(() => {
+            interval = setInterval(() => {
                 // `process.killed` only indicates that the signal was sent, so rely on the
                 // actual exit state instead.
                 const isKilled = this.process?.exitCode != null || this.process?.signalCode != null;
@@ -224,6 +236,7 @@ export abstract class BaseProcess {
                 if (!this.process || isKilled) {
                     this.logger.info(this.logTopic, 'Killed successfully');
                     clearInterval(interval);
+                    child.removeListener('close', onClose);
                     this.process = null;
                     resolve();
 
@@ -243,6 +256,7 @@ export abstract class BaseProcess {
                         `Process did not exit after SIGKILL, giving up... (pid: ${this.process.pid})`,
                     );
                     clearInterval(interval);
+                    child.removeListener('close', onClose);
                     // The child is still alive, the `close` handler clears it if it ever exits.
                     resolve();
                 }
