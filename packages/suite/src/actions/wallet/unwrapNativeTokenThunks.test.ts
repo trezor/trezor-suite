@@ -6,6 +6,7 @@ import { asNetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-c
 import {
     type ComposeYieldUnwrapTransactionThunkState,
     type YieldFlowDisplayToken,
+    transactionsActions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -41,6 +42,7 @@ jest.mock('@suite/modal', () => ({
 }));
 
 jest.mock('./stablecoin-yield/signingHelpers', () => ({
+    ...jest.requireActual('./stablecoin-yield/signingHelpers'),
     sendYieldTransaction: (payload: unknown) => mockSendYieldTransaction(payload),
     getYieldSubmitErrorAnalyticsMessage: jest.fn(() => 'submit-failed'),
 }));
@@ -66,10 +68,14 @@ const buildStore = (report?: jest.Mock) =>
         }),
     }).services.store;
 
-const dispatchUnwrap = (report: jest.Mock) =>
-    buildStore(report)
+const dispatchUnwrap = async (report: jest.Mock) => {
+    const store = buildStore(report);
+    await store
         .dispatch(submitUnwrapNativeTokenThunk({ account, token, unwrapAmount: '1' }))
         .unwrap();
+
+    return store;
+};
 
 describe('submitUnwrapNativeTokenThunk', () => {
     it.each(['signing', 'review'] as const)('reports a cancellation at %s', async stage => {
@@ -78,7 +84,10 @@ describe('submitUnwrapNativeTokenThunk', () => {
         mockOpenDeferredModal.mockImplementation(
             () => () => Promise.resolve({ value: true, resolve: jest.fn(), selectedFee: null }),
         );
-        await dispatchUnwrap(report);
+        const store = await dispatchUnwrap(report);
+        expect(
+            store.getActions().filter(transactionsActions.transactionBroadcastStatus.match),
+        ).toEqual([]);
         expect(report).toHaveBeenCalledWith({
             type: 'transaction/cancel',
             payload: { txType: 'yield', networkSymbol: 'eth', stage },
@@ -373,7 +382,13 @@ describe('submitUnwrapNativeTokenThunk', () => {
         );
         mockSendYieldTransaction.mockResolvedValue(mockSentResult('0xabc'));
 
-        await dispatchUnwrap(report);
+        const store = await dispatchUnwrap(report);
+        expect(
+            store
+                .getActions()
+                .filter(transactionsActions.transactionBroadcastStatus.match)
+                .map(action => action.payload),
+        ).toEqual([{ account, flow: 'unwrap', status: 'success', txid: '0xabc' }]);
 
         expect(report).toHaveBeenCalledWith(
             expect.objectContaining({

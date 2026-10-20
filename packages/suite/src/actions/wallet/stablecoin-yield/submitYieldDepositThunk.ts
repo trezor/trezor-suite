@@ -11,6 +11,7 @@ import {
     notifyEarnTransactionBroadcastThunk,
     openYieldApproveModal,
     setYieldError,
+    transactionsActions,
     yieldActions,
 } from '@suite-common/wallet-core';
 import { createThunk } from '@trezor/redux-utils';
@@ -20,6 +21,7 @@ import {
     type SendYieldTransactionState,
     getYieldErrorTranslationKey,
     getYieldSubmitErrorAnalyticsMessage,
+    isYieldPushError,
     sendYieldTransaction,
 } from './signingHelpers';
 
@@ -168,6 +170,15 @@ export const submitYieldDepositThunk = createThunk<
                 }),
             );
         } catch (error) {
+            if (isYieldPushError(error)) {
+                dispatch(
+                    transactionsActions.transactionBroadcastStatus({
+                        account: flowData.account,
+                        flow: 'yield-deposit',
+                        status: 'error',
+                    }),
+                );
+            }
             console.error(error);
             extra.services.analytics.report({
                 type: events.yieldDepositEvent.name,

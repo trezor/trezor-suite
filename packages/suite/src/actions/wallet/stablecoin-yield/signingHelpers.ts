@@ -30,6 +30,9 @@ import { asCoinSymbol } from '@trezor/connect-common';
 // which deserves a more specific message than the generic one.
 export const PUSH_TRANSACTION_FAILED_CAUSE = 'PushTransactionFailed';
 
+export const isYieldPushError = (error: unknown) =>
+    error instanceof Error && error.cause === PUSH_TRANSACTION_FAILED_CAUSE;
+
 export const getYieldErrorTranslationKey = (error: unknown) => {
     if (!(error instanceof Error)) {
         return 'TR_EARN_YIELD_ERROR_GENERIC';
@@ -42,7 +45,7 @@ export const getYieldErrorTranslationKey = (error: unknown) => {
         return 'TR_EARN_YIELD_ERROR_PASSPHRASE_INCORRECT';
     }
 
-    if (error.cause === PUSH_TRANSACTION_FAILED_CAUSE) {
+    if (isYieldPushError(error)) {
         return 'TR_EARN_YIELD_ERROR_PUSH_FAILED';
     }
 
@@ -50,9 +53,7 @@ export const getYieldErrorTranslationKey = (error: unknown) => {
 };
 
 export const getYieldSubmitErrorAnalyticsMessage = (error: unknown) =>
-    error instanceof Error && error.cause === PUSH_TRANSACTION_FAILED_CAUSE
-        ? 'push-failed'
-        : 'submit-failed';
+    isYieldPushError(error) ? 'push-failed' : 'submit-failed';
 
 export type SendYieldTransactionState = DeviceRootState &
     MessageSystemRootState &

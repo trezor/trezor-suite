@@ -7,6 +7,7 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type ComposeYieldWithdrawTransactionThunkState,
     type YieldFlowResolvedData,
+    transactionsActions,
     yieldActions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -14,7 +15,11 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { asGetter } from '@trezor/dependency-injection';
 
-import { type SendYieldTransactionDeps, type SendYieldTransactionState } from './signingHelpers';
+import {
+    PUSH_TRANSACTION_FAILED_CAUSE,
+    type SendYieldTransactionDeps,
+    type SendYieldTransactionState,
+} from './signingHelpers';
 import { submitYieldWithdrawThunk } from './submitYieldWithdrawThunk';
 
 const mockComposeYieldWithdrawTransactionThunk = jest.fn();
@@ -169,6 +174,20 @@ describe('submitYieldWithdrawThunk', () => {
             .filter(notificationsActions.addToast.match)
             .find(action => action.payload.type === 'tx-yield-withdraw');
         expect(toast?.payload).toMatchObject({ txid: '0xwithdraw' });
+        expect(
+            store.getActions().filter(transactionsActions.transactionBroadcastStatus.match),
+        ).toEqual([
+            expect.objectContaining({
+                payload: {
+                    account,
+                    flow: 'yield-withdraw',
+                    status: 'success',
+                    txid: '0xwithdraw',
+                    isCancellation: false,
+                    isRbf: false,
+                },
+            }),
+        ]);
     });
 
     it('persists the asset output converted at submit for a redeem', async () => {
@@ -197,6 +216,39 @@ describe('submitYieldWithdrawThunk', () => {
             tx: { type: 'redeem', amount: '100' },
             receiptAmount: '105',
         });
+        expect(
+            store.getActions().filter(transactionsActions.transactionBroadcastStatus.match),
+        ).toEqual([
+            expect.objectContaining({
+                payload: {
+                    account,
+                    flow: 'yield-redeem',
+                    status: 'success',
+                    txid: '0xwithdraw',
+                    isCancellation: false,
+                    isRbf: false,
+                },
+            }),
+        ]);
+        const toast = store
+            .getActions()
+            .filter(notificationsActions.addToast.match)
+            .find(action => action.payload.type === 'tx-yield-withdraw');
+        expect(toast?.payload).toMatchObject({ txid: '0xwithdraw' });
+    });
+
+    it.each(['withdraw', 'redeem'] as const)('keeps %s when broadcast fails', async flowType => {
+        mockSendYieldTransaction.mockRejectedValue(
+            new Error('private backend error', { cause: PUSH_TRANSACTION_FAILED_CAUSE }),
+        );
+        const store = await dispatchWithdraw(jest.fn(), { flowType });
+        expect(
+            store.getActions().filter(transactionsActions.transactionBroadcastStatus.match),
+        ).toEqual([
+            expect.objectContaining({
+                payload: { account, flow: `yield-${flowType}`, status: 'error' },
+            }),
+        ]);
     });
 
     it('still reports submit-failed when the signing throws', async () => {

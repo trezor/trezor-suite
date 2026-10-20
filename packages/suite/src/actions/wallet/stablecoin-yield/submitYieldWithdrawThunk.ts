@@ -11,6 +11,7 @@ import {
     getConvertedOutputTokenBalanceToInputTokenAmount,
     isYieldWithdrawFeeError,
     notifyEarnTransactionBroadcastThunk,
+    transactionsActions,
     yieldActions,
 } from '@suite-common/wallet-core';
 import { createThunk } from '@trezor/redux-utils';
@@ -20,6 +21,7 @@ import {
     type SendYieldTransactionState,
     getYieldErrorTranslationKey,
     getYieldSubmitErrorAnalyticsMessage,
+    isYieldPushError,
     sendYieldTransaction,
 } from './signingHelpers';
 
@@ -154,7 +156,7 @@ export const submitYieldWithdrawThunk = createThunk<
                 notifyEarnTransactionBroadcastThunk({
                     account,
                     txid: result.txid,
-                    flow: 'yield-withdraw',
+                    flow: `yield-${flowType}`,
                 }),
             );
 
@@ -184,6 +186,15 @@ export const submitYieldWithdrawThunk = createThunk<
                 }),
             );
         } catch (error) {
+            if (isYieldPushError(error)) {
+                dispatch(
+                    transactionsActions.transactionBroadcastStatus({
+                        account: flowData.account,
+                        flow: `yield-${flowType}`,
+                        status: 'error',
+                    }),
+                );
+            }
             console.error(error);
             reportSubmitError(getYieldSubmitErrorAnalyticsMessage(error));
             dispatch(
