@@ -49,6 +49,7 @@
         { "path": "../device-mutex" },
         { "path": "../discovery" },
         { "path": "../feature-flags" },
+        { "path": "../finprom" },
         { "path": "../formatters" },
         { "path": "../forms" },
         { "path": "../helpers" },
@@ -102,6 +103,9 @@
         },
         {
             "path": "../../suite-common/suite-constants"
+        },
+        {
+            "path": "../../suite-common/suite-types"
         },
         {
             "path": "../../suite-common/test-utils"

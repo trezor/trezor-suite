@@ -48,6 +48,7 @@
         "@suite-native/device-mutex": "workspace:*",
         "@suite-native/discovery": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",
+        "@suite-native/finprom": "workspace:*",
         "@suite-native/formatters": "workspace:*",
         "@suite-native/forms": "workspace:*",
         "@suite-native/helpers": "workspace:*",
@@ -97,6 +98,7 @@
     "devDependencies": {
         "@suite-common/discreet-mode": "workspace:*",
         "@suite-common/suite-constants": "workspace:*",
+        "@suite-common/suite-types": "workspace:*",
         "@suite-common/test-utils": "workspace:*",
         "@suite-common/toast-notifications": "workspace:*",
         "@suite-common/tx-simulation": "workspace:*",
