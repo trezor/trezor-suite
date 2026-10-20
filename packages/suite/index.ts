@@ -211,6 +211,10 @@ export { TriggerToast as DebugTriggerToast } from './src/views/settings/Settings
 export { WipeData as DebugWipeData } from './src/views/settings/SettingsDebug/WipeData';
 export { DeviceBanner } from './src/components/settings/DeviceBanner';
 export { selectHasActiveTransport } from './src/selectors/suite/suiteSelectors';
+export {
+    type NetworkBackend,
+    selectConnectingBackends,
+} from './src/selectors/suite/backendSelectors';
 export { getHowToGetFromBootloaderInstructionsMap } from './src/utils/device/bootloader';
 export { AuthenticateDevice } from './src/views/settings/SettingsDevice/AuthenticateDevice';
 export { AutoLock } from './src/views/settings/SettingsDevice/AutoLock';
