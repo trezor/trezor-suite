@@ -279,8 +279,8 @@
 !/networks/ethereum/network-ethereum-types
 /networks/network-module/*
 !/networks/network-module/network-assets-types
-!/networks/network-module/network-module-suite-common-types
 !/networks/network-module/network-module-types
+!/networks/network-module/suite-common
 /networks/ripple/*
 !/networks/ripple/network-ripple
 !/networks/ripple/network-ripple-assets
@@ -301,6 +301,8 @@
 !/networks/tron/network-tron-assets
 !/networks/tron/network-tron-suite-common
 !/networks/tron/network-tron-types
+/networks/network-module/suite-common/*
+!/networks/network-module/suite-common/suite-common-types
 
 # Never uploaded, including out of the allowed directories
 **/node_modules/

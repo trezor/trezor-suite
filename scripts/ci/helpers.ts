@@ -4,9 +4,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import semver from 'semver';
 
-import { getTrezorPackageDir } from './trezor-package-path.js';
+import { getTrezorPackageDir } from './trezor-package-path';
 
-export { getTrezorPackageDir, getTrezorPackageRelativePath } from './trezor-package-path.js';
+export { getTrezorPackageDir, getTrezorPackageRelativePath } from './trezor-package-path';
 
 const ROOT = path.join(import.meta.dirname, '..', '..');
 
