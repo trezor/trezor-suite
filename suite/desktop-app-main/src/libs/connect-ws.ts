@@ -224,6 +224,14 @@ export const exposeConnectWs = ({
 
                     if (!isLinux()) {
                         // we ignore missing process on linux because of AppImage/Flatpak sandboxing
+                        ws.send(
+                            JSON.stringify({
+                                id: message.id,
+                                success: false,
+                                payload: { error: 'Calling process could not be identified' },
+                            }),
+                        );
+
                         return;
                     }
                 }
