@@ -111,6 +111,7 @@
         "@suite/experimental": "workspace:*",
         "@suite/external-links": "workspace:*",
         "@suite/feature-feedback": "workspace:*",
+        "@suite/finprom": "workspace:*",
         "@suite/firmware-upgrade": "workspace:*",
         "@suite/flags": "workspace:*",
         "@suite/forms": "workspace:*",

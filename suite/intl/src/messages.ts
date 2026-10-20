@@ -328,6 +328,10 @@ export const messages = defineMessages({
         defaultMessage: '{type} is currently disabled.',
         id: 'TR_TRADING_DISABLED_DEFAULT',
     },
+    TR_TRADING_RESTRICTED: {
+        defaultMessage: 'Trading is not available in your region.',
+        id: 'TR_TRADING_RESTRICTED',
+    },
     TR_TRADING_HEADER_DESCRIPTION: {
         defaultMessage: 'View and track your {type} in trade history.',
         id: 'TR_TRADING_HEADER_DESCRIPTION',
