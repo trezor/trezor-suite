@@ -1,4 +1,5 @@
 import { selectIsDebugModeActive } from '@suite/debug';
+import { selectIsFinpromRestricted } from '@suite/finprom';
 import { Translation } from '@suite/intl';
 import { selectIsDeviceProtectedByPassphrase } from '@suite-common/device';
 import {
@@ -111,7 +112,22 @@ const walletsSection: ShortcutSection = {
     ],
 };
 
-const navigationSection: ShortcutSection = {
+const tradingShortcuts: ShortcutItem[] = [
+    {
+        labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_SWAP',
+        keys: ['ALT', 'KEY_X'],
+    },
+    {
+        labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_BUY',
+        keys: ['ALT', 'KEY_B'],
+    },
+    {
+        labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_SELL',
+        keys: ['ALT', 'KEY_C'],
+    },
+];
+
+const getNavigationSection = (isTradingAvailable: boolean): ShortcutSection => ({
     titleId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_NAVIGATION',
     items: [
         {
@@ -122,18 +138,7 @@ const navigationSection: ShortcutSection = {
             labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_RECEIVE',
             keys: ['ALT', 'KEY_R'],
         },
-        {
-            labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_SWAP',
-            keys: ['ALT', 'KEY_X'],
-        },
-        {
-            labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_BUY',
-            keys: ['ALT', 'KEY_B'],
-        },
-        {
-            labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_SELL',
-            keys: ['ALT', 'KEY_C'],
-        },
+        ...(isTradingAvailable ? tradingShortcuts : []),
         {
             labelId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_EARN',
             keys: ['ALT', 'KEY_E'],
@@ -147,7 +152,7 @@ const navigationSection: ShortcutSection = {
             keys: ['ALT', 'KEY_I'],
         },
     ],
-};
+});
 
 const otherSection: ShortcutSection = {
     titleId: 'TR_GUIDE_KEYBOARD_SHORTCUTS_OTHER',
@@ -220,6 +225,7 @@ const ShortcutSectionBlock = ({ titleId, items }: ShortcutSection) => (
 export const GuideShortcuts = () => {
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const isPassphraseProtectionEnabled = useSelector(selectIsDeviceProtectedByPassphrase);
+    const isFinpromRestricted = useSelector(selectIsFinpromRestricted);
     const { dispatch } = useServices(injectDispatch);
 
     const goBack = () => dispatch(setView('GUIDE_DEFAULT'));
@@ -240,7 +246,7 @@ export const GuideShortcuts = () => {
                 <Column>
                     <ShortcutSectionBlock {...securitySectionWithLockApp} />
                     <ShortcutSectionBlock {...walletsSectionWithPassphrase} />
-                    <ShortcutSectionBlock {...navigationSection} />
+                    <ShortcutSectionBlock {...getNavigationSection(!isFinpromRestricted)} />
                     <ShortcutSectionBlock {...generalSection} />
                     <ShortcutSectionBlock {...otherSection} />
                     {isDebugModeActive && <ShortcutSectionBlock {...debugSection} />}
