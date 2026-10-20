@@ -62,6 +62,7 @@ MUST: Fund ERC-20 tokens with `fundErc20`. It sends a real `transfer`, and the e
 MUST: Assert outcomes on chain (`expect.poll(() => anvil.readErc20Balance(...))`) **and** in Suite.
 MUST: Read chain-dependent values (fees, share amounts, symbols) from Suite or from the fork at runtime (e.g. `devicePrompt.cryptoAmountWithSymbolOf('fee').innerText()`, `anvil.readErc20Metadata`).
 MUST: Keep third-party HTTP APIs mocked with `page.route` where the flow needs them (yield metadata, Blockaid simulation). That makes the test `@webOnly`. Contracts are never mocked.
+MUST: Assert values Suite derives from mocked API data against the mock, not the chain, and check the chain separately. E.g. the yield "Received" amount is Suite's estimate from the mocked vault `pricePerShare`, while the vault mints shares at its real on-chain price.
 MUST_NOT: Write balances straight into storage for an account Suite has to discover.
 MUST_NOT: Hardcode block numbers, timestamps, fees or nonces that the latest block decides.
 MUST_NOT: Use `waitForTimeout` to wait for a confirmation.
