@@ -1,6 +1,7 @@
 import { memo } from 'react';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { selectIsFinpromRestricted } from '@suite/finprom';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { type AssetFiatBalance } from '@suite-common/assets';
@@ -76,6 +77,7 @@ export const AssetRow = memo(
             );
         };
         const coinDefinitions = useSelector(state => selectCoinDefinitions(state, network.symbol));
+        const isFinpromRestricted = useSelector(selectIsFinpromRestricted);
         const stakingAccountsForAsset = stakingAccounts.filter(
             account => account.symbol === network.symbol,
         );
@@ -198,7 +200,7 @@ export const AssetRow = memo(
                                 </AssetActionButton>
                             )}
 
-                            {!isTestnet(symbol) && (
+                            {!isTestnet(symbol) && !isFinpromRestricted && (
                                 <AssetActionButton
                                     symbol={symbol}
                                     routeName="wallet-trading-buy"
