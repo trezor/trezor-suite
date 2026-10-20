@@ -49,6 +49,7 @@ import { BigNumber, arrayDistinct, bufferUtils, typedObjectKeys } from '@trezor/
 
 import { convertAmountSubunitsToUnits, formatNetworkAmount } from './amountUtils';
 import { isDirectRpcBackendType } from './backendUtils';
+import { getDerivationType } from './cardanoUtils';
 import { getDescriptorForNetworkType } from './deviceAddressUtils';
 import { toFiatCurrency } from './fiatConverterUtils';
 import { getFiatRateKey } from './fiatRatesUtils';
@@ -1312,6 +1313,8 @@ export const prepareNewAccountPayload = async ({
         path: newPath,
         coin: networkSymbol,
         networkType: network.networkType,
+        derivationType:
+            network.networkType === 'cardano' ? getDerivationType(accountType) : undefined,
         device: {
             path: device.path,
             instance: device.instance,
