@@ -90,6 +90,10 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
             ...getStakeFormsDefaultValues({
                 address: stakingContractAddress,
                 stakeType: 'unstake',
+                providerId:
+                    account.networkType === 'ethereum'
+                        ? DEFAULT_ETHEREUM_STAKING_PROVIDER_ID
+                        : undefined,
                 amount: autocompoundBalance,
             }),
         } as WithdrawalFormState;

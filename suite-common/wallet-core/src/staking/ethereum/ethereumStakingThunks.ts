@@ -42,9 +42,10 @@ export const signPreparedEthereumStakingTransactionThunk = createThunk<
 >(
     `${STAKE_MODULE_PREFIX}/signPreparedEthereumStakingTransactionThunk`,
     async ({ context }, { dispatch, getState, rejectWithValue }) => {
-        const { account, variant } = context;
+        const { account, providerId, variant } = context;
 
         const liveState = await verifyEthereumStakingLiveStateForSign({
+            providerId,
             stakeType: variant.stakeType,
             account,
             calldata: variant.calldata,

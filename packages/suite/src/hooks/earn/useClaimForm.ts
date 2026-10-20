@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 
 import { getNetwork } from '@suite-common/wallet-config';
 import {
+    DEFAULT_ETHEREUM_STAKING_PROVIDER_ID,
     getStakeFormsDefaultValues,
     getStakingContractAddress,
     selectBaseCurrency,
@@ -44,6 +45,10 @@ export const useClaimForm = ({ account }: UseClaimFormsProps): ClaimContextValue
             ...getStakeFormsDefaultValues({
                 address: stakingContractAddress,
                 stakeType: 'claim',
+                providerId:
+                    account.networkType === 'ethereum'
+                        ? DEFAULT_ETHEREUM_STAKING_PROVIDER_ID
+                        : undefined,
             }),
         } as ClaimFormState;
     }, [account]);

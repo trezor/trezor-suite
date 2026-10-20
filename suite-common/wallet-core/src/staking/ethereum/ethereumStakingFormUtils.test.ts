@@ -1,4 +1,4 @@
-import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { type StakingProviderId, asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     type ComposeActionContext,
     type StakeFormState,
@@ -12,6 +12,7 @@ import { getStakeFormsDefaultValuesFixture } from './__fixtures__/ethereumStakin
 import {
     addEthereumStakingGasReserve,
     composeEthereumStakingTransaction,
+    getEthereumStakeFormProviderId,
     getStakeFormsDefaultValues,
 } from './ethereumStakingFormUtils';
 import { buildStakeData, buildUnstakeData } from './providers/everstake/everstakeCalldata';
@@ -88,8 +89,11 @@ const buildFormValues = (
 const blockchainEstimateFeeMock = TrezorConnect.blockchainEstimateFee as jest.Mock;
 const getAccountInfoMock = TrezorConnect.getAccountInfo as jest.Mock;
 
-const compose = (formValues = buildFormValues(), source = WALLET_SDK_SOURCE) =>
-    composeEthereumStakingTransaction({ formValues, composeContext, source });
+const compose = (
+    formValues = buildFormValues(),
+    source = WALLET_SDK_SOURCE,
+    providerId: StakingProviderId = 'everstake',
+) => composeEthereumStakingTransaction({ formValues, composeContext, providerId, source });
 
 beforeEach(() => {
     jest.clearAllMocks();
@@ -224,6 +228,13 @@ describe('composeEthereumStakingTransaction', () => {
         expect(blockchainEstimateFeeMock).not.toHaveBeenCalled();
     });
 
+    it('returns the generic error for a provider without an Ethereum adapter', async () => {
+        const result = await compose(buildFormValues(), WALLET_SDK_SOURCE, 'fivebinaries');
+
+        expect(result?.normal).toMatchObject({ type: 'error', error: 'INCORRECT-FEE-RATE' });
+        expect(blockchainEstimateFeeMock).not.toHaveBeenCalled();
+    });
+
     it('returns the generic error for a stake type Ethereum does not support', async () => {
         const result = await compose(buildFormValues({ stakeType: 'change-delegate' }));
 
@@ -264,5 +275,16 @@ describe(getStakeFormsDefaultValues.name, () => {
                 getStakeFormsDefaultValues(test.args as GetStakeFormsDefaultValuesParams),
             ).toEqual(test.result);
         });
+    });
+});
+
+describe(getEthereumStakeFormProviderId.name, () => {
+    it('reads the provider of the draft', () => {
+        expect(getEthereumStakeFormProviderId({ providerId: 'fivebinaries' })).toBe('fivebinaries');
+    });
+
+    it('defaults drafts saved before providers existed', () => {
+        expect(getEthereumStakeFormProviderId({})).toBe('everstake');
+        expect(getEthereumStakeFormProviderId({ providerId: undefined })).toBe('everstake');
     });
 });

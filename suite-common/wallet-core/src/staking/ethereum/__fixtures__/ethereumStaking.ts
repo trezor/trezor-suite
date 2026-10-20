@@ -51,6 +51,42 @@ export const transformTxFixtures = [
 
 export const getStakeFormsDefaultValuesFixture = [
     {
+        description: 'should carry the staking provider of the form',
+        args: {
+            address: '0xfB0bc552ab5Fa1971E8530852753c957e29eEEFC',
+            stakeType: 'unstake',
+            amount: '0.5',
+            providerId: 'everstake',
+        },
+        result: {
+            fiatInput: '',
+            cryptoInput: '0.5',
+            outputs: [
+                {
+                    address: '0xfB0bc552ab5Fa1971E8530852753c957e29eEEFC',
+                    amount: '0.5',
+                    type: 'payment',
+                    fiat: '',
+                    currency: { value: 'usd', label: 'USD' },
+                    token: null,
+                    label: '',
+                },
+            ],
+            options: ['broadcast'],
+            stakeType: 'unstake',
+            providerId: 'everstake',
+            ethereumNonce: '',
+            transactionData: '',
+            estimatedFeeLimit: undefined,
+            feeLimit: '',
+            feePerUnit: '',
+            selectedFee: undefined,
+            isCoinControlEnabled: false,
+            hasCoinControlBeenOpened: false,
+            selectedUtxos: [],
+        },
+    },
+    {
         description: 'should return default values for stake forms',
         args: {
             address: '0xfB0bc552ab5Fa1971E8530852753c957e29eEEFC',

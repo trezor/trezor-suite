@@ -11,4 +11,5 @@ export interface GetStakeFormsDefaultValuesParams {
     address: string;
     stakeType: StakeFormState['stakeType'];
     amount?: string;
+    providerId?: StakeFormState['providerId'];
 }

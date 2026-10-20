@@ -4,6 +4,7 @@ import { useDebounce } from 'react-use';
 
 import { getNetwork } from '@suite-common/wallet-config';
 import {
+    DEFAULT_ETHEREUM_STAKING_PROVIDER_ID,
     getMaxStakeAmount,
     getStakeFormsDefaultValues,
     getStakingContractAddress,
@@ -77,6 +78,10 @@ export const useStakeForm = ({ account }: UseStakeFormProps): StakeContextValues
             ...getStakeFormsDefaultValues({
                 address: stakingContractAddress,
                 stakeType: 'stake',
+                providerId:
+                    account.networkType === 'ethereum'
+                        ? DEFAULT_ETHEREUM_STAKING_PROVIDER_ID
+                        : undefined,
             }),
             setMaxOutputId: undefined,
         } as StakeFormState;

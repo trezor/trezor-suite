@@ -1,4 +1,4 @@
-import { getNetwork } from '@suite-common/wallet-config';
+import { type StakingProviderId, getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountKey,
     type BaseStakeType,
@@ -25,7 +25,7 @@ import {
     readEthereumStakingPools,
 } from './ethereumStakingLiveState';
 import {
-    DEFAULT_ETHEREUM_STAKING_PROVIDER_ID,
+    findEthereumStakingAdapter,
     getEthereumStakingAdapter,
 } from './providers/ethereumStakingProviders';
 import { type EthereumStakingAccount } from './providers/types';
@@ -49,6 +49,7 @@ export type EthereumStakingVariant = {
 
 export type PreparedEthereumStakingContext = {
     account: EthereumStakingAccount;
+    providerId: StakingProviderId;
     chainId: number;
     gasLimit: string;
     variant: EthereumStakingVariant;
@@ -125,6 +126,7 @@ export type PrepareEthereumStakingContextState = AccountsRootState;
 type PrepareEthereumStakingContextParams = {
     accountKey: AccountKey;
     stakeType: BaseStakeType;
+    providerId: StakingProviderId;
     precomposedTransaction: PrecomposedTransactionFinal;
     formValues: StakeFormState;
     source?: string;
@@ -135,6 +137,7 @@ export const prepareEthereumStakingContext = (
     {
         accountKey,
         stakeType,
+        providerId,
         precomposedTransaction,
         formValues,
         source = WALLET_SDK_SOURCE,
@@ -143,6 +146,15 @@ export const prepareEthereumStakingContext = (
     const account = selectAccountByKey(state, accountKey);
     if (account?.networkType !== 'ethereum') {
         return failed('Ethereum account not found.');
+    }
+
+    const adapter = findEthereumStakingAdapter(providerId);
+
+    if (!adapter) {
+        return failed(
+            'Staking provider is not supported.',
+            `No Ethereum staking adapter for ${providerId}`,
+        );
     }
 
     const { chainId } = getNetwork(account.symbol);
@@ -163,8 +175,6 @@ export const prepareEthereumStakingContext = (
     if (!variant) {
         return failed(`Compose result for ${stakeType} is incomplete.`);
     }
-
-    const adapter = getEthereumStakingAdapter(DEFAULT_ETHEREUM_STAKING_PROVIDER_ID);
 
     const calldataCheck = adapter.verifyStep({ label: stakeType, data: variant.calldata }, source);
 
@@ -195,6 +205,7 @@ export const prepareEthereumStakingContext = (
         ok: true,
         context: {
             account,
+            providerId,
             chainId,
             gasLimit,
             variant,
@@ -205,6 +216,7 @@ export const prepareEthereumStakingContext = (
 };
 
 interface VerifyEthereumStakingLiveStateForSignProps {
+    providerId: StakingProviderId;
     stakeType: BaseStakeType;
     account: EthereumStakingAccount;
     calldata: string;
@@ -213,13 +225,14 @@ interface VerifyEthereumStakingLiveStateForSignProps {
 // Re-checks the on-chain staking state right before signing (e.g. that the unstake
 // amount is still withdrawable), so a stale compose result cannot be signed.
 export const verifyEthereumStakingLiveStateForSign = async ({
+    providerId,
     stakeType,
     account,
     calldata,
 }: VerifyEthereumStakingLiveStateForSignProps): Promise<
     { isValid: true } | { isValid: false; error: StakeLiveStateInvalidError }
 > => {
-    const adapter = getEthereumStakingAdapter(DEFAULT_ETHEREUM_STAKING_PROVIDER_ID);
+    const adapter = getEthereumStakingAdapter(providerId);
 
     const liveState = await adapter.validateLiveState(
         { label: stakeType, data: calldata },

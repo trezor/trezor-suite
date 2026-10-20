@@ -154,6 +154,7 @@ const buildContext = (stakeType: BaseStakeType): PreparedEthereumStakingContext 
         {
             accountKey: ethAccount.key,
             stakeType,
+            providerId: 'everstake',
             precomposedTransaction,
             formValues: buildFormValues(stakeType),
         },

@@ -1,4 +1,4 @@
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, type StakingProviderId } from '@suite-common/wallet-config';
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import {
     type ComposeActionContext,
@@ -25,7 +25,7 @@ import { BigNumber } from '@trezor/utils';
 import { readEthereumStakingPools } from './ethereumStakingLiveState';
 import {
     DEFAULT_ETHEREUM_STAKING_PROVIDER_ID,
-    getEthereumStakingAdapter,
+    findEthereumStakingAdapter,
 } from './providers/ethereumStakingProviders';
 import { type StakingOperationRequest, type StakingTxStep } from './providers/types';
 import { type GetStakeFormsDefaultValuesParams } from './types';
@@ -45,10 +45,16 @@ const GENERIC_COMPOSE_ERROR: PrecomposedLevels = {
     },
 };
 
+export const getEthereumStakeFormProviderId = ({
+    providerId,
+}: Pick<StakeFormState, 'providerId'>): StakingProviderId =>
+    providerId ?? DEFAULT_ETHEREUM_STAKING_PROVIDER_ID;
+
 export const getStakeFormsDefaultValues = ({
     address,
     stakeType,
     amount,
+    providerId,
 }: GetStakeFormsDefaultValuesParams) => ({
     fiatInput: '',
     cryptoInput: amount || '',
@@ -62,6 +68,7 @@ export const getStakeFormsDefaultValues = ({
     options: ['broadcast'],
 
     stakeType,
+    ...(providerId ? { providerId } : {}),
     ethereumNonce: '',
     transactionData: '',
 
@@ -200,6 +207,7 @@ const attachTransactionData = (
 type ComposeEthereumStakingTransactionParams = {
     formValues: StakeFormState;
     composeContext: ComposeActionContext;
+    providerId: StakingProviderId;
     source: string;
 };
 
@@ -209,6 +217,7 @@ type ComposeEthereumStakingTransactionParams = {
 export const composeEthereumStakingTransaction = async ({
     formValues,
     composeContext,
+    providerId,
     source,
 }: ComposeEthereumStakingTransactionParams): Promise<PrecomposedLevels | undefined> => {
     const { account, feeInfo } = composeContext;
@@ -225,8 +234,15 @@ export const composeEthereumStakingTransaction = async ({
         return GENERIC_COMPOSE_ERROR;
     }
 
+    const adapter = findEthereumStakingAdapter(providerId);
+
+    if (!adapter) {
+        console.error(`${LOG_PREFIX}: no adapter for staking provider ${providerId}`);
+
+        return GENERIC_COMPOSE_ERROR;
+    }
+
     const identity = getAccountIdentity(account);
-    const adapter = getEthereumStakingAdapter(DEFAULT_ETHEREUM_STAKING_PROVIDER_ID);
 
     const planned = await adapter.planOperation(request, {
         account,

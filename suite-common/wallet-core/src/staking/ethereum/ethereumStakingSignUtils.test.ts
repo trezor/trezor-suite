@@ -1,4 +1,4 @@
-import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { type StakingProviderId, asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
     type BaseStakeType,
@@ -97,6 +97,7 @@ const buildPrecomposedTransaction = (
 
 type PrepareParams = {
     stakeType?: BaseStakeType;
+    providerId?: StakingProviderId;
     formValues?: StakeFormState;
     precomposedTransaction?: PrecomposedTransactionFinal;
     accounts?: Account[];
@@ -106,6 +107,7 @@ type PrepareParams = {
 
 const prepare = ({
     stakeType = 'stake',
+    providerId = 'everstake',
     formValues = buildFormValues({ stakeType }),
     precomposedTransaction = buildPrecomposedTransaction(),
     accounts,
@@ -115,6 +117,7 @@ const prepare = ({
     prepareEthereumStakingContext(buildState(accounts), {
         accountKey,
         stakeType,
+        providerId,
         precomposedTransaction,
         formValues,
         source,
@@ -136,6 +139,7 @@ describe('prepareEthereumStakingContext', () => {
             ok: true,
             context: {
                 account: ethAccount,
+                providerId: 'everstake',
                 chainId: 1,
                 gasLimit: '52000',
                 variant: {
@@ -186,6 +190,24 @@ describe('prepareEthereumStakingContext', () => {
             context: {
                 feeLevel: { maxFeePerGas: '30', maxPriorityFeePerGas: '2' },
                 formState: { maxFeePerGas: '30', maxPriorityFeePerGas: '2' },
+            },
+        });
+    });
+
+    it('carries the provider of the draft into the context', () => {
+        const prepared = prepare();
+
+        expect(prepared.ok && prepared.context.providerId).toBe('everstake');
+    });
+
+    it('fails for a provider without an Ethereum adapter', () => {
+        const prepared = prepare({ providerId: 'fivebinaries' });
+
+        expect(prepared).toEqual({
+            ok: false,
+            error: {
+                error: 'sign-transaction-failed',
+                message: 'Staking provider is not supported.',
             },
         });
     });

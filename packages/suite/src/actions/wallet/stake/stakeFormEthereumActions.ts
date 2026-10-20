@@ -7,6 +7,7 @@ import {
     type SignPreparedEthereumStakingTransactionThunkState,
     WALLET_SDK_SOURCE,
     composeEthereumStakingTransaction,
+    getEthereumStakeFormProviderId,
     prepareEthereumStakingContext,
     signPreparedEthereumStakingTransactionThunk,
 } from '@suite-common/wallet-core';
@@ -31,6 +32,7 @@ export const composeTransaction =
         composeEthereumStakingTransaction({
             formValues,
             composeContext: formState,
+            providerId: getEthereumStakeFormProviderId(formValues),
             source: WALLET_SDK_SOURCE,
         });
 
@@ -60,6 +62,7 @@ export const signTransactionThunk =
         const prepared = prepareEthereumStakingContext(getState(), {
             accountKey: account.key,
             stakeType,
+            providerId: getEthereumStakeFormProviderId(formValues),
             precomposedTransaction: transactionInfo,
             formValues,
             source: WALLET_SDK_SOURCE,

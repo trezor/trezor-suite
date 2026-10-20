@@ -14,8 +14,12 @@ const ADAPTERS: Partial<Record<StakingProviderId, EthereumStakingProviderAdapter
     everstake: everstakeAdapter,
 };
 
+export const findEthereumStakingAdapter = (
+    id: StakingProviderId,
+): EthereumStakingProviderAdapter | undefined => ADAPTERS[id];
+
 export const getEthereumStakingAdapter = (id: StakingProviderId): EthereumStakingProviderAdapter =>
-    ADAPTERS[id] ?? throwError(`No Ethereum staking adapter for ${id}`);
+    findEthereumStakingAdapter(id) ?? throwError(`No Ethereum staking adapter for ${id}`);
 
 export const listEthereumStakingAdapters = (
     symbol: NetworkSymbol,

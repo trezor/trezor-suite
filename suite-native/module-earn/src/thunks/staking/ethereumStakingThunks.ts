@@ -1,5 +1,6 @@
 import { events } from '@suite-common/analytics';
 import {
+    DEFAULT_ETHEREUM_STAKING_PROVIDER_ID,
     type FormDraftRootState,
     type PrepareEthereumStakingContextState,
     type SignPreparedEthereumStakingTransactionThunkState,
@@ -65,6 +66,7 @@ export const signEthereumStakingTransactionThunk = createThunk<
             const prepared = prepareEthereumStakingContext(getState(), {
                 accountKey,
                 stakeType,
+                providerId: DEFAULT_ETHEREUM_STAKING_PROVIDER_ID,
                 precomposedTransaction,
                 formValues,
                 source: WALLET_SDK_SOURCE_MOBILE,
