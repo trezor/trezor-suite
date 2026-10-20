@@ -54,6 +54,14 @@ type CardanoTypeItem = Extract<AccountTypeItem, { symbol: 'ada' }>;
 
 type CardanoRequest = Request & { account: CardanoTypeItem };
 
+type GetDescriptorParams = {
+    coinInfo: CoinInfo;
+    bip43PathTemplate: string;
+    derivationType: CardanoDerivation | undefined;
+    index: number;
+    sendCoreMessage: MethodContext['sendCoreMessage'];
+};
+
 const isCardano = (account: AccountTypeItem): account is CardanoTypeItem =>
     account.symbol === 'ada';
 
@@ -259,13 +267,13 @@ export default class DiscoverAccounts extends AbstractMethod<
 
         const getDescriptor = (derivation: keyof typeof CARDANO_DERIVATIONS) =>
             filterableRequest &&
-            this.getDescriptor(
-                filterableRequest.coinInfo,
-                filterableRequest.account.path,
-                CARDANO_DERIVATIONS[derivation],
-                0,
+            this.getDescriptor({
+                coinInfo: filterableRequest.coinInfo,
+                bip43PathTemplate: filterableRequest.account.path,
+                derivationType: CARDANO_DERIVATIONS[derivation],
+                index: 0,
                 sendCoreMessage,
-            ).then(({ descriptor }) => descriptor);
+            }).then(({ descriptor }) => descriptor);
 
         // normal descriptor or undefined when no legacy/ledger was requested as in that case it's useless
         const normalDescriptor = await getDescriptor('normal');
@@ -293,13 +301,13 @@ export default class DiscoverAccounts extends AbstractMethod<
 
     private readonly descriptorLock = getSynchronize();
     private readonly descriptorCache: Record<string, AccountDescriptor | undefined> = {};
-    private async getDescriptor(
-        coinInfo: CoinInfo,
-        bip43PathTemplate: string,
-        derivationType: CardanoDerivation | undefined,
-        index: number,
-        sendCoreMessage: MethodContext['sendCoreMessage'],
-    ) {
+    private async getDescriptor({
+        coinInfo,
+        bip43PathTemplate,
+        derivationType,
+        index,
+        sendCoreMessage,
+    }: GetDescriptorParams) {
         const path = substituteBip43Path(bip43PathTemplate, index);
 
         const { address_n: _, ...descriptorRest } = await this.descriptorLock(async () => {
@@ -396,24 +404,24 @@ export default class DiscoverAccounts extends AbstractMethod<
 
         let empty = 0;
 
-        let descPromise = this.getDescriptor(
+        let descPromise = this.getDescriptor({
             coinInfo,
-            bip43,
-            derivation,
-            offset + index,
+            bip43PathTemplate: bip43,
+            derivationType: derivation,
+            index: offset + index,
             sendCoreMessage,
-        );
+        });
         descPromise.catch(() => {});
         while (true) {
             try {
                 const { descriptor, ...descRest } = await descPromise;
-                descPromise = this.getDescriptor(
+                descPromise = this.getDescriptor({
                     coinInfo,
-                    bip43,
-                    derivation,
-                    offset + index + 1,
+                    bip43PathTemplate: bip43,
+                    derivationType: derivation,
+                    index: offset + index + 1,
                     sendCoreMessage,
-                );
+                });
                 descPromise.catch(() => {});
 
                 const info = await getAccountInfo(descriptor);
