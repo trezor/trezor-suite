@@ -8,6 +8,7 @@ import {
     type YieldFlowDisplayToken,
     type YieldWithdrawFlowType,
     composeYieldUnwrapTransactionThunk,
+    transactionsActions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { createThunk } from '@trezor/redux-utils';
@@ -16,6 +17,7 @@ import {
     type SendYieldTransactionDeps,
     type SendYieldTransactionState,
     getYieldSubmitErrorAnalyticsMessage,
+    isYieldPushError,
     sendYieldTransaction,
 } from './stablecoin-yield/signingHelpers';
 
@@ -157,6 +159,15 @@ export const submitUnwrapNativeTokenThunk = createThunk<
                 return undefined;
             }
 
+            dispatch(
+                transactionsActions.transactionBroadcastStatus({
+                    account,
+                    flow: 'unwrap',
+                    status: 'success',
+                    txid: sendResult.txid,
+                }),
+            );
+
             if (!yieldFlow) {
                 extra.services.analytics.report({
                     type: events.yieldUnwrapEvent.name,
@@ -195,6 +206,15 @@ export const submitUnwrapNativeTokenThunk = createThunk<
 
             return { txid: sendResult.txid, fee: sendResult.fee };
         } catch (error) {
+            if (isYieldPushError(error)) {
+                dispatch(
+                    transactionsActions.transactionBroadcastStatus({
+                        account,
+                        flow: 'unwrap',
+                        status: 'error',
+                    }),
+                );
+            }
             console.error(error);
             reportError(getYieldSubmitErrorAnalyticsMessage(error));
             dispatch(

@@ -8,6 +8,7 @@ import {
     type YieldFlowDisplayToken,
     composeYieldWrapTransactionThunk,
     setYieldError,
+    transactionsActions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { type TokenInfo } from '@trezor/connect';
@@ -18,6 +19,7 @@ import {
     type SendYieldTransactionState,
     getYieldErrorTranslationKey,
     getYieldSubmitErrorAnalyticsMessage,
+    isYieldPushError,
     sendYieldTransaction,
 } from './stablecoin-yield/signingHelpers';
 import { addToken } from './tokenActions';
@@ -172,6 +174,15 @@ export const submitWrapNativeTokenThunk = createThunk<
                 return undefined;
             }
 
+            dispatch(
+                transactionsActions.transactionBroadcastStatus({
+                    account,
+                    flow: 'wrap',
+                    status: 'success',
+                    txid: sendResult.txid,
+                }),
+            );
+
             if (!yieldFlow) {
                 extra.services.analytics.report({
                     type: events.yieldWrapEvent.name,
@@ -231,6 +242,15 @@ export const submitWrapNativeTokenThunk = createThunk<
 
             return { txid: sendResult.txid, fee: sendResult.fee };
         } catch (error) {
+            if (isYieldPushError(error)) {
+                dispatch(
+                    transactionsActions.transactionBroadcastStatus({
+                        account,
+                        flow: 'wrap',
+                        status: 'error',
+                    }),
+                );
+            }
             console.error(error);
             reportError(getYieldSubmitErrorAnalyticsMessage(error));
             dispatch(

@@ -7,6 +7,7 @@ import {
     type ComposeYieldWrapTransactionThunkState,
     type YieldFlowDisplayToken,
     accountsActions,
+    transactionsActions,
     yieldActions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -74,10 +75,12 @@ const buildStore = (report: jest.Mock) =>
         }),
     }).services.store;
 
-const dispatchWrap = (report: jest.Mock) =>
-    buildStore(report)
-        .dispatch(submitWrapNativeTokenThunk({ account, token, wrapAmount: '1' }))
-        .unwrap();
+const dispatchWrap = async (report: jest.Mock) => {
+    const store = buildStore(report);
+    await store.dispatch(submitWrapNativeTokenThunk({ account, token, wrapAmount: '1' })).unwrap();
+
+    return store;
+};
 
 describe('submitWrapNativeTokenThunk', () => {
     it.each(['signing', 'review'] as const)('reports a cancellation at %s', async stage => {
@@ -86,7 +89,10 @@ describe('submitWrapNativeTokenThunk', () => {
         mockOpenDeferredModal.mockImplementation(
             () => () => Promise.resolve({ value: true, resolve: jest.fn(), selectedFee: null }),
         );
-        await dispatchWrap(report);
+        const store = await dispatchWrap(report);
+        expect(
+            store.getActions().filter(transactionsActions.transactionBroadcastStatus.match),
+        ).toEqual([]);
         expect(report).toHaveBeenCalledWith({
             type: 'transaction/cancel',
             payload: { txType: 'yield', networkSymbol: 'eth', stage },
@@ -531,7 +537,13 @@ describe('submitWrapNativeTokenThunk', () => {
         );
         mockSendYieldTransaction.mockResolvedValue(mockSentResult('0xabc'));
 
-        await dispatchWrap(report);
+        const store = await dispatchWrap(report);
+        expect(
+            store
+                .getActions()
+                .filter(transactionsActions.transactionBroadcastStatus.match)
+                .map(action => action.payload),
+        ).toEqual([{ account, flow: 'wrap', status: 'success', txid: '0xabc' }]);
 
         expect(report).toHaveBeenCalledWith(
             expect.objectContaining({

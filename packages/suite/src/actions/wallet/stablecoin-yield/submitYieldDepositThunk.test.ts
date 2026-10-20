@@ -7,6 +7,7 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type ComposeYieldDepositTransactionThunkState,
     type YieldFlowResolvedData,
+    transactionsActions,
     yieldActions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -14,7 +15,11 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { asGetter } from '@trezor/dependency-injection';
 
-import { type SendYieldTransactionDeps, type SendYieldTransactionState } from './signingHelpers';
+import {
+    PUSH_TRANSACTION_FAILED_CAUSE,
+    type SendYieldTransactionDeps,
+    type SendYieldTransactionState,
+} from './signingHelpers';
 import { submitYieldDepositThunk } from './submitYieldDepositThunk';
 
 const mockComposeYieldDepositTransactionThunk = jest.fn();
@@ -137,6 +142,21 @@ describe('submitYieldDepositThunk', () => {
     it('stores the broadcast transaction with its fee and submission time', async () => {
         const store = await dispatchDeposit(jest.fn());
 
+        expect(
+            store
+                .getActions()
+                .filter(transactionsActions.transactionBroadcastStatus.match)
+                .map(action => action.payload),
+        ).toEqual([
+            {
+                account,
+                flow: 'yield-deposit',
+                status: 'success',
+                txid: '0xdeposit',
+                isCancellation: false,
+                isRbf: false,
+            },
+        ]);
         const pendingTxAction = store
             .getActions()
             .find(action => action.type === yieldActions.setPendingTx.type);
@@ -159,6 +179,19 @@ describe('submitYieldDepositThunk', () => {
             .filter(notificationsActions.addToast.match)
             .find(action => action.payload.type === 'tx-yield-deposit');
         expect(toast?.payload).toMatchObject({ txid: '0xdeposit' });
+    });
+
+    it('registers a push failure without specific backend details', async () => {
+        mockSendYieldTransaction.mockRejectedValue(
+            new Error('private backend error', { cause: PUSH_TRANSACTION_FAILED_CAUSE }),
+        );
+        const store = await dispatchDeposit(jest.fn());
+        expect(
+            store
+                .getActions()
+                .filter(transactionsActions.transactionBroadcastStatus.match)
+                .map(action => action.payload),
+        ).toEqual([{ account, flow: 'yield-deposit', status: 'error' }]);
     });
 
     it('still reports submit-failed when the signing throws', async () => {

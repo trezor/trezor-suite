@@ -26,6 +26,7 @@ import {
     selectAddressDisplayType,
     selectIsMevProtectionEnabled,
     synchronizeSentTransactionThunk,
+    transactionsActions,
     yieldActions,
 } from '@suite-common/wallet-core';
 import { ethereumGetCurrentNonceThunk } from '@suite-common/wallet-core/src/send/sendFormEthereumThunks';
@@ -320,6 +321,13 @@ export const claimMerklRewardsThunk = createThunk<
                 dispatch(closeModal());
 
                 if (!pushResponse.success) {
+                    dispatch(
+                        transactionsActions.transactionBroadcastStatus({
+                            account,
+                            flow: 'merkl-claim',
+                            status: 'error',
+                        }),
+                    );
                     throw new Error(pushResponse.error.message, {
                         cause: PUSH_TRANSACTION_FAILED_CAUSE,
                     });
@@ -340,7 +348,7 @@ export const claimMerklRewardsThunk = createThunk<
                     notifyEarnTransactionBroadcastThunk({
                         account,
                         txid: pushResponse.payload.txid,
-                        flow: 'yield-claim',
+                        flow: 'merkl-claim',
                     }),
                 );
 
