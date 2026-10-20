@@ -1,6 +1,7 @@
 import { CustomError } from '@trezor/blockchain-link-types';
 import {
     WebsocketClient,
+    WebsocketError,
     type WebsocketRequest,
     type WebsocketResponse,
     type WebsocketSendParams,
@@ -13,16 +14,40 @@ interface Subscription<T> {
 
 export abstract class BaseWebsocket<T extends Record<string, any>> extends WebsocketClient<T> {
     private readonly subscriptions: Subscription<keyof T & string>[] = [];
+    private probe?: Promise<void>;
 
     async onPing() {
         // make sure that connection is alive if there are subscriptions
         if (this.subscriptions.length > 0 || this.options.keepAlive) {
-            await this.ping().catch(error => {
-                throw new CustomError('websocket_runtime_error', error.message);
-            });
+            await this.probeConnection();
         } else {
             this.disconnect();
         }
+    }
+
+    onMessageTimeout(promiseId: number) {
+        this.messages.reject(promiseId, new WebsocketError('websocket_timeout'));
+        this.probeConnection();
+    }
+
+    private probeConnection() {
+        if (!this.probe) {
+            this.probe = this.ping()
+                .then(
+                    () => undefined,
+                    () => this.closeUnresponsive(),
+                )
+                .finally(() => {
+                    this.probe = undefined;
+                });
+        }
+
+        return this.probe;
+    }
+
+    private closeUnresponsive() {
+        this.messages.rejectAll(new WebsocketError('websocket_timeout'));
+        this.disconnect();
     }
 
     protected onMessage(message: WebsocketResponse) {
