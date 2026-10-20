@@ -271,7 +271,9 @@ export default defineConfig(
                               include: ['crypto', 'stream', 'vm', 'buffer', 'process', 'util'],
                               globals: {
                                   Buffer: true,
-                                  process: true,
+                                  // Since v0.28, `true` also injects the shim into source files in dev,
+                                  // shadowing the global `process.env.*` values set by `define` above.
+                                  process: 'dev',
                               },
                               overrides: {
                                   // Use the same polyfill packages that webpack used

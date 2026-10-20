@@ -19,7 +19,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@crowdin/cli": "4.13.0",
+        "@crowdin/cli": "5.3.0",
         "@formatjs/cli": "6.12.2",
         "@suite-common/locale": "workspace:*",
         "@suite-common/react-query": "workspace:*",
