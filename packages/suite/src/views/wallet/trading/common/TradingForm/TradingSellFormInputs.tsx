@@ -126,7 +126,7 @@ export const TradingSellFormInputs = () => {
                             />
                         )}
                         <Row gap={12} alignItems="center">
-                            <TradingFractionButtons />
+                            {!!sendCryptoSelect && <TradingFractionButtons />}
                             <AssetPickerInputBalance
                                 name={TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT}
                             />
