@@ -11,6 +11,7 @@ import {
     type BlockchainEstimatedFee,
     type BlockchainEstimatedFeeLevel,
 } from '@trezor/connect-common/src/types/api/blockchain/blockchainEstimateFee';
+import { EVERSTAKE_CONTRACTS } from '@trezor/network-ethereum/staking';
 import { type Err, type Ok, type Result } from '@trezor/type-utils';
 
 import {
@@ -21,7 +22,6 @@ import {
     getDaysToAddToPoolFixture,
     getDaysToAddToPoolInitialFixture,
     getDaysToUnstakeFixture,
-    getEthNetworkForWalletSdkFixture,
     getInstantStakeTypeFixture,
     getStakeFormsDefaultValuesFixture,
     getStakeTxGasLimitFixture,
@@ -41,7 +41,7 @@ import {
     getDaysToAddToPool,
     getDaysToAddToPoolInitial,
     getDaysToUnstake,
-    getEthNetworkForWalletSdk,
+    getEthereumStakingAddressByType,
     getInstantStakeType,
     getStakeFormsDefaultValues,
     getStakeTxGasLimit,
@@ -235,16 +235,24 @@ describe('getAdjustedGasLimitConsumption', () => {
     });
 });
 
-describe('getEthNetworkForWalletSdk', () => {
-    getEthNetworkForWalletSdkFixture.forEach(test => {
-        it(test.description, () => {
-            const result = getEthNetworkForWalletSdk(
-                test.args.symbol && test.args.symbol !== 'unknown'
-                    ? asNetworkSymbol(test.args.symbol)
-                    : test.args.symbol,
-            );
-            expect(result).toEqual(test.result);
-        });
+describe('getEthereumStakingAddressByType', () => {
+    it('resolves the mainnet deployment for eth', () => {
+        expect(getEthereumStakingAddressByType(asNetworkSymbol('eth'), 'stake')).toBe(
+            EVERSTAKE_CONTRACTS[1].pool,
+        );
+        expect(getEthereumStakingAddressByType(asNetworkSymbol('eth'), 'claim')).toBe(
+            EVERSTAKE_CONTRACTS[1].accounting,
+        );
+    });
+
+    it('resolves the Hoodi deployment for thod', () => {
+        expect(getEthereumStakingAddressByType(asNetworkSymbol('thod'), 'unstake')).toBe(
+            EVERSTAKE_CONTRACTS[560048].pool,
+        );
+    });
+
+    it('returns an empty address for a network without a deployment', () => {
+        expect(getEthereumStakingAddressByType(asNetworkSymbol('btc'), 'stake')).toBe('');
     });
 });
 

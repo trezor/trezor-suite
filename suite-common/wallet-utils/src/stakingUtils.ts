@@ -18,6 +18,10 @@ import {
     type TronAccountExtraData,
     type TronStakingInfo,
 } from '@trezor/blockchain-link-types';
+import {
+    EVERSTAKE_SELECTORS,
+    getEverstakeOperationBySelector,
+} from '@trezor/network-ethereum/staking';
 import { BigNumber } from '@trezor/utils';
 
 import { asAmountSubunit } from './AmountTypes';
@@ -153,24 +157,20 @@ export const getAccountTotalStakingBalance = (account: Account) =>
         ? STAKING_BALANCE_BY_TYPE[account.networkType]?.(account)
         : null;
 
-const STAKE_SIGNATURE = '0x3a29dbae';
-const UNSTAKE_SIGNATURE = '0x76ec871c';
-const CLAIM_SIGNATURE = '0x33986ffa';
-
 export const signatureToStakeTypeMap: { [key: string]: StakeType } = {
-    [STAKE_SIGNATURE]: 'stake',
-    [UNSTAKE_SIGNATURE]: 'unstake',
-    [CLAIM_SIGNATURE]: 'claim',
+    [EVERSTAKE_SELECTORS.stake]: 'stake',
+    [EVERSTAKE_SELECTORS.unstake]: 'unstake',
+    [EVERSTAKE_SELECTORS.claimWithdrawRequest]: 'claim',
 };
 
 export const isStakeTx = (signature: string | undefined) =>
-    signature?.toLowerCase() === STAKE_SIGNATURE;
+    getEverstakeOperationBySelector(signature) === 'stake';
 
 export const isUnstakeTx = (signature: string | undefined) =>
-    signature?.toLowerCase() === UNSTAKE_SIGNATURE;
+    getEverstakeOperationBySelector(signature) === 'unstake';
 
 export const isClaimTx = (signature: string | undefined) =>
-    signature?.toLowerCase() === CLAIM_SIGNATURE;
+    getEverstakeOperationBySelector(signature) === 'claimWithdrawRequest';
 
 export const isStakeTypeTx = (signature: string | undefined) =>
     isStakeTx(signature) || isUnstakeTx(signature) || isClaimTx(signature);

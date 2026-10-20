@@ -1,6 +1,6 @@
 import { type EthValidatorsQueue } from '@suite-common/earn-staking-api';
+import { EVERSTAKE_CONTRACTS } from '@trezor/network-ethereum/staking';
 
-import { ETH_NETWORK_ADDRESSES } from '../ethereumNetworkAddresses';
 import { DAYS_TO_ADD_TO_POOL_DEFAULT } from '../ethereumStakingConstants';
 
 export const transformTxFixtures = [
@@ -11,7 +11,7 @@ export const transformTxFixtures = [
             data: '0x3a29dbae0000000000000000000000000000000000000000000000000000000000000001',
             from: '0xCe66A9577F4e2589c1D1547B75B7A2b0807cE0ed',
             gasLimit: 416102,
-            to: ETH_NETWORK_ADDRESSES.hoodi.addressContractPool,
+            to: EVERSTAKE_CONTRACTS[560048].pool,
             value: '122222000000000000',
         },
         gasPrice: '50',
@@ -23,7 +23,7 @@ export const transformTxFixtures = [
             gasPrice: '0xba43b7400',
             nonce: '0x1a',
             chainId: 1,
-            to: ETH_NETWORK_ADDRESSES.hoodi.addressContractPool,
+            to: EVERSTAKE_CONTRACTS[560048].pool,
             value: '0x1b23842edbce000',
         },
     },
@@ -34,7 +34,7 @@ export const transformTxFixtures = [
             data: '0x3a29dbae0000000000000000000000000000000000000000000000000000000000000001',
             from: '0xCe66A9577F4e2589c1D1547B75B7A2b0807cE0ed',
             gasLimit: 300000,
-            to: ETH_NETWORK_ADDRESSES.hoodi.addressContractPool,
+            to: EVERSTAKE_CONTRACTS[560048].pool,
             value: '10000',
         },
         gasPrice: '1',
@@ -46,7 +46,7 @@ export const transformTxFixtures = [
             gasPrice: '0x3b9aca00',
             nonce: '0x1',
             chainId: 1,
-            to: ETH_NETWORK_ADDRESSES.hoodi.addressContractPool,
+            to: EVERSTAKE_CONTRACTS[560048].pool,
             value: '0x2710',
         },
     },
@@ -71,7 +71,7 @@ export const stakeFixture = [
             data: '0x3a29dbae0000000000000000000000000000000000000000000000000000000000000001',
             from: '0xfB0bc552ab5Fa1971E8530852753c957e29eEEFC',
             gasLimit: 241000, // 21000 + 220000 (reserve)
-            to: ETH_NETWORK_ADDRESSES.mainnet.addressContractPool,
+            to: EVERSTAKE_CONTRACTS[1].pool,
             value: '100000000000000000', // wei
         },
     },
@@ -93,7 +93,7 @@ export const stakeFixture = [
             data: '0x3a29dbae0000000000000000000000000000000000000000000000000000000000000001',
             from: '0xfB0bc552ab5Fa1971E8530852753c957e29eEEFC',
             gasLimit: 220000, // GAS_RESERVE = 220000
-            to: ETH_NETWORK_ADDRESSES.mainnet.addressContractPool,
+            to: EVERSTAKE_CONTRACTS[1].pool,
             value: '100000000000000000', // wei
         },
     },
@@ -167,7 +167,7 @@ export const unstakeFixture = [
             data: '0x76ec871c000000000000000000000000000000000000000000000000016345785d8a000000000000000000000000000000000000000000000000000000000000000000050000000000000000000000000000000000000000000000000000000000000001',
             from: '0xfB0bc552ab5Fa1971E8530852753c957e29eEEFC',
             gasLimit: 241000, // 21000 + 220000
-            to: ETH_NETWORK_ADDRESSES.mainnet.addressContractPool,
+            to: EVERSTAKE_CONTRACTS[1].pool,
             value: '0', // wei
         },
     },
@@ -306,7 +306,7 @@ export const claimFixture = [
         result: {
             data: '0x33986ffa', // claim signature
             from: '0xfB0bc552ab5Fa1971E8530852753c957e29eEEFC',
-            to: ETH_NETWORK_ADDRESSES.mainnet.addressContractAccounting, // contract accounting address
+            to: EVERSTAKE_CONTRACTS[1].accounting, // contract accounting address
             value: '0', // wei
             gasLimit: 241000, // 21000 + 220000
         },
@@ -668,51 +668,13 @@ export const getAdjustedGasLimitConsumptionFixture = [
     },
 ];
 
-export const getEthNetworkForWalletSdkFixture = [
-    {
-        description: 'should return "hoodi" for "thod"',
-        args: {
-            symbol: 'thod' as const,
-        },
-        result: 'hoodi',
-    },
-    {
-        description: 'should return "mainnet" for "eth"',
-        args: {
-            symbol: 'eth' as const,
-        },
-        result: 'mainnet',
-    },
-    {
-        description: 'should return null for undefined',
-        args: {
-            symbol: undefined,
-        },
-        result: null,
-    },
-    {
-        description: 'should return null for an unknown symbol',
-        args: {
-            symbol: 'unknown' as const,
-        },
-        result: null,
-    },
-    {
-        description: 'should return null for a non-staking network symbol',
-        args: {
-            symbol: 'btc' as const,
-        },
-        result: null,
-    },
-];
-
 export const getInstantStakeTypeFixture = [
     {
         description: 'should return "stake" for valid instant stake transfer (mainnet)',
         args: {
             internalTransfer: {
-                from: ETH_NETWORK_ADDRESSES.mainnet.addressContractPool,
-                to: ETH_NETWORK_ADDRESSES.mainnet.addressContractWithdrawTreasury,
+                from: EVERSTAKE_CONTRACTS[1].pool,
+                to: EVERSTAKE_CONTRACTS[1].withdrawTreasury,
             },
             address: 'address',
             symbol: 'eth' as const,
@@ -723,8 +685,8 @@ export const getInstantStakeTypeFixture = [
         description: 'should return "stake" for valid instant stake transfer (hoodi)',
         args: {
             internalTransfer: {
-                from: ETH_NETWORK_ADDRESSES.hoodi.addressContractPool,
-                to: ETH_NETWORK_ADDRESSES.hoodi.addressContractWithdrawTreasury,
+                from: EVERSTAKE_CONTRACTS[560048].pool,
+                to: EVERSTAKE_CONTRACTS[560048].withdrawTreasury,
             },
             address: 'address',
             symbol: 'thod' as const,
@@ -735,7 +697,7 @@ export const getInstantStakeTypeFixture = [
         description: 'should return "unstake" for valid instant unstake transfer (mainnet)',
         args: {
             internalTransfer: {
-                from: ETH_NETWORK_ADDRESSES.mainnet.addressContractPool,
+                from: EVERSTAKE_CONTRACTS[1].pool,
                 to: 'address',
             },
             address: 'address',
@@ -747,7 +709,7 @@ export const getInstantStakeTypeFixture = [
         description: 'should return "unstake" for valid instant unstake transfer (hoodi)',
         args: {
             internalTransfer: {
-                from: ETH_NETWORK_ADDRESSES.hoodi.addressContractPool,
+                from: EVERSTAKE_CONTRACTS[560048].pool,
                 to: 'address',
             },
             address: 'address',
@@ -759,7 +721,7 @@ export const getInstantStakeTypeFixture = [
         description: 'should return "claim" for valid claim transfer (mainnet)',
         args: {
             internalTransfer: {
-                from: ETH_NETWORK_ADDRESSES.mainnet.addressContractWithdrawTreasury,
+                from: EVERSTAKE_CONTRACTS[1].withdrawTreasury,
                 to: 'address',
             },
             address: 'address',
@@ -771,7 +733,7 @@ export const getInstantStakeTypeFixture = [
         description: 'should return "claim" for valid claim transfer (hoodi)',
         args: {
             internalTransfer: {
-                from: ETH_NETWORK_ADDRESSES.hoodi.addressContractWithdrawTreasury,
+                from: EVERSTAKE_CONTRACTS[560048].withdrawTreasury,
                 to: 'address',
             },
             address: 'address',
@@ -796,8 +758,8 @@ export const getInstantStakeTypeFixture = [
             'should return null for an unsupported network symbol even if addresses match mainnet contracts',
         args: {
             internalTransfer: {
-                from: ETH_NETWORK_ADDRESSES.mainnet.addressContractPool,
-                to: ETH_NETWORK_ADDRESSES.mainnet.addressContractWithdrawTreasury,
+                from: EVERSTAKE_CONTRACTS[1].pool,
+                to: EVERSTAKE_CONTRACTS[1].withdrawTreasury,
             },
             address: 'address',
             symbol: 'pol' as const,
@@ -846,8 +808,8 @@ export const getChangedInternalTxFixture = [
                     txid: '1',
                     internalTransfers: [
                         {
-                            from: ETH_NETWORK_ADDRESSES.mainnet.addressContractPool,
-                            to: ETH_NETWORK_ADDRESSES.mainnet.addressContractWithdrawTreasury,
+                            from: EVERSTAKE_CONTRACTS[1].pool,
+                            to: EVERSTAKE_CONTRACTS[1].withdrawTreasury,
                             type: 'external',
                             amount: '1',
                         },
@@ -859,8 +821,8 @@ export const getChangedInternalTxFixture = [
             symbol: 'eth' as const,
         },
         result: {
-            from: ETH_NETWORK_ADDRESSES.mainnet.addressContractPool,
-            to: ETH_NETWORK_ADDRESSES.mainnet.addressContractWithdrawTreasury,
+            from: EVERSTAKE_CONTRACTS[1].pool,
+            to: EVERSTAKE_CONTRACTS[1].withdrawTreasury,
             type: 'external',
             amount: '1',
         },
@@ -883,7 +845,7 @@ export const simulateUnstakeFixture = [
         args: {
             amount: '0.1',
             from: '0xfB0bc552ab5Fa1971E8530852753c957e29eEEFC',
-            to: ETH_NETWORK_ADDRESSES.hoodi.addressContractPool,
+            to: EVERSTAKE_CONTRACTS[560048].pool,
             symbol: 'eth',
         },
         blockchainEvmRpcCallResult: {

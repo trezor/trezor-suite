@@ -54,6 +54,9 @@
             "path": "../../networks/cardano/network-cardano"
         },
         {
+            "path": "../../networks/ethereum/network-ethereum"
+        },
+        {
             "path": "../../networks/ethereum/network-ethereum-suite-common"
         },
         {

@@ -1,8 +1,11 @@
 import { decodeFunctionResult } from 'viem';
 
 import { type EthValidatorsQueue } from '@suite-common/earn-staking-api';
-import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
-import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import {
+    type NetworkSymbol,
+    getNetwork,
+    getNetworkDisplaySymbol,
+} from '@suite-common/wallet-config';
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import {
     type PrecomposedLevels,
@@ -26,16 +29,16 @@ import TrezorConnect, {
 } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { type BlockchainEstimatedFee } from '@trezor/connect-common/src/types/api/blockchain/blockchainEstimateFee';
+import { type EverstakeContracts, getEverstakeContracts } from '@trezor/network-ethereum/staking';
 import {
     Calldata,
     EVM_ABI,
     Verifier,
     type VerifyIssue,
 } from '@trezor/network-ethereum-suite-common';
-import { type Ok, type PartialRecord, exhaustive } from '@trezor/type-utils';
+import { type Ok, exhaustive } from '@trezor/type-utils';
 import { BigNumber, throwError } from '@trezor/utils';
 
-import { ETH_NETWORK_ADDRESSES, type EthNetworkAddresses } from './ethereumNetworkAddresses';
 import {
     DAYS_TO_ADD_TO_POOL_DEFAULT,
     MIN_ETH_AMOUNT_FOR_STAKING,
@@ -44,7 +47,6 @@ import {
 } from './ethereumStakingConstants';
 import { isSupportedEthStakingNetworkSymbol } from './ethereumStakingUtils';
 import {
-    type EthNetwork,
     type EthereumStakingTransactionDraft,
     type GetStakeFormsDefaultValuesParams,
     type GetStakeTxGasLimitParams,
@@ -287,23 +289,10 @@ export const verifyEthereumStakingLiveState = async ({
     return invalidLiveState({ code: 'UNSUPPORTED_STAKE_TYPE', stakeType });
 };
 
-export const getEthNetworkForWalletSdk = (
-    symbol: NetworkSymbol | 'unknown' | undefined,
-): EthNetwork | null => {
-    const ethNetworks: PartialRecord<LegacyNetworkSymbol, EthNetwork> = {
-        thod: 'hoodi',
-        eth: 'mainnet',
-    };
+const getEverstakeContractsBySymbol = (symbol: NetworkSymbol): EverstakeContracts | null => {
+    const { chainId } = getNetwork(symbol);
 
-    return (
-        (symbol && symbol !== 'unknown' ? ethNetworks[symbol as LegacyNetworkSymbol] : null) ?? null
-    );
-};
-
-const getEthNetworkAddresses = (symbol: NetworkSymbol): EthNetworkAddresses | null => {
-    const ethNetwork = getEthNetworkForWalletSdk(symbol);
-
-    return ethNetwork ? ETH_NETWORK_ADDRESSES[ethNetwork] : null;
+    return chainId ? (getEverstakeContracts(chainId) ?? null) : null;
 };
 
 export const getAdjustedGasLimitConsumption = (estimatedFee: Ok<BlockchainEstimatedFee>) =>
@@ -331,8 +320,8 @@ export const stake = async ({
     }
 
     try {
-        const { addressContractPool } =
-            getEthNetworkAddresses(symbol) ??
+        const { pool } =
+            getEverstakeContractsBySymbol(symbol) ??
             throwError(`Unsupported staking network symbol: ${symbol}`);
         const data = buildStakeData(source);
 
@@ -345,7 +334,7 @@ export const stake = async ({
                 blocks: [2],
                 specific: {
                     from,
-                    ...getEthereumEstimateFeeParams(addressContractPool, amount, undefined, data),
+                    ...getEthereumEstimateFeeParams(pool, amount, undefined, data),
                 },
             },
         });
@@ -357,7 +346,7 @@ export const stake = async ({
         // Create the transaction
         return {
             from,
-            to: addressContractPool,
+            to: pool,
             value: amountWei,
             gasLimit: feeLimit ?? getAdjustedGasLimitConsumption(estimatedFee),
             data,
@@ -404,8 +393,8 @@ export const unstake = async ({
         }
 
         const amountWei = fromEther(amount).toWei();
-        const { addressContractPool } =
-            getEthNetworkAddresses(symbol) ??
+        const { pool } =
+            getEverstakeContractsBySymbol(symbol) ??
             throwError(`Unsupported staking network symbol: ${symbol}`);
         const data = buildUnstakeData(amountWei, interchanges, source);
 
@@ -418,7 +407,7 @@ export const unstake = async ({
                 blocks: [2],
                 specific: {
                     from,
-                    ...getEthereumEstimateFeeParams(addressContractPool, '0', undefined, data),
+                    ...getEthereumEstimateFeeParams(pool, '0', undefined, data),
                 },
             },
         });
@@ -430,7 +419,7 @@ export const unstake = async ({
         return {
             from,
             value: '0',
-            to: addressContractPool,
+            to: pool,
             gasLimit: feeLimit ?? getAdjustedGasLimitConsumption(estimatedFee),
             data,
         };
@@ -463,8 +452,8 @@ export const claimWithdrawRequest = async ({
             throw new Error(getEthereumStakingLiveStateErrorMessage(validation.reason));
         }
 
-        const { addressContractAccounting } =
-            getEthNetworkAddresses(symbol) ??
+        const { accounting } =
+            getEverstakeContractsBySymbol(symbol) ??
             throwError(`Unsupported staking network symbol: ${symbol}`);
         const data = buildClaimWithdrawRequestData();
 
@@ -477,12 +466,7 @@ export const claimWithdrawRequest = async ({
                 blocks: [2],
                 specific: {
                     from,
-                    ...getEthereumEstimateFeeParams(
-                        addressContractAccounting,
-                        '0',
-                        undefined,
-                        data,
-                    ),
+                    ...getEthereumEstimateFeeParams(accounting, '0', undefined, data),
                 },
             },
         });
@@ -492,7 +476,7 @@ export const claimWithdrawRequest = async ({
 
         return {
             from,
-            to: addressContractAccounting,
+            to: accounting,
             value: '0',
             gasLimit: feeLimit ?? getAdjustedGasLimitConsumption(estimatedFee),
             data,
@@ -702,20 +686,20 @@ export const getInstantStakeType = (
     symbol?: NetworkSymbol,
 ): StakeType | null => {
     if (!address || !symbol) return null;
-    const ethAddresses = getEthNetworkAddresses(symbol);
+    const ethAddresses = getEverstakeContractsBySymbol(symbol);
     if (!ethAddresses) return null;
     const { from, to } = internalTransfer;
-    const { addressContractPool, addressContractWithdrawTreasury } = ethAddresses;
+    const { pool, withdrawTreasury } = ethAddresses;
 
-    if (from === addressContractPool && to === addressContractWithdrawTreasury) {
+    if (from === pool && to === withdrawTreasury) {
         return 'stake';
     }
 
-    if (from === addressContractPool && to === address) {
+    if (from === pool && to === address) {
         return 'unstake';
     }
 
-    if (from === addressContractWithdrawTreasury && to === address) {
+    if (from === withdrawTreasury && to === address) {
         return 'claim';
     }
 
@@ -755,9 +739,9 @@ export const simulateUnstake = async ({
     if (!isSupportedEthStakingNetworkSymbol(symbol)) return null;
     if (!amount || !from || !symbol) return null;
 
-    const ethAddresses = getEthNetworkAddresses(symbol);
+    const ethAddresses = getEverstakeContractsBySymbol(symbol);
     if (!ethAddresses) return null;
-    const { addressContractPool } = ethAddresses;
+    const { pool } = ethAddresses;
 
     const amountWei = fromEther(amount).toWei();
     const data = buildUnstakeData(amountWei, UNSTAKE_INTERCHANGES, source);
@@ -765,7 +749,7 @@ export const simulateUnstake = async ({
     const transactionData = await TrezorConnect.blockchainEvmRpcCall({
         coin: asCoinSymbol(symbol),
         from,
-        to: addressContractPool,
+        to: pool,
         data,
     });
 
@@ -786,14 +770,14 @@ export const getEthereumStakingAddressByType = (
     symbol: NetworkSymbol,
     stakeType: StakeType,
 ): string => {
-    const { addressContractPool, addressContractAccounting } = getEthNetworkAddresses(symbol) ?? {};
+    const { pool, accounting } = getEverstakeContractsBySymbol(symbol) ?? {};
 
     switch (stakeType) {
         case 'stake':
         case 'unstake':
-            return addressContractPool || '';
+            return pool || '';
         case 'claim':
-            return addressContractAccounting || '';
+            return accounting || '';
         default:
             return '';
     }

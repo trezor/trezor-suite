@@ -78,7 +78,6 @@ export * from './staking/cardano/cardanoStakingConstants';
 export * from './staking/cardano/cardanoStakingSelectors';
 export type * from './staking/cardano/cardanoStakingTypes';
 export * from './staking/cardano/cardanoStakingUtils';
-export * from './staking/ethereum/ethereumNetworkAddresses';
 export * from './staking/ethereum/ethereumStaking';
 export * from './staking/ethereum/ethereumStakingConstants';
 export * from './staking/ethereum/ethereumStakingFormUtils';
