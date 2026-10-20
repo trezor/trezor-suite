@@ -153,6 +153,7 @@ export const TronSignTransaction = Type.Object({
     fee_limit: Type.Optional(Type.Number()),
     data: Type.Optional(Type.String()),
     contract: Type.Array(TronContractInput, { length: 1 }),
+    chunkify: Type.Optional(Type.Boolean()),
 });
 
 export type TronSignedTx = Static<typeof TronSignedTx>;

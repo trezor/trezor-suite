@@ -126,6 +126,7 @@ export default class TronSignTransaction extends AbstractMethod<'tronSignTransac
                 timestamp: payload.timestamp,
                 fee_limit: payload.fee_limit,
                 data: payload.data,
+                chunkify: typeof payload.chunkify === 'boolean' ? payload.chunkify : false,
             },
             contract,
         };
