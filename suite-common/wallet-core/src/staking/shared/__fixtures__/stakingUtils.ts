@@ -1,7 +1,7 @@
 import { type NetworkSymbol, type NetworkType, asNetworkSymbol } from '@suite-common/wallet-config';
 import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 
-import { UNSTAKING_ETH_PERIOD } from '../../ethereum/ethereumStakingConstants';
+import { UNSTAKING_ETH_PERIOD } from '../../ethereum/providers/everstake/everstakeConstants';
 
 type GetUnstakingPeriodInDaysFixture = {
     description: string;

@@ -7,7 +7,7 @@ import {
     secondsToDays,
 } from '@suite-common/wallet-utils';
 
-import { getDaysToAddToPoolInitial } from './ethereumStaking';
+import { getDaysToAddToPoolInitial } from './providers/everstake/everstakeTimelines';
 import { type AccountsRootState } from '../../accounts/accountsReducer';
 import { selectAccountByKey, selectDeviceAccounts } from '../../accounts/accountsSelectors';
 import { selectAccountStakeTransactions } from '../../transactions/transactionsSelectors';

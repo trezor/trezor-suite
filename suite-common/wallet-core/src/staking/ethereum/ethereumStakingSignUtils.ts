@@ -1,30 +1,44 @@
 import { getNetwork } from '@suite-common/wallet-config';
 import {
-    type Account,
     type AccountKey,
     type BaseStakeType,
     type PrecomposedTransactionFinal,
     type StakeFormState,
 } from '@suite-common/wallet-types';
-import { fromEther, getAccountIdentity } from '@suite-common/wallet-utils';
-import { type FeeLevel } from '@trezor/connect';
+import {
+    fromEther,
+    fromGwei,
+    fromIntegerString,
+    fromWei,
+    getAccountIdentity,
+    sanitizeHex,
+} from '@suite-common/wallet-utils';
+import {
+    type EthereumTransaction,
+    type EthereumTransactionEIP1559,
+    type FeeLevel,
+} from '@trezor/connect';
 import { BigNumber } from '@trezor/utils';
 
 import {
     getEthereumStakingLiveStateErrorMessage,
-    getUnstakeAmountFromCalldata,
-    transformTx,
-    verifyEthereumStakingCalldata,
-    verifyEthereumStakingLiveState,
-} from './ethereumStaking';
+    readEthereumStakingPool,
+} from './ethereumStakingLiveState';
+import {
+    DEFAULT_ETHEREUM_STAKING_PROVIDER_ID,
+    getEthereumStakingAdapter,
+} from './providers/ethereumStakingProviders';
+import { type EthereumStakingAccount } from './providers/types';
+import { type EthereumStakingTransactionDraft } from './types';
 import { type AccountsRootState } from '../../accounts/accountsReducer';
 import { selectAccountByKey } from '../../accounts/accountsSelectors';
 import { type SignTransactionError } from '../../send/sendFormTypes';
+import { WALLET_SDK_SOURCE } from '../shared/stakingConstants';
 
 const PREPARE_LOG_PREFIX = 'prepareEthereumStakingContext';
 const LIVE_STATE_LOG_PREFIX = 'verifyEthereumStakingLiveStateForSign';
 
-export type EthereumStakingAccount = Account & { networkType: 'ethereum' };
+export type { EthereumStakingAccount };
 
 export type EthereumStakingVariant = {
     stakeType: BaseStakeType;
@@ -123,7 +137,7 @@ export const prepareEthereumStakingContext = (
         stakeType,
         precomposedTransaction,
         formValues,
-        source,
+        source = WALLET_SDK_SOURCE,
     }: PrepareEthereumStakingContextParams,
 ): { ok: true; context: PreparedEthereumStakingContext } | PrepareFailure => {
     const account = selectAccountByKey(state, accountKey);
@@ -150,11 +164,10 @@ export const prepareEthereumStakingContext = (
         return failed(`Compose result for ${stakeType} is incomplete.`);
     }
 
-    const calldataCheck = verifyEthereumStakingCalldata({
-        stakeType,
-        calldata: variant.calldata,
-        source,
-    });
+    const adapter = getEthereumStakingAdapter(DEFAULT_ETHEREUM_STAKING_PROVIDER_ID);
+
+    const calldataCheck = adapter.verifyStep({ label: stakeType, data: variant.calldata }, source);
+
     if (!calldataCheck.isValid) {
         return failed(
             'Compose draft calldata failed verification.',
@@ -206,16 +219,15 @@ export const verifyEthereumStakingLiveStateForSign = async ({
 }: VerifyEthereumStakingLiveStateForSignProps): Promise<
     { isValid: true } | { isValid: false; error: StakeLiveStateInvalidError }
 > => {
-    const liveState = await verifyEthereumStakingLiveState({
-        stakeType,
-        from: account.descriptor,
-        symbol: account.symbol,
-        identity: getAccountIdentity(account),
-        amount:
-            stakeType === 'unstake'
-                ? (getUnstakeAmountFromCalldata(calldata) ?? undefined)
-                : undefined,
-    });
+    const adapter = getEthereumStakingAdapter(DEFAULT_ETHEREUM_STAKING_PROVIDER_ID);
+
+    const liveState = await adapter.validateLiveState({ label: stakeType, data: calldata }, () =>
+        readEthereumStakingPool({
+            symbol: account.symbol,
+            descriptor: account.descriptor,
+            identity: getAccountIdentity(account),
+        }),
+    );
 
     if (!liveState.isValid) {
         console.error(
@@ -232,6 +244,47 @@ export const verifyEthereumStakingLiveStateForSign = async ({
     }
 
     return { isValid: true };
+};
+
+export const transformTx = (
+    tx: EthereumStakingTransactionDraft,
+    nonce: string,
+    chainId: number,
+    gasPrice?: string,
+    maxFeePerGas?: string,
+    maxPriorityFeePerGas?: string,
+): EthereumTransaction | EthereumTransactionEIP1559 => {
+    let result: EthereumTransaction | EthereumTransactionEIP1559;
+
+    const commonTxData = {
+        to: tx.to,
+        // in send form, the amount is in ether, here in wei because it is converted earlier in stake, unstake, claimToWithdraw methods
+        value: fromWei(tx.value).toWei('hex'),
+        chainId,
+        nonce: fromIntegerString(nonce).toHex(),
+        gasLimit: fromIntegerString(tx.gasLimit.toString()).toHex(),
+        data: sanitizeHex(tx.data),
+    };
+
+    if (maxFeePerGas) {
+        result = {
+            ...commonTxData,
+            gasPrice: undefined,
+            maxFeePerGas: fromGwei(maxFeePerGas).toWei('hex'),
+            maxPriorityFeePerGas: fromGwei(maxPriorityFeePerGas || '0').toWei('hex'),
+        };
+    } else if (gasPrice) {
+        result = {
+            ...commonTxData,
+            gasPrice: fromGwei(gasPrice).toWei('hex'),
+            maxFeePerGas: undefined,
+            maxPriorityFeePerGas: undefined,
+        };
+    } else {
+        throw new Error('No gas price or maxFeePerGas and maxPriorityFeePerGas provided');
+    }
+
+    return result;
 };
 
 // Transforms the prepared context into TrezorConnect.ethereumSignTransaction params.

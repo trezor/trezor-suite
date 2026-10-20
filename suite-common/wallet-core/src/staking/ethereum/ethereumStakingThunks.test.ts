@@ -15,13 +15,17 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import TrezorConnect from '@trezor/connect';
 
 import { stakeActions } from '../stakingActions';
-import { buildClaimWithdrawRequestData, buildStakeData, buildUnstakeData } from './ethereumStaking';
-import { UNSTAKE_INTERCHANGES } from './ethereumStakingConstants';
 import {
     type PreparedEthereumStakingContext,
     prepareEthereumStakingContext,
 } from './ethereumStakingSignUtils';
 import { signPreparedEthereumStakingTransactionThunk } from './ethereumStakingThunks';
+import {
+    buildClaimWithdrawRequestData,
+    buildStakeData,
+    buildUnstakeData,
+} from './providers/everstake/everstakeCalldata';
+import { UNSTAKE_INTERCHANGES } from './providers/everstake/everstakeConstants';
 
 jest.mock('@trezor/connect', () => ({
     __esModule: true,

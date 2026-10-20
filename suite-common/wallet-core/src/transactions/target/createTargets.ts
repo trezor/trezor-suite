@@ -7,7 +7,7 @@ import {
 } from '@trezor/blockchain-link-types';
 
 import { type InternalTarget, type SimpleTarget, type Target, type TokenTarget } from './Target';
-import { getInstantStakeType } from '../../staking/ethereum/ethereumStaking';
+import { getInstantStakeType } from '../../staking/ethereum/providers/everstake/everstakeTransactions';
 
 // Filter out internal transfers that are instant staking transactions
 const filteredInternalTransfers = (

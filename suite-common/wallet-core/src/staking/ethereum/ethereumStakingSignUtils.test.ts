@@ -8,14 +8,20 @@ import {
 } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
-import { buildClaimWithdrawRequestData, buildStakeData, buildUnstakeData } from './ethereumStaking';
-import { UNSTAKE_INTERCHANGES } from './ethereumStakingConstants';
+import { transformTxFixtures } from './__fixtures__/ethereumStaking';
 import {
     type PrepareEthereumStakingContextState,
     buildEthereumStakingSignTransaction,
     prepareEthereumStakingContext,
+    transformTx,
 } from './ethereumStakingSignUtils';
 import { WALLET_SDK_SOURCE, WALLET_SDK_SOURCE_MOBILE } from '../shared/stakingConstants';
+import {
+    buildClaimWithdrawRequestData,
+    buildStakeData,
+    buildUnstakeData,
+} from './providers/everstake/everstakeCalldata';
+import { UNSTAKE_INTERCHANGES } from './providers/everstake/everstakeConstants';
 
 const ETH = asNetworkSymbol('eth');
 const POOL_ADDRESS = '0xD523794C879D9eC028960a231F866758e405bE34';
@@ -316,6 +322,16 @@ describe('buildEthereumStakingSignTransaction', () => {
             gasPrice: undefined,
             maxFeePerGas: '0x6fc23ac00',
             maxPriorityFeePerGas: '0x77359400',
+        });
+    });
+});
+
+describe('transformTx', () => {
+    transformTxFixtures.forEach(test => {
+        it(test.description, () => {
+            const result = transformTx(test.tx, test.nonce, test.chainId, test.gasPrice);
+            expect(result).toEqual(test.result);
+            expect(result).not.toHaveProperty('from');
         });
     });
 });

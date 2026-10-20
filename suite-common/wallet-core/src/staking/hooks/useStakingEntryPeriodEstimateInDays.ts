@@ -2,12 +2,12 @@ import { useEthereumValidatorsQueue } from '@suite-common/earn-staking-api';
 import { type Account, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 
-import { getDaysToAddToPool } from '../ethereum/ethereumStaking';
-import { DAYS_TO_ADD_TO_POOL_DEFAULT } from '../ethereum/ethereumStakingConstants';
 import {
     hasStakeInPendingDepositedState,
     isSupportedEthStakingNetworkSymbol,
 } from '../ethereum/ethereumStakingUtils';
+import { DAYS_TO_ADD_TO_POOL_DEFAULT } from '../ethereum/providers/everstake/everstakeConstants';
+import { getDaysToAddToPool } from '../ethereum/providers/everstake/everstakeTimelines';
 import { isSupportedSolStakingNetworkSymbol } from '../solana/solanaStakingUtils';
 
 type UseStakingEntryPeriodEstimateInDaysParams = {

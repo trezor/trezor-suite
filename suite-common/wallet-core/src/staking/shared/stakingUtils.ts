@@ -61,15 +61,15 @@ import {
     isSupportedAdaStakingNetworkSymbol,
     subtypeToStakeTypeMap,
 } from '../cardano/cardanoStakingUtils';
-import { getEthereumStakingAddressByType } from '../ethereum/ethereumStaking';
+import { isSupportedEthStakingNetworkSymbol } from '../ethereum/ethereumStakingUtils';
 import {
     MAX_ETH_AMOUNT_FOR_STAKING,
     MIN_ETH_AMOUNT_FOR_STAKING,
     MIN_ETH_BALANCE_FOR_STAKING,
     MIN_ETH_FOR_WITHDRAWALS,
     UNSTAKING_ETH_PERIOD,
-} from '../ethereum/ethereumStakingConstants';
-import { isSupportedEthStakingNetworkSymbol } from '../ethereum/ethereumStakingUtils';
+} from '../ethereum/providers/everstake/everstakeConstants';
+import { getEverstakeContractAddressByStakeType } from '../ethereum/providers/everstake/everstakeContracts';
 import {
     getSolStakingAccountsInfo,
     isSupportedSolStakingNetworkSymbol,
@@ -344,7 +344,7 @@ export const getStakingContractAddress = (account: Account, stakeType: StakeType
 
     switch (account.networkType) {
         case 'ethereum':
-            return getEthereumStakingAddressByType(account.symbol, stakeType);
+            return getEverstakeContractAddressByStakeType(account.symbol, stakeType);
         case 'solana':
         default:
             return account.descriptor;

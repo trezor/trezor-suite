@@ -8,9 +8,18 @@ import {
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import TrezorConnect, { type FeeLevel } from '@trezor/connect';
 
-import { buildStakeData, buildUnstakeData } from './ethereumStaking';
-import { STAKE_GAS_LIMIT_RESERVE, UNSTAKE_INTERCHANGES } from './ethereumStakingConstants';
-import { composeEthereumStakingTransaction } from './ethereumStakingFormUtils';
+import { getStakeFormsDefaultValuesFixture } from './__fixtures__/ethereumStaking';
+import {
+    addEthereumStakingGasReserve,
+    composeEthereumStakingTransaction,
+    getStakeFormsDefaultValues,
+} from './ethereumStakingFormUtils';
+import { buildStakeData, buildUnstakeData } from './providers/everstake/everstakeCalldata';
+import {
+    STAKE_GAS_LIMIT_RESERVE,
+    UNSTAKE_INTERCHANGES,
+} from './providers/everstake/everstakeConstants';
+import { type GetStakeFormsDefaultValuesParams } from './types';
 import { WALLET_SDK_SOURCE, WALLET_SDK_SOURCE_MOBILE } from '../shared/stakingConstants';
 
 jest.mock('@trezor/connect', () => ({
@@ -193,6 +202,25 @@ describe('composeEthereumStakingTransaction', () => {
         });
     });
 
+    it('returns the generic error when the plan is rejected', async () => {
+        const result = await compose(buildFormValues({ amount: '0.001' }));
+
+        expect(result).toEqual({
+            normal: {
+                type: 'error',
+                error: 'INCORRECT-FEE-RATE',
+                errorMessage: { id: 'TR_GENERIC_ERROR_TITLE' },
+            },
+        });
+        expect(blockchainEstimateFeeMock).not.toHaveBeenCalled();
+    });
+
+    it('returns the generic error for a stake type Ethereum does not support', async () => {
+        const result = await compose(buildFormValues({ stakeType: 'change-delegate' }));
+
+        expect(result?.normal).toMatchObject({ type: 'error', error: 'INCORRECT-FEE-RATE' });
+    });
+
     it('leaves error levels without calldata', async () => {
         const result = await compose(buildFormValues({ amount: '10' }));
 
@@ -203,6 +231,29 @@ describe('composeEthereumStakingTransaction', () => {
                 id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
                 values: { networkDisplaySymbol: 'ETH' },
             },
+        });
+    });
+});
+
+describe(addEthereumStakingGasReserve.name, () => {
+    it('adds the reserve to the estimated limit, rounded down', () => {
+        expect(addEthereumStakingGasReserve('20000', STAKE_GAS_LIMIT_RESERVE)).toBe(240000);
+        expect(addEthereumStakingGasReserve('0', STAKE_GAS_LIMIT_RESERVE)).toBe(
+            STAKE_GAS_LIMIT_RESERVE,
+        );
+    });
+
+    it('is NaN when the estimate is missing', () => {
+        expect(addEthereumStakingGasReserve(undefined, STAKE_GAS_LIMIT_RESERVE)).toBeNaN();
+    });
+});
+
+describe(getStakeFormsDefaultValues.name, () => {
+    getStakeFormsDefaultValuesFixture.forEach(test => {
+        it(test.description, () => {
+            expect(
+                getStakeFormsDefaultValues(test.args as GetStakeFormsDefaultValuesParams),
+            ).toEqual(test.result);
         });
     });
 });

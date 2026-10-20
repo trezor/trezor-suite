@@ -65,7 +65,7 @@ import {
     type WalletSettingsRootState,
     selectAddressDisplayType,
 } from '../settings/walletSettingsReducer';
-import { STAKE_GAS_LIMIT_RESERVE } from '../staking/ethereum/ethereumStakingConstants';
+import { STAKE_GAS_LIMIT_RESERVE } from '../staking/ethereum/providers/everstake/everstakeConstants';
 import { type TransactionsRootState } from '../transactions/transactionsReducerTypes';
 import {
     selectAccountTransactions,
