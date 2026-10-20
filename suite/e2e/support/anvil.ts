@@ -38,11 +38,6 @@ const ERC20_FUNDER_ADDRESS = '0x000000000000000000000000000000000000f00d';
 // Gas reserve given to an impersonated account whose balance cannot cover a transaction.
 const GAS_TOP_UP = 10n ** 18n;
 
-// Suite's evm-rpc worker reads Transfer logs only this many blocks behind the tip (TIP_LAG_BLOCKS in
-// packages/blockchain-link/src/workers/evm-rpc/history/constants.ts), and an automining fork adds no
-// block until the next transaction, so a transfer in the newest block would stay unseen.
-const SUITE_LOG_LAG_BLOCKS = 2;
-
 const getFreePort = () =>
     new Promise<number>((resolve, reject) => {
         const server = createServer();
@@ -75,6 +70,10 @@ const getAnvilArgs = (config: AnvilForkConfig, port: number) => [
     config.forkUrl,
     ...(config.blockNumber !== undefined ? ['--fork-block-number', `${config.blockNumber}`] : []),
     ...(config.baseFeePerGas !== undefined ? ['--base-fee', `${config.baseFeePerGas}`] : []),
+    // Mixed mining: each transaction is mined at once, and blocks keep coming in between.
+    ...(config.automine && config.blockTime > 0
+        ? ['--block-time', `${config.blockTime}`, '--mixed-mining']
+        : []),
     ...(config.automine ? [] : ['--no-mining']),
     '--chain-id',
     `${config.chainId}`,
@@ -285,8 +284,7 @@ export class AnvilFork {
      * Sends a transaction from any address without its key, e.g. an incoming transfer to the
      * account under test or a protocol action. An account that cannot cover value plus gas is
      * topped up first.
-     * With automine on, resolves once the transaction is mined and fails if it reverted, then mines
-     * past the lag at which Suite reads logs, so Suite's live watcher reports the transfer. With
+     * With automine on, resolves once the transaction is mined and fails if it reverted; with
      * automine off, resolves as soon as it is in the mempool.
      */
     @step()
@@ -311,7 +309,6 @@ export class AnvilFork {
                 if (receipt.status !== 'success') {
                     throw new Error(`Transaction ${hash} from ${from} to ${to} reverted`);
                 }
-                await this.mine(SUITE_LOG_LAG_BLOCKS);
             }
 
             return hash;
@@ -346,10 +343,14 @@ export class AnvilFork {
 
     // Mining and time
 
-    /** With automine off, transactions Suite broadcasts stay pending until `mine()`. */
+    /**
+     * With automine off, transactions Suite broadcasts stay pending until `mine()`. Interval mining
+     * pauses with it, or the next interval block would pick them up.
+     */
     @step()
     async setAutomine(enabled: boolean) {
         await this.rpc.setAutomine(enabled);
+        await this.rpc.setIntervalMining({ interval: enabled ? this.config.blockTime : 0 });
         this.automine = enabled;
     }
 

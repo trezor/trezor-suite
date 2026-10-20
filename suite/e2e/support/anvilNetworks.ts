@@ -21,11 +21,19 @@ export type AnvilForkOptions = {
     blockNumber?: number;
     /** When false, transactions wait in the mempool until `mine()`. Defaults to true. */
     automine?: boolean;
+    /**
+     * Seconds between blocks mined on top of automine, so the chain keeps moving like a real one.
+     * Suite's evm-rpc worker reads Transfer logs 2 blocks behind the tip, so without new blocks it
+     * would never see the newest transfers. 0 turns it off. Defaults to 1.
+     */
+    blockTime?: number;
     /** Base fee of the first block mined on the fork, in wei. */
     baseFeePerGas?: bigint;
 };
 
-export type AnvilForkConfig = Required<Pick<AnvilForkOptions, 'symbol' | 'forkUrl' | 'automine'>> &
+export type AnvilForkConfig = Required<
+    Pick<AnvilForkOptions, 'symbol' | 'forkUrl' | 'automine' | 'blockTime'>
+> &
     Pick<AnvilForkOptions, 'blockNumber' | 'baseFeePerGas'> & { chainId: number };
 
 const getEnv = (name: string, symbol: NetworkSymbol) =>
@@ -55,6 +63,7 @@ export const getAnvilForkConfig = (options: AnvilForkOptions): AnvilForkConfig =
         forkUrl,
         blockNumber: options.blockNumber ?? (envBlockNumber ? Number(envBlockNumber) : undefined),
         automine: options.automine ?? true,
+        blockTime: options.blockTime ?? 1,
         baseFeePerGas: options.baseFeePerGas,
     };
 };
