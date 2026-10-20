@@ -42,7 +42,7 @@ test.beforeEach(async ({ anvil, onboardingPage, settingsPage, walletPage }) => {
 });
 ```
 
-`anvilFork` options: `symbol`, `forkUrl`, `blockNumber`, `automine` (default `true`) and `baseFeePerGas`.
+`anvilFork` options: `symbol`, `forkUrl`, `blockNumber`, `automine` (default `true`), `blockTime` (default `1`) and `baseFeePerGas`.
 
 Suite offers the `evm-rpc` backend type only in debug mode (unless it is the network's default), so `changeNetworks` turns debug mode on whenever it is given an `evm-rpc` backend.
 
@@ -50,7 +50,7 @@ How Suite's `evm-rpc` worker sees the fork decides the order of setup:
 
 - Discovery loads only an account's balance and nonce, so the native balance must be there first.
 - Tokens are known only from `Transfer` logs. A live watcher polls every 10 s, in real time, for logs in blocks mined since the account was subscribed, and reports them to Suite. Its scan of older blocks goes through the fork's upstream RPC, which is slow and rate-limited, so do not rely on it. Fund tokens after `changeNetworks` and `openAccount`, then wait for Suite with an explicit timeout (e.g. `toBeVisible({ timeout: 30_000 })`); `page.clock` does not speed the worker up.
-- The worker reads logs 2 blocks behind the tip, and an automining fork mines no block until the next transaction. With automine on, `AnvilFork` therefore mines 2 extra blocks after each transaction it sends itself. Until those blocks exist, Suite shows no tokens: the Earn dashboard offers "Buy" instead of "Deposit now", for example.
+- The worker reads logs 2 blocks behind the tip. The fork therefore uses mixed mining: every transaction is mined at once, and a block is added every `blockTime` seconds so the chain keeps moving like a real one. With `blockTime: 0`, a transfer in one of the 2 newest blocks stays invisible to Suite until more blocks are mined; for example, the Earn dashboard keeps offering "Buy" instead of "Deposit now", or never shows the vault position.
 
 ## Core Rules
 
@@ -69,7 +69,7 @@ MUST_NOT: Use `waitForTimeout` to wait for a confirmation.
 
 ## Confirmations
 
-With automine on, every transaction is mined the moment it is sent. Suite only notices by polling, so fast-forward the page clock until the UI catches up:
+With automine on, every transaction is mined the moment it is sent, and interval blocks keep following. Suite only notices by polling, so fast-forward the page clock until the UI catches up:
 
 ```typescript
 await page.clock.install(); // before the action whose confirmation you wait for
@@ -85,7 +85,7 @@ await expect(async () => {
 ## Pending transactions, replacement and time-locked flows
 
 ```typescript
-await anvil.setAutomine(false); // or anvilFork: { automine: false }
+await anvil.setAutomine(false); // or anvilFork: { automine: false }; pauses interval blocks too
 // ...user signs and broadcasts in Suite...
 await expect.poll(() => anvil.getPendingTransactionHashes()).toHaveLength(1);
 // assert the pending state in Suite, bump the fee / cancel, then:
@@ -110,7 +110,7 @@ const id = await anvil.snapshot();
 await anvil.revert(id);
 ```
 
-With automine on, these calls resolve once the transaction is mined and 2 more blocks follow it (for the worker's log lag), and throw if it reverted. With automine off they resolve with the hash as soon as it is in the mempool; `mine()` is then up to the test.
+With automine on, these calls resolve once the transaction is mined, and throw if it reverted. With automine off they resolve with the hash as soon as it is in the mempool; `mine()` is then up to the test.
 
 ## Determinism and limits
 
