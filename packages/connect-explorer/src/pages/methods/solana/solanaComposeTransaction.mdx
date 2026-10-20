@@ -22,11 +22,14 @@ export const paramDescriptions = {
     amount: 'Amount to send in decimal string format',
     priorityFees:
         'Fee configuration. If not set, it defaults to hardcoded values. It is recommended to simulate the transaction using `blockchainEstimateFee`',
-    token: 'Token details in case of token transfer',
+    tokenTransfer: 'Token details in case of token transfer',
+    recipientAccountOwner:
+        'Program owning the recipient account, i.e. `misc.owner` of `toAddress` as returned by a Solana RPC `getAccountInfo` call, or `null` if the account does not exist yet. `null` or the System Program means the associated token account is created, unless `recipientTokenAccounts` already contains it.',
+    recipientTokenAccounts:
+        "The recipient's already existing token accounts for `mint`, an empty array if there are none. Used to reuse an existing associated token account instead of creating one.",
     blockHash: 'Recent Block hash',
     lastValidBlockHeight: 'Recent Block height',
     coin: '"SOL" for mainnet (default), "DSOL" for devnet',
-    identity: "Blockchain connection identity. It's used to separate multiple connections.",
 };
 
 ## Solana: Compose transaction
@@ -49,11 +52,40 @@ const result = await TrezorConnect.solanaComposeTransaction(params);
 
 ### Examples
 
+Native SOL transfer:
+
 ```javascript
 TrezorConnect.solanaComposeTransaction({
     fromAddress: '...',
     toAddress: '...',
     amount: '0.1',
+    blockHash: '...',
+    lastValidBlockHeight: 123456,
+    coin: 'SOL',
+});
+```
+
+Token transfer. `recipientAccountOwner` and `recipientTokenAccounts` are required and have to be
+looked up by the caller, by calling `getAccountInfo` on `toAddress` on a Solana RPC and taking its
+owner and its token accounts for `mint`. Passing `null` and `[]` tells the method that the recipient
+has no token account yet, so it adds an instruction creating the associated token account.
+
+```javascript
+TrezorConnect.solanaComposeTransaction({
+    fromAddress: '...',
+    toAddress: '...',
+    amount: '1',
+    tokenTransfer: {
+        mint: '...',
+        program: 'spl-token',
+        decimals: 6,
+        // Sender's token accounts for `mint`.
+        accounts: [{ publicKey: '...', balance: '10' }],
+        // Owner of `toAddress`, `null` if the account does not exist yet.
+        recipientAccountOwner: '11111111111111111111111111111111',
+        // Recipient's token accounts for `mint`, empty if there are none.
+        recipientTokenAccounts: [{ publicKey: '...', balance: '0' }],
+    },
     blockHash: '...',
     lastValidBlockHeight: 123456,
     coin: 'SOL',
