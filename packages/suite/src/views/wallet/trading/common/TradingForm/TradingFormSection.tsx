@@ -16,7 +16,7 @@ export const TradingFormSection = ({
     'data-testid': dataTestId,
 }: TradingFormSectionProps) => (
     <Column
-        gap={4}
+        gap={8}
         padding={{ horizontal: 20, vertical: 16 }}
         alignItems="stretch"
         data-testid={dataTestId}
@@ -37,7 +37,7 @@ export const TradingFormSection = ({
                 )}
             </Row>
         )}
-        <Column gap={8} alignItems="stretch">
+        <Column gap={4} alignItems="stretch">
             {children}
         </Column>
     </Column>

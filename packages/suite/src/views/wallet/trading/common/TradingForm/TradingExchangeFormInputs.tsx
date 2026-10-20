@@ -185,7 +185,7 @@ export const TradingExchangeFormInputs = () => {
                             cursor="default"
                         >
                             <Column
-                                gap={8}
+                                gap={4}
                                 flex="1"
                                 minWidth={0}
                                 alignItems="flex-start"
