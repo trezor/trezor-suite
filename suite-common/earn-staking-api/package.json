@@ -26,6 +26,6 @@
     "devDependencies": {
         "@suite-common/wallet-config": "workspace:*",
         "orval": "8.33.0",
-        "prettier": "^3.9.6"
+        "prettier": "^3.9.9"
     }
 }

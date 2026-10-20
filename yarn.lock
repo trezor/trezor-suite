@@ -11648,7 +11648,7 @@ __metadata:
   resolution: "@suite-common/earn-stablecoin-defs@workspace:suite-common/earn-stablecoin-defs"
   dependencies:
     orval: "npm:8.33.0"
-    prettier: "npm:^3.9.6"
+    prettier: "npm:^3.9.9"
     zod: "npm:4.6.5"
   languageName: unknown
   linkType: soft
@@ -11684,7 +11684,7 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     orval: "npm:8.33.0"
-    prettier: "npm:^3.9.6"
+    prettier: "npm:^3.9.9"
     zod: "npm:4.6.5"
   languageName: unknown
   linkType: soft
@@ -11868,7 +11868,7 @@ __metadata:
     "@trezor/network-module-types": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     fantasticon: "npm:4.1.0"
-    prettier: "npm:^3.9.6"
+    prettier: "npm:^3.9.9"
     sharp: "npm:^0.34.2"
     svgo: "npm:^4.0.1"
     zod: "npm:4.6.5"
@@ -11880,7 +11880,7 @@ __metadata:
   resolution: "@suite-common/illustrations@workspace:suite-common/illustrations"
   dependencies:
     chalk: "npm:^6.0.1"
-    prettier: "npm:^3.9.6"
+    prettier: "npm:^3.9.9"
     svgo: "npm:^4.0.1"
   languageName: unknown
   linkType: soft
@@ -16111,7 +16111,7 @@ __metadata:
     "@trezor/styles-native": "workspace:*"
     expo: "npm:~57.0.23"
     expo-video: "npm:~57.0.1"
-    prettier: "npm:^3.9.6"
+    prettier: "npm:^3.9.9"
     react: "npm:19.2.3"
     react-native: "npm:0.86.3"
     react-native-reanimated: "npm:4.7.0"
@@ -18741,7 +18741,7 @@ __metadata:
   dependencies:
     "@svgr/cli": "npm:^8.1.0"
     "@trezor/eslint": "workspace:*"
-    prettier: "npm:^3.9.6"
+    prettier: "npm:^3.9.9"
     react: "npm:19.2.3"
   languageName: unknown
   linkType: soft
@@ -19308,7 +19308,7 @@ __metadata:
     cross-fetch: "npm:^4.1.0"
     fs-extra: "npm:^11.3.1"
     minimatch: "npm:^10.2.4"
-    prettier: "npm:^3.9.6"
+    prettier: "npm:^3.9.9"
     rollup: "npm:^4.62.2"
     rollup-plugin-dts: "npm:^6.4.1"
     semver: "npm:^7.7.1"
@@ -41432,12 +41432,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^3.9.6":
-  version: 3.9.6
-  resolution: "prettier@npm:3.9.6"
+"prettier@npm:^3.9.9":
+  version: 3.9.9
+  resolution: "prettier@npm:3.9.9"
   bin:
     prettier: bin/prettier.cjs
-  checksum: 10/1dd1a1e0e40ec3b91cda9d294c4a95022aef61880ca3f441aad99b1252279f58a766c4cece81132c01550dcff1fd445efbd8812ea4a2374313e7fc6c8136f11f
+  checksum: 10/3d11a8095a7db50f0fbc8086ad96be676401154b63a2e9023e1274893457dccab19a9c211f4fb2cae7244e800bea2d5185d9bb6fc510f48a53017815e47d4e6d
   languageName: node
   linkType: hard
 
@@ -47256,7 +47256,7 @@ __metadata:
     nx: "npm:23.1.0"
     postcss-styled-syntax: "npm:^0.7.1"
     postcss-value-parser: "npm:^4.2.0"
-    prettier: "npm:^3.9.6"
+    prettier: "npm:^3.9.9"
     rimraf: "npm:^6.1.2"
     stylelint: "npm:^17.1.1"
     ts-node: "npm:^10.9.2"
