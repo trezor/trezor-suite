@@ -1,4 +1,5 @@
 import { useDevice } from '@suite/device';
+import { selectIsFinpromRestricted } from '@suite/finprom';
 import { Translation } from '@suite/intl';
 import { getNetworkDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { useDisplayBaseCurrency } from '@suite-common/wallet-core';
@@ -9,7 +10,7 @@ import { TokenIcon } from '@trezor/product-components';
 import { DashboardSection } from 'src/components/dashboard';
 import { YieldBadge } from 'src/components/earn/YieldBadge/YieldBadge';
 import { PriceTicker, TrendTicker } from 'src/components/suite';
-import { useLayoutSize } from 'src/hooks/suite';
+import { useLayoutSize, useSelector } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 
 import { TradeBoxActionButton } from './TradeBoxActionButton';
@@ -25,6 +26,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
     const { device } = useDevice();
     const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(account.symbol);
     const { hasEarnOption, yieldBadge } = useTradeBoxEarnOptions(account);
+    const isFinpromRestricted = useSelector(selectIsFinpromRestricted);
 
     return (
         <DashboardSection>
@@ -98,17 +100,21 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                                 <Translation id="TR_EARN" />
                             </TradeBoxActionButton>
                         )}
-                        <TradeBoxActionButton account={account} type="buy">
-                            <Translation id="TR_NAV_BUY" />
-                        </TradeBoxActionButton>
-                        <TradeBoxActionButton
-                            account={account}
-                            type="sell"
-                            isDisabled={account.empty}
-                        >
-                            <Translation id="TR_NAV_SELL" />
-                        </TradeBoxActionButton>
-                        {!hasBitcoinOnlyFirmware(device) && (
+                        {!isFinpromRestricted && (
+                            <>
+                                <TradeBoxActionButton account={account} type="buy">
+                                    <Translation id="TR_NAV_BUY" />
+                                </TradeBoxActionButton>
+                                <TradeBoxActionButton
+                                    account={account}
+                                    type="sell"
+                                    isDisabled={account.empty}
+                                >
+                                    <Translation id="TR_NAV_SELL" />
+                                </TradeBoxActionButton>
+                            </>
+                        )}
+                        {!hasBitcoinOnlyFirmware(device) && !isFinpromRestricted && (
                             <TradeBoxActionButton
                                 account={account}
                                 type="exchange"

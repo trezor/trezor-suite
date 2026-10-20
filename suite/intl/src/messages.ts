@@ -3355,6 +3355,15 @@ export const messages = defineMessages({
             'Get started by buying or receiving {networkDisplaySymbol} or any token on the {networkName} network.',
         id: 'TR_ACCOUNT_WITH_TOKENS_IS_EMPTY_DESCRIPTION',
     },
+    TR_ACCOUNT_IS_EMPTY_RECEIVE_DESCRIPTION: {
+        defaultMessage: 'Get started by receiving {network}.',
+        id: 'TR_ACCOUNT_IS_EMPTY_RECEIVE_DESCRIPTION',
+    },
+    TR_ACCOUNT_WITH_TOKENS_IS_EMPTY_RECEIVE_DESCRIPTION: {
+        defaultMessage:
+            'Get started by receiving {networkDisplaySymbol} or any token on the {networkName} network.',
+        id: 'TR_ACCOUNT_WITH_TOKENS_IS_EMPTY_RECEIVE_DESCRIPTION',
+    },
     TR_GENERIC_ERROR_TITLE: {
         defaultMessage: 'Something went wrong',
         description: 'Generic error message title',
