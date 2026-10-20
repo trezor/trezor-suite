@@ -118,6 +118,27 @@ describe(HidApi.name, () => {
                 error: { code: ERRORS.DEVICE_NOT_FOUND },
             });
         });
+
+        it('logs the interfaces only when the list changes', async () => {
+            const logger = { error: jest.fn(), info: jest.fn(), debug: jest.fn() };
+            const nodeHid = {
+                devicesAsync: jest.fn(() => Promise.resolve([mockNodeHidDevice()])),
+                HIDAsync: { open: jest.fn() },
+            } satisfies NodeHid;
+            // @ts-expect-error: a minimal logger is enough here
+            const api = new HidApi({ nodeHid, logger });
+
+            await api.enumerate();
+            await api.enumerate();
+            await api.enumerate();
+
+            expect(logger.debug).toHaveBeenCalledTimes(1);
+
+            nodeHid.devicesAsync.mockResolvedValueOnce([]);
+            await api.enumerate();
+
+            expect(logger.debug).toHaveBeenCalledTimes(2);
+        });
     });
 
     describe('openDevice', () => {

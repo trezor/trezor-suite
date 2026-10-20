@@ -88,6 +88,11 @@ export class HidApi extends AbstractApi {
     private openedDevices = new Map<PathInternal, OpenedDevice>();
     /** Strings that identify a device or its port, blanked out of logged error messages. */
     private secrets = new Set<string>();
+    /**
+     * Last logged interface list. The empty one counts as logged, a machine without a HID
+     * Trezor One has nothing to report.
+     */
+    private lastInterfaces = '[]';
 
     constructor({ logger, nodeHid, platform = process.platform }: HidApiParams) {
         super({ logger, type: 'usb' });
@@ -131,17 +136,21 @@ export class HidApi extends AbstractApi {
                     systemPaths.set(createPath(device.path), device.path);
                 }
             });
-            if (devices.length > 0 || this.systemPaths.size > 0) {
+            const interfaces = JSON.stringify(
+                devices.map(device => ({
+                    interface: device.interface,
+                    usagePage: device.usagePage,
+                    usage: device.usage,
+                    release: device.release,
+                    hasPath: !!device.path,
+                })),
+            );
+            // The listen loop enumerates twice a second while the log keeps only its last 100
+            // messages. Logging an unchanged list would push every other line out of it.
+            if (interfaces !== this.lastInterfaces) {
+                this.lastInterfaces = interfaces;
                 this.logger?.debug(
-                    `hid: enumerate: ${devices.length} interfaces of 534c:0001, ${systemPaths.size} wire interfaces ${JSON.stringify(
-                        devices.map(device => ({
-                            interface: device.interface,
-                            usagePage: device.usagePage,
-                            usage: device.usage,
-                            release: device.release,
-                            hasPath: !!device.path,
-                        })),
-                    )}`,
+                    `hid: enumerate: ${devices.length} interfaces of 534c:0001, ${systemPaths.size} wire interfaces ${interfaces}`,
                 );
             }
             this.handleDevicesChange(systemPaths);
