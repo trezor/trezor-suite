@@ -199,6 +199,67 @@ describe('sessions', () => {
         });
     });
 
+    // CURRENTLY CRASHES AND LEAKS THE LOCK — releaseDone dereferences the
+    // descriptor unconditionally, so when the device disconnects between
+    // releaseIntent and releaseDone the handler throws, falls into the
+    // UNEXPECTED_ERROR catch-all and never reaches clearLock. The lock taken by
+    // releaseIntent stays at the head of the queue, so every later
+    // acquire/release first has to wait out its 4s safety-net timer.
+    //
+    // This test pins the current broken behavior; both assertions flip when the
+    // fix lands.
+    test('releaseDone with disconnected device crashes and leaks the lock', async () => {
+        // the background logs the crash before swallowing it; silence the
+        // console.error trap of JestCustomEnv for it
+        const consoleError = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+        const client1 = new SessionsClient(background);
+        await client1.handshake();
+        await client1.enumerateDone({
+            descriptors: [{ path: PathInternal('1'), type: 1, apiType: 'usb' }],
+        });
+
+        const acquireIntent = await client1.acquireIntent({
+            path: PathPublic('1'),
+            previous: null,
+        });
+        expect(acquireIntent).toMatchObject({ success: true });
+        await client1.acquireDone({ path: PathPublic('1') });
+
+        const releaseIntent = await client1.releaseIntent({ session: Session('1') });
+        expect(releaseIntent).toMatchObject({ success: true, payload: { path: '1' } });
+
+        // device disconnects while the caller is closing it
+        await client1.enumerateDone({ descriptors: [] });
+
+        const releaseDone = await client1.releaseDone({ path: PathInternal('1') });
+        expect(releaseDone).toMatchObject({
+            success: false,
+            error: { code: 'unexpected error' },
+        });
+        expect(consoleError).toHaveBeenCalled();
+        consoleError.mockRestore();
+
+        // the lock taken by releaseIntent was not freed: a fresh acquire of the
+        // reconnected device does not resolve, it waits out the 4s safety-net
+        // timer of the leaked lock (hence the race; the sentinel must stay well
+        // below lockDuration in background.ts)
+        await client1.enumerateDone({
+            descriptors: [{ path: PathInternal('1'), type: 1, apiType: 'usb' }],
+        });
+        const acquireAgain = await Promise.race([
+            client1.acquireIntent({ path: PathPublic('2'), previous: null }),
+            new Promise(resolve =>
+                setTimeout(() => resolve('stuck behind the safety-net timer'), 1000),
+            ),
+        ]);
+        expect(acquireAgain).toBe('stuck behind the safety-net timer');
+
+        // cleanup: drop the safety-net timer of the leaked lock so the still
+        // queued acquire does not keep the test runner open
+        background.dispose();
+    });
+
     test('acquireDone with abort releases the lock without committing a session', async () => {
         const client1 = new SessionsClient(background);
         await client1.handshake();
