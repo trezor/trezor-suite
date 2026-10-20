@@ -28,6 +28,7 @@ import {
     asAccountDescriptor,
 } from '@suite-common/wallet-types';
 import { featureFlagsInitialState } from '@suite-native/feature-flags';
+import { localeInitialState } from '@suite-native/intl';
 import { appSettingsInitialState } from '@suite-native/settings';
 import {
     btcAsset,
@@ -104,6 +105,7 @@ const getPreloadedState = ({
     residence,
     countryCode,
     formResetRequestedFor,
+    isFinpromRestricted,
 }: {
     buy?: boolean;
     sell?: boolean;
@@ -115,6 +117,7 @@ const getPreloadedState = ({
     residence?: boolean;
     countryCode?: TradingCountryCode | undefined;
     formResetRequestedFor?: TradingType | undefined;
+    isFinpromRestricted?: boolean;
 }) => {
     const features: Feature[] = [];
     if (buy !== undefined) {
@@ -166,9 +169,17 @@ const getPreloadedState = ({
             payload: { allowedCountries: ['CZ'] },
         });
     }
+    if (isFinpromRestricted !== undefined) {
+        features.push({
+            domain: 'finprom.presenceRestriction',
+            flag: isFinpromRestricted,
+            payload: { countries: ['US'] },
+        });
+    }
 
     return {
         featureFlags: featureFlagsInitialState,
+        locale: localeInitialState,
         messageSystem: {
             config: {
                 version: 1,
@@ -446,6 +457,30 @@ describe('commonSelectors', () => {
                 expect(
                     selectIsTradingEnabled(
                         getPreloadedState({ residence: true, buy: true, countryCode: 'CZ' }),
+                    ),
+                ).toBe(true);
+            });
+        });
+
+        describe('when FinProm restriction applies', () => {
+            it('should select that trading is not enabled even with every trading feature enabled', () => {
+                expect(
+                    selectIsTradingEnabled(
+                        getPreloadedState({
+                            buy: true,
+                            exchange: true,
+                            sell: true,
+                            concierge: true,
+                            isFinpromRestricted: true,
+                        }),
+                    ),
+                ).toBe(false);
+            });
+
+            it('should select that trading is enabled when the FinProm flag is off', () => {
+                expect(
+                    selectIsTradingEnabled(
+                        getPreloadedState({ buy: true, isFinpromRestricted: false }),
                     ),
                 ).toBe(true);
             });

@@ -102,6 +102,7 @@
 !/suite-common/extra-dependencies
 !/suite-common/feedback
 !/suite-common/fiat-services
+!/suite-common/finprom
 !/suite-common/firmware
 !/suite-common/firmware-authenticity
 !/suite-common/flags
@@ -184,6 +185,7 @@
 !/suite-native/feature-feedback
 !/suite-native/feature-flags
 !/suite-native/feedback-form
+!/suite-native/finprom
 !/suite-native/firmware
 !/suite-native/formatters
 !/suite-native/formatters-config

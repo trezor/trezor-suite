@@ -1,5 +1,5 @@
 import { deviceInitialState } from '@suite-common/device';
-import { messageSystemInitialState } from '@suite-common/message-system';
+import { Feature, messageSystemInitialState } from '@suite-common/message-system';
 import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
@@ -78,6 +78,17 @@ describe('AppTabNavigator', () => {
         await fireEvent.press(getByText(getTranslation('navigation.tabs.trade')));
 
         expect(getByTestId('@screen/Trading')).toBeTruthy();
+    });
+
+    it('should not render Trade tab when FinProm is restricted', async () => {
+        const { queryByText } = await renderTabs({
+            messageSystem: mockMessageSystemStateWithFeatureFlags(
+                { [Feature.finprom.presenceRestriction]: true },
+                { [Feature.finprom.presenceRestriction]: { countries: ['US'] } },
+            ),
+        });
+
+        expect(queryByText(getTranslation('navigation.tabs.trade'))).toBe(null);
     });
 
     it('should render Earn tab', async () => {
