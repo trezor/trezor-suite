@@ -1,6 +1,6 @@
 import { type AccountWithNetworkType, type ReceiveInfo } from '@suite-common/wallet-types';
 import { getStakingPath } from '@suite-common/wallet-utils';
-import { type SignAddresses, toSignAddresses } from '@trezor/network-module-suite-sign-verify';
+import { type SignAddresses, toSignAddresses } from '@suite-lego/sign-verify';
 
 export const getCardanoSignAddresses = (
     account: AccountWithNetworkType<'cardano'>,

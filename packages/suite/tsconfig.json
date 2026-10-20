@@ -162,6 +162,9 @@
             "path": "../../suite-common/walletconnect"
         },
         { "path": "../../suite-lego/intl" },
+        {
+            "path": "../../suite-lego/sign-verify"
+        },
         { "path": "../../suite/account" },
         { "path": "../../suite/address" },
         { "path": "../../suite/analytics" },
@@ -250,9 +253,6 @@
         },
         {
             "path": "../../networks/network-module/suite-common/suite-common-types"
-        },
-        {
-            "path": "../../networks/network-module/suite/sign-verify"
         },
         {
             "path": "../../networks/network-module/suite/suite-types"

@@ -5,8 +5,6 @@ import * as yup from 'yup';
 
 import { type Account } from '@suite-common/wallet-types';
 import { Translation, type TranslationKey, useTranslation } from '@suite-lego/intl';
-import { Button, Card, Column } from '@trezor/components';
-import { useServices } from '@trezor/dependency-injection';
 import {
     SIGN_VERIFY_BASE_DEFAULT_VALUES,
     SignVerifyAddressField,
@@ -19,7 +17,9 @@ import {
     signVerifyBaseSchema,
     useSignVerifyCopyValue,
     useSignVerifyForm,
-} from '@trezor/network-module-suite-sign-verify';
+} from '@suite-lego/sign-verify';
+import { Button, Card, Column } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { type SignVerifyProps } from '@trezor/network-module-suite-types';
 import { injectDispatch } from '@trezor/redux-utils';
 

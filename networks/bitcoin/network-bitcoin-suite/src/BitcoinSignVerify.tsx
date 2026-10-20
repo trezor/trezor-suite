@@ -7,8 +7,6 @@ import * as yup from 'yup';
 import { type ReceiveRootState, selectTouchedAddresses } from '@suite-common/receive';
 import { type Account } from '@suite-common/wallet-types';
 import { Translation, type TranslationKey, useTranslation } from '@suite-lego/intl';
-import { Button, Card, Column } from '@trezor/components';
-import { useServices } from '@trezor/dependency-injection';
 import {
     FormatSwitch,
     SIGN_VERIFY_BASE_DEFAULT_VALUES,
@@ -22,7 +20,9 @@ import {
     signVerifyBaseSchema,
     useSignVerifyCopyValue,
     useSignVerifyForm,
-} from '@trezor/network-module-suite-sign-verify';
+} from '@suite-lego/sign-verify';
+import { Button, Card, Column } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { type SignVerifyProps } from '@trezor/network-module-suite-types';
 import { injectDispatch } from '@trezor/redux-utils';
 

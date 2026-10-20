@@ -44,11 +44,11 @@ import { type GetBinFilesBaseUrlDep, type ReloadAppDep } from '@suite-common/sui
 import { type ThpHostNameDep } from '@suite-common/thp';
 import { selectTradedAccountKeys } from '@suite-common/trading';
 import { selectAccountsByDeviceState } from '@suite-common/wallet-core';
+import { type SignVerifyAddressDep } from '@suite-lego/sign-verify';
 import { type GetTrezorConnectPrivilegedDep } from '@trezor/connect';
 import { toGetter } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';
 import type { CreateLoggerDep } from '@trezor/logger';
-import { type SignVerifyAddressDep } from '@trezor/network-module-suite-sign-verify';
 import { type SuiteNetworkModuleRepositoryDep } from '@trezor/network-module-suite-types';
 
 import { type SuiteReduxStore } from 'src/reducers/createReduxStore';

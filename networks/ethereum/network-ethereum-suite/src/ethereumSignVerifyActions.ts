@@ -2,7 +2,6 @@ import { type Dispatch } from 'redux';
 
 import { type AnalyticsDep } from '@suite-common/analytics';
 import { type Account } from '@suite-common/wallet-types';
-import { type GetTrezorConnectDep } from '@trezor/connect-common';
 import {
     type SignVerifyRootState,
     type VerifyMessageResult,
@@ -16,7 +15,8 @@ import {
     notifyVerifySuccess,
     reportSignMessage,
     reportVerifyMessage,
-} from '@trezor/network-module-suite-sign-verify';
+} from '@suite-lego/sign-verify';
+import { type GetTrezorConnectDep } from '@trezor/connect-common';
 import { type WithServices } from '@trezor/redux-utils';
 
 export type EthereumSignVerifyConnectDep = GetTrezorConnectDep<

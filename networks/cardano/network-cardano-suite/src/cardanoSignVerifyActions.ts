@@ -9,7 +9,6 @@ import {
     getProtocolMagic,
     getStakingPath,
 } from '@suite-common/wallet-utils';
-import { type GetTrezorConnectDep, getSerializedPath } from '@trezor/connect-common';
 import {
     type SignVerifyRootState,
     asError,
@@ -18,7 +17,8 @@ import {
     notifyError,
     notifySignSuccess,
     reportSignMessage,
-} from '@trezor/network-module-suite-sign-verify';
+} from '@suite-lego/sign-verify';
+import { type GetTrezorConnectDep, getSerializedPath } from '@trezor/connect-common';
 import { MessagesSchema } from '@trezor/protobuf';
 import { type WithServices } from '@trezor/redux-utils';
 

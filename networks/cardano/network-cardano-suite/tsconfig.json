@@ -16,6 +16,9 @@
         },
         { "path": "../../../suite-lego/intl" },
         {
+            "path": "../../../suite-lego/sign-verify"
+        },
+        {
             "path": "../../../packages/components"
         },
         {
@@ -25,9 +28,6 @@
             "path": "../../../packages/dependency-injection"
         },
         { "path": "../network-cardano-types" },
-        {
-            "path": "../../network-module/suite/sign-verify"
-        },
         {
             "path": "../../network-module/suite/suite-types"
         },

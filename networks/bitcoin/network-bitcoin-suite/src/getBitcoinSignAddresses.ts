@@ -1,5 +1,5 @@
 import { type Account, type ReceiveInfo } from '@suite-common/wallet-types';
-import { type SignAddresses, toSignAddresses } from '@trezor/network-module-suite-sign-verify';
+import { type SignAddresses, toSignAddresses } from '@suite-lego/sign-verify';
 
 export const getBitcoinSignAddresses = (
     account: Account,
