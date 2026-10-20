@@ -1,4 +1,5 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { selectIsFinpromRestricted } from '@suite/finprom';
 import { Translation } from '@suite/intl';
 import { gotoThunk, selectIsAccountTabPage, selectRouteName } from '@suite/router';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
@@ -21,6 +22,11 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
     const account = selectedAccount?.account;
     const isAccountTabPage = useSelector(selectIsAccountTabPage);
     const currentRouteName = useSelector(selectRouteName);
+    const isFinpromRestricted = useSelector(selectIsFinpromRestricted);
+
+    if (isFinpromRestricted) {
+        return null;
+    }
 
     const goToWithAnalytics = (...[payload]: Parameters<typeof gotoThunk>) => {
         if (currentRouteName === 'suite-index') {

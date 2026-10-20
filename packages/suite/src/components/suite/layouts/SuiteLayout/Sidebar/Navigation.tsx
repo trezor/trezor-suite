@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectIsAppsEmbeddingAvailable } from '@suite/apps-embedding-demo';
+import { selectIsFinpromRestricted } from '@suite/finprom';
 import {
     NewContentIndicatorId,
     markNewContentIndicatorAsSeen,
@@ -69,6 +70,7 @@ export const Navigation = ({ children }: NavigationProps) => {
     const startRoute: Route['name'] = 'suite-index';
 
     const isBtcOnly = useSelector(selectHasBitcoinOnlyFirmware);
+    const isFinpromRestricted = useSelector(selectIsFinpromRestricted);
     const isAppsEmbeddingAvailable = useSelector(selectIsAppsEmbeddingAvailable);
 
     const hasUnseenNotifications = useSelector(selectHasUnseenTransactionNotifications);
@@ -180,7 +182,7 @@ export const Navigation = ({ children }: NavigationProps) => {
                     routes: [startRoute],
                     shortcut: ['MOD', 'ALT', 'KEY_0'],
                 },
-                ...(!isBtcOnly
+                ...(!isBtcOnly && !isFinpromRestricted
                     ? [
                           {
                               nameId: 'TR_TRADING_SWAP',
@@ -192,6 +194,10 @@ export const Navigation = ({ children }: NavigationProps) => {
                               onClick: handleSwapNavigation,
                               shortcut: ['ALT', 'KEY_X'],
                           } as NavigationItemProps,
+                      ]
+                    : []),
+                ...(!isBtcOnly
+                    ? [
                           {
                               nameId: 'TR_EARN',
                               icon: PiggyBankIcon,
@@ -238,6 +244,7 @@ export const Navigation = ({ children }: NavigationProps) => {
             [
                 startRoute,
                 isBtcOnly,
+                isFinpromRestricted,
                 isAppsEmbeddingAvailable,
                 handleSwapNavigation,
                 isSwapNewContentIndicatorVisible,
