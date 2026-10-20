@@ -10,6 +10,7 @@ import { type WithServices, createThunk } from '@trezor/redux-utils';
 import { type VoteThunkArguments, composeTronVoteFeeLevelsThunk } from './composeVote';
 import { buildVoteContract, buildVoteReviewForm } from './voteContract';
 import { notifyEarnTransactionBroadcastThunk } from '../../../../earn/earnTransactionsThunks';
+import { transactionsActions } from '../../../../transactions/transactionsActions';
 import {
     type AddFakePendingTronTxThunkState,
     addFakePendingTronTxThunk,
@@ -194,6 +195,13 @@ export const submitTronVoteThunk = createThunk<
             });
 
             if (!pushResult.success) {
+                dispatch(
+                    transactionsActions.transactionBroadcastStatus({
+                        account,
+                        flow,
+                        status: 'error',
+                    }),
+                );
                 withScope(scope => {
                     scope.setTag('error.code', 'tron_staking_broadcast_failed_after_report');
                     scope.setTag('error.kind', 'vote');

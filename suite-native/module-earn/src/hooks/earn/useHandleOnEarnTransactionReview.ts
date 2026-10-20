@@ -93,7 +93,7 @@ export const useHandleOnEarnTransactionReview = ({
         }
 
         const response = await dispatch(
-            pushStakeTransactionThunk({ accountKey, isMevProtectionFeatureEnabled }),
+            pushStakeTransactionThunk({ accountKey, stakeType, isMevProtectionFeatureEnabled }),
         );
 
         if (isFulfilled(response)) {
@@ -111,6 +111,7 @@ export const useHandleOnEarnTransactionReview = ({
         dispatch,
         handleReviewError,
         isMevProtectionFeatureEnabled,
+        stakeType,
         networkSymbol,
         precomposedTransaction,
         formState,
