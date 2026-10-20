@@ -23,11 +23,14 @@ import { Translation } from '@suite-native/intl';
 import { SUITE_MOBILE_SUPPORT_URL, useOpenLink } from '@suite-native/link';
 import {
     AuthorizeDeviceStackRoutes,
+    DeviceSettingsStackRoutes,
+    FirmwareUpdateStackRoutes,
     type HomeStackParamList,
     type HomeStackRoutes,
     type RootStackParamList,
     RootStackRoutes,
     type StackToStackCompositeNavigationProps,
+    checkIsActiveRouteAnyOf,
     navigationContainerRef,
 } from '@suite-native/navigation';
 import { captureSentryException } from '@suite-native/sentry';
@@ -44,7 +47,15 @@ import {
     selectIsDeviceFirmwareSupported,
     selectIsDeviceSetupSupported,
     selectShouldFactoryResetBeVisible,
+    selectShouldForceFirmwareUpdate,
 } from '../selectors';
+
+// The firmware update flow must not be reset when the device restarts or reconnects.
+const FORCED_FIRMWARE_UPDATE_ROUTES = [
+    RootStackRoutes.FirmwareUpdateRequired,
+    DeviceSettingsStackRoutes.DeviceFirmware,
+    ...Object.values(FirmwareUpdateStackRoutes),
+];
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     HomeStackParamList,
@@ -66,6 +77,7 @@ export const useDetectDeviceError = () => {
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const isNoPhysicalDeviceConnected = useSelector(selectIsNoPhysicalDeviceConnected);
     const shouldFactoryResetBeVisible = useSelector(selectShouldFactoryResetBeVisible);
+    const shouldForceFirmwareUpdate = useSelector(selectShouldForceFirmwareUpdate);
     const isFirmwareInstallationRunning = useSelector(selectIsFirmwareInstallationRunning);
     const hasDeviceFirmwareInstalled = useSelector(selectHasDeviceFirmwareInstalled);
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
@@ -260,6 +272,27 @@ export const useDetectDeviceError = () => {
         isFirmwareInstallationRunning,
         isOnboardingFinished,
         navigation,
+        wasDeviceEjectedByUser,
+    ]);
+
+    useEffect(() => {
+        if (
+            shouldForceFirmwareUpdate &&
+            !isFirmwareInstallationRunning &&
+            !wasDeviceEjectedByUser &&
+            isOnboardingFinished &&
+            navigationContainerRef.isReady() &&
+            !checkIsActiveRouteAnyOf(FORCED_FIRMWARE_UPDATE_ROUTES)
+        ) {
+            navigationContainerRef.reset({
+                index: 0,
+                routes: [{ name: RootStackRoutes.FirmwareUpdateRequired }],
+            });
+        }
+    }, [
+        shouldForceFirmwareUpdate,
+        isFirmwareInstallationRunning,
+        isOnboardingFinished,
         wasDeviceEjectedByUser,
     ]);
 

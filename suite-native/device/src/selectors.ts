@@ -70,7 +70,11 @@ import { type Device } from '@trezor/connect';
 import { createWeakMapSelector } from '@trezor/redux-utils';
 import { BigNumber, isNotNullOrUndefined } from '@trezor/utils';
 
-import { getIsDeviceSetupSupported, isFirmwareVersionSupported } from './utils';
+import {
+    getIsDeviceSetupSupported,
+    getShouldForceFirmwareUpdate,
+    isFirmwareVersionSupported,
+} from './utils';
 
 export type NativeDeviceRootState = DeviceRootState &
     PersistentDeviceDataRootState &
@@ -300,6 +304,11 @@ export const selectIsDeviceAuthenticityCheckFailed = createMemoizedSelector(
 export const selectIsDeviceSetupSupported = createMemoizedSelector(
     [selectDeviceModel],
     model => isNotNullOrUndefined(model) && getIsDeviceSetupSupported(model),
+);
+
+export const selectShouldForceFirmwareUpdate = createMemoizedSelector(
+    [selectSelectedDevice],
+    device => !!device?.connected && getShouldForceFirmwareUpdate(device),
 );
 
 export const selectShouldFactoryResetBeVisible = createMemoizedSelector(
