@@ -13845,7 +13845,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-native/finprom@workspace:suite-native/finprom":
+"@suite-native/finprom@workspace:*, @suite-native/finprom@workspace:suite-native/finprom":
   version: 0.0.0-use.local
   resolution: "@suite-native/finprom@workspace:suite-native/finprom"
   dependencies:
@@ -15220,6 +15220,7 @@ __metadata:
     "@suite-common/networks": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
@@ -15244,6 +15245,7 @@ __metadata:
     "@suite-native/device-mutex": "workspace:*"
     "@suite-native/discovery": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
+    "@suite-native/finprom": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/forms": "workspace:*"
     "@suite-native/helpers": "workspace:*"
@@ -16174,6 +16176,8 @@ __metadata:
     "@suite-native/accounts": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
+    "@suite-native/finprom": "workspace:*"
+    "@suite-native/intl": "workspace:*"
     "@suite-native/labeling": "workspace:*"
     "@suite-native/sentry": "workspace:*"
     "@suite-native/settings": "workspace:*"
