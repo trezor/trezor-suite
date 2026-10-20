@@ -1258,10 +1258,6 @@ export const messages = defineMessages({
         defaultMessage: 'To see available offers, select your state of residence.',
         id: 'TR_TRADING_SUBDIVISION_REQUIRED_FOR_OFFERS',
     },
-    TR_TRADING_OFFER_LOOKING: {
-        defaultMessage: 'Searching for your best offer...',
-        id: 'TR_TRADING_OFFER_LOOKING',
-    },
     TR_TRADING_FEES_CALCULATION_DISCLAIMER: {
         defaultMessage: 'See how fees are calculated.',
         id: 'TR_TRADING_FEES_CALCULATION_DISCLAIMER',

@@ -448,19 +448,19 @@ export class TradingPage {
 
     @step()
     async verifyBuyFormOpened(displaySymbol: RegExp) {
-        await expect.soft(this.buyBestOfferButton).toBeVisible();
+        await expect.soft(this.page.getByTestId('@trading/form')).toBeVisible();
         await expect.soft(this.inputs.youGetAssetSymbol).toHaveText(displaySymbol);
     }
 
     @step()
     async verifySellFormOpened(displaySymbol: RegExp) {
-        await expect.soft(this.sellBestOfferButton).toBeVisible();
+        await expect.soft(this.page.getByTestId('@trading/form')).toBeVisible();
         await expect.soft(this.inputs.youPayAssetSymbol).toHaveText(displaySymbol);
     }
 
     @step()
     async verifySwapFormOpened(displaySymbol: RegExp) {
-        await expect.soft(this.swapBestOfferButton).toBeVisible();
+        await expect.soft(this.page.getByTestId('@trading/form')).toBeVisible();
         await expect.soft(this.inputs.youPayAssetSymbol).toHaveText(displaySymbol);
     }
 }
