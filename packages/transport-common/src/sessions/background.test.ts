@@ -244,6 +244,41 @@ describe('sessions', () => {
         await client1.acquireDone({ path: PathPublic('2'), abort: true });
     });
 
+    // CURRENTLY DROPS SUCH DEVICES — descriptors and pathInternalPathPublicMap
+    // are plain objects keyed by raw USB serial numbers, so a (hostile or
+    // broken) device presenting a serial that collides with an
+    // Object.prototype member reads as already registered and never makes it
+    // into the dictionary.
+    //
+    // This test pins the current broken behavior; both assertions flip when the
+    // fix lands.
+    test('descriptor paths colliding with Object.prototype keys are dropped', async () => {
+        const client1 = new SessionsClient(background);
+        await client1.handshake();
+
+        await client1.enumerateDone({
+            descriptors: [
+                { path: PathInternal('toString'), type: 1, apiType: 'usb' },
+                { path: PathInternal('__proto__'), type: 1, apiType: 'usb' },
+            ],
+        });
+
+        const sessions = await client1.getSessions();
+        expect(sessions).toMatchObject({
+            success: true,
+            payload: { descriptors: [] },
+        });
+
+        const acquireIntent = await client1.acquireIntent({
+            path: PathPublic('1'),
+            previous: null,
+        });
+        expect(acquireIntent).toMatchObject({
+            success: false,
+            error: { code: 'device not found' },
+        });
+    });
+
     test('acquireDone with abort releases the lock without committing a session', async () => {
         const client1 = new SessionsClient(background);
         await client1.handshake();
