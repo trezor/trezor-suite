@@ -11931,6 +11931,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/finprom@workspace:*, @suite-common/finprom@workspace:suite-common/finprom":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/finprom@workspace:suite-common/finprom"
+  dependencies:
+    "@suite-common/geolocation": "workspace:*"
+    "@suite-common/message-system": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/firmware-authenticity@workspace:*, @suite-common/firmware-authenticity@workspace:suite-common/firmware-authenticity":
   version: 0.0.0-use.local
   resolution: "@suite-common/firmware-authenticity@workspace:suite-common/firmware-authenticity"
@@ -13816,6 +13826,16 @@ __metadata:
     "@trezor/theme": "workspace:*"
     react: "npm:19.2.3"
     react-native-reanimated: "npm:4.7.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/finprom@workspace:suite-native/finprom":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/finprom@workspace:suite-native/finprom"
+  dependencies:
+    "@suite-common/finprom": "workspace:*"
+    "@suite-common/message-system": "workspace:*"
+    "@suite-native/intl": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -16871,6 +16891,17 @@ __metadata:
     react-redux: "npm:9.3.0"
     storybook: "npm:^10.6.1"
     styled-components: "npm:^6.5.3"
+  languageName: unknown
+  linkType: soft
+
+"@suite/finprom@workspace:suite/finprom":
+  version: 0.0.0-use.local
+  resolution: "@suite/finprom@workspace:suite/finprom"
+  dependencies:
+    "@suite-common/finprom": "workspace:*"
+    "@suite-common/locale": "workspace:*"
+    "@suite-common/message-system": "workspace:*"
+    "@suite/settings": "workspace:*"
   languageName: unknown
   linkType: soft
 
