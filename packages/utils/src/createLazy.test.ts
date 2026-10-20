@@ -204,5 +204,134 @@ describe('createLazy', () => {
             expect(state.settled).toBe(true);
             expect(disposeFn).not.toHaveBeenCalled();
         });
+
+        it('waits for an async disposer of a ready value', async () => {
+            const disposeFn = jest.fn(() => returnDelayed(300)(undefined).then(() => {}));
+            const lazy = createLazy(jest.fn(returnDelayed(100)), disposeFn);
+
+            const initPromise = lazy.getOrInit('value');
+            await jest.advanceTimersByTimeAsync(100);
+            await initPromise;
+
+            const state = trackSettled(lazy.dispose());
+
+            await jest.advanceTimersByTimeAsync(299);
+            expect(state.settled).toBe(false);
+
+            await jest.advanceTimersByTimeAsync(1);
+            expect(state.settled).toBe(true);
+        });
+
+        it('waits for an async disposer of a stale value', async () => {
+            const disposeFn = jest.fn(() => returnDelayed(300)(undefined).then(() => {}));
+            const lazy = createLazy(jest.fn(returnDelayed(500)), disposeFn);
+
+            lazy.getOrInit('value').catch(() => {});
+            const state = trackSettled(lazy.dispose());
+
+            await jest.advanceTimersByTimeAsync(799);
+            expect(state.settled).toBe(false);
+
+            await jest.advanceTimersByTimeAsync(1);
+            expect(state.settled).toBe(true);
+            expect(disposeFn).toHaveBeenCalledWith('value');
+        });
+
+        it('waits for a disposal started by a previous dispose() call', async () => {
+            const disposeFn = jest.fn(() => returnDelayed(300)(undefined).then(() => {}));
+            const lazy = createLazy(jest.fn(returnDelayed(100)), disposeFn);
+
+            const initPromise = lazy.getOrInit('value');
+            await jest.advanceTimersByTimeAsync(100);
+            await initPromise;
+
+            const first = trackSettled(lazy.dispose());
+            const second = trackSettled(lazy.dispose());
+
+            await jest.advanceTimersByTimeAsync(299);
+
+            expect(first.settled).toBe(false);
+            expect(second.settled).toBe(false);
+
+            await jest.advanceTimersByTimeAsync(1);
+
+            expect(first.settled).toBe(true);
+            expect(second.settled).toBe(true);
+            expect(disposeFn).toHaveBeenCalledTimes(1);
+        });
+
+        it('resolves and reports the error when an async disposer of a ready value rejects', async () => {
+            const error = new Error('dispose failed');
+            const onDisposeError = jest.fn();
+            const lazy = createLazy(
+                jest.fn(returnDelayed(100)),
+                jest.fn(() => Promise.reject(error)),
+                onDisposeError,
+            );
+
+            const initPromise = lazy.getOrInit('value');
+            await jest.advanceTimersByTimeAsync(100);
+            await initPromise;
+
+            await expect(lazy.dispose()).resolves.toBeUndefined();
+            expect(onDisposeError).toHaveBeenCalledWith(error);
+        });
+
+        it('resolves and reports the error when an async disposer of a stale value rejects', async () => {
+            const error = new Error('dispose failed');
+            const onDisposeError = jest.fn();
+            const lazy = createLazy(
+                jest.fn(returnDelayed(500)),
+                jest.fn(() => Promise.reject(error)),
+                onDisposeError,
+            );
+
+            lazy.getOrInit('value').catch(() => {});
+            const disposePromise = lazy.dispose();
+            await jest.advanceTimersByTimeAsync(500);
+
+            await expect(disposePromise).resolves.toBeUndefined();
+            expect(onDisposeError).toHaveBeenCalledWith(error);
+        });
+
+        it('clears the value and resolves when the disposer throws synchronously', async () => {
+            const error = new Error('dispose failed');
+            const onDisposeError = jest.fn();
+            const lazy = createLazy(
+                jest.fn(returnDelayed(100)),
+                () => {
+                    throw error;
+                },
+                onDisposeError,
+            );
+
+            const initPromise = lazy.getOrInit('value');
+            await jest.advanceTimersByTimeAsync(100);
+            await initPromise;
+
+            await expect(lazy.dispose()).resolves.toBeUndefined();
+            expect(lazy.get()).toBeUndefined();
+            expect(onDisposeError).toHaveBeenCalledWith(error);
+        });
+
+        it('resolves, now and on later calls, when onDisposeError throws', async () => {
+            const onDisposeError = jest.fn(() => {
+                throw new Error('reporter failed');
+            });
+            const lazy = createLazy(
+                jest.fn(returnDelayed(100)),
+                jest.fn(() => Promise.reject(new Error('dispose failed'))),
+                onDisposeError,
+            );
+
+            const initPromise = lazy.getOrInit('value');
+            await jest.advanceTimersByTimeAsync(100);
+            await initPromise;
+
+            await expect(lazy.dispose()).resolves.toBeUndefined();
+            expect(onDisposeError).toHaveBeenCalledTimes(1);
+
+            await expect(lazy.dispose()).resolves.toBeUndefined();
+        });
     });
 });
