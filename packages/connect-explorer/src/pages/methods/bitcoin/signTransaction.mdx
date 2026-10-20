@@ -227,7 +227,7 @@ multisig: multisig([0, 1], ['', '', firstSignature]), // firstSignature = payloa
 ```
 
 - `pubkeys_order: 1` (`LEXICOGRAPHIC`) sorts the keys as in BIP-67, so the order of `pubkeys` does not matter and addresses match a `wsh(sortedmulti(...))` descriptor. The default `0` (`PRESERVED`) uses the keys in the given order (`wsh(multi(...))`). Needs firmware 2.8.7 / 1.13.0. Older firmware ignores the field without an error and derives different addresses, so check one address with [getAddress](/methods/bitcoin/getAddress) first.
-- `signatures` has one entry per key in script order (after sorting with `LEXICOGRAPHIC`), not in the order of `pubkeys`. The signing device's own entry stays `''`. Trezor Model T and Safe devices reject a signature in the wrong slot (`Invalid multisig parameters`). Trezor Model One 1.13.1 does not, and returns a transaction that is missing a signature.
+- `signatures` has one entry per key in script order (after sorting with `LEXICOGRAPHIC`), not in the order of `pubkeys`. The signing device's own entry must be `''`: Trezor Model T and Safe devices fail with `Invalid multisig parameters` otherwise, Trezor Model One overwrites it. Other entries are not checked, so a cosigner's signature in the wrong slot can produce a transaction that does not validate.
 - Each entry is a DER signature as returned in `payload.signatures`, without the sighash byte. Signatures from a PSBT (`partial_sigs`) end with the sighash byte; remove it.
 
 ###### PAYTOADDRESS with refTxs (transaction data provided from custom backend)
