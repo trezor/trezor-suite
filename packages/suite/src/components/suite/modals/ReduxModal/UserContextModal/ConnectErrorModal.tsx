@@ -2,6 +2,7 @@ import { Translation } from '@suite/intl';
 import {
     connectPopupCallInnerThunk,
     connectPopupFinishCallThunk,
+    isDeviceReconnectError,
     selectConnectPopupCall,
 } from '@suite-common/connect-popup';
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
@@ -94,14 +95,10 @@ export const ConnectErrorModal = () => {
         popupCall.error?.code === 'Method_Cancel' ||
         popupCall.error?.code === 'Method_Interrupted' ||
         popupCall.error?.code === 'Failure_ActionCancelled';
-    const isDeviceReconnectError =
-        popupCall.error?.code === 'Device_NotFound' ||
-        popupCall.error?.code === 'Device_Disconnected' ||
-        popupCall.error?.code === 'Device_UsedElsewhere' ||
-        popupCall.error?.code === 'Device_InvalidState';
+    const isDeviceReconnect = isDeviceReconnectError(popupCall.error?.code);
     const isNoTransportError = prerequisite === 'no-transport';
 
-    if (isDeviceReconnectError && (!prerequisite || prerequisite === 'device-disconnected'))
+    if (isDeviceReconnect && (!prerequisite || prerequisite === 'device-disconnected'))
         return <ConnectSelectDeviceModal />;
 
     const getIconIntent = () => {

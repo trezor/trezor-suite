@@ -62,7 +62,7 @@ const CONNECT_POPUP_MODULE = '@common/connect-popup';
 
 // After these errors the popup stays open so that the user can reconnect or switch the device and
 // retry. The caller has not been answered yet.
-const isDeviceReconnectError = (code: string | undefined) =>
+export const isDeviceReconnectError = (code: string | undefined) =>
     code === 'Device_NotFound' ||
     code === 'Device_Disconnected' ||
     code === 'Device_UsedElsewhere' ||
