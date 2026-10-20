@@ -190,7 +190,7 @@ const parseFixtures: ParseFixture[] = [
         expected: {
             protocol: null,
             hostname: null,
-            pathname: '/',
+            pathname: null,
             query: {},
             search: null,
             hash: null,
@@ -202,7 +202,7 @@ const parseFixtures: ParseFixture[] = [
         expected: {
             protocol: null,
             hostname: null,
-            pathname: '/status',
+            pathname: null,
             query: {},
             search: null,
             hash: null,
