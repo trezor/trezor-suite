@@ -1,11 +1,13 @@
 import { selectSelectedAccount } from '@suite/account';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { Translation } from '@suite/intl';
-import { selectRouterParams } from '@suite/router';
+import { gotoThunk, selectRouterParams } from '@suite/router';
 import { selectIsNftSectionEnabled } from '@suite/settings';
 import { getNetworkOptional } from '@suite-common/wallet-config';
 import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { type NavigationItem, SubpageNavigation } from 'src/components/suite/layouts/SuiteLayout';
 import { useGoToWithAnalytics } from 'src/components/suite/layouts/SuiteLayout/PageHeader/useGoToWithAnalytics';
@@ -13,10 +15,11 @@ import { useSelector } from 'src/hooks/suite';
 import { type WalletParams } from 'src/types/wallet';
 
 export const AccountNavigation = () => {
-    const { analytics } = useServices(injectDesktopAnalytics);
+    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const account = useSelector(selectSelectedAccount);
     const routerParams = useSelector(selectRouterParams) as WalletParams;
     const enabledNftSection = useSelector(selectIsNftSectionEnabled);
+    const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const network = getNetworkOptional(routerParams?.symbol);
     const goToWithAnalytics = useGoToWithAnalytics(account);
 
@@ -80,6 +83,20 @@ export const AccountNavigation = () => {
             },
             title: <Translation id="TR_NAV_DETAILS" />,
             'data-testid': `@wallet/menu/wallet-details`,
+        },
+        // Debug only: trading form embed preview, revert together with the wallet-trade route
+        {
+            id: 'wallet-trade',
+            callback: () => {
+                dispatch(gotoThunk({ routeName: 'wallet-trade', preserveParams: true }));
+            },
+            title: (
+                <DebugOnlyBadge>
+                    <Translation id="TR_NAV_TRADE" />
+                </DebugOnlyBadge>
+            ),
+            isHidden: !isDebugModeActive,
+            'data-testid': '@wallet/menu/wallet-trade',
         },
     ];
 
