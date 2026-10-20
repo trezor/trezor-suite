@@ -65,11 +65,7 @@ describe('storageLoad', () => {
         expect(loadApps(app).permissions).toEqual([app]);
     });
 
-    it('loads permissions remembered for the origin null by an earlier version', () => {
-        const nullOriginApp = { ...app, origin: 'null' };
-
-        // Documents the bug: Settings -> Connected apps keeps listing an app whose grant
-        // the call thunk no longer honours.
-        expect(loadApps(nullOriginApp).permissions).toEqual([nullOriginApp]);
+    it('does not load permissions remembered for the origin null by an earlier version', () => {
+        expect(loadApps({ ...app, origin: 'null' }).permissions).toEqual([]);
     });
 });

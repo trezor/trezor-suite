@@ -71,6 +71,10 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
                                             'permission' in t,
                                     ),
                             )
+                            // Drop grants that are no longer remembered, e.g. the origin
+                            // `null` persisted by earlier versions, so the settings list
+                            // cannot show a grant that is ignored.
+                            .filter(canRememberPermissions)
                             // Grants persisted before coins were canonicalized at the
                             // source keep the mixed-case `coinInfo.shortcut` (e.g. `BTC`);
                             // lowercase them on load. This reducer is shared, so it covers
