@@ -13,6 +13,7 @@ import type {
     Utxo,
     VinVout,
 } from '@trezor/blockchain-link-types';
+import { EVERSTAKE_CONTRACTS } from '@trezor/network-ethereum/staking';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import {
@@ -99,22 +100,12 @@ export const filterTokenTransfers = (
         });
 };
 
-const ethereumStakingAddresses = {
-    poolInstance: [
-        '0xD523794C879D9eC028960a231F866758e405bE34',
-        '0x7967AcFc9EB46cA2d20076B61B05e224F2d0B8b3',
-    ],
-    withdrawTreasury: [
-        '0x19449f0f696703Aa3b1485DfA2d855F33659397a',
-        '0xCDd543223b6ef6CE26E7f80F7837c5C1A88aF683',
-    ],
-};
+const everstakeDeployments = Object.values(EVERSTAKE_CONTRACTS);
 
-const isEthereumStakingInternalTransfer = (from: string, to: string) => {
-    const { poolInstance, withdrawTreasury } = ethereumStakingAddresses;
-
-    return poolInstance.includes(from) && withdrawTreasury.includes(to);
-};
+const isEthereumStakingInternalTransfer = (from: string, to: string) =>
+    everstakeDeployments.some(
+        ({ pool, withdrawTreasury }) => pool === from && withdrawTreasury === to,
+    );
 
 export const filterEthereumInternalTransfers = (
     address: string | undefined,

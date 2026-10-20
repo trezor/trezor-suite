@@ -7,7 +7,9 @@ import {
     parseAbiParameters,
 } from 'viem';
 
-import { type BatchCall, MULTICALL3_ADDRESS, batchRead } from './multicall';
+import { MULTICALL3_ADDRESS } from '@trezor/network-ethereum/constants';
+
+import { type BatchCall, batchRead } from './multicall';
 
 const CONTRACT = '0x7a7f0b3c23C23a31cFcb0c44709be70d4D545c6e';
 const OTHER_CONTRACT = '0x1111111111111111111111111111111111111111';

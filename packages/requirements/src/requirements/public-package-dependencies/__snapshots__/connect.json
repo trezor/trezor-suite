@@ -31,6 +31,8 @@
         "@trezor/env-utils",
         "@trezor/logger",
         "@trezor/network-cardano",
+        "@trezor/network-ethereum",
+        "@trezor/network-ethereum-types",
         "@trezor/network-ripple",
         "@trezor/network-solana",
         "@trezor/network-solana-types",

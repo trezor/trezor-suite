@@ -9,6 +9,9 @@
         { "path": "../blockchain-link-types" },
         { "path": "../env-utils" },
         {
+            "path": "../../networks/ethereum/network-ethereum"
+        },
+        {
             "path": "../../networks/ripple/network-ripple"
         },
         {

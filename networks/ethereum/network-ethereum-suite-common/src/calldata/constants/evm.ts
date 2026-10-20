@@ -1,5 +1,7 @@
 import { parseAbi } from 'viem';
 
+import { EVERSTAKE_ABI } from '@trezor/network-ethereum/staking';
+
 export const EVM_ABI = {
     erc20: {
         allowance: parseAbi([
@@ -19,11 +21,9 @@ export const EVM_ABI = {
         ]),
     },
     everstake: {
-        stake: parseAbi(['function stake(uint64 source)']),
-        unstake: parseAbi([
-            'function unstake(uint256 value, uint16 allowedInterchangeNum, uint64 source) returns (uint256 unstakeFromPendingValue)',
-        ]),
-        claimWithdrawRequest: parseAbi(['function claimWithdrawRequest()']),
+        stake: EVERSTAKE_ABI.stake,
+        unstake: EVERSTAKE_ABI.unstake,
+        claimWithdrawRequest: EVERSTAKE_ABI.claimWithdrawRequest,
     },
     ens: {
         // ENSIP-19 UniversalResolver.

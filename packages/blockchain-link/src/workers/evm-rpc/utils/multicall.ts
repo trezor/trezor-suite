@@ -1,39 +1,9 @@
 import { type Abi, type PublicClient, decodeFunctionResult, encodeFunctionData } from 'viem';
 
+import { MULTICALL3_ADDRESS, MULTICALL3_AGGREGATE3_ABI } from '@trezor/network-ethereum/constants';
+
 import { cachePerClient } from './client';
 import { getErrorName } from './errors';
-
-// Canonical CREATE2 deployment, identical on every chain Multicall3 is deployed to.
-export const MULTICALL3_ADDRESS = '0xcA11bde05977b3631167028862bE2a173976CA11' as const;
-
-const AGGREGATE3_ABI = [
-    {
-        name: 'aggregate3',
-        type: 'function',
-        stateMutability: 'payable',
-        inputs: [
-            {
-                name: 'calls',
-                type: 'tuple[]',
-                components: [
-                    { name: 'target', type: 'address' },
-                    { name: 'allowFailure', type: 'bool' },
-                    { name: 'callData', type: 'bytes' },
-                ],
-            },
-        ],
-        outputs: [
-            {
-                name: 'returnData',
-                type: 'tuple[]',
-                components: [
-                    { name: 'success', type: 'bool' },
-                    { name: 'returnData', type: 'bytes' },
-                ],
-            },
-        ],
-    },
-] as const;
 
 export type BatchCall = {
     address: `0x${string}`;
@@ -72,7 +42,7 @@ class NotMulticall3Error extends Error {
 
 const readAggregated = async (client: PublicClient, calls: readonly BatchCall[]) => {
     const data = encodeFunctionData({
-        abi: AGGREGATE3_ABI,
+        abi: MULTICALL3_AGGREGATE3_ABI,
         functionName: 'aggregate3',
         args: [
             calls.map(call => ({
@@ -92,7 +62,7 @@ const readAggregated = async (client: PublicClient, calls: readonly BatchCall[])
     let entries;
     try {
         entries = decodeFunctionResult({
-            abi: AGGREGATE3_ABI,
+            abi: MULTICALL3_AGGREGATE3_ABI,
             functionName: 'aggregate3',
             data: result.data,
         });

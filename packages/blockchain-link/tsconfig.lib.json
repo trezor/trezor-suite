@@ -12,6 +12,9 @@
         { "path": "../blockchain-link-utils" },
         { "path": "../env-utils" },
         {
+            "path": "../../networks/ethereum/network-ethereum"
+        },
+        {
             "path": "../../networks/ripple/network-ripple"
         },
         {

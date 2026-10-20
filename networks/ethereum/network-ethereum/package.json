@@ -11,6 +11,7 @@
     "type": "module",
     "exports": {
         "./constants": "./src/constants/index.ts",
+        "./staking": "./src/staking/index.ts",
         ".": "./src/index.ts"
     },
     "publishConfig": {
@@ -20,6 +21,10 @@
             "./constants": {
                 "types": "./lib/constants/index.d.ts",
                 "default": "./lib/constants/index.js"
+            },
+            "./staking": {
+                "types": "./lib/staking/index.d.ts",
+                "default": "./lib/staking/index.js"
             },
             ".": {
                 "types": "./lib/index.d.ts",

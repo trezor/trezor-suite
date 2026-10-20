@@ -1,17 +1,16 @@
 import type { PublicClient } from 'viem';
 
 import type { StakingPool } from '@trezor/blockchain-link-types';
+import {
+    EVERSTAKE_ABI,
+    EVERSTAKE_STAKING_POOL_NAME,
+    type EverstakeFunctionName,
+    getEverstakeContracts,
+} from '@trezor/network-ethereum/staking';
 
-import { EVERSTAKE_ACCOUNTING_ABI } from './abi';
-import { STAKING_POOL_CONTRACTS } from './constants';
 import { getChainId } from '../utils/client';
 import { getErrorName } from '../utils/errors';
 import { type BatchCall, batchRead } from '../utils/multicall';
-
-type EverstakeAccountingFunctionName = Extract<
-    (typeof EVERSTAKE_ACCOUNTING_ABI)[number],
-    { type: 'function' }
->['name'];
 
 const ACCOUNTING_FUNCTIONS = [
     'pendingBalanceOf',
@@ -20,7 +19,7 @@ const ACCOUNTING_FUNCTIONS = [
     'withdrawRequest',
     'restakedRewardOf',
     'autocompoundBalanceOf',
-] as const satisfies readonly EverstakeAccountingFunctionName[];
+] as const satisfies readonly EverstakeFunctionName[];
 
 const readAccountingBalances = async (
     client: PublicClient,
@@ -29,7 +28,7 @@ const readAccountingBalances = async (
 ) => {
     const calls: BatchCall[] = ACCOUNTING_FUNCTIONS.map(functionName => ({
         address: contract,
-        abi: EVERSTAKE_ACCOUNTING_ABI,
+        abi: EVERSTAKE_ABI[functionName],
         functionName,
         args: [address],
     }));
@@ -70,14 +69,14 @@ export const getStakingPoolData = async (
 ): Promise<StakingPool[] | undefined> => {
     try {
         const chainId = await getChainId(client);
-        const poolConfig = STAKING_POOL_CONTRACTS[chainId];
+        const contracts = getEverstakeContracts(chainId);
 
-        if (!poolConfig) {
+        if (!contracts) {
             return undefined;
         }
 
-        const { contract, name } = poolConfig;
-        const balances = await readAccountingBalances(client, contract, address);
+        const { accounting } = contracts;
+        const balances = await readAccountingBalances(client, accounting, address);
 
         if (Object.values(balances).every(value => value === 0n)) {
             return undefined;
@@ -85,8 +84,8 @@ export const getStakingPoolData = async (
 
         return [
             {
-                contract,
-                name,
+                contract: accounting,
+                name: EVERSTAKE_STAKING_POOL_NAME,
                 pendingBalance: balances.pendingBalance.toString(),
                 pendingDepositedBalance: balances.pendingDepositedBalance.toString(),
                 depositedBalance: balances.depositedBalance.toString(),
