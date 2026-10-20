@@ -4,11 +4,10 @@ import { useSelector } from 'react-redux';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
+    DEFAULT_ETHEREUM_STAKING_PROVIDER_ID,
     type StakeRootState,
-    UNSTAKE_INTERCHANGES,
     WALLET_SDK_SOURCE_MOBILE,
-    buildUnstakeData,
-    getEthereumStakingAddressByType,
+    getEthereumStakingAdapter,
     getStakingLimitsByNetworkSymbol,
     selectAccountByKey,
     selectCanClaimByAccountKey,
@@ -75,11 +74,14 @@ export const useUnstakeForm = (accountKey: AccountKey) => {
         const amountWei = fromEther(amountValue).toWei();
         if (!isPositiveBalance(amountWei)) return undefined;
 
-        return buildEarnComposeFormState(
-            getEthereumStakingAddressByType(account.symbol, 'unstake'),
-            '0',
-            buildUnstakeData(amountWei, UNSTAKE_INTERCHANGES, WALLET_SDK_SOURCE_MOBILE),
+        const step = getEthereumStakingAdapter(DEFAULT_ETHEREUM_STAKING_PROVIDER_ID).buildStep(
+            { type: 'unstake', amount: amountValue },
+            { symbol: account.symbol, source: WALLET_SDK_SOURCE_MOBILE },
         );
+
+        if (!step) return undefined;
+
+        return buildEarnComposeFormState(step.to, '0', step.data);
     }, [account, isValid, amountValue]);
 
     const { formDraft, formDraftKey, isFeeUnavailable, isPrecomposeError, updateFeeLevelThunk } =

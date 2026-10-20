@@ -5,7 +5,7 @@ import {
     useSolanaRewardsHistory,
 } from '@suite-common/earn-staking-api';
 import {
-    getStakingDataForNetwork,
+    getLegacyStakingDataForNetwork,
     selectAccountIsStakingActive,
     selectHasRunningDiscovery,
     selectHasSolExternalStakingAccounts,
@@ -42,7 +42,7 @@ export const SolStakingDashboard = ({ selectedAccount }: SolStakingDashboardProp
     const { isBelowLaptop } = useLayoutSize();
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
 
-    const { canClaim = false } = getStakingDataForNetwork(account) ?? {};
+    const { canClaim = false } = getLegacyStakingDataForNetwork(account) ?? {};
 
     const apy = useSelector(state => selectPoolStatsApy(state, { account }));
 

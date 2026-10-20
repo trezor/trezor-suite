@@ -2,7 +2,7 @@ import { Translation, useTranslation } from '@suite/intl';
 import { selectLanguage } from '@suite/settings';
 import { useFormatters } from '@suite-common/formatters';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { AMOUNT_MAX_LENGTH, getStakingDataForNetwork } from '@suite-common/wallet-core';
+import { AMOUNT_MAX_LENGTH, getLegacyStakingDataForNetwork } from '@suite-common/wallet-core';
 import { Column, type FractionButtonProps, Text } from '@trezor/components';
 import { InputWithOptions } from '@trezor/product-components';
 
@@ -46,7 +46,7 @@ export const UnstakeInputs = () => {
         autocompoundBalance = '0',
         depositedBalance = '0',
         restakedReward = '0',
-    } = getStakingDataForNetwork(account) ?? {};
+    } = getLegacyStakingDataForNetwork(account) ?? {};
 
     const isRewardsVisible = restakedReward != '';
     const isRewardsDisabled = restakedReward === '0';

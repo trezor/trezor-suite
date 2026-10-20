@@ -2,7 +2,11 @@ import { type EthereumStakingProviderAdapter } from '../types';
 import { verifyEverstakeCalldata } from './everstakeCalldata';
 import { EVERSTAKE_STAKING_LIMITS } from './everstakeConstants';
 import { validateEverstakeStepLiveState } from './everstakeLiveState';
-import { planEverstakeOperation, previewEverstakeUnstake } from './everstakePlan';
+import {
+    buildEverstakeStep,
+    planEverstakeOperation,
+    previewEverstakeUnstake,
+} from './everstakePlan';
 import { deriveEverstakePosition } from './everstakePosition';
 
 export const everstakeAdapter: EthereumStakingProviderAdapter = {
@@ -10,6 +14,7 @@ export const everstakeAdapter: EthereumStakingProviderAdapter = {
     limits: EVERSTAKE_STAKING_LIMITS,
     contributesToNativeBalance: true,
     derivePosition: deriveEverstakePosition,
+    buildStep: buildEverstakeStep,
     planOperation: planEverstakeOperation,
     verifyStep: ({ label, data }, source) => verifyEverstakeCalldata(label, data, source),
     validateLiveState: validateEverstakeStepLiveState,

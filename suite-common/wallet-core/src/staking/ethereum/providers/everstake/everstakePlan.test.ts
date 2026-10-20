@@ -17,7 +17,11 @@ import {
     buildUnstakeData,
 } from './everstakeCalldata';
 import { STAKE_GAS_LIMIT_RESERVE, UNSTAKE_INTERCHANGES } from './everstakeConstants';
-import { planEverstakeOperation, previewEverstakeUnstake } from './everstakePlan';
+import {
+    buildEverstakeStep,
+    planEverstakeOperation,
+    previewEverstakeUnstake,
+} from './everstakePlan';
 
 const FROM = asAccountDescriptor('0xfB0bc552ab5Fa1971E8530852753c957e29eEEFC');
 
@@ -36,6 +40,54 @@ const createContext = (
     account: mockWalletAccount({ symbol, descriptor: FROM }),
     source: WALLET_SDK_SOURCE,
     readStakingPools: jest.fn(() => Promise.resolve(read)),
+});
+
+describe(buildEverstakeStep.name, () => {
+    const context = { symbol: asNetworkSymbol('eth'), source: WALLET_SDK_SOURCE };
+
+    it('encodes a stake into the pool with the amount as value', () => {
+        expect(buildEverstakeStep({ type: 'stake', amount: '0.1' }, context)).toEqual({
+            label: 'stake',
+            to: EVERSTAKE_CONTRACTS[1].pool,
+            data: buildStakeData(),
+            value: '100000000000000000',
+            gasReserve: STAKE_GAS_LIMIT_RESERVE,
+        });
+    });
+
+    it('encodes an unstake with the instant interchanges and no value', () => {
+        expect(buildEverstakeStep({ type: 'unstake', amount: '1.5' }, context)).toEqual({
+            label: 'unstake',
+            to: EVERSTAKE_CONTRACTS[1].pool,
+            data: buildUnstakeData('1500000000000000000', UNSTAKE_INTERCHANGES),
+            value: '0',
+            gasReserve: STAKE_GAS_LIMIT_RESERVE,
+        });
+    });
+
+    it('encodes a claim against the accounting contract', () => {
+        expect(buildEverstakeStep({ type: 'claim' }, context)).toMatchObject({
+            label: 'claim',
+            to: EVERSTAKE_CONTRACTS[1].accounting,
+            data: buildClaimWithdrawRequestData(),
+            value: '0',
+        });
+    });
+
+    it('attributes the calldata to the given app', () => {
+        const step = buildEverstakeStep(
+            { type: 'stake', amount: '0.1' },
+            { ...context, source: WALLET_SDK_SOURCE_MOBILE },
+        );
+
+        expect(step?.data).toBe(buildStakeData(WALLET_SDK_SOURCE_MOBILE));
+    });
+
+    it('is null on a network without a deployment', () => {
+        expect(
+            buildEverstakeStep({ type: 'claim' }, { ...context, symbol: asNetworkSymbol('btc') }),
+        ).toBeNull();
+    });
 });
 
 describe(planEverstakeOperation.name, () => {

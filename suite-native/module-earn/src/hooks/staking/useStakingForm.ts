@@ -5,9 +5,9 @@ import { useFormatters } from '@suite-common/formatters';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
+    DEFAULT_ETHEREUM_STAKING_PROVIDER_ID,
     WALLET_SDK_SOURCE_MOBILE,
-    buildStakeData,
-    getEthereumStakingAddressByType,
+    getEthereumStakingAdapter,
     selectAccountByKey,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
@@ -62,11 +62,13 @@ export const useStakingForm = (accountKey: AccountKey) => {
             return buildEarnComposeFormState(account.descriptor, amountValue, '');
         }
 
-        return buildEarnComposeFormState(
-            getEthereumStakingAddressByType(account.symbol, 'stake'),
-            amountValue,
-            buildStakeData(WALLET_SDK_SOURCE_MOBILE),
+        const step = getEthereumStakingAdapter(DEFAULT_ETHEREUM_STAKING_PROVIDER_ID).buildStep(
+            { type: 'stake', amount: amountValue },
+            { symbol: account.symbol, source: WALLET_SDK_SOURCE_MOBILE },
         );
+        if (!step) return undefined;
+
+        return buildEarnComposeFormState(step.to, amountValue, step.data);
     }, [account, isValid, amountValue]);
 
     const { formDraft, formDraftKey, isFeeUnavailable, isPrecomposeError, updateFeeLevelThunk } =

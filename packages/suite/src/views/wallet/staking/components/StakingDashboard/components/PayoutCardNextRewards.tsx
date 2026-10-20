@@ -1,7 +1,10 @@
 import { useMemo } from 'react';
 
 import { Translation } from '@suite/intl';
-import { BACKUP_REWARD_PAYOUT_DAYS, getStakingDataForNetwork } from '@suite-common/wallet-core';
+import {
+    BACKUP_REWARD_PAYOUT_DAYS,
+    getLegacyStakingDataForNetwork,
+} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { secondsToDays } from '@suite-common/wallet-utils';
 import { Paragraph } from '@trezor/components';
@@ -22,7 +25,7 @@ export const PayoutCardNextRewards = ({
     daysToAddToPool,
     validatorWithdrawTime,
 }: PayoutCardNextRewardsProps) => {
-    const { autocompoundBalance = '0' } = getStakingDataForNetwork(account) ?? {};
+    const { autocompoundBalance = '0' } = getLegacyStakingDataForNetwork(account) ?? {};
 
     const payout = useMemo(() => {
         if (!nextRewardPayout || !daysToAddToPool) return undefined;

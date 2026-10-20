@@ -4,8 +4,8 @@ import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { getDisplaySymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
+    getLegacyStakingDataForNetwork,
     getSolanaUnstakeAmountBounds,
-    getStakingDataForNetwork,
     getStakingHelpCenterLink,
 } from '@suite-common/wallet-core';
 import { Banner, Card, Column, InfoItem, Link, Tooltip } from '@trezor/components';
@@ -45,7 +45,7 @@ export const UnstakeForm = () => {
         autocompoundBalance = '0',
         canClaim = false,
         claimableAmount = '0',
-    } = getStakingDataForNetwork(account) ?? {};
+    } = getLegacyStakingDataForNetwork(account) ?? {};
 
     const inputError = errors[CRYPTO_INPUT] || errors[FIAT_INPUT] || errors?.outputs?.[0]?.amount;
     const showError = inputError && !['required', 'min'].includes(inputError.type);

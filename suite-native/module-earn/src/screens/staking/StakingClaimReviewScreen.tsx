@@ -6,8 +6,10 @@ import { type RouteProp, useNavigation, useRoute } from '@react-navigation/nativ
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
+    DEFAULT_ETHEREUM_STAKING_PROVIDER_ID,
     type StakeRootState,
-    buildClaimWithdrawRequestData,
+    WALLET_SDK_SOURCE_MOBILE,
+    getEthereumStakingAdapter,
     getStakingContractAddress,
     getStakingLimitsByNetworkSymbol,
     isSupportedEthStakingNetworkSymbol,
@@ -73,7 +75,14 @@ export const StakingClaimReviewScreen = () => {
 
         // Ethereum claims via calldata, Solana via the claimable amount.
         if (account.networkType === 'ethereum') {
-            return buildEarnComposeFormState(contractAddress, '0', buildClaimWithdrawRequestData());
+            const step = getEthereumStakingAdapter(DEFAULT_ETHEREUM_STAKING_PROVIDER_ID).buildStep(
+                { type: 'claim' },
+                { symbol: account.symbol, source: WALLET_SDK_SOURCE_MOBILE },
+            );
+
+            if (!step) return undefined;
+
+            return buildEarnComposeFormState(step.to, '0', step.data);
         }
 
         if (account.networkType === 'solana') {

@@ -168,7 +168,7 @@ export const getMaxStakeAmount = ({ balance, symbol }: GetMaxStakeAmount): strin
     return BigNumber.min(maxAmount, limits.MAX_AMOUNT_FOR_STAKING).toFixed();
 };
 
-export const getStakingDataForNetwork = (
+export const getLegacyStakingDataForNetwork = (
     account?: Account,
 ): Omit<StakingPoolExtended, 'contract' | 'name'> | undefined => {
     if (!account || !isStakingNetworkType(account.networkType)) return;
@@ -508,7 +508,7 @@ export const isAccountStakingActive = (
         claimableAmount = '0',
         canClaim = false,
         depositedBalance = '0',
-    } = getStakingDataForNetwork(account) ?? {};
+    } = getLegacyStakingDataForNetwork(account) ?? {};
 
     const pendingClaimTxs = claimTransactions.filter(tx => isPending(tx));
 

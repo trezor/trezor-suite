@@ -3,12 +3,12 @@ import { EVM_ABI } from '@trezor/network-ethereum-suite-common';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { createEvmRead } from '../../../../evm/evmRead';
 import { WALLET_SDK_SOURCE } from '../../../shared/stakingConstants';
 import {
     type StakingOperationRequest,
     type StakingPlanContext,
     type StakingPlanResult,
+    type StakingStepContext,
     type StakingTxStep,
     type StakingUnstakePreviewParams,
 } from '../types';
@@ -28,19 +28,66 @@ import {
     validateEverstakeUnstakeLiveState,
 } from './everstakeLiveState';
 import { findEverstakeStakingPool } from './everstakePosition';
+import { createEvmRead } from '../../../../evm/evmRead';
+import { type EthereumStakingLiveStateReason } from '../../ethereumStakingLiveState';
 
 const planned = (operation: StakingOperationRequest, step: StakingTxStep): StakingPlanResult => ({
     success: true,
     plan: { providerId: 'everstake', operation, steps: [step] },
 });
 
+const liveStateInvalid = (reason: EthereumStakingLiveStateReason): StakingPlanResult => ({
+    success: false,
+    error: { code: 'LIVE_STATE_INVALID', reason },
+});
+
+export const buildEverstakeStep = (
+    request: StakingOperationRequest,
+    { symbol, source }: StakingStepContext,
+): StakingTxStep | null => {
+    const contracts = getEverstakeContractsBySymbol(symbol);
+    if (!contracts) return null;
+
+    switch (request.type) {
+        case 'stake':
+            return {
+                label: 'stake',
+                to: contracts.pool,
+                data: buildStakeData(source),
+                value: fromEther(request.amount).toWei(),
+                gasReserve: STAKE_GAS_LIMIT_RESERVE,
+            };
+        case 'unstake':
+            return {
+                label: 'unstake',
+                to: contracts.pool,
+                data: buildUnstakeData(
+                    fromEther(request.amount).toWei(),
+                    UNSTAKE_INTERCHANGES,
+                    source,
+                ),
+                value: '0',
+                gasReserve: STAKE_GAS_LIMIT_RESERVE,
+            };
+        case 'claim':
+            return {
+                label: 'claim',
+                to: contracts.accounting,
+                data: buildClaimWithdrawRequestData(),
+                value: '0',
+                gasReserve: STAKE_GAS_LIMIT_RESERVE,
+            };
+        default:
+            return exhaustive(request);
+    }
+};
+
 export const planEverstakeOperation = async (
     request: StakingOperationRequest,
     { account, source, readStakingPools }: StakingPlanContext,
 ): Promise<StakingPlanResult> => {
-    const contracts = getEverstakeContractsBySymbol(account.symbol);
-
-    if (!contracts) {
+    const step = buildEverstakeStep(request, { symbol: account.symbol, source });
+    if (!step) {
         return { success: false, error: { code: 'UNSUPPORTED_NETWORK' } };
     }
 
@@ -56,25 +103,12 @@ export const planEverstakeOperation = async (
                 };
             }
 
-            return planned(request, {
-                label: 'stake',
-                to: contracts.pool,
-                data: buildStakeData(source),
-                value: fromEther(request.amount).toWei(),
-                gasReserve: STAKE_GAS_LIMIT_RESERVE,
-            });
+            return planned(request, step);
         }
         case 'unstake': {
             const read = await readStakingPools();
-
             if (!read.success) {
-                return {
-                    success: false,
-                    error: {
-                        code: 'LIVE_STATE_INVALID',
-                        reason: { code: 'ACCOUNT_INFO_FAILED', message: read.message },
-                    },
-                };
+                return liveStateInvalid({ code: 'ACCOUNT_INFO_FAILED', message: read.message });
             }
 
             const validation = validateEverstakeUnstakeLiveState(
@@ -82,56 +116,23 @@ export const planEverstakeOperation = async (
                 request.amount,
             );
 
-            if (!validation.isValid) {
-                return {
-                    success: false,
-                    error: { code: 'LIVE_STATE_INVALID', reason: validation.reason },
-                };
-            }
-
-            return planned(request, {
-                label: 'unstake',
-                to: contracts.pool,
-                data: buildUnstakeData(
-                    fromEther(request.amount).toWei(),
-                    UNSTAKE_INTERCHANGES,
-                    source,
-                ),
-                value: '0',
-                gasReserve: STAKE_GAS_LIMIT_RESERVE,
-            });
+            return validation.isValid
+                ? planned(request, step)
+                : liveStateInvalid(validation.reason);
         }
         case 'claim': {
             const read = await readStakingPools();
-
             if (!read.success) {
-                return {
-                    success: false,
-                    error: {
-                        code: 'LIVE_STATE_INVALID',
-                        reason: { code: 'ACCOUNT_INFO_FAILED', message: read.message },
-                    },
-                };
+                return liveStateInvalid({ code: 'ACCOUNT_INFO_FAILED', message: read.message });
             }
 
             const validation = validateEverstakeClaimLiveState(
                 findEverstakeStakingPool(account.symbol, read.stakingPools),
             );
 
-            if (!validation.isValid) {
-                return {
-                    success: false,
-                    error: { code: 'LIVE_STATE_INVALID', reason: validation.reason },
-                };
-            }
-
-            return planned(request, {
-                label: 'claim',
-                to: contracts.accounting,
-                data: buildClaimWithdrawRequestData(),
-                value: '0',
-                gasReserve: STAKE_GAS_LIMIT_RESERVE,
-            });
+            return validation.isValid
+                ? planned(request, step)
+                : liveStateInvalid(validation.reason);
         }
         default:
             return exhaustive(request);

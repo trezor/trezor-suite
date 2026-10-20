@@ -3,10 +3,11 @@ import { useSelector } from 'react-redux';
 import { useQuery } from '@suite-common/react-query';
 import {
     type AccountsRootState,
+    DEFAULT_ETHEREUM_STAKING_PROVIDER_ID,
     WALLET_SDK_SOURCE_MOBILE,
+    getEthereumStakingAdapter,
     isSupportedEthStakingNetworkSymbol,
     selectAccountByKey,
-    simulateUnstake,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { BigNumber, resolveAfter } from '@trezor/utils';
@@ -43,7 +44,11 @@ export const useApproximateInstantUnstakeAmount = (accountKey: AccountKey, amoun
                     return null;
                 }
 
-                const result = await simulateUnstake({
+                const { previewUnstake } = getEthereumStakingAdapter(
+                    DEFAULT_ETHEREUM_STAKING_PROVIDER_ID,
+                );
+
+                const result = await previewUnstake?.({
                     amount,
                     from: descriptor,
                     symbol,
@@ -57,7 +62,7 @@ export const useApproximateInstantUnstakeAmount = (accountKey: AccountKey, amoun
                 return result;
             } catch (error) {
                 if (__DEV__ && !signal.aborted) {
-                    console.warn('simulateUnstake failed', error);
+                    console.warn('previewUnstake failed', error);
                 }
 
                 return null;

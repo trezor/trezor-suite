@@ -8,8 +8,8 @@ import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-commo
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import {
     calculateRewards,
+    getLegacyStakingDataForNetwork,
     getNetworkAdjustedStakingBalance,
-    getStakingDataForNetwork,
     getStakingLimitsByNetworkSymbol,
     isCardanoWithdrawalBlockedByMissingDrep,
     selectAccountClaimTransactions,
@@ -70,7 +70,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
         votingMessageContent,
     } = useMessageSystemStaking(account.symbol);
 
-    const { canClaim = false } = getStakingDataForNetwork(account) ?? {};
+    const { canClaim = false } = getLegacyStakingDataForNetwork(account) ?? {};
     const isDrepDelegationRequired = isCardanoWithdrawalBlockedByMissingDrep(account);
     const isClaimButtonDisabled = isClaimingDisabled || isClaimPending || isDrepDelegationRequired;
     const claimTooltipContent =

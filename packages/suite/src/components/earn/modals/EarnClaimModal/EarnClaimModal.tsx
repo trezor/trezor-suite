@@ -6,7 +6,7 @@ import { setConnectionModal, setConnectionMode, useDevice } from '@suite/device'
 import { Translation } from '@suite/intl';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
-    getStakingDataForNetwork,
+    getLegacyStakingDataForNetwork,
     selectAreFeesLoading,
     selectHasRunningDiscovery,
 } from '@suite-common/wallet-core';
@@ -58,7 +58,8 @@ export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors
     const formIsValid = Object.keys(errors).length === 0;
 
-    const { claimableAmount = '0', restakedReward = '0' } = getStakingDataForNetwork(account) ?? {};
+    const { claimableAmount = '0', restakedReward = '0' } =
+        getLegacyStakingDataForNetwork(account) ?? {};
 
     const isFormInputsValid = !isCardanoNetworkType
         ? formIsValid && hasValues

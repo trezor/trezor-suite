@@ -1,11 +1,4 @@
-// Compatibility surface for the apps until they read the provider adapters directly.
-export {
-    buildClaimWithdrawRequestData,
-    buildStakeData,
-    buildUnstakeData,
-} from './providers/everstake/everstakeCalldata';
-export { getEverstakeContractAddressByStakeType as getEthereumStakingAddressByType } from './providers/everstake/everstakeContracts';
-export { previewEverstakeUnstake as simulateUnstake } from './providers/everstake/everstakePlan';
+// Compatibility surface for the apps until classification and timelines move into the adapters.
 export {
     getDaysToAddToPool,
     getDaysToAddToPoolInitial,

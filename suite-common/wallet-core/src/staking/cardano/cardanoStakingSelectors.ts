@@ -5,7 +5,7 @@ import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-u
 import { type AccountsRootState } from '../../accounts/accountsReducer';
 import { selectAccountByKey, selectDeviceAccounts } from '../../accounts/accountsSelectors';
 import { selectStakeData } from '../shared/stakingSelectors';
-import { getStakingDataForNetwork } from '../shared/stakingUtils';
+import { getLegacyStakingDataForNetwork } from '../shared/stakingUtils';
 import { type StakeRootState } from '../stakingReducerTypes';
 import {
     isCardanoStakedOutsideEverstake,
@@ -36,7 +36,7 @@ export const selectCardanoStakedBalanceByAccountKey = (
     const account = selectAccountByKey(state, accountKey);
     if (account?.networkType !== 'cardano') return null;
 
-    const stakingData = getStakingDataForNetwork(account);
+    const stakingData = getLegacyStakingDataForNetwork(account);
 
     return stakingData?.autocompoundBalance || '0';
 };
@@ -48,7 +48,7 @@ export const selectCardanoRewardsBalanceByAccountKey = (
     const account = selectAccountByKey(state, accountKey);
     if (account?.networkType !== 'cardano') return null;
 
-    const stakingData = getStakingDataForNetwork(account);
+    const stakingData = getLegacyStakingDataForNetwork(account);
 
     return stakingData?.restakedReward ?? '0';
 };

@@ -8,8 +8,8 @@ import { useFormatters } from '@suite-common/formatters';
 import { type NetworkType, getDisplaySymbol } from '@suite-common/wallet-config';
 import {
     calculateRewards,
+    getLegacyStakingDataForNetwork,
     getNetworkAdjustedStakingBalance,
-    getStakingDataForNetwork,
     getStakingLimitsByNetworkSymbol,
     isSupportedStakingNetworkSymbol,
     selectAccountIsStakingActive,
@@ -48,7 +48,7 @@ export const StakingBanner = ({ account }: StakingBannerProps) => {
     const earnEthBanner = useEarnEthBanner(account);
 
     const displaySymbol = getDisplaySymbol(account.symbol);
-    const stakingData = getStakingDataForNetwork(account);
+    const stakingData = getLegacyStakingDataForNetwork(account);
 
     const accountBalance = account.formattedBalance;
     const stakingBalance = stakingData?.depositedBalance ?? '0';

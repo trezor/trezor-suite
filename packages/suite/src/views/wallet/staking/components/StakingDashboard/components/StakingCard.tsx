@@ -5,7 +5,7 @@ import { useSolanaRewardsTotal } from '@suite-common/earn-staking-api';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
-    getStakingDataForNetwork,
+    getLegacyStakingDataForNetwork,
     isCardanoStakedWithEverstake,
     isCardanoWithdrawalBlockedByMissingDrep,
     selectAccountIsStakingActive,
@@ -126,7 +126,7 @@ export const StakingCard = ({
         withdrawTotalAmount = '0',
         claimableAmount = '0',
         restakedReward = '0',
-    } = getStakingDataForNetwork(account) ?? {};
+    } = getLegacyStakingDataForNetwork(account) ?? {};
 
     const isUnstakePending = new BigNumber(withdrawTotalAmount).gt(0);
 

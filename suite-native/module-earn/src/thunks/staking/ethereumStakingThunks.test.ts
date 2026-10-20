@@ -3,13 +3,13 @@ import { combineReducers, isFulfilled, isRejected } from '@reduxjs/toolkit';
 import { type MessageSystemState, messageSystemInitialState } from '@suite-common/message-system';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
+    DEFAULT_ETHEREUM_STAKING_PROVIDER_ID,
     type SendState,
-    UNSTAKE_INTERCHANGES,
+    type StakingOperationRequest,
     WALLET_SDK_SOURCE_MOBILE,
-    buildClaimWithdrawRequestData,
-    buildStakeData,
-    buildUnstakeData,
+    getEthereumStakingAdapter,
     prepareSendFormReducer,
 } from '@suite-common/wallet-core';
 import {
@@ -26,6 +26,7 @@ import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import TrezorConnect from '@trezor/connect';
 import { type WithServices } from '@trezor/redux-utils';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
+import { throwError } from '@trezor/utils';
 
 import { signEthereumStakingTransactionThunk } from './ethereumStakingThunks';
 
@@ -109,16 +110,17 @@ const buildPrecomposedTransaction = (
         ...overrides,
     }) as PrecomposedTransactionFinal;
 
-const buildCalldataForKind = (kind: BaseStakeType): string => {
-    if (kind === 'stake') return buildStakeData(WALLET_SDK_SOURCE_MOBILE);
-    if (kind === 'unstake')
-        return buildUnstakeData(
-            '1500000000000000000',
-            UNSTAKE_INTERCHANGES,
-            WALLET_SDK_SOURCE_MOBILE,
-        );
+const buildStepData = (request: StakingOperationRequest) =>
+    getEthereumStakingAdapter(DEFAULT_ETHEREUM_STAKING_PROVIDER_ID).buildStep(request, {
+        symbol: asNetworkSymbol('eth'),
+        source: WALLET_SDK_SOURCE_MOBILE,
+    })?.data ?? throwError('Unsupported staking network in test');
 
-    return buildClaimWithdrawRequestData();
+const buildCalldataForKind = (kind: BaseStakeType): string => {
+    if (kind === 'stake') return buildStepData({ type: 'stake', amount: '1.5' });
+    if (kind === 'unstake') return buildStepData({ type: 'unstake', amount: '1.5' });
+
+    return buildStepData({ type: 'claim' });
 };
 
 const buildComposeFormDraft = (kind: BaseStakeType, amount: string): FormState =>
@@ -250,7 +252,7 @@ describe('signEthereumStakingTransactionThunk', () => {
         expect(signCall.transaction.to).toBe(POOL_ADDRESS);
         // 1.5 ETH = 1.5 * 10^18 wei = 1500000000000000000 = 0x14d1120d7b160000
         expect(signCall.transaction.value).toBe('0x14d1120d7b160000');
-        expect(signCall.transaction.data).toBe(buildStakeData(WALLET_SDK_SOURCE_MOBILE));
+        expect(signCall.transaction.data).toBe(buildCalldataForKind('stake'));
         expect(signCall.chunkify).toBe(false);
         expect(store.getState().wallet.send.serializedTx).toEqual({
             tx: '0xsignedtx',
@@ -298,9 +300,7 @@ describe('signEthereumStakingTransactionThunk', () => {
         const signCall = ethereumSignTransactionMock.mock.calls[0][0];
         expect(signCall.transaction.to).toBe(POOL_ADDRESS);
         expect(signCall.transaction.value).toBe('0x0');
-        expect(signCall.transaction.data).toBe(
-            buildUnstakeData('1500000000000000000', UNSTAKE_INTERCHANGES, WALLET_SDK_SOURCE_MOBILE),
-        );
+        expect(signCall.transaction.data).toBe(buildCalldataForKind('unstake'));
     });
 
     it('uses the accounting contract address for a claim variant', async () => {
@@ -322,7 +322,7 @@ describe('signEthereumStakingTransactionThunk', () => {
         const signCall = ethereumSignTransactionMock.mock.calls[0][0];
         expect(signCall.transaction.to).toBe(ACCOUNTING_ADDRESS);
         expect(signCall.transaction.value).toBe('0x0');
-        expect(signCall.transaction.data).toBe(buildClaimWithdrawRequestData());
+        expect(signCall.transaction.data).toBe(buildCalldataForKind('claim'));
     });
 
     it('rejects an unstake when the live staked balance dropped below the requested amount', async () => {

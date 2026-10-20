@@ -39,6 +39,11 @@ export type StakingLiveStateContext = {
     readStakingPools: ReadEthereumStakingPools;
 };
 
+export type StakingStepContext = {
+    symbol: NetworkSymbol;
+    source: string;
+};
+
 export type StakingPlanError =
     | { code: 'UNSUPPORTED_NETWORK' }
     | { code: 'AMOUNT_BELOW_MINIMUM'; minAmount: string }
@@ -64,6 +69,11 @@ export type EthereumStakingProviderAdapter = {
     readonly contributesToNativeBalance: boolean;
     /** Sync part of the position from account data alone; null when the account holds nothing with this provider. */
     derivePosition: (account: Account) => StakingPosition | null;
+    /** Encodes the step of an operation without any chain read; null on a network without a deployment. */
+    buildStep: (
+        request: StakingOperationRequest,
+        context: StakingStepContext,
+    ) => StakingTxStep | null;
     planOperation: (
         request: StakingOperationRequest,
         context: StakingPlanContext,

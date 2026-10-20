@@ -4,8 +4,8 @@ import { useFormatters } from '@suite-common/formatters';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     calculateRewards,
+    getLegacyStakingDataForNetwork,
     getNetworkAdjustedStakingBalance,
-    getStakingDataForNetwork,
     getStakingLimitsByNetworkSymbol,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -36,7 +36,7 @@ export const useEmptyStakingCardData = ({
     const { isStakingDisabled } = useMessageSystemStaking(account?.symbol);
     const isStartStakingDisabled = isStakingDisabled || !account;
 
-    const stakingData = getStakingDataForNetwork(account);
+    const stakingData = getLegacyStakingDataForNetwork(account);
 
     const accountBalance = account?.formattedBalance ?? '0';
     const stakingBalance = stakingData?.depositedBalance ?? '0';

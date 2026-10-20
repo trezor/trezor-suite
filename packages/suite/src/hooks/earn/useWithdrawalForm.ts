@@ -6,9 +6,9 @@ import { getNetwork } from '@suite-common/wallet-config';
 import {
     DEFAULT_ETHEREUM_STAKING_PROVIDER_ID,
     getEthereumStakingAdapter,
+    getLegacyStakingDataForNetwork,
     getStakeFormsDefaultValues,
     getStakingContractAddress,
-    getStakingDataForNetwork,
     selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
     selectRawNetworkFeeInfo,
@@ -74,7 +74,7 @@ export const useWithdrawalForm = ({ account }: UseWithdrawalFormProps): Withdraw
         selectFiatRatesByFiatRateKey(state, getFiatRateKey(symbol, baseCurrencyCode), 'current'),
     );
 
-    const { autocompoundBalance = '0' } = getStakingDataForNetwork(account) ?? {};
+    const { autocompoundBalance = '0' } = getLegacyStakingDataForNetwork(account) ?? {};
     const amountLimits: AmountLimitProps = {
         currency: symbol,
         maxCrypto: autocompoundBalance,
