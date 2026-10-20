@@ -135,6 +135,9 @@ export const Feature = {
             unwrap: 'earn.wrappedNative.unwrap',
         } as const satisfies Record<WrappedNativeFlowType, string>,
     },
+    finprom: {
+        presenceRestriction: 'finprom.presenceRestriction',
+    },
     mevProtection: 'settings.mevProtection',
     suiteSync: 'settings.suiteSync',
 
