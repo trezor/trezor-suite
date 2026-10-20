@@ -50,14 +50,8 @@ export const TradingFormOfferExchangeActions = () => {
     const { amount, tokenAddress } = getTradingFirstOutput(outputs);
     const areSatsUsed = !!shouldSendInSats;
 
-    const {
-        quote,
-        quoteAmounts,
-        areFeesLoading,
-        confirmButtonData,
-        selectedAssetCryptoId,
-        isBaseButtonDisabled,
-    } = useTradingFormOfferCommon<'exchange'>();
+    const { quote, quoteAmounts, selectedAssetCryptoId, isBaseButtonDisabled } =
+        useTradingFormOfferCommon<'exchange'>();
 
     const isNetworkFeeMissing = useSelector(reduxState =>
         selectIsTradingNetworkFeeMissing(
@@ -159,12 +153,10 @@ export const TradingFormOfferExchangeActions = () => {
 
     const renderActionButton = () => {
         if (!isReceiveAddressSelected && quote) {
-            return (
+            return isButtonDisabled ? null : (
                 <Button
                     onClick={onContinueClick}
                     intent="brand"
-                    isDisabled={isButtonDisabled}
-                    isLoading={areFeesLoading || state.isFormLoading || isComposing}
                     size="large"
                     minWidth={160}
                     width="100%"
@@ -182,12 +174,14 @@ export const TradingFormOfferExchangeActions = () => {
             return stellarActivateButton;
         }
 
+        if (isButtonDisabled) {
+            return null;
+        }
+
         return (
             <TradingFormOfferConfirmButton
-                {...confirmButtonData}
-                isLoading={confirmButtonData.isLoading || isComposing}
+                translationId="TR_TRADING_SWAP"
                 onClick={onSelectQuote}
-                isDisabled={isButtonDisabled}
                 testId="@trading/form/exchange-button"
             />
         );

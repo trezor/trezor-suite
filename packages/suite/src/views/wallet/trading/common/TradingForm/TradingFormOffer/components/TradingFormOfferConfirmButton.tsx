@@ -3,8 +3,6 @@ import { Button, type IconComponent } from '@trezor/components';
 
 interface TradingFormOfferConfirmButtonProps {
     onClick: () => void;
-    isDisabled: boolean;
-    isLoading: boolean;
     translationId: TranslationKey;
     translationValues?: Record<string, string>;
     iconRight?: IconComponent;
@@ -13,8 +11,6 @@ interface TradingFormOfferConfirmButtonProps {
 
 export const TradingFormOfferConfirmButton = ({
     onClick,
-    isDisabled,
-    isLoading,
     translationId,
     translationValues,
     iconRight,
@@ -24,8 +20,6 @@ export const TradingFormOfferConfirmButton = ({
         onClick={onClick}
         intent="brand"
         size="large"
-        isDisabled={isDisabled}
-        isLoading={isLoading}
         data-testid={testId}
         width="100%"
         iconRight={iconRight}

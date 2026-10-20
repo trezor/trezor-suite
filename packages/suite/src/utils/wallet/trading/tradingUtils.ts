@@ -151,15 +151,6 @@ export const tradingGetRoundedFiatAmount = (amount: string | undefined): string 
 export const tradingGetAccountLabel = (label: string, shouldSendInSats: boolean | undefined) =>
     label === 'BTC' && shouldSendInSats ? 'sat' : label;
 
-export const tradingGetSectionActionLabel = (
-    type: TradingType,
-): Extract<ExtendedMessageDescriptor['id'], 'TR_BUY' | 'TR_TRADING_SELL' | 'TR_TRADING_SWAP'> => {
-    if (type === 'buy') return 'TR_BUY';
-    if (type === 'sell') return 'TR_TRADING_SELL';
-
-    return 'TR_TRADING_SWAP';
-};
-
 interface ResolveAddressAndTokenProps {
     address: string;
     token: string | null;

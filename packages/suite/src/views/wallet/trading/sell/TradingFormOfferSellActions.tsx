@@ -44,7 +44,7 @@ export const TradingFormOfferSellActions = () => {
           })
         : false;
 
-    const { quote, confirmButtonData, isBaseButtonDisabled } = useTradingFormOfferCommon<'sell'>();
+    const { quote, isBaseButtonDisabled } = useTradingFormOfferCommon<'sell'>();
 
     const isButtonDisabled =
         !account ||
@@ -62,13 +62,13 @@ export const TradingFormOfferSellActions = () => {
 
     return (
         <>
-            <TradingFormOfferConfirmButton
-                translationId="TR_CONTINUE"
-                isLoading={confirmButtonData.isLoading}
-                onClick={onSelectQuote}
-                isDisabled={isButtonDisabled}
-                testId="@trading/form/sell-button"
-            />
+            {!isButtonDisabled && (
+                <TradingFormOfferConfirmButton
+                    translationId="TR_CONTINUE"
+                    onClick={onSelectQuote}
+                    testId="@trading/form/sell-button"
+                />
+            )}
 
             <TradingFormOfferOTC />
         </>
