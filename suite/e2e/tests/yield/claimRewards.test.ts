@@ -8,6 +8,7 @@ import { ETH_MOCKED_ACCOUNT } from '../../support/mocks/eth-endpoints';
 import {
     YIELD_CLAIMED_MORPHO_TOKEN,
     YIELD_MERKL_CLAIM_REWARD,
+    YIELD_MERKL_SMALL_CLAIM_REWARD,
     YIELD_NEW_BLOCK,
     YIELD_USDC_VAULT_SHARE_TOKEN,
 } from '../../support/mocks/yieldMock';
@@ -15,6 +16,7 @@ import { createTestAnnotation } from '../../support/reporters/annotations';
 
 const CLAIM_REWARD_TOKEN = YIELD_MERKL_CLAIM_REWARD.token.symbol;
 const CLAIM_REWARD_AMOUNT = `${YIELD_MERKL_CLAIM_REWARD.claimableUnits} ${CLAIM_REWARD_TOKEN}`;
+const SMALL_CLAIM_REWARD_AMOUNT = `${YIELD_MERKL_SMALL_CLAIM_REWARD.claimableUnits} ${CLAIM_REWARD_TOKEN}`;
 const CLAIM_REWARD_FIAT_AMOUNT = '≈ $2.50';
 const CLAIM_MAX_FEE = '0.00010840280031 ETH';
 
@@ -45,7 +47,7 @@ test.describe('stablecoin yield claim', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
             tokens: buildEthAccountTokens({ withClaimedMorpho: false }),
         });
         await yieldMock.start();
-        await yieldMock.mockMerklRewards();
+        await yieldMock.mockMerklRewards(YIELD_MERKL_SMALL_CLAIM_REWARD);
         await settingsPage.changeNetworks({
             enableNetworks: [
                 {
@@ -70,6 +72,28 @@ test.describe('stablecoin yield claim', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
             blockbookMock,
             yieldMock,
         }) => {
+            const ethAccount = { symbol: 'eth', accountType: 'normal', index: 0 };
+
+            await test.step('Claim page warns when the network fee exceeds the rewards', async () => {
+                await yieldSection.earnMenuButton.click();
+                await yieldSection.claimRewardsButton.click();
+                await yieldSection.claimAccountButton(ethAccount).click();
+
+                await expect(yieldFlowSection.claimRewardAmount(CLAIM_REWARD_TOKEN)).toHaveText(
+                    SMALL_CLAIM_REWARD_AMOUNT,
+                );
+                await expect(yieldFlowSection.claimFeeWarningBanner).toHaveTranslation(
+                    'TR_EARN_REWARDS_NETWORK_FEE_WARNING',
+                );
+            });
+
+            await test.step('Rewards grow above the network fee', async () => {
+                yieldMock.updateMerklReward(YIELD_MERKL_CLAIM_REWARD);
+                // Let the rewards query go stale so the dashboard refetches on mount.
+                await page.clock.install();
+                await page.clock.fastForward('01:01');
+            });
+
             await test.step('Dashboard shows the claim rewards banner', async () => {
                 await yieldSection.earnMenuButton.click();
 
@@ -78,8 +102,6 @@ test.describe('stablecoin yield claim', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
             });
 
             await test.step('Select the account with claimable rewards', async () => {
-                const ethAccount = { symbol: 'eth', accountType: 'normal', index: 0 };
-
                 await expect(yieldSection.claimSelectAccountHeading).toHaveTranslation(
                     'TR_EARN_YIELD_CLAIM_MODAL_TITLE',
                 );
@@ -100,6 +122,9 @@ test.describe('stablecoin yield claim', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
                 await expect(yieldFlowSection.claimRewardFiatAmount(CLAIM_REWARD_TOKEN)).toHaveText(
                     CLAIM_REWARD_FIAT_AMOUNT,
                 );
+                // Rewards exceed the network fee, so the fee warning must not be shown.
+                await expect(yieldFlowSection.claimButton).toBeEnabled();
+                await expect(yieldFlowSection.claimFeeWarningBanner).toBeHidden();
             });
 
             await test.step('Claim the rewards', async () => {
@@ -181,7 +206,6 @@ test.describe('stablecoin yield claim', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
             });
 
             await test.step('Dashboard no longer offers rewards to claim', async () => {
-                await page.clock.install();
                 await page.clock.fastForward('01:01');
                 await yieldFlowSection.backToOverviewButton.click();
 

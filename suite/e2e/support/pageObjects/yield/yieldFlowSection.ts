@@ -40,6 +40,7 @@ export class YieldFlowSection {
     readonly claimHeading: Locator;
     readonly claimButton: Locator;
     readonly claimRewardsList: Locator;
+    readonly claimFeeWarningBanner: Locator;
     readonly claimedToast: Locator;
     readonly claimedToastMessage: Locator;
     // Flow-complete screen
@@ -90,6 +91,7 @@ export class YieldFlowSection {
         this.claimHeading = this.page.getByTestId('@yield/claim/heading');
         this.claimButton = this.page.getByTestId('@yield/claim/claim-button');
         this.claimRewardsList = this.page.getByTestId('@yield/claim/rewards-list');
+        this.claimFeeWarningBanner = this.page.getByTestId('@yield/claim/fee-warning-banner');
         this.claimedToast = this.page.getByTestId('@toast/tx-yield-claim');
         this.claimedToastMessage = this.page.getByTestId('@toast/tx-yield-claim/message');
         this.flowCompleteHeading = this.page.getByTestId('@yield/flow-complete/heading');

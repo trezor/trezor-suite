@@ -197,6 +197,7 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
                                             (accountRewards?.rewards?.length ?? 0) > 0 &&
                                             !claimSession.action.pendingTransaction && (
                                                 <Banner
+                                                    data-testid="@yield/claim/fee-warning-banner"
                                                     intent="warning"
                                                     icon={WarningIcon}
                                                     description={
