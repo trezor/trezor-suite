@@ -7378,6 +7378,23 @@ export const messages = defineMessages({
         id: 'TR_BACKENDS',
         defaultMessage: 'backend',
     },
+    TR_CUSTOM_SERVERS: {
+        id: 'TR_CUSTOM_SERVERS',
+        defaultMessage: 'Custom servers',
+    },
+    TR_RESET_CUSTOM_SERVERS: {
+        id: 'TR_RESET_CUSTOM_SERVERS',
+        defaultMessage: 'Reset custom servers',
+    },
+    TR_RESET_CUSTOM_SERVERS_DESCRIPTION: {
+        id: 'TR_RESET_CUSTOM_SERVERS_DESCRIPTION',
+        defaultMessage:
+            'Switch all coins and the Suite Sync server back to the default Trezor servers. Other settings stay as they are.',
+    },
+    TR_RESET_CUSTOM_SERVERS_BUTTON: {
+        id: 'TR_RESET_CUSTOM_SERVERS_BUTTON',
+        defaultMessage: 'Reset',
+    },
     TR_CUSTOM_BACKEND_INVALID_URL: {
         id: 'TR_CUSTOM_BACKEND_INVALID_URL',
         defaultMessage: 'Invalid URL',
