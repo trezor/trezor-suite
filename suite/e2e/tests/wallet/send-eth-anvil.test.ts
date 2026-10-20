@@ -11,19 +11,21 @@ import { transformAddress } from '../../support/testExtends/customMatchers';
 
 const ethSymbol = asNetworkSymbol('eth');
 const accountLabel = 'Ethereum #1';
-// Ethereum #1 of mnemonic_all (m/44'/60'/0'/0/0)
-const senderAddress = '0x73d0385F4d8E00C5e6504C6030F47BF6212736A8';
-const recipientAddress = '0xdcaB74E62b9D08a9f8Fa4A3Ccb5c46AE039C9d7C';
+// Seeds and addresses generated for this test, so neither side has mainnet history that the fork
+// would carry over. Public test seeds do: balances, tokens, even EIP-7702 delegations.
+const mnemonic = 'lava trip guilt grit violin illness bike meadow engage clutch pizza away';
+// Ethereum #1 of the mnemonic above (m/44'/60'/0'/0/0)
+const senderAddress = '0xc58062A48aCb6Cc1928E0DD7810B03cBC387ecA7';
+const recipientAddress = '0xb872C226B395E8c4070182AD0486ba0AF5767Fe4';
 const formattedRecipientAddress = formatAddressWithNewlines(recipientAddress);
 const fundedAmount = '1';
 const sendAmount = '0.1';
 const formattedSendAmount = `${localizeNumber(sendAmount)} ETH`;
 
 test.describe('Send ETH on a mainnet fork', { tag: ['@T3W1', '@T3T1'] }, () => {
-    test.use({ deviceSetup: { mnemonic: 'mnemonic_all' } });
+    test.use({ deviceSetup: { mnemonic } });
 
     test.beforeEach(async ({ page, anvil, onboardingPage, settingsPage, walletPage }) => {
-        // The fork carries real mainnet state, so the funded balance replaces whatever is there.
         await anvil.setBalance(senderAddress, parseEther(fundedAmount));
         await page.clock.install();
         await onboardingPage.completeOnboarding();
