@@ -1,18 +1,18 @@
-import { forgetAllBluetoothDevicesThunk, openSystemSettingsThunk } from '@suite/bluetooth';
+import { forgetAllBluetoothDevicesThunk, injectBluetooth } from '@suite/bluetooth';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { useServices } from '@trezor/dependency-injection';
 import { SectionItem } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
 export const ForgetAllDevicesButton = () => {
-    const { dispatch } = useServices(injectDispatch);
+    const { dispatch, bluetooth } = useServices(injectDispatch, injectBluetooth);
 
     const handleForgetButtonClick = () => {
         dispatch(forgetAllBluetoothDevicesThunk());
         dispatch(notificationsActions.addToast({ type: 'clear-storage' }));
     };
     const handleOpenSettingsButtonClick = () => {
-        dispatch(openSystemSettingsThunk({ type: 'bluetooth' }));
+        bluetooth.openSystemSettings('bluetooth');
     };
 
     return (

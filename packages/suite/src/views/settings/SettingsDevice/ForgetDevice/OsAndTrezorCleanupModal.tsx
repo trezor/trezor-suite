@@ -1,13 +1,12 @@
 import { useState } from 'react';
 
-import { openSystemSettingsThunk } from '@suite/bluetooth';
+import { injectBluetooth } from '@suite/bluetooth';
 import { TrezorLink } from '@suite/external-links';
 import { Translation } from '@suite/intl';
 import { Button, Column, Modal } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { LaptopIcon, TrezorSafe7Icon } from '@trezor/icons';
 import { StepCard } from '@trezor/product-components';
-import { injectDispatch } from '@trezor/redux-utils';
 
 type OsAndTrezorCleanupModalProps = {
     onCancel: () => void;
@@ -19,10 +18,10 @@ export const OsAndTrezorCleanupModal = ({
     onTrezorRemovalConfirm,
 }: OsAndTrezorCleanupModalProps) => {
     const [osRemovalConfirmed, setOsRemovalConfirmed] = useState(false);
-    const { dispatch } = useServices(injectDispatch);
+    const { bluetooth } = useServices(injectBluetooth);
 
     const handleOpenBluetoothSettings = () => {
-        dispatch(openSystemSettingsThunk({ type: 'bluetooth' }));
+        bluetooth.openSystemSettings('bluetooth');
     };
 
     return (

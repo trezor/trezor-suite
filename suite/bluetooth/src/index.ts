@@ -1,5 +1,5 @@
 export { createBluetoothCompositionRoot } from './createBluetoothCompositionRoot';
-export { type Bluetooth, type BluetoothDep } from './createBluetooth';
+export { type Bluetooth, type BluetoothDep, injectBluetooth } from './createBluetooth';
 export { type DesktopBluetoothDevice, fromBluetoothDevice } from './DesktopBluetoothDevice';
 
 export * from './desktopBluetoothReducer';
@@ -14,8 +14,6 @@ export { bluetoothDisconnectDeviceThunk } from './bluetoothDisconnectDeviceThunk
 export { bluetoothOnDeviceConnectedThunk } from './bluetoothOnDeviceConnectedThunk';
 export { removeNonResponsiveNearbyDevicesThunk } from './removeNonResponsiveNearbyDevicesThunk';
 export { unpairCurrentBondThunk, forgetBluetoothDeviceThunk } from './bluetoothEraseBondsThunk';
-
-export { openSystemSettingsThunk } from './openSystemSettingsThunk';
 
 export { isBluetoothDeviceReachable } from './isBluetoothDeviceReachable';
 export * from './filterOutNonResponsiveDevices';
