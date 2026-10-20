@@ -5,6 +5,9 @@
     },
     "references": [
         {
+            "path": "../../../packages/connect-common"
+        },
+        {
             "path": "../network-bitcoin-assets"
         },
         {

@@ -12,8 +12,13 @@ import {
     createEthereumNamedAddressResolverCompositionRoot,
 } from './namedAddress/createEthereumNamedAddressResolverCompositionRoot';
 import { getAccountSyncInterval, getNetworkConfig } from './networkConfig';
+import {
+    type EthereumWalletConnectAdapterDeps,
+    createEthereumWalletConnectAdapter,
+} from './walletConnect/createEthereumWalletConnectAdapter';
 
-type EthereumSuiteCommonNetworkModuleDeps = EthereumNamedAddressResolverCompositionRootDeps;
+type EthereumSuiteCommonNetworkModuleDeps = EthereumNamedAddressResolverCompositionRootDeps &
+    EthereumWalletConnectAdapterDeps;
 
 type EthereumSuiteCommonNetworkModule = SuiteCommonNetworkModule;
 
@@ -31,6 +36,7 @@ export const createEthereumSuiteCommonNetworkModule = (
         isWrappedNativeToken,
         addressValidator: ethereumValidator,
         namedAddressResolver: ethereumNamedAddressResolver,
+        walletConnectAdapter: createEthereumWalletConnectAdapter(deps),
         getNetworkConfig,
         getAccountSyncInterval,
     });
