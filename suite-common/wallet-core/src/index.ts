@@ -18,6 +18,7 @@ export * from './blockchain/blockchainReducer';
 export * from './blockchain/blockchainSelectors';
 export * from './blockchain/blockchainSubscriptionMiddleware';
 export * from './blockchain/blockchainThunks';
+export * from './customNetworks/customEvmNetworkThunks';
 export * from './device/deviceAddressUtils';
 export * from './device/deviceSelectors';
 export * from './device/deviceThunks';

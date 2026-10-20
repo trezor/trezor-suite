@@ -3,6 +3,7 @@ export type * from './allowance';
 export type * from './backend';
 export * from './baseCurrency';
 export * from './cardanoStaking';
+export * from './customEvmNetwork';
 export type * from './discovery';
 export * from './ethereumStaking';
 export type * from './ethereumUnits';
