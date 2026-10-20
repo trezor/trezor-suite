@@ -101,7 +101,8 @@ const TradingFormInputCryptoAmountContent = ({
     const setShowReserveBanner = isExchangeOrSellContext ? context.setShowReserveBanner : undefined;
     const composeRequest = isTradingSellContext(context) ? context.composeRequest : undefined;
 
-    const cryptoSelect = getValues(cryptoSelectName);
+    const cryptoSelect = useWatch({ control, name: cryptoSelectName });
+    const isSendAssetMissing = isExchangeOrSellContext && !cryptoSelect;
     const outputToken = getValues('outputs')?.[0]?.token;
     const { contractAddress } = cryptoIdToSymbolAndContractAddress(cryptoSelect?.id);
     const decimals = isBuyContext
@@ -126,20 +127,23 @@ const TradingFormInputCryptoAmountContent = ({
 
     const cryptoInputRules = useMemo(
         () =>
-            getCryptoInputRules({
-                isBuyContext,
-                translationString,
-                shouldSendInSats: isInSats,
-                decimals,
-                amountLimits,
-                formatter: CryptoAmountFormatter,
-                validationAccount,
-                outputToken,
-                isNetworkReserveEnabled,
-                contractAddress,
-                feeInUnits,
-            }),
+            isSendAssetMissing
+                ? { validate: {} }
+                : getCryptoInputRules({
+                      isBuyContext,
+                      translationString,
+                      shouldSendInSats: isInSats,
+                      decimals,
+                      amountLimits,
+                      formatter: CryptoAmountFormatter,
+                      validationAccount,
+                      outputToken,
+                      isNetworkReserveEnabled,
+                      contractAddress,
+                      feeInUnits,
+                  }),
         [
+            isSendAssetMissing,
             isBuyContext,
             translationString,
             isInSats,

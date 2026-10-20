@@ -115,16 +115,14 @@ export const TradingSellFormInputs = () => {
                         />
                     </Row>
                     <Row gap={8} justifyContent="space-between" alignItems="center" minHeight={20}>
-                        {!!asset && (
-                            <TradingFormInputBaseCurrencyAmount
-                                cryptoInputName={TRADING_FORM_OUTPUT_AMOUNT}
-                                fiatInputName={TRADING_FORM_OUTPUT_FIAT}
-                                symbol={asset.symbol}
-                                tokenAddress={tokenAddress}
-                                isInSats={shouldSendInSats}
-                                decimals={sendAssetDecimals}
-                            />
-                        )}
+                        <TradingFormInputBaseCurrencyAmount
+                            cryptoInputName={TRADING_FORM_OUTPUT_AMOUNT}
+                            fiatInputName={TRADING_FORM_OUTPUT_FIAT}
+                            symbol={asset?.symbol}
+                            tokenAddress={tokenAddress}
+                            isInSats={shouldSendInSats}
+                            decimals={sendAssetDecimals}
+                        />
                         <Row gap={12} alignItems="center">
                             {!!sendCryptoSelect && <TradingFractionButtons />}
                             <AssetPickerInputBalance
