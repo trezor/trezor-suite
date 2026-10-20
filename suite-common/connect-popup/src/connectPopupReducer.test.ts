@@ -53,3 +53,23 @@ describe('rememberAppPermissions', () => {
         expect(rememberApps({ ...app, origin: 'null' }).permissions).toEqual([]);
     });
 });
+
+describe('storageLoad', () => {
+    const loadApps = (...apps: AppRememberedPermission[]) =>
+        connectPopupReducer(connectPopupInitialState, {
+            type: mockActionType('storageLoad'),
+            payload: { connect: { permissions: apps } },
+        });
+
+    it('loads remembered permissions', () => {
+        expect(loadApps(app).permissions).toEqual([app]);
+    });
+
+    it('loads permissions remembered for the origin null by an earlier version', () => {
+        const nullOriginApp = { ...app, origin: 'null' };
+
+        // Documents the bug: Settings -> Connected apps keeps listing an app whose grant
+        // the call thunk no longer honours.
+        expect(loadApps(nullOriginApp).permissions).toEqual([nullOriginApp]);
+    });
+});
