@@ -14,7 +14,7 @@ import {
 } from '@suite-native/navigation';
 import {
     selectIsTradingBuyEnabled,
-    selectIsTradingEnabledForCountry,
+    selectIsTradingEnabled,
     selectIsTradingExchangeEnabled,
 } from '@suite-native/trading-state';
 
@@ -34,7 +34,7 @@ export const useEarnNoBalanceActions = ({
     onActionPress,
 }: UseEarnNoBalanceActionsParams) => {
     const navigation = useNavigation<NavigationProp>();
-    const isTradingEnabledForCountry = useSelector(selectIsTradingEnabledForCountry);
+    const isTradingEnabled = useSelector(selectIsTradingEnabled);
     const isBuyEnabled = useSelector(selectIsTradingBuyEnabled);
     const isSwapEnabled = useSelector(selectIsTradingExchangeEnabled);
     const hasFirmwareAuthenticityCheckHardFailed = useSelector(
@@ -74,8 +74,8 @@ export const useEarnNoBalanceActions = ({
     };
 
     return {
-        handleBuyPress: isTradingEnabledForCountry && isBuyEnabled ? handleBuyPress : undefined,
-        handleSwapPress: isTradingEnabledForCountry && isSwapEnabled ? handleSwapPress : undefined,
+        handleBuyPress: isTradingEnabled && isBuyEnabled ? handleBuyPress : undefined,
+        handleSwapPress: isTradingEnabled && isSwapEnabled ? handleSwapPress : undefined,
         handleReceivePress: hasFirmwareAuthenticityCheckHardFailed ? undefined : handleReceivePress,
     };
 };
