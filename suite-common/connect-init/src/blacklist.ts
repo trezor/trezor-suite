@@ -17,6 +17,7 @@ export const blacklist: (typeof connectCallableMethods)[number][] = [
     'blockchainUnsubscribeFiatRates',
     'blockchainEvmRpcCall',
     'blockchainEvmRpcGetChainId',
+    'blockchainRegisterEvmNetwork',
     'blockchainGetContractInfo',
     'cardanoComposeTransaction',
     'composePsbt',

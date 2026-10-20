@@ -6,6 +6,7 @@ import type { applySettings } from './applySettings';
 import type { authenticateDevice } from './authenticateDevice';
 import type { backupDevice } from './backupDevice';
 import type { bleUnpair } from './bleUnpair';
+import type { blockchainRegisterEvmNetwork } from './blockchainRegisterEvmNetwork';
 import type { changeLanguage } from './changeLanguage';
 import type { changePin } from './changePin';
 import type { changeWipeCode } from './changeWipeCode';
@@ -47,6 +48,7 @@ const TrezorConnectManagementBase = Type.Object({
     pingDevice: Type.Unsafe<typeof pingDevice>(),
     getNonce: Type.Unsafe<typeof getNonce>(),
     getSettings: Type.Unsafe<typeof getSettings>(),
+    blockchainRegisterEvmNetwork: Type.Unsafe<typeof blockchainRegisterEvmNetwork>(),
 });
 
 // Evolu identity operations export secret key material, so they belong to the privileged tier and

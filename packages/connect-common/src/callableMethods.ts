@@ -25,6 +25,7 @@ const connectManagementMethods = [
     'pingDevice',
     'getNonce',
     'getSettings',
+    'blockchainRegisterEvmNetwork',
     // Evolu identity operations export secret key material, so they are privileged and must not be
     // reachable by 3rd-party hosts through the public API.
     'evoluGetNode',

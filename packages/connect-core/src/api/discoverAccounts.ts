@@ -63,6 +63,18 @@ const isCardanoRequest = (request: Request): request is CardanoRequest =>
 const shouldSkipFirstAccountIndex = (account: AccountTypeItem, coinInfo: CoinInfo) =>
     (coinInfo.type === 'ethereum' || coinInfo.shortcut === 'TRX') && account.type === 'ledger';
 
+// Networks registered at runtime have no entry in `ACCOUNT_TYPES`; an EVM one is derived like any
+// other EVM chain by the normal account type. The symbol is kept as requested so the progress
+// events can be matched back to the caller's account.
+const getAccountTypes = (symbol: string, coinInfo: CoinInfo): AccountTypeItem[] => {
+    const accountTypes = ACCOUNT_TYPES.filter(a => a.symbol === symbol);
+    if (accountTypes.length > 0 || coinInfo.type !== 'ethereum') {
+        return accountTypes;
+    }
+
+    return [{ symbol, type: 'normal', path: "m/44'/60'/0'/0/i" } as AccountTypeItem];
+};
+
 const getAccountTypeKey = ({ symbol, type }: AccountTypeKey) => `${symbol}-${type}` as const;
 
 // Account types with an index-less path (root path) have exactly one account.
@@ -121,7 +133,7 @@ export default class DiscoverAccounts extends AbstractMethod<
             const firmwareRange = getFirmwareRange([payload.method], [coinInfo]);
 
             // Take all the defined account types based on requested coin symbol
-            const symbolAccounts = ACCOUNT_TYPES.filter(a => a.symbol === symbol);
+            const symbolAccounts = getAccountTypes(symbol, coinInfo);
 
             knownAccs?.forEach(account => {
                 validateParams(account, [
