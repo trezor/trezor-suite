@@ -20,6 +20,8 @@ const COMPACT_APPROVED_AMOUNT = '10.00';
 const APPROVE_MAX_FEE = '0.00003161748342375 ETH';
 const DEPOSIT_MAX_FEE = '0.00010840280031 ETH';
 
+const DEPOSIT_TXID = '0x1111111111111111111111111111111111111111111111111111111111111111';
+
 test.describe('stablecoin yield', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({
         deviceSetup: {
@@ -207,6 +209,7 @@ test.describe('stablecoin yield', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
             });
 
             await test.step('Deposit USDC', async () => {
+                blockbookMock.setBroadcastTxid(DEPOSIT_TXID);
                 await expect(yieldFlowSection.approvedAmount).toHaveText('10 USDC');
                 await yieldFlowSection.depositButton.click();
                 await expect(txSimulationModal.sentAsset(0)).toHaveText('Sending 10 USDC');
@@ -274,6 +277,15 @@ test.describe('stablecoin yield', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
                 });
                 await devicePrompt.sendButton.click();
                 await expect(toastSection.yieldDeposit).toBeVisible();
+                blockbookMock.updateAccountState({
+                    transactions: [
+                        { ...ETH_STAKE_CONFIRMED_TX, txid: DEPOSIT_TXID },
+                        ETH_STAKE_CONFIRMED_TX,
+                        ETH_BASE_TX,
+                    ],
+                });
+                await blockbookMock.sendNewBlockNotification(YIELD_NEW_BLOCK);
+
                 await expect(yieldFlowSection.flowCompleteHeading).toHaveTranslation(
                     'TR_EARN_YIELD_DEPOSIT_COMPLETE',
                 );
@@ -289,8 +301,6 @@ test.describe('stablecoin yield', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
                 await expect(yieldFlowSection.flowCompleteTransferOutputAmount).toHaveText(
                     '9.944238455556494028 trSHUSDCp',
                 );
-
-                await blockbookMock.sendNewBlockNotification(YIELD_NEW_BLOCK);
             });
 
             await test.step('Returning to the dashboard shows the deposited position', async () => {

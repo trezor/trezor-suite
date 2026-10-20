@@ -28,6 +28,8 @@ const buildEthAccountTokens = ({ withClaimedMorpho }: BuildEthAccountTokensParam
     ...(withClaimedMorpho ? [YIELD_CLAIMED_MORPHO_TOKEN] : []),
 ];
 
+const CLAIM_TXID = '0x5555555555555555555555555555555555555555555555555555555555555555';
+
 test.describe('stablecoin yield claim', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
     test.use({
         deviceSetup: {
@@ -38,6 +40,7 @@ test.describe('stablecoin yield claim', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
     test.beforeEach(async ({ onboardingPage, settingsPage, blockbookMock, yieldMock }) => {
         await onboardingPage.completeOnboarding();
         await blockbookMock.start('eth');
+        blockbookMock.setBroadcastTxid(CLAIM_TXID);
         blockbookMock.updateAccountState({
             txs: 3,
             nonce: '2',
@@ -164,6 +167,15 @@ test.describe('stablecoin yield claim', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
                 await expect(yieldFlowSection.claimedToastMessage).toHaveTranslation(
                     'TOAST_TX_CLAIM_PENDING',
                 );
+                blockbookMock.updateAccountState({
+                    transactions: [
+                        { ...ETH_STAKE_CONFIRMED_TX, txid: CLAIM_TXID },
+                        ETH_STAKE_CONFIRMED_TX,
+                        ETH_BASE_TX,
+                    ],
+                });
+                await blockbookMock.sendNewBlockNotification(YIELD_NEW_BLOCK);
+
                 await expect(yieldFlowSection.flowCompleteHeading).toHaveTranslation(
                     'TR_EARN_YIELD_CLAIM_COMPLETE',
                 );
@@ -176,8 +188,6 @@ test.describe('stablecoin yield claim', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
                 await expect(
                     yieldFlowSection.flowCompleteRewardFiatAmount(CLAIM_REWARD_TOKEN),
                 ).toHaveText(CLAIM_REWARD_FIAT_AMOUNT);
-
-                await blockbookMock.sendNewBlockNotification(YIELD_NEW_BLOCK);
             });
 
             await test.step('Dashboard no longer offers rewards to claim', async () => {
