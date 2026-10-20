@@ -213,6 +213,37 @@ describe('BaseProcess.stop', () => {
     });
 
     describe('when the process is slow to exit', () => {
+        it('resolves right away on the close event without waiting for the next check', async () => {
+            const logger = createLogger();
+            const testProcess = new TestProcess({}, logger);
+            const child = new FakeChildProcess();
+            testProcess.attach(child);
+
+            const state = watchPromiseSettled(testProcess.stop());
+            child.exit();
+            child.emit('close', 0);
+            await fastForward(0);
+
+            expect(state.settled).toBe(true);
+            expect(logger.info).toHaveBeenCalledWith(TOPIC, 'Killed successfully');
+            expect(testProcess.hasProcess()).toBe(false);
+            expect(jest.getTimerCount()).toBe(0);
+            expect(child.listenerCount('close')).toBe(0);
+        });
+
+        it('removes the close listener once the check resolves stop()', async () => {
+            const testProcess = new TestProcess();
+            const child = new FakeChildProcess();
+            testProcess.attach(child);
+            child.exit();
+
+            const stopPromise = testProcess.stop();
+            await fastForward(1);
+            await stopPromise;
+
+            expect(child.listenerCount('close')).toBe(0);
+        });
+
         it('does not treat `killed` flag alone as exited', async () => {
             const testProcess = new TestProcess({ stopKillWait: 10 });
             const child = new FakeChildProcess();
@@ -359,6 +390,7 @@ describe('BaseProcess.stop', () => {
             await stopPromise;
 
             expect(jest.getTimerCount()).toBe(0);
+            expect(child.listenerCount('close')).toBe(0);
         });
     });
 
