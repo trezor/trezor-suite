@@ -14,6 +14,7 @@ import {
     selectIsDeviceThpLocked,
     selectIsDiscoveryEntropyCheckDismissed,
     selectIsFirmwareAuthenticityCheckDismissed,
+    selectIsFirmwareUpdateRequired,
     selectIsUnacquiredDevice,
     selectSelectedDevice,
 } from '@suite-common/device';
@@ -87,6 +88,9 @@ export type NativeDeviceRootState = DeviceRootState &
 const createMemoizedSelector = createWeakMapSelector.withTypes<NativeDeviceRootState>();
 
 export const selectIsDeviceFirmwareSupported = (state: DeviceRootState) => {
+    // Connect rejects almost all calls to a device with required firmware update.
+    if (selectIsFirmwareUpdateRequired(state)) return false;
+
     const deviceFwVersion = selectDeviceFirmwareVersionArray(state);
     const deviceModel = selectDeviceModel(state);
 
