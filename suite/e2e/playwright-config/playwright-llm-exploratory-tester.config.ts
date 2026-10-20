@@ -25,6 +25,9 @@ const config = defineConfig({
     // Full onboarding + discovery exceeds the base timeouts; matches the
     // harness's SETUP_TIMEOUT_MS deadline in llmExploratoryTester/setup.ts (10 minutes).
     timeout: 600_000,
+    // The passphrase modal stays open until the device asks to confirm, which
+    // can exceed the default 5s expect timeout during hidden-wallet setup.
+    expect: { timeout: 15_000 },
     projects: PlaywrightProjectBuilder.buildFromDefinitions(target, definition),
     use: {
         ...baseConfig.use,
