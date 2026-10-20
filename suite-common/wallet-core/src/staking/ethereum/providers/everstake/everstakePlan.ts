@@ -1,12 +1,9 @@
-import { decodeFunctionResult } from 'viem';
-
 import { fromEther, fromWei } from '@suite-common/wallet-utils';
-import TrezorConnect from '@trezor/connect';
-import { asCoinSymbol } from '@trezor/connect-common';
 import { EVM_ABI } from '@trezor/network-ethereum-suite-common';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
+import { createEvmRead } from '../../../../evm/evmRead';
 import { WALLET_SDK_SOURCE } from '../../../shared/stakingConstants';
 import { isSupportedEthStakingNetworkSymbol } from '../../ethereumStakingUtils';
 import {
@@ -154,22 +151,17 @@ export const previewEverstakeUnstake = async ({
     const amountWei = fromEther(amount).toWei();
     const data = buildUnstakeData(amountWei, UNSTAKE_INTERCHANGES, source);
 
-    const transactionData = await TrezorConnect.blockchainEvmRpcCall({
-        coin: asCoinSymbol(symbol),
-        from,
+    const read = createEvmRead({ symbol, from });
+    const simulated = await read.one({
         to: contracts.pool,
+        abi: EVM_ABI.everstake.unstake,
+        functionName: 'unstake',
         data,
     });
 
-    if (!transactionData.success) {
-        throw new Error(transactionData.error.message);
+    if (!simulated.success) {
+        throw new Error(`Unstake preview failed: ${simulated.errorName}`);
     }
 
-    const unstakeFromPendingValue = decodeFunctionResult({
-        abi: EVM_ABI.everstake.unstake,
-        functionName: 'unstake',
-        data: transactionData.payload.data as `0x${string}`,
-    });
-
-    return fromWei(unstakeFromPendingValue.toString()).toEther();
+    return fromWei(simulated.value.toString()).toEther();
 };

@@ -1,11 +1,11 @@
+import { isAddress } from 'viem';
+
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { asAmountSubunit } from '@suite-common/wallet-utils';
-import TrezorConnect from '@trezor/connect';
-import { asCoinSymbol } from '@trezor/connect-common';
-import { Calldata } from '@trezor/network-ethereum-suite-common';
+import { EVM_ABI } from '@trezor/network-ethereum-suite-common';
 import { BigNumber } from '@trezor/utils';
 
-const ALLOWANCE_FETCH_TIMEOUT_MS = 15_000;
+import { createEvmRead } from '../evm/evmRead';
 
 type FetchAllowanceParams = {
     owner: string;
@@ -20,30 +20,21 @@ export const fetchAllowance = async ({
     tokenContractAddress,
     coin,
 }: FetchAllowanceParams) => {
-    const allowanceCalldata = Calldata.evm.erc20.allowance.encode({ owner, spender });
-
-    if (!allowanceCalldata.data) {
-        throw new Error('Allowance calldata could not be built.');
+    if (!isAddress(tokenContractAddress, { strict: false })) {
+        throw new Error('Allowance token contract address is invalid.');
     }
 
-    const response = await Promise.race([
-        TrezorConnect.blockchainEvmRpcCall({
-            coin: asCoinSymbol(coin),
-            from: owner,
-            to: tokenContractAddress,
-            data: allowanceCalldata.data,
-        }),
-        new Promise<never>((_, reject) =>
-            setTimeout(
-                () => reject(new Error('Allowance fetch timed out')),
-                ALLOWANCE_FETCH_TIMEOUT_MS,
-            ),
-        ),
-    ]);
+    const read = createEvmRead({ symbol: coin, from: owner });
+    const allowance = await read.one({
+        to: tokenContractAddress,
+        abi: EVM_ABI.erc20.allowance,
+        functionName: 'allowance',
+        args: [owner, spender],
+    });
 
-    if (!response.success) {
-        throw new Error(response.error.message);
+    if (!allowance.success) {
+        throw new Error(`Allowance read failed: ${allowance.errorName}`);
     }
 
-    return asAmountSubunit(new BigNumber(BigInt(response.payload.data).toString()));
+    return asAmountSubunit(new BigNumber(allowance.value.toString()));
 };
