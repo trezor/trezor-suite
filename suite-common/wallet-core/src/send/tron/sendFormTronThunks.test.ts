@@ -2,12 +2,17 @@ import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import {
     type Account,
+    AddressDisplayOptions,
     type PrecomposedTransaction,
     type PrecomposedTransactionError,
 } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 
-import { composeTronTransactionFeeLevelsThunk } from './sendFormTronThunks';
+import {
+    composeTronTransactionFeeLevelsThunk,
+    signTronSendFormTransactionThunk,
+} from './sendFormTronThunks';
+import { type WalletSettingsRootState } from '../../settings/walletSettingsReducer';
 
 const OWNER = 'TN3W4H6rK2ce4vX9YnFQHwKENnHjoxb3m9';
 const COLD_RECIPIENT = 'TVDGpn4hCSzJ5nkHPLetk8KQBtwaTppnkr';
@@ -101,5 +106,57 @@ describe('composeTronTransactionFeeLevelsThunk – cold recipient activation fee
         assertComposed(normal);
         expect(normal.accountActivationFee).toBe('1000000');
         expect(normal.fee).toBe('1100000');
+    });
+});
+
+describe('signTronSendFormTransactionThunk', () => {
+    let signMock: jest.SpyInstance;
+
+    beforeEach(() => {
+        jest.spyOn(TrezorConnect, 'blockchainGetInfo').mockResolvedValue({
+            success: true,
+            payload: { blockHash: '00'.repeat(32), blockHeight: 1 },
+        } as any);
+        jest.spyOn(TrezorConnect, 'tronComposeTransaction').mockResolvedValue({
+            success: true,
+            payload: {
+                ref_block_bytes: '0001',
+                ref_block_hash: '0000000000000000',
+                expiration: 1,
+                timestamp: 0,
+            },
+        } as any);
+        signMock = jest.spyOn(TrezorConnect, 'tronSignTransaction').mockResolvedValue({
+            success: true,
+            payload: { signature: 'signature', serializedTx: 'serialized' },
+        } as any);
+    });
+
+    afterEach(() => jest.restoreAllMocks());
+
+    const sign = (addressDisplayType: AddressDisplayOptions) => {
+        const { store } = createTestCompositionRoot<void, WalletSettingsRootState>({
+            preloadedState: { wallet: { settings: { addressDisplayType } } },
+        }).services;
+
+        return store
+            .dispatch(
+                signTronSendFormTransactionThunk({
+                    formState: { outputs: [{ address: COLD_RECIPIENT, amount: '1' }] } as any,
+                    precomposedTransaction: { fee: '0' } as any,
+                    selectedAccount: account,
+                    device: {} as any,
+                }),
+            )
+            .unwrap();
+    };
+
+    it.each([
+        [AddressDisplayOptions.CHUNKED, true],
+        [AddressDisplayOptions.ORIGINAL, false],
+    ])('passes chunkify for address display type %s', async (addressDisplayType, chunkify) => {
+        await sign(addressDisplayType);
+
+        expect(signMock).toHaveBeenCalledWith(expect.objectContaining({ chunkify }));
     });
 });

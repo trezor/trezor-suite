@@ -1,6 +1,6 @@
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork } from '@suite-common/wallet-config';
-import { type PrecomposedLevels } from '@suite-common/wallet-types';
+import { AddressDisplayOptions, type PrecomposedLevels } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
     asAmountUnit,
@@ -16,6 +16,10 @@ import * as tronUtils from '@trezor/network-tron/utils';
 import { createThunk } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
+import {
+    type WalletSettingsRootState,
+    selectAddressDisplayType,
+} from '../../settings/walletSettingsReducer';
 import { SEND_MODULE_PREFIX } from '../sendFormConstants';
 import {
     type ComposeFeeLevelsError,
@@ -200,7 +204,7 @@ export const composeTronTransactionFeeLevelsThunk = createThunk<
     },
 );
 
-type SignTronSendFormTransactionThunkState = void;
+type SignTronSendFormTransactionThunkState = WalletSettingsRootState;
 
 export const signTronSendFormTransactionThunk = createThunk<
     { serializedTx: string },
@@ -208,7 +212,10 @@ export const signTronSendFormTransactionThunk = createThunk<
     { rejectValue: SignTransactionError; state: SignTronSendFormTransactionThunkState }
 >(
     `${SEND_MODULE_PREFIX}/signTronSendFormTransactionThunk`,
-    async ({ formState, precomposedTransaction, selectedAccount, device }, { rejectWithValue }) => {
+    async (
+        { formState, precomposedTransaction, selectedAccount, device },
+        { getState, rejectWithValue },
+    ) => {
         if (selectedAccount.networkType !== 'tron') {
             return rejectWithValue({
                 error: 'sign-transaction-failed',
@@ -319,6 +326,7 @@ export const signTronSendFormTransactionThunk = createThunk<
             fee_limit: feeLimitSun,
             data: noteHex || undefined,
             contract: [contract],
+            chunkify: selectAddressDisplayType(getState()) === AddressDisplayOptions.CHUNKED,
         });
 
         if (!signed.success) {
