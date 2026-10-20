@@ -5,6 +5,8 @@ import {
     selectFeatureConfig,
 } from '@suite-common/message-system';
 import { type TradingCountryCode, isCountrySubdivisionEmpty } from '@suite-common/trading';
+import { selectIsFinpromRestricted } from '@suite-native/finprom';
+import { type LocaleSliceRootState } from '@suite-native/intl';
 import { type TradingResidenceRootState } from '@suite-native/trading-types';
 import { createWeakMapSelector } from '@trezor/redux-utils';
 
@@ -60,12 +62,17 @@ export const selectIsTradingCountrySet = (state: TradingResidenceRootState) => {
         !isCountrySubdivisionEmpty(country, selectTradingResidenceCountrySubdivision(state))
     );
 };
+
+export const selectIsTradingResidenceSelectionAvailable = (
+    state: MessageSystemRootState & LocaleSliceRootState,
+) => selectIsTradingResidenceWhitelistRequired(state) && !selectIsFinpromRestricted(state);
+
 export const selectShouldDisplayTradingResidenceOnboarding = (
-    state: TradingResidenceRootState & MessageSystemRootState,
+    state: TradingResidenceRootState & MessageSystemRootState & LocaleSliceRootState,
 ) => {
-    const isResidenceWhitelistRequired = selectIsTradingResidenceWhitelistRequired(state);
+    const isResidenceSelectionAvailable = selectIsTradingResidenceSelectionAvailable(state);
     const wasOnboardingVisited = selectWasTradingResidenceOnboardingVisited(state);
     const isCountrySet = selectIsTradingCountrySet(state);
 
-    return isResidenceWhitelistRequired && !wasOnboardingVisited && !isCountrySet;
+    return isResidenceSelectionAvailable && !wasOnboardingVisited && !isCountrySet;
 };
