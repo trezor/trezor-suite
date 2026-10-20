@@ -1,9 +1,12 @@
 import { type CSSProperties } from 'react';
 
 import { Translation } from '@suite/intl';
+import { truncateCryptoAmount } from '@suite-common/formatters';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { asAmountUnit, unitsToSubunits } from '@suite-common/wallet-utils';
 import { type FractionButtonProps } from '@trezor/components';
 import { typographyStylesBase } from '@trezor/theme';
-import { clamp } from '@trezor/utils';
+import { BigNumber, clamp } from '@trezor/utils';
 
 import { type TradingUseFormActionsReturnProps } from 'src/types/trading/tradingForm';
 
@@ -70,3 +73,30 @@ export const generateFractionButtons = (
         onClick: () => helpers.setAllAmount(),
     },
 ];
+
+type GetPayAmountInFormUnitParams = {
+    amount: string;
+    decimals: number;
+    shouldSendInSats: boolean | undefined;
+};
+
+export const getPayAmountInFormUnit = ({
+    amount,
+    decimals,
+    shouldSendInSats,
+}: GetPayAmountInFormUnitParams) => {
+    const value = new BigNumber(amount);
+
+    if (value.isNaN()) {
+        return undefined;
+    }
+
+    const truncatedValue = truncateCryptoAmount(value, decimals);
+
+    return shouldSendInSats
+        ? unitsToSubunits({
+              value: asAmountUnit(truncatedValue),
+              symbol: asNetworkSymbol('btc'),
+          }).toFixed()
+        : truncatedValue.toFixed();
+};
