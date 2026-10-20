@@ -97,6 +97,9 @@ export type UserContextPayload =
           symbol: NetworkSymbol;
       }
     | {
+          type: 'add-custom-network';
+      }
+    | {
           type: 'activate-assets';
       }
     | {

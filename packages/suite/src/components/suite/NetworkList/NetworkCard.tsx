@@ -51,7 +51,7 @@ export const NetworkCard = ({
                 onClick={isCardClickable && onClick ? () => onClick(symbol, !isEnabled) : undefined}
             >
                 <Row padding={{ vertical: 12, horizontal: 14 }} gap={12} maxWidth="100%">
-                    <NetworkIcon size={24} networkSymbol={symbol} />
+                    <NetworkIcon size={24} networkSymbol={symbol} networkName={name} />
                     <Column flex="1" minWidth={0} minHeight={32} justifyContent="center">
                         <Text typographyStyle="body-sm-strong" ellipsisLineCount={1}>
                             {name}

@@ -35,6 +35,7 @@ import { TransactionReviewModal } from '../TransactionReviewModal/TransactionRev
 import { UnhideTokenModal } from '../UnhideTokenModal';
 import { ActivateAssetsModal } from './ActivateAssetsModal';
 import { AddAccountModal } from './AddAccountModal/AddAccountModal';
+import { AddCustomNetworkModal } from './AddCustomNetworkModal/AddCustomNetworkModal';
 import { AddTokenModal } from './AddTokenModal';
 import { AdvancedCoinSettingsModal } from './AdvancedCoinSettingsModal/AdvancedCoinSettingsModal';
 import { ApplicationLogModal } from './ApplicationLogModal';
@@ -116,6 +117,8 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL_CONTE
             return <MetadataProviderModal onCancel={onCancel} decision={payload.decision} />;
         case 'advanced-coin-settings':
             return <AdvancedCoinSettingsModal {...payload} onCancel={onCancel} />;
+        case 'add-custom-network':
+            return <AddCustomNetworkModal onCancel={onCancel} />;
         case 'activate-assets':
             return <ActivateAssetsModal onCancel={onCancel} />;
         case 'add-token':

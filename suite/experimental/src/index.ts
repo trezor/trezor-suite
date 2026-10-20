@@ -4,7 +4,8 @@ export type ExperimentalFeature =
     | 'slip24'
     | 'experimental-networks'
     | 'mcp-server'
-    | 'gap-limit';
+    | 'gap-limit'
+    | 'custom-evm-networks';
 
 /**
  * Set of features that are truly experimental (as opposed to regular features
