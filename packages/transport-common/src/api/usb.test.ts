@@ -280,4 +280,59 @@ describe('api/usb', () => {
         expect(listener).toHaveBeenCalledTimes(1);
         expect(listener).toHaveBeenCalledWith([]);
     });
+    // CURRENTLY SERIALIZES EVERYTHING — runInIsolation guards the api with a
+    // single global mutex, so a long call on one device (e.g. signing awaiting
+    // on-device confirmation) blocks every call/receive on all other devices
+    // for its whole duration. trezord-go served devices independently.
+    //
+    // This test pins the current broken behavior; the assertion on the other
+    // path flips when the fix lands.
+    it('runInIsolation serializes across paths: a busy path blocks every other path', async () => {
+        const api = new UsbApi({ usbInterface: createUsbMock() });
+
+        const blocker = createDeferred();
+        const order: string[] = [];
+
+        // long operation (e.g. signing awaiting on-device confirmation) holds path 1
+        const path1 = api.runInIsolation(
+            { lock: { read: false, write: true }, path: '1' },
+            async () => {
+                order.push('path1-start');
+                await blocker.promise;
+                order.push('path1-end');
+
+                return { success: true as const, payload: undefined };
+            },
+        );
+
+        // an operation on another device queues behind it instead of running
+        const path2Call = api.runInIsolation(
+            { lock: { read: true, write: true }, path: '2' },
+            () => ({
+                success: true as const,
+                payload: 'path2',
+            }),
+        );
+        const path2 = await Promise.race([
+            path2Call,
+            new Promise(resolve => setTimeout(() => resolve('blocked'), 100)),
+        ]);
+        expect(path2).toBe('blocked');
+
+        // while an operation on the same path (non-conflicting lock) still serializes
+        const path1Again = api.runInIsolation(
+            { lock: { read: true, write: false }, path: '1' },
+            () => {
+                order.push('path1-again');
+
+                return { success: true as const, payload: undefined };
+            },
+        );
+
+        blocker.resolve(undefined);
+        await path1;
+        await path2Call;
+        await path1Again;
+        expect(order).toEqual(['path1-start', 'path1-end', 'path1-again']);
+    });
 });
