@@ -368,6 +368,13 @@ export const routes = [
         app: 'wallet',
         params: walletParams,
     },
+    // Debug only: trading form embed preview
+    {
+        name: 'wallet-trade',
+        pattern: '/accounts/trade',
+        app: 'wallet',
+        params: walletParams,
+    },
     {
         name: 'wallet-tokens',
         pattern: '/accounts/tokens',

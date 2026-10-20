@@ -36,6 +36,7 @@ import WalletSend from 'src/views/wallet/send';
 import { SignVerifyPage } from 'src/views/wallet/sign-verify/SignVerifyPage';
 import { WalletStaking } from 'src/views/wallet/staking/WalletStaking';
 import { Tokens } from 'src/views/wallet/tokens';
+import { WalletTrade } from 'src/views/wallet/trade/WalletTrade';
 import { TradingBuyConfirm } from 'src/views/wallet/trading/buy/TradingBuyConfirm';
 import { TradingBuyDetail } from 'src/views/wallet/trading/buy/TradingBuyDetail/TradingBuyDetail';
 import { TradingBuyForm } from 'src/views/wallet/trading/buy/TradingBuyForm';
@@ -89,6 +90,8 @@ export const desktopComponents: Record<PageName, ComponentType> = {
     'wallet-index': Transactions,
     'wallet-receive': Receive,
     'wallet-details': WalletDetails,
+    // Debug only: trading form embed preview
+    'wallet-trade': WalletTrade,
     'wallet-send': WalletSend,
     'wallet-staking': WalletStaking,
     'wallet-sign-verify': SignVerifyPage,
