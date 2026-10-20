@@ -199,20 +199,7 @@ describe('sessions', () => {
         });
     });
 
-    // CURRENTLY CRASHES AND LEAKS THE LOCK — releaseDone dereferences the
-    // descriptor unconditionally, so when the device disconnects between
-    // releaseIntent and releaseDone the handler throws, falls into the
-    // UNEXPECTED_ERROR catch-all and never reaches clearLock. The lock taken by
-    // releaseIntent stays at the head of the queue, so every later
-    // acquire/release first has to wait out its 4s safety-net timer.
-    //
-    // This test pins the current broken behavior; both assertions flip when the
-    // fix lands.
-    test('releaseDone with disconnected device crashes and leaks the lock', async () => {
-        // the background logs the crash before swallowing it; silence the
-        // console.error trap of JestCustomEnv for it
-        const consoleError = jest.spyOn(console, 'error').mockImplementation(() => {});
-
+    test('releaseDone with disconnected device errors but releases the lock', async () => {
         const client1 = new SessionsClient(background);
         await client1.handshake();
         await client1.enumerateDone({
@@ -235,15 +222,13 @@ describe('sessions', () => {
         const releaseDone = await client1.releaseDone({ path: PathInternal('1') });
         expect(releaseDone).toMatchObject({
             success: false,
-            error: { code: 'unexpected error' },
+            error: { code: 'device not found' },
         });
-        expect(consoleError).toHaveBeenCalled();
-        consoleError.mockRestore();
 
-        // the lock taken by releaseIntent was not freed: a fresh acquire of the
-        // reconnected device does not resolve, it waits out the 4s safety-net
-        // timer of the leaked lock (hence the race; the sentinel must stay well
-        // below lockDuration in background.ts)
+        // the lock taken by releaseIntent was freed: a fresh acquire of the
+        // reconnected device must resolve immediately, not by waiting out the
+        // 4s safety-net timer of a leaked lock (hence the race; the sentinel
+        // must stay well below lockDuration in background.ts)
         await client1.enumerateDone({
             descriptors: [{ path: PathInternal('1'), type: 1, apiType: 'usb' }],
         });
@@ -253,11 +238,10 @@ describe('sessions', () => {
                 setTimeout(() => resolve('stuck behind the safety-net timer'), 1000),
             ),
         ]);
-        expect(acquireAgain).toBe('stuck behind the safety-net timer');
+        expect(acquireAgain).toMatchObject({ success: true });
 
-        // cleanup: drop the safety-net timer of the leaked lock so the still
-        // queued acquire does not keep the test runner open
-        background.dispose();
+        // cleanup: release the lock acquireAgain just took
+        await client1.acquireDone({ path: PathPublic('2'), abort: true });
     });
 
     test('acquireDone with abort releases the lock without committing a session', async () => {
