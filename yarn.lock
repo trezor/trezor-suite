@@ -16851,6 +16851,21 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/module-sign-verify@workspace:*, @suite/module-sign-verify@workspace:suite/module-sign-verify":
+  version: 0.0.0-use.local
+  resolution: "@suite/module-sign-verify@workspace:suite/module-sign-verify"
+  dependencies:
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite/account": "workspace:*"
+    "@suite/device": "workspace:*"
+    "@trezor/dependency-injection": "workspace:*"
+    "@trezor/network-module-suite-types": "workspace:*"
+    "@types/react": "npm:19.2.14"
+    react: "npm:19.2.3"
+    react-redux: "npm:9.3.0"
+  languageName: unknown
+  linkType: soft
+
 "@suite/networks@workspace:*, @suite/networks@workspace:suite/networks":
   version: 0.0.0-use.local
   resolution: "@suite/networks@workspace:suite/networks"
@@ -17024,21 +17039,6 @@ __metadata:
     "@trezor/connect-common": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
-  languageName: unknown
-  linkType: soft
-
-"@suite/sign-verify@workspace:*, @suite/sign-verify@workspace:suite/sign-verify":
-  version: 0.0.0-use.local
-  resolution: "@suite/sign-verify@workspace:suite/sign-verify"
-  dependencies:
-    "@suite-common/wallet-types": "workspace:*"
-    "@suite/account": "workspace:*"
-    "@suite/device": "workspace:*"
-    "@trezor/dependency-injection": "workspace:*"
-    "@trezor/network-module-suite-types": "workspace:*"
-    "@types/react": "npm:19.2.14"
-    react: "npm:19.2.3"
-    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -19590,6 +19590,7 @@ __metadata:
     "@suite/metadata": "workspace:*"
     "@suite/metadata-migration": "workspace:*"
     "@suite/modal": "workspace:*"
+    "@suite/module-sign-verify": "workspace:*"
     "@suite/networks": "workspace:*"
     "@suite/nfc": "workspace:*"
     "@suite/onboarding-components": "workspace:*"
@@ -19598,7 +19599,6 @@ __metadata:
     "@suite/router": "workspace:*"
     "@suite/sentry": "workspace:*"
     "@suite/settings": "workspace:*"
-    "@suite/sign-verify": "workspace:*"
     "@suite/suite-lifecycle": "workspace:*"
     "@suite/suite-sync": "workspace:*"
     "@suite/thp": "workspace:*"

@@ -207,6 +207,9 @@
             "path": "../../suite/metadata-migration"
         },
         { "path": "../../suite/modal" },
+        {
+            "path": "../../suite/module-sign-verify"
+        },
         { "path": "../../suite/networks" },
         { "path": "../../suite/nfc" },
         {
@@ -217,7 +220,6 @@
         { "path": "../../suite/router" },
         { "path": "../../suite/sentry" },
         { "path": "../../suite/settings" },
-        { "path": "../../suite/sign-verify" },
         { "path": "../../suite/suite-lifecycle" },
         { "path": "../../suite/suite-sync" },
         { "path": "../../suite/thp" },

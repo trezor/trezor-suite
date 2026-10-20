@@ -2,11 +2,11 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../account" },
-        { "path": "../device" },
         {
             "path": "../../suite-common/wallet-types"
         },
+        { "path": "../account" },
+        { "path": "../device" },
         {
             "path": "../../packages/dependency-injection"
         },

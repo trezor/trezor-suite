@@ -8,11 +8,11 @@ import { injectSuiteNetworkModuleRepository } from '@trezor/network-module-suite
 
 import { type SignVerifyLayoutProps } from './SignVerifyLayoutProps';
 
-type SignVerifyProps = {
+type SignVerifyPageProps = {
     LayoutComponent: ComponentType<SignVerifyLayoutProps>;
 };
 
-export const SignVerify = ({ LayoutComponent }: SignVerifyProps) => {
+export const SignVerifyPage = ({ LayoutComponent }: SignVerifyPageProps) => {
     const selectedAccount = useSelector(selectFullSelectedAccount);
     const { suiteNetworkModuleRepository } = useServices(injectSuiteNetworkModuleRepository);
     const { device, isLocked } = useDevice();
