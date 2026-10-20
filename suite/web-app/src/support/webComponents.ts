@@ -139,6 +139,12 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
     'wallet-details': lazy(
         () => import(/* webpackChunkName: "wallet" */ 'src/views/wallet/details'),
     ),
+    // Debug only: trading form embed preview
+    'wallet-trade': lazy(() =>
+        import(/* webpackChunkName: "wallet" */ 'src/views/wallet/trade/WalletTrade').then(
+            ({ WalletTrade }) => ({ default: WalletTrade }),
+        ),
+    ),
     'wallet-tokens': lazy(() => import(/* webpackChunkName: "wallet" */ 'src/views/wallet/tokens')),
     'wallet-nfts': lazy(() => import(/* webpackChunkName: "wallet" */ 'src/views/wallet/nfts')),
     'wallet-send': lazy(() => import(/* webpackChunkName: "wallet" */ 'src/views/wallet/send')),
