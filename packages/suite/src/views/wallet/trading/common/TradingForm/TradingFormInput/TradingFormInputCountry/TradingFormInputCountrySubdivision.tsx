@@ -53,9 +53,9 @@ export const TradingFormInputCountrySubdivision = ({
                     borderRadius={0}
                     data-testid="@trading/form/country-subdivision-select"
                 >
-                    <Row justifyContent="space-between" padding={20}>
+                    <Row justifyContent="space-between" padding={{ vertical: 20, horizontal: 16 }}>
                         <Text
-                            typographyStyle="body-md"
+                            typographyStyle="body-sm"
                             align="start"
                             intent="neutral"
                             priority="secondary"
@@ -64,7 +64,7 @@ export const TradingFormInputCountrySubdivision = ({
                         </Text>
                         <Row gap={16}>
                             <Text
-                                typographyStyle="body-md"
+                                typographyStyle="body-sm"
                                 data-testid="@trading/form/country-subdivision-select/value"
                                 intent="neutral"
                                 priority="secondary"
@@ -73,7 +73,7 @@ export const TradingFormInputCountrySubdivision = ({
                             </Text>
                             <Icon
                                 as={CaretRightIcon}
-                                size={20}
+                                size={16}
                                 intent="neutral"
                                 priority="secondary"
                             />
