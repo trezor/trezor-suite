@@ -4,6 +4,7 @@ import {
     injectDesktopAnalytics,
 } from '@suite/analytics';
 import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
+import { getTransactionCreatedEventPayload } from '@suite-common/analytics';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
@@ -24,7 +25,6 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { type Deferred } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
-import { getTransactionCreatedEventPayload } from 'src/utils/suite/analytics';
 
 import { type TxInfoState, hasTxValidityExpired, selectTxType } from '../utils';
 
@@ -66,7 +66,7 @@ export const TransactionReviewModalBottomContent = ({
     const connectPopupCall = useSelector(selectConnectPopupCall);
     const { precomposedTx, serializedTx } = txInfoState;
 
-    const { symbol, networkType } = account;
+    const { networkType } = account;
     const { options } = precomposedForm;
 
     const isBroadcastEnabled = options.includes('broadcast');
@@ -84,7 +84,7 @@ export const TransactionReviewModalBottomContent = ({
             type: events.transactionCreatedEvent.name,
             payload: getTransactionCreatedEventPayload({
                 action,
-                symbol,
+                account,
                 precomposedForm,
                 tokens:
                     txType === 'yield'
