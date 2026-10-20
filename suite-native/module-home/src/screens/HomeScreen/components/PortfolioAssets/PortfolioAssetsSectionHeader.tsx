@@ -1,3 +1,6 @@
+import { useSelector } from 'react-redux';
+
+import { selectHomeAssetsTableGrouping } from '@suite-common/wallet-core';
 import { HStack, PressableOpacity, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation, useTranslate } from '@suite-native/intl';
@@ -11,6 +14,8 @@ type PortfolioAssetsSectionHeaderProps = {
 export const PortfolioAssetsSectionHeader = ({
     onViewOptionsPress,
 }: PortfolioAssetsSectionHeaderProps) => {
+    const grouping = useSelector(selectHomeAssetsTableGrouping);
+
     const { translate } = useTranslate();
 
     return (
@@ -31,7 +36,11 @@ export const PortfolioAssetsSectionHeader = ({
                 accessibilityLabel={translate('moduleHome.assets.viewOptionsSheet.title')}
                 testID="@home/portfolio-assets/view-options-button"
             >
-                <Icon name="funnelSimple" size="mediumLarge" />
+                <Icon
+                    name="funnelSimple"
+                    size="mediumLarge"
+                    color={grouping !== 'default' ? 'contentInfo' : 'contentPrimary'}
+                />
             </PressableOpacity>
         </HStack>
     );

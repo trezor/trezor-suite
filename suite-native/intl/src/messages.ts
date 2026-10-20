@@ -130,6 +130,9 @@ export const messages = {
             showLess: 'Show less',
             viewOptionsSheet: {
                 title: 'View options',
+                groupBy: 'Group by',
+                groupingDefault: 'Default',
+                groupingNetworks: 'By networks',
             },
         },
         graphIgnoredNetworks:
