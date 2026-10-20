@@ -9,7 +9,7 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type WithServices } from '@trezor/redux-utils';
 
 import { resetCustomServersThunk } from '#src/actions/suite/suiteThunks';
-import { createWalletReducer } from '#src/reducers/wallet';
+import { createWalletReducer } from '#src/reducers/wallet/walletReducer';
 import { type Db, type DbDep } from '#src/storage/createDb';
 
 import { createInMemoryDbMock } from '../../../mocks/createInMemoryDbMock';
