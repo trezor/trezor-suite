@@ -5,6 +5,7 @@ import {
 } from '@suite-common/message-system';
 import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
 import { type TradingCountryCode } from '@suite-common/trading';
+import { type LocaleSliceRootState, localeInitialState } from '@suite-native/intl';
 import { tradingInitialState } from '@suite-native/trading-consts';
 import {
     type TradingResidenceRootState,
@@ -14,6 +15,7 @@ import {
 import {
     selectIsTradingCountrySet,
     selectIsTradingEnabledForCountry,
+    selectIsTradingResidenceSelectionAvailable,
     selectShouldDisplayTradingResidenceOnboarding,
     selectTradingResidenceCountry,
     selectTradingResidenceCountrySubdivision,
@@ -54,6 +56,8 @@ describe('residenceSelectors', () => {
             { [residenceDomain]: payload },
         ),
     });
+
+    const localeRootState: LocaleSliceRootState = { locale: localeInitialState };
 
     const getRootResidenceCheckState = (
         isResidenceWhitelistRequired = false,
@@ -220,11 +224,40 @@ describe('residenceSelectors', () => {
         });
     });
 
+    describe('selectIsTradingResidenceSelectionAvailable', () => {
+        it.each<[string, boolean, boolean, boolean]>([
+            ['true when residence check enabled and FinProm not restricted', true, false, true],
+            ['false when residence check disabled', false, false, false],
+            ['false when FinProm restricted', true, true, false],
+            ['false when residence check disabled and FinProm restricted', false, true, false],
+        ])(
+            'should return %s',
+            (_description, isResidenceWhitelistRequired, isFinpromRestricted, expected) => {
+                const state = {
+                    messageSystem: mockMessageSystemStateWithFeatureFlags(
+                        {
+                            [residenceDomain]: isResidenceWhitelistRequired,
+                            [Feature.finprom.presenceRestriction]: isFinpromRestricted,
+                        },
+                        {
+                            [residenceDomain]: whitelistPayload,
+                            [Feature.finprom.presenceRestriction]: { countries: ['US'] },
+                        },
+                    ),
+                    ...localeRootState,
+                };
+
+                expect(selectIsTradingResidenceSelectionAvailable(state)).toBe(expected);
+            },
+        );
+    });
+
     describe('selectShouldDisplayTradingResidenceOnboarding', () => {
         it('should return false when residence check is disabled', () => {
             const state = {
                 ...getRootResidenceState(tradingInitialState.residence),
                 ...getRootResidenceCheckState(false),
+                ...localeRootState,
             };
 
             expect(selectShouldDisplayTradingResidenceOnboarding(state)).toBe(false);
@@ -234,6 +267,7 @@ describe('residenceSelectors', () => {
             const state = {
                 ...getRootResidenceState(visitedState),
                 ...getRootResidenceCheckState(true),
+                ...localeRootState,
             };
 
             expect(selectShouldDisplayTradingResidenceOnboarding(state)).toBe(false);
@@ -243,6 +277,7 @@ describe('residenceSelectors', () => {
             const state = {
                 ...getRootResidenceState({ country: 'US', countrySubdivision: 'CA' }),
                 ...getRootResidenceCheckState(true),
+                ...localeRootState,
             };
 
             expect(selectShouldDisplayTradingResidenceOnboarding(state)).toBe(false);
@@ -252,9 +287,26 @@ describe('residenceSelectors', () => {
             const state = {
                 ...getRootResidenceState(tradingInitialState.residence),
                 ...getRootResidenceCheckState(true),
+                ...localeRootState,
             };
 
             expect(selectShouldDisplayTradingResidenceOnboarding(state)).toBe(true);
+        });
+
+        it('should return false when FinProm is restricted (residence check enabled)', () => {
+            const state = {
+                ...getRootResidenceState(tradingInitialState.residence),
+                messageSystem: mockMessageSystemStateWithFeatureFlags(
+                    { [residenceDomain]: true, [Feature.finprom.presenceRestriction]: true },
+                    {
+                        [residenceDomain]: whitelistPayload,
+                        [Feature.finprom.presenceRestriction]: { countries: ['US'] },
+                    },
+                ),
+                ...localeRootState,
+            };
+
+            expect(selectShouldDisplayTradingResidenceOnboarding(state)).toBe(false);
         });
     });
 });

@@ -95,6 +95,45 @@ describe('BiometricsScreen', () => {
         expect(mockNavigate).toHaveBeenCalledWith(OnboardingStackRoutes.TradingLocation);
     });
 
+    it('should redirect to Home screen on Skip press when FinProm is restricted', async () => {
+        store = createLightStore({
+            reducer: {
+                featureFlags: featureFlagsReducer,
+                locale: createStaticReducer({
+                    appLocaleCode: 'en-US',
+                    systemLocaleCode: 'en-US',
+                    isSystemLocaleUsed: true,
+                }),
+                messageSystem: createStaticReducer(
+                    mockMessageSystemStateWithFeatureFlags(
+                        {
+                            'trading.restrictions.residenceWhitelistRequired': true,
+                            'finprom.presenceRestriction': true,
+                        },
+                        { 'finprom.presenceRestriction': { countries: ['US'] } },
+                    ),
+                ),
+                wallet: createStaticReducer({
+                    settings: {
+                        localCurrency: 'usd',
+                        bitcoinAmountUnit: 0,
+                    },
+                }),
+            },
+        });
+        const { getByText } = await renderBiometricsScreen();
+
+        await userEvent.press(
+            getByText(getTranslation('moduleOnboarding.biometricsScreen.button.notNow')),
+        );
+
+        expect(mockNavigate).not.toHaveBeenCalledWith(OnboardingStackRoutes.TradingLocation);
+        expect(mockNavigationDispatch).toHaveBeenCalledWith({
+            payload: { index: 0, routes: [{ name: 'AppTabs', params: { screen: 'Home' } }] },
+            type: 'RESET',
+        });
+    });
+
     it('should redirect to Home screen on Skip press when residence check message is absent', async () => {
         store = createLightStore({
             reducer: {
