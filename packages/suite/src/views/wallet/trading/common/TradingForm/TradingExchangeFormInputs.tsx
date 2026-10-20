@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
+import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
@@ -10,6 +11,7 @@ import {
     TRADING_FORM_SEND_CRYPTO_CURRENCY_SELECT,
     type TradingExchangeFormProps,
     type TradingExchangeType,
+    type TradingFormAccountRootState,
     selectTradingExchangeBuyCryptoIds,
     selectTradingExchangeSellCryptoIds,
     selectTradingLoadingAndTimestamp,
@@ -20,7 +22,6 @@ import { type TokenAddress } from '@suite-common/wallet-types';
 import { Box, Column, Row, Skeleton, Text, Tooltip } from '@trezor/components';
 
 import { useIsFeeRefetchDisabled } from 'src/components/wallet/Fees/CollapsibleFees/hooks/useIsFeeRefetchDisabled';
-import { useSelector } from 'src/hooks/suite';
 import { useSelectedTradingAsset } from 'src/hooks/wallet/trading/form/common/useSelectedTradingAsset';
 import { useTradingAssetDecimals } from 'src/hooks/wallet/trading/form/common/useTradingAssetDecimals';
 import { useTradingFormContext } from 'src/hooks/wallet/trading/form/useTradingCommonForm';
@@ -31,6 +32,7 @@ import { TradingFormInputCryptoAmount } from 'src/views/wallet/trading/common/Tr
 import { useTradingQuoteAmounts } from 'src/views/wallet/trading/common/hooks/useTradingQuoteAmounts';
 import { useTradingSelectedQuote } from 'src/views/wallet/trading/common/hooks/useTradingSelectedQuote';
 
+import { TradingExchangeAssetsSwitchButton } from './TradingExchangeAssetsSwitchButton/TradingExchangeAssetsSwitchButton';
 import { TradingFormCard } from './TradingFormCard';
 import { TradingSelectedOfferProvider } from '../TradingSelectedOffer/TradingSelectedOfferProvider';
 import { AssetPickerInputBalance } from './TradingFormInput/TradingFormInputAssetPicker';
@@ -64,7 +66,9 @@ export const TradingExchangeFormInputs = () => {
     } = context;
     const asset = useSelectedTradingAsset(type);
     const { CryptoAmountFormatter } = useFormatters();
-    const account = useSelector(state => selectTradingSendAccount(state, type));
+    const account = useSelector((state: TradingFormAccountRootState) =>
+        selectTradingSendAccount(state, type),
+    );
 
     const isRefetchDisabled = useIsFeeRefetchDisabled();
     useFetchFees({ networkSymbol: account?.symbol, isRefetchDisabled });
@@ -113,11 +117,12 @@ export const TradingExchangeFormInputs = () => {
             : TRADING_AMOUNT_PLACEHOLDER,
     );
 
-    const { handleSellAssetSelect, handleReceiveAssetSelect } = useTradingExchangeAssetSelect({
-        methods,
-        onCryptoCurrencyChange: helpers.onCryptoCurrencyChange,
-        setAmountLimits,
-    });
+    const { handleSellAssetSelect, handleReceiveAssetSelect, handleAssetsSwitch } =
+        useTradingExchangeAssetSelect({
+            methods,
+            onCryptoCurrencyChange: helpers.onCryptoCurrencyChange,
+            setAmountLimits,
+        });
 
     const exchangeBuySupportedCryptoIds = useSelector(selectTradingExchangeBuyCryptoIds);
     const exchangeSellSupportedCryptoIds = useSelector(selectTradingExchangeSellCryptoIds);
@@ -169,82 +174,90 @@ export const TradingExchangeFormInputs = () => {
                     )}
                 </TradingFormSection>
 
-                <TradingFormSection
-                    title={<Translation id="TR_TRADING_YOU_GET" />}
-                    data-testid="@trading/form/you-get"
-                >
-                    <Row gap={12} justifyContent="space-between" alignItems="flex-start">
-                        <Tooltip
-                            content={<Translation id="TR_TRADING_SWAP_RECEIVE_AMOUNT_TOOLTIP" />}
-                            placement="bottom-start"
-                            tooltipMaxWidth={218}
-                            flex="1"
-                            minWidth={0}
-                            cursor="default"
-                        >
-                            <Column
-                                gap={4}
+                <Box>
+                    <TradingExchangeAssetsSwitchButton
+                        receiveAmount={receiveAmount}
+                        onSwitch={handleAssetsSwitch}
+                    />
+                    <TradingFormSection
+                        title={<Translation id="TR_TRADING_YOU_GET" />}
+                        data-testid="@trading/form/you-get"
+                    >
+                        <Row gap={12} justifyContent="space-between" alignItems="flex-start">
+                            <Tooltip
+                                content={
+                                    <Translation id="TR_TRADING_SWAP_RECEIVE_AMOUNT_TOOLTIP" />
+                                }
+                                placement="bottom-start"
+                                tooltipMaxWidth={218}
                                 flex="1"
                                 minWidth={0}
-                                alignItems="flex-start"
-                                data-testid="@trading/form/receive-amount-zone"
+                                cursor="default"
                             >
-                                {state.isFormLoading ? (
-                                    <Skeleton
-                                        animate
-                                        width={TRADING_AMOUNT_SKELETON_WIDTH}
-                                        height={TRADING_AMOUNT_HEIGHT}
-                                    />
-                                ) : (
-                                    <Text
-                                        intent="neutral"
-                                        priority={receiveAmount ? 'primary' : 'secondary'}
-                                        data-testid="@trading/form/receive-amount"
-                                    >
-                                        <span style={receiveAmountStyle}>
-                                            {receiveAmount && receiveCryptoSelect ? (
-                                                <CryptoAmountFormatter
-                                                    value={receiveAmount}
-                                                    symbol={receiveCryptoSelect.networkSymbol}
-                                                    withSymbol={false}
-                                                    smallestUnitsOverride={shouldReceiveInSats}
-                                                />
-                                            ) : (
-                                                TRADING_AMOUNT_PLACEHOLDER
-                                            )}
-                                        </span>
-                                    </Text>
-                                )}
-                                <Box minHeight={20}>
-                                    {state.isFormLoading && (
+                                <Column
+                                    gap={4}
+                                    flex="1"
+                                    minWidth={0}
+                                    alignItems="flex-start"
+                                    data-testid="@trading/form/receive-amount-zone"
+                                >
+                                    {state.isFormLoading ? (
                                         <Skeleton
                                             animate
-                                            width={TRADING_BASE_CURRENCY_SKELETON_WIDTH}
+                                            width={TRADING_AMOUNT_SKELETON_WIDTH}
+                                            height={TRADING_AMOUNT_HEIGHT}
                                         />
+                                    ) : (
+                                        <Text
+                                            intent="neutral"
+                                            priority={receiveAmount ? 'primary' : 'secondary'}
+                                            data-testid="@trading/form/receive-amount"
+                                        >
+                                            <span style={receiveAmountStyle}>
+                                                {receiveAmount && receiveCryptoSelect ? (
+                                                    <CryptoAmountFormatter
+                                                        value={receiveAmount}
+                                                        symbol={receiveCryptoSelect.networkSymbol}
+                                                        withSymbol={false}
+                                                        smallestUnitsOverride={shouldReceiveInSats}
+                                                    />
+                                                ) : (
+                                                    TRADING_AMOUNT_PLACEHOLDER
+                                                )}
+                                            </span>
+                                        </Text>
                                     )}
-                                    {!state.isFormLoading && !!receiveCryptoSelect && (
-                                        <TradingBalance
-                                            balance={receiveAmount}
-                                            symbol={receiveCryptoSelect.networkSymbol}
-                                            tokenAddress={
-                                                (receiveCryptoSelect.contractAddress as TokenAddress) ??
-                                                undefined
-                                            }
-                                            showOnlyAmount
-                                        />
-                                    )}
-                                </Box>
-                            </Column>
-                        </Tooltip>
-                        <TradingFormInputBuyAsset
-                            inputPlaceholder="TR_SELECT_TOKEN"
-                            inputLabel="TR_TO"
-                            inputName={TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT}
-                            includedCryptoIds={exchangeBuySupportedCryptoIds}
-                            onAssetSelect={handleReceiveAssetSelect}
-                        />
-                    </Row>
-                </TradingFormSection>
+                                    <Box minHeight={20}>
+                                        {state.isFormLoading && (
+                                            <Skeleton
+                                                animate
+                                                width={TRADING_BASE_CURRENCY_SKELETON_WIDTH}
+                                            />
+                                        )}
+                                        {!state.isFormLoading && !!receiveCryptoSelect && (
+                                            <TradingBalance
+                                                balance={receiveAmount}
+                                                symbol={receiveCryptoSelect.networkSymbol}
+                                                tokenAddress={
+                                                    (receiveCryptoSelect.contractAddress as TokenAddress) ??
+                                                    undefined
+                                                }
+                                                showOnlyAmount
+                                            />
+                                        )}
+                                    </Box>
+                                </Column>
+                            </Tooltip>
+                            <TradingFormInputBuyAsset
+                                inputPlaceholder="TR_SELECT_TOKEN"
+                                inputLabel="TR_TO"
+                                inputName={TRADING_FORM_RECEIVE_CRYPTO_CURRENCY_SELECT}
+                                includedCryptoIds={exchangeBuySupportedCryptoIds}
+                                onAssetSelect={handleReceiveAssetSelect}
+                            />
+                        </Row>
+                    </TradingFormSection>
+                </Box>
             </TradingFormCard>
 
             {receiveCryptoSelect && (

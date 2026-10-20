@@ -54,6 +54,7 @@ export * from './utils/tradeableAssetGroupUtils';
 export * from './utils/tradeableAssetListUtils';
 export * from './utils/tradeOperationUtils';
 export * from './utils/tradeHistoryExportUtils';
+export * from './utils/exchange/canSwitchExchangeAssets';
 export * from './utils/exchange/composeDexTxSimulationAction';
 export * from './utils/exchange/exchangeUtils';
 export * from './utils/exchange/getExchangeIssue';
