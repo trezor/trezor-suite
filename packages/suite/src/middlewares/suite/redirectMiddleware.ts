@@ -10,6 +10,7 @@ import {
     selectRouterParams,
 } from '@suite/router';
 import { deviceActions, selectDevices, selectSelectedDevice } from '@suite-common/device';
+import { getIsFirmwareUpdateRequired } from '@suite-common/suite-utils';
 import { type Dispatch } from '@trezor/redux-utils';
 
 import { type AppState, type TrezorDevice } from 'src/types/suite';
@@ -29,7 +30,7 @@ const handleDeviceRedirect = (dispatch: Dispatch, state: AppState, device?: Trez
     }
 
     // device firmware update required, redirect to "firmware update"
-    if (device.firmware === 'required') {
+    if (getIsFirmwareUpdateRequired(device)) {
         dispatch(gotoThunk({ routeName: 'firmware-index' }));
     }
 
