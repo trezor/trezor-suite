@@ -198,7 +198,6 @@ describe('getEthereumFeeLevels', () => {
 
     Object.entries(fixtures).forEach(([chain, { expected, coinInfo }]) => {
         it(`should return correct fee levels for ${chain}`, () => {
-            // @ts-expect-error
             const result = getEthereumFeeLevels(coinInfo);
 
             expect(result).toEqual(expected);

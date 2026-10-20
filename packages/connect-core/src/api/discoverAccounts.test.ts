@@ -177,6 +177,67 @@ describe('DiscoverAccounts', () => {
     });
 });
 
+describe('DiscoverAccounts for a network registered at runtime', () => {
+    const discoverCustomNetwork = async (coinInfo: CoinInfo, known?: { type: string }[]) => {
+        jest.mocked(getCoinInfoOrThrow).mockReturnValue(coinInfo);
+        jest.mocked(initBlockchain).mockResolvedValue({
+            getAccountInfo: () => Promise.resolve({ empty: true }),
+        } as unknown as Awaited<ReturnType<typeof initBlockchain>>);
+
+        const method = new DiscoverAccounts({
+            payload: {
+                method: 'discoverAccounts',
+                // @ts-expect-error: the public param type only knows bundled symbols
+                coins: [{ symbol: 'evm146', known }],
+            },
+        });
+        method.setDevice(mockDevice());
+
+        const sendCoreMessage = jest.fn();
+        const result = await method.run({ sendCoreMessage } as unknown as MethodContext);
+        const progress = sendCoreMessage.mock.calls.map(
+            ([message]) => message.payload.response as DiscoverAccountsProgress,
+        );
+
+        return { result, progress };
+    };
+
+    it('discovers an EVM network without an account type with the normal one', async () => {
+        const { result, progress } = await discoverCustomNetwork({
+            type: 'ethereum',
+            shortcut: 'evm146',
+        } as CoinInfo);
+
+        expect(result).toEqual({ empty: 1, nonempty: 0, failed: 0 });
+        expect(progress).toEqual([
+            expect.objectContaining({
+                symbol: 'evm146',
+                type: 'normal',
+                path: "m/44'/60'/0'/0/0",
+                index: 0,
+            }),
+        ]);
+    });
+
+    it('rejects a type other than the normal one for an EVM network without account types', async () => {
+        await expect(
+            discoverCustomNetwork({ type: 'ethereum', shortcut: 'evm146' } as CoinInfo, [
+                { type: 'ledger' },
+            ]),
+        ).rejects.toThrow('Unknown account type: evm146/ledger');
+    });
+
+    it('does not invent account types for a non-EVM network', async () => {
+        const { result, progress } = await discoverCustomNetwork({
+            type: 'misc',
+            shortcut: 'evm146',
+        } as CoinInfo);
+
+        expect(result).toEqual({ empty: 0, nonempty: 0, failed: 0 });
+        expect(progress).toEqual([]);
+    });
+});
+
 const path = "m/84'/0'/0'";
 const xpub = 'xpub-of-the-created-wallet';
 const otherXpub = 'xpub-of-another-wallet';

@@ -2,7 +2,9 @@
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import {
     type BitcoinNetworkInfo,
+    type BlockchainLink,
     type CoinInfo,
+    type CoinSupport,
     type CoinSymbol,
     type EthereumNetworkInfo,
     type MiscNetworkInfo,
@@ -230,22 +232,114 @@ export const ethereumNetworkInfoBase = {
     decimals: 18,
 };
 
-const parseEthereumNetworksJson = (json: any) => {
-    Object.keys(json).forEach(key => {
-        const network = json[key];
+type EthereumNetworkJson = {
+    blockchain_link?: BlockchainLink;
+    chain: string;
+    chain_id: number;
+    blocktime_seconds: number;
+    label: string;
+    name: string;
+    shortcut: string;
+    slip44: number;
+    support: CoinSupport;
+};
 
-        ethereumNetworks.push({
-            ...ethereumNetworkInfoBase,
-            ...getEthereumFeeLevels(network),
-            blockchainLink: network.blockchain_link,
-            chainId: network.chain_id,
-            label: network.label,
-            name: network.name,
-            shortcut: network.shortcut,
-            slip44: network.slip44,
-            support: network.support,
-        });
+const createEthereumNetworkInfo = (network: EthereumNetworkJson): EthereumNetworkInfo => ({
+    ...ethereumNetworkInfoBase,
+    ...getEthereumFeeLevels(network),
+    blockchainLink: network.blockchain_link,
+    chainId: network.chain_id,
+    label: network.label,
+    name: network.name,
+    shortcut: network.shortcut,
+    slip44: network.slip44,
+    support: network.support,
+});
+
+const parseEthereumNetworksJson = (json: Record<string, EthereumNetworkJson>) => {
+    Object.values(json).forEach(network => {
+        ethereumNetworks.push(createEthereumNetworkInfo(network));
     });
+};
+
+// Shortcuts (lowercase) of EVM networks added at runtime, as opposed to the bundled definitions.
+const customEthereumShortcuts = new Set<string>();
+
+// Block time (in seconds) assumed for a user-supplied network, which carries no such data.
+const CUSTOM_EVM_BLOCK_TIME_SECONDS = 12;
+
+export type RegisterEthereumNetworkParams = {
+    symbol: string;
+    name: string;
+    chainId: number;
+    rpcUrls: string[];
+};
+
+/**
+ * Adds (or updates) an EVM network served by a plain RPC node. Bundled networks can never be
+ * replaced, so a symbol or chain id already owned by a bundled definition is rejected.
+ */
+export const registerEthereumNetwork = ({
+    symbol,
+    name,
+    chainId,
+    rpcUrls,
+}: RegisterEthereumNetworkParams): Readonly<EthereumNetworkInfo> => {
+    const shortcut = symbol.toLowerCase();
+
+    const isBundledSymbol =
+        !!getBitcoinNetwork(asCoinSymbol(shortcut)) ||
+        !!getMiscNetwork(asCoinSymbol(shortcut)) ||
+        (!!getEthereumNetwork(asCoinSymbol(shortcut)) && !customEthereumShortcuts.has(shortcut));
+    if (isBundledSymbol) {
+        throw ERRORS.TypedError(
+            'Method_InvalidParameter',
+            `Symbol ${symbol} is already used by a bundled network`,
+        );
+    }
+
+    const isBundledChainId = ethereumNetworks.some(
+        network =>
+            network.chainId === chainId &&
+            !customEthereumShortcuts.has(network.shortcut.toLowerCase()),
+    );
+    if (isBundledChainId) {
+        throw ERRORS.TypedError(
+            'Method_InvalidParameter',
+            `Chain ID ${chainId} is already used by a bundled network`,
+        );
+    }
+
+    // Custom networks have no firmware support data of their own and behave like any other EVM
+    // chain on the device, so they inherit the support matrix of the bundled Ethereum entry.
+    const ethereum = getEthereumNetwork(asCoinSymbol('eth'));
+    if (!ethereum) {
+        throw ERRORS.TypedError('Method_UnknownCoin');
+    }
+
+    const networkInfo = createEthereumNetworkInfo({
+        blockchain_link: { type: 'evm-rpc', url: rpcUrls },
+        chain: shortcut,
+        chain_id: chainId,
+        blocktime_seconds: CUSTOM_EVM_BLOCK_TIME_SECONDS,
+        label: name,
+        name,
+        shortcut: symbol,
+        slip44: ethereum.slip44,
+        support: { ...ethereum.support },
+    });
+
+    const existingIndex = ethereumNetworks.findIndex(
+        network => network.shortcut.toLowerCase() === shortcut,
+    );
+    if (existingIndex === -1) {
+        ethereumNetworks.push(networkInfo);
+    } else {
+        ethereumNetworks[existingIndex] = networkInfo;
+    }
+    customEthereumShortcuts.add(shortcut);
+
+    return networkInfo;
 };
 
 const parseMiscNetworksJSON = (json: any) => {

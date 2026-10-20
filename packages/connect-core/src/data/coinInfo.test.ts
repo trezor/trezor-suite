@@ -1,12 +1,14 @@
-import type { CoinSymbol } from '@trezor/connect-common/src/types/coinInfo';
+import { type CoinSymbol, asCoinSymbol } from '@trezor/connect-common/src/types/coinInfo';
 import { toHardenedPathPart } from '@trezor/crypto-utils';
 
 import {
     getAllNetworks,
     getBitcoinNetworkOrThrow,
     getCoinInfoOrThrow,
+    getEthereumNetwork,
     getMiscNetwork,
     getUniqueNetworks,
+    registerEthereumNetwork,
 } from './coinInfo';
 
 describe('data/coinInfo', () => {
@@ -135,6 +137,116 @@ describe('data/coinInfo', () => {
         const bitcoinNetworks = getAllNetworks().filter(({ type }) => type === 'bitcoin');
         bitcoinNetworks.forEach(network => {
             expect(network.blockTime).toBeGreaterThan(0);
+        });
+    });
+});
+
+describe('data/coinInfo registerEthereumNetwork', () => {
+    const sonic = {
+        symbol: 'evm146',
+        name: 'Sonic',
+        chainId: 146,
+        rpcUrls: ['https://rpc.soniclabs.com'],
+    };
+
+    it('registers an EVM network that resolves like a bundled one', () => {
+        registerEthereumNetwork(sonic);
+
+        const expected = {
+            type: 'ethereum',
+            shortcut: 'evm146',
+            name: 'Sonic',
+            label: 'Sonic',
+            chainId: 146,
+            slip44: 60,
+            decimals: 18,
+            blockchainLink: { type: 'evm-rpc', url: ['https://rpc.soniclabs.com'] },
+        };
+        expect(getCoinInfoOrThrow('evm146')).toMatchObject(expected);
+        expect(getCoinInfoOrThrow('EVM146')).toMatchObject(expected);
+        expect(getEthereumNetwork(asCoinSymbol('evm146'))).toMatchObject(expected);
+        expect(getAllNetworks().filter(({ shortcut }) => shortcut === 'evm146')).toHaveLength(1);
+    });
+
+    it('does not shadow the bundled Ethereum when looking up by path', () => {
+        registerEthereumNetwork({ ...sonic, symbol: 'evm147', chainId: 147 });
+
+        expect(getEthereumNetwork([toHardenedPathPart(44), toHardenedPathPart(60)])?.shortcut).toBe(
+            'ETH',
+        );
+    });
+
+    it('gives the network fee levels and the support matrix of Ethereum', () => {
+        registerEthereumNetwork({ ...sonic, symbol: 'evm148', chainId: 148 });
+
+        const ethereum = getCoinInfoOrThrow('eth');
+        const network = getCoinInfoOrThrow('evm148');
+
+        expect(Object.keys(ethereum.support).length).toBeGreaterThan(0);
+        expect(network.support).toEqual(ethereum.support);
+        expect(network.defaultFees).toHaveLength(1);
+        expect(network.defaultFees[0]).toMatchObject({ label: 'normal', feeLimit: '21000' });
+        expect(network.minFee).toBeGreaterThan(0);
+        expect(network.maxFee).toBeGreaterThan(network.minFee);
+        expect(network.blockTime).toBeGreaterThan(0);
+    });
+
+    it('updates a network registered before instead of duplicating it', () => {
+        registerEthereumNetwork({ ...sonic, symbol: 'evm149', chainId: 149 });
+        registerEthereumNetwork({
+            ...sonic,
+            symbol: 'evm149',
+            chainId: 149,
+            name: 'Sonic 2',
+            rpcUrls: ['https://rpc2.example.com', 'wss://rpc2.example.com'],
+        });
+
+        expect(getCoinInfoOrThrow('evm149')).toMatchObject({
+            name: 'Sonic 2',
+            blockchainLink: {
+                type: 'evm-rpc',
+                url: ['https://rpc2.example.com', 'wss://rpc2.example.com'],
+            },
+        });
+        expect(getAllNetworks().filter(({ shortcut }) => shortcut === 'evm149')).toHaveLength(1);
+    });
+
+    it('keeps the support of Ethereum independent of the registered network', () => {
+        const network = registerEthereumNetwork({ ...sonic, symbol: 'evm150', chainId: 150 });
+
+        expect(network.support).not.toBe(getCoinInfoOrThrow('eth').support);
+    });
+
+    it.each(['eth', 'ETH', 'btc', 'ada', 'tarc'])(
+        'rejects the symbol %s of a bundled network',
+        symbol => {
+            expect(() => registerEthereumNetwork({ ...sonic, symbol, chainId: 151 })).toThrow(
+                'already used by a bundled network',
+            );
+        },
+    );
+
+    it('rejects the chain id of a bundled network and leaves it untouched', () => {
+        // 5042 is Arc
+        expect(() =>
+            registerEthereumNetwork({ ...sonic, symbol: 'evm5042', chainId: 5042 }),
+        ).toThrow('Chain ID 5042 is already used by a bundled network');
+        expect(() => getCoinInfoOrThrow('evm5042')).toThrow('Coin not found');
+        expect(getCoinInfoOrThrow('arc')).toMatchObject({ shortcut: 'ARC', chainId: 5042 });
+    });
+
+    it('rejects the update of a bundled network and leaves it untouched', () => {
+        expect(() =>
+            registerEthereumNetwork({
+                ...sonic,
+                symbol: 'arc',
+                chainId: 152,
+                rpcUrls: ['https://x'],
+            }),
+        ).toThrow('already used by a bundled network');
+        expect(getCoinInfoOrThrow('arc').blockchainLink).toEqual({
+            type: 'evm-rpc',
+            url: ['https://arc.trezor.io'],
         });
     });
 });

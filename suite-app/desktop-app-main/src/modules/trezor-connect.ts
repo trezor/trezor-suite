@@ -91,6 +91,16 @@ export const getTransportsParam = (
     ];
 };
 
+// Unparsable URLs are skipped here and rejected by the method's own validation.
+const getRpcUrlHostnames = (rpcUrls: string[]) =>
+    rpcUrls.flatMap(url => {
+        try {
+            return [new URL(url).hostname];
+        } catch {
+            return [];
+        }
+    });
+
 export const initBackground: ModuleInitBackground = ({
     mainThreadEmitter,
     store,
@@ -185,6 +195,18 @@ export const initBackground: ModuleInitBackground = ({
                     mainThreadEmitter.emit('module/request-interceptor', {
                         type: 'ADD_WHITELISTED_DOMAIN',
                         domain: new URL(url).hostname,
+                    });
+                }
+
+                if (method === 'blockchainRegisterEvmNetwork') {
+                    const { symbol, rpcUrls } = params[0];
+
+                    // Keyed by symbol so that registering the network again on startup restores
+                    // the whitelist and a changed URL list replaces the previous one.
+                    mainThreadEmitter.emit('module/request-interceptor', {
+                        type: 'SET_WHITELISTED_DOMAINS_FOR_CUSTOM_BACKENDS',
+                        coin: symbol,
+                        domains: getRpcUrlHostnames(rpcUrls),
                     });
                 }
 
