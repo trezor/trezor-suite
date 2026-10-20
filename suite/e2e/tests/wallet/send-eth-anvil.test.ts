@@ -41,7 +41,7 @@ test.describe('Send ETH on a mainnet fork', { tag: ['@T3W1', '@T3T1'] }, () => {
             const senderNonceBefore = await anvil.getTransactionCount(senderAddress);
 
             await expect(walletPage.balanceOfAccount({ symbol: ethSymbol })).toHaveText(
-                fundedAmount,
+                toCompactAmount(fundedAmount),
             );
 
             await test.step('Fill in a Send form', async () => {
