@@ -1,4 +1,8 @@
-import { asNetworkSymbol } from '@suite-common/wallet-config';
+import {
+    asNetworkSymbol,
+    registerLegacyCustomEvmNetwork,
+    unregisterLegacyNetwork,
+} from '@suite-common/wallet-config';
 
 import {
     getDefaultBackendType,
@@ -13,6 +17,27 @@ describe('backend utils', () => {
         expect(getDefaultBackendType(asNetworkSymbol('ada'))).toBe('blockfrost');
         expect(getDefaultBackendType(asNetworkSymbol('arc'))).toBe('evm-rpc');
         expect(getDefaultBackendType(asNetworkSymbol('tarc'))).toBe('evm-rpc');
+        expect(getDefaultBackendType(asNetworkSymbol('eth'))).toBe('blockbook');
+        expect(getDefaultBackendType(asNetworkSymbol('tsep'))).toBe('blockbook');
+        expect(getDefaultBackendType(asNetworkSymbol('sol'))).toBe('solana');
+    });
+
+    test('getDefaultBackendType of a custom EVM network', () => {
+        const symbol = asNetworkSymbol('evm4242');
+        registerLegacyCustomEvmNetwork({
+            symbol,
+            chainId: 4242,
+            name: 'Custom',
+            displaySymbol: 'CUS',
+            explorerUrl: 'https://explorer.custom.example',
+            testnet: false,
+        });
+
+        expect(getDefaultBackendType(symbol)).toBe('evm-rpc');
+
+        unregisterLegacyNetwork(symbol);
+
+        expect(getDefaultBackendType(symbol)).toBe('blockbook');
     });
 
     test('isDirectRpcBackendType', () => {

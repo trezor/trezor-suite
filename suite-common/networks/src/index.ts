@@ -19,6 +19,27 @@ export {
     selectSupportedNetworkSymbols,
 } from '../reduxState/networksSelectors';
 export { createLoadNetworkModules, type LoadNetworkModulesDep } from './createLoadNetworkModules';
+export {
+    createRegisterCustomEvmNetwork,
+    injectRegisterCustomEvmNetwork,
+    type RegisterCustomEvmNetwork,
+    type RegisterCustomEvmNetworkDep,
+    type RegisterCustomEvmNetworkDeps,
+    type RegisterCustomEvmNetworkParams,
+} from './createRegisterCustomEvmNetwork';
+export {
+    createUnregisterCustomEvmNetwork,
+    injectUnregisterCustomEvmNetwork,
+    type UnregisterCustomEvmNetwork,
+    type UnregisterCustomEvmNetworkDep,
+    type UnregisterCustomEvmNetworkDeps,
+} from './createUnregisterCustomEvmNetwork';
+export {
+    buildCustomEvmNetworkConfig,
+    createCustomEvmNetworkModule,
+    type CustomEvmNetworkConfigParams,
+    type CustomEvmNetworkModuleParams,
+} from '@trezor/network-ethereum-suite-common';
 export { createGetNetworkConfigs, type GetNetworkConfigsDep } from './createGetNetworkConfigs';
 export {
     createGetNetworkByCoingeckoId,

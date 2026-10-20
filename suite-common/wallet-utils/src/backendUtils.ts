@@ -3,6 +3,7 @@ import {
     type BackendType,
     type NetworkSymbol,
     TREZOR_CONNECT_BACKENDS,
+    getNetworkOptional,
     getNetworkType,
 } from '@suite-common/wallet-config';
 import type {
@@ -23,7 +24,9 @@ export const getDefaultBackendType = (symbol: NetworkSymbol) => {
     if (symbol === 'sol' || symbol === 'dsol') {
         return 'solana';
     }
-    if (symbol === 'arc' || symbol === 'tarc') {
+    // Networks served by plain RPC nodes only (Arc, custom EVM networks) list `evm-rpc` first,
+    // whereas Blockbook-backed EVM networks merely offer it as an alternative.
+    if (getNetworkOptional(symbol)?.backendOptions[0]?.type === 'evm-rpc') {
         return 'evm-rpc';
     }
 

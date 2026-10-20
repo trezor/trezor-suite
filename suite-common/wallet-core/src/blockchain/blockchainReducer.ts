@@ -7,7 +7,11 @@ import {
     getNetworkOptional,
     networksCollection,
 } from '@suite-common/wallet-config';
-import { type Blockchain, type BlockchainNetworks } from '@suite-common/wallet-types';
+import {
+    type Blockchain,
+    type BlockchainNetworks,
+    type CustomEvmNetworkDefinition,
+} from '@suite-common/wallet-types';
 import { getCustomBackends } from '@suite-common/wallet-utils';
 import {
     type BlockchainBlock,
@@ -24,6 +28,7 @@ import {
 } from '@trezor/redux-utils';
 
 import { blockchainActions } from './blockchainActions';
+import { customEvmNetworksActions } from '../customNetworks/customEvmNetworksActions';
 import {
     type WalletSettingsRootState,
     selectEnabledNetworks,
@@ -35,29 +40,42 @@ const initialStatePredefined: Partial<BlockchainState> = {};
 
 export type BlockchainRootState = { wallet: { blockchain: BlockchainState } };
 
+const createInitialBlockchain = (backends: Blockchain['backends'] = {}): Blockchain => ({
+    connected: false,
+    blockHash: '0',
+    blockHeight: 0,
+    version: '0',
+    backends,
+});
+
 // fill initial state, those values will be changed by BLOCKCHAIN.UPDATE_FEE action
 export const blockchainInitialState: BlockchainNetworks = networksCollection.reduce(
     (state, network) => {
-        state[network.symbol as LegacyNetworkSymbol] = {
-            connected: false,
-            blockHash: '0',
-            blockHeight: 0,
-            version: '0',
-            backends:
-                network.symbol === 'regtest'
-                    ? {
-                          selected: 'blockbook',
-                          urls: {
-                              blockbook: ['http://localhost:19121'],
-                          },
-                      }
-                    : {},
-        };
+        state[network.symbol as LegacyNetworkSymbol] = createInitialBlockchain(
+            network.symbol === 'regtest'
+                ? {
+                      selected: 'blockbook',
+                      urls: {
+                          blockbook: ['http://localhost:19121'],
+                      },
+                  }
+                : undefined,
+        );
 
         return state;
     },
     initialStatePredefined as BlockchainState,
 );
+
+// Connect serves a custom network from the RPC urls it was registered with, so no backend is preset.
+export const addCustomEvmNetworkBlockchain = (
+    state: BlockchainState,
+    definition: CustomEvmNetworkDefinition,
+) => {
+    const symbol = definition.symbol as LegacyNetworkSymbol;
+
+    state[symbol] ??= createInitialBlockchain();
+};
 
 const writeIdentityConnection = (
     state: BlockchainState,
@@ -179,6 +197,12 @@ export const prepareBlockchainReducer = createReducerWithExtraDeps(
                 } else {
                     state[symbol as LegacyNetworkSymbol].backends.gapLimit = gapLimit;
                 }
+            })
+            .addCase(customEvmNetworksActions.registered, (state, action) => {
+                addCustomEvmNetworkBlockchain(state, action.payload.definition);
+            })
+            .addCase(customEvmNetworksActions.unregistered, (state, action) => {
+                delete state[action.payload.symbol as LegacyNetworkSymbol];
             })
             .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadBlockchain)
             .addMatcher(

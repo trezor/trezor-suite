@@ -1,4 +1,5 @@
-import { getSupportedNetworks } from '@suite-common/wallet-config';
+import { getSupportedNetworks, registerLegacyCustomEvmNetwork } from '@suite-common/wallet-config';
+import { isCustomEvmNetworkSymbol } from '@suite-common/wallet-types';
 
 import { type Db } from './createDb';
 
@@ -78,12 +79,29 @@ export const loadStoragePayload = async (db: Db) => {
         db.getItemsWithKeys('earnOnboarding'),
     ]);
 
+    // Custom networks are registered ahead of `getSupportedNetworks()` below, otherwise the
+    // accounts and the enabled flag of those networks would be dropped as unsupported. The stored
+    // definitions are user data, so one that fails to register is dropped rather than failing startup.
+    const customEvmNetworks = (walletSettings?.customEvmNetworks ?? []).filter(definition => {
+        if (!isCustomEvmNetworkSymbol(definition.symbol)) return false;
+
+        try {
+            registerLegacyCustomEvmNetwork(definition);
+
+            return true;
+        } catch (error) {
+            console.warn(`Custom network ${definition.symbol} not restored`, error);
+
+            return false;
+        }
+    });
+
     return {
         // Hydration runs before network metadata is loaded into Redux.
         // TODO(#30572): Supply migration ordering without the legacy registry.
         supportedNetworks: getSupportedNetworks(),
         suiteSettings,
-        walletSettings,
+        walletSettings: walletSettings && { ...walletSettings, customEvmNetworks },
         devices,
         thp,
         bluetooth,

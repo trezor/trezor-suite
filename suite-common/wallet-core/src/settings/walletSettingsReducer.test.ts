@@ -1,7 +1,10 @@
 import { deviceInitialState } from '@suite-common/device';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
-import { type SuspiciousTransactionsFilter } from '@suite-common/wallet-types';
+import {
+    type CustomEvmNetworkDefinition,
+    type SuspiciousTransactionsFilter,
+} from '@suite-common/wallet-types';
 import { FirmwareType } from '@trezor/device-utils';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
@@ -10,11 +13,14 @@ import {
     type WalletSettingsReducerDeps,
     initialWalletSettingsState,
     prepareWalletSettingsReducer,
+    selectCustomEvmNetworks,
     selectIsHideSuspiciousTransactions,
     selectIsNetworkReserveSettingsVisible,
     selectIsSuspiciousTransactionsBlurringEnabled,
     selectSuspiciousTransactionsFilter,
+    walletSettingsPersistedWhitelist,
 } from './walletSettingsReducer';
+import { customEvmNetworksActions } from '../customNetworks/customEvmNetworksActions';
 
 const initialState = initialWalletSettingsState;
 const opSymbol = asNetworkSymbol('op');
@@ -188,5 +194,59 @@ describe('selectIsNetworkReserveSettingsVisible', () => {
         expect(selectIsNetworkReserveSettingsVisible(getState(FirmwareType.BitcoinOnly))).toBe(
             false,
         );
+    });
+});
+
+describe('settings reducer custom EVM networks', () => {
+    const customSymbol = asNetworkSymbol('evm4242');
+    const definition: CustomEvmNetworkDefinition = {
+        symbol: customSymbol,
+        chainId: 4242,
+        name: 'Custom Chain',
+        displaySymbol: 'CST',
+        currencyName: 'Custom Token',
+        rpcUrls: ['https://rpc.custom.example'],
+        explorerUrl: 'https://explorer.custom.example',
+        testnet: false,
+    };
+
+    it('persists the custom networks', () => {
+        expect(walletSettingsPersistedWhitelist).toContain('customEvmNetworks');
+    });
+
+    it('stores a registered definition once, the latest one wins', () => {
+        const registered = reducer(undefined, customEvmNetworksActions.registered({ definition }));
+        const renamed = reducer(
+            registered,
+            customEvmNetworksActions.registered({ definition: { ...definition, name: 'Renamed' } }),
+        );
+
+        expect(selectCustomEvmNetworks({ wallet: { settings: renamed } })).toEqual([
+            { ...definition, name: 'Renamed' },
+        ]);
+    });
+
+    it('forgets the definition and the per-network settings on unregistration', () => {
+        const registered = reducer(
+            reducer(undefined, customEvmNetworksActions.registered({ definition })),
+            walletSettingsActions.changeNetworks(
+                [ethSymbol, customSymbol],
+                [ethSymbol, customSymbol],
+            ),
+        );
+        const hidden = reducer(
+            registered,
+            walletSettingsActions.setSuspiciousTransactionsFilter({
+                symbol: customSymbol,
+                filter: 'hideSuspicious',
+            }),
+        );
+
+        const state = reducer(
+            hidden,
+            customEvmNetworksActions.unregistered({ symbol: customSymbol }),
+        );
+
+        expect(state).toEqual({ ...initialState, enabledNetworks: [ethSymbol] });
     });
 });

@@ -52,6 +52,7 @@ import {
     accountsActions,
     blockchainActions,
     changeNetworks,
+    customEvmNetworksActions,
     earnOnboardingActions,
     explorerActions,
     phishingActions,
@@ -574,6 +575,8 @@ export const prepareStorageMiddleware = createMiddlewareWithExtraDeps<
             setHomeAssetsTableGrouping,
             setAreHomeAssetSmallBalancesShown,
             setSuspiciousTransactionsFilter,
+            customEvmNetworksActions.registered,
+            customEvmNetworksActions.unregistered,
         )(action)
     ) {
         api.dispatch(storageActions.saveWalletSettingsThunk());

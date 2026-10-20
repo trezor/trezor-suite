@@ -1,10 +1,16 @@
 import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type BackendSettings } from '@suite-common/wallet-types';
+import {
+    type BackendSettings,
+    type Blockchain,
+    type BlockchainNetworks,
+    type CustomEvmNetworkDefinition,
+} from '@suite-common/wallet-types';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { type SetBackendPayload, blockchainActions } from './blockchainActions';
 import { blockchainInitialState, prepareBlockchainReducer } from './blockchainReducer';
+import { customEvmNetworksActions } from '../customNetworks/customEvmNetworksActions';
 
 const blockchainReducer = prepareBlockchainReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
@@ -62,5 +68,70 @@ describe('blockchain reducer', () => {
                 ).toEqual(next);
             });
         });
+    });
+});
+
+// The registry types are closed over the bundled symbols, so a custom symbol is read through an open view.
+const asOpenState = (state: BlockchainNetworks): Record<string, Blockchain | undefined> => state;
+
+describe('blockchain reducer custom EVM networks', () => {
+    const symbol = asNetworkSymbol('evm4242');
+    const definition: CustomEvmNetworkDefinition = {
+        symbol,
+        chainId: 4242,
+        name: 'Custom Chain',
+        displaySymbol: 'CST',
+        currencyName: 'Custom Token',
+        rpcUrls: ['https://rpc.custom.example'],
+        explorerUrl: 'https://explorer.custom.example',
+        testnet: false,
+    };
+
+    it('seeds a registered network like a built-in one without a preset backend', () => {
+        const state = blockchainReducer(
+            blockchainInitialState,
+            customEvmNetworksActions.registered({ definition }),
+        );
+
+        expect(asOpenState(state)[symbol]).toEqual({
+            connected: false,
+            blockHash: '0',
+            blockHeight: 0,
+            version: '0',
+            backends: {},
+        });
+    });
+
+    it('keeps the existing entry when the network is registered again', () => {
+        const registered = blockchainReducer(
+            blockchainInitialState,
+            customEvmNetworksActions.registered({ definition }),
+        );
+        const connected = {
+            ...registered,
+            [symbol]: { ...asOpenState(registered)[symbol], connected: true },
+        };
+
+        const state = blockchainReducer(
+            connected,
+            customEvmNetworksActions.registered({ definition }),
+        );
+
+        expect(asOpenState(state)[symbol]?.connected).toBe(true);
+    });
+
+    it('removes the entry of an unregistered network', () => {
+        const registered = blockchainReducer(
+            blockchainInitialState,
+            customEvmNetworksActions.registered({ definition }),
+        );
+
+        const state = blockchainReducer(
+            registered,
+            customEvmNetworksActions.unregistered({ symbol }),
+        );
+
+        expect(asOpenState(state)[symbol]).toBeUndefined();
+        expect(state.btc).toEqual(blockchainInitialState.btc);
     });
 });

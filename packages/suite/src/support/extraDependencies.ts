@@ -26,6 +26,8 @@ import {
     type StellarContractTokensState,
     type TransactionsState,
     type WalletSettingsState,
+    addCustomEvmNetworkBlockchain,
+    addCustomEvmNetworkExplorer,
     changeNetworks,
 } from '@suite-common/wallet-core';
 import { type AccountKey, createAccountKey } from '@suite-common/wallet-types';
@@ -61,6 +63,11 @@ export const extraDependencies: ExtraDependenciesStatic & TokenDefinitionsMiddle
     },
     reducers: {
         storageLoadBlockchain: (state: BlockchainState, { payload }: StorageLoadAction) => {
+            // The entries of custom networks are not part of the initial state, seed them first.
+            payload.walletSettings?.customEvmNetworks.forEach(definition =>
+                addCustomEvmNetworkBlockchain(state, definition),
+            );
+
             payload.backendSettings.forEach(backend => {
                 const blockchain = state[backend.key as keyof typeof state];
 
@@ -70,6 +77,10 @@ export const extraDependencies: ExtraDependenciesStatic & TokenDefinitionsMiddle
             });
         },
         storageLoadExplorer: (state: ExplorerConfig, { payload }: StorageLoadAction) => {
+            payload.walletSettings?.customEvmNetworks.forEach(definition =>
+                addCustomEvmNetworkExplorer(state, definition),
+            );
+
             payload.explorer.forEach(({ symbol, explorer }) => {
                 // An explorer config can outlive its network; a throw here would cost the store.
                 const config = state[symbol as keyof typeof state];

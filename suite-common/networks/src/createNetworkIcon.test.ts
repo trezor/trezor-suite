@@ -32,6 +32,8 @@ it.each([
             get: () => mockNetworkModule({ icon }),
             getSupportedNetworks: () => [symbol],
             isSupportedNetwork: (value): value is NetworkSymbol => value === symbol,
+            register: null,
+            unregister: null,
         },
     });
     const networkIcon = createNetworkIcon(deps);
@@ -94,6 +96,8 @@ it.each([
             getSupportedNetworks: () => supportedNetworks,
             isSupportedNetwork: (value): value is NetworkSymbol =>
                 supportedNetworks.some(symbol => symbol === value),
+            register: null,
+            unregister: null,
         },
     });
     const networkIcon = createNetworkIcon(deps);

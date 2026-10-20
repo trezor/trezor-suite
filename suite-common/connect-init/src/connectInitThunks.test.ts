@@ -3,6 +3,7 @@ import { firmwareInitialState } from '@suite-common/firmware';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { type LockDevice } from '@suite-common/suite-types';
 import { testMocks } from '@suite-common/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     defaultTrezorUIEventHandlerThunk,
     initialWalletSettingsState,
@@ -47,8 +48,9 @@ const state: ConnectInitThunkState = {
 
 const createThunkDeps = (
     services: Partial<ConnectInitThunkDeps['services']> = {},
+    settings: ConnectInitThunkState['wallet']['settings'] = initialWalletSettingsState,
 ): ConnectInitThunkTestDeps => {
-    const getState = () => state;
+    const getState = () => ({ ...state, wallet: { settings } });
     const extra: ConnectInitThunkDeps = {
         services: {
             analytics: { report: jest.fn() },
@@ -132,6 +134,92 @@ describe('TrezorConnect Actions', () => {
         expect(initSpy).toHaveBeenCalledWith(
             expect.objectContaining({ firmwareChannel: 'production' }),
         );
+    });
+
+    describe('custom EVM networks', () => {
+        const definition = {
+            symbol: asNetworkSymbol('evm4242'),
+            chainId: 4242,
+            name: 'Custom Chain',
+            displaySymbol: 'CST',
+            currencyName: 'Custom Token',
+            rpcUrls: ['https://rpc.custom.example'],
+            explorerUrl: 'https://explorer.custom.example',
+            testnet: true,
+        };
+        const settings = {
+            ...initialWalletSettingsState,
+            enabledNetworks: [asNetworkSymbol('btc'), definition.symbol],
+            customEvmNetworks: [definition],
+        };
+
+        it('registers them in Connect after init and declares the enabled ones', async () => {
+            const initSpy = jest.spyOn(TrezorConnect, 'init');
+            const registerSpy = jest
+                .spyOn(TrezorConnect, 'blockchainRegisterEvmNetwork')
+                .mockResolvedValue({ success: true, payload: { symbol: definition.symbol } });
+            const updateSpy = jest
+                .spyOn(TrezorConnect, 'updateConnectSettings')
+                .mockResolvedValue({ success: true, payload: { message: 'success' } });
+            const { dispatch, getState, extra } = createThunkDeps({}, settings);
+
+            await connectInitThunk()(dispatch, getState, extra);
+
+            expect(initSpy).toHaveBeenCalledWith(
+                expect.objectContaining({ enabledNetworks: [{ coin: 'btc' }] }),
+            );
+            expect(registerSpy).toHaveBeenCalledWith({
+                symbol: definition.symbol,
+                name: 'Custom Chain',
+                chainId: 4242,
+                rpcUrls: definition.rpcUrls,
+                testnet: true,
+            });
+            expect(initSpy.mock.invocationCallOrder[0]).toBeLessThan(
+                registerSpy.mock.invocationCallOrder[0] ?? 0,
+            );
+            expect(updateSpy).toHaveBeenCalledWith({ enabledNetworks: [{ coin: 'evm4242' }] });
+        });
+
+        it.each([
+            {
+                description: 'rejected',
+                mock: () =>
+                    Promise.resolve({
+                        success: false as const,
+                        error: { code: 'Failure_UnknownCode' as const, message: 'no' },
+                    }),
+            },
+            { description: 'throwing', mock: () => Promise.reject(new Error('boom')) },
+        ])(
+            'carries on when Connect registration is $description',
+            async ({ mock: registration }) => {
+                jest.spyOn(console, 'warn').mockImplementation(() => undefined);
+                jest.spyOn(TrezorConnect, 'blockchainRegisterEvmNetwork').mockImplementation(
+                    registration,
+                );
+                const updateSpy = jest.spyOn(TrezorConnect, 'updateConnectSettings');
+                const { actions, dispatch, getState, extra } = createThunkDeps({}, settings);
+
+                await connectInitThunk()(dispatch, getState, extra);
+
+                expect(actions).toEqual([
+                    expect.objectContaining({ type: connectInitThunk.pending.type }),
+                    expect.objectContaining({ type: connectInitThunk.fulfilled.type }),
+                ]);
+                expect(updateSpy).not.toHaveBeenCalled();
+            },
+        );
+
+        it('does not register anything without custom networks', async () => {
+            const registerSpy = jest.spyOn(TrezorConnect, 'blockchainRegisterEvmNetwork');
+            registerSpy.mockClear();
+            const { dispatch, getState, extra } = createThunkDeps();
+
+            await connectInitThunk()(dispatch, getState, extra);
+
+            expect(registerSpy).not.toHaveBeenCalled();
+        });
     });
 
     it('forces the early access firmware channel for a prerelease-allowing user', async () => {
