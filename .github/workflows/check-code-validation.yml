@@ -25,10 +25,11 @@ jobs:
         with:
           node-version-file: ".nvmrc"
       - name: Install SafeDep PMG
-        uses: safedep/pmg@0d4f89121c773b0009cc2f2dfb578d03603263f2 # v0.29.1
+        uses: safedep/pmg@961499c36c98afbafec10a257ff27fb464073c86 # v0.30.0
         continue-on-error: true
         with:
-          version: v0.19.1
+          version: v0.32.0
+          config-file: .github/pmg-config.yml
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
@@ -180,10 +181,11 @@ jobs:
       - name: Detect unused dependencies
         run: yarn depcheck
       - name: Install SafeDep PMG
-        uses: safedep/pmg@0d4f89121c773b0009cc2f2dfb578d03603263f2 # v0.29.1
+        uses: safedep/pmg@961499c36c98afbafec10a257ff27fb464073c86 # v0.30.0
         continue-on-error: true
         with:
-          version: v0.19.1
+          version: v0.32.0
+          config-file: .github/pmg-config.yml
       - name: Yarn Dedupe check
         run: yarn dedupe --check
       - name: Check dependency domain lists
