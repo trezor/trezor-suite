@@ -1,6 +1,10 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
-import { deviceActions, selectSelectedDevice } from '@suite-common/device';
+import {
+    deviceActions,
+    selectIsPortfolioTrackerDevice,
+    selectSelectedDevice,
+} from '@suite-common/device';
 import { geolocationActions, selectCountryCode } from '@suite-common/geolocation';
 import {
     categorizeMessages,
@@ -34,7 +38,9 @@ export const messageSystemMiddleware = createMiddleware((action, { next, dispatc
 
     if (isAnyOfMessageSystemAffectingActions(action)) {
         const config = selectMessageSystemConfig(getState());
-        const device = selectSelectedDevice(getState());
+        const device = selectIsPortfolioTrackerDevice(getState())
+            ? undefined
+            : selectSelectedDevice(getState());
         const enabledNetworks = selectDeviceEnabledDiscoveryNetworkSymbols(getState());
         const countryCode = selectCountryCode(getState());
 
