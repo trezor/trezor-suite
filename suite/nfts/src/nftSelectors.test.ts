@@ -1,5 +1,5 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { getWalletAssetKey } from '@suite-common/wallet-core';
+import { explorerInitialState, getWalletAssetKey } from '@suite-common/wallet-core';
 import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { type StaticSessionId } from '@trezor/device-utils';
@@ -9,6 +9,7 @@ import {
     selectHiddenNftCollectionCount,
     selectHiddenNftCollectionKeys,
     selectNftCollection,
+    selectNftCollectionExplorerUrl,
     selectNftCollectionItems,
     selectShownNftCollectionCount,
     selectShownNftCollectionKeys,
@@ -94,7 +95,7 @@ const createState = ({
 
     return {
         device: { selectedDevice: { state: { staticSessionId: ALICE } } },
-        wallet: { accounts, settings: { enabledNetworks } },
+        wallet: { accounts, settings: { enabledNetworks }, explorer: explorerInitialState },
         tokenDefinitions: { [ETH]: definitions, [POL]: definitions },
     } as unknown as NftState;
 };
@@ -118,8 +119,8 @@ describe('the collections the section lists', () => {
         expect(selectNftCollection(state, punksOnEth)?.name).toBe('CryptoPunks');
         expect(selectNftCollectionItems(state, punksOnEth, false, ITEMS_LIMIT)).toEqual({
             items: [
-                { id: '1492', amount: '1' },
-                { id: '4820', amount: '1' },
+                { id: '1492', amount: '1', explorerUrl: expect.any(String) },
+                { id: '4820', amount: '1', explorerUrl: expect.any(String) },
             ],
             totalCount: 2,
         });
@@ -131,7 +132,7 @@ describe('the collections the section lists', () => {
         });
 
         expect(selectNftCollectionItems(state, apesOnEth, false, ITEMS_LIMIT)).toEqual({
-            items: [{ id: '7', amount: '3' }],
+            items: [{ id: '7', amount: '3', explorerUrl: expect.any(String) }],
             totalCount: 1,
         });
     });
@@ -340,6 +341,19 @@ describe('what the collapsed section counts', () => {
         expect(selectHiddenNftCollectionCount(state)).toBe(
             selectHiddenNftCollectionKeys(state).length,
         );
+    });
+});
+
+describe('where a collection links to', () => {
+    it('links each item and the collection to the network explorer', () => {
+        const state = createState({
+            accounts: [mockAccount({ tokens: [erc721(PUNKS, 'CryptoPunks', ['1492'])] })],
+        });
+
+        const [item] = selectNftCollectionItems(state, punksOnEth, false, ITEMS_LIMIT)?.items ?? [];
+
+        expect(item?.explorerUrl).toContain(`${PUNKS}/1492`);
+        expect(selectNftCollectionExplorerUrl(state, punksOnEth, false)).toContain(PUNKS);
     });
 });
 

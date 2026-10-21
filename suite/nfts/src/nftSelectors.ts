@@ -1,22 +1,25 @@
 import { shallowEqual } from 'react-redux';
 
 import { selectTokenDefinitions } from '@suite-common/token-definitions';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type Explorer, type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AssetAccountsRootState,
+    type ExplorerState,
     type WalletAssetKey,
     type WalletSettingsRootState,
     getTokens,
     getWalletAssetKey,
     selectEnabledNetworks,
+    selectExplorer,
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
 import { type Account, type TokenAddress } from '@suite-common/wallet-types';
+import { getNftContractExplorerUrl, getNftExplorerUrl } from '@suite-common/wallet-utils';
 import { type MultiTokenValue, type TokenInfo } from '@trezor/blockchain-link-types';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-export type NftState = AssetAccountsRootState & WalletSettingsRootState;
+export type NftState = AssetAccountsRootState & WalletSettingsRootState & ExplorerState;
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<NftState>();
 
@@ -78,6 +81,7 @@ const selectPartitionedNftHoldings = createMemoizedSelector(
 export type NftItem = {
     id: string;
     amount: string;
+    explorerUrl: string | undefined;
 };
 
 export type NftCollectionItems = {
@@ -99,19 +103,32 @@ type HoldingsByKey = ReadonlyMap<WalletAssetKey, readonly [NftHolding, ...NftHol
 const countListedItems = ({ ids, multiTokenValues }: TokenInfo) =>
     (ids?.length ?? 0) + (multiTokenValues?.length ?? 0);
 
-const getNftItems = (held: readonly NftHolding[], limit: number): NftCollectionItems => ({
-    items: held.reduce<NftItem[]>((items, { token: { ids, multiTokenValues } }) => {
+const getNftItems = (
+    held: readonly NftHolding[],
+    limit: number,
+    explorer: Explorer | undefined,
+): NftCollectionItems => ({
+    items: held.reduce<NftItem[]>((items, { token }) => {
+        const { ids, multiTokenValues } = token;
+        const getExplorerUrl = (id: string) =>
+            explorer === undefined ? undefined : getNftExplorerUrl(explorer, token, id);
         const room = limit - items.length;
 
         if (room <= 0) {
             return items;
         }
 
-        const idItems = (ids ?? []).slice(0, room).map(id => ({ id, amount: '1' }));
+        const idItems = (ids ?? [])
+            .slice(0, room)
+            .map(id => ({ id, amount: '1', explorerUrl: getExplorerUrl(id) }));
         const multiTokenItems = (multiTokenValues ?? [])
             .filter((value): value is MultiTokenValue & { id: string } => value.id !== undefined)
             .slice(0, room - idItems.length)
-            .map(({ id, value }) => ({ id, amount: value ?? '1' }));
+            .map(({ id, value }) => ({
+                id,
+                amount: value ?? '1',
+                explorerUrl: getExplorerUrl(id),
+            }));
 
         return items.concat(idItems, multiTokenItems);
     }, []),
@@ -226,11 +243,35 @@ const selectNftCollectionHoldings = (
         assetKey,
     );
 
+const selectNftCollectionExplorer = (
+    state: NftState,
+    assetKey: WalletAssetKey,
+    isHidden: boolean,
+) => {
+    const held = selectNftCollectionHoldings(state, assetKey, isHidden);
+
+    return held === undefined ? undefined : selectExplorer(state, held[0].symbol);
+};
+
 export const selectNftCollectionItems = createMemoizedSelector(
     [
         selectNftCollectionHoldings,
         (_state: NftState, _assetKey: WalletAssetKey, _isHidden: boolean, limit: number) => limit,
+        selectNftCollectionExplorer,
     ],
-    (held, limit): NftCollectionItems | undefined =>
-        held === undefined ? undefined : getNftItems(held, limit),
+    (held, limit, explorer): NftCollectionItems | undefined =>
+        held === undefined ? undefined : getNftItems(held, limit, explorer),
 );
+
+export const selectNftCollectionExplorerUrl = (
+    state: NftState,
+    assetKey: WalletAssetKey,
+    isHidden: boolean,
+): string | undefined => {
+    const held = selectNftCollectionHoldings(state, assetKey, isHidden);
+    const explorer = selectNftCollectionExplorer(state, assetKey, isHidden);
+
+    return held === undefined || explorer === undefined
+        ? undefined
+        : getNftContractExplorerUrl(explorer, held[0].token);
+};

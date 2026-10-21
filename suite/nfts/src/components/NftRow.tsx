@@ -5,13 +5,17 @@ import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { useFormatters } from '@suite-common/formatters';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
-import { Badge, Box, Icon, Row, Text } from '@trezor/components';
-import { CaretDownIcon, CaretRightIcon } from '@trezor/icons';
+import { Badge, Box, Icon, Link, Row, Text } from '@trezor/components';
+import { ArrowUpRightIcon, CaretDownIcon, CaretRightIcon } from '@trezor/icons';
 import { NetworkIcon } from '@trezor/product-components';
 
 import { NFT_ROW_PADDING } from './NftItemRow';
 import { NftUrlBlur } from './NftUrlBlur';
-import { type NftState, selectNftCollection } from '../nftSelectors';
+import {
+    type NftState,
+    selectNftCollection,
+    selectNftCollectionExplorerUrl,
+} from '../nftSelectors';
 
 type NftRowProps = {
     assetKey: WalletAssetKey;
@@ -24,6 +28,9 @@ export const NftRow = memo(({ assetKey, isHidden, isOpen, onToggle }: NftRowProp
     const collection = useSelector(
         (state: NftState) => selectNftCollection(state, assetKey, isHidden),
         shallowEqual,
+    );
+    const explorerUrl = useSelector((state: NftState) =>
+        selectNftCollectionExplorerUrl(state, assetKey, isHidden),
     );
     const { NetworkNameFormatter } = useFormatters();
 
@@ -72,12 +79,28 @@ export const NftRow = memo(({ assetKey, isHidden, isOpen, onToggle }: NftRowProp
                         </HiddenPlaceholder>
                     </Text>
                 </Row>
-                <Badge size="small">
-                    <Row gap={6}>
-                        <NetworkIcon networkSymbol={symbol} size={16} />
-                        <NetworkNameFormatter value={symbol} />
-                    </Row>
-                </Badge>
+                <Row gap={8} alignItems="center">
+                    <Badge size="small">
+                        <Row gap={6}>
+                            <NetworkIcon networkSymbol={symbol} size={16} />
+                            <NetworkNameFormatter value={symbol} />
+                        </Row>
+                    </Badge>
+                    {explorerUrl !== undefined && (
+                        <Link
+                            href={explorerUrl}
+                            onClick={event => event.stopPropagation()}
+                            data-testid={`@dashboard/home-asset-nft/${assetKey}/explorer`}
+                        >
+                            <Icon
+                                as={ArrowUpRightIcon}
+                                size={16}
+                                intent="neutral"
+                                priority="secondary"
+                            />
+                        </Link>
+                    )}
+                </Row>
             </Row>
         </Box>
     );

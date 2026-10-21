@@ -17,6 +17,9 @@
         {
             "path": "../../suite-common/wallet-types"
         },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
         { "path": "../discreet-mode" },
         { "path": "../intl" },
         { "path": "../settings" },
