@@ -1,6 +1,4 @@
-import { type CountryCode } from '@suite-common/geolocation';
-
-import { isKnownCountryCode } from './isKnownCountryCode';
+import { type CountryCode, isKnownCountryCode } from '@suite-common/geolocation';
 
 // TODO(#33785): Placeholder, country from the UI language region, not real presence.
 // Replace with real detection.

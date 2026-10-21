@@ -2,11 +2,9 @@ import { type CountryCode } from '@suite-common/geolocation';
 import {
     Feature,
     type MessageSystemRootState,
+    getFinpromRestrictedCountries,
     selectFeatureConfig,
-    selectIsFeatureEnabled,
 } from '@suite-common/message-system';
-
-import { getFinpromRestrictedCountries } from './finpromPayload';
 
 export const selectIsFinpromRestrictedByCountry = (
     state: MessageSystemRootState,
@@ -16,13 +14,11 @@ export const selectIsFinpromRestrictedByCountry = (
         return false;
     }
 
-    if (!selectIsFeatureEnabled(state, Feature.finprom.presenceRestriction, false)) {
+    const feature = selectFeatureConfig(state, Feature.finprom.presenceRestriction);
+
+    if (!feature?.flag) {
         return false;
     }
 
-    const restrictedCountries = getFinpromRestrictedCountries(
-        selectFeatureConfig(state, Feature.finprom.presenceRestriction),
-    );
-
-    return restrictedCountries.includes(country);
+    return getFinpromRestrictedCountries(feature).includes(country);
 };
