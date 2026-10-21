@@ -1,10 +1,8 @@
-import { useMemo } from 'react';
-
 import { Translation } from '@suite/intl';
+import { useHasSufficientFundsForGas } from '@suite-common/tx-simulation';
 import { type NetworkSymbol, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type PrecomposedTransaction } from '@suite-common/wallet-types';
 import { Banner } from '@trezor/components';
-import { BigNumber } from '@trezor/utils';
 
 interface EvmInsufficientGasWarningProps {
     composedLevel: PrecomposedTransaction | undefined;
@@ -18,10 +16,7 @@ export function EvmInsufficientGasWarning({
     networkSymbol,
 }: EvmInsufficientGasWarningProps) {
     const fee = composedLevel?.type === 'final' ? composedLevel.fee : undefined;
-    const hasSufficientFunds = useMemo(
-        () => !fee || new BigNumber(fee).lte(accountBalance),
-        [fee, accountBalance],
-    );
+    const hasSufficientFunds = useHasSufficientFundsForGas(fee, accountBalance);
 
     if (hasSufficientFunds) return null;
 
