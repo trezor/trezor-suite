@@ -50,8 +50,15 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
     const [selectedAssetCryptoId, setSelectedAssetCryptoId] = useState<CryptoId>();
     const [wasSelectedAssetNetworkInactive, setWasSelectedAssetNetworkInactive] = useState(false);
 
-    const { assets, assetSearchIndex, balances, networks, catalogStatus, retry } =
-        useGlobalReceiveAssets();
+    const {
+        assets,
+        assetSearchIndex,
+        assetIdsWithHistory,
+        balances,
+        networks,
+        catalogStatus,
+        retry,
+    } = useGlobalReceiveAssets();
 
     const selectedAsset = useMemo(
         () => assets.find(asset => asset.id === selectedAssetCryptoId),
@@ -195,6 +202,7 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
                         accountNetworks={enabledNetworks}
                         assets={assets}
                         assetSearchIndex={assetSearchIndex}
+                        assetIdsWithHistory={assetIdsWithHistory}
                         assetNetworks={networks}
                         balances={balances}
                         catalogStatus={catalogStatus}

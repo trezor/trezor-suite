@@ -34,6 +34,7 @@ type GlobalReceiveSearchStepProps = {
     activeTab: GlobalReceiveTab;
     assets: TradingAssetOption[];
     assetSearchIndex: TradeableAssetSearchIndex<TradingAssetOption>;
+    assetIdsWithHistory: ReadonlySet<string>;
     assetNetworks: readonly NetworkSymbol[];
     accountNetworks: readonly NetworkSymbol[];
     balances: TradeableAssetBalances;
@@ -51,6 +52,7 @@ export const GlobalReceiveSearchStep = ({
     activeTab,
     assets,
     assetSearchIndex,
+    assetIdsWithHistory,
     assetNetworks,
     accountNetworks,
     balances,
@@ -170,6 +172,7 @@ export const GlobalReceiveSearchStep = ({
                     <GlobalReceiveAssetsTab
                         assets={assets}
                         assetSearchIndex={assetSearchIndex}
+                        assetIdsWithHistory={assetIdsWithHistory}
                         balances={balances}
                         catalogStatus={catalogStatus}
                         isAssetDisabled={isAssetDisabled}

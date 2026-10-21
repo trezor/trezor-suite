@@ -15,6 +15,8 @@ import {
     type NetworkSymbol,
     toNetworkSymbolNonTestnet,
 } from '@suite-common/wallet-config';
+import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { BigNumber } from '@trezor/utils';
 
 type BuildGlobalReceiveAssetOptionsParams = {
     networks: readonly Network[];
@@ -58,8 +60,8 @@ export type GlobalReceiveAssetListItem = {
 };
 
 export type GlobalReceiveAssetSections = {
-    assetsWithBalance: GlobalReceiveAssetListItem[];
-    assetsWithoutBalance: GlobalReceiveAssetListItem[];
+    myAssets: GlobalReceiveAssetListItem[];
+    otherAssets: GlobalReceiveAssetListItem[];
 };
 
 export const getGlobalReceiveAssetDescriptionValues = (
@@ -73,9 +75,16 @@ export const getGlobalReceiveAssetDescriptionValues = (
 type GetGlobalReceiveAssetSectionsParams = {
     assets: readonly TradingAssetOption[];
     balances: TradeableAssetBalances;
+    assetIdsWithHistory?: ReadonlySet<string>;
     search: string;
     searchIndex?: TradeableAssetSearchIndex<TradingAssetOption>;
     networkSymbol: NetworkSymbol | undefined;
+};
+
+const EMPTY_ASSET_IDS_WITH_HISTORY: ReadonlySet<string> = new Set();
+const ZERO_ASSET_BALANCE: TradeableAssetBalance = {
+    cryptoAmount: '0',
+    fiatAmount: asBaseCurrencyAmount(new BigNumber(0)),
 };
 
 const getAssetSearchFields = (asset: TradingAssetOption): TradeableAssetSearchFields => ({
@@ -115,12 +124,14 @@ const compareHeldAssets = (
 export const getGlobalReceiveAssetSections = ({
     assets,
     balances,
+    assetIdsWithHistory = EMPTY_ASSET_IDS_WITH_HISTORY,
     search,
     searchIndex = buildGlobalReceiveAssetSearchIndex(assets),
     networkSymbol,
 }: GetGlobalReceiveAssetSectionsParams): GlobalReceiveAssetSections => {
     const query = normalizeForSearch(search);
     const heldAssets: TradingAssetOption[] = [];
+    const assetsWithHistory: GlobalReceiveAssetListItem[] = [];
     const nativeAssets: GlobalReceiveAssetListItem[] = [];
     const tokenAssets: GlobalReceiveAssetListItem[] = [];
 
@@ -147,6 +158,8 @@ export const getGlobalReceiveAssetSections = ({
 
         if (balances.has(asset.id)) {
             heldAssets.push(asset);
+        } else if (assetIdsWithHistory.has(asset.id)) {
+            assetsWithHistory.push({ asset, balance: ZERO_ASSET_BALANCE });
         } else if (asset.isNativeToken) {
             nativeAssets.push({ asset, balance: undefined });
         } else {
@@ -154,9 +167,12 @@ export const getGlobalReceiveAssetSections = ({
         }
     });
 
-    const assetsWithBalance = heldAssets
+    const fundedAssets = heldAssets
         .toSorted((assetA, assetB) => compareHeldAssets(balances, assetA, assetB))
         .map(asset => ({ asset, balance: balances.get(asset.id) }));
 
-    return { assetsWithBalance, assetsWithoutBalance: [...nativeAssets, ...tokenAssets] };
+    return {
+        myAssets: [...fundedAssets, ...assetsWithHistory],
+        otherAssets: [...nativeAssets, ...tokenAssets],
+    };
 };
