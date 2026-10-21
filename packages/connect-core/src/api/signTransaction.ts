@@ -104,7 +104,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             });
         }
 
-        const prevTxids = getPreviousTxids(inputs);
+        const prevTxids = getPreviousTxids(inputs, { version: payload.version }, coinInfo);
         const origTxids = getOriginalTxids(inputs, outputs);
 
         let refTxs: RefTransaction[] | undefined;
