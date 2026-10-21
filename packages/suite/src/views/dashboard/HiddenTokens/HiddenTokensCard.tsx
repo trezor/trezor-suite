@@ -3,22 +3,25 @@ import { type ReactNode, useCallback, useMemo, useState } from 'react';
 import { Translation } from '@suite/intl';
 import { selectHiddenWalletAssetKeys } from '@suite-common/assets';
 import { type HiddenTokenReason, type WalletAssetKey } from '@suite-common/wallet-core';
-import { Card, Column, Divider, Table, Text, VirtualizedList } from '@trezor/components';
+import { Box, Card, Column, Divider, Row, Text, VirtualizedList } from '@trezor/components';
 
 import { useSelector } from 'src/hooks/suite';
-import { HomeAssetRow } from 'src/views/home/HomeAssetsTable/HomeAssetRow';
-import {
-    HOME_ASSET_CELL_PADDING,
-    HOME_ASSET_COL_WIDTHS,
-    HOME_ASSET_ROW_HEIGHT,
-} from 'src/views/home/HomeAssetsTable/homeAssetTableLayout';
 
+import {
+    HIDDEN_TOKEN_BALANCE_WIDTH,
+    HIDDEN_TOKEN_PRICE_WIDTH,
+    HIDDEN_TOKEN_ROW_HEIGHT,
+    HIDDEN_TOKEN_ROW_PADDING,
+    HiddenTokenRow,
+} from './HiddenTokenRow';
 import { UnhideAssetModal } from './UnhideAssetModal';
 
 const LIST_MAX_ROW_COUNT = 9;
 
+const LIST_MIN_WIDTH = 480;
+
 const SEPARATOR_HEIGHT = 1;
-const ITEM_HEIGHT = HOME_ASSET_ROW_HEIGHT + SEPARATOR_HEIGHT;
+const ITEM_HEIGHT = HIDDEN_TOKEN_ROW_HEIGHT + SEPARATOR_HEIGHT;
 
 type HiddenTokenItem = {
     assetKey: WalletAssetKey;
@@ -47,16 +50,7 @@ export const HiddenTokensCard = ({
         ({ assetKey }: HiddenTokenItem) => (
             <>
                 <Divider margin={0} strokeWidth={SEPARATOR_HEIGHT} />
-                <Table isRowHighlightedOnHover colWidths={HOME_ASSET_COL_WIDTHS}>
-                    <Table.Body>
-                        <HomeAssetRow
-                            assetKey={assetKey}
-                            isHidden
-                            onSelect={setAssetKeyToUnhide}
-                            testIdPrefix="@hidden-tokens/item"
-                        />
-                    </Table.Body>
-                </Table>
+                <HiddenTokenRow assetKey={assetKey} onSelect={setAssetKeyToUnhide} />
             </>
         ),
         [],
@@ -77,29 +71,46 @@ export const HiddenTokensCard = ({
                 >
                     {heading}
                 </Text>
-                <Table isRowHighlightedOnHover colWidths={HOME_ASSET_COL_WIDTHS}>
-                    <Table.Header>
-                        <Table.Row>
-                            <Table.Cell padding={HOME_ASSET_CELL_PADDING.first}>
+                <Box overflow="auto">
+                    <Column minWidth={LIST_MIN_WIDTH}>
+                        <Row gap={16} padding={HIDDEN_TOKEN_ROW_PADDING}>
+                            <Text
+                                typographyStyle="body-sm"
+                                intent="neutral"
+                                priority="secondary"
+                                flex="1"
+                            >
                                 <Translation id="TR_ASSET" />
-                            </Table.Cell>
-                            <Table.Cell align="end">
+                            </Text>
+                            <Text
+                                typographyStyle="body-sm"
+                                intent="neutral"
+                                priority="secondary"
+                                width={HIDDEN_TOKEN_PRICE_WIDTH}
+                                align="end"
+                            >
                                 <Translation id="TR_EXCHANGE_RATE" />
-                            </Table.Cell>
-                            <Table.Cell align="end" padding={HOME_ASSET_CELL_PADDING.last}>
+                            </Text>
+                            <Text
+                                typographyStyle="body-sm"
+                                intent="neutral"
+                                priority="secondary"
+                                width={HIDDEN_TOKEN_BALANCE_WIDTH}
+                                align="end"
+                            >
                                 <Translation id="TR_BALANCE" />
-                            </Table.Cell>
-                        </Table.Row>
-                    </Table.Header>
-                </Table>
-                <VirtualizedList
-                    items={items}
-                    renderItem={renderItem}
-                    getItemKey={getItemKey}
-                    listHeight={Math.min(items.length, LIST_MAX_ROW_COUNT) * ITEM_HEIGHT}
-                    listMinHeight={0}
-                    resetScrollOnItemsChange={false}
-                />
+                            </Text>
+                        </Row>
+                        <VirtualizedList
+                            items={items}
+                            renderItem={renderItem}
+                            getItemKey={getItemKey}
+                            listHeight={Math.min(items.length, LIST_MAX_ROW_COUNT) * ITEM_HEIGHT}
+                            listMinHeight={0}
+                            resetScrollOnItemsChange={false}
+                        />
+                    </Column>
+                </Box>
             </Column>
 
             {assetKeyToUnhide !== undefined && (
