@@ -1,5 +1,6 @@
 import { memo } from 'react';
 
+import { Nfts } from '@suite/nfts';
 import { Column } from '@trezor/components';
 
 import { HomeAssetFeedback } from './HomeAssetFeedback';
@@ -12,6 +13,7 @@ export const HomeAssetDashboard = memo(() => (
         <HomeBalanceCard />
         <DashboardPromoBanner />
         <HomeAssetTable />
+        <Nfts />
         <HomeAssetFeedback />
     </Column>
 ));
