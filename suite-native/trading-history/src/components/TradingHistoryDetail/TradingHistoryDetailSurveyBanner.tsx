@@ -32,7 +32,7 @@ export const TradingHistoryDetailSurveyBanner = () => {
 
     const survey = surveyFeature?.payload ? safeValidateTradingSurvey(surveyFeature.payload) : null;
 
-    if (!survey || !canHandleCtaAction(survey.cta.action)) {
+    if (!survey || !canHandleCtaAction(survey.cta, language)) {
         return null;
     }
 

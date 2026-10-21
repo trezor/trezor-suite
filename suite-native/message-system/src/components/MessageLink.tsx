@@ -1,4 +1,5 @@
-import { type CTA, type Localization } from '@suite-common/suite-types';
+import { resolveMessageContent } from '@suite-common/message-system';
+import { type CTA } from '@suite-common/suite-types';
 import { Link } from '@suite-native/link';
 import { type TypographyStyle } from '@trezor/theme';
 
@@ -6,7 +7,7 @@ import { canHandleCtaAction } from '../utils/canHandleCtaAction';
 
 type MessageLinkProps = {
     messageCTA?: CTA;
-    language: keyof Localization;
+    language: string;
     textVariant?: TypographyStyle;
 };
 export const MessageLink = ({
@@ -14,18 +15,16 @@ export const MessageLink = ({
     language,
     textVariant = 'body-sm',
 }: MessageLinkProps) => {
-    const messageLinkLabel = messageCTA?.label[language];
-    const messageLink = messageCTA?.link;
-    const isExternalLink = canHandleCtaAction(messageCTA?.action);
+    const canHandleLinkAction = canHandleCtaAction(messageCTA, language);
 
-    const isLinkDisplayable = isExternalLink && messageLinkLabel && messageLink;
-
-    if (!isLinkDisplayable) return null;
+    if (!canHandleLinkAction) {
+        return null;
+    }
 
     return (
         <Link
-            href={messageLink}
-            label={messageLinkLabel}
+            href={messageCTA.link}
+            label={resolveMessageContent(messageCTA.label, language)}
             isUnderlined
             textColor="contentPrimary"
             textPressedColor="contentSecondary"

@@ -74,11 +74,11 @@ export const KillswitchMessageScreen = () => {
     const messageContent = resolveMessageContent(content, language);
     const ctaLabel = cta ? resolveMessageContent(cta.label, language) : null;
     const ctaLink = cta?.link;
-    const isExternalCta = canHandleCtaAction(cta?.action);
+    const canHandleCta = canHandleCtaAction(cta, language);
 
     const handleCtaPress = () => {
-        if (isExternalCta && ctaLink) {
-            openLink(ctaLink);
+        if (canHandleCta) {
+            openLink(cta.link);
         } else {
             // TODO: handle internal link once we introduce them
         }
