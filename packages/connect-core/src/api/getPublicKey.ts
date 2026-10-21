@@ -20,6 +20,8 @@ import { validatePath } from '../utils/pathUtils';
 type Params = {
     proto: PROTO.GetPublicKey;
     coinInfo: BitcoinNetworkInfo;
+    // Unset when coinInfo is only the v9 btc fallback for a non-bitcoin path.
+    permissionCoinInfo?: BitcoinNetworkInfo;
     suppressBackupWarning?: boolean;
     unlockPath?: PROTO.UnlockPath;
 };
@@ -37,6 +39,7 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
 
         const params = payload.bundle.map(batch => {
             let coinInfo: BitcoinNetworkInfo | undefined;
+            let isFallbackCoin = false;
             if (batch.coin) {
                 coinInfo = getBitcoinNetwork(batch.coin);
             }
@@ -48,7 +51,11 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
                 // Coin omitted or not bitcoin-like: derive the network from the path. Connect 10
                 // rejects an unresolved path; the v9 flag falls back to btc instead (as v9 did).
                 if (v9Compat) {
-                    coinInfo = getBitcoinNetwork(address_n) ?? getBitcoinNetworkOrThrow('btc');
+                    coinInfo = getBitcoinNetwork(address_n);
+                    if (!coinInfo) {
+                        coinInfo = getBitcoinNetworkOrThrow('btc');
+                        isFallbackCoin = true;
+                    }
                 } else {
                     coinInfo = getBitcoinNetworkOrThrow(address_n);
                 }
@@ -66,6 +73,7 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
             return {
                 proto,
                 coinInfo,
+                permissionCoinInfo: isFallbackCoin ? undefined : coinInfo,
                 unlockPath: batch.unlockPath,
                 suppressBackupWarning: batch.suppressBackupWarning,
             };
@@ -83,7 +91,11 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
     hasBundle?: boolean;
 
     get requiredPermissions(): PermissionRequest[] {
-        return this.coinPerms('read_xpub', this.requiredFirmwareCoins);
+        // A non-bitcoin path asks for a generic device permission, not a btc one.
+        return this.coinPerms(
+            'read_xpub',
+            this.params.map(({ permissionCoinInfo }) => permissionCoinInfo),
+        );
     }
 
     get info() {
@@ -94,7 +106,7 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const first: (typeof params)[number] = params[0];
 
-        return getPublicKeyLabel(first.proto.address_n, first.coinInfo);
+        return getPublicKeyLabel(first.proto.address_n, first.permissionCoinInfo);
     }
 
     async run({ sendCoreMessage }: MethodContext) {
