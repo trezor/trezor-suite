@@ -33,6 +33,7 @@
         { "path": "../intl" },
         { "path": "../labeling" },
         { "path": "../link" },
+        { "path": "../message-system" },
         { "path": "../navigation" },
         { "path": "../toasts" },
         { "path": "../trading-atoms" },

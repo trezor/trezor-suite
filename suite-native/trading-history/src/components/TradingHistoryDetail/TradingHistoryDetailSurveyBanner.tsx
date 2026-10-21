@@ -11,6 +11,7 @@ import {
 import { Button, Card, Text, VStack } from '@suite-native/atoms';
 import { selectSupportedLanguageLocale } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
+import { canHandleCtaAction } from '@suite-native/message-system';
 
 const safeValidateTradingSurvey = (data: unknown): TradingSurveyPayload | null => {
     try {
@@ -31,8 +32,7 @@ export const TradingHistoryDetailSurveyBanner = () => {
 
     const survey = surveyFeature?.payload ? safeValidateTradingSurvey(surveyFeature.payload) : null;
 
-    // Internal links of the message system are not supported on mobile yet.
-    if (survey?.cta.action !== 'external-link') {
+    if (!survey || !canHandleCtaAction(survey.cta, language)) {
         return null;
     }
 
