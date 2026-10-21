@@ -1,0 +1,37 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../../suite-common/formatters"
+        },
+        {
+            "path": "../../suite-common/token-definitions"
+        },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        { "path": "../discreet-mode" },
+        { "path": "../intl" },
+        { "path": "../settings" },
+        {
+            "path": "../../packages/blockchain-link-types"
+        },
+        { "path": "../../packages/components" },
+        { "path": "../../packages/icons" },
+        {
+            "path": "../../packages/product-components"
+        },
+        { "path": "../../packages/redux-utils" },
+        { "path": "../../packages/theme" },
+        { "path": "../../packages/type-utils" },
+        { "path": "../../packages/utils" },
+        { "path": "../../packages/device-utils" }
+    ]
+}

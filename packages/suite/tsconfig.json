@@ -205,6 +205,7 @@
         },
         { "path": "../../suite/modal" },
         { "path": "../../suite/nfc" },
+        { "path": "../../suite/nfts" },
         {
             "path": "../../suite/onboarding-components"
         },
