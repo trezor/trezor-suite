@@ -90,7 +90,7 @@ test.describe(
                 // Also verify the silent mode checkbox is hidden until Remember is ticked.
                 signMessage();
                 await expect(connectPermissionsModal.processParagraph).toHaveText(
-                    /^(node|MainThread)$/,
+                    /^(node|Node\.js|MainThread)$/,
                 );
                 await expect(connectPermissionsModal.silentModeCheckbox).toBeHidden();
                 await connectPermissionsModal.rememberCheckbox.click();
