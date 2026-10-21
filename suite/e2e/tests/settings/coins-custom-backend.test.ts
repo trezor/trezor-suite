@@ -118,7 +118,7 @@ test.describe('Coin Settings', { tag: ['@T3W1', '@T3T1'] }, () => {
                 await test.step(`Open ${coin.toUpperCase()} account & verify it errors to load`, async () => {
                     await walletPage.accountButton({ symbol: coin }).click();
                     await expect(walletPage.accountNotLoaded).toContainTranslation(
-                        'TR_ACCOUNT_EXCEPTION_DISCOVERY_ERROR',
+                        'TR_CUSTOM_BACKEND_UNREACHABLE',
                     );
                 });
             },
