@@ -1,5 +1,6 @@
 import { ServerOffline } from '@suite-native/trading-atoms';
 
+import { EXCHANGE_SEND_SECTION_BOTTOM_SPACING } from './ExchangeCard';
 import { ExchangeForm } from './ExchangeForm';
 import { ExchangeFormContextProvider } from './ExchangeFormContextProvider';
 import { useExchangeData } from '../../hooks/exchange/useExchangeData';
@@ -14,7 +15,12 @@ export const ExchangeTabContent = () => {
     }
 
     if (!isFullyLoaded) {
-        return <TradingFormSkeleton />;
+        return (
+            <TradingFormSkeleton
+                hasSecondSectionBalanceRow
+                firstSectionBottomSpacing={EXCHANGE_SEND_SECTION_BOTTOM_SPACING}
+            />
+        );
     }
 
     return (
