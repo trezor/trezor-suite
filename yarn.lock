@@ -17160,6 +17160,7 @@ __metadata:
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
     "@suite/discreet-mode": "workspace:*"
     "@suite/intl": "workspace:*"
     "@suite/settings": "workspace:*"

@@ -3,7 +3,7 @@ import { memo } from 'react';
 import { HiddenPlaceholder, RedactNumericalValue } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
-import { Badge, IconCircle, type Padding, Row, Text } from '@trezor/components';
+import { Badge, IconCircle, Link, type Padding, Row, Text } from '@trezor/components';
 import { PictureFrameIcon } from '@trezor/icons';
 
 import { type NftItem } from '../nftSelectors';
@@ -17,32 +17,40 @@ type NftItemRowProps = {
     item: NftItem;
 };
 
-export const NftItemRow = memo(({ assetKey, item: { id, amount } }: NftItemRowProps) => (
-    <Row
-        gap={12}
-        alignItems="center"
-        padding={NFT_ROW_PADDING}
-        data-testid={`@dashboard/home-asset-nft-item/${assetKey}/${id}`}
-    >
-        <IconCircle icon={PictureFrameIcon} size={NFT_ITEM_ICON_SIZE} intent="neutral" />
-        <Text
-            typographyStyle="body-sm"
-            intent="neutral"
-            priority="secondary"
-            ellipsisLineCount={1}
-            minWidth={0}
-        >
+export const NftItemRow = memo(
+    ({ assetKey, item: { id, amount, explorerUrl } }: NftItemRowProps) => {
+        const itemId = (
             <HiddenPlaceholder>
                 #<RedactNumericalValue value={id} />
             </HiddenPlaceholder>
-        </Text>
-        <Badge size="small">
-            <HiddenPlaceholder>
-                <RedactNumericalValue value={amount} />×
-            </HiddenPlaceholder>
-        </Badge>
-    </Row>
-));
+        );
+
+        return (
+            <Row
+                gap={12}
+                alignItems="center"
+                padding={NFT_ROW_PADDING}
+                data-testid={`@dashboard/home-asset-nft-item/${assetKey}/${id}`}
+            >
+                <IconCircle icon={PictureFrameIcon} size={NFT_ITEM_ICON_SIZE} intent="neutral" />
+                <Text
+                    typographyStyle="body-sm"
+                    intent="neutral"
+                    priority="secondary"
+                    ellipsisLineCount={1}
+                    minWidth={0}
+                >
+                    {explorerUrl === undefined ? itemId : <Link href={explorerUrl}>{itemId}</Link>}
+                </Text>
+                <Badge size="small">
+                    <HiddenPlaceholder>
+                        <RedactNumericalValue value={amount} />×
+                    </HiddenPlaceholder>
+                </Badge>
+            </Row>
+        );
+    },
+);
 
 NftItemRow.displayName = 'NftItemRow';
 
