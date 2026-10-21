@@ -19,12 +19,6 @@ let
   # unstable packages
   electron = electron_42;
   nodejs = nodejs_24;
-  # use older gcc. 10.2.0 with glibc 2.32 for node_modules bindings.
-  # electron-builder is packing the app with glibc 2.32, bindings should not be compiled with newer version.
-  gccPkgs = import (builtins.fetchTarball {
-    url = "https://github.com/NixOS/nixpkgs/archive/a78ed5cbdd5427c30ca02a47ce6cccc9b7d17de4.tar.gz";
-    sha256 = "0l5b1libi46sc3ly7a5vj04098f63aj5jynxpz44sb396nncnivl";
-  }) {};
 
   useAndroid = builtins.getEnv "USE_ANDROID" == "1";
   androidEnv = if useAndroid then import ./.nix/android.nix { inherit pkgs; } else {};
@@ -35,7 +29,7 @@ let
     (if useRust then rustEnv.extraPackages else [])
   ];
 in
-  stdenvNoCC.mkDerivation {
+  stdenv.mkDerivation {
     name = "trezor-suite-dev";
     buildInputs = [
       bash
@@ -60,7 +54,7 @@ in
       vips
     ] ++ extraBuildInputs
       ++ lib.optionals stdenv.hostPlatform.isLinux [
-      nsis openjpeg osslsigncode p7zip squashfsTools gccPkgs.gcc # binaries used by node_module: electron-builder
+      nsis openjpeg osslsigncode p7zip squashfsTools # binaries used by node_module: electron-builder
       udev  # used by node_module: usb
     ];
 

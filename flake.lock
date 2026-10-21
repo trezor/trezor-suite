@@ -68,22 +68,6 @@
         "type": "github"
       }
     },
-    "old-gcc-nixpkgs": {
-      "locked": {
-        "lastModified": 1619215201,
-        "narHash": "sha256-dEfLrDVpLE3Iv916WaQaxqEECJC7qOPpYNqQuCINq1A=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "a78ed5cbdd5427c30ca02a47ce6cccc9b7d17de4",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "a78ed5cbdd5427c30ca02a47ce6cccc9b7d17de4",
-        "type": "github"
-      }
-    },
     "playwright-web-flake": {
       "inputs": {
         "flake-utils": "flake-utils_2",
@@ -108,7 +92,6 @@
       "inputs": {
         "flake-utils": "flake-utils",
         "nixpkgs": "nixpkgs",
-        "old-gcc-nixpkgs": "old-gcc-nixpkgs",
         "playwright-web-flake": "playwright-web-flake"
       }
     },
