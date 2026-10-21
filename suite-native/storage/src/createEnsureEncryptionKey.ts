@@ -29,10 +29,12 @@ const resolveEncryptionKey = (): Promise<StorageEncryptionKey | null> =>
                     // It's not possible to read from SecureStore,
                     // and we don't want to set a new key or reset storage without user interaction.
                     // It might happen on the background when the phone is locked.
-                    return null;
+                    // Undefined distinguishes a failed read from SecureStore's null (key not found).
+                    return undefined;
                 });
         })
         .then(secureKey => {
+            if (secureKey === undefined) return null;
             if (secureKey != null) return secureKey as StorageEncryptionKey;
 
             // If we are here, it means that we have no encryption key in storage.
