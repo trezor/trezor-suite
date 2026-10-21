@@ -78,6 +78,7 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
         titleSpacing,
         description,
         icon,
+        customIcon,
         pictogramVariant,
         onPressPrimaryButton,
         primaryButtonTitle,
@@ -136,7 +137,8 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
                 >
                     <Card style={applyStyle(alertSheetContainerStyle, { bottomInset: bottom })}>
                         <VStack style={applyStyle(alertSheetContentStyle)}>
-                            {pictogramVariant && (
+                            {customIcon && <Box alignItems="center">{customIcon}</Box>}
+                            {!customIcon && pictogramVariant && (
                                 <Box alignItems="center">
                                     <Pictogram variant={pictogramVariant} icon={icon} />
                                 </Box>
