@@ -9,21 +9,22 @@ import type {
     TransactionOptions,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import { TypedError } from '@trezor/connect-common/src/constants/errors';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { promiseAllSequence } from '@trezor/utils/src/promiseAllSequence';
 
 import {
+    assertRefTransactions,
     createPendingTransaction,
     deriveOutputScript,
     enhanceSignTx,
-    getOrigTransactions,
-    getReferencedTransactions,
+    getOriginalTxids,
+    getPreviousTxids,
     parseTransactionHexes,
-    requireReferencedTransactions,
     signTx,
     transformOrigTransactions,
+    transformRawTransactions,
     transformReferencedTransactions,
-    validateReferencedTransactions,
     validateTrezorInputs,
     validateTrezorOutputs,
     verifyTx,
@@ -103,18 +104,38 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             });
         }
 
-        if (payload.refTxs && payload.account?.transactions) {
-            console.warn(
-                'two sources of referential transactions were passed. payload.refTxs have precedence',
-            );
+        const prevTxids = getPreviousTxids(inputs);
+        const origTxids = getOriginalTxids(inputs, outputs);
+
+        let refTxs: RefTransaction[] | undefined;
+
+        if (payload.refTxs?.length) {
+            if (payload.account?.transactions) {
+                console.warn(
+                    'two sources of referential transactions were passed. payload.refTxs have precedence',
+                );
+            }
+            assertRefTransactions({ transactions: payload.refTxs, origTxids });
+
+            refTxs = payload.refTxs;
+        } else if (payload.account?.transactions?.length) {
+            refTxs = transformRawTransactions({
+                transactions: payload.account.transactions,
+                inputs,
+                origTxids,
+                coinInfo,
+                addresses: payload.account?.addresses,
+            });
         }
-        const refTxs = validateReferencedTransactions({
-            transactions: payload.refTxs || payload.account?.transactions,
-            inputs,
-            outputs,
-            coinInfo,
-            addresses: payload.account?.addresses,
-        });
+
+        if (refTxs) {
+            const missing = prevTxids
+                .concat(origTxids)
+                .find(hash => !refTxs.some(tx => tx.hash === hash));
+            if (missing) {
+                throw TypedError('Method_InvalidParameter', `refTx: ${missing} not provided`);
+            }
+        }
 
         const outputsWithAmount = outputs.filter(
             output =>
@@ -271,11 +292,10 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             params: { inputs, outputs, options, coinInfo, identity, addresses },
         } = this;
 
-        const requiredRefTxs = requireReferencedTransactions(inputs, options, coinInfo);
-        const refTxsIds = requiredRefTxs ? getReferencedTransactions(inputs) : [];
-        const origTxsIds = getOrigTransactions(inputs, outputs);
+        const prevTxids = getPreviousTxids(inputs, options, coinInfo);
+        const origTxids = getOriginalTxids(inputs, outputs);
 
-        if (!refTxsIds.length && !origTxsIds.length) {
+        if (!prevTxids.length && !origTxids.length) {
             return [];
         }
 
@@ -283,17 +303,17 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         assertBackendSupported(coinInfo);
         const blockchain = await initBlockchain(coinInfo, sendCoreMessage, identity);
 
-        const refTxs = !refTxsIds.length
+        const refTxs = !prevTxids.length
             ? []
             : await blockchain
-                  .getTransactionHexes(refTxsIds)
+                  .getTransactionHexes(prevTxids)
                   .then(parseTransactionHexes(coinInfo.network))
                   .then(rawTxs => transformReferencedTransactions(rawTxs));
 
-        const origTxs = !origTxsIds.length
+        const origTxs = !origTxids.length
             ? []
             : await blockchain
-                  .getTransactionHexes(origTxsIds)
+                  .getTransactionHexes(origTxids)
                   .then(parseTransactionHexes(coinInfo.network))
                   .then(async rawOrigTxs => {
                       // if sender account addresses not provided, fetch account info from the blockbook

@@ -7,7 +7,6 @@ import {
     ERRORS,
     type FeeLevel,
     type PermissionRequest,
-    type RefTransaction,
     type SignedTransaction,
     UI_EVENTS,
     UI_REQUESTS,
@@ -32,9 +31,8 @@ import { enhanceSignTx } from './bitcoin/enhanceSignTx';
 import { inputToTrezor } from './bitcoin/inputs';
 import { outputToTrezor, validateHDOutput } from './bitcoin/outputs';
 import {
-    getReferencedTransactions,
+    getPreviousTxids,
     parseTransactionHexes,
-    requireReferencedTransactions,
     transformReferencedTransactions,
 } from './bitcoin/refTx';
 import { signTx } from './bitcoin/signtx';
@@ -401,15 +399,13 @@ export default class SendTransaction extends AbstractMethod<'sendTransaction', P
         const inputs = tx.inputs.map(inp => inputToTrezor(inp, params.sequence));
         const outputs = tx.outputs.map(outputToTrezor);
 
-        let refTxs: RefTransaction[] = [];
-        const requiredRefTxs = requireReferencedTransactions(inputs, options, coinInfo);
-        const refTxsIds = getReferencedTransactions(inputs);
-        if (requiredRefTxs && refTxsIds.length > 0) {
-            refTxs = await this.getBlockchain(sendCoreMessage)
-                .then(blockchain => blockchain.getTransactionHexes(refTxsIds))
-                .then(parseTransactionHexes(coinInfo.network))
-                .then(transformReferencedTransactions);
-        }
+        const prevTxids = getPreviousTxids(inputs, options, coinInfo);
+        const refTxs = prevTxids.length
+            ? await this.getBlockchain(sendCoreMessage)
+                  .then(blockchain => blockchain.getTransactionHexes(prevTxids))
+                  .then(parseTransactionHexes(coinInfo.network))
+                  .then(transformReferencedTransactions)
+            : [];
 
         const getHDNode = (address_n: number[]) =>
             device.getCommands().getHDNode({ address_n }, { coinInfo: params.coinInfo });

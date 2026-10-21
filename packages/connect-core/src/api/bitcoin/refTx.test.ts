@@ -1,74 +1,43 @@
 import * as fixtures from './__fixtures__/refTx';
-import {
-    getReferencedTransactions,
-    requireReferencedTransactions,
-    validateReferencedTransactions,
-} from './refTx';
+import { getOriginalTxids, getPreviousTxids, transformRawTransactions } from './refTx';
 
 describe('core/methods/tx/refTx', () => {
-    it('requireReferencedTransactions', () => {
-        expect(requireReferencedTransactions([{ script_type: 'SPENDP2SHWITNESS' }] as any)).toEqual(
-            true,
-        );
-        expect(
-            requireReferencedTransactions([
-                { script_type: 'SPENDP2SHWITNESS' },
-                { script_type: 'SPENDTAPROOT' },
-                { script_type: 'SPENDWITNESS' },
-                { script_type: 'SPENDADDRESS' },
-                { script_type: 'SPENDMULTISIG' },
-                { script_type: undefined },
-            ] as any),
-        ).toEqual(true);
-        expect(
-            requireReferencedTransactions([
-                { script_type: 'SPENDTAPROOT' },
-                { script_type: 'SPENDTAPROOT' },
-                { script_type: 'SPENDTAPROOT' },
-            ] as any),
-        ).toEqual(false);
-        expect(
-            requireReferencedTransactions([
-                { script_type: 'SPENDTAPROOT' },
-                { script_type: 'EXTERNAL' },
-            ] as any),
-        ).toEqual(false);
+    it('getPreviousTxids', () => {
+        const segwit = { script_type: 'SPENDWITNESS', prev_hash: 'segwit' } as any;
+        const taproot = { script_type: 'SPENDTAPROOT', prev_hash: 'taproot' } as any;
+        const external = { script_type: 'EXTERNAL', prev_hash: 'external' } as any;
+
+        expect(getPreviousTxids([segwit])).toEqual(['segwit']);
+        expect(getPreviousTxids([segwit, taproot])).toEqual(['segwit', 'taproot']);
+        expect(getPreviousTxids([taproot, taproot, taproot])).toEqual([]);
+        expect(getPreviousTxids([taproot, external])).toEqual([]);
 
         // zcash v5
-        expect(
-            requireReferencedTransactions([], { version: 4 }, { shortcut: 'ZEC' } as any),
-        ).toEqual(true);
-        expect(
-            requireReferencedTransactions([], { version: 4 }, { shortcut: 'TAZ' } as any),
-        ).toEqual(true);
-        expect(
-            requireReferencedTransactions([], { version: 5 }, { shortcut: 'ZEC' } as any),
-        ).toEqual(false);
-        expect(
-            requireReferencedTransactions([], { version: 5 }, { shortcut: 'TAZ' } as any),
-        ).toEqual(false);
+        expect(getPreviousTxids([segwit], { version: 4 }, { shortcut: 'ZEC' })).toEqual(['segwit']);
+        expect(getPreviousTxids([segwit], { version: 4 }, { shortcut: 'TAZ' })).toEqual(['segwit']);
+        expect(getPreviousTxids([segwit], { version: 5 }, { shortcut: 'ZEC' })).toEqual([]);
+        expect(getPreviousTxids([segwit], { version: 5 }, { shortcut: 'TAZ' })).toEqual([]);
+
+        const inputs = [segwit, taproot, external, taproot, segwit, external];
+        const result = ['segwit', 'taproot', 'external'];
+        expect(getPreviousTxids(inputs)).toEqual(result);
     });
 
-    it('getReferencedTransactions', () => {
-        const inputs = [
-            { prev_hash: 'abcd' },
-            { prev_hash: 'abcd' },
-            { prev_hash: 'deadbeef' },
-            { prev_hash: 'abcd' },
-            { prev_hash: 'deadbeef' },
-            { prev_hash: 'dcba' },
-        ];
-        const result = ['abcd', 'deadbeef', 'dcba'];
-        expect(getReferencedTransactions(inputs as any)).toEqual(result);
+    it('getOriginalTxids', () => {
+        const a = { orig_hash: 'a' } as any;
+        const b = { orig_hash: 'b' } as any;
+        expect(getOriginalTxids([a], [])).toEqual(['a']);
+        expect(getOriginalTxids([], [b])).toEqual(['b']);
+        expect(getOriginalTxids([a, b], [b, a])).toEqual(['a', 'b']);
     });
 
-    describe('validateReferencedTransactions', () => {
-        fixtures.validateReferencedTransactions.forEach(f => {
+    describe('transformRawTransactions', () => {
+        fixtures.transformRawTransactions.forEach(f => {
             it(` ${f.description}`, () => {
                 if (f.error) {
-                    expect(() => validateReferencedTransactions(f.params as any)).toThrow(f.error);
+                    expect(() => transformRawTransactions(f.params as any)).toThrow(f.error);
                 } else {
-                    expect(validateReferencedTransactions(f.params as any)).toEqual(f.result);
+                    expect(transformRawTransactions(f.params as any)).toEqual(f.result);
                 }
             });
         });
