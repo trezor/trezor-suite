@@ -7,6 +7,7 @@ import {
     type FormState,
     type PrecomposedLevels,
     type PrecomposedTransaction,
+    type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import {
     datetimeToLocktime,
@@ -336,7 +337,10 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
             // passing them directly from tx history will prevent downloading them from the backend (in @trezor/connect)
             // this is essential step for coinjoin account to avoid leaking txid
             if (['coinjoin', 'taproot'].includes(selectedAccount.accountType)) {
-                refTxs = (transactions[selectedAccount.key] || []).filter(tx => tx.txid === txid);
+                refTxs = (transactions[selectedAccount.key] || []).filter(
+                    (tx): tx is WalletAccountTransaction & { hex: string } =>
+                        tx.txid === txid && !!tx.hex,
+                );
             }
 
             // override inputs and outputs of precomposed transaction

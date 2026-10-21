@@ -2,8 +2,8 @@
 
 import type {
     AccountAddresses,
-    AccountTransaction,
     BitcoinNetworkInfo,
+    RawTransaction,
     RefTransaction,
 } from '@trezor/connect-common';
 import { TypedError } from '@trezor/connect-common/src/constants/errors';
@@ -206,7 +206,7 @@ const OrigTxShape = Type.Object({
     outputs: Type.Array(PROTO.TxOutputType, { minItems: 1 }),
 });
 
-const getTransactionHex = ({ hex, txid }: AccountTransaction) =>
+const getTransactionHex = ({ hex, txid }: RawTransaction) =>
     hex || throwError(TypedError('Method_InvalidParameter', `refTx: hex for ${txid} not provided`));
 
 export const transformRawTransactions = ({
@@ -216,7 +216,7 @@ export const transformRawTransactions = ({
     coinInfo,
     origTxids,
 }: {
-    transactions: AccountTransaction[];
+    transactions: RawTransaction[];
     inputs: PROTO.TxInputType[];
     addresses?: AccountAddresses;
     coinInfo: BitcoinNetworkInfo;
