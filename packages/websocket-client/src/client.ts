@@ -1,6 +1,11 @@
 import WebSocket from 'ws';
 
-import { TypedEmitter, createDeferred, createDeferredManager } from '@trezor/utils';
+import {
+    TypedEmitter,
+    createDeferred,
+    createDeferredManager,
+    promiseRaceWithSignal,
+} from '@trezor/utils';
 
 type WebsocketOptions = {
     url: string;
@@ -27,6 +32,8 @@ type WebsocketClientEvents = {
 
 export type WebsocketSendParams = { timeout?: number; onIdCreated?: (id: number) => void };
 
+export type WebsocketConnectParams = { signal?: AbortSignal };
+
 export type WebsocketRequest = Record<string, any>;
 export type WebsocketResponse = WebSocket.Data;
 
@@ -43,6 +50,7 @@ export class WebsocketClient<Events extends Record<string, any>> extends TypedEm
     private ws?: WebSocket;
     private pingTimeout?: ReturnType<typeof setTimeout>;
     private connectPromise?: Promise<void>;
+    private connectAbort?: (reason: Error) => void;
 
     protected createWebsocket?(): WebSocket;
     protected ping() {
@@ -180,16 +188,32 @@ export class WebsocketClient<Events extends Record<string, any>> extends TypedEm
         }
     }
 
-    async connect() {
+    // `signal` cancels the attempt started by this call; when joining an attempt or waiting for a
+    // closing socket it only rejects this call.
+    async connect({ signal }: WebsocketConnectParams = {}) {
+        signal?.throwIfAborted();
+
         // if connecting already, just return the promise
         if (this.connectPromise) {
-            return this.connectPromise;
+            return promiseRaceWithSignal(this.connectPromise, signal);
         }
 
         if (this.isConnected()) return Promise.resolve();
 
         if (this.ws?.readyState === WebSocket.CLOSING) {
-            await new Promise<void>(resolve => this.emitter.once('disconnected', resolve));
+            const closed = createDeferred();
+            this.emitter.once('disconnected', closed.resolve);
+            try {
+                await promiseRaceWithSignal(closed.promise, signal);
+            } finally {
+                this.emitter.off('disconnected', closed.resolve);
+            }
+            signal?.throwIfAborted();
+
+            // Another call woken by the same close may have started the attempt already.
+            if (this.connectPromise) {
+                return promiseRaceWithSignal(this.connectPromise, signal);
+            }
         }
 
         // create deferred promise
@@ -226,9 +250,31 @@ export class WebsocketClient<Events extends Record<string, any>> extends TypedEm
 
         this.ws = ws;
 
+        const abort = (reason: Error) => {
+            // already open, the pending finally() has not cleared the abort yet
+            if (this.isConnected()) return;
+            if (this.connectPromise === dfd.promise) this.connectPromise = undefined;
+            if (this.connectAbort === abort) this.connectAbort = undefined;
+
+            clearTimeout(connectionTimeout);
+            this.onClose();
+            this.ws = undefined;
+            dfd.reject(reason);
+            try {
+                ws.close();
+            } catch {
+                // empty
+            }
+        };
+        const onSignalAbort = () => abort(signal?.reason);
+        this.connectAbort = abort;
+        signal?.addEventListener('abort', onSignalAbort, { once: true });
+
         // wait for onopen event
         return dfd.promise.finally(() => {
-            this.connectPromise = undefined;
+            signal?.removeEventListener('abort', onSignalAbort);
+            if (this.connectAbort === abort) this.connectAbort = undefined;
+            if (this.connectPromise === dfd.promise) this.connectPromise = undefined;
         });
     }
 
@@ -249,6 +295,8 @@ export class WebsocketClient<Events extends Record<string, any>> extends TypedEm
     }
 
     disconnect() {
+        this.connectAbort?.(new WebsocketError('websocket_disconnected'));
+
         if (this.isConnected()) {
             const disconnectPromise = new Promise<void>(resolve => {
                 this.ws?.once('close', resolve);
