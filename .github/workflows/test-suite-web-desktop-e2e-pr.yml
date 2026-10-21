@@ -86,10 +86,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
-      - name: Install Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
-        with:
-          node-version-file: ".nvmrc"
       - name: Generate GitHub App token
         id: trezor-bot-token
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
@@ -102,12 +98,6 @@ jobs:
           github_token: ${{ steps.trezor-bot-token.outputs.token }}
           project: "desktop"
           currents-project-id: "4ytF0E"
-      - name: Post quarantine list
-        uses: ./.github/actions/post-quarantine-list
-        with:
-          github_token: ${{ steps.trezor-bot-token.outputs.token }}
-          currents_api_key: ${{ secrets.CURRENTS_API_KEY }}
-          project_name: "desktop"
 
   run-e2e-suite-desktop-tests:
     if: |
@@ -308,10 +298,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
-      - name: Install Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
-        with:
-          node-version-file: ".nvmrc"
       - name: Generate GitHub App token
         id: trezor-bot-token
         uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
@@ -324,12 +310,6 @@ jobs:
           github_token: ${{ steps.trezor-bot-token.outputs.token }}
           project: "web"
           currents-project-id: "Og0NOQ"
-      - name: Post quarantine list
-        uses: ./.github/actions/post-quarantine-list
-        with:
-          github_token: ${{ steps.trezor-bot-token.outputs.token }}
-          currents_api_key: ${{ secrets.CURRENTS_API_KEY }}
-          project_name: "web"
 
   run-e2e-suite-web-tests:
     if: |
