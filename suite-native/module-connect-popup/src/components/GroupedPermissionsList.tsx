@@ -164,6 +164,11 @@ export const GroupedPermissionsList = ({
     defaultIsOpen = true,
 }: GroupedPermissionsListProps) => (
     <VStack spacing="sp12" padding="sp8">
+        {permissions.length === 0 && (
+            <Text variant="body-sm" color="contentSecondary">
+                <Translation id="moduleConnectPopup.permissions.none" />
+            </Text>
+        )}
         {groupPermissionsByCoin(permissions).map(group => (
             <PermissionGroup
                 key={group.coin ?? '__device__'}

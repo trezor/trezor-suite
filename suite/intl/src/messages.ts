@@ -13138,6 +13138,10 @@ export const messages = defineMessages({
         defaultMessage:
             'This app wants to connect with Trezor Suite and needs the following permissions.',
     },
+    TR_NO_PERMISSIONS_REQUESTED: {
+        id: 'TR_NO_PERMISSIONS_REQUESTED',
+        defaultMessage: 'No permissions requested',
+    },
     TR_PERMISSIONS: {
         id: 'TR_PERMISSIONS',
         defaultMessage: 'Permissions',
