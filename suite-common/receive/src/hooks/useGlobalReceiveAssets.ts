@@ -11,8 +11,13 @@ import {
     selectTradeableAssetBalances,
 } from '@suite-common/trading';
 import { type NetworkSymbol, getMainnets } from '@suite-common/wallet-config';
-import { selectDeviceSupportedNetworks } from '@suite-common/wallet-core';
+import {
+    selectAllAccountsToList,
+    selectDeviceSupportedNetworks,
+    selectTransactions,
+} from '@suite-common/wallet-core';
 
+import { getGlobalReceiveAssetIdsWithHistory } from '../getGlobalReceiveAssetIdsWithHistory';
 import {
     buildGlobalReceiveAssetOptions,
     buildGlobalReceiveAssetSearchIndex,
@@ -23,6 +28,7 @@ export type GlobalReceiveAssetCatalogStatus = 'loading' | 'ready' | 'error';
 type UseGlobalReceiveAssetsReturn = {
     assets: TradingAssetOption[];
     assetSearchIndex: TradeableAssetSearchIndex<TradingAssetOption>;
+    assetIdsWithHistory: ReadonlySet<string>;
     balances: TradeableAssetBalances;
     networks: NetworkSymbol[];
     catalogStatus: GlobalReceiveAssetCatalogStatus;
@@ -45,6 +51,8 @@ export const useGlobalReceiveAssets = (): UseGlobalReceiveAssetsReturn => {
     const isBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
     const supportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
     const balances = useSelector(selectTradeableAssetBalances);
+    const accounts = useSelector(selectAllAccountsToList);
+    const transactions = useSelector(selectTransactions);
     const {
         data: definitions,
         isError,
@@ -76,6 +84,15 @@ export const useGlobalReceiveAssets = (): UseGlobalReceiveAssetsReturn => {
         [definitions, supportedMainnets],
     );
     const assetSearchIndex = useMemo(() => buildGlobalReceiveAssetSearchIndex(assets), [assets]);
+    const assetIdsWithHistory = useMemo(
+        () =>
+            getGlobalReceiveAssetIdsWithHistory({
+                accounts,
+                networks: supportedMainnets,
+                transactions,
+            }),
+        [accounts, supportedMainnets, transactions],
+    );
     const networks = useMemo(
         () => supportedMainnets.map(network => network.symbol),
         [supportedMainnets],
@@ -84,6 +101,7 @@ export const useGlobalReceiveAssets = (): UseGlobalReceiveAssetsReturn => {
     return {
         assets,
         assetSearchIndex,
+        assetIdsWithHistory,
         balances,
         networks,
         catalogStatus: getCatalogStatus(

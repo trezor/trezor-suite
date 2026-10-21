@@ -17,12 +17,15 @@ import {
     type RankedTokenStructure,
     fetchRankedTokenDefinitions,
 } from '@suite-common/token-definitions';
-import { getMainnets } from '@suite-common/wallet-config';
+import { getCryptoId } from '@suite-common/trading';
+import { asNetworkSymbol, getMainnets } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type FiatRatesRootState,
+    type TransactionsRootState,
     type WalletSettingsRootState,
 } from '@suite-common/wallet-core';
+import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { FirmwareType } from '@trezor/device-utils';
 
 import { useGlobalReceiveAssets } from './useGlobalReceiveAssets';
@@ -32,11 +35,12 @@ jest.mock('@suite-common/token-definitions', () => ({
     fetchRankedTokenDefinitions: jest.fn(),
 }));
 
-// The hook selects device, accounts, fiat rates and settings state only — none of it app-layer.
+// The hook selects shared wallet state only — none of it app-layer.
 type TestRootState = DeviceRootState &
     AccountsRootState &
     FiatRatesRootState &
     NetworksRootState &
+    TransactionsRootState &
     WalletSettingsRootState;
 
 const definitions: RankedTokenStructure = [
@@ -57,7 +61,11 @@ const renderAssets = (
         preloadedState: {
             device: { devices: [], selectedDevice: mockSuiteDevice({ firmwareType }) },
             networks: Object.fromEntries(getMainnets().map(network => [network.symbol, network])),
-            wallet: { accounts: [], settings: { enabledNetworks: [], localCurrency: 'usd' } },
+            wallet: {
+                accounts: [],
+                settings: { enabledNetworks: [], localCurrency: 'usd' },
+                transactions: { transactions: {}, phishing: {}, fetchStatusDetail: {} },
+            },
         },
     });
     const rendered = renderHookWithStoreProvider(useGlobalReceiveAssets, {
@@ -74,6 +82,63 @@ describe('useGlobalReceiveAssets', () => {
     beforeEach(() => {
         jest.mocked(fetchRankedTokenDefinitions).mockReset();
         jest.mocked(fetchRankedTokenDefinitions).mockResolvedValue(definitions);
+    });
+
+    it('derives zero-balance history only from visible, enabled accounts of the selected wallet', () => {
+        const contract = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+        const usedAccount = mockWalletAccount({
+            symbol: asNetworkSymbol('eth'),
+            formattedBalance: '0',
+            tokens: [mockAccountToken({ contract, balance: '0', totalSent: '1' })],
+        });
+        const { services } = createTestCompositionRoot<void, TestRootState>({
+            preloadedState: {
+                device: {
+                    devices: [],
+                    selectedDevice: mockSuiteDevice({
+                        state: { staticSessionId: usedAccount.deviceState },
+                    }),
+                },
+                networks: Object.fromEntries(
+                    getMainnets().map(network => [network.symbol, network]),
+                ),
+                wallet: {
+                    accounts: [
+                        usedAccount,
+                        mockWalletAccount({
+                            symbol: asNetworkSymbol('btc'),
+                            empty: true,
+                            history: { total: 0, unconfirmed: 0 },
+                        }),
+                        mockWalletAccount({ symbol: asNetworkSymbol('sol'), visible: false }),
+                        mockWalletAccount({ symbol: asNetworkSymbol('xrp') }),
+                        mockWalletAccount({
+                            symbol: asNetworkSymbol('ada'),
+                            deviceState: 'otherWallet@device:0',
+                        }),
+                    ],
+                    settings: {
+                        enabledNetworks: ['eth', 'btc', 'sol', 'ada'].map(asNetworkSymbol),
+                        localCurrency: 'usd',
+                    },
+                    transactions: { transactions: {}, phishing: {}, fetchStatusDetail: {} },
+                },
+            },
+        });
+        const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+        const { result, unmount } = renderHookWithStoreProvider(useGlobalReceiveAssets, {
+            services,
+            wrapper: ({ children }: PropsWithChildren) => (
+                <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+            ),
+        });
+
+        expect(result.current.balances.size).toBe(0);
+        expect(result.current.assetIdsWithHistory).toEqual(
+            new Set([getCryptoId(usedAccount.symbol), getCryptoId(usedAccount.symbol, contract)]),
+        );
+        unmount();
+        queryClient.clear();
     });
 
     it('loads definitions without dispatching trading actions and caches them across modal opens', async () => {
@@ -153,6 +218,7 @@ describe('useGlobalReceiveAssets', () => {
         expect(result.current.catalogStatus).toBe('ready');
         expect(result.current.assets).toEqual([]);
         expect(result.current.assetSearchIndex.size).toBe(0);
+        expect(result.current.assetIdsWithHistory.size).toBe(0);
         expect(result.current.networks).toEqual([]);
         act(() => result.current.retry());
         expect(fetchRankedTokenDefinitions).not.toHaveBeenCalled();

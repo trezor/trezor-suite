@@ -26,8 +26,8 @@ type GlobalReceiveListItem =
     | ({ type: 'asset' } & GlobalReceiveAssetListItem);
 
 type GlobalReceiveAssetListProps = {
-    assetsWithBalance: GlobalReceiveAssetListItem[];
-    assetsWithoutBalance: GlobalReceiveAssetListItem[];
+    myAssets: GlobalReceiveAssetListItem[];
+    otherAssets: GlobalReceiveAssetListItem[];
     disabledMessage: TranslationKey | undefined;
     listRef: RefObject<HTMLDivElement | null>;
     isAssetDisabled: (asset: TradingAssetOption) => boolean;
@@ -48,33 +48,33 @@ const getItemHeight = (item: GlobalReceiveListItem): number => {
 };
 
 export const GlobalReceiveAssetList = ({
-    assetsWithBalance,
-    assetsWithoutBalance,
+    myAssets,
+    otherAssets,
     disabledMessage,
     listRef,
     isAssetDisabled,
     onAssetClick,
 }: GlobalReceiveAssetListProps) => {
     const listItems = useMemo<GlobalReceiveListItem[]>(() => {
-        if (assetsWithBalance.length === 0) {
-            return assetsWithoutBalance.map(item => ({ type: 'asset', ...item }));
+        if (myAssets.length === 0) {
+            return otherAssets.map(item => ({ type: 'asset', ...item }));
         }
 
         return [
             { type: 'group-label', label: 'TR_MY_ASSETS' },
-            ...assetsWithBalance.map(item => ({ type: 'asset' as const, ...item })),
-            ...(assetsWithoutBalance.length > 0
+            ...myAssets.map(item => ({ type: 'asset' as const, ...item })),
+            ...(otherAssets.length > 0
                 ? [
                       { type: 'group-space' as const },
                       {
                           type: 'group-label' as const,
                           label: 'TR_GLOBAL_RECEIVE_ALL_ASSETS' as const,
                       },
-                      ...assetsWithoutBalance.map(item => ({ type: 'asset' as const, ...item })),
+                      ...otherAssets.map(item => ({ type: 'asset' as const, ...item })),
                   ]
                 : []),
         ];
-    }, [assetsWithBalance, assetsWithoutBalance]);
+    }, [myAssets, otherAssets]);
 
     const renderItem = useCallback(
         (item: GlobalReceiveListItem) => {

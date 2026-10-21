@@ -76,6 +76,7 @@ const AssetsNoResults = ({ onViewAccountsClick }: AssetsNoResultsProps) => (
 type GlobalReceiveAssetsTabProps = {
     assets: TradingAssetOption[];
     assetSearchIndex: TradeableAssetSearchIndex<TradingAssetOption>;
+    assetIdsWithHistory: ReadonlySet<string>;
     balances: TradeableAssetBalances;
     catalogStatus: GlobalReceiveAssetCatalogStatus;
     isAssetDisabled: (asset: TradingAssetOption) => boolean;
@@ -88,6 +89,7 @@ type GlobalReceiveAssetsTabProps = {
 export const GlobalReceiveAssetsTab = ({
     assets,
     assetSearchIndex,
+    assetIdsWithHistory,
     balances,
     catalogStatus,
     isAssetDisabled,
@@ -108,16 +110,16 @@ export const GlobalReceiveAssetsTab = ({
             getGlobalReceiveAssetSections({
                 assets,
                 balances,
+                assetIdsWithHistory,
                 search,
                 searchIndex: assetSearchIndex,
                 networkSymbol: selectedNetworkSymbol,
             }),
-        [assetSearchIndex, assets, balances, search, selectedNetworkSymbol],
+        [assetSearchIndex, assetIdsWithHistory, assets, balances, search, selectedNetworkSymbol],
     );
     const disabledMessage = getAssetDisabledMessage(device?.connected, isDiscoveryRunning);
     const isAssetListEmpty =
-        assetSections.assetsWithBalance.length === 0 &&
-        assetSections.assetsWithoutBalance.length === 0;
+        assetSections.myAssets.length === 0 && assetSections.otherAssets.length === 0;
 
     if (catalogStatus === 'loading') {
         return (
@@ -148,8 +150,8 @@ export const GlobalReceiveAssetsTab = ({
 
     return (
         <GlobalReceiveAssetList
-            assetsWithBalance={assetSections.assetsWithBalance}
-            assetsWithoutBalance={assetSections.assetsWithoutBalance}
+            myAssets={assetSections.myAssets}
+            otherAssets={assetSections.otherAssets}
             disabledMessage={disabledMessage}
             isAssetDisabled={isAssetDisabled}
             listRef={listRef}
