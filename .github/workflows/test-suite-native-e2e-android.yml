@@ -14,8 +14,14 @@ on:
       - "packages/connect-core/**"
       - "jest.config.native.js"
       - ".github/workflows/test-suite-native-e2e-android.yml"
+      - ".github/workflows/test-suite-native-e2e-ios.yml"
       - ".github/workflows/template-suite-native-e2e-android.yml"
       - ".github/workflows/template-suite-native-prepare-test-app-android.yml"
+      # Reporting-only changes also trigger the Android E2E workflow.
+      - ".github/actions/post-quarantine-list/**"
+      - "packages/e2e-utils/src/quarantineBot/**"
+      - "packages/e2e-utils/src/currentsApi/**"
+      - "packages/e2e-utils/src/logger.ts"
       - "!**.md"
   push:
     branches:
@@ -33,6 +39,38 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  post-quarantine-list-native:
+    if: |
+      github.repository == 'trezor/trezor-suite' &&
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    concurrency:
+      group: post-quarantine-list-native-${{ github.event.pull_request.number }}
+      cancel-in-progress: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+      - name: Install Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
+        with:
+          node-version-file: ".nvmrc"
+      - name: Generate GitHub App token
+        id: trezor-bot-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
+        with:
+          client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+          private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+      - name: Post quarantine list
+        uses: ./.github/actions/post-quarantine-list
+        with:
+          github_token: ${{ steps.trezor-bot-token.outputs.token }}
+          currents_api_key: ${{ secrets.CURRENTS_API_KEY }}
+          project_name: "native"
+
   check-previous-runs:
     if: github.repository == 'trezor/trezor-suite'
     runs-on: ubuntu-latest
