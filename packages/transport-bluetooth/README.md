@@ -51,7 +51,6 @@ Prerequisites: [RUST](https://www.rust-lang.org/tools/install)
 Vscode rust-analyzer extensions:
 
 - install `rust-analyzer` plugin
-- (NixOS only) install `nix-env-selector` plugin and [follow readme](https://marketplace.visualstudio.com/items?itemName=arrterian.nix-env-selector) to setup
 
 Vscode `.vscode/settings`:
 
@@ -59,8 +58,7 @@ Vscode `.vscode/settings`:
 
 "rust-analyzer.cargo.sysroot": "discover",
 "rust-analyzer.diagnostics.disabled": ["unresolved-proc-macro"],
-"rust-analyzer.linkedProjects": ["./packages/transport-bluetooth/Cargo.toml"],
-"nixEnvSelector.nixFile": "${workspaceFolder}/packages/transport-bluetooth/shell.nix" // NixOS only
+"rust-analyzer.linkedProjects": ["./packages/transport-bluetooth/Cargo.toml"]
 
 ```
 
@@ -68,7 +66,9 @@ Vscode `.vscode/settings`:
 
 ```
 
-nix-shell ./packages/transport-bluetooth/shell.nix
+USE_RUST=1 nix-shell
+# or with flakes:
+nix develop .#rust
 
 ```
 

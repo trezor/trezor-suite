@@ -35,6 +35,7 @@
         };
 
         androidEnv = import ./.nix/android.nix { inherit pkgs; };
+        rustEnv = import ./.nix/rust.nix { inherit pkgs; };
 
         # Keep in sync with the electron version pinned in package.json
         electron = pkgs.electron_42;
@@ -110,6 +111,15 @@
                 + androidEnv.nixLdHook
                 + androidEnv.shellHook;
             };
+
+            rustShell = pkgs.mkShell {
+              buildInputs = commonBuildInputs ++ rustEnv.extraPackages;
+
+              NIX_PATCHELF_LIBRARY_PATH = "${pkgs.openssl.out}/lib:${pkgs.zlib}/lib:${pkgs.gcc.cc.lib}/lib";
+              NIX_CC = "${pkgs.gcc}";
+
+              shellHook = commonShellHook;
+            };
           in
           {
             default = pkgs.mkShell {
@@ -121,6 +131,7 @@
 
             android = androidShell;
             use_android = androidShell;
+            rust = rustShell;
           };
       }
     );
