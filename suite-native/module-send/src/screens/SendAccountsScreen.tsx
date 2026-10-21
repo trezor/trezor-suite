@@ -60,7 +60,7 @@ export const SendAccountsScreen = () => {
                 onSelectAccount={handleSelectAccount}
                 closeActionType="close"
                 closeAction={handleClose}
-                isSendFlow
+                networkFilterType="send"
             />
         </Screen>
     );

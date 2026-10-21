@@ -39,3 +39,5 @@ export type AccountListSection = (
     isFirst?: boolean;
     isLast?: boolean;
 };
+
+export type NetworkFilterType = 'all' | 'accounts' | 'send';

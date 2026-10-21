@@ -57,6 +57,7 @@ export const AccountsScreen = ({ navigation, route }: ScreenNavigationProps) => 
                 onSelectAccount={handleSelectAccount}
                 flowType="accounts"
                 networksFilter={networksFilter}
+                networkFilterType="accounts"
                 noHeaderPaddingTop
             >
                 <AccountsRediscoveryNeededWarning marginBottom="sp16" />

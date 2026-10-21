@@ -56,7 +56,10 @@ import {
     sortTokensByName,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
+import { selectDiscoverySupportedNetworks } from '@suite-native/discovery';
+import type { FeatureFlagsRootState } from '@suite-native/feature-flags';
 import { type CombinedLabelingState, selectIsLabellingAllowed } from '@suite-native/labeling';
+import type { SettingsSliceRootState } from '@suite-native/settings';
 import { isNetworkWithTokens, selectAccountTokenInfo } from '@suite-native/tokens';
 import { type StaticSessionId } from '@trezor/connect';
 import { parseStaticSessionId } from '@trezor/device-utils';
@@ -66,7 +69,7 @@ import {
     weakMapMemoize,
 } from '@trezor/redux-utils';
 
-import { type AccountListSection } from './types';
+import { type AccountListSection, type NetworkFilterType } from './types';
 import {
     filterAccountsByLabelAndNetworkNames,
     filterAccountsByNetworkSymbols,
@@ -82,9 +85,13 @@ export type NativeAccountsRootState = AccountsRootState &
     TokenDefinitionsRootState &
     TransactionsRootState;
 
-const createNetworkMemoizedSelector = createWeakMapSelector.withTypes<
-    NativeAccountsRootState & NetworksRootState
->();
+export type NativeAccountsWithNetworksRootState = NativeAccountsRootState &
+    NetworksRootState &
+    SettingsSliceRootState &
+    FeatureFlagsRootState;
+
+const createNetworkMemoizedSelector =
+    createWeakMapSelector.withTypes<NativeAccountsWithNetworksRootState>();
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<NativeAccountsRootState>();
 
@@ -201,11 +208,11 @@ export const selectFilteredDeviceAccountListRows = createNetworkMemoizedSelector
 
 export type NetworkFilterOption = {
     symbol: NetworkSymbol;
-    accountCount: number;
+    accountCount?: number;
 };
 
 const createNetworkFilterOption = weakMapMemoize(
-    (symbol: NetworkSymbol, accountCount: number): NetworkFilterOption => ({
+    (symbol: NetworkSymbol, accountCount?: number): NetworkFilterOption => ({
         symbol,
         accountCount,
     }),
@@ -214,27 +221,21 @@ const createNetworkFilterOption = weakMapMemoize(
 export const selectNetworkFilterOptions = createNetworkMemoizedSelector(
     [
         selectVisibleAccountsWithSuiteSyncLabel,
-        selectSupportedNetworkSymbols,
-        (_state: NativeAccountsRootState, isSendFlow: boolean = false) => isSendFlow,
+        selectDiscoverySupportedNetworks,
+        (_state: NativeAccountsRootState, type: NetworkFilterType) => type,
     ],
-    (accounts, supportedNetworks, isSendFlow) => {
-        const sortedAccounts = sortAccountsByNetworksAndAccountTypes(accounts, supportedNetworks);
-        const filteredAccounts = isSendFlow
-            ? filterSendAvailableAccounts(sortedAccounts)
-            : sortedAccounts;
+    (accounts, supportedNetworks, type) => {
+        const filteredAccounts = type === 'send' ? filterSendAvailableAccounts(accounts) : accounts;
 
         const accountCounts = new Map<NetworkSymbol, number>();
-
-        for (const account of filteredAccounts) {
-            accountCounts.set(account.symbol, (accountCounts.get(account.symbol) ?? 0) + 1);
+        for (const { symbol } of filteredAccounts) {
+            accountCounts.set(symbol, (accountCounts.get(symbol) ?? 0) + 1);
         }
 
-        return returnStableArrayIfEmpty(
-            createStableArray(
-                ...Array.from(accountCounts, ([symbol, accountCount]) =>
-                    createNetworkFilterOption(symbol, accountCount),
-                ),
-            ),
+        return createStableArray(
+            ...supportedNetworks
+                .filter(({ symbol }) => accountCounts.has(symbol) || type === 'all')
+                .map(({ symbol }) => createNetworkFilterOption(symbol, accountCounts.get(symbol))),
         );
     },
 );
