@@ -82,6 +82,20 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             { name: 'chunkify', type: 'boolean' },
         ]);
 
+        if (payload.account) {
+            validateParams(payload.account, [
+                { name: 'addresses', type: 'object' },
+                { name: 'transactions', type: 'array', allowEmpty: true },
+            ]);
+
+            payload.account.transactions?.forEach(tx =>
+                validateParams(tx, [
+                    { name: 'txid', type: 'string', required: true },
+                    { name: 'hex', type: 'string', required: true },
+                ]),
+            );
+        }
+
         if (payload.unlockPath) {
             validateParams(payload.unlockPath, [
                 { name: 'address_n', required: true, type: 'array' },

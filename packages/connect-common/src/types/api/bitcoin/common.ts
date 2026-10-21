@@ -8,7 +8,6 @@ import type {
     TransactionInputOutputSortingStrategy,
 } from '@trezor/utxo-lib';
 
-import type { AccountTransaction } from '../../account';
 import { type CoinSymbol, CoinSymbolParam } from '../../coinInfo';
 import type { ProtoWithDerivationPath } from '../../params';
 import { DerivationPath } from '../../params';
@@ -89,8 +88,8 @@ export interface SignTransaction {
     paymentRequests?: PaymentRequest[];
     refTxs?: RefTransaction[];
     account?: {
-        addresses: AccountAddresses;
-        transactions?: AccountTransaction[]; // refTxs in different format. see refTxs/validateReferencedTransactions
+        addresses?: AccountAddresses;
+        transactions?: RawTransaction[]; // refTxs in different format. see refTxs/validateReferencedTransactions
     };
     coin: CoinSymbol;
     identity?: string;
