@@ -59,7 +59,7 @@ export const AccountsScreen = ({ navigation, route }: ScreenNavigationProps) => 
                 networksFilter={networksFilter}
                 noHeaderPaddingTop
             >
-                <AccountsRediscoveryNeededWarning marginHorizontal="sp16" marginBottom="sp16" />
+                <AccountsRediscoveryNeededWarning marginBottom="sp16" />
             </AccountsListWithFilter>
         </Screen>
     );
