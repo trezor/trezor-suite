@@ -47,7 +47,7 @@
         "zxcvbn": "^4.4.2"
     },
     "devDependencies": {
-        "@storybook/react": "^10.3.4",
+        "@storybook/react": "^10.6.1",
         "@testing-library/dom": "^10.4.2",
         "@testing-library/react": "^16.3.3",
         "@testing-library/user-event": "^14.6.7",
@@ -55,7 +55,7 @@
         "@types/react": "19.2.14",
         "@types/zxcvbn": "4.4.5",
         "postcss-styled-syntax": "^0.7.1",
-        "storybook": "^10.3.4",
+        "storybook": "^10.6.1",
         "stylelint": "^17.16.0",
         "stylelint-config-standard": "^40.0.0",
         "svgo": "^4.0.1",
