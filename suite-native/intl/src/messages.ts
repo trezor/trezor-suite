@@ -633,6 +633,7 @@ export const messages = {
         },
         permissions: {
             title: 'Permissions',
+            none: 'No permissions requested',
             coinHeading: '{coin} access',
             deviceHeading: 'Device access',
             read_address: 'View receive addresses',

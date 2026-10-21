@@ -257,6 +257,11 @@ export const GroupedPermissionsList = ({
     onRemovePermission,
 }: GroupedPermissionsListProps) => (
     <Column hasDivider gap={8} alignItems="stretch" padding={{ horizontal: 4 }}>
+        {permissions.length === 0 && (
+            <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
+                <Translation id="TR_NO_PERMISSIONS_REQUESTED" />
+            </Text>
+        )}
         {groupPermissionsByCoin(permissions).map(group => (
             <PermissionGroup
                 key={group.coin ?? '__device__'}
