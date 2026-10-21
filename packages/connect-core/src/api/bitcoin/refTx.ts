@@ -11,7 +11,7 @@ import type {
 import { TypedError } from '@trezor/connect-common/src/constants/errors';
 import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert, Type } from '@trezor/schema-utils';
-import { bufferUtils } from '@trezor/utils';
+import { arrayPartition, bufferUtils, isNotUndefined, throwError, unique } from '@trezor/utils';
 import {
     type TxInput as BitcoinJsInput,
     type TxOutput as BitcoinJsOutput,
@@ -22,11 +22,14 @@ import {
 import { parseOutputScript } from './outputs';
 import { getHDPath, getOutputScriptType, getScriptType } from '../../utils/pathUtils';
 
+type RefInput = Pick<PROTO.TxInputType, 'script_type' | 'prev_hash' | 'orig_hash'>;
+type RefOutput = Pick<PROTO.TxOutputType, 'orig_hash'>;
+
 // Referenced transactions are not required if:
 // - all internal inputs script_type === SPENDTAPROOT
 // - zcash tx version is NU5 (or greater)
 export const requireReferencedTransactions = (
-    inputs: PROTO.TxInputType[],
+    inputs: RefInput[],
     options: TransactionOptions = {},
     coinInfo?: CoinInfo,
 ): boolean => {
@@ -39,39 +42,18 @@ export const requireReferencedTransactions = (
 };
 
 // Get array of unique referenced transactions ids
-export const getReferencedTransactions = (inputs: PROTO.TxInputType[]): string[] => {
-    const result: string[] = [];
-    inputs.forEach(input => {
-        if (input.prev_hash && !result.includes(input.prev_hash)) {
-            result.push(input.prev_hash);
-        }
-    });
-
-    return result;
-};
+export const getReferencedTransactions = (inputs: RefInput[]) =>
+    unique(inputs.map(({ prev_hash }) => prev_hash).filter(isNotUndefined));
 
 // Get array of unique original transactions ids (used in rbf)
-export const getOrigTransactions = (
-    inputs: PROTO.TxInputType[],
-    outputs: PROTO.TxOutputType[],
-): string[] => {
-    const result: string[] = [];
-    inputs.forEach(input => {
-        if (input.orig_hash && !result.includes(input.orig_hash)) {
-            result.push(input.orig_hash);
-        }
-    });
-    outputs.forEach(output => {
-        if (output.orig_hash && !result.includes(output.orig_hash)) {
-            result.push(output.orig_hash);
-        }
-    });
+export const getOrigTransactions = (inputs: RefInput[], outputs: RefOutput[]) =>
+    unique([...inputs, ...outputs].map(({ orig_hash }) => orig_hash).filter(isNotUndefined));
 
-    return result;
-};
+const parseTransactionHex = (network?: Network) => (hex: string) =>
+    BitcoinJsTransaction.fromHex(hex, { network });
 
 export const parseTransactionHexes = (network?: Network) => (hexes: string[]) =>
-    hexes.map(hex => BitcoinJsTransaction.fromHex(hex, { network }));
+    hexes.map(parseTransactionHex(network));
 
 // extend refTx object with optional data
 const enhanceTransaction = (refTx: RefTransaction, srcTx: BitcoinJsTransaction): RefTransaction => {
@@ -94,8 +76,15 @@ const transformOrigTransaction = (
     tx: BitcoinJsTransaction,
     coinInfo: BitcoinNetworkInfo,
     currentInputs: PROTO.TxInputType[],
-    addresses: AccountAddresses,
+    addresses: AccountAddresses | undefined,
 ): RefTransaction => {
+    if (!addresses) {
+        throw TypedError(
+            'Method_InvalidParameter',
+            `transformOrigTransactions: addresses for ${tx.getId()} not provided`,
+        );
+    }
+
     // inputs, required by TXORIGINPUT (TxAckInput) request from Trezor
     const inputsMap = (input: BitcoinJsInput, i: number) => {
         const prev_hash = bufferUtils.reverseBuffer(input.hash).toString('hex');
@@ -225,6 +214,30 @@ export const transformReferencedTransaction = (tx: BitcoinJsTransaction): RefTra
 export const transformReferencedTransactions = (txs: BitcoinJsTransaction[]): RefTransaction[] =>
     txs.map(transformReferencedTransaction);
 
+const RefTxShape = {
+    hash: Type.String(),
+    version: Type.Number(),
+    lock_time: Type.Number(),
+    extra_data: Type.Optional(Type.String()),
+    timestamp: Type.Optional(Type.Number()),
+    version_group_id: Type.Optional(Type.Number()),
+};
+
+const PrevTxShape = Type.Object({
+    ...RefTxShape,
+    inputs: Type.Array(PROTO.PrevInput, { minItems: 1 }),
+    bin_outputs: Type.Array(PROTO.TxOutputBinType, { minItems: 1 }),
+});
+
+const OrigTxShape = Type.Object({
+    ...RefTxShape,
+    inputs: Type.Array(PROTO.TxInput, { minItems: 1 }),
+    outputs: Type.Array(PROTO.TxOutputType, { minItems: 1 }),
+});
+
+const getTransactionHex = ({ hex, txid }: AccountTransaction) =>
+    hex || throwError(TypedError('Method_InvalidParameter', `refTx: hex for ${txid} not provided`));
+
 // Validate referenced transactions provided by the user.
 // Data sent as response to TxAck needs to be strict.
 // They should not contain any fields unknown/unexpected by protobuf.
@@ -245,92 +258,42 @@ export const validateReferencedTransactions = ({
     // collect sets of transactions defined by inputs/outputs
     const refTxs = requireReferencedTransactions(inputs) ? getReferencedTransactions(inputs) : [];
     const origTxs = getOrigTransactions(inputs, outputs); // NOTE: origTxs are used in RBF
-    const transformedTxs: RefTransaction[] = transactions.map(tx => {
-        // transform AccountTransaction to RefTransaction
-        if ('details' in tx) {
-            if (!tx.hex)
-                throw TypedError(
-                    'Method_InvalidParameter',
-                    `refTx: hex for ${tx.txid} not provided`,
-                );
 
-            const srcTx = BitcoinJsTransaction.fromHex(tx.hex, { network: coinInfo.network });
+    const [accountTransactions, refTransactions] = arrayPartition(
+        transactions,
+        tx => 'details' in tx,
+    );
 
-            if (origTxs.includes(tx.txid)) {
-                if (!addresses)
-                    throw TypedError(
-                        'Method_InvalidParameter',
-                        `refTx: addresses for ${tx.txid} not provided`,
-                    );
+    const [origAccountTxs, prevAccountTxs] = arrayPartition(accountTransactions, tx =>
+        origTxs.includes(tx.txid),
+    );
 
-                return transformOrigTransaction(srcTx, coinInfo, inputs, addresses);
-            }
+    const transformedOrigTxs = origAccountTxs
+        .map(getTransactionHex)
+        .map(parseTransactionHex(coinInfo.network))
+        .map(srcTx => transformOrigTransaction(srcTx, coinInfo, inputs, addresses));
 
-            return transformReferencedTransaction(srcTx);
-        }
-        // validate common fields
-        Assert(
-            Type.Object({
-                hash: Type.String(),
-                version: Type.Number(),
-                lock_time: Type.Number(),
-                extra_data: Type.Optional(Type.String()),
-                timestamp: Type.Optional(Type.Number()),
-                version_group_id: Type.Optional(Type.Number()),
-            }),
-            tx,
-        );
+    const transformedPrevTxs = prevAccountTxs
+        .map(getTransactionHex)
+        .map(parseTransactionHex(coinInfo.network))
+        .map(transformReferencedTransaction);
 
-        // check if referenced transaction is in expected format (RBF)
-        if (origTxs.includes(tx.hash)) {
-            // validate specific fields of origTx
-            Assert(
-                Type.Object({
-                    inputs: Type.Array(PROTO.TxInput, { minItems: 1 }),
-                    outputs: Type.Array(PROTO.TxOutputType, { minItems: 1 }),
-                }),
-                tx,
-            );
+    const [origRefTxs, prevRefTxs] = arrayPartition(refTransactions, tx =>
+        origTxs.includes(tx.hash),
+    );
 
-            return tx;
-        }
+    origRefTxs.forEach(tx => Assert(OrigTxShape, tx));
+    prevRefTxs.forEach(tx => Assert(PrevTxShape, tx));
 
-        // validate specific fields of refTx
-        Assert(
-            Type.Object({
-                inputs: Type.Array(PROTO.PrevInput, { minItems: 1 }),
-                bin_outputs: Type.Array(PROTO.TxOutputBinType, { minItems: 1 }),
-            }),
-            tx,
-        );
-
-        return {
-            hash: tx.hash,
-            version: tx.version,
-            extra_data: tx.extra_data,
-            lock_time: tx.lock_time,
-            timestamp: tx.timestamp,
-            version_group_id: tx.version_group_id,
-            expiry: tx.expiry,
-            inputs: tx.inputs.map(input => ({
-                prev_hash: input.prev_hash,
-                prev_index: input.prev_index,
-                script_sig: input.script_sig,
-                sequence: input.sequence,
-            })),
-            bin_outputs: tx.bin_outputs.map(output => ({
-                amount: output.amount,
-                script_pubkey: output.script_pubkey,
-            })),
-        };
-    });
+    const transformedTxs = transformedOrigTxs.concat(transformedPrevTxs).concat(refTransactions);
 
     // check if all required transactions defined by inputs/outputs were provided
-    refTxs.concat(origTxs).forEach(hash => {
-        if (!transformedTxs.some(tx => tx.hash === hash)) {
-            throw TypedError('Method_InvalidParameter', `refTx: ${hash} not provided`);
-        }
-    });
+    const missing = refTxs
+        .concat(origTxs)
+        .find(hash => !transformedTxs.some(tx => tx.hash === hash));
+    if (missing) {
+        throw TypedError('Method_InvalidParameter', `refTx: ${missing} not provided`);
+    }
 
     return transformedTxs;
 };
