@@ -23,6 +23,7 @@ import {
 import { getFormDraftKey } from '@suite-common/wallet-utils';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
+import { type StakingPool } from '@trezor/blockchain-link-types';
 import TrezorConnect from '@trezor/connect';
 import { type WithServices } from '@trezor/redux-utils';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
@@ -46,17 +47,29 @@ jest.mock('@trezor/connect', () => ({
     },
 }));
 
+const stakingPool = (pool: Partial<StakingPool>): StakingPool => ({
+    name: 'Everstake',
+    contract: '0x7a7f0b3c23C23a31cFcb0c44709be70d4D545c6e',
+    autocompoundBalance: '0',
+    claimableAmount: '0',
+    depositedBalance: '0',
+    pendingBalance: '0',
+    pendingDepositedBalance: '0',
+    restakedReward: '0',
+    withdrawTotalAmount: '0',
+    ...pool,
+});
+
 const VALID_LIVE_STAKING_POOL = {
     success: true,
     payload: {
         misc: {
             stakingPools: [
-                {
-                    contract: '0x7a7f0b3c23C23a31cFcb0c44709be70d4D545c6e',
+                stakingPool({
                     autocompoundBalance: '2000000000000000000',
                     withdrawTotalAmount: '100000000000000000',
                     claimableAmount: '100000000000000000',
-                },
+                }),
             ],
         },
     },
@@ -331,12 +344,7 @@ describe('signEthereumStakingTransactionThunk', () => {
             success: true,
             payload: {
                 misc: {
-                    stakingPools: [
-                        {
-                            contract: '0x7a7f0b3c23C23a31cFcb0c44709be70d4D545c6e',
-                            autocompoundBalance: '1000000000000000000',
-                        },
-                    ],
+                    stakingPools: [stakingPool({ autocompoundBalance: '1000000000000000000' })],
                 },
             },
         });
@@ -374,11 +382,10 @@ describe('signEthereumStakingTransactionThunk', () => {
             payload: {
                 misc: {
                     stakingPools: [
-                        {
-                            contract: '0x7a7f0b3c23C23a31cFcb0c44709be70d4D545c6e',
+                        stakingPool({
                             withdrawTotalAmount: '200000000000000000',
                             claimableAmount: '100000000000000000',
-                        },
+                        }),
                     ],
                 },
             },

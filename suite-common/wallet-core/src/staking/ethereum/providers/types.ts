@@ -12,7 +12,7 @@ import { type StakingPosition } from '../../positions/positionsTypes';
 import {
     type EthereumStakingLiveStateReason,
     type EthereumStakingLiveStateValidation,
-    type ReadEthereumStakingPools,
+    type ReadEthereumStakingPosition,
 } from '../ethereumStakingLiveState';
 import { type EthereumProviderStats } from '../ethereumStakingStats';
 
@@ -38,12 +38,13 @@ export type StakingTxPlan = {
 export type StakingPlanContext = {
     account: Account;
     source: string;
-    readStakingPools: ReadEthereumStakingPools;
+    /** Fresh position of this adapter's provider, read from the backend on demand. */
+    readPosition: ReadEthereumStakingPosition;
 };
 
 export type StakingLiveStateContext = {
     account: Account;
-    readStakingPools: ReadEthereumStakingPools;
+    readPosition: ReadEthereumStakingPosition;
 };
 
 export type StakingStepContext = {

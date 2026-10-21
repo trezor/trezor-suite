@@ -1,7 +1,22 @@
 import { type EthValidatorsQueue } from '@suite-common/earn-staking-api';
-import { EVERSTAKE_CONTRACTS } from '@trezor/network-ethereum/staking';
+import { type StakingPool } from '@trezor/blockchain-link-types';
+import { EVERSTAKE_CONTRACTS, EVERSTAKE_STAKING_POOL_NAME } from '@trezor/network-ethereum/staking';
 
 import { DAYS_TO_ADD_TO_POOL_DEFAULT } from '../everstakeConstants';
+
+// The shape Blockbook and the evm-rpc worker report for the mainnet accounting contract.
+export const everstakeStakingPool = (pool: Partial<StakingPool> = {}): StakingPool => ({
+    name: EVERSTAKE_STAKING_POOL_NAME,
+    contract: EVERSTAKE_CONTRACTS[1].accounting,
+    autocompoundBalance: '0',
+    claimableAmount: '0',
+    depositedBalance: '0',
+    pendingBalance: '0',
+    pendingDepositedBalance: '0',
+    restakedReward: '0',
+    withdrawTotalAmount: '0',
+    ...pool,
+});
 
 export const getDaysToAddToPoolFixture = [
     {

@@ -27,7 +27,7 @@ import {
     validateEverstakeClaimLiveState,
     validateEverstakeUnstakeLiveState,
 } from './everstakeLiveState';
-import { findEverstakeStakingPool } from './everstakePosition';
+import { getEverstakeStakingPool } from './everstakePosition';
 import { createEvmRead } from '../../../../evm/evmRead';
 import { type EthereumStakingLiveStateReason } from '../../ethereumStakingLiveState';
 
@@ -84,7 +84,7 @@ export const buildEverstakeStep = (
 
 export const planEverstakeOperation = async (
     request: StakingOperationRequest,
-    { account, source, readStakingPools }: StakingPlanContext,
+    { account, source, readPosition }: StakingPlanContext,
 ): Promise<StakingPlanResult> => {
     const step = buildEverstakeStep(request, { symbol: account.symbol, source });
     if (!step) {
@@ -106,13 +106,14 @@ export const planEverstakeOperation = async (
             return planned(request, step);
         }
         case 'unstake': {
-            const read = await readStakingPools();
+            const read = await readPosition();
+
             if (!read.success) {
                 return liveStateInvalid({ code: 'ACCOUNT_INFO_FAILED', message: read.message });
             }
 
             const validation = validateEverstakeUnstakeLiveState(
-                findEverstakeStakingPool(account.symbol, read.stakingPools),
+                getEverstakeStakingPool(read.position),
                 request.amount,
             );
 
@@ -121,13 +122,14 @@ export const planEverstakeOperation = async (
                 : liveStateInvalid(validation.reason);
         }
         case 'claim': {
-            const read = await readStakingPools();
+            const read = await readPosition();
+
             if (!read.success) {
                 return liveStateInvalid({ code: 'ACCOUNT_INFO_FAILED', message: read.message });
             }
 
             const validation = validateEverstakeClaimLiveState(
-                findEverstakeStakingPool(account.symbol, read.stakingPools),
+                getEverstakeStakingPool(read.position),
             );
 
             return validation.isValid

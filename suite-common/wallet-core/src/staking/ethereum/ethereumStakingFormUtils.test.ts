@@ -15,6 +15,7 @@ import {
     getEthereumStakeFormProviderId,
     getStakeFormsDefaultValues,
 } from './ethereumStakingFormUtils';
+import { everstakeStakingPool } from './providers/everstake/__fixtures__/everstake';
 import { buildStakeData, buildUnstakeData } from './providers/everstake/everstakeCalldata';
 import {
     STAKE_GAS_LIMIT_RESERVE,
@@ -107,10 +108,7 @@ beforeEach(() => {
         payload: {
             misc: {
                 stakingPools: [
-                    {
-                        contract: '0x7a7f0b3c23C23a31cFcb0c44709be70d4D545c6e',
-                        autocompoundBalance: '2000000000000000000',
-                    },
+                    everstakeStakingPool({ autocompoundBalance: '2000000000000000000' }),
                 ],
             },
         },

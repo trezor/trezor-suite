@@ -1,5 +1,5 @@
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
-import { asAccountDescriptor } from '@suite-common/wallet-types';
+import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StakingPool } from '@trezor/blockchain-link-types';
 import TrezorConnect, { type OkWithDevice } from '@trezor/connect';
@@ -8,9 +8,9 @@ import { EVERSTAKE_CONTRACTS } from '@trezor/network-ethereum/staking';
 import { type Err } from '@trezor/type-utils';
 
 import { WALLET_SDK_SOURCE, WALLET_SDK_SOURCE_MOBILE } from '../../../shared/stakingConstants';
-import { type EthereumStakingPoolsRead } from '../../ethereumStakingLiveState';
+import { type EthereumStakingPositionRead } from '../../ethereumStakingLiveState';
 import { type StakingPlanContext, type StakingUnstakePreviewParams } from '../types';
-import { simulateUnstakeFixture } from './__fixtures__/everstake';
+import { everstakeStakingPool, simulateUnstakeFixture } from './__fixtures__/everstake';
 import {
     buildClaimWithdrawRequestData,
     buildStakeData,
@@ -22,24 +22,26 @@ import {
     planEverstakeOperation,
     previewEverstakeUnstake,
 } from './everstakePlan';
+import { deriveEverstakePosition } from './everstakePosition';
 
 const FROM = asAccountDescriptor('0xfB0bc552ab5Fa1971E8530852753c957e29eEEFC');
 
-const everstakePool = (pool: Partial<StakingPool>): StakingPool =>
-    ({ contract: EVERSTAKE_CONTRACTS[1].accounting, ...pool }) as StakingPool;
-
-const withPool = (pool: Partial<StakingPool>): EthereumStakingPoolsRead => ({
+const withPool = (pool: Partial<StakingPool>): EthereumStakingPositionRead => ({
     success: true,
-    stakingPools: [everstakePool(pool)],
+    position: deriveEverstakePosition({
+        ...mockWalletAccount({ symbol: asNetworkSymbol('eth'), descriptor: FROM }),
+        networkType: 'ethereum',
+        misc: { nonce: '0', stakingPools: [everstakeStakingPool(pool)] },
+    } as Account),
 });
 
 const createContext = (
-    read: EthereumStakingPoolsRead = { success: true, stakingPools: [] },
+    read: EthereumStakingPositionRead = { success: true, position: null },
     symbol: NetworkSymbol = asNetworkSymbol('eth'),
-): StakingPlanContext & { readStakingPools: jest.Mock } => ({
+): StakingPlanContext & { readPosition: jest.Mock } => ({
     account: mockWalletAccount({ symbol, descriptor: FROM }),
     source: WALLET_SDK_SOURCE,
-    readStakingPools: jest.fn(() => Promise.resolve(read)),
+    readPosition: jest.fn(() => Promise.resolve(read)),
 });
 
 describe(buildEverstakeStep.name, () => {
@@ -112,7 +114,7 @@ describe(planEverstakeOperation.name, () => {
                 ],
             },
         });
-        expect(context.readStakingPools).not.toHaveBeenCalled();
+        expect(context.readPosition).not.toHaveBeenCalled();
     });
 
     it('attributes the calldata to the planning app', async () => {
@@ -151,7 +153,7 @@ describe(planEverstakeOperation.name, () => {
                 gasReserve: STAKE_GAS_LIMIT_RESERVE,
             },
         ]);
-        expect(context.readStakingPools).toHaveBeenCalledTimes(1);
+        expect(context.readPosition).toHaveBeenCalledTimes(1);
     });
 
     it('rejects an unstake above the live pool balance', async () => {
@@ -169,7 +171,7 @@ describe(planEverstakeOperation.name, () => {
         });
     });
 
-    it('rejects an unstake when the pool cannot be read', async () => {
+    it('rejects an unstake when the position cannot be read', async () => {
         const result = await planEverstakeOperation(
             { type: 'unstake', amount: '0.1' },
             createContext({ success: false, message: 'Account info error' }),

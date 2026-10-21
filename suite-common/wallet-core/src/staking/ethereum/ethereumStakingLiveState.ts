@@ -1,9 +1,11 @@
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type Account } from '@suite-common/wallet-types';
 import { fromWei } from '@suite-common/wallet-utils';
 import { type StakingPool } from '@trezor/blockchain-link-types';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { exhaustive } from '@trezor/type-utils';
+
+import { type StakingPosition } from '../positions/positionsTypes';
 
 export type EthereumStakingPoolLiveState = Partial<
     Pick<StakingPool, 'autocompoundBalance' | 'withdrawTotalAmount' | 'claimableAmount'>
@@ -58,32 +60,54 @@ export const getEthereumStakingLiveStateErrorMessage = (
 
 export const weiToEtherBigNumber = (wei: string) => fromWei(wei).toEther('bignumber');
 
-export type EthereumStakingPoolsRead =
-    { success: true; stakingPools: StakingPool[] } | { success: false; message: string };
+export type EthereumStakingPositionRead =
+    { success: true; position: StakingPosition | null } | { success: false; message: string };
 
-export type ReadEthereumStakingPools = () => Promise<EthereumStakingPoolsRead>;
+export type ReadEthereumStakingPosition = () => Promise<EthereumStakingPositionRead>;
 
-type ReadEthereumStakingPoolsParams = {
-    symbol: NetworkSymbol;
-    descriptor: string;
+type StakingPositionSource = {
+    derivePosition: (account: Account) => StakingPosition | null;
+};
+
+type CreateEthereumStakingPositionReaderParams = {
+    account: Account;
+    adapter: StakingPositionSource;
     identity?: string;
 };
 
-export const readEthereumStakingPools = async ({
-    symbol,
-    descriptor,
-    identity,
-}: ReadEthereumStakingPoolsParams): Promise<EthereumStakingPoolsRead> => {
-    const accountInfo = await TrezorConnect.getAccountInfo({
-        coin: asCoinSymbol(symbol),
+// Re-reads the account from the backend and derives the adapter's position from it, so plan and
+// sign validate against live state instead of the store.
+export const createEthereumStakingPositionReader =
+    ({
+        account,
+        adapter,
         identity,
-        details: 'tokenBalances',
-        descriptor,
-    });
+    }: CreateEthereumStakingPositionReaderParams): ReadEthereumStakingPosition =>
+    async () => {
+        if (account.networkType !== 'ethereum') {
+            return { success: false, message: 'Account is not an Ethereum account.' };
+        }
 
-    if (!accountInfo.success) {
-        return { success: false, message: accountInfo.error.message };
-    }
+        const accountInfo = await TrezorConnect.getAccountInfo({
+            coin: asCoinSymbol(account.symbol),
+            identity,
+            details: 'tokenBalances',
+            descriptor: account.descriptor,
+        });
 
-    return { success: true, stakingPools: accountInfo.payload?.misc?.stakingPools ?? [] };
-};
+        if (!accountInfo.success) {
+            return { success: false, message: accountInfo.error.message };
+        }
+
+        const { misc, tokens } = accountInfo.payload;
+
+        const freshAccount: Account = {
+            ...account,
+            misc: { ...account.misc, stakingPools: misc?.stakingPools ?? [] },
+            tokens: tokens ?? account.tokens,
+        };
+
+        const position = adapter.derivePosition(freshAccount);
+
+        return { success: true, position };
+    };

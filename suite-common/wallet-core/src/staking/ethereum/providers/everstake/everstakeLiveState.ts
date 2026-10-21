@@ -9,7 +9,7 @@ import {
 } from '../../ethereumStakingLiveState';
 import { type StakingLiveStateContext, type StakingStepCalldata } from '../types';
 import { getUnstakeAmountFromCalldata } from './everstakeCalldata';
-import { findEverstakeStakingPool } from './everstakePosition';
+import { getEverstakeStakingPool } from './everstakePosition';
 
 export const validateEverstakeUnstakeLiveState = (
     stakingPool: EthereumStakingPoolLiveState | undefined,
@@ -60,13 +60,13 @@ export const validateEverstakeClaimLiveState = (
 // claim read the pool once and validate against the amount carried by the calldata.
 export const validateEverstakeStepLiveState = async (
     { label, data }: StakingStepCalldata,
-    { account, readStakingPools }: StakingLiveStateContext,
+    { readPosition }: StakingLiveStateContext,
 ): Promise<EthereumStakingLiveStateValidation> => {
     if (label === 'stake') {
         return VALID_ETHEREUM_STAKING_LIVE_STATE;
     }
 
-    const read = await readStakingPools();
+    const read = await readPosition();
 
     if (!read.success) {
         return invalidEthereumStakingLiveState({
@@ -75,7 +75,7 @@ export const validateEverstakeStepLiveState = async (
         });
     }
 
-    const stakingPool = findEverstakeStakingPool(account.symbol, read.stakingPools);
+    const stakingPool = getEverstakeStakingPool(read.position);
 
     switch (label) {
         case 'unstake': {

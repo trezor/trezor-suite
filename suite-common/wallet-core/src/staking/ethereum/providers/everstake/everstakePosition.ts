@@ -23,6 +23,11 @@ export const findEverstakeStakingPool = (
     return stakingPools?.find(pool => knownContracts.includes(pool.contract.toLowerCase()));
 };
 
+export const getEverstakeStakingPool = (
+    position: StakingPosition | null,
+): StakingPool | undefined =>
+    position?.details.providerId === 'everstake' ? position.details.pool : undefined;
+
 const toEther = (wei: string) => fromWei(wei).toEther();
 
 const toEtherSum = (...wei: string[]) =>

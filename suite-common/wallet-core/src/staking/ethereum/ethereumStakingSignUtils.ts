@@ -21,8 +21,8 @@ import {
 import { BigNumber } from '@trezor/utils';
 
 import {
+    createEthereumStakingPositionReader,
     getEthereumStakingLiveStateErrorMessage,
-    readEthereumStakingPools,
 } from './ethereumStakingLiveState';
 import {
     findEthereumStakingAdapter,
@@ -238,12 +238,11 @@ export const verifyEthereumStakingLiveStateForSign = async ({
         { label: stakeType, data: calldata },
         {
             account,
-            readStakingPools: () =>
-                readEthereumStakingPools({
-                    symbol: account.symbol,
-                    descriptor: account.descriptor,
-                    identity: getAccountIdentity(account),
-                }),
+            readPosition: createEthereumStakingPositionReader({
+                account,
+                adapter,
+                identity: getAccountIdentity(account),
+            }),
         },
     );
 

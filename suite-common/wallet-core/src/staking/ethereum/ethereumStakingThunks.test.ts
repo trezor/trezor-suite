@@ -20,6 +20,7 @@ import {
     prepareEthereumStakingContext,
 } from './ethereumStakingSignUtils';
 import { signPreparedEthereumStakingTransactionThunk } from './ethereumStakingThunks';
+import { everstakeStakingPool } from './providers/everstake/__fixtures__/everstake';
 import {
     buildClaimWithdrawRequestData,
     buildStakeData,
@@ -61,12 +62,11 @@ const VALID_LIVE_STAKING_POOL = {
     payload: {
         misc: {
             stakingPools: [
-                {
-                    contract: '0x7a7f0b3c23C23a31cFcb0c44709be70d4D545c6e',
+                everstakeStakingPool({
                     autocompoundBalance: '2000000000000000000',
                     withdrawTotalAmount: '100000000000000000',
                     claimableAmount: '100000000000000000',
-                },
+                }),
             ],
         },
     },
@@ -273,10 +273,7 @@ describe('signPreparedEthereumStakingTransactionThunk', () => {
             payload: {
                 misc: {
                     stakingPools: [
-                        {
-                            contract: '0x7a7f0b3c23C23a31cFcb0c44709be70d4D545c6e',
-                            autocompoundBalance: '1000000000000000000',
-                        },
+                        everstakeStakingPool({ autocompoundBalance: '1000000000000000000' }),
                     ],
                 },
             },
@@ -298,11 +295,10 @@ describe('signPreparedEthereumStakingTransactionThunk', () => {
             payload: {
                 misc: {
                     stakingPools: [
-                        {
-                            contract: '0x7a7f0b3c23C23a31cFcb0c44709be70d4D545c6e',
+                        everstakeStakingPool({
                             withdrawTotalAmount: '200000000000000000',
                             claimableAmount: '1',
-                        },
+                        }),
                     ],
                 },
             },

@@ -1,25 +1,31 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StakingPool } from '@trezor/blockchain-link-types';
-import { EVERSTAKE_CONTRACTS } from '@trezor/network-ethereum/staking';
 
+import { everstakeStakingPool } from './__fixtures__/everstake';
 import { buildStakeData, buildUnstakeData } from './everstakeCalldata';
 import {
     validateEverstakeClaimLiveState,
     validateEverstakeStepLiveState,
     validateEverstakeUnstakeLiveState,
 } from './everstakeLiveState';
-import { type EthereumStakingPoolsRead } from '../../ethereumStakingLiveState';
+import { deriveEverstakePosition } from './everstakePosition';
+import { type EthereumStakingPositionRead } from '../../ethereumStakingLiveState';
 
 const account = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
 
-const everstakePool = (pool: Partial<StakingPool>) =>
-    ({ contract: EVERSTAKE_CONTRACTS[1].accounting, ...pool }) as StakingPool;
+const positionWithPool = (pool: Partial<StakingPool>) =>
+    deriveEverstakePosition({
+        ...account,
+        networkType: 'ethereum',
+        misc: { nonce: '0', stakingPools: [everstakeStakingPool(pool)] },
+    } as Account);
 
-const createContext = (read: EthereumStakingPoolsRead) => {
-    const readStakingPools = jest.fn(() => Promise.resolve(read));
+const createContext = (read: EthereumStakingPositionRead) => {
+    const readPosition = jest.fn(() => Promise.resolve(read));
 
-    return { context: { account, readStakingPools }, readStakingPools };
+    return { context: { account, readPosition }, readPosition };
 };
 
 describe(validateEverstakeUnstakeLiveState.name, () => {
@@ -89,19 +95,19 @@ describe(validateEverstakeClaimLiveState.name, () => {
 });
 
 describe(validateEverstakeStepLiveState.name, () => {
-    it('is valid for stake without reading the pool', async () => {
-        const { context, readStakingPools } = createContext({ success: true, stakingPools: [] });
+    it('is valid for stake without reading the position', async () => {
+        const { context, readPosition } = createContext({ success: true, position: null });
 
         await expect(
             validateEverstakeStepLiveState({ label: 'stake', data: buildStakeData() }, context),
         ).resolves.toEqual({ isValid: true });
-        expect(readStakingPools).not.toHaveBeenCalled();
+        expect(readPosition).not.toHaveBeenCalled();
     });
 
     it('validates an unstake against the amount carried by the calldata', async () => {
-        const { context, readStakingPools } = createContext({
+        const { context, readPosition } = createContext({
             success: true,
-            stakingPools: [everstakePool({ autocompoundBalance: '2000000000000000000' })],
+            position: positionWithPool({ autocompoundBalance: '2000000000000000000' }),
         });
 
         await expect(
@@ -110,19 +116,11 @@ describe(validateEverstakeStepLiveState.name, () => {
                 context,
             ),
         ).resolves.toEqual({ isValid: true });
-        expect(readStakingPools).toHaveBeenCalledTimes(1);
+        expect(readPosition).toHaveBeenCalledTimes(1);
     });
 
-    it('ignores pools of other contracts', async () => {
-        const { context } = createContext({
-            success: true,
-            stakingPools: [
-                everstakePool({
-                    contract: '0x624087DD1904ab122A32878Ce9e933C7071F53B9',
-                    autocompoundBalance: '2000000000000000000',
-                }),
-            ],
-        });
+    it('is invalid for an unstake without a live position', async () => {
+        const { context } = createContext({ success: true, position: null });
 
         await expect(
             validateEverstakeStepLiveState(
@@ -138,7 +136,7 @@ describe(validateEverstakeStepLiveState.name, () => {
     it('is invalid for an unstake whose calldata carries no amount', async () => {
         const { context } = createContext({
             success: true,
-            stakingPools: [everstakePool({ autocompoundBalance: '2000000000000000000' })],
+            position: positionWithPool({ autocompoundBalance: '2000000000000000000' }),
         });
 
         await expect(
@@ -149,12 +147,10 @@ describe(validateEverstakeStepLiveState.name, () => {
     it('validates a claim against the withdraw request', async () => {
         const { context } = createContext({
             success: true,
-            stakingPools: [
-                everstakePool({
-                    withdrawTotalAmount: '100000000000000000',
-                    claimableAmount: '100000000000000000',
-                }),
-            ],
+            position: positionWithPool({
+                withdrawTotalAmount: '100000000000000000',
+                claimableAmount: '100000000000000000',
+            }),
         });
 
         await expect(
@@ -162,7 +158,7 @@ describe(validateEverstakeStepLiveState.name, () => {
         ).resolves.toEqual({ isValid: true });
     });
 
-    it('is invalid when the pool cannot be read', async () => {
+    it('is invalid when the position cannot be read', async () => {
         const { context } = createContext({ success: false, message: 'Account info error' });
 
         await expect(
