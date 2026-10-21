@@ -1,6 +1,7 @@
 import { type EthereumStakingProviderAdapter } from '../types';
 import { verifyEverstakeCalldata } from './everstakeCalldata';
 import { EVERSTAKE_STAKING_LIMITS } from './everstakeConstants';
+import { getEverstakeStepTarget } from './everstakeContracts';
 import { validateEverstakeStepLiveState } from './everstakeLiveState';
 import {
     buildEverstakeStep,
@@ -22,6 +23,7 @@ export const everstakeAdapter: EthereumStakingProviderAdapter = {
     timelineDefaults: EVERSTAKE_TIMELINE_DEFAULTS,
     timelines: getEverstakeTimelines,
     derivePosition: deriveEverstakePosition,
+    getStepTarget: getEverstakeStepTarget,
     buildStep: buildEverstakeStep,
     planOperation: planEverstakeOperation,
     verifyStep: ({ label, data }, source) => verifyEverstakeCalldata(label, data, source),

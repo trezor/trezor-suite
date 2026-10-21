@@ -1,6 +1,7 @@
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { type StakeType } from '@suite-common/wallet-types';
+import { type BaseStakeType } from '@suite-common/wallet-types';
 import { type EverstakeContracts, getEverstakeContracts } from '@trezor/network-ethereum/staking';
+import { exhaustive } from '@trezor/type-utils';
 
 export const getEverstakeContractsBySymbol = (symbol: NetworkSymbol): EverstakeContracts | null => {
     const { chainId } = getNetwork(symbol);
@@ -8,19 +9,20 @@ export const getEverstakeContractsBySymbol = (symbol: NetworkSymbol): EverstakeC
     return chainId ? (getEverstakeContracts(chainId) ?? null) : null;
 };
 
-export const getEverstakeContractAddressByStakeType = (
+export const getEverstakeStepTarget = (
+    label: BaseStakeType,
     symbol: NetworkSymbol,
-    stakeType: StakeType,
-): string => {
-    const { pool, accounting } = getEverstakeContractsBySymbol(symbol) ?? {};
+): string | null => {
+    const contracts = getEverstakeContractsBySymbol(symbol);
+    if (!contracts) return null;
 
-    switch (stakeType) {
+    switch (label) {
         case 'stake':
         case 'unstake':
-            return pool || '';
+            return contracts.pool;
         case 'claim':
-            return accounting || '';
+            return contracts.accounting;
         default:
-            return '';
+            return exhaustive(label);
     }
 };

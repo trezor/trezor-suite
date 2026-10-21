@@ -1,5 +1,5 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type Account } from '@suite-common/wallet-types';
+import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import TrezorConnect from '@trezor/connect';
 
@@ -9,7 +9,10 @@ import { type StakingPosition } from '../positions/positionsTypes';
 type GetAccountInfoResult = Awaited<ReturnType<typeof TrezorConnect.getAccountInfo>>;
 
 const ethAccount = {
-    ...mockWalletAccount({ symbol: asNetworkSymbol('eth'), descriptor: '0xabc' }),
+    ...mockWalletAccount({
+        symbol: asNetworkSymbol('eth'),
+        descriptor: asAccountDescriptor('0xabc'),
+    }),
     networkType: 'ethereum',
     misc: { nonce: '3' },
 } as Account;

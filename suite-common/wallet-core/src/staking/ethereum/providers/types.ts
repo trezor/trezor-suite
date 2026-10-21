@@ -116,6 +116,8 @@ export type EthereumStakingProviderAdapter = {
     ) => StakingTimelines;
     /** Sync part of the position from account data alone; null when the account holds nothing with this provider. */
     derivePosition: (account: Account) => StakingPosition | null;
+    /** Contract a step of the operation is sent to; null on a network without a deployment. */
+    getStepTarget: (label: BaseStakeType, symbol: NetworkSymbol) => string | null;
     /** Encodes the step of an operation without any chain read; null on a network without a deployment. */
     buildStep: (
         request: StakingOperationRequest,

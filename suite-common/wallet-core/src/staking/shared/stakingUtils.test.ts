@@ -14,10 +14,7 @@ import {
 describe('getUnstakingPeriodInDays', () => {
     getUnstakingPeriodInDaysFixture.forEach(test => {
         it(test.description, () => {
-            const result = getUnstakingPeriodInDays(test.args.networkType, {
-                withdrawTime: test.args.withdrawTime,
-                exitTime: test.args.exitTime,
-            });
+            const result = getUnstakingPeriodInDays(test.args.networkType, test.args.ethereumStats);
             expect(result).toEqual(test.result);
         });
     });

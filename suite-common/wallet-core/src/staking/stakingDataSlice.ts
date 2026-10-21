@@ -3,8 +3,19 @@ import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { type StakingBatch, type StakingBatchDataItem } from '@suite-common/earn-staking-api';
 import { exhaustive } from '@trezor/type-utils';
 
-import { type EthereumStatsByProvider } from './ethereum/ethereumStakingStats';
-import { mapEverstakeBatchItem } from './ethereum/providers/everstake/everstakeStats';
+import {
+    type EthereumStakingBatchItem,
+    type EthereumStatsByProvider,
+} from './ethereum/ethereumStakingStats';
+import { DEFAULT_ETHEREUM_STAKING_PROVIDER_ID } from './ethereum/providers/ethereumStakingProviders';
+
+// The earn worker still reports the Ethereum batch item as one provider's figures.
+const toEthereumStatsByProvider = ({
+    stats,
+    validators,
+}: EthereumStakingBatchItem): EthereumStatsByProvider => ({
+    [DEFAULT_ETHEREUM_STAKING_PROVIDER_ID]: { stats, validators },
+});
 
 export type StakeDataState = {
     error: null | string;
@@ -50,7 +61,7 @@ const stakeDataSlice = createSlice({
                 (acc, item) => {
                     switch (item.symbol) {
                         case 'eth':
-                            acc.eth = mapEverstakeBatchItem(item);
+                            acc.eth = toEthereumStatsByProvider(item);
                             break;
                         case 'sol':
                             acc.sol = item;

@@ -5,6 +5,7 @@ import { isPending } from '@suite-common/wallet-utils';
 import { createWeakMapSelector } from '@trezor/redux-utils';
 
 import { type EthereumProviderStats } from './ethereumStakingStats';
+import { EMPTY_STAKING_TIMELINE_CONTEXT } from './ethereumStakingUtils';
 import {
     DEFAULT_ETHEREUM_STAKING_PROVIDER_ID,
     getEthereumStakingAdapter,
@@ -27,8 +28,6 @@ import { getUnstakingPeriodInDays } from '../shared/stakingUtils';
 import { type StakeRootState } from '../stakingReducerTypes';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<StakeRootState>();
-
-const EMPTY_TIMELINE_CONTEXT = { stakeTxs: [], unstakeTxs: [] };
 
 export const selectVisibleDeviceEthereumAccountsWithStakingByNetworkSymbol = (
     state: StakeRootState,
@@ -116,7 +115,7 @@ export const selectEthereumProviderTimelines = createMemoizedSelector(
         (_state: StakeRootState, providerId: StakingProviderId) => providerId,
     ],
     (stats, providerId): StakingTimelines =>
-        getEthereumStakingAdapter(providerId).timelines(stats, EMPTY_TIMELINE_CONTEXT),
+        getEthereumStakingAdapter(providerId).timelines(stats, EMPTY_STAKING_TIMELINE_CONTEXT),
 );
 
 export const selectEthereumStakingTimelines = createMemoizedSelector(
@@ -133,10 +132,6 @@ export const selectEthereumStakingTimelines = createMemoizedSelector(
     (stats, providerId, stakeTxs, unstakeTxs): StakingTimelines =>
         getEthereumStakingAdapter(providerId).timelines(stats, { stakeTxs, unstakeTxs }),
 );
-
-// The default provider's validators queue; the Everstake-specific screens still read it directly.
-export const selectEthereumValidatorsQueue = (state: StakeRootState) =>
-    selectEthereumProviderStats(state, DEFAULT_ETHEREUM_STAKING_PROVIDER_ID)?.validators;
 
 export const selectUnstakingPeriodInDaysBySymbol = (
     state: StakeRootState,

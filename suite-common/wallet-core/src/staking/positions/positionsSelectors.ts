@@ -12,7 +12,9 @@ const createMemoizedSelector = createWeakMapSelector.withTypes<AccountsRootState
 
 const EMPTY_SUMMARY: StakingPositionsSummary = {
     staked: '0',
+    withdrawable: '0',
     pendingStake: '0',
+    activating: '0',
     unstaking: '0',
     claimable: '0',
     rewards: null,
@@ -57,7 +59,9 @@ export const selectAccountStakingSummary = createMemoizedSelector(
 
         return {
             staked: sumAmounts(positions, position => position.staked),
+            withdrawable: sumAmounts(positions, position => position.withdrawable),
             pendingStake: sumAmounts(positions, position => position.pendingStake),
+            activating: sumAmounts(positions, position => position.activating),
             unstaking: sumAmounts(positions, position => position.unstaking),
             claimable: sumAmounts(positions, position => position.claimable),
             rewards: sumRewards(positions),

@@ -20,7 +20,6 @@ import {
 } from '@suite-common/wallet-types';
 import {
     asAmountSubunit,
-    fromWei,
     getAccountTotalStakingBalance,
     getTronAccountTotalStakingBalance,
     isPending,
@@ -57,14 +56,17 @@ import {
     isSupportedAdaStakingNetworkSymbol,
     subtypeToStakeTypeMap,
 } from '../cardano/cardanoStakingUtils';
+import { type EthereumProviderStats } from '../ethereum/ethereumStakingStats';
 import { classifyEthereumStakingTransaction } from '../ethereum/ethereumStakingTransactions';
-import { isSupportedEthStakingNetworkSymbol } from '../ethereum/ethereumStakingUtils';
+import {
+    EMPTY_STAKING_TIMELINE_CONTEXT,
+    getEthereumStakingContractAddress,
+    isSupportedEthStakingNetworkSymbol,
+} from '../ethereum/ethereumStakingUtils';
 import {
     DEFAULT_ETHEREUM_STAKING_PROVIDER_ID,
     getEthereumStakingAdapter,
 } from '../ethereum/providers/ethereumStakingProviders';
-import { getEverstakeContractAddressByStakeType } from '../ethereum/providers/everstake/everstakeContracts';
-import { getEverstakeExitPeriodInDays } from '../ethereum/providers/everstake/everstakeTimelines';
 import { deriveEthereumStakingPositions } from '../positions/deriveStakingPositions';
 import {
     getSolStakingAccountsInfo,
@@ -173,19 +175,17 @@ export const getLegacyStakingDataForNetwork = (
 
     switch (account.networkType) {
         case 'ethereum': {
-            const position = deriveEthereumStakingPositions(account).find(
-                ({ details }) => details.providerId === 'everstake',
-            );
+            const [position] = deriveEthereumStakingPositions(account);
             if (!position) return;
 
-            const { pool } = position.details;
-
             return {
-                autocompoundBalance: fromWei(pool.autocompoundBalance).toEther(),
+                autocompoundBalance: position.withdrawable,
                 claimableAmount: position.claimable,
                 depositedBalance: position.staked,
-                pendingBalance: fromWei(pool.pendingBalance).toEther(),
-                pendingDepositedBalance: fromWei(pool.pendingDepositedBalance).toEther(),
+                pendingBalance: new BigNumber(position.pendingStake)
+                    .minus(position.activating)
+                    .toFixed(),
+                pendingDepositedBalance: position.activating,
                 totalPendingStakeBalance: position.pendingStake,
                 restakedReward: position.rewards ?? '',
                 withdrawTotalAmount: position.unstaking,
@@ -269,14 +269,9 @@ export const getLegacyStakingDataForNetwork = (
     }
 };
 
-interface GetUnstakingPeriodInDays {
-    withdrawTime?: number | null; // in seconds
-    exitTime?: number | null; // in seconds
-}
-
 export const getUnstakingPeriodInDays = (
     networkType: NetworkType | undefined,
-    { withdrawTime, exitTime }: GetUnstakingPeriodInDays = {},
+    ethereumStats?: EthereumProviderStats,
 ) => {
     if (networkType === 'solana') {
         return SOLANA_EPOCH_DAYS;
@@ -290,10 +285,10 @@ export const getUnstakingPeriodInDays = (
         return TRON_UNFREEZE_DELAY_DAYS;
     }
 
-    return getEverstakeExitPeriodInDays({
-        withdrawTime: withdrawTime ?? undefined,
-        exitTime: exitTime ?? undefined,
-    });
+    return getEthereumStakingAdapter(DEFAULT_ETHEREUM_STAKING_PROVIDER_ID).timelines(
+        ethereumStats,
+        EMPTY_STAKING_TIMELINE_CONTEXT,
+    ).exitPeriodDays;
 };
 
 export const getStakingHelpCenterLink = (networkType?: NetworkType) => {
@@ -348,7 +343,7 @@ export const getStakingContractAddress = (account: Account, stakeType: StakeType
 
     switch (account.networkType) {
         case 'ethereum':
-            return getEverstakeContractAddressByStakeType(account.symbol, stakeType);
+            return getEthereumStakingContractAddress(account, stakeType);
         case 'solana':
         default:
             return account.descriptor;

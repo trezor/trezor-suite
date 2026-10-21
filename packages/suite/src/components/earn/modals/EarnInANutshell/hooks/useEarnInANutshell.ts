@@ -6,11 +6,7 @@ import {
     type EarnProvider,
     type EarnYieldContext,
 } from '@suite-common/suite-types';
-import {
-    getUnstakingPeriodInDays,
-    selectEthereumValidatorsQueue,
-    selectPoolStatsApy,
-} from '@suite-common/wallet-core';
+import { selectPoolStatsApy, selectUnstakingPeriodInDaysBySymbol } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -35,9 +31,10 @@ export const useEarnInANutshell = ({
     actionType = 'continue',
     yieldContext,
 }: UseEarnInANutshellProps) => {
-    const validatorsQueueData = useSelector(selectEthereumValidatorsQueue);
     const apy = useSelector(state => selectPoolStatsApy(state, { networkSymbol: account.symbol }));
-    const unstakingPeriod = getUnstakingPeriodInDays(account.networkType, validatorsQueueData);
+    const unstakingPeriod = useSelector(state =>
+        selectUnstakingPeriodInDaysBySymbol(state, account.symbol),
+    );
 
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
 

@@ -95,7 +95,9 @@ describe(selectAccountStakingSummary.name, () => {
             selectAccountStakingSummary(createState([stakingAccount]), stakingAccount.key),
         ).toEqual({
             staked: '2',
+            withdrawable: '2.05',
             pendingStake: '0.1',
+            activating: '0',
             unstaking: '0.5',
             claimable: '0.5',
             rewards: '0.05',
@@ -111,7 +113,9 @@ describe(selectAccountStakingSummary.name, () => {
 
         expect(summary).toEqual({
             staked: '0',
+            withdrawable: '0',
             pendingStake: '0',
+            activating: '0',
             unstaking: '0',
             claimable: '0',
             rewards: null,
