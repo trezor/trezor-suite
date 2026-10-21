@@ -27,8 +27,8 @@
         "styled-components": "^6.5.3"
     },
     "devDependencies": {
-        "@storybook/react": "^10.3.4",
+        "@storybook/react": "^10.6.1",
         "@types/react": "19.2.14",
-        "storybook": "^10.3.4"
+        "storybook": "^10.6.1"
     }
 }
