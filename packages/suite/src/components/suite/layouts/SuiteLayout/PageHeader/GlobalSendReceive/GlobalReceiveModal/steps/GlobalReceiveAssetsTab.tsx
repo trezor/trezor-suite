@@ -5,10 +5,13 @@ import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey } from '@suite/intl';
 import {
     type GlobalReceiveAssetCatalogStatus,
-    buildGlobalReceiveAssetSearchIndex,
     getGlobalReceiveAssetSections,
 } from '@suite-common/receive';
-import { type TradeableAssetBalances, type TradingAssetOption } from '@suite-common/trading';
+import {
+    type TradeableAssetBalances,
+    type TradeableAssetSearchIndex,
+    type TradingAssetOption,
+} from '@suite-common/trading';
 import { Button, Column, H4, Link, Paragraph, Row, Skeleton } from '@trezor/components';
 
 import { useDiscovery } from 'src/hooks/suite';
@@ -72,6 +75,7 @@ const AssetsNoResults = ({ onViewAccountsClick }: AssetsNoResultsProps) => (
 
 type GlobalReceiveAssetsTabProps = {
     assets: TradingAssetOption[];
+    assetSearchIndex: TradeableAssetSearchIndex<TradingAssetOption>;
     balances: TradeableAssetBalances;
     catalogStatus: GlobalReceiveAssetCatalogStatus;
     isAssetDisabled: (asset: TradingAssetOption) => boolean;
@@ -83,6 +87,7 @@ type GlobalReceiveAssetsTabProps = {
 
 export const GlobalReceiveAssetsTab = ({
     assets,
+    assetSearchIndex,
     balances,
     catalogStatus,
     isAssetDisabled,
@@ -98,7 +103,6 @@ export const GlobalReceiveAssetsTab = ({
 
     const { device } = useDevice();
     const { isDiscoveryRunning } = useDiscovery();
-    const assetSearchIndex = useMemo(() => buildGlobalReceiveAssetSearchIndex(assets), [assets]);
     const assetSections = useMemo(
         () =>
             getGlobalReceiveAssetSections({
