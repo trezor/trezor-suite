@@ -14,6 +14,6 @@
     "devDependencies": {
         "chalk": "^6.0.1",
         "prettier": "^3.9.9",
-        "svgo": "^4.0.1"
+        "svgo": "^4.1.0"
     }
 }

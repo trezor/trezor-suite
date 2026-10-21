@@ -17,8 +17,8 @@
         "@trezor/dependency-injection": "workspace:*",
         "fantasticon": "4.1.0",
         "prettier": "^3.9.9",
-        "sharp": "^0.34.2",
-        "svgo": "^4.0.1"
+        "sharp": "^0.35.5",
+        "svgo": "^4.1.0"
     },
     "dependencies": {
         "@suite-common/http-client": "workspace:^",
