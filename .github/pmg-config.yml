@@ -1,0 +1,13 @@
+# SafeDep PMG config, used by every `safedep/pmg` step in CI via its `config-file` input.
+# Missing keys are filled from the PMG config template during `pmg setup install`.
+# Docs: https://github.com/safedep/pmg/blob/main/config/config.template.yml
+# Default cooldown duration as of v0.32.0: https://github.com/safedep/pmg/blob/ad7d74efddce4ed5c8b161a11945bd6e55be266c/config/config.go#L678
+
+dependency_cooldown:
+  enabled: true
+  days: 2
+
+  # Packages exempt from the cooldown window. They are still malware-scanned.
+  # Yarn has its own age gate in .yarnrc.yml, so a package added to npmPreapprovedPackages there
+  # usually needs an entry here too, if it is younger than the PMG cooldown above.
+  skip: []

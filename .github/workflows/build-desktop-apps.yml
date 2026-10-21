@@ -59,7 +59,8 @@ jobs:
         uses: safedep/pmg@961499c36c98afbafec10a257ff27fb464073c86 # v0.30.0
         continue-on-error: true
         with:
-          version: v0.19.1
+          version: v0.32.0
+          config-file: .github/pmg-config.yml
       - name: Install deps and build libs
         # not installing @suite/desktop-app and @suite/desktop-app-main, because this is only the renderer process
         run: |
@@ -178,7 +179,8 @@ jobs:
         uses: safedep/pmg@961499c36c98afbafec10a257ff27fb464073c86 # v0.30.0
         continue-on-error: true
         with:
-          version: v0.19.1
+          version: v0.32.0
+          config-file: .github/pmg-config.yml
 
       - name: Install native binaries for every target architecture
         uses: ./.github/actions/yarn-target-architectures
