@@ -18,10 +18,17 @@ import { createTestAnnotation } from '../../support/reporters/annotations';
 import { enhancePage } from '../../support/testExtends/enhancePage';
 
 test.describe('Bridge', { tag: ['@desktopOnly', '@T3W1', '@T3T1', '@windows'] }, () => {
-    test.use({ jsExceptionWatcher: skipFixture, startEmulator: false, setupEmulator: false });
+    // The fixture app is closed right after launch, and its interrupted startup raises toasts.
+    test.use({
+        jsExceptionWatcher: skipFixture,
+        toastErrorWatcher: skipFixture,
+        startEmulator: false,
+        setupEmulator: false,
+    });
 
-    test.beforeEach(async ({ page, trezorUserEnv }) => {
-        await page.close();
+    test.beforeEach(async ({ electronApp, trezorUserEnv }) => {
+        // The app must exit, not just close its window: a running app holds the single-instance lock.
+        await electronApp!.close();
         //Ensure bridge is stopped so we properly test the electron app starting node-bridge module.
         await trezorUserEnv.connect();
         await trezorUserEnv.stopBridge();
