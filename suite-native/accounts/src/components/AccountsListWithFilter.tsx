@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AddCoinFlowType, type CloseActionType } from '@suite-native/navigation';
 
-import { type OnSelectAccount } from '../types';
+import { type NetworkFilterType, type OnSelectAccount } from '../types';
 import { AccountsList } from './AccountsList/AccountsList';
 import { AccountsListEmptyPlaceholder } from './AccountsList/AccountsListEmptyPlaceholder';
 import { AccountsListFooter } from './AccountsListFooter';
@@ -21,7 +21,7 @@ type AccountsListWithFilterProps = {
     closeActionType?: CloseActionType;
     closeAction?: () => void;
     onAddAccount?: () => void;
-    isSendFlow?: boolean;
+    networkFilterType: NetworkFilterType;
     noHeaderPaddingTop?: boolean;
     children?: ReactNode;
 };
@@ -34,13 +34,14 @@ export const AccountsListWithFilter = ({
     closeActionType,
     closeAction,
     onAddAccount,
-    isSendFlow,
+    networkFilterType,
     noHeaderPaddingTop,
     children,
 }: AccountsListWithFilterProps) => {
     const [searchValue, setSearchValue] = useState('');
     const [isSearchActive, setIsSearchActive] = useState(false);
     const [filteredNetworks, setFilteredNetworks] = useState<NetworkSymbol[]>(networksFilter);
+    const networkFilter = { type: networkFilterType, filteredNetworks, setFilteredNetworks };
 
     useEffect(() => {
         setFilteredNetworks(networksFilter);
@@ -83,25 +84,24 @@ export const AccountsListWithFilter = ({
                 isSearchActive={isSearchActive}
                 onSearchActiveChange={setIsSearchActive}
                 flowType={flowType}
-                isSendFlow={isSendFlow}
                 closeActionType={closeActionType}
                 closeAction={closeAction}
                 onAddAccount={onAddAccount}
-                networkFilter={{ filteredNetworks, setFilteredNetworks }}
+                networkFilter={networkFilter}
                 noPaddingTop={noHeaderPaddingTop}
             />
             <AccountsList
                 onSelectAccount={handleSelectAccount}
                 searchValue={searchValue}
                 networkFilter={filteredNetworks}
-                isSendFlow={isSendFlow}
+                isSendFlow={networkFilterType === 'send'}
                 ListHeaderComponent={<>{children}</>}
                 ListEmptyComponent={
                     <AccountsListEmptyPlaceholder isFilterEmpty={!searchValue.length} />
                 }
                 ListFooterComponent={
                     <AccountsListFooter
-                        isSendFlow={isSendFlow}
+                        networkFilterType={networkFilterType}
                         activeFilterCount={filteredNetworks.length}
                         onClearFilters={() => setFilteredNetworks([])}
                     />

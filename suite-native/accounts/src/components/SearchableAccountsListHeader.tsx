@@ -21,7 +21,6 @@ export type SearchableAccountsListHeaderProps = {
     isSearchActive: boolean;
     onSearchActiveChange: (value: boolean) => void;
     flowType?: AddCoinFlowType;
-    isSendFlow?: boolean;
     closeActionType?: CloseActionType;
     closeAction?: () => void;
     onAddAccount?: () => void;
@@ -45,7 +44,6 @@ export const SearchableAccountsListHeader = ({
     isSearchActive,
     onSearchActiveChange,
     flowType,
-    isSendFlow,
     closeActionType,
     closeAction,
     onAddAccount,
@@ -120,7 +118,7 @@ export const SearchableAccountsListHeader = ({
                             alignItems="center"
                             spacing="sp8"
                         >
-                            <NetworkFilterButton isSendFlow={isSendFlow} filter={networkFilter} />
+                            <NetworkFilterButton filter={networkFilter} />
                             {flowType && (
                                 <AddAccountButton
                                     flowType={flowType}

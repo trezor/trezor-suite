@@ -66,6 +66,7 @@ export const ReceiveAccountsScreen = () => {
                 title={<Translation id="moduleReceive.receiveTitle" />}
                 onSelectAccount={navigateToReceiveScreen}
                 flowType="receive"
+                networkFilterType="accounts"
                 closeActionType="close"
                 closeAction={handleClose}
                 onAddAccount={handleAddAccount}

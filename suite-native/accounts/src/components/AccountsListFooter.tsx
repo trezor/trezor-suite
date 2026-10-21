@@ -1,28 +1,27 @@
 import { useSelector } from 'react-redux';
 
-import { type NetworksRootState } from '@suite-common/networks';
 import { Box, Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 import {
-    type NativeAccountsRootState,
+    type NativeAccountsWithNetworksRootState,
     selectIsAccountsListNetworkFilterVisible,
 } from '../selectors';
+import { type NetworkFilterType } from '../types';
 
 type AccountsListFooterProps = {
-    isSendFlow?: boolean;
+    networkFilterType: NetworkFilterType;
     activeFilterCount: number;
     onClearFilters: () => void;
 };
 
 export const AccountsListFooter = ({
-    isSendFlow,
+    networkFilterType,
     activeFilterCount,
     onClearFilters,
 }: AccountsListFooterProps) => {
-    const isNetworkFilterVisible = useSelector(
-        (state: NativeAccountsRootState & NetworksRootState) =>
-            selectIsAccountsListNetworkFilterVisible(state, isSendFlow),
+    const isNetworkFilterVisible = useSelector((state: NativeAccountsWithNetworksRootState) =>
+        selectIsAccountsListNetworkFilterVisible(state, networkFilterType),
     );
 
     if (!isNetworkFilterVisible || activeFilterCount === 0) {

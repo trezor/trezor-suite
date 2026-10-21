@@ -1,4 +1,3 @@
-import { type NetworksRootState } from '@suite-common/networks';
 import { mockNetworksState } from '@suite-common/networks/mocks';
 import { type SuiteSyncAccount, createSuiteSyncAccountId } from '@suite-common/suite-sync-storage';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
@@ -7,10 +6,12 @@ import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { featureFlagsInitialState } from '@suite-native/feature-flags';
+import { appSettingsInitialState } from '@suite-native/settings';
 import { type StaticSessionId, asWalletDescriptor } from '@trezor/device-utils';
 
 import {
-    type NativeAccountsRootState,
+    type NativeAccountsWithNetworksRootState,
     selectFilteredDeviceAccountListRows,
     selectNetworkFilterOptions,
 } from './selectors';
@@ -108,7 +109,7 @@ const createSuiteSyncAccountsRecord = (accounts: SuiteSyncAccount[]) =>
         return acc;
     }, {});
 
-const createState = (accounts: Account[]): NativeAccountsRootState & NetworksRootState => ({
+const createState = (accounts: Account[]): NativeAccountsWithNetworksRootState => ({
     networks: mockNetworksState(supportedNetworks),
     device: {
         devices: [selectedDevice],
@@ -165,6 +166,8 @@ const createState = (accounts: Account[]): NativeAccountsRootState & NetworksRoo
         },
     },
     tokenDefinitions: {},
+    appSettings: appSettingsInitialState,
+    featureFlags: featureFlagsInitialState,
 });
 
 const stateAccounts = [
@@ -258,15 +261,41 @@ describe('selectFilteredDeviceAccountListRows', () => {
 
 describe('selectNetworkFilterOptions', () => {
     it('returns one option per network with the account count', () => {
-        expect(selectNetworkFilterOptions(state, false)).toEqual([
+        expect(selectNetworkFilterOptions(state, 'accounts')).toEqual([
             { symbol: 'btc', accountCount: 2 },
             { symbol: 'eth', accountCount: 1 },
             { symbol: 'ada', accountCount: 1 },
         ]);
     });
 
+    it('returns all networks with the account count', () => {
+        expect(selectNetworkFilterOptions(state, 'all')).toEqual([
+            { symbol: 'btc', accountCount: 2 },
+            { symbol: 'eth', accountCount: 1 },
+            { symbol: 'pol', accountCount: undefined },
+            { symbol: 'bsc', accountCount: undefined },
+            { symbol: 'arb', accountCount: undefined },
+            { symbol: 'base', accountCount: undefined },
+            { symbol: 'op', accountCount: undefined },
+            { symbol: 'rhc', accountCount: undefined },
+            { symbol: 'hype', accountCount: undefined },
+            { symbol: 'avax', accountCount: undefined },
+            { symbol: 'sol', accountCount: undefined },
+            { symbol: 'trx', accountCount: undefined },
+            { symbol: 'ada', accountCount: 1 },
+            { symbol: 'etc', accountCount: undefined },
+            { symbol: 'xrp', accountCount: undefined },
+            { symbol: 'xlm', accountCount: undefined },
+            { symbol: 'ltc', accountCount: undefined },
+            { symbol: 'bch', accountCount: undefined },
+            { symbol: 'doge', accountCount: undefined },
+            { symbol: 'zec', accountCount: undefined },
+            { symbol: 'arc', accountCount: undefined },
+        ]);
+    });
+
     it('counts only send-available accounts when the send filter is enabled', () => {
-        expect(selectNetworkFilterOptions(state, true)).toEqual([
+        expect(selectNetworkFilterOptions(state, 'send')).toEqual([
             { symbol: 'btc', accountCount: 1 },
             { symbol: 'eth', accountCount: 1 },
             { symbol: 'ada', accountCount: 1 },
@@ -276,8 +305,8 @@ describe('selectNetworkFilterOptions', () => {
     it('returns a referentially stable result when unrelated state changes', () => {
         const recreatedState = createState(stateAccounts);
 
-        expect(selectNetworkFilterOptions(recreatedState, false)).toBe(
-            selectNetworkFilterOptions(state, false),
+        expect(selectNetworkFilterOptions(recreatedState, 'accounts')).toBe(
+            selectNetworkFilterOptions(state, 'accounts'),
         );
     });
 });

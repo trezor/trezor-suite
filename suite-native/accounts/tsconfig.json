@@ -38,6 +38,7 @@
         { "path": "../alerts" },
         { "path": "../atoms" },
         { "path": "../config" },
+        { "path": "../discovery" },
         { "path": "../formatters" },
         { "path": "../forms" },
         { "path": "../icons" },
@@ -51,11 +52,16 @@
             "path": "../../packages/dependency-injection"
         },
         { "path": "../../packages/device-utils" },
+        {
+            "path": "../../networks/network-module/network-module-types"
+        },
         { "path": "../../packages/redux-utils" },
         {
             "path": "../../packages/styles-native"
         },
         { "path": "../../packages/theme" },
+        { "path": "../feature-flags" },
+        { "path": "../settings" },
         { "path": "../test-utils" },
         { "path": "../test-utils-store" }
     ]
