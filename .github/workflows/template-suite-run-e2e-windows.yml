@@ -1,0 +1,119 @@
+name: "Reusable Run Playwright E2E Tests on Windows"
+# See suite/e2e/docs/e2e-windows.md.
+on:
+  workflow_call:
+    inputs:
+      download-artifact-name:
+        description: "Name of the desktop app build artifact (build-suite-desktop-e2e.yml)"
+        required: true
+        type: string
+      currents-ci-build-id:
+        description: "CI build ID shared by the runners of one Currents run"
+        required: true
+        type: string
+      containers:
+        description: "Docker containers to start"
+        default: "trezor-user-env-unix bitcoin-regtest electrum-regtest quota-db suite-sync"
+        required: false
+        type: string
+    secrets:
+      currents-record-key:
+        description: "Currents record key for reporting"
+        required: true
+      e2e-passphrase:
+        description: "Passphrase for E2E tests"
+        required: true
+
+jobs:
+  run-e2e-windows:
+    name: Run e2e on Windows (${{ matrix.runner }}/${{ strategy.job-total }})
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [1, 2, 3, 4]
+    runs-on: windows-latest
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: bash
+    env:
+      CURRENTS_PROJECT_ID: q2uGxh
+      CURRENTS_CI_BUILD_ID: ${{ inputs.currents-ci-build-id }}
+      CURRENTS_MACHINE_ID: windows-${{ matrix.runner }}
+      COMPOSE_FILE: ./docker/docker-compose.suite-ci-e2e.yml
+      UBUNTU_WSL_IMAGE_URL: https://cdimages.ubuntu.com/ubuntu-wsl/noble/daily-live/20260908/noble-wsl-amd64.wsl
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Install e2e workspace
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
+        run: yarn workspaces focus @trezor/suite-e2e
+
+      # Desktop fixtures still open a Chromium context, so the headless shell must be present.
+      - name: Install Playwright Chromium
+        run: yarn workspace @trezor/suite-e2e exec playwright install chromium
+
+      - name: Prefetch Electron binary
+        run: node node_modules/electron/install.js
+
+      - name: Build message system config
+        run: yarn message-system-sign-config
+
+      - name: Download desktop build
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: ${{ inputs.download-artifact-name }}
+          path: artifact-download
+
+      - name: Extract desktop build
+        run: tar -xzf artifact-download/app-build.tar.gz -C suite/desktop-app
+
+      - name: Start test environment in Docker inside WSL
+        run: |
+          curl -fsSL -o "$RUNNER_TEMP/ubuntu-wsl.wsl" "$UBUNTU_WSL_IMAGE_URL"
+          yarn workspace @trezor/suite-e2e test-env:windows "$(cygpath -w "$RUNNER_TEMP/ubuntu-wsl.wsl")" ${{ inputs.containers }}
+
+      - name: Run Playwright E2E Tests
+        env:
+          GITHUB_ACTION: true
+          PASSPHRASE: ${{ secrets.e2e-passphrase }}
+          CURRENTS_RECORD_KEY: ${{ secrets.currents-record-key }}
+          GH_BRANCH: ${{ github.ref_name }}
+          PW_CONFIG: ./playwright-config/playwright-desktop-windows.config.ts
+        run: |
+          DISCOVERY_FILE="$(cygpath -w "$RUNNER_TEMP/pwc-discovery.txt")"
+
+          yarn workspace @trezor/suite-e2e test:orchestrated:e2e discover \
+            --pwc-discovery-file "$DISCOVERY_FILE" \
+            --config=$PW_CONFIG
+
+          yarn workspace @trezor/suite-e2e test:orchestrated:e2e run \
+            --pwc-discovery-file "$DISCOVERY_FILE" \
+            --config=$PW_CONFIG \
+            --pwc-cancel-after-failures false \
+            --pwc-disable-test-tags \
+            --pwc-skip-reporter-injection
+
+      - name: Extract and Attach Logs to Currents
+        if: ${{ !cancelled() }}
+        uses: ./.github/actions/upload-test-logs
+        env:
+          CURRENTS_RECORD_KEY: ${{ secrets.currents-record-key }}
+          TEST_ENV_LOG_PASSPHRASE: ${{ secrets.e2e-passphrase }}
+        with:
+          destination: currents
+          currents-workspace: "@trezor/suite-e2e"
+
+      # wsl --shutdown also ends the session the setup script left to keep the distro alive.
+      - name: Docker Compose Down
+        if: ${{ !cancelled() }}
+        run: |
+          docker compose down
+          wsl --shutdown

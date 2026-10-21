@@ -49,6 +49,18 @@ jobs:
       e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
       e2e-passphrase-live: ${{ secrets.E2E_TEST_PASSPHRASE_LIVE }}
 
+  run-e2e-suite-desktop-windows-tests:
+    if: github.repository == 'trezor/trezor-suite'
+    needs:
+      - build-app
+    uses: ./.github/workflows/template-suite-run-e2e-windows.yml
+    with:
+      download-artifact-name: "desktop-app-build-e2e"
+      currents-ci-build-id: "nightly-windows-run-${{ github.run_id }}-${{ github.run_attempt }}"
+    secrets:
+      currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
+      e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
+
   # ── Web ────────────────────────────────────────────────────────────────────
 
   build-web:
