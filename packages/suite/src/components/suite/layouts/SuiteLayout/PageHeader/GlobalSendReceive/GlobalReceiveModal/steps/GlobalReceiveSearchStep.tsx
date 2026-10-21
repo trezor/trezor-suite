@@ -9,7 +9,11 @@ import {
 } from '@suite-common/analytics';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { type GlobalReceiveAssetCatalogStatus } from '@suite-common/receive';
-import { type TradeableAssetBalances, type TradingAssetOption } from '@suite-common/trading';
+import {
+    type TradeableAssetBalances,
+    type TradeableAssetSearchIndex,
+    type TradingAssetOption,
+} from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Column, Link, SubTabs } from '@trezor/components';
@@ -29,6 +33,7 @@ import { GlobalReceiveAssetsTab } from './GlobalReceiveAssetsTab';
 type GlobalReceiveSearchStepProps = {
     activeTab: GlobalReceiveTab;
     assets: TradingAssetOption[];
+    assetSearchIndex: TradeableAssetSearchIndex<TradingAssetOption>;
     assetNetworks: readonly NetworkSymbol[];
     accountNetworks: readonly NetworkSymbol[];
     balances: TradeableAssetBalances;
@@ -45,6 +50,7 @@ type GlobalReceiveSearchStepProps = {
 export const GlobalReceiveSearchStep = ({
     activeTab,
     assets,
+    assetSearchIndex,
     assetNetworks,
     accountNetworks,
     balances,
@@ -163,6 +169,7 @@ export const GlobalReceiveSearchStep = ({
                 {activeTab === 'assets' ? (
                     <GlobalReceiveAssetsTab
                         assets={assets}
+                        assetSearchIndex={assetSearchIndex}
                         balances={balances}
                         catalogStatus={catalogStatus}
                         isAssetDisabled={isAssetDisabled}

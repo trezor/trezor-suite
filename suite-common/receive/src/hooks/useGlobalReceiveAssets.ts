@@ -6,18 +6,23 @@ import { desktopQueryKeys, useQuery } from '@suite-common/react-query';
 import { fetchRankedTokenDefinitions } from '@suite-common/token-definitions';
 import {
     type TradeableAssetBalances,
+    type TradeableAssetSearchIndex,
     type TradingAssetOption,
     selectTradeableAssetBalances,
 } from '@suite-common/trading';
 import { type NetworkSymbol, getMainnets } from '@suite-common/wallet-config';
 import { selectDeviceSupportedNetworks } from '@suite-common/wallet-core';
 
-import { buildGlobalReceiveAssetOptions } from '../globalReceiveAssetUtils';
+import {
+    buildGlobalReceiveAssetOptions,
+    buildGlobalReceiveAssetSearchIndex,
+} from '../globalReceiveAssetUtils';
 
 export type GlobalReceiveAssetCatalogStatus = 'loading' | 'ready' | 'error';
 
 type UseGlobalReceiveAssetsReturn = {
     assets: TradingAssetOption[];
+    assetSearchIndex: TradeableAssetSearchIndex<TradingAssetOption>;
     balances: TradeableAssetBalances;
     networks: NetworkSymbol[];
     catalogStatus: GlobalReceiveAssetCatalogStatus;
@@ -70,6 +75,7 @@ export const useGlobalReceiveAssets = (): UseGlobalReceiveAssetsReturn => {
             }),
         [definitions, supportedMainnets],
     );
+    const assetSearchIndex = useMemo(() => buildGlobalReceiveAssetSearchIndex(assets), [assets]);
     const networks = useMemo(
         () => supportedMainnets.map(network => network.symbol),
         [supportedMainnets],
@@ -77,6 +83,7 @@ export const useGlobalReceiveAssets = (): UseGlobalReceiveAssetsReturn => {
 
     return {
         assets,
+        assetSearchIndex,
         balances,
         networks,
         catalogStatus: getCatalogStatus(

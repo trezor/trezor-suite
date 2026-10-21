@@ -93,10 +93,66 @@ describe('useGlobalReceiveAssets', () => {
         first.queryClient.clear();
     });
 
+    it('provides a normalized search index and reuses it across parent rerenders', async () => {
+        const { result, rerender, unmount, queryClient } = renderAssets();
+        await waitFor(() => expect(result.current.catalogStatus).toBe('ready'));
+
+        const { assets, assetSearchIndex } = result.current;
+        expect(assetSearchIndex).toBeDefined();
+        expect(assetSearchIndex.size).toBe(assets.length);
+        assets.forEach(asset => expect(assetSearchIndex.has(asset)).toBe(true));
+        expect(Array.from(assetSearchIndex.values())).toContainEqual({
+            name: 'wrapped sol',
+            symbol: 'wsol',
+            networkName: 'solana',
+            networkSymbol: 'sol',
+            contractAddress: 'so11111111111111111111111111111111111111112',
+        });
+
+        rerender();
+        expect(result.current.assets).toBe(assets);
+        expect(result.current.assetSearchIndex).toBe(assetSearchIndex);
+        unmount();
+        queryClient.clear();
+    });
+
+    it('rebuilds the search index when the catalogue changes', async () => {
+        const { result, unmount, queryClient } = renderAssets();
+        await waitFor(() => expect(result.current.catalogStatus).toBe('ready'));
+        const { assets, assetSearchIndex } = result.current;
+
+        const updatedDefinitions: RankedTokenStructure = [
+            ...definitions,
+            {
+                assetPlatformId: 'solana',
+                address: 'NewTokenMint',
+                symbol: 'NEW',
+                name: 'New Token',
+                marketCap: 1,
+            },
+        ];
+        act(() => {
+            queryClient.setQueryData(desktopQueryKeys.rankedTokenDefinitions(), updatedDefinitions);
+        });
+
+        await waitFor(() => expect(result.current.assets).not.toBe(assets));
+        expect(result.current.assetSearchIndex).not.toBe(assetSearchIndex);
+        expect(Array.from(result.current.assetSearchIndex.values())).toContainEqual({
+            name: 'new token',
+            symbol: 'new',
+            networkName: 'solana',
+            networkSymbol: 'sol',
+            contractAddress: 'newtokenmint',
+        });
+        unmount();
+        queryClient.clear();
+    });
+
     it('does not load or expose a catalogue on Bitcoin-only firmware, including manual retry', () => {
         const { result, unmount, queryClient } = renderAssets(FirmwareType.BitcoinOnly);
         expect(result.current.catalogStatus).toBe('ready');
         expect(result.current.assets).toEqual([]);
+        expect(result.current.assetSearchIndex.size).toBe(0);
         expect(result.current.networks).toEqual([]);
         act(() => result.current.retry());
         expect(fetchRankedTokenDefinitions).not.toHaveBeenCalled();
