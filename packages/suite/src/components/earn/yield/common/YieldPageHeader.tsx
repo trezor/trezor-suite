@@ -7,7 +7,7 @@ import { openModal } from '@suite/modal';
 import { type EarnParams } from '@suite/router';
 import { events } from '@suite-common/analytics';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
-import { type EarnAnalyticsStep, EarnFlow, EarnProvider } from '@suite-common/suite-types';
+import { type EarnAnalyticsStep, EarnFlow } from '@suite-common/suite-types';
 import { getYieldVaultContractAddress } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Button, IconButton, Row, Text } from '@trezor/components';
@@ -137,7 +137,7 @@ export const YieldPageHeader = ({
             openModal({
                 type: 'earn-in-a-nutshell',
                 flow: EarnFlow.Yield,
-                provider: EarnProvider.Morpho,
+                provider: 'morpho',
                 account,
                 analyticsStep,
                 actionType: 'close',

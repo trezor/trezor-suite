@@ -80,6 +80,7 @@ export const validateEverstakeStepLiveState = async (
     switch (label) {
         case 'unstake': {
             const amount = getUnstakeAmountFromCalldata(data);
+
             if (!amount) {
                 return invalidEthereumStakingLiveState({ code: 'MISSING_UNSTAKE_AMOUNT' });
             }

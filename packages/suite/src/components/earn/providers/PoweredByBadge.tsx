@@ -3,14 +3,14 @@ import styled from 'styled-components';
 import { Translation } from '@suite/intl';
 import { Image, Row, Text } from '@trezor/components';
 
-import { EARN_PROVIDER_METADATA, type EarnProviderId } from './providerMetadata';
+import { EARN_PROVIDER_LOGOS, type EarnProviderWithLogo } from './providerMetadata';
 
 const ImageWrapper = styled.div`
     filter: ${({ theme }) => (theme.variant === 'dark' ? 'invert(1)' : 'none')};
 `;
 
 type PoweredByBadgeProps = {
-    provider: EarnProviderId;
+    provider: EarnProviderWithLogo;
 };
 
 export function PoweredByBadge({ provider }: PoweredByBadgeProps) {
@@ -20,7 +20,7 @@ export function PoweredByBadge({ provider }: PoweredByBadgeProps) {
                 <Translation id="TR_STAKE_PROVIDED_BY" />
             </Text>
             <ImageWrapper>
-                <Image image={EARN_PROVIDER_METADATA[provider].logo} width={100} height={40} />
+                <Image image={EARN_PROVIDER_LOGOS[provider]} width={100} height={40} />
             </ImageWrapper>
         </Row>
     );

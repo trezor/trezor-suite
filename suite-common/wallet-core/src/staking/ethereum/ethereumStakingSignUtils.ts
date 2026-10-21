@@ -144,6 +144,7 @@ export const prepareEthereumStakingContext = (
     }: PrepareEthereumStakingContextParams,
 ): { ok: true; context: PreparedEthereumStakingContext } | PrepareFailure => {
     const account = selectAccountByKey(state, accountKey);
+
     if (account?.networkType !== 'ethereum') {
         return failed('Ethereum account not found.');
     }
@@ -158,6 +159,7 @@ export const prepareEthereumStakingContext = (
     }
 
     const { chainId } = getNetwork(account.symbol);
+
     if (!chainId) {
         return failed(
             'Chain ID not found for network.',
@@ -166,6 +168,7 @@ export const prepareEthereumStakingContext = (
     }
 
     const gasLimit = precomposedTransaction.feeLimit;
+
     if (!gasLimit) {
         return failed('Selected fee level is missing gas limit.');
     }
@@ -234,16 +237,12 @@ export const verifyEthereumStakingLiveStateForSign = async ({
 > => {
     const adapter = getEthereumStakingAdapter(providerId);
 
+    const identity = getAccountIdentity(account);
+    const readPosition = createEthereumStakingPositionReader({ account, adapter, identity });
+
     const liveState = await adapter.validateLiveState(
         { label: stakeType, data: calldata },
-        {
-            account,
-            readPosition: createEthereumStakingPositionReader({
-                account,
-                adapter,
-                identity: getAccountIdentity(account),
-            }),
-        },
+        { account, readPosition },
     );
 
     if (!liveState.isValid) {

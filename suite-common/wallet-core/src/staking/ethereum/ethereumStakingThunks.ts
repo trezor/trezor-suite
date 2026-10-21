@@ -50,6 +50,7 @@ export const signPreparedEthereumStakingTransactionThunk = createThunk<
             account,
             calldata: variant.calldata,
         });
+
         if (!liveState.isValid) {
             return rejectWithValue(liveState.error);
         }

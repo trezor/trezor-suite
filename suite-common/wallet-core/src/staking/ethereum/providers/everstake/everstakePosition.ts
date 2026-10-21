@@ -14,6 +14,7 @@ export const findEverstakeStakingPool = (
     stakingPools: StakingPool[] | undefined,
 ): StakingPool | undefined => {
     const contracts = getEverstakeContractsBySymbol(symbol);
+
     if (!contracts) return undefined;
 
     const knownContracts = [contracts.accounting, contracts.pool].map(address =>
@@ -39,6 +40,7 @@ export const deriveEverstakePosition = (account: Account): StakingPosition | nul
     if (account.networkType !== 'ethereum') return null;
 
     const pool = findEverstakeStakingPool(account.symbol, account.misc?.stakingPools);
+
     if (!pool) return null;
 
     const claimable = new BigNumber(pool.claimableAmount);

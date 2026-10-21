@@ -4,7 +4,6 @@ import { fireEvent, render } from '@testing-library/react';
 
 import { type DesktopAnalytics } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
-import { EarnProvider } from '@suite-common/suite-types';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockYieldVault } from '@suite-common/wallet-core/mocks';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -59,7 +58,7 @@ const renderYieldEducation = (
     render(
         <YieldEarnInANutshellModal
             account={mockWalletAccount({ symbol: asNetworkSymbol('eth') })}
-            provider={EarnProvider.Morpho}
+            provider="morpho"
             onCancel={jest.fn()}
             actionType={actionType}
         />,

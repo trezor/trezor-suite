@@ -4,7 +4,7 @@ import { Translation } from '@suite/intl';
 import { events } from '@suite-common/analytics';
 import { EarnFlow, type EarnProvider, type EarnYieldContext } from '@suite-common/suite-types';
 import { selectTradingCoinSymbolByCryptoId, toTokenCryptoId } from '@suite-common/trading';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getEarnProvider, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
@@ -16,7 +16,6 @@ import { useSelector } from 'src/hooks/suite';
 import { EarnProviderConsentModalLayout } from './components/EarnProviderConsentModalLayout';
 import { YieldProviderConsentBanners } from './components/YieldProviderConsentBanners';
 import { useEarnProviderConsentActions } from './hooks/useEarnProviderConsentActions';
-import { getEarnProviderName } from '../../utils/getEarnProviderName';
 
 interface YieldEarnProviderConsentModalProps {
     account: Account;
@@ -65,7 +64,7 @@ export const YieldEarnProviderConsentModal = ({
     const depositSymbol = isWrappedNativeToken(account.symbol, normalizedTokenContractAddress)
         ? displaySymbol
         : (tokenSymbolFromAccount ?? tokenSymbolFromTrading ?? displaySymbol);
-    const providerName = getEarnProviderName(provider);
+    const providerName = getEarnProvider(provider).name;
 
     const handleOnConfirm = () => {
         analytics.report({

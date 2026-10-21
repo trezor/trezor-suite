@@ -18,8 +18,12 @@ import { type EthereumProviderStats } from '../ethereumStakingStats';
 
 export type EthereumStakingAccount = Account & { networkType: 'ethereum' };
 
+type StakingStakeOperationRequest = { type: 'stake'; amount: string };
+type StakingUnstakeOperationRequest = { type: 'unstake'; amount: string };
+type StakingClaimOperationRequest = { type: 'claim' };
+
 export type StakingOperationRequest =
-    { type: 'stake'; amount: string } | { type: 'unstake'; amount: string } | { type: 'claim' };
+    StakingStakeOperationRequest | StakingUnstakeOperationRequest | StakingClaimOperationRequest;
 
 export type StakingTxStep = {
     label: BaseStakeType;
@@ -57,8 +61,10 @@ export type StakingPlanError =
     | { code: 'AMOUNT_BELOW_MINIMUM'; minAmount: string }
     | { code: 'LIVE_STATE_INVALID'; reason: EthereumStakingLiveStateReason };
 
-export type StakingPlanResult =
-    { success: true; plan: StakingTxPlan } | { success: false; error: StakingPlanError };
+type StakingPlanSuccessResult = { success: true; plan: StakingTxPlan };
+type StakingPlanErrorResult = { success: false; error: StakingPlanError };
+
+export type StakingPlanResult = StakingPlanSuccessResult | StakingPlanErrorResult;
 
 export type StakingStepCalldata = Pick<StakingTxStep, 'label' | 'data'>;
 

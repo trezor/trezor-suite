@@ -244,11 +244,9 @@ export const composeEthereumStakingTransaction = async ({
 
     const identity = getAccountIdentity(account);
 
-    const planned = await adapter.planOperation(request, {
-        account,
-        source,
-        readPosition: createEthereumStakingPositionReader({ account, adapter, identity }),
-    });
+    const readPosition = createEthereumStakingPositionReader({ account, adapter, identity });
+
+    const planned = await adapter.planOperation(request, { account, source, readPosition });
 
     if (!planned.success) {
         const { error } = planned;

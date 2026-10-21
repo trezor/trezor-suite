@@ -7,6 +7,7 @@ import {
 } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { EVERSTAKE_CONTRACTS } from '@trezor/network-ethereum/staking';
 import { EVERSTAKE_VOTER_PUBKEYS, StakeState } from '@trezor/network-solana/constants';
 import { type DeepPartial } from '@trezor/type-utils';
 import { mergeDeepObject } from '@trezor/utils';
@@ -26,7 +27,7 @@ const solStake = {
 };
 
 const ethPool = {
-    contract: 'test-contract',
+    contract: EVERSTAKE_CONTRACTS[1].accounting,
     name: 'Everstake',
     pendingBalance: '0',
     pendingDepositedBalance: '0',

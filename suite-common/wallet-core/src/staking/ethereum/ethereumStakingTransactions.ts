@@ -74,6 +74,7 @@ export const findChangedEthereumStakingInternalTransfer = (
     const changedTx = currentSentTxs.find(currTx =>
         prevPendingTxs.some(prevTx => currTx.txid === prevTx.txid),
     );
+
     if (!changedTx) return null;
 
     const internalTransfer = changedTx.internalTransfers.find(transfer =>

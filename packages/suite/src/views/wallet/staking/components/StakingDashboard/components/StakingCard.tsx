@@ -2,9 +2,10 @@ import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { useSolanaRewardsTotal } from '@suite-common/earn-staking-api';
-import { EarnFlow, EarnProvider } from '@suite-common/suite-types';
+import { EarnFlow } from '@suite-common/suite-types';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
+    DEFAULT_ETHEREUM_STAKING_PROVIDER_ID,
     getLegacyStakingDataForNetwork,
     isCardanoStakedWithEverstake,
     isCardanoWithdrawalBlockedByMissingDrep,
@@ -177,7 +178,7 @@ export const StakingCard = ({
                 openModal({
                     type: 'earn-in-a-nutshell',
                     flow: EarnFlow.Stake,
-                    provider: EarnProvider.Everstake,
+                    provider: DEFAULT_ETHEREUM_STAKING_PROVIDER_ID,
                     account,
                     analyticsStep: 'staking-dashboard',
                 }),

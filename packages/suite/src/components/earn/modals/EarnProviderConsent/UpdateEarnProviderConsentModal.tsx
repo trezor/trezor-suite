@@ -1,12 +1,11 @@
 import { Translation } from '@suite/intl';
 import { EarnFlow, type EarnProvider, type EarnYieldContext } from '@suite-common/suite-types';
-import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import { getEarnProvider, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 
 import { EarnProviderConsentModalLayout } from './components/EarnProviderConsentModalLayout';
 import { StakingProviderConsentBanners } from './components/StakingProviderConsentBanners';
 import { useEarnProviderConsentActions } from './hooks/useEarnProviderConsentActions';
-import { getEarnProviderName } from '../../utils/getEarnProviderName';
 
 interface UpdateEarnProviderConsentModalProps {
     account: Account;
@@ -31,7 +30,7 @@ export const UpdateEarnProviderConsentModal = ({
     });
 
     const displaySymbol = getNetworkDisplaySymbol(account.symbol);
-    const providerName = getEarnProviderName(provider);
+    const providerName = getEarnProvider(provider).name;
 
     return (
         <EarnProviderConsentModalLayout

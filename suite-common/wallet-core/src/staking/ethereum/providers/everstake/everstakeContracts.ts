@@ -6,7 +6,9 @@ import { exhaustive } from '@trezor/type-utils';
 export const getEverstakeContractsBySymbol = (symbol: NetworkSymbol): EverstakeContracts | null => {
     const { chainId } = getNetwork(symbol);
 
-    return chainId ? (getEverstakeContracts(chainId) ?? null) : null;
+    if (!chainId) return null;
+
+    return getEverstakeContracts(chainId) ?? null;
 };
 
 export const getEverstakeStepTarget = (
@@ -14,6 +16,7 @@ export const getEverstakeStepTarget = (
     symbol: NetworkSymbol,
 ): string | null => {
     const contracts = getEverstakeContractsBySymbol(symbol);
+
     if (!contracts) return null;
 
     switch (label) {

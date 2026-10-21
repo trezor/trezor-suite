@@ -1,8 +1,12 @@
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { EarnFlow, EarnProvider } from '@suite-common/suite-types';
+import { EarnFlow } from '@suite-common/suite-types';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { isCardanoStakedWithFiveBinaries, selectPoolStatsApy } from '@suite-common/wallet-core';
+import {
+    DEFAULT_ETHEREUM_STAKING_PROVIDER_ID,
+    isCardanoStakedWithFiveBinaries,
+    selectPoolStatsApy,
+} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Banner, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -34,7 +38,7 @@ export const NewProviderCard = ({ account }: NewProviderCardProps) => {
                 openModal({
                     type: 'earn-in-a-nutshell',
                     flow: EarnFlow.UpdateProvider,
-                    provider: EarnProvider.Everstake,
+                    provider: DEFAULT_ETHEREUM_STAKING_PROVIDER_ID,
                     account,
                     analyticsStep: 'staking-dashboard',
                 }),

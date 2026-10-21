@@ -6,7 +6,7 @@ import { gotoThunk } from '@suite/router';
 import { events as sharedEvents } from '@suite-common/analytics';
 import { selectSelectedDevice } from '@suite-common/device';
 import { useFormatters } from '@suite-common/formatters';
-import { EarnFlow, EarnProvider } from '@suite-common/suite-types';
+import { EarnFlow } from '@suite-common/suite-types';
 import {
     getTradingPrefilledFromAccountData,
     toTokenCryptoId,
@@ -188,7 +188,7 @@ export const EarnYieldAccountOpportunity = ({
             openModal({
                 type: 'earn-in-a-nutshell',
                 flow: EarnFlow.Yield,
-                provider: EarnProvider.Morpho,
+                provider: 'morpho',
                 account: opportunity.account,
                 analyticsStep: 'earn-dashboard',
                 yieldContext,

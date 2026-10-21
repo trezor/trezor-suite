@@ -3,7 +3,9 @@ import { EVM_ABI } from '@trezor/network-ethereum-suite-common';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
+import { createEvmRead } from '../../../../evm/evmRead';
 import { WALLET_SDK_SOURCE } from '../../../shared/stakingConstants';
+import { type EthereumStakingLiveStateReason } from '../../ethereumStakingLiveState';
 import {
     type StakingOperationRequest,
     type StakingPlanContext,
@@ -28,8 +30,6 @@ import {
     validateEverstakeUnstakeLiveState,
 } from './everstakeLiveState';
 import { getEverstakeStakingPool } from './everstakePosition';
-import { createEvmRead } from '../../../../evm/evmRead';
-import { type EthereumStakingLiveStateReason } from '../../ethereumStakingLiveState';
 
 const planned = (operation: StakingOperationRequest, step: StakingTxStep): StakingPlanResult => ({
     success: true,
@@ -46,6 +46,7 @@ export const buildEverstakeStep = (
     { symbol, source }: StakingStepContext,
 ): StakingTxStep | null => {
     const contracts = getEverstakeContractsBySymbol(symbol);
+
     if (!contracts) return null;
 
     switch (request.type) {
@@ -87,6 +88,7 @@ export const planEverstakeOperation = async (
     { account, source, readPosition }: StakingPlanContext,
 ): Promise<StakingPlanResult> => {
     const step = buildEverstakeStep(request, { symbol: account.symbol, source });
+
     if (!step) {
         return { success: false, error: { code: 'UNSUPPORTED_NETWORK' } };
     }
@@ -159,6 +161,7 @@ export const previewEverstakeUnstake = async ({
     const data = buildUnstakeData(amountWei, UNSTAKE_INTERCHANGES, source);
 
     const read = createEvmRead({ symbol, from });
+
     const simulated = await read.one({
         to: contracts.pool,
         abi: EVM_ABI.everstake.unstake,

@@ -34,10 +34,7 @@ export const getDaysToAddToPool = (
     }
 
     const lastTxBlockTime = stakeTxs[0]?.blockTime;
-
-    if (!lastTxBlockTime) {
-        return undefined;
-    }
+    if (!lastTxBlockTime) return undefined;
 
     const now = Math.floor(Date.now() / 1000);
 
@@ -51,9 +48,7 @@ export const getDaysToUnstake = (
     unstakeTxs: WalletAccountTransaction[],
     validatorsQueue?: EthValidatorsQueue | null,
 ) => {
-    if (typeof validatorsQueue?.withdrawTime !== 'number') {
-        return undefined;
-    }
+    if (typeof validatorsQueue?.withdrawTime !== 'number') return undefined;
 
     const now = Math.floor(Date.now() / 1000);
     const lastTxBlockTime = unstakeTxs[0]?.blockTime || now;
@@ -90,7 +85,9 @@ export const getEverstakeExitPeriodInDays = (validatorsQueue?: EthValidatorsQueu
 export const getEverstakeNextRewardPayoutDays = (stats: EverstakeEthereumStats | undefined) => {
     const nextRewardPayout = stats?.stats?.nextRewardPayout;
 
-    return nextRewardPayout ? Math.max(1, secondsToDays(nextRewardPayout)) : null;
+    if (!nextRewardPayout) return null;
+
+    return Math.max(1, secondsToDays(nextRewardPayout));
 };
 
 export const getEverstakeTimelines = (

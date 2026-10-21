@@ -15,6 +15,7 @@ type EthereumAccount = AccountWithNetworkType<'ethereum'>;
 // Contract addresses are public, so they can be logged.
 const reportUnclaimedStakingPools = (account: EthereumAccount) => {
     const contracts = account.misc?.stakingPools?.map(pool => pool.contract) ?? [];
+
     if (contracts.length === 0) return;
 
     console.error(

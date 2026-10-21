@@ -20,8 +20,14 @@ export type EthereumStakingLiveStateReason =
     | { code: 'UNSTAKE_REQUEST_NOT_FILLED' }
     | { code: 'MISSING_UNSTAKE_AMOUNT' };
 
+type EthereumStakingLiveStateValidationSuccess = { isValid: true };
+type EthereumStakingLiveStateValidationError = {
+    isValid: false;
+    reason: EthereumStakingLiveStateReason;
+};
+
 export type EthereumStakingLiveStateValidation =
-    { isValid: true } | { isValid: false; reason: EthereumStakingLiveStateReason };
+    EthereumStakingLiveStateValidationSuccess | EthereumStakingLiveStateValidationError;
 
 export const VALID_ETHEREUM_STAKING_LIVE_STATE: EthereumStakingLiveStateValidation = {
     isValid: true,
@@ -60,8 +66,11 @@ export const getEthereumStakingLiveStateErrorMessage = (
 
 export const weiToEtherBigNumber = (wei: string) => fromWei(wei).toEther('bignumber');
 
+type EthereumStakingPositionReadSuccess = { success: true; position: StakingPosition | null };
+type EthereumStakingPositionReadError = { success: false; message: string };
+
 export type EthereumStakingPositionRead =
-    { success: true; position: StakingPosition | null } | { success: false; message: string };
+    EthereumStakingPositionReadSuccess | EthereumStakingPositionReadError;
 
 export type ReadEthereumStakingPosition = () => Promise<EthereumStakingPositionRead>;
 

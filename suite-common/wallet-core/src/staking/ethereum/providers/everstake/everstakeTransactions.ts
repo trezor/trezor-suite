@@ -19,6 +19,7 @@ const OPERATION_TO_STAKE_TYPE: Record<EverstakeOperation, BaseStakeType> = {
 
 const classify = (selector: string | undefined, data?: string): StakingTxClassification | null => {
     const operation = getEverstakeOperationBySelector(selector);
+
     if (!operation) return null;
 
     const type = OPERATION_TO_STAKE_TYPE[operation];
@@ -38,9 +39,11 @@ export const classifyEverstakeCalldata = (data: string | undefined) =>
 // Blockbook parses the selector into parsedData; the raw data covers backends that do not.
 export const classifyEverstakeTransaction = (tx: WalletAccountTransaction) => {
     const { ethereumSpecific } = tx;
+
     if (!ethereumSpecific) return null;
 
     const { parsedData, data } = ethereumSpecific;
+
     const selector =
         parsedData?.methodId ?? (data ? getSignatureByEthereumDataHex(data) : undefined);
 
@@ -54,7 +57,9 @@ export const classifyEverstakeInternalTransfer = (
     { descriptor, symbol }: StakingTransferAccount,
 ): BaseStakeType | null => {
     const contracts = getEverstakeContractsBySymbol(symbol);
+
     if (!contracts) return null;
+
     const { pool, withdrawTreasury } = contracts;
 
     if (from === pool && to === withdrawTreasury) {

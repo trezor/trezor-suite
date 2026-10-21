@@ -37,5 +37,4 @@ export {
 
 export { PoweredByBadge } from './providers/PoweredByBadge';
 
-export { getEarnProviderName } from './utils/getEarnProviderName';
 export { getApyRate } from './utils/earnApyUtils';

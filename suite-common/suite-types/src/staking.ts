@@ -8,19 +8,7 @@ export enum EarnFlow {
 
 export type StakeModalFlow = EarnFlow.Stake | EarnFlow.UpdateProvider;
 
-export enum EarnProvider {
-    Everstake = 'everstake',
-    Morpho = 'morpho',
-}
-
-// Transitional bridge to the registry id space until the enum is removed.
-const EARN_PROVIDER_IDS: Record<EarnProvider, EarnProviderId> = {
-    [EarnProvider.Everstake]: 'everstake',
-    [EarnProvider.Morpho]: 'morpho',
-};
-
-export const getEarnProviderId = (provider: EarnProvider): EarnProviderId =>
-    EARN_PROVIDER_IDS[provider];
+export type EarnProvider = EarnProviderId;
 
 export type EarnYieldContext = {
     id: string;

@@ -4,7 +4,8 @@ import { type DesktopAnalyticsDep, events, injectDesktopAnalytics } from '@suite
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
-import { EarnFlow, EarnProvider } from '@suite-common/suite-types';
+import { EarnFlow } from '@suite-common/suite-types';
+import { DEFAULT_ETHEREUM_STAKING_PROVIDER_ID } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { type IconComponent, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -188,7 +189,7 @@ const getCardanoContent = ({ data, dispatch }: UseNetworkContentProps): EmptySta
             openModal({
                 type: 'earn-in-a-nutshell',
                 flow: EarnFlow.Stake,
-                provider: EarnProvider.Everstake,
+                provider: DEFAULT_ETHEREUM_STAKING_PROVIDER_ID,
                 account,
                 analyticsStep: 'staking-dashboard',
             }),
@@ -271,7 +272,7 @@ const getDefaultContent = ({ data, dispatch }: UseNetworkContentProps): EmptySta
             openModal({
                 type: 'earn-in-a-nutshell',
                 flow: EarnFlow.Stake,
-                provider: EarnProvider.Everstake,
+                provider: DEFAULT_ETHEREUM_STAKING_PROVIDER_ID,
                 account,
                 analyticsStep: 'staking-dashboard',
             }),

@@ -3,10 +3,11 @@ import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
 import { useFormatters } from '@suite-common/formatters';
-import { EarnFlow, EarnProvider } from '@suite-common/suite-types';
+import { EarnFlow } from '@suite-common/suite-types';
 import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import {
+    DEFAULT_ETHEREUM_STAKING_PROVIDER_ID,
     calculateRewards,
     getLegacyStakingDataForNetwork,
     getNetworkAdjustedStakingBalance,
@@ -144,7 +145,7 @@ export const EarnStakingAccountRow = ({ account, isCardLayout }: EarnStakingAcco
             openModal({
                 type: 'earn-in-a-nutshell',
                 flow: EarnFlow.Stake,
-                provider: EarnProvider.Everstake,
+                provider: DEFAULT_ETHEREUM_STAKING_PROVIDER_ID,
                 account,
                 analyticsStep: 'staking-dashboard',
             }),
