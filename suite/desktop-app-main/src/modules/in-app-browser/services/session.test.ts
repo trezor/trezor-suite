@@ -199,6 +199,7 @@ describe('in-app browser sessions and Tor', () => {
                 download,
                 { getURL: () => 'https://app.example/statement.pdf' } as DownloadItem,
                 {} as WebContents,
+                null,
             );
 
             expect(download.preventDefault).toHaveBeenCalledTimes(1);

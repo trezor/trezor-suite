@@ -59,7 +59,7 @@
     },
     "devDependencies": {
         "@trezor/eslint": "workspace:*",
-        "electron": "43.2.0",
+        "electron": "43.8.3",
         "electron-builder": "27.0.0-alpha.10"
     }
 }
