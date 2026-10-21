@@ -26,7 +26,7 @@ export const TradingHistoryDetailAfterTradeExperiment = ({
     <ExperimentWrapper
         id={ExperimentId.tradingFeedbackForm}
         components={[
-            // Keep feedback card as first, it is shown when the experiment is not active.
+            { variant: 'A', element: <></> },
             {
                 variant: 'B',
                 element: (
@@ -42,7 +42,6 @@ export const TradingHistoryDetailAfterTradeExperiment = ({
                 ),
             },
             { variant: 'C', element: <TradingHistoryDetailSurveyBanner /> },
-            { variant: 'A', element: <></> },
         ]}
     />
 );

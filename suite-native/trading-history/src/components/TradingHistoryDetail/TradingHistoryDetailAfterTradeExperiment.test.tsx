@@ -85,10 +85,10 @@ const renderAfterTradeExperiment = (activeVariant?: string) =>
     });
 
 describe('TradingHistoryDetailAfterTradeExperiment', () => {
-    it('renders the feedback card when the experiment is not active', async () => {
-        const { getByText, queryByTestId } = await renderAfterTradeExperiment();
+    it('renders nothing when the experiment is not active', async () => {
+        const { queryByText, queryByTestId } = await renderAfterTradeExperiment();
 
-        expect(getByText(getTranslation('feedbackForm.title'))).toBeOnTheScreen();
+        expect(queryByText(getTranslation('feedbackForm.title'))).not.toBeOnTheScreen();
         expect(queryByTestId('@trading-history/detail/survey')).not.toBeOnTheScreen();
     });
 
