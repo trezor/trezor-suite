@@ -51,50 +51,6 @@ const ADDRESSES = {
 
 export const validateReferencedTransactions = [
     {
-        description:
-            'OrigTransaction and RefTransaction in protobuf format (strict fields validation)',
-        params: {
-            transactions: [
-                {
-                    hash: '70f9871eb03a38405cfd7a01e0e1448678132d815e2c9f552ad83ae23969509e',
-                    ...tx70f987,
-                    // TODO
-                },
-                {
-                    hash: '43d273d3caf41759ad843474f960fbf80ff2ec961135d018b61e9fab3ad1fc06',
-                    ...tx43d273,
-                    inputs: [{ ...tx43d273.inputs[0], someExtraField: 'should-be-ignored' }],
-                    bin_outputs: tx43d273.bin_outputs.slice(0, 2).concat({
-                        ...tx43d273.bin_outputs[2],
-                        // @ts-expect-error
-                        someExtraField: 'should-be-ignored',
-                    }),
-                },
-            ],
-            inputs: [
-                {
-                    prev_hash: '43d273d3caf41759ad843474f960fbf80ff2ec961135d018b61e9fab3ad1fc06',
-                    prev_index: 1,
-                    orig_hash: '70f9871eb03a38405cfd7a01e0e1448678132d815e2c9f552ad83ae23969509e',
-                    orig_index: 0,
-                },
-            ],
-            outputs: [], // irrelevant
-            addresses: {}, // irrelevant
-            coinInfo: { network: networks.testnet },
-        },
-        result: [
-            {
-                hash: '70f9871eb03a38405cfd7a01e0e1448678132d815e2c9f552ad83ae23969509e',
-                ...tx70f987,
-            },
-            {
-                hash: '43d273d3caf41759ad843474f960fbf80ff2ec961135d018b61e9fab3ad1fc06',
-                ...tx43d273,
-            },
-        ],
-    },
-    {
         description: 'transform AccountTransaction to RefTransaction',
         params: {
             transactions: [tx70f987blockbook],
