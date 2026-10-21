@@ -3,6 +3,12 @@ import { captureException, withScope } from '@sentry/core';
 import type { reportTronVoteTxId } from './reportTronVoteTxId';
 
 jest.mock('@sentry/core', () => ({ captureException: jest.fn(), withScope: jest.fn() }));
+jest.mock('@trezor/env-utils', () => ({
+    ...jest.requireActual('@trezor/env-utils'),
+    getEnvironment: () => 'desktop',
+    getSuiteVersion: () => '26.10.1',
+    isCodesignBuild: () => true,
+}));
 
 const TXID = 'a'.repeat(64);
 const SELECTED_BASE_URL = 'http://localhost:3001/staking/v1';
@@ -63,6 +69,7 @@ describe('reportTronVoteTxId', () => {
             txid: TXID,
             network: 'tron',
             kind: 'vote',
+            suite: { version: '26.10.1', platform: 'desktop', build: 'prod' },
         });
         expect(captureExceptionMock).not.toHaveBeenCalled();
     });

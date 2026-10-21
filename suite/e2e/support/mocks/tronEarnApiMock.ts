@@ -18,6 +18,11 @@ export type ReportedStakingTxId = {
     txid: string;
     network: string;
     kind: string;
+    suite: {
+        version: string;
+        platform: string;
+        build: string;
+    };
 };
 
 export const TRON_LUGANODES_ADDRESS = LUGANODES_TRON_SRS[0] as string;

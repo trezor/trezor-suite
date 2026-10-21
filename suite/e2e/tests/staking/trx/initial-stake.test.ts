@@ -272,7 +272,16 @@ test.describe('Staking - Tron', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
                 );
                 await tronStakingSection.dismissToast('tx-staked');
                 expect(tronEarnApiMock.reportedTxIds).toEqual([
-                    { txid: blockbookMock.lastBroadcastTxid, network: 'tron', kind: 'vote' },
+                    {
+                        txid: blockbookMock.lastBroadcastTxid,
+                        network: 'tron',
+                        kind: 'vote',
+                        suite: {
+                            version: expect.stringMatching(/^\d+\.\d+\.\d+$/),
+                            platform: 'web',
+                            build: 'dev',
+                        },
+                    },
                 ]);
             });
 
