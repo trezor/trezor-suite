@@ -1,5 +1,6 @@
 import { Translation } from '@suite-native/intl';
 
+import { ExchangeAssetsSwitchButton } from './ExchangeAssetsSwitchButton';
 import { ExchangeReceiveContent } from './receive/ExchangeReceiveContent';
 import { ExchangeSendAmountErrorBadge } from './send/ExchangeSendAmountErrorBadge';
 import { ExchangeSendContent } from './send/ExchangeSendContent';
@@ -22,6 +23,7 @@ export const ExchangeCard = ({ isAmountInputActive }: ExchangeCardProps) => (
         >
             <ExchangeSendContent />
         </TradingCardSection>
+        <ExchangeAssetsSwitchButton />
         <TradingCardSection
             testID={`${EXCHANGE_CARD_TEST_ID}/receiveSection`}
             title={<Translation id="moduleTrading.selectCoin.title" />}

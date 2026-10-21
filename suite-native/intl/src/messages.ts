@@ -4033,6 +4033,14 @@ export const messages = {
                 description: "For now, swaps only let you enter the amount you're paying.",
             },
         },
+        assetSwitcher: {
+            buttonAccessibilityLabel: 'Switch assets',
+            inactiveNetworkAlert: {
+                title: 'Pay with another asset',
+                description:
+                    'To pay with {asset} on {network}, first turn on this network in Settings.',
+            },
+        },
         fiatCurrencySheet: {
             title: 'Currency',
             emptyTitle: 'Currency not found',
