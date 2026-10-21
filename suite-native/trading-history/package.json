@@ -35,6 +35,7 @@
         "@suite-native/intl": "workspace:*",
         "@suite-native/labeling": "workspace:*",
         "@suite-native/link": "workspace:*",
+        "@suite-native/message-system": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/toasts": "workspace:*",
         "@suite-native/trading-atoms": "workspace:*",

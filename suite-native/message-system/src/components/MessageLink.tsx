@@ -2,6 +2,8 @@ import { type CTA, type Localization } from '@suite-common/suite-types';
 import { Link } from '@suite-native/link';
 import { type TypographyStyle } from '@trezor/theme';
 
+import { canHandleCtaAction } from '../utils/canHandleCtaAction';
+
 type MessageLinkProps = {
     messageCTA?: CTA;
     language: keyof Localization;
@@ -14,7 +16,7 @@ export const MessageLink = ({
 }: MessageLinkProps) => {
     const messageLinkLabel = messageCTA?.label[language];
     const messageLink = messageCTA?.link;
-    const isExternalLink = messageCTA?.action === 'external-link';
+    const isExternalLink = canHandleCtaAction(messageCTA?.action);
 
     const isLinkDisplayable = isExternalLink && messageLinkLabel && messageLink;
 
