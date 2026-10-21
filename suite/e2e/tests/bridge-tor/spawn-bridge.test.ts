@@ -17,7 +17,7 @@ import { SettingsPage } from '../../support/pageObjects/settings/settingsPage';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 import { enhancePage } from '../../support/testExtends/enhancePage';
 
-test.describe('Bridge', { tag: ['@desktopOnly', '@T3W1', '@T3T1'] }, () => {
+test.describe('Bridge', { tag: ['@desktopOnly', '@T3W1', '@T3T1', '@windows'] }, () => {
     test.use({ jsExceptionWatcher: skipFixture, startEmulator: false, setupEmulator: false });
 
     test.beforeEach(async ({ page, trezorUserEnv }) => {

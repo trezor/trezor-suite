@@ -1,0 +1,46 @@
+# Desktop e2e on Windows
+
+`template-suite-run-e2e-windows.yml` runs the `@windows` subset of the desktop e2e tests on
+GitHub-hosted `windows-latest` runners. The nightly workflow calls it next to the Linux groups,
+`test-suite-desktop-e2e-win-nightly.yml` is the manual run for a branch.
+
+## How it runs
+
+- Playwright and the Electron app run on Windows. The app bundle is the `desktop-app-build-e2e`
+  artifact of the calling workflow's build job, built on Linux and platform-neutral.
+- trezor-user-env runs inside WSL2. A Linux job exports the Docker image's filesystem into a
+  tarball, the Windows job imports it with `wsl --import` and starts the controller. WSL forwards
+  Windows loopback to it, so the hardcoded `127.0.0.1` addresses in the tests and in Suite work
+  unchanged. Mirrored WSL networking is unsupported on the hosted runners, NAT is the only mode.
+- Four runners share one Currents run through orchestration, project `4ytF0E`, tag `windows`.
+- Tests are selected by `playwright-desktop-windows.config.ts`: `@windows` tests on T3W1, T3T1
+  for its exclusive tests, and `no_device`. Tag a test `@windows` when it exercises the Electron
+  main process or OS integration.
+- The job body is `yarn workspace @trezor/suite-e2e test:e2e:windows`, the script
+  `suite/e2e/scripts/windows/run-e2e.ts`. It starts trezor-user-env, runs the tests and collects
+  the logs in one process because a process started by a step does not survive it on the runner.
+
+## Running it yourself
+
+- CI: `gh workflow run test-suite-desktop-e2e-win-nightly.yml --ref <branch>`, which builds the
+  app and runs the subset.
+- Locally on Windows: the same script, with a rootfs exported by
+  `docker export $(docker create ghcr.io/trezor/trezor-user-env:latest) | gzip > tenv-rootfs.tar.gz`
+  and the desktop build extracted into `suite/desktop-app`. Without `CURRENTS_RECORD_KEY` the
+  script uses plain Playwright. A Windows VM with nested virtualization on a Linux workstation works.
+- The test code itself is platform-agnostic: a failure that reproduces on Linux with the Docker
+  trezor-user-env is a test bug, one that does not is the Windows finding.
+
+## Known Windows differences
+
+- Electron keeps the single-instance lock as a kernel object, not a file in user data, so a second
+  Suite instance is always refused there. Tests must wait for a previous app to exit before
+  launching their own.
+- The Connect permissions modal names the calling process `Node.js`, not `node`.
+
+## Later
+
+- trezor-user-env CI publishes the rootfs with every image, replacing the export job here.
+- The trezor-user-env stuck protection in `support/setup.ts` restarts a Docker container; on
+  Windows it does nothing, a WSL restart is needed.
+- Test fixes made on this branch move to their own PR.
