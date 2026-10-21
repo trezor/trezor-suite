@@ -8,7 +8,7 @@ import { transformAddress } from '../../support/testExtends/customMatchers';
 
 test.describe(
     'TrezorConnect.ethereumSignMessage',
-    { tag: ['@T3T1', '@T3W1', '@desktopOnly'] },
+    { tag: ['@T3T1', '@T3W1', '@desktopOnly', '@windows'] },
     () => {
         test.use({ electronConf: { exposeConnectWs: true } });
 

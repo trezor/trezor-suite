@@ -5,7 +5,7 @@ import { TestStream } from '@trezor/e2e-utils';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
-test.describe('TrezorConnect', { tag: ['@T3T1', '@T3W1', '@desktopOnly'] }, () => {
+test.describe('TrezorConnect', { tag: ['@T3T1', '@T3W1', '@desktopOnly', '@windows'] }, () => {
     test.use({ electronConf: { exposeConnectWs: true } });
 
     test.beforeEach(async ({ onboardingPage }) => {
