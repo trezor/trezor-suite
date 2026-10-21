@@ -11,7 +11,12 @@ export function useHasSufficientFundsForGas(
     accountBalance: string,
 ): boolean {
     return useMemo(
-        () => !totalFeeInWei || new BigNumber(totalFeeInWei).lte(accountBalance),
+        () =>
+            !totalFeeInWei ||
+            // A placeholder account (network not supported or not discovered in Suite) has an
+            // empty balance. The balance is not known, so do not report insufficient funds.
+            !accountBalance ||
+            new BigNumber(totalFeeInWei).lte(accountBalance),
         [totalFeeInWei, accountBalance],
     );
 }
