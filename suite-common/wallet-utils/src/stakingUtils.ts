@@ -56,7 +56,8 @@ export const getEthereumAccountStakingPools = (account?: Account): StakingPool[]
     );
 };
 
-const getStakingPoolTotalBalance = (pool: StakingPool) =>
+// What the account gets back by exiting the pool: earning, pending and requested balances.
+export const getStakingPoolTotalBalance = (pool: StakingPool) =>
     fromWei(
         new BigNumber(pool.autocompoundBalance)
             .plus(pool.pendingBalance)

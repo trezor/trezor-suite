@@ -1,6 +1,6 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
-import { fromWei } from '@suite-common/wallet-utils';
+import { fromWei, getStakingPoolTotalBalance } from '@suite-common/wallet-utils';
 import { type StakingPool } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
@@ -56,12 +56,7 @@ export const deriveEverstakePosition = (account: Account): StakingPosition | nul
         claimable: toEther(pool.claimableAmount),
         rewards: toEther(pool.restakedReward),
         canClaim: claimable.gt(0) && claimable.eq(pool.withdrawTotalAmount),
-        total: toEtherSum(
-            pool.autocompoundBalance,
-            pool.pendingBalance,
-            pool.pendingDepositedBalance,
-            pool.withdrawTotalAmount,
-        ).toFixed(),
+        total: getStakingPoolTotalBalance(pool).toFixed(),
         details: { providerId: 'everstake', pool },
     };
 };
