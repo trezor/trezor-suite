@@ -15,6 +15,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
+import { canHandleCtaAction } from '../utils/canHandleCtaAction';
+
 const APP_RESTART_DELAY_MILLISECONDS = 100;
 
 const screenStyle = prepareNativeStyle(utils => ({
@@ -72,11 +74,11 @@ export const KillswitchMessageScreen = () => {
     const messageContent = resolveMessageContent(content, language);
     const ctaLabel = cta ? resolveMessageContent(cta.label, language) : null;
     const ctaLink = cta?.link;
-    const isExternalCta = cta?.action === 'external-link';
+    const canHandleCta = canHandleCtaAction(cta, language);
 
     const handleCtaPress = () => {
-        if (isExternalCta && ctaLink) {
-            openLink(ctaLink);
+        if (canHandleCta) {
+            openLink(cta.link);
         } else {
             // TODO: handle internal link once we introduce them
         }

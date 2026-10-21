@@ -7,7 +7,11 @@ import { TradingHistoryDetailSurveyBanner } from './TradingHistoryDetailSurveyBa
 import { renderWithTradingHistoryProvider } from '../../test-utils/tradingHistoryTestUtils';
 
 type MessageSystemConfig = NonNullable<MessageSystemState['config']>;
-type SurveyCta = { action: 'external-link' | 'internal-link'; link: string };
+type SurveyCta = {
+    action: 'external-link' | 'internal-link';
+    link: string;
+    label: ReturnType<typeof createLocalization>;
+};
 
 const SURVEY_MESSAGE_ID = 'trading-survey-message';
 const SURVEY_LINK = 'https://example.com/interview';
@@ -44,10 +48,11 @@ const createSurveyConfig = (payload: Record<string, unknown>): MessageSystemConf
 const createSurveyPayload = ({
     action = 'external-link',
     link = SURVEY_LINK,
+    label = createLocalization('Book a call'),
 }: Partial<SurveyCta> = {}) => ({
     title: createLocalization('Join a user interview'),
     description: createLocalization('Help us improve trading.'),
-    cta: { action, link, label: createLocalization('Book a call') },
+    cta: { action, link, label },
 });
 
 const renderSurveyBanner = (payload: Record<string, unknown>) =>
@@ -101,6 +106,14 @@ describe('TradingHistoryDetailSurveyBanner', () => {
     it('does not render with an internal link, which is not supported on mobile', async () => {
         const { queryByTestId } = await renderSurveyBanner(
             createSurveyPayload({ action: 'internal-link', link: 'wallet-index' }),
+        );
+
+        expect(queryByTestId('@trading-history/detail/survey')).not.toBeOnTheScreen();
+    });
+
+    it('does not render with an empty CTA label', async () => {
+        const { queryByTestId } = await renderSurveyBanner(
+            createSurveyPayload({ label: { en: '', es: '', cs: '', de: '', fr: '', pt: '' } }),
         );
 
         expect(queryByTestId('@trading-history/detail/survey')).not.toBeOnTheScreen();
