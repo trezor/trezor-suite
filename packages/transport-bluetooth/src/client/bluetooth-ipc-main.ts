@@ -146,6 +146,16 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
     async init(state?: BluetoothIpcState) {
         if (state) {
             this.state = state;
+
+            // set_state is otherwise sent only when connecting
+            const api = await this.getReadyApi();
+            if (api) {
+                try {
+                    await api.send('set_state', { devices: this.state.knownDevices });
+                } catch (error) {
+                    return this.failure(error);
+                }
+            }
         }
 
         if (this.state.knownDevices.length > 0) {
@@ -211,7 +221,8 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
     async dispose() {
         this.shouldScan = false;
         this.scanOwners.clear();
-        await this.lazyApi.dispose();
+        // queued scan actions connect the client, so they must finish before it is disposed
+        await this.serializeScan(() => this.lazyApi.dispose());
 
         return this.result();
     }

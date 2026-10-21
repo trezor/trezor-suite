@@ -560,6 +560,18 @@ describe('BluetoothIpc connection', () => {
             ]);
         });
 
+        it('sends known devices to a client created before init', async () => {
+            await ipc.getInfo();
+            sendMock.mockClear();
+
+            await ipc.init({ knownDevices });
+
+            expect(sendMock).toHaveBeenCalledWith({
+                method: 'set_state',
+                params: { devices: knownDevices },
+            });
+        });
+
         it('sends changed known devices to a connected client', async () => {
             await ipc.init({ knownDevices });
             sendMock.mockClear();
@@ -637,6 +649,15 @@ describe('BluetoothIpc connection', () => {
 
             expect(connectMock).not.toHaveBeenCalled();
             expect(disposeMock).not.toHaveBeenCalled();
+        });
+
+        it('does not leave a client created by a queued startScan', async () => {
+            const start = ipc.startScan('ui');
+            const disposed = ipc.dispose();
+            await Promise.all([start, disposed]);
+
+            expect(ipc['api']).toBeUndefined();
+            expect(disposeMock).toHaveBeenCalledTimes(1);
         });
 
         it('waits for a connection in flight so it is not leaked', async () => {
