@@ -11937,7 +11937,6 @@ __metadata:
   dependencies:
     "@suite-common/geolocation": "workspace:*"
     "@suite-common/message-system": "workspace:*"
-    "@suite-common/suite-types": "workspace:*"
   languageName: unknown
   linkType: soft
 
