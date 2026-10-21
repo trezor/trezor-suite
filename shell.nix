@@ -28,8 +28,11 @@ let
 
   useAndroid = builtins.getEnv "USE_ANDROID" == "1";
   androidEnv = if useAndroid then import ./.nix/android.nix { inherit pkgs; } else {};
+  useRust = builtins.getEnv "USE_RUST" == "1";
+  rustEnv = if useRust then import ./.nix/rust.nix { inherit pkgs; } else {};
   extraBuildInputs = pkgs.lib.concatLists [
     (if useAndroid then [ androidEnv.jdk androidEnv.androidSdk ] ++ androidEnv.extraPackages else [jre])
+    (if useRust then rustEnv.extraPackages else [])
   ];
 in
   stdenvNoCC.mkDerivation {
