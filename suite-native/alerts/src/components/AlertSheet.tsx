@@ -5,10 +5,8 @@ import { type EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-conte
 import {
     AnimatedPressable,
     AnimatedView,
-    Box,
     Button,
     Card,
-    Pictogram,
     TitleHeader,
     VStack,
     useAlertAnimation,
@@ -18,6 +16,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Alert } from '../alertsAtoms';
 import { useAlert } from '../useAlert';
 import { useShakeAnimation } from '../useShakeAnimation';
+import { AlertSheetIcon } from './AlertSheetIcon';
 
 type AlertSheetProps = {
     alert: Alert;
@@ -79,6 +78,7 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
         titleSpacing,
         description,
         icon,
+        customIcon,
         pictogramVariant,
         onPressPrimaryButton,
         primaryButtonTitle,
@@ -137,11 +137,11 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
                 >
                     <Card style={applyStyle(alertSheetContainerStyle, { insets })}>
                         <VStack style={applyStyle(alertSheetContentStyle)}>
-                            {pictogramVariant && (
-                                <Box alignItems="center">
-                                    <Pictogram variant={pictogramVariant} icon={icon} />
-                                </Box>
-                            )}
+                            <AlertSheetIcon
+                                customIcon={customIcon}
+                                pictogramVariant={pictogramVariant}
+                                icon={icon}
+                            />
                             <VStack spacing="sp20">
                                 {(title || description) && (
                                     <TitleHeader

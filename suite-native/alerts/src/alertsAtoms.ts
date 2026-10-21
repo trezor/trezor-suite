@@ -15,6 +15,7 @@ export type Alert = {
     textAlign?: 'left' | 'center';
     description?: ReactNode;
     icon?: IconName;
+    customIcon?: ReactNode;
     pictogramVariant?: PictogramVariant;
     primaryButtonTitle: ReactNode;
     primaryButtonIconLeft?: IconName;

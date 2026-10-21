@@ -3,14 +3,21 @@ import { useSelector } from 'react-redux';
 import { Box, Card, VStack } from '@suite-native/atoms';
 import { SkeletonLargeRow, SkeletonSmall } from '@suite-native/trading-atoms';
 import { selectIsTradingResidenceWhitelistRequired } from '@suite-native/trading-state';
+import { type NativeSpacing } from '@trezor/theme';
 
 import { TradingCardSection } from './TradingCardSection';
 
 export type TradingFormSkeletonProps = {
     hasResidenceField?: boolean;
+    hasSecondSectionBalanceRow?: boolean;
+    firstSectionBottomSpacing?: NativeSpacing;
 };
 
-export const TradingFormSkeleton = ({ hasResidenceField = false }: TradingFormSkeletonProps) => {
+export const TradingFormSkeleton = ({
+    hasResidenceField = false,
+    hasSecondSectionBalanceRow = false,
+    firstSectionBottomSpacing,
+}: TradingFormSkeletonProps) => {
     const isTradingResidenceWhitelistRequired = useSelector(
         selectIsTradingResidenceWhitelistRequired,
     );
@@ -20,7 +27,7 @@ export const TradingFormSkeleton = ({ hasResidenceField = false }: TradingFormSk
     return (
         <VStack spacing="sp16">
             <Card noPadding>
-                <TradingCardSection bottomBorder>
+                <TradingCardSection bottomBorder bottomSpacing={firstSectionBottomSpacing}>
                     <SkeletonSmall widthPercentage={0.2} />
                     <SkeletonLargeRow leftWidthPercentage={0.4} rightWidthPercentage={0.35} />
 
@@ -29,6 +36,8 @@ export const TradingFormSkeleton = ({ hasResidenceField = false }: TradingFormSk
                 <TradingCardSection bottomBorder>
                     <SkeletonSmall widthPercentage={0.2} />
                     <SkeletonLargeRow leftWidthPercentage={0.4} rightWidthPercentage={0.3} />
+
+                    {hasSecondSectionBalanceRow && <Box paddingVertical="sp12" />}
                 </TradingCardSection>
             </Card>
             {isResidenceSkeletonVisible && (
