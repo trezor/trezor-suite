@@ -44,7 +44,7 @@ test.describe('TrezorConnect', { tag: ['@T3T1', '@T3W1', '@desktopOnly', '@windo
             });
 
             await expect(connectPermissionsModal.processParagraph).toHaveText(
-                /^(node|MainThread)$/,
+                /^(node|Node\.js|MainThread)$/,
             );
             await expect(connectPermissionsModal.rememberCheckbox).toHaveTranslation(
                 'TR_CONNECT_MODAL_REMEMBER',
@@ -75,7 +75,7 @@ test.describe('TrezorConnect', { tag: ['@T3T1', '@T3W1', '@desktopOnly', '@windo
                 coin: 'btc',
             });
             await expect(connectPermissionsModal.processParagraph).toHaveText(
-                /^(node|MainThread)$/,
+                /^(node|Node\.js|MainThread)$/,
             );
         },
     );
