@@ -14,6 +14,6 @@
     },
     "dependencies": {
         "@suite/desktop-app-api": "workspace:*",
-        "electron": "43.2.0"
+        "electron": "43.8.3"
     }
 }

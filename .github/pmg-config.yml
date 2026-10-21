@@ -10,4 +10,7 @@ dependency_cooldown:
   # Packages exempt from the cooldown window. They are still malware-scanned.
   # Yarn has its own age gate in .yarnrc.yml, so a package added to npmPreapprovedPackages there
   # usually needs an entry here too, if it is younger than the PMG cooldown above.
-  skip: []
+  skip:
+    # Security hotfix. Can be removed after 5.11.2026
+    - purl: pkg:npm/electron@43.8.3
+      reason: "Security hotfix"
