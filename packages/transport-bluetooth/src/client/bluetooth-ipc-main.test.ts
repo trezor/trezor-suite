@@ -560,6 +560,31 @@ describe('BluetoothIpc connection', () => {
             ]);
         });
 
+        it('runs concurrent calls one after another', async () => {
+            await Promise.all([ipc.init({ knownDevices }), ipc.init({ knownDevices })]);
+
+            expect(methods()).toEqual([
+                'set_state',
+                'start_scan',
+                'stop_scan',
+                'set_state',
+                'start_scan',
+                'stop_scan',
+            ]);
+        });
+
+        it('runs a call after a failed one', async () => {
+            connectMock.mockRejectedValueOnce(new Error('ECONNREFUSED'));
+
+            const [first, second] = await Promise.all([
+                ipc.init({ knownDevices }),
+                ipc.init({ knownDevices }),
+            ]);
+
+            expect(first).toMatchObject({ success: false });
+            expect(second).toEqual({ success: true });
+        });
+
         it('sends known devices to a client created before init', async () => {
             await ipc.getInfo();
             sendMock.mockClear();

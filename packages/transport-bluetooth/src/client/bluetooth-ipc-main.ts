@@ -24,6 +24,7 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
     private shouldScan = false;
     private scanOwners = new Set<ScanOwner>();
     private scanPromise: Promise<unknown> = Promise.resolve();
+    private initPromise: Promise<unknown> = Promise.resolve();
     private initialSettings: TrezorBluetoothSettings;
     // holds a client only when it is fully initialized, concurrent callers share one attempt
     private lazyApi = createLazy(
@@ -143,7 +144,14 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
         return api;
     }
 
-    async init(state?: BluetoothIpcState) {
+    init(state?: BluetoothIpcState) {
+        const next = this.initPromise.catch(() => {}).then(() => this.runInit(state));
+        this.initPromise = next;
+
+        return next;
+    }
+
+    private async runInit(state?: BluetoothIpcState) {
         if (state) {
             this.state = state;
 
