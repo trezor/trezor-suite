@@ -245,8 +245,6 @@ export const prepareCoinjoinTransaction = (
     account: Account,
     transaction: CoinjoinTransactionData,
 ) => {
-    const inputScriptType = account.accountType === 'normal' ? 'SPENDWITNESS' : 'SPENDTAPROOT';
-    const outputScriptType = account.accountType === 'normal' ? 'PAYTOWITNESS' : 'PAYTOTAPROOT';
     const isInternalInput = (input: CoinjoinTransactionData['inputs'][0]) =>
         input.path && account.utxo?.find(u => getUtxoOutpoint(u) === input.outpoint);
     const isInternalOutput = (output: CoinjoinTransactionData['outputs'][0]) =>
@@ -263,7 +261,7 @@ export const prepareCoinjoinTransaction = (
         inputs: transaction.inputs.map(input => {
             if (isInternalInput(input)) {
                 return {
-                    script_type: inputScriptType,
+                    script_type: 'SPENDTAPROOT',
                     address_n: input.path!,
                     prev_hash: input.hash,
                     prev_index: input.index,
@@ -287,7 +285,7 @@ export const prepareCoinjoinTransaction = (
                 return {
                     address_n: output.path!,
                     amount: output.amount,
-                    script_type: outputScriptType,
+                    script_type: 'PAYTOTAPROOT',
                 } as const;
             }
 
