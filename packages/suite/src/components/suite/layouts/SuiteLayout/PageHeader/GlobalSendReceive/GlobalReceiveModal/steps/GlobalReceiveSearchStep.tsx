@@ -8,12 +8,11 @@ import {
     events as sharedEvents,
 } from '@suite-common/analytics';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
-import { type GlobalReceiveAssetCatalogStatus } from '@suite-common/receive';
 import {
-    type TradeableAssetBalances,
-    type TradeableAssetSearchIndex,
-    type TradingAssetOption,
-} from '@suite-common/trading';
+    type GlobalReceiveAssetCatalogStatus,
+    type GlobalReceiveAssetSections,
+} from '@suite-common/receive';
+import { type TradingAssetOption } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { Column, Link, SubTabs } from '@trezor/components';
@@ -30,14 +29,10 @@ import { GlobalReceiveAccountsTab } from './GlobalReceiveAccountsTab';
 import { type GlobalReceiveTab } from '../types';
 import { GlobalReceiveAssetsTab } from './GlobalReceiveAssetsTab';
 
-type GlobalReceiveSearchStepProps = {
+type GlobalReceiveSearchStepProps = GlobalReceiveAssetSections & {
     activeTab: GlobalReceiveTab;
-    assets: TradingAssetOption[];
-    assetSearchIndex: TradeableAssetSearchIndex<TradingAssetOption>;
-    assetIdsWithHistory: ReadonlySet<string>;
     assetNetworks: readonly NetworkSymbol[];
     accountNetworks: readonly NetworkSymbol[];
-    balances: TradeableAssetBalances;
     catalogStatus: GlobalReceiveAssetCatalogStatus;
     isAssetDisabled: (asset: TradingAssetOption) => boolean;
     onAccountClick: (account: Account) => void;
@@ -50,12 +45,10 @@ type GlobalReceiveSearchStepProps = {
 
 export const GlobalReceiveSearchStep = ({
     activeTab,
-    assets,
-    assetSearchIndex,
-    assetIdsWithHistory,
+    myAssets,
+    otherAssets,
     assetNetworks,
     accountNetworks,
-    balances,
     catalogStatus,
     isAssetDisabled,
     onAccountClick,
@@ -170,10 +163,8 @@ export const GlobalReceiveSearchStep = ({
 
                 {activeTab === 'assets' ? (
                     <GlobalReceiveAssetsTab
-                        assets={assets}
-                        assetSearchIndex={assetSearchIndex}
-                        assetIdsWithHistory={assetIdsWithHistory}
-                        balances={balances}
+                        myAssets={myAssets}
+                        otherAssets={otherAssets}
                         catalogStatus={catalogStatus}
                         isAssetDisabled={isAssetDisabled}
                         listRef={listRef}

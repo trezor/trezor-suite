@@ -1,21 +1,15 @@
-import { type RefObject, useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import { type RefObject } from 'react';
 
 import { useDevice } from '@suite/device';
 import { Translation, type TranslationKey } from '@suite/intl';
 import {
     type GlobalReceiveAssetCatalogStatus,
-    getGlobalReceiveAssetSections,
+    type GlobalReceiveAssetSections,
 } from '@suite-common/receive';
-import {
-    type TradeableAssetBalances,
-    type TradeableAssetSearchIndex,
-    type TradingAssetOption,
-} from '@suite-common/trading';
+import { type TradingAssetOption } from '@suite-common/trading';
 import { Button, Column, H4, Link, Paragraph, Row, Skeleton } from '@trezor/components';
 
 import { useDiscovery } from 'src/hooks/suite';
-import { globalSendReceiveFiltersSelectors } from 'src/slices/wallet/globalSendReceiveFilters';
 
 import { GlobalReceiveAssetList } from '../components/GlobalReceiveAssetList';
 import { GLOBAL_RECEIVE_LIST_HEIGHT } from '../constants';
@@ -73,11 +67,7 @@ const AssetsNoResults = ({ onViewAccountsClick }: AssetsNoResultsProps) => (
     </Column>
 );
 
-type GlobalReceiveAssetsTabProps = {
-    assets: TradingAssetOption[];
-    assetSearchIndex: TradeableAssetSearchIndex<TradingAssetOption>;
-    assetIdsWithHistory: ReadonlySet<string>;
-    balances: TradeableAssetBalances;
+type GlobalReceiveAssetsTabProps = GlobalReceiveAssetSections & {
     catalogStatus: GlobalReceiveAssetCatalogStatus;
     isAssetDisabled: (asset: TradingAssetOption) => boolean;
     listRef: RefObject<HTMLDivElement | null>;
@@ -87,10 +77,8 @@ type GlobalReceiveAssetsTabProps = {
 };
 
 export const GlobalReceiveAssetsTab = ({
-    assets,
-    assetSearchIndex,
-    assetIdsWithHistory,
-    balances,
+    myAssets,
+    otherAssets,
     catalogStatus,
     isAssetDisabled,
     listRef,
@@ -98,28 +86,10 @@ export const GlobalReceiveAssetsTab = ({
     onRetry,
     onViewAccountsClick,
 }: GlobalReceiveAssetsTabProps) => {
-    const search = useSelector(globalSendReceiveFiltersSelectors.selectSearch);
-    const selectedNetworkSymbol = useSelector(
-        globalSendReceiveFiltersSelectors.selectNetworkSymbol,
-    );
-
     const { device } = useDevice();
     const { isDiscoveryRunning } = useDiscovery();
-    const assetSections = useMemo(
-        () =>
-            getGlobalReceiveAssetSections({
-                assets,
-                balances,
-                assetIdsWithHistory,
-                search,
-                searchIndex: assetSearchIndex,
-                networkSymbol: selectedNetworkSymbol,
-            }),
-        [assetSearchIndex, assetIdsWithHistory, assets, balances, search, selectedNetworkSymbol],
-    );
     const disabledMessage = getAssetDisabledMessage(device?.connected, isDiscoveryRunning);
-    const isAssetListEmpty =
-        assetSections.myAssets.length === 0 && assetSections.otherAssets.length === 0;
+    const isAssetListEmpty = myAssets.length === 0 && otherAssets.length === 0;
 
     if (catalogStatus === 'loading') {
         return (
@@ -150,8 +120,8 @@ export const GlobalReceiveAssetsTab = ({
 
     return (
         <GlobalReceiveAssetList
-            myAssets={assetSections.myAssets}
-            otherAssets={assetSections.otherAssets}
+            myAssets={myAssets}
+            otherAssets={otherAssets}
             disabledMessage={disabledMessage}
             isAssetDisabled={isAssetDisabled}
             listRef={listRef}

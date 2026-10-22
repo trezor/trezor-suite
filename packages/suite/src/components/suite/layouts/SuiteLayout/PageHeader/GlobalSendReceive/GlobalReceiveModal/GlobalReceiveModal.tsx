@@ -38,6 +38,8 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
     const supportedNetworks = useSelector(selectSupportedNetworkSymbols);
     const isDebug = useSelector(selectIsDebugModeActive);
     const filledSearch = useSelector(globalSendReceiveFiltersSelectors.filledSearch);
+    const search = useSelector(globalSendReceiveFiltersSelectors.selectSearch);
+    const networkSymbol = useSelector(globalSendReceiveFiltersSelectors.selectNetworkSymbol);
 
     const { analytics } = useServices(injectDesktopAnalytics);
     const { device } = useDevice();
@@ -50,15 +52,8 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
     const [selectedAssetCryptoId, setSelectedAssetCryptoId] = useState<CryptoId>();
     const [wasSelectedAssetNetworkInactive, setWasSelectedAssetNetworkInactive] = useState(false);
 
-    const {
-        assets,
-        assetSearchIndex,
-        assetIdsWithHistory,
-        balances,
-        networks,
-        catalogStatus,
-        retry,
-    } = useGlobalReceiveAssets();
+    const { assets, myAssets, otherAssets, networks, catalogStatus, retry } =
+        useGlobalReceiveAssets({ search, networkSymbol });
 
     const selectedAsset = useMemo(
         () => assets.find(asset => asset.id === selectedAssetCryptoId),
@@ -200,11 +195,9 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
                     <GlobalReceiveSearchStep
                         activeTab={activeTab}
                         accountNetworks={enabledNetworks}
-                        assets={assets}
-                        assetSearchIndex={assetSearchIndex}
-                        assetIdsWithHistory={assetIdsWithHistory}
+                        myAssets={myAssets}
+                        otherAssets={otherAssets}
                         assetNetworks={networks}
-                        balances={balances}
                         catalogStatus={catalogStatus}
                         isAssetDisabled={isAssetDisabled}
                         onAccountClick={handleAccountTabSelection}

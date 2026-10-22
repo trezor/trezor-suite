@@ -28,12 +28,25 @@ import {
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { FirmwareType } from '@trezor/device-utils';
 
-import { useGlobalReceiveAssets } from './useGlobalReceiveAssets';
+import {
+    type UseGlobalReceiveAssetsParams,
+    useGlobalReceiveAssets,
+} from './useGlobalReceiveAssets';
+import * as globalReceiveAssetUtils from '../globalReceiveAssetUtils';
 
 jest.mock('@suite-common/token-definitions', () => ({
     ...jest.requireActual('@suite-common/token-definitions'),
     fetchRankedTokenDefinitions: jest.fn(),
 }));
+
+jest.mock('../globalReceiveAssetUtils', () => {
+    const utils = jest.requireActual<typeof globalReceiveAssetUtils>('../globalReceiveAssetUtils');
+
+    return {
+        ...utils,
+        buildGlobalReceiveAssetSearchIndex: jest.fn(utils.buildGlobalReceiveAssetSearchIndex),
+    };
+});
 
 // The hook selects shared wallet state only — none of it app-layer.
 type TestRootState = DeviceRootState &
@@ -53,6 +66,11 @@ const definitions: RankedTokenStructure = [
     },
 ];
 
+const initialFilters: UseGlobalReceiveAssetsParams = {
+    search: '',
+    networkSymbol: undefined,
+};
+
 const renderAssets = (
     firmwareType = FirmwareType.Universal,
     queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } }),
@@ -70,6 +88,7 @@ const renderAssets = (
     });
     const rendered = renderHookWithStoreProvider(useGlobalReceiveAssets, {
         services,
+        initialProps: initialFilters,
         wrapper: ({ children }: PropsWithChildren) => (
             <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
         ),
@@ -82,10 +101,21 @@ describe('useGlobalReceiveAssets', () => {
     beforeEach(() => {
         jest.mocked(fetchRankedTokenDefinitions).mockReset();
         jest.mocked(fetchRankedTokenDefinitions).mockResolvedValue(definitions);
+        jest.mocked(globalReceiveAssetUtils.buildGlobalReceiveAssetSearchIndex).mockClear();
     });
 
-    it('derives zero-balance history only from visible, enabled accounts of the selected wallet', () => {
+    it('includes zero-balance history only from visible, enabled accounts of the selected wallet', async () => {
         const contract = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48';
+        jest.mocked(fetchRankedTokenDefinitions).mockResolvedValueOnce([
+            ...definitions,
+            {
+                assetPlatformId: 'ethereum',
+                address: contract,
+                symbol: 'usdc',
+                name: 'USD Coin',
+                marketCap: 1,
+            },
+        ]);
         const usedAccount = mockWalletAccount({
             symbol: asNetworkSymbol('eth'),
             formattedBalance: '0',
@@ -128,15 +158,21 @@ describe('useGlobalReceiveAssets', () => {
         const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
         const { result, unmount } = renderHookWithStoreProvider(useGlobalReceiveAssets, {
             services,
+            initialProps: initialFilters,
             wrapper: ({ children }: PropsWithChildren) => (
                 <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
             ),
         });
 
-        expect(result.current.balances.size).toBe(0);
-        expect(result.current.assetIdsWithHistory).toEqual(
-            new Set([getCryptoId(usedAccount.symbol), getCryptoId(usedAccount.symbol, contract)]),
-        );
+        await waitFor(() => expect(result.current.catalogStatus).toBe('ready'));
+        expect(result.current.myAssets.map(({ asset }) => asset.id)).toEqual([
+            getCryptoId(usedAccount.symbol),
+            getCryptoId(usedAccount.symbol, contract),
+        ]);
+        result.current.myAssets.forEach(({ balance }) => {
+            expect(balance?.cryptoAmount).toBe('0');
+            expect(balance?.fiatAmount?.isZero()).toBe(true);
+        });
         unmount();
         queryClient.clear();
     });
@@ -158,33 +194,58 @@ describe('useGlobalReceiveAssets', () => {
         first.queryClient.clear();
     });
 
-    it('provides a normalized search index and reuses it across parent rerenders', async () => {
+    it('returns filtered sections without rebuilding the index or reloading the catalogue', async () => {
         const { result, rerender, unmount, queryClient } = renderAssets();
         await waitFor(() => expect(result.current.catalogStatus).toBe('ready'));
 
-        const { assets, assetSearchIndex } = result.current;
-        expect(assetSearchIndex).toBeDefined();
-        expect(assetSearchIndex.size).toBe(assets.length);
-        assets.forEach(asset => expect(assetSearchIndex.has(asset)).toBe(true));
-        expect(Array.from(assetSearchIndex.values())).toContainEqual({
-            name: 'wrapped sol',
-            symbol: 'wsol',
-            networkName: 'solana',
-            networkSymbol: 'sol',
-            contractAddress: 'so11111111111111111111111111111111111111112',
-        });
+        const { assets, myAssets, otherAssets, networks } = result.current;
+        const indexBuildCount = jest.mocked(
+            globalReceiveAssetUtils.buildGlobalReceiveAssetSearchIndex,
+        ).mock.calls.length;
+        expect(myAssets).toEqual([]);
+        expect(otherAssets.map(({ asset }) => asset)).toEqual(assets);
 
-        rerender();
+        rerender(initialFilters);
+        expect(result.current.myAssets).toBe(myAssets);
+        expect(result.current.otherAssets).toBe(otherAssets);
+
+        rerender({ search: 'WrÁppéd', networkSymbol: undefined });
+        expect(result.current.otherAssets).toEqual([
+            expect.objectContaining({ asset: expect.objectContaining({ name: 'Wrapped SOL' }) }),
+        ]);
+
+        rerender({ search: 'wsol', networkSymbol: asNetworkSymbol('eth') });
+        expect(result.current.otherAssets).toEqual([]);
+
+        rerender({ search: '', networkSymbol: asNetworkSymbol('sol') });
+        expect(result.current.otherAssets.map(({ asset }) => asset.displaySymbol)).toEqual([
+            'SOL',
+            'WSOL',
+        ]);
+
+        rerender({ search: 'no matching asset', networkSymbol: undefined });
+        expect(result.current.myAssets).toEqual([]);
+        expect(result.current.otherAssets).toEqual([]);
+
+        rerender(initialFilters);
+        expect(result.current.otherAssets.map(({ asset }) => asset)).toEqual(assets);
         expect(result.current.assets).toBe(assets);
-        expect(result.current.assetSearchIndex).toBe(assetSearchIndex);
+        expect(result.current.networks).toBe(networks);
+        expect(globalReceiveAssetUtils.buildGlobalReceiveAssetSearchIndex).toHaveBeenCalledTimes(
+            indexBuildCount,
+        );
+        expect(fetchRankedTokenDefinitions).toHaveBeenCalledTimes(1);
         unmount();
         queryClient.clear();
     });
 
     it('rebuilds the search index when the catalogue changes', async () => {
-        const { result, unmount, queryClient } = renderAssets();
+        const { result, rerender, unmount, queryClient } = renderAssets();
         await waitFor(() => expect(result.current.catalogStatus).toBe('ready'));
-        const { assets, assetSearchIndex } = result.current;
+        const { assets } = result.current;
+        const indexBuildCount = jest.mocked(
+            globalReceiveAssetUtils.buildGlobalReceiveAssetSearchIndex,
+        ).mock.calls.length;
 
         const updatedDefinitions: RankedTokenStructure = [
             ...definitions,
@@ -201,14 +262,13 @@ describe('useGlobalReceiveAssets', () => {
         });
 
         await waitFor(() => expect(result.current.assets).not.toBe(assets));
-        expect(result.current.assetSearchIndex).not.toBe(assetSearchIndex);
-        expect(Array.from(result.current.assetSearchIndex.values())).toContainEqual({
-            name: 'new token',
-            symbol: 'new',
-            networkName: 'solana',
-            networkSymbol: 'sol',
-            contractAddress: 'newtokenmint',
-        });
+        expect(globalReceiveAssetUtils.buildGlobalReceiveAssetSearchIndex).toHaveBeenCalledTimes(
+            indexBuildCount + 1,
+        );
+        rerender({ search: 'newtokenmint', networkSymbol: undefined });
+        expect(result.current.otherAssets).toEqual([
+            expect.objectContaining({ asset: expect.objectContaining({ name: 'New Token' }) }),
+        ]);
         unmount();
         queryClient.clear();
     });
@@ -217,8 +277,8 @@ describe('useGlobalReceiveAssets', () => {
         const { result, unmount, queryClient } = renderAssets(FirmwareType.BitcoinOnly);
         expect(result.current.catalogStatus).toBe('ready');
         expect(result.current.assets).toEqual([]);
-        expect(result.current.assetSearchIndex.size).toBe(0);
-        expect(result.current.assetIdsWithHistory.size).toBe(0);
+        expect(result.current.myAssets).toEqual([]);
+        expect(result.current.otherAssets).toEqual([]);
         expect(result.current.networks).toEqual([]);
         act(() => result.current.retry());
         expect(fetchRankedTokenDefinitions).not.toHaveBeenCalled();
