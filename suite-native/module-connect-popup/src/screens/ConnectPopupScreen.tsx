@@ -20,7 +20,7 @@ import { Screen } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { AddressConfirmation } from '../components/AddressConfirmation';
+import { AddressConfirmationScreenContent } from '../components/AddressConfirmationScreenContent';
 import { ConnectConfirmOnTrezor } from '../components/ConnectConfirmOnTrezor';
 import { ConnectErrorMessage } from '../components/ConnectErrorMessage';
 import { ConnectLoader } from '../components/ConnectLoader';
@@ -58,6 +58,8 @@ export const ConnectPopupScreen = () => {
         }
     }, [popupCall, navigation, addressConfirmation, dispatch]);
 
+    const isAddressConfirmation =
+        !discoveryActive && validDevice && popupCall?.state === 'address-confirmation';
     const isLoading =
         discoveryActive || !validDevice || !popupCall || popupCall.state === 'ongoing';
     const mainView = useMemo(() => {
@@ -83,10 +85,6 @@ export const ConnectPopupScreen = () => {
             return <PermissionConfirmation />;
         }
 
-        if (popupCall?.state === 'address-confirmation') {
-            return <AddressConfirmation />;
-        }
-
         if (popupCall?.state === 'tx-simulation') {
             return <TxSimulation />;
         }
@@ -105,6 +103,11 @@ export const ConnectPopupScreen = () => {
             />
         );
     }, [validDevice, popupCall, discoveryActive, buttonRequests]);
+
+    // The address confirmation has its own screen layout to show the confirm on Trezor sheet.
+    if (isAddressConfirmation) {
+        return <AddressConfirmationScreenContent />;
+    }
 
     return (
         <Screen>
