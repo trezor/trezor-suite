@@ -141,7 +141,7 @@ jobs:
     env:
       platform: win
     container:
-      image: electronuserland/builder:22-wine
+      image: electronuserland/builder:22-wine-05.26@sha256:b226b27b1a7e95ad25eb3d6414ea90c56c04eb6d8329967f4d721dce50b989ff
       options: --user 1001
     steps:
       - name: Checkout code
