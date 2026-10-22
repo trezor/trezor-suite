@@ -233,6 +233,15 @@ export class HidApi extends AbstractApi {
 
                 return error({ code: ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE });
             }
+            // The listen loop may have seen the device disconnect while it was being opened. Its
+            // `closeDevice` found nothing to close, so a handle stored now would stay registered
+            // for a path that is gone, and the device would look opened when it comes back.
+            if (this.systemPaths.get(path) !== systemPath) {
+                this.logger?.info(`hid: ${shortPath(path)} disconnected while opening`);
+                await handle.close().catch(() => {});
+
+                return error({ code: ERRORS.DEVICE_NOT_FOUND });
+            }
             this.openedDevices.set(path, {
                 handle,
                 shouldPrependReportId,

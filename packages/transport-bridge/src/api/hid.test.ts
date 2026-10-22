@@ -226,6 +226,30 @@ describe(HidApi.name, () => {
                 error: { code: ERRORS.DEVICE_NOT_FOUND },
             });
         });
+
+        it('closes the handle of a device that disconnected while it was being opened', async () => {
+            const handle = mockHandle();
+            const { api, nodeHid, path } = await setup({ handle });
+            const opening = createDeferred<typeof handle>();
+            nodeHid.HIDAsync.open.mockReturnValueOnce(opening.promise);
+
+            const opened = api.openDevice(path);
+            nodeHid.devicesAsync.mockResolvedValueOnce([]);
+            await api.enumerate();
+            opening.resolve(handle);
+
+            expect(await opened).toEqual({
+                success: false,
+                error: { code: ERRORS.DEVICE_NOT_FOUND },
+            });
+            expect(handle.close).toHaveBeenCalledTimes(1);
+
+            // Plugged back into the same port, the device gets the very same path.
+            await api.enumerate();
+
+            expect(await api.openDevice(path)).toEqual({ success: true, payload: undefined });
+            expect(nodeHid.HIDAsync.open).toHaveBeenCalledTimes(2);
+        });
     });
 
     describe('report ID on Windows', () => {
