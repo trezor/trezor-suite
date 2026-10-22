@@ -130,13 +130,20 @@ jobs:
         env:
           JS_BUNDLE_PATH: ./android/app/build/outputs/apk/release/unpacked/assets/index.android.bundle
           ASSETS_DEST_PATH: ./android/app/build/outputs/apk/release/unpacked/res/
-          ENTRY_FILE_PATH: ./suite-native/app/index.js
+          ENTRY_FILE_PATH: index.js
           EXPO_PUBLIC_IS_DETOX_BUILD: true
           EXPO_PUBLIC_FF_IS_REGTEST_ENABLED: true
           EXPO_PUBLIC_FF_IS_CONNECT_POPUP_ENABLED: true
           EXPO_PUBLIC_FF_IS_DEBUG_KEYS_ALLOWED: true
           EXPO_PUBLIC_ENVIRONMENT: debug
-        run: yarn exec react-native bundle --platform android --dev false --entry-file $ENTRY_FILE_PATH --bundle-output $JS_BUNDLE_PATH --assets-dest $ASSETS_DEST_PATH
+        # Bundled like the Gradle build on a cache miss (Expo `export:embed`, then hermesc with the
+        # React Native Gradle plugin's flags), so both paths ship the same app: `react-native bundle`
+        # skips the React Compiler and Hermes bytecode.
+        run: |
+          yarn exec expo export:embed --platform android --dev false --minify false --entry-file "$ENTRY_FILE_PATH" --bundle-output "$JS_BUNDLE_PATH" --assets-dest "$ASSETS_DEST_PATH"
+          HERMES_COMPILER_DIR=$(node --print "require('path').dirname(require.resolve('hermes-compiler/package.json', { paths: [require.resolve('react-native/package.json')] }))")
+          "$HERMES_COMPILER_DIR/hermesc/linux64-bin/hermesc" -w -emit-binary -max-diagnostic-width=80 -out "$RUNNER_TEMP/index.android.bundle.hbc" "$JS_BUNDLE_PATH" -O -output-source-map
+          mv "$RUNNER_TEMP/index.android.bundle.hbc" "$JS_BUNDLE_PATH"
 
       - name: fix native library bundling (extractNativeLibs=true)
         if: steps.s3_build_cache.outputs.hit == 'true'
