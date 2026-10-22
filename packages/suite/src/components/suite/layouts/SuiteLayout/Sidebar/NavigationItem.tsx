@@ -1,4 +1,4 @@
-import { type MouseEvent } from 'react';
+import { type MouseEvent, type ReactNode } from 'react';
 
 import styled, { css } from 'styled-components';
 
@@ -45,7 +45,11 @@ const Container = styled.button<{ $isActive?: boolean }>`
         ${commonFocusStyles}
     }
 
-    &:hover {
+    &:disabled {
+        cursor: not-allowed;
+    }
+
+    &:hover:not(:disabled) {
         background: ${({ theme }) => theme.elementFillGhostHovered};
     }
 
@@ -65,6 +69,8 @@ export type NavigationItemProps = {
     goToRoute?: Route['name'];
     preserveParams?: boolean;
     isActive?: boolean;
+    isDisabled?: boolean;
+    tooltipContent?: ReactNode;
     hasIndicator?: boolean;
     hasNewContentIndicator?: boolean;
     isNewContentIndicatorAnimated?: boolean;
@@ -88,6 +94,8 @@ const NavItem = ({
     routes,
     goToRoute,
     isActive,
+    isDisabled,
+    tooltipContent,
     hasIndicator,
     hasNewContentIndicator,
     isNewContentIndicatorAnimated,
@@ -118,7 +126,7 @@ const NavItem = ({
     const isActiveRoute = routes?.some(route => route === activeRoute);
     const isItemActive = isActive || isActiveRoute;
 
-    const isTooltipActive = expanded ? shortcut !== undefined : true;
+    const isTooltipActive = !!tooltipContent || !expanded || shortcut !== undefined;
     const isNewContentBadgeShown = expanded === true && hasNewContentIndicator === true;
     const isNewContentDotShown =
         expanded !== true && hasNewContentIndicator === true && hasIndicator !== true;
@@ -128,20 +136,21 @@ const NavItem = ({
 
     return (
         <Tooltip
-            cursor="pointer"
+            cursor={isDisabled ? 'not-allowed' : 'pointer'}
             flex="1"
             content={
-                shortcut ? (
+                tooltipContent ??
+                (shortcut ? (
                     <Row gap={12}>
                         <Title nameId={nameId} values={values} />
                         <ShortcutBadge shortcut={shortcut} />
                     </Row>
                 ) : (
                     <Title nameId={nameId} values={values} />
-                )
+                ))
             }
             isActive={isTooltipActive}
-            delayShow={expanded ? TOOLTIP_DELAY_LONG : TOOLTIP_DELAY_SHORT}
+            delayShow={expanded && !tooltipContent ? TOOLTIP_DELAY_LONG : TOOLTIP_DELAY_SHORT}
             placement="right"
         >
             <Container
@@ -149,6 +158,8 @@ const NavItem = ({
                 onClick={handleClick}
                 data-testid={navigationItemTestId}
                 type="button"
+                disabled={isDisabled}
+                aria-current={isItemActive ? 'page' : undefined}
             >
                 <StatusBadge
                     isShown={isIconIndicatorShown}
@@ -164,6 +175,7 @@ const NavItem = ({
                         as={icon}
                         size={24}
                         intent="neutral"
+                        isDisabled={isDisabled}
                         priority={isItemActive ? 'primary' : 'secondary'}
                         pointerEvents="none"
                     />
@@ -179,6 +191,7 @@ const NavItem = ({
                         <Paragraph
                             typographyStyle="body-md"
                             intent="neutral"
+                            isDisabled={isDisabled}
                             priority={isItemActive ? 'primary' : 'secondary'}
                             minWidth={0}
                             overflowWrap="anywhere"

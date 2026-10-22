@@ -26,6 +26,7 @@ export const IMAGES = {
     MORPHO_LOGO: 'morpho-logo.svg',
     NFC_TAG: 'nfc-tag.png',
     PLAY_STORE: 'play-store.svg',
+    REFERRAL_PATTERN: 'referral-pattern.svg',
     TOUCH: 'touch.webp',
     TRADING_SUCCESS: 'trading-success.svg',
     TRADING_WAITING: 'trading-waiting.svg',
