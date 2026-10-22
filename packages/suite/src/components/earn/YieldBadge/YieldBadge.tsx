@@ -58,19 +58,35 @@ const variantConfigMap: Record<YieldBadgeVariant, YieldBadgeVariantConfig> = {
     },
 };
 
-type YieldBadgeProps = {
+/** Without an account the badge is a plain label: nothing to open on the Earn page for it. */
+type YieldBadgeNavigationProps =
+    | {
+          account: Account;
+          vaultId: string;
+          analyticsFrom: 'account-tokens' | 'account-defi-tokens' | 'account-tradebox';
+      }
+    | { account?: undefined; vaultId?: undefined; analyticsFrom?: undefined };
+
+type YieldBadgeProps = YieldBadgeNavigationProps & {
     apy: number;
     /** `inactive` = eligible but not yielding, `active` = already yielding, `promo` = trade box teaser. */
     variant: YieldBadgeVariant;
-    account: Account;
-    vaultId: string;
-    analyticsFrom: 'account-tokens' | 'account-defi-tokens' | 'account-tradebox';
 };
 
 export const YieldBadge = ({ apy, variant, account, vaultId, analyticsFrom }: YieldBadgeProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
 
     const { translationId, iconLeft, priority, shouldAnchorAtVaultRow } = variantConfigMap[variant];
+
+    const badge = (
+        <Badge intent="brand" size="small" priority={priority} iconLeft={iconLeft}>
+            <Translation id={translationId} values={{ apy: formatApyValue(apy) }} />
+        </Badge>
+    );
+
+    if (account === undefined) {
+        return badge;
+    }
 
     const goToEarnYield = () => {
         // The row anchor scrolls to and highlights the vault row of this very account; the
@@ -95,9 +111,7 @@ export const YieldBadge = ({ apy, variant, account, vaultId, analyticsFrom }: Yi
 
     return (
         <BadgeButton type="button" onClick={goToEarnYield} data-testid="@earn/yield-badge">
-            <Badge intent="brand" size="small" priority={priority} iconLeft={iconLeft}>
-                <Translation id={translationId} values={{ apy: formatApyValue(apy) }} />
-            </Badge>
+            {badge}
         </BadgeButton>
     );
 };
