@@ -8,6 +8,7 @@ import {
     selectDeviceAccountKeyForNetworkSymbolAndAccountTypeWithIndex,
 } from '@suite-common/wallet-core';
 import { type ReceiveStackParamList, type ReceiveStackRoutes } from '@suite-native/navigation';
+import { ScreenPerformanceRoot, useIsReceiveScreenReady } from '@suite-native/performance-metrics';
 
 import { ReceiveAddressContent } from '../components/ReceiveAddressContent';
 import { ReceiveAddressLoader } from '../components/ReceiveAddressLoader';
@@ -33,18 +34,22 @@ export const ReceiveFreshAddressScreen = () => {
         ),
     );
     const accountKey = routeAccountKey ?? foundAccountKey;
-
-    if (!accountKey) {
-        return (
-            <ReceiveAddressLoader tokenContract={tokenContract} closeActionType={closeActionType} />
-        );
-    }
+    const isScreenReady = useIsReceiveScreenReady(accountKey);
 
     return (
-        <ReceiveAddressContent
-            accountKey={accountKey}
-            tokenContract={tokenContract}
-            closeActionType={closeActionType}
-        />
+        <ScreenPerformanceRoot screen="receive" isReady={isScreenReady}>
+            {accountKey ? (
+                <ReceiveAddressContent
+                    accountKey={accountKey}
+                    tokenContract={tokenContract}
+                    closeActionType={closeActionType}
+                />
+            ) : (
+                <ReceiveAddressLoader
+                    tokenContract={tokenContract}
+                    closeActionType={closeActionType}
+                />
+            )}
+        </ScreenPerformanceRoot>
     );
 };
