@@ -27,6 +27,8 @@ const INITIAL_EPOCH = 864;
 const ACCOUNT_BALANCE_LAMPORTS = 1_000_000_000_000;
 const SLOTS_IN_EPOCH = 432000;
 const SLOT_INDEX = 376284;
+const CONFIRMED_SLOT = 369150991;
+const CONFIRMED_BLOCK_TIME = 1758796808;
 
 const buildEpochInfo = (epoch: number) => ({
     absoluteSlot: epoch * SLOTS_IN_EPOCH + SLOT_INDEX,
@@ -47,6 +49,10 @@ export class SolanaStakingMock {
     private rewardsHistory: SolanaReward[] = rewards.response.rewards;
     private simulatedTransaction: unknown = solSimulateStakeTransaction;
     private transactionConfirmed = false;
+    // Transactions broadcast so far, newest first. The worker derives a txid from the signed bytes
+    // rather than from the sendTransaction response, so the confirmed history has to carry these
+    // signatures for the pending stand-in Suite adds after a broadcast to be replaced.
+    private broadcastTransactions: { signature: string; slot: number }[] = [];
     private revision = 0;
 
     readonly stakeFeeFormatted = '0.002298742 SOL';
@@ -204,40 +210,62 @@ export class SolanaStakingMock {
         }));
         this.server.setHandler('simulateTransaction', () => ({ value: this.simulatedTransaction }));
         this.server.setHandler('sendTransaction', () => TRANSACTION_SIGNATURE);
-        this.server.setHandler('getSignatureStatuses', () => ({
-            value: [
-                {
-                    slot: 48,
-                    confirmations: null,
-                    err: null,
-                    status: { Ok: null },
-                    confirmationStatus: 'finalized',
-                },
-            ],
-        }));
+        // @solana/kit confirms a broadcast by asking for the status of the signature it derived from
+        // the signed transaction, which is the only place the mock can learn that signature.
+        this.server.setHandler('getSignatureStatuses', ([signatures]) => {
+            const [signature] = signatures as string[];
+
+            if (signature && !this.broadcastTransactions.some(tx => tx.signature === signature)) {
+                this.broadcastTransactions.unshift({
+                    signature,
+                    slot: CONFIRMED_SLOT + this.broadcastTransactions.length,
+                });
+            }
+
+            return {
+                value: [
+                    {
+                        slot: 48,
+                        confirmations: null,
+                        err: null,
+                        status: { Ok: null },
+                        confirmationStatus: 'finalized',
+                    },
+                ],
+            };
+        });
         this.server.setHandler('getRecentPrioritizationFees', () => [
             { prioritizationFee: 0, slot: 394770899 },
         ]);
         this.server.setHandler('getFeeForMessage', () => ({ value: 5000 }));
         this.server.setHandler('getMinimumBalanceForRentExemption', () => 2282880);
         this.server.setHandler('getSignaturesForAddress', ([address]) =>
-            this.transactionConfirmed && address === ACCOUNT_ADDRESS
-                ? [
-                      {
-                          blockTime: 1758796808,
-                          confirmationStatus: 'finalized',
-                          err: null,
-                          memo: null,
-                          signature: TRANSACTION_SIGNATURE,
-                          slot: 369150991,
+            this.transactionConfirmed &&
+            address === ACCOUNT_ADDRESS &&
+            this.broadcastTransactions.length > 0
+                ? this.broadcastTransactions.map(({ signature, slot }) => ({
+                      blockTime: CONFIRMED_BLOCK_TIME,
+                      confirmationStatus: 'finalized',
+                      err: null,
+                      memo: null,
+                      signature,
+                      slot,
+                  }))
+                : PASSTHROUGH,
+        );
+        this.server.setHandler('getTransaction', ([signature]) => {
+            const broadcast = this.broadcastTransactions.find(tx => tx.signature === signature);
+
+            return this.transactionConfirmed && broadcast
+                ? {
+                      ...solStakeTransaction,
+                      slot: broadcast.slot,
+                      transaction: {
+                          ...solStakeTransaction.transaction,
+                          signatures: [broadcast.signature],
                       },
-                  ]
-                : PASSTHROUGH,
-        );
-        this.server.setHandler('getTransaction', ([signature]) =>
-            this.transactionConfirmed && signature === TRANSACTION_SIGNATURE
-                ? solStakeTransaction
-                : PASSTHROUGH,
-        );
+                  }
+                : PASSTHROUGH;
+        });
     }
 }
