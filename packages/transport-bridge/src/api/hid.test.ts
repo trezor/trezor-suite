@@ -309,6 +309,17 @@ describe(HidApi.name, () => {
             expect(written?.subarray(PACKET.length).every(byte => byte === 0)).toBe(true);
         });
 
+        it('refuses a buffer that does not fit into one report instead of truncating it', async () => {
+            const { api, handle, path } = await setup();
+            await api.openDevice(path);
+
+            expect(await api.write(path, Buffer.alloc(65, 0x3f))).toEqual({
+                success: false,
+                error: { code: ERRORS.INTERFACE_DATA_TRANSFER },
+            });
+            expect(handle.write).not.toHaveBeenCalled();
+        });
+
         it('reports a failed and an empty write as a transfer error', async () => {
             const { api, handle, path } = await setup();
             await api.openDevice(path);

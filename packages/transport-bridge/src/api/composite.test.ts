@@ -150,6 +150,19 @@ describe(CompositeApi.name, () => {
         });
     });
 
+    it('refuses a HID api whose chunk size differs from the one of the USB api', async () => {
+        const { composite, hid } = setup();
+        // `core.writeUtil` would chunk HID messages with the chunk size of the USB api.
+        Object.assign(hid.api, { chunkSize: 32 });
+
+        expect(await composite.enableHid()).toBe(false);
+        expect(hid.methods.dispose).toHaveBeenCalledTimes(1);
+        expect(await composite.openDevice(HID_PATH)).toEqual({
+            success: false,
+            error: { code: ERRORS.DEVICE_NOT_FOUND },
+        });
+    });
+
     it('routes device calls by path', async () => {
         const { composite, usb, hid } = setup();
         await composite.enableHid();

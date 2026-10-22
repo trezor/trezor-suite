@@ -379,6 +379,15 @@ export class HidApi extends AbstractApi {
             return error({ code: ERRORS.DEVICE_DISCONNECTED_DURING_ACTION });
         }
 
+        // `Buffer#copy` would silently drop everything past the report length.
+        if (buffer.length > this.chunkSize) {
+            this.logger?.error(
+                `hid: ${shortPath(path)} write of ${buffer.length} bytes exceeds ${this.chunkSize}`,
+            );
+
+            return error({ code: ERRORS.INTERFACE_DATA_TRANSFER });
+        }
+
         const packet = Buffer.alloc(this.chunkSize);
         buffer.copy(packet);
         const report = device.shouldPrependReportId

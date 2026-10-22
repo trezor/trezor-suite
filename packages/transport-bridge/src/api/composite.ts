@@ -87,6 +87,17 @@ export class CompositeApi extends AbstractApi {
                 return false;
             }
 
+            // `core.writeUtil` chunks every message with the single chunk size reported here, so
+            // a HID api expecting a different one would be fed packets of the wrong length.
+            if (hidApi.chunkSize !== this.chunkSize) {
+                hidApi.dispose();
+                this.logger?.error(
+                    `composite: hid chunk size ${hidApi.chunkSize} does not match usb ${this.chunkSize}`,
+                );
+
+                return false;
+            }
+
             this.hidApi = hidApi;
             this.hidDescriptors = enumeration.payload;
             hidApi.on('transport-interface-change', descriptors => {
