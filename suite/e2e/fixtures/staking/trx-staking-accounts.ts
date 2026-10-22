@@ -33,6 +33,13 @@ type TrxVotedAccountParams = TrxFrozenAccountParams & {
     representativeAddress: string;
 };
 
+type TrxUnstakingAccountParams = TrxVotedAccountParams & {
+    unstakeAmount: string;
+    unstakeAmountSun: string;
+    unstakeTxid: string;
+    expireTime: number;
+};
+
 // Bandwidth gained by freezing `stakeAmount` TRX on the mocked network.
 export const getTrxBandwidthGain = (stakeAmount: string) =>
     Math.round(
@@ -111,6 +118,54 @@ export const buildTrxVotedAccountState = (params: TrxVotedAccountParams) => {
                     votes: [
                         { address: params.representativeAddress, voteCount: params.stakeAmount },
                     ],
+                },
+            },
+        },
+    };
+};
+
+// The voted account after a confirmed unfreeze of `unstakeAmount` TRX from the bandwidth stake.
+// Tron lowers the voting power with the stake, so the remaining votes go to the same representative.
+export const buildTrxUnstakingAccountState = (params: TrxUnstakingAccountParams) => {
+    const votedAccountState = buildTrxVotedAccountState(params);
+    const remainingStakeSun = (
+        BigInt(params.stakeAmountSun) - BigInt(params.unstakeAmountSun)
+    ).toString();
+    const remainingStake = (Number(params.stakeAmount) - Number(params.unstakeAmount)).toString();
+    const remainingBandwidth = getTrxBandwidthGain(remainingStake);
+    const unstakeTx = buildTrxStakingTx({
+        txid: params.unstakeTxid,
+        address: TRX_FIRST_ACCOUNT_ADDRESS,
+        blockHeight: TRX_BEST_BLOCK.height + 3,
+        payload: {
+            contractType: 'UnfreezeBalanceV2Contract',
+            operation: 'unstake',
+            resource: 'BANDWIDTH',
+            unstakeAmount: params.unstakeAmountSun,
+        },
+    });
+
+    return {
+        ...votedAccountState,
+        txs: 4,
+        nonTokenTxs: 4,
+        transactions: [unstakeTx, ...votedAccountState.transactions],
+        chainExtraData: {
+            payloadType: 'tron',
+            payload: {
+                ...votedAccountState.chainExtraData.payload,
+                availableStakedBandwidth: remainingBandwidth,
+                totalStakedBandwidth: remainingBandwidth,
+                stakingInfo: {
+                    ...votedAccountState.chainExtraData.payload.stakingInfo,
+                    stakedBalance: remainingStakeSun,
+                    stakedBalanceBandwidth: remainingStakeSun,
+                    unstakingBatches: [
+                        { amount: params.unstakeAmountSun, expireTime: params.expireTime },
+                    ],
+                    totalVotingPower: remainingStake,
+                    availableVotingPower: '0',
+                    votes: [{ address: params.representativeAddress, voteCount: remainingStake }],
                 },
             },
         },
