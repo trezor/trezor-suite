@@ -117,6 +117,7 @@ const SECTIONS = {
     general: [
         '/',
         '/hidden-tokens',
+        '/asset',
         '/notifications',
         '/version',
         '/bridge',

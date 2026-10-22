@@ -20,6 +20,7 @@ import { EarnDeposit } from 'src/views/earn/yield/deposit';
 import { EarnUnwrap } from 'src/views/earn/yield/unwrap';
 import { EarnWithdraw } from 'src/views/earn/yield/withdraw';
 import { EarnWrap } from 'src/views/earn/yield/wrap';
+import { AssetDetail } from 'src/views/home/AssetDetail/AssetDetail';
 import PasswordManagerView from 'src/views/password-manager';
 import { SettingsCoins } from 'src/views/settings/SettingsCoins/SettingsCoins';
 import { SettingsConnectedApps } from 'src/views/settings/SettingsConnectedApps/SettingsConnectedApps';
@@ -68,6 +69,7 @@ export const desktopComponents: Record<PageName, ComponentType> = {
     // TODO add a redirect option to routeConfig instead of duplication.
     'suite-start': Dashboard,
     'suite-hidden-tokens': HiddenTokens,
+    'suite-asset': AssetDetail,
     'suite-earn': Earn,
     'earn-yield-deposit': EarnDeposit,
     'earn-yield-withdraw': EarnWithdraw,

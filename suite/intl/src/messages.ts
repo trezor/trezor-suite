@@ -69,6 +69,10 @@ export const messages = defineMessages({
         defaultMessage: "Account doesn't exist",
         id: 'TR_ACCOUNT_EXCEPTION_NOT_EXIST',
     },
+    TR_ASSET_EXCEPTION_NOT_EXIST: {
+        defaultMessage: "Asset doesn't exist",
+        id: 'TR_ASSET_EXCEPTION_NOT_EXIST',
+    },
     TR_EARN_YIELD_VAULT_NOT_EXIST: {
         defaultMessage: "Vault doesn't exist",
         id: 'TR_EARN_YIELD_VAULT_NOT_EXIST',
@@ -1827,6 +1831,14 @@ export const messages = defineMessages({
     TR_HOME_ASSET_FEEDBACK_TITLE: {
         defaultMessage: 'How do you like the new asset table?',
         id: 'TR_HOME_ASSET_FEEDBACK_TITLE',
+    },
+    TR_ASSET_DETAIL_YOUR_BALANCE: {
+        defaultMessage: 'Your balance',
+        id: 'TR_ASSET_DETAIL_YOUR_BALANCE',
+    },
+    TR_ASSET_DETAIL_ACCOUNT_COUNT: {
+        defaultMessage: 'on {count, plural, one {# account} other {# accounts}}',
+        id: 'TR_ASSET_DETAIL_ACCOUNT_COUNT',
     },
     TR_HOME_ASSET_SMALL_BALANCES: {
         defaultMessage: 'Show small balances',
