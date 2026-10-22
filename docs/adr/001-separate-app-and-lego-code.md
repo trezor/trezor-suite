@@ -49,6 +49,9 @@ The diagram and layout below use the final package names after migration. For ex
 
 ## Practical steps
 
+> [!NOTE]
+> This is an ongoing, opportunistic migration. We will move and split code when needed for development work, rather than reorganizing it for its own sake.
+
 1. Extract lego code into the temporary `suite-lego` and `suite-native-lego` directories.
 2. Once all lego code has moved, rename `suite` to `suite-app` and `suite-native` to `suite-native-app`.
 3. Rename `suite-lego` to `suite` and `suite-native-lego` to `suite-native`.
