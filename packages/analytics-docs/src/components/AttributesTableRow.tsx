@@ -6,6 +6,7 @@ import { Box, Column, Row, Table, Text } from '@trezor/components';
 
 import { AddedBadge } from './AddedBadge';
 import { Changelog } from './Changelog';
+import { HighlightedText } from './HighlightedText';
 import { LastUpdatedBadge } from './LastUpdatedBadge';
 import { Markdown } from './Markdown';
 import type { AttributeDoc } from '../types';
@@ -22,6 +23,7 @@ const Syntax = styled.span`
 type AttributesTableRowProps = {
     attributeKey: string;
     attributes: Record<string, AttributeDoc>;
+    query: string;
 };
 
 const formatRuntimeType = (t?: string) => {
@@ -106,7 +108,11 @@ const renderRuntimeType = (t?: string) => {
     ));
 };
 
-export const AttributesTableRow = ({ attributeKey, attributes }: AttributesTableRowProps) => {
+export const AttributesTableRow = ({
+    attributeKey,
+    attributes,
+    query,
+}: AttributesTableRowProps) => {
     const attribute = attributes[attributeKey];
     const { ChangelogButton, isChangelogOpened } = useChangelogButton();
     if (!attribute) return null;
@@ -117,7 +123,7 @@ export const AttributesTableRow = ({ attributeKey, attributes }: AttributesTable
             <Table.Row key={attributeKey} verticalAlign="top">
                 <Table.Cell width={200}>
                     <Text typographyStyle="body-xs" isMonospaced overflow="auto">
-                        {attributeKey}
+                        <HighlightedText text={attributeKey} query={query} />
                     </Text>
                 </Table.Cell>
                 <Table.Cell>
@@ -136,7 +142,7 @@ export const AttributesTableRow = ({ attributeKey, attributes }: AttributesTable
                 </Table.Cell>
                 <Table.Cell>
                     <Column overflow="auto">
-                        <Markdown>{attribute.description}</Markdown>
+                        <Markdown query={query}>{attribute.description}</Markdown>
                     </Column>
                 </Table.Cell>
                 <Table.Cell align="end">

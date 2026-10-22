@@ -1,4 +1,4 @@
-import type { EventDoc } from '../types';
+import { type EventDoc, type SearchField, searchFields } from '../types';
 
 type AnalyticsJsonShape = {
     events?: Record<string, EventDoc>;
@@ -144,6 +144,55 @@ export const eventMatchesFullText = (query: string, e: EventDoc): boolean => {
     const haystack = buildEventSearchHaystack(e);
 
     return tokens.every(token => haystack.includes(token));
+};
+
+const attributeFieldMatchesToken = (token: string, event: EventDoc): boolean =>
+    Object.entries(event.attributes ?? {}).some(
+        ([attributeKey, attribute]) =>
+            attributeKey.toLowerCase().includes(token) ||
+            (attribute.runtimeType ?? '').toLowerCase().includes(token),
+    );
+
+const descriptionFieldMatchesToken = (token: string, event: EventDoc): boolean => {
+    if ((event.description ?? '').toLowerCase().includes(token)) return true;
+
+    return Object.values(event.attributes ?? {}).some(attribute =>
+        (attribute.description ?? '').toLowerCase().includes(token),
+    );
+};
+
+const searchFieldMatchesToken = (field: SearchField, token: string, event: EventDoc): boolean => {
+    const matchers: Record<SearchField, () => boolean> = {
+        eventName: () =>
+            fuzzyMatch(token, event.name) ||
+            fuzzyMatchExportName(token, toEventExportName(event.name)),
+        attributeName: () => attributeFieldMatchesToken(token, event),
+        trigger: () => event.descriptionTrigger.toLowerCase().includes(token),
+        description: () => descriptionFieldMatchesToken(token, event),
+    };
+
+    return matchers[field]();
+};
+
+export const normalizeSearchFields = (fields: readonly SearchField[]): SearchField[] =>
+    searchFields.filter(field => fields.includes(field));
+
+export const eventMatchesSearch = (
+    query: string,
+    event: EventDoc,
+    fields: readonly SearchField[],
+): boolean => {
+    const normalized = query.trim().toLowerCase();
+    if (!normalized) return true;
+
+    const selectedFields = normalizeSearchFields(fields);
+    if (selectedFields.length === 0) return false;
+
+    const tokens = normalized.split(/\s+/).filter(Boolean);
+
+    return tokens.every(token =>
+        selectedFields.some(field => searchFieldMatchesToken(field, token, event)),
+    );
 };
 
 export const getEventVersions = (e: EventDoc): string[] => {
