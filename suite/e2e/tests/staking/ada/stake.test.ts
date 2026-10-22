@@ -2,6 +2,7 @@ import type { StakingBatch } from '@suite-common/earn-staking-api';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { CARDANO_STAKING_REGISTRATION_DEPOSIT } from '@suite-common/wallet-constants';
 import { TestCategory, TestPriority, TestStream, createTestAnnotation } from '@trezor/e2e-utils';
+import { Model } from '@trezor/trezor-user-env-link';
 
 import { toADA } from '../../../support/common';
 import { expect, test } from '../../../support/fixtures';
@@ -185,9 +186,29 @@ test.describe('Staking - Cardano', { tag: ['@T3W1', '@T3T1'] }, () => {
                             ['Vote delegation'],
                             ['For account #1'],
                             ["m/1852'/1815'/0'/2", '\n', '/0'],
+                        ],
+                    },
+                });
+
+                if (device.model === Model.T3T1) {
+                    await devicePrompt.waitForPromptAndClick();
+                }
+
+                await expect(device).toShowOnDisplay({
+                    T3W1: {
+                        header: { title: 'Confirm transaction' },
+                        body: [
+                            ['Confirm'],
+                            ['Vote', '\n', 'delegation'],
+                            ['For account #1'],
+                            ["m/1852'/1815'/", '\n', "0'/2/0"],
                             ['Delegating to'],
                             ['Always Abstain'],
                         ],
+                        actions: { right_button: 'Confirm' },
+                    },
+                    T3T1: {
+                        body: [['Delegating to'], ['Always Abstain']],
                     },
                 });
 

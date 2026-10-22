@@ -134,7 +134,7 @@ test.describe('eth yield deposit with wrap', { tag: ['@webOnly', '@T3W1', '@T3T1
                 await devicePrompt.confirmOnDevicePromptIsShown();
                 await expect(device).toShowOnDisplay({
                     T3W1: {
-                        header: { title: 'Provider' },
+                        header: { title: 'Contract address' },
                         body: [['WETH']],
                         actions: { right_button: 'Confirm' },
                     },
@@ -333,7 +333,7 @@ test.describe('eth yield deposit with wrap', { tag: ['@webOnly', '@T3W1', '@T3T1
                 await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Deposit' },
-                        body: [YIELD_WETH_VAULT_DISPLAY_NAME],
+                        body: [['Deposit to'], YIELD_WETH_VAULT_DISPLAY_NAME],
                         actions: { right_button: 'Continue' },
                     },
                     T3T1: {

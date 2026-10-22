@@ -142,11 +142,8 @@ test.describe('stablecoin yield withdrawal', { tag: ['@webOnly', '@T3W1', '@T3T1
                 await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Withdraw' },
-                        body: [YIELD_USDC_VAULT_DISPLAY_NAME],
-                        actions: { right_button: 'Continue' },
-                    },
-                    T3T1: {
                         body: [['Withdraw from'], YIELD_USDC_VAULT_DISPLAY_NAME],
+                        actions: { right_button: 'Continue' },
                     },
                 });
                 await device.pressYes();
