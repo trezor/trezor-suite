@@ -94,6 +94,7 @@ Checked on 2026-10-21 against `react-native-webview` 13.16.1 and `expo-web-brows
 | Geolocation                                                        | ⚠️ [25]     | ✅          | ⚠️ [25]         | ✅              |
 | HTTP Basic authentication                                          | ⚠️ [26]     | ✅          | ⚠️ [26]         | ✅              |
 | Remote inspection (Web Inspector, `chrome://inspect`)              | ✅ [27]     | ❌          | ✅ [27]         | ❌              |
+| JavaScript dialogs (`alert`, `confirm`, `prompt`)                  | ✅ [28]     | ✅          | ⚠️ [28]         | ✅              |
 
 1. Every mobile host is a top-level browsing context, so the framing rules that stop the web iframe
    do not apply.
@@ -190,6 +191,11 @@ Checked on 2026-10-21 against `react-native-webview` 13.16.1 and `expo-web-brows
     none, so a challenge ends as a 401 page.
 27. `webviewDebuggingEnabled` turns on Safari Web Inspector (iOS 16.4+) and `chrome://inspect`;
     `EmbeddedAppWebView` enables it in builds that are not codesigned.
+28. A dialog looks like one of the app unless it says who asked. On iOS a patch of
+    `react-native-webview` (see `.yarn/patches`) titles each dialog with the host of the frame that
+    opened it, so a third-party iframe cannot pass a prompt off as Suite's own, and shows none for a
+    frame without an identifiable host. Android's own dialog names the page, but the top-level one
+    whatever frame asked.
 
 ### Sources
 

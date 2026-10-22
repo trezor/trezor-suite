@@ -37,3 +37,9 @@ Skips the git timestamp lookup when building inside a git worktree. nextra resol
 the worktree's git directory (`.git/worktrees/<name>`), so every page lookup walks the whole history and
 `next build` of `@trezor/connect-explorer` effectively never finishes. Introduced in
 [#26620](https://github.com/trezor/trezor-suite/pull/26620).
+
+## react-native-webview
+
+Changes for the in-app browser of `@suite-native/apps-embedding`, introduced for [#33402](https://github.com/trezor/trezor-suite/issues/33402); one bullet per change, each to be removed once `react-native-webview` offers the behavior itself.
+
+- iOS titles the `alert`, `confirm` and `prompt` dialogs with the host of the frame that opened them, and shows none for a frame without an identifiable host. The library presents every dialog as an app alert with an empty title whatever frame asked, so a third-party iframe inside an embedded site could pass a prompt for a PIN off as Suite's own; WebKit hands the delegate the calling frame, and Android's default client already names the page.

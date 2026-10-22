@@ -1,0 +1,76 @@
+diff --git a/apple/RNCWebViewImpl.m b/apple/RNCWebViewImpl.m
+index 7f5c24d6e2cfb26eddbc513bf17a81c24a7273e2..1129ea768389a9c4071f35ff6c3873462adf0d99 100644
+--- a/apple/RNCWebViewImpl.m
++++ b/apple/RNCWebViewImpl.m
+@@ -1196,13 +1196,42 @@ RCTAutoInsetsProtocol>
+ 
+ #pragma mark - WKNavigationDelegate methods
+ 
++#if !TARGET_OS_OSX
++/**
++ * The host a JavaScript dialog is attributed to, or nil for a frame that has none.
++ *
++ * WebKit tells the delegate which frame called alert/confirm/prompt. A dialog titled with that
++ * frame's host cannot pass for a dialog of the app or of the page that embeds the frame; a
++ * third-party iframe asking for a PIN shows up as that iframe's host. A frame without an
++ * identifiable host (an opaque origin loaded from about:srcdoc or about:blank) could belong to any
++ * frame on the page, so it gets no native dialog at all.
++ */
++- (NSString *)dialogTitleForFrame:(WKFrameInfo *)frame
++{
++  NSString *originHost = frame.securityOrigin.host;
++  if (originHost.length > 0) {
++    return originHost;
++  }
++  NSString *requestHost = frame.request.URL.host;
++  if (requestHost.length > 0) {
++    return requestHost;
++  }
++  return nil;
++}
++#endif // !TARGET_OS_OSX
++
+ /**
+  * alert
+  */
+ - (void)webView:(WKWebView *)webView runJavaScriptAlertPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(void))completionHandler
+ {
+ #if !TARGET_OS_OSX
+-  UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:message preferredStyle:UIAlertControllerStyleAlert];
++  NSString *title = [self dialogTitleForFrame:frame];
++  if (title == nil) {
++    completionHandler();
++    return;
++  }
++  UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+   [alert addAction:[UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault handler:^(__unused UIAlertAction *action) {
+     completionHandler();
+   }]];
+@@ -1221,7 +1250,12 @@ RCTAutoInsetsProtocol>
+  */
+ - (void)webView:(WKWebView *)webView runJavaScriptConfirmPanelWithMessage:(NSString *)message initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(BOOL))completionHandler{
+ #if !TARGET_OS_OSX
+-  UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:message preferredStyle:UIAlertControllerStyleAlert];
++  NSString *title = [self dialogTitleForFrame:frame];
++  if (title == nil) {
++    completionHandler(NO);
++    return;
++  }
++  UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:message preferredStyle:UIAlertControllerStyleAlert];
+   [alert addAction:[UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault handler:^(__unused UIAlertAction *action) {
+     completionHandler(YES);
+   }]];
+@@ -1246,7 +1280,12 @@ RCTAutoInsetsProtocol>
+  */
+ - (void)webView:(WKWebView *)webView runJavaScriptTextInputPanelWithPrompt:(NSString *)prompt defaultText:(NSString *)defaultText initiatedByFrame:(WKFrameInfo *)frame completionHandler:(void (^)(NSString *))completionHandler{
+ #if !TARGET_OS_OSX
+-  UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"" message:prompt preferredStyle:UIAlertControllerStyleAlert];
++  NSString *title = [self dialogTitleForFrame:frame];
++  if (title == nil) {
++    completionHandler(nil);
++    return;
++  }
++  UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:prompt preferredStyle:UIAlertControllerStyleAlert];
+   [alert addTextFieldWithConfigurationHandler:^(UITextField *textField) {
+     textField.text = defaultText;
+   }];

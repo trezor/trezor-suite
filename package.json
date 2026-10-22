@@ -135,7 +135,8 @@
         "### Security fixes forced outside the range requested by the dependent package (dev only), check Dependabot alerts": "1.0.0",
         "shell-quote": "^1.11.0",
         "seroval": "^1.6.2",
-        "@solana/rpc@npm:6.9.0": "patch:@solana/rpc@npm%3A6.9.0#~/.yarn/patches/@solana-rpc-npm-6.9.0-ba7976484d.patch"
+        "@solana/rpc@npm:6.9.0": "patch:@solana/rpc@npm%3A6.9.0#~/.yarn/patches/@solana-rpc-npm-6.9.0-ba7976484d.patch",
+        "react-native-webview@npm:13.16.1": "patch:react-native-webview@npm%3A13.16.1#~/.yarn/patches/react-native-webview-npm-13.16.1-in-app-browser.patch"
     },
     "devDependencies": {
         "@arethetypeswrong/cli": "^0.18.5",
