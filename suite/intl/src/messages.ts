@@ -4489,13 +4489,11 @@ export const messages = defineMessages({
         id: 'TOAST_ACQUIRE_ERROR',
         defaultMessage: 'Acquire error {error}',
     },
-    TOAST_AUTH_CONFIRM_ERROR: {
-        id: 'TOAST_AUTH_CONFIRM_ERROR',
-        defaultMessage: 'Passphrase confirmation error: {error}',
-    },
-    TOAST_AUTH_CONFIRM_ERROR_DEFAULT: {
-        id: 'TOAST_AUTH_CONFIRM_ERROR_DEFAULT',
-        defaultMessage: 'Invalid passphrase',
+    TOAST_PASSPHRASE_MISMATCH_ERROR: {
+        id: 'TOAST_PASSPHRASE_MISMATCH_ERROR',
+        description:
+            'Shown as {error} in error toasts when the passphrase does not match the opened wallet.',
+        defaultMessage: "Passphrase doesn't match this wallet",
     },
     TOAST_DISCOVERY_ERROR: {
         id: 'TOAST_DISCOVERY_ERROR',

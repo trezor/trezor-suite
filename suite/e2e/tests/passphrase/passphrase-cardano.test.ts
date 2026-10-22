@@ -11,7 +11,7 @@ const correctPassphraseAddr =
 const passphrase = 'secret passphrase A';
 const toastErrorMessage = replaceTemplatesInTranslation(
     messages.TOAST_VERIFY_ADDRESS_ERROR.defaultMessage,
-    { error: 'Passphrase is incorrect' },
+    { error: messages.TOAST_PASSPHRASE_MISMATCH_ERROR.defaultMessage },
 );
 
 test.describe('Passphrase with cardano', { tag: ['@optional', '@T3W1', '@T3T1'] }, () => {
