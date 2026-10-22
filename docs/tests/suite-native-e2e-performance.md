@@ -26,7 +26,7 @@ zero are very different statements, and the report keeps them apart everywhere.
 
 ```mermaid
 flowchart TD
-    A["Screen calls useScreenPerformance('home')"] --> B["react-native-lighthouse measures the screen"]
+    A["Screen renders ScreenPerformanceRoot screen='home'"] --> B["react-native-lighthouse measures the screen"]
     B --> C["console.log('__TREZOR_PERF__ {…}') — one line per measurement"]
     C --> D["Detox log artifact plugin captures the device log"]
     D --> E["e2e/performance parses the lines, medians the samples, applies budgets"]
@@ -36,17 +36,18 @@ flowchart TD
 
 ### 1. In the app
 
-A screen calls `useScreenPerformance(screen)` and wires up the two things the library cannot do by
-itself:
+A screen wraps what it renders in `ScreenPerformanceRoot`, which supplies the two things the library
+cannot work out by itself:
 
-- **`markInteractive()`** — the screen calls it when its real content is on screen. Without that
-  call there is no `ttiMs`; the hook has no way to guess when a list stopped being a spinner.
-- **`panHandlers`** — spread onto the screen's root view. Without it there is no `fidMs`, because
-  nothing is watching for the first touch.
+- **`isReady`** — the screen passes `true` once its real content is on screen, and the root marks
+  the screen interactive. Without it there is no `ttiMs`; nothing else knows when a list stopped
+  being a spinner. Store-backed screens read it from their own `useIs<Screen>Ready` hook.
+- **The first touch** — the root is the view that watches for it. Without it there is no `fidMs`.
 
 Instrumentation is gated on `isDetoxTestBuild()` (`suite-native/config/src/environment.ts`, driven by
-`EXPO_PUBLIC_IS_DETOX_BUILD`). Outside a Detox build the hook is an inert no-op and the library does
-not enter the bundle.
+`EXPO_PUBLIC_IS_DETOX_BUILD`). Outside a Detox build the root renders its children untouched, the
+readiness hooks return `false` without reading the store, and the library does not enter the
+bundle.
 
 The per-screen how-to — which screens are instrumented, and how to add one — lives in the
 `@suite-native/performance-metrics` README, next to the code.
