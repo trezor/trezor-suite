@@ -23,7 +23,7 @@ export type ShardHistory = { shard: string; history: PerfHistoryFile; flows: Flo
 const isHistoryFile = (value: unknown): value is PerfHistoryFile =>
     typeof value === 'object' &&
     value !== null &&
-    typeof (value as PerfHistoryFile).surface === 'string' &&
+    typeof (value as PerfHistoryFile).platform === 'string' &&
     Array.isArray((value as PerfHistoryFile).measurements);
 
 /** Our medians and a Lighthouse flow per profiled test sit side by side, told apart by shape. */
@@ -53,7 +53,7 @@ export const collectShardHistories = (artifactsDir: string): ShardHistory[] =>
             mergeHistories(histories) ??
             (firstFlow
                 ? {
-                      surface: firstFlow.surface,
+                      platform: firstFlow.platform,
                       generatedAt: firstFlow.generatedAt,
                       measurements: [],
                   }

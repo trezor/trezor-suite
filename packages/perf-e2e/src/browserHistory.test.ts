@@ -3,7 +3,7 @@ import {
     buildHistoryFile,
     historyToPerfRun,
     mergeHistories,
-    resolveSurface,
+    resolvePlatform,
 } from './browserHistory';
 import type { PerfHistoryFile } from './browserHistory';
 import { buildFlowDocument } from './lighthouseFlow';
@@ -12,14 +12,14 @@ import type { PerfRunIdentity } from './publishRuns';
 
 const identity: PerfRunIdentity = {
     branch: 'feat/thing',
-    sha: 'abc1234',
+    commitId: 'abc1234',
     runId: '99',
     runAttempt: '1',
 };
 
 const history: PerfHistoryFile = {
     generatedAt: '2026-09-19T08:00:00.000Z',
-    surface: 'web',
+    platform: 'web',
     measurements: [
         {
             scenario: 'wallet-discovery',
@@ -30,13 +30,13 @@ const history: PerfHistoryFile = {
     ],
 };
 
-describe('resolveSurface', () => {
-    it('accepts only the surfaces this pipeline measures', () => {
-        expect(resolveSurface('web')).toBe('web');
-        expect(resolveSurface('desktop')).toBe('desktop');
-        expect(resolveSurface('android')).toBeNull();
-        expect(resolveSurface(undefined)).toBeNull();
-        expect(resolveSurface('')).toBeNull();
+describe('resolvePlatform', () => {
+    it('accepts only the platforms this pipeline measures', () => {
+        expect(resolvePlatform('web')).toBe('web');
+        expect(resolvePlatform('desktop')).toBe('desktop');
+        expect(resolvePlatform('android')).toBeNull();
+        expect(resolvePlatform(undefined)).toBeNull();
+        expect(resolvePlatform('')).toBeNull();
     });
 });
 
@@ -46,7 +46,7 @@ describe('buildHistoryFile', () => {
 
         expect(file).toEqual({
             generatedAt: '2026-09-19T09:00:00.000Z',
-            surface: 'desktop',
+            platform: 'desktop',
             measurements: history.measurements,
         });
     });
@@ -83,9 +83,9 @@ describe('historyToPerfRun', () => {
         });
     });
 
-    it('carries the surface and shard into the context', () => {
+    it('carries the platform and shard into the context', () => {
         expect(historyToPerfRun('3', history, identity)?.context).toMatchObject({
-            surface: 'web',
+            platform: 'web',
             shard: '3',
             branch: 'feat/thing',
             generatedAt: '2026-09-19T08:00:00.000Z',
@@ -112,7 +112,7 @@ describe('historyToPerfRun', () => {
 describe('mergeHistories', () => {
     const second: PerfHistoryFile = {
         generatedAt: '2026-09-19T09:00:00.000Z',
-        surface: 'web',
+        platform: 'web',
         measurements: [
             {
                 scenario: 'account-switch',
@@ -172,7 +172,7 @@ describe('mergeHistories', () => {
 describe('historyToPerfRun with Lighthouse flows', () => {
     const flow = (overrides: Partial<Parameters<typeof buildFlowDocument>[0]> = {}): FlowDocument =>
         buildFlowDocument({
-            surface: 'web',
+            platform: 'web',
             model: 'T3W1',
             title: 'wallet discovery',
             retry: 0,

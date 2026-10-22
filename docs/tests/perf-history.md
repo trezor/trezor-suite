@@ -95,7 +95,7 @@ one audited step per timespan — as an artifact of kind `flow-result`. Fetch on
 nothing installed but Lighthouse itself:
 
 ```sh
-curl -sO https://dev.suite.sldev.cz/e2e/perf/v1/runs/web/develop/<sha>/<run>-1/shard-web-3/flow-<test>-T3W1-0.json
+curl -sO https://dev.suite.sldev.cz/e2e/perf/v1/runs/web/develop/<commit-id>/<run>-1/shard-web-3/flow-<test>-T3W1-0.json
 node -e "import('lighthouse').then(({generateReport})=>require('fs').writeFileSync('report.html',generateReport(JSON.parse(require('fs').readFileSync(process.argv[1],'utf8')),'html')))" flow-*.json
 ```
 

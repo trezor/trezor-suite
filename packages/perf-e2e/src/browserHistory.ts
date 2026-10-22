@@ -1,7 +1,7 @@
 import type { FlowDocument } from './lighthouseFlow';
 import { flowArtifactName } from './lighthouseFlow';
 import type { PerfRunIdentity } from './publishRuns';
-import type { PerfRun, PerfSurface } from './store';
+import type { PerfPlatform, PerfRun } from './store';
 import type { PerfMetrics } from './types';
 
 /** The history document web and desktop shards write, and its mapping into the store. */
@@ -17,7 +17,7 @@ export type PerfHistoryMeasurement = {
 
 export type PerfHistoryFile = {
     generatedAt: string;
-    surface: PerfSurface;
+    platform: PerfPlatform;
     measurements: PerfHistoryMeasurement[];
 };
 
@@ -27,17 +27,17 @@ export const BROWSER_METRIC_PREFIX = 'browser';
 /** The artifact every measurement of a shard drills into. */
 const ARTIFACT_NAME = 'history';
 
-const SURFACES: Record<string, PerfSurface> = { web: 'web', desktop: 'desktop' };
+const PLATFORMS: Record<string, PerfPlatform> = { web: 'web', desktop: 'desktop' };
 
-/** Only `web` and `desktop` are measured here; anything else cannot be filed under a surface. */
-export const resolveSurface = (target: string | undefined): PerfSurface | null =>
-    (target && SURFACES[target]) || null;
+/** Only `web` and `desktop` are measured here; anything else cannot be filed under a platform. */
+export const resolvePlatform = (target: string | undefined): PerfPlatform | null =>
+    (target && PLATFORMS[target]) || null;
 
 export const buildHistoryFile = (
-    surface: PerfSurface,
+    platform: PerfPlatform,
     measurements: readonly PerfHistoryMeasurement[],
     generatedAt = new Date().toISOString(),
-): PerfHistoryFile => ({ generatedAt, surface, measurements: [...measurements] });
+): PerfHistoryFile => ({ generatedAt, platform, measurements: [...measurements] });
 
 /** Each Playwright process of a shard writes its own document; a later measurement wins. */
 export const mergeHistories = (files: readonly PerfHistoryFile[]): PerfHistoryFile | null => {
@@ -61,7 +61,7 @@ export const mergeHistories = (files: readonly PerfHistoryFile[]): PerfHistoryFi
                 .map(file => file.generatedAt)
                 .toSorted()
                 .at(-1) ?? first.generatedAt,
-        surface: first.surface,
+        platform: first.platform,
         measurements: [...byMeasurement.values()],
     };
 };
@@ -149,7 +149,7 @@ export const historyToPerfRun = (
     return {
         context: {
             ...identity,
-            surface: history.surface,
+            platform: history.platform,
             shard,
             generatedAt: history.generatedAt,
             // From the documents, not an env flag: a run whose attach failed was not profiled.

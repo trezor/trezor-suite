@@ -9,7 +9,7 @@ import {
     connect,
 } from 'puppeteer-core';
 
-import { buildFlowDocument, resolveSurface } from '@trezor/perf-e2e';
+import { buildFlowDocument, resolvePlatform } from '@trezor/perf-e2e';
 
 import { LighthouseMode, getLighthouseDebugPort, getLighthouseMode } from './lighthouseConfig';
 import { writeFlowDocument } from './perfHistory';
@@ -207,12 +207,12 @@ export const startLighthouseFlow = async ({
                     contentType: 'text/html',
                 });
 
-                const surface = resolveSurface(process.env.PERF_SURFACE);
+                const platform = resolvePlatform(process.env.PERF_PLATFORM);
 
-                if (surface) {
+                if (platform) {
                     writeFlowDocument(
                         buildFlowDocument({
-                            surface,
+                            platform,
                             model: testInfo.project.name,
                             title: testInfo.title,
                             retry: testInfo.retry,

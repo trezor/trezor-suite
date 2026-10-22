@@ -226,7 +226,7 @@ jobs:
           # The label keys this job's section of the PR comment, so it must stay stable across runs.
           PERF_REPORT_LABEL: "${{ inputs.target }} / group ${{ inputs.test-group }}"
           PERF_REPORT_JOB: "${{ inputs.caller-job-id && format('{0} ({1})', inputs.caller-job-id, inputs.test-group) || '' }}"
-          PERF_SURFACE: "${{ inputs.target }}"
+          PERF_PLATFORM: "${{ inputs.target }}"
           # Outside test-results, which Playwright cleans.
           PERF_HISTORY_DIR: "${{ github.workspace }}/perf-history"
           LIGHTHOUSE: "1"

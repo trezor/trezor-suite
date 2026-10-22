@@ -131,7 +131,7 @@ describe('flowMetrics', () => {
 describe('buildFlowDocument', () => {
     const document = () =>
         buildFlowDocument({
-            surface: 'web',
+            platform: 'web',
             model: 'T3W1',
             title: 'wallet discovery',
             retry: 0,
@@ -152,7 +152,7 @@ describe('buildFlowDocument', () => {
 
     it('is recognisable beside a history document', () => {
         expect(isFlowDocument(document())).toBe(true);
-        expect(isFlowDocument({ surface: 'web', measurements: [] })).toBe(false);
+        expect(isFlowDocument({ platform: 'web', measurements: [] })).toBe(false);
         expect(isFlowDocument(null)).toBe(false);
     });
 
@@ -164,7 +164,7 @@ describe('buildFlowDocument', () => {
 describe('flowArtifactName', () => {
     const named = (title: string, model: string, retry: number) =>
         flowArtifactName(
-            buildFlowDocument({ surface: 'web', model, title, retry, flow: { steps: [] } }),
+            buildFlowDocument({ platform: 'web', model, title, retry, flow: { steps: [] } }),
         );
 
     it('survives a title a key cannot carry', () => {

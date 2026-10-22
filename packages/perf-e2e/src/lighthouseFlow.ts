@@ -1,5 +1,5 @@
 import { slugify } from './store';
-import type { PerfSurface } from './store';
+import type { PerfPlatform } from './store';
 
 /**
  * Strips a Lighthouse flow result for storage and maps its audits to `lh:` metrics. Lighthouse is
@@ -30,7 +30,7 @@ export type FlowStep = {
 
 export type FlowDocument = {
     kind: typeof FLOW_DOCUMENT_KIND;
-    surface: PerfSurface;
+    platform: PerfPlatform;
     generatedAt: string;
     /** Playwright project, i.e. the device model — the same value a measurement's variant carries. */
     model: string;
@@ -111,14 +111,14 @@ export const flowArtifactName = ({ title, model, retry }: FlowDocument): string 
     slugify(`flow-${title}-${model}-${retry}`);
 
 export const buildFlowDocument = ({
-    surface,
+    platform,
     model,
     title,
     retry,
     flow,
     generatedAt = new Date().toISOString(),
 }: {
-    surface: PerfSurface;
+    platform: PerfPlatform;
     model: string;
     title: string;
     retry: number;
@@ -130,7 +130,7 @@ export const buildFlowDocument = ({
 
     return {
         kind: FLOW_DOCUMENT_KIND,
-        surface,
+        platform,
         generatedAt,
         model,
         title,

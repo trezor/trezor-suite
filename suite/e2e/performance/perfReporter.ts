@@ -13,7 +13,7 @@ import {
     formatMetricValue,
     measurementKey,
     resolveBudget,
-    resolveSurface,
+    resolvePlatform,
     suggestLimits,
 } from '@trezor/perf-e2e';
 
@@ -269,13 +269,13 @@ class PerfReporter implements Reporter {
             profiled,
         );
 
-        // For the publish job; a surface it cannot name contributes no history.
-        const surface = resolveSurface(process.env.PERF_SURFACE);
+        // For the publish job; a platform it cannot name contributes no history.
+        const platform = resolvePlatform(process.env.PERF_PLATFORM);
 
-        if (surface) {
+        if (platform) {
             writeHistoryFile(
                 buildHistoryFile(
-                    surface,
+                    platform,
                     measured.map(entry => ({
                         scenario: entry.scenario,
                         variant: entry.project,
