@@ -1314,15 +1314,6 @@ export const messages = defineMessages({
         defaultMessage: 'Select a lower fee, or go back and reduce the send amount.',
         id: 'TR_TRADING_NETWORK_FEE_MODAL_NOT_ENOUGH_FUNDS_DESC',
     },
-    TR_TRADING_TREZOR_FEE: {
-        defaultMessage: 'Trezor fee (incl.)',
-        id: 'TR_TRADING_TREZOR_FEE',
-    },
-    TR_TRADING_TREZOR_FEE_TOOLTIP: {
-        defaultMessage:
-            "This is Trezor's fee to facilitate your trade (already included in your offer).",
-        id: 'TR_TRADING_TREZOR_FEE_TOOLTIP',
-    },
     TR_TRADING_TRADE_HISTORY_TAB_ALL: {
         defaultMessage: 'All trades',
         id: 'TR_TRADING_TRADE_HISTORY_TAB_ALL',
