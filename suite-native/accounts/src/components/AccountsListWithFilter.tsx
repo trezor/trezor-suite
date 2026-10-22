@@ -14,6 +14,7 @@ import {
 } from '../selectors';
 import { type OnSelectAccount } from '../types';
 import { AccountsList } from './AccountsList/AccountsList';
+import { AccountsListEmptyPlaceholder } from './AccountsList/AccountsListEmptyPlaceholder';
 import { AccountsListFooter } from './AccountsListFooter';
 import { NetworkFilterBottomSheet } from './NetworkFilterBottomSheet';
 import { SearchableAccountsListHeader } from './SearchableAccountsListHeader';
@@ -121,6 +122,9 @@ export const AccountsListWithFilter = ({
                 networkFilter={filteredNetworks}
                 isSendFlow={isSendFlow}
                 ListHeaderComponent={<>{children}</>}
+                ListEmptyComponent={
+                    <AccountsListEmptyPlaceholder isFilterEmpty={!searchValue.length} />
+                }
                 ListFooterComponent={
                     <AccountsListFooter
                         isSendFlow={isSendFlow}
