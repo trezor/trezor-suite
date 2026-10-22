@@ -11,7 +11,7 @@ import {
 } from '@suite-native/bluetooth';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { Screen } from '@suite-native/navigation';
-import { ScreenPerformanceRoot, useScreenPerformance } from '@suite-native/performance-metrics';
+import { ScreenPerformanceRoot, useIsHomeScreenReady } from '@suite-native/performance-metrics';
 import { exhaustive } from '@trezor/type-utils';
 
 import { DiscoveryNotFinished } from './components/DiscoveryNotFinished';
@@ -67,7 +67,7 @@ export const HomeScreen = () => {
         variant: 'B',
     });
     const portfolioGraphRef = useRef<PortfolioGraphRef>(null);
-    const { panHandlers } = useScreenPerformance('home');
+    const isScreenReady = useIsHomeScreenReady();
 
     const homeScreenState = useSelector(selectHomeScreenState);
     const isDiscoveredDeviceAccountless = useSelector(selectIsDiscoveredDeviceAccountless);
@@ -95,7 +95,7 @@ export const HomeScreen = () => {
     const doesHomeContentHandleHorizontalPadding = homeScreenState === 'portfolioContent';
 
     return (
-        <ScreenPerformanceRoot panHandlers={panHandlers}>
+        <ScreenPerformanceRoot screen="home" isReady={isScreenReady}>
             <Screen
                 header={<DeviceManagerScreenHeader />}
                 refreshControl={isAssetsFirstHomeScreenVisible ? undefined : refreshControl}

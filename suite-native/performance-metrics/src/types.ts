@@ -18,6 +18,8 @@ export type ScreenPerformance = {
 };
 
 export type ScreenPerformanceRootProps = {
-    panHandlers: ScreenPerformance['panHandlers'];
+    screen: PerformanceScreen;
+    /** Ready for interaction: the data the user came for is on screen, not just mounted. */
+    isReady: boolean;
     children: ReactNode;
 };

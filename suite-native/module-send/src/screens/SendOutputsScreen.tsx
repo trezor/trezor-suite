@@ -15,7 +15,7 @@ import {
     type SendStackRoutes,
     type StackProps,
 } from '@suite-native/navigation';
-import { ScreenPerformanceRoot, useScreenPerformance } from '@suite-native/performance-metrics';
+import { ScreenPerformanceRoot } from '@suite-native/performance-metrics';
 import { selectFeeLevels } from '@suite-native/transaction-management';
 
 import { AccountBalanceScreenHeader } from '../components/AccountBalanceScreenHeader';
@@ -39,7 +39,6 @@ export const SendOutputsScreen = ({
     const { accountKey, tokenContract, postNavigationAction, initialAddress, initialAmount } =
         params;
     const sendForm = useSendForm(accountKey, tokenContract);
-    const { panHandlers } = useScreenPerformance('send', !!sendForm);
     const { totalSelectedAmount, selectedUtxos } = useUtxoSelection(accountKey);
     const feeLevels = useSelector(selectFeeLevels);
     const isCardanoTokenSendAdaInsufficient = useSelector((state: CardanoTokenSendRootState) =>
@@ -93,7 +92,7 @@ export const SendOutputsScreen = ({
         selectedUtxos.length > 0 && amount && totalSelectedAmount.isLessThan(amount);
 
     return (
-        <ScreenPerformanceRoot panHandlers={panHandlers}>
+        <ScreenPerformanceRoot screen="send" isReady>
             <Screen
                 header={
                     <AccountBalanceScreenHeader

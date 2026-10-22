@@ -14,7 +14,7 @@ import {
     Screen,
     type StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
-import { ScreenPerformanceRoot, useScreenPerformance } from '@suite-native/performance-metrics';
+import { ScreenPerformanceRoot, useIsAccountsScreenReady } from '@suite-native/performance-metrics';
 import { isNetworkWithTokens } from '@suite-native/tokens';
 
 type ScreenNavigationProps = StackToStackCompositeScreenProps<
@@ -24,7 +24,7 @@ type ScreenNavigationProps = StackToStackCompositeScreenProps<
 >;
 
 export const AccountsScreen = ({ navigation, route }: ScreenNavigationProps) => {
-    const { panHandlers } = useScreenPerformance('accounts');
+    const isScreenReady = useIsAccountsScreenReady();
     const networksFilter = useMemo(
         () => route.params?.networksFilter ?? [],
         [route.params?.networksFilter],
@@ -48,7 +48,7 @@ export const AccountsScreen = ({ navigation, route }: ScreenNavigationProps) => 
     };
 
     return (
-        <ScreenPerformanceRoot panHandlers={panHandlers}>
+        <ScreenPerformanceRoot screen="accounts" isReady={isScreenReady}>
             <Screen
                 header={<DeviceManagerScreenHeader />}
                 isScrollable={false}

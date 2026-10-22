@@ -15385,13 +15385,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/performance-metrics@workspace:suite-native/performance-metrics"
   dependencies:
-    "@react-navigation/native": "npm:7.1.31"
     "@suite-common/device": "workspace:*"
     "@suite-common/receive": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-native/config": "workspace:*"
-    "@trezor/type-utils": "workspace:*"
     react: "npm:19.2.3"
     react-native: "npm:0.86.3"
     react-native-lighthouse: "npm:1.0.0"

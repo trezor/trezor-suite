@@ -10,7 +10,7 @@ import {
     type AccountDetailStackParamList,
     type AccountDetailStackRoutes,
 } from '@suite-native/navigation';
-import { ScreenPerformanceRoot, useScreenPerformance } from '@suite-native/performance-metrics';
+import { ScreenPerformanceRoot } from '@suite-native/performance-metrics';
 
 import { AccountDetailContentScreen } from './AccountDetailContentScreen';
 import { AccountDetailLoadingScreen } from './AccountDetailLoadingScreen';
@@ -45,10 +45,8 @@ export const AccountDetailScreen = memo(() => {
         selectAccountByKey(state, accountKey),
     );
 
-    const { panHandlers } = useScreenPerformance('account-detail', !!account);
-
     return (
-        <ScreenPerformanceRoot panHandlers={panHandlers}>
+        <ScreenPerformanceRoot screen="account-detail" isReady={!!account}>
             {account ? (
                 <AccountDetailContentScreen account={account} tokenContract={tokenContract} />
             ) : (
