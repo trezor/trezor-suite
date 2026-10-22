@@ -3,7 +3,7 @@ import '@suite-common/test-utils/globalOverrides';
 import { screen } from '@testing-library/react';
 
 import { initialState as selectedAccountInitialState } from '@suite/account';
-import { mockNetworkIcon } from '@suite-common/networks/mocks';
+import { mockNetworkIcon, mockNetworksState } from '@suite-common/networks/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
@@ -53,6 +53,7 @@ const bitcoinAccount = mockWalletAccount({ symbol: BTC, formattedBalance: '0.1' 
 
 const getInitialState = (): AppState => ({
     ...mockInitialAppState,
+    networks: mockNetworksState([BTC, ETH]),
     device: {
         ...mockInitialAppState.device,
         selectedDevice: mockSuiteDevice({ state: { staticSessionId: DEVICE_STATE } }),

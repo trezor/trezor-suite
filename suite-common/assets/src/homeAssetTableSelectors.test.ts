@@ -3,7 +3,7 @@ import { getWalletAssetKey } from '@suite-common/wallet-core';
 import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
-import { type StaticSessionId } from '@trezor/device-utils';
+import { FirmwareType, type StaticSessionId } from '@trezor/device-utils';
 import { BigNumber } from '@trezor/utils';
 
 import {
@@ -84,6 +84,7 @@ const mockRate = (
 type MockStateParams = {
     accounts: Account[];
     enabledNetworks?: Account['symbol'][];
+    hasBitcoinOnlyFirmware?: boolean;
     rates?: Record<string, { rate: number; usdRate?: number }>;
     knownTokens?: TokenAddress[];
     hiddenTokens?: TokenAddress[];
@@ -95,6 +96,7 @@ type MockStateParams = {
 const createState = ({
     accounts,
     enabledNetworks = [BTC, ETH, POL],
+    hasBitcoinOnlyFirmware = false,
     rates = {},
     knownTokens = [USDC_ON_ETH, USDC_ON_POL],
     hiddenTokens = [],
@@ -107,7 +109,14 @@ const createState = ({
     };
 
     return {
-        device: { selectedDevice: { state: { staticSessionId: ALICE } } },
+        device: {
+            selectedDevice: {
+                state: { staticSessionId: ALICE },
+                firmwareType: hasBitcoinOnlyFirmware
+                    ? FirmwareType.BitcoinOnly
+                    : FirmwareType.Universal,
+            },
+        },
         wallet: {
             accounts,
             settings: {
@@ -122,6 +131,7 @@ const createState = ({
             [BTC]: { symbol: BTC, name: 'Bitcoin' },
             [ETH]: { symbol: ETH, name: 'Ethereum' },
             [POL]: { symbol: POL, name: 'Polygon PoS' },
+            [DSOL]: { symbol: DSOL, name: 'Solana Devnet' },
         },
     } as unknown as HomeAssetTableState;
 };
@@ -218,6 +228,25 @@ describe('the rows the table is given', () => {
         });
 
         expect(selectHomeAssetRowKeys(state)).toEqual([]);
+    });
+
+    it('leaves out a network the device cannot use, enabled or not', () => {
+        const state = createState({
+            accounts: [
+                mockAccount({ symbol: BTC }),
+                mockAccount({
+                    symbol: ETH,
+                    tokens: [{ symbol: 'usdc', contract: USDC_ON_ETH, balance: '10' }],
+                }),
+            ],
+            hiddenTokens: [USDC_ON_ETH],
+            hasBitcoinOnlyFirmware: true,
+        });
+
+        expect(selectHomeAssetRowKeys(state)).toEqual([
+            getWalletAssetKey({ deviceState: ALICE, symbol: BTC }),
+        ]);
+        expect(selectHiddenWalletAssetKeys(state, 'hiddenByUser')).toEqual([]);
     });
 
     it('leaves out a token nothing vouches for', () => {

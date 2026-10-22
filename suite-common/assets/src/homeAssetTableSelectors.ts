@@ -15,7 +15,7 @@ import {
     selectBaseCurrency,
     selectCurrentFiatRates,
     selectDeviceAssetAccounts,
-    selectEnabledNetworks,
+    selectEnabledSupportedNetworks,
     selectHiddenAssetAccountKeySet,
     selectHiddenTokenReasons,
     selectLastWeekFiatRates,
@@ -250,7 +250,7 @@ const byValue =
     };
 
 export const selectShownWalletAssetKeys = createMemoizedSelector(
-    [selectWalletAssets, selectWalletAssetValues, selectEnabledNetworks],
+    [selectWalletAssets, selectWalletAssetValues, selectEnabledSupportedNetworks],
     (assets, values, enabledNetworks): readonly WalletAssetKey[] =>
         returnStableArrayIfEmpty(
             [...assets.values()]
@@ -703,7 +703,7 @@ const selectHiddenWalletAssetKeysByReason = createMemoizedSelector(
         selectHiddenWalletAssets,
         selectHiddenWalletAssetValues,
         selectHiddenTokenReasons,
-        selectEnabledNetworks,
+        selectEnabledSupportedNetworks,
     ],
     (
         assets,

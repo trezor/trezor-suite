@@ -8,6 +8,11 @@ import { getFirmwareVersion, hasBitcoinOnlyFirmware } from '@trezor/device-utils
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { isArrayMember } from '@trezor/utils';
 
+import {
+    type WalletSettingsRootState,
+    selectEnabledNetworks,
+} from '../settings/walletSettingsReducer';
+
 const createMemoizedSelector = createWeakMapSelector.withTypes<
     DeviceRootState & NetworksRootState
 >();
@@ -71,3 +76,11 @@ export const selectDeviceSupportedNetworks = createMemoizedSelector(
     [selectSelectedDevice, selectSupportedNetworkSymbols],
     selectSupportedNetworkByDevice,
 );
+
+export const selectEnabledSupportedNetworks = createWeakMapSelector.withTypes<
+    DeviceRootState & NetworksRootState & WalletSettingsRootState
+>()([selectEnabledNetworks, selectDeviceSupportedNetworks], (enabledNetworks, deviceNetworks) => {
+    const supportedNetworks = enabledNetworks.filter(n => deviceNetworks.includes(n));
+
+    return returnStableArrayIfEmpty(supportedNetworks);
+});

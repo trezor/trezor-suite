@@ -11,7 +11,10 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { FirmwareType } from '@trezor/connect';
 
 import { blockchainInitialState } from './blockchain/blockchainReducer';
-import { selectSupportedNetworkByDevice } from './device/deviceSelectors';
+import {
+    selectEnabledSupportedNetworks,
+    selectSupportedNetworkByDevice,
+} from './device/deviceSelectors';
 import {
     type WalletCoreCompoundRootState,
     selectDiscoveryAccountsParam,
@@ -23,6 +26,8 @@ const STATIC_SESSION_ID: `${string}@${string}:${number}` =
     'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@ABC123:1';
 const DEVICE_PATH = 'device-path';
 const solSymbol = asNetworkSymbol('sol');
+const btcSymbol = asNetworkSymbol('btc');
+const ethSymbol = asNetworkSymbol('eth');
 
 const mockSolAccount = (
     account: Omit<Partial<Account>, 'failed' | 'error'>,
@@ -51,6 +56,7 @@ type GetStateOptions = {
     device?: TrezorDevice;
     discovery?: DiscoveryStatus;
     enabledNetworks?: NetworkSymbol[];
+    networks?: NetworkSymbol[];
 };
 
 const getState = ({
@@ -58,8 +64,9 @@ const getState = ({
     device = mockDeviceWithPathAndState(),
     discovery,
     enabledNetworks = [solSymbol],
+    networks = [solSymbol],
 }: GetStateOptions = {}): WalletCoreCompoundRootState => ({
-    networks: mockNetworksState([solSymbol]),
+    networks: mockNetworksState(networks),
     persistentDeviceData: { devices: [] },
     wallet: {
         accounts,
@@ -199,6 +206,49 @@ describe(selectShouldRediscover.name, () => {
                 device,
             ),
         ).toBe(false);
+    });
+});
+
+describe(selectEnabledSupportedNetworks.name, () => {
+    const networks = [btcSymbol, ethSymbol, solSymbol];
+
+    it('keeps the enabled networks a universal device supports', () => {
+        expect(
+            selectEnabledSupportedNetworks(
+                getState({
+                    device: mockDeviceWithPathAndState({ firmwareType: FirmwareType.Universal }),
+                    enabledNetworks: [ethSymbol, btcSymbol],
+                    networks,
+                }),
+            ),
+        ).toEqual([ethSymbol, btcSymbol]);
+    });
+
+    it('drops an enabled network a bitcoin-only device cannot use', () => {
+        expect(
+            selectEnabledSupportedNetworks(
+                getState({
+                    device: mockDeviceWithPathAndState({ firmwareType: FirmwareType.BitcoinOnly }),
+                    enabledNetworks: [ethSymbol, btcSymbol],
+                    networks,
+                }),
+            ),
+        ).toEqual([btcSymbol]);
+    });
+
+    it('drops an enabled network the firmware reports no capability for', () => {
+        expect(
+            selectEnabledSupportedNetworks(
+                getState({
+                    device: mockDeviceWithPathAndState({
+                        firmwareType: FirmwareType.Universal,
+                        unavailableCapabilities: { sol: 'no-capability' },
+                    }),
+                    enabledNetworks: [solSymbol, btcSymbol],
+                    networks,
+                }),
+            ),
+        ).toEqual([btcSymbol]);
     });
 });
 
