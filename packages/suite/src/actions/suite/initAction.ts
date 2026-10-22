@@ -1,6 +1,7 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 import { type ThunkDispatch } from 'redux-thunk';
 
+import { type BluetoothDep } from '@suite/bluetooth';
 import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { type FlagsRootState, selectFlags, setFlag } from '@suite/flags';
 import { type MetadataRootState, metadataLabelingActions } from '@suite/metadata';
@@ -85,7 +86,7 @@ type InitThunkDeps = ConnectInitThunkDeps &
     InitTokenDefinitionsThunkDeps &
     PeriodicFetchFiatRatesThunkDeps &
     WalletConnectInitThunkDeps &
-    WithServices<InitThunkDesktopApiDep>;
+    WithServices<InitThunkDesktopApiDep & BluetoothDep>;
 
 export type InitThunkDesktopApiDep = DesktopApiDep<
     | 'setAutomaticUpdateEnabled'
@@ -152,6 +153,9 @@ export const initThunk =
             // it is necessary to unwrap the result here because init calls async thunk from redux-toolkit which is always resolved
             // see more details here: https://redux-toolkit.js.org/api/createAsyncThunk#unwrapping-result-actions
             await dispatch(trezorConnectActions.connectInitThunk()).unwrap();
+
+            // init bluetooth module
+            void extra.services.bluetooth.init();
         } catch (err) {
             dispatch(setSuiteError(err.message));
 
