@@ -52,8 +52,12 @@ export const transactionCreatedEvent: EventDef<Attributes, EventType.Transaction
             changelog: [{ version: '1.9.0', notes: 'added' }],
         },
         tokens: {
-            description: 'tokens separated by `,`',
-            changelog: [{ version: '1.9.0', notes: 'added' }],
+            description:
+                'Token symbols separated by `,`. Yield reports the token from the prepared transaction on both platforms, independently of device review screens; empty when the transaction has no token.',
+            changelog: [
+                { version: '1.9.0', notes: 'added' },
+                { version: '26.11.0', notes: 'Aligned yield token symbols on mobile and desktop.' },
+            ],
         },
         outputsCount: {
             changelog: [{ version: '1.9.0', notes: 'added' }],
@@ -83,7 +87,13 @@ export const transactionCreatedEvent: EventDef<Attributes, EventType.Transaction
             description: 'Whether the destination-tag option is enabled in the signing form',
         },
         selectedFee: {
-            changelog: [{ version: '1.9.0', notes: 'added' }],
+            changelog: [
+                { version: '1.9.0', notes: 'added' },
+                {
+                    version: '26.11.0',
+                    notes: 'Desktop yield preserves the fee level selected in simulation instead of always reporting custom.',
+                },
+            ],
             description:
                 'The selected fee level for the transaction (e.g., `custom`, `normal`, `economy`, `high`, `low`)',
         },

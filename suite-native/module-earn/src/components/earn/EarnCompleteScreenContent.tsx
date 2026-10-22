@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
+import { events as sharedEvents } from '@suite-common/analytics';
 import { selectSelectedDevice } from '@suite-common/device';
 import {
     type FeedbackCategory,
@@ -102,7 +103,12 @@ export const EarnCompleteScreenContent = ({
     const onFeedbackRatingSelect = (rating: Rating) => {
         analytics.report({
             type: events.feedbackRatingSelectedEvent.name,
-            payload: { rating, category: feedbackFeature, context: type },
+            payload: {
+                rating,
+                category: feedbackFeature,
+                context: type,
+                provider: vaultId,
+            },
         });
     };
 
@@ -126,8 +132,18 @@ export const EarnCompleteScreenContent = ({
 
         analytics.report({
             type: events.feedbackSentEvent.name,
-            payload: { category: feedbackFeature, context: type },
+            payload: { category: feedbackFeature, context: type, provider: vaultId },
         });
+
+        if (
+            feedbackFeature === 'yield' &&
+            ['deposit', 'withdraw', 'redeem', 'claim'].includes(type)
+        ) {
+            analytics.report({
+                type: sharedEvents.yieldInteractionEvent.name,
+                payload: { element: 'feedback-submit', value: rating, vaultId },
+            });
+        }
     };
 
     return (

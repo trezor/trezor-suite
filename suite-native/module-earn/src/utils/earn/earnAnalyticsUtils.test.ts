@@ -1,5 +1,6 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type FormState, type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { mockAccountToken } from '@suite-common/wallet-types/mocks';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { mock } from '@trezor/dependency-injection';
@@ -24,6 +25,31 @@ const formState: Pick<FormState, 'options' | 'selectedFee'> = {
 };
 
 describe('reportTransactionCreated', () => {
+    it.each(['USDT', 'WETH', undefined])('reports the transaction token symbol %s', symbol => {
+        const services: NativeAnalyticsDep = {
+            analytics: mockNativeAnalytics(mock<NativeAnalyticsDep['analytics']['report']>()),
+        };
+
+        reportTransactionCreated({
+            analytics: services.analytics,
+            symbol: asNetworkSymbol('eth'),
+            precomposedTransaction: {
+                ...precomposedTransaction,
+                token: mockAccountToken({ symbol, contract: 'private-token-contract' }),
+            },
+            formState,
+            txType: 'yield',
+        });
+
+        expect(services.analytics.report).toHaveBeenCalledWith({
+            type: 'transaction-created',
+            payload: expect.objectContaining({ tokens: symbol ?? '' }),
+        });
+        expect(JSON.stringify(jest.mocked(services.analytics.report).mock.calls)).not.toContain(
+            'private-',
+        );
+    });
+
     it.each(['stake', 'yield'] as const)(
         'reports enabled transaction options for %s without exposing transaction contents',
         txType => {
