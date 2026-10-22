@@ -7,11 +7,13 @@ import { PortalProvider } from 'react-native-teleport';
 import { useSelector } from 'react-redux';
 
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { closeMenu } from 'expo-dev-client';
 import * as SplashScreen from 'expo-splash-screen';
 
 import { FormatterProvider } from '@suite-common/formatters';
 import { ReactNativeQueryProvider } from '@suite-common/react-query/react-native';
 import { selectShouldUserBeAuthenticated } from '@suite-native/biometrics';
+import { isDetoxTestBuild } from '@suite-native/config';
 import { useFormattersConfig } from '@suite-native/formatters-config';
 import { IntlProvider } from '@suite-native/intl';
 import { KillswitchMessageScreen } from '@suite-native/message-system';
@@ -41,6 +43,11 @@ const AppComponent = () => {
 
     useEffect(() => {
         if (isAppReady) {
+            if (__DEV__ && isDetoxTestBuild()) {
+                // Expo opens its native developer menu above the app on launch.
+                closeMenu();
+            }
+
             // Report the first usable frame even if the native splash API fails to resolve.
             void SplashScreen.hideAsync().then(reportStartupAppLoaded, reportStartupAppLoaded);
         }
