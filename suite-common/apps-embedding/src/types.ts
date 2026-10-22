@@ -203,6 +203,8 @@ export type AppsEmbeddingEvent =
     // popup modes are being compared on.
     | { type: 'window-open-attempt'; url: string; outcome: AppsEmbeddingWindowOpenOutcome }
     | { type: 'navigation-blocked'; url: string }
+    // A download the host refused: the file never reaches the device.
+    | { type: 'download-blocked'; url: string }
     // The origin that asked, never the url or what was typed: the log is the one place the
     // credentials must not end up. `detail` carries the host's reason for a refusal.
     | { type: 'http-auth'; origin: string; outcome: AppsEmbeddingHttpAuthOutcome; detail?: string }

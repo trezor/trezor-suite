@@ -56,6 +56,8 @@ export const formatAppsEmbeddingEvent = (event: AppsEmbeddingEvent): string => {
             return `window.open ${WINDOW_OPEN_OUTCOME_LABEL[event.outcome]} — ${event.url}`;
         case 'navigation-blocked':
             return `navigation blocked — ${event.url}`;
+        case 'download-blocked':
+            return `download blocked — ${event.url}`;
         case 'http-auth':
             return `HTTP auth ${HTTP_AUTH_OUTCOME_LABEL[event.outcome]} — ${event.origin}${
                 event.detail === undefined ? '' : ` (${event.detail})`

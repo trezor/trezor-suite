@@ -1,5 +1,5 @@
 diff --git a/android/src/main/java/com/reactnativecommunity/webview/RNCWebChromeClient.java b/android/src/main/java/com/reactnativecommunity/webview/RNCWebChromeClient.java
-index 07f73fd00a083ebf5a03bffaa7bbadbd1f648505..f697a2043d1be1874c3767021d2eefd6f48ad531 100644
+index 07f73fd..f697a20 100644
 --- a/android/src/main/java/com/reactnativecommunity/webview/RNCWebChromeClient.java
 +++ b/android/src/main/java/com/reactnativecommunity/webview/RNCWebChromeClient.java
 @@ -19,6 +19,7 @@ import android.webkit.WebView;
@@ -87,11 +87,57 @@ index 07f73fd00a083ebf5a03bffaa7bbadbd1f648505..f697a2043d1be1874c3767021d2eefd6
 +    }
  }
 \ No newline at end of file
+diff --git a/android/src/main/java/com/reactnativecommunity/webview/RNCWebView.java b/android/src/main/java/com/reactnativecommunity/webview/RNCWebView.java
+index 80c6803..ad338de 100644
+--- a/android/src/main/java/com/reactnativecommunity/webview/RNCWebView.java
++++ b/android/src/main/java/com/reactnativecommunity/webview/RNCWebView.java
+@@ -67,6 +67,11 @@ public class RNCWebView extends WebView implements LifecycleEventListener {
+     protected boolean injectedJavaScriptBeforeContentLoadedForMainFrameOnly = true;
+ 
+     protected boolean messagingEnabled = false;
++    /**
++     * Whether the download listener hands a download to DownloadManager. Off, it reports the
++     * download through onFileDownload instead and nothing is saved, as the iOS view does.
++     */
++    protected boolean downloadsEnabled = true;
+     protected @Nullable
+     String messagingModuleName;
+     protected @Nullable
+@@ -247,6 +252,14 @@ public class RNCWebView extends WebView implements LifecycleEventListener {
+         return this.messagingEnabled;
+     }
+ 
++    public boolean getDownloadsEnabled() {
++        return this.downloadsEnabled;
++    }
++
++    public void setDownloadsEnabled(boolean enabled) {
++        this.downloadsEnabled = enabled;
++    }
++
+     protected void createRNCWebViewBridge(RNCWebView webView) {
+         if (WebViewFeature.isFeatureSupported(WebViewFeature.WEB_MESSAGE_LISTENER)){
+           if (this.bridgeListener == null) {
 diff --git a/android/src/main/java/com/reactnativecommunity/webview/RNCWebViewManagerImpl.kt b/android/src/main/java/com/reactnativecommunity/webview/RNCWebViewManagerImpl.kt
-index f83033b3597a425da159555233bacce250ccfce0..ec18f1b8f593f8469223cdb6f1089681d08289b4 100644
+index f83033b..2fcb2f1 100644
 --- a/android/src/main/java/com/reactnativecommunity/webview/RNCWebViewManagerImpl.kt
 +++ b/android/src/main/java/com/reactnativecommunity/webview/RNCWebViewManagerImpl.kt
-@@ -43,6 +43,7 @@ class RNCWebViewManagerImpl(private val newArch: Boolean = false) {
+@@ -17,11 +17,14 @@ import android.webkit.WebSettings
+ import android.webkit.WebView
+ import androidx.webkit.WebSettingsCompat
+ import androidx.webkit.WebViewFeature
++import com.facebook.react.bridge.Arguments
+ import com.facebook.react.bridge.ReadableArray
+ import com.facebook.react.bridge.ReadableMap
+ import com.facebook.react.common.MapBuilder
+ import com.facebook.react.common.build.ReactBuildConfig
+ import com.facebook.react.uimanager.ThemedReactContext
++import com.facebook.react.uimanager.UIManagerHelper
++import com.reactnativecommunity.webview.events.TopFileDownloadEvent
+ import org.json.JSONException
+ import org.json.JSONObject
+ import java.io.UnsupportedEncodingException
+@@ -43,6 +46,7 @@ class RNCWebViewManagerImpl(private val newArch: Boolean = false) {
      private var mDownloadingMessage: String? = null
      private var mLackPermissionToDownloadMessage: String? = null
      private var mHasOnOpenWindowEvent = false
@@ -99,7 +145,18 @@ index f83033b3597a425da159555233bacce250ccfce0..ec18f1b8f593f8469223cdb6f1089681
      private var mPendingSource: ReadableMap? = null
  
      private var mUserAgent: String? = null
-@@ -208,6 +209,7 @@ class RNCWebViewManagerImpl(private val newArch: Boolean = false) {
+@@ -92,6 +96,10 @@ class RNCWebViewManagerImpl(private val newArch: Boolean = false) {
+             WebView.setWebContentsDebuggingEnabled(true)
+         }
+         webView.setDownloadListener(DownloadListener { url, userAgent, contentDisposition, mimetype, contentLength ->
++            if (!webView.downloadsEnabled) {
++                dispatchFileDownloadEvent(webView, url)
++                return@DownloadListener
++            }
+             val module = webView.reactApplicationContext.getNativeModule(RNCWebViewModule::class.java) ?: return@DownloadListener
+             val request: DownloadManager.Request = try {
+                 DownloadManager.Request(Uri.parse(url))
+@@ -208,6 +216,7 @@ class RNCWebViewManagerImpl(private val newArch: Boolean = false) {
                  }
              webChromeClient.setAllowsProtectedMedia(mAllowsProtectedMedia);
              webChromeClient.setHasOnOpenWindowEvent(mHasOnOpenWindowEvent);
@@ -107,7 +164,7 @@ index f83033b3597a425da159555233bacce250ccfce0..ec18f1b8f593f8469223cdb6f1089681
              webView.webChromeClient = webChromeClient
          } else {
              var webChromeClient = webView.webChromeClient as RNCWebChromeClient?
-@@ -219,6 +221,7 @@ class RNCWebViewManagerImpl(private val newArch: Boolean = false) {
+@@ -219,6 +228,7 @@ class RNCWebViewManagerImpl(private val newArch: Boolean = false) {
              }
              webChromeClient.setAllowsProtectedMedia(mAllowsProtectedMedia);
              webChromeClient.setHasOnOpenWindowEvent(mHasOnOpenWindowEvent);
@@ -115,7 +172,28 @@ index f83033b3597a425da159555233bacce250ccfce0..ec18f1b8f593f8469223cdb6f1089681
              webView.webChromeClient = webChromeClient
          }
      }
-@@ -651,6 +654,18 @@ class RNCWebViewManagerImpl(private val newArch: Boolean = false) {
+@@ -626,6 +636,20 @@ class RNCWebViewManagerImpl(private val newArch: Boolean = false) {
+         mLackPermissionToDownloadMessage = value
+     }
+ 
++    fun setDownloadsEnabled(viewWrapper: RNCWebViewWrapper, value: Boolean) {
++        viewWrapper.webView.downloadsEnabled = value
++    }
++
++    // Reported the way the iOS view reports a download it leaves to the app, so a host can log
++    // or refuse downloads on both platforms through the same onFileDownload prop.
++    private fun dispatchFileDownloadEvent(webView: RNCWebView, url: String) {
++        val reactTag = RNCWebViewWrapper.getReactTagFromWebView(webView)
++        val event = Arguments.createMap()
++        event.putString("downloadUrl", url)
++        UIManagerHelper.getEventDispatcherForReactTag(webView.themedReactContext, reactTag)
++            ?.dispatchEvent(TopFileDownloadEvent(reactTag, event))
++    }
++
+     fun setHasOnOpenWindowEvent(viewWrapper: RNCWebViewWrapper, value: Boolean) {
+         val view = viewWrapper.webView
+         mHasOnOpenWindowEvent = value
+@@ -651,6 +675,18 @@ class RNCWebViewManagerImpl(private val newArch: Boolean = false) {
        }
      }
  
@@ -134,11 +212,51 @@ index f83033b3597a425da159555233bacce250ccfce0..ec18f1b8f593f8469223cdb6f1089681
      fun setMenuCustomItems(viewWrapper: RNCWebViewWrapper, value: ReadableArray?) {
          val view = viewWrapper.webView
          when (value) {
+diff --git a/android/src/main/java/com/reactnativecommunity/webview/events/TopFileDownloadEvent.kt b/android/src/main/java/com/reactnativecommunity/webview/events/TopFileDownloadEvent.kt
+new file mode 100644
+index 0000000..89b5fa5
+--- /dev/null
++++ b/android/src/main/java/com/reactnativecommunity/webview/events/TopFileDownloadEvent.kt
+@@ -0,0 +1,26 @@
++package com.reactnativecommunity.webview.events
++
++import com.facebook.react.bridge.WritableMap
++import com.facebook.react.uimanager.events.Event
++import com.facebook.react.uimanager.events.RCTEventEmitter
++
++/**
++ * Event emitted in place of a download when downloads are disabled on the WebView, with the same
++ * payload as the iOS onFileDownload event.
++ */
++class TopFileDownloadEvent(viewId: Int, private val mEventData: WritableMap) :
++  Event<TopFileDownloadEvent>(viewId) {
++  companion object {
++    const val EVENT_NAME = "topFileDownload"
++  }
++
++  override fun getEventName(): String = EVENT_NAME
++
++  override fun canCoalesce(): Boolean = false
++
++  override fun getCoalescingKey(): Short = 0
++
++  override fun dispatch(rctEventEmitter: RCTEventEmitter) =
++    rctEventEmitter.receiveEvent(viewTag, eventName, mEventData)
++
++}
 diff --git a/android/src/newarch/com/reactnativecommunity/webview/RNCWebViewManager.java b/android/src/newarch/com/reactnativecommunity/webview/RNCWebViewManager.java
-index 4709e2822499067cef3a4ce571991b96f844e085..b69ff1b659f390235d864f5bf06800f2a2d0ca09 100644
+index 4709e28..0525b70 100644
 --- a/android/src/newarch/com/reactnativecommunity/webview/RNCWebViewManager.java
 +++ b/android/src/newarch/com/reactnativecommunity/webview/RNCWebViewManager.java
-@@ -94,6 +94,12 @@ public class RNCWebViewManager extends ViewGroupManager<RNCWebViewWrapper>
+@@ -15,6 +15,7 @@ import com.facebook.react.viewmanagers.RNCWebViewManagerDelegate;
+ import com.facebook.react.viewmanagers.RNCWebViewManagerInterface;
+ import com.facebook.react.views.scroll.ScrollEventType;
+ import com.reactnativecommunity.webview.events.TopCustomMenuSelectionEvent;
++import com.reactnativecommunity.webview.events.TopFileDownloadEvent;
+ import com.reactnativecommunity.webview.events.SubResourceErrorEvent;
+ import com.reactnativecommunity.webview.events.TopHttpErrorEvent;
+ import com.reactnativecommunity.webview.events.TopLoadingErrorEvent;
+@@ -94,6 +95,12 @@ public class RNCWebViewManager extends ViewGroupManager<RNCWebViewWrapper>
          mRNCWebViewManagerImpl.setAllowsProtectedMedia(view, value);
      }
  
@@ -151,7 +269,20 @@ index 4709e2822499067cef3a4ce571991b96f844e085..b69ff1b659f390235d864f5bf06800f2
      @Override
      @ReactProp(name = "androidLayerType")
      public void setAndroidLayerType(RNCWebViewWrapper view, @Nullable String value) {
-@@ -423,9 +429,6 @@ public class RNCWebViewManager extends ViewGroupManager<RNCWebViewWrapper>
+@@ -208,6 +215,12 @@ public class RNCWebViewManager extends ViewGroupManager<RNCWebViewWrapper>
+         mRNCWebViewManagerImpl.setLackPermissionToDownloadMessage(value);
+     }
+ 
++    @Override
++    @ReactProp(name = "downloadsEnabled", defaultBoolean = true)
++    public void setDownloadsEnabled(RNCWebViewWrapper view, boolean value) {
++        mRNCWebViewManagerImpl.setDownloadsEnabled(view, value);
++    }
++
+     @Override
+     @ReactProp(name = "hasOnOpenWindowEvent")
+     public void setHasOnOpenWindowEvent(RNCWebViewWrapper view, boolean hasEvent) {
+@@ -423,9 +436,6 @@ public class RNCWebViewManager extends ViewGroupManager<RNCWebViewWrapper>
      @Override
      public void setHasOnFileDownload(RNCWebViewWrapper view, boolean value) {}
  
@@ -161,11 +292,37 @@ index 4709e2822499067cef3a4ce571991b96f844e085..b69ff1b659f390235d864f5bf06800f2
      @Override
      public void setFraudulentWebsiteWarningEnabled(RNCWebViewWrapper view, boolean value) {}
      /* !iOS PROPS - no implemented here */
+@@ -536,6 +546,7 @@ public class RNCWebViewManager extends ViewGroupManager<RNCWebViewWrapper>
+         export.put(TopRenderProcessGoneEvent.EVENT_NAME, MapBuilder.of("registrationName", "onRenderProcessGone"));
+         export.put(TopCustomMenuSelectionEvent.EVENT_NAME, MapBuilder.of("registrationName", "onCustomMenuSelection"));
+         export.put(TopOpenWindowEvent.EVENT_NAME, MapBuilder.of("registrationName", "onOpenWindow"));
++        export.put(TopFileDownloadEvent.EVENT_NAME, MapBuilder.of("registrationName", "onFileDownload"));
+         return export;
+     }
+ 
 diff --git a/android/src/oldarch/com/reactnativecommunity/webview/RNCWebViewManager.java b/android/src/oldarch/com/reactnativecommunity/webview/RNCWebViewManager.java
-index 974337f41ce01a5102eeafa6e54fbb3b949c48d7..70a9ad019a60bc69bf60510e9fa5893423067234 100644
+index 974337f..d938327 100644
 --- a/android/src/oldarch/com/reactnativecommunity/webview/RNCWebViewManager.java
 +++ b/android/src/oldarch/com/reactnativecommunity/webview/RNCWebViewManager.java
-@@ -174,6 +174,11 @@ public class RNCWebViewManager extends ViewGroupManager<RNCWebViewWrapper> {
+@@ -11,6 +11,7 @@ import com.facebook.react.uimanager.ViewGroupManager;
+ import com.facebook.react.uimanager.annotations.ReactProp;
+ import com.facebook.react.views.scroll.ScrollEventType;
+ import com.reactnativecommunity.webview.events.TopCustomMenuSelectionEvent;
++import com.reactnativecommunity.webview.events.TopFileDownloadEvent;
+ import com.reactnativecommunity.webview.events.SubResourceErrorEvent;
+ import com.reactnativecommunity.webview.events.TopHttpErrorEvent;
+ import com.reactnativecommunity.webview.events.TopLoadingErrorEvent;
+@@ -169,11 +170,21 @@ public class RNCWebViewManager extends ViewGroupManager<RNCWebViewWrapper> {
+         mRNCWebViewManagerImpl.setLackPermissionToDownloadMessage(value);
+     }
+ 
++    @ReactProp(name = "downloadsEnabled", defaultBoolean = true)
++    public void setDownloadsEnabled(RNCWebViewWrapper view, boolean value) {
++        mRNCWebViewManagerImpl.setDownloadsEnabled(view, value);
++    }
++
+     @ReactProp(name = "hasOnOpenWindowEvent")
+     public void setHasOnOpenWindowEvent(RNCWebViewWrapper view, boolean hasEvent) {
          mRNCWebViewManagerImpl.setHasOnOpenWindowEvent(view, hasEvent);
      }
  
@@ -177,8 +334,16 @@ index 974337f41ce01a5102eeafa6e54fbb3b949c48d7..70a9ad019a60bc69bf60510e9fa58934
      @ReactProp(name = "mediaPlaybackRequiresUserAction")
      public void setMediaPlaybackRequiresUserAction(RNCWebViewWrapper view, boolean value) {
          mRNCWebViewManagerImpl.setMediaPlaybackRequiresUserAction(view, value);
+@@ -306,6 +317,7 @@ public class RNCWebViewManager extends ViewGroupManager<RNCWebViewWrapper> {
+         export.put(TopRenderProcessGoneEvent.EVENT_NAME, MapBuilder.of("registrationName", "onRenderProcessGone"));
+         export.put(TopCustomMenuSelectionEvent.EVENT_NAME, MapBuilder.of("registrationName", "onCustomMenuSelection"));
+         export.put(TopOpenWindowEvent.EVENT_NAME, MapBuilder.of("registrationName", "onOpenWindow"));
++        export.put(TopFileDownloadEvent.EVENT_NAME, MapBuilder.of("registrationName", "onFileDownload"));
+         return export;
+     }
+ 
 diff --git a/apple/RNCWebViewImpl.m b/apple/RNCWebViewImpl.m
-index 7f5c24d6e2cfb26eddbc513bf17a81c24a7273e2..1129ea768389a9c4071f35ff6c3873462adf0d99 100644
+index 7f5c24d..1129ea7 100644
 --- a/apple/RNCWebViewImpl.m
 +++ b/apple/RNCWebViewImpl.m
 @@ -1196,13 +1196,42 @@ RCTAutoInsetsProtocol>
@@ -253,11 +418,33 @@ index 7f5c24d6e2cfb26eddbc513bf17a81c24a7273e2..1129ea768389a9c4071f35ff6c387346
    [alert addTextFieldWithConfigurationHandler:^(UITextField *textField) {
      textField.text = defaultText;
    }];
+diff --git a/lib/RNCWebViewNativeComponent.d.ts b/lib/RNCWebViewNativeComponent.d.ts
+index 8dd6cef..1ad9428 100644
+--- a/lib/RNCWebViewNativeComponent.d.ts
++++ b/lib/RNCWebViewNativeComponent.d.ts
+@@ -120,6 +120,7 @@ export interface NativeProps extends ViewProps {
+     cacheMode?: WithDefault<'LOAD_DEFAULT' | 'LOAD_CACHE_ELSE_NETWORK' | 'LOAD_NO_CACHE' | 'LOAD_CACHE_ONLY', 'LOAD_DEFAULT'>;
+     domStorageEnabled?: boolean;
+     downloadingMessage?: string;
++    downloadsEnabled?: WithDefault<boolean, true>;
+     forceDarkOn?: boolean;
+     geolocationEnabled?: boolean;
+     lackPermissionToDownloadMessage?: string;
 diff --git a/lib/WebViewTypes.d.ts b/lib/WebViewTypes.d.ts
-index 998cc88f03f3fbcd0a47f227c01f738dbf4c58bf..cfc4a4f0ed6cba8b7da700fcddfbba41e9fffb1d 100644
+index 998cc88..039b193 100644
 --- a/lib/WebViewTypes.d.ts
 +++ b/lib/WebViewTypes.d.ts
-@@ -566,7 +566,8 @@ export interface IOSWebViewProps extends WebViewSharedProps {
+@@ -543,6 +543,9 @@ export interface IOSWebViewProps extends WebViewSharedProps {
+      * the file.
+      *
+      * If not provided, the default is to let the webview try to render the file.
++     *
++     * Android: called in place of the download when `downloadsEnabled` is `false`;
++     * never called otherwise, since the webview downloads the file itself.
+      */
+     onFileDownload?: (event: FileDownloadEvent) => void;
+     /**
+@@ -566,7 +569,8 @@ export interface IOSWebViewProps extends WebViewSharedProps {
      /**
       * This property specifies how to handle media capture permission requests.
       * Defaults to `prompt`, resulting in the user being prompted repeatedly.
@@ -267,11 +454,49 @@ index 998cc88f03f3fbcd0a47f227c01f738dbf4c58bf..cfc4a4f0ed6cba8b7da700fcddfbba41
       */
      mediaCapturePermissionGrantType?: MediaCapturePermissionGrantType;
      /**
+@@ -941,6 +945,15 @@ export interface AndroidWebViewProps extends WebViewSharedProps {
+      * @platform android
+      */
+     downloadingMessage?: string;
++    /**
++     * Whether a download — an attachment response, or content the webview cannot render — is
++     * handed to the system DownloadManager, which saves it to the public Downloads directory
++     * with the site's cookies and, on Android 10+, without a prompt. When `false` nothing is
++     * saved and the attempt is reported through `onFileDownload` instead, as on iOS.
++     * Default is true.
++     * @platform android
++     */
++    downloadsEnabled?: boolean;
+     /**
+      * Sets the message to be shown in the toast when webview is unable to download due to permissions issue.
+      * Default is 'Cannot download files as permission was denied. Please provide permission to write to storage, in order to download files.'.
+diff --git a/src/RNCWebViewNativeComponent.ts b/src/RNCWebViewNativeComponent.ts
+index 7f4e6c4..b6d8650 100644
+--- a/src/RNCWebViewNativeComponent.ts
++++ b/src/RNCWebViewNativeComponent.ts
+@@ -157,6 +157,7 @@ export interface NativeProps extends ViewProps {
+   >;
+   domStorageEnabled?: boolean;
+   downloadingMessage?: string;
++  downloadsEnabled?: WithDefault<boolean, true>;
+   forceDarkOn?: boolean;
+   geolocationEnabled?: boolean;
+   lackPermissionToDownloadMessage?: string;
 diff --git a/src/WebViewTypes.ts b/src/WebViewTypes.ts
-index eca81415ab48676da18fc2be13b84e60fe5cb3f5..8baae75876bca2c29a41992ba451c7247f455131 100644
+index eca8141..a498bc0 100644
 --- a/src/WebViewTypes.ts
 +++ b/src/WebViewTypes.ts
-@@ -724,7 +724,8 @@ export interface IOSWebViewProps extends WebViewSharedProps {
+@@ -698,6 +698,9 @@ export interface IOSWebViewProps extends WebViewSharedProps {
+    * the file.
+    *
+    * If not provided, the default is to let the webview try to render the file.
++   *
++   * Android: called in place of the download when `downloadsEnabled` is `false`;
++   * never called otherwise, since the webview downloads the file itself.
+    */
+   onFileDownload?: (event: FileDownloadEvent) => void;
+ 
+@@ -724,7 +727,8 @@ export interface IOSWebViewProps extends WebViewSharedProps {
    /**
     * This property specifies how to handle media capture permission requests.
     * Defaults to `prompt`, resulting in the user being prompted repeatedly.
@@ -281,3 +506,20 @@ index eca81415ab48676da18fc2be13b84e60fe5cb3f5..8baae75876bca2c29a41992ba451c724
     */
    mediaCapturePermissionGrantType?: MediaCapturePermissionGrantType;
  
+@@ -1147,6 +1151,16 @@ export interface AndroidWebViewProps extends WebViewSharedProps {
+    */
+   downloadingMessage?: string;
+ 
++  /**
++   * Whether a download — an attachment response, or content the webview cannot render — is
++   * handed to the system DownloadManager, which saves it to the public Downloads directory
++   * with the site's cookies and, on Android 10+, without a prompt. When `false` nothing is
++   * saved and the attempt is reported through `onFileDownload` instead, as on iOS.
++   * Default is true.
++   * @platform android
++   */
++  downloadsEnabled?: boolean;
++
+   /**
+    * Sets the message to be shown in the toast when webview is unable to download due to permissions issue.
+    * Default is 'Cannot download files as permission was denied. Please provide permission to write to storage, in order to download files.'.

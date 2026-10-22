@@ -90,7 +90,7 @@ Checked on 2026-10-21 against `react-native-webview` 13.16.1 and `expo-web-brows
 | Session shared with the system browser                             | ❌          | ❌ [18]     | ❌              | ✅ [20]         |
 | Suite can clear the site's data                                    | ⚠️ [17]     | ❌          | ⚠️ [19]         | ❌              |
 | File upload (`<input type="file">`)                                | ✅          | ✅          | ✅ [21]         | ✅              |
-| Downloads                                                          | ⚠️ [22]     | ⚠️ [23]     | ✅ [24]         | ✅              |
+| Downloads                                                          | ⚠️ [22]     | ⚠️ [23]     | ⚠️ [24]         | ✅              |
 | Geolocation                                                        | ⚠️ [25]     | ✅          | ⚠️ [25]         | ✅              |
 | HTTP Basic authentication                                          | ⚠️ [26]     | ✅          | ⚠️ [26]         | ✅              |
 | Remote inspection (Web Inspector, `chrome://inspect`)              | ✅ [27]     | ❌          | ✅ [27]         | ❌              |
@@ -180,12 +180,18 @@ Checked on 2026-10-21 against `react-native-webview` 13.16.1 and `expo-web-brows
     not exposed by `expo-web-browser` 57.
 21. `react-native-webview` answers `onShowFileChooser` with the photo picker or the camera; a
     `capture` input needs the camera permission.
-22. iOS 13+ reports a download through `onFileDownload` and leaves the download to the app; without a
-    handler the WebView tries to render the file instead (PDFs render inline). Not wired.
+22. iOS 13+ cancels an attachment response and reports it through `onFileDownload` as soon as a
+    handler is set, leaving the download to the app; without one the WebView tries to render the
+    file instead (PDFs render inline). `EmbeddedAppWebView` sets the handler and downloads nothing,
+    so every attempt ends as a `download-blocked` event, as on desktop.
 23. The browser's own handling: files open through its share and "Open in" sheet rather than a
     download manager.
-24. `react-native-webview` hands downloads to `DownloadManager`, which saves them to the device; the
-    host cannot refuse.
+24. `react-native-webview` hands downloads to `DownloadManager`, which saves them to the public
+    Downloads directory with the site's cookies and, on Android 10+, without a prompt — for any
+    frame, and the library offers no way to refuse. Suite's patch of the library
+    (`.yarn/patches/react-native-webview-npm-13.16.1-in-app-browser.patch`) adds a `downloadsEnabled`
+    prop; off, the listener reports the download through `onFileDownload` instead of saving it, and
+    `EmbeddedAppWebView` keeps it off.
 25. iOS prompts through the page once the app declares `NSLocationWhenInUseUsageDescription` (Suite
     has none). Android needs `geolocationEnabled` and `ACCESS_FINE_LOCATION` in the manifest; the
     library asks the user when the page does. `EmbeddedAppWebView` keeps it off.

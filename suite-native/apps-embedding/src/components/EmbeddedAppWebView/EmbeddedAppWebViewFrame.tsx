@@ -47,6 +47,7 @@ export const EmbeddedAppWebViewFrame = ({
         handleLoad,
         handleError,
         handleOpenWindow,
+        handleFileDownload,
         handleMessage,
         handleNavigationStateChange,
     } = useEmbeddedAppWebViewFrame({ targetUrl: url, allowedOrigins, onEvent });
@@ -90,10 +91,15 @@ export const EmbeddedAppWebViewFrame = ({
                 // Desktop denies every permission. The camera and the microphone are refused on
                 // both platforms: the library implements the grant type on iOS only and would grant
                 // them on Android whenever Suite holds the permission, to any frame, so Suite's
-                // patch of it (.yarn/patches) makes the prop apply there too. Android still saves
-                // downloads to the device; the library offers no way to refuse that.
+                // patch of it (.yarn/patches) makes the prop apply there too.
                 geolocationEnabled={false}
                 mediaCapturePermissionGrantType="deny"
+                // Downloads are refused and reported, as on desktop. iOS cancels an attachment
+                // response as soon as a handler is set; Android would save the file to the
+                // device with the site's cookies and no prompt, so the patched library reports
+                // it through the same handler instead (see .yarn/patches/README.md).
+                downloadsEnabled={false}
+                onFileDownload={handleFileDownload}
                 webviewDebuggingEnabled={isDebuggingEnabled}
                 onLoadStart={handleLoadStart}
                 onLoad={handleLoad}

@@ -48,3 +48,4 @@ Changes for the in-app browser of `@suite-native/apps-embedding`, introduced for
   than the page's; the other values keep the library's handling, which grants to any frame once the
   app holds the Android permission and asks the user for it otherwise. Upstream has no Android
   implementation as of 13.16.1.
+- Android `downloadsEnabled` prop (default `true`). The library's download listener hands every attachment response, from any frame, to `DownloadManager`, which saves it to the public Downloads directory with the site's cookies and no prompt on Android 10+, and no prop could refuse it. Off, the listener reports the download through the existing `onFileDownload` event (`topFileDownload`, with the iOS payload) instead of saving anything. Upstream has no equivalent as of 13.16.1.
