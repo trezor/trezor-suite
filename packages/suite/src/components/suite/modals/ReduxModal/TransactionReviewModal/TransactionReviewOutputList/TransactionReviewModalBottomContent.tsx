@@ -86,10 +86,13 @@ export const TransactionReviewModalBottomContent = ({
                 action,
                 symbol,
                 precomposedForm,
-                tokens: outputs
-                    .filter((output: TransactionReviewOutput) => output.token?.symbol)
-                    .map((output: TransactionReviewOutput) => output.token?.symbol)
-                    .join(','),
+                tokens:
+                    txType === 'yield'
+                        ? (precomposedTx?.token?.symbol ?? '')
+                        : outputs
+                              .filter((output: TransactionReviewOutput) => output.token?.symbol)
+                              .map((output: TransactionReviewOutput) => output.token?.symbol)
+                              .join(','),
                 txType,
             }),
         });

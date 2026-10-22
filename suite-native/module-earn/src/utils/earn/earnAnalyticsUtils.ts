@@ -23,7 +23,7 @@ export const reportTransactionCreated = ({
         payload: {
             action: 'sent',
             symbol,
-            tokens: '',
+            tokens: precomposedTransaction.token?.symbol ?? '',
             outputsCount: precomposedTransaction.outputs.length,
             broadcast: true,
             bitcoinLocktime: formState.options.includes('bitcoinLocktime'),
