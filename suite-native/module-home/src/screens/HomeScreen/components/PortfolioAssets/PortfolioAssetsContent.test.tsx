@@ -1,5 +1,6 @@
 import { Text } from 'react-native';
 
+import { mockNetworksState } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
@@ -57,6 +58,7 @@ const createPreloadedState = (assetCount: number) => {
             fiat: { current: {}, lastWeek: {} },
         },
         tokenDefinitions: { [ETH]: { coin: { data: tokenContracts, hide: [], show: [] } } },
+        networks: mockNetworksState([ETH]),
     };
 };
 

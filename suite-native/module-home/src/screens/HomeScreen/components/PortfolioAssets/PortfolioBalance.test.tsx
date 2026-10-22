@@ -1,3 +1,4 @@
+import { mockNetworksState } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { renderWithStoreProvider, screen } from '@suite-native/test-utils-store';
@@ -34,6 +35,7 @@ const createPreloadedState = ({
         },
     },
     tokenDefinitions: {},
+    networks: mockNetworksState([BTC, ETH]),
 });
 
 const RATES = { 'btc-usd': { rate: 100000 }, 'eth-usd': { rate: 3000 } };
