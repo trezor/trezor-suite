@@ -29,10 +29,16 @@ export type AnvilForkOptions = {
     blockTime?: number;
     /** Base fee of the first block mined on the fork, in wei. */
     baseFeePerGas?: bigint;
+    /**
+     * Mines Suite's whole initial history window on the fork right after it starts, so the
+     * evm-rpc worker's first log scan reads only local blocks instead of asking the upstream RPC
+     * for thousands of pre-fork blocks. Adds a few seconds to startup. Defaults to true.
+     */
+    padHistory?: boolean;
 };
 
 export type AnvilForkConfig = Required<
-    Pick<AnvilForkOptions, 'symbol' | 'forkUrl' | 'automine' | 'blockTime'>
+    Pick<AnvilForkOptions, 'symbol' | 'forkUrl' | 'automine' | 'blockTime' | 'padHistory'>
 > &
     Pick<AnvilForkOptions, 'blockNumber' | 'baseFeePerGas'> & { chainId: number };
 
@@ -65,5 +71,6 @@ export const getAnvilForkConfig = (options: AnvilForkOptions): AnvilForkConfig =
         automine: options.automine ?? true,
         blockTime: options.blockTime ?? 1,
         baseFeePerGas: options.baseFeePerGas,
+        padHistory: options.padHistory ?? true,
     };
 };

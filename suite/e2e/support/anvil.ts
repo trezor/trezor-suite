@@ -35,6 +35,11 @@ const MAX_BALANCE_SLOT_PROBE = 20;
 
 // Holds tokens only between the storage write and the transfer in `fundErc20`.
 const ERC20_FUNDER_ADDRESS = '0x000000000000000000000000000000000000f00d';
+// How far back the evm-rpc worker scans an account it has not seen yet (INITIAL_HISTORY_BLOCKS in
+// packages/blockchain-link/src/workers/evm-rpc/history/constants.ts).
+const SUITE_HISTORY_WINDOW_BLOCKS = 10_000;
+const HISTORY_PAD_BATCH = 1_000;
+
 // Gas reserve given to an impersonated account whose balance cannot cover a transaction.
 const GAS_TOP_UP = 10n ** 18n;
 
@@ -69,7 +74,6 @@ const getAnvilArgs = (config: AnvilForkConfig, port: number) => [
     '--fork-url',
     config.forkUrl,
     ...(config.blockNumber !== undefined ? ['--fork-block-number', `${config.blockNumber}`] : []),
-    ...(config.baseFeePerGas !== undefined ? ['--base-fee', `${config.baseFeePerGas}`] : []),
     // Mixed mining: each transaction is mined at once, and blocks keep coming in between.
     ...(config.automine && config.blockTime > 0
         ? ['--block-time', `${config.blockTime}`, '--mixed-mining']
@@ -86,6 +90,9 @@ const getAnvilArgs = (config: AnvilForkConfig, port: number) => [
     '10',
     '--fork-retry-backoff',
     '1000',
+    // Tests only read the latest state. Without this, Anvil writes every past state to disk,
+    // gigabytes per fork once the history padding is mined.
+    '--prune-history',
 ];
 
 type SendTransactionAsParams = { to: Address; value?: bigint; data?: Hex };
@@ -156,8 +163,35 @@ export class AnvilFork {
         });
 
         this.client = createAnvilClient(this.url);
+        try {
+            await this.prepare(() => exitReason);
+        } catch (error) {
+            // The fixture only stops a fork that started, so a failed start must not leave anvil
+            // running.
+            await this.stop();
+            throw error;
+        }
+    }
+
+    private async prepare(getExitReason: () => string | undefined) {
+        await this.waitUntilReady(getExitReason);
+
+        if (this.config.padHistory) {
+            // In batches, each well within the client's request timeout. Same timestamp for all of
+            // them, so the chain does not run ahead of the wall clock.
+            for (let mined = 0; mined < SUITE_HISTORY_WINDOW_BLOCKS; mined += HISTORY_PAD_BATCH) {
+                await this.rpc.mine({ blocks: HISTORY_PAD_BATCH, interval: 0 });
+            }
+        }
+        if (this.config.baseFeePerGas !== undefined) {
+            await this.setNextBlockBaseFee(this.config.baseFeePerGas);
+        }
+    }
+
+    private async waitUntilReady(getExitReason: () => string | undefined) {
         const deadline = Date.now() + STARTUP_TIMEOUT_MS;
         while (Date.now() < deadline) {
+            const exitReason = getExitReason();
             if (exitReason) {
                 throw new Error(`${exitReason}\n${this.output}`);
             }
@@ -170,7 +204,6 @@ export class AnvilFork {
             await new Promise(resolve => setTimeout(resolve, STARTUP_POLL_INTERVAL_MS));
         }
 
-        await this.stop();
         throw new Error(`anvil did not start within ${STARTUP_TIMEOUT_MS} ms\n${this.output}`);
     }
 
