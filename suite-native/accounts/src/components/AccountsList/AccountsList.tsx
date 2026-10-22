@@ -10,7 +10,6 @@ import { Box, useBannerAwareSafeAreaInsets, useScrollDivider } from '@suite-nati
 import { useIsBottomInsetApplicable } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { AccountsListEmptyPlaceholder } from './AccountsListEmptyPlaceholder';
 import { AccountsListRow } from './AccountsListRow';
 import {
     type FilteredDeviceAccountListRow,
@@ -27,6 +26,7 @@ type AccountsListProps = {
     isSendFlow?: boolean;
     networkFilter?: NetworkSymbol[];
     ListHeaderComponent?: ReactElement;
+    ListEmptyComponent?: ReactElement;
     ListFooterComponent?: ReactElement;
 };
 
@@ -48,6 +48,7 @@ export const AccountsList = ({
     isSendFlow = false,
     networkFilter = DEFAULT_NETWORK_FILTER,
     ListHeaderComponent,
+    ListEmptyComponent,
     ListFooterComponent,
 }: AccountsListProps) => {
     const { scrollDivider, handleScroll } = useScrollDivider();
@@ -81,9 +82,7 @@ export const AccountsList = ({
                 keyExtractor={item => item.accountKey}
                 renderItem={renderItem}
                 ListHeaderComponent={ListHeaderComponent}
-                ListEmptyComponent={
-                    <AccountsListEmptyPlaceholder isFilterEmpty={!searchValue.length} />
-                }
+                ListEmptyComponent={ListEmptyComponent}
                 ListFooterComponent={
                     <Box style={applyStyle(footerStyle, { insets, isBottomInsetApplicable })}>
                         {ListFooterComponent}
