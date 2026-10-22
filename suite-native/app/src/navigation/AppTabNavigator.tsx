@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { type BottomTabBarProps, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
-import { useAccountsFiatRates } from '@suite-common/wallet-core';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { AccountsStackNavigator } from '@suite-native/module-accounts';
 import { EarnStackNavigator } from '@suite-native/module-earn';
@@ -19,8 +18,6 @@ import { rootTabsOptions, rootTabsOptionsWithoutEarn } from './routes';
 const Tab = createBottomTabNavigator<AppTabsParamList>();
 
 export const AppTabNavigator = () => {
-    // Every tab shows values of the whole portfolio, so keep the rates of all accounts fresh.
-    useAccountsFiatRates();
     const { analytics } = useServices(injectNativeAnalytics);
     const isTradingEnabled = useSelector(selectIsTradingEnabled);
     const isBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);

@@ -51,6 +51,7 @@ export const useCryptoFiatConverters = ({
     useFiatRate({
         ticker: symbol ? { symbol, tokenAddress: tokenContract } : undefined,
         isDisabled: useHistoricRate,
+        isPolling: false,
     });
     const currentRate = useSelector((state: FiatRatesRootState) =>
         selectFiatRatesByFiatRateKey(state, fiatRateKey),

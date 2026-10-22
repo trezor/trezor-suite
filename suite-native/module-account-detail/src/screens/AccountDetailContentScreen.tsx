@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
+import { useIsFocused } from '@react-navigation/native';
+
+import { useAccountFiatRates } from '@suite-common/wallet-core';
 import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Screen } from '@suite-native/navigation';
@@ -21,6 +24,8 @@ export const AccountDetailContentScreen = ({
     account,
     tokenContract,
 }: AccountDetailContentScreenProps) => {
+    const isFocused = useIsFocused();
+    useAccountFiatRates({ accountKey: account.key, isDisabled: !isFocused });
     const { analytics } = useServices(injectNativeAnalytics);
     const token = useSelector((state: TokensRootState) =>
         selectAccountTokenInfo(state, account.key, tokenContract),

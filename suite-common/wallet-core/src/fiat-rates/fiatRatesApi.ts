@@ -250,10 +250,14 @@ export const getFiatRateEndpoint = (rateType: RateTypeWithoutHistoric): FiatRate
     fiatRatesApi.endpoints[getFiatRateEndpointName(rateType)];
 
 /**
- * Subscribed rates are polled while the app is focused.
+ * Polling subscriptions refetch their rates while the app is focused. The others only keep the
+ * cached rates alive, an interval of 0 turns polling off.
  */
-export const getFiatRateSubscriptionOptions = (rateType: RateTypeWithoutHistoric) => ({
-    pollingInterval: REFETCH_INTERVAL[rateType],
+export const getFiatRateSubscriptionOptions = (
+    rateType: RateTypeWithoutHistoric,
+    isPolling = true,
+) => ({
+    pollingInterval: isPolling ? REFETCH_INTERVAL[rateType] : 0,
     skipPollingIfUnfocused: true,
 });
 

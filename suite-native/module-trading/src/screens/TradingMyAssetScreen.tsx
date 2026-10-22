@@ -1,6 +1,9 @@
 import { useCallback } from 'react';
 
+import { useIsFocused } from '@react-navigation/native';
+
 import { type TradingType } from '@suite-common/trading';
+import { useDeviceAccountsFiatRates } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Translation } from '@suite-native/intl';
 import {
@@ -46,6 +49,8 @@ export type TradingMyAssetScreenProps = StackProps<
 >;
 
 export const TradingMyAssetScreen = ({ navigation, route }: TradingMyAssetScreenProps) => {
+    const isFocused = useIsFocused();
+    useDeviceAccountsFiatRates({ isDisabled: !isFocused });
     const { tradingType } = route.params;
 
     const handleAssetSelect = useCallback(

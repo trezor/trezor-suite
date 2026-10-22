@@ -1,5 +1,8 @@
 import { useMemo } from 'react';
 
+import { useIsFocused } from '@react-navigation/native';
+
+import { useDeviceAccountsFiatRates } from '@suite-common/wallet-core';
 import { isStakingSymbol } from '@suite-common/wallet-utils';
 import { AccountsListWithFilter, type OnSelectAccount } from '@suite-native/accounts';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
@@ -23,6 +26,8 @@ type ScreenNavigationProps = StackToStackCompositeScreenProps<
 >;
 
 export const AccountsScreen = ({ navigation, route }: ScreenNavigationProps) => {
+    const isFocused = useIsFocused();
+    useDeviceAccountsFiatRates({ isDisabled: !isFocused });
     const networksFilter = useMemo(
         () => route.params?.networksFilter ?? [],
         [route.params?.networksFilter],

@@ -9,6 +9,7 @@ import {
     selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
     selectHistoricFiatRatesByTimestamp,
+    useFiatRate,
 } from '@suite-common/wallet-core';
 import { type Timestamp, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
@@ -34,6 +35,7 @@ type TodayHeaderCellProps = {
 const TodayHeaderCell = ({ cryptoValue, symbol, historicRate }: TodayHeaderCellProps) => {
     const fiatCurrencyCode = useSelector(selectBaseCurrency);
     const fiatRateKey = getFiatRateKey(symbol, fiatCurrencyCode);
+    useFiatRate({ ticker: { symbol }, isPolling: false });
     const currentRates = useSelector((state: FiatRatesRootState) =>
         selectFiatRatesByFiatRateKey(state, fiatRateKey),
     );

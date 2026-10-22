@@ -35,7 +35,12 @@ export const useFiatFromCryptoValue = ({
 }: useFiatFromCryptoValueParams) => {
     const fiatCurrencyCode = useSelector(selectBaseCurrency);
     const fiatRateKey = getFiatRateKey(symbol, fiatCurrencyCode, tokenAddress);
-    useFiatRate({ ticker: { symbol, tokenAddress }, isDisabled: useHistoricRate });
+    // The focused screen keeps the rate fresh, a shown value only makes sure it is loaded.
+    useFiatRate({
+        ticker: { symbol, tokenAddress },
+        isDisabled: useHistoricRate,
+        isPolling: false,
+    });
     const currentRate = useSelector((state: FiatRatesRootState) =>
         selectFiatRatesByFiatRateKey(state, fiatRateKey),
     );

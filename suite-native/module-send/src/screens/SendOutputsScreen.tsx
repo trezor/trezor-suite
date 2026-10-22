@@ -2,8 +2,9 @@ import { useCallback, useEffect, useRef } from 'react';
 import { FadeInDown, FadeOutDown } from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
 
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 
+import { useAccountFiatRates } from '@suite-common/wallet-core';
 import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { AccountDetailsCard } from '@suite-native/accounts';
 import { AnimatedView, BannerInline, Box } from '@suite-native/atoms';
@@ -37,6 +38,8 @@ export const SendOutputsScreen = ({
 }: StackProps<SendStackParamList, SendStackRoutes.SendOutputs>) => {
     const { accountKey, tokenContract, postNavigationAction, initialAddress, initialAmount } =
         params;
+    const isFocused = useIsFocused();
+    useAccountFiatRates({ accountKey, isDisabled: !isFocused });
     const sendForm = useSendForm(accountKey, tokenContract);
     const { totalSelectedAmount, selectedUtxos } = useUtxoSelection(accountKey);
     const feeLevels = useSelector(selectFeeLevels);

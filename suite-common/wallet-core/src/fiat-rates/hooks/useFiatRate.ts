@@ -21,11 +21,14 @@ type UseFiatRateParams = {
     forceFetchToken?: boolean;
     skipCache?: boolean;
     isDisabled?: boolean;
+    /** Off for components that only show the rate, the focused screen keeps it fresh. */
+    isPolling?: boolean;
 };
 
 /**
- * Subscribes the component to one ticker rate: it is fetched when missing or stale and polled
- * while the component is mounted. Read the value from the result or from the fiat rate selectors.
+ * Subscribes the component to one ticker rate: it is fetched when missing or stale and, unless
+ * `isPolling` is off, polled while the component is mounted. Read the value from the result or from
+ * the fiat rate selectors.
  */
 export const useFiatRate = ({
     ticker,
@@ -34,6 +37,7 @@ export const useFiatRate = ({
     forceFetchToken,
     skipCache,
     isDisabled = false,
+    isPolling = true,
 }: UseFiatRateParams) => {
     const defaultBaseCurrencyCode = useSelector(selectBaseCurrency);
     const queryArgs =
@@ -46,7 +50,7 @@ export const useFiatRate = ({
               }
             : skipToken;
     const options = {
-        ...getFiatRateSubscriptionOptions(rateType),
+        ...getFiatRateSubscriptionOptions(rateType, isPolling),
         refetchOnMountOrArgChange: getFiatRateMaxAgeInSeconds(rateType),
     };
 

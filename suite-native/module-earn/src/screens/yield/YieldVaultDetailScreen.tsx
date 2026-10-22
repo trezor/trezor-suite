@@ -1,12 +1,13 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { type RouteProp, useRoute } from '@react-navigation/native';
+import { type RouteProp, useIsFocused, useRoute } from '@react-navigation/native';
 
 import {
     type AccountsRootState,
     fetchAllTransactionsForAccountThunk,
     selectAccountByKey,
+    useAccountFiatRates,
 } from '@suite-common/wallet-core';
 import { type RootStackParamList, type RootStackRoutes, Screen } from '@suite-native/navigation';
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
@@ -21,6 +22,8 @@ import { YieldVaultDetailScreenHeader } from '../../components/yield/YieldVaultD
 export const YieldVaultDetailScreen = () => {
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.YieldVaultDetail>>();
     const { accountKey, tokenContract } = route.params;
+    const isFocused = useIsFocused();
+    useAccountFiatRates({ accountKey, isDisabled: !isFocused });
     const { dispatch } = useServices(injectDispatch);
 
     const account = useSelector((state: AccountsRootState) =>

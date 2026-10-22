@@ -11,6 +11,7 @@ import {
     selectBaseCurrency,
     selectFiatRatesByFiatRateKey,
     selectTransactionBlockTimeById,
+    useFiatRate,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
@@ -77,6 +78,7 @@ export const UtxoCard = ({
     const fiatCurrencyCode = useSelector(selectBaseCurrency);
     const fiatRateKey = getFiatRateKey(symbol, fiatCurrencyCode);
 
+    useFiatRate({ ticker: { symbol }, isPolling: false });
     const currentRates = useSelector((state: FiatRatesRootState) =>
         selectFiatRatesByFiatRateKey(state, fiatRateKey),
     );

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import { useIsFocused } from '@react-navigation/native';
 import { type NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import {
@@ -9,6 +10,7 @@ import {
     selectAccountByKey,
     selectAccountDefiTokensCount,
     selectAccountManuallyHiddenTokensCount,
+    useAccountFiatRates,
 } from '@suite-common/wallet-core';
 import { isAccountFailed } from '@suite-common/wallet-utils';
 import {
@@ -60,6 +62,9 @@ export const AccountOverviewScreen = ({
             accountIndex,
             setParams: navigation.setParams,
         }) ?? routeAccountKey;
+
+    const isFocused = useIsFocused();
+    useAccountFiatRates({ accountKey, isDisabled: !isFocused });
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),

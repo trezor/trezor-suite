@@ -5,6 +5,7 @@ import { type TokenDefinitionsRootState } from '@suite-common/token-definitions'
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
+    type AccountKey,
     type CryptoBaseCurrencyPair,
     type Rate,
     type Timestamp,
@@ -15,6 +16,8 @@ import {
     selectCurrentFiatRatesByFiatRateKeys,
     selectHistoricFiatRatesByTimestamp,
     selectTickerFromAccounts,
+    selectTickersFromAccount,
+    selectTickersFromDeviceAccounts,
 } from './fiatRatesSelectors';
 import { type FiatRatesRootState } from './fiatRatesTypes';
 import { mockFiatRatesApiState } from '../../mocks/mockFiatRatesApiState';
@@ -127,6 +130,42 @@ describe('selectTickerFromAccounts', () => {
         );
 
         expect(result.map(ticker => ticker.tokenAddress)).not.toContain(UNLISTED_TOKEN);
+    });
+});
+
+describe('selectTickersFromDeviceAccounts', () => {
+    it('returns tickers of the selected wallet only', () => {
+        const getTokenAddresses = (selectedDevice: TrezorDevice) =>
+            selectTickersFromDeviceAccounts(getState(selectedDevice)).map(
+                ticker => ticker.tokenAddress,
+            );
+
+        expect(getTokenAddresses(STANDARD_WALLET)).toEqual([undefined, USDT]);
+        expect(getTokenAddresses(PASSPHRASE_WALLET)).toEqual([undefined, USDC]);
+    });
+});
+
+describe('selectTickersFromAccount', () => {
+    const ACCOUNT_KEY = 'standard-eth-account' as AccountKey;
+    const accounts = [
+        { ...evmAccount(STANDARD_WALLET_SSID, USDT), key: ACCOUNT_KEY },
+        evmAccount(PASSPHRASE_WALLET_SSID, USDC),
+    ];
+
+    it('returns tickers of the account and its tokens', () => {
+        expect(selectTickersFromAccount(getState(STANDARD_WALLET, accounts), ACCOUNT_KEY)).toEqual([
+            { symbol: 'eth' },
+            { symbol: 'eth', tokenAddress: USDT, protocols: [] },
+        ]);
+    });
+
+    it('returns no tickers for an unknown account', () => {
+        expect(
+            selectTickersFromAccount(
+                getState(STANDARD_WALLET, accounts),
+                'unknown-account' as AccountKey,
+            ),
+        ).toEqual([]);
     });
 });
 

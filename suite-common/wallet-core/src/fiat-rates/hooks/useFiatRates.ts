@@ -38,12 +38,14 @@ type UseFiatRatesParams = {
     baseCurrencyCode?: BaseCurrencyCode;
     forceFetchToken?: boolean;
     isDisabled?: boolean;
+    /** Off for components that only show the rates, the focused screen keeps them fresh. */
+    isPolling?: boolean;
 };
 
 /**
  * Subscribes the component to the rates of a changing list of tickers. Rates are fetched when
- * missing or stale and polled while the component is mounted. Read the values with the fiat rate
- * selectors.
+ * missing or stale and, unless `isPolling` is off, polled while the component is mounted. Read the
+ * values with the fiat rate selectors.
  */
 export const useFiatRates = ({
     tickers,
@@ -51,6 +53,7 @@ export const useFiatRates = ({
     baseCurrencyCode,
     forceFetchToken = false,
     isDisabled = false,
+    isPolling = true,
 }: UseFiatRatesParams): UseFiatRatesResult => {
     const { dispatch } = useServices(injectDispatch);
     const defaultBaseCurrencyCode = useSelector(selectBaseCurrency);
@@ -91,7 +94,7 @@ export const useFiatRates = ({
         const endpoint = getFiatRateEndpoint(rateType);
         const tickersBySubscriptionKey = new Map(
             Array.from(tickersByQueryCacheKey, ([queryCacheKey, ticker]) => [
-                `${queryCacheKey}:${forceFetchToken}`,
+                `${queryCacheKey}:${forceFetchToken}:${isPolling}`,
                 ticker,
             ]),
         );
@@ -113,13 +116,16 @@ export const useFiatRates = ({
                         { ticker, baseCurrencyCode: fiatCurrency, forceFetchToken },
                         {
                             forceRefetch: getFiatRateMaxAgeInSeconds(rateType),
-                            subscriptionOptions: getFiatRateSubscriptionOptions(rateType),
+                            subscriptionOptions: getFiatRateSubscriptionOptions(
+                                rateType,
+                                isPolling,
+                            ),
                         },
                     ),
                 ),
             );
         });
-    }, [dispatch, tickersByQueryCacheKey, rateType, fiatCurrency, forceFetchToken]);
+    }, [dispatch, tickersByQueryCacheKey, rateType, fiatCurrency, forceFetchToken, isPolling]);
 
     useEffect(() => {
         const subscriptions = subscriptionsRef.current;

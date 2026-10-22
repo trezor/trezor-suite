@@ -7,6 +7,7 @@ import {
     selectAccountHasStaking,
     selectFormattedAccountType,
     selectIsCardanoStakedWithFiveBinaries,
+    useAccountFiatRates,
 } from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import { isAccountFailed } from '@suite-common/wallet-utils';
@@ -71,6 +72,8 @@ const AccountsListItemComponent = ({
     badges,
     shouldShowExactAmount = false,
 }: AccountListItemProps) => {
+    // The screen showing the list keeps the rates fresh, a row only makes sure they are loaded.
+    useAccountFiatRates({ accountKey: account.key, isPolling: false });
     const formattedAccountType = useSelector((state: AccountsRootState) =>
         selectFormattedAccountType(state, account.key),
     );

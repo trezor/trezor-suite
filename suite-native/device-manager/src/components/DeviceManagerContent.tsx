@@ -16,7 +16,7 @@ import {
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/device';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import { selectHasRunningDiscovery, useAccountsFiatRates } from '@suite-common/wallet-core';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { AnimatedScrollView, AnimatedVStack, VStack } from '@suite-native/atoms';
 import { selectShouldFactoryResetBeVisible } from '@suite-native/device';
@@ -56,6 +56,8 @@ const scrollViewStyle = prepareNativeStyle<{ maxHeight: number }>((utils, { maxH
 type NavigationProp = TabNavigationProp<AppTabsParamList, AppTabsRoutes.HomeStack>;
 
 export const DeviceManagerContent = () => {
+    // The wallet list shows totals of all wallets, it is mounted only while the switcher is open.
+    useAccountsFiatRates();
     const { applyStyle, utils } = useNativeStyles();
     const { height: windowHeight } = useWindowDimensions();
     const [isChangeDeviceRequested, setIsChangeDeviceRequested] = useState(false);

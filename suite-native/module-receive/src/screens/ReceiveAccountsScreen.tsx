@@ -1,7 +1,8 @@
 import { useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 
+import { useDeviceAccountsFiatRates } from '@suite-common/wallet-core';
 import { AccountsListWithFilter, type OnSelectAccount } from '@suite-native/accounts';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
@@ -23,6 +24,8 @@ type NavigationProp = StackNavigationProps<
 >;
 
 export const ReceiveAccountsScreen = () => {
+    const isFocused = useIsFocused();
+    useDeviceAccountsFiatRates({ isDisabled: !isFocused });
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const { analytics } = useServices(injectNativeAnalytics);
     const navigation = useNavigation<NavigationProp>();

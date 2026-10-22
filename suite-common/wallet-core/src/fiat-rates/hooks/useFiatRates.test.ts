@@ -5,6 +5,7 @@ import { combineReducers } from '@reduxjs/toolkit';
 
 import { fetchCurrentFiatRates } from '@suite-common/fiat-services';
 import {
+    act,
     cleanup,
     createTestCompositionRoot,
     renderHookWithStoreProvider,
@@ -19,6 +20,7 @@ import { useFiatRates } from './useFiatRates';
 import { blockchainInitialState } from '../../blockchain/blockchainReducer';
 import { initialWalletSettingsState } from '../../settings/walletSettingsReducer';
 import { type FiatRatesApiQueryState, fiatRatesApi } from '../fiatRatesApi';
+import { REFETCH_INTERVAL } from '../fiatRatesConstants';
 import { selectCurrentFiatRates } from '../fiatRatesSelectors';
 import { type FiatRatesRootState } from '../fiatRatesTypes';
 
@@ -129,6 +131,71 @@ describe('useFiatRates', () => {
 
         await waitFor(() => expect(fetchCurrentFiatRates).toHaveBeenCalledTimes(1));
         expect(getFetchedTickers()).toEqual([{ symbol: 'btc', localCurrency: USD }]);
+    });
+});
+
+describe('useFiatRates polling', () => {
+    let services: ReturnType<typeof createServices>;
+
+    // Lets the mocked fetch resolve and RTK Query store its result.
+    const flushPromises = () => act(() => Promise.resolve());
+
+    beforeEach(() => {
+        jest.useFakeTimers();
+        jest.mocked(fetchCurrentFiatRates).mockResolvedValue({
+            rate: 1,
+            usdRate: 1,
+            lastTickerTimestamp: 1700000000 as Timestamp,
+        });
+        services = createServices();
+    });
+
+    afterEach(() => {
+        cleanup();
+        services.store.dispatch(fiatRatesApi.util.resetApiState());
+        jest.clearAllMocks();
+        jest.useRealTimers();
+    });
+
+    it('polls the rates while subscribed', async () => {
+        renderHookWithStoreProvider(() => useFiatRates({ tickers: [BTC] }), { services });
+        await flushPromises();
+        expect(fetchCurrentFiatRates).toHaveBeenCalledTimes(1);
+
+        await act(() => jest.advanceTimersByTimeAsync(REFETCH_INTERVAL.current));
+
+        expect(fetchCurrentFiatRates).toHaveBeenCalledTimes(2);
+    });
+
+    it('fetches the rates once without polling', async () => {
+        renderHookWithStoreProvider(() => useFiatRates({ tickers: [BTC], isPolling: false }), {
+            services,
+        });
+        await flushPromises();
+
+        await act(() => jest.advanceTimersByTimeAsync(REFETCH_INTERVAL.current * 2));
+
+        expect(fetchCurrentFiatRates).toHaveBeenCalledTimes(1);
+    });
+
+    it('stops polling while disabled and does not refetch fresh rates when enabled again', async () => {
+        const { rerender } = renderHookWithStoreProvider(
+            ({ isDisabled }: { isDisabled: boolean }) =>
+                useFiatRates({ tickers: [BTC], isDisabled }),
+            { services, initialProps: { isDisabled: false } },
+        );
+        await flushPromises();
+
+        rerender({ isDisabled: true });
+        await act(() => jest.advanceTimersByTimeAsync(REFETCH_INTERVAL.current));
+        expect(fetchCurrentFiatRates).toHaveBeenCalledTimes(1);
+
+        rerender({ isDisabled: false });
+        await flushPromises();
+        expect(fetchCurrentFiatRates).toHaveBeenCalledTimes(1);
+
+        await act(() => jest.advanceTimersByTimeAsync(REFETCH_INTERVAL.current));
+        expect(fetchCurrentFiatRates).toHaveBeenCalledTimes(2);
     });
 });
 

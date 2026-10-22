@@ -1,10 +1,13 @@
 import React, { type Ref, useCallback, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 
 import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
-import { selectIsDiscoveredDeviceAccountless } from '@suite-common/wallet-core';
+import {
+    selectIsDiscoveredDeviceAccountless,
+    useDeviceAccountsFiatRates,
+} from '@suite-common/wallet-core';
 import {
     selectIsBluetoothDeviceOsUnpairingRequired,
     useBluetoothAlerts,
@@ -60,6 +63,8 @@ const HomeScreenContent = ({
 };
 
 export const HomeScreen = () => {
+    const isFocused = useIsFocused();
+    useDeviceAccountsFiatRates({ isDisabled: !isFocused });
     const { showSystemUnpairingAlert } = useBluetoothAlerts();
     const isAssetsFirstHomeScreenEnabled = useIsExperimentVariantActive({
         experimentId: ExperimentId.assetFirstHomeTable,

@@ -1,8 +1,6 @@
 import { deviceInitialState } from '@suite-common/device';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
-import { fiatRatesApi } from '@suite-common/wallet-core';
-import { mockFiatRatesApiState } from '@suite-common/wallet-core/mocks';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { featureFlagsInitialState } from '@suite-native/feature-flags';
@@ -33,10 +31,7 @@ const baseState = {
     device: deviceInitialState,
     featureFlags: featureFlagsInitialState,
     messageSystem: messageSystemInitialState,
-    fiatRatesApi: mockFiatRatesApiState(),
-    tokenDefinitions: {},
     wallet: {
-        accounts: [],
         trading: { residence: { country: null, wasOnboardingVisited: false } },
     },
 };
@@ -46,7 +41,6 @@ describe('AppTabNavigator', () => {
     const renderTabs = async (overrides: Record<string, unknown> = {}) =>
         await renderWithStoreProvider(<AppTabNavigator />, {
             preloadedState: mergePreloadedState(baseState, overrides),
-            middleware: [fiatRatesApi.middleware],
             services,
         });
 

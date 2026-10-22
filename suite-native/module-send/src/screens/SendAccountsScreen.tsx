@@ -1,5 +1,6 @@
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 
+import { useDeviceAccountsFiatRates } from '@suite-common/wallet-core';
 import { AccountsListWithFilter, type OnSelectAccount } from '@suite-native/accounts';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Translation } from '@suite-native/intl';
@@ -21,6 +22,8 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 >;
 
 export const SendAccountsScreen = () => {
+    const isFocused = useIsFocused();
+    useDeviceAccountsFiatRates({ isDisabled: !isFocused });
     const navigateToInitialScreen = useNavigateToInitialScreen();
     const { analytics } = useServices(injectNativeAnalytics);
     const navigation = useNavigation<NavigationProps>();

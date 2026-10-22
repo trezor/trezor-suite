@@ -9,6 +9,8 @@ import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { HomeScreen } from './HomeScreen';
 
+const mockUseDeviceAccountsFiatRates = jest.fn();
+const mockUseIsFocused = jest.fn(() => true);
 const mockPortfolioAssetsContent = jest.fn(() => null);
 const mockLegacyPortfolioContent = jest.fn(() => null);
 
@@ -19,12 +21,14 @@ type MockScreenProps = {
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
     useFocusEffect: () => undefined,
+    useIsFocused: () => mockUseIsFocused(),
 }));
 
 jest.mock('@suite-common/wallet-core', () => ({
     selectBaseCurrency: () => 'usd',
     selectBitcoinAmountUnit: () => 0,
     selectIsDiscoveredDeviceAccountless: () => false,
+    useDeviceAccountsFiatRates: (params: unknown) => mockUseDeviceAccountsFiatRates(params),
 }));
 
 jest.mock('@suite-native/bluetooth', () => ({
@@ -102,6 +106,7 @@ const createMessageSystemState = (activeVariant: 'A' | 'B'): MessageSystemState 
 describe('HomeScreen', () => {
     beforeEach(() => {
         jest.clearAllMocks();
+        mockUseIsFocused.mockReturnValue(true);
     });
 
     it.each([
@@ -127,6 +132,25 @@ describe('HomeScreen', () => {
 
             expect(expectedContent).toHaveBeenCalled();
             expect(hiddenContent).not.toHaveBeenCalled();
+        },
+    );
+
+    it.each([
+        { isFocused: true, isDisabled: false },
+        { isFocused: false, isDisabled: true },
+    ])(
+        'subscribes to the rates of the selected device only while focused ($isFocused)',
+        async ({ isFocused, isDisabled }) => {
+            mockUseIsFocused.mockReturnValue(isFocused);
+
+            await renderWithStoreProvider(<HomeScreen />, {
+                preloadedState: {
+                    analytics: { instanceId: 'home-screen-fiat-rates-test' },
+                    messageSystem: createMessageSystemState('A'),
+                },
+            });
+
+            expect(mockUseDeviceAccountsFiatRates).toHaveBeenLastCalledWith({ isDisabled });
         },
     );
 });

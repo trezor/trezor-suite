@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 
+import { useDeviceAccountsFiatRates } from '@suite-common/wallet-core';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { VStack } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
@@ -59,7 +60,9 @@ const TradingScreenContent = () => {
 };
 
 export const TradingScreen = () => {
+    const isFocused = useIsFocused();
     const isTradingEnabled = useSelector(selectIsTradingEnabled);
+    useDeviceAccountsFiatRates({ isDisabled: !isFocused || !isTradingEnabled });
 
     if (!isTradingEnabled) {
         return null;

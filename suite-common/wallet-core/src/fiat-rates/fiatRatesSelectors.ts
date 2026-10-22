@@ -1,13 +1,16 @@
 import { A, F, pipe } from '@mobily/ts-belt';
 import { QueryStatus } from '@reduxjs/toolkit/query';
 
+import { type DeviceRootState } from '@suite-common/device';
 import {
     type TokenDefinitionsRootState,
+    type TokenDefinitionsState,
     selectIsSpecificCoinDefinitionKnown,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
 import { type NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
 import {
+    type Account,
     type CryptoBaseCurrencyPair,
     type CurrentFiatRatesResult,
     type CurrentRate,
@@ -38,7 +41,11 @@ import {
 } from './fiatRatesApi';
 import { type FiatRatesHistoricRootState, type FiatRatesRootState } from './fiatRatesTypes';
 import { type AccountsRootState } from '../accounts/accountsReducer';
-import { selectAccounts } from '../accounts/accountsSelectors';
+import {
+    selectAccountByKey,
+    selectAccounts,
+    selectDeviceAccounts,
+} from '../accounts/accountsSelectors';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<FiatRatesRootState>();
 
@@ -230,48 +237,77 @@ type SelectTickerFromAccountsState = TokenDefinitionsRootState & AccountsRootSta
 
 const createTickerSelector = createWeakMapSelector.withTypes<SelectTickerFromAccountsState>();
 
+const EMPTY_TICKERS: TickerId[] = [];
+
 /**
- * Tickers of all accounts and their tokens with a balance. Tokens of networks with coin definitions
- * are included only when they are known.
+ * Tickers of the given accounts and their tokens with a balance, native coins first. Tokens of
+ * networks with coin definitions are included only when they are known.
+ */
+export const getTickersFromAccounts = (
+    accounts: readonly Account[],
+    tokenDefinitions: TokenDefinitionsState,
+): TickerId[] =>
+    pipe(
+        accounts,
+        A.map((account): TickerId[] => [
+            {
+                symbol: account.symbol,
+            },
+            ...(account.tokens || [])
+                .filter(token => new BigNumber(token.balance ?? '0').gt(0))
+                .map(
+                    token =>
+                        ({
+                            symbol: account.symbol,
+                            tokenAddress: token.contract as TokenAddress,
+                            protocols: token.protocols,
+                        }) satisfies TickerId,
+                ),
+        ]),
+        A.flat,
+        A.filter(
+            ticker =>
+                !ticker.tokenAddress ||
+                !getNetworkFeatures(ticker.symbol).includes('coin-definitions') ||
+                selectIsSpecificCoinDefinitionKnown(
+                    { tokenDefinitions },
+                    ticker.symbol,
+                    ticker.tokenAddress,
+                ),
+        ),
+        A.uniqBy(ticker =>
+            ticker.tokenAddress ? `${ticker.symbol}-${ticker.tokenAddress}` : ticker.symbol,
+        ),
+        A.sortBy(ticker => (ticker.tokenAddress ? 1 : 0)),
+        F.toMutable,
+    );
+
+/**
+ * Tickers of the accounts of all remembered devices and wallets, not just the selected one, so that
+ * e.g. tokens that exist only on a non-selected passphrase wallet get their rates too.
  */
 export const selectTickerFromAccounts = createTickerSelector(
     [selectAccounts, selectTokenDefinitions],
-    (accounts, tokenDefinitions): TickerId[] =>
-        // Use accounts of all remembered devices/wallets, not just the selected one, so that
-        // token fiat rates are fetched for every wallet. Otherwise tokens that exist only on a
-        // non-selected wallet (e.g. a passphrase wallet) never get a rate fetched on launch.
-        pipe(
-            accounts,
-            A.map((account): TickerId[] => [
-                {
-                    symbol: account.symbol,
-                },
-                ...(account.tokens || [])
-                    .filter(token => new BigNumber(token.balance ?? '0').gt(0))
-                    .map(
-                        token =>
-                            ({
-                                symbol: account.symbol,
-                                tokenAddress: token.contract as TokenAddress,
-                                protocols: token.protocols,
-                            }) satisfies TickerId,
-                    ),
-            ]),
-            A.flat,
-            A.filter(
-                ticker =>
-                    !ticker.tokenAddress ||
-                    !getNetworkFeatures(ticker.symbol).includes('coin-definitions') ||
-                    selectIsSpecificCoinDefinitionKnown(
-                        { tokenDefinitions },
-                        ticker.symbol,
-                        ticker.tokenAddress,
-                    ),
-            ),
-            A.uniqBy(ticker =>
-                ticker.tokenAddress ? `${ticker.symbol}-${ticker.tokenAddress}` : ticker.symbol,
-            ),
-            A.sortBy(ticker => (ticker.tokenAddress ? 1 : 0)),
-            F.toMutable,
-        ),
+    getTickersFromAccounts,
+);
+
+const createDeviceTickerSelector = createWeakMapSelector.withTypes<
+    SelectTickerFromAccountsState & DeviceRootState
+>();
+
+/**
+ * Tickers of the accounts of the selected device.
+ */
+export const selectTickersFromDeviceAccounts = createDeviceTickerSelector(
+    [selectDeviceAccounts, selectTokenDefinitions],
+    getTickersFromAccounts,
+);
+
+/**
+ * Tickers of one account and its tokens.
+ */
+export const selectTickersFromAccount = createTickerSelector(
+    [selectAccountByKey, selectTokenDefinitions],
+    (account, tokenDefinitions): TickerId[] =>
+        account ? getTickersFromAccounts([account], tokenDefinitions) : EMPTY_TICKERS,
 );
