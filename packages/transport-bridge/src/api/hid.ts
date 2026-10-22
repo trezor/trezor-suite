@@ -57,6 +57,8 @@ type OpenedDevice = {
     shouldPrependReportId: boolean;
     // Bumped whenever the in-flight read has to give up: session takeover or close.
     readGeneration: number;
+    // Set while a session takeover drains the transfers of the previous owner.
+    isTakenOver: boolean;
     pendingTransfers: Set<Promise<unknown>>;
 };
 
@@ -209,8 +211,16 @@ export class HidApi extends AbstractApi {
             if (options?.reset) {
                 this.logger?.info(`hid: ${shortPath(path)} reopened for a new session`);
                 openedDevice.readGeneration += 1;
-                await Promise.allSettled(Array.from(openedDevice.pendingTransfers));
-                await this.discardQueuedReports(openedDevice);
+                // The flag is set before the first await, so that every chunk the previous owner
+                // writes from now on is rejected. Otherwise its remaining chunks would interleave
+                // with the first message of the new owner on the wire.
+                openedDevice.isTakenOver = true;
+                try {
+                    await Promise.allSettled(Array.from(openedDevice.pendingTransfers));
+                    await this.discardQueuedReports(openedDevice);
+                } finally {
+                    openedDevice.isTakenOver = false;
+                }
             }
 
             return success(undefined);
@@ -246,6 +256,7 @@ export class HidApi extends AbstractApi {
                 handle,
                 shouldPrependReportId,
                 readGeneration: 0,
+                isTakenOver: false,
                 pendingTransfers: new Set(),
             });
             this.logger?.info(
@@ -362,6 +373,10 @@ export class HidApi extends AbstractApi {
 
         if (options?.signal?.aborted) {
             return error({ code: ERRORS.ABORTED_BY_SIGNAL });
+        }
+
+        if (device.isTakenOver) {
+            return error({ code: ERRORS.DEVICE_DISCONNECTED_DURING_ACTION });
         }
 
         const packet = Buffer.alloc(this.chunkSize);

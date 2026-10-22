@@ -334,6 +334,25 @@ describe(HidApi.name, () => {
                 error: { code: ERRORS.DEVICE_NOT_FOUND },
             });
         });
+
+        it('rejects the chunks of the previous session while a takeover is in progress', async () => {
+            const { api, handle, path } = await setup();
+            await api.openDevice(path);
+            const queuedReport = createDeferred<Buffer | undefined>();
+            handle.read.mockReturnValueOnce(queuedReport.promise);
+
+            const takeover = api.openDevice(path, { reset: true });
+
+            expect(await api.write(path, PACKET)).toEqual({
+                success: false,
+                error: { code: ERRORS.DEVICE_DISCONNECTED_DURING_ACTION },
+            });
+
+            queuedReport.resolve(undefined);
+            await takeover;
+
+            expect(await api.write(path, PACKET)).toEqual({ success: true, payload: undefined });
+        });
     });
 
     describe('read', () => {
