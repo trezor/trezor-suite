@@ -138,7 +138,13 @@ export const APPS_EMBEDDING_CATALOG: AppsEmbeddingCatalogEntry[] = [
             {
                 kind: 'mobile',
                 expectedBehavior:
-                    'Google Pay does not work in plain WebViews at all — it requires Chrome Custom Tabs.',
+                    "Google's web SDK does not support iOS web views, and Android WebView shows the sheet only with the Payment Request API switched on (Android System WebView 137+, not enabled in Suite), so the button does nothing in the WebView on either platform. The sheet needs a popup, which the WebView denies, and the site then redirects at the top level instead, which originWhitelist permits. The system browser runs the flow; persistSession keeps its Google sign-in between openings on iOS, and Chrome Custom Tabs keep it regardless.",
+                // As on desktop, a Google account that stays signed in is what makes the sheet
+                // reachable at all on a second run.
+                persistSession: true,
+                // Where the popup is denied the site falls back to a top-level redirect, and the
+                // sign-in step inside it hops the same way.
+                originWhitelist: ['https://pay.google.com', 'https://accounts.google.com'],
             },
         ],
         communication: [],
@@ -165,6 +171,9 @@ export const APPS_EMBEDDING_CATALOG: AppsEmbeddingCatalogEntry[] = [
                 kind: 'mobile',
                 expectedBehavior:
                     'The page loads, but Google refuses OAuth in embedded webviews (disallowed_useragent).',
+                // Signing in bounces the main frame through accounts.youtube.com; on desktop the
+                // same hop happens in a popup.
+                originWhitelist: ['https://accounts.youtube.com'],
             },
         ],
     },
@@ -215,6 +224,32 @@ export const APPS_EMBEDDING_CATALOG: AppsEmbeddingCatalogEntry[] = [
                 kind: 'mobile',
                 expectedBehavior:
                     'Loads in the WebView, a top-level browsing context. Expect a 401 from the develop site in a develop build: the WebView is given no basicAuthCredential to answer its HTTP Basic challenge with.',
+            },
+        ],
+    },
+    {
+        id: 'qr-code-scanner',
+        name: 'QR code scanner',
+        description:
+            'qrscanner.net — a QR code reader that scans the camera feed on the device (the nimiq qr-scanner library) and uploads images to its server for decoding. The camera entry: each host decides whether the page gets the camera at all, and the page shows what it got.',
+        url: 'https://qrscanner.net/',
+        communication: [],
+        platformSpecific: [
+            {
+                kind: 'web',
+                expectedBehavior:
+                    'Iframe refused (X-Frame-Options: SAMEORIGIN as of 2026-10-21) — observe how the refusal renders. Were it framed, allow=camera would delegate the camera in dev only: preview/production builds block the frame with their own frame-src first and keep the camera from a cross-origin frame with permissions-policy camera=(self).',
+                allow: 'camera',
+            },
+            {
+                kind: 'desktop',
+                expectedBehavior:
+                    "Loads in the WebContentsView, but the in-app browser session refuses every permission, so the camera mode cannot start; image upload still works, decoded by the site's server behind a Cloudflare Turnstile check. A decoded link is a target=_blank anchor: denied and reported as a popup.",
+            },
+            {
+                kind: 'mobile',
+                expectedBehavior:
+                    "Loads in the WebView. iOS denies the camera (EmbeddedAppWebView answers every capture request with deny), so the camera mode cannot start; Android WebView grants the camera once Suite holds the permission and asks the OS for it otherwise, so scanning works there. Image upload works on both, decoded by the site's server behind a Cloudflare Turnstile check. A decoded link is a target=_blank anchor: denied and reported as a popup. The scan history lives in localStorage, so it is gone on the next opening as long as the entry does not persist. In the system browser Safari or Chrome asks for the camera itself — on iOS in the ephemeral session this non-persisting entry gets; observe whether that one grants it too.",
             },
         ],
     },

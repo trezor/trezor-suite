@@ -95,12 +95,11 @@ export type AppsEmbeddingCatalogEntry = {
                * to be remembered is cheaper to reason about, and the showcase is mostly about
                * first-load behavior.
                *
-               * Only the desktop host can honour it: it gives such an entry a session of its own on
-               * disk, one directory per entry, so entries cannot read each other's cookies. The
-               * other platforms have no such flag because persistence is not Suite's to control
-               * there: web embeds in an iframe inside Suite's own origin storage, which persists
-               * regardless, and on mobile the inline WebView is always incognito while the
-               * system-browser mode hands the site the real browser session.
+               * Only the desktop host gives such an entry a session of its own on disk, one
+               * directory per entry, so entries cannot read each other's cookies. Web has no such
+               * flag: an iframe lives in Suite's own origin storage, which persists regardless. The
+               * `mobile` record has a `persistSession` of its own, backed by a store that every
+               * persisting entry shares.
                */
               persistSession?: boolean;
 
@@ -133,6 +132,40 @@ export type AppsEmbeddingCatalogEntry = {
         | {
               kind: 'mobile';
               expectedBehavior: string;
+
+              /**
+               * Whether the site keeps its cookies, web storage and cache between openings and
+               * Suite restarts. Off by default, as on desktop: the inline WebView then opens the
+               * site in a non-persistent store (`incognito`), and the iOS system browser in an
+               * ephemeral `ASWebAuthenticationSession`, so nothing the site stored outlives the
+               * session.
+               *
+               * Unlike desktop, mobile has no store per entry: every persisting entry shares the
+               * app's default `WKWebsiteDataStore` on iOS and the app's single WebView profile on
+               * Android, where an incognito opening of any entry also clears that profile's
+               * cookies, cache, history and form data (its web storage survives). The Android
+               * system browser (Chrome Custom Tabs) cannot honour the flag at all: it runs in
+               * Chrome's own profile, which persists regardless.
+               */
+              persistSession?: boolean;
+
+              /**
+               * Origins the embedded site may navigate to besides the origin of `url` — the
+               * allowlist of the WebView host's navigation guard, and the mobile counterpart of
+               * [redirectExternalOrigins]. Every main-frame navigation off the list, a server-side
+               * redirect included, is blocked and reported; subframes are not held to it, as on
+               * desktop. The system browser has no guard.
+               *
+               * The guard is Suite's own `onShouldStartLoadWithRequest` handler, not the
+               * `originWhitelist` prop of `react-native-webview` the option is named after: the
+               * prop matches origin prefixes, applies to iframe loads as well on iOS, and opens
+               * whatever it refuses in another app or the system browser through `Linking.openURL`
+               * instead of blocking it.
+               *
+               * Same shape and matching as [redirectExternalOrigins]: bare origins, and only the
+               * origin of each item is matched.
+               */
+              originWhitelist?: HttpsUrl[];
           }
     )[];
 };
@@ -162,6 +195,9 @@ export type AppsEmbeddingEvent =
     | { type: 'load-failed'; detail: string }
     | { type: 'callback'; status: AppsEmbeddingCallbackStatus; url: string }
     | { type: 'message'; data: unknown }
+    // A message the host refused to take in — too large to be a structured message. `detail`
+    // carries the host's reason.
+    | { type: 'message-dropped'; detail: string }
     // One event with an outcome rather than an event per destination: the interesting part of the
     // log line is that the page reached for a window at all, and where it ended up is what the two
     // popup modes are being compared on.

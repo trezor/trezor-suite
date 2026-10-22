@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { AppsEmbeddingScreen } from '@suite-native/apps-embedding-demo';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { BootloaderModeScreen } from '@suite-native/device-bootloader-mode';
 import { AccountDetailStackNavigator } from '@suite-native/module-account-detail';
@@ -268,6 +269,10 @@ export const RootStackNavigator = () => {
             <RootStack.Screen
                 name={RootStackRoutes.MessageSystemExperiments}
                 component={MessageSystemExperimentsScreen}
+            />
+            <RootStack.Screen
+                name={RootStackRoutes.AppsEmbedding}
+                component={AppsEmbeddingScreen}
             />
             <RootStack.Screen name={RootStackRoutes.ConnectPopup} component={ConnectPopupScreen} />
             <RootStack.Screen

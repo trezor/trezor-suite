@@ -33,6 +33,11 @@ const fixtures: { description: string; event: AppsEmbeddingEvent; expected: stri
         expected: 'message {"foo":"bar"}',
     },
     {
+        description: 'message-dropped',
+        event: { type: 'message-dropped', detail: '70000 characters, over the limit of 65536' },
+        expected: 'message dropped — 70000 characters, over the limit of 65536',
+    },
+    {
         description: 'denied window-open-attempt',
         event: { type: 'window-open-attempt', url: 'https://example.com/popup', outcome: 'denied' },
         expected: 'window.open denied — https://example.com/popup',

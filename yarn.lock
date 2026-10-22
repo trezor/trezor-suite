@@ -13099,6 +13099,7 @@ __metadata:
     "@suite-native/alerts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/app-init": "workspace:*"
+    "@suite-native/apps-embedding-demo": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/biometrics": "workspace:*"
     "@suite-native/blockchain": "workspace:*"
@@ -13229,6 +13230,7 @@ __metadata:
     react-native-svg: "npm:15.15.5"
     react-native-tcp-socket: "npm:6.4.3"
     react-native-teleport: "npm:^1.2.1"
+    react-native-webview: "npm:13.16.1"
     react-native-worklets: "npm:0.13.0"
     react-redux: "npm:9.3.0"
     set.prototype.difference: "npm:^1.1.7"
@@ -13246,6 +13248,43 @@ __metadata:
     uri-scheme: "npm:^2.2.0"
     vm-browserify: "npm:^1.1.2"
     xml2js: "npm:^0.6.2"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/apps-embedding-demo@workspace:*, @suite-native/apps-embedding-demo@workspace:suite-native/apps-embedding-demo":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/apps-embedding-demo@workspace:suite-native/apps-embedding-demo"
+  dependencies:
+    "@suite-common/apps-embedding": "workspace:*"
+    "@suite-native/apps-embedding": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/navigation": "workspace:*"
+    "@trezor/styles-native": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
+    react: "npm:19.2.3"
+    react-native: "npm:0.86.3"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/apps-embedding@workspace:*, @suite-native/apps-embedding@workspace:suite-native/apps-embedding":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/apps-embedding@workspace:suite-native/apps-embedding"
+  dependencies:
+    "@suite-common/apps-embedding": "workspace:*"
+    "@suite-common/react-query": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/config": "workspace:*"
+    "@suite-native/intl": "workspace:*"
+    "@suite-native/test-utils-store": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
+    expo-web-browser: "npm:~57.0.1"
+    react: "npm:19.2.3"
+    react-native: "npm:0.86.3"
+    react-native-webview: "npm:13.16.1"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 
@@ -33577,7 +33616,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"invariant@npm:^2.2.4":
+"invariant@npm:2.2.4, invariant@npm:^2.2.4":
   version: 2.2.4
   resolution: "invariant@npm:2.2.4"
   dependencies:
@@ -42942,6 +42981,19 @@ __metadata:
     react: ^18.0.0 || ^19.0.0
     react-dom: ^18.0.0 || ^19.0.0
   checksum: 10/32f785541660c25326d6ef863afb7b07259b884c2faf083b2d9ea44677bf2423a5b805478f83531be7c9b0260d98997def720000c033d178fd55fecfe6336211
+  languageName: node
+  linkType: hard
+
+"react-native-webview@npm:13.16.1":
+  version: 13.16.1
+  resolution: "react-native-webview@npm:13.16.1"
+  dependencies:
+    escape-string-regexp: "npm:^4.0.0"
+    invariant: "npm:2.2.4"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 10/3b97550ccc7ad3f205342a9bdea31c83b2d8b9ab011d76a30a8b8f7a2738a0579238b1502bd0101e6210b3af6037dca8cf38276ad1705687d72a8fd3ed0138dd
   languageName: node
   linkType: hard
 
