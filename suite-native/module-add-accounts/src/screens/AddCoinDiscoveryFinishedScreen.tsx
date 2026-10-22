@@ -47,6 +47,7 @@ export const AddCoinDiscoveryFinishedScreen = ({
     const handleSelectedAccount = (account: Account) =>
         navigateToSuccessorScreen({
             flowType,
+            accountKey: account.key,
             symbol: networkSymbol,
             accountType: account.accountType,
             accountIndex: account.index,

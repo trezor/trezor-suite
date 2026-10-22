@@ -46,9 +46,10 @@ export const AddCoinDiscoveryRunningScreen = ({
     const { navigateToSuccessorScreen, clearNetworkWithTypeToBeAdded } = useAddCoinAccount();
     const [loadingResult, setLoadingResult] = useState<SpinnerLoadingState>('idle');
 
-    const goToAccountDetail = ({ account }: { account: Account }) => {
+    const openAccount = ({ account }: { account: Account }) => {
         navigateToSuccessorScreen({
             flowType,
+            accountKey: account.key,
             symbol: networkSymbol,
             accountType: account.accountType,
             accountIndex: account.index,
@@ -91,7 +92,7 @@ export const AddCoinDiscoveryRunningScreen = ({
 
         const firstAccount = normalAccounts[0];
         if (!firstAccount) return;
-        goToAccountDetail({ account: firstAccount });
+        openAccount({ account: firstAccount });
     };
 
     useEffect(() => {
