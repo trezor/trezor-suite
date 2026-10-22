@@ -25,12 +25,15 @@ const event = {
     payload: { action: 'cancel', from: 'deposit-form', to: 'deposit-form' },
 } as const satisfies AnalyticsNativeEvents;
 
-const renderBackAnalytics = async () => {
+const renderBackAnalytics = async (isEnabled = true) => {
     const services: NativeAnalyticsDep = { analytics: mockNativeAnalytics(jest.fn()) };
-    const view = await renderHookWithBasicProvider(useNavigateBackAnalytics, {
-        initialProps: event,
-        services,
-    });
+    const view = await renderHookWithBasicProvider(
+        (enabled: boolean) => useNavigateBackAnalytics(event, enabled),
+        {
+            initialProps: isEnabled,
+            services,
+        },
+    );
     const listener = mockNavigation.addListener.mock.calls[0]?.[1];
     if (!listener) throw new Error('Missing beforeRemove listener');
 
@@ -72,6 +75,12 @@ describe('useNavigateBackAnalytics', () => {
         const { analytics, remove, result } = await renderBackAnalytics();
         await act(() => result.current());
         await remove('POP_TO_TOP');
+        expect(analytics.report).not.toHaveBeenCalled();
+    });
+
+    it('does not report cancellation for an info-only screen', async () => {
+        const { analytics, remove } = await renderBackAnalytics(false);
+        await remove('GO_BACK');
         expect(analytics.report).not.toHaveBeenCalled();
     });
 

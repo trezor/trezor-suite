@@ -5,7 +5,7 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { type AnalyticsNativeEvents, injectNativeAnalytics } from '@suite-native/analytics';
 import { useServices } from '@trezor/dependency-injection';
 
-export const useNavigateBackAnalytics = (event: AnalyticsNativeEvents) => {
+export const useNavigateBackAnalytics = (event: AnalyticsNativeEvents, isEnabled = true) => {
     const { analytics } = useServices(injectNativeAnalytics);
     const hasContinuedRef = useRef(false);
     const navigation = useNavigation();
@@ -28,11 +28,16 @@ export const useNavigateBackAnalytics = (event: AnalyticsNativeEvents) => {
                     e.data.action.type === 'POP' ||
                     e.data.action.type === 'POP_TO_TOP';
 
-                if (isBackRemoval && navigation.isFocused() && !hasContinuedRef.current) {
+                if (
+                    isEnabled &&
+                    isBackRemoval &&
+                    navigation.isFocused() &&
+                    !hasContinuedRef.current
+                ) {
                     analytics.report(eventRef.current);
                 }
             }),
-        [navigation, analytics],
+        [navigation, analytics, isEnabled],
     );
 
     return useCallback(() => {
