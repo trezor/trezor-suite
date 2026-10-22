@@ -155,6 +155,7 @@ describe('ExchangeConfirmation', () => {
             ...defaultQuote,
             isDex: true,
             preapprovedStringAmount: '100',
+            status: 'CONFIRM',
         });
         mockSelectQuote({});
 

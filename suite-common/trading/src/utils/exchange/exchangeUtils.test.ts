@@ -180,6 +180,30 @@ describe('getApprovalStatus', () => {
         expect(result).toBe('approved');
     });
 
+    it('should return "not_needed" when quote is CONFIRM without preapprovedStringAmount', () => {
+        const quote = {
+            orderId: 'test-order',
+            preapprovedStringAmount: '0',
+            isDex: true,
+            send: DAI_CRYPTO_ID,
+            status: 'CONFIRM' as const,
+        };
+        const result = getApprovalStatus(quote);
+        expect(result).toBe('not_needed');
+    });
+
+    it('should return "needs_approval" when quote is APPROVAL_REQ and preapprovedStringAmount is zero with decimals', () => {
+        const quote = {
+            orderId: 'test-order',
+            preapprovedStringAmount: '0.00',
+            isDex: true,
+            send: USDT_CRYPTO_ID,
+            status: 'APPROVAL_REQ' as const,
+        };
+        const result = getApprovalStatus(quote);
+        expect(result).toBe('needs_approval');
+    });
+
     it('should return "approved" when quote has preapprovedStringAmount !== "0" without status', () => {
         const quote = {
             orderId: 'test-order',
@@ -262,7 +286,7 @@ describe('getApprovalStatus', () => {
         expect(result).toBe('not_needed');
     });
 
-    it('should return "needs_approval" for quote with SIGN_DATA status and non-EIP-712 data', () => {
+    it('should return "not_needed" for quote with SIGN_DATA status and non-EIP-712 data', () => {
         const quote = {
             orderId: 'test-order',
             isDex: true,
@@ -274,7 +298,7 @@ describe('getApprovalStatus', () => {
             } as any,
         };
         const result = getApprovalStatus(quote);
-        expect(result).toBe('needs_approval');
+        expect(result).toBe('not_needed');
     });
 
     it('should return "needs_approval" for quote with EIP-712 data without SIGN_DATA status', () => {
