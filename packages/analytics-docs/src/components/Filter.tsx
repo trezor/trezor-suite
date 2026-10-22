@@ -1,20 +1,30 @@
 import {
-    Dropdown,
+    Box,
+    Card,
+    Column,
     Icon,
+    IconButton,
     Input,
+    Popover,
     Row,
     Select,
     Switch,
-    useMediaQuery,
-    variables,
+    Text,
 } from '@trezor/components';
-import { DotsThreeIcon, MagnifyingGlassIcon } from '@trezor/icons';
+import { FunnelIcon, MagnifyingGlassIcon } from '@trezor/icons';
 import { zIndices } from '@trezor/theme';
 
 import { platforms, sorting } from '../constants';
-import type { SearchMode, Sort } from '../types';
+import { type SearchField, type Sort, searchFields as allSearchFields } from '../types';
 
 const menuPortalTarget = typeof document !== 'undefined' ? document.body : undefined;
+
+const searchFieldMenuLabel: Record<SearchField, string> = {
+    eventName: 'Event name',
+    attributeName: 'Attributes',
+    trigger: 'Trigger',
+    description: 'Description',
+};
 
 type FilterProps = {
     query: string;
@@ -26,8 +36,8 @@ type FilterProps = {
     version: string;
     setVersion: (version: string) => void;
     versions: string[];
-    searchMode: SearchMode;
-    setSearchMode: (mode: SearchMode) => void;
+    searchFields: readonly SearchField[];
+    setSearchFields: (fields: readonly SearchField[]) => void;
 };
 
 export const Filter = ({
@@ -40,92 +50,117 @@ export const Filter = ({
     version,
     setVersion,
     versions,
-    searchMode,
-    setSearchMode,
+    searchFields,
+    setSearchFields,
 }: FilterProps) => {
-    const isMobile = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.SM})`);
-
     const versionOptions = [
         { value: 'all', label: 'All versions' },
         ...versions.map(v => ({ value: v, label: v })),
     ];
 
-    const isFullText = searchMode === 'fulltext';
-
     return (
-        <Row gap={8} flexWrap={isMobile ? 'wrap' : undefined}>
-            <Input
-                value={query}
-                size="small"
-                onChange={e => setQuery(e.target.value)}
-                placeholder="Filter events"
-                showClearButton
-                leftContent={
-                    <Icon
-                        as={MagnifyingGlassIcon}
-                        size={12}
-                        intent="neutral"
-                        priority="secondary"
-                        pointerEvents="none"
-                    />
-                }
-                onClear={() => setQuery('')}
-            />
+        <Row gap={8} flex="0 1 auto" minWidth={0} maxWidth="100%">
+            <Box flex="0 1 auto" minWidth={0}>
+                <Input
+                    value={query}
+                    size="small"
+                    width={240}
+                    maxWidth="100%"
+                    onChange={e => setQuery(e.target.value)}
+                    placeholder="Filter events"
+                    showClearButton
+                    leftContent={
+                        <Icon
+                            as={MagnifyingGlassIcon}
+                            size={12}
+                            intent="neutral"
+                            priority="secondary"
+                            pointerEvents="none"
+                        />
+                    }
+                    onClear={() => setQuery('')}
+                />
+            </Box>
 
-            <Dropdown
-                icon={DotsThreeIcon}
-                iconSize="small"
-                data-testid="@analytics/search-options"
-                items={[
-                    {
-                        label: (
-                            <Switch
-                                isChecked={isFullText}
-                                onChange={checked => setSearchMode(checked ? 'fulltext' : 'name')}
-                                label="Fulltext search"
+            <Popover
+                placement={{ position: 'bottom', alignment: 'start' }}
+                content={
+                    <Card paddingType="small" minWidth={260} overflow="visible">
+                        <Column gap={12}>
+                            <Text typographyStyle="body-sm-strong">Search in</Text>
+                            {allSearchFields.map(field => (
+                                <Switch
+                                    key={field}
+                                    isChecked={searchFields.includes(field)}
+                                    isDisabled={
+                                        searchFields.length === 1 && searchFields.includes(field)
+                                    }
+                                    onChange={isChecked => {
+                                        const next = isChecked
+                                            ? [...searchFields, field]
+                                            : searchFields.filter(item => item !== field);
+
+                                        setSearchFields(next);
+                                    }}
+                                    label={searchFieldMenuLabel[field]}
+                                    size="small"
+                                />
+                            ))}
+                            <Select
+                                placeholder="Platform"
+                                value={platforms.find(p => p.value === platform) ?? platforms[0]}
+                                onChange={option => {
+                                    setPlatform(option.value);
+                                }}
+                                aria-label="Platform filter"
                                 size="small"
+                                options={platforms}
+                                menuPosition="absolute"
                             />
-                        ),
-                        closeOnClick: false,
-                    },
-                ]}
-            />
+                            <Select
+                                placeholder="Version"
+                                value={
+                                    versionOptions.find(v => v.value === version) ??
+                                    versionOptions[0]
+                                }
+                                onChange={option => {
+                                    setVersion(option.value);
+                                }}
+                                aria-label="Version filter"
+                                size="small"
+                                options={versionOptions}
+                                menuPosition="absolute"
+                            />
+                        </Column>
+                    </Card>
+                }
+            >
+                <IconButton
+                    icon={FunnelIcon}
+                    size="medium"
+                    intent="neutral"
+                    priority="secondary"
+                    tooltip={{ content: 'Filter' }}
+                    aria-label="Filter"
+                    data-testid="@analytics/filter"
+                />
+            </Popover>
 
-            <Select
-                placeholder="Platform"
-                value={platforms.find(p => p.value === platform) ?? platforms[0]}
-                onChange={option => {
-                    setPlatform(option.value);
-                }}
-                aria-label="Platform filter"
-                size="small"
-                options={platforms}
-                menuPortalTarget={menuPortalTarget}
-                menuPortalZIndex={zIndices.pageHeader}
-            />
-            <Select
-                placeholder="Version"
-                value={versionOptions.find(v => v.value === version) ?? versionOptions[0]}
-                onChange={option => {
-                    setVersion(option.value);
-                }}
-                aria-label="Version filter"
-                size="small"
-                options={versionOptions}
-                menuPortalTarget={menuPortalTarget}
-                menuPortalZIndex={zIndices.pageHeader}
-            />
-            <Select
-                placeholder="Sort by"
-                value={sorting.find(s => s.value === sort) ?? sorting[0]}
-                onChange={option => {
-                    setSort(option.value);
-                }}
-                size="small"
-                options={sorting}
-                menuPortalTarget={menuPortalTarget}
-                menuPortalZIndex={zIndices.pageHeader}
-            />
+            <Box flex="0 1 auto" minWidth={0}>
+                <Select
+                    placeholder="Sort by"
+                    width={200}
+                    maxWidth="100%"
+                    value={sorting.find(s => s.value === sort) ?? sorting[0]}
+                    onChange={option => {
+                        setSort(option.value);
+                    }}
+                    size="small"
+                    options={sorting}
+                    menuPortalTarget={menuPortalTarget}
+                    menuPortalZIndex={zIndices.pageHeader}
+                />
+            </Box>
         </Row>
     );
 };
