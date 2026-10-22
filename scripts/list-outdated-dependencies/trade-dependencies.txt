@@ -82,6 +82,7 @@ react-native-svg
 react-native-teleport
 react-native-view-shot
 react-native-web
+react-native-webview
 react-native-worklets
 rimraf
 stream-http
