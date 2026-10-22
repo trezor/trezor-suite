@@ -3,7 +3,7 @@ import { type Locator, type Page } from '@playwright/test';
 import { step } from '../../common';
 import { expect } from '../../testExtends/customMatchers';
 
-type TronStakingToastType = 'tx-staked';
+type TronStakingToastType = 'tx-staked' | 'tx-unstaked';
 
 export class TronStakingSection {
     // The flow advances only after the app re-fetches the account and sees the broadcast
@@ -24,6 +24,18 @@ export class TronStakingSection {
     readonly freezeAmountError: Locator;
     readonly freezeContinueButton: Locator;
     readonly pendingTransactionTitle: Locator;
+
+    // unstake flow
+    readonly unstakeTitle: Locator;
+    readonly unstakeResourceOption = (resource: 'bandwidth' | 'energy') =>
+        this.page.getByTestId(`@staking/tron-unstake/resource-select/${resource}`);
+    readonly unstakeAmountInput: Locator;
+    readonly unstakeMaxButton: Locator;
+    readonly unstakeStakedBalanceAmount: Locator;
+    readonly unstakeAmountError: Locator;
+    readonly unstakeResourceReduction: Locator;
+    readonly unstakeResourceChange: Locator;
+    readonly unstakeContinueButton: Locator;
 
     // vote step
     readonly remainingVotes: Locator;
@@ -80,9 +92,12 @@ export class TronStakingSection {
 
     // complete screen
     readonly completeHeading: Locator;
+    readonly completeDescription: Locator;
     readonly summaryCard: Locator;
     readonly summaryEarnedResource: Locator;
     readonly summarySuppliedAmount: Locator;
+    readonly summaryUnstakedAmount: Locator;
+    readonly summaryResourceReduction: Locator;
     readonly backToOverviewButton: Locator;
 
     // toasts
@@ -103,6 +118,14 @@ export class TronStakingSection {
     readonly voteButton: Locator;
     readonly votesToAllocateButton: Locator;
     readonly resourcesCard: Locator;
+    readonly unstakingCard: Locator;
+    readonly unstakingRow = (index: number) =>
+        this.unstakingCard.getByTestId(`@staking/tron-unstaking-card/row-${index}`);
+    readonly unstakingRowLocked = (index: number) =>
+        this.unstakingRow(index).getByTestId(`@staking/tron-unstaking-card/row-${index}/locked`);
+    readonly unstakingRowAmount = (index: number) =>
+        this.unstakingRow(index).getByTestId(`@staking/tron-unstaking-card/row-${index}/amount`);
+    readonly withdrawReadyBanner: Locator;
     readonly resourceValue = (resource: 'bandwidth' | 'energy') =>
         this.page.getByTestId(`@staking/tron-resources-card/${resource}`);
 
@@ -124,6 +147,19 @@ export class TronStakingSection {
         this.freezeAmountError = this.page.getByTestId('@staking/tron-freeze/amount-error');
         this.freezeContinueButton = this.page.getByTestId('@staking/tron-freeze/continue-button');
         this.pendingTransactionTitle = this.page.getByTestId('@pending-transaction/title');
+
+        this.unstakeTitle = this.page.getByTestId('@staking/tron-unstake/title');
+        this.unstakeAmountInput = this.page.getByTestId('@staking/tron-unstake/amount-input');
+        this.unstakeMaxButton = this.page.getByTestId('@staking/tron-unstake/max-button');
+        this.unstakeStakedBalanceAmount = this.page.getByTestId(
+            '@staking/tron-unstake/staked-balance/amount-with-symbol',
+        );
+        this.unstakeAmountError = this.page.getByTestId('@staking/tron-unstake/amount-error');
+        this.unstakeResourceReduction = this.page.getByTestId(
+            '@staking/tron-unstake/resource-reduction',
+        );
+        this.unstakeResourceChange = this.page.getByTestId('@staking/tron-unstake/resource-change');
+        this.unstakeContinueButton = this.page.getByTestId('@staking/tron-unstake/continue-button');
 
         this.remainingVotes = this.page.getByTestId('@staking/tron-vote/remaining-votes');
         this.selectRepresentativesButton = this.page.getByTestId(
@@ -175,12 +211,19 @@ export class TronStakingSection {
             .getByTestId('@modal/output-value');
 
         this.completeHeading = this.page.getByTestId('@staking/tron-complete/heading');
+        this.completeDescription = this.page.getByTestId('@staking/tron-complete/description');
         this.summaryCard = this.page.getByTestId('@staking/tron-complete/summary-card');
         this.summaryEarnedResource = this.summaryCard.getByTestId(
             '@staking/tron-complete/earned-resource',
         );
         this.summarySuppliedAmount = this.summaryCard.getByTestId(
             '@staking/tron-complete/supplied-amount',
+        );
+        this.summaryUnstakedAmount = this.summaryCard.getByTestId(
+            '@staking/tron-complete/unstaked-amount',
+        );
+        this.summaryResourceReduction = this.summaryCard.getByTestId(
+            '@staking/tron-complete/resource-reduction',
         );
         this.backToOverviewButton = this.page.getByTestId(
             '@staking/tron-complete/back-to-overview-button',
@@ -198,6 +241,8 @@ export class TronStakingSection {
             '@staking/tron-staked-card/votes-to-allocate-button',
         );
         this.resourcesCard = this.page.getByTestId('@staking/tron-resources-card/container');
+        this.unstakingCard = this.page.getByTestId('@staking/tron-unstaking-card/container');
+        this.withdrawReadyBanner = this.page.getByTestId('@staking/tron-withdraw-banner/container');
     }
 
     // The confirmed toast replaces the pending one for the same txid; dismissing the pending toast
