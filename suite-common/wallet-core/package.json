@@ -15,7 +15,7 @@
         "@mobily/ts-belt": "^3.13.1",
         "@reduxjs/toolkit": "2.13.0",
         "@scure/base": "^2.0.0",
-        "@sentry/core": "10.69.0",
+        "@sentry/core": "10.75.2",
         "@suite-common/analytics": "workspace:*",
         "@suite-common/bluetooth": "workspace:*",
         "@suite-common/device": "workspace:*",

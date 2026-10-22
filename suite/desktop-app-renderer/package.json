@@ -15,7 +15,7 @@
         "build": "NODE_ENV=production TS_NODE_PROJECT=\"tsconfig.json\" webpack --config ./webpack.config.ts"
     },
     "dependencies": {
-        "@sentry/electron": "^7.16.0",
+        "@sentry/electron": "^7.20.1",
         "@suite-common/react-query": "workspace:*",
         "@suite/analytics": "workspace:*",
         "@suite/debug": "workspace:*",
