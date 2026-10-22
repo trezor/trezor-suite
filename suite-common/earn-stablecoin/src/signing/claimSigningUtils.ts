@@ -5,7 +5,7 @@ import {
     type YieldClaimReward,
 } from '@suite-common/wallet-types';
 import { fromHex, sanitizeHex } from '@suite-common/wallet-utils';
-import { type EthereumSignTransaction } from '@trezor/connect-common';
+import { type EthereumSignTransaction, type FeeLevel } from '@trezor/connect-common';
 import { Calldata, asEvmAddress } from '@trezor/network-ethereum-suite-common';
 import { BigNumber } from '@trezor/utils';
 
@@ -67,6 +67,7 @@ type BuildClaimReviewStateParams = {
     contractAddress: EvmHexString;
     fee: EvmFeeHex;
     rewards: ClaimReviewReward[];
+    selectedFeeLevel?: FeeLevel['label'];
 };
 
 type BuildClaimReviewStateResult = {
@@ -84,6 +85,7 @@ type BuildClaimTransactionReviewParams = {
     unsignedTransaction: UnsignedClaimTransaction;
     selectedFee: unknown;
     rewards: ClaimReviewReward[];
+    selectedFeeLevel?: FeeLevel['label'];
 };
 
 type BuildClaimTransactionReviewResult = BuildClaimReviewStateResult & {
@@ -208,6 +210,7 @@ export const buildClaimReviewState = ({
     contractAddress,
     fee,
     rewards,
+    selectedFeeLevel = 'custom',
 }: BuildClaimReviewStateParams): BuildClaimReviewStateResult => {
     const { feeWei, feeLimitWei, feePerUnitGwei, eip1559Fields } = getClaimFeeData(fee);
     const availableRewards = rewards.map(reward => ({
@@ -227,7 +230,7 @@ export const buildClaimReviewState = ({
                 dataHex: data,
             },
         ],
-        selectedFee: 'custom',
+        selectedFee: selectedFeeLevel,
         feePerUnit: feePerUnitGwei,
         feeLimit: feeLimitWei,
         maxFeePerGas: eip1559Fields.maxFeePerGas,
@@ -287,6 +290,7 @@ export const buildClaimTransactionReview = ({
     unsignedTransaction,
     selectedFee,
     rewards,
+    selectedFeeLevel,
 }: BuildClaimTransactionReviewParams): BuildClaimTransactionReviewResult => {
     const fee = parseEvmFeeHex(selectedFee);
 
@@ -302,6 +306,7 @@ export const buildClaimTransactionReview = ({
             contractAddress: unsignedTransaction.to,
             fee,
             rewards,
+            selectedFeeLevel,
         }),
         transactionForSigning: getClaimTransactionForSigning({
             unsignedTransaction,

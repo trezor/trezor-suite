@@ -21,6 +21,7 @@ import {
     type Account,
     AddressDisplayOptions,
     type EvmSelectedFee,
+    type FeeLevelLabel,
 } from '@suite-common/wallet-types';
 import { getAccountIdentity, getMevProtectedTxData } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
@@ -81,6 +82,7 @@ export type SendYieldTransactionParams = {
     dispatch: SendYieldTransactionDispatch;
     getState: () => SendYieldTransactionState;
     selectedFee: EvmSelectedFee | null;
+    selectedFeeLevel: FeeLevelLabel;
 };
 
 export const sendYieldTransaction = async ({
@@ -93,6 +95,7 @@ export const sendYieldTransaction = async ({
     dispatch,
     getState,
     selectedFee,
+    selectedFeeLevel,
 }: SendYieldTransactionParams): Promise<SendYieldTransactionResult> => {
     const device = selectSelectedDevice(getState());
     const addressDisplayType = selectAddressDisplayType(getState());
@@ -108,6 +111,7 @@ export const sendYieldTransaction = async ({
     const transactionReview = buildStablecoinYieldTransactionReview({
         unsignedTransaction,
         selectedFee,
+        selectedFeeLevel,
         amount,
         token,
         symbol: account.symbol,

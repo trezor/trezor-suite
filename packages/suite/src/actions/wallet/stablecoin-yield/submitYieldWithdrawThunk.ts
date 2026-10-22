@@ -75,7 +75,7 @@ export const submitYieldWithdrawThunk = createThunk<
             if (composeResult.type === 'error') {
                 const isFeeError = isYieldWithdrawFeeError(composeResult.reason);
 
-                reportSubmitError(isFeeError ? 'fee-estimation-failed' : 'submit-failed');
+                reportSubmitError(composeResult.reason);
                 dispatch(
                     yieldActions.setError({
                         flowType,
@@ -121,7 +121,7 @@ export const submitYieldWithdrawThunk = createThunk<
                 return;
             }
 
-            const { selectedFee } = userAcceptedTxSimulation;
+            const { selectedFee, selectedFeeLevel } = userAcceptedTxSimulation;
             const reviewToken = flowType === 'redeem' ? flowData.receiptToken : flowData.token;
 
             const result = await sendYieldTransaction({
@@ -134,6 +134,7 @@ export const submitYieldWithdrawThunk = createThunk<
                 dispatch,
                 getState,
                 selectedFee,
+                selectedFeeLevel,
             });
 
             userAcceptedTxSimulation.resolve();

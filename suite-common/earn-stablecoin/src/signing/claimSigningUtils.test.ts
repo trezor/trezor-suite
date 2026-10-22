@@ -35,6 +35,29 @@ const unsignedTransaction = {
 } as const;
 
 describe('claimSigningUtils', () => {
+    it.each(['low', 'normal', 'high', 'custom'] as const)(
+        'preserves the selected %s fee level in the claim review form',
+        selectedFeeLevel => {
+            const params = {
+                unsignedTransaction,
+                selectedFee: {
+                    type: 'legacy',
+                    gasLimit: '0x5208',
+                    gasPrice: '0x3b9aca00',
+                },
+                selectedFeeLevel,
+                rewards: [createReward()],
+            };
+            const result = buildClaimTransactionReview(params);
+
+            expect(result.formState.selectedFee).toBe(selectedFeeLevel);
+            expect(result.transactionForSigning).toMatchObject({
+                gasLimit: '0x5208',
+                gasPrice: '0x3b9aca00',
+            });
+        },
+    );
+
     it('builds Merkl claim calldata for claimable rewards', () => {
         expect(
             buildClaimCalldata({

@@ -89,6 +89,49 @@ const dispatchDeposit = (report: jest.Mock) => {
 };
 
 describe('submitYieldDepositThunk', () => {
+    it('reports an unexpected compose failure without exposing its message', async () => {
+        const report = jest.fn();
+        mockComposeYieldDepositTransactionThunk.mockImplementation(() => () => ({
+            unwrap: () => Promise.reject(new Error('private-compose-details')),
+        }));
+
+        await dispatchDeposit(report);
+
+        expect(report).toHaveBeenCalledWith({
+            type: 'yield/deposit',
+            payload: expect.objectContaining({
+                type: 'error',
+                errorMessage: 'submit-failed',
+            }),
+        });
+        expect(JSON.stringify(report.mock.calls)).not.toContain('private-compose-details');
+    });
+
+    it.each(['fee-estimation-failed', 'missing-deposit-params', 'vault-chain-mismatch'] as const)(
+        'reports the specific compose reason %s before simulation',
+        async reason => {
+            const report = jest.fn();
+            mockComposeYieldDepositTransactionThunk.mockImplementation(() => () => ({
+                unwrap: () => Promise.resolve({ type: 'error', reason }),
+            }));
+
+            await dispatchDeposit(report);
+
+            expect(report).toHaveBeenCalledWith({
+                type: 'yield/deposit',
+                payload: {
+                    type: 'error',
+                    action: 'continue',
+                    networkSymbol: 'eth',
+                    vaultId: 'vault-1',
+                    errorMessage: reason,
+                },
+            });
+            expect(mockOpenDeferredModal).not.toHaveBeenCalled();
+            expect(mockSendYieldTransaction).not.toHaveBeenCalled();
+        },
+    );
+
     beforeAll(() => {
         // The thunk logs every caught failure; the expected ones would clutter the test output.
         jest.spyOn(console, 'error').mockImplementation();
@@ -105,9 +148,33 @@ describe('submitYieldDepositThunk', () => {
                 }),
         }));
         mockOpenDeferredModal.mockImplementation(
-            () => () => Promise.resolve({ value: true, resolve: jest.fn(), selectedFee: null }),
+            () => () =>
+                Promise.resolve({
+                    value: true,
+                    resolve: jest.fn(),
+                    selectedFee: null,
+                    selectedFeeLevel: 'normal',
+                }),
         );
         mockSendYieldTransaction.mockResolvedValue(mockSentResult('0xdeposit'));
+    });
+
+    it('passes the selected fee level from simulation to signing', async () => {
+        mockOpenDeferredModal.mockImplementation(
+            () => () =>
+                Promise.resolve({
+                    value: true,
+                    resolve: jest.fn(),
+                    selectedFee: null,
+                    selectedFeeLevel: 'low',
+                }),
+        );
+
+        await dispatchDeposit(jest.fn());
+
+        expect(mockSendYieldTransaction).toHaveBeenCalledWith(
+            expect.objectContaining({ selectedFee: null, selectedFeeLevel: 'low' }),
+        );
     });
 
     it('does not report an error when the user cancels the signing', async () => {
@@ -218,7 +285,13 @@ describe('submitYieldDepositThunk', () => {
         const report = jest.fn();
         mockSendYieldTransaction.mockResolvedValue({ status: 'cancelled', stage });
         mockOpenDeferredModal.mockImplementation(
-            () => () => Promise.resolve({ value: true, resolve: jest.fn(), selectedFee: null }),
+            () => () =>
+                Promise.resolve({
+                    value: true,
+                    resolve: jest.fn(),
+                    selectedFee: null,
+                    selectedFeeLevel: 'normal',
+                }),
         );
         await dispatchDeposit(report);
         expect(report).toHaveBeenCalledWith({

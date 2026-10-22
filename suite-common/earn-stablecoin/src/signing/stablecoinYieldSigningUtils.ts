@@ -12,7 +12,11 @@ import {
     getContractAddressForNetworkSymbol,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
-import { type EthereumSignTransaction, type TokenInfo } from '@trezor/connect-common';
+import {
+    type EthereumSignTransaction,
+    type FeeLevel,
+    type TokenInfo,
+} from '@trezor/connect-common';
 import { BigNumber } from '@trezor/utils';
 
 // Codes TrezorConnect returns when the user backs out of signing on purpose (device button, PIN
@@ -42,6 +46,7 @@ type BuildStablecoinYieldReviewTokenParams = {
 type BuildStablecoinYieldReviewStateParams = BuildStablecoinYieldReviewTokenParams & {
     amount: string;
     tx: StablecoinYieldParsedTransactionForSigning;
+    selectedFeeLevel?: FeeLevel['label'];
 };
 
 type BuildStablecoinYieldReviewStateResult = {
@@ -134,6 +139,7 @@ export const buildStablecoinYieldReviewState = ({
     amount,
     token,
     symbol,
+    selectedFeeLevel = 'custom',
 }: BuildStablecoinYieldReviewStateParams): BuildStablecoinYieldReviewStateResult => {
     const gasPriceHex = tx.maxFeePerGas ?? tx.gasPrice ?? '0x0';
     const gasLimit = fromHex(tx.gasLimit);
@@ -168,7 +174,7 @@ export const buildStablecoinYieldReviewState = ({
                 dataHex: tx.data,
             },
         ],
-        selectedFee: 'custom',
+        selectedFee: selectedFeeLevel,
         feePerUnit,
         feeLimit: gasLimit.toIntegerString(),
         ...eip1559ReviewFields,

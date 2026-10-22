@@ -78,11 +78,53 @@ const dispatchUnwrap = async (report: jest.Mock) => {
 };
 
 describe('submitUnwrapNativeTokenThunk', () => {
+    it('reports an unexpected compose failure without exposing its message', async () => {
+        const report = jest.fn();
+        mockComposeYieldUnwrapTransactionThunk.mockImplementation(() => () => ({
+            unwrap: () => Promise.reject(new Error('private-compose-details')),
+        }));
+
+        await dispatchUnwrap(report);
+
+        expect(report).toHaveBeenCalledWith({
+            type: 'yield/unwrap',
+            payload: expect.objectContaining({
+                type: 'error',
+                errorMessage: 'submit-failed',
+            }),
+        });
+        expect(JSON.stringify(report.mock.calls)).not.toContain('private-compose-details');
+    });
+
+    it('passes the selected fee level from simulation to signing', async () => {
+        mockOpenDeferredModal.mockImplementation(
+            () => () =>
+                Promise.resolve({
+                    value: true,
+                    resolve: jest.fn(),
+                    selectedFee: null,
+                    selectedFeeLevel: 'low',
+                }),
+        );
+
+        await dispatchUnwrap(jest.fn());
+
+        expect(mockSendYieldTransaction).toHaveBeenCalledWith(
+            expect.objectContaining({ selectedFee: null, selectedFeeLevel: 'low' }),
+        );
+    });
+
     it.each(['signing', 'review'] as const)('reports a cancellation at %s', async stage => {
         const report = jest.fn();
         mockSendYieldTransaction.mockResolvedValue({ status: 'cancelled', stage });
         mockOpenDeferredModal.mockImplementation(
-            () => () => Promise.resolve({ value: true, resolve: jest.fn(), selectedFee: null }),
+            () => () =>
+                Promise.resolve({
+                    value: true,
+                    resolve: jest.fn(),
+                    selectedFee: null,
+                    selectedFeeLevel: 'normal',
+                }),
         );
         const store = await dispatchUnwrap(report);
         expect(
@@ -92,6 +134,9 @@ describe('submitUnwrapNativeTokenThunk', () => {
             type: 'transaction/cancel',
             payload: { txType: 'yield', networkSymbol: 'eth', stage },
         });
+        expect(report).not.toHaveBeenCalledWith(
+            expect.objectContaining({ payload: expect.objectContaining({ type: 'error' }) }),
+        );
     });
 
     beforeAll(() => {
@@ -262,22 +307,40 @@ describe('submitUnwrapNativeTokenThunk', () => {
             expectWithdrawError(report, 'unwrap-fee-estimation-failed');
         });
 
-        it('reports a device rejection on the withdraw event', async () => {
+        it('reports a device rejection as cancellation without a withdraw error', async () => {
             const report = jest.fn();
             mockOpenDeferredModal.mockImplementation(
-                () => () => Promise.resolve({ value: true, resolve: jest.fn(), selectedFee: null }),
+                () => () =>
+                    Promise.resolve({
+                        value: true,
+                        resolve: jest.fn(),
+                        selectedFee: null,
+                        selectedFeeLevel: 'normal',
+                    }),
             );
             mockSendYieldTransaction.mockResolvedValue(mockCancelledResult);
 
             await dispatchInFlowUnwrap(report);
 
-            expectWithdrawError(report, 'unwrap-submit-failed');
+            expect(report).toHaveBeenCalledWith({
+                type: 'transaction/cancel',
+                payload: { txType: 'yield', networkSymbol: 'eth', stage: 'signing' },
+            });
+            expect(report).not.toHaveBeenCalledWith(
+                expect.objectContaining({ payload: expect.objectContaining({ type: 'error' }) }),
+            );
         });
 
         it('reports a thrown signing failure on the withdraw event', async () => {
             const report = jest.fn();
             mockOpenDeferredModal.mockImplementation(
-                () => () => Promise.resolve({ value: true, resolve: jest.fn(), selectedFee: null }),
+                () => () =>
+                    Promise.resolve({
+                        value: true,
+                        resolve: jest.fn(),
+                        selectedFee: null,
+                        selectedFeeLevel: 'normal',
+                    }),
             );
             mockSendYieldTransaction.mockRejectedValue(new Error('boom'));
 
@@ -289,7 +352,13 @@ describe('submitUnwrapNativeTokenThunk', () => {
         it('reports no withdraw error once the unwrap is broadcast', async () => {
             const report = jest.fn();
             mockOpenDeferredModal.mockImplementation(
-                () => () => Promise.resolve({ value: true, resolve: jest.fn(), selectedFee: null }),
+                () => () =>
+                    Promise.resolve({
+                        value: true,
+                        resolve: jest.fn(),
+                        selectedFee: null,
+                        selectedFeeLevel: 'normal',
+                    }),
             );
             mockSendYieldTransaction.mockResolvedValue(mockSentResult('0xunwrap'));
 
@@ -347,10 +416,16 @@ describe('submitUnwrapNativeTokenThunk', () => {
         );
     });
 
-    it('reports tx-simulation-modal continue and submit-failed when the tx is not broadcast', async () => {
+    it('reports simulation continue and cancellation without an error when signing is cancelled', async () => {
         const report = jest.fn();
         mockOpenDeferredModal.mockImplementation(
-            () => () => Promise.resolve({ value: true, resolve: jest.fn(), selectedFee: null }),
+            () => () =>
+                Promise.resolve({
+                    value: true,
+                    resolve: jest.fn(),
+                    selectedFee: null,
+                    selectedFeeLevel: 'normal',
+                }),
         );
 
         await dispatchUnwrap(report);
@@ -364,7 +439,7 @@ describe('submitUnwrapNativeTokenThunk', () => {
                 }),
             }),
         );
-        expect(report).toHaveBeenCalledWith(
+        expect(report).not.toHaveBeenCalledWith(
             expect.objectContaining({
                 type: events.yieldUnwrapEvent.name,
                 payload: expect.objectContaining({
@@ -378,7 +453,13 @@ describe('submitUnwrapNativeTokenThunk', () => {
     it('reports the sent event when the transaction is broadcast', async () => {
         const report = jest.fn();
         mockOpenDeferredModal.mockImplementation(
-            () => () => Promise.resolve({ value: true, resolve: jest.fn(), selectedFee: null }),
+            () => () =>
+                Promise.resolve({
+                    value: true,
+                    resolve: jest.fn(),
+                    selectedFee: null,
+                    selectedFeeLevel: 'normal',
+                }),
         );
         mockSendYieldTransaction.mockResolvedValue(mockSentResult('0xabc'));
 

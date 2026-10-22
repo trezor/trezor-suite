@@ -1,7 +1,7 @@
 import { USER_CANCELLED_ERROR_CODES } from '@suite-common/earn-stablecoin';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { type Account } from '@suite-common/wallet-types';
+import { type Account, type EvmSelectedFee, type FeeLevelLabel } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import TrezorConnect from '@trezor/connect';
 
@@ -62,7 +62,21 @@ const createDispatch = (isReviewModalConfirmed: boolean) =>
         return action;
     }) as unknown as SendYieldTransactionParams['dispatch'];
 
-const sendTransaction = ({ isReviewModalConfirmed = true } = {}) =>
+type SendTransactionParams = {
+    isReviewModalConfirmed?: boolean;
+    selectedFee?: EvmSelectedFee | null;
+    selectedFeeLevel?: FeeLevelLabel;
+    unsignedTransaction?: string;
+    dispatch?: ReturnType<typeof createDispatch>;
+};
+
+const sendTransaction = ({
+    isReviewModalConfirmed = true,
+    selectedFee = null,
+    selectedFeeLevel = 'normal',
+    unsignedTransaction = '{}',
+    dispatch = createDispatch(isReviewModalConfirmed),
+}: SendTransactionParams = {}) =>
     sendYieldTransaction({
         account,
         amount: '100',
@@ -72,12 +86,13 @@ const sendTransaction = ({ isReviewModalConfirmed = true } = {}) =>
             decimals: 6,
             contractAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
         },
-        unsignedTransaction: '{}',
+        unsignedTransaction,
         flowKey: 'flow-1',
         flowType: 'deposit',
-        dispatch: createDispatch(isReviewModalConfirmed),
+        dispatch,
         getState: () => ({}) as unknown as SendYieldTransactionState,
-        selectedFee: null,
+        selectedFee,
+        selectedFeeLevel,
     });
 
 describe('sendYieldTransaction', () => {
@@ -105,6 +120,45 @@ describe('sendYieldTransaction', () => {
             payload: { txid: '0xtxid' },
         });
     });
+
+    it.each(['low', 'normal', 'high', 'custom'] as const)(
+        'carries the selected %s fee from simulation into the transaction review',
+        async selectedFeeLevel => {
+            mockBuildStablecoinYieldTransactionReview.mockImplementationOnce(
+                jest.requireActual('@suite-common/earn-stablecoin')
+                    .buildStablecoinYieldTransactionReview,
+            );
+            const dispatch = createDispatch(false);
+
+            await sendTransaction({
+                dispatch,
+                selectedFeeLevel,
+                selectedFee: {
+                    type: 'legacy',
+                    gasLimit: '0x5208',
+                    gasPrice: '0x1',
+                },
+                unsignedTransaction: JSON.stringify({
+                    from: '0x1111111111111111111111111111111111111111',
+                    to: '0x2222222222222222222222222222222222222222',
+                    data: '0x',
+                    chainId: 1,
+                    gasLimit: '0x5208',
+                    nonce: '0x1',
+                    gasPrice: '0x1',
+                }),
+            });
+
+            expect(dispatch).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    payload: expect.objectContaining({
+                        precomposedForm: expect.objectContaining({ selectedFee: selectedFeeLevel }),
+                    }),
+                }),
+            );
+            expect(TrezorConnect.pushTransaction).not.toHaveBeenCalled();
+        },
+    );
 
     it.each([...USER_CANCELLED_ERROR_CODES])(
         'returns cancelled when signing fails with %s',
