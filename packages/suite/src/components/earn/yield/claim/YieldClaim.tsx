@@ -19,7 +19,6 @@ import {
 import { type Account } from '@suite-common/wallet-types';
 import { Banner, Button, Card, Column, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { WarningIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { claimMerklRewardsThunk } from 'src/actions/wallet/stablecoin-yield';
@@ -27,6 +26,7 @@ import { useSelector } from 'src/hooks/suite';
 import { useFirmwareUpgradeModal } from 'src/hooks/suite/useFirmwareUpgradeModal';
 import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
 
+import { YieldClaimFeeWarning } from './YieldClaimFeeWarning';
 import { YieldRewardsList } from './YieldRewardsList';
 import { useMerklRewards } from './hooks';
 import { YieldDisabledBanner } from '../common/YieldDisabledBanner';
@@ -193,17 +193,13 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
                                             </Column>
                                         </Card>
 
-                                        {merklRewardsQuery.isSuccess &&
-                                            (accountRewards?.rewards?.length ?? 0) > 0 &&
-                                            !claimSession.action.pendingTransaction && (
-                                                <Banner
-                                                    intent="warning"
-                                                    icon={WarningIcon}
-                                                    description={
-                                                        <Translation id="TR_EARN_REWARDS_NETWORK_FEE_WARNING" />
-                                                    }
-                                                />
-                                            )}
+                                        <YieldClaimFeeWarning
+                                            accountRewards={accountRewards}
+                                            networkSymbol={account.symbol}
+                                            isClaimPending={
+                                                !!claimSession.action.pendingTransaction
+                                            }
+                                        />
 
                                         {claimSession.error && (
                                             <Banner

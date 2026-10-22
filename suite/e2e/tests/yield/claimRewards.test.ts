@@ -107,6 +107,8 @@ test.describe('stablecoin yield claim', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
 
             await test.step('Claim the rewards', async () => {
                 await yieldMock.mockMorphoClaim();
+                await expect(yieldFlowSection.claimButton).toBeEnabled();
+                await expect(yieldFlowSection.claimFeeWarning).toBeHidden();
                 await yieldFlowSection.claimButton.click();
 
                 await expect(txSimulationModal.receivedAsset(0)).toHaveText(
