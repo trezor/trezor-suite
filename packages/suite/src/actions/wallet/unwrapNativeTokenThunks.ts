@@ -138,12 +138,11 @@ export const submitUnwrapNativeTokenThunk = createThunk<
                 dispatch,
                 getState,
                 selectedFee: userAcceptedTxSimulation.selectedFee,
+                selectedFeeLevel: userAcceptedTxSimulation.selectedFeeLevel,
             });
 
             userAcceptedTxSimulation.resolve();
 
-            // Unlike the main yield transactions, a cancelled unwrap is reported: the unwrap-step
-            // failure values documented on the withdraw event include user rejections.
             if (sendResult.status === 'cancelled') {
                 extra.services.analytics.report({
                     type: events.transactionCancelEvent.name,
@@ -153,8 +152,6 @@ export const submitUnwrapNativeTokenThunk = createThunk<
                         stage: sendResult.stage,
                     },
                 });
-
-                reportError('submit-failed');
 
                 return undefined;
             }

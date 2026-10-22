@@ -55,6 +55,16 @@ export const submitYieldDepositThunk = createThunk<
             ).unwrap();
 
             if (result.type === 'error') {
+                extra.services.analytics.report({
+                    type: events.yieldDepositEvent.name,
+                    payload: {
+                        type: 'error',
+                        action: 'continue',
+                        networkSymbol: flowData.account.symbol,
+                        vaultId: flowData.vault.id,
+                        errorMessage: result.reason,
+                    },
+                });
                 setYieldError({
                     dispatch,
                     flowType,
@@ -117,7 +127,7 @@ export const submitYieldDepositThunk = createThunk<
                 return;
             }
 
-            const { selectedFee } = userAcceptedTxSimulation;
+            const { selectedFee, selectedFeeLevel } = userAcceptedTxSimulation;
 
             const sendResult = await sendYieldTransaction({
                 account: flowData.account,
@@ -129,6 +139,7 @@ export const submitYieldDepositThunk = createThunk<
                 dispatch,
                 getState,
                 selectedFee,
+                selectedFeeLevel,
             });
 
             userAcceptedTxSimulation.resolve();

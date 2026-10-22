@@ -210,6 +210,7 @@ export const claimMerklRewardsThunk = createThunk<
                 buildClaimTransactionReview({
                     unsignedTransaction: unsignedClaimTx,
                     selectedFee: userAcceptedTxSimulation.selectedFee,
+                    selectedFeeLevel: userAcceptedTxSimulation.selectedFeeLevel,
                     rewards,
                 });
 

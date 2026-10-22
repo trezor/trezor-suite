@@ -118,6 +118,7 @@ export function EarnYieldTxSimulationModalInner({
             decision.resolve({
                 value: true,
                 selectedFee,
+                selectedFeeLevel: form.getValues('selectedFee') ?? 'normal',
                 resolve,
             });
         });
