@@ -3,7 +3,8 @@ import {
     getFiatRatesForTimestamps,
 } from '@suite-common/fiat-services';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { toTokenAddress } from '@suite-common/wallet-types';
+import { type TokenAddress, asTimestamp, toTokenAddress } from '@suite-common/wallet-types';
+import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { renderHookWithStoreProvider, waitFor } from '@suite-native/test-utils-store';
 import { BigNumber } from '@trezor/utils';
 
@@ -21,32 +22,30 @@ const ethSymbol = asNetworkSymbol('eth');
 const vaultContract = toTokenAddress('0x90551c1795392094FE6D29B758EcCD233cFAa260');
 const underlyingContract = toTokenAddress('0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2');
 
-const preloadedState = {
+const createPreloadedState = (currentRate: number, tokenContract?: TokenAddress) => ({
+    device: { devices: [], selectedDevice: undefined },
     wallet: {
         settings: { localCurrency: 'usd' },
         blockchain: { eth: { backends: {} } },
+        fiat: {
+            current: {
+                [getFiatRateKey(ethSymbol, 'usd', tokenContract)]: { rate: currentRate },
+            },
+            lastWeek: {},
+        },
     },
-};
+});
 
-const mockFetchedRates = (weekAgoRate: number | null, currentRate: number) => {
-    getFiatRatesForTimestampsMock.mockImplementation((_ticker, timestamps) => {
-        const [weekAgoTimestamp, currentTimestamp] = timestamps;
-
-        if (weekAgoTimestamp === undefined || currentTimestamp === undefined) {
-            throw new Error('Expected week-ago and current timestamps');
-        }
-
-        return Promise.resolve({
-            ts: 0,
-            symbol: ethSymbol,
-            tickers: [
-                ...(weekAgoRate === null
-                    ? []
-                    : [{ ts: weekAgoTimestamp, rates: { usd: weekAgoRate } }]),
-                { ts: currentTimestamp, rates: { usd: currentRate } },
-            ],
-        });
-    });
+const mockFetchedRate = (weekAgoRate: number | null) => {
+    getFiatRatesForTimestampsMock.mockResolvedValue(
+        weekAgoRate === null
+            ? null
+            : {
+                  ts: asTimestamp(0),
+                  symbol: ethSymbol,
+                  tickers: [{ ts: asTimestamp(0), rates: { usd: weekAgoRate } }],
+              },
+    );
 };
 
 describe('useDayCoinPriceChange', () => {
@@ -55,23 +54,21 @@ describe('useDayCoinPriceChange', () => {
     });
 
     it('returns fiat rates of a regular token', async () => {
-        mockFetchedRates(100, 110);
+        mockFetchedRate(100);
 
         const { result } = await renderHookWithStoreProvider(
             () => useDayCoinPriceChange({ symbol: ethSymbol, tokenContract: underlyingContract }),
-            { preloadedState },
+            { preloadedState: createPreloadedState(110, underlyingContract) },
         );
 
-        await waitFor(() => {
-            expect(result.current.currentValue?.toNumber()).toBe(110);
-        });
+        await waitFor(() => expect(result.current.valuePercentageChange).toBeCloseTo(0.1));
 
-        expect(result.current.valuePercentageChange).toBeCloseTo(0.1);
+        expect(result.current.currentValue?.toNumber()).toBe(110);
         expect(result.current.underlyingAssetContract).toBeNull();
         expect(fetchErc4626UnderlyingAssetMock).not.toHaveBeenCalled();
         expect(getFiatRatesForTimestampsMock).toHaveBeenCalledWith(
             { symbol: ethSymbol, tokenAddress: underlyingContract },
-            expect.any(Array),
+            [expect.any(Number)],
             'usd',
             false,
             false,
@@ -79,7 +76,7 @@ describe('useDayCoinPriceChange', () => {
     });
 
     it('scales the underlying asset rates by the vault exchange rate for an ERC4626 token', async () => {
-        mockFetchedRates(100, 110);
+        mockFetchedRate(100);
         fetchErc4626UnderlyingAssetMock.mockResolvedValue({
             contract: underlyingContract,
             exchangeRate: new BigNumber('1.2'),
@@ -92,14 +89,12 @@ describe('useDayCoinPriceChange', () => {
                     tokenContract: vaultContract,
                     isErc4626Token: true,
                 }),
-            { preloadedState },
+            { preloadedState: createPreloadedState(132, vaultContract) },
         );
 
-        await waitFor(() => {
-            expect(result.current.currentValue?.toNumber()).toBe(132);
-        });
+        await waitFor(() => expect(result.current.valuePercentageChange).toBeCloseTo(0.1));
 
-        expect(result.current.valuePercentageChange).toBeCloseTo(0.1);
+        expect(result.current.currentValue?.toNumber()).toBe(132);
         expect(result.current.underlyingAssetContract).toBe(underlyingContract);
         expect(fetchErc4626UnderlyingAssetMock).toHaveBeenCalledWith({
             coin: ethSymbol,
@@ -107,15 +102,15 @@ describe('useDayCoinPriceChange', () => {
         });
         expect(getFiatRatesForTimestampsMock).toHaveBeenCalledWith(
             { symbol: ethSymbol, tokenAddress: underlyingContract },
-            expect.any(Array),
+            [expect.any(Number)],
             'usd',
             false,
             false,
         );
     });
 
-    it('returns null values when the vault data fetch fails', async () => {
-        mockFetchedRates(100, 110);
+    it('keeps the current price when the vault data fetch fails', async () => {
+        mockFetchedRate(100);
         fetchErc4626UnderlyingAssetMock.mockRejectedValue(new Error('Fetch failed'));
 
         const { result } = await renderHookWithStoreProvider(
@@ -125,24 +120,24 @@ describe('useDayCoinPriceChange', () => {
                     tokenContract: vaultContract,
                     isErc4626Token: true,
                 }),
-            { preloadedState },
+            { preloadedState: createPreloadedState(132, vaultContract) },
         );
 
         await waitFor(() => {
             expect(result.current.isLoading).toBe(false);
         });
 
-        expect(result.current.currentValue).toBeNull();
+        expect(result.current.currentValue?.toNumber()).toBe(132);
         expect(result.current.valuePercentageChange).toBeNull();
         expect(result.current.underlyingAssetContract).toBeNull();
     });
 
     it('keeps the current price when the historical rate is missing', async () => {
-        mockFetchedRates(null, 110);
+        mockFetchedRate(null);
 
         const { result } = await renderHookWithStoreProvider(
             () => useDayCoinPriceChange({ symbol: ethSymbol, tokenContract: underlyingContract }),
-            { preloadedState },
+            { preloadedState: createPreloadedState(110, underlyingContract) },
         );
 
         await waitFor(() => {
