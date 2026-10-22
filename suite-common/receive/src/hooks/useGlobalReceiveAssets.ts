@@ -4,12 +4,7 @@ import { useSelector } from 'react-redux';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { desktopQueryKeys, useQuery } from '@suite-common/react-query';
 import { fetchRankedTokenDefinitions } from '@suite-common/token-definitions';
-import {
-    type TradeableAssetBalances,
-    type TradeableAssetSearchIndex,
-    type TradingAssetOption,
-    selectTradeableAssetBalances,
-} from '@suite-common/trading';
+import { type TradingAssetOption, selectTradeableAssetBalances } from '@suite-common/trading';
 import { type NetworkSymbol, getMainnets } from '@suite-common/wallet-config';
 import {
     selectAllAccountsToList,
@@ -19,17 +14,21 @@ import {
 
 import { getGlobalReceiveAssetIdsWithHistory } from '../getGlobalReceiveAssetIdsWithHistory';
 import {
+    type GlobalReceiveAssetSections,
     buildGlobalReceiveAssetOptions,
     buildGlobalReceiveAssetSearchIndex,
+    getGlobalReceiveAssetSections,
 } from '../globalReceiveAssetUtils';
 
 export type GlobalReceiveAssetCatalogStatus = 'loading' | 'ready' | 'error';
 
-type UseGlobalReceiveAssetsReturn = {
+export type UseGlobalReceiveAssetsParams = {
+    search: string;
+    networkSymbol: NetworkSymbol | undefined;
+};
+
+type UseGlobalReceiveAssetsReturn = GlobalReceiveAssetSections & {
     assets: TradingAssetOption[];
-    assetSearchIndex: TradeableAssetSearchIndex<TradingAssetOption>;
-    assetIdsWithHistory: ReadonlySet<string>;
-    balances: TradeableAssetBalances;
     networks: NetworkSymbol[];
     catalogStatus: GlobalReceiveAssetCatalogStatus;
     retry: () => void;
@@ -47,7 +46,10 @@ const getCatalogStatus = (isReady: boolean, hasError: boolean): GlobalReceiveAss
  * Loads the wallet-independent ranked catalogue once per session, except on Bitcoin-only firmware.
  * Device support is applied locally, never included in the request or cache key.
  */
-export const useGlobalReceiveAssets = (): UseGlobalReceiveAssetsReturn => {
+export const useGlobalReceiveAssets = ({
+    search,
+    networkSymbol,
+}: UseGlobalReceiveAssetsParams): UseGlobalReceiveAssetsReturn => {
     const isBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
     const supportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
     const balances = useSelector(selectTradeableAssetBalances);
@@ -93,6 +95,18 @@ export const useGlobalReceiveAssets = (): UseGlobalReceiveAssetsReturn => {
             }),
         [accounts, supportedMainnets, transactions],
     );
+    const assetSections = useMemo(
+        () =>
+            getGlobalReceiveAssetSections({
+                assets,
+                balances,
+                assetIdsWithHistory,
+                search,
+                searchIndex: assetSearchIndex,
+                networkSymbol,
+            }),
+        [assets, balances, assetIdsWithHistory, search, assetSearchIndex, networkSymbol],
+    );
     const networks = useMemo(
         () => supportedMainnets.map(network => network.symbol),
         [supportedMainnets],
@@ -100,9 +114,7 @@ export const useGlobalReceiveAssets = (): UseGlobalReceiveAssetsReturn => {
 
     return {
         assets,
-        assetSearchIndex,
-        assetIdsWithHistory,
-        balances,
+        ...assetSections,
         networks,
         catalogStatus: getCatalogStatus(
             isBitcoinOnlyFirmware || definitions !== undefined,
