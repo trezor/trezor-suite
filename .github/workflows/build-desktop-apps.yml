@@ -136,7 +136,7 @@ jobs:
   suite-desktop-win:
     if: (github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'build-desktop') || (github.event_name == 'push' && github.ref == 'refs/heads/develop')) && (github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private')
     name: Build suite-desktop-win
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
       platform: win
