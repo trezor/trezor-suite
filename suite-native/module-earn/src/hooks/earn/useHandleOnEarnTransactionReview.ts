@@ -35,16 +35,19 @@ type NavigationProps = StackNavigationProps<RootStackParamList, RootStackRoutes>
 type HandleOnEarnTransactionReviewProps = {
     accountKey: AccountKey;
     stakeType: EarnFormDraftPrefix;
+    isPushing: boolean;
 };
 
 export const useHandleOnEarnTransactionReview = ({
     accountKey,
     stakeType,
+    isPushing,
 }: HandleOnEarnTransactionReviewProps) => {
-    const { closeReview, markReviewNavigationSuccess } = useEarnReviewBackNavigation(
-        stakeType,
+    const { closeReview, markReviewNavigationSuccess } = useEarnReviewBackNavigation({
+        formType: stakeType,
         accountKey,
-    );
+        isPushing,
+    });
 
     const navigation = useNavigation<NavigationProps>();
     const handleReviewError = useHandleEarnReviewError(stakeType, navigation);

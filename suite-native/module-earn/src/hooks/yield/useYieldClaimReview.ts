@@ -75,6 +75,7 @@ export const useYieldClaimReview = ({
     const { finalizeSubmit, leaveReviewFromDeviceCancel, startReview, status, submitReview } =
         useEarnTransactionReview({
             formType: 'yield-claim',
+            networkSymbol: account.symbol,
             isSigned: isClaimSigned,
             navigation,
             onPushSuccess,

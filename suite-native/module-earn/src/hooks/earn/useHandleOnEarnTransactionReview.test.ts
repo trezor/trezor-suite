@@ -54,7 +54,11 @@ it.each([
         const broadcast = createDeferred<unknown>();
         mockDispatch.mockReturnValue(broadcast.promise);
         const { result } = await renderHookWithStoreProvider(() =>
-            useHandleOnEarnTransactionReview({ accountKey: mockAccountKey(), stakeType: 'stake' }),
+            useHandleOnEarnTransactionReview({
+                accountKey: mockAccountKey(),
+                stakeType: 'stake',
+                isPushing: false,
+            }),
         );
         let send: Promise<string | undefined> | undefined;
         await act(() => {

@@ -10,12 +10,12 @@ type Attributes = {
 export const transactionCancelEvent: EventDef<Attributes, EventType.TransactionCancel> = {
     name: EventType.TransactionCancel,
     descriptionTrigger:
-        'User intentionally cancels transaction signing or declines the signed transaction review before broadcast. Device, PIN and application cancellations share this event; unrelated signing failures and timeouts do not. Mobile currently reports Earn signing cancellation only',
+        'User intentionally cancels transaction signing or declines the signed transaction review before broadcast. Device, PIN and application cancellations share this event; unrelated signing failures and timeouts do not. Both stages are reported for desktop and mobile Earn',
     changelog: [
         { version: '25.4.0', notes: 'added' },
         {
             version: '26.11.0',
-            notes: 'Shared with mobile Earn; added yield and cancellation stage; desktop Earn approvals and revokes using shared Send are included; only explicit user cancellations are counted',
+            notes: 'Shared with mobile Earn; added yield and cancellation stage; desktop and mobile Earn approvals and revokes using shared Send are included. Mobile signed-review exits are reported once, excluding background screens, successful navigation, programmatic replacements and in-progress broadcasts. Wrap/unwrap user cancellations no longer also report submit-failed errors; only explicit user cancellations are counted',
         },
     ],
 

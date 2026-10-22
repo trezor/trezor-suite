@@ -36,6 +36,7 @@ type UseWrappedNativeTokenReviewParams = {
 
     onBroadcast?: (broadcast: YieldBroadcastTransaction) => void;
     onReviewLeave?: () => void;
+    onError?: (errorMessage: 'submit-failed' | 'push-failed') => void;
 };
 
 type UseWrappedNativeTokenReviewResult = {
@@ -61,6 +62,7 @@ export const useWrappedNativeTokenReview = ({
     unsignedTransaction,
     onBroadcast,
     onReviewLeave,
+    onError,
 }: UseWrappedNativeTokenReviewParams): UseWrappedNativeTokenReviewResult => {
     const { dispatch } = useServices(injectDispatch);
     const navigation = useNavigation<NavigationProps>();
@@ -74,7 +76,18 @@ export const useWrappedNativeTokenReview = ({
         flowType,
         networkSymbol: account.symbol,
     });
-    const reportSubmitFailed = useCallback(() => reportError('submit-failed'), [reportError]);
+    const handleReviewError = useCallback(
+        (errorMessage: 'submit-failed' | 'push-failed') => {
+            if (isStandaloneFlow) {
+                reportError(errorMessage);
+
+                return;
+            }
+
+            onError?.(errorMessage);
+        },
+        [isStandaloneFlow, onError, reportError],
+    );
 
     const signAction = useCallback(
         () =>
@@ -117,13 +130,13 @@ export const useWrappedNativeTokenReview = ({
     const { finalizeSubmit, leaveReviewFromDeviceCancel, startReview, status, submitReview } =
         useEarnTransactionReview({
             formType: flowType === 'wrap' ? 'wrap-native' : 'unwrap-native',
+            networkSymbol: account.symbol,
             isSigned: !!signedTransaction,
             navigation,
             onPushSuccess,
             onReviewLeave,
             onSignSuccess: setSignedTransaction,
-            reportCancel: isStandaloneFlow ? reportSubmitFailed : undefined,
-            reportError: isStandaloneFlow ? reportError : undefined,
+            reportError: handleReviewError,
             signAction,
             pushAction,
         });
