@@ -19,7 +19,7 @@ const HID_RETRY_INTERVAL = 30_000;
 
 type CompositeApiParams = Omit<AbstractApiConstructorParams, 'type'> & {
     usbApi: AbstractApi;
-    /** Called at most once, when the HID backend is enabled. May throw. */
+    /** Called on every activation attempt, a failed one is retried. May throw. */
     createHidApi: () => AbstractApi;
 };
 
