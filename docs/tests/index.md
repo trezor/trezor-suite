@@ -8,6 +8,7 @@ This chapter contains information about tests.
 - [GitHub Test Reporter](../symlink/tests/e2e-github-reporter.md)
 - [regtest](./regtest.md)
 - [@suite-native/test-utils](./suite-native-test-utils.md)
+- [Suite Native E2E performance](./suite-native-e2e-performance.md)
 - [Performance history](./perf-history.md)
 - [@suite-common/test-utils](./suite-common-test-utils.md)
 
