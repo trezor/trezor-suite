@@ -44,6 +44,7 @@ export const YieldPositionCard = ({ item, onClose }: YieldPositionCardProps) => 
                 from: 'earn-dashboard',
                 to: 'vault-detail',
                 networkSymbol: item.networkSymbol,
+                vaultId: item.yieldId,
                 action: 'continue',
             },
         });
@@ -55,6 +56,7 @@ export const YieldPositionCard = ({ item, onClose }: YieldPositionCardProps) => 
     }, [
         analytics,
         item.networkSymbol,
+        item.yieldId,
         item.accountKey,
         item.contractAddress,
         onClose,
