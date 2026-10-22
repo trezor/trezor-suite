@@ -1,6 +1,6 @@
 import * as path from 'path';
 
-import type { PerfRun, PerfRunContext, PerfRunIdentity, PerfSurface } from '@trezor/perf-e2e';
+import type { PerfPlatform, PerfRun, PerfRunContext, PerfRunIdentity } from '@trezor/perf-e2e';
 import { listShardDirectories, readJsonFile } from '@trezor/perf-e2e';
 
 import type { PerformanceReport } from './types';
@@ -35,10 +35,10 @@ export const collectShardReports = (artifactsDir: string): ShardReport[] =>
 
 /**
  * `unknown` means the Detox configuration did not say which platform ran, and a run that cannot be
- * attributed to a surface is skipped rather than filed under a guess — a wrong label would poison
- * that surface's trend, while a missing run only leaves a gap.
+ * attributed to a platform is skipped rather than filed under a guess — a wrong label would poison
+ * that platform's trend, while a missing run only leaves a gap.
  */
-const toSurface = (report: PerformanceReport): PerfSurface | null => {
+const toPlatform = (report: PerformanceReport): PerfPlatform | null => {
     switch (report.meta.platform) {
         case 'android':
             return 'android';
@@ -53,15 +53,15 @@ export const toPerfRun = (
     { shard, report }: ShardReport,
     identity: PerfRunIdentity,
 ): PerfRun | null => {
-    const surface = toSurface(report);
+    const platform = toPlatform(report);
 
-    if (!surface) {
+    if (!platform) {
         return null;
     }
 
     const context: PerfRunContext = {
         ...identity,
-        surface,
+        platform,
         shard,
         generatedAt: report.meta.generatedAt,
         env: { device: report.meta.device, appVersion: report.meta.appVersion },

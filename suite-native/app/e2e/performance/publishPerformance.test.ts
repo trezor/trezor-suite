@@ -5,7 +5,7 @@ import * as path from 'path';
 import { collectShardReports, toPerfRun } from './publishPerformance';
 import type { PerformanceReport } from './types';
 
-const identity = { branch: 'develop', sha: 'abc1234', runId: '9', runAttempt: '1' };
+const identity = { branch: 'develop', commitId: 'abc1234', runId: '9', runAttempt: '1' };
 
 const report = (
     screen: string,
@@ -88,7 +88,7 @@ describe('toPerfRun', () => {
         const run = toPerfRun({ shard: '3', report: report('home') }, identity);
 
         expect(run?.context).toMatchObject({
-            surface: 'android',
+            platform: 'android',
             shard: '3',
             branch: 'develop',
             generatedAt: '2026-09-18T07:30:00.000Z',
@@ -106,9 +106,9 @@ describe('toPerfRun', () => {
         expect(run?.artifacts[0]).toMatchObject({ kind: 'native-report', name: 'report' });
     });
 
-    it('keeps iOS on its own surface', () => {
+    it('keeps iOS on its own platform', () => {
         expect(
-            toPerfRun({ shard: '1', report: report('home', 'ios') }, identity)?.context.surface,
+            toPerfRun({ shard: '1', report: report('home', 'ios') }, identity)?.context.platform,
         ).toBe('ios');
     });
 
