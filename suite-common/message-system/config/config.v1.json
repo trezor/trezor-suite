@@ -1,7 +1,7 @@
 {
     "version": 1,
     "timestamp": "2026-10-22T12:00:00+00:00",
-    "sequence": 161,
+    "sequence": 162,
     "actions": [
         {
             "conditions": [
@@ -2125,30 +2125,6 @@
                     {
                         "variant": "B",
                         "percentage": 100
-                    }
-                ]
-            }
-        },
-        {
-            "conditions": [
-                {
-                    "environment": {
-                        "desktop": "*",
-                        "mobile": "!",
-                        "web": "*"
-                    }
-                }
-            ],
-            "experiment": {
-                "id": "eef0ff6f-95da-4a7e-aae6-ccd589c32998",
-                "groups": [
-                    {
-                        "variant": "control",
-                        "percentage": 90
-                    },
-                    {
-                        "variant": "treatment",
-                        "percentage": 10
                     }
                 ]
             }
