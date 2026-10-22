@@ -237,6 +237,17 @@ describe('getApprovalStatus', () => {
         expect(result).toBe('needs_approval');
     });
 
+    it('should return "not_needed" when the approval check returns CONFIRM without an allowance', () => {
+        const quote = {
+            orderId: 'test-order',
+            isDex: true,
+            send: DAI_CRYPTO_ID,
+            status: 'CONFIRM' as const,
+        };
+        const result = getApprovalStatus(quote);
+        expect(result).toBe('not_needed');
+    });
+
     it('should return "not_needed" for regular quote', () => {
         const quote = {
             orderId: 'test-order',

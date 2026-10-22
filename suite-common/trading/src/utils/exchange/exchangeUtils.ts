@@ -177,6 +177,10 @@ export const getApprovalStatus = (candidateQuote?: ExchangeTrade): ApprovalStatu
         return 'approved';
     }
 
+    if (candidateQuote.status === 'CONFIRM') {
+        return 'not_needed';
+    }
+
     return 'needs_approval';
 };
 
