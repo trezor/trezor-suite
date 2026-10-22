@@ -8,6 +8,7 @@ import { WebsocketError } from './client';
  */
 class WSWrapper extends EventEmitter {
     private _ws: WebSocket;
+    private _isCloseRequested = false;
     static CONNECTING = 0;
     static OPEN = 1;
     static CLOSING = 2;
@@ -29,6 +30,12 @@ class WSWrapper extends EventEmitter {
         };
 
         this._ws.onopen = () => {
+            // RN Android ignores close() until the socket opens, so close it again here.
+            if (this._isCloseRequested) {
+                this._ws.close();
+
+                return;
+            }
             this.emit('open');
         };
 
@@ -51,7 +58,8 @@ class WSWrapper extends EventEmitter {
     }
 
     close() {
-        if (this.readyState === WSWrapper.OPEN) {
+        this._isCloseRequested = true;
+        if (this.readyState === WSWrapper.CONNECTING || this.readyState === WSWrapper.OPEN) {
             this._ws.close();
         }
     }
