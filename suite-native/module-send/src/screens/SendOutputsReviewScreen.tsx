@@ -92,6 +92,7 @@ export const SendOutputsReviewScreen = ({ route }: SendOutputsReviewScreenProps)
             sendTransactionThunk({
                 selectedAccount: account,
                 wasAppLeftDuringReview,
+                tokenContract,
             }),
         );
 
