@@ -125,11 +125,8 @@ test.describe('stablecoin yield redeem', { tag: ['@webOnly', '@T3W1', '@T3T1'] }
                 await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Redeem' },
-                        body: [YIELD_USDC_VAULT_DISPLAY_NAME],
-                        actions: { right_button: 'Continue' },
-                    },
-                    T3T1: {
                         body: [['Redeem from'], YIELD_USDC_VAULT_DISPLAY_NAME],
+                        actions: { right_button: 'Continue' },
                     },
                 });
                 await device.pressYes();
