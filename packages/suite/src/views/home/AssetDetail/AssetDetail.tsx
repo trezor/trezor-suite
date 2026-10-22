@@ -8,6 +8,7 @@ import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { useDiscovery, useLayout, useSelector } from 'src/hooks/suite';
 
 import { AssetDetailBalance, AssetDetailBalanceSkeleton } from './AssetDetailBalance';
+import { AssetDetailMarketPrice } from './AssetDetailMarketPrice';
 import { AssetNotExists } from './AssetNotExists';
 import { selectRoutedAssetKey } from './selectRoutedAssetKey';
 
@@ -26,6 +27,7 @@ export const AssetDetail = () => {
 
     return (
         <Column gap={16} alignItems="stretch" data-testid="@asset-detail">
+            <AssetDetailMarketPrice assetKey={assetKey} />
             <AssetDetailBalance assetKey={assetKey} />
         </Column>
     );
