@@ -145,7 +145,7 @@ export const StakingTransactionDataReviewContent = ({
     ]);
 
     const { handleSign, handlePush, closeReview, markReviewNavigationSuccess } =
-        useHandleOnEarnTransactionReview({ accountKey, stakeType });
+        useHandleOnEarnTransactionReview({ accountKey, stakeType, isPushing });
 
     const { trackPushedTransaction, pendingTxid, isPending, submittedAt } =
         useNavigateAfterPushedTransaction({

@@ -1,3 +1,4 @@
+import { deviceAuthorizationInitialState } from '@suite-native/device-authorization';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { useEarnTransactionReview } from './useEarnTransactionReview';
@@ -45,6 +46,7 @@ const PUSHED_PAYLOAD = { txid: 'test-txid' };
 
 const createParams = (overrides: Record<string, unknown> = {}) => ({
     formType: 'yield-deposit' as const,
+    networkSymbol: 'eth',
     isSigned: false,
     navigation: { pop: jest.fn() },
     onPushSuccess: jest.fn(),
@@ -60,7 +62,10 @@ type HookParams = ReturnType<typeof createParams>;
 
 const renderReview = (params: HookParams, { isDeviceConnected = true } = {}) =>
     renderHookWithStoreProvider((props: HookParams) => useEarnTransactionReview(props), {
-        preloadedState: { device: { selectedDevice: { connected: isDeviceConnected } } },
+        preloadedState: {
+            deviceAuthorization: deviceAuthorizationInitialState,
+            device: { selectedDevice: { connected: isDeviceConnected } },
+        },
         initialProps: params,
     });
 

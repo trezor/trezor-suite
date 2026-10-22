@@ -136,6 +136,8 @@ export const useYieldApprovalReview = ({
     const { leaveReviewFromDeviceCancel, markReviewNavigationSuccess, wasReviewCancelledByUser } =
         useYieldApprovalReviewNavigation({
             flowKey,
+            networkSymbol: flowData.account.symbol,
+            isSigned: isApprovalSigned && !isSendingApproval,
             onReviewLeave,
             shouldConfirmCancellation: shouldConfirmApprovalCancellation,
             transactionType,

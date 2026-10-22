@@ -24,6 +24,7 @@ type WrappedNativeTokenReviewContentProps = {
     flowContext: 'standalone' | 'in-flow';
     flowType: WrappedNativeFlowType;
     onBroadcast?: (broadcast: YieldBroadcastTransaction) => void;
+    onError?: (errorMessage: 'submit-failed' | 'push-failed') => void;
     preview: YieldReviewPreview;
     spentToken: YieldFlowDisplayToken;
     unsignedTransaction: string;
@@ -35,6 +36,7 @@ export const WrappedNativeTokenReviewContent = ({
     flowContext,
     flowType,
     onBroadcast,
+    onError,
     preview,
     spentToken,
     unsignedTransaction,
@@ -60,6 +62,7 @@ export const WrappedNativeTokenReviewContent = ({
         amount,
         unsignedTransaction,
         onBroadcast,
+        onError,
         onReviewLeave: markReviewLeave,
     });
 
