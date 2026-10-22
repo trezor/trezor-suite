@@ -123,6 +123,33 @@ describe('router', () => {
     });
 
     describe('getAppWithParams', () => {
+        it('asset params validation', () => {
+            const route = getRoute('suite-asset');
+
+            expect(getAppWithParams({ pathname: '/asset', hash: '#/btc' })).toEqual({
+                app: 'dashboard',
+                params: { symbol: 'btc' },
+                route,
+            });
+            expect(
+                getAppWithParams({
+                    pathname: '/asset',
+                    hash: '#/eth/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                }),
+            ).toEqual({
+                app: 'dashboard',
+                params: {
+                    symbol: 'eth',
+                    contractAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                },
+                route,
+            });
+            expect(getAppWithParams({ pathname: '/asset', hash: '#/btc-invalid' }).params).toBe(
+                undefined,
+            );
+            expect(getAppWithParams({ pathname: '/asset', hash: '' }).params).toBe(undefined);
+        });
+
         it('wallet params validation', () => {
             const resp = {
                 app: 'wallet',

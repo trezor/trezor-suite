@@ -607,6 +607,11 @@ export const selectWalletAssetDisplaySymbol = (
     isHidden?: boolean,
 ) => selectWalletAsset(state, assetKey, isHidden)?.displaySymbol;
 
+export const selectWalletAssetName = (
+    state: HomeAssetTableState,
+    assetKey: WalletAssetKey | undefined,
+) => selectWalletAsset(state, assetKey)?.name;
+
 export const selectWalletAssetAmount = (
     state: HomeAssetTableState,
     assetKey: WalletAssetKey | undefined,

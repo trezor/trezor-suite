@@ -4,6 +4,7 @@ import {
     type NetworkSymbol,
     getNetworkOptional,
     isAccountOfNetwork,
+    isNetworkSymbol,
 } from '@suite-common/wallet-config';
 import {
     type WalletParams as CommonWalletParams,
@@ -37,6 +38,17 @@ export function parseEarnParams(params: unknown): EarnParams | undefined {
         return undefined;
     }
 }
+
+export type AssetParams = {
+    symbol: NetworkSymbol;
+    contractAddress?: string;
+};
+
+export const parseAssetParams = ({
+    symbol,
+    contractAddress,
+}: Partial<Record<keyof AssetParams, string>>): AssetParams | undefined =>
+    symbol !== undefined && isNetworkSymbol(symbol) ? { symbol, contractAddress } : undefined;
 
 const dashboardParamsSchema = yup.object({
     networkSymbol: yup.mixed<NetworkSymbol>().notRequired(),

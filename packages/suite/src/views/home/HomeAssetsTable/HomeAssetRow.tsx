@@ -1,5 +1,6 @@
 import { memo } from 'react';
 
+import { gotoThunk } from '@suite/router';
 import {
     selectWalletAssetContractAddress,
     selectWalletAssetDisplaySymbol,
@@ -8,6 +9,8 @@ import {
 } from '@suite-common/assets';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { Column, Table } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { PriceTicker, TrendTicker } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
@@ -25,6 +28,7 @@ export const HomeAssetRow = memo(function HomeAssetRow({
     assetKey,
     hasBorderTop,
 }: HomeAssetRowProps) {
+    const { dispatch } = useServices(injectDispatch);
     const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey));
     const contractAddress = useSelector(state => selectWalletAssetContractAddress(state, assetKey));
     const displaySymbol = useSelector(state => selectWalletAssetDisplaySymbol(state, assetKey));
@@ -34,9 +38,13 @@ export const HomeAssetRow = memo(function HomeAssetRow({
         return null;
     }
 
+    const openAssetDetail = () =>
+        dispatch(gotoThunk({ routeName: 'suite-asset', params: { symbol, contractAddress } }));
+
     return (
         <Table.Row
             hasBorderTop={hasBorderTop}
+            onClick={openAssetDetail}
             data-testid={`@dashboard/home-asset-item/${symbol}/${contractAddress ?? 'coin'}`}
         >
             <Table.Cell padding={HOME_ASSET_CELL_PADDING.first}>
