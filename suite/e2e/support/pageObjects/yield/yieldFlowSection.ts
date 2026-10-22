@@ -39,6 +39,7 @@ export class YieldFlowSection {
     // Claim step
     readonly claimHeading: Locator;
     readonly claimButton: Locator;
+    readonly claimFeeWarning: Locator;
     readonly claimRewardsList: Locator;
     readonly claimedToast: Locator;
     readonly claimedToastMessage: Locator;
@@ -89,6 +90,7 @@ export class YieldFlowSection {
         this.withdrawnToast = this.page.getByTestId('@toast/tx-yield-withdraw');
         this.claimHeading = this.page.getByTestId('@yield/claim/heading');
         this.claimButton = this.page.getByTestId('@yield/claim/claim-button');
+        this.claimFeeWarning = this.page.getByTestId('@yield/claim/fee-warning');
         this.claimRewardsList = this.page.getByTestId('@yield/claim/rewards-list');
         this.claimedToast = this.page.getByTestId('@toast/tx-yield-claim');
         this.claimedToastMessage = this.page.getByTestId('@toast/tx-yield-claim/message');
