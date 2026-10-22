@@ -50,6 +50,8 @@ export const formatAppsEmbeddingEvent = (event: AppsEmbeddingEvent): string => {
             return `callback ${event.status.toUpperCase()} — ${event.url}`;
         case 'message':
             return `message ${formatMessageData(event.data)}`;
+        case 'message-dropped':
+            return `message dropped — ${event.detail}`;
         case 'window-open-attempt':
             return `window.open ${WINDOW_OPEN_OUTCOME_LABEL[event.outcome]} — ${event.url}`;
         case 'navigation-blocked':

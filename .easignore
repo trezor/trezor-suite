@@ -83,6 +83,7 @@
 !/suite-common/address
 !/suite-common/analytics
 !/suite-common/analytics-redux
+!/suite-common/apps-embedding
 !/suite-common/assets
 !/suite-common/bip329
 !/suite-common/bip329-types
@@ -162,6 +163,8 @@
 !/suite-native/analytics-redux
 !/suite-native/app
 !/suite-native/app-init
+!/suite-native/apps-embedding
+!/suite-native/apps-embedding-demo
 !/suite-native/assets
 !/suite-native/atoms
 !/suite-native/banners

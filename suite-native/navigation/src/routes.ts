@@ -20,6 +20,7 @@ export enum RootStackRoutes {
     DevUtils = 'DevUtils',
     MessageSystemManager = 'MessageSystemManager',
     MessageSystemExperiments = 'MessageSystemExperiments',
+    AppsEmbedding = 'AppsEmbedding',
     SignAndVerify = 'SignAndVerify',
     SignAndVerifyStack = 'SignAndVerifyStack',
     TransactionDetailStack = 'TransactionDetailStack',
