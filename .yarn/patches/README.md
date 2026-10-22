@@ -43,3 +43,8 @@ the worktree's git directory (`.git/worktrees/<name>`), so every page lookup wal
 Changes for the in-app browser of `@suite-native/apps-embedding`, introduced for [#33402](https://github.com/trezor/trezor-suite/issues/33402); one bullet per change, each to be removed once `react-native-webview` offers the behavior itself.
 
 - iOS titles the `alert`, `confirm` and `prompt` dialogs with the host of the frame that opened them, and shows none for a frame without an identifiable host. The library presents every dialog as an app alert with an empty title whatever frame asked, so a third-party iframe inside an embedded site could pass a prompt for a PIN off as Suite's own; WebKit hands the delegate the calling frame, and Android's default client already names the page.
+- Android honours `mediaCapturePermissionGrantType`, which the library implements on iOS only: `deny`
+  refuses every camera and microphone request and `grantIfSameHostElseDeny` those from another host
+  than the page's; the other values keep the library's handling, which grants to any frame once the
+  app holds the Android permission and asks the user for it otherwise. Upstream has no Android
+  implementation as of 13.16.1.

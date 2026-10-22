@@ -1,3 +1,182 @@
+diff --git a/android/src/main/java/com/reactnativecommunity/webview/RNCWebChromeClient.java b/android/src/main/java/com/reactnativecommunity/webview/RNCWebChromeClient.java
+index 07f73fd00a083ebf5a03bffaa7bbadbd1f648505..f697a2043d1be1874c3767021d2eefd6f48ad531 100644
+--- a/android/src/main/java/com/reactnativecommunity/webview/RNCWebChromeClient.java
++++ b/android/src/main/java/com/reactnativecommunity/webview/RNCWebChromeClient.java
+@@ -19,6 +19,7 @@ import android.webkit.WebView;
+ import android.webkit.WebViewClient;
+ import android.widget.FrameLayout;
+ 
++import androidx.annotation.Nullable;
+ import androidx.annotation.RequiresApi;
+ import androidx.core.content.ContextCompat;
+ 
+@@ -81,6 +82,14 @@ public class RNCWebChromeClient extends WebChromeClient implements LifecycleEven
+ 
+     protected boolean mHasOnOpenWindowEvent = false;
+ 
++    // The values of the `mediaCapturePermissionGrantType` prop that refuse a capture request here;
++    // `prompt`, `grant` and `grantIfSameHostElsePrompt` keep the handling below, which grants once
++    // the app holds the Android permission and asks the user for it otherwise.
++    protected static final String MEDIA_CAPTURE_GRANT_TYPE_DENY = "deny";
++    protected static final String MEDIA_CAPTURE_GRANT_TYPE_GRANT_IF_SAME_HOST_ELSE_DENY = "grantIfSameHostElseDeny";
++
++    protected String mMediaCapturePermissionGrantType = null;
++
+     public RNCWebChromeClient(RNCWebView webView) {
+         this.mWebView = webView;
+     }
+@@ -147,14 +156,17 @@ public class RNCWebChromeClient extends WebChromeClient implements LifecycleEven
+ 
+         grantedPermissions = new ArrayList<>();
+ 
++        // A refused capture resource is neither granted nor asked for, whatever the app holds.
++        boolean isMediaCaptureRefused = isMediaCaptureRefused(request.getOrigin());
++
+         ArrayList<String> requestedAndroidPermissions = new ArrayList<>();
+         for (String requestedResource : request.getResources()) {
+             String androidPermission = null;
+ 
+             if (requestedResource.equals(PermissionRequest.RESOURCE_AUDIO_CAPTURE)) {
+-                androidPermission = Manifest.permission.RECORD_AUDIO;
++                androidPermission = isMediaCaptureRefused ? null : Manifest.permission.RECORD_AUDIO;
+             } else if (requestedResource.equals(PermissionRequest.RESOURCE_VIDEO_CAPTURE)) {
+-                androidPermission = Manifest.permission.CAMERA;
++                androidPermission = isMediaCaptureRefused ? null : Manifest.permission.CAMERA;
+             } else if(requestedResource.equals(PermissionRequest.RESOURCE_PROTECTED_MEDIA_ID)) {
+                 if (mAllowsProtectedMedia) {
+                   grantedPermissions.add(requestedResource);
+@@ -180,7 +192,11 @@ public class RNCWebChromeClient extends WebChromeClient implements LifecycleEven
+ 
+         // If all the permissions are already granted, send the response to the WebView synchronously
+         if (requestedAndroidPermissions.isEmpty()) {
+-            request.grant(grantedPermissions.toArray(new String[0]));
++            if (grantedPermissions.isEmpty()) {
++                request.deny();
++            } else {
++                request.grant(grantedPermissions.toArray(new String[0]));
++            }
+             grantedPermissions = null;
+             return;
+         }
+@@ -369,4 +385,27 @@ public class RNCWebChromeClient extends WebChromeClient implements LifecycleEven
+     public void setHasOnOpenWindowEvent(boolean hasEvent) {
+       mHasOnOpenWindowEvent = hasEvent;
+     }
++
++    /**
++     * Set how camera and microphone requests are answered, the Android side of the
++     * `mediaCapturePermissionGrantType` prop: `deny` refuses every one, `grantIfSameHostElseDeny`
++     * refuses those from another host than the page's, and the other values keep the default
++     * handling, which grants once the app holds the Android permission and asks the user for it
++     * otherwise. Protected media keeps `allowsProtectedMedia`.
++     */
++    public void setMediaCapturePermissionGrantType(@Nullable String grantType) {
++      mMediaCapturePermissionGrantType = grantType;
++    }
++
++    protected boolean isMediaCaptureRefused(Uri origin) {
++      if (MEDIA_CAPTURE_GRANT_TYPE_DENY.equals(mMediaCapturePermissionGrantType)) {
++        return true;
++      }
++      if (MEDIA_CAPTURE_GRANT_TYPE_GRANT_IF_SAME_HOST_ELSE_DENY.equals(mMediaCapturePermissionGrantType)) {
++        String pageUrl = mWebView.getUrl();
++        String pageHost = pageUrl == null ? null : Uri.parse(pageUrl).getHost();
++        return pageHost == null || !pageHost.equals(origin.getHost());
++      }
++      return false;
++    }
+ }
+\ No newline at end of file
+diff --git a/android/src/main/java/com/reactnativecommunity/webview/RNCWebViewManagerImpl.kt b/android/src/main/java/com/reactnativecommunity/webview/RNCWebViewManagerImpl.kt
+index f83033b3597a425da159555233bacce250ccfce0..ec18f1b8f593f8469223cdb6f1089681d08289b4 100644
+--- a/android/src/main/java/com/reactnativecommunity/webview/RNCWebViewManagerImpl.kt
++++ b/android/src/main/java/com/reactnativecommunity/webview/RNCWebViewManagerImpl.kt
+@@ -43,6 +43,7 @@ class RNCWebViewManagerImpl(private val newArch: Boolean = false) {
+     private var mDownloadingMessage: String? = null
+     private var mLackPermissionToDownloadMessage: String? = null
+     private var mHasOnOpenWindowEvent = false
++    private var mMediaCapturePermissionGrantType: String? = null
+     private var mPendingSource: ReadableMap? = null
+ 
+     private var mUserAgent: String? = null
+@@ -208,6 +209,7 @@ class RNCWebViewManagerImpl(private val newArch: Boolean = false) {
+                 }
+             webChromeClient.setAllowsProtectedMedia(mAllowsProtectedMedia);
+             webChromeClient.setHasOnOpenWindowEvent(mHasOnOpenWindowEvent);
++            webChromeClient.setMediaCapturePermissionGrantType(mMediaCapturePermissionGrantType);
+             webView.webChromeClient = webChromeClient
+         } else {
+             var webChromeClient = webView.webChromeClient as RNCWebChromeClient?
+@@ -219,6 +221,7 @@ class RNCWebViewManagerImpl(private val newArch: Boolean = false) {
+             }
+             webChromeClient.setAllowsProtectedMedia(mAllowsProtectedMedia);
+             webChromeClient.setHasOnOpenWindowEvent(mHasOnOpenWindowEvent);
++            webChromeClient.setMediaCapturePermissionGrantType(mMediaCapturePermissionGrantType);
+             webView.webChromeClient = webChromeClient
+         }
+     }
+@@ -651,6 +654,18 @@ class RNCWebViewManagerImpl(private val newArch: Boolean = false) {
+       }
+     }
+ 
++    fun setMediaCapturePermissionGrantType(viewWrapper: RNCWebViewWrapper, value: String?) {
++      val view = viewWrapper.webView
++      // Kept for a WebChromeClient created later, as mAllowsProtectedMedia is
++      mMediaCapturePermissionGrantType = value
++      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
++        val client = view.webChromeClient
++        if (client != null && client is RNCWebChromeClient) {
++          client.setMediaCapturePermissionGrantType(value)
++        }
++      }
++    }
++
+     fun setMenuCustomItems(viewWrapper: RNCWebViewWrapper, value: ReadableArray?) {
+         val view = viewWrapper.webView
+         when (value) {
+diff --git a/android/src/newarch/com/reactnativecommunity/webview/RNCWebViewManager.java b/android/src/newarch/com/reactnativecommunity/webview/RNCWebViewManager.java
+index 4709e2822499067cef3a4ce571991b96f844e085..b69ff1b659f390235d864f5bf06800f2a2d0ca09 100644
+--- a/android/src/newarch/com/reactnativecommunity/webview/RNCWebViewManager.java
++++ b/android/src/newarch/com/reactnativecommunity/webview/RNCWebViewManager.java
+@@ -94,6 +94,12 @@ public class RNCWebViewManager extends ViewGroupManager<RNCWebViewWrapper>
+         mRNCWebViewManagerImpl.setAllowsProtectedMedia(view, value);
+     }
+ 
++    @Override
++    @ReactProp(name = "mediaCapturePermissionGrantType")
++    public void setMediaCapturePermissionGrantType(RNCWebViewWrapper view, @Nullable String value) {
++        mRNCWebViewManagerImpl.setMediaCapturePermissionGrantType(view, value);
++    }
++
+     @Override
+     @ReactProp(name = "androidLayerType")
+     public void setAndroidLayerType(RNCWebViewWrapper view, @Nullable String value) {
+@@ -423,9 +429,6 @@ public class RNCWebViewManager extends ViewGroupManager<RNCWebViewWrapper>
+     @Override
+     public void setHasOnFileDownload(RNCWebViewWrapper view, boolean value) {}
+ 
+-    @Override
+-    public void setMediaCapturePermissionGrantType(RNCWebViewWrapper view, @Nullable String value) {}
+-
+     @Override
+     public void setFraudulentWebsiteWarningEnabled(RNCWebViewWrapper view, boolean value) {}
+     /* !iOS PROPS - no implemented here */
+diff --git a/android/src/oldarch/com/reactnativecommunity/webview/RNCWebViewManager.java b/android/src/oldarch/com/reactnativecommunity/webview/RNCWebViewManager.java
+index 974337f41ce01a5102eeafa6e54fbb3b949c48d7..70a9ad019a60bc69bf60510e9fa5893423067234 100644
+--- a/android/src/oldarch/com/reactnativecommunity/webview/RNCWebViewManager.java
++++ b/android/src/oldarch/com/reactnativecommunity/webview/RNCWebViewManager.java
+@@ -174,6 +174,11 @@ public class RNCWebViewManager extends ViewGroupManager<RNCWebViewWrapper> {
+         mRNCWebViewManagerImpl.setHasOnOpenWindowEvent(view, hasEvent);
+     }
+ 
++    @ReactProp(name = "mediaCapturePermissionGrantType")
++    public void setMediaCapturePermissionGrantType(RNCWebViewWrapper view, @Nullable String value) {
++        mRNCWebViewManagerImpl.setMediaCapturePermissionGrantType(view, value);
++    }
++
+     @ReactProp(name = "mediaPlaybackRequiresUserAction")
+     public void setMediaPlaybackRequiresUserAction(RNCWebViewWrapper view, boolean value) {
+         mRNCWebViewManagerImpl.setMediaPlaybackRequiresUserAction(view, value);
 diff --git a/apple/RNCWebViewImpl.m b/apple/RNCWebViewImpl.m
 index 7f5c24d6e2cfb26eddbc513bf17a81c24a7273e2..1129ea768389a9c4071f35ff6c3873462adf0d99 100644
 --- a/apple/RNCWebViewImpl.m
@@ -74,3 +253,31 @@ index 7f5c24d6e2cfb26eddbc513bf17a81c24a7273e2..1129ea768389a9c4071f35ff6c387346
    [alert addTextFieldWithConfigurationHandler:^(UITextField *textField) {
      textField.text = defaultText;
    }];
+diff --git a/lib/WebViewTypes.d.ts b/lib/WebViewTypes.d.ts
+index 998cc88f03f3fbcd0a47f227c01f738dbf4c58bf..cfc4a4f0ed6cba8b7da700fcddfbba41e9fffb1d 100644
+--- a/lib/WebViewTypes.d.ts
++++ b/lib/WebViewTypes.d.ts
+@@ -566,7 +566,8 @@ export interface IOSWebViewProps extends WebViewSharedProps {
+     /**
+      * This property specifies how to handle media capture permission requests.
+      * Defaults to `prompt`, resulting in the user being prompted repeatedly.
+-     * Available on iOS 15 and later.
++     * Available on iOS 15 and later. On Android (patched by Trezor Suite) `deny` and
++     * `grantIfSameHostElseDeny` refuse the request; the other values keep the library's own handling.
+      */
+     mediaCapturePermissionGrantType?: MediaCapturePermissionGrantType;
+     /**
+diff --git a/src/WebViewTypes.ts b/src/WebViewTypes.ts
+index eca81415ab48676da18fc2be13b84e60fe5cb3f5..8baae75876bca2c29a41992ba451c7247f455131 100644
+--- a/src/WebViewTypes.ts
++++ b/src/WebViewTypes.ts
+@@ -724,7 +724,8 @@ export interface IOSWebViewProps extends WebViewSharedProps {
+   /**
+    * This property specifies how to handle media capture permission requests.
+    * Defaults to `prompt`, resulting in the user being prompted repeatedly.
+-   * Available on iOS 15 and later.
++   * Available on iOS 15 and later. On Android (patched by Trezor Suite) `deny` and
++   * `grantIfSameHostElseDeny` refuse the request; the other values keep the library's own handling.
+    */
+   mediaCapturePermissionGrantType?: MediaCapturePermissionGrantType;
+ 

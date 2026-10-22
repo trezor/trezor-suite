@@ -87,9 +87,11 @@ export const EmbeddedAppWebViewFrame = ({
                 // keeps its default: turned off, it lets an iframe escape into the top-level page.
                 javaScriptCanOpenWindowsAutomatically={Platform.OS === 'ios'}
                 onOpenWindow={handleOpenWindow}
-                // Desktop denies every permission. Android WebView grants the camera whenever
-                // Suite holds the permission and asks for it otherwise, and it saves downloads to
-                // the device; the library offers no way to refuse either.
+                // Desktop denies every permission. The camera and the microphone are refused on
+                // both platforms: the library implements the grant type on iOS only and would grant
+                // them on Android whenever Suite holds the permission, to any frame, so Suite's
+                // patch of it (.yarn/patches) makes the prop apply there too. Android still saves
+                // downloads to the device; the library offers no way to refuse that.
                 geolocationEnabled={false}
                 mediaCapturePermissionGrantType="deny"
                 webviewDebuggingEnabled={isDebuggingEnabled}

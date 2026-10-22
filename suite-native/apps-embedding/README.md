@@ -128,9 +128,11 @@ Checked on 2026-10-21 against `react-native-webview` 13.16.1 and `expo-web-brows
    declares the camera usage description; its microphone one says the app does not use it). Since
    iOS 15 the host answers each request through `mediaCapturePermissionGrantType`;
    `EmbeddedAppWebView` denies.
-9. `react-native-webview` grants the camera and microphone once Suite holds the runtime permission
-   and asks the user otherwise, so `CAMERA` and `RECORD_AUDIO` have to be declared in the manifest.
-   The library offers no way to refuse.
+9. `react-native-webview` grants the camera and microphone to any frame once Suite holds the runtime
+   permission and asks the user otherwise, so a host that grants needs `CAMERA` and `RECORD_AUDIO` in
+   the manifest. The library implements `mediaCapturePermissionGrantType` on iOS only; Suite's patch
+   of it (`.yarn/patches/react-native-webview-npm-13.16.1-in-app-browser.patch`) makes `deny` and
+   `grantIfSameHostElseDeny` apply on Android too, and `EmbeddedAppWebView` denies.
 10. iOS 13+, only with `enableApplePay`, which switches off every injected script:
     `injectJavaScript`, the history shim, `sharedCookiesEnabled` and the `window.ReactNativeWebView`
     bridge (a page then has to call `window.webkit.messageHandlers.ReactNativeWebView.postMessage`).
