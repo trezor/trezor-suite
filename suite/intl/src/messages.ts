@@ -1832,6 +1832,10 @@ export const messages = defineMessages({
         defaultMessage: 'How do you like the new asset table?',
         id: 'TR_HOME_ASSET_FEEDBACK_TITLE',
     },
+    TR_ASSET_DETAIL_MARKET_PRICE: {
+        defaultMessage: 'Market price',
+        id: 'TR_ASSET_DETAIL_MARKET_PRICE',
+    },
     TR_ASSET_DETAIL_YOUR_BALANCE: {
         defaultMessage: 'Your balance',
         id: 'TR_ASSET_DETAIL_YOUR_BALANCE',
