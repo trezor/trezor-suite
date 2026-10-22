@@ -67,13 +67,13 @@ its report timer inside `markInteractive()`.
 
 ## What is instrumented today
 
-| Screen id        | Component                                          | Ready when                             | Readiness owner            |
-| ---------------- | -------------------------------------------------- | -------------------------------------- | -------------------------- |
-| `home`           | `module-home` `HomeScreen`                         | discovery is no longer running         | `useIsHomeScreenReady`     |
-| `accounts`       | `module-accounts-management` `AccountsScreen`      | the device has an account row to tap   | `useIsAccountsScreenReady` |
-| `account-detail` | `module-accounts-management` `AccountDetailScreen` | the account resolved (loader replaced) | the screen                 |
-| `send`           | `module-send` `SendOutputsScreen`                  | the form renders                       | the screen                 |
-| `receive`        | `module-receive` `ReceiveFreshAddressScreen`       | the fresh address is available         | `useIsReceiveScreenReady`  |
+| Screen id        | Component                                          | Ready when                                       | Readiness owner            |
+| ---------------- | -------------------------------------------------- | ------------------------------------------------ | -------------------------- |
+| `home`           | `module-home` `HomeScreen`                         | discovery completed (portfolio tracker: at once) | `useIsHomeScreenReady`     |
+| `accounts`       | `module-accounts-management` `AccountsScreen`      | the device has an account row to tap             | `useIsAccountsScreenReady` |
+| `account-detail` | `module-accounts-management` `AccountDetailScreen` | the account resolved (loader replaced)           | the screen                 |
+| `send`           | `module-send` `SendOutputsScreen`                  | the form renders                                 | the screen                 |
+| `receive`        | `module-receive` `ReceiveFreshAddressScreen`       | the fresh address is available                   | `useIsReceiveScreenReady`  |
 
 ## Gating
 
