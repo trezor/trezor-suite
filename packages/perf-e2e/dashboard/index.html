@@ -176,8 +176,8 @@
 
             <form id="controls">
                 <label
-                    >Surface
-                    <select id="surface">
+                    >Platform
+                    <select id="platform">
                         <option value="web">web</option>
                         <option value="desktop">desktop</option>
                         <option value="android">android</option>
@@ -201,14 +201,14 @@
             const $ = id => document.getElementById(id);
             const params = new URLSearchParams(location.search);
             const state = {
-                surface: params.get('surface') || 'web',
+                platform: params.get('platform') || 'web',
                 branch: params.get('branch') || 'develop',
                 metric: params.get('metric') || '',
                 rows: [],
             };
 
             const indexUrl = () =>
-                `../index/${encodeURIComponent(state.surface)}/${state.branch.replace(/\//g, '__')}/index.ndjson`;
+                `../index/${encodeURIComponent(state.platform)}/${state.branch.replace(/\//g, '__')}/index.ndjson`;
 
             /** A line the file holds that we cannot parse is dropped, never allowed to blank the page. */
             const parse = text =>
@@ -306,7 +306,7 @@
                                           },
                                           [
                                               svg('title', {
-                                                  text: `${fmt(p.value)} — ${String(p.sha).slice(0, 9)} (run ${p.run})${p.profiled ? ' · profiled' : ''}`,
+                                                  text: `${fmt(p.value)} — ${String(p.commitId).slice(0, 9)} (run ${p.run})${p.profiled ? ' · profiled' : ''}`,
                                               }),
                                           ],
                                       ),
@@ -351,7 +351,7 @@
             const card = (name, rows) => {
                 const points = rows.map(r => ({
                     value: r.metrics?.[state.metric] ?? null,
-                    sha: r.sha ?? '',
+                    commitId: r.commitId ?? '',
                     run: r.run ?? '',
                     profiled: r.profiled === true,
                 }));
@@ -425,10 +425,10 @@
                 render();
             };
 
-            $('surface').value = state.surface;
+            $('platform').value = state.platform;
             $('branch').value = state.branch;
-            $('surface').addEventListener('change', e => {
-                state.surface = e.target.value;
+            $('platform').addEventListener('change', e => {
+                state.platform = e.target.value;
                 load();
             });
             $('branch').addEventListener('change', e => {

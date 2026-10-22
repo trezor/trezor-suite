@@ -64,7 +64,7 @@ warning on the job, rather than rewritten with only this run's lines.
 
 A page is served from the store itself, so it needs nothing installed and no credentials:
 
-**<https://dev.suite.sldev.cz/e2e/perf/v1/dashboard/index.html>** — pick a surface, a branch and a
+**<https://dev.suite.sldev.cz/e2e/perf/v1/dashboard/index.html>** — pick a platform, a branch and a
 metric; each scenario gets its own trend and links through to the artifact behind its latest point.
 It reads the same rolling index described above, with relative URLs, and is redeployed whenever a
 run publishes. A branch with no run yet simply reports that its index does not exist. Points from
