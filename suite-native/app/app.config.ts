@@ -193,6 +193,8 @@ const getPlugins = (): ExpoPlugins => {
             'expo-dev-client',
             {
                 toolsButton: false,
+                // Expo's startup overlays block Detox interactions with the app after a data reset.
+                // Disable them in test builds through native configuration, before the app renders.
                 ...(process.env.EXPO_PUBLIC_IS_DETOX_BUILD === 'true'
                     ? { skipOnboarding: true, showMenuAtLaunch: false }
                     : {}),
