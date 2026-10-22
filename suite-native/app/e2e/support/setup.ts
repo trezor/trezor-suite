@@ -5,9 +5,11 @@ import { resolveConfig } from 'detox/internals';
 import { LaunchArguments } from '@suite-native/config';
 import { PreloadedState } from '@suite-native/state';
 import { mockInitialAppState } from '@suite-native/state/mocks';
+import { type Features } from '@trezor/connect';
 import { MNEMONICS, Model, TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { mergeDeepObject } from '@trezor/utils';
 
+import { prepareEmulatorPreloadedState } from './prepareEmulatorPreloadedState';
 import { enableIOSReducedMotion } from './reducedMotion';
 import { appIsFullyLoaded, getModelFromEnv, platform } from './utils';
 import { onDeviceOnboarding } from '../pageObjects/deviceOnboardingActions';
@@ -43,6 +45,8 @@ const MODEL_NAMES: Record<Model, string> = {
 };
 
 const getTrezorE2eDeviceLabel = (model: Model) => `${MODEL_NAMES[model]} - Tester`;
+
+let emulatorFeatures: Features | undefined;
 
 const getExpoDeepLinkUrl = () => {
     const expoLauncherUrl = encodeURIComponent(
@@ -133,6 +137,13 @@ export const openApp = async ({
         ...args,
     };
 
+    if (platform === 'android' && launchArgs.preloadedState && emulatorFeatures) {
+        launchArgs.preloadedState = prepareEmulatorPreloadedState({
+            preloadedState: launchArgs.preloadedState,
+            emulatorFeatures,
+        });
+    }
+
     // On iOS wipe via uninstall+reinstall; on Android pass delete:true directly into the
     // launchApp call so the Expo URL is provided in the same launch that clears data,
     // avoiding the slow/unstable uninstall+reinstall cycle on API 34.
@@ -199,6 +210,9 @@ export const prepareTrezorEmulator = async ({
                 passphrase_protection,
             });
         }
+        // Reading features uses UDP, which must not compete with the bridge for the emulator.
+        await TrezorUserEnvLink.stopBridge();
+        emulatorFeatures = await TrezorUserEnvLink.getFeatures();
         await TrezorUserEnvLink.startBridge('node-bridge');
         await waitForBridgeReady();
         await waitForDeviceEnumerated();

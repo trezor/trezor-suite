@@ -31,7 +31,6 @@ describe('Eject wallets [@androidOnly @T3T1 @T3W1]', () => {
         await onDeviceManager.assertDeviceSwitcherState({ title: 'Connected' });
     });
 
-    // Two devices are displayed in device manager, one connected and one disconnected
     it('Eject single wallet with disconnected device', async () => {
         await TrezorUserEnvLink.stopEmu();
         await onDeviceManager.assertDeviceSwitcherState({ title: 'Disconnected' });
@@ -45,7 +44,6 @@ describe('Eject wallets [@androidOnly @T3T1 @T3W1]', () => {
         await onDeviceManager.assertDeviceSwitcherState({ title: 'Hi there!' });
     });
 
-    // Two devices are displayed in device manager, one connected and one disconnected
     it('Eject single wallet with connected device', async () => {
         await navigateToEjectWallets();
         await onSettings.ejectSingleWallet();
