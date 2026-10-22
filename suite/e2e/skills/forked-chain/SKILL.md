@@ -42,14 +42,16 @@ test.beforeEach(async ({ anvil, onboardingPage, settingsPage, walletPage }) => {
 });
 ```
 
-`anvilFork` options: `symbol`, `forkUrl`, `blockNumber`, `automine` (default `true`), `blockTime` (default `1`) and `baseFeePerGas`.
+`anvilFork` options: `symbol`, `forkUrl`, `blockNumber`, `automine` (default `true`), `blockTime` (default `1`), `baseFeePerGas` and `padHistory` (default `true`).
 
 Suite offers the `evm-rpc` backend type only in debug mode (unless it is the network's default), so `changeNetworks` turns debug mode on whenever it is given an `evm-rpc` backend.
 
 How Suite's `evm-rpc` worker sees the fork decides the order of setup:
 
 - Discovery loads only an account's balance and nonce, so the native balance must be there first.
-- Tokens are known only from `Transfer` logs. A live watcher polls every 10 s, in real time, for logs in blocks mined since the account was subscribed, and reports them to Suite. Its scan of older blocks goes through the fork's upstream RPC, which is slow and rate-limited, so do not rely on it. Fund tokens after `changeNetworks` and `openAccount`, then wait for Suite with an explicit timeout (e.g. `toBeVisible({ timeout: 30_000 })`); `page.clock` does not speed the worker up.
+- Tokens are known only from `Transfer` logs, found in two ways:
+    - The first look at an account scans its last 10 000 blocks with `eth_getLogs`. On a fresh fork those would be pre-fork blocks, which Anvil fetches from the upstream RPC; public endpoints refuse such queries, the worker abandons the range and keeps treating the account as unscanned, so later transfers, including the ones Suite's own transactions cause (e.g. vault shares minted by a deposit), never reach Suite. `padHistory` (on by default) therefore mines 10 000 empty blocks when the fork starts, so the whole window is local. Keep it on whenever Suite connects to the fork.
+    - A live watcher polls every 10 s, in real time, for logs in blocks mined since the account was subscribed, and reports transfers it has not seen to Suite. Fund tokens after `changeNetworks` and `openAccount`, then wait for Suite with an explicit timeout (e.g. `toBeVisible({ timeout: 30_000 })`); `page.clock` does not speed the worker up.
 - The worker reads logs 2 blocks behind the tip. The fork therefore uses mixed mining: every transaction is mined at once, and a block is added every `blockTime` seconds so the chain keeps moving like a real one. With `blockTime: 0`, a transfer in one of the 2 newest blocks stays invisible to Suite until more blocks are mined; for example, the Earn dashboard keeps offering "Buy" instead of "Deposit now", or never shows the vault position.
 
 ## Core Rules
