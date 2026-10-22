@@ -128,7 +128,7 @@ const createStakeFlow = () => {
 const signStakeTransaction = async () => {
     const flow = createStakeFlow();
 
-    await signTransactionThunk({ account, formValues, transactionInfo })(
+    await signTransactionThunk({ accountKey: account.key, formValues, transactionInfo })(
         flow.dispatch,
         flow.getState,
         flow.extra,

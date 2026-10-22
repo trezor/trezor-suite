@@ -4,6 +4,7 @@ import { isStakingSymbol } from '@suite-common/wallet-utils';
 import { SOLANA_EPOCH_DAYS } from '@trezor/network-solana/constants';
 import { exhaustive } from '@trezor/type-utils';
 
+import { type AccountsRootState } from '../accounts/accountsReducer';
 import {
     selectAccountByKey,
     selectAdaAccountHasStaked,
@@ -47,7 +48,7 @@ import {
     selectVisibleDeviceSolanaAccountsWithStakingByNetworkSymbol,
 } from './solana/solanaStakingSelectors';
 import { getSolanaCryptoBalanceWithStaking } from './solana/solanaStakingUtils';
-import type { StakeRootState } from './stakingReducerTypes';
+import type { StakeRootState, StakeSliceRootState } from './stakingReducerTypes';
 import {
     selectTronAccountHasStaked,
     selectTronRewardsBalanceByAccountKey,
@@ -392,11 +393,11 @@ export const selectEntryPeriodInDaysBySymbol = (
  * to render a selection wants `selectVotingDelegationOption` instead.
  */
 export const selectStakeVotingDelegation = (
-    state: StakeRootState,
+    state: StakeSliceRootState,
 ): AccountVotingDelegation | undefined => selectStake(state).votingDelegation;
 
 export const selectVotingDelegationOption = (
-    state: StakeRootState,
+    state: StakeSliceRootState,
     accountKey: AccountKey,
 ): VotingDelegationOption => {
     const votingDelegation = selectStakeVotingDelegation(state);
@@ -406,10 +407,12 @@ export const selectVotingDelegationOption = (
         : DEFAULT_VOTING_OPTION;
 };
 
-export const selectStakePrecomposedForm = (state: StakeRootState) =>
+export const selectStakePrecomposedForm = (state: StakeSliceRootState) =>
     selectStake(state).precomposedForm;
 
-export const selectStakeAccount = (state: StakeRootState): Account | undefined => {
+export const selectStakeAccount = (
+    state: StakeSliceRootState & AccountsRootState,
+): Account | undefined => {
     const accountKey = selectStakeAccountKey(state);
 
     if (!accountKey) return undefined;

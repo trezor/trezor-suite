@@ -360,16 +360,18 @@ export const useStakeForm = ({ account }: UseStakeFormProps): StakeContextValues
     }, [clearErrors, composedLevels, getValues, setValue, selectedFee, currentRate]);
 
     const [isLoading, setIsLoading] = useState(false);
+
     // get response from TransactionReviewModal
     const signTx = useCallback(async () => {
         const values = getValues();
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
+
         if (composedTx?.type === 'final') {
             setIsLoading(true);
             try {
                 const result = await dispatch(
                     signTransactionThunk({
-                        account,
+                        accountKey: account.key,
                         formValues: values,
                         transactionInfo: composedTx,
                     }),
@@ -389,7 +391,7 @@ export const useStakeForm = ({ account }: UseStakeFormProps): StakeContextValues
                 setIsLoading(false);
             }
         }
-    }, [getValues, composedLevels, dispatch, account, clearForm, selectedFee]);
+    }, [getValues, composedLevels, dispatch, account.key, clearForm, selectedFee]);
 
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
     const closeConfirmModal = () => {

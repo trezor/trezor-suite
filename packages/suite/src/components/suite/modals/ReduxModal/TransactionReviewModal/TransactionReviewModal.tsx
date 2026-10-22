@@ -113,7 +113,7 @@ export const TransactionReviewModal = ({ type, decision }: TransactionReviewModa
 
         await dispatch(
             signTransactionThunk({
-                account: stakeAccount,
+                accountKey: stakeAccount.key,
                 formValues: stake.precomposedForm!,
                 transactionInfo: stake.precomposedTx as PrecomposedTransactionFinal,
             }),

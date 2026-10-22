@@ -2,13 +2,13 @@ import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 
 import { getCardanoAccountPoolId, selectBestCardanoPool } from '../cardano/cardanoStakingUtils';
-import { type StakeRootState } from '../stakingReducerTypes';
+import { type StakeSliceRootState } from '../stakingReducerTypes';
 
-export const selectStake = (state: StakeRootState) => state.wallet.stake;
+export const selectStake = (state: StakeSliceRootState) => state.wallet.stake;
 
-export const selectStakeData = (state: StakeRootState) => selectStake(state).data.data;
+export const selectStakeData = (state: StakeSliceRootState) => selectStake(state).data.data;
 
-export const selectStakeAccountKey = (state: StakeRootState) => selectStake(state).accountKey;
+export const selectStakeAccountKey = (state: StakeSliceRootState) => selectStake(state).accountKey;
 
 interface SelectPoolStatsApyProps {
     account?: Account;
@@ -16,7 +16,7 @@ interface SelectPoolStatsApyProps {
 }
 
 export const selectPoolStatsApy = (
-    state: StakeRootState,
+    state: StakeSliceRootState,
     { account, networkSymbol }: SelectPoolStatsApyProps,
 ) => {
     const data = selectStakeData(state);

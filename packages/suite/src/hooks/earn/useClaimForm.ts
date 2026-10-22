@@ -128,11 +128,12 @@ export const useClaimForm = ({ account }: UseClaimFormsProps): ClaimContextValue
     const signTx = useCallback(async () => {
         const values = getValues();
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
+
         if (composedTx?.type === 'final') {
             try {
                 const result = await dispatch(
                     signTransactionThunk({
-                        account,
+                        accountKey: account.key,
                         formValues: values,
                         transactionInfo: composedTx,
                     }),
@@ -149,7 +150,7 @@ export const useClaimForm = ({ account }: UseClaimFormsProps): ClaimContextValue
                 console.warn('Stake signing failed', error instanceof Error ? error.name : error);
             }
         }
-    }, [getValues, composedLevels, dispatch, account, clearForm, selectedFee]);
+    }, [getValues, composedLevels, dispatch, account.key, clearForm, selectedFee]);
 
     const { calculateFeeAndDeposit, withdrawingAvailable } = useCardanoStaking({ account });
     const isClaimingDisabled = !withdrawingAvailable.status;
