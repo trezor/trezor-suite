@@ -1,9 +1,11 @@
 import { CommonActions } from '@react-navigation/native';
 
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey, type FormState, type TokenAddress } from '@suite-common/wallet-types';
 import {
     AccountDetailStackRoutes,
     AppTabsRoutes,
+    AssetsStackRoutes,
     RootStackRoutes,
     TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
@@ -70,12 +72,14 @@ interface NavigateOutOfSendFlowActionProps {
     accountKey: AccountKey;
     tokenContract?: TokenAddress;
     txid?: string;
+    networkSymbol?: NetworkSymbol;
 }
 
 export const navigateOutOfSendFlowAction = ({
     accountKey,
     tokenContract,
     txid,
+    networkSymbol,
 }: NavigateOutOfSendFlowActionProps) => {
     const routes: any[] = [
         {
@@ -84,17 +88,28 @@ export const navigateOutOfSendFlowAction = ({
                 screen: AppTabsRoutes.HomeStack,
             },
         },
-        {
-            name: RootStackRoutes.AccountDetailStack,
-            params: {
-                screen: AccountDetailStackRoutes.AccountDetail,
-                params: {
-                    accountKey,
-                    tokenContract,
-                    closeActionType: 'back',
-                },
-            },
-        },
+        networkSymbol
+            ? {
+                  name: RootStackRoutes.AssetsStack,
+                  params: {
+                      screen: AssetsStackRoutes.AssetDetail,
+                      params: {
+                          networkSymbol,
+                          tokenContract,
+                      },
+                  },
+              }
+            : {
+                  name: RootStackRoutes.AccountDetailStack,
+                  params: {
+                      screen: AccountDetailStackRoutes.AccountDetail,
+                      params: {
+                          accountKey,
+                          tokenContract,
+                          closeActionType: 'back',
+                      },
+                  },
+              },
     ];
 
     if (txid) {
@@ -113,9 +128,9 @@ export const navigateOutOfSendFlowAction = ({
         });
     }
 
-    // Reset navigation stack to the transaction detail screen with HomeStack as a previous step, so the user can navigate back there.
+    // Keep the asset or account detail in Back history after a confirmed send.
     return CommonActions.reset({
-        index: 1,
+        index: routes.length - 1,
         routes,
     });
 };

@@ -2382,6 +2382,11 @@ export const messages = {
     moduleAssets: {
         assetDetailScreen: {
             headerTitle: 'Asset details',
+            settings: {
+                openButtonAccessibilityLabel: 'Asset settings',
+                network: 'Network',
+                accounts: 'Accounts',
+            },
             balanceSection: {
                 title: 'Your balance',
                 accountCount: 'on {count, plural, one {# account} other {# accounts}}',

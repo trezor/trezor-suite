@@ -1,21 +1,15 @@
 import { FlashList } from '@shopify/flash-list';
 
 import { Box } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
-import { Screen, ScreenHeader } from '@suite-native/navigation';
+import { Screen } from '@suite-native/navigation';
 
 import { AssetDetailHeader } from '../components/AssetDetailHeader';
+import { AssetDetailScreenHeader } from '../components/AssetDetailScreenHeader';
 
 const ASSET_DETAIL_ITEMS: readonly never[] = [];
 
 export const AssetDetailScreen = () => (
-    <Screen
-        header={
-            <ScreenHeader title={<Translation id="moduleAssets.assetDetailScreen.headerTitle" />} />
-        }
-        isScrollable={false}
-        noHorizontalPadding
-    >
+    <Screen header={<AssetDetailScreenHeader />} isScrollable={false} noHorizontalPadding>
         <Box flex={1}>
             <FlashList
                 data={ASSET_DETAIL_ITEMS}

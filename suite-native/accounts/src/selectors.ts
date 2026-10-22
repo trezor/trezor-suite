@@ -443,6 +443,11 @@ export const selectIsAccountDiscoveryFailed = createMemoizedSelector(
     account => !!account && isAccountFailed(account),
 );
 
+export const selectAccountSupportsTokens = createMemoizedSelector(
+    [selectAccountByKey],
+    account => !!account && isNetworkWithTokens(account.symbol),
+);
+
 export const selectHasDeviceAnyFailedAccountForNetworkSymbol = createMemoizedSelector(
     [
         selectVisibleDeviceAccounts,

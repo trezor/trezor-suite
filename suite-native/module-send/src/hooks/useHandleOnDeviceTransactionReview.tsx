@@ -4,16 +4,19 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { isRejected } from '@reduxjs/toolkit';
 
+import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
 import { sendFormActions } from '@suite-common/wallet-core';
 import {
     type AccountKey,
     type GeneralPrecomposedTransactionFinal,
     type TokenAddress,
 } from '@suite-common/wallet-types';
+import { parseAccountKey } from '@suite-common/wallet-utils';
 import { useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
 import {
     AccountDetailStackRoutes,
+    AssetsStackRoutes,
     type RootStackParamList,
     RootStackRoutes,
     type SendStackParamList,
@@ -51,6 +54,10 @@ export const useHandleOnDeviceTransactionReview = ({
     const { dispatch } = useServices(injectDispatch);
     const navigation = useNavigation<NavigationProps>();
     const { showAlert } = useAlert();
+    const isAssetsFirstEnabled = useIsExperimentVariantActive({
+        experimentId: ExperimentId.assetFirstHomeTable,
+        variant: 'B',
+    });
 
     const showReviewCancellationAlert = useShowReviewCancellationAlert();
     const handleCommonSignRejection = useHandleCommonSignRejection({ accountKey, tokenContract });
@@ -114,6 +121,17 @@ export const useHandleOnDeviceTransactionReview = ({
                 return;
             }
 
+            if (isAssetsFirstEnabled) {
+                const { networkSymbol } = parseAccountKey(accountKey);
+
+                navigation.navigate(RootStackRoutes.AssetsStack, {
+                    screen: AssetsStackRoutes.AssetDetail,
+                    params: { networkSymbol, tokenContract },
+                });
+
+                return;
+            }
+
             navigation.navigate(RootStackRoutes.AccountDetailStack, {
                 screen: AccountDetailStackRoutes.AccountDetail,
                 params: {
@@ -128,6 +146,7 @@ export const useHandleOnDeviceTransactionReview = ({
         tokenContract,
         transaction,
         navigation,
+        isAssetsFirstEnabled,
         handleCommonSignRejection,
         dispatch,
         showAlert,
