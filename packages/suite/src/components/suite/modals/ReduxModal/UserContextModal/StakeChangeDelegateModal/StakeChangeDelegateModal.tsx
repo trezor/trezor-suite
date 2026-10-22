@@ -22,6 +22,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { BASE_VOTING_PREFERENCE_OPTIONS, VotingPreferenceCard } from 'src/components/earn';
 import { Fees } from 'src/components/wallet/Fees/Fees';
+import { useEarnDeviceStatus } from 'src/hooks/earn/useEarnDeviceStatus';
 import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import {
@@ -42,6 +43,7 @@ export const StakeChangeDelegateModalLoaded = ({
     selectedAccount,
 }: StakeChangeDelegateModalProps) => {
     const { account } = selectedAccount;
+    const deviceStatus = useEarnDeviceStatus();
 
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
 
@@ -106,6 +108,7 @@ export const StakeChangeDelegateModalLoaded = ({
                 type: events.stakingChangeDelegateEvent.name,
                 payload: {
                     action: 'continue',
+                    deviceStatus,
                     step: 'change-delegate-form-modal',
                     networkSymbol: account.symbol,
                 },

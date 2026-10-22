@@ -31,6 +31,7 @@ import { SolanaUnstakeAmountBoundsAlert } from '../../components/staking/SolanaU
 import { UnstakeCanClaimAlert } from '../../components/staking/UnstakeCanClaimAlert';
 import { UnstakeFlowScreenHeader } from '../../components/staking/UnstakeFlowScreenHeader';
 import { UnstakingTimelineCard } from '../../components/staking/UnstakingTimelineCard';
+import { useEarnDeviceStatus } from '../../hooks/earn/useEarnDeviceStatus';
 import { useNavigateBackAnalytics } from '../../hooks/earn/useNavigateBackAnalytics';
 import { useSolanaStakingLimit } from '../../hooks/staking/useSolanaStakingLimit';
 import { useUnstakeForm } from '../../hooks/staking/useUnstakeForm';
@@ -46,7 +47,8 @@ export const UnstakeFlowScreen = () => {
         selectAccountNetworkSymbol(state, accountKey),
     );
     const { analytics } = useServices(injectNativeAnalytics);
-    const [currency, setCurrency] = useState<'crypto' | 'fiat' | undefined>(undefined);
+    const deviceStatus = useEarnDeviceStatus();
+    const [currency, setCurrency] = useState<'crypto' | 'fiat'>('crypto');
     const handleCurrencyChange = useCallback((activeView: ActiveView) => {
         setCurrency(activeView === 'primary' ? 'crypto' : 'fiat');
     }, []);
@@ -96,6 +98,7 @@ export const UnstakeFlowScreen = () => {
             type: events.stakingUnstakeEvent.name,
             payload: {
                 action: 'continue',
+                deviceStatus,
                 step: 'unstake-form-modal',
                 networkSymbol: networkSymbol ?? undefined,
                 currency,

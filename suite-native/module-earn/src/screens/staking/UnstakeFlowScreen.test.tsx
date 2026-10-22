@@ -5,6 +5,7 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { type ActiveView } from '@suite-native/atoms';
+import { deviceAuthorizationInitialState } from '@suite-native/device-authorization';
 import { act, fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { mock } from '@trezor/dependency-injection';
 
@@ -77,7 +78,13 @@ jest.mock('../../components/earn/EarnOutputFields', () => ({
 
 const renderUnstakeForm = async () => {
     const services: NativeAnalyticsDep = { analytics: mockNativeAnalytics(jest.fn()) };
-    const view = await renderWithStoreProvider(<UnstakeFlowScreen />, { services });
+    const view = await renderWithStoreProvider(<UnstakeFlowScreen />, {
+        services,
+        preloadedState: {
+            deviceAuthorization: deviceAuthorizationInitialState,
+            device: { selectedDevice: { connected: true } },
+        },
+    });
 
     return {
         ...view,
@@ -104,6 +111,7 @@ describe('UnstakeFlowScreen analytics', () => {
     });
 
     it.each([
+        ['crypto', []],
         ['fiat', ['Fiat input']],
         ['crypto', ['Fiat input', 'Crypto input']],
     ] as const)(

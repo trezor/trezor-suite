@@ -1,3 +1,12 @@
+export {
+    earnTilePressedEvent,
+    stakingClaimEvent,
+    stakingNavigateEvent,
+    stakingStakeEvent,
+    stakingUnstakeEvent,
+    yieldEarnEntryEvent,
+} from '@suite-common/analytics';
+
 export { appReadyEvent } from './appReadyEvent';
 export { assetDetailEvent } from './assetDetailEvent';
 export { assetDetailTimeframeChangeEvent } from './assetDetailTimeframeChangeEvent';
@@ -22,9 +31,6 @@ export { deviceSetupCompletedEvent } from './deviceSetupCompletedEvent';
 export { deviceSetupInfoEvent } from './deviceSetupInfoEvent';
 export { deviceSetupSecurityCheckEvent } from './deviceSetupSecurityCheckEvent';
 export { deviceSetupStartedEvent } from './deviceSetupStartedEvent';
-export { earnNavigateEvent } from './earnNavigateEvent';
-export { earnStablecoinYieldTilePressedEvent } from './earnStablecoinYieldTilePressedEvent';
-export { earnStakeTilePressedEvent } from './earnStakeTilePressedEvent';
 export { ejectDeviceClickEvent } from './ejectDeviceClickEvent';
 export { emptyDashboardActionEvent } from './emptyDashboardActionEvent';
 export { feedbackRatingSelectedEvent } from './feedbackRatingSelectedEvent';
@@ -72,10 +78,6 @@ export { settingsDataPermissionEvent } from './settingsDataPermissionEvent';
 export { settingsDiscreetToggleEvent } from './settingsDiscreetToggleEvent';
 export { settingsNetworkReserveToggleEvent } from './settingsNetworkReserveToggleEvent';
 export { settingsToggleExperimentalFeatureEvent } from './settingsToggleExperimentalFeatureEvent';
-export { stakingClaimEvent } from './stakingClaimEvent';
-export { stakingNavigateEvent } from './stakingNavigateEvent';
-export { stakingStakeEvent } from './stakingStakeEvent';
-export { stakingUnstakeEvent } from './stakingUnstakeEvent';
 export { switcherEvent } from './switcherEvent';
 export { tradingBuyEvent } from './tradingBuyEvent';
 export { tradingCompareOffersEvent } from './tradingCompareOffersEvent';

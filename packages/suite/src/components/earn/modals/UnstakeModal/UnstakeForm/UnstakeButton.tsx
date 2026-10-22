@@ -7,6 +7,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { InfoIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
+import { useEarnDeviceStatus } from 'src/hooks/earn/useEarnDeviceStatus';
 import { useWithdrawalFormContext } from 'src/hooks/earn/useWithdrawalForm';
 import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
@@ -18,6 +19,7 @@ export const UnstakeButton = () => {
     // `useWatch` or out of render.
     'use no memo';
 
+    const deviceStatus = useEarnDeviceStatus();
     const { device, isLocked } = useDevice();
     const { account, network, isComposing, formState, handleSubmit, watch, signTx, currency } =
         useWithdrawalFormContext();
@@ -38,6 +40,17 @@ export const UnstakeButton = () => {
     const areFeesLoading = useSelector(state => selectAreFeesLoading(state, network.symbol));
 
     const onWithdrawalClick = () => {
+        analytics.report({
+            type: events.stakingUnstakeEvent.name,
+            payload: {
+                action: 'continue',
+                deviceStatus,
+                step: 'unstake-form-modal',
+                currency,
+                networkSymbol: account.symbol,
+            },
+        });
+
         if (!isDeviceConnected) {
             if (device?.descriptor?.apiType === 'bluetooth') {
                 dispatch(setConnectionMode('bluetooth'));
@@ -48,16 +61,6 @@ export const UnstakeButton = () => {
         }
 
         handleSubmit(signTx)();
-
-        analytics.report({
-            type: events.stakingUnstakeEvent.name,
-            payload: {
-                action: 'continue',
-                step: 'unstake-form-modal',
-                currency,
-                networkSymbol: account.symbol,
-            },
-        });
     };
 
     const isLoading = isComposing || isSubmitting || isDiscoveryRunning || areFeesLoading;

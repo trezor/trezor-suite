@@ -52,11 +52,15 @@ export const yieldInteractionEvent: EventDef<Attributes, EventType.YieldInteract
                     version: '26.8.1',
                     notes: '`wrap-max` / `unwrap-max` / `amount-currency-toggle` reported from mobile as well; mobile now also reports `deposit-max` from the approval and in-flow wrap steps and `withdraw-max` from the in-flow unwrap step, which previously reported no max event',
                 },
+                {
+                    version: '26.11.0',
+                    notes: '`pending-tx-open` also reports explicit mobile explorer opens from yield pending sheets; automatic sheet presentation is not an interaction',
+                },
             ],
         },
         value: {
             description:
-                'Optional sub-identifier — for `in-a-nutshell-process-tab`: `deposit` | `withdraw` | `claim`; for `withdraw-unit-toggle`: the unit being switched to (`asset` = underlying deposit token, `shares` = vault receipt token); for `amount-currency-toggle`: the input unit being switched to (`crypto` | `fiat`); for `withdraw-max`: the current unit (`asset` | `shares`); for `pending-tx-open`: the pending tx type (`approve` | `revoke` | `deposit` | `withdraw` | `claim`); omitted for `deposit-max`, `wrap-max` and `unwrap-max`',
+                'Optional sub-identifier — for `in-a-nutshell-process-tab`: `deposit` | `withdraw` | `claim`; for `withdraw-unit-toggle`: the unit being switched to (`asset` = underlying deposit token, `shares` = vault receipt token); for `amount-currency-toggle`: the input unit being switched to (`crypto` | `fiat`); for `withdraw-max`: the current unit (`asset` | `shares`); for `pending-tx-open`: the pending tx type (`approve` | `revoke` | `deposit` | `withdraw` | `redeem` | `claim` | `wrap` | `unwrap`), opening in-app details on desktop or the explorer on mobile; omitted for `deposit-max`, `wrap-max` and `unwrap-max`',
             changelog: [
                 { version: '26.5.2', notes: 'added' },
                 {

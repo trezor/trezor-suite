@@ -5,6 +5,7 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { type ActiveView } from '@suite-native/atoms';
+import { deviceAuthorizationInitialState } from '@suite-native/device-authorization';
 import { act, fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { mock } from '@trezor/dependency-injection';
 
@@ -45,7 +46,11 @@ jest.mock('@suite-native/forms', () => ({
 }));
 jest.mock('@suite-native/transaction-management', () => ({ FeeSelector: () => null }));
 jest.mock('../../components/staking/StakingFormScreenFooter', () => ({
-    StakingFormScreenFooter: () => null,
+    StakingFormScreenFooter: ({ onPress }: { onPress: () => void }) => {
+        const { Pressable } = jest.requireActual('react-native');
+
+        return <Pressable onPress={onPress} testID="submit-stake" />;
+    },
 }));
 jest.mock('../../hooks/staking/useStakingForm');
 jest.mock('../../utils/staking/isBalanceBelowStakingMinimum', () => ({
@@ -69,9 +74,15 @@ jest.mock('../../components/earn/EarnOutputFields', () => ({
     },
 }));
 
-const renderStakingForm = async () => {
+const renderStakingForm = async (isDeviceConnected = true) => {
     const services: NativeAnalyticsDep = { analytics: mockNativeAnalytics(jest.fn()) };
-    const view = await renderWithStoreProvider(<StakingFormScreen />, { services });
+    const view = await renderWithStoreProvider(<StakingFormScreen />, {
+        services,
+        preloadedState: {
+            deviceAuthorization: deviceAuthorizationInitialState,
+            device: { selectedDevice: { connected: isDeviceConnected } },
+        },
+    });
 
     return {
         ...view,
@@ -85,6 +96,23 @@ const renderStakingForm = async () => {
 };
 
 describe('StakingFormScreen analytics', () => {
+    it.each([true, false])(
+        'reports connection state on a submit attempt (connected=%s)',
+        async connected => {
+            const view = await renderStakingForm(connected);
+            await fireEvent.press(view.getByTestId('submit-stake'));
+            expect(view.analytics.report).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    type: 'staking/stake',
+                    payload: expect.objectContaining({
+                        action: 'continue',
+                        deviceStatus: connected ? 'connected' : 'disconnected',
+                    }),
+                }),
+            );
+        },
+    );
+
     beforeEach(() => {
         jest.clearAllMocks();
         mockNavigation.addListener.mockReturnValue(jest.fn());
@@ -98,6 +126,7 @@ describe('StakingFormScreen analytics', () => {
     });
 
     it.each([
+        ['crypto', []],
         ['fiat', ['Fiat input']],
         ['crypto', ['Fiat input', 'Crypto input']],
     ] as const)(

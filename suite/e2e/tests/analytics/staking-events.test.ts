@@ -1,4 +1,4 @@
-import { EventType } from '@suite/analytics/src/constants';
+import { stakingNavigateEvent } from '@suite/analytics';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestCategory, TestPriority, TestStream, createTestAnnotation } from '@trezor/e2e-utils';
 
@@ -17,10 +17,10 @@ test.describe('Analytics Events - Staking Navigate', { tag: ['@T3W1', '@optional
 
     for (const coin of coins) {
         test(
-            `Should log the event ${EventType.StakingNavigate} - ${coin.toUpperCase()} from account menu`,
+            `Should log the event ${stakingNavigateEvent.name} - ${coin.toUpperCase()} from account menu`,
             {
                 annotation: createTestAnnotation({
-                    testCase: `Verify that the ${EventType.StakingNavigate} event is logged for ${coin.toUpperCase()} when navigating from the account menu`,
+                    testCase: `Verify that the ${stakingNavigateEvent.name} event is logged for ${coin.toUpperCase()} when navigating from the account menu`,
                     category: TestCategory.General,
                     priority: TestPriority.Medium,
                     stream: TestStream.Growth,
@@ -31,7 +31,7 @@ test.describe('Analytics Events - Staking Navigate', { tag: ['@T3W1', '@optional
 
                 // Set up listeners
                 const analyticsPromise = analyticsHelper.waitForEvent({
-                    c_type: EventType.StakingNavigate,
+                    c_type: stakingNavigateEvent.name,
                     networkSymbol: coin,
                 });
 
@@ -42,17 +42,17 @@ test.describe('Analytics Events - Staking Navigate', { tag: ['@T3W1', '@optional
                 const payload = await analyticsPromise;
 
                 expect(payload).toMatchObject({
-                    c_type: EventType.StakingNavigate,
+                    c_type: stakingNavigateEvent.name,
                     networkSymbol: coin,
                 });
             },
         );
 
         test(
-            `Should log ${EventType.StakingNavigate} - ${coin.toUpperCase()} from dashboard assets`,
+            `Should log ${stakingNavigateEvent.name} - ${coin.toUpperCase()} from dashboard assets`,
             {
                 annotation: createTestAnnotation({
-                    testCase: `Verify that the ${EventType.StakingNavigate} event is logged for ${coin.toUpperCase()} when navigating from the dashboard`,
+                    testCase: `Verify that the ${stakingNavigateEvent.name} event is logged for ${coin.toUpperCase()} when navigating from the dashboard`,
                     category: TestCategory.General,
                     priority: TestPriority.Medium,
                     stream: TestStream.Growth,
@@ -63,7 +63,7 @@ test.describe('Analytics Events - Staking Navigate', { tag: ['@T3W1', '@optional
 
                 // Set up listeners
                 const analyticsPromise = analyticsHelper.waitForEvent({
-                    c_type: EventType.StakingNavigate,
+                    c_type: stakingNavigateEvent.name,
                     networkSymbol: coin,
                 });
 
@@ -74,7 +74,7 @@ test.describe('Analytics Events - Staking Navigate', { tag: ['@T3W1', '@optional
                 const payload = await analyticsPromise;
 
                 expect(payload).toMatchObject({
-                    c_type: EventType.StakingNavigate,
+                    c_type: stakingNavigateEvent.name,
                     networkSymbol: coin,
                 });
             },

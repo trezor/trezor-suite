@@ -1,5 +1,6 @@
 import type { EarnModalAction } from '@suite-common/suite-types';
 
+import { type EarnDeviceStatus, deviceStatusAttribute } from '../earnAttributes';
 import type { AttributeDef } from '../eventDefinition';
 
 /**
@@ -13,6 +14,7 @@ import type { AttributeDef } from '../eventDefinition';
  */
 export type WrappedNativeFlowAttributes = {
     action: AttributeDef<EarnModalAction>;
+    deviceStatus?: AttributeDef<EarnDeviceStatus>;
     type: AttributeDef<
         'submit' | 'tx-simulation-modal' | 'sent' | 'success' | 'error' | 'leftPending'
     >;
@@ -22,6 +24,7 @@ export type WrappedNativeFlowAttributes = {
 };
 
 export const wrappedNativeFlowAttributes = {
+    deviceStatus: deviceStatusAttribute,
     action: {
         description:
             'What the user did with the surface the `type` names. `continue` on every lifecycle report; `cancel` when the tx-simulation modal was declined; `close` when the "transaction sent" toast was dismissed with its dismiss button.',
@@ -33,6 +36,10 @@ export const wrappedNativeFlowAttributes = {
         changelog: [
             { version: '26.8.0', notes: 'added' },
             { version: '26.8.1', notes: 'reported from mobile as well' },
+            {
+                version: '26.11.0',
+                notes: 'Mobile simulation cancellation includes backdrop and gesture dismissal exactly once and excludes dismissal after Continue.',
+            },
         ],
     },
     networkSymbol: {
@@ -45,10 +52,14 @@ export const wrappedNativeFlowAttributes = {
     },
     errorMessage: {
         description:
-            'Classified failure reason. On compose failure, the specific compose reason (e.g. `unsupported-network`, `not-wrapped-native`, `missing-chain-id`, `missing-fee-level`, `fee-estimation-failed`). On submit failure, `submit-failed` (signing/review cancelled or failed) or `push-failed` (broadcast rejected by backend). On on-chain revert, `on-chain-failure`. Mobile reports only `submit-failed`, `push-failed` and `on-chain-failure` — the form composes continuously in the background, so compose failures are not surfaced as an event.',
+            'Classified failure reason. On compose failure, the specific compose reason (e.g. `unsupported-network`, `not-wrapped-native`, `missing-chain-id`, `missing-fee-level`, `fee-estimation-failed`). On submit failure, `submit-failed` (unexpected failure) or `push-failed` (broadcast rejected by backend). Intentional signing/review cancellations use `transaction/cancel` instead of an error. On on-chain revert, `on-chain-failure`. Mobile preserves the same compose reasons; repeated background failures with the same reason are reported once until recovery or an explicit fee retry. Stale results and unmounted forms do not report failures.',
         changelog: [
             { version: '26.8.0', notes: 'added' },
             { version: '26.8.1', notes: 'reported from mobile as well' },
+            {
+                version: '26.11.0',
+                notes: 'User cancellations no longer report submit-failed; mobile also reports classified compose errors.',
+            },
         ],
     },
 } satisfies WrappedNativeFlowAttributes;

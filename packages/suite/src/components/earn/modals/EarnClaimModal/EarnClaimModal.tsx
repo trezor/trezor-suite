@@ -23,6 +23,7 @@ import { SolanaStakingLimitBanner } from 'src/components/suite/modals/ReduxModal
 import { Fees } from 'src/components/wallet/Fees/Fees';
 import { useCardanoStaking } from 'src/hooks/earn/useCardanoStaking';
 import { useClaimForm } from 'src/hooks/earn/useClaimForm';
+import { useEarnDeviceStatus } from 'src/hooks/earn/useEarnDeviceStatus';
 import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 import { CRYPTO_INPUT } from 'src/types/earn/earnFormFields';
@@ -38,6 +39,7 @@ export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
     // `useWatch` or out of render.
     'use no memo';
 
+    const deviceStatus = useEarnDeviceStatus();
     const { device, isLocked } = useDevice();
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { isClaimingDisabled, claimingMessageContent } = useMessageSystemStaking(account.symbol);
@@ -105,6 +107,16 @@ export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
     }, [onClaimChange, claimableAmount]);
 
     const onClaimClick = () => {
+        analytics.report({
+            type: events.stakingClaimEvent.name,
+            payload: {
+                action: 'continue',
+                deviceStatus,
+                step: 'claim-form-modal',
+                networkSymbol: account.symbol,
+            },
+        });
+
         if (!isDeviceConnected) {
             if (device?.descriptor?.apiType === 'bluetooth') {
                 dispatch(setConnectionMode('bluetooth'));
@@ -115,15 +127,6 @@ export const EarnClaimModal = ({ onCancel, account }: EarnClaimModalProps) => {
         }
 
         handleSubmit(signTx)();
-
-        analytics.report({
-            type: events.stakingClaimEvent.name,
-            payload: {
-                action: 'continue',
-                step: 'claim-form-modal',
-                networkSymbol: account.symbol,
-            },
-        });
     };
 
     const onCancelClick = () => {

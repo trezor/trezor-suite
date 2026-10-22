@@ -29,6 +29,7 @@ import { EarnAmountCard } from '../../components/earn/EarnAmountCard';
 import { EarnOutputFields } from '../../components/earn/EarnOutputFields';
 import { StakingFormScreenFooter } from '../../components/staking/StakingFormScreenFooter';
 import { StakingNoBalanceContent } from '../../components/staking/StakingNoBalanceContent';
+import { useEarnDeviceStatus } from '../../hooks/earn/useEarnDeviceStatus';
 import { useNavigateBackAnalytics } from '../../hooks/earn/useNavigateBackAnalytics';
 import { useStakingForm } from '../../hooks/staking/useStakingForm';
 import { isBalanceBelowStakingMinimum } from '../../utils/staking/isBalanceBelowStakingMinimum';
@@ -51,7 +52,8 @@ export const StakingFormScreen = () => {
         selectAccountNetworkSymbol(state, accountKey),
     );
     const { analytics } = useServices(injectNativeAnalytics);
-    const [currency, setCurrency] = useState<'crypto' | 'fiat' | undefined>(undefined);
+    const deviceStatus = useEarnDeviceStatus();
+    const [currency, setCurrency] = useState<'crypto' | 'fiat'>('crypto');
     const handleCurrencyChange = useCallback((activeView: ActiveView) => {
         setCurrency(activeView === 'primary' ? 'crypto' : 'fiat');
     }, []);
@@ -93,6 +95,7 @@ export const StakingFormScreen = () => {
             type: events.stakingStakeEvent.name,
             payload: {
                 action: 'continue',
+                deviceStatus,
                 step: 'stake-form-modal',
                 networkSymbol: account.symbol,
                 currency,

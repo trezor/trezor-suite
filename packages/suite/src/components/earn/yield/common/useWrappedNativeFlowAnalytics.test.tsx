@@ -2,13 +2,22 @@ import { type PropsWithChildren } from 'react';
 
 import { act, renderHook } from '@testing-library/react';
 
+import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
+import { MODAL_CONTEXT_NONE } from '@suite/modal';
 import { events } from '@suite-common/analytics';
 import { ServicesProvider } from '@trezor/dependency-injection';
 
 import { useWrappedNativeFlowAnalytics } from './useWrappedNativeFlowAnalytics';
 
 const mockReport = jest.fn();
+let mockDevice = { connected: true, available: true };
+
+jest.mock('@suite/device', () => ({ useDevice: () => ({ device: mockDevice }) }));
+jest.mock('src/hooks/suite', () => ({
+    useSelector: (selector: (state: object) => unknown) =>
+        selector({ modal: { context: MODAL_CONTEXT_NONE } }),
+}));
 
 type Props = Parameters<typeof useWrappedNativeFlowAnalytics>[0];
 
@@ -20,7 +29,7 @@ const pendingWrap: Props = {
 };
 
 const renderFlowAnalytics = (initialProps: Props) => {
-    const services = { analytics: mockDesktopAnalytics(mockReport) };
+    const services: DesktopAnalyticsDep = { analytics: mockDesktopAnalytics(mockReport) };
 
     return renderHook((props: Props) => useWrappedNativeFlowAnalytics(props), {
         initialProps,
@@ -33,6 +42,26 @@ const renderFlowAnalytics = (initialProps: Props) => {
 describe('useWrappedNativeFlowAnalytics', () => {
     beforeEach(() => {
         jest.clearAllMocks();
+        mockDevice = { connected: true, available: true };
+    });
+
+    it.each([
+        { connected: true, available: true, expectedStatus: 'connected' },
+        { connected: false, available: false, expectedStatus: 'disconnected' },
+        { connected: true, available: false, expectedStatus: 'unavailable' },
+    ])('reports the connection state before the device guard ($connected/$available)', device => {
+        mockDevice = device;
+        const { result } = renderFlowAnalytics({ ...pendingWrap, status: null, txid: null });
+
+        act(() => result.current.reportSubmit());
+
+        expect(mockReport).toHaveBeenCalledWith(
+            expect.objectContaining({
+                payload: expect.objectContaining({
+                    deviceStatus: device.expectedStatus,
+                }),
+            }),
+        );
     });
 
     it('reportSubmit fires the submit event', () => {

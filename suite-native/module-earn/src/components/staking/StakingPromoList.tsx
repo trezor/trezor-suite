@@ -50,7 +50,10 @@ export const StakingPromoList = () => {
 
     const onItemPress = useCallback(
         (symbol: NetworkSymbol) => {
-            analytics.report({ type: events.earnStakeTilePressedEvent.name });
+            analytics.report({
+                type: events.earnTilePressedEvent.name,
+                payload: { id: symbol, asset: symbol, type: 'staking' },
+            });
             onPromoItemPress(symbol);
         },
         [analytics, onPromoItemPress],

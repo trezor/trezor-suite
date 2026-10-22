@@ -17,6 +17,8 @@ type MockStepListProps = { steps: { approve: YieldFlowStepDefinition } };
 
 const mockAnalytics = mockDesktopAnalytics(mock<DesktopAnalytics['report']>());
 const mockSkipApprove = mock<YieldFlowContextValues['skipApprove']>();
+const mockSubmitApprovalAction = mock<YieldFlowContextValues['submitApprovalAction']>();
+let mockApprovalAction: YieldFlowContextValues['approvalAction'] = 'increase';
 
 jest.mock('@trezor/dependency-injection', () => ({
     ...jest.requireActual('@trezor/dependency-injection'),
@@ -44,6 +46,9 @@ jest.mock('src/hooks/suite/useMessageSystemWrappedNative', () => ({
 jest.mock('src/hooks/suite/useMessageSystemYield', () => ({
     useMessageSystemYield: () => ({ isDisabled: false }),
 }));
+jest.mock('src/hooks/earn/useEarnDeviceStatus', () => ({
+    useEarnDeviceStatus: () => 'connected',
+}));
 jest.mock('src/components/wallet/Fees/CollapsibleFees/hooks/useIsFeeRefetchDisabled', () => ({
     useIsFeeRefetchDisabled: () => false,
 }));
@@ -59,9 +64,10 @@ jest.mock('./useYieldDepositContext', () => ({
         flow: { currentStep: 'approve', isWrappedNativeVault: false },
         allowanceAmount: '10',
         allowanceStatus: 'success',
-        approvalAction: 'increase',
+        approvalAction: mockApprovalAction,
         canRevokeAllowance: true,
         skipApprove: mockSkipApprove,
+        submitApprovalAction: mockSubmitApprovalAction,
     }),
 }));
 jest.mock('../common/YieldFlowStepList', () => ({
@@ -69,12 +75,20 @@ jest.mock('../common/YieldFlowStepList', () => ({
         steps.approve.content({ state: 'active', indicator: { index: 1, total: 2 } }),
 }));
 jest.mock('../common/YieldApproveStep', () => ({
-    YieldApproveStep: ({ onSkip }: YieldApproveStepProps) => (
-        <button onClick={onSkip}>Skip approval</button>
+    YieldApproveStep: ({ onSkip, onApprovalSubmit }: YieldApproveStepProps) => (
+        <>
+            <button onClick={onSkip}>Skip approval</button>
+            <button onClick={onApprovalSubmit}>Continue approval</button>
+        </>
     ),
 }));
 
 describe('YieldDepositForm analytics', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+        mockApprovalAction = 'increase';
+    });
+
     it('continues with an existing allowance without reporting an approval cancellation', () => {
         const { getByRole } = render(<YieldDepositForm />);
 
@@ -84,11 +98,55 @@ describe('YieldDepositForm analytics', () => {
         expect(mockAnalytics.report).toHaveBeenCalledWith({
             type: 'yield/deposit',
             payload: {
-                type: 'approve-skipped',
-                action: 'continue',
+                type: 'approve',
+                action: 'skip',
                 networkSymbol: 'eth',
                 vaultId: 'vault-1',
             },
         });
     });
+
+    it('reports reusing allowance as a skip while keeping live validation', () => {
+        mockApprovalAction = 'continue';
+        const { getByRole } = render(<YieldDepositForm />);
+
+        fireEvent.click(getByRole('button', { name: 'Continue approval' }));
+
+        expect(mockSkipApprove).not.toHaveBeenCalled();
+        expect(mockSubmitApprovalAction).toHaveBeenCalledTimes(1);
+        expect(mockAnalytics.report).toHaveBeenCalledTimes(1);
+        expect(mockAnalytics.report).toHaveBeenCalledWith({
+            type: 'yield/deposit',
+            payload: {
+                type: 'approve',
+                action: 'skip',
+                networkSymbol: 'eth',
+                vaultId: 'vault-1',
+            },
+        });
+    });
+
+    it.each(['approve', 'increase', 'revoke'] as const)(
+        'keeps the device snapshot for an actual %s submit',
+        action => {
+            mockApprovalAction = action;
+            const { getByRole } = render(<YieldDepositForm />);
+
+            fireEvent.click(getByRole('button', { name: 'Continue approval' }));
+
+            expect(mockSubmitApprovalAction).toHaveBeenCalledTimes(1);
+            expect(mockSkipApprove).not.toHaveBeenCalled();
+            expect(mockAnalytics.report).toHaveBeenCalledTimes(1);
+            expect(mockAnalytics.report).toHaveBeenCalledWith({
+                type: 'yield/deposit',
+                payload: {
+                    type: action === 'revoke' ? 'revoke' : 'approve',
+                    action: 'continue',
+                    deviceStatus: 'connected',
+                    networkSymbol: 'eth',
+                    vaultId: 'vault-1',
+                },
+            });
+        },
+    );
 });

@@ -6,12 +6,14 @@ import { Button, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { BigNumber } from '@trezor/utils';
 
+import { useEarnDeviceStatus } from 'src/hooks/earn/useEarnDeviceStatus';
 import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 import { useTronStakeContext } from '../TronStakeContext';
 
 export const TronWithdrawSubmitButton = () => {
+    const deviceStatus = useEarnDeviceStatus();
     const { device, isLocked } = useDevice();
     const { analytics } = useServices(injectDesktopAnalytics);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
@@ -30,20 +32,17 @@ export const TronWithdrawSubmitButton = () => {
             return;
         }
 
-        submitAction();
-
-        if (!device?.connected || !device?.available) {
-            return;
-        }
-
         analytics.report({
             type: events.stakingUnstakeEvent.name,
             payload: {
                 action: 'continue',
+                deviceStatus,
                 step: 'withdraw-form-modal',
                 networkSymbol: account.symbol,
             },
         });
+
+        submitAction();
     };
 
     return (

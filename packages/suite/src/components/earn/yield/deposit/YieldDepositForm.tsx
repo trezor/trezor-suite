@@ -16,6 +16,7 @@ import { useServices } from '@trezor/dependency-injection';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 import { useIsFeeRefetchDisabled } from 'src/components/wallet/Fees/CollapsibleFees/hooks/useIsFeeRefetchDisabled';
+import { useEarnDeviceStatus } from 'src/hooks/earn/useEarnDeviceStatus';
 import { useMessageSystemWrappedNative } from 'src/hooks/suite/useMessageSystemWrappedNative';
 import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
 
@@ -31,6 +32,7 @@ import { YieldFlowStepList } from '../common/YieldFlowStepList';
 import { YieldWrapStep } from '../common/YieldWrapStep';
 
 export const YieldDepositForm = () => {
+    const deviceStatus = useEarnDeviceStatus();
     const { analytics } = useServices(injectDesktopAnalytics);
     const { CryptoAmountFormatter } = useFormatters();
 
@@ -206,7 +208,8 @@ export const YieldDepositForm = () => {
             type: events.yieldDepositEvent.name,
             payload: {
                 type: approvalAction === 'revoke' ? 'revoke' : 'approve',
-                action: 'continue',
+                action: approvalAction === 'continue' ? 'skip' : 'continue',
+                ...(approvalAction !== 'continue' && { deviceStatus }),
                 networkSymbol: token.networkSymbol,
                 vaultId: vault.id,
             },
@@ -219,8 +222,8 @@ export const YieldDepositForm = () => {
         analytics.report({
             type: events.yieldDepositEvent.name,
             payload: {
-                type: 'approve-skipped',
-                action: 'continue',
+                type: 'approve',
+                action: 'skip',
                 networkSymbol: token.networkSymbol,
                 vaultId: vault.id,
             },
@@ -237,6 +240,7 @@ export const YieldDepositForm = () => {
             payload: {
                 type: 'revoke',
                 action: 'continue',
+                deviceStatus,
                 networkSymbol: token.networkSymbol,
                 vaultId: vault.id,
             },
@@ -268,6 +272,7 @@ export const YieldDepositForm = () => {
             payload: {
                 type: 'deposit',
                 action: 'continue',
+                deviceStatus,
                 networkSymbol: token.networkSymbol,
                 vaultId: vault.id,
                 wrappedNative: flow.isWrappedNativeVault,
@@ -286,6 +291,7 @@ export const YieldDepositForm = () => {
             payload: {
                 type: 'wrap',
                 action: 'continue',
+                deviceStatus,
                 networkSymbol: token.networkSymbol,
                 vaultId: vault.id,
             },
