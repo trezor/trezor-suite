@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 
 import {
     type StablecoinYieldTxSimulationParams,
@@ -43,6 +43,24 @@ export const YieldTxSimulationBottomSheet = ({
     ref,
     unsignedTx,
 }: YieldTxSimulationBottomSheetProps) => {
+    const hasHandledDecisionRef = useRef(false);
+    const handleCancel = () => {
+        if (hasHandledDecisionRef.current) return;
+        hasHandledDecisionRef.current = true;
+        onCancel();
+    };
+    const handleConfirm = () => {
+        if (hasHandledDecisionRef.current) return;
+        hasHandledDecisionRef.current = true;
+        onConfirm();
+    };
+    const handleDismiss = () => {
+        if (!hasHandledDecisionRef.current) {
+            onCancel();
+        }
+        hasHandledDecisionRef.current = false;
+    };
+
     const parsedData = useMemo(
         () =>
             composeStablecoinYieldTxSimulationAction(
@@ -61,13 +79,14 @@ export const YieldTxSimulationBottomSheet = ({
             ref={ref}
             title={<Translation id="moduleConnectPopup.simulation.reviewTransaction" />}
             isCloseDisplayed
-            onClose={onCancel}
+            onClose={handleCancel}
+            onDismiss={handleDismiss}
         >
             {parsedData ? (
                 <EvmTxSimulationReviewContent
                     action={parsedData.action}
                     cancelButton={
-                        <Button intent="neutral" priority="secondary" onPress={onCancel}>
+                        <Button intent="neutral" priority="secondary" onPress={handleCancel}>
                             <Translation id="generic.buttons.cancel" />
                         </Button>
                     }
@@ -77,7 +96,7 @@ export const YieldTxSimulationBottomSheet = ({
                             networkSymbol={account.symbol}
                         />
                     }
-                    onConfirm={onConfirm}
+                    onConfirm={handleConfirm}
                 />
             ) : (
                 <BannerFull

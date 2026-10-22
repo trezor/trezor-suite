@@ -22,6 +22,7 @@ import { useRefreshYieldDepositAllowanceOnIdle } from './useRefreshYieldDepositA
 import { useShowYieldAlert } from './useShowYieldAlert';
 import { useShowYieldTransactionFailureAlert } from './useShowYieldTransactionFailureAlert';
 import { type YieldAllowanceFeeTransaction, useYieldAllowanceFees } from './useYieldAllowanceFees';
+import { useYieldFlowAnalytics } from './useYieldFlowAnalytics';
 import { useYieldFlowData } from './useYieldFlowData';
 import { useYieldPendingTransaction } from './useYieldPendingTransaction';
 import { useYieldPendingTransactionTracking } from './useYieldPendingTransactionTracking';
@@ -52,6 +53,10 @@ export const useYieldDepositRevokeScreen = () => {
         vaultTokenName,
         resolutionStatus,
     } = yieldFlowData;
+    const { reportDeposit } = useYieldFlowAnalytics({
+        networkSymbol: account?.symbol,
+        vaultId: yieldFlowData.vault?.id,
+    });
     const session = useYieldSession({
         flowKey,
         flowType: 'deposit',
@@ -68,6 +73,7 @@ export const useYieldDepositRevokeScreen = () => {
         isFocused,
         pendingTransaction: session?.action.pendingTransaction,
         transactionType: 'revoke',
+        vaultId: yieldFlowData.vault?.id,
     });
     const isApprovedAmountUnlimited = isYieldApprovalAllowanceUnlimited({ session, token });
     const intendedDepositAmount = route.params.amount ?? session?.action.amount ?? undefined;
@@ -264,6 +270,7 @@ export const useYieldDepositRevokeScreen = () => {
             return;
         }
 
+        reportDeposit({ action: 'continue', type: 'revoke' });
         setIsPreparingReview(true);
 
         try {
@@ -302,6 +309,7 @@ export const useYieldDepositRevokeScreen = () => {
         flowKey,
         isApprovedAmountUnlimited,
         navigation,
+        reportDeposit,
         resolutionStatus,
         route.params,
         showYieldAlert,

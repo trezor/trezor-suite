@@ -2,6 +2,7 @@ import { useCallback, useMemo } from 'react';
 
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
+    type ComposeYieldWrapErrorReason,
     type WrappedNativeFlowType,
     composeYieldUnwrapTransactionThunk,
     composeYieldWrapTransactionThunk,
@@ -26,6 +27,7 @@ type UseWrappedNativeTokenFeesParams = {
     amount: string | undefined;
     flowType: WrappedNativeFlowType;
     isEnabled: boolean;
+    onComposeError: (reason: ComposeYieldWrapErrorReason) => void;
 };
 
 const getWrappedNativeTokenFormDraftKey = (flowType: WrappedNativeFlowType, accountKey: string) =>
@@ -36,6 +38,7 @@ export const useWrappedNativeTokenFees = ({
     amount,
     flowType,
     isEnabled,
+    onComposeError,
 }: UseWrappedNativeTokenFeesParams) => {
     const { dispatch } = useServices(injectDispatch);
 
@@ -46,11 +49,13 @@ export const useWrappedNativeTokenFees = ({
     const hasInvalidContext = !amount || !account || !formDraftKey;
 
     const composeTransaction = useCallback(
-        async (composeAmount: string): Promise<ComposeTxResult<ComposedTxBase>> => {
+        async (
+            composeAmount: string,
+        ): Promise<ComposeTxResult<ComposedTxBase, ComposeYieldWrapErrorReason>> => {
             const wrappedNative = account ? getWrappedNativeToken(account.symbol) : undefined;
 
             if (!account || !wrappedNative) {
-                return { type: 'error' };
+                return { type: 'error', reason: 'unsupported-network' };
             }
 
             try {
@@ -82,7 +87,7 @@ export const useWrappedNativeTokenFees = ({
                           ).unwrap();
 
                 if (result.type !== 'action-ready') {
-                    return { type: 'error' };
+                    return { type: 'error', reason: result.reason };
                 }
 
                 const spentToken =
@@ -107,7 +112,7 @@ export const useWrappedNativeTokenFees = ({
                     },
                 };
             } catch {
-                return { type: 'error' };
+                return { type: 'error', reason: 'fee-estimation-failed' };
             }
         },
         [account, dispatch, flowType],
@@ -120,6 +125,8 @@ export const useWrappedNativeTokenFees = ({
         hasInvalidContext,
         isEnabled,
         symbol: account?.symbol,
+        onComposeError,
+        fallbackReason: 'fee-estimation-failed',
     });
 
     const preparedAction = useMemo(

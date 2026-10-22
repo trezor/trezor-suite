@@ -3,9 +3,9 @@ import { useEffect } from 'react';
 import { type YieldPendingTransactionState } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { useBottomSheetModal } from '@suite-native/atoms';
-import { useTransactionDetails } from '@suite-native/transaction-management';
 
 import { useYieldPendingSheet } from './useYieldPendingSheet';
+import { useYieldPendingTransactionDetails } from './useYieldPendingTransactionDetails';
 
 type YieldPendingTransactionType = YieldPendingTransactionState['type'];
 
@@ -14,6 +14,7 @@ type UseYieldPendingTransactionParams = {
     isFocused: boolean;
     pendingTransaction: YieldPendingTransactionState | null | undefined;
     transactionType: YieldPendingTransactionType;
+    vaultId?: string;
 };
 
 const getPendingTransactionByType = (
@@ -32,6 +33,7 @@ export const useYieldPendingTransaction = ({
     isFocused,
     pendingTransaction,
     transactionType,
+    vaultId,
 }: UseYieldPendingTransactionParams) => {
     const {
         bottomSheetRef: pendingBottomSheetRef,
@@ -44,9 +46,11 @@ export const useYieldPendingTransaction = ({
     );
     const { displayedPendingTransaction, isSheetPresented, handleSheetDismissed } =
         useYieldPendingSheet(matchingPendingTransaction);
-    const { explorerUrl, openInBlockchain } = useTransactionDetails({
+    const { explorerUrl, openInBlockchain } = useYieldPendingTransactionDetails({
         accountKey: accountKey ?? null,
         txid: displayedPendingTransaction?.txid ?? null,
+        transactionType: displayedPendingTransaction?.type,
+        vaultId,
     });
     // Built from the retained transaction so the sheet keeps its values while it dismisses.
     const pendingModalProps =

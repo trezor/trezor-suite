@@ -2,6 +2,7 @@ import { useCallback, useMemo } from 'react';
 
 import {
     type ResolvedYieldFlowData,
+    type YieldDepositErrorReason,
     composeYieldDepositTransactionThunk,
 } from '@suite-common/wallet-core';
 import { type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
@@ -26,6 +27,7 @@ export type PreparedYieldDepositAction = {
 type UseYieldDepositFeesParams = Pick<ResolvedYieldFlowData, 'flowData' | 'flowKey'> & {
     amount: string | undefined;
     isEnabled: boolean;
+    onComposeError?: (reason: YieldDepositErrorReason) => void;
 };
 
 type ComposedDepositTransaction = ComposedTxBase & { receiptAmount: string };
@@ -35,6 +37,7 @@ export const useYieldDepositFees = ({
     flowData,
     flowKey,
     isEnabled,
+    onComposeError,
 }: UseYieldDepositFeesParams) => {
     const { dispatch } = useServices(injectDispatch);
 
@@ -45,7 +48,9 @@ export const useYieldDepositFees = ({
     const hasInvalidContext = !amount || !flowData || !flowKey || !formDraftKey;
 
     const composeTransaction = useCallback(
-        async (composeAmount: string): Promise<ComposeTxResult<ComposedDepositTransaction>> => {
+        async (
+            composeAmount: string,
+        ): Promise<ComposeTxResult<ComposedDepositTransaction, YieldDepositErrorReason>> => {
             if (!flowData) {
                 return { type: 'error' };
             }
@@ -55,8 +60,12 @@ export const useYieldDepositFees = ({
                     composeYieldDepositTransactionThunk({ amount: composeAmount, flowData }),
                 ).unwrap();
 
+                if (result.type === 'error') {
+                    return { type: 'error', reason: result.reason };
+                }
+
                 if (result.type !== 'action-ready') {
-                    return { type: 'error' };
+                    return { type: 'not-ready' };
                 }
 
                 return {
@@ -69,7 +78,7 @@ export const useYieldDepositFees = ({
                     },
                 };
             } catch {
-                return { type: 'error' };
+                return { type: 'error', reason: 'fee-estimation-failed' };
             }
         },
         [dispatch, flowData],
@@ -82,6 +91,8 @@ export const useYieldDepositFees = ({
         hasInvalidContext,
         isEnabled,
         symbol: flowData?.account.symbol,
+        onComposeError,
+        fallbackReason: 'fee-estimation-failed',
     });
 
     const preparedAction = useMemo(

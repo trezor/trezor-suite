@@ -83,6 +83,7 @@ export const useYieldDepositApprovalController = () => {
         isFocused,
         pendingTransaction: session?.action.pendingTransaction,
         transactionType: 'approve',
+        vaultId: yieldFlowData.vault?.id,
     });
     const isApprovalPending = !!approvalPendingTransaction;
     const hasApprovedAmount =
@@ -189,7 +190,7 @@ export const useYieldDepositApprovalController = () => {
             return;
         }
 
-        reportDeposit({ action: 'continue', type: 'approve-skipped' });
+        reportDeposit({ action: 'skip', type: 'approve' });
 
         dispatch(
             yieldActions.skipApprovalStep({
@@ -215,8 +216,6 @@ export const useYieldDepositApprovalController = () => {
             return;
         }
 
-        reportDeposit({ action: 'continue', type: 'revoke' });
-
         const amount =
             amountValue !== undefined && isPositiveBalance(amountValue) ? amountValue : undefined;
 
@@ -234,15 +233,7 @@ export const useYieldDepositApprovalController = () => {
             ...route.params,
             amount,
         });
-    }, [
-        amountValue,
-        dispatch,
-        flowKey,
-        isApprovalPending,
-        navigation,
-        reportDeposit,
-        route.params,
-    ]);
+    }, [amountValue, dispatch, flowKey, isApprovalPending, navigation, route.params]);
 
     useYieldPendingTransactionTracking({
         account,
@@ -259,11 +250,15 @@ export const useYieldDepositApprovalController = () => {
             return;
         }
 
-        reportDeposit({
-            action: 'continue',
-            type: footerApprovalAction === 'revoke' ? 'revoke' : 'approve',
-            approvalType: getYieldApprovalAnalyticsType(approvalLimitType),
-        });
+        if (footerApprovalAction === 'continue') {
+            reportDeposit({ action: 'skip', type: 'approve' });
+        } else if (footerApprovalAction !== 'revoke') {
+            reportDeposit({
+                action: 'continue',
+                type: 'approve',
+                approvalType: getYieldApprovalAnalyticsType(approvalLimitType),
+            });
+        }
 
         await handleSubmitApproval(amount);
     });

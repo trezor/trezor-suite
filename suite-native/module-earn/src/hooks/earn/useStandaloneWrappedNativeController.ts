@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
@@ -6,6 +7,7 @@ import { events } from '@suite-common/analytics';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
+    type ComposeYieldWrapErrorReason,
     type WrappedNativeFlowType,
     getWrapReserveStatus,
     getWrappableNativeBalance,
@@ -22,6 +24,7 @@ import { getWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { useMessageSystemWrappedNative } from './useMessageSystemWrappedNative';
 import { useNavigateBackAnalytics } from './useNavigateBackAnalytics';
 import { useStandaloneWrappedNativeFlow } from './useStandaloneWrappedNativeFlow';
+import { useWrappedNativeFlowReport } from './useWrappedNativeFlowReport';
 import { useWrappedNativeTokenFees } from './useWrappedNativeTokenFees';
 import { useWrappedNativeTokenForm } from './useWrappedNativeTokenForm';
 import { getAccountTokenByContract } from '../../utils/earn/contractTokenBalanceUtils';
@@ -88,11 +91,24 @@ export const useStandaloneWrappedNativeController = (flowType: WrappedNativeFlow
     const isFlowPending = !!pendingTransaction;
     const isFeeSectionDisplayed = isAmountReady && !isFlowPending;
 
+    const report = useWrappedNativeFlowReport(flowType);
+    const onComposeError = useCallback(
+        (errorMessage: ComposeYieldWrapErrorReason) =>
+            report({
+                type: 'error',
+                action: 'continue',
+                networkSymbol: account?.symbol,
+                errorMessage,
+            }),
+        [report, account?.symbol],
+    );
+
     const fees = useWrappedNativeTokenFees({
         account: account ?? null,
         amount: amountValue,
         flowType,
         isEnabled: isFeeSectionDisplayed,
+        onComposeError,
     });
 
     const flow = useStandaloneWrappedNativeFlow({
