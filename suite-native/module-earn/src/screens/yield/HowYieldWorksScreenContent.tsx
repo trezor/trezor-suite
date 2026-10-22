@@ -49,16 +49,19 @@ export const HowYieldWorksScreenContent = ({ yieldFlowData }: HowYieldWorksScree
 
     const { show: showYieldApyBreakdownAlert } = useYieldApyBreakdownAlert({ account, vault });
     const { analytics } = useServices(injectNativeAnalytics);
-    const registerNavigateBackAnalytics = useNavigateBackAnalytics({
-        type: events.yieldNavigateEvent.name,
-        payload: {
-            action: 'cancel',
-            from: 'deposit-in-a-nutshell-modal',
-            to: 'deposit-in-a-nutshell-modal',
-            networkSymbol: account?.symbol,
-            vaultId: vault?.id,
+    const registerNavigateBackAnalytics = useNavigateBackAnalytics(
+        {
+            type: events.yieldNavigateEvent.name,
+            payload: {
+                action: 'cancel',
+                from: 'deposit-in-a-nutshell-modal',
+                to: 'deposit-in-a-nutshell-modal',
+                networkSymbol: account?.symbol,
+                vaultId: vault?.id,
+            },
         },
-    });
+        !route.params.isInfoOnly,
+    );
 
     const vaultContractAddress = vault ? getYieldVaultContractAddress(vault) : undefined;
     const {

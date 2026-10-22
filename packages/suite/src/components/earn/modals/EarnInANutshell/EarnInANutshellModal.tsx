@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react';
 import { injectDesktopAnalytics } from '@suite/analytics';
 import { openModal } from '@suite/modal';
 import { gotoThunk } from '@suite/router';
+import { events } from '@suite-common/analytics';
 import {
     type EarnAnalyticsStep,
     EarnFlow,
@@ -85,6 +86,16 @@ export const EarnInANutshellModal = ({
         onCancel();
 
         if (flow === EarnFlow.Yield && yieldContext?.vaultAddress) {
+            analytics.report({
+                type: events.yieldNavigateEvent.name,
+                payload: {
+                    action: 'continue',
+                    from: 'deposit-in-a-nutshell-modal',
+                    to: 'deposit-form',
+                    networkSymbol: account.symbol,
+                    vaultId: yieldContext.id,
+                },
+            });
             dispatch(
                 gotoThunk({
                     routeName: 'earn-yield-deposit',
@@ -97,7 +108,16 @@ export const EarnInANutshellModal = ({
         } else if (flow === EarnFlow.Stake) {
             dispatch(openModal({ type: 'stake', flow, account }));
         }
-    }, [shouldSkip, flow, yieldContext?.vaultAddress, onCancel, account, dispatch]);
+    }, [
+        shouldSkip,
+        flow,
+        yieldContext?.vaultAddress,
+        yieldContext?.id,
+        onCancel,
+        account,
+        dispatch,
+        analytics,
+    ]);
 
     useEffect(() => {
         switch (flow) {
