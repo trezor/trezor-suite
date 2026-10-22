@@ -1,5 +1,4 @@
 export * from './StoreProvider';
-export * from './appSlice';
 export {
     type FullAppState,
     type FullPersistedAppState,
