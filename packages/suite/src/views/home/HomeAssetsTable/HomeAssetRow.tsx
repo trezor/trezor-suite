@@ -5,6 +5,7 @@ import {
     selectWalletAssetContractAddress,
     selectWalletAssetDisplaySymbol,
     selectWalletAssetSymbol,
+    selectWalletAssetTokenDecimals,
     selectWalletAssetTokenSymbol,
 } from '@suite-common/assets';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
@@ -15,6 +16,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { PriceTicker, TrendTicker } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 
+import { HomeAssetApyBadge } from './HomeAssetApyBadge';
 import { HomeAssetBalance } from './HomeAssetBalance';
 import { HomeAssetIdentity } from './HomeAssetIdentity';
 import { HOME_ASSET_CELL_PADDING, HOME_ASSET_LINE_GAP } from './homeAssetTableLayout';
@@ -33,6 +35,7 @@ export const HomeAssetRow = memo(function HomeAssetRow({
     const contractAddress = useSelector(state => selectWalletAssetContractAddress(state, assetKey));
     const displaySymbol = useSelector(state => selectWalletAssetDisplaySymbol(state, assetKey));
     const tokenSymbol = useSelector(state => selectWalletAssetTokenSymbol(state, assetKey));
+    const tokenDecimals = useSelector(state => selectWalletAssetTokenDecimals(state, assetKey));
 
     if (symbol === undefined) {
         return null;
@@ -53,6 +56,14 @@ export const HomeAssetRow = memo(function HomeAssetRow({
                     contractAddress={contractAddress}
                     displaySymbol={displaySymbol}
                     tokenSymbol={tokenSymbol}
+                    badge={
+                        <HomeAssetApyBadge
+                            symbol={symbol}
+                            contractAddress={contractAddress}
+                            tokenSymbol={tokenSymbol}
+                            tokenDecimals={tokenDecimals}
+                        />
+                    }
                 />
             </Table.Cell>
 

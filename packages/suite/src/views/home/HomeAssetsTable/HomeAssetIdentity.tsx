@@ -1,3 +1,5 @@
+import { type ReactNode } from 'react';
+
 import { useFormatters } from '@suite-common/formatters';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
@@ -13,6 +15,7 @@ type HomeAssetIdentityProps = {
     contractAddress: TokenAddress | undefined;
     displaySymbol: string | undefined;
     tokenSymbol: TokenSymbol | null | undefined;
+    badge?: ReactNode;
 };
 
 export const HomeAssetIdentity = ({
@@ -20,6 +23,7 @@ export const HomeAssetIdentity = ({
     contractAddress,
     displaySymbol,
     tokenSymbol,
+    badge,
 }: HomeAssetIdentityProps) => {
     const { NetworkNameFormatter } = useFormatters();
 
@@ -33,16 +37,19 @@ export const HomeAssetIdentity = ({
                 placeholder={displaySymbol ?? ''}
             />
             <Column alignItems="flex-start" gap={HOME_ASSET_LINE_GAP} flex="1" minWidth={0}>
-                <Text
-                    typographyStyle="body-md"
-                    ellipsisLineCount={1}
-                    maxWidth="100%"
-                    data-testid="@dashboard/home-asset/name"
-                >
-                    <TruncateWithTooltip delayShow={TOOLTIP_DELAY_LONG}>
-                        <TokenUrlBlur text={tokenSymbol ?? displaySymbol} />
-                    </TruncateWithTooltip>
-                </Text>
+                <Row gap={8} maxWidth="100%">
+                    <Text
+                        typographyStyle="body-md"
+                        ellipsisLineCount={1}
+                        minWidth={0}
+                        data-testid="@dashboard/home-asset/name"
+                    >
+                        <TruncateWithTooltip delayShow={TOOLTIP_DELAY_LONG}>
+                            <TokenUrlBlur text={tokenSymbol ?? displaySymbol} />
+                        </TruncateWithTooltip>
+                    </Text>
+                    {badge}
+                </Row>
                 <Text intent="neutral" priority="secondary" typographyStyle="body-sm">
                     <NetworkNameFormatter value={symbol} />
                 </Text>

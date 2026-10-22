@@ -18,6 +18,11 @@ import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 import { HomeAssetTable } from './HomeAssetTable';
 import { mockInitialAppState } from '../../../../mocks/mockInitialAppState';
 
+jest.mock('@suite-common/earn-stablecoin-api', () => ({
+    ...jest.requireActual('@suite-common/earn-stablecoin-api'),
+    useAllYieldOpportunities: () => ({ data: undefined }),
+}));
+
 global.ResizeObserver = class MockedResizeObserver {
     observe = jest.fn();
     unobserve = jest.fn();
