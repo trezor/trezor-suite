@@ -193,6 +193,9 @@ const getPlugins = (): ExpoPlugins => {
             'expo-dev-client',
             {
                 toolsButton: false,
+                ...(process.env.EXPO_PUBLIC_IS_DETOX_BUILD === 'true'
+                    ? { skipOnboarding: true, showMenuAtLaunch: false }
+                    : {}),
             },
         ],
     ];
