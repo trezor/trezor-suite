@@ -75,6 +75,10 @@ its report timer inside `markInteractive()`.
 | `send`           | `module-send` `SendOutputsScreen`                  | the form renders                                 | the screen                 |
 | `receive`        | `module-receive` `ReceiveFreshAddressScreen`       | the fresh address is available                   | `useIsReceiveScreenReady`  |
 
+`send` and `account-detail` read data that discovery and app start already loaded, so in the E2E
+flows they are interactive on their first frame and their TTI is close to their TTFF. That is the
+true value today; a regression that makes them wait for something shows up as a gap.
+
 ## Gating
 
 Nothing here runs, and nothing here ships, outside a Detox test build.
