@@ -16646,7 +16646,7 @@ __metadata:
   dependencies:
     "@suite-common/apps-embedding": "workspace:*"
     "@suite/desktop-app-api": "workspace:*"
-    electron: "npm:43.8.3"
+    electron: "npm:44.9.3"
   languageName: unknown
   linkType: soft
 
@@ -16708,7 +16708,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@types/electron-localshortcut": "npm:^3.1.3"
     chalk: "npm:^6.0.1"
-    electron: "npm:43.8.3"
+    electron: "npm:44.9.3"
     electron-devtools-installer: "npm:^4.0.0"
     electron-localshortcut: "npm:^3.2.1"
     electron-store: "npm:11.0.2"
@@ -16717,7 +16717,7 @@ __metadata:
     lodash: "npm:^4.18.1"
     minimizer-webpack-plugin: "npm:5.13.0"
     node-loader: "npm:^2.1.0"
-    openpgp: "npm:^6.3.1"
+    openpgp: "npm:^6.3.2"
     rimraf: "npm:^6.1.2"
     webpack: "npm:5.111.1"
     ws: "npm:^8.20.0"
@@ -16729,8 +16729,8 @@ __metadata:
   resolution: "@suite/desktop-app-native-bindings@workspace:suite/desktop-app-native-bindings"
   dependencies:
     "@types/node": "npm:22.13.10"
-    electron: "npm:43.8.3"
-    node-addon-api: "npm:8.5.0"
+    electron: "npm:44.9.3"
+    node-addon-api: "npm:8.9.2"
     node-gyp: "npm:13.1.0"
   languageName: unknown
   linkType: soft
@@ -16787,9 +16787,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite/desktop-app@workspace:suite/desktop-app"
   dependencies:
-    electron: "npm:43.8.3"
+    electron: "npm:44.9.3"
     electron-builder: "npm:27.0.0-alpha.10"
-    openpgp: "npm:^6.3.1"
+    openpgp: "npm:^6.3.2"
     usb: "npm:^3.1.0"
     usb-legacy: "npm:usb@2.17.0"
   languageName: unknown
@@ -26158,7 +26158,7 @@ __metadata:
   dependencies:
     "@trezor/connect": "workspace:*"
     "@trezor/eslint": "workspace:*"
-    electron: "npm:43.8.3"
+    electron: "npm:44.9.3"
     electron-builder: "npm:27.0.0-alpha.10"
   languageName: unknown
   linkType: soft
@@ -28342,9 +28342,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron@npm:43.8.3":
-  version: 43.8.3
-  resolution: "electron@npm:43.8.3"
+"electron@npm:44.9.3":
+  version: 44.9.3
+  resolution: "electron@npm:44.9.3"
   dependencies:
     "@electron-internal/extract-zip": "npm:^1.0.1"
     "@electron/get": "npm:^5.0.0"
@@ -28352,7 +28352,7 @@ __metadata:
   bin:
     electron: cli.js
     install-electron: install.js
-  checksum: 10/e39ae50adaf725c1e5952b5a43ea57a482601994c99d0686e26ff60003c191d87a84c8be978695d904a5a3c77f31d6f315e514391ebdd9f2db691a79ed076da1
+  checksum: 10/361b55f4eba052b2bc6d22802e77e2e9d779d9ebcea5bf85cfa2b9ba3c7eca460f51a983b399547f606c1d5e2d11bd1df40ffcfc9c7db0c61309ce821e1233d6
   languageName: node
   linkType: hard
 
@@ -39445,12 +39445,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-addon-api@npm:8.5.0":
-  version: 8.5.0
-  resolution: "node-addon-api@npm:8.5.0"
+"node-addon-api@npm:8.9.2":
+  version: 8.9.2
+  resolution: "node-addon-api@npm:8.9.2"
   dependencies:
     node-gyp: "npm:latest"
-  checksum: 10/9a893f4f835fbc3908e0070f7bcacf36e37fd06be8008409b104c30df4092a0d9a29927b3a74cdbc1d34338274ba4116d597a41f573e06c29538a1a70d07413f
+  checksum: 10/5354f9b53631d99a952408112d795f36782fd41c0ac073bd91814805fe931b619c743689d0cedcc310c0ae8392fc9b104b2852d28cce294236407ca57d01743e
   languageName: node
   linkType: hard
 
@@ -40394,15 +40394,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"openpgp@npm:^6.3.1":
-  version: 6.3.1
-  resolution: "openpgp@npm:6.3.1"
+"openpgp@npm:^6.3.2":
+  version: 6.3.2
+  resolution: "openpgp@npm:6.3.2"
   peerDependencies:
     "@openpgp/web-stream-tools": ~0.3.0
   peerDependenciesMeta:
     "@openpgp/web-stream-tools":
       optional: true
-  checksum: 10/56c66ffb906cbbf73a7a303bf018b109d982e6fe19195321945ac980f9496131051b49866bfb88703ac22b22abd9b180bc851cd2127e6f0d0bda2f113fa06517
+  checksum: 10/42ea7f45fd04685750c968e26ad6c3b65a41eb2c3ee82c7c82bc3f016fb4f3be119b8b2e81b76df4e0f57d3e131276925ea95c0799e9fb91666f2b61f487703a
   languageName: node
   linkType: hard
 
