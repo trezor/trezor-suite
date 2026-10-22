@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
 import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import { useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
@@ -35,6 +36,10 @@ export const useSendTransactionErrorAlert = ({
     const { showAlert } = useAlert();
     const { dispatch } = useServices(injectDispatch);
     const navigation = useNavigation<NavigationProps>();
+    const isAssetsFirstEnabled = useIsExperimentVariantActive({
+        experimentId: ExperimentId.assetFirstHomeTable,
+        variant: 'B',
+    });
 
     const handleRetryAfterExpiry = useCallback(() => {
         if (!account) return;
@@ -82,12 +87,21 @@ export const useSendTransactionErrorAlert = ({
                     navigateOutOfSendFlowAction({
                         accountKey,
                         tokenContract,
+                        networkSymbol: isAssetsFirstEnabled ? account.symbol : undefined,
                     }),
                 );
             },
             secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
         });
-    }, [account, tokenContract, dispatch, navigation, showAlert, handleRetryAfterExpiry]);
+    }, [
+        account,
+        tokenContract,
+        dispatch,
+        navigation,
+        showAlert,
+        handleRetryAfterExpiry,
+        isAssetsFirstEnabled,
+    ]);
 
     return { show };
 };
