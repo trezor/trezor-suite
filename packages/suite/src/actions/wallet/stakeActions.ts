@@ -28,6 +28,7 @@ import {
     isSupportedSolStakingNetworkSymbol,
     notifyEarnTransactionBroadcastThunk,
     replaceTransactionThunk,
+    selectAccountByKey,
     selectIsMevProtectionEnabled,
     selectStake,
     selectStakeAccount,
@@ -37,6 +38,7 @@ import {
 } from '@suite-common/wallet-core';
 import {
     type Account,
+    type AccountKey,
     type ComposeActionContext,
     type PrecomposedTransactionFinal,
     type StakeFormState,
@@ -268,21 +270,22 @@ export type SignTransactionThunkState = DeviceRootState &
 export type SignTransactionThunkDeps = PushTransactionThunkDeps;
 
 export type SignTransactionThunkParams = {
-    account: Account;
+    accountKey: AccountKey;
     formValues: StakeFormState;
     transactionInfo: PrecomposedTransactionFinal;
 };
 
 export const signTransactionThunk =
-    ({ account, formValues, transactionInfo }: SignTransactionThunkParams) =>
+    ({ accountKey, formValues, transactionInfo }: SignTransactionThunkParams) =>
     async (
         dispatch: ThunkDispatch<SignTransactionThunkState, SignTransactionThunkDeps, UnknownAction>,
         getState: () => SignTransactionThunkState,
         extra: SignTransactionThunkDeps,
     ) => {
         const device = selectSelectedDevice(getState());
+        const account = selectAccountByKey(getState(), accountKey);
 
-        if (!device) return;
+        if (!device || !account) return;
 
         const enhancedTxInfo: PrecomposedTransactionFinal = {
             ...transactionInfo,

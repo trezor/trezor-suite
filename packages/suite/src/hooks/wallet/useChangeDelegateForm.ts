@@ -119,16 +119,21 @@ export const useChangeDelegateForm = ({
     const signTx = useCallback(async () => {
         const values = getValues();
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
+
         if (composedTx?.type === 'final') {
             const result = await dispatch(
-                signTransactionThunk({ account, formValues: values, transactionInfo: composedTx }),
+                signTransactionThunk({
+                    accountKey: account.key,
+                    formValues: values,
+                    transactionInfo: composedTx,
+                }),
             );
 
             if (result?.success) {
                 clearForm();
             }
         }
-    }, [getValues, composedLevels, dispatch, account, clearForm, selectedFee]);
+    }, [getValues, composedLevels, dispatch, account.key, clearForm, selectedFee]);
 
     return {
         ...methods,

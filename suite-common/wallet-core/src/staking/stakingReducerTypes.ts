@@ -21,10 +21,13 @@ export interface StakeState {
     data: StakeDataState;
 }
 
+export type StakeSliceRootState = {
+    wallet: {
+        stake: StakeState;
+    };
+};
+
 export type StakeRootState = AccountsRootState &
     TransactionsRootState &
-    DeviceRootState & {
-        wallet: {
-            stake: StakeState;
-        };
-    };
+    DeviceRootState &
+    StakeSliceRootState;
