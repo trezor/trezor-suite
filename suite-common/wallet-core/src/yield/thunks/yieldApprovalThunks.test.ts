@@ -132,8 +132,8 @@ describe('initYieldAllowanceThunk', () => {
             expect(analytics.report).toHaveBeenCalledWith({
                 type: 'yield/deposit',
                 payload: {
-                    type: 'approve-skipped',
-                    action: 'continue',
+                    type: 'approve',
+                    action: 'skip',
                     networkSymbol: 'eth',
                     vaultId: flowData.vault.id,
                 },

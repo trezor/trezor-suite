@@ -8,6 +8,7 @@ import { Button, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { InfoIcon } from '@trezor/icons';
 
+import { useEarnDeviceStatus } from 'src/hooks/earn/useEarnDeviceStatus';
 import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
@@ -19,6 +20,7 @@ import {
 } from '../utils/voteUtils';
 
 export const TronVoteSubmitButton = () => {
+    const deviceStatus = useEarnDeviceStatus();
     const { device, isLocked } = useDevice();
     const { analytics } = useServices(injectDesktopAnalytics);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
@@ -61,16 +63,11 @@ export const TronVoteSubmitButton = () => {
             return;
         }
 
-        submitAction();
-
-        if (!device?.connected || !device?.available) {
-            return;
-        }
-
         analytics.report({
             type: events.stakingUpdateProviderEvent.name,
             payload: {
                 action: 'continue',
+                deviceStatus,
                 step: 'stake-form-modal',
                 networkSymbol: account.symbol,
                 votingDelegation: getVotingDelegationAnalyticsValue(
@@ -79,6 +76,8 @@ export const TronVoteSubmitButton = () => {
                 ),
             },
         });
+
+        submitAction();
     };
 
     return (

@@ -34,6 +34,7 @@ import { BigNumber } from '@trezor/utils';
 
 import { EarnAmountCard } from '../../components/earn/EarnAmountCard';
 import { useComposeEarnFees } from '../../hooks/earn/useComposeEarnFees';
+import { useEarnDeviceStatus } from '../../hooks/earn/useEarnDeviceStatus';
 import { useNavigateBackAnalytics } from '../../hooks/earn/useNavigateBackAnalytics';
 import { useSolanaStakingLimit } from '../../hooks/staking/useSolanaStakingLimit';
 import { buildEarnComposeFormState } from '../../utils/earn/utils';
@@ -94,6 +95,7 @@ export const StakingClaimReviewScreen = () => {
         useSolanaStakingLimit({ accountKey, type: 'claim', amount: claimableAmount });
 
     const { analytics } = useServices(injectNativeAnalytics);
+    const deviceStatus = useEarnDeviceStatus();
     const registerNavigateBackAnalytics = useNavigateBackAnalytics({
         type: events.stakingClaimEvent.name,
         payload: {
@@ -110,6 +112,7 @@ export const StakingClaimReviewScreen = () => {
             type: events.stakingClaimEvent.name,
             payload: {
                 action: 'continue',
+                deviceStatus,
                 step: 'claim-form-modal',
                 networkSymbol: symbol,
             },

@@ -146,6 +146,13 @@ export const useYieldTableData = ({
     visibleAccountSymbols,
 }: UseYieldTableDataProps) => {
     const allNetworkSymbols = useSelector(selectSupportedNetworkSymbols);
+    const availableVaultCount = useMemo(
+        () =>
+            availableVaults.filter(
+                vault => getNetworkByYieldXyzId(vault.network) && vault.token.address,
+            ).length,
+        [availableVaults],
+    );
 
     const yieldAccountOpportunities = useMemo<YieldAccountOpportunity[]>(() => {
         const allOpportunities = availableVaults.flatMap(vault => {
@@ -262,6 +269,7 @@ export const useYieldTableData = ({
     );
 
     return {
+        availableVaultCount,
         isYieldActive,
         hasAnyRewardsData,
         yieldAccountOpportunities,

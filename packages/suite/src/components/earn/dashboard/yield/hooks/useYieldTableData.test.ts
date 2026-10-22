@@ -191,6 +191,34 @@ describe(getYieldOpportunityData.name, () => {
 });
 
 describe(useYieldTableData.name, () => {
+    it('counts only catalog vaults with a mapped network and an underlying token address', () => {
+        const { services } = createTestCompositionRoot<void, AppState>({
+            preloadedState: {
+                device: { selectedDevice: undefined },
+                networks: mockNetworksState([ethSymbol]),
+            },
+        });
+        const { result } = renderHookWithStoreProvider(
+            () =>
+                useYieldTableData({
+                    availableVaults: [
+                        wethVault,
+                        { ...wethVault, id: 'unknown-network', network: 'gnosis' },
+                        {
+                            ...wethVault,
+                            id: 'missing-address',
+                            token: { ...wethVault.token, address: '' },
+                        },
+                    ],
+                    visibleAccounts: [],
+                    visibleAccountSymbols: new Set<NetworkSymbol>(),
+                }),
+            { services },
+        );
+
+        expect(result.current.availableVaultCount).toBe(1);
+    });
+
     it('classifies a native-only account as depositable, ahead of empty accounts', () => {
         const emptyAccount = mockWalletAccount({
             symbol: ethSymbol,

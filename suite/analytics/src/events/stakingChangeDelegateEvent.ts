@@ -1,10 +1,16 @@
-import type { AttributeDef, EventDef } from '@suite-common/analytics';
+import {
+    type AttributeDef,
+    type EarnDeviceStatus,
+    type EventDef,
+    deviceStatusAttribute,
+} from '@suite-common/analytics';
 import type { EarnAnalyticsStep, EarnModalAction } from '@suite-common/suite-types';
 
 import { EventType } from '../constants';
 
 type Attributes = {
     action: AttributeDef<EarnModalAction>;
+    deviceStatus?: AttributeDef<EarnDeviceStatus>;
     step: AttributeDef<
         Extract<EarnAnalyticsStep, 'staking-dashboard' | 'change-delegate-form-modal'>
     >;
@@ -19,6 +25,7 @@ export const stakingChangeDelegateEvent: EventDef<Attributes, EventType.StakingC
     changelog: [{ version: '25.4.0', notes: 'added' }],
 
     attributes: {
+        deviceStatus: deviceStatusAttribute,
         action: {
             changelog: [
                 { version: '25.4.0', notes: 'added' },

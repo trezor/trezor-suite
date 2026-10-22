@@ -1,15 +1,16 @@
 import type { EarnModalAction } from '@suite-common/suite-types';
 
 import { EventType } from '../constants';
+import { type EarnDeviceStatus, deviceStatusAttribute } from '../earnAttributes';
 import type { AttributeDef, EventDef } from '../eventDefinition';
 
 type Attributes = {
-    action: AttributeDef<EarnModalAction>;
+    action: AttributeDef<EarnModalAction | 'skip'>;
+    deviceStatus?: AttributeDef<EarnDeviceStatus>;
     type: AttributeDef<
         | 'approve'
         | 'approve-modal'
         | 'approve-success'
-        | 'approve-skipped'
         | 'revoke'
         | 'revoke-modal'
         | 'revoke-success'
@@ -43,17 +44,22 @@ export const yieldDepositEvent: EventDef<Attributes, EventType.YieldDeposit> = {
         { version: '26.9.0', notes: 'added pre-broadcast wrap-step failures' },
         {
             version: '26.11.0',
-            notes: 'Reusing an existing allowance reports approve-skipped/continue, including automatic skips on desktop and mobile; explicit desktop skips no longer report approve/cancel.',
+            notes: 'Reusing an existing allowance reports approve/skip on desktop and mobile; explicit desktop skips no longer report approve/cancel. Mobile simulation cancellation includes backdrop and gesture dismissal exactly once and excludes dismissal after Continue.',
         },
     ],
 
     attributes: {
+        deviceStatus: deviceStatusAttribute,
         action: {
-            changelog: [{ version: '26.5.0', notes: 'added' }],
+            description:
+                '`skip` means the approval step is skipped to reuse an existing allowance without submitting an approval transaction.',
+            changelog: [
+                { version: '26.5.0', notes: 'added' },
+                { version: '26.11.0', notes: 'added `skip` for the approval step' },
+            ],
         },
         type: {
-            description:
-                '`approve-skipped` = user skipped the approval step to continue with the allowance already granted — distinct from `type=approve` `action=cancel` (cancelled before submitting the allowance transaction) and `type=approve-modal` `action=cancel` (declined the allowance simulation modal)',
+            description: 'Which step of the deposit flow the event refers to.',
             changelog: [
                 { version: '26.5.0', notes: 'added' },
                 {
@@ -61,7 +67,6 @@ export const yieldDepositEvent: EventDef<Attributes, EventType.YieldDeposit> = {
                     notes: 'added `approve-success`, `revoke-success`, `leftPending`, `tx-simulation-modal`, `firmware-upgrade-needed-modal` values',
                 },
                 { version: '26.8.0', notes: 'added `wrap` and `wrap-success` values' },
-                { version: '26.8.1', notes: 'added `approve-skipped` value (mobile)' },
             ],
         },
         networkSymbol: {
@@ -83,10 +88,14 @@ export const yieldDepositEvent: EventDef<Attributes, EventType.YieldDeposit> = {
         },
         errorMessage: {
             description:
-                'Values prefixed with `wrap-` are failures of the wrap step of a wrapped-native deposit, all of them before the wrap transaction is broadcast: `wrap-submit-failed` (signing failed, or the user rejected the transaction on the device or in the review modal), `wrap-push-failed` (signed but the broadcast failed), and `wrap-<compose reason>` (e.g. `wrap-fee-estimation-failed`) when the transaction could not be composed. A wrap that fails on chain instead reports `on-chain-failure`, as does the deposit transaction itself.',
+                'Classified deposit compose failures (e.g. `fee-estimation-failed`, `missing-deposit-params`, `vault-chain-mismatch`) use the same unprefixed reason on mobile and desktop. Values prefixed with `wrap-` are failures of the wrap step of a wrapped-native deposit, all of them before the wrap transaction is broadcast: `wrap-submit-failed` (unexpected failure), `wrap-push-failed` (signed but the broadcast failed), and `wrap-<compose reason>` (e.g. `wrap-fee-estimation-failed`) when the transaction could not be composed. Intentional user cancellations use `transaction/cancel` instead of errors. A wrap that fails on chain instead reports `on-chain-failure`, as does the deposit transaction itself.',
             changelog: [
                 { version: '26.5.0', notes: 'added' },
                 { version: '26.9.0', notes: 'added `wrap-` prefixed values' },
+                {
+                    version: '26.11.0',
+                    notes: 'Mobile reports wrap signing and broadcast failures in the parent deposit event. Intentional wrap cancellations on both platforms use transaction/cancel instead of errors.',
+                },
                 {
                     version: '26.9.0',
                     notes: 'desktop no longer reports user cancellations of the deposit transaction (device button, PIN entry, review modal) as `submit-failed`',

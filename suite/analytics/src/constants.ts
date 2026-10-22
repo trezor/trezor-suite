@@ -9,7 +9,6 @@ export enum EventType {
     AccountsTransactionsExport = 'accounts/transactions-export',
     // eslint-disable-next-line local-rules/analytics-event-name
     AddToken = 'add-token',
-    AppFormPercentButtons = 'app/form-percent-buttons',
     // eslint-disable-next-line local-rules/analytics-event-name
     AppUpdate = 'app-update',
     AppUriHandler = 'app/uri-handler',
@@ -109,12 +108,7 @@ export enum EventType {
     SettingsTorOnionLinks = 'settings/tor/onion-links',
     StakingCardanoPoolDelegation = 'staking/cardano-pool-delegation',
     StakingChangeDelegate = 'staking/change-delegate',
-    StakingClaim = 'staking/claim',
-    StakingNavigate = 'staking/navigate',
-    StakingStake = 'staking/stake',
-    StakingUnstake = 'staking/unstake',
     StakingUpdateProvider = 'staking/update-provider',
-    YieldEarnEntry = 'yield/earn-entry',
     // eslint-disable-next-line local-rules/analytics-event-name
     SuiteReady = 'suite-ready',
     // eslint-disable-next-line local-rules/analytics-event-name

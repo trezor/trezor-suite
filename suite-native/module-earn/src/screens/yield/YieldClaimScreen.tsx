@@ -37,6 +37,7 @@ import { YieldDisabledAlert } from '../../components/yield/YieldDisabledAlert';
 import { YieldFeeSection } from '../../components/yield/YieldFeeSection';
 import { YieldPendingTransactionModal } from '../../components/yield/YieldPendingTransactionModal';
 import { YieldTxSimulationBottomSheet } from '../../components/yield/YieldTxSimulationBottomSheet';
+import { useEarnDeviceStatus } from '../../hooks/earn/useEarnDeviceStatus';
 import { useNavigateBackAnalytics } from '../../hooks/earn/useNavigateBackAnalytics';
 import { useMessageSystemYield } from '../../hooks/yield/useMessageSystemYield';
 import { useShowYieldTransactionFailureAlert } from '../../hooks/yield/useShowYieldTransactionFailureAlert';
@@ -180,6 +181,8 @@ export const YieldClaimScreen = () => {
         }
     }, [isSheetPresented, navigation, route.params, session?.step]);
 
+    const deviceStatus = useEarnDeviceStatus();
+
     const reportClaimEvent = useCallback(
         (payload: { action: 'continue' | 'cancel'; type: 'claim' | 'tx-simulation-modal' }) => {
             analytics.report({
@@ -188,10 +191,13 @@ export const YieldClaimScreen = () => {
                     ...payload,
                     networkSymbol: account?.symbol,
                     rewardCount: accountRewards?.rewards.length,
+                    ...(payload.action === 'continue' && payload.type === 'claim'
+                        ? { deviceStatus }
+                        : {}),
                 },
             });
         },
-        [account?.symbol, accountRewards?.rewards.length, analytics],
+        [account?.symbol, accountRewards?.rewards.length, analytics, deviceStatus],
     );
 
     const handleContinue = useCallback(() => {

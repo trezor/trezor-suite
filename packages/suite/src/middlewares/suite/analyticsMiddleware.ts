@@ -249,13 +249,13 @@ export const prepareAnalyticsMiddleware = createAnalyticsMiddleware(
                         anchor: redactAnchor(action.payload.anchor),
                     },
                 });
+            }
 
-                if (selectRouteName(state) === 'suite-earn' && prevRouteName !== 'suite-earn') {
-                    analytics.report({
-                        type: events.yieldEarnEntryEvent.name,
-                        payload: { from: prevRouteName ?? 'unknown' },
-                    });
-                }
+            if (selectRouteName(state) === 'suite-earn' && prevRouteName !== 'suite-earn') {
+                analytics.report({
+                    type: events.yieldEarnEntryEvent.name,
+                    payload: { from: prevRouteName ?? 'unknown' },
+                });
             }
         } else if (anchorChange.match(action)) {
             if (action.payload) {

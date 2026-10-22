@@ -47,12 +47,7 @@ export enum EventType {
     DeviceSetupSecurityCheck = 'device_setup/security_check',
     // eslint-disable-next-line local-rules/analytics-event-name
     DeviceSetupStarted = 'device_setup/started',
-    // eslint-disable-next-line local-rules/analytics-event-name
-    EarnNavigate = 'earn/navigate',
-    // eslint-disable-next-line local-rules/analytics-event-name
-    EarnStakeTilePressed = 'earn/stake-tile-pressed',
-    // eslint-disable-next-line local-rules/analytics-event-name
-    EarnStablecoinYieldTilePressed = 'earn/stablecoin-yield-tile-pressed',
+
     // eslint-disable-next-line local-rules/analytics-event-name
     EjectDeviceClick = 'eject_device/click',
     // eslint-disable-next-line local-rules/analytics-event-name
@@ -132,10 +127,6 @@ export enum EventType {
     SettingsToggleExperimentalFeature = 'settings/experimental-feature',
     // eslint-disable-next-line local-rules/analytics-event-name
     SettingsDiscreetToggle = 'settings/discreet_toggle',
-    StakingClaim = 'staking/claim',
-    StakingNavigate = 'staking/navigate',
-    StakingStake = 'staking/stake',
-    StakingUnstake = 'staking/unstake',
     // eslint-disable-next-line local-rules/analytics-event-name
     Switcher = 'switcher',
     TradingBuy = 'trading/buy',

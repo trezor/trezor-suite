@@ -293,8 +293,8 @@ export const initYieldAllowanceThunk = createThunk<
                         extra.services.analytics.report({
                             type: events.yieldDepositEvent.name,
                             payload: {
-                                type: 'approve-skipped',
-                                action: 'continue',
+                                type: 'approve',
+                                action: 'skip',
                                 networkSymbol: flowData.account.symbol,
                                 vaultId: flowData.vault.id,
                             },

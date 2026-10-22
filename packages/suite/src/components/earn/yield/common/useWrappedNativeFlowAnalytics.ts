@@ -6,6 +6,8 @@ import { type EvmPendingTxStatus, type WrappedNativeFlowType } from '@suite-comm
 import { useServices } from '@trezor/dependency-injection';
 import { useCurrentRef } from '@trezor/react-utils';
 
+import { useEarnDeviceStatus } from 'src/hooks/earn/useEarnDeviceStatus';
+
 // Wrap and unwrap share one attribute schema, so one payload type serves both events.
 type WrappedNativeFlowPayload = EventInstance<typeof events.yieldWrapEvent>['payload'];
 
@@ -28,6 +30,7 @@ export const useWrappedNativeFlowAnalytics = ({
     networkSymbol,
 }: UseWrappedNativeFlowAnalyticsParams) => {
     const { analytics } = useServices(injectDesktopAnalytics);
+    const deviceStatus = useEarnDeviceStatus();
     const hasReportedResolutionRef = useRef(false);
     const startRef = useRef<{ txid: string; startedAt: number } | null>(null);
 
@@ -43,8 +46,8 @@ export const useWrappedNativeFlowAnalytics = ({
     );
 
     const reportSubmit = useCallback(() => {
-        report({ type: 'submit', action: 'continue', networkSymbol });
-    }, [report, networkSymbol]);
+        report({ type: 'submit', action: 'continue', networkSymbol, deviceStatus });
+    }, [report, networkSymbol, deviceStatus]);
 
     // No `vaultId` — that is what separates these from the in-flow deposit-max / withdraw-max.
     const reportMaxClick = useCallback(() => {

@@ -1,4 +1,13 @@
 export {
+    appFormPercentButtonsEvent,
+    stakingClaimEvent,
+    stakingNavigateEvent,
+    stakingStakeEvent,
+    stakingUnstakeEvent,
+    yieldEarnEntryEvent,
+} from '@suite-common/analytics';
+
+export {
     promoDashboardBannerEvent,
     transactionCancelEvent,
     transactionCreatedEvent,
@@ -12,7 +21,6 @@ export { accountsStatusEvent } from './accountsStatusEvent';
 export { accountsTokensStatusEvent } from './accountsTokensStatusEvent';
 export { accountsTransactionsExportEvent } from './accountsTransactionsExportEvent';
 export { addTokenEvent } from './addTokenEvent';
-export { appFormPercentButtonsEvent } from './appFormPercentButtonsEvent';
 export { appNewContentBadgeEvent } from './appNewContentBadgeEvent';
 export { appUpdateEvent } from './appUpdateEvent';
 export { appUriHandlerEvent } from './appUriHandlerEvent';
@@ -93,10 +101,6 @@ export { settingsTorEvent } from './settingsTorEvent';
 export { settingsTorOnionLinksEvent } from './settingsTorOnionLinksEvent';
 export { stakingCardanoPoolDelegationEvent } from './stakingCardanoPoolDelegationEvent';
 export { stakingChangeDelegateEvent } from './stakingChangeDelegateEvent';
-export { stakingClaimEvent } from './stakingClaimEvent';
-export { stakingNavigateEvent } from './stakingNavigateEvent';
-export { stakingStakeEvent } from './stakingStakeEvent';
-export { stakingUnstakeEvent } from './stakingUnstakeEvent';
 export { stakingUpdateProviderEvent } from './stakingUpdateProviderEvent';
 export { suiteReadyEvent } from './suiteReadyEvent';
 export { switchDeviceEjectEvent } from './switchDeviceEjectEvent';
@@ -113,4 +117,3 @@ export { tradeStatusEvent } from './tradeStatusEvent';
 export { tradingExchangeIssueEvent } from './tradingExchangeIssueEvent';
 export { transactionTimeoutRetryEvent } from './transactionTimeoutRetryEvent';
 export { transportTypeEvent } from './transportTypeEvent';
-export { yieldEarnEntryEvent } from './yieldEarnEntryEvent';

@@ -14,6 +14,7 @@ import { InfoIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { earnFlowToEventTypeMap } from 'src/constants/suite/staking';
+import { useEarnDeviceStatus } from 'src/hooks/earn/useEarnDeviceStatus';
 import { useStakeFormContext } from 'src/hooks/earn/useStakeForm';
 import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
@@ -29,6 +30,7 @@ export const StakeButton = ({ flow }: StakeButtonProps) => {
     // `useWatch` or out of render.
     'use no memo';
 
+    const deviceStatus = useEarnDeviceStatus();
     const { device, isLocked } = useDevice();
     const {
         account,
@@ -75,6 +77,20 @@ export const StakeButton = ({ flow }: StakeButtonProps) => {
         !isFormInputsValid || isSubmitting || isSigning || (isDeviceConnected && isLocked());
 
     const onStakeClick = () => {
+        analytics.report({
+            type: earnFlowToEventTypeMap[flow],
+            payload: {
+                action: 'continue',
+                deviceStatus,
+                step: 'stake-form-modal',
+                currency,
+                networkSymbol: account.symbol,
+                ...(flow === EarnFlow.UpdateProvider && isCardano
+                    ? { votingDelegation: selectedVotingDelegation.type }
+                    : {}),
+            },
+        });
+
         if (!isDeviceConnected) {
             if (device?.descriptor?.apiType === 'bluetooth') {
                 dispatch(setConnectionMode('bluetooth'));
@@ -90,19 +106,6 @@ export const StakeButton = ({ flow }: StakeButtonProps) => {
         } else {
             handleSubmit(onSubmit)();
         }
-
-        analytics.report({
-            type: earnFlowToEventTypeMap[flow],
-            payload: {
-                action: 'continue',
-                step: 'stake-form-modal',
-                currency,
-                networkSymbol: account.symbol,
-                ...(flow === EarnFlow.UpdateProvider && isCardano
-                    ? { votingDelegation: selectedVotingDelegation.type }
-                    : {}),
-            },
-        });
     };
 
     const isLoading =

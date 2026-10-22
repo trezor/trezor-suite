@@ -55,6 +55,7 @@ export function useMerklRewards(accounts: YieldRewardsAccounts) {
     const totalRewardsToClaim = useTotalClaimableRewardsAmountOfAccounts(accountsRewards);
 
     return {
+        isRewardsReady: merklRewardsQueryEntries.length === 0 || merklRewardsQuery.isSuccess,
         merklRewardsQuery: {
             ...merklRewardsQuery,
             data: {

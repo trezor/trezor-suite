@@ -7,12 +7,14 @@ import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { Button, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 
+import { useEarnDeviceStatus } from 'src/hooks/earn/useEarnDeviceStatus';
 import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 import { useTronStakeContext } from '../TronStakeContext';
 
 export const TronFreezeSubmitButton = () => {
+    const deviceStatus = useEarnDeviceStatus();
     const { device, isLocked } = useDevice();
     const { analytics } = useServices(injectDesktopAnalytics);
     const isDiscoveryRunning = useSelector(selectHasRunningDiscovery);
@@ -29,22 +31,19 @@ export const TronFreezeSubmitButton = () => {
             return;
         }
 
-        submitAction();
-
-        if (!device?.connected || !device?.available) {
-            return;
-        }
-
         analytics.report({
             type: events.stakingStakeEvent.name,
             payload: {
                 action: 'continue',
+                deviceStatus,
                 step: 'stake-form-modal',
                 networkSymbol: account.symbol,
                 currency: amountInput.currency,
                 resource: form.methods.getValues().resourceType,
             },
         });
+
+        submitAction();
     };
 
     return (

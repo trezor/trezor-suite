@@ -1,4 +1,5 @@
 export { accountsInfoEvent } from './accountsInfoEvent';
+export { appFormPercentButtonsEvent } from './appFormPercentButtonsEvent';
 export { coinSignMessageEvent } from './coinSignMessageEvent';
 export { coinVerifyMessageEvent } from './coinVerifyMessageEvent';
 export { connectPopupCallEvent } from './connectPopupCallEvent';
@@ -34,6 +35,10 @@ export { settingsGeneralLabelingEvent } from './settingsGeneralLabelingEvent';
 export { settingsNetworkSearchUsedEvent } from './settingsNetworkSearchUsedEvent';
 export { settingsNetworksExplorerEvent } from './settingsNetworksExplorerEvent';
 export { settingsTestnetNetworksToggleEvent } from './settingsTestnetNetworksToggleEvent';
+export { stakingClaimEvent } from './stakingClaimEvent';
+export { stakingNavigateEvent } from './stakingNavigateEvent';
+export { stakingStakeEvent } from './stakingStakeEvent';
+export { stakingUnstakeEvent } from './stakingUnstakeEvent';
 export { suiteSyncLabelCreatedEvent } from './suiteSyncLabelCreatedEvent';
 export {
     transactionCreatedEvent,
@@ -48,7 +53,9 @@ export { walletConnectProposalRejectedEvent } from './walletConnectProposalRejec
 export { walletConnectSessionRequestEvent } from './walletConnectSessionRequestEvent';
 export { yieldClaimEvent } from './yieldClaimEvent';
 export { yieldDepositEvent } from './yieldDepositEvent';
-export { yieldEarnDashboardReadyEvent } from './yieldEarnDashboardReadyEvent';
+export { earnDashboardReadyEvent } from './earnDashboardReadyEvent';
+export { earnTilePressedEvent } from './earnTilePressedEvent';
+export { yieldEarnEntryEvent } from './yieldEarnEntryEvent';
 export { yieldInteractionEvent } from './yieldInteractionEvent';
 export { yieldNavigateEvent } from './yieldNavigateEvent';
 export { yieldUnwrapEvent } from './yieldUnwrapEvent';

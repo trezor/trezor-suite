@@ -1,6 +1,5 @@
-import type { AttributeDef, EventDef } from '@suite-common/analytics';
-
 import { EventType } from '../constants';
+import type { AttributeDef, EventDef } from '../eventDefinition';
 
 type Attributes = {
     type: AttributeDef<'staking' | 'sell' | 'swap' | 'send'>;
@@ -11,7 +10,13 @@ export const appFormPercentButtonsEvent: EventDef<Attributes, EventType.AppFormP
     name: EventType.AppFormPercentButtons,
     descriptionTrigger:
         'Fired when user clicks 10%, 25%, 50% or MAX in staking/sell/swap/send form',
-    changelog: [{ version: '26.2.0', notes: 'added' }],
+    changelog: [
+        { version: '26.2.0', notes: 'added' },
+        {
+            version: '26.11.0',
+            notes: 'Shared definition; mobile reports the staking max selection.',
+        },
+    ],
 
     attributes: {
         type: {

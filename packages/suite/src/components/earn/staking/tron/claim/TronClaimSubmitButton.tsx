@@ -11,6 +11,7 @@ import { Button, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { BigNumber } from '@trezor/utils';
 
+import { useEarnDeviceStatus } from 'src/hooks/earn/useEarnDeviceStatus';
 import { useSelector } from 'src/hooks/suite';
 import { useFirmwareUpgradeModal } from 'src/hooks/suite/useFirmwareUpgradeModal';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
@@ -18,6 +19,7 @@ import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking
 import { useTronStakeContext } from '../TronStakeContext';
 
 export const TronClaimSubmitButton = () => {
+    const deviceStatus = useEarnDeviceStatus();
     const { device, isLocked } = useDevice();
     const { analytics } = useServices(injectDesktopAnalytics);
     const { translationString } = useTranslation();
@@ -48,20 +50,17 @@ export const TronClaimSubmitButton = () => {
             return;
         }
 
-        submitAction();
-
-        if (!device?.connected || !device?.available) {
-            return;
-        }
-
         analytics.report({
             type: events.stakingClaimEvent.name,
             payload: {
                 action: 'continue',
+                deviceStatus,
                 step: 'claim-form-modal',
                 networkSymbol: account.symbol,
             },
         });
+
+        submitAction();
     };
 
     return (

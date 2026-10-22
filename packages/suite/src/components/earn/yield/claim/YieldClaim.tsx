@@ -23,6 +23,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { claimMerklRewardsThunk } from 'src/actions/wallet/stablecoin-yield';
+import { useEarnDeviceStatus } from 'src/hooks/earn/useEarnDeviceStatus';
 import { useSelector } from 'src/hooks/suite';
 import { useFirmwareUpgradeModal } from 'src/hooks/suite/useFirmwareUpgradeModal';
 import { useMessageSystemYield } from 'src/hooks/suite/useMessageSystemYield';
@@ -42,6 +43,7 @@ type YieldClaimProps = {
 };
 
 export const YieldClaim = ({ account }: YieldClaimProps) => {
+    const deviceStatus = useEarnDeviceStatus();
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const { device } = useDevice();
     const { translationString } = useTranslation();
@@ -95,6 +97,19 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
             return;
         }
 
+        const { account, rewards } = accountRewards;
+
+        analytics.report({
+            type: events.yieldClaimEvent.name,
+            payload: {
+                action: 'continue',
+                deviceStatus,
+                type: 'claim',
+                networkSymbol: account.symbol,
+                rewardCount: rewards.length,
+            },
+        });
+
         if (!isDeviceConnected) {
             if (device?.descriptor?.apiType === 'bluetooth') {
                 dispatch(setConnectionMode('bluetooth'));
@@ -103,18 +118,6 @@ export const YieldClaim = ({ account }: YieldClaimProps) => {
 
             return;
         }
-
-        const { account, rewards } = accountRewards;
-
-        analytics.report({
-            type: events.yieldClaimEvent.name,
-            payload: {
-                action: 'continue',
-                type: 'claim',
-                networkSymbol: account.symbol,
-                rewardCount: rewards.length,
-            },
-        });
 
         const isSessionReady = await ensureDeviceSession();
 
