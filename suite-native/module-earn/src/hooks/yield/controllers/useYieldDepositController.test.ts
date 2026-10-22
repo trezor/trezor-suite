@@ -6,6 +6,7 @@ import { mockResolvedYieldFlowData, mockYieldSessionState } from '@suite-common/
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
+import { deviceAuthorizationReducer } from '@suite-native/device-authorization';
 import {
     act,
     createLightStore,
@@ -96,6 +97,8 @@ const renderDepositController = () => {
     const services: NativeAnalyticsDep = { analytics: mockNativeAnalytics(jest.fn()) };
     const store = createLightStore({
         reducer: {
+            deviceAuthorization: deviceAuthorizationReducer,
+            device: createStaticReducer({ selectedDevice: { connected: true } }),
             locale: createStaticReducer({
                 appLocaleCode: 'en-US',
                 systemLocaleCode: 'en-US',
@@ -116,6 +119,25 @@ const renderDepositController = () => {
 };
 
 describe('useYieldDepositController', () => {
+    it('reports the same classified deposit compose failure as desktop', async () => {
+        const { services } = await renderDepositController();
+
+        await act(() =>
+            useYieldDepositFeesMock.mock.calls.at(-1)?.[0].onComposeError?.('vault-chain-mismatch'),
+        );
+
+        expect(services.analytics.report).toHaveBeenCalledWith({
+            type: 'yield/deposit',
+            payload: {
+                type: 'error',
+                action: 'continue',
+                networkSymbol: resolvedYieldFlowData.account.symbol,
+                vaultId: resolvedYieldFlowData.vault.id,
+                errorMessage: 'vault-chain-mismatch',
+            },
+        });
+    });
+
     beforeEach(() => {
         jest.clearAllMocks();
         useYieldFlowScreenBaseMock.mockReturnValue(buildScreenBase());

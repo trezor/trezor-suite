@@ -28,6 +28,7 @@ import { useDebounce } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 import { deepEqual } from '@trezor/utils';
 
+import { useComposeErrorHandler } from './useComposeErrorHandler';
 import {
     type YieldDepositFeeToken,
     buildYieldDepositFeeDraftState,
@@ -41,8 +42,10 @@ export type ComposedTxBase = {
     unsignedTransaction: string;
 };
 
-export type ComposeTxResult<TComposed extends ComposedTxBase> =
-    { type: 'ready'; transaction: TComposed } | { type: 'error' };
+export type ComposeTxResult<TComposed extends ComposedTxBase, TReason extends string = never> =
+    | { type: 'ready'; transaction: TComposed }
+    | { type: 'error'; reason?: TReason }
+    | { type: 'not-ready' };
 
 export type PreparedTx<TComposed extends ComposedTxBase> = {
     amount: string;
@@ -58,14 +61,16 @@ type BaseActionContext<TComposed extends ComposedTxBase> = {
     transaction: TComposed;
 };
 
-type UsePreparedTxFeesParams<TComposed extends ComposedTxBase> = {
+type UsePreparedTxFeesParams<TComposed extends ComposedTxBase, TReason extends string> = {
     amount: string | undefined;
     /**
      * Composes the base transaction for the debounced amount. Must not throw — map failures to
      * the `error` result. Every error is surfaced as a retryable alert; a failure that only
      * disables the submit button leaves the user with no way to proceed.
      */
-    composeTransaction: (amount: string) => Promise<ComposeTxResult<TComposed>>;
+    composeTransaction: (amount: string) => Promise<ComposeTxResult<TComposed, TReason>>;
+    onComposeError?: (reason: TReason) => void;
+    fallbackReason: TReason;
     /** Empty string marks a missing draft context; the store is then only cleared, never written. */
     formDraftKey: string;
     /** True when required inputs are missing — composing stops and stored drafts are cleared. */
@@ -88,17 +93,27 @@ const getFeeInfoRevision = (feeInfo: FeeInfo | null | undefined) =>
  * stores them so the shared `<FeeSelector>` can render and change them. The flow-specific part
  * (which thunk composes the transaction and what it carries) is injected via `composeTransaction`.
  */
-export const usePreparedTxFees = <TComposed extends ComposedTxBase>({
+export const usePreparedTxFees = <
+    TComposed extends ComposedTxBase,
+    TReason extends string = never,
+>({
     amount,
     composeTransaction,
     formDraftKey,
     hasInvalidContext,
     isEnabled,
     symbol,
-}: UsePreparedTxFeesParams<TComposed>) => {
+    onComposeError,
+    fallbackReason,
+}: UsePreparedTxFeesParams<TComposed, TReason>) => {
     const { dispatch } = useServices(injectDispatch);
     const debounce = useDebounce();
     const requestIdRef = useRef(0);
+    const { reportError: reportComposeError, resetError: resetComposeError } =
+        useComposeErrorHandler({
+            contextKey: formDraftKey,
+            onError: onComposeError,
+        });
     const [baseActionContext, setBaseActionContext] = useState<BaseActionContext<TComposed> | null>(
         null,
     );
@@ -149,9 +164,14 @@ export const usePreparedTxFees = <TComposed extends ComposedTxBase>({
 
     const canCompose = isEnabled && !hasInvalidContext;
 
+    const handleRetryFeeEstimation = useCallback(() => {
+        resetComposeError();
+        retryFeeEstimation();
+    }, [resetComposeError, retryFeeEstimation]);
+
     const prepareBaseAction = useCallback(
         async (composeAmount: string, requestId: number) => {
-            let result: ComposeTxResult<TComposed>;
+            let result: ComposeTxResult<TComposed, TReason>;
 
             try {
                 result = await composeTransaction(composeAmount);
@@ -163,7 +183,15 @@ export const usePreparedTxFees = <TComposed extends ComposedTxBase>({
                 return;
             }
 
-            if (result.type !== 'ready') {
+            if (result.type === 'not-ready') {
+                setHasFeeEstimationError(true);
+                clearFeeState();
+
+                return;
+            }
+
+            if (result.type === 'error') {
+                reportComposeError(result.reason ?? fallbackReason);
                 setHasFeeEstimationError(true);
                 clearFeeState();
 
@@ -176,12 +204,14 @@ export const usePreparedTxFees = <TComposed extends ComposedTxBase>({
 
             // A transaction that composed but cannot be priced is a failure, not a pending state.
             if (!baseFeePreview) {
+                reportComposeError(fallbackReason);
                 setHasFeeEstimationError(true);
                 clearFeeState();
 
                 return;
             }
 
+            resetComposeError();
             setBaseActionContext({
                 amount: composeAmount,
                 baseFeePreview,
@@ -189,7 +219,14 @@ export const usePreparedTxFees = <TComposed extends ComposedTxBase>({
             });
             setIsPreparingFee(false);
         },
-        [clearFeeState, composeTransaction, setHasFeeEstimationError],
+        [
+            clearFeeState,
+            composeTransaction,
+            fallbackReason,
+            reportComposeError,
+            resetComposeError,
+            setHasFeeEstimationError,
+        ],
     );
 
     const feeDraftState = useMemo(() => {
@@ -341,7 +378,7 @@ export const usePreparedTxFees = <TComposed extends ComposedTxBase>({
         isFeeReady,
         isFeeUnavailable,
         preparedTx,
-        retryFeeEstimation,
+        retryFeeEstimation: handleRetryFeeEstimation,
         selectedFee,
     };
 };

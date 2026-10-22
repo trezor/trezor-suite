@@ -4,6 +4,7 @@ import { type RouteProp, useIsFocused, useNavigation, useRoute } from '@react-na
 
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
+    type ComposeYieldWrapErrorReason,
     getWrapReserveStatus,
     getWrappableNativeBalance,
     getYieldNativeFeeStatus,
@@ -84,6 +85,16 @@ export const useYieldDepositWrapController = () => {
         [reportDeposit],
     );
 
+    const handleComposeError = useCallback(
+        (reason: ComposeYieldWrapErrorReason) =>
+            reportDeposit({
+                action: 'continue',
+                type: 'error',
+                errorMessage: `wrap-${reason}`,
+            }),
+        [reportDeposit],
+    );
+
     const handleNavigateToReview = useCallback(() => {
         navigation.navigate(YieldStackRoutes.YieldDepositWrapReview, route.params);
     }, [navigation, route.params]);
@@ -99,6 +110,7 @@ export const useYieldDepositWrapController = () => {
         onNavigateToReview: handleNavigateToReview,
         onSkipAnalytics: handleSkipAnalytics,
         onSubmitAnalytics: handleSubmitAnalytics,
+        onComposeError: handleComposeError,
         step: 'wrap',
         tokenSymbol: nativeSymbol,
         vault,
@@ -205,8 +217,14 @@ export const useYieldDepositWrapController = () => {
             ? {
                   bottomSheetRef: simulation.simulationBottomSheetRef,
                   unsignedTransaction: simulation.preparedTx.unsignedTransaction,
-                  onConfirm: simulation.handleConfirmSimulation,
-                  onCancel: simulation.handleCancelSimulation,
+                  onConfirm: () => {
+                      reportDeposit({ action: 'continue', type: 'tx-simulation-modal' });
+                      simulation.handleConfirmSimulation();
+                  },
+                  onCancel: () => {
+                      reportDeposit({ action: 'cancel', type: 'tx-simulation-modal' });
+                      simulation.handleCancelSimulation();
+                  },
               }
             : null,
     };
