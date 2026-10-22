@@ -23,6 +23,7 @@ export class ToastSection {
     readonly wrappedReceiveAmount: Locator;
     readonly txSentViewDetailsButton: Locator;
     readonly txDetailsConfirmed: Locator;
+    readonly accountsDiscovered: Locator;
     readonly toast = (preset: ActivityPreset): Locator => this.page.getByTestId(`@toast/${preset}`);
     readonly toastCloseButton = (preset: ToastActivityPreset): Locator =>
         this.page.getByTestId(`@toast/${preset}/close`);
@@ -40,6 +41,7 @@ export class ToastSection {
         this.wrappedReceiveAmount = this.page.getByTestId('@toast/tx-wrap/receive-amount');
         this.txSentViewDetailsButton = this.page.getByTestId('@toast/tx-sent/view-details');
         this.txDetailsConfirmed = this.page.getByTestId('@modal/tx-details/confirmed');
+        this.accountsDiscovered = this.page.getByTestId('@toast/accounts-discovered');
     }
 
     @step()

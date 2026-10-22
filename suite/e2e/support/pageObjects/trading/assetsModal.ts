@@ -4,6 +4,7 @@ import type { CryptoId } from 'invity-api';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { step } from '../../common';
+import { expect } from '../../testExtends/customMatchers';
 import { AssetPickerNetworkFilter, BuyAsset, SellAsset, SellAssetGroup } from '../../types';
 
 type SellAccountParams = {
@@ -15,6 +16,8 @@ type SellAccountParams = {
 const getSellOptionTestId = ({ accountType, accountSymbol, index }: SellAccountParams) =>
     `@asset-picker/sell/option/${accountType}/${accountSymbol}/${index}`;
 
+const NETWORK_FILTER_OPTION_TESTID_PREFIX = '@asset-picker/search/filter/select-option/';
+
 export class TradingAssetPicker {
     readonly openSellModal: Locator;
     readonly openBuyModal: Locator;
@@ -23,11 +26,12 @@ export class TradingAssetPicker {
     readonly sendReceiveNetworkFilterSelect: Locator;
     readonly networkFilterOption = (tab: AssetPickerNetworkFilter | NetworkSymbol) =>
         this.page.getByTestId(`@asset-picker/search/filter/select-option/${tab}`);
+    // The filter menu is not virtualized, so opening it renders every option at once.
+    readonly renderedNetworkFilterOptions: Locator;
     readonly selectedNetworkFilterIcon = (network: AssetPickerNetworkFilter | NetworkSymbol) =>
         this.page
             .getByTestId(`@asset-picker/search/filter/select-option-value/${network}`)
             .locator('svg');
-    readonly globalAddAccountButton: Locator;
 
     // buy and sell options
     readonly sellOption = (params: SellAccountParams & { tokenSymbol?: string }) =>
@@ -43,7 +47,6 @@ export class TradingAssetPicker {
     readonly buyAssetOption = (assetCryptoId: CryptoId) =>
         this.page.getByTestId(`@asset-picker/buy/option/asset/${assetCryptoId}`);
 
-    // send and receive options
     readonly sendOption = (params: {
         accountSymbol: NetworkSymbol;
         accountType: string;
@@ -55,14 +58,6 @@ export class TradingAssetPicker {
                 params.tokenSymbol ? `/token/${params.tokenSymbol}` : ''
             }`,
         );
-    readonly receiveOption = (params: {
-        accountSymbol: NetworkSymbol;
-        accountType: string;
-        index: number;
-    }) =>
-        this.page.getByTestId(
-            `@global-receive-account/${params.accountType}/${params.accountSymbol}/${params.index}`,
-        );
 
     constructor(private readonly page: Page) {
         this.openSellModal = this.page.getByTestId('@trading/sell/asset-picker');
@@ -72,7 +67,9 @@ export class TradingAssetPicker {
         this.sendReceiveNetworkFilterSelect = this.page.getByTestId(
             '@asset-picker/search/filter/input',
         );
-        this.globalAddAccountButton = this.page.getByTestId('@global-send-receive/add-account');
+        this.renderedNetworkFilterOptions = this.page.getByTestId(
+            new RegExp(`^${NETWORK_FILTER_OPTION_TESTID_PREFIX}`),
+        );
     }
 
     @step()
@@ -84,12 +81,44 @@ export class TradingAssetPicker {
         );
     }
 
+    /**
+     * Every network the send/receive filter offers. The menu hides whatever is currently selected,
+     * so this has to run with no network filter applied to see them all.
+     */
+    @step()
+    async getSendReceiveNetworkFilterOptions(): Promise<string[]> {
+        // Opening the menu is flaky in automation, so the click is retried until options appear.
+        await expect(async () => {
+            if ((await this.renderedNetworkFilterOptions.count()) === 0) {
+                await this.sendReceiveNetworkFilterSelect.click({ timeout: 2000 });
+            }
+            expect(await this.renderedNetworkFilterOptions.count()).toBeGreaterThan(0);
+        }).toPass({ timeout: 10_000 });
+
+        const options = await this.renderedNetworkFilterOptions.all();
+        const testIds = await Promise.all(
+            options.map(option => option.getAttribute('data-testid')),
+        );
+        // Escape would close the surrounding modal, so the menu is dismissed by blurring it.
+        await this.searchInput.click();
+        await expect.poll(() => this.renderedNetworkFilterOptions.count()).toBe(0);
+
+        return testIds
+            .filter((testId): testId is string => testId !== null)
+            .map(testId => testId.replace(NETWORK_FILTER_OPTION_TESTID_PREFIX, ''));
+    }
+
     @step()
     async filterSendReceiveByNetwork(networkFilter: AssetPickerNetworkFilter | NetworkSymbol) {
         await this.page.selectDropdownOptionWithRetry(
             this.sendReceiveNetworkFilterSelect,
             this.networkFilterOption(networkFilter),
         );
+    }
+
+    @step()
+    async clearSearch() {
+        await this.searchInput.fill('');
     }
 
     @step()
