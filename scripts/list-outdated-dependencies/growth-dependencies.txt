@@ -35,7 +35,6 @@ history
 intl-messageformat
 intl-pluralrules
 lottie-react
-lottie-web
 node-addon-api
 node-gyp
 node-loader

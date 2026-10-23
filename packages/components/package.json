@@ -58,7 +58,6 @@
         "@types/react": "19.2.14",
         "@types/react-date-range": "^1.4.10",
         "babel-loader": "^10.1.1",
-        "lottie-web": "^5.13.0",
         "postcss-styled-syntax": "^0.7.3",
         "storybook": "^10.6.2",
         "stream-browserify": "^3.0.0",
