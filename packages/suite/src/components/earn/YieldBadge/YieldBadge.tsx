@@ -64,7 +64,7 @@ const variantConfigMap: Record<YieldBadgeVariant, YieldBadgeVariantConfig> = {
 type YieldBadgeNavigationProps =
     | {
           account: Account;
-          vaultId: string;
+          vaultId?: string;
           analyticsFrom: 'account-tokens' | 'account-defi-tokens' | 'account-tradebox';
       }
     | { account?: undefined; vaultId?: undefined; analyticsFrom?: undefined };
@@ -98,6 +98,8 @@ export const YieldBadge = ({ apy, variant, account, vaultId, analyticsFrom }: Yi
     }
 
     const goToEarnYield = () => {
+        if (!vaultId) return;
+
         // The row anchor scrolls to and highlights the vault row of this very account; the
         // Earn page falls back to scrolling the yield section when that row is not rendered.
         const anchor = shouldAnchorAtVaultRow

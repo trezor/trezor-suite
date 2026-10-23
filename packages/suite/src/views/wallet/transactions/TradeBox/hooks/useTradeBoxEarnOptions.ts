@@ -1,12 +1,12 @@
 import { useNativeYieldVault } from '@suite-common/earn-stablecoin';
-import { hasNetworkFeatures, isApyAvailable } from '@suite-common/wallet-utils';
+import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 
 import { useStakingRate } from 'src/hooks/earn/useStakingRate';
 import { type Account } from 'src/types/wallet';
 
 type TradeBoxYieldBadge = {
     apy: number;
-    vaultId: string;
+    vaultId?: string;
 };
 
 type TradeBoxEarnOptions = {
@@ -21,15 +21,12 @@ export const useTradeBoxEarnOptions = (account: Account): TradeBoxEarnOptions =>
         accountKey: account.key,
     });
 
-    // The token list badges advertise a single vault, while the trade box teases every way
-    // to earn on the account — so it shows the better of the vault and staking rates.
-    const yieldBadge = bestVault
+    const hasApy = !!bestVault?.apy || stakingRate !== null;
+
+    const yieldBadge = hasApy
         ? {
-              apy:
-                  stakingRate !== null && isApyAvailable(stakingRate)
-                      ? Math.max(bestVault.apy, stakingRate)
-                      : bestVault.apy,
-              vaultId: bestVault.id,
+              apy: Math.max(bestVault?.apy ?? 0, stakingRate ?? 0),
+              vaultId: bestVault?.id,
           }
         : null;
 
