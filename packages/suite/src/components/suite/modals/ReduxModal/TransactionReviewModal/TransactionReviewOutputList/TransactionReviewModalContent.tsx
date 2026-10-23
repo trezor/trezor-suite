@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { selectTradingExchangeSelectedQuote } from '@suite-common/trading';
@@ -16,14 +17,11 @@ import {
     constructTransactionReviewOutputsOptional,
     getDecreaseOutputId,
     getStakeType,
-    getTxValidityTimeoutInMs,
     isDeviceReviewOnlyTransaction,
     isRbfBumpFeeTransaction,
     isRbfTransaction,
 } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
-
-import { useSelector } from 'src/hooks/suite';
 
 import { ReplaceByFeeFailedOriginalTxConfirmed } from '../../UserContextModal/TxDetailModal/ReplaceByFeeFailedOriginalTxConfirmed';
 import { TransactionReviewDetails } from '../TransactionReviewDetails';
@@ -42,6 +40,7 @@ type TransactionReviewModalContentProps = {
     serializedTx?: SerializedTx;
     areDetailsVisible: boolean;
     hasTxReviewExpired: boolean;
+    deadline: number;
     isRbfConfirmedError?: boolean;
 };
 
@@ -56,18 +55,12 @@ export const TransactionReviewModalContent = ({
     availableRewards,
     onTryAgain,
     isSending,
+    deadline,
     isRbfConfirmedError,
 }: TransactionReviewModalContentProps) => {
     const { symbol, networkType } = account;
     const device = useSelector(selectSelectedDevice);
     const swapSlippage = useSelector(selectTradingExchangeSelectedQuote)?.swapSlippage;
-
-    const createdTxTimestamp = useMemo(
-        () => precomposedTx.createdTimestamp ?? 0,
-        [precomposedTx.createdTimestamp],
-    );
-
-    const deadline = createdTxTimestamp + getTxValidityTimeoutInMs(account?.networkType);
 
     const isBumpFeeRbfAction =
         precomposedTx !== undefined && isRbfBumpFeeTransaction(precomposedTx);

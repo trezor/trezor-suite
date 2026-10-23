@@ -76,6 +76,8 @@ const renderReview = ({ txType, tokenSymbol, outputs }: RenderReviewParams) => {
             txInfoState={{ precomposedTx, serializedTx: { tx: 'private-signed-tx', symbol } }}
             actionTranslation={{ id: 'SEND_TRANSACTION' }}
             hasTxReviewExpired={false}
+            deadline={0}
+            shouldCheckTxTimeValidity={false}
             account={mockWalletAccount({ symbol })}
             precomposedForm={precomposedForm}
             outputs={outputs}

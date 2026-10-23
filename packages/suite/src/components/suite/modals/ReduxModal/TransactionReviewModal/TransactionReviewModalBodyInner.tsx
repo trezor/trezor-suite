@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
@@ -7,6 +8,7 @@ import { selectRouteName } from '@suite/router';
 import type { DeviceRootState } from '@suite-common/device';
 import {
     type SerializedTx,
+    type WalletCoreCompoundRootState,
     selectIsTxOutputInternal,
     selectSendFormReviewButtonRequestsCount,
     selectSendFormReviewLastButtonCode,
@@ -22,7 +24,6 @@ import {
 import {
     getDecreaseOutputId,
     getStakeType,
-    getTxValidityTimeoutInMs,
     isDeviceReviewOnlyTransaction,
     isEvmApprovalTx,
     isRbfBumpFeeTransaction,
@@ -34,7 +35,6 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { type Deferred } from '@trezor/utils';
 
 import { ConnectModalBackdrop } from 'src/components/suite/ConnectModalBackdrop';
-import { useSelector } from 'src/hooks/suite';
 import { getTransactionReviewModalActionTranslation } from 'src/utils/suite/transactionReview';
 
 import { TransactionReviewModalBottomContent } from './TransactionReviewOutputList/TransactionReviewModalBottomContent';
@@ -90,6 +90,8 @@ export type TransactionReviewModalBodyInnerProps = {
     setIsSending: (value: boolean) => void;
     handleTryAgain: (cancel: boolean) => void;
     hasTxReviewExpired: boolean;
+    deadline: number;
+    shouldCheckTxTimeValidity: boolean;
     isRbfConfirmedError?: boolean;
 };
 
@@ -108,6 +110,8 @@ export const TransactionReviewModalBodyInner = ({
     isSending,
     setIsSending,
     hasTxReviewExpired,
+    deadline,
+    shouldCheckTxTimeValidity,
 }: TransactionReviewModalBodyInnerProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const [areDetailsVisible, setAreDetailsVisible] = useState(false);
@@ -172,15 +176,11 @@ export const TransactionReviewModalBodyInner = ({
         isContractCall,
     ]);
 
-    const isInternalTransfer = useSelector(state =>
+    const isInternalTransfer = useSelector((state: WalletCoreCompoundRootState) =>
         selectIsTxOutputInternal(state, account?.symbol, outputs[0]),
     );
 
-    const createdTxTimestamp = txInfoState?.precomposedTx?.createdTimestamp ?? 0;
-    const deadline = createdTxTimestamp + getTxValidityTimeoutInMs(account?.networkType);
-
     const stakeType = getStakeType(precomposedForm);
-    const shouldCheckTxTimeValidity = account?.networkType === 'solana' && createdTxTimestamp !== 0;
 
     const onCancel = () => {
         dispatch(closeModal());
@@ -297,6 +297,8 @@ export const TransactionReviewModalBodyInner = ({
                             txInfoState={txInfoState}
                             actionTranslation={actionTranslation('button')}
                             hasTxReviewExpired={hasTxReviewExpired}
+                            deadline={deadline}
+                            shouldCheckTxTimeValidity={shouldCheckTxTimeValidity}
                             isRbfConfirmedError={isRbfConfirmedError}
                             account={account}
                             precomposedForm={precomposedForm}
@@ -319,6 +321,7 @@ export const TransactionReviewModalBodyInner = ({
                     onTryAgain={handleTryAgain}
                     areDetailsVisible={areDetailsVisible}
                     hasTxReviewExpired={hasTxReviewExpired}
+                    deadline={deadline}
                 />
             </Modal.ModalBase>
         </ConnectModalBackdrop>
