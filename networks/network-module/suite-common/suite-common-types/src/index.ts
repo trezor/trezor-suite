@@ -48,7 +48,12 @@ export {
     type OpenNetwork,
     type OpenNetworkCapabilities,
 } from './capabilities/defineFamily';
+export { isAccountOfNetwork } from './capabilities/isAccountOfNetwork';
 export { defineMessageSigning } from './capabilities/messageSigning/defineMessageSigning';
+export {
+    getFreshAddresses,
+    groupSignAddresses,
+} from './capabilities/messageSigning/signAddressGroups';
 export type {
     ClosedShowSignAddressParams,
     ClosedSignMessageParams,

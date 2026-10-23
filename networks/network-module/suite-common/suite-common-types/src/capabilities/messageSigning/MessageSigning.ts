@@ -92,6 +92,8 @@ export type MessageSigningLabels = {
  * Everything a page needs to render is here: what to label, whether the address is fixed, which
  * formats exist and what the result contains. Verification is supported exactly when `verify`
  * exists.
+ *
+ * @serviceContract
  */
 export type MessageSigning = {
     readonly labels: MessageSigningLabels;

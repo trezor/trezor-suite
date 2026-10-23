@@ -1,20 +1,24 @@
 {
     "extends": "../../../tsconfig.base.json",
-    "compilerOptions": {
-        "outDir": "libDev"
-    },
+    "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
-            "path": "../network-bitcoin-assets"
+            "path": "../../../packages/connect-common"
         },
-        {
-            "path": "../network-bitcoin-types"
-        },
+        { "path": "../network-bitcoin-assets" },
+        { "path": "../network-bitcoin-types" },
         {
             "path": "../../network-module/suite-common/suite-common-types"
         },
         {
-            "path": "../../../packages/utils"
+            "path": "../../../packages/type-utils"
+        },
+        { "path": "../../../packages/utils" },
+        {
+            "path": "../../../packages/dependency-injection"
+        },
+        {
+            "path": "../../network-module/network-module-types"
         }
     ]
 }
