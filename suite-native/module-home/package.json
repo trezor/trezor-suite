@@ -42,6 +42,7 @@
         "@suite-native/discovery": "workspace:*",
         "@suite-native/experimental-features": "workspace:*",
         "@suite-native/feature-feedback": "workspace:*",
+        "@suite-native/feedback-form": "workspace:*",
         "@suite-native/firmware": "workspace:*",
         "@suite-native/formatters": "workspace:*",
         "@suite-native/graph": "workspace:*",

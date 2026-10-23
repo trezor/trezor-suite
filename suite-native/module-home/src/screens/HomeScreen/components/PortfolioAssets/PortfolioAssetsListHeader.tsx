@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { selectHasShownWalletAssets } from '@suite-common/assets';
 
 import { PortfolioAssetsHeader } from './PortfolioAssetsHeader';
+import { PortfolioAssetsNewBanner } from './PortfolioAssetsNewBanner';
 import { PortfolioAssetsSectionHeader } from './PortfolioAssetsSectionHeader';
 
 type PortfolioAssetsListHeaderProps = {
@@ -17,7 +18,12 @@ export const PortfolioAssetsListHeader = ({
     return (
         <>
             <PortfolioAssetsHeader />
-            {hasAssets && <PortfolioAssetsSectionHeader onViewOptionsPress={onViewOptionsPress} />}
+            {hasAssets && (
+                <>
+                    <PortfolioAssetsSectionHeader onViewOptionsPress={onViewOptionsPress} />
+                    <PortfolioAssetsNewBanner />
+                </>
+            )}
         </>
     );
 };
