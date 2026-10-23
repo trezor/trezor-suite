@@ -40,6 +40,8 @@ export const AddressConfirmation = () => {
 
     if (popupCall?.state !== 'address-confirmation') return null;
 
+    const isVerifyingOnDevice = popupCall.addresses.some(({ loading }) => loading);
+
     return (
         <VStack testID="@popup/address-confirmation" spacing="sp16" flex={1}>
             {popupCall.exported ? (
@@ -89,6 +91,7 @@ export const AddressConfirmation = () => {
                                     item.validated === 'valid' ? 'checkCircle' : 'trezorDevices'
                                 }
                                 onPress={() => onVerify(index)}
+                                isDisabled={isVerifyingOnDevice}
                             />
                         </HStack>
                     ))}
@@ -98,6 +101,7 @@ export const AddressConfirmation = () => {
             <Button
                 testID="@popup/confirm-addresses"
                 onPress={popupCall.exported ? onFinish : onConfirm}
+                isDisabled={isVerifyingOnDevice}
             >
                 <Translation id="moduleConnectPopup.confirm" />
             </Button>
