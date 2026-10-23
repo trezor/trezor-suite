@@ -8,7 +8,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
-import { Box, Text } from '@suite-native/atoms';
+import { Box, DiscreetText } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -61,9 +61,9 @@ export const InstantStakeBanner = ({ accountKey, transaction }: InstantStakeBann
 
     return (
         <Box style={applyStyle(bannerStyle)}>
-            <Text variant="body-sm" color="contentPrimary">
+            <DiscreetText variant="body-sm" color="contentPrimary">
                 {label}
-            </Text>
+            </DiscreetText>
         </Box>
     );
 };

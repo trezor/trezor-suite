@@ -118,7 +118,6 @@ export const YieldClaimRewardsSummaryCard = () => {
                                     <BaseCurrencyAmountFormatter
                                         value={totalClaimableFiatAmount}
                                         variant="body-md-strong"
-                                        isDiscreetText={false}
                                     />
                                 </Text>
                             ) : (

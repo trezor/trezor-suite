@@ -16,13 +16,23 @@ import {
 } from '@suite-common/wallet-types';
 import { isApyAvailable } from '@suite-common/wallet-utils';
 import { injectNativeAnalytics } from '@suite-native/analytics';
-import { Box, Button, Card, HStack, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import {
+    Box,
+    Button,
+    Card,
+    DiscreetText,
+    DiscreetTextTrigger,
+    HStack,
+    Text,
+    VStack,
+    useBottomSheetModal,
+} from '@suite-native/atoms';
 import {
     CompactTokenAmountFormatter,
     TokenToFiatAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
-import { Translation } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 import {
     type RootStackParamList,
     RootStackRoutes,
@@ -62,6 +72,7 @@ export const YieldVaultDetailScreenContent = ({
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProps>();
     const { analytics } = useServices(injectNativeAnalytics);
+    const { translate } = useTranslate();
 
     const { CryptoAmountFormatter: cryptoAmountFormatter } = useFormatters();
     const { isFirmwareSupported, showFirmwareUpdateAlert } =
@@ -282,13 +293,15 @@ export const YieldVaultDetailScreenContent = ({
                                 <Translation id="earn.tokenBalance" />
                             </Text>
 
-                            <CompactTokenAmountFormatter
-                                value={asDecimalTokenAmount(yieldToken.balance ?? '0')}
-                                tokenSymbol={yieldToken.symbol}
-                                tokenDecimals={yieldToken.decimals}
-                                color="contentPrimary"
-                                variant="headline-sm"
-                            />
+                            <DiscreetTextTrigger>
+                                <CompactTokenAmountFormatter
+                                    value={asDecimalTokenAmount(yieldToken.balance ?? '0')}
+                                    tokenSymbol={yieldToken.symbol}
+                                    tokenDecimals={yieldToken.decimals}
+                                    color="contentPrimary"
+                                    variant="headline-sm"
+                                />
+                            </DiscreetTextTrigger>
 
                             <TokenToFiatAmountFormatter
                                 value={yieldToken.balance ?? '0'}
@@ -318,14 +331,11 @@ export const YieldVaultDetailScreenContent = ({
                                 variant="headline-sm"
                             />
 
-                            <Text variant="body-md" color="contentSecondary">
-                                <Translation
-                                    id="earn.yearlyRewardsDeposited"
-                                    values={{
-                                        amountWithSymbol: yearlyRewards.formattedDepositedAmount,
-                                    }}
-                                />
-                            </Text>
+                            <DiscreetText variant="body-md" color="contentSecondary">
+                                {translate('earn.yearlyRewardsDeposited', {
+                                    amountWithSymbol: yearlyRewards.formattedDepositedAmount,
+                                })}
+                            </DiscreetText>
                         </VStack>
                     )}
 
@@ -347,15 +357,12 @@ export const YieldVaultDetailScreenContent = ({
                                 variant="headline-sm"
                             />
 
-                            <Text variant="body-md" color="contentSecondary">
-                                <Translation
-                                    id="earn.potentialRewardsIfYouAdd"
-                                    values={{
-                                        amountWithSymbol:
-                                            potentialRewards.formattedAdditionalDepositAmount,
-                                    }}
-                                />
-                            </Text>
+                            <DiscreetText variant="body-md" color="contentSecondary">
+                                {translate('earn.potentialRewardsIfYouAdd', {
+                                    amountWithSymbol:
+                                        potentialRewards.formattedAdditionalDepositAmount,
+                                })}
+                            </DiscreetText>
                         </VStack>
                     )}
 
