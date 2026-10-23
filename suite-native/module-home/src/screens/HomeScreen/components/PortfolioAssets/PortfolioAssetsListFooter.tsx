@@ -7,6 +7,7 @@ import {
 } from '@suite-common/assets';
 import { Divider, VStack } from '@suite-native/atoms';
 
+import { PortfolioAssetsFeedback } from './PortfolioAssetsFeedback';
 import { PortfolioAssetsShowMoreButton } from './PortfolioAssetsShowMoreButton';
 
 type PortfolioAssetsListFooterProps = {
@@ -22,16 +23,20 @@ export const PortfolioAssetsListFooter = ({
         selectIsHomeAssetTableFoldable(state, HOME_ASSET_ROW_LIMIT),
     );
 
-    if (!isFoldable) {
-        return null;
-    }
-
     return (
         <>
-            <Divider />
-            <VStack alignItems="center" paddingVertical="sp12">
-                <PortfolioAssetsShowMoreButton isExpanded={isExpanded} onPress={onShowMorePress} />
-            </VStack>
+            {isFoldable && (
+                <>
+                    <Divider />
+                    <VStack alignItems="center" paddingVertical="sp12">
+                        <PortfolioAssetsShowMoreButton
+                            isExpanded={isExpanded}
+                            onPress={onShowMorePress}
+                        />
+                    </VStack>
+                </>
+            )}
+            <PortfolioAssetsFeedback />
         </>
     );
 };

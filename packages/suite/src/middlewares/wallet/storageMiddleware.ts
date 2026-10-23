@@ -52,6 +52,8 @@ import {
     accountsActions,
     blockchainActions,
     changeNetworks,
+    closeHomeAssetTableFeedback,
+    closeHomeAssetTableNewBanner,
     earnOnboardingActions,
     explorerActions,
     phishingActions,
@@ -573,6 +575,8 @@ export const prepareStorageMiddleware = createMiddlewareWithExtraDeps<
             setAddressDisplayType,
             setHomeAssetsTableGrouping,
             setAreHomeAssetSmallBalancesShown,
+            closeHomeAssetTableNewBanner,
+            closeHomeAssetTableFeedback,
             setSuspiciousTransactionsFilter,
         )(action)
     ) {
