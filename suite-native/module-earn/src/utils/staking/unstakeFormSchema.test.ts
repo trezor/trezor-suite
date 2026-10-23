@@ -41,7 +41,7 @@ describe('unstakeFormValidationSchema — Solana unstake amount bounds', () => {
             validate('0.5', {
                 account,
                 symbol: asNetworkSymbol('sol'),
-                stakedBalance: '1.42',
+                unstakableBalance: '1.42',
                 decimals: 9,
             }),
         ).rejects.toThrow('earn.unstakeFormScreen.validation.invalidUnstakeAmountHigherOnly');
@@ -57,7 +57,7 @@ describe('unstakeFormValidationSchema — Solana unstake amount bounds', () => {
             validate('1.42', {
                 account,
                 symbol: asNetworkSymbol('sol'),
-                stakedBalance: '3.42',
+                unstakableBalance: '3.42',
                 decimals: 9,
             }),
         ).resolves.toBeDefined();
@@ -73,7 +73,7 @@ describe('unstakeFormValidationSchema — Solana unstake amount bounds', () => {
             validate('2', {
                 account,
                 symbol: asNetworkSymbol('sol'),
-                stakedBalance: '3.42',
+                unstakableBalance: '3.42',
                 decimals: 9,
             }),
         ).rejects.toThrow(/invalidUnstakeAmount(?!HigherOnly)/);
@@ -86,7 +86,7 @@ describe('unstakeFormValidationSchema — Solana unstake amount bounds', () => {
             validate('0.42', {
                 account,
                 symbol: asNetworkSymbol('sol'),
-                stakedBalance: '3.12',
+                unstakableBalance: '3.12',
                 decimals: 9,
             }),
         ).rejects.toThrow('earn.unstakeFormScreen.validation.invalidUnstakeAmountHigherOnly');
@@ -94,7 +94,33 @@ describe('unstakeFormValidationSchema — Solana unstake amount bounds', () => {
 
     it('does not apply the Solana bounds check to other networks (e.g. Ethereum)', async () => {
         await expect(
-            validate('0.5', { symbol: asNetworkSymbol('eth'), stakedBalance: '10', decimals: 18 }),
+            validate('0.5', {
+                symbol: asNetworkSymbol('eth'),
+                unstakableBalance: '10',
+                decimals: 18,
+            }),
         ).resolves.toBeDefined();
+    });
+});
+
+describe('unstakeFormValidationSchema — unstakable balance', () => {
+    it('accepts the whole unstakable balance including restaked rewards', async () => {
+        await expect(
+            validate('2.05', {
+                symbol: asNetworkSymbol('eth'),
+                unstakableBalance: '2.05',
+                decimals: 18,
+            }),
+        ).resolves.toBeDefined();
+    });
+
+    it('rejects an amount above the unstakable balance', async () => {
+        await expect(
+            validate('2.06', {
+                symbol: asNetworkSymbol('eth'),
+                unstakableBalance: '2.05',
+                decimals: 18,
+            }),
+        ).rejects.toThrow('earn.unstakeFormScreen.validation.insufficientBalance');
     });
 });

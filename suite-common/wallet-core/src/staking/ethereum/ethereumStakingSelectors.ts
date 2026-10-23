@@ -72,6 +72,15 @@ export const selectEthereumStakedBalanceByAccountKey = (
     return stakingPool?.depositedBalance ?? '0';
 };
 
+export const selectEthereumUnstakableBalanceByAccountKey = (
+    state: AccountsRootState,
+    accountKey: AccountKey,
+) => {
+    const stakingPool = selectEthereumStakingPoolByAccountKey(state, accountKey);
+
+    return stakingPool?.autocompoundBalance ?? '0';
+};
+
 export const selectEthereumRewardsBalanceByAccountKey = (
     state: AccountsRootState,
     accountKey: AccountKey,

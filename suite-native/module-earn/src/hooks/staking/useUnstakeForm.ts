@@ -13,7 +13,7 @@ import {
     selectAccountByKey,
     selectCanClaimByAccountKey,
     selectClaimableAmountByAccountKey,
-    selectStakedBalanceByAccountKey,
+    selectUnstakableBalanceByAccountKey,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { fromEther, isPositiveBalance } from '@suite-common/wallet-utils';
@@ -33,8 +33,8 @@ export const useUnstakeForm = (accountKey: AccountKey) => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const stakedBalance = useSelector((state: StakeRootState) =>
-        selectStakedBalanceByAccountKey(state, accountKey),
+    const unstakableBalance = useSelector((state: StakeRootState) =>
+        selectUnstakableBalanceByAccountKey(state, accountKey),
     );
     const canClaim = useSelector((state: StakeRootState) =>
         selectCanClaimByAccountKey(state, accountKey),
@@ -52,7 +52,7 @@ export const useUnstakeForm = (accountKey: AccountKey) => {
         context: {
             account,
             symbol: account?.symbol,
-            stakedBalance,
+            unstakableBalance,
             decimals: network?.decimals,
             translate,
         },
@@ -110,7 +110,7 @@ export const useUnstakeForm = (accountKey: AccountKey) => {
         form,
         account,
         amountValue,
-        stakedBalance,
+        unstakableBalance,
         canClaim,
         claimableAmount,
         showNetworkFeeWarning,
