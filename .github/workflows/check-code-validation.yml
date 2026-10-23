@@ -4,6 +4,9 @@ on:
   pull_request:
   push:
     branches:
+      # On `develop` only the two lint jobs run: they save the ESLint caches under the default
+      # branch's cache scope, which every pull request can restore from.
+      - develop
       - release/2*
       - release-native/*
 
@@ -11,12 +14,17 @@ env:
   NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_GHACTIONS_TOKEN }}
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  # Pushes to `develop` share one group so a newer push cancels an older cache warm-up; the
+  # next run restores the latest saved cache anyway. Release pushes keep a group per run.
+  group: ${{ github.workflow }}-${{ github.head_ref || (github.ref == 'refs/heads/develop' && github.ref) || github.run_id }}
   cancel-in-progress: true
 
 jobs:
   changed-scopes:
     name: Determine changed scopes
+    # A push to `develop` only warms the ESLint caches; every job except `lint`, `lint-type-aware`
+    # and their `setup-and-cache` prerequisite is gated on this condition.
+    if: github.ref != 'refs/heads/develop'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -63,6 +71,7 @@ jobs:
   type-check:
     name: Type Checking
     needs: setup-and-cache
+    if: github.ref != 'refs/heads/develop'
     runs-on: ubuntu-latest
     env:
       NODE_OPTIONS: --max-old-space-size=6144
@@ -89,16 +98,24 @@ jobs:
         uses: ./.github/actions/nx-checkout
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
-      - name: ESlint Cache
+      - name: ESLint cache
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
         with:
-          # Most of the ESLint cache is handled by Nx. However, it can't handle the root cache.
-          # That's why we include only the root .eslintcache (and only root eslint config hash as cache key)
-          # (context: https://github.com/trezor/trezor-suite/pull/26006#discussion_r2949341349)
+          # Nx restores a workspace's `.eslintcache*` only on a task cache hit, so on a miss a fresh
+          # runner lints the whole workspace from zero. This restores every workspace's cache file
+          # so ESLint relints only the files whose content changed.
+          # The key ends in the commit SHA because a cache entry is immutable: without it only the
+          # first run would save and every later run would start from that one snapshot. The
+          # restore key takes the newest entry for the same toolchain instead.
+          # ESLint's own validation covers the file content, the ESLint and Node versions and the
+          # resolved config, but not the implementation of a plugin or a local rule; the toolchain
+          # hash keys those changes out.
           path: |
-            './.eslintcache'
-            '!**/node_modules'
-          key: ${{ runner.os }}-node-${{ hashFiles('./eslint.config.mjs') }} }}
+            **/.eslintcache
+            !**/node_modules
+          key: ${{ runner.os }}-eslint-basic-${{ hashFiles('yarn.lock', 'eslint.config.mjs', 'eslint-local-rules/**', 'packages/eslint/**') }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-eslint-basic-${{ hashFiles('yarn.lock', 'eslint.config.mjs', 'eslint-local-rules/**', 'packages/eslint/**') }}-
       - name: Lint JS
         run: yarn lint:js --output-style=stream
       - name: Lint Styles
@@ -119,13 +136,16 @@ jobs:
         uses: ./.github/actions/nx-checkout
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
-      - name: ESlint Cache
+      - name: ESLint cache
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
         with:
+          # See the `lint` job for why the key ends in the SHA and hashes the toolchain.
           path: |
-            './.eslintcache-type-aware'
-            '!**/node_modules'
-          key: ${{ runner.os }}-node-type-aware-${{ hashFiles('./eslint.config.mjs') }}
+            **/.eslintcache-type-aware
+            !**/node_modules
+          key: ${{ runner.os }}-eslint-type-aware-${{ hashFiles('yarn.lock', 'eslint.config.mjs', 'eslint-local-rules/**', 'packages/eslint/**') }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-eslint-type-aware-${{ hashFiles('yarn.lock', 'eslint.config.mjs', 'eslint-local-rules/**', 'packages/eslint/**') }}-
       - name: Lint JS
         env:
           ESLINT_RULE_SET: type-aware
@@ -134,7 +154,7 @@ jobs:
   rust-checks:
     name: Rust checks
     needs: changed-scopes
-    if: needs.changed-scopes.outputs.rust == 'true'
+    if: github.ref != 'refs/heads/develop' && needs.changed-scopes.outputs.rust == 'true'
     runs-on: ubuntu-latest
     env:
       # Same toolchain as packages/transport-bluetooth/scripts/Dockerfile
@@ -169,7 +189,7 @@ jobs:
     name: Docs checks
     needs: changed-scopes
     # With default scope changes the same checks run in "Other Checks".
-    if: needs.changed-scopes.outputs.docs == 'true' && needs.changed-scopes.outputs.default != 'true'
+    if: github.ref != 'refs/heads/develop' && needs.changed-scopes.outputs.docs == 'true' && needs.changed-scopes.outputs.default != 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -195,6 +215,7 @@ jobs:
   test-madge-circular-imports:
     name: Check for new Circular Imports
     needs: setup-and-cache
+    if: github.ref != 'refs/heads/develop'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -212,7 +233,7 @@ jobs:
     name: Unit Tests (${{ matrix.test-task }})
     needs: [changed-scopes, setup-and-cache]
     # Expand the matrix even when setup is skipped so each required check reports a result.
-    if: ${{ !cancelled() && !failure() }}
+    if: ${{ github.ref != 'refs/heads/develop' && !cancelled() && !failure() }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:
@@ -238,6 +259,7 @@ jobs:
   build-libs-for-publishing:
     name: "Build libs for publishing"
     needs: setup-and-cache
+    if: github.ref != 'refs/heads/develop'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -252,6 +274,7 @@ jobs:
   other-checks:
     name: Other Checks
     needs: setup-and-cache
+    if: github.ref != 'refs/heads/develop'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -317,6 +340,7 @@ jobs:
   releases-revision-checks:
     name: Releases revision Checks
     needs: setup-and-cache
+    if: github.ref != 'refs/heads/develop'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
