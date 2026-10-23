@@ -75,7 +75,7 @@ export const UnstakeFlowScreen = () => {
         form,
         account,
         amountValue,
-        stakedBalance,
+        unstakableBalance,
         canClaim,
         claimableAmount,
         showNetworkFeeWarning,
@@ -133,7 +133,7 @@ export const UnstakeFlowScreen = () => {
             <EarnAmountCard
                 accountKey={accountKey}
                 label={<Translation id="earn.earnFormScreen.staked" />}
-                cryptoAmount={stakedBalance ?? undefined}
+                cryptoAmount={unstakableBalance ?? undefined}
             />
 
             {isAccountLimitExceeded && networkSymbol && (

@@ -14,7 +14,7 @@ export const SOLANA_UNSTAKE_AMOUNT_BOUNDS_ERROR = 'solana-unstake-amount-bounds'
 export type UnstakeFormContext = {
     account?: Account;
     symbol?: NetworkSymbol;
-    stakedBalance?: string;
+    unstakableBalance?: string;
     decimals?: number;
     translate: Translate;
 };
@@ -78,11 +78,11 @@ export const unstakeFormValidationSchema = yup.object({
             });
         })
         .test('is-higher-than-staked', "You don't have enough staked balance.", function (value) {
-            const { stakedBalance, translate } = this.options.context as UnstakeFormContext;
+            const { unstakableBalance, translate } = this.options.context as UnstakeFormContext;
 
-            if (!value || !stakedBalance) return true;
+            if (!value || !unstakableBalance) return true;
 
-            if (new BigNumber(value).gt(stakedBalance)) {
+            if (new BigNumber(value).gt(unstakableBalance)) {
                 return this.createError({
                     message: translate('earn.unstakeFormScreen.validation.insufficientBalance'),
                 });

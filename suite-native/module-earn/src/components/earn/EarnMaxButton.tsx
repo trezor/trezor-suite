@@ -9,7 +9,7 @@ import {
     selectAccountByKey,
     selectBaseCurrency,
     selectIsBaseCurrencyInSats,
-    selectStakedBalanceByAccountKey,
+    selectUnstakableBalanceByAccountKey,
 } from '@suite-common/wallet-core';
 import { type AccountKey, type StakeType } from '@suite-common/wallet-types';
 import { formatNetworkAmount, getDecimalsForBaseCurrency } from '@suite-common/wallet-utils';
@@ -46,8 +46,8 @@ export const EarnMaxButton = ({
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const stakedBalance = useSelector((state: StakeRootState) =>
-        selectStakedBalanceByAccountKey(state, accountKey),
+    const unstakableBalance = useSelector((state: StakeRootState) =>
+        selectUnstakableBalanceByAccountKey(state, accountKey),
     );
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const isBaseCurrencyInSats = useSelector(selectIsBaseCurrencyInSats);
@@ -60,7 +60,7 @@ export const EarnMaxButton = ({
 
     const getMaxAmount = (): string => {
         if (variant === 'unstake') {
-            return stakedBalance ?? '0';
+            return unstakableBalance ?? '0';
         }
 
         const availableAmount = formatNetworkAmount(account!.availableBalance, symbol);

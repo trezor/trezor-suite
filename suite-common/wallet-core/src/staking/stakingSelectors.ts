@@ -30,6 +30,7 @@ import {
     selectEthereumRewardsBalanceByAccountKey,
     selectEthereumStakedBalanceByAccountKey,
     selectEthereumTotalStakePendingByAccountKey,
+    selectEthereumUnstakableBalanceByAccountKey,
     selectEthereumUnstakingBalanceByAccountKey,
     selectEthereumValidatorsQueue,
     selectVisibleDeviceEthereumAccountsWithStakingByNetworkSymbol,
@@ -217,6 +218,31 @@ export const selectStakedBalanceByAccountKey = (state: StakeRootState, accountKe
         case 'eth':
         case 'thod':
             return selectEthereumStakedBalanceByAccountKey(state, accountKey);
+        case 'dsol':
+        case 'sol':
+            return selectSolanaStakedBalanceByAccountKey(state, accountKey);
+        case 'ada':
+            return selectCardanoStakedBalanceByAccountKey(state, accountKey);
+        case 'trx':
+            return selectTronStakedBalanceByAccountKey(state, accountKey);
+        default:
+            return exhaustive(symbol);
+    }
+};
+
+export const selectUnstakableBalanceByAccountKey = (
+    state: StakeRootState,
+    accountKey: AccountKey,
+) => {
+    const account = selectAccountByKey(state, accountKey);
+    const symbol = account?.symbol;
+
+    if (!symbol || !isStakingSymbol(symbol)) return '0';
+
+    switch (symbol) {
+        case 'eth':
+        case 'thod':
+            return selectEthereumUnstakableBalanceByAccountKey(state, accountKey);
         case 'dsol':
         case 'sol':
             return selectSolanaStakedBalanceByAccountKey(state, accountKey);

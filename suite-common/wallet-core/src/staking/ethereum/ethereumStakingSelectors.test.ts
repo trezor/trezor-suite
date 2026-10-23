@@ -1,7 +1,7 @@
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
-import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/device-utils';
 
 import {
@@ -14,6 +14,7 @@ import {
     selectEthereumStakedBalanceByAccountKey,
     selectEthereumStakingPoolByAccountKey,
     selectEthereumTotalStakePendingByAccountKey,
+    selectEthereumUnstakableBalanceByAccountKey,
 } from './ethereumStakingSelectors';
 import { type StakeDataState, stakeDataInitialState } from '../stakingDataSlice';
 import { stakeInitialState } from '../stakingReducer';
@@ -83,6 +84,27 @@ const ethAccountWithPendingStake: Account = {
         ],
     },
 } as unknown as Account;
+
+const ethAccountWithRestakedRewards = mockWalletAccount(
+    { symbol: ethSymbol, deviceState: staticStateString },
+    {
+        misc: {
+            stakingPools: [
+                {
+                    name: 'Everstake',
+                    contract: '0x789',
+                    autocompoundBalance: '2050000000000000000',
+                    claimableAmount: '0',
+                    depositedBalance: '2000000000000000000',
+                    pendingBalance: '0',
+                    pendingDepositedBalance: '0',
+                    restakedReward: '50000000000000000',
+                    withdrawTotalAmount: '0',
+                },
+            ],
+        },
+    },
+);
 
 const getTestState = (accounts: Account[]) => ({
     wallet: {
@@ -246,6 +268,27 @@ describe('ethereumStakingSelectors', () => {
             const testState = getTestState([ethAccountWithoutStaking]);
 
             const result = selectEthereumStakedBalanceByAccountKey(testState, eth2Key);
+
+            expect(result).toBe('0');
+        });
+    });
+
+    describe('selectEthereumUnstakableBalanceByAccountKey', () => {
+        it('should return the deposit together with restaked rewards', () => {
+            const testState = getTestState([ethAccountWithRestakedRewards]);
+
+            const result = selectEthereumUnstakableBalanceByAccountKey(
+                testState,
+                ethAccountWithRestakedRewards.key,
+            );
+
+            expect(result).toBe('2.05');
+        });
+
+        it('should return "0" for account without staking', () => {
+            const testState = getTestState([ethAccountWithoutStaking]);
+
+            const result = selectEthereumUnstakableBalanceByAccountKey(testState, eth2Key);
 
             expect(result).toBe('0');
         });
