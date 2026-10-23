@@ -1,0 +1,132 @@
+name: "[Bot] Sync linked issue status on PR open/draft/ready"
+
+on:
+  pull_request:
+    types:
+      - opened
+      - ready_for_review
+      - converted_to_draft
+
+env:
+  PROJECT_ID: PVT_kwDOAD9FD84AAuwj
+  STATUS_FIELD_ID: PVTSSF_lADOAD9FD84AAuwjzgAYi50
+  IN_PROGRESS_OPTION_ID: 98236657
+  NEEDS_REVIEW_OPTION_ID: badedff6
+  # Later-stage statuses that must never be regressed by this workflow
+  GUARDED_OPTION_IDS: "97926e6f 93108e06 0f23d421 a9d19930"
+
+jobs:
+  sync-issue-status:
+    name: Sync linked issue status
+    runs-on: ubuntu-latest
+    if: github.repository == 'trezor/trezor-suite'
+    steps:
+      - name: Determine target status
+        id: target
+        run: |
+          if [ "${{ github.event.pull_request.draft }}" == "true" ]; then
+            echo "option_id=${{ env.IN_PROGRESS_OPTION_ID }}" >> "$GITHUB_OUTPUT"
+            echo "status_name=In progress" >> "$GITHUB_OUTPUT"
+          else
+            echo "option_id=${{ env.NEEDS_REVIEW_OPTION_ID }}" >> "$GITHUB_OUTPUT"
+            echo "status_name=Needs review" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Generate GitHub App token
+        id: trezor-bot-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
+        with:
+          client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+          private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+
+      - name: Find linked issues and sync their status
+        env:
+          GH_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
+          TARGET_OPTION_ID: ${{ steps.target.outputs.option_id }}
+          TARGET_STATUS_NAME: ${{ steps.target.outputs.status_name }}
+        run: |
+          # 1. Find issues this PR will close (same pattern as check-project-assignment.yml)
+          LINKED_ISSUE_IDS=$(gh api graphql -f query='
+          query($owner: String!, $repo: String!, $number: Int!) {
+            repository(owner: $owner, name: $repo) {
+              pullRequest(number: $number) {
+                closingIssuesReferences(first: 10) {
+                  nodes { id number }
+                }
+              }
+            }
+          }' -F owner=${{ github.repository_owner }} -F repo=${{ github.event.repository.name }} \
+             -F number=${{ github.event.pull_request.number }} \
+             --jq '.data.repository.pullRequest.closingIssuesReferences.nodes[] | .id')
+
+          if [ -z "$LINKED_ISSUE_IDS" ]; then
+            echo "No linked issues found on this PR — nothing to sync."
+            exit 0
+          fi
+
+          for ISSUE_ID in $LINKED_ISSUE_IDS; do
+            echo "Processing linked issue node $ISSUE_ID"
+
+            # 2. Get this issue's item in the Suite project + its current Status option
+            RESPONSE=$(gh api graphql -f query='
+              query($content_id: ID!) {
+                node(id: $content_id) {
+                  ... on Issue {
+                    projectItems(first: 10) {
+                      nodes {
+                        id
+                        project { id }
+                        fieldValues(first: 20) {
+                          nodes {
+                            ... on ProjectV2ItemFieldSingleSelectValue {
+                              field { ... on ProjectV2SingleSelectField { id } }
+                              optionId
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }' -f content_id="$ISSUE_ID")
+
+            PROJECT_ITEM=$(echo "$RESPONSE" | jq -r \
+              ".data.node.projectItems.nodes[] | select(.project.id == \"${{ env.PROJECT_ID }}\")")
+
+            ITEM_ID=$(echo "$PROJECT_ITEM" | jq -r '.id // empty')
+            if [ -z "$ITEM_ID" ]; then
+              echo "  Issue not tracked in the Suite project — skipping."
+              continue
+            fi
+
+            CURRENT_STATUS=$(echo "$PROJECT_ITEM" | jq -r \
+              ".fieldValues.nodes[] | select(.field?.id == \"${{ env.STATUS_FIELD_ID }}\") | .optionId // empty")
+
+            if echo "${{ env.GUARDED_OPTION_IDS }}" | tr ' ' '\n' | grep -qx "$CURRENT_STATUS"; then
+              echo "  Current status ($CURRENT_STATUS) is a later-stage status — skipping to avoid regressing it."
+              continue
+            fi
+
+            if [ "$CURRENT_STATUS" == "$TARGET_OPTION_ID" ]; then
+              echo "  Already set to '$TARGET_STATUS_NAME' — skipping."
+              continue
+            fi
+
+            # 3. Set the Status field
+            gh api graphql -f query='
+              mutation($project: ID!, $item: ID!, $field: ID!, $value: String!) {
+                updateProjectV2ItemFieldValue(input: {
+                  projectId: $project
+                  itemId: $item
+                  fieldId: $field
+                  value: { singleSelectOptionId: $value }
+                }) {
+                  projectV2Item { id }
+                }
+              }' -f project=${{ env.PROJECT_ID }} \
+                 -f item="$ITEM_ID" \
+                 -f field=${{ env.STATUS_FIELD_ID }} \
+                 -f value="$TARGET_OPTION_ID"
+
+            echo "  ✅ Status set to '$TARGET_STATUS_NAME'"
+          done
