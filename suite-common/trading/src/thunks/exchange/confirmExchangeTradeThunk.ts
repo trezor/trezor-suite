@@ -3,6 +3,10 @@ import { type CryptoId, type ExchangeTrade } from 'invity-api';
 import { type Account } from '@suite-common/wallet-types';
 import { createThunk } from '@trezor/redux-utils';
 
+import {
+    type ValidateExchangeReceiveAddressThunkDeps,
+    validateExchangeReceiveAddressThunk,
+} from './validateExchangeReceiveAddressThunk';
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
 import { type TradingRootState, tradingActions } from '../../reducers/tradingCommonReducer';
@@ -33,10 +37,12 @@ export type ConfirmExchangeTradeThunkProps = {
 
 export type ConfirmExchangeTradeThunkState = TradingRootState;
 
+export type ConfirmExchangeTradeThunkDeps = ValidateExchangeReceiveAddressThunkDeps;
+
 export const confirmExchangeTradeThunk = createThunk<
     ExchangeTrade | undefined,
     ConfirmExchangeTradeThunkProps,
-    { state: ConfirmExchangeTradeThunkState }
+    { state: ConfirmExchangeTradeThunkState; extra: ConfirmExchangeTradeThunkDeps }
 >(
     `${TRADING_EXCHANGE_THUNK_PREFIX}/confirmTrade`,
     async (
@@ -69,6 +75,19 @@ export const confirmExchangeTradeThunk = createThunk<
         }
 
         if (!trade || !refundAddress || !trade.quoteId) {
+            return undefined;
+        }
+
+        const isReceiveAddressAccepted =
+            isTradeSubmitted ||
+            (await dispatch(
+                validateExchangeReceiveAddressThunk({
+                    receiveAddress,
+                    receiveCryptoId: trade.receive,
+                }),
+            ).unwrap());
+
+        if (!isReceiveAddressAccepted) {
             return undefined;
         }
 
@@ -154,6 +173,19 @@ export const confirmExchangeTradeThunk = createThunk<
                 }),
             );
 
+            return undefined;
+        }
+
+        const isResponseAddressAccepted =
+            isTradeSubmitted ||
+            (await dispatch(
+                validateExchangeReceiveAddressThunk({
+                    receiveAddress: response.receiveAddress ?? receiveAddress,
+                    receiveCryptoId: response.receive ?? trade.receive,
+                }),
+            ).unwrap());
+
+        if (!isResponseAddressAccepted) {
             return undefined;
         }
 
