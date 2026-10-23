@@ -18,6 +18,7 @@ import type { EventDoc } from '../types';
 import { AddedBadge } from './AddedBadge';
 import { AttributesTable } from './AttributesTable';
 import { Changelog } from './Changelog';
+import { HighlightedText } from './HighlightedText';
 import { LastUpdatedBadge } from './LastUpdatedBadge';
 import { Markdown } from './Markdown';
 import { getEventId, toEventExportName } from '../utils/filterUtils';
@@ -39,10 +40,11 @@ const COPY_FEEDBACK_MS = 2000;
 
 type HeaderProps = {
     event: EventDoc;
+    query: string;
     onEdit?: (event: EventDoc) => void;
 };
 
-const Header = ({ event, onEdit }: HeaderProps) => {
+const Header = ({ event, query, onEdit }: HeaderProps) => {
     const { ChangelogButton, isChangelogOpened } = useChangelogButton();
     const isMobile = useMediaQuery(`(max-width: ${variables.SCREEN_SIZE.MD})`);
     const [copied, setCopied] = useState(false);
@@ -136,7 +138,9 @@ const Header = ({ event, onEdit }: HeaderProps) => {
                             onClick={handleCopyExportNameClick}
                             onKeyDown={handleCopyExportNameKeyDown}
                         >
-                            <H3>{event.name}</H3>
+                            <H3>
+                                <HighlightedText text={event.name} query={query} />
+                            </H3>
                         </span>
                     </Tooltip>
                     <Row gap={4} alignItems="center">
@@ -172,18 +176,19 @@ const Header = ({ event, onEdit }: HeaderProps) => {
 
 type EventCardProps = {
     event: EventDoc;
+    query: string;
     onEdit?: (event: EventDoc) => void;
 };
 
-export const EventCard = memo(({ event, onEdit }: EventCardProps) => (
+export const EventCard = memo(({ event, query, onEdit }: EventCardProps) => (
     <Card paddingType="small">
-        <Header event={event} onEdit={onEdit} />
+        <Header event={event} query={query} onEdit={onEdit} />
         <InfoItem label="Trigger" typographyStyle="body-xs">
-            <Markdown>{event.descriptionTrigger}</Markdown>
+            <Markdown query={query}>{event.descriptionTrigger}</Markdown>
         </InfoItem>
         {event.description && (
             <InfoItem label="Description" typographyStyle="body-xs" margin={{ top: 12 }}>
-                <Markdown>{event.description}</Markdown>
+                <Markdown query={query}>{event.description}</Markdown>
             </InfoItem>
         )}
         {event.possibleImprovements && (
@@ -192,7 +197,7 @@ export const EventCard = memo(({ event, onEdit }: EventCardProps) => (
             </InfoItem>
         )}
 
-        <AttributesTable attributes={event.attributes ?? {}} />
+        <AttributesTable attributes={event.attributes ?? {}} query={query} />
     </Card>
 ));
 

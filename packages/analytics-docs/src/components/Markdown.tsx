@@ -10,6 +10,8 @@ import {
 } from '@trezor/components';
 import { CircleFilledIcon } from '@trezor/icons';
 
+import { HighlightedContent } from './HighlightedContent';
+
 const Code = styled.span`
     margin: 2px;
     position: relative;
@@ -27,8 +29,9 @@ const Code = styled.span`
 
 type MarkdownProps = {
     children?: string | null;
+    query?: string;
 };
-export const Markdown = ({ children: childrenMarkdown }: MarkdownProps) => (
+export const Markdown = ({ children: childrenMarkdown, query = '' }: MarkdownProps) => (
     <MarkdownComponent
         components={{
             code: ({ children }) => (
@@ -39,15 +42,23 @@ export const Markdown = ({ children: childrenMarkdown }: MarkdownProps) => (
                         intent="neutral"
                         position={{ type: 'relative' }}
                     >
-                        {children}
+                        <HighlightedContent query={query}>{children}</HighlightedContent>
                     </Text>
                 </Code>
             ),
-            strong: ({ children }) => <Text typographyStyle="body-sm-strong">{children}</Text>,
-            a: ({ children, ...rest }) => <Link {...rest}>{children}</Link>,
+            strong: ({ children }) => (
+                <Text typographyStyle="body-sm-strong">
+                    <HighlightedContent query={query}>{children}</HighlightedContent>
+                </Text>
+            ),
+            a: ({ children, ...rest }) => (
+                <Link {...rest}>
+                    <HighlightedContent query={query}>{children}</HighlightedContent>
+                </Link>
+            ),
             p: ({ children }) => (
                 <Paragraph typographyStyle="inherit" intent="neutral" margin={{ bottom: 8 }}>
-                    {children}
+                    <HighlightedContent query={query}>{children}</HighlightedContent>
                 </Paragraph>
             ),
             ul: ({ children }) => (
@@ -55,7 +66,11 @@ export const Markdown = ({ children: childrenMarkdown }: MarkdownProps) => (
                     {children}
                 </List>
             ),
-            li: ({ children }) => <List.Item>{children}</List.Item>,
+            li: ({ children }) => (
+                <List.Item>
+                    <HighlightedContent query={query}>{children}</HighlightedContent>
+                </List.Item>
+            ),
         }}
     >
         {childrenMarkdown}
