@@ -20,16 +20,20 @@ export const initBackground: ModuleInitBackground = ({
     messageSystem,
     logger,
 }) => {
-    const initialSettings = store.getTraySettings();
+    // The tray is off by default, and a headless boot has no window, so the disabled state would
+    // have no way to reach the user at all: while it lasts it overrides the user's tray preference
+    // (which is itself left untouched). Every writer of `state.visible` derives it here, so none
+    // of them can hide the tray while the message system has the app disabled.
+    const resolveVisible = (isDisabledByMessageSystem: boolean) =>
+        isDisabledByMessageSystem || store.getTraySettings().showOnTray;
+
+    const { isKillswitchActive } = messageSystem.getGate();
 
     const state = {
-        // The tray is off by default, and a headless boot has no window, so the disabled state
-        // would have no way to reach the user at all: while it lasts it overrides the user's tray
-        // preference (which is itself left untouched).
-        visible: initialSettings.showOnTray || messageSystem.getGate().isKillswitchActive,
+        visible: resolveVisible(isKillswitchActive),
         bridgeStatus: true,
         devices: 0,
-        isDisabledByMessageSystem: messageSystem.getGate().isKillswitchActive,
+        isDisabledByMessageSystem: isKillswitchActive,
     };
     let tray: Tray | undefined;
 
@@ -100,7 +104,7 @@ export const initBackground: ModuleInitBackground = ({
                     mainWindowProxy
                         .getInstance()
                         ?.webContents.send('tray/settings', store.getTraySettings());
-                    state.visible = false;
+                    state.visible = resolveVisible(state.isDisabledByMessageSystem);
                     renderTray();
                 },
             },
@@ -148,7 +152,7 @@ export const initBackground: ModuleInitBackground = ({
                 : 'Enabled by the message system',
         );
         state.isDisabledByMessageSystem = gate.isKillswitchActive;
-        state.visible = gate.isKillswitchActive || store.getTraySettings().showOnTray;
+        state.visible = resolveVisible(state.isDisabledByMessageSystem);
         renderTray();
     });
     mainThreadEmitter.on('module/bridge/status', (status: Status) => {
@@ -163,7 +167,7 @@ export const initBackground: ModuleInitBackground = ({
                 ...store.getTraySettings(),
                 ...updatedSettings,
             });
-            state.visible = updatedSettings.showOnTray;
+            state.visible = resolveVisible(state.isDisabledByMessageSystem);
             renderTray();
 
             return { success: true };
