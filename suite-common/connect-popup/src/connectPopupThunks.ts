@@ -423,6 +423,9 @@ export const connectPopupVerifyAddressThunk = createThunk<
         const device = selectSelectedDevice(getState());
         const call = selectConnectPopupCall(getState());
         if (!device || call?.state !== 'address-confirmation') return;
+        // Device is busy with a previous verification. A second call fails with
+        // Device_CallInProgress and clears the loading state of the running one.
+        if (call.addresses.some(({ loading }) => loading)) return;
 
         // Update loading state of addresses
         dispatch(
