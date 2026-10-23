@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { type UseFormReturn } from 'react-hook-form';
 
-import { selectAccountTransactionsWithNulls } from '@suite-common/wallet-core';
+import { selectAccountTransactions } from '@suite-common/wallet-core';
 import { type ExcludedUtxos, type FormState, type UtxoSorting } from '@suite-common/wallet-types';
 import { getUtxoOutpoint, isSameUtxo } from '@suite-common/wallet-utils';
 import type { AccountUtxo, PROTO } from '@trezor/connect';
@@ -31,9 +31,7 @@ export const useUtxoSelection = ({
     setValue,
     watch,
 }: UtxoSelectionContextProps): UtxoSelectionContext => {
-    const accountTransactions = useSelector(state =>
-        selectAccountTransactionsWithNulls(state, account.key),
-    );
+    const accountTransactions = useSelector(state => selectAccountTransactions(state, account.key));
 
     // register custom form field (without HTMLElement)
     useEffect(() => {
