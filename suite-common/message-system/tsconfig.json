@@ -11,6 +11,7 @@
     ],
     "references": [
         { "path": "../analytics-redux" },
+        { "path": "../geolocation" },
         { "path": "../message-system-core" },
         { "path": "../suite-types" },
         { "path": "../suite-utils" },
