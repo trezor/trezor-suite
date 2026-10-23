@@ -47,6 +47,8 @@ const initTray = ({
 }) => {
     let traySettings: TraySettings = { showOnTray };
 
+    // The background modules are loaded without a handshake payload, and `ModuleInterface` makes
+    // both hooks optional, neither of which the tray module does.
     const { onLoad } = initBackground({
         store: {
             getTraySettings: () => traySettings,
@@ -62,13 +64,13 @@ const initTray = ({
             subscribe: () => () => {},
         } as unknown as Dependencies['messageSystem'],
         logger,
-    } as Dependencies);
+    } as Dependencies) as { onLoad: () => void };
 
     onLoad();
 
     return {
         changeSettings: (settings: TraySettings) =>
-            ipcHandlers['tray/change-settings'](null, settings),
+            ipcHandlers['tray/change-settings']?.(null, settings),
         getTraySettings: () => traySettings,
     };
 };

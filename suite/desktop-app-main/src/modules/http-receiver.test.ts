@@ -55,6 +55,8 @@ const initHttpReceiver = (isKillswitchActive: boolean) => {
     let gate: MessageSystemGate = { isKillswitchActive, killswitchMessageId: undefined };
     const listeners: ((gate: MessageSystemGate) => void)[] = [];
 
+    // The background modules are loaded without a handshake payload, and `ModuleInterface` makes
+    // both hooks optional, neither of which the http-receiver module does.
     const module = initBackground({
         store: {
             getConnectSettings: () => ({ disableWs: true }),
@@ -72,7 +74,7 @@ const initHttpReceiver = (isKillswitchActive: boolean) => {
             },
         } as unknown as Dependencies['messageSystem'],
         logger: logger as unknown as Dependencies['logger'],
-    } as Dependencies);
+    } as Dependencies) as { onLoad: () => Promise<{ url: string | null }> };
 
     return {
         ...module,
