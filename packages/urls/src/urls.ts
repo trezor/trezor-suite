@@ -243,6 +243,9 @@ export const HELP_CENTER_SOL_STAKING: Url = withPlatformUtm(
 export const HELP_CENTER_ADA_STAKING: Url = withPlatformUtm(
     'https://trezor.io/guides/sending-receiving-staking-funds/staking-assets-in-trezor-suite/staking-cardano-ada-in-trezor-suite',
 );
+export const HELP_CENTER_ADA_STAKING_UPDATE_PROVIDER: Url = withPlatformUtm(
+    'https://trezor.io/support/troubleshooting/coins-tokens/fix-cardano-staking-that-s-no-longer-earning-rewards',
+);
 export const HELP_CENTER_SEED_CARD_URL: Url = withPlatformUtm(
     'https://trezor.io/learn/security-privacy/personal-security-standards/wallet-backup-cards-download-and-print-for-your-trezor',
 );

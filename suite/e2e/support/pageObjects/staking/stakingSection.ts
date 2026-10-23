@@ -96,6 +96,7 @@ export class StakingSection {
     readonly cardanoOutdatedBannerUpdateProviderButton: Locator;
     readonly newProviderCardHeader: Locator;
     readonly newProviderCardParagraph: Locator;
+    readonly newProviderCardLearnMoreLink: Locator;
     readonly newProviderCardUpdateProviderButton: Locator;
     readonly earnDashboardUpdateProviderButton: Locator;
 
@@ -200,6 +201,9 @@ export class StakingSection {
         this.newProviderCardHeader = this.page.getByTestId('@staking/new-provider-card/header');
         this.newProviderCardParagraph = this.page.getByTestId(
             '@staking/new-provider-card/paragraph',
+        );
+        this.newProviderCardLearnMoreLink = this.page.getByTestId(
+            '@staking/new-provider-card/learn-more',
         );
         this.newProviderCardUpdateProviderButton = this.page.getByTestId(
             '@staking/new-provider-card/update-provider-button',
