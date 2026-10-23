@@ -41,8 +41,6 @@ import {
     type RatesByKey,
     type TokenAddress,
     type TokenInfoBranded,
-    areBaseCurrencyAmountsEqual,
-    asBaseCurrencyAmount,
     createAccountKey,
 } from '@suite-common/wallet-types';
 import {
@@ -54,6 +52,7 @@ import {
     isErc4626,
     isStakingSymbol,
     sortTokensByName,
+    toBaseCurrencyDisplayAmount,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
 import { selectDiscoverySupportedNetworks } from '@suite-native/discovery';
@@ -272,14 +271,9 @@ export const selectAccountFiatBalance = createMemoizedSelector(
             shouldIncludeTokens,
         });
 
-        return totalBalance ? asBaseCurrencyAmount(totalBalance) : BASE_CURRENCY_ZERO;
-    },
-    {
-        memoizeOptions: {
-            // Accounts and fiat rates churn on every sync; keep the previous BigNumber reference
-            // when the amount is unchanged so useSelector consumers don't rerender.
-            resultEqualityCheck: areBaseCurrencyAmountsEqual,
-        },
+        return totalBalance
+            ? toBaseCurrencyDisplayAmount({ value: totalBalance, baseCurrencyCode: localCurrency })
+            : BASE_CURRENCY_ZERO;
     },
 );
 
@@ -293,14 +287,11 @@ export const selectAccountTokenFiatBalance = createMemoizedSelector(
 
         if (!rate || !balance) return BASE_CURRENCY_ZERO;
 
-        return toFiatCurrency({ amount: balance, rate }) ?? BASE_CURRENCY_ZERO;
-    },
-    {
-        memoizeOptions: {
-            // Accounts and fiat rates churn on every sync; keep the previous BigNumber reference
-            // when the amount is unchanged so useSelector consumers don't rerender.
-            resultEqualityCheck: areBaseCurrencyAmountsEqual,
-        },
+        const fiatAmount = toFiatCurrency({ amount: balance, rate });
+
+        return fiatAmount
+            ? toBaseCurrencyDisplayAmount({ value: fiatAmount, baseCurrencyCode: localCurrency })
+            : BASE_CURRENCY_ZERO;
     },
 );
 
