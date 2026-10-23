@@ -68,7 +68,11 @@ it('preserves the account sync cadence of every registered network', () => {
 
 it('exposes the service through the networks composition root and injector', () => {
     const networks = createNetworksCompositionRoot(
-        createMockDeps<NetworksCompositionRootDeps>({ getTrezorConnect: null, dispatch: null }),
+        createMockDeps<NetworksCompositionRootDeps>({
+            getTrezorConnect: null,
+            dispatch: null,
+            getNetworkBackend: null,
+        }),
     );
     const { getAccountSyncInterval } = injectGetAccountSyncInterval({ networks });
 

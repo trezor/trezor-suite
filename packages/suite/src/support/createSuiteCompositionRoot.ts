@@ -43,7 +43,7 @@ import {
 import { type GetBinFilesBaseUrlDep, type ReloadAppDep } from '@suite-common/suite-types';
 import { type ThpHostNameDep } from '@suite-common/thp';
 import { selectTradedAccountKeys } from '@suite-common/trading';
-import { selectAccountsByDeviceState } from '@suite-common/wallet-core';
+import { selectAccountsByDeviceState, selectNetworkBackendType } from '@suite-common/wallet-core';
 import { type SignVerifyAddressDep } from '@suite-lego/sign-verify';
 import { type GetTrezorConnectPrivilegedDep } from '@trezor/connect';
 import { toGetter } from '@trezor/dependency-injection';
@@ -152,6 +152,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
     const networks = createNetworksCompositionRoot({
         getTrezorConnect: deps.getTrezorConnect,
         dispatch: deps.dispatch,
+        getNetworkBackend: toGetter(deps.getState, selectNetworkBackendType),
     });
     const { suiteNetworkModuleRepository } = createSuiteNetworksCompositionRoot({
         getTrezorConnect: deps.getTrezorConnect,

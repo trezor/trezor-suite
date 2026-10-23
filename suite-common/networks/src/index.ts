@@ -19,6 +19,16 @@ export {
     selectSupportedNetworkSymbols,
 } from '../reduxState/networksSelectors';
 export { createLoadNetworkModules, type LoadNetworkModulesDep } from './createLoadNetworkModules';
+export {
+    createGetNetwork,
+    injectGetNetwork,
+    type GetNetwork,
+    type GetNetworkBackend,
+    type GetNetworkBackendDep,
+    type GetNetworkDep,
+    type GetNetworkDeps,
+    type GetNetworkParams,
+} from './createGetNetwork';
 export { createGetNetworkConfigs, type GetNetworkConfigsDep } from './createGetNetworkConfigs';
 export {
     createGetNetworkByCoingeckoId,
