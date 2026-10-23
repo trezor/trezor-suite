@@ -1,5 +1,6 @@
 import '@suite-common/test-utils/globalOverrides';
 
+import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { type TranslationKey } from '@suite/intl';
 import { type SuiteRouterHistoryDep } from '@suite/router';
 import { mockSuiteRouterHistory } from '@suite/router/mocks';
@@ -191,11 +192,17 @@ describe(`${DeviceCompromisedScreen.name} component`, () => {
     deviceCompromisedFixtures.forEach(({ description, device, persistentDeviceData, result }) => {
         it(description, () => {
             const { services } = createTestCompositionRoot<
-                { services: SuiteRouterHistoryDep },
+                { services: SuiteRouterHistoryDep & DesktopApiDep<'isLegacyBridgeRunning'> },
                 AppState
             >({
                 preloadedState: getInitialState(device, persistentDeviceData),
-                services: () => ({ suiteRouterHistory }),
+                services: () => ({
+                    suiteRouterHistory,
+                    desktopApi: {
+                        isLegacyBridgeRunning: () =>
+                            Promise.resolve({ success: true, payload: false }),
+                    },
+                }),
             });
             const { getByText, unmount } = renderWithProviders(
                 { ...services, networks: { networkIcon } },
