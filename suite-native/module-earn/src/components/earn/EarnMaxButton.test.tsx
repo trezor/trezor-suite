@@ -57,3 +57,57 @@ describe('Stake max analytics', () => {
         }
     });
 });
+
+describe('Unstake max', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('fills the deposit together with restaked ETH rewards', async () => {
+        const account = mockWalletAccount(
+            { symbol: asNetworkSymbol('eth') },
+            {
+                misc: {
+                    stakingPools: [
+                        {
+                            name: 'Everstake',
+                            contract: '0x789',
+                            autocompoundBalance: '2050000000000000000',
+                            claimableAmount: '0',
+                            depositedBalance: '2000000000000000000',
+                            pendingBalance: '0',
+                            pendingDepositedBalance: '0',
+                            restakedReward: '50000000000000000',
+                            withdrawTotalAmount: '0',
+                        },
+                    ],
+                },
+            },
+        );
+        const services: NativeAnalyticsDep = {
+            analytics: mockNativeAnalytics(mock<NativeAnalyticsDep['analytics']['report']>()),
+        };
+        await renderWithStoreProvider(
+            <EarnMaxButton
+                accountKey={account.key}
+                symbol={account.symbol}
+                isChecked={false}
+                onChange={mock()}
+                variant="unstake"
+            />,
+            {
+                services,
+                preloadedState: {
+                    wallet: {
+                        accounts: [account],
+                        settings: { localCurrency: 'usd', bitcoinAmountUnit: 0 },
+                    },
+                },
+            },
+        );
+
+        await fireEvent.press(screen.getByRole('switch'));
+
+        expect(mockSetValue).toHaveBeenCalledWith('amount', '2.05', { shouldValidate: true });
+    });
+});

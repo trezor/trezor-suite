@@ -21,6 +21,7 @@ import {
     selectIsCardanoStakedWithFiveBinaries,
     selectStakedBalanceByAccountKey,
     selectTronVotesByAccountKey,
+    selectUnstakableBalanceByAccountKey,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
@@ -147,6 +148,10 @@ export const StakingManagementStakedCard = ({
         selectStakedBalanceByAccountKey(state, accountKey),
     );
     const hasStakedBalance = new BigNumber(stakedBalance ?? '0').gt(0);
+    const unstakableBalance = useSelector((state: StakeRootState) =>
+        selectUnstakableBalanceByAccountKey(state, accountKey),
+    );
+    const hasUnstakableBalance = new BigNumber(unstakableBalance ?? '0').gt(0);
     const { totalRewards, isTotalRewardsLoading } = useStakingTotalRewards(accountKey);
 
     const apy = useSelector((state: StakeRootState) =>
@@ -325,7 +330,7 @@ export const StakingManagementStakedCard = ({
                                     }
                                 />
                             </Button>
-                            {hasStakedBalance && (
+                            {hasUnstakableBalance && (
                                 <Button
                                     flex={1}
                                     priority="secondary"
