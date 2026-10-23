@@ -10,8 +10,8 @@ import {
 } from '@trezor/blockchain-link-types';
 import { type Features } from '@trezor/connect';
 
+import { TRON_REWARD_CLAIM_COOLDOWN_SECONDS } from './tronStakingConstants';
 import {
-    TRON_REWARD_CLAIM_COOLDOWN_SECONDS,
     TRON_UNFREEZE_DELAY_SECONDS,
     getResourceGain,
     getTronAvailableVotingPower,

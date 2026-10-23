@@ -21,6 +21,9 @@ export const TRON_STAKING_LIMITS: StakingLimits = {
 
 export const TRON_UNFREEZE_DELAY_DAYS = 14;
 
+export const TRON_REWARD_CLAIM_COOLDOWN_SECONDS = 24 * 60 * 60;
+export const TRON_REWARD_CLAIM_MIN_FIRMWARE: [number, number, number] = [2, 12, 2];
+
 // TODO: return these from the API
 export const LUGANODES_TERMS_OF_SERVICE_URL = 'https://luganodes.com/terms-of-service';
 export const P2P_ORG_TERMS_OF_SERVICE_URL = 'https://www.p2p.org/terms-of-use';

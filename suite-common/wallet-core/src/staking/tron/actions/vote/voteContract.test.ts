@@ -6,9 +6,9 @@ import {
     buildVoteContract,
     buildVoteReviewForm,
     getAllocatedVotesTotal,
-    getCurrentVoteAllocations,
     splitVotesEvenly,
 } from './voteContract';
+import { getCurrentVoteAllocations } from '../../tronStakingUtils';
 
 const OWNER_ADDRESS = 'TVDGpn4hCSzJ5nkHPLetk8KQBtwaTppnkr';
 const REPRESENTATIVE_A = 'TN3W4H6rK2ce4vX9YnFQHwKENnHjoxb3m9';

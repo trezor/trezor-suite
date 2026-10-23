@@ -1,8 +1,5 @@
 import { type Account, type FormState } from '@suite-common/wallet-types';
 import * as tronUtils from '@trezor/network-tron/utils';
-import { BigNumber } from '@trezor/utils';
-
-import { getTronVotes } from '../../tronStakingUtils';
 
 export type TronVoteAllocation = {
     address: string;
@@ -31,22 +28,6 @@ export const buildVoteWitnessContract = ({ ownerHex, votes }: BuildVoteWitnessCo
     }) as const;
 
 export type TronVoteContract = ReturnType<typeof buildVoteWitnessContract>;
-
-const toWholeVotes = (votingPower: string): number =>
-    new BigNumber(votingPower).integerValue(BigNumber.ROUND_FLOOR).toNumber();
-
-export const getTotalVotes = (account: Account): number => {
-    if (account.networkType !== 'tron') {
-        return 0;
-    }
-
-    return toWholeVotes(account.misc.tronResources?.stakingInfo?.totalVotingPower ?? '0');
-};
-
-export const getCurrentVoteAllocations = (account: Account): TronVoteAllocation[] =>
-    getTronVotes(account)
-        .map(({ address, voteCount }) => ({ address, count: toWholeVotes(voteCount) }))
-        .filter(({ count }) => count > 0);
 
 export const getAllocatedVotesTotal = (allocations: TronVoteAllocation[]): number =>
     allocations.reduce((total, { count }) => total + count, 0);

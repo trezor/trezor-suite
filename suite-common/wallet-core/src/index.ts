@@ -124,8 +124,6 @@ export { composeTronVoteFeeLevelsThunk } from './staking/tron/actions/vote/compo
 export { submitTronVoteThunk } from './staking/tron/actions/vote/submitVote';
 export {
     getAllocatedVotesTotal,
-    getCurrentVoteAllocations,
-    getTotalVotes,
     splitVotesEvenly,
     type TronVoteAllocation,
 } from './staking/tron/actions/vote/voteContract';

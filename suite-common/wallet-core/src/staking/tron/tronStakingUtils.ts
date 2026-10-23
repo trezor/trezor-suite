@@ -7,16 +7,16 @@ import {
     type WalletAccountTransaction,
     supportedTronNetworkSymbols,
 } from '@suite-common/wallet-types';
-import { getTronStakingInfo, sunToTrx } from '@suite-common/wallet-utils';
+import { sunToTrx } from '@suite-common/wallet-utils';
 import {
     type TronAccountExtraData,
     type TronUnstakingBatch,
     type TronVote,
 } from '@trezor/blockchain-link-types';
-import { getFirmwareVersionArray } from '@trezor/device-utils';
 import { returnStableArrayIfEmpty } from '@trezor/redux-utils';
-import { BigNumber, isArrayMember, versionUtils } from '@trezor/utils';
+import { BigNumber, isArrayMember } from '@trezor/utils';
 
+import { type TronVoteAllocation } from './actions/vote/voteContract';
 import { tronStakingAdapter } from './adapter/tronStakingAdapter';
 import { TRON_UNFREEZE_DELAY_DAYS } from './tronStakingConstants';
 import { deriveStakingPositions } from '../positions/deriveStakingPositions';
@@ -29,15 +29,8 @@ export function isSupportedTronStakingNetworkSymbol(
     return isArrayMember(symbol, supportedTronNetworkSymbols);
 }
 
-export const isTronClaimSupported = (device: TrezorDevice | undefined): boolean => {
-    const firmware = getFirmwareVersionArray(device);
-
-    if (firmware === null) {
-        return false;
-    }
-
-    return versionUtils.isNewerOrEqual(firmware, [2, 12, 2]);
-};
+export const isTronClaimSupported = (device: TrezorDevice | undefined): boolean =>
+    tronStakingAdapter.isRewardClaimSupported(device);
 
 export const isTronStakingTx = (transaction: WalletAccountTransaction) =>
     tronStakingAdapter.classifyTransaction(transaction) !== null;
@@ -63,14 +56,8 @@ export const getTronCryptoBalanceWithStaking = (account: Account): string =>
 export const getTronStakingRewards = (account: Account): string =>
     getTronStakingSummary(account).claimableRewards;
 
-export const TRON_REWARD_CLAIM_COOLDOWN_SECONDS = 24 * 60 * 60;
-
-export const getTronRewardClaimCooldownEndsAt = (account: Account): number | null => {
-    const stakingInfo = getTronStakingInfo(account);
-    if (!stakingInfo?.latestWithdrawTime) return null;
-
-    return stakingInfo.latestWithdrawTime + TRON_REWARD_CLAIM_COOLDOWN_SECONDS;
-};
+export const getTronRewardClaimCooldownEndsAt = (account: Account): number | null =>
+    tronStakingAdapter.getRewardClaimCooldownEndsAt(account);
 
 export const isTronRewardClaimOnCooldown = (account: Account): boolean => {
     const cooldownEndsAt = getTronRewardClaimCooldownEndsAt(account);
@@ -219,13 +206,19 @@ export const getTronPendingUnstakeBalance = (
 ): string => sumUnstakingBatchesSun(account, batch => batch.expireTime > nowSeconds);
 
 export const getTronVotes = (account?: Account): TronVote[] =>
-    getTronStakingInfo(account)?.votes ?? [];
+    account ? tronStakingAdapter.getVotes(account) : [];
 
 export const getTronTotalVotingPower = (account?: Account): string =>
-    getTronStakingInfo(account)?.totalVotingPower ?? '0';
+    account ? tronStakingAdapter.getVotingPower(account).total : '0';
 
 export const getTronAvailableVotingPower = (account?: Account): string =>
-    getTronStakingInfo(account)?.availableVotingPower ?? '0';
+    account ? tronStakingAdapter.getVotingPower(account).available : '0';
+
+export const getTotalVotes = (account: Account): number =>
+    tronStakingAdapter.getCastableVotes(account);
+
+export const getCurrentVoteAllocations = (account: Account): TronVoteAllocation[] =>
+    tronStakingAdapter.getVoteAllocations(account);
 
 export const getResourceGain = (
     amount: string,
