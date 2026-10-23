@@ -13,6 +13,7 @@ type Params = {
     coinInfo: CoinInfo;
     identity?: string;
     descriptor?: string;
+    hexOnly?: boolean;
 };
 
 export default class BlockchainGetTransactions extends AbstractMethod<
@@ -28,6 +29,7 @@ export default class BlockchainGetTransactions extends AbstractMethod<
             { name: 'coin', type: 'string', required: true },
             { name: 'identity', type: 'string' },
             { name: 'descriptor', type: 'string' },
+            { name: 'hexOnly', type: 'boolean' },
         ]);
 
         const coinInfo = getCoinInfoOrThrow(payload.coin);
@@ -39,6 +41,7 @@ export default class BlockchainGetTransactions extends AbstractMethod<
             coinInfo,
             identity: payload.identity,
             descriptor: payload.descriptor,
+            hexOnly: payload.hexOnly,
         };
 
         super(message, params);
@@ -55,6 +58,12 @@ export default class BlockchainGetTransactions extends AbstractMethod<
             sendCoreMessage,
             this.params.identity,
         );
+
+        if (this.params.hexOnly) {
+            const hexes = await backend.getTransactionHexes(this.params.txs);
+
+            return this.params.txs.map((txid, i) => ({ txid, hex: hexes[i]! }));
+        }
 
         return backend.getTransactions(this.params.txs, this.params.descriptor);
     }
