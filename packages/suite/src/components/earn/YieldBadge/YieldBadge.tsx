@@ -28,6 +28,8 @@ const BadgeButton = styled.button`
     }
 `;
 
+const YIELD_BADGE_TEST_ID = '@earn/yield-badge';
+
 type YieldBadgeVariant = 'inactive' | 'active' | 'promo';
 
 type YieldBadgeVariantConfig = {
@@ -79,7 +81,14 @@ export const YieldBadge = ({ apy, variant, account, vaultId, analyticsFrom }: Yi
     const { translationId, iconLeft, priority, shouldAnchorAtVaultRow } = variantConfigMap[variant];
 
     const badge = (
-        <Badge intent="brand" size="small" priority={priority} iconLeft={iconLeft}>
+        <Badge
+            intent="brand"
+            size="small"
+            priority={priority}
+            iconLeft={iconLeft}
+            // Tests reach the badge by this id: the button around it carries it when there is one.
+            data-testid={account === undefined ? YIELD_BADGE_TEST_ID : undefined}
+        >
             <Translation id={translationId} values={{ apy: formatApyValue(apy) }} />
         </Badge>
     );
@@ -110,7 +119,7 @@ export const YieldBadge = ({ apy, variant, account, vaultId, analyticsFrom }: Yi
     };
 
     return (
-        <BadgeButton type="button" onClick={goToEarnYield} data-testid="@earn/yield-badge">
+        <BadgeButton type="button" onClick={goToEarnYield} data-testid={YIELD_BADGE_TEST_ID}>
             {badge}
         </BadgeButton>
     );

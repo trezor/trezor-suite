@@ -67,5 +67,7 @@ export const HomeAssetApyBadge = (props: HomeAssetApyBadgeProps) => {
         return null;
     }
 
-    return <YieldBadge apy={apy} variant={isToken ? 'active' : 'inactive'} />;
+    // A Home row stands for every account holding the asset, so whether one of them already
+    // earns this rate is not known here: the badge is always the offer, as on the token list.
+    return <YieldBadge apy={apy} variant="inactive" />;
 };
