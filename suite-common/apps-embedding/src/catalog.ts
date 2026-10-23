@@ -249,7 +249,7 @@ export const APPS_EMBEDDING_CATALOG: AppsEmbeddingCatalogEntry[] = [
             {
                 kind: 'mobile',
                 expectedBehavior:
-                    "Loads in the WebView. iOS denies the camera (EmbeddedAppWebView answers every capture request with deny), so the camera mode cannot start; Android WebView grants the camera once Suite holds the permission and asks the OS for it otherwise, so scanning works there. Image upload works on both, decoded by the site's server behind a Cloudflare Turnstile check. A decoded link is a target=_blank anchor: denied and reported as a popup. The scan history lives in localStorage, so it is gone on the next opening as long as the entry does not persist. In the system browser Safari or Chrome asks for the camera itself — on iOS in the ephemeral session this non-persisting entry gets; observe whether that one grants it too.",
+                    "Loads in the WebView. Both platforms deny the camera (EmbeddedAppWebView answers every capture request with deny, on Android through Suite's patch of react-native-webview), so the camera mode cannot start. Image upload works on both, decoded by the site's server behind a Cloudflare Turnstile check. A decoded link is a target=_blank anchor: denied and reported as a popup. The scan history lives in localStorage, so it is gone on the next opening as long as the entry does not persist. In the system browser Safari or Chrome asks for the camera itself — on iOS in the ephemeral session this non-persisting entry gets; observe whether that one grants it too.",
             },
         ],
     },

@@ -42997,6 +42997,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-native-webview@patch:react-native-webview@npm%3A13.16.1#~/.yarn/patches/react-native-webview-npm-13.16.1-in-app-browser.patch":
+  version: 13.16.1
+  resolution: "react-native-webview@patch:react-native-webview@npm%3A13.16.1#~/.yarn/patches/react-native-webview-npm-13.16.1-in-app-browser.patch::version=13.16.1&hash=4318f6"
+  dependencies:
+    escape-string-regexp: "npm:^4.0.0"
+    invariant: "npm:2.2.4"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 10/f385410bb325550c7ee078c6009bcc1213b80be6c85bf8f5c054bbc1ff427b93f8feeb631e91b4d142d7e67d0eb1191d09669d22326933d4a2d353bae866727c
+  languageName: node
+  linkType: hard
+
 "react-native-worklets@npm:0.13.0":
   version: 0.13.0
   resolution: "react-native-worklets@npm:0.13.0"

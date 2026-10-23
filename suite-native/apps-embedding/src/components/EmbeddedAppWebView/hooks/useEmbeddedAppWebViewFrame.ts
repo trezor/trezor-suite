@@ -138,6 +138,12 @@ export const useEmbeddedAppWebViewFrame = ({
         onEvent({ type: 'window-open-attempt', url: nativeEvent.targetUrl, outcome: 'denied' });
     };
 
+    // Reached only for a download the view has already refused: iOS cancels the response before
+    // reporting, and Android reports instead of saving once downloads are disabled.
+    const handleFileDownload: WebViewHandler<'onFileDownload'> = ({ nativeEvent }) => {
+        onEvent({ type: 'download-blocked', url: nativeEvent.downloadUrl });
+    };
+
     // Both platforms name the frame that posted, so a message from an iframe of another origin
     // never reaches the log.
     const handleMessage = ({ nativeEvent }: WebViewMessageEvent) => {
@@ -179,6 +185,7 @@ export const useEmbeddedAppWebViewFrame = ({
         handleLoad,
         handleError,
         handleOpenWindow,
+        handleFileDownload,
         handleMessage,
         handleNavigationStateChange,
     };

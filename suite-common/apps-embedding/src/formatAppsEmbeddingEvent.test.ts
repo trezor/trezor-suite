@@ -57,6 +57,11 @@ const fixtures: { description: string; event: AppsEmbeddingEvent; expected: stri
         expected: 'navigation blocked — https://elsewhere.example/',
     },
     {
+        description: 'download-blocked',
+        event: { type: 'download-blocked', url: 'https://example.com/update.apk' },
+        expected: 'download blocked — https://example.com/update.apk',
+    },
+    {
         description: 'requested http-auth',
         event: { type: 'http-auth', origin: 'https://guides.example', outcome: 'requested' },
         expected: 'HTTP auth requested — https://guides.example',

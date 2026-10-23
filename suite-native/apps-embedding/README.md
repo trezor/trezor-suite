@@ -90,10 +90,11 @@ Checked on 2026-10-21 against `react-native-webview` 13.16.1 and `expo-web-brows
 | Session shared with the system browser                             | ❌          | ❌ [18]     | ❌              | ✅ [20]         |
 | Suite can clear the site's data                                    | ⚠️ [17]     | ❌          | ⚠️ [19]         | ❌              |
 | File upload (`<input type="file">`)                                | ✅          | ✅          | ✅ [21]         | ✅              |
-| Downloads                                                          | ⚠️ [22]     | ⚠️ [23]     | ✅ [24]         | ✅              |
+| Downloads                                                          | ⚠️ [22]     | ⚠️ [23]     | ⚠️ [24]         | ✅              |
 | Geolocation                                                        | ⚠️ [25]     | ✅          | ⚠️ [25]         | ✅              |
 | HTTP Basic authentication                                          | ⚠️ [26]     | ✅          | ⚠️ [26]         | ✅              |
 | Remote inspection (Web Inspector, `chrome://inspect`)              | ✅ [27]     | ❌          | ✅ [27]         | ❌              |
+| JavaScript dialogs (`alert`, `confirm`, `prompt`)                  | ✅ [28]     | ✅          | ⚠️ [28]         | ✅              |
 
 1. Every mobile host is a top-level browsing context, so the framing rules that stop the web iframe
    do not apply.
@@ -127,9 +128,11 @@ Checked on 2026-10-21 against `react-native-webview` 13.16.1 and `expo-web-brows
    declares the camera usage description; its microphone one says the app does not use it). Since
    iOS 15 the host answers each request through `mediaCapturePermissionGrantType`;
    `EmbeddedAppWebView` denies.
-9. `react-native-webview` grants the camera and microphone once Suite holds the runtime permission
-   and asks the user otherwise, so `CAMERA` and `RECORD_AUDIO` have to be declared in the manifest.
-   The library offers no way to refuse.
+9. `react-native-webview` grants the camera and microphone to any frame once Suite holds the runtime
+   permission and asks the user otherwise, so a host that grants needs `CAMERA` and `RECORD_AUDIO` in
+   the manifest. The library implements `mediaCapturePermissionGrantType` on iOS only; Suite's patch
+   of it (`.yarn/patches/react-native-webview-npm-13.16.1-in-app-browser.patch`) makes `deny` and
+   `grantIfSameHostElseDeny` apply on Android too, and `EmbeddedAppWebView` denies.
 10. iOS 13+, only with `enableApplePay`, which switches off every injected script:
     `injectJavaScript`, the history shim, `sharedCookiesEnabled` and the `window.ReactNativeWebView`
     bridge (a page then has to call `window.webkit.messageHandlers.ReactNativeWebView.postMessage`).
@@ -177,12 +180,18 @@ Checked on 2026-10-21 against `react-native-webview` 13.16.1 and `expo-web-brows
     not exposed by `expo-web-browser` 57.
 21. `react-native-webview` answers `onShowFileChooser` with the photo picker or the camera; a
     `capture` input needs the camera permission.
-22. iOS 13+ reports a download through `onFileDownload` and leaves the download to the app; without a
-    handler the WebView tries to render the file instead (PDFs render inline). Not wired.
+22. iOS 13+ cancels an attachment response and reports it through `onFileDownload` as soon as a
+    handler is set, leaving the download to the app; without one the WebView tries to render the
+    file instead (PDFs render inline). `EmbeddedAppWebView` sets the handler and downloads nothing,
+    so every attempt ends as a `download-blocked` event, as on desktop.
 23. The browser's own handling: files open through its share and "Open in" sheet rather than a
     download manager.
-24. `react-native-webview` hands downloads to `DownloadManager`, which saves them to the device; the
-    host cannot refuse.
+24. `react-native-webview` hands downloads to `DownloadManager`, which saves them to the public
+    Downloads directory with the site's cookies and, on Android 10+, without a prompt — for any
+    frame, and the library offers no way to refuse. Suite's patch of the library
+    (`.yarn/patches/react-native-webview-npm-13.16.1-in-app-browser.patch`) adds a `downloadsEnabled`
+    prop; off, the listener reports the download through `onFileDownload` instead of saving it, and
+    `EmbeddedAppWebView` keeps it off.
 25. iOS prompts through the page once the app declares `NSLocationWhenInUseUsageDescription` (Suite
     has none). Android needs `geolocationEnabled` and `ACCESS_FINE_LOCATION` in the manifest; the
     library asks the user when the page does. `EmbeddedAppWebView` keeps it off.
@@ -190,6 +199,11 @@ Checked on 2026-10-21 against `react-native-webview` 13.16.1 and `expo-web-brows
     none, so a challenge ends as a 401 page.
 27. `webviewDebuggingEnabled` turns on Safari Web Inspector (iOS 16.4+) and `chrome://inspect`;
     `EmbeddedAppWebView` enables it in builds that are not codesigned.
+28. A dialog looks like one of the app unless it says who asked. On iOS a patch of
+    `react-native-webview` (see `.yarn/patches`) titles each dialog with the host of the frame that
+    opened it, so a third-party iframe cannot pass a prompt off as Suite's own, and shows none for a
+    frame without an identifiable host. Android's own dialog names the page, but the top-level one
+    whatever frame asked.
 
 ### Sources
 
