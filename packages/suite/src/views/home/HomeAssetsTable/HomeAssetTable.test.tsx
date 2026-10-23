@@ -17,10 +17,15 @@ import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockYieldVault } from '@suite-common/wallet-core/mocks';
-import { type CurrentRate, type TokenAddress } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type CurrentRate,
+    type HomeAssetsTableGrouping,
+    type TokenAddress,
+} from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
-import { type StaticSessionId } from '@trezor/device-utils';
+import { FirmwareType, type StaticSessionId } from '@trezor/device-utils';
 import { getWrappedNativeToken } from '@trezor/network-ethereum/constants';
 
 import { type AppState } from 'src/reducers/store';
@@ -104,11 +109,19 @@ type InitialStateParams = {
     /** What the Earn API says Ethereum staking pays, as a percentage; nothing by default. */
     ethStakingApy?: number;
     areYieldDepositsOff?: boolean;
+    accounts?: Account[];
+    firmwareType?: FirmwareType;
+    grouping?: HomeAssetsTableGrouping;
+    areSmallBalancesShown?: boolean;
 };
 
 const getInitialState = ({
     ethStakingApy,
     areYieldDepositsOff = false,
+    accounts = [ethereumAccount, bitcoinAccount],
+    firmwareType = FirmwareType.Universal,
+    grouping = 'default',
+    areSmallBalancesShown = true,
 }: InitialStateParams = {}): AppState => ({
     ...mockInitialAppState,
     messageSystem: areYieldDepositsOff
@@ -117,7 +130,10 @@ const getInitialState = ({
     networks: mockNetworksState([BTC, ETH]),
     device: {
         ...mockInitialAppState.device,
-        selectedDevice: mockSuiteDevice({ state: { staticSessionId: DEVICE_STATE } }),
+        selectedDevice: mockSuiteDevice({
+            state: { staticSessionId: DEVICE_STATE },
+            firmwareType,
+        }),
     },
     tokenDefinitions: {
         [ETH]: {
@@ -127,11 +143,13 @@ const getInitialState = ({
     wallet: {
         ...mockInitialAppState.wallet,
         selectedAccount: selectedAccountInitialState,
-        accounts: [ethereumAccount, bitcoinAccount],
+        accounts,
         settings: {
             ...mockInitialAppState.wallet.settings,
             enabledNetworks: [BTC, ETH],
             localCurrency: 'usd',
+            homeAssetsTableGrouping: grouping,
+            areHomeAssetSmallBalancesShown: areSmallBalancesShown,
         },
         fiat: {
             ...mockInitialAppState.wallet.fiat,
@@ -198,6 +216,8 @@ const renderTable = (state: AppState) => {
     const { services } = createTestCompositionRoot<void, AppState>({ preloadedState: state });
 
     renderWithProviders({ ...services, networks: { networkIcon } }, <HomeAssetTable />);
+
+    return services;
 };
 
 /** The badge in the row of a coin (`eth/coin`) or a token (`eth/<contract>`), if it has one. */
@@ -261,6 +281,40 @@ describe('the home-asset table', () => {
             expect(mockUseAllYieldOpportunities).not.toHaveBeenCalledWith(
                 expect.objectContaining({ enabled: true }),
             );
+        });
+    });
+
+    describe('the menu over the table', () => {
+        it('groups the rows by network as the user chose on universal firmware', () => {
+            renderTable(getInitialState({ grouping: 'networks' }));
+
+            expect(screen.getByTestId('@dashboard/home-asset/grouping')).toBeInTheDocument();
+            expect(screen.getByTestId('@dashboard/home-asset-group/btc')).toBeInTheDocument();
+        });
+
+        it('is not offered on Bitcoin-only firmware, which shows every row ungrouped', () => {
+            // Worth 10c: a small balance the saved switch would hide.
+            const smallBitcoinAccount = mockWalletAccount({
+                symbol: BTC,
+                formattedBalance: '0.000001',
+            });
+
+            const services = renderTable(
+                getInitialState({
+                    accounts: [smallBitcoinAccount],
+                    firmwareType: FirmwareType.BitcoinOnly,
+                    grouping: 'networks',
+                    areSmallBalancesShown: false,
+                }),
+            );
+
+            expect(screen.queryByTestId('@dashboard/home-asset/grouping')).not.toBeInTheDocument();
+            expect(screen.queryByTestId('@dashboard/home-asset-group/btc')).not.toBeInTheDocument();
+            expect(screen.getByTestId('@dashboard/home-asset-item/btc/coin')).toBeInTheDocument();
+            expect(services.store.getState().wallet.settings).toMatchObject({
+                homeAssetsTableGrouping: 'networks',
+                areHomeAssetSmallBalancesShown: false,
+            });
         });
     });
 });
