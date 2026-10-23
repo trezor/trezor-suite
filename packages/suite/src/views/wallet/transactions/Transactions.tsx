@@ -15,7 +15,7 @@ import { type AppState } from 'src/types/suite';
 import { isNetworkWithGraphFeature } from 'src/utils/wallet/graph';
 
 import { TradeBox } from './TradeBox/TradeBox';
-import { WalletTransactionList } from './TransactionList/WalletTransactionList';
+import { SingleAccountTransactionList } from './TransactionList/SingleAccountTransactionList';
 import { AccountEmpty } from './components/AccountEmpty';
 import { AccountOverviewBalance } from './components/AccountOverviewBalance';
 import { NoTransactions } from './components/NoTransactions';
@@ -72,7 +72,9 @@ export const Transactions = () => {
                     <AccountOverviewBalance selectedAccount={selectedAccount} />
                     {isEmpty && <AccountEmpty account={account} />}
                 </Column>
-                {!isEmpty && <WalletTransactionList account={account} symbol={account.symbol} />}
+                {!isEmpty && (
+                    <SingleAccountTransactionList account={account} symbol={account.symbol} />
+                )}
             </Layout>
         );
     }
@@ -103,7 +105,7 @@ export const Transactions = () => {
                     </Column>
                 )}
                 <SolanaLimitedHistoryBanner account={account} />
-                <WalletTransactionList account={account} symbol={account.symbol} />
+                <SingleAccountTransactionList account={account} symbol={account.symbol} />
             </Layout>
         );
     }
