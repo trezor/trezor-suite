@@ -7,7 +7,6 @@ import { useAtomValue } from 'jotai';
 
 import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { parseAccountKey } from '@suite-common/wallet-utils';
 import { useConfirmOnTrezorController } from '@suite-native/confirm-on-trezor';
 import {
     type SendStackParamList,
@@ -30,7 +29,7 @@ import { wasAppLeftDuringReviewAtom } from '../atoms/wasAppLeftDuringReviewAtom'
 import { useSendTransactionErrorAlert } from '../hooks/useSendTransactionErrorAlert';
 import { useTxValidityFlow } from '../hooks/useTxValidityFlow';
 import { useUtxoSelection } from '../hooks/useUtxoSelection';
-import { navigateOutOfSendFlowAction } from '../utils';
+import { getSendFlowExitDestination, navigateOutOfSendFlowAction } from '../utils';
 
 type SendOutputsReviewScreenProps = StackProps<
     SendStackParamList,
@@ -121,9 +120,10 @@ export const SendOutputsReviewScreen = ({ route }: SendOutputsReviewScreenProps)
                 accountKey,
                 tokenContract,
                 txid,
-                networkSymbol: isAssetsFirstEnabled
-                    ? parseAccountKey(accountKey).networkSymbol
-                    : undefined,
+                destination: getSendFlowExitDestination({
+                    isAssetsFirstEnabled,
+                    networkSymbol: account?.symbol,
+                }),
             }),
         );
 

@@ -443,7 +443,7 @@ export const selectIsAccountDiscoveryFailed = createMemoizedSelector(
     account => !!account && isAccountFailed(account),
 );
 
-export const selectAccountSupportsTokens = createMemoizedSelector(
+export const selectAreTokensSupportedByAccount = createMemoizedSelector(
     [selectAccountByKey],
     account => !!account && isNetworkWithTokens(account.symbol),
 );

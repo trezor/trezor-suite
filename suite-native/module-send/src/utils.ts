@@ -68,33 +68,47 @@ export const constructFormDraft = ({
 export const isSameUtxo = (utxo1: Utxo, utxo2: Utxo): boolean =>
     utxo1.txid === utxo2.txid && utxo1.vout === utxo2.vout;
 
-interface NavigateOutOfSendFlowActionProps {
+export type SendFlowExitDestination =
+    { type: 'assetDetail'; networkSymbol: NetworkSymbol } | { type: 'accountDetail' };
+
+type GetSendFlowExitDestinationParams = {
+    isAssetsFirstEnabled: boolean;
+    networkSymbol: NetworkSymbol | null | undefined;
+};
+
+/**
+ * The assets-first experiment exits the send flow to the asset detail, every other case exits to
+ * the account detail. Without a resolved network symbol there is no asset detail to open.
+ */
+export const getSendFlowExitDestination = ({
+    isAssetsFirstEnabled,
+    networkSymbol,
+}: GetSendFlowExitDestinationParams): SendFlowExitDestination =>
+    isAssetsFirstEnabled && networkSymbol
+        ? { type: 'assetDetail', networkSymbol }
+        : { type: 'accountDetail' };
+
+type NavigateOutOfSendFlowActionParams = {
     accountKey: AccountKey;
+    destination: SendFlowExitDestination;
     tokenContract?: TokenAddress;
     txid?: string;
-    networkSymbol?: NetworkSymbol;
-}
+};
 
 export const navigateOutOfSendFlowAction = ({
     accountKey,
+    destination,
     tokenContract,
     txid,
-    networkSymbol,
-}: NavigateOutOfSendFlowActionProps) => {
-    const routes: any[] = [
-        {
-            name: RootStackRoutes.AppTabs,
-            params: {
-                screen: AppTabsRoutes.HomeStack,
-            },
-        },
-        networkSymbol
+}: NavigateOutOfSendFlowActionParams) => {
+    const detailRoute =
+        destination.type === 'assetDetail'
             ? {
                   name: RootStackRoutes.AssetsStack,
                   params: {
                       screen: AssetsStackRoutes.AssetDetail,
                       params: {
-                          networkSymbol,
+                          networkSymbol: destination.networkSymbol,
                           tokenContract,
                       },
                   },
@@ -109,7 +123,16 @@ export const navigateOutOfSendFlowAction = ({
                           closeActionType: 'back',
                       },
                   },
-              },
+              };
+
+    const routes: any[] = [
+        {
+            name: RootStackRoutes.AppTabs,
+            params: {
+                screen: AppTabsRoutes.HomeStack,
+            },
+        },
+        detailRoute,
     ];
 
     if (txid) {
