@@ -6,6 +6,7 @@ import { type AssetsRootState, selectAssetName } from '@suite-common/assets';
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
 import type { AssetsStackParamList, AssetsStackRoutes } from '@suite-native/navigation';
+import { AssetPriceChart } from '@suite-native/price-chart';
 
 import { AssetDetailPrice } from './AssetDetailPrice';
 
@@ -30,6 +31,7 @@ export const AssetDetailPriceSection = () => {
             </HStack>
 
             <AssetDetailPrice networkSymbol={networkSymbol} tokenContract={tokenContract} />
+            <AssetPriceChart networkSymbol={networkSymbol} tokenContract={tokenContract} />
         </VStack>
     );
 };

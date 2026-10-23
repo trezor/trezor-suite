@@ -20,6 +20,20 @@ interface FetchCurrentFiatRatesOptions {
     skipCache?: boolean;
 }
 
+export type CoinGeckoPricePair = [timestamp: number, price: number];
+
+export type CoinGeckoMarketChartDays = number | 'max';
+
+type FetchCoinGeckoMarketChartParams = {
+    ticker: TickerId;
+    fiatCurrency: BaseCurrencyCode;
+    days: CoinGeckoMarketChartDays;
+};
+
+type CoinGeckoMarketChartResponse = {
+    prices?: CoinGeckoPricePair[];
+};
+
 const rateLimiter = new RateLimiter(1_000, 15_000);
 
 const fetchCoinGecko = async (url: string, skipCache?: boolean) => {
@@ -95,6 +109,27 @@ const buildCoinUrls = async (ticker: TickerId) => {
     }
 
     return [`${baseUrl}/contract/${ticker.tokenAddress}`];
+};
+
+export const fetchCoinGeckoMarketChart = async ({
+    ticker,
+    fiatCurrency,
+    days,
+}: FetchCoinGeckoMarketChartParams): Promise<CoinGeckoPricePair[] | null> => {
+    const coinUrls = await buildCoinUrls(ticker);
+    const urlParams = `vs_currency=${fiatCurrency}&days=${days}`;
+
+    for (const coinUrl of coinUrls) {
+        const response = (await fetchCoinGecko(`${coinUrl}/market_chart?${urlParams}`)) as
+            CoinGeckoMarketChartResponse | undefined;
+        const prices = response?.prices;
+
+        if (prices && prices.length > 0) {
+            return prices;
+        }
+    }
+
+    return null;
 };
 
 /**
