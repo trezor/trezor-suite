@@ -10,8 +10,9 @@ import {
 import { fixtures as dogeFixtures } from './doge-endpoints';
 import { ETH_MOCKED_ACCOUNT, fixtures as ethFixtures } from './eth-endpoints';
 import { fixtures as ltcFixtures } from './ltc-mw-endpoints';
+import { TRX_MOCKED_ACCOUNT, deriveTrxTxid, fixtures as trxFixtures } from './trx-endpoints';
 
-type SupportedSymbols = 'ltc' | 'doge' | 'eth' | 'ada';
+type SupportedSymbols = 'ltc' | 'doge' | 'eth' | 'ada' | 'trx';
 
 type SendNewBlockNotificationParams = { height: number; hash: string };
 
@@ -20,6 +21,7 @@ export class BlockbookMock {
     private accountState: any = null;
     private mockType: SupportedSymbols | null = null;
     private readonly newBlockSubscriptionIds = new Set<string>();
+    private _lastBroadcastTxid: string | undefined;
 
     get mockServer() {
         if (!this._mockServer) {
@@ -31,6 +33,15 @@ export class BlockbookMock {
 
     get url() {
         return `ws://localhost:${this.mockServer.options.port}`;
+    }
+
+    // Txid of the last transaction broadcast to the mock (source of truth for post-send assertions).
+    get lastBroadcastTxid(): string {
+        if (!this._lastBroadcastTxid) {
+            throw new Error('No transaction has been broadcast to the mock yet');
+        }
+
+        return this._lastBroadcastTxid;
     }
 
     private selectFixture(type: SupportedSymbols) {
@@ -47,6 +58,10 @@ export class BlockbookMock {
                 this.accountState = ADA_MOCKED_ACCOUNT;
 
                 return adaFixtures;
+            case 'trx':
+                this.accountState = TRX_MOCKED_ACCOUNT;
+
+                return trxFixtures;
             default:
                 throw new Error('Unknown blockbook mock type');
         }
@@ -59,6 +74,13 @@ export class BlockbookMock {
         // client's `block` event when its id matches the id the subscription was created with.
         this.mockServer.on('blockbook_subscribeNewBlock', (request: { id: string }) => {
             this.newBlockSubscriptionIds.add(request.id);
+        });
+        // The trx fixtures answer a broadcast with the txid of the broadcast transaction, as a real
+        // backend does; remember it for post-send assertions.
+        this.mockServer.on('blockbook_sendTransaction', (request: { params: { hex: string } }) => {
+            if (mockType === 'trx') {
+                this._lastBroadcastTxid = deriveTrxTxid(request.params.hex);
+            }
         });
         this.mockType = mockType;
         const fixtures = this.selectFixture(mockType);
@@ -74,7 +96,7 @@ export class BlockbookMock {
 
     @step()
     updateAccountState(accountData: any) {
-        if (this.mockType !== 'eth' && this.mockType !== 'ada') {
+        if (this.mockType !== 'eth' && this.mockType !== 'ada' && this.mockType !== 'trx') {
             throw new Error(
                 `Account state update not supported for this mock type: ${this.mockType}`,
             );
@@ -91,6 +113,11 @@ export class BlockbookMock {
                 accountMethod: 'GET_ACCOUNT_INFO',
                 accountId: 'descriptor',
                 fallbackResponse: ADA_MOCKED_EMPTY_ACCOUNT,
+            },
+            trx: {
+                accountMethod: 'getAccountInfo',
+                accountId: 'address',
+                fallbackResponse: undefined,
             },
         };
         const { accountMethod, accountId, fallbackResponse } = accountParams[this.mockType];

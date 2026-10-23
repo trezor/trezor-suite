@@ -17,6 +17,7 @@ import { MetadataMock } from './mocks/metadataMock';
 import { SolanaStakingMock } from './mocks/solanaStakingMock';
 import { TradingMock } from './mocks/trading/tradingMock';
 import { TradingResponses, observeTradingResponses } from './mocks/trading/tradingResponses';
+import { TronEarnApiMock } from './mocks/tronEarnApiMock';
 import { YieldMock } from './mocks/yieldMock';
 import { ActivityPage } from './pageObjects/activityPage';
 import { AnalyticsSection } from './pageObjects/analyticsSection';
@@ -34,6 +35,7 @@ import { PromoBanner } from './pageObjects/promoBanner';
 import { RecoveryModal } from './pageObjects/recoveryModal';
 import { SettingsPage } from './pageObjects/settings/settingsPage';
 import { StakingSection } from './pageObjects/staking/stakingSection';
+import { TronStakingSection } from './pageObjects/staking/tronStakingSection';
 import { ToastSection } from './pageObjects/toastSection';
 import { FeeSection } from './pageObjects/trading/feeSection';
 import { TradingPage } from './pageObjects/trading/tradingPage';
@@ -75,6 +77,8 @@ type Fixtures = {
     connectPermissionsModal: ConnectPermissionsModal;
     connectSelectAccountModal: ConnectSelectAccountModal;
     stakingSection: StakingSection;
+    tronStakingSection: TronStakingSection;
+    tronEarnApiMock: TronEarnApiMock;
     earnNutshellModal: EarnNutshellModal;
     yieldSection: YieldSection;
     yieldFlowSection: YieldFlowSection;
@@ -192,6 +196,14 @@ const test = suiteBaseTest.extend<Fixtures>({
     },
     stakingSection: async ({ page }, use) => {
         await use(new StakingSection(page));
+    },
+    tronStakingSection: async ({ page }, use) => {
+        await use(new TronStakingSection(page));
+    },
+    tronEarnApiMock: async ({ page }, use) => {
+        const tronEarnApiMock = new TronEarnApiMock(page);
+        await tronEarnApiMock.start();
+        await use(tronEarnApiMock);
     },
     earnNutshellModal: async ({ page }, use) => {
         await use(new EarnNutshellModal(page));

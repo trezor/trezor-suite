@@ -151,7 +151,10 @@ export const TronReassignVotesModal = ({
                                                 }
                                             />
                                         </Table.Cell>
-                                        <Table.Cell align="end">
+                                        <Table.Cell
+                                            align="end"
+                                            data-testid="@staking/tron-reassign-votes/apr"
+                                        >
                                             <TronRepresentativeApr
                                                 address={address}
                                                 representatives={representatives}
