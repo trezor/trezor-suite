@@ -26,8 +26,7 @@ import {
     validateTrezorOutputs,
     verifyTx,
 } from './bitcoin';
-import { assertBackendSupported, initBlockchain } from '../backend/BlockchainLink';
-import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
+import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getBitcoinNetworkOrThrow } from '../data/coinInfo';
 import { getLabel } from '../utils/pathUtils';
@@ -275,7 +274,14 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         }
     }
 
-    async run({ sendCoreMessage }: MethodContext) {
+    async run() {
+        if (this.params.push) {
+            throw ERRORS.TypedError(
+                'Method_InvalidParameter',
+                'push is deprecated, broadcast the signed transaction using pushTransaction',
+            );
+        }
+
         const device = this.getDevice();
         const { params } = this;
         const { inputs, outputs, coinInfo, refTxs = [] } = params;
@@ -333,18 +339,6 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             });
         }
 
-        if (params.push) {
-            // validate backend
-            assertBackendSupported(coinInfo);
-            const blockchain = await initBlockchain(coinInfo, sendCoreMessage, params.identity);
-            const txid = await blockchain.pushTransaction(response.serializedTx);
-
-            return {
-                ...response,
-                txid,
-            };
-        }
-
-        return response;
+        return { ...response, txid: bitcoinTx.getId() };
     }
 }

@@ -3,7 +3,7 @@ import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectAccountForNetworkSymbolAndPath, sendFormActions } from '@suite-common/wallet-core';
 import { type FormOptions } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
-import type { CallMethodKeys, SignTransaction } from '@trezor/connect';
+import type { CallMethodKeys, SignTransaction, SignedTransaction } from '@trezor/connect';
 import { getOriginalTxids, getPreviousTxids, getSerializedPath } from '@trezor/connect-common';
 import type { Bip43Path } from '@trezor/crypto-utils';
 
@@ -130,8 +130,33 @@ const preCallHook = async <M extends CallMethodKeys>({
     } as unknown as typeof payload;
 };
 
-export function postCallHook<M extends CallMethodKeys>({ dispatch }: PostCallHookParams<M>) {
+export async function postCallHook<M extends CallMethodKeys>({
+    method,
+    originalPayload,
+    response,
+    dispatch,
+}: PostCallHookParams<M>) {
     temporaryAccounts.cleanup(dispatch);
+
+    // Must be originalPayload as payload was already stripped from push
+    const typedPayload = originalPayload as unknown as SignTransaction;
+
+    if (method === 'signTransaction' && typedPayload.push && response.success) {
+        const signed = response.payload as SignedTransaction;
+        if (signed.serializedTx) {
+            const res = await TrezorConnect.pushTransaction({
+                coin: typedPayload.coin,
+                identity: typedPayload.identity,
+                tx: signed.serializedTx,
+            });
+
+            if (!res.success) {
+                // postCallHooks are not in try/catch, therefore this behaves the same
+                // as if the original signTransaction call fails
+                throw res.error;
+            }
+        }
+    }
 
     return false;
 }
