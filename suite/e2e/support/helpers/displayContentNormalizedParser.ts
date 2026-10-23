@@ -95,11 +95,12 @@ export function parseDisplayContent(json: any): NormalizedDisplayContent {
         ['content', 'content', 'paragraphs'], // original default
         ['Content', 'paragraphs'], // T3W1
         ['content', 'paragraphs'], // possible variation
+        ['paragraphs', 'paragraphs'], // MoreInfoScreen (fee info)
     ]);
 
     if (!Array.isArray(paragraphs) || paragraphs.length < 1) {
         throw new Error(
-            `Expected at least one paragraph in display JSON, JSON: ${JSON.stringify(paragraphs)}`,
+            `Expected at least one paragraph in display JSON, JSON: ${JSON.stringify(json)}`,
         );
     }
 
