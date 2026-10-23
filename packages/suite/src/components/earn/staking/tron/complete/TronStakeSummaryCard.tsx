@@ -60,18 +60,26 @@ export const TronStakeSummaryCard = () => {
                     <>
                         <Divider color="borderNeutral" margin={0} />
                         <Column gap={12} padding={{ vertical: 16, horizontal: 20 }}>
-                            {freeze && (
-                                <Row justifyContent="space-between" alignItems="center">
+                            {allocations.length > 0 ? (
+                                <Row justifyContent="flex-end">
                                     <Text typographyStyle="body-md">
                                         <Translation id="TR_EARN_TRON_APR_LABEL" />
                                     </Text>
-                                    <Text
-                                        typographyStyle="body-md-strong"
-                                        data-testid="@staking/tron-complete/apr"
-                                    >
-                                        {formatApr(apr)}
-                                    </Text>
                                 </Row>
+                            ) : (
+                                freeze && (
+                                    <Row justifyContent="space-between" alignItems="center">
+                                        <Text typographyStyle="body-md">
+                                            <Translation id="TR_EARN_TRON_APR_LABEL" />
+                                        </Text>
+                                        <Text
+                                            typographyStyle="body-md-strong"
+                                            data-testid="@staking/tron-complete/apr"
+                                        >
+                                            {formatApr(apr)}
+                                        </Text>
+                                    </Row>
+                                )
                             )}
 
                             {allocations.length > 0 && (
