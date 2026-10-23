@@ -41,6 +41,8 @@ const initialState: WalletSettingsState = {
     addressDisplayType: AddressDisplayOptions.CHUNKED,
     homeAssetsTableGrouping: 'default',
     areHomeAssetSmallBalancesShown: true,
+    isHomeAssetTableNewBannerClosed: false,
+    isHomeAssetTableFeedbackClosed: false,
 };
 export const initialWalletSettingsState: WalletSettingsState = initialState;
 
@@ -55,6 +57,8 @@ export const walletSettingsPersistedWhitelist: Array<keyof WalletSettingsState> 
     'addressDisplayType',
     'homeAssetsTableGrouping',
     'areHomeAssetSmallBalancesShown',
+    'isHomeAssetTableNewBannerClosed',
+    'isHomeAssetTableFeedbackClosed',
 ];
 
 export type WalletSettingsReducerDeps = ActionTypesDep<'storageLoad'> &
@@ -140,6 +144,12 @@ export const prepareWalletSettingsReducer = createReducerWithExtraDeps(
                 state.areHomeAssetSmallBalancesShown = action.payload;
             },
         );
+        builder.addCase(walletSettingsActions.closeHomeAssetTableNewBanner.type, state => {
+            state.isHomeAssetTableNewBannerClosed = true;
+        });
+        builder.addCase(walletSettingsActions.closeHomeAssetTableFeedback.type, state => {
+            state.isHomeAssetTableFeedbackClosed = true;
+        });
     },
 );
 
@@ -167,6 +177,10 @@ export const selectHomeAssetsTableGrouping = (state: WalletSettingsRootState) =>
     state.wallet.settings.homeAssetsTableGrouping;
 export const selectAreHomeAssetSmallBalancesShown = (state: WalletSettingsRootState) =>
     state.wallet.settings.areHomeAssetSmallBalancesShown;
+export const selectIsHomeAssetTableNewBannerClosed = (state: WalletSettingsRootState) =>
+    state.wallet.settings.isHomeAssetTableNewBannerClosed;
+export const selectIsHomeAssetTableFeedbackClosed = (state: WalletSettingsRootState) =>
+    state.wallet.settings.isHomeAssetTableFeedbackClosed;
 export const selectIsDeviceAutoEjectEnabled = (state: WalletSettingsRootState) =>
     state.wallet.settings.isAutoEjectEnabled;
 
