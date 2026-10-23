@@ -120,6 +120,31 @@ describe('requiresTokenApproval', () => {
         expect(result).toBe(true);
     });
 
+    it.each(['simpleTransfer', 'transferWithMemo'] as const)(
+        'should return false for DEX quotes with ERC-20 tokens when txKind is %s',
+        txKind => {
+            const quote = {
+                orderId: 'test-order',
+                isDex: true,
+                send: USDT_CRYPTO_ID,
+                txKind,
+            };
+            const result = requiresTokenApproval(quote);
+            expect(result).toBe(false);
+        },
+    );
+
+    it('should return true for DEX quotes with ERC-20 tokens when txKind is contractCall', () => {
+        const quote = {
+            orderId: 'test-order',
+            isDex: true,
+            send: USDT_CRYPTO_ID,
+            txKind: 'contractCall' as const,
+        };
+        const result = requiresTokenApproval(quote);
+        expect(result).toBe(true);
+    });
+
     it('should return true for DEX quotes with ERC-20 tokens when EIP-712 sign data is missing', () => {
         const quote = {
             orderId: 'test-order',
@@ -187,6 +212,19 @@ describe('getApprovalStatus', () => {
             isDex: true,
             send: DAI_CRYPTO_ID,
             status: 'CONFIRM' as const,
+        };
+        const result = getApprovalStatus(quote);
+        expect(result).toBe('not_needed');
+    });
+
+    it('should return "not_needed" when quote is APPROVAL_REQ with simpleTransfer txKind', () => {
+        const quote = {
+            orderId: 'test-order',
+            preapprovedStringAmount: '0',
+            isDex: true,
+            send: USDT_CRYPTO_ID,
+            status: 'APPROVAL_REQ' as const,
+            txKind: 'simpleTransfer' as const,
         };
         const result = getApprovalStatus(quote);
         expect(result).toBe('not_needed');
