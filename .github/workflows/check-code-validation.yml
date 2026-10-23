@@ -92,11 +92,36 @@ jobs:
             '!**/node_modules'
           key: ${{ runner.os }}-node-${{ hashFiles('./eslint.config.mjs') }} }}
       - name: Lint JS
-        env:
-          ESLINT_RUN_EXPENSIVE_CHECKS: "true"
         run: yarn lint:js --output-style=stream
       - name: Lint Styles
         run: yarn lint:styles --output-style=stream
+
+  lint-type-aware:
+    # The type-aware rules are bound by the TypeScript program each lint worker builds, while the
+    # rest of the rules parallelize freely, so the two rule sets run as separate jobs. The config
+    # keeps every rule enabled in both; `ESLINT_RULE_SET` only picks which set a job enforces
+    # (see packages/eslint/src/ruleSets.mjs).
+    name: Linting, type-aware rules
+    needs: setup-and-cache
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+      - name: "Checkout branches for Nx"
+        uses: ./.github/actions/nx-checkout
+      - name: "Minimal yarn install"
+        uses: ./.github/actions/minimal-yarn-install
+      - name: ESlint Cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
+        with:
+          path: |
+            './.eslintcache-type-aware'
+            '!**/node_modules'
+          key: ${{ runner.os }}-node-type-aware-${{ hashFiles('./eslint.config.mjs') }}
+      - name: Lint JS
+        env:
+          ESLINT_RULE_SET: type-aware
+        run: yarn lint:js --output-style=stream
 
   rust-checks:
     name: Rust checks

@@ -34,7 +34,7 @@ nx-cloud.env
 __docker-snapshots__
 __pycache__/
 .cache/
-.eslintcache
+.eslintcache*
 .stylelintcache
 *.tsbuildinfo
 .nx
