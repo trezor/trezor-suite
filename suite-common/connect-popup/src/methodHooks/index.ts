@@ -36,7 +36,9 @@ export const validateCallHooks = <M extends CallMethodKeys>(
 };
 
 export const preCallHooks = async <M extends CallMethodKeys>(params: PreCallHookParams<M>) => {
-    await bitcoinSignTransaction.preCallHook(params);
+    const bitcoinSignPayload = await bitcoinSignTransaction.preCallHook(params);
+    if (bitcoinSignPayload) return bitcoinSignPayload;
+
     await solanaSignTransaction.preCallHook(params);
     await stellarSignTransaction.preCallHook(params);
 
