@@ -6078,6 +6078,25 @@ export const messages = defineMessages({
         id: 'TR_EXPERIMENTAL_SUITE_SYNC_TITLE',
         defaultMessage: 'Suite Sync',
     },
+    TR_TRON_STAKE_CONSENT_MODAL_DESCRIPTION: {
+        id: 'TR_TRON_STAKE_CONSENT_MODAL_DESCRIPTION',
+        defaultMessage: 'You retain full ownership of your TRX — only your votes are delegated.',
+    },
+    TR_TRON_STAKE_CONSENT_MODAL_BANNER_1_TEXT: {
+        id: 'TR_TRON_STAKE_CONSENT_MODAL_BANNER_1_TEXT',
+        defaultMessage:
+            'Vote for Luganodes or P2P.org to receive TRX rewards and help support the security and stability of the Tron network.',
+    },
+    TR_TRON_STAKE_CONSENT_MODAL_BANNER_2_TEXT: {
+        id: 'TR_TRON_STAKE_CONSENT_MODAL_BANNER_2_TEXT',
+        defaultMessage:
+            'Use Trezor Suite to securely delegate your voting rights to Luganodes or P2P.org. Earn rewards, rely on trusted Super Representatives, and keep full ownership of your TRX at all times. To process rewards correctly, your voting transaction ID is shared with the Trezor backend.',
+    },
+    TR_TRON_STAKE_CONSENT_MODAL_CONSENT_TEXT: {
+        id: 'TR_TRON_STAKE_CONSENT_MODAL_CONSENT_TEXT',
+        defaultMessage:
+            'I acknowledge the Terms of Service of <p2p>P2P.org</p2p> and <luganodes>Luganodes</luganodes> and consent to freeze my TRX and vote for these representatives.',
+    },
     TR_TRON_VOTE_CONSENT_MODAL_HEADING: {
         id: 'TR_TRON_VOTE_CONSENT_MODAL_HEADING',
         defaultMessage: 'Vote for {representativeName}',
