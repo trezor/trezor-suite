@@ -1570,8 +1570,18 @@ export const signAndPush: SignAndPush[] = [
                         totalSpent: '2500000000', // 2200000000 are externals + fee
                         fee: '100',
                         inputs: [
-                            { amount: '0', prev_hash: 'should not be used', prev_index: 0 },
-                            { amount: '12500000000', prev_hash: UTXO.CC.txid, prev_index: 0 },
+                            {
+                                amount: '0',
+                                prev_hash: 'should not be used',
+                                prev_index: 0,
+                                script_type: 'SPENDTAPROOT',
+                            },
+                            {
+                                amount: '12500000000',
+                                prev_hash: UTXO.CC.txid,
+                                prev_index: 0,
+                                script_type: 'SPENDTAPROOT',
+                            },
                         ],
                         outputs: [
                             { address_n: [44, 0, 0, 1, 1], amount: '10000000000' },
