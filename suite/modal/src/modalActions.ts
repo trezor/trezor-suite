@@ -94,6 +94,7 @@ type DeferredModals = Extract<
             | 'review-transaction'
             | 'import-transaction'
             | 'earn-yield-tx-simulation'
+            | 'tron-stake-consent'
             | 'tron-vote-consent';
     }
 >;

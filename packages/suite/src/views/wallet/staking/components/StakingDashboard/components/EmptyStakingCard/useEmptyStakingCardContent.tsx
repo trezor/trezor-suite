@@ -3,7 +3,6 @@ import { type ReactNode } from 'react';
 import { type DesktopAnalyticsDep, events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
-import { gotoThunk } from '@suite/router';
 import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { type Account } from '@suite-common/wallet-types';
 import { type IconComponent, Tooltip } from '@trezor/components';
@@ -92,13 +91,10 @@ const getTronContent = ({
         if (!account || isStartStakingDisabled) return;
 
         dispatch(
-            gotoThunk({
-                routeName: 'earn-tron-stake',
-                params: {
-                    symbol: account.symbol,
-                    accountIndex: account.index,
-                    accountType: account.accountType,
-                },
+            openModal({
+                type: 'tron-stake-in-a-nutshell',
+                actionType: 'continue',
+                account,
             }),
         );
 
