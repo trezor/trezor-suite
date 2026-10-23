@@ -10,7 +10,8 @@ import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmoun
 
 import { useTronStakeContext } from '../TronStakeContext';
 import { TronStakeInfoRow } from '../TronStakeInfoRow';
-import { formatApr, getWeightedApr, parseVoteAllocations } from '../utils/voteUtils';
+import { getRepresentativeName, parseVoteCount } from '../utils/voteUtils';
+import { TronRepresentativeApr } from '../vote/TronRepresentativeApr';
 
 const RESOURCE_LABEL: Record<TronResourceType, TranslationKey> = {
     bandwidth: 'TR_EARN_TRON_BANDWIDTH',
@@ -23,16 +24,14 @@ export const TronStakeSummaryCard = () => {
     // `useWatch` or out of render.
     'use no memo';
 
-    const { account, form, representatives } = useTronStakeContext();
-    const { amount, resourceType } = form.methods.getValues();
+    const { account, form, representatives, actions } = useTronStakeContext();
+    const { freeze } = actions;
+
+    const voteAllocations = form.methods.getValues('voteAllocations');
+    const allocations = voteAllocations.filter(({ votes }) => (parseVoteCount(votes) ?? 0) > 0);
 
     const tronResources = account.networkType === 'tron' ? account.misc.tronResources : undefined;
-    const gain = getResourceGain(amount, resourceType, tronResources);
-
-    const apr = getWeightedApr({
-        allocations: parseVoteAllocations(form.methods.getValues('voteAllocations')),
-        representatives: representatives.data,
-    });
+    const gain = freeze ? getResourceGain(freeze.amount, freeze.resourceType, tronResources) : null;
 
     return (
         <Card type="contrast" paddingType="none" data-testid="@staking/tron-complete/summary-card">
@@ -46,50 +45,115 @@ export const TronStakeSummaryCard = () => {
                     </Row>
                 </TronStakeInfoRow>
 
-                <Divider color="borderNeutral" margin={0} />
-
-                <TronStakeInfoRow label={<Translation id="TR_EARN_TRON_APR_LABEL" />}>
-                    <Text typographyStyle="body-md-strong" data-testid="@staking/tron-complete/apr">
-                        {formatApr(apr)}
-                    </Text>
-                </TronStakeInfoRow>
-
-                <Divider color="borderNeutral" margin={0} />
-
-                <TronStakeInfoRow label={<Translation id="TR_EARN_TRON_EARNED_RESOURCE" />}>
-                    <Text
-                        typographyStyle="body-md-strong"
-                        data-testid="@staking/tron-complete/earned-resource"
-                    >
-                        <Translation
-                            id={RESOURCE_LABEL[resourceType]}
-                            values={{ count: gain !== null ? Math.round(gain) : 0 }}
-                        />
-                    </Text>
-                </TronStakeInfoRow>
-
-                <Divider color="borderNeutral" margin={0} />
-
-                <TronStakeInfoRow label={<Translation id="TR_EARN_TRON_SUPPLIED" />}>
-                    <Row alignItems="center" gap={8}>
-                        <TokenIcon symbol={account.symbol} size={24} />
-                        <Column gap={2} alignItems="flex-end">
+                {freeze && (
+                    <>
+                        <Divider color="borderNeutral" margin={0} />
+                        <TronStakeInfoRow label={<Translation id="TR_EARN_TRON_SUPPLIED" />}>
+                            <Row alignItems="center" gap={8}>
+                                <TokenIcon symbol={account.symbol} size={24} />
+                                <Column gap={2} alignItems="flex-end">
+                                    <Text
+                                        typographyStyle="body-md-strong"
+                                        data-testid="@staking/tron-complete/supplied-amount"
+                                    >
+                                        <FormattedCryptoAmount
+                                            value={freeze.amount}
+                                            symbol={account.symbol}
+                                        />
+                                    </Text>
+                                    <Text
+                                        typographyStyle="body-sm"
+                                        intent="neutral"
+                                        priority="secondary"
+                                    >
+                                        <BaseCurrencyValue
+                                            amount={freeze.amount}
+                                            symbol={account.symbol}
+                                            showApproximationIndicator
+                                        />
+                                    </Text>
+                                </Column>
+                            </Row>
+                        </TronStakeInfoRow>
+                        <Divider color="borderNeutral" margin={0} />
+                        <TronStakeInfoRow label={<Translation id="TR_EARN_TRON_EARNED_RESOURCE" />}>
                             <Text
                                 typographyStyle="body-md-strong"
-                                data-testid="@staking/tron-complete/supplied-amount"
+                                data-testid="@staking/tron-complete/earned-resource"
                             >
-                                <FormattedCryptoAmount value={amount} symbol={account.symbol} />
-                            </Text>
-                            <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
-                                <BaseCurrencyValue
-                                    amount={amount}
-                                    symbol={account.symbol}
-                                    showApproximationIndicator
+                                <Translation
+                                    id={RESOURCE_LABEL[freeze.resourceType]}
+                                    values={{ count: gain !== null ? Math.round(gain) : 0 }}
                                 />
                             </Text>
-                        </Column>
-                    </Row>
-                </TronStakeInfoRow>
+                        </TronStakeInfoRow>
+                    </>
+                )}
+                {allocations.length > 0 && (
+                    <>
+                        <Divider color="borderNeutral" margin={0} />
+                        <Row
+                            gap={16}
+                            alignItems="flex-start"
+                            padding={{ vertical: 16, horizontal: 20 }}
+                        >
+                            <Text typographyStyle="body-md">
+                                <Translation id="TR_TRON_VOTES" />
+                            </Text>
+                            <Column
+                                gap={12}
+                                flex="1"
+                                minWidth={0}
+                                data-testid="@staking/tron-complete/vote-allocations"
+                            >
+                                {allocations.map(({ address, votes }) => (
+                                    <Row
+                                        key={address}
+                                        justifyContent="space-between"
+                                        alignItems="center"
+                                        gap={12}
+                                        data-testid={`@staking/tron-vote/allocation-row/${address}`}
+                                    >
+                                        <Column gap={2} flex="1" minWidth={0}>
+                                            <Text
+                                                typographyStyle="body-md"
+                                                overflowWrap="anywhere"
+                                                data-testid="@staking/tron-representative/name"
+                                            >
+                                                {getRepresentativeName(
+                                                    address,
+                                                    representatives.data,
+                                                ) ?? address}
+                                            </Text>
+                                            <Text
+                                                typographyStyle="body-sm"
+                                                intent="neutral"
+                                                priority="secondary"
+                                                data-testid="@staking/tron-vote/allocation-row-votes"
+                                            >
+                                                <Translation
+                                                    id="TR_TRON_TX_VOTED_VOTES"
+                                                    values={{ votes: Number(votes) }}
+                                                />
+                                            </Text>
+                                        </Column>
+                                        <Text
+                                            typographyStyle="body-md-strong"
+                                            textWrap="nowrap"
+                                            data-testid="@staking/tron-vote/allocation-row-apr"
+                                        >
+                                            <TronRepresentativeApr
+                                                address={address}
+                                                representatives={representatives.data}
+                                            />{' '}
+                                            <Translation id="TR_EARN_TRON_APR_LABEL" />
+                                        </Text>
+                                    </Row>
+                                ))}
+                            </Column>
+                        </Row>
+                    </>
+                )}
             </Column>
         </Card>
     );

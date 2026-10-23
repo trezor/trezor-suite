@@ -204,7 +204,14 @@ export const submitTronFreezeThunk = createThunk<
             );
 
             dispatch(notifyEarnTransactionBroadcastThunk({ account, device, txid, flow }));
-            dispatch(tronStakeActions.submitFinished({ accountKey, flow, txid }));
+            dispatch(
+                tronStakeActions.submitFinished({
+                    accountKey,
+                    flow,
+                    txid,
+                    freeze: { amount, resourceType },
+                }),
+            );
         } finally {
             onSettled?.();
             dispatch(tronStakeActions.discardTransaction());
