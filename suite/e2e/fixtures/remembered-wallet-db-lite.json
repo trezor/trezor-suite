@@ -18520,8 +18520,6 @@
                         "hasSeenDisconnectTooltip": true,
                         "showNoDeviceEshopSidebarBanner": true,
                         "areNoDeviceEshopBannersDisabled": true,
-                        "homeAssetTableNewBannerClosed": false,
-                        "homeAssetTableFeedbackClosed": false,
                         "seenNewContentIndicators": {
                             "activity-26.8": true,
                             "earn-26.8": true,

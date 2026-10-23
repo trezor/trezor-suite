@@ -11595,6 +11595,8 @@ __metadata:
   resolution: "@suite-common/assets@workspace:suite-common/assets"
   dependencies:
     "@suite-common/device": "workspace:*"
+    "@suite-common/feedback": "workspace:*"
+    "@suite-common/message-system": "workspace:*"
     "@suite-common/networks": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"

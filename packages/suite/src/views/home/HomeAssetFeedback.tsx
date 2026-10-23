@@ -1,14 +1,17 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { useDevice } from '@suite/device';
 import { FeedbackCard } from '@suite/feature-feedback';
-import { selectIsHomeAssetTableFeedbackClosed, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
-import { selectShownWalletAssetKeys } from '@suite-common/assets';
-import { type Rating, buildUserFeedbackData, sendFeedbackThunk } from '@suite-common/feedback';
 import {
-    formatExperimentVariantsForAnalytics,
-    selectActiveExperimentsWithVariants,
-} from '@suite-common/message-system';
+    HOME_ASSET_TABLE_FEEDBACK_CATEGORY,
+    HOME_ASSET_TABLE_FEEDBACK_CONTEXT,
+    selectShownWalletAssetKeys,
+    sendHomeAssetTableFeedbackThunk,
+} from '@suite-common/assets';
+import { type Rating } from '@suite-common/feedback';
+import {
+    closeHomeAssetTableFeedback,
+    selectIsHomeAssetTableFeedbackClosed,
+} from '@suite-common/wallet-core';
 import { Box, GhostContainer, Icon } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { XIcon } from '@trezor/icons';
@@ -16,11 +19,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
 
-const FEEDBACK_CONTEXT = 'homeAssetTable';
-
 export const HomeAssetFeedback = () => {
-    const { device } = useDevice();
-    const activeExperimentsWithVariants = useSelector(selectActiveExperimentsWithVariants);
     const isClosed = useSelector(selectIsHomeAssetTableFeedbackClosed);
     const assetKeys = useSelector(selectShownWalletAssetKeys);
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
@@ -28,31 +27,23 @@ export const HomeAssetFeedback = () => {
     const handleRatingSelect = (rating: Rating) => {
         analytics.report({
             type: events.feedbackRatingSelectedEvent.name,
-            payload: { rating, category: 'dashboard', context: FEEDBACK_CONTEXT },
+            payload: {
+                rating,
+                category: HOME_ASSET_TABLE_FEEDBACK_CATEGORY,
+                context: HOME_ASSET_TABLE_FEEDBACK_CONTEXT,
+            },
         });
     };
 
     const handleSubmit = (rating: Rating, description: string) => {
-        dispatch(
-            sendFeedbackThunk({
-                type: 'SUGGESTION',
-                payload: {
-                    category: 'dashboard',
-                    description,
-                    rating,
-                    context: FEEDBACK_CONTEXT,
-                    feature: FEEDBACK_CONTEXT,
-                    activeExperimentsWithVariants: formatExperimentVariantsForAnalytics(
-                        activeExperimentsWithVariants,
-                    ),
-                    ...buildUserFeedbackData(device),
-                },
-            }),
-        );
+        dispatch(sendHomeAssetTableFeedbackThunk({ rating, description }));
 
         analytics.report({
             type: events.feedbackSentEvent.name,
-            payload: { category: 'dashboard', context: FEEDBACK_CONTEXT },
+            payload: {
+                category: HOME_ASSET_TABLE_FEEDBACK_CATEGORY,
+                context: HOME_ASSET_TABLE_FEEDBACK_CONTEXT,
+            },
         });
     };
 
@@ -78,9 +69,7 @@ export const HomeAssetFeedback = () => {
                 <GhostContainer
                     padding={4}
                     borderRadius={6}
-                    onClick={() =>
-                        dispatch(setFlag({ key: 'homeAssetTableFeedbackClosed', value: true }))
-                    }
+                    onClick={() => dispatch(closeHomeAssetTableFeedback())}
                     data-testid="@dashboard/home-asset/feedback/dismiss"
                 >
                     <Icon as={XIcon} size={16} intent="neutral" priority="secondary" />

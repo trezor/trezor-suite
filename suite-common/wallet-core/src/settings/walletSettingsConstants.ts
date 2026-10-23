@@ -10,6 +10,8 @@ const SET_ADDRESS_DISPLAY_TYPE = '@wallet-settings/set-address-display-type';
 const SET_HOME_ASSETS_TABLE_GROUPING = '@wallet-settings/set-home-assets-table-grouping';
 const SET_ARE_HOME_ASSET_SMALL_BALANCES_SHOWN =
     '@wallet-settings/set-are-home-asset-small-balances-shown';
+const CLOSE_HOME_ASSET_TABLE_NEW_BANNER = '@wallet-settings/close-home-asset-table-new-banner';
+const CLOSE_HOME_ASSET_TABLE_FEEDBACK = '@wallet-settings/close-home-asset-table-feedback';
 
 export const WALLET_SETTINGS = {
     SET_BASE_CURRENCY,
@@ -23,4 +25,6 @@ export const WALLET_SETTINGS = {
     SET_ADDRESS_DISPLAY_TYPE,
     SET_HOME_ASSETS_TABLE_GROUPING,
     SET_ARE_HOME_ASSET_SMALL_BALANCES_SHOWN,
+    CLOSE_HOME_ASSET_TABLE_NEW_BANNER,
+    CLOSE_HOME_ASSET_TABLE_FEEDBACK,
 } as const;
