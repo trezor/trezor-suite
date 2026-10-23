@@ -12243,6 +12243,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/price-chart@workspace:*, @suite-common/price-chart@workspace:suite-common/price-chart":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/price-chart@workspace:suite-common/price-chart"
+  dependencies:
+    "@suite-common/fiat-services": "workspace:*"
+    "@suite-common/react-query": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@trezor/blockchain-link-types": "workspace:*"
+    react: "npm:19.2.3"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/react-query@workspace:*, @suite-common/react-query@workspace:^, @suite-common/react-query@workspace:suite-common/react-query":
   version: 0.0.0-use.local
   resolution: "@suite-common/react-query@workspace:suite-common/react-query"
@@ -14396,6 +14408,7 @@ __metadata:
     "@suite-native/icons": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/navigation": "workspace:*"
+    "@suite-native/price-chart": "workspace:*"
     "@suite-native/toasts": "workspace:*"
     "@trezor/requirements": "workspace:*"
     "@trezor/styles-native": "workspace:*"
@@ -15399,6 +15412,20 @@ __metadata:
     react: "npm:19.2.3"
     react-native: "npm:0.86.3"
     react-native-reanimated: "npm:4.7.0"
+    react-redux: "npm:9.3.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/price-chart@workspace:*, @suite-native/price-chart@workspace:suite-native/price-chart":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/price-chart@workspace:suite-native/price-chart"
+  dependencies:
+    "@suite-common/price-chart": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    react: "npm:19.2.3"
     react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
@@ -17263,6 +17290,21 @@ __metadata:
   dependencies:
     "@suite-common/platform-encryption": "workspace:*"
     "@trezor/type-utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@suite/price-chart@workspace:suite/price-chart":
+  version: 0.0.0-use.local
+  resolution: "@suite/price-chart@workspace:suite/price-chart"
+  dependencies:
+    "@suite-common/price-chart": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@trezor/components": "workspace:*"
+    "@types/react": "npm:19.2.14"
+    react: "npm:19.2.3"
+    react-redux: "npm:9.3.0"
   languageName: unknown
   linkType: soft
 

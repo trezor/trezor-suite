@@ -119,6 +119,7 @@
 !/suite-common/networks
 !/suite-common/persistent-device-data
 !/suite-common/platform-encryption
+!/suite-common/price-chart
 !/suite-common/react-query
 !/suite-common/receive
 !/suite-common/schemas
@@ -225,6 +226,7 @@
 !/suite-native/navigation
 !/suite-native/passphrase
 !/suite-native/platform-encryption-native
+!/suite-native/price-chart
 !/suite-native/qr-code
 !/suite-native/react-native-graph
 !/suite-native/scrollview

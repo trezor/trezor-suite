@@ -1,0 +1,21 @@
+{
+    "name": "@suite-common/price-chart",
+    "version": "1.0.0",
+    "main": "src/index",
+    "license": "See LICENSE.md in repo root",
+    "private": true,
+    "sideEffects": false,
+    "type": "module",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@suite-common/fiat-services": "workspace:*",
+        "@suite-common/react-query": "workspace:*",
+        "@suite-common/wallet-types": "workspace:*",
+        "@trezor/blockchain-link-types": "workspace:*",
+        "react": "19.2.3"
+    }
+}
