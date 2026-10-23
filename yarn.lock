@@ -15988,6 +15988,7 @@ __metadata:
     "@suite-native/intl": "workspace:*"
     "@suite-native/labeling": "workspace:*"
     "@suite-native/link": "workspace:*"
+    "@suite-native/message-system": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/test-utils": "workspace:*"
     "@suite-native/test-utils-store": "workspace:*"
