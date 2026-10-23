@@ -181,7 +181,7 @@ export const CardanoComposeTransactionParamsSchema = Type.Object({
 // TS - Assert type of CardanoComposeTransactionParams is compatible with CardanoComposeTransactionParamsSchema
 const _params: CardanoComposeTransactionParamsSchema = {} as CardanoComposeTransactionParams;
 const _paramsOld: CardanoComposeTransactionParams = {} as CardanoComposeTransactionParamsSchema;
-// eslint-disable-next-line
+// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 [_params, _paramsOld];
 
 export declare function cardanoComposeTransaction(
