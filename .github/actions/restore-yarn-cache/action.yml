@@ -1,0 +1,17 @@
+name: "Restore develop Yarn cache"
+description: "Loads the Yarn package cache saved on develop by the [Build] develop Yarn cache workflow. Never saves."
+runs:
+  using: "composite"
+  steps:
+    - name: Get yarn cache directory path
+      id: yarn-cache-dir-path
+      shell: bash
+      run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
+
+    # Must match the path and key saved by .github/workflows/build-develop-yarn-cache.yml.
+    - name: Restore develop Yarn cache
+      uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+      with:
+        path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+        key: yarn-cache-develop-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+        restore-keys: yarn-cache-develop-${{ runner.os }}-
