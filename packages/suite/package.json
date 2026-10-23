@@ -217,7 +217,7 @@
         "@trezor/bundler-security": "workspace:*",
         "@trezor/eslint": "workspace:*",
         "@types/file-saver": "^2.0.6",
-        "@types/invity-api": "^1.1.22",
+        "@types/invity-api": "^1.1.23",
         "@types/pako": "^2.0.4",
         "@types/pdfmake": "^0.3.1",
         "@types/react": "19.2.14",

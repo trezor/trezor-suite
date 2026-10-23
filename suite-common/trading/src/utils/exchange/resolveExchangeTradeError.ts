@@ -22,6 +22,7 @@ export type TradingErrorValues = StrictErrorMap<{
     trade_expired: { orderId: string };
     trade_failed: { orderId: string };
     trade_refunded: { orderId: string };
+    trade_is_not_possible: undefined;
     no_response: undefined;
     unknown: undefined;
 }>;
@@ -139,6 +140,8 @@ export const resolveExchangeTradeError = (
                 values: details.orderId ? { orderId: details.orderId } : undefined,
             };
         }
+        case 'trade_is_not_possible':
+            return { ...base, code: 'trade_is_not_possible' };
         case 'no_response':
             return { ...base, code: 'no_response' };
         case 'unknown':

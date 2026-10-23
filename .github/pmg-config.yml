@@ -14,3 +14,6 @@ dependency_cooldown:
     # Security hotfix. Can be removed after 5.11.2026
     - purl: pkg:npm/electron@43.8.3
       reason: "Security hotfix"
+    # Published 2026-10-23, already preapproved in .yarnrc.yml. Can be removed after 26.10.2026
+    - purl: pkg:npm/%40types/invity-api@1.1.23
+      reason: "Trade API types update"

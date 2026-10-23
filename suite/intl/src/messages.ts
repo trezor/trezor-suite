@@ -533,6 +533,10 @@ export const messages = defineMessages({
         defaultMessage: 'The trade failed and will be refunded. Order ID {orderId}.',
         id: 'TR_TRADING_ERROR_TRADE_REFUNDED_DETAILED',
     },
+    TR_TRADING_ERROR_TRADE_IS_NOT_POSSIBLE: {
+        defaultMessage: 'Swap is not possible, please choose a different provider.',
+        id: 'TR_TRADING_ERROR_TRADE_IS_NOT_POSSIBLE',
+    },
     TR_TRADING_CANNOT_CREATE_TRANSACTION: {
         defaultMessage: 'Unable to create transaction',
         id: 'TR_TRADING_CANNOT_CREATE_TRANSACTION',
