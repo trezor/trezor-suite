@@ -12,6 +12,7 @@ import {
 import { Column, Divider, Row, Text, TextButton } from '@trezor/components';
 import { ArrowLineUpRightIcon } from '@trezor/icons';
 import { TREZOR_TRADING_DEX_SLIPPAGE_URL } from '@trezor/urls';
+import { BigNumber } from '@trezor/utils';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
@@ -20,17 +21,19 @@ import { formatCryptoAmountAsAmount } from 'src/views/wallet/trading/common/form
 
 interface TradingOfferExchangeSlippageSummaryProps {
     selectedQuote: ExchangeTrade;
+    receiveAmount?: string;
 }
 
 export const TradingOfferExchangeSlippageSummary = ({
     selectedQuote,
+    receiveAmount = selectedQuote.receiveStringAmount,
 }: TradingOfferExchangeSlippageSummaryProps) => {
     const { cryptoIdToSymbolAndContractAddress } = useTradingUtils();
     const { getAssetDecimals } = useTradingAssetDecimals();
     const { watch, formState } = useFormContext<SlippageFormValues>();
     const receiveAccountKey = useSelector(selectTradingExchangeReceiveAccountKey);
 
-    const { receive, receiveStringAmount } = selectedQuote;
+    const { receive } = selectedQuote;
     const slippageValue = watch('slippage');
 
     const decimals = getAssetDecimals({ accountKey: receiveAccountKey, cryptoId: receive });
@@ -39,24 +42,33 @@ export const TradingOfferExchangeSlippageSummary = ({
 
     const previewSlippage =
         !formState.errors.slippage && slippageValue !== ''
-            ? Number(slippageValue)
-            : Number(selectedQuote.swapSlippage);
+            ? slippageValue
+            : selectedQuote.swapSlippage;
 
-    const receiveAmount = Number(receiveStringAmount);
-
-    const toAmount = (fraction: number) =>
-        formatCryptoAmountAsAmount(fraction * receiveAmount, receiveAmount, decimals);
+    const receiveAmountBigNumber = new BigNumber(receiveAmount ?? '');
+    const slippageDeduction = new BigNumber(previewSlippage ?? '')
+        .dividedBy(100)
+        .multipliedBy(receiveAmountBigNumber)
+        .negated();
+    const minimumReceiveAmount = receiveAmountBigNumber.plus(slippageDeduction);
 
     const rows: {
         label: TranslationKey;
         value?: string;
         isSummaryRow?: boolean;
     }[] = [
-        { label: 'TR_EXCHANGE_SWAP_SLIPPAGE_OFFERED', value: receiveStringAmount },
-        { label: 'TR_EXCHANGE_SWAP_SLIPPAGE_AMOUNT', value: `-${toAmount(previewSlippage / 100)}` },
+        { label: 'TR_EXCHANGE_SWAP_SLIPPAGE_OFFERED', value: receiveAmount },
+        {
+            label: 'TR_EXCHANGE_SWAP_SLIPPAGE_AMOUNT',
+            value: formatCryptoAmountAsAmount(slippageDeduction, receiveAmountBigNumber, decimals),
+        },
         {
             label: 'TR_EXCHANGE_SWAP_SLIPPAGE_MINIMUM',
-            value: toAmount((100 - previewSlippage) / 100),
+            value: formatCryptoAmountAsAmount(
+                minimumReceiveAmount,
+                receiveAmountBigNumber,
+                decimals,
+            ),
             isSummaryRow: true,
         },
     ];

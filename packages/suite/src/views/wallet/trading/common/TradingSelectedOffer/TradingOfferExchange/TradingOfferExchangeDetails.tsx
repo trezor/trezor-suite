@@ -15,6 +15,7 @@ import { networksCollection } from '@suite-common/wallet-config';
 import { selectIsMevProtectionEnabled } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Card, Column, InfoItem, Text, Tooltip } from '@trezor/components';
+import { BigNumber } from '@trezor/utils';
 
 import { BannerPoints } from 'src/components/wallet/WalletLayout/AccountBanners/BannerPoints';
 import { useSelector } from 'src/hooks/suite';
@@ -35,6 +36,7 @@ import { TradingTrezorFeeInfoItem } from '../TradingInfo/TradingTrezorFeeInfoIte
 type TradingOfferExchangeDetailsProps = {
     account: Account;
     exchangeQuote: ExchangeTrade;
+    receiveAmount: string | undefined;
     exchange: string | undefined;
     providers: TradingExchangeProvidersInfoProps;
     networkFeeEdit?: TradingNetworkFeeInfoItemProps['edit'];
@@ -43,6 +45,7 @@ type TradingOfferExchangeDetailsProps = {
 export const TradingOfferExchangeDetails = ({
     account,
     exchangeQuote,
+    receiveAmount = exchangeQuote.receiveStringAmount,
     exchange,
     providers,
     networkFeeEdit,
@@ -78,10 +81,14 @@ export const TradingOfferExchangeDetails = ({
     const rateType = provider?.isFixedRate ? 'fixed' : 'floating';
     const dexSlippage = exchangeQuote.isDex ? exchangeQuote.swapSlippage : undefined;
 
+    const receiveAmountBigNumber = new BigNumber(receiveAmount ?? '');
+    const slippageDeduction = new BigNumber(exchangeQuote.swapSlippage ?? '')
+        .dividedBy(100)
+        .multipliedBy(receiveAmountBigNumber)
+        .negated();
     const minimumYouGetAmount = formatCryptoAmountAsAmount(
-        ((100 - Number(exchangeQuote.swapSlippage)) / 100) *
-            Number(exchangeQuote.receiveStringAmount),
-        Number(exchangeQuote.receiveStringAmount),
+        receiveAmountBigNumber.plus(slippageDeduction),
+        receiveAmountBigNumber,
         decimals,
     );
 
@@ -102,6 +109,7 @@ export const TradingOfferExchangeDetails = ({
                             isEditable
                             slippage={dexSlippage}
                             selectedQuote={exchangeQuote}
+                            receiveAmount={receiveAmount}
                         />
                         <TradingExchangeMinimumReceivedInfoItem
                             minimumYouGetAmount={minimumYouGetAmount}

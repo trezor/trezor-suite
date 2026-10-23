@@ -21,11 +21,13 @@ import { TradingOfferExchangeSlippageSummary } from './TradingOfferExchangeSlipp
 interface TradingOfferExchangeSlippageModalProps {
     onClose: () => void;
     selectedQuote: ExchangeTrade;
+    receiveAmount?: string;
 }
 
 export const TradingOfferExchangeSlippageModal = ({
     onClose,
     selectedQuote,
+    receiveAmount,
 }: TradingOfferExchangeSlippageModalProps) => {
     const { translationString } = useTranslation();
     const { confirmTrade } = useTradingExchangeTradeActions();
@@ -115,7 +117,10 @@ export const TradingOfferExchangeSlippageModal = ({
             >
                 <Column gap={16}>
                     <TradingOfferExchangeSlippageInput />
-                    <TradingOfferExchangeSlippageSummary selectedQuote={selectedQuote} />
+                    <TradingOfferExchangeSlippageSummary
+                        selectedQuote={selectedQuote}
+                        receiveAmount={receiveAmount}
+                    />
 
                     {hasSubmitError && (
                         <Banner
