@@ -51,6 +51,7 @@
         { "path": "../discovery" },
         { "path": "../experimental-features" },
         { "path": "../feature-feedback" },
+        { "path": "../feedback-form" },
         { "path": "../firmware" },
         { "path": "../formatters" },
         { "path": "../graph" },

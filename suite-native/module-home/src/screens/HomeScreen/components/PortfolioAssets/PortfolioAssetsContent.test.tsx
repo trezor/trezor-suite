@@ -12,6 +12,7 @@ import {
 import { type HomeAssetsTableGrouping, type TokenAddress } from '@suite-common/wallet-types';
 import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation, localeReducer } from '@suite-native/intl';
 import {
     createLightStore,
@@ -48,6 +49,8 @@ const ASSET_ROW = /^aliceWallet@device:0\//;
 const ETH_NETWORK_HEADER = '@home/portfolio-assets/network/eth';
 const BTC_NETWORK_HEADER = '@home/portfolio-assets/network/btc';
 const SMALL_BALANCES_SWITCH = '@home/portfolio-assets/view-options/small-balances';
+const NEW_BANNER = '@home/portfolio-assets/new-banner';
+const FEEDBACK = '@home/portfolio-assets/feedback';
 
 const walletSettingsReducer = prepareWalletSettingsReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
@@ -64,6 +67,8 @@ type CreateStoreParams = {
     ethUsdRate?: number;
     firmwareType?: FirmwareType;
     areSmallBalancesShown?: boolean;
+    isNewBannerClosed?: boolean;
+    isFeedbackClosed?: boolean;
 };
 
 // The Ethereum account's coin is one row, so `ethAssetCount - 1` tokens make up the rest.
@@ -74,6 +79,8 @@ const createStore = ({
     ethUsdRate,
     firmwareType = FirmwareType.Universal,
     areSmallBalancesShown = true,
+    isNewBannerClosed = false,
+    isFeedbackClosed = false,
 }: CreateStoreParams) => {
     const tokenContracts = Array.from({ length: Math.max(ethAssetCount - 1, 0) }, (_, index) =>
         getTokenContract(index + 1),
@@ -130,6 +137,8 @@ const createStore = ({
                     enabledNetworks: [ETH, BTC],
                     homeAssetsTableGrouping: grouping ?? 'default',
                     areHomeAssetSmallBalancesShown: areSmallBalancesShown,
+                    isHomeAssetTableNewBannerClosed: isNewBannerClosed,
+                    isHomeAssetTableFeedbackClosed: isFeedbackClosed,
                 },
             },
         },
@@ -138,7 +147,7 @@ const createStore = ({
 
 const renderPortfolioAssetsContent = async (params: CreateStoreParams) =>
     await renderWithStoreProvider(<PortfolioAssetsContent />, {
-        services: { store: createStore(params) },
+        services: { store: createStore(params), analytics: mockNativeAnalytics(jest.fn()) },
     });
 
 describe('PortfolioAssetsContent', () => {
@@ -148,6 +157,54 @@ describe('PortfolioAssetsContent', () => {
         expect(screen.queryByText(getTranslation('moduleHome.assets.title'))).toBeNull();
         expect(screen.queryByTestId('@home/portfolio-assets/view-options-button')).toBeNull();
         expect(screen.queryByTestId('@home/portfolio-assets/show-more')).toBeNull();
+        expect(screen.queryByTestId(NEW_BANNER)).toBeNull();
+        expect(screen.queryByTestId(FEEDBACK)).toBeNull();
+    });
+
+    it('shows the new banner and the feedback card around a list that does not fold', async () => {
+        await renderPortfolioAssetsContent({ ethAssetCount: 3 });
+
+        expect(screen.getByTestId(NEW_BANNER)).toBeTruthy();
+        expect(screen.getByText(getTranslation('moduleHome.assets.newBanner.title'))).toBeTruthy();
+        expect(screen.getByTestId(FEEDBACK)).toBeTruthy();
+        expect(screen.getByText(getTranslation('moduleHome.assets.feedback.title'))).toBeTruthy();
+    });
+
+    it('keeps the feedback card under a folded list', async () => {
+        await renderPortfolioAssetsContent({ ethAssetCount: 9 });
+
+        expect(screen.getByTestId('@home/portfolio-assets/show-more')).toBeTruthy();
+        expect(screen.getByTestId(FEEDBACK)).toBeTruthy();
+    });
+
+    it('hides the new banner once dismissed', async () => {
+        await renderPortfolioAssetsContent({ ethAssetCount: 3 });
+
+        await fireEvent.press(screen.getByTestId('@home/portfolio-assets/new-banner/dismiss'));
+
+        expect(screen.queryByTestId(NEW_BANNER)).toBeNull();
+        expect(screen.getByTestId(FEEDBACK)).toBeTruthy();
+    });
+
+    it('hides the feedback card once dismissed', async () => {
+        await renderPortfolioAssetsContent({ ethAssetCount: 3 });
+
+        await fireEvent.press(screen.getByTestId('@feedback-form/dismiss-button'));
+
+        expect(screen.queryByTestId(FEEDBACK)).toBeNull();
+        expect(screen.getByTestId(NEW_BANNER)).toBeTruthy();
+    });
+
+    it('does not bring back what was dismissed before', async () => {
+        await renderPortfolioAssetsContent({
+            ethAssetCount: 3,
+            isNewBannerClosed: true,
+            isFeedbackClosed: true,
+        });
+
+        expect(screen.getAllByText(ASSET_ROW)).toHaveLength(3);
+        expect(screen.queryByTestId(NEW_BANNER)).toBeNull();
+        expect(screen.queryByTestId(FEEDBACK)).toBeNull();
     });
 
     it.each([7, 8])('renders all %i assets without the show more button', async count => {
