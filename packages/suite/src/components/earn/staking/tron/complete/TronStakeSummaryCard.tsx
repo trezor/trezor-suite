@@ -102,7 +102,7 @@ export const TronStakeSummaryCard = () => {
                             </Text>
                             <Column
                                 gap={12}
-                                flex={1}
+                                flex="1"
                                 minWidth={0}
                                 data-testid="@staking/tron-complete/vote-allocations"
                             >
@@ -114,7 +114,7 @@ export const TronStakeSummaryCard = () => {
                                         gap={12}
                                         data-testid={`@staking/tron-vote/allocation-row/${address}`}
                                     >
-                                        <Column gap={2} flex={1} minWidth={0}>
+                                        <Column gap={2} flex="1" minWidth={0}>
                                             <Text
                                                 typographyStyle="body-md"
                                                 overflowWrap="anywhere"
