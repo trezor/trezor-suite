@@ -85,3 +85,72 @@ jobs:
           base: develop
           delete-branch: true
           labels: ci, no-project
+
+  # Suite Native E2E pins the image by digest because the nightly image build overwrites its tags.
+  update-native-trezor-user-env:
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+        with:
+          ref: develop
+
+      - name: Generate GitHub App token
+        id: trezor-bot-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
+        with:
+          client-id: ${{ secrets.TREZOR_BOT_APP_ID }}
+          private-key: ${{ secrets.TREZOR_BOT_PRIVATE_KEY }}
+
+      # Leave a candidate that is ready for review or has extra commits, e.g. fixture fixes.
+      - name: Check open candidate
+        id: candidate
+        env:
+          GH_TOKEN: ${{ steps.trezor-bot-token.outputs.token }}
+        run: |
+          refresh=$(gh pr list --repo "$GITHUB_REPOSITORY" --head chore/update-native-trezor-user-env \
+            --json isDraft,commits --jq 'all(.[]; .isDraft and (.commits | length == 1))')
+          echo "refresh=$refresh" >> "$GITHUB_OUTPUT"
+
+      - name: Pin latest image digest
+        if: steps.candidate.outputs.refresh == 'true'
+        id: latest
+        run: |
+          set -euo pipefail
+          digest=$(docker buildx imagetools inspect ghcr.io/trezor/trezor-user-env:latest --format '{{.Manifest.Digest}}')
+          if ! [[ "$digest" =~ ^sha256:[0-9a-f]{64}$ ]]; then
+            echo "::error::Failed to fetch latest trezor-user-env image digest from ghcr.io: $digest"
+            exit 1
+          fi
+          file=docker/docker-compose.suite-native-ci.yml
+          if ! grep -qE 'ghcr\.io/trezor/trezor-user-env@sha256:[0-9a-f]{64}' "$file"; then
+            echo "::error::Failed to detect pinned trezor-user-env image digest in $file"
+            exit 1
+          fi
+          sed -i -E "s|ghcr\.io/trezor/trezor-user-env@sha256:[0-9a-f]{64}|ghcr.io/trezor/trezor-user-env@${digest}|" "$file"
+          echo "digest=$digest" >> "$GITHUB_OUTPUT"
+          echo "short_digest=${digest:7:12}" >> "$GITHUB_OUTPUT"
+
+      - name: Create Pull Request
+        if: steps.candidate.outputs.refresh == 'true'
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8
+        with:
+          token: ${{ steps.trezor-bot-token.outputs.token }}
+          commit-message: "ci(suite-native): update trezor-user-env to ${{ steps.latest.outputs.short_digest }}"
+          branch: chore/update-native-trezor-user-env
+          title: "Update Suite Native trezor-user-env to ${{ steps.latest.outputs.short_digest }}"
+          body: |
+            ## Description
+
+            Pins the Suite Native E2E `ghcr.io/trezor/trezor-user-env` image to the current `latest` digest.
+
+            **Image digest:** [`${{ steps.latest.outputs.digest }}`](https://github.com/trezor/trezor-user-env/pkgs/container/trezor-user-env)
+
+            The full Android nightly E2E suite runs on this PR. When it passes, the PR is marked ready for review; when it fails, Slack is notified. The bot stops refreshing the PR once it is ready for review or has more than one commit, so push fixture fixes on top of its commit.
+          base: develop
+          draft: always-true
+          delete-branch: true
+          labels: ci, no-project

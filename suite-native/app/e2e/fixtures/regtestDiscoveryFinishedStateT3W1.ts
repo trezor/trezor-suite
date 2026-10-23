@@ -1,6 +1,5 @@
 import { TrezorDevice } from '@suite-common/suite-types';
 import { PreloadedState } from '@suite-native/state';
-import { THP_CREDENTIALS } from '@trezor/connect-core/e2e/common-thp-credentials';
 
 /**
  *  reflects state after REGTEST discovery of connected T3W1 device with `mnemonic_immune` seed from @packages/trezor-user-env-link constants.
@@ -15,7 +14,7 @@ export const regtestDiscoveryFinishedStateT3W1: PreloadedState = {
         },
         accounts: [
             {
-                deviceState: 'mt5WPmXL77AJwhCPPv6Gct3UtiuVUMieXJ@34C8EB6F03D6406A86034A5D:0',
+                deviceState: 'mt5WPmXL77AJwhCPPv6Gct3UtiuVUMieXJ@EED45525C7191867C39BA495:0',
                 symbol: 'regtest',
                 index: 0,
                 accountType: 'normal',
@@ -31,7 +30,7 @@ export const regtestDiscoveryFinishedStateT3W1: PreloadedState = {
                     unconfirmed: 0,
                     addrTxCount: 1,
                 },
-                key: 'vpub5YHfp9RSUHcKc7Nu9KbS7TsiBENUMJiQAMiJhCNdQA8cDzqzL4rr7VZThZPbMCXYnASdHQurixwwjPKFr8THXUUT4567PsM4gfqDi87kXxS-regtest-mt5WPmXL77AJwhCPPv6Gct3UtiuVUMieXJ@34C8EB6F03D6406A86034A5D:0',
+                key: 'vpub5YHfp9RSUHcKc7Nu9KbS7TsiBENUMJiQAMiJhCNdQA8cDzqzL4rr7VZThZPbMCXYnASdHQurixwwjPKFr8THXUUT4567PsM4gfqDi87kXxS-regtest-mt5WPmXL77AJwhCPPv6Gct3UtiuVUMieXJ@EED45525C7191867C39BA495:0',
                 formattedBalance: '3.14',
                 tokens: [],
                 addresses: {
@@ -282,19 +281,18 @@ export const regtestDiscoveryFinishedStateT3W1: PreloadedState = {
     device: {
         devices: [
             {
-                path: 'e1bdc5f1',
+                path: '',
                 name: 'Trezor Safe 7',
                 descriptor: {
                     apiType: 'usb',
                     id: '127.0.0.1:21324',
                 },
                 type: 'acquired',
-                id: '34C8EB6F03D6406A86034A5D',
+                id: 'EED45525C7191867C39BA495',
                 label: 'My Trezor',
                 state: {
                     staticSessionId:
-                        'mt5WPmXL77AJwhCPPv6Gct3UtiuVUMieXJ@34C8EB6F03D6406A86034A5D:0',
-                    sessionId: '01',
+                        'mt5WPmXL77AJwhCPPv6Gct3UtiuVUMieXJ@EED45525C7191867C39BA495:0',
                     deriveCardano: false,
                 },
                 status: 'available',
@@ -307,7 +305,7 @@ export const regtestDiscoveryFinishedStateT3W1: PreloadedState = {
                     minor_version: 9,
                     patch_version: 3,
                     bootloader_mode: null,
-                    device_id: '34C8EB6F03D6406A86034A5D',
+                    device_id: 'EED45525C7191867C39BA495',
                     pin_protection: false,
                     passphrase_protection: false,
                     language: 'en-US',
@@ -388,23 +386,7 @@ export const regtestDiscoveryFinishedStateT3W1: PreloadedState = {
                         attemptCount: 1,
                     },
                 },
-                thp: {
-                    properties: {
-                        internal_model: 'T3W1',
-                        model_variant: 0,
-                        protocol_version_major: 2,
-                        protocol_version_minor: 0,
-                        pairing_methods: ['CodeEntry', 'QrCode', 'NFC', 'SkipPairing'],
-                    },
-                    channel: '8205',
-                    sendBit: 0,
-                    recvBit: 0,
-                    sendNonce: 2,
-                    recvNonce: 3,
-                    expectedResponses: [],
-                    credentials: THP_CREDENTIALS,
-                },
-                connected: true,
+                connected: false,
                 metadata: {},
                 passwords: {},
                 firstConnectedTimestamp: 1760363102751,
@@ -412,7 +394,7 @@ export const regtestDiscoveryFinishedStateT3W1: PreloadedState = {
                 useEmptyPassphrase: true,
                 remember: true,
                 temporaryRemember: false,
-                available: true,
+                available: false,
                 walletNumber: 1,
                 discovered: true,
             } as unknown as TrezorDevice,
