@@ -4,10 +4,11 @@ import { EarnFlow, EarnProvider } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { isCardanoStakedWithFiveBinaries, selectPoolStatsApy } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { Banner, Tooltip } from '@trezor/components';
+import { Banner, Link, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { InfoIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
+import { HELP_CENTER_ADA_STAKING_UPDATE_PROVIDER } from '@trezor/urls';
 
 import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
 import { useSelector } from 'src/hooks/suite';
@@ -59,15 +60,28 @@ export const NewProviderCard = ({ account }: NewProviderCardProps) => {
                 </span>
             }
             description={
-                <span data-testid="@staking/new-provider-card/paragraph">
-                    <Translation
-                        id={
-                            isStakedWithFiveBinaries
-                                ? 'TR_STAKING_NEW_PROVIDER_OUTDATED_TEXT'
-                                : 'TR_STAKING_NEW_PROVIDER_TEXT'
-                        }
-                        values={{ apy: formatApyValue(apy), displaySymbol }}
-                    />
+                <span>
+                    <span data-testid="@staking/new-provider-card/paragraph">
+                        <Translation
+                            id={
+                                isStakedWithFiveBinaries
+                                    ? 'TR_STAKING_NEW_PROVIDER_OUTDATED_TEXT'
+                                    : 'TR_STAKING_NEW_PROVIDER_TEXT'
+                            }
+                            values={{ apy: formatApyValue(apy), displaySymbol }}
+                        />
+                    </span>
+                    {isStakedWithFiveBinaries && (
+                        <>
+                            {' '}
+                            <Link
+                                href={HELP_CENTER_ADA_STAKING_UPDATE_PROVIDER}
+                                data-testid="@staking/new-provider-card/learn-more"
+                            >
+                                <Translation id="TR_LEARN_MORE" />
+                            </Link>
+                        </>
+                    )}
                 </span>
             }
             rightContent={
