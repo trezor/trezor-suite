@@ -8,6 +8,7 @@ import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { CARDANO_EVERSTAKE_DREP } from '@suite-common/wallet-constants';
 import {
     CARDANO_ALWAYS_ABSTAIN_DREP_ID,
+    areCardanoDrepIdsEqual,
     getCardanoAccountDrepId,
     getCardanoCurrentVotingOption,
     selectStakeVotingDelegation,
@@ -137,7 +138,7 @@ export const StakeChangeDelegateModalLoaded = ({
             case 'another_drep': {
                 const { drepId } = selectedVotingDelegation;
 
-                if (drepId === currentDrepId) {
+                if (areCardanoDrepIdsEqual(drepId, currentDrepId)) {
                     return { isDisabled: true, errorType: 'current_delegate' as const };
                 }
 

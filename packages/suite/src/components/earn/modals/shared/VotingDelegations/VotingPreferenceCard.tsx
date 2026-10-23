@@ -1,9 +1,12 @@
-import React, { type ReactNode } from 'react';
+import React, { type ReactNode, useState } from 'react';
 
 import { TrezorLink } from '@suite/external-links';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import {
     type VotingDelegationOption,
+    areCardanoDrepIdsEqual,
+    getCardanoAccountDrepId,
+    normalizeCardanoDrepId,
     selectVotingDelegationOption,
     stakeActions,
     validateCardanoDrep,
@@ -23,7 +26,7 @@ import {
     Tooltip,
 } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { QuestionIcon } from '@trezor/icons';
+import { CheckIcon, QuestionIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 import { HELP_CENTER_ADA_STAKING } from '@trezor/urls';
@@ -73,7 +76,9 @@ const getVotingOption = (type: VotingDelegationOption['type']): VotingDelegation
 const getDrepIdErrorId = (drepId: string, currentDrepId?: string | null): TranslationKey | null => {
     if (drepId === '') return null;
 
-    if (drepId === currentDrepId) return 'TR_STAKING_DREP_ID_IS_CURRENT_DELEGATE';
+    if (areCardanoDrepIdsEqual(drepId, currentDrepId)) {
+        return 'TR_STAKING_DREP_ID_IS_CURRENT_DELEGATE';
+    }
 
     if (!validateCardanoDrep(drepId)) return 'TR_STAKING_INVALID_DREP_ID';
 
@@ -100,6 +105,7 @@ export const VotingPreferenceCard = ({
     );
     const { dispatch } = useServices(injectDispatch);
     const { translationString } = useTranslation();
+    const [isDrepIdConverted, setIsDrepIdConverted] = useState(false);
 
     if (account.networkType !== 'cardano') return null;
 
@@ -109,6 +115,7 @@ export const VotingPreferenceCard = ({
             : null;
 
     const handleOptionSelect = (type: VotingDelegationOption['type']) => {
+        setIsDrepIdConverted(false);
         dispatch(
             stakeActions.setAccountVotingDelegation({
                 accountKey: account.key,
@@ -118,12 +125,28 @@ export const VotingPreferenceCard = ({
     };
 
     const handleDrepIdChange = (value: string) => {
+        const normalizedDrepId = normalizeCardanoDrepId(value);
+        // The backend's legacy id needs its has_script flag to preserve the credential type.
+        const resolvedDrepId =
+            normalizedDrepId !== null &&
+            value.toLowerCase() === account.misc?.staking?.drep?.drep_id?.toLowerCase()
+                ? getCardanoAccountDrepId(account)
+                : normalizedDrepId;
+
+        setIsDrepIdConverted(resolvedDrepId !== null && resolvedDrepId !== value.toLowerCase());
         dispatch(
             stakeActions.setAccountVotingDelegation({
                 accountKey: account.key,
-                option: { type: 'another_drep', drepId: value },
+                option: { type: 'another_drep', drepId: resolvedDrepId ?? value },
             }),
         );
+    };
+
+    const getDrepIdBottomText = () => {
+        if (drepIdErrorId) return <Translation id={drepIdErrorId} />;
+        if (isDrepIdConverted) return <Translation id="TR_STAKING_DREP_ID_CONVERTED" />;
+
+        return null;
     };
 
     return (
@@ -197,10 +220,11 @@ export const VotingPreferenceCard = ({
                                             value={selectedVotingDelegation.drepId}
                                             inputMode="text"
                                             hasError={drepIdErrorId !== null}
-                                            bottomText={
-                                                drepIdErrorId ? (
-                                                    <Translation id={drepIdErrorId} />
-                                                ) : null
+                                            bottomText={getDrepIdBottomText()}
+                                            bottomTextIconComponent={
+                                                isDrepIdConverted && !drepIdErrorId ? (
+                                                    <Icon as={CheckIcon} size={16} isDisabled />
+                                                ) : undefined
                                             }
                                             onChange={e => handleDrepIdChange(e.target.value)}
                                         />
