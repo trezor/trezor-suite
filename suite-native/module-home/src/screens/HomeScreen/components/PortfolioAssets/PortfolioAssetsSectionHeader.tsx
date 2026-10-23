@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 
+import { selectIsHomeAssetTableMenuAvailable } from '@suite-common/assets';
 import { selectHomeAssetsTableGrouping } from '@suite-common/wallet-core';
 import { HStack, PressableOpacity, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
@@ -15,6 +16,7 @@ export const PortfolioAssetsSectionHeader = ({
     onViewOptionsPress,
 }: PortfolioAssetsSectionHeaderProps) => {
     const grouping = useSelector(selectHomeAssetsTableGrouping);
+    const isMenuAvailable = useSelector(selectIsHomeAssetTableMenuAvailable);
 
     const { translate } = useTranslate();
 
@@ -29,19 +31,21 @@ export const PortfolioAssetsSectionHeader = ({
             <Text variant="body-xs" color="contentSecondary">
                 <Translation id="moduleHome.assets.title" />
             </Text>
-            <PressableOpacity
-                onPress={onViewOptionsPress}
-                hitSlop={VIEW_OPTIONS_BUTTON_HIT_SLOP}
-                accessibilityRole="button"
-                accessibilityLabel={translate('moduleHome.assets.viewOptionsSheet.title')}
-                testID="@home/portfolio-assets/view-options-button"
-            >
-                <Icon
-                    name="funnelSimple"
-                    size="mediumLarge"
-                    color={grouping !== 'default' ? 'contentInfo' : 'contentPrimary'}
-                />
-            </PressableOpacity>
+            {isMenuAvailable && (
+                <PressableOpacity
+                    onPress={onViewOptionsPress}
+                    hitSlop={VIEW_OPTIONS_BUTTON_HIT_SLOP}
+                    accessibilityRole="button"
+                    accessibilityLabel={translate('moduleHome.assets.viewOptionsSheet.title')}
+                    testID="@home/portfolio-assets/view-options-button"
+                >
+                    <Icon
+                        name="funnelSimple"
+                        size="mediumLarge"
+                        color={grouping !== 'default' ? 'contentInfo' : 'contentPrimary'}
+                    />
+                </PressableOpacity>
+            )}
         </HStack>
     );
 };

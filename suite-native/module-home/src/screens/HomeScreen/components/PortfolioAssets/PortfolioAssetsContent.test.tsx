@@ -21,7 +21,7 @@ import {
     screen,
     within,
 } from '@suite-native/test-utils-store';
-import { type StaticSessionId } from '@trezor/device-utils';
+import { FirmwareType, type StaticSessionId } from '@trezor/device-utils';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { PortfolioAssetsContent } from './PortfolioAssetsContent';
@@ -60,6 +60,7 @@ type CreateStoreParams = {
     hasBitcoin?: boolean;
     grouping?: HomeAssetsTableGrouping;
     ethUsdRate?: number;
+    firmwareType?: FirmwareType;
 };
 
 // The Ethereum account's coin is one row, so `ethAssetCount - 1` tokens make up the rest.
@@ -68,6 +69,7 @@ const createStore = ({
     hasBitcoin = false,
     grouping,
     ethUsdRate,
+    firmwareType = FirmwareType.Universal,
 }: CreateStoreParams) => {
     const tokenContracts = Array.from({ length: Math.max(ethAssetCount - 1, 0) }, (_, index) =>
         getTokenContract(index + 1),
@@ -92,7 +94,7 @@ const createStore = ({
     return createLightStore({
         reducer: {
             device: createStaticReducer({
-                selectedDevice: { state: { staticSessionId: DEVICE_STATE } },
+                selectedDevice: { state: { staticSessionId: DEVICE_STATE }, firmwareType },
             }),
             discreetMode: createStaticReducer({ isActive: false }),
             locale: localeReducer,
@@ -249,5 +251,21 @@ describe('PortfolioAssetsContent', () => {
 
         expect(await screen.findByTestId(BTC_NETWORK_HEADER)).toBeTruthy();
         expect(screen.getAllByText(ASSET_ROW)).toHaveLength(10);
+    });
+
+    it('offers no view options on Bitcoin-only firmware and lists the assets ungrouped', async () => {
+        await renderPortfolioAssetsContent({
+            ethAssetCount: 1,
+            hasBitcoin: true,
+            grouping: 'networks',
+            firmwareType: FirmwareType.BitcoinOnly,
+        });
+
+        expect(screen.getAllByText(ASSET_ROW)).toHaveLength(1);
+        expect(screen.queryByTestId(BTC_NETWORK_HEADER)).toBeNull();
+        expect(screen.queryByTestId('@home/portfolio-assets/view-options-button')).toBeNull();
+        expect(
+            screen.queryByTestId('@home/portfolio-assets/view-options/grouping/networks'),
+        ).toBeNull();
     });
 });
