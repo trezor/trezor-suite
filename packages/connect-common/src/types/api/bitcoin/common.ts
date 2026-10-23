@@ -81,6 +81,8 @@ export interface PaymentRequest extends Omit<PROTO.PaymentRequest, 'amount'> {
     amount?: string;
 }
 
+export type RawTransaction = { txid: string; hex: string };
+
 export interface SignTransaction {
     inputs: ProtoWithDerivationPath<PROTO.TxInputType>[];
     outputs: ProtoWithDerivationPath<PROTO.TxOutputType>[];
