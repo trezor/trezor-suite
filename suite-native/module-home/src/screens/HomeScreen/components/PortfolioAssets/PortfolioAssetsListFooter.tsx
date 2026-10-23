@@ -10,12 +10,12 @@ import { Divider, VStack } from '@suite-native/atoms';
 import { PortfolioAssetsShowMoreButton } from './PortfolioAssetsShowMoreButton';
 
 type PortfolioAssetsListFooterProps = {
-    isExpanded: boolean;
+    isListExpanded: boolean;
     onShowMorePress: () => void;
 };
 
 export const PortfolioAssetsListFooter = ({
-    isExpanded,
+    isListExpanded,
     onShowMorePress,
 }: PortfolioAssetsListFooterProps) => {
     const isFoldable = useSelector((state: HomeAssetTableState) =>
@@ -30,7 +30,10 @@ export const PortfolioAssetsListFooter = ({
         <>
             <Divider />
             <VStack alignItems="center" paddingVertical="sp12">
-                <PortfolioAssetsShowMoreButton isExpanded={isExpanded} onPress={onShowMorePress} />
+                <PortfolioAssetsShowMoreButton
+                    isExpanded={isListExpanded}
+                    onPress={onShowMorePress}
+                />
             </VStack>
         </>
     );
