@@ -8,7 +8,7 @@ import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config
 import {
     AMOUNT_MAX_LENGTH,
     TRON_STAKING_RESERVE,
-    composeTronFreezeFeeLevelsThunk,
+    composeTronStakingStepThunk,
     getStakingLimitsByNetworkSymbol,
 } from '@suite-common/wallet-core';
 import { asAmountSubunit, subunitsToUnits, toFiatCurrency } from '@suite-common/wallet-utils';
@@ -78,10 +78,9 @@ export const TronFreezeAmount = () => {
         }).toString();
 
         const levels = await dispatch(
-            composeTronFreezeFeeLevelsThunk({
+            composeTronStakingStepThunk({
                 account,
-                amount: availableBalanceUnits,
-                resourceType,
+                request: { type: 'freeze', amount: availableBalanceUnits, resourceType },
             }),
         )
             .unwrap()

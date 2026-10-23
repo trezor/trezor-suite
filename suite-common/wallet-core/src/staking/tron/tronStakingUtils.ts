@@ -16,7 +16,7 @@ import {
 import { returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { BigNumber, isArrayMember } from '@trezor/utils';
 
-import { type TronVoteAllocation } from './actions/vote/voteContract';
+import { type TronVoteAllocation } from './adapter/contracts/voteContract';
 import { tronStakingAdapter } from './adapter/tronStakingAdapter';
 import { TRON_UNFREEZE_DELAY_DAYS } from './tronStakingConstants';
 import { deriveStakingPositions } from '../positions/deriveStakingPositions';
@@ -41,11 +41,6 @@ const getTronStakingPositions = (account: Account | null): StakingPosition[] =>
 const getTronStakingSummary = (account: Account | null) =>
     summarizeStakingPositions(getTronStakingPositions(account));
 
-const getTronUnstakingBatches = (account: Account): TronUnstakingBatch[] =>
-    getTronStakingPositions(account).flatMap(({ details }) =>
-        details.type === 'tron-unattributed' ? details.unstakingBatches : [],
-    );
-
 export const isTronStakingActive = (account: Account | null): boolean =>
     new BigNumber(getTronStakingSummary(account).staked).isGreaterThan(0);
 
@@ -54,7 +49,7 @@ export const getTronCryptoBalanceWithStaking = (account: Account): string =>
     new BigNumber(account.formattedBalance).plus(getTronStakingSummary(account).staked).toString();
 
 export const getTronStakingRewards = (account: Account): string =>
-    getTronStakingSummary(account).claimableRewards;
+    tronStakingAdapter.getClaimableRewards(account);
 
 export const getTronRewardClaimCooldownEndsAt = (account: Account): number | null =>
     tronStakingAdapter.getRewardClaimCooldownEndsAt(account);
@@ -64,18 +59,6 @@ export const isTronRewardClaimOnCooldown = (account: Account): boolean => {
     if (cooldownEndsAt === null) return false;
 
     return Date.now() / 1000 < cooldownEndsAt;
-};
-
-const sumUnstakingBatchesSun = (
-    account: Account,
-    predicate: (batch: TronUnstakingBatch) => boolean,
-): string => {
-    const totalSun = getTronUnstakingBatches(account).reduce(
-        (acc, batch) => (predicate(batch) ? acc.plus(batch.amount) : acc),
-        new BigNumber(0),
-    );
-
-    return sunToTrx(totalSun.toString(), account.symbol);
 };
 
 export const getTronUnstakingBalance = (account: Account): string =>
@@ -155,7 +138,8 @@ export const getTronUnstakingBatchesWithResource = ({
     const candidates = getUnfreezeTransactionCandidates(transactions);
     const usedCandidates = new Set<UnfreezeTransactionCandidate>();
 
-    return getTronUnstakingBatches(account)
+    return tronStakingAdapter
+        .getUnfreezeBatches(account)
         .toSorted((a, b) => a.expireTime - b.expireTime)
         .map(batch => {
             const candidate = candidates.find(
@@ -198,12 +182,12 @@ export const getTronPendingUnstakingBatches = ({
 export const getTronWithdrawableBalance = (
     account: Account,
     nowSeconds: number = Date.now() / 1000,
-): string => sumUnstakingBatchesSun(account, batch => batch.expireTime <= nowSeconds);
+): string => tronStakingAdapter.getWithdrawableAmount(account, nowSeconds);
 
 export const getTronPendingUnstakeBalance = (
     account: Account,
     nowSeconds: number = Date.now() / 1000,
-): string => sumUnstakingBatchesSun(account, batch => batch.expireTime > nowSeconds);
+): string => tronStakingAdapter.getPendingUnfreezeAmount(account, nowSeconds);
 
 export const getTronVotes = (account?: Account): TronVote[] =>
     account ? tronStakingAdapter.getVotes(account) : [];

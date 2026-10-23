@@ -2,20 +2,18 @@ import { type Account } from '@suite-common/wallet-types';
 import { exhaustive } from '@trezor/type-utils';
 import { BigNumber } from '@trezor/utils';
 
+import { buildClaimContract, buildClaimReviewForm } from './contracts/claimContract';
+import { buildFreezeContract, buildFreezeReviewForm } from './contracts/freezeContract';
+import { buildUnstakeContract, buildUnstakeReviewForm } from './contracts/unstakeContract';
+import { buildVoteContract, buildVoteReviewForm } from './contracts/voteContract';
+import { buildWithdrawContract, buildWithdrawReviewForm } from './contracts/withdrawContract';
+import { getTronClaimableRewards, getTronWithdrawableAmount } from './tronStakingRules';
 import {
     type TronStakingPlanError,
     type TronStakingStep,
     type TronStakingStepPlan,
     type TronStakingStepRequest,
 } from './types';
-import { buildClaimContract, buildClaimReviewForm } from '../actions/claim/claimContract';
-import { buildFreezeContract, buildFreezeReviewForm } from '../actions/freeze/freezeContract';
-import { buildUnstakeContract, buildUnstakeReviewForm } from '../actions/unstake/unstakeContract';
-import { buildVoteContract, buildVoteReviewForm } from '../actions/vote/voteContract';
-import {
-    buildWithdrawContract,
-    buildWithdrawReviewForm,
-} from '../actions/withdraw/withdrawContract';
 
 const TRON_VOTING_SYMBOL = 'trx';
 
@@ -85,14 +83,24 @@ export const planTronStakingStep = (
 
             if (!contract) return failed('INVALID_OWNER_ADDRESS');
 
-            return planned({ ...request, contract, reviewForm: buildWithdrawReviewForm() });
+            return planned({
+                type: 'withdraw',
+                amount: getTronWithdrawableAmount(account, Date.now() / 1000),
+                contract,
+                reviewForm: buildWithdrawReviewForm(),
+            });
         }
         case 'claim': {
             const contract = buildClaimContract(account);
 
             if (!contract) return failed('INVALID_OWNER_ADDRESS');
 
-            return planned({ ...request, contract, reviewForm: buildClaimReviewForm() });
+            return planned({
+                type: 'claim',
+                amount: getTronClaimableRewards(account),
+                contract,
+                reviewForm: buildClaimReviewForm(),
+            });
         }
         default:
             return exhaustive(request);

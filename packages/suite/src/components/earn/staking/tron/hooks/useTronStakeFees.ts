@@ -2,11 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 
 import {
     type TronStakeStepId,
-    composeTronClaimFeeLevelsThunk,
-    composeTronFreezeFeeLevelsThunk,
-    composeTronUnstakeFeeLevelsThunk,
-    composeTronVoteFeeLevelsThunk,
-    composeTronWithdrawFeeLevelsThunk,
+    type TronStakingStepRequest,
+    composeTronStakingStepThunk,
     selectRawNetworkFeeInfo,
 } from '@suite-common/wallet-core';
 import { type Account, type FeeInfo, type PrecomposedLevels } from '@suite-common/wallet-types';
@@ -46,12 +43,14 @@ export const useTronStakeFees = ({ account, form, step }: UseTronStakeFeesProps)
     );
 
     const composeLevels = useMemo(() => {
+        const composeStep = (request: TronStakingStepRequest) => () =>
+            dispatch(composeTronStakingStepThunk({ account, request }))
+                .unwrap()
+                .catch(() => undefined);
+
         switch (step) {
             case 'freeze':
-                return () =>
-                    dispatch(composeTronFreezeFeeLevelsThunk({ account, amount, resourceType }))
-                        .unwrap()
-                        .catch(() => undefined);
+                return composeStep({ type: 'freeze', amount, resourceType });
             case 'vote': {
                 const allocations = parseVoteAllocations(voteAllocations);
 
@@ -59,26 +58,14 @@ export const useTronStakeFees = ({ account, form, step }: UseTronStakeFeesProps)
                     return undefined;
                 }
 
-                return () =>
-                    dispatch(composeTronVoteFeeLevelsThunk({ account, allocations }))
-                        .unwrap()
-                        .catch(() => undefined);
+                return composeStep({ type: 'vote', allocations });
             }
             case 'unstake':
-                return () =>
-                    dispatch(composeTronUnstakeFeeLevelsThunk({ account, amount, resourceType }))
-                        .unwrap()
-                        .catch(() => undefined);
+                return composeStep({ type: 'unstake', amount, resourceType });
             case 'withdraw':
-                return () =>
-                    dispatch(composeTronWithdrawFeeLevelsThunk({ account }))
-                        .unwrap()
-                        .catch(() => undefined);
+                return composeStep({ type: 'withdraw' });
             case 'claim':
-                return () =>
-                    dispatch(composeTronClaimFeeLevelsThunk({ account }))
-                        .unwrap()
-                        .catch(() => undefined);
+                return composeStep({ type: 'claim' });
             case 'complete':
                 return undefined;
             default:

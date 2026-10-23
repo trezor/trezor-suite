@@ -6,25 +6,14 @@ import { asCoinSymbol } from '@trezor/connect-common';
 import * as tronUtils from '@trezor/network-tron/utils';
 
 import { isEarnSigningCancelled } from '../../../earn/earnTransactionAnalytics';
-import { type TronClaimContract } from '../actions/claim/claimContract';
-import { type TronFreezeContract } from '../actions/freeze/freezeContract';
-import { type TronUnstakeContract } from '../actions/unstake/unstakeContract';
-import { type TronVoteContract } from '../actions/vote/voteContract';
-import { type TronWithdrawContract } from '../actions/withdraw/withdrawContract';
+import { type TronStakingContract } from '../adapter/types';
 import { type TronStakeError } from '../tronStakingTypes';
-
-type TronStakeContract =
-    | TronFreezeContract
-    | TronUnstakeContract
-    | TronVoteContract
-    | TronWithdrawContract
-    | TronClaimContract;
 
 type SignTronContractResult = { serializedTx: string; txid: string } | { error: TronStakeError };
 type SignTronContractParams = {
     account: Account;
     device: TrezorDevice;
-    contract: TronStakeContract;
+    contract: TronStakingContract;
 };
 
 export const signTronContract = async ({

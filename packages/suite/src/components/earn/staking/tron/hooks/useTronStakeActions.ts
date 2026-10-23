@@ -7,15 +7,12 @@ import {
     type TronFlow,
     type TronStakeError,
     type TronStakeStepId,
+    type TronStakingStepRequest,
     getCurrentVoteAllocations,
     getTronStakingRewards,
     getTronWithdrawableBalance,
     selectTronStakeSession,
-    submitTronClaimThunk,
-    submitTronFreezeThunk,
-    submitTronUnstakeThunk,
-    submitTronVoteThunk,
-    submitTronWithdrawThunk,
+    submitTronStakingStepThunk,
     tronStakeActions,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -83,25 +80,30 @@ export const useTronStakeActions = ({
             return;
         }
 
+        const submitStep = (
+            request: TronStakingStepRequest,
+            requestConsent?: () => Promise<boolean>,
+        ) =>
+            dispatch(
+                submitTronStakingStepThunk({
+                    account,
+                    device,
+                    flow,
+                    request,
+                    requestConsent,
+                    requestPushApproval: async () =>
+                        Boolean(await dispatch(openDeferredModal({ type: 'review-transaction' }))),
+                    onSigningStart: () => dispatch(preserveModal()),
+                    onSettled: () => dispatch(closeModal()),
+                }),
+            );
+
         switch (step) {
             case 'freeze': {
                 if (isStakingDisabled) break;
 
                 const { amount, resourceType } = form.methods.getValues();
-                dispatch(
-                    submitTronFreezeThunk({
-                        account,
-                        device,
-                        amount,
-                        resourceType,
-                        requestPushApproval: async () =>
-                            Boolean(
-                                await dispatch(openDeferredModal({ type: 'review-transaction' })),
-                            ),
-                        onSigningStart: () => dispatch(preserveModal()),
-                        onSettled: () => dispatch(closeModal()),
-                    }),
-                );
+                submitStep({ type: 'freeze', amount, resourceType });
                 break;
             }
             case 'vote': {
@@ -153,76 +155,27 @@ export const useTronStakeActions = ({
                           }
                         : undefined;
 
-                dispatch(
-                    submitTronVoteThunk({
-                        account,
-                        device,
-                        flow,
-                        allocations,
-                        requestVoteConsent,
-                        requestPushApproval: async () =>
-                            Boolean(
-                                await dispatch(openDeferredModal({ type: 'review-transaction' })),
-                            ),
-                        onSigningStart: () => dispatch(preserveModal()),
-                        onSettled: () => dispatch(closeModal()),
-                    }),
-                );
+                submitStep({ type: 'vote', allocations }, requestVoteConsent);
                 break;
             }
             case 'unstake': {
                 if (isUnstakingDisabled) break;
 
                 const { amount, resourceType } = form.methods.getValues();
-                dispatch(
-                    submitTronUnstakeThunk({
-                        account,
-                        device,
-                        amount,
-                        resourceType,
-                        requestPushApproval: async () =>
-                            Boolean(
-                                await dispatch(openDeferredModal({ type: 'review-transaction' })),
-                            ),
-                        onSigningStart: () => dispatch(preserveModal()),
-                        onSettled: () => dispatch(closeModal()),
-                    }),
-                );
+                submitStep({ type: 'unstake', amount, resourceType });
                 break;
             }
             case 'withdraw':
                 if (isWithdrawingDisabled) break;
 
                 form.methods.setValue('amount', getTronWithdrawableBalance(account));
-                dispatch(
-                    submitTronWithdrawThunk({
-                        account,
-                        device,
-                        requestPushApproval: async () =>
-                            Boolean(
-                                await dispatch(openDeferredModal({ type: 'review-transaction' })),
-                            ),
-                        onSigningStart: () => dispatch(preserveModal()),
-                        onSettled: () => dispatch(closeModal()),
-                    }),
-                );
+                submitStep({ type: 'withdraw' });
                 break;
             case 'claim':
                 if (isClaimingDisabled) break;
 
                 form.methods.setValue('amount', getTronStakingRewards(account));
-                dispatch(
-                    submitTronClaimThunk({
-                        account,
-                        device,
-                        requestPushApproval: async () =>
-                            Boolean(
-                                await dispatch(openDeferredModal({ type: 'review-transaction' })),
-                            ),
-                        onSigningStart: () => dispatch(preserveModal()),
-                        onSettled: () => dispatch(closeModal()),
-                    }),
-                );
+                submitStep({ type: 'claim' });
                 break;
             case 'complete':
                 break;

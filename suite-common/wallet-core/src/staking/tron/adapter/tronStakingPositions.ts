@@ -1,6 +1,7 @@
 import { type Account } from '@suite-common/wallet-types';
 import { getTronStakingInfo, sunToTrx } from '@suite-common/wallet-utils';
 import { type TronVote } from '@trezor/blockchain-link-types';
+import { weakMapMemoize } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
 import {
@@ -55,7 +56,7 @@ const createTronPosition = ({
 // Frozen TRX backs the votes for all Super Representatives at once. Each product holds its
 // representatives' votes; what no product holds (unvoted stake, other representatives, unfreeze
 // batches, rewards) goes to one unattributed position.
-export const deriveTronStakingPositions = (account: Account): StakingPosition[] => {
+export const deriveTronStakingPositions = weakMapMemoize((account: Account): StakingPosition[] => {
     if (account.networkType !== 'tron') return [];
 
     const stakingInfo = getTronStakingInfo(account);
@@ -129,4 +130,4 @@ export const deriveTronStakingPositions = (account: Account): StakingPosition[] 
             },
         }),
     ];
-};
+});

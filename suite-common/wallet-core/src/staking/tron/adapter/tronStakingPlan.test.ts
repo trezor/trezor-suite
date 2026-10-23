@@ -1,33 +1,48 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 
+import { buildClaimContract, buildClaimReviewForm } from './contracts/claimContract';
+import { buildFreezeContract, buildFreezeReviewForm } from './contracts/freezeContract';
+import { buildUnstakeContract, buildUnstakeReviewForm } from './contracts/unstakeContract';
+import { buildVoteContract, buildVoteReviewForm } from './contracts/voteContract';
+import { buildWithdrawContract, buildWithdrawReviewForm } from './contracts/withdrawContract';
 import { tronStakingAdapter } from './tronStakingAdapter';
-import { buildClaimContract, buildClaimReviewForm } from '../actions/claim/claimContract';
-import { buildFreezeContract, buildFreezeReviewForm } from '../actions/freeze/freezeContract';
-import { buildUnstakeContract, buildUnstakeReviewForm } from '../actions/unstake/unstakeContract';
-import { buildVoteContract, buildVoteReviewForm } from '../actions/vote/voteContract';
-import {
-    buildWithdrawContract,
-    buildWithdrawReviewForm,
-} from '../actions/withdraw/withdrawContract';
 
 const OWNER_ADDRESS = 'TVDGpn4hCSzJ5nkHPLetk8KQBtwaTppnkr';
 const REPRESENTATIVE_A = 'TN3W4H6rK2ce4vX9YnFQHwKENnHjoxb3m9';
 const REPRESENTATIVE_B = 'TKWJhMU8NAviZ9TN5hroaFQPZ83FNctzz4';
 const INVALID_ADDRESS = 'TKWJhMU8NAviZ9TN5hroaFQPZ83FNctzz5';
 
+const NOW_SECONDS = 1_700_000_000;
+
 const tronAccount = (overrides: Partial<Account> = {}): Account =>
     ({
         symbol: asNetworkSymbol('trx'),
         networkType: 'tron',
         descriptor: OWNER_ADDRESS,
-        misc: {},
+        misc: {
+            tronResources: {
+                stakingInfo: {
+                    stakedBalance: '0',
+                    votes: [],
+                    unstakingBatches: [
+                        { amount: '4000000', expireTime: NOW_SECONDS - 1 },
+                        { amount: '6000000', expireTime: NOW_SECONDS + 1 },
+                    ],
+                    unclaimedReward: '1500000',
+                },
+            },
+        },
         ...overrides,
     }) as unknown as Account;
 
 const { planStep } = tronStakingAdapter;
 
 describe('Tron staking step planning', () => {
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
     it('plans a freeze with its contract and review', () => {
         const account = tronAccount();
 
@@ -85,13 +100,15 @@ describe('Tron staking step planning', () => {
         });
     });
 
-    it('plans a withdrawal and a reward claim', () => {
+    it('plans a withdrawal of the expired unfreezes and a claim of the rewards', () => {
+        jest.spyOn(Date, 'now').mockReturnValue(NOW_SECONDS * 1000);
         const account = tronAccount();
 
         expect(planStep({ type: 'withdraw' }, account)).toEqual({
             success: true,
             step: {
                 type: 'withdraw',
+                amount: '4',
                 contract: buildWithdrawContract(account),
                 reviewForm: buildWithdrawReviewForm(),
             },
@@ -100,6 +117,7 @@ describe('Tron staking step planning', () => {
             success: true,
             step: {
                 type: 'claim',
+                amount: '1.5',
                 contract: buildClaimContract(account),
                 reviewForm: buildClaimReviewForm(),
             },

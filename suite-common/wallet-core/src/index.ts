@@ -114,27 +114,18 @@ export type * from './staking/stakingReducerTypes';
 export * from './staking/stakingSelectors';
 export * from './staking/stakingThunks';
 export * from './staking/stakingTransactionThunks';
-export { composeTronClaimFeeLevelsThunk } from './staking/tron/actions/claim/composeClaim';
-export { submitTronClaimThunk } from './staking/tron/actions/claim/submitClaim';
-export { composeTronFreezeFeeLevelsThunk } from './staking/tron/actions/freeze/composeFreeze';
-export { submitTronFreezeThunk } from './staking/tron/actions/freeze/submitFreeze';
-export { composeTronUnstakeFeeLevelsThunk } from './staking/tron/actions/unstake/composeUnstake';
-export { submitTronUnstakeThunk } from './staking/tron/actions/unstake/submitUnstake';
-export { composeTronVoteFeeLevelsThunk } from './staking/tron/actions/vote/composeVote';
-export { submitTronVoteThunk } from './staking/tron/actions/vote/submitVote';
 export {
     getAllocatedVotesTotal,
     splitVotesEvenly,
     type TronVoteAllocation,
-} from './staking/tron/actions/vote/voteContract';
-export { composeTronWithdrawFeeLevelsThunk } from './staking/tron/actions/withdraw/composeWithdraw';
-export { submitTronWithdrawThunk } from './staking/tron/actions/withdraw/submitWithdraw';
+} from './staking/tron/adapter/contracts/voteContract';
 export * from './staking/tron/adapter/tronStakingAdapter';
 export type * from './staking/tron/adapter/types';
 export { confirmTronPendingTransactionThunk } from './staking/tron/shared/confirmPendingTransactionThunk';
 export * from './staking/tron/tronStakingConstants';
 export * from './staking/tron/tronStakingReducer';
 export * from './staking/tron/tronStakingSelectors';
+export * from './staking/tron/tronStakingStepThunks';
 export * from './staking/tron/tronStakingTypes';
 export * from './staking/tron/tronStakingUtils';
 export * from './token/stellarContractTokensSlice';

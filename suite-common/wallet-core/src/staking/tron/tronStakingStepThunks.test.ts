@@ -10,19 +10,18 @@ import TrezorConnect from '@trezor/connect';
 import { type WithServices } from '@trezor/redux-utils';
 import { createDeferred } from '@trezor/utils';
 
-import { submitTronVoteThunk } from './submitVote';
-import { transactionsActions } from '../../../../transactions/transactionsActions';
+import { buildFreezeReviewForm } from './adapter/contracts/freezeContract';
+import { type TronStakingStepRequest } from './adapter/types';
+import { reportTronVoteTxId } from './shared/reportTronVoteTxId';
+import { signTronContract } from './shared/signTronContract';
+import { tronStakeActions } from './tronStakingReducer';
+import { composeTronStakingStepThunk, submitTronStakingStepThunk } from './tronStakingStepThunks';
+import { type TronFlow } from './tronStakingTypes';
+import { transactionsActions } from '../../transactions/transactionsActions';
 import {
     type AddFakePendingTronTxThunkState,
     addFakePendingTronTxThunk,
-} from '../../../../transactions/transactionsThunks';
-import { reportTronVoteTxId } from '../../shared/reportTronVoteTxId';
-import { signTronContract } from '../../shared/signTronContract';
-import { tronStakeActions } from '../../tronStakingReducer';
-import { submitTronClaimThunk } from '../claim/submitClaim';
-import { submitTronFreezeThunk } from '../freeze/submitFreeze';
-import { submitTronUnstakeThunk } from '../unstake/submitUnstake';
-import { submitTronWithdrawThunk } from '../withdraw/submitWithdraw';
+} from '../../transactions/transactionsThunks';
 
 jest.mock('@sentry/core', () => ({ captureException: jest.fn(), withScope: jest.fn() }));
 jest.mock('@trezor/connect', () => {
@@ -38,8 +37,8 @@ jest.mock('@trezor/connect', () => {
         },
     };
 });
-jest.mock('../../shared/reportTronVoteTxId', () => ({ reportTronVoteTxId: jest.fn() }));
-jest.mock('../../shared/signTronContract', () => ({ signTronContract: jest.fn() }));
+jest.mock('./shared/reportTronVoteTxId', () => ({ reportTronVoteTxId: jest.fn() }));
+jest.mock('./shared/signTronContract', () => ({ signTronContract: jest.fn() }));
 
 const analytics = mockAnalytics<AnalyticsSharedEvents>();
 
@@ -101,17 +100,42 @@ const initStore = () =>
 
 const ALLOCATIONS = [{ address: REPRESENTATIVE_ADDRESS, count: 10 }];
 
+type SubmitStepParams = {
+    request: TronStakingStepRequest;
+    flow?: TronFlow;
+    account?: Account;
+    requestConsent?: () => Promise<boolean>;
+    requestPushApproval?: () => Promise<boolean>;
+    onSettled?: () => void;
+};
+
+const submitStep = ({
+    request,
+    flow = FLOW,
+    account = buildAccount(),
+    requestConsent,
+    requestPushApproval = () => Promise.resolve(true),
+    onSettled,
+}: SubmitStepParams) =>
+    submitTronStakingStepThunk({
+        account,
+        device,
+        flow,
+        request,
+        requestConsent,
+        requestPushApproval,
+        onSettled,
+    });
+
 const submitVote = (
     store: TestCompositionStore<AddFakePendingTronTxThunkState, WithServices<AnalyticsDep>>,
     account = buildAccount(),
     requestPushApproval = () => Promise.resolve(true),
 ) =>
     store.dispatch(
-        submitTronVoteThunk({
+        submitStep({
+            request: { type: 'vote', allocations: ALLOCATIONS },
             account,
-            device,
-            flow: FLOW,
-            allocations: ALLOCATIONS,
             requestPushApproval,
         }),
     );
@@ -129,7 +153,7 @@ beforeEach(() => {
     pushTransactionMock.mockResolvedValue({ success: true, payload: { txid: SIGNED_TXID } });
 });
 
-describe('submitTronVoteThunk', () => {
+describe('submitTronStakingStepThunk for a vote', () => {
     it('broadcasts only after the signed txid has been reported', async () => {
         const reportRequested = createDeferred();
         const reportResult = createDeferred<boolean>();
@@ -274,15 +298,14 @@ describe('submitTronVoteThunk', () => {
         const store = initStore();
 
         await store.dispatch(
-            submitTronVoteThunk({
-                account: buildAccount(),
-                device,
-                flow: FLOW,
-                allocations: [
-                    { address: REPRESENTATIVE_ADDRESS, count: 16 },
-                    { address: OTHER_REPRESENTATIVE_ADDRESS, count: 30 },
-                ],
-                requestPushApproval: () => Promise.resolve(true),
+            submitStep({
+                request: {
+                    type: 'vote',
+                    allocations: [
+                        { address: REPRESENTATIVE_ADDRESS, count: 16 },
+                        { address: OTHER_REPRESENTATIVE_ADDRESS, count: 30 },
+                    ],
+                },
             }),
         );
 
@@ -323,15 +346,14 @@ describe('submitTronVoteThunk', () => {
         const store = initStore();
 
         await store.dispatch(
-            submitTronVoteThunk({
-                account: buildAccount(),
-                device,
-                flow: FLOW,
-                allocations: [
-                    { address: REPRESENTATIVE_ADDRESS, count: 16 },
-                    { address: OTHER_REPRESENTATIVE_ADDRESS, count: 0 },
-                ],
-                requestPushApproval: () => Promise.resolve(true),
+            submitStep({
+                request: {
+                    type: 'vote',
+                    allocations: [
+                        { address: REPRESENTATIVE_ADDRESS, count: 16 },
+                        { address: OTHER_REPRESENTATIVE_ADDRESS, count: 0 },
+                    ],
+                },
             }),
         );
 
@@ -389,57 +411,25 @@ describe('submitTronVoteThunk', () => {
 
 describe('Tron signing cancellation analytics', () => {
     const submissions = [
-        [
-            'vote',
-            () =>
-                submitTronVoteThunk({
-                    account: buildAccount(),
-                    device,
-                    flow: FLOW,
-                    allocations: ALLOCATIONS,
-                    requestPushApproval: jest.fn(),
-                }),
-        ],
+        ['vote', () => submitStep({ request: { type: 'vote', allocations: ALLOCATIONS } })],
         [
             'stake',
             () =>
-                submitTronFreezeThunk({
-                    account: buildAccount(),
-                    device,
-                    amount: '1',
-                    resourceType: 'energy',
-                    requestPushApproval: jest.fn(),
+                submitStep({
+                    flow: 'stake',
+                    request: { type: 'freeze', amount: '1', resourceType: 'energy' },
                 }),
         ],
         [
             'unstake',
             () =>
-                submitTronUnstakeThunk({
-                    account: buildAccount(),
-                    device,
-                    amount: '1',
-                    resourceType: 'bandwidth',
-                    requestPushApproval: jest.fn(),
+                submitStep({
+                    flow: 'unstake',
+                    request: { type: 'unstake', amount: '1', resourceType: 'bandwidth' },
                 }),
         ],
-        [
-            'claim',
-            () =>
-                submitTronClaimThunk({
-                    account: buildAccount(),
-                    device,
-                    requestPushApproval: jest.fn(),
-                }),
-        ],
-        [
-            'withdraw',
-            () =>
-                submitTronWithdrawThunk({
-                    account: buildAccount(),
-                    device,
-                    requestPushApproval: jest.fn(),
-                }),
-        ],
+        ['claim', () => submitStep({ flow: 'claim', request: { type: 'claim' } })],
+        ['withdraw', () => submitStep({ flow: 'withdraw', request: { type: 'withdraw' } })],
     ] as const;
 
     it.each(submissions)('reports a signing cancellation once for %s', async (_, submit) => {
@@ -472,4 +462,195 @@ describe('Tron signing cancellation analytics', () => {
             expect(pushTransactionMock).not.toHaveBeenCalled();
         },
     );
+});
+
+describe('submitTronStakingStepThunk for the other steps', () => {
+    const NOW_SECONDS = 1_700_000_000;
+
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    it('freezes without reporting the transaction id and shows the freeze as pending', async () => {
+        const store = initStore();
+
+        await store.dispatch(
+            submitStep({
+                flow: 'stake',
+                request: { type: 'freeze', amount: '1', resourceType: 'energy' },
+            }),
+        );
+
+        expect(reportTronVoteTxIdMock).not.toHaveBeenCalled();
+        expect(pushTransactionMock).toHaveBeenCalledTimes(1);
+        expect(
+            store
+                .getActions()
+                .filter(tronStakeActions.storePrecomposedTransaction.match)
+                .map(action => action.payload.precomposedForm),
+        ).toEqual([buildFreezeReviewForm('energy')]);
+        expect(
+            store
+                .getActions()
+                .filter(addFakePendingTronTxThunk.pending.match)
+                .map(action => action.meta.arg),
+        ).toEqual([
+            expect.objectContaining({
+                txid: SIGNED_TXID,
+                type: 'self',
+                target: { addresses: [ACCOUNT_ADDRESS], amount: '1000000' },
+                tronSpecific: expect.objectContaining({
+                    contractType: 'FreezeBalanceV2Contract',
+                    resource: 'ENERGY',
+                    stakeAmount: '1000000',
+                }),
+            }),
+        ]);
+        expect(getSubmitFinishedActions(store)).toEqual([
+            tronStakeActions.submitFinished({
+                accountKey: ACCOUNT_KEY,
+                flow: 'stake',
+                txid: SIGNED_TXID,
+            }),
+        ]);
+    });
+
+    it('shows a withdrawal as pending with the TRX whose unfreeze has expired', async () => {
+        jest.spyOn(Date, 'now').mockReturnValue(NOW_SECONDS * 1000);
+        const store = initStore();
+        const account = buildAccount({
+            misc: {
+                tronResources: {
+                    availableFreeBandwidth: 600,
+                    availableStakedBandwidth: 0,
+                    stakingInfo: {
+                        stakedBalance: '0',
+                        votes: [],
+                        unstakingBatches: [
+                            { amount: '4000000', expireTime: NOW_SECONDS - 1 },
+                            { amount: '6000000', expireTime: NOW_SECONDS + 1 },
+                        ],
+                        unclaimedReward: '0',
+                    },
+                },
+            },
+        } as unknown as Partial<Account>);
+
+        await store.dispatch(
+            submitStep({ flow: 'withdraw', account, request: { type: 'withdraw' } }),
+        );
+
+        expect(
+            store
+                .getActions()
+                .filter(addFakePendingTronTxThunk.pending.match)
+                .map(action => action.meta.arg.target),
+        ).toEqual([{ addresses: [ACCOUNT_ADDRESS], amount: '4000000' }]);
+    });
+
+    it('rejects a step it cannot plan before starting the submission', async () => {
+        const store = initStore();
+
+        await store.dispatch(
+            submitStep({
+                flow: 'claim',
+                account: buildAccount({ descriptor: 'invalid' } as Partial<Account>),
+                request: { type: 'claim' },
+            }),
+        );
+
+        expect(signTronContractMock).not.toHaveBeenCalled();
+        expect(store.getActions()).not.toContainEqual(
+            tronStakeActions.submitStarted({ accountKey: ACCOUNT_KEY, flow: 'claim' }),
+        );
+        expect(getSubmitFinishedActions(store)).toEqual([
+            tronStakeActions.submitFinished({
+                accountKey: ACCOUNT_KEY,
+                flow: 'claim',
+                error: { kind: 'compose-failed', message: 'Invalid owner address.' },
+            }),
+        ]);
+    });
+
+    it('does nothing when the consent is declined', async () => {
+        const store = initStore();
+
+        await store.dispatch(
+            submitStep({
+                request: { type: 'vote', allocations: ALLOCATIONS },
+                requestConsent: () => Promise.resolve(false),
+            }),
+        );
+
+        expect(signTronContractMock).not.toHaveBeenCalled();
+        expect(getSubmitFinishedActions(store)).toEqual([]);
+    });
+
+    it('finishes with a compose failure and settles when the fee cannot be estimated', async () => {
+        tronComposeTransactionMock.mockResolvedValue({
+            success: false,
+            payload: { error: 'Node is down' },
+            error: { message: 'Node is down' },
+        });
+        const onSettled = jest.fn();
+        const store = initStore();
+
+        await store.dispatch(
+            submitStep({
+                flow: 'unstake',
+                request: { type: 'unstake', amount: '1', resourceType: 'energy' },
+                onSettled,
+            }),
+        );
+
+        expect(signTronContractMock).not.toHaveBeenCalled();
+        expect(onSettled).toHaveBeenCalledTimes(1);
+        expect(getSubmitFinishedActions(store)).toEqual([
+            tronStakeActions.submitFinished({
+                accountKey: ACCOUNT_KEY,
+                flow: 'unstake',
+                error: { kind: 'compose-failed' },
+            }),
+        ]);
+    });
+});
+
+describe(composeTronStakingStepThunk.name, () => {
+    it('composes the fee levels of a planned step', async () => {
+        const store = initStore();
+
+        const levels = await store
+            .dispatch(
+                composeTronStakingStepThunk({
+                    account: buildAccount(),
+                    request: { type: 'claim' },
+                }),
+            )
+            .unwrap();
+
+        expect(levels.normal).toMatchObject({
+            type: 'final',
+            bytes: 300,
+            outputs: [{ address: ACCOUNT_ADDRESS, amount: '0' }],
+        });
+        expect(tronComposeTransactionMock).toHaveBeenCalledWith(
+            expect.objectContaining({ blockHeight: 0 }),
+        );
+    });
+
+    it('rejects a step it cannot plan with the reason', async () => {
+        const store = initStore();
+
+        await expect(
+            store
+                .dispatch(
+                    composeTronStakingStepThunk({
+                        account: buildAccount(),
+                        request: { type: 'freeze', amount: '0', resourceType: 'energy' },
+                    }),
+                )
+                .unwrap(),
+        ).rejects.toEqual({ kind: 'compose-failed', message: 'Invalid amount.' });
+        expect(tronComposeTransactionMock).not.toHaveBeenCalled();
+    });
 });
