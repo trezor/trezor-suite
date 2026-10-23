@@ -133,10 +133,11 @@ const useDexQuoteApprovalInfoChangeEffect = ({
 }: ExchangeFormType) => {
     const { dispatch } = useServices(injectDispatch);
     const sendAccount = useSelector(selectExchangeSelectedSendAccount);
+    const receiveAddress = useSelector(selectTradingExchangeQuotesRequest)?.receiveAddress;
     const quote = useWatch({ control, name: 'quote' });
 
-    const lastProcessedQuoteId = useRef<string | undefined>(undefined);
-    const pendingPrefetchQuoteIds = useRef(new Set<string>());
+    const lastProcessedPrefetchKey = useRef<string | undefined>(undefined);
+    const pendingPrefetchKeys = useRef(new Set<string>());
 
     // This effect is used to prefetch the approval info for the DEX quote
     // Then we can show the approval button shortly after the user selects the quote
@@ -145,28 +146,37 @@ const useDexQuoteApprovalInfoChangeEffect = ({
         const { quoteId, isDex } = quote ?? {};
 
         if (!isDex) {
-            lastProcessedQuoteId.current = undefined;
+            lastProcessedPrefetchKey.current = undefined;
 
-            return;
-        }
-
-        if (!quote || !quoteId || !sendAccount || !requiresTokenApproval(quote)) {
             return;
         }
 
         if (
-            pendingPrefetchQuoteIds.current.has(quoteId) ||
-            lastProcessedQuoteId.current === quoteId
+            !quote ||
+            !quoteId ||
+            !sendAccount ||
+            !receiveAddress ||
+            !requiresTokenApproval(quote)
         ) {
             return;
         }
 
-        pendingPrefetchQuoteIds.current.add(quoteId);
+        const prefetchKey = `${quoteId}:${receiveAddress}`;
+
+        if (
+            pendingPrefetchKeys.current.has(prefetchKey) ||
+            lastProcessedPrefetchKey.current === prefetchKey
+        ) {
+            return;
+        }
+
+        pendingPrefetchKeys.current.add(prefetchKey);
 
         void dispatch(
             exchangeThunks.prefetchDexQuoteApprovalThunk({
                 account: sendAccount,
                 trade: quote,
+                receiveAddress,
             }),
         )
             .unwrap()
@@ -175,19 +185,19 @@ const useDexQuoteApprovalInfoChangeEffect = ({
                     setValue('quote', response);
                 }
 
-                lastProcessedQuoteId.current = quoteId;
+                lastProcessedPrefetchKey.current = prefetchKey;
             })
             .catch(() => {
-                lastProcessedQuoteId.current = undefined;
+                lastProcessedPrefetchKey.current = undefined;
             })
             .finally(() => {
-                pendingPrefetchQuoteIds.current.delete(quoteId);
+                pendingPrefetchKeys.current.delete(prefetchKey);
             });
 
         return () => {
             isMounted = false;
         };
-    }, [dispatch, getValues, quote, sendAccount, setValue]);
+    }, [dispatch, getValues, quote, receiveAddress, sendAccount, setValue]);
 };
 
 type UseValidationsParams = {
