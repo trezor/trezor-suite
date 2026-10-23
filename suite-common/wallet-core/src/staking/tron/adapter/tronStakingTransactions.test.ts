@@ -2,7 +2,6 @@ import { LUGANODES_TRON_SRS, P2P_ORG_TRON_SRS, asNetworkSymbol } from '@suite-co
 import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 
 import { classifyTronStakingTransaction } from './tronStakingTransactions';
-import { TRON_STAKING_CONTRACT_TYPES } from '../tronStakingConstants';
 
 const [luganodesSr = ''] = LUGANODES_TRON_SRS;
 const [p2pOrgSr = ''] = P2P_ORG_TRON_SRS;
@@ -13,8 +12,16 @@ const tronTransaction = (tronSpecific?: TronSpecificFixture): WalletAccountTrans
     ({ symbol: asNetworkSymbol('trx'), tronSpecific }) as unknown as WalletAccountTransaction;
 
 describe(classifyTronStakingTransaction.name, () => {
-    it('classifies every staking contract type', () => {
-        TRON_STAKING_CONTRACT_TYPES.forEach(contractType => {
+    it('classifies every staking contract type, Stake 1.0 included', () => {
+        [
+            'FreezeBalanceContract',
+            'FreezeBalanceV2Contract',
+            'UnfreezeBalanceContract',
+            'UnfreezeBalanceV2Contract',
+            'VoteWitnessContract',
+            'WithdrawExpireUnfreezeContract',
+            'WithdrawBalanceContract',
+        ].forEach(contractType => {
             expect(
                 classifyTronStakingTransaction(tronTransaction({ contractType })),
             ).not.toBeNull();

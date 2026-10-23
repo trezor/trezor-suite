@@ -7,20 +7,21 @@ import {
     type WalletAccountTransaction,
     supportedTronNetworkSymbols,
 } from '@suite-common/wallet-types';
-import {
-    getTronAccountTotalStakingBalance,
-    getTronStakingInfo,
-    sunToTrx,
-} from '@suite-common/wallet-utils';
+import { getTronStakingInfo, sunToTrx } from '@suite-common/wallet-utils';
 import {
     type TronAccountExtraData,
     type TronUnstakingBatch,
     type TronVote,
 } from '@trezor/blockchain-link-types';
 import { getFirmwareVersionArray } from '@trezor/device-utils';
+import { returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { BigNumber, isArrayMember, versionUtils } from '@trezor/utils';
 
-import { TRON_STAKING_CONTRACT_TYPES, TRON_UNFREEZE_DELAY_DAYS } from './tronStakingConstants';
+import { tronStakingAdapter } from './adapter/tronStakingAdapter';
+import { TRON_UNFREEZE_DELAY_DAYS } from './tronStakingConstants';
+import { deriveStakingPositions } from '../positions/deriveStakingPositions';
+import { type StakingPosition } from '../positions/positionsTypes';
+import { summarizeStakingPositions } from '../positions/summarizeStakingPositions';
 
 export function isSupportedTronStakingNetworkSymbol(
     symbol: NetworkSymbol,
@@ -39,27 +40,28 @@ export const isTronClaimSupported = (device: TrezorDevice | undefined): boolean 
 };
 
 export const isTronStakingTx = (transaction: WalletAccountTransaction) =>
-    TRON_STAKING_CONTRACT_TYPES.some(type => type === transaction.tronSpecific?.contractType);
+    tronStakingAdapter.classifyTransaction(transaction) !== null;
 
-export const isTronStakingActive = (account: Account | null): boolean => {
-    const stakingInfo = getTronStakingInfo(account ?? undefined);
-    if (!stakingInfo) return false;
+const getTronStakingPositions = (account: Account | null): StakingPosition[] =>
+    account?.networkType === 'tron' ? deriveStakingPositions(account) : returnStableArrayIfEmpty();
 
-    return new BigNumber(stakingInfo.stakedBalance).isGreaterThan(0);
-};
+const getTronStakingSummary = (account: Account | null) =>
+    summarizeStakingPositions(getTronStakingPositions(account));
 
-export const getTronCryptoBalanceWithStaking = (account: Account): string => {
-    const stakingBalance = getTronAccountTotalStakingBalance(account) ?? '0';
+const getTronUnstakingBatches = (account: Account): TronUnstakingBatch[] =>
+    getTronStakingPositions(account).flatMap(({ details }) =>
+        details.type === 'tron-unattributed' ? details.unstakingBatches : [],
+    );
 
-    return new BigNumber(account.formattedBalance).plus(stakingBalance).toString();
-};
+export const isTronStakingActive = (account: Account | null): boolean =>
+    new BigNumber(getTronStakingSummary(account).staked).isGreaterThan(0);
 
-export const getTronStakingRewards = (account: Account): string => {
-    const stakingInfo = getTronStakingInfo(account);
-    if (!stakingInfo) return '0';
+// Only the frozen TRX is added; unfreeze batches stay out of the balance.
+export const getTronCryptoBalanceWithStaking = (account: Account): string =>
+    new BigNumber(account.formattedBalance).plus(getTronStakingSummary(account).staked).toString();
 
-    return sunToTrx(stakingInfo.unclaimedReward, account.symbol);
-};
+export const getTronStakingRewards = (account: Account): string =>
+    getTronStakingSummary(account).claimableRewards;
 
 export const TRON_REWARD_CLAIM_COOLDOWN_SECONDS = 24 * 60 * 60;
 
@@ -81,10 +83,7 @@ const sumUnstakingBatchesSun = (
     account: Account,
     predicate: (batch: TronUnstakingBatch) => boolean,
 ): string => {
-    const stakingInfo = getTronStakingInfo(account);
-    if (!stakingInfo) return '0';
-
-    const totalSun = stakingInfo.unstakingBatches.reduce(
+    const totalSun = getTronUnstakingBatches(account).reduce(
         (acc, batch) => (predicate(batch) ? acc.plus(batch.amount) : acc),
         new BigNumber(0),
     );
@@ -93,7 +92,7 @@ const sumUnstakingBatchesSun = (
 };
 
 export const getTronUnstakingBalance = (account: Account): string =>
-    sumUnstakingBatchesSun(account, () => true);
+    getTronStakingSummary(account).unstaking;
 
 export const TRON_UNFREEZE_DELAY_SECONDS = TRON_UNFREEZE_DELAY_DAYS * 24 * 60 * 60;
 
@@ -166,14 +165,10 @@ export const getTronUnstakingBatchesWithResource = ({
     account,
     transactions,
 }: GetTronUnstakingBatchesWithResourceParams): TronUnstakingBatchWithResource[] => {
-    const stakingInfo = getTronStakingInfo(account);
-
-    if (!stakingInfo) return [];
-
     const candidates = getUnfreezeTransactionCandidates(transactions);
     const usedCandidates = new Set<UnfreezeTransactionCandidate>();
 
-    return stakingInfo.unstakingBatches
+    return getTronUnstakingBatches(account)
         .toSorted((a, b) => a.expireTime - b.expireTime)
         .map(batch => {
             const candidate = candidates.find(

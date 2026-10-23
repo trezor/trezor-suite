@@ -62,11 +62,19 @@ export const deriveTronStakingPositions = (account: Account): StakingPosition[] 
 
     if (!stakingInfo) return [];
 
+    // Positions are derived for every Tron account, so a partial backend payload must not throw.
+    const {
+        stakedBalance = '0',
+        votes: accountVotes = [],
+        unstakingBatches = [],
+        unclaimedReward = '0',
+    } = stakingInfo;
+
     const toTrx = (sun: string) => new BigNumber(sunToTrx(sun, account.symbol));
     const products = listTronStakingProducts(account.symbol);
 
     const productPositions = products.flatMap(product => {
-        const votes = stakingInfo.votes.filter(vote =>
+        const votes = accountVotes.filter(vote =>
             isTronProductSuperRepresentative(product, vote.address),
         );
         const staked = sumVotes(votes);
@@ -85,20 +93,20 @@ export const deriveTronStakingPositions = (account: Account): StakingPosition[] 
         ];
     });
 
-    const otherVotes = stakingInfo.votes.filter(
+    const otherVotes = accountVotes.filter(
         vote => !products.some(product => isTronProductSuperRepresentative(product, vote.address)),
     );
     const attributed = productPositions.reduce(
         (total, position) => total.plus(position.staked),
         new BigNumber(0),
     );
-    const unattributedStake = BigNumber.max(toTrx(stakingInfo.stakedBalance).minus(attributed), 0);
+    const unattributedStake = BigNumber.max(toTrx(stakedBalance).minus(attributed), 0);
     const unstaking = toTrx(
-        stakingInfo.unstakingBatches
+        unstakingBatches
             .reduce((total, batch) => total.plus(batch.amount), new BigNumber(0))
             .toFixed(),
     );
-    const rewards = toTrx(stakingInfo.unclaimedReward);
+    const rewards = toTrx(unclaimedReward);
 
     const hasUnattributedStake = [unattributedStake, unstaking, rewards].some(amount =>
         amount.gt(0),
@@ -117,7 +125,7 @@ export const deriveTronStakingPositions = (account: Account): StakingPosition[] 
             details: {
                 type: 'tron-unattributed',
                 votes: otherVotes,
-                unstakingBatches: stakingInfo.unstakingBatches,
+                unstakingBatches,
             },
         }),
     ];

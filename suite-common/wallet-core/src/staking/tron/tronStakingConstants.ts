@@ -1,5 +1,4 @@
 import { LUGANODES_TRON_SRS, P2P_ORG_TRON_SRS } from '@suite-common/wallet-config';
-import { type TronTxContractType } from '@suite-common/wallet-constants';
 import { type StakingLimits } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
@@ -30,13 +29,3 @@ export const TRON_REPRESENTATIVE_TERMS_OF_SERVICE_URLS: Record<string, string> =
     [LUGANODES_TRON_SRS[0] as string]: LUGANODES_TERMS_OF_SERVICE_URL,
     [P2P_ORG_TRON_SRS[0] as string]: P2P_ORG_TERMS_OF_SERVICE_URL,
 };
-
-export const TRON_STAKING_CONTRACT_TYPES: TronTxContractType[] = [
-    'FreezeBalanceContract',
-    'FreezeBalanceV2Contract',
-    'UnfreezeBalanceContract',
-    'UnfreezeBalanceV2Contract',
-    'VoteWitnessContract',
-    'WithdrawExpireUnfreezeContract',
-    'WithdrawBalanceContract',
-];

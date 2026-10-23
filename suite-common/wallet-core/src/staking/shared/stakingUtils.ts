@@ -4,7 +4,6 @@ import {
     getStakingProviderByCardanoPoolId,
     getStakingProviderByEthereumContract,
     getStakingProviderBySolanaVoterPubkey,
-    getStakingProviderByTronSrAddress,
 } from '@suite-common/wallet-config';
 import {
     CARDANO_EPOCH_DAYS,
@@ -21,7 +20,7 @@ import {
 import {
     asAmountSubunit,
     getAccountTotalStakingBalance,
-    getTronAccountTotalStakingBalance,
+    getTronStakingInfo,
     isPending,
     isStakingNetworkType,
     isStakingSymbol,
@@ -68,25 +67,13 @@ import {
     getEthereumStakingAdapter,
 } from '../ethereum/providers/ethereumStakingProviders';
 import { deriveStakingPositions } from '../positions/deriveStakingPositions';
+import { summarizeStakingPositions } from '../positions/summarizeStakingPositions';
 import {
     getSolStakingAccountsInfo,
     isSupportedSolStakingNetworkSymbol,
 } from '../solana/solanaStakingUtils';
-import {
-    MAX_TRON_AMOUNT_FOR_STAKING,
-    MIN_TRON_AMOUNT_FOR_STAKING,
-    MIN_TRON_BALANCE_FOR_FEE_BUFFER,
-    MIN_TRON_BALANCE_FOR_STAKING,
-    MIN_TRON_FOR_WITHDRAWALS,
-    TRON_UNFREEZE_DELAY_DAYS,
-} from '../tron/tronStakingConstants';
-import {
-    getTronStakingRewards,
-    getTronUnstakingBalance,
-    getTronVotes,
-    isSupportedTronStakingNetworkSymbol,
-    isTronStakingTx,
-} from '../tron/tronStakingUtils';
+import { tronStakingAdapter } from '../tron/adapter/tronStakingAdapter';
+import { isSupportedTronStakingNetworkSymbol, isTronStakingTx } from '../tron/tronStakingUtils';
 
 export const isSupportedStakingNetworkSymbol = (symbol: NetworkSymbol) =>
     isSupportedEthStakingNetworkSymbol(symbol) ||
@@ -131,14 +118,7 @@ export const getStakingLimitsByNetworkSymbol = (
             };
 
         case 'trx':
-            return {
-                MIN_AMOUNT_FOR_STAKING: MIN_TRON_AMOUNT_FOR_STAKING,
-                MIN_AMOUNT_FOR_STAKING_DASHBOARD: MIN_TRON_AMOUNT_FOR_STAKING,
-                MAX_AMOUNT_FOR_STAKING: MAX_TRON_AMOUNT_FOR_STAKING,
-                MIN_FOR_WITHDRAWALS: MIN_TRON_FOR_WITHDRAWALS,
-                MIN_BALANCE_FOR_FEE_BUFFER: MIN_TRON_BALANCE_FOR_FEE_BUFFER,
-                MIN_BALANCE_FOR_STAKING: MIN_TRON_BALANCE_FOR_STAKING,
-            };
+            return tronStakingAdapter.limits;
 
         default:
             return exhaustive(symbol);
@@ -249,7 +229,9 @@ export const getLegacyStakingDataForNetwork = (
         }
 
         case 'tron': {
-            const stakedBalance = getTronAccountTotalStakingBalance(account) ?? '';
+            const summary = summarizeStakingPositions(deriveStakingPositions(account));
+            // An account the backend reports no staking info for keeps the empty staked balance.
+            const stakedBalance = getTronStakingInfo(account) ? summary.staked : '';
 
             return {
                 autocompoundBalance: stakedBalance,
@@ -258,8 +240,8 @@ export const getLegacyStakingDataForNetwork = (
                 pendingBalance: '',
                 pendingDepositedBalance: '',
                 totalPendingStakeBalance: '',
-                restakedReward: getTronStakingRewards(account),
-                withdrawTotalAmount: getTronUnstakingBalance(account),
+                restakedReward: summary.claimableRewards,
+                withdrawTotalAmount: summary.unstaking,
                 canClaim: false,
             };
         }
@@ -282,7 +264,7 @@ export const getUnstakingPeriodInDays = (
     }
 
     if (networkType === 'tron') {
-        return TRON_UNFREEZE_DELAY_DAYS;
+        return tronStakingAdapter.unstakingPeriodDays;
     }
 
     return getEthereumStakingAdapter(DEFAULT_ETHEREUM_STAKING_PROVIDER_ID).timelines(
@@ -423,11 +405,10 @@ export const getStakingProvidersForAnalytics = (accounts: Account[]): string[] =
                 break;
             }
             case 'tron':
-                getTronVotes(account).forEach(vote => {
-                    const provider = getStakingProviderByTronSrAddress(vote.address);
-                    if (provider) {
-                        providers.add(provider.id);
-                    } else {
+                deriveStakingPositions(account).forEach(({ providerId, details }) => {
+                    if (providerId) {
+                        providers.add(providerId);
+                    } else if (details.type === 'tron-unattributed' && details.votes.length > 0) {
                         // Account is staked but provider is unknown
                         providers.add('unknown');
                     }
