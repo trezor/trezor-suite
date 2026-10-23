@@ -6,8 +6,9 @@ import {
     sendFormActions,
 } from '@suite-common/wallet-core';
 import { type Account, type FormOptions } from '@suite-common/wallet-types';
-import type { CallMethodKeys, SignTransaction } from '@trezor/connect';
-import { getSerializedPath } from '@trezor/connect-common';
+import TrezorConnect from '@trezor/connect';
+import type { CallMethodKeys, SignTransaction, SignedTransaction } from '@trezor/connect';
+import { getOriginalTxids, getPreviousTxids, getSerializedPath } from '@trezor/connect-common';
 import type { Bip43Path } from '@trezor/crypto-utils';
 
 import { connectPopupActions } from '../connectPopupActions';
@@ -16,6 +17,30 @@ import { createPlaceholderAccount } from './utils';
 
 const temporaryAccounts: Account[] = [];
 
+const fetchRefTransactions = async (payload: SignTransaction) => {
+    const { coin, refTxs, account, inputs, outputs } = payload;
+
+    if (!refTxs?.length && !account?.transactions?.length) {
+        const prevTxids = getPreviousTxids(inputs);
+        const origTxids = getOriginalTxids(inputs, outputs);
+        const txs = [...prevTxids, ...origTxids];
+
+        if (origTxids.length && !account?.addresses) {
+            throw new Error('Missing addresses for RBF transaction');
+        }
+
+        if (!txs.length) {
+            return;
+        }
+
+        const res = await TrezorConnect.blockchainGetTransactions({ coin, txs, hexOnly: true });
+
+        if (res.success) {
+            return res.payload.map(({ txid, hex }) => ({ txid, hex }));
+        }
+    }
+};
+
 const preCallHook = async <M extends CallMethodKeys>({
     method,
     payload,
@@ -23,9 +48,19 @@ const preCallHook = async <M extends CallMethodKeys>({
     dispatch,
     txSigningPrecomposed,
 }: PreCallHookParams<M>) => {
+    if (method !== 'signTransaction') {
+        return undefined;
+    }
+
+    const typedPayload = payload as any as SignTransaction;
+
+    // Not awaited yet so it can run in parallel
+    const refTransactionsPromise = fetchRefTransactions(typedPayload).catch(error => {
+        console.error(`Error in Connect Popup ${method} hook:`, error);
+    });
+
     try {
-        if (method === 'signTransaction' && txSigningPrecomposed) {
-            const typedPayload = payload as any as SignTransaction;
+        if (txSigningPrecomposed) {
             const network = getNetwork(typedPayload.coin as NetworkSymbol);
             if (!network) {
                 throw new Error(`Network not supported`);
@@ -92,13 +127,45 @@ const preCallHook = async <M extends CallMethodKeys>({
         // If an error occurs it's not a problem, we just fall back to generic UI
         console.error(`Error in Connect Popup ${method} hook:`, error);
     }
+
+    const transactions = await refTransactionsPromise;
+
+    return {
+        ...typedPayload,
+        push: false,
+        account: transactions ? { ...typedPayload.account, transactions } : typedPayload.account,
+    } as unknown as typeof payload;
 };
 
-export function postCallHook<M extends CallMethodKeys>({ dispatch }: PostCallHookParams<M>) {
+export async function postCallHook<M extends CallMethodKeys>({
+    method,
+    originalPayload,
+    response,
+    dispatch,
+}: PostCallHookParams<M>) {
     if (temporaryAccounts.length) {
         // Remove temporary accounts
         dispatch(accountsActions.removeAccount(temporaryAccounts));
         temporaryAccounts.length = 0;
+    }
+
+    // Must be originalPayload as payload was already stripped from push
+    const typedPayload = originalPayload as unknown as SignTransaction;
+
+    if (method === 'signTransaction' && typedPayload.push && response.success) {
+        const signed = response.payload as SignedTransaction;
+        if (signed.serializedTx) {
+            const res = await TrezorConnect.pushTransaction({
+                coin: typedPayload.coin,
+                tx: signed.serializedTx,
+            });
+
+            if (!res.success) {
+                // postCallHooks are not in try/catch, therefore this behaves the same
+                // as if the original signTransaction call fails
+                throw res.error;
+            }
+        }
     }
 
     return false;

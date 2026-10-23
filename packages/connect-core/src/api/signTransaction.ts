@@ -1,36 +1,32 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/SignTransaction.js
 
-import type {
-    AccountAddresses,
-    BitcoinNetworkInfo,
-    PROTO,
-    PermissionRequest,
-    RefTransaction,
-    TransactionOptions,
+import {
+    type AccountAddresses,
+    type BitcoinNetworkInfo,
+    type PROTO,
+    type PermissionRequest,
+    type RefTransaction,
+    type TransactionOptions,
+    getOriginalTxids,
+    getPreviousTxids,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
+import { TypedError } from '@trezor/connect-common/src/constants/errors';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { promiseAllSequence } from '@trezor/utils/src/promiseAllSequence';
 
 import {
+    assertRefTransactions,
     createPendingTransaction,
     deriveOutputScript,
     enhanceSignTx,
-    getOrigTransactions,
-    getReferencedTransactions,
-    parseTransactionHexes,
-    requireReferencedTransactions,
     signTx,
-    transformOrigTransactions,
-    transformReferencedTransactions,
-    validateReferencedTransactions,
+    transformRawTransactions,
     validateTrezorInputs,
     validateTrezorOutputs,
     verifyTx,
 } from './bitcoin';
-import type { Blockchain } from '../backend/BlockchainLink';
-import { assertBackendSupported, initBlockchain } from '../backend/BlockchainLink';
-import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
+import type { MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getBitcoinNetworkOrThrow } from '../data/coinInfo';
 import { getLabel } from '../utils/pathUtils';
@@ -42,11 +38,10 @@ type Params = {
     inputs: PROTO.TxInputType[];
     outputs: PROTO.TxOutputType[];
     paymentRequests: PROTO.PaymentRequest[];
-    refTxs?: RefTransaction[];
+    refTxs: RefTransaction[];
     addresses?: AccountAddresses;
     options: TransactionOptions;
     coinInfo: BitcoinNetworkInfo;
-    identity?: string;
     push: boolean;
     unlockPath?: PROTO.UnlockPath;
 };
@@ -80,6 +75,20 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             { name: 'chunkify', type: 'boolean' },
         ]);
 
+        if (payload.account) {
+            validateParams(payload.account, [
+                { name: 'addresses', type: 'object' },
+                { name: 'transactions', type: 'array', allowEmpty: true },
+            ]);
+
+            payload.account.transactions?.forEach(tx =>
+                validateParams(tx, [
+                    { name: 'txid', type: 'string' },
+                    { name: 'hex', type: 'string' },
+                ]),
+            );
+        }
+
         if (payload.unlockPath) {
             validateParams(payload.unlockPath, [
                 { name: 'address_n', required: true, type: 'array' },
@@ -103,18 +112,38 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             });
         }
 
-        if (payload.refTxs && payload.account?.transactions) {
-            console.warn(
-                'two sources of referential transactions were passed. payload.refTxs have precedence',
-            );
+        const prevTxids = getPreviousTxids(inputs, { version: payload.version }, coinInfo);
+        const origTxids = getOriginalTxids(inputs, outputs);
+
+        let refTxs: RefTransaction[] = [];
+
+        if (payload.refTxs?.length) {
+            if (payload.account?.transactions) {
+                console.warn(
+                    'two sources of referential transactions were passed. payload.refTxs have precedence',
+                );
+            }
+            assertRefTransactions({ transactions: payload.refTxs, origTxids });
+
+            refTxs = payload.refTxs;
+        } else if (payload.account?.transactions?.length) {
+            refTxs = transformRawTransactions({
+                transactions: payload.account.transactions,
+                inputs,
+                origTxids,
+                coinInfo,
+                addresses: payload.account?.addresses,
+            });
         }
-        const refTxs = validateReferencedTransactions({
-            transactions: payload.refTxs || payload.account?.transactions,
-            inputs,
-            outputs,
-            coinInfo,
-            addresses: payload.account?.addresses,
-        });
+
+        if (!payload.__info) {
+            const missing = prevTxids
+                .concat(origTxids)
+                .find(hash => !refTxs.some(tx => tx.hash === hash));
+            if (missing) {
+                throw TypedError('Method_InvalidParameter', `refTx: ${missing} not provided`);
+            }
+        }
 
         const outputsWithAmount = outputs.filter(
             output =>
@@ -192,13 +221,12 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
 
     payloadToPrecomposed() {
         try {
-            const { inputs, outputs, coinInfo } = this.params;
-            const { refTxs } = this.params;
+            const { inputs, outputs, coinInfo, refTxs } = this.params;
             const inputsTotal: BigNumber = inputs.reduce((bn, input) => {
                 if (typeof input.amount === 'string') {
                     return bn.plus(input.amount);
                 } else {
-                    if (!refTxs) {
+                    if (!refTxs.length) {
                         throw ERRORS.TypedError(
                             'Runtime',
                             'refTxs are required for precomposed transaction info when input amount is not provided',
@@ -245,77 +273,17 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         }
     }
 
-    private async fetchAddresses(blockchain: Blockchain) {
-        const device = this.getDevice();
-        const {
-            params: { inputs, coinInfo },
-        } = this;
-
-        // TODO: validate inputs address_n's === same account
-        const accountPath = inputs.find(i => i.address_n);
-        if (!accountPath?.address_n) {
-            throw ERRORS.TypedError('Runtime', 'Account not found');
-        }
-        const address_n = accountPath.address_n.slice(0, 3);
-        const node = await device.getCommands().getHDNode({ address_n }, { coinInfo });
-        const account = await blockchain.getAccountInfo({
-            descriptor: node.xpubSegwit || node.xpub,
-            details: 'tokens',
-        });
-
-        return account.addresses;
-    }
-
-    private async fetchRefTxs(sendCoreMessage: MethodContext['sendCoreMessage']) {
-        const {
-            params: { inputs, outputs, options, coinInfo, identity, addresses },
-        } = this;
-
-        const requiredRefTxs = requireReferencedTransactions(inputs, options, coinInfo);
-        const refTxsIds = requiredRefTxs ? getReferencedTransactions(inputs) : [];
-        const origTxsIds = getOrigTransactions(inputs, outputs);
-
-        if (!refTxsIds.length && !origTxsIds.length) {
-            return [];
+    async run() {
+        if (this.params.push) {
+            throw ERRORS.TypedError(
+                'Method_InvalidParameter',
+                'push is deprecated, broadcast the signed transaction using pushTransaction',
+            );
         }
 
-        // validate and initialize backend
-        assertBackendSupported(coinInfo);
-        const blockchain = await initBlockchain(coinInfo, sendCoreMessage, identity);
-
-        const refTxs = !refTxsIds.length
-            ? []
-            : await blockchain
-                  .getTransactionHexes(refTxsIds)
-                  .then(parseTransactionHexes(coinInfo.network))
-                  .then(rawTxs => transformReferencedTransactions(rawTxs));
-
-        const origTxs = !origTxsIds.length
-            ? []
-            : await blockchain
-                  .getTransactionHexes(origTxsIds)
-                  .then(parseTransactionHexes(coinInfo.network))
-                  .then(async rawOrigTxs => {
-                      // if sender account addresses not provided, fetch account info from the blockbook
-                      const accountAddresses = addresses ?? (await this.fetchAddresses(blockchain));
-                      if (!accountAddresses) return [];
-
-                      return transformOrigTransactions(
-                          rawOrigTxs,
-                          coinInfo,
-                          inputs,
-                          accountAddresses,
-                      );
-                  });
-
-        return refTxs.concat(origTxs);
-    }
-
-    async run({ sendCoreMessage }: MethodContext) {
         const device = this.getDevice();
         const { params } = this;
-        const { inputs, outputs, coinInfo } = params;
-        const refTxs = params.refTxs ?? (await this.fetchRefTxs(sendCoreMessage));
+        const { inputs, outputs, coinInfo, refTxs } = params;
 
         let outputScripts: Awaited<ReturnType<typeof deriveOutputScript>>[] = [];
         if (params.options.serialize !== false) {
@@ -370,18 +338,6 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             });
         }
 
-        if (params.push) {
-            // validate backend
-            assertBackendSupported(coinInfo);
-            const blockchain = await initBlockchain(coinInfo, sendCoreMessage, params.identity);
-            const txid = await blockchain.pushTransaction(response.serializedTx);
-
-            return {
-                ...response,
-                txid,
-            };
-        }
-
-        return response;
+        return { ...response, txid: bitcoinTx.getId() };
     }
 }
