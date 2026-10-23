@@ -4,15 +4,15 @@ import { Translation } from '@suite/intl';
 import {
     HOME_ASSET_ROW_LIMIT,
     getHomeAssetRowLimit,
+    selectAreHomeAssetSmallBalancesDisplayed,
     selectDisplayedNetworkSymbols,
     selectDisplayedWalletAssetKeys,
     selectHasShownWalletAssets,
+    selectHomeAssetGrouping,
     selectIsHomeAssetTableFoldable,
 } from '@suite-common/assets';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    selectAreHomeAssetSmallBalancesShown,
-    selectHomeAssetsTableGrouping,
     setAreHomeAssetSmallBalancesShown,
     setHomeAssetsTableGrouping,
 } from '@suite-common/wallet-core';
@@ -37,8 +37,8 @@ const NO_NETWORKS: readonly NetworkSymbol[] = [];
 export const HomeAssetTable = () => {
     const { dispatch } = useServices(injectDispatch);
     const [isExpanded, setIsExpanded] = useState(false);
-    const grouping = useSelector(selectHomeAssetsTableGrouping);
-    const areSmallBalancesShown = useSelector(selectAreHomeAssetSmallBalancesShown);
+    const grouping = useSelector(selectHomeAssetGrouping);
+    const areSmallBalancesShown = useSelector(selectAreHomeAssetSmallBalancesDisplayed);
     const hasAssets = useSelector(selectHasShownWalletAssets);
     const { isDiscoveryRunning } = useDiscovery();
     const isFoldable = useSelector(state =>
