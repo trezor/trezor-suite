@@ -20,16 +20,12 @@ import {
     createPendingTransaction,
     deriveOutputScript,
     enhanceSignTx,
-    parseTransactionHexes,
     signTx,
-    transformOrigTransactions,
     transformRawTransactions,
-    transformReferencedTransactions,
     validateTrezorInputs,
     validateTrezorOutputs,
     verifyTx,
 } from './bitcoin';
-import type { Blockchain } from '../backend/BlockchainLink';
 import { assertBackendSupported, initBlockchain } from '../backend/BlockchainLink';
 import type { MethodContext, MethodMessage } from '../core/AbstractMethod';
 import { AbstractMethod } from '../core/AbstractMethod';
@@ -43,7 +39,7 @@ type Params = {
     inputs: PROTO.TxInputType[];
     outputs: PROTO.TxOutputType[];
     paymentRequests: PROTO.PaymentRequest[];
-    refTxs?: RefTransaction[];
+    refTxs: RefTransaction[];
     addresses?: AccountAddresses;
     options: TransactionOptions;
     coinInfo: BitcoinNetworkInfo;
@@ -121,7 +117,7 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         const prevTxids = getPreviousTxids(inputs, { version: payload.version }, coinInfo);
         const origTxids = getOriginalTxids(inputs, outputs);
 
-        let refTxs: RefTransaction[] | undefined;
+        let refTxs: RefTransaction[] = [];
 
         if (payload.refTxs?.length) {
             if (payload.account?.transactions) {
@@ -142,13 +138,11 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             });
         }
 
-        if (refTxs) {
-            const missing = prevTxids
-                .concat(origTxids)
-                .find(hash => !refTxs.some(tx => tx.hash === hash));
-            if (missing) {
-                throw TypedError('Method_InvalidParameter', `refTx: ${missing} not provided`);
-            }
+        const missing = prevTxids
+            .concat(origTxids)
+            .find(hash => !refTxs.some(tx => tx.hash === hash));
+        if (missing) {
+            throw TypedError('Method_InvalidParameter', `refTx: ${missing} not provided`);
         }
 
         const outputsWithAmount = outputs.filter(
@@ -227,18 +221,11 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
 
     payloadToPrecomposed() {
         try {
-            const { inputs, outputs, coinInfo } = this.params;
-            const { refTxs } = this.params;
+            const { inputs, outputs, coinInfo, refTxs } = this.params;
             const inputsTotal: BigNumber = inputs.reduce((bn, input) => {
                 if (typeof input.amount === 'string') {
                     return bn.plus(input.amount);
                 } else {
-                    if (!refTxs) {
-                        throw ERRORS.TypedError(
-                            'Runtime',
-                            'refTxs are required for precomposed transaction info when input amount is not provided',
-                        );
-                    }
                     const refTx = refTxs.find(tx => tx.hash === input.prev_hash);
                     const refOutput =
                         refTx?.outputs?.[input.prev_index] ??
@@ -280,76 +267,10 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
         }
     }
 
-    private async fetchAddresses(blockchain: Blockchain) {
-        const device = this.getDevice();
-        const {
-            params: { inputs, coinInfo },
-        } = this;
-
-        // TODO: validate inputs address_n's === same account
-        const accountPath = inputs.find(i => i.address_n);
-        if (!accountPath?.address_n) {
-            throw ERRORS.TypedError('Runtime', 'Account not found');
-        }
-        const address_n = accountPath.address_n.slice(0, 3);
-        const node = await device.getCommands().getHDNode({ address_n }, { coinInfo });
-        const account = await blockchain.getAccountInfo({
-            descriptor: node.xpubSegwit || node.xpub,
-            details: 'tokens',
-        });
-
-        return account.addresses;
-    }
-
-    private async fetchRefTxs(sendCoreMessage: MethodContext['sendCoreMessage']) {
-        const {
-            params: { inputs, outputs, options, coinInfo, identity, addresses },
-        } = this;
-
-        const prevTxids = getPreviousTxids(inputs, options, coinInfo);
-        const origTxids = getOriginalTxids(inputs, outputs);
-
-        if (!prevTxids.length && !origTxids.length) {
-            return [];
-        }
-
-        // validate and initialize backend
-        assertBackendSupported(coinInfo);
-        const blockchain = await initBlockchain(coinInfo, sendCoreMessage, identity);
-
-        const refTxs = !prevTxids.length
-            ? []
-            : await blockchain
-                  .getTransactionHexes(prevTxids)
-                  .then(parseTransactionHexes(coinInfo.network))
-                  .then(rawTxs => transformReferencedTransactions(rawTxs));
-
-        const origTxs = !origTxids.length
-            ? []
-            : await blockchain
-                  .getTransactionHexes(origTxids)
-                  .then(parseTransactionHexes(coinInfo.network))
-                  .then(async rawOrigTxs => {
-                      // if sender account addresses not provided, fetch account info from the blockbook
-                      const accountAddresses = addresses ?? (await this.fetchAddresses(blockchain));
-                      if (!accountAddresses) return [];
-
-                      return transformOrigTransactions(
-                          rawOrigTxs,
-                          coinInfo,
-                          inputs,
-                          accountAddresses,
-                      );
-                  });
-
-        return refTxs.concat(origTxs);
-    }
-
     async run({ sendCoreMessage }: MethodContext) {
         const device = this.getDevice();
         const { params } = this;
-        const { inputs, outputs, coinInfo } = params;
-        const refTxs = params.refTxs ?? (await this.fetchRefTxs(sendCoreMessage));
+        const { inputs, outputs, coinInfo, refTxs } = params;
 
         let outputScripts: Awaited<ReturnType<typeof deriveOutputScript>>[] = [];
         if (params.options.serialize !== false) {
