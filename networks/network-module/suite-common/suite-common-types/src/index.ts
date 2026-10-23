@@ -26,3 +26,48 @@ export {
     type Explorer,
     type NetworkAccount,
 } from './SuiteCommonNetworkConfig';
+
+export type { NetworkContext } from './capabilities/NetworkContext';
+export {
+    areRequirementsMet,
+    getContextFeatures,
+    type CapabilityRequirements,
+} from './capabilities/CapabilityRequirements';
+export type { Label } from './capabilities/Label';
+export type { AddressRef, OpenAccount, OpenAccountAddresses } from './capabilities/OpenAccount';
+export {
+    defineCapability,
+    defineFamily,
+    type BoundNetworkFamily,
+    type CapabilityProvider,
+    type FamilyDefinition,
+    type Network,
+    type NetworkCapabilities,
+    type NetworkDescription,
+    type NetworkFamily,
+    type OpenNetwork,
+    type OpenNetworkCapabilities,
+} from './capabilities/defineFamily';
+export { defineMessageSigning } from './capabilities/messageSigning/defineMessageSigning';
+export type {
+    ClosedShowSignAddressParams,
+    ClosedSignMessageParams,
+    ClosedVerifyMessageParams,
+    GetSignAddressGroupsParams,
+    MessageSigning,
+    MessageSigningDefinition,
+    MessageSigningFormatsDefinition,
+    MessageSigningLabels,
+    ShowSignAddressParams,
+    SignAddressGroup,
+    SignAddressSelection,
+    SignedMessage,
+    SignFormat,
+    SignFormatChoice,
+    SignFormatId,
+    SignFormatKind,
+    SignFormatOption,
+    SignMessageParams,
+    SignOutput,
+    VerifyMessageParams,
+} from './capabilities/messageSigning/MessageSigning';
