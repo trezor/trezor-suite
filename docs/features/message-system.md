@@ -370,6 +370,16 @@ a process runs cannot reach it until it is launched with a window; for the same 
 served while a Tor bootstrap fails" does not hold either, because the background modules load
 regardless of Tor. Main driving the Tor bootstrap itself is follow-up work.
 
+The cache is also main's only startup source. The generated local config
+(`suite-common/message-system/files/config.v1.ts`) that the renderer falls back to is not part of
+the main bundle, so on a first launch - or after the profile was wiped - main starts with an open
+gate and closes it only once a remote fetch succeeded, which offline never happens: a build shipped
+with the killswitch already raised in that file does not gate anything in main. In UI mode the
+first acquisition is not awaited either, only a headless boot awaits it, so the bridge, the
+http-receiver and `/connect-ws` of a killswitched profile are up for as long as that fetch takes on
+every launch. Bundling the local config into main as the floor, and awaiting the first acquisition
+before the background modules load, is follow-up work.
+
 #### Scope of the main process gate
 
 Main owns the gate only for the surfaces it serves on its own. It is not (yet) the single
