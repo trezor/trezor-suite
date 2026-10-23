@@ -53,7 +53,7 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
     const [wasSelectedAssetNetworkInactive, setWasSelectedAssetNetworkInactive] = useState(false);
 
     const { assets, myAssets, otherAssets, networks, catalogStatus, retry } =
-        useGlobalReceiveAssets({ search, networkSymbol });
+        useGlobalReceiveAssets({ search, networkSymbols: networkSymbol ? [networkSymbol] : [] });
 
     const selectedAsset = useMemo(
         () => assets.find(asset => asset.id === selectedAssetCryptoId),

@@ -62,6 +62,7 @@ export type GlobalReceiveAssetListItem = {
 export type GlobalReceiveAssetSections = {
     myAssets: GlobalReceiveAssetListItem[];
     otherAssets: GlobalReceiveAssetListItem[];
+    hasMoreOtherAssets: boolean;
 };
 
 export const getGlobalReceiveAssetDescriptionValues = (
@@ -78,7 +79,8 @@ type GetGlobalReceiveAssetSectionsParams = {
     assetIdsWithHistory?: ReadonlySet<string>;
     search: string;
     searchIndex?: TradeableAssetSearchIndex<TradingAssetOption>;
-    networkSymbol: NetworkSymbol | undefined;
+    networkSymbols: NetworkSymbol[];
+    otherAssetsLimit?: number;
 };
 
 const EMPTY_ASSET_IDS_WITH_HISTORY: ReadonlySet<string> = new Set();
@@ -127,16 +129,19 @@ export const getGlobalReceiveAssetSections = ({
     assetIdsWithHistory = EMPTY_ASSET_IDS_WITH_HISTORY,
     search,
     searchIndex = buildGlobalReceiveAssetSearchIndex(assets),
-    networkSymbol,
+    networkSymbols,
+    otherAssetsLimit = Infinity,
 }: GetGlobalReceiveAssetSectionsParams): GlobalReceiveAssetSections => {
     const query = normalizeForSearch(search);
     const heldAssets: TradingAssetOption[] = [];
     const assetsWithHistory: GlobalReceiveAssetListItem[] = [];
     const nativeAssets: GlobalReceiveAssetListItem[] = [];
     const tokenAssets: GlobalReceiveAssetListItem[] = [];
+    let otherAssetsCount = 0;
+    let hasMoreOtherAssets = false;
 
     assets.forEach(asset => {
-        if (networkSymbol && asset.networkSymbol !== networkSymbol) {
+        if (networkSymbols?.length && !networkSymbols.includes(asset.networkSymbol)) {
             return;
         }
 
@@ -160,10 +165,16 @@ export const getGlobalReceiveAssetSections = ({
             heldAssets.push(asset);
         } else if (assetIdsWithHistory.has(asset.id)) {
             assetsWithHistory.push({ asset, balance: ZERO_ASSET_BALANCE });
-        } else if (asset.isNativeToken) {
-            nativeAssets.push({ asset, balance: undefined });
+        } else if (otherAssetsCount < otherAssetsLimit) {
+            otherAssetsCount++;
+
+            if (asset.isNativeToken) {
+                nativeAssets.push({ asset, balance: undefined });
+            } else {
+                tokenAssets.push({ asset, balance: undefined });
+            }
         } else {
-            tokenAssets.push({ asset, balance: undefined });
+            hasMoreOtherAssets = true;
         }
     });
 
@@ -174,5 +185,6 @@ export const getGlobalReceiveAssetSections = ({
     return {
         myAssets: [...fundedAssets, ...assetsWithHistory],
         otherAssets: [...nativeAssets, ...tokenAssets],
+        hasMoreOtherAssets,
     };
 };

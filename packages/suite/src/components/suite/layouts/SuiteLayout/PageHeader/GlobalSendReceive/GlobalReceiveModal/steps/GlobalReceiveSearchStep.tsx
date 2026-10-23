@@ -29,7 +29,7 @@ import { GlobalReceiveAccountsTab } from './GlobalReceiveAccountsTab';
 import { type GlobalReceiveTab } from '../types';
 import { GlobalReceiveAssetsTab } from './GlobalReceiveAssetsTab';
 
-type GlobalReceiveSearchStepProps = GlobalReceiveAssetSections & {
+type GlobalReceiveSearchStepProps = Omit<GlobalReceiveAssetSections, 'hasMoreOtherAssets'> & {
     activeTab: GlobalReceiveTab;
     assetNetworks: readonly NetworkSymbol[];
     accountNetworks: readonly NetworkSymbol[];
