@@ -1,4 +1,4 @@
-import { type SignVerifyLayoutProps } from '@suite/module-sign-verify';
+import { type SignVerifyLayoutProps } from '@suite/sign-verify';
 
 import { WalletLayout } from 'src/components/wallet/WalletLayout/WalletLayout';
 import { WalletSubpageHeading } from 'src/components/wallet/WalletLayout/WalletSubpageHeading';

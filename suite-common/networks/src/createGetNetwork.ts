@@ -17,7 +17,8 @@ export type GetNetworkBackendDep = {
 };
 
 export type GetNetworkParams = {
-    readonly symbol: NetworkSymbol;
+    /** Absent when no account is selected, so components need not branch before reading it. */
+    readonly symbol: NetworkSymbol | undefined;
     /** Resolve for one account type when the caller works with a specific account. */
     readonly accountType?: AccountType;
 };
@@ -26,7 +27,7 @@ export type GetNetworkDeps = GetNetworkBackendDep & {
     networkFamilies: readonly BoundNetworkFamily[];
 };
 
-/** `undefined` for a symbol no registered family serves. */
+/** `undefined` without a symbol, or for a symbol no registered family serves. */
 export type GetNetwork = Getter<[params: GetNetworkParams], OpenNetwork | undefined>;
 
 export type GetNetworkDep = {
@@ -45,6 +46,10 @@ export const createGetNetwork = (deps: GetNetworkDeps): GetNetwork => {
     const networksByContext = new Map<string, OpenNetwork | undefined>();
 
     return asGetter(({ symbol, accountType }: GetNetworkParams) => {
+        if (symbol === undefined) {
+            return undefined;
+        }
+
         const context: NetworkContext = {
             symbol,
             backend: deps.getNetworkBackend(symbol),

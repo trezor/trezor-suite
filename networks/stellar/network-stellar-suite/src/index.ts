@@ -1,1 +1,0 @@
-export { createStellarSuiteNetworkModule } from './StellarSuiteNetworkModule';

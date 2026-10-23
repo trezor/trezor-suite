@@ -64,5 +64,6 @@ describe('createGetNetwork', () => {
 
         expect(getNetwork({ symbol: asNetworkSymbol('sol') })?.capabilities).toEqual({});
         expect(getNetwork({ symbol: asNetworkSymbol('zzz') })).toBeUndefined();
+        expect(getNetwork({ symbol: undefined })).toBeUndefined();
     });
 });

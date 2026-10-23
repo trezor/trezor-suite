@@ -162,9 +162,6 @@
             "path": "../../suite-common/walletconnect"
         },
         { "path": "../../suite-lego/intl" },
-        {
-            "path": "../../suite-lego/sign-verify"
-        },
         { "path": "../../suite/account" },
         { "path": "../../suite/address" },
         { "path": "../../suite/analytics" },
@@ -207,10 +204,6 @@
             "path": "../../suite/metadata-migration"
         },
         { "path": "../../suite/modal" },
-        {
-            "path": "../../suite/module-sign-verify"
-        },
-        { "path": "../../suite/networks" },
         { "path": "../../suite/nfc" },
         {
             "path": "../../suite/onboarding-components"
@@ -220,6 +213,7 @@
         { "path": "../../suite/router" },
         { "path": "../../suite/sentry" },
         { "path": "../../suite/settings" },
+        { "path": "../../suite/sign-verify" },
         { "path": "../../suite/suite-lifecycle" },
         { "path": "../../suite/suite-sync" },
         { "path": "../../suite/thp" },
@@ -255,9 +249,6 @@
         },
         {
             "path": "../../networks/network-module/suite-common/suite-common-types"
-        },
-        {
-            "path": "../../networks/network-module/suite/suite-types"
         },
         {
             "path": "../../networks/ripple/network-ripple"
