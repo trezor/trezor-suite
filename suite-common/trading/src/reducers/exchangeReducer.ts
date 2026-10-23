@@ -33,6 +33,7 @@ export interface TradingExchangeState {
     receiveAddress?: string;
     extraField?: string;
     selectedQuote: ExchangeTrade | undefined;
+    selectedQuoteTimestamp?: number;
     isFromRedirect: boolean;
     isLoading: boolean;
     dexQuoteApprovalPrefetchLoadingQuoteId: string | undefined;
@@ -53,6 +54,7 @@ export const exchangeInitialState: TradingExchangeState = {
     receiveAddress: undefined,
     extraField: undefined,
     selectedQuote: undefined,
+    selectedQuoteTimestamp: undefined,
     isFromRedirect: false,
     isLoading: false,
     dexQuoteApprovalPrefetchLoadingQuoteId: undefined,
@@ -88,12 +90,14 @@ const tradingExchangeSlice = createSlice({
         clearQuotes(state: TradingExchangeState) {
             state.quotes = [];
             state.selectedQuote = undefined;
+            state.selectedQuoteTimestamp = undefined;
         },
         clearQuotesAndParams(state: TradingExchangeState) {
             state.quotes = [];
             state.quotesRequest = undefined;
             state.formValues = undefined;
             state.selectedQuote = undefined;
+            state.selectedQuoteTimestamp = undefined;
             state.amountLimits = undefined;
         },
         setTradingAccountKey(
@@ -108,6 +112,7 @@ const tradingExchangeSlice = createSlice({
                 state.quotes = [];
                 state.quotesRequest = undefined;
                 state.selectedQuote = undefined;
+                state.selectedQuoteTimestamp = undefined;
             }
             state.tradingAccountKey = action.payload;
         },
@@ -127,7 +132,17 @@ const tradingExchangeSlice = createSlice({
             state: TradingExchangeState,
             action: PayloadAction<ExchangeTrade | undefined>,
         ) {
+            const isSameConfirmedTrade =
+                !!action.payload?.orderId &&
+                action.payload.orderId === state.selectedQuote?.orderId;
+
+            if (!isSameConfirmedTrade) {
+                state.selectedQuoteTimestamp = undefined;
+            }
             state.selectedQuote = action.payload;
+        },
+        setSelectedQuoteTimestamp(state: TradingExchangeState, action: PayloadAction<number>) {
+            state.selectedQuoteTimestamp = action.payload;
         },
         setSelectedQuoteSwapSlippage(state: TradingExchangeState, action: PayloadAction<string>) {
             if (state.selectedQuote?.isDex) {

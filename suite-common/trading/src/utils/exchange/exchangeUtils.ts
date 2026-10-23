@@ -14,6 +14,7 @@ import {
     asAmountUnit,
     buildApprovalTransactionData,
     getErc20ApproveSpender,
+    getProviderTransactionValidityMs,
     getUnusedChangeAddress,
     tokenSupportsIncreasingAllowance,
     unitsToSubunits,
@@ -139,6 +140,38 @@ export const hasEip712SignDataType = (quote?: ExchangeTrade): boolean =>
 // BTC DEX swaps sign the provider's PSBT as is, so its fee can't be changed.
 export const hasFixedPsbtFee = (quote: ExchangeTrade | undefined, networkType: NetworkType) =>
     networkType === 'bitcoin' && !!quote?.isDex && !!quote.dexTx?.data;
+
+export const hasExpiringProviderTransaction = (
+    quote: ExchangeTrade | undefined,
+    networkType: Account['networkType'] | undefined,
+) =>
+    !!quote?.isDex &&
+    !!quote.dexTx?.data &&
+    getProviderTransactionValidityMs(networkType) !== undefined;
+
+type GetProviderTransactionDeadlineParams = {
+    quote: ExchangeTrade | undefined;
+    networkType: Account['networkType'] | undefined;
+    selectedQuoteTimestamp: number | undefined;
+};
+
+export const getProviderTransactionDeadline = ({
+    quote,
+    networkType,
+    selectedQuoteTimestamp,
+}: GetProviderTransactionDeadlineParams): number | undefined => {
+    const validityMs = getProviderTransactionValidityMs(networkType);
+
+    if (
+        selectedQuoteTimestamp === undefined ||
+        validityMs === undefined ||
+        !hasExpiringProviderTransaction(quote, networkType)
+    ) {
+        return undefined;
+    }
+
+    return selectedQuoteTimestamp + validityMs;
+};
 
 export const hasEip712SignData = (quote?: ExchangeTrade) =>
     quote?.status === 'SIGN_DATA' && hasEip712SignDataType(quote);
