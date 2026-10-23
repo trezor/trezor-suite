@@ -109,11 +109,12 @@ running the app, E2E or tests that load native modules requires a full install.
   prerequisites: prepare generated dependencies first, including `yarn workspace @suite-common/message-system build:lib` when needed.
 - Package typecheck: `yarn nx run <package-name>:type-check --no-tui`; can also check dependencies
   and fetch guide content per `nx.json`.
-- Package lint: `ESLINT_RUN_EXPENSIVE_CHECKS=true yarn workspace <package-name> lint:js`; use the
-  package's `lint:styles` script for styles where present.
+- Package lint: `yarn workspace <package-name> lint:js` runs the basic rules in parallel threads;
+  `ESLINT_RULE_SET=type-aware` runs the type-aware rules instead and `ESLINT_RULE_SET=all` runs both.
+  CI runs the two sets as separate jobs. Use the package's `lint:styles` script for styles where present.
 - Formatting changed files: `yarn prettier --check <files>`; use `--write` only on intended files.
 - Affected checks: `yarn test:unit --no-tui`, `yarn type-check --no-tui` (only on user's request),
-  `ESLINT_RUN_EXPENSIVE_CHECKS=true yarn lint:js --no-tui`, `yarn lint:styles --no-tui`, `yarn format:verify`. Styles also runs local Stylelint rule tests.
+  `yarn lint:js --no-tui` plus `ESLINT_RULE_SET=type-aware yarn lint:js --no-tui`, `yarn lint:styles --no-tui`, `yarn format:verify`. Styles also runs local Stylelint rule tests.
 - Library build validation: `yarn build:libs:verify --no-tui` builds affected libraries; `yarn build:libs` rebuilds all libraries without Nx cache, so reserve it for a demonstrated need.
 - Production web behavior: `yarn suite:build:web`; `yarn suite:build:web:preview` builds and serves
   with production security headers. For an existing build: `yarn workspace @suite/web-app preview`.
@@ -138,8 +139,9 @@ confirm the fix plus relevant failure/edge cases. Run scoped lint for TypeScript
 affected checks for shared contracts, dependencies or configuration. Typechecks are slow even per
 package: for isolated changes rely on IDE diagnostics and focused tests; run the package typecheck at
 most once near final validation, only for integration risk or on request, and warn first. Run affected
-or repo-wide typechecks, including the CI type-check gate, only on request. Match CI's
-`ESLINT_RUN_EXPENSIVE_CHECKS=true` when validating JS/TS. Build changed publishing/bundling surfaces;
+or repo-wide typechecks, including the CI type-check gate, only on request. Match CI by validating
+JS/TS with both rule sets: the default run and `ESLINT_RULE_SET=type-aware`, or `ESLINT_RULE_SET=all`
+for both at once. Build changed publishing/bundling surfaces;
 exercise changed UI/runtime behavior in the relevant app when available, including production headers
 for browser-permission changes. Documentation-only edits need link/command/diff and formatting checks,
 not application builds or tests.
