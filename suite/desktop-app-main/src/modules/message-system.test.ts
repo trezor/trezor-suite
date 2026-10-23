@@ -59,17 +59,17 @@ const logger = {
 const createOwner = ({
     store,
     isInterceptorInstalled = true,
-    isTorReady = true,
+    isTorReady = () => true,
 }: {
     store: Store;
     isInterceptorInstalled?: boolean;
-    isTorReady?: boolean;
+    isTorReady?: () => boolean;
 }) =>
     createMessageSystemOwner({
         store,
         logger: logger as unknown as Parameters<typeof createMessageSystemOwner>[0]['logger'],
         isInterceptorInstalled: () => isInterceptorInstalled,
-        isTorReady: () => isTorReady,
+        isTorReady,
     });
 
 describe('message system owner', () => {
@@ -95,12 +95,31 @@ describe('message system owner', () => {
     it('does not fetch the config while Tor is wanted but not running yet', async () => {
         const owner = createOwner({
             store: createTestStore(),
-            isTorReady: false,
+            isTorReady: () => false,
         });
 
         await owner.acquireRemoteConfig();
 
         expect(fetchRemoteConfigJws).not.toHaveBeenCalled();
+    });
+
+    it('fetches the config on the next attempt once Tor is no longer awaited', async () => {
+        // Either Tor finished its bootstrap or the user disabled it: a postponed fetch must not
+        // keep the process on the config it launched with.
+        let isTorReady = false;
+        const owner = createOwner({
+            store: createTestStore(),
+            isTorReady: () => isTorReady,
+        });
+        await owner.acquireRemoteConfig();
+
+        isTorReady = true;
+        jest.mocked(fetchRemoteConfigJws).mockResolvedValue('fresh-jws');
+        jest.mocked(verifyConfigJws).mockReturnValue(getConfig(1, [getKillswitchAction()]));
+        await owner.acquireRemoteConfig();
+
+        expect(fetchRemoteConfigJws).toHaveBeenCalledTimes(1);
+        expect(owner.getGate().isKillswitchActive).toBe(true);
     });
 
     it('closes the gate on a killswitch in the persisted config', () => {

@@ -124,11 +124,18 @@ export const createDesktopMainApp =
         // request only once Tor is running, so main must not reach the network on its own between
         // the launch and that point. A boot with `--tor` on a profile that never enabled Tor is
         // the leaking case: `torSettings.running` is still false there, so the switch is read too.
-        let torStatus = TorStatus.Disabled;
+        // `undefined` until the tor module reports: before that only the switch can tell us Tor
+        // is wanted. From then on the persisted setting is authoritative, because `--tor` is read
+        // from argv and can never be cleared, so a user who disabled Tor after a failed bootstrap
+        // would otherwise keep a process whose acquisition is postponed forever.
+        let torStatus: TorStatus | undefined;
         mainThreadEmitter.on('module/tor-status-update', status => {
             torStatus = status;
         });
-        const shouldUseTor = () => hasSwitch('tor') || store.getTorSettings().running;
+        const shouldUseTor = () =>
+            torStatus === undefined
+                ? hasSwitch('tor') || store.getTorSettings().running
+                : store.getTorSettings().running;
 
         const messageSystem = createMessageSystemOwner({
             store,
