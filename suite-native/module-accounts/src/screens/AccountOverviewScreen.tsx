@@ -14,7 +14,7 @@ import {
     AccountDiscoveryFailedBanner,
     type NativeAccountsRootState,
     selectAccountListSectionsWithZeroBalanceGroup,
-    selectAccountSupportsTokens,
+    selectAreTokensSupportedByAccount,
     selectIsAccountDiscoveryFailed,
     useResolvedAccountKey,
 } from '@suite-native/accounts';
@@ -77,8 +77,8 @@ export const AccountOverviewScreen = ({
     const isFailed = useSelector((state: NativeAccountsRootState) =>
         selectIsAccountDiscoveryFailed(state, accountKey),
     );
-    const areTokenTabsVisible = useSelector((state: NativeAccountsRootState) =>
-        selectAccountSupportsTokens(state, accountKey),
+    const areTokensSupported = useSelector((state: NativeAccountsRootState) =>
+        selectAreTokensSupportedByAccount(state, accountKey),
     );
 
     const tokenCount = sections.filter(item => item.type === 'token').length;
@@ -101,7 +101,7 @@ export const AccountOverviewScreen = ({
                     ListHeaderComponent={
                         <VStack spacing="sp16" marginBottom="sp16">
                             <AccountEarnPromoBanner accountKey={accountKey} />
-                            {areTokenTabsVisible && (
+                            {areTokensSupported && (
                                 <AccountOverviewTabBar
                                     activeTab={activeTab}
                                     flowType={flowType}

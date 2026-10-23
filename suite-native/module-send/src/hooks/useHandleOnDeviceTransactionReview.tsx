@@ -5,13 +5,16 @@ import { useNavigation } from '@react-navigation/native';
 import { isRejected } from '@reduxjs/toolkit';
 
 import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
-import { sendFormActions } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    selectAccountNetworkSymbol,
+    sendFormActions,
+} from '@suite-common/wallet-core';
 import {
     type AccountKey,
     type GeneralPrecomposedTransactionFinal,
     type TokenAddress,
 } from '@suite-common/wallet-types';
-import { parseAccountKey } from '@suite-common/wallet-utils';
 import { useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
 import {
@@ -58,6 +61,9 @@ export const useHandleOnDeviceTransactionReview = ({
         experimentId: ExperimentId.assetFirstHomeTable,
         variant: 'B',
     });
+    const networkSymbol = useSelector((state: AccountsRootState) =>
+        selectAccountNetworkSymbol(state, accountKey),
+    );
 
     const showReviewCancellationAlert = useShowReviewCancellationAlert();
     const handleCommonSignRejection = useHandleCommonSignRejection({ accountKey, tokenContract });
@@ -121,9 +127,7 @@ export const useHandleOnDeviceTransactionReview = ({
                 return;
             }
 
-            if (isAssetsFirstEnabled) {
-                const { networkSymbol } = parseAccountKey(accountKey);
-
+            if (isAssetsFirstEnabled && networkSymbol) {
                 navigation.navigate(RootStackRoutes.AssetsStack, {
                     screen: AssetsStackRoutes.AssetDetail,
                     params: { networkSymbol, tokenContract },
@@ -147,6 +151,7 @@ export const useHandleOnDeviceTransactionReview = ({
         transaction,
         navigation,
         isAssetsFirstEnabled,
+        networkSymbol,
         handleCommonSignRejection,
         dispatch,
         showAlert,

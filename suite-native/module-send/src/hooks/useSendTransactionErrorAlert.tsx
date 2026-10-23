@@ -16,7 +16,7 @@ import { cleanupSendFormThunk } from '@suite-native/send';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { navigateOutOfSendFlowAction } from '../utils';
+import { getSendFlowExitDestination, navigateOutOfSendFlowAction } from '../utils';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     SendStackParamList,
@@ -87,7 +87,10 @@ export const useSendTransactionErrorAlert = ({
                     navigateOutOfSendFlowAction({
                         accountKey,
                         tokenContract,
-                        networkSymbol: isAssetsFirstEnabled ? account.symbol : undefined,
+                        destination: getSendFlowExitDestination({
+                            isAssetsFirstEnabled,
+                            networkSymbol: account.symbol,
+                        }),
                     }),
                 );
             },
