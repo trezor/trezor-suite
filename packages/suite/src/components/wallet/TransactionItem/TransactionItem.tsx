@@ -33,6 +33,7 @@ import { useSelector } from 'src/hooks/suite';
 import { type WalletAccountTransaction } from 'src/types/wallet';
 
 import { EvmBumpFeeTooltip } from './EvmBumpFeeTooltip';
+import { TransactionAccountBadge } from './TransactionAccountBadge';
 import { TransactionHeading } from './TransactionHeading';
 import { TransactionLayout } from './TransactionLayout';
 import { CoinjoinRow, DepositRow, FeeRow, WithdrawalRow } from './TransactionRow';
@@ -58,6 +59,7 @@ type TransactionItemProps = {
     accountType: AccountType;
     disableBumpFee?: boolean;
     index: number;
+    isAccountShown?: boolean;
 };
 
 export const TransactionItem = memo(
@@ -70,6 +72,7 @@ export const TransactionItem = memo(
         accountType,
         disableBumpFee,
         index,
+        isAccountShown = false,
     }: TransactionItemProps) => {
         const { shallDisplayBaseCurrency } = useDisplayBaseCurrency(transaction.symbol);
 
@@ -168,6 +171,9 @@ export const TransactionItem = memo(
                         timestamp={
                             <Row gap={4}>
                                 <TransactionTimestamp transaction={transaction} />
+                                {isAccountShown && account !== null && (
+                                    <TransactionAccountBadge account={account} />
+                                )}
                                 {nonceWarning && (
                                     <Tooltip content={nonceWarning}>
                                         <Icon as={WarningIcon} size={16} intent="warning" />

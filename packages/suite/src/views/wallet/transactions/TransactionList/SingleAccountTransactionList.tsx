@@ -38,7 +38,7 @@ interface TransactionListProps {
     isExportable?: boolean;
 }
 
-export const WalletTransactionList = ({
+export const SingleAccountTransactionList = ({
     account,
     symbol,
     customTotalItems,
