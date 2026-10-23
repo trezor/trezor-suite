@@ -1,3 +1,5 @@
+import { useSelector } from 'react-redux';
+
 import {
     type TransactionCreatedEventAction,
     events,
@@ -7,24 +9,19 @@ import { type ExtendedMessageDescriptor, Translation } from '@suite/intl';
 import { getTransactionCreatedEventPayload } from '@suite-common/analytics';
 import { selectConnectPopupCall } from '@suite-common/connect-popup';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { type YieldRootState } from '@suite-common/wallet-core';
 import {
     type Account,
     type FormState,
     type RbfTransactionType,
     type TransactionReviewOutput,
 } from '@suite-common/wallet-types';
-import {
-    getTxValidityTimeoutInMs,
-    isRbfCancelTransaction,
-    isRbfTransaction,
-} from '@suite-common/wallet-utils';
+import { isRbfCancelTransaction, isRbfTransaction } from '@suite-common/wallet-utils';
 import { Modal } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { copyToClipboard, download } from '@trezor/dom-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 import { type Deferred } from '@trezor/utils';
-
-import { useSelector } from 'src/hooks/suite';
 
 import { type TxInfoState, hasTxValidityExpired, selectTxType } from '../utils';
 
@@ -42,6 +39,8 @@ type TransactionReviewModalBottomContentProps = {
     txInfoState: TxInfoState;
     actionTranslation: ExtendedMessageDescriptor;
     hasTxReviewExpired: boolean;
+    deadline: number;
+    shouldCheckTxTimeValidity: boolean;
     isRbfConfirmedError?: boolean;
     account: Account;
     precomposedForm: FormState;
@@ -58,6 +57,8 @@ export const TransactionReviewModalBottomContent = ({
     txInfoState,
     actionTranslation,
     hasTxReviewExpired,
+    deadline,
+    shouldCheckTxTimeValidity,
     account,
     precomposedForm,
     outputs,
@@ -70,13 +71,12 @@ export const TransactionReviewModalBottomContent = ({
     const { options } = precomposedForm;
 
     const isBroadcastEnabled = options.includes('broadcast');
-    const txType = useSelector(state => selectTxType(state, txInfoState, precomposedForm));
+    const txType = useSelector((state: YieldRootState) =>
+        selectTxType(state, txInfoState, precomposedForm),
+    );
 
     const isCancelRbfAction = precomposedTx ? isRbfCancelTransaction(precomposedTx) : false;
 
-    const createdTxTimestamp = txInfoState?.precomposedTx?.createdTimestamp ?? 0;
-    const shouldCheckTxTimeValidity = account?.networkType === 'solana' && createdTxTimestamp !== 0;
-    const deadline = createdTxTimestamp + getTxValidityTimeoutInMs(account.networkType);
     const hasTxDeadlineExpired = shouldCheckTxTimeValidity && hasTxValidityExpired(deadline);
 
     const reportTransactionCreatedEvent = (action: TransactionCreatedEventAction) =>

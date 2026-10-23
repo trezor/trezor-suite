@@ -1,17 +1,12 @@
 import React from 'react';
 
-import styled from 'styled-components';
-
 import { Translation } from '@suite/intl';
-import { Badge, Banner, Button, Text } from '@trezor/components';
+import { Banner, Button, Text } from '@trezor/components';
 import { HourglassIcon, RepeatIcon } from '@trezor/icons';
 import { useClickCooldown } from '@trezor/react-utils';
 
 import { CountdownTimer } from 'src/components/suite/CountdownTimer';
-
-const TimerBox = styled.div`
-    font-variant-numeric: tabular-nums;
-`;
+import { TxValidityCountdownBadge } from 'src/components/suite/TxValidityCountdownBadge';
 
 type TransactionReviewOutputTimerProps = {
     deadline: number;
@@ -43,20 +38,13 @@ export const TransactionReviewOutputTimer = ({
                 >
                     <Translation id="TR_TRY_AGAIN" />
                 </Button>
-                <Badge intent="warning">
-                    <TimerBox data-testid="@modal/header/timer">
-                        {isSending ? (
-                            <Translation id="TR_CONFIRMING_TX" />
-                        ) : (
-                            <CountdownTimer
-                                deadline={deadline}
-                                unitDisplay="narrow"
-                                message="TR_TX_CONFIRMATION_TIMER_SHORT"
-                                pastDeadlineMessage="TR_TX_SEND_FAILED"
-                            />
-                        )}
-                    </TimerBox>
-                </Badge>
+                <TxValidityCountdownBadge
+                    deadline={deadline}
+                    pastDeadlineMessage="TR_TX_SEND_FAILED"
+                    data-testid="@modal/header/timer"
+                >
+                    {isSending ? <Translation id="TR_CONFIRMING_TX" /> : undefined}
+                </TxValidityCountdownBadge>
             </>
         );
     }
@@ -70,7 +58,7 @@ export const TransactionReviewOutputTimer = ({
                 </Banner.Button>
             }
             description={
-                <TimerBox>
+                <Text as="div" isTabular>
                     <Text typographyStyle="body-sm-strong" as="div">
                         <CountdownTimer
                             deadline={deadline}
@@ -80,7 +68,7 @@ export const TransactionReviewOutputTimer = ({
                         />
                     </Text>
                     <Translation id="TR_SOLANA_TX_CONFIRMATION_TIMER_DESCRIPTION" />
-                </TimerBox>
+                </Text>
             }
         />
     );
