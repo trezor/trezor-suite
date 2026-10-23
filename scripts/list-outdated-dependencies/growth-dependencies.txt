@@ -16,7 +16,6 @@
 @storybook/react-native
 @storybook/react-native-web-vite
 @storybook/react-webpack5
-@types/pako
 @types/pdfmake
 @types/react-date-range
 @types/zxcvbn

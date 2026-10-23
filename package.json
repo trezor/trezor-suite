@@ -167,7 +167,7 @@
         "jest-expo": "~57.0.2",
         "node-gyp": "13.1.0",
         "nx": "23.2.1",
-        "postcss-styled-syntax": "^0.7.1",
+        "postcss-styled-syntax": "^0.7.3",
         "postcss-value-parser": "^4.2.0",
         "prettier": "^3.9.9",
         "rimraf": "^6.1.2",
