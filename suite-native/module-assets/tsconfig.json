@@ -21,6 +21,7 @@
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../navigation" },
+        { "path": "../toasts" },
         {
             "path": "../../packages/styles-native"
         },
