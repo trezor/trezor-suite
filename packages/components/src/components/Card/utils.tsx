@@ -70,6 +70,23 @@ export const mapCardTypeToCSS = ({
                 `
             }
         `,
+        action: css`
+            background: ${theme.surfaceFillAction};
+            outline: 1px solid ${theme.surfaceBorderAction};
+
+            ${
+                $isSelected &&
+                css`
+                    outline: 2px solid ${theme.borderBrand};
+                `
+            }
+
+            box-shadow: ${theme.surfaceShadowAction};
+
+            &:hover {
+                box-shadow: ${theme.surfaceShadowActionHovered};
+            }
+        `,
         sunken: css`
             background: ${theme.surfaceFillSunken};
             outline: 1px solid ${theme.surfaceBorderSunken};
