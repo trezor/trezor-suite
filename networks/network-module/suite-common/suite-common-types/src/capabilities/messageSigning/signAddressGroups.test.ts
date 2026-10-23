@@ -23,13 +23,13 @@ describe('groupSignAddresses', () => {
     it('keeps an address only in the last group that lists it and drops empty groups', () => {
         expect(
             groupSignAddresses([
-                { label: LABEL, addresses: [first, second] },
-                { label: null, addresses: [] },
-                { label: LABEL, addresses: [first] },
+                { category: 'fresh', label: LABEL, addresses: [first, second] },
+                { category: 'change', label: null, addresses: [] },
+                { category: 'used', label: LABEL, addresses: [first] },
             ]),
         ).toEqual([
-            { label: LABEL, addresses: [second] },
-            { label: LABEL, addresses: [first] },
+            { category: 'fresh', label: LABEL, addresses: [second] },
+            { category: 'used', label: LABEL, addresses: [first] },
         ]);
     });
 });

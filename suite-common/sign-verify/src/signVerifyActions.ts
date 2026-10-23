@@ -2,29 +2,30 @@ import { type Dispatch } from 'redux';
 
 import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import { type NetworksDep } from '@suite-common/networks';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type WalletSettingsRootState, selectAddressDisplayType } from '@suite-common/wallet-core';
 import { type Account, AddressDisplayOptions } from '@suite-common/wallet-types';
-import {
-    getAddressParameters,
-    getDerivationType,
-    getNetworkId,
-    getProtocolMagic,
-    getStakingPath,
-} from '@suite-common/wallet-utils';
-import TrezorConnect, { PROTO } from '@trezor/connect';
-import { asCoinSymbol, getSerializedPath } from '@trezor/connect-common';
-import { type ErrorCode, type SerializedError } from '@trezor/connect-common/src/constants/errors';
+import type {
+    AddressRef,
+    MessageSigning,
+    MessageSigningError,
+    SignFormat,
+    SignedMessage,
+} from '@trezor/network-module-suite-common-types';
 import { type WithServices } from '@trezor/redux-utils';
-import { type Result } from '@trezor/type-utils';
 
 import * as SIGN_VERIFY from './signVerifyConstants';
-import { getHasSelectableSignatureFormat } from './signVerifyUtils';
 
 export type SignVerifyRootState = DeviceRootState & WalletSettingsRootState;
 
-const CANCEL_ERROR_CODES: ErrorCode[] = ['Method_Cancel', 'Failure_ActionCancelled'];
+export type SignVerifyThunkExtra = WithServices<AnalyticsDep & NetworksDep>;
+
+const CANCEL_ERROR_CODES: readonly MessageSigningError['code'][] = [
+    'Method_Cancel',
+    'Failure_ActionCancelled',
+];
 
 /**
  * What a verification attempt settled on.
@@ -34,330 +35,234 @@ const CANCEL_ERROR_CODES: ErrorCode[] = ['Method_Cancel', 'Failure_ActionCancell
  */
 export type VerifyMessageResult = 'verified' | 'failed' | 'cancelled';
 
-const getFailureAttributes = ({ code }: SerializedError) => ({
-    status: CANCEL_ERROR_CODES.includes(code) ? ('cancelled' as const) : ('error' as const),
-    error: code,
-});
-
-const asError = (error: unknown) => (error instanceof Error ? error : new Error(String(error)));
-
 export type SignVerifyAction =
     | { type: typeof SIGN_VERIFY.SIGN_SUCCESS; signSignature: string }
     | { type: typeof SIGN_VERIFY.VERIFY_SUCCESS };
 
-type StateParams = {
-    device: TrezorDevice;
-    account: Account;
-    coin: Account['symbol'];
-    chunkify?: boolean;
+type SignVerifyToast = 'sign-message-error' | 'verify-message-error' | 'verify-address-error';
+
+const isCancelledError = ({ code }: MessageSigningError) => CANCEL_ERROR_CODES.includes(code);
+
+const getFailureAttributes = (error: MessageSigningError) => ({
+    status: isCancelledError(error) ? ('cancelled' as const) : ('error' as const),
+    error: error.code,
+});
+
+const notifyError = (dispatch: Dispatch, type: SignVerifyToast, message: string) => {
+    dispatch(notificationsActions.addToast({ type, error: message }));
+
+    return false as const;
 };
 
-const throwWhenFailed = <T>(response: Result<T, SerializedError>) =>
-    response.success
-        ? Promise.resolve(response.payload)
-        : Promise.reject(new Error(response.error.message));
-
-const getStateParams = (
+/** The message signing of the account's network, for that account's type. */
+export const getAccountMessageSigning = (
+    extra: SignVerifyThunkExtra,
     account: Account,
-    getState: () => SignVerifyRootState,
-): Promise<StateParams> => {
+): MessageSigning | undefined =>
+    extra.services.networks.getNetwork({
+        symbol: account.symbol,
+        accountType: account.accountType,
+    })?.capabilities.messageSigning;
+
+type DeviceParams = {
+    readonly device: TrezorDevice;
+    readonly isChunkified: boolean;
+};
+
+const getDeviceParams = (getState: () => SignVerifyRootState): DeviceParams | undefined => {
     const device = selectSelectedDevice(getState());
-    const addressDisplayType = selectAddressDisplayType(getState());
 
-    return !device || !device.connected || !device.available
-        ? Promise.reject(new Error('Device not found'))
-        : Promise.resolve({
+    return device?.connected && device.available
+        ? {
               device,
-              account,
-              coin: account.symbol,
-              chunkify: addressDisplayType === AddressDisplayOptions.CHUNKED,
-          });
+              isChunkified: selectAddressDisplayType(getState()) === AddressDisplayOptions.CHUNKED,
+          }
+        : undefined;
 };
 
-const showAddressByNetwork =
-    (_: Dispatch, address: string, path: string) =>
-    ({ account, device, coin, chunkify }: StateParams) => {
-        const params = { device, address, path, coin: asCoinSymbol(coin), chunkify };
+const DEVICE_NOT_FOUND = 'Device not found';
+const NOT_SUPPORTED = 'Message signing is not supported for this account';
 
-        switch (account.networkType) {
-            case 'bitcoin':
-                return TrezorConnect.getAddress(params);
-            case 'ethereum':
-                return TrezorConnect.ethereumGetAddress(params);
-            default:
-                return Promise.reject(new Error('ShowAddress not supported'));
-        }
-    };
-
-const signByNetwork =
-    (
-        path: string | number[],
-        message: string,
-        hex: boolean,
-        isElectrum: boolean,
-        isCose: boolean,
-    ) =>
-    ({ account, device, coin }: StateParams) => {
-        const params = {
-            device,
-            path,
-            coin: asCoinSymbol(coin),
-            message,
-            hex,
-            no_script_type: isElectrum,
-        };
-
-        switch (account.networkType) {
-            case 'bitcoin':
-                return TrezorConnect.signMessage(params);
-            case 'ethereum':
-                return TrezorConnect.ethereumSignMessage(params);
-            case 'cardano': {
-                const payload = hex ? message : Buffer.from(message, 'utf8').toString('hex');
-                const serializedPath = typeof path === 'string' ? path : getSerializedPath(path);
-                const stakingPath = getStakingPath(account);
-                const addressParameters =
-                    path === stakingPath
-                        ? {
-                              addressType: PROTO.CardanoAddressType.REWARD,
-                              stakingPath,
-                          }
-                        : getAddressParameters(account, serializedPath);
-
-                return TrezorConnect.cardanoSignMessage({
-                    ...params,
-                    payload,
-                    addressParameters,
-                    protocolMagic: getProtocolMagic(account.symbol),
-                    networkId: getNetworkId(),
-                    derivationType: getDerivationType(account.accountType),
-                }).then(response =>
-                    response.success
-                        ? {
-                              ...response,
-                              payload: {
-                                  signature: response.payload.coseSignature,
-                                  pubKey: isCose
-                                      ? response.payload.coseKey
-                                      : response.payload.pubKey,
-                                  address: response.payload.headers.protected.address,
-                              },
-                          }
-                        : response,
-                );
-            }
-            default:
-                return Promise.reject(new Error('Signing not supported'));
-        }
-    };
-
-export const isVerifySupported = (account?: Account) => {
-    switch (account?.networkType) {
-        case 'bitcoin':
-        case 'ethereum':
-            return true;
-        default:
-            return false;
-    }
+export type ShowAddressThunkParams = {
+    readonly account: Account;
+    readonly address: string;
+    readonly path: string;
 };
-
-const verifyByNetwork =
-    (address: string, message: string, signature: string, hex: boolean) =>
-    ({ account, device, coin }: StateParams) => {
-        const params = { device, address, coin: asCoinSymbol(coin), message, signature, hex };
-
-        switch (account.networkType) {
-            case 'bitcoin':
-                return TrezorConnect.verifyMessage(params);
-            case 'ethereum':
-                return TrezorConnect.ethereumVerifyMessage(params);
-            default:
-                return Promise.reject(new Error('Verifying not supported'));
-        }
-    };
-
-const onSignSuccess = (dispatch: Dispatch) => (result: { signature: string; pubKey?: string }) => {
-    dispatch(
-        notificationsActions.addToast({
-            type: 'sign-message-success',
-        }),
-    );
-    dispatch({
-        type: SIGN_VERIFY.SIGN_SUCCESS,
-        signSignature: result.signature,
-    });
-
-    return result;
-};
-
-const onVerifySuccess = (dispatch: Dispatch) => () => {
-    dispatch(
-        notificationsActions.addToast({
-            type: 'verify-message-success',
-        }),
-    );
-    dispatch({
-        type: SIGN_VERIFY.VERIFY_SUCCESS,
-    });
-
-    return true;
-};
-
-const onError =
-    (
-        dispatch: Dispatch,
-        type: 'sign-message-error' | 'verify-message-error' | 'verify-address-error',
-    ) =>
-    (error: Error) => {
-        dispatch(
-            notificationsActions.addToast({
-                type,
-                error: error.message,
-            }),
-        );
-
-        return false as const;
-    };
 
 type ShowAddressThunkState = SignVerifyRootState;
 
+type ShowAddressThunkDeps = SignVerifyThunkExtra;
+
 export const showAddressThunk =
-    (account: Account, address: string, path: string) =>
-    (dispatch: Dispatch, getState: () => ShowAddressThunkState) =>
-        getStateParams(account, getState)
-            .then(showAddressByNetwork(dispatch, address, path))
-            .then(throwWhenFailed)
-            .catch(onError(dispatch, 'verify-address-error'));
+    ({ account, address, path }: ShowAddressThunkParams) =>
+    async (
+        dispatch: Dispatch,
+        getState: () => ShowAddressThunkState,
+        extra: ShowAddressThunkDeps,
+    ): Promise<AddressRef | false> => {
+        const showAddress = getAccountMessageSigning(extra, account)?.showAddress;
+        const deviceParams = getDeviceParams(getState);
+
+        if (showAddress === undefined) {
+            return notifyError(dispatch, 'verify-address-error', NOT_SUPPORTED);
+        }
+
+        if (deviceParams === undefined) {
+            return notifyError(dispatch, 'verify-address-error', DEVICE_NOT_FOUND);
+        }
+
+        const result = await showAddress({ ...deviceParams, account, address, path });
+
+        return result.success
+            ? result.payload
+            : notifyError(dispatch, 'verify-address-error', result.error.message);
+    };
+
+export type SignThunkParams = {
+    readonly account: Account;
+    readonly path: string;
+    readonly message: string;
+    readonly isHex: boolean;
+    /** One of the options the account's message signing offered; omitted when it offered none. */
+    readonly format?: SignFormat;
+};
 
 type SignThunkState = SignVerifyRootState;
 
-type SignThunkDeps = WithServices<AnalyticsDep>;
+type SignThunkDeps = SignVerifyThunkExtra;
 
 export const signThunk =
-    (
-        account: Account,
-        path: string | number[],
-        message: string,
-        hex = false,
-        isElectrum = false,
-        isCose = false,
-    ) =>
-    async (dispatch: Dispatch, getState: () => SignThunkState, extra: SignThunkDeps) => {
+    ({ account, path, message, isHex, format }: SignThunkParams) =>
+    async (
+        dispatch: Dispatch,
+        getState: () => SignThunkState,
+        extra: SignThunkDeps,
+    ): Promise<SignedMessage | false> => {
         const { analytics } = extra.services;
-        // Networks signing in a single format never offered the choice, so reporting one of its
+        const messageSigning = getAccountMessageSigning(extra, account);
+        // Accounts signing in a single format never offered the choice, so reporting one of its
         // values would invent an answer the user never gave.
-        const formatAttributes = getHasSelectableSignatureFormat(account)
-            ? { signatureFormat: isElectrum ? ('electrum' as const) : ('trezor' as const) }
-            : {};
-
-        try {
-            const stateParams = await getStateParams(account, getState);
-            const response = await signByNetwork(
-                path,
-                message,
-                hex,
-                isElectrum,
-                isCose,
-            )(stateParams);
-
-            if (!response.success) {
-                analytics.report({
-                    type: events.coinSignMessageEvent.name,
-                    payload: {
-                        ...getFailureAttributes(response.error),
-                        symbol: account.symbol,
-                        hex,
-                        ...formatAttributes,
-                    },
-                });
-
-                return onError(dispatch, 'sign-message-error')(new Error(response.error.message));
-            }
-
+        const formatAttributes =
+            messageSigning?.getFormatChoice(account)?.kind === 'signature'
+                ? {
+                      signatureFormat:
+                          format === 'electrum' ? ('electrum' as const) : ('trezor' as const),
+                  }
+                : {};
+        const report = (payload: { status: 'success' | 'error' | 'cancelled'; error?: string }) =>
             analytics.report({
                 type: events.coinSignMessageEvent.name,
-                payload: { status: 'success', symbol: account.symbol, hex, ...formatAttributes },
+                payload: { ...payload, symbol: account.symbol, hex: isHex, ...formatAttributes },
             });
 
-            return onSignSuccess(dispatch)(response.payload);
-        } catch (error) {
-            analytics.report({
-                type: events.coinSignMessageEvent.name,
-                payload: {
-                    status: 'error',
-                    error: asError(error).message,
-                    symbol: account.symbol,
-                    hex,
-                    ...formatAttributes,
-                },
-            });
+        if (messageSigning === undefined) {
+            report({ status: 'error', error: NOT_SUPPORTED });
 
-            return onError(dispatch, 'sign-message-error')(asError(error));
+            return notifyError(dispatch, 'sign-message-error', NOT_SUPPORTED);
         }
+
+        const deviceParams = getDeviceParams(getState);
+
+        if (deviceParams === undefined) {
+            report({ status: 'error', error: DEVICE_NOT_FOUND });
+
+            return notifyError(dispatch, 'sign-message-error', DEVICE_NOT_FOUND);
+        }
+
+        const result = await messageSigning.sign({
+            device: deviceParams.device,
+            account,
+            path,
+            message,
+            isHex,
+            format,
+        });
+
+        if (!result.success) {
+            report(getFailureAttributes(result.error));
+
+            return notifyError(dispatch, 'sign-message-error', result.error.message);
+        }
+
+        report({ status: 'success' });
+        dispatch(notificationsActions.addToast({ type: 'sign-message-success' }));
+        dispatch({ type: SIGN_VERIFY.SIGN_SUCCESS, signSignature: result.payload.signature });
+
+        return result.payload;
     };
+
+export type VerifyThunkParams = {
+    readonly account: Account;
+    readonly address: string;
+    readonly message: string;
+    readonly signature: string;
+    readonly isHex: boolean;
+};
 
 type VerifyThunkState = SignVerifyRootState;
 
-type VerifyThunkDeps = WithServices<AnalyticsDep>;
+type VerifyThunkDeps = SignVerifyThunkExtra;
 
 export const verifyThunk =
-    (account: Account, address: string, message: string, signature: string, hex = false) =>
+    ({ account, address, message, signature, isHex }: VerifyThunkParams) =>
     async (
         dispatch: Dispatch,
         getState: () => VerifyThunkState,
         extra: VerifyThunkDeps,
     ): Promise<VerifyMessageResult> => {
         const { analytics } = extra.services;
-
-        try {
-            const stateParams = await getStateParams(account, getState);
-            const response = await verifyByNetwork(address, message, signature, hex)(stateParams);
-
-            if (!response.success) {
-                analytics.report({
-                    type: events.coinVerifyMessageEvent.name,
-                    payload: {
-                        ...getFailureAttributes(response.error),
-                        symbol: account.symbol,
-                        hex,
-                    },
-                });
-
-                if (CANCEL_ERROR_CODES.includes(response.error.code)) {
-                    // The user backed out on the device, which says nothing about the signature.
-                    // Still say so: the prompt disappearing with the form untouched leaves no other
-                    // sign that the check was dropped rather than quietly failing.
-                    dispatch(notificationsActions.addToast({ type: 'verify-message-cancelled' }));
-
-                    return 'cancelled';
-                }
-
-                onError(dispatch, 'verify-message-error')(new Error(response.error.message));
-
-                return 'failed';
-            }
-
+        const verify = getAccountMessageSigning(extra, account)?.verify;
+        const report = (payload: { status: 'success' | 'error' | 'cancelled'; error?: string }) =>
             analytics.report({
                 type: events.coinVerifyMessageEvent.name,
-                payload: { status: 'success', symbol: account.symbol, hex },
+                payload: { ...payload, symbol: account.symbol, hex: isHex },
             });
 
-            onVerifySuccess(dispatch)();
-
-            return 'verified';
-        } catch (error) {
-            analytics.report({
-                type: events.coinVerifyMessageEvent.name,
-                payload: {
-                    status: 'error',
-                    error: asError(error).message,
-                    symbol: account.symbol,
-                    hex,
-                },
-            });
-
-            onError(dispatch, 'verify-message-error')(asError(error));
+        if (verify === undefined) {
+            report({ status: 'error', error: NOT_SUPPORTED });
+            notifyError(dispatch, 'verify-message-error', NOT_SUPPORTED);
 
             return 'failed';
         }
+
+        const deviceParams = getDeviceParams(getState);
+
+        if (deviceParams === undefined) {
+            report({ status: 'error', error: DEVICE_NOT_FOUND });
+            notifyError(dispatch, 'verify-message-error', DEVICE_NOT_FOUND);
+
+            return 'failed';
+        }
+
+        const result = await verify({
+            device: deviceParams.device,
+            account,
+            address,
+            message,
+            signature,
+            isHex,
+        });
+
+        if (!result.success) {
+            report(getFailureAttributes(result.error));
+
+            if (isCancelledError(result.error)) {
+                // The user backed out on the device, which says nothing about the signature.
+                // Still say so: the prompt disappearing with the form untouched leaves no other
+                // sign that the check was dropped rather than quietly failing.
+                dispatch(notificationsActions.addToast({ type: 'verify-message-cancelled' }));
+
+                return 'cancelled';
+            }
+
+            notifyError(dispatch, 'verify-message-error', result.error.message);
+
+            return 'failed';
+        }
+
+        report({ status: 'success' });
+        dispatch(notificationsActions.addToast({ type: 'verify-message-success' }));
+        dispatch({ type: SIGN_VERIFY.VERIFY_SUCCESS });
+
+        return 'verified';
     };

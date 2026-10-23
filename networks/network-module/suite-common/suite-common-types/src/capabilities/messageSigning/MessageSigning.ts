@@ -31,7 +31,11 @@ export type SignFormatChoice = {
     readonly options: readonly SignFormatOption[];
 };
 
+/** What a group of addresses is, for UIs that present it in their own way. */
+export type SignAddressCategory = 'account' | 'staking' | 'fresh' | 'used' | 'change';
+
 export type SignAddressGroup = {
+    readonly category: SignAddressCategory;
     /** `null` for a group that needs no heading, such as Ethereum's single account address. */
     readonly label: Label | null;
     readonly addresses: readonly AddressRef[];

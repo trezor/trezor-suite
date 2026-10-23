@@ -103,6 +103,7 @@ export {
 } from './createGetNamedAddressSupport';
 
 export { createNetworkModulesCompositionRoot } from './createNetworkModulesCompositionRoot';
+export { createNetworkFamiliesCompositionRoot } from './createNetworkFamiliesCompositionRoot';
 export type { NetworksServices, NetworksDep } from './NetworksServices';
 
 export type { Network, Networks } from './Network';

@@ -35,7 +35,11 @@ export const createEthereumMessageSigning = (
                 ? { path: account.path, address: account.descriptor }
                 : undefined,
         getSignAddressGroups: account => [
-            { label: null, addresses: [{ path: account.path, address: account.address }] },
+            {
+                category: 'account',
+                label: null,
+                addresses: [{ path: account.path, address: account.address }],
+            },
         ],
         sign: async ({ device, path, message, isHex }) => {
             const response = await deps.getTrezorConnect().ethereumSignMessage({

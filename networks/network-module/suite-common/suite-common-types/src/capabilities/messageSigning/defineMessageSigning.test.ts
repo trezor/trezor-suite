@@ -37,7 +37,7 @@ const definition: MessageSigningDefinition<TestAccount, TestFormat> = {
         getAvailable: account => (account.hasChoice ? ['default', 'electrum'] : []),
     },
     getSignAddressGroups: account => [
-        { label: null, addresses: [{ path: account.path, address: 'addr' }] },
+        { category: 'account', label: null, addresses: [{ path: account.path, address: 'addr' }] },
     ],
     sign: ({ format }) => {
         signedFormats.push(format);

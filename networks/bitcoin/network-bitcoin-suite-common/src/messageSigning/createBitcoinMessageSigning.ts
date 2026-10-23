@@ -57,14 +57,17 @@ export const createBitcoinMessageSigning = (
         getSignAddressGroups: (account, touchedAddresses) =>
             groupSignAddresses([
                 {
+                    category: 'fresh',
                     label: labels.freshAddresses,
                     addresses: getFreshAddresses(account.addresses, touchedAddresses),
                 },
                 {
+                    category: 'used',
                     label: labels.usedAddresses,
                     addresses: (account.addresses?.used ?? []).toReversed(),
                 },
                 {
+                    category: 'change',
                     label: labels.changeAddresses,
                     addresses: (account.addresses?.change ?? []).toReversed(),
                 },
