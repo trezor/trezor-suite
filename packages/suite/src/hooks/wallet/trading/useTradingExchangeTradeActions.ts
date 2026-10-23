@@ -19,7 +19,9 @@ import {
     isSilentSendRejection,
     selectTradingExchangeActiveTrade,
     selectTradingExchangeSelectedQuote,
+    selectTradingExchangeSelectedQuoteTimestamp,
     selectTradingIsSlip24Allowed,
+    tradingExchangeActions,
 } from '@suite-common/trading';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { useServices } from '@trezor/dependency-injection';
@@ -38,6 +40,7 @@ export const useTradingExchangeTradeActions = () => {
     const { device } = useDevice();
 
     const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
+    const selectedQuoteTimestamp = useSelector(selectTradingExchangeSelectedQuoteTimestamp);
     const trade = useSelector(selectTradingExchangeActiveTrade);
 
     const { account: formAccount } = useTradingFormAccount('exchange');
@@ -191,9 +194,67 @@ export const useTradingExchangeTradeActions = () => {
         );
     };
 
+    const refreshSelectedQuote = async () => {
+        const receiveAddress = selectedQuote?.receiveAddress;
+
+        if (!account || !selectedQuote || !receiveAddress) {
+            return false;
+        }
+
+        let isConfirmed = false;
+        try {
+            const freshQuote = await dispatch(
+                exchangeThunks.fetchSelectedProviderQuoteThunk(),
+            ).unwrap();
+            const commonFunctions = await getTradeRequestParams(freshQuote);
+
+            if (!commonFunctions) {
+                return false;
+            }
+
+            const { returnUrl, processResponseData, nextStep } = commonFunctions;
+            const confirmedTrade = await dispatch(
+                exchangeThunks.confirmTradeThunk({
+                    returnUrl,
+                    receiveAddress,
+                    account,
+                    trade: {
+                        ...freshQuote,
+                        swapSlippage: selectedQuote.swapSlippage ?? freshQuote.swapSlippage,
+                    },
+                    // The confirmation was already reported when the offer was chosen.
+                    triggerAnalyticsTradeConfirmation: () => {},
+                    processResponseData,
+                    nextStep,
+                }),
+            ).unwrap();
+
+            isConfirmed = !!confirmedTrade;
+        } catch (e) {
+            if (isSendRejectedError<TranslationKey>(e) && !isSilentSendRejection(e.type)) {
+                dispatch(
+                    notificationsActions.addToast({
+                        type: e.type,
+                        error: translationString(e.error.id, e.error.values),
+                    }),
+                );
+            }
+        }
+
+        if (!isConfirmed) {
+            dispatch(tradingExchangeActions.saveSelectedQuote(selectedQuote));
+            if (selectedQuoteTimestamp !== undefined) {
+                dispatch(tradingExchangeActions.setSelectedQuoteTimestamp(selectedQuoteTimestamp));
+            }
+        }
+
+        return isConfirmed;
+    };
+
     return {
         account,
         confirmTrade,
+        refreshSelectedQuote,
         sendTransaction,
         signDataAndConfirm,
     };
