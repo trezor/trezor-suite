@@ -39,7 +39,6 @@ import {
     convertAmountUnitsToSubunits,
     formatNetworkAmount,
     getNetworkReserve,
-    parseAccountKey,
 } from '@suite-common/wallet-utils';
 import { useAlert } from '@suite-native/alerts';
 import { useForm } from '@suite-native/forms';
@@ -514,12 +513,10 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
                     }
 
                     dispatch(sendFormActions.discardTransaction());
-                    if (isAssetsFirstEnabled) {
-                        const { networkSymbol } = parseAccountKey(accountKey);
-
+                    if (isAssetsFirstEnabled && account) {
                         navigation.navigate(RootStackRoutes.AssetsStack, {
                             screen: AssetsStackRoutes.AssetDetail,
-                            params: { networkSymbol, tokenContract },
+                            params: { networkSymbol: account.symbol, tokenContract },
                         });
                     } else {
                         navigation.navigate(RootStackRoutes.AccountDetailStack, {
@@ -538,6 +535,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         },
         [
             dispatch,
+            account,
             accountKey,
             tokenContract,
             requestDelayedNavigationToOutputsReview,

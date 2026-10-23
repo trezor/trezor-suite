@@ -12,7 +12,6 @@ import {
     selectDiscoveryForSelectedDevice,
     selectHasRunningDiscovery,
 } from '@suite-common/wallet-core';
-import { type Account } from '@suite-common/wallet-types';
 import {
     type AddCoinAccountNavigationProps,
     useAddCoinAccount,
@@ -45,17 +44,6 @@ export const AddCoinDiscoveryRunningScreen = ({
     const enabledNetworkSymbols = useSelector(selectDeviceEnabledDiscoveryNetworkSymbols);
     const { navigateToSuccessorScreen, clearNetworkWithTypeToBeAdded } = useAddCoinAccount();
     const [loadingResult, setLoadingResult] = useState<SpinnerLoadingState>('idle');
-
-    const openAccount = ({ account }: { account: Account }) => {
-        navigateToSuccessorScreen({
-            flowType,
-            accountKey: account.key,
-            symbol: networkSymbol,
-            accountType: account.accountType,
-            accountIndex: account.index,
-            earnFlowParams,
-        });
-    };
 
     const handleFinish = () => {
         if (loadingResult === 'error') {
@@ -92,7 +80,15 @@ export const AddCoinDiscoveryRunningScreen = ({
 
         const firstAccount = normalAccounts[0];
         if (!firstAccount) return;
-        openAccount({ account: firstAccount });
+
+        navigateToSuccessorScreen({
+            flowType,
+            accountKey: firstAccount.key,
+            symbol: networkSymbol,
+            accountType: firstAccount.accountType,
+            accountIndex: firstAccount.index,
+            earnFlowParams,
+        });
     };
 
     useEffect(() => {

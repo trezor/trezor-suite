@@ -1,5 +1,7 @@
 import { useSelector } from 'react-redux';
 
+import { useNavigation } from '@react-navigation/native';
+
 import {
     type HomeAssetTableState,
     selectWalletAssetAccountCount,
@@ -18,13 +20,27 @@ import {
 } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import {
+    AccountsStackRoutes,
+    AppTabsRoutes,
+    type AssetsStackParamList,
+    type AssetsStackRoutes,
+    type RootStackParamList,
+    RootStackRoutes,
+    type StackToStackCompositeNavigationProps,
+} from '@suite-native/navigation';
+
+type NavigationProps = StackToStackCompositeNavigationProps<
+    AssetsStackParamList,
+    AssetsStackRoutes.AssetDetail,
+    RootStackParamList
+>;
 
 type AssetSettingsBottomSheetProps = {
     ref: BottomSheetModalRef;
     assetDisplaySymbol: string;
     networkSymbol: NetworkSymbol;
     tokenContract?: TokenAddress;
-    onAccountsPress: () => void;
 };
 
 export const AssetSettingsBottomSheet = ({
@@ -32,14 +48,28 @@ export const AssetSettingsBottomSheet = ({
     assetDisplaySymbol,
     networkSymbol,
     tokenContract,
-    onAccountsPress,
 }: AssetSettingsBottomSheetProps) => {
+    const navigation = useNavigation<NavigationProps>();
     const assetKey = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetKey(state, networkSymbol, tokenContract),
     );
     const accountsCount = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetAccountCount(state, assetKey),
     );
+
+    const handleAccountsPress = () => {
+        if (ref && 'current' in ref && ref.current) {
+            ref.current.dismiss();
+        }
+
+        navigation.navigate(RootStackRoutes.AppTabs, {
+            screen: AppTabsRoutes.AccountsStack,
+            params: {
+                screen: AccountsStackRoutes.Accounts,
+                params: { networksFilter: [networkSymbol] },
+            },
+        });
+    };
 
     return (
         <BottomSheetModal ref={ref} title={assetDisplaySymbol} isCloseDisplayed>
@@ -53,7 +83,7 @@ export const AssetSettingsBottomSheet = ({
 
                 <PressableOpacity
                     accessibilityRole="button"
-                    onPress={onAccountsPress}
+                    onPress={handleAccountsPress}
                     testID="@asset-detail/settings/accounts-button"
                 >
                     <HStack

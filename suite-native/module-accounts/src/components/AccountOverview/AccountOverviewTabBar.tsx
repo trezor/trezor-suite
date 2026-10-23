@@ -19,28 +19,26 @@ const scrollContentStyle = prepareNativeStyle(({ spacings }) => ({
     paddingVertical: spacings.sp8,
 }));
 
-interface TabItem {
+type TabItem = {
     tab: AccountOverviewTab;
     icon: NonNullable<ComponentProps<typeof Button>['iconLeft']>;
     translationId: TxKeyPath;
     translationValues?: Record<string, number>;
     isVisible: boolean;
-}
+};
 
-type AccountOverviewTabBarProps = {
-    activeTab: AccountOverviewTab;
+type GetTabsConfigParams = {
     flowType: AccountOverviewFlow;
     networkType?: NetworkType;
     tokenCount: number;
     defiTokenCount: number;
     hiddenTokenCount: number;
-    onTabChange: (tab: AccountOverviewTab) => void;
 };
 
-type GetTabsConfigParams = Pick<
-    AccountOverviewTabBarProps,
-    'flowType' | 'networkType' | 'tokenCount' | 'defiTokenCount' | 'hiddenTokenCount'
->;
+type AccountOverviewTabBarProps = GetTabsConfigParams & {
+    activeTab: AccountOverviewTab;
+    onTabChange: (tab: AccountOverviewTab) => void;
+};
 
 const getTabsConfig = ({
     flowType,
