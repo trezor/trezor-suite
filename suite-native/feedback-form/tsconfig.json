@@ -4,6 +4,7 @@
     "references": [
         { "path": "../../suite-common/feedback" },
         { "path": "../atoms" },
+        { "path": "../icons" },
         {
             "path": "../../packages/styles-native"
         },

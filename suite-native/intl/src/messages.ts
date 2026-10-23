@@ -134,6 +134,14 @@ export const messages = {
                 groupingDefault: 'Default',
                 groupingNetworks: 'By networks',
             },
+            newBanner: {
+                title: 'New! A simpler view of your assets',
+                description:
+                    'Each asset is totaled across every account that holds it. Click on it to see more details.',
+            },
+            feedback: {
+                title: 'How do you like the new asset table?',
+            },
         },
         graphIgnoredNetworks:
             "{networksString} and all related tokens are included in your portfolio balance, but aren't currently supported in the graph.",
