@@ -30,6 +30,7 @@ import {
     BannerInline,
     Button,
     Card,
+    DiscreetTextTrigger,
     HStack,
     PressableOpacity,
     Text,
@@ -201,6 +202,7 @@ export const StakingManagementStakedCard = ({
                             <Text variant="body-md" color="contentSecondary">
                                 <Translation id="earn.stakingManagementScreen.stakedLabel" />
                             </Text>
+
                             {isCardanoStaking && (
                                 <Badge
                                     label={
@@ -211,6 +213,7 @@ export const StakingManagementStakedCard = ({
                                 />
                             )}
                         </HStack>
+
                         {isCardanoStaking && (
                             <PressableOpacity onPress={openAutoStakedModal}>
                                 <Text variant="body-sm" color="contentBrand">
@@ -219,12 +222,16 @@ export const StakingManagementStakedCard = ({
                             </PressableOpacity>
                         )}
                     </HStack>
-                    <CompactCryptoAmountFormatter
-                        value={stakedBalance}
-                        symbol={networkSymbol}
-                        variant="headline-sm"
-                        color="contentPrimary"
-                    />
+
+                    <DiscreetTextTrigger>
+                        <CompactCryptoAmountFormatter
+                            value={stakedBalance}
+                            symbol={networkSymbol}
+                            variant="headline-sm"
+                            color="contentPrimary"
+                        />
+                    </DiscreetTextTrigger>
+
                     <CryptoToFiatAmountFormatter
                         value={stakedBalance}
                         symbol={networkSymbol}
@@ -232,6 +239,7 @@ export const StakingManagementStakedCard = ({
                         isBalance
                     />
                 </VStack>
+
                 <VStack
                     spacing="sp4"
                     style={applyStyle(stakedSectionStyle, { hasBottomBorder: true })}
@@ -246,6 +254,7 @@ export const StakingManagementStakedCard = ({
                                 }
                             />
                         </Text>
+
                         {areRewardsAutoRestaked && (
                             <Badge
                                 label={
@@ -256,6 +265,7 @@ export const StakingManagementStakedCard = ({
                             />
                         )}
                     </HStack>
+
                     <CompactCryptoAmountFormatter
                         value={totalRewards}
                         symbol={networkSymbol}
@@ -263,6 +273,7 @@ export const StakingManagementStakedCard = ({
                         color="contentPrimary"
                         isLoading={isTotalRewardsLoading}
                     />
+
                     <CryptoToFiatAmountFormatter
                         value={totalRewards}
                         symbol={networkSymbol}
@@ -271,6 +282,7 @@ export const StakingManagementStakedCard = ({
                         isLoading={isTotalRewardsLoading}
                     />
                 </VStack>
+
                 <HStack
                     justifyContent="space-between"
                     style={applyStyle(stakedSectionStyle, {
@@ -288,6 +300,7 @@ export const StakingManagementStakedCard = ({
                             />
                         )}
                     </Text>
+
                     {rewardsFrequencyInDays !== null ? (
                         <Text variant="body-sm">
                             <Translation
@@ -307,14 +320,17 @@ export const StakingManagementStakedCard = ({
                         )
                     )}
                 </HStack>
+
                 {areStakeActionsShown && (
                     <VStack style={applyStyle(buttonsRowStyle)}>
                         {isUnstakingDisabled && unstakingMessageContent && (
                             <BannerInline intent="warning" title={unstakingMessageContent} />
                         )}
+
                         {isStakingDisabled && stakingMessageContent && (
                             <BannerInline intent="warning" title={stakingMessageContent} />
                         )}
+
                         <HStack spacing="sp12">
                             <Button
                                 flex={1}
@@ -330,6 +346,7 @@ export const StakingManagementStakedCard = ({
                                     }
                                 />
                             </Button>
+
                             {hasUnstakableBalance && (
                                 <Button
                                     flex={1}
@@ -344,6 +361,7 @@ export const StakingManagementStakedCard = ({
                     </VStack>
                 )}
             </Card>
+
             {isCardanoStaking && (
                 <CardanoAutoStakedModal ref={autoStakedModalRef} networkSymbol={networkSymbol} />
             )}

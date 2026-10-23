@@ -68,7 +68,6 @@ const EarnBalanceLegendItem = ({ amount, color, title }: EarnBalanceLegendItemPr
                     value={amount}
                     variant="body-sm"
                     color="contentSecondary"
-                    isDiscreetText={false}
                 />
             </Text>
         </HStack>

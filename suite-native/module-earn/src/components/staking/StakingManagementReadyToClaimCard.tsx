@@ -12,9 +12,9 @@ import {
 import { type AccountKey } from '@suite-common/wallet-types';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
-import { BannerInline, Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
+import { BannerInline, Box, Button, DiscreetText, HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
-import { Translation } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 import {
     type RootStackParamList,
     RootStackRoutes,
@@ -41,6 +41,7 @@ const containerStyle = prepareNativeStyle(utils => ({
 export const StakingManagementReadyToClaimCard = ({
     accountKey,
 }: StakingManagementReadyToClaimCardProps) => {
+    const { translate } = useTranslate();
     const { applyStyle } = useNativeStyles();
     const { isPortfolioTrackerDevice, openPortfolioTrackerSheet } = useEarnPortfolioTrackerGuard();
     const navigation = useNavigation<NavigationProp>();
@@ -103,17 +104,16 @@ export const StakingManagementReadyToClaimCard = ({
             <HStack spacing="sp12">
                 <Icon name="checkCircle" size="large" color="contentPrimary" />
                 <VStack flex={1} spacing="sp12">
-                    <Text variant="body-md">
-                        <Translation
-                            id="earn.stakingManagementScreen.claim.readyToClaim"
-                            values={{
-                                amount: formattedAmount,
-                            }}
-                        />
-                    </Text>
+                    <DiscreetText variant="body-md">
+                        {translate('earn.stakingManagementScreen.claim.readyToClaim', {
+                            amount: formattedAmount,
+                        })}
+                    </DiscreetText>
+
                     {isClaimingDisabled && claimingMessageContent && (
                         <BannerInline intent="warning" title={claimingMessageContent} />
                     )}
+
                     <Button
                         size="medium"
                         isFullWidth
