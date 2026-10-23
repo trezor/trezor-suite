@@ -3,9 +3,10 @@ import {
     selectCappedAssetKeysByNetwork,
     selectDisplayedNetworkSymbols,
     selectDisplayedWalletAssetKeys,
+    selectHomeAssetGrouping,
 } from '@suite-common/assets';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type WalletAssetKey, selectHomeAssetsTableGrouping } from '@suite-common/wallet-core';
+import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { createWeakMapSelector } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -23,7 +24,7 @@ const toAssetEntries = (
 
 export const selectPortfolioAssetListEntries = createMemoizedSelector(
     [
-        selectHomeAssetsTableGrouping,
+        selectHomeAssetGrouping,
         selectDisplayedWalletAssetKeys,
         selectDisplayedNetworkSymbols,
         selectCappedAssetKeysByNetwork,
