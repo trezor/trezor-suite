@@ -30,6 +30,7 @@ export interface TradingBuyState {
     tradingAccountKey?: AccountKey;
     receiveAccountKey?: AccountKey;
     receiveAddress?: string;
+    extraField?: string;
     isLoading: boolean;
     amountLimits: TradingAmountLimitProps | undefined;
     transactionId?: string;
@@ -46,6 +47,7 @@ export const buyInitialState: TradingBuyState = {
     tradingAccountKey: undefined,
     receiveAccountKey: undefined,
     receiveAddress: undefined,
+    extraField: undefined,
     isLoading: false,
     amountLimits: undefined,
 };
@@ -108,6 +110,9 @@ const tradingBuySlice = createSlice({
         },
         setReceiveAddress(state: TradingBuyState, action: PayloadAction<string | undefined>) {
             state.receiveAddress = action.payload;
+        },
+        setExtraField(state: TradingBuyState, action: PayloadAction<string | undefined>) {
+            state.extraField = action.payload;
         },
         setLastErrorMessage(state: TradingBuyState, action: PayloadAction<string | undefined>) {
             state.lastErrorMessage = action.payload;

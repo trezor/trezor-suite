@@ -18,7 +18,6 @@ import { useTradingExchangeTradeRequest } from 'src/hooks/wallet/trading/form/co
 interface UseExchangeApprovalProps {
     account: Account | undefined;
     receiveAddress?: string;
-    extraField?: string;
 }
 
 type VerifyAddressThunkState = ConfirmAddressOnDeviceThunkState &
@@ -35,11 +34,7 @@ type VerifyAddressThunkDispatch = ThunkDispatch<
  * Device-touching exchange trade actions that are not quote-refresh: address
  * verification and the DEX approval flow (confirm / approve / revoke).
  */
-export const useExchangeApproval = ({
-    account,
-    receiveAddress,
-    extraField,
-}: UseExchangeApprovalProps) => {
+export const useExchangeApproval = ({ account, receiveAddress }: UseExchangeApprovalProps) => {
     const { dispatch } = useServices(injectDispatch);
     const { getTradeRequestParams } = useTradingExchangeTradeRequest(account);
 
@@ -78,7 +73,6 @@ export const useExchangeApproval = ({
             exchangeThunks.confirmApprovalThunk({
                 receiveAddress: approvalReceiveAddress,
                 account,
-                extraField,
                 trade: approvalTrade,
                 processResponseData,
             }),

@@ -41,7 +41,7 @@ const renderExchangeApproval = (receiveAddress?: string) => {
     const { services } = createTestCompositionRoot<void, unknown>({});
 
     const utils = renderHookWithStoreProvider(
-        () => useExchangeApproval({ account: ACCOUNT, receiveAddress, extraField: undefined }),
+        () => useExchangeApproval({ account: ACCOUNT, receiveAddress }),
         { services },
     );
 

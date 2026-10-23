@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
+import { useSelector } from 'react-redux';
 
 import { type CryptoId } from 'invity-api';
 
@@ -11,6 +12,7 @@ import {
     type TradingType,
     cryptoIdToNetworkSymbol,
     getUnusedAddressFromAccount,
+    selectTradingBuyExtraField,
     selectTradingBuyReceiveAccountKey,
     selectTradingBuyReceiveAddress,
     selectTradingExchangeAccountKey,
@@ -19,14 +21,17 @@ import {
     tradingBuyActions,
     tradingExchangeActions,
 } from '@suite-common/trading';
-import { selectAccountByKey, selectAccounts } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    selectAccountByKey,
+    selectAccounts,
+} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { filterReceiveAccounts } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { useNetworkSupport } from 'src/hooks/settings/useNetworkSupport';
-import { useSelector } from 'src/hooks/suite';
 import { type TradingVerifyFormProps } from 'src/types/trading/tradingVerify';
 
 import { useAccountAddressDictionary } from '../../useAccounts';
@@ -53,11 +58,12 @@ export const useTradingReceiveAddress = ({
 
     const persistedExchangeReceiveAddress = useSelector(selectTradingExchangeReceiveAddress);
     const persistedBuyReceiveAddress = useSelector(selectTradingBuyReceiveAddress);
+    const persistedBuyExtraField = useSelector(selectTradingBuyExtraField);
 
-    const [persistedReceiveAccountKey, persistedReceiveAddress] =
+    const [persistedReceiveAccountKey, persistedReceiveAddress, persistedExtraField] =
         type === 'exchange'
-            ? [persistedExchangeReceiveAccountKey, persistedExchangeReceiveAddress]
-            : [persistedBuyReceiveAccountKey, persistedBuyReceiveAddress];
+            ? [persistedExchangeReceiveAccountKey, persistedExchangeReceiveAddress, undefined]
+            : [persistedBuyReceiveAccountKey, persistedBuyReceiveAddress, persistedBuyExtraField];
 
     const isDebug = useSelector(selectIsDebugModeActive);
 
@@ -74,7 +80,9 @@ export const useTradingReceiveAddress = ({
 
     const prevCryptoIdRef = useRef<CryptoId | undefined>(undefined);
 
-    const receiveAccount = useSelector(state => selectAccountByKey(state, selectedAccount?.key));
+    const receiveAccount = useSelector((state: AccountsRootState) =>
+        selectAccountByKey(state, selectedAccount?.key),
+    );
     const supportedNetworks = useSelector(selectSupportedNetworkSymbols);
 
     const isSupportedNetwork = [...supportedMainnets, ...supportedTestnets].some(
@@ -103,6 +111,7 @@ export const useTradingReceiveAddress = ({
             setHasSelectionInitialized(true);
             const { address } = getUnusedAddressFromAccount(account);
             methods.setValue('address', address, { shouldValidate: true });
+            methods.setValue('extraField', '', { shouldValidate: true });
         },
         [methods],
     );
@@ -117,10 +126,7 @@ export const useTradingReceiveAddress = ({
             setSelectedAccount(null);
             setHasSelectionInitialized(true);
             methods.setValue('address', address, { shouldValidate: true });
-
-            if (extraFieldValue !== undefined) {
-                methods.setValue('extraField', extraFieldValue, { shouldValidate: true });
-            }
+            methods.setValue('extraField', extraFieldValue ?? '', { shouldValidate: true });
         },
         [methods],
     );
@@ -157,10 +163,11 @@ export const useTradingReceiveAddress = ({
     ]);
 
     useEffect(() => {
-        const isNewAsset = prevCryptoIdRef.current !== cryptoId;
+        const isNewAsset =
+            prevCryptoIdRef.current !== undefined && prevCryptoIdRef.current !== cryptoId;
+        prevCryptoIdRef.current = cryptoId;
 
         if (isNewAsset) {
-            prevCryptoIdRef.current = cryptoId;
             setSelectedAccount(undefined);
             setHasSelectionInitialized(false);
             methods.setValue('address', '', { shouldValidate: false });
@@ -169,6 +176,30 @@ export const useTradingReceiveAddress = ({
 
         if (!symbol) return;
         if (hasSelectionInitialized && !isNewAsset) return;
+
+        if (
+            !isNewAsset &&
+            !persistedReceiveAccountKey &&
+            persistedReceiveAddress &&
+            canUseNonSuiteAccount
+        ) {
+            let isValidForCurrentSymbol: boolean;
+
+            try {
+                isValidForCurrentSymbol = addressValidator.isAddressValid(
+                    persistedReceiveAddress,
+                    symbol,
+                );
+            } catch {
+                isValidForCurrentSymbol = false;
+            }
+
+            if (isValidForCurrentSymbol) {
+                selectNonSuiteAddress(persistedReceiveAddress, persistedExtraField);
+
+                return;
+            }
+        }
 
         if (!hasSuiteReceiveAccount) {
             if (canUseNonSuiteAccount) {
@@ -192,25 +223,6 @@ export const useTradingReceiveAddress = ({
 
             if (matchingAccount) {
                 selectSuiteAccount(matchingAccount);
-
-                return;
-            }
-        }
-
-        if (!isNewAsset && persistedReceiveAddress && canUseNonSuiteAccount && symbol) {
-            let isValidForCurrentSymbol: boolean;
-
-            try {
-                isValidForCurrentSymbol = addressValidator.isAddressValid(
-                    persistedReceiveAddress,
-                    symbol,
-                );
-            } catch {
-                isValidForCurrentSymbol = false;
-            }
-
-            if (isValidForCurrentSymbol) {
-                selectNonSuiteAddress(persistedReceiveAddress);
 
                 return;
             }
@@ -264,6 +276,7 @@ export const useTradingReceiveAddress = ({
         suiteReceiveAccounts,
         persistedReceiveAccountKey,
         persistedReceiveAddress,
+        persistedExtraField,
         walletSelectedAccount.account?.key,
         selectSuiteAccount,
         selectNonSuiteAddress,
@@ -299,12 +312,12 @@ export const useTradingReceiveAddress = ({
     useEffect(() => {
         if (type === 'exchange') {
             dispatch(tradingExchangeActions.setReceiveAddress(receiveAddress));
-            dispatch(tradingExchangeActions.setExtraField(extraField));
             dispatch(tradingExchangeActions.setReceiveAccountKey(receiveAccount?.key));
         }
 
         if (type === 'buy') {
             dispatch(tradingBuyActions.setReceiveAddress(receiveAddress));
+            dispatch(tradingBuyActions.setExtraField(extraField));
             dispatch(tradingBuyActions.setReceiveAccountKey(receiveAccount?.key));
         }
     }, [receiveAddress, extraField, receiveAccount, type, dispatch]);
