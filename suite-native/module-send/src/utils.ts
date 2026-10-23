@@ -1,6 +1,11 @@
 import { CommonActions } from '@react-navigation/native';
 
-import { type AccountKey, type FormState, type TokenAddress } from '@suite-common/wallet-types';
+import {
+    type AccountKey,
+    type FormOptions,
+    type FormState,
+    type TokenAddress,
+} from '@suite-common/wallet-types';
 import {
     AccountDetailStackRoutes,
     AppTabsRoutes,
@@ -30,6 +35,15 @@ export const getSendMaxAmount = ({
 }: GetSendMaxAmountParams): string | undefined =>
     isTokenFlow ? tokenBalance : normalFeeLevelMaxAmount;
 
+const buildDraftOptions = ({
+    destinationTag,
+    transactionData,
+}: Pick<SendOutputsFormValues, 'destinationTag' | 'transactionData'>): FormOptions[] => [
+    'broadcast',
+    ...(destinationTag ? (['destinationTag'] as const) : []),
+    ...(transactionData ? (['transactionData'] as const) : []),
+];
+
 export const constructFormDraft = ({
     formValues: { outputs, transactionData, ...restFormValues },
     tokenContract,
@@ -41,6 +55,7 @@ export const constructFormDraft = ({
     feeLevel?: Pick<FeeLevel, 'label' | 'feePerUnit' | 'feeLimit'>;
     selectedUtxos?: Utxo[];
 }): FormState => ({
+    txType: 'send',
     outputs: outputs.map(({ address, resolvedAddress, amount, label, fiat = '' }) => ({
         address,
         // An empty string is the form's "name did not resolve" marker, never an address.
@@ -55,7 +70,7 @@ export const constructFormDraft = ({
     isCoinControlEnabled: selectedUtxos.length > 0,
     hasCoinControlBeenOpened: false,
     selectedUtxos,
-    options: [],
+    options: buildDraftOptions({ destinationTag: restFormValues.destinationTag, transactionData }),
     selectedFee: feeLevel.label,
     feePerUnit: feeLevel.feePerUnit,
     feeLimit: feeLevel.feeLimit ?? '',
