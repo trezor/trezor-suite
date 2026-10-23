@@ -3,6 +3,10 @@ import { type CryptoId, type ExchangeTrade } from 'invity-api';
 import { type Account } from '@suite-common/wallet-types';
 import { createThunk } from '@trezor/redux-utils';
 
+import {
+    type ValidateExchangeReceiveAddressThunkDeps,
+    validateExchangeReceiveAddressThunk,
+} from './validateExchangeReceiveAddressThunk';
 import { TRADING_EXCHANGE_THUNK_PREFIX } from '../../constants';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
 import { type TradingRootState, tradingActions } from '../../reducers/tradingCommonReducer';
@@ -27,10 +31,12 @@ export type ConfirmApprovalThunkProps = {
 
 export type ConfirmApprovalThunkState = TradingRootState;
 
+export type ConfirmApprovalThunkDeps = ValidateExchangeReceiveAddressThunkDeps;
+
 export const confirmApprovalThunk = createThunk<
     ExchangeTrade | undefined,
     ConfirmApprovalThunkProps,
-    { state: ConfirmApprovalThunkState }
+    { state: ConfirmApprovalThunkState; extra: ConfirmApprovalThunkDeps }
 >(
     `${TRADING_EXCHANGE_THUNK_PREFIX}/confirmApproval`,
     async ({ trade, receiveAddress, account, processResponseData }, { dispatch, getState }) => {
@@ -47,6 +53,14 @@ export const confirmApprovalThunk = createThunk<
         }
 
         if (!refundAddress || !trade?.quoteId || !receiveAddress) {
+            return undefined;
+        }
+
+        const isReceiveAddressAccepted = await dispatch(
+            validateExchangeReceiveAddressThunk({ receiveAddress, receiveCryptoId: trade.receive }),
+        ).unwrap();
+
+        if (!isReceiveAddressAccepted) {
             return undefined;
         }
 
@@ -97,6 +111,17 @@ export const confirmApprovalThunk = createThunk<
             dispatch(tradingExchangeActions.saveSelectedQuote(response));
 
             return response;
+        }
+
+        const isResponseAddressAccepted = await dispatch(
+            validateExchangeReceiveAddressThunk({
+                receiveAddress: response.receiveAddress ?? receiveAddress,
+                receiveCryptoId: response.receive ?? trade.receive,
+            }),
+        ).unwrap();
+
+        if (!isResponseAddressAccepted) {
+            return undefined;
         }
 
         if (response.status === 'APPROVAL_REQ' || response.status === 'APPROVAL_PENDING') {
