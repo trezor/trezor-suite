@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { selectAccountIncludingChosenInTrading } from '@suite/account';
 import { events, injectDesktopAnalytics } from '@suite/analytics';
@@ -12,17 +13,16 @@ import { type FormState } from '@suite-common/wallet-types';
 import {
     constructTransactionReviewOutputsOptional,
     getDecreaseOutputId,
-    getTxValidityTimeoutInMs,
 } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { type Deferred } from '@trezor/utils';
 
-import { useSelector } from 'src/hooks/suite';
 import { redactRouterUrl } from 'src/utils/suite/analytics';
 
 import { TransactionReviewModalBodyInner } from './TransactionReviewModalBodyInner';
+import { useTransactionReviewDeadline } from './useTransactionReviewDeadline';
 import { type TxInfoState, isStakeState } from './utils';
 import { ConfirmActionModal } from '../DeviceContextModal/ConfirmActionModal';
 import { ExpiredTxValidityModal } from '../UserContextModal/TxDetailModal/ExpiredTxValidityModal';
@@ -70,10 +70,11 @@ export const TransactionReviewModalBody = ({
         prevSerializedTxRef.current = serializedTx;
     }, [isSending, serializedTx]);
 
-    const createdTxTimestamp = txInfoState?.precomposedTx?.createdTimestamp ?? 0;
-    const shouldCheckTxTimeValidity = account?.networkType === 'solana' && createdTxTimestamp !== 0;
-
-    const deadline = createdTxTimestamp + getTxValidityTimeoutInMs(account?.networkType);
+    const { deadline, shouldCheckTxTimeValidity } = useTransactionReviewDeadline({
+        account,
+        txInfoState,
+        precomposedForm,
+    });
 
     useEffect(() => {
         if (!shouldCheckTxTimeValidity) {
