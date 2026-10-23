@@ -1,0 +1,45 @@
+{
+    "name": "@suite/t1-escape-app",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview",
+        "test:unit": "yarn g:jest -c ./jest.config.cjs",
+        "type-check": "yarn g:tsc --build tsconfig.json",
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
+    },
+    "dependencies": {
+        "@bufbuild/protobuf": "^2.11.0",
+        "@trezor/blockchain-link": "workspace:*",
+        "@trezor/blockchain-link-types": "workspace:*",
+        "@trezor/components": "workspace:*",
+        "@trezor/connect-common": "workspace:*",
+        "@trezor/connect-core": "workspace:*",
+        "@trezor/eslint": "workspace:*",
+        "@trezor/protobuf": "workspace:*",
+        "@trezor/protocol": "workspace:*",
+        "@trezor/theme": "workspace:*",
+        "@trezor/transport-common": "workspace:*",
+        "@trezor/type-utils": "workspace:*",
+        "@trezor/utils": "workspace:*",
+        "@trezor/utxo-lib": "workspace:*",
+        "@vitejs/plugin-react": "^6.0.1",
+        "react": "19.2.3",
+        "react-dom": "19.2.3",
+        "styled-components": "^6.5.3",
+        "viem": "^2.54.1",
+        "vite": "^8.0.7",
+        "vite-plugin-node-polyfills": "^0.26.0"
+    },
+    "devDependencies": {
+        "@trezor/dependency-injection": "workspace:*",
+        "@types/jest": "30.0.0",
+        "@types/node": "22.13.10",
+        "@types/react-dom": "19.2.3"
+    }
+}
