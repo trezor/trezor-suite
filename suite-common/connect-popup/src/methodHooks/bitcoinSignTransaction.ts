@@ -7,7 +7,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type Account, type FormOptions } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
-import type { CallMethodKeys, SignTransaction } from '@trezor/connect';
+import type { CallMethodKeys, SignTransaction, SignedTransaction } from '@trezor/connect';
 import { getOriginalTxids, getPreviousTxids, getSerializedPath } from '@trezor/connect-common';
 import type { Bip43Path } from '@trezor/crypto-utils';
 
@@ -130,11 +130,32 @@ const preCallHook = async <M extends CallMethodKeys>({
     }
 };
 
-export function postCallHook<M extends CallMethodKeys>({ dispatch }: PostCallHookParams<M>) {
+export async function postCallHook<M extends CallMethodKeys>({
+    method,
+    payload,
+    response,
+    dispatch,
+}: PostCallHookParams<M>) {
     if (temporaryAccounts.length) {
         // Remove temporary accounts
         dispatch(accountsActions.removeAccount(temporaryAccounts));
         temporaryAccounts.length = 0;
+    }
+
+    const typedPayload = payload as unknown as SignTransaction;
+
+    if (method === 'signTransaction' && typedPayload.push && response.success) {
+        const signed = response.payload as SignedTransaction;
+        const res = await TrezorConnect.pushTransaction({
+            coin: typedPayload.coin,
+            tx: signed.serializedTx,
+        });
+
+        if (!res.success) {
+            // postCallHooks are not in try/catch, therefore this behaves the same
+            // as if the original signTransaction call fails
+            throw res.error;
+        }
     }
 
     return false;
