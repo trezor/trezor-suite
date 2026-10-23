@@ -2,7 +2,15 @@
 import { ESLint } from 'eslint';
 import { parseArgs } from 'node:util';
 
-// The config package reads this at import time, so it is set before anything imports it.
+/**
+ * Custom eslint executable wrapper was created in JavaScript because we want to compose and configure rules programmatically.
+ *
+ * Runs ESLint through its Node API instead of the CLI because the `ESLINT_RULE_SET` split needs
+ * ESLint's `ruleFilter`, which the CLI only uses for `--quiet`. Rules stay configured in
+ * `eslint.config.mjs`; the filter only picks which set runs (see `src/ruleSets.mjs` for why).
+ * It mirrors just the CLI options the `lint:js` scripts use (`--fix`, `--[no-]warn-ignored`,
+ * `--max-warnings`) and, like the CLI, exits 2 on anything else.
+ */
 process.env.ESLINT_RULE_FILTER_ACTIVE = 'true';
 
 const { parseRuleSet } = await import('../src/ruleSets.mjs');

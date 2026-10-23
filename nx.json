@@ -55,7 +55,6 @@
         },
         "lint:js": {
             "inputs": [
-                "^production",
                 "{projectRoot}/**/*",
                 "{workspaceRoot}/eslint.config.mjs",
                 "{workspaceRoot}/eslint-local-rules/**/*",
