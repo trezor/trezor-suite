@@ -3,7 +3,11 @@ import { useSelector } from 'react-redux';
 
 import { FlashList } from '@shopify/flash-list';
 
-import { HOME_ASSET_ROW_LIMIT, type HomeAssetTableState } from '@suite-common/assets';
+import {
+    HOME_ASSET_ROW_LIMIT,
+    type HomeAssetTableState,
+    selectIsHomeAssetTableMenuAvailable,
+} from '@suite-common/assets';
 import { Box, useBottomSheetModal } from '@suite-native/atoms';
 import { exhaustive } from '@trezor/type-utils';
 
@@ -53,6 +57,7 @@ export const PortfolioAssetsContent = () => {
     const entries = useSelector((state: HomeAssetTableState) =>
         selectPortfolioAssetListEntries(state, rowLimit),
     );
+    const isMenuAvailable = useSelector(selectIsHomeAssetTableMenuAvailable);
     const { bottomSheetRef, openModal } = useBottomSheetModal();
 
     const toggleIsExpanded = () => setIsExpanded(previous => !previous);
@@ -77,7 +82,7 @@ export const PortfolioAssetsContent = () => {
                     />
                 }
             />
-            <PortfolioAssetsViewOptionsSheet bottomSheetRef={bottomSheetRef} />
+            {isMenuAvailable && <PortfolioAssetsViewOptionsSheet bottomSheetRef={bottomSheetRef} />}
         </Box>
     );
 };
