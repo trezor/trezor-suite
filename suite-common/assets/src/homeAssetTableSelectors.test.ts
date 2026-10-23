@@ -770,8 +770,7 @@ describe('the small balances the switch hides', () => {
     it('leaves out what is worth under a dollar while the switch is off', () => {
         const state = stateWithSmallBalances(false);
 
-        // The empty Ethereum account stays: it is the network, not a leftover.
-        expect(selectDisplayedWalletAssetKeys(state)).toEqual([`${ALICE}/btc/`, `${ALICE}/eth/`]);
+        expect(selectDisplayedWalletAssetKeys(state)).toEqual([`${ALICE}/btc/`]);
         // What the wallet holds is unchanged — only what the table draws is.
         expect(selectShownWalletAssetKeys(state)).toHaveLength(3);
     });
@@ -787,8 +786,7 @@ describe('the small balances the switch hides', () => {
     it('says how many there are and what they come to', () => {
         const summary = selectSmallBalanceSummary(stateWithSmallBalances(true));
 
-        // The Ethereum account holds nothing, and nothing is not a small balance.
-        expect(summary?.assetCount).toBe(1);
+        expect(summary?.assetCount).toBe(2);
         expect(summary?.fiatValue.toFixed()).toBe('0.5');
     });
 
@@ -830,10 +828,7 @@ describe('the small balances the switch hides', () => {
         });
 
         it('draws the line at a dollar, not at one of the currency', () => {
-            expect(selectDisplayedWalletAssetKeys(stateInCzk)).toEqual([
-                `${ALICE}/btc/`,
-                `${ALICE}/eth/`,
-            ]);
+            expect(selectDisplayedWalletAssetKeys(stateInCzk)).toEqual([`${ALICE}/btc/`]);
         });
 
         it('still says what they come to in the chosen currency', () => {
@@ -891,23 +886,37 @@ describe('the small balances the switch hides', () => {
         it('is never a small balance, so the switch leaves it alone', () => {
             const state = stateWithAnUnpricedToken(false);
 
+            // The empty account, worth nothing, is small; the unpriced token is not.
             expect(selectDisplayedWalletAssetKeys(state)).toEqual([
                 `${ALICE}/btc/`,
-                `${ALICE}/eth/`,
                 `${ALICE}/eth/${UNKNOWN_TOKEN}`,
             ]);
-            // Neither the empty account nor the unpriced token is small: nothing to count.
-            expect(selectSmallBalanceSummary(state)).toBeUndefined();
+            expect(selectSmallBalanceSummary(state)?.assetCount).toBe(1);
         });
     });
 
-    it('never counts a coin with nothing on it: an empty account is the network, not a leftover', () => {
+    it('counts a priced coin with nothing on it, as it is worth nothing', () => {
         const state = createState({
             accounts: [
                 mockAccount({ symbol: BTC, balance: '2' }),
                 mockAccount({ symbol: ETH, index: 1, balance: '0' }),
             ],
             rates: { ...mockRate(BTC, 1), ...mockRate(ETH, 1) },
+            areSmallBalancesShown: false,
+        });
+
+        expect(selectDisplayedWalletAssetKeys(state)).toEqual([`${ALICE}/btc/`]);
+        expect(selectSmallBalanceSummary(state)?.assetCount).toBe(1);
+        expect(selectSmallBalanceSummary(state)?.fiatValue.toFixed()).toBe('0');
+    });
+
+    it('leaves a coin with nothing on it alone while nothing can price it', () => {
+        const state = createState({
+            accounts: [
+                mockAccount({ symbol: BTC, balance: '2' }),
+                mockAccount({ symbol: ETH, index: 1, balance: '0' }),
+            ],
+            rates: mockRate(BTC, 1),
             areSmallBalancesShown: false,
         });
 

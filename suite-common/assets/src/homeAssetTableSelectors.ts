@@ -305,21 +305,12 @@ const selectUsdToBaseCurrencyRate = createMemoizedSelector(
 );
 
 /**
- * Under a dollar, as the spec draws the line, whatever currency is chosen: the values the table
- * already shows, against a dollar converted once. An asset nothing can price has no value to be under
- * it, so it is not small: it stays, sorted below the priced ones. Neither is a coin with nothing on
- * it: an empty account is the network the user enabled, not a leftover, and a token with nothing on
- * it never makes a row in the first place. Until the dollar can be converted nothing is small, which
- * is safe: small balances are shown by default.
+ * Assets worth under $1 in the selected currency. An unpriced asset is never small, and nothing is
+ * small until the USD rate is known, so nothing is hidden by mistake.
  */
 const selectSmallBalanceAssetKeySet = createMemoizedSelector(
-    [
-        selectShownWalletAssetKeys,
-        selectWalletAssets,
-        selectWalletAssetValues,
-        selectUsdToBaseCurrencyRate,
-    ],
-    (assetKeys, assets, values, usdToBaseCurrencyRate): ReadonlySet<WalletAssetKey> => {
+    [selectShownWalletAssetKeys, selectWalletAssetValues, selectUsdToBaseCurrencyRate],
+    (assetKeys, values, usdToBaseCurrencyRate): ReadonlySet<WalletAssetKey> => {
         const small = new Set<WalletAssetKey>();
 
         if (usdToBaseCurrencyRate === undefined) {
@@ -329,16 +320,6 @@ const selectSmallBalanceAssetKeySet = createMemoizedSelector(
         const threshold = SMALL_BALANCE_USD_VALUE.times(usdToBaseCurrencyRate);
 
         assetKeys.forEach(assetKey => {
-            const asset = assets.get(assetKey);
-
-            if (
-                asset !== undefined &&
-                asset.contractAddress === undefined &&
-                asset.cryptoBalance.isZero()
-            ) {
-                return;
-            }
-
             // Rates and balances are never negative, so neither is a value: no `abs` needed.
             if (values.get(assetKey)?.lt(threshold)) {
                 small.add(assetKey);
