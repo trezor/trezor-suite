@@ -7,7 +7,6 @@ import {
     type FormState,
     type PrecomposedLevels,
     type PrecomposedTransaction,
-    type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import {
     datetimeToLocktime,
@@ -27,7 +26,7 @@ import TrezorConnect, {
     type SignTransaction,
     type SignedTransaction,
 } from '@trezor/connect';
-import { asCoinSymbol } from '@trezor/connect-common';
+import { type RawTransaction, asCoinSymbol, getPreviousTxids } from '@trezor/connect-common';
 import { createThunk } from '@trezor/redux-utils';
 import { BigNumber, isArrayMember } from '@trezor/utils';
 
@@ -45,7 +44,7 @@ import {
     selectBitcoinAmountUnit,
 } from '../settings/walletSettingsReducer';
 import { type TransactionsRootState } from '../transactions/transactionsReducerTypes';
-import { selectTransactions } from '../transactions/transactionsSelectors';
+import { selectAccountTransactions } from '../transactions/transactionsSelectors';
 
 type GetSequenceParams = { account: Account; formValues: FormState };
 
@@ -305,7 +304,6 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
         { getState, rejectWithValue },
     ) => {
         const bitcoinAmountUnit = selectBitcoinAmountUnit(getState());
-        const transactions = selectTransactions(getState());
         const addressDisplayType = selectAddressDisplayType(getState());
 
         // transactionInfo needs some additional changes:
@@ -323,7 +321,7 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
             signEnhancement.locktime = formState.rbfParams.locktime;
         }
 
-        let refTxs;
+        const refTxids = getPreviousTxids(precomposedTransaction.inputs);
 
         if (
             formState.rbfParams?.type === 'bitcoin' &&
@@ -332,16 +330,8 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
         ) {
             const { txid, utxo, outputs } = formState.rbfParams;
 
-            // normally taproot/coinjoin account doesn't require referenced transactions while signing
-            // but in RBF case they are needed to obtain data of original transaction
-            // passing them directly from tx history will prevent downloading them from the backend (in @trezor/connect)
-            // this is essential step for coinjoin account to avoid leaking txid
-            if (['coinjoin', 'taproot'].includes(selectedAccount.accountType)) {
-                refTxs = (transactions[selectedAccount.key] || []).filter(
-                    (tx): tx is WalletAccountTransaction & { hex: string } =>
-                        tx.txid === txid && !!tx.hex,
-                );
-            }
+            // add orig transaction into ref transactions
+            refTxids.push(txid);
 
             // override inputs and outputs of precomposed transaction
             // NOTE: RBF inputs/outputs required are to be in the same exact order as in original tx (covered by TrezorConnect.composeTransaction.sortStrategy='none param)
@@ -367,6 +357,27 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
             );
         }
 
+        let refTxs;
+        if (refTxids.length) {
+            const transactions = selectAccountTransactions(getState(), selectedAccount.key);
+            const localTxMap = Object.fromEntries(transactions.map(tx => [tx.txid, tx.hex]));
+
+            const fetchedTxs =
+                selectedAccount.accountType !== 'coinjoin' // Fetching would reveal coinjoin account transactions to the backend.
+                    ? await TrezorConnect.blockchainGetTransactions({
+                          coin: asCoinSymbol(selectedAccount.symbol),
+                          txs: refTxids.filter(txid => !localTxMap[txid]),
+                          hexOnly: true,
+                      }).then(response => (response.success ? response.payload : []))
+                    : [];
+
+            const fetchedTxMap = Object.fromEntries(fetchedTxs.map(tx => [tx.txid, tx.hex]));
+
+            refTxs = refTxids
+                .map(txid => ({ txid, hex: localTxMap[txid] || fetchedTxMap[txid] }))
+                .filter((tx): tx is RawTransaction => !!tx.hex);
+        }
+
         if (hasNetworkFeatures(selectedAccount, 'amount-unit')) {
             signEnhancement.amountUnit = bitcoinAmountUnit;
         }
@@ -390,7 +401,7 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
             inputs: precomposedTransaction.inputs,
             outputs: precomposedTransaction.outputs,
             account: {
-                addresses: selectedAccount.addresses!,
+                addresses: selectedAccount.addresses,
                 transactions: refTxs,
             },
             coin: asCoinSymbol(selectedAccount.symbol),
