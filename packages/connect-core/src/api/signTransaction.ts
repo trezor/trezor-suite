@@ -1,12 +1,14 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/SignTransaction.js
 
-import type {
-    AccountAddresses,
-    BitcoinNetworkInfo,
-    PROTO,
-    PermissionRequest,
-    RefTransaction,
-    TransactionOptions,
+import {
+    type AccountAddresses,
+    type BitcoinNetworkInfo,
+    type PROTO,
+    type PermissionRequest,
+    type RefTransaction,
+    type TransactionOptions,
+    getOriginalTxids,
+    getPreviousTxids,
 } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { TypedError } from '@trezor/connect-common/src/constants/errors';
@@ -19,8 +21,6 @@ import {
     createPendingTransaction,
     deriveOutputScript,
     enhanceSignTx,
-    getOriginalTxids,
-    getPreviousTxids,
     parseTransactionHexes,
     signTx,
     transformOrigTransactions,

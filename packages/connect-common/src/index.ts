@@ -17,6 +17,7 @@ export {
 } from './data/connectSettings';
 export * from './utils/debug';
 export * from './utils/definitionsUtils';
+export * from './utils/refTransactions';
 export * from './utils/urlUtils';
 export { getSerializedPath, getSlip44ByPath, validatePath } from './utils/pathUtils';
 export { connectCallableMethods } from './callableMethods';
