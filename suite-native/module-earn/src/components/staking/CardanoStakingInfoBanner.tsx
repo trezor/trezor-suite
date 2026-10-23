@@ -11,7 +11,7 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { BannerFull, BannerInline } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
-import { HELP_CENTER_ADA_STAKING } from '@trezor/urls';
+import { HELP_CENTER_ADA_STAKING_UPDATE_PROVIDER } from '@trezor/urls';
 
 type CardanoStakingInfoBannerProps = {
     accountKey: AccountKey;
@@ -29,7 +29,7 @@ export const CardanoStakingInfoBanner = ({ accountKey }: CardanoStakingInfoBanne
     );
 
     const handleLearnMorePress = () => {
-        openLink(`${HELP_CENTER_ADA_STAKING}#migrating-staking-pools`);
+        openLink(HELP_CENTER_ADA_STAKING_UPDATE_PROVIDER);
     };
 
     if (isStakedWithFiveBinaries) {
