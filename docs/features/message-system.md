@@ -400,7 +400,11 @@ relying on either side:
 
 Making main the single evaluation point - renderer facts reported to main, the verified config and
 the evaluation result pushed back, the renderer's own acquisition dropped on desktop, and the debug
-tooling commanding main - is follow-up work.
+tooling commanding main - is follow-up work. So is turning the message system into an injected
+service (see `skills/dependency-injection/SKILL.md`): `createMessageSystemOwner` is one
+implementation with one consumer, threaded through the main process `Dependencies`, so there is no
+service contract for it yet and no renderer, web or mobile implementation behind one. The contract
+belongs to the commit that introduces the second implementation.
 
 ### Message Manager (UI)
 
