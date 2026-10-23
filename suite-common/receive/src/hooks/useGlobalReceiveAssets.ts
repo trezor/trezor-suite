@@ -24,7 +24,8 @@ export type GlobalReceiveAssetCatalogStatus = 'loading' | 'ready' | 'error';
 
 export type UseGlobalReceiveAssetsParams = {
     search: string;
-    networkSymbol: NetworkSymbol | undefined;
+    networkSymbols: NetworkSymbol[];
+    otherAssetsLimit?: number;
 };
 
 type UseGlobalReceiveAssetsReturn = GlobalReceiveAssetSections & {
@@ -48,7 +49,8 @@ const getCatalogStatus = (isReady: boolean, hasError: boolean): GlobalReceiveAss
  */
 export const useGlobalReceiveAssets = ({
     search,
-    networkSymbol,
+    networkSymbols,
+    otherAssetsLimit,
 }: UseGlobalReceiveAssetsParams): UseGlobalReceiveAssetsReturn => {
     const isBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
     const supportedNetworkSymbols = useSelector(selectDeviceSupportedNetworks);
@@ -103,9 +105,18 @@ export const useGlobalReceiveAssets = ({
                 assetIdsWithHistory,
                 search,
                 searchIndex: assetSearchIndex,
-                networkSymbol,
+                networkSymbols,
+                otherAssetsLimit,
             }),
-        [assets, balances, assetIdsWithHistory, search, assetSearchIndex, networkSymbol],
+        [
+            assets,
+            balances,
+            assetIdsWithHistory,
+            search,
+            assetSearchIndex,
+            networkSymbols,
+            otherAssetsLimit,
+        ],
     );
     const networks = useMemo(
         () => supportedMainnets.map(network => network.symbol),

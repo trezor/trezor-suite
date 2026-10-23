@@ -67,7 +67,7 @@ const AssetsNoResults = ({ onViewAccountsClick }: AssetsNoResultsProps) => (
     </Column>
 );
 
-type GlobalReceiveAssetsTabProps = GlobalReceiveAssetSections & {
+type GlobalReceiveAssetsTabProps = Omit<GlobalReceiveAssetSections, 'hasMoreOtherAssets'> & {
     catalogStatus: GlobalReceiveAssetCatalogStatus;
     isAssetDisabled: (asset: TradingAssetOption) => boolean;
     listRef: RefObject<HTMLDivElement | null>;

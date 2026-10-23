@@ -68,7 +68,7 @@ const definitions: RankedTokenStructure = [
 
 const initialFilters: UseGlobalReceiveAssetsParams = {
     search: '',
-    networkSymbol: undefined,
+    networkSymbols: [],
 };
 
 const renderAssets = (
@@ -209,21 +209,21 @@ describe('useGlobalReceiveAssets', () => {
         expect(result.current.myAssets).toBe(myAssets);
         expect(result.current.otherAssets).toBe(otherAssets);
 
-        rerender({ search: 'WrÁppéd', networkSymbol: undefined });
+        rerender({ search: 'WrÁppéd', networkSymbols: [] });
         expect(result.current.otherAssets).toEqual([
             expect.objectContaining({ asset: expect.objectContaining({ name: 'Wrapped SOL' }) }),
         ]);
 
-        rerender({ search: 'wsol', networkSymbol: asNetworkSymbol('eth') });
+        rerender({ search: 'wsol', networkSymbols: [asNetworkSymbol('eth')] });
         expect(result.current.otherAssets).toEqual([]);
 
-        rerender({ search: '', networkSymbol: asNetworkSymbol('sol') });
+        rerender({ search: '', networkSymbols: [asNetworkSymbol('sol')] });
         expect(result.current.otherAssets.map(({ asset }) => asset.displaySymbol)).toEqual([
             'SOL',
             'WSOL',
         ]);
 
-        rerender({ search: 'no matching asset', networkSymbol: undefined });
+        rerender({ search: 'no matching asset', networkSymbols: [] });
         expect(result.current.myAssets).toEqual([]);
         expect(result.current.otherAssets).toEqual([]);
 
@@ -265,7 +265,7 @@ describe('useGlobalReceiveAssets', () => {
         expect(globalReceiveAssetUtils.buildGlobalReceiveAssetSearchIndex).toHaveBeenCalledTimes(
             indexBuildCount + 1,
         );
-        rerender({ search: 'newtokenmint', networkSymbol: undefined });
+        rerender({ search: 'newtokenmint', networkSymbols: [] });
         expect(result.current.otherAssets).toEqual([
             expect.objectContaining({ asset: expect.objectContaining({ name: 'New Token' }) }),
         ]);

@@ -124,7 +124,7 @@ describe(getGlobalReceiveAssetSections.name, () => {
             balances,
             assetIdsWithHistory: new Set([bitcoin.id, arbitrumUSDC.id]),
             search: '',
-            networkSymbol: undefined,
+            networkSymbols: [],
         });
 
         expect(result.myAssets.map(({ asset }) => asset.id)).toEqual([
@@ -152,7 +152,7 @@ describe(getGlobalReceiveAssetSections.name, () => {
             balances: new Map(),
             assetIdsWithHistory: new Set([bitcoin.id, ethereumUSDC.id, arbitrumUSDC.id]),
             search: 'usdc',
-            networkSymbol: asNetworkSymbol('arb'),
+            networkSymbols: [asNetworkSymbol('arb')],
         });
 
         expect(result.myAssets.map(({ asset }) => asset.id)).toEqual([arbitrumUSDC.id]);
@@ -171,7 +171,7 @@ describe(getGlobalReceiveAssetSections.name, () => {
             assets: [bitcoin, ethereum, ethereumUSDC, arbitrumUSDC],
             balances,
             search: '',
-            networkSymbol: undefined,
+            networkSymbols: [],
         });
 
         expect(result.myAssets.map(({ asset }) => asset.id)).toEqual([
@@ -198,7 +198,7 @@ describe(getGlobalReceiveAssetSections.name, () => {
             assets: [arbitrumUSDC, ethereumUSDC, bitcoin, ethereum],
             balances,
             search: '',
-            networkSymbol: undefined,
+            networkSymbols: [],
         });
 
         expect(result.myAssets.map(({ asset }) => asset.id)).toEqual([ethereum.id]);
@@ -220,7 +220,7 @@ describe(getGlobalReceiveAssetSections.name, () => {
             assets: [bitcoin, arbitrumUSDC, ethereumUSDC, ethereum],
             balances: new Map(),
             search: 'usdc',
-            networkSymbol: undefined,
+            networkSymbols: [],
         });
 
         expect(result.myAssets).toEqual([]);
@@ -233,7 +233,7 @@ describe(getGlobalReceiveAssetSections.name, () => {
             assets: [bitcoin, arbitrumUSDC, ethereumUSDC, ethereum, arbitrumEthereum],
             balances: new Map(),
             search: 'arbitrum',
-            networkSymbol: undefined,
+            networkSymbols: [],
         });
 
         expect(networkResult.otherAssets.map(({ asset }) => asset.id)).toEqual([
@@ -247,7 +247,7 @@ describe(getGlobalReceiveAssetSections.name, () => {
             assets: [bridgedEthereum, ethereum],
             balances: new Map(),
             search: 'eth',
-            networkSymbol: undefined,
+            networkSymbols: [],
         });
 
         expect(result.otherAssets.map(({ asset }) => asset.id)).toEqual([
@@ -261,7 +261,7 @@ describe(getGlobalReceiveAssetSections.name, () => {
             assets: [arbitrumUSDC, arbitrumEthereum],
             balances: new Map(),
             search: '',
-            networkSymbol: asNetworkSymbol('arb'),
+            networkSymbols: [asNetworkSymbol('arb')],
         });
 
         expect(result.otherAssets.map(({ asset }) => asset.id)).toEqual([
@@ -275,7 +275,7 @@ describe(getGlobalReceiveAssetSections.name, () => {
             assets: [bitcoin, arbitrumUSDC, ethereumUSDC, ethereum],
             balances: new Map(),
             search: 'usd coin',
-            networkSymbol: asNetworkSymbol('eth'),
+            networkSymbols: [asNetworkSymbol('eth')],
         });
 
         expect(result.otherAssets.map(({ asset }) => asset.id)).toEqual([ethereumUSDC.id]);
@@ -292,7 +292,7 @@ describe(getGlobalReceiveAssetSections.name, () => {
             assets: [highestRanked, ethereumUSDC, arbitrumUSDC],
             balances: new Map(),
             search: 'usd coin',
-            networkSymbol: undefined,
+            networkSymbols: [],
         });
 
         expect(result.otherAssets.map(({ asset }) => asset.id)).toEqual([
@@ -307,11 +307,50 @@ describe(getGlobalReceiveAssetSections.name, () => {
             assets: [arbitrumEthereum, arbitrumUSDC],
             balances: new Map([[arbitrumUSDC.id, createBalance('10')]]),
             search: 'arbitrum',
-            networkSymbol: asNetworkSymbol('arb'),
+            networkSymbols: [asNetworkSymbol('arb')],
         });
 
         expect(result.myAssets.map(({ asset }) => asset.id)).toEqual([arbitrumUSDC.id]);
         expect(result.otherAssets.map(({ asset }) => asset.id)).toEqual([arbitrumEthereum.id]);
+    });
+
+    it('limits unheld assets while keeping held and previously used assets', () => {
+        const balances = new Map<CryptoId, TradeableAssetBalance>([
+            [arbitrumUSDC.id, createBalance('10')],
+        ]);
+
+        const result = getGlobalReceiveAssetSections({
+            assets: [bitcoin, ethereum, arbitrumEthereum, arbitrumUSDC],
+            balances,
+            assetIdsWithHistory: new Set([ethereum.id]),
+            search: '',
+            networkSymbols: [],
+            otherAssetsLimit: 1,
+        });
+
+        expect(result.myAssets.map(({ asset }) => asset.id)).toEqual([
+            arbitrumUSDC.id,
+            ethereum.id,
+        ]);
+        expect(result.otherAssets.map(({ asset }) => asset.id)).toEqual([bitcoin.id]);
+        expect(result.hasMoreOtherAssets).toBe(true);
+    });
+
+    it('does not report more assets when every matching asset fits under the limit', () => {
+        const result = getGlobalReceiveAssetSections({
+            assets: [bitcoin, ethereum, arbitrumEthereum],
+            balances: new Map(),
+            assetIdsWithHistory: new Set([ethereum.id]),
+            search: '',
+            networkSymbols: [],
+            otherAssetsLimit: 2,
+        });
+
+        expect(result.otherAssets.map(({ asset }) => asset.id)).toEqual([
+            bitcoin.id,
+            arbitrumEthereum.id,
+        ]);
+        expect(result.hasMoreOtherAssets).toBe(false);
     });
 
     it.each(['USD COIN', 'usdc', 'Ethereum', 'eth', '0X-USDC'])('searches by %s', search => {
@@ -319,7 +358,7 @@ describe(getGlobalReceiveAssetSections.name, () => {
             assets: [ethereumUSDC],
             balances: new Map(),
             search,
-            networkSymbol: undefined,
+            networkSymbols: [],
         });
 
         expect(result.otherAssets.map(({ asset }) => asset.id)).toEqual([ethereumUSDC.id]);
@@ -456,7 +495,7 @@ describe(buildGlobalReceiveAssetOptions.name, () => {
                 [getCryptoId(asNetworkSymbol('sol'), wrappedSolToken.address), balance],
             ]),
             search: '',
-            networkSymbol: undefined,
+            networkSymbols: [],
         });
 
         expect(result.myAssets).toEqual([
