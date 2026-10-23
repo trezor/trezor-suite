@@ -69,12 +69,9 @@ export const EarnInANutshellModal = ({
     const isConfirmed = useSelector(state =>
         selectIsEarnOnboardingConfirmed(state, account.key, opportunity),
     );
-    // The update-provider flow must always be shown, and an explicit 'close' action means the modal
-    // was opened as info only, never as an entry into the earn flow.
-    const shouldSkip =
-        isConfirmed &&
-        (!actionType || actionType === 'continue') &&
-        flow !== EarnFlow.UpdateProvider;
+    // An explicit 'close' action means the modal was opened as info only, never as an entry into
+    // the earn flow.
+    const shouldSkip = isConfirmed && (!actionType || actionType === 'continue');
 
     const hasSkipped = useRef(false);
 
@@ -94,7 +91,7 @@ export const EarnInANutshellModal = ({
                     }),
                 }),
             );
-        } else if (flow === EarnFlow.Stake) {
+        } else if (flow === EarnFlow.Stake || flow === EarnFlow.UpdateProvider) {
             dispatch(openModal({ type: 'stake', flow, account }));
         }
     }, [shouldSkip, flow, yieldContext?.vaultAddress, onCancel, account, dispatch]);
