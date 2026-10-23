@@ -51,6 +51,17 @@ export const sortByBlockHeight = (a: { blockHeight?: number }, b: { blockHeight?
     return blockB - blockA;
 };
 
+/** An account's transactions from the newest one up to the first page that wasn't fetched. */
+export const getTransactionsUntilGap = (
+    transactions: readonly (WalletAccountTransaction | undefined)[],
+): WalletAccountTransaction[] => {
+    const firstGap = transactions.findIndex(transaction => !transaction);
+
+    return transactions
+        .slice(0, firstGap === -1 ? transactions.length : firstGap)
+        .filter(isNotNullOrUndefined);
+};
+
 /**
  * Returns transactions for the active account that have been fetched so far.
  * The list is not sorted here because it may contain null values as placeholders

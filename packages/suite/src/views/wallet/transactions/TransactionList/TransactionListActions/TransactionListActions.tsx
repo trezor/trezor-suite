@@ -3,6 +3,7 @@ import { type Dispatch, type SetStateAction, useCallback, useEffect, useState } 
 import { useTranslation } from '@suite/intl';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { hasNetworkPotentialFraudTransactions } from '@suite-common/token-definitions';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import { Icon, Input } from '@trezor/components';
@@ -19,7 +20,8 @@ import { ExportAction } from './ExportAction';
 import { FilterAction } from './FilterAction';
 
 interface TransactionListActionsProps {
-    account: Account;
+    accounts: readonly Account[];
+    symbol: NetworkSymbol;
     searchQuery: string;
     setSearch: Dispatch<SetStateAction<string>>;
     setSelectedPage: Dispatch<SetStateAction<number>>;
@@ -28,7 +30,8 @@ interface TransactionListActionsProps {
 }
 
 export const TransactionListActions = ({
-    account,
+    accounts,
+    symbol,
     searchQuery,
     setSearch,
     setSelectedPage,
@@ -36,6 +39,8 @@ export const TransactionListActions = ({
     isTxFilteringEnabled = true,
 }: TransactionListActionsProps) => {
     const [hasFetchedAll, setHasFetchedAll] = useState(false);
+    const accountsKey = accounts.map(account => account.key).join('|');
+    const [singleAccount] = accounts;
 
     const transactionHistoryPrefill = useSelector(selectTransactionHistoryPrefill);
 
@@ -51,11 +56,15 @@ export const TransactionListActions = ({
                 setHasFetchedAll(true);
 
                 try {
-                    await dispatch(
-                        fetchAllTransactionsForAccountThunk({
-                            accountKey: account.key,
-                            noLoading: true,
-                        }),
+                    await Promise.all(
+                        accounts.map(account =>
+                            dispatch(
+                                fetchAllTransactionsForAccountThunk({
+                                    accountKey: account.key,
+                                    noLoading: true,
+                                }),
+                            ),
+                        ),
                     );
                 } catch {
                     dispatch(
@@ -67,13 +76,13 @@ export const TransactionListActions = ({
                 }
             }
         },
-        [account, dispatch, hasFetchedAll, setSearch, setSelectedPage, translationString],
+        [accounts, dispatch, hasFetchedAll, setSearch, setSelectedPage, translationString],
     );
 
     useEffect(() => {
         setHasFetchedAll(false);
         setSearch('');
-    }, [account.symbol, account.index, account.accountType, setSearch]);
+    }, [accountsKey, setSearch]);
 
     useEffect(() => {
         if (transactionHistoryPrefill) {
@@ -81,7 +90,7 @@ export const TransactionListActions = ({
             setSearch(transactionHistoryPrefill);
             dispatch(setTransactionHistoryPrefill(''));
         }
-    }, [transactionHistoryPrefill, setSearch, onSearch, account, dispatch]);
+    }, [transactionHistoryPrefill, setSearch, onSearch, dispatch]);
 
     return (
         <Row gap={12}>
@@ -101,10 +110,12 @@ export const TransactionListActions = ({
                     />
                 }
             />
-            {isTxFilteringEnabled && hasNetworkPotentialFraudTransactions(account.symbol) && (
-                <FilterAction symbol={account.symbol} />
+            {isTxFilteringEnabled && hasNetworkPotentialFraudTransactions(symbol) && (
+                <FilterAction symbol={symbol} />
             )}
-            {isExportable && <ExportAction account={account} searchQuery={searchQuery} />}
+            {isExportable && accounts.length === 1 && singleAccount && (
+                <ExportAction account={singleAccount} searchQuery={searchQuery} />
+            )}
         </Row>
     );
 };
