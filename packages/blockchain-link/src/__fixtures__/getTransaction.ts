@@ -99,13 +99,22 @@ const xrpFixture = {
     validated: true,
     inLedger: 21230990,
     ledger_index: 21230990,
+    // A real partial payment: DeliverMax (what the sender authorised at most) is
+    // 10000000 drops, but meta.delivered_amount (what was actually delivered, per
+    // https://xrpl.org/docs/references/protocol/transactions/metadata#delivered_amount)
+    // is only 4200000 drops. DeliverMax must never be read as the delivered amount.
+    meta: {
+        TransactionIndex: 3,
+        TransactionResult: 'tesSUCCESS',
+        delivered_amount: '4200000',
+    },
     tx_json: {
         Account: 'rB8Ai21NLgz85T9js2fKAVTVEDZnbTn8Eu',
         DeliverMax: '10000000',
         Destination: 'rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh',
         DestinationTag: 1000000999,
         Fee: '10',
-        Flags: 2147483648,
+        Flags: 2147483648 + 131072, // tfFullyCanonicalSig | tfPartialPayment
         Sequence: 176,
         SigningPubKey: '02EEFCFCDC10B7ADAD61C9DF80AEF746A7D2439B52AA5155E6D21B4008CDB6AC43',
         TransactionType: 'Payment',
@@ -122,7 +131,7 @@ const xrpTx = {
     blockHeight: xrpFixture.ledger_index,
     blockHash: xrpFixture.hash,
     blockTime: xrpFixture.tx_json.date + 946684800,
-    amount: xrpFixture.tx_json.DeliverMax,
+    amount: xrpFixture.meta.delivered_amount,
     fee: xrpFixture.tx_json.Fee,
 
     targets: [],

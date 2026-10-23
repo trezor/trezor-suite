@@ -30,7 +30,26 @@ export const transformTransaction = (
         const deliverMax = (tx_json as { DeliverMax?: string }).DeliverMax ?? undefined;
         const isTokenTransaction = typeof deliverMax !== 'string';
 
-        amount = !isTokenTransaction ? deliverMax : undefined;
+        // DeliverMax (formerly Amount) is only the MAXIMUM the sender authorised.
+        // On a partial payment (Flags & tfPartialPayment) the amount actually delivered
+        // can be anything up to DeliverMax, chosen by the sender - the XRPL docs are
+        // explicit that DeliverMax/Amount must never be used to determine what was
+        // delivered. meta.delivered_amount is the authoritative value; it's absent only
+        // on legacy pre-delivered_amount ledgers, and reported as the string sentinel
+        // 'unavailable' on some very old validated ledgers where it can't be determined.
+        // https://xrpl.org/docs/references/protocol/transactions/metadata#delivered_amount
+        const deliveredAmount =
+            meta != null && typeof meta !== 'string' ? meta.delivered_amount : undefined;
+        // delivered_amount is a string for a native XRP (drops) delivery, an object for
+        // an issued-currency/MPT delivery, or the literal string 'unavailable' when the
+        // server can't determine it - only the drops case is usable here, and it must be
+        // told apart from the 'unavailable' sentinel, which is also typeof 'string'.
+        const resolvedAmount =
+            typeof deliveredAmount === 'string' && deliveredAmount !== 'unavailable'
+                ? deliveredAmount
+                : deliverMax;
+
+        amount = !isTokenTransaction ? resolvedAmount : undefined;
 
         // https://xrpl.org/docs/references/protocol/transactions/transaction-results
         // Success - tes - (Not an error) The transaction succeeded. This result only final in a validated ledger.
