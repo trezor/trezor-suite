@@ -99,8 +99,12 @@ describe('message system owner', () => {
         });
 
         await owner.acquireRemoteConfig();
+        await owner.acquireRemoteConfig();
 
         expect(fetchRemoteConfigJws).not.toHaveBeenCalled();
+        // A headless boot of a Tor profile never gets Tor running, so the postponement must not
+        // be logged on every poll.
+        expect(logger.warn).toHaveBeenCalledTimes(1);
     });
 
     it('fetches the config on the next attempt once Tor is no longer awaited', async () => {

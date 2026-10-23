@@ -123,6 +123,7 @@ export const createMessageSystemOwner = ({
     // In memory on purpose: a persisted fetch timestamp would make a relaunch within the fetch
     // interval skip the startup fetch and run on a stale config, which the renderer never did.
     let lastFetchTimestamp = 0;
+    let isTorPostponementLogged = false;
     // The rollback floor, taken only from a config that verified. The persisted sequence must not
     // be used for it: the store file is user-writable, so a sequence no verified config backs
     // would make every future config look like a rollback and reject it forever.
@@ -182,10 +183,18 @@ export const createMessageSystemOwner = ({
         }
 
         if (!isTorReady()) {
-            logger.info(SERVICE_NAME, 'Postponing the config fetch until Tor is running');
+            // Main does not start Tor itself, so in a headless boot of a Tor profile this never
+            // resolves: logged once at `warn` rather than on every poll for the life of the
+            // process.
+            if (!isTorPostponementLogged) {
+                isTorPostponementLogged = true;
+                logger.warn(SERVICE_NAME, 'Postponing the config fetch until Tor is running');
+            }
 
             return;
         }
+
+        isTorPostponementLogged = false;
 
         const cache = store.getMessageSystemCache();
         if (!isConfigFetchDue({ isLocalConfig: false, lastFetchTimestamp, isMobile: false })) {

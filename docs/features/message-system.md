@@ -361,6 +361,15 @@ acquisition runs after `createInterceptor()` so that it is Tor-aware and whiteli
 postponed while Tor is wanted but not running yet, because `interceptFetch` proxies a request only
 once Tor is up, and it is skipped entirely with `--offline-mode` or under Playwright.
 
+Main does not start Tor on its own. `module/tor-status-update` is emitted from inside the tor
+module, which only the renderer loads (`handshake/load-tor-module`), so in a headless boot
+(`--bridge-daemon` or an auto-started launch) of a profile with Tor enabled nothing ever reports
+Tor as running. The acquisition then stays postponed - it logs a warning once and keeps retrying -
+and main's gate is whatever the persisted config said at launch. A killswitch published while such
+a process runs cannot reach it until it is launched with a window; for the same reason "nothing is
+served while a Tor bootstrap fails" does not hold either, because the background modules load
+regardless of Tor. Main driving the Tor bootstrap itself is follow-up work.
+
 #### Scope of the main process gate
 
 Main owns the gate only for the surfaces it serves on its own. It is not (yet) the single
