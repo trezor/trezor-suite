@@ -5,6 +5,7 @@ import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import {
     type VotingDelegationOption,
     areCardanoDrepIdsEqual,
+    getCardanoAccountDrepId,
     normalizeCardanoDrepId,
     selectVotingDelegationOption,
     stakeActions,
@@ -125,12 +126,18 @@ export const VotingPreferenceCard = ({
 
     const handleDrepIdChange = (value: string) => {
         const normalizedDrepId = normalizeCardanoDrepId(value);
+        // The backend's legacy id needs its has_script flag to preserve the credential type.
+        const resolvedDrepId =
+            normalizedDrepId !== null &&
+            value.toLowerCase() === account.misc?.staking?.drep?.drep_id?.toLowerCase()
+                ? getCardanoAccountDrepId(account)
+                : normalizedDrepId;
 
-        setIsDrepIdConverted(normalizedDrepId !== null && normalizedDrepId !== value);
+        setIsDrepIdConverted(resolvedDrepId !== null && resolvedDrepId !== value.toLowerCase());
         dispatch(
             stakeActions.setAccountVotingDelegation({
                 accountKey: account.key,
-                option: { type: 'another_drep', drepId: normalizedDrepId ?? value },
+                option: { type: 'another_drep', drepId: resolvedDrepId ?? value },
             }),
         );
     };
