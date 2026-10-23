@@ -11,6 +11,8 @@ import {
     initialWalletSettingsState,
     prepareWalletSettingsReducer,
     selectIsHideSuspiciousTransactions,
+    selectIsHomeAssetTableFeedbackClosed,
+    selectIsHomeAssetTableNewBannerClosed,
     selectIsNetworkReserveSettingsVisible,
     selectIsSuspiciousTransactionsBlurringEnabled,
     selectSuspiciousTransactionsFilter,
@@ -169,6 +171,35 @@ describe('suspicious transactions filter selectors', () => {
         expect(selectIsSuspiciousTransactionsBlurringEnabled(state, opSymbol)).toBe(true);
         expect(selectIsSuspiciousTransactionsBlurringEnabled(state, ethSymbol)).toBe(false);
         expect(selectIsSuspiciousTransactionsBlurringEnabled(state, btcSymbol)).toBe(true);
+    });
+});
+
+describe('home asset table dismissals', () => {
+    const getRootState = (settings: typeof initialState) => ({ wallet: { settings } });
+
+    it('shows the new banner and the feedback card until each is closed', () => {
+        const state = getRootState(initialState);
+
+        expect(selectIsHomeAssetTableNewBannerClosed(state)).toBe(false);
+        expect(selectIsHomeAssetTableFeedbackClosed(state)).toBe(false);
+    });
+
+    it('closes the new banner alone', () => {
+        const state = getRootState(
+            reducer(initialState, walletSettingsActions.closeHomeAssetTableNewBanner()),
+        );
+
+        expect(selectIsHomeAssetTableNewBannerClosed(state)).toBe(true);
+        expect(selectIsHomeAssetTableFeedbackClosed(state)).toBe(false);
+    });
+
+    it('closes the feedback card alone', () => {
+        const state = getRootState(
+            reducer(initialState, walletSettingsActions.closeHomeAssetTableFeedback()),
+        );
+
+        expect(selectIsHomeAssetTableFeedbackClosed(state)).toBe(true);
+        expect(selectIsHomeAssetTableNewBannerClosed(state)).toBe(false);
     });
 });
 
