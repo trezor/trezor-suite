@@ -19,6 +19,7 @@ import {
     fireEvent,
     renderWithStoreProvider,
     screen,
+    waitFor,
     within,
 } from '@suite-native/test-utils-store';
 import { FirmwareType, type StaticSessionId } from '@trezor/device-utils';
@@ -46,6 +47,7 @@ const BTC = asNetworkSymbol('btc');
 const ASSET_ROW = /^aliceWallet@device:0\//;
 const ETH_NETWORK_HEADER = '@home/portfolio-assets/network/eth';
 const BTC_NETWORK_HEADER = '@home/portfolio-assets/network/btc';
+const SMALL_BALANCES_SWITCH = '@home/portfolio-assets/view-options/small-balances';
 
 const walletSettingsReducer = prepareWalletSettingsReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
@@ -61,6 +63,7 @@ type CreateStoreParams = {
     grouping?: HomeAssetsTableGrouping;
     ethUsdRate?: number;
     firmwareType?: FirmwareType;
+    areSmallBalancesShown?: boolean;
 };
 
 // The Ethereum account's coin is one row, so `ethAssetCount - 1` tokens make up the rest.
@@ -70,6 +73,7 @@ const createStore = ({
     grouping,
     ethUsdRate,
     firmwareType = FirmwareType.Universal,
+    areSmallBalancesShown = true,
 }: CreateStoreParams) => {
     const tokenContracts = Array.from({ length: Math.max(ethAssetCount - 1, 0) }, (_, index) =>
         getTokenContract(index + 1),
@@ -125,6 +129,7 @@ const createStore = ({
                     ...initialWalletSettingsState,
                     enabledNetworks: [ETH, BTC],
                     homeAssetsTableGrouping: grouping ?? 'default',
+                    areHomeAssetSmallBalancesShown: areSmallBalancesShown,
                 },
             },
         },
@@ -250,6 +255,81 @@ describe('PortfolioAssetsContent', () => {
         );
 
         expect(await screen.findByTestId(BTC_NETWORK_HEADER)).toBeTruthy();
+        expect(screen.getAllByText(ASSET_ROW)).toHaveLength(10);
+    });
+
+    it('hides the small balances switch when no asset is small', async () => {
+        await renderPortfolioAssetsContent({ ethAssetCount: 1, ethUsdRate: 3000 });
+
+        expect(screen.getAllByText(ASSET_ROW)).toHaveLength(1);
+        expect(screen.queryByTestId(SMALL_BALANCES_SWITCH)).toBeNull();
+    });
+
+    it('shows how many small balances there are and what they are worth', async () => {
+        await renderPortfolioAssetsContent({ ethAssetCount: 3, ethUsdRate: 0.5 });
+
+        const smallBalancesSwitch = screen.getByTestId(SMALL_BALANCES_SWITCH);
+
+        expect(
+            within(smallBalancesSwitch).getByText(
+                getTranslation('moduleHome.assets.viewOptionsSheet.smallBalancesSummary', {
+                    count: 1,
+                }),
+                { exact: false },
+            ),
+        ).toBeTruthy();
+        expect(within(smallBalancesSwitch).getByText('$0.50')).toBeTruthy();
+    });
+
+    it('hides small balances from the list without changing the network total', async () => {
+        await renderPortfolioAssetsContent({
+            ethAssetCount: 3,
+            grouping: 'networks',
+            ethUsdRate: 0.5,
+        });
+
+        expect(screen.getAllByText(ASSET_ROW)).toHaveLength(3);
+
+        fireEvent.press(screen.getByTestId(SMALL_BALANCES_SWITCH));
+
+        await waitFor(() => expect(screen.getAllByText(ASSET_ROW)).toHaveLength(2));
+        expect(within(screen.getByTestId(ETH_NETWORK_HEADER)).getByText(/0\.5/)).toBeTruthy();
+    });
+
+    it('drops a network holding only small balances and brings it back', async () => {
+        await renderPortfolioAssetsContent({
+            ethAssetCount: 1,
+            hasBitcoin: true,
+            grouping: 'networks',
+            ethUsdRate: 0.5,
+        });
+
+        fireEvent.press(screen.getByTestId(SMALL_BALANCES_SWITCH));
+
+        await waitFor(() => expect(screen.queryByTestId(ETH_NETWORK_HEADER)).toBeNull());
+        expect(screen.getByTestId(BTC_NETWORK_HEADER)).toBeTruthy();
+        expect(screen.getAllByText(ASSET_ROW)).toHaveLength(1);
+
+        fireEvent.press(screen.getByTestId(SMALL_BALANCES_SWITCH));
+
+        expect(await screen.findByTestId(ETH_NETWORK_HEADER)).toBeTruthy();
+        expect(screen.getAllByText(ASSET_ROW)).toHaveLength(2);
+    });
+
+    it('expands the list when small balances are turned on', async () => {
+        await renderPortfolioAssetsContent({
+            ethAssetCount: 9,
+            hasBitcoin: true,
+            ethUsdRate: 0.5,
+            areSmallBalancesShown: false,
+        });
+
+        expect(screen.getAllByText(ASSET_ROW)).toHaveLength(8);
+        expect(screen.getByText(getTranslation('moduleHome.assets.showMore'))).toBeTruthy();
+
+        fireEvent.press(screen.getByTestId(SMALL_BALANCES_SWITCH));
+
+        expect(await screen.findByText(getTranslation('moduleHome.assets.showLess'))).toBeTruthy();
         expect(screen.getAllByText(ASSET_ROW)).toHaveLength(10);
     });
 

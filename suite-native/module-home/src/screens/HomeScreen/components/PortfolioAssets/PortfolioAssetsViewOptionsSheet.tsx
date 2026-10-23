@@ -2,13 +2,16 @@ import { BottomSheetModal, type BottomSheetModalRef, Box, Text, VStack } from '@
 import { Translation } from '@suite-native/intl';
 
 import { PortfolioAssetsGroupingOptions } from './PortfolioAssetsGroupingOptions';
+import { PortfolioAssetsSmallBalancesSwitch } from './PortfolioAssetsSmallBalancesSwitch';
 
 type PortfolioAssetsViewOptionsSheetProps = {
     bottomSheetRef: BottomSheetModalRef;
+    onSmallBalancesChange: (areShown: boolean) => void;
 };
 
 export const PortfolioAssetsViewOptionsSheet = ({
     bottomSheetRef,
+    onSmallBalancesChange,
 }: PortfolioAssetsViewOptionsSheetProps) => (
     <BottomSheetModal
         ref={bottomSheetRef}
@@ -22,6 +25,7 @@ export const PortfolioAssetsViewOptionsSheet = ({
                 </Text>
             </Box>
             <PortfolioAssetsGroupingOptions />
+            <PortfolioAssetsSmallBalancesSwitch onChange={onSmallBalancesChange} />
         </VStack>
     </BottomSheetModal>
 );
