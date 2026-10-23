@@ -4,6 +4,7 @@ import { IntlProviderForTests, messages } from '@suite/intl';
 import { EarnFlow } from '@suite-common/suite-types/src/staking';
 import { FIVE_BINARIES_POOLS, asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { getIndexOrThrow } from '@trezor/utils';
 
 import { StakingProviderConsentBanners } from './StakingProviderConsentBanners';
 
@@ -24,7 +25,7 @@ describe('Cardano consent voting defaults', () => {
         {
             name: 'Five Binaries migration resets to Abstain',
             flow: EarnFlow.UpdateProvider,
-            account: cardanoAccount(FIVE_BINARIES_POOLS[0]),
+            account: cardanoAccount(getIndexOrThrow(FIVE_BINARIES_POOLS, 0)),
             message: 'TR_EARN_CARDANO_UPDATE_ABSTAIN',
         },
         {

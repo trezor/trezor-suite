@@ -6,6 +6,7 @@ import { FIVE_BINARIES_POOLS, asNetworkSymbol } from '@suite-common/wallet-confi
 import { CARDANO_EVERSTAKE_DREP } from '@suite-common/wallet-constants';
 import { DEFAULT_VOTING_OPTION, stakeActions, stakeInitialState } from '@suite-common/wallet-core';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
+import { getIndexOrThrow } from '@trezor/utils';
 
 import { type AppState } from 'src/reducers/store';
 import { stakeReducer } from 'src/reducers/wallet';
@@ -149,7 +150,7 @@ describe('useSeededCardanoVotingDelegation', () => {
     it('defaults a Five Binaries migration to Abstain even with an existing DRep', () => {
         const account = createCardanoAccount(CUSTOM_DREP_ID);
         if (account.networkType !== 'cardano') throw new Error('Expected Cardano account');
-        account.misc.staking.poolId = FIVE_BINARIES_POOLS[0];
+        account.misc.staking.poolId = getIndexOrThrow(FIVE_BINARIES_POOLS, 0);
         const { getActions, dispatch, rerender } = renderSeededHook(account);
 
         expect(getActions()).toEqual([
