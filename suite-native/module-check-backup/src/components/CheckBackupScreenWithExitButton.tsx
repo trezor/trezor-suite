@@ -6,6 +6,7 @@ import { useAlert } from '@suite-native/alerts';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { useTranslate } from '@suite-native/intl';
 import {
+    BACK_NAVIGATION_ACTIONS,
     type DeviceCheckBackupStackParamList,
     type DeviceCheckBackupStackRoutes,
     type DeviceSettingsStackParamList,
@@ -14,7 +15,7 @@ import {
     ScreenHeader,
     type ScreenProps,
     type StackToStackCompositeNavigationProps,
-    useOverrideBackNavigation,
+    useNavigationRemoveGuard,
 } from '@suite-native/navigation';
 import TrezorConnect from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
@@ -59,8 +60,9 @@ export const useHandleCheckBackupExitButtonPress = () => {
 export const CheckBackupScreenWithExitButton = ({ children, ...screenProps }: ScreenProps) => {
     const handleExitButtonPress = useHandleCheckBackupExitButtonPress();
 
-    useOverrideBackNavigation({
-        onNavigateBack: handleExitButtonPress,
+    useNavigationRemoveGuard({
+        actionTypes: BACK_NAVIGATION_ACTIONS,
+        onBlocked: handleExitButtonPress,
     });
 
     return (

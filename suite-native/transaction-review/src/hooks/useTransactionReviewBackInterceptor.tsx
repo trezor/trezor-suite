@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { useNavigationRemoveActionInterceptor } from '@suite-native/navigation';
+import { BACK_NAVIGATION_ACTIONS, useNavigationRemoveGuard } from '@suite-native/navigation';
 import { useShowReviewCancellationAlert } from '@suite-native/transaction-management';
 
 interface UseTransactionReviewBackInterceptorProps {
@@ -22,5 +22,9 @@ export const useTransactionReviewBackInterceptor = ({
         }
     }, [onReviewCanceled, showReviewCancellationAlert]);
 
-    useNavigationRemoveActionInterceptor({ isEnabled, onInterceptedAction: onPreventedRemove });
+    useNavigationRemoveGuard({
+        isEnabled,
+        actionTypes: BACK_NAVIGATION_ACTIONS,
+        onBlocked: onPreventedRemove,
+    });
 };
