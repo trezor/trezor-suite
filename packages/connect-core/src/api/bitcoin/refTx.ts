@@ -145,14 +145,6 @@ const transformOrigTransaction = (
     return enhanceTransaction(refTx, tx);
 };
 
-export const transformOrigTransactions = (
-    txs: BitcoinJsTransaction[],
-    coinInfo: BitcoinNetworkInfo,
-    currentInputs: PROTO.TxInputType[],
-    addresses: AccountAddresses,
-): RefTransaction[] =>
-    txs.map(tx => transformOrigTransaction(tx, coinInfo, currentInputs, addresses));
-
 // Transform referenced transactions from Blockbook (blockchain-link) to Trezor format
 export const transformReferencedTransaction = (tx: BitcoinJsTransaction): RefTransaction => {
     // inputs, required by TXINPUT (TxAckPrevInput) request from Trezor
