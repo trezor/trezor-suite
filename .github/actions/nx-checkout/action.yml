@@ -1,32 +1,86 @@
 name: "Checkout and Fetch for Nx"
-description: "Checks out the repo with submodules, extracts the branch name, and fetches additional commits for Nx."
+description: "Fetches the commits Nx affected needs on top of a shallow checkout and derives a verified NX_BASE/NX_HEAD pair."
 runs:
   using: "composite"
   steps:
-    - name: Extract branch name
-      shell: bash
-      run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
-      id: extract_branch
-    - name: Fetch develop and some commits for Nx
-      if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
-      shell: bash
-      # This step should fetch some reasonably small amount branches and commits that Nx affected needs
-      # It's much faster than doing git fetch depth=1 of all commits
-      run: |
-        git fetch origin ${{ steps.extract_branch.outputs.branch }} --depth=150
-        git fetch origin develop --depth=200
+    # actions/checkout leaves a depth-1 clone. On pull_request events HEAD is the PR merge commit
+    # without its parents, on push events it is the pushed tip without its history.
 
-    # For PRs from forks we need to fetch everything or it will fail
+    - name: Fetch develop and the parents of the PR merge commit
+      if: ${{ github.event_name == 'pull_request' }}
+      shell: bash
+      env:
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+      # nx-set-shas derives the base from `git merge-base origin/develop HEAD`. A depth-1 merge commit
+      # has no parents, so the merge base is empty until the commit is deepened by one. Its first
+      # parent is develop's tip at trigger time, which the develop fetch connects to. A re-run checks
+      # out the original run's merge commit, whose first parent can by then be older than the 200
+      # fetched develop commits, so develop is deepened until it reaches that parent. The PR branch
+      # history itself is not needed, which also makes this work for PRs from forks.
+      run: |
+        git fetch origin develop --depth=200
+        git fetch --no-tags --deepen=1 origin "+${GITHUB_SHA}:refs/remotes/pull/${PR_NUMBER}/merge"
+        for _ in 1 2 3 4 5; do
+          git merge-base --is-ancestor HEAD^1 origin/develop && break
+          git fetch --no-tags --deepen=1000 origin develop
+        done
+
+    # PRs from forks keep the full history fetch they always had; the merge base no longer depends on it.
     - name: Fetch everything if it's PR from a fork
-      if: ${{ github.event.pull_request.head.repo.full_name != github.repository }}
+      if: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
       shell: bash
       run: |
         git fetch --prune --unshallow --no-tags
 
+    - name: Fetch the previous tip and derive the Nx SHAs from the pushed range
+      if: ${{ github.event_name == 'push' }}
+      shell: bash
+      env:
+        BEFORE: ${{ github.event.before }}
+      # nx-set-shas cannot give a push the right base: it takes the last successful develop run of
+      # the calling workflow when one exists (only the ESLint cache warm-up runs on develop), and
+      # origin/develop~1 otherwise, so a release-branch push would be diffed against a develop
+      # commit either way. The pushed range itself is the base and head. `before` is fetched by SHA
+      # so that a force push that dropped it from the branch still works, and at depth 1 because Nx
+      # needs no history: `git merge-base` finds nothing between two shallow tips, so Nx diffs
+      # `before` against HEAD directly, which needs only their trees. A checkout that already has
+      # `before` skips the fetch, which would make a full clone shallow. A new branch or an
+      # unfetchable `before` falls through to nx-set-shas, which needs the full history.
+      run: |
+        if [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then
+          echo "::notice::First push of this branch, falling through to nx-set-shas for the base"
+        elif git cat-file -e "${BEFORE}^{commit}" 2>/dev/null || git fetch --no-tags --depth=1 origin "$BEFORE"; then
+          echo "NX_BASE=$BEFORE" >> "$GITHUB_ENV"
+          echo "NX_HEAD=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+          exit 0
+        else
+          echo "::warning::Previous tip $BEFORE could not be fetched, falling through to nx-set-shas for the base"
+        fi
+        if [ "$(git rev-parse --is-shallow-repository)" = "true" ]; then
+          git fetch --prune --unshallow --no-tags
+        fi
+
+    # Pull requests, and pushes whose range could not be resolved above.
     - name: Derive appropriate SHAs for base and head for `nx affected` commands
+      if: ${{ github.event_name == 'pull_request' || env.NX_BASE == '' }}
       uses: nrwl/nx-set-shas@afb73a62d26e41464e9254689e1fd6122ee683c1 # v5
       with:
         main-branch-name: "develop"
+
+    # nx-set-shas exports whatever `git merge-base` printed, even nothing. Nx then treats the empty
+    # variable as unset and falls back to nx.json defaultBase, so the affected set is never validated
+    # against the commit this action meant to use. Fail here instead.
+    - name: Verify the Nx base commit
+      shell: bash
+      run: |
+        if [ -z "${NX_BASE:-}" ]; then
+          echo "::error::NX_BASE is empty. On pull_request events this means 'git merge-base origin/develop HEAD' found no common ancestor, usually because the checked-out merge commit is still shallow (its parents were not fetched) or develop moved more than 5200 commits since the PR was last updated. On push events it means the pushed range could not be resolved and nx-set-shas found no base either."
+          exit 1
+        fi
+        if ! git cat-file -e "${NX_BASE}^{commit}" 2>/dev/null; then
+          echo "::error::NX_BASE=${NX_BASE} is not a commit in this checkout, so 'nx affected' cannot diff against it. Fetch the base commit before nx-set-shas runs."
+          exit 1
+        fi
 
     - run: |
         echo "BASE: ${{ env.NX_BASE }}"
