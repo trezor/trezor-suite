@@ -42,7 +42,6 @@ type Params = {
     addresses?: AccountAddresses;
     options: TransactionOptions;
     coinInfo: BitcoinNetworkInfo;
-    identity?: string;
     push: boolean;
     unlockPath?: PROTO.UnlockPath;
 };
@@ -137,11 +136,13 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
             });
         }
 
-        const missing = prevTxids
-            .concat(origTxids)
-            .find(hash => !refTxs.some(tx => tx.hash === hash));
-        if (missing) {
-            throw TypedError('Method_InvalidParameter', `refTx: ${missing} not provided`);
+        if (!payload.__info) {
+            const missing = prevTxids
+                .concat(origTxids)
+                .find(hash => !refTxs.some(tx => tx.hash === hash));
+            if (missing) {
+                throw TypedError('Method_InvalidParameter', `refTx: ${missing} not provided`);
+            }
         }
 
         const outputsWithAmount = outputs.filter(
@@ -225,6 +226,12 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
                 if (typeof input.amount === 'string') {
                     return bn.plus(input.amount);
                 } else {
+                    if (!refTxs.length) {
+                        throw ERRORS.TypedError(
+                            'Runtime',
+                            'refTxs are required for precomposed transaction info when input amount is not provided',
+                        );
+                    }
                     const refTx = refTxs.find(tx => tx.hash === input.prev_hash);
                     const refOutput =
                         refTx?.outputs?.[input.prev_index] ??
@@ -267,6 +274,13 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
     }
 
     async run() {
+        if (this.params.push) {
+            throw ERRORS.TypedError(
+                'Method_InvalidParameter',
+                'push is deprecated, broadcast the signed transaction using pushTransaction',
+            );
+        }
+
         const device = this.getDevice();
         const { params } = this;
         const { inputs, outputs, coinInfo, refTxs } = params;

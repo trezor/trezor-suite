@@ -17,7 +17,7 @@ export const getPreviousTxids = (
     // - all internal inputs script_type === SPENDTAPROOT
     const prevRequired =
         shortcut === 'ZEC' || shortcut === 'TAZ'
-            ? !(version && version >= 5)
+            ? version && version < 5
             : inputs.some(
                   input => input.script_type !== 'SPENDTAPROOT' && input.script_type !== 'EXTERNAL',
               );

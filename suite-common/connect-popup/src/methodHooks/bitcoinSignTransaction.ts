@@ -20,13 +20,17 @@ const temporaryAccounts: Account[] = [];
 const fetchRefTransactions = async (payload: SignTransaction) => {
     const { coin, refTxs, account, inputs, outputs } = payload;
 
-    if (!refTxs && !account?.transactions) {
+    if (!refTxs?.length && !account?.transactions?.length) {
         const prevTxids = getPreviousTxids(inputs);
         const origTxids = getOriginalTxids(inputs, outputs);
         const txs = [...prevTxids, ...origTxids];
 
         if (origTxids.length && !account?.addresses) {
             throw new Error('Missing addresses for RBF transaction');
+        }
+
+        if (!txs.length) {
+            return;
         }
 
         const res = await TrezorConnect.blockchainGetTransactions({ coin, txs, hexOnly: true });
@@ -125,14 +129,17 @@ const preCallHook = async <M extends CallMethodKeys>({
     }
 
     const transactions = await refTransactionsPromise;
-    if (transactions) {
-        typedPayload.account = { ...typedPayload.account, transactions };
-    }
+
+    return {
+        ...typedPayload,
+        push: false,
+        account: transactions ? { ...typedPayload.account, transactions } : typedPayload.account,
+    } as unknown as typeof payload;
 };
 
 export async function postCallHook<M extends CallMethodKeys>({
     method,
-    payload,
+    originalPayload,
     response,
     dispatch,
 }: PostCallHookParams<M>) {
@@ -142,19 +149,22 @@ export async function postCallHook<M extends CallMethodKeys>({
         temporaryAccounts.length = 0;
     }
 
-    const typedPayload = payload as unknown as SignTransaction;
+    // Must be originalPayload as payload was already stripped from push
+    const typedPayload = originalPayload as unknown as SignTransaction;
 
     if (method === 'signTransaction' && typedPayload.push && response.success) {
         const signed = response.payload as SignedTransaction;
-        const res = await TrezorConnect.pushTransaction({
-            coin: typedPayload.coin,
-            tx: signed.serializedTx,
-        });
+        if (signed.serializedTx) {
+            const res = await TrezorConnect.pushTransaction({
+                coin: typedPayload.coin,
+                tx: signed.serializedTx,
+            });
 
-        if (!res.success) {
-            // postCallHooks are not in try/catch, therefore this behaves the same
-            // as if the original signTransaction call fails
-            throw res.error;
+            if (!res.success) {
+                // postCallHooks are not in try/catch, therefore this behaves the same
+                // as if the original signTransaction call fails
+                throw res.error;
+            }
         }
     }
 
