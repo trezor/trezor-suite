@@ -1,5 +1,5 @@
-import { combineReducers } from '@reduxjs/toolkit';
-import { type CryptoId } from 'invity-api';
+import { type UnknownAction, combineReducers } from '@reduxjs/toolkit';
+import { type CryptoId, type ExchangeTrade } from 'invity-api';
 
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { toNetworkSymbolNonTestnet } from '@suite-common/wallet-config';
@@ -227,6 +227,73 @@ describe('tradingExchangeReducer', () => {
             expect(state?.quotes).toEqual([]);
             expect(state?.quotesRequest).toBeUndefined();
             expect(state?.formValues).toBeUndefined();
+        });
+    });
+
+    describe('selectedQuoteTimestamp', () => {
+        const SELECTED_QUOTE_TIMESTAMP = new Date('2026-10-23T10:00:00Z').getTime();
+
+        it('stores the time the selected quote was confirmed', () => {
+            const actions = [
+                tradingExchangeActions.saveSelectedQuote(changellyExchangeQuote),
+                tradingExchangeActions.setSelectedQuoteTimestamp(SELECTED_QUOTE_TIMESTAMP),
+            ];
+
+            const state = actions.reduce(tradingExchangeReducer, undefined);
+
+            expect(state?.selectedQuoteTimestamp).toBe(SELECTED_QUOTE_TIMESTAMP);
+        });
+
+        const confirmedTrade = { ...changellyExchangeQuote, orderId: 'order-1' };
+
+        it('is kept when the same confirmed trade is saved again', () => {
+            const actions = [
+                tradingExchangeActions.saveSelectedQuote(confirmedTrade),
+                tradingExchangeActions.setSelectedQuoteTimestamp(SELECTED_QUOTE_TIMESTAMP),
+                tradingExchangeActions.saveSelectedQuote({ ...confirmedTrade, status: 'CONFIRM' }),
+            ];
+
+            const state = actions.reduce(tradingExchangeReducer, undefined);
+
+            expect(state?.selectedQuote?.status).toBe('CONFIRM');
+            expect(state?.selectedQuoteTimestamp).toBe(SELECTED_QUOTE_TIMESTAMP);
+        });
+
+        it.each<[string, ExchangeTrade]>([
+            ['another confirmed trade', { ...confirmedTrade, orderId: 'order-2' }],
+            ['an unconfirmed quote', { ...changellyExchangeQuote, orderId: undefined }],
+        ])('is dropped when %s is saved', (_quote, quote) => {
+            const actions = [
+                tradingExchangeActions.saveSelectedQuote(confirmedTrade),
+                tradingExchangeActions.setSelectedQuoteTimestamp(SELECTED_QUOTE_TIMESTAMP),
+                tradingExchangeActions.saveSelectedQuote(quote),
+            ];
+
+            const state = actions.reduce(tradingExchangeReducer, undefined);
+
+            expect(state?.selectedQuote).toEqual(quote);
+            expect(state?.selectedQuoteTimestamp).toBeUndefined();
+        });
+
+        it.each<[string, UnknownAction]>([
+            ['saveSelectedQuote(undefined)', tradingExchangeActions.saveSelectedQuote(undefined)],
+            ['clearQuotes', tradingExchangeActions.clearQuotes()],
+            ['clearQuotesAndParams', tradingExchangeActions.clearQuotesAndParams()],
+            [
+                'setTradingAccountKey(undefined)',
+                tradingExchangeActions.setTradingAccountKey(undefined),
+            ],
+        ])('is cleared together with the selected quote by %s', (_action, action) => {
+            const actions = [
+                tradingExchangeActions.saveSelectedQuote(changellyExchangeQuote),
+                tradingExchangeActions.setSelectedQuoteTimestamp(SELECTED_QUOTE_TIMESTAMP),
+                action,
+            ];
+
+            const state = actions.reduce(tradingExchangeReducer, undefined);
+
+            expect(state?.selectedQuote).toBeUndefined();
+            expect(state?.selectedQuoteTimestamp).toBeUndefined();
         });
     });
 });

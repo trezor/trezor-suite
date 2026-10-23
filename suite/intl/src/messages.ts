@@ -1203,6 +1203,18 @@ export const messages = defineMessages({
         defaultMessage: 'Review your swap',
         id: 'TR_TRADING_REVIEW_SWAP',
     },
+    TR_TRADING_QUOTE_EXPIRED_TITLE: {
+        defaultMessage: 'Quote expired',
+        id: 'TR_TRADING_QUOTE_EXPIRED_TITLE',
+    },
+    TR_TRADING_REFRESH_TRANSACTION: {
+        defaultMessage: 'Refresh transaction',
+        id: 'TR_TRADING_REFRESH_TRANSACTION',
+    },
+    TR_TRADING_REFRESH_TRANSACTION_FAILED: {
+        defaultMessage: 'The transaction could not be refreshed. Go back and get a new quote.',
+        id: 'TR_TRADING_REFRESH_TRANSACTION_FAILED',
+    },
     TR_TRADING_SIMULATING: {
         defaultMessage: 'Simulating transaction',
         id: 'TR_TRADING_SIMULATING',
