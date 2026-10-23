@@ -6,11 +6,11 @@ const base: SignTransactionParams = {
     coin: 'test',
     inputs: [
         {
-            address_n: "m/84'/1'/0'/0/0",
+            address_n: "m/86'/1'/0'/0/0",
             prev_hash: 'e294c4c172c3d87991b0369e45d6af8584be92914d01e3060fad1ed31d12ff00',
             prev_index: 0,
             amount: '129999867',
-            script_type: 'SPENDWITNESS',
+            script_type: 'SPENDTAPROOT',
         },
     ],
     outputs: [
