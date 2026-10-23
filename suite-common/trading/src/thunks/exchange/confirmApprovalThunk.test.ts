@@ -5,7 +5,10 @@ import { type TestCompositionStore, createTestCompositionRoot } from '@suite-com
 import { type Account } from '@suite-common/wallet-types';
 import { mockActionType } from '@trezor/redux-utils/mocks';
 
-import { type ConfirmApprovalThunkState } from './confirmApprovalThunk';
+import {
+    type ConfirmApprovalThunkDeps,
+    type ConfirmApprovalThunkState,
+} from './confirmApprovalThunk';
 import { MIN_MAX_QUOTES_OK } from '../../__fixtures__/exchangeUtils';
 import { accountBtc } from '../../__fixtures__/utils';
 import { type TradingExchangeState } from '../../reducers/exchangeReducer';
@@ -20,6 +23,7 @@ import { exchangeThunks } from './index';
 const tradingReducer = prepareTradingReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
 });
+const RECEIVE_ADDRESS = 'receiveAddress';
 
 jest.mock('../common/logErrorThunk', () => ({
     logErrorThunk: (props: LogErrorThunkProps) => ({
@@ -46,7 +50,10 @@ describe('confirmApprovalThunk', () => {
             send: quoteNotTyped.send as CryptoId,
             receive: quoteNotTyped.receive as CryptoId,
         };
-        const { store } = createTestCompositionRoot<void, ConfirmApprovalThunkState>({
+        const { store } = createTestCompositionRoot<
+            ConfirmApprovalThunkDeps,
+            ConfirmApprovalThunkState
+        >({
             reducer: combineReducers({
                 wallet: combineReducers({
                     trading: tradingReducer,
@@ -70,6 +77,16 @@ describe('confirmApprovalThunk', () => {
                     },
                 },
             },
+            services: () => ({
+                networks: {
+                    addressValidator: {
+                        getAddressType: jest.fn(),
+                        isAddressValid: jest.fn(
+                            (address, symbol) => address === RECEIVE_ADDRESS && symbol === 'btc',
+                        ),
+                    },
+                },
+            }),
         }).services;
 
         const mockProcessResponseData = jest.fn();
@@ -84,7 +101,7 @@ describe('confirmApprovalThunk', () => {
 
         return {
             store,
-            receiveAddress: 'receiveAddress',
+            receiveAddress: RECEIVE_ADDRESS,
             account,
             trade,
             mockProcessResponseData,
@@ -92,18 +109,21 @@ describe('confirmApprovalThunk', () => {
     };
 
     const dispatchThunk = (
-        store: TestCompositionStore<ConfirmApprovalThunkState, void>,
+        store: TestCompositionStore<ConfirmApprovalThunkState, ConfirmApprovalThunkDeps>,
         props: Parameters<typeof exchangeThunks.confirmApprovalThunk>[0],
     ) => store.dispatch(exchangeThunks.confirmApprovalThunk(props)).unwrap();
 
-    const getExchangeState = (store: TestCompositionStore<ConfirmApprovalThunkState, void>) =>
-        store.getState().wallet.trading.exchange;
+    const getExchangeState = (
+        store: TestCompositionStore<ConfirmApprovalThunkState, ConfirmApprovalThunkDeps>,
+    ) => store.getState().wallet.trading.exchange;
 
-    const getTradingState = (store: TestCompositionStore<ConfirmApprovalThunkState, void>) =>
-        store.getState().wallet.trading;
+    const getTradingState = (
+        store: TestCompositionStore<ConfirmApprovalThunkState, ConfirmApprovalThunkDeps>,
+    ) => store.getState().wallet.trading;
 
-    const findLogErrorAction = (store: TestCompositionStore<ConfirmApprovalThunkState, void>) =>
-        store.getActions().find(action => action.type === 'mockedLogErrorThunk');
+    const findLogErrorAction = (
+        store: TestCompositionStore<ConfirmApprovalThunkState, ConfirmApprovalThunkDeps>,
+    ) => store.getActions().find(action => action.type === 'mockedLogErrorThunk');
 
     describe('guard clauses', () => {
         it.each([
@@ -197,6 +217,54 @@ describe('confirmApprovalThunk', () => {
                     trade: expect.objectContaining({ fromAddress: 'fromAddress' }),
                 }),
             );
+        });
+    });
+
+    describe('receive address network guard', () => {
+        it('should not call the API when the receive address is not valid for the receive network', async () => {
+            const { store, account, trade, mockProcessResponseData } = getMocks();
+            const doExchangeTradeSpy = jest.fn();
+            tradeApi.doExchangeTrade = doExchangeTradeSpy;
+
+            const response = await dispatchThunk(store, {
+                receiveAddress: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
+                account,
+                trade,
+                processResponseData: mockProcessResponseData,
+            });
+
+            expect(doExchangeTradeSpy).not.toHaveBeenCalled();
+            expect(findLogErrorAction(store)?.payload).toEqual({
+                errorMessage: 'Receive address does not match the receive network',
+                tradingType: 'exchange',
+            });
+            expect(response).toBeUndefined();
+        });
+
+        it('should not save a response whose receive address is not valid for the receive network', async () => {
+            const { store, receiveAddress, account, trade, mockProcessResponseData } = getMocks();
+            const tradeResponse = {
+                ...trade,
+                status: 'CONFIRM',
+                orderId: 'orderId',
+                receiveAddress: '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
+            } as ExchangeTrade;
+            tradeApi.doExchangeTrade = () => Promise.resolve(tradeResponse);
+
+            const response = await dispatchThunk(store, {
+                receiveAddress,
+                account,
+                trade,
+                processResponseData: mockProcessResponseData,
+            });
+
+            expect(findLogErrorAction(store)?.payload).toEqual({
+                errorMessage: 'Receive address does not match the receive network',
+                tradingType: 'exchange',
+            });
+            expect(getExchangeState(store).selectedQuote).not.toEqual(tradeResponse);
+            expect(getExchangeState(store).formStep).not.toEqual('SEND_TRANSACTION');
+            expect(response).toBeUndefined();
         });
     });
 
