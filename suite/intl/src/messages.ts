@@ -12525,7 +12525,17 @@ export const messages = defineMessages({
     TR_EARN_CARDANO_STAKE_STAYS_IN_WALLET: {
         id: 'TR_EARN_CARDANO_STAKE_STAYS_IN_WALLET',
         defaultMessage:
-            "Your {symbol} stays in your wallet under your full control, and you can switch pools or stop staking at any time. Your governance vote isn't handed to Everstake: it keeps your current choice, Abstain by default, unless you pick a DRep or let Everstake vote for you.",
+            'Your {symbol} stays in your wallet under your control. You can switch pools or stop staking at any time. Your voting preference defaults to Abstain. You can choose Abstain, your own DRep, or let Everstake vote for you at any time.',
+    },
+    TR_EARN_CARDANO_UPDATE_ABSTAIN: {
+        id: 'TR_EARN_CARDANO_UPDATE_ABSTAIN',
+        defaultMessage:
+            'Your {symbol} stays in your wallet under your control. You can switch pools or stop staking at any time. Switching pools will set your voting preference to Abstain. You can choose Abstain, your own DRep, or let Everstake vote for you at any time.',
+    },
+    TR_EARN_CARDANO_UPDATE_KEEP_CURRENT_VOTE: {
+        id: 'TR_EARN_CARDANO_UPDATE_KEEP_CURRENT_VOTE',
+        defaultMessage:
+            'Your {symbol} stays in your wallet under your control. You can switch pools or stop staking at any time. Switching pools will keep your current voting preference. You can choose Abstain, your own DRep, or let Everstake vote for you at any time.',
     },
     TR_EARN_CONSENT_TO_STAKING_WITH_PROVIDER: {
         id: 'TR_EARN_CONSENT_TO_STAKING_WITH_PROVIDER',

@@ -62,10 +62,7 @@ export const StakingEarnProviderConsentModal = ({
             }
             banners={
                 !isConfirmed && (
-                    <StakingProviderConsentBanners
-                        networkType={account.networkType}
-                        displaySymbol={displaySymbol}
-                    />
+                    <StakingProviderConsentBanners account={account} flow={EarnFlow.Stake} />
                 )
             }
             consentText={

@@ -1,19 +1,28 @@
-import { Translation } from '@suite/intl';
-import { type NetworkType } from '@suite-common/wallet-config';
+import { Translation, type TranslationKey } from '@suite/intl';
+import { EarnFlow, type StakeModalFlow } from '@suite-common/suite-types/src/staking';
+import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
+import {
+    hasCardanoLiveVoteDelegation,
+    isCardanoStakedWithFiveBinaries,
+} from '@suite-common/wallet-core';
+import { type Account } from '@suite-common/wallet-types';
 import { isStakingNetworkType } from '@suite-common/wallet-utils';
 import { Banner } from '@trezor/components';
 import { FileFilledIcon, ShieldWarningFilledIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
 
 interface StakingProviderConsentBannersProps {
-    networkType: NetworkType;
-    displaySymbol: string;
+    account: Account;
+    flow: StakeModalFlow;
 }
 
 export const StakingProviderConsentBanners = ({
-    networkType,
-    displaySymbol,
+    account,
+    flow,
 }: StakingProviderConsentBannersProps) => {
+    const { networkType } = account;
+    const displaySymbol = getNetworkDisplaySymbol(account.symbol);
+
     if (!isStakingNetworkType(networkType)) return null;
 
     switch (networkType) {
@@ -40,7 +49,16 @@ export const StakingProviderConsentBanners = ({
                     />
                 </>
             );
-        case 'cardano':
+        case 'cardano': {
+            const keepsCurrentVote =
+                !isCardanoStakedWithFiveBinaries(account) && hasCardanoLiveVoteDelegation(account);
+            let votingMessage: TranslationKey = 'TR_EARN_CARDANO_STAKE_STAYS_IN_WALLET';
+            if (flow === EarnFlow.UpdateProvider) {
+                votingMessage = keepsCurrentVote
+                    ? 'TR_EARN_CARDANO_UPDATE_KEEP_CURRENT_VOTE'
+                    : 'TR_EARN_CARDANO_UPDATE_ABSTAIN';
+            }
+
             return (
                 <>
                     <Banner
@@ -60,14 +78,12 @@ export const StakingProviderConsentBanners = ({
                         icon={ShieldWarningFilledIcon}
                         intent="info"
                         description={
-                            <Translation
-                                id="TR_EARN_CARDANO_STAKE_STAYS_IN_WALLET"
-                                values={{ symbol: displaySymbol }}
-                            />
+                            <Translation id={votingMessage} values={{ symbol: displaySymbol }} />
                         }
                     />
                 </>
             );
+        }
         case 'solana':
             return (
                 <>
