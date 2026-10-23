@@ -4,6 +4,7 @@ import { Box } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 
+import { AssetDetailActions } from '../components/AssetDetailActions';
 import { AssetDetailHeader } from '../components/AssetDetailHeader';
 
 const ASSET_DETAIL_ITEMS: readonly never[] = [];
@@ -15,14 +16,13 @@ export const AssetDetailScreen = () => (
         }
         isScrollable={false}
         noHorizontalPadding
+        footer={<AssetDetailActions />}
     >
         <Box flex={1}>
             <FlashList
                 data={ASSET_DETAIL_ITEMS}
                 renderItem={() => null}
                 ListHeaderComponent={<AssetDetailHeader />}
-                ListEmptyComponent={null}
-                ListFooterComponent={null}
             />
         </Box>
     </Screen>
