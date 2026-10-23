@@ -240,25 +240,79 @@ describe('claimSigningUtils', () => {
         ).toThrow('Failed to decode claim transaction data.');
     });
 
-    it('throws when selected fee data is missing or incomplete', () => {
-        expect(() =>
-            buildClaimTransactionReview({
-                unsignedTransaction,
-                selectedFee: null,
-                rewards: [createReward()],
-            }),
-        ).toThrow('Fee information is missing for the transaction.');
+    it('falls back to the EIP-1559 fee of the unsigned transaction without a selected fee', () => {
+        const expectedTransactionForSigning = {
+            to: CLAIM_CONTRACT,
+            chainId: 1,
+            value: '0x0',
+            nonce: '0xa',
+            data: CLAIM_CALLDATA,
+            gasLimit: '0x5208',
+            maxFeePerGas: '0x77359400',
+            maxPriorityFeePerGas: '0x3b9aca00',
+        };
 
-        expect(() =>
-            buildClaimTransactionReview({
-                unsignedTransaction,
-                selectedFee: {
-                    type: 'eip1559',
-                    gasLimit: '0x5208',
-                    maxFeePerGas: '0x77359400',
-                },
-                rewards: [createReward()],
+        const withoutSelectedFee = buildClaimTransactionReview({
+            unsignedTransaction,
+            selectedFee: null,
+            rewards: [createReward()],
+        });
+        const withIncompleteSelectedFee = buildClaimTransactionReview({
+            unsignedTransaction,
+            selectedFee: {
+                type: 'eip1559',
+                gasLimit: '0x5208',
+                maxFeePerGas: '0x77359400',
+            },
+            rewards: [createReward()],
+        });
+
+        expect(withoutSelectedFee.formState).toMatchObject({
+            feeLimit: '21000',
+            feePerUnit: '2',
+            maxFeePerGas: '2',
+            maxPriorityFeePerGas: '1',
+        });
+        expect(withoutSelectedFee.precomposedTransaction).toMatchObject({
+            fee: '42000000000000',
+            feeLimit: '21000',
+        });
+        expect(withoutSelectedFee.transactionForSigning).toEqual(expectedTransactionForSigning);
+        expect(withIncompleteSelectedFee.transactionForSigning).toEqual(
+            expectedTransactionForSigning,
+        );
+    });
+
+    it('falls back to the legacy fee of the unsigned transaction without a selected fee', () => {
+        const result = buildClaimTransactionReview({
+            unsignedTransaction: buildUnsignedClaimTransaction({
+                contractAddress: CLAIM_CONTRACT,
+                data: CLAIM_CALLDATA,
+                chainId: 1,
+                fee: { gasLimit: '21000', gasPrice: '1000000000' },
+                nonce: '10',
             }),
-        ).toThrow('Fee information is missing for the transaction.');
+            rewards: [createReward()],
+        });
+
+        expect(result.formState).toMatchObject({
+            feeLimit: '21000',
+            feePerUnit: '1',
+            maxFeePerGas: undefined,
+            maxPriorityFeePerGas: undefined,
+        });
+        expect(result.precomposedTransaction).toMatchObject({
+            fee: '21000000000000',
+            feeLimit: '21000',
+        });
+        expect(result.transactionForSigning).toEqual({
+            to: CLAIM_CONTRACT,
+            chainId: 1,
+            value: '0x0',
+            nonce: '0xa',
+            data: CLAIM_CALLDATA,
+            gasLimit: '0x5208',
+            gasPrice: '0x3b9aca00',
+        });
     });
 });
