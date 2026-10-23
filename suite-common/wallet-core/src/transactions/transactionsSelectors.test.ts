@@ -26,6 +26,7 @@ import {
     selectAccountStakeTransactions,
     selectAccountStakeTypeTransactions,
     selectAccountYieldVaultTransactions,
+    selectAccountsTransactions,
     selectEvmPrivatePendingHint,
     selectHasUnseenNonPhishingTransactionNotifications,
     selectNonPhishingTransactionNotifications,
@@ -452,5 +453,67 @@ describe('staking transaction selectors', () => {
                 ),
             ).toEqual([ethereumStake, solanaStake]);
         });
+    });
+});
+
+describe('selectAccountsTransactions', () => {
+    const FIRST = 'first-btc-device' as AccountKey;
+    const SECOND = 'second-btc-device' as AccountKey;
+    const USDC = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as TokenAddress;
+    const DAI = '0x6b175474e89094c44da98b954eedeac495271d0f' as TokenAddress;
+
+    const transaction = (txid: string, blockHeight: number, tokenContracts: string[] = []) =>
+        ({
+            txid,
+            blockHeight,
+            tokens: tokenContracts.map(contract => ({ contract })),
+        }) as unknown as WalletAccountTransaction;
+
+    const stateWithTransactions = (transactions: Record<AccountKey, WalletAccountTransaction[]>) =>
+        ({
+            wallet: { transactions: { ...transactionsInitialState, transactions } },
+        }) as TransactionsRootState;
+
+    it('merges the accounts newest first, with pending ones on top', () => {
+        const state = stateWithTransactions({
+            [FIRST]: [transaction('a', 100), transaction('c', 300)],
+            [SECOND]: [transaction('b', 200), transaction('pending', 0)],
+        });
+
+        expect(selectAccountsTransactions(state, [FIRST, SECOND]).map(({ txid }) => txid)).toEqual([
+            'pending',
+            'c',
+            'b',
+            'a',
+        ]);
+    });
+
+    it('stops each account at its first page that was not fetched', () => {
+        const transactions = [transaction('newest', 300)];
+        transactions[3] = transaction('old', 100);
+
+        expect(
+            selectAccountsTransactions(stateWithTransactions({ [FIRST]: transactions }), [
+                FIRST,
+            ]).map(({ txid }) => txid),
+        ).toEqual(['newest']);
+    });
+
+    it('keeps for a token only what moves it, whatever the case of its address', () => {
+        const state = stateWithTransactions({
+            [FIRST]: [
+                transaction('usdc', 2, [USDC.toUpperCase()]),
+                transaction('dai', 3, [DAI]),
+                transaction('eth', 1),
+            ],
+        });
+
+        expect(selectAccountsTransactions(state, [FIRST], USDC).map(({ txid }) => txid)).toEqual([
+            'usdc',
+        ]);
+    });
+
+    it('lists nothing without accounts', () => {
+        expect(selectAccountsTransactions(stateWithTransactions({}), [])).toEqual([]);
     });
 });
