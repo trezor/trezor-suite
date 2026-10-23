@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { isFulfilled } from '@reduxjs/toolkit';
 import { useAtomValue } from 'jotai';
 
+import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { useConfirmOnTrezorController } from '@suite-native/confirm-on-trezor';
 import {
@@ -28,7 +29,7 @@ import { wasAppLeftDuringReviewAtom } from '../atoms/wasAppLeftDuringReviewAtom'
 import { useSendTransactionErrorAlert } from '../hooks/useSendTransactionErrorAlert';
 import { useTxValidityFlow } from '../hooks/useTxValidityFlow';
 import { useUtxoSelection } from '../hooks/useUtxoSelection';
-import { navigateOutOfSendFlowAction } from '../utils';
+import { getSendFlowExitDestination, navigateOutOfSendFlowAction } from '../utils';
 
 type SendOutputsReviewScreenProps = StackProps<
     SendStackParamList,
@@ -48,6 +49,10 @@ export const SendOutputsReviewScreen = ({ route }: SendOutputsReviewScreenProps)
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
+    const isAssetsFirstEnabled = useIsExperimentVariantActive({
+        experimentId: ExperimentId.assetFirstHomeTable,
+        variant: 'B',
+    });
 
     const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
 
@@ -115,6 +120,10 @@ export const SendOutputsReviewScreen = ({ route }: SendOutputsReviewScreenProps)
                 accountKey,
                 tokenContract,
                 txid,
+                destination: getSendFlowExitDestination({
+                    isAssetsFirstEnabled,
+                    networkSymbol: account?.symbol,
+                }),
             }),
         );
 

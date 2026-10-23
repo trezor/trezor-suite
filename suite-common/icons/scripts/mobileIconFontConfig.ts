@@ -74,6 +74,7 @@ const iconNames = [
     'devicesFilled',
     'discover',
     'discoverFilled',
+    'dotsThree',
     'downloadSimple',
     'dualCpu',
     'eggCrack',

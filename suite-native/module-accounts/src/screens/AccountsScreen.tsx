@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 
+import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
 import { isStakingSymbol } from '@suite-common/wallet-utils';
 import { AccountsListWithFilter, type OnSelectAccount } from '@suite-native/accounts';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
@@ -23,25 +24,29 @@ type ScreenNavigationProps = StackToStackCompositeScreenProps<
 >;
 
 export const AccountsScreen = ({ navigation, route }: ScreenNavigationProps) => {
+    const isAssetsFirstEnabled = useIsExperimentVariantActive({
+        experimentId: ExperimentId.assetFirstHomeTable,
+        variant: 'B',
+    });
     const networksFilter = useMemo(
         () => route.params?.networksFilter ?? [],
         [route.params?.networksFilter],
     );
 
     const handleSelectAccount: OnSelectAccount = ({ account }) => {
-        const { key: accountKey, symbol } = account;
-
-        if (isNetworkWithTokens(symbol) || isStakingSymbol(symbol)) {
-            navigation.navigate(RootStackRoutes.AccountOverview, { accountKey });
+        if (
+            isAssetsFirstEnabled ||
+            isNetworkWithTokens(account.symbol) ||
+            isStakingSymbol(account.symbol)
+        ) {
+            navigation.navigate(RootStackRoutes.AccountOverview, { accountKey: account.key });
 
             return;
         }
+
         navigation.navigate(RootStackRoutes.AccountDetailStack, {
             screen: AccountDetailStackRoutes.AccountDetail,
-            params: {
-                accountKey,
-                closeActionType: 'back',
-            },
+            params: { accountKey: account.key, closeActionType: 'back' },
         });
     };
 

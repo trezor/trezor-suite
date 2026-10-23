@@ -28,6 +28,11 @@ jest.mock('@react-navigation/native', () => ({
         }) as RouteProp<RootStackParamList, RootStackRoutes.ReceiveAccounts>,
 }));
 
+jest.mock('@suite-common/message-system', () => ({
+    ...jest.requireActual('@suite-common/message-system'),
+    useIsExperimentVariantActive: () => false,
+}));
+
 const overridesWithAccounts = (
     preloadedAccounts: Account[],
 ): PreloadedStatePartial<TradingTestPreloadedState> => ({

@@ -1,4 +1,4 @@
-import { type ComponentProps, useMemo } from 'react';
+import { type ComponentProps } from 'react';
 import { ScrollView, View } from 'react-native';
 
 import { type NetworkType } from '@suite-common/wallet-config';
@@ -37,6 +37,47 @@ type AccountOverviewTabBarProps = {
     onTabChange: (tab: AccountOverviewTab) => void;
 };
 
+type GetTabsConfigParams = Pick<
+    AccountOverviewTabBarProps,
+    'flowType' | 'networkType' | 'tokenCount' | 'defiTokenCount' | 'hiddenTokenCount'
+>;
+
+const getTabsConfig = ({
+    flowType,
+    networkType,
+    tokenCount,
+    defiTokenCount,
+    hiddenTokenCount,
+}: GetTabsConfigParams): TabItem[] => [
+    {
+        tab: 'tokens',
+        icon: 'coins',
+        translationId: 'moduleAccountManagement.accountOverviewScreen.tab.tokens',
+        translationValues: { count: tokenCount },
+        isVisible: true,
+    },
+    {
+        tab: 'defi',
+        icon: 'percent',
+        translationId: 'moduleAccountManagement.accountOverviewScreen.tab.defi',
+        translationValues: { count: defiTokenCount },
+        isVisible: networkType === 'ethereum',
+    },
+    {
+        tab: 'hidden',
+        icon: 'eyeSlash',
+        translationId: 'moduleAccountManagement.accountOverviewScreen.tab.hidden',
+        translationValues: { count: hiddenTokenCount },
+        isVisible: true,
+    },
+    {
+        tab: 'inactive',
+        icon: 'coinSlash',
+        translationId: 'moduleAccountManagement.accountOverviewScreen.tab.inactive',
+        isVisible: networkType === 'stellar' && flowType === 'overview',
+    },
+];
+
 export const AccountOverviewTabBar = ({
     activeTab,
     flowType,
@@ -50,49 +91,24 @@ export const AccountOverviewTabBar = ({
     const { scrollViewRef, handleTabLayout, handleScroll, handleScrollViewLayout } =
         useActiveTabScroll(activeTab);
 
-    const tabsConfig: TabItem[] = useMemo(
-        () => [
-            {
-                tab: 'tokens',
-                icon: 'coins',
-                translationId: 'moduleAccountManagement.accountOverviewScreen.tab.tokens',
-                translationValues: { count: tokenCount },
-                isVisible: true,
-            },
-            {
-                tab: 'defi',
-                icon: 'percent',
-                translationId: 'moduleAccountManagement.accountOverviewScreen.tab.defi',
-                translationValues: { count: defiTokenCount },
-                isVisible: networkType === 'ethereum',
-            },
-            {
-                tab: 'hidden',
-                icon: 'eyeSlash',
-                translationId: 'moduleAccountManagement.accountOverviewScreen.tab.hidden',
-                translationValues: { count: hiddenTokenCount },
-                isVisible: true,
-            },
-            {
-                tab: 'inactive',
-                icon: 'coinSlash',
-                translationId: 'moduleAccountManagement.accountOverviewScreen.tab.inactive',
-                isVisible: networkType === 'stellar' && flowType === 'overview',
-            },
-        ],
-        [tokenCount, defiTokenCount, hiddenTokenCount, networkType, flowType],
-    );
+    const tabsConfig = getTabsConfig({
+        flowType,
+        networkType,
+        tokenCount,
+        defiTokenCount,
+        hiddenTokenCount,
+    });
 
     return (
         <ScrollView
             ref={scrollViewRef}
-            horizontal
             showsHorizontalScrollIndicator={false}
             style={applyStyle(scrollStyle)}
             contentContainerStyle={applyStyle(scrollContentStyle)}
             onScroll={handleScroll}
             scrollEventThrottle={16}
             onLayout={handleScrollViewLayout}
+            horizontal
         >
             {tabsConfig
                 .filter(({ isVisible }) => isVisible)

@@ -1,9 +1,11 @@
 import { CommonActions } from '@react-navigation/native';
 
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountKey, type FormState, type TokenAddress } from '@suite-common/wallet-types';
 import {
     AccountDetailStackRoutes,
     AppTabsRoutes,
+    AssetsStackRoutes,
     RootStackRoutes,
     TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
@@ -66,17 +68,63 @@ export const constructFormDraft = ({
 export const isSameUtxo = (utxo1: Utxo, utxo2: Utxo): boolean =>
     utxo1.txid === utxo2.txid && utxo1.vout === utxo2.vout;
 
-interface NavigateOutOfSendFlowActionProps {
+export type SendFlowExitDestination =
+    { type: 'assetDetail'; networkSymbol: NetworkSymbol } | { type: 'accountDetail' };
+
+type GetSendFlowExitDestinationParams = {
+    isAssetsFirstEnabled: boolean;
+    networkSymbol: NetworkSymbol | null | undefined;
+};
+
+/**
+ * The assets-first experiment exits the send flow to the asset detail, every other case exits to
+ * the account detail. Without a resolved network symbol there is no asset detail to open.
+ */
+export const getSendFlowExitDestination = ({
+    isAssetsFirstEnabled,
+    networkSymbol,
+}: GetSendFlowExitDestinationParams): SendFlowExitDestination =>
+    isAssetsFirstEnabled && networkSymbol
+        ? { type: 'assetDetail', networkSymbol }
+        : { type: 'accountDetail' };
+
+type NavigateOutOfSendFlowActionParams = {
     accountKey: AccountKey;
+    destination: SendFlowExitDestination;
     tokenContract?: TokenAddress;
     txid?: string;
-}
+};
 
 export const navigateOutOfSendFlowAction = ({
     accountKey,
+    destination,
     tokenContract,
     txid,
-}: NavigateOutOfSendFlowActionProps) => {
+}: NavigateOutOfSendFlowActionParams) => {
+    const detailRoute =
+        destination.type === 'assetDetail'
+            ? {
+                  name: RootStackRoutes.AssetsStack,
+                  params: {
+                      screen: AssetsStackRoutes.AssetDetail,
+                      params: {
+                          networkSymbol: destination.networkSymbol,
+                          tokenContract,
+                      },
+                  },
+              }
+            : {
+                  name: RootStackRoutes.AccountDetailStack,
+                  params: {
+                      screen: AccountDetailStackRoutes.AccountDetail,
+                      params: {
+                          accountKey,
+                          tokenContract,
+                          closeActionType: 'back',
+                      },
+                  },
+              };
+
     const routes: any[] = [
         {
             name: RootStackRoutes.AppTabs,
@@ -84,17 +132,7 @@ export const navigateOutOfSendFlowAction = ({
                 screen: AppTabsRoutes.HomeStack,
             },
         },
-        {
-            name: RootStackRoutes.AccountDetailStack,
-            params: {
-                screen: AccountDetailStackRoutes.AccountDetail,
-                params: {
-                    accountKey,
-                    tokenContract,
-                    closeActionType: 'back',
-                },
-            },
-        },
+        detailRoute,
     ];
 
     if (txid) {
@@ -113,9 +151,9 @@ export const navigateOutOfSendFlowAction = ({
         });
     }
 
-    // Reset navigation stack to the transaction detail screen with HomeStack as a previous step, so the user can navigate back there.
+    // Keep the asset or account detail in Back history after a confirmed send.
     return CommonActions.reset({
-        index: 1,
+        index: routes.length - 1,
         routes,
     });
 };

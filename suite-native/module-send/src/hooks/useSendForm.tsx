@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 
 import { selectIsDeviceRemembered } from '@suite-common/device';
+import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
 import { injectAddressValidator, injectGetNamedAddressSupport } from '@suite-common/networks';
 import { getExcludedUtxos } from '@suite-common/transaction-search';
 import { type NetworkType, getDisplaySymbol, getNetwork } from '@suite-common/wallet-config';
@@ -44,6 +45,7 @@ import { useForm } from '@suite-native/forms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
     AccountDetailStackRoutes,
+    AssetsStackRoutes,
     AuthorizeDeviceStackRoutes,
     type RootStackParamList,
     RootStackRoutes,
@@ -115,6 +117,10 @@ type SendFormNavigationProp = StackToStackCompositeNavigationProps<
 export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress) => {
     const debounce = useDebounce();
     const navigation = useNavigation<SendFormNavigationProp>();
+    const isAssetsFirstEnabled = useIsExperimentVariantActive({
+        experimentId: ExperimentId.assetFirstHomeTable,
+        variant: 'B',
+    });
     const { translate } = useTranslate();
     const { addressValidator, getNamedAddressSupport, dispatch } = useServices(
         injectAddressValidator,
@@ -507,14 +513,21 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
                     }
 
                     dispatch(sendFormActions.discardTransaction());
-                    navigation.navigate(RootStackRoutes.AccountDetailStack, {
-                        screen: AccountDetailStackRoutes.AccountDetail,
-                        params: {
-                            accountKey,
-                            tokenContract,
-                            closeActionType: 'back',
-                        },
-                    });
+                    if (isAssetsFirstEnabled && account) {
+                        navigation.navigate(RootStackRoutes.AssetsStack, {
+                            screen: AssetsStackRoutes.AssetDetail,
+                            params: { networkSymbol: account.symbol, tokenContract },
+                        });
+                    } else {
+                        navigation.navigate(RootStackRoutes.AccountDetailStack, {
+                            screen: AccountDetailStackRoutes.AccountDetail,
+                            params: {
+                                accountKey,
+                                tokenContract,
+                                closeActionType: 'back',
+                            },
+                        });
+                    }
                 }
             });
 
@@ -522,10 +535,12 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         },
         [
             dispatch,
+            account,
             accountKey,
             tokenContract,
             requestDelayedNavigationToOutputsReview,
             navigation,
+            isAssetsFirstEnabled,
             showAlert,
             isViewOnlyDevice,
             showDeviceDisconnectedAlert,
