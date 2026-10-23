@@ -162,6 +162,11 @@ export type UserContextPayload =
     | {
           type: 'tron-stake-in-a-nutshell';
           actionType?: EarnModalAction;
+          account?: Account;
+      }
+    | {
+          type: 'tron-stake-consent';
+          decision: Deferred<boolean>;
       }
     | {
           type: 'tron-vote-consent';

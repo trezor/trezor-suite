@@ -1,12 +1,15 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { Translation } from '@suite/intl';
+import { openDeferredModal } from '@suite/modal';
+import { gotoThunk } from '@suite/router';
 import { useTronStakingStats } from '@suite-common/earn-staking-api';
 import { type EarnModalAction } from '@suite-common/suite-types/src/staking';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { supportedTronNetworkSymbols } from '@suite-common/wallet-types';
+import { type Account, supportedTronNetworkSymbols } from '@suite-common/wallet-types';
 import { Divider, StepList } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { CheckSquareOffsetIcon, LightningIcon, LockSimpleOpenIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
 
@@ -24,12 +27,15 @@ const TRON_UNSTAKING_PERIOD_DAYS = 14;
 interface TronStakeInANutshellModalProps {
     onCancel: () => void;
     actionType?: EarnModalAction;
+    account?: Account;
 }
 
 export const TronStakeInANutshellModal = ({
     onCancel,
     actionType = 'close',
+    account,
 }: TronStakeInANutshellModalProps) => {
+    const { dispatch } = useServices(injectDispatch);
     const { analytics } = useServices(injectDesktopAnalytics);
     const { maxApr } = useTronStakingStats();
 
@@ -42,6 +48,48 @@ export const TronStakeInANutshellModal = ({
                 action: actionType,
                 step: 'stake-in-a-nutshell-modal',
                 networkSymbol: supportedTronNetworkSymbols[0],
+            },
+        });
+    };
+
+    const onAction = async () => {
+        if (actionType === 'close') {
+            handleCancel();
+
+            return;
+        }
+
+        if (!account) return;
+
+        onCancel();
+
+        const consent = Boolean(
+            await dispatch(
+                openDeferredModal({
+                    type: 'tron-stake-consent',
+                }),
+            ),
+        );
+
+        if (!consent) return;
+
+        dispatch(
+            gotoThunk({
+                routeName: 'earn-tron-stake',
+                params: {
+                    symbol: account.symbol,
+                    accountIndex: account.index,
+                    accountType: account.accountType,
+                },
+            }),
+        );
+
+        analytics.report({
+            type: events.stakingStakeEvent.name,
+            payload: {
+                action: 'continue',
+                step: 'stake-in-a-nutshell-modal',
+                networkSymbol: account.symbol,
             },
         });
     };
@@ -120,7 +168,7 @@ export const TronStakeInANutshellModal = ({
             heading={<Translation id="TR_EARN_TRON_STAKING_IN_A_NUTSHELL" />}
             onCancel={handleCancel}
             actionType={actionType}
-            onAction={handleCancel}
+            onAction={onAction}
         >
             <EarnInANutshellHighlights
                 items={[
