@@ -12,22 +12,24 @@ import { useSelector } from 'src/hooks/suite';
 import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
 
 import { TransactionsGroup } from './TransactionsGroup/TransactionsGroup';
+import { findTransactionAccount } from './findTransactionAccount';
 
 interface TransactionGroupedListProps {
     transactionGroups: GroupedTransactionsByDate;
     symbol: WalletAccountTransaction['symbol'];
-    account: Account;
+    accounts: readonly Account[];
     isPending: boolean;
 }
 
 export const TransactionGroupedList = ({
     transactionGroups,
     symbol,
-    account,
+    accounts,
     isPending,
 }: TransactionGroupedListProps) => {
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const network = getNetwork(symbol);
+    const isAccountShown = accounts.length > 1;
 
     const transactionWithLowestNonce: WalletAccountTransaction | null =
         getTransactionWithLowestNonce(transactionGroups);
@@ -37,36 +39,46 @@ export const TransactionGroupedList = ({
             key={dateKey}
             dateKey={dateKey}
             symbol={symbol}
-            account={account}
+            accounts={accounts}
             transactions={value}
             baseCurrencyCode={baseCurrencyCode}
             isPending={isPending}
             index={groupIndex}
         >
-            {groupJointTransactions(value).map((item, index) =>
-                item.type === 'joint-batch' ? (
-                    <CoinjoinBatchItem
-                        key={item.rounds[0]?.txid}
-                        transactions={item.rounds}
-                        isPending={isPending}
-                    />
-                ) : (
-                    <TransactionItem
-                        key={item.tx.txid}
-                        transaction={item.tx}
-                        isPending={isPending}
-                        accountKey={account.key}
-                        network={network}
-                        accountType={account.accountType}
-                        index={index}
-                        disableBumpFee={
-                            network.networkType === 'ethereum'
-                                ? item.tx.txid !== transactionWithLowestNonce?.txid
-                                : item.tx.type === 'joint'
-                        }
-                    />
-                ),
-            )}
+            {groupJointTransactions(value).map((item, index) => {
+                if (item.type === 'joint-batch') {
+                    return (
+                        <CoinjoinBatchItem
+                            key={item.rounds[0]?.txid}
+                            transactions={item.rounds}
+                            isPending={isPending}
+                        />
+                    );
+                }
+
+                const account = findTransactionAccount(accounts, item.tx);
+
+                return (
+                    account && (
+                        <TransactionItem
+                            key={`${account.key}/${item.tx.txid}`}
+                            transaction={item.tx}
+                            isPending={isPending}
+                            accountKey={account.key}
+                            network={network}
+                            accountType={account.accountType}
+                            index={index}
+                            isAccountShown={isAccountShown}
+                            disableBumpFee={
+                                isAccountShown ||
+                                (network.networkType === 'ethereum'
+                                    ? item.tx.txid !== transactionWithLowestNonce?.txid
+                                    : item.tx.type === 'joint')
+                            }
+                        />
+                    )
+                );
+            })}
         </TransactionsGroup>
     ));
 };

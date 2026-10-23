@@ -5,7 +5,7 @@ import { Translation } from '@suite/intl';
 import { findAnchorTransactionPage, selectRouterAnchor } from '@suite/router';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { advancedSearchTransactions } from '@suite-common/transaction-search';
-import { groupTransactionsByDate, isPending } from '@suite-common/wallet-utils';
+import { isPending } from '@suite-common/wallet-utils';
 import { Column } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -17,11 +17,8 @@ import { selectAccountLabelsForSearch } from 'src/selectors/suite/selectAccountL
 import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
 
 import { LoadOlderHistory } from './LoadOlderHistory';
-import { NoSearchResults } from './NoSearchResults';
-import { SkeletonTransactionItem } from './SkeletonTransactionItem';
-import { TransactionGroupedList } from './TransactionGroupedList';
 import { TransactionListActions } from './TransactionListActions/TransactionListActions';
-import { PendingGroupHeader } from './TransactionsGroup/PendingGroupHeader';
+import { TransactionListBody } from './TransactionListBody';
 import { useFetchTransactions } from './useFetchTransactions';
 
 interface TransactionListProps {
@@ -59,7 +56,8 @@ export const TransactionList = ({
     const { dispatch } = useServices(injectDispatch);
     const searchLabels = useSelector(state => selectAccountLabelsForSearch(state, account));
 
-    const { fetchPage, fetchedAll, fetchAll } = useFetchTransactions(account, allTransactions);
+    const accounts = useMemo(() => [account], [account]);
+    const { fetchPage, fetchedAll, fetchAll } = useFetchTransactions(accounts);
 
     // Search
     const [searchQuery, setSearchQuery] = useState('');
@@ -142,15 +140,6 @@ export const TransactionList = ({
         [slicedTransactions],
     );
 
-    const pendingTxsByDate = useMemo(
-        () => groupTransactionsByDate(pendingTxs, 'day'),
-        [pendingTxs],
-    );
-    const confirmedTxsByDate = useMemo(
-        () => groupTransactionsByDate(confirmedTxs, 'day'),
-        [confirmedTxs],
-    );
-
     // if total pages cannot be determined check current page and number of txs (XRP/XLM)
     // Edge case: if there is exactly 25 Ripple/Stellar txs, pagination will be displayed
     const isRippleOrStellar = account.networkType === 'ripple' || account.networkType === 'stellar';
@@ -166,7 +155,8 @@ export const TransactionList = ({
             heading={customHeading ?? <Translation id="TR_ALL_TRANSACTIONS" />}
             actions={
                 <TransactionListActions
-                    account={account}
+                    accounts={accounts}
+                    symbol={account.symbol}
                     searchQuery={searchQuery}
                     setSearch={setSearchQuery}
                     setSelectedPage={setSelectedPage}
@@ -178,42 +168,20 @@ export const TransactionList = ({
         >
             <Column gap={32} padding={{ top: 16 }}>
                 {/* TODO: show this skeleton also while searching in txs */}
-                {isLoading ||
-                (!areAllTransactionsLoaded && searchQuery && searchedTransactions.length === 0) ? (
-                    <Column gap={16}>
-                        <SkeletonTransactionItem />
-                        <SkeletonTransactionItem />
-                        <SkeletonTransactionItem />
-                    </Column>
-                ) : (
-                    <Column gap={40}>
-                        {areTransactionsAvailable && <NoSearchResults />}
-                        {!areTransactionsAvailable &&
-                            (customNoTransactions &&
-                            confirmedTxs.length === 0 &&
-                            pendingTxs.length === 0 ? (
-                                customNoTransactions
-                            ) : (
-                                <>
-                                    {pendingTxs.length > 0 && (
-                                        <PendingGroupHeader txsCount={pendingTxs.length} />
-                                    )}
-                                    <TransactionGroupedList
-                                        transactionGroups={pendingTxsByDate}
-                                        symbol={symbol}
-                                        account={account}
-                                        isPending={true}
-                                    />
-                                    <TransactionGroupedList
-                                        transactionGroups={confirmedTxsByDate}
-                                        symbol={symbol}
-                                        account={account}
-                                        isPending={false}
-                                    />
-                                </>
-                            ))}
-                    </Column>
-                )}
+                <TransactionListBody
+                    isLoading={
+                        !!isLoading ||
+                        (!areAllTransactionsLoaded &&
+                            !!searchQuery &&
+                            searchedTransactions.length === 0)
+                    }
+                    hasNoSearchResults={areTransactionsAvailable}
+                    pendingTxs={pendingTxs}
+                    confirmedTxs={confirmedTxs}
+                    accounts={accounts}
+                    symbol={symbol}
+                    customNoTransactions={customNoTransactions}
+                />
 
                 <LoadOlderHistory account={account} loadedCount={allTransactions.length} />
 

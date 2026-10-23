@@ -16,14 +16,17 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { getSynchronize } from '@trezor/utils';
 
 import { useDiscovery, useSelector } from 'src/hooks/suite';
-import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
+import { type Account } from 'src/types/wallet';
 
 import { shouldAttemptToLoadNextPageForVisibleTransactions } from './transaction-fetch-utils';
+
+const isWithoutTotal = (network: Account['networkType']) =>
+    network === 'ripple' || network === 'stellar';
 
 const getPaging = (network: Account['networkType'], txFetched: number, txTotal: number) => {
     const perPage = getTxsPerPage(network);
     // There is no total in XRP and Stellar, so always presume there could be one more tx and calculate page count accordingly
-    const totalItems = network === 'ripple' || network === 'stellar' ? txFetched + 1 : txTotal;
+    const totalItems = isWithoutTotal(network) ? txFetched + 1 : txTotal;
     const pagesTotal = Math.ceil(totalItems / perPage);
     // Consider incomplete pages unfetched unless fetched tx count equals total
     const page = txFetched === totalItems ? pagesTotal : Math.floor(txFetched / perPage);
@@ -31,15 +34,38 @@ const getPaging = (network: Account['networkType'], txFetched: number, txTotal: 
     return { page, pagesTotal, perPage };
 };
 
-export const useFetchTransactions = (
-    account: Account,
-    transactions: WalletAccountTransaction[],
-) => {
-    const accountKey = account.key;
-    const { page, pagesTotal, perPage } = getPaging(
-        account.networkType,
-        transactions.length,
-        account.history.total,
+/** How many of the account's transactions there are from the newest one up to the first page that wasn't fetched. */
+const countTransactionsUntilGap = (transactions: readonly unknown[]) => {
+    const firstHole = transactions.findIndex(transaction => !transaction);
+
+    return firstHole === -1 ? transactions.length : firstHole;
+};
+
+const hasMoreToLoad = (account: Account, loadedCount: number) =>
+    isWithoutTotal(account.networkType)
+        ? loadedCount % getTxsPerPage(account.networkType) === 0
+        : loadedCount < account.history.total;
+
+/**
+ * Loads the accounts' histories together: a page is the page of every account, so the newest
+ * transactions of them all stay complete. With one account it is that account's paging.
+ */
+export const useFetchTransactions = (accounts: readonly Account[]) => {
+    const accountsKey = accounts.map(account => account.key).join('|');
+    const transactionsByAccount = useSelector(state =>
+        accounts.map(account => selectAccountTransactionsWithNulls(state, account.key)),
+    );
+    const pagings = accounts.map((account, index) =>
+        getPaging(
+            account.networkType,
+            transactionsByAccount[index]?.length ?? 0,
+            account.history.total,
+        ),
+    );
+    const page = Math.min(...pagings.map(paging => paging.page));
+    const isLastPage = pagings.every(paging => paging.page >= paging.pagesTotal);
+    const hasMore = accounts.some((account, index) =>
+        hasMoreToLoad(account, countTransactionsUntilGap(transactionsByAccount[index] ?? [])),
     );
 
     const [pagesFetched, setPagesFetched] = useState(page);
@@ -50,7 +76,7 @@ export const useFetchTransactions = (
         setPagesFetched(1);
         setFetching(false);
         setFetchedAll(false);
-    }, [accountKey]);
+    }, [accountsKey]);
 
     useEffect(() => {
         if (page > pagesFetched) {
@@ -58,75 +84,75 @@ export const useFetchTransactions = (
         }
     }, [pagesFetched, page]);
 
-    const isLastPage = pagesFetched >= pagesTotal;
-
     useEffect(() => {
         if (!fetchedAll && isLastPage) {
             setFetchedAll(true);
         }
     }, [fetchedAll, isLastPage]);
 
-    const synchronize = useMemo(getSynchronize, [accountKey]);
+    const synchronize = useMemo(getSynchronize, [accountsKey]);
     const { dispatch } = useServices(injectDispatch);
 
-    const fetchCommon = useCallback(
-        (
-            page: number,
-            options: {
-                recursive?: boolean;
-            } = {},
-        ) => {
-            if (options.recursive) {
-                // NOTE: when recursion is requested, load all the transactions along but don't wait for it
-                dispatch(fetchAllTransactionsForAccountThunk({ accountKey }));
-            }
-
-            return dispatch(
+    const fetchAccountPage = useCallback(
+        (account: Account, page: number, noLoading = false) =>
+            dispatch(
                 fetchTransactionsPageThunk({
                     accountKey: account.key,
                     page,
-                    perPage,
+                    perPage: getTxsPerPage(account.networkType),
+                    noLoading,
                 }),
-            );
-        },
-        [dispatch, account.key, perPage, accountKey],
+            ),
+        [dispatch],
     );
 
     const fetchPage = useCallback(
-        (
-            page: number,
-            options: {
-                noLoading?: boolean;
-            } = {},
-        ) => {
+        (page: number, options: { noLoading?: boolean } = {}) => {
             synchronize(async () => {
                 setFetching(true);
-                await dispatch(
-                    fetchTransactionsPageThunk({
-                        accountKey: account.key,
-                        page,
-                        perPage,
-                        noLoading: Boolean(options.noLoading),
-                    }),
+                await Promise.all(
+                    accounts.map(account =>
+                        fetchAccountPage(account, page, Boolean(options.noLoading)),
+                    ),
                 );
             }).finally(() => {
                 setFetching(false);
             });
         },
-        [account.key, dispatch, perPage, synchronize],
+        [accounts, fetchAccountPage, synchronize],
     );
 
+    /** The next page of every account that still has one, filling a gap left by a page skipped before. */
     const fetchNext = useCallback(
         () =>
             synchronize(async () => {
-                if (fetchedAll) return;
+                const pending = accounts.flatMap((account, index) => {
+                    const loadedCount = countTransactionsUntilGap(
+                        transactionsByAccount[index] ?? [],
+                    );
+
+                    return hasMoreToLoad(account, loadedCount)
+                        ? [
+                              {
+                                  account,
+                                  page:
+                                      Math.floor(loadedCount / getTxsPerPage(account.networkType)) +
+                                      1,
+                              },
+                          ]
+                        : [];
+                });
+
+                if (pending.length === 0) return;
+
                 setFetching(true);
-                await fetchCommon(pagesFetched + 1);
-                setPagesFetched(pagesFetched + 1);
+                await Promise.all(
+                    pending.map(({ account, page }) => fetchAccountPage(account, page)),
+                );
             }).finally(() => {
                 setFetching(false);
             }),
-        [synchronize, fetchCommon, pagesFetched, fetchedAll],
+        [synchronize, accounts, transactionsByAccount, fetchAccountPage],
     );
 
     const fetchAll = useCallback(
@@ -134,17 +160,21 @@ export const useFetchTransactions = (
             synchronize(async () => {
                 if (fetchedAll) return;
                 setFetching(true);
-                await fetchCommon(pagesFetched + 1, {
-                    recursive: true,
+                // NOTE: load all the transactions along but don't wait for it
+                accounts.forEach(account => {
+                    dispatch(fetchAllTransactionsForAccountThunk({ accountKey: account.key }));
                 });
+                await Promise.all(
+                    accounts.map(account => fetchAccountPage(account, pagesFetched + 1)),
+                );
                 setFetchedAll(true);
             }).finally(() => {
                 setFetching(false);
             }),
-        [synchronize, fetchCommon, pagesFetched, fetchedAll],
+        [synchronize, accounts, dispatch, fetchAccountPage, pagesFetched, fetchedAll],
     );
 
-    return { fetchNext, pagesFetched, fetchPage, fetchAll, isFetching, fetchedAll };
+    return { fetchNext, pagesFetched, fetchPage, fetchAll, isFetching, fetchedAll, hasMore };
 };
 
 type UseVisibleTransactionsParams = {
@@ -162,13 +192,14 @@ export const useVisibleTransactions = ({
         selectAccountTransactionsWithNulls(state, account.key),
     );
     const { isDiscoveryRunning } = useDiscovery();
+    const accounts = useMemo(() => [account], [account]);
 
     const {
         fetchedAll,
         isFetching,
         pagesFetched: allTransactionsPagesFetched,
         fetchPage,
-    } = useFetchTransactions(account, allTransactions);
+    } = useFetchTransactions(accounts);
     const allAccountTransactions = useSelector(state =>
         selectAccountTotalTransactions(state, account.key),
     );
