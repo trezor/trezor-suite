@@ -20,3 +20,4 @@ export * from './components/GoBackIcon';
 export * from './hooks/useNavigationRouteMatch';
 export * from './hooks/useDisableIOSGesture';
 export * from './hooks/useNavigationRemoveActionInterceptor';
+export * from './hooks/useNavigationBackListener';
