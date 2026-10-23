@@ -41,6 +41,9 @@ jest.mock('@suite-common/wallet-core', () => ({
 jest.mock('src/hooks/suite/useMessageSystemWrappedNative', () => ({
     useMessageSystemWrappedNative: () => ({ isDisabled: false }),
 }));
+jest.mock('src/hooks/suite/useMessageSystemYield', () => ({
+    useMessageSystemYield: () => ({ isDisabled: false }),
+}));
 jest.mock('src/components/wallet/Fees/CollapsibleFees/hooks/useIsFeeRefetchDisabled', () => ({
     useIsFeeRefetchDisabled: () => false,
 }));
