@@ -27,7 +27,7 @@ export class FileSystemProvider extends AbstractMetadataProvider {
         return Promise.resolve(this.ok());
     }
 
-    // eslint-disable-next-line
+    // eslint-disable-next-line require-await
     async getProviderDetails() {
         return this.ok({
             type: this.type,
