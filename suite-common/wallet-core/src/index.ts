@@ -130,6 +130,8 @@ export {
 } from './staking/tron/actions/vote/voteContract';
 export { composeTronWithdrawFeeLevelsThunk } from './staking/tron/actions/withdraw/composeWithdraw';
 export { submitTronWithdrawThunk } from './staking/tron/actions/withdraw/submitWithdraw';
+export * from './staking/tron/adapter/tronStakingAdapter';
+export type * from './staking/tron/adapter/types';
 export { confirmTronPendingTransactionThunk } from './staking/tron/shared/confirmPendingTransactionThunk';
 export * from './staking/tron/tronStakingConstants';
 export * from './staking/tron/tronStakingReducer';

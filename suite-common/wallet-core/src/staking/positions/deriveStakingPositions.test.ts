@@ -1,4 +1,4 @@
-import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { LUGANODES_TRON_SRS, asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StakingPool } from '@trezor/blockchain-link-types';
@@ -35,6 +35,28 @@ describe(deriveStakingPositions.name, () => {
             providerId: 'everstake',
             staked: '1',
         });
+    });
+
+    it('derives the positions of other networks through their adapters', () => {
+        const [luganodesSr = ''] = LUGANODES_TRON_SRS;
+        const tronAccount = {
+            ...mockWalletAccount({ symbol: asNetworkSymbol('trx') }),
+            networkType: 'tron',
+            misc: {
+                tronResources: {
+                    stakingInfo: {
+                        stakedBalance: '5000000',
+                        unstakingBatches: [],
+                        votes: [{ address: luganodesSr, voteCount: '5' }],
+                        unclaimedReward: '0',
+                    },
+                },
+            },
+        } as unknown as Account;
+
+        expect(deriveStakingPositions(tronAccount)).toEqual([
+            expect.objectContaining({ productId: 'trx:trx:luganodes:native', staked: '5' }),
+        ]);
     });
 
     it('keeps the same references for the same account object', () => {

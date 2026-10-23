@@ -8,10 +8,12 @@ import {
 
 import { everstakeAdapter } from '../ethereum/providers/everstake/everstakeAdapter';
 import { type EthereumStakingProductAdapter } from '../ethereum/providers/types';
+import { tronStakingAdapter } from '../tron/adapter/tronStakingAdapter';
+import { type TronStakingProductAdapter } from '../tron/adapter/types';
 
-export type StakingProductAdapter = EthereumStakingProductAdapter;
+export type StakingProductAdapter = EthereumStakingProductAdapter | TronStakingProductAdapter;
 
-const ADAPTERS: readonly StakingProductAdapter[] = [everstakeAdapter];
+const ADAPTERS: readonly StakingProductAdapter[] = [everstakeAdapter, tronStakingAdapter];
 
 export const findStakingProductAdapter = (
     product: StakingProduct,

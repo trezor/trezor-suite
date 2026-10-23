@@ -5,9 +5,21 @@ import {
     type StakingProviderId,
 } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
-import { type StakingPool } from '@trezor/blockchain-link-types';
+import {
+    type StakingPool,
+    type TronUnstakingBatch,
+    type TronVote,
+} from '@trezor/blockchain-link-types';
 
-export type StakingPositionDetails = { type: 'everstake-pool'; pool: StakingPool };
+export type StakingPositionDetails =
+    | { type: 'everstake-pool'; pool: StakingPool }
+    | { type: 'tron-votes'; votes: TronVote[] }
+    | {
+          type: 'tron-unattributed';
+          /** Votes for Super Representatives outside the catalog. */
+          votes: TronVote[];
+          unstakingBatches: TronUnstakingBatch[];
+      };
 
 // What an account holds with one staking product. Amounts are in the staked asset's units, as
 // decimal strings. The buckets overlap where noted, so sum them only through `total`.

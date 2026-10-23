@@ -14,6 +14,7 @@ import {
     listEthereumStakingAdapters,
 } from '../ethereum/providers/ethereumStakingProviders';
 import { everstakeAdapter } from '../ethereum/providers/everstake/everstakeAdapter';
+import { tronStakingAdapter } from '../tron/adapter/tronStakingAdapter';
 
 const ethSymbol = asNetworkSymbol('eth');
 const thodSymbol = asNetworkSymbol('thod');
@@ -26,8 +27,14 @@ describe(findStakingProductAdapter.name, () => {
         });
     });
 
-    it('has no adapter for products whose network has not moved to adapters yet', () => {
+    it('serves every Tron Super Representative product with one adapter', () => {
         listStakingProducts(trxSymbol).forEach(product => {
+            expect(findStakingProductAdapter(product)).toBe(tronStakingAdapter);
+        });
+    });
+
+    it('has no adapter for products whose network has not moved to adapters yet', () => {
+        listStakingProducts(asNetworkSymbol('sol')).forEach(product => {
             expect(findStakingProductAdapter(product)).toBeUndefined();
         });
     });
@@ -60,7 +67,7 @@ describe(findStakingProductAdapterById.name, () => {
 describe(listStakingProductAdapters.name, () => {
     it('lists each adapter of the network once', () => {
         expect(listStakingProductAdapters(ethSymbol)).toEqual([everstakeAdapter]);
-        expect(listStakingProductAdapters(trxSymbol)).toEqual([]);
+        expect(listStakingProductAdapters(trxSymbol)).toEqual([tronStakingAdapter]);
         expect(listStakingProductAdapters(asNetworkSymbol('btc'))).toEqual([]);
     });
 });
