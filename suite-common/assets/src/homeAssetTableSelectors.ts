@@ -1,6 +1,10 @@
 import { shallowEqual } from 'react-redux';
 
-import { type DeviceRootState, selectDeviceStaticSessionId } from '@suite-common/device';
+import {
+    type DeviceRootState,
+    selectDeviceStaticSessionId,
+    selectHasBitcoinOnlyFirmware,
+} from '@suite-common/device';
 import { type NetworksRootState, selectNetworkNamesMap } from '@suite-common/networks';
 import { type NetworkSymbol, getAssetName, getDisplaySymbol } from '@suite-common/wallet-config';
 import {
@@ -18,6 +22,7 @@ import {
     selectEnabledSupportedNetworks,
     selectHiddenAssetAccountKeySet,
     selectHiddenTokenReasons,
+    selectHomeAssetsTableGrouping,
     selectLastWeekFiatRates,
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
@@ -377,11 +382,25 @@ export const selectSmallBalanceSummary = createMemoizedSelector(
     { memoizeOptions: { resultEqualityCheck: haveSameSmallBalanceSummary } },
 );
 
+export const selectIsHomeAssetTableMenuAvailable = (state: HomeAssetTableState) =>
+    !selectHasBitcoinOnlyFirmware(state);
+
+/** The saved grouping, or the default one while the menu that sets it is not offered. */
+export const selectHomeAssetGrouping = (state: HomeAssetTableState): HomeAssetGrouping =>
+    selectIsHomeAssetTableMenuAvailable(state) ? selectHomeAssetsTableGrouping(state) : 'default';
+
+/**
+ * The saved switch, or shown while the menu holding it is not offered: nothing else could bring
+ * small balances back.
+ */
+export const selectAreHomeAssetSmallBalancesDisplayed = (state: HomeAssetTableState) =>
+    !selectIsHomeAssetTableMenuAvailable(state) || selectAreHomeAssetSmallBalancesShown(state);
+
 const selectAllDisplayedAssetKeys = createMemoizedSelector(
     [
         selectShownWalletAssetKeys,
         selectSmallBalanceAssetKeySet,
-        selectAreHomeAssetSmallBalancesShown,
+        selectAreHomeAssetSmallBalancesDisplayed,
     ],
     (assetKeys, small, areSmallBalancesShown): readonly WalletAssetKey[] =>
         areSmallBalancesShown
