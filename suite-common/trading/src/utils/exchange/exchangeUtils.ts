@@ -142,8 +142,14 @@ export const hasFixedPsbtFee = (quote: ExchangeTrade | undefined, networkType: N
 export const hasEip712SignData = (quote?: ExchangeTrade) =>
     quote?.status === 'SIGN_DATA' && hasEip712SignDataType(quote);
 
+const isTransferTxKind = (quote: ExchangeTrade) =>
+    quote.txKind === 'simpleTransfer' || quote.txKind === 'transferWithMemo';
+
 export const requiresTokenApproval = (quote?: ExchangeTrade): boolean =>
-    !!quote?.isDex && requiresErc20Approval(quote.send) && !hasEip712SignData(quote);
+    !!quote?.isDex &&
+    requiresErc20Approval(quote.send) &&
+    !isTransferTxKind(quote) &&
+    !hasEip712SignData(quote);
 
 export const getDisplayNetworkFee = (
     quote: ExchangeTrade | undefined,
