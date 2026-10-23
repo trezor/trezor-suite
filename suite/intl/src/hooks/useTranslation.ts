@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useIntl } from 'react-intl';
+import { type MessageDescriptor, useIntl } from 'react-intl';
 
 import { type PrimitiveType } from '@trezor/type-utils';
 
@@ -17,7 +17,10 @@ export const useTranslation = () => {
     const translationString = useCallback<TranslationFunction>(
         (id, values) => {
             if (id && messages[id]) {
-                return intl.formatMessage(messages[id], values);
+                // widen to an untyped descriptor, `values` are not typed per message
+                const descriptor: MessageDescriptor = messages[id];
+
+                return intl.formatMessage(descriptor, values);
             }
 
             return `Unknown translation id: ${id}`;
