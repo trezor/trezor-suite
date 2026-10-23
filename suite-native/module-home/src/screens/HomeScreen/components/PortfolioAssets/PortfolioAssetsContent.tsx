@@ -4,7 +4,10 @@ import { useSelector } from 'react-redux';
 import { FlashList } from '@shopify/flash-list';
 
 import { HOME_ASSET_ROW_LIMIT, type HomeAssetTableState } from '@suite-common/assets';
+import { setAreHomeAssetSmallBalancesShown } from '@suite-common/wallet-core';
 import { Box, useBottomSheetModal } from '@suite-native/atoms';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 
 import { PortfolioAssetListItem } from './PortfolioAssetListItem';
@@ -47,15 +50,23 @@ const renderEntry = ({ item }: RenderEntryParams) => {
 };
 
 export const PortfolioAssetsContent = () => {
-    const [isExpanded, setIsExpanded] = useState(false);
+    const [isListExpanded, setIsListExpanded] = useState(false);
     // Capping a list no longer than the limit leaves it whole, so no foldability check is needed.
-    const rowLimit = isExpanded ? undefined : HOME_ASSET_ROW_LIMIT;
+    const rowLimit = isListExpanded ? undefined : HOME_ASSET_ROW_LIMIT;
     const entries = useSelector((state: HomeAssetTableState) =>
         selectPortfolioAssetListEntries(state, rowLimit),
     );
     const { bottomSheetRef, openModal } = useBottomSheetModal();
+    const { dispatch } = useServices(injectDispatch);
 
-    const toggleIsExpanded = () => setIsExpanded(previous => !previous);
+    const toggleIsListExpanded = () => setIsListExpanded(previous => !previous);
+
+    const changeSmallBalances = (areShown: boolean) => {
+        if (areShown) {
+            setIsListExpanded(true);
+        }
+        dispatch(setAreHomeAssetSmallBalancesShown(areShown));
+    };
 
     return (
         <Box flex={1}>
@@ -72,12 +83,15 @@ export const PortfolioAssetsContent = () => {
                 ListHeaderComponent={<PortfolioAssetsListHeader onViewOptionsPress={openModal} />}
                 ListFooterComponent={
                     <PortfolioAssetsListFooter
-                        isExpanded={isExpanded}
-                        onShowMorePress={toggleIsExpanded}
+                        isListExpanded={isListExpanded}
+                        onShowMorePress={toggleIsListExpanded}
                     />
                 }
             />
-            <PortfolioAssetsViewOptionsSheet bottomSheetRef={bottomSheetRef} />
+            <PortfolioAssetsViewOptionsSheet
+                bottomSheetRef={bottomSheetRef}
+                onSmallBalancesChange={changeSmallBalances}
+            />
         </Box>
     );
 };

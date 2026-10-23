@@ -133,6 +133,8 @@ export const messages = {
                 groupBy: 'Group by',
                 groupingDefault: 'Default',
                 groupingNetworks: 'By networks',
+                showSmallBalances: 'Show small balances',
+                smallBalancesSummary: '{count, plural, one {# asset} other {# assets}}',
             },
         },
         graphIgnoredNetworks:
