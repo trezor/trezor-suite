@@ -2,7 +2,11 @@ import type { CryptoId, ExchangeTrade } from 'invity-api';
 
 import { createTestCompositionRoot, renderHookWithStoreProvider } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { exchangeInitialState, initialState as tradingInitialState } from '@suite-common/trading';
+import {
+    exchangeInitialState,
+    tradingExchangeActions,
+    initialState as tradingInitialState,
+} from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -57,9 +61,17 @@ jest.mock('src/hooks/wallet/trading/form/common/useTradingExchangeTradeRequest',
 }));
 
 const CONFIRMED_TRADE = { quoteId: 'confirmed-quote' } as ExchangeTrade;
+const FRESH_QUOTE = {
+    quoteId: 'fresh-quote',
+    exchange: 'lifi',
+    swapSlippage: '1',
+} as ExchangeTrade;
 
 const mockConfirmTradeThunk = jest.fn((args: unknown) =>
-    Object.assign(() => ({ unwrap: () => Promise.resolve(CONFIRMED_TRADE) }), { args }),
+    Object.assign(
+        () => ({ unwrap: () => Promise.resolve<ExchangeTrade | undefined>(CONFIRMED_TRADE) }),
+        { args },
+    ),
 );
 const mockSendTransactionThunk = jest.fn((args: unknown) =>
     Object.assign(() => ({ unwrap: () => Promise.resolve(true) }), { args }),
@@ -67,6 +79,9 @@ const mockSendTransactionThunk = jest.fn((args: unknown) =>
 const mockSignDataAndConfirmThunk = jest.fn((args: unknown) =>
     Object.assign(() => Promise.resolve(), { args }),
 );
+const mockFetchSelectedProviderQuoteThunk = jest.fn(() => () => ({
+    unwrap: () => Promise.resolve(FRESH_QUOTE),
+}));
 
 jest.mock('@suite-common/trading', () => {
     const actual = jest.requireActual('@suite-common/trading');
@@ -79,6 +94,7 @@ jest.mock('@suite-common/trading', () => {
             confirmTradeThunk: (args: unknown) => mockConfirmTradeThunk(args),
             sendTransactionThunk: (args: unknown) => mockSendTransactionThunk(args),
             signDataAndConfirmThunk: (args: unknown) => mockSignDataAndConfirmThunk(args),
+            fetchSelectedProviderQuoteThunk: () => mockFetchSelectedProviderQuoteThunk(),
         },
     };
 });
@@ -98,6 +114,7 @@ const SELECTED_QUOTE: ExchangeTrade = {
 
 type StateOverrides = {
     selectedQuote?: ExchangeTrade | undefined;
+    selectedQuoteTimestamp?: number;
     accountKey?: Account['key'] | undefined;
     accounts?: Account[];
     extraField?: string | undefined;
@@ -111,6 +128,7 @@ const buildState = (overrides: StateOverrides = {}) => {
 
     const overridesForExchange = {
         selectedQuote,
+        selectedQuoteTimestamp: overrides.selectedQuoteTimestamp,
         tradingAccountKey: accountKey,
         extraField,
     };
@@ -152,6 +170,7 @@ describe('useTradingExchangeTradeActions', () => {
         mockConfirmTradeThunk.mockClear();
         mockSendTransactionThunk.mockClear();
         mockSignDataAndConfirmThunk.mockClear();
+        mockFetchSelectedProviderQuoteThunk.mockClear();
         mockUseTradingFormAccount.mockReset();
     });
 
@@ -291,6 +310,63 @@ describe('useTradingExchangeTradeActions', () => {
 
             expect(confirmed).toBeUndefined();
             expect(mockConfirmTradeThunk).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('refreshSelectedQuote', () => {
+        const EXPIRED_QUOTE: ExchangeTrade = {
+            ...SELECTED_QUOTE,
+            exchange: 'lifi',
+            isDex: true,
+            receiveAddress: 'SoLReceiveAddress',
+            swapSlippage: '3',
+        };
+        const EXPIRED_QUOTE_TIMESTAMP = new Date('2026-10-23T10:00:00Z').getTime();
+
+        it('confirms the fresh quote with the slippage of the expired one', async () => {
+            const { result } = renderActions({
+                selectedQuote: EXPIRED_QUOTE,
+                selectedQuoteTimestamp: EXPIRED_QUOTE_TIMESTAMP,
+            });
+
+            const isRefreshed = await result.current.refreshSelectedQuote();
+
+            expect(isRefreshed).toBe(true);
+            expect(mockFetchSelectedProviderQuoteThunk).toHaveBeenCalledTimes(1);
+            const [args] = mockConfirmTradeThunk.mock.calls[0] as [
+                { receiveAddress: string; trade: ExchangeTrade },
+            ];
+            expect(args.receiveAddress).toBe('SoLReceiveAddress');
+            expect(args.trade).toEqual({ ...FRESH_QUOTE, swapSlippage: '3' });
+        });
+
+        it('puts the expired quote back when the confirmation fails', async () => {
+            mockConfirmTradeThunk.mockImplementationOnce((args: unknown) =>
+                Object.assign(() => ({ unwrap: () => Promise.resolve(undefined) }), { args }),
+            );
+            const { getActions, result } = renderActions({
+                selectedQuote: EXPIRED_QUOTE,
+                selectedQuoteTimestamp: EXPIRED_QUOTE_TIMESTAMP,
+            });
+
+            const isRefreshed = await result.current.refreshSelectedQuote();
+
+            expect(isRefreshed).toBe(false);
+            expect(getActions()).toContainEqual(
+                tradingExchangeActions.saveSelectedQuote(EXPIRED_QUOTE),
+            );
+            expect(getActions()).toContainEqual(
+                tradingExchangeActions.setSelectedQuoteTimestamp(EXPIRED_QUOTE_TIMESTAMP),
+            );
+        });
+
+        it('does nothing without a receive address on the selected quote', async () => {
+            const { result } = renderActions({ selectedQuote: SELECTED_QUOTE });
+
+            const isRefreshed = await result.current.refreshSelectedQuote();
+
+            expect(isRefreshed).toBe(false);
+            expect(mockFetchSelectedProviderQuoteThunk).not.toHaveBeenCalled();
         });
     });
 

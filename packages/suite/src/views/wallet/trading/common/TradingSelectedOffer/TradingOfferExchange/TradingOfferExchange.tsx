@@ -10,6 +10,7 @@ import {
     selectIsFeatureEnabled,
 } from '@suite-common/message-system';
 import {
+    getProviderTransactionDeadline,
     getSimulatedReceiveAmount,
     hasFixedPsbtFee,
     selectTradingComposedTransactionInfo,
@@ -19,15 +20,18 @@ import {
     selectTradingExchangeIsLoading,
     selectTradingExchangeReceiveAccountKey,
     selectTradingExchangeSelectedQuote,
+    selectTradingExchangeSelectedQuoteTimestamp,
     useDexExchangeTxSimulation,
     useExchangeIssue,
 } from '@suite-common/trading';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { Button, Card, Column, H2 } from '@trezor/components';
+import { Button, Card, Column, H2, Row } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { useAsyncClickHandler } from '@trezor/react-utils';
+import { ArrowsClockwiseIcon } from '@trezor/icons';
+import { useAsyncClickHandler, useIsPastDeadline } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
+import { TxValidityCountdownBadge } from 'src/components/suite/TxValidityCountdownBadge';
 import { TRADING_DEX_SOURCE_ORIGIN } from 'src/constants/wallet/trading/txSimulation';
 import { useTradingExchangeConfirmFees } from 'src/hooks/wallet/trading/useTradingExchangeConfirmFees';
 import { useTradingExchangeTradeActions } from 'src/hooks/wallet/trading/useTradingExchangeTradeActions';
@@ -54,6 +58,7 @@ export const TradingOfferExchange = () => {
 
     const {
         account: sendAccount,
+        refreshSelectedQuote,
         sendTransaction,
         signDataAndConfirm,
     } = useTradingExchangeTradeActions();
@@ -65,6 +70,7 @@ export const TradingOfferExchange = () => {
     const selectedQuote = useSelector(selectTradingExchangeSelectedQuote);
     const trade = useSelector(selectTradingExchangeActiveTrade);
     const isLoading = useSelector(selectTradingExchangeIsLoading);
+    const selectedQuoteTimestamp = useSelector(selectTradingExchangeSelectedQuoteTimestamp);
 
     const isTxSimulationFeatureEnabled = useSelector((state: MessageSystemRootState) =>
         selectIsFeatureEnabled(state, Feature.trading.txSimulation, true),
@@ -84,10 +90,22 @@ export const TradingOfferExchange = () => {
 
     useExchangeIssueAnalytics({ issue, isSimulationLoading, isSimulation });
 
-    const isConfirmDisabled =
-        isLoading || !selectedQuote || !sendAccount || !device?.connected || isSimulationLoading;
-
     const selectedTrade = trade?.data ?? selectedQuote;
+
+    const providerTransactionDeadline = getProviderTransactionDeadline({
+        quote: selectedQuote,
+        networkType: sendAccount?.networkType,
+        selectedQuoteTimestamp,
+    });
+    const isProviderTransactionExpired = useIsPastDeadline(providerTransactionDeadline);
+
+    const isConfirmDisabled =
+        isLoading ||
+        !selectedQuote ||
+        !sendAccount ||
+        !device?.connected ||
+        isSimulationLoading ||
+        isProviderTransactionExpired;
 
     if (!selectedTrade) {
         return null;
@@ -149,9 +167,18 @@ export const TradingOfferExchange = () => {
             <Card width="100%" maxWidth="440px" data-testid="@trading/selected-offer">
                 <Column gap={20}>
                     <Column gap={4} alignItems="start">
-                        <H2 typographyStyle="headline-sm">
-                            <Translation id="TR_TRADING_REVIEW_SWAP" />
-                        </H2>
+                        <Row justifyContent="space-between" alignItems="center" width="100%">
+                            <H2 typographyStyle="headline-sm">
+                                <Translation id="TR_TRADING_REVIEW_SWAP" />
+                            </H2>
+                            {providerTransactionDeadline !== undefined && (
+                                <TxValidityCountdownBadge
+                                    deadline={providerTransactionDeadline}
+                                    pastDeadlineMessage="TR_TRADING_QUOTE_EXPIRED_TITLE"
+                                    data-testid="@trading/offer/validity-timer"
+                                />
+                            )}
+                        </Row>
                         <TradingOfferExchangeSimulationSubtitle
                             isSimulationEnabled={isSimulationEnabled}
                             isSimulationLoading={isSimulationLoading}
@@ -195,7 +222,23 @@ export const TradingOfferExchange = () => {
                         />
                     )}
 
-                    {issue ? (
+                    {isProviderTransactionExpired && (
+                        <Button
+                            data-testid="@trading/offer/refresh-transaction"
+                            iconLeft={ArrowsClockwiseIcon}
+                            intent="warning"
+                            priority="secondary"
+                            isLoading={disabled}
+                            isDisabled={isLoading || disabled}
+                            onClick={() => handleClick(refreshSelectedQuote)}
+                            size="large"
+                            width="100%"
+                        >
+                            <Translation id="TR_TRADING_REFRESH_TRANSACTION" />
+                        </Button>
+                    )}
+
+                    {!isProviderTransactionExpired && issue && (
                         <Button
                             data-testid="@trading/offer/back-to-trade-form"
                             intent="neutral"
@@ -206,7 +249,9 @@ export const TradingOfferExchange = () => {
                         >
                             <Translation id="TR_TRADING_BACK_TO_TRADE_FORM" />
                         </Button>
-                    ) : (
+                    )}
+
+                    {!isProviderTransactionExpired && !issue && (
                         <Button
                             data-testid="@trading/offer/confirm-on-trezor-and-send"
                             isLoading={isLoading || disabled}
