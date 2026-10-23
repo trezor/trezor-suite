@@ -343,13 +343,20 @@ describe('useExchangeForm', () => {
             },
         } as ExchangeTrade;
 
-        it('should confirm dex quote once selected in form', async () => {
+        const quotesRequest = {
+            send: usdcAsset.cryptoId,
+            receive: btcAsset.cryptoId,
+            sendStringAmount: dexQuoteWithDexTx.sendStringAmount,
+            receiveAddress: 'bc1qreceive',
+        };
+
+        it('should prefetch dex quote approval with the quotes request receive address', async () => {
             await renderUseExchangeForm();
 
             await act(async () => {
                 store.dispatch(tradingExchangeActions.setTradingAccountKey(eth1AccountKey));
-                store.dispatch(tradingExchangeActions.setReceiveAccountKey(eth1AccountKey));
                 store.dispatch(tradingExchangeActions.saveQuotes([dexQuoteWithDexTx]));
+                store.dispatch(tradingExchangeActions.saveQuoteRequest(quotesRequest));
                 await Promise.resolve();
             });
 
@@ -357,8 +364,27 @@ describe('useExchangeForm', () => {
             expect(exchangeThunks.prefetchDexQuoteApprovalThunk).toHaveBeenCalledWith(
                 expect.objectContaining({
                     trade: expect.objectContaining({ quoteId: dexQuoteWithDexTx.quoteId }),
+                    receiveAddress: quotesRequest.receiveAddress,
                 }),
             );
+        });
+
+        it('should not prefetch dex quote approval when quotes request has no receive address', async () => {
+            await renderUseExchangeForm();
+
+            await act(async () => {
+                store.dispatch(tradingExchangeActions.setTradingAccountKey(eth1AccountKey));
+                store.dispatch(tradingExchangeActions.saveQuotes([dexQuoteWithDexTx]));
+                store.dispatch(
+                    tradingExchangeActions.saveQuoteRequest({
+                        ...quotesRequest,
+                        receiveAddress: undefined,
+                    }),
+                );
+                await Promise.resolve();
+            });
+
+            expect(exchangeThunks.prefetchDexQuoteApprovalThunk).not.toHaveBeenCalled();
         });
 
         it('should not confirm the same dex quote repeatedly', async () => {
@@ -366,8 +392,8 @@ describe('useExchangeForm', () => {
 
             await act(async () => {
                 store.dispatch(tradingExchangeActions.setTradingAccountKey(eth1AccountKey));
-                store.dispatch(tradingExchangeActions.setReceiveAccountKey(eth1AccountKey));
                 store.dispatch(tradingExchangeActions.saveQuotes([dexQuoteWithDexTx]));
+                store.dispatch(tradingExchangeActions.saveQuoteRequest(quotesRequest));
                 await Promise.resolve();
                 store.dispatch(
                     tradingExchangeActions.saveQuotes([{ ...dexQuoteWithDexTx, rate: 0.0000089 }]),
