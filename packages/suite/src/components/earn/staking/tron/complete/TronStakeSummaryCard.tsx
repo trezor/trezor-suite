@@ -8,9 +8,10 @@ import { TokenIcon } from '@trezor/product-components';
 import { BaseCurrencyValue } from 'src/components/suite/BaseCurrencyValue';
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';
 
+import { useFormatApyValue } from '../../../utils/earnApyUtils';
 import { useTronStakeContext } from '../TronStakeContext';
 import { TronStakeInfoRow } from '../TronStakeInfoRow';
-import { formatApr, getWeightedApr, parseVoteAllocations } from '../utils/voteUtils';
+import { getWeightedApr, parseVoteAllocations } from '../utils/voteUtils';
 
 const RESOURCE_LABEL: Record<TronResourceType, TranslationKey> = {
     bandwidth: 'TR_EARN_TRON_BANDWIDTH',
@@ -24,6 +25,7 @@ export const TronStakeSummaryCard = () => {
     'use no memo';
 
     const { account, form, representatives } = useTronStakeContext();
+    const formatApyValue = useFormatApyValue();
     const { amount, resourceType } = form.methods.getValues();
 
     const tronResources = account.networkType === 'tron' ? account.misc.tronResources : undefined;
@@ -50,7 +52,7 @@ export const TronStakeSummaryCard = () => {
 
                 <TronStakeInfoRow label={<Translation id="TR_EARN_TRON_APR_LABEL" />}>
                     <Text typographyStyle="body-md-strong" data-testid="@staking/tron-complete/apr">
-                        {formatApr(apr)}
+                        {formatApyValue(apr, { withSymbol: true })}
                     </Text>
                 </TronStakeInfoRow>
 

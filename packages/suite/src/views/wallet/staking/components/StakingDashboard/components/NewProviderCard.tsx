@@ -9,7 +9,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { InfoIcon } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { formatApyValue } from 'src/components/earn/utils/earnApyUtils';
+import { useFormatApyValue } from 'src/components/earn/utils/earnApyUtils';
 import { useSelector } from 'src/hooks/suite';
 import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
@@ -19,6 +19,7 @@ interface NewProviderCardProps {
 
 export const NewProviderCard = ({ account }: NewProviderCardProps) => {
     const { dispatch } = useServices(injectDispatch);
+    const formatApyValue = useFormatApyValue();
 
     const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking(account?.symbol);
 

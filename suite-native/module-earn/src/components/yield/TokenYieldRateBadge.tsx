@@ -1,3 +1,4 @@
+import { useFormatters } from '@suite-common/formatters';
 import { type Account } from '@suite-common/wallet-types';
 import { HStack, Text } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
@@ -32,6 +33,7 @@ type TokenYieldRateBadgeProps = {
 
 /** Rate of the best yield vault a token row can earn with, e.g. `up to 6.42% APY`. */
 export const TokenYieldRateBadge = ({ account, token, variant }: TokenYieldRateBadgeProps) => {
+    const { PercentageFormatter } = useFormatters();
     const yieldRate = useTokenYieldRate({ account, token, variant });
 
     if (!yieldRate) {
@@ -46,7 +48,7 @@ export const TokenYieldRateBadge = ({ account, token, variant }: TokenYieldRateB
             <Text variant="body-sm" color={color}>
                 <Translation
                     id={translationIds[variant][yieldRate.labelType]}
-                    values={{ value: yieldRate.apy }}
+                    values={{ value: PercentageFormatter.format(yieldRate.apy) }}
                 />
             </Text>
         </HStack>

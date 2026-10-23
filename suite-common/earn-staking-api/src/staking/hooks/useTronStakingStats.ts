@@ -3,6 +3,7 @@ import { type UseQueryOptions, commonQueryKeys, useQuery } from '@suite-common/r
 
 import { type TrxStats } from '../../api/types';
 import { getTronStakingStats } from '../services';
+import { formatTronApr } from '../utils/tronAprUtils';
 
 export function useTronStakingStats(
     queryOptions?: Partial<UseQueryOptions<TrxStats, ResponseError | ResponseValidationError>>,
@@ -15,7 +16,7 @@ export function useTronStakingStats(
     });
 
     const maxApr = stats.data?.length ? Math.max(...stats.data.map(({ apr }) => apr)) : null;
-    const formattedMaxApr = maxApr ? Number(maxApr.toFixed(2)) : null;
+    const formattedMaxApr = maxApr ? formatTronApr(maxApr) : null;
 
     return { stats, maxApr, formattedMaxApr };
 }

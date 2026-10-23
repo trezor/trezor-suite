@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 
 import { events } from '@suite-common/analytics';
+import { useFormatters } from '@suite-common/formatters';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { isApyAvailable } from '@suite-common/wallet-utils';
@@ -28,6 +29,7 @@ type YieldPositionCardProps = {
 };
 
 export const YieldPositionCard = ({ item, onClose }: YieldPositionCardProps) => {
+    const { PercentageFormatter } = useFormatters();
     const { analytics } = useServices(injectNativeAnalytics);
     const { navigateToYieldDetail } = useYieldDetailNavigation();
 
@@ -109,7 +111,10 @@ export const YieldPositionCard = ({ item, onClose }: YieldPositionCardProps) => 
                         {!isApyAvailable(item.apy) ? (
                             <ApyValue apy={null} withLabel />
                         ) : (
-                            <Translation id="earn.apyPercentage" values={{ apy: item.apy }} />
+                            <Translation
+                                id="earn.apyPercentage"
+                                values={{ apy: PercentageFormatter.format(item.apy) }}
+                            />
                         )}
                     </Text>
                 )
