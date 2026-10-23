@@ -2550,7 +2550,6 @@
   "TR_STAKING_CURRENT_PREFERENCE": "Current preference",
   "TR_STAKING_DELEGATION_INFO_TEXT": "You can choose to support the Cardano ecosystem by delegating your community voting rights. This has no effect on your staking.",
   "TR_STAKING_DREP_ID": "DRep ID",
-  "TR_STAKING_DREP_ID_CONVERTED": "Converted to the new DRep ID format",
   "TR_STAKING_DREP_ID_IS_CURRENT_DELEGATE": "This DRep is already your current delegate",
   "TR_STAKING_ESTIMATED_GAINS": "Estimated rewards",
   "TR_STAKING_INVALID_DREP_ID": "Invalid DRep ID",

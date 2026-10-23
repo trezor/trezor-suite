@@ -2486,7 +2486,6 @@
   "TR_STAKING_CARD_UNSTAKE_ANYTIME_TITLE": "Zrušit staking kdykoliv",
   "TR_STAKING_DELEGATION_INFO_TEXT": "Pro podporu ekosystému Cardano můžete delegovat svá komunitní hlasovací práva. Tento krok nijak neovlivní váš staking.",
   "TR_STAKING_DREP_ID": "DRep ID",
-  "TR_STAKING_DREP_ID_CONVERTED": "Převedeno do nového formátu DRep ID",
   "TR_STAKING_ESTIMATED_GAINS": "Odhadované odměny",
   "TR_STAKING_INVALID_DREP_ID": "Neplatné DRep ID",
   "TR_STAKING_IS_NOT_SUPPORTED": "Staking není v této síti podporován.",
