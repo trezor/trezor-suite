@@ -36,6 +36,7 @@ import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
 
 import { FirmwareTypeSuggestion } from './FirmwareTypeSuggestion';
 import { NoNetworkSearchResults } from './NoNetworkSearchResults';
+import { ResetCustomServers } from './ResetCustomServers';
 import { useNetworkSettingsSearch } from './useNetworkSettingsSearch';
 
 const discoveryButtonAnimationConfig: MotionProps = {
@@ -246,6 +247,8 @@ export const SettingsCoins = () => {
                     )}
                 </Column>
             </SettingsSection>
+
+            <ResetCustomServers />
 
             <Box position={{ type: 'fixed', bottom: 16 }}>
                 <AnimatePresence>

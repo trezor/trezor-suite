@@ -1,3 +1,5 @@
+import { type ReactNode } from 'react';
+
 import { injectReloadApp } from '@suite-common/suite-types';
 import { Button, Column, Divider, H2, Paragraph, Row } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -7,9 +9,10 @@ import { injectDb } from 'src/storage/createDb';
 
 type ErrorProps = {
     error: string;
+    actions?: ReactNode;
 };
 
-export const Error = ({ error }: ErrorProps) => {
+export const Error = ({ error, actions }: ErrorProps) => {
     const { reloadApp, db } = useServices(injectReloadApp, injectDb);
 
     return (
@@ -40,6 +43,8 @@ export const Error = ({ error }: ErrorProps) => {
                 >
                     Reload window
                 </Button>
+
+                {actions}
 
                 <Button
                     iconLeft={RepeatIcon}
