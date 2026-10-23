@@ -13,6 +13,7 @@ import {
     UI_RESPONSE,
     createUiEventMessage,
     createUiRequestMessage,
+    getPreviousTxids,
 } from '@trezor/connect-common';
 import { toCanonicalDescriptor } from '@trezor/utils';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
@@ -31,11 +32,7 @@ import { createComposer } from './bitcoin/TransactionComposer';
 import { enhanceSignTx } from './bitcoin/enhanceSignTx';
 import { inputToTrezor } from './bitcoin/inputs';
 import { outputToTrezor, validateHDOutput } from './bitcoin/outputs';
-import {
-    getPreviousTxids,
-    parseTransactionHexes,
-    transformReferencedTransactions,
-} from './bitcoin/refTx';
+import { parseTransactionHexes, transformReferencedTransactions } from './bitcoin/refTx';
 import { signTx } from './bitcoin/signtx';
 import { deriveOutputScript, verifyTx } from './bitcoin/signtxVerify';
 import { Discovery } from './common/Discovery';
