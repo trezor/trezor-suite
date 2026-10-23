@@ -7,11 +7,12 @@ import {
 import { useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
 import { Feature, selectIsYieldFeatureDisabled } from '@suite-common/message-system';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
-import { getYieldVaultsForInputToken, selectPoolStatsApy } from '@suite-common/wallet-core';
+import { getYieldVaultsForInputToken } from '@suite-common/wallet-core';
 import { type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
 import { getApyPercent, isApyAvailable } from '@suite-common/wallet-utils';
 
 import { YieldBadge } from 'src/components/earn/YieldBadge/YieldBadge';
+import { useStakingRate } from 'src/hooks/earn/useStakingRate';
 import { useSelector } from 'src/hooks/suite';
 
 type HomeAssetApyBadgeProps = {
@@ -56,9 +57,9 @@ const useVaultApy = ({
 export const HomeAssetApyBadge = (props: HomeAssetApyBadgeProps) => {
     const isToken = props.contractAddress !== undefined;
     const vaultApy = useVaultApy(props);
-    const stakingApy = useSelector(state =>
-        isToken ? null : selectPoolStatsApy(state, { networkSymbol: props.symbol }),
-    );
+    const { rate: stakingRate } = useStakingRate({ symbol: props.symbol });
+    const stakingApy = isToken ? null : stakingRate;
+
     const apy = Math.max(
         ...[vaultApy, stakingApy].filter((rate): rate is number => isApyAvailable(rate)),
     );
