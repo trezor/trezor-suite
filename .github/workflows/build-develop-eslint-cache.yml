@@ -1,0 +1,66 @@
+name: "[Build] develop ESLint cache"
+
+# GitHub lets a workflow run restore only the cache entries saved on its own branch or on the
+# default branch. "[Check] Validation" does not run on `develop`, so without this workflow every
+# pull request's first lint run starts from an empty ESLint cache and only its later pushes reuse
+# one. Each push to `develop` runs the basic lint job here with the same cache key as the
+# validation workflow and saves the result under the default branch's scope; the type-aware run is
+# never cached (see its job in check-code-validation.yml). Restoring the newest
+# `develop` entry first and linting only the affected projects makes the entry accumulate across
+# pushes; a toolchain change starts a new key and lints every project, which fills it in one run.
+# A change to a workspace manifest alone starts a new key too, but fills it only for the affected
+# projects until the next yarn.lock change or a manual run of this workflow lints every project
+# again. Unlike the Yarn cache, no schedule is needed: develop is pushed often enough to outlive
+# eviction.
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches:
+      - develop
+  workflow_dispatch:
+
+env:
+  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_GHACTIONS_TOKEN }}
+
+concurrency:
+  # Runs queue instead of cancelling each other: a cancelled run saves nothing, and on a busy day
+  # the warm-up would otherwise never finish. GitHub keeps at most one run pending per group.
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  lint:
+    name: Save the basic rule set cache
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+      - name: "Checkout branches for Nx"
+        # A manual run has no pushed range to diff, so it lints every project instead.
+        if: github.event_name == 'push'
+        uses: ./.github/actions/nx-checkout
+      - name: "Minimal yarn install"
+        uses: ./.github/actions/minimal-yarn-install
+      - name: ESLint cache key
+        id: eslint-cache-key
+        # Same as in the `lint` job of check-code-validation.yml, which explains it.
+        run: |
+          hash=$(git ls-files -s -- yarn.lock eslint.config.mjs eslint-local-rules packages/eslint ':(glob)*/**/package.json' | sha256sum | cut -d' ' -f1)
+          echo "toolchain=$hash" >> "$GITHUB_OUTPUT"
+      - name: ESLint cache
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
+        with:
+          # Same path and keys as the `lint` job of check-code-validation.yml, which explains them.
+          path: |
+            **/.eslintcache
+            !**/node_modules
+          key: ${{ runner.os }}-eslint-basic-${{ steps.eslint-cache-key.outputs.toolchain }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-eslint-basic-${{ steps.eslint-cache-key.outputs.toolchain }}-
+      - name: Lint JS
+        run: yarn ${{ github.event_name == 'push' && 'lint:js' || 'lint:js:all' }} --output-style=stream
