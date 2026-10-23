@@ -141,10 +141,18 @@ export const selectStakingListItems = createMemoizedSelector(
         ),
 );
 
+const shouldShowFiveBinariesBanner = (account: Account) =>
+    isCardanoStakedWithFiveBinaries(account) && new BigNumber(account.balance).gt(0);
+
+export const selectCardanoAccountForFiveBinariesBanner = createMemoizedSelector(
+    [selectVisibleDeviceAccounts],
+    accounts => accounts.find(shouldShowFiveBinariesBanner) ?? null,
+);
+
 export const selectCardanoStakedWithFiveBinariesAccountKey = createMemoizedSelector(
     [selectStakingSymbolAccounts],
     (stakingSymbolAccounts): AccountKey | null =>
-        stakingSymbolAccounts.find(isCardanoStakedWithFiveBinaries)?.key ?? null,
+        stakingSymbolAccounts.find(shouldShowFiveBinariesBanner)?.key ?? null,
 );
 
 export const selectStakingListSymbols = createMemoizedSelector(
