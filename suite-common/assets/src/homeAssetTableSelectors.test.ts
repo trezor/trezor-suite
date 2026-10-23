@@ -1,6 +1,10 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { getWalletAssetKey } from '@suite-common/wallet-core';
-import { type Account, type TokenAddress } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type HomeAssetsTableGrouping,
+    type TokenAddress,
+} from '@suite-common/wallet-types';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { FirmwareType, type StaticSessionId } from '@trezor/device-utils';
@@ -8,13 +12,16 @@ import { BigNumber } from '@trezor/utils';
 
 import {
     type HomeAssetTableState,
+    selectAreHomeAssetSmallBalancesDisplayed,
     selectDisplayedNetworkSymbols,
     selectDisplayedWalletAssetKeys,
     selectDisplayedWalletAssetKeysOfNetwork,
     selectHiddenWalletAssetKeys,
+    selectHomeAssetGrouping,
     selectHomeAssetTotalFiatValue,
     selectHomeAssetTotals,
     selectIsHomeAssetTableFoldable,
+    selectIsHomeAssetTableMenuAvailable,
     selectNetworkFiatValue,
     selectShownWalletAssetKeys,
     selectSmallBalanceSummary,
@@ -89,6 +96,7 @@ type MockStateParams = {
     knownTokens?: TokenAddress[];
     hiddenTokens?: TokenAddress[];
     areSmallBalancesShown?: boolean;
+    grouping?: HomeAssetsTableGrouping;
     shownTokens?: TokenAddress[];
     localCurrency?: BaseCurrencyCode;
 };
@@ -101,6 +109,7 @@ const createState = ({
     knownTokens = [USDC_ON_ETH, USDC_ON_POL],
     hiddenTokens = [],
     areSmallBalancesShown = true,
+    grouping = 'default',
     shownTokens = [],
     localCurrency = 'usd',
 }: MockStateParams): HomeAssetTableState => {
@@ -123,6 +132,7 @@ const createState = ({
                 enabledNetworks,
                 localCurrency,
                 areHomeAssetSmallBalancesShown: areSmallBalancesShown,
+                homeAssetsTableGrouping: grouping,
             },
             fiat: { current: rates, lastWeek: {}, historic: {} },
         },
@@ -1053,5 +1063,35 @@ describe('the fold a long table shows', () => {
 
         expect(selectDisplayedWalletAssetKeysOfNetwork(state, ETH)).toHaveLength(7);
         expect(selectDisplayedWalletAssetKeysOfNetwork(state, POL)).toHaveLength(7);
+    });
+});
+
+describe('the menu over the table', () => {
+    // Bitcoin is worth 50c here: a small balance.
+    const stateWithMenuSettings = (hasBitcoinOnlyFirmware: boolean) =>
+        createState({
+            accounts: [mockAccount({ symbol: BTC, balance: '0.5' })],
+            rates: mockRate(BTC, 1),
+            hasBitcoinOnlyFirmware,
+            areSmallBalancesShown: false,
+            grouping: 'networks',
+        });
+
+    it('follows the saved settings on universal firmware', () => {
+        const state = stateWithMenuSettings(false);
+
+        expect(selectIsHomeAssetTableMenuAvailable(state)).toBe(true);
+        expect(selectHomeAssetGrouping(state)).toBe('networks');
+        expect(selectAreHomeAssetSmallBalancesDisplayed(state)).toBe(false);
+        expect(selectDisplayedWalletAssetKeys(state)).toEqual([]);
+    });
+
+    it('is not offered on Bitcoin-only firmware, which falls back to what it would set by default', () => {
+        const state = stateWithMenuSettings(true);
+
+        expect(selectIsHomeAssetTableMenuAvailable(state)).toBe(false);
+        expect(selectHomeAssetGrouping(state)).toBe('default');
+        expect(selectAreHomeAssetSmallBalancesDisplayed(state)).toBe(true);
+        expect(selectDisplayedWalletAssetKeys(state)).toEqual([`${ALICE}/btc/`]);
     });
 });
