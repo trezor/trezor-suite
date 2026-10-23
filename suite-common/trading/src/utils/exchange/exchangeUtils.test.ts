@@ -10,7 +10,9 @@ import {
     getApprovalStatus,
     getDexEstimationData,
     getDisplayNetworkFee,
+    getProviderTransactionDeadline,
     hasEip712SignDataType,
+    hasExpiringProviderTransaction,
     hasFixedPsbtFee,
     requiresErc20Approval,
     requiresTokenApproval,
@@ -493,6 +495,71 @@ describe('hasFixedPsbtFee', () => {
 
     it('should return false when no quote is provided', () => {
         expect(hasFixedPsbtFee(undefined, 'bitcoin')).toBe(false);
+    });
+});
+
+describe('hasExpiringProviderTransaction', () => {
+    const dexTx = { from: 'from', to: 'to', data: 'AQAAAAAA', value: '0' };
+
+    it('should return true for a solana DEX quote with a serialized transaction', () => {
+        expect(hasExpiringProviderTransaction({ isDex: true, dexTx }, 'solana')).toBe(true);
+    });
+
+    it('should return false for a solana DEX quote that is a plain transfer', () => {
+        expect(
+            hasExpiringProviderTransaction(
+                { isDex: true, dexTx: { from: 'from', to: 'to', data: '', value: '1' } },
+                'solana',
+            ),
+        ).toBe(false);
+    });
+
+    it('should return false for a solana CEX quote', () => {
+        expect(hasExpiringProviderTransaction({ isDex: false }, 'solana')).toBe(false);
+    });
+
+    it('should return false for an EVM DEX quote with transaction data', () => {
+        expect(hasExpiringProviderTransaction({ isDex: true, dexTx }, 'ethereum')).toBe(false);
+    });
+
+    it('should return false without a quote or a network type', () => {
+        expect(hasExpiringProviderTransaction(undefined, 'solana')).toBe(false);
+        expect(hasExpiringProviderTransaction({ isDex: true, dexTx }, undefined)).toBe(false);
+    });
+});
+
+describe('getProviderTransactionDeadline', () => {
+    const quote = { isDex: true, dexTx: { from: 'from', to: 'to', data: 'AQAAAAAA', value: '0' } };
+    const selectedQuoteTimestamp = new Date('2026-10-23T10:00:00Z').getTime();
+
+    it('should count the validity from the trade confirmation for a provider-built solana transaction', () => {
+        expect(
+            getProviderTransactionDeadline({
+                quote,
+                networkType: 'solana',
+                selectedQuoteTimestamp,
+            }),
+        ).toBe(selectedQuoteTimestamp + 30_000);
+    });
+
+    it('should return undefined without a confirmation timestamp', () => {
+        expect(
+            getProviderTransactionDeadline({
+                quote,
+                networkType: 'solana',
+                selectedQuoteTimestamp: undefined,
+            }),
+        ).toBeUndefined();
+    });
+
+    it('should return undefined for a quote without a provider-built transaction', () => {
+        expect(
+            getProviderTransactionDeadline({
+                quote: { isDex: false },
+                networkType: 'solana',
+                selectedQuoteTimestamp,
+            }),
+        ).toBeUndefined();
     });
 });
 

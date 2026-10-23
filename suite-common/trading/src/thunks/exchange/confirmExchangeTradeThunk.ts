@@ -83,6 +83,7 @@ export const confirmExchangeTradeThunk = createThunk<
             }
         }
 
+        const confirmRequestTimestamp = Date.now();
         const rawResponse = await tradeApi.doExchangeTrade(
             {
                 trade,
@@ -104,6 +105,7 @@ export const confirmExchangeTradeThunk = createThunk<
             isDex: rawResponse.isDex ?? trade.isDex,
             receiveTxHash: rawResponse.receiveTxHash ?? trade.receiveTxHash,
             swapSlippage: rawResponse.swapSlippage || trade.swapSlippage,
+            receiveAddress: rawResponse.receiveAddress ?? trade.receiveAddress,
         };
 
         if (!response) {
@@ -170,6 +172,7 @@ export const confirmExchangeTradeThunk = createThunk<
 
         if (response.status === 'CONFIRM') {
             dispatch(tradingExchangeActions.saveSelectedQuote(response));
+            dispatch(tradingExchangeActions.setSelectedQuoteTimestamp(confirmRequestTimestamp));
             dispatch(tradingExchangeActions.setFormStep('SEND_TRANSACTION'));
 
             return response;

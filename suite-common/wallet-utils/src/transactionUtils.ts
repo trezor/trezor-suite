@@ -1284,3 +1284,7 @@ export const getTxValidityTimeoutInMs = (networkType?: NetworkType) => {
 
     return 0;
 };
+
+export const getProviderTransactionValidityMs = (
+    networkType: Account['networkType'] | undefined,
+): number | undefined => (networkType === 'solana' ? SOLANA_BLOCKHASH_VALIDITY_MS : undefined);

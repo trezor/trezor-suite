@@ -406,6 +406,9 @@ export const selectTradingExchangeIsFromRedirect = (state: TradingRootState) =>
 export const selectTradingExchangeQuotes = (state: TradingRootState) =>
     state.wallet.trading.exchange.quotes;
 
+export const selectTradingExchangeSelectedQuoteTimestamp = (state: TradingRootState) =>
+    state.wallet.trading.exchange.selectedQuoteTimestamp;
+
 export const selectTradingSellQuotesRequest = (state: TradingRootState) =>
     state.wallet.trading.sell.quotesRequest;
 
