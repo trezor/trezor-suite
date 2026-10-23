@@ -558,6 +558,8 @@ describe('confirmExchangeTradeThunk', () => {
     });
 
     it('should return true from confirmation when transaction is confirmed', async () => {
+        const NOW = new Date('2026-10-23T10:00:00Z').getTime();
+        const dateNowSpy = jest.spyOn(Date, 'now').mockReturnValue(NOW);
         const {
             store,
             returnUrl,
@@ -595,12 +597,15 @@ describe('confirmExchangeTradeThunk', () => {
         const { exchange } = store.getState().wallet.trading;
 
         expect(mockTriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
-        expect(store.getActions().length).toEqual(4);
+        expect(store.getActions().length).toEqual(5);
         expect(exchange.transactionId).toBeUndefined();
         expect(exchange.isLoading).toBeFalsy();
         expect(exchange.selectedQuote).toEqual(tradeResponse);
         expect(exchange.formStep).toEqual('SEND_TRANSACTION');
+        expect(exchange.selectedQuoteTimestamp).toBe(NOW);
         expect(!!response).toBeTruthy();
+
+        dateNowSpy.mockRestore();
     });
 
     it('should preserve DEX fields omitted by the provider response', async () => {
@@ -690,7 +695,7 @@ describe('confirmExchangeTradeThunk', () => {
             const { exchange } = store.getState().wallet.trading;
 
             expect(mockTriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
-            expect(store.getActions().length).toEqual(4);
+            expect(store.getActions().length).toEqual(5);
             expect(exchange.transactionId).toBeUndefined();
             expect(exchange.isLoading).toBeFalsy();
             expect(exchange.selectedQuote).toEqual(tradeResponse);
@@ -738,7 +743,7 @@ describe('confirmExchangeTradeThunk', () => {
         const { exchange } = store.getState().wallet.trading;
 
         expect(mockTriggerAnalyticsTradeConfirmation).toHaveBeenCalledTimes(1);
-        expect(store.getActions().length).toEqual(4);
+        expect(store.getActions().length).toEqual(5);
         expect(exchange.transactionId).toBeUndefined();
         expect(exchange.isLoading).toBeFalsy();
         expect(exchange.selectedQuote).toEqual(tradeResponse);

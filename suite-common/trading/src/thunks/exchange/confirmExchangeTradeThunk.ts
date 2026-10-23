@@ -85,6 +85,7 @@ export const confirmExchangeTradeThunk = createThunk<
             }
         }
 
+        const confirmRequestTimestamp = Date.now();
         const rawResponse = await tradeApi.doExchangeTrade(
             {
                 trade,
@@ -173,6 +174,7 @@ export const confirmExchangeTradeThunk = createThunk<
 
         if (response.status === 'CONFIRM') {
             dispatch(tradingExchangeActions.saveSelectedQuote(response));
+            dispatch(tradingExchangeActions.setSelectedQuoteTimestamp(confirmRequestTimestamp));
             dispatch(tradingExchangeActions.setFormStep('SEND_TRANSACTION'));
 
             return response;

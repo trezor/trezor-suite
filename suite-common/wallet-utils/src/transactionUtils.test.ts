@@ -7,6 +7,7 @@ import {
     asAccountDescriptor,
 } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { SOLANA_BLOCKHASH_VALIDITY_MS } from '@trezor/network-solana/constants';
 
 import * as fixtures from './__fixtures__/transactionUtils';
 import {
@@ -23,6 +24,7 @@ import {
     getEvmNonceStatus,
     getEvmPrivatePendingHint,
     getPendingEvmNonceStatus,
+    getProviderTransactionValidityMs,
     getRbfParams,
     getTargetAmount,
     getTransactionWithLowestNonce,
@@ -1266,5 +1268,16 @@ describe('transaction utils', () => {
         it('returns undefined when the form is missing', () => {
             expect(getDecreaseOutputId(buildBumpFeeRbfTx(true), undefined)).toBeUndefined();
         });
+    });
+});
+
+describe('getProviderTransactionValidityMs', () => {
+    it('returns the blockhash validity for solana', () => {
+        expect(getProviderTransactionValidityMs('solana')).toBe(SOLANA_BLOCKHASH_VALIDITY_MS);
+    });
+
+    it('returns undefined where a provider transaction does not expire', () => {
+        expect(getProviderTransactionValidityMs('ethereum')).toBeUndefined();
+        expect(getProviderTransactionValidityMs(undefined)).toBeUndefined();
     });
 });
