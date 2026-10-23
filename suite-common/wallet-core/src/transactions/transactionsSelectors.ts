@@ -1,3 +1,5 @@
+import { shallowEqual } from 'react-redux';
+
 import { A, D, pipe } from '@mobily/ts-belt';
 
 import { type DeviceRootState } from '@suite-common/device';
@@ -26,6 +28,7 @@ import {
     getErc4626Contracts,
     getEvmPrivatePendingHint,
     getFiatRateKey,
+    getTransactionsUntilGap,
     isClaimTx,
     isNftTokenTransfer,
     isPending,
@@ -34,6 +37,7 @@ import {
     isUnstakeTx,
     isYieldTypeTx,
     roundTimestampToNearestPastHour,
+    sortByBlockHeight,
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
@@ -97,6 +101,40 @@ export const selectAccountTransactionsWithNulls = (
 export const selectAccountTransactions = createMemoizedSelector(
     [selectAccountTransactionsWithNulls],
     transactions => returnStableArrayIfEmpty(transactions.filter(isNotNullOrUndefined)),
+);
+
+const isTransferOf = (transaction: WalletAccountTransaction, contractAddress: TokenAddress) =>
+    transaction.tokens.some(
+        token => token.contract.toLowerCase() === contractAddress.toLowerCase(),
+    );
+
+/**
+ * The transactions of several accounts as one list, newest first, as far as every account has
+ * them loaded without a gap. With a contract address, only the transactions moving that token.
+ */
+export const selectAccountsTransactions = createMemoizedSelector(
+    [
+        selectTransactions,
+        (_state: TransactionsRootState, accountKeys: readonly AccountKey[]) => accountKeys,
+        (
+            _state: TransactionsRootState,
+            _accountKeys: readonly AccountKey[],
+            contractAddress?: TokenAddress,
+        ) => contractAddress,
+    ],
+    (transactionsByAccount, accountKeys, contractAddress): readonly WalletAccountTransaction[] =>
+        returnStableArrayIfEmpty(
+            accountKeys
+                .flatMap(accountKey =>
+                    getTransactionsUntilGap(transactionsByAccount[accountKey] ?? []).filter(
+                        transaction =>
+                            contractAddress === undefined ||
+                            isTransferOf(transaction, contractAddress),
+                    ),
+                )
+                .sort(sortByBlockHeight),
+        ),
+    { memoizeOptions: { resultEqualityCheck: shallowEqual } },
 );
 
 export const selectPendingAccountAddresses = createMemoizedSelector(
