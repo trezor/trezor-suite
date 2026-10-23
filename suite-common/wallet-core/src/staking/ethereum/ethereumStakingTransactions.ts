@@ -1,18 +1,19 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import { type BaseStakeType, type WalletAccountTransaction } from '@suite-common/wallet-types';
+import { type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { isPending } from '@suite-common/wallet-utils';
 import { type InternalTransfer } from '@trezor/blockchain-link-types';
 
 import { listEthereumStakingAdapters } from './providers/ethereumStakingProviders';
 import {
-    type EthereumStakingProviderAdapter,
+    type EthereumStakingProductAdapter,
     type StakingTransferAccount,
+    type StakingTransferClassification,
     type StakingTxClassification,
 } from './providers/types';
 
 const firstHit = <T>(
-    adapters: EthereumStakingProviderAdapter[],
-    classify: (adapter: EthereumStakingProviderAdapter) => T | null,
+    adapters: EthereumStakingProductAdapter[],
+    classify: (adapter: EthereumStakingProductAdapter) => T | null,
 ): T | null => {
     for (const adapter of adapters) {
         const hit = classify(adapter);
@@ -35,22 +36,17 @@ export const classifyEthereumStakingCalldata = (
     symbol: NetworkSymbol,
     data: string | undefined,
 ): StakingTxClassification | null =>
-    firstHit(listEthereumStakingAdapters(symbol), adapter => adapter.classifyCalldata(data));
-
-export type EthereumStakingInternalTransferClassification = {
-    providerId: StakingTxClassification['providerId'];
-    type: BaseStakeType;
-};
+    firstHit(listEthereumStakingAdapters(symbol), adapter =>
+        adapter.classifyCalldata(data, symbol),
+    );
 
 export const classifyEthereumInternalTransfer = (
     transfer: Pick<InternalTransfer, 'from' | 'to'>,
     account: StakingTransferAccount,
-): EthereumStakingInternalTransferClassification | null =>
-    firstHit(listEthereumStakingAdapters(account.symbol), adapter => {
-        const type = adapter.classifyInternalTransfer(transfer, account);
-
-        return type ? { providerId: adapter.id, type } : null;
-    });
+): StakingTransferClassification | null =>
+    firstHit(listEthereumStakingAdapters(account.symbol), adapter =>
+        adapter.classifyInternalTransfer(transfer, account),
+    );
 
 // An instant stake moves funds from the pool to the provider's treasury; it is not a transfer of
 // the account and stays out of its targets.

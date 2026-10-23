@@ -94,6 +94,8 @@ export * from './staking/hooks/useStakingEntryPeriodEstimateInDays';
 export * from './staking/positions/deriveStakingPositions';
 export * from './staking/positions/positionsSelectors';
 export type * from './staking/positions/positionsTypes';
+export * from './staking/products/stakingProductAdapters';
+export type * from './staking/products/types';
 export * from './staking/shared/stakingConstants';
 export * from './staking/shared/stakingFormUtils';
 export * from './staking/shared/stakingSelectors';

@@ -101,7 +101,7 @@ describe(planEverstakeOperation.name, () => {
         expect(result).toEqual({
             success: true,
             plan: {
-                providerId: 'everstake',
+                productId: 'eth:eth:everstake:pooled',
                 operation: { type: 'stake', amount: '0.1' },
                 steps: [
                     {

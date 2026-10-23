@@ -4,7 +4,7 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StakingPool } from '@trezor/blockchain-link-types';
 import { EVERSTAKE_CONTRACTS } from '@trezor/network-ethereum/staking';
 
-import { deriveEthereumStakingPositions } from './deriveStakingPositions';
+import { deriveStakingPositions } from './deriveStakingPositions';
 
 const pool: StakingPool = {
     name: 'Everstake',
@@ -25,27 +25,31 @@ const hoodiAccount = (stakingPools: StakingPool[]): Account =>
         misc: { nonce: '0', stakingPools },
     }) as Account;
 
-describe(deriveEthereumStakingPositions.name, () => {
-    it('derives one position per provider the account has a pool with', () => {
-        const positions = deriveEthereumStakingPositions(hoodiAccount([pool]));
+describe(deriveStakingPositions.name, () => {
+    it('derives one position per product the account has a pool with', () => {
+        const positions = deriveStakingPositions(hoodiAccount([pool]));
 
         expect(positions).toHaveLength(1);
-        expect(positions[0]).toMatchObject({ providerId: 'everstake', staked: '1' });
+        expect(positions[0]).toMatchObject({
+            productId: 'thod:thod:everstake:pooled',
+            providerId: 'everstake',
+            staked: '1',
+        });
     });
 
     it('keeps the same references for the same account object', () => {
         const account = hoodiAccount([pool]);
 
-        const first = deriveEthereumStakingPositions(account);
-        const second = deriveEthereumStakingPositions(account);
+        const first = deriveStakingPositions(account);
+        const second = deriveStakingPositions(account);
 
         expect(second).toBe(first);
         expect(second[0]).toBe(first[0]);
     });
 
     it('returns the shared empty array when the account has no position', () => {
-        const withoutPools = deriveEthereumStakingPositions(hoodiAccount([]));
-        const bitcoin = deriveEthereumStakingPositions(
+        const withoutPools = deriveStakingPositions(hoodiAccount([]));
+        const bitcoin = deriveStakingPositions(
             mockWalletAccount({ symbol: asNetworkSymbol('btc') }),
         );
 
@@ -53,11 +57,11 @@ describe(deriveEthereumStakingPositions.name, () => {
         expect(bitcoin).toBe(withoutPools);
     });
 
-    it('reports a pool no provider claims instead of silently returning no position', () => {
+    it('reports a pool no product claims instead of silently returning no position', () => {
         const error = jest.spyOn(console, 'error').mockImplementation(() => {});
         const unknownContract = '0x624087DD1904ab122A32878Ce9e933C7071F53B9';
 
-        const positions = deriveEthereumStakingPositions(
+        const positions = deriveStakingPositions(
             hoodiAccount([{ ...pool, contract: unknownContract }]),
         );
 
@@ -70,7 +74,7 @@ describe(deriveEthereumStakingPositions.name, () => {
     it('does not report an account without pools', () => {
         const error = jest.spyOn(console, 'error').mockImplementation(() => {});
 
-        deriveEthereumStakingPositions(hoodiAccount([]));
+        deriveStakingPositions(hoodiAccount([]));
 
         expect(error).not.toHaveBeenCalled();
 

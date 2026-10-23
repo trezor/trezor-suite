@@ -1,17 +1,16 @@
 import { type Account, type AccountWithNetworkType } from '@suite-common/wallet-types';
 import { returnStableArrayIfEmpty, weakMapMemoize } from '@trezor/redux-utils';
-import { isNotNull } from '@trezor/utils';
 
 import { type StakingPosition } from './positionsTypes';
-import { listEthereumStakingAdapters } from '../ethereum/providers/ethereumStakingProviders';
+import { listStakingProductAdapters } from '../products/stakingProductAdapters';
 
-const LOG_PREFIX = 'deriveEthereumStakingPositions';
+const LOG_PREFIX = 'deriveStakingPositions';
 
 const createStableArray = weakMapMemoize((...positions: StakingPosition[]) => positions);
 
 type EthereumAccount = AccountWithNetworkType<'ethereum'>;
 
-// A backend reporting a pool no provider claims would otherwise read as "nothing staked".
+// A backend reporting a pool no product claims would otherwise read as "nothing staked".
 // Contract addresses are public, so they can be logged.
 const reportUnclaimedStakingPools = (account: EthereumAccount) => {
     const contracts = account.misc?.stakingPools?.map(pool => pool.contract) ?? [];
@@ -19,25 +18,19 @@ const reportUnclaimedStakingPools = (account: EthereumAccount) => {
     if (contracts.length === 0) return;
 
     console.error(
-        `${LOG_PREFIX}: no ${account.symbol} staking provider matches the account's staking pools (${contracts.join(', ')})`,
+        `${LOG_PREFIX}: no ${account.symbol} staking product matches the account's staking pools (${contracts.join(', ')})`,
     );
 };
 
 // Memoized on the account object: the positions of an unchanged account keep their references.
-export const deriveEthereumStakingPositions = weakMapMemoize(
-    (account: Account): StakingPosition[] => {
-        if (account.networkType !== 'ethereum') {
-            return returnStableArrayIfEmpty();
-        }
+export const deriveStakingPositions = weakMapMemoize((account: Account): StakingPosition[] => {
+    const positions = listStakingProductAdapters(account.symbol).flatMap(adapter =>
+        adapter.derivePositions(account),
+    );
 
-        const positions = listEthereumStakingAdapters(account.symbol)
-            .map(adapter => adapter.derivePosition(account))
-            .filter(isNotNull);
+    if (positions.length === 0 && account.networkType === 'ethereum') {
+        reportUnclaimedStakingPools(account);
+    }
 
-        if (positions.length === 0) {
-            reportUnclaimedStakingPools(account);
-        }
-
-        return returnStableArrayIfEmpty(createStableArray(...positions));
-    },
-);
+    return returnStableArrayIfEmpty(createStableArray(...positions));
+});

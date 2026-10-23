@@ -24,17 +24,12 @@ import {
     STAKE_GAS_LIMIT_RESERVE,
     UNSTAKE_INTERCHANGES,
 } from './everstakeConstants';
-import { getEverstakeContractsBySymbol } from './everstakeContracts';
+import { findEverstakeProduct, getEverstakeContractsBySymbol } from './everstakeContracts';
 import {
     validateEverstakeClaimLiveState,
     validateEverstakeUnstakeLiveState,
 } from './everstakeLiveState';
 import { getEverstakeStakingPool } from './everstakePosition';
-
-const planned = (operation: StakingOperationRequest, step: StakingTxStep): StakingPlanResult => ({
-    success: true,
-    plan: { providerId: 'everstake', operation, steps: [step] },
-});
 
 const liveStateInvalid = (reason: EthereumStakingLiveStateReason): StakingPlanResult => ({
     success: false,
@@ -87,11 +82,17 @@ export const planEverstakeOperation = async (
     request: StakingOperationRequest,
     { account, source, readPosition }: StakingPlanContext,
 ): Promise<StakingPlanResult> => {
+    const product = findEverstakeProduct(account.symbol);
     const step = buildEverstakeStep(request, { symbol: account.symbol, source });
 
-    if (!step) {
+    if (!product || !step) {
         return { success: false, error: { code: 'UNSUPPORTED_NETWORK' } };
     }
+
+    const planned: StakingPlanResult = {
+        success: true,
+        plan: { productId: product.id, operation: request, steps: [step] },
+    };
 
     switch (request.type) {
         case 'stake': {
@@ -105,7 +106,7 @@ export const planEverstakeOperation = async (
                 };
             }
 
-            return planned(request, step);
+            return planned;
         }
         case 'unstake': {
             const read = await readPosition();
@@ -119,9 +120,7 @@ export const planEverstakeOperation = async (
                 request.amount,
             );
 
-            return validation.isValid
-                ? planned(request, step)
-                : liveStateInvalid(validation.reason);
+            return validation.isValid ? planned : liveStateInvalid(validation.reason);
         }
         case 'claim': {
             const read = await readPosition();
@@ -134,9 +133,7 @@ export const planEverstakeOperation = async (
                 getEverstakeStakingPool(read.position),
             );
 
-            return validation.isValid
-                ? planned(request, step)
-                : liveStateInvalid(validation.reason);
+            return validation.isValid ? planned : liveStateInvalid(validation.reason);
         }
         default:
             return exhaustive(request);

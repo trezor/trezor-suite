@@ -1,20 +1,24 @@
 import {
-    type EthereumStakingKind,
     type NetworkSymbol,
+    type StakingProductId,
+    type StakingProductKind,
     type StakingProviderId,
 } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { type StakingPool } from '@trezor/blockchain-link-types';
 
-export type StakingPositionDetails = { providerId: 'everstake'; pool: StakingPool };
+export type StakingPositionDetails = { type: 'everstake-pool'; pool: StakingPool };
 
-// What an account holds with one provider. Amounts are in ether, as decimal strings.
-// The buckets overlap where noted, so sum them only through `total`.
+// What an account holds with one staking product. Amounts are in the staked asset's units, as
+// decimal strings. The buckets overlap where noted, so sum them only through `total`.
 export type StakingPosition = {
     accountKey: AccountKey;
+    /** Null for stake the protocol holds without a product of the catalog. */
+    productId: StakingProductId | null;
+    providerId: StakingProviderId | null;
     symbol: NetworkSymbol;
-    providerId: StakingProviderId;
-    kind: EthereumStakingKind;
+    asset: string;
+    kind: StakingProductKind;
     /** Principal that is earning now, without rewards. */
     staked: string;
     /** The most an unstake may request now; with a pooled provider that is staked plus rewards. */
@@ -29,9 +33,13 @@ export type StakingPosition = {
     claimable: string;
     /** Rewards earned so far; null when the provider cannot tell. */
     rewards: string | null;
+    /** Rewards claimed by their own transaction instead of compounding into the stake. */
+    claimableRewards: string;
     canClaim: boolean;
     /** withdrawable + pendingStake + unstaking: what the account would get back by exiting. */
     total: string;
+    /** False when the total is already counted elsewhere, e.g. as a token or in the balance. */
+    contributesToNativeBalance: boolean;
     details: StakingPositionDetails;
 };
 
@@ -43,6 +51,7 @@ export type StakingPositionsSummary = {
     unstaking: string;
     claimable: string;
     rewards: string | null;
+    claimableRewards: string;
     canClaim: boolean;
     total: string;
 };

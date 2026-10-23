@@ -1,28 +1,39 @@
 import {
     type NetworkSymbol,
+    STAKING_PRODUCTS,
     type StakingProviderId,
-    getEthereumStakingProviderIds,
 } from '@suite-common/wallet-config';
-import { type PartialRecord } from '@trezor/type-utils';
 import { throwError } from '@trezor/utils';
 
-import { everstakeAdapter } from './everstake/everstakeAdapter';
-import { type EthereumStakingProviderAdapter } from './types';
+import { type EthereumStakingProductAdapter } from './types';
+import {
+    type StakingProductAdapter,
+    findStakingProductAdapter,
+    listStakingProductAdapters,
+} from '../../products/stakingProductAdapters';
 
 export const DEFAULT_ETHEREUM_STAKING_PROVIDER_ID: StakingProviderId = 'everstake';
 
-const ADAPTERS: PartialRecord<StakingProviderId, EthereumStakingProviderAdapter> = {
-    everstake: everstakeAdapter,
-};
+const isEthereumStakingAdapter = (
+    adapter: StakingProductAdapter | undefined,
+): adapter is EthereumStakingProductAdapter => adapter?.networkType === 'ethereum';
 
+// Ethereum flows address the provider until they carry a product id; each provider offers one
+// Ethereum product family today.
 export const findEthereumStakingAdapter = (
-    id: StakingProviderId,
-): EthereumStakingProviderAdapter | undefined => ADAPTERS[id];
+    providerId: StakingProviderId,
+): EthereumStakingProductAdapter | undefined =>
+    STAKING_PRODUCTS.filter(product => product.providerId === providerId)
+        .map(findStakingProductAdapter)
+        .find(isEthereumStakingAdapter);
 
-export const getEthereumStakingAdapter = (id: StakingProviderId): EthereumStakingProviderAdapter =>
-    findEthereumStakingAdapter(id) ?? throwError(`No Ethereum staking adapter for ${id}`);
+export const getEthereumStakingAdapter = (
+    providerId: StakingProviderId,
+): EthereumStakingProductAdapter =>
+    findEthereumStakingAdapter(providerId) ??
+    throwError(`No Ethereum staking adapter for ${providerId}`);
 
 export const listEthereumStakingAdapters = (
     symbol: NetworkSymbol,
-): EthereumStakingProviderAdapter[] =>
-    getEthereumStakingProviderIds(symbol).map(getEthereumStakingAdapter);
+): EthereumStakingProductAdapter[] =>
+    listStakingProductAdapters(symbol).filter(isEthereumStakingAdapter);

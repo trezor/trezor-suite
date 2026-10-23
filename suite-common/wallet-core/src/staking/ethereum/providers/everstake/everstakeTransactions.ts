@@ -1,3 +1,4 @@
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type BaseStakeType, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { getSignatureByEthereumDataHex } from '@suite-common/wallet-utils';
 import { type InternalTransfer } from '@trezor/blockchain-link-types';
@@ -6,10 +7,14 @@ import {
     getEverstakeOperationBySelector,
 } from '@trezor/network-ethereum/staking';
 
-import { type StakingTransferAccount, type StakingTxClassification } from '../types';
+import {
+    type StakingTransferAccount,
+    type StakingTransferClassification,
+    type StakingTxClassification,
+} from '../types';
 import { getUnstakeAmountWeiFromCalldata } from './everstakeCalldata';
 import { STAKE_GAS_LIMIT_RESERVE } from './everstakeConstants';
-import { getEverstakeContractsBySymbol } from './everstakeContracts';
+import { findEverstakeProduct } from './everstakeContracts';
 
 const OPERATION_TO_STAKE_TYPE: Record<EverstakeOperation, BaseStakeType> = {
     stake: 'stake',
@@ -17,24 +22,31 @@ const OPERATION_TO_STAKE_TYPE: Record<EverstakeOperation, BaseStakeType> = {
     claimWithdrawRequest: 'claim',
 };
 
-const classify = (selector: string | undefined, data?: string): StakingTxClassification | null => {
+type ClassifyParams = {
+    symbol: NetworkSymbol;
+    selector: string | undefined;
+    data?: string;
+};
+
+const classify = ({ symbol, selector, data }: ClassifyParams): StakingTxClassification | null => {
+    const product = findEverstakeProduct(symbol);
     const operation = getEverstakeOperationBySelector(selector);
 
-    if (!operation) return null;
+    if (!product || !operation) return null;
 
     const type = OPERATION_TO_STAKE_TYPE[operation];
     const amount = type === 'unstake' && data ? getUnstakeAmountWeiFromCalldata(data) : null;
 
     return {
-        providerId: 'everstake',
+        productId: product.id,
         type,
         ...(amount ? { amount } : {}),
         gasReserve: STAKE_GAS_LIMIT_RESERVE,
     };
 };
 
-export const classifyEverstakeCalldata = (data: string | undefined) =>
-    data ? classify(getSignatureByEthereumDataHex(data), data) : null;
+export const classifyEverstakeCalldata = (data: string | undefined, symbol: NetworkSymbol) =>
+    data ? classify({ symbol, selector: getSignatureByEthereumDataHex(data), data }) : null;
 
 // Blockbook parses the selector into parsedData; the raw data covers backends that do not.
 export const classifyEverstakeTransaction = (tx: WalletAccountTransaction) => {
@@ -47,7 +59,7 @@ export const classifyEverstakeTransaction = (tx: WalletAccountTransaction) => {
     const selector =
         parsedData?.methodId ?? (data ? getSignatureByEthereumDataHex(data) : undefined);
 
-    return classify(selector, data);
+    return classify({ symbol: tx.symbol, selector, data });
 };
 
 // Instant operations settle through internal transfers between the pool, the withdraw treasury
@@ -55,23 +67,24 @@ export const classifyEverstakeTransaction = (tx: WalletAccountTransaction) => {
 export const classifyEverstakeInternalTransfer = (
     { from, to }: Pick<InternalTransfer, 'from' | 'to'>,
     { descriptor, symbol }: StakingTransferAccount,
-): BaseStakeType | null => {
-    const contracts = getEverstakeContractsBySymbol(symbol);
+): StakingTransferClassification | null => {
+    const product = findEverstakeProduct(symbol);
 
-    if (!contracts) return null;
+    if (!product) return null;
 
-    const { pool, withdrawTreasury } = contracts;
+    const { pool, withdrawTreasury } = product.identity.contracts;
+    const classified = (type: BaseStakeType) => ({ productId: product.id, type });
 
     if (from === pool && to === withdrawTreasury) {
-        return 'stake';
+        return classified('stake');
     }
 
     if (from === pool && to === descriptor) {
-        return 'unstake';
+        return classified('unstake');
     }
 
     if (from === withdrawTreasury && to === descriptor) {
-        return 'claim';
+        return classified('claim');
     }
 
     return null;

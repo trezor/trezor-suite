@@ -1,15 +1,25 @@
-import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import {
+    type NetworkSymbol,
+    type StakingProduct,
+    type StakingProductIdentity,
+    listStakingProducts,
+} from '@suite-common/wallet-config';
 import { type BaseStakeType } from '@suite-common/wallet-types';
-import { type EverstakeContracts, getEverstakeContracts } from '@trezor/network-ethereum/staking';
+import { type EverstakeContracts } from '@trezor/network-ethereum/staking';
 import { exhaustive } from '@trezor/type-utils';
 
-export const getEverstakeContractsBySymbol = (symbol: NetworkSymbol): EverstakeContracts | null => {
-    const { chainId } = getNetwork(symbol);
-
-    if (!chainId) return null;
-
-    return getEverstakeContracts(chainId) ?? null;
+export type EverstakeProduct = StakingProduct & {
+    identity: Extract<StakingProductIdentity, { type: 'everstake-pool' }>;
 };
+
+const isEverstakeProduct = (product: StakingProduct): product is EverstakeProduct =>
+    product.identity.type === 'everstake-pool';
+
+export const findEverstakeProduct = (symbol: NetworkSymbol): EverstakeProduct | undefined =>
+    listStakingProducts(symbol).find(isEverstakeProduct);
+
+export const getEverstakeContractsBySymbol = (symbol: NetworkSymbol): EverstakeContracts | null =>
+    findEverstakeProduct(symbol)?.identity.contracts ?? null;
 
 export const getEverstakeStepTarget = (
     label: BaseStakeType,

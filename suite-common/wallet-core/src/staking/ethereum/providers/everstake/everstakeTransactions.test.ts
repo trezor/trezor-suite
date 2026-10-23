@@ -27,21 +27,23 @@ const ethereumTransaction = (
 
 describe(classifyEverstakeCalldata.name, () => {
     it('classifies stake, unstake and claim calldata by selector', () => {
-        expect(classifyEverstakeCalldata(buildStakeData())).toEqual({
-            providerId: 'everstake',
+        expect(classifyEverstakeCalldata(buildStakeData(), ethSymbol)).toEqual({
+            productId: 'eth:eth:everstake:pooled',
             type: 'stake',
             gasReserve: STAKE_GAS_LIMIT_RESERVE,
         });
-        expect(classifyEverstakeCalldata(buildClaimWithdrawRequestData())).toEqual({
-            providerId: 'everstake',
+        expect(classifyEverstakeCalldata(buildClaimWithdrawRequestData(), ethSymbol)).toEqual({
+            productId: 'eth:eth:everstake:pooled',
             type: 'claim',
             gasReserve: STAKE_GAS_LIMIT_RESERVE,
         });
     });
 
     it('carries the unstake amount in wei', () => {
-        expect(classifyEverstakeCalldata(buildUnstakeData('1500000000000000000', 5))).toEqual({
-            providerId: 'everstake',
+        expect(
+            classifyEverstakeCalldata(buildUnstakeData('1500000000000000000', 5), ethSymbol),
+        ).toEqual({
+            productId: 'eth:eth:everstake:pooled',
             type: 'unstake',
             amount: '1500000000000000000',
             gasReserve: STAKE_GAS_LIMIT_RESERVE,
@@ -49,10 +51,17 @@ describe(classifyEverstakeCalldata.name, () => {
     });
 
     it('accepts calldata without the 0x prefix and ignores other calls', () => {
-        expect(classifyEverstakeCalldata(buildStakeData().slice(2))?.type).toBe('stake');
-        expect(classifyEverstakeCalldata('0xa9059cbb')).toBeNull();
-        expect(classifyEverstakeCalldata(undefined)).toBeNull();
-        expect(classifyEverstakeCalldata('')).toBeNull();
+        expect(classifyEverstakeCalldata(buildStakeData().slice(2), ethSymbol)?.type).toBe('stake');
+        expect(classifyEverstakeCalldata('0xa9059cbb', ethSymbol)).toBeNull();
+        expect(classifyEverstakeCalldata(undefined, ethSymbol)).toBeNull();
+        expect(classifyEverstakeCalldata('', ethSymbol)).toBeNull();
+    });
+
+    it('classifies only on networks with an Everstake product', () => {
+        expect(classifyEverstakeCalldata(buildStakeData(), asNetworkSymbol('thod'))).toMatchObject({
+            productId: 'thod:thod:everstake:pooled',
+        });
+        expect(classifyEverstakeCalldata(buildStakeData(), asNetworkSymbol('pol'))).toBeNull();
     });
 });
 
@@ -68,7 +77,7 @@ describe(classifyEverstakeTransaction.name, () => {
                 }),
             ),
         ).toEqual({
-            providerId: 'everstake',
+            productId: 'eth:eth:everstake:pooled',
             type: 'unstake',
             amount: '2000000000000000000',
             gasReserve: STAKE_GAS_LIMIT_RESERVE,
@@ -83,7 +92,7 @@ describe(classifyEverstakeTransaction.name, () => {
                 }),
             ),
         ).toEqual({
-            providerId: 'everstake',
+            productId: 'eth:eth:everstake:pooled',
             type: 'unstake',
             gasReserve: STAKE_GAS_LIMIT_RESERVE,
         });

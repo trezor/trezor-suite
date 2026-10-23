@@ -57,8 +57,10 @@ describe(deriveEverstakePosition.name, () => {
 
         expect(deriveEverstakePosition(account)).toEqual({
             accountKey: account.key,
-            symbol: ethSymbol,
+            productId: 'eth:eth:everstake:pooled',
             providerId: 'everstake',
+            symbol: ethSymbol,
+            asset: 'eth',
             kind: 'pooled',
             staked: '3',
             withdrawable: '3.234',
@@ -67,9 +69,11 @@ describe(deriveEverstakePosition.name, () => {
             unstaking: '0.5',
             claimable: '0.5',
             rewards: '0.234',
+            claimableRewards: '0',
             canClaim: true,
             total: '4.034',
-            details: { providerId: 'everstake', pool: everstakePool() },
+            contributesToNativeBalance: true,
+            details: { type: 'everstake-pool', pool: everstakePool() },
         });
     });
 

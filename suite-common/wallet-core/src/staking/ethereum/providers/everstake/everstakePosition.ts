@@ -4,7 +4,7 @@ import { fromWei, getStakingPoolTotalBalance } from '@suite-common/wallet-utils'
 import { type StakingPool } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
-import { getEverstakeContractsBySymbol } from './everstakeContracts';
+import { findEverstakeProduct, getEverstakeContractsBySymbol } from './everstakeContracts';
 import { type StakingPosition } from '../../../positions/positionsTypes';
 
 // Blockbook reports the accounting contract; the evm-rpc worker does the same. The pool contract
@@ -27,7 +27,7 @@ export const findEverstakeStakingPool = (
 export const getEverstakeStakingPool = (
     position: StakingPosition | null,
 ): StakingPool | undefined =>
-    position?.details.providerId === 'everstake' ? position.details.pool : undefined;
+    position?.details.type === 'everstake-pool' ? position.details.pool : undefined;
 
 const toEther = (wei: string) => fromWei(wei).toEther();
 
@@ -39,17 +39,20 @@ const toEtherSum = (...wei: string[]) =>
 export const deriveEverstakePosition = (account: Account): StakingPosition | null => {
     if (account.networkType !== 'ethereum') return null;
 
+    const product = findEverstakeProduct(account.symbol);
     const pool = findEverstakeStakingPool(account.symbol, account.misc?.stakingPools);
 
-    if (!pool) return null;
+    if (!product || !pool) return null;
 
     const claimable = new BigNumber(pool.claimableAmount);
 
     return {
         accountKey: account.key,
-        symbol: account.symbol,
-        providerId: 'everstake',
-        kind: 'pooled',
+        productId: product.id,
+        providerId: product.providerId,
+        symbol: product.symbol,
+        asset: product.asset,
+        kind: product.kind,
         staked: toEther(pool.depositedBalance),
         withdrawable: toEther(pool.autocompoundBalance),
         pendingStake: toEtherSum(pool.pendingBalance, pool.pendingDepositedBalance).toFixed(),
@@ -57,8 +60,10 @@ export const deriveEverstakePosition = (account: Account): StakingPosition | nul
         unstaking: toEther(pool.withdrawTotalAmount),
         claimable: toEther(pool.claimableAmount),
         rewards: toEther(pool.restakedReward),
+        claimableRewards: '0',
         canClaim: claimable.gt(0) && claimable.eq(pool.withdrawTotalAmount),
         total: getStakingPoolTotalBalance(pool).toFixed(),
-        details: { providerId: 'everstake', pool },
+        contributesToNativeBalance: true,
+        details: { type: 'everstake-pool', pool },
     };
 };

@@ -1,14 +1,14 @@
-import { type NetworkSymbol, type StakingProviderId } from '@suite-common/wallet-config';
+import { type NetworkSymbol, type StakingProductId } from '@suite-common/wallet-config';
 import {
     type Account,
     type BaseStakeType,
-    type StakingLimits,
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import { type InternalTransfer } from '@trezor/blockchain-link-types';
 import { type VerifyIssue } from '@trezor/network-ethereum-suite-common';
 
 import { type StakingPosition } from '../../positions/positionsTypes';
+import { type StakingProductAdapterBase } from '../../products/types';
 import {
     type EthereumStakingLiveStateReason,
     type EthereumStakingLiveStateValidation,
@@ -34,7 +34,7 @@ export type StakingTxStep = {
 };
 
 export type StakingTxPlan = {
-    providerId: StakingProviderId;
+    productId: StakingProductId;
     operation: StakingOperationRequest;
     steps: StakingTxStep[];
 };
@@ -71,7 +71,7 @@ export type StakingStepCalldata = Pick<StakingTxStep, 'label' | 'data'>;
 export type StakingCalldataVerification = { isValid: boolean; issues: VerifyIssue[] };
 
 export type StakingTxClassification = {
-    providerId: StakingProviderId;
+    productId: StakingProductId;
     type: BaseStakeType;
     /** In subunits, like the transaction's own amounts; present where the calldata carries it. */
     amount?: string;
@@ -79,6 +79,8 @@ export type StakingTxClassification = {
 };
 
 export type StakingTransferAccount = { descriptor: string; symbol: NetworkSymbol };
+
+export type StakingTransferClassification = { productId: StakingProductId; type: BaseStakeType };
 
 export type StakingTimelineContext = {
     stakeTxs: WalletAccountTransaction[];
@@ -110,17 +112,14 @@ export type StakingUnstakePreviewParams = {
     source?: string;
 };
 
-export type EthereumStakingProviderAdapter = {
-    readonly id: StakingProviderId;
-    readonly limits: StakingLimits;
-    readonly contributesToNativeBalance: boolean;
+export type EthereumStakingProductAdapter = StakingProductAdapterBase<'ethereum'> & {
     readonly timelineDefaults: StakingTimelineDefaults;
     /** Entry, exit and payout estimates from the provider's stats and the account's staking transactions. */
     timelines: (
         stats: EthereumProviderStats | undefined,
         context: StakingTimelineContext,
     ) => StakingTimelines;
-    /** Sync part of the position from account data alone; null when the account holds nothing with this provider. */
+    /** Sync part of the position from account data alone; null when the account holds nothing with this product. */
     derivePosition: (account: Account) => StakingPosition | null;
     /** Contract a step of the operation is sent to; null on a network without a deployment. */
     getStepTarget: (label: BaseStakeType, symbol: NetworkSymbol) => string | null;
@@ -140,12 +139,15 @@ export type EthereumStakingProviderAdapter = {
     ) => Promise<EthereumStakingLiveStateValidation>;
     previewUnstake?: (params: StakingUnstakePreviewParams) => Promise<string | null>;
     /** Classifies calldata by its function selector alone, for drafts and fee bumps. */
-    classifyCalldata: (data: string | undefined) => StakingTxClassification | null;
-    /** Maps a wallet transaction to an operation of this provider, or null. */
+    classifyCalldata: (
+        data: string | undefined,
+        symbol: NetworkSymbol,
+    ) => StakingTxClassification | null;
+    /** Maps a wallet transaction to an operation of the adapter's product, or null. */
     classifyTransaction: (tx: WalletAccountTransaction) => StakingTxClassification | null;
-    /** Maps an internal transfer between the provider's contracts and the account to an operation, or null. */
+    /** Maps an internal transfer between the product's contracts and the account to an operation, or null. */
     classifyInternalTransfer: (
         transfer: Pick<InternalTransfer, 'from' | 'to'>,
         account: StakingTransferAccount,
-    ) => BaseStakeType | null;
+    ) => StakingTransferClassification | null;
 };

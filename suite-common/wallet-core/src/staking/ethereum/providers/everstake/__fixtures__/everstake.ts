@@ -134,7 +134,7 @@ export const getInstantStakeTypeFixture = [
             address: 'address',
             symbol: 'eth' as const,
         },
-        result: 'stake',
+        result: { productId: 'eth:eth:everstake:pooled', type: 'stake' },
     },
     {
         description: 'should return "stake" for valid instant stake transfer (hoodi)',
@@ -146,7 +146,7 @@ export const getInstantStakeTypeFixture = [
             address: 'address',
             symbol: 'thod' as const,
         },
-        result: 'stake',
+        result: { productId: 'thod:thod:everstake:pooled', type: 'stake' },
     },
     {
         description: 'should return "unstake" for valid instant unstake transfer (mainnet)',
@@ -158,7 +158,7 @@ export const getInstantStakeTypeFixture = [
             address: 'address',
             symbol: 'eth' as const,
         },
-        result: 'unstake',
+        result: { productId: 'eth:eth:everstake:pooled', type: 'unstake' },
     },
     {
         description: 'should return "unstake" for valid instant unstake transfer (hoodi)',
@@ -170,7 +170,7 @@ export const getInstantStakeTypeFixture = [
             address: 'address',
             symbol: 'thod' as const,
         },
-        result: 'unstake',
+        result: { productId: 'thod:thod:everstake:pooled', type: 'unstake' },
     },
     {
         description: 'should return "claim" for valid claim transfer (mainnet)',
@@ -182,7 +182,7 @@ export const getInstantStakeTypeFixture = [
             address: 'address',
             symbol: 'eth' as const,
         },
-        result: 'claim',
+        result: { productId: 'eth:eth:everstake:pooled', type: 'claim' },
     },
     {
         description: 'should return "claim" for valid claim transfer (hoodi)',
@@ -194,7 +194,7 @@ export const getInstantStakeTypeFixture = [
             address: 'address',
             symbol: 'thod' as const,
         },
-        result: 'claim',
+        result: { productId: 'thod:thod:everstake:pooled', type: 'claim' },
     },
     {
         description: 'should return null for invalid transaction',

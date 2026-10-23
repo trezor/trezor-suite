@@ -1,9 +1,9 @@
-import { type StakingProviderId } from '@suite-common/wallet-config';
+import { type StakingProductId } from '@suite-common/wallet-config';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { deriveEthereumStakingPositions } from './deriveStakingPositions';
+import { deriveStakingPositions } from './deriveStakingPositions';
 import { type StakingPosition, type StakingPositionsSummary } from './positionsTypes';
 import { type AccountsRootState } from '../../accounts/accountsReducer';
 import { selectAccountByKey } from '../../accounts/accountsSelectors';
@@ -18,6 +18,7 @@ const EMPTY_SUMMARY: StakingPositionsSummary = {
     unstaking: '0',
     claimable: '0',
     rewards: null,
+    claimableRewards: '0',
     canClaim: false,
     total: '0',
 };
@@ -36,17 +37,16 @@ const sumRewards = (positions: StakingPosition[]) => {
 export const selectStakingPositions = createMemoizedSelector(
     [selectAccountByKey],
     (account): StakingPosition[] =>
-        account ? deriveEthereumStakingPositions(account) : returnStableArrayIfEmpty(),
+        account ? deriveStakingPositions(account) : returnStableArrayIfEmpty(),
 );
 
 export const selectStakingPosition = (
     state: AccountsRootState,
     accountKey: AccountKey,
-    providerId: StakingProviderId,
+    productId: StakingProductId,
 ): StakingPosition | null =>
-    selectStakingPositions(state, accountKey).find(
-        position => position.providerId === providerId,
-    ) ?? null;
+    selectStakingPositions(state, accountKey).find(position => position.productId === productId) ??
+    null;
 
 export const selectAccountHasStakingPosition = (state: AccountsRootState, accountKey: AccountKey) =>
     selectStakingPositions(state, accountKey).length > 0;
@@ -65,6 +65,7 @@ export const selectAccountStakingSummary = createMemoizedSelector(
             unstaking: sumAmounts(positions, position => position.unstaking),
             claimable: sumAmounts(positions, position => position.claimable),
             rewards: sumRewards(positions),
+            claimableRewards: sumAmounts(positions, position => position.claimableRewards),
             canClaim: positions.some(position => position.canClaim),
             total: sumAmounts(positions, position => position.total),
         };

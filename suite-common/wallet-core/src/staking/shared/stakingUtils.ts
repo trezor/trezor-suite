@@ -67,7 +67,7 @@ import {
     DEFAULT_ETHEREUM_STAKING_PROVIDER_ID,
     getEthereumStakingAdapter,
 } from '../ethereum/providers/ethereumStakingProviders';
-import { deriveEthereumStakingPositions } from '../positions/deriveStakingPositions';
+import { deriveStakingPositions } from '../positions/deriveStakingPositions';
 import {
     getSolStakingAccountsInfo,
     isSupportedSolStakingNetworkSymbol,
@@ -175,7 +175,7 @@ export const getLegacyStakingDataForNetwork = (
 
     switch (account.networkType) {
         case 'ethereum': {
-            const [position] = deriveEthereumStakingPositions(account);
+            const [position] = deriveStakingPositions(account);
             if (!position) return;
 
             return {

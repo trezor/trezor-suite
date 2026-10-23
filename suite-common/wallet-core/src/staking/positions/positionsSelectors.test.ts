@@ -1,4 +1,4 @@
-import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { asNetworkSymbol, getStakingProductId } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StakingPool } from '@trezor/blockchain-link-types';
@@ -70,13 +70,24 @@ describe(selectStakingPositions.name, () => {
 });
 
 describe(selectStakingPosition.name, () => {
-    it('selects the position of one provider', () => {
+    it('selects the position of one product', () => {
         const state = createState([stakingAccount]);
+        const product = { symbol: ethSymbol, asset: ethSymbol, providerId: 'everstake' } as const;
 
-        expect(selectStakingPosition(state, stakingAccount.key, 'everstake')).toMatchObject({
-            staked: '2',
-        });
-        expect(selectStakingPosition(state, stakingAccount.key, 'luganodes')).toBeNull();
+        expect(
+            selectStakingPosition(
+                state,
+                stakingAccount.key,
+                getStakingProductId({ ...product, kind: 'pooled' }),
+            ),
+        ).toMatchObject({ staked: '2' });
+        expect(
+            selectStakingPosition(
+                state,
+                stakingAccount.key,
+                getStakingProductId({ ...product, kind: 'native' }),
+            ),
+        ).toBeNull();
     });
 });
 
@@ -101,6 +112,7 @@ describe(selectAccountStakingSummary.name, () => {
             unstaking: '0.5',
             claimable: '0.5',
             rewards: '0.05',
+            claimableRewards: '0',
             canClaim: true,
             total: '2.65',
         });
@@ -119,6 +131,7 @@ describe(selectAccountStakingSummary.name, () => {
             unstaking: '0',
             claimable: '0',
             rewards: null,
+            claimableRewards: '0',
             canClaim: false,
             total: '0',
         });

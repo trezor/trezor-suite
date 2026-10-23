@@ -5,7 +5,7 @@ import {
     STAKING_TYPES,
     type StakingNetworkSymbol,
     type StakingNetworkType,
-    getStakingProviderByEthereumContract,
+    getStakingProductByEthereumContract,
 } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -44,15 +44,14 @@ export const isStakingSymbol = (
 ): symbol is NetworkSymbol & StakingNetworkSymbol =>
     (STAKING_SYMBOLS as readonly string[]).includes(symbol);
 
-// Pools of known pooled providers, located by contract address. Liquid positions live in the
+// Pools of known pooled products, located by contract address. Liquid positions live in the
 // token balance and never add to the native balance.
 export const getEthereumAccountStakingPools = (account?: Account): StakingPool[] => {
     if (account?.networkType !== 'ethereum') return [];
 
     return (account.misc?.stakingPools ?? []).filter(
         pool =>
-            getStakingProviderByEthereumContract(account.symbol, pool.contract)?.ethereum?.kind ===
-            'pooled',
+            getStakingProductByEthereumContract(account.symbol, pool.contract)?.kind === 'pooled',
     );
 };
 

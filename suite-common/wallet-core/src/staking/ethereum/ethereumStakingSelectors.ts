@@ -17,7 +17,7 @@ import {
     selectAccountStakeTransactions,
     selectAccountUnstakeTransactions,
 } from '../../transactions/transactionsSelectors';
-import { deriveEthereumStakingPositions } from '../positions/deriveStakingPositions';
+import { deriveStakingPositions } from '../positions/deriveStakingPositions';
 import {
     selectAccountHasStakingPosition,
     selectAccountStakingSummary,
@@ -39,7 +39,7 @@ export const selectVisibleDeviceEthereumAccountsWithStakingByNetworkSymbol = (
         account =>
             account.symbol === symbol &&
             account.visible &&
-            deriveEthereumStakingPositions(account).length > 0,
+            deriveStakingPositions(account).length > 0,
     );
 };
 

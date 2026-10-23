@@ -25,17 +25,21 @@ const transaction = (
     ({ symbol, ethereumSpecific }) as unknown as WalletAccountTransaction;
 
 describe(classifyEthereumStakingTransaction.name, () => {
-    it('asks the providers of the transaction network', () => {
+    it('asks the products of the transaction network', () => {
         expect(
             classifyEthereumStakingTransaction(
                 transaction(ethSymbol, {
                     parsedData: { methodId: EVERSTAKE_SELECTORS.stake, name: 'stake' },
                 }),
             ),
-        ).toEqual({ providerId: 'everstake', type: 'stake', gasReserve: STAKE_GAS_LIMIT_RESERVE });
+        ).toEqual({
+            productId: 'eth:eth:everstake:pooled',
+            type: 'stake',
+            gasReserve: STAKE_GAS_LIMIT_RESERVE,
+        });
     });
 
-    it('is null for networks without staking providers and for non-staking calls', () => {
+    it('is null for networks without staking products and for non-staking calls', () => {
         expect(
             classifyEthereumStakingTransaction(
                 transaction(asNetworkSymbol('pol'), {
@@ -63,13 +67,13 @@ describe(classifyEthereumStakingCalldata.name, () => {
 describe(classifyEthereumInternalTransfer.name, () => {
     const { pool, withdrawTreasury } = EVERSTAKE_CONTRACTS[1];
 
-    it('names the provider of an instant operation', () => {
+    it('names the product of an instant operation', () => {
         expect(
             classifyEthereumInternalTransfer({ from: pool, to: withdrawTreasury }, account),
-        ).toEqual({ providerId: 'everstake', type: 'stake' });
+        ).toEqual({ productId: 'eth:eth:everstake:pooled', type: 'stake' });
         expect(
             classifyEthereumInternalTransfer({ from: pool, to: account.descriptor }, account),
-        ).toEqual({ providerId: 'everstake', type: 'unstake' });
+        ).toEqual({ productId: 'eth:eth:everstake:pooled', type: 'unstake' });
     });
 
     it('hides only instant stakes from the targets', () => {

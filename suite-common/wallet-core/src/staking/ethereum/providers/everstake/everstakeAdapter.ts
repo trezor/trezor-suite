@@ -1,4 +1,4 @@
-import { type EthereumStakingProviderAdapter } from '../types';
+import { type EthereumStakingProductAdapter } from '../types';
 import { verifyEverstakeCalldata } from './everstakeCalldata';
 import { EVERSTAKE_STAKING_LIMITS } from './everstakeConstants';
 import { getEverstakeStepTarget } from './everstakeContracts';
@@ -16,13 +16,18 @@ import {
     classifyEverstakeTransaction,
 } from './everstakeTransactions';
 
-export const everstakeAdapter: EthereumStakingProviderAdapter = {
-    id: 'everstake',
+export const everstakeAdapter: EthereumStakingProductAdapter = {
+    networkType: 'ethereum',
+    identityType: 'everstake-pool',
     limits: EVERSTAKE_STAKING_LIMITS,
-    contributesToNativeBalance: true,
     timelineDefaults: EVERSTAKE_TIMELINE_DEFAULTS,
     timelines: getEverstakeTimelines,
     derivePosition: deriveEverstakePosition,
+    derivePositions: account => {
+        const position = deriveEverstakePosition(account);
+
+        return position ? [position] : [];
+    },
     getStepTarget: getEverstakeStepTarget,
     buildStep: buildEverstakeStep,
     planOperation: planEverstakeOperation,
