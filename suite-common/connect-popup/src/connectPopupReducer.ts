@@ -76,8 +76,9 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
                             .filter(canRememberPermissions)
                             // Grants persisted before coins were canonicalized at the
                             // source keep the mixed-case `coinInfo.shortcut` (e.g. `BTC`);
-                            // lowercase them on load. This reducer is shared, so it covers
-                            // both the web IDB store and native.
+                            // lowercase them on load. This case covers the web/desktop IDB
+                            // store only: native rehydrates `permissions` from mmkv and
+                            // never dispatches `storageLoad`.
                             .map(normalizeRememberedCoins);
                     }
                 },
