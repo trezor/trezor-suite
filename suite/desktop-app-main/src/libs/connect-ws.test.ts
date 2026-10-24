@@ -1,11 +1,13 @@
 import net from 'net';
 import { WebSocket } from 'ws';
 
-import { POPUP } from '@trezor/connect';
+import { CORE_CALL, POPUP } from '@trezor/connect';
 import { findProcessFromIncomingPort } from '@trezor/node-utils';
 import { createDeferred } from '@trezor/utils';
 
+import { rejectMessage } from './connect-popup-messages';
 import {
+    IDLE_CONNECTION_TIMEOUT_MS,
     MAX_CONCURRENT_CONNECTIONS,
     MAX_CONNECTIONS_PER_ORIGIN,
     exposeConnectWs,
@@ -86,7 +88,7 @@ describe('connect-ws', () => {
     const sockets: net.Socket[] = [];
     const clients: WebSocket[] = [];
 
-    const startServer = async () => {
+    const startServer = async (dependencies?: Partial<ExposeConnectWsParams>) => {
         receiver = createHttpReceiver({ logger, port: 0 });
         const startResult = await receiver.start();
         if (!startResult.success) throw new Error(startResult.message);
@@ -96,6 +98,7 @@ describe('connect-ws', () => {
             mainThreadEmitter: {} as ExposeConnectWsParams['mainThreadEmitter'],
             mainWindowProxy: {} as ExposeConnectWsParams['mainWindowProxy'],
             store: {} as ExposeConnectWsParams['store'],
+            ...dependencies,
         });
 
         return startResult.payload.port;
@@ -182,16 +185,58 @@ describe('connect-ws', () => {
             jest.useRealTimers();
         });
 
-        // Documents the current behaviour: a handshaken connection is never released on its
-        // own, so a page that has stopped making calls keeps one of the limited slots for as
-        // long as it stays open.
-        it('keeps an idle connection open indefinitely', async () => {
+        it('expires an idle connection, but not while a handshake is in progress', async () => {
             const client = await openClient(await startServer(), 'https://app.test');
             expect(await request(client, handshake)).toMatchObject({ payload: 'ok' });
+            await jest.advanceTimersByTimeAsync(IDLE_CONNECTION_TIMEOUT_MS - 500);
 
-            // Pings, which the client sends on its own, are the only traffic left on it.
-            await jest.advanceTimersByTimeAsync(10 * 60_000);
+            // The client handshakes again before each call. Hold its process lookup past the
+            // deadline that the first handshake set.
+            const lookupStarted = createDeferred();
+            const lookup = createDeferred<undefined>();
+            jest.mocked(findProcessFromIncomingPort).mockImplementationOnce(() => {
+                lookupStarted.resolve();
+
+                return lookup.promise;
+            });
+            const ack = request(client, handshake);
+            await lookupStarted.promise;
+            await jest.advanceTimersByTimeAsync(500);
+            lookup.resolve(undefined);
+            expect(await ack).toMatchObject({ payload: 'ok' });
+
+            // Pings, which the client sends on its own, do not keep the connection open.
+            await jest.advanceTimersByTimeAsync(IDLE_CONNECTION_TIMEOUT_MS - 1_000);
             expect(await request(client, { type: 'ping' })).toMatchObject({ type: 'pong' });
+            await jest.advanceTimersByTimeAsync(1_000);
+            expect(await request(client, { type: 'ping' })).toBeUndefined();
+        });
+
+        it('does not expire a connection while a call is pending', async () => {
+            const rendererCall = createDeferred<{ id: string }>();
+            const send = (_channel: string, call: { id: string }) => rendererCall.resolve(call);
+            const port = await startServer({
+                mainWindowProxy: {
+                    getInstance: () => ({ webContents: { send } }),
+                } as unknown as ExposeConnectWsParams['mainWindowProxy'],
+                store: {
+                    setConnectSettings: () => {},
+                } as unknown as ExposeConnectWsParams['store'],
+            });
+            const client = await openClient(port, 'https://app.test');
+            // Outside Linux, a call is dropped when no process is found on its port.
+            const appProcess = { name: 'app', pid: '1', fullPath: '/app' };
+            jest.mocked(findProcessFromIncomingPort).mockResolvedValueOnce(appProcess);
+            expect(await request(client, handshake)).toMatchObject({ payload: 'ok' });
+            void request(client, { type: CORE_CALL, payload: { method: 'getFeatures' } });
+            const { id } = await rendererCall.promise;
+
+            await jest.advanceTimersByTimeAsync(IDLE_CONNECTION_TIMEOUT_MS * 2);
+            expect(await request(client, { type: 'ping' })).toMatchObject({ type: 'pong' });
+
+            rejectMessage(id, new Error('Call failed'));
+            await jest.advanceTimersByTimeAsync(IDLE_CONNECTION_TIMEOUT_MS);
+            expect(await request(client, { type: 'ping' })).toBeUndefined();
         });
     });
 });
