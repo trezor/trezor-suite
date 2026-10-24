@@ -11,6 +11,17 @@ _Note: All paths below are relative to the root of trezor-suite repository, if n
 - [Docker](https://docs.docker.com/desktop/mac/install/)
 - [Trezor user env](https://github.com/trezor/trezor-user-env)
 - No other instance of `Suite` or `trezord` service is running
+- [Foundry](https://getfoundry.sh/) (`anvil`), only for tests that use the `anvil` fixture
+
+### EVM network forks (Anvil)
+
+Tests that use the `anvil` fixture (e.g. `wallet/send-eth-anvil.test.ts`, `yield/deposit-anvil.test.ts`) start a fresh `anvil` fork of an EVM network for each test and connect Suite to it as a custom `evm-rpc` backend, so signed transactions are executed on the fork. How to write and debug them is in the [Forked Chain skill](../skills/forked-chain/SKILL.md).
+
+Optional environment variables:
+
+- `ANVIL_BIN` – path to the `anvil` binary, defaults to `anvil` in `PATH`
+- `ANVIL_FORK_URL_<SYMBOL>` (e.g. `ANVIL_FORK_URL_ETH`) – upstream RPC to fork from, defaults to the network's public endpoint in `support/anvilNetworks.ts`
+- `ANVIL_FORK_BLOCK_NUMBER_<SYMBOL>` – pins the fork to a block, defaults to the latest block
 
 ### Common steps
 

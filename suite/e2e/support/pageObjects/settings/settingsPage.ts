@@ -193,6 +193,13 @@ export class SettingsPage {
         await expect(this.debugTabButton).toBeVisible();
     }
 
+    /** Unlike toggleDebugModeInSettings, leaves debug mode on when it already is. */
+    @step()
+    async enableDebugMode() {
+        if (await this.debugTabButton.isVisible()) return;
+        await this.toggleDebugModeInSettings();
+    }
+
     @step()
     async joinEarlyAccessProgram() {
         await this.earlyAccessJoinButton.scrollIntoViewIfNeeded();
@@ -286,6 +293,14 @@ export class SettingsPage {
         skipDiscovery?: boolean;
     }) {
         await this.navigateTo('coins');
+        // Suite offers the evm-rpc backend type only in debug mode, unless it is the network default.
+        const needsEvmRpc = options.enableNetworks.some(
+            entry => typeof entry !== 'string' && entry.backend.type === 'evm-rpc',
+        );
+        if (needsEvmRpc) {
+            await this.enableDebugMode();
+        }
+
         for (const entry of options.enableNetworks) {
             const inputWithCustomBackend = typeof entry !== 'string';
             const symbol = getNetworkSymbol(entry);
