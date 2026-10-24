@@ -2,7 +2,7 @@ import { type AsyncThunkAction } from '@reduxjs/toolkit';
 
 import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { type DeviceRootState, deviceActions, selectSelectedDevice } from '@suite-common/device';
-import { type LockDeviceDep } from '@suite-common/suite-types';
+import { type LockDeviceDep, type TrezorDevice } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
@@ -67,6 +67,23 @@ const getCallParamNames = (payload: unknown): string[] =>
     payload && typeof payload === 'object' && !Array.isArray(payload)
         ? Object.keys(payload).sort()
         : [];
+
+type RequestedDevice = {
+    path?: string;
+    instance?: number;
+    state?: { staticSessionId?: string };
+    useEmptyPassphrase?: boolean;
+};
+
+// The user approves a popup call on the wallet selected in Suite, so a `device` in its payload may
+// only name that wallet. Fields the payload leaves out are taken from the selected wallet.
+const isSelectedWallet = (requested: RequestedDevice, selected: TrezorDevice) =>
+    (requested.path === undefined || requested.path === selected.path) &&
+    (requested.instance === undefined || requested.instance === selected.instance) &&
+    (requested.useEmptyPassphrase === undefined ||
+        requested.useEmptyPassphrase === selected.useEmptyPassphrase) &&
+    (requested.state?.staticSessionId === undefined ||
+        requested.state.staticSessionId === selected.state?.staticSessionId);
 
 type ConnectPopupCallThunkParams<M extends CallMethodKeys> = {
     method: M;
@@ -207,16 +224,24 @@ export const connectPopupCallInnerThunk = createThunk<
             device = selectSelectedDevice(getState());
             if (!device) throw TypedError('Device_Disconnected');
 
+            const requestedDevice = (modifiedPayload as { device?: RequestedDevice }).device;
+            if (requestedDevice && !isSelectedWallet(requestedDevice, device)) {
+                throw TypedError(
+                    'Method_InvalidParameter',
+                    'device does not match the wallet selected in Suite',
+                );
+            }
+
             dispatch(connectPopupActions.setCallDevicePath(device.path));
 
             const response = await TrezorConnect.call({
+                ...modifiedPayload,
                 device: {
                     path: device.path,
                     instance: device.instance,
                     state: device.state,
                     useEmptyPassphrase: device.useEmptyPassphrase,
                 },
-                ...modifiedPayload,
                 method,
             } as CallMethodPayload);
             response.id = undefined;
@@ -438,13 +463,13 @@ export const connectPopupVerifyAddressThunk = createThunk<
         try {
             // @ts-expect-error: method is dynamic
             const res = await TrezorConnect[call.method]({
+                ...call.addresses?.[index]?.validatePayload,
                 device: {
                     path: device.path,
                     instance: device.instance,
                     state: device.state,
                     useEmptyPassphrase: device.useEmptyPassphrase,
                 },
-                ...call.addresses?.[index]?.validatePayload,
                 showOnTrezor: true,
                 chunked: false,
             });
