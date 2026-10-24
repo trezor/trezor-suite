@@ -79,6 +79,8 @@ describe('connect-ws upgrade', () => {
             client.on('open', resolve);
             client.on('error', reject);
         });
+
+        return client;
     };
 
     afterEach(async () => {
