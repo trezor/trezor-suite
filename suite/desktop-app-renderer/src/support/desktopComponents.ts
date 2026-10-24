@@ -30,6 +30,7 @@ import { DesktopSettingsGeneral } from 'src/views/settings/SettingsGeneral/Deskt
 import Notification from 'src/views/suite/notifications';
 import WalletAnonymize from 'src/views/wallet/anonymize';
 import WalletDetails from 'src/views/wallet/details';
+import WalletMixing from 'src/views/wallet/mixing';
 import { Nfts } from 'src/views/wallet/nfts';
 import { Receive } from 'src/views/wallet/receive/Receive';
 import WalletSend from 'src/views/wallet/send';
@@ -93,6 +94,7 @@ export const desktopComponents: Record<PageName, ComponentType> = {
     'wallet-staking': WalletStaking,
     'wallet-sign-verify': SignVerifyPage,
     'wallet-anonymize': WalletAnonymize,
+    'wallet-mixing': WalletMixing,
     'wallet-tokens': Tokens,
     'wallet-nfts': Nfts,
     'wallet-trading-buy': TradingBuyForm,

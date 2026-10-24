@@ -223,6 +223,31 @@ export const actionFixtures = [
             ],
         },
     },
+    {
+        description: 'updateSpendingRestrictions stores the override in both directions',
+        initialState: {
+            ...initialState,
+            accounts: [account],
+        },
+        actions: [
+            {
+                type: COINJOIN.ACCOUNT_UPDATE_SPENDING_RESTRICTIONS,
+                payload: { accountKey: 'A', areSpendingRestrictionsEnabled: true },
+            },
+            {
+                type: COINJOIN.ACCOUNT_UPDATE_SPENDING_RESTRICTIONS,
+                payload: { accountKey: 'A', areSpendingRestrictionsEnabled: false },
+            },
+            {
+                type: COINJOIN.ACCOUNT_UPDATE_SPENDING_RESTRICTIONS,
+                payload: { accountKey: 'unknown', areSpendingRestrictionsEnabled: true },
+            },
+        ],
+        result: {
+            ...initialState,
+            accounts: [{ ...account, areSpendingRestrictionsEnabled: false }],
+        },
+    },
 ];
 
 export const selectorFixtures = [

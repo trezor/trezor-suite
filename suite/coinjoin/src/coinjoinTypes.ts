@@ -94,7 +94,22 @@ export interface CoinjoinAccount {
     transactionCandidates?: CoinjoinTxCandidate[];
     prison?: Record<string, Omit<CoinjoinPrisonInmate, 'id' | 'accountKey'>>;
     agreedToLegalDocumentVersions?: CoinjoinLegalDocuments;
+    // User override of the derived spending restriction, see selectCoinjoinSpendingRestrictionByAccountKey.
+    // Undefined means the restriction is derived from on-chain data.
+    areSpendingRestrictionsEnabled?: boolean;
 }
+
+/**
+ * Spending restriction of a privacy account:
+ * - `unrestricted` behaves like a target anonymity of 1: every utxo is available to automatic coin
+ *   selection and no anonymity confirmation is needed,
+ * - `restricted` keeps the low-anonymity utxos out of automatic coin selection, spendable through
+ *   coin control,
+ * - `restricted-incomplete-data` is `restricted` without trustworthy anonymity scores, which blocks
+ *   sending until the user turns the restrictions off.
+ */
+export type CoinjoinSpendingRestriction =
+    'unrestricted' | 'restricted' | 'restricted-incomplete-data';
 
 export interface CoinjoinDebugSettings {
     coinjoinServerEnvironment?: PartialRecord<NetworkSymbol, CoinjoinServerEnvironment>;

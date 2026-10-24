@@ -18,6 +18,9 @@ import {
     findTransactionSenderAccount,
     getAccountIdentifier,
     getAccountSpecific,
+    getAccountTypeDesc,
+    getAccountTypeName,
+    getAccountTypeTech,
     getBip43Type,
     getDirectRpcHistoryState,
     getHistoryCoveredSince,
@@ -81,6 +84,26 @@ describe('account utils', () => {
             it(f.description, () => {
                 expect(substituteBip43Path(f.pathTemplate, f.index)).toBe(f.result);
             });
+        });
+    });
+
+    describe('slip25 account type copy', () => {
+        const slip25Account = {
+            path: "m/10025'/0'/i'/1'",
+            accountType: 'coinjoin',
+            networkType: 'bitcoin',
+        } as const;
+
+        it('is named Privacy', () => {
+            expect(getAccountTypeName(slip25Account)).toBe('TR_ACCOUNT_TYPE_PRIVACY_NAME');
+        });
+
+        it('is described by the Privacy account description', () => {
+            expect(getAccountTypeDesc(slip25Account)).toBe('TR_ACCOUNT_TYPE_PRIVACY_DESC');
+        });
+
+        it('keeps its technical description', () => {
+            expect(getAccountTypeTech(slip25Account.path)).toBe('TR_ACCOUNT_TYPE_SLIP25_TECH');
         });
     });
 

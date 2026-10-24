@@ -50,6 +50,7 @@ import { ConnectPermissionsModal } from './ConnectPermissionsModal';
 import { ConnectSelectAccount } from './ConnectSelectAccount/ConnectSelectAccount';
 import { CriticalCoinjoinPhaseModal } from './CriticalCoinjoinPhaseModal/CriticalCoinjoinPhaseModal';
 import { DeviceAuthenticityOptOutModal } from './DeviceAuthenticityOptOutModal';
+import { DisableSpendingRestrictionsModal } from './DisableSpendingRestrictionsModal';
 import { FirmwareRevisionOptOutModal } from './FirmwareRevisionOptOutModal';
 import { ImportTransactionModal } from './ImportTransactionModal/ImportTransactionModal';
 import { MoreRoundsNeededModal } from './MoreRoundsNeededModal';
@@ -93,6 +94,13 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL_CONTE
             return <BackgroundGalleryModal onCancel={onCancel} />;
         case 'device-authenticity-check-opt-out':
             return <DeviceAuthenticityOptOutModal onCancel={onCancel} />;
+        case 'coinjoin-disable-spending-restrictions':
+            return (
+                <DisableSpendingRestrictionsModal
+                    relatedAccountKey={payload.relatedAccountKey}
+                    onCancel={onCancel}
+                />
+            );
         case 'firmware-authenticity-checks-opt-out':
             return <FirmwareRevisionOptOutModal onCancel={onCancel} />;
         case 'qr-reader':

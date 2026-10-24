@@ -3194,7 +3194,7 @@ export const messages = defineMessages({
         dynamic: true,
     },
     TR_ACCOUNT_TYPE_COINJOIN: {
-        defaultMessage: 'Coinjoin',
+        defaultMessage: 'Privacy',
         id: 'TR_ACCOUNT_TYPE_COINJOIN',
         dynamic: true,
     },
@@ -3296,6 +3296,12 @@ export const messages = defineMessages({
         description: 'Title of the coinjoin setup page.',
         id: 'TR_NAV_ANONYMIZE',
     },
+    TR_NAV_MIXING: {
+        defaultMessage: 'Mixing',
+        description:
+            'Title of the account tab holding the mixing UI, shown only when a coordinator URL is passed at startup.',
+        id: 'TR_NAV_MIXING',
+    },
     TR_INCLUDING_TOKENS: {
         defaultMessage: 'Including tokens',
         id: 'TR_INCLUDING_TOKENS',
@@ -3324,17 +3330,17 @@ export const messages = defineMessages({
         defaultMessage: 'This transaction is on a testnet network',
         id: 'TR_NETWORK_TESTNET',
     },
-    TR_NETWORK_COINJOIN_BITCOIN: {
-        defaultMessage: 'Coinjoin',
-        id: 'TR_NETWORK_COINJOIN_BITCOIN',
+    TR_NETWORK_PRIVACY_BITCOIN: {
+        defaultMessage: 'Privacy',
+        id: 'TR_NETWORK_PRIVACY_BITCOIN',
     },
-    TR_NETWORK_COINJOIN_BITCOIN_TESTNET: {
-        defaultMessage: 'Coinjoin Testnet',
-        id: 'TR_NETWORK_COINJOIN_BITCOIN_TESTNET',
+    TR_NETWORK_PRIVACY_BITCOIN_TESTNET: {
+        defaultMessage: 'Privacy Testnet',
+        id: 'TR_NETWORK_PRIVACY_BITCOIN_TESTNET',
     },
-    TR_NETWORK_COINJOIN_BITCOIN_REGTEST: {
-        defaultMessage: 'Coinjoin Regtest',
-        id: 'TR_NETWORK_COINJOIN_BITCOIN_REGTEST',
+    TR_NETWORK_PRIVACY_BITCOIN_REGTEST: {
+        defaultMessage: 'Privacy Regtest',
+        id: 'TR_NETWORK_PRIVACY_BITCOIN_REGTEST',
     },
     TR_SOLANA_DEVNET_SHORTCUT_WARNING: {
         defaultMessage:
@@ -4462,18 +4468,76 @@ export const messages = defineMessages({
         defaultMessage: 'BIP44, Base58',
         dynamic: true,
     },
-    TR_ACCOUNT_TYPE_SLIP25_NAME: {
-        id: 'TR_ACCOUNT_TYPE_SLIP25_NAME',
-        defaultMessage: 'Coinjoin',
+    TR_ACCOUNT_TYPE_PRIVACY_NAME: {
+        id: 'TR_ACCOUNT_TYPE_PRIVACY_NAME',
+        defaultMessage: 'Privacy',
+    },
+    TR_ACCOUNT_TYPE_PRIVACY_ADD_ACCOUNT_NAME: {
+        id: 'TR_ACCOUNT_TYPE_PRIVACY_ADD_ACCOUNT_NAME',
+        defaultMessage: 'Privacy account (previously coinjoin)',
+        description:
+            'Name of the SLIP25 account type in the Add account dialog, where returning users need to recognize it by its former name.',
     },
     TR_ACCOUNT_TYPE_SLIP25_TECH: {
         id: 'TR_ACCOUNT_TYPE_SLIP25_TECH',
         defaultMessage: 'SLIP25, P2TR, Bech32m',
     },
-    TR_ACCOUNT_TYPE_SLIP25_DESC: {
-        id: 'TR_ACCOUNT_TYPE_SLIP25_DESC',
+    TR_ACCOUNT_TYPE_PRIVACY_DESC: {
+        id: 'TR_ACCOUNT_TYPE_PRIVACY_DESC',
         defaultMessage:
-            "On June 1st, 2024, the coinjoin feature was deactivated. Your coinjoin account and funds remain accessible, but you won't be able to initiate new coinjoin rounds.",
+            "On June 1st, 2024, the coinjoin feature was deactivated. Your Privacy account and funds remain accessible, but you can't start new coinjoin rounds.",
+    },
+    TR_PRIVACY_ACCOUNT_RESTRICTIONS_TITLE: {
+        id: 'TR_PRIVACY_ACCOUNT_RESTRICTIONS_TITLE',
+        defaultMessage: 'Coin restrictions',
+    },
+    TR_PRIVACY_ACCOUNT_RESTRICTIONS_DESC: {
+        id: 'TR_PRIVACY_ACCOUNT_RESTRICTIONS_DESC',
+        defaultMessage:
+            'Coins that went through a coinjoin round are kept apart from the rest of this account, so that automatic coin selection never combines them. Turn restrictions off to spend all coins of this account together.',
+    },
+    TR_PRIVACY_ACCOUNT_RESTRICTIONS_READ_ONLY_DESC: {
+        id: 'TR_PRIVACY_ACCOUNT_RESTRICTIONS_READ_ONLY_DESC',
+        defaultMessage: 'Restrictions stay on while a coordinator is configured for this coin.',
+    },
+    TR_PRIVACY_ACCOUNT_RESTRICTIONS_OFF_TITLE: {
+        id: 'TR_PRIVACY_ACCOUNT_RESTRICTIONS_OFF_TITLE',
+        defaultMessage: 'Turn coin restrictions off?',
+    },
+    TR_PRIVACY_ACCOUNT_RESTRICTIONS_OFF_DESCRIPTION: {
+        id: 'TR_PRIVACY_ACCOUNT_RESTRICTIONS_OFF_DESCRIPTION',
+        defaultMessage:
+            'Coins that went through a coinjoin round and coins that did not can then be combined in one transaction. Anyone looking at the blockchain can link them to each other.',
+    },
+    TR_PRIVACY_ACCOUNT_RESTRICTIONS_OFF_CHECKBOX: {
+        id: 'TR_PRIVACY_ACCOUNT_RESTRICTIONS_OFF_CHECKBOX',
+        defaultMessage: 'I understand that combining these coins can link them to each other.',
+    },
+    TR_PRIVACY_ACCOUNT_RESTRICTIONS_OFF_BUTTON: {
+        id: 'TR_PRIVACY_ACCOUNT_RESTRICTIONS_OFF_BUTTON',
+        defaultMessage: 'Turn restrictions off',
+    },
+    TR_PRIVACY_ACCOUNT_RESTRICTIONS_BANNER_TITLE: {
+        id: 'TR_PRIVACY_ACCOUNT_RESTRICTIONS_BANNER_TITLE',
+        defaultMessage: 'Some coins are set aside',
+    },
+    TR_PRIVACY_ACCOUNT_RESTRICTIONS_BANNER_DESCRIPTION: {
+        id: 'TR_PRIVACY_ACCOUNT_RESTRICTIONS_BANNER_DESCRIPTION',
+        defaultMessage:
+            'Coins that went through a coinjoin round are kept apart from the rest of this account, so automatic coin selection skips them. You can still spend them by picking them with coin control, or turn coin restrictions off in account details.',
+    },
+    TR_PRIVACY_ACCOUNT_SPENDING_BLOCKED_TITLE: {
+        id: 'TR_PRIVACY_ACCOUNT_SPENDING_BLOCKED_TITLE',
+        defaultMessage: "Can't tell this account's coins apart",
+    },
+    TR_PRIVACY_ACCOUNT_SPENDING_BLOCKED_DESCRIPTION: {
+        id: 'TR_PRIVACY_ACCOUNT_SPENDING_BLOCKED_DESCRIPTION',
+        defaultMessage:
+            'Scoring the coins of this account failed, so Suite cannot tell which of them went through a coinjoin round. The score comes from a program bundled with Suite, which an antivirus or an unsupported system may have stopped. Rescan the account in account details, or turn coin restrictions off there to send anyway.',
+    },
+    TR_PRIVACY_ACCOUNT_SPENDING_BLOCKED_BUTTON: {
+        id: 'TR_PRIVACY_ACCOUNT_SPENDING_BLOCKED_BUTTON',
+        defaultMessage: 'Go to account details',
     },
     TOAST_QR_INCORRECT_ADDRESS: {
         id: 'TOAST_QR_INCORRECT_ADDRESS',
@@ -10136,10 +10200,6 @@ export const messages = defineMessages({
         id: 'TR_COINJOIN_STEP_3_DESCRIPTION',
         defaultMessage: "Your coins will be mixed with other peoples' to achieve privacy",
     },
-    TR_COINJOIN_CEX_WARNING: {
-        id: 'TR_COINJOIN_CEX_WARNING',
-        defaultMessage: 'Exchanges may not serve you if you use coinjoin.',
-    },
     TR_ZERO_PHISHING_TOOLTIP: {
         id: 'TR_ZERO_PHISHING_TOOLTIP',
         defaultMessage:
@@ -10250,15 +10310,6 @@ export const messages = defineMessages({
     TR_ERROR: {
         id: 'TR_ERROR',
         defaultMessage: 'Error',
-    },
-    TR_COINJOIN_RECEIVE_WARNING_TITLE: {
-        id: 'TR_COINJOIN_RECEIVE_WARNING_TITLE',
-        defaultMessage: 'Good to know',
-    },
-    TR_UNECO_COINJOIN_RECEIVE_WARNING: {
-        id: 'TR_UNECO_COINJOIN_RECEIVE_WARNING',
-        defaultMessage:
-            'You can receive funds into this account and use it just like any other. However, be aware that the coinjoin feature will be discontinued as of June 1st, 2024.',
     },
     TR_UNECO_COINJOIN_AGREE: {
         id: 'TR_UNECO_COINJOIN_AGREE',

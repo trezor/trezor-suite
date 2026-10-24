@@ -28,6 +28,8 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
     const isFinpromRestricted = useSelector(selectIsFinpromRestricted);
 
     const isTokensNetwork = getNetworkFeatures(account.symbol).includes('tokens');
+    // Trading is unavailable for the Privacy (SLIP-25) account type, see HeaderActions.
+    const isTradingAvailable = account.accountType !== 'coinjoin';
 
     const displaySymbol = getNetworkDisplaySymbol(account.symbol);
     const networkName = getNetwork(account.symbol).name;
@@ -113,7 +115,11 @@ export const AccountEmpty = ({ account }: AccountEmptyProps) => {
             }
             icon={ArrowsLeftRightIcon}
             iconVariant="neutral"
-            actions={isFinpromRestricted ? [receiveAction] : [buyAction, receiveAction]}
+            actions={
+                isFinpromRestricted || !isTradingAvailable
+                    ? [receiveAction]
+                    : [buyAction, receiveAction]
+            }
         />
     );
 };

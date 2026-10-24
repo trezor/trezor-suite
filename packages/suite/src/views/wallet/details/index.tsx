@@ -1,8 +1,7 @@
 import { type ReactNode } from 'react';
 
-import styled from 'styled-components';
-
 import { AccountTypeBadge, selectFullSelectedAccount } from '@suite/account';
+import { selectIsMixingEnabledByAccountKey } from '@suite/coinjoin';
 import { useDevice } from '@suite/device';
 import { LearnMoreButton } from '@suite/external-links';
 import { Translation, type TranslationKey } from '@suite/intl';
@@ -11,7 +10,6 @@ import { getAccountTypeTech } from '@suite-common/wallet-utils';
 import { Button, Card, Column, InfoItem, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
-import { typography } from '@trezor/theme';
 import { HELP_CENTER_BIP32_URL, HELP_CENTER_XPUB_URL, type Url } from '@trezor/urls';
 
 import { showXpubThunk } from 'src/actions/wallet/publicKeyActions';
@@ -22,15 +20,9 @@ import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/Cont
 
 import { AccountNonce } from './AccountNonce';
 import { CoinjoinLogs } from './CoinjoinLogs';
-import { CoinjoinSetup } from './CoinjoinSetup/CoinjoinSetup';
 import { RescanAccount } from './RescanAccount';
+import { SpendingRestrictions } from './SpendingRestrictions';
 import { Bip329Labels } from '../labels/Bip329Labels';
-
-const Heading = styled.h3`
-    color: ${({ theme }) => theme.contentSecondary};
-    ${typography['body-sm-strong']}
-    text-transform: uppercase;
-`;
 
 type DetailsRowProps = {
     title: TranslationKey;
@@ -69,6 +61,9 @@ const DetailsRow = ({ title, description, learnMoreUrl, children }: DetailsRowPr
 const Details = () => {
     const { device, isLocked } = useDevice();
     const selectedAccount = useSelector(selectFullSelectedAccount);
+    const isMixingEnabled = useSelector(state =>
+        selectIsMixingEnabledByAccountKey(state, selectedAccount.account?.key ?? null),
+    );
     const { isReceiveDisabled, ReceiveDisabledWrapper } = useReceiveDisabled();
 
     const { dispatch } = useServices(injectDispatch);
@@ -98,15 +93,6 @@ const Details = () => {
 
     return (
         <WalletLayout title="TR_ACCOUNT_DETAILS_HEADER" account={selectedAccount}>
-            {isCoinjoinAccount && (
-                <Column gap={8}>
-                    <Heading>
-                        <Translation id="TR_COINJOIN_SETUP_HEADING" />
-                    </Heading>
-                    <CoinjoinSetup accountKey={account.key} />
-                </Column>
-            )}
-
             <Card data-testid="@wallet/account-details">
                 <Column gap={40} hasDivider>
                     <DetailsRow
@@ -160,14 +146,32 @@ const Details = () => {
                             </DetailsRow>
                         )
                     ) : (
-                        <DetailsRow
-                            title="TR_COINJOIN_ACCOUNT_RESCAN_TITLE"
-                            description={
-                                <Translation id="TR_COINJOIN_ACCOUNT_RESCAN_DESCRIPTION" />
-                            }
-                        >
-                            <RescanAccount account={account} />
-                        </DetailsRow>
+                        <>
+                            <DetailsRow
+                                title="TR_PRIVACY_ACCOUNT_RESTRICTIONS_TITLE"
+                                description={
+                                    <>
+                                        <Translation id="TR_PRIVACY_ACCOUNT_RESTRICTIONS_DESC" />
+                                        {isMixingEnabled && (
+                                            <>
+                                                {' '}
+                                                <Translation id="TR_PRIVACY_ACCOUNT_RESTRICTIONS_READ_ONLY_DESC" />
+                                            </>
+                                        )}
+                                    </>
+                                }
+                            >
+                                <SpendingRestrictions account={account} />
+                            </DetailsRow>
+                            <DetailsRow
+                                title="TR_COINJOIN_ACCOUNT_RESCAN_TITLE"
+                                description={
+                                    <Translation id="TR_COINJOIN_ACCOUNT_RESCAN_DESCRIPTION" />
+                                }
+                            >
+                                <RescanAccount account={account} />
+                            </DetailsRow>
+                        </>
                     )}
                     {account.networkType === 'ethereum' && (
                         <DetailsRow

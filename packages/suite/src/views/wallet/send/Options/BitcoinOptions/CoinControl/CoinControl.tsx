@@ -138,7 +138,10 @@ export const CoinControl = ({ close }: CoinControlProps) => {
     const spendableUtxosOnPage = paginatedCategories[0] ?? [];
     const lowAnonymityUtxosOnPage = paginatedCategories[1] ?? [];
     const dustUtxosOnPage = paginatedCategories[2] ?? [];
-    const isCoinjoinAccount = account.accountType === 'coinjoin';
+    // An unrestricted privacy account keeps nothing apart, so the anonymity headings would only
+    // explain a distinction that does not apply to its coins.
+    const shouldShowAnonymityCategories =
+        account.accountType === 'coinjoin' && !!lowAnonymityUtxos.length;
     const hasEligibleUtxos = spendableUtxos.length + lowAnonymityUtxos.length > 0;
 
     // fetch all transactions so that we can show a transaction timestamp for each UTXO
@@ -216,7 +219,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                 )}
                 {!!spendableUtxosOnPage.length && (
                     <UtxoSelectionList
-                        withHeader={isCoinjoinAccount}
+                        withHeader={shouldShowAnonymityCategories}
                         heading={<Translation id="TR_PRIVATE" />}
                         description={
                             <Translation id="TR_PRIVATE_DESCRIPTION" values={{ targetAnonymity }} />

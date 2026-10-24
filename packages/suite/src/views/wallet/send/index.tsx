@@ -4,8 +4,9 @@ import styled from 'styled-components';
 
 import { selectFullSelectedAccount } from '@suite/account';
 import {
+    selectCoinjoinSpendingRestrictionByAccountKey,
+    selectEffectiveTargetAnonymityByAccountKey,
     selectRegisteredUtxosByAccountKey,
-    selectTargetAnonymityByAccountKey,
 } from '@suite/coinjoin';
 import { Form } from '@suite/form';
 import { Translation } from '@suite/intl';
@@ -27,6 +28,7 @@ import { Outputs } from './Outputs/Outputs';
 import { SendFees } from './SendFees';
 import { SendHeader } from './SendHeader';
 import { SendRaw } from './SendRaw';
+import { SpendingBlocked } from './SpendingBlocked';
 import { TotalSent } from './TotalSent/TotalSent';
 
 const FormGrid = styled.div`
@@ -74,7 +76,7 @@ const SendLoaded = ({ children, selectedAccount }: SendLoadedProps) => {
     const isMetadataProviderConnected = useSelector(selectIsMetadataProviderConnected);
     const metadataEnabled = isMetadataProviderConnected || isSuiteSyncEnabled;
     const targetAnonymity = useSelector(state =>
-        selectTargetAnonymityByAccountKey(state, accountKey),
+        selectEffectiveTargetAnonymityByAccountKey(state, accountKey),
     );
     const prison = useSelector(state => selectRegisteredUtxosByAccountKey(state, accountKey));
 
@@ -136,10 +138,21 @@ const SendLoaded = ({ children, selectedAccount }: SendLoadedProps) => {
 const Send = ({ children }: SendProps) => {
     const selectedAccount = useSelector(selectFullSelectedAccount);
     const currentRoute = useSelector(selectRouteName);
+    const spendingRestriction = useSelector(state =>
+        selectCoinjoinSpendingRestrictionByAccountKey(state, selectedAccount.account?.key ?? null),
+    );
 
     // alone selectedAccount.status is not enough, currently there is a race-condition that needs to be fixed in send form
     if (selectedAccount.status !== 'loaded' || currentRoute !== 'wallet-send') {
         return <WalletLayout title="TR_NAV_SEND" account={selectedAccount} />;
+    }
+
+    if (spendingRestriction === 'restricted-incomplete-data') {
+        return (
+            <WalletLayout title="TR_NAV_SEND" isSubpage account={selectedAccount}>
+                <SpendingBlocked />
+            </WalletLayout>
+        );
     }
 
     /* children are only for test purposes, this prop is not available in regular build */

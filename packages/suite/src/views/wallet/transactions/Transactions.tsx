@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react';
 
 import { selectFullSelectedAccount } from '@suite/account';
+import { selectIsMixingEnabledByAccountKey } from '@suite/coinjoin';
 import {
     selectAccountTransactionsWithNulls,
     selectIsLoadingAccountTransactions,
@@ -14,8 +15,6 @@ import { useSelector } from 'src/hooks/suite';
 import { type AppState } from 'src/types/suite';
 import { isNetworkWithGraphFeature } from 'src/utils/wallet/graph';
 
-import { CoinjoinExplanation } from './CoinjoinExplanation/CoinjoinExplanation';
-import { CoinjoinSummary } from './CoinjoinSummary/CoinjoinSummary';
 import { TradeBox } from './TradeBox/TradeBox';
 import { WalletTransactionList } from './TransactionList/WalletTransactionList';
 import { AccountEmpty } from './components/AccountEmpty';
@@ -23,6 +22,8 @@ import { AccountOverviewBalance } from './components/AccountOverviewBalance';
 import { NoTransactions } from './components/NoTransactions';
 import { TransactionSummary } from './components/TransactionSummary';
 import { TronResources } from './components/TronResources';
+import { CoinjoinExplanation } from '../mixing/CoinjoinExplanation/CoinjoinExplanation';
+import { CoinjoinSummary } from '../mixing/CoinjoinSummary/CoinjoinSummary';
 import { CardanoNewProviderCard } from '../staking/components/AdaStakingDashboard/CardanoNewProviderCard';
 
 interface LayoutProps {
@@ -44,6 +45,9 @@ export const Transactions = () => {
     const accountTransactions = useSelector(state =>
         selectAccountTransactionsWithNulls(state, selectedAccount.account?.key || null),
     );
+    const isMixingEnabled = useSelector(state =>
+        selectIsMixingEnabledByAccountKey(state, selectedAccount.account?.key || null),
+    );
 
     if (selectedAccount.status !== 'loaded') {
         return <Layout selectedAccount={selectedAccount} />;
@@ -57,20 +61,40 @@ export const Transactions = () => {
         const isLoading = account.status === 'out-of-sync' && !!account.syncing;
         const isEmpty = !accountTransactions.length;
 
+        if (isLoading) {
+            return (
+                <Layout selectedAccount={selectedAccount}>
+                    <CoinjoinAccountDiscoveryProgress />
+                </Layout>
+            );
+        }
+
+        // The mixing surface lives in its own tab and only exists while a coordinator URL override
+        // is present; otherwise the Privacy account overview is a plain balance and history.
+        // Trading is unavailable for the account type, so neither the TradeBox nor the graph
+        // (absent from the account type features) is rendered here.
+        if (!isMixingEnabled) {
+            return (
+                <Layout selectedAccount={selectedAccount}>
+                    <Column gap={20}>
+                        <AccountOverviewBalance selectedAccount={selectedAccount} />
+                        {isEmpty && <AccountEmpty account={account} />}
+                    </Column>
+                    {!isEmpty && (
+                        <WalletTransactionList account={account} symbol={account.symbol} />
+                    )}
+                </Layout>
+            );
+        }
+
         return (
             <Layout selectedAccount={selectedAccount}>
-                {isLoading && <CoinjoinAccountDiscoveryProgress />}
+                <CoinjoinSummary accountKey={account.key} />
 
-                {!isLoading && (
-                    <>
-                        <CoinjoinSummary accountKey={account.key} />
-
-                        {isEmpty ? (
-                            <CoinjoinExplanation />
-                        ) : (
-                            <WalletTransactionList account={account} symbol={account.symbol} />
-                        )}
-                    </>
+                {isEmpty ? (
+                    <CoinjoinExplanation />
+                ) : (
+                    <WalletTransactionList account={account} symbol={account.symbol} />
                 )}
             </Layout>
         );
