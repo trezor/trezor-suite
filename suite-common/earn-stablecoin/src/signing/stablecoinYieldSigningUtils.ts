@@ -30,6 +30,8 @@ export const USER_CANCELLED_ERROR_CODES = [
 export const isUserCancelledSignErrorCode = (code: string | undefined) =>
     USER_CANCELLED_ERROR_CODES.some(cancelledCode => cancelledCode === code);
 
+const EIP1559_TRANSACTION_TYPE = 2;
+
 export type StablecoinYieldParsedTransactionForSigning = NonNullable<
     ReturnType<typeof parseUnsignedEvmTransactionForSigning>
 >;
@@ -80,9 +82,18 @@ const getStablecoinYieldTransactionWithSelectedFee = (
         throw new Error('Fee information is missing for the transaction.');
     }
 
+    const { gasPrice, maxFeePerGas, maxPriorityFeePerGas, type, ...transactionFields } =
+        parsedTransaction;
+    const selectedFeeFields = flattenEvmFees(parsedSelectedFee);
+
+    if (parsedSelectedFee.type === 'eip1559') {
+        return { ...transactionFields, type: EIP1559_TRANSACTION_TYPE, ...selectedFeeFields };
+    }
+
     return {
-        ...parsedTransaction,
-        ...flattenEvmFees(parsedSelectedFee),
+        ...transactionFields,
+        ...(type === EIP1559_TRANSACTION_TYPE ? {} : { type }),
+        ...selectedFeeFields,
     };
 };
 
