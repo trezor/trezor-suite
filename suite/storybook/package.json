@@ -16,8 +16,8 @@
         "@trezor/dependency-injection": "workspace:*",
         "@trezor/network-module-types": "workspace:*",
         "@trezor/product-components": "workspace:*",
-        "react": "19.2.3",
-        "react-dom": "19.2.3",
+        "react": "19.3.0",
+        "react-dom": "19.3.0",
         "react-redux": "9.3.0",
         "styled-components": "^6.5.3"
     },
@@ -32,7 +32,7 @@
         "@storybook/react-webpack5": "^10.6.2",
         "@trezor/eslint": "workspace:*",
         "@types/node": "22.13.10",
-        "@types/react": "19.2.14",
+        "@types/react": "19.3.0",
         "babel-loader": "^10.1.1",
         "storybook": "^10.6.2"
     }

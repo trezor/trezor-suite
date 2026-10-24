@@ -26,7 +26,7 @@
         "@trezor/product-components": "workspace:*",
         "@trezor/redux-utils": "workspace:*",
         "@trezor/theme": "workspace:*",
-        "react": "19.2.3",
+        "react": "19.3.0",
         "styled-components": "^6.5.3"
     },
     "devDependencies": {

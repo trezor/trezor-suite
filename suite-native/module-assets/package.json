@@ -29,7 +29,7 @@
         "@suite-native/price-chart": "workspace:*",
         "@suite-native/toasts": "workspace:*",
         "@trezor/styles-native": "workspace:*",
-        "react": "19.2.3",
+        "react": "19.3.0",
         "react-redux": "9.3.0"
     },
     "devDependencies": {
