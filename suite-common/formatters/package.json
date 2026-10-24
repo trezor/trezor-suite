@@ -37,7 +37,7 @@
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "date-fns": "^4.1.0",
-        "react": "19.2.3",
+        "react": "19.3.0",
         "react-intl": "^12.1.4",
         "react-redux": "9.3.0"
     }

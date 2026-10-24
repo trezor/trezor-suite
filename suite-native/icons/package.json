@@ -13,7 +13,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
-        "@shopify/react-native-skia": "2.6.2",
+        "@shopify/react-native-skia": "2.14.0",
         "@suite-common/icons": "workspace:*",
         "@suite-common/networks": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
@@ -27,10 +27,10 @@
         "@trezor/styles-native": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "expo-image": "~57.0.1",
-        "react": "19.2.3",
-        "react-native": "0.86.3",
-        "react-native-reanimated": "4.7.0",
+        "expo-image": "~58.0.16",
+        "react": "19.3.0",
+        "react-native": "0.88.0",
+        "react-native-reanimated": "4.7.1",
         "react-redux": "9.3.0"
     },
     "devDependencies": {

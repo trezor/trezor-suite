@@ -25,6 +25,6 @@
         "@trezor/redux-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "date-fns": "^4.1.0",
-        "react": "19.2.3"
+        "react": "19.3.0"
     }
 }
