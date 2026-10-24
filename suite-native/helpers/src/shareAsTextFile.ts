@@ -16,7 +16,7 @@ export const shareAsTextFile = async ({
         }
 
         file.create();
-        file.write(textContent);
+        await file.write(textContent);
 
         await Sharing.shareAsync(file.uri, {
             mimeType: 'text/plain',
