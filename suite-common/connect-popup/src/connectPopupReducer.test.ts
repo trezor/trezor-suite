@@ -6,6 +6,7 @@ import {
     type AppRememberedPermission,
     CALL_SOURCE_DESKTOP_WS,
     CALL_SOURCE_MCP,
+    UNKNOWN_PROCESS,
 } from './connectPopupTypes';
 
 const connectPopupReducer = prepareConnectPopupReducer({
@@ -51,6 +52,10 @@ describe('rememberAppPermissions', () => {
 
     it('does not remember permissions for an app with the origin null', () => {
         expect(rememberApps({ ...app, origin: 'null' }).permissions).toEqual([]);
+    });
+
+    it('does not remember permissions for a desktop app whose process is unknown', () => {
+        expect(rememberApps({ ...app, process: UNKNOWN_PROCESS }).permissions).toEqual([]);
     });
 });
 
