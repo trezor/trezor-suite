@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="500" viewBox="0 0 1600 500" role="img" aria-labelledby="title description">
+  <title id="title">Sign-verify dependency inversion</title>
+  <desc id="description">The API contract package is imported by both the app page package and the Bitcoin implementation package. The page does not import the Bitcoin implementation. Arrows point from dependency to importer.</desc>
+  <style>
+ text { font-family: Inter, "Segoe UI", Arial, sans-serif; }
+ .pkg { font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace; font-size:16px; font-weight:500; fill:#283443; }
+ .detail { font-size:16px; fill:#5e6977; }
+ .layer { font-size:19px; font-weight:650; letter-spacing:.3px; }
+ .layer-detail { font-size:16px; fill:#647080; }
+</style>
+  <defs>
+    <marker id="arrow-contract" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M 1 1 L 8 5 L 1 9" fill="none" stroke="#8b75b5" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" />
+    </marker>
+  </defs>
+  <rect width="1600" height="500" fill="#ffffff" />
+  <rect x="180" y="60" width="1240" height="140" rx="20" fill="#f3efff" stroke="#8b75b5" />
+  <rect x="180" y="285" width="600" height="140" rx="20" fill="#edf3ff" stroke="#6484b4" />
+  <rect x="820" y="285" width="600" height="140" rx="20" fill="#fff7e6" stroke="#b89446" />
+  <path d="M 650 166 C 650 230 480 230 480 315" fill="none" stroke="#8b75b5" stroke-width="2" stroke-linecap="round" marker-end="url(#arrow-contract)" />
+  <path d="M 1050 166 C 1050 230 1300 230 1300 315" fill="none" stroke="#8b75b5" stroke-width="2" stroke-linecap="round" marker-end="url(#arrow-contract)" />
+  <text x="180" y="40" class="layer" fill="#8b75b5">CONTRACTS</text>
+  <text x="380" y="40" class="layer-detail">Independent API contract</text>
+  <text x="180" y="265" class="layer" fill="#6484b4">APPLICATION</text>
+  <text x="820" y="265" class="layer" fill="#b89446">NETWORK IMPLEMENTATIONS</text>
+  <rect x="500" y="90" width="600" height="76" rx="14" fill="#ffffff" stroke="#8b75b5" stroke-opacity=".65" />
+  <rect x="500" y="108" width="3" height="40" rx="1.5" fill="#8b75b5" />
+  <circle cx="522" cy="118" r="3" fill="#8b75b5" />
+  <text x="536" y="123" class="pkg">@trezor/network-module-suite-types</text>
+  <text x="524" y="149" class="detail">Abstract module and registry contracts</text>
+  <rect x="210" y="315" width="540" height="90" rx="14" fill="#ffffff" stroke="#6484b4" stroke-opacity=".65" />
+  <rect x="210" y="333" width="3" height="54" rx="1.5" fill="#6484b4" />
+  <circle cx="232" cy="343" r="3" fill="#6484b4" />
+  <text x="246" y="348" class="pkg">@suite-app/sign-verify-page</text>
+  <text x="234" y="374" class="detail">Uses the contract without importing Bitcoin</text>
+  <rect x="850" y="315" width="540" height="90" rx="14" fill="#ffffff" stroke="#b89446" stroke-opacity=".65" />
+  <rect x="850" y="333" width="3" height="54" rx="1.5" fill="#b89446" />
+  <circle cx="872" cy="343" r="3" fill="#b89446" />
+  <text x="886" y="348" class="pkg">@trezor/network-bitcoin-suite</text>
+  <text x="874" y="374" class="detail">Implements the contract for Bitcoin</text>
+  <path d="M 182 470 H 213 M 207 465 L 214 470 L 207 475" stroke="#657182" stroke-width="1.7" fill="none" />
+  <text x="228" y="475" fill="#657182" font-size="13">Arrows point from dependencies to the packages that import them.</text>
+</svg>
