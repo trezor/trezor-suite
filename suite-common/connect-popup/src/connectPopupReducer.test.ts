@@ -6,6 +6,7 @@ import {
     type AppRememberedPermission,
     CALL_SOURCE_DESKTOP_WS,
     CALL_SOURCE_MCP,
+    CALL_SOURCE_WALLETCONNECT,
 } from './connectPopupTypes';
 
 const connectPopupReducer = prepareConnectPopupReducer({
@@ -52,6 +53,18 @@ describe('rememberAppPermissions', () => {
     it('does not remember permissions for an app with the origin null', () => {
         expect(rememberApps({ ...app, origin: 'null' }).permissions).toEqual([]);
     });
+
+    it('remembers permissions for a walletconnect app', () => {
+        const walletconnectApp: AppRememberedPermission = {
+            ...app,
+            type: CALL_SOURCE_WALLETCONNECT,
+            process: undefined,
+        };
+
+        // Documents the bug: `canRememberPermissions` accepts walletconnect, so the reducer
+        // relies on every consent UI composing its own walletconnect check.
+        expect(rememberApps(walletconnectApp).permissions).toEqual([walletconnectApp]);
+    });
 });
 
 describe('storageLoad', () => {
@@ -67,5 +80,17 @@ describe('storageLoad', () => {
 
     it('does not load permissions remembered for the origin null by an earlier version', () => {
         expect(loadApps({ ...app, origin: 'null' }).permissions).toEqual([]);
+    });
+
+    it('loads permissions remembered for walletconnect by an earlier version', () => {
+        const walletconnectApp: AppRememberedPermission = {
+            ...app,
+            type: CALL_SOURCE_WALLETCONNECT,
+            process: undefined,
+        };
+
+        // Documents the bug: a grant persisted for walletconnect survives the load, so every
+        // reader of `state.permissions` filters it out again.
+        expect(loadApps(walletconnectApp).permissions).toEqual([walletconnectApp]);
     });
 });
