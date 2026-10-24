@@ -1,0 +1,69 @@
+name: "[Build] develop Yarn cache"
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - "yarn.lock"
+      - ".github/workflows/build-develop-yarn-cache.yml"
+  pull_request:
+    paths:
+      - ".github/workflows/build-develop-yarn-cache.yml"
+  # Re-creates the cache after GitHub evicts it; push runs only on yarn.lock changes.
+  schedule:
+    - cron: "0 4 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  save-yarn-cache:
+    name: Save Yarn package cache
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+
+      - name: Install node and yarn
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
+
+      # Must match the path and key restored by .github/actions/restore-yarn-cache.
+      - name: Look up existing cache
+        id: lookup
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: yarn-cache-develop-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+          lookup-only: true
+
+      - name: Install SafeDep PMG
+        if: steps.lookup.outputs.cache-hit != 'true'
+        uses: safedep/pmg@961499c36c98afbafec10a257ff27fb464073c86 # v0.30.0
+        continue-on-error: true
+        with:
+          version: v0.32.0
+          config-file: .github/pmg-config.yml
+
+      - name: Download all packages
+        if: steps.lookup.outputs.cache-hit != 'true'
+        run: yarn --immutable --mode=skip-build
+
+      - name: Save cache
+        if: steps.lookup.outputs.cache-hit != 'true' && github.ref == 'refs/heads/develop'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: yarn-cache-develop-${{ runner.os }}-${{ hashFiles('yarn.lock') }}

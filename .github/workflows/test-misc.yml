@@ -39,6 +39,9 @@ jobs:
         with:
           node-version-file: ".nvmrc"
 
+      - name: Restore develop Yarn cache
+        uses: ./.github/actions/restore-yarn-cache
+
       - name: Install SafeDep PMG
         uses: safedep/pmg@961499c36c98afbafec10a257ff27fb464073c86 # v0.30.0
         continue-on-error: true
@@ -63,6 +66,9 @@ jobs:
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
         with:
           node-version-file: ".nvmrc"
+
+      - name: Restore develop Yarn cache
+        uses: ./.github/actions/restore-yarn-cache
 
       - name: Install SafeDep PMG
         uses: safedep/pmg@961499c36c98afbafec10a257ff27fb464073c86 # v0.30.0
@@ -92,6 +98,9 @@ jobs:
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
         with:
           node-version-file: ".nvmrc"
+
+      - name: Restore develop Yarn cache
+        uses: ./.github/actions/restore-yarn-cache
 
       - name: Install SafeDep PMG
         uses: safedep/pmg@961499c36c98afbafec10a257ff27fb464073c86 # v0.30.0
@@ -131,6 +140,9 @@ jobs:
         with:
           node-version-file: ".nvmrc"
 
+      - name: Restore develop Yarn cache
+        uses: ./.github/actions/restore-yarn-cache
+
       - name: Install SafeDep PMG
         uses: safedep/pmg@961499c36c98afbafec10a257ff27fb464073c86 # v0.30.0
         continue-on-error: true
@@ -151,6 +163,9 @@ jobs:
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
         with:
           node-version-file: ".nvmrc"
+
+      - name: Restore develop Yarn cache
+        uses: ./.github/actions/restore-yarn-cache
 
       - name: Install SafeDep PMG
         uses: safedep/pmg@961499c36c98afbafec10a257ff27fb464073c86 # v0.30.0
