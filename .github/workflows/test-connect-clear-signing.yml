@@ -1,0 +1,105 @@
+name: "[Test] connect clear signing"
+
+on:
+  schedule:
+    - cron: "30 0 * * *"
+  workflow_dispatch:
+    inputs:
+      firmware:
+        description: "Firmware to test"
+        type: choice
+        default: "2-latest"
+        options:
+          - 2-latest
+          - 2-main
+          - branch
+      firmwareBranch:
+        description: "Firmware branch (required when firmware is branch)"
+        type: string
+      model:
+        description: "Trezor model"
+        type: choice
+        default: "all"
+        options:
+          - all
+          - T3W1
+          - T3T1
+          - T3B1
+          - T2T1
+  pull_request:
+    paths:
+      - "packages/connect-core/e2e/**/clearSigning*"
+      - "packages/connect-core/e2e/common.setup.ts"
+      - "packages/connect-core/e2e/run.ts"
+      - "packages/connect-core/e2e/vitest*.ts"
+      - ".github/workflows/test-connect-clear-signing.yml"
+      - ".github/workflows/template-connect-test-params.yml"
+      - "docker/docker-connect-test.sh"
+      - "docker/docker-compose.connect-test.yml"
+      - ".nvmrc"
+      - ".yarnrc.yml"
+      - "package.json"
+      - "yarn.lock"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.head_ref || github.ref }}-${{ inputs.firmware }}-${{ inputs.firmwareBranch }}-${{ inputs.model }}
+  cancel-in-progress: true
+
+jobs:
+  set-matrix:
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.generate.outputs.matrix }}
+    steps:
+      - name: Select firmware and models
+        id: generate
+        env:
+          FIRMWARE: ${{ inputs.firmware || '2-latest' }}
+          FIRMWARE_BRANCH: ${{ inputs.firmwareBranch }}
+          MODEL: ${{ inputs.model || 'all' }}
+        run: |
+          node <<'NODE'
+          const { appendFileSync } = require('node:fs');
+          const { execFileSync } = require('node:child_process');
+          const models = ['T3W1', 'T3T1', 'T3B1', 'T2T1'];
+          const { FIRMWARE: firmware, FIRMWARE_BRANCH: branch, MODEL: model } = process.env;
+          if (!['2-latest', '2-main', 'branch'].includes(firmware)) {
+            throw new Error('Unsupported firmware selection');
+          }
+          if (model !== 'all' && !models.includes(model)) {
+            throw new Error('Unsupported Trezor model');
+          }
+          if (firmware === 'branch') {
+            if (!branch) throw new Error('firmwareBranch is required when firmware is branch');
+            execFileSync('git', ['check-ref-format', '--branch', branch]);
+          }
+          const matrix = {
+            model: model === 'all' ? models : [model],
+            firmware: [firmware === 'branch' ? '2-latest' : firmware],
+            firmwareBranch: [firmware === 'branch' ? branch : ''],
+          };
+          appendFileSync(process.env.GITHUB_OUTPUT, `matrix=${JSON.stringify(matrix)}\n`);
+          NODE
+
+  clear-signing:
+    needs: [set-matrix]
+    name: Clear signing (${{ matrix.model }} ${{ matrix.firmwareBranch || matrix.firmware }})
+    uses: ./.github/workflows/template-connect-test-params.yml
+    with:
+      testPattern: "clearSigning"
+      testsFirmware: ${{ matrix.firmware }}
+      testsFirmwareBranch: ${{ matrix.firmwareBranch }}
+      testDescription: "node-clear-signing-${{ matrix.model }}"
+      disable_cache_tx: ${{ 'true' }}
+      transport: "node-bridge"
+      testEnv: "node"
+      testFirmwareModel: ${{ matrix.model }}
+      testGroup: clear-signing
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.set-matrix.outputs.matrix) }}
