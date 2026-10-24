@@ -47,9 +47,11 @@ const getRawLiquidityClue = (
     // find most recent coinjoin transaction in history
     const cjTx = transactions.find(tx => tx.type === 'joint');
     if (!cjTx) return Promise.resolve(null);
+    // Only the other participants' outputs describe their liquidity, so the account's own
+    // coinjoin outputs must not reach the clue.
     const externalAmounts = cjTx.details.vout
         .flatMap(vout => transformVinVout(vout, options.network))
-        .filter(vout => !('address' in vout))
+        .filter(vout => !isInternal(vout))
         .map(o => Number(o.Value));
 
     return middleware.initLiquidityClue(externalAmounts, {
