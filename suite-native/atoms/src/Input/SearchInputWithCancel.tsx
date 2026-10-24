@@ -33,7 +33,7 @@ export type SearchInputWithCancelProps<R extends ClearAndBlur | null> = {
     onBlur?: () => void;
 };
 
-export type SearchComponentWithRef<R extends ClearAndBlur | null> = React.ForwardRefExoticComponent<
+export type SearchComponentWithRef<R extends ClearAndBlur | null> = React.ComponentType<
     SearchComponentProps & React.RefAttributes<R>
 >;
 

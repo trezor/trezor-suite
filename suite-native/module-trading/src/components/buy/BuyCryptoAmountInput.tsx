@@ -1,5 +1,5 @@
 import { type Ref } from 'react';
-import { type TextInput } from 'react-native';
+import { type TextInputInstance } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { selectTradingBuyIsLoading } from '@suite-common/trading';
@@ -16,7 +16,7 @@ import { AmountInput } from '../general/Input/AmountInput';
 
 export type CryptoAmountInputProps = {
     showAssetsSheet: () => void;
-    ref?: Ref<TextInput>;
+    ref?: Ref<TextInputInstance>;
 };
 
 const CRYPTO_AMOUNT_TEST_ID = '@trading/buy/crypto-amount-input';

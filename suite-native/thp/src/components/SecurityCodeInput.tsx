@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState } from 'react';
-import { Platform, Pressable, TextInput } from 'react-native';
+import { Platform, Pressable, TextInput, type TextInputInstance } from 'react-native';
 import { KeyboardEvents } from 'react-native-keyboard-controller';
 
 import { useFocusEffect } from '@react-navigation/native';
@@ -29,7 +29,7 @@ const KEYBOARD_TYPE = IS_IPAD ? 'numbers-and-punctuation' : 'number-pad';
 export const SecurityCodeInput = ({ length, onSubmit }: SecurityCodeInputProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const inputRef = useRef<TextInput>(null);
+    const inputRef = useRef<TextInputInstance>(null);
 
     const [isFocused, setIsFocused] = useState(false);
     const [code, setCode] = useState('');

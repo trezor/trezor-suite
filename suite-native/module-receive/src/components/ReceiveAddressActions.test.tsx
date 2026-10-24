@@ -64,7 +64,7 @@ describe('ReceiveAddressActions', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockCopyToClipboard.mockResolvedValue(undefined);
-        mockShare.mockResolvedValue({ action: Share.sharedAction });
+        mockShare.mockResolvedValue({ action: Share.sharedAction, activityType: undefined });
         mockUseNavigation.mockReturnValue({ navigate: mockNavigate } as never);
         mockUseBottomSheetModal
             .mockReturnValueOnce({
@@ -188,7 +188,7 @@ describe('ReceiveAddressActions', () => {
     });
 
     it('does not open shared address verification after cancelling sharing', async () => {
-        mockShare.mockResolvedValue({ action: Share.dismissedAction });
+        mockShare.mockResolvedValue({ action: Share.dismissedAction, activityType: undefined });
         const { getByText } = await renderActions();
 
         await userEvent.press(getByText(getTranslation('qrCode.shareButton')));

@@ -1,3 +1,7 @@
+const { loadE2eEnv } = require('./scripts/withE2eEnv');
+
+loadE2eEnv();
+
 /** @type {Detox.DetoxConfig} */
 module.exports = {
     session: {
@@ -16,23 +20,23 @@ module.exports = {
         'ios.debug': {
             type: 'ios.app',
             binaryPath: 'ios/build/Build/Products/Debug-iphonesimulator/TrezorSuiteDebug.app',
-            build: 'NODE_ENV=test xcodebuild -workspace ios/TrezorSuiteDebug.xcworkspace -scheme TrezorSuiteDebug -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build',
+            build: 'xcodebuild -workspace ios/TrezorSuiteDebug.xcworkspace -scheme TrezorSuiteDebug -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build',
         },
         'ios.release': {
             type: 'ios.app',
             binaryPath: 'ios/build/Build/Products/Release-iphonesimulator/TrezorSuiteDebug.app',
-            build: 'NODE_ENV=test xcodebuild -workspace ios/TrezorSuiteDebug.xcworkspace -scheme TrezorSuiteDebug -configuration Release -sdk iphonesimulator -derivedDataPath ios/build',
+            build: 'xcodebuild -workspace ios/TrezorSuiteDebug.xcworkspace -scheme TrezorSuiteDebug -configuration Release -sdk iphonesimulator -derivedDataPath ios/build',
         },
         'android.debug': {
             type: 'android.apk',
             binaryPath: 'android/app/build/outputs/apk/debug/app-debug.apk',
-            build: 'cd android && NODE_ENV=test ./gradlew :app:assembleDebug :app:assembleAndroidTest -DtestBuildType=debug',
+            build: 'cd android && ./gradlew :app:assembleDebug :app:assembleAndroidTest -DtestBuildType=debug',
             reversePorts: [8081, 21328, 19121],
         },
         'android.release': {
             type: 'android.apk',
             binaryPath: 'android/app/build/outputs/apk/release/app-release.apk',
-            build: 'cd android && NODE_ENV=test ./gradlew :app:assembleRelease :app:assembleAndroidTest -DtestBuildType=release',
+            build: 'cd android && ./gradlew :app:assembleRelease :app:assembleAndroidTest -DtestBuildType=release',
             reversePorts: [21328, 19121],
         },
     },

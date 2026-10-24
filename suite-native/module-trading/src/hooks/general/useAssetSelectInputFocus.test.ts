@@ -1,12 +1,12 @@
 import { type RefObject } from 'react';
-import { type TextInput } from 'react-native';
+import { type TextInputInstance } from 'react-native';
 
 import { act, renderHook } from '@suite-native/test-utils';
 
 import { useAssetSelectInputFocus } from './useAssetSelectInputFocus';
 
-const createInputRef = (focus: jest.Mock): RefObject<TextInput | null> => ({
-    current: { focus } as unknown as TextInput,
+const createInputRef = (focus: jest.Mock): RefObject<TextInputInstance | null> => ({
+    current: { focus } as unknown as TextInputInstance,
 });
 
 describe('useAssetSelectInputFocus', () => {

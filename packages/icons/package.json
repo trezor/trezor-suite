@@ -13,7 +13,7 @@
         "generate-icons": "yarn g:rimraf src/generated/icons && yarn svgr --config-file svgr.web.config.mjs -- assets && node generateIconTypes.mjs && prettier --write --log-level silent 'src/generated/icons/**/*.{ts,tsx}' 'src/index.ts'"
     },
     "dependencies": {
-        "react": "19.2.3"
+        "react": "19.3.0"
     },
     "devDependencies": {
         "@svgr/cli": "^8.1.0",

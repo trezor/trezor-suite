@@ -21,7 +21,7 @@ const saveFile = async (fileName: string, content: string): Promise<void> => {
     if (Platform.OS === 'android') {
         const dir = await Directory.pickDirectoryAsync();
         const newFile = dir.createFile(fileName, CSV_MIME_TYPE);
-        newFile.write(content);
+        await newFile.write(content);
     } else if (Platform.OS === 'ios') {
         const cachedFile = new File(Paths.cache, fileName);
 
@@ -31,7 +31,7 @@ const saveFile = async (fileName: string, content: string): Promise<void> => {
 
         try {
             cachedFile.create();
-            cachedFile.write(content);
+            await cachedFile.write(content);
 
             await Sharing.shareAsync(cachedFile.uri, {
                 UTI: 'public.comma-separated-values-text',

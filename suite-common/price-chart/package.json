@@ -16,6 +16,6 @@
         "@suite-common/react-query": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
-        "react": "19.2.3"
+        "react": "19.3.0"
     }
 }

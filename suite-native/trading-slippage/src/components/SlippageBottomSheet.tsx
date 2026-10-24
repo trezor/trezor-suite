@@ -133,7 +133,7 @@ export const SlippageBottomSheet = ({
                             isFullWidth
                             isLoading={isSubmitting}
                             isDisabled={!isValid}
-                            onPress={handleSubmit(handleConfirm)}
+                            onPress={() => handleSubmit(handleConfirm)()}
                         >
                             <Translation id="generic.buttons.confirm" />
                         </Button>
