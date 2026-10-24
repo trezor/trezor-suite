@@ -1,4 +1,5 @@
 import { v1 as v1Protocol } from '@trezor/protocol';
+import { typedObjectFromEntries } from '@trezor/utils';
 
 import {
     AbstractTransport,
@@ -173,16 +174,16 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                                 channel,
                             });
 
-                            return [channel, res.success];
+                            return [channel, res.success] as const;
                         } catch {
-                            return [channel, false];
+                            return [channel, false] as const;
                         }
                     }),
                 );
 
-                const map = Object.fromEntries(entries);
+                const map: Record<OpenDeviceChannel, boolean> = typedObjectFromEntries(entries);
 
-                return success(map as Record<OpenDeviceChannel, boolean>);
+                return success(map);
             },
             { signal },
         );

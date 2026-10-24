@@ -40,6 +40,7 @@ type WatchTradeDataResultProps<T extends TradingType> = {
 const getDefinedWatchUpdates = <T extends TradingType>(
     response: TradingWatchTradeResponsePropsMap[T],
 ): Partial<TradingTradeMapProps[T]> =>
+    // eslint-disable-next-line no-restricted-syntax -- filtering the entries of a generic response cannot be typed as a generic `Partial`.
     Object.fromEntries(
         Object.entries(response).filter(([, value]) => value !== undefined),
     ) as Partial<TradingTradeMapProps[T]>;

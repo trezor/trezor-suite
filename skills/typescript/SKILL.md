@@ -1,6 +1,6 @@
 ---
 name: typescript
-description: TypeScript-specific conventions including ts-expect-error usage, unknown vs any, const assertions, and type vs interface preferences. Use when writing TypeScript code.
+description: TypeScript-specific conventions including ts-expect-error usage, unknown vs any, typed object helpers instead of native Object.* calls, const assertions, and type vs interface preferences. Use when writing TypeScript code.
 ---
 
 # TypeScript
@@ -34,6 +34,53 @@ const validateKey = (key: unknown): key is DictionaryKey => {
 ```
 
 If the above type guard marked `key` as `any`, calling `key()` would not throw.
+
+## Prefer typed helpers to casting native APIs
+
+When a native API's TypeScript signature loses type information, use the typed wrapper from
+`@trezor/utils` instead of casting the result. A cast only checks that the two types overlap, so it
+usually keeps compiling after the data changes shape. Before writing `as` on the result of a
+built-in call, check `@trezor/utils` and `@trezor/type-utils` for a wrapper. If the same cast keeps
+coming back and no wrapper exists, add one there instead of repeating the cast.
+
+| Native               | Native result type              | Helper                   |
+| -------------------- | ------------------------------- | ------------------------ |
+| `Object.keys`        | `string[]`                      | `typedObjectKeys`        |
+| `Object.entries`     | `[string, T][]`                 | `typedObjectEntries`     |
+| `Object.values`      | `T[]` (`any[]` for some inputs) | `typedObjectValues`      |
+| `Object.fromEntries` | `{ [k: string]: T }` or `any`   | `typedObjectFromEntries` |
+| `Object.hasOwn`      | `boolean` (no narrowing)        | `hasOwn`                 |
+
+`typedObjectKeys`, `typedObjectEntries` and `typedObjectValues` assume the object has no keys
+beyond its type. Use them on objects whose keys you control, not on parsed external data.
+
+`Object.fromEntries` returns `any` when its entries do not resolve to tuples. Entries passed inline
+are usually contextually typed as tuples, so `Object.fromEntries(items.map(item => [item.id, item]))`
+is already checked. Entries built in a variable or an earlier `.then()` are not. Neither are
+callbacks whose branches return different value types, such as
+`tx.type === 'error' ? [key, tx] : [key, { ...tx, extra }]`:
+
+🔴 Entries stored before the call infer as `string[][]`, so the result is `any`:
+
+```tsx
+const entries = addresses.map(({ address, path }) => [address, path]);
+const paths: AddressPaths = Object.fromEntries(entries);
+```
+
+🟢 Pass the entries inline, type them as tuples, or use the helper:
+
+```tsx
+const paths: AddressPaths = Object.fromEntries(
+    addresses.map(({ address, path }) => [address, path]),
+);
+const entries = addresses.map(({ address, path }) => [address, path] as const);
+const pathsFromTuples: AddressPaths = Object.fromEntries(entries);
+```
+
+ESLint enforces this: `no-restricted-syntax` rejects casts of `Object.keys/entries/values/fromEntries`,
+and `local-rules/no-any-object-from-entries` (type-aware, `ESLINT_RUN_EXPENSIVE_CHECKS=true`) rejects
+`Object.fromEntries` calls that return `any`. Packages that cannot depend on `@trezor/utils` use
+tuple entries.
 
 ## Prefer direct type assignment to indirect
 

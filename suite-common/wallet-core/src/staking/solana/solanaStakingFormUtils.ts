@@ -79,7 +79,7 @@ const applyDeviceReviewOnly = (
     isDeviceReviewOnly: boolean,
 ): PrecomposedLevels =>
     Object.fromEntries(
-        Object.entries(composed).map(([key, tx]) =>
+        Object.entries(composed).map(([key, tx]): [string, PrecomposedTransaction] =>
             tx.type === 'error' ? [key, tx] : [key, { ...tx, isDeviceReviewOnly }],
         ),
     );
@@ -91,7 +91,7 @@ const applySolanaTxMeta = (
 ): PrecomposedLevels =>
     Object.fromEntries(
         Object.entries(applyDeviceReviewOnly(composed, solanaTxMeta.hasSplitInstruction)).map(
-            ([key, tx]) => {
+            ([key, tx]): [string, PrecomposedTransaction] => {
                 if (tx.type === 'error') return [key, tx];
 
                 const nextTx = { ...tx, solanaTxMeta };

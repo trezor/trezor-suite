@@ -9,6 +9,7 @@ import {
     type Variant,
     type Vendor,
 } from '@suite-common/suite-types';
+import { typedObjectEntries, typedObjectFromEntries } from '@trezor/utils';
 
 import { type Context, ExperimentId, Feature } from './messageSystemTypes';
 import { collectStringsDeep, toMessageSystemOptions } from './messageSystemUtils';
@@ -85,9 +86,10 @@ export const CONTEXT_PATTERNS = {
     },
 } as const satisfies Record<keyof typeof Context, { pattern: string; regex: RegExp }>;
 
-export const EXPERIMENT_MAP = Object.fromEntries(
-    Object.entries(ExperimentId).map(([name, id]) => [id, name]),
-) as Record<ExperimentId, keyof typeof ExperimentId>;
+export const EXPERIMENT_MAP: Record<ExperimentId, keyof typeof ExperimentId> =
+    typedObjectFromEntries(
+        typedObjectEntries(ExperimentId).map(([name, id]) => [id, name] as const),
+    );
 
 export const CATEGORY_ENUM = schema.definitions.category.enum.sort() as readonly Category[];
 export const VARIANT_ENUM = schema.properties.actions.items.properties.message.properties.variant
