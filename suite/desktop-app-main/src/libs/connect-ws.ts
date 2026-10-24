@@ -200,8 +200,8 @@ export const exposeConnectWs = ({
                     port,
                     filterSelf,
                     req.socket,
-                ).catch(() => {
-                    logger.error(LOG_PREFIX, 'findProcessFromIncomingPort failed');
+                ).catch(error => {
+                    logger.error(LOG_PREFIX, `findProcessFromIncomingPort failed: ${error}`);
 
                     return undefined;
                 });
