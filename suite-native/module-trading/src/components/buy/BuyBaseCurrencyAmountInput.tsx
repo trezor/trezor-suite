@@ -1,5 +1,5 @@
 import { type Ref } from 'react';
-import { type TextInput } from 'react-native';
+import { type TextInputInstance } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { selectTradingBuyIsLoading } from '@suite-common/trading';
@@ -12,7 +12,7 @@ import { TradingBaseCurrencyAmountInput } from '../general/TradingBaseCurrencyAm
 
 export type BuyBaseCurrencyAmountInputProps = {
     showAssetsSheet: () => void;
-    ref?: Ref<TextInput>;
+    ref?: Ref<TextInputInstance>;
 };
 
 const BUY_BASE_CURRENCY_INPUT_TEST_ID = '@trading/buy/base-currency-amount-input';

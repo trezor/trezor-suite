@@ -51,7 +51,7 @@ describe('useReceiveQRCodeActions', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        mockShare.mockResolvedValue({ action: Share.sharedAction });
+        mockShare.mockResolvedValue({ action: Share.sharedAction, activityType: undefined });
         mockOpenSettings.mockResolvedValue();
         mockCaptureRef.mockResolvedValue('/cache/trezor-receive-address-qr.png');
         mockSetImageAsync.mockResolvedValue(undefined);

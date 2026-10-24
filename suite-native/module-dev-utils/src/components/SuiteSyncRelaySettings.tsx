@@ -88,7 +88,7 @@ export const SuiteSyncRelaySettings = () => {
                             intent="neutral"
                             priority="secondary"
                             size="medium"
-                            onPress={onSubmit}
+                            onPress={() => onSubmit()}
                         >
                             Save
                         </Button>

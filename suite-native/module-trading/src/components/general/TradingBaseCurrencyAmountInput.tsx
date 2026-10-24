@@ -1,5 +1,5 @@
 import { type Ref } from 'react';
-import { type Insets, type TextInput } from 'react-native';
+import { type Insets, type TextInputInstance } from 'react-native';
 
 import { AMOUNT_MAX_LENGTH } from '@suite-common/wallet-core';
 import { decimalTransformer } from '@suite-native/helpers';
@@ -25,7 +25,7 @@ export type TradingBaseCurrencyAmountInputProps = {
     isEditable?: boolean;
     isLoading?: boolean;
     testID?: string;
-    ref?: Ref<TextInput>;
+    ref?: Ref<TextInputInstance>;
     hitSlop?: AmountInputProps['hitSlop'];
 };
 

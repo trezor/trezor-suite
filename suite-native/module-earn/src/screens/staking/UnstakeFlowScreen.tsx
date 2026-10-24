@@ -135,7 +135,7 @@ export const UnstakeFlowScreen = () => {
                             isDisabled={
                                 !isValid || isFeeUnavailable || isPrecomposeError || isPending
                             }
-                            onPress={handleReviewAndSign}
+                            onPress={() => handleReviewAndSign()}
                         >
                             <Translation id="earn.earnFormScreen.reviewAndSign" />
                         </Button>

@@ -1,5 +1,5 @@
 import { type Ref } from 'react';
-import { type TextInput } from 'react-native';
+import { type TextInputInstance } from 'react-native';
 
 import { useWatch } from '@suite-native/forms';
 import { useAmountInputTransformers } from '@suite-native/helpers';
@@ -15,7 +15,7 @@ import { AmountInput } from '../../general/Input/AmountInput';
 
 export type ExchangeSendAmountInputProps = {
     onSelectAsset: () => void;
-    ref?: Ref<TextInput>;
+    ref?: Ref<TextInputInstance>;
 };
 
 const EXCHANGE_SEND_INPUT_TEST_ID = '@trading/exchange/send-amount-input';
