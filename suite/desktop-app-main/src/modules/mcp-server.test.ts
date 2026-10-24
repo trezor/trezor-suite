@@ -45,7 +45,10 @@ jest.mock('../libs/process-icon', () => ({
     getProcessIcon: jest.fn().mockResolvedValue(undefined),
 }));
 
+import { findProcessFromIncomingPort } from '@trezor/node-utils';
+
 import { init } from './mcp-server';
+import { addMessage } from '../libs/connect-popup-messages';
 
 const TEST_TOKEN = 'test-token-abc123';
 
@@ -65,16 +68,17 @@ const createMockStore = (overrides?: Partial<McpSettings>) => {
     };
 };
 
-const createMockMainWindowProxy = (hasWindow = true) => ({
-    getInstance: jest.fn(() =>
-        hasWindow
-            ? {
-                  webContents: { send: jest.fn() },
-                  isDestroyed: () => false,
-              }
-            : undefined,
-    ),
-});
+const createMockMainWindowProxy = (hasWindow = true) => {
+    // The same window across calls, so a test can read what was sent to it.
+    const mainWindow = hasWindow
+        ? {
+              webContents: { send: jest.fn() },
+              isDestroyed: () => false,
+          }
+        : undefined;
+
+    return { getInstance: jest.fn(() => mainWindow) };
+};
 
 /**
  * Start an MCP server on a free port and return the port + cleanup function.
@@ -176,6 +180,16 @@ const jsonRpcNotification = (method: string, params?: Record<string, unknown>) =
     method,
     params,
 });
+
+const waitFor = async (condition: () => boolean) => {
+    for (let attempt = 0; attempt < 300; attempt++) {
+        if (condition()) return;
+        await new Promise(resolve => {
+            setTimeout(resolve, 10);
+        });
+    }
+    throw new Error('Condition was not met in time');
+};
 
 describe('MCP server', () => {
     let cleanup: (() => void) | undefined;
@@ -535,6 +549,52 @@ describe('MCP server', () => {
             expect(res.status).toBe(202);
             const text = await res.text();
             expect(text).toBe('');
+        });
+    });
+
+    describe('calling process', () => {
+        const popupCall = (mainWindowProxy: ReturnType<typeof createMockMainWindowProxy>) =>
+            mainWindowProxy.getInstance()?.webContents.send.mock.calls[0]?.[1];
+
+        const lastPopupDeferred = () =>
+            (addMessage as jest.Mock).mock.results.at(-1)!.value as {
+                resolve: (value: unknown) => void;
+            };
+
+        it('names the client by its declared clientInfo when the executable path is unknown', async () => {
+            (findProcessFromIncomingPort as jest.Mock).mockResolvedValueOnce({
+                name: 'node',
+                pid: '300',
+                fullPath: '',
+                warning: true,
+            });
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const initRes = await mcpFetch(
+                server.port,
+                jsonRpc('initialize', { clientInfo: { name: 'Claude Code', version: '1.0.0' } }),
+            );
+            const sessionId = initRes.headers.get('mcp-session-id')!;
+            const callRes = mcpFetch(
+                server.port,
+                jsonRpc('tools/call', {
+                    name: 'trezor_get_address',
+                    arguments: { coin: 'btc' },
+                }),
+                { sessionId },
+            );
+            await waitFor(() => popupCall(server.mainWindowProxy) !== undefined);
+            const call = popupCall(server.mainWindowProxy);
+            // Answer the popup, so that the request the call belongs to can finish.
+            lastPopupDeferred().resolve({ success: false, error: 'cancelled' });
+            await callRes;
+
+            expect(call.process).toEqual({
+                name: 'Claude Code',
+                fullPath: '',
+                warning: true,
+            });
         });
     });
 
