@@ -68,7 +68,7 @@ describe('HttpServer', () => {
         });
     });
 
-    test('register a route and getRouterAddress', async () => {
+    test('register a route and activate it', async () => {
         const handler = jest.fn((_request, response, _next) => {
             response.end('ok');
         });
@@ -80,9 +80,10 @@ describe('HttpServer', () => {
         expect(res.status).toEqual(200);
         expect(handler).toHaveBeenCalled();
 
-        expect(server.getRouteAddress('/foo')).toEqual(
-            `http://${address.address}:${address.port}/foo`,
-        );
+        const activated = server.activateRoute('/foo');
+        expect(activated?.url).toEqual(`http://${address.address}:${address.port}/foo`);
+        expect(activated?.token).toEqual(expect.any(String));
+        expect(activated?.token.length).toBeGreaterThan(0);
     });
 
     test('set response headers in a custom middleware handler', async () => {
@@ -468,6 +469,229 @@ describe('HttpServer', () => {
         expect(res.status).toEqual(404);
         res = await fetch(`http://${address.address}:${address.port}/bar`);
         expect(res.status).toEqual(200);
+    });
+
+    describe('requireToken middleware', () => {
+        const setup = async () => {
+            const handler = jest.fn((_request, response) => {
+                response.end('ok');
+            });
+            server.get('/foo', [server.requireToken(), handler]);
+            server.deactivateRoute('/foo');
+            await server.start();
+            const address = server.getServerAddress();
+
+            return { handler, base: `http://${address.address}:${address.port}` };
+        };
+
+        test('rejects request without token', async () => {
+            const { handler, base } = await setup();
+            const activated = server.activateRoute('/foo');
+            expect(activated).toBeDefined();
+
+            const res = await fetch(`${base}/foo`);
+            expect(res.status).toEqual(404);
+            expect(handler).not.toHaveBeenCalled();
+        });
+
+        test('rejects request with wrong token', async () => {
+            const { handler, base } = await setup();
+            server.activateRoute('/foo');
+
+            const res = await fetch(`${base}/foo?token=not-the-real-one`);
+            expect(res.status).toEqual(404);
+            expect(handler).not.toHaveBeenCalled();
+        });
+
+        test('rejection response strips headers set by common middleware (stealth 404)', async () => {
+            const handler = jest.fn((_request, response) => {
+                response.end('ok');
+            });
+            // common middleware sets a Content-Type for every request, before the
+            // per-route requireToken runs
+            server.use([
+                (request, response, next) => {
+                    response.setHeader('Content-Type', 'text/html; charset=UTF-8');
+                    response.setHeader('X-Content-Type-Options', 'nosniff');
+                    next(request, response);
+                },
+            ]);
+            server.get('/foo', [server.requireToken(), handler]);
+            server.deactivateRoute('/foo');
+            await server.start();
+            const address = server.getServerAddress();
+            const base = `http://${address.address}:${address.port}`;
+
+            // route is activated, so common middleware runs, but the token is wrong →
+            // the 404 must not carry the Content-Type header, otherwise a probe could
+            // tell an activated route apart from an unregistered/inactive one
+            server.activateRoute('/foo');
+            const res = await fetch(`${base}/foo?token=wrong`);
+            expect(res.status).toEqual(404);
+            expect(handler).not.toHaveBeenCalled();
+
+            // the whole header set must match the 404 of a never registered route,
+            // not just the one header the common middleware happens to set today
+            const unregistered = await fetch(`${base}/not-a-route`);
+            expect(unregistered.status).toEqual(404);
+            expect([...res.headers.keys()]).toEqual([...unregistered.headers.keys()]);
+        });
+
+        test('accepts valid token, then auto-deactivates after single use', async () => {
+            const { handler, base } = await setup();
+            const activated = server.activateRoute('/foo')!;
+
+            const res1 = await fetch(`${base}/foo?token=${activated.token}`);
+            expect(res1.status).toEqual(200);
+            expect(handler).toHaveBeenCalledTimes(1);
+
+            // same token replayed → 404 (consumed) AND route auto-closed
+            const res2 = await fetch(`${base}/foo?token=${activated.token}`);
+            expect(res2.status).toEqual(404);
+            expect(handler).toHaveBeenCalledTimes(1);
+        });
+
+        test('two parallel activations issue distinct tokens, both work, route closes after both consumed', async () => {
+            const { handler, base } = await setup();
+            const a = server.activateRoute('/foo')!;
+            const b = server.activateRoute('/foo')!;
+            expect(a.token).not.toEqual(b.token);
+
+            expect((await fetch(`${base}/foo?token=${a.token}`)).status).toEqual(200);
+            // after first consume, route still active because b is live
+            expect((await fetch(`${base}/foo?token=${b.token}`)).status).toEqual(200);
+            // both consumed → 404
+            expect((await fetch(`${base}/foo?token=${a.token}`)).status).toEqual(404);
+            expect(handler).toHaveBeenCalledTimes(2);
+        });
+
+        test('expired token is rejected', async () => {
+            server = new HttpServer<Events>({ logger: muteLogger, tokenTtlMs: 0 });
+            const handler = jest.fn((_request, response) => {
+                response.end('ok');
+            });
+            server.get('/foo', [server.requireToken(), handler]);
+            server.deactivateRoute('/foo');
+            await server.start();
+            const address = server.getServerAddress();
+            const activated = server.activateRoute('/foo')!;
+
+            // wait one tick so token is past TTL
+            await new Promise(r => setTimeout(r, 10));
+            const res = await fetch(
+                `http://${address.address}:${address.port}/foo?token=${activated.token}`,
+            );
+            expect(res.status).toEqual(404);
+            expect(handler).not.toHaveBeenCalled();
+        });
+
+        test('per-activation ttlMs overrides the server-wide token lifetime', async () => {
+            // server-wide TTL is already expired, so only the override can keep a token alive
+            server = new HttpServer<Events>({ logger: muteLogger, tokenTtlMs: 0 });
+            const handler = jest.fn((_request, response) => {
+                response.end('ok');
+            });
+            server.get('/foo', [server.requireToken(), handler]);
+            server.deactivateRoute('/foo');
+            await server.start();
+            const address = server.getServerAddress();
+            const base = `http://${address.address}:${address.port}`;
+            const longLived = server.activateRoute('/foo', { ttlMs: 24 * 60 * 60 * 1000 })!;
+
+            await new Promise(r => setTimeout(r, 10));
+            expect((await fetch(`${base}/foo?token=${longLived.token}`)).status).toEqual(200);
+            expect(handler).toHaveBeenCalledTimes(1);
+        });
+
+        test('reads token from custom query param (state) for OAuth flows', async () => {
+            const handler = jest.fn((_request, response) => {
+                response.end('ok');
+            });
+            server.get('/oauth', [server.requireToken({ from: 'state' }), handler]);
+            server.deactivateRoute('/oauth');
+            await server.start();
+            const address = server.getServerAddress();
+            const activated = server.activateRoute('/oauth')!;
+            const base = `http://${address.address}:${address.port}`;
+
+            // ?token= should NOT work
+            expect((await fetch(`${base}/oauth?token=${activated.token}`)).status).toEqual(404);
+            // ?state= should
+            expect((await fetch(`${base}/oauth?state=${activated.token}`)).status).toEqual(200);
+            expect(handler).toHaveBeenCalledTimes(1);
+        });
+
+        test('accepts a valid token on a parameterized route', async () => {
+            const handler = jest.fn((_request, response) => {
+                response.end('ok');
+            });
+            server.get('/param/:id', [server.requireToken(), handler]);
+            server.deactivateRoute('/param');
+            await server.start();
+            const address = server.getServerAddress();
+            const base = `http://${address.address}:${address.port}`;
+            const activated = server.activateRoute('/param')!;
+
+            expect((await fetch(`${base}/param/42?token=${activated.token}`)).status).toEqual(200);
+            expect(handler).toHaveBeenCalledTimes(1);
+        });
+
+        test('token issued for one method is not accepted by another method on the same pathname', async () => {
+            const getHandler = jest.fn((_request, response) => {
+                response.end('ok');
+            });
+            const deleteHandler = jest.fn((_request, response) => {
+                response.end('ok');
+            });
+            server.get('/dual', [server.requireToken(), getHandler]);
+            server.delete('/dual', [server.requireToken(), deleteHandler]);
+            await server.start();
+            const address = server.getServerAddress();
+            const base = `http://${address.address}:${address.port}`;
+            // the token is issued to the first registered /dual route, the GET one
+            const activated = server.activateRoute('/dual')!;
+
+            const deleted = await fetch(`${base}/dual?token=${activated.token}`, {
+                method: 'DELETE',
+            });
+            expect(deleted.status).toEqual(404);
+            expect(deleteHandler).not.toHaveBeenCalled();
+
+            expect((await fetch(`${base}/dual?token=${activated.token}`)).status).toEqual(200);
+            expect(getHandler).toHaveBeenCalledTimes(1);
+        });
+
+        test('calls onReject when the token is missing or wrong', async () => {
+            const onReject = jest.fn();
+            const handler = jest.fn((_request, response) => {
+                response.end('ok');
+            });
+            server.get('/foo', [server.requireToken({ onReject }), handler]);
+            server.deactivateRoute('/foo');
+            await server.start();
+            const address = server.getServerAddress();
+            const base = `http://${address.address}:${address.port}`;
+            const activated = server.activateRoute('/foo')!;
+
+            expect((await fetch(`${base}/foo`)).status).toEqual(404);
+            expect((await fetch(`${base}/foo?token=wrong`)).status).toEqual(404);
+            expect(onReject).toHaveBeenCalledTimes(2);
+
+            // a valid token goes to the handler, not to onReject
+            expect((await fetch(`${base}/foo?token=${activated.token}`)).status).toEqual(200);
+            expect(handler).toHaveBeenCalledTimes(1);
+            expect(onReject).toHaveBeenCalledTimes(2);
+        });
+
+        test('deactivateRoute clears all live tokens', async () => {
+            const { handler, base } = await setup();
+            const activated = server.activateRoute('/foo')!;
+
+            server.deactivateRoute('/foo');
+            const res = await fetch(`${base}/foo?token=${activated.token}`);
+            expect(res.status).toEqual(404);
+            expect(handler).not.toHaveBeenCalled();
+        });
     });
 
     test('port negotiation, first available port is occupied, second is free', async () => {
