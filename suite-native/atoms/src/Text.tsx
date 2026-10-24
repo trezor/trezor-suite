@@ -1,8 +1,9 @@
-import React from 'react';
+import { type Ref } from 'react';
 import {
     PixelRatio,
     Text as RNText,
     type TextProps as RNTextProps,
+    type TextInstance,
     type TextStyle,
 } from 'react-native';
 
@@ -25,6 +26,7 @@ export interface PressableTextProps extends Omit<RNTextProps, 'style'>, TestProp
     priority?: TextPriority;
     textAlign?: TextStyle['textAlign'];
     style?: NativeStyleObject;
+    ref?: Ref<TextInstance>;
 }
 
 export type TextProps = PressableTextProps;
@@ -84,36 +86,32 @@ const textStyle = prepareNativeStyle<TextStyleProps>(
     }),
 );
 
-export const Text = React.forwardRef<RNText, TextProps>(
-    (
-        {
-            variant = 'body-md',
-            color = 'contentPrimary',
-            priority = 'primary',
-            textAlign = 'left',
-            style = {},
-            children,
-            ...otherProps
-        },
-        ref,
-    ) => {
-        const { applyStyle } = useNativeStyles();
-        const maxFontSizeMultiplier = getAccessibilityFontScale(variant);
+export const Text = ({
+    variant = 'body-md',
+    color = 'contentPrimary',
+    priority = 'primary',
+    textAlign = 'left',
+    style = {},
+    children,
+    ref,
+    ...otherProps
+}: TextProps) => {
+    const { applyStyle } = useNativeStyles();
+    const maxFontSizeMultiplier = getAccessibilityFontScale(variant);
 
-        return (
-            <RNText
-                style={mergeNativeStyleObjects([
-                    applyStyle(textStyle, { variant, color, priority, textAlign }),
-                    style,
-                ])}
-                maxFontSizeMultiplier={maxFontSizeMultiplier}
-                {...otherProps}
-                ref={ref}
-            >
-                {children}
-            </RNText>
-        );
-    },
-);
+    return (
+        <RNText
+            style={mergeNativeStyleObjects([
+                applyStyle(textStyle, { variant, color, priority, textAlign }),
+                style,
+            ])}
+            maxFontSizeMultiplier={maxFontSizeMultiplier}
+            {...otherProps}
+            ref={ref}
+        >
+            {children}
+        </RNText>
+    );
+};
 
 Text.displayName = 'Text';

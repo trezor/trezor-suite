@@ -1,10 +1,10 @@
 import { forwardRef } from 'react';
-import { type TextInput } from 'react-native';
+import { type TextInputInstance } from 'react-native';
 
 import { SearchInput, type SearchInputProps } from './SearchInput';
 
 export type BottomSheetSearchInputProps = SearchInputProps;
-export type BottomSheetSearchInputRef = TextInput | null;
+export type BottomSheetSearchInputRef = TextInputInstance | null;
 
 /**
  * `SearchInput` preset that renders a `BottomSheetTextInput` so the field works

@@ -1,5 +1,5 @@
 import { type RefObject, useCallback, useRef } from 'react';
-import { type TextInput } from 'react-native';
+import { type TextInputInstance } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { type Account } from '@suite-common/wallet-types';
@@ -22,8 +22,8 @@ import { TradeableAssetButton } from '../../general/TradeableAssetButton';
 const ASSET_PICKER_TEST_ID = '@trading/sell/asset-send-button';
 
 export const SellSendAssetPicker = () => {
-    const cryptoInputRef = useRef<TextInput>(null);
-    const baseCurrencyInputRef = useRef<TextInput>(null);
+    const cryptoInputRef = useRef<TextInputInstance>(null);
+    const baseCurrencyInputRef = useRef<TextInputInstance>(null);
     const form = useSellFormContext();
     const { requestInputFocus, focusRequestedInput } = useAssetSelectInputFocus();
     const myAssets = useSelector((state: CombinedSelectorsRootState) =>
@@ -46,7 +46,7 @@ export const SellSendAssetPicker = () => {
     });
 
     const showAssetsScreenAndFocusInput = useCallback(
-        (inputRef: RefObject<TextInput | null>) => {
+        (inputRef: RefObject<TextInputInstance | null>) => {
             requestInputFocus(inputRef);
             showAssetsScreen();
         },

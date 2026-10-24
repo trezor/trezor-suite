@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, type ViewProps, type ViewStyle } from 'react-native';
+import { type Ref } from 'react';
+import { View, type ViewInstance, type ViewProps, type ViewStyle } from 'react-native';
 
 import { D, pipe } from '@mobily/ts-belt';
 
@@ -45,6 +45,7 @@ type Style = NativeStyleObject | Array<Style | undefined>;
 
 export interface BoxProps extends ViewProps, LayoutStyleProps, SpacingStyleProps, TestProps {
     style?: Style;
+    ref?: Ref<ViewInstance>;
 }
 
 type BoxStyleProps = Record<(typeof spacingStylePropsKeys)[number], number> & LayoutStyleProps;
@@ -53,7 +54,7 @@ const boxStyle = prepareNativeStyle<BoxStyleProps>((_utils, { ...styles }) => ({
     ...styles,
 }));
 
-export const Box = React.forwardRef<View, BoxProps>(({ style, ...props }, ref) => {
+export const Box = ({ style, ref, ...props }: BoxProps) => {
     const { applyStyle, utils } = useNativeStyles();
     const { isFlashOnRerenderEnabled } = useDebugView();
     const ViewComponent = isFlashOnRerenderEnabled ? DebugView : View;
@@ -73,6 +74,6 @@ export const Box = React.forwardRef<View, BoxProps>(({ style, ...props }, ref) =
             ref={ref}
         />
     );
-});
+};
 
 Box.displayName = 'Box';

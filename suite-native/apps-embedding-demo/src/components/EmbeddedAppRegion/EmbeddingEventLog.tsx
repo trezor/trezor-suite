@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { ScrollView } from 'react-native';
+import { ScrollView, type ScrollViewInstance } from 'react-native';
 
 import { formatAppsEmbeddingEvent } from '@suite-common/apps-embedding';
 import { Button, HStack, Text, VStack } from '@suite-native/atoms';
@@ -17,7 +17,7 @@ type EmbeddingEventLogProps = {
 
 export const EmbeddingEventLog = ({ entries, onClear }: EmbeddingEventLogProps) => {
     const { applyStyle } = useNativeStyles();
-    const scrollViewRef = useRef<ScrollView>(null);
+    const scrollViewRef = useRef<ScrollViewInstance>(null);
 
     return (
         <VStack spacing="sp8">

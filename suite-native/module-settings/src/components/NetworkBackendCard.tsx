@@ -72,7 +72,7 @@ export const NetworkBackendCard = ({ form }: NetworkBackendCardProps) => {
                     />
                 )}
                 {(isDirty || !isConnected) && (
-                    <Button onPress={submit} isLoading={isConnecting}>
+                    <Button onPress={() => submit()} isLoading={isConnecting}>
                         <Translation id="moduleSettings.networkBackends.server.connectButton" />
                     </Button>
                 )}

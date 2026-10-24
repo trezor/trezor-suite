@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Pressable, TextInput } from 'react-native';
+import { Pressable, TextInput, type TextInputInstance } from 'react-native';
 
 import { HStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -16,7 +16,7 @@ type SecurityCodeInputProps = {
 export const SecurityCodeInput = ({ length, onSubmit }: SecurityCodeInputProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const inputRef = useRef<TextInput>(null);
+    const inputRef = useRef<TextInputInstance>(null);
 
     const [isFocused, setIsFocused] = useState(false);
     const [code, setCode] = useState('');
