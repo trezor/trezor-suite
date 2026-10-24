@@ -24,13 +24,13 @@
         "@trezor/icons": "workspace:*",
         "@trezor/redux-utils": "workspace:*",
         "@trezor/theme": "workspace:*",
-        "react": "19.2.3",
+        "react": "19.3.0",
         "react-redux": "9.3.0",
         "redux": "^5.0.1",
         "semver": "^7.7.1",
         "styled-components": "^6.5.3"
     },
     "devDependencies": {
-        "@types/react": "19.2.14"
+        "@types/react": "19.3.0"
     }
 }

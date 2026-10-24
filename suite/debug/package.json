@@ -20,7 +20,7 @@
         "@trezor/dependency-injection": "workspace:*",
         "@trezor/redux-utils": "workspace:*",
         "@trezor/theme": "workspace:*",
-        "react": "19.2.3",
+        "react": "19.3.0",
         "react-redux": "9.3.0",
         "styled-components": "^6.5.3"
     }

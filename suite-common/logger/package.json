@@ -29,7 +29,7 @@
         "@trezor/env-utils": "workspace:*",
         "@trezor/redux-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
-        "react": "19.2.3",
+        "react": "19.3.0",
         "react-redux": "9.3.0"
     },
     "devDependencies": {
