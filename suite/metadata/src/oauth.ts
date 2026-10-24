@@ -191,6 +191,22 @@ export const extractCredentialsFromAuthorizationFlow = (deps: OauthDesktopApiDep
             getDesktopHandlerInstance(deps, dfd, url.searchParams),
         );
         window.open(url, METADATA_PROVIDER.AUTH_WINDOW_TITLE, METADATA_PROVIDER.AUTH_WINDOW_PROPS);
+
+        // Safety timeout — the redirect may never reach the receiver at all, e.g. the
+        // implicit flow returns its parameters in the URL fragment, which the browser
+        // never sends to the server. Settle the flow instead of waiting forever.
+        const timeoutId = window.setTimeout(() => {
+            dfd.reject(new Error('window closed'));
+        }, POPUP_TIMEOUT_MS);
+
+        void dfd.promise
+            .finally(() => {
+                window.clearTimeout(timeoutId);
+                deps.desktopApi.removeAllListeners('oauth/response');
+            })
+            // the rejection itself is handled by the caller awaiting dfd.promise;
+            // this derived promise only cleans up and must not surface as unhandled
+            .catch(() => {});
     } else {
         const channel = createWebBroadcastChannel(dfd, url.searchParams);
 
