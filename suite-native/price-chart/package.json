@@ -16,7 +16,7 @@
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite-native/atoms": "workspace:*",
-        "react": "19.2.3",
+        "react": "19.3.0",
         "react-redux": "9.3.0"
     }
 }

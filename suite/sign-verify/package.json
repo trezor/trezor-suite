@@ -28,12 +28,12 @@
         "@trezor/dom-utils": "workspace:*",
         "@trezor/icons": "workspace:*",
         "@trezor/redux-utils": "workspace:*",
-        "react": "19.2.3",
+        "react": "19.3.0",
         "react-hook-form": "^7.77.0",
         "react-redux": "9.3.0",
         "redux": "^5.0.1"
     },
     "devDependencies": {
-        "@types/react": "19.2.14"
+        "@types/react": "19.3.0"
     }
 }
