@@ -34,7 +34,7 @@ const createStore = (activeCall: ConnectPopupCall) =>
     }).services.store;
 
 // `finishCall` is the teardown marker: the cancel thunk dispatches it only on the path that tears
-// down the active popup, so its presence proves the popup was ended.
+// down the active popup, so its absence proves a forwarded cancel left the popup running.
 const hasFinishedCall = (store: ReturnType<typeof createStore>) =>
     store.getActions().some(action => action.type === connectPopupActions.finishCall.type);
 
@@ -47,25 +47,25 @@ describe('connectPopupCancelThunk', () => {
 
     afterEach(() => jest.restoreAllMocks());
 
-    it('tears down the active popup even when the cancel names another call', () => {
+    it('forwards a cancel for another call without tearing down the active popup', () => {
         const store = createStore(createActiveCall('active-id'));
 
         store.dispatch(connectPopupCancelThunk({ callId: 'other-id' }));
 
         expect(cancelSpy).toHaveBeenCalledWith({ reason: undefined, callId: 'other-id' });
-        expect(hasFinishedCall(store)).toBe(true);
+        expect(hasFinishedCall(store)).toBe(false);
         expect(
             store
                 .getActions()
                 .some(action => action.type === deviceActions.removeButtonRequests.type),
-        ).toBe(true);
+        ).toBe(false);
     });
 
-    it('passes a plain cancel on without any callId', () => {
+    it('scopes a plain cancel to the active call', () => {
         const store = createStore(createActiveCall('active-id'));
 
         store.dispatch(connectPopupCancelThunk({}));
 
-        expect(cancelSpy).toHaveBeenCalledWith({ reason: undefined, callId: undefined });
+        expect(cancelSpy).toHaveBeenCalledWith({ reason: undefined, callId: 'active-id' });
     });
 });
