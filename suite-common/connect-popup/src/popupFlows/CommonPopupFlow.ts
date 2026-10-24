@@ -197,6 +197,9 @@ export class CommonPopupFlow<M extends CallMethodKeys = CallMethodKeys> implemen
     // Returns the permissions the user is asked to consent to.
     private initiateCall({ info, requiredPermissions, useUi }: MethodInfo) {
         const { method, payload, source } = this;
+        // Store the caller's token before permissions or device selection so a cancel can be
+        // matched throughout the entire popup flow.
+        const { callId } = payload as { callId?: string };
 
         // Permissions the host/dapp declared up front (ConnectSettings.requestedPermissions),
         // sanitized against the same rules as the hard block in assertCallAllowed. Merged with this
@@ -218,6 +221,7 @@ export class CommonPopupFlow<M extends CallMethodKeys = CallMethodKeys> implemen
                 },
                 payload,
                 source,
+                callId,
             }),
         );
 
