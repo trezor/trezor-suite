@@ -99,6 +99,9 @@ export const connectPopupCallInnerThunk = createThunk<
     async ({ source, ...params }, { dispatch, getState, extra }) => {
         try {
             const { method, payload } = compatibilityHooks({ ...params, source });
+            // Store the caller's token before permissions or device selection so a cancel can be
+            // matched throughout the entire popup flow.
+            const { callId } = payload as { callId?: string };
 
             if (!connectCallableMethods.includes(method)) throw TypedError('Method_Unsupported');
 
@@ -142,6 +145,7 @@ export const connectPopupCallInnerThunk = createThunk<
                     },
                     payload,
                     source,
+                    callId,
                 }),
             );
 
