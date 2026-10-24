@@ -214,16 +214,20 @@ export const extractCredentialsFromAuthorizationFlow = (deps: OauthDesktopApiDep
             dfd.reject(new Error('window closed'));
         }, POPUP_TIMEOUT_MS);
 
-        void dfd.promise.finally(() => {
-            window.clearTimeout(timeoutId);
-            channel.close();
+        void dfd.promise
+            .finally(() => {
+                window.clearTimeout(timeoutId);
+                channel.close();
 
-            try {
-                popup.close();
-            } catch {
-                // COOP may block access to the popup.
-            }
-        });
+                try {
+                    popup.close();
+                } catch {
+                    // COOP may block access to the popup.
+                }
+            })
+            // the rejection itself is handled by the caller awaiting dfd.promise;
+            // this derived promise only cleans up and must not surface as unhandled
+            .catch(() => {});
     }
 
     return dfd.promise;
