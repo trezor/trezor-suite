@@ -118,6 +118,27 @@ describe(HidApi.name, () => {
                 error: { code: ERRORS.DEVICE_NOT_FOUND },
             });
         });
+
+        it('logs the interfaces only when the list changes', async () => {
+            const logger = { error: jest.fn(), info: jest.fn(), debug: jest.fn() };
+            const nodeHid = {
+                devicesAsync: jest.fn(() => Promise.resolve([mockNodeHidDevice()])),
+                HIDAsync: { open: jest.fn() },
+            } satisfies NodeHid;
+            // @ts-expect-error: a minimal logger is enough here
+            const api = new HidApi({ nodeHid, logger });
+
+            await api.enumerate();
+            await api.enumerate();
+            await api.enumerate();
+
+            expect(logger.debug).toHaveBeenCalledTimes(1);
+
+            nodeHid.devicesAsync.mockResolvedValueOnce([]);
+            await api.enumerate();
+
+            expect(logger.debug).toHaveBeenCalledTimes(2);
+        });
     });
 
     describe('openDevice', () => {
@@ -149,6 +170,52 @@ describe(HidApi.name, () => {
                 success: false,
                 error: { code: ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE },
             });
+        });
+
+        it('blanks the system path and the serial number out of logged errors', async () => {
+            const logger = { error: jest.fn(), info: jest.fn(), debug: jest.fn() };
+            const nodeHid = {
+                devicesAsync: jest.fn(() => Promise.resolve([mockNodeHidDevice()])),
+                HIDAsync: {
+                    open: jest.fn(() =>
+                        Promise.reject(
+                            new Error(`cannot open ${SYSTEM_PATH} (serial SERIAL-NUMBER)`),
+                        ),
+                    ),
+                },
+            } satisfies NodeHid;
+            // @ts-expect-error: a minimal logger is enough here
+            const api = new HidApi({ nodeHid, logger });
+            const enumeration = await api.enumerate();
+            const path = enumeration.success ? enumeration.payload[0]?.path : undefined;
+
+            await api.openDevice(path ?? PathInternal('missing'));
+
+            const logged = logger.error.mock.calls.map(([message]) => String(message)).join('\n');
+            expect(logged).toContain('open failed: cannot open <redacted> (serial <redacted>)');
+            expect(logged).not.toContain('IOService');
+            expect(logged).not.toContain('SERIAL-NUMBER');
+        });
+
+        it('leaves a serial number too short to identify a device out of the redaction', async () => {
+            const logger = { error: jest.fn(), info: jest.fn(), debug: jest.fn() };
+            const nodeHid = {
+                devicesAsync: jest.fn(() =>
+                    Promise.resolve([mockNodeHidDevice({ serialNumber: '0' })]),
+                ),
+                HIDAsync: {
+                    open: jest.fn(() => Promise.reject(new Error('cannot open, error 50'))),
+                },
+            } satisfies NodeHid;
+            // @ts-expect-error: a minimal logger is enough here
+            const api = new HidApi({ nodeHid, logger });
+            const enumeration = await api.enumerate();
+            const path = enumeration.success ? enumeration.payload[0]?.path : undefined;
+
+            await api.openDevice(path ?? PathInternal('missing'));
+
+            const logged = logger.error.mock.calls.map(([message]) => String(message)).join('\n');
+            expect(logged).toContain('open failed: cannot open, error 50');
         });
 
         it('fails for an unknown path', async () => {
