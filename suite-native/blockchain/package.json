@@ -19,8 +19,8 @@
         "@trezor/connect-common": "workspace:*",
         "@trezor/dependency-injection": "workspace:*",
         "@trezor/redux-utils": "workspace:*",
-        "react": "19.2.3",
-        "react-native": "0.86.3",
+        "react": "19.3.0",
+        "react-native": "0.88.0",
         "react-redux": "9.3.0"
     },
     "devDependencies": {

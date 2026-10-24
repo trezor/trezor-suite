@@ -27,6 +27,6 @@
     "dependencies": {
         "@tanstack/react-query": "5.104.2",
         "@tanstack/react-query-devtools": "5.104.2",
-        "react": "19.2.3"
+        "react": "19.3.0"
     }
 }

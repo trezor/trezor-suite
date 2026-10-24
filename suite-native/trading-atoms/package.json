@@ -33,9 +33,9 @@
         "@trezor/theme": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "react": "19.2.3",
-        "react-native": "0.86.3",
-        "react-native-reanimated": "4.7.0",
+        "react": "19.3.0",
+        "react-native": "0.88.0",
+        "react-native-reanimated": "4.7.1",
         "type-fest": "5.5.0"
     },
     "devDependencies": {

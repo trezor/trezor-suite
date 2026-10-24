@@ -24,12 +24,12 @@
         "@trezor/dependency-injection": "workspace:*",
         "@trezor/redux-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "react": "19.2.3",
+        "react": "19.3.0",
         "react-redux": "9.3.0",
         "recharts": "^2.15.3",
         "styled-components": "^6.5.3"
     },
     "devDependencies": {
-        "@types/react": "19.2.14"
+        "@types/react": "19.3.0"
     }
 }

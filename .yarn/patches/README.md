@@ -31,6 +31,13 @@ abort events with a null target on React Native. Introduced for
 Prevents the Expo dev client from hanging when Detox starts an Android test. Introduced in
 [#25924](https://github.com/trezor/trezor-suite/pull/25924).
 
+## react-native-webview
+
+Restores the `P = {}` default generic of the `WebView` class typings. Versions 14.0.0 to 15.x
+declare `P = undefined`, which collapses the props to `never` (`WebViewProps & undefined`), so every
+`<WebView>` prop fails to type-check. Remove after upgrading to 16.0.0 or newer, which declares
+`P = {}` again.
+
 ## nextra
 
 Skips the git timestamp lookup when building inside a git worktree. nextra resolves page paths against

@@ -134,8 +134,7 @@ const getPlugins = (): ExpoPlugins => {
             {
                 android: {
                     minSdkVersion: 28,
-                    // this fixes expo-updates build error
-                    kotlinVersion: '2.1.20',
+                    enableMinifyInReleaseBuilds: false,
                     // react-native-quick-crypto (since v1) and expo-sqlite both bundle their
                     // own OpenSSL libcrypto.so, which collides during mergeDebugNativeLibs.
                     // pickFirst resolves the duplicate-.so packaging conflict.
@@ -145,8 +144,6 @@ const getPlugins = (): ExpoPlugins => {
                 },
                 ios: {
                     deploymentTarget: '16.4',
-                    // iOS 27 traps apps that don't adopt the UIScene lifecycle. No-op on SDK 58+.
-                    enableSceneSupport: true,
                 },
             },
         ],
