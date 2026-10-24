@@ -1,6 +1,15 @@
 import { type PermissionRequest } from '@trezor/connect';
 
 import {
+    CALL_SOURCE_DEEPLINK,
+    CALL_SOURCE_DESKTOP_WS,
+    CALL_SOURCE_MCP,
+    CALL_SOURCE_WALLETCONNECT,
+    CALL_SOURCE_WEB,
+    type ConnectCallSource,
+} from './connectPopupTypes';
+import {
+    canRememberPermissions,
     canonicalizePermissionCoins,
     deriveCardanoEnabledNetworks,
     groupPermissionsByCoin,
@@ -245,5 +254,41 @@ describe('deriveCardanoEnabledNetworks', () => {
         expect(deriveCardanoEnabledNetworks([{ permission: 'read_address', coin: 'btc' }])).toEqual(
             [],
         );
+    });
+});
+
+describe('canRememberPermissions', () => {
+    const manifest = { appName: 'App' };
+
+    it.each<[string, ConnectCallSource]>([
+        ['a web app', { type: CALL_SOURCE_WEB, origin: 'https://example.com', manifest }],
+        ['a deeplink', { type: CALL_SOURCE_DEEPLINK, origin: 'example://app', manifest }],
+        [
+            'a desktop process',
+            {
+                type: CALL_SOURCE_DESKTOP_WS,
+                origin: 'https://example.com',
+                process: { name: 'App', fullPath: '/usr/bin/app', warning: false },
+                manifest,
+            },
+        ],
+        ['an mcp client', { type: CALL_SOURCE_MCP, origin: 'http://127.0.0.1', manifest }],
+        [
+            // Documents the bug: walletconnect is accepted here, so every consent UI has to
+            // compose `source.type !== CALL_SOURCE_WALLETCONNECT` itself.
+            'walletconnect, whose consent lives in its own session',
+            { type: CALL_SOURCE_WALLETCONNECT, origin: 'https://example.com', manifest },
+        ],
+    ])('remembers permissions for %s', (_, source) => {
+        expect(canRememberPermissions(source)).toBe(true);
+    });
+
+    it.each<[string, ConnectCallSource]>([
+        [
+            'the origin null that every sandboxed or local page sends',
+            { type: CALL_SOURCE_WEB, origin: 'null', manifest },
+        ],
+    ])('does not remember permissions for %s', (_, source) => {
+        expect(canRememberPermissions(source)).toBe(false);
     });
 });
