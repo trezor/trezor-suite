@@ -6,6 +6,7 @@ import {
     type AppRememberedPermission,
     CALL_SOURCE_DESKTOP_WS,
     CALL_SOURCE_MCP,
+    UNKNOWN_PROCESS,
 } from './connectPopupTypes';
 
 const connectPopupReducer = prepareConnectPopupReducer({
@@ -51,6 +52,14 @@ describe('rememberAppPermissions', () => {
 
     it('does not remember permissions for an app with the origin null', () => {
         expect(rememberApps({ ...app, origin: 'null' }).permissions).toEqual([]);
+    });
+
+    it('remembers permissions for a desktop app whose process is unknown', () => {
+        const unknownProcessApp = { ...app, process: UNKNOWN_PROCESS };
+
+        // Documents the bug: every desktop caller whose process the main process could not
+        // identify gets this same placeholder, so the grant is reused for any other such caller.
+        expect(rememberApps(unknownProcessApp).permissions).toEqual([unknownProcessApp]);
     });
 });
 
