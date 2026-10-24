@@ -1116,7 +1116,8 @@ export const connectPopupResolveSelectAccountThunk = createThunk<
     getPermissionDeferred().resolve();
 });
 
-type ConnectPopupCancelThunkState = ConnectPopupStateRootState;
+// Reads the active call so a scoped cancel can be matched against its callId.
+export type ConnectPopupCancelThunkState = ConnectPopupStateRootState;
 
 export const connectPopupCancelThunk = createThunk<
     void,
