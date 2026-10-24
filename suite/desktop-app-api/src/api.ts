@@ -61,6 +61,11 @@ export interface RendererChannels {
               key: 'trezor-oauth';
               hash: string;
           };
+    /**
+     * The receiver could not accept an OAuth redirect (missing, expired or
+     * replayed token), so no `oauth/response` will follow for this flow.
+     */
+    'oauth/error': string;
 
     // Update events
     'update/checking': void;

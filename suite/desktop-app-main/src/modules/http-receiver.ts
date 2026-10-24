@@ -64,6 +64,12 @@ export const initBackground: ModuleInitBackground = ({
                 app.focus();
             });
 
+            // the redirect was rejected by the token gate, so no response will follow
+            receiver.on('oauth/error', message => {
+                mainWindowProxy.getInstance()?.webContents.send('oauth/error', message);
+                app.focus();
+            });
+
             receiver.on('buy/redirect', () => {
                 // It is enough to set focus to the Suite, the Suite should be on a page with info about the trade status,
                 // if the user has not moved somewhere else in the Suite. This is a reasonable assumption

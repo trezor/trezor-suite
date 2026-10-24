@@ -193,11 +193,15 @@ export const extractCredentialsFromAuthorizationFlow = (deps: OauthDesktopApiDep
     if (deps.desktopApi.available) {
         // to make sure that there is always only one listener registered remove all listeners before creating a new one
         deps.desktopApi.removeAllListeners('oauth/response');
+        deps.desktopApi.removeAllListeners('oauth/error');
         // this listener may never be called in some cases
         deps.desktopApi.once(
             'oauth/response',
             getDesktopHandlerInstance(deps, dfd, url.searchParams),
         );
+        // the HTTP receiver refused the redirect (missing, expired or replayed token),
+        // so `oauth/response` will never arrive for this flow
+        deps.desktopApi.once('oauth/error', message => dfd.reject(new Error(message)));
         window.open(url, METADATA_PROVIDER.AUTH_WINDOW_TITLE, METADATA_PROVIDER.AUTH_WINDOW_PROPS);
 
         // Safety timeout — the redirect may never reach the receiver at all, e.g. the
@@ -211,6 +215,7 @@ export const extractCredentialsFromAuthorizationFlow = (deps: OauthDesktopApiDep
             .finally(() => {
                 window.clearTimeout(timeoutId);
                 deps.desktopApi.removeAllListeners('oauth/response');
+                deps.desktopApi.removeAllListeners('oauth/error');
             })
             // the rejection itself is handled by the caller awaiting dfd.promise;
             // this derived promise only cleans up and must not surface as unhandled
