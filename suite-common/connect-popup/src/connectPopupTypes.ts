@@ -39,11 +39,11 @@ export type ConnectProcessInfo = {
     warning: boolean;
 };
 // Process of a desktop caller that the main process could not identify.
-export const UNKNOWN_PROCESS: ConnectProcessInfo = {
+export const UNKNOWN_PROCESS = Object.freeze({
     name: 'Unknown',
     fullPath: 'Unknown',
     warning: true,
-};
+} as const) satisfies ConnectProcessInfo;
 export type ConnectCallSource = {
     origin: string;
     // Permissions the host declared up front (via ConnectSettings.requestedPermissions), carried on
