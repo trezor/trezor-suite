@@ -54,12 +54,8 @@ describe('rememberAppPermissions', () => {
         expect(rememberApps({ ...app, origin: 'null' }).permissions).toEqual([]);
     });
 
-    it('remembers permissions for a desktop app whose process is unknown', () => {
-        const unknownProcessApp = { ...app, process: UNKNOWN_PROCESS };
-
-        // Documents the bug: every desktop caller whose process the main process could not
-        // identify gets this same placeholder, so the grant is reused for any other such caller.
-        expect(rememberApps(unknownProcessApp).permissions).toEqual([unknownProcessApp]);
+    it('does not remember permissions for a desktop app whose process is unknown', () => {
+        expect(rememberApps({ ...app, process: UNKNOWN_PROCESS }).permissions).toEqual([]);
     });
 });
 
