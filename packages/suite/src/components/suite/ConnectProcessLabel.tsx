@@ -20,7 +20,7 @@ export const ConnectProcessLabel = ({
 }: ConnectProcessLabelProps) => {
     if (process.warning) {
         return (
-            <Tooltip content={process.fullPath}>
+            <Tooltip content={process.fullPath || process.name}>
                 <Badge intent="warning" iconLeft={WarningIcon}>
                     <Text data-testid={dataTest}>{process.name}</Text>
                 </Badge>
