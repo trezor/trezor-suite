@@ -15,7 +15,7 @@ GitHub-hosted `windows-latest` runners. The nightly workflow calls it next to th
   controller. WSL forwards
   Windows loopback to it, so the hardcoded `127.0.0.1` addresses in the tests and in Suite work
   unchanged. Mirrored WSL networking is unsupported on the hosted runners, NAT is the only mode.
-- Four runners share one Currents run through orchestration, project `4ytF0E`, tag `windows`.
+- Four runners share one Currents run through orchestration, project `q2uGxh`, tag `windows`.
 - Tests are selected by `playwright-desktop-windows.config.ts`: `@windows` tests on T3W1, T3T1
   for its exclusive tests, and `no_device`. Tag a test `@windows` when it exercises the Electron
   main process or OS integration.

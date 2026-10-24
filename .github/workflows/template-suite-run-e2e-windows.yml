@@ -83,7 +83,7 @@ jobs:
         env:
           GITHUB_ACTION: true
           PASSPHRASE: ${{ secrets.e2e-passphrase }}
-          CURRENTS_PROJECT_ID: "4ytF0E"
+          CURRENTS_PROJECT_ID: "q2uGxh"
           CURRENTS_RECORD_KEY: ${{ secrets.currents-record-key }}
           CURRENTS_CI_BUILD_ID: ${{ inputs.currents-ci-build-id }}
           GH_BRANCH: ${{ github.ref_name }}
