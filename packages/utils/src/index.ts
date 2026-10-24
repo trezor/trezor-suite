@@ -51,6 +51,7 @@ export * from './objectPartition';
 export * from './parseElectrumUrl';
 export * from './parseHostname';
 export * from './promiseAllSequence';
+export * from './promiseRaceWithSignal';
 export * from './redactUserPath';
 export * from './resolveAfter';
 export * from './safeParseUrl';
