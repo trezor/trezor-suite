@@ -58,6 +58,7 @@ next-themes
 nextra
 nextra-theme-docs
 node-fetch
+node-hid
 postcss
 postcss-cli
 postcss-import
