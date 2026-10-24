@@ -9,7 +9,7 @@ import {
 } from '@trezor/connect';
 import { unique } from '@trezor/utils/src/unique';
 
-import { type ConnectCallSource } from './connectPopupTypes';
+import { CALL_SOURCE_WALLETCONNECT, type ConnectCallSource } from './connectPopupTypes';
 
 // A `PermissionRequest.coin` is the canonical lowercase `CoinSymbol`: call-derived permissions are
 // lowercased in `coinPerm`, host-declared ones in `sanitizeRequestedPermissions`. Everything below
@@ -74,11 +74,21 @@ export const isSameConnectApp = (app: ConnectCallSource, source: ConnectCallSour
     app.process?.fullPath === source.process?.fullPath;
 
 /**
- * Permissions are remembered only for a caller that can be told apart from others, not for the
- * origin `null` that browsers send for every sandboxed or local page.
+ * Permissions are remembered only for a grant this slice owns and can key on a caller told apart
+ * from others: never for walletconnect, whose consent lives in its own session (see
+ * `selectSessions`) and is persisted and revoked there, and not for the origin `null` that browsers
+ * send for every sandboxed or local page, which cannot be told apart from any other such page.
+ *
+ * Every consent UI gates its Remember option on this predicate, `rememberAppPermissions` re-checks
+ * it on write and `selectConnectAppPermissions` re-filters on read, so narrowing or widening it
+ * here cannot leave one of them behind. The read-side filter is what covers native, which
+ * rehydrates `permissions` straight from mmkv (see `suite-native/state/src/reducers.ts`) and never
+ * dispatches `storageLoad`; the `storageLoad` filter prunes the web/desktop IDB store only. Note
+ * that `connectPopupCallInnerThunk` keeps its own walletconnect check: it decides whether to open
+ * the consent dialog at all, which is a different question.
  */
 export const canRememberPermissions = (source: ConnectCallSource): boolean =>
-    source.origin !== 'null';
+    source.type !== CALL_SOURCE_WALLETCONNECT && source.origin !== 'null';
 
 export const groupPermissionsByCoin = (permissions: PermissionRequest[]): GroupedPermissions[] => {
     const order: (CoinSymbol | undefined)[] = [];
