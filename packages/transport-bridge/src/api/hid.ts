@@ -36,6 +36,9 @@ const MAX_DISCARDED_REPORTS = 64;
 const UNNUMBERED_REPORT_ID = Buffer.from([0x00]);
 // A continuation-like packet without a message header, which the firmware ignores.
 const REPORT_ID_PROBE = Buffer.concat([Buffer.from('?'), Buffer.alloc(63, 0xff)]);
+// A shorter string identifies neither a device nor a port, while blanking it out would corrupt
+// every logged message that happens to contain it.
+const MIN_SECRET_LENGTH = 8;
 
 type HidHandle = {
     read: (timeout?: number) => Promise<Buffer | undefined>;
@@ -78,7 +81,8 @@ const shortPath = (path: PathInternal) => path.slice(0, 12);
 
 /**
  * Talks to Trezor One devices that only expose a HID interface (firmware 1.6.3 and older).
- * Error messages from `node-hid` are never passed on, they can contain the system path.
+ * Error messages from `node-hid` are never passed on in results, they can contain the system
+ * path. The log gets them with the system path and the serial number blanked out.
  */
 export class HidApi extends AbstractApi {
     chunkSize = 64;
@@ -87,6 +91,13 @@ export class HidApi extends AbstractApi {
     private readonly platform: NodeJS.Platform;
     private systemPaths = new Map<PathInternal, string>();
     private openedDevices = new Map<PathInternal, OpenedDevice>();
+    /** Strings that identify a device or its port, blanked out of logged error messages. */
+    private secrets = new Set<string>();
+    /**
+     * Last logged interface list. The empty one counts as logged, a machine without a HID
+     * Trezor One has nothing to report.
+     */
+    private lastInterfaces = '[]';
 
     constructor({ logger, nodeHid, platform = process.platform }: HidApiParams) {
         super({ logger, type: 'usb' });
@@ -109,20 +120,49 @@ export class HidApi extends AbstractApi {
         }
     }
 
+    private describeError(err: unknown) {
+        let message = err instanceof Error ? err.message : String(err);
+        this.secrets.forEach(secret => {
+            message = message.split(secret).join('<redacted>');
+        });
+
+        return message;
+    }
+
     public async enumerate(..._args: AbstractApiArgs<'enumerate'>) {
         try {
             const devices = await this.nodeHid.devicesAsync(T1_HID_VENDOR, T1_HID_PRODUCT);
             const systemPaths = new Map<PathInternal, string>();
             devices.forEach(device => {
+                [device.path, device.serialNumber].forEach(secret => {
+                    if (secret && secret.length >= MIN_SECRET_LENGTH) this.secrets.add(secret);
+                });
                 if (device.path && isWireInterface(device)) {
                     systemPaths.set(createPath(device.path), device.path);
                 }
             });
+            const interfaces = JSON.stringify(
+                devices.map(device => ({
+                    interface: device.interface,
+                    usagePage: device.usagePage,
+                    usage: device.usage,
+                    release: device.release,
+                    hasPath: !!device.path,
+                })),
+            );
+            // The listen loop enumerates twice a second while the log keeps only its last 100
+            // messages. Logging an unchanged list would push every other line out of it.
+            if (interfaces !== this.lastInterfaces) {
+                this.lastInterfaces = interfaces;
+                this.logger?.debug(
+                    `hid: enumerate: ${devices.length} interfaces of 534c:0001, ${systemPaths.size} wire interfaces ${interfaces}`,
+                );
+            }
             this.handleDevicesChange(systemPaths);
 
             return success(this.getDescriptors());
-        } catch {
-            this.logger?.error('hid: enumerate failed');
+        } catch (err) {
+            this.logger?.error(`hid: enumerate failed: ${this.describeError(err)}`);
 
             return error({ code: ERRORS.UNEXPECTED_ERROR });
         }
@@ -148,6 +188,11 @@ export class HidApi extends AbstractApi {
         );
         this.systemPaths = systemPaths;
 
+        if (disconnectedPaths.length > 0 || hasConnectedDevice) {
+            this.logger?.info(
+                `hid: devices changed: ${systemPaths.size} connected, ${disconnectedPaths.length} disconnected`,
+            );
+        }
         disconnectedPaths.forEach(path => this.closeDevice(path));
 
         if ((disconnectedPaths.length > 0 || hasConnectedDevice) && this.listening) {
@@ -164,6 +209,7 @@ export class HidApi extends AbstractApi {
             // read of the previous owner has to finish before the new owner sends anything,
             // otherwise it would swallow the first chunk of the response meant for the new owner.
             if (options?.reset) {
+                this.logger?.info(`hid: ${shortPath(path)} reopened for a new session`);
                 openedDevice.readGeneration += 1;
                 const takeoverGeneration = openedDevice.readGeneration;
                 // The flag is set before the first await, so that every chunk the previous owner
@@ -183,6 +229,8 @@ export class HidApi extends AbstractApi {
 
         const systemPath = this.systemPaths.get(path);
         if (!systemPath) {
+            this.logger?.error(`hid: ${shortPath(path)} not found for open`);
+
             return error({ code: ERRORS.DEVICE_NOT_FOUND });
         }
 
@@ -191,6 +239,7 @@ export class HidApi extends AbstractApi {
             const handle = await this.nodeHid.HIDAsync.open(systemPath);
             const shouldPrependReportId = await this.detectReportIdPrepend(handle);
             if (shouldPrependReportId === undefined) {
+                this.logger?.error(`hid: ${shortPath(path)} accepts neither report format`);
                 await handle.close().catch(() => {});
 
                 return error({ code: ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE });
@@ -211,10 +260,13 @@ export class HidApi extends AbstractApi {
                 isTakenOver: false,
                 pendingTransfers: new Set(),
             });
+            this.logger?.info(
+                `hid: ${shortPath(path)} opened, report id prepend: ${shouldPrependReportId}`,
+            );
 
             return success(undefined);
-        } catch {
-            this.logger?.error('hid: openDevice failed');
+        } catch (err) {
+            this.logger?.error(`hid: ${shortPath(path)} open failed: ${this.describeError(err)}`);
 
             return error({ code: ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE });
         }
@@ -230,12 +282,22 @@ export class HidApi extends AbstractApi {
      */
     private async detectReportIdPrepend(handle: HidHandle) {
         const prependedProbe = Buffer.concat([UNNUMBERED_REPORT_ID, REPORT_ID_PROBE]);
-        const prependedLength = await handle.write(prependedProbe).catch(() => undefined);
+        const prependedLength = await handle.write(prependedProbe).catch(err => {
+            this.logger?.debug(`hid: probe with report id 0 rejected: ${this.describeError(err)}`);
+
+            return undefined;
+        });
+        this.logger?.debug(`hid: probe with report id 0 wrote ${prependedLength} bytes`);
         if (prependedLength === prependedProbe.length) {
             return true;
         }
 
-        const plainLength = await handle.write(REPORT_ID_PROBE).catch(() => undefined);
+        const plainLength = await handle.write(REPORT_ID_PROBE).catch(err => {
+            this.logger?.debug(`hid: probe with report id 63 rejected: ${this.describeError(err)}`);
+
+            return undefined;
+        });
+        this.logger?.debug(`hid: probe with report id 63 wrote ${plainLength} bytes`);
         if (plainLength === REPORT_ID_PROBE.length) {
             return false;
         }
@@ -256,7 +318,11 @@ export class HidApi extends AbstractApi {
             const report = await this.trackTransfer(device, device.handle.read(READ_TIMEOUT)).catch(
                 () => undefined,
             );
-            if (!report?.length) return;
+            if (!report?.length) {
+                if (discarded > 0) this.logger?.info(`hid: discarded ${discarded} queued reports`);
+
+                return;
+            }
         }
     }
 
@@ -287,9 +353,15 @@ export class HidApi extends AbstractApi {
                 const report = await this.trackTransfer(device, device.handle.read(READ_TIMEOUT));
                 // A timed out read and an occasional empty report both mean "nothing yet".
                 if (report?.length) {
+                    this.logger?.debug(`hid: ${shortPath(path)} read ${report.length} bytes`);
+
                     return success(Buffer.from(report));
                 }
-            } catch {
+            } catch (err) {
+                this.logger?.error(
+                    `hid: ${shortPath(path)} read failed: ${this.describeError(err)}`,
+                );
+
                 return error({ code: ERRORS.INTERFACE_DATA_TRANSFER });
             }
         }
@@ -330,12 +402,17 @@ export class HidApi extends AbstractApi {
 
         try {
             const writtenLength = await this.trackTransfer(device, device.handle.write(report));
+            this.logger?.debug(
+                `hid: ${shortPath(path)} wrote ${writtenLength} of ${report.length} bytes`,
+            );
             if (!writtenLength) {
                 return error({ code: ERRORS.INTERFACE_DATA_TRANSFER });
             }
 
             return success(undefined);
-        } catch {
+        } catch (err) {
+            this.logger?.error(`hid: ${shortPath(path)} write failed: ${this.describeError(err)}`);
+
             return error({ code: ERRORS.INTERFACE_DATA_TRANSFER });
         }
     }
@@ -355,9 +432,12 @@ export class HidApi extends AbstractApi {
 
         try {
             await device.handle.close();
+            this.logger?.info(`hid: ${shortPath(path)} closed`);
 
             return success(undefined);
-        } catch {
+        } catch (err) {
+            this.logger?.error(`hid: ${shortPath(path)} close failed: ${this.describeError(err)}`);
+
             return error({ code: ERRORS.INTERFACE_UNABLE_TO_CLOSE_DEVICE });
         }
     }
