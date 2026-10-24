@@ -145,8 +145,8 @@ describe('analyzeTransactions', () => {
             bcrt1p9av3jgcyjkwlh6gevvdn95a6vzyfqz962ulm57fc9mjuptg0usls0qvqvk: 1,
             bcrt1pksq9t85p4lect9ra8frvsn3f358lpkwtmlcgcup8aqaxcvnr4ylqglgdfp: 2, // occurred twice => greater anonymity
         });
-        // Computed locally from the coinjoin's outputs. The own 1000000 output still reaches the
-        // clue and outweighs the foreign 20000; narrowing it to foreign outputs is a follow-up.
-        expect(response.rawLiquidityClue).toBe(1000000);
+        // Computed locally from the coinjoin's foreign outputs only, matching upstream
+        // LiquidityClueProvider.GetForeignOutputsValues: the own 1000000 output is excluded.
+        expect(response.rawLiquidityClue).toBe(20000);
     });
 });

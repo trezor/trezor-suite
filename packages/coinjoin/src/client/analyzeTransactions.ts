@@ -54,7 +54,7 @@ const getRawLiquidityClue = (
     if (!cjTx) return null;
     const externalAmounts = cjTx.details.vout
         .flatMap(vout => transformVinVout(vout, options.network))
-        .filter(vout => !('address' in vout))
+        .filter(vinvout => !isInternal(vinvout))
         .map(o => Number(o.Value));
 
     return initLiquidityClue(externalAmounts);
