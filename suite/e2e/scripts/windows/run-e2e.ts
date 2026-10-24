@@ -1,17 +1,20 @@
-// Starts trezor-user-env inside WSL from an exported rootfs, runs the desktop e2e tests against it and
-// collects its logs. One process for the whole lifetime: on a GitHub runner a process started by a
-// step does not survive the step.
+// Starts trezor-user-env inside WSL from its rootfs, runs the desktop e2e tests against it and collects
+// its logs. One process for the whole lifetime: on a GitHub runner a process started by a step does not
+// survive the step.
 import { type ChildProcess, type SpawnOptions, spawn } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import * as fs from 'node:fs';
 import * as http from 'node:http';
 import { createRequire } from 'node:module';
 import * as os from 'node:os';
 import * as path from 'node:path';
+import { Readable } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { parseArgs } from 'node:util';
 
 type WindowsE2eOptions = {
-    rootfs: string;
+    rootfs: { path: string } | { ref: string };
     config: string;
     distro: string;
     distroDir: string;
@@ -25,6 +28,8 @@ type RunParams = { command: string; args: string[]; options?: SpawnOptions };
 type RunNodeScriptParams = { script: string; args: string[]; env?: NodeJS.ProcessEnv };
 type GetPackageBinParams = { packageName: string; binName: string };
 type CollectLogsAndShutdownParams = { options: WindowsE2eOptions; tenv: ChildProcess | undefined };
+type OciLayer = { digest: string; size: number; annotations?: Record<string, string> };
+type OciManifest = { layers: OciLayer[] };
 
 const e2eDir = path.resolve(__dirname, '..', '..');
 const resolveModule = createRequire(__filename).resolve;
@@ -37,13 +42,15 @@ const defaults = {
     logDir: path.join(e2eDir, 'tenv-logs'),
     timeoutSeconds: 240,
 };
+const rootfsFileName = 'tenv-rootfs.tar.gz';
 const usage =
-    'Usage: yarn workspace @trezor/suite-e2e test:e2e:windows --rootfs <tenv-rootfs.tar.gz> [--config <playwright config>] [--distro <name>] [--distro-dir <dir>] [--log-dir <dir>] [--timeout-seconds <n>]';
+    'Usage: yarn workspace @trezor/suite-e2e test:e2e:windows (--rootfs <tenv-rootfs.tar.gz> | --rootfs-ref ghcr.io/<repository>:<tag>) [--config <playwright config>] [--distro <name>] [--distro-dir <dir>] [--log-dir <dir>] [--timeout-seconds <n>]';
 
 const parseOptions = (): Result<WindowsE2eOptions> => {
     const { values } = parseArgs({
         options: {
             rootfs: { type: 'string' },
+            'rootfs-ref': { type: 'string' },
             config: { type: 'string' },
             distro: { type: 'string' },
             'distro-dir': { type: 'string' },
@@ -51,7 +58,8 @@ const parseOptions = (): Result<WindowsE2eOptions> => {
             'timeout-seconds': { type: 'string' },
         },
     });
-    if (values.rootfs === undefined) {
+    const rootfsRef = values['rootfs-ref'];
+    if ((values.rootfs === undefined) === (rootfsRef === undefined)) {
         return { success: false, error: usage };
     }
     const timeoutSeconds =
@@ -65,7 +73,7 @@ const parseOptions = (): Result<WindowsE2eOptions> => {
     return {
         success: true,
         value: {
-            rootfs: values.rootfs,
+            rootfs: rootfsRef === undefined ? { path: values.rootfs! } : { ref: rootfsRef },
             config: values.config ?? defaults.config,
             distro: values.distro ?? defaults.distro,
             distroDir: values['distro-dir'] ?? defaults.distroDir,
@@ -111,6 +119,79 @@ const getPackageBin = ({ packageName, binName }: GetPackageBinParams): Result<st
     return { success: true, value: path.join(path.dirname(packageJsonPath), binPath) };
 };
 
+// An OCI artifact on a public registry: anonymous token, manifest, then the single layer that is the file.
+const pullRootfs = async (ref: string, targetDir: string): Promise<Result<string>> => {
+    const match = /^([^/]+)\/(.+):([^:]+)$/.exec(ref);
+    if (!match) {
+        return {
+            success: false,
+            error: `rootfs ref must look like ghcr.io/<repository>:<tag>, got ${ref}`,
+        };
+    }
+    const [, registry, repository, tag] = match;
+
+    const tokenResponse = await fetch(
+        `https://${registry}/token?scope=repository:${repository}:pull`,
+    );
+    if (!tokenResponse.ok) {
+        return {
+            success: false,
+            error: `token request for ${ref} failed: ${tokenResponse.status}`,
+        };
+    }
+    const { token } = (await tokenResponse.json()) as { token: string };
+    const headers = { Authorization: `Bearer ${token}` };
+
+    const manifestResponse = await fetch(`https://${registry}/v2/${repository}/manifests/${tag}`, {
+        headers: { ...headers, Accept: 'application/vnd.oci.image.manifest.v1+json' },
+    });
+    if (!manifestResponse.ok) {
+        return {
+            success: false,
+            error: `manifest of ${ref} not found: ${manifestResponse.status}`,
+        };
+    }
+    const manifest = (await manifestResponse.json()) as OciManifest;
+    const layer = manifest.layers.find(
+        ({ annotations }) => annotations?.['org.opencontainers.image.title'] === rootfsFileName,
+    );
+    if (!layer) {
+        return { success: false, error: `${ref} has no layer named ${rootfsFileName}` };
+    }
+
+    console.log(
+        `Pulling ${rootfsFileName} (${Math.round(layer.size / 1024 / 1024)} MB) from ${ref}`,
+    );
+    const blobResponse = await fetch(`https://${registry}/v2/${repository}/blobs/${layer.digest}`, {
+        headers,
+    });
+    if (!blobResponse.ok || !blobResponse.body) {
+        return { success: false, error: `blob download of ${ref} failed: ${blobResponse.status}` };
+    }
+    fs.mkdirSync(targetDir, { recursive: true });
+    const targetPath = path.join(targetDir, rootfsFileName);
+    const hash = createHash('sha256');
+    await pipeline(
+        Readable.fromWeb(blobResponse.body as import('node:stream/web').ReadableStream),
+        async function* (chunks) {
+            for await (const chunk of chunks) {
+                hash.update(chunk);
+                yield chunk;
+            }
+        },
+        fs.createWriteStream(targetPath),
+    );
+    const digest = `sha256:${hash.digest('hex')}`;
+    if (digest !== layer.digest) {
+        return {
+            success: false,
+            error: `${rootfsFileName} digest ${digest} does not match ${layer.digest}`,
+        };
+    }
+
+    return { success: true, value: targetPath };
+};
+
 const printTenvOutput = (logDir: string) => {
     for (const file of ['tenv.out.log', 'tenv.err.log']) {
         const filePath = path.join(logDir, file);
@@ -139,7 +220,27 @@ const startTenv = async ({
     logDir,
     timeoutSeconds,
 }: WindowsE2eOptions): Promise<Result<ChildProcess>> => {
-    const imported = await runWsl(['--import', distro, distroDir, rootfs, '--version', '2']);
+    const rootfsPath =
+        'path' in rootfs
+            ? { success: true as const, value: rootfs.path }
+            : await pullRootfs(rootfs.ref, path.join(os.tmpdir(), 'tenv-rootfs'));
+    if (!rootfsPath.success) {
+        return rootfsPath;
+    }
+    // Fails when the distro is not registered yet, the normal case on a fresh runner.
+    await run({
+        command: 'wsl',
+        args: ['--unregister', distro],
+        options: { env: wslEnv, stdio: 'ignore' },
+    });
+    const imported = await runWsl([
+        '--import',
+        distro,
+        distroDir,
+        rootfsPath.value,
+        '--version',
+        '2',
+    ]);
     if (!imported.success) {
         return imported;
     }

@@ -8,8 +8,11 @@ GitHub-hosted `windows-latest` runners. The nightly workflow calls it next to th
 
 - Playwright and the Electron app run on Windows. The app bundle is the `desktop-app-build-e2e`
   artifact of the calling workflow's build job, built on Linux and platform-neutral.
-- trezor-user-env runs inside WSL2. A Linux job exports the Docker image's filesystem into a
-  tarball, the Windows job imports it with `wsl --import` and starts the controller. WSL forwards
+- trezor-user-env runs inside WSL2. Its CI publishes the Linux root filesystem as an OCI artifact,
+  `ghcr.io/trezor/trezor-user-env-rootfs`, tagged like the image. The template pins the tag and
+  `update-trezor-user-env.yml` bumps it together with the Docker image pin, so Linux and Windows run
+  the same trezor-user-env. The script pulls it, imports it with `wsl --import` and starts the
+  controller. WSL forwards
   Windows loopback to it, so the hardcoded `127.0.0.1` addresses in the tests and in Suite work
   unchanged. Mirrored WSL networking is unsupported on the hosted runners, NAT is the only mode.
 - Four runners share one Currents run through orchestration, project `4ytF0E`, tag `windows`.
@@ -24,10 +27,9 @@ GitHub-hosted `windows-latest` runners. The nightly workflow calls it next to th
 
 - CI: `gh workflow run test-suite-desktop-e2e-win-nightly.yml --ref <branch>`, which builds the
   app and runs the subset.
-- Locally on Windows: the same script, with a rootfs exported by
-  `docker export $(docker create ghcr.io/trezor/trezor-user-env:latest) | gzip > tenv-rootfs.tar.gz`
-  and the desktop build extracted into `suite/desktop-app`. Without `CURRENTS_RECORD_KEY` the
-  script uses plain Playwright. A Windows VM with nested virtualization on a Linux workstation works.
+- Locally on Windows: the same script with the same `--rootfs-ref`, or `--rootfs <file>` for a
+  tarball already on disk, and the desktop build extracted into `suite/desktop-app`. Without
+  `CURRENTS_RECORD_KEY` the script uses plain Playwright. A Windows VM with nested virtualization on a Linux workstation works.
 - The test code itself is platform-agnostic: a failure that reproduces on Linux with the Docker
   trezor-user-env is a test bug, one that does not is the Windows finding.
 
@@ -40,7 +42,5 @@ GitHub-hosted `windows-latest` runners. The nightly workflow calls it next to th
 
 ## Later
 
-- trezor-user-env CI publishes the rootfs with every image, replacing the export job here.
 - The trezor-user-env stuck protection in `support/setup.ts` restarts a Docker container; on
   Windows it does nothing, a WSL restart is needed.
-- Test fixes made on this branch move to their own PR.
