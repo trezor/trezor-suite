@@ -22,7 +22,8 @@ import { getProcessIcon } from './process-icon';
 import { type Dependencies } from '../modules';
 
 const LOG_PREFIX = 'connect-ws';
-const HANDSHAKE_TIMEOUT_MS = 10000;
+export const HANDSHAKE_TIMEOUT_MS = 10000;
+export const IDLE_CONNECTION_TIMEOUT_MS = 60000;
 export const MAX_CONCURRENT_CONNECTIONS = 50;
 export const MAX_CONNECTIONS_PER_ORIGIN = 5;
 const MAX_MESSAGE_SIZE = 2 * 1024 * 1024; // 2 MB
@@ -141,6 +142,18 @@ export const exposeConnectWs = ({
         let version: string | undefined;
         let requestedPermissions: PermissionRequest[] | undefined;
         let isHandshakeDone = false;
+        let idleTimeout: ReturnType<typeof setTimeout> | undefined;
+
+        // Releases the slot of a client that has stopped making calls. Pings do not restart it:
+        // the client pings on its own, so the connection would never expire.
+        const startIdleTimeout = () => {
+            clearTimeout(idleTimeout);
+            if (req.socket.destroyed) return;
+            idleTimeout = setTimeout(() => {
+                logger.info(LOG_PREFIX, `connection closed: idle timeout from ${ip}:${port}`);
+                req.socket.destroy();
+            }, IDLE_CONNECTION_TIMEOUT_MS);
+        };
 
         // Close connection if handshake is not received within timeout
         const handshakeTimeout = setTimeout(() => {
@@ -183,17 +196,34 @@ export const exposeConnectWs = ({
             }
             if (message.type === POPUP.HANDSHAKE) {
                 const filterSelf = !process.env.PLAYWRIGHT_RUN; // ignore own process, unless testing
-                processOnPort = await findProcessFromIncomingPort(port, filterSelf).catch(() => {
-                    logger.error(LOG_PREFIX, 'findProcessFromIncomingPort failed');
+                // The client handshakes before every call, so expiring the connection during the
+                // lookup would fail that call and make the client fall back to the web popup.
+                clearTimeout(idleTimeout);
+                processOnPort = await Promise.race([
+                    findProcessFromIncomingPort(port, filterSelf).catch(() => {
+                        logger.error(LOG_PREFIX, 'findProcessFromIncomingPort failed');
 
-                    return undefined;
-                });
+                        return undefined;
+                    }),
+                    // The lookup spawns a child process and has no deadline of its own. Without
+                    // this bound a hung spawn would leave the idle timeout disarmed for good,
+                    // because the handshake timeout is already cleared on an established
+                    // connection, and the connection would hold its slot forever.
+                    resolveAfter<ProcessInfo | undefined>(
+                        HANDSHAKE_TIMEOUT_MS,
+                        undefined,
+                        undefined,
+                    ),
+                ]);
                 manifest = parseManifest(message.payload.settings.manifest);
                 version = parseVersion(message.payload.settings.version);
                 requestedPermissions = message.payload.settings.requestedPermissions;
                 isHandshakeDone = true;
                 clearTimeout(handshakeTimeout);
                 ws.send(JSON.stringify({ id: message.id, type: POPUP.HANDSHAKE, payload: 'ok' }));
+                if (connectionPendingMessages.size === 0) {
+                    startIdleTimeout();
+                }
             } else if (message.type === POPUP.CLOSED) {
                 mainWindowProxy.getInstance()?.webContents.send('connect-popup/cancel', {
                     error: message.payload?.error,
@@ -254,6 +284,8 @@ export const exposeConnectWs = ({
                 }
                 const deferred = addMessage(storeId);
                 connectionPendingMessages.add(storeId);
+                // The user can take longer than the idle timeout to confirm a pending call.
+                clearTimeout(idleTimeout);
 
                 try {
                     // check window exists, if not wait for it to be created
@@ -333,11 +365,15 @@ export const exposeConnectWs = ({
                     logger.error(LOG_PREFIX, 'error handling call: ' + e);
                 } finally {
                     connectionPendingMessages.delete(storeId);
+                    if (connectionPendingMessages.size === 0) {
+                        startIdleTimeout();
+                    }
                 }
             }
         });
         ws.on('close', () => {
             clearTimeout(handshakeTimeout);
+            clearTimeout(idleTimeout);
             const currentOriginCount = connectionsByOrigin.get(originKey) ?? 1;
             if (currentOriginCount <= 1) {
                 connectionsByOrigin.delete(originKey);
