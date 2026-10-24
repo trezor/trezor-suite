@@ -179,20 +179,25 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
         return address;
     }
 
-    getRouteAddress(pathname: string) {
-        const address = this.getServerAddress();
-        const route = this.routes.find(r => r.pathname === pathname);
-        if (!route) return;
-
-        return `http://${address.address}:${address.port}${route.pathname}`;
-    }
-
     public getInfo() {
         const address = this.getServerAddress();
 
         return {
             url: `http://${address.address}:${address.port}`,
         };
+    }
+
+    /**
+     * Returns the URL for a registered route without activating it or issuing a
+     * token. Suitable for routes that don't use the `requireToken` middleware
+     * (e.g. always-on transport-bridge endpoints).
+     */
+    public getRouteAddress(pathname: string) {
+        const address = this.getServerAddress();
+        const route = this.routes.find(r => r.pathname === pathname);
+        if (!route) return;
+
+        return `http://${address.address}:${address.port}${route.pathname}`;
     }
 
     public start() {
