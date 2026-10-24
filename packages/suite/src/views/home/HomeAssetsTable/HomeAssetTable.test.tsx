@@ -1,6 +1,6 @@
 import '@suite-common/test-utils/globalOverrides';
 
-import { createIntl } from 'react-intl';
+import { type MessageDescriptor, createIntl } from 'react-intl';
 
 import { screen, within } from '@testing-library/react';
 
@@ -189,10 +189,10 @@ const vaultsQuery = (vaults?: YieldDtoV2[]) =>
     ({ data: vaults }) as ReturnType<typeof useAllYieldOpportunities>;
 
 const intl = createIntl({ locale: 'en' });
+const upToApyMessage: MessageDescriptor = messages.TR_EARN_YIELD_BADGE_UP_TO_RATE;
 
 /** What the badge says for a rate, as the user reads it. */
-const upToApy = (apy: string) =>
-    intl.formatMessage(messages.TR_EARN_YIELD_BADGE_UP_TO_RATE, { apy });
+const upToApy = (apy: string) => intl.formatMessage(upToApyMessage, { apy });
 
 const renderTable = (state: AppState) => {
     const { services } = createTestCompositionRoot<void, AppState>({ preloadedState: state });

@@ -16,7 +16,6 @@
 @storybook/react-native
 @storybook/react-native-web-vite
 @storybook/react-webpack5
-@types/pako
 @types/pdfmake
 @types/react-date-range
 @types/zxcvbn
@@ -36,7 +35,6 @@ history
 intl-messageformat
 intl-pluralrules
 lottie-react
-lottie-web
 node-addon-api
 node-gyp
 node-loader

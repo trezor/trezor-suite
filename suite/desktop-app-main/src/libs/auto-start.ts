@@ -71,7 +71,6 @@ export const setAutoStartEnabled = (enabled: boolean) => {
         // For Windows and macOS, we use native Electron API
         app.setLoginItemSettings({
             openAtLogin: enabled,
-            openAsHidden: true,
             args: ['--bridge-daemon'],
         });
     }

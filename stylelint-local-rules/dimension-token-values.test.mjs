@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import postcssStyledSyntax from 'postcss-styled-syntax';
+import * as postcssStyledSyntax from 'postcss-styled-syntax';
 import stylelint from 'stylelint';
 
 import plugin from './dimension-token-values.cjs';
