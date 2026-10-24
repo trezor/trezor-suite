@@ -194,6 +194,16 @@ export const createHttpReceiver = ({ logger, ...options }: CreateHttpReceiverPar
     ]);
 
     httpReceiver.get('/oauth', [
+        // OAuth providers only echo the `state` parameter back, so the per-flow
+        // single-use token is carried there.
+        httpReceiver.requireToken({
+            from: 'state',
+            // A rejected redirect never reaches the handler below, so the app would
+            // keep waiting for an `oauth/response` that can no longer arrive. The
+            // response itself stays a bare 404 for stealth; the app is told
+            // out-of-band instead.
+            onReject: () => httpReceiver.emit('oauth/error', 'Invalid response from data provider'),
+        }),
         allowReferers(['', '127.0.0.1', 'www.dropbox.com']), // No referer is sent by Google, Dropbox sends referer when using Safari
         (request, response) => {
             const { search, hash } = parseRequestUrl(request.url);
@@ -211,6 +221,7 @@ export const createHttpReceiver = ({ logger, ...options }: CreateHttpReceiverPar
     httpReceiver.deactivateRoute('/oauth');
 
     httpReceiver.get('/buy-redirect', [
+        httpReceiver.requireToken(),
         allowReferers(['', 'localhost:3000', '*.invity.io', 'invity.io']),
         (request, response) => {
             const { query } = parseRequestUrl(request.url);
@@ -225,6 +236,7 @@ export const createHttpReceiver = ({ logger, ...options }: CreateHttpReceiverPar
     httpReceiver.deactivateRoute('/buy-redirect');
 
     httpReceiver.get('/buy-post', [
+        httpReceiver.requireToken(),
         allowReferers(['']), // No referer
         (request, response) => {
             try {
@@ -277,6 +289,7 @@ export const createHttpReceiver = ({ logger, ...options }: CreateHttpReceiverPar
     httpReceiver.deactivateRoute('/buy-post');
 
     httpReceiver.get('/sell-redirect', [
+        httpReceiver.requireToken(),
         allowReferers(['']), // No referer
         (request, response) => {
             const { query } = parseRequestUrl(request.url);
@@ -291,6 +304,7 @@ export const createHttpReceiver = ({ logger, ...options }: CreateHttpReceiverPar
     httpReceiver.deactivateRoute('/sell-redirect');
 
     httpReceiver.get('/exchange-redirect', [
+        httpReceiver.requireToken(),
         allowReferers(['']), // No referer
         (request, response) => {
             const { query } = parseRequestUrl(request.url);
