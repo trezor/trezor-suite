@@ -139,7 +139,7 @@ If a single address is enough for your use case — deposits, withdrawals, owner
 
 - **`selectionType`** — `'single'` (default), `'multi'`, or bounded multi-select via `{ minCount, maxCount }`.
 - **`accountType`** — restricts which derivation types the picker offers, each as its own tab: the built-in types (`'normal'`, `'taproot'`, `'segwit'`, `'legacy'`, `'ledger'`), or a custom derivation path as `{ bip43Path: "m/44'/60'/i'/0/0", label: 'My accounts' }` (with `i` as the account-index placeholder). If omitted, all of the network's types are offered.
-- **`requireOnDeviceVerification`** — whether the selected address must be confirmed on the device. Defaults to `true`.
+- **`requireOnDeviceVerification`** — whether each selected entry must be confirmed on the device before it is shared. Defaults to `true` for addresses and `false` for the `'fullAccount'` xpub flow.
 
 ## Other improvements worth adopting
 
