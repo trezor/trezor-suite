@@ -75,7 +75,7 @@ export const NetworkExplorerCard = ({ form }: NetworkExplorerCardProps) => {
                 {(isDirty || !isDefault) && (
                     <VStack spacing="sp12">
                         {isDirty && (
-                            <Button onPress={submit}>
+                            <Button onPress={() => submit()}>
                                 <Translation id="generic.buttons.confirm" />
                             </Button>
                         )}

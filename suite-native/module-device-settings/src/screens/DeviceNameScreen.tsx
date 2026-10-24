@@ -16,7 +16,7 @@ export const DeviceNameScreen = () => {
                 footer={
                     <Box marginHorizontal="sp16" marginBottom="sp16">
                         {isSubmittable && (
-                            <Button onPress={onSubmit} testID="@device-name/submit-button">
+                            <Button onPress={() => onSubmit()} testID="@device-name/submit-button">
                                 <Translation id="moduleDeviceSettings.changeDeviceName.submitButton" />
                             </Button>
                         )}

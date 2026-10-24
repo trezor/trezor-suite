@@ -1,5 +1,5 @@
 import { type Ref } from 'react';
-import { type TextInput } from 'react-native';
+import { type TextInputInstance } from 'react-native';
 
 import { useField, useWatch } from '@suite-native/forms';
 
@@ -10,7 +10,7 @@ import { TradingBaseCurrencyAmountInput } from '../../general/TradingBaseCurrenc
 
 export type ExchangeSendBaseCurrencyAmountInputProps = {
     onSelectAsset: () => void;
-    ref?: Ref<TextInput>;
+    ref?: Ref<TextInputInstance>;
 };
 
 const EXCHANGE_SEND_BASE_CURRENCY_INPUT_TEST_ID =
