@@ -3,6 +3,7 @@ import { WebSocket } from 'ws';
 
 import { POPUP } from '@trezor/connect';
 import { findProcessFromIncomingPort } from '@trezor/node-utils';
+import { createDeferred } from '@trezor/utils';
 
 import {
     MAX_CONCURRENT_CONNECTIONS,
@@ -21,6 +22,33 @@ type ExposeConnectWsParams = Parameters<typeof exposeConnectWs>[0];
 
 const LOOPBACK = '127.0.0.1';
 const logger = new Logger('mute');
+
+const handshake = {
+    type: POPUP.HANDSHAKE,
+    payload: {
+        settings: {
+            manifest: { appName: 'App', appUrl: 'https://app.test', email: 'dev@app.test' },
+        },
+    },
+};
+
+let requestId = 0;
+// Resolves with the response to the message, or with `undefined` once the connection is closed.
+const request = (client: WebSocket, message: object) => {
+    if (client.readyState !== WebSocket.OPEN) return Promise.resolve(undefined);
+
+    const id = `${++requestId}`;
+    const response = createDeferred<unknown>();
+    const onMessage = (data: WebSocket.RawData) => {
+        const parsed = JSON.parse(data.toString());
+        if (parsed.id === id) response.resolve(parsed);
+    };
+    const onClose = () => response.resolve(undefined);
+    client.on('message', onMessage).on('close', onClose);
+    client.send(JSON.stringify({ id, ...message }));
+
+    return response.promise.finally(() => client.off('message', onMessage).off('close', onClose));
+};
 
 // A raw socket instead of a `ws` client, so that any request target can be sent and the exact
 // response observed.
@@ -143,5 +171,27 @@ describe('connect-ws', () => {
 
         expect(await firstEvent).toBe('close');
         expect(findProcessFromIncomingPort).not.toHaveBeenCalled();
+    });
+
+    describe('idle timeout', () => {
+        beforeEach(() => {
+            jest.useFakeTimers({ doNotFake: ['nextTick', 'setImmediate', 'queueMicrotask'] });
+        });
+
+        afterEach(() => {
+            jest.useRealTimers();
+        });
+
+        // Documents the current behaviour: a handshaken connection is never released on its
+        // own, so a page that has stopped making calls keeps one of the limited slots for as
+        // long as it stays open.
+        it('keeps an idle connection open indefinitely', async () => {
+            const client = await openClient(await startServer(), 'https://app.test');
+            expect(await request(client, handshake)).toMatchObject({ payload: 'ok' });
+
+            // Pings, which the client sends on its own, are the only traffic left on it.
+            await jest.advanceTimersByTimeAsync(10 * 60_000);
+            expect(await request(client, { type: 'ping' })).toMatchObject({ type: 'pong' });
+        });
     });
 });
