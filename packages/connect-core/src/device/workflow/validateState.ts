@@ -2,7 +2,7 @@ import { UI_EVENTS, createUiEventMessage } from '@trezor/connect-common';
 import type { StaticSessionId } from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { toHardenedPathPart } from '@trezor/crypto-utils';
-import { createStaticSessionId, parseStaticSessionId } from '@trezor/device-utils';
+import { createStaticSessionId, isSameWallet } from '@trezor/device-utils';
 
 import type { WorkflowContext } from '../../types/workflow';
 import { createThpSession } from '../thp';
@@ -33,18 +33,20 @@ const preauthorizeState = ({ device, method }: WorkflowContext) => {
     }
 };
 
-// Treat two states as "unexpected" if they describe different (walletDescriptor, deviceId)
-// pairs. Instance is intentionally ignored — the same wallet can be referenced through
-// different host-side instance numbers across reconnects.
-const isUnexpectedState = (expected?: StaticSessionId, current?: StaticSessionId) => {
+/**
+ * Two states are "unexpected" when they describe different wallets, i.e. their `walletDescriptor`
+ * (the first Testnet address, a pure function of seed and passphrase) differs. That is the only
+ * thing the "Passphrase is incorrect" (Device_InvalidState) guard exists to catch.
+ *
+ * `deviceId` is not compared: wiping and recovering the same seed mints a fresh hardware
+ * `device_id`, and a host that kept the previous state would otherwise get a passphrase error for
+ * a wallet that did not change. `instance` is not compared either: it is a host-side number that
+ * can differ across reconnects for the same wallet.
+ */
+export const isUnexpectedState = (expected?: StaticSessionId, current?: StaticSessionId) => {
     if (!expected || !current) return false;
-    const parsedExpected = parseStaticSessionId(expected);
-    const parsedCurrent = parseStaticSessionId(current);
 
-    return (
-        parsedExpected.walletDescriptor !== parsedCurrent.walletDescriptor ||
-        parsedExpected.deviceId !== parsedCurrent.deviceId
-    );
+    return !isSameWallet(expected, current);
 };
 
 const validate = async (context: WorkflowContext) => {
@@ -172,7 +174,11 @@ const validateThpDeviceState = async (context: WorkflowContext) => {
         throw ERRORS.TypedError('Device_InvalidState');
     }
 
-    if (!expectedState) {
+    // Mirror the non-THP `validate` above and adopt the freshly derived id whenever it differs. The
+    // wallet matches at this point (a differing `walletDescriptor` would have thrown), so the
+    // difference is a new `deviceId` of a re-provisioned device or a caller-supplied `instance`.
+    // Adopting it keeps `getState()`/`getDeviceState` reporting the current `device_id`.
+    if (!expectedState || expectedState !== uniqueState) {
         device.setState({ staticSessionId: uniqueState });
     }
 };
