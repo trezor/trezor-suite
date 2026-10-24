@@ -94,6 +94,7 @@ export default function Layout({
 
 export { useConfig, useThemeConfig, type PartialDocsThemeConfig as DocsThemeConfig };
 export { type NetworkRoute, asNetworkRoute } from './networkRoute';
+export { getRouteTestIdSegment } from './utils/route-test-id';
 export {
     type NetworkRouteToSymbolMap,
     selectNetworkRouteToSymbolMap,

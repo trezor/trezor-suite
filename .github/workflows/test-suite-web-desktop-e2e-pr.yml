@@ -2,6 +2,7 @@ name: "[Test] PR Suite Web & Desktop e2e tests"
 # Executed as part of PR checks
 # Builds the desktop app and deploys the web app to dev.suite.sldev.cz/suite-web/<branch-name>/web
 # Runs full e2e test suite for Suite Desktop and Suite Web
+# Runs the device-free Connect Explorer UI suite against dev.suite.sldev.cz/connect/<branch-name>/
 
 permissions:
   id-token: write # for fetching the OIDC token
@@ -342,3 +343,114 @@ jobs:
       currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
       e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
       e2e-passphrase-live: ${{ secrets.E2E_TEST_PASSPHRASE_LIVE }}
+
+  # ── Connect Explorer ───────────────────────────────────────────────────────
+
+  connect-explorer-affected:
+    name: Determine Connect Explorer impact
+    needs: changed-scopes
+    if: github.repository == 'trezor/trezor-suite' && needs.changed-scopes.outputs.default == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      affected: ${{ steps.check.outputs.affected }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+
+      - name: Checkout branches for Nx
+        uses: ./.github/actions/nx-checkout
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+
+      - name: Install SafeDep PMG
+        uses: safedep/pmg@961499c36c98afbafec10a257ff27fb464073c86 # v0.30.0
+        continue-on-error: true
+        with:
+          version: v0.19.1
+
+      # Only the Nx project graph is needed, so no package has to be built.
+      - name: Install dependencies
+        run: yarn --immutable --mode=skip-build
+
+      # The explorer has ~100 workspace dependencies, so Nx decides instead of a path list. The e2e
+      # suite lives in @trezor/suite-e2e, which Nx does not link to the explorer, so its explorer
+      # tests, the shared e2e framework (suite/e2e outside tests/) and this workflow count by path.
+      - name: Check changes
+        id: check
+        shell: bash
+        run: |
+          # nx-set-shas leaves NX_BASE empty on pull requests, so use the defaultBase from nx.json.
+          BASE="${NX_BASE:-origin/develop}"
+          AFFECTED=$(yarn nx show projects --affected --base="$BASE" --head="$NX_HEAD" --projects=@trezor/connect-explorer --json)
+          E2E_CHANGED=$(git diff --name-only "$BASE" "$NX_HEAD" | awk '
+            /\.md$/ { next }
+            /^suite\/e2e\/tests\/connect-explorer\// || (/^suite\/e2e\// && !/^suite\/e2e\/tests\//) || /^\.github\/workflows\/test-suite-web-desktop-e2e-pr\.yml$/
+          ')
+          echo "Affected explorer project: $AFFECTED"
+          echo "Relevant e2e changes: ${E2E_CHANGED:-none}"
+          if jq -e 'length > 0' <<< "$AFFECTED" > /dev/null || [[ -n "$E2E_CHANGED" ]]; then
+            echo "affected=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "affected=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  run-e2e-connect-explorer-tests:
+    # Device-free and without Currents, so it does not go through the e2e template (docker services,
+    # pwc-p orchestration) and tests the explorer preview that build-connect deploys.
+    needs:
+      - extract-branch
+      - build-connect
+      - connect-explorer-affected
+    if: github.repository == 'trezor/trezor-suite' && needs.connect-explorer-affected.outputs.affected == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      # Default ref on purpose: release-connect builds the preview from the same PR merge commit,
+      # so the tests match the deployed test IDs.
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+
+      - name: Cache node_modules
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
+        with:
+          path: node_modules
+          key: node_modules-suite-e2e-${{ hashFiles('yarn.lock') }}
+
+      - name: Install SafeDep PMG
+        uses: safedep/pmg@961499c36c98afbafec10a257ff27fb464073c86 # v0.30.0
+        continue-on-error: true
+        with:
+          version: v0.19.1
+
+      - name: Install dependencies
+        run: yarn workspaces focus @trezor/suite-e2e
+
+      - name: Install Playwright Chromium
+        run: yarn workspace @trezor/suite-e2e exec playwright install --with-deps chromium
+
+      - name: Run Connect Explorer e2e tests
+        env:
+          CONNECT_EXPLORER_URL: ${{ env.DEV_SERVER_URL }}/connect/${{ needs.extract-branch.outputs.branch }}/
+        run: yarn workspace @trezor/suite-e2e test:e2e:connect-explorer
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: connect-explorer-e2e-report-${{ github.run_attempt }}
+          path: suite/e2e/playwright-report
+          retention-days: 30

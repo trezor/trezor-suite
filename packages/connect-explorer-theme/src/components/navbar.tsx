@@ -95,7 +95,7 @@ export function Navbar({ items }: { items: (PageItem | MenuItem)[] }): ReactElem
     return (
         <div className="nextra-nav-container _sticky _top-[8px] _mt-[32px] _z-20 _w-full _bg-transparent print:_hidden">
             <nav className="_mx-auto _flex _h-[var(--nextra-navbar-height)] _max-w-[90rem] _items-start _justify-end _gap-2 _pl-[max(env(safe-area-inset-left),1.5rem)] _pr-[max(env(safe-area-inset-right),1.5rem)]">
-                <Container>
+                <Container data-testid="@explorer/navbar/container">
                     {themeConfig.logoLink ? (
                         <Anchor
                             href={
@@ -191,6 +191,7 @@ export function Navbar({ items }: { items: (PageItem | MenuItem)[] }): ReactElem
                     <button
                         type="button"
                         aria-label="Menu"
+                        data-testid="@explorer/navbar/hamburger"
                         className="nextra-hamburger _-mr-2 _rounded _p-2 active:_bg-gray-400/20 md:_hidden"
                         onClick={() => setMenu(!menu)}
                     >

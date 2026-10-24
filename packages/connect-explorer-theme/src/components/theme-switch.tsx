@@ -29,6 +29,7 @@ export function ThemeSwitch({ lite }: ThemeSwitchProps): ReactElement {
     return (
         <Select
             size="small"
+            data-testid="@explorer/theme/switch"
             options={[
                 { value: 'light', label: options.light },
                 { value: 'dark', label: options.dark },

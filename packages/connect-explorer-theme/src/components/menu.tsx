@@ -33,6 +33,7 @@ import { FocusedItemContext, OnFocusItemContext } from '../contexts/sidebar-focu
 import { useThemeConfig } from '../contexts/theme-config';
 import { asNetworkRoute } from '../networkRoute';
 import { selectNetworkRouteToSymbolMap } from '../selectors/networkRouteToSymbolMapSelectors';
+import { getRouteTestIdSegment } from '../utils/route-test-id';
 
 const TreeState: Record<string, boolean> = Object.create(null);
 const FolderLevelContext = createContext(0);
@@ -61,7 +62,7 @@ const classes = {
 };
 
 const MenuCategory = styled.div`
-    padding: 1rem 0 0.5rem 0;
+    padding: 16px 0 8px;
     font-weight: 600;
     text-transform: uppercase;
     ${typography['body-xs']}
@@ -70,7 +71,7 @@ const MenuCategory = styled.div`
 
 const SelectWrapper = styled.div`
     margin: 0 2px;
-    margin-bottom: 0.5rem;
+    margin-bottom: 8px;
 `;
 
 const Option = styled.div`
@@ -123,9 +124,16 @@ interface MenuProps {
     base?: string;
     className?: string;
     onlyCurrentDocs?: boolean;
+    'data-testid'?: string;
 }
 
-function MenuInner({ directories, anchors, className, onlyCurrentDocs }: MenuProps): ReactElement {
+function MenuInner({
+    directories,
+    anchors,
+    className,
+    onlyCurrentDocs,
+    'data-testid': dataTestId,
+}: MenuProps): ReactElement {
     const renderStructure = (item: PageItem | Item) => {
         if (item.display === 'hidden') return null;
 
@@ -143,7 +151,11 @@ function MenuInner({ directories, anchors, className, onlyCurrentDocs }: MenuPro
         return null;
     };
 
-    return <ul className={cn(classes.list, className)}>{directories.map(renderStructure)}</ul>;
+    return (
+        <ul className={cn(classes.list, className)} data-testid={dataTestId}>
+            {directories.map(renderStructure)}
+        </ul>
+    );
 }
 
 export function Menu({
@@ -151,6 +163,7 @@ export function Menu({
     anchors,
     className,
     onlyCurrentDocs,
+    'data-testid': dataTestId,
 }: MenuProps): ReactElement {
     const router = useRouter();
     const route = useFSRoute();
@@ -202,12 +215,13 @@ export function Menu({
     };
 
     return (
-        <div className={cn(className)}>
+        <div className={cn(className)} data-testid={dataTestId}>
             <MenuCategory>Quick Access</MenuCategory>
             <MenuInner
                 directories={topLevelItems}
                 anchors={anchors}
                 onlyCurrentDocs={onlyCurrentDocs}
+                data-testid="@explorer/sidebar/quick-access"
             />
             <MenuCategory>Coin Methods</MenuCategory>
             <SelectWrapper>
@@ -231,18 +245,21 @@ export function Menu({
                 directories={activeCoinItems ?? []}
                 anchors={anchors}
                 onlyCurrentDocs={onlyCurrentDocs}
+                data-testid="@explorer/sidebar/coin-methods"
             />
             <MenuCategory>Common Methods</MenuCategory>
             <MenuInner
                 directories={commonMethodsItems}
                 anchors={anchors}
                 onlyCurrentDocs={onlyCurrentDocs}
+                data-testid="@explorer/sidebar/common-methods"
             />
             <MenuCategory onClick={handleClickMisc}>Miscellaneous</MenuCategory>
             <MenuInner
                 directories={[...otherMethods, ...otherFolders]}
                 anchors={anchors}
                 onlyCurrentDocs={onlyCurrentDocs}
+                data-testid="@explorer/sidebar/miscellaneous"
             />
         </div>
     );
@@ -338,6 +355,8 @@ export function FolderImpl({ item, anchors }: FolderProps): ReactElement {
         <li className={cn({ open, active })}>
             <ComponentToUse
                 href={isLink ? item.route : undefined}
+                aria-expanded={open}
+                data-testid={`@explorer/sidebar/folder/${getRouteTestIdSegment(item.route)}`}
                 className={cn(
                     '_items-center _justify-between _gap-2',
                     !isLink && '_text-left _w-full',
@@ -370,6 +389,9 @@ export function FolderImpl({ item, anchors }: FolderProps): ReactElement {
             >
                 <TitleWithIcon title={item.title} icon={getItemIcon(item)} />
                 <ArrowRightIcon
+                    data-testid={`@explorer/sidebar/folder-toggle/${getRouteTestIdSegment(
+                        item.route,
+                    )}`}
                     className={cn(
                         '_h-[18px] _min-w-[18px] _rounded-sm _p-0.5 hover:_bg-gray-800/5 dark:hover:_bg-gray-100/5',
                         '_origin-center _transition-transform rtl:_-rotate-180',
@@ -384,6 +406,9 @@ export function FolderImpl({ item, anchors }: FolderProps): ReactElement {
                         directories={item.children}
                         base={item.route}
                         anchors={anchors}
+                        data-testid={`@explorer/sidebar/folder-items/${getRouteTestIdSegment(
+                            item.route,
+                        )}`}
                     />
                 ) : null}
             </Collapse>
@@ -434,6 +459,7 @@ export function File({
             <Anchor
                 href={(item as PageItem).href || item.route}
                 newWindow={(item as PageItem).newWindow}
+                data-testid={`@explorer/sidebar/link/${getRouteTestIdSegment(item.route)}`}
                 className={cn(classes.link, active ? classes.active : classes.inactive)}
                 onClick={() => {
                     setMenu(false);
@@ -453,6 +479,7 @@ export function File({
                         <li key={id}>
                             <a
                                 href={`#${id}`}
+                                data-testid={`@explorer/sidebar/anchor/${id}`}
                                 className={cn(
                                     classes.link,
                                     '_flex _gap-2 before:_opacity-25 before:_content-["#"]',

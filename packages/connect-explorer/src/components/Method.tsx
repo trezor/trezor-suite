@@ -282,8 +282,8 @@ export const Method = () => {
     };
 
     return (
-        <MethodContent $manualMode={manualMode}>
-            <div>
+        <MethodContent $manualMode={manualMode} data-testid="@explorer/playground/method">
+            <div data-testid="@explorer/playground/params">
                 {manualMode ? (
                     <Container>
                         <Text typographyStyle="body-md-strong">Method with params</Text>
