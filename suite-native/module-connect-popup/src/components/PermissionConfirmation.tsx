@@ -3,7 +3,11 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { connectPopupActions, selectConnectPopupCall } from '@suite-common/connect-popup';
+import {
+    canRememberPermissions,
+    connectPopupActions,
+    selectConnectPopupCall,
+} from '@suite-common/connect-popup';
 import {
     Button,
     Card,
@@ -39,6 +43,12 @@ export const PermissionConfirmation = () => {
             />
         );
     }
+
+    // The Remember option follows the same predicate as the reducer, so widening
+    // `canRememberPermissions` later cannot leave this screen offering a choice the reducer drops.
+    // No call source native can produce today makes this false: a deeplink origin is always
+    // `${protocol}//${host}`, and walletconnect never reaches the `permission-request` state.
+    const canRemember = canRememberPermissions(popupCall.source);
 
     const onConfirm = () => {
         if (isRemembered) {
@@ -83,19 +93,23 @@ export const PermissionConfirmation = () => {
 
                 <GroupedPermissionsList permissions={popupCall.methodInfo.permissionTypes} />
 
-                <TextDivider title="moduleConnectPopup.optional" />
+                {canRemember && (
+                    <>
+                        <TextDivider title="moduleConnectPopup.optional" />
 
-                <PressableOpacity onPress={() => setIsRemembered(!isRemembered)}>
-                    <HStack spacing="sp16" padding="sp8" alignItems="center">
-                        <CheckBox
-                            isChecked={isRemembered}
-                            onChange={() => setIsRemembered(!isRemembered)}
-                        />
-                        <Text color="contentSecondary" variant="body-sm">
-                            <Translation id="moduleConnectPopup.alwaysAllow" />
-                        </Text>
-                    </HStack>
-                </PressableOpacity>
+                        <PressableOpacity onPress={() => setIsRemembered(!isRemembered)}>
+                            <HStack spacing="sp16" padding="sp8" alignItems="center">
+                                <CheckBox
+                                    isChecked={isRemembered}
+                                    onChange={() => setIsRemembered(!isRemembered)}
+                                />
+                                <Text color="contentSecondary" variant="body-sm">
+                                    <Translation id="moduleConnectPopup.alwaysAllow" />
+                                </Text>
+                            </HStack>
+                        </PressableOpacity>
+                    </>
+                )}
             </Card>
 
             <VStack spacing="sp12">
