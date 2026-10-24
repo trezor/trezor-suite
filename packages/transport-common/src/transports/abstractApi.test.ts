@@ -333,6 +333,28 @@ describe('Usb', () => {
             });
         });
 
+        it('releaseSync completes the release (releaseDone is called)', async () => {
+            const { transport } = await initTest();
+            await transport.enumerate();
+            const acquireRes = await transport.acquire({
+                input: { path: PathPublic('1'), previous: null },
+            });
+            expect(acquireRes).toEqual({ success: true, payload: '1' });
+
+            transport.releaseSync(Session('1'));
+            // releaseSync is fire-and-forget; give its releaseIntent ->
+            // closeDevice -> releaseDone chain time to settle
+            await new Promise(resolve => setTimeout(resolve, 10));
+
+            // without releaseDone the session would stay committed, so this
+            // acquire would fail immediately with "wrong previous session" (and
+            // the lock taken by releaseIntent would leak until the 4s safety-net)
+            const reacquireRes = await transport.acquire({
+                input: { path: PathPublic('1'), previous: null },
+            });
+            expect(reacquireRes).toEqual({ success: true, payload: '2' });
+        });
+
         // CURRENTLY LEAKS — see PR #27978 for the fix.
         //
         // AbstractApiTransport.listen() registers three event handlers (one on the api emitter,

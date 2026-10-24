@@ -199,6 +199,87 @@ describe('sessions', () => {
         });
     });
 
+    test('releaseDone with disconnected device errors but releases the lock', async () => {
+        const client1 = new SessionsClient(background);
+        await client1.handshake();
+        await client1.enumerateDone({
+            descriptors: [{ path: PathInternal('1'), type: 1, apiType: 'usb' }],
+        });
+
+        const acquireIntent = await client1.acquireIntent({
+            path: PathPublic('1'),
+            previous: null,
+        });
+        expect(acquireIntent).toMatchObject({ success: true });
+        await client1.acquireDone({ path: PathPublic('1') });
+
+        const releaseIntent = await client1.releaseIntent({ session: Session('1') });
+        expect(releaseIntent).toMatchObject({ success: true, payload: { path: '1' } });
+
+        // device disconnects while the caller is closing it
+        await client1.enumerateDone({ descriptors: [] });
+
+        const releaseDone = await client1.releaseDone({ path: PathInternal('1') });
+        expect(releaseDone).toMatchObject({
+            success: false,
+            error: { code: 'device not found' },
+        });
+
+        // the lock taken by releaseIntent was freed: a fresh acquire of the
+        // reconnected device must resolve immediately, not by waiting out the
+        // 4s safety-net timer of a leaked lock (hence the race; the sentinel
+        // must stay well below lockDuration in background.ts)
+        await client1.enumerateDone({
+            descriptors: [{ path: PathInternal('1'), type: 1, apiType: 'usb' }],
+        });
+        const acquireAgain = await Promise.race([
+            client1.acquireIntent({ path: PathPublic('2'), previous: null }),
+            new Promise(resolve =>
+                setTimeout(() => resolve('stuck behind the safety-net timer'), 1000),
+            ),
+        ]);
+        expect(acquireAgain).toMatchObject({ success: true });
+
+        // cleanup: release the lock acquireAgain just took
+        await client1.acquireDone({ path: PathPublic('2'), abort: true });
+    });
+
+    // paths are raw USB serial numbers, so a (hostile or broken) device can
+    // present a serial colliding with an Object.prototype member; such a device
+    // must still register and go through the acquire/release lifecycle
+    test('descriptor paths colliding with Object.prototype keys', async () => {
+        const client1 = new SessionsClient(background);
+        await client1.handshake();
+
+        await client1.enumerateDone({
+            descriptors: [
+                { path: PathInternal('toString'), type: 1, apiType: 'usb' },
+                { path: PathInternal('__proto__'), type: 1, apiType: 'usb' },
+            ],
+        });
+
+        const sessions = await client1.getSessions();
+        expect(sessions).toMatchObject({
+            success: true,
+            payload: { descriptors: [{ path: '1' }, { path: '2' }] },
+        });
+
+        const acquireIntent = await client1.acquireIntent({
+            path: PathPublic('1'),
+            previous: null,
+        });
+        expect(acquireIntent).toMatchObject({ success: true, payload: { path: 'toString' } });
+        await client1.acquireDone({ path: PathPublic('1') });
+
+        const releaseIntent = await client1.releaseIntent({ session: Session('1') });
+        expect(releaseIntent).toMatchObject({ success: true, payload: { path: 'toString' } });
+        const releaseDone = await client1.releaseDone({ path: PathInternal('toString') });
+        expect(releaseDone).toMatchObject({ success: true });
+
+        // and nothing leaked into the global prototype
+        expect((Object.prototype as any).session).toBeUndefined();
+    });
+
     test('acquireDone with abort releases the lock without committing a session', async () => {
         const client1 = new SessionsClient(background);
         await client1.handshake();
