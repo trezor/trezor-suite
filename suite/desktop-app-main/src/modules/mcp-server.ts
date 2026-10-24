@@ -1275,8 +1275,9 @@ export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
                         const processInfo = await findProcessFromIncomingPort(
                             remotePort,
                             true,
-                        ).catch(() => {
-                            logger.warn(LOG_PREFIX, 'findProcessFromIncomingPort failed');
+                            req.socket,
+                        ).catch(error => {
+                            logger.warn(LOG_PREFIX, `findProcessFromIncomingPort failed: ${error}`);
 
                             return undefined;
                         });

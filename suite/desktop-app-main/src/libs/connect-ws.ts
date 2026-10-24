@@ -183,8 +183,12 @@ export const exposeConnectWs = ({
             }
             if (message.type === POPUP.HANDSHAKE) {
                 const filterSelf = !process.env.PLAYWRIGHT_RUN; // ignore own process, unless testing
-                processOnPort = await findProcessFromIncomingPort(port, filterSelf).catch(() => {
-                    logger.error(LOG_PREFIX, 'findProcessFromIncomingPort failed');
+                processOnPort = await findProcessFromIncomingPort(
+                    port,
+                    filterSelf,
+                    req.socket,
+                ).catch(error => {
+                    logger.error(LOG_PREFIX, `findProcessFromIncomingPort failed: ${error}`);
 
                     return undefined;
                 });
@@ -210,11 +214,24 @@ export const exposeConnectWs = ({
                 });
             } else if (message.type === CORE_CALL) {
                 if (!processOnPort) {
-                    // ts check, should be set
-                    logger.error(LOG_PREFIX, 'processOnPort result not found');
+                    // The lookup can legitimately miss, so log both endpoints of the connection:
+                    // it tells an lsof or netstat format difference apart from a lookup that
+                    // could not run at all.
+                    logger.error(
+                        LOG_PREFIX,
+                        `processOnPort result not found for ${ip}:${port} -> ${req.socket.localAddress}:${req.socket.localPort}`,
+                    );
 
                     if (!isLinux()) {
                         // we ignore missing process on linux because of AppImage/Flatpak sandboxing
+                        ws.send(
+                            JSON.stringify({
+                                id: message.id,
+                                success: false,
+                                payload: { error: 'Calling process could not be identified' },
+                            }),
+                        );
+
                         return;
                     }
                 }
