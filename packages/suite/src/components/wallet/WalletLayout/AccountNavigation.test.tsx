@@ -70,7 +70,7 @@ const renderAccountNavigation = (coordinatorUrl?: string) => {
         preloadedState: getInitialState(coordinatorUrl),
     });
 
-    renderWithProviders(services, <AccountNavigation />);
+    renderWithProviders(services, <AccountNavigation account={privacyAccount} />);
 };
 
 describe('the account navigation of a Privacy account', () => {
