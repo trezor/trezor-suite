@@ -32,7 +32,9 @@ describe('findProcessFromIncomingPort', () => {
                     expect(processInfo?.name).toEqual('node');
                     break;
                 default:
-                    expect(processInfo?.name).toEqual('MainThread');
+                    // The basename of /proc/<pid>/exe, not the `comm` string the jest worker
+                    // thread names itself with.
+                    expect(processInfo?.name).toEqual('node');
             }
         } finally {
             server.close();
@@ -123,6 +125,25 @@ describe('findProcessFromIncomingPort for an accepted connection', () => {
         expect(processInfo?.fullPath).toBe('/usr/local/bin/node');
         // Only lsof is asked, so argv[0] is never consulted.
         expect(spawn).toHaveBeenCalledTimes(1);
+    });
+
+    test('names a Linux process by its executable, not by the name the process chose for itself', async () => {
+        setPlatform('linux');
+        mockCommands([
+            [
+                'lsof',
+                'google-chrome 300 user 18u IPv4 207199 0t0 TCP 127.0.0.1:40000->127.0.0.1:21335 (ESTABLISHED)',
+            ],
+        ]);
+        jest.spyOn(fs, 'readlink').mockResolvedValue('/usr/bin/python3.14');
+
+        const processInfo = await findProcessFromIncomingPort(40000, true, connection);
+
+        expect(processInfo).toEqual({
+            name: 'python3.14',
+            pid: '300',
+            fullPath: '/usr/bin/python3.14',
+        });
     });
 
     test('identifies a Linux process whose executable was replaced by the path it was installed at', async () => {
