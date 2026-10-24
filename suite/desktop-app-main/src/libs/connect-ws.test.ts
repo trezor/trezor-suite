@@ -129,10 +129,7 @@ describe('connect-ws', () => {
         },
     );
 
-    // Documents the current behaviour: the handshake is acknowledged even though the manifest
-    // does not parse, so the connection keeps its slot while every later call is dropped
-    // without a response.
-    it('acknowledges a handshake whose manifest is not valid', async () => {
+    it('closes a connection whose handshake has no valid manifest', async () => {
         const client = await openClient(await startServer(), 'https://app.test');
         const firstEvent = new Promise<string>(resolve => {
             client.once('message', data => resolve(data.toString()));
@@ -144,9 +141,7 @@ describe('connect-ws', () => {
             JSON.stringify({ id: '1', type: POPUP.HANDSHAKE, payload: { settings: { manifest } } }),
         );
 
-        expect(await firstEvent).toBe(
-            JSON.stringify({ id: '1', type: POPUP.HANDSHAKE, payload: 'ok' }),
-        );
-        expect(findProcessFromIncomingPort).toHaveBeenCalled();
+        expect(await firstEvent).toBe('close');
+        expect(findProcessFromIncomingPort).not.toHaveBeenCalled();
     });
 });
