@@ -318,10 +318,12 @@ describe('selectRound', () => {
     });
 
     it('LiquidityClue handed to select-inputs-for-round is computed locally', async () => {
-        const liquidityClues: unknown[] = [];
+        const liquidityClues: Record<string, unknown> = {};
         server?.addListener('test-request', ({ url, data, resolve }) => {
             if (url.endsWith('/select-inputs-for-round')) {
-                liquidityClues.push(data.LiquidityClue);
+                // Keyed by outpoint because the requests are issued concurrently, so the order
+                // they reach the server is not the account order.
+                liquidityClues[data.Utxos[0].Outpoint] = data.LiquidityClue;
                 resolve({ Indices: [] });
             }
             resolve();
@@ -363,7 +365,7 @@ describe('selectRound', () => {
 
         // The clue below MaxSuggestedAmount is passed through, the one above it and the missing one
         // are both capped at MaxSuggestedAmount.
-        expect(liquidityClues).toEqual([20000, 1000000, 1000000]);
+        expect(liquidityClues).toEqual({ AA: 20000, BA: 1000000, CA: 1000000 });
     });
 
     it('Skipping round when selected utxo effective value < allowedOutputAmounts.min', async () => {
