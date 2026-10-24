@@ -1,5 +1,5 @@
 import { type Ref } from 'react';
-import { type TextInput } from 'react-native';
+import { type TextInputInstance } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { selectTradingSellIsLoading } from '@suite-common/trading';
@@ -12,7 +12,7 @@ import { TradingBaseCurrencyAmountInput } from '../../general/TradingBaseCurrenc
 
 export type SellSendBaseCurrencyAmountInputProps = {
     showAssetsScreen: () => void;
-    ref?: Ref<TextInput>;
+    ref?: Ref<TextInputInstance>;
 };
 
 const SELL_SEND_BASE_CURRENCY_INPUT_TEST_ID = '@trading/sell/send-base-currency-amount-input';

@@ -107,7 +107,7 @@ export const SettingsDustPhishingScreen = () => {
                                     />
 
                                     {!isDisabled && (
-                                        <Button size="medium" onPress={onSubmit}>
+                                        <Button size="medium" onPress={() => onSubmit()}>
                                             <Translation id="moduleSettings.security.dustPhishing.save" />
                                         </Button>
                                     )}

@@ -84,7 +84,7 @@ export const SignMessageCard = ({ form }: SignMessageCardProps) => {
                             <Translation id="signAndVerify.buttons.clear" />
                         </Button>
                     ) : (
-                        <Button onPress={submit}>
+                        <Button onPress={() => submit()}>
                             <Translation id="signAndVerify.buttons.sign" />
                         </Button>
                     )}

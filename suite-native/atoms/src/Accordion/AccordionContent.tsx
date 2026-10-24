@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { View, type ViewInstance } from 'react-native';
 import {
     type SharedValue,
     measure,
@@ -29,7 +29,7 @@ const ANIMATION_DURATION = 200;
 export const AccordionContent = ({ isOpened, children }: AccordionContentProps) => {
     const { applyStyle } = useNativeStyles();
 
-    const animatedRef = useAnimatedRef<View>();
+    const animatedRef = useAnimatedRef<ViewInstance>();
 
     const animatedHeightStyle = useAnimatedStyle(() => ({
         height: withTiming(isOpened.value ? Number(measure(animatedRef)?.height ?? 0) : 0, {

@@ -122,7 +122,7 @@ export const AccountImportConfirmFormScreen = ({
                 footer={
                     <Button
                         testID="@account-import/coin-synced/confirm-button"
-                        onPress={handleImportAccount}
+                        onPress={() => handleImportAccount()}
                         isDisabled={!isValid}
                     >
                         <Translation id="generic.buttons.confirm" />

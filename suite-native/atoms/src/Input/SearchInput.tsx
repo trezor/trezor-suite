@@ -1,11 +1,17 @@
 import {
     type ComponentType,
+    type Ref,
     type RefAttributes,
-    forwardRef,
     useImperativeHandle,
     useRef,
 } from 'react';
-import { Platform, Pressable, TextInput, type TextInputProps } from 'react-native';
+import {
+    Platform,
+    Pressable,
+    TextInput,
+    type TextInputInstance,
+    type TextInputProps,
+} from 'react-native';
 
 import { BottomSheetTextInput } from '@gorhom/bottom-sheet';
 
@@ -85,86 +91,80 @@ export type SearchInputProps = {
     onBlur?: () => void;
     isBottomSheetInput?: boolean;
     autoCapitalize?: TextInputProps['autoCapitalize'];
+    ref?: Ref<TextInputInstance>;
 };
 
-export const SearchInput = forwardRef<TextInput, SearchInputProps>(
-    (
-        {
-            onChange,
-            placeholder,
-            maxLength,
-            autoFocus,
-            onFocus,
-            onBlur,
-            isDisabled = false,
-            size = 'medium',
-            value,
-            autoCorrect,
-            testId,
-            isBottomSheetInput = false,
-            autoCapitalize,
-        },
-        ref,
-    ) => {
-        const { applyStyle, utils } = useNativeStyles();
+export const SearchInput = ({
+    onChange,
+    placeholder,
+    maxLength,
+    autoFocus,
+    onFocus,
+    onBlur,
+    isDisabled = false,
+    size = 'medium',
+    value,
+    autoCorrect,
+    testId,
+    isBottomSheetInput = false,
+    autoCapitalize,
+    ref,
+}: SearchInputProps) => {
+    const { applyStyle, utils } = useNativeStyles();
 
-        // Keep an internal ref so tap-to-focus and clear work even when no ref is
-        // forwarded, and expose the underlying TextInput instance to forwarded refs.
-        const inputRef = useRef<TextInput>(null);
-        useImperativeHandle(ref, () => inputRef.current as TextInput, []);
+    // Keep an internal ref so tap-to-focus and clear work even when no ref is
+    // forwarded, and expose the underlying TextInput instance to forwarded refs.
+    const inputRef = useRef<TextInputInstance>(null);
+    useImperativeHandle(ref, () => inputRef.current as TextInputInstance, []);
 
-        const {
-            handleClear,
-            handleInputFocus,
-            handleOnChangeText,
-            isFocused,
-            isClearButtonVisible,
-            setIsFocused,
-        } = useSearchInputCallbacks(inputRef, onChange);
+    const {
+        handleClear,
+        handleInputFocus,
+        handleOnChangeText,
+        isFocused,
+        isClearButtonVisible,
+        setIsFocused,
+    } = useSearchInputCallbacks(inputRef, onChange);
 
-        // Both branches accept `TextInputProps`, but `BottomSheetTextInput` forwards its ref to
-        // gesture-handler's `TextInput` — a nominally different type from react-native's. Cast to
-        // a single signature so the shared `ref`/props type-check against both.
-        const InputComponent = (
-            isBottomSheetInput ? BottomSheetTextInput : TextInput
-        ) as ComponentType<TextInputProps & RefAttributes<TextInput>>;
+    // Both branches accept `TextInputProps`, but `BottomSheetTextInput` forwards its ref to
+    // gesture-handler's `TextInput` — a nominally different type from react-native's. Cast to
+    // a single signature so the shared `ref`/props type-check against both.
+    const InputComponent = (isBottomSheetInput ? BottomSheetTextInput : TextInput) as ComponentType<
+        TextInputProps & RefAttributes<TextInputInstance>
+    >;
 
-        return (
-            <Pressable onPress={handleInputFocus}>
-                <Box style={applyStyle(inputWrapperStyle, { isFocused, size })}>
-                    <SearchInputMagnifyingGlass />
+    return (
+        <Pressable onPress={handleInputFocus}>
+            <Box style={applyStyle(inputWrapperStyle, { isFocused, size })}>
+                <SearchInputMagnifyingGlass />
 
-                    <InputComponent
-                        ref={inputRef}
-                        onChangeText={handleOnChangeText}
-                        placeholder={placeholder}
-                        accessibilityLabel={placeholder}
-                        placeholderTextColor={utils.colors.contentSecondary}
-                        // eslint-disable-next-line jsx-a11y/no-autofocus
-                        autoFocus={autoFocus}
-                        editable={!isDisabled}
-                        onFocus={() => {
-                            setIsFocused(true);
-                            onFocus?.();
-                        }}
-                        onBlur={() => {
-                            setIsFocused(false);
-                            onBlur?.();
-                        }}
-                        style={applyStyle(inputStyle)}
-                        maxLength={maxLength}
-                        value={value}
-                        autoCorrect={autoCorrect}
-                        testID={testId}
-                        autoCapitalize={autoCapitalize}
-                    />
+                <InputComponent
+                    ref={inputRef}
+                    onChangeText={handleOnChangeText}
+                    placeholder={placeholder}
+                    accessibilityLabel={placeholder}
+                    placeholderTextColor={utils.colors.contentSecondary}
+                    // eslint-disable-next-line jsx-a11y/no-autofocus
+                    autoFocus={autoFocus}
+                    editable={!isDisabled}
+                    onFocus={() => {
+                        setIsFocused(true);
+                        onFocus?.();
+                    }}
+                    onBlur={() => {
+                        setIsFocused(false);
+                        onBlur?.();
+                    }}
+                    style={applyStyle(inputStyle)}
+                    maxLength={maxLength}
+                    value={value}
+                    autoCorrect={autoCorrect}
+                    testID={testId}
+                    autoCapitalize={autoCapitalize}
+                />
 
-                    <SearchInputClearButton
-                        onPress={handleClear}
-                        isVisible={isClearButtonVisible}
-                    />
-                </Box>
-            </Pressable>
-        );
-    },
-);
+                <SearchInputClearButton onPress={handleClear} isVisible={isClearButtonVisible} />
+            </Box>
+        </Pressable>
+    );
+};

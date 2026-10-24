@@ -1,5 +1,4 @@
-import React, { type ReactNode } from 'react';
-import { type View } from 'react-native';
+import { type ReactNode } from 'react';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type NativeSpacing } from '@trezor/theme';
@@ -28,27 +27,30 @@ const spacerStyle = prepareNativeStyle<SpacerStyleProps>((utils, { spacing, orie
     };
 });
 
-export const Stack = React.forwardRef<View, StackProps>(
-    ({ children, style, spacing, orientation = 'vertical', ...rest }: StackProps, ref) => {
-        const { applyStyle } = useNativeStyles();
+export const Stack = ({
+    children,
+    style,
+    spacing,
+    orientation = 'vertical',
+    ...rest
+}: StackProps) => {
+    const { applyStyle } = useNativeStyles();
 
-        return (
-            <Box
-                ref={ref}
-                style={[
-                    applyStyle(spacerStyle, {
-                        spacing,
-                        orientation,
-                    }),
-                    style,
-                ]}
-                {...rest}
-            >
-                {children}
-            </Box>
-        );
-    },
-);
+    return (
+        <Box
+            style={[
+                applyStyle(spacerStyle, {
+                    spacing,
+                    orientation,
+                }),
+                style,
+            ]}
+            {...rest}
+        >
+            {children}
+        </Box>
+    );
+};
 
 export const VStack = Stack;
 export const HStack = (props: StackProps) => <Stack {...props} orientation="horizontal" />;

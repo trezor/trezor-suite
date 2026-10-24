@@ -1,7 +1,7 @@
 import { type RefObject, useCallback, useState } from 'react';
-import { type TextInput } from 'react-native';
+import { type TextInputInstance } from 'react-native';
 
-type AmountInputRef = RefObject<TextInput | null>;
+type AmountInputRef = RefObject<TextInputInstance | null>;
 
 export const useAssetSelectInputFocus = () => {
     const [inputRefToFocus, setInputRefToFocus] = useState<AmountInputRef | null>(null);
