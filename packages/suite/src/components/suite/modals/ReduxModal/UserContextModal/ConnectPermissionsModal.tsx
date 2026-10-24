@@ -31,7 +31,7 @@ export const ConnectPermissionsModal = () => {
 
     const { method, methodInfo, source } = popupCall;
     const { permissionTypes } = methodInfo;
-    const canRemember = source.type !== CALL_SOURCE_WALLETCONNECT && canRememberPermissions(source);
+    const canRemember = canRememberPermissions(source);
 
     const rememberPayload = {
         allowedPermissions: permissionTypes,

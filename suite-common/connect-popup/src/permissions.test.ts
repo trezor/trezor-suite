@@ -273,17 +273,15 @@ describe('canRememberPermissions', () => {
             },
         ],
         ['an mcp client', { type: CALL_SOURCE_MCP, origin: 'http://127.0.0.1', manifest }],
-        [
-            // Documents the bug: walletconnect is accepted here, so every consent UI has to
-            // compose `source.type !== CALL_SOURCE_WALLETCONNECT` itself.
-            'walletconnect, whose consent lives in its own session',
-            { type: CALL_SOURCE_WALLETCONNECT, origin: 'https://example.com', manifest },
-        ],
     ])('remembers permissions for %s', (_, source) => {
         expect(canRememberPermissions(source)).toBe(true);
     });
 
     it.each<[string, ConnectCallSource]>([
+        [
+            'walletconnect, whose consent lives in its own session',
+            { type: CALL_SOURCE_WALLETCONNECT, origin: 'https://example.com', manifest },
+        ],
         [
             'the origin null that every sandboxed or local page sends',
             { type: CALL_SOURCE_WEB, origin: 'null', manifest },
