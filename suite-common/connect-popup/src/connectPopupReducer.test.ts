@@ -65,6 +65,19 @@ describe('rememberAppPermissions', () => {
                 .permissions,
         ).toEqual([]);
     });
+
+    // A path the main process read as blank identifies the caller no better than UNKNOWN_PROCESS
+    // does, yet such a grant is remembered, and `isSameConnectApp` — which tells callers apart by
+    // `fullPath` alone — matches it against every other blank-path caller of the same origin. The
+    // test documents that behaviour before it is changed.
+    it.each(['', '   '])(
+        'remembers permissions for a desktop app whose process path is %p',
+        fullPath => {
+            const blankPath = { ...app, process: { ...appProcess, fullPath } };
+
+            expect(rememberApps(blankPath).permissions).toEqual([blankPath]);
+        },
+    );
 });
 
 describe('storageLoad', () => {
@@ -86,5 +99,11 @@ describe('storageLoad', () => {
         expect(
             loadApps({ ...app, type: CALL_SOURCE_WALLETCONNECT, process: undefined }).permissions,
         ).toEqual([]);
+    });
+
+    it('loads permissions remembered for a blank process path', () => {
+        const blankPath = { ...app, process: { ...appProcess, fullPath: '' } };
+
+        expect(loadApps(blankPath).permissions).toEqual([blankPath]);
     });
 });
