@@ -5,6 +5,7 @@ import * as path from 'node:path';
 
 import { getWeakRandomInt, scheduleAction, unique } from '@trezor/utils';
 
+import { type QuarantineCheck, checkRecommendedQuarantine } from './quarantine';
 import { error, log, output, printProblemSummary, warn } from '../logger';
 import { githubRunLink, postSlackMessage } from '../slack';
 import type { CoverageIndex } from '../testCoverage/types';
@@ -27,6 +28,7 @@ interface SelectionResult {
     uncovered_changes: string[];
     recommendations: TestRecommendation[];
     summary: string;
+    quarantine_check?: QuarantineCheck;
 }
 
 interface PromptParts {
@@ -953,6 +955,10 @@ const main = async () => {
     const result: SelectionResult = {
         changed_files: changedFiles,
         ...llmResult,
+        quarantine_check:
+            llmResult.recommendations.length > 0
+                ? await checkRecommendedQuarantine(llmResult.recommendations.map(rec => rec.test))
+                : undefined,
     };
 
     output(JSON.stringify(result, null, 2));
