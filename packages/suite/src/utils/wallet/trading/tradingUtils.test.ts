@@ -4,6 +4,7 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
 import { type Account } from 'src/types/wallet';
 import {
+    buildHttpReceiverRedirectUrl,
     getComposeAddressPlaceholder,
     resolveAddressAndToken,
     tradingGetAccountLabel,
@@ -76,6 +77,26 @@ describe('trading utils', () => {
             expect(resolveAddressAndToken(option.account, option.tokenContractAddress)).toEqual(
                 result,
             );
+        });
+    });
+
+    describe('buildHttpReceiverRedirectUrl', () => {
+        it('appends token query for HTTP receiver address', () => {
+            expect(
+                buildHttpReceiverRedirectUrl(
+                    { url: 'http://127.0.0.1:21335/buy-redirect', token: 'tk-1' },
+                    '/coinmarket-redirect/foo',
+                ),
+            ).toBe('http://127.0.0.1:21335/buy-redirect?p=%2Fcoinmarket-redirect%2Ffoo&token=tk-1');
+        });
+
+        it('omits token query for deeplink (empty token)', () => {
+            expect(
+                buildHttpReceiverRedirectUrl(
+                    { url: 'trezorsuite://buy-redirect', token: '' },
+                    '/coinmarket-redirect/foo',
+                ),
+            ).toBe('trezorsuite://buy-redirect?p=%2Fcoinmarket-redirect%2Ffoo');
         });
     });
 
