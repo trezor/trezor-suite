@@ -6,6 +6,7 @@ import {
     type AppRememberedPermission,
     CALL_SOURCE_DESKTOP_WS,
     CALL_SOURCE_MCP,
+    CALL_SOURCE_WALLETCONNECT,
 } from './connectPopupTypes';
 
 const connectPopupReducer = prepareConnectPopupReducer({
@@ -52,6 +53,13 @@ describe('rememberAppPermissions', () => {
     it('does not remember permissions for an app with the origin null', () => {
         expect(rememberApps({ ...app, origin: 'null' }).permissions).toEqual([]);
     });
+
+    it('does not remember permissions for a walletconnect app', () => {
+        expect(
+            rememberApps({ ...app, type: CALL_SOURCE_WALLETCONNECT, process: undefined })
+                .permissions,
+        ).toEqual([]);
+    });
 });
 
 describe('storageLoad', () => {
@@ -67,5 +75,11 @@ describe('storageLoad', () => {
 
     it('does not load permissions remembered for the origin null by an earlier version', () => {
         expect(loadApps({ ...app, origin: 'null' }).permissions).toEqual([]);
+    });
+
+    it('does not load permissions remembered for walletconnect by an earlier version', () => {
+        expect(
+            loadApps({ ...app, type: CALL_SOURCE_WALLETCONNECT, process: undefined }).permissions,
+        ).toEqual([]);
     });
 });

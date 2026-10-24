@@ -6,7 +6,6 @@ import { connectPopupActions } from './connectPopupActions';
 import { getPermissionDeferred } from './connectPopupPromiseManager';
 import {
     type AppRememberedPermission,
-    CALL_SOURCE_WALLETCONNECT,
     type ConnectPopupCall,
     type ConnectPopupCallWithState,
 } from './connectPopupTypes';
@@ -77,8 +76,9 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
                             .filter(canRememberPermissions)
                             // Grants persisted before coins were canonicalized at the
                             // source keep the mixed-case `coinInfo.shortcut` (e.g. `BTC`);
-                            // lowercase them on load. This reducer is shared, so it covers
-                            // both the web IDB store and native.
+                            // lowercase them on load. This case covers the web/desktop IDB
+                            // store only: native rehydrates `permissions` from mmkv and
+                            // never dispatches `storageLoad`.
                             .map(normalizeRememberedCoins);
                     }
                 },
@@ -306,7 +306,7 @@ export const selectConnectPopupCallWithState = <CallState extends ConnectPopupCa
         : null;
 
 export const selectConnectAppPermissions = (state: ConnectPopupStateRootState) =>
-    state.connectPopup.permissions.filter(p => p.type !== CALL_SOURCE_WALLETCONNECT);
+    state.connectPopup.permissions.filter(canRememberPermissions);
 
 export const selectIsConnectAppSilentModeByOrigin = (
     state: ConnectPopupStateRootState,
