@@ -37,3 +37,36 @@ so transcriptions of them arrive with that port.
 
 Captured fixtures age with the binary: bumping `suite/app-assets/files/bin/coinjoin/update.sh` means
 re-capturing them against the new binary.
+
+### Re-capturing
+
+The binary is bundled per platform at
+`suite/app-assets/files/bin/coinjoin/<platform>/WalletWasabi.WabiSabiClientLibrary` (`linux-x64`,
+`linux-arm64`, `mac-x64`, `mac-arm64`, `win-x64`). It takes its port from `WCL_BIND_PORT` — there is
+no command-line argument for it — and every endpoint is a `POST` of a JSON body:
+
+```sh
+cd suite/app-assets/files/bin/coinjoin/linux-x64
+WCL_BIND_PORT=37128 ./WalletWasabi.WabiSabiClientLibrary &
+
+# Goes into LIQUIDITY_CLUE_BINARY_VERSION and the fixture file's header comment.
+curl -s -X POST localhost:37128/get-version -H 'Content-Type: application/json' -d '{}'
+# {"Version":"15.0","CommitHash":"34a0f983a527cff36f20c19ad9b0650a02238e38","Debug":false}
+
+curl -s -X POST localhost:37128/init-liquidity-clue -H 'Content-Type: application/json' \
+    -d '{"ExternalAmounts":[5000,5000,10000,20000,1234]}'
+# {"RawLiquidityClue":20000}
+
+curl -s -X POST localhost:37128/update-liquidity-clue -H 'Content-Type: application/json' \
+    -d '{"RawLiquidityClue":50000,"MaxSuggestedAmount":1000000,"ExternalAmounts":[20000,20000,10000]}'
+# {"RawLiquidityClue":20000}
+
+curl -s -X POST localhost:37128/get-liquidity-clue -H 'Content-Type: application/json' \
+    -d '{"RawLiquidityClue":1000000,"MaxSuggestedAmount":20000}'
+# {"LiquidityClue":20000}
+```
+
+Those three calls are the `request`/`response` of existing fixtures verbatim — each fixture's
+`request` is the body to post and its `response` is what the binary must answer. Replaying every
+`request` in `liquidityClue.fixture.ts` therefore both re-captures a group and proves the old set
+was not stale.
