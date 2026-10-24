@@ -321,3 +321,29 @@ describe('NotificationRenderer transaction broadcasts', () => {
         },
     );
 });
+
+describe('NotificationRenderer passphrase mismatch errors', () => {
+    it.each([
+        ['verify-address-error', 'Address verification error'],
+        ['sign-tx-error', 'Transaction signing error'],
+    ] as const)('renders %s with the passphrase mismatch message', (type, prefix) => {
+        renderNotification({ context: 'toast', id: 0, type, error: 'Passphrase is incorrect' });
+
+        expect(screen.getByTestId('notification-view')).toHaveTextContent(
+            `${prefix}: Passphrase doesn't match this wallet`,
+        );
+    });
+
+    it('keeps other errors unchanged', () => {
+        renderNotification({
+            context: 'toast',
+            id: 0,
+            type: 'sign-tx-error',
+            error: 'Unexpected response type: Failure',
+        });
+
+        expect(screen.getByTestId('notification-view')).toHaveTextContent(
+            'Transaction signing error: Unexpected response type: Failure',
+        );
+    });
+});
