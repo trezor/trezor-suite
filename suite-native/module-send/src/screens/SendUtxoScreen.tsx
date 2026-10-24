@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { type TextInput } from 'react-native';
+import { type TextInputInstance } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -38,7 +38,7 @@ export const SendUtxoScreen = ({
     const { translate } = useTranslate();
     const navigation = useNavigation();
 
-    const searchInputRef = useRef<TextInput>(null);
+    const searchInputRef = useRef<TextInputInstance>(null);
 
     const { selectedUtxos, setSelectedUtxos } = useUtxoSelection(accountKey);
     const [searchQuery, setSearchQuery] = useState<string>('');

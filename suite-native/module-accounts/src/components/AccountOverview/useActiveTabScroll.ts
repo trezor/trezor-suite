@@ -3,13 +3,13 @@ import {
     type LayoutChangeEvent,
     type NativeScrollEvent,
     type NativeSyntheticEvent,
-    type ScrollView,
+    type ScrollViewInstance,
 } from 'react-native';
 
 import { type AccountOverviewTab } from './types';
 
 export const useActiveTabScroll = (activeTab: AccountOverviewTab) => {
-    const scrollViewRef = useRef<ScrollView>(null);
+    const scrollViewRef = useRef<ScrollViewInstance>(null);
     const tabLayouts = useRef<Partial<Record<AccountOverviewTab, { x: number; width: number }>>>(
         {},
     );

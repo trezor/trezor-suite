@@ -13,6 +13,17 @@ import {
 } from '../biometricsSelectors';
 import { handleBiometricsAppStateChangeThunk } from '../biometricsThunks';
 
+const APP_STATE_STATUSES: AppStateStatus[] = [
+    'active',
+    'background',
+    'inactive',
+    'unknown',
+    'extension',
+];
+
+const isAppStateStatus = (appState: string | null | undefined): appState is AppStateStatus =>
+    APP_STATE_STATUSES.some(status => status === appState);
+
 export const BiometricsModalRenderer = () => {
     const { dispatch } = useServices(injectDispatch);
 
@@ -33,7 +44,10 @@ export const BiometricsModalRenderer = () => {
             );
         };
 
-        handleBiometricsAppStateChange(AppState.currentState);
+        const { currentState } = AppState;
+        if (isAppStateStatus(currentState)) {
+            handleBiometricsAppStateChange(currentState);
+        }
 
         const subscription = AppState.addEventListener('change', handleBiometricsAppStateChange);
 

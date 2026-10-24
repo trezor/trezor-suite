@@ -126,7 +126,7 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
                         testID="@account-detail/settings/account-rename/input"
                     />
                     <Button
-                        onPress={handleRenameAccount}
+                        onPress={() => handleRenameAccount()}
                         isDisabled={hasErrors}
                         testID="@account-detail/settings/account-rename/confirm-button"
                     >

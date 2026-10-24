@@ -424,6 +424,11 @@ jest.mock('react-native-keyboard-controller', () =>
     require('react-native-keyboard-controller/jest'),
 );
 
+jest.mock(
+    'react-native-gesture-handler/lib/module/v3/detectors/useEnsureGestureHandlerRootView',
+    () => ({ useEnsureGestureHandlerRootView: () => {} }),
+);
+
 jest.mock('@gorhom/bottom-sheet', () => {
     const { ScrollView } = require('react-native');
     const GorhomBottomSheetMock = require('@gorhom/bottom-sheet/mock');

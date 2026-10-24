@@ -4,6 +4,7 @@ import {
     type LayoutChangeEvent,
     Pressable,
     TextInput,
+    type TextInputInstance,
     type TextInputProps,
     View,
 } from 'react-native';
@@ -57,7 +58,7 @@ export type AmountInputProps = {
     size?: AmountInputSize;
     prefix?: string;
     hitSlop?: Insets | number;
-    ref?: Ref<TextInput>;
+    ref?: Ref<TextInputInstance>;
 } & Omit<TextInputProps, 'style' | 'onLayout' | 'onContentSizeChange' | 'onChangeText' | 'hitSlop'>;
 
 export const AMOUNT_INPUT_TEST_ID = '@trading/amountInput/wrapper';
@@ -238,7 +239,7 @@ export const AmountInput = ({
     ref,
     ...inputProps
 }: AmountInputProps) => {
-    const innerRef = useRef<TextInput>(null);
+    const innerRef = useRef<TextInputInstance>(null);
     useImperativeHandle(ref, () => innerRef.current!, []);
 
     const sizeConfig = amountInputSizes[size];

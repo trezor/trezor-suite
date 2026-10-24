@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { View, useWindowDimensions } from 'react-native';
+import { View, type ViewInstance, useWindowDimensions } from 'react-native';
 
 import { useFocusEffect } from '@react-navigation/native';
 
@@ -41,7 +41,7 @@ export const AxisLabel = ({ x, value }: AxisLabelProps) => {
     const { applyStyle, utils } = useNativeStyles();
     const { width: windowWidth } = useWindowDimensions();
     const { isDiscreetMode } = useDiscreetMode();
-    const viewRef = useRef<View>(null);
+    const viewRef = useRef<ViewInstance>(null);
     const [isOverflowing, setIsOverflowing] = useState(false);
 
     const handleLayoutOverflow = useCallback(() => {
