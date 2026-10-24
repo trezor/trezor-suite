@@ -57,6 +57,12 @@ describe('rememberAppPermissions', () => {
     it('does not remember permissions for a desktop app whose process is unknown', () => {
         expect(rememberApps({ ...app, process: UNKNOWN_PROCESS }).permissions).toEqual([]);
     });
+
+    it('does not remember permissions for a desktop app whose process path is blank', () => {
+        expect(
+            rememberApps({ ...app, process: { ...appProcess, fullPath: '' } }).permissions,
+        ).toEqual([]);
+    });
 });
 
 describe('storageLoad', () => {
