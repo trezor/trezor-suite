@@ -196,6 +196,17 @@ export interface InvokeChannels {
     'in-app-browser/can-open-dev-tools': () => boolean;
 }
 
+/**
+ * Returned by `getHttpReceiverAddress`. `url` is the base URL of the route.
+ * `token` is a single-use token to be appended as `?token=<token>` (or used as
+ * the `state` parameter for OAuth flows). On platforms where the request is
+ * served by a deeplink instead of the HTTP receiver, `token` is an empty string.
+ */
+export type HttpReceiverAddress = {
+    url: string;
+    token: string;
+};
+
 type DesktopApiListener = ListenerMethod<RendererChannels>;
 
 type DesktopApiSend<K extends keyof MainChannels> = SendMethod<{ 0: MainChannels[K] }>;
