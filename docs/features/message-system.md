@@ -345,6 +345,67 @@ To create an experiment for components, use ExperimentWrapper.tsx. It requires t
 1. Conditions of config are evaluated on specific Redux actions. See `messageSystemMiddleware.ts` [file](https://github.com/trezor/trezor-suite/blob/145a43d21ee94461d3f013c1dc23241dd27b0224/packages/suite/src/middlewares/suite/messageSystemMiddleware.ts).
 1. If conditions of a message satisfy the user's stack, the message is accordingly propagated. If it is dismissible, its ID is saved to Redux state (IndexDB) on close, to avoid displaying it next time.
 
+### Desktop main process gate
+
+On desktop the Electron main process acquires the config on its own, in
+`suite/desktop-app-main/src/modules/message-system.ts`: it verifies the JWS persisted in
+`electron-store` at launch, polls for a newer one and never accepts a lower sequence. It evaluates
+only the conditions whose every key is `duration` or `environment`, because the facts behind the
+other keys (`devices`, `transport`, `settings`, `countryCodes`, `os`) are reported by the renderer,
+and with `--bridge-daemon` or an auto-started launch no renderer is ever created.
+
+An active killswitch in that result stops what main serves without a renderer: the bridge
+(including its 30 s watcher), `/connect-ws` upgrades and the http-receiver, with the disabled state
+shown in the tray. A config that drops the killswitch brings them back without an app restart. The
+acquisition runs after `createInterceptor()` so that it is Tor-aware and whitelist-checked, it is
+postponed while Tor is wanted but not running yet, because `interceptFetch` proxies a request only
+once Tor is up, and it is skipped entirely with `--offline-mode` or under Playwright.
+
+Main does not start Tor on its own. `module/tor-status-update` is emitted from inside the tor
+module, which only the renderer loads (`handshake/load-tor-module`), so in a headless boot
+(`--bridge-daemon` or an auto-started launch) of a profile with Tor enabled nothing ever reports
+Tor as running. The acquisition then stays postponed - it logs a warning once and keeps retrying -
+and main's gate is whatever the persisted config said at launch. A killswitch published while such
+a process runs cannot reach it until it is launched with a window; for the same reason "nothing is
+served while a Tor bootstrap fails" does not hold either, because the background modules load
+regardless of Tor. Main driving the Tor bootstrap itself is follow-up work.
+
+The cache is also main's only startup source. The generated local config
+(`suite-common/message-system/files/config.v1.ts`) that the renderer falls back to is not part of
+the main bundle, so on a first launch - or after the profile was wiped - main starts with an open
+gate and closes it only once a remote fetch succeeded, which offline never happens: a build shipped
+with the killswitch already raised in that file does not gate anything in main. In UI mode the
+first acquisition is not awaited either, only a headless boot awaits it, so the bridge, the
+http-receiver and `/connect-ws` of a killswitched profile are up for as long as that fetch takes on
+every launch. Bundling the local config into main as the floor, and awaiting the first acquisition
+before the background modules load, is follow-up work.
+
+#### Scope of the main process gate
+
+Main owns the gate only for the surfaces it serves on its own. It is not (yet) the single
+evaluation point on desktop: the renderer keeps its own acquisition and evaluation, so messages,
+feature flags and experiments reach the UI through Redux as described above. Nothing is pushed
+across the process boundary in either direction, which has consequences worth knowing before
+relying on either side:
+
+- A desktop build runs two independent acquisition loops against `data.trezor.io`, each with its
+  own fetch clock and its own sequence, so the config is downloaded twice per fetch interval.
+- The two can disagree for up to a fetch interval. Main's gate can already be closed - the bridge,
+  `/connect-ws` and the http-receiver stopped - while the renderer still renders a normal UI, in
+  which case the user sees a transport error rather than the killswitch screen.
+- The Message Manager debug tooling (config source Local, manually added messages, experiment
+  inclusion overrides) acts on renderer Redux only. It cannot exercise or reproduce main's gate,
+  and with the Local source selected the renderer keeps showing no killswitch while main's gate
+  may stay closed.
+
+Making main the single evaluation point - renderer facts reported to main, the verified config and
+the evaluation result pushed back, the renderer's own acquisition dropped on desktop, and the debug
+tooling commanding main - is follow-up work. So is turning the message system into an injected
+service (see `skills/dependency-injection/SKILL.md`): `createMessageSystemOwner` is one
+implementation with one consumer, threaded through the main process `Dependencies`, so there is no
+service contract for it yet and no renderer, web or mobile implementation behind one. The contract
+belongs to the commit that introduces the second implementation.
+
 ### Message Manager (UI)
 
 Built-in UI to inspect and test messages:
