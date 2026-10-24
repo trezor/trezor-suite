@@ -1,0 +1,25 @@
+name: "[Test] Suite Desktop e2e Windows tests (manual)"
+# Manual run of the Windows desktop e2e subset on a branch. The nightly schedule lives in
+# test-suite-web-desktop-e2e-nightly.yml, which calls the same template.
+
+permissions:
+  actions: read
+  contents: read
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-app:
+    uses: ./.github/workflows/build-suite-desktop-e2e.yml
+
+  run-e2e-windows:
+    needs:
+      - build-app
+    uses: ./.github/workflows/template-suite-run-e2e-windows.yml
+    with:
+      download-artifact-name: "desktop-app-build-e2e"
+      currents-ci-build-id: "manual-windows-run-${{ github.run_id }}-${{ github.run_attempt }}"
+    secrets:
+      currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
+      e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}

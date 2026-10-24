@@ -1,0 +1,100 @@
+name: "Reusable Run Playwright E2E Tests on Windows"
+# Runs a desktop e2e config on hosted Windows runners: Playwright drives the Electron app on Windows,
+# trezor-user-env runs inside WSL2 from the rootfs trezor-user-env publishes to GHCR, and the runners
+# share one Currents run through orchestration. See suite/e2e/docs/e2e-windows.md.
+on:
+  workflow_call:
+    inputs:
+      pw-config:
+        description: "Path to the PW config to be used, relative to suite/e2e"
+        required: false
+        default: "./playwright-config/playwright-desktop-windows.config.ts"
+        type: string
+      download-artifact-name:
+        description: "Name of the desktop app build artifact (build-suite-desktop-e2e.yml)"
+        required: true
+        type: string
+      currents-ci-build-id:
+        description: "CI build ID shared by the runners of one Currents run"
+        required: true
+        type: string
+      tenv-rootfs-ref:
+        description: "OCI reference of the trezor-user-env WSL rootfs, tagged like the image; update-trezor-user-env.yml bumps it"
+        required: false
+        default: "ghcr.io/trezor/trezor-user-env-rootfs:9f0c95995dd6167929300bfd58b1eda71c3d0a09"
+        type: string
+    secrets:
+      currents-record-key:
+        description: "Currents record key for reporting"
+        required: true
+      e2e-passphrase:
+        description: "Passphrase for E2E tests"
+        required: true
+
+jobs:
+  run-e2e-windows:
+    name: Run e2e on Windows (${{ matrix.runner }}/${{ strategy.job-total }})
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [1, 2, 3, 4]
+    runs-on: windows-latest
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: pwsh
+    env:
+      WSL_UTF8: 1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Install e2e workspace
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
+        run: yarn workspaces focus @trezor/suite-e2e
+
+      # Desktop fixtures still open a Chromium context, so the headless shell must be present.
+      - name: Install Playwright Chromium
+        run: yarn workspace @trezor/suite-e2e exec playwright install chromium
+
+      - name: Prefetch Electron binary
+        run: node node_modules/electron/install.js
+
+      - name: Build message system config
+        run: yarn message-system-sign-config
+
+      - name: Download desktop build
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: ${{ inputs.download-artifact-name }}
+          path: artifact-download
+
+      - name: Extract desktop build
+        run: tar -xzf artifact-download\app-build.tar.gz -C suite\desktop-app
+
+      # One step: a process started by a step does not survive it on the Windows runner.
+      - name: Start trezor-user-env and run tests
+        env:
+          GITHUB_ACTION: true
+          PASSPHRASE: ${{ secrets.e2e-passphrase }}
+          CURRENTS_PROJECT_ID: "q2uGxh"
+          CURRENTS_RECORD_KEY: ${{ secrets.currents-record-key }}
+          CURRENTS_CI_BUILD_ID: ${{ inputs.currents-ci-build-id }}
+          GH_BRANCH: ${{ github.ref_name }}
+        run: yarn workspace @trezor/suite-e2e test:e2e:windows --rootfs-ref "${{ inputs.tenv-rootfs-ref }}" --config "${{ inputs.pw-config }}"
+
+      # Test traces, videos and logs are on Currents; test-results only ever holds the last batch.
+      - name: Upload trezor-user-env logs
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: tenv-logs-windows-${{ matrix.runner }}
+          path: suite/e2e/tenv-logs
+          if-no-files-found: warn
+          retention-days: 7
