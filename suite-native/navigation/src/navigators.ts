@@ -541,6 +541,7 @@ export type RootStackParamList = {
     [RootStackRoutes.DevUtils]: undefined;
     [RootStackRoutes.MessageSystemManager]: undefined;
     [RootStackRoutes.MessageSystemExperiments]: undefined;
+    [RootStackRoutes.AppsEmbedding]: undefined;
     [RootStackRoutes.StakingManagement]: { accountKey: AccountKey };
     [RootStackRoutes.YieldVaultDetail]: { accountKey: AccountKey; tokenContract: TokenAddress };
     [RootStackRoutes.HowStakeWorksScreen]: {
