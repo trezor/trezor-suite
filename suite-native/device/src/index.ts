@@ -15,6 +15,7 @@ export * from './components/FollowDeviceScreenContent';
 export * from './components/ConnectAndUnlockDeviceScreenContent';
 export * from './components/TurnOnAndUnlockDeviceScreenContent';
 export * from './components/DeviceDangerBanner';
+export * from './components/IncompatibleFirmwareModalAppendix';
 export * from './utils';
 export * from './selectors';
 export * from './deviceThunks';

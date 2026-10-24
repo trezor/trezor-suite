@@ -27,6 +27,7 @@ import {
     checkIsHomeStackFocused,
     navigationContainerRef,
 } from '@suite-native/navigation';
+import { selectIsOnboardingFinished } from '@suite-native/settings';
 import { type DeviceModelInternal, hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
 import {
@@ -34,7 +35,7 @@ import {
     DEVICE_DISCONNECTION_BLACKLISTED_ROUTES,
 } from '../deviceNavigationConfig';
 import { type NativeDeviceRootState, selectCompromisedDeviceFailedCheck } from '../selectors';
-import { getIsDeviceSetupSupported } from '../utils';
+import { getIsDeviceSetupSupported, getShouldForceFirmwareUpdate } from '../utils';
 
 export const deviceConnectionMiddleware = createListenerMiddleware<NativeDeviceRootState>();
 
@@ -151,6 +152,9 @@ deviceConnectionMiddleware.startListening({
 
         // In case auto-connect is offered, we don't want to interfere with the flow.
         if (selectThpAutoconnectStep(getState()) === 'AutoconnectInfo') return;
+
+        // Redirect to the forced firmware update is handled in `useDetectDeviceError` hook.
+        if (selectIsOnboardingFinished(getState()) && getShouldForceFirmwareUpdate(device)) return;
 
         // If device is authorized already (usually in case of remembered device which has already been authorized)
         // We need to use the state before we add connected device to the array so we find out whether it was previously remembered

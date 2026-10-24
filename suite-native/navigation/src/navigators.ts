@@ -590,6 +590,7 @@ export type RootStackParamList = {
         failedCheck: DeviceCompromisedModalFailedCheck;
     };
     [RootStackRoutes.BootloaderMode]: undefined;
+    [RootStackRoutes.FirmwareUpdateRequired]: undefined;
     [RootStackRoutes.TradingLocationModal]: undefined;
     [RootStackRoutes.Storybook]: undefined;
     [RootStackRoutes.PassphraseStack]: NavigatorScreenParams<PassphraseStackParamList>;

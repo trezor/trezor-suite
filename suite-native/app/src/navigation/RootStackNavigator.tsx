@@ -29,7 +29,10 @@ import {
     BackupFailedModalScreen,
     DeviceOnboardingStackNavigator,
 } from '@suite-native/module-device-onboarding';
-import { DeviceSettingsStackNavigator } from '@suite-native/module-device-settings';
+import {
+    DeviceSettingsStackNavigator,
+    FirmwareUpdateRequiredScreen,
+} from '@suite-native/module-device-settings';
 import {
     EarnConsentsScreen,
     HowStakeWorksScreen,
@@ -310,6 +313,10 @@ export const RootStackNavigator = () => {
             <RootStack.Screen
                 name={RootStackRoutes.BootloaderMode}
                 component={BootloaderModeScreen}
+            />
+            <RootStack.Screen
+                name={RootStackRoutes.FirmwareUpdateRequired}
+                component={FirmwareUpdateRequiredScreen}
             />
             <RootStack.Screen
                 name={RootStackRoutes.ActivityCenterStack}

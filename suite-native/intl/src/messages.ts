@@ -983,6 +983,11 @@ export const messages = {
                 primaryButton: 'No, create wallet backup',
                 secondaryButton: 'Yes, update firmware',
             },
+            updateRequiredScreen: {
+                title: 'Firmware update required',
+                description:
+                    "Your Trezor's firmware is no longer supported. Update to continue using your device.",
+            },
         },
     },
     moduleReceive: {

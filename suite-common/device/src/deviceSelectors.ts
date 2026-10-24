@@ -17,6 +17,7 @@ import {
     getIsDeviceDescriptorApiTypeBluetooth,
     getIsDeviceInitialized,
     getIsDeviceRemembered,
+    getIsFirmwareUpdateRequired,
     getIsThpDevice,
     getSortedDevicesWithoutInstances,
     getStatus,
@@ -390,6 +391,11 @@ export const selectFirmwareReleaseConfig = createMemoizedSelector(
 export const selectIsFirmwareUpgradable = createMemoizedSelector(
     [selectFirmwareReleaseConfig],
     deviceReleaseInfo => deviceReleaseInfo?.isNewer ?? false,
+);
+
+export const selectIsFirmwareUpdateRequired = createMemoizedSelector(
+    [selectSelectedDevice],
+    getIsFirmwareUpdateRequired,
 );
 
 export const selectDeviceFirmwareVersion = createMemoizedSelector([selectSelectedDevice], device =>

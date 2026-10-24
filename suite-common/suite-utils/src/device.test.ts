@@ -16,6 +16,7 @@ import {
     getIsDeviceConnectedViaBluetooth,
     getIsDeviceDescriptorApiTypeBluetooth,
     getIsDeviceRemembered,
+    getIsFirmwareUpdateRequired,
     getNewInstanceNumber,
     getNewWalletNumber,
     getPackagingUrl,
@@ -36,6 +37,21 @@ describe(getStatus.name, () => {
             const status = getStatus(f.device);
             expect(status).toEqual(f.status);
         });
+    });
+});
+
+describe(getIsFirmwareUpdateRequired.name, () => {
+    it('returns true for required firmware', () => {
+        expect(getIsFirmwareUpdateRequired(mockSuiteDevice({ firmware: 'required' }))).toBe(true);
+    });
+
+    it.each(['valid', 'outdated', 'none'] as const)('returns false for %s firmware', firmware => {
+        expect(getIsFirmwareUpdateRequired(mockSuiteDevice({ firmware }))).toBe(false);
+    });
+
+    it('returns false for unacquired and missing device', () => {
+        expect(getIsFirmwareUpdateRequired(mockSuiteDevice({ type: 'unacquired' }))).toBe(false);
+        expect(getIsFirmwareUpdateRequired(undefined)).toBe(false);
     });
 });
 

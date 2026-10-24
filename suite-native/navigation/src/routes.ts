@@ -36,6 +36,7 @@ export enum RootStackRoutes {
     DeviceCompromisedModal = 'DeviceCompromisedModal',
     BackupFailedModal = 'BackupFailedModal',
     BootloaderMode = 'BootloaderMode',
+    FirmwareUpdateRequired = 'FirmwareUpdateRequired',
     TradingLocationModal = 'TradingLocationModal',
     DemoAccountQuestionnaireStack = 'DemoAccountQuestionnaireStack',
     Storybook = 'Storybook',
