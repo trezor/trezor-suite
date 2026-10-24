@@ -9,7 +9,11 @@ import {
 } from '@trezor/connect';
 import { unique } from '@trezor/utils/src/unique';
 
-import { type ConnectCallSource, UNKNOWN_PROCESS } from './connectPopupTypes';
+import {
+    type ConnectCallSource,
+    type ConnectProcessInfo,
+    UNKNOWN_PROCESS,
+} from './connectPopupTypes';
 
 // A `PermissionRequest.coin` is the canonical lowercase `CoinSymbol`: call-derived permissions are
 // lowercased in `coinPerm`, host-declared ones in `sanitizeRequestedPermissions`. Everything below
@@ -73,13 +77,26 @@ export const isSameConnectApp = (app: ConnectCallSource, source: ConnectCallSour
     app.origin === source.origin &&
     app.process?.fullPath === source.process?.fullPath;
 
+// A process is told apart from other processes of the same origin only by its full path (see
+// `isSameConnectApp`), so a blank path identifies nothing — just like the `UNKNOWN_PROCESS`
+// placeholder the main process substitutes when it could not identify the caller at all. The path
+// is checked for being a string because persisted grants reach this predicate unvalidated (see
+// the `storageLoad` case of `connectPopupReducer`), and such an entry must be dropped, not thrown
+// on.
+const isIdentifiedProcess = (process: ConnectProcessInfo): boolean =>
+    typeof process.fullPath === 'string' &&
+    process.fullPath.trim() !== '' &&
+    process.fullPath !== UNKNOWN_PROCESS.fullPath;
+
 /**
- * Permissions are remembered only for a caller that can be told apart from others: not for a desktop
+ * Permissions are remembered only for a caller that can be told apart from others: not for a
  * process that could not be identified, and not for the origin `null` that browsers send for every
- * sandboxed or local page.
+ * sandboxed or local page. A source with no `process` at all (web, deeplink, MCP without a
+ * resolved process) is told apart by its origin alone — for MCP that origin is the constant
+ * `mcp://localhost`, so MCP callers whose process stayed unresolved do still share one grant.
  */
 export const canRememberPermissions = (source: ConnectCallSource): boolean =>
-    source.origin !== 'null' && source.process?.fullPath !== UNKNOWN_PROCESS.fullPath;
+    source.origin !== 'null' && (!source.process || isIdentifiedProcess(source.process));
 
 export const groupPermissionsByCoin = (permissions: PermissionRequest[]): GroupedPermissions[] => {
     const order: (CoinSymbol | undefined)[] = [];
