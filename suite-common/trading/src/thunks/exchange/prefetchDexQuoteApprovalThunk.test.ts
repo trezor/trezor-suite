@@ -16,6 +16,8 @@ import { getUnusedAddressFromAccount } from '../../utils';
 
 jest.mock('../../tradeApi');
 
+const RECEIVE_ADDRESS = '0xreceive';
+
 const tradingReducer = prepareTradingReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
 });
@@ -70,6 +72,7 @@ describe('prefetchDexQuoteApprovalThunk', () => {
             prefetchDexQuoteApprovalThunk({
                 account: accountEth as Account,
                 trade: quote,
+                receiveAddress: RECEIVE_ADDRESS,
             }),
         );
 
@@ -94,6 +97,7 @@ describe('prefetchDexQuoteApprovalThunk', () => {
             prefetchDexQuoteApprovalThunk({
                 account: accountWithoutSpendAddress,
                 trade: { ...quote, fromAddress: undefined },
+                receiveAddress: RECEIVE_ADDRESS,
             }),
         );
 
@@ -117,6 +121,7 @@ describe('prefetchDexQuoteApprovalThunk', () => {
             prefetchDexQuoteApprovalThunk({
                 account: accountEth as Account,
                 trade: quote,
+                receiveAddress: RECEIVE_ADDRESS,
             }),
         );
 
@@ -140,6 +145,7 @@ describe('prefetchDexQuoteApprovalThunk', () => {
             prefetchDexQuoteApprovalThunk({
                 account: accountEth as Account,
                 trade: quote,
+                receiveAddress: RECEIVE_ADDRESS,
             }),
         );
 
@@ -166,12 +172,13 @@ describe('prefetchDexQuoteApprovalThunk', () => {
             prefetchDexQuoteApprovalThunk({
                 account: accountEth as Account,
                 trade: quote,
+                receiveAddress: RECEIVE_ADDRESS,
             }),
         );
 
         expect(doExchangeTrade).toHaveBeenCalledWith({
             trade: { ...quote, fromAddress: fromAccount },
-            receiveAddress: fromAccount,
+            receiveAddress: RECEIVE_ADDRESS,
             refundAddress: fromAccount,
             returnUrl: undefined,
             approvalFlow: true,
@@ -191,13 +198,12 @@ describe('prefetchDexQuoteApprovalThunk', () => {
         ).toBeUndefined();
     });
 
-    it('passes through trade with fromAddress and receiveAddress for the API call', async () => {
+    it('passes the receiveAddress argument instead of the one on the quote', async () => {
         const fromOnQuote = '0xfrom';
-        const receiveOnQuote = '0xreceive';
         const quote = {
             ...getExchangeTrade('quote-1'),
             fromAddress: fromOnQuote,
-            receiveAddress: receiveOnQuote,
+            receiveAddress: '0xstale',
         } as ExchangeTrade;
         const store = getStore([quote]);
         const { address: fromAccount } = getUnusedAddressFromAccount(accountEth as Account);
@@ -210,16 +216,34 @@ describe('prefetchDexQuoteApprovalThunk', () => {
             prefetchDexQuoteApprovalThunk({
                 account: accountEth as Account,
                 trade: quote,
+                receiveAddress: RECEIVE_ADDRESS,
             }),
         );
 
         expect(doExchangeTrade).toHaveBeenCalledWith({
             trade: quote,
-            receiveAddress: receiveOnQuote,
+            receiveAddress: RECEIVE_ADDRESS,
             refundAddress: fromAccount,
             returnUrl: undefined,
             approvalFlow: true,
         });
+    });
+
+    it('returns early and does not call the API when receiveAddress is empty', async () => {
+        const quote = getExchangeTrade('quote-1');
+        const store = getStore([quote]);
+        const doExchangeTrade = jest.spyOn(tradeApi, 'doExchangeTrade');
+
+        const result = await store.dispatch(
+            prefetchDexQuoteApprovalThunk({
+                account: accountEth as Account,
+                trade: quote,
+                receiveAddress: '',
+            }),
+        );
+
+        expect(result.payload).toBeUndefined();
+        expect(doExchangeTrade).not.toHaveBeenCalled();
     });
 
     it('tracks loading state correctly for concurrent prefetches', async () => {
@@ -247,12 +271,14 @@ describe('prefetchDexQuoteApprovalThunk', () => {
             prefetchDexQuoteApprovalThunk({
                 account: accountEth as Account,
                 trade: quoteA,
+                receiveAddress: RECEIVE_ADDRESS,
             }),
         );
         const promiseB = store.dispatch(
             prefetchDexQuoteApprovalThunk({
                 account: accountEth as Account,
                 trade: quoteB,
+                receiveAddress: RECEIVE_ADDRESS,
             }),
         );
 

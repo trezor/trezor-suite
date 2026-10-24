@@ -7,7 +7,6 @@ import type {
     ExchangeTradeStatus,
 } from 'invity-api';
 
-import { invariant } from '@suite-common/suite-utils';
 import { type Network, type NetworkType } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import {
@@ -143,41 +142,47 @@ export const hasFixedPsbtFee = (quote: ExchangeTrade | undefined, networkType: N
 export const hasEip712SignData = (quote?: ExchangeTrade) =>
     quote?.status === 'SIGN_DATA' && hasEip712SignDataType(quote);
 
+const isTransferTxKind = (quote: ExchangeTrade) =>
+    quote.txKind === 'simpleTransfer' || quote.txKind === 'transferWithMemo';
+
 export const requiresTokenApproval = (quote?: ExchangeTrade): boolean =>
-    !!quote?.isDex && requiresErc20Approval(quote.send) && !hasEip712SignData(quote);
+    !!quote?.isDex &&
+    requiresErc20Approval(quote.send) &&
+    !isTransferTxKind(quote) &&
+    !hasEip712SignData(quote);
 
 export const getDisplayNetworkFee = (
     quote: ExchangeTrade | undefined,
     fee: string | undefined,
 ): string | undefined => (hasEip712SignDataType(quote) ? '0' : fee);
 
+const getInsufficientAllowanceStatus = (send: CryptoId): ApprovalStatus =>
+    tokenSupportsIncreasingAllowance(parseCryptoId(send).contractAddress)
+        ? 'needs_increase'
+        : 'needs_revoke';
+
 export const getApprovalStatus = (candidateQuote?: ExchangeTrade): ApprovalStatus => {
     if (!candidateQuote) {
         return null;
     }
 
-    if (!requiresTokenApproval(candidateQuote)) {
+    const { send, status, preapprovedStringAmount } = candidateQuote;
+
+    if (!send || !requiresTokenApproval(candidateQuote)) {
         return 'not_needed';
     }
 
-    const isApprovalTxPreApproved =
-        candidateQuote.preapprovedStringAmount && candidateQuote.preapprovedStringAmount !== '0';
+    const hasPreapprovedAmount = new BigNumber(preapprovedStringAmount ?? 0).gt(0);
 
-    if (isApprovalTxPreApproved && candidateQuote.status === 'APPROVAL_REQ') {
-        // send is defined as requiresTokenApproval checks for it, but we need to assert it for TypeScript
-        invariant(candidateQuote.send, 'candidateQuote.send not defined!');
-        const { contractAddress } = parseCryptoId(candidateQuote.send);
-
-        return tokenSupportsIncreasingAllowance(contractAddress)
-            ? 'needs_increase'
-            : 'needs_revoke';
+    if (status === 'APPROVAL_REQ') {
+        return hasPreapprovedAmount ? getInsufficientAllowanceStatus(send) : 'needs_approval';
     }
 
-    if (isApprovalTxPreApproved) {
+    if (hasPreapprovedAmount) {
         return 'approved';
     }
 
-    return 'needs_approval';
+    return status === 'CONFIRM' || status === 'SIGN_DATA' ? 'not_needed' : 'needs_approval';
 };
 
 export const getDexEstimationData = (quote: ExchangeTrade): string | undefined => {
