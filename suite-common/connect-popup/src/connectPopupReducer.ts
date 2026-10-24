@@ -6,7 +6,6 @@ import { connectPopupActions } from './connectPopupActions';
 import { getPermissionDeferred } from './connectPopupPromiseManager';
 import {
     type AppRememberedPermission,
-    CALL_SOURCE_WALLETCONNECT,
     type ConnectPopupCall,
     type ConnectPopupCallWithState,
 } from './connectPopupTypes';
@@ -306,7 +305,7 @@ export const selectConnectPopupCallWithState = <CallState extends ConnectPopupCa
         : null;
 
 export const selectConnectAppPermissions = (state: ConnectPopupStateRootState) =>
-    state.connectPopup.permissions.filter(p => p.type !== CALL_SOURCE_WALLETCONNECT);
+    state.connectPopup.permissions.filter(canRememberPermissions);
 
 export const selectIsConnectAppSilentModeByOrigin = (
     state: ConnectPopupStateRootState,
