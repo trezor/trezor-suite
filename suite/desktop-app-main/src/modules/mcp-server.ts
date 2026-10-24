@@ -1282,19 +1282,26 @@ export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
                             return undefined;
                         });
 
-                        if (processInfo) {
+                        if (processInfo?.fullPath) {
                             sessionProcessInfo = {
                                 name: processInfo.name,
                                 fullPath: processInfo.fullPath,
                                 warning: !!processInfo.warning,
                                 icon: await getProcessIcon({ path: processInfo.fullPath, logger }),
                             };
-                        } else if (clientInfo?.name) {
-                            sessionProcessInfo = {
-                                name: clientInfo.name,
-                                fullPath: clientInfo.name,
-                                warning: true,
-                            };
+                        } else {
+                            // Without a path the lookup only names the running binary, usually
+                            // the interpreter an MCP client is started with, so the name the
+                            // client declares for itself identifies it better. The path stays
+                            // empty while it is unknown.
+                            const name = clientInfo?.name ?? processInfo?.name;
+                            if (name) {
+                                sessionProcessInfo = {
+                                    name,
+                                    fullPath: processInfo?.fullPath ?? name,
+                                    warning: true,
+                                };
+                            }
                         }
                     } else if (clientInfo?.name) {
                         sessionProcessInfo = {
