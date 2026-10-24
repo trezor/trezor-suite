@@ -58,9 +58,17 @@ export const ConnectPopupScreen = () => {
         }
     }, [popupCall, navigation, addressConfirmation, dispatch]);
 
+    // A declined call does not need the device, so its reason is shown right away.
+    const isConnectV9Refusal =
+        popupCall?.state === 'call-error' && popupCall.isConnectV9Refusal === true;
     const isLoading =
-        discoveryActive || !validDevice || !popupCall || popupCall.state === 'ongoing';
+        !isConnectV9Refusal &&
+        (discoveryActive || !validDevice || !popupCall || popupCall.state === 'ongoing');
     const mainView = useMemo(() => {
+        if (isConnectV9Refusal) {
+            return <ConnectErrorMessage />;
+        }
+
         if (discoveryActive) {
             return (
                 <ConnectLoader
@@ -104,7 +112,7 @@ export const ConnectPopupScreen = () => {
                 title={<Translation id="moduleConnectPopup.connectionStatus.loading" />}
             />
         );
-    }, [validDevice, popupCall, discoveryActive, buttonRequests]);
+    }, [validDevice, popupCall, discoveryActive, buttonRequests, isConnectV9Refusal]);
 
     return (
         <Screen>
