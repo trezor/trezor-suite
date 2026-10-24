@@ -235,11 +235,23 @@ export const createHttpReceiver = ({ logger, ...options }: CreateHttpReceiverPar
                     return response.end('invalid request');
                 }
 
+                // `a` holds the action URL and `token` is the receiver's single-use
+                // auth token — both are receiver-internal and must not be forwarded
+                // to the external partner endpoint. Suite appends the partner fields
+                // after them, so drop only the first occurrence of each: a later
+                // partner field of the same name is legitimate and has to survive.
+                const internalKeys = new Set(['a', 'token']);
+                const partnerFields = Array.from(searchParams).filter(([key]) => {
+                    if (!internalKeys.has(key)) return true;
+                    internalKeys.delete(key);
+
+                    return false;
+                });
+
                 const content = `
             Forwarding to ${xssFilters.inHTML(action)}...
             <form id="buy-form" method="POST" action="${xssFilters.inDoubleQuotes(action)}">
-            ${Array.from(searchParams)
-                .filter(([key]) => key !== 'a')
+            ${partnerFields
                 .map(
                     ([key, value]) =>
                         `<input type="hidden" name="${xssFilters.inDoubleQuotes(key)}" value="${xssFilters.inDoubleQuotes(

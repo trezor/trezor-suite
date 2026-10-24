@@ -123,7 +123,7 @@ export interface InvokeChannels {
     'metadata/write': (options: { file: string; content: string }) => InvokeResult;
     'metadata/get-files': () => InvokeResult<string[]>;
     'metadata/rename-file': (options: { file: string; to: string }) => InvokeResult;
-    'server/request-address': (route: string) => string | undefined;
+    'server/request-address': (route: string) => HttpReceiverAddress | undefined;
     'tor/toggle': (shouldEnableTor: boolean) => InvokeResult;
     'tor/change-settings': (payload: TorSettings) => InvokeResult;
     'tor/get-settings': () => InvokeResult<TorSettings>;

@@ -22,6 +22,15 @@ export const TRADING_REDIRECT_PATHS = [
     '/exchange-redirect',
 ] as const;
 
+/**
+ * A trading-redirect token is issued when the quote link is built, but it is only
+ * redeemed once the partner sends the user back — after KYC, payment and 3DS,
+ * which routinely takes longer than the default one-hour lifetime. The token is
+ * still an unguessable single-use UUID, which is what guards the route against a
+ * local drive-by, so a long lifetime costs nothing in practice.
+ */
+const TRADING_REDIRECT_TOKEN_TTL_MS = 24 * 60 * 60 * 1000;
+
 export const initBackground: ModuleInitBackground = ({
     mainWindowProxy,
     mainThreadEmitter,
@@ -80,19 +89,19 @@ export const initBackground: ModuleInitBackground = ({
         // when httpReceiver was asked to provide current address for given pathname
         ipcMain.handle('server/request-address', (_, pathname) => {
             try {
-                // Use deeplink URLs for trading redirects on macOS/Windows only
-                if (isArrayMember(pathname, TRADING_REDIRECT_PATHS) && (isMacOs() || isWindows())) {
-                    receiver.activateRoute(pathname);
+                if (isArrayMember(pathname, TRADING_REDIRECT_PATHS)) {
+                    // Use deeplink URLs for trading redirects on macOS/Windows only.
+                    // The HTTP route is bypassed entirely, so no token is needed.
+                    if (isMacOs() || isWindows()) {
+                        return { url: `trezorsuite:/${pathname}`, token: '' };
+                    }
 
-                    return `trezorsuite:/${pathname}`;
+                    return receiver.activateRoute(pathname, {
+                        ttlMs: TRADING_REDIRECT_TOKEN_TTL_MS,
+                    });
                 }
 
-                const address = receiver.getRouteAddress(pathname);
-                if (address) {
-                    receiver.activateRoute(pathname);
-                }
-
-                return address;
+                return receiver.activateRoute(pathname);
             } catch (e) {
                 logger.error(SERVICE_NAME, `Failed to get address: ${e.message}`);
             }

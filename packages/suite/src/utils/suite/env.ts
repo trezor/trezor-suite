@@ -23,12 +23,17 @@ export const submitRequestForm = async (
     }
 
     if (isDesktop()) {
-        let params = `a=${encodeURIComponent(formAction)}`;
-        Object.entries(fields).forEach(([k, v]) => {
-            params += `&${k}=${encodeURIComponent(v)}`;
-        });
-        const serverUrl = await deps.desktopApi.getHttpReceiverAddress('/buy-post');
-        window.open(`${serverUrl}?${params}`, '_blank');
+        const address = await deps.desktopApi.getHttpReceiverAddress('/buy-post');
+        if (!address) return;
+
+        const search = new URLSearchParams();
+        if (address.token) search.set('token', address.token);
+        search.set('a', formAction);
+        // The receiver consumes the first `token` and `a` and forwards everything else,
+        // so partner fields are appended after them; `set` would let a partner field of
+        // the same name replace them.
+        Object.entries(fields).forEach(([k, v]) => search.append(k, v));
+        window.open(`${address.url}?${search.toString()}`, '_blank');
     } else {
         const form = document.createElement('form');
         form.method = formMethod;

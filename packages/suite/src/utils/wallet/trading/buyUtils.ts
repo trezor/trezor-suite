@@ -5,6 +5,8 @@ import { getLocationOrigin, isDesktop } from '@trezor/env-utils';
 
 import { type Account } from 'src/types/wallet';
 
+import { buildHttpReceiverRedirectUrl } from './tradingUtils';
+
 export const createQuoteLink = async (
     { desktopApi }: DesktopApiDep<'getHttpReceiverAddress'>,
     request: BuyTradeQuoteRequest,
@@ -23,9 +25,9 @@ export const createQuoteLink = async (
     const params = `offers/${account.symbol}/${account.accountType}/${account.index}/${hash}`;
 
     if (isDesktop()) {
-        const url = await desktopApi.getHttpReceiverAddress('/buy-redirect');
+        const address = await desktopApi.getHttpReceiverAddress('/buy-redirect');
 
-        return `${url}?p=${encodeURIComponent(`/coinmarket-redirect/${params}`)}`;
+        return buildHttpReceiverRedirectUrl(address, `/coinmarket-redirect/${params}`);
     }
 
     return `${locationOrigin}${assetPrefix}/coinmarket-redirect#${params}`;
@@ -41,9 +43,9 @@ export const createTxLink = async (
     const params = `detail/${account.symbol}/${account.accountType}/${account.index}/${trade.paymentId}`;
 
     if (isDesktop()) {
-        const url = await desktopApi.getHttpReceiverAddress('/buy-redirect');
+        const address = await desktopApi.getHttpReceiverAddress('/buy-redirect');
 
-        return `${url}?p=${encodeURIComponent(`/coinmarket-redirect/${params}`)}`;
+        return buildHttpReceiverRedirectUrl(address, `/coinmarket-redirect/${params}`);
     }
 
     return `${locationOrigin}${assetPrefix}/coinmarket-redirect#${params}`;
