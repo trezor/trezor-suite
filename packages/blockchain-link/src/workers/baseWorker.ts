@@ -77,6 +77,11 @@ export abstract class BaseWorker<API> {
 
     protected abstract tryConnect(url: string): Promise<API>;
 
+    /** The order in which the configured endpoints are tried. */
+    protected orderEndpoints(urls: string[]) {
+        return prioritizeEndpoints(urls);
+    }
+
     private connectPromise?: Promise<API>;
 
     connect(): Promise<API> {
@@ -93,7 +98,7 @@ export abstract class BaseWorker<API> {
                 throw new CustomError('connect', 'Endpoint not set');
             }
 
-            const endpoints = prioritizeEndpoints(urls);
+            const endpoints = this.orderEndpoints(urls);
             this.connectPromise = this.connectRecursive(endpoints)
                 .then(api => {
                     this.debug('Connected');
