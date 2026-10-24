@@ -22,7 +22,7 @@ import { getProcessIcon } from './process-icon';
 import { type Dependencies } from '../modules';
 
 const LOG_PREFIX = 'connect-ws';
-const HANDSHAKE_TIMEOUT_MS = 10000;
+export const HANDSHAKE_TIMEOUT_MS = 10000;
 export const IDLE_CONNECTION_TIMEOUT_MS = 60000;
 export const MAX_CONCURRENT_CONNECTIONS = 50;
 export const MAX_CONNECTIONS_PER_ORIGIN = 5;
@@ -199,11 +199,22 @@ export const exposeConnectWs = ({
                 // The client handshakes before every call, so expiring the connection during the
                 // lookup would fail that call and make the client fall back to the web popup.
                 clearTimeout(idleTimeout);
-                processOnPort = await findProcessFromIncomingPort(port, filterSelf).catch(() => {
-                    logger.error(LOG_PREFIX, 'findProcessFromIncomingPort failed');
+                processOnPort = await Promise.race([
+                    findProcessFromIncomingPort(port, filterSelf).catch(() => {
+                        logger.error(LOG_PREFIX, 'findProcessFromIncomingPort failed');
 
-                    return undefined;
-                });
+                        return undefined;
+                    }),
+                    // The lookup spawns a child process and has no deadline of its own. Without
+                    // this bound a hung spawn would leave the idle timeout disarmed for good,
+                    // because the handshake timeout is already cleared on an established
+                    // connection, and the connection would hold its slot forever.
+                    resolveAfter<ProcessInfo | undefined>(
+                        HANDSHAKE_TIMEOUT_MS,
+                        undefined,
+                        undefined,
+                    ),
+                ]);
                 manifest = parseManifest(message.payload.settings.manifest);
                 version = parseVersion(message.payload.settings.version);
                 requestedPermissions = message.payload.settings.requestedPermissions;

@@ -7,6 +7,7 @@ import { createDeferred } from '@trezor/utils';
 
 import { rejectMessage } from './connect-popup-messages';
 import {
+    HANDSHAKE_TIMEOUT_MS,
     IDLE_CONNECTION_TIMEOUT_MS,
     MAX_CONCURRENT_CONNECTIONS,
     MAX_CONNECTIONS_PER_ORIGIN,
@@ -192,6 +193,28 @@ describe('connect-ws', () => {
             await jest.advanceTimersByTimeAsync(IDLE_CONNECTION_TIMEOUT_MS - 1_000);
             expect(await request(client, { type: 'ping' })).toMatchObject({ type: 'pong' });
             await jest.advanceTimersByTimeAsync(1_000);
+            expect(await request(client, { type: 'ping' })).toBeUndefined();
+        });
+
+        it('expires a connection whose process lookup never settles', async () => {
+            const client = await openClient(await startServer(), 'https://app.test');
+            expect(await request(client, handshake)).toMatchObject({ payload: 'ok' });
+
+            // The handshake timeout is already cleared on an established connection, so only the
+            // bound on the lookup itself can re-arm the idle timeout of a hung handshake.
+            const lookupStarted = createDeferred();
+            const hungLookup = createDeferred<undefined>();
+            jest.mocked(findProcessFromIncomingPort).mockImplementationOnce(() => {
+                lookupStarted.resolve();
+
+                return hungLookup.promise;
+            });
+            const ack = request(client, handshake);
+            await lookupStarted.promise;
+            await jest.advanceTimersByTimeAsync(HANDSHAKE_TIMEOUT_MS);
+            expect(await ack).toMatchObject({ payload: 'ok' });
+
+            await jest.advanceTimersByTimeAsync(IDLE_CONNECTION_TIMEOUT_MS);
             expect(await request(client, { type: 'ping' })).toBeUndefined();
         });
 
