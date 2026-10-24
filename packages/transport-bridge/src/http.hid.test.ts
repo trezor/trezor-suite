@@ -140,6 +140,16 @@ const setup = async ({
 };
 
 describe('http: HID-only Trezor One devices', () => {
+    it('reports the version that announces HID support', async () => {
+        const { trezordNode, post } = await setup();
+
+        expect((await post({ endpoint: '', origin: SUITE_ORIGIN })).body).toMatchObject({
+            version: '3.3.0',
+        });
+
+        await trezordNode.stop();
+    });
+
     it('loads the HID backend only for the allowed origin', async () => {
         const { trezordNode, createHidApiSpy, enumerate } = await setup();
 
