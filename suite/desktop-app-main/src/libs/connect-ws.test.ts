@@ -1,6 +1,9 @@
 import net from 'net';
 import { WebSocket } from 'ws';
 
+import { POPUP } from '@trezor/connect';
+import { findProcessFromIncomingPort } from '@trezor/node-utils';
+
 import {
     MAX_CONCURRENT_CONNECTIONS,
     MAX_CONNECTIONS_PER_ORIGIN,
@@ -8,6 +11,11 @@ import {
 } from './connect-ws';
 import { createHttpReceiver } from './http-receiver';
 import { Logger } from './logger';
+
+jest.mock('@trezor/node-utils', () => ({
+    ...jest.requireActual('@trezor/node-utils'),
+    findProcessFromIncomingPort: jest.fn(() => Promise.resolve(undefined)),
+}));
 
 type ExposeConnectWsParams = Parameters<typeof exposeConnectWs>[0];
 
@@ -45,7 +53,7 @@ const rawUpgrade = (port: number, path: string, origin: string) => {
     return { socket, closed, received: () => Buffer.concat(chunks).toString() };
 };
 
-describe('connect-ws upgrade', () => {
+describe('connect-ws', () => {
     let receiver: ReturnType<typeof createHttpReceiver> | undefined;
     const sockets: net.Socket[] = [];
     const clients: WebSocket[] = [];
@@ -84,6 +92,7 @@ describe('connect-ws upgrade', () => {
     };
 
     afterEach(async () => {
+        jest.clearAllMocks();
         sockets.splice(0).forEach(socket => socket.destroy());
         clients.splice(0).forEach(client => client.terminate());
         await receiver?.stop();
@@ -119,4 +128,25 @@ describe('connect-ws upgrade', () => {
             expect(upgrade.received()).toBe('');
         },
     );
+
+    // Documents the current behaviour: the handshake is acknowledged even though the manifest
+    // does not parse, so the connection keeps its slot while every later call is dropped
+    // without a response.
+    it('acknowledges a handshake whose manifest is not valid', async () => {
+        const client = await openClient(await startServer(), 'https://app.test');
+        const firstEvent = new Promise<string>(resolve => {
+            client.once('message', data => resolve(data.toString()));
+            client.once('close', () => resolve('close'));
+        });
+
+        const manifest = { appUrl: 'https://app.test', email: 'dev@app.test' };
+        client.send(
+            JSON.stringify({ id: '1', type: POPUP.HANDSHAKE, payload: { settings: { manifest } } }),
+        );
+
+        expect(await firstEvent).toBe(
+            JSON.stringify({ id: '1', type: POPUP.HANDSHAKE, payload: 'ok' }),
+        );
+        expect(findProcessFromIncomingPort).toHaveBeenCalled();
+    });
 });
