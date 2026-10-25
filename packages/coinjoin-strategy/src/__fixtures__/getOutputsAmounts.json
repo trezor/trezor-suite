@@ -1,0 +1,43 @@
+[
+    {
+        "Name": "",
+        "Request": {
+            "InputSize": 58,
+            "OutputSize": 43,
+            "AvailableVsize": 394,
+            "MiningFeeRate": 129000,
+            "AllowedOutputAmounts": {
+                "Min": 5000,
+                "Max": 4300000000000
+            },
+            "InternalAmounts": [19932518, 996992518],
+            "ExternalAmounts": []
+        },
+        "ExpectedStatusCode": 200,
+        "ExpectedResponse": {
+            "OutputAmounts": [
+                16777216, 16777216, 16777216, 16777216, 16777216, 16777216, 16777216, 16777216,
+                882657385
+            ]
+        }
+    },
+    {
+        "Name": "Not enough money",
+        "Request": {
+            "InputSize": 58,
+            "OutputSize": 43,
+            "AvailableVsize": 394,
+            "MiningFeeRate": 129000,
+            "AllowedOutputAmounts": {
+                "Min": 5000,
+                "Max": 4300000000000
+            },
+            "InternalAmounts": [4000],
+            "ExternalAmounts": [30000, 20000]
+        },
+        "ExpectedStatusCode": 500,
+        "ExpectedResponse": {
+            "Description": "Not enough coins registered to participate in the coinjoin."
+        }
+    }
+]
