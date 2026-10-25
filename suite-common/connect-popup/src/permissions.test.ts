@@ -1,6 +1,12 @@
 import { type PermissionRequest } from '@trezor/connect';
 
 import {
+    CALL_SOURCE_DESKTOP_WS,
+    CALL_SOURCE_WEB,
+    type ConnectCallSource,
+} from './connectPopupTypes';
+import {
+    canRememberPermissions,
     canonicalizePermissionCoins,
     deriveCardanoEnabledNetworks,
     groupPermissionsByCoin,
@@ -245,5 +251,39 @@ describe('deriveCardanoEnabledNetworks', () => {
         expect(deriveCardanoEnabledNetworks([{ permission: 'read_address', coin: 'btc' }])).toEqual(
             [],
         );
+    });
+});
+
+describe('canRememberPermissions', () => {
+    const appProcess = { name: 'App', fullPath: '/usr/bin/app', warning: false };
+    const source: ConnectCallSource = {
+        type: CALL_SOURCE_DESKTOP_WS,
+        origin: 'https://example.com',
+        process: appProcess,
+        manifest: { appName: 'App' },
+    };
+
+    it('remembers a caller identified by its process path', () => {
+        expect(canRememberPermissions(source)).toBe(true);
+    });
+
+    it('remembers a web caller, which has no process at all', () => {
+        expect(
+            canRememberPermissions({
+                type: CALL_SOURCE_WEB,
+                origin: 'https://example.com',
+                manifest: { appName: 'App' },
+            }),
+        ).toBe(true);
+    });
+
+    it('does not remember the origin `null`', () => {
+        expect(canRememberPermissions({ ...source, origin: 'null' })).toBe(false);
+    });
+
+    it('does not remember a process whose executable could not be read', () => {
+        expect(
+            canRememberPermissions({ ...source, process: { ...appProcess, fullPath: '' } }),
+        ).toBe(false);
     });
 });

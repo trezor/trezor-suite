@@ -74,11 +74,14 @@ export const isSameConnectApp = (app: ConnectCallSource, source: ConnectCallSour
     app.process?.fullPath === source.process?.fullPath;
 
 /**
- * Permissions are remembered only for a caller that can be told apart from others, not for the
- * origin `null` that browsers send for every sandboxed or local page.
+ * Permissions are remembered only for a caller that can be told apart from others: not for the
+ * origin `null` that browsers send for every sandboxed or local page, and not for a process whose
+ * executable could not be read. The empty path such a lookup reports is shared by every caller it
+ * failed for, so `isSameConnectApp` would match them all and the first grant would be reused for
+ * the rest without asking.
  */
 export const canRememberPermissions = (source: ConnectCallSource): boolean =>
-    source.origin !== 'null';
+    source.origin !== 'null' && source.process?.fullPath !== '';
 
 export const groupPermissionsByCoin = (permissions: PermissionRequest[]): GroupedPermissions[] => {
     const order: (CoinSymbol | undefined)[] = [];
