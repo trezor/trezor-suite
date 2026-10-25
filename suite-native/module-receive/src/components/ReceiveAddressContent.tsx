@@ -90,7 +90,7 @@ export const ReceiveAddressContent = ({
                 footer={
                     <>
                         <ScreenFooterGradient />
-                        <VStack paddingHorizontal="sp16" paddingTop="sp8" paddingBottom="sp16">
+                        <VStack paddingTop="sp8" paddingBottom="sp16">
                             <ReceiveAddressActions
                                 address={currentFreshAddress.address}
                                 isDeviceVerificationEnabled={!isPortfolioTrackerDevice}
@@ -98,6 +98,7 @@ export const ReceiveAddressContent = ({
                         </VStack>
                     </>
                 }
+                footerHorizontalPadding="sp16"
                 noBottomPadding
             >
                 <VStack marginTop="sp8" spacing="sp16" flex={1}>

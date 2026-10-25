@@ -12,7 +12,7 @@ import { selectIsAnyBannerMessageActive } from '@suite-common/message-system';
 import { Box, useBannerAwareSafeAreaInsets } from '@suite-native/atoms';
 import { KeyboardToolbar, KeyboardToolbarHost } from '@suite-native/keyboard';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
-import { type Color } from '@trezor/theme';
+import { type Color, type NativeSpacing } from '@trezor/theme';
 
 import { useAndroidNavigationBarStyle } from '../hooks/useAndroidNavigationBarStyle';
 import { useIsBottomInsetApplicable } from '../hooks/useIsBottomInsetApplicable';
@@ -26,6 +26,7 @@ export type ScreenProps = {
     children: ReactNode;
     header?: ReactNode;
     footer?: ReactNode;
+    footerHorizontalPadding?: NativeSpacing;
     keyboardToolbarComponent?: ReactNode;
     keyboardToolbarHostName?: string;
     systemThemeStyle?: 'dark' | 'light';
@@ -83,16 +84,18 @@ const screenContentStyle = prepareNativeStyle<{
 const screenFooterStyle = prepareNativeStyle<{
     insets: EdgeInsets;
     applyBottomInset: boolean;
-}>((_, { insets, applyBottomInset }) => ({
+    horizontalPadding: number;
+}>((_, { insets, applyBottomInset, horizontalPadding }) => ({
     paddingBottom: applyBottomInset ? insets.bottom : 0,
-    paddingLeft: insets.left,
-    paddingRight: insets.right,
+    paddingLeft: Math.max(insets.left, horizontalPadding),
+    paddingRight: Math.max(insets.right, horizontalPadding),
 }));
 
 export const Screen = ({
     children,
     header,
     footer,
+    footerHorizontalPadding,
     keyboardToolbarComponent,
     keyboardToolbarHostName,
     refreshControl,
@@ -178,7 +181,13 @@ export const Screen = ({
                     <KeyboardStickyView
                         enabled={isFooterKeyboardAware}
                         offset={{ opened: -activeKeyboardToolbarHeight }}
-                        style={applyStyle(screenFooterStyle, { insets, applyBottomInset })}
+                        style={applyStyle(screenFooterStyle, {
+                            insets,
+                            applyBottomInset,
+                            horizontalPadding: footerHorizontalPadding
+                                ? spacings[footerHorizontalPadding]
+                                : 0,
+                        })}
                     >
                         {footer}
                     </KeyboardStickyView>
