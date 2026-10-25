@@ -1,8 +1,57 @@
+import { getOutputAmounts } from '@trezor/coinjoin-strategy';
+
 import { outputDecomposition as fixtures } from './__fixtures__/outputDecomposition.fixture';
 import { outputDecomposition } from './outputDecomposition';
 import { createServer } from '../../../mocks/server';
 import { createInput } from '../../__fixtures__/input.fixture';
 import { INPUT_ADDED_EVENT, createCoinjoinRound } from '../../__fixtures__/round.fixture';
+
+/**
+ * This suite is about the plumbing between decomposition and credential joining: which
+ * amounts are asked for, how `availableVsize` is derived, and how many credential
+ * issuance round trips it takes to split the inputs' credentials into those amounts. Its
+ * fixtures start in the middle of a round with credentials of chosen values, which real
+ * credentials cannot be — a `Credential` carries a blinding factor and a MAC the
+ * coordinator issued. So the decomposer and the credential layer are both stubbed here,
+ * and the real credential round trip against the mock coordinator's issuer is covered by
+ * `inputRegistration.test.ts`, `connectionConfirmation.test.ts` and the cross-phase test
+ * at the end of this file.
+ */
+jest.mock('@trezor/coinjoin-strategy', () => ({
+    ...jest.requireActual('@trezor/coinjoin-strategy'),
+    getOutputAmounts: jest.fn(),
+}));
+
+jest.mock('../credentials', () => {
+    const actual = jest.requireActual('../credentials');
+    const bundle = (requested: number[]) => ({
+        CredentialsRequest: {
+            Delta: requested.reduce((total, value) => total + value, 0),
+            Presented: [],
+            Requested: requested.map(String),
+            Proofs: [],
+        },
+        CredentialsResponseValidation: { requested: requested.map(value => ({ value })) },
+    });
+
+    return {
+        ...actual,
+        getZeroCredentials: jest.fn(() => bundle([0, 0])),
+        getRealCredentials: jest.fn((amountsToRequest: number[]) =>
+            bundle(amountsToRequest.length > 0 ? amountsToRequest : [0, 0]),
+        ),
+        getCredentials: jest.fn(
+            (
+                _issuer: unknown,
+                _max: number,
+                _response: unknown,
+                validation: { requested: { value: number }[] },
+            ) => validation.requested.map(({ value }) => ({ value })),
+        ),
+    };
+});
+
+const getOutputAmountsMock = getOutputAmounts as jest.MockedFunction<typeof getOutputAmounts>;
 
 let server: Awaited<ReturnType<typeof createServer>>;
 
@@ -12,6 +61,7 @@ describe('outputRegistration', () => {
     });
 
     beforeEach(() => {
+        jest.clearAllMocks();
         server?.removeAllListeners('test-request');
     });
 
@@ -38,15 +88,22 @@ describe('outputRegistration', () => {
         it(`outputDecomposition ${f.description}`, async () => {
             const spy = jest.fn();
             const availableVsize: number[] = [];
-            server?.addListener('test-request', ({ url, resolve, data }) => {
-                if (url.endsWith('/get-outputs-amounts')) {
-                    availableVsize.push(data.AvailableVsize);
-                    resolve({
-                        OutputAmounts: f.outputAmounts,
-                    });
-                }
+            getOutputAmountsMock.mockImplementation(request => {
+                availableVsize.push(request.AvailableVsize);
+
+                return f.outputAmounts;
+            });
+            server?.addListener('test-request', ({ url, resolve }) => {
                 if (url.endsWith('/credential-issuance')) {
                     spy();
+                    // The stubbed credential layer ignores the issued credentials, so the
+                    // coordinator only has to answer with the right shape.
+                    resolve({
+                        RealAmountCredentials: {},
+                        RealVsizeCredentials: {},
+                        ZeroAmountCredentials: {},
+                        ZeroVsizeCredentials: {},
+                    });
                 }
                 resolve();
             });

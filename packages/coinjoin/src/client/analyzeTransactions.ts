@@ -1,23 +1,33 @@
+import {
+    type AnalyzeExternalVinVout,
+    type AnalyzeInternalVinVout,
+    type AnalyzeTransactionDetails,
+    type RawLiquidityClue,
+    getAnonymityScores as computeAnonymityScores,
+    initLiquidityClue,
+} from '@trezor/coinjoin-analysis';
 import type { Logger } from '@trezor/logger';
 import { arrayPartition } from '@trezor/utils';
 import { type Network, address as addressBjs } from '@trezor/utxo-lib';
 
-import * as middleware from './middleware';
 import { type EnhancedVinVout, type Transaction } from '../types/backend';
-import { type AnalyzeExternalVinVout, type AnalyzeInternalVinVout } from '../types/middleware';
 
 interface AnalyzeTransactionsOptions {
     network: Network;
-    middlewareUrl: string;
     logger: Logger;
-    signal: AbortSignal;
 }
 
 export interface AnalyzeTransactionsResult {
     anonymityScores: Record<string, number> | undefined;
-    rawLiquidityClue: middleware.RawLiquidityClue;
+    rawLiquidityClue: RawLiquidityClue;
 }
 
+/**
+ * Turns a backend transaction's inputs and outputs into the shape the ported analyzer
+ * takes. This pass stays here rather than moving into `@trezor/coinjoin-analysis`,
+ * because it needs `@trezor/utxo-lib` to derive the scriptPubKey of a foreign address,
+ * and that package is deliberately dependency-free.
+ */
 const transformVinVout = (vinvout: EnhancedVinVout, network: Network) => {
     if (!vinvout.isAddress || !vinvout.addresses || vinvout.addresses.length > 1) return [];
 
@@ -43,30 +53,30 @@ const isInternal = (
 const getRawLiquidityClue = (
     transactions: Transaction[],
     options: AnalyzeTransactionsOptions,
-): Promise<middleware.RawLiquidityClue> => {
+): RawLiquidityClue => {
     // find most recent coinjoin transaction in history
     const cjTx = transactions.find(tx => tx.type === 'joint');
-    if (!cjTx) return Promise.resolve(null);
+    if (!cjTx) return null;
     const externalAmounts = cjTx.details.vout
         .flatMap(vout => transformVinVout(vout, options.network))
         .filter(vout => !('address' in vout))
         .map(o => Number(o.Value));
 
-    return middleware.initLiquidityClue(externalAmounts, {
-        baseUrl: options.middlewareUrl,
-        signal: options.signal,
-    });
+    return initLiquidityClue(externalAmounts);
 };
 
 /**
- * Get transactions from CoinjoinBackend.getAccountInfo and calculate anonymity in middleware.
- * Returns { key => value } where `key` is an address and `value` is an anonymity level of that address
+ * The analyzer's input, as derived from a backend account's history.
+ *
+ * Exported so that `tools/anonymity-test.ts` can record exactly what was fed to the
+ * analyzer; that tool used to capture it by intercepting the HTTP request to the
+ * middleware.
  */
-export const getAnonymityScores = async (
+export const getAnonymityScoresRequest = (
     transactions: Transaction[],
     options: AnalyzeTransactionsOptions,
-) => {
-    const formattedTransactions = transactions.map(tx => {
+): AnalyzeTransactionDetails[] =>
+    transactions.map(tx => {
         const [InternalInputs, ExternalInputs] = arrayPartition(
             tx.details.vin.flatMap(vin => transformVinVout(vin, options.network)),
             isInternal,
@@ -85,13 +95,16 @@ export const getAnonymityScores = async (
         };
     });
 
+/**
+ * Get transactions from CoinjoinBackend.getAccountInfo and calculate anonymity scores.
+ * Returns { key => value } where `key` is an address and `value` is an anonymity level of that address
+ */
+export const getAnonymityScores = (
+    transactions: Transaction[],
+    options: AnalyzeTransactionsOptions,
+) => {
     try {
-        const scores = await middleware.getAnonymityScores(formattedTransactions, {
-            baseUrl: options.middlewareUrl,
-            signal: options.signal,
-        });
-
-        return scores.reduce(
+        return computeAnonymityScores(getAnonymityScoresRequest(transactions, options)).reduce(
             (dict, { Address, AnonymitySet }) => {
                 dict[Address] = AnonymitySet;
 
@@ -104,18 +117,18 @@ export const getAnonymityScores = async (
     }
 };
 
-export const analyzeTransactions = async <T extends keyof AnalyzeTransactionsResult>(
+export const analyzeTransactions = <T extends keyof AnalyzeTransactionsResult>(
     transactions: Transaction[],
     options: AnalyzeTransactionsOptions,
     sections?: T[],
-): Promise<{ [P in T]: AnalyzeTransactionsResult[P] }> =>
+): { [P in T]: AnalyzeTransactionsResult[P] } =>
     ({
         anonymityScores:
             !sections || sections.includes('anonymityScores' as T)
-                ? await getAnonymityScores(transactions, options)
+                ? getAnonymityScores(transactions, options)
                 : undefined,
         rawLiquidityClue:
             !sections || sections.includes('rawLiquidityClue' as T)
-                ? await getRawLiquidityClue(transactions, options)
+                ? getRawLiquidityClue(transactions, options)
                 : undefined,
     }) as AnalyzeTransactionsResult;

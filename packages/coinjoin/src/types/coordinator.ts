@@ -1,3 +1,10 @@
+import {
+    type CredentialsResponseValidation,
+    type SerializedCredentialsRequest,
+    type SerializedMac,
+    type SerializedProof,
+} from '@trezor/wabisabi-crypto';
+
 import { type EndRoundState, type RoundPhase } from '../enums';
 
 export interface CoinjoinStatus {
@@ -13,28 +20,39 @@ export interface SoftwareVersion {
     CommitHash: string;
 }
 
-export interface CredentialsResponseValidation {
-    Transcript: Record<string, any>;
-    Presented: any[];
-    Requested: any[];
+/**
+ * What is POSTed to the coordinator: the already-serialized credential request.
+ *
+ * `@trezor/wabisabi-crypto` produces exactly the shape the coordinator expects —
+ * PascalCase keys, compressed SEC1 points and scalars as uppercase hex — so this is a
+ * re-export rather than a parallel definition.
+ */
+export type CredentialsRequestData = SerializedCredentialsRequest;
+
+/** What the coordinator sends back: the issued MACs and the issuer-parameters proofs. */
+export interface CredentialsResponseData {
+    IssuedCredentials: SerializedMac[];
+    Proofs: SerializedProof[];
 }
 
-export interface CredentialsRequestData {
-    Delta: number;
-    Presented: any[];
-    Proofs: any[];
-    Requested: any[];
-}
-
-export interface ZeroCredentials {
+/**
+ * A credential request together with the state needed to validate the response to it.
+ *
+ * `CredentialsResponseValidation` is a live object from `@trezor/wabisabi-crypto`: it
+ * holds the Fiat-Shamir transcript the request was built against, plus the presented
+ * credentials and the blinding factors of the requested ones. It stays in round state for
+ * the duration of a request/response pair and is neither serialized nor sent anywhere.
+ */
+export interface CredentialsBundle {
     CredentialsRequest: CredentialsRequestData;
     CredentialsResponseValidation: CredentialsResponseValidation;
 }
 
-export interface RealCredentials {
-    CredentialsRequest: CredentialsRequestData;
-    CredentialsResponseValidation: CredentialsResponseValidation;
-}
+/** A request for zero-value credentials (a null request). */
+export type ZeroCredentials = CredentialsBundle;
+
+/** A request that presents credentials and asks for new ones. */
+export type RealCredentials = CredentialsBundle;
 
 export interface IssuerParameter {
     Cw: string;
@@ -42,23 +60,23 @@ export interface IssuerParameter {
 }
 
 export interface IssuanceData {
-    RealAmountCredentials: ZeroCredentials;
-    RealVsizeCredentials: ZeroCredentials;
-    ZeroAmountCredentials: RealCredentials;
-    ZeroVsizeCredentials: RealCredentials;
+    RealAmountCredentials: CredentialsResponseData;
+    RealVsizeCredentials: CredentialsResponseData;
+    ZeroAmountCredentials: CredentialsResponseData;
+    ZeroVsizeCredentials: CredentialsResponseData;
 }
 
 export interface ConfirmationData {
-    RealAmountCredentials?: RealCredentials; // real Credentials are not present in phase: 0
-    RealVsizeCredentials?: RealCredentials;
-    ZeroAmountCredentials: RealCredentials;
-    ZeroVsizeCredentials: RealCredentials;
+    RealAmountCredentials?: CredentialsResponseData; // real Credentials are not present in phase: 0
+    RealVsizeCredentials?: CredentialsResponseData;
+    ZeroAmountCredentials: CredentialsResponseData;
+    ZeroVsizeCredentials: CredentialsResponseData;
 }
 
 export interface RegistrationData {
     AliceId: string;
-    AmountCredentials: RealCredentials;
-    VsizeCredentials: RealCredentials;
+    AmountCredentials: CredentialsResponseData;
+    VsizeCredentials: CredentialsResponseData;
     IsPayingZeroCoordinationFee: boolean;
 }
 

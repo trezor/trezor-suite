@@ -15,6 +15,31 @@ jest.mock('@trezor/utils', () => {
     };
 });
 
+/**
+ * This suite is about the confirmation interval: when the ping is sent, how its delay is
+ * reduced by request latency, and what happens on a deadline or an error. Its inputs
+ * carry credential placeholders rather than real credentials, so the credential layer is
+ * stubbed; the real round trip against the mock coordinator's issuer is covered by
+ * `inputRegistration.test.ts`.
+ */
+jest.mock('../credentials', () => ({
+    ...jest.requireActual('../credentials'),
+    getZeroCredentials: jest.fn(() => ({
+        CredentialsRequest: { Delta: 0, Presented: [], Requested: [], Proofs: [] },
+        CredentialsResponseValidation: {},
+    })),
+    getCredentials: jest.fn(() => [{ value: 0 }, { value: 0 }]),
+}));
+
+/**
+ * A credential bundle with the right shape but no proofs, which is what the mock
+ * coordinator recognises as "this suite stubs the credential layer".
+ */
+const CREDENTIALS_STUB = {
+    CredentialsRequest: { Delta: 0, Presented: [], Requested: [], Proofs: [] },
+    CredentialsResponseValidation: {},
+} as any;
+
 describe('connectionConfirmation', () => {
     beforeAll(async () => {
         server = await createServer();
@@ -56,8 +81,8 @@ describe('connectionConfirmation', () => {
                         registrationData: {
                             AliceId: '01A1-01a1',
                         },
-                        realAmountCredentials: {},
-                        realVsizeCredentials: {},
+                        realAmountCredentials: CREDENTIALS_STUB,
+                        realVsizeCredentials: CREDENTIALS_STUB,
                         confirmationData: {},
                         confirmedAmountCredentials: {},
                         confirmedVsizeCredentials: {},
@@ -66,8 +91,8 @@ describe('connectionConfirmation', () => {
                         registrationData: {
                             AliceId: '01B1-01b1',
                         },
-                        realAmountCredentials: {},
-                        realVsizeCredentials: {},
+                        realAmountCredentials: CREDENTIALS_STUB,
+                        realVsizeCredentials: CREDENTIALS_STUB,
                     }),
                 ],
                 {
@@ -107,15 +132,15 @@ describe('connectionConfirmation', () => {
                         registrationData: {
                             AliceId: '01A1-01a1',
                         },
-                        realAmountCredentials: {},
-                        realVsizeCredentials: {},
+                        realAmountCredentials: CREDENTIALS_STUB,
+                        realVsizeCredentials: CREDENTIALS_STUB,
                     }),
                     createInput('account-B', 'B1', {
                         registrationData: {
                             AliceId: '01B1-01b1',
                         },
-                        realAmountCredentials: {},
-                        realVsizeCredentials: {},
+                        realAmountCredentials: CREDENTIALS_STUB,
+                        realVsizeCredentials: CREDENTIALS_STUB,
                     }),
                 ],
                 {
@@ -160,8 +185,8 @@ describe('connectionConfirmation', () => {
             registrationData: {
                 AliceId: '01A1-01a1',
             },
-            realAmountCredentials: {},
-            realVsizeCredentials: {},
+            realAmountCredentials: CREDENTIALS_STUB,
+            realVsizeCredentials: CREDENTIALS_STUB,
         });
 
         await confirmationInterval(
@@ -202,8 +227,8 @@ describe('connectionConfirmation', () => {
                 registrationData: {
                     AliceId: '01A1-01a1',
                 },
-                realAmountCredentials: {},
-                realVsizeCredentials: {},
+                realAmountCredentials: CREDENTIALS_STUB,
+                realVsizeCredentials: CREDENTIALS_STUB,
             });
 
             const interval = confirmationInterval(
@@ -246,22 +271,22 @@ describe('connectionConfirmation', () => {
                         registrationData: {
                             AliceId: '01A1-01a1',
                         },
-                        realAmountCredentials: {},
-                        realVsizeCredentials: {},
+                        realAmountCredentials: CREDENTIALS_STUB,
+                        realVsizeCredentials: CREDENTIALS_STUB,
                     }),
                     createInput('account-A', 'A2', {
                         registrationData: {
                             AliceId: '01A2-01a2',
                         },
-                        realAmountCredentials: {},
-                        realVsizeCredentials: {},
+                        realAmountCredentials: CREDENTIALS_STUB,
+                        realVsizeCredentials: CREDENTIALS_STUB,
                     }),
                     createInput('account-A', 'A3', {
                         registrationData: {
                             AliceId: '01A3-01a3',
                         },
-                        realAmountCredentials: {},
-                        realVsizeCredentials: {},
+                        realAmountCredentials: CREDENTIALS_STUB,
+                        realVsizeCredentials: CREDENTIALS_STUB,
                     }),
                 ],
                 {
