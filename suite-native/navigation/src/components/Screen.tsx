@@ -85,6 +85,8 @@ const screenFooterStyle = prepareNativeStyle<{
     applyBottomInset: boolean;
 }>((_, { insets, applyBottomInset }) => ({
     paddingBottom: applyBottomInset ? insets.bottom : 0,
+    paddingLeft: insets.left,
+    paddingRight: insets.right,
 }));
 
 export const Screen = ({

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useWindowDimensions } from 'react-native';
 
 import type { NetworkSymbol } from '@suite-common/wallet-config';
@@ -28,7 +29,10 @@ const addressContainer = prepareNativeStyle(() => ({
     alignItems: 'center',
 }));
 
+const addressStyle = prepareNativeStyle<{ width: number }>((_, { width }) => ({ width }));
+
 const MAX_RECEIVE_QR_CODE_SIZE = 310;
+const MAX_RECEIVE_QR_CODE_HEIGHT_RATIO = 0.35;
 
 export const ReceiveAddressDetails = ({
     address,
@@ -43,26 +47,39 @@ export const ReceiveAddressDetails = ({
         applyStyle,
         utils: { spacings },
     } = useNativeStyles();
-    const { width: windowWidth } = useWindowDimensions();
+    const [contentWidth, setContentWidth] = useState(0);
+    const { height: windowHeight } = useWindowDimensions();
     const { handleCopyAddress } = useReceiveAddressInteractions();
 
-    const screenHorizontalPadding = spacings.sp16 * 2;
     const cardHorizontalMargin = spacings.sp8 * 2;
     const qrCodePadding = spacings[RECEIVE_QR_CODE_PADDING] * 2;
-    const horizontalOffset = screenHorizontalPadding + cardHorizontalMargin + qrCodePadding;
-    const qrCodeSize = Math.min(MAX_RECEIVE_QR_CODE_SIZE, windowWidth - horizontalOffset);
+    const horizontalOffset = cardHorizontalMargin + qrCodePadding;
+    const qrCodeSize = Math.max(
+        1,
+        Math.min(
+            MAX_RECEIVE_QR_CODE_SIZE,
+            windowHeight * MAX_RECEIVE_QR_CODE_HEIGHT_RATIO,
+            contentWidth - horizontalOffset,
+        ),
+    );
 
     return (
-        <VStack spacing="sp24" flex={1}>
-            <Box marginHorizontal="sp8" marginTop="sp8">
-                <ReceiveQRCodeCard
-                    address={address}
-                    networkSymbol={networkSymbol}
-                    tokenContract={tokenContract}
-                    tokenSymbol={tokenSymbol}
-                    qrCodeSize={qrCodeSize}
-                    onCopyAddress={handleCopyAddress}
-                />
+        <VStack
+            spacing="sp24"
+            flex={1}
+            onLayout={event => setContentWidth(event.nativeEvent.layout.width)}
+        >
+            <Box marginHorizontal="sp8" marginTop="sp8" alignItems="center">
+                {contentWidth > 0 && (
+                    <ReceiveQRCodeCard
+                        address={address}
+                        networkSymbol={networkSymbol}
+                        tokenContract={tokenContract}
+                        tokenSymbol={tokenSymbol}
+                        qrCodeSize={qrCodeSize}
+                        onCopyAddress={handleCopyAddress}
+                    />
+                )}
             </Box>
             <VStack spacing="sp8" alignItems="center" justifyContent="center" flex={1}>
                 {showLabelEdit && (
@@ -74,15 +91,22 @@ export const ReceiveAddressDetails = ({
                         testID="@receive/address-label"
                     />
                 )}
-                <ClipboardCopyMenu onCopy={handleCopyAddress} style={applyStyle(addressContainer)}>
-                    <AddressFormatter
-                        value={address}
-                        format="full"
-                        variant="headline-sm"
-                        textAlign="center"
-                        testID="@receive/confirmed-receive-address"
-                    />
-                </ClipboardCopyMenu>
+                {contentWidth > 0 && (
+                    <ClipboardCopyMenu
+                        onCopy={handleCopyAddress}
+                        style={applyStyle(addressContainer)}
+                    >
+                        <Box style={applyStyle(addressStyle, { width: contentWidth })}>
+                            <AddressFormatter
+                                value={address}
+                                format="full"
+                                variant="headline-sm"
+                                textAlign="center"
+                                testID="@receive/confirmed-receive-address"
+                            />
+                        </Box>
+                    </ClipboardCopyMenu>
+                )}
             </VStack>
         </VStack>
     );

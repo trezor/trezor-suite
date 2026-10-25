@@ -52,6 +52,11 @@ const deviceManagerHeaderStyle = prepareNativeStyle(utils => ({
     borderTopWidth: 0,
 }));
 
+const modalContentStyle = prepareNativeStyle<{ insets: EdgeInsets }>((_, { insets }) => ({
+    marginLeft: insets.left,
+    marginRight: insets.right,
+}));
+
 const deviceSwitchWrapperStyle = prepareNativeStyle<{ insets: EdgeInsets }>(
     (utils, { insets }) => ({
         marginTop: insets.top + (StatusBar.currentHeight ?? 0),
@@ -130,10 +135,15 @@ export const DeviceManagerModal = ({
                                     </HStack>
                                 </ScreenHeaderWrapper>
                             </Pressable>
-                            <AnimatedView entering={FadeIn}>{children}</AnimatedView>
+                            <AnimatedView
+                                entering={FadeIn}
+                                style={applyStyle(modalContentStyle, { insets })}
+                            >
+                                {children}
+                            </AnimatedView>
                         </AnimatedView>
                     </AnimatedView>
-                    {footer}
+                    <Box style={applyStyle(modalContentStyle, { insets })}>{footer}</Box>
                 </AnimatedView>
             </Pressable>
         </Modal>

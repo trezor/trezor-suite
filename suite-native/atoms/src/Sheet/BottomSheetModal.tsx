@@ -42,6 +42,11 @@ const backdropStyle = prepareNativeStyle(({ colors }) => ({
     backgroundColor: colors.surfaceFillMediaOverlay,
 }));
 
+const sheetStyle = prepareNativeStyle<{ left: number; right: number }>((_, { left, right }) => ({
+    marginLeft: left,
+    marginRight: right,
+}));
+
 const footerStyle = prepareNativeStyle<{ bottomInset: number }>(({ colors }, { bottomInset }) => ({
     backgroundColor: colors.surfaceFillPage,
     paddingBottom: bottomInset,
@@ -64,7 +69,7 @@ export const BottomSheetModal = forwardRef<BottomSheetModalMethods, BottomSheetM
         },
         ref,
     ) => {
-        const { top, bottom } = useSafeAreaInsets();
+        const { top, bottom, left, right } = useSafeAreaInsets();
         const { applyStyle } = useNativeStyles();
         const { scrollDivider, handleScroll } = useScrollDivider();
         const { animatedIndex, isSheetSettled } = useBottomSheetInteractionGate();
@@ -129,6 +134,7 @@ export const BottomSheetModal = forwardRef<BottomSheetModalMethods, BottomSheetM
                 )}
                 onDismiss={onDismiss}
                 {...bottomSheetCustomProps}
+                style={[bottomSheetCustomProps.style, applyStyle(sheetStyle, { left, right })]}
             >
                 <BottomSheetModalContent
                     handleScroll={handleScroll}
