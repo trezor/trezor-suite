@@ -75,7 +75,12 @@ const getDecomposedOutputAmounts = async (params: GetOutputAmountsParams) => {
 
     return outputAmounts.map(amount => {
         const miningFee = Math.floor((outputSize * roundParameters.MiningFeeRate) / 1000);
-        const coordinatorFee = 0; // NOTE: middleware issue https://github.com/zkSNACKs/WalletWasabi/issues/8814 should be `amount > plebsDontPayThreshold ? Math.floor(roundParameters.coordinationFeeRate.rate * amount) : 0` but middleware does not considerate coordinationFeeRate and plebs for external amounts
+        // NOTE: upstream issue https://github.com/zkSNACKs/WalletWasabi/issues/8814, which
+        // the port reproduces. This should be
+        // `amount > plebsDontPayThreshold ? Math.floor(roundParameters.coordinationFeeRate.rate * amount) : 0`,
+        // but the decomposer does not take coordinationFeeRate or plebs into account for
+        // external amounts.
+        const coordinatorFee = 0;
 
         return amount + coordinatorFee + miningFee;
     });

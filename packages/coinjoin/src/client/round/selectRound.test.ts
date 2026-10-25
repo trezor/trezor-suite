@@ -321,7 +321,7 @@ describe('selectRound', () => {
             options: server?.requestOptions,
         });
 
-        expect(spy).toHaveBeenCalledTimes(1); // middleware was called once
+        expect(spy).toHaveBeenCalledTimes(1); // the selector was called once
         expect(result).toBeUndefined();
     });
 
@@ -348,7 +348,7 @@ describe('selectRound', () => {
             options: server?.requestOptions,
         });
 
-        expect(spy).toHaveBeenCalledTimes(1); // middleware was called once
+        expect(spy).toHaveBeenCalledTimes(1); // the selector was called once
         expect(result).toBeUndefined();
     });
 
@@ -530,7 +530,7 @@ describe('selectRound', () => {
             options: server?.requestOptions,
         });
 
-        expect(spy).toHaveBeenCalledTimes(0); // middleware was not called, detained inputs were used
+        expect(spy).toHaveBeenCalledTimes(0); // the selector was not called, detained inputs were used
         expect(result?.inputs.length).toBe(2);
         expect(result).toMatchObject({
             id: '02',
@@ -635,7 +635,7 @@ describe('selectRound', () => {
         });
         expect(result2).toBeUndefined();
 
-        // no result from middleware
+        // no result from the selector
         const result3 = await selectRound({
             roundGenerator,
             aliceGenerator,

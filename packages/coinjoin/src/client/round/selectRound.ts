@@ -417,7 +417,8 @@ export const selectInputsForRound = async ({
             return utxo;
         });
 
-        // Temporary workaround for middleware issue: https://github.com/zkSNACKs/WalletWasabi/issues/10759
+        // Temporary workaround for an upstream issue, reproduced by the port:
+        // https://github.com/zkSNACKs/WalletWasabi/issues/10759
         const feeRate = selectedRound.roundParameters.MiningFeeRate;
         const inputFee = Math.floor((getInputSize(account.scriptType) * feeRate) / 1000);
         const outputFee = Math.floor((getOutputSize(account.scriptType) * feeRate) / 1000);

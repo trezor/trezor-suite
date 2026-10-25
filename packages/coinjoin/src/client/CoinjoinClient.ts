@@ -64,7 +64,8 @@ export class CoinjoinClient extends TypedEmitter<CoinjoinClientEvents> {
     }
 
     /**
-     * Get transactions from CoinjoinBackend.getAccountInfo and calculate anonymity in middleware.
+     * Get transactions from CoinjoinBackend.getAccountInfo and calculate anonymity with
+     * `@trezor/coinjoin-analysis`.
      * Returns { key => value } where `key` is an address and `value` is an anonymity level of that address
      */
     analyzeTransactions<T extends keyof AnalyzeTransactionsResult>(

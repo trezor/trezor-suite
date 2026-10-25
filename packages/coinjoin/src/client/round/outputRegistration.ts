@@ -14,7 +14,7 @@ import type { Account } from '../Account';
  * RoundPhase: 2, OutputRegistration
  *
  * Process steps:
- * - Calculate output amounts using middleware (see ./outputDecomposition)
+ * - Calculate output amounts with `@trezor/coinjoin-strategy` (see ./outputDecomposition)
  * - Combine registered Credentials in to outputs using coordinator /credential-issuance (see ./outputDecomposition)
  * - Register decomposed Credentials as outputs using coordinator /output-registration
  * - Finally call /ready-to-sign on coordinator for each input
