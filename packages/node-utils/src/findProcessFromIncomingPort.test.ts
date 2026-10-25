@@ -104,6 +104,27 @@ describe('findProcessFromIncomingPort for an accepted connection', () => {
         expect(processInfo?.pid).toBe('300');
     });
 
+    // Documents the behaviour the path of a Linux client is read with today: it is whatever
+    // argv[0] the process was started with, not the executable the kernel runs.
+    test('identifies a Linux process by the argv[0] it was started with, not by its executable', async () => {
+        setPlatform('linux');
+        const spawn = mockCommands([
+            [
+                'lsof',
+                'node 300 user 18u IPv4 207199 0t0 TCP 127.0.0.1:40000->127.0.0.1:21335 (ESTABLISHED)',
+            ],
+            // A process started as `/usr/bin/google-chrome script.js`, a path it picked for
+            // itself; its executable is /usr/local/bin/node.
+            ['cat /proc/300/cmdline', '/usr/bin/google-chrome\0script.js\0'],
+        ]);
+
+        const processInfo = await findProcessFromIncomingPort(40000, true, connection);
+
+        expect(processInfo?.fullPath).toBe('/usr/bin/google-chrome');
+        // argv[0] is read with a command of its own, so lsof is not the only one asked.
+        expect(spawn).toHaveBeenCalledTimes(2);
+    });
+
     test('matches an IPv4-mapped IPv6 address as the plain IPv4 form lsof prints', async () => {
         setPlatform('linux');
         mockCommands([
