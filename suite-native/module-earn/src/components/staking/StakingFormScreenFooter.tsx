@@ -30,6 +30,7 @@ export const StakingFormScreenFooter = ({
 
     return (
         <EarnScreenFooter
+            noHorizontalPadding
             estimatedRewards={
                 isRewardsBoxVisible && (
                     <EarnEstimatedRewards

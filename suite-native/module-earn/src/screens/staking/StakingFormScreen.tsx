@@ -137,6 +137,7 @@ export const StakingFormScreen = () => {
                     onPress={() => handleSubmit()}
                 />
             }
+            footerHorizontalPadding="sp16"
         >
             <EarnAmountCard accountKey={accountKey} />
             <Box marginTop="sp16">
