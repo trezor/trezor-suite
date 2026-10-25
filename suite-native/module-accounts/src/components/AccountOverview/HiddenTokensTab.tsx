@@ -19,6 +19,7 @@ import { TokenYieldRateBadge } from '@suite-native/module-earn';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { type AccountAssetsTabListProps, type OnSelectAsset } from './types';
+import { useAccountOverviewListContentStyle } from './useAccountOverviewListContentStyle';
 
 type SectionHeaderListItem = { type: 'section-header'; id: string; translationId: TxKeyPath };
 type WarningListItem = { type: 'warning'; id: string };
@@ -38,10 +39,6 @@ type HiddenTokensTabProps = AccountAssetsTabListProps & {
 
 const listStyle = prepareNativeStyle(() => ({
     flex: 1,
-}));
-
-const listContentStyle = prepareNativeStyle(({ spacings }) => ({
-    paddingHorizontal: spacings.sp16,
 }));
 
 const sectionHeaderStyle = prepareNativeStyle(utils => ({
@@ -116,6 +113,7 @@ export const HiddenTokensTab = ({
     onScroll,
 }: HiddenTokensTabProps) => {
     const { applyStyle } = useNativeStyles();
+    const listContentStyle = useAccountOverviewListContentStyle();
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -187,7 +185,7 @@ export const HiddenTokensTab = ({
     return (
         <FlashList
             style={applyStyle(listStyle)}
-            contentContainerStyle={applyStyle(listContentStyle)}
+            contentContainerStyle={listContentStyle}
             data={listItems}
             keyExtractor={item => item.id}
             getItemType={item => item.type}

@@ -82,6 +82,8 @@ export const AccountOverviewScreen = ({
             header={<AccountOverviewScreenHeader accountKey={accountKey} flowType={flowType} />}
             isScrollable={false}
             noHorizontalPadding
+            noBottomPadding
+            hasBottomInset={false}
         >
             {isFailed ? (
                 <AccountDiscoveryFailedBanner accountKey={accountKey} />
