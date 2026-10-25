@@ -45,6 +45,8 @@ jest.mock('../libs/process-icon', () => ({
     getProcessIcon: jest.fn().mockResolvedValue(undefined),
 }));
 
+import { findProcessFromIncomingPort } from '@trezor/node-utils';
+
 import { init } from './mcp-server';
 
 const TEST_TOKEN = 'test-token-abc123';
@@ -89,6 +91,12 @@ const startMcpServer = async (overrides?: {
     const port = await getFreePort();
     const store = createMockStore({ port, ...overrides?.storeOverrides });
     const mainWindowProxy = createMockMainWindowProxy(overrides?.hasWindow ?? true);
+    const logger = {
+        info: jest.fn(),
+        warn: jest.fn(),
+        error: jest.fn(),
+        debug: jest.fn(),
+    };
 
     const result = init({
         mainWindowProxy,
@@ -96,12 +104,7 @@ const startMcpServer = async (overrides?: {
         interceptor: {} as any,
         mainThreadEmitter: {} as any,
         cspNonce: 'test-nonce',
-        logger: {
-            info: jest.fn(),
-            warn: jest.fn(),
-            error: jest.fn(),
-            debug: jest.fn(),
-        },
+        logger,
     } as any);
 
     result!.onLoad({} as any);
@@ -129,6 +132,7 @@ const startMcpServer = async (overrides?: {
         port,
         store,
         mainWindowProxy,
+        logger,
         cleanup: () => result?.onQuit?.(),
     };
 };
@@ -423,6 +427,49 @@ describe('MCP server', () => {
             const res = await mcpFetch(server.port, jsonRpc('initialize', undefined, 2));
 
             expect(res.status).toBe(200);
+        });
+
+        it('identifies the client by its declared name when the process has no path', async () => {
+            // The Linux lookup reports an empty path when it cannot read /proc/<pid>/exe, and
+            // leaves only the name the process picked for its own kernel task.
+            (findProcessFromIncomingPort as jest.Mock).mockResolvedValueOnce({
+                name: 'node',
+                pid: '1',
+                fullPath: '',
+                warning: true,
+            });
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const res = await mcpFetch(
+                server.port,
+                jsonRpc('initialize', { clientInfo: { name: 'Claude Code' } }),
+            );
+
+            expect(res.status).toBe(200);
+            expect(server.logger.info).toHaveBeenCalledWith(
+                'mcp-server',
+                'Session initialized for process: Claude Code',
+            );
+        });
+
+        it('keeps the pathless process name when the client declared none', async () => {
+            (findProcessFromIncomingPort as jest.Mock).mockResolvedValueOnce({
+                name: 'node',
+                pid: '1',
+                fullPath: '',
+                warning: true,
+            });
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const res = await mcpFetch(server.port, jsonRpc('initialize'));
+
+            expect(res.status).toBe(200);
+            expect(server.logger.info).toHaveBeenCalledWith(
+                'mcp-server',
+                'Session initialized for process: node',
+            );
         });
 
         it('allows re-initialization after DELETE', async () => {

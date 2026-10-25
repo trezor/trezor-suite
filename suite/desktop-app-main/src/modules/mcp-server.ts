@@ -1282,7 +1282,12 @@ export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
                             return undefined;
                         });
 
-                        if (processInfo) {
+                        // A lookup that found the process but could not read its executable
+                        // reports an empty path. The declared name is preferred over such a
+                        // result: it is at least what the client calls itself in the manifest,
+                        // where the pathless lookup only has the name the process picked for
+                        // its own kernel task. An empty path is also nothing to find an icon by.
+                        if (processInfo?.fullPath) {
                             sessionProcessInfo = {
                                 name: processInfo.name,
                                 fullPath: processInfo.fullPath,
@@ -1293,6 +1298,12 @@ export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
                             sessionProcessInfo = {
                                 name: clientInfo.name,
                                 fullPath: clientInfo.name,
+                                warning: true,
+                            };
+                        } else if (processInfo) {
+                            sessionProcessInfo = {
+                                name: processInfo.name,
+                                fullPath: processInfo.fullPath,
                                 warning: true,
                             };
                         }
