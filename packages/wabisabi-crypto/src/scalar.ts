@@ -20,7 +20,22 @@ export const SCALAR_ONE: Scalar = 1n;
 
 export const SCALAR_BYTES = 32;
 
-/** `new Scalar(ulong)` / `new Scalar(uint)`. */
+/**
+ * `new Scalar(ulong)` / `new Scalar(uint)`.
+ *
+ * A deliberate divergence, the only one in this file. Upstream reaches this as
+ * `new Scalar((ulong)value)` on a `long`, so a negative amount does not fail: the cast
+ * wraps it to a huge positive scalar and the client goes on to build a commitment and a
+ * range proof over it, which the coordinator then rejects with an opaque protocol error.
+ * Throwing names the actual bug at the call site instead. Nothing in the port can reach
+ * it with a negative value — registration amounts are clamped by the round parameters
+ * and decomposition only ever emits positive amounts — so this is a guard, not a branch
+ * that changes behaviour.
+ *
+ * The reduction is a no-op for every real input (upstream's source type is at most 64
+ * bits, the group order is 256) and is kept only so the return value is always a
+ * canonical scalar.
+ */
 export const scalarFromNumber = (value: number | bigint): Scalar => {
     const big = BigInt(value);
     if (big < 0n) {

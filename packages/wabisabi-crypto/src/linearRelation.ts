@@ -39,10 +39,11 @@ export class Equation {
         //   - e is the challenge
         //   - s is the response
         //
-        // Rearranged to `(s*G) + (-e)*P =? R` so the challenge term joins the same
-        // batched multiplication instead of costing a separate one. Exact group
-        // arithmetic either way; a range proof statement has 85 equations, and the
-        // separate form spent about half the verification time on those 85 products.
+        // Rearranged to `(s*G) + (-e)*P =? R` so that the challenge term is folded into
+        // the same sum rather than costing a separate multiplication. Exact group
+        // arithmetic either way, and it matters: a 42-bit range proof statement has 85
+        // equations, and `P` is a fresh point with no precomputed table, so the separate
+        // form paid for 85 of the most expensive kind of multiplication there is.
         return multiScalarMultiply(
             [...responses, scalarNegate(challenge)],
             [...this.generators, this.publicPoint],
