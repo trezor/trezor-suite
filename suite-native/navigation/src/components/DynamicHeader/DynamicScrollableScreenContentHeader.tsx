@@ -1,8 +1,10 @@
 import { type ReactNode } from 'react';
 import { type LayoutChangeEvent, type ViewProps } from 'react-native';
 import { type AnimatedProps } from 'react-native-reanimated';
+import { type EdgeInsets, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AnimatedVStack, Text } from '@suite-native/atoms';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type NativeSpacing } from '@trezor/theme';
 
 import { useDynamicHeader } from './DynamicScreenHeaderContext';
@@ -18,6 +20,11 @@ type DynamicScrollableScreenContentHeaderProps = {
     contentLayoutAnimation?: AnimatedProps<ViewProps>['layout'];
 } & Pick<ScreenHeaderProps, 'title'>;
 
+const headerStyle = prepareNativeStyle<{ insets: EdgeInsets }>((utils, { insets }) => ({
+    paddingLeft: Math.max(insets.left, utils.spacings.sp16),
+    paddingRight: Math.max(insets.right, utils.spacings.sp16),
+}));
+
 export const DynamicScrollableScreenContentHeader = ({
     title,
     subtitle,
@@ -29,6 +36,8 @@ export const DynamicScrollableScreenContentHeader = ({
     contentLayoutAnimation,
 }: DynamicScrollableScreenContentHeaderProps) => {
     const { setScrollableHeaderHeight } = useDynamicHeader();
+    const insets = useSafeAreaInsets();
+    const { applyStyle } = useNativeStyles();
 
     const handleLayout = (e: LayoutChangeEvent) => {
         const { height } = e.nativeEvent.layout;
@@ -37,7 +46,7 @@ export const DynamicScrollableScreenContentHeader = ({
 
     return (
         <AnimatedVStack
-            paddingHorizontal="sp16"
+            style={applyStyle(headerStyle, { insets })}
             marginTop={marginTop}
             marginBottom={marginBottom}
             onLayout={expandedContent ? handleLayout : undefined}
