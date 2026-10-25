@@ -30,6 +30,8 @@ const stepContainerStyle = prepareNativeStyle<{ height: number }>((_, { height }
     height,
 }));
 
+const stepContentStyle = prepareNativeStyle(() => ({ flexGrow: 1 }));
+
 const scrollViewContentStyle = prepareNativeStyle<{
     safeAreaInsetBottom: number;
     height: number;
@@ -97,7 +99,12 @@ export const SwipeableWalkthroughStep = ({
                     title={title}
                     description={description}
                 />
-                <VStack marginBottom="sp16" spacing="sp24" alignItems="center" flexGrow={1}>
+                <VStack
+                    marginBottom="sp16"
+                    spacing="sp24"
+                    alignItems="center"
+                    style={applyStyle(stepContentStyle)}
+                >
                     {children}
                     {continueButton ?? (
                         <IconButton

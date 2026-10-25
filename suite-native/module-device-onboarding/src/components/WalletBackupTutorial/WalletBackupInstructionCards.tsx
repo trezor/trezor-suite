@@ -106,7 +106,7 @@ export const WalletBackupInstructionCards = ({
     isMultishareSelected,
     isStepFocused,
 }: WalletBackupInstructionCardsProps) => (
-    <VStack spacing="sp16" alignSelf="stretch" marginTop="sp32" flexGrow={1}>
+    <VStack spacing="sp16" alignSelf="stretch" marginTop="sp32">
         {getCardProps(isMultishareSelected).map((card, index) => (
             <WalletBackupInstructionCard
                 key={card.iconName}
