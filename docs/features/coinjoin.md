@@ -22,6 +22,12 @@ Suite has no default coordinator for Bitcoin and Testnet. Coinjoin works only in
 
 For development and e2e purposes you can use local version of coinjoin backend (`Regtest` only).
 
+> Nothing else has to be running. Suite used to spawn a bundled
+> `WalletWasabi.WabiSabiClientLibrary` process and talk to it over a localhost port for the
+> credential crypto, amount decomposition, input selection and anonymity scoring; all of
+> that is now computed in process by `@trezor/wabisabi-crypto`,
+> `@trezor/coinjoin-strategy` and `@trezor/coinjoin-analysis`.
+
 1. run `./docker/docker-coinjoin-backend.sh`
 
     > If you are using `trezor-user-env` make sure that it's started with `-r` option (disabled regtest)

@@ -87,7 +87,6 @@
         "update-submodules": "./scripts/update-submodules.sh",
         "update-models": "./scripts/update-models.sh",
         "update-protobuf": "./scripts/update-protobuf.sh",
-        "update-coinjoin-middleware": "yarn workspace @suite/app-assets update-coinjoin-middleware",
         "prepare-desktop-release": "./scripts/prepare-desktop-release.sh",
         "prepare-mobile-release": "./scripts/prepare-mobile-release.sh",
         "native:android": "yarn workspace @suite-native/app android",
