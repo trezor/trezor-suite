@@ -18292,6 +18292,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/coinjoin-strategy@workspace:packages/coinjoin-strategy":
+  version: 0.0.0-use.local
+  resolution: "@trezor/coinjoin-strategy@workspace:packages/coinjoin-strategy"
+  dependencies:
+    "@trezor/eslint": "workspace:*"
+    "@trezor/wabisabi-crypto": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@trezor/coinjoin@workspace:*, @trezor/coinjoin@workspace:packages/coinjoin":
   version: 0.0.0-use.local
   resolution: "@trezor/coinjoin@workspace:packages/coinjoin"
@@ -19971,7 +19980,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/wabisabi-crypto@workspace:packages/wabisabi-crypto":
+"@trezor/wabisabi-crypto@workspace:*, @trezor/wabisabi-crypto@workspace:packages/wabisabi-crypto":
   version: 0.0.0-use.local
   resolution: "@trezor/wabisabi-crypto@workspace:packages/wabisabi-crypto"
   dependencies:
