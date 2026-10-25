@@ -133,9 +133,11 @@ describe('WabiSabiClient — get-credentials vectors', () => {
         new WabiSabiClient(
             deserializeIssuerParameters(CredentialIssuerParameters),
             new DeterministicRandom(0),
-            // `GetCredentialsRequest.MaxAmountCredentialValue` defaults to the round's
-            // max amount credential value; the vector does not send one, and the width
-            // only matters for request construction, not for response validation.
+            // The vector omits `GetCredentialsRequest.MaxAmountCredentialValue`, so
+            // upstream deserializes it as 0 and derives a nonsense range proof width
+            // from it. That is harmless there and here: the width is only read when
+            // building a request, never when validating a response. Any value does, so
+            // this is the mainnet round's.
             4_300_000_000_000,
         );
 
