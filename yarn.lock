@@ -20260,6 +20260,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/wabisabi-crypto@workspace:packages/wabisabi-crypto":
+  version: 0.0.0-use.local
+  resolution: "@trezor/wabisabi-crypto@workspace:packages/wabisabi-crypto"
+  dependencies:
+    "@noble/curves": "npm:^2.0.1"
+    "@noble/hashes": "npm:^2.0.1"
+    "@trezor/eslint": "workspace:*"
+    "@trezor/utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@trezor/webextension-mv3-sw-ts@workspace:packages/connect-examples/webextension":
   version: 0.0.0-use.local
   resolution: "@trezor/webextension-mv3-sw-ts@workspace:packages/connect-examples/webextension"
