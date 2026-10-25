@@ -4,7 +4,6 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const listContentStyle = prepareNativeStyle<{ bottomInset: number }>(
     ({ spacings }, { bottomInset }) => ({
-        paddingHorizontal: spacings.sp16,
         paddingBottom: bottomInset + spacings.sp16,
     }),
 );
