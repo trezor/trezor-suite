@@ -1,3 +1,8 @@
+import { isWorkerUrl } from './is-worker-url.js';
+
+// Mirrors the specifier sanitizeInternalImports rewrites; non-global so .test() stays stateless.
+const internalSrcSpecifier = /@trezor\/[^/]+\/src/;
+
 const sanitizeInternalImports = (src, moduleType) => {
     const searchValue = new RegExp('@trezor/([^/]+)/src', 'g');
 
@@ -85,10 +90,24 @@ const sanitizeInternalImportsPlugin = ({ types }) => {
             // e.g. new URL('@trezor/blockchain-link/src/workers/blockbook', import.meta.url)
             //   → new URL('@trezor/blockchain-link/lib/workers/blockbook', import.meta.url)
             // Published packages ship lib/ only, so a /src specifier cannot resolve for consumers.
+            // The guard keeps every other new URL(...) untouched — except for an internal /src
+            // specifier, which would ship unresolvable, so it fails the build here the same way
+            // a CJS require does above.
             NewExpression(path) {
                 if (!types.isIdentifier(path.node.callee, { name: 'URL' })) return;
                 const [first] = path.node.arguments;
                 if (!types.isStringLiteral(first)) return;
+
+                if (!isWorkerUrl(types, path)) {
+                    if (internalSrcSpecifier.test(first.value)) {
+                        throw new Error(
+                            `Cannot sanitize new URL('${first.value}'), published packages ship lib/ only; only new Worker(new URL('<specifier>', import.meta.url)) is rewritten, otherwise use an @trezor/<pkg>/lib path`,
+                        );
+                    }
+
+                    return;
+                }
+
                 first.value = sanitizeInternalImports(first.value, 'esm');
             },
             // handle template literals (for dynamic imports with template strings)

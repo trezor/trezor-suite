@@ -131,33 +131,39 @@ describe('publish import transforms — specifier positions', () => {
     });
 });
 
-// Characterizes the current behavior: both NewExpression visitors match on the callee name and
-// the first string-literal argument, so every new URL('<literal>', ...) is rewritten — not just
-// the new Worker(new URL('<specifier>', import.meta.url)) worker idiom the visitors' own comments
-// describe. The expectations below are that wrong output.
-describe('publish import transforms — new URL rewrites are not gated on the worker idiom', () => {
-    it('appends the runtime extension to a runtime new URL(relative, base)', () => {
+describe('publish import transforms — new URL is gated on the worker idiom', () => {
+    it('leaves a runtime new URL(relative, base) untouched', () => {
         const out = runEsm(`const u = new URL('./api/status', origin);`);
-        expect(out).toContain('./api/status.js');
+        expect(out).toContain('./api/status');
+        expect(out).not.toContain('./api/status.js');
     });
 
-    it('rewrites a non-worker new URL(@trezor/*/src, base) into a lib path', () => {
-        const out = runEsm(
-            `const u = new URL('@trezor/blockchain-link/src/workers/blockbook', base);`,
-        );
-        expect(out).toContain('@trezor/blockchain-link/lib/workers/blockbook/index.js');
+    // Passing it through would ship a specifier no consumer can resolve, with no diagnostic, so
+    // the gate fails the build instead — the same choice the CJS require path already makes.
+    it('throws on a new URL(@trezor/*/src, base) when base is not import.meta.url', () => {
+        expect(() =>
+            runEsm(`const u = new URL('@trezor/blockchain-link/src/workers/blockbook', base);`),
+        ).toThrow(/published packages ship lib\/ only/);
     });
 
-    it('appends the runtime extension to a single-argument new URL(literal)', () => {
+    it('leaves a single-argument new URL(literal) untouched', () => {
         const out = runEsm(`const u = new URL('./api/status');`);
-        expect(out).toContain('./api/status.js');
+        expect(out).not.toContain('./api/status.js');
     });
 
-    // import.meta.url is also the idiomatic base for a data file next to the module, so this one
-    // is rewritten even though it addresses an asset rather than a worker module.
-    it('appends /index.js to a non-worker new URL(literal, import.meta.url)', () => {
+    // import.meta.url is also the idiomatic base for a data file next to the module, so only the
+    // new Worker(new URL(...)) shape may gain a runtime extension.
+    it('leaves a non-worker new URL(literal, import.meta.url) untouched', () => {
         const out = runEsm(`const data = readFileSync(new URL('./localdir', import.meta.url));`);
-        expect(out).toContain('./localdir/index.js');
+        expect(out).toContain('./localdir');
+        expect(out).not.toContain('./localdir/index.js');
+    });
+
+    it('rewrites the specifier of a new SharedWorker(new URL(...)) too', () => {
+        const out = runEsm(
+            `new SharedWorker(new URL('@trezor/blockchain-link/src/workers/solana', import.meta.url));`,
+        );
+        expect(out).toContain('@trezor/blockchain-link/lib/workers/solana/index.js');
     });
 });
 

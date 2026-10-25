@@ -1,6 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
+import { isWorkerUrl } from './is-worker-url.js';
+
 // Match relative imports without extension: "./x", "../x", "./x/y"
 const isRelativeImport = src => src.startsWith('.') && !path.extname(src);
 
@@ -115,9 +117,12 @@ const addEsmExtensionPlugin = ({ types }) => {
                 if (!types.isImport(nodePath.node.callee)) return;
                 modifyStringLiteral(nodePath.node.arguments[0], state);
             },
-            // Bundler worker idiom: new Worker(new URL('<specifier>', import.meta.url)).
+            // Bundler worker idiom: new Worker(new URL('<specifier>', import.meta.url)). The
+            // guard keeps every other new URL(...) untouched, including an extensionless asset
+            // path addressed with import.meta.url, which must not gain a .js extension.
             NewExpression(nodePath, state) {
                 if (!types.isIdentifier(nodePath.node.callee, { name: 'URL' })) return;
+                if (!isWorkerUrl(types, nodePath)) return;
                 modifyStringLiteral(nodePath.node.arguments[0], state);
             },
             // Inline import("...") types in .d.ts files.
