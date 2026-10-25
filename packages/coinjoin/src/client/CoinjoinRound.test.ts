@@ -6,6 +6,27 @@ import { createInput } from '../__fixtures__/input.fixture';
 import { DEFAULT_ROUND, createCoinjoinRound } from '../__fixtures__/round.fixture';
 import * as CONSTANTS from '../constants';
 
+/**
+ * This suite is about phase-change locking and the cool-off window, and it races fixed
+ * timeouts against the work a phase does. The credential layer is stubbed so that those
+ * timings measure the locking and not a few thousand secp256k1 multiplications; the real
+ * credential round trip lives in `round/inputRegistration.test.ts` and
+ * `round/credentialRoundTrip.test.ts`.
+ */
+jest.mock('./credentials', () => {
+    const credentialsBundle = {
+        CredentialsRequest: { Delta: 0, Presented: [], Requested: [], Proofs: [] },
+        CredentialsResponseValidation: {},
+    };
+
+    return {
+        ...jest.requireActual('./credentials'),
+        getZeroCredentials: jest.fn(() => credentialsBundle),
+        getRealCredentials: jest.fn(() => credentialsBundle),
+        getCredentials: jest.fn(() => [{ value: 0 }, { value: 0 }]),
+    };
+});
+
 // mock random delay function
 jest.mock('@trezor/utils', () => {
     const originalModule = jest.requireActual('@trezor/utils');
