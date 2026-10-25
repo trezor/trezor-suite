@@ -97,7 +97,7 @@ export const SwipeableWalkthroughStep = ({
                     title={title}
                     description={description}
                 />
-                <VStack marginBottom="sp16" spacing="sp24" alignItems="center" flex={1}>
+                <VStack marginBottom="sp16" spacing="sp24" alignItems="center" flexGrow={1}>
                     {children}
                     {continueButton ?? (
                         <IconButton
