@@ -13146,6 +13146,10 @@ export const messages = defineMessages({
         id: 'TR_PERMISSIONS',
         defaultMessage: 'Permissions',
     },
+    TR_CONNECT_PROCESS_PATH_UNKNOWN: {
+        id: 'TR_CONNECT_PROCESS_PATH_UNKNOWN',
+        defaultMessage: 'The location of this app could not be read.',
+    },
     TR_OPTIONAL: {
         id: 'TR_OPTIONAL',
         defaultMessage: 'Optional',

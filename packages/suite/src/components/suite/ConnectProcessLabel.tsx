@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
 import { type ConnectProcessInfo } from '@suite-common/connect-popup/src/connectPopupTypes';
 import { Badge, Icon, Row, Text, Tooltip } from '@trezor/components';
 import { AppWindowIcon, WarningIcon } from '@trezor/icons';
@@ -18,9 +19,14 @@ export const ConnectProcessLabel = ({
     process,
     'data-testid': dataTest,
 }: ConnectProcessLabelProps) => {
+    // `name` is what the process calls itself, `fullPath` is where it actually runs from, so the
+    // path is shown on both branches and not only next to a warning. An empty path means it could
+    // not be read at all, which would otherwise leave the warning badge without any tooltip.
+    const tooltip = process.fullPath || <Translation id="TR_CONNECT_PROCESS_PATH_UNKNOWN" />;
+
     if (process.warning) {
         return (
-            <Tooltip content={process.fullPath}>
+            <Tooltip content={tooltip}>
                 <Badge intent="warning" iconLeft={WarningIcon}>
                     <Text data-testid={dataTest}>{process.name}</Text>
                 </Badge>
@@ -29,15 +35,17 @@ export const ConnectProcessLabel = ({
     }
 
     return (
-        <Badge intent="neutral">
-            <Row gap={8}>
-                {process.icon ? (
-                    <AppIcon src={process.icon} alt="Process icon" />
-                ) : (
-                    <Icon as={AppWindowIcon} intent="neutral" priority="secondary" />
-                )}
-                <Text data-testid={dataTest}>{process.name}</Text>
-            </Row>
-        </Badge>
+        <Tooltip content={tooltip}>
+            <Badge intent="neutral">
+                <Row gap={8}>
+                    {process.icon ? (
+                        <AppIcon src={process.icon} alt="Process icon" />
+                    ) : (
+                        <Icon as={AppWindowIcon} intent="neutral" priority="secondary" />
+                    )}
+                    <Text data-testid={dataTest}>{process.name}</Text>
+                </Row>
+            </Badge>
+        </Tooltip>
     );
 };
