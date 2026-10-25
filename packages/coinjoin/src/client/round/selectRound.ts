@@ -1,4 +1,7 @@
+import { getLiquidityClue } from '@trezor/coinjoin-analysis';
+import { selectInputsForRound as selectUtxosForRound } from '@trezor/coinjoin-strategy';
 import { arrayPartition, arrayToDictionary } from '@trezor/utils';
+import { secureRandom } from '@trezor/wabisabi-crypto';
 
 import { ROUND_SELECTION_MAX_OUTPUTS, ROUND_SELECTION_REGISTRATION_OFFSET } from '../../constants';
 import { RoundPhase, SessionPhase, WabiSabiProtocolErrorCode } from '../../enums';
@@ -12,7 +15,6 @@ import type {
 import { getInputSize, getOutputSize } from '../../utils/coordinatorUtils';
 import { type Account } from '../Account';
 import { type Round } from '../coordinator';
-import * as middleware from '../middleware';
 
 export interface SelectRoundProps {
     roundGenerator: CoinjoinRoundGenerator;
@@ -286,7 +288,7 @@ const selectInputsForBlameRound = ({
         return false;
     });
 
-// Use middleware algorithm to process preselected CoinjoinRounds and Accounts
+// Use the ported selection algorithm to process preselected CoinjoinRounds and Accounts
 export const selectInputsForRound = async ({
     aliceGenerator,
     roundCandidates,
@@ -356,36 +358,31 @@ export const selectInputsForRound = async ({
                         return [];
                     }
 
-                    // ...finally call get liquidityClue and
+                    // ...finally derive the liquidityClue and
                     // try to select the best utxos combination for given Round
-                    return middleware
-                        .getLiquidityClue(
+                    try {
+                        const LiquidityClue = getLiquidityClue(
                             account.rawLiquidityClue,
                             roundParameters.MaxSuggestedAmount,
-                            { baseUrl: options.middlewareUrl },
-                        )
-                        .then(LiquidityClue =>
-                            middleware.selectInputsForRound(
-                                {
-                                    ...roundConstants,
-                                    Utxos,
-                                    AnonScoreTarget: account.targetAnonymity,
-                                    LiquidityClue,
-                                    SemiPrivateThreshold: 2,
-                                    ConsolidationMode: false,
-                                },
-                                {
-                                    signal: options.signal,
-                                    baseUrl: options.middlewareUrl,
-                                },
-                            ),
-                        )
-                        .then(indices => indices.filter(i => Utxos[i])) // filter valid existing indices
-                        .catch(error => {
-                            logger.error(`selectInputsForRound failed ${error.message}`);
+                        );
+                        const indices = selectUtxosForRound(
+                            {
+                                ...roundConstants,
+                                Utxos,
+                                AnonScoreTarget: account.targetAnonymity,
+                                LiquidityClue,
+                                SemiPrivateThreshold: 2,
+                                ConsolidationMode: false,
+                            },
+                            secureRandom,
+                        );
 
-                            return [] as number[];
-                        });
+                        return indices.filter(i => Utxos[i]); // filter valid existing indices
+                    } catch (error) {
+                        logger.error(`selectInputsForRound failed ${error.message}`);
+
+                        return [] as number[];
+                    }
                 }),
             );
         }),

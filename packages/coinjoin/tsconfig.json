@@ -8,11 +8,14 @@
         { "path": "../blockchain-link" },
         { "path": "../blockchain-link-types" },
         { "path": "../blockchain-link-utils" },
+        { "path": "../coinjoin-analysis" },
+        { "path": "../coinjoin-strategy" },
         { "path": "../eslint" },
         { "path": "../logger" },
         { "path": "../type-utils" },
         { "path": "../utils" },
         { "path": "../utxo-lib" },
+        { "path": "../wabisabi-crypto" },
         { "path": "../node-utils" }
     ]
 }

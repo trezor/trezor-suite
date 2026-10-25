@@ -4,7 +4,7 @@ import { SessionPhase, WabiSabiProtocolErrorCode } from '../../enums';
 import type { AccountAddress } from '../../types/account';
 import type { AliceShape } from '../../types/alice';
 import * as coordinator from '../coordinator';
-import * as middleware from '../middleware';
+import * as credentials from '../credentials';
 import { type Bob, outputDecomposition } from './outputDecomposition';
 import type { CoinjoinRoundOptions, CoinjoinRoundShape } from '../../types/round';
 import { scheduleDelay } from '../../utils/roundUtils';
@@ -28,25 +28,25 @@ const registerOutput = async (
     options: CoinjoinRoundOptions,
 ) => {
     const { roundParameters, phaseDeadline } = round;
-    const { signal, coordinatorUrl, middlewareUrl, logger } = options;
+    const { signal, coordinatorUrl, logger } = options;
 
     const remainingTime = phaseDeadline - Date.now();
     const delay = scheduleDelay(Math.floor(remainingTime * 0.8));
 
-    const outputAmountCredentials = await middleware.getRealCredentials(
+    const outputAmountCredentials = credentials.getRealCredentials(
         [], // NOTE: sending empty amountToRequest **will not** create credentialToRequest object which **should not** be sent to coordinator in output-registration request
         amountCredentials,
         round.amountCredentialIssuerParameters,
         roundParameters.MaxAmountCredentialValue,
-        { signal, baseUrl: middlewareUrl },
     );
-    const outputVsizeCredentials = await middleware.getRealCredentials(
+    await credentials.yieldToEventLoop();
+    const outputVsizeCredentials = credentials.getRealCredentials(
         [],
         vsizeCredentials,
         round.vsizeCredentialIssuerParameters,
         roundParameters.MaxVsizeAllocationPerAlice,
-        { signal, baseUrl: middlewareUrl },
     );
+    await credentials.yieldToEventLoop();
 
     // TODO: tricky, if for some reason AlreadyRegisteredScript is called then we have 2 options:
     // - try again with different address and link my new address with old address (privacy loss against coordinator?)
@@ -98,7 +98,7 @@ const registerOutput = async (
                         // @ts-expect-error: indexing with noUncheckedIndexedAccess
                         const firstCred: (typeof amountCredentials)[number] = amountCredentials[0];
                         logger.error(
-                            `NotEnoughFunds. Amount: ${firstCred.Value} Delta: ${outputAmountCredentials.CredentialsRequest.Delta} FeeRate: ${roundParameters.MiningFeeRate}`,
+                            `NotEnoughFunds. Amount: ${firstCred.value} Delta: ${outputAmountCredentials.CredentialsRequest.Delta} FeeRate: ${roundParameters.MiningFeeRate}`,
                         );
                     }
                 }

@@ -18292,7 +18292,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/coinjoin-analysis@workspace:packages/coinjoin-analysis":
+"@trezor/coinjoin-analysis@workspace:*, @trezor/coinjoin-analysis@workspace:packages/coinjoin-analysis":
   version: 0.0.0-use.local
   resolution: "@trezor/coinjoin-analysis@workspace:packages/coinjoin-analysis"
   dependencies:
@@ -18300,7 +18300,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/coinjoin-strategy@workspace:packages/coinjoin-strategy":
+"@trezor/coinjoin-strategy@workspace:*, @trezor/coinjoin-strategy@workspace:packages/coinjoin-strategy":
   version: 0.0.0-use.local
   resolution: "@trezor/coinjoin-strategy@workspace:packages/coinjoin-strategy"
   dependencies:
@@ -18317,12 +18317,15 @@ __metadata:
     "@trezor/blockchain-link": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"
+    "@trezor/coinjoin-analysis": "workspace:*"
+    "@trezor/coinjoin-strategy": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@trezor/logger": "workspace:*"
     "@trezor/node-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
+    "@trezor/wabisabi-crypto": "workspace:*"
     golomb: "npm:1.2.0"
     n64: "npm:^0.2.10"
     node-fetch: "npm:^3.3.2"

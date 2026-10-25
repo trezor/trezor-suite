@@ -1,3 +1,8 @@
+import {
+    type SelectInputsForRoundRequest,
+    selectInputsForRound as selectUtxosForRound,
+} from '@trezor/coinjoin-strategy';
+
 import { createServer } from '../../../mocks/server';
 import {
     DEFAULT_ROUND,
@@ -18,6 +23,33 @@ import {
     selectInputsForRound,
     selectRound,
 } from './selectRound';
+
+/**
+ * Input selection runs in process now, so the suite stubs the ported selector rather than
+ * intercepting a request to the middleware. The stub receives the same request object
+ * that used to be the HTTP body.
+ */
+jest.mock('@trezor/coinjoin-strategy', () => {
+    const actual = jest.requireActual('@trezor/coinjoin-strategy');
+
+    return {
+        ...actual,
+        selectInputsForRound: jest.fn(actual.selectInputsForRound),
+    };
+});
+
+const realSelectInputsForRound = jest.requireActual('@trezor/coinjoin-strategy')
+    .selectInputsForRound as typeof selectUtxosForRound;
+
+const selectUtxosMock = selectUtxosForRound as jest.MockedFunction<typeof selectUtxosForRound>;
+
+/** Stubs the selector and counts the calls, as the HTTP spy used to. */
+const stubSelector = (implementation: (request: SelectInputsForRoundRequest) => number[]) => {
+    const spy = jest.fn(implementation);
+    selectUtxosMock.mockImplementation(request => spy(request));
+
+    return spy;
+};
 
 const ACCOUNT = {
     accountKey: 'account-A',
@@ -44,6 +76,7 @@ describe('selectRound', () => {
     beforeEach(() => {
         prison.inmates = [];
         server?.removeAllListeners('test-request');
+        selectUtxosMock.mockImplementation(realSelectInputsForRound);
     });
 
     afterAll(() => {
@@ -172,23 +205,15 @@ describe('selectRound', () => {
         expect(result.length).toBeLessThan(5); // should be 4 but there is always 20% chance that will be 3
     });
 
-    it('middleware/select-inputs-for-round throws error', async () => {
-        // mock server response
-        // return error for each round with miningFeeRate: 1 (second round in fixture)
+    it('selectInputsForRound throws error', async () => {
+        // throw for each round with miningFeeRate: 1 (second round in fixture),
         // for other rounds return invalid indices
-        const spy = jest.fn();
-        server?.addListener('test-request', ({ url, data, resolve, reject }) => {
-            if (url.endsWith('/select-inputs-for-round')) {
-                spy();
-                if (data.MiningFeeRate === 1) {
-                    reject(500, { error: 'ExpectedRuntimeError' });
-                } else {
-                    resolve({
-                        Indices: [5], // non existing indices (utxo indexes)
-                    });
-                }
+        const spy = stubSelector(request => {
+            if (request.MiningFeeRate === 1) {
+                throw new Error('ExpectedRuntimeError');
             }
-            resolve();
+
+            return [5]; // non existing indices (utxo indexes)
         });
 
         const result = await selectInputsForRound({
@@ -228,17 +253,7 @@ describe('selectRound', () => {
     });
 
     it('Skipping round when fees are high', async () => {
-        // mock server response
-        // return error for each round with miningFeeRate: 1 (second round in fixture)
-        // for other rounds return invalid indices
-        const spy = jest.fn();
-        server?.addListener('test-request', ({ url, resolve }) => {
-            if (url.endsWith('/select-inputs-for-round')) {
-                spy();
-                resolve([]);
-            }
-            resolve();
-        });
+        const spy = stubSelector(() => []);
 
         const result = await selectInputsForRound({
             aliceGenerator,
@@ -278,19 +293,12 @@ describe('selectRound', () => {
             options: server?.requestOptions,
         });
 
-        expect(spy).toHaveBeenCalledTimes(1); // middleware was called once for account3
+        expect(spy).toHaveBeenCalledTimes(1); // the selector was called once, for account3
         expect(result).toBeUndefined();
     });
 
     it('Skipping round when selected utxo value > maxSuggestedAmount', async () => {
-        const spy = jest.fn();
-        server?.addListener('test-request', ({ url, resolve }) => {
-            if (url.endsWith('/select-inputs-for-round')) {
-                spy();
-                resolve({ Indices: [0] });
-            }
-            resolve();
-        });
+        const spy = stubSelector(() => [0]);
 
         const result = await selectInputsForRound({
             aliceGenerator,
@@ -318,14 +326,7 @@ describe('selectRound', () => {
     });
 
     it('Skipping round when selected utxo effective value < allowedOutputAmounts.min', async () => {
-        const spy = jest.fn();
-        server?.addListener('test-request', ({ url, resolve }) => {
-            if (url.endsWith('/select-inputs-for-round')) {
-                spy();
-                resolve({ Indices: [0] });
-            }
-            resolve();
-        });
+        const spy = stubSelector(() => [0]);
 
         const result = await selectInputsForRound({
             aliceGenerator,
@@ -353,17 +354,9 @@ describe('selectRound', () => {
 
     it('Multiple blame rounds in roundCandidates', async () => {
         // pick utxo which amount is greater than miningFeeRate
-        server?.addListener('test-request', ({ url, data, resolve }) => {
-            if (url.endsWith('/select-inputs-for-round')) {
-                const Indices = data.Utxos.flatMap((utxo: any, i: number) => {
-                    if (utxo.Amount < data.MiningFeeRate) return [];
-
-                    return i;
-                });
-                resolve({ Indices });
-            }
-            resolve();
-        });
+        stubSelector(request =>
+            request.Utxos.flatMap((utxo, i) => (utxo.Amount < request.MiningFeeRate ? [] : i)),
+        );
 
         const result = await selectInputsForRound({
             aliceGenerator,
@@ -414,24 +407,12 @@ describe('selectRound', () => {
     });
 
     it('Success. new CoinjoinRound created', async () => {
-        // dummy mock of /select-inputs-for-round
         // pick utxo which amount is greater than miningFeeRate + 1000
-        const spy = jest.fn();
-        server?.addListener('test-request', ({ url, data, resolve }) => {
-            if (url.endsWith('/select-inputs-for-round')) {
-                spy();
-                const Indices = data.Utxos.flatMap((utxo: any, i: number) => {
-                    if (utxo.Amount < 1000 + data.MiningFeeRate) return [];
-
-                    return i;
-                });
-
-                resolve({
-                    Indices,
-                });
-            }
-            resolve();
-        });
+        const spy = stubSelector(request =>
+            request.Utxos.flatMap((utxo, i) =>
+                utxo.Amount < 1000 + request.MiningFeeRate ? [] : i,
+            ),
+        );
 
         const roundWithMiningFee = (MiningFeeRate: number) => ({
             ...DEFAULT_ROUND,
@@ -514,14 +495,7 @@ describe('selectRound', () => {
     });
 
     it('Success. new blame Round created', async () => {
-        const spy = jest.fn();
-        server?.addListener('test-request', ({ url, resolve }) => {
-            if (url.endsWith('/select-inputs-for-round')) {
-                spy();
-                resolve([]);
-            }
-            resolve();
-        });
+        const spy = stubSelector(() => []);
 
         const blameOf = '1'.repeat(64);
 

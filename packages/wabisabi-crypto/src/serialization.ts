@@ -148,6 +148,19 @@ export const serializeCredentialsRequest = (
     Proofs: request.proofs.map(serializeProof),
 });
 
+/**
+ * The inverse, for a coordinator. Only the mock coordinator in `@trezor/coinjoin`'s tests
+ * needs this — Suite itself only ever builds requests, never receives them.
+ */
+export const deserializeCredentialsRequest = (
+    serialized: SerializedCredentialsRequest,
+): CredentialsRequest => ({
+    delta: serialized.Delta,
+    presented: serialized.Presented.map(deserializeCredentialPresentation),
+    requested: serialized.Requested.map(deserializeIssuanceRequest),
+    proofs: serialized.Proofs.map(deserializeProof),
+});
+
 export const serializeCredentialsResponse = (
     response: CredentialsResponse,
 ): SerializedCredentialsResponse => ({

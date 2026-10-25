@@ -75,9 +75,7 @@ export class CoinjoinClient extends TypedEmitter<CoinjoinClientEvents> {
             txs,
             {
                 network: this.network,
-                middlewareUrl: this.settings.middlewareUrl,
                 logger: this.logger,
-                signal: this.abortController.signal,
             },
             sections,
         );
@@ -204,7 +202,6 @@ export class CoinjoinClient extends TypedEmitter<CoinjoinClientEvents> {
                     signal: this.abortController.signal,
                     coordinatorName: this.settings.coordinatorName,
                     coordinatorUrl,
-                    middlewareUrl: this.settings.middlewareUrl,
                     logger: this.logger,
                     setSessionPhase: sessionPhase => this.setSessionPhase(sessionPhase),
                 },
