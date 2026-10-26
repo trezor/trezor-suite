@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { promisify } from 'node:util';
 
+import { getCommitsSinceLastStableRelease } from './connect-changelog';
 import {
     comment,
     commit,
@@ -200,14 +201,8 @@ const bumpConnect = async () => {
                 // always writes; keeping it would inflate every count taken from this list.
                 .filter(Boolean);
 
-            const newCommits: string[] = [];
-            for (const commit of commitsArr) {
-                // Here we check commits utils last stable release
-                if (commit.includes(`npm-release: @trezor/${packageName}`)) {
-                    break;
-                }
-                newCommits.push(commit);
-            }
+            // Everything above the package's previous release is what this release adds.
+            const newCommits = getCommitsSinceLastStableRelease(commitsArr, packageName);
 
             // In Connect dependencies packages we only update CHANGELOG when doing a stable release (patch or minor).
             // We do that so we can generate the complete CHANGELOG automatically when doing stable release.
