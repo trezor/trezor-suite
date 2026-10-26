@@ -180,7 +180,15 @@ export const updateSelectedFeeLevelThunk = createThunk<
 >(
     `${SEND_MODULE_PREFIX}/updateSelectedFeeLevelThunk`,
     (
-        { accountKey, tokenContract, feeLevelLabel, feePerUnit, feeLimit },
+        {
+            accountKey,
+            tokenContract,
+            feeLevelLabel,
+            feePerUnit,
+            feeLimit,
+            maxFeePerGas,
+            maxPriorityFeePerGas,
+        },
         { dispatch, getState },
     ) => {
         const draft = selectSendFormDraftByKey(getState(), accountKey, tokenContract);
@@ -194,6 +202,13 @@ export const updateSelectedFeeLevelThunk = createThunk<
         }
         if (feeLimit) {
             draftCopy.feeLimit = feeLimit;
+        }
+
+        if (maxFeePerGas) {
+            draftCopy.maxFeePerGas = maxFeePerGas;
+        }
+        if (maxPriorityFeePerGas) {
+            draftCopy.maxPriorityFeePerGas = maxPriorityFeePerGas;
         }
 
         dispatch(sendFormActions.storeDraft({ accountKey, tokenContract, formState: draftCopy }));
