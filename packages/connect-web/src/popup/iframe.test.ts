@@ -72,28 +72,21 @@ describe('getIframeInstance', () => {
         await expect(promise).resolves.toBeUndefined();
     });
 
-    // Documents the bug: every manager looks the iframe up by the fixed DOM id
-    // `trezor-connect-bootstrap`, so the second one adopts the element of the
-    // first instead of appending its own. The adopted `src` carries the
-    // `connect-popup-req` channel id of whoever created it, so the second
-    // manager's bootstrap handshake can never complete.
-    it('shares one iframe between instances', async () => {
+    it('gives each instance its own iframe', async () => {
         const first = getIframeInstance();
         const second = getIframeInstance();
         await createAndLoad(first);
         await createAndLoad(second);
-        expect(getElement(second)).toBe(getElement(first));
+        expect(getElement(second)).not.toBe(getElement(first));
     });
 
-    // Documents the bug: the same lookup adopts any element that carries the
-    // fixed id, e.g. one left behind by a previous bundle on the page.
-    it('adopts a foreign iframe left in the document', async () => {
+    it('does not adopt a foreign iframe left in the document', async () => {
         const foreign = document.createElement('iframe');
         foreign.id = 'trezor-connect-bootstrap';
         document.body.appendChild(foreign);
 
         const iframe = getIframeInstance();
         await createAndLoad(iframe);
-        expect(getElement(iframe)).toBe(foreign);
+        expect(getElement(iframe)).not.toBe(foreign);
     });
 });
