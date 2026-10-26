@@ -85,7 +85,8 @@ export const useFeeSelector = ({
         networkSymbol: symbol,
     });
     const feeUnavailableErrorTitle =
-        precomposedErrorTitle ?? (isFeeUnavailable ? translate('moduleSend.fees.error') : null);
+        precomposedErrorTitle ??
+        (isFeeUnavailable ? translate('moduleSend.fees.unavailable') : null);
     const shouldShowFeeUnavailableAlert = isFeeUnavailable;
 
     const handleOpen = useCallback(() => {

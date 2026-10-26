@@ -1,7 +1,8 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import type { FormState } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
-import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
+import { getTranslation } from '@suite-native/intl';
+import { fireEvent, renderWithStoreProvider, within } from '@suite-native/test-utils-store';
 
 import { FeeSelectorRow } from './FeeSelectorRow';
 import { BTC_ACCOUNT_KEY, getWalletState } from '../../__fixtures__/walletState';
@@ -89,37 +90,51 @@ describe('FeeSelectorRow', () => {
         expect(toJSON()).toBeNull();
     });
 
-    it('should render an alert when fees are unavailable and a form draft is set', async () => {
-        const baseWalletState = getWalletState();
-        const preloadedState = {
-            wallet: {
-                ...baseWalletState,
-                send: {
-                    ...baseWalletState.send,
-                    feeLevels: {
-                        ...baseWalletState.send.feeLevels,
-                        normal: {
-                            type: 'error' as const,
-                            error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' as const,
+    it.each([
+        {
+            error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
+            message:
+                'transactionManagement.precomposedTransaction.errors.amountNotEnoughCurrencyFee',
+        },
+        { error: 'TR_GENERIC_ERROR_TITLE', message: 'moduleSend.fees.unavailable' },
+    ] as const)(
+        'describes $error below the accessible fee selector',
+        async ({ error, message }) => {
+            const baseWalletState = getWalletState();
+            const preloadedState = {
+                wallet: {
+                    ...baseWalletState,
+                    send: {
+                        ...baseWalletState.send,
+                        feeLevels: {
+                            ...baseWalletState.send.feeLevels,
+                            normal: {
+                                type: 'error' as const,
+                                error,
+                            },
                         },
                     },
                 },
-            },
-        };
+            };
 
-        const { queryByTestId, getByText } = await renderWithStoreProvider(
-            <FeeSelectorRow
-                accountKey={BTC_ACCOUNT_KEY}
-                updateThunk={noopThunk}
-                selectedFee="normal"
-                formDraft={{} as FormState}
-            />,
-            { preloadedState },
-        );
+            const { queryByTestId } = await renderWithStoreProvider(
+                <FeeSelectorRow
+                    accountKey={BTC_ACCOUNT_KEY}
+                    updateThunk={noopThunk}
+                    selectedFee="normal"
+                    formDraft={{} as FormState}
+                />,
+                { preloadedState },
+            );
 
-        expect(queryByTestId('@transactionManagement/fee-selector-row')).toBeOnTheScreen();
-        await fireEvent.press(queryByTestId('@transactionManagement/fee-selector-row')!);
-        expect(mockOpenModal).toHaveBeenCalledTimes(1);
-        expect(getByText(/Insufficient .* to cover the transaction fee/i)).toBeOnTheScreen();
-    });
+            expect(queryByTestId('@transactionManagement/fee-selector-row')).toBeOnTheScreen();
+            await fireEvent.press(queryByTestId('@transactionManagement/fee-selector-row')!);
+            expect(mockOpenModal).toHaveBeenCalledTimes(1);
+            expect(
+                within(queryByTestId('@transactionManagement/fee-unavailable-alert')!).getByText(
+                    getTranslation(message, { networkDisplaySymbol: 'BTC' }),
+                ),
+            ).toBeOnTheScreen();
+        },
+    );
 });

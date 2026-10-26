@@ -76,7 +76,7 @@ export const FeeSelectorRow = ({ isReadOnly = false, ...props }: FeeSelectorRowP
                 )}
             </Pressable>
             {shouldShowFeeUnavailableAlert && feeUnavailableErrorTitle && (
-                <Box marginTop="sp8">
+                <Box marginTop="sp8" testID="@transactionManagement/fee-unavailable-alert">
                     <BannerInline intent="critical" title={feeUnavailableErrorTitle} />
                 </Box>
             )}
