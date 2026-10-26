@@ -78,6 +78,8 @@ describe('revoke submit analytics', () => {
         jest.mocked(useYieldAllowanceFees).mockReturnValue({
             formDraft: undefined,
             formDraftKey: '',
+            hasFeeEstimationError: false,
+            retryFeeEstimation: jest.fn(),
             isAllowanceFeeReady: true,
             isComposingAllowanceFee: false,
             isFeeUnavailable: false,
@@ -115,6 +117,8 @@ describe('revoke submit analytics', () => {
         jest.mocked(useYieldAllowanceFees).mockReturnValue({
             formDraft: undefined,
             formDraftKey: '',
+            hasFeeEstimationError: false,
+            retryFeeEstimation: jest.fn(),
             isAllowanceFeeReady: false,
             isComposingAllowanceFee: false,
             isFeeUnavailable: true,

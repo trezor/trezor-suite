@@ -101,6 +101,8 @@ export const useYieldDepositRevokeScreen = () => {
     const {
         formDraft: revokeFeeFormDraft,
         formDraftKey: revokeFeeFormDraftKey,
+        hasFeeEstimationError,
+        retryFeeEstimation,
         isAllowanceFeeReady,
         isComposingAllowanceFee,
         selectedFee: selectedRevokeFee,
@@ -323,11 +325,12 @@ export const useYieldDepositRevokeScreen = () => {
     const feeSelectorProps =
         revokeFeeTransaction !== null
             ? {
+                  hasFeeEstimationError,
+                  retryFeeEstimation,
                   accountKey: account.key,
                   tokenContract: route.params.tokenContract,
                   updateThunk: updateRevokeFeeLevelThunk,
                   selectedFee: selectedRevokeFee,
-                  selectedFeePerUnit: revokeFeeFormDraft?.feePerUnit,
                   formDraft: revokeFeeFormDraft,
                   formDraftKey: revokeFeeFormDraftKey,
               }

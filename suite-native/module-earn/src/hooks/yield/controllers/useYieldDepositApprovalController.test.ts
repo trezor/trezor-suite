@@ -135,6 +135,8 @@ describe('useYieldDepositApprovalController', () => {
         useYieldApprovalFeesMock.mockReturnValue({
             formDraft: null,
             formDraftKey: '',
+            hasFeeEstimationError: false,
+            retryFeeEstimation: jest.fn(),
             isAllowanceFeeReady: true,
             selectedFee: undefined,
             updateFeeLevelThunk: jest.fn(),
@@ -173,6 +175,8 @@ describe('useYieldDepositApprovalController', () => {
         useYieldApprovalFeesMock.mockReturnValue({
             formDraft: null,
             formDraftKey: '',
+            hasFeeEstimationError: false,
+            retryFeeEstimation: jest.fn(),
             isAllowanceFeeReady: false,
             selectedFee: undefined,
             updateFeeLevelThunk: jest.fn(),
