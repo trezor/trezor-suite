@@ -124,12 +124,14 @@ const createTestStore = (fees: FeesState = initialFees) =>
     });
 const renderFees = async (props: HookProps = initialProps, fees = initialFees) => {
     const store = createTestStore(fees);
+    const analytics = mockNativeAnalytics();
 
     return {
         store,
+        analytics,
         ...(await renderHookWithStoreProvider(useYieldClaimFees, {
             initialProps: props,
-            services: { store, analytics: mockNativeAnalytics() },
+            services: { store, analytics },
         })),
     };
 };
@@ -145,6 +147,56 @@ describe('useYieldClaimFees with shared fee preparation', () => {
     afterEach(() => {
         jest.clearAllMocks();
         jest.useRealTimers();
+    });
+
+    it('does not report stale shared fee errors while rewards are unavailable', async () => {
+        const rewards = createAccountRewards();
+        const { store, analytics, rerender } = await renderFees({
+            accountRewards: null,
+            isEnabled: false,
+        });
+        await act(() => {
+            store.dispatch(
+                transactionManagementActions.storeFeeLevels({
+                    feeLevels: { normal: { type: 'error', error: 'NOT-ENOUGH-FUNDS' } },
+                }),
+            );
+        });
+
+        await rerender({
+            accountRewards: { ...rewards, rewards: [] },
+            isEnabled: true,
+        });
+        await rerender({ accountRewards: rewards, isEnabled: true });
+        await settle();
+
+        expect(analytics.report).not.toHaveBeenCalled();
+    });
+
+    it('reports Claim estimation failure, explicit retry and usable recovery without private context', async () => {
+        estimateFeeMock.mockResolvedValueOnce({
+            success: false,
+            error: 'fee-estimation-failed',
+        });
+        const { result, analytics } = await renderFees({
+            accountRewards: createAccountRewards(),
+            isEnabled: true,
+        });
+
+        await settle();
+        expect(result.current.hasFeeEstimationError).toBe(true);
+        await act(() => result.current.retryFeeEstimation());
+        await settle();
+
+        expect(result.current.preparedAction).not.toBeNull();
+        expect(jest.mocked(analytics.report).mock.calls.map(([event]) => event)).toEqual(
+            ['fee-estimation-error-banner', 'fee-estimation-retry', 'fee-estimation-recovered'].map(
+                element => ({
+                    type: 'yield/interaction',
+                    payload: { element, value: 'merkl-claim', networkSymbol: 'eth' },
+                }),
+            ),
+        );
     });
 
     it('prepares real claim calldata and the selected EIP-1559 fee for Review', async () => {

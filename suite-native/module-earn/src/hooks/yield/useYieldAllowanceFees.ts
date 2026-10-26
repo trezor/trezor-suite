@@ -23,6 +23,7 @@ import {
 import { buildApprovalTransactionData } from '@suite-common/wallet-utils';
 import {
     type NativeSendRootState,
+    getFeeAvailability,
     isPrecomposedTransactionError,
     selectFeeLevels,
     transactionManagementActions,
@@ -37,6 +38,7 @@ import {
     getYieldAllowanceFeeState,
 } from '../../utils/yield/yieldApprovalUtils';
 import { updateEarnSelectedFeeLevelThunk } from '../earn/useComposeEarnFees';
+import { useEarnFeeAnalytics } from '../earn/useEarnFeeAnalytics';
 import { useEarnFeeEstimationError } from '../earn/useEarnFeeEstimationError';
 
 export type YieldAllowanceFeeTransaction = {
@@ -73,18 +75,18 @@ export const useYieldAllowanceFees = ({
     const { dispatch } = useServices(injectDispatch);
     const debounce = useDebounce();
     const requestIdRef = useRef(0);
-    const {
-        feeEstimationRetryKey,
-        hasFeeEstimationError,
-        retryFeeEstimation,
-        setHasFeeEstimationError,
-    } = useEarnFeeEstimationError();
     const [isComposingFeeLevels, setIsComposingFeeLevels] = useState(true);
     const [composedParams, setComposedParams] = useState<ComposeAllowanceFeeParams | null>(null);
     const formDraftKey = useMemo(
         () => (flowKey ? getYieldAllowanceFormDraftKey(flowKey, draftTransactionType) : ''),
         [draftTransactionType, flowKey],
     );
+    const {
+        feeEstimationRetryKey,
+        hasFeeEstimationError,
+        retryFeeEstimation,
+        setHasFeeEstimationError,
+    } = useEarnFeeEstimationError(formDraftKey);
     const feeInfo = useSelector((state: FeesRootState) =>
         selectConvertedNetworkFeeInfo(state, flowData?.account.symbol),
     );
@@ -254,11 +256,31 @@ export const useYieldAllowanceFees = ({
         [],
     );
 
+    const { isFeeUnavailable } = getFeeAvailability({
+        feeLevels,
+        selectedFee,
+        isLoading: isCurrentFeeComposing,
+    });
+    const handleRetryFeeEstimation = useCallback(() => {
+        setComposedParams(null);
+        retryFeeEstimation();
+    }, [retryFeeEstimation]);
+    const retryWithAnalytics = useEarnFeeAnalytics({
+        contextKey: formDraftKey,
+        flow: draftTransactionType,
+        networkSymbol: flowData?.account.symbol,
+        isEnabled: composeAllowanceFeeParams !== null,
+        hasEstimationError: hasFeeEstimationError,
+        isFeeUnavailable,
+        isReady: isAllowanceFeeReady,
+        retry: handleRetryFeeEstimation,
+    });
+
     return {
         formDraft,
         formDraftKey,
         hasFeeEstimationError,
-        retryFeeEstimation,
+        retryFeeEstimation: retryWithAnalytics,
         isAllowanceFeeReady,
         isComposingFeeLevels: isCurrentFeeComposing,
         selectedFee,
