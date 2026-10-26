@@ -38,3 +38,12 @@ export const getCommitsSinceLastStableRelease = (commitLines: string[], packageN
 
     return boundary === -1 ? commitLines : commitLines.slice(0, boundary);
 };
+
+// Keep only user-facing commit types so a package changelog reads as a list of actual changes rather
+// than every commit that happened to touch its directory (the git log is path-scoped, so repo-wide
+// mechanical sweeps leak in). An allow-list drops release bookkeeping (`npm-release:`,
+// `npm-prerelease(connect):`, `release:`) and non-user-facing churn (chore/test/ci/build/style/docs)
+// with or without a scope, and is self-limiting: a bookkeeping type added later cannot leak in.
+const USER_FACING_COMMIT = /^-\s+(?:feat|fix|perf|refactor|revert)(?:\([^)]*\))?:|^-\s+Revert "/;
+export const filterChangelogCommits = (commitLines: string[]) =>
+    commitLines.filter(line => USER_FACING_COMMIT.test(line));

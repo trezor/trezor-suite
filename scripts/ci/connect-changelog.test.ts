@@ -1,4 +1,4 @@
-import { getCommitsSinceLastStableRelease } from './connect-changelog';
+import { filterChangelogCommits, getCommitsSinceLastStableRelease } from './connect-changelog';
 
 const commitLine = (subject: string) => `-   ${subject} (abc1234)`;
 
@@ -98,5 +98,34 @@ describe('getCommitsSinceLastStableRelease', () => {
         expect(warn).toHaveBeenCalledWith(expect.stringContaining('@trezor/utils'));
 
         warn.mockRestore();
+    });
+});
+
+describe('filterChangelogCommits', () => {
+    it.each([
+        'feat: add something',
+        'feat(connect): add something',
+        'fix(utils): fix something',
+        'perf(connect): speed something up',
+        'refactor(connect): move something',
+        'revert(connect): revert something',
+        'Revert "feat(connect): add something"',
+    ])('keeps %s', subject => {
+        expect(filterChangelogCommits([commitLine(subject)])).toEqual([commitLine(subject)]);
+    });
+
+    it.each([
+        'chore: bump something',
+        'chore(connect): bump something',
+        'test(connect): add a test',
+        'ci: tweak a workflow',
+        'build(connect): tweak the bundle',
+        'style: reformat',
+        'docs(connect): document something',
+        'npm-release: @trezor/utils 1.2.3',
+        'npm-prerelease(connect): @trezor/utils 1.2.3-beta.1',
+        'release: connect 9.4.0',
+    ])('drops %s', subject => {
+        expect(filterChangelogCommits([commitLine(subject)])).toEqual([]);
     });
 });

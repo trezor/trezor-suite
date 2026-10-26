@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { promisify } from 'node:util';
 
-import { getCommitsSinceLastStableRelease } from './connect-changelog';
+import { filterChangelogCommits, getCommitsSinceLastStableRelease } from './connect-changelog';
 import {
     comment,
     commit,
@@ -207,7 +207,10 @@ const bumpConnect = async () => {
                 // Stop at the previous stable release so the entry spans only this release.
                 const newCommits = getCommitsSinceLastStableRelease(commitsArr, packageName);
 
-                if (newCommits.length) {
+                // Keep only user-facing changes; drop release bookkeeping and mechanical churn.
+                const changelogCommits = filterChangelogCommits(newCommits);
+
+                if (changelogCommits.length) {
                     const CHANGELOG_PATH = path.join(PACKAGE_PATH, 'CHANGELOG.md');
                     if (!fs.existsSync(CHANGELOG_PATH)) {
                         await writeFile(CHANGELOG_PATH, '');
@@ -215,7 +218,7 @@ const bumpConnect = async () => {
 
                     let changelog = await readFile(CHANGELOG_PATH, 'utf-8');
 
-                    changelog = `# ${version}\n\n${newCommits.join('\n')}\n\n${changelog}`;
+                    changelog = `# ${version}\n\n${changelogCommits.join('\n')}\n\n${changelog}`;
                     await writeFile(CHANGELOG_PATH, changelog, 'utf-8');
 
                     await exec('yarn', ['prettier', '--write', CHANGELOG_PATH]);
