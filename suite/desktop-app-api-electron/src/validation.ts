@@ -26,6 +26,7 @@ export const isTheme = (theme: any) => validThemes.includes(theme);
 
 const validChannels: Array<keyof RendererChannels> = [
     'oauth/response',
+    'oauth/error',
     'update/checking',
     'update/available',
     'update/not-available',
