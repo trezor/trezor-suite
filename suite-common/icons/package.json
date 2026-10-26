@@ -27,6 +27,6 @@
         "@trezor/logger": "workspace:*",
         "@trezor/network-module-types": "workspace:*",
         "@trezor/type-utils": "workspace:*",
-        "zod": "4.6.6"
+        "zod": "4.6.7"
     }
 }

@@ -19,6 +19,6 @@
         "prettier": "^3.9.9"
     },
     "dependencies": {
-        "zod": "4.6.6"
+        "zod": "4.6.7"
     }
 }
