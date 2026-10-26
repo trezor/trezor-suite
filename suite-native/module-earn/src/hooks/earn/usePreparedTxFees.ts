@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
+    type EarnTransactionFlow,
     type FeesRootState,
     type FormDraftRootState,
     formDraftActions,
@@ -28,6 +29,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { deepEqual } from '@trezor/utils';
 
 import { useComposeErrorHandler } from './useComposeErrorHandler';
+import { useEarnFeeAnalytics } from './useEarnFeeAnalytics';
 import { useEarnFeeEstimationError } from './useEarnFeeEstimationError';
 import {
     type PreparedTxFeeToken,
@@ -67,6 +69,7 @@ type UsePreparedTxFeesParams<TComposed extends ComposedTxBase, TReason extends s
     amount: string | undefined;
     availableBalance?: string;
     contextKey?: string;
+    analyticsFlow: EarnTransactionFlow;
     /**
      * Composes the base transaction for the debounced amount. Thrown failures use fallbackReason. Every error is surfaced as a retryable alert; a failure that only
      * disables the submit button leaves the user with no way to proceed.
@@ -93,6 +96,7 @@ export const usePreparedTxFees = <
 >({
     amount,
     availableBalance,
+    analyticsFlow,
     composeTransaction,
     formDraftKey,
     contextKey = formDraftKey,
@@ -337,6 +341,7 @@ export const usePreparedTxFees = <
         !!amount &&
         !hasFeeEstimationError &&
         (isPreparingFee || !currentBaseActionContext);
+    const canPrepareFee = canCompose && !!amount;
     const isFeeReady = isEnabled && preparedTx?.amount === amount && !isFeeUnavailable;
 
     useEffect(() => {
@@ -345,7 +350,7 @@ export const usePreparedTxFees = <
 
         setHasFeeEstimationError(false);
 
-        if (!canCompose || !amount) {
+        if (!canPrepareFee) {
             setBaseActionContext(null);
             setIsPreparingFee(false);
 
@@ -361,7 +366,7 @@ export const usePreparedTxFees = <
         void debounce(() => void prepareBaseAction(amount, requestId));
     }, [
         amount,
-        canCompose,
+        canPrepareFee,
         clearFeeStore,
         debounce,
         feeEstimationRetryKey,
@@ -418,16 +423,28 @@ export const usePreparedTxFees = <
         resetComposeError,
     ]);
 
+    const hasFeeError = hasFeeEstimationError || hasFeeDraftEstimationError;
+    const retryWithAnalytics = useEarnFeeAnalytics({
+        contextKey,
+        flow: analyticsFlow,
+        networkSymbol: symbol,
+        isEnabled: canPrepareFee,
+        hasEstimationError: hasFeeError,
+        isFeeUnavailable,
+        isReady: isFeeReady,
+        retry: handleRetryFeeEstimation,
+    });
+
     return {
         getCustomFeeLevel,
         formDraft,
         formDraftKey,
-        hasFeeEstimationError: hasFeeEstimationError || hasFeeDraftEstimationError,
+        hasFeeEstimationError: hasFeeError,
         isFeePreparing: isCurrentFeePreparing,
         isFeeReady,
         isFeeUnavailable,
         preparedTx,
-        retryFeeEstimation: handleRetryFeeEstimation,
+        retryFeeEstimation: retryWithAnalytics,
         selectedFee,
     };
 };

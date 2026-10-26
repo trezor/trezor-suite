@@ -90,6 +90,7 @@ const createTestStore = () =>
 
 const renderFees = async (draft?: FormState, transaction = TRANSACTION) => {
     const store = createTestStore();
+    const analytics = mockNativeAnalytics();
     if (draft)
         store.dispatch(
             formDraftActions.storeDraft({
@@ -99,7 +100,7 @@ const renderFees = async (draft?: FormState, transaction = TRANSACTION) => {
         );
 
     const hook = await renderHookWithStoreProvider(useYieldAllowanceFees, {
-        services: { store, analytics: mockNativeAnalytics() },
+        services: { store, analytics },
         initialProps: {
             flowData: FLOW.flowData,
             flowKey: FLOW.flowKey,
@@ -109,7 +110,7 @@ const renderFees = async (draft?: FormState, transaction = TRANSACTION) => {
         },
     });
 
-    return { ...hook, store };
+    return { ...hook, store, analytics };
 };
 
 describe('useYieldAllowanceFees recovery', () => {
@@ -147,7 +148,7 @@ describe('useYieldAllowanceFees recovery', () => {
                 );
             else
                 mockCompose.mockResolvedValueOnce(failure === 'empty' ? fulfilled({}) : rejected());
-            const { result } = await renderFees();
+            const { result, analytics } = await renderFees();
             expect(result.current.isAllowanceFeeReady).toBe(false);
             await settleDebounce();
             expect(result.current.hasFeeEstimationError).toBe(true);
@@ -156,6 +157,16 @@ describe('useYieldAllowanceFees recovery', () => {
             await settleDebounce();
             expect(result.current.hasFeeEstimationError).toBe(false);
             expect(result.current.isAllowanceFeeReady).toBe(true);
+            expect(jest.mocked(analytics.report).mock.calls.map(([event]) => event)).toEqual(
+                [
+                    'fee-estimation-error-banner',
+                    'fee-estimation-retry',
+                    'fee-estimation-recovered',
+                ].map(element => ({
+                    type: 'yield/interaction',
+                    payload: { element, value: 'approve', networkSymbol: 'eth' },
+                })),
+            );
         },
     );
 

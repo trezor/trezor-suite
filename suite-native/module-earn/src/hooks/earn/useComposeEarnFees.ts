@@ -26,6 +26,7 @@ import {
 import {
     type NativeSendRootState,
     type UpdateSelectedFeeLevelThunkParams,
+    getFeeAvailability,
     hasNewCustomFee,
     isPrecomposedTransactionError,
     selectFeeLevels,
@@ -35,6 +36,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { useDebounce } from '@trezor/react-utils';
 import { createThunk, injectDispatch, injectGetState } from '@trezor/redux-utils';
 
+import { useEarnFeeAnalytics } from './useEarnFeeAnalytics';
 import { useEarnFeeEstimationError } from './useEarnFeeEstimationError';
 import { EARN_MODULE_PREFIX } from '../../constants';
 import { type EarnFormDraftPrefix } from '../../types';
@@ -272,21 +274,36 @@ export const useComposeEarnFees = ({
         [],
     );
 
+    const isCurrentFeeComposing =
+        isComposingFeeLevels || (!!formState && !isCurrentComposition && !hasFeeEstimationError);
+    const { isFeeUnavailable } = getFeeAvailability({
+        feeLevels,
+        selectedFee,
+        isLoading: isCurrentFeeComposing,
+    });
     const isFeeReady =
         !!formState &&
         isCurrentComposition &&
         !isComposingFeeLevels &&
         !hasFeeEstimationError &&
         isFinalPrecomposedTransaction(selectedFeeLevel);
+    const retryWithAnalytics = useEarnFeeAnalytics({
+        contextKey: formDraftKey,
+        flow: formDraftPrefix,
+        networkSymbol: account?.symbol,
+        isEnabled: isFocused && !!formState,
+        hasEstimationError: hasFeeEstimationError,
+        isFeeUnavailable,
+        isReady: isFeeReady,
+        retry: retryFeeEstimation,
+    });
 
     return {
         formDraft,
         formDraftKey,
         hasFeeEstimationError,
-        retryFeeEstimation,
-        isComposingFeeLevels:
-            isComposingFeeLevels ||
-            (!!formState && !isCurrentComposition && !hasFeeEstimationError),
+        retryFeeEstimation: retryWithAnalytics,
+        isComposingFeeLevels: isCurrentFeeComposing,
         isFeeReady,
         updateFeeLevelThunk: updateEarnSelectedFeeLevelThunk,
     };
