@@ -7,6 +7,7 @@ import {
     getCoinLabel,
     groupPermissionsByCoin,
     permissionIcons,
+    readGrantedPermissions,
 } from '@suite-common/connect-popup';
 import { injectHasNetworkIcon } from '@suite-common/networks';
 import { AccordionContent, AnimatedBox, Box, HStack, Text, VStack } from '@suite-native/atoms';
@@ -153,7 +154,9 @@ const PermissionGroup = ({ coin, permissions, defaultIsOpen }: PermissionGroupPr
 };
 
 type GroupedPermissionsListProps = {
-    permissions: PermissionRequest[];
+    // A remembered app persisted on native can reach this screen with an unreadable grant list,
+    // so the prop admits the untrusted shape; see `readGrantedPermissions`.
+    permissions: PermissionRequest[] | undefined;
     // Groups are expanded by default: granting is a security decision, so nothing
     // is hidden behind a tap. They remain collapsible to tidy up long lists.
     defaultIsOpen?: boolean;
@@ -162,20 +165,26 @@ type GroupedPermissionsListProps = {
 export const GroupedPermissionsList = ({
     permissions,
     defaultIsOpen = true,
-}: GroupedPermissionsListProps) => (
-    <VStack spacing="sp12" padding="sp8">
-        {permissions.length === 0 && (
-            <Text variant="body-sm" color="contentSecondary">
-                <Translation id="moduleConnectPopup.permissions.none" />
-            </Text>
-        )}
-        {groupPermissionsByCoin(permissions).map(group => (
-            <PermissionGroup
-                key={group.coin ?? '__device__'}
-                coin={group.coin}
-                permissions={group.permissions}
-                defaultIsOpen={defaultIsOpen}
-            />
-        ))}
-    </VStack>
-);
+}: GroupedPermissionsListProps) => {
+    // Show an unreadable grant list as no permissions rather than throwing, which would hide the
+    // "forget" button that clears it.
+    const grantedPermissions = readGrantedPermissions(permissions);
+
+    return (
+        <VStack spacing="sp12" padding="sp8">
+            {grantedPermissions.length === 0 && (
+                <Text variant="body-sm" color="contentSecondary">
+                    <Translation id="moduleConnectPopup.permissions.none" />
+                </Text>
+            )}
+            {groupPermissionsByCoin(grantedPermissions).map(group => (
+                <PermissionGroup
+                    key={group.coin ?? '__device__'}
+                    coin={group.coin}
+                    permissions={group.permissions}
+                    defaultIsOpen={defaultIsOpen}
+                />
+            ))}
+        </VStack>
+    );
+};
