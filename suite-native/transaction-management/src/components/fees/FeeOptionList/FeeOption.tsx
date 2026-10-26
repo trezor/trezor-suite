@@ -12,8 +12,8 @@ import { type NetworkSymbol, type NetworkType, getNetworkType } from '@suite-com
 import {
     EVM_FEE_RATE_DECIMALS,
     type FeesRootState,
-    selectConvertedNetworkFeeLevelFeePerUnit,
     selectConvertedNetworkFeeLevelTimeEstimate,
+    selectNetworkFeeLevel,
 } from '@suite-common/wallet-core';
 import type {
     GeneralPrecomposedTransaction,
@@ -31,15 +31,20 @@ import { FormContext, useWatch } from '@suite-native/forms';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color } from '@trezor/theme';
+import { BigNumber } from '@trezor/utils';
 
 import { FeeOptionErrorMessage } from './FeeOptionErrorMessage';
+import {
+    isPrecomposedTransactionError,
+    usePrecomposedTransactionError,
+} from '../../../hooks/usePrecomposedTransactionError';
 import { type NativeSupportedPredefinedFeeLevel } from '../../../types';
 
 export type FeeOptionProps = {
     feeKey: NativeSupportedPredefinedFeeLevel;
-    feeLevel: GeneralPrecomposedTransactionFinal;
+    feeLevel: GeneralPrecomposedTransaction;
+    referenceFeeLevel?: GeneralPrecomposedTransactionFinal;
     symbol: NetworkSymbol;
-    transactionBytes: number;
     isInteractive?: boolean;
     isLoading?: boolean;
     onSelectedFeeLevel?: (feeKey: NativeSupportedPredefinedFeeLevel) => void;
@@ -67,25 +72,18 @@ const valuesWrapperStyle = prepareNativeStyle(utils => ({
 const getFeePerUnit = ({
     networkType,
     feeLevel,
-    transactionBytes,
-    backendFeePerUnit = '0',
 }: {
     networkType: NetworkType;
-    feeLevel: GeneralPrecomposedTransaction;
-    transactionBytes: number;
-    backendFeePerUnit: string;
+    feeLevel: GeneralPrecomposedTransactionFinal;
 }): string => {
-    if (!isFinalPrecomposedTransaction(feeLevel)) {
-        return backendFeePerUnit;
-    }
-
     if (networkType === 'ethereum') {
         const value = Number(isEip1559(feeLevel) ? feeLevel.maxFeePerGas : feeLevel.feePerByte);
 
         return value.toFixed(EVM_FEE_RATE_DECIMALS);
     }
 
-    if (networkType === 'bitcoin') {
+    if (networkType === 'bitcoin' && 'bytes' in feeLevel && feeLevel.bytes) {
+        const transactionBytes = feeLevel.bytes;
         const feePerVb = Number(feeLevel.fee) / transactionBytes;
 
         return Number.isInteger(feePerVb) ? String(feePerVb) : Number(feePerVb).toFixed(2);
@@ -94,11 +92,37 @@ const getFeePerUnit = ({
     return feeLevel.feePerByte;
 };
 
+type EstimateFeeParams = {
+    networkType: NetworkType;
+    feePerUnit: string | undefined;
+    referenceFeeLevel: GeneralPrecomposedTransactionFinal | undefined;
+};
+
+const estimateFee = ({
+    networkType,
+    feePerUnit,
+    referenceFeeLevel,
+}: EstimateFeeParams): string | null => {
+    if (!feePerUnit || !referenceFeeLevel) return null;
+
+    const rate = new BigNumber(feePerUnit);
+    const size = new BigNumber(
+        (networkType === 'ethereum' ? referenceFeeLevel.feeLimit : referenceFeeLevel.bytes) ?? 0,
+    );
+    if (!rate.isFinite() || rate.isNegative() || !size.isFinite() || !size.gt(0)) return null;
+
+    // Ethereum rates are in Gwei per gas unit; Bitcoin rates are in satoshis per vbyte.
+    if (networkType === 'ethereum') return rate.times(size).times(1e9).toFixed(0);
+    if (networkType === 'bitcoin') return rate.times(size).toFixed(0, BigNumber.ROUND_CEIL);
+
+    return null;
+};
+
 export const FeeOption = ({
     feeKey,
     feeLevel,
+    referenceFeeLevel,
     symbol,
-    transactionBytes,
     isInteractive = true,
     isLoading = false,
     onSelectedFeeLevel,
@@ -110,11 +134,15 @@ export const FeeOption = ({
         selectConvertedNetworkFeeLevelTimeEstimate(state, symbol, feeKey),
     );
 
-    const backendFeePerUnit = useSelector((state: FeesRootState) =>
-        selectConvertedNetworkFeeLevelFeePerUnit(state, symbol, feeKey),
+    const networkFeeLevel = useSelector((state: FeesRootState) =>
+        selectNetworkFeeLevel(state, symbol, feeKey),
     );
 
     const areFeeValuesComplete = isFinalPrecomposedTransaction(feeLevel);
+    const feeError = usePrecomposedTransactionError({
+        error: feeLevel.type === 'error' ? feeLevel.error : undefined,
+        networkSymbol: symbol,
+    });
 
     const selectedLevel = useWatch({ control, name: 'feeLevel' });
     const isChecked = selectedLevel === feeKey;
@@ -137,19 +165,22 @@ export const FeeOption = ({
     const networkType = getNetworkType(symbol);
     const feeUnits = getFeeUnits(networkType);
 
-    // If trezor-connect was not able to compose the fee level (e.g. insufficient account balance), we have to mock its value.
-    const fee = areFeeValuesComplete
-        ? feeLevel.fee
-        : String(transactionBytes * Number(backendFeePerUnit));
-
-    const feePerUnit = getFeePerUnit({
-        networkType,
-        feeLevel,
-        transactionBytes,
-        backendFeePerUnit: backendFeePerUnit ?? '0',
-    });
-
-    const formattedFeePerUnit = `${feePerUnit} ${feeUnits}`;
+    const networkFeePerUnit = networkFeeLevel?.maxFeePerGas ?? networkFeeLevel?.feePerUnit;
+    const networkRate = new BigNumber(networkFeePerUnit ?? NaN);
+    const estimatedFeePerUnit =
+        networkRate.isFinite() && !networkRate.isNegative() ? networkRate : undefined;
+    const formattedEstimatedFeePerUnit =
+        networkType === 'ethereum'
+            ? estimatedFeePerUnit?.toFixed(EVM_FEE_RATE_DECIMALS)
+            : estimatedFeePerUnit?.toString();
+    const feePerUnit = areFeeValuesComplete
+        ? getFeePerUnit({ networkType, feeLevel })
+        : formattedEstimatedFeePerUnit;
+    const estimatedFee =
+        feeLevel.type === 'error' && isPrecomposedTransactionError(feeLevel.error)
+            ? estimateFee({ networkType, feePerUnit: networkFeePerUnit, referenceFeeLevel })
+            : null;
+    const fee = areFeeValuesComplete ? feeLevel.fee : estimatedFee;
 
     const handleSelectFeeLevel = () => {
         if (feeKey === selectedLevel) return;
@@ -157,20 +188,18 @@ export const FeeOption = ({
         setValue('feeLevel', feeKey, { shouldValidate: true, shouldDirty: true });
         onSelectedFeeLevel?.(feeKey);
 
+        if (!areFeeValuesComplete) return;
+
         // Update custom fee form so user sees current values when switching to Custom tab.
         setValue('customFeePerUnit', feePerUnit, { shouldValidate: true, shouldDirty: true });
         setValue('customMaxFeePerGas', isEip1559(feeLevel) ? feeLevel.maxFeePerGas : undefined, {
             shouldValidate: true,
             shouldDirty: true,
         });
-        setValue(
-            'customMaxPriorityFeePerGas',
-            isFinalPrecomposedTransaction(feeLevel) ? feeLevel.maxPriorityFeePerGas : undefined,
-            {
-                shouldValidate: true,
-                shouldDirty: true,
-            },
-        );
+        setValue('customMaxPriorityFeePerGas', feeLevel.maxPriorityFeePerGas, {
+            shouldValidate: true,
+            shouldDirty: true,
+        });
         if (feeLevel.feeLimit !== undefined) {
             setValue('customFeeLimit', feeLevel.feeLimit, {
                 shouldValidate: true,
@@ -197,45 +226,54 @@ export const FeeOption = ({
                             <Box alignItems="center" flexDirection="row">
                                 <Text variant="body-md-strong">
                                     <Translation id={label} />
-                                    {' • '}
+                                    {(feePerUnit !== undefined || isLoading) && ' • '}
                                 </Text>
-                                <Text variant="body-sm" color="contentSecondary">
-                                    {isLoading ? (
-                                        <EmptyAmountSkeleton variant="body-sm" />
-                                    ) : (
-                                        formattedFeePerUnit
-                                    )}
-                                </Text>
+                                {(feePerUnit !== undefined || isLoading) && (
+                                    <Text variant="body-sm" color="contentSecondary">
+                                        {isLoading ? (
+                                            <EmptyAmountSkeleton variant="body-sm" />
+                                        ) : (
+                                            `${feePerUnit} ${feeUnits}`
+                                        )}
+                                    </Text>
+                                )}
                             </Box>
                             <Text variant="body-sm" color="contentSecondary">
                                 {isLoading ? (
                                     <EmptyAmountSkeleton variant="body-sm" />
                                 ) : (
-                                    `~ ${feeTimeEstimate}`
+                                    <>
+                                        {fee !== null && feeTimeEstimate && `~ ${feeTimeEstimate}`}
+                                        {fee === null && (
+                                            <Translation id="transactionManagement.fees.levelUnavailable" />
+                                        )}
+                                    </>
                                 )}
                             </Text>
                         </VStack>
-                        <VStack flex={1} alignItems="flex-end" spacing="sp4">
-                            <CryptoToFiatAmountFormatter
-                                variant="body-md"
-                                color="contentPrimary"
-                                value={fee}
-                                symbol={symbol}
-                                isLoading={isLoading}
-                                isDiscreetText={false}
-                            />
-                            <ExactCryptoAmountFormatter
-                                variant="body-sm"
-                                color="contentSecondary"
-                                value={fee}
-                                symbol={symbol}
-                                isBalance={false}
-                                adjustsFontSizeToFit
-                                numberOfLines={1}
-                                isLoading={isLoading}
-                                isDiscreetText={false}
-                            />
-                        </VStack>
+                        {(fee !== null || isLoading) && (
+                            <VStack flex={1} alignItems="flex-end" spacing="sp4">
+                                <CryptoToFiatAmountFormatter
+                                    variant="body-md"
+                                    color="contentPrimary"
+                                    value={fee}
+                                    symbol={symbol}
+                                    isLoading={isLoading}
+                                    isDiscreetText={false}
+                                />
+                                <ExactCryptoAmountFormatter
+                                    variant="body-sm"
+                                    color="contentSecondary"
+                                    value={fee}
+                                    symbol={symbol}
+                                    isBalance={false}
+                                    adjustsFontSizeToFit
+                                    numberOfLines={1}
+                                    isLoading={isLoading}
+                                    isDiscreetText={false}
+                                />
+                            </VStack>
+                        )}
                         {isInteractive && (
                             <Radio
                                 isChecked={isChecked}
@@ -249,7 +287,12 @@ export const FeeOption = ({
                     </HStack>
                 </Box>
 
-                {!areFeeValuesComplete && <FeeOptionErrorMessage isVisible={isChecked} />}
+                {!areFeeValuesComplete && (
+                    <FeeOptionErrorMessage
+                        isVisible={isChecked}
+                        message={feeError ?? <Translation id="moduleSend.fees.unavailable" />}
+                    />
+                )}
             </AnimatedView>
         </Pressable>
     );

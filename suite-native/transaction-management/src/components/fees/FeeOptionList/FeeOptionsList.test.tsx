@@ -38,15 +38,15 @@ type State = AccountsRootState &
 jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
     selectConvertedNetworkFeeLevelTimeEstimate: jest.fn(),
-    selectConvertedNetworkFeeLevelFeePerUnit: jest.fn(),
+    selectNetworkFeeLevel: jest.fn(),
 }));
 
 const mockSelectConvertedNetworkFeeLevelTimeEstimate = jest.requireMock(
     '@suite-common/wallet-core',
 ).selectConvertedNetworkFeeLevelTimeEstimate;
-const mockSelectConvertedNetworkFeeLevelFeePerUnit = jest.requireMock(
+const mockSelectNetworkFeeLevel = jest.requireMock(
     '@suite-common/wallet-core',
-).selectConvertedNetworkFeeLevelFeePerUnit;
+).selectNetworkFeeLevel;
 
 const btcSymbol = asNetworkSymbol('btc');
 const ethSymbol = asNetworkSymbol('eth');
@@ -127,7 +127,7 @@ describe('FeeOptionsList', () => {
     beforeEach(() => {
         // Default mock implementations
         mockSelectConvertedNetworkFeeLevelTimeEstimate.mockReturnValue('~10 minutes');
-        mockSelectConvertedNetworkFeeLevelFeePerUnit.mockReturnValue('10');
+        mockSelectNetworkFeeLevel.mockReturnValue({ label: 'normal', feePerUnit: '10', blocks: 2 });
     });
 
     afterEach(() => {
@@ -141,6 +141,90 @@ describe('FeeOptionsList', () => {
             expect(getByText(/Low/)).toBeTruthy();
             expect(getByText(/Normal/)).toBeTruthy();
             expect(getByText(/High/)).toBeTruthy();
+        });
+
+        it.each(['eth', 'btc'] as const)(
+            'orders %s levels from low to high regardless of composition order',
+            async symbol => {
+                const { getAllByTestId } = await renderFeeOptionsList({
+                    props: {
+                        symbol: asNetworkSymbol(symbol),
+                        feeLevels: {
+                            high: createFeeLevel(),
+                            normal: createFeeLevel(),
+                            ...(symbol === 'btc'
+                                ? { economy: createFeeLevel(), low: createFeeLevel() }
+                                : { low: createFeeLevel() }),
+                            custom: createFeeLevel(),
+                        },
+                    },
+                });
+
+                expect(
+                    getAllByTestId(/@transactionManagement\/fees-level-container-/).map(
+                        option => option.props.testID,
+                    ),
+                ).toEqual(
+                    [symbol === 'btc' ? 'economy' : 'low', 'normal', 'high'].map(
+                        level => `@transactionManagement/fees-level-container-${level}`,
+                    ),
+                );
+            },
+        );
+
+        it('shows estimates for unaffordable Normal and High using the available Low gas limit', async () => {
+            mockSelectNetworkFeeLevel.mockImplementation(
+                (_state: State, _symbol: string, label: string) => ({
+                    label,
+                    feePerUnit: label === 'high' ? '12' : '10',
+                    blocks: 2,
+                }),
+            );
+            const { getByText, queryByText, getAllByTestId } = await renderFeeOptionsList({
+                props: {
+                    feeLevels: {
+                        normal: { type: 'error', error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' },
+                        high: { type: 'error', error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' },
+                        low: createFeeLevel({
+                            bytes: 0,
+                            fee: '8000000000000000',
+                            feePerByte: '8',
+                            feeLimit: '1000000',
+                        }),
+                    },
+                },
+            });
+
+            expect(getByText(/0\.008\s*ETH/)).toBeOnTheScreen();
+            expect(getByText(/0\.01\s*ETH/)).toBeOnTheScreen();
+            expect(getByText(/0\.012\s*ETH/)).toBeOnTheScreen();
+            expect(getByText('10.0000 Gwei')).toBeOnTheScreen();
+            expect(getByText('12.0000 Gwei')).toBeOnTheScreen();
+            expect(queryByText('Unavailable')).toBeNull();
+            expect(
+                getAllByTestId(/@transactionManagement\/fees-level-container-/).map(
+                    option => option.props.testID,
+                ),
+            ).toEqual([
+                '@transactionManagement/fees-level-container-low',
+                '@transactionManagement/fees-level-container-normal',
+                '@transactionManagement/fees-level-container-high',
+            ]);
+        });
+
+        it('does not use a manually edited Custom gas limit to estimate Standard fees', async () => {
+            const { getByText, queryByText } = await renderFeeOptionsList({
+                props: {
+                    feeLevels: {
+                        normal: { type: 'error', error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' },
+                        custom: createFeeLevel({ feeLimit: '2000000' }),
+                    },
+                },
+            });
+
+            expect(getByText('10.0000 Gwei')).toBeOnTheScreen();
+            expect(getByText('Unavailable')).toBeOnTheScreen();
+            expect(queryByText(/0\.02\s*ETH/)).toBeNull();
         });
 
         it('should show loading state when isLoading is true', async () => {
@@ -195,6 +279,55 @@ describe('FeeOptionsList', () => {
             await userEvent.press(getByTestId('@transactionManagement/fees-level-radio-normal'));
 
             expect(defaultProps.onSelectedFeeLevel).toHaveBeenCalledWith('normal');
+        });
+
+        it('uses each Bitcoin level size for its rate, independent of custom insertion order', async () => {
+            const { getByText, getByTestId, form } = await renderFeeOptionsList({
+                props: {
+                    symbol: btcSymbol,
+                    feeLevels: {
+                        custom: createFeeLevel({ bytes: 100 }),
+                        high: createFeeLevel({ bytes: 300, fee: '9000' }),
+                        normal: createFeeLevel({ bytes: 200, fee: '2000' }),
+                        economy: createFeeLevel({ bytes: 250, fee: '1000' }),
+                    },
+                },
+            });
+
+            expect(getByText('4 sat/vB')).toBeOnTheScreen();
+            expect(getByText('10 sat/vB')).toBeOnTheScreen();
+            expect(getByText('30 sat/vB')).toBeOnTheScreen();
+            await act(() => form.setValue('feeLevel', 'economy'));
+            await userEvent.press(getByTestId('@transactionManagement/fees-level-radio-normal'));
+            expect(form.getValues('customFeePerUnit')).toBe('10');
+        });
+
+        it('keeps confirmed custom fields when selecting an unavailable level', async () => {
+            const { getByTestId, form } = await renderFeeOptionsList({
+                props: {
+                    feeLevels: {
+                        normal: { type: 'error', error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' },
+                        low: createFeeLevel(),
+                    },
+                },
+            });
+            const customValues = {
+                customFeePerUnit: '9',
+                customFeeLimit: '21000',
+                customMaxFeePerGas: '9',
+                customMaxPriorityFeePerGas: '1',
+            };
+            await act(() => {
+                form.setValue('feeLevel', 'low');
+                Object.entries(customValues).forEach(([key, value]) =>
+                    form.setValue(key as keyof typeof customValues, value),
+                );
+            });
+
+            await userEvent.press(getByTestId('@transactionManagement/fees-level-radio-normal'));
+
+            expect(form.getValues()).toEqual(expect.objectContaining(customValues));
+            expect(form.getValues('feeLevel')).toBe('normal');
         });
 
         it('should handle different fee level selections', async () => {

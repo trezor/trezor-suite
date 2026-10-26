@@ -1,10 +1,12 @@
-import { D, pipe } from '@mobily/ts-belt';
-
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
-import type { GeneralPrecomposedLevels } from '@suite-common/wallet-types';
+import { type GeneralPrecomposedLevels } from '@suite-common/wallet-types';
 import { VStack } from '@suite-native/atoms';
 
 import { FeeOption } from './FeeOption';
+import {
+    getReferenceFeeLevel,
+    predefinedFeeLevelOrder,
+} from '../../../hooks/fees/referenceFeeLevel';
 import { type NativeSupportedPredefinedFeeLevel } from '../../../types';
 
 export type FeeOptionsListProps = {
@@ -12,19 +14,6 @@ export type FeeOptionsListProps = {
     symbol: NetworkSymbol;
     isLoading?: boolean;
     onSelectedFeeLevel?: (feeKey: NativeSupportedPredefinedFeeLevel) => void;
-};
-
-// User is not able to enter the fees screen if there is not normal fee or at least the economy fee (in final state) present.
-const getTransactionBytes = (feeLevels: Partial<GeneralPrecomposedLevels>) => {
-    if (feeLevels.normal && 'bytes' in feeLevels.normal) {
-        return feeLevels.normal.bytes;
-    }
-
-    if (feeLevels.economy && 'bytes' in feeLevels.economy) {
-        return feeLevels.economy.bytes;
-    }
-
-    return 0;
 };
 
 export const FeeOptionsList = ({
@@ -35,29 +24,31 @@ export const FeeOptionsList = ({
 }: FeeOptionsListProps) => {
     const isBtcNetworkType = getNetworkType(symbol) === 'bitcoin';
 
-    const predefinedFeeLevels = pipe(
-        feeLevels,
-        D.filterWithKey(key => key !== 'custom' && (isBtcNetworkType ? key !== 'low' : true)),
+    const predefinedFeeKeys = predefinedFeeLevelOrder.filter(
+        key => feeLevels[key] && !(isBtcNetworkType && key === 'low'),
     );
-
-    const transactionBytes = getTransactionBytes(predefinedFeeLevels);
-
-    const isMultipleOptionsDisplayed = Object.keys(predefinedFeeLevels).length > 1;
+    const referenceFeeLevel = getReferenceFeeLevel(feeLevels);
+    const isMultipleOptionsDisplayed = predefinedFeeKeys.length > 1;
 
     return (
         <VStack spacing="sp12">
-            {Object.entries(predefinedFeeLevels).map(([feeKey, feeLevel]) => (
-                <FeeOption
-                    key={feeKey}
-                    feeKey={feeKey as NativeSupportedPredefinedFeeLevel}
-                    feeLevel={feeLevel}
-                    symbol={symbol}
-                    transactionBytes={transactionBytes}
-                    isInteractive={isMultipleOptionsDisplayed}
-                    isLoading={isLoading}
-                    onSelectedFeeLevel={onSelectedFeeLevel}
-                />
-            ))}
+            {predefinedFeeKeys.map(feeKey => {
+                const feeLevel = feeLevels[feeKey];
+                if (!feeLevel) return null;
+
+                return (
+                    <FeeOption
+                        key={feeKey}
+                        feeKey={feeKey}
+                        feeLevel={feeLevel}
+                        referenceFeeLevel={referenceFeeLevel}
+                        symbol={symbol}
+                        isInteractive={isMultipleOptionsDisplayed}
+                        isLoading={isLoading}
+                        onSelectedFeeLevel={onSelectedFeeLevel}
+                    />
+                );
+            })}
         </VStack>
     );
 };

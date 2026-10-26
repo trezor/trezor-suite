@@ -41,15 +41,15 @@ const TestFormWrapper = ({ children }: { children: React.ReactNode }) => {
 jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
     selectConvertedNetworkFeeLevelTimeEstimate: jest.fn(),
-    selectConvertedNetworkFeeLevelFeePerUnit: jest.fn(),
+    selectNetworkFeeLevel: jest.fn(),
 }));
 
 const mockSelectConvertedNetworkFeeLevelTimeEstimate = jest.requireMock(
     '@suite-common/wallet-core',
 ).selectConvertedNetworkFeeLevelTimeEstimate;
-const mockSelectConvertedNetworkFeeLevelFeePerUnit = jest.requireMock(
+const mockSelectNetworkFeeLevel = jest.requireMock(
     '@suite-common/wallet-core',
-).selectConvertedNetworkFeeLevelFeePerUnit;
+).selectNetworkFeeLevel;
 
 describe('FeeOption', () => {
     let store: Store<State>;
@@ -64,7 +64,6 @@ describe('FeeOption', () => {
             feeLimit: '21000',
         }),
         symbol: 'btc' as NetworkSymbol,
-        transactionBytes: 250,
         isInteractive: true,
         isLoading: false,
         onSelectedFeeLevel: jest.fn(),
@@ -91,7 +90,7 @@ describe('FeeOption', () => {
 
         // Default mock implementations
         mockSelectConvertedNetworkFeeLevelTimeEstimate.mockReturnValue('~10 minutes');
-        mockSelectConvertedNetworkFeeLevelFeePerUnit.mockReturnValue('10');
+        mockSelectNetworkFeeLevel.mockReturnValue({ label: 'normal', feePerUnit: '10', blocks: 2 });
     });
 
     afterEach(() => {
@@ -114,6 +113,126 @@ describe('FeeOption', () => {
 
             expect(getByText('4 sat/vB')).toBeTruthy();
             expect(getByText('~ ~10 minutes')).toBeTruthy();
+        });
+
+        it.each([
+            {
+                symbol: 'eth',
+                reference: createFeeLevel({ bytes: 0, feeLimit: '1000000' }),
+                rate: '10.0000 Gwei',
+                amount: /0\.01\s*ETH/,
+            },
+            {
+                symbol: 'btc',
+                reference: createFeeLevel({ bytes: 250 }),
+                rate: '10 sat/vB',
+                amount: /0\.000025\s*BTC/,
+            },
+        ])(
+            'keeps the $symbol estimate visible when the balance cannot cover it',
+            async ({ symbol, reference, rate, amount }) => {
+                const { getByText, queryByText } = await renderFeeOption({
+                    symbol,
+                    feeLevel: { type: 'error', error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' },
+                    referenceFeeLevel: reference,
+                });
+
+                expect(getByText(rate)).toBeOnTheScreen();
+                expect(getByText(amount)).toBeOnTheScreen();
+                expect(
+                    getByText(
+                        `Insufficient ${symbol.toUpperCase()} to cover the current transaction fee.`,
+                    ),
+                ).toBeOnTheScreen();
+                expect(queryByText('Unavailable')).toBeNull();
+            },
+        );
+
+        it('uses the EIP-1559 maximum rate for an insufficient-balance estimate', async () => {
+            mockSelectNetworkFeeLevel.mockReturnValue({
+                label: 'normal',
+                feePerUnit: '5',
+                maxFeePerGas: '10',
+                maxPriorityFeePerGas: '1',
+                blocks: 2,
+            });
+            const { getByText } = await renderFeeOption({
+                symbol: 'eth',
+                feeLevel: { type: 'error', error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' },
+                referenceFeeLevel: createFeeLevel({ bytes: 0, feeLimit: '1000000' }),
+            });
+
+            expect(getByText('10.0000 Gwei')).toBeOnTheScreen();
+            expect(getByText(/0\.01\s*ETH/)).toBeOnTheScreen();
+        });
+
+        it('does not turn a missing transaction size into a zero estimate', async () => {
+            const { getByText, queryByText } = await renderFeeOption({
+                symbol: 'eth',
+                feeLevel: { type: 'error', error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' },
+            });
+
+            expect(getByText('10.0000 Gwei')).toBeOnTheScreen();
+            expect(getByText('Unavailable')).toBeOnTheScreen();
+            expect(queryByText(/0\s*ETH/)).toBeNull();
+        });
+
+        it.each(['0', '-1', 'NaN'])(
+            'does not estimate with an invalid gas limit (%s)',
+            async feeLimit => {
+                const { getByText, queryByText } = await renderFeeOption({
+                    symbol: 'eth',
+                    feeLevel: { type: 'error', error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' },
+                    referenceFeeLevel: createFeeLevel({ feeLimit }),
+                });
+
+                expect(getByText('Unavailable')).toBeOnTheScreen();
+                expect(queryByText(/0\s*ETH/)).toBeNull();
+            },
+        );
+
+        it.each(['-1', 'NaN'])(
+            'does not display an invalid network rate (%s)',
+            async feePerUnit => {
+                mockSelectNetworkFeeLevel.mockReturnValue({
+                    label: 'normal',
+                    feePerUnit,
+                    blocks: 2,
+                });
+                const { getByText, queryByText } = await renderFeeOption({
+                    symbol: 'eth',
+                    feeLevel: { type: 'error', error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' },
+                    referenceFeeLevel: createFeeLevel({ feeLimit: '1000000' }),
+                });
+
+                expect(getByText('Unavailable')).toBeOnTheScreen();
+                expect(queryByText(/Gwei/)).toBeNull();
+            },
+        );
+
+        it('rounds an estimated Bitcoin fee up to whole satoshis', async () => {
+            mockSelectNetworkFeeLevel.mockReturnValue({
+                label: 'normal',
+                feePerUnit: '1.1',
+                blocks: 2,
+            });
+            const { getByText } = await renderFeeOption({
+                symbol: 'btc',
+                feeLevel: { type: 'error', error: 'NOT-ENOUGH-FUNDS' },
+                referenceFeeLevel: createFeeLevel({ bytes: 251 }),
+            });
+
+            expect(getByText(/0\.00000277\s*BTC/)).toBeOnTheScreen();
+        });
+
+        it('does not describe a failed estimate as an insufficient balance', async () => {
+            const { getByText, queryByText } = await renderFeeOption({
+                symbol: 'eth',
+                feeLevel: { type: 'error', error: 'TR_GENERIC_ERROR_TITLE' },
+            });
+
+            expect(getByText('Network fee information is unavailable.')).toBeOnTheScreen();
+            expect(queryByText('Insufficient balance for this fee.')).toBeNull();
         });
 
         it('should show radio button when interactive', async () => {
@@ -178,7 +297,6 @@ describe('FeeOption', () => {
             const { getByText } = await renderFeeOption({
                 symbol: 'btc',
                 feeLevel: defaultProps.feeLevel,
-                transactionBytes: 250,
             });
 
             // For bitcoin: fee / bytes = 1000 / 250 = 4 sat/vB
@@ -189,7 +307,6 @@ describe('FeeOption', () => {
             const { getByText } = await renderFeeOption({
                 symbol: 'eth',
                 feeLevel: defaultProps.feeLevel,
-                transactionBytes: 250,
             });
 
             expect(getByText('10.0000 Gwei')).toBeTruthy();
