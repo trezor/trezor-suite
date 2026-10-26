@@ -19,13 +19,13 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "devDependencies": {
-        "@currents/playwright": "^2.5.0",
+        "@currents/playwright": "^2.5.2",
         "@evolu/common": "8.10.0",
         "@noble/hashes": "^2.0.1",
-        "@playwright/browser-chromium": "1.62.1",
-        "@playwright/browser-firefox": "1.62.1",
-        "@playwright/browser-webkit": "1.62.1",
-        "@playwright/test": "1.62.1",
+        "@playwright/browser-chromium": "1.64.0",
+        "@playwright/browser-firefox": "1.64.0",
+        "@playwright/browser-webkit": "1.64.0",
+        "@playwright/test": "1.64.0",
         "@scure/base": "^2.0.0",
         "@suite-common/address": "workspace:*",
         "@suite-common/analytics": "workspace:*",

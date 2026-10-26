@@ -74,16 +74,16 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1786038285,
-        "narHash": "sha256-s6qe6bAm3lLxvGjfWKroTcIRT0pLx7ILKBEuoB4RbrA=",
+        "lastModified": 1791436526,
+        "narHash": "sha256-SUs2CnSCd32H58LE2LYG1SBWXqI5cODKeSLL8V4HaG0=",
         "owner": "pietdevries94",
         "repo": "playwright-web-flake",
-        "rev": "e5de44e09f0796796c63b29c1b394e6a04e42ce8",
+        "rev": "2f3d72e6d3c11bba55934d3d585b384938ec3a9e",
         "type": "github"
       },
       "original": {
         "owner": "pietdevries94",
-        "ref": "1.62.1",
+        "ref": "1.64.0",
         "repo": "playwright-web-flake",
         "type": "github"
       }

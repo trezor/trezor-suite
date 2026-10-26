@@ -190,7 +190,7 @@
     "devDependencies": {
         "@babel/core": "7.29.7",
         "@config-plugins/detox": "^11.0.0",
-        "@currents/cmd": "1.10.0",
+        "@currents/cmd": "2.2.0",
         "@jest/globals": "^29.7.0",
         "@react-native-community/cli": "^20.0.0",
         "@react-native/babel-preset": "0.86.3",
