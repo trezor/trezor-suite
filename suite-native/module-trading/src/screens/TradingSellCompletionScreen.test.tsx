@@ -52,17 +52,10 @@ jest.mock('../thunks', () => ({
     clearTradingStateThunk: () => mockClearTradingStateThunk(),
 }));
 
-let mockIsDeviceConnected = true;
-jest.mock('@suite-common/device', () => ({
-    ...jest.requireActual('@suite-common/device'),
-    selectIsDeviceConnected: () => mockIsDeviceConnected,
-}));
-
 describe('TradingSellCompletionScreen', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockUseTradingDetailData.trade = undefined;
-        mockIsDeviceConnected = true;
     });
 
     const renderScreen = async ({
@@ -210,14 +203,5 @@ describe('TradingSellCompletionScreen', () => {
         await unmount();
 
         expect(mockClearTradingStateThunk).toHaveBeenCalledTimes(1);
-    });
-
-    it('shows device guard when device is disconnected', async () => {
-        mockIsDeviceConnected = false;
-        const { getByText } = await renderScreen();
-
-        expect(
-            getByText(getTranslation('moduleConnectDevice.connectAndUnlockScreen.title')),
-        ).toBeOnTheScreen();
     });
 });

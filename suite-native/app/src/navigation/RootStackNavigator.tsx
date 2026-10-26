@@ -32,6 +32,7 @@ import {
 import { DeviceSettingsStackNavigator } from '@suite-native/module-device-settings';
 import {
     EarnConsentsScreen,
+    EarnDeviceConnectionGuard,
     HowStakeWorksScreen,
     StakingClaimReviewScreen,
     StakingFormScreen,
@@ -54,6 +55,7 @@ import { StellarManageTokenStackNavigator } from '@suite-native/module-stellar-t
 import {
     TradingBuyPreviewScreen,
     TradingConfirmingScreen,
+    TradingDeviceConnectionGuard,
     TradingExchangeApprovalScreen,
     TradingExchangePreviewScreen,
     TradingExchangeRevokeScreen,
@@ -168,11 +170,17 @@ export const RootStackNavigator = () => {
                 name={RootStackRoutes.EarnConsents}
                 component={EarnConsentsScreen}
             />
-            <RootStack.Screen
-                options={{ title: RootStackRoutes.StakingTransactionDataReview }}
-                name={RootStackRoutes.StakingTransactionDataReview}
-                component={StakingTransactionDataReviewScreen}
-            />
+            <RootStack.Group
+                screenLayout={({ children }) => (
+                    <EarnDeviceConnectionGuard>{children}</EarnDeviceConnectionGuard>
+                )}
+            >
+                <RootStack.Screen
+                    options={{ title: RootStackRoutes.StakingTransactionDataReview }}
+                    name={RootStackRoutes.StakingTransactionDataReview}
+                    component={StakingTransactionDataReviewScreen}
+                />
+            </RootStack.Group>
             <RootStack.Screen
                 options={{ title: RootStackRoutes.StakingTransactionComplete }}
                 name={RootStackRoutes.StakingTransactionComplete}
@@ -190,29 +198,9 @@ export const RootStackNavigator = () => {
                 )}
             >
                 <RootStack.Screen
-                    options={{ title: RootStackRoutes.TradingExchangePreview }}
-                    name={RootStackRoutes.TradingExchangePreview}
-                    component={TradingExchangePreviewScreen}
-                />
-                <RootStack.Screen
-                    options={{ title: RootStackRoutes.TradingExchangeApproval }}
-                    name={RootStackRoutes.TradingExchangeApproval}
-                    component={TradingExchangeApprovalScreen}
-                />
-                <RootStack.Screen
-                    options={{ title: RootStackRoutes.TradingExchangeRevoke }}
-                    name={RootStackRoutes.TradingExchangeRevoke}
-                    component={TradingExchangeRevokeScreen}
-                />
-                <RootStack.Screen
                     options={{ title: RootStackRoutes.TradingSellPreview }}
                     name={RootStackRoutes.TradingSellPreview}
                     component={TradingSellPreviewScreen}
-                />
-                <RootStack.Screen
-                    options={{ title: RootStackRoutes.TradingSellCompletion }}
-                    name={RootStackRoutes.TradingSellCompletion}
-                    component={TradingSellCompletionScreen}
                 />
                 <RootStack.Screen
                     options={{ title: RootStackRoutes.TradingConfirming }}
@@ -263,6 +251,35 @@ export const RootStackNavigator = () => {
                     options={{ title: RootStackRoutes.TradingBuyPreview }}
                     name={RootStackRoutes.TradingBuyPreview}
                     component={TradingBuyPreviewScreen}
+                />
+            </RootStack.Group>
+            {/* Trading screens that require a connected device */}
+            <RootStack.Group
+                screenLayout={({ children }) => (
+                    <TradingRestrictedGuard>
+                        <TradingDeviceConnectionGuard>{children}</TradingDeviceConnectionGuard>
+                    </TradingRestrictedGuard>
+                )}
+            >
+                <RootStack.Screen
+                    options={{ title: RootStackRoutes.TradingExchangePreview }}
+                    name={RootStackRoutes.TradingExchangePreview}
+                    component={TradingExchangePreviewScreen}
+                />
+                <RootStack.Screen
+                    options={{ title: RootStackRoutes.TradingExchangeApproval }}
+                    name={RootStackRoutes.TradingExchangeApproval}
+                    component={TradingExchangeApprovalScreen}
+                />
+                <RootStack.Screen
+                    options={{ title: RootStackRoutes.TradingExchangeRevoke }}
+                    name={RootStackRoutes.TradingExchangeRevoke}
+                    component={TradingExchangeRevokeScreen}
+                />
+                <RootStack.Screen
+                    options={{ title: RootStackRoutes.TradingSellCompletion }}
+                    name={RootStackRoutes.TradingSellCompletion}
+                    component={TradingSellCompletionScreen}
                 />
             </RootStack.Group>
             <RootStack.Screen name={RootStackRoutes.DevUtils} component={DevUtilsScreen} />

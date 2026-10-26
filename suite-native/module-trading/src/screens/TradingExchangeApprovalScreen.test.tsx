@@ -84,12 +84,6 @@ jest.mock('@suite-native/atoms', () => ({
     }),
 }));
 
-let mockIsDeviceConnected = true;
-jest.mock('@suite-common/device', () => ({
-    ...jest.requireActual('@suite-common/device'),
-    selectIsDeviceConnected: () => mockIsDeviceConnected,
-}));
-
 const testQuote = mercuryoFixedWorstQuote;
 
 describe('TradingExchangeApprovalScreen', () => {
@@ -121,8 +115,6 @@ describe('TradingExchangeApprovalScreen', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-
-        mockIsDeviceConnected = true;
 
         store = createTradingTestStore({ tradeType: 'exchange' });
         store.dispatch(tradingExchangeActions.saveSelectedQuote(testQuote));
@@ -211,16 +203,6 @@ describe('TradingExchangeApprovalScreen', () => {
             getByText(
                 getTranslation('moduleTrading.tradingExchangeApprovalScreen.revokeSuccessAlert'),
             ),
-        ).toBeOnTheScreen();
-    });
-
-    it('should display device guard when device is not connected', async () => {
-        mockIsDeviceConnected = false;
-
-        const { getByText } = await renderScreen();
-
-        expect(
-            getByText(getTranslation('moduleConnectDevice.connectAndUnlockScreen.title')),
         ).toBeOnTheScreen();
     });
 

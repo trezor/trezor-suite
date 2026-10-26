@@ -26,7 +26,6 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { ApprovalButton } from '../components/exchange/Approval/ApprovalButton';
 import { ExchangeRevokeDetails } from '../components/exchange/Approval/ExchangeRevokeDetails';
-import { TradingDeviceConnectionGuard } from '../components/general/TradingDeviceConnectionGuard';
 import { useApprovalFlow } from '../hooks/exchange/Approval/useApprovalFlow';
 import { useEvmApprovalFees } from '../hooks/exchange/Approval/useEvmApprovalFees';
 
@@ -35,7 +34,7 @@ type TradingExchangeRevokeScreenProps = StackProps<
     RootStackRoutes.TradingExchangeRevoke
 >;
 
-const TradingExchangeRevokeScreenContent = ({
+export const TradingExchangeRevokeScreen = ({
     route: { params },
     navigation,
 }: TradingExchangeRevokeScreenProps) => {
@@ -175,9 +174,3 @@ const TradingExchangeRevokeScreenContent = ({
         </Screen>
     );
 };
-
-export const TradingExchangeRevokeScreen = (props: TradingExchangeRevokeScreenProps) => (
-    <TradingDeviceConnectionGuard>
-        <TradingExchangeRevokeScreenContent {...props} />
-    </TradingDeviceConnectionGuard>
-);
