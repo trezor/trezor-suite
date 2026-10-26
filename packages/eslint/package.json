@@ -13,7 +13,7 @@
     "devDependencies": {
         "@eslint/compat": "^2.1.1",
         "@eslint/js": "^10.0.1",
-        "@tanstack/eslint-plugin-query": "5.103.1",
+        "@tanstack/eslint-plugin-query": "5.104.2",
         "eslint": "^10.11.0",
         "eslint-plugin-import": "^2.32.0",
         "eslint-plugin-jest": "^29.16.6",
