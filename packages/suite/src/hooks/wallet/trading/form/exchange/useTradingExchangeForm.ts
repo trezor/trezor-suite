@@ -21,7 +21,7 @@ import {
     tradingExchangeActions,
     tradingThunks,
 } from '@suite-common/trading';
-import { getNetwork } from '@suite-common/wallet-config';
+import { getNetwork, isAccountBasedNetwork } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -160,6 +160,8 @@ export const useTradingExchangeForm = (): TradingExchangeFormContextProps => {
         methods,
         network,
         shouldSendInSats,
+        fromAddress:
+            account && isAccountBasedNetwork(account.symbol) ? account.descriptor : undefined,
         receiveAddress: tradingReceiveAddress.receiveAddress,
         receiveAccountKey: tradingReceiveAddress.selectedAccount?.key,
         receiveAccountSymbol: tradingReceiveAddress.selectedAccount?.symbol,
