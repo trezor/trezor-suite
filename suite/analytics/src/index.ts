@@ -27,4 +27,5 @@ export { type DashboardSendModalEventSource } from './events/dashboardSendModalE
 export { type DashboardSendModalOptionsEventOption } from './events/dashboardSendModalOptionsEvent';
 export { type SendEnsResolutionDirection } from './events/sendEnsResolutionEvent';
 export { type TradeExchangeAction } from './events/tradeExchangeEvent';
+export { type TradeNavigateEventFrom } from './events/tradeNavigateEvent';
 export { type TradingExchangeIssue } from './events/tradingExchangeIssueEvent';

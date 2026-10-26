@@ -2,23 +2,24 @@ import type { AttributeDef, EventDef } from '@suite-common/analytics';
 
 import { EventType } from '../constants';
 
+export type TradeNavigateEventFrom =
+    | 'sidebar'
+    | 'otc-banner'
+    | 'dashboard/header'
+    | 'dashboard/assets'
+    | 'dashboard/empty-wallet'
+    | 'dashboard/staking-dashboard'
+    | 'earn-dashboard'
+    | 'account/header'
+    | 'account/tokens'
+    | 'account/tradebox'
+    | 'account/empty'
+    | 'buy/sell';
+
 type Attributes = {
     action: AttributeDef<'navigate' | 'cancel'>;
     type: AttributeDef<'exchange' | 'buy' | 'sell' | 'buy/sell' | 'concierge'>;
-    from: AttributeDef<
-        | 'sidebar'
-        | 'otc-banner'
-        | 'dashboard/header'
-        | 'dashboard/assets'
-        | 'dashboard/empty-wallet'
-        | 'dashboard/staking-dashboard'
-        | 'earn-dashboard'
-        | 'account/header'
-        | 'account/tokens'
-        | 'account/tradebox'
-        | 'account/empty'
-        | 'buy/sell'
-    >;
+    from: AttributeDef<TradeNavigateEventFrom>;
     networkSymbol?: AttributeDef<string>;
     contractAddress?: AttributeDef<string>;
 };

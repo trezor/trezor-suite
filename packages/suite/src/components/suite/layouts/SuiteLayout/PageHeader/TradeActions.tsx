@@ -1,9 +1,9 @@
-import { events, injectDesktopAnalytics } from '@suite/analytics';
+import { type TradeNavigateEventFrom, events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectIsFinpromRestricted } from '@suite/finprom';
 import { Translation } from '@suite/intl';
 import { gotoThunk, selectIsAccountTabPage, selectRouteName } from '@suite/router';
-import { getTradingPrefilledFromAccountData, tradingActions } from '@suite-common/trading';
-import { type SelectedAccountStatus } from '@suite-common/wallet-types';
+import { type TradingPrefilledFromAccount, tradingActions } from '@suite-common/trading';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { ButtonGroup, Row } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { MinusIcon, PlusIcon } from '@trezor/icons';
@@ -13,13 +13,25 @@ import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavi
 import { HeaderActionButton } from 'src/components/suite/layouts/SuiteLayout/PageHeader/HeaderActionButton';
 import { useSelector } from 'src/hooks/suite';
 
-interface TradeActionsProps {
-    selectedAccount?: SelectedAccountStatus;
-}
+type TradeActionsSource = {
+    from: TradeNavigateEventFrom;
+    networkSymbol?: NetworkSymbol;
+    contractAddress?: string;
+};
 
-export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
+type TradeActionsPrefill = {
+    buy?: TradingPrefilledFromAccount;
+    sell?: TradingPrefilledFromAccount;
+};
+
+type TradeActionsProps = {
+    source: TradeActionsSource;
+    prefill?: TradeActionsPrefill;
+    isDisabled?: boolean;
+};
+
+export const TradeActions = ({ source, prefill, isDisabled }: TradeActionsProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
-    const account = selectedAccount?.account;
     const isAccountTabPage = useSelector(selectIsAccountTabPage);
     const currentRouteName = useSelector(selectRouteName);
     const isFinpromRestricted = useSelector(selectIsFinpromRestricted);
@@ -36,10 +48,10 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
             });
         }
 
-        if (isAccountTabPage && account?.symbol) {
+        if (isAccountTabPage && source.networkSymbol) {
             analytics.report({
                 type: events.accountsActionsEvent.name,
-                payload: { symbol: account?.symbol, action: payload.routeName },
+                payload: { symbol: source.networkSymbol, action: payload.routeName },
             });
         }
 
@@ -48,13 +60,10 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
 
     const navigateToTrading = (type: 'buy' | 'sell') => {
         const routeName = `wallet-trading-${type}` as const;
+        const typePrefill = prefill?.[type];
 
-        if (account) {
-            dispatch(
-                tradingActions.setTradingFromPrefilledAccount(
-                    getTradingPrefilledFromAccountData(account),
-                ),
-            );
+        if (typePrefill) {
+            dispatch(tradingActions.setTradingFromPrefilledAccount(typePrefill));
         }
 
         goToWithAnalytics({ routeName, preserveParams: false });
@@ -64,18 +73,17 @@ export const TradeActions = ({ selectedAccount }: TradeActionsProps) => {
             payload: {
                 action: 'navigate',
                 type,
-                from: account ? 'account/header' : 'dashboard/header',
-                networkSymbol: account?.symbol,
+                from: source.from,
+                networkSymbol: source.networkSymbol,
+                ...(source.contractAddress ? { contractAddress: source.contractAddress } : {}),
             },
         });
     };
 
-    const isAccountLoading = selectedAccount ? selectedAccount.status === 'loading' : false;
-
     return (
         <Row gap={12}>
             <AppNavigationTooltip>
-                <ButtonGroup intent="neutral" priority="secondary" isDisabled={isAccountLoading}>
+                <ButtonGroup intent="neutral" priority="secondary" isDisabled={isDisabled}>
                     <HeaderActionButton
                         icon={PlusIcon}
                         onClick={() => navigateToTrading('buy')}
