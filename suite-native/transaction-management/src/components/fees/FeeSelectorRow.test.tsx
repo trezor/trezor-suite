@@ -117,7 +117,9 @@ describe('FeeSelectorRow', () => {
             { preloadedState },
         );
 
-        expect(queryByTestId('@transactionManagement/fee-selector-row')).toBeNull();
+        expect(queryByTestId('@transactionManagement/fee-selector-row')).toBeOnTheScreen();
+        await fireEvent.press(queryByTestId('@transactionManagement/fee-selector-row')!);
+        expect(mockOpenModal).toHaveBeenCalledTimes(1);
         expect(getByText(/Insufficient .* to cover the transaction fee/i)).toBeOnTheScreen();
     });
 });

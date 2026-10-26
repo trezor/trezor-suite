@@ -159,6 +159,18 @@ export const FeeOption = ({
 
         // Update custom fee form so user sees current values when switching to Custom tab.
         setValue('customFeePerUnit', feePerUnit, { shouldValidate: true, shouldDirty: true });
+        setValue('customMaxFeePerGas', isEip1559(feeLevel) ? feeLevel.maxFeePerGas : undefined, {
+            shouldValidate: true,
+            shouldDirty: true,
+        });
+        setValue(
+            'customMaxPriorityFeePerGas',
+            isFinalPrecomposedTransaction(feeLevel) ? feeLevel.maxPriorityFeePerGas : undefined,
+            {
+                shouldValidate: true,
+                shouldDirty: true,
+            },
+        );
         if (feeLevel.feeLimit !== undefined) {
             setValue('customFeeLimit', feeLevel.feeLimit, {
                 shouldValidate: true,

@@ -1,6 +1,6 @@
 import { Pressable } from 'react-native';
 
-import { BannerInline } from '@suite-native/atoms';
+import { BannerInline, Box } from '@suite-native/atoms';
 
 import { FeeSummaryRow } from './FeeSummaryRow';
 import { FeesBottomSheet } from './FeesBottomSheet';
@@ -46,10 +46,6 @@ export const FeeSelectorRow = ({ isReadOnly = false, ...props }: FeeSelectorRowP
         return null;
     }
 
-    if (shouldShowFeeUnavailableAlert && feeUnavailableErrorTitle) {
-        return <BannerInline intent="critical" title={feeUnavailableErrorTitle} />;
-    }
-
     const isTron = networkType === 'tron';
     const isPressable = !isReadOnly && (!isTron || isTrc20);
 
@@ -79,6 +75,11 @@ export const FeeSelectorRow = ({ isReadOnly = false, ...props }: FeeSelectorRowP
                     />
                 )}
             </Pressable>
+            {shouldShowFeeUnavailableAlert && feeUnavailableErrorTitle && (
+                <Box marginTop="sp8">
+                    <BannerInline intent="critical" title={feeUnavailableErrorTitle} />
+                </Box>
+            )}
             <FeesBottomSheet
                 ref={bottomSheetRef}
                 form={form}

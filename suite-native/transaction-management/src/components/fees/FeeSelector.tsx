@@ -1,4 +1,4 @@
-import { BannerInline } from '@suite-native/atoms';
+import { BannerInline, Box } from '@suite-native/atoms';
 
 import { FeeSummaryCard } from './FeeSummaryCard';
 import { FeesBottomSheet } from './FeesBottomSheet';
@@ -32,10 +32,6 @@ export const FeeSelector = (props: FeeSelectorProps) => {
 
     if (!symbol || !networkType) return null;
 
-    if (shouldShowFeeUnavailableAlert && feeUnavailableErrorTitle) {
-        return <BannerInline intent="critical" title={feeUnavailableErrorTitle} />;
-    }
-
     return (
         <>
             {networkType === 'tron' ? (
@@ -56,6 +52,11 @@ export const FeeSelector = (props: FeeSelectorProps) => {
                     testID="@transactionManagement/fee-selector-card"
                     withCaret
                 />
+            )}
+            {shouldShowFeeUnavailableAlert && feeUnavailableErrorTitle && (
+                <Box marginTop="sp8">
+                    <BannerInline intent="critical" title={feeUnavailableErrorTitle} />
+                </Box>
             )}
             <FeesBottomSheet
                 ref={bottomSheetRef}
