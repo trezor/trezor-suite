@@ -17,10 +17,12 @@ import type {
     FeeInfo,
     FormState,
     GeneralPrecomposedLevels,
+    PrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { useFormContext, useFormState, useWatch } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
+import { type FeeLevel } from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
 import { useDebounce } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -36,12 +38,15 @@ import {
 import { calculateCustomFeeLevelThunk } from '../../thunks';
 import { usePrecomposedTransactionError } from '../usePrecomposedTransactionError';
 
+export type CustomFeeLevelBuilder = (feeLevel: FeeLevel) => PrecomposedTransaction | undefined;
+
 type UseCustomFeeProps = {
     accountKey: AccountKey;
     formState: FormState | null | undefined;
+    getCustomFeeLevel?: CustomFeeLevelBuilder;
 };
 
-export const useCustomFee = ({ accountKey, formState }: UseCustomFeeProps) => {
+export const useCustomFee = ({ accountKey, formState, getCustomFeeLevel }: UseCustomFeeProps) => {
     const debounce = useDebounce();
     const { translate } = useTranslate();
     const { dispatch } = useServices(injectDispatch);
@@ -56,6 +61,7 @@ export const useCustomFee = ({ accountKey, formState }: UseCustomFeeProps) => {
         account: Account | null;
         feeInfo: FeeInfo | null;
         feeLevels: GeneralPrecomposedLevels;
+        builder: CustomFeeLevelBuilder | undefined;
     } | null>(null);
 
     const account = useSelector((state: AccountsRootState) =>
@@ -105,7 +111,8 @@ export const useCustomFee = ({ accountKey, formState }: UseCustomFeeProps) => {
 
             invariant(networkType !== 'solana', 'Custom fee is not supported for solana');
 
-            if (!areValuesValid || (!isEip1559Fee && !customFeePerUnit) || !formState) {
+            const feePerUnit = isEip1559Fee ? customMaxFeePerGas : customFeePerUnit;
+            if (!areValuesValid || !feePerUnit || !formState) {
                 setIsFeeLoading(false);
 
                 return;
@@ -114,20 +121,41 @@ export const useCustomFee = ({ accountKey, formState }: UseCustomFeeProps) => {
             setIsFeeLoading(true);
             setFeeError(null);
 
-            const response = await dispatch(
-                calculateCustomFeeLevelThunk({
-                    accountKey,
-                    formState,
-                    selectedFeeLevel: 'custom',
-                    customFeePerUnit,
-                    customFeeLimit,
-                    customMaxPriorityFeePerGas,
-                    customMaxFeePerGas,
-                }),
-            );
+            let feeLevels: GeneralPrecomposedLevels | undefined;
+            if (getCustomFeeLevel) {
+                try {
+                    const custom = getCustomFeeLevel({
+                        label: 'custom',
+                        blocks: -1,
+                        feePerUnit,
+                        feeLimit: customFeeLimit,
+                        ...(isEip1559Fee
+                            ? {
+                                  maxPriorityFeePerGas: customMaxPriorityFeePerGas,
+                                  maxFeePerGas: customMaxFeePerGas,
+                              }
+                            : {}),
+                    });
+                    feeLevels = custom ? { custom } : undefined;
+                } catch {
+                    feeLevels = undefined;
+                }
+            } else {
+                const response = await dispatch(
+                    calculateCustomFeeLevelThunk({
+                        accountKey,
+                        formState,
+                        selectedFeeLevel: 'custom',
+                        customFeePerUnit,
+                        customFeeLimit,
+                        customMaxPriorityFeePerGas,
+                        customMaxFeePerGas,
+                    }),
+                );
+                feeLevels = isFulfilled(response) ? response.payload : undefined;
+            }
             if (requestId !== requestIdRef.current) return;
 
-            const feeLevels = isFulfilled(response) ? response.payload : undefined;
             const custom = feeLevels?.custom;
             if (!isFinalPrecomposedTransaction(custom)) {
                 setFeeError({ code: custom?.type === 'error' ? custom.error : undefined });
@@ -152,6 +180,7 @@ export const useCustomFee = ({ accountKey, formState }: UseCustomFeeProps) => {
                     account,
                     feeInfo,
                     feeLevels,
+                    builder: getCustomFeeLevel,
                 });
             }
             if (requestId === requestIdRef.current) setIsFeeLoading(false);
@@ -161,6 +190,7 @@ export const useCustomFee = ({ accountKey, formState }: UseCustomFeeProps) => {
             setError,
             translate,
             inputKey,
+            getCustomFeeLevel,
             account,
             feeInfo,
             networkType,
@@ -191,7 +221,8 @@ export const useCustomFee = ({ accountKey, formState }: UseCustomFeeProps) => {
         preparedFee?.key === inputKey &&
         preparedFee.formState === formState &&
         preparedFee.account === account &&
-        preparedFee.feeInfo === feeInfo
+        preparedFee.feeInfo === feeInfo &&
+        preparedFee.builder === getCustomFeeLevel
             ? preparedFee.feeLevels
             : undefined;
     const customFeeLevel = currentFeeLevels?.custom;
