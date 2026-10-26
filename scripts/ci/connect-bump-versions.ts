@@ -187,7 +187,15 @@ const bumpConnect = async () => {
 
             const packageGitLog = await getGitCommitByPackageName(packageName, 1000);
 
-            const commitsArr = packageGitLog.stdout.split('\n');
+            // The log format wraps every line in literal quotes (no shell to strip them). Only the
+            // wrapping pair is removed: dropping every quote would also mangle a subject that
+            // contains one, e.g. git's own revert subject `Revert "feat(connect): ..."`.
+            const commitsArr = packageGitLog.stdout
+                .split('\n')
+                .map(commit => commit.replace(/^"/, '').replace(/"$/, ''))
+                // `%s` is a single-line subject, so the only empty line is the trailing one git
+                // always writes; keeping it would inflate every count taken from this list.
+                .filter(Boolean);
 
             const newCommits: string[] = [];
             for (const commit of commitsArr) {
@@ -195,7 +203,7 @@ const bumpConnect = async () => {
                 if (commit.includes(`npm-release: @trezor/${packageName}`)) {
                     break;
                 }
-                newCommits.push(commit.replaceAll('"', ''));
+                newCommits.push(commit);
             }
 
             // In Connect dependencies packages we only update CHANGELOG when doing a stable release (patch or minor).
