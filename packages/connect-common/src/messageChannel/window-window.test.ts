@@ -64,12 +64,8 @@ describe('WindowWindowChannel sender validation', () => {
         expect(onMessage).toHaveBeenCalledTimes(1);
     });
 
-    // Documents the bug: the listener checks the origin and the channel names,
-    // which are the same for every peer of this kind. A message from another
-    // window of the expected origin, e.g. the bootstrap iframe of a second
-    // connect-web copy on the same page, is handled as if it came from this
-    // channel's own peer.
-    it('forwards messages from another window of the expected origin', () => {
+    // E.g. the bootstrap iframe of a second connect-web copy on the same page.
+    it('drops messages from another window of the expected origin', () => {
         const onMessage = jest.fn();
         channel.on('message', onMessage);
 
@@ -82,7 +78,7 @@ describe('WindowWindowChannel sender validation', () => {
             createWindow(),
         );
 
-        expect(onMessage).toHaveBeenCalledTimes(1);
+        expect(onMessage).not.toHaveBeenCalled();
     });
 
     it('drops messages from a different origin even with valid channel metadata', () => {
