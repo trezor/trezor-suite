@@ -97,7 +97,8 @@ export async function findProcessFromIncomingPort(
                 .find(({ local }) => local.endsWith(`:${port}`));
             if (record) {
                 // Extract the app name from the full path on Windows
-                const appInfoCommand = `powershell -Command "(Get-Item (Get-Process -Id ${record.pid}).Path).VersionInfo | ConvertTo-Json"`;
+                // Do not load the user profile. A slow profile delays the connect-ws handshake past the client timeout.
+                const appInfoCommand = `powershell -NoProfile -NonInteractive -Command "(Get-Item (Get-Process -Id ${record.pid}).Path).VersionInfo | ConvertTo-Json"`;
                 const appInfoStdout = await spawnAndCollectStdout(appInfoCommand);
                 const appInfo = JSON.parse(appInfoStdout);
                 const fullPath = appInfo['FileName'];
