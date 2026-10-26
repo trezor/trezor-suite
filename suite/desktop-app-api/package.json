@@ -25,7 +25,7 @@
         "@suite-common/schemas": "workspace:*",
         "@suite/tor-types": "workspace:*",
         "@trezor/type-utils": "workspace:*",
-        "zod": "4.6.5"
+        "zod": "4.6.6"
     },
     "devDependencies": {
         "@trezor/dependency-injection": "workspace:*"
