@@ -127,6 +127,7 @@ describe('filterChangelogCommits', () => {
         'npm-release: @trezor/utils 1.2.3',
         'npm-prerelease(connect): @trezor/utils 1.2.3-beta.1',
         'release: connect 9.4.0',
+        'Revert "chore(deps): bump foo"',
     ])('drops %s', subject => {
         expect(filterChangelogCommits([commitLine(subject)], 'utils')).toEqual([]);
     });
