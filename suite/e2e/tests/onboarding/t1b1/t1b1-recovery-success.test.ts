@@ -11,7 +11,8 @@ test.describe('Onboarding - recover wallet T1B1', { tag: ['@T1B1'] }, () => {
         setupEmulator: false,
     });
 
-    test.beforeEach(async ({ onboardingPage }) => {
+    test.beforeEach(async ({ onboardingPage, firmwareReleaseConfigMock }) => {
+        await firmwareReleaseConfigMock.startWithInstalledFirmware();
         await onboardingPage.disableNecessaryFirmwareChecks();
     });
 

@@ -164,8 +164,12 @@ const test = suiteBaseTest.extend<Fixtures>({
         await use(blockbookMock);
         blockbookMock.stop();
     },
-    firmwareReleaseConfigMock: async ({ page, device }, use) => {
-        const firmwareReleaseConfigMock = new FirmwareReleaseConfigMock(page, device);
+    firmwareReleaseConfigMock: async ({ page, device, trezorUserEnv }, use) => {
+        const firmwareReleaseConfigMock = new FirmwareReleaseConfigMock(
+            page,
+            device,
+            trezorUserEnv,
+        );
         await use(firmwareReleaseConfigMock);
         await firmwareReleaseConfigMock.stop();
     },
