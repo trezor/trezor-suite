@@ -224,13 +224,13 @@ export const connectPopupCallInnerThunk = createThunk<
             dispatch(connectPopupActions.setCallDevicePath(device.path));
 
             const response = await TrezorConnect.call({
+                ...modifiedPayload,
                 device: {
                     path: device.path,
                     instance: device.instance,
                     state: device.state,
                     useEmptyPassphrase: device.useEmptyPassphrase,
                 },
-                ...modifiedPayload,
                 method,
             } as CallMethodPayload);
             response.id = undefined;
@@ -452,13 +452,13 @@ export const connectPopupVerifyAddressThunk = createThunk<
         try {
             // @ts-expect-error: method is dynamic
             const res = await TrezorConnect[call.method]({
+                ...call.addresses?.[index]?.validatePayload,
                 device: {
                     path: device.path,
                     instance: device.instance,
                     state: device.state,
                     useEmptyPassphrase: device.useEmptyPassphrase,
                 },
-                ...call.addresses?.[index]?.validatePayload,
                 showOnTrezor: true,
                 chunked: false,
             });

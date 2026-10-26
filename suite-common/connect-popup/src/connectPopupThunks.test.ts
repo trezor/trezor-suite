@@ -319,12 +319,17 @@ const source = {
     manifest: { appName: 'Test app' },
 } as const;
 
+const selectedWallet = {
+    path: fakeDevice.path,
+    instance: fakeDevice.instance,
+    state: fakeDevice.state,
+    useEmptyPassphrase: fakeDevice.useEmptyPassphrase,
+};
+
 describe('connectPopupCallThunk', () => {
     afterEach(() => jest.restoreAllMocks());
 
-    // Documents the bug: the payload `device` is spread over the device built from the wallet
-    // selected in Suite, so both the call and the on-device address check run on the payload one.
-    it('runs the call and its address check on the payload device, not the selected wallet', async () => {
+    it('runs the call and its address check on the whole selected wallet when the payload names it', async () => {
         mockConnectCall();
         // Never settles: the user exports the address without confirming it on the device.
         jest.spyOn(TrezorConnect, 'getAddress').mockImplementation(() => new Promise(() => {}));
@@ -346,10 +351,10 @@ describe('connectPopupCallThunk', () => {
         await call;
 
         expect(TrezorConnect.call).toHaveBeenLastCalledWith(
-            expect.objectContaining({ device: { path: fakeDevice.path } }),
+            expect.objectContaining({ device: selectedWallet }),
         );
         expect(TrezorConnect.getAddress).toHaveBeenCalledWith(
-            expect.objectContaining({ device: { path: fakeDevice.path }, showOnTrezor: true }),
+            expect.objectContaining({ device: selectedWallet, showOnTrezor: true }),
         );
     });
 });
