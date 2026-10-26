@@ -18,41 +18,42 @@ import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { type UseFormReturn, useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 
+import { getReferenceFeeLevel } from './referenceFeeLevel';
 import { type FeesFormValues, feesFormValidationSchema } from '../../feesFormSchema';
 import { selectFeeLevels } from '../../selectors';
 import { getFeeValue } from '../../utils';
 
 const getDefaultFeeLimit = (
     networkType: NetworkType | undefined,
-    normalFee: PrecomposedTransactionFinal | undefined,
+    referenceFee: PrecomposedTransactionFinal | undefined,
 ): string | undefined => {
-    if (networkType === 'tron') return normalFee?.estimatedFeeLimit;
+    if (networkType === 'tron') return referenceFee?.estimatedFeeLimit;
 
-    return normalFee?.feeLimit;
+    return referenceFee?.feeLimit;
 };
 
 const syncCustomFeeDefaults = (
     networkType: NetworkType | undefined,
     form: UseFormReturn<FeesFormValues>,
     feePerUnit: string | undefined,
-    normalFee: PrecomposedTransactionFinal | undefined,
+    referenceFee: PrecomposedTransactionFinal | undefined,
 ) => {
     const values = form.getValues();
 
     if (!values.customFeePerUnit && feePerUnit) {
         form.setValue('customFeePerUnit', feePerUnit);
     }
-    const defaultFeeLimit = getDefaultFeeLimit(networkType, normalFee);
+    const defaultFeeLimit = getDefaultFeeLimit(networkType, referenceFee);
     const shouldUpdateFeeLimit =
         networkType === 'tron' ? !!defaultFeeLimit : !values.customFeeLimit && !!defaultFeeLimit;
+    if (!values.customMaxFeePerGas && referenceFee?.maxFeePerGas) {
+        form.setValue('customMaxFeePerGas', referenceFee.maxFeePerGas);
+    }
+    if (!values.customMaxPriorityFeePerGas && referenceFee?.maxPriorityFeePerGas) {
+        form.setValue('customMaxPriorityFeePerGas', referenceFee.maxPriorityFeePerGas);
+    }
     if (shouldUpdateFeeLimit) {
         form.setValue('customFeeLimit', defaultFeeLimit, { shouldValidate: true });
-    }
-    if (!values.customMaxFeePerGas && normalFee?.maxFeePerGas) {
-        form.setValue('customMaxFeePerGas', normalFee.maxFeePerGas);
-    }
-    if (!values.customMaxPriorityFeePerGas && normalFee?.maxPriorityFeePerGas) {
-        form.setValue('customMaxPriorityFeePerGas', normalFee.maxPriorityFeePerGas);
     }
 };
 
@@ -88,25 +89,23 @@ export const useFeesForm = ({
         symbol: account?.symbol,
     });
 
-    const minimalFeeLimit =
-        feeLevels.normal && 'estimatedFeeLimit' in feeLevels.normal
-            ? feeLevels.normal.estimatedFeeLimit
-            : undefined;
-
-    const normalFee = isFinalPrecomposedTransaction(feeLevels.normal)
-        ? feeLevels.normal
-        : undefined;
-
+    const referenceFee = getReferenceFeeLevel(feeLevels);
     const networkType = account?.symbol ? getNetworkType(account.symbol) : undefined;
+    const customEstimate = isFinalPrecomposedTransaction(feeLevels.custom)
+        ? feeLevels.custom.estimatedFeeLimit
+        : undefined;
+    const minimalFeeLimit =
+        referenceFee?.estimatedFeeLimit ??
+        (networkType === 'ethereum' ? (referenceFee?.feeLimit ?? customEstimate) : undefined);
 
     const form = useForm<FeesFormValues>({
         validation: feesFormValidationSchema,
         defaultValues: {
             feeLevel: defaultFeeLevel,
             customFeePerUnit: trimmedFeePerUnit,
-            customFeeLimit: getDefaultFeeLimit(networkType, normalFee),
-            customMaxFeePerGas: normalFee?.maxFeePerGas,
-            customMaxPriorityFeePerGas: normalFee?.maxPriorityFeePerGas,
+            customFeeLimit: getDefaultFeeLimit(networkType, referenceFee),
+            customMaxFeePerGas: referenceFee?.maxFeePerGas,
+            customMaxPriorityFeePerGas: referenceFee?.maxPriorityFeePerGas,
         },
         context: {
             networkFeeInfo,
@@ -118,8 +117,8 @@ export const useFeesForm = ({
     });
 
     useEffect(() => {
-        syncCustomFeeDefaults(networkType, form, trimmedFeePerUnit, normalFee);
-    }, [networkType, trimmedFeePerUnit, normalFee, form]);
+        syncCustomFeeDefaults(networkType, form, trimmedFeePerUnit, referenceFee);
+    }, [networkType, trimmedFeePerUnit, referenceFee, form]);
 
     return form;
 };

@@ -106,11 +106,27 @@ export const feesFormValidationSchema = yup.object({
 
             if (networkType !== 'ethereum' && networkType !== 'tron') return true;
 
-            if (!value || !minimalFeeLimit) return false;
+            const feeLimit = new BigNumber(value);
+            if (
+                networkType === 'ethereum' &&
+                (!feeLimit.isFinite() || !feeLimit.isInteger() || feeLimit.lte(0))
+            ) {
+                return this.createError({
+                    message: translate!(
+                        'transactionManagement.fees.custom.bottomSheet.errors.feeLimit.invalid',
+                    ),
+                });
+            }
 
-            const feeBig = new BigNumber(value);
+            if (!minimalFeeLimit) {
+                return this.createError({
+                    message: translate!(
+                        'transactionManagement.fees.custom.bottomSheet.errors.feeLimit.unavailable',
+                    ),
+                });
+            }
 
-            if (feeBig.isLessThan(minimalFeeLimit)) {
+            if (feeLimit.isLessThan(minimalFeeLimit)) {
                 return this.createError({
                     message:
                         networkType === 'tron'

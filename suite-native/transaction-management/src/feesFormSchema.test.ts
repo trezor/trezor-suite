@@ -22,6 +22,23 @@ describe('feesFormValidationSchema', () => {
         ...overrides,
     });
 
+    it.each(['0', '1.5'])(
+        'preserves Tron fee-limit validation for %s SUN',
+        async customFeeLimit => {
+            await expect(
+                feesFormValidationSchema.validate(
+                    { feeLevel: 'custom', customFeePerUnit: '500000', customFeeLimit },
+                    {
+                        context: createContext({
+                            symbol: asNetworkSymbol('trx'),
+                            minimalFeeLimit: '0',
+                        }),
+                    },
+                ),
+            ).resolves.toBeDefined();
+        },
+    );
+
     describe('basic validation', () => {
         it('should validate a complete valid form', async () => {
             const data = {
@@ -51,6 +68,22 @@ describe('feesFormValidationSchema', () => {
     });
 
     describe('customFeeLimit validation', () => {
+        it.each(['0', '-1', '21000.5', 'NaN', 'Infinity'])(
+            'rejects invalid gas %s with an available estimate',
+            async customFeeLimit => {
+                await expect(
+                    feesFormValidationSchema.validate(
+                        {
+                            feeLevel: 'custom',
+                            customFeePerUnit: '500000',
+                            customFeeLimit,
+                        },
+                        { context: createContext({ translate: () => 'Invalid gas limit.' }) },
+                    ),
+                ).rejects.toMatchObject({ path: 'customFeeLimit' });
+            },
+        );
+
         it('should accept valid fee limit for ethereum', async () => {
             const data = {
                 feeLevel: 'custom',
