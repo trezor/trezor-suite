@@ -12,11 +12,9 @@ import {
 import { advancedSearchTransactions } from '@suite-common/transaction-search';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
-    selectAccountsTransactions,
     selectActiveDustPhishingThreshold,
     selectHistoricFiatRates,
     selectIsHideSuspiciousTransactions,
-    selectIsLoadingAccountTransactions,
     selectPhishingTransactions,
 } from '@suite-common/wallet-core';
 import {
@@ -36,7 +34,7 @@ import { NoVisibleTransactions } from './SingleAccountTransactionList';
 import { TransactionListActions } from './TransactionListActions/TransactionListActions';
 import { TransactionListBody } from './TransactionListBody';
 import { findTransactionAccount } from './findTransactionAccount';
-import { useFetchTransactions } from './useFetchTransactions';
+import { useAccountsTransactions } from './useAccountsTransactions';
 
 const SEARCH_DEBOUNCE_MS = 200;
 
@@ -72,14 +70,25 @@ export const MultiAccountTransactionList = ({
     const sectionRef = useRef<HTMLDivElement>(null);
 
     const accountKeys = useMemo(() => accounts.map(account => account.key), [accounts]);
-    const transactions = useSelector(state =>
-        selectAccountsTransactions(state, accountKeys, contractAddress),
-    );
-    const isLoadingAny = useSelector(state =>
-        accountKeys.some(accountKey => selectIsLoadingAccountTransactions(state, accountKey)),
-    );
-    const { fetchNext, fetchAll, fetchedAll, hasMore, isFetching, isFetchingAll } =
-        useFetchTransactions(accounts);
+    const [currentPage, setCurrentPage] = useState(1);
+    const perPage = getTxsPerPage(getNetworkType(symbol));
+    const anchor = useSelector(selectRouterAnchor);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [searchResult, setSearchResult] = useState(NO_SEARCH_RESULT);
+    const isSearching = searchQuery.trim() !== '';
+
+    const {
+        transactions: loadedTransactions,
+        isComplete,
+        isLoading,
+    } = useAccountsTransactions({
+        accountKeys,
+        contractAddress,
+        page: currentPage,
+        perPage,
+        isAllRequested: !!anchor || isSearching,
+        isWaitingForAll: isSearching,
+    });
 
     const isHidingSuspicious = useSelector(
         state =>
@@ -91,12 +100,10 @@ export const MultiAccountTransactionList = ({
     const txsMarkedAsNotScamByAccount = useSelector(selectPhishingTransactions);
     const dustThreshold = useSelector(selectActiveDustPhishingThreshold);
 
-    const visibleTransactions = useMemo(() => {
-        if (!isHidingSuspicious) {
-            return transactions;
-        }
+    const transactions = useMemo(() => {
+        if (!isHidingSuspicious) return loadedTransactions;
 
-        return transactions.filter(transaction => {
+        return loadedTransactions.filter(transaction => {
             const account = findTransactionAccount(accounts, transaction);
 
             return !isPhishingTransaction({
@@ -110,66 +117,29 @@ export const MultiAccountTransactionList = ({
         });
     }, [
         isHidingSuspicious,
-        transactions,
+        loadedTransactions,
         accounts,
         tokenDefinitions,
         historicRates,
         txsMarkedAsNotScamByAccount,
         dustThreshold,
     ]);
-
-    const [currentPage, setCurrentPage] = useState(1);
-    const perPage = getTxsPerPage(getNetworkType(symbol));
     const confirmedTransactions = useMemo(
-        () => visibleTransactions.filter(transaction => !isPending(transaction)),
-        [visibleTransactions],
+        () => transactions.filter(transaction => !isPending(transaction)),
+        [transactions],
     );
-    const confirmedCount = confirmedTransactions.length;
 
     // A link to one transaction (e.g. from a notification) loads everything and opens its page.
-    const anchor = useSelector(selectRouterAnchor);
     const anchorPage = useMemo(
         () => (anchor ? findAnchorTransactionPage(confirmedTransactions, perPage, anchor) : null),
         [anchor, confirmedTransactions, perPage],
     );
-
-    const [searchQuery, setSearchQuery] = useState('');
-    const [searchResult, setSearchResult] = useState(NO_SEARCH_RESULT);
-    const isSearching = searchQuery.trim() !== '';
-
-    // A token's transfers can be anywhere in the accounts' histories, so its list loads them all.
-    const isLoadingAll = !!contractAddress || !!anchor || isSearching;
-
-    useEffect(() => {
-        if (isLoadingAll && !fetchedAll) {
-            fetchAll();
-        }
-    }, [isLoadingAll, fetchedAll, fetchAll]);
 
     useEffect(() => {
         if (anchorPage !== null) {
             setCurrentPage(anchorPage);
         }
     }, [anchorPage]);
-
-    // A coin's page is one page of every account, so each page shown needs one round at most.
-    const [lastFetchedPage, setLastFetchedPage] = useState(0);
-    useEffect(() => {
-        if (isLoadingAll || isFetching || currentPage <= lastFetchedPage) return;
-        setLastFetchedPage(currentPage);
-        if (hasMore && confirmedCount < currentPage * perPage) {
-            fetchNext();
-        }
-    }, [
-        fetchNext,
-        isLoadingAll,
-        isFetching,
-        hasMore,
-        confirmedCount,
-        currentPage,
-        lastFetchedPage,
-        perPage,
-    ]);
 
     const accountLabels = useSelector(state =>
         accounts.map(account => selectAccountLabelsForSearch(state, account)),
@@ -190,7 +160,7 @@ export const MultiAccountTransactionList = ({
                     return labels === undefined
                         ? []
                         : advancedSearchTransactions(
-                              visibleTransactions.filter(
+                              transactions.filter(
                                   transaction =>
                                       findTransactionAccount([account], transaction) !== undefined,
                               ),
@@ -203,12 +173,12 @@ export const MultiAccountTransactionList = ({
             setSearchResult({ query: searchQuery, transactions: results });
         },
         SEARCH_DEBOUNCE_MS,
-        [visibleTransactions, accounts, accountLabels, searchQuery, isSearching],
+        [transactions, accounts, accountLabels, searchQuery, isSearching],
     );
 
     // Until the first results of a search come in, the list stays as it was.
     const searchedTransactions =
-        isSearching && searchResult.query !== '' ? searchResult.transactions : visibleTransactions;
+        isSearching && searchResult.query !== '' ? searchResult.transactions : transactions;
 
     const pendingTxs = useMemo(
         () => searchedTransactions.filter(isPending),
@@ -221,16 +191,9 @@ export const MultiAccountTransactionList = ({
                 .slice((currentPage - 1) * perPage, currentPage * perPage),
         [searchedTransactions, currentPage, perPage],
     );
-    // Pages are counted as they load: XRP and Stellar have no total, and a token's transfers or the
-    // suspicious filter make any total too high. A list loading everything has no page in reserve.
     const totalItems = isSearching
         ? searchedTransactions.length - pendingTxs.length
-        : confirmedCount + (hasMore && !isLoadingAll ? perPage : 0);
-
-    // While everything loads, a page shows once it is full, so its rows don't trickle in.
-    const isPageLoading = isLoadingAll
-        ? (isFetchingAll || !fetchedAll) && confirmedTxs.length < perPage
-        : (isLoadingAny || isFetching) && confirmedTxs.length === 0;
+        : confirmedTransactions.length + (isComplete ? 0 : perPage);
 
     const onPageSelected = (page: number) => {
         setCurrentPage(page);
@@ -238,11 +201,9 @@ export const MultiAccountTransactionList = ({
     };
 
     const getCustomNoTransactions = () => {
-        if (transactions.length === 0) {
-            return <NoTransactions />;
-        }
+        if (transactions.length > 0) return undefined;
 
-        return visibleTransactions.length === 0 ? <NoVisibleTransactions /> : undefined;
+        return loadedTransactions.length > 0 ? <NoVisibleTransactions /> : <NoTransactions />;
     };
 
     return (
@@ -263,11 +224,9 @@ export const MultiAccountTransactionList = ({
         >
             <Column gap={32} padding={{ top: 16 }}>
                 <TransactionListBody
-                    isLoading={isPageLoading}
+                    isLoading={isLoading}
                     hasNoSearchResults={
-                        isSearching &&
-                        visibleTransactions.length > 0 &&
-                        searchedTransactions.length === 0
+                        isSearching && transactions.length > 0 && searchedTransactions.length === 0
                     }
                     pendingTxs={pendingTxs}
                     confirmedTxs={confirmedTxs}

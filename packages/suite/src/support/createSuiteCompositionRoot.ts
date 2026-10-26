@@ -41,7 +41,16 @@ import {
 import { type GetBinFilesBaseUrlDep, type ReloadAppDep } from '@suite-common/suite-types';
 import { type ThpHostNameDep } from '@suite-common/thp';
 import { selectTradedAccountKeys } from '@suite-common/trading';
-import { selectAccountsByDeviceState } from '@suite-common/wallet-core';
+import {
+    type TransactionRetrieverDep,
+    createTransactionRetriever,
+    fetchAllTransactionsForAccountThunk,
+    fetchTransactionsPageThunk,
+    selectAccountByKey,
+    selectAccountTransactionsFetchStatus,
+    selectAccountsByDeviceState,
+    selectAccountsTransactions,
+} from '@suite-common/wallet-core';
 import { type GetTrezorConnectPrivilegedDep } from '@trezor/connect';
 import { toGetter } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';
@@ -74,7 +83,8 @@ export type SuiteServices = CommonServices &
     MetadataMigrationDep &
     SuiteRouterHistoryDep &
     TransportsDep &
-    BluetoothDep;
+    BluetoothDep &
+    TransactionRetrieverDep;
 
 export type StoreAPIDep = Pick<SuiteReduxStore, 'getState' | 'dispatch'>;
 
@@ -183,6 +193,18 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         connectInitDeviceEventHooks: createConnectInitDeviceEventHooks({
             dispatch: deps.dispatch,
             bluetooth,
+        }),
+        transactionRetriever: createTransactionRetriever({
+            fetchTransactionsPage: params =>
+                deps.dispatch(fetchTransactionsPageThunk(params)).unwrap(),
+            fetchAllTransactionsForAccount: params =>
+                deps.dispatch(fetchAllTransactionsForAccountThunk(params)).unwrap(),
+            getAccount: toGetter(deps.getState, selectAccountByKey),
+            getTransactionsFetchStatus: toGetter(
+                deps.getState,
+                selectAccountTransactionsFetchStatus,
+            ),
+            getAccountsTransactions: toGetter(deps.getState, selectAccountsTransactions),
         }),
         connectInitUIEventHooks: createConnectInitUIEventHooks({
             dispatch: deps.dispatch,

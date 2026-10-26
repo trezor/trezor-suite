@@ -1,12 +1,14 @@
 import { testMocks } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { type AccountInfo } from '@trezor/connect';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import * as fixtures from './__fixtures__/transactionsReducer';
 import { transactionsActions } from './transactionsActions';
 import { prepareTransactionsReducer, transactionsInitialState } from './transactionsReducer';
 import type { TransactionsState } from './transactionsReducerTypes';
+import { fetchTransactionsPageThunk } from './transactionsThunks';
 
 const transactionsReducer = prepareTransactionsReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
@@ -123,6 +125,42 @@ describe(transactionsReducer.name, () => {
 
                 expect(result.transactions).toStrictEqual(f.result);
             });
+        });
+    });
+
+    describe('fetchTransactionsPageThunk.fulfilled', () => {
+        const fetchedPage = (state: TransactionsState, page: number, hasPageAfter = true) =>
+            transactionsReducer(
+                state,
+                fetchTransactionsPageThunk.fulfilled(
+                    {
+                        history: { transactions: [testMocks.getWalletTransaction()] },
+                        page: { index: page, size: 25, total: hasPageAfter ? page + 1 : page },
+                    } as unknown as AccountInfo,
+                    'requestId',
+                    { accountKey: account.key, page, perPage: 25 },
+                ),
+            );
+
+        it('counts only the pages fetched in order', () => {
+            const state = fetchedPage(fetchedPage(transactionsInitialState, 1), 3);
+
+            expect(state.fetchStatusDetail[account.key]?.fetchedPages).toEqual({
+                count: 1,
+                perPage: 25,
+            });
+        });
+
+        it('marks the history loaded at the last page fetched in order', () => {
+            const state = fetchedPage(fetchedPage(transactionsInitialState, 1), 2, false);
+
+            expect(state.fetchStatusDetail[account.key]?.areAllTransactionsLoaded).toBe(true);
+        });
+
+        it('does not mark the history loaded at a last page fetched out of order', () => {
+            const state = fetchedPage(transactionsInitialState, 3, false);
+
+            expect(state.fetchStatusDetail[account.key]?.areAllTransactionsLoaded).toBeUndefined();
         });
     });
 });

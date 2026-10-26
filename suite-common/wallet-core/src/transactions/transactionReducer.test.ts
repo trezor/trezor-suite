@@ -138,7 +138,11 @@ describe('transaction reducer', () => {
         expect(
             reducer(undefined, {
                 type: fetchTransactionsPageThunk.fulfilled.type,
-                meta: { arg: { accountKey: 'someAccountKey', page: 1 } },
+                meta: { arg: { accountKey: 'someAccountKey', page: 1, perPage: 25 } },
+                payload: {
+                    history: { transactions: [{ txid: 'txid' }] },
+                    page: { index: 1, size: 25, total: 2 },
+                },
             }),
         ).toEqual({
             ...transactionsInitialState,
@@ -146,6 +150,7 @@ describe('transaction reducer', () => {
                 someAccountKey: {
                     status: 'idle',
                     error: null,
+                    fetchedPages: { count: 1, perPage: 25 },
                 },
             },
         });

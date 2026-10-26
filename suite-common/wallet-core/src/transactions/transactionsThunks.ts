@@ -51,8 +51,8 @@ import { type TransactionsRootState } from './transactionsReducerTypes';
 import {
     selectAccountTransactions,
     selectAccountTransactionsFromNowUntilTimestamp,
-    selectAreAllAccountTransactionsLoaded,
     selectAreAllAccountTransactionsLoadedFromNowUntilTimestamp,
+    selectAreAllTransactionsLoaded,
     selectIsPageAlreadyFetched,
     selectTransactions,
 } from './transactionsSelectors';
@@ -1018,7 +1018,7 @@ export const addFakePendingSolanaStakeTxThunk = createThunk<
  * @param noLoading - disable loading indicator
  * @param forceRefetch - force refetch of transactions even if this page is already fetched
  */
-type FetchTransactionsPageThunkParams = {
+export type FetchTransactionsPageThunkParams = {
     accountKey: AccountKey;
     page: number;
     perPage: number;
@@ -1124,6 +1124,22 @@ export const fetchTransactionsPageThunk = createThunk<
     },
 );
 
+/**
+ * `knownTotalPages` carries the page count of an earlier response over, so a response that omits
+ * it does not end the walk on its own. An empty page is the end whatever the count says, because
+ * Solana reports more pages than it serves.
+ */
+export const hasTransactionsPageAfter = (
+    result: AccountInfo | 'ALREADY_FETCHED',
+    page: number,
+    knownTotalPages = 0,
+) =>
+    result === 'ALREADY_FETCHED' ||
+    (!!result.history.transactions?.length &&
+        (page < Math.max(result.page?.total ?? 0, knownTotalPages) ||
+            !!result.marker ||
+            !!result.stellarCursor));
+
 type FetchUtxoTransactionsForAccountThunkParams = {
     accountKey: AccountKey;
 };
@@ -1177,7 +1193,7 @@ export const fetchUtxoTransactionsForAccountThunk = createSingleInstanceThunk<
 /**
  * @param noLoading - disable loading indicator, it's not used directly in this thunk, but it's used in reducer
  */
-type FetchAllTransactionsForAccountThunkParams = {
+export type FetchAllTransactionsForAccountThunkParams = {
     accountKey: AccountKey;
     noLoading?: boolean;
 };
@@ -1203,7 +1219,9 @@ export const fetchAllTransactionsForAccountThunk = createSingleInstanceThunk<
 
         // If all transactions are already loaded, it means we can do some optimization (fetch only first few pages, less transactions per page etc.)
         // to just check for that few new transactions.
-        const areAllTransactionsAlreadyFetched = selectAreAllAccountTransactionsLoaded(
+        // Only a walk that reached the end counts, never the account's total: XRP and Stellar
+        // report -1, which would make every walk a quick one that stops at the first stored page.
+        const areAllTransactionsAlreadyFetched = !!selectAreAllTransactionsLoaded(
             getState(),
             accountKey,
         );
@@ -1250,10 +1268,8 @@ export const fetchAllTransactionsForAccountThunk = createSingleInstanceThunk<
             }
 
             totalPages = result.page?.total || totalPages;
-            const areThereMorePages =
-                page < totalPages || !!result.marker || !!result.stellarCursor;
 
-            if (!areThereMorePages) {
+            if (!hasTransactionsPageAfter(result, page, totalPages)) {
                 break;
             }
 
@@ -1341,9 +1357,8 @@ export const fetchTransactionsFromNowUntilTimestampThunk = createSingleInstanceT
             }
 
             totalPages = result.page?.total || totalPages;
-            const areThereMorePages = page < totalPages || !!result.marker;
 
-            if (!areThereMorePages) {
+            if (!hasTransactionsPageAfter(result, page, totalPages)) {
                 // This should never happen because of previous checks, but just it won't hurt to have it here as a safety net.
                 break;
             }
