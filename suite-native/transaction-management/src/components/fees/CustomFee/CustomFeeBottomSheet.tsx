@@ -14,10 +14,10 @@ import { type CustomFeeParams } from '../../../hooks';
 type CustomFeeBottomSheetProps = {
     onClose: () => void;
     accountKey: AccountKey;
-    feeValue: string;
+    feeValue: string | null;
     isFeeLoading: boolean;
     isSubmittable: boolean;
-    isErrorBoxVisible: boolean;
+    errorMessage: React.ReactNode;
     onCustomFeeSet: (customFeeParams: CustomFeeParams) => void;
     ref: BottomSheetModalRef;
     lastSavedValuesRef: RefObject<FeesFormValues | undefined>;
@@ -29,7 +29,7 @@ export const CustomFeeBottomSheet = ({
     feeValue,
     isFeeLoading,
     isSubmittable,
-    isErrorBoxVisible,
+    errorMessage,
     ref,
     lastSavedValuesRef,
     onCustomFeeSet,
@@ -98,7 +98,7 @@ export const CustomFeeBottomSheet = ({
                     symbol={symbol}
                     feeValue={feeValue}
                     isFeeLoading={isFeeLoading}
-                    isErrorBoxVisible={isErrorBoxVisible}
+                    errorMessage={errorMessage}
                 />
                 <Box marginTop="sp16">
                     <FormSubmitButton

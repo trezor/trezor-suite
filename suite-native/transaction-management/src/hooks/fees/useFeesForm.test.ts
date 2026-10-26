@@ -236,7 +236,7 @@ describe('useFeesForm', () => {
         });
     });
 
-    it('does not use a previous Custom gas limit as a minimum when all standard levels failed', async () => {
+    it('allows a fresh preview without using a previous Custom gas limit as the minimum', async () => {
         const wallet = getWalletState();
         const { result } = await renderHookWithStoreProvider(
             () =>
@@ -265,7 +265,7 @@ describe('useFeesForm', () => {
         );
         await act(async () => {
             result.current.setValue('customFeeLimit', '45000');
-            expect(await result.current.trigger('customFeeLimit')).toBe(false);
+            expect(await result.current.trigger('customFeeLimit')).toBe(true);
         });
     });
     it('uses a composed Custom estimate without trusting its user-entered gas limit', async () => {

@@ -129,6 +129,10 @@ export const feesFormValidationSchema = yup.object({
                 }
 
                 if (!minimalFeeLimit) {
+                    // A local Ethereum preview supplies the gas estimate after input validation.
+                    // Confirmation also checks that fresh estimate in useCustomFee.
+                    if (networkType === 'ethereum') return true;
+
                     return this.createError({
                         message: translate!(
                             'transactionManagement.fees.custom.bottomSheet.errors.feeLimit.unavailable',
