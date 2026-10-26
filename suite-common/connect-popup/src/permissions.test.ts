@@ -196,13 +196,13 @@ describe('permissionsAreCovered', () => {
         ['undefined', undefined],
         ['null', null],
         ['a non-array', 'read_address'],
-    ])('throws when the granted list is %s', (_name, badGranted) => {
-        expect(() =>
+    ])('is not covered when the granted list is %s', (_name, badGranted) => {
+        expect(
             permissionsAreCovered(
                 [{ permission: 'read_address', coin: 'btc' }],
                 badGranted as unknown as PermissionRequest[],
             ),
-        ).toThrow();
+        ).toBe(false);
     });
 
     it('is not covered by an empty granted list', () => {
