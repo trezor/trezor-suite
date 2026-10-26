@@ -154,6 +154,36 @@ beforeEach(() => {
 });
 
 describe('composeSolanaStakingTransactionFeeLevelsThunk', () => {
+    it.each(['unstake', 'claim'] as const)(
+        'classifies a failed %s estimate using only a proven protocol-fee shortfall',
+        async stakeType => {
+            for (const availableBalance of ['0', '4999', '5000', '100000000']) {
+                blockchainEstimateFeeMock.mockResolvedValueOnce({
+                    success: false,
+                    payload: { error: 'simulation failed' },
+                });
+                const store = buildStore({ accounts: [{ ...solAccount, availableBalance }] });
+                const result = await dispatchCompose(store, {
+                    accountKey: SOL_ACCOUNT_KEY,
+                    stakeType,
+                    amount: '1',
+                });
+                expect(result).toEqual({
+                    ok: true,
+                    payload: {
+                        normal: expect.objectContaining({
+                            type: 'error',
+                            error:
+                                Number(availableBalance) < 5000
+                                    ? 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE'
+                                    : 'TR_GENERIC_ERROR_TITLE',
+                        }),
+                    },
+                });
+            }
+        },
+    );
+
     it('returns undefined for an empty amount', async () => {
         const store = buildStore();
 

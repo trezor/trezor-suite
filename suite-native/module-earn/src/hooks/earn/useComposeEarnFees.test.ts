@@ -27,6 +27,7 @@ type ComposeResult = {
     payload?: PrecomposedLevels;
 };
 const mockCompose = jest.fn<Promise<ComposeResult>, []>();
+const mockSolanaCompose = jest.fn<Promise<ComposeResult>, []>();
 const FEE_LEVELS = {
     normal: { type: 'final', fee: '21000000', feeLimit: '21000', feePerByte: '10' },
 } as unknown as PrecomposedLevels;
@@ -52,7 +53,7 @@ jest.mock('@suite-common/wallet-core', () => ({
         jest.requireActual('@suite-common/wallet-core').composeSendFormTransactionFeeLevelsThunk,
     ),
     composeSolanaStakingTransactionFeeLevelsThunk: Object.assign(
-        () => () => mockCompose(),
+        () => () => mockSolanaCompose(),
         jest.requireActual('@suite-common/wallet-core')
             .composeSolanaStakingTransactionFeeLevelsThunk,
     ),
@@ -77,7 +78,7 @@ const FEES_STATE = {
     },
 } as unknown as FeesState;
 
-const createTestStore = () =>
+const createTestStore = (account = ACCOUNT) =>
     createLightStore({
         reducer: {
             // Static slices required by the test store provider (formatters config).
@@ -89,8 +90,8 @@ const createTestStore = () =>
                     bitcoinAmountUnit: 0,
                     addressDisplayType: 'chunked',
                 }),
-                accounts: createStaticReducer([ACCOUNT]),
-                fees: createStaticReducer(FEES_STATE),
+                accounts: createStaticReducer([account]),
+                fees: createStaticReducer({ ...FEES_STATE, [account.symbol]: FEES_STATE.eth }),
                 formDrafts: formDraftReducer,
                 send: prepareSendFormReducer({
                     actionTypes: { storageLoad: mockActionType('storageLoad') },
@@ -110,6 +111,7 @@ describe('useComposeEarnFees recovery', () => {
     beforeEach(() => {
         jest.useFakeTimers();
         mockCompose.mockResolvedValue(fulfilled());
+        mockSolanaCompose.mockResolvedValue(fulfilled());
     });
     afterEach(() => {
         jest.resetAllMocks();
@@ -162,6 +164,31 @@ describe('useComposeEarnFees recovery', () => {
             expect(result.current.formDraft?.outputs[0]?.amount).toBe('1');
         },
     );
+
+    it('offers retry for a failed Solana staking estimate and recovers with Normal only', async () => {
+        const account = mockWalletAccount({ symbol: asNetworkSymbol('sol') });
+        mockSolanaCompose.mockResolvedValueOnce(
+            fulfilled({ normal: { type: 'error', error: 'TR_GENERIC_ERROR_TITLE' } }),
+        );
+        const { result } = await renderHookWithStoreProvider(useComposeEarnFees, {
+            services: { store: createTestStore(account), analytics: mockNativeAnalytics() },
+            initialProps: {
+                accountKey: account.key,
+                formState: buildEarnComposeFormState(account.descriptor, '1.1', ''),
+                formDraftPrefix: 'unstake',
+            },
+        });
+        await settleDebounce();
+        expect(result.current.hasFeeEstimationError).toBe(true);
+        expect(result.current.isFeeReady).toBe(false);
+        await act(() => result.current.retryFeeEstimation());
+        await settleDebounce();
+        expect(result.current.hasFeeEstimationError).toBe(false);
+        expect(result.current.isFeeReady).toBe(true);
+        expect(result.current.formDraft?.outputs[0]?.amount).toBe('1.1');
+        expect(mockSolanaCompose).toHaveBeenCalledTimes(2);
+        expect(mockCompose).not.toHaveBeenCalled();
+    });
 
     it('does not report previous-flow error levels as a new failure at mount', async () => {
         const store = createTestStore();
