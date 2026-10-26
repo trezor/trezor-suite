@@ -1,6 +1,7 @@
 import { AddressFormatter } from '@suite-common/formatters';
 import { getCryptoId } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { getErc20ApproveSpender } from '@suite-common/wallet-utils';
 import { TestStream } from '@trezor/e2e-utils';
 
 import { countDecimalPlaces } from '../../support/common';
@@ -14,7 +15,6 @@ const approvalAmount = '60';
 // The toast shows the approved amount compactly, and a stablecoin reads money-like.
 const compactApprovalAmount = '60.00';
 const accountLabel = 'Ethereum #3';
-const lifiDiamondAddress = '0x1231DEB6f5749EF6cE6943a275A1D3E7486F4EaE';
 const positiveEthereumAmountPattern = /^(?!0+(?:\.0+)?\s*ETH$)\d+(?:\.\d+)?\s*ETH$/;
 
 test.describe('Trading - DEX swap approval (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
@@ -131,10 +131,16 @@ test.describe('Trading - DEX swap approval (LI.FI)', { tag: ['@T3T1', '@T3W1'] }
                 });
                 await devicePrompt.waitForPromptAndClick();
 
+                const { dexTx } = await tradingResponses.swap.trade();
+                const spender = getErc20ApproveSpender(dexTx?.data);
+                if (!spender) {
+                    throw new Error('The LI.FI approval trade has no approve calldata');
+                }
+
                 await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Token approval' },
-                        body: [transformAddress(lifiDiamondAddress, 'evmTetragrams')],
+                        body: [transformAddress(spender, 'evmTetragrams')],
                         actions: { right_button: 'Continue' },
                     },
                     T3T1: {
