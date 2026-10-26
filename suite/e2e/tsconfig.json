@@ -71,6 +71,9 @@
         {
             "path": "../../packages/blockchain-link-types"
         },
+        {
+            "path": "../../packages/connect-common"
+        },
         { "path": "../../packages/connect-web" },
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/e2e-utils" },
@@ -83,6 +86,7 @@
         },
         { "path": "../../packages/perf-e2e" },
         { "path": "../../packages/protobuf" },
+        { "path": "../../packages/protocol" },
         { "path": "../../packages/suite" },
         { "path": "../../packages/theme" },
         {
