@@ -399,8 +399,16 @@ export const runDiscoveryThunk = createThunk<
 
             if (!isDiscoveryInProgress(discovery)) return;
 
-            // Can be changed later if the passphrase typed on device is identified as empty
+            // Can be changed later:
+            // - if the device is passphrase_always_on_device.
+            // - if the passphrase typed on device is identified as empty.
             let { isAddingHiddenWallet } = discovery;
+
+            // Standard wallet cannot be created in this setup.
+            const isPassphraseAlwaysOnDevice = device.features?.passphrase_always_on_device;
+            if (isPassphraseAlwaysOnDevice && !isAddingHiddenWallet) {
+                isAddingHiddenWallet = true;
+            }
 
             assertDeviceIsAcquired(device);
 
@@ -484,7 +492,7 @@ export const runDiscoveryThunk = createThunk<
                     d => d.path === passedDevice.path && d.useEmptyPassphrase,
                 );
 
-                if (!standardWallet) {
+                if (!standardWallet && !isPassphraseAlwaysOnDevice) {
                     // no passphrase duplicity and no standard wallet -> check that this is not in fact empty passphrase
                     const res = await TrezorConnect.getDeviceState({
                         device: { path: passedDevice.path, useEmptyPassphrase: true },
