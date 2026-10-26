@@ -1,13 +1,14 @@
 import { type UnknownAction, combineReducers, createAction } from '@reduxjs/toolkit';
 
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
-import { formDraftReducer } from '@suite-common/wallet-core';
+import { type EarnTransactionFlow, formDraftReducer } from '@suite-common/wallet-core';
 import {
     type FeesState,
     type FormState,
     type GeneralPrecomposedLevels,
     type PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import {
     act,
     createLightStore,
@@ -23,6 +24,12 @@ import {
     buildPreparedTxFeeDraftState,
     buildPreparedTxFeePreview,
 } from '../../utils/earn/preparedTxFeeUtils';
+
+let mockIsFocused = true;
+jest.mock('@react-navigation/native', () => ({
+    ...jest.requireActual('@react-navigation/native'),
+    useIsFocused: () => mockIsFocused,
+}));
 
 jest.mock('../../utils/earn/preparedTxFeeUtils', () => ({
     buildPreparedTxFeeDraftState: jest.fn(),
@@ -78,6 +85,7 @@ const composeReady = (unsignedTransaction = BASE_UNSIGNED_TX) => ({
 });
 
 type HookProps = {
+    analyticsFlow: EarnTransactionFlow;
     amount: string | undefined;
     composeTransaction: (amount: string) => Promise<ComposeTxResult<ComposedTxBase>>;
     formDraftKey: string;
@@ -114,6 +122,7 @@ const createTestStore = (initialFees = FEES_STATE) =>
     });
 
 const createProps = (overrides: Partial<HookProps> = {}): HookProps => ({
+    analyticsFlow: 'yield-deposit',
     amount: '1',
     composeTransaction: jest.fn(),
     formDraftKey: FORM_DRAFT_KEY,
@@ -126,11 +135,13 @@ const createProps = (overrides: Partial<HookProps> = {}): HookProps => ({
 
 const renderPreparedTxFees = async (initialProps: HookProps, initialFees = FEES_STATE) => {
     const store = createTestStore(initialFees);
+    const analytics = mockNativeAnalytics();
 
     return {
         store,
+        analytics,
         ...(await renderHookWithStoreProvider((props: HookProps) => usePreparedTxFees(props), {
-            services: { store },
+            services: { store, analytics },
             initialProps,
         })),
     };
@@ -183,6 +194,7 @@ describe('usePreparedTxFees', () => {
 
     beforeEach(() => {
         jest.useFakeTimers();
+        mockIsFocused = true;
         buildFeePreviewMock.mockReturnValue(BASE_FEE_PREVIEW);
         buildFeeDraftStateMock.mockReturnValue(FEE_DRAFT_STATE);
     });
@@ -192,6 +204,51 @@ describe('usePreparedTxFees', () => {
         jest.useRealTimers();
     });
 
+    it('does not attribute a previous account failure to a newly selected account', async () => {
+        const pending = createDeferred<ComposeTxResult<ComposedTxBase>>();
+        const composeTransaction = jest
+            .fn()
+            .mockResolvedValueOnce({ type: 'error' })
+            .mockReturnValueOnce(pending.promise);
+        const props = createProps({ composeTransaction });
+        const { rerender, analytics } = await renderPreparedTxFees(props);
+        await settleDebounce();
+        expect(analytics.report).toHaveBeenCalledTimes(1);
+
+        await rerender({ ...props, formDraftKey: 'earn/test-flow/another-account' });
+        await settleDebounce();
+        expect(analytics.report).toHaveBeenCalledTimes(1);
+
+        await resolveCompose(pending, composeReady());
+        expect(analytics.report).toHaveBeenCalledTimes(1);
+    });
+
+    it('preserves the failure episode without reporting hidden updates under Review', async () => {
+        const props = createProps({
+            composeTransaction: jest.fn().mockResolvedValue(composeReady()),
+        });
+        buildFeeDraftStateMock.mockReturnValue(null);
+        const { rerender, analytics } = await renderPreparedTxFees(props);
+        await settleDebounce();
+        expect(analytics.report).toHaveBeenCalledTimes(1);
+        mockIsFocused = false;
+        buildFeeDraftStateMock.mockReturnValue(FEE_DRAFT_STATE);
+        await rerender({ ...props, amount: '2' });
+        await settleDebounce();
+        expect(analytics.report).toHaveBeenCalledTimes(1);
+        mockIsFocused = true;
+        await rerender({ ...props, amount: '2' });
+        expect(analytics.report).toHaveBeenCalledTimes(2);
+        expect(analytics.report).toHaveBeenLastCalledWith({
+            type: 'yield/interaction',
+            payload: {
+                element: 'fee-estimation-recovered',
+                value: 'yield-deposit',
+                networkSymbol: 'eth',
+            },
+        });
+    });
+
     it('reports a compose failure once until recovery or an explicit retry', async () => {
         const onComposeError = jest.fn();
         const composeTransaction = jest.fn().mockResolvedValue({
@@ -199,7 +256,7 @@ describe('usePreparedTxFees', () => {
             reason: 'missing-fee-level',
         });
         const props = createProps({ composeTransaction, onComposeError });
-        const { result, rerender } = await renderPreparedTxFees(props);
+        const { result, rerender, analytics } = await renderPreparedTxFees(props);
 
         await settleDebounce();
         expect(onComposeError).toHaveBeenCalledWith('missing-fee-level');
@@ -220,6 +277,18 @@ describe('usePreparedTxFees', () => {
         await rerender({ ...props, amount: '4' });
         await settleDebounce();
         expect(onComposeError).toHaveBeenCalledTimes(3);
+        expect(jest.mocked(analytics.report).mock.calls.map(([event]) => event)).toEqual(
+            [
+                'fee-estimation-error-banner',
+                'fee-estimation-retry',
+                'fee-estimation-error-banner',
+                'fee-estimation-recovered',
+                'fee-estimation-error-banner',
+            ].map(element => ({
+                type: 'yield/interaction',
+                payload: { element, value: 'yield-deposit', networkSymbol: 'eth' },
+            })),
+        );
     });
 
     it('ignores compose failures for stale requests and after unmount', async () => {
@@ -448,6 +517,29 @@ describe('usePreparedTxFees', () => {
         expect(result.current.hasFeeEstimationError).toBe(true);
         expect(onComposeError).toHaveBeenCalledTimes(2);
         expect(composeTransaction).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not report a stale missing draft as another failure while retry starts', async () => {
+        buildFeeDraftStateMock.mockReturnValue(null);
+        const { result, analytics } = await renderPreparedTxFees(
+            createProps({ composeTransaction: jest.fn().mockResolvedValue(composeReady()) }),
+        );
+        await settleDebounce();
+        expect(result.current.hasFeeEstimationError).toBe(true);
+
+        await act(() => result.current.retryFeeEstimation());
+        buildFeeDraftStateMock.mockReturnValue(FEE_DRAFT_STATE);
+        await settleDebounce();
+
+        expect(result.current.isFeeReady).toBe(true);
+        expect(jest.mocked(analytics.report).mock.calls.map(([event]) => event)).toEqual(
+            ['fee-estimation-error-banner', 'fee-estimation-retry', 'fee-estimation-recovered'].map(
+                element => ({
+                    type: 'yield/interaction',
+                    payload: { element, value: 'yield-deposit', networkSymbol: 'eth' },
+                }),
+            ),
+        );
     });
 
     it('surfaces an error when the compose function throws', async () => {

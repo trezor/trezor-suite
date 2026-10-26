@@ -91,12 +91,13 @@ const renderFees = async (overrides: Partial<typeof initialProps> = {}) => {
         },
     });
 
+    const analytics = mockNativeAnalytics();
     const hook = await renderHookWithStoreProvider(useYieldWithdrawFees, {
         initialProps: { ...initialProps, ...overrides },
-        services: { store, analytics: mockNativeAnalytics() },
+        services: { store, analytics },
     });
 
-    return { ...hook, store };
+    return { ...hook, store, analytics };
 };
 
 describe('Yield withdraw fee selection', () => {
@@ -381,4 +382,36 @@ describe('Yield withdraw fee selection', () => {
             estimatedFeeLimit: '200000',
         });
     });
+
+    it.each(['withdraw', 'redeem'] as const)(
+        'reports %s failure, retry and usable recovery through the real fee hook',
+        async flowType => {
+            mockCompose.mockResolvedValueOnce({ type: 'error', reason: 'fee-estimation-failed' });
+            mockCompose.mockResolvedValueOnce({ type: 'error', reason: 'fee-estimation-failed' });
+            const { result, analytics } = await renderFees({ flowType });
+
+            await act(() => jest.advanceTimersByTimeAsync(300));
+            expect(result.current.hasFeeEstimationError).toBe(true);
+            await act(() => result.current.retryFeeEstimation());
+            expect(result.current.hasFeeEstimationError).toBe(false);
+            await act(() => jest.advanceTimersByTimeAsync(300));
+            expect(result.current.hasFeeEstimationError).toBe(true);
+            await act(() => result.current.retryFeeEstimation());
+            await act(() => jest.advanceTimersByTimeAsync(300));
+
+            expect(result.current.preparedAction).not.toBeNull();
+            expect(jest.mocked(analytics.report).mock.calls.map(([event]) => event)).toEqual(
+                [
+                    'fee-estimation-error-banner',
+                    'fee-estimation-retry',
+                    'fee-estimation-error-banner',
+                    'fee-estimation-retry',
+                    'fee-estimation-recovered',
+                ].map(element => ({
+                    type: 'yield/interaction',
+                    payload: { element, value: `yield-${flowType}`, networkSymbol: 'eth' },
+                })),
+            );
+        },
+    );
 });

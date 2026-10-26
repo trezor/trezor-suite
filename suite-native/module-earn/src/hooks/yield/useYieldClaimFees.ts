@@ -92,6 +92,7 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
 
     const fees = usePreparedTxFees({
         amount: '0',
+        analyticsFlow: 'merkl-claim',
         availableBalance: account?.availableBalance,
         composeTransaction,
         formDraftKey,

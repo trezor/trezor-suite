@@ -69,9 +69,11 @@ const rejected = (): ComposeResult => ({
 });
 const settleDebounce = () => act(() => jest.advanceTimersByTimeAsync(300));
 
+let mockIsFocused = true;
+
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
-    useIsFocused: () => true,
+    useIsFocused: () => mockIsFocused,
 }));
 jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
@@ -132,11 +134,16 @@ const createTestStore = (account = ACCOUNT, additionalAccounts: Account[] = []) 
         },
     });
 
-const renderFees = () =>
-    renderHookWithStoreProvider(useComposeEarnFees, {
-        services: { store: createTestStore(), analytics: mockNativeAnalytics() },
+const renderFees = async () => {
+    const analytics = mockNativeAnalytics();
+    const store = createTestStore();
+    const rendered = await renderHookWithStoreProvider(useComposeEarnFees, {
+        services: { store, analytics },
         initialProps: { accountKey: ACCOUNT.key, formState: FORM_STATE, formDraftPrefix: 'stake' },
     });
+
+    return { ...rendered, analytics, store };
+};
 
 type FeeFlowProps = Parameters<typeof useComposeEarnFees>[0] & { isCustomOpen?: boolean };
 
@@ -205,12 +212,32 @@ const ReviewFee = ({
 describe('useComposeEarnFees recovery', () => {
     beforeEach(() => {
         jest.useFakeTimers();
+        mockIsFocused = true;
         mockCompose.mockResolvedValue(fulfilled());
         mockSolanaCompose.mockResolvedValue(fulfilled());
     });
     afterEach(() => {
         jest.resetAllMocks();
         jest.useRealTimers();
+    });
+
+    it('does not carry a staking failure into a pending unstake estimate', async () => {
+        const pending = createDeferred<ComposeResult>();
+        mockCompose.mockResolvedValueOnce(rejected()).mockReturnValueOnce(pending.promise);
+        const { rerender, analytics } = await renderFees();
+        await settleDebounce();
+        expect(analytics.report).toHaveBeenCalledTimes(1);
+
+        await rerender({
+            accountKey: ACCOUNT.key,
+            formState: FORM_STATE,
+            formDraftPrefix: 'unstake',
+        });
+        await settleDebounce();
+        expect(analytics.report).toHaveBeenCalledTimes(1);
+
+        await act(() => pending.resolve(fulfilled()));
+        expect(analytics.report).toHaveBeenCalledTimes(1);
     });
 
     it('does not restart composition after publishing its own fee levels and draft', async () => {
@@ -247,27 +274,93 @@ describe('useComposeEarnFees recovery', () => {
                 );
             else
                 mockCompose.mockResolvedValueOnce(failure === 'empty' ? fulfilled({}) : rejected());
-            const { result } = await renderFees();
+            const { result, analytics } = await renderFees();
             expect(result.current.isFeeReady).toBe(false);
             await settleDebounce();
             expect(result.current.hasFeeEstimationError).toBe(true);
             expect(result.current.isFeeReady).toBe(false);
             await act(() => result.current.retryFeeEstimation());
+            expect(analytics.report).toHaveBeenCalledTimes(2);
+            expect(result.current.isFeeReady).toBe(false);
             await settleDebounce();
             expect(result.current.hasFeeEstimationError).toBe(false);
             expect(result.current.isFeeReady).toBe(true);
             expect(result.current.formDraft?.outputs[0]?.amount).toBe('1');
+            expect(jest.mocked(analytics.report).mock.calls.map(([event]) => event)).toEqual(
+                [
+                    'fee-estimation-error-banner',
+                    'fee-estimation-retry',
+                    'fee-estimation-recovered',
+                ].map(element => ({
+                    type: 'yield/interaction',
+                    payload: { element, value: 'stake', networkSymbol: 'eth' },
+                })),
+            );
         },
     );
+
+    it('does not recover from foreign fee levels after refocusing', async () => {
+        mockCompose.mockResolvedValueOnce(
+            fulfilled({ normal: { type: 'error', error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' } }),
+        );
+        const { rerender, analytics, store } = await renderFees();
+        await settleDebounce();
+        const props = {
+            accountKey: ACCOUNT.key,
+            formState: FORM_STATE,
+            formDraftPrefix: 'stake' as const,
+        };
+        mockIsFocused = false;
+        await rerender(props);
+        await act(() =>
+            store.dispatch(transactionManagementActions.storeFeeLevels({ feeLevels: FEE_LEVELS })),
+        );
+        const pending = createDeferred<ComposeResult>();
+        mockCompose.mockReturnValueOnce(pending.promise);
+        mockIsFocused = true;
+        await rerender(props);
+        await settleDebounce();
+        expect(analytics.report).toHaveBeenCalledTimes(1);
+        await act(() => pending.resolve(fulfilled()));
+        expect(analytics.report).toHaveBeenCalledTimes(2);
+        expect(analytics.report).toHaveBeenLastCalledWith({
+            type: 'yield/interaction',
+            payload: { element: 'fee-estimation-recovered', value: 'stake', networkSymbol: 'eth' },
+        });
+    });
+
+    it('reports an unaffordable estimate once without reporting recovery', async () => {
+        mockCompose.mockResolvedValueOnce(
+            fulfilled({ normal: { type: 'error', error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' } }),
+        );
+        const { result, analytics } = await renderFees();
+
+        await settleDebounce();
+        await act(() => jest.advanceTimersByTimeAsync(3000));
+
+        expect(result.current.hasFeeEstimationError).toBe(false);
+        expect(result.current.isFeeReady).toBe(false);
+        expect(jest.mocked(analytics.report).mock.calls.map(([event]) => event)).toEqual([
+            {
+                type: 'yield/interaction',
+                payload: {
+                    element: 'fee-unavailable-banner',
+                    value: 'stake',
+                    networkSymbol: 'eth',
+                },
+            },
+        ]);
+    });
 
     it.each([
         ['unstake', 'TR_GENERIC_ERROR_TITLE'],
         ['claim', 'TR_STAKE_TX_PREPARATION_FAILED'],
     ] as const)('offers retry for Solana %s after %s and recovers', async (stakeType, error) => {
         const account = mockWalletAccount({ symbol: asNetworkSymbol('sol') });
+        const analytics = mockNativeAnalytics();
         mockSolanaCompose.mockResolvedValueOnce(fulfilled({ normal: { type: 'error', error } }));
         const { result } = await renderHookWithStoreProvider(useComposeEarnFees, {
-            services: { store: createTestStore(account), analytics: mockNativeAnalytics() },
+            services: { store: createTestStore(account), analytics },
             initialProps: {
                 accountKey: account.key,
                 formState: buildEarnComposeFormState(account.descriptor, '1.1', ''),
@@ -284,6 +377,14 @@ describe('useComposeEarnFees recovery', () => {
         expect(result.current.formDraft?.outputs[0]?.amount).toBe('1.1');
         expect(mockSolanaCompose).toHaveBeenCalledTimes(2);
         expect(mockCompose).not.toHaveBeenCalled();
+        expect(jest.mocked(analytics.report).mock.calls.map(([event]) => event)).toEqual(
+            ['fee-estimation-error-banner', 'fee-estimation-retry', 'fee-estimation-recovered'].map(
+                element => ({
+                    type: 'yield/interaction',
+                    payload: { element, value: stakeType, networkSymbol: 'sol' },
+                }),
+            ),
+        );
     });
 
     it('does not report previous-flow error levels as a new failure at mount', async () => {
