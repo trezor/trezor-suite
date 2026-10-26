@@ -108,7 +108,7 @@ packages/suite/src/views/wallet/trading/sell/TradingFormOfferSellActions.tsx	opt
 packages/suite/src/views/wallet/transactions/TransactionList/LoadOlderHistory.tsx	bail	(BuildHIR::lowerStatement) Handle TryStatement without a catch clause
 packages/suite/src/views/wallet/transactions/TransactionList/NoSearchResults.tsx	bail	Cannot access refs during render
 packages/suite/src/views/wallet/transactions/TransactionList/TransactionListActions/ExportAction.tsx	bail	(BuildHIR::lowerStatement) Handle TryStatement with a finalizer ('finally') clause
-packages/suite/src/views/wallet/transactions/TransactionList/useFetchTransactions.ts	partial	Expected the first argument to be an inline function expression
+packages/suite/src/views/wallet/transactions/TransactionList/useFetchTransactions.ts	bail	Expected the first argument to be an inline function expression
 suite-common/trading/src/hooks/useChangeStringsExtractor.ts	opt-out	'use no memo'
 suite-common/trading/src/hooks/useTradingAssets.ts	bail	(BuildHIR::node.lowerReorderableExpression) Expression type `NewExpression` cannot be safely reordered
 suite-common/trading/src/hooks/useTradingRefetchScheduler.ts	bail	Cannot access refs during render

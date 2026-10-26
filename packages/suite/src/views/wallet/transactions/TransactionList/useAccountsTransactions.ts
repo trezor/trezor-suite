@@ -16,9 +16,24 @@ type UseAccountsTransactionsParams = {
     perPage: number;
     isAllRequested: boolean;
     isWaitingForAll: boolean;
+    /** Called once a load has failed for good, after its retry. */
+    onError?: (error: Error) => void;
 };
 
-const QUERY_OPTIONS = { retry: 1, refetchOnWindowFocus: false } as const;
+const RETRY_COUNT = 1;
+
+const QUERY_OPTIONS = { refetchOnWindowFocus: false } as const;
+
+// TanStack Query v5 has no error callback on a query, and its `retry` decides once per failure
+// whether to try again, so the last of those decisions is where a load has failed for good.
+const retryOrReport =
+    (onError: UseAccountsTransactionsParams['onError']) => (failureCount: number, error: Error) => {
+        if (failureCount < RETRY_COUNT) return true;
+
+        onError?.(error);
+
+        return false;
+    };
 
 export const useAccountsTransactions = ({
     accountKeys,
@@ -27,6 +42,7 @@ export const useAccountsTransactions = ({
     perPage,
     isAllRequested,
     isWaitingForAll,
+    onError,
 }: UseAccountsTransactionsParams) => {
     const { transactionRetriever } = useServices(injectTransactionRetriever);
     const accountsTransactions = useSelector(state =>
@@ -36,6 +52,7 @@ export const useAccountsTransactions = ({
 
     const pageQuery = useQuery({
         ...QUERY_OPTIONS,
+        retry: retryOrReport(onError),
         queryKey: commonQueryKeys.transactionsPage(accountKeys, contractAddress, page, perPage),
         queryFn: async ({ signal }) => {
             await transactionRetriever.retrievePage({
@@ -53,6 +70,7 @@ export const useAccountsTransactions = ({
     });
     const allQuery = useQuery({
         ...QUERY_OPTIONS,
+        retry: retryOrReport(onError),
         queryKey: commonQueryKeys.allTransactions(accountKeys),
         queryFn: async ({ signal }) => {
             await transactionRetriever.retrieveAll({ accountKeys, signal });
@@ -65,5 +83,5 @@ export const useAccountsTransactions = ({
     const error = isAllRequested ? allQuery.error : pageQuery.error;
     const isReady = isWaitingForAll ? accountsTransactions.isComplete : isPageReady;
 
-    return { ...accountsTransactions, isLoading: !isReady && !error, error };
+    return { ...accountsTransactions, isLoading: !isReady && !error };
 };

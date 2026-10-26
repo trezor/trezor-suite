@@ -1,15 +1,14 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { useDebounce } from 'react-use';
+import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 
-import { Translation } from '@suite/intl';
+import { Translation, useTranslation } from '@suite/intl';
 import { findAnchorTransactionPage, selectRouterAnchor } from '@suite/router';
 import { getTxsPerPage } from '@suite-common/suite-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     hasNetworkPotentialFraudTransactions,
     isPhishingTransaction,
     selectNetworkTokenDefinitions,
 } from '@suite-common/token-definitions';
-import { advancedSearchTransactions } from '@suite-common/transaction-search';
 import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import {
     selectActiveDustPhishingThreshold,
@@ -17,39 +16,33 @@ import {
     selectIsHideSuspiciousTransactions,
     selectPhishingTransactions,
 } from '@suite-common/wallet-core';
-import {
-    type Account,
-    type TokenAddress,
-    type WalletAccountTransaction,
-} from '@suite-common/wallet-types';
-import { isPending, sortByBlockHeight } from '@suite-common/wallet-utils';
+import { type Account, type TokenAddress } from '@suite-common/wallet-types';
+import { isPending } from '@suite-common/wallet-utils';
 import { Card, Column, Text } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { DashboardSection } from 'src/components/dashboard';
 import { Pagination } from 'src/components/wallet';
 import { useSelector } from 'src/hooks/suite';
-import { selectAccountLabelsForSearch } from 'src/selectors/suite/selectAccountLabelsForSearch';
 
-import { NoVisibleTransactions } from './SingleAccountTransactionList';
 import { TransactionListActions } from './TransactionListActions/TransactionListActions';
 import { TransactionListBody } from './TransactionListBody';
 import { findTransactionAccount } from './findTransactionAccount';
 import { useAccountsTransactions } from './useAccountsTransactions';
-
-const SEARCH_DEBOUNCE_MS = 200;
+import { useTransactionSearch } from './useTransactionSearch';
 
 const NO_TXIDS: string[] = [];
 
-const NO_SEARCH_RESULT: { query: string; transactions: readonly WalletAccountTransaction[] } = {
-    query: '',
-    transactions: [],
+type EmptyListMessageProps = {
+    id: 'TR_NO_TRANSACTIONS_YET' | 'TR_NO_VISIBLE_TRANSACTIONS' | 'TR_NO_RECENT_TRANSACTIONS';
 };
 
-const NoTransactions = () => (
+export const EmptyListMessage = ({ id }: EmptyListMessageProps) => (
     <Card>
         <Column alignItems="center">
             <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
-                <Translation id="TR_NO_TRANSACTIONS_YET" />
+                <Translation id={id} />
             </Text>
         </Column>
     </Card>
@@ -59,6 +52,15 @@ type MultiAccountTransactionListProps = {
     accounts: readonly Account[];
     symbol: NetworkSymbol;
     contractAddress?: TokenAddress;
+    isAccountShown?: boolean;
+    /** A fee is bumped from its account's own screen, so leave it off anywhere else. */
+    isBumpFeeAllowed?: boolean;
+    isExportable?: boolean;
+    knownTotal?: number;
+    isHistoryPending?: boolean;
+    customNoTransactions?: ReactNode;
+    footer?: ReactNode;
+    'data-testid'?: string;
 };
 
 /** Mount it with a `key` made of the account keys, so its state resets when the accounts change. */
@@ -66,16 +68,33 @@ export const MultiAccountTransactionList = ({
     accounts,
     symbol,
     contractAddress,
+    isAccountShown = true,
+    isBumpFeeAllowed = false,
+    isExportable = false,
+    knownTotal,
+    isHistoryPending = false,
+    customNoTransactions,
+    footer,
+    'data-testid': dataTestId = '@transactions/multi-account',
 }: MultiAccountTransactionListProps) => {
     const sectionRef = useRef<HTMLDivElement>(null);
+    const { dispatch } = useServices(injectDispatch);
+    const { translationString } = useTranslation();
 
     const accountKeys = useMemo(() => accounts.map(account => account.key), [accounts]);
     const [currentPage, setCurrentPage] = useState(1);
     const perPage = getTxsPerPage(getNetworkType(symbol));
     const anchor = useSelector(selectRouterAnchor);
     const [searchQuery, setSearchQuery] = useState('');
-    const [searchResult, setSearchResult] = useState(NO_SEARCH_RESULT);
     const isSearching = searchQuery.trim() !== '';
+
+    const showSearchFailed = () =>
+        dispatch(
+            notificationsActions.addToast({
+                type: 'error',
+                error: translationString('TR_SEARCH_FAIL'),
+            }),
+        );
 
     const {
         transactions: loadedTransactions,
@@ -88,6 +107,7 @@ export const MultiAccountTransactionList = ({
         perPage,
         isAllRequested: !!anchor || isSearching,
         isWaitingForAll: isSearching,
+        onError: isSearching ? showSearchFailed : undefined,
     });
 
     const isHidingSuspicious = useSelector(
@@ -141,44 +161,7 @@ export const MultiAccountTransactionList = ({
         }
     }, [anchorPage]);
 
-    const accountLabels = useSelector(state =>
-        accounts.map(account => selectAccountLabelsForSearch(state, account)),
-    );
-
-    useDebounce(
-        () => {
-            if (!isSearching) {
-                setSearchResult(NO_SEARCH_RESULT);
-
-                return;
-            }
-
-            const results = accounts
-                .flatMap((account, index) => {
-                    const labels = accountLabels[index];
-
-                    return labels === undefined
-                        ? []
-                        : advancedSearchTransactions(
-                              transactions.filter(
-                                  transaction =>
-                                      findTransactionAccount([account], transaction) !== undefined,
-                              ),
-                              labels,
-                              searchQuery,
-                          );
-                })
-                .sort(sortByBlockHeight);
-
-            setSearchResult({ query: searchQuery, transactions: results });
-        },
-        SEARCH_DEBOUNCE_MS,
-        [transactions, accounts, accountLabels, searchQuery, isSearching],
-    );
-
-    // Until the first results of a search come in, the list stays as it was.
-    const searchedTransactions =
-        isSearching && searchResult.query !== '' ? searchResult.transactions : transactions;
+    const searchedTransactions = useTransactionSearch(accounts, transactions, searchQuery);
 
     const pendingTxs = useMemo(
         () => searchedTransactions.filter(isPending),
@@ -191,9 +174,12 @@ export const MultiAccountTransactionList = ({
                 .slice((currentPage - 1) * perPage, currentPage * perPage),
         [searchedTransactions, currentPage, perPage],
     );
+    const loadedTotalItems = isComplete
+        ? confirmedTransactions.length
+        : Math.max(confirmedTransactions.length + perPage, knownTotal ?? 0);
     const totalItems = isSearching
         ? searchedTransactions.length - pendingTxs.length
-        : confirmedTransactions.length + (isComplete ? 0 : perPage);
+        : loadedTotalItems;
 
     const onPageSelected = (page: number) => {
         setCurrentPage(page);
@@ -203,7 +189,11 @@ export const MultiAccountTransactionList = ({
     const getCustomNoTransactions = () => {
         if (transactions.length > 0) return undefined;
 
-        return loadedTransactions.length > 0 ? <NoVisibleTransactions /> : <NoTransactions />;
+        if (loadedTransactions.length > 0) {
+            return <EmptyListMessage id="TR_NO_VISIBLE_TRANSACTIONS" />;
+        }
+
+        return customNoTransactions ?? <EmptyListMessage id="TR_NO_TRANSACTIONS_YET" />;
     };
 
     return (
@@ -217,14 +207,14 @@ export const MultiAccountTransactionList = ({
                     searchQuery={searchQuery}
                     setSearch={setSearchQuery}
                     setSelectedPage={setCurrentPage}
-                    isExportable={false}
+                    isExportable={isExportable}
                 />
             }
-            data-testid="@transactions/multi-account"
+            data-testid={dataTestId}
         >
             <Column gap={32} padding={{ top: 16 }}>
                 <TransactionListBody
-                    isLoading={isLoading}
+                    isLoading={isLoading || isHistoryPending}
                     hasNoSearchResults={
                         isSearching && transactions.length > 0 && searchedTransactions.length === 0
                     }
@@ -233,8 +223,10 @@ export const MultiAccountTransactionList = ({
                     accounts={accounts}
                     symbol={symbol}
                     customNoTransactions={getCustomNoTransactions()}
-                    isAccountShown
+                    isAccountShown={isAccountShown}
+                    isBumpFeeAllowed={isBumpFeeAllowed}
                 />
+                {footer}
                 {totalItems > perPage && (
                     <Pagination
                         currentPage={currentPage}

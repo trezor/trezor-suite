@@ -19,8 +19,9 @@ interface TransactionGroupedListProps {
     symbol: WalletAccountTransaction['symbol'];
     accounts: readonly Account[];
     isPending: boolean;
-    /** Rows of several accounts, or of one asset's transfers: each names its account and none bumps a fee. */
+    /** Rows of several accounts, or of one asset's transfers, each name their account. */
     isAccountShown?: boolean;
+    isBumpFeeAllowed?: boolean;
 }
 
 export const TransactionGroupedList = ({
@@ -29,6 +30,7 @@ export const TransactionGroupedList = ({
     accounts,
     isPending,
     isAccountShown = false,
+    isBumpFeeAllowed = true,
 }: TransactionGroupedListProps) => {
     const baseCurrencyCode = useSelector(selectBaseCurrency);
     const network = getNetwork(symbol);
@@ -72,7 +74,7 @@ export const TransactionGroupedList = ({
                             index={index}
                             isAccountShown={isAccountShown}
                             disableBumpFee={
-                                isAccountShown ||
+                                !isBumpFeeAllowed ||
                                 (network.networkType === 'ethereum'
                                     ? item.tx.txid !== transactionWithLowestNonce?.txid
                                     : item.tx.type === 'joint')
