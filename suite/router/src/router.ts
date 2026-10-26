@@ -242,6 +242,9 @@ export type WalletParams = CommonWalletParams;
 export const getRoute = (name: Route['name']): Route | undefined =>
     suiteRoutes.find(r => r.name === name);
 
+export const isTradingRoute = (routeName: Route['name'] | undefined): boolean =>
+    routeName?.startsWith('wallet-trading') === true;
+
 export const getRouteHash = (route?: Route, params?: RouteParams) =>
     ensureHashString(
         params &&
