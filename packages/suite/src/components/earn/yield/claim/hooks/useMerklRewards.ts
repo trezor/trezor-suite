@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 
-import { selectIsDebugModeActive } from '@suite/debug';
 import {
     useExtendMerklRewardsWithFiat,
     useGetMerklRewards,
@@ -29,10 +28,7 @@ export function useMerklRewards(accounts: YieldRewardsAccounts) {
 
         return maybeAccounts.filter((account): account is Account => Boolean(account));
     }, [accounts]);
-    const isDebugMode = useSelector(selectIsDebugModeActive);
-    const merklRewardsQueryEntries = useGetMerklRewardsQueryEntries(resolvedAccounts, {
-        isDebugMode,
-    });
+    const merklRewardsQueryEntries = useGetMerklRewardsQueryEntries(resolvedAccounts);
     const merklRewardsQuery = useGetMerklRewards(merklRewardsQueryEntries);
 
     const baseCurrency = useSelector(selectBaseCurrency);

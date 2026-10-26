@@ -63,7 +63,6 @@ export const networkConfigBySymbol = {
             'eip1559',
             'mev-protection',
             'graph',
-            'claim-rewards',
         ],
         backendOptions: [{ type: 'blockbook' }, { type: 'evm-rpc' }],
         accountTypes: {

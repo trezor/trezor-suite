@@ -263,17 +263,11 @@ export const useYieldTableData = ({
         [yieldAccountOpportunities],
     );
 
-    const yieldAccounts = useMemo(
-        () => yieldAccountOpportunities.map(opportunity => opportunity.account),
-        [yieldAccountOpportunities],
-    );
-
     return {
         availableVaultCount,
         isYieldActive,
         hasAnyRewardsData,
         yieldAccountOpportunities,
         yieldInactiveVaultOpportunities,
-        yieldAccounts,
     };
 };

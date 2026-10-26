@@ -253,6 +253,36 @@ describe('selectCardanoStakedWithFiveBinariesAccountKey', () => {
 });
 
 describe('selectYieldClaimAccounts', () => {
+    it('includes all claim-contract networks without vaults and excludes hidden or other-wallet accounts', () => {
+        const claimAccounts = ['eth', 'arb', 'base', 'op'].map(symbol =>
+            mockWalletAccount({
+                symbol: asNetworkSymbol(symbol),
+                deviceState: DEVICE_STATIC_SESSION_ID,
+                tokens: [],
+            }),
+        );
+        const accounts = [
+            ...claimAccounts,
+            createBtcAccount('btc'),
+            mockWalletAccount({
+                symbol: asNetworkSymbol('pol'),
+                deviceState: DEVICE_STATIC_SESSION_ID,
+            }),
+            mockWalletAccount({
+                symbol: asNetworkSymbol('arb'),
+                descriptor: asAccountDescriptor('hidden'),
+                deviceState: DEVICE_STATIC_SESSION_ID,
+                visible: false,
+            }),
+            mockWalletAccount({
+                symbol: asNetworkSymbol('base'),
+                deviceState: OTHER_DEVICE_STATIC_SESSION_ID,
+            }),
+        ];
+
+        expect(selectYieldClaimAccounts(createState(accounts))).toEqual(claimAccounts);
+    });
+
     it('lists only ethereum accounts with claim support and keeps the reference', () => {
         const ethAccount = createEthAccount('ethclaim');
         const accounts = [createAdaAccount('ada', '5000000'), ethAccount];
@@ -311,6 +341,43 @@ describe('selectYieldClaimListItems', () => {
         ]),
         createChainRewards(emptyAccount, [createReward({ claimable: '0', fiatClaimable: '0' })]),
     ];
+
+    it.each([
+        ['arb', 42161],
+        ['base', 8453],
+        ['op', 10],
+    ] as const)(
+        'keeps %s rewards claimable after all vaults and positions are gone',
+        (symbol, chainId) => {
+            const account = mockWalletAccount({
+                symbol: asNetworkSymbol(symbol),
+                deviceState: DEVICE_STATIC_SESSION_ID,
+                tokens: [],
+            });
+            const state = createState([account]);
+            const reward = createReward({ claimable: '1000000', fiatClaimable: '1' });
+            const rewards: ChainRewardsWithFiat[] = [
+                {
+                    ...createChainRewards(account, [
+                        { ...reward, token: { ...reward.token, chainId } },
+                    ]),
+                    chainId,
+                },
+            ];
+
+            expect(selectYieldClaimAccountItems(state, rewards, [])).toEqual([
+                {
+                    summary: expect.objectContaining({
+                        accountKey: account.key,
+                        networkSymbol: asNetworkSymbol(symbol),
+                        claimableRewardsCount: 1,
+                    }),
+                    vaults: [],
+                },
+            ]);
+            expect(selectYieldClaimTotalFiatAmount(state, rewards)?.toString()).toBe('1');
+        },
+    );
 
     it('builds one claim item per account with claimable rewards', () => {
         const state = createState([createAdaAccount('ada', '5000000'), emptyAccount, claimAccount]);

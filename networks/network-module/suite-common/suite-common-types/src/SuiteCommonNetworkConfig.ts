@@ -61,8 +61,7 @@ export type NetworkFeature =
     | 'nft-definitions'
     | 'eip1559'
     | 'mev-protection'
-    | 'graph'
-    | 'claim-rewards';
+    | 'graph';
 
 export type Explorer = {
     base: string;

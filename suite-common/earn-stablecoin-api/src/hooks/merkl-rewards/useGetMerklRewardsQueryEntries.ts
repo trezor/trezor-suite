@@ -42,7 +42,6 @@ export type MerklRewardsSource = {
 };
 
 type MerklRewardsQueryEntriesOptions = {
-    isDebugMode?: boolean;
     skipEmptyAccountCheck?: boolean;
 };
 
@@ -72,13 +71,13 @@ function getMerklRewardsQueryEntries(sources: MerklRewardsSource[]) {
 
 export function getMerklRewardsQueryEntriesForAccounts(
     accounts: Account[],
-    { isDebugMode, skipEmptyAccountCheck = false }: MerklRewardsQueryEntriesOptions = {},
+    { skipEmptyAccountCheck = false }: MerklRewardsQueryEntriesOptions = {},
 ) {
     const accountsRewardSources = accounts
         .filter(
             (account): account is AccountWithNetworkType<'ethereum'> =>
                 account?.networkType === 'ethereum' &&
-                isEarnYieldClaimSupported(account.symbol, { isDebugMode }) &&
+                isEarnYieldClaimSupported(account.symbol) &&
                 (skipEmptyAccountCheck || !isEmptyEvmAccount(account)),
         )
         .map(account => ({
@@ -91,14 +90,13 @@ export function getMerklRewardsQueryEntriesForAccounts(
 
 export function useGetMerklRewardsQueryEntries(
     accounts: Account[],
-    { isDebugMode, skipEmptyAccountCheck }: MerklRewardsQueryEntriesOptions = {},
+    { skipEmptyAccountCheck }: MerklRewardsQueryEntriesOptions = {},
 ) {
     return useMemo(
         () =>
             getMerklRewardsQueryEntriesForAccounts(accounts, {
-                isDebugMode,
                 skipEmptyAccountCheck,
             }),
-        [accounts, isDebugMode, skipEmptyAccountCheck],
+        [accounts, skipEmptyAccountCheck],
     );
 }
