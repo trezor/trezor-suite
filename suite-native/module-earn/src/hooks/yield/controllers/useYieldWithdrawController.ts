@@ -505,6 +505,7 @@ export const useYieldWithdrawController = () => {
             ? {
                   formDraft: withdrawFeeFormDraft,
                   formDraftKey: withdrawFees.formDraftKey,
+                  getCustomFeeLevel: withdrawFees.getCustomFeeLevel,
                   selectedFee: withdrawFees.selectedFee,
                   updateFeeLevelThunk: withdrawFees.updateFeeLevelThunk,
               }

@@ -12,11 +12,15 @@ import {
     createStaticReducer,
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
-import { prepareSendFormReducer } from '@suite-native/transaction-management';
+import {
+    prepareSendFormReducer,
+    transactionManagementActions,
+} from '@suite-native/transaction-management';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 import { createDeferred } from '@trezor/utils';
 
 import { useYieldWithdrawFees } from './useYieldWithdrawFees';
+import { getSelectedEvmFeeFromFormDraft } from '../../utils/yield/yieldSelectedFeeUtils';
 
 const mockCompose = jest.fn();
 jest.mock('@suite-common/wallet-core', () => ({
@@ -52,10 +56,10 @@ const feeInfo: FeeInfo = {
         { label: 'low', feePerUnit: '8000000000', blocks: 2 },
     ],
 };
-const initialProps = {
+const initialProps: Parameters<typeof useYieldWithdrawFees>[0] = {
     ...FLOW,
     amount: '1',
-    flowType: 'withdraw' as const,
+    flowType: 'withdraw',
     isEnabled: true,
 };
 const settle = () => act(() => jest.advanceTimersByTimeAsync(300));
@@ -237,5 +241,109 @@ describe('Yield withdraw fee selection', () => {
         await settle();
         expect(mockCompose).toHaveBeenCalledTimes(2);
     });
+    it('confirms the committed legacy preview and clears hidden EIP-1559 form values', async () => {
+        const { result, store } = await renderFees();
+        await settle();
+        const custom = result.current.getCustomFeeLevel?.({
+            label: 'custom',
+            blocks: -1,
+            feePerUnit: '15',
+            feeLimit: '450000',
+        });
+        if (!isFinalPrecomposedTransaction(custom)) throw new Error('Missing Custom preview');
+        await act(() => {
+            store.dispatch(transactionManagementActions.storeCustomFeeLevel({ feeLevel: custom }));
 
+            return (
+                store.dispatch as ThunkDispatch<
+                    ReturnType<typeof store.getState>,
+                    Record<never, never>,
+                    UnknownAction
+                >
+            )(
+                result.current.updateFeeLevelThunk({
+                    accountKey: FLOW.account.key,
+                    formDraftKey: result.current.formDraftKey,
+                    feeLevelLabel: 'custom',
+                    feePerUnit: '15',
+                    feeLimit: '450000',
+                    maxFeePerGas: '20',
+                    maxPriorityFeePerGas: '2',
+                }),
+            );
+        });
+        expect(result.current.formDraft).toMatchObject({
+            selectedFee: 'custom',
+            feePerUnit: '15',
+            feeLimit: '450000',
+        });
+        expect(result.current.formDraft?.maxFeePerGas).toBeUndefined();
+        expect(result.current.formDraft?.maxPriorityFeePerGas).toBeUndefined();
+        expect(getSelectedEvmFeeFromFormDraft(result.current.formDraft)).toEqual({
+            type: 'legacy',
+            gasLimit: '0x6ddd0',
+            gasPrice: '0x37e11d600',
+        });
+    });
+
+    it.each([
+        { amount: '2', flowType: 'withdraw' as const },
+        { amount: '1', flowType: 'redeem' as const },
+    ])('invalidates the Custom builder while preparing $amount/$flowType', async next => {
+        const { result, rerender } = await renderFees();
+        await settle();
+        const originalBuilder = result.current.getCustomFeeLevel;
+        const level = { label: 'custom' as const, blocks: -1, feePerUnit: '3' };
+        expect(originalBuilder?.(level)?.type).toBe('final');
+        const pending = createDeferred<{ type: string; unsignedTransaction: string }>();
+        mockCompose.mockReturnValueOnce(pending.promise);
+        await rerender({ ...initialProps, ...next });
+        expect(result.current.getCustomFeeLevel).not.toBe(originalBuilder);
+        expect(result.current.getCustomFeeLevel?.(level)).toBeUndefined();
+        await settle();
+        expect(result.current.getCustomFeeLevel?.(level)).toBeUndefined();
+        await act(() =>
+            pending.resolve({ type: 'success', unsignedTransaction: UNSIGNED_TRANSACTION }),
+        );
+        expect(result.current.getCustomFeeLevel?.(level)?.type).toBe('final');
+    });
+
+    it('does not publish a completed withdrawal after unmounting into another fee flow', async () => {
+        const pending = createDeferred<{ type: string; unsignedTransaction: string }>();
+        mockCompose.mockReturnValueOnce(pending.promise);
+        const { result, store, unmount } = await renderFees();
+        await settle();
+        expect(mockCompose).toHaveBeenCalledTimes(1);
+        const key = result.current.formDraftKey;
+        await unmount();
+        store.dispatch(transactionManagementActions.storeFeeLevels({ feeLevels: {} }));
+        const nextFlowState = store.getState().wallet;
+        await act(() =>
+            pending.resolve({ type: 'success', unsignedTransaction: UNSIGNED_TRANSACTION }),
+        );
+        expect(store.getState().wallet.send.feeLevels).toEqual({});
+        expect(store.getState().wallet.formDrafts).toEqual(nextFlowState.formDrafts);
+        expect(store.getState().wallet.formDrafts[key]).toBeUndefined();
+    });
+
+    it('previews the withdrawal transaction without requiring its received tokens in the wallet', async () => {
+        const { result } = await renderFees();
+        await settle();
+        expect(FLOW.account.tokens).toEqual([]);
+        expect(
+            result.current.getCustomFeeLevel?.({
+                label: 'custom',
+                blocks: -1,
+                feePerUnit: '3',
+                feeLimit: '450000',
+                maxFeePerGas: '3',
+                maxPriorityFeePerGas: '1',
+            }),
+        ).toMatchObject({
+            type: 'final',
+            fee: '1350000000000000',
+            feeLimit: '450000',
+            estimatedFeeLimit: '200000',
+        });
+    });
 });
