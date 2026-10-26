@@ -9,7 +9,7 @@ import { DEFAULT_DEVICE_SIZE_QUOTA } from '../quotaManagerQuotaSize';
 import { type RegisterDeviceDeps, createRegisterDevice } from './createRegisterDevice';
 
 const deviceWithLegacyRegistrationRequest = mockSuiteDevice(
-    { id: 'device-id-v1', path: 'selected-device', state: { staticSessionId: 'selected-wallet' } },
+    { id: 'device-id-v1', path: 'selected-device', state: { staticSessionId: 'wallet@device:0' } },
     {
         internal_model: DeviceModelInternal.T2T1,
         major_version: 2,
@@ -83,7 +83,7 @@ describe(createRegisterDevice.name, () => {
         expect(evoluSignRegistrationRequest).toHaveBeenCalledWith({
             device: {
                 path: 'selected-device',
-                state: { staticSessionId: 'selected-wallet' },
+                state: { staticSessionId: 'wallet@device:0' },
                 instance: testCase.expectedInstance,
                 useEmptyPassphrase: testCase.expectedUseEmptyPassphrase,
             },
