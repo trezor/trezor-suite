@@ -1,4 +1,8 @@
-import { filterChangelogCommits, getCommitsSinceLastStableRelease } from './connect-changelog';
+import {
+    filterChangelogCommits,
+    getCommitsSinceLastStableRelease,
+    splitChangelogHeader,
+} from './connect-changelog';
 
 const commitLine = (subject: string) => `-   ${subject} (abc1234)`;
 
@@ -174,5 +178,52 @@ describe('filterChangelogCommits', () => {
         const chore = commitLine('chore(deps): bump something');
 
         expect(filterChangelogCommits([chore], 'connect-web', new Set([chore]))).toEqual([]);
+    });
+});
+
+describe('splitChangelogHeader', () => {
+    it('splits a pointer paragraph from the version history', () => {
+        const changelog = [
+            'See the [@trezor/connect changelog](../connect/CHANGELOG.md).',
+            '',
+            '# 10.0.1',
+            '',
+            '-   feat(connect): add something (abc1234)',
+            '',
+        ].join('\n');
+
+        expect(splitChangelogHeader(changelog)).toEqual({
+            header: 'See the [@trezor/connect changelog](../connect/CHANGELOG.md).',
+            history: '# 10.0.1\n\n-   feat(connect): add something (abc1234)',
+        });
+    });
+
+    it('has no header when the file starts with a version heading', () => {
+        const changelog = '# 10.0.0\n\n-   feat(connect): add something (abc1234)\n';
+
+        expect(splitChangelogHeader(changelog)).toEqual({
+            header: '',
+            history: '# 10.0.0\n\n-   feat(connect): add something (abc1234)',
+        });
+    });
+
+    it('treats a changelog with only non-version headings as history', () => {
+        const changelog = '# Changelog\n\n### 0.5.1\n\n-   feat(transport): add something\n';
+
+        expect(splitChangelogHeader(changelog)).toEqual({
+            header: '',
+            history: '# Changelog\n\n### 0.5.1\n\n-   feat(transport): add something',
+        });
+    });
+
+    it('treats a heading-less file as a pure header', () => {
+        expect(splitChangelogHeader('See the core changelog.\n')).toEqual({
+            header: 'See the core changelog.',
+            history: '',
+        });
+    });
+
+    it('returns empty parts for an empty changelog', () => {
+        expect(splitChangelogHeader('')).toEqual({ header: '', history: '' });
     });
 });

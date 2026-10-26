@@ -6,6 +6,7 @@ import {
     filterChangelogCommits,
     getCommitsSinceLastStableRelease,
     hasChangelogScopes,
+    splitChangelogHeader,
 } from './connect-changelog';
 import {
     comment,
@@ -241,10 +242,14 @@ const bumpConnect = async () => {
                         await writeFile(CHANGELOG_PATH, '');
                     }
 
-                    let changelog = await readFile(CHANGELOG_PATH, 'utf-8');
+                    const existingChangelog = await readFile(CHANGELOG_PATH, 'utf-8');
+                    // Preserve any fixed header (e.g. a pointer to the core changelog) above the version
+                    // history instead of prepending the new entry above everything.
+                    const { header, history } = splitChangelogHeader(existingChangelog);
+                    const entry = `# ${version}\n\n${changelogCommits.join('\n')}`;
+                    const changelog = [header, entry, history].filter(Boolean).join('\n\n');
 
-                    changelog = `# ${version}\n\n${changelogCommits.join('\n')}\n\n${changelog}`;
-                    await writeFile(CHANGELOG_PATH, changelog, 'utf-8');
+                    await writeFile(CHANGELOG_PATH, `${changelog}\n`, 'utf-8');
 
                     await exec('yarn', ['prettier', '--write', CHANGELOG_PATH]);
                 }

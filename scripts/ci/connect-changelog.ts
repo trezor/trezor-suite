@@ -103,3 +103,27 @@ export const filterChangelogCommits = (
         return !!commitsTouchingSrc?.has(line);
     });
 };
+
+// Split a CHANGELOG into the fixed header (anything before the first `# <version>` heading, e.g. a
+// pointer to the core changelog) and the version history, so a new entry can be inserted at the top
+// of the history without clobbering the header.
+export const splitChangelogHeader = (changelog: string) => {
+    const lines = changelog.split('\n');
+    const firstVersionIdx = lines.findIndex(line => /^#\s+\d/.test(line));
+    if (firstVersionIdx !== -1) {
+        return {
+            header: lines.slice(0, firstVersionIdx).join('\n').trim(),
+            history: lines.slice(firstVersionIdx).join('\n').trim(),
+        };
+    }
+
+    // No `# <version>` heading. A file with some other heading (e.g. a `# Changelog` title with
+    // `### <version>` sections) has an unknown layout, so treat it all as history and prepend as
+    // before rather than appending the new entry below it. Only a heading-less file (an empty
+    // CHANGELOG or a bare pointer paragraph) is a pure header.
+    const hasHeading = lines.some(line => line.startsWith('#'));
+
+    return hasHeading
+        ? { header: '', history: changelog.trim() }
+        : { header: changelog.trim(), history: '' };
+};
