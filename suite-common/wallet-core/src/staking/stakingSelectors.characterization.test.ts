@@ -32,7 +32,7 @@ import {
     selectUnstakingBalanceByAccountKey,
     selectUnstakingPeriodInDaysByAccountKey,
 } from './stakingSelectors';
-import { mockEthereumStakeTransaction, mockStakeRootState } from '../../mocks';
+import { mockEthereumStakingTransaction, mockStakeRootState } from '../../mocks';
 import { selectAccountByKey } from '../accounts/accountsSelectors';
 
 const readStakingSelectors = (state: StakeRootState, accountKey: AccountKey) => ({
@@ -216,7 +216,13 @@ describe('staking selectors characterization', () => {
             const state = mockStakeRootState({
                 accounts: [account],
                 transactions: {
-                    [account.key]: [mockEthereumStakeTransaction({ account, isPending: true })],
+                    [account.key]: [
+                        mockEthereumStakingTransaction({
+                            account,
+                            stakeType: 'stake',
+                            isPending: true,
+                        }),
+                    ],
                 },
             });
 
@@ -231,7 +237,13 @@ describe('staking selectors characterization', () => {
             const state = mockStakeRootState({
                 accounts: [account],
                 transactions: {
-                    [account.key]: [mockEthereumStakeTransaction({ account, isPending: false })],
+                    [account.key]: [
+                        mockEthereumStakingTransaction({
+                            account,
+                            stakeType: 'stake',
+                            isPending: false,
+                        }),
+                    ],
                 },
             });
 
