@@ -51,7 +51,7 @@
         "@trezor/websocket-client": "workspace:*"
     },
     "devDependencies": {
-        "@playwright/test": "1.62.1",
+        "@playwright/test": "1.64.0",
         "@trezor/eslint": "workspace:*",
         "@trezor/requirements": "workspace:*",
         "@trezor/type-utils": "workspace:*",
