@@ -1,0 +1,35 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        { "path": "../../suite-common/networks" },
+        { "path": "../../suite-common/receive" },
+        {
+            "path": "../../suite-common/sign-verify"
+        },
+        {
+            "path": "../../suite-common/toast-notifications"
+        },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
+        { "path": "../../suite-lego/intl" },
+        { "path": "../account" },
+        { "path": "../address" },
+        { "path": "../device" },
+        { "path": "../../packages/components" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        { "path": "../../packages/dom-utils" },
+        { "path": "../../packages/icons" },
+        {
+            "path": "../../networks/network-module/suite-common/suite-common-types"
+        },
+        { "path": "../../packages/redux-utils" },
+        { "path": "../../packages/utils" }
+    ]
+}

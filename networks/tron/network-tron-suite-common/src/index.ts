@@ -1,4 +1,5 @@
 export { createTronSuiteCommonNetworkModule } from './TronNetworkSuiteCommonNetworkModule';
+export { tronFamily } from './tronFamily';
 
 export { networkConfigBySymbol } from './networkConfig';
 

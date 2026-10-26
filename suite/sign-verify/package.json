@@ -1,0 +1,44 @@
+{
+    "name": "@suite/sign-verify",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@hookform/resolvers": "^5.4.0",
+        "@suite-common/networks": "workspace:*",
+        "@suite-common/receive": "workspace:*",
+        "@suite-common/sign-verify": "workspace:*",
+        "@suite-common/toast-notifications": "workspace:*",
+        "@suite-common/wallet-config": "workspace:*",
+        "@suite-common/wallet-types": "workspace:*",
+        "@suite-lego/intl": "workspace:*",
+        "@suite/account": "workspace:*",
+        "@suite/address": "workspace:*",
+        "@suite/device": "workspace:*",
+        "@trezor/components": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*",
+        "@trezor/dom-utils": "workspace:*",
+        "@trezor/icons": "workspace:*",
+        "@trezor/network-module-suite-common-types": "workspace:*",
+        "@trezor/redux-utils": "workspace:*",
+        "@trezor/utils": "workspace:*",
+        "react": "19.2.3",
+        "react-hook-form": "^7.77.0",
+        "react-redux": "9.3.0",
+        "yup": "1.7.1"
+    },
+    "devDependencies": {
+        "@reduxjs/toolkit": "2.13.0",
+        "@testing-library/react": "^16.3.3",
+        "@types/react": "19.2.14",
+        "styled-components": "^6.5.3"
+    }
+}

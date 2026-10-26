@@ -1,1 +1,0 @@
-export { createSolanaSuiteNetworkModule } from './SolanaSuiteNetworkModule';

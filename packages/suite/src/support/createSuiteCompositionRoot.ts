@@ -1,6 +1,5 @@
 import { saveAs } from 'file-saver';
 
-import { Address } from '@suite/address';
 import { type DesktopAnalyticsDep, createAnalytics } from '@suite/analytics';
 import { selectShouldRetryFirmwareRevisionCheckError } from '@suite/authenticity-checks';
 import { type BluetoothDep, createBluetoothCompositionRoot } from '@suite/bluetooth';
@@ -12,7 +11,6 @@ import {
     type MetadataMigrationDep,
     createMetadataMigrationCompositionRoot,
 } from '@suite/metadata-migration';
-import { createSuiteNetworksCompositionRoot } from '@suite/networks';
 import {
     type HistoryDep,
     type SuiteRouterHistoryDep,
@@ -43,13 +41,11 @@ import {
 import { type GetBinFilesBaseUrlDep, type ReloadAppDep } from '@suite-common/suite-types';
 import { type ThpHostNameDep } from '@suite-common/thp';
 import { selectTradedAccountKeys } from '@suite-common/trading';
-import { selectAccountsByDeviceState } from '@suite-common/wallet-core';
-import { type SignVerifyAddressDep } from '@suite-lego/sign-verify';
+import { selectAccountsByDeviceState, selectNetworkBackendType } from '@suite-common/wallet-core';
 import { type GetTrezorConnectPrivilegedDep } from '@trezor/connect';
 import { toGetter } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';
 import type { CreateLoggerDep } from '@trezor/logger';
-import { type SuiteNetworkModuleRepositoryDep } from '@trezor/network-module-suite-types';
 
 import { type SuiteReduxStore } from 'src/reducers/createReduxStore';
 import { selectIsWindowVisible } from 'src/reducers/suite/windowReducer';
@@ -76,8 +72,6 @@ export type SuiteServices = CommonServices &
     DesktopApiDep &
     DesktopAnalyticsDep &
     MetadataMigrationDep &
-    SuiteNetworkModuleRepositoryDep &
-    SignVerifyAddressDep &
     SuiteRouterHistoryDep &
     TransportsDep &
     BluetoothDep;
@@ -152,9 +146,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
     const networks = createNetworksCompositionRoot({
         getTrezorConnect: deps.getTrezorConnect,
         dispatch: deps.dispatch,
-    });
-    const { suiteNetworkModuleRepository } = createSuiteNetworksCompositionRoot({
-        getTrezorConnect: deps.getTrezorConnect,
+        getNetworkBackend: toGetter(deps.getState, selectNetworkBackendType),
     });
 
     const createTransports: CreateTransports = transports => {
@@ -174,8 +166,6 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         db: deps.db,
         desktopApi: deps.desktopApi,
         networks,
-        suiteNetworkModuleRepository,
-        signVerifyAddress: Address,
         suiteSync,
         bip329,
         migrateLegacyLabelsToSuiteSync,

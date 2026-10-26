@@ -1,8 +1,8 @@
 import { type JSX } from 'react';
 
 import { selectSelectedAccount } from '@suite/account';
+import { useAccountMessageSigning } from '@suite/sign-verify';
 import { getNetwork } from '@suite-common/wallet-config';
-import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { Translation } from '@suite-lego/intl';
 import { Dropdown, type DropdownMenuItemProps, type IconComponent } from '@trezor/components';
 import { PencilLineIcon, WalletConnectIcon } from '@trezor/icons';
@@ -28,6 +28,7 @@ type HeaderDropdownProps = {
 export const HeaderDropdown = ({ isDisabled, showSignAndVerify }: HeaderDropdownProps) => {
     const goToWithAnalytics = useGoToWithAnalytics();
     const account = useSelector(selectSelectedAccount);
+    const canSignMessages = useAccountMessageSigning(account) !== undefined;
 
     const additionalActions: ActionItem[] = [
         ...(showSignAndVerify
@@ -42,7 +43,7 @@ export const HeaderDropdown = ({ isDisabled, showSignAndVerify }: HeaderDropdown
                       },
                       title: <Translation id="TR_NAV_SIGN_AND_VERIFY" />,
                       icon: PencilLineIcon,
-                      isHidden: account ? !hasNetworkFeatures(account, 'sign-verify') : false,
+                      isHidden: account ? !canSignMessages : false,
                   },
               ]
             : []),

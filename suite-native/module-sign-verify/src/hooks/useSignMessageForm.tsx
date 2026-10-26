@@ -1,18 +1,20 @@
 import { useMemo, useState } from 'react';
 
 import { useFormatters } from '@suite-common/formatters';
-import { MAX_LENGTH_MESSAGE, getHasSelectableSignatureFormat } from '@suite-common/sign-verify';
+import { MAX_LENGTH_MESSAGE } from '@suite-common/sign-verify';
 import { type Account } from '@suite-common/wallet-types';
-import { getStakingPath, isUtxoBased } from '@suite-common/wallet-utils';
-import { Badge, type SelectItemType } from '@suite-native/atoms';
+import { type SelectItemType } from '@suite-native/atoms';
 import { useForm, useWatch, yup } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
+import type { SignFormat } from '@trezor/network-module-suite-common-types';
 import { isHex } from '@trezor/utils';
 
-import { type SignatureFormat, useSignMessage } from './useSignMessage';
+import { useAccountMessageSigning } from './useAccountMessageSigning';
+import { useSignMessage } from './useSignMessage';
+import { useMessageSigningLabels } from '../messageSigningLabels';
 
 type FormValues = {
-    format: SignatureFormat;
+    format?: SignFormat;
     address: string;
     message: string;
     hex: boolean;
@@ -20,81 +22,47 @@ type FormValues = {
 };
 
 export const useSignMessageForm = (account: Account) => {
-    const isAddressBased = !isUtxoBased(account);
-    const isCardano = account.networkType === 'cardano';
+    const messageSigning = useAccountMessageSigning(account);
+    const isAddressFixed = messageSigning?.addressSelection === 'fixed';
 
     const signMessage = useSignMessage();
     const { AddressFormatter } = useFormatters();
     const { translate } = useTranslate();
+    const { getFormatLabel, addressBadges } = useMessageSigningLabels();
 
     const [isSigned, setIsSigned] = useState(false);
 
-    const formats = useMemo((): SelectItemType<SignatureFormat>[] | undefined => {
-        if (getHasSelectableSignatureFormat(account)) {
-            return [
-                { value: 'default', label: translate('signAndVerify.format.values.trezor') },
-                { value: 'electrum', label: translate('signAndVerify.format.values.electrum') },
-            ];
-        }
-        if (isCardano) {
-            return [
-                { value: 'default', label: translate('signAndVerify.format.values.rawKey') },
-                { value: 'cose', label: translate('signAndVerify.format.values.cose') },
-            ];
-        }
-    }, [translate, account, isCardano]);
+    const formatChoice = useMemo(
+        () => messageSigning?.getFormatChoice(account) ?? null,
+        [messageSigning, account],
+    );
+
+    const formats = useMemo(
+        (): SelectItemType<SignFormat>[] | undefined =>
+            formatChoice?.options.map(option => ({
+                value: option.format,
+                label: getFormatLabel(formatChoice.kind, option),
+            })),
+        [formatChoice, getFormatLabel],
+    );
 
     const addresses = useMemo((): (SelectItemType<string> & { path: string })[] => {
-        const formatAddress = (address: string) =>
-            AddressFormatter.format(address, { format: 'long' });
+        const groups =
+            messageSigning?.getSignAddressGroups({ account, touchedAddresses: [] }) ?? [];
 
-        if (isAddressBased) {
-            return [
-                {
-                    value: account.descriptor,
-                    label: formatAddress(account.descriptor),
-                    path: account.path,
-                },
-            ];
-        }
-
-        const addressGroups = [
-            {
-                items: isCardano
-                    ? [{ address: account.misc?.staking?.address, path: getStakingPath(account) }]
-                    : [],
-                badge: (
-                    <Badge label={translate('signAndVerify.address.badges.stake')} intent="info" />
-                ),
-            },
-            {
-                items: account.addresses?.unused?.slice(0, 1) ?? [],
-                badge: (
-                    <Badge label={translate('signAndVerify.address.badges.fresh')} intent="brand" />
-                ),
-            },
-            {
-                items: account.addresses?.used.slice().reverse() ?? [],
-            },
-            {
-                items: account.addresses?.change.slice().reverse() ?? [],
-                badge: <Badge label={translate('signAndVerify.address.badges.change')} />,
-            },
-        ];
-
-        return addressGroups.flatMap(({ items, badge }) =>
-            items.map(({ address, path }) => ({
+        return groups.flatMap(group =>
+            group.addresses.map(({ address, path }) => ({
                 value: address,
-                label: formatAddress(address),
-                badge,
+                label: AddressFormatter.format(address, { format: 'long' }),
+                badge: addressBadges[group.category],
                 path,
             })),
         );
-    }, [translate, isAddressBased, isCardano, account, AddressFormatter]);
+    }, [messageSigning, account, AddressFormatter, addressBadges]);
 
     const form = useForm<FormValues>({
         validation: yup.object({
-            format: yup.string<SignatureFormat>().required(),
+            format: yup.mixed<SignFormat>(),
             address: yup.string().required(),
             message: yup
                 .string()
@@ -110,8 +78,8 @@ export const useSignMessageForm = (account: Account) => {
             hex: yup.boolean().required(),
         }),
         defaultValues: {
-            format: 'default',
-            address: isAddressBased ? addresses[0]?.value : '',
+            format: formatChoice?.options[0]?.format,
+            address: isAddressFixed ? addresses[0]?.value : '',
             message: '',
             hex: false,
             signature: '',
@@ -124,7 +92,7 @@ export const useSignMessageForm = (account: Account) => {
         hex: useWatch({ control: form.control, name: 'hex' }),
     };
 
-    const setFormat = (format: SignatureFormat) => {
+    const setFormat = (format: SignFormat) => {
         form.setValue('format', format);
     };
 

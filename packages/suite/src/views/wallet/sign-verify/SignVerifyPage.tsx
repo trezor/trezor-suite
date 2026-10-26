@@ -1,4 +1,4 @@
-import { SignVerifyPage as SignVerifyModulePage } from '@suite/module-sign-verify';
+import { SignVerifyPage as SignVerifyModulePage } from '@suite/sign-verify';
 
 import { SignVerifyLayout } from './SignVerifyLayout';
 
