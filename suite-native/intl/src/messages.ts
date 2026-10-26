@@ -987,10 +987,30 @@ export const messages = {
     },
     moduleReceive: {
         receiveTitle: 'Receive',
+        receiveDescription: '{assetName} on {networkName}',
         screenTitle: '{coinSymbol} Receive address',
         deviceCancelError: 'Address confirmation canceled.',
         destinationTag:
             "When sending {coinSymbol} to Trezor, your online exchange may require a memo/destination tag, but Trezor doesn't. Enter any random number to proceed. <link>Learn more</link>",
+        tabs: {
+            assets: 'Assets',
+            accounts: 'Accounts',
+        },
+        assetList: {
+            myAssets: 'My assets',
+            allAssets: 'All assets',
+        },
+        search: {
+            placeholder: 'Search by name or symbol',
+            noAssets:
+                'If the token uses a network supported by Trezor Suite, you can receive it using that network account instead.',
+            noAccounts: 'Check the spelling, or enable more networks to widen your search.',
+            viewAccounts: 'View accounts',
+        },
+        discovery: {
+            title: 'Getting your accounts ready',
+            subtitle: 'Turning on the {networkName} network and checking for your accounts.',
+        },
         receiveAddressCard: {
             alert: {
                 longCardanoAddress:
