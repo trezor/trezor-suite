@@ -147,6 +147,24 @@ describe('findProcessFromIncomingPort for an accepted connection', () => {
         });
     });
 
+    test('keeps the name of a Linux process displayable, without touching its path', async () => {
+        setPlatform('linux');
+        mockCommands([
+            [
+                'lsof',
+                'client 300 user 18u IPv4 207199 0t0 TCP 127.0.0.1:40000->127.0.0.1:21335 (ESTABLISHED)',
+            ],
+        ]);
+        // A filename is free to contain a bidi override and a control character, which a badge in
+        // the consent prompt is not.
+        const fullPath = '/tmp/\u202egnp.exe\n';
+        jest.spyOn(fs, 'readlink').mockResolvedValue(fullPath);
+
+        const processInfo = await findProcessFromIncomingPort(40000, true, connection);
+
+        expect(processInfo).toEqual({ name: 'gnp.exe', pid: '300', fullPath });
+    });
+
     test('identifies a Linux process whose executable was replaced by the path it was installed at', async () => {
         setPlatform('linux');
         mockCommands([

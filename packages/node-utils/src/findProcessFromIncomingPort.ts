@@ -47,6 +47,17 @@ const IPV4_MAPPED_IPV6 = /^::ffff:(\d{1,3}(?:\.\d{1,3}){3})$/;
 // replaced, as an upgrade of a running app does.
 const DELETED_EXE_SUFFIX = / \(deleted\)$/;
 
+// A filename may be 255 bytes of anything but `/` and NUL, control characters and bidi overrides
+// included, while the `comm` string it replaces is capped at 15 bytes and escaped by lsof. The name
+// ends up as a badge in the consent prompt, so it is cleaned and bounded; the path it comes from is
+// the permission key and keeps its exact bytes.
+const MAX_NAME_LENGTH = 64;
+const toDisplayedName = (name: string) =>
+    name
+        .replace(/[\p{Cc}\p{Cf}]/gu, ' ')
+        .trim()
+        .slice(0, MAX_NAME_LENGTH);
+
 // Endpoint as lsof and netstat print it, with IPv6 addresses in brackets.
 const formatEndpoint = (address: string, port: number) => {
     const printedAddress = address.replace(IPV4_MAPPED_IPV6, '$1');
@@ -149,7 +160,7 @@ export async function findProcessFromIncomingPort(
                     // is no more trustworthy than the `comm` string lsof prints, which a process
                     // picks for itself with prctl(PR_SET_NAME) — nothing constrains where a Linux
                     // binary may live, see above — only consistent with the key.
-                    return { name: basename(fullPath), pid, fullPath };
+                    return { name: toDisplayedName(basename(fullPath)), pid, fullPath };
                 }
             }
 
