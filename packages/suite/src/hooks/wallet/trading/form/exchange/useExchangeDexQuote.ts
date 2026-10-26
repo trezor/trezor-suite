@@ -14,7 +14,6 @@ import {
     requiresErc20Approval,
     selectTradingExchangeQuoteToEstimate,
 } from '@suite-common/trading';
-import { isAccountBasedNetwork } from '@suite-common/wallet-config';
 import { ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { ETHEREUM_ADJUST_GAS_LIMIT, updateFeeInfoThunk } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
@@ -90,16 +89,6 @@ export const useExchangeDexQuote = ({
 
         composeRequestRef.current();
     }, [dispatch, account, accountRef, composeRequestRef]);
-
-    useEffect(() => {
-        if (!account) {
-            return;
-        }
-
-        const fromAddress = isAccountBasedNetwork(account.symbol) ? account.descriptor : undefined;
-
-        setValue('fromAddress', fromAddress);
-    }, [account, setValue]);
 
     // set transactionData from DEX quote for correct fees fetching
     useEffect(() => {

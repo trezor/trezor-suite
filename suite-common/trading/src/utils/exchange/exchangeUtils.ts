@@ -7,7 +7,7 @@ import type {
     ExchangeTradeStatus,
 } from 'invity-api';
 
-import { type Network, type NetworkType } from '@suite-common/wallet-config';
+import { type Network, type NetworkType, isAccountBasedNetwork } from '@suite-common/wallet-config';
 import { type Account } from '@suite-common/wallet-types';
 import {
     asAmountUnit,
@@ -46,6 +46,9 @@ const isNativeCryptoId = (cryptoId?: CryptoId) => {
 
     return !contractAddress || contractAddress === CONTRACT_ADDRESS_FOR_NATIVE_TOKEN;
 };
+
+export const getExchangeFromAddress = (account: Account | undefined): string | undefined =>
+    account && isAccountBasedNetwork(account.symbol) ? account.descriptor : undefined;
 
 export const isSendingEvmNativeToken = (cryptoId?: CryptoId) =>
     isEvmCryptoId(cryptoId) && isNativeCryptoId(cryptoId);
