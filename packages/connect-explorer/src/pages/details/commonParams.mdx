@@ -5,7 +5,11 @@ import { Param } from '../../components/Param';
 Every call requires an `Object` with a combination of common and method-specified fields.
 All common parameters are optional.
 
-<Param name="device" type="Object" required={false} />
+<Param name="device" type="Object" required={false}>
+    When the call is hosted by Trezor Suite (popup, desktop, webextension or deeplink), it runs on
+    the wallet currently selected in Suite: a `device` naming another device, instance or passphrase
+    wallet is rejected with `Method_InvalidParameter`.
+</Param>
 
 <div style={{ marginLeft: 30 }}>
     <Param name="path" type="string" required={true}>
