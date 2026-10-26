@@ -44,7 +44,7 @@
         "react-dom": "19.2.3",
         "react-intl": "^12.1.4",
         "styled-components": "^6.5.3",
-        "usb": "^3.1.0",
+        "usb": "^3.2.1",
         "usb-legacy": "npm:usb@2.19.1"
     }
 }
