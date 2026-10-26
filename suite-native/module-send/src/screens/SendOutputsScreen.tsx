@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 
 import { useFocusEffect } from '@react-navigation/native';
 
+import { type SendRootState, selectSendFormDraftByKey } from '@suite-common/wallet-core';
 import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { AccountDetailsCard } from '@suite-native/accounts';
 import { AnimatedView, BannerInline, Box } from '@suite-native/atoms';
@@ -40,11 +41,15 @@ export const SendOutputsScreen = ({
     const sendForm = useSendForm(accountKey, tokenContract);
     const { totalSelectedAmount, selectedUtxos } = useUtxoSelection(accountKey);
     const feeLevels = useSelector(selectFeeLevels);
+    const selectedFee = useSelector(
+        (state: SendRootState) =>
+            selectSendFormDraftByKey(state, accountKey, tokenContract)?.selectedFee ?? 'normal',
+    );
     const isCardanoTokenSendAdaInsufficient = useSelector((state: CardanoTokenSendRootState) =>
         selectIsCardanoTokenSendAdaInsufficient(state, accountKey, tokenContract),
     );
 
-    const isFeeReady = isFinalPrecomposedTransaction(feeLevels.normal);
+    const isFeeReady = isFinalPrecomposedTransaction(feeLevels[selectedFee]);
     const showDeviceDisconnectedAlert = useShowDeviceDisconnectedAlert();
 
     useFocusEffect(
