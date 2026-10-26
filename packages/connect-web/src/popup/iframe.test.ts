@@ -74,6 +74,22 @@ describe('getIframeInstance', () => {
         await expect(promise).resolves.toBeUndefined();
     });
 
+    // Documents the bug: create() reuses a resolved initPromise without
+    // checking that the iframe is still in the document. When the page removed
+    // it, e.g. Turbo or htmx replacing <body> on navigation, the next open()
+    // has no peer to handshake with: the call fails with `handshake failed`
+    // after 10 s and the popup times out, and only the retry after that
+    // rebuilds the iframe.
+    it('reuses the resolved init promise after the page removed the iframe', async () => {
+        const iframe = getIframeInstance();
+        await createAndLoad(iframe);
+
+        document.body.innerHTML = '';
+
+        await expect(iframe.create(SRC)).resolves.toBeUndefined();
+        expect(iframe.get()).toBeUndefined();
+    });
+
     // Guard for the original PR #29770 fix: a load timeout must clear the
     // rejected initPromise so the next create() starts fresh.
     it('clears the rejected init promise on load timeout (#29770)', async () => {
