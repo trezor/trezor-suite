@@ -92,16 +92,19 @@ describe('rememberAppPermissions', () => {
 });
 
 describe('forgetAppPermission', () => {
-    it('throws when forgetting a permission of an app whose granted list is unreadable', () => {
-        expect(() =>
-            connectPopupReducer(
-                stateWith(malformedApp),
-                connectPopupActions.forgetAppPermission({
-                    origin: app.origin,
-                    permission: { permission: 'read_address' },
-                }),
-            ),
-        ).toThrow();
+    // Pins the defensive branch of the reducer rather than a path a user can reach today: the
+    // singular forget is dispatched only by the desktop/web settings list, where storageLoad has
+    // already dropped such a record.
+    it('drops an app whose granted list is unreadable', () => {
+        const state = connectPopupReducer(
+            stateWith(malformedApp),
+            connectPopupActions.forgetAppPermission({
+                origin: app.origin,
+                permission: { permission: 'read_address' },
+            }),
+        );
+
+        expect(state.permissions).toEqual([]);
     });
 });
 
