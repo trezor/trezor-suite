@@ -125,6 +125,27 @@ describe('findProcessFromIncomingPort for an accepted connection', () => {
         expect(spawn).toHaveBeenCalledTimes(1);
     });
 
+    // Documents the behaviour today: the name is the lsof COMMAND column, i.e. the `comm` string
+    // the process set for itself, while the path is the executable the permission is keyed by.
+    test('names a Linux process by the name it chose for itself, not by its executable', async () => {
+        setPlatform('linux');
+        mockCommands([
+            [
+                'lsof',
+                'google-chrome 300 user 18u IPv4 207199 0t0 TCP 127.0.0.1:40000->127.0.0.1:21335 (ESTABLISHED)',
+            ],
+        ]);
+        jest.spyOn(fs, 'readlink').mockResolvedValue('/usr/bin/python3.14');
+
+        const processInfo = await findProcessFromIncomingPort(40000, true, connection);
+
+        expect(processInfo).toEqual({
+            name: 'google-chrome',
+            pid: '300',
+            fullPath: '/usr/bin/python3.14',
+        });
+    });
+
     test('identifies a Linux process whose executable was replaced by the path it was installed at', async () => {
         setPlatform('linux');
         mockCommands([
