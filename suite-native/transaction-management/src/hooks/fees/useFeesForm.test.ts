@@ -3,6 +3,11 @@ import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { type UseFeesFormProps, useFeesForm } from './useFeesForm';
+import { createFeeLevel } from '../../__fixtures__/feeLevels';
+import {
+    ETH_ACCOUNT_KEY as FIXTURE_ACCOUNT_KEY,
+    getWalletState,
+} from '../../__fixtures__/walletState';
 
 const ethSymbol = asNetworkSymbol('eth');
 const ETH_ACCOUNT_KEY = mockAccountKey({ symbol: ethSymbol, descriptor: 'eth1' });
@@ -154,6 +159,149 @@ describe('useFeesForm', () => {
             feeLevel: 'high',
             customFeePerUnit: '15000000000',
             customFeeLimit: '11000',
+        });
+    });
+
+    it('allows custom gas validation from an available level when normal is unavailable', async () => {
+        const wallet = getWalletState();
+        const { result } = await renderHookWithStoreProvider(
+            () =>
+                useFeesForm({
+                    accountKey: FIXTURE_ACCOUNT_KEY,
+                    defaultFeeLevel: 'low',
+                    defaultFeePerUnit: '8',
+                }),
+            {
+                preloadedState: {
+                    wallet: {
+                        ...wallet,
+                        send: {
+                            ...wallet.send,
+                            feeLevels: {
+                                normal: { type: 'error', error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' },
+                                low: createFeeLevel({
+                                    feeLimit: '30000',
+                                    estimatedFeeLimit: '21000',
+                                    maxFeePerGas: '8',
+                                    maxPriorityFeePerGas: '1',
+                                }),
+                            },
+                        },
+                    },
+                },
+            },
+        );
+        expect(result.current.getValues('customFeeLimit')).toBe('30000');
+        await act(async () => {
+            expect(await result.current.trigger('customFeeLimit')).toBe(true);
+        });
+        await act(async () => {
+            result.current.setValue('customFeeLimit', '20000');
+            expect(await result.current.trigger('customFeeLimit')).toBe(false);
+        });
+    });
+
+    it('validates Ethereum prepared fees that provide a gas limit without a separate estimate', async () => {
+        const wallet = getWalletState();
+        const { result } = await renderHookWithStoreProvider(
+            () =>
+                useFeesForm({
+                    accountKey: FIXTURE_ACCOUNT_KEY,
+                    defaultFeeLevel: 'normal',
+                    defaultFeePerUnit: '8',
+                }),
+            {
+                preloadedState: {
+                    wallet: {
+                        ...wallet,
+                        send: {
+                            ...wallet.send,
+                            feeLevels: {
+                                normal: createFeeLevel({
+                                    feeLimit: '30000',
+                                    estimatedFeeLimit: undefined,
+                                }),
+                            },
+                        },
+                    },
+                },
+            },
+        );
+        await act(async () => {
+            expect(await result.current.trigger('customFeeLimit')).toBe(true);
+        });
+        await act(async () => {
+            result.current.setValue('customFeeLimit', '29999');
+            expect(await result.current.trigger('customFeeLimit')).toBe(false);
+        });
+    });
+
+    it('does not use a previous Custom gas limit as a minimum when all standard levels failed', async () => {
+        const wallet = getWalletState();
+        const { result } = await renderHookWithStoreProvider(
+            () =>
+                useFeesForm({
+                    accountKey: FIXTURE_ACCOUNT_KEY,
+                    defaultFeeLevel: 'custom',
+                    defaultFeePerUnit: '8',
+                }),
+            {
+                preloadedState: {
+                    wallet: {
+                        ...wallet,
+                        send: {
+                            ...wallet.send,
+                            feeLevels: {
+                                normal: { type: 'error', error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' },
+                                custom: createFeeLevel({
+                                    feeLimit: '90000',
+                                    estimatedFeeLimit: undefined,
+                                }),
+                            },
+                        },
+                    },
+                },
+            },
+        );
+        await act(async () => {
+            result.current.setValue('customFeeLimit', '45000');
+            expect(await result.current.trigger('customFeeLimit')).toBe(false);
+        });
+    });
+    it('uses a composed Custom estimate without trusting its user-entered gas limit', async () => {
+        const wallet = getWalletState();
+        const { result } = await renderHookWithStoreProvider(
+            () =>
+                useFeesForm({
+                    accountKey: FIXTURE_ACCOUNT_KEY,
+                    defaultFeeLevel: 'custom',
+                    defaultFeePerUnit: '8',
+                }),
+            {
+                preloadedState: {
+                    wallet: {
+                        ...wallet,
+                        send: {
+                            ...wallet.send,
+                            feeLevels: {
+                                normal: { type: 'error', error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' },
+                                custom: createFeeLevel({
+                                    feeLimit: '90000',
+                                    estimatedFeeLimit: '45000',
+                                }),
+                            },
+                        },
+                    },
+                },
+            },
+        );
+        await act(async () => {
+            result.current.setValue('customFeeLimit', '45000');
+            expect(await result.current.trigger('customFeeLimit')).toBe(true);
+        });
+        await act(async () => {
+            result.current.setValue('customFeeLimit', '44999');
+            expect(await result.current.trigger('customFeeLimit')).toBe(false);
         });
     });
 });

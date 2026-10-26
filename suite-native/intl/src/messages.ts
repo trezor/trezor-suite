@@ -4860,6 +4860,9 @@ export const messages = {
                     errors: {
                         feeLimit: {
                             low: 'Gas limit must be at least {minGasLimit}',
+                            invalid: 'Enter a positive whole number.',
+                            unavailable:
+                                'Cannot validate the fee limit without a transaction estimate.',
                         },
                         decimals: 'Too many decimal places.',
                         feePerUnit: {
