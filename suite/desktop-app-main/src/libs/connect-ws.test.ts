@@ -10,6 +10,7 @@ import {
     IDLE_CONNECTION_TIMEOUT_MS,
     MAX_CONCURRENT_CONNECTIONS,
     MAX_CONNECTIONS_PER_ORIGIN,
+    PROCESS_LOOKUP_TIMEOUT_MS,
     exposeConnectWs,
 } from './connect-ws';
 import { createHttpReceiver } from './http-receiver';
@@ -183,9 +184,11 @@ describe('connect-ws', () => {
 
         afterEach(() => {
             jest.useRealTimers();
+            jest.restoreAllMocks();
         });
 
         it('expires an idle connection, but not while a handshake is in progress', async () => {
+            const errors = jest.spyOn(logger, 'error');
             const client = await openClient(await startServer(), 'https://app.test');
             expect(await request(client, handshake)).toMatchObject({ payload: 'ok' });
             await jest.advanceTimersByTimeAsync(IDLE_CONNECTION_TIMEOUT_MS - 500);
@@ -208,16 +211,23 @@ describe('connect-ws', () => {
             // Pings, which the client sends on its own, do not keep the connection open.
             await jest.advanceTimersByTimeAsync(IDLE_CONNECTION_TIMEOUT_MS - 1_000);
             expect(await request(client, { type: 'ping' })).toMatchObject({ type: 'pong' });
+
+            // Both lookups won their race, so the deadline each handshake armed was cancelled
+            // and must not report a timeout, long after both have passed.
+            expect(errors).not.toHaveBeenCalledWith(
+                expect.anything(),
+                'findProcessFromIncomingPort timed out',
+            );
             await jest.advanceTimersByTimeAsync(1_000);
             expect(await request(client, { type: 'ping' })).toBeUndefined();
         });
 
-        it('never expires a connection whose process lookup never settles', async () => {
+        it('expires a connection whose process lookup never settles', async () => {
             const client = await openClient(await startServer(), 'https://app.test');
             expect(await request(client, handshake)).toMatchObject({ payload: 'ok' });
 
             // The handshake timeout is already cleared on an established connection, so only the
-            // lookup settling can re-arm the idle timeout.
+            // bound on the lookup itself can re-arm the idle timeout of a hung handshake.
             const lookupStarted = createDeferred();
             const hungLookup = createDeferred<undefined>();
             jest.mocked(findProcessFromIncomingPort).mockImplementationOnce(() => {
@@ -225,13 +235,13 @@ describe('connect-ws', () => {
 
                 return hungLookup.promise;
             });
-            void request(client, handshake);
+            const ack = request(client, handshake);
             await lookupStarted.promise;
+            await jest.advanceTimersByTimeAsync(PROCESS_LOOKUP_TIMEOUT_MS);
+            expect(await ack).toMatchObject({ payload: 'ok' });
 
-            // The lookup spawns a child process and has no deadline of its own, so a hung spawn
-            // holds the slot for the lifetime of the process.
-            await jest.advanceTimersByTimeAsync(IDLE_CONNECTION_TIMEOUT_MS * 2);
-            expect(await request(client, { type: 'ping' })).toMatchObject({ type: 'pong' });
+            await jest.advanceTimersByTimeAsync(IDLE_CONNECTION_TIMEOUT_MS);
+            expect(await request(client, { type: 'ping' })).toBeUndefined();
         });
 
         it('does not expire a connection while a call is pending', async () => {
