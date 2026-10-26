@@ -1,8 +1,10 @@
-import { combineReducers } from '@reduxjs/toolkit';
+import { type ThunkDispatch, type UnknownAction, combineReducers } from '@reduxjs/toolkit';
 
+import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { formDraftActions, formDraftReducer } from '@suite-common/wallet-core';
 import { mockResolvedYieldFlowData } from '@suite-common/wallet-core/mocks';
 import { type FeeInfo, isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
+import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import {
     act,
@@ -23,7 +25,12 @@ jest.mock('@suite-common/wallet-core', () => ({
     composeYieldWithdrawTransactionThunk: () => () => ({ unwrap: () => mockCompose() }),
 }));
 
-const FLOW = mockResolvedYieldFlowData();
+const FLOW = mockResolvedYieldFlowData({
+    account: mockWalletAccount({
+        symbol: asNetworkSymbol('eth'),
+        availableBalance: '1000000000000000000',
+    }),
+});
 const UNSIGNED_TRANSACTION = JSON.stringify({
     from: '0x1111111111111111111111111111111111111111',
     to: '0x0000000000000000000000000000000000000001',
@@ -52,7 +59,7 @@ const initialProps = {
     isEnabled: true,
 };
 const settle = () => act(() => jest.advanceTimersByTimeAsync(300));
-const renderFees = async () => {
+const renderFees = async (overrides: Partial<typeof initialProps> = {}) => {
     const store = createLightStore({
         reducer: {
             discreetMode: createStaticReducer({ isActive: false }),
@@ -70,7 +77,7 @@ const renderFees = async () => {
     });
 
     const hook = await renderHookWithStoreProvider(useYieldWithdrawFees, {
-        initialProps,
+        initialProps: { ...initialProps, ...overrides },
         services: { store, analytics: mockNativeAnalytics() },
     });
 
@@ -174,4 +181,61 @@ describe('Yield withdraw fee selection', () => {
         expect(store.getState().wallet.send.feeLevels.custom).toBeUndefined();
         expect(result.current.preparedAction?.amount).toBe('2');
     });
+    it.each(['0', '1600000000000000', '2000000000000000'])(
+        'keeps an explanatory fee picker at ETH balance %s and allows exact coverage',
+        async availableBalance => {
+            const { result, store } = await renderFees({
+                flowData: {
+                    ...FLOW.flowData,
+                    account: { ...FLOW.account, availableBalance },
+                },
+            });
+            await settle();
+            const levels = store.getState().wallet.send.feeLevels;
+            expect(levels.normal?.type).toBe(
+                availableBalance === '2000000000000000' ? 'final' : 'error',
+            );
+            expect(levels.low?.type).toBe(availableBalance === '0' ? 'error' : 'final');
+            expect(result.current.hasFeeEstimationError).toBe(false);
+            expect(result.current.formDraft?.selectedFee).toBe('normal');
+            expect(result.current.isFeeUnavailable).toBe(availableBalance !== '2000000000000000');
+            expect(result.current.preparedAction).not.toBeNull();
+            if (availableBalance === '1600000000000000') {
+                await act(() =>
+                    (
+                        store.dispatch as ThunkDispatch<
+                            ReturnType<typeof store.getState>,
+                            Record<never, never>,
+                            UnknownAction
+                        >
+                    )(
+                        result.current.updateFeeLevelThunk({
+                            accountKey: FLOW.account.key,
+                            formDraftKey: result.current.formDraftKey,
+                            feeLevelLabel: 'low',
+                        }),
+                    ),
+                );
+                expect(result.current.isFeeUnavailable).toBe(false);
+                expect(result.current.fee).toBe('1600000000000000');
+            }
+        },
+    );
+    it('recovers after an ETH top-up without requiring an amount edit', async () => {
+        const { result, rerender } = await renderFees({
+            flowData: {
+                ...FLOW.flowData,
+                account: { ...FLOW.account, availableBalance: '0' },
+            },
+        });
+        await settle();
+        expect(result.current.isFeeUnavailable).toBe(true);
+        await rerender(initialProps);
+        await settle();
+        expect(result.current.isFeeUnavailable).toBe(false);
+        expect(result.current.formDraft?.selectedFee).toBe('normal');
+        await settle();
+        expect(mockCompose).toHaveBeenCalledTimes(2);
+    });
+
 });
