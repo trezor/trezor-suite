@@ -14,6 +14,7 @@ import {
     canRememberPermissions,
     canonicalizePermissionCoins,
     isSameConnectApp,
+    readGrantedPermissions,
 } from './permissions';
 
 export type ConnectPopupState = {
@@ -244,7 +245,12 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
                     return;
                 }
 
-                app.allowedPermissions = app.allowedPermissions.filter(
+                // Defence in depth: only the desktop/web settings list dispatches this action
+                // today, and there `storageLoad` has already dropped a record whose grant list is
+                // unreadable; native, where such a record survives, forgets the whole app
+                // (`forgetAppPermissions` above). Read the list defensively anyway so that a
+                // future per-permission forget on native cannot bring the crash back.
+                app.allowedPermissions = readGrantedPermissions(app.allowedPermissions).filter(
                     granted =>
                         !(
                             granted.permission === payload.permission.permission &&
