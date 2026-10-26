@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/assets"
+        },
+        {
             "path": "../../suite-common/price-chart"
         },
         {
@@ -13,6 +16,9 @@
         },
         {
             "path": "../../suite-common/wallet-types"
+        },
+        {
+            "path": "../../suite-common/wallet-utils"
         },
         { "path": "../atoms" },
         { "path": "../react-native-graph" },

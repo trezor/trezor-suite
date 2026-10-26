@@ -3,10 +3,12 @@ import { useSelector } from 'react-redux';
 
 import { useAtomValue } from 'jotai';
 
+import { type AssetsRootState, selectAssetTokenInfo } from '@suite-common/assets';
 import { useAssetPriceHistoryQuery } from '@suite-common/price-chart';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import type { TokenAddress } from '@suite-common/wallet-types';
+import { isErc4626 } from '@suite-common/wallet-utils';
 import { VStack } from '@suite-native/atoms';
 import { type GraphPoint, LineGraph } from '@suite-native/react-native-graph';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -26,13 +28,21 @@ const graphStyle = prepareNativeStyle(() => ({
 
 export const AssetPriceChart = ({ networkSymbol, tokenContract }: AssetPriceChartProps) => {
     const fiatCurrency = useSelector(selectBaseCurrency);
+    const token = useSelector((state: AssetsRootState) =>
+        selectAssetTokenInfo(state, networkSymbol, tokenContract),
+    );
+    const isErc4626Token = isErc4626(token);
     const range = useAtomValue(assetPriceChartRangeAtom);
     const {
         applyStyle,
         utils: { colors },
     } = useNativeStyles();
     const { data, isLoading } = useAssetPriceHistoryQuery({
-        ticker: { symbol: networkSymbol, tokenAddress: tokenContract },
+        ticker: {
+            symbol: networkSymbol,
+            tokenAddress: tokenContract,
+            protocols: isErc4626Token ? ['erc4626'] : undefined,
+        },
         fiatCurrency,
         range,
     });
