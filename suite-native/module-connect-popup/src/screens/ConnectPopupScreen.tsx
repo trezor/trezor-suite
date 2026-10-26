@@ -25,6 +25,7 @@ import { ConnectConfirmOnTrezor } from '../components/ConnectConfirmOnTrezor';
 import { ConnectErrorMessage } from '../components/ConnectErrorMessage';
 import { ConnectLoader } from '../components/ConnectLoader';
 import { PermissionConfirmation } from '../components/PermissionConfirmation';
+import { SelectAccount } from '../components/SelectAccount';
 import { TxSimulation } from '../components/TxSimulation';
 
 export const ConnectPopupScreen = () => {
@@ -85,6 +86,10 @@ export const ConnectPopupScreen = () => {
 
         if (popupCall?.state === 'address-confirmation') {
             return <AddressConfirmation />;
+        }
+
+        if (popupCall?.state === 'select-account') {
+            return <SelectAccount />;
         }
 
         if (popupCall?.state === 'tx-simulation') {
