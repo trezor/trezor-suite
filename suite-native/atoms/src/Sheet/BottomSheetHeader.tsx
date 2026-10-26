@@ -9,9 +9,12 @@ import { IconButton } from '../Button/IconButton';
 import { Text } from '../Text';
 import { BottomSheetGrabber } from './BottomSheetGrabber';
 
-type BottomSheetHeaderProps = {
+export type BottomSheetSubtitleProps =
+    | { subtitle?: ReactNode; subtitleContent?: never }
+    | { subtitle?: never; subtitleContent?: ReactNode };
+
+type BottomSheetHeaderProps = BottomSheetSubtitleProps & {
     title: ReactNode;
-    subtitle?: ReactNode;
     isCloseDisplayed: boolean;
     onCloseSheet: () => void;
     scrollDivider?: ReactNode;
@@ -36,6 +39,7 @@ const titlesContainer = prepareNativeStyle(_ => ({
 export const BottomSheetHeader = ({
     title,
     subtitle,
+    subtitleContent,
     isCloseDisplayed,
     onCloseSheet,
     scrollDivider,
@@ -44,7 +48,7 @@ export const BottomSheetHeader = ({
     const { applyStyle } = useNativeStyles();
     const { translate } = useTranslate();
 
-    const isHeaderDisplayed = !!(title || subtitle || isCloseDisplayed);
+    const isHeaderDisplayed = !!(title || subtitle || subtitleContent || isCloseDisplayed);
 
     return (
         <Box pointerEvents={pointerEvents}>
@@ -60,6 +64,7 @@ export const BottomSheetHeader = ({
                                 {subtitle}
                             </Text>
                         )}
+                        {subtitleContent}
                     </View>
                     {isCloseDisplayed && (
                         <IconButton

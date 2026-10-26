@@ -17,7 +17,7 @@ import { nativeSpacings } from '@trezor/theme';
 
 import { Box, type BoxProps } from '../Box';
 import { useScrollDivider } from '../useScrollDivider';
-import { BottomSheetHeader } from './BottomSheetHeader';
+import { BottomSheetHeader, type BottomSheetSubtitleProps } from './BottomSheetHeader';
 import { BottomSheetModalContent } from './BottomSheetModalContent';
 import { useBottomSheetInteractionGate } from './hooks/useBottomSheetInteractionGate';
 
@@ -25,14 +25,14 @@ export type BottomSheetModalProps = {
     children: ReactNode;
     footer?: ReactNode;
     title?: ReactNode;
-    subtitle?: ReactNode;
     isCloseDisplayed?: boolean;
     bottomSheetCustomProps?: Partial<BottomSheetModalBaseProps>;
     // triggered when the close button is pressed
     onClose?: () => void;
     // triggered Always when the modal is dismissed
     onDismiss?: () => void;
-} & BoxProps;
+} & BoxProps &
+    BottomSheetSubtitleProps;
 
 const backgroundStyle = prepareNativeStyle(({ colors }) => ({
     backgroundColor: colors.surfaceFillPage,
@@ -62,6 +62,7 @@ export const BottomSheetModal = forwardRef<BottomSheetModalMethods, BottomSheetM
             title,
             isCloseDisplayed = false,
             subtitle,
+            subtitleContent,
             onDismiss,
             bottomSheetCustomProps = {},
             onClose,
@@ -112,7 +113,7 @@ export const BottomSheetModal = forwardRef<BottomSheetModalMethods, BottomSheetM
                 handleComponent={() => (
                     <BottomSheetHeader
                         title={title}
-                        subtitle={subtitle}
+                        {...(subtitleContent === undefined ? { subtitle } : { subtitleContent })}
                         isCloseDisplayed={isCloseDisplayed}
                         onCloseSheet={onCloseModal}
                         scrollDivider={scrollDivider}
