@@ -117,7 +117,7 @@ export const YieldClaimScreen = () => {
     const isClaimSubmitting = session?.action.isSubmitting ?? false;
     const claimFee = useYieldClaimFees({
         accountRewards,
-        isEnabled: !!account && !isClaimPending,
+        isEnabled: !!account && isFocused && !isClaimPending,
     });
     const feeFiatAmount = useFiatFromCryptoValue({
         cryptoValue: claimFee.feePreview?.fee ?? null,
@@ -134,7 +134,7 @@ export const YieldClaimScreen = () => {
     const isClaimPrepared =
         !isClaimRewardsLoading &&
         !isClaimRewardsFiatLoading &&
-        !claimFee.isPreparingClaimFee &&
+        !claimFee.isComposingFeeLevels &&
         !!claimFee.preparedAction;
 
     useEffect(() => {
@@ -152,7 +152,7 @@ export const YieldClaimScreen = () => {
         isClaimPending ||
         isClaimSubmitting ||
         isClaimRewardsLoading ||
-        claimFee.isPreparingClaimFee ||
+        claimFee.isComposingFeeLevels ||
         claimFee.isFeeUnavailable ||
         !accountRewards ||
         !claimFee.preparedAction ||
