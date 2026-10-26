@@ -17,8 +17,11 @@
         "@suite-common/wallet-types": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/react-native-graph": "workspace:*",
+        "@suite-native/storage": "workspace:*",
         "@trezor/styles-native": "workspace:*",
+        "jotai": "2.17.1",
         "react": "19.2.3",
+        "react-native": "0.86.3",
         "react-native-reanimated": "4.7.0",
         "react-redux": "9.3.0"
     }

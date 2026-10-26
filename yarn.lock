@@ -15466,8 +15466,11 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/react-native-graph": "workspace:*"
+    "@suite-native/storage": "workspace:*"
     "@trezor/styles-native": "workspace:*"
+    jotai: "npm:2.17.1"
     react: "npm:19.2.3"
+    react-native: "npm:0.86.3"
     react-native-reanimated: "npm:4.7.0"
     react-redux: "npm:9.3.0"
   languageName: unknown

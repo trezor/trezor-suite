@@ -1,10 +1,9 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
-import {
-    INITIAL_ASSET_PRICE_CHART_RANGE,
-    useAssetPriceHistoryQuery,
-} from '@suite-common/price-chart';
+import { useAtomValue } from 'jotai';
+
+import { useAssetPriceHistoryQuery } from '@suite-common/price-chart';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import type { TokenAddress } from '@suite-common/wallet-types';
@@ -13,6 +12,7 @@ import { type GraphPoint, LineGraph } from '@suite-native/react-native-graph';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { AssetPriceChartRangeSelector } from './AssetPriceChartRangeSelector';
+import { assetPriceChartRangeAtom } from './assetPriceChartRangeAtom';
 
 export type AssetPriceChartProps = {
     networkSymbol: NetworkSymbol;
@@ -26,7 +26,7 @@ const graphStyle = prepareNativeStyle(() => ({
 
 export const AssetPriceChart = ({ networkSymbol, tokenContract }: AssetPriceChartProps) => {
     const fiatCurrency = useSelector(selectBaseCurrency);
-    const [range, setRange] = useState(INITIAL_ASSET_PRICE_CHART_RANGE);
+    const range = useAtomValue(assetPriceChartRangeAtom);
     const {
         applyStyle,
         utils: { colors },
@@ -37,7 +37,9 @@ export const AssetPriceChart = ({ networkSymbol, tokenContract }: AssetPriceChar
         range,
     });
     const points = useMemo<GraphPoint[]>(
-        () => data?.map(({ timestamp, price }) => ({ date: new Date(timestamp), value: price })) ?? [],
+        () =>
+            data?.map(({ timestamp, price }) => ({ date: new Date(timestamp), value: price })) ??
+            [],
         [data],
     );
 
@@ -57,7 +59,7 @@ export const AssetPriceChart = ({ networkSymbol, tokenContract }: AssetPriceChar
                 points={points}
                 style={applyStyle(graphStyle)}
             />
-            <AssetPriceChartRangeSelector selectedRange={range} onRangeChange={setRange} />
+            <AssetPriceChartRangeSelector />
         </VStack>
     );
 };

@@ -2,17 +2,13 @@ import { useEffect, useState } from 'react';
 import { type LayoutChangeEvent } from 'react-native';
 import { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
-import {
-    type AssetPriceChartRange,
-    assetPriceChartRangeOptions,
-} from '@suite-common/price-chart';
+import { useAtom } from 'jotai';
+
+import { assetPriceChartRangeOptions } from '@suite-common/price-chart';
 import { AnimatedView, Box, PressableOpacity, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-type AssetPriceChartRangeSelectorProps = {
-    selectedRange: AssetPriceChartRange;
-    onRangeChange: (range: AssetPriceChartRange) => void;
-};
+import { assetPriceChartRangeAtom } from './assetPriceChartRangeAtom';
 
 const SELECTOR_PADDING = 4;
 const SELECTION_ANIMATION_DURATION = 200;
@@ -42,20 +38,15 @@ const optionStyle = prepareNativeStyle(utils => ({
     borderRadius: utils.borders.radii.round,
 }));
 
-export const AssetPriceChartRangeSelector = ({
-    selectedRange,
-    onRangeChange,
-}: AssetPriceChartRangeSelectorProps) => {
+export const AssetPriceChartRangeSelector = () => {
     const { applyStyle } = useNativeStyles();
-    const selectedIndex = assetPriceChartRangeOptions.findIndex(
-        option => option.range === selectedRange,
-    );
+    const [range, setRange] = useAtom(assetPriceChartRangeAtom);
+
+    const selectedIndex = assetPriceChartRangeOptions.findIndex(option => option.range === range);
     const [width, setWidth] = useState(0);
     const translateX = useSharedValue(0);
     const optionWidth =
-        width > 0
-            ? (width - SELECTOR_PADDING * 2) / assetPriceChartRangeOptions.length
-            : 0;
+        width > 0 ? (width - SELECTOR_PADDING * 2) / assetPriceChartRangeOptions.length : 0;
 
     useEffect(() => {
         translateX.value = withTiming(SELECTOR_PADDING + selectedIndex * optionWidth, {
@@ -79,7 +70,7 @@ export const AssetPriceChartRangeSelector = ({
                 style={[applyStyle(selectionIndicatorStyle), selectionIndicatorAnimatedStyle]}
             />
             {assetPriceChartRangeOptions.map(option => {
-                const isSelected = option.range === selectedRange;
+                const isSelected = option.range === range;
 
                 return (
                     <PressableOpacity
@@ -87,7 +78,7 @@ export const AssetPriceChartRangeSelector = ({
                         accessibilityRole="tab"
                         accessibilityState={{ selected: isSelected }}
                         style={applyStyle(optionStyle)}
-                        onPress={() => onRangeChange(option.range)}
+                        onPress={() => setRange(option.range)}
                     >
                         <Text
                             variant="body-md"
