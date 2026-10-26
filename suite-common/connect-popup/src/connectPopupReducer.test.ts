@@ -30,6 +30,19 @@ const app: AppRememberedPermission = {
     allowedPermissions: [{ permission: 'read_address' }],
 };
 
+// What an earlier native release persisted: the granted list under the former `types` key, so
+// `allowedPermissions` is missing.
+const malformedApp = {
+    ...app,
+    allowedPermissions: undefined,
+    types: [{ permission: 'read_address' }],
+} as unknown as AppRememberedPermission;
+
+const stateWith = (...apps: AppRememberedPermission[]) => ({
+    ...connectPopupInitialState,
+    permissions: apps,
+});
+
 describe('rememberAppPermissions', () => {
     it.each<[string, AppRememberedPermission]>([
         [
@@ -74,6 +87,17 @@ describe('rememberAppPermissions', () => {
             ).toEqual([]);
         },
     );
+
+    // A record persisted on native can reach the reducer without `allowedPermissions`, where the
+    // storageLoad validation never runs (SUITE-NATIVE-4PR).
+    it('throws when remembering over a record whose granted list is unreadable', () => {
+        expect(() =>
+            connectPopupReducer(
+                stateWith(malformedApp),
+                connectPopupActions.rememberAppPermissions(app),
+            ),
+        ).toThrow();
+    });
 });
 
 describe('storageLoad', () => {
