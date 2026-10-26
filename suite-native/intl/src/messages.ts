@@ -3231,7 +3231,8 @@ export const messages = {
                 },
                 third: {
                     titleEthereum: 'Receive weekly rewards',
-                    titleSolana: 'Receive rewards every ~{days} days',
+                    titleSolana:
+                        'Receive rewards every ~{days, plural, one {# day} other {# days}}',
                     description: '~{apy}% APY',
                     title: 'Receive weekly rewards',
                 },
