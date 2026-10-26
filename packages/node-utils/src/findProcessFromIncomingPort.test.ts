@@ -38,13 +38,19 @@ describe('findProcessFromIncomingPort', () => {
         }
     });
 
-    test('if there is nothing running on the port, findProcessFromIncomingPort throws', async () => {
+    test('if there is nothing running on the port, findProcessFromIncomingPort reports no process', async () => {
         const ports = await getFreePort();
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const [port]: [number] = ports;
-        await expect(findProcessFromIncomingPort(port)).rejects.toThrow(
-            'Command failed with code 1: ',
-        );
+        if (process.platform === 'win32') {
+            // netstat lists every connection and exits 0, so an absent port is simply no match.
+            await expect(findProcessFromIncomingPort(port)).resolves.toBeUndefined();
+        } else {
+            // lsof exits 1 when it matches nothing.
+            await expect(findProcessFromIncomingPort(port)).rejects.toThrow(
+                'Command failed with code 1: ',
+            );
+        }
     });
 });
 
@@ -56,7 +62,10 @@ describe('findProcessFromIncomingPort for an accepted connection', () => {
     // Answers each spawned command with the output of the first matching prefix.
     const mockCommands = (outputs: [string, string][]) =>
         jest.spyOn(childProcess, 'spawn').mockImplementation((...args: unknown[]) => {
-            const command = args.filter(arg => typeof arg === 'string').join(' ');
+            const command = args
+                .flat()
+                .filter(arg => typeof arg === 'string')
+                .join(' ');
             const child = Object.assign(new EventEmitter(), {
                 stdout: new EventEmitter(),
                 stderr: new EventEmitter(),
