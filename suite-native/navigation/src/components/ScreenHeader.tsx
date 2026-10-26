@@ -33,8 +33,8 @@ const headerStyle = prepareNativeStyle<{ insets: EdgeInsets }>((utils, { insets 
     // content would otherwise butt against the side icons on a narrow screen.
     gap: utils.spacings.sp12,
     paddingTop: utils.spacings.sp8,
-    paddingLeft: Math.max(insets.left, utils.spacings.sp16),
-    paddingRight: Math.max(insets.right, utils.spacings.sp16),
+    paddingLeft: insets.left + utils.spacings.sp16,
+    paddingRight: insets.right + utils.spacings.sp16,
     paddingBottom: utils.spacings.sp16,
     backgroundColor: utils.colors.surfaceFillPage,
     minHeight: ICON_SIZE,

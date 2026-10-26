@@ -101,7 +101,7 @@ export const ReceiveAddressContent = ({
                 footerHorizontalPadding="sp16"
                 noBottomPadding
             >
-                <VStack marginTop="sp8" spacing="sp16" flex={1}>
+                <VStack marginBottom="sp16" spacing="sp16" flex={1}>
                     <ReceiveAddressCard
                         accountKey={accountKey}
                         address={currentFreshAddress.address}

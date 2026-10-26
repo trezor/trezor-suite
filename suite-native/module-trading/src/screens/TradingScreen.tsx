@@ -1,11 +1,10 @@
 import { useEffect } from 'react';
-import { type EdgeInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
-import { VStack, useBannerAwareSafeAreaInsets } from '@suite-native/atoms';
+import { VStack } from '@suite-native/atoms';
 import { DeviceManagerScreenHeader } from '@suite-native/device-manager';
 import { RootStackRoutes, Screen } from '@suite-native/navigation';
 import { TradingEnvironmentWarning } from '@suite-native/trading-debug';
@@ -16,7 +15,6 @@ import {
     selectTradeToBeOpened,
 } from '@suite-native/trading-state';
 import { useServices } from '@trezor/dependency-injection';
-import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { TRADING_KEYBOARD_TOOLBAR_HOST } from '../components/general/CryptoAmountKeyboardToolbar';
 import { Header } from '../components/general/Header/Header';
@@ -26,21 +24,7 @@ import { TradingTabContent } from '../components/general/TradingTabContent';
 import { TradingTypeAwareContextMessage } from '../components/general/TradingTypeAwareContextMessage';
 import { useActiveTradingTypeReaction } from '../hooks/general/useActiveTradingTypeReaction';
 
-const tradingContentStyle = prepareNativeStyle<{ insets: EdgeInsets }>((utils, { insets }) => ({
-    // Screen already applies the safe-area insets; add only the remaining page spacing.
-    paddingLeft: Math.max(utils.spacings.sp16 - insets.left, 0),
-    paddingRight: Math.max(utils.spacings.sp16 - insets.right, 0),
-}));
-
-const useTradingContentStyle = () => {
-    const insets = useBannerAwareSafeAreaInsets();
-    const { applyStyle } = useNativeStyles();
-
-    return applyStyle(tradingContentStyle, { insets });
-};
-
 const TradingScreenContent = () => {
-    const contentStyle = useTradingContentStyle();
     const tradeToBeOpened = useSelector(selectTradeToBeOpened);
     const hasActiveTradingType = useSelector(selectHasActiveTradingType);
     const navigation = useNavigation<NavigationProps>();
@@ -65,7 +49,7 @@ const TradingScreenContent = () => {
         <VStack spacing="sp16" flex={1}>
             <TradingEnvironmentWarning />
             <Header />
-            <VStack spacing="sp16" style={contentStyle} flex={1}>
+            <VStack spacing="sp16" paddingHorizontal="sp16" flex={1}>
                 <TradingTabContent />
                 <HistoryButton />
                 <Footer />
@@ -75,7 +59,6 @@ const TradingScreenContent = () => {
 };
 
 export const TradingScreen = () => {
-    const contentStyle = useTradingContentStyle();
     const isTradingEnabled = useSelector(selectIsTradingEnabled);
 
     if (!isTradingEnabled) {
@@ -94,7 +77,7 @@ export const TradingScreen = () => {
             }
         >
             <TradingScreenContent />
-            <LegalGatewayContextMessage marginVertical="sp16" style={contentStyle} />
+            <LegalGatewayContextMessage marginVertical="sp16" marginHorizontal="sp16" />
         </Screen>
     );
 };

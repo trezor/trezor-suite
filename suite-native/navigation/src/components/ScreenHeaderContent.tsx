@@ -3,6 +3,9 @@ import { FadeIn, FadeOut } from 'react-native-reanimated';
 
 import { AnimatedView, Box, Text } from '@suite-native/atoms';
 import { type Translation } from '@suite-native/intl';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+
+const titleContainerStyle = prepareNativeStyle(() => ({ flex: 1 }));
 
 export type ScreenHeaderContentProps = {
     title?: ReactElement<ComponentProps<typeof Translation>> | string;
@@ -10,9 +13,11 @@ export type ScreenHeaderContentProps = {
 };
 
 export const ScreenHeaderContent = ({ title, customContent }: ScreenHeaderContentProps) => {
+    const { applyStyle } = useNativeStyles();
+
     if (customContent) {
         return (
-            <Box alignItems="center" flexShrink={1}>
+            <Box alignItems="center" flex={1}>
                 {customContent}
             </Box>
         );
@@ -20,11 +25,16 @@ export const ScreenHeaderContent = ({ title, customContent }: ScreenHeaderConten
 
     if (title) {
         return (
-            <AnimatedView entering={FadeIn} exiting={FadeOut}>
+            <AnimatedView
+                entering={FadeIn}
+                exiting={FadeOut}
+                style={applyStyle(titleContainerStyle)}
+            >
                 <Box alignItems="center">
                     <Text
                         variant="body-md-strong"
                         adjustsFontSizeToFit
+                        minimumFontScale={0.8}
                         numberOfLines={1}
                         testID="@screen/sub-header/title"
                     >

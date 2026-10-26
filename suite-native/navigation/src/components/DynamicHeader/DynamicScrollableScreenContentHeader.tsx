@@ -21,8 +21,8 @@ type DynamicScrollableScreenContentHeaderProps = {
 } & Pick<ScreenHeaderProps, 'title'>;
 
 const headerStyle = prepareNativeStyle<{ insets: EdgeInsets }>((utils, { insets }) => ({
-    paddingLeft: Math.max(insets.left, utils.spacings.sp16),
-    paddingRight: Math.max(insets.right, utils.spacings.sp16),
+    paddingLeft: insets.left + utils.spacings.sp16,
+    paddingRight: insets.right + utils.spacings.sp16,
 }));
 
 export const DynamicScrollableScreenContentHeader = ({

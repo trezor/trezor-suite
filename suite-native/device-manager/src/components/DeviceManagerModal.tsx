@@ -44,6 +44,7 @@ const deviceManagerModalWrapperStyle = prepareNativeStyle(utils => ({
 }));
 
 const deviceManagerHeaderStyle = prepareNativeStyle(utils => ({
+    marginHorizontal: utils.spacings.sp16,
     backgroundColor: utils.colors.surfaceFillRaised,
     borderWidth: utils.borders.widths.small,
     borderBottomLeftRadius: utils.borders.radii.r12,
@@ -52,7 +53,12 @@ const deviceManagerHeaderStyle = prepareNativeStyle(utils => ({
     borderTopWidth: 0,
 }));
 
-const modalContentStyle = prepareNativeStyle<{ insets: EdgeInsets }>((_, { insets }) => ({
+const modalHeaderStyle = prepareNativeStyle(utils => ({
+    paddingLeft: utils.spacings.sp16,
+    paddingRight: utils.spacings.sp16,
+}));
+
+const modalPanelStyle = prepareNativeStyle<{ insets: EdgeInsets }>((_, { insets }) => ({
     marginLeft: insets.left,
     marginRight: insets.right,
 }));
@@ -105,7 +111,10 @@ export const DeviceManagerModal = ({
                 style={applyStyle(modalBackgroundOverlayStyle, { windowWidth, windowHeight })}
                 onPress={handlePressOutside}
             >
-                <AnimatedView entering={SlideInUp.damping(30)}>
+                <AnimatedView
+                    entering={SlideInUp.damping(30)}
+                    style={applyStyle(modalPanelStyle, { insets })}
+                >
                     <AnimatedView
                         style={applyStyle(deviceManagerModalWrapperStyle, { insets })}
                         layout={LinearTransition}
@@ -118,7 +127,7 @@ export const DeviceManagerModal = ({
                                 onPress={handleClose}
                                 style={applyStyle(deviceManagerHeaderStyle)}
                             >
-                                <ScreenHeaderWrapper>
+                                <ScreenHeaderWrapper style={applyStyle(modalHeaderStyle)}>
                                     <HStack
                                         justifyContent="space-between"
                                         alignItems="center"
@@ -135,15 +144,10 @@ export const DeviceManagerModal = ({
                                     </HStack>
                                 </ScreenHeaderWrapper>
                             </Pressable>
-                            <AnimatedView
-                                entering={FadeIn}
-                                style={applyStyle(modalContentStyle, { insets })}
-                            >
-                                {children}
-                            </AnimatedView>
+                            <AnimatedView entering={FadeIn}>{children}</AnimatedView>
                         </AnimatedView>
                     </AnimatedView>
-                    <Box style={applyStyle(modalContentStyle, { insets })}>{footer}</Box>
+                    {footer}
                 </AnimatedView>
             </Pressable>
         </Modal>

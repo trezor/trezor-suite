@@ -80,7 +80,7 @@ export const ReceiveAddressDetailScreen = () => {
                 footerHorizontalPadding="sp16"
                 noBottomPadding
             >
-                <VStack marginTop="sp8" spacing="sp16" flex={1}>
+                <VStack marginBottom="sp16" spacing="sp16" flex={1}>
                     <ReceiveAddressDetails
                         accountDescriptor={accountDescriptor}
                         address={address.address}

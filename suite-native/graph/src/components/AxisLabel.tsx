@@ -1,7 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { View, useWindowDimensions } from 'react-native';
-
-import { useFocusEffect } from '@react-navigation/native';
+import { useState } from 'react';
+import { View } from 'react-native';
 
 import { useDiscreetMode } from '@suite-common/discreet-mode';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
@@ -12,69 +10,36 @@ import { BigNumber } from '@trezor/utils';
 type AxisLabelProps = {
     x: number;
     value: number;
+    graphWidth: number;
 };
 
-type AxisLabelStyleProps = {
-    x: number;
-    isOverflowing: boolean;
-};
-// Default react-navigation screen transition animation duration is equal to 350.
-// https://reactnavigation.org/docs/native-stack-navigator/#animationduration
-const SCREEN_TRANSITION_ANIMATION_DURATION = 350;
-
-const axisLabelStyle = prepareNativeStyle<AxisLabelStyleProps>(
-    ({ spacings }, { x, isOverflowing }) => ({
+const axisLabelStyle = prepareNativeStyle<{ left: number; isMeasured: boolean }>(
+    (_, { left, isMeasured }) => ({
         position: 'absolute',
-        left: `${x}%`,
-        extend: {
-            // Position the axis label from the right if it's overflowing the screen width.
-            condition: isOverflowing,
-            style: {
-                left: undefined,
-                right: spacings.sp8,
-            },
-        },
+        left,
+        opacity: isMeasured ? 1 : 0,
     }),
 );
 
-export const AxisLabel = ({ x, value }: AxisLabelProps) => {
+export const AxisLabel = ({ x, value, graphWidth }: AxisLabelProps) => {
     const { applyStyle, utils } = useNativeStyles();
-    const { width: windowWidth } = useWindowDimensions();
     const { isDiscreetMode } = useDiscreetMode();
-    const viewRef = useRef<View>(null);
-    const [isOverflowing, setIsOverflowing] = useState(false);
-
-    const handleLayoutOverflow = useCallback(() => {
-        if (viewRef.current) {
-            viewRef.current.measureInWindow((viewX, _, viewWidth) => {
-                const graphHorizontalPadding = utils.spacings.sp8;
-                // The right most pixel of the axis label is overflowing the graph width.
-                if (viewX + viewWidth + graphHorizontalPadding > windowWidth) {
-                    setIsOverflowing(true);
-                }
-            });
-        }
-    }, [utils, windowWidth]);
-
-    useEffect(() => {
-        setIsOverflowing(false);
-    }, [windowWidth]);
-
-    // We need to check the axis overflow on every return to a already rendered graph screen, because it might be shifted by the previous screen transition animation.
-    // The timeout is needed because the calculation has to be started after the screen transition animation is finished.
-    useFocusEffect(() => {
-        const timeoutId = setTimeout(handleLayoutOverflow, SCREEN_TRANSITION_ANIMATION_DURATION);
-
-        return () => clearTimeout(timeoutId);
-    });
+    const [labelWidth, setLabelWidth] = useState(0);
+    const padding = utils.spacings.sp8;
+    const left = Math.max(
+        padding,
+        Math.min((graphWidth * x) / 100, graphWidth - labelWidth - padding),
+    );
 
     if (isDiscreetMode) return null;
 
     return (
         <View
-            style={applyStyle(axisLabelStyle, { x, isOverflowing })}
-            onLayout={handleLayoutOverflow}
-            ref={viewRef}
+            style={applyStyle(axisLabelStyle, {
+                left,
+                isMeasured: graphWidth > 0 && labelWidth > 0,
+            })}
+            onLayout={event => setLabelWidth(event.nativeEvent.layout.width)}
         >
             <BaseCurrencyAmountFormatter
                 value={asBaseCurrencyAmount(new BigNumber(value))}

@@ -20,12 +20,14 @@ export const TradingFormSkeleton = ({ hasResidenceField = false }: TradingFormSk
     return (
         <VStack spacing="sp16">
             <Card noPadding>
-                <TradingCardSection bottomBorder title={<SkeletonSmall widthPercentage={0.2} />}>
+                <TradingCardSection bottomBorder>
+                    <SkeletonSmall widthPercentage={0.2} />
                     <SkeletonLargeRow leftWidthPercentage={0.4} rightWidthPercentage={0.35} />
 
                     <Box paddingVertical="sp12" />
                 </TradingCardSection>
-                <TradingCardSection bottomBorder title={<SkeletonSmall widthPercentage={0.2} />}>
+                <TradingCardSection bottomBorder>
+                    <SkeletonSmall widthPercentage={0.2} />
                     <SkeletonLargeRow leftWidthPercentage={0.4} rightWidthPercentage={0.3} />
                 </TradingCardSection>
             </Card>

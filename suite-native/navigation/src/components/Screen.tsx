@@ -75,8 +75,8 @@ const screenContentStyle = prepareNativeStyle<{
 
     return {
         flexGrow: 1,
-        paddingLeft: Math.max(left, horizontalPadding),
-        paddingRight: Math.max(right, horizontalPadding),
+        paddingLeft: left + horizontalPadding,
+        paddingRight: right + horizontalPadding,
         paddingBottom: bottomInset + bottomPadding,
     };
 });
@@ -87,8 +87,8 @@ const screenFooterStyle = prepareNativeStyle<{
     horizontalPadding: number;
 }>((_, { insets, applyBottomInset, horizontalPadding }) => ({
     paddingBottom: applyBottomInset ? insets.bottom : 0,
-    paddingLeft: Math.max(insets.left, horizontalPadding),
-    paddingRight: Math.max(insets.right, horizontalPadding),
+    paddingLeft: insets.left + horizontalPadding,
+    paddingRight: insets.right + horizontalPadding,
 }));
 
 export const Screen = ({
@@ -159,6 +159,7 @@ export const Screen = ({
                 <ScreenContentWrapper
                     isScrollable={isScrollable}
                     hasHeader={!!header}
+                    scrollIndicatorBottomInset={applyBottomInset && !footer ? insets.bottom : 0}
                     focusedInputBottomOffset={focusedInputBottomOffset}
                     refreshControl={refreshControl}
                     isDynamicHeader={isScreenHeaderPropDynamic(header)}
