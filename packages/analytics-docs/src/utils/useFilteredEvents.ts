@@ -18,10 +18,33 @@ import { getParamsFromUrl, updateUrl } from './urlParams';
 const ANALYTICS_JSON_URL = `${import.meta.env.BASE_URL}analytics.json`;
 
 const SEARCH_FIELDS_STORAGE_KEY = 'analytics-docs:search-in';
+const SEARCH_FIELDS_STORAGE_VERSION = 2;
 const DEFAULT_SEARCH_FIELDS: SearchField[] = [...searchFields];
+
+type StoredSearchFields = {
+    version: typeof SEARCH_FIELDS_STORAGE_VERSION;
+    fields: unknown;
+};
 
 const isSearchField = (value: unknown): value is SearchField =>
     searchFields.some(field => field === value);
+
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+    typeof value === 'object' && value !== null;
+
+const isStoredSearchFields = (value: unknown): value is StoredSearchFields =>
+    isRecord(value) &&
+    value.version === SEARCH_FIELDS_STORAGE_VERSION &&
+    Array.isArray(value.fields);
+
+const parseSearchFields = (value: unknown): SearchField[] => {
+    if (!Array.isArray(value)) return [];
+
+    return normalizeSearchFields(value.filter(isSearchField));
+};
+
+const migrateLegacySearchFields = (fields: SearchField[]): SearchField[] =>
+    normalizeSearchFields(fields.includes('runtimeType') ? fields : [...fields, 'runtimeType']);
 
 const getInitialSearchFields = (): SearchField[] => {
     if (typeof window === 'undefined') return DEFAULT_SEARCH_FIELDS;
@@ -31,11 +54,17 @@ const getInitialSearchFields = (): SearchField[] => {
         if (stored === null) return DEFAULT_SEARCH_FIELDS;
 
         const parsed: unknown = JSON.parse(stored);
-        if (!Array.isArray(parsed)) return DEFAULT_SEARCH_FIELDS;
 
-        const selected = normalizeSearchFields(parsed.filter(isSearchField));
+        if (isStoredSearchFields(parsed)) {
+            const selected = parseSearchFields(parsed.fields);
 
-        return selected.length > 0 ? selected : DEFAULT_SEARCH_FIELDS;
+            return selected.length > 0 ? selected : DEFAULT_SEARCH_FIELDS;
+        }
+
+        const legacy = parseSearchFields(parsed);
+        if (legacy.length === 0) return DEFAULT_SEARCH_FIELDS;
+
+        return migrateLegacySearchFields(legacy);
     } catch {
         return DEFAULT_SEARCH_FIELDS;
     }
@@ -99,7 +128,10 @@ export const useFilteredEvents = () => {
         try {
             window.localStorage.setItem(
                 SEARCH_FIELDS_STORAGE_KEY,
-                JSON.stringify(searchFieldsState),
+                JSON.stringify({
+                    version: SEARCH_FIELDS_STORAGE_VERSION,
+                    fields: searchFieldsState,
+                }),
             );
         } catch {
             return;

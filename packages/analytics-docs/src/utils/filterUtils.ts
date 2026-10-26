@@ -147,10 +147,13 @@ export const eventMatchesFullText = (query: string, e: EventDoc): boolean => {
 };
 
 const attributeFieldMatchesToken = (token: string, event: EventDoc): boolean =>
-    Object.entries(event.attributes ?? {}).some(
-        ([attributeKey, attribute]) =>
-            attributeKey.toLowerCase().includes(token) ||
-            (attribute.runtimeType ?? '').toLowerCase().includes(token),
+    Object.keys(event.attributes ?? {}).some(attributeKey =>
+        attributeKey.toLowerCase().includes(token),
+    );
+
+const runtimeTypeFieldMatchesToken = (token: string, event: EventDoc): boolean =>
+    Object.values(event.attributes ?? {}).some(attribute =>
+        (attribute.runtimeType ?? '').toLowerCase().includes(token),
     );
 
 const descriptionFieldMatchesToken = (token: string, event: EventDoc): boolean => {
@@ -167,6 +170,7 @@ const searchFieldMatchesToken = (field: SearchField, token: string, event: Event
             fuzzyMatch(token, event.name) ||
             fuzzyMatchExportName(token, toEventExportName(event.name)),
         attributeName: () => attributeFieldMatchesToken(token, event),
+        runtimeType: () => runtimeTypeFieldMatchesToken(token, event),
         trigger: () => event.descriptionTrigger.toLowerCase().includes(token),
         description: () => descriptionFieldMatchesToken(token, event),
     };

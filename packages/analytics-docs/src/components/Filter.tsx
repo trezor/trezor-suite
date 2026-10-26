@@ -22,6 +22,7 @@ const menuPortalTarget = typeof document !== 'undefined' ? document.body : undef
 const searchFieldMenuLabel: Record<SearchField, string> = {
     eventName: 'Event name',
     attributeName: 'Attributes',
+    runtimeType: 'Type',
     trigger: 'Trigger',
     description: 'Description',
 };
