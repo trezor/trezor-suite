@@ -215,11 +215,11 @@ export const calculate = (
             } as const;
         }
 
-        return {
-            type: 'error',
-            error: 'AMOUNT_IS_NOT_ENOUGH',
-            errorMessage: { id: 'AMOUNT_IS_NOT_ENOUGH' },
-        } as const;
+        const error = new BigNumber(amount).isLessThanOrEqualTo(availableBalance)
+            ? 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE'
+            : 'AMOUNT_IS_NOT_ENOUGH';
+
+        return { type: 'error', error, errorMessage: { id: error } } as const;
     }
 
     // validate if token balance is not 0 or lower than amount
@@ -440,6 +440,14 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
                 tx.estimatedFeeLimit = !customFeeLimit.isNaN()
                     ? customFeeLimit.toFixed(0)
                     : undefined;
+            }
+            if (tx.type === 'error' && tx.error === 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE') {
+                tx.errorMessage = {
+                    id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
+                    values: {
+                        networkDisplaySymbol: getNetworkDisplaySymbol(network.symbol),
+                    },
+                };
             }
             if (
                 tx.type === 'error' &&
