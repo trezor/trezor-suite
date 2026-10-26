@@ -11286,7 +11286,7 @@ __metadata:
   dependencies:
     "@trezor/env-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
-    zod: "npm:4.6.5"
+    zod: "npm:4.6.6"
   languageName: unknown
   linkType: soft
 
@@ -11526,7 +11526,7 @@ __metadata:
     "@trezor/react-utils": "workspace:^"
     "@trezor/utils": "workspace:^"
     react: "npm:19.2.3"
-    zod: "npm:4.6.5"
+    zod: "npm:4.6.6"
   languageName: unknown
   linkType: soft
 
@@ -11536,7 +11536,7 @@ __metadata:
   dependencies:
     orval: "npm:8.33.0"
     prettier: "npm:^3.9.9"
-    zod: "npm:4.6.5"
+    zod: "npm:4.6.6"
   languageName: unknown
   linkType: soft
 
@@ -11556,7 +11556,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     react: "npm:19.2.3"
     react-redux: "npm:9.3.0"
-    zod: "npm:4.6.5"
+    zod: "npm:4.6.6"
   languageName: unknown
   linkType: soft
 
@@ -11573,7 +11573,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     orval: "npm:8.33.0"
     prettier: "npm:^3.9.9"
-    zod: "npm:4.6.5"
+    zod: "npm:4.6.6"
   languageName: unknown
   linkType: soft
 
@@ -11749,7 +11749,7 @@ __metadata:
   dependencies:
     "@trezor/type-utils": "workspace:*"
     up-fetch: "npm:2.6.1"
-    zod: "npm:4.6.5"
+    zod: "npm:4.6.6"
   languageName: unknown
   linkType: soft
 
@@ -11768,7 +11768,7 @@ __metadata:
     prettier: "npm:^3.9.9"
     sharp: "npm:^0.35.5"
     svgo: "npm:^4.1.0"
-    zod: "npm:4.6.5"
+    zod: "npm:4.6.6"
   languageName: unknown
   linkType: soft
 
@@ -11994,7 +11994,7 @@ __metadata:
   resolution: "@suite-common/schemas@workspace:suite-common/schemas"
   dependencies:
     "@trezor/utils": "workspace:*"
-    zod: "npm:4.6.5"
+    zod: "npm:4.6.6"
   languageName: unknown
   linkType: soft
 
@@ -12315,7 +12315,7 @@ __metadata:
     ajv: "npm:^8.20.0"
     jws: "npm:^4.0.1"
     toml: "npm:^5.0.0"
-    zod: "npm:4.6.5"
+    zod: "npm:4.6.6"
   languageName: unknown
   linkType: soft
 
@@ -12359,7 +12359,7 @@ __metadata:
     react-intl: "npm:^12.1.4"
     react-redux: "npm:9.3.0"
     yup: "npm:1.7.1"
-    zod: "npm:4.6.5"
+    zod: "npm:4.6.6"
   languageName: unknown
   linkType: soft
 
@@ -16216,7 +16216,7 @@ __metadata:
     "@trezor/react-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     react: "npm:19.2.3"
-    zod: "npm:4.6.5"
+    zod: "npm:4.6.6"
   languageName: unknown
   linkType: soft
 
@@ -16372,7 +16372,7 @@ __metadata:
     "@suite/tor-types": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
     "@trezor/type-utils": "workspace:*"
-    zod: "npm:4.6.5"
+    zod: "npm:4.6.6"
   languageName: unknown
   linkType: soft
 
@@ -16905,7 +16905,7 @@ __metadata:
     react-redux: "npm:9.3.0"
     redux: "npm:^5.0.1"
     styled-components: "npm:^6.5.3"
-    zod: "npm:4.6.5"
+    zod: "npm:4.6.6"
   languageName: unknown
   linkType: soft
 
@@ -18177,7 +18177,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
     socks-proxy-agent: "npm:8.0.5"
-    zod: "npm:4.6.5"
+    zod: "npm:4.6.6"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -18473,7 +18473,7 @@ __metadata:
     scroll-into-view-if-needed: "npm:^3.1.0"
     styled-components: "npm:^6.5.3"
     tailwindcss: "npm:^3.4.10"
-    zod: "npm:4.6.5"
+    zod: "npm:4.6.6"
   peerDependencies:
     next: ">=15.0.0"
     nextra: ^3.3.1
@@ -18739,7 +18739,7 @@ __metadata:
     opencode-ai: "npm:1.18.23"
     tsx: "npm:^4.21.0"
     ws: "npm:^8.20.0"
-    zod: "npm:4.6.5"
+    zod: "npm:4.6.6"
   languageName: unknown
   linkType: soft
 
@@ -49389,10 +49389,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zod@npm:4.6.5, zod@npm:^3.25 || ^4.0, zod@npm:^3.25.0 || ^4.0.0, zod@npm:^4.3.5":
-  version: 4.6.5
-  resolution: "zod@npm:4.6.5"
-  checksum: 10/db004952e4dc6eab38b70f0cdef9251a65da84f5d08c5a0ef85e2590cfa9c477544ce734161ff5c05f89a15f0967137607a7feb16716195e04965f030db47213
+"zod@npm:4.6.6, zod@npm:^3.25 || ^4.0, zod@npm:^3.25.0 || ^4.0.0, zod@npm:^4.3.5":
+  version: 4.6.6
+  resolution: "zod@npm:4.6.6"
+  checksum: 10/ce628fb33400b531f48b63ad1bd9b5ab95ec3ac60d4e8025892d90af9ca5d03b168aaaf74071928345ad1b1bcd735a7d5cf33230ece7de885240bb0f2b7bb492
   languageName: node
   linkType: hard
 
