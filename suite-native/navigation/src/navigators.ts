@@ -2,7 +2,7 @@ import { type NavigatorScreenParams } from '@react-navigation/native';
 import { type RequireAllOrNone } from 'type-fest';
 
 import { type BackupType } from '@suite-common/suite-types';
-import { type TradingType } from '@suite-common/trading';
+import { type TradingAssetOption, type TradingType } from '@suite-common/trading';
 import { type AccountType, type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
@@ -239,7 +239,12 @@ export type SettingsStackParamList = {
 };
 
 export type ReceiveStackParamList = {
-    [ReceiveStackRoutes.ReceiveAccounts]: undefined;
+    [ReceiveStackRoutes.ReceiveCrossroads]: undefined;
+    [ReceiveStackRoutes.ReceiveDiscovery]: { asset: TradingAssetOption };
+    [ReceiveStackRoutes.ReceiveAccounts]: {
+        asset: TradingAssetOption;
+        closeActionType: CloseActionType;
+    };
     [ReceiveStackRoutes.ReceiveAddress]: AccountDetailParams;
     [ReceiveStackRoutes.ReceiveAddressVerification]: {
         accountKey: AccountKey;

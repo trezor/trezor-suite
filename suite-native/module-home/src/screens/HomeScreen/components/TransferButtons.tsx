@@ -33,7 +33,7 @@ const ReceiveButton = () => {
             payload: { location: 'dashboard' },
         });
         navigation.navigate(RootStackRoutes.ReceiveStack, {
-            screen: ReceiveStackRoutes.ReceiveAccounts,
+            screen: ReceiveStackRoutes.ReceiveCrossroads,
         });
     };
 

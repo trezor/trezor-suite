@@ -23,10 +23,12 @@ export type NetworkFilter = {
 
 type NetworkFilterButtonProps = {
     filter: NetworkFilter;
+    onPress?: () => void;
 };
 
 export const NetworkFilterButton = ({
     filter: { type, filteredNetworks, setFilteredNetworks },
+    onPress,
 }: NetworkFilterButtonProps) => {
     const filterBottomSheetRef = useRef<BottomSheetModalMethods>(null);
 
@@ -41,6 +43,7 @@ export const NetworkFilterButton = ({
     const openFilterBottomSheet = () => {
         Keyboard.dismiss();
         filterBottomSheetRef.current?.present();
+        onPress?.();
     };
 
     return (
