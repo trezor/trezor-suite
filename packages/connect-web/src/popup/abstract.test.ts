@@ -80,25 +80,21 @@ describe('Popup.handleOpenFailure', () => {
         expect(popup.openCount).toBe(2);
     });
 
-    // Documents the bug: WebPopup reports one failed open() twice, from the
-    // `channel-handshake-error` listener and from the rejected
-    // iframeWindowChannel.init(). The first report's reset() recreates
-    // handshakePromise for the next open(); the second report rejects that
-    // fresh deferred, and its own reset() early-returns because `locked` is
-    // already false. The next call() then fails with this stale reason even
-    // though its own popup opened fine.
-    it('poisons the next handshakePromise when the same open() failure is reported twice', async () => {
+    // Regression: WebPopup used to report one failed open() twice. The second
+    // report rejected the handshakePromise that reset() had just recreated
+    // (reset() early-returns because `locked` is already false), so the next
+    // call() failed with the stale reason.
+    it('keeps a usable handshakePromise when the same open() failure is reported twice', async () => {
         const popup = new TestPopup(createParams());
         await popup.focusOrCreate();
 
         popup.failOpen('handshake-timeout');
         popup.failOpen('handshake-timeout');
 
-        // The deferred the next call() will await is already rejected, and
-        // resolve() on a settled deferred is ignored, so POPUP.CORE_LOADED of
-        // the next popup can no longer settle it.
+        // The next call() resolves it via POPUP.CORE_LOADED; a permanently
+        // rejected deferred would ignore resolve() and fail this.
         const handshakePromise = getHandshakePromise(popup);
         handshakePromise.resolve();
-        await expect(handshakePromise.promise).rejects.toThrow('handshake-timeout');
+        await expect(handshakePromise.promise).resolves.toBeUndefined();
     });
 });
