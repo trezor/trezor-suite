@@ -6,16 +6,19 @@ import {
 } from '@suite-common/wallet-types';
 import { type PreloadedState } from '@suite-native/state';
 
-import { tokenReceiveAccountInfo, tokenReceiveToken } from './connect/tokenReceiveAccountInfo';
+import {
+    tokenReceiveAccountInfoUSDC,
+    tokenReceiveTokenUSDC,
+} from './connect/tokenReceiveAccountInfoUSDC';
 
 export const PRELOADED_TOKEN_ACCOUNT_LABEL = 'Ethereum with token balance';
 
-const descriptor = asAccountDescriptor(tokenReceiveAccountInfo.descriptor);
+const descriptor = asAccountDescriptor(tokenReceiveAccountInfoUSDC.descriptor);
 const symbol = asNetworkSymbol('eth');
 const deviceState = 'state@hiddenDeviceWithImportedAccounts:1';
 
-export const portfolioTrackerTokenAccount: AccountWithNetworkType<'ethereum'> = {
-    ...tokenReceiveAccountInfo,
+export const portfolioTrackerUSDCTokenAccount: AccountWithNetworkType<'ethereum'> = {
+    ...tokenReceiveAccountInfoUSDC,
     descriptor,
     symbol,
     deviceState,
@@ -32,7 +35,7 @@ export const portfolioTrackerTokenAccount: AccountWithNetworkType<'ethereum'> = 
     visible: true,
     imported: true,
     formattedBalance: '0',
-    tokens: [{ ...tokenReceiveToken, balance: '10' }],
+    tokens: [{ ...tokenReceiveTokenUSDC, balance: '10' }],
     metadata: { key: descriptor },
     misc: { nonce: '0' },
     page: undefined,
@@ -41,7 +44,7 @@ export const portfolioTrackerTokenAccount: AccountWithNetworkType<'ethereum'> = 
     utxo: undefined,
 };
 
-export const portfolioTrackerTokenAccountState: PreloadedState = {
+export const portfolioTrackerUSDCTokenAccountState: PreloadedState = {
     analytics: {
         enabled: false,
         confirmed: true,
@@ -57,17 +60,17 @@ export const portfolioTrackerTokenAccountState: PreloadedState = {
         settings: {
             enabledNetworks: [symbol],
         },
-        accounts: [portfolioTrackerTokenAccount],
+        accounts: [portfolioTrackerUSDCTokenAccount],
         transactions: {
             transactions: {
-                [portfolioTrackerTokenAccount.key]: [],
+                [portfolioTrackerUSDCTokenAccount.key]: [],
             },
         },
     },
     tokenDefinitions: {
         [symbol]: {
             coin: {
-                data: [tokenReceiveToken.contract],
+                data: [tokenReceiveTokenUSDC.contract],
                 isLoading: false,
                 error: false,
                 hide: [],

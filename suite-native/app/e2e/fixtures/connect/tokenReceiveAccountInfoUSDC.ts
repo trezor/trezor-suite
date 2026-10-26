@@ -1,6 +1,6 @@
 import { type AccountInfo, type TokenInfo } from '@trezor/connect';
 
-export const tokenReceiveToken = {
+export const tokenReceiveTokenUSDC = {
     name: 'USD Coin',
     symbol: 'USDC',
     contract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
@@ -9,12 +9,12 @@ export const tokenReceiveToken = {
     balance: '10000000',
 } satisfies TokenInfo;
 
-export const tokenReceiveAccountInfo: AccountInfo = {
+export const tokenReceiveAccountInfoUSDC: AccountInfo = {
     descriptor: '0x0000000000000000000000000000000000000001',
     balance: '0',
     availableBalance: '0',
     empty: false,
-    tokens: [tokenReceiveToken],
+    tokens: [tokenReceiveTokenUSDC],
     history: {
         total: 0,
         unconfirmed: 0,
