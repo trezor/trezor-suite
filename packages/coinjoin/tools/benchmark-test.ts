@@ -415,7 +415,8 @@ const runPhases = async () => {
             yieldTo,
         ),
     );
-    const reissuanceNull = nullRequests('phase 2');
+    // The reissuance asks for zero credentials of its own, as `outputDecomposition` does.
+    nullRequests('phase 2');
     // The issuer's side of the reissuance is the coordinator's work, so it is done
     // before the clock starts: verifying a width-42 range proof costs it as much as
     // producing one costs us, and timing it here would measure the mock coordinator.
@@ -439,7 +440,6 @@ const runPhases = async () => {
     await timeWithYields('phase 2', 'output registration request (presentation only)', yieldTo =>
         vsizeClient.createRequestWithYields([], outputVsizeCredentials, yieldTo),
     );
-    void reissuanceNull;
 
     // Round selection, once per round candidate per account.
     time('selection', 'select inputs for round', () =>
