@@ -54,7 +54,7 @@ const PageHeaderIndex = () => {
     return (
         <Row gap={12}>
             <HeaderDropdown />
-            <TradeActions />
+            <TradeActions source={{ from: 'dashboard/header' }} />
             <GlobalSendReceive />
         </Row>
     );
