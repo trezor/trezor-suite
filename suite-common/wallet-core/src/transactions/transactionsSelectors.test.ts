@@ -23,6 +23,7 @@ import { transactionsInitialState } from './transactionsReducer';
 import { type TransactionsRootState } from './transactionsReducerTypes';
 import {
     selectAccountStakeTypeTransactions,
+    selectAccountYieldVaultTransactions,
     selectEvmPrivatePendingHint,
     selectHasUnseenNonPhishingTransactionNotifications,
     selectNonPhishingTransactionNotifications,
@@ -286,5 +287,74 @@ describe('selectAccountStakeTypeTransactions', () => {
         ]);
 
         expect(selectAccountStakeTypeTransactions(state, TRON_ACCOUNT_KEY)).toEqual([]);
+    });
+});
+
+describe('selectAccountYieldVaultTransactions', () => {
+    const OTHER_VAULT_CONTRACT = '0x8eb67a509616cd6a7c1b3c8c21d48ff57df3d458' as TokenAddress;
+    const RECEIVER = '0000000000000000000000009ea3721b5bf3b64b4418c38b603154d2d597fae3';
+    const AMOUNT = '00000000000000000000000000000000000000000000000000000000004c4b40';
+    const ERC4626_DEPOSIT = `0x6e553f65${AMOUNT}${RECEIVER}`;
+    const TRANSFER = `0xa9059cbb${RECEIVER}${AMOUNT}`;
+
+    type VaultCallTransactionParams = {
+        txid: string;
+        callTarget: string;
+        data: string;
+    };
+
+    const vaultCallTransaction = ({ txid, callTarget, data }: VaultCallTransactionParams) =>
+        testMocks.getWalletTransaction({
+            txid,
+            symbol: asNetworkSymbol('eth'),
+            ethereumSpecific: { status: 1, nonce: 0, gasLimit: 200000, data },
+            details: {
+                vin: [],
+                vout: [{ n: 0, isAddress: true, addresses: [callTarget] }],
+                size: 0,
+                totalInput: '0',
+                totalOutput: '0',
+            },
+        });
+
+    const getVaultState = (transactions: WalletAccountTransaction[]): TransactionsRootState => ({
+        wallet: {
+            transactions: {
+                ...transactionsInitialState,
+                transactions: { [ACCOUNT_KEY]: transactions },
+            },
+            accounts: accountsInitialState,
+        },
+    });
+
+    it('keeps only the deposit/withdraw/redeem transactions of the given vault', () => {
+        const state = getVaultState([
+            vaultCallTransaction({
+                txid: 'vault-deposit',
+                callTarget: VAULT_CONTRACT,
+                data: ERC4626_DEPOSIT,
+            }),
+            vaultCallTransaction({
+                txid: 'other-vault-deposit',
+                callTarget: OTHER_VAULT_CONTRACT,
+                data: ERC4626_DEPOSIT,
+            }),
+            vaultCallTransaction({
+                txid: 'unrelated-transfer',
+                callTarget: USDT_CONTRACT,
+                data: TRANSFER,
+            }),
+        ]);
+
+        expect(
+            selectAccountYieldVaultTransactions(state, ACCOUNT_KEY, VAULT_CONTRACT).map(
+                tx => tx.txid,
+            ),
+        ).toEqual(['vault-deposit']);
+        expect(
+            selectAccountYieldVaultTransactions(state, ACCOUNT_KEY, OTHER_VAULT_CONTRACT).map(
+                tx => tx.txid,
+            ),
+        ).toEqual(['other-vault-deposit']);
     });
 });

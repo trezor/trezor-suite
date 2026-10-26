@@ -71,7 +71,7 @@ export const StakingManagementScreen = () => {
                             account={account}
                             onRefresh={refreshStakeData}
                             listHeaderComponent={listHeaderComponent}
-                            filter="staking"
+                            filter={{ type: 'staking' }}
                         />
                     ))}
             </Screen>

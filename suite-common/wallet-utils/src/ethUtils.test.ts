@@ -1,8 +1,10 @@
 import { UINT256_MAX } from '@suite-common/suite-constants';
+import { testMocks } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type PrecomposedTransactionFinal,
     type WalletAccountTransaction,
+    toTokenAddress,
 } from '@suite-common/wallet-types';
 import { mockAccountToken } from '@suite-common/wallet-types/mocks';
 import { Calldata, asEvmAddress } from '@trezor/network-ethereum-suite-common';
@@ -19,7 +21,7 @@ import {
     getWrappedNativeTxTarget,
     isUnwrapNativeTx,
     isWrapNativeTx,
-    isYieldTypeTx,
+    isYieldVaultTx,
     padLeftEven,
     sanitizeHex,
     strip,
@@ -359,70 +361,100 @@ describe('eth utils', () => {
         });
     });
 
-    describe('isYieldTypeTx', () => {
+    describe('isYieldVaultTx', () => {
+        const VAULT = toTokenAddress('0xBEEF01735c132Ada46AA9aA4c54623cAA92A64CB');
+        const OTHER_VAULT = '0x8eb67a509616cd6a7c1b3c8c21d48ff57df3d458';
+        const ROUTER = '0x4095f064b8d3c3548a3bebfd0bbfd04750e30077';
         const WETH = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
         const RECEIVER = '0000000000000000000000009ea3721b5bf3b64b4418c38b603154d2d597fae3';
         const AMOUNT = '00000000000000000000000000000000000000000000000000000000004c4b40';
 
         const WETH_DEPOSIT = '0xd0e30db0';
-        const WETH_WITHDRAW =
-            '0x2e1a7d4d0000000000000000000000000000000000000000000000000de0b6b3a7640000';
         const ERC4626_DEPOSIT = `0x6e553f65${AMOUNT}${RECEIVER}`;
         const ERC4626_WITHDRAW = `0xb460af94${AMOUNT}${RECEIVER}${RECEIVER}`;
         const ERC4626_REDEEM = `0xba087652${AMOUNT}${RECEIVER}${RECEIVER}`;
         const TRANSFER = `0xa9059cbb${RECEIVER}${AMOUNT}`;
-        type TxParams = {
-            targets?: { addresses?: string[] }[];
-            internalTransfers?: { from: string }[];
-            data?: string;
+
+        type VaultTxParams = {
+            callTarget: string;
+            data: string;
+            shareTokenContract?: string;
         };
 
-        const tx = ({ targets = [], internalTransfers = [], data }: TxParams) =>
-            ({
-                symbol: 'eth',
-                targets,
-                internalTransfers,
-                ethereumSpecific: data ? { data } : undefined,
-            }) as unknown as WalletAccountTransaction;
-
-        it('detects ERC-4626 vault deposit/withdraw/redeem transactions', () => {
-            expect(isYieldTypeTx(tx({ data: ERC4626_DEPOSIT }))).toBe(true);
-            expect(isYieldTypeTx(tx({ data: ERC4626_WITHDRAW }))).toBe(true);
-            expect(isYieldTypeTx(tx({ data: ERC4626_REDEEM }))).toBe(true);
-        });
-
-        it('detects a distributor rewards claim transaction', () => {
-            const claimData = Calldata.evm.distributor.claim.encode(
-                {
-                    users: [VALID_CLAIM_ADDRESS],
-                    tokens: [VALID_CLAIM_ADDRESS],
-                    amounts: [new BigNumber(1)],
-                    proofs: [[]],
+        const vaultTx = ({ callTarget, data, shareTokenContract }: VaultTxParams) =>
+            testMocks.getWalletTransaction({
+                symbol: ethSymbol,
+                ethereumSpecific: { status: 1, nonce: 0, gasLimit: 200000, data },
+                details: {
+                    vin: [],
+                    vout: [{ n: 0, isAddress: true, addresses: [callTarget] }],
+                    size: 0,
+                    totalInput: '0',
+                    totalOutput: '0',
                 },
-                { sender: VALID_CLAIM_ADDRESS },
-            ).data;
+                tokens: shareTokenContract
+                    ? [
+                          {
+                              type: 'recv',
+                              amount: '1',
+                              from: '0x0000000000000000000000000000000000000000',
+                              to: `0x${RECEIVER.slice(24)}`,
+                              contract: shareTokenContract,
+                              decimals: 18,
+                          },
+                      ]
+                    : [],
+            });
 
-            expect(isYieldTypeTx(tx({ data: claimData ?? undefined }))).toBe(true);
+        it('detects deposit/withdraw/redeem calls to the vault', () => {
+            const callTarget = VAULT.toLowerCase();
+
+            expect(isYieldVaultTx(vaultTx({ callTarget, data: ERC4626_DEPOSIT }), VAULT)).toBe(
+                true,
+            );
+            expect(isYieldVaultTx(vaultTx({ callTarget, data: ERC4626_WITHDRAW }), VAULT)).toBe(
+                true,
+            );
+            expect(isYieldVaultTx(vaultTx({ callTarget, data: ERC4626_REDEEM }), VAULT)).toBe(true);
         });
 
-        it('detects the native wrap/unwrap steps of the yield flows', () => {
+        it('detects a vault call made through another contract by its share token transfer', () => {
+            const transaction = vaultTx({
+                callTarget: ROUTER,
+                data: ERC4626_DEPOSIT,
+                shareTokenContract: VAULT.toLowerCase(),
+            });
+
+            expect(isYieldVaultTx(transaction, VAULT)).toBe(true);
+        });
+
+        it('ignores calls to another vault', () => {
+            const transaction = vaultTx({
+                callTarget: OTHER_VAULT,
+                data: ERC4626_DEPOSIT,
+                shareTokenContract: OTHER_VAULT,
+            });
+
+            expect(isYieldVaultTx(transaction, VAULT)).toBe(false);
+        });
+
+        it('ignores vault share token transfers and other calls to the vault', () => {
             expect(
-                isYieldTypeTx(tx({ targets: [{ addresses: [WETH] }], data: WETH_DEPOSIT })),
-            ).toBe(true);
-            expect(
-                isYieldTypeTx(tx({ internalTransfers: [{ from: WETH }], data: WETH_WITHDRAW })),
-            ).toBe(true);
+                isYieldVaultTx(
+                    vaultTx({ callTarget: VAULT, data: TRANSFER, shareTokenContract: VAULT }),
+                    VAULT,
+                ),
+            ).toBe(false);
+            expect(isYieldVaultTx(vaultTx({ callTarget: VAULT, data: '0xdeadbeef' }), VAULT)).toBe(
+                false,
+            );
+            expect(isYieldVaultTx(vaultTx({ callTarget: VAULT, data: '0x' }), VAULT)).toBe(false);
         });
 
-        it('ignores WETH selectors when the target is not the wrapped-native contract', () => {
-            expect(isYieldTypeTx(tx({ data: WETH_DEPOSIT }))).toBe(false);
-            expect(isYieldTypeTx(tx({ data: WETH_WITHDRAW }))).toBe(false);
-        });
-
-        it('ignores other transactions', () => {
-            expect(isYieldTypeTx(tx({ data: TRANSFER }))).toBe(false);
-            expect(isYieldTypeTx(tx({ data: '0xdeadbeef' }))).toBe(false);
-            expect(isYieldTypeTx(tx({}))).toBe(false);
+        it('ignores wrap transactions of the yield flow', () => {
+            expect(isYieldVaultTx(vaultTx({ callTarget: WETH, data: WETH_DEPOSIT }), VAULT)).toBe(
+                false,
+            );
         });
     });
 

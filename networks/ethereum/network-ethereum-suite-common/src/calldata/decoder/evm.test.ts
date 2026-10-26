@@ -33,6 +33,11 @@ describe('createEvmDecoder', () => {
         expect(decode('')).toBeNull();
     });
 
+    it('returns null when data is shorter than a selector', () => {
+        expect(decode('0x')).toBeNull();
+        expect(decode('0xa905')).toBeNull();
+    });
+
     it('returns null when selector does not match', () => {
         const wrongSelector = '0xdeadbeef' + VALID_CALLDATA.slice(10);
         expect(decode(wrongSelector)).toBeNull();

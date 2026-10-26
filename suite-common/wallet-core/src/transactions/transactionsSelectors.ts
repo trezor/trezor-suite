@@ -32,7 +32,7 @@ import {
     isStakeTx,
     isStakeTypeTx,
     isUnstakeTx,
-    isYieldTypeTx,
+    isYieldVaultTx,
     roundTimestampToNearestPastHour,
 } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
@@ -97,6 +97,11 @@ export const selectAccountTransactionsWithNulls = (
 export const selectAccountTransactions = createMemoizedSelector(
     [selectAccountTransactionsWithNulls],
     transactions => returnStableArrayIfEmpty(transactions.filter(isNotNullOrUndefined)),
+);
+
+export const selectAccountTransactionsCount = createMemoizedSelector(
+    [selectAccountTransactions],
+    transactions => transactions.length,
 );
 
 export const selectPendingAccountAddresses = createMemoizedSelector(
@@ -258,9 +263,15 @@ export const selectAccountStakeTypeTransactions = createMemoizedSelector(
         ),
 );
 
-export const selectAccountYieldTypeTransactions = createMemoizedSelector(
-    [selectAccountTransactions],
-    transactions => returnStableArrayIfEmpty(transactions.filter(isYieldTypeTx)),
+export const selectAccountYieldVaultTransactions = createMemoizedSelector(
+    [
+        selectAccountTransactions,
+        (_state, _accountKey: AccountKey, vaultContract: TokenAddress) => vaultContract,
+    ],
+    (transactions, vaultContract) =>
+        returnStableArrayIfEmpty(
+            transactions.filter(transaction => isYieldVaultTx(transaction, vaultContract)),
+        ),
 );
 
 export const hasPendingStakeTypeTransaction = createMemoizedSelector(

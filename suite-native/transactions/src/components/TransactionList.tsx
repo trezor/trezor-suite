@@ -10,6 +10,7 @@ import {
     type TransactionsRootState,
     fetchAndUpdateAccountThunk,
     fetchTransactionsPageThunk,
+    selectAccountTransactionsCount,
     selectAccountTransactionsFetchStatus,
     selectAccountTransactionsWithNulls,
     selectAreAllAccountTransactionsLoaded,
@@ -31,21 +32,22 @@ import {
     type WalletAccountTransaction,
     selectAccountStakeTypeTransactionsWithTokenTransfers,
     selectAccountTransactionsWithTokenTransfers,
-    selectAccountYieldTypeTransactionsWithTokenTransfers,
+    selectAccountYieldVaultTransactionsWithTokenTransfers,
 } from '@suite-native/tokens';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+import { exhaustive } from '@trezor/type-utils';
 import { arrayPartition } from '@trezor/utils';
 
+import { useFetchMissingTransactionFiatRates } from '../hooks/useFetchMissingTransactionFiatRates';
+import { getNextRequestedTransactionCount, getOlderHistoryPage } from '../utils';
 import { OlderHistoryStatus } from './OlderHistoryStatus';
 import { TokenTransferListItem } from './TokenTransferListItem';
 import { TransactionListGroupTitle } from './TransactionListGroupTitle';
 import { TransactionListItem } from './TransactionListItem';
 import { TransactionsEmptyState } from './TransactionsEmptyState';
 import { TransactionsListFooter } from './TransactionsListFooter';
-import { useFetchMissingTransactionFiatRates } from '../hooks/useFetchMissingTransactionFiatRates';
-import { getNextRequestedTransactionCount, getOlderHistoryPage } from '../utils';
 
 type RenderSectionHeaderParams = {
     section: {
@@ -71,6 +73,13 @@ type TypedTokenTransferWithTx = TypedTokenTransfer & {
 
 type TransactionListItem =
     (TypedTokenTransferWithTx | MonthKey) | (WalletAccountTransaction | MonthKey);
+
+type TransactionListFilter =
+    { type: 'all' } | { type: 'staking' } | { type: 'yield'; vaultContract: TokenAddress };
+
+const ALL_TRANSACTIONS_FILTER: TransactionListFilter = { type: 'all' };
+
+const YIELD_AUTO_FILL_PAGE_LIMIT = 4;
 
 const sectionListContainerStyle = prepareNativeStyle(utils => ({
     paddingTop: utils.spacings.sp8,
@@ -137,7 +146,7 @@ type AccountTransactionProps = {
     renderListEmptyComponent?: (state: { isRecentWindowEmpty: boolean }) => JSX.Element;
     account: Account;
     tokenContract?: TokenAddress;
-    filter?: 'all' | 'staking' | 'yield';
+    filter?: TransactionListFilter;
     onRefresh?: () => Promise<unknown>;
 };
 
@@ -146,7 +155,7 @@ export const TransactionList = ({
     renderListEmptyComponent,
     account,
     tokenContract,
-    filter = 'all',
+    filter = ALL_TRANSACTIONS_FILTER,
     onRefresh,
 }: AccountTransactionProps) => {
     const accountKey = account.key;
@@ -170,17 +179,26 @@ export const TransactionList = ({
     );
 
     const transactions = useSelector((state: TransactionsRootState & TokensRootState) => {
-        switch (filter) {
+        switch (filter.type) {
             case 'all':
                 return selectAccountTransactionsWithTokenTransfers(state, accountKey);
             case 'staking':
                 return selectAccountStakeTypeTransactionsWithTokenTransfers(state, accountKey);
             case 'yield':
-                return selectAccountYieldTypeTransactionsWithTokenTransfers(state, accountKey);
+                return selectAccountYieldVaultTransactionsWithTokenTransfers(
+                    state,
+                    accountKey,
+                    filter.vaultContract,
+                );
             default:
-                return [] as WalletAccountTransaction[];
+                return exhaustive(filter);
         }
     });
+
+    const accountTransactionCount = useSelector(
+        (state: TransactionsRootState & AccountsRootState) =>
+            selectAccountTransactionsCount(state, accountKey),
+    );
 
     const txnsPerPage = getTxsPerPage(account.networkType);
 
@@ -192,16 +210,17 @@ export const TransactionList = ({
 
     // Count only full cached pages so Load more refetches a partially cached next page.
     // Page 1 is requested separately until its initial fetch succeeds.
-    const initialPageNumber = Math.max(1, Math.floor(transactions.length / txnsPerPage));
+    const initialPageNumber = Math.max(1, Math.floor(accountTransactionCount / txnsPerPage));
     const [page, setPage] = useState(initialPageNumber);
     const [hasLoadingOlderFailed, setHasLoadingOlderFailed] = useState(false);
     const isFetchingPageRef = useRef(false);
+    const isYieldFilter = filter.type === 'yield';
+    const isAutoFilledView = !!tokenContract || isYieldFilter;
     // The loader and footer must agree when history ends, even if cached counts differ.
     const hasMoreTransactions =
         !areAllTransactionsLoaded &&
-        (!tokenContract || page < Math.ceil(account.history.total / txnsPerPage));
-    const shouldDeferEmptyState =
-        (!!tokenContract || filter === 'staking' || filter === 'yield') && hasMoreTransactions;
+        (!isAutoFilledView || page < Math.ceil(account.history.total / txnsPerPage));
+    const shouldDeferEmptyState = (!!tokenContract || filter.type !== 'all') && hasMoreTransactions;
     // Direct-RPC history ends at the scanned window, not the first transaction. Reaching past it is
     // left to the button, as auto-fill would keep scanning back for a token with no transfers.
     const olderHistoryFrom =
@@ -328,22 +347,28 @@ export const TransactionList = ({
     const isHistoryUnscanned = directRpcHistoryState === 'unscanned' && !hasInitialScanFailed;
     const historyCoveredSince = getHistoryCoveredSince(account);
     const [requestedVisibleCount, setRequestedVisibleCount] = useState<number>(txnsPerPage);
-    const shouldLoadMoreTokenTransactions =
-        !!tokenContract &&
+    const [autoFillLastPage, setAutoFillLastPage] = useState(
+        initialPageNumber + YIELD_AUTO_FILL_PAGE_LIMIT - 1,
+    );
+    // A vault may have a few transactions in a long history, so each yield round stops early.
+    const hasAutoFillPagesLeft = !isYieldFilter || page < autoFillLastPage;
+    const shouldAutoFillTransactions =
+        isAutoFilledView &&
+        hasAutoFillPagesLeft &&
         visibleTransactionCount < requestedVisibleCount &&
         shouldDeferEmptyState &&
         fetchStatus !== 'error' &&
         isInitialPageLoaded;
 
     useEffect(() => {
-        // One visible token page may require several account pages after filtering.
-        if (shouldLoadMoreTokenTransactions && !isLoadingTransactions) {
+        // One visible page may require several account pages after filtering.
+        if (shouldAutoFillTransactions && !isLoadingTransactions) {
             handleOnLoadMore();
         }
-    }, [shouldLoadMoreTokenTransactions, isLoadingTransactions, handleOnLoadMore]);
+    }, [shouldAutoFillTransactions, isLoadingTransactions, handleOnLoadMore]);
 
     const handleOnLoadMorePress = () => {
-        if (tokenContract) {
+        if (isAutoFilledView) {
             setRequestedVisibleCount(requestedCount =>
                 getNextRequestedTransactionCount({
                     requestedCount,
@@ -352,6 +377,11 @@ export const TransactionList = ({
                 }),
             );
         }
+
+        if (isYieldFilter) {
+            setAutoFillLastPage(page + YIELD_AUTO_FILL_PAGE_LIMIT);
+        }
+
         if (olderHistoryFrom !== undefined) {
             fetchPage(getOlderHistoryPage(loadedTransactionCount, txnsPerPage), olderHistoryFrom);
         } else {
@@ -441,7 +471,7 @@ export const TransactionList = ({
                         // The skeleton stands in for the loader until the first scan is done.
                         isLoading={
                             !isHistoryUnscanned &&
-                            (isLoadingTransactions || shouldLoadMoreTokenTransactions)
+                            (isLoadingTransactions || shouldAutoFillTransactions)
                         }
                         onButtonPress={handleOnLoadMorePress}
                     >
