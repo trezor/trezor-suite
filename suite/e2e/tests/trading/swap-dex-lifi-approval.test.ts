@@ -1,20 +1,22 @@
 import { AddressFormatter } from '@suite-common/formatters';
 import { getCryptoId } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { getErc20ApproveSpender } from '@suite-common/wallet-utils';
 import { TestStream } from '@trezor/e2e-utils';
 
 import { countDecimalPlaces } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
+import { getAddressProviderName } from '../../support/helpers/ethereumDefinitions';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 import { transformAddress } from '../../support/testExtends/customMatchers';
 
 const ethSymbol = asNetworkSymbol('eth');
+const ethereumChainId = 1;
 
 const approvalAmount = '60';
 // The toast shows the approved amount compactly, and a stablecoin reads money-like.
 const compactApprovalAmount = '60.00';
 const accountLabel = 'Ethereum #3';
-const lifiDiamondAddress = '0x1231DEB6f5749EF6cE6943a275A1D3E7486F4EaE';
 const positiveEthereumAmountPattern = /^(?!0+(?:\.0+)?\s*ETH$)\d+(?:\.\d+)?\s*ETH$/;
 
 test.describe('Trading - DEX swap approval (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
@@ -44,6 +46,7 @@ test.describe('Trading - DEX swap approval (LI.FI)', { tag: ['@T3T1', '@T3W1'] }
         'User can approve USDC spending for a LI.FI DEX swap',
         { annotation: createTestAnnotation({ stream: TestStream.Trade }) },
         async ({
+            page,
             tradingPage,
             devicePrompt,
             device,
@@ -131,10 +134,29 @@ test.describe('Trading - DEX swap approval (LI.FI)', { tag: ['@T3T1', '@T3W1'] }
                 });
                 await devicePrompt.waitForPromptAndClick();
 
+                const dexTxData = await page.getReduxObject(
+                    'wallet.trading.exchange.selectedQuote.dexTx.data',
+                );
+                const spender = getErc20ApproveSpender(dexTxData);
+                if (!spender) {
+                    throw new Error('The LI.FI approval trade has no approve calldata');
+                }
+
+                const { major_version, minor_version, patch_version } = await page.getReduxObject(
+                    'device.selectedDevice.features',
+                );
+                const spenderProviderName = await getAddressProviderName({
+                    chainId: ethereumChainId,
+                    address: spender,
+                    firmwareVersion: [major_version, minor_version, patch_version],
+                });
+
                 await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Token approval' },
-                        body: [transformAddress(lifiDiamondAddress, 'evmTetragrams')],
+                        body: spenderProviderName
+                            ? [[spenderProviderName]]
+                            : [transformAddress(spender, 'evmTetragrams')],
                         actions: { right_button: 'Continue' },
                     },
                     T3T1: {
