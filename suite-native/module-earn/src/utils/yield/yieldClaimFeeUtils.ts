@@ -33,8 +33,8 @@ type YieldClaimFee = {
 
 const buildInsufficientFeeBalanceTransaction = (): PrecomposedTransaction => ({
     type: 'error',
-    error: 'AMOUNT_IS_NOT_ENOUGH',
-    errorMessage: { id: 'AMOUNT_IS_NOT_ENOUGH' },
+    error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
+    errorMessage: { id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' },
 });
 
 const buildYieldClaimFeeLevel = ({
@@ -48,7 +48,11 @@ const buildYieldClaimFeeLevel = ({
     const gasLimit = feeLevel.feeLimit;
 
     if (!feeRate || !gasLimit) {
-        return buildInsufficientFeeBalanceTransaction();
+        return {
+            type: 'error',
+            error: 'TR_GENERIC_ERROR_TITLE',
+            errorMessage: { id: 'TR_GENERIC_ERROR_TITLE' },
+        };
     }
 
     const fee = calculateTotalGasCost(fromGwei(feeRate).toWei(), gasLimit);
