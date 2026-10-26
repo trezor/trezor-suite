@@ -6,7 +6,7 @@ import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { accountsInitialState } from '@suite-common/wallet-core';
 import * as walletUtils from '@suite-common/wallet-utils';
-import TrezorConnect, { type CallMethodAnyResponse } from '@trezor/connect';
+import TrezorConnect, { type CallMethodAnyResponse, type CallMethodParams } from '@trezor/connect';
 import { TypedError, serializeError } from '@trezor/connect-common/src/constants/errors';
 import { mock, mockNotExpected } from '@trezor/dependency-injection';
 import { type WithServices } from '@trezor/redux-utils';
@@ -48,14 +48,35 @@ const createDeferred = <T>() => {
     return { promise, resolve };
 };
 
+// Suite leaves `instance` unset for a device without passphrase protection (see deviceReducer),
+// while @trezor/connect calls the very same wallet `instance: 0`.
 const fakeDevice = mockSuiteDevice({
     connected: true,
     path: '1',
-    instance: 0,
+    instance: undefined,
     state: undefined,
     useEmptyPassphrase: true,
 });
 const fakeDeviceState: DeviceReducerState = { ...deviceInitialState, selectedDevice: fakeDevice };
+
+const fakePassphraseWallet = mockSuiteDevice({
+    connected: true,
+    path: '1',
+    instance: 1,
+    state: { staticSessionId: 'walletA@device-id:1' },
+    useEmptyPassphrase: false,
+});
+const fakePassphraseWalletState: DeviceReducerState = {
+    ...deviceInitialState,
+    selectedDevice: fakePassphraseWallet,
+};
+
+const otherConnectedDevice = mockSuiteDevice({ connected: true, path: '2' });
+const twoConnectedDevicesState: DeviceReducerState = {
+    ...deviceInitialState,
+    selectedDevice: fakeDevice,
+    devices: [fakeDevice, otherConnectedDevice],
+};
 
 // A UTXO `addressSelection: 'manual'` picker sitting in the address phase, with an empty candidate
 // list (the cold-cache drill-in). A *custom* account-type tab (no `accountType`) keeps the thunk on
@@ -326,8 +347,69 @@ const selectedWallet = {
     useEmptyPassphrase: fakeDevice.useEmptyPassphrase,
 };
 
+// Drives a getAddress call carrying `device` in its payload through the wallet guard and resolves
+// with the response the app gets. The device round-trip is mocked, so a call the guard lets through
+// reaches the address-confirmation phase, which the helper exports without an on-device check.
+const callWithPayloadDevice = async (
+    payloadDevice: unknown,
+    deviceState: DeviceReducerState = fakeDeviceState,
+) => {
+    mockConnectCall();
+    const store = initCallStore(deviceState);
+    const getCallState = () => store.getState().connectPopup.activeCall?.state;
+    const response = getPopupCallDeferred(true).promise;
+
+    store.dispatch(
+        connectPopupCallThunk({
+            method: 'getAddress',
+            payload: {
+                path: "m/84'/0'/0'/0/0",
+                device: payloadDevice as CallMethodParams<'getAddress'>['device'],
+            },
+            source,
+        }),
+    );
+    await waitFor(() => getCallState() === 'permission-request');
+    store.dispatch(connectPopupActions.approvePermissions());
+    await waitFor(
+        () => getCallState() === 'address-confirmation' || getCallState() === 'call-error',
+    );
+    if (getCallState() === 'address-confirmation') getPermissionDeferred().resolve();
+
+    return response;
+};
+
 describe('connectPopupCallThunk', () => {
     afterEach(() => jest.restoreAllMocks());
+
+    it('rejects a call whose payload names another wallet than the one selected in Suite', async () => {
+        mockConnectCall();
+        const store = initCallStore();
+        const response = getPopupCallDeferred(true).promise;
+
+        store.dispatch(
+            connectPopupCallThunk({
+                method: 'getAddress',
+                payload: { path: "m/84'/0'/0'/0/0", device: { instance: 2 } },
+                source,
+            }),
+        );
+        await waitFor(
+            () => store.getState().connectPopup.activeCall?.state === 'permission-request',
+        );
+        store.dispatch(connectPopupActions.approvePermissions());
+        getPermissionDeferred().resolve();
+
+        await expect(response).resolves.toEqual({
+            success: false,
+            error: expect.objectContaining({ code: 'Method_InvalidParameter' }),
+        });
+        // Only the `__info` round-trip ran, the device was never asked.
+        const deviceCalls = jest
+            .mocked(TrezorConnect.call)
+            .mock.calls.filter(([params]) => !('__info' in params));
+        expect(deviceCalls).toEqual([]);
+    });
 
     it('runs the call and its address check on the whole selected wallet when the payload names it', async () => {
         mockConnectCall();
@@ -356,5 +438,68 @@ describe('connectPopupCallThunk', () => {
         expect(TrezorConnect.getAddress).toHaveBeenCalledWith(
             expect.objectContaining({ device: selectedWallet, showOnTrezor: true }),
         );
+    });
+
+    it('accepts the device identity @trezor/connect reported for the selected standard wallet', async () => {
+        // What the app gets back in `response.device` and the docs tell it to replay: connect
+        // normalizes the wallet Suite stores with `instance: undefined` to `instance: 0`.
+        await expect(
+            callWithPayloadDevice({ path: fakeDevice.path, instance: 0 }),
+        ).resolves.toEqual(expect.objectContaining({ success: true }));
+    });
+
+    it('accepts a stale path that names no connected device', async () => {
+        // `path` is minted per connection, so a replayed path names the same wallet after a
+        // reconnect even though the value changed.
+        await expect(callWithPayloadDevice({ path: 'stale' })).resolves.toEqual(
+            expect.objectContaining({ success: true }),
+        );
+    });
+
+    it('rejects a path that names another connected device', async () => {
+        await expect(
+            callWithPayloadDevice({ path: otherConnectedDevice.path }, twoConnectedDevicesState),
+        ).resolves.toEqual({
+            success: false,
+            error: expect.objectContaining({ code: 'Method_InvalidParameter' }),
+        });
+    });
+
+    it('accepts the staticSessionId of the selected passphrase wallet', async () => {
+        await expect(
+            callWithPayloadDevice(
+                { state: { staticSessionId: 'walletA@device-id:1' } },
+                fakePassphraseWalletState,
+            ),
+        ).resolves.toEqual(expect.objectContaining({ success: true }));
+    });
+
+    it('rejects the staticSessionId of another passphrase wallet', async () => {
+        await expect(
+            callWithPayloadDevice(
+                { state: { staticSessionId: 'walletB@device-id:2' } },
+                fakePassphraseWalletState,
+            ),
+        ).resolves.toEqual({
+            success: false,
+            error: expect.objectContaining({ code: 'Method_InvalidParameter' }),
+        });
+    });
+
+    // @trezor/connect also accepts `state` as the plain staticSessionId string, and that spelling
+    // is what the common parameters document.
+    it('accepts the staticSessionId string of the selected passphrase wallet', async () => {
+        await expect(
+            callWithPayloadDevice({ state: 'walletA@device-id:1' }, fakePassphraseWalletState),
+        ).resolves.toEqual(expect.objectContaining({ success: true }));
+    });
+
+    it('rejects the staticSessionId string of another passphrase wallet', async () => {
+        await expect(
+            callWithPayloadDevice({ state: 'walletB@device-id:2' }, fakePassphraseWalletState),
+        ).resolves.toEqual({
+            success: false,
+            error: expect.objectContaining({ code: 'Method_InvalidParameter' }),
+        });
     });
 });
