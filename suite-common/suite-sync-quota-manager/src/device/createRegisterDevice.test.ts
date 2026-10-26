@@ -30,24 +30,27 @@ const deviceWithV2RegistrationRequest = mockSuiteDevice(
 describe(createRegisterDevice.name, () => {
     it.each([
         {
+            description: 'uses default instance and passphrase settings when omitted',
             instance: undefined,
             useEmptyPassphrase: undefined,
             expectedInstance: 0,
             expectedUseEmptyPassphrase: false,
         },
         {
+            description: 'preserves a nonzero instance and disabled empty passphrase',
             instance: 2,
             useEmptyPassphrase: false,
             expectedInstance: 2,
             expectedUseEmptyPassphrase: false,
         },
         {
+            description: 'preserves instance zero and enabled empty passphrase',
             instance: 0,
             useEmptyPassphrase: true,
             expectedInstance: 0,
             expectedUseEmptyPassphrase: true,
         },
-    ])('registers selected device ($instance, $useEmptyPassphrase)', async testCase => {
+    ])('registers selected device: $description', async testCase => {
         const device: TrezorDeviceWithState = {
             ...deviceWithLegacyRegistrationRequest,
             instance: testCase.instance,
