@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import { useIsFocused } from '@react-navigation/native';
+
 import {
     type UnsignedClaimTransaction,
     buildClaimCalldata,
@@ -42,6 +44,7 @@ import {
 import { buildEarnComposeFormState } from '../../utils/earn/utils';
 import { type StablecoinYieldAccountRewards } from '../../utils/yield/stablecoinYieldClaimSummaryUtils';
 import { buildYieldClaimFeeLevels, getYieldClaimFee } from '../../utils/yield/yieldClaimFeeUtils';
+import { useEarnFeeAnalytics } from '../earn/useEarnFeeAnalytics';
 
 export type PreparedYieldClaimAction = {
     feePreview: PrecomposedTransactionFinal;
@@ -91,7 +94,7 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
     const debounce = useDebounce();
     const requestIdRef = useRef(0);
     const [baseContext, setBaseContext] = useState<ClaimFeeBaseContext | null>(null);
-    const [isPreparingClaimFee, setIsPreparingClaimFee] = useState(false);
+    const [isPreparingClaimFee, setIsPreparingClaimFee] = useState(true);
     const {
         feeEstimationRetryKey,
         hasFeeEstimationError,
@@ -122,7 +125,6 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
             ? selectedFeeLevel
             : null;
     const { isFeeUnavailable } = getFeeAvailability({
-        fee: feePreview?.fee ?? null,
         feeLevels,
         selectedFee,
         isLoading: isPreparingClaimFee,
@@ -350,6 +352,18 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
         };
     }, [baseContext, feePreview]);
 
+    const isFocused = useIsFocused();
+    const retryWithAnalytics = useEarnFeeAnalytics({
+        contextKey: claimFormDraftKey,
+        flow: 'merkl-claim',
+        networkSymbol: account?.symbol,
+        isEnabled: isEnabled && isFocused,
+        hasEstimationError: hasFeeEstimationError,
+        isFeeUnavailable,
+        isReady: !!preparedAction && !isPreparingClaimFee,
+        retry: retryFeeEstimation,
+    });
+
     return {
         feePreview,
         formDraft,
@@ -358,7 +372,7 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
         isFeeUnavailable,
         isPreparingClaimFee: !!prepareClaimFeeParams && isPreparingClaimFee,
         preparedAction,
-        retryFeeEstimation,
+        retryFeeEstimation: retryWithAnalytics,
         selectedFee,
         updateFeeLevelThunk: updateYieldClaimSelectedFeeLevelThunk,
     };

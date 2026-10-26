@@ -39,6 +39,7 @@ import {
     buildYieldAllowanceFormState,
     getYieldAllowanceFeeState,
 } from '../../utils/yield/yieldApprovalUtils';
+import { useEarnFeeAnalytics } from '../earn/useEarnFeeAnalytics';
 
 export type YieldAllowanceFeeTransaction = {
     allowanceAmount: string;
@@ -252,11 +253,22 @@ export const useYieldAllowanceFees = ({
         [],
     );
 
+    const retryWithAnalytics = useEarnFeeAnalytics({
+        contextKey: formDraftKey,
+        flow: draftTransactionType,
+        networkSymbol: flowData?.account.symbol,
+        isEnabled: composeAllowanceFeeParams !== null,
+        hasEstimationError: hasFeeEstimationError,
+        isFeeUnavailable,
+        isReady: isAllowanceFeeReady,
+        retry: retryFeeEstimation,
+    });
+
     return {
         formDraft,
         formDraftKey,
         hasFeeEstimationError,
-        retryFeeEstimation,
+        retryFeeEstimation: retryWithAnalytics,
         isAllowanceFeeReady,
         isComposingAllowanceFee,
         isFeeUnavailable,

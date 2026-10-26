@@ -25,6 +25,11 @@ import { useYieldClaimFees } from './useYieldClaimFees';
 import { type StablecoinYieldAccountRewards } from '../../utils/yield/stablecoinYieldClaimSummaryUtils';
 import { buildYieldClaimFeeLevels, getYieldClaimFee } from '../../utils/yield/yieldClaimFeeUtils';
 
+jest.mock('@react-navigation/native', () => ({
+    ...jest.requireActual('@react-navigation/native'),
+    useIsFocused: () => true,
+}));
+
 const mockGetCurrentNonce = jest.fn<Promise<{ nonce: string }>, []>();
 
 jest.mock('@suite-common/wallet-core', () => ({
@@ -330,7 +335,7 @@ describe('useYieldClaimFees', () => {
             isEnabled: true,
         });
         await settleDebounce();
-        const preparedAction = result.current.preparedAction;
+        const { preparedAction } = result.current;
 
         await act(() =>
             store.dispatch(

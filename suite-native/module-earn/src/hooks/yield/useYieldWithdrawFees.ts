@@ -40,6 +40,7 @@ import { useYieldFeeEstimationError } from './useYieldFeeEstimationError';
 import { EARN_MODULE_PREFIX } from '../../constants';
 import { getYieldWithdrawFormDraftKey } from '../../utils/yield/yieldWithdrawUtils';
 import { useComposeErrorHandler } from '../earn/useComposeErrorHandler';
+import { useEarnFeeAnalytics } from '../earn/useEarnFeeAnalytics';
 
 type UseYieldWithdrawFeesParams = Pick<ResolvedYieldFlowData, 'flowData' | 'flowKey'> & {
     onComposeError?: (reason: ComposeYieldWithdrawErrorReason) => void;
@@ -453,6 +454,17 @@ export const useYieldWithdrawFees = ({
         setHasFeeEstimationError,
     ]);
 
+    const retryWithAnalytics = useEarnFeeAnalytics({
+        contextKey: formDraftKey,
+        flow: flowType === 'redeem' ? 'yield-redeem' : 'yield-withdraw',
+        networkSymbol: flowData?.account.symbol,
+        isEnabled,
+        hasEstimationError: hasFeeEstimationError,
+        isFeeUnavailable,
+        isReady: !!preparedAction && !isComposingWithdrawFee && !isFeeUnavailable,
+        retry: handleRetryFeeEstimation,
+    });
+
     return {
         fee,
         formDraft,
@@ -461,7 +473,7 @@ export const useYieldWithdrawFees = ({
         isComposingWithdrawFee,
         isFeeUnavailable,
         preparedAction,
-        retryFeeEstimation: handleRetryFeeEstimation,
+        retryFeeEstimation: retryWithAnalytics,
         selectedFee,
         updateFeeLevelThunk: updateYieldWithdrawSelectedFeeLevelThunk,
     };

@@ -36,6 +36,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { useDebounce } from '@trezor/react-utils';
 import { createThunk, injectDispatch } from '@trezor/redux-utils';
 
+import { useEarnFeeAnalytics } from './useEarnFeeAnalytics';
 import { EARN_MODULE_PREFIX } from '../../constants';
 import { type EarnFormDraftPrefix } from '../../types';
 import { useYieldFeeEstimationError } from '../yield/useYieldFeeEstimationError';
@@ -269,13 +270,23 @@ export const useComposeEarnFees = ({
         !isComposingFeeLevels &&
         !hasFeeEstimationError &&
         isFinalPrecomposedTransaction(selectedFeeLevel);
+    const retryWithAnalytics = useEarnFeeAnalytics({
+        contextKey: formDraftKey,
+        flow: formDraftPrefix,
+        networkSymbol: account?.symbol,
+        isEnabled: isFocused && !!formState,
+        hasEstimationError: hasFeeEstimationError,
+        isFeeUnavailable,
+        isReady: isFeeReady,
+        retry: retryFeeEstimation,
+    });
 
     return {
         formDraft,
         formDraftKey,
         isFeeUnavailable: formState !== undefined && !isComposingFeeLevels && isFeeUnavailable,
         hasFeeEstimationError,
-        retryFeeEstimation,
+        retryFeeEstimation: retryWithAnalytics,
         isComposingFeeLevels,
         isFeeReady,
         updateFeeLevelThunk: updateEarnSelectedFeeLevelThunk,

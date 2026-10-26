@@ -189,6 +189,27 @@ describe('usePreparedTxFees', () => {
         jest.useRealTimers();
     });
 
+    it('settles after writing value-equal drafts and fee levels back to the real store', async () => {
+        buildFeeDraftStateMock.mockImplementation(() => ({
+            ...FEE_DRAFT_STATE,
+            formDraft: { ...FEE_DRAFT_STATE.formDraft },
+            feeLevels: { ...FEE_DRAFT_STATE.feeLevels },
+        }));
+        const composeTransaction = jest.fn().mockResolvedValue(composeReady());
+        const { result } = await renderPreparedTxFees(createProps({ composeTransaction }));
+
+        await settleDebounce();
+        expect(result.current.isFeeReady).toBe(true);
+        const draftBuilds = buildFeeDraftStateMock.mock.calls.length;
+
+        await act(() => jest.advanceTimersByTimeAsync(3000));
+
+        expect(composeTransaction).toHaveBeenCalledTimes(1);
+        expect(buildFeeDraftStateMock).toHaveBeenCalledTimes(draftBuilds);
+        expect(result.current.isFeePreparing).toBe(false);
+        expect(result.current.isFeeReady).toBe(true);
+    });
+
     it('reports a compose failure once until recovery or an explicit retry', async () => {
         const onComposeError = jest.fn();
         const composeTransaction = jest.fn().mockResolvedValue({

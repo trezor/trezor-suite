@@ -15,7 +15,6 @@ import {
     type FormState,
     type GeneralPrecomposedLevels,
     type PrecomposedTransactionFinal,
-    isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import {
     type NativeSendRootState,
@@ -29,6 +28,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { deepEqual } from '@trezor/utils';
 
 import { useComposeErrorHandler } from './useComposeErrorHandler';
+import { type EarnFeeFlow, useEarnFeeAnalytics } from './useEarnFeeAnalytics';
 import {
     type YieldDepositFeeToken,
     buildYieldDepositFeeDraftState,
@@ -63,6 +63,7 @@ type BaseActionContext<TComposed extends ComposedTxBase> = {
 
 type UsePreparedTxFeesParams<TComposed extends ComposedTxBase, TReason extends string> = {
     amount: string | undefined;
+    analyticsFlow?: EarnFeeFlow;
     /**
      * Composes the base transaction for the debounced amount. Must not throw — map failures to
      * the `error` result. Every error is surfaced as a retryable alert; a failure that only
@@ -98,6 +99,7 @@ export const usePreparedTxFees = <
     TReason extends string = never,
 >({
     amount,
+    analyticsFlow,
     composeTransaction,
     formDraftKey,
     hasInvalidContext,
@@ -317,10 +319,7 @@ export const usePreparedTxFees = <
     const selectedFee: FeeLevelLabel =
         feeDraftState?.formDraft.selectedFee ?? formDraft?.selectedFee ?? 'normal';
     const localFeeLevels = feeDraftState?.feeLevels ?? {};
-    const selectedFeeLevel = localFeeLevels[selectedFee];
-    const fee = isFinalPrecomposedTransaction(selectedFeeLevel) ? selectedFeeLevel.fee : null;
     const feeAvailability = getFeeAvailability({
-        fee,
         feeLevels: localFeeLevels,
         selectedFee,
         isLoading: isPreparingFee,
@@ -370,15 +369,27 @@ export const usePreparedTxFees = <
         [clearFeeStore],
     );
 
+    const hasEstimationError = hasFeeEstimationError || (!!baseActionContext && !feeDraftState);
+    const retryWithAnalytics = useEarnFeeAnalytics({
+        contextKey: formDraftKey,
+        flow: analyticsFlow,
+        networkSymbol: symbol,
+        isEnabled: canCompose && !!amount,
+        hasEstimationError,
+        isFeeUnavailable,
+        isReady: isFeeReady,
+        retry: handleRetryFeeEstimation,
+    });
+
     return {
         formDraft,
         formDraftKey,
-        hasFeeEstimationError,
+        hasFeeEstimationError: hasEstimationError,
         isFeePreparing: isCurrentFeePreparing,
         isFeeReady,
         isFeeUnavailable,
         preparedTx,
-        retryFeeEstimation: handleRetryFeeEstimation,
+        retryFeeEstimation: retryWithAnalytics,
         selectedFee,
     };
 };
