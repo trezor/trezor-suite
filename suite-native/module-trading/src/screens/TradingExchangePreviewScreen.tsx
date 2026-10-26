@@ -36,7 +36,6 @@ import {
     ExchangePreviewScreenHeader,
     ExchangePreviewView,
 } from '../components/exchange/ExchangePreview';
-import { TradingDeviceConnectionGuard } from '../components/general/TradingDeviceConnectionGuard';
 import { useExchangeFlow } from '../hooks/exchange/useExchangeFlow';
 import { clearTradingStateThunk } from '../thunks';
 import { getReceiveAccountAddressText } from '../utils/general/receiveAccountUtils';
@@ -46,7 +45,7 @@ export type TradingExchangePreviewScreenProps = StackProps<
     RootStackRoutes.TradingExchangePreview
 >;
 
-const TradingExchangePreviewScreenContent = ({
+export const TradingExchangePreviewScreen = ({
     navigation,
     route: { params },
 }: TradingExchangePreviewScreenProps) => {
@@ -204,9 +203,3 @@ const TradingExchangePreviewScreenContent = ({
         </Screen>
     );
 };
-
-export const TradingExchangePreviewScreen = (props: TradingExchangePreviewScreenProps) => (
-    <TradingDeviceConnectionGuard>
-        <TradingExchangePreviewScreenContent {...props} />
-    </TradingDeviceConnectionGuard>
-);

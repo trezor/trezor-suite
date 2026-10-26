@@ -26,7 +26,6 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { ApprovalButton } from '../components/exchange/Approval/ApprovalButton';
 import { ExchangeApprovalDetails } from '../components/exchange/Approval/ExchangeApprovalDetails';
-import { TradingDeviceConnectionGuard } from '../components/general/TradingDeviceConnectionGuard';
 import { useApprovalFlow } from '../hooks/exchange/Approval/useApprovalFlow';
 import { useEvmApprovalFees } from '../hooks/exchange/Approval/useEvmApprovalFees';
 
@@ -35,7 +34,7 @@ type TradingExchangeApprovalScreenProps = StackProps<
     RootStackRoutes.TradingExchangeApproval
 >;
 
-const TradingExchangeApprovalScreenContent = ({
+export const TradingExchangeApprovalScreen = ({
     route: { params },
     navigation,
 }: TradingExchangeApprovalScreenProps) => {
@@ -188,9 +187,3 @@ const TradingExchangeApprovalScreenContent = ({
         </Screen>
     );
 };
-
-export const TradingExchangeApprovalScreen = (props: TradingExchangeApprovalScreenProps) => (
-    <TradingDeviceConnectionGuard>
-        <TradingExchangeApprovalScreenContent {...props} />
-    </TradingDeviceConnectionGuard>
-);

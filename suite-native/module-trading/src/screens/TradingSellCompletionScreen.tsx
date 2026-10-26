@@ -11,13 +11,12 @@ import {
 import { Footer } from '@suite-native/trading-provider-utils';
 
 import { LastErrorMessage } from '../components/general/Error/LastErrorMessage';
-import { TradingDeviceConnectionGuard } from '../components/general/TradingDeviceConnectionGuard';
 import { TradingPreviewErrorScreen } from '../components/general/TradingPreview/TradingPreviewErrorScreen';
 import { SellCompletionConfirmButton } from '../components/sell/SellCompletion/SellCompletionConfirmButton';
 import { SellCompletionView } from '../components/sell/SellCompletion/SellCompletionView';
 import { useSellCompletionScreenControls } from '../hooks/sell/useSellCompletionScreenControls';
 
-const TradingSellCompletionScreenContent = () => {
+export const TradingSellCompletionScreen = () => {
     const controls = useSellCompletionScreenControls();
     const [shouldShowHeader, setShouldShowHeader] = useState(false);
 
@@ -82,9 +81,3 @@ const TradingSellCompletionScreenContent = () => {
         </Screen>
     );
 };
-
-export const TradingSellCompletionScreen = () => (
-    <TradingDeviceConnectionGuard>
-        <TradingSellCompletionScreenContent />
-    </TradingDeviceConnectionGuard>
-);
