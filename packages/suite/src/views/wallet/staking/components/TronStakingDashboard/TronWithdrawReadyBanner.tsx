@@ -67,17 +67,19 @@ export const TronWithdrawReadyBanner = ({ account, nowSeconds }: TronWithdrawRea
                 </Tooltip>
             }
             description={
-                <Translation
-                    id="TR_EARN_TRON_WITHDRAW_READY"
-                    values={{
-                        amount: (
-                            <FormattedCryptoAmount
-                                value={withdrawableAmount}
-                                symbol={account.symbol}
-                            />
-                        ),
-                    }}
-                />
+                <span data-testid="@staking/tron-withdraw-banner/description">
+                    <Translation
+                        id="TR_EARN_TRON_WITHDRAW_READY"
+                        values={{
+                            amount: (
+                                <FormattedCryptoAmount
+                                    value={withdrawableAmount}
+                                    symbol={account.symbol}
+                                />
+                            ),
+                        }}
+                    />
+                </span>
             }
         />
     );

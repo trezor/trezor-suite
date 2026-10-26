@@ -177,7 +177,9 @@ export const TronStakedCard = ({ account }: TronStakedCardProps) => {
             <Row justifyContent="space-between" alignItems="center">
                 <Text typographyStyle="body-md-strong" data-testid="@staking/tron-staked-card/apr">
                     <Translation id="TR_EARN_TRON_APR_LABEL" />{' '}
-                    {formatApyValue(apr, { withSymbol: true })}
+                    <span data-testid="@staking/tron-staked-card/apr-value">
+                        {formatApyValue(apr, { withSymbol: true })}
+                    </span>
                 </Text>
                 {hasRemainingVotes ? (
                     <Tooltip content={<Translation id="TR_EARN_TRON_ASSIGN_VOTES_TOOLTIP" />}>
