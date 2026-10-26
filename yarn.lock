@@ -17690,6 +17690,23 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/transaction@workspace:*, @suite/transaction@workspace:suite/transaction":
+  version: 0.0.0-use.local
+  resolution: "@suite/transaction@workspace:suite/transaction"
+  dependencies:
+    "@storybook/react": "npm:^10.6.2"
+    "@suite-common/toast-notifications": "workspace:*"
+    "@trezor/components": "workspace:*"
+    "@trezor/icons": "workspace:*"
+    "@trezor/network-module-types": "workspace:*"
+    "@trezor/product-components": "workspace:*"
+    "@trezor/utils": "workspace:*"
+    "@types/react": "npm:19.2.14"
+    react: "npm:19.2.3"
+    react-redux: "npm:9.3.0"
+  languageName: unknown
+  linkType: soft
+
 "@suite/transfer-uri@workspace:*, @suite/transfer-uri@workspace:suite/transfer-uri":
   version: 0.0.0-use.local
   resolution: "@suite/transfer-uri@workspace:suite/transfer-uri"
@@ -19948,6 +19965,7 @@ __metadata:
     "@suite/tor-desktop": "workspace:*"
     "@suite/tor-web": "workspace:*"
     "@suite/trading": "workspace:*"
+    "@suite/transaction": "workspace:*"
     "@suite/transfer-uri": "workspace:*"
     "@suite/tx-simulation": "workspace:^"
     "@suite/ui-animations": "workspace:*"

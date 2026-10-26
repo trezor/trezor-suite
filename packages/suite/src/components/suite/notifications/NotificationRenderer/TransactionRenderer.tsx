@@ -2,6 +2,7 @@ import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { getTxAnchor, gotoThunk, selectRouteName, selectRouterApp } from '@suite/router';
+import { TransactionNotification } from '@suite/transaction';
 import { selectDeviceThunk, selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { type TransactionNotificationType } from '@suite-common/toast-notifications';
 import {
@@ -20,7 +21,6 @@ import {
 } from '@suite-common/wallet-utils';
 import { Row } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
-import { TransactionNotification } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { FormattedCryptoAmount } from 'src/components/suite/FormattedCryptoAmount';

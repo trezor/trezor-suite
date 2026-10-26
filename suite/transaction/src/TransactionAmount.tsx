@@ -3,13 +3,12 @@ import { useSelector } from 'react-redux';
 
 import { Row } from '@trezor/components';
 import { type NetworkConfigState, type NetworkSymbol } from '@trezor/network-module-types';
+import { formatDisplaySymbol, selectDisplaySymbol } from '@trezor/product-components';
 
-import { formatDisplaySymbol } from './formatDisplaySymbol';
 import {
     type TransactionNotificationToken,
     type TransactionNotificationType,
-} from './notificationsTypes';
-import { selectDisplaySymbol } from '../../network-display/networkDisplaySelectors';
+} from './notificationTypes';
 
 type TransactionAmountProps = {
     amount: ReactNode;

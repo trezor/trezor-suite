@@ -1,12 +1,12 @@
 import { type ReactNode } from 'react';
 
 import { type NetworkSymbol } from '@trezor/network-module-types';
+import { TokenIcon } from '@trezor/product-components';
 
 import {
     type TransactionNotificationToken,
     type TransactionNotificationType,
-} from './notificationsTypes';
-import { TokenIcon } from '../TokenIcon/TokenIcon';
+} from './notificationTypes';
 
 type TransactionIconProps = {
     icon?: ReactNode;
