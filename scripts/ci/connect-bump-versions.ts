@@ -47,12 +47,11 @@ const deploymentType = ['prepatch', 'preminor', 'prerelease'].includes(semver)
 
 const ROOT = path.join(import.meta.dirname, '..', '..');
 
-const getGitCommitByPackageName = (packageName: string, maxCount = 10) =>
+const getGitCommitByPackageName = (packageName: string, maxCount?: number) =>
     exec('git', [
         'log',
         '--oneline',
-        '--max-count',
-        `${maxCount}`,
+        ...(maxCount === undefined ? [] : ['--max-count', `${maxCount}`]),
         '--pretty=tformat:"-   %s (%h)"',
         '--',
         `./${getTrezorPackageRelativePath(packageName)}`,
@@ -185,7 +184,11 @@ const bumpConnect = async () => {
             const packageJSON = JSON.parse(rawPackageJSON);
             const { version } = packageJSON;
 
-            const packageGitLog = await getGitCommitByPackageName(packageName, 1000);
+            // Read the whole path-scoped log: the entry is bounded by the previous stable release
+            // found below, while a cap short enough to cut that marker off would silently widen the
+            // range instead (@trezor/transport already has more than 1000 commits here). The
+            // release workflow checks out with `fetch-depth: 0`.
+            const packageGitLog = await getGitCommitByPackageName(packageName);
 
             // The log format wraps every line in literal quotes (no shell to strip them). Only the
             // wrapping pair is removed: dropping every quote would also mangle a subject that
