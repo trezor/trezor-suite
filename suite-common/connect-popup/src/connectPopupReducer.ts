@@ -207,22 +207,32 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
                 }
 
                 const existing = state.permissions.find(p => p.origin === payload.origin);
-                if (!existing || !isSameConnectApp(existing, payload)) {
+                if (
+                    !existing ||
+                    !isSameConnectApp(existing, payload) ||
+                    !Array.isArray(existing.allowedPermissions)
+                ) {
                     // One app per origin: permissions remembered for another source type or
-                    // process of this origin are replaced, never extended.
+                    // process of this origin are replaced, never extended. A record whose grant
+                    // list is unreadable is replaced as well: there is nothing to merge with, and
+                    // merging into it would persist a hybrid record carrying both the fresh
+                    // `allowedPermissions` and the keys of the schema it was written with, which
+                    // the planned `types` -> `allowedPermissions` migration could then re-apply
+                    // over the grants the user just approved (item 8 of #30401).
                     state.permissions = state.permissions.filter(p => p.origin !== payload.origin);
                     state.permissions.push(payload);
 
                     return;
                 }
 
+                const existingGrants = existing.allowedPermissions;
                 const newPermissions = payload.allowedPermissions.filter(
                     next =>
-                        !existing.allowedPermissions.some(
+                        !existingGrants.some(
                             prev => prev.permission === next.permission && prev.coin === next.coin,
                         ),
                 );
-                existing.allowedPermissions.push(...newPermissions);
+                existing.allowedPermissions = [...existingGrants, ...newPermissions];
                 existing.silentMode = payload.silentMode;
             })
             .addCase(connectPopupActions.forgetAppPermissions, (state, { payload }) => {
