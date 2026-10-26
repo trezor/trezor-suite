@@ -41,7 +41,14 @@ const getMockDescriptor = (symbol: NetworkSymbol, scenario: string) =>
     asAccountDescriptor(`${symbol}_${scenario}`);
 
 export type EthereumStakingScenario =
-    'none' | 'pending' | 'active' | 'unstaking' | 'claimable' | 'partiallyClaimable' | 'otherPool';
+    | 'none'
+    | 'pending'
+    | 'pendingDeposited'
+    | 'active'
+    | 'unstaking'
+    | 'claimable'
+    | 'partiallyClaimable'
+    | 'otherPool';
 
 const mockEverstakePool = (pool: Partial<StakingPool>): StakingPool => ({
     contract: MOCK_ETHEREUM_EVERSTAKE_CONTRACT,
@@ -64,6 +71,7 @@ const ETHEREUM_STAKING_POOLS: Record<EthereumStakingScenario, StakingPool[] | un
             pendingDepositedBalance: '250000000000000000',
         }),
     ],
+    pendingDeposited: [mockEverstakePool({ pendingDepositedBalance: '250000000000000000' })],
     active: [
         mockEverstakePool({
             depositedBalance: '2000000000000000000',
