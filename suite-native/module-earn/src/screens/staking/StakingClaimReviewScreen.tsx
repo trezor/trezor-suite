@@ -9,16 +9,14 @@ import {
     type StakeRootState,
     buildClaimWithdrawRequestData,
     getStakingContractAddress,
-    getStakingLimitsByNetworkSymbol,
     isSupportedEthStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
     selectAccountByKey,
     selectCanClaimByAccountKey,
     selectClaimableAmountByAccountKey,
 } from '@suite-common/wallet-core';
-import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
-import { BannerFull, BannerInline, Box, Button, Text, VStack } from '@suite-native/atoms';
+import { BannerInline, Box, Button, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     type RootStackParamList,
@@ -57,15 +55,6 @@ export const StakingClaimReviewScreen = () => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const availableBalance = account?.availableBalance ?? '0';
-
-    const feeBuffer = getStakingLimitsByNetworkSymbol(symbol)?.MIN_BALANCE_FOR_FEE_BUFFER;
-    const availableBalanceInUnits = subunitsToUnits({
-        value: asAmountSubunit(new BigNumber(availableBalance)),
-        symbol,
-    });
-    const isInsufficientFeeBalance = !!feeBuffer && availableBalanceInUnits.lt(feeBuffer);
-    const formattedAvailableBalance = `${availableBalanceInUnits.toString()} ${displaySymbol}`;
 
     const claimFormState = useMemo(() => {
         if (!account) return undefined;
@@ -89,8 +78,6 @@ export const StakingClaimReviewScreen = () => {
     const {
         formDraft,
         formDraftKey,
-        isFeeUnavailable,
-        isPrecomposeError,
         hasFeeEstimationError,
         retryFeeEstimation,
         isFeeReady,
@@ -156,9 +143,6 @@ export const StakingClaimReviewScreen = () => {
                         isDisabled={
                             !claimFormState ||
                             !canClaimInstantly ||
-                            isInsufficientFeeBalance ||
-                            isFeeUnavailable ||
-                            isPrecomposeError ||
                             !isFeeReady ||
                             !(
                                 isSupportedEthStakingNetworkSymbol(symbol) ||
@@ -187,25 +171,7 @@ export const StakingClaimReviewScreen = () => {
                     formDraft={formDraft}
                     formDraftKey={formDraftKey}
                 />
-                {isInsufficientFeeBalance && (
-                    <BannerFull
-                        intent="critical"
-                        iconName="warningCircle"
-                        title={
-                            <Translation
-                                id="earn.claimReviewScreen.insufficientFeeBalance.title"
-                                values={{ displaySymbol }}
-                            />
-                        }
-                        description={
-                            <Translation
-                                id="earn.claimReviewScreen.insufficientFeeBalance.description"
-                                values={{ amount: formattedAvailableBalance }}
-                            />
-                        }
-                    />
-                )}
-                {canClaimInstantly && !isInsufficientFeeBalance && (
+                {canClaimInstantly && isFeeReady && (
                     <BannerInline
                         intent="brand"
                         title={
