@@ -17,7 +17,7 @@ import { EarnYieldTable } from './EarnYieldTable';
 import { mockInitialAppState } from '../../../../../mocks/mockInitialAppState';
 import { type YieldDashboardReadyPayload } from '../useReportEarnDashboardReadyEvent';
 
-let mockYieldAccounts: Account[] = [];
+let mockVisibleAccounts: Account[] = [];
 const mockRewardsQueryState: ReturnType<typeof useGetMerklRewards> = {
     data: undefined,
     error: null,
@@ -48,7 +48,6 @@ const renderYieldTable = () => {
 jest.mock('@trezor/components', () => ({ Column: ({ children }: PropsWithChildren) => children }));
 jest.mock('@suite/intl', () => ({ Translation: () => null }));
 jest.mock('@suite/message-system', () => ({ ContextMessage: () => null }));
-jest.mock('@suite/debug', () => ({ selectIsDebugModeActive: () => false }));
 jest.mock('@suite/router', () => ({
     ...jest.requireActual('@suite/router'),
     useAnchor: () => ({ anchorRef: undefined }),
@@ -73,7 +72,7 @@ jest.mock('@suite-common/earn-stablecoin-api', () => ({
 }));
 jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
-    selectVisibleDeviceAccounts: () => [],
+    selectVisibleDeviceAccounts: () => mockVisibleAccounts,
     selectBaseCurrency: () => 'usd',
     selectCurrentFiatRates: () => ({}),
     useMissingRateTickersQuery: () => ({ isLoading: false }),
@@ -82,7 +81,6 @@ jest.mock('./hooks/useYieldTableData', () => ({
     useYieldTableData: () => ({
         yieldAccountOpportunities: [],
         yieldInactiveVaultOpportunities: [],
-        yieldAccounts: mockYieldAccounts,
         isYieldActive: false,
         hasAnyRewardsData: false,
         availableVaultCount: 0,
@@ -103,16 +101,17 @@ jest.mock('./EarnYieldClaimSelectAccountModal', () => ({
 jest.mock('../common/EarnDashboardTableHeader', () => ({ EarnDashboardTableHeader: () => null }));
 jest.mock('../../providers/PoweredByBadge', () => ({ PoweredByBadge: () => null }));
 
-describe('yield dashboard readiness without rewards queries', () => {
+describe('yield dashboard rewards and readiness', () => {
     beforeEach(() => {
         jest.clearAllMocks();
+        mockVisibleAccounts = [];
         jest.mocked(useGetMerklRewards).mockReturnValue(mockRewardsQueryState);
     });
 
     it.each(['no-account', 'btc-only', 'fresh-eth'] as const)(
         'reports a ready empty yield section for %s',
         kind => {
-            mockYieldAccounts =
+            mockVisibleAccounts =
                 kind === 'no-account'
                     ? []
                     : [
@@ -134,10 +133,24 @@ describe('yield dashboard readiness without rewards queries', () => {
     );
 
     it.each([
+        ['eth', 1],
+        ['arb', 42161],
+        ['base', 8453],
+        ['op', 10],
+    ] as const)('queries %s rewards when no vaults are offered', (symbol, chainId) => {
+        const account = mockWalletAccount({ symbol: asNetworkSymbol(symbol), tokens: [] });
+        mockVisibleAccounts = [account, mockWalletAccount({ symbol: asNetworkSymbol('pol') })];
+
+        renderYieldTable();
+
+        expect(useGetMerklRewards).toHaveBeenCalledWith([{ chainId, address: account.descriptor }]);
+    });
+
+    it.each([
         { isLoading: true, isError: false },
         { isLoading: false, isError: true },
     ])('still waits for an enabled rewards query ($isLoading, $isError)', status => {
-        mockYieldAccounts = [mockWalletAccount({ symbol: asNetworkSymbol('eth') })];
+        mockVisibleAccounts = [mockWalletAccount({ symbol: asNetworkSymbol('eth') })];
         jest.mocked(useGetMerklRewards).mockReturnValue({ ...mockRewardsQueryState, ...status });
 
         const onReady = renderYieldTable();

@@ -71,7 +71,6 @@ export const EarnYieldTable = ({ onReady }: EarnYieldTableProps) => {
     const {
         yieldAccountOpportunities,
         yieldInactiveVaultOpportunities,
-        yieldAccounts,
         isYieldActive,
         hasAnyRewardsData,
         availableVaultCount,
@@ -110,7 +109,7 @@ export const EarnYieldTable = ({ onReady }: EarnYieldTableProps) => {
     );
 
     const { merklRewardsQuery, missingRateTickersQuery, isRewardsReady } =
-        useMerklRewards(yieldAccounts);
+        useMerklRewards(visibleAccounts);
     const { accountsRewards } = merklRewardsQuery.data;
     const isClaimDisabled =
         claimMessageSystem.isDisabled ||

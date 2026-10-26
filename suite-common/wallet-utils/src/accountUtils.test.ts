@@ -456,7 +456,6 @@ describe('account utils', () => {
             'eip1559',
             'mev-protection',
             'graph',
-            'claim-rewards',
         ]);
         expect(getNetworkAccountFeatures(coinjoinAcc)).toEqual(['rbf', 'amount-unit']);
         // when account does not have features defined, take them from root network object
