@@ -6,6 +6,7 @@ import {
     getPrefixedURL,
     getRoute,
     getRouteHash,
+    isTradingRoute,
     stripPrefixedURL,
 } from './router';
 import type { RouteParams } from './routes';
@@ -295,6 +296,33 @@ describe('router', () => {
                 },
                 route: getRoute('earn-tron-stake'),
             });
+        });
+    });
+
+    describe('isTradingRoute', () => {
+        it.each([
+            'wallet-trading-buy',
+            'wallet-trading-sell',
+            'wallet-trading-exchange',
+            'wallet-trading-buy-confirm',
+            'wallet-trading-sell-detail',
+            'wallet-trading-exchange-detail',
+            'wallet-trading-concierge',
+            'wallet-trading-transactions',
+            'wallet-trading-redirect',
+        ] as const)('is true for %s', routeName => {
+            expect(isTradingRoute(routeName)).toBe(true);
+        });
+
+        it.each([
+            undefined,
+            'suite-index',
+            'suite-earn',
+            'wallet-index',
+            'wallet-staking',
+            'notifications-index',
+        ] as const)('is false for %s', routeName => {
+            expect(isTradingRoute(routeName)).toBe(false);
         });
     });
 });

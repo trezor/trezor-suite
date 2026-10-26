@@ -9,7 +9,7 @@ import {
     markNewContentIndicatorAsSeen,
     selectIsNewContentIndicatorVisible,
 } from '@suite/flags';
-import { type Route, selectRouteName } from '@suite/router';
+import { type Route, isTradingRoute, selectRouteName } from '@suite/router';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
 import { selectHasUnseenTransactionNotifications } from '@suite-common/toast-notifications';
 import { Column } from '@trezor/components';
@@ -93,6 +93,7 @@ export const Navigation = ({ children }: NavigationProps) => {
     const isActivityOpen = routeName === 'notifications-index';
     const isEarnOpen = routeName !== undefined && EARN_ROUTES.includes(routeName);
     const isSwapOpen = routeName !== undefined && SWAP_ROUTES.includes(routeName);
+    const isTradingOpen = isTradingRoute(routeName);
     const hasActivityIndicator = hasUnseenNotifications && !isActivityOpen;
 
     useEffect(() => {
@@ -188,7 +189,7 @@ export const Navigation = ({ children }: NavigationProps) => {
                               nameId: 'TR_TRADING_SWAP',
                               icon: RepeatIcon,
                               goToRoute: 'wallet-trading-exchange',
-                              routes: SWAP_ROUTES,
+                              isActive: isTradingOpen,
                               hasNewContentIndicator: isSwapNewContentIndicatorVisible,
                               isNewContentIndicatorAnimated: shouldAnimateNewContentIndicators,
                               onClick: handleSwapNavigation,
@@ -246,6 +247,7 @@ export const Navigation = ({ children }: NavigationProps) => {
                 isBtcOnly,
                 isFinpromRestricted,
                 isAppsEmbeddingAvailable,
+                isTradingOpen,
                 handleSwapNavigation,
                 isSwapNewContentIndicatorVisible,
                 isEarnNewContentIndicatorVisible,
