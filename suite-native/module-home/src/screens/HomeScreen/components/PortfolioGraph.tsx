@@ -45,7 +45,9 @@ export const PortfolioGraph = forwardRef<PortfolioGraphRef>((_props, ref) => {
     return (
         <VStack spacing="sp24" testID="@home/portfolio/graph">
             <PortfolioHeader />
-            <PortfolioLineGraph refetchGraph={refetchGraph} />
+            <VStack marginHorizontal="sp16">
+                <PortfolioLineGraph refetchGraph={refetchGraph} />
+            </VStack>
             <IgnoredNetworksBanner />
             <PortfolioGraphTimeSwitch />
         </VStack>

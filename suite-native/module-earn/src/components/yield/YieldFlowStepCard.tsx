@@ -17,7 +17,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { EarnModalStepIndicator } from '../earn/EarnModalStepIndicator';
 
 const stepCardStyle = prepareNativeStyle(utils => ({
-    width: '100%',
+    marginHorizontal: utils.spacings.sp16,
     backgroundColor: utils.colors.surfaceFillRaised,
     borderTopWidth: utils.borders.widths.small,
     borderBottomWidth: utils.borders.widths.small,

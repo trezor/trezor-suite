@@ -32,7 +32,7 @@ const addressContainer = prepareNativeStyle(() => ({
 const addressStyle = prepareNativeStyle<{ width: number }>((_, { width }) => ({ width }));
 
 const MAX_RECEIVE_QR_CODE_SIZE = 310;
-const MAX_RECEIVE_QR_CODE_HEIGHT_RATIO = 0.35;
+const MAX_RECEIVE_QR_CODE_HEIGHT_RATIO = 0.3;
 
 export const ReceiveAddressDetails = ({
     address,
@@ -64,12 +64,8 @@ export const ReceiveAddressDetails = ({
     );
 
     return (
-        <VStack
-            spacing="sp24"
-            flex={1}
-            onLayout={event => setContentWidth(event.nativeEvent.layout.width)}
-        >
-            <Box marginHorizontal="sp8" marginTop="sp8" alignItems="center">
+        <VStack spacing="sp16" onLayout={event => setContentWidth(event.nativeEvent.layout.width)}>
+            <Box marginHorizontal="sp8" alignItems="center">
                 {contentWidth > 0 && (
                     <ReceiveQRCodeCard
                         address={address}
@@ -81,7 +77,7 @@ export const ReceiveAddressDetails = ({
                     />
                 )}
             </Box>
-            <VStack spacing="sp8" alignItems="center" justifyContent="center" flex={1}>
+            <VStack spacing="sp8" alignItems="center" justifyContent="center">
                 {showLabelEdit && (
                     <AddressLabelEditable
                         accountDescriptor={accountDescriptor}

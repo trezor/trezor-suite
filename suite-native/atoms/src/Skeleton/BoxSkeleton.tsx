@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo } from 'react';
-import { type AccessibilityProps } from 'react-native';
+import React, { useEffect, useMemo, useState } from 'react';
+import { type AccessibilityProps, View } from 'react-native';
 import {
     cancelAnimation,
     interpolate,
@@ -28,7 +28,7 @@ import { nativeRadiusToNumber } from '../utils';
 
 type BoxSkeletonProps = {
     height: number;
-    width: number;
+    width: number | `${number}%`;
     elevation?: SurfaceElevation;
     borderRadius?: NativeRadius | number;
 } & AccessibilityProps;
@@ -40,13 +40,13 @@ const elevationToGradientColors = {
     1: ['surfaceFillRaised', 'surfaceFillSunken', 'surfaceFillRaised'],
 } as const satisfies Record<SurfaceElevation, Color[]>;
 
-export const BoxSkeleton = ({
+const FixedWidthBoxSkeleton = ({
     height,
     width,
     elevation = '1',
     borderRadius = 'r8',
     ...accessibilityProps
-}: BoxSkeletonProps) => {
+}: Omit<BoxSkeletonProps, 'width'> & { width: number }) => {
     const {
         utils: { colors },
     } = useNativeStyles();
@@ -80,7 +80,7 @@ export const BoxSkeleton = ({
     );
 
     return (
-        <Canvas style={{ width, height }} {...accessibilityProps}>
+        <Canvas style={{ width, height, overflow: 'hidden' }} {...accessibilityProps}>
             <Group clip={rct}>
                 <Group transform={position}>
                     <RoundedRect rect={rct}>
@@ -93,5 +93,24 @@ export const BoxSkeleton = ({
                 </Group>
             </Group>
         </Canvas>
+    );
+};
+
+export const BoxSkeleton = ({ width, height, ...props }: BoxSkeletonProps) => {
+    const [measuredWidth, setMeasuredWidth] = useState(0);
+
+    if (typeof width === 'number') {
+        return <FixedWidthBoxSkeleton width={width} height={height} {...props} />;
+    }
+
+    return (
+        <View
+            style={{ width, height, overflow: 'hidden' }}
+            onLayout={event => setMeasuredWidth(event.nativeEvent.layout.width)}
+        >
+            {measuredWidth > 0 && (
+                <FixedWidthBoxSkeleton width={measuredWidth} height={height} {...props} />
+            )}
+        </View>
     );
 };
