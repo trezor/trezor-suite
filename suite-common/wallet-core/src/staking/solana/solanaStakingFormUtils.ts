@@ -15,6 +15,7 @@ import {
     MIN_SOL_AMOUNT_FOR_STAKING,
     MIN_SOL_BALANCE_FOR_STAKING,
     MIN_SOL_FOR_WITHDRAWALS,
+    SOL_BASE_FEE,
     SOL_STAKING_OPERATION_FEE,
 } from '@trezor/network-solana/constants';
 import solana from '@trezor/network-solana/runtime';
@@ -35,6 +36,7 @@ import {
 
 // Rent-aware Solana stake fee calc for `composeStakingTransaction` / `calculateStakeFormTransaction`.
 const calculateSolanaStakeTransaction = (
+    rentLamports: string,
     availableBalance: string,
     output: ExternalOutput,
     feeLevel: FeeLevel,
@@ -42,6 +44,12 @@ const calculateSolanaStakeTransaction = (
     symbol: NetworkSymbol,
     estimatedFee?: EstimatedFee,
 ): PrecomposedTransaction => {
+    // The prepared transaction proves the rent even when fee estimation fails.
+    const minimumFee = new BigNumber(SOL_BASE_FEE.toString()).plus(rentLamports);
+    if (estimatedFee?.success === false && new BigNumber(availableBalance).lt(minimumFee)) {
+        return { type: 'error', error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' };
+    }
+
     const feeInLamports =
         estimatedFee?.payload?.feePerTx ?? new BigNumber(SOL_STAKING_OPERATION_FEE).toString();
 
@@ -249,7 +257,7 @@ export const composeSolanaStakingTransaction = async ({
         formValues,
         composeContext,
         predefinedLevels,
-        calculateSolanaStakeTransaction,
+        (...args) => calculateSolanaStakeTransaction(txData.solanaTxMeta.rentLamports, ...args),
         estimatedFee,
         undefined,
     );

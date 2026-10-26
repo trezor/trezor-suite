@@ -155,6 +155,75 @@ beforeEach(() => {
 });
 
 describe('composeSolanaStakingTransactionFeeLevelsThunk', () => {
+    it.each(['unstake', 'claim'] as const)(
+        'classifies a failed %s estimate using only a proven protocol-fee shortfall',
+        async stakeType => {
+            const prepareTx =
+                stakeType === 'claim' ? prepareClaimSolTxMock : prepareUnstakeSolTxMock;
+            prepareTx.mockResolvedValue({
+                success: true,
+                txShim: solanaTxShim,
+                solanaTxMeta: { ...solanaTxMetaMock, rentLamports: '0' },
+            });
+            for (const availableBalance of ['0', '4999', '5000', '100000000']) {
+                blockchainEstimateFeeMock.mockResolvedValueOnce({
+                    success: false,
+                    payload: { error: 'simulation failed' },
+                });
+                const store = buildStore({ accounts: [{ ...solAccount, availableBalance }] });
+                const result = await dispatchCompose(store, {
+                    accountKey: SOL_ACCOUNT_KEY,
+                    stakeType,
+                    amount: '1',
+                });
+                expect(result).toEqual({
+                    ok: true,
+                    payload: {
+                        normal: expect.objectContaining({
+                            type: 'error',
+                            error:
+                                Number(availableBalance) < 5000
+                                    ? 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE'
+                                    : 'TR_GENERIC_ERROR_TITLE',
+                        }),
+                    },
+                });
+            }
+        },
+    );
+
+    it.each([
+        ['5000', 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE'],
+        ['2287879', 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE'],
+        ['2287880', 'TR_GENERIC_ERROR_TITLE'],
+        ['2287881', 'TR_GENERIC_ERROR_TITLE'],
+    ])(
+        'uses the known rent when classifying a failed split unstake estimate: balance %s',
+        async (availableBalance, error) => {
+            prepareUnstakeSolTxMock.mockResolvedValue({
+                success: true,
+                txShim: solanaTxShim,
+                solanaTxMeta: { ...solanaTxMetaMock, hasSplitInstruction: true },
+            });
+            blockchainEstimateFeeMock.mockResolvedValueOnce({
+                success: false,
+                payload: { error: 'simulation failed' },
+            });
+            const store = buildStore({ accounts: [{ ...solAccount, availableBalance }] });
+
+            expect(
+                await dispatchCompose(store, {
+                    accountKey: SOL_ACCOUNT_KEY,
+                    stakeType: 'unstake',
+                    amount: '1',
+                }),
+            ).toEqual({
+                ok: true,
+                payload: { normal: expect.objectContaining({ type: 'error', error }) },
+            });
+        },
+    );
+
     it('returns undefined for an empty amount', async () => {
         const store = buildStore();
 
