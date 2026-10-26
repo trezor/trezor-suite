@@ -1297,7 +1297,11 @@ export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
                         } else if (clientInfo?.name) {
                             sessionProcessInfo = {
                                 name: clientInfo.name,
-                                fullPath: clientInfo.name,
+                                // A path the lookup could not produce stays empty, whether it read
+                                // no path or found no process at all, so that it is never mistaken
+                                // for an identified executable and never becomes a permission key
+                                // the client chose for itself.
+                                fullPath: '',
                                 warning: true,
                             };
                         } else if (processInfo) {
@@ -1310,7 +1314,8 @@ export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
                     } else if (clientInfo?.name) {
                         sessionProcessInfo = {
                             name: clientInfo.name,
-                            fullPath: clientInfo.name,
+                            // Nothing was looked up, so there is no path to key a permission by.
+                            fullPath: '',
                             warning: true,
                         };
                     }

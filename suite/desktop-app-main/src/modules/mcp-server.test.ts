@@ -631,9 +631,7 @@ describe('MCP server', () => {
             return call;
         };
 
-        // Documents the behaviour today: the name the client declared about itself is also used
-        // as its path, which is what the permission is keyed by.
-        it('keeps the declared name of a client as the path of a pathless process', async () => {
+        it('names the client by its declared clientInfo when the executable path is unknown', async () => {
             (findProcessFromIncomingPort as jest.Mock).mockResolvedValueOnce({
                 name: 'node',
                 pid: '300',
@@ -645,12 +643,12 @@ describe('MCP server', () => {
 
             expect(call.process).toEqual({
                 name: 'Claude Code',
-                fullPath: 'Claude Code',
+                fullPath: '',
                 warning: true,
             });
         });
 
-        it('keeps the declared name of a client the lookup did not find at all as its path', async () => {
+        it('keeps the path of a client the lookup did not find at all empty', async () => {
             // No lsof line for the client endpoint, no lsof installed, or a process of another
             // user: the declared name is all there is, and it is not a path.
             (findProcessFromIncomingPort as jest.Mock).mockResolvedValueOnce(undefined);
@@ -659,7 +657,7 @@ describe('MCP server', () => {
 
             expect(call.process).toEqual({
                 name: 'Claude Code',
-                fullPath: 'Claude Code',
+                fullPath: '',
                 warning: true,
             });
         });
