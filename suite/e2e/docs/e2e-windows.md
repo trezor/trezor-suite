@@ -11,8 +11,8 @@ GitHub-hosted `windows-latest` runners. The nightly workflow calls it next to th
 - trezor-user-env runs inside WSL2. Its CI publishes the Linux root filesystem as an OCI artifact,
   `ghcr.io/trezor/trezor-user-env-rootfs`, tagged like the image. The template pins the tag and
   `update-trezor-user-env.yml` bumps it together with the Docker image pin, so Linux and Windows run
-  the same trezor-user-env. The script pulls it, imports it with `wsl --import` and starts the
-  controller. WSL forwards
+  the same trezor-user-env. The template pulls it with `oras pull`, the script imports it with
+  `wsl --import` and starts the controller. WSL forwards
   Windows loopback to it, so the hardcoded `127.0.0.1` addresses in the tests and in Suite work
   unchanged. Mirrored WSL networking is unsupported on the hosted runners, NAT is the only mode.
 - Four runners share one Currents run through orchestration, project `q2uGxh`, tag `windows`.
@@ -27,8 +27,8 @@ GitHub-hosted `windows-latest` runners. The nightly workflow calls it next to th
 
 - CI: `gh workflow run test-suite-desktop-e2e-win-nightly.yml --ref <branch>`, which builds the
   app and runs the subset.
-- Locally on Windows: the same script with the same `--rootfs-ref`, or `--rootfs <file>` for a
-  tarball already on disk, and the desktop build extracted into `suite/desktop-app`. Without
+- Locally on Windows: `oras pull` the same reference, then the script with the path of the
+  tarball and the desktop build extracted into `suite/desktop-app`. Without
   `CURRENTS_RECORD_KEY` the script uses plain Playwright. A Windows VM with nested virtualization on a Linux workstation works.
 - The test code itself is platform-agnostic: a failure that reproduces on Linux with the Docker
   trezor-user-env is a test bug, one that does not is the Windows finding.
