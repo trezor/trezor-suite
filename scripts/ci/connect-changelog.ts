@@ -44,7 +44,13 @@ export const getCommitsSinceLastStableRelease = (commitLines: string[], packageN
 // mechanical sweeps leak in). An allow-list drops release bookkeeping (`npm-release:`,
 // `npm-prerelease(connect):`, `release:`) and non-user-facing churn (chore/test/ci/build/style/docs)
 // with or without a scope, and is self-limiting: a bookkeeping type added later cannot leak in.
-const USER_FACING_COMMIT = /^-\s+(?:feat|fix|perf|refactor|revert)(?:\([^)]*\))?:|^-\s+Revert "/;
+// git's own `Revert "<subject>"` is the one non-conventional subject the repo's commit lint exempts
+// (see COMMITS.md), so the same allow-list is applied to the reverted subject: a revert of a chore
+// or docs commit is no more user-facing than the commit it reverts.
+const USER_FACING_TYPE = String.raw`(?:feat|fix|perf|refactor|revert)(?:\([^)]*\))?:`;
+const USER_FACING_COMMIT = new RegExp(
+    String.raw`^-\s+(?:${USER_FACING_TYPE}|Revert "${USER_FACING_TYPE})`,
+);
 
 // The connect entry points are thin wrappers around `@trezor/connect`, so a repo-wide sweep that
 // happened to touch only their package manifest or tsconfig (e.g. `fix: add TON of missing
