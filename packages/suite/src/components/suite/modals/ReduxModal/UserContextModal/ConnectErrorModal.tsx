@@ -33,17 +33,13 @@ export const ConnectSelectDeviceModal = () => {
         dispatch(connectPopupFinishCallThunk());
     };
     const onResume = () => {
-        if (popupCall?.state === 'call-error')
-            dispatch(
-                connectPopupCallInnerThunk({
-                    ...popupCall,
-                    payload: {
-                        ...popupCall.payload,
-                        // override previously selected device
-                        device: selectedDevice,
-                    },
-                }),
-            );
+        if (popupCall?.state === 'call-error') {
+            // The call thunk always runs on the wallet selected in Suite, so the payload must not
+            // carry a `device` of its own: it is only validated against that selection, and the
+            // snapshot taken here goes stale as soon as the device reconnects with a new path.
+            const { device: _device, ...payload } = popupCall.payload ?? {};
+            dispatch(connectPopupCallInnerThunk({ ...popupCall, payload }));
+        }
     };
 
     return (
