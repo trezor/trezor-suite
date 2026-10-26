@@ -145,7 +145,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
             placement="bottom"
         >
             <Column flex="1" gap={8} alignItems="center">
-                {!emptyPassphraseWalletExists && (
+                {!emptyPassphraseWalletExists && !device.features?.passphrase_always_on_device && (
                     <Button
                         data-testid="@switch-device/add-wallet-button"
                         intent="neutral"
