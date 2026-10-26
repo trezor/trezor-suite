@@ -66,10 +66,18 @@ export const calculateStakeFormTransaction = (
 
     const totalSpent = new BigNumber(calculateTotal(amount, feeInBaseUnits));
 
+    // A failed simulation or preparation says nothing about the payer's balance.
+    if (estimatedFee?.success === false) {
+        return {
+            type: 'error',
+            error: 'TR_GENERIC_ERROR_TITLE',
+            errorMessage: { id: 'TR_GENERIC_ERROR_TITLE' },
+        };
+    }
+
     if (
         new BigNumber(feeInBaseUnits).gt(availableBalance) ||
-        (compareWithAmount && totalSpent.isGreaterThan(availableBalance)) ||
-        estimatedFee?.success === false
+        (compareWithAmount && totalSpent.isGreaterThan(availableBalance))
     ) {
         const error = 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE';
 
