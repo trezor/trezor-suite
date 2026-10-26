@@ -1319,6 +1319,9 @@ export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
                                 // for an identified executable and never becomes a permission key
                                 // the client chose for itself.
                                 fullPath: '',
+                                // The declared name is all the prompt would otherwise say about
+                                // the caller, so whatever the lookup did observe is kept with it.
+                                observedName: processInfo?.name,
                                 warning: true,
                             };
                         } else if (processInfo) {

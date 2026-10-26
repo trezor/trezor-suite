@@ -20,9 +20,15 @@ export const ConnectProcessLabel = ({
     'data-testid': dataTest,
 }: ConnectProcessLabelProps) => {
     // `name` is what the process calls itself, `fullPath` is where it actually runs from, so the
-    // path is shown on both branches and not only next to a warning. An empty path means it could
-    // not be read at all, which would otherwise leave the warning badge without any tooltip.
-    const tooltip = process.fullPath || <Translation id="TR_CONNECT_PROCESS_PATH_UNKNOWN" />;
+    // path is shown on both branches and not only next to a warning. Without a path, the tooltip
+    // says so, and names the executable the lookup did observe when there is one: it is the only
+    // thing the prompt knows about a caller whose badge shows its own declared name.
+    const missingPath = process.observedName ? (
+        <Translation id="TR_CONNECT_PROCESS_RUNS_AS" values={{ name: process.observedName }} />
+    ) : (
+        <Translation id="TR_CONNECT_PROCESS_PATH_UNKNOWN" />
+    );
+    const tooltip = process.fullPath || missingPath;
 
     if (process.warning) {
         return (

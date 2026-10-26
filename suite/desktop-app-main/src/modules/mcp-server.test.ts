@@ -644,6 +644,8 @@ describe('MCP server', () => {
             expect(call.process).toEqual({
                 name: 'Claude Code',
                 fullPath: '',
+                // The one thing the lookup did observe about the caller.
+                observedName: 'node',
                 warning: true,
             });
         });

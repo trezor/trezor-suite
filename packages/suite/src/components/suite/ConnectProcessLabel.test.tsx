@@ -7,11 +7,13 @@ import { ThemeProvider } from 'src/support/suite/ThemeProvider';
 
 import { ConnectProcessLabel } from './ConnectProcessLabel';
 
-type TranslationProps = { id: string };
+type TranslationProps = { id: string; values?: Record<string, string> };
 
 jest.mock('@suite/intl', () => ({
     ...jest.requireActual('@suite/intl'),
-    Translation: ({ id }: TranslationProps) => <span>{id}</span>,
+    Translation: ({ id, values }: TranslationProps) => (
+        <span>{[id, ...Object.values(values ?? {})].join(' ')}</span>
+    ),
 }));
 
 const renderLabel = (process: ConnectProcessInfo) =>
@@ -44,5 +46,11 @@ describe('ConnectProcessLabel', () => {
         renderLabel({ name: 'node', fullPath: '', warning: true });
 
         expect(await hoverLabel()).toHaveTextContent('TR_CONNECT_PROCESS_PATH_UNKNOWN');
+    });
+
+    it('names the process the lookup observed when the path could not be read', async () => {
+        renderLabel({ name: 'Claude Code', observedName: 'node', fullPath: '', warning: true });
+
+        expect(await hoverLabel()).toHaveTextContent('TR_CONNECT_PROCESS_RUNS_AS node');
     });
 });

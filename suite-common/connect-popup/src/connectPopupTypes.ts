@@ -35,6 +35,10 @@ export type ConnectSerializedError = SerializedError;
 export type ConnectProcessInfo = {
     name: string;
     fullPath: string;
+    // What the lookup observed about the socket owner when `name` is what the caller declared
+    // about itself. Shown to the user, never part of the permission key in `isSameConnectApp`,
+    // since the caller influences it too.
+    observedName?: string;
     icon?: string;
     warning: boolean;
 };

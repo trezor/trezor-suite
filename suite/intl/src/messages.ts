@@ -13150,6 +13150,11 @@ export const messages = defineMessages({
         id: 'TR_CONNECT_PROCESS_PATH_UNKNOWN',
         defaultMessage: 'The location of this app could not be read.',
     },
+    TR_CONNECT_PROCESS_RUNS_AS: {
+        id: 'TR_CONNECT_PROCESS_RUNS_AS',
+        defaultMessage:
+            'The location of this app could not be read. It runs as the process {name}.',
+    },
     TR_OPTIONAL: {
         id: 'TR_OPTIONAL',
         defaultMessage: 'Optional',
