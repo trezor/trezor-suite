@@ -236,23 +236,29 @@ const bumpConnect = async () => {
                     commitsTouchingSrc,
                 );
 
-                if (changelogCommits.length) {
-                    const CHANGELOG_PATH = path.join(PACKAGE_PATH, 'CHANGELOG.md');
-                    if (!fs.existsSync(CHANGELOG_PATH)) {
-                        await writeFile(CHANGELOG_PATH, '');
-                    }
-
-                    const existingChangelog = await readFile(CHANGELOG_PATH, 'utf-8');
-                    // Preserve any fixed header (e.g. a pointer to the core changelog) above the version
-                    // history instead of prepending the new entry above everything.
-                    const { header, history } = splitChangelogHeader(existingChangelog);
-                    const entry = `# ${version}\n\n${changelogCommits.join('\n')}`;
-                    const changelog = [header, entry, history].filter(Boolean).join('\n\n');
-
-                    await writeFile(CHANGELOG_PATH, `${changelog}\n`, 'utf-8');
-
-                    await exec('yarn', ['prettier', '--write', CHANGELOG_PATH]);
+                const CHANGELOG_PATH = path.join(PACKAGE_PATH, 'CHANGELOG.md');
+                if (!fs.existsSync(CHANGELOG_PATH)) {
+                    await writeFile(CHANGELOG_PATH, '');
                 }
+
+                const existingChangelog = await readFile(CHANGELOG_PATH, 'utf-8');
+                // Preserve any fixed header (e.g. a pointer to the core changelog) above the version
+                // history instead of prepending the new entry above everything.
+                const { header, history } = splitChangelogHeader(existingChangelog);
+                // The version is bumped, committed and published regardless, so always write the
+                // heading: a package whose commits are all filtered out (or that only moved
+                // dependency versions) must not be missing from its own changelog. The fallback
+                // states only what the filter established — that nothing user-facing is in range —
+                // since the filtered-out commits are not necessarily dependency updates.
+                const entryBody = changelogCommits.length
+                    ? changelogCommits.join('\n')
+                    : '-   Maintenance release: no user-facing changes in this package.';
+                const entry = `# ${version}\n\n${entryBody}`;
+                const changelog = [header, entry, history].filter(Boolean).join('\n\n');
+
+                await writeFile(CHANGELOG_PATH, `${changelog}\n`, 'utf-8');
+
+                await exec('yarn', ['prettier', '--write', CHANGELOG_PATH]);
             }
 
             await commit({
