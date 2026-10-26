@@ -21,7 +21,7 @@ GitHub-hosted `windows-latest` runners. The nightly workflow calls it next to th
   main process or OS integration.
 - The job body is `yarn workspace @trezor/suite-e2e test:e2e:windows`, the script
   `suite/e2e/scripts/windows/run-e2e.ts`. It starts trezor-user-env, runs the tests and collects
-  the logs in one process because a process started by a step does not survive it on the runner.
+  the logs.
 
 ## Running it yourself
 
@@ -39,8 +39,3 @@ GitHub-hosted `windows-latest` runners. The nightly workflow calls it next to th
   Suite instance is always refused there. Tests must wait for a previous app to exit before
   launching their own.
 - The Connect permissions modal names the calling process `Node.js`, not `node`.
-
-## Later
-
-- The trezor-user-env stuck protection in `support/setup.ts` restarts a Docker container; on
-  Windows it does nothing, a WSL restart is needed.
