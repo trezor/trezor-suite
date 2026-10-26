@@ -25,8 +25,8 @@ import { globalSendReceiveFiltersActions } from 'src/slices/wallet/globalSendRec
 
 import { AssetSearchWithNetworkFilter } from '../../AssetSearchWithNetworkFilter/AssetSearchWithNetworkFilter';
 import { GLOBAL_RECEIVE_MODAL_HEIGHT } from '../constants';
-import { GlobalReceiveAccountsTab } from './GlobalReceiveAccountsTab';
 import { type GlobalReceiveTab } from '../types';
+import { GlobalReceiveAccountsTab } from './GlobalReceiveAccountsTab';
 import { GlobalReceiveAssetsTab } from './GlobalReceiveAssetsTab';
 
 type GlobalReceiveSearchStepProps = GlobalReceiveAssetSections & {
@@ -71,8 +71,7 @@ export const GlobalReceiveSearchStep = ({
             type: sharedEvents.receiveEntryInteractionEvent.name,
             payload: {
                 action,
-                platform: 'desktop',
-                ...(networkSymbol ? { networkSymbol } : {}),
+                networkSymbols: networkSymbol ? [networkSymbol] : undefined,
             },
         });
     };
