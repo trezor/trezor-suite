@@ -6,6 +6,8 @@ import { type UnknownAction } from '@reduxjs/toolkit';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+import { Feature } from '@suite-common/message-system';
+import { mockMessageSystemStateWithFeatureFlags } from '@suite-common/message-system/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import {
     type TradingRootState,
@@ -91,11 +93,16 @@ const previousAccountKey = mockAccountKey({ descriptor: 'previousaccount' });
 type RenderEmbedParams = {
     type: TradingType;
     onTypeChange?: (type: TradingType) => void;
+    isFinpromRestricted?: boolean;
 };
 
-const renderEmbed = ({ type, onTypeChange }: RenderEmbedParams) => {
+const renderEmbed = ({ type, onTypeChange, isFinpromRestricted = false }: RenderEmbedParams) => {
     const preloadedState = {
         ...mockInitialAppState,
+        messageSystem: mockMessageSystemStateWithFeatureFlags(
+            { [Feature.finprom.presenceRestriction]: isFinpromRestricted },
+            { [Feature.finprom.presenceRestriction]: { countries: ['US'] } },
+        ),
         wallet: {
             ...mockInitialAppState.wallet,
             trading: {
@@ -162,17 +169,28 @@ describe('TradingFormEmbed', () => {
         },
     );
 
-    it('leaves the trading state untouched while trading is disabled', () => {
+    it('renders nothing and leaves the trading state untouched while trading is disabled', () => {
         jest.mocked(useMessageSystemTrading).mockReturnValue({
             isDisabled: true,
             content: undefined,
         });
+        const onTypeChange = mock<(type: TradingType) => void>();
 
-        const store = renderEmbed({ type: 'sell' });
+        const store = renderEmbed({ type: 'sell', onTypeChange });
 
         expect(screen.queryByTestId('trading-form-wrapper/sell')).not.toBeInTheDocument();
+        expect(screen.queryByTestId('@trading/menu/wallet-trading-sell')).not.toBeInTheDocument();
         expect(store.getState().wallet.trading.sell.tradingAccountKey).toBe(previousAccountKey);
         expect(store.getState().wallet.trading.sell.transactionId).toBe('stale-order');
+    });
+
+    it('renders nothing and leaves the trading state untouched when restricted', () => {
+        const onTypeChange = mock<(type: TradingType) => void>();
+        const store = renderEmbed({ type: 'buy', onTypeChange, isFinpromRestricted: true });
+
+        expect(screen.queryByTestId('trading-form-wrapper/buy')).not.toBeInTheDocument();
+        expect(screen.queryByTestId('@trading/menu/wallet-trading-buy')).not.toBeInTheDocument();
+        expect(store.getState().wallet.trading.buy.tradingAccountKey).toBe(previousAccountKey);
     });
 
     it('renders no type tabs without a type change handler', () => {

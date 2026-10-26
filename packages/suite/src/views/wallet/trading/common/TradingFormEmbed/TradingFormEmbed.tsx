@@ -2,6 +2,7 @@ import { type ComponentType } from 'react';
 import { useSelector } from 'react-redux';
 
 import { selectIsDeviceCompromised } from '@suite/authenticity-checks';
+import { selectIsFinpromRestricted } from '@suite/finprom';
 import { ContextMessage } from '@suite/message-system';
 import { Context } from '@suite-common/message-system';
 import { type TradingType, useBoundTradingAccount } from '@suite-common/trading';
@@ -36,7 +37,12 @@ const TradingFormEmbedForm = ({ type, account }: Omit<TradingFormEmbedProps, 'on
 
 export const TradingFormEmbed = ({ type, account, onTypeChange }: TradingFormEmbedProps) => {
     const isDeviceCompromised = useSelector(selectIsDeviceCompromised);
+    const isFinpromRestricted = useSelector(selectIsFinpromRestricted);
     const { isDisabled, content } = useMessageSystemTrading(type);
+
+    if (isDisabled || isFinpromRestricted) {
+        return null;
+    }
 
     return (
         <Column gap={16} width="100%" maxWidth={400} alignSelf="center" alignItems="stretch">
@@ -44,7 +50,7 @@ export const TradingFormEmbed = ({ type, account, onTypeChange }: TradingFormEmb
                 <TradingTypeTabs activeType={type} size="large" onTypeChange={onTypeChange} />
             )}
             <ContextMessage context={Context.getTrading(type)} />
-            {isDisabled || isDeviceCompromised ? (
+            {isDeviceCompromised ? (
                 <TradingDisabled type={type} content={content} />
             ) : (
                 <TradingFormEmbedForm type={type} account={account} />
