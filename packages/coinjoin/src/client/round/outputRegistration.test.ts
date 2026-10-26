@@ -1,8 +1,9 @@
 import { outputDecomposition } from './outputDecomposition';
 import { outputRegistration } from './outputRegistration';
-import { createServer } from '../../../mocks/server';
+import { createServer, getRoundCredentialKinds, resetMockCoordinator } from '../../../mocks/server';
+import { mintCredentials } from '../../__fixtures__/credentialIssuer.fixture';
 import { createInput } from '../../__fixtures__/input.fixture';
-import { createCoinjoinRound } from '../../__fixtures__/round.fixture';
+import { DEFAULT_ROUND, createCoinjoinRound } from '../../__fixtures__/round.fixture';
 
 // mock random delay function
 jest.mock('@trezor/utils', () => {
@@ -30,6 +31,10 @@ describe('outputRegistration', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         server?.removeAllListeners('test-request');
+    });
+
+    afterEach(() => {
+        resetMockCoordinator();
     });
 
     afterAll(() => {
@@ -121,4 +126,73 @@ describe('outputRegistration', () => {
         const firstInput2: (typeof inputs)[number] = inputs[0];
         expect(firstInput2.error?.message).toMatch(/No change address available/);
     });
+
+    /**
+     * Output registration is the one phase whose credential request presents credentials
+     * and asks for nothing back, so it is the only place where the issuer checks a
+     * presentation-only balance proof. The credentials here are minted from the mock
+     * coordinator's own issuer, which then has to accept them: if it did not, the mock
+     * answers 500 and the input ends up with an error instead of being readied to sign.
+     */
+    it('registers an output with credentials the issuer accepts', async () => {
+        const kinds = getRoundCredentialKinds(DEFAULT_ROUND.Id);
+        const amountCredentials = await mintCredentials(kinds.amount, [2000, 0]);
+        const vsizeCredentials = await mintCredentials(kinds.vsize, [43, 0]);
+
+        (outputDecomposition as jest.Mock).mockImplementation(() =>
+            Promise.resolve([
+                {
+                    accountKey: 'account-A',
+                    outputs: [
+                        {
+                            accountKey: 'account-A',
+                            amount: 2000,
+                            amountCredentials,
+                            vsizeCredentials,
+                        },
+                    ],
+                },
+            ]),
+        );
+
+        const urls: string[] = [];
+        server?.addListener('test-request', ({ url, resolve }) => {
+            urls.push(url);
+            resolve();
+        });
+
+        const response = await outputRegistration(
+            createCoinjoinRound(
+                [
+                    createInput('account-A', 'A1', {
+                        registrationData: { AliceId: '01A1-01a1' },
+                    }),
+                ],
+                {
+                    ...server?.requestOptions,
+                    round: { phase: 3 },
+                },
+            ),
+            [
+                {
+                    accountKey: 'account-A',
+                    changeAddresses: [
+                        {
+                            address:
+                                'tb1p55k3nua65qqqsq7j9zn8xp6rn3ntht9gj2ww3zfstczytd07htts3txmh9',
+                        },
+                    ],
+                } as any, // partial Account
+            ],
+            server?.requestOptions,
+        );
+
+        const { inputs } = response;
+        // @ts-expect-error: indexing with noUncheckedIndexedAccess
+        const firstInput: (typeof inputs)[number] = inputs[0];
+        expect(firstInput.error).toBeUndefined();
+        expect(urls).toContain('/output-registration');
+        expect(urls).toContain('/ready-to-sign');
+        expect(response.addresses).toHaveLength(1);
+    }, 60_000);
 });

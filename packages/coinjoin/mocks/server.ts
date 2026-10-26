@@ -8,7 +8,11 @@ import {
 } from '@trezor/wabisabi-crypto';
 import { type CredentialIssuer } from '@trezor/wabisabi-crypto/src/testing';
 
-import { createRoundIssuers } from '../src/__fixtures__/credentialIssuer.fixture';
+import {
+    AMOUNT_CREDENTIAL_ISSUER_PARAMETERS,
+    VSIZE_CREDENTIAL_ISSUER_PARAMETERS,
+    createRoundIssuers,
+} from '../src/__fixtures__/credentialIssuer.fixture';
 import {
     DEFAULT_ROUND,
     FEE_RATE_MEDIANS,
@@ -27,8 +31,18 @@ import type { CoinjoinClientEvents } from '../src/types/client';
 
 type RequestData = Record<string, any>;
 
-const { MaxAmountCredentialValue, MaxVsizeAllocationPerAlice } =
-    ROUND_CREATION_EVENT.RoundParameters;
+/**
+ * The credential upper bounds the issuers are built with.
+ *
+ * They have to be the ones in the round the client is driving, because the client sizes
+ * its range proofs from them and the issuer checks the bit width it gets against its own.
+ * The default is the round fixture's; a suite that overrides `roundParameters` has to say
+ * so with `configureMockCoordinator`.
+ */
+let credentialBounds = {
+    MaxAmountCredentialValue: ROUND_CREATION_EVENT.RoundParameters.MaxAmountCredentialValue,
+    MaxVsizeAllocationPerAlice: ROUND_CREATION_EVENT.RoundParameters.MaxVsizeAllocationPerAlice,
+};
 
 /**
  * One pair of issuers per round id. `CredentialIssuer` is stateful, so a round has to
@@ -36,31 +50,72 @@ const { MaxAmountCredentialValue, MaxVsizeAllocationPerAlice } =
  */
 const roundIssuers = new Map<string, ReturnType<typeof createRoundIssuers>>();
 
-const getIssuers = (roundId: string) => {
+/**
+ * The round's issuers, as the coordinator holds them.
+ *
+ * Exported because a suite that starts mid-round needs credentials this very issuer
+ * signed; see `mintCredentials` in `src/__fixtures__/credentialIssuer.fixture.ts`.
+ */
+export const getRoundIssuers = (roundId: string) => {
     let issuers = roundIssuers.get(roundId);
     if (issuers === undefined) {
-        issuers = createRoundIssuers(MaxAmountCredentialValue, MaxVsizeAllocationPerAlice);
+        issuers = createRoundIssuers(
+            credentialBounds.MaxAmountCredentialValue,
+            credentialBounds.MaxVsizeAllocationPerAlice,
+        );
         roundIssuers.set(roundId, issuers);
     }
 
     return issuers;
 };
 
+/**
+ * The round's two credential kinds — issuer, advertised parameters and upper bound.
+ *
+ * For a suite that starts mid-round: pass one to `mintCredentials` and it gets
+ * credentials this coordinator will accept back. See
+ * `src/__fixtures__/credentialIssuer.fixture.ts`.
+ */
+export const getRoundCredentialKinds = (roundId: string) => {
+    const issuers = getRoundIssuers(roundId);
+
+    return {
+        amount: {
+            issuer: issuers.amount,
+            issuerParameters: AMOUNT_CREDENTIAL_ISSUER_PARAMETERS,
+            maxCredentialValue: credentialBounds.MaxAmountCredentialValue,
+        },
+        vsize: {
+            issuer: issuers.vsize,
+            issuerParameters: VSIZE_CREDENTIAL_ISSUER_PARAMETERS,
+            maxCredentialValue: credentialBounds.MaxVsizeAllocationPerAlice,
+        },
+    };
+};
+
+/** Builds this round's issuers for credential bounds other than the fixture's. */
+export const configureMockCoordinator = (bounds: Partial<typeof credentialBounds>) => {
+    credentialBounds = { ...credentialBounds, ...bounds };
+    roundIssuers.clear();
+};
+
 /** Discards the issuer state, so that a test can register the same input again. */
-export const resetMockCoordinator = () => roundIssuers.clear();
+export const resetMockCoordinator = () => {
+    roundIssuers.clear();
+    credentialBounds = {
+        MaxAmountCredentialValue: ROUND_CREATION_EVENT.RoundParameters.MaxAmountCredentialValue,
+        MaxVsizeAllocationPerAlice: ROUND_CREATION_EVENT.RoundParameters.MaxVsizeAllocationPerAlice,
+    };
+};
 
 /**
  * The issued credentials for a request.
  *
- * A request with no proofs cannot have come from the real credential client, which means
- * the calling suite has stubbed the credential layer because its subject is elsewhere
- * (see `connectionConfirmation.test.ts` and `outputDecomposition.test.ts`). Answer with
- * the right shape and leave the issuer out of it, rather than failing those suites on a
- * request they never meant to make.
+ * `STUBBED_CREDENTIALS_REQUEST` is the one thing answered without the issuer; see the
+ * comment on it.
  */
 const issue = (issuer: CredentialIssuer, request: unknown) => {
-    const proofs = (request as { Proofs?: unknown[] } | undefined)?.Proofs;
-    if (!proofs || proofs.length === 0) {
+    if ((request as { StubbedByTest?: boolean } | undefined)?.StubbedByTest) {
         return { IssuedCredentials: [], Proofs: [] };
     }
 
@@ -93,7 +148,7 @@ const DEFAULT = {
         if (!data?.ZeroAmountCredentialRequests) {
             return { AliceId: Math.random().toString() };
         }
-        const issuers = getIssuers(data.RoundId);
+        const issuers = getRoundIssuers(data.RoundId);
         aliceIdCounter += 1;
 
         return {
@@ -107,7 +162,7 @@ const DEFAULT = {
         if (!data?.ZeroAmountCredentialRequests) {
             return {};
         }
-        const issuers = getIssuers(data.RoundId);
+        const issuers = getRoundIssuers(data.RoundId);
         const confirmation: RequestData = {
             ZeroAmountCredentials: issue(issuers.amount, data.ZeroAmountCredentialRequests),
             ZeroVsizeCredentials: issue(issuers.vsize, data.ZeroVsizeCredentialRequests),
@@ -131,7 +186,7 @@ const DEFAULT = {
         if (!data?.RealAmountCredentialRequests) {
             return {};
         }
-        const issuers = getIssuers(data.RoundId);
+        const issuers = getRoundIssuers(data.RoundId);
 
         return {
             RealAmountCredentials: issue(issuers.amount, data.RealAmountCredentialRequests),
@@ -147,7 +202,7 @@ const DEFAULT = {
         }
         // Output registration is presentation-only: the issuer verifies the presented
         // credentials and the balance proof and issues nothing back.
-        const issuers = getIssuers(data.RoundId);
+        const issuers = getRoundIssuers(data.RoundId);
         issue(issuers.amount, data.AmountCredentialRequests);
         issue(issuers.vsize, data.VsizeCredentialRequests);
 
@@ -199,7 +254,26 @@ const handleRequest = (
     const url = request.url?.substring(1);
     const defaultResponse = DEFAULT[url as keyof typeof DEFAULT] ?? {};
     if (typeof defaultResponse === 'function') {
-        const r = defaultResponse.call(null, requestData);
+        let r: RequestData | string;
+        try {
+            r = defaultResponse.call(null, requestData);
+        } catch (error) {
+            // The issuer rejected the request: a proof that does not verify, a reused
+            // serial number, a range proof of the wrong width. Answer the way the
+            // coordinator answers a bad registration, so the suite fails on the error
+            // instead of hanging on a request nobody replied to.
+            response.statusCode = 500;
+            response.setHeader('Content-Type', 'application/json');
+            response.write(
+                JSON.stringify({
+                    ErrorCode: 'MockIssuerRejectedRequest',
+                    Description: `${url}: ${error.message}`,
+                }),
+            );
+            response.end();
+
+            return;
+        }
         response.setHeader('Content-Type', 'application/json');
         response.write(JSON.stringify(r));
     } else if (typeof defaultResponse === 'string') {

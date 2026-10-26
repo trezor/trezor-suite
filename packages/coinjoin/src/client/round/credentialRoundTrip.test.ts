@@ -10,14 +10,14 @@ import { type Alice } from '../Alice';
  * The credential round trip across phases, against the mock coordinator's real
  * `CredentialIssuer`.
  *
- * This lives in its own file because each per-phase suite stubs something different in
- * order to isolate its own subject: `connectionConfirmation.test.ts` stubs the credential
- * layer to test interval timing, and `outputDecomposition.test.ts` stubs both the
- * decomposer and the credential layer because its fixtures start mid-round with chosen
- * credential values. Nothing is stubbed here, so this is the test that actually shows the
- * client and the issuer agreeing: every range proof, the balance proof and the serial
- * number set are checked by the issuer, and every issued credential's
- * issuer-parameters proof is checked by the client.
+ * The per-phase suites each exercise the credential round trip for their own phase, with
+ * their inputs' credentials minted from the mock coordinator's issuer so that they can
+ * start mid-round (`connectionConfirmation.test.ts`, `outputDecomposition.test.ts`,
+ * `outputRegistration.test.ts`). This file is what joins them up: one input carried
+ * across registration, confirmation and decomposition with nothing minted and nothing
+ * stubbed, so the credentials each phase presents are the ones the phase before it was
+ * issued. Every range proof, the balance proof and the serial number set are checked by
+ * the issuer, and every issued credential's issuer-parameters proof by the client.
  *
  * Re-presenting a credential is rejected by the issuer's serial number set; that is
  * asserted directly in `@trezor/wabisabi-crypto`'s `CredentialIssuer` suite rather than
