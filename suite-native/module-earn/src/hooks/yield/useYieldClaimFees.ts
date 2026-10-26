@@ -26,6 +26,7 @@ import {
 import {
     type NativeSendRootState,
     getFeeAvailability,
+    isPrecomposedTransactionError,
     selectFeeLevels,
     transactionManagementActions,
 } from '@suite-native/transaction-management';
@@ -116,7 +117,10 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
     const feeLevels = useSelector((state: NativeSendRootState) => selectFeeLevels(state));
     const selectedFee = formDraft?.selectedFee ?? 'normal';
     const selectedFeeLevel = feeLevels[selectedFee];
-    const feePreview = isFinalPrecomposedTransaction(selectedFeeLevel) ? selectedFeeLevel : null;
+    const feePreview =
+        baseContext && !isPreparingClaimFee && isFinalPrecomposedTransaction(selectedFeeLevel)
+            ? selectedFeeLevel
+            : null;
     const { isFeeUnavailable } = getFeeAvailability({
         fee: feePreview?.fee ?? null,
         feeLevels,
@@ -173,9 +177,12 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
             }: PrepareClaimFeeParams,
             requestId: number,
         ) => {
+            if (requestId !== requestIdRef.current) return;
+
             const currentFeeInfo = feeInfoRef.current;
 
             if (!currentFeeInfo || !claimFormDraftKey) {
+                setHasFeeEstimationError(true);
                 clearClaimFeeState();
 
                 return;
@@ -221,6 +228,18 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
                     gasLimit: feeLevel.payload.feeLimit,
                 });
 
+                const hasFeeResult = Object.values(claimFeeLevels).some(
+                    level =>
+                        isFinalPrecomposedTransaction(level) ||
+                        (level.type === 'error' && isPrecomposedTransactionError(level.error)),
+                );
+                if (!hasFeeResult) {
+                    setHasFeeEstimationError(true);
+                    clearClaimFeeState();
+
+                    return;
+                }
+
                 dispatch(
                     transactionManagementActions.storeFeeLevels({ feeLevels: claimFeeLevels }),
                 );
@@ -241,6 +260,7 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
                 setIsPreparingClaimFee(false);
             } catch {
                 if (requestId === requestIdRef.current) {
+                    setHasFeeEstimationError(true);
                     clearClaimFeeState();
                 }
             }
@@ -263,7 +283,8 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
     const claimCalldata = prepareClaimFeeParams?.claimCalldata ?? null;
     const claimContractAddress = prepareClaimFeeParams?.contractAddress ?? null;
     const claimChainId = prepareClaimFeeParams?.chainId ?? null;
-    const feeInfoBlockHeight = feeInfo?.blockHeight ?? null;
+    const availableBalance = account?.availableBalance;
+    const feeInfoRevision = useMemo(() => JSON.stringify(feeInfo), [feeInfo]);
 
     useEffect(() => {
         const requestId = requestIdRef.current + 1;
@@ -283,13 +304,15 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
         setIsPreparingClaimFee(true);
         void debounce(() => void prepareClaimFee(params, requestId));
     }, [
+        accountKey,
+        availableBalance,
         claimCalldata,
         claimChainId,
         claimContractAddress,
         clearClaimFeeState,
         debounce,
         feeEstimationRetryKey,
-        feeInfoBlockHeight,
+        feeInfoRevision,
         prepareClaimFee,
         prepareClaimFeeParamsRef,
         setHasFeeEstimationError,
@@ -297,6 +320,7 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
 
     useEffect(
         () => () => {
+            requestIdRef.current += 1;
             dispatch(transactionManagementActions.clearFeeLevels());
         },
         [dispatch],
