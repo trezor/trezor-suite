@@ -34,10 +34,11 @@ export const SidebarDeviceStatus = () => {
         return null;
     }
     const instances = deviceUtils.getDeviceInstances(selectedDevice, devices);
-    const instancesWithState = instances.filter(i => i.state);
+    const instancesWithState = instances.filter(i => i.state?.staticSessionId);
 
     const isConnectionShown =
-        instancesWithState.length === 1 && selectedDevice.useEmptyPassphrase === true;
+        instancesWithState.length === 0 ||
+        (instancesWithState.length === 1 && selectedDevice.useEmptyPassphrase === true);
 
     return (
         <DeviceStatus
