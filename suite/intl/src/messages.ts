@@ -7516,10 +7516,10 @@ export const messages = defineMessages({
         id: 'SETTINGS_ADV_COIN_CONN_INFO_VERSION',
         defaultMessage: 'Backend version',
     },
-    SETTINGS_ADV_COIN_CONN_INFO_NO_CONNECTED: {
-        id: 'SETTINGS_ADV_COIN_CONN_INFO_NO_CONNECTED',
+    SETTINGS_ADV_COIN_CONN_INFO_NOT_CONNECTED: {
+        id: 'SETTINGS_ADV_COIN_CONN_INFO_NOT_CONNECTED',
         defaultMessage:
-            'Connection to the backend server failed. Check your internet connection, verify your custom backend address, reconnect your device, and make sure Bitcoin is enabled in Settings.',
+            'Connection to the backend server failed. Check your internet connection, verify your custom backend address, reconnect your device, and make sure {networkName} is enabled in Settings.',
     },
     TR_LABELING_ADD_LABEL: {
         id: 'TR_LABELING_ADD_LABEL',
