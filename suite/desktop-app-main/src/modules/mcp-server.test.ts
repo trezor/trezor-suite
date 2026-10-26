@@ -48,6 +48,7 @@ jest.mock('../libs/process-icon', () => ({
 import { findProcessFromIncomingPort } from '@trezor/node-utils';
 
 import { init } from './mcp-server';
+import { addMessage } from '../libs/connect-popup-messages';
 
 const TEST_TOKEN = 'test-token-abc123';
 
@@ -67,16 +68,17 @@ const createMockStore = (overrides?: Partial<McpSettings>) => {
     };
 };
 
-const createMockMainWindowProxy = (hasWindow = true) => ({
-    getInstance: jest.fn(() =>
-        hasWindow
-            ? {
-                  webContents: { send: jest.fn() },
-                  isDestroyed: () => false,
-              }
-            : undefined,
-    ),
-});
+const createMockMainWindowProxy = (hasWindow = true) => {
+    // The same window across calls, so a test can read what was sent to it.
+    const mainWindow = hasWindow
+        ? {
+              webContents: { send: jest.fn() },
+              isDestroyed: () => false,
+          }
+        : undefined;
+
+    return { getInstance: jest.fn(() => mainWindow) };
+};
 
 /**
  * Start an MCP server on a free port and return the port + cleanup function.
@@ -180,6 +182,16 @@ const jsonRpcNotification = (method: string, params?: Record<string, unknown>) =
     method,
     params,
 });
+
+const waitFor = async (condition: () => boolean) => {
+    for (let attempt = 0; attempt < 300; attempt++) {
+        if (condition()) return;
+        await new Promise(resolve => {
+            setTimeout(resolve, 10);
+        });
+    }
+    throw new Error('Condition was not met in time');
+};
 
 describe('MCP server', () => {
     let cleanup: (() => void) | undefined;
@@ -582,6 +594,74 @@ describe('MCP server', () => {
             expect(res.status).toBe(202);
             const text = await res.text();
             expect(text).toBe('');
+        });
+    });
+
+    describe('calling process', () => {
+        const popupCall = (mainWindowProxy: ReturnType<typeof createMockMainWindowProxy>) =>
+            mainWindowProxy.getInstance()?.webContents.send.mock.calls[0]?.[1];
+
+        const lastPopupDeferred = () =>
+            (addMessage as jest.Mock).mock.results.at(-1)!.value as {
+                resolve: (value: unknown) => void;
+            };
+
+        // Initializes a session with the given clientInfo and returns the popup call that
+        // a permission-requiring tool call then sent to the renderer.
+        const popupCallOfClient = async (clientInfo?: Record<string, unknown>) => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const initRes = await mcpFetch(server.port, jsonRpc('initialize', { clientInfo }));
+            const sessionId = initRes.headers.get('mcp-session-id')!;
+            const callRes = mcpFetch(
+                server.port,
+                jsonRpc('tools/call', {
+                    name: 'trezor_get_address',
+                    arguments: { coin: 'btc' },
+                }),
+                { sessionId },
+            );
+            await waitFor(() => popupCall(server.mainWindowProxy) !== undefined);
+            const call = popupCall(server.mainWindowProxy);
+            // Answer the popup, so that the request the call belongs to can finish.
+            lastPopupDeferred().resolve({ success: false, error: 'cancelled' });
+            await callRes;
+
+            return call;
+        };
+
+        // Documents the behaviour today: the name the client declared about itself is also used
+        // as its path, which is what the permission is keyed by.
+        it('keeps the declared name of a client as the path of a pathless process', async () => {
+            (findProcessFromIncomingPort as jest.Mock).mockResolvedValueOnce({
+                name: 'node',
+                pid: '300',
+                fullPath: '',
+                warning: true,
+            });
+
+            const call = await popupCallOfClient({ name: 'Claude Code', version: '1.0.0' });
+
+            expect(call.process).toEqual({
+                name: 'Claude Code',
+                fullPath: 'Claude Code',
+                warning: true,
+            });
+        });
+
+        it('keeps the declared name of a client the lookup did not find at all as its path', async () => {
+            // No lsof line for the client endpoint, no lsof installed, or a process of another
+            // user: the declared name is all there is, and it is not a path.
+            (findProcessFromIncomingPort as jest.Mock).mockResolvedValueOnce(undefined);
+
+            const call = await popupCallOfClient({ name: 'Claude Code', version: '1.0.0' });
+
+            expect(call.process).toEqual({
+                name: 'Claude Code',
+                fullPath: 'Claude Code',
+                warning: true,
+            });
         });
     });
 
