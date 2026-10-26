@@ -16841,7 +16841,7 @@ __metadata:
     electron-builder: "npm:27.0.0-alpha.10"
     openpgp: "npm:^6.3.2"
     usb: "npm:^3.1.0"
-    usb-legacy: "npm:usb@2.17.0"
+    usb-legacy: "npm:usb@2.19.1"
   languageName: unknown
   linkType: soft
 
@@ -20107,7 +20107,7 @@ __metadata:
     rimraf: "npm:^6.1.2"
     styled-components: "npm:^6.5.3"
     usb: "npm:^3.1.0"
-    usb-legacy: "npm:usb@2.17.0"
+    usb-legacy: "npm:usb@2.19.1"
     webpack: "npm:5.111.1"
     webpack-cli: "npm:^7.2.3"
   languageName: unknown
@@ -20173,7 +20173,7 @@ __metadata:
     ts-node: "npm:^10.9.2"
     tsx: "npm:^4.21.0"
     usb: "npm:^3.1.0"
-    usb-legacy: "npm:usb@2.17.0"
+    usb-legacy: "npm:usb@2.19.1"
   languageName: unknown
   linkType: soft
 
@@ -20202,7 +20202,7 @@ __metadata:
     "@types/w3c-web-usb": "npm:^1.0.14"
     jest: "npm:29.7.0"
     usb: "npm:^3.1.0"
-    usb-legacy: "npm:usb@2.17.0"
+    usb-legacy: "npm:usb@2.19.1"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -48948,15 +48948,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"usb-legacy@npm:usb@2.17.0":
-  version: 2.17.0
-  resolution: "usb@npm:2.17.0"
+"usb-legacy@npm:usb@2.19.1":
+  version: 2.19.1
+  resolution: "usb@npm:2.19.1"
   dependencies:
     "@types/w3c-web-usb": "npm:^1.0.6"
     node-addon-api: "npm:^8.0.0"
     node-gyp: "npm:latest"
     node-gyp-build: "npm:^4.5.0"
-  checksum: 10/464585012a384fc0a199d0401e1f4966256afb807c1dd09b0f30b829f46516a9529cf0724961193cf4f13f2e9622f349544503e7e830340c8234eb67524a7e21
+  checksum: 10/96b55aed0b0a9b9e9a8f2fc1b1b78175148be793563b151f219da363bd5881f3ab4070dce24e9ceae286bf3b8b47a144da7173a1844514b9216b0f0200f7606e
   languageName: node
   linkType: hard
 
