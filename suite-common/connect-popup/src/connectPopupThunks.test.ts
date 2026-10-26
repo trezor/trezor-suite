@@ -6,22 +6,27 @@ import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { accountsInitialState } from '@suite-common/wallet-core';
 import * as walletUtils from '@suite-common/wallet-utils';
+import TrezorConnect, { type CallMethodAnyResponse } from '@trezor/connect';
 import { TypedError, serializeError } from '@trezor/connect-common/src/constants/errors';
-import { mock } from '@trezor/dependency-injection';
+import { mock, mockNotExpected } from '@trezor/dependency-injection';
 import { type WithServices } from '@trezor/redux-utils';
 import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { connectPopupActions } from './connectPopupActions';
-import { getPopupCallDeferred } from './connectPopupPromiseManager';
+import { getPermissionDeferred, getPopupCallDeferred } from './connectPopupPromiseManager';
 import {
     prepareConnectPopupReducer,
     selectConnectPopupCall,
     selectConnectPopupCallWithState,
 } from './connectPopupReducer';
 import {
+    type ConnectPopupCallThunkDeps,
+    type ConnectPopupCallThunkState,
     type ConnectPopupLoadSelectAccountPageThunkState,
+    connectPopupCallThunk,
     connectPopupFinishCallThunk,
     connectPopupLoadSelectAccountPageThunk,
+    connectPopupVerifyAddressThunk,
 } from './connectPopupThunks';
 
 // prepareNewAccountPayload is the device round-trip the load thunk awaits — exactly once on the
@@ -259,5 +264,92 @@ describe('connectPopupFinishCallThunk', () => {
 
         await expect(deferred.promise).resolves.toEqual({ success: false, error });
         expect(selectConnectPopupCall(store.getState())?.state).toBe('finished');
+    });
+});
+
+const initCallStore = (deviceState: DeviceReducerState = fakeDeviceState) =>
+    createTestCompositionRoot<ConnectPopupCallThunkDeps, ConnectPopupCallThunkState>({
+        services: () => ({
+            analytics: {
+                init: mockNotExpected('init'),
+                enable: mockNotExpected('enable'),
+                disable: mockNotExpected('disable'),
+                isEnabled: mockNotExpected('isEnabled'),
+                setUrl: mockNotExpected('setUrl'),
+                setLoggerEnabled: mockNotExpected('setLoggerEnabled'),
+                report: mock(),
+            },
+            lockDevice: mock<LockDevice>(),
+        }),
+        reducer: combineReducers({
+            connectPopup: connectPopupReducer,
+            device: (state: DeviceReducerState = deviceState) => state,
+        }),
+        preloadedState: {
+            connectPopup: { activeCall: undefined, permissions: [] },
+            device: deviceState,
+        },
+    }).services.store;
+
+const waitFor = async (condition: () => boolean) => {
+    for (let i = 0; i < 50 && !condition(); i++) {
+        await new Promise(resolve => setTimeout(resolve, 0));
+    }
+    expect(condition()).toBe(true);
+};
+
+const mockConnectCall = () =>
+    jest.spyOn(TrezorConnect, 'call').mockImplementation(params =>
+        Promise.resolve(
+            '__info' in params
+                ? ({
+                      success: true,
+                      payload: { info: 'Get address', requiredPermissions: [], useUi: true },
+                  } as Awaited<CallMethodAnyResponse>)
+                : {
+                      success: true,
+                      payload: { address: 'address', path: [], serializedPath: "m/84'/0'/0'/0/0" },
+                  },
+        ),
+    );
+
+const source = {
+    type: 'web',
+    origin: 'https://example.com',
+    manifest: { appName: 'Test app' },
+} as const;
+
+describe('connectPopupCallThunk', () => {
+    afterEach(() => jest.restoreAllMocks());
+
+    // Documents the bug: the payload `device` is spread over the device built from the wallet
+    // selected in Suite, so both the call and the on-device address check run on the payload one.
+    it('runs the call and its address check on the payload device, not the selected wallet', async () => {
+        mockConnectCall();
+        // Never settles: the user exports the address without confirming it on the device.
+        jest.spyOn(TrezorConnect, 'getAddress').mockImplementation(() => new Promise(() => {}));
+        const store = initCallStore();
+        const getCallState = () => store.getState().connectPopup.activeCall?.state;
+
+        const call = store.dispatch(
+            connectPopupCallThunk({
+                method: 'getAddress',
+                payload: { path: "m/84'/0'/0'/0/0", device: { path: fakeDevice.path } },
+                source,
+            }),
+        );
+        await waitFor(() => getCallState() === 'permission-request');
+        store.dispatch(connectPopupActions.approvePermissions());
+        await waitFor(() => getCallState() === 'address-confirmation');
+        store.dispatch(connectPopupVerifyAddressThunk({ index: 0 }));
+        getPermissionDeferred().resolve();
+        await call;
+
+        expect(TrezorConnect.call).toHaveBeenLastCalledWith(
+            expect.objectContaining({ device: { path: fakeDevice.path } }),
+        );
+        expect(TrezorConnect.getAddress).toHaveBeenCalledWith(
+            expect.objectContaining({ device: { path: fakeDevice.path }, showOnTrezor: true }),
+        );
     });
 });
