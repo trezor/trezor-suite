@@ -29,6 +29,7 @@ import {
     type NativeSendRootState,
     type UpdateSelectedFeeLevelThunkParams,
     getFeeAvailability,
+    isPrecomposedTransactionError,
     selectFeeLevels,
     transactionManagementActions,
 } from '@suite-native/transaction-management';
@@ -81,6 +82,7 @@ type ComposeWithdrawFeeParams = {
 
 type BuildYieldWithdrawFeeLevelsParams = {
     amount: string;
+    availableBalance: string;
     feeInfo: FeeInfo;
     gasLimit: string;
     reviewToken: WithdrawFlowData['receiptToken'];
@@ -189,6 +191,7 @@ const getYieldWithdrawFeeState = (formDraft: FormState | null | undefined) => {
 
 const buildYieldWithdrawFeeLevels = ({
     amount,
+    availableBalance,
     feeInfo,
     gasLimit,
     reviewToken,
@@ -224,7 +227,11 @@ const buildYieldWithdrawFeeLevels = ({
                 unsignedTransaction,
             });
 
-            return [feeLevel.label, { ...precomposedTransaction, estimatedFeeLimit: gasLimit }];
+            const transaction = new BigNumber(precomposedTransaction.fee).gt(availableBalance)
+                ? { type: 'error' as const, error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' as const }
+                : { ...precomposedTransaction, estimatedFeeLimit: gasLimit };
+
+            return [feeLevel.label, transaction];
         }),
     );
 };
@@ -277,6 +284,7 @@ export const useYieldWithdrawFees = ({
     flowDataRef.current = flowData;
     const feeStateRef = useRef(feeState);
     feeStateRef.current = feeState;
+    const availableBalance = flowData?.account.availableBalance;
     const selectedFeeLevel = feeLevels[selectedFee];
     const fee = isFinalPrecomposedTransaction(selectedFeeLevel) ? selectedFeeLevel.fee : null;
     const { isFeeUnavailable } = getFeeAvailability({
@@ -357,6 +365,7 @@ export const useYieldWithdrawFees = ({
                 });
                 const withdrawFeeLevels = buildYieldWithdrawFeeLevels({
                     amount: withdrawAmount,
+                    availableBalance: withdrawFlowData.account.availableBalance,
                     feeInfo: withdrawFeeInfo,
                     customFee: withdrawCustomFee,
                     gasLimit: baseFormState.feeLimit,
@@ -379,18 +388,20 @@ export const useYieldWithdrawFees = ({
                     transactionManagementActions.storeFeeLevels({ feeLevels: withdrawFeeLevels }),
                 );
 
-                const resolvedSelectedFee = isFinalPrecomposedTransaction(
-                    withdrawFeeLevels[mergedFormState.selectedFee],
-                )
+                const resolvedSelectedFee = withdrawFeeLevels[mergedFormState.selectedFee]
                     ? mergedFormState.selectedFee
-                    : FEE_LEVEL_LABELS_BY_PRICE.find(label =>
-                          isFinalPrecomposedTransaction(withdrawFeeLevels[label]),
-                      );
+                    : FEE_LEVEL_LABELS_BY_PRICE.find(label => withdrawFeeLevels[label]);
                 const selectedFeeTransaction = resolvedSelectedFee
                     ? withdrawFeeLevels[resolvedSelectedFee]
                     : undefined;
 
-                if (!isFinalPrecomposedTransaction(selectedFeeTransaction)) {
+                if (
+                    !isFinalPrecomposedTransaction(selectedFeeTransaction) &&
+                    !(
+                        selectedFeeTransaction?.type === 'error' &&
+                        isPrecomposedTransactionError(selectedFeeTransaction.error)
+                    )
+                ) {
                     reportComposeError('missing-fee-level');
                     setHasFeeEstimationError(true);
                     dispatch(formDraftActions.removeDraft({ key: withdrawFormDraftKey }));
@@ -405,7 +416,9 @@ export const useYieldWithdrawFees = ({
                         formDraft: {
                             ...mergedFormState,
                             selectedFee: resolvedSelectedFee,
-                            ...getYieldWithdrawSelectedFeeFields(selectedFeeTransaction),
+                            ...(isFinalPrecomposedTransaction(selectedFeeTransaction)
+                                ? getYieldWithdrawSelectedFeeFields(selectedFeeTransaction)
+                                : {}),
                         },
                     }),
                 );
@@ -462,6 +475,7 @@ export const useYieldWithdrawFees = ({
         );
     }, [
         amount,
+        availableBalance,
         composeWithdrawFee,
         debounce,
         dispatch,
