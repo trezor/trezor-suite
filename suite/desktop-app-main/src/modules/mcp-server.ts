@@ -1096,6 +1096,27 @@ const readJsonBody = (req: http.IncomingMessage): Promise<unknown> =>
         req.on('error', reject);
     });
 
+const MAX_CLIENT_NAME_LENGTH = 100;
+
+/**
+ * The name a client declares in `initialize`, which is unvalidated JSON from a local caller. Suite
+ * renders it in the consent prompt and carries it in the session manifest, so anything but a string
+ * is dropped instead of reaching the renderer, and the length is bounded to what a badge can show.
+ */
+const readDeclaredClientName = (params?: Record<string, unknown>) => {
+    const clientInfo = params?.clientInfo;
+    const name =
+        typeof clientInfo === 'object' && clientInfo !== null
+            ? (clientInfo as { name?: unknown }).name
+            : undefined;
+
+    if (typeof name !== 'string') return undefined;
+
+    const declaredName = name.trim().slice(0, MAX_CLIENT_NAME_LENGTH);
+
+    return declaredName || undefined;
+};
+
 export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
     let server: http.Server | null = null;
     let sessionId: string | null = null;
@@ -1264,11 +1285,7 @@ export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
                     sessionId = crypto.randomUUID();
 
                     // Identify the calling process via TCP port lookup + MCP clientInfo
-                    const clientInfo = (
-                        jsonRpcRequest.params as {
-                            clientInfo?: { name?: string; version?: string };
-                        }
-                    )?.clientInfo;
+                    const clientName = readDeclaredClientName(jsonRpcRequest.params);
 
                     const { remotePort } = req.socket;
                     if (remotePort) {
@@ -1294,9 +1311,9 @@ export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
                                 warning: !!processInfo.warning,
                                 icon: await getProcessIcon({ path: processInfo.fullPath, logger }),
                             };
-                        } else if (clientInfo?.name) {
+                        } else if (clientName) {
                             sessionProcessInfo = {
-                                name: clientInfo.name,
+                                name: clientName,
                                 // A path the lookup could not produce stays empty, whether it read
                                 // no path or found no process at all, so that it is never mistaken
                                 // for an identified executable and never becomes a permission key
@@ -1311,17 +1328,17 @@ export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
                                 warning: true,
                             };
                         }
-                    } else if (clientInfo?.name) {
+                    } else if (clientName) {
                         sessionProcessInfo = {
-                            name: clientInfo.name,
+                            name: clientName,
                             // Nothing was looked up, so there is no path to key a permission by.
                             fullPath: '',
                             warning: true,
                         };
                     }
 
-                    if (clientInfo?.name) {
-                        sessionManifest = { ...MCP_MANIFEST, appName: clientInfo.name };
+                    if (clientName) {
+                        sessionManifest = { ...MCP_MANIFEST, appName: clientName };
                     }
 
                     logger.info(

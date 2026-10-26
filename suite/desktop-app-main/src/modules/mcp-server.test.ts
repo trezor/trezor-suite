@@ -648,6 +648,22 @@ describe('MCP server', () => {
             });
         });
 
+        it('ignores a declared name that is not a string', async () => {
+            // The body is parsed JSON from a local caller, and the name ends up as a React child
+            // in the consent prompt, where an object would throw.
+            (findProcessFromIncomingPort as jest.Mock).mockResolvedValueOnce({
+                name: 'node',
+                pid: '300',
+                fullPath: '/usr/bin/node',
+                warning: false,
+            });
+
+            const call = await popupCallOfClient({ name: {} });
+
+            expect(call.process.name).toBe('node');
+            expect(call.manifest.appName).toBe('MCP Agent');
+        });
+
         it('keeps the path of a client the lookup did not find at all empty', async () => {
             // No lsof line for the client endpoint, no lsof installed, or a process of another
             // user: the declared name is all there is, and it is not a path.
