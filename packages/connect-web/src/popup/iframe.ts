@@ -75,6 +75,12 @@ export const getIframeInstance = () => {
     };
 
     const create = (src: string) => {
+        // The page may have removed the iframe (e.g. Turbo or htmx replacing
+        // <body>); without it there is no peer to handshake with.
+        if (initPromise && !getIframeElement()) {
+            destroy();
+        }
+
         if (initPromise) {
             return initPromise.promise;
         }
