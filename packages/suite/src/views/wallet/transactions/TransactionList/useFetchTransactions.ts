@@ -88,6 +88,7 @@ export const useFetchTransactions = (accounts: readonly Account[]) => {
     const [pagesFetched, setPagesFetched] = useState(page);
     const [isFetching, setFetching] = useState(false);
     const [fetchedAll, setFetchedAll] = useState(false);
+    const [isFetchingAll, setFetchingAll] = useState(false);
 
     useEffect(() => {
         setPagesFetched(1);
@@ -182,10 +183,13 @@ export const useFetchTransactions = (accounts: readonly Account[]) => {
             synchronize(async () => {
                 if (fetchedAll) return;
                 setFetching(true);
+                setFetchingAll(true);
                 // NOTE: load all the transactions along but don't wait for it
-                accounts.forEach(account => {
-                    dispatch(fetchAllTransactionsForAccountThunk({ accountKey: account.key }));
-                });
+                Promise.allSettled(
+                    accounts.map(account =>
+                        dispatch(fetchAllTransactionsForAccountThunk({ accountKey: account.key })),
+                    ),
+                ).finally(() => setFetchingAll(false));
                 await Promise.all(
                     accounts.map(account => fetchAccountPage(account, pagesFetched + 1)),
                 );
@@ -196,7 +200,16 @@ export const useFetchTransactions = (accounts: readonly Account[]) => {
         [synchronize, accounts, dispatch, fetchAccountPage, pagesFetched, fetchedAll],
     );
 
-    return { fetchNext, pagesFetched, fetchPage, fetchAll, isFetching, fetchedAll, hasMore };
+    return {
+        fetchNext,
+        pagesFetched,
+        fetchPage,
+        fetchAll,
+        isFetching,
+        isFetchingAll,
+        fetchedAll,
+        hasMore,
+    };
 };
 
 type UseVisibleTransactionsParams = {

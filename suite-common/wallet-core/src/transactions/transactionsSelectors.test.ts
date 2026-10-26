@@ -513,6 +513,19 @@ describe('selectAccountsTransactions', () => {
         ]);
     });
 
+    it('keeps the transfers of a token after a gap', () => {
+        const transactions = [transaction('newest', 300, [USDC])];
+        transactions[3] = transaction('old', 100, [USDC]);
+
+        expect(
+            selectAccountsTransactions(
+                stateWithTransactions({ [FIRST]: transactions }),
+                [FIRST],
+                USDC,
+            ).map(({ txid }) => txid),
+        ).toEqual(['newest', 'old']);
+    });
+
     it('lists nothing without accounts', () => {
         expect(selectAccountsTransactions(stateWithTransactions({}), [])).toEqual([]);
     });

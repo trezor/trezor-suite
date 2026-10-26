@@ -14,7 +14,6 @@ import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config'
 import {
     selectAccountsTransactions,
     selectActiveDustPhishingThreshold,
-    selectAreAllAccountTransactionsLoaded,
     selectHistoricFiatRates,
     selectIsHideSuspiciousTransactions,
     selectIsLoadingAccountTransactions,
@@ -79,10 +78,8 @@ export const MultiAccountTransactionList = ({
     const isLoadingAny = useSelector(state =>
         accountKeys.some(accountKey => selectIsLoadingAccountTransactions(state, accountKey)),
     );
-    const areAllLoaded = useSelector(state =>
-        accountKeys.every(accountKey => selectAreAllAccountTransactionsLoaded(state, accountKey)),
-    );
-    const { fetchNext, fetchAll, fetchedAll, hasMore, isFetching } = useFetchTransactions(accounts);
+    const { fetchNext, fetchAll, fetchedAll, hasMore, isFetching, isFetchingAll } =
+        useFetchTransactions(accounts);
 
     const isHidingSuspicious = useSelector(
         state =>
@@ -136,11 +133,18 @@ export const MultiAccountTransactionList = ({
         [anchor, confirmedTransactions, perPage],
     );
 
+    const [searchQuery, setSearchQuery] = useState('');
+    const [searchResult, setSearchResult] = useState(NO_SEARCH_RESULT);
+    const isSearching = searchQuery.trim() !== '';
+
+    // A token's transfers can be anywhere in the accounts' histories, so its list loads them all.
+    const isLoadingAll = !!contractAddress || !!anchor || isSearching;
+
     useEffect(() => {
-        if (anchor && !fetchedAll) {
+        if (isLoadingAll && !fetchedAll) {
             fetchAll();
         }
-    }, [anchor, fetchedAll, fetchAll]);
+    }, [isLoadingAll, fetchedAll, fetchAll]);
 
     useEffect(() => {
         if (anchorPage !== null) {
@@ -148,17 +152,25 @@ export const MultiAccountTransactionList = ({
         }
     }, [anchorPage]);
 
-    // Until the page is full: for a coin that is one page of every account, a token's transfers
-    // may be spread over many account pages.
+    // A coin's page is one page of every account, so each page shown needs one round at most.
+    const [lastFetchedPage, setLastFetchedPage] = useState(0);
     useEffect(() => {
-        if (!isFetching && hasMore && confirmedCount < currentPage * perPage) {
+        if (isLoadingAll || isFetching || currentPage <= lastFetchedPage) return;
+        setLastFetchedPage(currentPage);
+        if (hasMore && confirmedCount < currentPage * perPage) {
             fetchNext();
         }
-    }, [fetchNext, isFetching, hasMore, confirmedCount, currentPage, perPage]);
+    }, [
+        fetchNext,
+        isLoadingAll,
+        isFetching,
+        hasMore,
+        confirmedCount,
+        currentPage,
+        lastFetchedPage,
+        perPage,
+    ]);
 
-    const [searchQuery, setSearchQuery] = useState('');
-    const [searchResult, setSearchResult] = useState(NO_SEARCH_RESULT);
-    const isSearching = searchQuery.trim() !== '';
     const accountLabels = useSelector(state =>
         accounts.map(account => selectAccountLabelsForSearch(state, account)),
     );
@@ -210,10 +222,15 @@ export const MultiAccountTransactionList = ({
         [searchedTransactions, currentPage, perPage],
     );
     // Pages are counted as they load: XRP and Stellar have no total, and a token's transfers or the
-    // suspicious filter make any total too high.
+    // suspicious filter make any total too high. A list loading everything has no page in reserve.
     const totalItems = isSearching
         ? searchedTransactions.length - pendingTxs.length
-        : confirmedCount + (hasMore ? perPage : 0);
+        : confirmedCount + (hasMore && !isLoadingAll ? perPage : 0);
+
+    // While everything loads, a page shows once it is full, so its rows don't trickle in.
+    const isPageLoading = isLoadingAll
+        ? (isFetchingAll || !fetchedAll) && confirmedTxs.length < perPage
+        : (isLoadingAny || isFetching) && confirmedTxs.length === 0;
 
     const onPageSelected = (page: number) => {
         setCurrentPage(page);
@@ -246,10 +263,7 @@ export const MultiAccountTransactionList = ({
         >
             <Column gap={32} padding={{ top: 16 }}>
                 <TransactionListBody
-                    isLoading={
-                        ((isLoadingAny || isFetching) && confirmedTxs.length === 0) ||
-                        (isSearching && !areAllLoaded && searchedTransactions.length === 0)
-                    }
+                    isLoading={isPageLoading}
                     hasNoSearchResults={
                         isSearching &&
                         visibleTransactions.length > 0 &&

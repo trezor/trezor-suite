@@ -112,7 +112,8 @@ const isTransferOf = (transaction: WalletAccountTransaction, contractAddress: To
 
 /**
  * The transactions of several accounts as one list, newest first, as far as every account has
- * them loaded without a gap. With a contract address, only the transactions moving that token.
+ * them loaded without a gap. With a contract address, only the transactions moving that token,
+ * from all that is loaded: a token's list loads whole histories, where a gap is a short page.
  */
 export const selectAccountsTransactions = createMemoizedSelector(
     [
@@ -127,13 +128,16 @@ export const selectAccountsTransactions = createMemoizedSelector(
     (transactionsByAccount, accountKeys, contractAddress): readonly WalletAccountTransaction[] =>
         returnStableArrayIfEmpty(
             accountKeys
-                .flatMap(accountKey =>
-                    getTransactionsUntilGap(transactionsByAccount[accountKey] ?? []).filter(
-                        transaction =>
-                            contractAddress === undefined ||
-                            isTransferOf(transaction, contractAddress),
-                    ),
-                )
+                .flatMap(accountKey => {
+                    const transactions = transactionsByAccount[accountKey] ?? [];
+
+                    return contractAddress === undefined
+                        ? getTransactionsUntilGap(transactions)
+                        : transactions.filter(
+                              (transaction): transaction is WalletAccountTransaction =>
+                                  !!transaction && isTransferOf(transaction, contractAddress),
+                          );
+                })
                 .sort(sortByBlockHeight),
         ),
     { memoizeOptions: { resultEqualityCheck: shallowEqual } },
