@@ -265,6 +265,12 @@ export type ConnectPopupCallWithState<
 > = Extract<ConnectPopupCallLoaded, { state: CallState; method: Method }>;
 
 export type AppRememberedPermission = {
+    // Only as honest as the path the record travelled: on web the reducer's `storageLoad` case
+    // validates the grant list, while on native redux-persist rehydrates the raw payload, so a
+    // record written by an earlier schema reaches readers with this key missing
+    // (SUITE-NATIVE-4PR). Read it through `readGrantedPermissions` wherever native can reach,
+    // until the planned `types` -> `allowedPermissions` migration makes this type true (item 8
+    // of #30401).
     allowedPermissions: PermissionRequest[];
     silentMode?: boolean;
 } & ConnectCallSource;
