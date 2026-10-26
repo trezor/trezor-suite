@@ -14,6 +14,11 @@ describe('getAccountTotalStakingBalance characterization', () => {
     it.each<{ name: string; account: Account; expected: string | null }>([
         { name: 'eth none', account: mockEthereumStakingAccount('none'), expected: '0' },
         { name: 'eth pending', account: mockEthereumStakingAccount('pending'), expected: '0.75' },
+        {
+            name: 'eth pendingDeposited',
+            account: mockEthereumStakingAccount('pendingDeposited'),
+            expected: '0.25',
+        },
         { name: 'eth active', account: mockEthereumStakingAccount('active'), expected: '2.05' },
         {
             name: 'eth unstaking',

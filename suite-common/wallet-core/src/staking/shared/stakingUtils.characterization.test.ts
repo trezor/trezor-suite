@@ -128,6 +128,17 @@ describe('staking account helpers characterization', () => {
                 },
             },
             {
+                scenario: 'pendingDeposited',
+                expected: {
+                    ...STAKED_READING,
+                    providers: ['everstake'],
+                    stakingData: everstakePoolData({
+                        pendingDepositedBalance: '0.25',
+                        totalPendingStakeBalance: '0.25',
+                    }),
+                },
+            },
+            {
                 scenario: 'active',
                 expected: {
                     ...STAKED_READING,

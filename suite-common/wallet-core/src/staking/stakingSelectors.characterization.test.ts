@@ -169,6 +169,16 @@ describe('staking selectors characterization', () => {
                     cryptoBalanceWithStaking: '2.25',
                 },
             },
+            {
+                scenario: 'pendingDeposited',
+                expected: {
+                    ...ETHEREUM_EMPTY_READING,
+                    hasStaking: true,
+                    isStakePending: true,
+                    totalStakePending: '0.25',
+                    cryptoBalanceWithStaking: '1.75',
+                },
+            },
             { scenario: 'active', expected: ETHEREUM_ACTIVE_READING },
             {
                 scenario: 'unstaking',
