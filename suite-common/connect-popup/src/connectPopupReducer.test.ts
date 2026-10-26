@@ -91,6 +91,20 @@ describe('rememberAppPermissions', () => {
     });
 });
 
+describe('forgetAppPermission', () => {
+    it('throws when forgetting a permission of an app whose granted list is unreadable', () => {
+        expect(() =>
+            connectPopupReducer(
+                stateWith(malformedApp),
+                connectPopupActions.forgetAppPermission({
+                    origin: app.origin,
+                    permission: { permission: 'read_address' },
+                }),
+            ),
+        ).toThrow();
+    });
+});
+
 describe('storageLoad', () => {
     const loadApps = (...apps: AppRememberedPermission[]) =>
         connectPopupReducer(connectPopupInitialState, {
