@@ -89,6 +89,12 @@ export const createRegisterDevice =
         const registrationRequestResult = await deps
             .getTrezorConnect()
             .evoluSignRegistrationRequest({
+                device: {
+                    path: device.path,
+                    state: device.state,
+                    instance: device.instance ?? 0,
+                    useEmptyPassphrase: device.useEmptyPassphrase ?? false,
+                },
                 challenge_from_server: sessionChallenge.payload.challenge,
                 size_to_acquire: DEFAULT_DEVICE_SIZE_QUOTA,
                 proof_of_delegated_identity: proofOfDelegatedIdentity.payload,

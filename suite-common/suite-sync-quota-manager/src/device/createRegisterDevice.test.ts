@@ -1,7 +1,7 @@
 import { DELEGATED_IDENTITY_KEY } from '@suite-common/delegated-identity-key-types/mocks';
 import { type TrezorDeviceWithState } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { createMockDeps } from '@trezor/dependency-injection';
+import { createMockDeps, mock } from '@trezor/dependency-injection';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { err, ok } from '@trezor/type-utils';
 
@@ -9,7 +9,7 @@ import { DEFAULT_DEVICE_SIZE_QUOTA } from '../quotaManagerQuotaSize';
 import { type RegisterDeviceDeps, createRegisterDevice } from './createRegisterDevice';
 
 const deviceWithLegacyRegistrationRequest = mockSuiteDevice(
-    { id: 'device-id-v1' },
+    { id: 'device-id-v1', path: 'selected-device', state: { staticSessionId: 'selected-wallet' } },
     {
         internal_model: DeviceModelInternal.T2T1,
         major_version: 2,
@@ -28,8 +28,32 @@ const deviceWithV2RegistrationRequest = mockSuiteDevice(
 ) as TrezorDeviceWithState;
 
 describe(createRegisterDevice.name, () => {
-    it('registers device using challenge session and Connect signature', async () => {
-        const evoluSignRegistrationRequest = jest.fn(() =>
+    it.each([
+        {
+            instance: undefined,
+            useEmptyPassphrase: undefined,
+            expectedInstance: 0,
+            expectedUseEmptyPassphrase: false,
+        },
+        {
+            instance: 2,
+            useEmptyPassphrase: false,
+            expectedInstance: 2,
+            expectedUseEmptyPassphrase: false,
+        },
+        {
+            instance: 0,
+            useEmptyPassphrase: true,
+            expectedInstance: 0,
+            expectedUseEmptyPassphrase: true,
+        },
+    ])('registers selected device ($instance, $useEmptyPassphrase)', async testCase => {
+        const device: TrezorDeviceWithState = {
+            ...deviceWithLegacyRegistrationRequest,
+            instance: testCase.instance,
+            useEmptyPassphrase: testCase.useEmptyPassphrase,
+        };
+        const evoluSignRegistrationRequest = mock(() =>
             Promise.resolve(
                 ok({
                     certificate_chain: ['device-cert', 'ca-cert'],
@@ -48,12 +72,18 @@ describe(createRegisterDevice.name, () => {
 
         const result = await createRegisterDevice(deps)({
             delegatedKey: DELEGATED_IDENTITY_KEY,
-            device: deviceWithLegacyRegistrationRequest,
+            device,
         });
 
         expect(result).toEqual(ok());
         expect(deps.prepareChallengeSessionFetch).toHaveBeenCalledWith();
         expect(evoluSignRegistrationRequest).toHaveBeenCalledWith({
+            device: {
+                path: 'selected-device',
+                state: { staticSessionId: 'selected-wallet' },
+                instance: testCase.expectedInstance,
+                useEmptyPassphrase: testCase.expectedUseEmptyPassphrase,
+            },
             challenge_from_server: 'aa55',
             size_to_acquire: DEFAULT_DEVICE_SIZE_QUOTA,
             proof_of_delegated_identity:
