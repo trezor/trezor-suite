@@ -10,7 +10,7 @@ import {
     yieldActions,
 } from '@suite-common/wallet-core';
 import { injectNativeAnalytics } from '@suite-native/analytics';
-import { Text } from '@suite-native/atoms';
+import { Text, useBottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     type StackNavigationProps,
@@ -25,8 +25,8 @@ import { injectDispatch } from '@trezor/redux-utils';
 import { ApyDottedUnderline } from '../../components/earn/ApyDottedUnderline';
 import { ApyValue } from '../../components/earn/ApyValue';
 import { EarnCompleteScreenContent } from '../../components/earn/EarnCompleteScreenContent';
+import { YieldApyBreakdownBottomSheet } from '../../components/yield/YieldApyBreakdownBottomSheet';
 import { getYieldDepositCompleteRows } from '../../components/yield/YieldCompleteScreenPresets';
-import { useYieldApyBreakdownAlert } from '../../hooks/yield/useYieldApyBreakdownAlert';
 import { useYieldFlowData } from '../../hooks/yield/useYieldFlowData';
 
 type RouteProps = RouteProp<YieldStackParamList, YieldStackRoutes.YieldDepositComplete>;
@@ -47,7 +47,12 @@ export const YieldDepositCompleteScreen = () => {
         selectYieldSessionByFlowKey(state, 'deposit', flowKey),
     );
 
-    const { show: showYieldApyBreakdownAlert } = useYieldApyBreakdownAlert({ account, vault });
+    const {
+        bottomSheetRef: apyBreakdownBottomSheetRef,
+        openModal: openApyBreakdownBottomSheet,
+        closeModal: closeApyBreakdownBottomSheet,
+    } = useBottomSheetModal();
+
     const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
 
     const handleExit = useCallback(() => {
@@ -97,7 +102,7 @@ export const YieldDepositCompleteScreen = () => {
         return getYieldDepositCompleteRows({
             accountSymbol: account.symbol,
             apyValue: (
-                <ApyDottedUnderline onPress={showYieldApyBreakdownAlert}>
+                <ApyDottedUnderline onPress={openApyBreakdownBottomSheet}>
                     <Text variant="body-md" color="contentPrimary">
                         <ApyValue apy={apy} />
                     </Text>
@@ -116,21 +121,30 @@ export const YieldDepositCompleteScreen = () => {
                 tokenSymbol: hasWrappedInput ? undefined : flowData.token.symbol,
             },
         });
-    }, [showYieldApyBreakdownAlert, account, apy, flowData, resolutionStatus, session]);
+    }, [openApyBreakdownBottomSheet, account, apy, flowData, resolutionStatus, session]);
 
     if (resolutionStatus !== 'resolved' || session?.step !== 'complete') {
         return null;
     }
 
     return (
-        <EarnCompleteScreenContent
-            type="deposit"
-            vaultId={vault.id}
-            buttonTranslationId="earn.yieldCompleteScreen.backToOverview"
-            onButtonPress={handleExit}
-            rows={rows}
-            title={<Translation id="earn.yieldDepositCompleteScreen.title" />}
-            subtitle={<Translation id="earn.yieldDepositCompleteScreen.subtitle" />}
-        />
+        <>
+            <EarnCompleteScreenContent
+                type="deposit"
+                vaultId={vault.id}
+                buttonTranslationId="earn.yieldCompleteScreen.backToOverview"
+                onButtonPress={handleExit}
+                rows={rows}
+                title={<Translation id="earn.yieldDepositCompleteScreen.title" />}
+                subtitle={<Translation id="earn.yieldDepositCompleteScreen.subtitle" />}
+            />
+
+            <YieldApyBreakdownBottomSheet
+                ref={apyBreakdownBottomSheetRef}
+                onClose={closeApyBreakdownBottomSheet}
+                account={account}
+                vault={vault}
+            />
+        </>
     );
 };

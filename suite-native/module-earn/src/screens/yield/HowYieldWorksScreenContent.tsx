@@ -6,7 +6,7 @@ import {
     getYieldVaultContractAddress,
 } from '@suite-common/wallet-core';
 import { injectNativeAnalytics } from '@suite-native/analytics';
-import { Button, TimelineDetailsCard, VStack } from '@suite-native/atoms';
+import { Button, TimelineDetailsCard, VStack, useBottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     Screen,
@@ -21,10 +21,10 @@ import { HowEarnWorksBenefitsSection } from '../../components/earn/HowEarnWorks/
 import { HowEarnWorksHeaderSection } from '../../components/earn/HowEarnWorks/HowEarnWorksHeaderSection';
 import { HowEarnWorksTimelineCard } from '../../components/earn/HowEarnWorks/HowEarnWorksTimelineCard';
 import { useHowYieldWorksPreset } from '../../components/earn/HowEarnWorks/yieldPresets';
+import { YieldApyBreakdownBottomSheet } from '../../components/yield/YieldApyBreakdownBottomSheet';
 import { YieldDisabledAlert } from '../../components/yield/YieldDisabledAlert';
 import { useNavigateBackAnalytics } from '../../hooks/earn/useNavigateBackAnalytics';
 import { useMessageSystemYield } from '../../hooks/yield/useMessageSystemYield';
-import { useYieldApyBreakdownAlert } from '../../hooks/yield/useYieldApyBreakdownAlert';
 
 type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoutes.HowYieldWorks>;
 
@@ -47,7 +47,12 @@ export const HowYieldWorksScreenContent = ({ yieldFlowData }: HowYieldWorksScree
         wrappedNativeSymbol,
     } = yieldFlowData;
 
-    const { show: showYieldApyBreakdownAlert } = useYieldApyBreakdownAlert({ account, vault });
+    const {
+        bottomSheetRef: apyBreakdownBottomSheetRef,
+        openModal: openApyBreakdownBottomSheet,
+        closeModal: closeApyBreakdownBottomSheet,
+    } = useBottomSheetModal({ isNestedSheet: true });
+
     const { analytics } = useServices(injectNativeAnalytics);
     const registerNavigateBackAnalytics = useNavigateBackAnalytics(
         {
@@ -107,7 +112,7 @@ export const HowYieldWorksScreenContent = ({ yieldFlowData }: HowYieldWorksScree
         tokenSymbol: tokenSymbol ?? '',
         vaultTokenSymbol: vaultTokenSymbol ?? '',
         apy,
-        onApyPress: showYieldApyBreakdownAlert,
+        onApyPress: openApyBreakdownBottomSheet,
         bonusRewardTokenSymbol,
         wrappedNativeSymbol,
     });
@@ -117,71 +122,82 @@ export const HowYieldWorksScreenContent = ({ yieldFlowData }: HowYieldWorksScree
     }
 
     return (
-        <Screen header={<ScreenHeader closeActionType="back" />}>
-            <VStack flex={1} justifyContent="space-between">
-                <VStack alignItems="flex-start" spacing="sp32">
-                    <HowEarnWorksHeaderSection
-                        title={
-                            <Translation
-                                id={
-                                    wrappedNativeSymbol !== null
-                                        ? 'earn.howYieldWorksScreen.wrappedNativeVault.defiYieldTitle'
-                                        : 'earn.howYieldWorksScreen.defiYieldTitle'
-                                }
-                                values={{ nativeSymbol: wrappedNativeSymbol }}
-                            />
-                        }
-                        subtitle={
-                            <Translation
-                                id={
-                                    wrappedNativeSymbol !== null
-                                        ? 'earn.howYieldWorksScreen.wrappedNativeVault.defiYieldSubtitle'
-                                        : 'earn.howYieldWorksScreen.defiYieldSubtitle'
-                                }
-                                values={{ nativeSymbol: wrappedNativeSymbol }}
-                            />
-                        }
-                    />
-                    <HowEarnWorksBenefitsSection items={benefitItems} />
-                    <HowEarnWorksTimelineCard
-                        cardTitle={<Translation id="earn.howYieldWorksScreen.timelineCardTitle" />}
-                        bottomSheetTitle={
-                            <Translation id="earn.howYieldWorksScreen.timelineBottomSheetTitle" />
-                        }
-                        onOpen={handleTimelineOpen}
-                    >
-                        {timelineSections.map(section => (
-                            <TimelineDetailsCard
-                                key={section.id}
-                                headerTitle={section.title}
-                                headerIconName={section.iconName}
-                                items={section.items}
-                            />
-                        ))}
-                    </HowEarnWorksTimelineCard>
-                </VStack>
-                <VStack spacing="sp16">
-                    {isDepositDisabled && (
-                        <YieldDisabledAlert
-                            type="deposit"
-                            content={depositDisabledContent}
-                            variant={depositDisabledVariant}
-                        />
-                    )}
-                    <Button
-                        onPress={handleNavigateToYieldConsents}
-                        isDisabled={!route.params.isInfoOnly && isDepositDisabled}
-                    >
-                        <Translation
-                            id={
-                                route.params.isInfoOnly
-                                    ? 'generic.buttons.close'
-                                    : 'generic.buttons.continue'
+        <>
+            <Screen header={<ScreenHeader closeActionType="back" />}>
+                <VStack flex={1} justifyContent="space-between">
+                    <VStack alignItems="flex-start" spacing="sp32">
+                        <HowEarnWorksHeaderSection
+                            title={
+                                <Translation
+                                    id={
+                                        wrappedNativeSymbol !== null
+                                            ? 'earn.howYieldWorksScreen.wrappedNativeVault.defiYieldTitle'
+                                            : 'earn.howYieldWorksScreen.defiYieldTitle'
+                                    }
+                                    values={{ nativeSymbol: wrappedNativeSymbol }}
+                                />
+                            }
+                            subtitle={
+                                <Translation
+                                    id={
+                                        wrappedNativeSymbol !== null
+                                            ? 'earn.howYieldWorksScreen.wrappedNativeVault.defiYieldSubtitle'
+                                            : 'earn.howYieldWorksScreen.defiYieldSubtitle'
+                                    }
+                                    values={{ nativeSymbol: wrappedNativeSymbol }}
+                                />
                             }
                         />
-                    </Button>
+                        <HowEarnWorksBenefitsSection items={benefitItems} />
+                        <HowEarnWorksTimelineCard
+                            cardTitle={
+                                <Translation id="earn.howYieldWorksScreen.timelineCardTitle" />
+                            }
+                            bottomSheetTitle={
+                                <Translation id="earn.howYieldWorksScreen.timelineBottomSheetTitle" />
+                            }
+                            onOpen={handleTimelineOpen}
+                        >
+                            {timelineSections.map(section => (
+                                <TimelineDetailsCard
+                                    key={section.id}
+                                    headerTitle={section.title}
+                                    headerIconName={section.iconName}
+                                    items={section.items}
+                                />
+                            ))}
+                        </HowEarnWorksTimelineCard>
+                    </VStack>
+                    <VStack spacing="sp16">
+                        {isDepositDisabled && (
+                            <YieldDisabledAlert
+                                type="deposit"
+                                content={depositDisabledContent}
+                                variant={depositDisabledVariant}
+                            />
+                        )}
+                        <Button
+                            onPress={handleNavigateToYieldConsents}
+                            isDisabled={!route.params.isInfoOnly && isDepositDisabled}
+                        >
+                            <Translation
+                                id={
+                                    route.params.isInfoOnly
+                                        ? 'generic.buttons.close'
+                                        : 'generic.buttons.continue'
+                                }
+                            />
+                        </Button>
+                    </VStack>
                 </VStack>
-            </VStack>
-        </Screen>
+            </Screen>
+
+            <YieldApyBreakdownBottomSheet
+                ref={apyBreakdownBottomSheetRef}
+                onClose={closeApyBreakdownBottomSheet}
+                account={account}
+                vault={vault}
+            />
+        </>
     );
 };

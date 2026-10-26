@@ -1,13 +1,19 @@
-import { useMemo } from 'react';
-
 import {
     type RewardDtoV2,
-    type TokenDtoV2,
+    type YieldDtoV2,
     sortRewardsByUnderlyingToken,
 } from '@suite-common/earn-stablecoin-api';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/networks';
+import { type Account } from '@suite-common/wallet-types';
 import { getApyPercent } from '@suite-common/wallet-utils';
-import { Box, HStack, Text, VStack } from '@suite-native/atoms';
+import {
+    BottomSheetModal,
+    type BottomSheetModalRef,
+    Box,
+    HStack,
+    Text,
+    VStack,
+} from '@suite-native/atoms';
 import { Icon, TokenIcon, tokenIconSizes } from '@suite-native/icons';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 
@@ -44,11 +50,11 @@ const isAprReward = (reward: RewardDtoV2): boolean => {
     );
 };
 
-interface RewardRowProps {
+type RewardRowProps = {
     reward: RewardDtoV2;
     networkSymbol: NetworkSymbol;
     tokenSymbol: string;
-}
+};
 
 const RewardRow = ({ reward, networkSymbol, tokenSymbol }: RewardRowProps) => {
     const rewardRatePercent = getApyPercent(reward.rate);
@@ -70,8 +76,10 @@ const RewardRow = ({ reward, networkSymbol, tokenSymbol }: RewardRowProps) => {
                                 size="extraSmall"
                                 showNetworkIcon
                             />
+
                             <Text variant="body-md">{rewardSymbol}</Text>
                         </HStack>
+
                         {rewardRatePercent !== null && rewardRatePercent > 0 && (
                             <Text variant="body-md" color="contentBrand">
                                 +{rewardRatePercent.toFixed(2)}%
@@ -84,6 +92,7 @@ const RewardRow = ({ reward, networkSymbol, tokenSymbol }: RewardRowProps) => {
                             </Text>
                         )}
                     </HStack>
+
                     {descriptionKey && (
                         <Box style={{ marginLeft: tokenIconSizes.extraSmall }} paddingLeft="sp8">
                             <Text variant="body-sm" color="contentSecondary">
@@ -97,50 +106,62 @@ const RewardRow = ({ reward, networkSymbol, tokenSymbol }: RewardRowProps) => {
     );
 };
 
-interface YieldApyBreakdownProps {
-    networkSymbol: NetworkSymbol;
-    rewards: RewardDtoV2[];
-    underlyingToken: TokenDtoV2 | undefined;
-    tokenSymbol: string;
-}
+type YieldApyBreakdownBottomSheetProps = {
+    ref: BottomSheetModalRef;
+    onClose: () => void;
+    account: Account;
+    vault?: YieldDtoV2 | null;
+};
 
-export const YieldApyBreakdown = ({
-    networkSymbol,
-    rewards,
-    underlyingToken,
-    tokenSymbol,
-}: YieldApyBreakdownProps) => {
-    const sortedRewards = useMemo(
-        () => sortRewardsByUnderlyingToken(rewards, underlyingToken),
-        [rewards, underlyingToken],
-    );
+export const YieldApyBreakdownBottomSheet = ({
+    ref,
+    onClose,
+    account,
+    vault,
+}: YieldApyBreakdownBottomSheetProps) => {
+    if (!vault?.outputToken?.name) return null;
 
+    const networkSymbol = account.symbol;
+    const rewards = vault.rewardRate.components;
+    const underlyingToken = vault.token;
+    const tokenSymbol = vault.token.symbol;
+
+    const sortedRewards = sortRewardsByUnderlyingToken(rewards, underlyingToken);
     const hasAprReward = !!sortedRewards.some(isAprReward);
 
     return (
-        <Box testID="@account-detail/stablecoin-yield/apy-breakdown-sheet">
-            <VStack spacing="sp20">
-                {sortedRewards.map((reward, index) => (
-                    <RewardRow
-                        key={`${reward.token.symbol}-${reward.yieldSource}-${index}`}
-                        reward={reward}
-                        networkSymbol={networkSymbol}
-                        tokenSymbol={tokenSymbol}
-                    />
-                ))}
-                <HStack spacing="sp8" alignItems="center">
-                    <Icon name="arrowsDownUp" size="medium" color="contentSecondary" />
-                    <Text variant="body-md" color="contentSecondary">
-                        <Translation
-                            id={
-                                hasAprReward
-                                    ? 'moduleAccounts.accountDetail.stablecoinYield.apyBreakdown.footerApyApr'
-                                    : 'moduleAccounts.accountDetail.stablecoinYield.apyBreakdown.footerApy'
-                            }
+        <BottomSheetModal
+            ref={ref}
+            title={vault.outputToken?.name}
+            isCloseDisplayed
+            onClose={onClose}
+        >
+            <Box testID="@account-detail/stablecoin-yield/apy-breakdown-sheet">
+                <VStack spacing="sp20">
+                    {sortedRewards.map((reward, index) => (
+                        <RewardRow
+                            key={`${reward.token.symbol}-${reward.yieldSource}-${index}`}
+                            reward={reward}
+                            networkSymbol={networkSymbol}
+                            tokenSymbol={tokenSymbol}
                         />
-                    </Text>
-                </HStack>
-            </VStack>
-        </Box>
+                    ))}
+
+                    <HStack spacing="sp8" alignItems="center">
+                        <Icon name="arrowsDownUp" size="medium" color="contentSecondary" />
+
+                        <Text variant="body-md" color="contentSecondary">
+                            <Translation
+                                id={
+                                    hasAprReward
+                                        ? 'moduleAccounts.accountDetail.stablecoinYield.apyBreakdown.footerApyApr'
+                                        : 'moduleAccounts.accountDetail.stablecoinYield.apyBreakdown.footerApy'
+                                }
+                            />
+                        </Text>
+                    </HStack>
+                </VStack>
+            </Box>
+        </BottomSheetModal>
     );
 };
