@@ -4,10 +4,9 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
-import { changeCoinVisibilityThunk } from '@suite-common/wallet-core';
+import { changeCoinVisibilityThunk, selectEnabledNetworks } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
-import { selectDeviceEnabledDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import { Form, useForm } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { useServices } from '@trezor/dependency-injection';
@@ -29,7 +28,7 @@ export const CoinEnablingForm = ({ searchQuery }: CoinEnablingFormProps) => {
     const allNetworkSymbols = useSelector(selectSupportedNetworkSymbols);
 
     const navigation = useNavigation();
-    const enabledNetworkSymbols = useSelector(selectDeviceEnabledDiscoveryNetworkSymbols);
+    const enabledNetworks = useSelector(selectEnabledNetworks);
     const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
 
     const { showAlert } = useAlert();
@@ -49,7 +48,7 @@ export const CoinEnablingForm = ({ searchQuery }: CoinEnablingFormProps) => {
 
     const form = useForm<CoinEnablingFormValues>({
         defaultValues: {
-            enabledCoins: getEnabledCoinsFromNetworkSymbols(enabledNetworkSymbols),
+            enabledCoins: getEnabledCoinsFromNetworkSymbols(enabledNetworks),
         },
         validation: coinEnablingFormValidationSchema,
     });
@@ -60,7 +59,7 @@ export const CoinEnablingForm = ({ searchQuery }: CoinEnablingFormProps) => {
             allNetworkSymbols,
         );
         const changedCoins = allNetworkSymbols.filter(
-            symbol => enabledNetworkSymbols.includes(symbol) !== enabledCoins.includes(symbol),
+            symbol => enabledNetworks.includes(symbol) !== enabledCoins.includes(symbol),
         );
 
         if (changedCoins.length === 0) return;
