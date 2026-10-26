@@ -27,13 +27,13 @@ import {
     ScreenHeader,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import { FeeSelector } from '@suite-native/transaction-management';
 import { useServices } from '@trezor/dependency-injection';
 import { MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT } from '@trezor/network-solana/constants';
 import { BigNumber } from '@trezor/utils';
 
 import { EarnAmountCard } from '../../components/earn/EarnAmountCard';
 import { StakingPendingTransactionModal } from '../../components/staking/StakingPendingTransactionModal';
+import { YieldFeeSection } from '../../components/yield/YieldFeeSection';
 import { useComposeEarnFees } from '../../hooks/earn/useComposeEarnFees';
 import { useEarnDeviceStatus } from '../../hooks/earn/useEarnDeviceStatus';
 import { useNavigateBackAnalytics } from '../../hooks/earn/useNavigateBackAnalytics';
@@ -86,18 +86,27 @@ export const StakingClaimReviewScreen = () => {
         }
 
         if (account.networkType === 'solana') {
-            return buildEarnComposeFormState(contractAddress, claimableAmount ?? '0', '');
+            if (!claimableAmount || !new BigNumber(claimableAmount).gt(0)) return undefined;
+
+            return buildEarnComposeFormState(contractAddress, claimableAmount, '');
         }
 
         return buildEarnComposeFormState(contractAddress, '0', '');
     }, [account, claimableAmount]);
 
-    const { formDraft, formDraftKey, isFeeUnavailable, isPrecomposeError, updateFeeLevelThunk } =
-        useComposeEarnFees({
-            accountKey,
-            formState: claimFormState,
-            formDraftPrefix: 'claim',
-        });
+    const {
+        formDraft,
+        formDraftKey,
+        isFeeUnavailable,
+        hasFeeEstimationError,
+        retryFeeEstimation,
+        isFeeReady,
+        updateFeeLevelThunk,
+    } = useComposeEarnFees({
+        accountKey,
+        formState: claimFormState,
+        formDraftPrefix: 'claim',
+    });
 
     const { isLimitExceeded: isAccountLimitExceeded, formattedAmount: claimableLimitAmount } =
         useSolanaStakingLimit({ accountKey, type: 'claim', amount: claimableAmount });
@@ -160,7 +169,7 @@ export const StakingClaimReviewScreen = () => {
                             !canClaimInstantly ||
                             isInsufficientFeeBalance ||
                             isFeeUnavailable ||
-                            isPrecomposeError ||
+                            !isFeeReady ||
                             !(
                                 isSupportedEthStakingNetworkSymbol(symbol) ||
                                 isSupportedSolStakingNetworkSymbol(symbol)
@@ -179,13 +188,16 @@ export const StakingClaimReviewScreen = () => {
                         label={<Translation id="earn.claimReviewScreen.amountLabel" />}
                         cryptoAmount={claimableAmount}
                     />
-                    <FeeSelector
+                    <YieldFeeSection
                         accountKey={accountKey}
-                        updateThunk={updateFeeLevelThunk}
-                        selectedFee={formDraft?.selectedFee ?? 'normal'}
-                        selectedFeePerUnit={formDraft?.feePerUnit}
-                        formDraft={formDraft}
-                        formDraftKey={formDraftKey}
+                        fees={{
+                            hasFeeEstimationError,
+                            retryFeeEstimation,
+                            updateFeeLevelThunk,
+                            selectedFee: formDraft?.selectedFee ?? 'normal',
+                            formDraft,
+                            formDraftKey,
+                        }}
                     />
                     {isInsufficientFeeBalance && (
                         <BannerFull
