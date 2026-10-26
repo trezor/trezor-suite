@@ -14,6 +14,9 @@ import { ethereumNetworkInfoBase } from '../../data/coinInfo';
 import * as settingsStore from '../../data/settingsStore';
 import type { DefinitionsVersion } from '../../utils/definitionsUtils';
 
+// Firmware sends this function signature to ask for the name of the contract at the address.
+const CONTRACT_NAME_FUNCTION_SIGNATURE = '00000000';
+
 interface GetEthereumDefinitions {
     chainId?: number;
     slip44?: number;
@@ -24,10 +27,51 @@ interface GetEthereumDefinitions {
     version?: DefinitionsVersion;
 }
 
+interface GetEthereumDisplayFormat {
+    baseUrl: string;
+    chainId: number;
+    contractAddress: string;
+    functionSignature: string;
+}
+
+/**
+ * Download clear-signing (display-format) definition for given contract and function signature.
+ */
+const getEthereumDisplayFormat = async ({
+    baseUrl,
+    chainId,
+    contractAddress,
+    functionSignature,
+}: GetEthereumDisplayFormat): Promise<string | undefined> => {
+    try {
+        const lowerCaseContractAddress = contractAddress.toLowerCase();
+        const lowerCaseFunctionSignature = functionSignature.toLowerCase();
+        const displayFormatUrl = `${baseUrl}/chain-id/${chainId}/display-format/${lowerCaseContractAddress}-${lowerCaseFunctionSignature}.dat`;
+        const displayFormatDefinition = await fetch(displayFormatUrl);
+        if (displayFormatDefinition.status === 200) {
+            const encodedDisplayFormat = await displayFormatDefinition.arrayBuffer();
+
+            return Buffer.from(encodedDisplayFormat).toString('hex');
+        }
+        if (displayFormatDefinition.status !== 404) {
+            throw new Error(`unexpected status: ${displayFormatDefinition.status}`);
+        }
+    } catch (err) {
+        console.warn(
+            `unable to download or parse ${chainId}/${contractAddress}/${functionSignature} display-format definition. detail: ${err.message}`,
+        );
+    }
+
+    return undefined;
+};
+
 /**
  * For given chainId and optionally contractAddress download ethereum definitions for transaction signing.
  * Definitions are only required to display correct information on display. If definitions
  * are not provided UNKNOWN is shown. This means that should this method fail we only log this but don't return error.
+ *
+ * With functionSignature, only the display-format definition is returned. If it is not found and
+ * the firmware asks for the contract name, network and token definitions are returned instead.
  */
 export const getEthereumDefinitions = async ({
     chainId,
@@ -46,6 +90,22 @@ export const getEthereumDefinitions = async ({
     // loaded (e.g. when this helper is exercised outside of a running connect core).
     const channel = settingsStore.isLoaded() ? settingsStore.get('definitionsChannel') : undefined;
     const baseUrl = getEthereumDefinitionsBaseUrl(version, channel);
+
+    if (chainId && contractAddress && functionSignature) {
+        const encodedDisplayFormat = await getEthereumDisplayFormat({
+            baseUrl,
+            chainId,
+            contractAddress,
+            functionSignature,
+        });
+        if (encodedDisplayFormat) {
+            return { encoded_display_format: encodedDisplayFormat };
+        }
+        // Only a contract name request continues to the token lookup. The contract can be an ERC-20 token.
+        if (functionSignature.toLowerCase() !== CONTRACT_NAME_FUNCTION_SIGNATURE) {
+            return definitions;
+        }
+    }
 
     try {
         const networkDefinitionUrl = `${baseUrl}/${chainId ? 'chain-id' : 'slip44'}/${chainId ?? slip44}/network.dat`;
@@ -74,27 +134,6 @@ export const getEthereumDefinitions = async ({
     } catch (err) {
         console.warn(
             `unable to download or parse ${chainId}/${contractAddress} definition. detail: ${err.message}`,
-        );
-    }
-
-    try {
-        // Clear-signing (display-format) definitions
-        if (chainId && contractAddress && functionSignature) {
-            const lowerCaseContractAddress = contractAddress.toLowerCase();
-            const lowerCaseFunctionSignature = functionSignature.toLowerCase();
-            const displayFormatUrl = `${baseUrl}/chain-id/${chainId}/display-format/${lowerCaseContractAddress}-${lowerCaseFunctionSignature}.dat`;
-            const displayFormatDefinition = await fetch(displayFormatUrl);
-            if (displayFormatDefinition.status === 200) {
-                const encodedDisplayFormat = await displayFormatDefinition.arrayBuffer();
-                definitions.encoded_display_format =
-                    Buffer.from(encodedDisplayFormat).toString('hex');
-            } else if (displayFormatDefinition.status !== 404) {
-                throw new Error(`unexpected status: ${displayFormatDefinition.status}`);
-            }
-        }
-    } catch (err) {
-        console.warn(
-            `unable to download or parse ${chainId}/${contractAddress}/${functionSignature} display-format definition. detail: ${err.message}`,
         );
     }
 

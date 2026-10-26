@@ -30,18 +30,81 @@ describe('getEthereumDefinitions', () => {
     });
 
     it('fetches v2 definitions from the production channel', async () => {
-        await getEthereumDefinitions({
-            chainId: 1,
-            contractAddress,
-            functionSignature: 'A9059CBB',
-            version: 2,
-        });
+        await getEthereumDefinitions({ chainId: 1, contractAddress, version: 2 });
 
         expect(getFetchedUrls()).toEqual([
             'https://data.trezor.io/firmware/definitions/v2/eth/chain-id/1/network.dat',
             `https://data.trezor.io/firmware/definitions/v2/eth/chain-id/1/token-${lowerCaseContractAddress}.dat`,
-            `https://data.trezor.io/firmware/definitions/v2/eth/chain-id/1/display-format/${lowerCaseContractAddress}-a9059cbb.dat`,
         ]);
+    });
+
+    describe('with function signature', () => {
+        const displayFormatUrl = (functionSignature: string) =>
+            `https://data.trezor.io/firmware/definitions/v2/eth/chain-id/1/display-format/${lowerCaseContractAddress}-${functionSignature}.dat`;
+        const networkUrl =
+            'https://data.trezor.io/firmware/definitions/v2/eth/chain-id/1/network.dat';
+        const tokenUrl = `https://data.trezor.io/firmware/definitions/v2/eth/chain-id/1/token-${lowerCaseContractAddress}.dat`;
+
+        const mockFoundUrls = (foundUrls: string[]) =>
+            mockedFetch.mockImplementation(url =>
+                Promise.resolve(
+                    (foundUrls.includes(url as string)
+                        ? {
+                              status: 200,
+                              arrayBuffer: () => Promise.resolve(new Uint8Array([1]).buffer),
+                          }
+                        : { status: 404 }) as Response,
+                ),
+            );
+
+        it.each(['A9059CBB', '00000000'])(
+            'returns only the display format when found for %s',
+            async functionSignature => {
+                const lowerCaseFunctionSignature = functionSignature.toLowerCase();
+                mockFoundUrls([displayFormatUrl(lowerCaseFunctionSignature), networkUrl, tokenUrl]);
+
+                const definitions = await getEthereumDefinitions({
+                    chainId: 1,
+                    contractAddress,
+                    functionSignature,
+                    version: 2,
+                });
+
+                expect(getFetchedUrls()).toEqual([displayFormatUrl(lowerCaseFunctionSignature)]);
+                expect(definitions).toEqual({ encoded_display_format: '01' });
+            },
+        );
+
+        it('returns no definitions when the display format is not found', async () => {
+            mockFoundUrls([networkUrl, tokenUrl]);
+
+            const definitions = await getEthereumDefinitions({
+                chainId: 1,
+                contractAddress,
+                functionSignature: 'A9059CBB',
+                version: 2,
+            });
+
+            expect(getFetchedUrls()).toEqual([displayFormatUrl('a9059cbb')]);
+            expect(definitions).toEqual({});
+        });
+
+        it('falls back to the network and token for a contract name request', async () => {
+            mockFoundUrls([networkUrl, tokenUrl]);
+
+            const definitions = await getEthereumDefinitions({
+                chainId: 1,
+                contractAddress,
+                functionSignature: '00000000',
+                version: 2,
+            });
+
+            expect(getFetchedUrls()).toEqual([displayFormatUrl('00000000'), networkUrl, tokenUrl]);
+            expect(definitions).toEqual({
+                encoded_network: expect.any(ArrayBuffer),
+                encoded_token: expect.any(ArrayBuffer),
+            });
+        });
     });
 
     it.each([
