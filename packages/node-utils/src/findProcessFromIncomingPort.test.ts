@@ -2,6 +2,7 @@ import childProcess, { type ChildProcess } from 'child_process';
 import { EventEmitter } from 'events';
 import { promises as fs } from 'fs';
 import net from 'net';
+import { basename } from 'path';
 
 import { findProcessFromIncomingPort } from './findProcessFromIncomingPort';
 import { getFreePort } from './getFreePort';
@@ -32,7 +33,9 @@ describe('findProcessFromIncomingPort', () => {
                     expect(processInfo?.name).toEqual('node');
                     break;
                 default:
-                    expect(processInfo?.name).toEqual('MainThread');
+                    // The basename of /proc/<pid>/exe — the executable this test runs under — not
+                    // the `comm` string the jest worker thread names itself with.
+                    expect(processInfo?.name).toEqual(basename(process.execPath));
             }
         } finally {
             server.close();
@@ -125,9 +128,7 @@ describe('findProcessFromIncomingPort for an accepted connection', () => {
         expect(spawn).toHaveBeenCalledTimes(1);
     });
 
-    // Documents the behaviour today: the name is the lsof COMMAND column, i.e. the `comm` string
-    // the process set for itself, while the path is the executable the permission is keyed by.
-    test('names a Linux process by the name it chose for itself, not by its executable', async () => {
+    test('names a Linux process by its executable, not by the name the process chose for itself', async () => {
         setPlatform('linux');
         mockCommands([
             [
@@ -140,7 +141,7 @@ describe('findProcessFromIncomingPort for an accepted connection', () => {
         const processInfo = await findProcessFromIncomingPort(40000, true, connection);
 
         expect(processInfo).toEqual({
-            name: 'google-chrome',
+            name: 'python3.14',
             pid: '300',
             fullPath: '/usr/bin/python3.14',
         });

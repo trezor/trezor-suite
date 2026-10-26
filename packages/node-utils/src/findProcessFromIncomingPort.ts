@@ -1,5 +1,6 @@
 import { spawn } from 'child_process';
 import { promises as fs } from 'fs';
+import { basename } from 'path';
 
 function spawnAndCollectStdout(command: string): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -143,7 +144,12 @@ export async function findProcessFromIncomingPort(
                     const fullPath = exe.replace(DELETED_EXE_SUFFIX, '');
                     // Binaries can be all over the place on Linux, so we don't check the path
 
-                    return { name: sanitizedName, pid, fullPath };
+                    // The name the user consents against is the basename of the same executable
+                    // the permission is keyed by, so the consent and the grant name one thing. It
+                    // is no more trustworthy than the `comm` string lsof prints, which a process
+                    // picks for itself with prctl(PR_SET_NAME) — nothing constrains where a Linux
+                    // binary may live, see above — only consistent with the key.
+                    return { name: basename(fullPath), pid, fullPath };
                 }
             }
 
