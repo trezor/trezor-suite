@@ -81,13 +81,13 @@ describe('rememberAppPermissions', () => {
 
     // A record persisted on native can reach the reducer without `allowedPermissions`, where the
     // storageLoad validation never runs (SUITE-NATIVE-4PR).
-    it('throws when remembering over a record whose granted list is unreadable', () => {
-        expect(() =>
-            connectPopupReducer(
-                stateWith(malformedApp),
-                connectPopupActions.rememberAppPermissions(app),
-            ),
-        ).toThrow();
+    it('remembers over a record whose granted list is unreadable', () => {
+        const state = connectPopupReducer(
+            stateWith(malformedApp),
+            connectPopupActions.rememberAppPermissions(app),
+        );
+
+        expect(state.permissions).toEqual([app]);
     });
 });
 
