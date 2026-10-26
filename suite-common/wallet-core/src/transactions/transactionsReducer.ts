@@ -1,6 +1,7 @@
 import { freeze, isAnyOf, isDraft, original } from '@reduxjs/toolkit';
 
 import type { AccountKey } from '@suite-common/wallet-types';
+import { type AccountInfo } from '@trezor/connect';
 import {
     type ActionTypesDep,
     type ReducersDep,
@@ -9,10 +10,14 @@ import {
 
 import { mergeTransactions } from './mergeTransactions';
 import { transactionsActions } from './transactionsActions';
-import type { TransactionsState } from './transactionsReducerTypes';
+import type {
+    AccountTransactionsHistoryStatus,
+    TransactionsState,
+} from './transactionsReducerTypes';
 import {
     fetchAllTransactionsForAccountThunk,
     fetchTransactionsPageThunk,
+    hasTransactionsPageAfter,
 } from './transactionsThunks';
 import { accountsActions } from '../accounts/accountsActions';
 
@@ -29,6 +34,34 @@ const initializeAccount = (state: TransactionsState, accountKey: AccountKey) => 
     }
 
     return state.transactions[accountKey];
+};
+
+/** What a fetched page adds to the account's history walk. Only pages fetched in order count. */
+type GetHistoryStatusAfterPageParams = {
+    status: Partial<AccountTransactionsHistoryStatus> | undefined;
+    page: number;
+    perPage: number;
+    result: AccountInfo | 'ALREADY_FETCHED';
+};
+
+const getHistoryStatusAfterPage = ({
+    status,
+    page,
+    perPage,
+    result,
+}: GetHistoryStatusAfterPageParams): Partial<AccountTransactionsHistoryStatus> => {
+    const { fetchedPages } = status ?? {};
+    const fetchedCount = fetchedPages?.perPage === perPage ? (fetchedPages?.count ?? 0) : 0;
+
+    if (page > fetchedCount + 1) {
+        return {};
+    }
+
+    return {
+        fetchedPages: { count: Math.max(page, fetchedCount), perPage },
+        ...(page >= fetchedCount &&
+            !hasTransactionsPageAfter(result, page) && { areAllTransactionsLoaded: true }),
+    };
 };
 
 export type TransactionsReducerDeps = ActionTypesDep<'storageLoad'> &
@@ -101,11 +134,20 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
                 });
             })
 
-            .addCase(fetchTransactionsPageThunk.fulfilled, (state, { meta }) => {
-                state.fetchStatusDetail[meta.arg.accountKey] = {
-                    ...state.fetchStatusDetail[meta.arg.accountKey],
+            .addCase(fetchTransactionsPageThunk.fulfilled, (state, { meta, payload }) => {
+                const { accountKey } = meta.arg;
+                const detail = state.fetchStatusDetail[accountKey];
+
+                state.fetchStatusDetail[accountKey] = {
+                    ...detail,
                     status: 'idle',
                     error: null,
+                    ...getHistoryStatusAfterPage({
+                        status: detail,
+                        page: meta.arg.page,
+                        perPage: meta.arg.perPage,
+                        result: payload,
+                    }),
                 };
             })
             .addCase(fetchAllTransactionsForAccountThunk.fulfilled, (state, { meta }) => {

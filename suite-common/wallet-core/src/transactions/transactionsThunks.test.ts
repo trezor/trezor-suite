@@ -13,6 +13,7 @@ import {
     networkSpecificDefaultSolana,
 } from '@suite-common/wallet-types/mocks';
 import { isPending } from '@suite-common/wallet-utils';
+import { type AccountInfo } from '@trezor/connect';
 import {
     SOLANA_BLOCKHASH_VALIDITY_BLOCKS,
     SOLANA_SLOT_TIME_MS,
@@ -28,6 +29,7 @@ import {
     addFakePendingSolanaSendTxThunk,
     addFakePendingSolanaStakeTxThunk,
     addFakePendingStellarTxThunk,
+    hasTransactionsPageAfter,
 } from './transactionsThunks';
 import { blockchainInitialState } from '../blockchain/blockchainReducer';
 
@@ -588,5 +590,37 @@ describe('Solana fake pending transactions', () => {
 
             expect(getAddedTransaction(actions)).toBeUndefined();
         });
+    });
+});
+
+describe(hasTransactionsPageAfter.name, () => {
+    const page = (transactionCount: number, total?: number) =>
+        ({
+            history: { transactions: Array.from({ length: transactionCount }, () => ({})) },
+            ...(total === undefined ? {} : { page: { total } }),
+        }) as unknown as AccountInfo;
+
+    it('has one more while the reported total is not reached', () => {
+        expect(hasTransactionsPageAfter(page(25, 3), 1)).toBe(true);
+        expect(hasTransactionsPageAfter(page(25, 3), 3)).toBe(false);
+    });
+
+    it('takes the total of an earlier page when a response leaves it out', () => {
+        expect(hasTransactionsPageAfter(page(25), 1)).toBe(false);
+        expect(hasTransactionsPageAfter(page(25), 1, 3)).toBe(true);
+    });
+
+    it('ends at an empty page, however many the backend reports', () => {
+        expect(hasTransactionsPageAfter(page(0, 10), 1, 10)).toBe(false);
+    });
+
+    it('has one more while a cursor is handed over', () => {
+        const withMarker = { ...page(25), marker: { ledger: 1, seq: 1 } } as AccountInfo;
+
+        expect(hasTransactionsPageAfter(withMarker, 1)).toBe(true);
+    });
+
+    it('has one more when the page was stored before', () => {
+        expect(hasTransactionsPageAfter('ALREADY_FETCHED', 9)).toBe(true);
     });
 });

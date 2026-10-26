@@ -26,7 +26,6 @@ import {
     getRbfParams,
     getTargetAmount,
     getTransactionWithLowestNonce,
-    getTransactionsUntilGap,
     groupJointTransactions,
     groupTokensTransactionsByContractAddress,
     groupTransactionsByDate,
@@ -1267,23 +1266,5 @@ describe('transaction utils', () => {
         it('returns undefined when the form is missing', () => {
             expect(getDecreaseOutputId(buildBumpFeeRbfTx(true), undefined)).toBeUndefined();
         });
-    });
-});
-
-describe(getTransactionsUntilGap.name, () => {
-    const transaction = (txid: string) => ({ txid }) as WalletAccountTransaction;
-
-    it('keeps every transaction when no page is missing', () => {
-        expect(getTransactionsUntilGap([transaction('a'), transaction('b')])).toEqual([
-            transaction('a'),
-            transaction('b'),
-        ]);
-    });
-
-    it('stops at the first page that was not fetched', () => {
-        const transactions: WalletAccountTransaction[] = [transaction('newest')];
-        transactions[3] = transaction('old');
-
-        expect(getTransactionsUntilGap(transactions)).toEqual([transaction('newest')]);
     });
 });

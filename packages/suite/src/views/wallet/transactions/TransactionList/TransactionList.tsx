@@ -57,7 +57,7 @@ export const TransactionList = ({
     const searchLabels = useSelector(state => selectAccountLabelsForSearch(state, account));
 
     const accounts = useMemo(() => [account], [account]);
-    const { fetchPage, fetchedAll, fetchAll } = useFetchTransactions(accounts);
+    const { fetchPage, fetchedAll, fetchAll } = useFetchTransactions(account, allTransactions);
 
     // Search
     const [searchQuery, setSearchQuery] = useState('');

@@ -26,6 +26,13 @@ export const commonQueryKeys = {
     ],
     merklRewards: (...args: any[]) => ['merkl-rewards', ...args],
     missingRateTickers: (...args: any[]) => ['missing-rate-tickers', ...args],
+    transactionsPage: (
+        accountKeys: readonly string[],
+        contractAddress: string | undefined,
+        page: number,
+        perPage: number,
+    ) => ['transactions', 'page', accountKeys, contractAddress ?? null, page, perPage],
+    allTransactions: (accountKeys: readonly string[]) => ['transactions', 'all', accountKeys],
     // `lastKnownNonce` (account.misc.nonce) is part of the key, not just an input to the fetcher —
     // when it changes (e.g. a delayed accountsActions.updateAccount lands after a tx was already
     // added to the store), the query must be treated as brand new and refetched, rather than
