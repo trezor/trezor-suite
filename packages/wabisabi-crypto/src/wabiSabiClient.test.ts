@@ -124,6 +124,49 @@ describe('WabiSabiClient — get-real-credential-requests vectors', () => {
     });
 });
 
+/**
+ * `createRequestWithYields` is what the coinjoin client actually calls, so it has to
+ * produce the very same request as the synchronous driver the vectors above pin — the
+ * yields may only move when the work happens, never what it computes.
+ */
+describe('WabiSabiClient — yielding between proofs', () => {
+    it('reproduces the get-real-credential-requests vectors step by step', async () => {
+        for (const vector of getRealCredentialRequests) {
+            const {
+                AmountsToRequest,
+                CredentialIssuerParameters,
+                MaxCredentialValue,
+                CredentialsToPresent,
+            } = vector.Request;
+            const build = () =>
+                new WabiSabiClient(
+                    deserializeIssuerParameters(CredentialIssuerParameters),
+                    new DeterministicRandom(0),
+                    MaxCredentialValue,
+                );
+            const presented = CredentialsToPresent.map(deserializeCredential);
+
+            let yields = 0;
+            const { credentialsRequest } = await build().createRequestWithYields(
+                AmountsToRequest,
+                presented,
+                () => {
+                    yields += 1;
+
+                    return Promise.resolve();
+                },
+            );
+
+            expect(serializeCredentialsRequest(credentialsRequest)).toEqual(
+                vector.ExpectedResponse.RealCredentialRequests.CredentialsRequest,
+            );
+            // Two statement commitments and two nonce vectors per presented credential
+            // and per requested one, plus the balance proof's pair.
+            expect(yields).toBe(2 * (presented.length + (AmountsToRequest.length > 0 ? 2 : 0)) + 2);
+        }
+    });
+});
+
 describe('WabiSabiClient — get-credentials vectors', () => {
     const vector = getCredentials[0]!;
     const { CredentialIssuerParameters, CredentialsResponse, CredentialsValidationData } =

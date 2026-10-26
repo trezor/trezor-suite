@@ -1,7 +1,7 @@
 import { secp256k1 } from '@noble/curves/secp256k1.js';
 
 import { GroupElement, groupElementFromText, precomputeGenerator } from './groupElement';
-import { type Scalar, scalarNegate, scalarPowerOfTwo } from './scalar';
+import { type Scalar, scalarFromNumber, scalarNegate, scalarPowerOfTwo } from './scalar';
 
 /**
  * Port of `NWabiSabi/WabiSabi/Crypto/Groups/Generators.cs`.
@@ -109,6 +109,49 @@ export const NegatedGhPowersOfTwo: readonly GroupElement[] = ScalarPowersOfTwo.m
  * than a fresh point on every call; upstream computes it once per statement too.
  */
 export const NegatedGh: GroupElement = precomputeGenerator(Gh.negate(), BASE_GENERATOR_WINDOW);
+
+/**
+ * The width a mainnet amount credential's range proof uses,
+ * `ceil(log2(MaxAmountCredentialValue))` for the 43 000 BTC upper bound every round has
+ * carried so far. Only `warmUp` reads it, and only to decide how many of the
+ * powers-of-two tables to build ahead.
+ */
+export const MAINNET_RANGE_PROOF_WIDTH = 42;
+
+/**
+ * Builds the precomputed tables up front, handing the event loop back between them.
+ *
+ * The tables are lazy, so without this the first credential request of a process pays
+ * for all of them: measured at 380 ms in one uninterrupted stretch, which is exactly
+ * what the budget for a single synchronous computation is about. Most of it is the
+ * powers-of-two tables, one per bit of the range proof. Called from
+ * `CoinjoinClient.enable()`, which is before a round rather than inside one; a width
+ * wider than asked for here still works, its remaining tables are just built lazily as
+ * upstream's are.
+ */
+export const warmUp = async (
+    yieldToCaller: () => Promise<void>,
+    rangeProofWidth = MAINNET_RANGE_PROOF_WIDTH,
+) => {
+    // Doing one multiplication is what builds the table, and `@noble/curves` keeps a
+    // separate one for the constant-time and the variable-time path, so the base
+    // generators — which are multiplied both ways — are touched twice. Multiplying by
+    // three rather than one or zero matters: those two have short circuits in front of
+    // the table.
+    const three = scalarFromNumber(3);
+    for (const generator of [...Object.values(DERIVED), NegatedGh]) {
+        generator.multiply(three);
+        await yieldToCaller();
+        generator.multiplyUnsafe(three);
+        await yieldToCaller();
+    }
+    // The powers of two are only ever reached through a multi-scalar multiplication,
+    // which is variable time.
+    for (let i = 0; i < Math.min(rangeProofWidth, NegatedGhPowersOfTwo.length); i++) {
+        (NegatedGhPowersOfTwo[i] as GroupElement).multiplyUnsafe(three);
+        await yieldToCaller();
+    }
+};
 
 const FRIENDLY_NAMES: [GroupElement, string][] = [
     [G, 'Standard'],

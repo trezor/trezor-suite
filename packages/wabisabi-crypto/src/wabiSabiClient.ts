@@ -15,12 +15,13 @@ import {
 } from './credentialRequesting';
 import { WabiSabiCryptoError, WabiSabiCryptoErrorCode } from './errors';
 import * as Generators from './generators';
-import { type Knowledge } from './linearRelation';
+import { type Knowledge, type Proof } from './linearRelation';
 import {
     balanceProofKnowledge,
     issuerParametersStatement,
     pedersenCommitment,
     prove,
+    proveWithYields,
     rangeProofKnowledge,
     showCredentialKnowledge,
     verify,
@@ -117,6 +118,44 @@ export class WabiSabiClient {
         amountsToRequest: readonly number[],
         credentialsToPresent: readonly Credential[],
     ): RealCredentialsRequestData {
+        const { transcript, knowledge, build } = this.prepareRequest(
+            amountsToRequest,
+            credentialsToPresent,
+        );
+
+        return build(prove(transcript, knowledge, this.random));
+    }
+
+    /**
+     * `createRequest`, handing the event loop back between the proofs it is made of.
+     *
+     * A mainnet amount request is a few thousand secp256k1 multiplications and takes a
+     * couple of hundred milliseconds; in the desktop build it now runs on the Electron
+     * main process event loop, which also serves device IPC. The proofs are identical to
+     * `createRequest`'s — same steps, same order, same randomness — so a caller that can
+     * await should prefer this one. See `proveWithYields`.
+     */
+    async createRequestWithYields(
+        amountsToRequest: readonly number[],
+        credentialsToPresent: readonly Credential[],
+        yieldToCaller: () => Promise<void>,
+    ): Promise<RealCredentialsRequestData> {
+        const { transcript, knowledge, build } = this.prepareRequest(
+            amountsToRequest,
+            credentialsToPresent,
+        );
+
+        return build(await proveWithYields(transcript, knowledge, this.random, yieldToCaller));
+    }
+
+    /**
+     * Everything a real request needs before the proofs: the presentations, the issuance
+     * requests and the witnesses. Shared by the two drivers above.
+     */
+    private prepareRequest(
+        amountsToRequest: readonly number[],
+        credentialsToPresent: readonly Credential[],
+    ) {
         const credentialAmountsToRequest = [...amountsToRequest];
         if (amountsToRequest.length > 0) {
             const missing = this.numberOfCredentials - amountsToRequest.length;
@@ -184,17 +223,21 @@ export class WabiSabiClient {
             sum(amountsToRequest) - sum(credentialsToPresent.map(credential => credential.value));
 
         return {
-            credentialsRequest: new RealCredentialsRequest(
-                delta,
-                presentations,
-                credentialsToRequest,
-                prove(transcript, knowledgeToProve, this.random),
-            ),
-            credentialsResponseValidation: new CredentialsResponseValidation(
-                transcript,
-                credentialsToPresent,
-                validationData,
-            ),
+            transcript,
+            knowledge: knowledgeToProve,
+            build: (proofs: Proof[]): RealCredentialsRequestData => ({
+                credentialsRequest: new RealCredentialsRequest(
+                    delta,
+                    presentations,
+                    credentialsToRequest,
+                    proofs,
+                ),
+                credentialsResponseValidation: new CredentialsResponseValidation(
+                    transcript,
+                    credentialsToPresent,
+                    validationData,
+                ),
+            }),
         };
     }
 

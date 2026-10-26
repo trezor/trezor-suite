@@ -1,6 +1,6 @@
 import { Credential } from './credential';
 import * as Generators from './generators';
-import { GroupElement, multiScalarMultiply } from './groupElement';
+import { GroupElement, groupElementsEqual, multiScalarMultiply } from './groupElement';
 import { Knowledge, Proof, Statement } from './linearRelation';
 import * as ProofSystem from './proofSystem';
 import { type Random, secureRandom } from './random';
@@ -271,6 +271,41 @@ describe('ProofSystem', () => {
             ),
         ).toBe(false);
     });
+
+    /**
+     * The prover builds `\sum 2^i * B_i` from the openings of its own bit commitments
+     * rather than by multiplying each commitment, which is the single largest saving in
+     * a mainnet amount request. The two have to agree exactly, or the verifier (which
+     * only has the public commitments) computes a different statement and every proof
+     * is rejected — so compare the statements term by term, not just the verdict.
+     */
+    it.each([1, 8, 37, 42])(
+        'builds the same width-%i statement as a verifier who only has the bit commitments',
+        width => {
+            const amount = (
+                (1n << BigInt(width)) - 7n > 0n ? (1n << BigInt(width)) - 7n : 1n
+            ) as Scalar;
+            const randomness = rnd.getScalar();
+            const { knowledge, bitCommitments } = ProofSystem.rangeProofKnowledge(
+                amount,
+                randomness,
+                width,
+                rnd,
+            );
+            const ma = Generators.Gg.multiply(amount).add(Generators.Gh.multiply(randomness));
+            const verifierStatement = ProofSystem.rangeProofStatement(ma, bitCommitments, width);
+
+            expect(
+                groupElementsEqual(
+                    knowledge.statement.publicPoints,
+                    verifierStatement.publicPoints,
+                ),
+            ).toBe(true);
+            expect(
+                groupElementsEqual(knowledge.statement.generators, verifierStatement.generators),
+            ).toBe(true);
+        },
+    );
 
     it('can prove and verify compound zero proofs', () => {
         const r0 = rnd.getScalar();
