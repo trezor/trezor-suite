@@ -1,3 +1,4 @@
+export { EarnDeviceConnectionGuard } from './components/earn/EarnDeviceConnectionGuard';
 export { TokenSettingsBottomSheet } from './components/earn/TokenSettingsBottomSheet';
 export { FiveBinariesHomeBanner } from './components/staking/FiveBinariesHomeBanner';
 export { StakingApyBadge } from './components/staking/StakingApyBadge';

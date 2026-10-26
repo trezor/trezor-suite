@@ -17,7 +17,6 @@ import {
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { EarnDeviceConnectionGuard } from '../../components/earn/EarnDeviceConnectionGuard';
 import { WrappedNativeTokenReviewContent } from '../../components/earn/WrappedNativeTokenReviewContent';
 import { useWrappedNativeReviewPreview } from '../../hooks/earn/useWrappedNativeReviewPreview';
 import { useYieldFlowAnalytics } from '../../hooks/yield/useYieldFlowAnalytics';
@@ -107,18 +106,16 @@ export const YieldWithdrawUnwrapReviewScreen = () => {
     }
 
     return (
-        <EarnDeviceConnectionGuard>
-            <WrappedNativeTokenReviewContent
-                account={account}
-                amount={review.amount}
-                flowContext="in-flow"
-                flowType="unwrap"
-                onBroadcast={handleBroadcast}
-                onError={handleReviewError}
-                preview={preview}
-                spentToken={spentToken}
-                unsignedTransaction={review.unsignedTransaction}
-            />
-        </EarnDeviceConnectionGuard>
+        <WrappedNativeTokenReviewContent
+            account={account}
+            amount={review.amount}
+            flowContext="in-flow"
+            flowType="unwrap"
+            onBroadcast={handleBroadcast}
+            onError={handleReviewError}
+            preview={preview}
+            spentToken={spentToken}
+            unsignedTransaction={review.unsignedTransaction}
+        />
     );
 };

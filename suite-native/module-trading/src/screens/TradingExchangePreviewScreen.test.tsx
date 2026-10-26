@@ -60,12 +60,6 @@ jest.mock('@react-navigation/native', () => ({
         }) as RouteProp<RootStackParamList, RootStackRoutes.TradingExchangePreview>,
 }));
 
-let mockIsDeviceConnected = true;
-jest.mock('@suite-common/device', () => ({
-    ...jest.requireActual('@suite-common/device'),
-    selectIsDeviceConnected: () => mockIsDeviceConnected,
-}));
-
 const mockConfirmTrade = jest.fn().mockResolvedValue(Promise.resolve());
 const mockComposeTradingTransaction = jest.fn();
 const mockSignAndSendTransaction = jest.fn();
@@ -194,7 +188,6 @@ describe('TradingExchangePreviewScreen', () => {
         jest.clearAllMocks();
         mockFocusHandlers = new Set();
         mockTxnErrorString = null;
-        mockIsDeviceConnected = true;
         mockUseExchangeIssue.mockReturnValue({
             isSimulationEnabled: false,
             isSimulationLoading: false,
@@ -219,14 +212,6 @@ describe('TradingExchangePreviewScreen', () => {
             await unmount();
             unmount = undefined;
         }
-    });
-
-    it('should display device guard when device is not connected', async () => {
-        mockIsDeviceConnected = false;
-        const { result } = await renderTradingExchangePreviewScreen();
-        expect(
-            result.getByText(getTranslation('moduleConnectDevice.connectAndUnlockScreen.title')),
-        ).toBeOnTheScreen();
     });
 
     it('should render continue button', async () => {

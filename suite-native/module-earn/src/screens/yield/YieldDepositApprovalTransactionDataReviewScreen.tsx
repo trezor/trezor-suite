@@ -5,7 +5,6 @@ import { type RouteProp, useRoute } from '@react-navigation/native';
 import { selectSelectedDevice } from '@suite-common/device';
 import { type YieldStackParamList, YieldStackRoutes } from '@suite-native/navigation';
 
-import { EarnDeviceConnectionGuard } from '../../components/earn/EarnDeviceConnectionGuard';
 import { YieldDepositApprovalReviewContent } from '../../components/yield/YieldDepositApprovalReviewContent';
 import { useYieldFlowData } from '../../hooks/yield/useYieldFlowData';
 
@@ -35,15 +34,13 @@ export const YieldDepositApprovalTransactionDataReviewScreen = () => {
     }
 
     return (
-        <EarnDeviceConnectionGuard>
-            <YieldDepositApprovalReviewContent
-                approvalLimitType={approvalLimitType}
-                device={device}
-                flowData={flowData}
-                flowKey={flowKey}
-                transactionType={transactionType}
-                vaultName={vaultName}
-            />
-        </EarnDeviceConnectionGuard>
+        <YieldDepositApprovalReviewContent
+            approvalLimitType={approvalLimitType}
+            device={device}
+            flowData={flowData}
+            flowKey={flowKey}
+            transactionType={transactionType}
+            vaultName={vaultName}
+        />
     );
 };

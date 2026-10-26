@@ -7,6 +7,7 @@ import {
     useDisableIOSGesture,
 } from '@suite-native/navigation';
 
+import { EarnDeviceConnectionGuard } from '../components/earn/EarnDeviceConnectionGuard';
 import { UnwrapNativeTokenCompleteScreen } from '../screens/earn/UnwrapNativeTokenCompleteScreen';
 import { UnwrapNativeTokenReviewScreen } from '../screens/earn/UnwrapNativeTokenReviewScreen';
 import { UnwrapNativeTokenScreen } from '../screens/earn/UnwrapNativeTokenScreen';
@@ -27,11 +28,6 @@ export const WrappedNativeTokenStackNavigator = () => {
                 component={WrapNativeTokenScreen}
             />
             <WrappedNativeTokenStack.Screen
-                options={{ title: WrappedNativeTokenStackRoutes.WrapNativeTokenReview }}
-                name={WrappedNativeTokenStackRoutes.WrapNativeTokenReview}
-                component={WrapNativeTokenReviewScreen}
-            />
-            <WrappedNativeTokenStack.Screen
                 options={{ title: WrappedNativeTokenStackRoutes.WrapNativeTokenComplete }}
                 name={WrappedNativeTokenStackRoutes.WrapNativeTokenComplete}
                 component={WrapNativeTokenCompleteScreen}
@@ -42,15 +38,26 @@ export const WrappedNativeTokenStackNavigator = () => {
                 component={UnwrapNativeTokenScreen}
             />
             <WrappedNativeTokenStack.Screen
-                options={{ title: WrappedNativeTokenStackRoutes.UnwrapNativeTokenReview }}
-                name={WrappedNativeTokenStackRoutes.UnwrapNativeTokenReview}
-                component={UnwrapNativeTokenReviewScreen}
-            />
-            <WrappedNativeTokenStack.Screen
                 options={{ title: WrappedNativeTokenStackRoutes.UnwrapNativeTokenComplete }}
                 name={WrappedNativeTokenStackRoutes.UnwrapNativeTokenComplete}
                 component={UnwrapNativeTokenCompleteScreen}
             />
+            <WrappedNativeTokenStack.Group
+                screenLayout={({ children }) => (
+                    <EarnDeviceConnectionGuard>{children}</EarnDeviceConnectionGuard>
+                )}
+            >
+                <WrappedNativeTokenStack.Screen
+                    options={{ title: WrappedNativeTokenStackRoutes.WrapNativeTokenReview }}
+                    name={WrappedNativeTokenStackRoutes.WrapNativeTokenReview}
+                    component={WrapNativeTokenReviewScreen}
+                />
+                <WrappedNativeTokenStack.Screen
+                    options={{ title: WrappedNativeTokenStackRoutes.UnwrapNativeTokenReview }}
+                    name={WrappedNativeTokenStackRoutes.UnwrapNativeTokenReview}
+                    component={UnwrapNativeTokenReviewScreen}
+                />
+            </WrappedNativeTokenStack.Group>
         </WrappedNativeTokenStack.Navigator>
     );
 };
