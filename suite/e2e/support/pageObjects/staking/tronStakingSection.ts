@@ -3,7 +3,7 @@ import { type Locator, type Page } from '@playwright/test';
 import { step } from '../../common';
 import { expect } from '../../testExtends/customMatchers';
 
-type TronStakingToastType = 'tx-staked' | 'tx-unstaked';
+type TronStakingToastType = 'tx-staked' | 'tx-unstaked' | 'tx-withdrawn';
 
 export class TronStakingSection {
     // The flow advances only after the app re-fetches the account and sees the broadcast
@@ -36,6 +36,12 @@ export class TronStakingSection {
     readonly unstakeResourceReduction: Locator;
     readonly unstakeResourceChange: Locator;
     readonly unstakeContinueButton: Locator;
+
+    // withdraw flow
+    readonly withdrawTitle: Locator;
+    readonly withdrawAmount: Locator;
+    readonly withdrawContinueButton: Locator;
+    readonly reviewWithdrawNote: Locator;
 
     // vote step
     readonly remainingVotes: Locator;
@@ -97,6 +103,7 @@ export class TronStakingSection {
     readonly summaryEarnedResource: Locator;
     readonly summarySuppliedAmount: Locator;
     readonly summaryUnstakedAmount: Locator;
+    readonly summaryWithdrawnAmount: Locator;
     readonly summaryResourceReduction: Locator;
     readonly backToOverviewButton: Locator;
 
@@ -113,6 +120,7 @@ export class TronStakingSection {
     readonly stakedCard: Locator;
     readonly stakedAmount: Locator;
     readonly stakedCardApr: Locator;
+    readonly stakedCardAprValue: Locator;
     readonly stakeButton: Locator;
     readonly unstakeButton: Locator;
     readonly voteButton: Locator;
@@ -126,6 +134,8 @@ export class TronStakingSection {
     readonly unstakingRowAmount = (index: number) =>
         this.unstakingRow(index).getByTestId(`@staking/tron-unstaking-card/row-${index}/amount`);
     readonly withdrawReadyBanner: Locator;
+    readonly withdrawReadyDescription: Locator;
+    readonly withdrawReadyButton: Locator;
     readonly resourceValue = (resource: 'bandwidth' | 'energy') =>
         this.page.getByTestId(`@staking/tron-resources-card/${resource}`);
 
@@ -160,6 +170,15 @@ export class TronStakingSection {
         );
         this.unstakeResourceChange = this.page.getByTestId('@staking/tron-unstake/resource-change');
         this.unstakeContinueButton = this.page.getByTestId('@staking/tron-unstake/continue-button');
+
+        this.withdrawTitle = this.page.getByTestId('@staking/tron-withdraw/title');
+        this.withdrawAmount = this.page.getByTestId('@staking/tron-withdraw/amount');
+        this.withdrawContinueButton = this.page.getByTestId(
+            '@staking/tron-withdraw/continue-button',
+        );
+        this.reviewWithdrawNote = this.page
+            .getByTestId('@modal/output-tron-withdraw')
+            .getByTestId('@modal/output-value');
 
         this.remainingVotes = this.page.getByTestId('@staking/tron-vote/remaining-votes');
         this.selectRepresentativesButton = this.page.getByTestId(
@@ -222,6 +241,9 @@ export class TronStakingSection {
         this.summaryUnstakedAmount = this.summaryCard.getByTestId(
             '@staking/tron-complete/unstaked-amount',
         );
+        this.summaryWithdrawnAmount = this.summaryCard.getByTestId(
+            '@staking/tron-complete/withdrawn-amount',
+        );
         this.summaryResourceReduction = this.summaryCard.getByTestId(
             '@staking/tron-complete/resource-reduction',
         );
@@ -232,6 +254,9 @@ export class TronStakingSection {
         this.stakedCard = this.page.getByTestId('@staking/tron-staked-card/container');
         this.stakedAmount = this.stakedCard.getByTestId('@staking/tron-staked-card/staked-amount');
         this.stakedCardApr = this.stakedCard.getByTestId('@staking/tron-staked-card/apr');
+        this.stakedCardAprValue = this.stakedCardApr.getByTestId(
+            '@staking/tron-staked-card/apr-value',
+        );
         this.stakeButton = this.stakedCard.getByTestId('@staking/tron-staked-card/stake-button');
         this.unstakeButton = this.stakedCard.getByTestId(
             '@staking/tron-staked-card/unstake-button',
@@ -243,6 +268,12 @@ export class TronStakingSection {
         this.resourcesCard = this.page.getByTestId('@staking/tron-resources-card/container');
         this.unstakingCard = this.page.getByTestId('@staking/tron-unstaking-card/container');
         this.withdrawReadyBanner = this.page.getByTestId('@staking/tron-withdraw-banner/container');
+        this.withdrawReadyDescription = this.withdrawReadyBanner.getByTestId(
+            '@staking/tron-withdraw-banner/description',
+        );
+        this.withdrawReadyButton = this.withdrawReadyBanner.getByTestId(
+            '@staking/tron-withdraw-banner/withdraw-button',
+        );
     }
 
     // The confirmed toast replaces the pending one for the same txid; dismissing the pending toast

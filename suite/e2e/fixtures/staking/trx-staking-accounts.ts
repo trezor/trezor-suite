@@ -40,6 +40,10 @@ type TrxUnstakingAccountParams = TrxVotedAccountParams & {
     expireTime: number;
 };
 
+type TrxWithdrawnAccountParams = TrxUnstakingAccountParams & {
+    withdrawTxid: string;
+};
+
 // Bandwidth gained by freezing `stakeAmount` TRX on the mocked network.
 export const getTrxBandwidthGain = (stakeAmount: string) =>
     Math.round(
@@ -166,6 +170,41 @@ export const buildTrxUnstakingAccountState = (params: TrxUnstakingAccountParams)
                     totalVotingPower: remainingStake,
                     availableVotingPower: '0',
                     votes: [{ address: params.representativeAddress, voteCount: remainingStake }],
+                },
+            },
+        },
+    };
+};
+
+// The unstaking account after its expired batch was withdrawn back to the available balance.
+export const buildTrxWithdrawnAccountState = (params: TrxWithdrawnAccountParams) => {
+    const unstakingAccountState = buildTrxUnstakingAccountState(params);
+    const withdrawTx = buildTrxStakingTx({
+        txid: params.withdrawTxid,
+        address: TRX_FIRST_ACCOUNT_ADDRESS,
+        blockHeight: TRX_BEST_BLOCK.height + 4,
+        payload: {
+            contractType: 'WithdrawExpireUnfreezeContract',
+            operation: 'withdraw',
+            unstakeAmount: params.unstakeAmountSun,
+        },
+    });
+
+    return {
+        ...unstakingAccountState,
+        balance: (
+            BigInt(unstakingAccountState.balance) + BigInt(params.unstakeAmountSun)
+        ).toString(),
+        txs: 5,
+        nonTokenTxs: 5,
+        transactions: [withdrawTx, ...unstakingAccountState.transactions],
+        chainExtraData: {
+            payloadType: 'tron',
+            payload: {
+                ...unstakingAccountState.chainExtraData.payload,
+                stakingInfo: {
+                    ...unstakingAccountState.chainExtraData.payload.stakingInfo,
+                    unstakingBatches: [],
                 },
             },
         },
