@@ -9,3 +9,5 @@ export {
     mockYieldVault,
 } from './mockResolvedYieldFlowData';
 export { mockYieldSessionState } from './mockYieldSessionState';
+export { mockEthereumStakeTransaction } from './mockEthereumStakeTransaction';
+export { mockStakeData, mockStakeRootState } from './mockStakeRootState';
