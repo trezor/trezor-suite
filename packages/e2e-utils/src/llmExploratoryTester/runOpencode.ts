@@ -284,6 +284,8 @@ export async function runOpencode({
             abortSignal,
         };
         await runTurn(session, { prompt });
+        // OpenCode can emit idle before tool cleanup; abort waits for the runner to stop.
+        await client.session.abort({ sessionID: session.sessionId }, { throwOnError: true });
         const verdict = await requestVerdict(session);
 
         // Estimated from provider-reported usage; the OpenRouter key runs across
