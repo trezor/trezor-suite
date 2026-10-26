@@ -69,12 +69,11 @@ export const useStakingForm = (accountKey: AccountKey) => {
         );
     }, [account, isValid, amountValue]);
 
-    const { formDraft, formDraftKey, isFeeUnavailable, isPrecomposeError, updateFeeLevelThunk } =
-        useComposeEarnFees({
-            accountKey,
-            formState: stakeFormState,
-            formDraftPrefix: 'stake',
-        });
+    const fees = useComposeEarnFees({
+        accountKey,
+        formState: stakeFormState,
+        formDraftPrefix: 'stake',
+    });
 
     if (!account) return null;
 
@@ -82,10 +81,6 @@ export const useStakingForm = (accountKey: AccountKey) => {
         form,
         amountValue,
         account,
-        formDraft,
-        formDraftKey,
-        isFeeUnavailable,
-        isPrecomposeError,
-        updateFeeLevelThunk,
+        ...fees,
     };
 };

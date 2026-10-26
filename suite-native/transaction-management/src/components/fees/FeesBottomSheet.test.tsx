@@ -179,7 +179,7 @@ it('validates the active Custom mode and restores the previous Standard selectio
     });
     const form = result.current;
     const onConfirm = jest.fn();
-    const screen = await renderWithStoreProvider(
+    const renderBottomSheet = (areFeesLoading: boolean) => (
         <FeesBottomSheet
             ref={{ current: null }}
             form={form}
@@ -187,19 +187,24 @@ it('validates the active Custom mode and restores the previous Standard selectio
             feeLevels={wallet.send.feeLevels}
             symbol={asNetworkSymbol('eth')}
             networkType="ethereum"
-            areFeesLoading={false}
+            areFeesLoading={areFeesLoading}
             isSubmittable
             formDraft={null}
             snapshotRef={{ current: form.getValues() }}
             confirmedRef={{ current: false }}
             onConfirm={onConfirm}
             closeModal={jest.fn()}
-        />,
-        { preloadedState },
+        />
     );
+    const screen = await renderWithStoreProvider(renderBottomSheet(false), { preloadedState });
 
     await userEvent.press(screen.getByText('Custom fee'));
     expect(form.getValues('feeLevel')).toBe('custom');
+    expect(screen.getByText('Confirm custom fee')).toBeOnTheScreen();
+    await screen.rerender(renderBottomSheet(true));
+    expect(screen.queryByText('Confirm custom fee')).toBeNull();
+    expect(onConfirm).not.toHaveBeenCalled();
+    await screen.rerender(renderBottomSheet(false));
     expect(screen.getByText('Confirm custom fee')).toBeOnTheScreen();
     await act(async () => {
         form.setValue('customMaxFeePerGas', '');

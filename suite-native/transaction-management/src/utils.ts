@@ -1,4 +1,5 @@
 import { type NetworkSymbol, type NetworkType, getNetwork } from '@suite-common/wallet-config';
+import { type FormState } from '@suite-common/wallet-types';
 import { BigNumber, isNotNull } from '@trezor/utils';
 
 export const getFeeDecimals = ({ symbol }: { symbol: NetworkSymbol }) => {
@@ -42,3 +43,11 @@ export const getTransactionReviewNetworkOptions = (networkType?: NetworkType) =>
     isSummaryItemEnabled: networkType !== 'tron',
     isSlidingOverlayEnabled: networkType !== 'solana',
 });
+
+export const hasNewCustomFee = (composed: FormState, current: FormState | undefined): boolean =>
+    current?.selectedFee === 'custom' &&
+    (composed.selectedFee !== 'custom' ||
+        current.feePerUnit !== composed.feePerUnit ||
+        current.feeLimit !== composed.feeLimit ||
+        current.maxFeePerGas !== composed.maxFeePerGas ||
+        current.maxPriorityFeePerGas !== composed.maxPriorityFeePerGas);

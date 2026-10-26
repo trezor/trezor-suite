@@ -82,12 +82,11 @@ export const useUnstakeForm = (accountKey: AccountKey) => {
         );
     }, [account, isValid, amountValue]);
 
-    const { formDraft, formDraftKey, isFeeUnavailable, isPrecomposeError, updateFeeLevelThunk } =
-        useComposeEarnFees({
-            accountKey,
-            formState: unstakeFormState,
-            formDraftPrefix: 'unstake',
-        });
+    const fees = useComposeEarnFees({
+        accountKey,
+        formState: unstakeFormState,
+        formDraftPrefix: 'unstake',
+    });
 
     const approximatedInstantEthAmount = useApproximateInstantUnstakeAmount(
         accountKey,
@@ -114,11 +113,7 @@ export const useUnstakeForm = (accountKey: AccountKey) => {
         canClaim,
         claimableAmount,
         showNetworkFeeWarning,
-        formDraft,
-        formDraftKey,
-        isFeeUnavailable,
-        isPrecomposeError,
-        updateFeeLevelThunk,
+        ...fees,
         approximatedInstantEthAmount,
     };
 };

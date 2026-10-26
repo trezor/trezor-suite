@@ -5,6 +5,7 @@ import { YieldFeeEstimationErrorAlert } from './YieldFeeEstimationErrorAlert';
 
 type YieldFees = Pick<FeeSelectorProps, 'formDraft' | 'formDraftKey' | 'selectedFee'> & {
     hasFeeEstimationError: boolean;
+    isComposingFeeLevels?: boolean;
     retryFeeEstimation: () => void;
     updateFeeLevelThunk: FeeSelectorProps['updateThunk'];
 };
@@ -22,6 +23,7 @@ export const YieldFeeSection = ({ accountKey, fees, tokenContract }: YieldFeeSec
 
     return (
         <FeeSelector
+            isLoading={fees.isComposingFeeLevels}
             accountKey={accountKey}
             tokenContract={tokenContract}
             updateThunk={fees.updateFeeLevelThunk}

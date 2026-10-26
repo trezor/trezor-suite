@@ -117,9 +117,11 @@ export const FeesBottomSheet = ({
     const tabIsSubmittable = activeTab === 'custom' ? customIsSubmittable : standardIsSubmittable;
     const currentIsSubmittable = isTrc20 ? customIsSubmittable : tabIsSubmittable;
 
-    const isConfirmVisible = isDirty && currentIsSubmittable;
+    const isConfirmVisible = isDirty && currentIsSubmittable && !areFeesLoading;
 
     const handleConfirm = useCallback(() => {
+        if (areFeesLoading) return;
+
         confirmedRef.current = true;
         const values = getValues();
 
@@ -141,7 +143,17 @@ export const FeesBottomSheet = ({
         }
 
         closeModal();
-    }, [isTrc20, activeTab, confirmedRef, form, getValues, onConfirm, closeModal, customFeeLevels]);
+    }, [
+        areFeesLoading,
+        isTrc20,
+        activeTab,
+        confirmedRef,
+        form,
+        getValues,
+        onConfirm,
+        closeModal,
+        customFeeLevels,
+    ]);
 
     const handleDismiss = useCallback(() => {
         if (confirmedRef.current) {

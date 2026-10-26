@@ -5,14 +5,16 @@ import { FeesBottomSheet } from './FeesBottomSheet';
 import { TronFeeSummaryCard } from './TronFeeSummaryCard/TronFeeSummaryCard';
 import { type UseFeeSelectorParams, useFeeSelector } from '../../hooks/fees/useFeeSelector';
 
-export type FeeSelectorProps = UseFeeSelectorParams;
+export type FeeSelectorProps = UseFeeSelectorParams & {
+    isLoading?: boolean;
+};
 
 export const FeeSelector = (props: FeeSelectorProps) => {
     const {
         form,
         fee,
         feeLevels,
-        areFeesLoading,
+        areFeesLoading: areNetworkFeesLoading,
         isSubmittable,
         symbol,
         networkType,
@@ -29,6 +31,7 @@ export const FeeSelector = (props: FeeSelectorProps) => {
     } = useFeeSelector(props);
 
     const { accountKey, tokenContract, formDraft } = props;
+    const areFeesLoading = areNetworkFeesLoading || !!props.isLoading;
 
     if (!symbol || !networkType) return null;
 
@@ -53,7 +56,7 @@ export const FeeSelector = (props: FeeSelectorProps) => {
                     withCaret
                 />
             )}
-            {shouldShowFeeUnavailableAlert && feeUnavailableErrorTitle && (
+            {!areFeesLoading && shouldShowFeeUnavailableAlert && feeUnavailableErrorTitle && (
                 <Box marginTop="sp8" testID="@transactionManagement/fee-unavailable-alert">
                     <BannerInline intent="critical" title={feeUnavailableErrorTitle} />
                 </Box>
@@ -67,7 +70,7 @@ export const FeeSelector = (props: FeeSelectorProps) => {
                 networkType={networkType}
                 tokenContract={tokenContract}
                 areFeesLoading={areFeesLoading}
-                isSubmittable={isSubmittable}
+                isSubmittable={isSubmittable && !areFeesLoading}
                 formDraft={formDraft}
                 snapshotRef={snapshotRef}
                 confirmedRef={confirmedRef}
