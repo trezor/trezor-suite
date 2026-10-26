@@ -93,6 +93,7 @@ export const FeesBottomSheet = ({
     useEffect(() => {
         setActiveTab(showCustomTab ? feeLevelToTab(selectedFeeLevel) : 'standard');
     }, [selectedFeeLevel, showCustomTab]);
+    const [customFeeLevels, setCustomFeeLevels] = useState<GeneralPrecomposedLevels>();
     const [customIsSubmittable, setCustomIsSubmittable] = useState(false);
 
     const standardFeeRef = useRef(
@@ -131,6 +132,7 @@ export const FeesBottomSheet = ({
         } else if (activeTab === 'custom') {
             form.setValue('feeLevel', 'custom');
             onConfirm('custom', {
+                customFeeLevels,
                 customFeePerUnit: values.customFeePerUnit,
                 customFeeLimit: values.customFeeLimit,
                 customMaxFeePerGas: values.customMaxFeePerGas,
@@ -141,12 +143,10 @@ export const FeesBottomSheet = ({
         }
 
         closeModal();
-    }, [isTrc20, activeTab, confirmedRef, form, getValues, onConfirm, closeModal]);
+    }, [isTrc20, activeTab, confirmedRef, form, getValues, onConfirm, closeModal, customFeeLevels]);
 
     const handleDismiss = useCallback(() => {
         if (confirmedRef.current) {
-            confirmedRef.current = false;
-
             return;
         }
 
@@ -215,6 +215,7 @@ export const FeesBottomSheet = ({
                         symbol={symbol}
                         formDraft={formDraft}
                         onSubmittableChange={setCustomIsSubmittable}
+                        onFeeLevelsChange={setCustomFeeLevels}
                     />
                 )}
             </Form>
