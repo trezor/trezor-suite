@@ -201,23 +201,25 @@ const bumpConnect = async () => {
                 // always writes; keeping it would inflate every count taken from this list.
                 .filter(Boolean);
 
-            // Everything above the package's previous release is what this release adds.
-            const newCommits = getCommitsSinceLastStableRelease(commitsArr, packageName);
-
             // In Connect dependencies packages we only update CHANGELOG when doing a stable release (patch or minor).
             // We do that so we can generate the complete CHANGELOG automatically when doing stable release.
-            if (newCommits.length && deploymentType === 'stable') {
-                const CHANGELOG_PATH = path.join(PACKAGE_PATH, 'CHANGELOG.md');
-                if (!fs.existsSync(CHANGELOG_PATH)) {
-                    await writeFile(CHANGELOG_PATH, '');
+            if (deploymentType === 'stable') {
+                // Stop at the previous stable release so the entry spans only this release.
+                const newCommits = getCommitsSinceLastStableRelease(commitsArr, packageName);
+
+                if (newCommits.length) {
+                    const CHANGELOG_PATH = path.join(PACKAGE_PATH, 'CHANGELOG.md');
+                    if (!fs.existsSync(CHANGELOG_PATH)) {
+                        await writeFile(CHANGELOG_PATH, '');
+                    }
+
+                    let changelog = await readFile(CHANGELOG_PATH, 'utf-8');
+
+                    changelog = `# ${version}\n\n${newCommits.join('\n')}\n\n${changelog}`;
+                    await writeFile(CHANGELOG_PATH, changelog, 'utf-8');
+
+                    await exec('yarn', ['prettier', '--write', CHANGELOG_PATH]);
                 }
-
-                let changelog = await readFile(CHANGELOG_PATH, 'utf-8');
-
-                changelog = `# ${version}\n\n${newCommits.join('\n')}\n\n${changelog}`;
-                await writeFile(CHANGELOG_PATH, changelog, 'utf-8');
-
-                await exec('yarn', ['prettier', '--write', CHANGELOG_PATH]);
             }
 
             await commit({
