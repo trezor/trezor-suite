@@ -11936,7 +11936,7 @@ export const messages = defineMessages({
     },
     TR_EARN_REWARDS_EVERY: {
         id: 'TR_EARN_REWARDS_EVERY',
-        defaultMessage: 'Receive rewards every ~{days} days',
+        defaultMessage: 'Receive rewards every ~{days, plural, one {# day} other {# days}}',
     },
     TR_EARN_COOL_DOWN_PERIOD: {
         id: 'TR_EARN_COOL_DOWN_PERIOD',
