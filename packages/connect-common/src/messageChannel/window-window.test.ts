@@ -12,24 +12,35 @@ type TestMessage = {
 const EXPECTED_ORIGIN = 'https://connect.trezor.io';
 const ATTACKER_ORIGIN = 'https://connect.trezor.io.attacker.com';
 
-const dispatchMessage = (origin: string, data: any) => {
-    const event = new MessageEvent('message', { data, origin });
+const createWindow = () => {
+    const iframe = document.createElement('iframe');
+    document.body.appendChild(iframe);
+    if (!iframe.contentWindow) throw new Error('iframe has no window');
+
+    return iframe.contentWindow;
+};
+
+const dispatchMessage = (origin: string, data: any, source: Window) => {
+    const event = new MessageEvent('message', { data, origin, source });
     window.dispatchEvent(event);
 };
 
-const createChannel = () =>
+const createChannel = (peer: Window) =>
     new WindowWindowChannel<TestMessage>({
         windowHere: window,
-        windowPeer: () => undefined,
+        windowPeer: () => peer,
         channel: { here: '@trezor/connect-web', peer: '@trezor/connect-popup' },
         origin: EXPECTED_ORIGIN,
     });
 
-describe('WindowWindowChannel origin validation', () => {
+describe('WindowWindowChannel sender validation', () => {
+    let peer: Window;
     let channel: ReturnType<typeof createChannel>;
 
     beforeEach(() => {
-        channel = createChannel();
+        document.body.innerHTML = '';
+        peer = createWindow();
+        channel = createChannel(peer);
     });
 
     afterEach(() => {
@@ -40,11 +51,36 @@ describe('WindowWindowChannel origin validation', () => {
         const onMessage = jest.fn();
         channel.on('message', onMessage);
 
-        dispatchMessage(EXPECTED_ORIGIN, {
-            type: 'test-message',
-            channel: { peer: '@trezor/connect-web', here: '@trezor/connect-popup' },
-            payload: { ok: true },
-        });
+        dispatchMessage(
+            EXPECTED_ORIGIN,
+            {
+                type: 'test-message',
+                channel: { peer: '@trezor/connect-web', here: '@trezor/connect-popup' },
+                payload: { ok: true },
+            },
+            peer,
+        );
+
+        expect(onMessage).toHaveBeenCalledTimes(1);
+    });
+
+    // Documents the bug: the listener checks the origin and the channel names,
+    // which are the same for every peer of this kind. A message from another
+    // window of the expected origin, e.g. the bootstrap iframe of a second
+    // connect-web copy on the same page, is handled as if it came from this
+    // channel's own peer.
+    it('forwards messages from another window of the expected origin', () => {
+        const onMessage = jest.fn();
+        channel.on('message', onMessage);
+
+        dispatchMessage(
+            EXPECTED_ORIGIN,
+            {
+                type: 'test-message',
+                channel: { peer: '@trezor/connect-web', here: '@trezor/connect-popup' },
+            },
+            createWindow(),
+        );
 
         expect(onMessage).toHaveBeenCalledTimes(1);
     });
@@ -53,11 +89,15 @@ describe('WindowWindowChannel origin validation', () => {
         const onMessage = jest.fn();
         channel.on('message', onMessage);
 
-        dispatchMessage(ATTACKER_ORIGIN, {
-            type: 'test-message',
-            channel: { peer: '@trezor/connect-web', here: '@trezor/connect-popup' },
-            payload: { hostile: true },
-        });
+        dispatchMessage(
+            ATTACKER_ORIGIN,
+            {
+                type: 'test-message',
+                channel: { peer: '@trezor/connect-web', here: '@trezor/connect-popup' },
+                payload: { hostile: true },
+            },
+            peer,
+        );
 
         expect(onMessage).not.toHaveBeenCalled();
     });
@@ -66,10 +106,14 @@ describe('WindowWindowChannel origin validation', () => {
         const onMessage = jest.fn();
         channel.on('message', onMessage);
 
-        dispatchMessage('null', {
-            type: 'test-message',
-            channel: { peer: '@trezor/connect-web', here: '@trezor/connect-popup' },
-        });
+        dispatchMessage(
+            'null',
+            {
+                type: 'test-message',
+                channel: { peer: '@trezor/connect-web', here: '@trezor/connect-popup' },
+            },
+            peer,
+        );
 
         expect(onMessage).not.toHaveBeenCalled();
     });
