@@ -5,6 +5,7 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import { BRIDGE_VERSION } from '../support/bridge';
+import { launchSuite } from '../support/electron';
 import { test as suiteTest } from '../support/fixtures';
 import { enhancePage } from '../support/testExtends/enhancePage';
 
@@ -16,7 +17,7 @@ const CDP_URL = 'http://127.0.0.1:9222';
 // the Playwright-launched browser via CDP and onboard in the default context —
 // otherwise the agent inherits a bare about:blank tab instead of the session.
 /* eslint-disable react-hooks/rules-of-hooks */
-const test = suiteTest.extend({
+const webTest = suiteTest.extend({
     // Depending on `browser` makes Playwright launch its Chromium (with the
     // CDP port from the llmExploratoryTester config) before we re-attach to it.
     context: async ({ browser: _launched }, use) => {
@@ -49,7 +50,24 @@ const test = suiteTest.extend({
         await use(page);
     },
 });
+const desktopTest = suiteTest.extend({
+    page: async ({ locale, colorScheme }, use, testInfo) => {
+        const suite = await launchSuite({
+            locale,
+            colorScheme,
+            artefactFolder: testInfo.outputDir,
+            viewport: { width: 1600, height: 1000 },
+            remoteDebuggingPort: 9222,
+            recordVideo: false,
+        });
+        enhancePage(suite.window);
+        await use(suite.window);
+        await suite.electronApp.close();
+    },
+});
 /* eslint-enable react-hooks/rules-of-hooks */
+
+const test = process.env.LLM_EXPLORATORY_TESTER_PLATFORM === 'desktop' ? desktopTest : webTest;
 
 test.use({
     deviceSetup: {

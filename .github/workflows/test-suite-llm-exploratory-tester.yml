@@ -4,6 +4,10 @@ name: "[Test] LLM Exploratory Tester"
 # packages/e2e-utils/.env (gitignored) and run:
 # TARGET=<pr-url> DEVICE_MODEL=T3T1 yarn workspace @trezor/e2e-utils llm-exploratory-tester
 # Optional: LLM_EXPLORATORY_TESTER_MODEL=z-ai/glm-5v-turbo
+# Desktop: LLM_EXPLORATORY_TESTER_PLATFORM=desktop (requires a display).
+# Build both parts first; development bundles need a server and violate production CSP:
+# TEST_BUILD=true yarn workspace @suite/desktop-app build:app
+# TEST_BUILD=true yarn workspace @suite/desktop-app build:ui
 
 on:
   workflow_dispatch:
@@ -16,6 +20,11 @@ on:
         description: "PR or issue URL (https://github.com/trezor/trezor-suite/pull/…)"
         required: true
         type: string
+      platform:
+        description: "Suite platform (desktop reuses the target PR’s Linux E2E build)"
+        default: web
+        type: choice
+        options: [web, desktop]
       device_model:
         description: "Trezor emulator model"
         required: false
@@ -38,12 +47,13 @@ on:
     types: [opened, ready_for_review, reopened]
 
 permissions:
+  actions: read
   contents: read
   issues: read
   pull-requests: write
 
 concurrency:
-  group: ${{ inputs.target || github.event.pull_request.html_url }}
+  group: ${{ inputs.target || github.event.pull_request.html_url }}-${{ inputs.platform || 'web' }}
   cancel-in-progress: true
 
 jobs:
@@ -55,9 +65,14 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      actions: read
+      issues: read
       pull-requests: read
     outputs:
       run: ${{ inputs.confirm_trusted_branch || steps.preview.outcome == 'success' }}
+      head-sha: ${{ steps.desktop.outputs.head-sha }}
+      desktop-run-id: ${{ steps.desktop.outputs.run-id }}
+      build-target: ${{ steps.desktop.outputs.build-target }}
     steps:
       - id: jev
         if: github.event_name == 'pull_request'
@@ -110,16 +125,71 @@ jobs:
           done
           [ "$conclusion" = success ]
 
-  llm-exploratory-tester:
+      - name: Checkout target helpers
+        if: inputs.confirm_trusted_branch && inputs.platform == 'desktop'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+        with:
+          sparse-checkout: packages/e2e-utils/src/llmExploratoryTester
+
+      - name: Resolve desktop build
+        id: desktop
+        if: inputs.confirm_trusted_branch && inputs.platform == 'desktop'
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET: ${{ inputs.target }}
+        with:
+          script: |
+            const { ghView, loadLinkedNumbersFrom, parseTarget } = require('./packages/e2e-utils/src/llmExploratoryTester/target.ts');
+
+            const target = parseTarget(process.env.TARGET);
+            const numbers =
+                target.kind === 'pr' ? [target.number] : loadLinkedNumbersFrom('issue', target.number);
+            if (!numbers.length) throw new Error('Issue has no linked Suite PR');
+
+            const pr = ghView('pr', Math.max(...numbers), 'number,headRefOid,isCrossRepository');
+            if (pr.isCrossRepository) throw new Error('Desktop testing of fork PRs is not supported');
+            core.setOutput('head-sha', pr.headRefOid);
+            core.setOutput('build-target', `${pr.number}:${pr.headRefOid}`);
+
+            const { data: { workflow_runs: [run] } } = await github.rest.actions.listWorkflowRuns({
+                ...context.repo,
+                workflow_id: 'test-suite-web-desktop-e2e-pr.yml',
+                head_sha: pr.headRefOid,
+                event: 'pull_request',
+                per_page: 1,
+            });
+            if (!run) return;
+
+            const { data: { artifacts } } = await github.rest.actions.listWorkflowRunArtifacts({
+                ...context.repo,
+                run_id: run.id,
+                name: 'desktop-app-build-e2e',
+            });
+            if (artifacts.some(artifact => !artifact.expired)) core.setOutput('run-id', run.id);
+
+  build-desktop:
     needs: gate
+    if: needs.gate.outputs.run == 'true' && inputs.platform == 'desktop' && needs.gate.outputs.desktop-run-id == ''
+    permissions:
+      contents: read
+    uses: ./.github/workflows/build-suite-desktop-e2e.yml
+    with:
+      ref: ${{ needs.gate.outputs.head-sha }}
+
+  llm-exploratory-tester:
+    needs: [gate, build-desktop]
     runs-on: ubuntu-latest
     timeout-minutes: 240
-    if: needs.gate.outputs.run == 'true'
+    if: >-
+      !cancelled() && !failure() && needs.gate.outputs.run == 'true'
     env:
       COMPOSE_FILE: ./docker/docker-compose.suite-ci-e2e.yml
       TARGET: ${{ inputs.target || github.event.pull_request.html_url }}
       DEVICE_MODEL: ${{ inputs.device_model || 'T3W1' }}
       LLM_EXPLORATORY_TESTER_MODEL: ${{ inputs.model }}
+      LLM_EXPLORATORY_TESTER_PLATFORM: ${{ inputs.platform || 'web' }}
+      LLM_EXPLORATORY_TESTER_BUILD_TARGET: ${{ needs.gate.outputs.build-target }}
 
     steps:
       # Manual dispatch picks the branch. Do not run this workflow from an
@@ -144,6 +214,19 @@ jobs:
       - name: Install Playwright Chromium
         run: yarn workspace @trezor/suite-e2e exec playwright install chromium --with-deps
 
+      - name: Download desktop build
+        if: inputs.platform == 'desktop'
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: desktop-app-build-e2e
+          run-id: ${{ needs.gate.outputs.desktop-run-id || github.run_id }}
+          github-token: ${{ github.token }}
+          path: artifact-download
+
+      - name: Extract desktop build
+        if: inputs.platform == 'desktop'
+        run: tar -xzf artifact-download/app-build.tar.gz -C suite/desktop-app
+
       # trezor-user-env also serves the trezor-emulator MCP on :9003
       # (started by src/main.py in the pinned image, host networking).
       - name: Start trezor-user-env
@@ -155,7 +238,7 @@ jobs:
           AGENT_GITHUB_ACTION: true
           LLM_EXPLORATORY_TESTER_PASSPHRASE: ${{ secrets.LLM_EXPLORATORY_TESTER_PASSPHRASE }}
           OPENROUTER_API_KEY: ${{ secrets.E2E_EXPLORATORY_TESTER_API_KEY }}
-        run: yarn workspace @trezor/e2e-utils llm-exploratory-tester
+        run: xvfb-run -a yarn workspace @trezor/e2e-utils llm-exploratory-tester
 
       # Surface the verdict on the job page; the run step's exit code already
       # fails the job on a fail verdict, this makes the reason visible.
@@ -164,7 +247,7 @@ jobs:
         run: |
           RESULT=packages/e2e-utils/src/llmExploratoryTester/reports/test-result.json
           cat >> "$GITHUB_STEP_SUMMARY" <<EOF
-          ## LLM Exploratory Tester: $(jq -r '.result' "$RESULT")
+          ## LLM Exploratory Tester ($LLM_EXPLORATORY_TESTER_PLATFORM): $(jq -r '.result' "$RESULT")
 
           $(jq -r '.summary' "$RESULT")
 

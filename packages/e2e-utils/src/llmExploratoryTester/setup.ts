@@ -10,31 +10,32 @@ import {
     writeBrowserState,
 } from './browserState';
 import { CONTEXT_FILE, REPO_ROOT, SETUP_READY_FILE, readJson } from './paths';
-import { PrContextSchema } from './schemas';
+import { type PrContext, PrContextSchema } from './schemas';
 
 const SETUP_SPEC = 'llmExploratoryTester/llmExploratoryTesterSetup.test.ts';
 const SETUP_CONFIG = 'playwright-config/playwright-llm-exploratory-tester.config.ts';
 const SETUP_TIMEOUT_MS = 600_000;
 
+type RunOnboardingSpecParams = Pick<PrContext, 'deviceModel' | 'suiteUrl' | 'platform'>;
+
 async function runOnboardingSpec({
-    model,
+    deviceModel,
     suiteUrl,
-}: {
-    model: string;
-    suiteUrl: string;
-}): Promise<void> {
+    platform,
+}: RunOnboardingSpecParams): Promise<void> {
     rmSync(SETUP_READY_FILE, { force: true });
 
     // Detached so Playwright outlives this setup process; the agent attaches
     // over CDP to the still-running browser.
     const child = spawn(
         'playwright',
-        ['test', SETUP_SPEC, '--config', SETUP_CONFIG, `--project=${model}`],
+        ['test', SETUP_SPEC, '--config', SETUP_CONFIG, `--project=${deviceModel}`],
         {
             cwd: join(REPO_ROOT, 'suite/e2e'),
             env: {
                 ...process.env,
                 BASE_URL: suiteUrl,
+                LLM_EXPLORATORY_TESTER_PLATFORM: platform,
                 LLM_EXPLORATORY_TESTER_READY_FILE: SETUP_READY_FILE,
             },
             stdio: 'inherit',
@@ -71,14 +72,12 @@ async function main(): Promise<void> {
 
     const context = PrContextSchema.parse(readJson(CONTEXT_FILE));
     log('━━━ LLM Exploratory Tester setup ━━━');
-    log(`Suite:  ${context.suiteUrl}`);
+    log(`Platform: ${context.platform}`);
+    log(`Suite:  ${context.platform === 'desktop' ? 'local Electron build' : context.suiteUrl}`);
     log(`Model:  ${context.deviceModel}`);
 
     await killHarnessBrowser();
-    await runOnboardingSpec({
-        model: context.deviceModel,
-        suiteUrl: context.suiteUrl,
-    });
+    await runOnboardingSpec(context);
 
     log('Setup done. Browser stays running for the agent session.');
 }

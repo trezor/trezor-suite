@@ -3,7 +3,7 @@ import { execFileSync } from 'node:child_process';
 import { error, log } from '../logger';
 import { downloadAttachmentImages } from './contextImages';
 import { CONTEXT_FILE, writeJson } from './paths';
-import { DeviceModelSchema, type PrContext } from './schemas';
+import { DeviceModelSchema, PlatformSchema, type PrContext } from './schemas';
 import { ghView, loadLinkedNumbersFrom, parseTarget } from './target';
 
 const PREVIEW_SUITE_URL_BASE = 'https://dev.suite.sldev.cz/suite-web';
@@ -15,6 +15,7 @@ type PullRequest = {
     title: string;
     body: string;
     headRefName: string;
+    headRefOid: string;
     url: string;
 };
 
@@ -26,7 +27,7 @@ type GithubIssue = {
 };
 
 function loadPullRequest(prNumber: number): PullRequest {
-    return ghView<PullRequest>('pr', prNumber, 'number,title,body,headRefName,url');
+    return ghView<PullRequest>('pr', prNumber, 'number,title,body,headRefName,headRefOid,url');
 }
 
 function loadIssue(issueNumber: number): GithubIssue {
@@ -78,6 +79,7 @@ async function main(): Promise<void> {
     }
 
     const target = parseTarget(process.env.TARGET);
+    const platform = PlatformSchema.parse(process.env.LLM_EXPLORATORY_TESTER_PLATFORM ?? 'web');
     const deviceModel = DeviceModelSchema.parse(process.env.DEVICE_MODEL ?? DEFAULT_MODEL);
 
     let prs: PullRequest[];
@@ -95,6 +97,10 @@ async function main(): Promise<void> {
     }
 
     const pr = newestPr(prs);
+    const buildTarget = process.env.LLM_EXPLORATORY_TESTER_BUILD_TARGET;
+    if (buildTarget && buildTarget !== `${pr.number}:${pr.headRefOid}`) {
+        throw new Error('Target PR changed during the desktop build; rerun the workflow');
+    }
     const suiteUrl = `${PREVIEW_SUITE_URL_BASE}/${pr.headRefName}/web/`;
     const contextImages = await downloadAttachmentImages([
         ...prs.map(({ body }) => body),
@@ -108,6 +114,7 @@ async function main(): Promise<void> {
     }
 
     const context: PrContext = {
+        platform,
         prNumber: pr.number,
         prUrl: pr.url,
         prTitle: pr.title,
@@ -121,7 +128,8 @@ async function main(): Promise<void> {
 
     writeJson(CONTEXT_FILE, context);
     log(`PR #${context.prNumber}: ${context.prTitle}`);
-    log(`Suite URL: ${context.suiteUrl}`);
+    log(`Platform: ${platform}`);
+    log(`Suite: ${platform === 'desktop' ? 'local Electron build' : context.suiteUrl}`);
     log(`Device model: ${context.deviceModel}`);
     log(`Context images: ${context.contextImages.length}`);
 }

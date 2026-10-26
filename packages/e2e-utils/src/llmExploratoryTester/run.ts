@@ -20,6 +20,7 @@ const DEFAULT_TIMEOUT_MIN = 120;
 
 function buildPrContextPrompt(context: PrContext): string {
     const brief = {
+        platform: context.platform,
         prs: context.prs,
         issues: context.issues,
         deviceModel: context.deviceModel,
@@ -48,7 +49,8 @@ async function main(): Promise<void> {
         mkdirSync(BROWSER_DIR, { recursive: true });
 
         log(`━━━ LLM Exploratory Tester — PR #${context.prNumber} ━━━`);
-        log(`Suite: ${context.suiteUrl}`);
+        log(`Platform: ${context.platform}`);
+        log(`Suite: ${context.platform === 'desktop' ? 'local Electron build' : context.suiteUrl}`);
         log(`Model: ${context.deviceModel}`);
         log(`Agent: budget $${budgetUsd} · timeout ${timeoutMs / 60_000}min`);
 
