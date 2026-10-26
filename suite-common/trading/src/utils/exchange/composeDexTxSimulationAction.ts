@@ -8,7 +8,7 @@ import {
     type EthereumSignTypedDataTypes,
 } from '@trezor/connect';
 
-import { hasEip712SignData } from './exchangeUtils';
+import { hasEip712SignDataType } from './exchangeUtils';
 
 type ComposeDexTxSimulationActionParams = {
     quote: ExchangeTrade | undefined;
@@ -31,7 +31,7 @@ export const composeDexTxSimulationAction = ({
         return null;
     }
 
-    if (hasEip712SignData(quote) && quote.signData) {
+    if (hasEip712SignDataType(quote) && quote.signData) {
         return {
             method: 'ethereumSignTypedData',
             fromAddress: account.descriptor,
