@@ -13,7 +13,14 @@ const getAssetPriceHistoryQueryKey = ({
     fiatCurrency,
     range,
 }: FetchAssetPriceHistoryParams) =>
-    ['asset-price-history', ticker.symbol, ticker.tokenAddress, fiatCurrency, range] as const;
+    [
+        'asset-price-history',
+        ticker.symbol,
+        ticker.tokenAddress,
+        ticker.protocols?.includes('erc4626') ?? false,
+        fiatCurrency,
+        range,
+    ] as const;
 
 const fetchAssetPriceHistoryOrNull = async (
     params: FetchAssetPriceHistoryParams,
