@@ -22,6 +22,7 @@ const getYieldApyBreakdownDescriptionKey = (
 ): TxKeyPath | null => {
     switch (yieldSource) {
         case 'protocol_incentive':
+        case 'campaign_incentive':
             return 'moduleAccounts.accountDetail.stablecoinYield.apyBreakdown.manualCompound';
         default:
             return 'moduleAccounts.accountDetail.stablecoinYield.apyBreakdown.autoCompounded';
