@@ -1,15 +1,12 @@
 import * as ERRORS from '@trezor/connect-common/src/constants/errors';
 import { type Deferred, createDeferred } from '@trezor/utils';
+import { getWeakRandomId } from '@trezor/utils/src/getWeakRandomId';
 
-const IFRAME_ID = 'trezor-connect-bootstrap';
 const IFRAME_TIMEOUT = 10000;
 
-const getIframeElement = (): HTMLIFrameElement | undefined =>
-    (document.getElementById(IFRAME_ID) as HTMLIFrameElement | null) ?? undefined;
-
-const createIframeElement = (): HTMLIFrameElement => {
+const createIframeElement = (id: string): HTMLIFrameElement => {
     const instance = document.createElement('iframe');
-    instance.id = IFRAME_ID;
+    instance.id = id;
     instance.frameBorder = '0';
     instance.width = '0px';
     instance.height = '0px';
@@ -23,8 +20,14 @@ const createIframeElement = (): HTMLIFrameElement => {
 };
 
 export const getIframeInstance = () => {
+    // Unique per manager, so two copies of connect-web on one page (or an
+    // iframe left behind by a previous bundle) never share each other's iframe.
+    const iframeId = `trezor-connect-bootstrap-${getWeakRandomId(8)}`;
     let initPromise: Deferred<void> | undefined;
     let initTimeout: ReturnType<typeof setTimeout> | undefined;
+
+    const getIframeElement = (): HTMLIFrameElement | undefined =>
+        (document.getElementById(iframeId) as HTMLIFrameElement | null) ?? undefined;
 
     const clearInitTimeout = () => {
         if (initTimeout) {
@@ -63,14 +66,9 @@ export const getIframeInstance = () => {
             return initPromise.promise;
         }
 
-        const instance = getIframeElement();
-        if (instance) {
-            return Promise.resolve();
-        }
-
         initPromise = createDeferred();
 
-        const newInstance = createIframeElement();
+        const newInstance = createIframeElement(iframeId);
         initTimeout = setTimeout(() => {
             initPromise?.reject(ERRORS.TypedError('Handshake_Error', 'iframe-timeout'));
         }, IFRAME_TIMEOUT);
