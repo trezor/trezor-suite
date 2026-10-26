@@ -30,9 +30,14 @@ async function isCdpPortInUse(): Promise<boolean> {
     }
 }
 
-async function waitForCdpPortRelease(timeoutMs: number): Promise<void> {
-    const deadline = Date.now() + timeoutMs;
-    while (Date.now() < deadline && (await isCdpPortInUse())) {
+async function waitForRunnerExit(pid: number): Promise<void> {
+    const deadline = Date.now() + 5_000;
+    while (Date.now() < deadline) {
+        try {
+            process.kill(-pid, 0);
+        } catch {
+            return;
+        }
         await new Promise(resolve => setTimeout(resolve, 200));
     }
 }
@@ -45,16 +50,19 @@ export async function killHarnessBrowser(): Promise<void> {
         const state = readJson<BrowserState>(BROWSER_STATE_FILE);
         rmSync(BROWSER_STATE_FILE, { force: true });
 
-        // The pid is the detached playwright runner, which is its process-group
-        // leader. Signal the whole group: killing only the runner leaves its
-        // Chromium orphaned on :9222 and the next setup silently attaches to
-        // the stale onboarded session instead of a fresh browser.
+        // Playwright launches Electron/Chromium in separate process groups. Let its
+        // signal handlers close them before forcefully stopping the runner.
+        try {
+            process.kill(-state.pid, 'SIGTERM');
+        } catch {
+            // Already dead.
+        }
+        await waitForRunnerExit(state.pid);
         try {
             process.kill(-state.pid, 'SIGKILL');
         } catch {
-            // already dead
+            // Already dead.
         }
-        await waitForCdpPortRelease(5_000);
         log(`Browser (pid ${state.pid}) stopped.`);
     }
 

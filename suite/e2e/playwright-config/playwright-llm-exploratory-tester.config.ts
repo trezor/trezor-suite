@@ -11,7 +11,10 @@ import { PlaywrightTarget } from '../support/testExtends/suiteTestOptions';
 // nightly/PR discovery never picks these specs up.
 // Uses main (canary) firmware — same as local canary runs — so the agent exercises
 // the newest FW features available in trezor-user-env.
-const target = PlaywrightTarget.Web;
+const target =
+    process.env.LLM_EXPLORATORY_TESTER_PLATFORM === 'desktop'
+        ? PlaywrightTarget.Desktop
+        : PlaywrightTarget.Web;
 const definition: PlaywrightProjectDefinition[] = [
     { model: Model.T3W1, firmware: '2-main' },
     { model: Model.T3T1, firmware: '2-main' },
