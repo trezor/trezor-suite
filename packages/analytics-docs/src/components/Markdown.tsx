@@ -51,6 +51,11 @@ export const Markdown = ({ children: childrenMarkdown, query = '' }: MarkdownPro
                     <HighlightedContent query={query}>{children}</HighlightedContent>
                 </Text>
             ),
+            em: ({ children }) => (
+                <em>
+                    <HighlightedContent query={query}>{children}</HighlightedContent>
+                </em>
+            ),
             a: ({ children, ...rest }) => (
                 <Link {...rest}>
                     <HighlightedContent query={query}>{children}</HighlightedContent>

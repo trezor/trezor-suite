@@ -1,4 +1,4 @@
-import { type JSX } from 'react';
+import { Fragment, type JSX } from 'react';
 
 import styled from 'styled-components';
 
@@ -39,24 +39,33 @@ const formatRuntimeType = (t?: string) => {
     return normalized;
 };
 
-const renderRuntimeTypeLine = (line: string) => {
-    const parts: Array<string | JSX.Element> = [];
+const renderRuntimeTypeLine = (line: string, query: string) => {
+    const parts: JSX.Element[] = [];
     const re =
         /'([^'\\]|\\.)*'|"([^"\\]|\\.)*"|\b(string|number|boolean|bigint|symbol|null|undefined|unknown|any|never|object)\b|\b\d+(?:\.\d+)?\b/g;
     let lastIndex = 0;
     let match: RegExpExecArray | null;
 
+    const pushText = (text: string, key: string, color?: string) => {
+        const content = <HighlightedText text={text} query={query} />;
+        parts.push(
+            color ? (
+                <span key={key} style={{ color }}>
+                    {content}
+                </span>
+            ) : (
+                <Fragment key={key}>{content}</Fragment>
+            ),
+        );
+    };
+
     while ((match = re.exec(line)) !== null) {
         const [token] = match;
         if (match.index > lastIndex) {
-            parts.push(line.slice(lastIndex, match.index));
+            pushText(line.slice(lastIndex, match.index), `${match.index}-gap`);
         }
         if (token.startsWith("'") || token.startsWith('"')) {
-            parts.push(
-                <span key={`${match.index}-${token}`} style={{ color: '#6A8759' }}>
-                    {token}
-                </span>,
-            );
+            pushText(token, `${match.index}-${token}`, '#6A8759');
         } else if (
             token === 'string' ||
             token === 'number' ||
@@ -70,39 +79,31 @@ const renderRuntimeTypeLine = (line: string) => {
             token === 'never' ||
             token === 'object'
         ) {
-            parts.push(
-                <span key={`${match.index}-${token}`} style={{ color: '#CC7832' }}>
-                    {token}
-                </span>,
-            );
+            pushText(token, `${match.index}-${token}`, '#CC7832');
         } else if (/^\d/.test(token)) {
-            parts.push(
-                <span key={`${match.index}-${token}`} style={{ color: '#6897BB' }}>
-                    {token}
-                </span>,
-            );
+            pushText(token, `${match.index}-${token}`, '#6897BB');
         } else {
-            parts.push(token);
+            pushText(token, `${match.index}-${token}`);
         }
         lastIndex = match.index + token.length;
     }
 
     if (lastIndex < line.length) {
-        parts.push(line.slice(lastIndex));
+        pushText(line.slice(lastIndex), `${lastIndex}-end`);
     }
 
     return parts;
 };
 
-const renderRuntimeType = (t?: string) => {
-    const formatted = formatRuntimeType(t);
+const renderRuntimeType = (runtimeType: string | undefined, query: string) => {
+    const formatted = formatRuntimeType(runtimeType);
     if (formatted === '—') return '—';
 
     const lines = formatted.split('\n');
 
     return lines.map((line, idx) => (
         <span key={`${idx}-${line}`}>
-            {renderRuntimeTypeLine(line)}
+            {renderRuntimeTypeLine(line, query)}
             {idx < lines.length - 1 && <br />}
         </span>
     ));
@@ -128,7 +129,7 @@ export const AttributesTableRow = ({
                 </Table.Cell>
                 <Table.Cell>
                     <Text typographyStyle="body-xs" overflow="auto">
-                        <Syntax>{renderRuntimeType(attribute.runtimeType)}</Syntax>
+                        <Syntax>{renderRuntimeType(attribute.runtimeType, query)}</Syntax>
                     </Text>
                 </Table.Cell>
 
