@@ -86,6 +86,8 @@
         + pkgs.lib.optionalString pkgs.stdenv.hostPlatform.isLinux ''
           export ELECTRON_OVERRIDE_DIST_PATH="${electron}/bin/"
           export npm_config_build_from_source=true
+          # usb-legacy loads its prebuilt binary, which needs libudev and libstdc++ at runtime
+          export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath [ pkgs.udev pkgs.gcc.cc.lib ]}''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
         '';
 
       in

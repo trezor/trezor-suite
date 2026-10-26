@@ -74,6 +74,8 @@ in
       export ELECTRON_OVERRIDE_DIST_PATH="${electron}/bin/"
       export ELECTRON_DISABLE_SANDBOX=1
       export npm_config_build_from_source=true  # tell yarn to not download binaries, but build from source
+      # usb-legacy loads its prebuilt binary, which needs libudev and libstdc++ at runtime
+      export LD_LIBRARY_PATH="${lib.makeLibraryPath [ udev gcc.cc.lib ]}''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
       export PLAYWRIGHT_BROWSERS_PATH="$CURDIR/.cache/ms-playwright"
     '';
   }
