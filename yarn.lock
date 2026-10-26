@@ -47628,6 +47628,8 @@ __metadata:
       built: true
     unrs-resolver:
       built: true
+    usb:
+      built: true
   languageName: unknown
   linkType: soft
 

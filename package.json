@@ -237,6 +237,9 @@
         },
         "unrs-resolver": {
             "built": true
+        },
+        "usb": {
+            "built": true
         }
     },
     "packageManager": "yarn@4.18.0"
