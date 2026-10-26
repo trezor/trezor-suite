@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { isFulfilled } from '@reduxjs/toolkit';
@@ -26,9 +26,10 @@ import {
     transactionManagementActions,
 } from '@suite-native/transaction-management';
 import { useServices } from '@trezor/dependency-injection';
-import { useDebounce } from '@trezor/react-utils';
+import { useDebounce, useFreshRef } from '@trezor/react-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 
+import { useYieldFeeEstimationError } from './useYieldFeeEstimationError';
 import {
     getYieldAllowanceFormDraftKey,
     updateYieldAllowanceSelectedFeeLevelThunk,
@@ -69,7 +70,14 @@ export const useYieldAllowanceFees = ({
 }: UseYieldAllowanceFeesParams) => {
     const { dispatch } = useServices(injectDispatch);
     const debounce = useDebounce();
-    const [isComposingAllowanceFee, setIsComposingAllowanceFee] = useState(false);
+    const requestIdRef = useRef(0);
+    const {
+        feeEstimationRetryKey,
+        hasFeeEstimationError,
+        retryFeeEstimation,
+        setHasFeeEstimationError,
+    } = useYieldFeeEstimationError();
+    const [isComposingAllowanceFee, setIsComposingAllowanceFee] = useState(true);
     const formDraftKey = useMemo(
         () => (flowKey ? getYieldAllowanceFormDraftKey(flowKey, draftTransactionType) : ''),
         [draftTransactionType, flowKey],
@@ -82,20 +90,34 @@ export const useYieldAllowanceFees = ({
     );
     const feeLevels = useSelector((state: NativeSendRootState) => selectFeeLevels(state));
 
-    const { customFee, selectedFee } = useMemo(
+    const { customFee: draftCustomFee, selectedFee } = useMemo(
         () => getYieldAllowanceFeeState(formDraft),
         [formDraft],
     );
+    const feePerUnit = draftCustomFee?.feePerUnit;
+    const feeLimit = draftCustomFee?.feeLimit;
+    const maxFeePerGas = draftCustomFee?.maxFeePerGas;
+    const maxPriorityFeePerGas = draftCustomFee?.maxPriorityFeePerGas;
+    const customFee = useMemo(
+        () =>
+            feePerUnit && feeLimit
+                ? { feePerUnit, feeLimit, maxFeePerGas, maxPriorityFeePerGas }
+                : undefined,
+        [feePerUnit, feeLimit, maxFeePerGas, maxPriorityFeePerGas],
+    );
     const selectedFeeLevel = feeLevels[selectedFee];
-    const fee = isFinalPrecomposedTransaction(selectedFeeLevel) ? selectedFeeLevel.fee : null;
     const { isFeeUnavailable } = getFeeAvailability({
-        fee,
         feeLevels,
         selectedFee,
         isLoading: isComposingAllowanceFee,
     });
     const isAllowanceFeeReady =
-        formDraft !== undefined && !isComposingAllowanceFee && !isFeeUnavailable;
+        isEnabled &&
+        transaction !== null &&
+        formDraft !== undefined &&
+        !isComposingAllowanceFee &&
+        !hasFeeEstimationError &&
+        isFinalPrecomposedTransaction(selectedFeeLevel);
 
     const composeAllowanceFeeParams = useMemo((): ComposeAllowanceFeeParams | null => {
         if (!isEnabled || !flowData || !formDraftKey || !feeInfo || !transaction) {
@@ -110,80 +132,131 @@ export const useYieldAllowanceFees = ({
         };
     }, [feeInfo, flowData, formDraftKey, isEnabled, transaction]);
 
-    const composeAllowanceFee = useCallback(async () => {
-        if (!composeAllowanceFeeParams) {
-            setIsComposingAllowanceFee(false);
+    const formDraftRef = useFreshRef(formDraft);
 
-            return;
-        }
+    const composeAllowanceFee = useCallback(
+        async (requestId: number) => {
+            if (requestId !== requestIdRef.current) return;
 
-        setIsComposingAllowanceFee(true);
-        try {
-            const {
-                feeInfo: allowanceFeeInfo,
-                flowData: allowanceFlowData,
-                formDraftKey: allowanceFormDraftKey,
-                transaction: allowanceTransaction,
-            } = composeAllowanceFeeParams;
-            const { allowanceAmount, modalState } = allowanceTransaction;
-            const data = buildApprovalTransactionData({
-                amount: allowanceAmount,
-                spender: modalState.spender,
-            });
-            const feeResponse = await dispatch(
-                composeAllowanceTransactionThunk({
-                    account: allowanceFlowData.account,
-                    contract: modalState.contractAddress,
-                    customFee,
-                    data,
+            if (!composeAllowanceFeeParams) {
+                setIsComposingAllowanceFee(false);
+
+                return;
+            }
+
+            setIsComposingAllowanceFee(true);
+            try {
+                const {
                     feeInfo: allowanceFeeInfo,
+                    flowData: allowanceFlowData,
+                    formDraftKey: allowanceFormDraftKey,
+                    transaction: allowanceTransaction,
+                } = composeAllowanceFeeParams;
+                const { allowanceAmount, modalState } = allowanceTransaction;
+                const data = buildApprovalTransactionData({
+                    amount: allowanceAmount,
+                    spender: modalState.spender,
+                });
+                if (!formDraftRef.current) {
+                    dispatch(
+                        formDraftActions.storeDraft({
+                            key: allowanceFormDraftKey,
+                            formDraft: buildYieldAllowanceFormState({
+                                approvalModalState: modalState,
+                                data,
+                                selectedFee,
+                            }),
+                        }),
+                    );
+                }
+                const feeResponse = await dispatch(
+                    composeAllowanceTransactionThunk({
+                        account: allowanceFlowData.account,
+                        contract: modalState.contractAddress,
+                        customFee,
+                        data,
+                        feeInfo: allowanceFeeInfo,
+                        selectedFee,
+                    }),
+                );
+
+                if (requestId !== requestIdRef.current) return;
+
+                if (!isFulfilled(feeResponse)) {
+                    setHasFeeEstimationError(true);
+
+                    return;
+                }
+
+                dispatch(
+                    transactionManagementActions.storeFeeLevels({ feeLevels: feeResponse.payload }),
+                );
+
+                const selectedFeeTransaction = feeResponse.payload[selectedFee];
+
+                if (!isFinalPrecomposedTransaction(selectedFeeTransaction)) {
+                    setHasFeeEstimationError(selectedFeeTransaction?.type !== 'error');
+
+                    return;
+                }
+
+                const formState = buildYieldAllowanceFormState({
+                    approvalModalState: modalState,
+                    data,
+                    precomposedTransaction: selectedFeeTransaction,
                     selectedFee,
-                }),
-            );
+                });
 
-            if (!isFulfilled(feeResponse)) {
-                dispatch(formDraftActions.removeDraft({ key: allowanceFormDraftKey }));
-
-                return;
+                dispatch(
+                    formDraftActions.storeDraft({
+                        key: allowanceFormDraftKey,
+                        formDraft: formState,
+                    }),
+                );
+            } catch {
+                if (requestId !== requestIdRef.current) return;
+                setHasFeeEstimationError(true);
+            } finally {
+                if (requestId === requestIdRef.current) {
+                    setIsComposingAllowanceFee(false);
+                }
             }
-
-            dispatch(
-                transactionManagementActions.storeFeeLevels({ feeLevels: feeResponse.payload }),
-            );
-
-            const selectedFeeTransaction = feeResponse.payload[selectedFee];
-
-            if (!isFinalPrecomposedTransaction(selectedFeeTransaction)) {
-                dispatch(formDraftActions.removeDraft({ key: allowanceFormDraftKey }));
-
-                return;
-            }
-
-            const formState = buildYieldAllowanceFormState({
-                approvalModalState: modalState,
-                data,
-                precomposedTransaction: selectedFeeTransaction,
-                selectedFee,
-            });
-
-            dispatch(
-                formDraftActions.storeDraft({ key: allowanceFormDraftKey, formDraft: formState }),
-            );
-        } catch {
-            dispatch(formDraftActions.removeDraft({ key: composeAllowanceFeeParams.formDraftKey }));
-        } finally {
-            setIsComposingAllowanceFee(false);
-        }
-    }, [composeAllowanceFeeParams, customFee, dispatch, selectedFee]);
+        },
+        [
+            composeAllowanceFeeParams,
+            customFee,
+            dispatch,
+            formDraftRef,
+            selectedFee,
+            setHasFeeEstimationError,
+        ],
+    );
 
     useEffect(() => {
+        const requestId = ++requestIdRef.current;
+        setHasFeeEstimationError(false);
         setIsComposingAllowanceFee(composeAllowanceFeeParams !== null);
-        debounce(composeAllowanceFee);
-    }, [composeAllowanceFee, composeAllowanceFeeParams, debounce]);
+        debounce(() => composeAllowanceFee(requestId));
+    }, [
+        composeAllowanceFee,
+        composeAllowanceFeeParams,
+        debounce,
+        feeEstimationRetryKey,
+        setHasFeeEstimationError,
+    ]);
+
+    useEffect(
+        () => () => {
+            requestIdRef.current += 1;
+        },
+        [],
+    );
 
     return {
         formDraft,
         formDraftKey,
+        hasFeeEstimationError,
+        retryFeeEstimation,
         isAllowanceFeeReady,
         isComposingAllowanceFee,
         isFeeUnavailable,

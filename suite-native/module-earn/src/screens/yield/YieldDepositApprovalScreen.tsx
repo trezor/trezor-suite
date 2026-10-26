@@ -4,8 +4,8 @@ import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { ContextMessage } from '@suite-native/message-system';
 import { Screen } from '@suite-native/navigation';
-import { FeeSelector } from '@suite-native/transaction-management';
 
+import { RetriableFeeEstimation } from '../../components/earn/RetriableFeeEstimation';
 import { YieldAmountInputCard } from '../../components/yield/YieldAmountInputCard';
 import { YieldDepositApprovalLimitBottomSheet } from '../../components/yield/YieldDepositApprovalLimitBottomSheet';
 import { YieldDepositApprovedAmountCard } from '../../components/yield/YieldDepositApprovedAmountCard';
@@ -156,9 +156,11 @@ export const YieldDepositApprovalScreen = () => {
 
                         {feeSection.isVisible && (
                             <Box paddingHorizontal="sp16">
-                                <FeeSelector
+                                <RetriableFeeEstimation
                                     accountKey={account.key}
                                     tokenContract={tokenContract}
+                                    hasFeeEstimationError={feeSection.hasFeeEstimationError}
+                                    retryFeeEstimation={feeSection.retryFeeEstimation}
                                     updateThunk={feeSection.updateFeeLevelThunk}
                                     selectedFee={feeSection.selectedFee}
                                     selectedFeePerUnit={feeSection.formDraft?.feePerUnit}
