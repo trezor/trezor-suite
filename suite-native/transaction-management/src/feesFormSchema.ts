@@ -92,45 +92,51 @@ export const feesFormValidationSchema = yup.object({
             return true;
         })
         .required(),
-    customFeeLimit: yup.string().test(
-        'fee-limit-too-low',
-        'Value is too low.',
+    customFeeLimit: yup
+        .string()
+        .when('$isEip1559Fee', { is: true, then: schema => schema.required() })
+        .test(
+            'fee-limit-too-low',
+            'Value is too low.',
 
-        function (value) {
-            if (!value) return true;
-            const { symbol, minimalFeeLimit, translate } = this.options.context as FeesFormContext;
+            function (value) {
+                if (!value) return true;
+                const { symbol, minimalFeeLimit, translate } = this.options
+                    .context as FeesFormContext;
 
-            if (!symbol) return true;
+                if (!symbol) return true;
 
-            const { networkType } = getNetwork(symbol);
+                const { networkType } = getNetwork(symbol);
 
-            if (networkType !== 'ethereum' && networkType !== 'tron') return true;
+                if (networkType !== 'ethereum' && networkType !== 'tron') return true;
 
-            if (!value || !minimalFeeLimit) return false;
+                const feeLimit = new BigNumber(value);
+                if (!feeLimit.isFinite() || !feeLimit.isInteger() || feeLimit.lte(0)) {
+                    return false;
+                }
 
-            const feeBig = new BigNumber(value);
+                if (minimalFeeLimit && feeLimit.isLessThan(minimalFeeLimit)) {
+                    return this.createError({
+                        message:
+                            networkType === 'tron'
+                                ? translate!(
+                                      'transactionManagement.fees.tron.feeLimitBelowRecommended',
+                                      { minFeeLimit: minimalFeeLimit },
+                                  )
+                                : translate!(
+                                      'transactionManagement.fees.custom.bottomSheet.errors.feeLimit.low',
+                                      { minGasLimit: minimalFeeLimit },
+                                  ),
+                    });
+                }
 
-            if (feeBig.isLessThan(minimalFeeLimit)) {
-                return this.createError({
-                    message:
-                        networkType === 'tron'
-                            ? translate!(
-                                  'transactionManagement.fees.tron.feeLimitBelowRecommended',
-                                  { minFeeLimit: minimalFeeLimit },
-                              )
-                            : translate!(
-                                  'transactionManagement.fees.custom.bottomSheet.errors.feeLimit.low',
-                                  { minGasLimit: minimalFeeLimit },
-                              ),
-                });
-            }
-
-            return true;
-        },
-    ),
+                return true;
+            },
+        ),
     // EIP1559 only validations
     customMaxFeePerGas: yup
         .string()
+        .when('$isEip1559Fee', { is: true, then: schema => schema.required() })
         .test('too-many-decimals', 'Too many decimals.', function (value) {
             if (!value) return true;
 
@@ -195,6 +201,7 @@ export const feesFormValidationSchema = yup.object({
         ),
     customMaxPriorityFeePerGas: yup
         .string()
+        .when('$isEip1559Fee', { is: true, then: schema => schema.required() })
         .test('too-many-decimals', 'Too many decimals.', function (value) {
             const { translate, ...context } = this.options.context as FeesFormContext;
             if (!validateFeeDecimalLength(value, context)) {

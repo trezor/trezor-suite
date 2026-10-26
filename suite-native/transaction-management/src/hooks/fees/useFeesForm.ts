@@ -14,10 +14,10 @@ import type {
     FeeLevelLabel,
     PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
-import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { type UseFormReturn, useForm } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
 
+import { getReferenceFeeLevel } from './referenceFeeLevel';
 import { type FeesFormValues, feesFormValidationSchema } from '../../feesFormSchema';
 import { selectFeeLevels } from '../../selectors';
 import { getFeeValue } from '../../utils';
@@ -88,16 +88,11 @@ export const useFeesForm = ({
         symbol: account?.symbol,
     });
 
-    const minimalFeeLimit =
-        feeLevels.normal && 'estimatedFeeLimit' in feeLevels.normal
-            ? feeLevels.normal.estimatedFeeLimit
-            : undefined;
-
-    const normalFee = isFinalPrecomposedTransaction(feeLevels.normal)
-        ? feeLevels.normal
-        : undefined;
-
+    const normalFee = getReferenceFeeLevel(feeLevels);
     const networkType = account?.symbol ? getNetworkType(account.symbol) : undefined;
+    const minimalFeeLimit =
+        normalFee?.estimatedFeeLimit ??
+        (networkType === 'ethereum' ? normalFee?.feeLimit : undefined);
 
     const form = useForm<FeesFormValues>({
         validation: feesFormValidationSchema,

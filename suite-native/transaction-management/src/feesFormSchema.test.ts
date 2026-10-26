@@ -22,6 +22,34 @@ describe('feesFormValidationSchema', () => {
         ...overrides,
     });
 
+    it.each(['customMaxFeePerGas', 'customMaxPriorityFeePerGas', 'customFeeLimit'])(
+        'requires visible EIP-1559 field %s instead of silently keeping a hidden old value',
+        async field => {
+            const values: Record<string, string> = {
+                feeLevel: 'custom',
+                customFeePerUnit: '10',
+                customFeeLimit: '21000',
+                customMaxFeePerGas: '20',
+                customMaxPriorityFeePerGas: '2',
+            };
+            values[field] = '';
+            const context = createContext({
+                isEip1559Fee: true,
+                networkFeeInfo: {
+                    minFee: 1,
+                    maxFee: 100,
+                    minPriorityFee: 1,
+                    levels: [],
+                    blockHeight: 0,
+                    blockTime: 12,
+                },
+            });
+            await expect(
+                feesFormValidationSchema.validate(values, { context }),
+            ).rejects.toMatchObject({ path: field });
+        },
+    );
+
     describe('basic validation', () => {
         it('should validate a complete valid form', async () => {
             const data = {
@@ -51,6 +79,22 @@ describe('feesFormValidationSchema', () => {
     });
 
     describe('customFeeLimit validation', () => {
+        it.each(['0', '-1', '1.5', 'NaN', 'Infinity'])(
+            'rejects invalid gas %s even when no standard estimate exists',
+            async customFeeLimit => {
+                await expect(
+                    feesFormValidationSchema.validate(
+                        {
+                            feeLevel: 'custom',
+                            customFeePerUnit: '500000',
+                            customFeeLimit,
+                        },
+                        { context: createContext({ minimalFeeLimit: undefined }) },
+                    ),
+                ).rejects.toMatchObject({ path: 'customFeeLimit' });
+            },
+        );
+
         it('should accept valid fee limit for ethereum', async () => {
             const data = {
                 feeLevel: 'custom',
