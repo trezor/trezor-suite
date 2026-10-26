@@ -15,14 +15,17 @@ import * as CONSTANTS from '../constants';
  */
 jest.mock('./credentials', () => {
     const credentialsBundle = {
-        CredentialsRequest: { Delta: 0, Presented: [], Requested: [], Proofs: [] },
+        // The marker the mock coordinator recognises, so that it answers with the right
+        // shape instead of handing a proofless request to its issuer.
+        CredentialsRequest: jest.requireActual('../../mocks/stubbedCredentials')
+            .STUBBED_CREDENTIALS_REQUEST,
         CredentialsResponseValidation: {},
     };
 
     return {
         ...jest.requireActual('./credentials'),
         getZeroCredentials: jest.fn(() => credentialsBundle),
-        getRealCredentials: jest.fn(() => credentialsBundle),
+        getRealCredentials: jest.fn(() => Promise.resolve(credentialsBundle)),
         getCredentials: jest.fn(() => [{ value: 0 }, { value: 0 }]),
     };
 });

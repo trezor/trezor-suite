@@ -1,7 +1,8 @@
 import { confirmationInterval, connectionConfirmation } from './connectionConfirmation';
-import { createServer } from '../../../mocks/server';
+import { createServer, getRoundCredentialKinds, resetMockCoordinator } from '../../../mocks/server';
+import { mintCredentialsRequest } from '../../__fixtures__/credentialIssuer.fixture';
 import { createInput } from '../../__fixtures__/input.fixture';
-import { createCoinjoinRound } from '../../__fixtures__/round.fixture';
+import { DEFAULT_ROUND, createCoinjoinRound } from '../../__fixtures__/round.fixture';
 
 let server: Awaited<ReturnType<typeof createServer>>;
 
@@ -17,28 +18,36 @@ jest.mock('@trezor/utils', () => {
 
 /**
  * This suite is about the confirmation interval: when the ping is sent, how its delay is
- * reduced by request latency, and what happens on a deadline or an error. Its inputs
- * carry credential placeholders rather than real credentials, so the credential layer is
- * stubbed; the real round trip against the mock coordinator's issuer is covered by
- * `inputRegistration.test.ts`.
+ * reduced by request latency, and what happens on a deadline or an error.
+ *
+ * Nothing is stubbed. Its inputs start mid-round, so their real credential requests are
+ * built by `realCredentials` below against the mock coordinator's own issuer — the same
+ * issuer that then verifies them when the confirmation arrives, and whose serial number
+ * set would reject the second presentation of one. A confirmation the issuer refuses is
+ * an HTTP 500 from the mock, so these tests fail rather than pass on a request a real
+ * coordinator would have thrown out.
  */
-jest.mock('../credentials', () => ({
-    ...jest.requireActual('../credentials'),
-    getZeroCredentials: jest.fn(() => ({
-        CredentialsRequest: { Delta: 0, Presented: [], Requested: [], Proofs: [] },
-        CredentialsResponseValidation: {},
-    })),
-    getCredentials: jest.fn(() => [{ value: 0 }, { value: 0 }]),
-}));
+
+/** Rather less than the input's 1 000 000 sat, as the mining and coordination fees are. */
+const REGISTERED_AMOUNT = 990_000;
+/** `MaxVsizeAllocationPerAlice` (255) less a Taproot input's 58. */
+const REGISTERED_VSIZE = 197;
 
 /**
- * A credential bundle with the right shape but no proofs, which is what the mock
- * coordinator recognises as "this suite stubs the credential layer".
+ * One alice's real credential requests, for an input that has already registered.
+ *
+ * A fresh pair per input: two inputs cannot present the same credentials, and neither
+ * can one input twice.
  */
-const CREDENTIALS_STUB = {
-    CredentialsRequest: { Delta: 0, Presented: [], Requested: [], Proofs: [] },
-    CredentialsResponseValidation: {},
-} as any;
+const realCredentials = async (roundId: string = DEFAULT_ROUND.Id) => {
+    const kinds = getRoundCredentialKinds(roundId);
+    const [realAmountCredentials, realVsizeCredentials] = await Promise.all([
+        mintCredentialsRequest(kinds.amount, [REGISTERED_AMOUNT, 0]),
+        mintCredentialsRequest(kinds.vsize, [REGISTERED_VSIZE, 0]),
+    ]);
+
+    return { realAmountCredentials, realVsizeCredentials };
+};
 
 describe('connectionConfirmation', () => {
     beforeAll(async () => {
@@ -47,6 +56,10 @@ describe('connectionConfirmation', () => {
 
     beforeEach(() => {
         server?.removeAllListeners('test-request');
+    });
+
+    afterEach(() => {
+        resetMockCoordinator();
     });
 
     afterAll(() => {
@@ -81,8 +94,7 @@ describe('connectionConfirmation', () => {
                         registrationData: {
                             AliceId: '01A1-01a1',
                         },
-                        realAmountCredentials: CREDENTIALS_STUB,
-                        realVsizeCredentials: CREDENTIALS_STUB,
+                        ...(await realCredentials()),
                         confirmationData: {},
                         confirmedAmountCredentials: {},
                         confirmedVsizeCredentials: {},
@@ -91,8 +103,7 @@ describe('connectionConfirmation', () => {
                         registrationData: {
                             AliceId: '01B1-01b1',
                         },
-                        realAmountCredentials: CREDENTIALS_STUB,
-                        realVsizeCredentials: CREDENTIALS_STUB,
+                        ...(await realCredentials()),
                     }),
                 ],
                 {
@@ -114,7 +125,9 @@ describe('connectionConfirmation', () => {
         // confirmation request sent only for second input
         expect(spy).toHaveBeenCalledTimes(1);
         expect(spy).toHaveBeenLastCalledWith('01B1-01b1');
-    });
+        // Two inputs' worth of real credential requests, plus the confirmation the
+        // issuer verifies: past the default timeout on a loaded machine.
+    }, 30_000);
 
     it('connection confirmation interval (real credentials not received)', async () => {
         const spy = jest.fn();
@@ -132,15 +145,13 @@ describe('connectionConfirmation', () => {
                         registrationData: {
                             AliceId: '01A1-01a1',
                         },
-                        realAmountCredentials: CREDENTIALS_STUB,
-                        realVsizeCredentials: CREDENTIALS_STUB,
+                        ...(await realCredentials()),
                     }),
                     createInput('account-B', 'B1', {
                         registrationData: {
                             AliceId: '01B1-01b1',
                         },
-                        realAmountCredentials: CREDENTIALS_STUB,
-                        realVsizeCredentials: CREDENTIALS_STUB,
+                        ...(await realCredentials()),
                     }),
                 ],
                 {
@@ -162,7 +173,7 @@ describe('connectionConfirmation', () => {
             // inputs are not confirmed, deadline reached (~2.5 sec: phaseDeadline + connectionConfirmationTimeout)
             expect(input.error?.message).toMatch(/Aborted by deadline/);
         });
-    });
+    }, 30_000);
 
     it('connection-confirmation, intervalDelay reduced by request latency', async () => {
         const spy = jest.fn();
@@ -185,8 +196,7 @@ describe('connectionConfirmation', () => {
             registrationData: {
                 AliceId: '01A1-01a1',
             },
-            realAmountCredentials: CREDENTIALS_STUB,
-            realVsizeCredentials: CREDENTIALS_STUB,
+            ...(await realCredentials()),
         });
 
         await confirmationInterval(
@@ -219,16 +229,19 @@ describe('connectionConfirmation', () => {
             .forEach(ts => {
                 expect(ts).toBeLessThan(1100); // time distance between each request should be around 1 sec, regardless of delayed responses
             });
-    });
+        // Four one-second intervals, plus the real credential work: building this
+        // input's requests against the issuer and a null request per ping.
+    }, 20_000);
 
-    it('connection-confirmation interval aborted, Alice unregistered', () =>
-        new Promise<void>(done => {
+    it('connection-confirmation interval aborted, Alice unregistered', async () => {
+        const credentials = await realCredentials();
+
+        return new Promise<void>(done => {
             const alice = createInput('account-A', 'A1', {
                 registrationData: {
                     AliceId: '01A1-01a1',
                 },
-                realAmountCredentials: CREDENTIALS_STUB,
-                realVsizeCredentials: CREDENTIALS_STUB,
+                ...credentials,
             });
 
             const interval = confirmationInterval(
@@ -253,7 +266,43 @@ describe('connectionConfirmation', () => {
             });
 
             interval.abort();
-        }));
+        });
+    });
+
+    /**
+     * The point of the mock coordinator holding a real issuer: a credential request that
+     * does not verify has to fail the test. Before, the mock answered any shape with
+     * structurally fake data and this would have confirmed happily.
+     */
+    it('a tampered credential request is refused, not waved through', async () => {
+        const credentials = await realCredentials();
+        const [proof] = credentials.realAmountCredentials.CredentialsRequest.Proofs;
+        // One response scalar of the first proof, zeroed: still a well-formed request,
+        // still the right number of proofs, but the verification equation no longer holds.
+        proof!.Responses[0] = `${'00'.repeat(32)}`;
+
+        const response = await connectionConfirmation(
+            createCoinjoinRound(
+                [
+                    createInput('account-A', 'A1', {
+                        registrationData: { AliceId: '01A1-01a1' },
+                        ...credentials,
+                    }),
+                ],
+                {
+                    ...server?.requestOptions,
+                    round: { phase: 1 },
+                    roundParameters: { ConnectionConfirmationTimeout: '0d 0h 0m 4s' },
+                },
+            ),
+            server?.requestOptions,
+        );
+
+        response.inputs.forEach(input => {
+            expect(input.error?.message).toMatch(/MockIssuerRejectedRequest|InvalidProof/i);
+            expect(input.confirmationData).toBeUndefined();
+        });
+    }, 20_000);
 
     it('404 error in coordinator connection-confirmation', async () => {
         server?.addListener('test-request', ({ url, data, resolve, reject }) => {
@@ -271,22 +320,21 @@ describe('connectionConfirmation', () => {
                         registrationData: {
                             AliceId: '01A1-01a1',
                         },
-                        realAmountCredentials: CREDENTIALS_STUB,
-                        realVsizeCredentials: CREDENTIALS_STUB,
+                        // This round is `01`, not the fixture's default, and the issuer
+                        // is per round.
+                        ...(await realCredentials('01')),
                     }),
                     createInput('account-A', 'A2', {
                         registrationData: {
                             AliceId: '01A2-01a2',
                         },
-                        realAmountCredentials: CREDENTIALS_STUB,
-                        realVsizeCredentials: CREDENTIALS_STUB,
+                        ...(await realCredentials('01')),
                     }),
                     createInput('account-A', 'A3', {
                         registrationData: {
                             AliceId: '01A3-01a3',
                         },
-                        realAmountCredentials: CREDENTIALS_STUB,
-                        realVsizeCredentials: CREDENTIALS_STUB,
+                        ...(await realCredentials('01')),
                     }),
                 ],
                 {
@@ -305,7 +353,12 @@ describe('connectionConfirmation', () => {
                 expect(input.error?.message).toMatch(/Not Found/);
             } else {
                 expect(input.confirmationData).toEqual(expect.any(Object));
+                // The issuer accepted the presentation and the client verified the
+                // issuer-parameters proof on what came back, so the credential carries
+                // the amount that was asked for.
+                expect(input.confirmedAmountCredentials?.[0]?.value).toBe(REGISTERED_AMOUNT);
+                expect(input.confirmedVsizeCredentials?.[0]?.value).toBe(REGISTERED_VSIZE);
             }
         });
-    });
+    }, 30_000);
 });
