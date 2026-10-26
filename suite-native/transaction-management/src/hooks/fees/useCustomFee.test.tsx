@@ -6,7 +6,7 @@ import { getTranslation } from '@suite-native/intl';
 import { act, renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import { createDeferred } from '@trezor/utils';
 
-import { useCustomFee } from './useCustomFee';
+import { type CustomFeeLevelBuilder, useCustomFee } from './useCustomFee';
 import { createFeeLevel } from '../../__fixtures__/feeLevels';
 import { ETH_ACCOUNT_KEY, getWalletState } from '../../__fixtures__/walletState';
 import { type FeesFormValues } from '../../feesFormSchema';
@@ -35,7 +35,10 @@ const success = (fee: string) => ({
 });
 const settle = () => act(() => jest.advanceTimersByTimeAsync(300));
 
-const renderCustom = async () => {
+const renderCustom = async (
+    getCustomFeeLevel?: CustomFeeLevelBuilder,
+    wallet = getWalletState(),
+) => {
     const { result: form } = await renderHookWithStoreProvider(() =>
         useForm<FeesFormValues>({
             validation: yup.object({
@@ -55,9 +58,11 @@ const renderCustom = async () => {
         }),
     );
     const hook = await renderHookWithStoreProvider(
-        () => useCustomFee({ accountKey: ETH_ACCOUNT_KEY, formState: FORM_STATE }),
+        (props: { getCustomFeeLevel?: CustomFeeLevelBuilder }) =>
+            useCustomFee({ accountKey: ETH_ACCOUNT_KEY, formState: FORM_STATE, ...props }),
         {
-            preloadedState: { wallet: getWalletState() },
+            initialProps: { getCustomFeeLevel },
+            preloadedState: { wallet },
             wrapper: ({ children }: PropsWithChildren) => (
                 <Form form={form.current}>{children}</Form>
             ),
@@ -75,6 +80,82 @@ describe('custom fee preview', () => {
     afterEach(() => {
         jest.clearAllMocks();
         jest.useRealTimers();
+    });
+
+    it('uses the owning flow builder instead of imposing Send token-balance checks', async () => {
+        const getCustomFeeLevel = jest.fn(() => createFeeLevel({ fee: '200' }));
+        const { result, form } = await renderCustom(getCustomFeeLevel);
+        await settle();
+        expect(result.current.feeValue).toBe('200');
+        expect(result.current.isSubmittable).toBe(true);
+        expect(mockCompose).not.toHaveBeenCalled();
+        await act(() => form.current.setValue('customFeePerUnit', '15'));
+        await settle();
+        expect(getCustomFeeLevel).toHaveBeenLastCalledWith({
+            label: 'custom',
+            blocks: -1,
+            feePerUnit: '15',
+            feeLimit: '21000',
+        });
+    });
+
+    it('passes the visible EIP-1559 max and priority rates to an owning builder', async () => {
+        const builder = jest.fn(() => createFeeLevel({ fee: '200' }));
+        const wallet = getWalletState();
+        await renderCustom(builder, {
+            ...wallet,
+            fees: {
+                eth: {
+                    status: 'loaded',
+                    data: {
+                        blockHeight: 100,
+                        blockTime: 12,
+                        minFee: 1,
+                        maxFee: 1000000000000,
+                        minPriorityFee: 0,
+                        levels: [
+                            {
+                                label: 'normal',
+                                blocks: 1,
+                                feePerUnit: '10000000000',
+                                maxFeePerGas: '20000000000',
+                                maxPriorityFeePerGas: '2000000000',
+                            },
+                        ],
+                    },
+                },
+            },
+        });
+        await settle();
+        expect(builder).toHaveBeenLastCalledWith({
+            label: 'custom',
+            blocks: -1,
+            feePerUnit: '20',
+            feeLimit: '21000',
+            maxFeePerGas: '20',
+            maxPriorityFeePerGas: '2',
+        });
+    });
+
+    it('explains an owning builder failure as unavailable instead of insufficient funds', async () => {
+        const { result } = await renderCustom(() => {
+            throw new Error('Invalid prepared transaction');
+        });
+        await settle();
+        expect(result.current.isSubmittable).toBe(false);
+        expect(result.current.errorMessage).toBe(getTranslation('moduleSend.fees.unavailable'));
+        expect(mockCompose).not.toHaveBeenCalled();
+    });
+
+    it('invalidates a preview when its owning prepared transaction changes', async () => {
+        const { result, rerender } = await renderCustom(() => createFeeLevel({ fee: '200' }));
+        await settle();
+        await rerender({ getCustomFeeLevel: () => createFeeLevel({ fee: '400' }) });
+        expect(result.current.isSubmittable).toBe(false);
+        expect(result.current.feeValue).toBeNull();
+        await settle();
+        expect(result.current.feeValue).toBe('400');
+        expect(result.current.isSubmittable).toBe(true);
     });
 
     it('uses current gas values and blocks confirmation while the replacement estimate is pending', async () => {

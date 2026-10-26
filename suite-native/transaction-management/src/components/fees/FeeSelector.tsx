@@ -3,9 +3,10 @@ import { BannerInline, Box } from '@suite-native/atoms';
 import { FeeSummaryCard } from './FeeSummaryCard';
 import { FeesBottomSheet } from './FeesBottomSheet';
 import { TronFeeSummaryCard } from './TronFeeSummaryCard/TronFeeSummaryCard';
+import { type CustomFeeLevelBuilder } from '../../hooks/fees/useCustomFee';
 import { type UseFeeSelectorParams, useFeeSelector } from '../../hooks/fees/useFeeSelector';
 
-export type FeeSelectorProps = UseFeeSelectorParams;
+export type FeeSelectorProps = UseFeeSelectorParams & { getCustomFeeLevel?: CustomFeeLevelBuilder };
 
 export const FeeSelector = (props: FeeSelectorProps) => {
     const {
@@ -69,6 +70,7 @@ export const FeeSelector = (props: FeeSelectorProps) => {
                 areFeesLoading={areFeesLoading}
                 isSubmittable={isSubmittable}
                 formDraft={formDraft}
+                getCustomFeeLevel={props.getCustomFeeLevel}
                 snapshotRef={snapshotRef}
                 confirmedRef={confirmedRef}
                 onConfirm={handleConfirm}

@@ -33,6 +33,7 @@ import { FeeOptionsList } from './FeeOptionList/FeeOptionsList';
 import { TronFeeLimitContent } from './TronFeeLimitContent';
 import { type FeesFormType, type FeesFormValues } from '../../feesFormSchema';
 import { type CustomFeeParams } from '../../hooks';
+import { type CustomFeeLevelBuilder } from '../../hooks/fees/useCustomFee';
 
 type TabValue = 'standard' | 'custom';
 
@@ -47,6 +48,7 @@ type FeesBottomSheetProps = {
     areFeesLoading: boolean;
     isSubmittable: boolean;
     formDraft: FormState | null | undefined;
+    getCustomFeeLevel?: CustomFeeLevelBuilder;
     snapshotRef: RefObject<FeesFormValues | undefined>;
     confirmedRef: MutableRefObject<boolean>;
     onConfirm: (feeLevel: FeeLevelLabel, customParams?: CustomFeeParams) => void | Promise<void>;
@@ -78,6 +80,7 @@ export const FeesBottomSheet = ({
     areFeesLoading,
     isSubmittable: standardIsSubmittable,
     formDraft,
+    getCustomFeeLevel,
     snapshotRef,
     confirmedRef,
     onConfirm,
@@ -214,6 +217,7 @@ export const FeesBottomSheet = ({
                         accountKey={accountKey}
                         symbol={symbol}
                         formDraft={formDraft}
+                        getCustomFeeLevel={getCustomFeeLevel}
                         onSubmittableChange={setCustomIsSubmittable}
                         onFeeLevelsChange={setCustomFeeLevels}
                     />
