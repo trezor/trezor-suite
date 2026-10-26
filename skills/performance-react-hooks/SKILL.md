@@ -36,16 +36,53 @@ when in doubt and treat the list below as a summary that can lag it by a commit.
   `useMemo`/`useCallback` sites is a large unreviewable diff for a modest win. A hand-written memo whose
   equivalence the compiler cannot prove fails `react-hooks/preserve-manual-memoization`.
 - **A bail-out is worse than a missing memo** — it silently drops auto-memoization for the whole
-  function. `react-hook-form`'s `useForm().watch()` causes one; use `useWatch()`. So does a hook
-  called inside a nested function, typically a component defined in another component's body:
-  hoist it to module scope, where it also stops remounting on every render. So does a `try` with a
-  `finally`, or one wrapping `?.`, `&&`, `||`, `??` or a ternary, anywhere in the function or its
-  callbacks: move that logic into a thunk or a module-level helper.
+  function, callbacks included. The syntax that causes one, and the fix for each, is in the next
+  section; `react-hook-form`'s `useForm().watch()` and an `eslint-disable` for `exhaustive-deps`
+  are in the one after.
 - **Green lint is not a correctness gate for the compiler rollout.** None of these rules — nor jest —
-  can see the failure mode in the next section. `yarn react-compiler:check` is the gate that does:
+  can see the frozen-read failure mode under "Compiled paths" below. `yarn react-compiler:check` is the
+  gate that does:
   it compiles every enabled tree and fails on a render-time `react-hook-form` read
   ([`reactCompilerFrozenReads.ts`](../../packages/suite/webpack/reactCompilerFrozenReads.ts), run by
   the `other-checks` CI job). Run it locally before pushing anything that changes any React code.
+
+## What makes the compiler bail, and what to do instead
+
+The compiler compiles components and hooks only, closures declared inside them included, so the
+universal fix is to move the offending code out: into a module-level function, a thunk, an event
+handler or an effect. The current list is
+[`react-compiler-bail-snapshot.txt`](../../packages/suite/webpack/react-compiler-bail-snapshot.txt):
+`bail` is the whole file, `partial` some of its functions, `opt-out` a deliberate `'use no memo'`.
+The bail-outs are tracked under [#32578](https://github.com/trezor/trezor-suite/issues/32578).
+Ordered by how many files each hit in the 2026-10 snapshot:
+
+- **A `try` with a `finally`, or without a `catch`,** is not lowered at all. With
+  `babel-plugin-react-compiler` 1.0.0 a `try` wrapping `?.`, `&&`, `||`, `??` or a ternary bails too;
+  newer compiler versions accept that one. Both apply anywhere in the function or its callbacks: move
+  the `try` into a thunk or a module-level helper, or compute the conditional before it.
+- **Reading or writing `ref.current` during render** ("Cannot access refs during render"). The "latest
+  ref" pattern `callbackRef.current = callback` executed on every render is the main offender; a
+  parameter default such as `(field = defaultFieldRef.current)` is the same mistake, reported as
+  "cannot be safely reordered". Assign refs in an effect —
+  [`useCurrentRef`](../../packages/react-utils/src/hooks/useCurrentRef.ts) does exactly that — or in
+  the handler that needs them. A value needed during render is state or a `useWatch()` subscription,
+  not a ref; see the `useFreshRef` note at the end of this file.
+- **Three compiler bugs in 1.0.0**, all worked around by hoisting the sub-expression into a `const`:
+  `Math.min` / `Math.max` with a ternary or a call as an argument ("MethodCall::property", still present
+  in newer versions); `&&`, `||` or `??` whose left operand wraps a ternary, an optional chain or another
+  logical inside a comparison or a call, as in `fn({ x: a ? b : c }) ?? '0'` or `a?.b === c?.d && …`
+  ("Unexpected terminal kind … for logical test block"); and a `switch` whose cases `return` from inside
+  `{ }` blocks ("Expected a break target"). The last two go away with a compiler bump.
+- **A destructuring default that is not a literal or a plain identifier** ("cannot be safely
+  reordered"): `= new Set()`, `= asAmountSubunit(new BigNumber(0))`, `= <Translation … />` and
+  `= obj.prop` all bail, in parameters and in `const { … } =` alike. Apply the default with `??` after
+  the destructure, or hoist the constant to module scope, which also keeps its identity stable.
+- **A hook called inside a nested function**, typically a component defined in another component's
+  body: hoist it to module scope, where it also stops remounting on every render. **A `useMemo` or
+  `useCallback` whose first argument is not an inline function expression** bails as well
+  (`useMemo(getSynchronize, deps)`), and an `async` one memoizes a promise — a bug on its own.
+- **A computed key in a destructuring pattern** (`const { [symbol]: _, ...rest } = errors`): build the
+  filtered object in a helper.
 
 ## Compiled paths: three review rules no linter enforces
 
@@ -56,16 +93,19 @@ that test is false after the first render, and the value read inside the block f
 Lint cannot see it, `@swc/jest` cannot see it, and the send-form E2E specs fill a field once and never
 assert a second change.
 
-- **A render-body `watch()`, `getValues()` or `getDefaultValue()` call in a compiled path is a blocker.**
-  Subscribe with `useWatch()` instead and keep imperative reads inside event handlers and effects. This
-  overrides the `getValues()` suggestion under "Never add a new `eslint-disable` for `exhaustive-deps`"
-  below whenever the file is compiled.
+- **A render-body `watch()`, `getValues()`, `getDefaultValue()` or `formState.errors` read in a compiled
+  path is a blocker.** `formState.errors` is mutated in place, so `Object.keys(formState.errors)` is
+  cached on the first render just the same, and so is any value read through a stable ref — a
+  `useFreshRef` chain is what opted `useChangeStringsExtractor` out. Subscribe with `useWatch()` instead
+  and keep imperative reads inside event handlers and effects. This overrides the `getValues()`
+  suggestion under "Never add a new `eslint-disable` for `exhaustive-deps`" below whenever the file is
+  compiled.
 - **A new `eslint-disable` for `react-hooks/exhaustive-deps` or `react-hooks/rules-of-hooks` also opts
   code out of compilation.** Those two rule names are `babel-plugin-react-compiler`'s
   `DEFAULT_ESLINT_SUPPRESSIONS`, and the repo passes no `eslintSuppressionRules` override. A
   `// eslint-disable-next-line` inside a component drops that whole component; a file-top `/* eslint-disable */` for either rule drops the whole
   file. Nothing reports it — `panicThreshold` stays at its `'none'` default. Suppressing any other rule name has no effect on compilation.
-- **`'use no memo'` is the escape hatch, not `REACT_COMPILER_PATHS`.** Don't use for new code explicitly allowed by developer. The goal is to eliminate the directive completely.
+- **`'use no memo'` is the escape hatch, not `REACT_COMPILER_PATHS`.** Don't use for new code explicitly allowed by developer. The goal is to eliminate the directive completely: every remaining one is tracked under [#33281](https://github.com/trezor/trezor-suite/issues/33281), and a new one needs a sub-issue there.
 
 ## Relocate render-body work before memoizing it, and memoize only what pays
 
@@ -167,9 +207,14 @@ therefore cannot see it, keep the dependency listed and reference it with a `voi
 stays live rather than suppressed — `useTradingBuyFormDefaultValues.ts:45` does exactly that with
 `void coins;`, and carries no `eslint-disable` at all.
 [`useFreshRef`](../../packages/react-utils/src/hooks/useFreshRef.ts) assigns during render, so `.current`
-is always the newest value; it is the only correct choice when the ref is read in render or inside a
-`useMemo`. [`useCurrentRef`](../../packages/react-utils/src/hooks/useCurrentRef.ts) assigns in an effect,
-so during render `.current` still holds the last committed value. Neither tracks the previous value — for
+is always the newest value; in an uncompiled tree it is the right choice when the ref is read in render
+or inside a `useMemo`. In a compiled tree it is wrong either way: a `.current` read during render is the
+bail listed above, and a read hidden behind a stable callback compiles and freezes exactly like
+`getValues()` — `useChangeStringsExtractor` carries `'use no memo'` for that chain. There, a value
+needed during render is state or a `useWatch()` subscription.
+[`useCurrentRef`](../../packages/react-utils/src/hooks/useCurrentRef.ts) assigns in an effect, so during
+render `.current` still holds the last committed value; it serves handlers and effects on both kinds of
+tree. Neither tracks the previous value — for
 that, assign a plain `useRef` at the end of the effect. And confirm the dependency is genuinely unstable
 at its declaration first: a `useCallback(…, [])` handler is already stable and belongs in the array
 ([#26319](https://github.com/trezor/trezor-suite/pull/26319#discussion_r3137461927),
