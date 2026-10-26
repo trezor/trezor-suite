@@ -1,9 +1,9 @@
 import { Translation } from '@suite/intl';
-import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, selectNetworkConfig } from '@suite-common/networks';
 import { selectNetworkBlockchainInfo } from '@suite-common/wallet-core';
 import { Column, InfoItem, Paragraph } from '@trezor/components';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite/useSelector';
 
 type ConnectionInfoProps = {
     symbol: NetworkSymbol;
@@ -11,6 +11,7 @@ type ConnectionInfoProps = {
 
 const ConnectionInfo = ({ symbol }: ConnectionInfoProps) => {
     const blockchain = useSelector(state => selectNetworkBlockchainInfo(state, symbol));
+    const networkName = useSelector(state => selectNetworkConfig(state, symbol)?.name ?? symbol);
 
     const { connected, url, blockHash: hash, blockHeight: height, version } = blockchain;
 
@@ -35,7 +36,10 @@ const ConnectionInfo = ({ symbol }: ConnectionInfoProps) => {
                     </InfoItem>
                 </Column>
             ) : (
-                <Translation id="SETTINGS_ADV_COIN_CONN_INFO_NO_CONNECTED" />
+                <Translation
+                    id="SETTINGS_ADV_COIN_CONN_INFO_NOT_CONNECTED"
+                    values={{ networkName }}
+                />
             )}
         </Paragraph>
     );
