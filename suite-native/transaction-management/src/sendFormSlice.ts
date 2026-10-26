@@ -10,7 +10,10 @@ import {
     pushSendFormTransactionThunk,
     signTransactionThunk,
 } from '@suite-common/wallet-core';
-import type { GeneralPrecomposedLevels } from '@suite-common/wallet-types';
+import type {
+    GeneralPrecomposedLevels,
+    GeneralPrecomposedTransactionFinal,
+} from '@suite-common/wallet-types';
 import { createSliceWithExtraDeps } from '@trezor/redux-utils';
 
 type NativeSendState = CommonSendState & {
@@ -36,6 +39,12 @@ const sendFormSlice = createSliceWithExtraDeps({
     reducers: {
         clearFeeLevels: (state: NativeSendState) => {
             state.feeLevels = {};
+        },
+        storeCustomFeeLevel: (
+            state: NativeSendState,
+            { payload }: PayloadAction<{ feeLevel: GeneralPrecomposedTransactionFinal }>,
+        ) => {
+            state.feeLevels.custom = payload.feeLevel;
         },
         storeFeeLevels: (
             state: NativeSendState,

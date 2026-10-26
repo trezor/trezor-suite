@@ -1,10 +1,17 @@
 import { useCallback, useRef } from 'react';
 
-import type { AccountKey, FeeLevelLabel, TokenAddress } from '@suite-common/wallet-types';
+import type {
+    AccountKey,
+    FeeLevelLabel,
+    GeneralPrecomposedLevels,
+    TokenAddress,
+} from '@suite-common/wallet-types';
+import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
+import { transactionManagementActions } from '../../sendFormSlice';
 import { type UpdateSelectedFeeLevelThunkParams } from '../../types';
 
 type UseFeeSelectionParams = {
@@ -15,6 +22,7 @@ type UseFeeSelectionParams = {
 };
 
 export type CustomFeeParams = {
+    customFeeLevels?: GeneralPrecomposedLevels;
     customFeePerUnit?: string;
     customFeeLimit?: string;
     customMaxFeePerGas?: string;
@@ -32,6 +40,7 @@ export const useFeeSelection = ({
         async (
             feeLevel: FeeLevelLabel,
             {
+                customFeeLevels,
                 customFeePerUnit,
                 customFeeLimit,
                 customMaxFeePerGas,
@@ -64,6 +73,15 @@ export const useFeeSelection = ({
                 };
             }
 
+            if (feeLevel === 'custom' && isFinalPrecomposedTransaction(customFeeLevels?.custom)) {
+                dispatch(
+                    transactionManagementActions.storeCustomFeeLevel({
+                        feeLevel: customFeeLevels.custom,
+                    }),
+                );
+            }
+            // Standard levels belong to the flow that composed the transaction. Confirming
+            // Custom must not replace them with the preview estimator's standard levels.
             await dispatch(updateThunk(thunkParams));
         },
         [analytics, dispatch, updateThunk, accountKey, tokenContract, formDraftKey],
@@ -71,12 +89,14 @@ export const useFeeSelection = ({
 
     const handleCustomFeeSet = useCallback(
         ({
+            customFeeLevels,
             customFeePerUnit,
             customFeeLimit,
             customMaxFeePerGas,
             customMaxPriorityFeePerGas,
         }: CustomFeeParams) =>
             handleFeeLevelChange('custom', {
+                customFeeLevels,
                 customFeePerUnit,
                 customFeeLimit,
                 customMaxFeePerGas,
