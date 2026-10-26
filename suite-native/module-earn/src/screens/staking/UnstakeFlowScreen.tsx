@@ -21,12 +21,12 @@ import {
     Screen,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import { FeeSelector } from '@suite-native/transaction-management';
 import { useServices } from '@trezor/dependency-injection';
 import { MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT } from '@trezor/network-solana/constants';
 
 import { EarnAmountCard } from '../../components/earn/EarnAmountCard';
 import { EarnOutputFields } from '../../components/earn/EarnOutputFields';
+import { RetriableFeeEstimation } from '../../components/earn/RetriableFeeEstimation';
 import { SolanaUnstakeAmountBoundsAlert } from '../../components/staking/SolanaUnstakeAmountBoundsAlert';
 import { UnstakeCanClaimAlert } from '../../components/staking/UnstakeCanClaimAlert';
 import { UnstakeFlowScreenHeader } from '../../components/staking/UnstakeFlowScreenHeader';
@@ -81,8 +81,9 @@ export const UnstakeFlowScreen = () => {
         showNetworkFeeWarning,
         formDraft,
         formDraftKey,
-        isFeeUnavailable,
-        isPrecomposeError,
+        hasFeeEstimationError,
+        retryFeeEstimation,
+        isFeeReady,
         updateFeeLevelThunk,
         approximatedInstantEthAmount,
     } = unstakeForm;
@@ -120,10 +121,7 @@ export const UnstakeFlowScreen = () => {
                 <>
                     <ScreenFooterGradient />
                     <Box paddingBottom="sp16">
-                        <Button
-                            isDisabled={!isValid || isFeeUnavailable || isPrecomposeError}
-                            onPress={handleReviewAndSign}
-                        >
+                        <Button isDisabled={!isValid || !isFeeReady} onPress={handleReviewAndSign}>
                             <Translation id="earn.earnFormScreen.reviewAndSign" />
                         </Button>
                     </Box>
@@ -191,8 +189,10 @@ export const UnstakeFlowScreen = () => {
             )}
             {isValid && (
                 <Box marginTop="sp24">
-                    <FeeSelector
+                    <RetriableFeeEstimation
                         accountKey={accountKey}
+                        hasFeeEstimationError={hasFeeEstimationError}
+                        retryFeeEstimation={retryFeeEstimation}
                         updateThunk={updateFeeLevelThunk}
                         selectedFee={formDraft?.selectedFee ?? 'normal'}
                         selectedFeePerUnit={formDraft?.feePerUnit}

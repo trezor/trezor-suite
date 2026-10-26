@@ -1,7 +1,7 @@
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { FeeSelector, type FeeSelectorProps } from '@suite-native/transaction-management';
+import { type FeeSelectorProps } from '@suite-native/transaction-management';
 
-import { YieldFeeEstimationErrorAlert } from './YieldFeeEstimationErrorAlert';
+import { RetriableFeeEstimation } from '../earn/RetriableFeeEstimation';
 
 type YieldFees = Pick<FeeSelectorProps, 'formDraft' | 'formDraftKey' | 'selectedFee'> & {
     hasFeeEstimationError: boolean;
@@ -15,20 +15,16 @@ type YieldFeeSectionProps = {
     tokenContract?: TokenAddress;
 };
 
-export const YieldFeeSection = ({ accountKey, fees, tokenContract }: YieldFeeSectionProps) => {
-    if (fees.hasFeeEstimationError) {
-        return <YieldFeeEstimationErrorAlert onRetry={fees.retryFeeEstimation} />;
-    }
-
-    return (
-        <FeeSelector
-            accountKey={accountKey}
-            tokenContract={tokenContract}
-            updateThunk={fees.updateFeeLevelThunk}
-            selectedFee={fees.selectedFee}
-            selectedFeePerUnit={fees.formDraft?.feePerUnit}
-            formDraft={fees.formDraft}
-            formDraftKey={fees.formDraftKey}
-        />
-    );
-};
+export const YieldFeeSection = ({ accountKey, fees, tokenContract }: YieldFeeSectionProps) => (
+    <RetriableFeeEstimation
+        hasFeeEstimationError={fees.hasFeeEstimationError}
+        retryFeeEstimation={fees.retryFeeEstimation}
+        accountKey={accountKey}
+        tokenContract={tokenContract}
+        updateThunk={fees.updateFeeLevelThunk}
+        selectedFee={fees.selectedFee}
+        selectedFeePerUnit={fees.formDraft?.feePerUnit}
+        formDraft={fees.formDraft}
+        formDraftKey={fees.formDraftKey}
+    />
+);

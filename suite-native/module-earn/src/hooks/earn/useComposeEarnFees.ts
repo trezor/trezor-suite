@@ -28,6 +28,7 @@ import {
     type NativeSendRootState,
     type UpdateSelectedFeeLevelThunkParams,
     getFeeAvailability,
+    isPrecomposedTransactionError,
     selectFeeLevels,
     transactionManagementActions,
 } from '@suite-native/transaction-management';
@@ -37,6 +38,7 @@ import { createThunk, injectDispatch } from '@trezor/redux-utils';
 
 import { EARN_MODULE_PREFIX } from '../../constants';
 import { type EarnFormDraftPrefix } from '../../types';
+import { useYieldFeeEstimationError } from '../yield/useYieldFeeEstimationError';
 
 export type UpdateEarnSelectedFeeLevelThunkState = FormDraftRootState;
 
@@ -92,10 +94,16 @@ export const useComposeEarnFees = ({
         formDraftKey,
         saveDraft,
     } = useFormDraft<FormState>(formDraftPrefix, accountKey);
-    const [isComposingFeeLevels, setIsComposingFeeLevels] = useState(false);
+    const [isComposingFeeLevels, setIsComposingFeeLevels] = useState(true);
     const formDraftRef = useRef(formDraft);
     formDraftRef.current = formDraft;
     const requestIdRef = useRef(0);
+    const {
+        feeEstimationRetryKey,
+        hasFeeEstimationError,
+        retryFeeEstimation,
+        setHasFeeEstimationError,
+    } = useYieldFeeEstimationError();
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -107,20 +115,22 @@ export const useComposeEarnFees = ({
     );
     const feeLevels = useSelector((state: NativeSendRootState) => selectFeeLevels(state));
     const selectedFee = formDraft?.selectedFee;
+    const customFeePerUnit = selectedFee === 'custom' ? formDraft?.feePerUnit : undefined;
+    const customFeeLimit = selectedFee === 'custom' ? formDraft?.feeLimit : undefined;
+    const customMaxFeePerGas = selectedFee === 'custom' ? formDraft?.maxFeePerGas : undefined;
+    const customMaxPriorityFeePerGas =
+        selectedFee === 'custom' ? formDraft?.maxPriorityFeePerGas : undefined;
     const selectedFeeLevel = selectedFee ? feeLevels[selectedFee] : undefined;
-    const fee = isFinalPrecomposedTransaction(selectedFeeLevel) ? selectedFeeLevel.fee : null;
     const { isFeeUnavailable } = getFeeAvailability({
-        fee,
         feeLevels,
         selectedFee,
         isLoading: areFeesLoading || isComposingFeeLevels,
     });
 
-    const effectiveFeeLevel = selectedFeeLevel ?? feeLevels.normal;
-    const isPrecomposeError = !isComposingFeeLevels && effectiveFeeLevel?.type === 'error';
-
     const composeFeeLevels = useCallback(
         async (requestId: number) => {
+            if (requestId !== requestIdRef.current) return;
+
             if (!formState || !account || !feeInfo) {
                 if (requestId === requestIdRef.current) {
                     setIsComposingFeeLevels(false);
@@ -172,7 +182,17 @@ export const useComposeEarnFees = ({
 
                 if (requestId !== requestIdRef.current) return;
 
-                if (!isFulfilled(response) || !response.payload) return;
+                if (
+                    !isFulfilled(response) ||
+                    !response.payload?.normal ||
+                    (response.payload.normal.type === 'error' &&
+                        !isPrecomposedTransactionError(response.payload.normal.error))
+                ) {
+                    setHasFeeEstimationError(true);
+                    dispatch(transactionManagementActions.clearFeeLevels());
+
+                    return;
+                }
 
                 dispatch(
                     transactionManagementActions.storeFeeLevels({ feeLevels: response.payload }),
@@ -183,23 +203,59 @@ export const useComposeEarnFees = ({
                     mergedFormState.feePerUnit = normalLevel.feePerByte;
                 }
 
-                saveDraft(mergedFormState);
+                // A standard selection can change while all levels are being composed.
+                saveDraft({
+                    ...mergedFormState,
+                    selectedFee: formDraftRef.current?.selectedFee ?? mergedFormState.selectedFee,
+                });
+            } catch {
+                if (requestId === requestIdRef.current) {
+                    setHasFeeEstimationError(true);
+                    dispatch(transactionManagementActions.clearFeeLevels());
+                }
             } finally {
                 if (requestId === requestIdRef.current) {
                     setIsComposingFeeLevels(false);
                 }
             }
         },
-        [dispatch, formState, account, feeInfo, saveDraft, accountKey, formDraftPrefix],
+        [
+            dispatch,
+            formState,
+            account,
+            feeInfo,
+            saveDraft,
+            accountKey,
+            formDraftPrefix,
+            setHasFeeEstimationError,
+        ],
     );
 
     useEffect(() => {
-        if (!isFocused) return;
+        if (isFocused) dispatch(transactionManagementActions.clearFeeLevels());
+    }, [dispatch, formDraftKey, isFocused]);
+
+    useEffect(() => {
         const requestId = requestIdRef.current + 1;
         requestIdRef.current = requestId;
+        if (!isFocused) return;
+        setHasFeeEstimationError(false);
         setIsComposingFeeLevels(!!formState && !!account && !!feeInfo);
         debounce(() => composeFeeLevels(requestId));
-    }, [isFocused, account, debounce, composeFeeLevels, feeInfo, formState]);
+    }, [
+        isFocused,
+        account,
+        debounce,
+        composeFeeLevels,
+        feeInfo,
+        formState,
+        feeEstimationRetryKey,
+        customFeePerUnit,
+        customFeeLimit,
+        customMaxFeePerGas,
+        customMaxPriorityFeePerGas,
+        setHasFeeEstimationError,
+    ]);
 
     useEffect(
         () => () => {
@@ -208,11 +264,20 @@ export const useComposeEarnFees = ({
         [],
     );
 
+    const isFeeReady =
+        !!formState &&
+        !isComposingFeeLevels &&
+        !hasFeeEstimationError &&
+        isFinalPrecomposedTransaction(selectedFeeLevel);
+
     return {
         formDraft,
         formDraftKey,
         isFeeUnavailable: formState !== undefined && !isComposingFeeLevels && isFeeUnavailable,
-        isPrecomposeError,
+        hasFeeEstimationError,
+        retryFeeEstimation,
+        isComposingFeeLevels,
+        isFeeReady,
         updateFeeLevelThunk: updateEarnSelectedFeeLevelThunk,
     };
 };

@@ -22,11 +22,11 @@ import {
     ScreenHeader,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import { FeeSelector } from '@suite-native/transaction-management';
 import { useServices } from '@trezor/dependency-injection';
 
 import { EarnAmountCard } from '../../components/earn/EarnAmountCard';
 import { EarnOutputFields } from '../../components/earn/EarnOutputFields';
+import { RetriableFeeEstimation } from '../../components/earn/RetriableFeeEstimation';
 import { StakingFormScreenFooter } from '../../components/staking/StakingFormScreenFooter';
 import { StakingNoBalanceContent } from '../../components/staking/StakingNoBalanceContent';
 import { useEarnDeviceStatus } from '../../hooks/earn/useEarnDeviceStatus';
@@ -77,8 +77,9 @@ export const StakingFormScreen = () => {
         account,
         formDraft,
         formDraftKey,
-        isFeeUnavailable,
-        isPrecomposeError,
+        hasFeeEstimationError,
+        retryFeeEstimation,
+        isFeeReady,
         updateFeeLevelThunk,
     } = stakingForm;
     const {
@@ -133,7 +134,7 @@ export const StakingFormScreen = () => {
                 <StakingFormScreenFooter
                     symbol={account.symbol}
                     amountValue={amountValue}
-                    isDisabled={!isValid || isFeeUnavailable || isPrecomposeError}
+                    isDisabled={!isValid || !isFeeReady}
                     onPress={() => handleSubmit()}
                 />
             }
@@ -150,8 +151,10 @@ export const StakingFormScreen = () => {
             </Box>
             {isValid && (
                 <Box marginTop="sp24">
-                    <FeeSelector
+                    <RetriableFeeEstimation
                         accountKey={accountKey}
+                        hasFeeEstimationError={hasFeeEstimationError}
+                        retryFeeEstimation={retryFeeEstimation}
                         updateThunk={updateFeeLevelThunk}
                         selectedFee={formDraft?.selectedFee ?? 'normal'}
                         selectedFeePerUnit={formDraft?.feePerUnit}
