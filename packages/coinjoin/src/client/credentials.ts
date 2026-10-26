@@ -1,6 +1,7 @@
 import {
     type Credential,
     type CredentialsResponseValidation,
+    Generators,
     WabiSabiClient,
     deserializeCredentialsResponse,
     deserializeIssuerParameters,
@@ -36,6 +37,27 @@ import {
 const getClient = (issuer: IssuerParameter, maxCredentialValue: number) =>
     new WabiSabiClient(deserializeIssuerParameters(issuer), secureRandom, maxCredentialValue);
 
+/**
+ * Hands the event loop back between independent credential computations.
+ *
+ * A width-42 range proof is a few thousand secp256k1 multiplications, and in the desktop
+ * build they now run on the Electron main process event loop, which also serves device
+ * IPC. Awaiting this between proofs keeps a phase from blocking it end to end. See the
+ * per-phase numbers in `tools/benchmark-test.ts`.
+ */
+export const yieldToEventLoop = () => new Promise<void>(resolve => setTimeout(resolve, 0));
+
+/**
+ * Builds the credential crypto's precomputed tables before a round needs them.
+ *
+ * `@trezor/wabisabi-crypto` builds the window table of a generator on first use, and the
+ * first credential request of a process would otherwise pay for all of them at once —
+ * 380 ms in one uninterrupted stretch, measured by `tools/benchmark-test.ts`. Doing it
+ * from `CoinjoinClient.enable()` moves that cost before the round and spreads it over
+ * event loop turns. Skipping it changes nothing but the timing.
+ */
+export const warmUp = () => Generators.warmUp(yieldToEventLoop);
+
 /** `get-zero-credential-requests`: `k` zero-value credentials, the null request. */
 export const getZeroCredentials = (
     issuer: IssuerParameter,
@@ -58,16 +80,22 @@ export const getZeroCredentials = (
  * An empty `amountsToRequest` is the presentation-only request: it creates no issuance
  * requests, which is what output registration needs.
  */
-export const getRealCredentials = (
+export const getRealCredentials = async (
     amountsToRequest: number[],
     credentialsToPresent: Credential[],
     issuer: IssuerParameter,
     maxCredentialValue: number,
-): RealCredentials => {
-    const { credentialsRequest, credentialsResponseValidation } = getClient(
+): Promise<RealCredentials> => {
+    // A mainnet amount request is two width-42 range proofs plus the presentations and
+    // the balance proof, a couple of hundred milliseconds of secp256k1 arithmetic. It
+    // runs on the Electron main process event loop, which also serves device IPC, so it
+    // is driven proof by proof with a yield between: the largest synchronous step is
+    // then about 70 ms rather than the whole request. The proofs are identical to the
+    // synchronous driver's.
+    const { credentialsRequest, credentialsResponseValidation } = await getClient(
         issuer,
         maxCredentialValue,
-    ).createRequest(amountsToRequest, credentialsToPresent);
+    ).createRequestWithYields(amountsToRequest, credentialsToPresent, yieldToEventLoop);
 
     return {
         CredentialsRequest: serializeCredentialsRequest(credentialsRequest),
@@ -93,13 +121,3 @@ export const getCredentials = (
         deserializeCredentialsResponse(credentialsResponse),
         credentialsValidationData,
     );
-
-/**
- * Hands the event loop back between independent credential computations.
- *
- * A width-42 range proof is a few thousand secp256k1 multiplications, and in the desktop
- * build they now run on the Electron main process event loop, which also serves device
- * IPC. Awaiting this between proofs keeps a phase from blocking it end to end. See the
- * per-phase numbers in `tools/benchmark-test.ts`.
- */
-export const yieldToEventLoop = () => new Promise<void>(resolve => setTimeout(resolve, 0));

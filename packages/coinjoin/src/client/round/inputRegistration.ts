@@ -157,20 +157,20 @@ const registerInput = async (
         await credentials.yieldToEventLoop();
 
         // use Credentials to get RealCredentials. use them in outputConfirmation
-        const realAmountCredentials = credentials.getRealCredentials(
+        // `getRealCredentials` yields between the proofs it builds, so it needs no
+        // yield after it.
+        const realAmountCredentials = await credentials.getRealCredentials(
             [amount, 0],
             amountCredentials,
             round.amountCredentialIssuerParameters,
             roundParameters.MaxAmountCredentialValue,
         );
-        await credentials.yieldToEventLoop();
-        const realVsizeCredentials = credentials.getRealCredentials(
+        const realVsizeCredentials = await credentials.getRealCredentials(
             [vsize, 0],
             vsizeCredentials,
             round.vsizeCredentialIssuerParameters,
             roundParameters.MaxVsizeAllocationPerAlice,
         );
-        await credentials.yieldToEventLoop();
 
         logger.info(
             `Registration ~~${input.outpoint}~~ to ~~${round.id}~~ successful. aliceId: ${registrationData.AliceId}`,

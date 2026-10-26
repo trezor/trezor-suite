@@ -33,20 +33,20 @@ const registerOutput = async (
     const remainingTime = phaseDeadline - Date.now();
     const delay = scheduleDelay(Math.floor(remainingTime * 0.8));
 
-    const outputAmountCredentials = credentials.getRealCredentials(
+    // `getRealCredentials` yields between the proofs it builds, so it needs no yield
+    // after it.
+    const outputAmountCredentials = await credentials.getRealCredentials(
         [], // NOTE: sending empty amountToRequest **will not** create credentialToRequest object which **should not** be sent to coordinator in output-registration request
         amountCredentials,
         round.amountCredentialIssuerParameters,
         roundParameters.MaxAmountCredentialValue,
     );
-    await credentials.yieldToEventLoop();
-    const outputVsizeCredentials = credentials.getRealCredentials(
+    const outputVsizeCredentials = await credentials.getRealCredentials(
         [],
         vsizeCredentials,
         round.vsizeCredentialIssuerParameters,
         roundParameters.MaxVsizeAllocationPerAlice,
     );
-    await credentials.yieldToEventLoop();
 
     // TODO: tricky, if for some reason AlreadyRegisteredScript is called then we have 2 options:
     // - try again with different address and link my new address with old address (privacy loss against coordinator?)

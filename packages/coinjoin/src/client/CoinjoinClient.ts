@@ -6,6 +6,7 @@ import { CoinjoinPrison } from './CoinjoinPrison';
 import { CoinjoinRound } from './CoinjoinRound';
 import { Status } from './Status';
 import { type AnalyzeTransactionsResult, analyzeTransactions } from './analyzeTransactions';
+import * as credentials from './credentials';
 import type {
     CoinjoinClientEvents,
     CoinjoinClientSettings,
@@ -50,6 +51,10 @@ export class CoinjoinClient extends TypedEmitter<CoinjoinClientEvents> {
         if (this.abortController.signal.aborted) {
             this.abortController = new AbortController();
         }
+
+        // Build the credential crypto's precomputed tables now, in event-loop-sized
+        // pieces, rather than inside the first input registration. Nothing waits for it.
+        credentials.warmUp().catch(error => this.logger.warn(`Credential warm-up ${error}`));
 
         return this.status.start();
     }

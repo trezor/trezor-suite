@@ -121,20 +121,20 @@ const credentialIssuance = async (params: CredentialIssuanceParams) => {
     )
         throw new Error('Not enough Credentials to join');
 
-    const issuanceAmountCredentials = credentials.getRealCredentials(
+    // `getRealCredentials` yields between the proofs it builds, so it needs no yield
+    // after it.
+    const issuanceAmountCredentials = await credentials.getRealCredentials(
         amountToRequest,
         amountCredentials,
         round.amountCredentialIssuerParameters,
         roundParameters.MaxAmountCredentialValue,
     );
-    await credentials.yieldToEventLoop();
-    const issuanceVsizeCredentials = credentials.getRealCredentials(
+    const issuanceVsizeCredentials = await credentials.getRealCredentials(
         vsizeToRequest,
         vsizeCredentials,
         round.vsizeCredentialIssuerParameters,
         roundParameters.MaxVsizeAllocationPerAlice,
     );
-    await credentials.yieldToEventLoop();
 
     const zeroAmountCredentials = credentials.getZeroCredentials(
         round.amountCredentialIssuerParameters,
