@@ -33,12 +33,15 @@ export const collectWorkspacePackages = (repoRoot: string): Map<string, Workspac
 /**
  * Compute the production closure of the given root packages: every internal
  * workspace package reachable through `dependencies` and `optionalDependencies`
- * (i.e. what actually ships when the roots are published). `devDependencies` and
- * `peerDependencies` are intentionally not traversed.
+ * (i.e. what actually ships when the roots are published). `devDependencies` are
+ * never traversed. `peerDependencies` are traversed only with
+ * `includePeerDependencies`: yarn publishes a `workspace:` peer as a range on the
+ * local version, so the peer has to be released along with its dependents.
  */
 export const collectProdWorkspaceClosure = (
     roots: ReadonlyArray<string>,
     packages: ReadonlyMap<string, WorkspacePackage>,
+    { includePeerDependencies = false }: { includePeerDependencies?: boolean } = {},
 ): ReadonlySet<string> => {
     const getProdWorkspaceDeps = (
         deps: Record<string, string> | undefined,
@@ -64,6 +67,9 @@ export const collectProdWorkspaceClosure = (
         const nextDeps = [
             ...getProdWorkspaceDeps(pkg.packageJson.dependencies),
             ...getProdWorkspaceDeps(pkg.packageJson.optionalDependencies),
+            ...(includePeerDependencies
+                ? getProdWorkspaceDeps(pkg.packageJson.peerDependencies)
+                : []),
         ];
 
         for (const dep of nextDeps) {
