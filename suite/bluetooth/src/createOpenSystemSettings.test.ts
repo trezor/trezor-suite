@@ -10,6 +10,14 @@ const setup = (openSystemSettings: jest.Mock) => {
 };
 
 describe('createOpenSystemSettings', () => {
+    beforeEach(() => {
+        jest.useFakeTimers().setSystemTime(new Date('2026-01-01T00:00:00Z'));
+    });
+
+    afterEach(() => {
+        jest.useRealTimers();
+    });
+
     it('returns the result and dispatches no toast on success', async () => {
         const openSystemSettings = jest.fn().mockResolvedValue({ success: true });
         const { dispatch, open } = setup(openSystemSettings);
