@@ -1,19 +1,12 @@
-import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { useAllYieldOpportunities } from '@suite-common/earn-stablecoin-api';
-import {
-    type AccountsRootState,
-    fetchAllTransactionsForAccountThunk,
-    selectAccountByKey,
-} from '@suite-common/wallet-core';
+import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { type RootStackParamList, type RootStackRoutes, Screen } from '@suite-native/navigation';
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
 import { TransactionList } from '@suite-native/transactions';
-import { useServices } from '@trezor/dependency-injection';
-import { injectDispatch } from '@trezor/redux-utils';
 
 import { YieldVaultDetailScreenContent } from './YieldVaultDetailScreenContent';
 import { EarnPortfolioTrackerGuard } from '../../components/earn/EarnPortfolioTrackerGuard';
@@ -22,7 +15,6 @@ import { YieldVaultDetailScreenHeader } from '../../components/yield/YieldVaultD
 export const YieldVaultDetailScreen = () => {
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.YieldVaultDetail>>();
     const { accountKey, tokenContract } = route.params;
-    const { dispatch } = useServices(injectDispatch);
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -33,10 +25,6 @@ export const YieldVaultDetailScreen = () => {
     );
 
     const { refetch: refetchYieldOpportunities } = useAllYieldOpportunities();
-
-    useEffect(() => {
-        dispatch(fetchAllTransactionsForAccountThunk({ accountKey, noLoading: true }));
-    }, [accountKey, dispatch]);
 
     if (!account || !yieldToken) return null;
 
@@ -57,7 +45,7 @@ export const YieldVaultDetailScreen = () => {
                     listHeaderComponent={
                         <YieldVaultDetailScreenContent account={account} yieldToken={yieldToken} />
                     }
-                    filter="yield"
+                    filter={{ type: 'yield', vaultContract: tokenContract }}
                 />
             </Screen>
         </EarnPortfolioTrackerGuard>

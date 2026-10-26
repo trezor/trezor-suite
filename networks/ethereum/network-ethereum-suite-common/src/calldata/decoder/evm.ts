@@ -1,4 +1,4 @@
-import { type Abi, type AbiFunction, decodeFunctionData } from 'viem';
+import { type Abi, type AbiFunction, decodeFunctionData, toFunctionSelector } from 'viem';
 
 import { type DecodedAbiInputs, type Decoder } from '../types/decoder';
 
@@ -34,11 +34,15 @@ export const createEvmDecoder = <const T extends Abi>(abi: T): Decoder<T> => {
         return input.name;
     });
 
+    const selector = toFunctionSelector(fn);
+
     return (data?: string) => {
         if (!data) return null;
         const normalized = (
             data.toLowerCase().startsWith('0x') ? data.toLowerCase() : `0x${data.toLowerCase()}`
         ) as `0x${string}`;
+        // Decoding a mismatched selector costs a signature hash and a thrown error on every call.
+        if (!normalized.startsWith(selector)) return null;
         try {
             const { args } = decodeFunctionData({ abi, data: normalized });
             // viem returns `args: undefined` for zero-input functions (e.g. `deposit()`).
