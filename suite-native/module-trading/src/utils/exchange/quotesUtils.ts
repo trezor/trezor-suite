@@ -1,16 +1,11 @@
 import type { ExchangeTrade } from 'invity-api';
 
 import { invariant } from '@suite-common/suite-utils';
-import type { MinimalExchangeFormProps } from '@suite-common/trading';
-import { isAccountBasedNetwork } from '@suite-common/wallet-config';
-import type { Account } from '@suite-common/wallet-types';
+import { type MinimalExchangeFormProps, getExchangeFromAddress } from '@suite-common/trading';
 import { toCaseAwareCryptoId } from '@suite-native/trading-atoms';
 import type { ExchangeFormType } from '@suite-native/trading-types';
 
 import { getReceiveAccountAddressText } from '../general/receiveAccountUtils';
-
-const getFromAddress = (account: Account | undefined): string | undefined =>
-    account && isAccountBasedNetwork(account.symbol) ? account.descriptor : undefined;
 
 export const tradingExchangeFormToTradingExchangeFormProps = (
     getValues: ExchangeFormType['getValues'],
@@ -31,7 +26,7 @@ export const tradingExchangeFormToTradingExchangeFormProps = (
         sendCryptoSelect: { id: toCaseAwareCryptoId(sendAsset.cryptoId) },
         receiveCryptoSelect: { id: toCaseAwareCryptoId(receiveAsset.cryptoId) },
         outputs: [{ amount: sendCryptoAmount }],
-        fromAddress: getFromAddress(sendAccount),
+        fromAddress: getExchangeFromAddress(sendAccount),
         receiveAddress: getReceiveAccountAddressText(receiveAccount),
         receiveAccountKey: receiveAccount?.account.key,
     };
