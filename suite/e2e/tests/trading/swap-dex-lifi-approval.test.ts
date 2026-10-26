@@ -6,6 +6,7 @@ import { TestStream } from '@trezor/e2e-utils';
 import { countDecimalPlaces } from '../../support/common';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
+import { transformAddress } from '../../support/testExtends/customMatchers';
 
 const ethSymbol = asNetworkSymbol('eth');
 
@@ -13,7 +14,7 @@ const approvalAmount = '60';
 // The toast shows the approved amount compactly, and a stablecoin reads money-like.
 const compactApprovalAmount = '60.00';
 const accountLabel = 'Ethereum #3';
-const providerName = 'LiFI Diamond';
+const lifiDiamondAddress = '0x1231DEB6f5749EF6cE6943a275A1D3E7486F4EaE';
 const positiveEthereumAmountPattern = /^(?!0+(?:\.0+)?\s*ETH$)\d+(?:\.\d+)?\s*ETH$/;
 
 test.describe('Trading - DEX swap approval (LI.FI)', { tag: ['@T3T1', '@T3W1'] }, () => {
@@ -133,7 +134,7 @@ test.describe('Trading - DEX swap approval (LI.FI)', { tag: ['@T3T1', '@T3W1'] }
                 await expect(device).toShowOnDisplay({
                     T3W1: {
                         header: { title: 'Token approval' },
-                        body: [[providerName]],
+                        body: [transformAddress(lifiDiamondAddress, 'evmTetragrams')],
                         actions: { right_button: 'Continue' },
                     },
                     T3T1: {
