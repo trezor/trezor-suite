@@ -4745,10 +4745,6 @@ export const messages = defineMessages({
         id: 'TR_QUICK_ACTION_TOOLTIP_RESTART_TO_UPDATE',
         defaultMessage: 'Restart to update',
     },
-    TR_QUICK_ACTION_TOOLTIP_JUST_UPDATED: {
-        id: 'TR_QUICK_ACTION_TOOLTIP_JUST_UPDATED',
-        defaultMessage: 'Just updated ({currentVersion})',
-    },
     TR_QUICK_ACTION_UPDATE_POPOVER_APP_UPDATE_AVAILABLE: {
         id: 'TR_QUICK_ACTION_UPDATE_POPOVER_APP_UPDATE_AVAILABLE',
         defaultMessage: 'Trezor Suite update available',
@@ -4772,10 +4768,6 @@ export const messages = defineMessages({
     TR_QUICK_ACTION_UPDATE_POPOVER_CLICK_TO_RESTART_AND_UPDATE: {
         id: 'TR_QUICK_ACTION_UPDATE_POPOVER_CLICK_TO_RESTART_AND_UPDATE',
         defaultMessage: 'Restart & update',
-    },
-    TR_QUICK_ACTION_UPDATE_POPOVER_WHATS_NEW: {
-        id: 'TR_QUICK_ACTION_UPDATE_POPOVER_WHATS_NEW',
-        defaultMessage: "See what's new",
     },
     TR_QUICK_ACTION_DEBUG_EAP_EXPERIMENTAL_ENABLED: {
         id: 'TR_QUICK_ACTION_DEBUG_EAP_EXPERIMENTAL_ENABLED',
