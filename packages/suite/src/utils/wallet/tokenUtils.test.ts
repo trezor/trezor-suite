@@ -8,13 +8,8 @@ import {
 import { mockAccountToken } from '@suite-common/wallet-types/mocks';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 
-import { getTokensFixtures, hasVisibleTokensFixtures } from './__fixtures__/tokenUtils';
-import {
-    enhanceTokensWithRates,
-    getTokens,
-    hasVisibleTokens,
-    sortTokensWithRates,
-} from './tokenUtils';
+import { getTokensFixtures } from './__fixtures__/tokenUtils';
+import { enhanceTokensWithRates, getTokens, sortTokensWithRates } from './tokenUtils';
 
 describe('getTokens', () => {
     getTokensFixtures.forEach(
@@ -33,16 +28,6 @@ describe('getTokens', () => {
             });
         },
     );
-});
-
-describe('hasVisibleTokens', () => {
-    hasVisibleTokensFixtures.forEach(({ testName, tokens, symbol, tokenDefinitions, result }) => {
-        test(testName, () => {
-            const networkSymbol = asNetworkSymbol(symbol);
-
-            expect(hasVisibleTokens(networkSymbol, tokens, tokenDefinitions)).toStrictEqual(result);
-        });
-    });
 });
 
 describe('enhanceTokensWithRates and sortTokensWithRates', () => {
