@@ -1,9 +1,20 @@
 import { type UnknownAction, isAnyOf } from '@reduxjs/toolkit';
 
-import { type TickerId, type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
+import {
+    type RateTypeWithoutHistoric,
+    type TickerId,
+    type Timestamp,
+    type TokenAddress,
+} from '@suite-common/wallet-types';
+import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { isNative } from '@trezor/env-utils';
 import { createMiddlewareWithExtraDeps } from '@trezor/redux-utils';
 
+import {
+    hasPendingFiatRateDemand,
+    markFiatRateDemandPending,
+    takePendingFiatRateDemand,
+} from './fiatRatesDemandRegister';
 import {
     fetchFiatRatesThunk,
     updateFiatRatesThunk,
@@ -12,6 +23,9 @@ import {
 } from './fiatRatesThunks';
 import { accountsActions } from '../accounts/accountsActions';
 import { blockchainActions } from '../blockchain/blockchainActions';
+import { discoveryActions } from '../discovery/discoveryActions';
+import { type DiscoveryRootState } from '../discovery/discoveryReducer';
+import { selectHasAnyRunningDiscovery } from '../discovery/discoverySelectors';
 import { setBaseCurrency } from '../settings/walletSettingsActions';
 import {
     type WalletSettingsRootState,
@@ -20,7 +34,43 @@ import {
 import { transactionsActions } from '../transactions/transactionsActions';
 import { fetchAllTransactionsForAccountThunk } from '../transactions/transactionsThunks';
 
-type FiatRatesMiddlewareState = WalletSettingsRootState;
+export type FiatRatesMiddlewareState = WalletSettingsRootState & DiscoveryRootState;
+
+type RequestFiatRatesArgs = {
+    rateType: RateTypeWithoutHistoric;
+    localCurrency: BaseCurrencyCode;
+    dispatch: (action: unknown) => unknown;
+    getState: () => FiatRatesMiddlewareState;
+};
+
+/**
+ * During discovery, record demand instead of fetching so account storms collapse into one flush.
+ * Outside discovery, fetch immediately.
+ */
+const requestFiatRates = ({
+    rateType,
+    localCurrency,
+    dispatch,
+    getState,
+}: RequestFiatRatesArgs) => {
+    if (selectHasAnyRunningDiscovery(getState())) {
+        markFiatRateDemandPending(rateType, localCurrency);
+
+        return;
+    }
+
+    dispatch(fetchFiatRatesThunk({ rateType, localCurrency }));
+};
+
+const flushPendingFiatRates = (dispatch: (action: unknown) => unknown) => {
+    if (!hasPendingFiatRateDemand()) {
+        return;
+    }
+
+    for (const { rateType, localCurrency } of takePendingFiatRateDemand()) {
+        dispatch(fetchFiatRatesThunk({ rateType, localCurrency }));
+    }
+};
 
 export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps<
     void,
@@ -30,19 +80,10 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps<
     next(action); //next must be at the beginning, othervise tickers are not going to be updated and fiat rates wont fetch (the user will have to wait for 1m timeout)
 
     if (isAnyOf(accountsActions.updateAccount, accountsActions.createAccount)(action)) {
-        dispatch(
-            fetchFiatRatesThunk({
-                rateType: 'current',
-                localCurrency: selectBaseCurrency(getState()),
-            }),
-        );
+        const localCurrency = selectBaseCurrency(getState());
+        requestFiatRates({ rateType: 'current', localCurrency, dispatch, getState });
         if (!isNative()) {
-            dispatch(
-                fetchFiatRatesThunk({
-                    rateType: 'lastWeek',
-                    localCurrency: selectBaseCurrency(getState()),
-                }),
-            );
+            requestFiatRates({ rateType: 'lastWeek', localCurrency, dispatch, getState });
         }
     }
 
@@ -80,37 +121,26 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps<
     if (setBaseCurrency.match(action)) {
         const { localCurrency } = action.payload;
         // We need to pass localCurrency as a parameter, because it is not yet updated in the store
-        dispatch(fetchFiatRatesThunk({ rateType: 'current', localCurrency }));
+        requestFiatRates({ rateType: 'current', localCurrency, dispatch, getState });
         if (!isNative()) {
-            dispatch(
-                fetchFiatRatesThunk({
-                    rateType: 'lastWeek',
-                    localCurrency,
-                }),
-            );
-            dispatch(updateMissingTxFiatRatesThunk({ localCurrency }));
+            requestFiatRates({ rateType: 'lastWeek', localCurrency, dispatch, getState });
+            if (!selectHasAnyRunningDiscovery(getState())) {
+                dispatch(updateMissingTxFiatRatesThunk({ localCurrency }));
+            }
         }
     }
 
     if (blockchainActions.connected.match(action)) {
-        dispatch(
-            fetchFiatRatesThunk({
-                rateType: 'current',
-                localCurrency: selectBaseCurrency(getState()),
-            }),
-        );
+        const localCurrency = selectBaseCurrency(getState());
+        requestFiatRates({ rateType: 'current', localCurrency, dispatch, getState });
         if (!isNative()) {
-            dispatch(
-                fetchFiatRatesThunk({
-                    rateType: 'lastWeek',
-                    localCurrency: selectBaseCurrency(getState()),
-                }),
-            );
+            requestFiatRates({ rateType: 'lastWeek', localCurrency, dispatch, getState });
         }
     }
 
     // Fetch fiat rates for all tokens of newly suite-native discovered account.
-    if (accountsActions.createAccount.match(action)) {
+    // Skip while discovery is active — demand is already registered above and flushed at the end.
+    if (accountsActions.createAccount.match(action) && !selectHasAnyRunningDiscovery(getState())) {
         const baseCurrencyCode = selectBaseCurrency(getState());
 
         const { tokens = [], symbol } = action.payload.account;
@@ -130,6 +160,14 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps<
                 fetchAttemptTimestamp: Date.now() as Timestamp,
             }),
         );
+    }
+
+    // Flush postponed demand once no discovery remains in progress (covers multi-device).
+    if (
+        discoveryActions.updateDiscovery.match(action) &&
+        !selectHasAnyRunningDiscovery(getState())
+    ) {
+        flushPendingFiatRates(dispatch);
     }
 
     return action;

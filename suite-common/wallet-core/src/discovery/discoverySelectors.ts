@@ -42,6 +42,10 @@ export const selectHasRunningDiscovery = (state: DiscoveryRootState & DeviceRoot
     return isDiscoveryInProgress(discovery);
 };
 
+/** True when any device (not only the selected one) has discovery in progress. */
+export const selectHasAnyRunningDiscovery = (state: DiscoveryRootState): boolean =>
+    Object.values(state.wallet.discovery).some(isDiscoveryInProgress);
+
 /**
  * Helper selector called from components
  */

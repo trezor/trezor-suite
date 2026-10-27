@@ -34,6 +34,7 @@ import { type TimerId, exhaustive } from '@trezor/type-utils';
 import { BigNumber, isNotUndefined, typedObjectKeys } from '@trezor/utils';
 
 import { FIAT_RATES_MODULE_PREFIX, REFETCH_INTERVAL } from './fiatRatesConstants';
+import { markFiatRateDemandPending } from './fiatRatesDemandRegister';
 import { selectTickersToBeUpdated } from './fiatRatesSelectors';
 import { type FiatRatesRootState } from './fiatRatesTypes';
 import { type AccountsRootState } from '../accounts/accountsReducer';
@@ -43,6 +44,8 @@ import {
     selectActiveBackendType,
     selectIsElectrumBackendSelected,
 } from '../blockchain/blockchainSelectors';
+import { type DiscoveryRootState } from '../discovery/discoveryReducer';
+import { selectHasAnyRunningDiscovery } from '../discovery/discoverySelectors';
 import { type TransactionsRootState } from '../transactions/transactionsReducerTypes';
 import { selectTransactionsWithMissingRates } from '../transactions/transactionsSelectors';
 
@@ -413,7 +416,7 @@ type PeriodicFetchFiatRatesThunkPayload = {
     localCurrency: BaseCurrencyCode;
 };
 
-export type PeriodicFetchFiatRatesThunkState = FetchFiatRatesThunkState;
+export type PeriodicFetchFiatRatesThunkState = FetchFiatRatesThunkState & DiscoveryRootState;
 
 export type PeriodicFetchFiatRatesThunkDeps = WithServices<GetIsWindowVisibleDep>;
 
@@ -423,7 +426,7 @@ export const periodicFetchFiatRatesThunk = createThunk<
     { state: PeriodicFetchFiatRatesThunkState; extra: PeriodicFetchFiatRatesThunkDeps }
 >(
     `${FIAT_RATES_MODULE_PREFIX}/periodicFetchFiatRates`,
-    async ({ rateType, localCurrency }, { dispatch, extra }) => {
+    async ({ rateType, localCurrency }, { dispatch, getState, extra }) => {
         const {
             services: { getIsWindowVisible },
         } = extra;
@@ -434,7 +437,12 @@ export const periodicFetchFiatRatesThunk = createThunk<
         }
 
         if (isWindowVisible) {
-            await dispatch(fetchFiatRatesThunk({ rateType, localCurrency }));
+            if (selectHasAnyRunningDiscovery(getState())) {
+                // Defer until discovery ends so periodic refresh does not fight the demand register.
+                markFiatRateDemandPending(rateType, localCurrency);
+            } else {
+                await dispatch(fetchFiatRatesThunk({ rateType, localCurrency }));
+            }
         }
         ratesTimeouts[rateType] = setTimeout(() => {
             dispatch(periodicFetchFiatRatesThunk({ rateType, localCurrency }));
