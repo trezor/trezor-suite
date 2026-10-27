@@ -21,6 +21,13 @@ const lint = async () => {
     });
     const maxWarnings = Number(values['max-warnings']);
 
+    // Like the ESLint CLI, reject a non-integer or blank limit; Number() reads a blank one as 0.
+    if (values['max-warnings'].trim() === '' || !Number.isInteger(maxWarnings)) {
+        throw new Error(
+            `Unsupported --max-warnings value "${values['max-warnings']}": use an integer.`,
+        );
+    }
+
     const eslint = await ESLint.fromOptionsModule(
         createRunnerOptionsModuleURL({
             ruleSet: parseRuleSet(process.env.ESLINT_RULE_SET),
