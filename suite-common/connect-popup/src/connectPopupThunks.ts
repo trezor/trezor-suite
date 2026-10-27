@@ -26,7 +26,12 @@ import {
     type ConnectCallSource,
 } from './connectPopupTypes';
 import { getMethodDefinition } from './methods';
-import type { ConnectPopupMethodKey, MethodPayload } from './methods/types';
+import type {
+    CallParams,
+    ConnectPopupMethodKey,
+    GetInfoParams,
+    MethodPayload,
+} from './methods/types';
 import {
     canRememberPermissions,
     deriveCardanoEnabledNetworks,
@@ -49,6 +54,25 @@ const getCallParamNames = (payload: unknown): string[] =>
     payload && typeof payload === 'object' && !Array.isArray(payload)
         ? Object.keys(payload).sort()
         : [];
+
+const getConnectMethodInfo = async ({
+    method,
+    payload,
+}: GetInfoParams<ConnectPopupMethodKey>): Promise<MethodInfo> => {
+    const methodInfo = await TrezorConnect.call({
+        ...payload,
+        method,
+        __info: true,
+    } as CallMethodPayload);
+    if (!methodInfo.success) {
+        throw methodInfo.error;
+    }
+
+    return methodInfo.payload as MethodInfo;
+};
+
+const callConnectMethod = ({ method, payload, device }: CallParams<ConnectPopupMethodKey>) =>
+    TrezorConnect.call({ device, ...payload, method } as CallMethodPayload);
 
 type ConnectPopupCallThunkParams<M extends ConnectPopupMethodKey> = {
     method: M;
@@ -87,15 +111,8 @@ export const connectPopupCallInnerThunk = createThunk<
 
             if (!connectCallableMethods.includes(method)) throw TypedError('Method_Unsupported');
 
-            const methodInfo = await TrezorConnect.call({
-                ...payload,
-                method,
-                __info: true,
-            } as CallMethodPayload);
-            if (!methodInfo.success) {
-                throw methodInfo.error;
-            }
-            const methodInfoPayload = methodInfo.payload as MethodInfo;
+            const getInfo = definition?.getInfo ?? getConnectMethodInfo;
+            const methodInfoPayload = await getInfo({ method, payload, source });
             const callPermissions = methodInfoPayload.requiredPermissions;
             const hasPermission = (name: string) =>
                 callPermissions.some(p => p.permission === name);
@@ -202,16 +219,22 @@ export const connectPopupCallInnerThunk = createThunk<
 
             dispatch(connectPopupActions.setCallDevicePath(device.path));
 
-            const response = await TrezorConnect.call({
+            const callMethod = definition?.call ?? callConnectMethod;
+            const response = await callMethod({
+                method,
+                payload: modifiedPayload,
                 device: {
                     path: device.path,
                     instance: device.instance,
                     state: device.state,
                     useEmptyPassphrase: device.useEmptyPassphrase,
                 },
-                ...modifiedPayload,
-                method,
-            } as CallMethodPayload);
+                dispatch,
+                getState,
+                txSigningPrecomposed,
+                source,
+                onCleanup,
+            });
             response.id = undefined;
 
             const postCallOngoing =

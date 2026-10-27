@@ -762,6 +762,48 @@ describe('connectPopupCallThunk — method registry', () => {
         );
     });
 
+    it('runs a popup-only method without calling Connect', async () => {
+        const popupOnlyMethod = {
+            getInfo: mock<MethodStep<'selectAccount', 'getInfo'>>(() => ({
+                info: 'Select account',
+                useUi: true,
+                requiredPermissions: [],
+            })),
+            call: mock<MethodStep<'selectAccount', 'call'>>(() =>
+                Promise.resolve({ success: true, payload: [] }),
+            ),
+        };
+        mockMethodDefinitions({ selectAccount: popupOnlyMethod });
+        const store = initCallStore();
+
+        const response = getPopupCallDeferred(true).promise;
+        await store.dispatch(
+            connectPopupCallThunk({
+                method: 'selectAccount',
+                payload: { coin: 'eth' },
+                source: desktopSource,
+            }),
+        );
+
+        await expect(response).resolves.toMatchObject({ success: true, payload: [] });
+        expect(mockedConnectCall).not.toHaveBeenCalled();
+        expect(popupOnlyMethod.getInfo).toHaveBeenCalledWith({
+            method: 'selectAccount',
+            payload: { coin: 'eth' },
+            source: desktopSource,
+        });
+        expect(popupOnlyMethod.call).toHaveBeenCalledWith(
+            expect.objectContaining({
+                method: 'selectAccount',
+                payload: { coin: 'eth' },
+                device: { path: '1', instance: 0, state: undefined, useEmptyPassphrase: true },
+            }),
+        );
+        expect(
+            store.getActions().find(connectPopupActions.initiateCall.match)?.payload.methodInfo,
+        ).toMatchObject({ methodTitle: 'Select account' });
+    });
+
     it('keeps the call open when postCall resolves to true', async () => {
         mockMethodDefinitions({
             getFeatures: { postCall: mock<MethodStep<'getFeatures', 'postCall'>>(() => true) },
