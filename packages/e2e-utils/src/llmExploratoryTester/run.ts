@@ -2,16 +2,11 @@ import { config as loadDotenv } from 'dotenv';
 import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 
+import { readJson } from '@trezor/node-utils';
+
 import { error, log } from '../logger';
 import { killHarnessBrowser, killHarnessBrowserOnExitSignals } from './browserState';
-import {
-    BROWSER_DIR,
-    CONTEXT_FILE,
-    REPO_ROOT,
-    TEST_RESULT_FILE,
-    readJson,
-    writeJson,
-} from './paths';
+import { BROWSER_DIR, CONTEXT_FILE, REPO_ROOT, TEST_RESULT_FILE, writeJson } from './paths';
 import { runOpencode } from './runOpencode';
 import { type PrContext, PrContextSchema } from './schemas';
 
