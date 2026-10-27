@@ -17,6 +17,8 @@ on:
       - "packages/connect/**"
       - "scripts/ci/helpers.ts"
       - "scripts/ci/pack-packages.ts"
+      - "scripts/ci/connect-publish-roots.ts"
+      - "scripts/ci/publish-closure.ts"
       - "scripts/ci/trezor-package-path.ts"
       - "scripts/publish/**"
       - "packages/connect-install-smoke/**"
