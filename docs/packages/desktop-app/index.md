@@ -56,7 +56,7 @@ See separate documentation for [debugging](./debugging.md) with debugging instru
 
 ## Logging
 
-Logging can be enabled by running Suite with the command line flag `--log-level=LEVEL` (replace _LEVEL_ with _error_, _warn_, _info_ or _debug_ based on the logging you wish to display). Additional command line flags can be found [here](./runtime-flags.md).
+Logging can be enabled by running Suite with the command line flag `--log-level=LEVEL` (replace _LEVEL_ with _mute_, _error_, _warn_, _info_ or _debug_ based on the logging you wish to display). Additional command line flags can be found [here](./runtime-flags.md).
 
 More technical information can be found on the [Desktop Logger page](../../features/desktop-logger.md).
 

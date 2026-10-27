@@ -20,7 +20,7 @@ Available flags:
 | `--bridge-test`               | Run the internal node-bridge in UDP mode (for use with the device emulator)                                                                                                            |
 | `--bridge-daemon`             | Start Suite in daemon mode (no UI initially)                                                                                                                                           |
 | `--bridge-daemon-show-ui`     | Start Suite in daemon mode with UI right away                                                                                                                                          |
-| `--log-level=NAME`            | Set the logging level. Available levels are [name (value)]: error (1), warn (2), info(3), debug (4). All logs with a value equal or lower to the selected log level will be displayed. |
+| `--log-level=NAME`            | Set the logging level [name (value)]: mute (0), error (1), warn (2), info (3), debug (4). All logs with a value equal or lower will be displayed. Defaults to `info` (`debug` in dev). |
 | `--log-write`                 | Write log to disk                                                                                                                                                                      |
 | `--log-ui`                    | Enables printing of UI console messages in the console.                                                                                                                                |
 | `--log-file=FILENAME`         | Name of the output file (defaults to `trezor-suite-log-%tt.txt`)                                                                                                                       |
