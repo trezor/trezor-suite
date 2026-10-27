@@ -36,6 +36,7 @@ import {
     type RunDiscoveryThunkState,
     applyDeviceStatesThunk,
     cancelDiscoveryThunk,
+    endUnfinishedDiscoveryThunk,
     runAdditionalDiscoveryThunk,
     runDiscoveryThunk,
     startOrRestartDiscoveryThunk,
@@ -857,5 +858,38 @@ describe(`${runDiscoveryThunk.name} duplicates`, () => {
             ),
         );
         expect(actions).not.toContainEqual(deviceActions.selectDevice(existingWallet));
+    });
+});
+
+describe(endUnfinishedDiscoveryThunk.name, () => {
+    const disconnected: Extract<DiscoveryStatus, { status: 'failed' }> = {
+        status: 'failed',
+        error: 'Device disconnected',
+        errorCode: 'Device_Disconnected',
+    };
+
+    it('records the outcome of a run that is still in progress', async () => {
+        const state = createState({
+            status: 'progress',
+            total: 10,
+            progress: 1,
+            trigger: 'device-connect',
+        });
+
+        const actions = await run(state, dispatch =>
+            dispatch(endUnfinishedDiscoveryThunk({ devicePath, status: disconnected })),
+        );
+
+        expect(getDiscoveryUpdates(actions)).toEqual([disconnected]);
+    });
+
+    it('leaves a run that has already ended alone', async () => {
+        const state = createState({ status: 'cancelled', trigger: 'device-connect' });
+
+        const actions = await run(state, dispatch =>
+            dispatch(endUnfinishedDiscoveryThunk({ devicePath, status: disconnected })),
+        );
+
+        expect(getDiscoveryUpdates(actions)).toEqual([]);
     });
 });

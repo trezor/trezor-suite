@@ -6,6 +6,7 @@ import { prepareSuiteSyncMiddleware } from '@suite-common/suite-sync';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import {
     prepareBlockchainSubscriptionMiddleware,
+    prepareDiscoveryAnalyticsMiddleware,
     prepareEarnTransactionsMiddleware,
     prepareFiatRatesMiddleware,
     preparePushNotificationMiddleware,
@@ -72,6 +73,7 @@ const getMiddlewares = (getExtra: () => GetMiddlewaresDeps | null) => {
         prepareEarnTransactionsMiddleware(getExtra),
         prepareDeviceMiddleware(getExtra),
         prepareDiscoveryMiddleware(getExtra),
+        prepareDiscoveryAnalyticsMiddleware(getExtra),
         sendFormMiddleware,
         prepareTradingMiddleware(getExtra),
         prepareTradingLastErrorSentryMiddleware(getExtra),

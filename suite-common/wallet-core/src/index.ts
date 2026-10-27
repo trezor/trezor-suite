@@ -25,6 +25,7 @@ export * from './device/preparePushNotificationMiddleware';
 export * from './device/publicKeyActions';
 export * from './discovery/activateNetworkWithDiscoveryThunk';
 export * from './discovery/discoveryActions';
+export * from './discovery/discoveryAnalyticsMiddleware';
 export * from './discovery/discoveryReducer';
 export * from './discovery/discoverySelectors';
 export * from './discovery/discoveryThunks';

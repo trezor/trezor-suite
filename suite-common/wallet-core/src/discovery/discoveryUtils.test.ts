@@ -6,6 +6,7 @@ import type { Bip43Path } from '@trezor/crypto-utils';
 import {
     getDiscoveryOutcome,
     getErrorCode,
+    getReportableErrorCode,
     shouldFetchAssetsAfterDiscovery,
 } from './discoveryUtils';
 import { type CreateAccountActionProps } from '../accounts/accountsActions';
@@ -68,6 +69,28 @@ describe(getErrorCode.name, () => {
             expect(getErrorCode(error)).toBe('Failure_UnknownCode');
         },
     );
+});
+
+describe(getReportableErrorCode.name, () => {
+    it.each([
+        'Device_Disconnected',
+        'Backend_Error',
+        'Failure_ActionCancelled',
+        'Failure_PinInvalid',
+        'ThpDeviceLocked',
+        'ThpTransportBusy',
+    ])('keeps the known Trezor Connect, firmware or THP code %s', code => {
+        expect(getReportableErrorCode(code)).toBe(code);
+    });
+
+    it.each([
+        'ECONNRESET',
+        'xpub6CUGRUonZSQ4TWtTMmzXdrXDtypWKiKrhko4egpiMZbpiaQL2jkwSB1icqYh2cfDfVxdx4df189oLKnC5fSwqPfgyP3hooxujYzAu3fDVmz',
+        '4',
+        undefined,
+    ])('reports %p as the unknown code', code => {
+        expect(getReportableErrorCode(code)).toBe('Failure_UnknownCode');
+    });
 });
 
 describe(shouldFetchAssetsAfterDiscovery.name, () => {

@@ -28,6 +28,7 @@ import { getNewInstanceNumber } from '@suite-common/suite-utils';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { type TrezorConnectBackendType, asNetworkSymbol } from '@suite-common/wallet-config';
 import {
+    type DiscoveryOutcome,
     type DiscoveryStatus,
     type DiscoveryTrigger,
     type GetTradedAccountKeysDep,
@@ -988,6 +989,23 @@ export const runAdditionalDiscoveryThunk = createThunk<
         }
     },
 );
+
+type EndUnfinishedDiscoveryThunkParams = {
+    devicePath: DeviceUniquePath;
+    status: Extract<DiscoveryStatus, { status: DiscoveryOutcome }>;
+};
+
+type EndUnfinishedDiscoveryThunkState = DiscoveryRootState;
+
+export const endUnfinishedDiscoveryThunk = createThunk<
+    void,
+    EndUnfinishedDiscoveryThunkParams,
+    { state: EndUnfinishedDiscoveryThunkState }
+>(`${DISCOVERY_MODULE_PREFIX}/endUnfinished`, ({ devicePath, status }, { dispatch, getState }) => {
+    if (!isDiscoveryInProgress(selectDiscoveryByDevicePath(getState(), devicePath))) return;
+
+    dispatch(discoveryActions.updateDiscovery(status, devicePath));
+});
 
 type SubmitPassphraseThunkParams = {
     device: TrezorDevice;
