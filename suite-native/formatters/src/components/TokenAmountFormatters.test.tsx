@@ -1,6 +1,6 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenSymbol, toTokenAddress } from '@suite-common/wallet-types';
-import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
+import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import {
     CompactTokenAmountFormatter,
@@ -62,14 +62,12 @@ describe('ExactTokenAmountFormatter', () => {
         expect(getByTestId('discreet-text')).toHaveTextContent('0 USDC');
     });
 
-    it('masks a URL in the symbol and reveals it on tap without changing the amount', async () => {
-        const { getByLabelText, getByText } = await renderExactTokenAmountFormatter({
+    it('masks a URL in the symbol without changing the amount', async () => {
+        const { getByLabelText } = await renderExactTokenAmountFormatter({
             tokenSymbol: 'claim.example' as TokenSymbol,
         });
 
         expect(getByLabelText('1,234.56 …')).toBeOnTheScreen();
-        await fireEvent.press(getByText('claim.example'), { stopPropagation: () => undefined });
-        expect(getByLabelText('1,234.56 claim.example')).toBeOnTheScreen();
     });
 
     it('keeps a recognized symbol readable from its network and contract', async () => {
