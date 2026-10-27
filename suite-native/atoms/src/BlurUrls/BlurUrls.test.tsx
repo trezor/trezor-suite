@@ -1,19 +1,10 @@
 import { fireEvent, renderWithBasicProvider, screen } from '@suite-native/test-utils';
 
 import { BlurUrls } from './BlurUrls';
-import { PressableOpacity as MockPressableOpacity } from '../Pressable';
 
 type UrlCase = [text: string, label: string, urls: string[]];
-type MockBlurredUrlProps = {
-    text: string;
-    onToggle: () => void;
-};
 
-jest.mock('./BlurredUrl', () => ({
-    BlurredUrl: ({ text, onToggle }: MockBlurredUrlProps) => (
-        <MockPressableOpacity testID="blurred-url" accessibilityLabel={text} onPress={onToggle} />
-    ),
-}));
+const pressEvent = { stopPropagation: () => undefined };
 
 describe('BlurUrls', () => {
     it('preserves an ordinary token name and its truncation props', async () => {
@@ -22,7 +13,6 @@ describe('BlurUrls', () => {
         );
 
         expect(screen.getByText('Ordinary Token')).toHaveProp('numberOfLines', 1);
-        expect(screen.queryByTestId('blurred-url')).toBeNull();
     });
 
     it('reveals on tap, masks on a second tap and keeps a different token masked', async () => {
@@ -30,13 +20,20 @@ describe('BlurUrls', () => {
             <BlurUrls text="Claim at rewards.example now" />,
         );
 
-        await fireEvent.press(screen.getByTestId('blurred-url'));
+        expect(screen.getByText('rewards.example')).toHaveStyle({
+            color: '#ffffff00',
+            textShadowRadius: 3,
+        });
+
+        await fireEvent.press(screen.getByText('rewards.example'), pressEvent);
         expect(screen.getByLabelText('Claim at rewards.example now')).toBeOnTheScreen();
+        expect(screen.getByText('rewards.example')).toHaveStyle({ textShadowRadius: 1 });
 
-        await fireEvent.press(screen.getByTestId('blurred-url'));
+        await fireEvent.press(screen.getByText('rewards.example'), pressEvent);
         expect(screen.getByLabelText('Claim at … now')).toBeOnTheScreen();
+        expect(screen.getByText('rewards.example')).toHaveStyle({ textShadowRadius: 3 });
 
-        await fireEvent.press(screen.getByTestId('blurred-url'));
+        await fireEvent.press(screen.getByText('rewards.example'), pressEvent);
         await rerender(<BlurUrls text="Visit other.example" />);
         expect(screen.getByLabelText('Visit …')).toBeOnTheScreen();
     });
@@ -65,11 +62,11 @@ describe('BlurUrls', () => {
         await renderWithBasicProvider(<BlurUrls text={text} />);
 
         expect(screen.getByLabelText(label)).toBeOnTheScreen();
-        expect(
-            screen.getAllByTestId('blurred-url').map(element => element.props.accessibilityLabel),
-        ).toEqual(urls);
         for (const url of urls) {
-            expect(screen.queryByText(url, { exact: false })).toBeNull();
+            expect(screen.getByText(url)).toHaveStyle({
+                color: '#ffffff00',
+                textShadowRadius: 3,
+            });
         }
     });
 });

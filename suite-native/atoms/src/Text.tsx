@@ -54,7 +54,7 @@ const variantToMaxFontSizeMultiplier = {
     'body-xs': TEXT_MAX_FONT_MULTIPLIER,
 } as const satisfies Record<NativeTypographyStyle, number>;
 
-export const getAccessibilityFontScale = (variant?: NativeTypographyStyle) => {
+const getAccessibilityFontScale = (variant?: NativeTypographyStyle) => {
     const fontScale = PixelRatio.getFontScale();
 
     const maxFontScale = variant

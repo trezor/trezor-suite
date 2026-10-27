@@ -1,12 +1,9 @@
-import { type GestureResponderEvent, ScrollView } from 'react-native';
+import { type GestureResponderEvent, PixelRatio, Platform } from 'react-native';
 
-import { type Color, type NativeTypographyStyle, nativeTypography } from '@trezor/theme';
+import { useNativeStyles } from '@trezor/styles-native';
+import { type Color, type NativeTypographyStyle } from '@trezor/theme';
 
-import { Box } from '../Box';
-import { DiscreetCanvas } from '../DiscreetText/DiscreetCanvas';
-import { useDiscreetFont } from '../DiscreetText/useDiscreetFont';
-import { PressableOpacity } from '../Pressable';
-import { getAccessibilityFontScale } from '../Text';
+import { Text } from '../Text';
 
 type BlurredUrlProps = {
     text: string;
@@ -17,47 +14,34 @@ type BlurredUrlProps = {
 };
 
 export const BlurredUrl = ({ text, variant, color, isRevealed, onToggle }: BlurredUrlProps) => {
-    const typography = nativeTypography[variant];
-    const scale = getAccessibilityFontScale(variant);
-    const fontSize = typography.fontSize * scale;
-    const lineHeight = typography.lineHeight * scale;
-    const font = useDiscreetFont(fontSize);
-    const textWidth = font?.measureText(text).width ?? fontSize * text.length;
-    // Text ellipsizes inline views as a whole. Keep long URLs compact so their blur remains visible.
-    const width = Math.min(textWidth, fontSize * 6);
+    const { utils } = useNativeStyles();
+    const blurRadius = isRevealed ? 1 : 3;
+    // Android's text-shadow radius is measured in physical pixels.
+    const textShadowRadius =
+        Platform.OS === 'android' ? PixelRatio.getPixelSizeForLayoutSize(blurRadius) : blurRadius;
 
     const handlePress = (event: GestureResponderEvent) => {
         event.stopPropagation();
         onToggle();
     };
 
-    // Inline views sit on the baseline; the taller canvas also leaves room for descenders.
     return (
-        <Box
-            style={{ width, height: fontSize }}
+        <Text
+            variant={variant}
+            color={color}
+            onPress={handlePress}
+            suppressHighlighting
             accessible={false}
-            importantForAccessibility="no-hide-descendants"
+            style={{
+                // Android treats transparent black as unspecified and inherits the parent's color.
+                color: '#ffffff00',
+                // A translucent shadow avoids inheriting the transparent glyph's alpha on Android.
+                textShadowColor: utils.transparentize(0.01, utils.colors[color]),
+                textShadowOffset: { width: 0, height: 0 },
+                textShadowRadius,
+            }}
         >
-            <ScrollView
-                style={{ position: 'absolute', top: 0, width, height: lineHeight }}
-                horizontal
-                scrollEnabled={isRevealed}
-                showsHorizontalScrollIndicator={false}
-            >
-                <PressableOpacity
-                    style={{ width: textWidth, height: lineHeight }}
-                    onPress={handlePress}
-                    accessible={false}
-                >
-                    <DiscreetCanvas
-                        text={text}
-                        fontSize={fontSize}
-                        lineHeight={lineHeight}
-                        color={color}
-                        blur={(isRevealed ? 1 : 3) * scale}
-                    />
-                </PressableOpacity>
-            </ScrollView>
-        </Box>
+            {text}
+        </Text>
     );
 };
