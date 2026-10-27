@@ -7,6 +7,7 @@ import { tokenDefinitionsInitialState } from '@suite-common/token-definitions';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
+    type DiscoveryStatus,
     type DiscoveryTrigger,
     asAccountDescriptor,
 } from '@suite-common/wallet-types';
@@ -175,6 +176,58 @@ describe(activateNetworkWithDiscoveryThunk.name, () => {
         );
     });
 
+    it('marks the final status of a run that already failed as silent while rolling back', async () => {
+        const state = createState();
+        const failedDiscovery: DiscoveryStatus = {
+            status: 'failed',
+            error: 'Backend disconnected',
+            errorCode: 'Backend_Disconnected',
+        };
+        mockRunAdditionalDiscovery.mockImplementation(() => {
+            state.wallet.discovery[devicePath] = failedDiscovery;
+
+            return Promise.resolve();
+        });
+
+        const { actions, result } = await runThunk(state);
+
+        expect(result).toEqual({
+            success: false,
+            error: { message: 'Backend disconnected', wasCancelled: false },
+        });
+        expect(actions).toContainEqual(
+            discoveryActions.updateDiscovery(failedDiscovery, devicePath, { isSilent: true }),
+        );
+    });
+
+    it('reports the failure of a rejected discovery with its error code', async () => {
+        const state = createState({ enabledNetworks: [networkSymbol] });
+        mockRunAdditionalDiscovery.mockImplementation(() => {
+            state.wallet.discovery[devicePath] = { status: 'progress', total: 1, progress: 0 };
+
+            return Promise.reject(
+                Object.assign(new Error('Device disconnected'), { code: 'Device_Disconnected' }),
+            );
+        });
+
+        const { actions, result } = await runThunk(state);
+
+        expect(result).toEqual({
+            success: false,
+            error: { message: 'Device disconnected', wasCancelled: false },
+        });
+        expect(actions).toContainEqual(
+            discoveryActions.updateDiscovery(
+                {
+                    status: 'failed',
+                    error: 'Device disconnected',
+                    errorCode: 'Device_Disconnected',
+                },
+                devicePath,
+            ),
+        );
+    });
+
     it('restores network visibility when activation fails', async () => {
         const state = createState();
         mockChangeCoinVisibility.mockImplementation(({ shouldBeVisible }) => {
@@ -200,7 +253,11 @@ describe(activateNetworkWithDiscoveryThunk.name, () => {
         ]);
         expect(actions).toContainEqual(
             discoveryActions.updateDiscovery(
-                { status: 'failed', error: 'Network activation failed' },
+                {
+                    status: 'failed',
+                    error: 'Network activation failed',
+                    errorCode: 'Failure_UnknownCode',
+                },
                 devicePath,
             ),
         );

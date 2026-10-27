@@ -1,7 +1,10 @@
 import { useState } from 'react';
 
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { cancelDiscoveryThunk, startAddWalletDiscoveryThunk } from '@suite-common/wallet-core';
+import {
+    cancelDiscoveryForRestartThunk,
+    startAddWalletDiscoveryThunk,
+} from '@suite-common/wallet-core';
 import { type DiscoveryStatus } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -34,7 +37,7 @@ export const PassphraseWalletExistsFlow = ({
     >('empty-wallet');
 
     const toExistEnterPassphrase = () => {
-        dispatch(cancelDiscoveryThunk(device));
+        dispatch(cancelDiscoveryForRestartThunk(device));
         dispatch(
             startAddWalletDiscoveryThunk({
                 device,

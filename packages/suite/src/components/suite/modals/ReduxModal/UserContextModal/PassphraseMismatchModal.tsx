@@ -1,7 +1,10 @@
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { type TrezorDevice } from '@suite-common/suite-types';
-import { cancelDiscoveryThunk, startAddWalletDiscoveryThunk } from '@suite-common/wallet-core';
+import {
+    cancelDiscoveryForRestartThunk,
+    startAddWalletDiscoveryThunk,
+} from '@suite-common/wallet-core';
 import { type DiscoveryStatus } from '@suite-common/wallet-types';
 import { Button, Column, H3, Text, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -23,7 +26,7 @@ export const PassphraseMismatchModal = ({ device, discovery }: PassphraseMismatc
     const { dispatch } = useServices(injectDispatch);
 
     const onStartOver = () => {
-        dispatch(cancelDiscoveryThunk(device));
+        dispatch(cancelDiscoveryForRestartThunk(device));
         dispatch(
             startAddWalletDiscoveryThunk({
                 device,
