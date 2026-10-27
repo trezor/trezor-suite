@@ -5,6 +5,7 @@ import { type PackageJson, readJson } from '@trezor/node-utils';
 
 import type { Requirement } from '../Requirement';
 import {
+    CONNECT_PUBLISH_ROOTS,
     type WorkspacePackage,
     collectProdWorkspaceClosure,
     collectWorkspacePackages,
@@ -13,13 +14,6 @@ import {
 type Snapshot = {
     readonly prod: ReadonlyArray<string>;
 };
-
-const TARGET_PACKAGES = [
-    '@trezor/connect',
-    '@trezor/connect-web',
-    '@trezor/connect-mobile',
-    '@trezor/connect-webextension',
-] as const;
 
 const SNAPSHOT_DIR = join(
     'packages',
@@ -85,7 +79,7 @@ const validateSnapshots = ({ repoRoot, write }: { repoRoot: string; write: boole
 
     const errors: string[] = [];
 
-    for (const target of TARGET_PACKAGES) {
+    for (const target of CONNECT_PUBLISH_ROOTS) {
         if (!workspacePackages.has(target)) {
             errors.push(`Target package not found in workspaces: ${target}`);
 
