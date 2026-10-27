@@ -9,12 +9,12 @@ import {
     selectWalletAssetTokenDecimals,
     selectWalletAssetTokenSymbol,
 } from '@suite-common/assets';
-import { useFormatters } from '@suite-common/formatters';
 import { type WalletAssetKey, selectBaseCurrency } from '@suite-common/wallet-core';
 import { Card, Column, Row, Skeleton, Text } from '@trezor/components';
 
-import { FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
+import { FormattedCryptoAmount } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
+import { HomeTotalBalance } from 'src/views/home/HomeBalance/HomeTotalBalance';
 
 type AssetDetailBalanceProps = {
     assetKey: WalletAssetKey;
@@ -44,7 +44,6 @@ export const AssetDetailBalanceSkeleton = () => {
 };
 
 export const AssetDetailBalance = ({ assetKey }: AssetDetailBalanceProps) => {
-    const { BaseCurrencyAmountFormatter } = useFormatters();
     const baseCurrency = useSelector(selectBaseCurrency);
     const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey));
     const contractAddress = useSelector(state => selectWalletAssetContractAddress(state, assetKey));
@@ -79,11 +78,10 @@ export const AssetDetailBalance = ({ assetKey }: AssetDetailBalanceProps) => {
                         <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                             {baseCurrency.toUpperCase()}
                         </Text>
-                        <Text typographyStyle="headline-md">
-                            <HiddenPlaceholder>
-                                {BaseCurrencyAmountFormatter.format(fiatValue)}
-                            </HiddenPlaceholder>
-                        </Text>
+                        <HomeTotalBalance
+                            fiatValue={fiatValue}
+                            data-testid="@asset-detail/balance/fiat-amount"
+                        />
                     </Row>
                 )}
                 <Row justifyContent="space-between" alignItems="center">
