@@ -80,6 +80,7 @@ export const activateNetworkWithDiscoveryThunk = createThunk<
         // this state and would otherwise start a second discovery for the same network.
         dispatch(
             discoveryActions.startDiscovery(devicePath, {
+                trigger: 'add-account',
                 isAddingHiddenWallet: false,
                 isAddingExistingWallet: false,
             }),
@@ -121,7 +122,9 @@ export const activateNetworkWithDiscoveryThunk = createThunk<
             }
         }
 
-        const discoveryPromise = dispatch(runAdditionalDiscoveryThunk(staticSessionId));
+        const discoveryPromise = dispatch(
+            runAdditionalDiscoveryThunk({ staticSessionId, trigger: 'add-account' }),
+        );
         const abortDiscovery = () => {
             discoveryPromise.abort();
 
@@ -182,6 +185,7 @@ export const activateNetworkWithDiscoveryThunk = createThunk<
             // activation: hiding the network must not start another discovery concurrently.
             dispatch(
                 discoveryActions.startDiscovery(devicePath, {
+                    trigger: 'add-account',
                     isAddingHiddenWallet: false,
                     isAddingExistingWallet: false,
                 }),

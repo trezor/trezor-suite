@@ -40,5 +40,5 @@ export const ejectAllWalletsThunk = createThunk<
     await dispatch(forgetDisconnectedDevicesThunk({ device, forceForget: true }));
 
     // try to start discovery with standard wallet
-    dispatch(startDiscoveryThunk({ device }));
+    dispatch(startDiscoveryThunk({ device, trigger: 'device-check' }));
 });

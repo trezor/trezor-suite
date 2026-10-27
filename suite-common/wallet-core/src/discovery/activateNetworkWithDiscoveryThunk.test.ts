@@ -5,7 +5,11 @@ import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { tokenDefinitionsInitialState } from '@suite-common/token-definitions';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
-import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type DiscoveryTrigger,
+    asAccountDescriptor,
+} from '@suite-common/wallet-types';
 import { mockGetTradedAccountKeys, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { type StaticSessionId, asDeviceUniquePath } from '@trezor/connect';
@@ -26,8 +30,13 @@ type ChangeCoinVisibilityParams = {
     shouldBeVisible: boolean;
 };
 
+type RunAdditionalDiscoveryParams = {
+    staticSessionId: StaticSessionId;
+    trigger: DiscoveryTrigger;
+};
+
 const mockChangeCoinVisibility = jest.fn<Promise<void>, [ChangeCoinVisibilityParams]>();
-const mockRunAdditionalDiscovery = jest.fn<Promise<void>, [StaticSessionId]>();
+const mockRunAdditionalDiscovery = jest.fn<Promise<void>, [RunAdditionalDiscoveryParams]>();
 const mockCancelDiscovery = jest.fn<void, [TrezorDevice]>();
 
 jest.mock('../settings/walletSettingsThunks', () => {
@@ -51,7 +60,7 @@ jest.mock('./discoveryThunks', () => {
         ...actualModule,
         runAdditionalDiscoveryThunk: createThunk(
             '@test/runAdditionalDiscovery',
-            (staticSessionId: StaticSessionId) => mockRunAdditionalDiscovery(staticSessionId),
+            (params: RunAdditionalDiscoveryParams) => mockRunAdditionalDiscovery(params),
         ),
         cancelDiscoveryThunk: createThunk('@test/cancelDiscovery', (device: TrezorDevice) =>
             mockCancelDiscovery(device),
@@ -145,7 +154,7 @@ describe(activateNetworkWithDiscoveryThunk.name, () => {
             return Promise.resolve();
         });
 
-        const { result } = await runThunk(state);
+        const { actions, result } = await runThunk(state);
 
         expect(result).toEqual({ success: true, payload: { discoveredAccountCount: 1 } });
         expect(mockChangeCoinVisibility).toHaveBeenCalledTimes(1);
@@ -153,7 +162,17 @@ describe(activateNetworkWithDiscoveryThunk.name, () => {
             symbol: networkSymbol,
             shouldBeVisible: true,
         });
-        expect(mockRunAdditionalDiscovery).toHaveBeenCalledWith(staticSessionId);
+        expect(mockRunAdditionalDiscovery).toHaveBeenCalledWith({
+            staticSessionId,
+            trigger: 'add-account',
+        });
+        expect(actions).toContainEqual(
+            discoveryActions.startDiscovery(devicePath, {
+                trigger: 'add-account',
+                isAddingHiddenWallet: false,
+                isAddingExistingWallet: false,
+            }),
+        );
     });
 
     it('restores network visibility when activation fails', async () => {

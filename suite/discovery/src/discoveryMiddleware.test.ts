@@ -37,7 +37,7 @@ import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type ThpState, initialThpState, prepareThpReducer, thpActions } from '@suite-common/thp';
 import * as walletCore from '@suite-common/wallet-core';
 import { discoveryInitialState, prepareDiscoveryReducer } from '@suite-common/wallet-core';
-import type { Discovery } from '@suite-common/wallet-types';
+import type { Discovery, DiscoveryTrigger } from '@suite-common/wallet-types';
 import { asDeviceUniquePath } from '@trezor/connect-common';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
@@ -106,6 +106,7 @@ type FixtureState = {
 type FixtureStep = {
     action: UnknownAction;
     expectedCallCount: number;
+    expectedTrigger?: DiscoveryTrigger;
 };
 
 type Fixture = {
@@ -220,6 +221,7 @@ const fixtures: Fixture[] = [
             {
                 action: deviceActions.selectDevice(selectedDevice),
                 expectedCallCount: 1,
+                expectedTrigger: 'device-switch',
             },
         ],
     },
@@ -276,6 +278,7 @@ const fixtures: Fixture[] = [
             {
                 action: routerAppChanged('dashboard'),
                 expectedCallCount: 1,
+                expectedTrigger: 'resume',
             },
         ],
     },
@@ -297,6 +300,7 @@ const fixtures: Fixture[] = [
                     isDeviceBecomingConnected: true,
                 }),
                 expectedCallCount: 1,
+                expectedTrigger: 'device-connect',
             },
         ],
     },
@@ -382,6 +386,7 @@ const fixtures: Fixture[] = [
             {
                 action: thpActions.finishAutoconnectFlow(),
                 expectedCallCount: 1,
+                expectedTrigger: 'device-connect',
             },
         ],
     },
@@ -406,6 +411,7 @@ const fixtures: Fixture[] = [
                     deviceId: selectedDevice.id,
                 }),
                 expectedCallCount: 1,
+                expectedTrigger: 'device-check',
             },
         ],
     },
@@ -509,6 +515,11 @@ describe('discoveryMiddleware', () => {
                 expect(mockedStartOrRestartDiscoveryThunk).toHaveBeenCalledTimes(
                     step.expectedCallCount,
                 );
+                if (step.expectedTrigger !== undefined) {
+                    expect(mockedStartOrRestartDiscoveryThunk).toHaveBeenLastCalledWith({
+                        trigger: step.expectedTrigger,
+                    });
+                }
             }
         });
     });

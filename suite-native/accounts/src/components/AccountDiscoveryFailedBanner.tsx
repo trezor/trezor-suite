@@ -34,7 +34,9 @@ export const AccountDiscoveryFailedBanner = ({ accountKey }: AccountDiscoveryFai
             primaryButtonLabel={translate(
                 'moduleAccountManagement.discoveryFailedBanner.retryButton',
             )}
-            onPressPrimaryButton={() => dispatch(startOrRestartDiscoveryThunk())}
+            onPressPrimaryButton={() =>
+                dispatch(startOrRestartDiscoveryThunk({ trigger: 'retry' }))
+            }
             primaryButtonProps={{ isLoading: hasRunningDiscovery }}
         />
     );

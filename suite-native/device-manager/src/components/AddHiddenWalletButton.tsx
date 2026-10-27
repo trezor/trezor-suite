@@ -46,6 +46,7 @@ export const AddHiddenWalletButton = ({ isDisabled }: AddHiddenWalletButtonProps
         dispatch(
             startDiscoveryThunk({
                 device,
+                trigger: 'add-wallet',
                 isAddingHiddenWallet: true,
                 isAddingExistingWallet: false,
             }),
