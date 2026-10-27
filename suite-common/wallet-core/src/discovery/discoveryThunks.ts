@@ -96,7 +96,7 @@ function assertStaticSessionId(
     }
 }
 
-const deviceStateEqualTo = (first: DeviceState) => {
+const describesSameWallet = (first: DeviceState) => {
     const firstParsed = first.staticSessionId?.split(':')[0];
 
     return (second?: DeviceState) =>
@@ -402,7 +402,7 @@ export const runDiscoveryThunk = createThunk<
             if (isAddingHiddenWallet) {
                 const duplicate = selectDevices(getState())
                     .map(d => d.state)
-                    .find(deviceStateEqualTo(deviceState));
+                    .find(describesSameWallet(deviceState));
 
                 if (duplicate?.staticSessionId) {
                     dispatch(
@@ -429,7 +429,7 @@ export const runDiscoveryThunk = createThunk<
                         callId,
                     });
 
-                    if (res.success && deviceStateEqualTo(deviceState)(res.payload.state)) {
+                    if (res.success && describesSameWallet(deviceState)(res.payload.state)) {
                         isAddingHiddenWallet = false;
                     }
                 }
@@ -631,7 +631,7 @@ export const runDiscoveryThunk = createThunk<
             }
 
             // todo: not sure about instance, now it looks that there are 2 devices created in connect
-            if (!deviceStateEqualTo(deviceState)(getDeviceState2Res.payload.state)) {
+            if (!describesSameWallet(deviceState)(getDeviceState2Res.payload.state)) {
                 dispatch(
                     discoveryActions.updateDiscovery(
                         { status: 'passphrase-mismatch' },
