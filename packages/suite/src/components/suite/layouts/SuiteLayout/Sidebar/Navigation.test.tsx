@@ -34,7 +34,6 @@ import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { BottomNavigation } from './BottomNavigation';
 import { Navigation } from './Navigation';
-import { Sidebar } from './Sidebar';
 import { SIDEBAR_MIN_WIDTH } from './consts';
 import { mockInitialAppState } from '../../../../../../mocks/mockInitialAppState';
 
@@ -75,7 +74,6 @@ type RenderNavigationParams = {
     notifications?: AppState['notifications'];
     isFinpromRestricted?: boolean;
     devices?: TrezorDevice[];
-    renderSidebar?: boolean;
 };
 
 const renderNavigation = ({
@@ -87,7 +85,6 @@ const renderNavigation = ({
     notifications = [],
     isFinpromRestricted = false,
     devices = [],
-    renderSidebar = false,
 }: RenderNavigationParams = {}) => {
     const preloadedState: AppState = {
         ...mockInitialAppState,
@@ -128,14 +125,10 @@ const renderNavigation = ({
 
     renderWithProviders(
         root.services,
-        renderSidebar ? (
-            <Sidebar />
-        ) : (
-            <>
-                <Navigation />
-                <BottomNavigation />
-            </>
-        ),
+        <>
+            <Navigation />
+            <BottomNavigation />
+        </>,
     );
 
     return root;

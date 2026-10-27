@@ -2,7 +2,16 @@ import { useIntl } from 'react-intl';
 
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { Badge, Button, IconCircle, Row, Table, Text, Tooltip } from '@trezor/components';
+import {
+    Badge,
+    Button,
+    IconCircle,
+    type IconComponent,
+    Row,
+    Table,
+    Text,
+    Tooltip,
+} from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { copyToClipboard } from '@trezor/dom-utils';
 import {
@@ -16,6 +25,12 @@ import {
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { type ReferralVoucher } from './mockReferralProgram';
+
+type VoucherState = {
+    icon: IconComponent;
+    intent: 'brand' | 'neutral' | 'critical';
+    label: TranslationKey;
+};
 
 const voucherStates = {
     ready: { icon: GiftIcon, intent: 'brand', label: 'TR_REFERRAL_VOUCHER_READY' },
@@ -35,14 +50,7 @@ const voucherStates = {
         intent: 'neutral',
         label: 'TR_REFERRAL_VOUCHER_EXPIRED',
     },
-} as const satisfies Record<
-    ReferralVoucher['status'],
-    {
-        icon: typeof GiftIcon;
-        intent: 'brand' | 'neutral' | 'critical';
-        label: TranslationKey;
-    }
->;
+} as const satisfies Record<ReferralVoucher['status'], VoucherState>;
 
 const getVoucherTooltip = (voucher: ReferralVoucher, formatExpiry: (date: string) => string) => {
     switch (voucher.status) {

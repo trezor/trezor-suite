@@ -1,5 +1,5 @@
 import { Translation } from '@suite/intl';
-import { Button, Card, Column, H3, Link, Paragraph, Row } from '@trezor/components';
+import { Box, Button, Card, Column, Flex, H3, Link, Paragraph } from '@trezor/components';
 import { breakpoints } from '@trezor/theme';
 
 import { useIsContentBelowBreakpoint } from 'src/support/suite/ContentFlex';
@@ -20,27 +20,41 @@ export const ReferralInvitation = ({
     onJoin,
 }: ReferralInvitationProps) => {
     const isBelowTablet = useIsContentBelowBreakpoint(breakpoints.tablet);
+    const isBelowMobile = useIsContentBelowBreakpoint(breakpoints.mobile);
 
     return (
         <Column gap={12}>
             <Card paddingType="none">
-                <Row gap={24} alignItems="stretch" padding={20}>
-                    <ReferralCard
-                        rewardAmount={rewardAmount}
-                        minimumOrderAmount={minimumOrderAmount}
-                        friendDiscountPercentage={friendDiscountPercentage}
-                    />
+                <Flex
+                    direction={isBelowMobile ? 'column' : 'row'}
+                    gap={24}
+                    alignItems={isBelowMobile ? 'center' : 'stretch'}
+                    padding={20}
+                >
+                    <Box
+                        flex={isBelowMobile ? undefined : '0 1 365px'}
+                        width={isBelowMobile ? '100%' : undefined}
+                        maxWidth={isBelowMobile ? undefined : 365}
+                        minWidth={0}
+                    >
+                        <ReferralCard
+                            rewardAmount={rewardAmount}
+                            minimumOrderAmount={minimumOrderAmount}
+                            friendDiscountPercentage={friendDiscountPercentage}
+                        />
+                    </Box>
                     <Column
-                        flex="1 1 280px"
+                        flex={isBelowMobile ? undefined : '1 1 280px'}
+                        width={isBelowMobile ? '100%' : undefined}
                         minWidth={0}
                         gap={24}
                         justifyContent="space-between"
-                        alignItems="flex-end"
+                        alignItems={isBelowMobile ? 'center' : 'flex-end'}
                     >
-                        <Column gap={0} alignItems="flex-end">
+                        <Column gap={0} alignItems={isBelowTablet ? 'center' : 'flex-end'}>
                             <H3
                                 typographyStyle={isBelowTablet ? 'body-md' : 'headline-sm'}
-                                align="end"
+                                align={isBelowMobile ? 'center' : 'end'}
                                 textWrap="balance"
                             >
                                 <Translation id="TR_REFERRAL_INVITATION_TITLE" />
@@ -60,13 +74,13 @@ export const ReferralInvitation = ({
                         </Column>
                         <Button
                             data-testid="@referral/join"
-                            size={isBelowTablet ? 'small' : 'large'}
+                            size={isBelowTablet ? 'medium' : 'large'}
                             onClick={onJoin}
                         >
                             <Translation id="TR_REFERRAL_JOIN_PROGRAM" />
                         </Button>
                     </Column>
-                </Row>
+                </Flex>
             </Card>
             <Paragraph
                 typographyStyle="body-xs"

@@ -1,4 +1,5 @@
 import { type MouseEvent, type ReactNode } from 'react';
+import { useSelector } from 'react-redux';
 
 import styled, { css } from 'styled-components';
 
@@ -21,7 +22,6 @@ import { commonFocusStyles } from '@trezor/components/src/utils/utils';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { useSelector } from 'src/hooks/suite';
 import { useResponsiveContext } from 'src/support/suite/ResponsiveContext';
 
 const Container = styled.button<{ $isActive?: boolean }>`
@@ -126,6 +126,14 @@ const NavItem = ({
     const isActiveRoute = routes?.some(route => route === activeRoute);
     const isItemActive = isActive || isActiveRoute;
 
+    const defaultTooltipContent = shortcut ? (
+        <Row gap={12}>
+            <Title nameId={nameId} values={values} />
+            <ShortcutBadge shortcut={shortcut} />
+        </Row>
+    ) : (
+        <Title nameId={nameId} values={values} />
+    );
     const isTooltipActive = !!tooltipContent || !expanded || shortcut !== undefined;
     const isNewContentBadgeShown = expanded === true && hasNewContentIndicator === true;
     const isNewContentDotShown =
@@ -138,17 +146,7 @@ const NavItem = ({
         <Tooltip
             cursor={isDisabled ? 'not-allowed' : 'pointer'}
             flex="1"
-            content={
-                tooltipContent ??
-                (shortcut ? (
-                    <Row gap={12}>
-                        <Title nameId={nameId} values={values} />
-                        <ShortcutBadge shortcut={shortcut} />
-                    </Row>
-                ) : (
-                    <Title nameId={nameId} values={values} />
-                ))
-            }
+            content={tooltipContent ?? defaultTooltipContent}
             isActive={isTooltipActive}
             delayShow={expanded && !tooltipContent ? TOOLTIP_DELAY_LONG : TOOLTIP_DELAY_SHORT}
             placement="right"

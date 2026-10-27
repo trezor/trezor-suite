@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
 
@@ -46,57 +46,10 @@ const mockScenarioOptions: { value: keyof typeof mockReferralScenarios; label: s
 
 type ReferralFAQ = {
     question: TranslationKey;
-    answer: TranslationKey;
+    answer: ReactNode;
+    questionValues?: { rewardAmount: string } | { friendDiscountPercentage: number };
     visibility: 'before' | 'after' | 'both';
 };
-
-const referralFAQs: ReferralFAQ[] = [
-    {
-        question: 'TR_REFERRAL_FAQ_PROGRAM',
-        answer: 'TR_REFERRAL_FAQ_PROGRAM_ANSWER',
-        visibility: 'both',
-    },
-    {
-        question: 'TR_REFERRAL_FAQ_JOIN',
-        answer: 'TR_REFERRAL_FAQ_JOIN_ANSWER',
-        visibility: 'before',
-    },
-    {
-        question: 'TR_REFERRAL_FAQ_SHARE',
-        answer: 'TR_REFERRAL_FAQ_SHARE_ANSWER',
-        visibility: 'both',
-    },
-    {
-        question: 'TR_REFERRAL_FAQ_LIMIT',
-        answer: 'TR_REFERRAL_FAQ_LIMIT_ANSWER',
-        visibility: 'both',
-    },
-    {
-        question: 'TR_REFERRAL_FAQ_REDEEM',
-        answer: 'TR_REFERRAL_FAQ_REDEEM_ANSWER',
-        visibility: 'both',
-    },
-    {
-        question: 'TR_REFERRAL_FAQ_COMBINE',
-        answer: 'TR_REFERRAL_FAQ_COMBINE_ANSWER',
-        visibility: 'both',
-    },
-    {
-        question: 'TR_REFERRAL_FAQ_SUPPORT',
-        answer: 'TR_REFERRAL_FAQ_SUPPORT_ANSWER',
-        visibility: 'both',
-    },
-    {
-        question: 'TR_REFERRAL_FAQ_OLD_PROGRAM',
-        answer: 'TR_REFERRAL_FAQ_OLD_PROGRAM_ANSWER',
-        visibility: 'both',
-    },
-    {
-        question: 'TR_REFERRAL_FAQ_LEAVE',
-        answer: 'TR_REFERRAL_FAQ_LEAVE_ANSWER',
-        visibility: 'after',
-    },
-];
 
 export const ReferAFriend = () => {
     const [isJoined, setIsJoined] = useState(false);
@@ -133,9 +86,91 @@ export const ReferAFriend = () => {
             currency: fiatCurrency,
             maximumFractionDigits: 0,
         }),
-        friendDiscountPercentage,
-        annualReferralLimit,
     };
+    const referralFAQs: ReferralFAQ[] = [
+        {
+            question: 'TR_REFERRAL_FAQ_PROGRAM',
+            answer: (
+                <Translation
+                    id="TR_REFERRAL_FAQ_PROGRAM_ANSWER"
+                    values={{
+                        minimumOrderAmount: translationValues.minimumOrderAmount,
+                        friendDiscountPercentage,
+                        rewardAmount: translationValues.rewardAmount,
+                    }}
+                />
+            ),
+            visibility: 'both',
+        },
+        {
+            question: 'TR_REFERRAL_FAQ_JOIN',
+            answer: <Translation id="TR_REFERRAL_FAQ_JOIN_ANSWER" />,
+            visibility: 'before',
+        },
+        {
+            question: 'TR_REFERRAL_FAQ_SHARE',
+            answer: <Translation id="TR_REFERRAL_FAQ_SHARE_ANSWER" />,
+            visibility: 'both',
+        },
+        {
+            question: 'TR_REFERRAL_FAQ_LIMIT',
+            answer: (
+                <Translation
+                    id="TR_REFERRAL_FAQ_LIMIT_ANSWER"
+                    values={{
+                        annualReferralLimit,
+                        annualRewardLimit: translationValues.annualRewardLimit,
+                        friendDiscountPercentage,
+                    }}
+                />
+            ),
+            visibility: 'both',
+        },
+        {
+            question: 'TR_REFERRAL_FAQ_REDEEM',
+            questionValues: { rewardAmount: translationValues.rewardAmount },
+            answer: <Translation id="TR_REFERRAL_FAQ_REDEEM_ANSWER" />,
+            visibility: 'both',
+        },
+        {
+            question: 'TR_REFERRAL_FAQ_COMBINE',
+            questionValues: { friendDiscountPercentage },
+            answer: <Translation id="TR_REFERRAL_FAQ_COMBINE_ANSWER" />,
+            visibility: 'both',
+        },
+        {
+            question: 'TR_REFERRAL_FAQ_SUPPORT',
+            answer: <Translation id="TR_REFERRAL_FAQ_SUPPORT_ANSWER" />,
+            visibility: 'both',
+        },
+        {
+            question: 'TR_REFERRAL_FAQ_OLD_PROGRAM',
+            answer: <Translation id="TR_REFERRAL_FAQ_OLD_PROGRAM_ANSWER" />,
+            visibility: 'both',
+        },
+        {
+            question: 'TR_REFERRAL_FAQ_LEAVE',
+            answer: (
+                <Translation
+                    id="TR_REFERRAL_FAQ_LEAVE_ANSWER"
+                    values={{
+                        leaveProgram: chunks => (
+                            <TextButton
+                                isUnderlined
+                                intent="neutral"
+                                size="small"
+                                data-testid="@referral/leave"
+                                onClick={leaveModal.openModal}
+                            >
+                                {chunks}
+                            </TextButton>
+                        ),
+                    }}
+                />
+            ),
+            visibility: 'after',
+        },
+    ];
     const faqItems = referralFAQs.filter(
         faq => faq.visibility === 'both' || faq.visibility === (isJoined ? 'after' : 'before'),
     );
@@ -296,11 +331,8 @@ export const ReferAFriend = () => {
                     </Collapsible.Toggle>
                     <Collapsible.Content>
                         <Column hasDivider dividerColor="surfaceBorderSunken">
-                            {faqItems.map(({ question, answer }) => (
-                                <Collapsible
-                                    key={question}
-                                    data-testid={`@referral/faq/${question}`}
-                                >
+                            {faqItems.map(({ question, questionValues, answer }) => (
+                                <Collapsible key={question}>
                                     <Column>
                                         <Collapsible.Toggle>
                                             <Row
@@ -311,7 +343,7 @@ export const ReferAFriend = () => {
                                                 <Text typographyStyle="body-sm">
                                                     <Translation
                                                         id={question}
-                                                        values={translationValues}
+                                                        values={questionValues}
                                                     />
                                                 </Text>
                                                 <Collapsible.ToggleIcon
@@ -327,23 +359,7 @@ export const ReferAFriend = () => {
                                                 priority="secondary"
                                                 padding={{ bottom: 16, horizontal: 20 }}
                                             >
-                                                <Translation
-                                                    id={answer}
-                                                    values={{
-                                                        ...translationValues,
-                                                        leaveProgram: chunks => (
-                                                            <TextButton
-                                                                isUnderlined
-                                                                intent="neutral"
-                                                                size="small"
-                                                                data-testid="@referral/leave"
-                                                                onClick={leaveModal.openModal}
-                                                            >
-                                                                {chunks}
-                                                            </TextButton>
-                                                        ),
-                                                    }}
-                                                />
+                                                {answer}
                                             </Paragraph>
                                         </Collapsible.Content>
                                     </Column>
