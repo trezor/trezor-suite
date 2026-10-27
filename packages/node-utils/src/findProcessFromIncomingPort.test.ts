@@ -124,6 +124,7 @@ describe('findProcessFromIncomingPort for an accepted connection', () => {
         });
 
         expect(processInfo?.pid).toBe('300');
+        expect(processInfo?.warning).toBe(false);
     });
 
     test('matches a connection over IPv6 loopback', async () => {
@@ -148,9 +149,7 @@ describe('findProcessFromIncomingPort for an accepted connection', () => {
         expect(processInfo?.pid).toBe('300');
     });
 
-    // Documents the current behaviour: an empty `/proc/<pid>/cmdline` yields a blank path and
-    // no `warning`, so the popup presents such a caller with the neutral, verified-looking badge.
-    test('does not warn about a Linux caller whose /proc/<pid>/cmdline reads empty', async () => {
+    test('warns about a Linux caller whose /proc/<pid>/cmdline reads empty', async () => {
         setPlatform('linux');
         mockCommands([
             [
@@ -167,6 +166,7 @@ describe('findProcessFromIncomingPort for an accepted connection', () => {
             name: 'client',
             pid: '300',
             fullPath: '',
+            warning: true,
         });
     });
 

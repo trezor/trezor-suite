@@ -130,7 +130,15 @@ export async function findProcessFromIncomingPort(
                     const trimmedFullPath = fullPath.trim();
                     // Binaries can be all over the place on Linux, so we don't check the path
 
-                    return { name: sanitizedName, pid, fullPath: trimmedFullPath };
+                    return {
+                        name: sanitizedName,
+                        pid,
+                        fullPath: trimmedFullPath,
+                        // An empty `/proc/<pid>/cmdline` identifies nothing, so the caller cannot
+                        // be vouched for — show a warning, same as a binary in an unusual
+                        // location on darwin and win32.
+                        warning: trimmedFullPath === '',
+                    };
                 }
             }
 
