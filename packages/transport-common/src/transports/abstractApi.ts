@@ -199,11 +199,17 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                     return error({ code: releaseIntentResponse.error.code });
                 }
 
-                await this.api.closeDevice(releaseIntentResponse.payload.path, { channel: 'read' });
-
-                await this.sessionsClient.releaseDone({
-                    path: releaseIntentResponse.payload.path,
-                });
+                try {
+                    await this.api.closeDevice(releaseIntentResponse.payload.path, {
+                        channel: 'read',
+                    });
+                } finally {
+                    // always reached, even when closeDevice failed, so the lock
+                    // taken by releaseIntent is freed
+                    await this.sessionsClient.releaseDone({
+                        path: releaseIntentResponse.payload.path,
+                    });
+                }
 
                 return success(null);
             },
@@ -214,12 +220,22 @@ export abstract class AbstractApiTransport extends AbstractTransport {
     public releaseSync(session: Session) {
         // fire-and-forget variant of release(); releaseDone must still run,
         // otherwise the lock taken by releaseIntent is never freed
-        this.sessionsClient.releaseIntent({ session }).then(async res => {
-            if (res.success) {
-                await this.api.closeDevice(res.payload.path, { channel: 'read' });
-                await this.sessionsClient.releaseDone({ path: res.payload.path });
-            }
-        });
+        this.sessionsClient
+            .releaseIntent({ session })
+            .then(async res => {
+                if (!res.success) return;
+
+                try {
+                    await this.api.closeDevice(res.payload.path, { channel: 'read' });
+                } finally {
+                    // always reached, even when closeDevice failed, so the lock
+                    // taken by releaseIntent is freed
+                    await this.sessionsClient.releaseDone({ path: res.payload.path });
+                }
+            })
+            // nobody awaits this chain, an unhandled rejection could take down
+            // the bridge worker
+            .catch(err => this.logger?.error(this.name, 'releaseSync error: ', err));
     }
 
     public call({
