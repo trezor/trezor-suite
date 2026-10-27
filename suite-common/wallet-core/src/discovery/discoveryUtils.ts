@@ -6,6 +6,11 @@ import { type CreateAccountActionProps } from '../accounts/accountsActions';
 
 export const UNKNOWN_ERROR_CODE = 'Failure_UnknownCode';
 
+const CANCELLATION_ERROR_CODES = ['Method_Cancel', 'Failure_ActionCancelled'];
+
+export const isCancellationErrorCode = (code: string | undefined): boolean =>
+    code !== undefined && CANCELLATION_ERROR_CODES.includes(code);
+
 export const getDiscoveryOutcome = (
     discovery: DiscoveryStatus | undefined,
 ): DiscoveryOutcome | undefined => {

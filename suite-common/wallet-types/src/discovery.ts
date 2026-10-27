@@ -25,6 +25,7 @@ type CommonDiscoveryStatus = {
     startTimestamp?: number;
     passphraseSubmitted?: boolean;
     useScopedCallIds?: boolean;
+    callId?: string;
 };
 
 export type DiscoveryStatus = CommonDiscoveryStatus &

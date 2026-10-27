@@ -37,6 +37,7 @@ export const deleteDiscovery = createAction(
 
 type StartDiscoveryParams = {
     trigger: DiscoveryTrigger;
+    callId?: string;
     isAddingHiddenWallet?: boolean;
     isAddingExistingWallet?: boolean;
     useScopedCallIds?: boolean;
@@ -48,6 +49,7 @@ export const startDiscovery = createAction(
         path: DeviceUniquePath,
         {
             trigger,
+            callId,
             isAddingHiddenWallet,
             isAddingExistingWallet,
             useScopedCallIds,
@@ -56,6 +58,7 @@ export const startDiscovery = createAction(
         payload: {
             path,
             trigger,
+            callId,
             isAddingHiddenWallet,
             isAddingExistingWallet,
             useScopedCallIds,
