@@ -1,3 +1,4 @@
+import { getLiquidityClue } from '@trezor/coinjoin-analysis';
 import { arrayPartition, arrayToDictionary } from '@trezor/utils';
 
 import { ROUND_SELECTION_MAX_OUTPUTS, ROUND_SELECTION_REGISTRATION_OFFSET } from '../../constants';
@@ -356,29 +357,26 @@ export const selectInputsForRound = async ({
                         return [];
                     }
 
-                    // ...finally call get liquidityClue and
-                    // try to select the best utxos combination for given Round
+                    const LiquidityClue = getLiquidityClue(
+                        account.rawLiquidityClue,
+                        roundParameters.MaxSuggestedAmount,
+                    );
+
+                    // ...finally try to select the best utxos combination for given Round
                     return middleware
-                        .getLiquidityClue(
-                            account.rawLiquidityClue,
-                            roundParameters.MaxSuggestedAmount,
-                            { baseUrl: options.middlewareUrl },
-                        )
-                        .then(LiquidityClue =>
-                            middleware.selectInputsForRound(
-                                {
-                                    ...roundConstants,
-                                    Utxos,
-                                    AnonScoreTarget: account.targetAnonymity,
-                                    LiquidityClue,
-                                    SemiPrivateThreshold: 2,
-                                    ConsolidationMode: false,
-                                },
-                                {
-                                    signal: options.signal,
-                                    baseUrl: options.middlewareUrl,
-                                },
-                            ),
+                        .selectInputsForRound(
+                            {
+                                ...roundConstants,
+                                Utxos,
+                                AnonScoreTarget: account.targetAnonymity,
+                                LiquidityClue,
+                                SemiPrivateThreshold: 2,
+                                ConsolidationMode: false,
+                            },
+                            {
+                                signal: options.signal,
+                                baseUrl: options.middlewareUrl,
+                            },
                         )
                         .then(indices => indices.filter(i => Utxos[i])) // filter valid existing indices
                         .catch(error => {

@@ -8,6 +8,7 @@
         { "path": "../blockchain-link" },
         { "path": "../blockchain-link-types" },
         { "path": "../blockchain-link-utils" },
+        { "path": "../coinjoin-analysis" },
         { "path": "../eslint" },
         { "path": "../logger" },
         { "path": "../type-utils" },

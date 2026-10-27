@@ -44,14 +44,7 @@ describe('transactionSigning', () => {
         server?.close();
     });
 
-    it('getTransactionData: coinjoin request and update-liquidity-clue', async () => {
-        server?.addListener('test-request', ({ url, data, resolve }) => {
-            if (url.endsWith('/update-liquidity-clue')) {
-                resolve({ RawLiquidityClue: data.ExternalAmounts[0] });
-            }
-            resolve();
-        });
-
+    it('getTransactionData: coinjoin request and locally updated liquidity clue', async () => {
         const response = await transactionSigning(
             createCoinjoinRound(
                 [
