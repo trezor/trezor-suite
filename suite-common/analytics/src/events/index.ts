@@ -1,3 +1,4 @@
+export { accountsDiscoveryResultEvent } from './accountsDiscoveryResultEvent';
 export { accountsInfoEvent } from './accountsInfoEvent';
 export { appCopyToClipboardEvent } from './appCopyToClipboardEvent';
 export { appExternalLinkEvent } from './appExternalLinkEvent';
