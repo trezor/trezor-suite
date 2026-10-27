@@ -42,6 +42,7 @@ export const PassphraseEmptyWalletScreen = () => {
             dispatch(
                 startDiscoveryThunk({
                     device,
+                    trigger: 'add-wallet',
                     isAddingHiddenWallet: true,
                     isAddingExistingWallet: false,
                 }),

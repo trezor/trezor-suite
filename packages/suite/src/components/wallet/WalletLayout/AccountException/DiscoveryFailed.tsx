@@ -16,7 +16,7 @@ export const DiscoveryFailed = () => {
     const { discovery } = useDiscovery();
     const description = discovery?.status === 'failed' ? discovery.error : undefined;
 
-    const handleClick = () => dispatch(startOrRestartDiscoveryThunk());
+    const handleClick = () => dispatch(startOrRestartDiscoveryThunk({ trigger: 'retry' }));
 
     return (
         <AccountExceptionLayout

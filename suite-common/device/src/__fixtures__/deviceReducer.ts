@@ -685,12 +685,7 @@ const selectDevice: Array<
             ...deviceReducerInitialState,
             devices: [SUITE_DEVICE],
         },
-        actions: [
-            {
-                type: deviceActions.selectDevice.type,
-                payload: SUITE_DEVICE,
-            },
-        ],
+        actions: [deviceActions.selectDevice(SUITE_DEVICE)],
         result: [
             {
                 features: {
@@ -711,12 +706,7 @@ const selectDevice: Array<
                 SUITE_DEVICE,
             ],
         },
-        actions: [
-            {
-                type: deviceActions.selectDevice.type,
-                payload: SUITE_DEVICE,
-            },
-        ],
+        actions: [deviceActions.selectDevice(SUITE_DEVICE)],
         result: [
             {
                 features: {
@@ -737,12 +727,7 @@ const selectDevice: Array<
             ...deviceReducerInitialState,
             devices: [SUITE_DEVICE, mockSuiteDevice({ instance: 1 })],
         },
-        actions: [
-            {
-                type: deviceActions.selectDevice.type,
-                payload: mockSuiteDevice({ instance: 1 }),
-            },
-        ],
+        actions: [deviceActions.selectDevice(mockSuiteDevice({ instance: 1 }))],
         result: [
             {
                 instance: undefined,
@@ -766,14 +751,8 @@ const selectDevice: Array<
             devices: [SUITE_DEVICE, mockSuiteDevice({ instance: 1 })],
         },
         actions: [
-            {
-                type: deviceActions.selectDevice.type,
-                payload: SUITE_DEVICE,
-            },
-            {
-                type: deviceActions.selectDevice.type,
-                payload: mockSuiteDevice({ instance: 1 }),
-            },
+            deviceActions.selectDevice(SUITE_DEVICE),
+            deviceActions.selectDevice(mockSuiteDevice({ instance: 1 })),
         ],
         result: [
             {
@@ -794,24 +773,14 @@ const selectDevice: Array<
     {
         description: `Select device (0 connected, 0 affected)`,
         initialState: deviceReducerInitialState,
-        actions: [
-            {
-                type: deviceActions.selectDevice.type,
-                payload: undefined,
-            },
-        ],
+        actions: [deviceActions.selectDevice(undefined)],
         result: [],
         ts: [],
     },
     {
         description: `Select device which doesn't exist in reducer`,
         initialState: deviceReducerInitialState,
-        actions: [
-            {
-                type: deviceActions.selectDevice.type,
-                payload: SUITE_DEVICE,
-            },
-        ],
+        actions: [deviceActions.selectDevice(SUITE_DEVICE)],
         result: [],
         ts: [],
     },

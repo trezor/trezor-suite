@@ -19,6 +19,9 @@
         {
             "path": "../../suite-common/wallet-core"
         },
+        {
+            "path": "../../suite-common/wallet-types"
+        },
         { "path": "../authenticity-checks" },
         { "path": "../locks" },
         { "path": "../router" },
@@ -29,9 +32,6 @@
         },
         {
             "path": "../../suite-common/test-utils"
-        },
-        {
-            "path": "../../suite-common/wallet-types"
         },
         { "path": "../settings" },
         {

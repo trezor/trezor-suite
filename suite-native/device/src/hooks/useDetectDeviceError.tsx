@@ -114,7 +114,12 @@ export const useDetectDeviceError = () => {
                         acquireDeviceThunk({ requestedDevice: selectedDevice }),
                     );
                     if (acquireResult.type === acquireDeviceThunk.fulfilled.type) {
-                        dispatch(startDiscoveryThunk({ device: selectedDevice }));
+                        dispatch(
+                            startDiscoveryThunk({
+                                device: selectedDevice,
+                                trigger: 'device-connect',
+                            }),
+                        );
                     }
                 },
                 testID: '@device/errors/alert/unacquired-device',

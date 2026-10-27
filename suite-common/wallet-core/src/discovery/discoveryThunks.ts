@@ -27,7 +27,11 @@ import {
 import { getNewInstanceNumber } from '@suite-common/suite-utils';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { type TrezorConnectBackendType, asNetworkSymbol } from '@suite-common/wallet-config';
-import { type DiscoveryStatus, type GetTradedAccountKeysDep } from '@suite-common/wallet-types';
+import {
+    type DiscoveryStatus,
+    type DiscoveryTrigger,
+    type GetTradedAccountKeysDep,
+} from '@suite-common/wallet-types';
 import TrezorConnect, {
     type AccountInfo,
     type DeviceState,
@@ -678,6 +682,7 @@ export const runDiscoveryThunk = createThunk<
 
 type StartDiscoveryThunkParams = {
     device: TrezorDevice;
+    trigger: DiscoveryTrigger;
     isAddingHiddenWallet?: boolean;
     isAddingExistingWallet?: boolean;
     useScopedCallIds?: boolean;
@@ -696,7 +701,7 @@ export const startDiscoveryThunk = createThunk<
 >(
     `${DISCOVERY_MODULE_PREFIX}/start`,
     (
-        { device, isAddingHiddenWallet, isAddingExistingWallet, useScopedCallIds },
+        { device, trigger, isAddingHiddenWallet, isAddingExistingWallet, useScopedCallIds },
         { dispatch, getState },
     ): void => {
         const currentDiscovery = selectDiscoveryByDevicePath(getState(), device.path);
@@ -711,6 +716,7 @@ export const startDiscoveryThunk = createThunk<
 
         dispatch(
             discoveryActions.startDiscovery(device.path, {
+                trigger,
                 isAddingHiddenWallet,
                 isAddingExistingWallet,
                 useScopedCallIds,
@@ -727,6 +733,11 @@ export const startDiscoveryThunk = createThunk<
     },
 );
 
+type RunAdditionalDiscoveryThunkParams = {
+    staticSessionId: StaticSessionId;
+    trigger: DiscoveryTrigger;
+};
+
 export type RunAdditionalDiscoveryThunkState = RunDiscoveryThunkState;
 
 export type RunAdditionalDiscoveryThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep> &
@@ -734,11 +745,11 @@ export type RunAdditionalDiscoveryThunkDeps = WithServices<AnalyticsDep & GetTra
 
 export const runAdditionalDiscoveryThunk = createThunk<
     void,
-    StaticSessionId,
+    RunAdditionalDiscoveryThunkParams,
     { state: RunAdditionalDiscoveryThunkState; extra: RunAdditionalDiscoveryThunkDeps }
 >(
     `${DISCOVERY_MODULE_PREFIX}/runAdditional`,
-    async (staticSessionId, { dispatch, getState }): Promise<void> => {
+    async ({ staticSessionId, trigger }, { dispatch, getState }): Promise<void> => {
         // todo: not now, but in the future, there could be more devices (wallets) sharing the same static session id, for example
         // an imported wallet + wallet on the physical device. So this should run for all the applicable devices/wallets
 
@@ -753,6 +764,7 @@ export const runAdditionalDiscoveryThunk = createThunk<
 
         dispatch(
             discoveryActions.startDiscovery(device.path, {
+                trigger,
                 isAddingHiddenWallet: false,
                 isAddingExistingWallet: false,
             }),
@@ -917,6 +929,10 @@ export const submitPassphraseThunk = createThunk<
     },
 );
 
+type StartOrRestartDiscoveryThunkParams = {
+    trigger: DiscoveryTrigger;
+};
+
 type StartOrRestartDiscoveryThunkState = RunDiscoveryThunkState;
 
 type StartOrRestartDiscoveryThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep> & {
@@ -928,15 +944,15 @@ type StartOrRestartDiscoveryThunkDeps = WithServices<AnalyticsDep & GetTradedAcc
  */
 export const startOrRestartDiscoveryThunk = createThunk<
     void,
-    void,
+    StartOrRestartDiscoveryThunkParams,
     { state: StartOrRestartDiscoveryThunkState; extra: StartOrRestartDiscoveryThunkDeps }
->(`${DISCOVERY_MODULE_PREFIX}/restart`, (_, { dispatch, getState }) => {
+>(`${DISCOVERY_MODULE_PREFIX}/restart`, ({ trigger }, { dispatch, getState }) => {
     const device = selectSelectedDevice(getState());
     if (!device) return;
     const staticSessionId = device.state?.staticSessionId;
     if (staticSessionId) {
         // we already have staticSessionId (=passphrase state), we probably failed during blockchain discovery
-        dispatch(runAdditionalDiscoveryThunk(staticSessionId));
+        dispatch(runAdditionalDiscoveryThunk({ staticSessionId, trigger }));
 
         return;
     }
@@ -945,6 +961,7 @@ export const startOrRestartDiscoveryThunk = createThunk<
     dispatch(
         startDiscoveryThunk({
             device,
+            trigger,
             isAddingExistingWallet: true,
             isAddingHiddenWallet: false,
         }),

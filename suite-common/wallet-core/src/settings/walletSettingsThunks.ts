@@ -2,6 +2,7 @@ import { type Dispatch } from '@reduxjs/toolkit';
 
 import { type NetworksRootState, selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type DiscoveryTrigger } from '@suite-common/wallet-types';
 import TrezorConnect, { PROTO } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { createThunk } from '@trezor/redux-utils';
@@ -27,6 +28,7 @@ export const changeCoinVisibilityThunk = createThunk<
     {
         symbol: NetworkSymbol;
         shouldBeVisible: boolean;
+        discoveryTrigger?: DiscoveryTrigger;
     },
     { state: ChangeCoinVisibilityThunkState }
 >(
