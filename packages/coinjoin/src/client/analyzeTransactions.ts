@@ -53,6 +53,9 @@ const getRawLiquidityClue = (
         .flatMap(vout => transformVinVout(vout, options.network))
         .filter(vout => !isInternal(vout))
         .map(o => Number(o.Value));
+    // A `joint` transaction only means that some input is foreign, so every output can still be
+    // the account's own; nothing foreign means nothing to infer about the others' liquidity.
+    if (externalAmounts.length === 0) return Promise.resolve(null);
 
     return middleware.initLiquidityClue(externalAmounts, {
         baseUrl: options.middlewareUrl,
