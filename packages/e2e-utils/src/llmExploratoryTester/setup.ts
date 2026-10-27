@@ -3,13 +3,15 @@ import { spawn } from 'node:child_process';
 import { existsSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 
+import { readJson } from '@trezor/node-utils';
+
 import { error, log } from '../logger';
 import {
     killHarnessBrowser,
     killHarnessBrowserOnExitSignals,
     writeBrowserState,
 } from './browserState';
-import { CONTEXT_FILE, REPO_ROOT, SETUP_READY_FILE, readJson } from './paths';
+import { CONTEXT_FILE, REPO_ROOT, SETUP_READY_FILE } from './paths';
 import { PrContextSchema } from './schemas';
 
 const SETUP_SPEC = 'llmExploratoryTester/llmExploratoryTesterSetup.test.ts';
