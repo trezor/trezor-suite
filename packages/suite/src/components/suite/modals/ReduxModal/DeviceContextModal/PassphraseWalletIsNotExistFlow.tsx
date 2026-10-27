@@ -1,6 +1,6 @@
 import { type TrezorDevice } from '@suite-common/suite-types';
 import {
-    cancelDiscoveryThunk,
+    cancelDiscoveryForRestartThunk,
     runPassphraseWalletAddingDiscoveryThunk,
     startAddWalletDiscoveryThunk,
 } from '@suite-common/wallet-core';
@@ -60,7 +60,7 @@ export const PassphraseWalletIsNotExistFlow = ({
                 submitting={discovery.passphraseSubmitted}
                 offerPassphraseOnDevice={offerPassphraseOnDevice}
                 onBack={() => {
-                    dispatch(cancelDiscoveryThunk(device));
+                    dispatch(cancelDiscoveryForRestartThunk(device));
                     // TODO: best practices flow should not be initiated along with discovery
                     dispatch(
                         startAddWalletDiscoveryThunk({

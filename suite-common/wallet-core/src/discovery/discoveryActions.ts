@@ -5,12 +5,23 @@ import { type DeviceUniquePath } from '@trezor/connect';
 
 export const DISCOVERY_MODULE_PREFIX = '@common/wallet-core/discovery';
 
+type UpdateDiscoveryMeta = {
+    isSilent?: boolean;
+};
+
 export const updateDiscovery = createAction(
     `${DISCOVERY_MODULE_PREFIX}/update`,
-    (status: DiscoveryStatus, path: DeviceUniquePath) => ({
+    (
+        status: DiscoveryStatus,
+        path: DeviceUniquePath,
+        { isSilent = false }: UpdateDiscoveryMeta = {},
+    ) => ({
         payload: {
             status,
             path,
+        },
+        meta: {
+            isSilent,
         },
     }),
 );
