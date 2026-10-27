@@ -4,11 +4,6 @@ import {
     createNoopSigner,
     partiallySignTransactionMessageWithSigners,
 } from '@solana/kit';
-import {
-    getDeactivateInstruction,
-    getDelegateStakeInstruction,
-    getWithdrawInstruction,
-} from '@solana-program/stake';
 
 import type { SolanaNetworkSymbol } from '@trezor/network-solana-types';
 import { serializeError } from '@trezor/utils';
@@ -49,9 +44,12 @@ import { createTransactionShim } from './shim';
 import {
     baseTx,
     createAccountWithSeedTx,
+    getDeactivateInstructionWithSysvars,
+    getDelegateStakeInstructionWithSysvars,
     getDelegations,
     getFeeSummary,
     getStakingParams,
+    getWithdrawInstructionWithSysvars,
     isCompilableTransactionMessage,
     isLockupInForce,
     isStake,
@@ -60,9 +58,6 @@ import {
     timestampInSec,
     toLamports,
 } from './stakingUtils';
-
-const STAKE_HISTORY_ACCOUNT = address('SysvarStakeHistory1111111111111111111111111');
-const STAKE_CONFIG_ACCOUNT = address('StakeConfig11111111111111111111111111111111');
 
 /** @see {@link file://./../../../../suite-common/wallet-core/src/staking/shared/stakingConstants.ts}  */
 const WALLET_SDK_SOURCE = '1';
@@ -128,11 +123,9 @@ export const stake = async ({
             initializeStakeAccountInstruction,
             stakeAccountPublicKey,
         ] = await createAccountWithSeedTx(address(sender), BigInt(lamports) + minimumRent, source);
-        const delegateInstruction = getDelegateStakeInstruction({
+        const delegateInstruction = getDelegateStakeInstructionWithSysvars({
             stake: stakeAccountPublicKey,
             vote: validator,
-            stakeHistory: STAKE_HISTORY_ACCOUNT,
-            unused: STAKE_CONFIG_ACCOUNT,
             stakeAuthority: createNoopSigner(address(sender)),
         });
 
@@ -301,7 +294,7 @@ export const unstake = async ({
                     )),
             );
 
-            const deactivateInstruction = getDeactivateInstruction({
+            const deactivateInstruction = getDeactivateInstructionWithSysvars({
                 stake: newStakeAccountPubkey,
                 stakeAuthority: createNoopSigner(address(sender)),
             });
@@ -313,7 +306,7 @@ export const unstake = async ({
         }
 
         accountsToDeactivate.forEach(acc => {
-            const deactivateInstruction = getDeactivateInstruction({
+            const deactivateInstruction = getDeactivateInstructionWithSysvars({
                 stake: acc.address,
                 stakeAuthority: createNoopSigner(address(sender)),
             });
@@ -374,10 +367,9 @@ export const claim = async ({
         let accountsForClaim = 0;
         for (const acc of deactivatedStakeAccounts) {
             // Create the withdraw instruction
-            const withdrawInstruction = getWithdrawInstruction({
+            const withdrawInstruction = getWithdrawInstructionWithSysvars({
                 stake: acc.address,
                 recipient: address(sender),
-                stakeHistory: STAKE_HISTORY_ACCOUNT,
                 withdrawAuthority: createNoopSigner(address(sender)),
                 args: acc.lamports,
             });
