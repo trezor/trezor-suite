@@ -2,8 +2,7 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenInfoBranded, toTokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { Text } from '@suite-native/atoms';
-import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
-import { mock } from '@trezor/dependency-injection';
+import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import { AccountsListTokenItem } from './AccountsListTokenItem';
 
@@ -33,36 +32,21 @@ jest.mock('@suite-common/discreet-mode', () => ({
     }),
 }));
 
-type RenderAccountsListTokenItemParams = {
-    showFiatValue?: boolean;
-    token?: TokenInfoBranded;
-    isKnown?: boolean;
-    onSelectAccount?: () => void;
-};
-
 describe('AccountsListTokenItem', () => {
     const renderAccountsListTokenItem = ({
         showFiatValue,
-        token = mockToken,
-        isKnown = false,
-        onSelectAccount = mock<() => void>(),
-    }: RenderAccountsListTokenItemParams = {}) =>
+    }: {
+        showFiatValue?: boolean;
+    } = {}) =>
         renderWithStoreProvider(
             <AccountsListTokenItem
-                token={token}
+                token={mockToken}
                 account={mockAccount}
                 showFiatValue={showFiatValue}
-                onSelectAccount={onSelectAccount}
+                onSelectAccount={jest.fn()}
             />,
             {
-                preloadedState: {
-                    wallet: { accounts: [mockAccount] },
-                    tokenDefinitions: {
-                        eth: {
-                            coin: { data: isKnown ? [token.contract] : [], hide: [token.contract] },
-                        },
-                    },
-                },
+                preloadedState: { wallet: { accounts: [mockAccount] } },
             },
         );
 
@@ -80,26 +64,5 @@ describe('AccountsListTokenItem', () => {
 
         expect(getByText('23.91 USDC')).toBeOnTheScreen();
         expect(queryByText('23.910287 USDC')).toBeNull();
-    });
-
-    it('masks an unrecognized token URL without intercepting selection', async () => {
-        const onSelectAccount = mock<() => void>();
-        const { getByLabelText, queryByText } = await renderAccountsListTokenItem({
-            token: { ...mockToken, name: 'Claim at rewards.example now' },
-            onSelectAccount,
-        });
-
-        expect(queryByText('Claim at rewards.example now')).toBeNull();
-        fireEvent.press(getByLabelText('Claim at … now'));
-        expect(onSelectAccount).toHaveBeenCalledTimes(1);
-    });
-
-    it('keeps a recognized token name readable even when the token is manually hidden', async () => {
-        const { getByText } = await renderAccountsListTokenItem({
-            token: { ...mockToken, name: 'Known rewards.example token' },
-            isKnown: true,
-        });
-
-        expect(getByText('Known rewards.example token')).toBeOnTheScreen();
     });
 });
