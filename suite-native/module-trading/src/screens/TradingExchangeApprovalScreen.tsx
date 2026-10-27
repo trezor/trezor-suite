@@ -13,14 +13,13 @@ import { BannerInline, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     DynamicScreenHeader,
-    type RootStackParamList,
-    type RootStackRoutes,
     Screen,
     ScreenHeader,
-    type StackProps,
+    type TradingFlowStackRoutes,
     useNavigationRemoveActionInterceptor,
 } from '@suite-native/navigation';
 import { useExchangeAnalyticsStepReport } from '@suite-native/trading-analytics';
+import { type TradingFlowStackScreenProps } from '@suite-native/trading-types';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
@@ -29,10 +28,8 @@ import { ExchangeApprovalDetails } from '../components/exchange/Approval/Exchang
 import { useApprovalFlow } from '../hooks/exchange/Approval/useApprovalFlow';
 import { useEvmApprovalFees } from '../hooks/exchange/Approval/useEvmApprovalFees';
 
-type TradingExchangeApprovalScreenProps = StackProps<
-    RootStackParamList,
-    RootStackRoutes.TradingExchangeApproval
->;
+type TradingExchangeApprovalScreenProps =
+    TradingFlowStackScreenProps<TradingFlowStackRoutes.TradingExchangeApproval>;
 
 export const TradingExchangeApprovalScreen = ({
     route: { params },

@@ -17,14 +17,17 @@ import {
 } from '../../../test-utils/tradingTestUtils';
 
 const mockNavigate = jest.fn();
-const mockPopToTop = jest.fn();
+const mockCloseTradingFlow = jest.fn();
+
+jest.mock('../../../hooks/general/useCloseTradingFlow', () => ({
+    useCloseTradingFlow: () => mockCloseTradingFlow,
+}));
 const services: NativeAnalyticsDep = { analytics: mockNativeAnalytics() };
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
     useNavigation: () => ({
         navigate: mockNavigate,
-        popToTop: mockPopToTop,
     }),
 }));
 
@@ -118,7 +121,7 @@ describe('ExchangePreviewFooter', () => {
             getByText(getTranslation('moduleTrading.transactionSimulation.backToTradeForm')),
         );
 
-        expect(mockPopToTop).toHaveBeenCalledTimes(1);
+        expect(mockCloseTradingFlow).toHaveBeenCalledTimes(1);
         expect(mockNavigate).not.toHaveBeenCalled();
     });
 

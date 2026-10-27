@@ -139,7 +139,10 @@ describe('SellSendAssetPicker', () => {
 
         await userEvent.press(getByLabelText('Select asset'));
 
-        expect(mockNavigate).toHaveBeenCalledWith('TradingMyAsset', { tradingType: 'sell' });
+        expect(mockNavigate).toHaveBeenCalledWith('TradingFlowStack', {
+            screen: 'TradingMyAsset',
+            params: { tradingType: 'sell' },
+        });
     });
 
     it('should navigate to the my asset screen on base currency input press without an asset', async () => {
@@ -149,7 +152,10 @@ describe('SellSendAssetPicker', () => {
             getByLabelText(getTranslation('moduleTrading.tradingScreen.baseCurrencyAmountLabel')),
         );
 
-        expect(mockNavigate).toHaveBeenCalledWith('TradingMyAsset', { tradingType: 'sell' });
+        expect(mockNavigate).toHaveBeenCalledWith('TradingFlowStack', {
+            screen: 'TradingMyAsset',
+            params: { tradingType: 'sell' },
+        });
     });
 
     it('should select asset returned from the screen', async () => {

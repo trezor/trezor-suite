@@ -8,22 +8,16 @@ import { selectSendPrecomposedTx } from '@suite-common/wallet-core';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { Box, Button, ScreenFooterGradient } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import {
-    type RootStackParamList,
-    RootStackRoutes,
-    type StackNavigationProps,
-} from '@suite-native/navigation';
+import { TradingFlowStackRoutes } from '@suite-native/navigation';
 import { selectSellSelectedSendAccount } from '@suite-native/trading-state';
+import { type TradingFlowStackNavigationProp } from '@suite-native/trading-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 export type SellCompletionConfirmButtonProps = {
     quote: SellFiatTrade;
 };
 
-type NavigationProp = StackNavigationProps<
-    RootStackParamList,
-    RootStackRoutes.TradingSellCompletion
->;
+type NavigationProp = TradingFlowStackNavigationProp<TradingFlowStackRoutes.TradingSellCompletion>;
 
 const SELL_COMPLETION_CONFIRM_BUTTON_TEST_ID = '@trading/sell-completion/confirm-button';
 
@@ -54,7 +48,7 @@ export const SellCompletionConfirmButton = ({ quote }: SellCompletionConfirmButt
             ? (parseCryptoId(quote.cryptoCurrency)?.contractAddress as TokenAddress)
             : undefined;
 
-        navigation.navigate(RootStackRoutes.TradingSellTransactionReview, {
+        navigation.navigate(TradingFlowStackRoutes.TradingSellTransactionReview, {
             accountKey: fromAccount.key,
             tokenContract,
             orderId: quote.orderId ?? '',

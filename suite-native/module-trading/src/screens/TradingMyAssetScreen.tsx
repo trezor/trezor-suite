@@ -5,14 +5,13 @@ import { type Account } from '@suite-common/wallet-types';
 import { Translation } from '@suite-native/intl';
 import {
     AppTabsRoutes,
-    type RootStackParamList,
     RootStackRoutes,
     Screen,
     ScreenHeader,
-    type StackProps,
+    type TradingFlowStackRoutes,
     TradingStackRoutes,
 } from '@suite-native/navigation';
-import { type MyAsset } from '@suite-native/trading-types';
+import { type MyAsset, type TradingFlowStackScreenProps } from '@suite-native/trading-types';
 
 import { MyAssetList, type MyAssetListProps } from '../components/general/MyAssetList/MyAssetList';
 import { useMyAssetsFilteredData } from '../hooks/general/useMyAssetsFilteredData';
@@ -40,10 +39,8 @@ const TradingMyAssetList = ({ onAssetSelect, testID, tradingType }: TradingMyAss
     );
 };
 
-export type TradingMyAssetScreenProps = StackProps<
-    RootStackParamList,
-    RootStackRoutes.TradingMyAsset
->;
+export type TradingMyAssetScreenProps =
+    TradingFlowStackScreenProps<TradingFlowStackRoutes.TradingMyAsset>;
 
 export const TradingMyAssetScreen = ({ navigation, route }: TradingMyAssetScreenProps) => {
     const { tradingType } = route.params;

@@ -15,6 +15,7 @@ import {
     type RootStackParamList,
     RootStackRoutes,
     type StackToStackCompositeNavigationProps,
+    TradingFlowStackRoutes,
     type TradingStackParamList,
     type TradingStackRoutes,
 } from '@suite-native/navigation';
@@ -63,9 +64,12 @@ export const useBuyFlow = (form: BuyFormType) => {
     const selectReceiveAccount = () => {
         const selectedNetworkSymbol = getSymbolFromTradeableAsset(asset);
         if (selectedNetworkSymbol) {
-            navigation.navigate(RootStackRoutes.ReceiveAccounts, {
-                symbol: selectedNetworkSymbol,
-                tradingType: 'buy',
+            navigation.navigate(RootStackRoutes.TradingFlowStack, {
+                screen: TradingFlowStackRoutes.ReceiveAccounts,
+                params: {
+                    symbol: selectedNetworkSymbol,
+                    tradingType: 'buy',
+                },
             });
         }
     };
@@ -121,7 +125,10 @@ export const useBuyFlow = (form: BuyFormType) => {
                 quote: candidateQuote,
                 returnUrl,
                 loginRequest: formResponse => openBrowserForFormData(formResponse, returnUrl),
-                nextStep: () => navigation.navigate(RootStackRoutes.TradingBuyPreview),
+                nextStep: () =>
+                    navigation.navigate(RootStackRoutes.TradingFlowStack, {
+                        screen: TradingFlowStackRoutes.TradingBuyPreview,
+                    }),
             }),
         );
     };

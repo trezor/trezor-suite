@@ -152,8 +152,11 @@ describe('BuyTradeableAssetPicker', () => {
                 getByLabelText(getTranslation('moduleTrading.selectCoin.buttonTitle')),
             );
 
-            expect(mockNavigate).toHaveBeenCalledWith('TradingTradeableAsset', {
-                tradingType: 'buy',
+            expect(mockNavigate).toHaveBeenCalledWith('TradingFlowStack', {
+                screen: 'TradingTradeableAsset',
+                params: {
+                    tradingType: 'buy',
+                },
             });
         });
 
@@ -166,8 +169,11 @@ describe('BuyTradeableAssetPicker', () => {
                 ),
             );
 
-            expect(mockNavigate).toHaveBeenCalledWith('TradingTradeableAsset', {
-                tradingType: 'buy',
+            expect(mockNavigate).toHaveBeenCalledWith('TradingFlowStack', {
+                screen: 'TradingTradeableAsset',
+                params: {
+                    tradingType: 'buy',
+                },
             });
         });
 

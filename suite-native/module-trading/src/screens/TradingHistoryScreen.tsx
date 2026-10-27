@@ -3,21 +3,16 @@ import { useCallback } from 'react';
 import { useNavigation } from '@react-navigation/native';
 
 import { Translation } from '@suite-native/intl';
-import {
-    type RootStackParamList,
-    RootStackRoutes,
-    Screen,
-    ScreenHeader,
-    type StackNavigationProps,
-} from '@suite-native/navigation';
+import { Screen, ScreenHeader, TradingFlowStackRoutes } from '@suite-native/navigation';
 import { TradingHistory, TradingHistoryExportButton } from '@suite-native/trading-history';
+import { type TradingFlowStackNavigationProp } from '@suite-native/trading-types';
 
 export const TradingHistoryScreen = () => {
     const navigation =
-        useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.TradingHistory>>();
+        useNavigation<TradingFlowStackNavigationProp<TradingFlowStackRoutes.TradingHistory>>();
     const openTradeDetailScreen = useCallback(
         (orderId: string) => {
-            navigation.navigate(RootStackRoutes.TradingHistoryDetail, { orderId });
+            navigation.navigate(TradingFlowStackRoutes.TradingHistoryDetail, { orderId });
         },
         [navigation],
     );

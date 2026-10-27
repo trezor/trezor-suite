@@ -1,17 +1,12 @@
-import {
-    type RootStackParamList,
-    type RootStackRoutes,
-    type StackProps,
-} from '@suite-native/navigation';
+import { type TradingFlowStackRoutes } from '@suite-native/navigation';
 import { useSellAnalyticReportCallback } from '@suite-native/trading-analytics';
+import { type TradingFlowStackScreenProps } from '@suite-native/trading-types';
 
 import { TradingTransactionReview } from '../components/reviewOutputs/TradingTransactionReview';
 import { useSellFlow } from '../hooks/sell/useSellFlow';
 
-type TradingSellTransactionReviewScreenProps = StackProps<
-    RootStackParamList,
-    RootStackRoutes.TradingSellTransactionReview
->;
+type TradingSellTransactionReviewScreenProps =
+    TradingFlowStackScreenProps<TradingFlowStackRoutes.TradingSellTransactionReview>;
 
 export const TradingSellTransactionReviewScreen = ({
     route,

@@ -3,26 +3,23 @@ import { useCallback } from 'react';
 import { Translation } from '@suite-native/intl';
 import {
     AppTabsRoutes,
-    type RootStackParamList,
     RootStackRoutes,
     Screen,
     ScreenHeader,
-    type StackProps,
+    type TradingFlowStackRoutes,
     TradingStackRoutes,
 } from '@suite-native/navigation';
 import {
     selectBuyTradeableAssets,
     selectExchangeBuyTradeableAssets,
 } from '@suite-native/trading-state';
-import { type TradeableAsset } from '@suite-native/trading-types';
+import { type TradeableAsset, type TradingFlowStackScreenProps } from '@suite-native/trading-types';
 
 import { TradeableAssetList } from '../components/general/TradeableAssetList/TradeableAssetList';
 import { useTradingTradeableAssetsFilteredData } from '../hooks/general/useTradingTradeableAssetsFilteredData';
 
-export type TradingTradeableAssetScreenProps = StackProps<
-    RootStackParamList,
-    RootStackRoutes.TradingTradeableAsset
->;
+export type TradingTradeableAssetScreenProps =
+    TradingFlowStackScreenProps<TradingFlowStackRoutes.TradingTradeableAsset>;
 
 type TradeableAssetScreenListProps = {
     onAssetSelect: (asset: TradeableAsset) => void;

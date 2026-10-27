@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
 import type { BuyTradeResponse } from 'invity-api';
 
 import {
@@ -15,28 +14,17 @@ import {
 } from '@suite-common/trading';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
-import {
-    type RootStackParamList,
-    type StackToStackCompositeNavigationProps,
-    type TradingStackParamList,
-    type TradingStackRoutes,
-} from '@suite-native/navigation';
 import { buildTradingUrl, useBrowserAuth } from '@suite-native/trading-browser-auth';
 import { tradingActions } from '@suite-native/trading-state';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { getAnalyticsTradingBuyPayload } from '../../utils/buy/quotesUtils';
-
-type NavigationProps = StackToStackCompositeNavigationProps<
-    TradingStackParamList,
-    TradingStackRoutes.Trading,
-    RootStackParamList
->;
+import { useCloseTradingFlow } from '../general/useCloseTradingFlow';
 
 export const useBuyPreviewFlow = () => {
     const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
-    const navigation = useNavigation<NavigationProps>();
+    const closeTradingFlow = useCloseTradingFlow();
 
     const selectedQuote = useSelector(selectTradingBuySelectedQuote);
     const receiveAccountKey = useSelector(selectTradingBuyReceiveAccountKey);
@@ -76,7 +64,7 @@ export const useBuyPreviewFlow = () => {
         }
 
         dispatch(tradingActions.requestTradingFormReset('buy'));
-        navigation.popToTop();
+        closeTradingFlow();
         dispatch(tradingBuyActions.clearQuotesAndParams());
 
         if (response.trade.orderId) {

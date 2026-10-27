@@ -14,6 +14,7 @@ import {
     type RootStackParamList,
     RootStackRoutes,
     type StackToStackCompositeNavigationProps,
+    TradingFlowStackRoutes,
     type TradingStackParamList,
     type TradingStackRoutes,
 } from '@suite-native/navigation';
@@ -67,7 +68,9 @@ export const useSellSelectQuote = (form: SellFormType): SellSelectQuoteReturn =>
 
         const nextStep = () => {
             // bank account and txn handling will be done in the next step
-            navigation.navigate(RootStackRoutes.TradingSellPreview);
+            navigation.navigate(RootStackRoutes.TradingFlowStack, {
+                screen: TradingFlowStackRoutes.TradingSellPreview,
+            });
         };
 
         await dispatch(

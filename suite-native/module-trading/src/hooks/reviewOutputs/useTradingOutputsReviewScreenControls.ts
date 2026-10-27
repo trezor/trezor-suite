@@ -7,7 +7,7 @@ import { type TradingType, isSilentSendRejection } from '@suite-common/trading';
 import { sendFormActions } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { useConfirmOnTrezorController } from '@suite-native/confirm-on-trezor';
-import { RootStackRoutes } from '@suite-native/navigation';
+import { TradingFlowStackRoutes } from '@suite-native/navigation';
 import type {
     TradingExchangeAnalyticReportCallback,
     TradingSellAnalyticReportCallback,
@@ -24,6 +24,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { useTradingOutputsReviewErrorAlert } from './useTradingOutputsReviewErrorAlert';
 import { useTradingTxValidityTimer } from './useTradingTxValidityTimer';
+import { useCloseTradingFlow } from '../general/useCloseTradingFlow';
 import type {
     TradingTransactionSignAndSendProps,
     UseTradingTransactionReturnProps,
@@ -55,6 +56,7 @@ export const useTradingOutputsReviewScreenControls = ({
     const [isBroadcasting, setIsBroadcasting] = useState(false);
 
     const navigation = useNavigation<TradingOutputsReviewScreenNavigationProp>();
+    const closeTradingFlow = useCloseTradingFlow();
     const { dispatch } = useServices(injectDispatch);
 
     const { confirmOnTrezorRef, closeSheet, revealConfirmOnTrezorSheet } =
@@ -75,18 +77,18 @@ export const useTradingOutputsReviewScreenControls = ({
         resolveTransactionSendConsent(false);
         TrezorConnect.cancel('tx-cancelled');
         dispatch(tradingActions.requestTradingFormReset(tradingType));
-        navigation.popToTop();
+        closeTradingFlow();
         reportToAnalytics('sign-and-send', 'cancel');
-    }, [dispatch, navigation, reportToAnalytics, resolveTransactionSendConsent, tradingType]);
+    }, [closeTradingFlow, dispatch, reportToAnalytics, resolveTransactionSendConsent, tradingType]);
 
     useOutputsReviewBackInterceptor(onReviewCanceled);
 
     const nextStep: TradingTransactionSignAndSendProps['nextStep'] = useCallback(() => {
         dispatch(tradingActions.requestTradingFormReset(tradingType));
-        navigation.popToTop();
+        closeTradingFlow();
         reportToAnalytics('sign-and-send', 'continue');
         dispatch(tradingActions.setTradeOrderIdToBeOpened(orderId));
-    }, [dispatch, navigation, orderId, reportToAnalytics, tradingType]);
+    }, [closeTradingFlow, dispatch, orderId, reportToAnalytics, tradingType]);
 
     const startSigning = useCallback(() => {
         signingExecutedRef.current = true;
@@ -155,7 +157,7 @@ export const useTradingOutputsReviewScreenControls = ({
         setIsBroadcasting(false);
 
         if (isDexExchange) {
-            navigation.popTo(RootStackRoutes.TradingExchangePreview, {});
+            navigation.popTo(TradingFlowStackRoutes.TradingExchangePreview, {});
 
             return;
         }

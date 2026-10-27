@@ -12,14 +12,10 @@ import {
 } from '@suite-common/trading';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { type TxKeyPath } from '@suite-native/intl';
-import {
-    type ExchangeFlowType,
-    type RootStackParamList,
-    RootStackRoutes,
-    type StackNavigationProps,
-} from '@suite-native/navigation';
+import { type ExchangeFlowType, TradingFlowStackRoutes } from '@suite-native/navigation';
 import { buildTradingUrl, useBrowserAuth } from '@suite-native/trading-browser-auth';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
+import { type TradingFlowStackNavigationProp } from '@suite-native/trading-types';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
@@ -47,10 +43,9 @@ export type UseExchangeFlowProps = {
 export const useExchangeFlow = ({ flowType }: UseExchangeFlowProps = {}) => {
     const navigation =
         useNavigation<
-            StackNavigationProps<
-                RootStackParamList,
-                | RootStackRoutes.TradingExchangePreview
-                | RootStackRoutes.TradingExchangeTransactionReview
+            TradingFlowStackNavigationProp<
+                | TradingFlowStackRoutes.TradingExchangePreview
+                | TradingFlowStackRoutes.TradingExchangeTransactionReview
             >
         >();
     const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
@@ -71,7 +66,7 @@ export const useExchangeFlow = ({ flowType }: UseExchangeFlowProps = {}) => {
                     flowType === 'revoke' || flowType === 'revoke-and-approve'
                         ? flowType
                         : 'approve';
-                navigation.navigate(RootStackRoutes.TradingConfirming, {
+                navigation.navigate(TradingFlowStackRoutes.TradingConfirming, {
                     flowType: confirmingFlowType,
                 });
             }

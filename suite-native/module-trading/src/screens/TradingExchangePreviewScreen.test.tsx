@@ -8,7 +8,7 @@ import { asAccountDescriptor } from '@suite-common/wallet-types';
 import { type NativeAnalyticsDep, events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
-import { type RootStackParamList, RootStackRoutes } from '@suite-native/navigation';
+import { type TradingFlowStackParamList, TradingFlowStackRoutes } from '@suite-native/navigation';
 import { act, renderWithStoreProvider, userEvent, waitFor } from '@suite-native/test-utils-store';
 import {
     createPrecomposedTxFinal,
@@ -51,13 +51,12 @@ jest.mock('@react-navigation/native', () => ({
     },
     useNavigation: () => ({
         navigate: jest.fn(),
-        popToTop: jest.fn(),
         setOptions: jest.fn(),
     }),
     useRoute: () =>
         ({
             params: {},
-        }) as RouteProp<RootStackParamList, RootStackRoutes.TradingExchangePreview>,
+        }) as RouteProp<TradingFlowStackParamList, TradingFlowStackRoutes.TradingExchangePreview>,
 }));
 
 const mockConfirmTrade = jest.fn().mockResolvedValue(Promise.resolve());
@@ -111,7 +110,11 @@ jest.mock('@suite-native/alerts', () => ({
     }),
 }));
 
-const mockPopToTop = jest.fn();
+const mockCloseTradingFlow = jest.fn();
+
+jest.mock('../hooks/general/useCloseTradingFlow', () => ({
+    useCloseTradingFlow: () => mockCloseTradingFlow,
+}));
 const mockNavigate = jest.fn();
 
 const createStore = (quote?: ExchangeTrade) =>
@@ -143,7 +146,6 @@ const createStore = (quote?: ExchangeTrade) =>
 const createNavigationProps = () =>
     ({
         navigate: mockNavigate,
-        popToTop: mockPopToTop,
     }) as unknown as TradingExchangePreviewScreenProps['navigation'];
 
 const createRouteProps = (isApproved: boolean = false) =>
@@ -310,7 +312,7 @@ describe('TradingExchangePreviewScreen', () => {
 
             cancelFunction();
 
-            expect(mockPopToTop).toHaveBeenCalledTimes(1);
+            expect(mockCloseTradingFlow).toHaveBeenCalledTimes(1);
             expect(reportMock).toHaveBeenCalledWith({
                 type: events.tradingExchangeEvent.name,
                 payload: expect.objectContaining({
@@ -549,7 +551,10 @@ describe('TradingExchangePreviewScreen', () => {
             await waitFor(() => {
                 expect(mockNavigate).toHaveBeenCalledTimes(1);
             });
-            expect(mockNavigate).toHaveBeenCalledWith(RootStackRoutes.TradingExchangeApproval, {});
+            expect(mockNavigate).toHaveBeenCalledWith(
+                TradingFlowStackRoutes.TradingExchangeApproval,
+                {},
+            );
         });
     });
 

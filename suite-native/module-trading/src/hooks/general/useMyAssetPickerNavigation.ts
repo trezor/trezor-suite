@@ -9,13 +9,16 @@ import {
     type RootStackParamList,
     RootStackRoutes,
     type StackToStackCompositeNavigationProps,
+    type TradingFlowStackParamList,
+    TradingFlowStackRoutes,
     type TradingStackParamList,
     type TradingStackRoutes,
 } from '@suite-native/navigation';
 import { type SectionListData, coinInfoToTradeableAsset } from '@suite-native/trading-atoms';
 import { type MyAsset, type TradeableAsset } from '@suite-native/trading-types';
 
-type MyAssetPickerTradingType = RootStackParamList[RootStackRoutes.TradingMyAsset]['tradingType'];
+type MyAssetPickerTradingType =
+    TradingFlowStackParamList[TradingFlowStackRoutes.TradingMyAsset]['tradingType'];
 
 type UseMyAssetPickerNavigationProps = {
     assets: SectionListData<MyAsset, Account>;
@@ -90,7 +93,11 @@ export const useMyAssetPickerNavigation = ({
     ]);
 
     return useCallback(
-        () => navigation.navigate(RootStackRoutes.TradingMyAsset, { tradingType }),
+        () =>
+            navigation.navigate(RootStackRoutes.TradingFlowStack, {
+                screen: TradingFlowStackRoutes.TradingMyAsset,
+                params: { tradingType },
+            }),
         [navigation, tradingType],
     );
 };
