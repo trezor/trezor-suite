@@ -13,10 +13,9 @@ import {
     type DeviceUniquePath,
     type Features,
     type KnownDevice,
-    type StaticSessionId,
 } from '@trezor/connect';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
-import { parseStaticSessionId } from '@trezor/device-utils';
+import { isSameWallet, isStaticSessionId } from '@trezor/device-utils';
 import {
     type ActionTypesDep,
     type ReducersDep,
@@ -77,16 +76,15 @@ const isUnlocked = (features: Features): boolean =>
 const getIsWalletAvailable = (useEmptyPassphrase: boolean | undefined, features: Features) =>
     !!useEmptyPassphrase || !!features.passphrase_protection;
 
-// The instance is ignored, the same wallet can be referenced through a different one after a reconnect.
-const isSameWallet = (first: StaticSessionId, second: StaticSessionId) => {
-    const firstParts = parseStaticSessionId(first);
-    const secondParts = parseStaticSessionId(second);
-
-    return (
-        firstParts.walletDescriptor === secondParts.walletDescriptor &&
-        firstParts.deviceId === secondParts.deviceId
-    );
-};
+// Two states describe the same wallet when their `walletDescriptor` matches. The `deviceId` may
+// differ for the same wallet: wiping and recovering the same seed mints a new hardware `device_id`
+// while the seed, and therefore the wallet, is unchanged. Plain equality comes first so states
+// that carry no `staticSessionId` still count as the same wallet, as they did before.
+const describesSameWallet = (current: DeviceState, upcoming: DeviceState): boolean =>
+    current.staticSessionId === upcoming.staticSessionId ||
+    (isStaticSessionId(current.staticSessionId) &&
+        isStaticSessionId(upcoming.staticSessionId) &&
+        isSameWallet(current.staticSessionId, upcoming.staticSessionId));
 
 /**
  * Local utility: get state in DeviceState format from AcquiredDevice in backwards compatible way
@@ -99,14 +97,12 @@ const mergeDeviceState = (
 ): DeviceState | undefined => {
     const currentState = device.state;
 
-    // Device state is set explicitly via addAuthorizedDevice/setDeviceState. For the same session we only
+    // Device state is set explicitly via addAuthorizedDevice/setDeviceState. For the same wallet we only
     // sync the volatile sessionId and deriveCardano from connect, so the cardano-derived session is not
-    // recreated (re-prompting the passphrase) on every cardano call.
-    if (
-        !currentState ||
-        !upcoming.state ||
-        currentState.staticSessionId !== upcoming.state.staticSessionId
-    ) {
+    // recreated (re-prompting the passphrase) on every cardano call. The staticSessionId itself is never
+    // adopted here: the wallet stays keyed by the id it was authorized with, even when connect reports
+    // a new deviceId after the device was wiped and recovered with the same seed.
+    if (!currentState || !upcoming.state || !describesSameWallet(currentState, upcoming.state)) {
         return currentState;
     }
 

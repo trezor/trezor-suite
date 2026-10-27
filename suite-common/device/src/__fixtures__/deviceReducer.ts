@@ -711,10 +711,7 @@ const changed: Fixture<ReturnType<typeof deviceActions.deviceChanged>>[] = [
         ],
     },
     {
-        // Documents the bug: the fresh sessionId from connect is dropped because the whole
-        // staticSessionId string is compared, so the stale one keeps being re-sent and a hidden
-        // wallet re-prompts the passphrase on every call.
-        description: `Drop the sessionId when the same wallet is reported with a new device_id (device wiped and recovered with the same seed)`,
+        description: `Keep the wallet key but sync sessionId when the same wallet is reported with a new device_id (device wiped and recovered with the same seed)`,
         initialState: {
             ...deviceReducerInitialState,
             devices: [
@@ -746,7 +743,7 @@ const changed: Fixture<ReturnType<typeof deviceActions.deviceChanged>>[] = [
         result: [
             {
                 id: 'new-device-id',
-                state: { staticSessionId: '1stTestnet@device_id:0', sessionId: 'stale-session' },
+                state: { staticSessionId: '1stTestnet@device_id:0', sessionId: 'fresh-session' },
             },
         ],
     },
