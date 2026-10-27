@@ -3,7 +3,7 @@ import type { AliceConfirmationInterval, AliceShape } from '../../types/alice';
 import type { CoinjoinRoundOptions, CoinjoinRoundShape } from '../../types/round';
 import { readTimeSpan } from '../../utils/roundUtils';
 import * as coordinator from '../coordinator';
-import * as middleware from '../middleware';
+import * as credentials from '../credentials';
 
 /**
  * usage in RoundPhase: 0, InputRegistration
@@ -35,25 +35,22 @@ const confirmInput = async (
         return input;
     }
 
-    const { signal, coordinatorUrl, middlewareUrl, logger } = options;
+    const { signal, coordinatorUrl, logger } = options;
+    const { roundParameters } = round;
 
-    const zeroAmountCredentials = await middleware.getZeroCredentials(
+    const zeroAmountCredentials = credentials.getZeroCredentials(
         round.amountCredentialIssuerParameters,
-        {
-            signal,
-            baseUrl: middlewareUrl,
-        },
+        roundParameters.MaxAmountCredentialValue,
     );
-    const zeroVsizeCredentials = await middleware.getZeroCredentials(
+    await credentials.yieldToEventLoop();
+    const zeroVsizeCredentials = credentials.getZeroCredentials(
         round.vsizeCredentialIssuerParameters,
-        {
-            signal,
-            baseUrl: middlewareUrl,
-        },
+        roundParameters.MaxVsizeAllocationPerAlice,
     );
+    await credentials.yieldToEventLoop();
 
     const deadline =
-        round.phaseDeadline + readTimeSpan(round.roundParameters.ConnectionConfirmationTimeout);
+        round.phaseDeadline + readTimeSpan(roundParameters.ConnectionConfirmationTimeout);
 
     logger.info(
         `Confirming ~~${input.outpoint}~~ to ~~${round.id}~~ phase ${round.phase} with delay ${delay}ms and deadline ${deadline}`,
@@ -76,17 +73,18 @@ const confirmInput = async (
         return input;
     }
 
-    const confirmedAmountCredentials = await middleware.getCredentials(
+    // NOTE: post processing is intentionally not interruptible (should not be aborted)
+    const confirmedAmountCredentials = credentials.getCredentials(
         round.amountCredentialIssuerParameters,
+        roundParameters.MaxAmountCredentialValue,
         confirmationData.RealAmountCredentials,
         input.realAmountCredentials.CredentialsResponseValidation,
-        { baseUrl: middlewareUrl }, // NOTE: post processing intentionally without abort signal (should not be aborted)
     );
-    const confirmedVsizeCredentials = await middleware.getCredentials(
+    const confirmedVsizeCredentials = credentials.getCredentials(
         round.vsizeCredentialIssuerParameters,
+        roundParameters.MaxVsizeAllocationPerAlice,
         confirmationData.RealVsizeCredentials,
         input.realVsizeCredentials.CredentialsResponseValidation,
-        { baseUrl: middlewareUrl }, // NOTE: post processing intentionally without abort signal (should not be aborted)
     );
 
     logger.info(`Confirmed ~~${input.outpoint}~~ in ~~${round.id}~~`);

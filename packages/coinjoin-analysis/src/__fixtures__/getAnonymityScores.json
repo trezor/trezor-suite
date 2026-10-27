@@ -1,0 +1,111 @@
+[
+    {
+        "Name": "",
+        "Request": {
+            "Transactions": [
+                {
+                    "InternalInputs": [],
+                    "ExternalInputs": [
+                        {
+                            "ScriptPubKey": "76a914343f14545ae181898cced42a280e25cc20f7972c88ac",
+                            "Value": 4979995320
+                        }
+                    ],
+                    "InternalOutputs": [
+                        {
+                            "Address": "bcrt1p0hghqgks9z83pwh3a3jzq3eldgzj8ezjrs247szks3w2nq7s7fhsqtqgg7",
+                            "Value": 1000000000
+                        }
+                    ],
+                    "ExternalOutputs": [
+                        {
+                            "ScriptPubKey": "76a914d51d49df61c406305f14cae176e0e05f200d40b288ac",
+                            "Value": 3979990640
+                        }
+                    ]
+                },
+                {
+                    "InternalInputs": [],
+                    "ExternalInputs": [
+                        {
+                            "ScriptPubKey": "76a9143833d325bfc715ec1e902e75456265c0f7d2e41988ac",
+                            "Value": 5000000000
+                        }
+                    ],
+                    "InternalOutputs": [
+                        {
+                            "Address": "bcrt1p0hghqgks9z83pwh3a3jzq3eldgzj8ezjrs247szks3w2nq7s7fhsqtqgg7",
+                            "Value": 20000000
+                        }
+                    ],
+                    "ExternalOutputs": [
+                        {
+                            "ScriptPubKey": "76a914343f14545ae181898cced42a280e25cc20f7972c88ac",
+                            "Value": 4979995320
+                        }
+                    ]
+                }
+            ]
+        },
+        "ExpectedStatusCode": 200,
+        "ExpectedResponse": {
+            "Results": [
+                {
+                    "Address": "bcrt1p0hghqgks9z83pwh3a3jzq3eldgzj8ezjrs247szks3w2nq7s7fhsqtqgg7",
+                    "AnonymitySet": 1.0
+                }
+            ]
+        }
+    },
+    {
+        "Name": "",
+        "Request": {
+            "Transactions": [
+                {
+                    "InternalInputs": [
+                        {
+                            "Address": "bcrt1p0hghqgks9z83pwh3a3jzq3eldgzj8ezjrs247szks3w2nq7s7fhsqtqgg7",
+                            "Value": 20000000
+                        }
+                    ],
+                    "ExternalInputs": [],
+                    "InternalOutputs": [],
+                    "ExternalOutputs": []
+                }
+            ]
+        },
+        "ExpectedStatusCode": 500,
+        "ExpectedResponse": {
+            "Description": "There is an internal input that references a non-existing transaction."
+        }
+    },
+    {
+        "Name": "",
+        "Request": {},
+        "ExpectedStatusCode": 500,
+        "ExpectedResponse": {
+            "Description": "The Transactions field is required."
+        }
+    },
+    {
+        "Name": "",
+        "Request": {
+            "Transactions": [
+                {
+                    "InternalInputs": [
+                        {
+                            "Value": ""
+                        }
+                    ],
+                    "ExternalInputs": [],
+                    "InternalOutputs": [],
+                    "ExternalOutputs": []
+                }
+            ]
+        },
+        "ExpectedStatusCode": 500,
+        "ExpectedResponse": {
+            "Description": "Unable to cast object of type 'System.String' to type 'System.Nullable`1[System.Int64]'."
+        }
+    }
+]

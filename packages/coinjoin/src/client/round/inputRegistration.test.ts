@@ -1,5 +1,5 @@
 import { inputRegistration } from './inputRegistration';
-import { createServer } from '../../../mocks/server';
+import { createServer, getDefaultResponse, resetMockCoordinator } from '../../../mocks/server';
 import { createInput } from '../../__fixtures__/input.fixture';
 import { createCoinjoinRound } from '../../__fixtures__/round.fixture';
 
@@ -23,6 +23,9 @@ describe('inputRegistration', () => {
 
     afterEach(() => {
         server?.removeAllListeners('test-request');
+        // The mock coordinator's credential issuer is stateful (serial numbers, balance),
+        // so each test gets a fresh round.
+        resetMockCoordinator();
     });
 
     afterAll(() => {
@@ -74,19 +77,12 @@ describe('inputRegistration', () => {
                 url.endsWith('/input-registration') &&
                 (data.Input === 'A1' || data.Input === 'B1')
             ) {
-                // first input from each account is remixed (no coordinator fee)
+                // first input from each account is remixed (no coordinator fee).
+                // The issued credentials still have to be real, otherwise the client
+                // rejects them.
                 resolve({
-                    AliceId: data.input,
+                    ...getDefaultResponse('input-registration', data),
                     IsPayingZeroCoordinationFee: true,
-                });
-            }
-            if (url.endsWith('/get-real-credential-requests')) {
-                resolve({
-                    RealCredentialRequests: {
-                        CredentialsRequest: {
-                            Delta: data.AmountsToRequest[0],
-                        },
-                    },
                 });
             }
             resolve();
@@ -237,10 +233,22 @@ describe('inputRegistration', () => {
         });
     });
 
-    it('error in middleware after successful registration (input should be unregistered while still can)', async () => {
-        server?.addListener('test-request', ({ url, resolve, reject }) => {
-            if (url.endsWith('/get-real-credential-requests')) {
-                reject(500, { error: 'ExpectedRuntimeError' });
+    it('credentials the coordinator could not have issued are rejected after a successful registration (input should be unregistered while still can)', async () => {
+        // The coordinator registers the input and then answers with an issuer-parameters
+        // proof that does not verify. The client must refuse the credentials rather than
+        // go on to present them, and the input must end up excluded from the round.
+        server?.addListener('test-request', ({ url, data, resolve }) => {
+            if (url.endsWith('/input-registration')) {
+                const registration = getDefaultResponse('input-registration', data) as {
+                    AmountCredentials: { Proofs: { Responses: string[] }[] };
+                };
+                const [firstProof] = registration.AmountCredentials.Proofs;
+                // change one response scalar; the last hex digit always moves
+                const response = firstProof!.Responses[0] as string;
+                firstProof!.Responses[0] = `${response.slice(0, -1)}${
+                    response.slice(-1) === '1' ? '2' : '1'
+                }`;
+                resolve(registration);
             }
             resolve();
         });
@@ -256,7 +264,7 @@ describe('inputRegistration', () => {
         // @ts-expect-error: indexing with noUncheckedIndexedAccess
         const firstInput: (typeof inputs)[number] = inputs[0];
         expect(firstInput.registrationData).toMatchObject({ AliceId: expect.any(String) });
-        expect(firstInput.error?.message).toMatch(/ExpectedRuntimeError/);
+        expect(firstInput.error?.message).toMatch(/ClientReceivedInvalidProofs/);
     });
 
     it('success. using connection-confirmation interval', async () => {

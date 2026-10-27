@@ -98,9 +98,6 @@
                  androidEnv.androidSdk
                ] ++ androidEnv.extraPackages;
 
-              NIX_PATCHELF_LIBRARY_PATH = "${pkgs.openssl.out}/lib:${pkgs.zlib}/lib:${pkgs.gcc.cc.lib}/lib";
-              NIX_CC = "${pkgs.gcc}";
-
               shellHook = commonShellHook
                 + androidEnv.nixLdHook
                 + androidEnv.shellHook;
@@ -109,17 +106,12 @@
             rustShell = pkgs.mkShell {
               buildInputs = commonBuildInputs ++ rustEnv.extraPackages;
 
-              NIX_PATCHELF_LIBRARY_PATH = "${pkgs.openssl.out}/lib:${pkgs.zlib}/lib:${pkgs.gcc.cc.lib}/lib";
-              NIX_CC = "${pkgs.gcc}";
-
               shellHook = commonShellHook;
             };
           in
           {
             default = pkgs.mkShell {
               buildInputs = commonBuildInputs;
-              NIX_PATCHELF_LIBRARY_PATH = "${pkgs.openssl.out}/lib:${pkgs.zlib}/lib:${pkgs.gcc.cc.lib}/lib";
-              NIX_CC = "${pkgs.gcc}";
               shellHook = commonShellHook;
             };
 
