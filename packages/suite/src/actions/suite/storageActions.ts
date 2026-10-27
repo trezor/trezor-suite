@@ -45,7 +45,11 @@ import {
     type TokenManagementAction,
     selectTokenDefinitions,
 } from '@suite-common/token-definitions';
-import type { TradingTransaction } from '@suite-common/trading';
+import {
+    type TradingRootState,
+    type TradingTransaction,
+    selectTradeApiDeviceSalt,
+} from '@suite-common/trading';
 import type { Explorer, NetworkSymbol } from '@suite-common/wallet-config';
 import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
 import {
@@ -470,6 +474,7 @@ export const forgetDeviceThunk =
         return Promise.all([
             extra.services.db.removeItemByPK('devices', staticSessionId),
             extra.services.db.removeItemByPK('suiteSyncOwners', staticSessionId),
+            extra.services.db.removeItemByPK('tradeApiSalts', staticSessionId),
             extra.services.db.removeItemByIndex('accounts', 'deviceState', staticSessionId),
             extra.services.db.removeItemByIndex('txs', 'deviceState', staticSessionId),
             extra.services.db.removeItemByIndex('graph', 'deviceState', staticSessionId),
@@ -595,6 +600,7 @@ export type RememberDeviceThunkState = AccountsRootState &
     FormDraftRootState &
     ReceiveRootState &
     SendRootState &
+    TradingRootState &
     TransactionsRootState & {
         metadata: MetadataState;
         wallet: { graph: GraphState };
@@ -620,6 +626,7 @@ export const rememberDeviceThunk =
             deviceGraphDataFilterFn(d, device.state?.staticSessionId),
         );
         const historicRates = selectHistoricFiatRates(getState());
+        const tradeApiSalt = selectTradeApiDeviceSalt(getState(), device.state.staticSessionId);
 
         const accountPromises = accounts.reduce<Array<unknown | Promise<unknown>>>(
             (promises, account) =>
@@ -644,6 +651,16 @@ export const rememberDeviceThunk =
                 saveDevice(extra.services, device),
                 saveAccounts(extra.services, accounts),
                 saveGraph(extra.services, graphData),
+                ...(tradeApiSalt
+                    ? [
+                          extra.services.db.addItem(
+                              'tradeApiSalts',
+                              tradeApiSalt,
+                              device.state.staticSessionId,
+                              true,
+                          ),
+                      ]
+                    : []),
                 // eslint-disable-next-line  @typescript-eslint/no-use-before-define
                 dispatch(saveDeviceMetadataErrorThunk(device)),
                 ...accountPromises,
@@ -919,6 +936,43 @@ export const saveSuiteSyncSettingsThunk =
             'suiteSyncSettings',
             true,
         );
+    };
+
+type SaveTradeApiDeviceSaltParams = {
+    staticSessionId: StaticSessionId;
+    salt: string;
+};
+
+type SaveTradeApiDeviceSaltThunkDeps = WithServices<DbDep>;
+
+export const saveTradeApiDeviceSaltThunk =
+    ({ staticSessionId, salt }: SaveTradeApiDeviceSaltParams) =>
+    (
+        _dispatch: Dispatch<UnknownAction>,
+        _getState: () => unknown,
+        extra: SaveTradeApiDeviceSaltThunkDeps,
+    ) => {
+        if (!extra.services.db.isAccessible()) {
+            return;
+        }
+
+        return extra.services.db.addItem('tradeApiSalts', salt, staticSessionId, true);
+    };
+
+type SaveTradeApiInstallSaltThunkDeps = WithServices<DbDep>;
+
+export const saveTradeApiInstallSaltThunk =
+    (salt: string) =>
+    (
+        _dispatch: Dispatch<UnknownAction>,
+        _getState: () => unknown,
+        extra: SaveTradeApiInstallSaltThunkDeps,
+    ) => {
+        if (!extra.services.db.isAccessible()) {
+            return;
+        }
+
+        return extra.services.db.addItem('tradeApiInstallSalt', salt, 'tradeApiInstallSalt', true);
     };
 
 type SaveSuiteSyncOwnerParams = {

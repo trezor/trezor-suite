@@ -25,6 +25,7 @@ import {
     testMocks,
     wireEnabledNetworksMock,
 } from '@suite-common/test-utils';
+import { tradingActions } from '@suite-common/trading';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type ChangeCoinVisibilityThunkState,
@@ -54,6 +55,7 @@ import {
     earnOnboardingReducer,
     fiatRatesReducer,
     sendFormReducer,
+    tradingReducer,
     transactionsReducer,
     walletSettingsReducer,
 } from 'src/reducers/wallet';
@@ -218,6 +220,7 @@ const getInitialState = (prevState?: Partial<PartialState>, action?: any): State
             prevState?.wallet?.earnOnboarding,
             action || ({ type: 'foo' } as any),
         ),
+        trading: tradingReducer(prevState?.wallet?.trading, action || ({ type: 'foo' } as any)),
         formDrafts: {},
     },
 });
@@ -685,6 +688,52 @@ describe('Storage actions', () => {
         await store.dispatch(storageActions.forgetDeviceThunk(dev1));
 
         expect(await db.getItemByPK('suiteSyncOwners', deviceStaticId)).toBeUndefined();
+    });
+
+    it('should store trade API salts of remembered wallets, load them and remove them on forgetDevice', async () => {
+        const staticSessionId = dev1.state!.staticSessionId!;
+        const notRememberedDevice = { ...dev2, remember: false };
+        const store = mockStore(
+            db,
+            getInitialState({
+                device: {
+                    devices: [dev1, notRememberedDevice],
+                    buttonRequestsByPath: {},
+                    isConnectionModalOpen: false,
+                    defaultConnectionMode: 'cable',
+                },
+            }),
+        );
+
+        store.dispatch(
+            tradingActions.setTradeApiDeviceSalt({
+                staticSessionId,
+                salt: 'aa',
+                isRemembered: true,
+            }),
+        );
+        store.dispatch(
+            tradingActions.setTradeApiDeviceSalt({
+                staticSessionId: notRememberedDevice.state!.staticSessionId!,
+                salt: 'bb',
+                isRemembered: false,
+            }),
+        );
+        store.dispatch(tradingActions.setTradeApiInstallSalt('cc'));
+
+        await new Promise(resolve => setTimeout(resolve, 100));
+
+        const reloadedStore = mockStore(db, getInitialState());
+        reloadedStore.dispatch((await preloadStore())!);
+        expect(reloadedStore.getState().wallet.trading.tradeApiSalts).toEqual({
+            [staticSessionId]: 'aa',
+        });
+        expect(reloadedStore.getState().wallet.trading.tradeApiInstallSalt).toBe('cc');
+
+        await store.dispatch(storageActions.forgetDeviceThunk(dev1));
+
+        expect(await db.getItemByPK('tradeApiSalts', staticSessionId)).toBeUndefined();
+        expect(await db.getItemByPK('tradeApiInstallSalt', 'tradeApiInstallSalt')).toBe('cc');
     });
 
     it('should remove legacy labels migration flag on forgetDevice', async () => {

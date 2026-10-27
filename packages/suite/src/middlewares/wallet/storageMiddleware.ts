@@ -351,6 +351,14 @@ const rememberedDeviceHandlers: RememberedDeviceHandler[] = [
             );
         },
     }),
+    defineRememberedDeviceHandler({
+        match: [tradingActions.setTradeApiDeviceSalt.match],
+        getDevice: (action, state) =>
+            selectDeviceByStaticSessionId(state, action.payload.staticSessionId),
+        save: ({ action }, { dispatch }) => {
+            dispatch(storageActions.saveTradeApiDeviceSaltThunk(action.payload));
+        },
+    }),
 ];
 
 export const prepareStorageMiddleware = createMiddlewareWithExtraDeps<
@@ -603,6 +611,8 @@ export const prepareStorageMiddleware = createMiddlewareWithExtraDeps<
         api.dispatch(storageActions.saveDebugSettingsThunk());
     } else if (tradingActions.saveTrade.match(action)) {
         storageActions.saveTradingTrade(api.extra.services, action.payload);
+    } else if (tradingActions.setTradeApiInstallSalt.match(action)) {
+        api.dispatch(storageActions.saveTradeApiInstallSaltThunk(action.payload));
     } else if (
         metadataActions.enableMetadata.match(action) ||
         metadataActions.disableMetadata.match(action) ||
