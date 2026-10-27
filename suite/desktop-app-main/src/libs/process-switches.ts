@@ -14,6 +14,7 @@ export type SuiteSwitch =
     | 'log-file'
     | 'log-path'
     | 'log-no-print'
+    | 'silent'
     | 'remove-user-data-on-start'
     | 'expose-connect-ws'
     | 'expose-store'

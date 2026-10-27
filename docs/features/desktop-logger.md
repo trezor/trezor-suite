@@ -14,7 +14,10 @@ All messages with an inferior level to the selected one will be displayed. For e
 
 ## How to enable logging
 
-Logging can be enabled by running Suite with the command line flag `--log-level=LEVEL` (replace _LEVEL_ with _mute_, _error_, _warn_, _info_ or _debug_ based on the logging you wish to display). Defaults to _debug_ in development and _info_ otherwise. Additional command line flags can be found on the [Suite-Desktop page](../packages/desktop-app/index.md).
+Logging can be enabled by running Suite with the command line flag `--log-level=LEVEL` (replace _LEVEL_ with _mute_, _error_, _warn_, _info_ or _debug_ based on the logging you wish to display).
+Defaults to _debug_ in development and _info_ otherwise.
+The `--silent` flag is a shorthand for `--log-level=mute`.
+Additional command line flags can be found on the [Suite-Desktop page](../packages/desktop-app/index.md).
 
 If you activate Debug menu, logging to file is automatically started. When you deactivate Debug menu, logging stopped if the app is not running with the command line flag. If you run the app with `--log-write` flag and then activate the Debug menu, logging just continue with the same file.
 
