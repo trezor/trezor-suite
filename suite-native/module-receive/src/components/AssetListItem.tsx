@@ -1,11 +1,13 @@
 import React from 'react';
 
 import type { GlobalReceiveAssetListItem } from '@suite-common/receive';
+import { toTokenSymbol } from '@suite-common/wallet-types';
 import { AccountsListItemBase } from '@suite-native/accounts';
 import { Badge, Box, HStack, Text } from '@suite-native/atoms';
 import {
     BaseCurrencyAmountFormatter,
-    CompactCryptoAmountFormatter,
+    CompactTokenAmountFormatter,
+    asDecimalTokenAmount,
 } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -84,9 +86,9 @@ export const AssetListItem = ({ item, onSelect }: AssetListItemProps) => {
                 }
                 secondaryValue={
                     balance && (
-                        <CompactCryptoAmountFormatter
-                            value={balance.cryptoAmount}
-                            symbol={asset.networkSymbol}
+                        <CompactTokenAmountFormatter
+                            value={asDecimalTokenAmount(balance.cryptoAmount)}
+                            tokenSymbol={toTokenSymbol(asset.symbol)}
                             numberOfLines={1}
                             adjustsFontSizeToFit
                         />
