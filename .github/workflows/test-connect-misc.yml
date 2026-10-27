@@ -19,6 +19,9 @@ on:
       - "scripts/ci/pack-packages.ts"
       - "scripts/ci/connect-publish-roots.ts"
       - "scripts/ci/publish-closure.ts"
+      # publish-closure.ts resolves @trezor/requirements to its TypeScript sources under tsx,
+      # so the closure walk itself is part of pack-packages.ts' code.
+      - "packages/requirements/**"
       - "scripts/ci/trezor-package-path.ts"
       - "scripts/publish/**"
       - "packages/connect-install-smoke/**"
