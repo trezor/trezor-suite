@@ -38,7 +38,7 @@ jest.mock('@react-navigation/native', () => ({
     useRoute: () =>
         ({
             params: undefined,
-        }) as RouteProp<RootStackParamList, RootStackRoutes.TradingHistory>,
+        }) as RouteProp<RootStackParamList, RootStackRoutes.TradingLocationModal>,
     useNavigation: () => ({
         dispatch: mockNavigationDispatch,
     }),

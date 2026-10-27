@@ -73,7 +73,9 @@ describe('HistoryButton', () => {
                 getByText(getTranslation('moduleTrading.tradeHistory.list.title')),
             );
 
-            expect(mockNavigate).toHaveBeenCalledWith('TradingHistory');
+            expect(mockNavigate).toHaveBeenCalledWith('TradingFlowStack', {
+                screen: 'TradingHistory',
+            });
         });
     });
 });

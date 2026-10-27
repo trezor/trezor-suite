@@ -8,21 +8,21 @@ import { selectIsDeviceInViewOnlyMode } from '@suite-common/device';
 import { type TradingType } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { Divider } from '@suite-native/atoms';
-import {
-    type RootStackParamList,
-    RootStackRoutes,
-    type StackNavigationProps,
-} from '@suite-native/navigation';
+import { TradingFlowStackRoutes } from '@suite-native/navigation';
 import { type SectionListData, useSectionList } from '@suite-native/trading-atoms';
-import { type ReceiveAccount } from '@suite-native/trading-types';
+import {
+    type ReceiveAccount,
+    type TradingFlowStackNavigationProp,
+} from '@suite-native/trading-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { AccountListFooter } from './AccountListFooter';
 import { AccountListItem } from './AccountListItem';
 import { NoAccountsComponent } from './NoAccountsComponent';
+import { useCloseTradingFlow } from '../../../hooks/general/useCloseTradingFlow';
 import { useTradingReceiveAccountSelection } from '../../../hooks/general/useTradingReceiveAccountSelection';
 
-type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.ReceiveAccounts>;
+type NavigationProp = TradingFlowStackNavigationProp<TradingFlowStackRoutes.ReceiveAccounts>;
 
 export type AccountsListProps = {
     data: SectionListData<ReceiveAccount>;
@@ -50,10 +50,11 @@ export const AccountList = ({ data, symbol, onAddAccountTap, tradingType }: Acco
     const { bottom: insetBottom } = useSafeAreaInsets();
     const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
     const selectReceiveAccount = useTradingReceiveAccountSelection(tradingType);
+    const closeTradingFlow = useCloseTradingFlow();
 
     const onItemSelect = (receiveAccount: ReceiveAccount) => {
         if (receiveAccount.account.addresses) {
-            navigation.navigate(RootStackRoutes.TradingReceiveAddress, {
+            navigation.navigate(TradingFlowStackRoutes.TradingReceiveAddress, {
                 accountKey: receiveAccount.account.key,
                 tradingType,
             });
@@ -62,7 +63,7 @@ export const AccountList = ({ data, symbol, onAddAccountTap, tradingType }: Acco
         }
 
         selectReceiveAccount(receiveAccount);
-        navigation.popToTop();
+        closeTradingFlow();
     };
 
     const renderItem = (item: ReceiveAccount) => (

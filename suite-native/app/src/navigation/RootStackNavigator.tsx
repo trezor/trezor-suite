@@ -52,25 +52,7 @@ import { SendStackNavigator } from '@suite-native/module-send';
 import { SettingsStackNavigator } from '@suite-native/module-settings';
 import { SignAndVerifyScreen, SignAndVerifyStackNavigator } from '@suite-native/module-sign-verify';
 import { StellarManageTokenStackNavigator } from '@suite-native/module-stellar-token-management';
-import {
-    TradingBuyPreviewScreen,
-    TradingConfirmingScreen,
-    TradingDeviceConnectionGuard,
-    TradingExchangeApprovalScreen,
-    TradingExchangePreviewScreen,
-    TradingExchangeRevokeScreen,
-    TradingExchangeTransactionReviewScreen,
-    TradingHistoryDetailScreen,
-    TradingHistoryScreen,
-    TradingMyAssetScreen,
-    TradingReceiveAccountsPickerScreen,
-    TradingReceiveAddressPickerScreen,
-    TradingRestrictedGuard,
-    TradingSellCompletionScreen,
-    TradingSellPreviewScreen,
-    TradingSellTransactionReviewScreen,
-    TradingTradeableAssetScreen,
-} from '@suite-native/module-trading';
+import { TradingFlowStackNavigator } from '@suite-native/module-trading';
 import { TransactionDetailStackNavigator } from '@suite-native/module-transactions';
 import {
     type RootStackParamList,
@@ -191,97 +173,10 @@ export const RootStackNavigator = () => {
                 name={RootStackRoutes.StakingClaimReview}
                 component={StakingClaimReviewScreen}
             />
-            {/* Trading screens */}
-            <RootStack.Group
-                screenLayout={({ children }) => (
-                    <TradingRestrictedGuard>{children}</TradingRestrictedGuard>
-                )}
-            >
-                <RootStack.Screen
-                    options={{ title: RootStackRoutes.TradingSellPreview }}
-                    name={RootStackRoutes.TradingSellPreview}
-                    component={TradingSellPreviewScreen}
-                />
-                <RootStack.Screen
-                    options={{ title: RootStackRoutes.TradingConfirming }}
-                    name={RootStackRoutes.TradingConfirming}
-                    component={TradingConfirmingScreen}
-                />
-                <RootStack.Screen
-                    options={{ title: RootStackRoutes.TradingSellTransactionReview }}
-                    name={RootStackRoutes.TradingSellTransactionReview}
-                    component={TradingSellTransactionReviewScreen}
-                />
-                <RootStack.Screen
-                    options={{ title: RootStackRoutes.TradingExchangeTransactionReview }}
-                    name={RootStackRoutes.TradingExchangeTransactionReview}
-                    component={TradingExchangeTransactionReviewScreen}
-                />
-                <RootStack.Screen
-                    options={{ title: RootStackRoutes.TradingMyAsset }}
-                    name={RootStackRoutes.TradingMyAsset}
-                    component={TradingMyAssetScreen}
-                />
-                <RootStack.Screen
-                    options={{ title: RootStackRoutes.TradingTradeableAsset }}
-                    name={RootStackRoutes.TradingTradeableAsset}
-                    component={TradingTradeableAssetScreen}
-                />
-                <RootStack.Screen
-                    options={{ title: RootStackRoutes.ReceiveAccounts }}
-                    name={RootStackRoutes.ReceiveAccounts}
-                    component={TradingReceiveAccountsPickerScreen}
-                />
-                <RootStack.Screen
-                    options={{ title: RootStackRoutes.TradingReceiveAddress }}
-                    name={RootStackRoutes.TradingReceiveAddress}
-                    component={TradingReceiveAddressPickerScreen}
-                />
-                <RootStack.Screen
-                    options={{ title: RootStackRoutes.TradingHistory }}
-                    name={RootStackRoutes.TradingHistory}
-                    component={TradingHistoryScreen}
-                />
-                <RootStack.Screen
-                    options={{ title: RootStackRoutes.TradingHistoryDetail }}
-                    name={RootStackRoutes.TradingHistoryDetail}
-                    component={TradingHistoryDetailScreen}
-                />
-                <RootStack.Screen
-                    options={{ title: RootStackRoutes.TradingBuyPreview }}
-                    name={RootStackRoutes.TradingBuyPreview}
-                    component={TradingBuyPreviewScreen}
-                />
-            </RootStack.Group>
-            {/* Trading screens that require a connected device */}
-            <RootStack.Group
-                screenLayout={({ children }) => (
-                    <TradingRestrictedGuard>
-                        <TradingDeviceConnectionGuard>{children}</TradingDeviceConnectionGuard>
-                    </TradingRestrictedGuard>
-                )}
-            >
-                <RootStack.Screen
-                    options={{ title: RootStackRoutes.TradingExchangePreview }}
-                    name={RootStackRoutes.TradingExchangePreview}
-                    component={TradingExchangePreviewScreen}
-                />
-                <RootStack.Screen
-                    options={{ title: RootStackRoutes.TradingExchangeApproval }}
-                    name={RootStackRoutes.TradingExchangeApproval}
-                    component={TradingExchangeApprovalScreen}
-                />
-                <RootStack.Screen
-                    options={{ title: RootStackRoutes.TradingExchangeRevoke }}
-                    name={RootStackRoutes.TradingExchangeRevoke}
-                    component={TradingExchangeRevokeScreen}
-                />
-                <RootStack.Screen
-                    options={{ title: RootStackRoutes.TradingSellCompletion }}
-                    name={RootStackRoutes.TradingSellCompletion}
-                    component={TradingSellCompletionScreen}
-                />
-            </RootStack.Group>
+            <RootStack.Screen
+                name={RootStackRoutes.TradingFlowStack}
+                component={TradingFlowStackNavigator}
+            />
             <RootStack.Screen name={RootStackRoutes.DevUtils} component={DevUtilsScreen} />
             <RootStack.Screen
                 name={RootStackRoutes.MessageSystemManager}

@@ -109,9 +109,12 @@ describe('BuyReceiveAccountPicker', () => {
         );
 
         expect(mockNavigate).toHaveBeenCalledTimes(1);
-        expect(mockNavigate).toHaveBeenCalledWith('ReceiveAccounts', {
-            symbol: 'btc',
-            tradingType: 'buy',
+        expect(mockNavigate).toHaveBeenCalledWith('TradingFlowStack', {
+            screen: 'ReceiveAccounts',
+            params: {
+                symbol: 'btc',
+                tradingType: 'buy',
+            },
         });
     });
 });

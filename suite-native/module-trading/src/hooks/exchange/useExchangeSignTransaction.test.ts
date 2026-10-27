@@ -1,4 +1,4 @@
-import { RootStackRoutes } from '@suite-native/navigation';
+import { TradingFlowStackRoutes } from '@suite-native/navigation';
 import { act } from '@suite-native/test-utils-store';
 import {
     btc1NormalAccount,
@@ -117,7 +117,7 @@ describe('useExchangeSignTransaction', () => {
         });
 
         expect(mockNavigate).toHaveBeenCalledWith(
-            RootStackRoutes.TradingExchangeTransactionReview,
+            TradingFlowStackRoutes.TradingExchangeTransactionReview,
             {
                 accountKey: btc1NormalAccount.key,
                 tokenContract: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',

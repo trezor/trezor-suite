@@ -1,18 +1,12 @@
 import { useEffect, useRef } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { useNavigation } from '@react-navigation/native';
 import { FlashList, type FlashListRef } from '@shopify/flash-list';
 
 import type { TradingType } from '@suite-common/trading';
 import type { AccountKey } from '@suite-common/wallet-types';
 import { Divider, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import type {
-    RootStackParamList,
-    RootStackRoutes,
-    StackNavigationProps,
-} from '@suite-native/navigation';
 import {
     type ItemRenderConfig,
     type ListInternalItemShape,
@@ -24,16 +18,12 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { keyExtractor } from './AccountList';
 import { AccountListAddressItem } from './AccountListAddressItem';
+import { useCloseTradingFlow } from '../../../hooks/general/useCloseTradingFlow';
 import {
     type ReceiveAddressSection,
     useReceiveAddressesListData,
 } from '../../../hooks/general/useReceiveAddressesListData';
 import { useTradingReceiveAccountSelection } from '../../../hooks/general/useTradingReceiveAccountSelection';
-
-type NavigationProp = StackNavigationProps<
-    RootStackParamList,
-    RootStackRoutes.TradingReceiveAddress
->;
 
 type AddressListProps = {
     accountKey: AccountKey;
@@ -56,7 +46,7 @@ const itemDividerStyle = prepareNativeStyle(({ spacings }) => ({
 }));
 
 export const AddressList = ({ accountKey, searchQuery, tradingType }: AddressListProps) => {
-    const navigation = useNavigation<NavigationProp>();
+    const closeTradingFlow = useCloseTradingFlow();
     const { applyStyle } = useNativeStyles();
     const { bottom: insetBottom } = useSafeAreaInsets();
     const selectReceiveAccount = useTradingReceiveAccountSelection(tradingType);
@@ -75,7 +65,7 @@ export const AddressList = ({ accountKey, searchQuery, tradingType }: AddressLis
 
     const onItemSelect = (receiveAccount: ReceiveAccount) => {
         selectReceiveAccount(receiveAccount);
-        navigation.popToTop();
+        closeTradingFlow();
     };
 
     const renderItem = (
