@@ -2,12 +2,18 @@ import { app as electronApp } from 'electron';
 import path from 'path';
 
 import { isDevEnv } from '@suite-common/suite-utils';
+import { isCodesignBuild } from '@trezor/env-utils';
 
 import { createDesktopMainCompositionRoot } from './createDesktopMainCompositionRoot';
 import { hasSwitch } from './libs/process-switches';
 import { clearUserDataOptimistically, initUserData } from './libs/user-data';
 
 process.traceProcessWarnings = true;
+
+// Node deprecation warnings are only useful during development
+if (isCodesignBuild()) {
+    process.noDeprecation = true;
+}
 
 // Without PLAYWRIGHT_RUN env variable, the version is set to 0.0 during e2e tests, and auto-updater fails to load
 // @ts-expect-error using internal electron API to set suite version in dev mode correctly
