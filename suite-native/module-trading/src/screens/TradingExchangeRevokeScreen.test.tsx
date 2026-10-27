@@ -7,8 +7,8 @@ import { events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
 import {
-    type RootStackParamList,
-    RootStackRoutes,
+    type TradingFlowStackParamList,
+    TradingFlowStackRoutes,
     useNavigationRemoveActionInterceptor,
 } from '@suite-native/navigation';
 import { eth1NormalAccount, mercuryoFixedWorstQuote } from '@suite-native/trading-fixtures';
@@ -62,10 +62,10 @@ jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
     useRoute: () =>
         ({
-            key: RootStackRoutes.TradingExchangeRevoke,
-            name: RootStackRoutes.TradingExchangeRevoke,
+            key: TradingFlowStackRoutes.TradingExchangeRevoke,
+            name: TradingFlowStackRoutes.TradingExchangeRevoke,
             params: {},
-        }) as RouteProp<RootStackParamList, RootStackRoutes.TradingExchangeRevoke>,
+        }) as RouteProp<TradingFlowStackParamList, TradingFlowStackRoutes.TradingExchangeRevoke>,
     useNavigation: () => ({
         setOptions: jest.fn(),
     }),

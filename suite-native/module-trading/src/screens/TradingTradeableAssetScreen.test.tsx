@@ -3,8 +3,9 @@ import { type RouteProp } from '@react-navigation/native';
 import { mockNetworksServices } from '@suite-common/networks/mocks';
 import {
     AppTabsRoutes,
-    type RootStackParamList,
     RootStackRoutes,
+    type TradingFlowStackParamList,
+    TradingFlowStackRoutes,
     TradingStackRoutes,
 } from '@suite-native/navigation';
 import { fireEvent } from '@suite-native/test-utils-store';
@@ -38,7 +39,7 @@ const mockUseTradingTradeableAssetsFilteredData = jest.fn();
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
-    useRoute: () => ({ name: RootStackRoutes.TradingTradeableAsset }),
+    useRoute: () => ({ name: TradingFlowStackRoutes.TradingTradeableAsset }),
 }));
 
 jest.mock('../hooks/general/useTradingTradeableAssetsFilteredData', () => ({
@@ -48,9 +49,9 @@ jest.mock('../hooks/general/useTradingTradeableAssetsFilteredData', () => ({
 
 const createRoute = (
     tradingType: 'buy' | 'exchange',
-): RouteProp<RootStackParamList, RootStackRoutes.TradingTradeableAsset> => ({
-    key: RootStackRoutes.TradingTradeableAsset,
-    name: RootStackRoutes.TradingTradeableAsset,
+): RouteProp<TradingFlowStackParamList, TradingFlowStackRoutes.TradingTradeableAsset> => ({
+    key: TradingFlowStackRoutes.TradingTradeableAsset,
+    name: TradingFlowStackRoutes.TradingTradeableAsset,
     params: { tradingType },
 });
 

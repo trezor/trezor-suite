@@ -1,3 +1,4 @@
+import { StackActions } from '@react-navigation/native';
 import { type Store } from '@reduxjs/toolkit';
 
 import { mockNetworksServices } from '@suite-common/networks/mocks';
@@ -10,7 +11,7 @@ import {
 import { events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
-import { type RootStackParamList, RootStackRoutes } from '@suite-native/navigation';
+import { type TradingFlowStackParamList, TradingFlowStackRoutes } from '@suite-native/navigation';
 import { act, renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { mockTransaction } from '@suite-native/tokens';
 import { exchangeQuotes } from '@suite-native/trading-fixtures';
@@ -52,25 +53,29 @@ const mockAddListener = jest.fn(
     ) => jest.fn(),
 );
 
+const mockParentNavigation = {
+    dispatch: jest.fn(),
+    getState: () => ({ key: 'root-stack' }),
+};
+const closeTradingFlowAction = { ...StackActions.popToTop(), target: 'root-stack' };
+
 const mockNavigation = {
     navigate: jest.fn(),
     goBack: jest.fn(),
     dispatch: jest.fn(),
-    popToTop: jest.fn(),
-    push: jest.fn(),
+    reset: jest.fn(),
     setOptions: jest.fn(),
     addListener: mockAddListener,
-    canGoBack: jest.fn(() => true),
-    getState: jest.fn(() => ({ routes: [{ key: 'root' }, { key: 'confirming' }] })),
+    getParent: () => mockParentNavigation,
 } as any;
 
-let routeParams: RootStackParamList[RootStackRoutes.TradingConfirming] = {
+let routeParams: TradingFlowStackParamList[TradingFlowStackRoutes.TradingConfirming] = {
     flowType: 'approve',
 };
 
 const mockUseRoute = () => ({
     key: 'route-key',
-    name: RootStackRoutes.TradingConfirming as const,
+    name: TradingFlowStackRoutes.TradingConfirming as const,
     params: routeParams,
 });
 
@@ -101,7 +106,9 @@ describe('TradingConfirmingScreen', () => {
     let store: Store<State>;
 
     const renderScreen = (
-        routeProps: Partial<RootStackParamList[RootStackRoutes.TradingConfirming]> = {},
+        routeProps: Partial<
+            TradingFlowStackParamList[TradingFlowStackRoutes.TradingConfirming]
+        > = {},
     ) => {
         routeParams = {
             flowType: 'approve',
@@ -171,8 +178,8 @@ describe('TradingConfirmingScreen', () => {
     it('should not navigate when transaction is not confirmed', async () => {
         await renderScreen();
 
-        expect(mockNavigation.popToTop).not.toHaveBeenCalled();
-        expect(mockNavigation.push).not.toHaveBeenCalled();
+        expect(mockParentNavigation.dispatch).not.toHaveBeenCalled();
+        expect(mockNavigation.reset).not.toHaveBeenCalled();
     });
 
     it('approve: navigates to TradingExchangePreview when the quote status becomes CONFIRM', async () => {
@@ -180,7 +187,7 @@ describe('TradingConfirmingScreen', () => {
 
         await renderScreen({ flowType: 'approve' });
 
-        expect(mockNavigation.push).not.toHaveBeenCalled();
+        expect(mockNavigation.reset).not.toHaveBeenCalled();
 
         // Simulate the backend advancing the status (what the watch poll saves).
         await act(() => {
@@ -189,9 +196,14 @@ describe('TradingConfirmingScreen', () => {
             );
         });
 
-        expect(mockNavigation.popToTop).toHaveBeenCalled();
-        expect(mockNavigation.push).toHaveBeenCalledWith(RootStackRoutes.TradingExchangePreview, {
-            isApproved: true,
+        expect(mockNavigation.reset).toHaveBeenCalledWith({
+            index: 0,
+            routes: [
+                {
+                    name: TradingFlowStackRoutes.TradingExchangePreview,
+                    params: { isApproved: true },
+                },
+            ],
         });
     });
 
@@ -203,8 +215,8 @@ describe('TradingConfirmingScreen', () => {
 
         await renderScreen({ flowType: 'approve' });
 
-        expect(mockNavigation.popToTop).not.toHaveBeenCalled();
-        expect(mockNavigation.push).not.toHaveBeenCalled();
+        expect(mockParentNavigation.dispatch).not.toHaveBeenCalled();
+        expect(mockNavigation.reset).not.toHaveBeenCalled();
     });
 
     it('revoke-and-approve: navigates to TradingExchangeApproval and strips revoke-tx artifacts from selectedQuote', async () => {
@@ -221,7 +233,7 @@ describe('TradingConfirmingScreen', () => {
 
         await renderScreen({ flowType: 'revoke-and-approve' });
 
-        expect(mockNavigation.push).not.toHaveBeenCalled();
+        expect(mockNavigation.reset).not.toHaveBeenCalled();
 
         // Simulate the backend reporting the follow-up approval is required.
         await act(() => {
@@ -235,9 +247,14 @@ describe('TradingConfirmingScreen', () => {
             );
         });
 
-        expect(mockNavigation.popToTop).toHaveBeenCalled();
-        expect(mockNavigation.push).toHaveBeenCalledWith(RootStackRoutes.TradingExchangeApproval, {
-            isRevoked: true,
+        expect(mockNavigation.reset).toHaveBeenCalledWith({
+            index: 0,
+            routes: [
+                {
+                    name: TradingFlowStackRoutes.TradingExchangeApproval,
+                    params: { isRevoked: true },
+                },
+            ],
         });
         const persisted = selectTradingExchangeSelectedQuote(store.getState());
         expect(persisted).toBeDefined();
@@ -246,13 +263,13 @@ describe('TradingConfirmingScreen', () => {
         expect(persisted?.status).toBe('APPROVAL_REQ');
     });
 
-    it('revoke: pops to top and clears selectedQuote', async () => {
+    it('revoke: closes the trading flow and clears selectedQuote', async () => {
         mockUseAllowanceTxTracking.mockReturnValue(confirmedStatus);
 
         await renderScreen({ flowType: 'revoke' });
 
-        expect(mockNavigation.popToTop).toHaveBeenCalled();
-        expect(mockNavigation.push).not.toHaveBeenCalled();
+        expect(mockParentNavigation.dispatch).toHaveBeenCalledWith(closeTradingFlowAction);
+        expect(mockNavigation.reset).not.toHaveBeenCalled();
         expect(selectTradingExchangeSelectedQuote(store.getState())).toBeUndefined();
     });
 
@@ -298,8 +315,7 @@ describe('TradingConfirmingScreen', () => {
         });
 
         expect(selectTradingExchangeSelectedQuote(store.getState())).toBeUndefined();
-        expect(mockNavigation.popToTop).toHaveBeenCalled();
-        expect(mockNavigation.goBack).toHaveBeenCalled();
+        expect(mockParentNavigation.dispatch).toHaveBeenCalledWith(closeTradingFlowAction);
     });
 
     it('should allow leaving without confirmation when approval transaction fails', async () => {
@@ -331,7 +347,7 @@ describe('TradingConfirmingScreen', () => {
         expect(mockUseNavigationRemoveInterceptorAlert).toHaveBeenCalledWith(
             expect.objectContaining({ shouldPrevent: false }),
         );
-        expect(mockNavigation.push).not.toHaveBeenCalled();
+        expect(mockNavigation.reset).not.toHaveBeenCalled();
     });
 
     describe('analytics', () => {

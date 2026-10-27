@@ -11,6 +11,7 @@ import {
     type RootStackParamList,
     RootStackRoutes,
     type StackToStackCompositeNavigationProps,
+    TradingFlowStackRoutes,
     type TradingStackParamList,
     type TradingStackRoutes,
 } from '@suite-native/navigation';
@@ -48,7 +49,10 @@ export const HistoryButton = () => {
     const { totalTrades } = useWatchAllTrades();
     const shouldHideButton = useSelector(selectIsAmountInputActive);
 
-    const handleOnPress = () => navigation.navigate(RootStackRoutes.TradingHistory);
+    const handleOnPress = () =>
+        navigation.navigate(RootStackRoutes.TradingFlowStack, {
+            screen: TradingFlowStackRoutes.TradingHistory,
+        });
 
     if (totalTrades === 0 || shouldHideButton) {
         return null;

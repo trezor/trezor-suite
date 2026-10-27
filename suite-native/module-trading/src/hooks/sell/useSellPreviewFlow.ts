@@ -4,15 +4,12 @@ import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import { selectTradingSellIsLoading, selectTradingSellSelectedQuote } from '@suite-common/trading';
-import {
-    type RootStackParamList,
-    RootStackRoutes,
-    type StackNavigationProps,
-} from '@suite-native/navigation';
+import { TradingFlowStackRoutes } from '@suite-native/navigation';
 import { useSellAnalyticReportCallback } from '@suite-native/trading-analytics';
 import { selectSellSelectedSendAccount } from '@suite-native/trading-state';
+import { type TradingFlowStackNavigationProp } from '@suite-native/trading-types';
 
-type NavigationProp = StackNavigationProps<RootStackParamList, RootStackRoutes.TradingSellPreview>;
+type NavigationProp = TradingFlowStackNavigationProp<TradingFlowStackRoutes.TradingSellPreview>;
 
 export const useSellPreviewFlow = () => {
     const navigation = useNavigation<NavigationProp>();
@@ -29,7 +26,7 @@ export const useSellPreviewFlow = () => {
         }
 
         reportToAnalytics('transaction-preview', 'continue');
-        navigation.replace(RootStackRoutes.TradingSellCompletion);
+        navigation.replace(TradingFlowStackRoutes.TradingSellCompletion);
     }, [canProceed, navigation, reportToAnalytics]);
 
     return {

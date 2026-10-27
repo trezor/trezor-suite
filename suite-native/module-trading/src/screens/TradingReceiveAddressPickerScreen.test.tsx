@@ -3,7 +3,7 @@ import { type RouteProp, useNavigation } from '@react-navigation/native';
 import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { tradingBuyActions } from '@suite-common/trading';
 import { getTranslation } from '@suite-native/intl';
-import type { RootStackParamList, RootStackRoutes } from '@suite-native/navigation';
+import type { TradingFlowStackParamList, TradingFlowStackRoutes } from '@suite-native/navigation';
 import { fireEvent, renderWithStoreProvider, waitFor } from '@suite-native/test-utils-store';
 import { MOCK_ACCOUNT_DEVICE_SESSION_ID, btc1NormalAccount } from '@suite-native/trading-fixtures';
 import {
@@ -18,9 +18,13 @@ import {
     createTradingTestStore,
 } from '../test-utils/tradingTestUtils';
 
-const navigationPopToTop = jest.fn();
+const mockCloseTradingFlow = jest.fn();
+
+jest.mock('../hooks/general/useCloseTradingFlow', () => ({
+    useCloseTradingFlow: () => mockCloseTradingFlow,
+}));
 const navigationGoBack = jest.fn();
-let mockRouteParams: RootStackParamList[RootStackRoutes.TradingReceiveAddress] = {
+let mockRouteParams: TradingFlowStackParamList[TradingFlowStackRoutes.TradingReceiveAddress] = {
     accountKey: btc1NormalAccount.key,
     tradingType: 'buy',
 };
@@ -31,7 +35,7 @@ jest.mock('@react-navigation/native', () => ({
     useRoute: () =>
         ({
             params: mockRouteParams,
-        }) as RouteProp<RootStackParamList, RootStackRoutes.TradingReceiveAddress>,
+        }) as RouteProp<TradingFlowStackParamList, TradingFlowStackRoutes.TradingReceiveAddress>,
 }));
 
 jest.mock('@trezor/react-utils', () => ({
@@ -73,7 +77,6 @@ describe('TradingReceiveAddressPickerScreen', () => {
         (useNavigation as jest.Mock).mockReturnValue({
             canGoBack: () => true,
             goBack: navigationGoBack,
-            popToTop: navigationPopToTop,
         });
         mockRouteParams = { accountKey: btc1NormalAccount.key, tradingType: 'buy' };
     });
@@ -122,7 +125,7 @@ describe('TradingReceiveAddressPickerScreen', () => {
             account: btc1NormalAccount,
             address: btc1NormalAccount.addresses?.unused[0],
         });
-        expect(navigationPopToTop).toHaveBeenCalledTimes(1);
+        expect(mockCloseTradingFlow).toHaveBeenCalledTimes(1);
     });
 
     it('atomically selects an exchange account and address', async () => {
@@ -135,7 +138,7 @@ describe('TradingReceiveAddressPickerScreen', () => {
             account: btc1NormalAccount,
             address: btc1NormalAccount.addresses?.used[0],
         });
-        expect(navigationPopToTop).toHaveBeenCalledTimes(1);
+        expect(mockCloseTradingFlow).toHaveBeenCalledTimes(1);
     });
 
     it('preserves the previous selection when navigating back', async () => {

@@ -7,14 +7,10 @@ import { parseCryptoId, selectTradingExchangeSelectedQuote } from '@suite-common
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { AnimatedView, Box, Button, ScreenFooterGradient } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import {
-    type ExchangeFlowType,
-    type RootStackParamList,
-    RootStackRoutes,
-    type StackNavigationProps,
-} from '@suite-native/navigation';
+import { type ExchangeFlowType, TradingFlowStackRoutes } from '@suite-native/navigation';
 import { useExchangeAnalyticsStepReport } from '@suite-native/trading-analytics';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
+import { type TradingFlowStackNavigationProp } from '@suite-native/trading-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const footerStyle = prepareNativeStyle(utils => ({
@@ -39,7 +35,7 @@ const getApprovalButtonTestID = (flowType: ApprovalButtonProps['flowType']) => {
 export const ApprovalButton = ({ isReady, isDisabled, flowType }: ApprovalButtonProps) => {
     const navigation =
         useNavigation<
-            StackNavigationProps<RootStackParamList, RootStackRoutes.TradingExchangeApproval>
+            TradingFlowStackNavigationProp<TradingFlowStackRoutes.TradingExchangeApproval>
         >();
 
     const quote = useSelector(selectTradingExchangeSelectedQuote);
@@ -63,7 +59,7 @@ export const ApprovalButton = ({ isReady, isDisabled, flowType }: ApprovalButton
             return;
         }
         reportToAnalytics('continue');
-        navigation.navigate(RootStackRoutes.TradingExchangeTransactionReview, {
+        navigation.navigate(TradingFlowStackRoutes.TradingExchangeTransactionReview, {
             accountKey: fromAccount.key,
             tokenContract,
             orderId: quote.orderId ?? '',

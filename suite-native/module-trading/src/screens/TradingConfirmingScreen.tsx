@@ -8,16 +8,11 @@ import {
 } from '@suite-common/trading';
 import { sendFormActions, useAllowanceTxTracking } from '@suite-common/wallet-core';
 import { Translation } from '@suite-native/intl';
-import {
-    type RootStackParamList,
-    RootStackRoutes,
-    Screen,
-    type StackProps,
-    useNavigateToInitialScreen,
-} from '@suite-native/navigation';
+import { Screen, TradingFlowStackRoutes } from '@suite-native/navigation';
 import { useExchangeAnalyticsStepReport } from '@suite-native/trading-analytics';
 import { useTransactionStatusOverride } from '@suite-native/trading-debug';
 import { selectExchangeSelectedSendAccount } from '@suite-native/trading-state';
+import { type TradingFlowStackScreenProps } from '@suite-native/trading-types';
 import {
     useNavigationRemoveInterceptorAlert,
     useTransactionDetails,
@@ -30,12 +25,10 @@ import { ExchangeConfirmationHeader } from '../components/exchange/Confirmation/
 import { ExchangeConfirmationInfo } from '../components/exchange/Confirmation/ExchangeConfirmationInfo';
 import { ExchangeConfirmationTitle } from '../components/exchange/Confirmation/ExchangeConfirmationTitle';
 import { ExploreInBlockchainButton } from '../components/exchange/Confirmation/ExploreInBlockchainButton';
-import { TradingDeviceConnectionGuard } from '../components/general/TradingDeviceConnectionGuard';
+import { useCloseTradingFlow } from '../hooks/general/useCloseTradingFlow';
 
-export type TradingConfirmingScreenProps = StackProps<
-    RootStackParamList,
-    RootStackRoutes.TradingConfirming
->;
+export type TradingConfirmingScreenProps =
+    TradingFlowStackScreenProps<TradingFlowStackRoutes.TradingConfirming>;
 
 export const TradingConfirmingScreen = ({
     route: { params },
@@ -86,12 +79,12 @@ export const TradingConfirmingScreen = ({
 
     const isPending = !isFailed && activeQuote?.status === 'APPROVAL_PENDING';
 
-    const navigateToInitialScreen = useNavigateToInitialScreen();
+    const closeTradingFlow = useCloseTradingFlow();
     const handleRemoveConfirmed = useCallback(() => {
         dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
         reportToAnalytics('cancel');
-        navigateToInitialScreen();
-    }, [dispatch, navigateToInitialScreen, reportToAnalytics]);
+        closeTradingFlow();
+    }, [dispatch, closeTradingFlow, reportToAnalytics]);
 
     useNavigationRemoveInterceptorAlert({
         shouldPrevent: !isFailed,
@@ -120,7 +113,7 @@ export const TradingConfirmingScreen = ({
             hasNavigatedRef.current = true;
             dispatch(sendFormActions.dispose());
             dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
-            navigation.popToTop();
+            closeTradingFlow();
             reportToAnalytics('continue');
 
             return;
@@ -129,8 +122,16 @@ export const TradingConfirmingScreen = ({
         if (activeQuote.status === 'CONFIRM') {
             hasNavigatedRef.current = true;
             dispatch(sendFormActions.dispose());
-            navigation.popToTop();
-            navigation.push(RootStackRoutes.TradingExchangePreview, { isApproved: true });
+            // Reset drops the finished approval steps, so going back leaves the flow.
+            navigation.reset({
+                index: 0,
+                routes: [
+                    {
+                        name: TradingFlowStackRoutes.TradingExchangePreview,
+                        params: { isApproved: true },
+                    },
+                ],
+            });
             reportToAnalytics('continue');
 
             return;
@@ -146,30 +147,41 @@ export const TradingConfirmingScreen = ({
                     approvalType: undefined,
                 }),
             );
-            navigation.popToTop();
-            navigation.push(RootStackRoutes.TradingExchangeApproval, {
-                isRevoked: flowType === 'revoke-and-approve',
+            navigation.reset({
+                index: 0,
+                routes: [
+                    {
+                        name: TradingFlowStackRoutes.TradingExchangeApproval,
+                        params: { isRevoked: flowType === 'revoke-and-approve' },
+                    },
+                ],
             });
             reportToAnalytics('continue');
         }
-    }, [activeQuote, flowType, isConfirmed, dispatch, navigation, reportToAnalytics]);
+    }, [
+        activeQuote,
+        flowType,
+        isConfirmed,
+        dispatch,
+        closeTradingFlow,
+        navigation,
+        reportToAnalytics,
+    ]);
 
     return (
-        <TradingDeviceConnectionGuard>
-            <Screen header={<ExchangeConfirmationHeader flowType={flowType} />}>
-                <ConfirmationQuoteDebugView
-                    forceStatus={forceStatus}
-                    approvalTxid={approvalTxid}
-                    transactionStatus={status}
-                />
-                <ExchangeConfirmationTitle
-                    flowType={flowType}
-                    isFailed={isFailed}
-                    isPending={isPending}
-                />
-                <ExchangeConfirmationInfo flowType={flowType} transaction={transaction} />
-                <ExploreInBlockchainButton onPress={openInBlockchain} />
-            </Screen>
-        </TradingDeviceConnectionGuard>
+        <Screen header={<ExchangeConfirmationHeader flowType={flowType} />}>
+            <ConfirmationQuoteDebugView
+                forceStatus={forceStatus}
+                approvalTxid={approvalTxid}
+                transactionStatus={status}
+            />
+            <ExchangeConfirmationTitle
+                flowType={flowType}
+                isFailed={isFailed}
+                isPending={isPending}
+            />
+            <ExchangeConfirmationInfo flowType={flowType} transaction={transaction} />
+            <ExploreInBlockchainButton onPress={openInBlockchain} />
+        </Screen>
     );
 };

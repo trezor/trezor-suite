@@ -3,7 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import { mockNetworksServices } from '@suite-common/networks/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { getTranslation } from '@suite-native/intl';
-import { RootStackRoutes } from '@suite-native/navigation';
+import { TradingFlowStackRoutes } from '@suite-native/navigation';
 import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 import {
     MOCK_ACCOUNT_DEVICE_SESSION_ID,
@@ -24,7 +24,11 @@ import {
 } from '../../../test-utils/tradingTestUtils';
 
 const navigationNavigate = jest.fn();
-const navigationPopToTop = jest.fn();
+const mockCloseTradingFlow = jest.fn();
+
+jest.mock('../../../hooks/general/useCloseTradingFlow', () => ({
+    useCloseTradingFlow: () => mockCloseTradingFlow,
+}));
 
 const defaultOverrides: PreloadedStatePartial<TradingTestPreloadedState> = {
     device: {
@@ -82,7 +86,6 @@ describe('AccountList', () => {
         jest.clearAllMocks();
         (useNavigation as jest.Mock).mockReturnValue({
             navigate: navigationNavigate,
-            popToTop: navigationPopToTop,
         });
     });
 
@@ -98,12 +101,15 @@ describe('AccountList', () => {
 
         await fireEvent.press(getByText('BTC Account #1'));
 
-        expect(navigationNavigate).toHaveBeenCalledWith(RootStackRoutes.TradingReceiveAddress, {
-            accountKey: btc1NormalAccount.key,
-            tradingType: 'buy',
-        });
+        expect(navigationNavigate).toHaveBeenCalledWith(
+            TradingFlowStackRoutes.TradingReceiveAddress,
+            {
+                accountKey: btc1NormalAccount.key,
+                tradingType: 'buy',
+            },
+        );
         expect(selectBuySelectedReceiveAccount(store.getState())).toBeUndefined();
-        expect(navigationPopToTop).not.toHaveBeenCalled();
+        expect(mockCloseTradingFlow).not.toHaveBeenCalled();
     });
 
     it('selects an account-based buy account and closes the picker', async () => {
@@ -114,7 +120,7 @@ describe('AccountList', () => {
         expect(selectBuySelectedReceiveAccount(store.getState())).toEqual({
             account: eth1NormalAccount,
         });
-        expect(navigationPopToTop).toHaveBeenCalledTimes(1);
+        expect(mockCloseTradingFlow).toHaveBeenCalledTimes(1);
     });
 
     it('selects an account-based exchange account and closes the picker', async () => {
@@ -128,7 +134,7 @@ describe('AccountList', () => {
         expect(selectExchangeSelectedReceiveAccount(store.getState())).toEqual({
             account: eth1NormalAccount,
         });
-        expect(navigationPopToTop).toHaveBeenCalledTimes(1);
+        expect(mockCloseTradingFlow).toHaveBeenCalledTimes(1);
     });
 
     it('renders the separate add account button for a populated list', async () => {
