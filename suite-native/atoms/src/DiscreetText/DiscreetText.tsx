@@ -8,7 +8,6 @@ import {
 } from '@trezor/styles-native';
 import { nativeTypography } from '@trezor/theme';
 
-import { BlurUrls } from '../BlurUrls/BlurUrls';
 import { Box } from '../Box';
 import { Text, type TextProps } from '../Text';
 import { DiscreetCanvas } from './DiscreetCanvas';
@@ -17,7 +16,6 @@ import { preloadDiscreetFont } from './useDiscreetFont';
 export type DiscreetTextProps = TextProps & {
     children?: string | null;
     isForcedDiscreetMode?: boolean;
-    shouldBlurUrls?: boolean;
 };
 
 const textStyle = prepareNativeStyle((_, { isDiscreetMode }) => ({
@@ -32,7 +30,6 @@ export const DiscreetText = ({
     adjustsFontSizeToFit,
     style = {},
     isForcedDiscreetMode,
-    shouldBlurUrls = false,
     ...restTextProps
 }: DiscreetTextProps) => {
     const { applyStyle } = useNativeStyles();
@@ -47,18 +44,6 @@ export const DiscreetText = ({
     const { fontSize, lineHeight } = nativeTypography[variant];
     if (!children) return null;
     const showAsDiscreet = isDiscreetMode || !!isForcedDiscreetMode;
-    const textProps = {
-        testID: showAsDiscreet ? 'discreet-text' : 'plain-text',
-        variant,
-        color,
-        ellipsizeMode,
-        adjustsFontSizeToFit,
-        style: mergeNativeStyleObjects([
-            style,
-            applyStyle(textStyle, { isDiscreetMode: showAsDiscreet }),
-        ]),
-        ...restTextProps,
-    };
 
     return (
         <Box>
@@ -74,11 +59,20 @@ export const DiscreetText = ({
             {/* Plain Text always sizes the parent that the DiscreetCanvas fills. */}
             {/* If the DiscreetMode is on, it is hidden with opacity set to zero. */}
             <Box>
-                {shouldBlurUrls && !showAsDiscreet ? (
-                    <BlurUrls text={children} {...textProps} />
-                ) : (
-                    <Text {...textProps}>{children}</Text>
-                )}
+                <Text
+                    testID={showAsDiscreet ? 'discreet-text' : 'plain-text'}
+                    variant={variant}
+                    color={color}
+                    ellipsizeMode={ellipsizeMode}
+                    adjustsFontSizeToFit={adjustsFontSizeToFit}
+                    style={mergeNativeStyleObjects([
+                        style,
+                        applyStyle(textStyle, { isDiscreetMode: showAsDiscreet }),
+                    ])}
+                    {...restTextProps}
+                >
+                    {children}
+                </Text>
             </Box>
         </Box>
     );
