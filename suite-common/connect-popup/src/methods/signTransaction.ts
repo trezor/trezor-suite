@@ -1,6 +1,10 @@
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
-import { selectAccountForNetworkSymbolAndPath, sendFormActions } from '@suite-common/wallet-core';
+import {
+    accountsActions,
+    selectAccountForNetworkSymbolAndPath,
+    sendFormActions,
+} from '@suite-common/wallet-core';
 import { type FormOptions } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
 import type { SignTransaction } from '@trezor/connect';
@@ -9,14 +13,11 @@ import type { Bip43Path } from '@trezor/crypto-utils';
 
 import { connectPopupActions } from '../connectPopupActions';
 import { createPlaceholderAccount } from './shared/placeholderAccount';
-import { createTemporaryAccountsRegistry } from './shared/temporaryAccountsRegistry';
 import {
     type ConnectPopupMethodDefinition,
     type PostCallParams,
     type PreCallParams,
 } from './types';
-
-const temporaryAccounts = createTemporaryAccountsRegistry();
 
 const fetchRefTransactions = async (payload: SignTransaction) => {
     const { coin, refTxs, account, inputs, outputs, identity, version } = payload;
@@ -45,6 +46,7 @@ const preCall = async ({
     getState,
     dispatch,
     txSigningPrecomposed,
+    onCleanup,
 }: PreCallParams<'signTransaction'>) => {
     // Not awaited yet so it can run in parallel
     const refTransactionsPromise = fetchRefTransactions(payload).catch(error => {
@@ -77,7 +79,9 @@ const preCall = async ({
                         selectSupportedNetworkSymbols(getState()),
                     ),
                 );
-                temporaryAccounts.track(createdAccount.payload.account);
+                onCleanup(() =>
+                    dispatch(accountsActions.removeAccount([createdAccount.payload.account])),
+                );
                 selectedAccount = createdAccount.payload.account;
             }
             if (!selectedAccount) {
@@ -129,13 +133,7 @@ const preCall = async ({
     } as unknown as typeof payload;
 };
 
-const postCall = async ({
-    originalPayload,
-    response,
-    dispatch,
-}: PostCallParams<'signTransaction'>) => {
-    temporaryAccounts.cleanup(dispatch);
-
+const postCall = async ({ originalPayload, response }: PostCallParams<'signTransaction'>) => {
     // Must be originalPayload as payload was already stripped from push
     if (originalPayload.push && response.success) {
         const signed = response.payload;

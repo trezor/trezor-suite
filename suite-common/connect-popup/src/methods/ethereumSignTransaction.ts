@@ -8,16 +8,8 @@ import { getSerializedPath, validatePath } from '@trezor/connect-common';
 import type { Bip43Path } from '@trezor/crypto-utils';
 
 import { selectConnectPopupCall } from '../connectPopupReducer';
-import {
-    cleanupEvmSigningAccounts,
-    prepareEvmSigningAccount,
-    showEvmTxSimulation,
-} from './shared/evmSignPreparation';
-import {
-    type ConnectPopupMethodDefinition,
-    type PostCallParams,
-    type PreCallParams,
-} from './types';
+import { prepareEvmSigningAccount, showEvmTxSimulation } from './shared/evmSignPreparation';
+import { type ConnectPopupMethodDefinition, type PreCallParams } from './types';
 
 type _storePrecomposedTransactionParams = {
     typedPayload: EthereumSignTransaction;
@@ -63,6 +55,7 @@ const preCall = async ({
     dispatch,
     txSigningPrecomposed,
     source,
+    onCleanup,
 }: PreCallParams<'ethereumSignTransaction'>) => {
     try {
         const path = getSerializedPath(validatePath(payload.path)) as Bip43Path;
@@ -74,6 +67,7 @@ const preCall = async ({
             chainId,
             dispatch,
             getState,
+            onCleanup,
         });
 
         if (txSigningPrecomposed) {
@@ -141,13 +135,6 @@ const preCall = async ({
     }
 };
 
-const postCall = ({ dispatch }: PostCallParams<'ethereumSignTransaction'>) => {
-    cleanupEvmSigningAccounts(dispatch);
-
-    return false;
-};
-
 export const ethereumSignTransaction: ConnectPopupMethodDefinition<'ethereumSignTransaction'> = {
     preCall,
-    postCall,
 };

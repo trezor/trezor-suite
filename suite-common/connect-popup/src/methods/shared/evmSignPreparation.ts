@@ -1,9 +1,7 @@
-import { type Dispatch } from '@reduxjs/toolkit/react';
-
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { asNetworkSymbol, getNetworkByEvmChainId } from '@suite-common/wallet-config';
-import { selectAccountForNetworkSymbolAndPath } from '@suite-common/wallet-core';
+import { accountsActions, selectAccountForNetworkSymbolAndPath } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import TrezorConnect, { type DerivationPath } from '@trezor/connect';
 import type { Bip43Path } from '@trezor/crypto-utils';
@@ -12,13 +10,12 @@ import { connectPopupActions } from '../../connectPopupActions';
 import { getPermissionDeferred } from '../../connectPopupPromiseManager';
 import { type PreCallParams } from '../types';
 import { createPlaceholderAccount } from './placeholderAccount';
-import { createTemporaryAccountsRegistry } from './temporaryAccountsRegistry';
 
 type EvmSignMethod = 'ethereumSignTransaction' | 'ethereumSignTypedData';
 
 type PrepareEvmSigningAccountParams = Pick<
     PreCallParams<EvmSignMethod>,
-    'dispatch' | 'getState'
+    'dispatch' | 'getState' | 'onCleanup'
 > & {
     path: Bip43Path;
     chainId: number;
@@ -32,14 +29,13 @@ type ShowEvmTxSimulationParams = Pick<
     isSimulationSupported: boolean;
 };
 
-const temporaryAccounts = createTemporaryAccountsRegistry();
-
 // Selects the signing account for the review, a placeholder one when Suite does not have it.
 export const prepareEvmSigningAccount = async ({
     path,
     chainId,
     dispatch,
     getState,
+    onCleanup,
 }: PrepareEvmSigningAccountParams): Promise<Account> => {
     const network = getNetworkByEvmChainId(chainId) || {
         // Placeholder for chains not supported in Suite
@@ -57,7 +53,7 @@ export const prepareEvmSigningAccount = async ({
         const createdAccount = await dispatch(
             createPlaceholderAccount(network, path, selectSupportedNetworkSymbols(getState())),
         );
-        temporaryAccounts.track(createdAccount.payload.account);
+        onCleanup(() => dispatch(accountsActions.removeAccount([createdAccount.payload.account])));
         selectedAccount = createdAccount.payload.account;
     }
     if (!selectedAccount) {
@@ -105,6 +101,3 @@ export const showEvmTxSimulation = async ({
         await getPermissionDeferred(true).promise;
     }
 };
-
-export const cleanupEvmSigningAccounts = (dispatch: Dispatch) =>
-    temporaryAccounts.cleanup(dispatch);

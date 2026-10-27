@@ -27,6 +27,7 @@ import {
 import {
     type ConnectPopupCallThunkDeps,
     type ConnectPopupCallThunkState,
+    connectPopupCallInnerThunk,
     connectPopupCallThunk,
     connectPopupFinishCallThunk,
 } from './connectPopupThunks';
@@ -628,9 +629,14 @@ describe('connectPopupCallThunk — per-method popup behavior', () => {
                 accountsActions.removeAccount(createdAccount),
             ]);
 
+            // Removed once the call ends, before the discovery middleware reacts to its end.
             const actionTypes = getActionTypes(store);
-            expect(actionTypes.indexOf(accountsActions.removeAccount.type)).toBeLessThan(
+            const removeAccountIndex = actionTypes.indexOf(accountsActions.removeAccount.type);
+            expect(removeAccountIndex).toBeGreaterThan(
                 actionTypes.indexOf(connectPopupActions.finishCall.type),
+            );
+            expect(removeAccountIndex).toBeLessThan(
+                actionTypes.indexOf(connectPopupCallInnerThunk.fulfilled.type),
             );
         },
     );

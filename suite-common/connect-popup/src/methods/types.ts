@@ -41,6 +41,8 @@ export type PreCallParams<M extends ConnectPopupMethodKey> = {
     getState: () => any;
     txSigningPrecomposed?: PrecomposedTransactionFinal;
     source: ConnectCallSource;
+    /** Registers a teardown that runs once the call ends, however it ends. */
+    onCleanup: (cleanup: () => void) => void;
 };
 
 export type PostCallParams<M extends ConnectPopupMethodKey> = PreCallParams<M> & {

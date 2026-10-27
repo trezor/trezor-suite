@@ -1,7 +1,11 @@
 import { selectSelectedDevice } from '@suite-common/device';
 import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { getNetwork } from '@suite-common/wallet-config';
-import { selectAccountForNetworkSymbolAndPath, sendFormActions } from '@suite-common/wallet-core';
+import {
+    accountsActions,
+    selectAccountForNetworkSymbolAndPath,
+    sendFormActions,
+} from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 import { getSerializedPath, validatePath } from '@trezor/connect-common';
 import type { Bip43Path } from '@trezor/crypto-utils';
@@ -9,14 +13,7 @@ import type { Bip43Path } from '@trezor/crypto-utils';
 import { connectPopupActions } from '../connectPopupActions';
 import { getPermissionDeferred } from '../connectPopupPromiseManager';
 import { createPlaceholderAccount } from './shared/placeholderAccount';
-import { createTemporaryAccountsRegistry } from './shared/temporaryAccountsRegistry';
-import {
-    type ConnectPopupMethodDefinition,
-    type PostCallParams,
-    type PreCallParams,
-} from './types';
-
-const temporaryAccounts = createTemporaryAccountsRegistry();
+import { type ConnectPopupMethodDefinition, type PreCallParams } from './types';
 
 const preCall = async ({
     method,
@@ -25,6 +22,7 @@ const preCall = async ({
     dispatch,
     txSigningPrecomposed,
     source,
+    onCleanup,
 }: PreCallParams<'solanaSignTransaction'>): Promise<undefined> => {
     try {
         const path = getSerializedPath(validatePath(payload.path)) as Bip43Path;
@@ -40,7 +38,9 @@ const preCall = async ({
             const createdAccount = await dispatch(
                 createPlaceholderAccount(network, path, selectSupportedNetworkSymbols(getState())),
             );
-            temporaryAccounts.track(createdAccount.payload.account);
+            onCleanup(() =>
+                dispatch(accountsActions.removeAccount([createdAccount.payload.account])),
+            );
             selectedAccount = createdAccount.payload.account;
         }
         if (!selectedAccount) {
@@ -104,13 +104,6 @@ const preCall = async ({
     }
 };
 
-const postCall = ({ dispatch }: PostCallParams<'solanaSignTransaction'>) => {
-    temporaryAccounts.cleanup(dispatch);
-
-    return false;
-};
-
 export const solanaSignTransaction: ConnectPopupMethodDefinition<'solanaSignTransaction'> = {
     preCall,
-    postCall,
 };

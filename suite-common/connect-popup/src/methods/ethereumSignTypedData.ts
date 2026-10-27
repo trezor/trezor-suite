@@ -3,16 +3,8 @@ import type { EthereumSignTypedData, EthereumSignTypedDataTypes } from '@trezor/
 import { getSerializedPath, validatePath } from '@trezor/connect-common';
 import type { Bip43Path } from '@trezor/crypto-utils';
 
-import {
-    cleanupEvmSigningAccounts,
-    prepareEvmSigningAccount,
-    showEvmTxSimulation,
-} from './shared/evmSignPreparation';
-import {
-    type ConnectPopupMethodDefinition,
-    type PostCallParams,
-    type PreCallParams,
-} from './types';
+import { prepareEvmSigningAccount, showEvmTxSimulation } from './shared/evmSignPreparation';
+import { type ConnectPopupMethodDefinition, type PreCallParams } from './types';
 
 const preCall = async ({
     method,
@@ -20,6 +12,7 @@ const preCall = async ({
     getState,
     dispatch,
     source,
+    onCleanup,
 }: PreCallParams<'ethereumSignTypedData'>): Promise<undefined> => {
     try {
         // The simulation reads typed data only, the payload may be a typed hash too.
@@ -31,7 +24,7 @@ const preCall = async ({
             payload: typedPayload,
         });
 
-        await prepareEvmSigningAccount({ path, chainId, dispatch, getState });
+        await prepareEvmSigningAccount({ path, chainId, dispatch, getState, onCleanup });
         await showEvmTxSimulation({
             path: typedPayload.path,
             isSimulationSupported,
@@ -49,13 +42,6 @@ const preCall = async ({
     }
 };
 
-const postCall = ({ dispatch }: PostCallParams<'ethereumSignTypedData'>) => {
-    cleanupEvmSigningAccounts(dispatch);
-
-    return false;
-};
-
 export const ethereumSignTypedData: ConnectPopupMethodDefinition<'ethereumSignTypedData'> = {
     preCall,
-    postCall,
 };

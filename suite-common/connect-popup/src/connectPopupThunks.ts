@@ -25,7 +25,7 @@ import {
     CONNECT_POPUP_MODULE,
     type ConnectCallSource,
 } from './connectPopupTypes';
-import { cleanupAllTemporaryAccounts, getMethodDefinition } from './methods';
+import { getMethodDefinition } from './methods';
 import type { ConnectPopupMethodKey, MethodPayload } from './methods/types';
 import {
     canRememberPermissions,
@@ -73,6 +73,11 @@ export const connectPopupCallInnerThunk = createThunk<
 >(
     `${CONNECT_POPUP_MODULE}/callThunk`,
     async ({ source, ...params }, { dispatch, getState, extra }) => {
+        const cleanups: Array<() => void> = [];
+        const onCleanup = (cleanup: () => void) => {
+            cleanups.push(cleanup);
+        };
+
         try {
             // A redirect is resolved once: the target method's own compatibility step is skipped.
             const { method, payload } =
@@ -188,6 +193,7 @@ export const connectPopupCallInnerThunk = createThunk<
                     getState,
                     txSigningPrecomposed,
                     source,
+                    onCleanup,
                 })) ?? payload;
 
             // refresh device state before call (could have changed during preCall)
@@ -217,6 +223,7 @@ export const connectPopupCallInnerThunk = createThunk<
                     dispatch,
                     getState,
                     source,
+                    onCleanup,
                 })) ?? false;
             if (!response.success) {
                 throw response.error;
@@ -283,9 +290,8 @@ export const connectPopupCallInnerThunk = createThunk<
                 error: serializeError(error),
             });
         } finally {
-            // Tear down any placeholder accounts created in preCall even if the call threw
-            // before postCall ran, so they cannot leak into a later removeAccount payload.
-            cleanupAllTemporaryAccounts(dispatch);
+            // Runs however the call ends, e.g. to remove placeholder accounts created in preCall.
+            cleanups.forEach(cleanup => cleanup());
             extra.services.lockDevice(false);
         }
     },

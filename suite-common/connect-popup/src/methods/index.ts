@@ -46,8 +46,3 @@ export const getMethodDefinition = <M extends ConnectPopupMethodKey>(
     method: M,
 ): ConnectPopupMethodDefinition<M> | undefined =>
     Object.hasOwn(methodDefinitions, method) ? methodDefinitions[method] : undefined;
-
-// Unconditional safety net invoked from the thunk's finally: tears down every sign method's
-// placeholder accounts (registered via createTemporaryAccountsRegistry) so the leak cannot survive a
-// call even when it throws between preCall and postCall.
-export { cleanupAllTemporaryAccounts } from './shared/temporaryAccountsRegistry';
