@@ -1,7 +1,9 @@
 #!/usr/bin/env tsx
 
-import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
+
+import { readPackageJson } from '@trezor/node-utils';
 
 import { createExecCliCommand } from './execCliCommand';
 import { createGetAffectedWorkspaces } from './getAffectedWorkspaces';
@@ -20,8 +22,9 @@ const getModeFromPositionals = (positionals: ReadonlyArray<string>): Requirement
     throw new Error(`Invalid mode "${mode ?? ''}". Use "verify" or "fix".`);
 };
 
-const pkg = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
-const requirementsWorkspaceName = pkg.name;
+const { name: requirementsWorkspaceName } = readPackageJson(
+    fileURLToPath(new URL('..', import.meta.url)),
+);
 if (typeof requirementsWorkspaceName !== 'string') {
     throw new Error('Failed to get name of this workspace (requirements) from package.json.');
 }
