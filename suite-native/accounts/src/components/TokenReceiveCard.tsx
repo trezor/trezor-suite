@@ -119,6 +119,7 @@ export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps
                     <ExactTokenAmountFormatter
                         value={asDecimalTokenAmount(token.balance ?? '0')}
                         tokenSymbol={token.symbol}
+                        shouldBlurUrls={isUnrecognized}
                         maxDisplayedDecimals={token.decimals}
                     />
                 </Box>

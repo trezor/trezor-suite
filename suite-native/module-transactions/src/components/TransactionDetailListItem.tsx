@@ -1,8 +1,15 @@
+import { useSelector } from 'react-redux';
+
 import { type AccountKey } from '@suite-common/wallet-types';
-import { Box, PressableOpacity, Text } from '@suite-native/atoms';
+import { BlurUrls, Box, PressableOpacity, Text } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
 import { useNavigateToTransactionDetail } from '@suite-native/navigation';
-import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
+import {
+    type TokensRootState,
+    type TypedTokenTransfer,
+    type WalletAccountTransaction,
+    selectIsUnrecognizedToken,
+} from '@suite-native/tokens';
 import {
     TokenTransferListItemValues,
     TransactionListItemValues,
@@ -36,6 +43,9 @@ export const TransactionDetailListItem = ({
 }: TransactionDetailListItemProps) => {
     const { applyStyle } = useNativeStyles();
     const navigateToTransactionDetail = useNavigateToTransactionDetail();
+    const isUnrecognized = useSelector((state: TokensRootState) =>
+        selectIsUnrecognizedToken(state, accountKey, tokenTransfer?.contract),
+    );
 
     const handleNavigation = () => {
         onPress?.();
@@ -60,7 +70,11 @@ export const TransactionDetailListItem = ({
                     />
                 </Box>
                 <Box style={applyStyle(CoinNameContainerStyle)}>
-                    <Text>{tokenTransfer?.name ?? 'Ethereum'}</Text>
+                    {isUnrecognized ? (
+                        <BlurUrls text={tokenTransfer?.name ?? 'Ethereum'} />
+                    ) : (
+                        <Text>{tokenTransfer?.name ?? 'Ethereum'}</Text>
+                    )}
                 </Box>
             </Box>
             <Box style={applyStyle(valuesContainerStyle)}>

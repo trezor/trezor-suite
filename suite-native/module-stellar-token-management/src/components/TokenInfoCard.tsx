@@ -1,8 +1,13 @@
 import { Pressable } from 'react-native';
+import { useSelector } from 'react-redux';
 
+import {
+    type TokenDefinitionsRootState,
+    selectIsSpecificCoinDefinitionKnown,
+} from '@suite-common/token-definitions';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
-import { Card, HStack, Text, VStack } from '@suite-native/atoms';
+import { BlurUrls, Card, HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon, TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -27,6 +32,11 @@ export const TokenInfoCard = ({
     onPress,
 }: TokenInfoCardProps) => {
     const { applyStyle } = useNativeStyles();
+    const isRecognized = useSelector(
+        (state: TokenDefinitionsRootState) =>
+            iconContractAddress !== undefined &&
+            selectIsSpecificCoinDefinitionKnown(state, asNetworkSymbol('xlm'), iconContractAddress),
+    );
 
     return (
         <Pressable onPress={onPress}>
@@ -49,7 +59,11 @@ export const TokenInfoCard = ({
                                     tokenSymbol={tokenName}
                                     size="extraSmall"
                                 />
-                                <Text variant="body-md">{tokenName}</Text>
+                                {isRecognized ? (
+                                    <Text variant="body-md">{tokenName}</Text>
+                                ) : (
+                                    <BlurUrls text={tokenName} />
+                                )}
                             </HStack>
                             <Text variant="body-md">{issuerDomain}</Text>
                         </VStack>

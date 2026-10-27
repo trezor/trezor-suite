@@ -78,6 +78,7 @@ export const AccountsListTokenItem = ({
                 <CompactTokenAmountFormatter
                     value={asDecimalTokenAmount(balance)}
                     tokenSymbol={tokenSymbol}
+                    shouldBlurUrls={isUnrecognized}
                     tokenDecimals={token.decimals}
                     numberOfLines={1}
                     adjustsFontSizeToFit

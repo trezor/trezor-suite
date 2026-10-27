@@ -28,4 +28,16 @@ describe('DiscreetText', () => {
         expect(getByTestId('discreet-canvas')).toBeOnTheScreen();
         expect(hasLayoutHandler).toBe(0);
     });
+
+    it('keeps the whole value private instead of allowing URL reveal in forced discreet mode', async () => {
+        const { getByTestId, queryByRole } = await renderWithBasicProvider(
+            <DiscreetText isForcedDiscreetMode shouldBlurUrls>
+                100 claim.example
+            </DiscreetText>,
+        );
+
+        expect(getByTestId('discreet-canvas')).toBeOnTheScreen();
+        expect(getByTestId('discreet-text')).toHaveStyle({ opacity: 0 });
+        expect(queryByRole('button')).toBeNull();
+    });
 });

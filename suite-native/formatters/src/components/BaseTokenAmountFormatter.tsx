@@ -10,6 +10,8 @@ export type TokenAmountFormatterCommonProps = {
     tokenSymbol: TokenSymbol | null;
     isDiscreetText?: boolean;
     isPhishingTransaction?: boolean;
+    // Mask untrusted symbols by default; callers with token definitions can exempt recognized tokens.
+    shouldBlurUrls?: boolean;
 } & FormatterProps<DecimalTokenAmount> &
     TextProps;
 
@@ -30,6 +32,7 @@ export const BaseTokenAmountFormatter = ({
     variant = 'body-sm',
     color = 'contentSecondary',
     isPhishingTransaction = false,
+    shouldBlurUrls = true,
     formatStyle,
     ...rest
 }: BaseTokenAmountFormatterProps) => {
@@ -52,6 +55,7 @@ export const BaseTokenAmountFormatter = ({
             variant={variant}
             color={color}
             isForcedDiscreetMode={isPhishingTransaction}
+            shouldBlurUrls={shouldBlurUrls}
             {...rest}
         />
     );

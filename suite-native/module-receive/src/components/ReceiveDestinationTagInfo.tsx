@@ -7,10 +7,14 @@ import {
     selectAccountNetworkType,
 } from '@suite-common/wallet-core';
 import type { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { BannerInline } from '@suite-native/atoms';
+import { BannerInline, BlurUrls } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
-import { type TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
+import {
+    type TokensRootState,
+    selectAccountTokenSymbol,
+    selectIsUnrecognizedToken,
+} from '@suite-native/tokens';
 import { HELP_CENTER_OTHER_CRYPTOCURRENCIES_DESTINATION_TAGS_URL } from '@trezor/urls';
 
 type ReceiveDestinationTagInfoProps = {
@@ -24,6 +28,9 @@ export const ReceiveDestinationTagInfo = ({
 }: ReceiveDestinationTagInfoProps) => {
     const tokenSymbol = useSelector((state: TokensRootState) =>
         selectAccountTokenSymbol(state, accountKey, tokenContract),
+    );
+    const isUnrecognized = useSelector((state: TokensRootState) =>
+        selectIsUnrecognizedToken(state, accountKey, tokenContract),
     );
     const accountSymbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
@@ -56,7 +63,12 @@ export const ReceiveDestinationTagInfo = ({
                                 textPressedColor="contentSecondary"
                             />
                         ),
-                        coinSymbol: tokenSymbol ?? getDisplaySymbol(accountSymbol),
+                        coinSymbol:
+                            isUnrecognized && tokenSymbol !== null ? (
+                                <BlurUrls text={tokenSymbol} variant="body-xs" />
+                            ) : (
+                                (tokenSymbol ?? getDisplaySymbol(accountSymbol))
+                            ),
                     }}
                 />
             }

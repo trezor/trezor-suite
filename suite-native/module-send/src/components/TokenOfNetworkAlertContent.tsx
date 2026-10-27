@@ -4,10 +4,14 @@ import { useSelector } from 'react-redux';
 import { getNetwork } from '@suite-common/wallet-config';
 import { type AccountsRootState, selectAccountNetworkSymbol } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { BannerInline, Text, VStack } from '@suite-native/atoms';
+import { BannerInline, BlurUrls, Text, VStack } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { type TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
+import {
+    type TokensRootState,
+    selectAccountTokenSymbol,
+    selectIsUnrecognizedToken,
+} from '@suite-native/tokens';
 
 type ParagraphProps = {
     header: ReactNode;
@@ -31,6 +35,9 @@ export const TokenOfNetworkAlertBody = ({
     const tokenSymbol = useSelector((state: TokensRootState) =>
         selectAccountTokenSymbol(state, accountKey, tokenContract),
     );
+    const isUnrecognized = useSelector((state: TokensRootState) =>
+        selectIsUnrecognizedToken(state, accountKey, tokenContract),
+    );
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
@@ -51,7 +58,15 @@ export const TokenOfNetworkAlertBody = ({
             <Text variant="headline-sm">
                 <Translation
                     id="moduleSend.outputs.tokenOfNetworkSheet.title"
-                    values={{ tokenSymbol, networkName }}
+                    values={{
+                        tokenSymbol:
+                            isUnrecognized && tokenSymbol !== null ? (
+                                <BlurUrls text={tokenSymbol} variant="headline-sm" />
+                            ) : (
+                                tokenSymbol
+                            ),
+                        networkName,
+                    }}
                 />
             </Text>
             <Paragraph

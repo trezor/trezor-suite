@@ -25,6 +25,7 @@ import {
 import { type AccountKey, type TokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import {
+    BlurUrls,
     BottomSheetModal,
     Box,
     Button,
@@ -149,6 +150,7 @@ export const TokenSettingsBottomSheet = forwardRef(
 
         const tokenBalance = token?.balance ?? '0';
         const tokenSymbol = token?.symbol ? toTokenSymbol(getDisplaySymbol(token.symbol)) : null;
+        const tokenTitle = token?.name ?? displaySymbol;
         const networkName = getNetwork(symbol).name;
 
         const isHidden = hiddenTokens.some(
@@ -229,7 +231,17 @@ export const TokenSettingsBottomSheet = forwardRef(
         };
 
         return (
-            <BottomSheetModal ref={ref} title={token?.name ?? displaySymbol} isCloseDisplayed>
+            <BottomSheetModal
+                ref={ref}
+                title={
+                    isUnrecognized ? (
+                        <BlurUrls text={tokenTitle} variant="headline-sm" />
+                    ) : (
+                        tokenTitle
+                    )
+                }
+                isCloseDisplayed
+            >
                 <VStack spacing="sp16" paddingBottom="sp16">
                     <Card style={applyStyle(cardStyle)}>
                         <VStack>
@@ -277,6 +289,7 @@ export const TokenSettingsBottomSheet = forwardRef(
                                     <VStack spacing={0} alignItems="flex-end">
                                         {tokenContract ? (
                                             <ExactTokenAmountFormatter
+                                                shouldBlurUrls={isUnrecognized}
                                                 value={asDecimalTokenAmount(tokenBalance)}
                                                 tokenSymbol={tokenSymbol}
                                                 variant="body-sm"

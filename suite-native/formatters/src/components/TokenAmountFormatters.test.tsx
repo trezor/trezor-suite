@@ -1,5 +1,5 @@
 import { type TokenSymbol } from '@suite-common/wallet-types';
-import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
 
 import {
     CompactTokenAmountFormatter,
@@ -52,6 +52,26 @@ describe('ExactTokenAmountFormatter', () => {
 
         expect(getByTestId('discreet-text')).toHaveTextContent('0 USDC');
     });
+
+    it('masks a URL in the symbol and reveals it on tap without changing the amount', async () => {
+        const { getByLabelText, getByText } = await renderExactTokenAmountFormatter({
+            tokenSymbol: 'claim.example' as TokenSymbol,
+        });
+
+        expect(getByLabelText('1,234.56 …')).toBeOnTheScreen();
+        await fireEvent.press(getByText('claim.example'), { stopPropagation: () => undefined });
+        expect(getByLabelText('1,234.56 claim.example')).toBeOnTheScreen();
+    });
+
+    it('keeps a recognized symbol readable when masking is disabled', async () => {
+        const { getByTestId, queryByLabelText } = await renderExactTokenAmountFormatter({
+            tokenSymbol: 'known.example' as TokenSymbol,
+            shouldBlurUrls: false,
+        });
+
+        expect(getByTestId('plain-text')).toHaveTextContent('1,234.56 known.example');
+        expect(queryByLabelText('1,234.56 …')).toBeNull();
+    });
 });
 
 describe('CompactTokenAmountFormatter', () => {
@@ -68,6 +88,15 @@ describe('CompactTokenAmountFormatter', () => {
         const { getByTestId } = await renderCompactTokenAmountFormatter({});
 
         expect(getByTestId('plain-text')).toHaveTextContent('1,234.56 USDC');
+    });
+
+    it('masks URL symbols even outside discreet text', async () => {
+        const { getByLabelText } = await renderCompactTokenAmountFormatter({
+            tokenSymbol: 'claim.example' as TokenSymbol,
+            isDiscreetText: false,
+        });
+
+        expect(getByLabelText('1,234.56 …')).toBeOnTheScreen();
     });
 
     it('should render compact formatted dust value', async () => {

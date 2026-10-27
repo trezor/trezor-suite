@@ -11,6 +11,10 @@ import {
     selectWalletAssetTokenDecimals,
     selectWalletAssetTokenSymbol,
 } from '@suite-common/assets';
+import {
+    type TokenDefinitionsRootState,
+    selectIsSpecificCoinDefinitionKnown,
+} from '@suite-common/token-definitions';
 import { selectBaseCurrency, selectIsBaseCurrencyInSats } from '@suite-common/wallet-core';
 import { areBaseCurrencyAmountsEqual } from '@suite-common/wallet-types';
 import { buildCurrencyShortOption } from '@suite-common/wallet-utils';
@@ -39,6 +43,11 @@ export const AssetDetailBalanceSection = () => {
     );
     const tokenSymbol = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetTokenSymbol(state, assetKey),
+    );
+    const isUnrecognized = useSelector(
+        (state: TokenDefinitionsRootState) =>
+            tokenContract !== undefined &&
+            !selectIsSpecificCoinDefinitionKnown(state, networkSymbol, tokenContract),
     );
     const tokenDecimals = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetTokenDecimals(state, assetKey),
@@ -98,6 +107,7 @@ export const AssetDetailBalanceSection = () => {
                         <ExactTokenAmountFormatter
                             value={asDecimalTokenAmount(amount)}
                             tokenSymbol={tokenSymbol}
+                            shouldBlurUrls={isUnrecognized}
                             maxDisplayedDecimals={tokenDecimals}
                             variant="body-md-strong"
                             color="contentPrimary"

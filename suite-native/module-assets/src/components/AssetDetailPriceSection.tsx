@@ -3,7 +3,11 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { type AssetsRootState, selectAssetName } from '@suite-common/assets';
-import { HStack, Text, VStack } from '@suite-native/atoms';
+import {
+    type TokenDefinitionsRootState,
+    selectIsSpecificCoinDefinitionKnown,
+} from '@suite-common/token-definitions';
+import { BlurUrls, HStack, Text, VStack } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
 import type { AssetsStackParamList, AssetsStackRoutes } from '@suite-native/navigation';
 import { AssetPriceChart } from '@suite-native/price-chart';
@@ -16,6 +20,11 @@ export const AssetDetailPriceSection = () => {
     const assetName = useSelector((state: AssetsRootState) =>
         selectAssetName(state, networkSymbol, tokenContract),
     );
+    const isUnrecognized = useSelector(
+        (state: TokenDefinitionsRootState) =>
+            tokenContract !== undefined &&
+            !selectIsSpecificCoinDefinitionKnown(state, networkSymbol, tokenContract),
+    );
 
     return (
         <VStack spacing="sp12" paddingHorizontal="sp16" paddingVertical="sp8">
@@ -27,7 +36,13 @@ export const AssetDetailPriceSection = () => {
                     showNetworkIcon
                     size="extraSmall"
                 />
-                <Text variant="body-md-strong">{assetName}</Text>
+                <Text variant="body-md-strong">
+                    {isUnrecognized ? (
+                        <BlurUrls text={assetName} variant="body-md-strong" />
+                    ) : (
+                        assetName
+                    )}
+                </Text>
             </HStack>
 
             <AssetDetailPrice networkSymbol={networkSymbol} tokenContract={tokenContract} />

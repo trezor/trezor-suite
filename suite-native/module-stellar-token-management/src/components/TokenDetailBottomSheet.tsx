@@ -1,10 +1,15 @@
 import { type RefObject } from 'react';
+import { useSelector } from 'react-redux';
 
 import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
 
+import {
+    type TokenDefinitionsRootState,
+    selectIsSpecificCoinDefinitionKnown,
+} from '@suite-common/token-definitions';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
-import { BottomSheetModal, Button, HStack, Text, VStack } from '@suite-native/atoms';
+import { BlurUrls, BottomSheetModal, Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 
@@ -26,43 +31,63 @@ export const TokenDetailBottomSheet = ({
     issuerAddress,
     iconContractAddress,
     onClose,
-}: TokenDetailBottomSheetProps) => (
-    <BottomSheetModal ref={bottomSheetRef} onDismiss={onClose}>
-        <VStack spacing="sp16" paddingHorizontal="sp16">
-            <HStack alignItems="center" spacing="sp12">
-                <TokenIcon
-                    networkSymbol={asNetworkSymbol('xlm')}
-                    contractAddress={iconContractAddress}
-                    tokenSymbol={assetCode || tokenName}
-                    size="large"
-                />
-                <VStack>
-                    <Text variant="body-md">{tokenName}</Text>
-                    <Text variant="body-sm" color="contentSecondary">
-                        {assetCode}
-                    </Text>
-                </VStack>
-            </HStack>
+}: TokenDetailBottomSheetProps) => {
+    const isRecognized = useSelector(
+        (state: TokenDefinitionsRootState) =>
+            iconContractAddress !== undefined &&
+            selectIsSpecificCoinDefinitionKnown(state, asNetworkSymbol('xlm'), iconContractAddress),
+    );
 
-            <VStack spacing="sp12">
-                <VStack spacing="sp4">
-                    <Text variant="body-md-strong">
-                        <Translation id="moduleStellarToken.tokenDetail.issuer" />
-                    </Text>
-                    <Text variant="body-md">{issuerDomain}</Text>
+    return (
+        <BottomSheetModal ref={bottomSheetRef} onDismiss={onClose}>
+            <VStack spacing="sp16" paddingHorizontal="sp16">
+                <HStack alignItems="center" spacing="sp12">
+                    <TokenIcon
+                        networkSymbol={asNetworkSymbol('xlm')}
+                        contractAddress={iconContractAddress}
+                        tokenSymbol={assetCode || tokenName}
+                        size="large"
+                    />
+                    <VStack>
+                        {isRecognized ? (
+                            <Text variant="body-md">{tokenName}</Text>
+                        ) : (
+                            <BlurUrls text={tokenName} />
+                        )}
+                        <Text variant="body-sm" color="contentSecondary">
+                            {isRecognized ? (
+                                assetCode
+                            ) : (
+                                <BlurUrls
+                                    text={assetCode}
+                                    variant="body-sm"
+                                    color="contentSecondary"
+                                />
+                            )}
+                        </Text>
+                    </VStack>
+                </HStack>
+
+                <VStack spacing="sp12">
+                    <VStack spacing="sp4">
+                        <Text variant="body-md-strong">
+                            <Translation id="moduleStellarToken.tokenDetail.issuer" />
+                        </Text>
+                        <Text variant="body-md">{issuerDomain}</Text>
+                    </VStack>
+
+                    <VStack spacing="sp4">
+                        <Text variant="body-md-strong">
+                            <Translation id="moduleStellarToken.tokenDetail.issuerAddress" />
+                        </Text>
+                        <Text variant="body-md">{issuerAddress}</Text>
+                    </VStack>
                 </VStack>
 
-                <VStack spacing="sp4">
-                    <Text variant="body-md-strong">
-                        <Translation id="moduleStellarToken.tokenDetail.issuerAddress" />
-                    </Text>
-                    <Text variant="body-md">{issuerAddress}</Text>
-                </VStack>
+                <Button intent="brand" priority="primary" onPress={onClose}>
+                    <Translation id="generic.buttons.goBack" />
+                </Button>
             </VStack>
-
-            <Button intent="brand" priority="primary" onPress={onClose}>
-                <Translation id="generic.buttons.goBack" />
-            </Button>
-        </VStack>
-    </BottomSheetModal>
-);
+        </BottomSheetModal>
+    );
+};

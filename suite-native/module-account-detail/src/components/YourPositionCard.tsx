@@ -1,6 +1,8 @@
+import { useSelector } from 'react-redux';
+
 import { getDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { type Account, type TokenInfoBranded, type TokenSymbol } from '@suite-common/wallet-types';
-import { Box, Card, HStack, Text } from '@suite-native/atoms';
+import { BlurUrls, Box, Card, HStack, Text } from '@suite-native/atoms';
 import {
     CryptoToFiatAmountFormatter,
     ExactCryptoAmountFormatter,
@@ -10,6 +12,7 @@ import {
 } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { YieldBadge } from '@suite-native/module-earn';
+import { type TokensRootState, selectIsUnrecognizedToken } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { useYourPositionCardYieldBadge } from '../hooks/useYourPositionCardYieldBadge';
@@ -37,6 +40,9 @@ interface YourPositionCardProps {
 
 export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
     const { applyStyle } = useNativeStyles();
+    const isUnrecognized = useSelector((state: TokensRootState) =>
+        selectIsUnrecognizedToken(state, account.key, token?.contract),
+    );
 
     const { symbol } = account;
 
@@ -72,7 +78,11 @@ export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
                     <Box style={applyStyle(cardContentStyle)}>
                         <HStack>
                             <Text variant="body-sm-strong" color="contentPrimary">
-                                {tokenSymbol}
+                                {isUnrecognized ? (
+                                    <BlurUrls text={tokenSymbol} variant="body-sm-strong" />
+                                ) : (
+                                    tokenSymbol
+                                )}
                             </Text>
 
                             {yieldBadge && account && (
@@ -86,7 +96,15 @@ export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
                         </HStack>
 
                         <Text variant="body-sm" color="contentSecondary" numberOfLines={1}>
-                            {tokenName}
+                            {isUnrecognized ? (
+                                <BlurUrls
+                                    text={tokenName}
+                                    variant="body-sm"
+                                    color="contentSecondary"
+                                />
+                            ) : (
+                                tokenName
+                            )}
                         </Text>
                     </Box>
 
@@ -116,6 +134,7 @@ export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
                             <ExactTokenAmountFormatter
                                 value={asDecimalTokenAmount(token.balance ?? '0')}
                                 tokenSymbol={tokenAmountSymbol}
+                                shouldBlurUrls={isUnrecognized}
                                 maxDisplayedDecimals={token.decimals}
                                 numberOfLines={1}
                                 adjustsFontSizeToFit

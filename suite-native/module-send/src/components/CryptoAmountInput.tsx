@@ -5,11 +5,15 @@ import { useFormatters } from '@suite-common/formatters';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency, selectIsBaseCurrencyInSats } from '@suite-common/wallet-core';
 import { getDecimalsForBaseCurrency } from '@suite-common/wallet-utils';
-import { Input, Text } from '@suite-native/atoms';
+import { BlurUrls, Input, Text } from '@suite-native/atoms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { useField, useFormContext } from '@suite-native/forms';
 import { useAmountInputTransformers } from '@suite-native/helpers';
-import { type TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
+import {
+    type TokensRootState,
+    selectAccountTokenSymbol,
+    selectIsUnrecognizedToken,
+} from '@suite-native/tokens';
 import { useDebounce } from '@trezor/react-utils';
 import { type Color } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
@@ -49,6 +53,13 @@ export const CryptoAmountInput = ({
     const tokenSymbol = useSelector((state: TokensRootState) =>
         selectAccountTokenSymbol(state, accountKey, tokenContract),
     );
+    const isUnrecognized = useSelector((state: TokensRootState) =>
+        selectIsUnrecognizedToken(state, accountKey, tokenContract),
+    );
+    const displaySymbol =
+        tokenSymbol !== null
+            ? getDisplaySymbol(tokenSymbol, tokenContract)
+            : formatter.format(symbol);
 
     const cryptoFieldName = getOutputFieldName(recipientIndex, 'amount');
     const fiatFieldName = getOutputFieldName(recipientIndex, 'fiat');
@@ -103,9 +114,14 @@ export const CryptoAmountInput = ({
             hasError={!isDisabled && hasError}
             rightIcon={
                 <SendAmountCurrencyLabelWrapper isDisabled={isDisabled}>
-                    {tokenSymbol !== null
-                        ? getDisplaySymbol(tokenSymbol, tokenContract)
-                        : formatter.format(symbol)}
+                    {isUnrecognized ? (
+                        <BlurUrls
+                            text={displaySymbol}
+                            color={isDisabled ? 'contentSecondary' : 'contentPrimary'}
+                        />
+                    ) : (
+                        displaySymbol
+                    )}
                 </SendAmountCurrencyLabelWrapper>
             }
         />

@@ -45,6 +45,7 @@ export const TokenInfoCard = ({
                 <ExactTokenAmountFormatter
                     value={convertTokenValueToDecimal(balance, decimals ?? 0)}
                     tokenSymbol={tokenSymbol}
+                    shouldBlurUrls={false}
                     maxDisplayedDecimals={decimals}
                     variant="body-xs"
                 />
