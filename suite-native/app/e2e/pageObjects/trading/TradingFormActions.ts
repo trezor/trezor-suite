@@ -101,6 +101,10 @@ export abstract class TradingFormActions extends TradingActions {
             await element(freshAddressMatcher).tap();
         }
 
+        await this.expectSelectedReceiveAccount(accountName);
+    }
+
+    async expectSelectedReceiveAccount(accountName: string) {
         await detoxExpect(this.getElementById('receive-account/selected-account')).toHaveText(
             accountName,
         );
@@ -209,7 +213,7 @@ export abstract class TradingFormActions extends TradingActions {
             .withTimeout(this.SHORT_TIMEOUT);
     }
 
-    async selectSendAsset(asset: string, network?: string, searchString?: string) {
+    async selectSendAsset(asset: string, network?: string, searchString?: string, matchIndex = 1) {
         const sendAssetButton = this.getElementById('asset-send-button');
         await waitForVisible(sendAssetButton, { timeout: this.SHORT_TIMEOUT });
         await sendAssetButton.tap();
@@ -235,7 +239,7 @@ export abstract class TradingFormActions extends TradingActions {
         }
 
         // This line should select asset from Ethereum #3 account, but this solution is fragile.
-        const matchingAsset = element(by.label(asset)).atIndex(1);
+        const matchingAsset = element(by.label(asset)).atIndex(matchIndex);
         await waitForVisible(matchingAsset);
         await matchingAsset.tap();
 
