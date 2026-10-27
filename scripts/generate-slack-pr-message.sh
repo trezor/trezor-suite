@@ -6,6 +6,7 @@ Usage: $(basename "$0") [PR] [PLATFORM] [OPTIONS]
        $(basename "$0") [PLATFORM] [OPTIONS]
 
 Generate a Slack-formatted PR message with stats and copy it to clipboard.
+The line and file counts ignore whitespace-only changes, unlike the GitHub UI.
 
 PR:
     GitHub pull request number or URL. Uses the current branch when omitted.
@@ -36,7 +37,7 @@ Examples:
 
 Requirements:
     - GitHub CLI (gh) must be installed and authenticated
-    - A PR number must be used from within its GitHub repository
+    - Must run inside the PR's repository, with the PR branch on the remote 'origin'
     - When PR is omitted, the current branch must have a pull request
 
 EOF
@@ -235,7 +236,7 @@ fetch_pr_json() {
     local pr_reference="$1"
     local pr_json
 
-    if ! pr_json=$(gh pr view "$pr_reference" --json title,changedFiles,additions,deletions,url 2>&1); then
+    if ! pr_json=$(gh pr view "$pr_reference" --json title,url,baseRefName,headRefName 2>&1); then
         echo -e "\033[0;31mError: Failed to fetch PR information.
 $pr_json
 Make sure the PR number or URL is valid.\033[0m
@@ -246,6 +247,26 @@ Use -h option for more info" >&2
     echo "$pr_json"
 }
 
+# Prints "additions deletions files" of the PR with whitespace-only changes ignored.
+# A file counts when it has a non-whitespace line change or is binary.
+compute_diff_stats() {
+    local pr_json="$1"
+    local base_branch head_branch
+
+    base_branch=$(echo "$pr_json" | jq -r ".baseRefName")
+    head_branch=$(echo "$pr_json" | jq -r ".headRefName")
+
+    if ! git fetch --quiet origin "$base_branch" "$head_branch"; then
+        echo -e "\033[0;31mError: Failed to fetch '$base_branch' and '$head_branch' from origin.\033[0m" >&2
+        return 1
+    fi
+
+    git diff -w --numstat "origin/$base_branch...origin/$head_branch" | awk '
+        { additions += $1; deletions += $2 }
+        $1 == "-" || $1 + $2 > 0 { files++ }
+        END { print additions + 0, deletions + 0, files + 0 }'
+}
+
 build_slack_message() {
     local pr_json="$1"
     local icon="$2"
@@ -254,9 +275,7 @@ build_slack_message() {
 
     title=$(echo "$pr_json" | jq -r ".title")
     url=$(echo "$pr_json" | jq -r ".url")
-    deletions=$(echo "$pr_json" | jq -r ".deletions")
-    additions=$(echo "$pr_json" | jq -r ".additions")
-    changed_files=$(echo "$pr_json" | jq -r ".changedFiles")
+    read -r additions deletions changed_files < <(compute_diff_stats "$pr_json") || return 1
 
     small_pr_emoji=""
     if [[ $((additions + deletions)) -lt 20 ]]; then
@@ -326,7 +345,9 @@ main() {
         return 1
     fi
 
-    result=$(build_slack_message "$pr_json" "$icon" "$PARSED_EXTRA_EMOJIS")
+    if ! result=$(build_slack_message "$pr_json" "$icon" "$PARSED_EXTRA_EMOJIS"); then
+        return 1
+    fi
     print_result "$result"
 
     if copy_to_clipboard "$result"; then
