@@ -202,4 +202,50 @@ describe('analyzeTransactions', () => {
         expect(externalAmounts).toEqual([20000]);
         expect(response.rawLiquidityClue).toBe(20000);
     });
+
+    it('Regtest: a coinjoin paying only to own addresses means no liquidity clue', async () => {
+        let initLiquidityClueCalled = false;
+        server?.addListener('test-request', ({ url, resolve }) => {
+            if (url.endsWith('/init-liquidity-clue')) {
+                initLiquidityClueCalled = true;
+                // a non-null answer regardless of the request body, so that both assertions below
+                // fail if we ever get here: this fixture has no foreign output, so
+                // `calcLiquidityClue(data.ExternalAmounts)` would itself be null and let the
+                // `rawLiquidityClue` assertion pass.
+                resolve({ RawLiquidityClue: 1 });
+            }
+            resolve();
+        });
+
+        const txHistory = [
+            // `joint` only means that some input is foreign, so a collaborative transaction may
+            // still send everything to the account's own addresses.
+            generateTx(
+                [
+                    {
+                        address: 'bcrt1plc2ree0z9a9vew23updksagk2mvlwc2g3ft8zuj24l406dpqtlpqap8xz8',
+                        value: 1030000,
+                        isAccountOwned: true,
+                    },
+                ],
+                [
+                    {
+                        address: 'bcrt1plc2ree0z9a9vew23updksagk2mvlwc2g3ft8zuj24l406dpqtlpqap8xz8',
+                        value: 1000000,
+                        isAccountOwned: true,
+                    },
+                ],
+                'joint',
+            ),
+        ];
+
+        const response = await analyzeTransactions(txHistory, {
+            ...server?.requestOptions,
+            network: networks.regtest,
+        });
+        // No foreign output means no information about the others' liquidity, so there is nothing
+        // to ask the middleware about and no empty request body is sent.
+        expect(initLiquidityClueCalled).toBe(false);
+        expect(response.rawLiquidityClue).toBe(null);
+    });
 });
