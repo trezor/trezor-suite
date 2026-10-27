@@ -15,9 +15,10 @@ import { TronStakingUnstakeRow } from './TronStakingUnstakeRow';
 
 type TronStakingUnstakeCardProps = {
     accountKey: AccountKey;
+    nowSeconds: number;
 };
 
-export const TronStakingUnstakeCard = ({ accountKey }: TronStakingUnstakeCardProps) => {
+export const TronStakingUnstakeCard = ({ accountKey, nowSeconds }: TronStakingUnstakeCardProps) => {
     const symbol = useSelector((state: StakeRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
@@ -27,7 +28,7 @@ export const TronStakingUnstakeCard = ({ accountKey }: TronStakingUnstakeCardPro
 
     if (!symbol) return null;
 
-    const pendingBatches = getTronPendingUnstakingBatches({ batches, symbol });
+    const pendingBatches = getTronPendingUnstakingBatches({ batches, symbol, nowSeconds });
 
     if (pendingBatches.length === 0) return null;
 

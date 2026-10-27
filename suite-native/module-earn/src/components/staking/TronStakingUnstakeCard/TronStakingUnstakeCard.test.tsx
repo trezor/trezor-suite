@@ -1,15 +1,11 @@
 import { testMocks } from '@suite-common/test-utils';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TRON_UNFREEZE_DELAY_SECONDS } from '@suite-common/wallet-core';
-import {
-    type Account,
-    type TronStakingInfo,
-    type TronUnstakingBatch,
-    type WalletAccountTransaction,
-} from '@suite-common/wallet-types';
+import { type Account, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { mockWalletAccount, networkSpecificDefaultTron } from '@suite-common/wallet-types/mocks';
 import { getTranslation } from '@suite-native/intl';
 import { renderWithStoreProvider, screen, within } from '@suite-native/test-utils-store';
+import { type TronStakingInfo, type TronUnstakingBatch } from '@trezor/blockchain-link-types';
 
 import { TronStakingUnstakeCard } from './TronStakingUnstakeCard';
 
@@ -81,26 +77,21 @@ type RenderCardParams = {
 const renderCard = ({ unstakingBatches, transactions = [] }: RenderCardParams) => {
     const account = buildTronAccount(unstakingBatches);
 
-    return renderWithStoreProvider(<TronStakingUnstakeCard accountKey={account.key} />, {
-        preloadedState: {
-            wallet: {
-                accounts: [account],
-                transactions: { transactions: { [account.key]: transactions } },
-                fiat: { current: { 'trx-usd': { rate: 0.25 } }, lastWeek: {} },
+    return renderWithStoreProvider(
+        <TronStakingUnstakeCard accountKey={account.key} nowSeconds={NOW_SECONDS} />,
+        {
+            preloadedState: {
+                wallet: {
+                    accounts: [account],
+                    transactions: { transactions: { [account.key]: transactions } },
+                    fiat: { current: { 'trx-usd': { rate: 0.25 } }, lastWeek: {} },
+                },
             },
         },
-    });
+    );
 };
 
 describe('TronStakingUnstakeCard', () => {
-    beforeEach(() => {
-        jest.spyOn(Date, 'now').mockReturnValue(NOW_SECONDS * 1000);
-    });
-
-    afterEach(() => {
-        jest.restoreAllMocks();
-    });
-
     it('shows each pending unstake with its resource and the days left until it unlocks', async () => {
         const energyExpireTime = NOW_SECONDS + 6 * DAY;
         const bandwidthExpireTime = NOW_SECONDS + 13 * DAY - 60;
