@@ -148,6 +148,28 @@ describe('findProcessFromIncomingPort for an accepted connection', () => {
         expect(processInfo?.pid).toBe('300');
     });
 
+    // Documents the current behaviour: an empty `/proc/<pid>/cmdline` yields a blank path and
+    // no `warning`, so the popup presents such a caller with the neutral, verified-looking badge.
+    test('does not warn about a Linux caller whose /proc/<pid>/cmdline reads empty', async () => {
+        setPlatform('linux');
+        mockCommands([
+            [
+                'lsof',
+                [
+                    'COMMAND PID USER FD TYPE DEVICE SIZE/OFF NODE NAME',
+                    'client 300 user 18u IPv4 207199 0t0 TCP 127.0.0.1:40000->127.0.0.1:21335 (ESTABLISHED)',
+                ].join('\n'),
+            ],
+            ['cat /proc/', ''],
+        ]);
+
+        await expect(findProcessFromIncomingPort(40000, true, connection)).resolves.toEqual({
+            name: 'client',
+            pid: '300',
+            fullPath: '',
+        });
+    });
+
     test('reports no process when no socket is at the client end of the connection', async () => {
         setPlatform('linux');
         mockCommands([
