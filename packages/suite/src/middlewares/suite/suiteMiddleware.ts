@@ -23,7 +23,9 @@ import { isAnyDeviceEventAction } from '@suite-common/suite-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     type AccountsRootState,
+    type EndUnfinishedDiscoveryThunkState,
     type WalletSettingsRootState,
+    endUnfinishedDiscoveryThunk,
     forgetDisconnectedDevicesThunk,
     handleDeviceDisconnectThunk,
     observeSelectedDeviceThunk,
@@ -37,6 +39,7 @@ import { desktopHandshake, setRecentlyDisconnectedDevice } from 'src/actions/sui
 
 type SuiteMiddlewareState = AccountsRootState &
     DeviceRootState &
+    EndUnfinishedDiscoveryThunkState &
     RouterRootState &
     WalletSettingsRootState & {
         flags: Pick<FlagsRootState['flags'], 'hasSeenDisconnectTooltip'>;
@@ -91,6 +94,17 @@ export const prepareSuiteMiddleware = createSuiteMiddleware(
             // eslint-disable-next-line no-restricted-syntax
             const state = getState();
             const isAutoEjectEnabled = selectIsDeviceAutoEjectEnabled(state);
+            // A run that never reached Connect would otherwise never report an outcome.
+            dispatch(
+                endUnfinishedDiscoveryThunk({
+                    devicePath: action.payload.path,
+                    status: {
+                        status: 'failed',
+                        error: 'Device disconnected',
+                        errorCode: 'Device_Disconnected',
+                    },
+                }),
+            );
             dispatch(
                 forgetDisconnectedDevicesThunk({
                     device: action.payload,

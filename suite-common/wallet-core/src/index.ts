@@ -27,6 +27,7 @@ export * from './discovery/activateNetworkWithDiscoveryThunk';
 export * from './discovery/discoveryActions';
 export * from './discovery/discoveryReducer';
 export * from './discovery/discoverySelectors';
+export * from './discovery/discoveryStateThunks';
 export * from './discovery/discoveryThunks';
 export * from './discovery/ejectAllWalletsThunk';
 export * from './discovery/passphraseWalletThunks';

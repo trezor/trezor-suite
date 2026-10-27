@@ -23,6 +23,7 @@ import {
     activateNetworkWithDiscoveryThunk,
 } from './activateNetworkWithDiscoveryThunk';
 import { discoveryActions } from './discoveryActions';
+import { updateDiscoveryThunk } from './discoveryStateThunks';
 import { blockchainInitialState } from '../blockchain/blockchainReducer';
 import { initialWalletSettingsState } from '../settings/walletSettingsReducer';
 
@@ -196,7 +197,12 @@ describe(activateNetworkWithDiscoveryThunk.name, () => {
             error: { message: 'Backend disconnected', wasCancelled: false },
         });
         expect(actions).toContainEqual(
-            discoveryActions.updateDiscovery(failedDiscovery, devicePath, { isSilent: true }),
+            expect.objectContaining({
+                type: updateDiscoveryThunk.pending.type,
+                meta: expect.objectContaining({
+                    arg: { status: failedDiscovery, path: devicePath, isSilent: true },
+                }),
+            }),
         );
     });
 
