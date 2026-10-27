@@ -17,7 +17,7 @@ export const AccountNotLoaded = () => {
     const { dispatch } = useServices(injectDispatch);
     const { isLocked } = useDevice();
 
-    const handleClick = () => dispatch(startOrRestartDiscoveryThunk());
+    const handleClick = () => dispatch(startOrRestartDiscoveryThunk({ trigger: 'retry' }));
 
     return (
         <AccountExceptionLayout

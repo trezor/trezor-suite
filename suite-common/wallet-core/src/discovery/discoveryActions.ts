@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { type DiscoveryStatus } from '@suite-common/wallet-types';
+import { type DiscoveryStatus, type DiscoveryTrigger } from '@suite-common/wallet-types';
 import { type DeviceUniquePath } from '@trezor/connect';
 
 export const DISCOVERY_MODULE_PREFIX = '@common/wallet-core/discovery';
@@ -25,6 +25,7 @@ export const deleteDiscovery = createAction(
 );
 
 type StartDiscoveryParams = {
+    trigger: DiscoveryTrigger;
     isAddingHiddenWallet?: boolean;
     isAddingExistingWallet?: boolean;
     useScopedCallIds?: boolean;
@@ -35,13 +36,15 @@ export const startDiscovery = createAction(
     (
         path: DeviceUniquePath,
         {
+            trigger,
             isAddingHiddenWallet,
             isAddingExistingWallet,
             useScopedCallIds,
-        }: StartDiscoveryParams = {},
+        }: StartDiscoveryParams,
     ) => ({
         payload: {
             path,
+            trigger,
             isAddingHiddenWallet,
             isAddingExistingWallet,
             useScopedCallIds,

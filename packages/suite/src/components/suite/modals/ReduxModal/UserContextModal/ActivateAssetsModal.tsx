@@ -99,7 +99,7 @@ export const ActivateAssetsModal = ({ onCancel }: ActivateAssetsModalProps) => {
         );
 
         if (toEnable.length > 0) {
-            dispatch(startOrRestartDiscoveryThunk());
+            dispatch(startOrRestartDiscoveryThunk({ trigger: 'coin-toggle' }));
         }
 
         onCancel();

@@ -79,6 +79,7 @@ export const useReceiveNavigation = ({
                     changeCoinVisibilityThunk({
                         symbol: asset.networkSymbol,
                         shouldBeVisible: true,
+                        discoveryTrigger: 'add-account',
                     }),
                 );
                 navigation.navigate(ReceiveStackRoutes.ReceiveDiscovery, { asset });

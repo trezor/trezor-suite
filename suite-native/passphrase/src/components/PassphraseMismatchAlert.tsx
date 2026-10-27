@@ -62,6 +62,7 @@ export const PassphraseMismatchAlert = ({ children }: { children?: React.ReactNo
                     dispatch(
                         startDiscoveryThunk({
                             device,
+                            trigger: 'add-wallet',
                             isAddingHiddenWallet: true,
                             isAddingExistingWallet: false,
                         }),

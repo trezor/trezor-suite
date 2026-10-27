@@ -38,7 +38,7 @@ export const EarnActivateButton = ({ symbol }: EarnActivateButtonProps) => {
         }
 
         if (isNetworkEnabled) {
-            dispatch(startOrRestartDiscoveryThunk());
+            dispatch(startOrRestartDiscoveryThunk({ trigger: 'retry' }));
 
             return;
         }

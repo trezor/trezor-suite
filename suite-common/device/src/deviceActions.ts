@@ -87,10 +87,17 @@ const addButtonRequest = createAction(
 
 const requestDeviceReconnect = createAction(`${DEVICE_MODULE_PREFIX}/requestDeviceReconnect`);
 
+type SelectDeviceMeta = {
+    isNewlyConnected?: boolean;
+};
+
 const selectDevice = createAction(
     `${DEVICE_MODULE_PREFIX}/selectDevice`,
-    (payload?: TrezorDevice) => ({
+    (payload?: TrezorDevice, { isNewlyConnected = false }: SelectDeviceMeta = {}) => ({
         payload,
+        meta: {
+            isNewlyConnected,
+        },
     }),
 );
 

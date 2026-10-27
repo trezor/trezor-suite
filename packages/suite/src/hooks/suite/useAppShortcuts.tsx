@@ -89,6 +89,7 @@ export const useAppShortcuts = () => {
             dispatch(
                 startDiscoveryThunk({
                     device: selectedDevice,
+                    trigger: 'add-wallet',
                     isAddingHiddenWallet: true,
                     isAddingExistingWallet: true,
                 }),

@@ -104,6 +104,7 @@ export const AddCoinDiscoveryRunningScreen = ({
                 changeCoinVisibilityThunk({
                     symbol: networkSymbol,
                     shouldBeVisible: true,
+                    discoveryTrigger: 'add-account',
                 }),
             );
 

@@ -11,6 +11,7 @@ import {
 } from '@suite-common/wallet-config';
 import {
     type Account,
+    type DiscoveryTrigger,
     type SuccessfulAccount,
     type TransactionReviewOutput,
 } from '@suite-common/wallet-types';
@@ -179,31 +180,42 @@ export const selectShowRediscoverButton = (
     return symbols.some(symbol => !discoveredNetworks.has(symbol));
 };
 
+type RediscoveryReason = Extract<
+    DiscoveryTrigger,
+    'device-connect' | 'coin-toggle' | 'account-update'
+>;
+
 /**
- * Whether re-discovery is needed (accounts missing).
+ * Why re-discovery is needed (accounts missing), or undefined when it isn't.
  * Warning: this can be slightly expensive computation for large wallets. It isn't viable for memoization, because
  * it depends on every account (with frequent account updates, it would fire too often to be practical).
  */
-export const selectShouldRediscover = (
+export const selectRediscoveryReason = (
     state: WalletCoreCompoundRootState,
     device: TrezorDevice,
-) => {
-    if (selectHasRunningDiscovery(state)) return false;
+): RediscoveryReason | undefined => {
+    if (selectHasRunningDiscovery(state)) return undefined;
 
     const staticSessionId = device.state?.staticSessionId;
-    if (!staticSessionId) return true;
+    if (!staticSessionId || !device.discovered) return 'device-connect';
 
-    if (!device.discovered) return true;
+    const accountsPerNetwork = getDeviceAccountsPerEnabledNetwork(state, staticSessionId);
+    if (accountsPerNetwork.some(({ accounts }) => !accounts)) return 'coin-toggle';
 
-    return getDeviceAccountsPerEnabledNetwork(state, staticSessionId).some(
+    const hasDiscoverableNextAccount = accountsPerNetwork.some(
         ({ symbol, accounts }) =>
-            !accounts ||
+            accounts &&
             getAccountChainsPerAccountType(getNetwork(symbol), accounts).some(
                 ({ lastAccount, canDiscoverNextAccount }) =>
                     !lastAccount.failed && canDiscoverNextAccount,
             ),
     );
+
+    return hasDiscoverableNextAccount ? 'account-update' : undefined;
 };
+
+export const selectShouldRediscover = (state: WalletCoreCompoundRootState, device: TrezorDevice) =>
+    selectRediscoveryReason(state, device) !== undefined;
 
 export const selectAccountsToBeForgotten = (
     state: DiscoveryRootState & AccountsRootState & WalletSettingsRootState,
