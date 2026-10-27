@@ -9752,12 +9752,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@solana-program/stake@npm:0.9.0":
-  version: 0.9.0
-  resolution: "@solana-program/stake@npm:0.9.0"
+"@solana-program/stake@npm:^0.10.0":
+  version: 0.10.0
+  resolution: "@solana-program/stake@npm:0.10.0"
   peerDependencies:
-    "@solana/kit": ^8.0.0
-  checksum: 10/8dc1fd82593cb7f03dfd12ec4922dd74c1c58fd0962d952a157e31b6811dd777c5b12002dade0e9ecf471784c04448528c00ed01f36642d1de4f0d51eb63b842
+    "@solana/kit": ^8.3.0
+  checksum: 10/487fa0b38f600ea65ba5f5d9a99ab3561865ea867d97d191ee906658bc04d819902943061ebaf31ce03c9184d2a41967cc2bd077a8a7c786cdd4a086736e51f6
   languageName: node
   linkType: hard
 
@@ -19031,7 +19031,7 @@ __metadata:
   dependencies:
     "@solana-program/compute-budget": "npm:^0.19.0"
     "@solana-program/memo": "npm:^0.15.0"
-    "@solana-program/stake": "npm:0.9.0"
+    "@solana-program/stake": "npm:^0.10.0"
     "@solana-program/system": "npm:^0.15.0"
     "@solana-program/token": "npm:^0.17.0"
     "@solana-program/token-2022": "npm:^0.19.0"
