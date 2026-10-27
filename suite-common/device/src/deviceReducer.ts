@@ -394,6 +394,8 @@ const setDeviceState = (
     }
 
     // The accounts of an authorized wallet are bound to its static session id, so it must not change.
+    // Connect reports a new deviceId for the same wallet after the device was wiped and recovered
+    // with the same seed; the wallet keeps the staticSessionId it was authorized with.
     targetDevice.state = {
         ...state,
         staticSessionId: currentStaticSessionId ?? state.staticSessionId,
