@@ -22,7 +22,6 @@
         {
             "path": "../../packages/blockchain-link"
         },
-        { "path": "../../packages/redux-utils" },
-        { "path": "../test-utils-store" }
+        { "path": "../../packages/redux-utils" }
     ]
 }
