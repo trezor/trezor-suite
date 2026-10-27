@@ -174,9 +174,14 @@ export const MultiAccountTransactionList = ({
                 .slice((currentPage - 1) * perPage, currentPage * perPage),
         [searchedTransactions, currentPage, perPage],
     );
+    // A token's transfers are sparse in the history, so while it loads, a short page is the end of
+    // what was found, not a sign of a next page; only a full last page is.
+    const isLastPageFull =
+        confirmedTransactions.length > 0 && confirmedTransactions.length % perPage === 0;
+    const hasNextPage = !isComplete && (contractAddress === undefined || isLastPageFull);
     const loadedTotalItems = isComplete
         ? confirmedTransactions.length
-        : Math.max(confirmedTransactions.length + perPage, knownTotal ?? 0);
+        : Math.max(confirmedTransactions.length + (hasNextPage ? perPage : 0), knownTotal ?? 0);
     const totalItems = isSearching
         ? searchedTransactions.length - pendingTxs.length
         : loadedTotalItems;
