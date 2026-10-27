@@ -9,7 +9,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { parseAccountKey } from '@suite-common/wallet-utils';
-import { Badge, Box, ErrorMessage, HStack, Text, VStack } from '@suite-native/atoms';
+import { Badge, BlurUrls, Box, ErrorMessage, HStack, Text, VStack } from '@suite-native/atoms';
 import {
     ExactTokenAmountFormatter,
     TokenToFiatAmountFormatter,
@@ -17,7 +17,12 @@ import {
 } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { type TokensRootState, getTokenName, selectAccountTokenInfo } from '@suite-native/tokens';
+import {
+    type TokensRootState,
+    getTokenName,
+    selectAccountTokenInfo,
+    selectIsUnrecognizedToken,
+} from '@suite-native/tokens';
 import { parseStaticSessionId } from '@trezor/device-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -62,6 +67,9 @@ export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps
     const token = useSelector((state: TokensRootState) =>
         selectAccountTokenInfo(state, accountKey, contract),
     );
+    const isUnrecognized = useSelector((state: TokensRootState) =>
+        selectIsUnrecognizedToken(state, accountKey, contract),
+    );
 
     if (!token || !symbol) {
         return (
@@ -84,7 +92,7 @@ export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps
                         />
                     </Box>
                     <Box style={applyStyle(tokenDescriptionStyle)}>
-                        <Text>{tokenName}</Text>
+                        {isUnrecognized ? <BlurUrls text={tokenName} /> : <Text>{tokenName}</Text>}
 
                         <HStack alignItems="center" spacing="sp4">
                             <Text
