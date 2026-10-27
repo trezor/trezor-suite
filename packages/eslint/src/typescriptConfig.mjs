@@ -60,6 +60,14 @@ const suiteInternalPatterns = {
         '@suite-common/* and @suite-native/* packages are private to the suite apps and must not be imported by other workspace packages.',
 };
 
+// Staking products are registered by the application composition roots only. Everything else
+// reaches them through the injected product repository from `@suite-common/earn-staking`.
+const stakingProductsPattern = {
+    group: ['@suite-common/earn-staking-products', '@suite-common/earn-staking-products/**'],
+    message:
+        'Only an application composition root registers staking products. Import @suite-common/earn-staking and take the product repository as an injected dependency.',
+};
+
 /*
  Currently only relevant in @suite/desktop-app-main, but if the ipcMain import is to be used elsewhere,
  the wrapper shall be extracted and this should still be a global rule.
@@ -72,15 +80,38 @@ const electronIpcMainRestrictedImport = {
 
 const commonRestrictedImports = {
     paths: [{ name: '.' }, { name: '..' }, { name: '../..' }, electronIpcMainRestrictedImport],
-    patterns: [buildArtifactPatterns, networksPackagePattern, ...connectDeepImportPatterns],
+    patterns: [
+        buildArtifactPatterns,
+        networksPackagePattern,
+        stakingProductsPattern,
+        ...connectDeepImportPatterns,
+    ],
 };
 
 export const restrictedImportsPatterns = [
     buildArtifactPatterns,
     suiteInternalPatterns,
     networksPackagePattern,
+    stakingProductsPattern,
     ...connectDeepImportPatterns,
 ];
+
+// The two application composition roots register the staking products. The block drops only the
+// products pattern; it comes after every block above that sets the rule, so it wins for these files.
+const stakingProductsCompositionRootAllowance = {
+    files: ['**/createSuiteCompositionRoot.ts', '**/createNativeServicesCompositionRoot.ts'],
+    rules: {
+        '@typescript-eslint/no-restricted-imports': [
+            'error',
+            {
+                paths: commonRestrictedImports.paths,
+                patterns: commonRestrictedImports.patterns.filter(
+                    pattern => pattern !== stakingProductsPattern,
+                ),
+            },
+        ],
+    },
+};
 
 /** @type {import('typescript-eslint').ConfigArray} */
 export const typescriptConfig = [
@@ -211,6 +242,7 @@ export const typescriptConfig = [
             ],
         },
     },
+    stakingProductsCompositionRootAllowance,
     {
         files: ['**/src/**/*.{ts,tsx}'],
         languageOptions: {

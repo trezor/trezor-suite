@@ -1,0 +1,1 @@
+export { createStakingProductsCompositionRoot } from './createStakingProductsCompositionRoot';
