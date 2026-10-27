@@ -73,6 +73,7 @@ import {
 } from '../sendOutputsFormSchema';
 import { constructFormDraft, getSendMaxAmount } from '../utils';
 import { useRequestDelayedNavigationToOutputsReview } from './useRequestDelayedNavigationToOutputsReview';
+import { useSendAmountPrefill } from './useSendAmountPrefill';
 import { useShowDeviceDisconnectedAlert } from './useShowDeviceDisconnectedAlert';
 import { useUtxoSelection } from './useUtxoSelection';
 
@@ -202,6 +203,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         }),
     });
 
+    const prefillAmount = useSendAmountPrefill({ form, accountKey, recipientIndex: 0 });
     const { handleSubmit, control, getValues, trigger, setError } = form;
     const watchedFormValues = useWatch({ control });
     const watchedAddress = useWatch({ name: 'outputs.0.address', control });
@@ -598,6 +600,7 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
 
     return {
         handleSubmitSendForm,
+        prefillAmount,
         form,
         network,
         amount,

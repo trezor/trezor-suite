@@ -44,6 +44,7 @@ import { SendFormLabelEditable } from './SendFormLabelEditable';
 import { useAddressValidationAlerts } from '../hooks/useAddressValidationAlerts/useAddressValidationAlerts';
 import { useSolAssociatedTokenAddress } from '../hooks/useAddressValidationAlerts/useSolAssociatedTokenAddress';
 import { useResolvedAddress } from '../hooks/useResolvedAddress';
+import { useSendAmountPrefill } from '../hooks/useSendAmountPrefill';
 import { type SendOutputsFormValues } from '../sendOutputsFormSchema';
 import { getOutputFieldName } from '../utils';
 
@@ -69,9 +70,10 @@ type AddressInputProps = {
 export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: AddressInputProps) => {
     const addressFieldName = getOutputFieldName(index, 'address');
     const utxoLabelFieldName = getOutputFieldName(index, 'label');
-    const amountFieldName = getOutputFieldName(index, 'amount');
     const tokenFieldName = getOutputFieldName(index, 'token');
-    const { setValue, control } = useFormContext<SendOutputsFormValues>();
+    const form = useFormContext<SendOutputsFormValues>();
+    const { setValue, control } = form;
+    const prefillAmount = useSendAmountPrefill({ form, accountKey, recipientIndex: index });
     const { getState, analytics, addressValidator, getNamedAddressSupport } = useServices(
         injectGetState,
         injectNativeAnalytics,
@@ -192,7 +194,7 @@ export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: Address
                 setValue(tokenFieldName, erc681.token, { shouldDirty: true });
                 const displayAmount = toDisplayAmount(account);
                 if (displayAmount !== undefined) {
-                    setValue(amountFieldName, displayAmount, { shouldValidate: true });
+                    prefillAmount(displayAmount);
                 }
             }
             analytics.report({
@@ -213,7 +215,7 @@ export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: Address
             onQrNetworkMismatch?.(null);
             setValue(addressFieldName, bip321.address, { shouldValidate: true });
             if (bip321.amount) {
-                setValue(amountFieldName, bip321.amount, { shouldValidate: true });
+                prefillAmount(bip321.amount);
             }
             if (bip321.label) {
                 setValue(utxoLabelFieldName, bip321.label, { shouldValidate: true });
