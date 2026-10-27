@@ -12,8 +12,7 @@ export type UpdateStatusSuite =
     | 'up-to-date'
     | 'update-available'
     | 'update-downloaded-manual'
-    | 'update-downloaded-auto-restart-to-update'
-    | 'just-updated';
+    | 'update-downloaded-auto-restart-to-update';
 
 export type UpdateStatus = UpdateStatusDevice | UpdateStatusSuite;
 
@@ -23,7 +22,6 @@ export const mapUpdateStatusToIcon: Record<UpdateStatus, IconComponent> = {
     'update-downloaded-auto-restart-to-update': ArrowsClockwiseFilledIcon,
     'up-to-date': CheckIcon,
     'update-available': ArrowDownIcon,
-    'just-updated': CheckIcon,
 };
 
 export const mapUpdateStatusToIntent: Record<UpdateStatus, UIIntent> = {
@@ -32,7 +30,6 @@ export const mapUpdateStatusToIntent: Record<UpdateStatus, UIIntent> = {
     'update-downloaded-auto-restart-to-update': 'info',
     'up-to-date': 'brand',
     'update-available': 'explore',
-    'just-updated': 'explore',
 };
 
 type OnClickCallback = ((params: { dispatch: Dispatch }) => void) | null;
@@ -49,7 +46,6 @@ export const mapSuiteUpdateToClick: Record<UpdateStatusSuite, OnClickCallback> =
         dispatch(installUpdateThunk({ installNow: true })),
     'update-downloaded-manual': ({ dispatch }) =>
         dispatch(desktopUpdateActions.setIsUpdateModalVisible(true)),
-    'just-updated': ({ dispatch }) => dispatch(desktopUpdateActions.justUpdated()),
     'update-available': ({ dispatch }) =>
         dispatch(desktopUpdateActions.setIsUpdateModalVisible(true)),
 };
