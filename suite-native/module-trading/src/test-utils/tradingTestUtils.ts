@@ -28,6 +28,7 @@ import {
 } from '@suite-common/trading';
 import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import {
+    type DiscoveryRootState,
     type FeesRootState,
     type FiatRatesRootState,
     type FormDraftRootState,
@@ -97,6 +98,7 @@ const createBaseTradingPreloadedState = (tradeType: TradingType): TradingTestPre
             settings: { ...initialWalletSettingsState, ...wallet.settings },
             selectedAccount: { status: 'none' },
             send: { ...sendFormInitialState, ...wallet.send },
+            discovery: {},
             fees: {},
             formDrafts: {},
             phishing: phishingInitialState,
@@ -109,6 +111,7 @@ export type TradingTestPreloadedState = TradingRootState &
     NetworksRootState &
     TradingRootStateWithDeviceAndAccounts &
     WalletSettingsRootState &
+    DiscoveryRootState &
     FiatRatesRootState &
     FeesRootState &
     FormDraftRootState &
@@ -174,6 +177,7 @@ export const createTradingTestStore = (
                 reducers: { storageLoadWalletSettings: mockReducer() },
             }),
             accounts: createStaticReducer(preloadedState.wallet.accounts),
+            discovery: createStaticReducer(preloadedState.wallet.discovery),
             fiat: createStaticReducer(preloadedState.wallet.fiat),
             fees: createStaticReducer(preloadedState.wallet.fees),
             formDrafts: formDraftReducer,

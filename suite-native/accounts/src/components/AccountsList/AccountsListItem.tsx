@@ -72,8 +72,13 @@ const AccountsListItemComponent = ({
     badges,
     shouldShowExactAmount = false,
 }: AccountListItemProps) => {
-    // The screen showing the list keeps the rates fresh, a row only makes sure they are loaded.
-    useAccountFiatRates({ accountKey: account.key, isPolling: false });
+    // The screen showing the list keeps the rates fresh, a row only makes sure they are loaded,
+    // also while discovery adds other accounts.
+    useAccountFiatRates({
+        accountKey: account.key,
+        isPolling: false,
+        isDeferredDuringDiscovery: false,
+    });
     const formattedAccountType = useSelector((state: AccountsRootState) =>
         selectFormattedAccountType(state, account.key),
     );

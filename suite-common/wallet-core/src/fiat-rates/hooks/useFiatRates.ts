@@ -31,7 +31,7 @@ type UseFiatRatesResult = {
     refetch: () => void;
 };
 
-type UseFiatRatesParams = {
+export type UseFiatRatesParams = {
     tickers: readonly TickerId[];
     rateType?: RateTypeWithoutHistoric;
     /** Defaults to the base currency from the wallet settings. */

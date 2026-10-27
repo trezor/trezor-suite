@@ -1,22 +1,29 @@
 /**
  * @jest-environment jsdom
  */
-import { combineReducers } from '@reduxjs/toolkit';
+import { combineReducers, createAction } from '@reduxjs/toolkit';
 
 import { fetchCurrentFiatRates } from '@suite-common/fiat-services';
 import {
+    act,
     cleanup,
     createTestCompositionRoot,
     renderHookWithStoreProvider,
     waitFor,
 } from '@suite-common/test-utils';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
-import { type Account, type AccountKey, type Timestamp } from '@suite-common/wallet-types';
+import {
+    type Account,
+    type AccountKey,
+    type Discovery,
+    type Timestamp,
+} from '@suite-common/wallet-types';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 
 import { useAccountFiatRates } from './useAccountFiatRates';
 import { type AccountsRootState } from '../../accounts/accountsReducer';
 import { blockchainInitialState } from '../../blockchain/blockchainReducer';
+import { type DiscoveryRootState } from '../../discovery/discoveryReducer';
 import { initialWalletSettingsState } from '../../settings/walletSettingsReducer';
 import { type FiatRatesApiQueryState, fiatRatesApi } from '../fiatRatesApi';
 import { type FiatRatesRootState } from '../fiatRatesTypes';
@@ -29,6 +36,11 @@ jest.mock('@suite-common/fiat-services', () => ({
 }));
 
 const USD = 'usd' as BaseCurrencyCode;
+const finishDiscovery = createAction('test/finishDiscovery');
+// Only the status matters for whether a discovery runs.
+const runningDiscovery = {
+    'device-path': { status: 'progress' },
+} as unknown as Discovery;
 const BTC_ACCOUNT_KEY = 'btc-account' as AccountKey;
 
 const accounts = [
@@ -39,15 +51,18 @@ const accounts = [
 type State = FiatRatesRootState &
     FiatRatesApiQueryState &
     AccountsRootState &
+    DiscoveryRootState &
     TokenDefinitionsRootState;
 
-const createServices = () =>
+const createServices = (discovery: Discovery = {}) =>
     createTestCompositionRoot<void, State>({
         reducer: combineReducers({
             [fiatRatesApi.reducerPath]: fiatRatesApi.reducer,
             wallet: combineReducers({
                 accounts: (state = accounts) => state,
                 blockchain: (state = blockchainInitialState) => state,
+                discovery: (state: Discovery = discovery, action: { type: string }) =>
+                    action.type === finishDiscovery.type ? {} : state,
                 fiat: (state = { historic: {} }) => state,
                 settings: (state = { ...initialWalletSettingsState, localCurrency: USD }) => state,
             }),
@@ -91,5 +106,37 @@ describe(useAccountFiatRates.name, () => {
         });
 
         expect(fetchCurrentFiatRates).not.toHaveBeenCalled();
+    });
+
+    it('waits for discovery to finish before fetching', async () => {
+        cleanup();
+        services = createServices(runningDiscovery);
+
+        renderHookWithStoreProvider(() => useAccountFiatRates({ accountKey: BTC_ACCOUNT_KEY }), {
+            services,
+        });
+        expect(fetchCurrentFiatRates).not.toHaveBeenCalled();
+
+        act(() => {
+            services.store.dispatch(finishDiscovery());
+        });
+
+        await waitFor(() => expect(fetchCurrentFiatRates).toHaveBeenCalledTimes(1));
+    });
+
+    it('fetches during discovery when not deferred', async () => {
+        cleanup();
+        services = createServices(runningDiscovery);
+
+        renderHookWithStoreProvider(
+            () =>
+                useAccountFiatRates({
+                    accountKey: BTC_ACCOUNT_KEY,
+                    isDeferredDuringDiscovery: false,
+                }),
+            { services },
+        );
+
+        await waitFor(() => expect(fetchCurrentFiatRates).toHaveBeenCalledTimes(1));
     });
 });
