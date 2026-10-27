@@ -37,8 +37,14 @@ const postMessageToExtension = (message: ConnectPopupOutgoingMessage, extensionI
     chrome.runtime.sendMessage(extensionId, message);
 };
 
+const getUrlHashParams = () => new URLSearchParams(window.location.hash.replace('#', '?'));
+
+const clearUrlHash = () =>
+    window.history.replaceState(null, '', window.location.pathname + window.location.search);
+
 export const useConnectPopupWebextension = () => {
-    const [extensionId, setExtensionId] = useState<string | null>(null);
+    // Read once, so later hash writes cannot change which extension the popup answers.
+    const [extensionId] = useState(() => getUrlHashParams().get('extension-id'));
     const lastProcessedMessageIdRef = useRef<number | undefined>(undefined);
     const [incomingMessages, setIncomingMessages] = useState<ConnectPopupMessage[]>([]);
 
@@ -69,9 +75,17 @@ export const useConnectPopupWebextension = () => {
 
     // Read messages from URL hash (webextension link).
     const readUrl = useCallback(() => {
-        const hash = new URLSearchParams(window.location.hash.replace('#', '?'));
-        const newExtensionId = hash.get('extension-id');
+        const hash = getUrlHashParams();
         const message = hash.get('message');
+
+        // The opening extension sends its id with every message, so drop any other id or none.
+        if (message && hash.get('extension-id') !== extensionId) {
+            console.warn('[connect-popup] dropping a hash message with a mismatched extension-id');
+            clearUrlHash();
+
+            return;
+        }
+
         let parsedMessage: ConnectPopupMessage | null = null;
         if (message) {
             try {
@@ -80,10 +94,6 @@ export const useConnectPopupWebextension = () => {
                 // Malformed message in hash — ignore.
                 return;
             }
-        }
-
-        if (newExtensionId) {
-            setExtensionId(newExtensionId);
         }
 
         if (parsedMessage) {
@@ -98,16 +108,17 @@ export const useConnectPopupWebextension = () => {
                 setIncomingMessages(prev => [...prev, parsedMessage]);
             }
             // Clean hash after reading to prevent browser history pollution.
-            window.history.replaceState(
-                null,
-                '',
-                window.location.pathname + window.location.search,
-            );
+            clearUrlHash();
         }
-    }, []);
+    }, [extensionId]);
 
     // Monitor URL hash changes for incoming webextension messages.
     useEffect(() => {
+        if (!extensionId) {
+            // Suite Web was not opened by an extension.
+            return;
+        }
+
         readUrl();
 
         window.addEventListener('popstate', readUrl);
@@ -117,5 +128,5 @@ export const useConnectPopupWebextension = () => {
             window.removeEventListener('popstate', readUrl);
             window.removeEventListener('hashchange', readUrl);
         };
-    }, [readUrl]);
+    }, [extensionId, readUrl]);
 };
