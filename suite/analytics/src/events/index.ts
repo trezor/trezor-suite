@@ -13,12 +13,8 @@ export {
     transactionCreatedEvent,
 } from '@suite-common/analytics';
 export { accountsActionsEvent } from './accountsActionsEvent';
-export { accountsActiveStakingEvent } from './accountsActiveStakingEvent';
 export { accountsEmptyAccountReceiveEvent } from './accountsEmptyAccountReceiveEvent';
 export { accountsNewAccountEvent } from './accountsNewAccountEvent';
-export { accountsNonZeroBalanceEvent } from './accountsNonZeroBalanceEvent';
-export { accountsStatusEvent } from './accountsStatusEvent';
-export { accountsTokensStatusEvent } from './accountsTokensStatusEvent';
 export { accountsTransactionsExportEvent } from './accountsTransactionsExportEvent';
 export { addTokenEvent } from './addTokenEvent';
 export { appNewContentBadgeEvent } from './appNewContentBadgeEvent';

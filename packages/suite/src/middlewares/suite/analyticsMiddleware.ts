@@ -25,18 +25,8 @@ import {
     getIsDeviceDescriptorApiTypeBluetooth,
     getPhysicalDeviceCount,
 } from '@suite-common/suite-utils';
-import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
-import {
-    changeCoinVisibilityEvent,
-    discoveryActions,
-    setBitcoinAmountUnits,
-} from '@suite-common/wallet-core';
+import { changeCoinVisibilityEvent, setBitcoinAmountUnits } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
-import {
-    accumulateAccountCountBySymbolAndType,
-    getAccountTotalStakingBalance,
-    getAccountsWithSomeTransactionHistory,
-} from '@suite-common/wallet-utils';
 import { TRANSPORT, isTransportEventOfType } from '@trezor/connect';
 import {
     getBootloaderHash,
@@ -48,7 +38,6 @@ import {
     isDeviceInBootloaderMode,
 } from '@trezor/device-utils';
 import { type WithServices, createMiddlewareWithExtraDeps } from '@trezor/redux-utils';
-import { BigNumber } from '@trezor/utils';
 
 import { type SuiteRootState } from 'src/reducers/suite/suiteReducer';
 import {
@@ -57,7 +46,6 @@ import {
     redactAnchor,
     redactRouterUrl,
 } from 'src/utils/suite/analytics';
-import { hasVisibleTokens } from 'src/utils/wallet/tokenUtils';
 
 /*
     In analytics middleware we may intercept actions we would like to log. For example:
@@ -70,8 +58,7 @@ export type PrepareAnalyticsMiddlewareDeps = WithServices<DesktopAnalyticsDep>;
 
 type AnalyticsMiddlewareState = CoinjoinRootState &
     GetSuiteReadyPayloadState &
-    RouterRootState &
-    TokenDefinitionsRootState & {
+    RouterRootState & {
         suite: Pick<SuiteRootState['suite'], 'lifecycle'>;
     };
 
@@ -179,62 +166,6 @@ export const prepareAnalyticsMiddleware = createAnalyticsMiddleware(
         } else if (deviceActions.deviceDisconnect.match(action)) {
             analytics.report({
                 type: events.deviceDisconnectEvent.name,
-            });
-        } else if (discoveryActions.updateDiscovery.match(action)) {
-            if (action.payload.status.status !== 'complete') return result;
-
-            const accountsWithNonZeroBalance = state.wallet.accounts
-                .filter(
-                    account =>
-                        new BigNumber(account.balance).gt(0) ||
-                        new BigNumber(getAccountTotalStakingBalance(account) || 0).gt(0) ||
-                        hasVisibleTokens(
-                            account.symbol,
-                            account.tokens ?? [],
-                            state.tokenDefinitions,
-                        ),
-                )
-                .reduce(accumulateAccountCountBySymbolAndType, {});
-
-            const accountsWithTokens = state.wallet.accounts
-                .filter(account => new BigNumber(account.tokens?.length || 0).gt(0))
-                .reduce<Record<string, number>>((acc, { symbol, tokens }) => {
-                    if (
-                        tokens?.length &&
-                        !hasVisibleTokens(symbol, tokens, state.tokenDefinitions)
-                    ) {
-                        return acc;
-                    }
-                    acc[symbol] = (acc[symbol] || 0) + 1;
-
-                    return acc;
-                }, {});
-
-            const accountsWithStaking = state.wallet.accounts
-                .filter(account => new BigNumber(getAccountTotalStakingBalance(account) || 0).gt(0))
-                .reduce(accumulateAccountCountBySymbolAndType, {});
-
-            analytics.report({
-                type: events.accountsStatusEvent.name,
-                payload: getAccountsWithSomeTransactionHistory(state.wallet.accounts).reduce(
-                    accumulateAccountCountBySymbolAndType,
-                    {},
-                ),
-            });
-
-            analytics.report({
-                type: events.accountsNonZeroBalanceEvent.name,
-                payload: accountsWithNonZeroBalance,
-            });
-
-            analytics.report({
-                type: events.accountsTokensStatusEvent.name,
-                payload: accountsWithTokens,
-            });
-
-            analytics.report({
-                type: events.accountsActiveStakingEvent.name,
-                payload: accountsWithStaking,
             });
         } else if (routerLocationChange.match(action)) {
             if (

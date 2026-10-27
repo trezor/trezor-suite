@@ -1,11 +1,7 @@
 export enum EventType {
     AccountsActions = 'accounts/actions',
-    AccountsActiveStaking = 'accounts/active-staking',
     AccountsEmptyAccountReceive = 'accounts/empty-account/receive',
     AccountsNewAccount = 'accounts/new-account',
-    AccountsNonZeroBalance = 'accounts/non-zero-balance',
-    AccountsStatus = 'accounts/status',
-    AccountsTokensStatus = 'accounts/tokens-status',
     AccountsTransactionsExport = 'accounts/transactions-export',
     // eslint-disable-next-line local-rules/analytics-event-name
     AddToken = 'add-token',
