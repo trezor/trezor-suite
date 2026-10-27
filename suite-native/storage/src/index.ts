@@ -5,6 +5,8 @@ export { createEnsureEncryptionKey } from './createEnsureEncryptionKey';
 export type { EnsureEncryptionKeyDep } from './createEnsureEncryptionKey';
 export { createMMKVStorage, clearStorage } from './mmkvStorage';
 export type { MMKVStorageDep, MMKVStorage } from './mmkvStorage';
+export * from './createDeferrablePersistStorage';
+export * from './deferPersistWritesWhile';
 export * from './atomWithUnecryptedStorage';
 export * from './isDevUtilsEnabledAtom';
 

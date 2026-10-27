@@ -6,10 +6,15 @@ import {
     createNativeServicesCompositionRoot,
     createReduxStore,
     createStorePersistor,
+    deferPersistenceDuringDiscovery,
     extraDependencies,
     prepareRootReducers,
 } from '@suite-native/state';
-import { createEnsureEncryptionKey, createMMKVStorage } from '@suite-native/storage';
+import {
+    createDeferrablePersistStorage,
+    createEnsureEncryptionKey,
+    createMMKVStorage,
+} from '@suite-native/storage';
 import TrezorConnect from '@trezor/connect';
 
 import { type NativeApp, createNativeApp } from './createNativeApp';
@@ -24,6 +29,7 @@ export const createSuiteNativeCompositionRoot = (
 ): SuiteNativeCompositionRoot => {
     const ensureEncryptionKey = createEnsureEncryptionKey();
     const mmkvStorage = createMMKVStorage({ ensureEncryptionKey });
+    const deferrablePersistStorage = createDeferrablePersistStorage({ mmkvStorage });
     const { store, injectServicesIntoReduxExtra } = createReduxStore({
         // Passing runtime dependencies into reducer setup is an anti-pattern: reducers should
         // remain pure and receive runtime data through action payloads, not services or extra.
@@ -31,7 +37,11 @@ export const createSuiteNativeCompositionRoot = (
         // whitelist to reducer construction, not a pattern to follow for other reducers.
         // See https://github.com/trezor/trezor-suite/issues/32215.
         // Network metadata is loaded after hydration, so it cannot supply this whitelist yet.
-        reducer: prepareRootReducers({ mmkvStorage, getSupportedNetworks }),
+        reducer: prepareRootReducers({
+            mmkvStorage,
+            deferrablePersistStorage,
+            getSupportedNetworks,
+        }),
         extraDependencies,
         preloadedState,
     });
@@ -43,6 +53,7 @@ export const createSuiteNativeCompositionRoot = (
         getTrezorConnect: () => TrezorConnect,
     });
     const storePersistor = createStorePersistor({ store });
+    deferPersistenceDuringDiscovery({ store, deferrablePersistStorage });
     const hydrateReduxStore = createHydrateReduxStore({ storePersistor });
     const services = { ...nativeServices, store, storePersistor, hydrateReduxStore };
 

@@ -6,6 +6,7 @@ import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
 import { type ReducerState } from '@trezor/redux-utils';
 
 import { createAsyncMigrate } from './createAsyncMigrate';
+import { type DeferrablePersistStorage } from './createDeferrablePersistStorage';
 import { type MigrationsManifest } from './migrationTypes';
 import { type MMKVStorage } from './mmkvStorage';
 
@@ -26,8 +27,11 @@ export const preparePersistReducer = <TReducer extends Reducer<any, any>>({
     migrations?: MigrationsManifest;
     transforms?: Array<Transform<any, any>>;
     mergeLevel?: 1 | 2;
-    storage: MMKVStorage;
+    storage: MMKVStorage | DeferrablePersistStorage;
 }): TReducer => {
+    // A deferrable storage serializes the state itself, only when it actually writes it.
+    const isDeferrableStorage = 'deferWrites' in storage;
+
     const persistConfig = {
         key,
         storage,
@@ -37,6 +41,8 @@ export const preparePersistReducer = <TReducer extends Reducer<any, any>>({
         transforms,
         stateReconciler: (mergeLevel === 2 ? autoMergeLevel2 : autoMergeLevel1) as any,
         timeout: 0, // Disable default 5s timeout to prevent occasional data loss.
+        serialize: !isDeferrableStorage,
+        deserialize: !isDeferrableStorage,
     };
 
     return persistReducer(persistConfig, reducer) as TReducer;

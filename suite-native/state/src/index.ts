@@ -13,4 +13,5 @@ export { type NativeServices } from './NativeServices';
 export { createHydrateReduxStore, type HydrateReduxStoreDep } from './createHydrateReduxStore';
 export { createStorePersistor, type StorePersistorDep } from './createStorePersistor';
 export { prepareRootReducers } from './reducers';
+export { deferPersistenceDuringDiscovery } from './deferPersistenceDuringDiscovery';
 export { extraDependencies } from './createNativeExtraDependencies';

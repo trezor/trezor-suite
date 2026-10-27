@@ -57,6 +57,7 @@ import { graphPersistTransform, graphReducer } from '@suite-native/graph';
 import { type TxKeyPath, localePersistWhitelist, localeReducer } from '@suite-native/intl';
 import { appSettingsPersistWhitelist, appSettingsReducer } from '@suite-native/settings';
 import {
+    type DeferrablePersistStorageDep,
     type MMKVStorageDep,
     backfillDeviceAuthenticityChecks,
     backfillManualCheckResult,
@@ -114,9 +115,10 @@ const receiveReducer = prepareReceiveReducer(extraDependencies);
 const bluetoothReducer = prepareBluetoothReducer(extraDependencies);
 const thpReducer = prepareThpReducer(extraDependencies);
 
-type PrepareRootReducersDeps = MMKVStorageDep & {
-    getSupportedNetworks: () => readonly NetworkSymbol[];
-};
+type PrepareRootReducersDeps = MMKVStorageDep &
+    DeferrablePersistStorageDep & {
+        getSupportedNetworks: () => readonly NetworkSymbol[];
+    };
 
 export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
     const appSettingsPersistedReducer = preparePersistReducer({
@@ -645,7 +647,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
                 };
             },
         },
-        storage: deps.mmkvStorage,
+        storage: deps.deferrablePersistStorage,
     });
 
     return rootReducer;
