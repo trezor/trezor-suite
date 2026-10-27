@@ -478,6 +478,8 @@ describe('sessions fuzz (disconnect/reconnect churn)', () => {
                 expect(probe['dev-1']).toBeUndefined();
                 expect(Object.keys(Object.prototype)).toHaveLength(0);
             }),
+            // 5000 runs measure ~2.3s locally; this harness runs nightly
+            // (test:fuzz), not in the per-PR unit suite, so the deep run is free
             { numRuns: 5000 },
         );
 
@@ -488,5 +490,5 @@ describe('sessions fuzz (disconnect/reconnect churn)', () => {
         expect(sentinels.acquireIntentOnMissingDevice).toBeGreaterThan(0);
         expect(sentinels.acquireDoneAfterDisconnect).toBeGreaterThan(0);
         expect(sentinels.releaseDoneAfterDisconnect).toBeGreaterThan(0);
-    }, 240000);
+    }, 30000);
 });
