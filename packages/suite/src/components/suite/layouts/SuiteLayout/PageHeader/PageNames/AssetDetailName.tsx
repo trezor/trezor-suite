@@ -7,6 +7,7 @@ import {
     selectWalletAssetSymbol,
 } from '@suite-common/assets';
 import { useFormatters } from '@suite-common/formatters';
+import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
 import { Column, IconButton, Row, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { CaretLeftIcon } from '@trezor/icons';
@@ -46,6 +47,14 @@ export const AssetDetailName = () => {
     const contractAddress = useSelector(state => selectWalletAssetContractAddress(state, assetKey));
     const displaySymbol = useSelector(state => selectWalletAssetDisplaySymbol(state, assetKey));
     const name = useSelector(state => selectWalletAssetName(state, assetKey));
+    // A recognized token may carry a URL in its name, so only an unrecognized one is blurred,
+    // as on the account's token list.
+    const isNameTrusted = useSelector(
+        state =>
+            symbol === undefined ||
+            contractAddress === undefined ||
+            selectIsSpecificCoinDefinitionKnown(state, symbol, contractAddress),
+    );
 
     return (
         <Row alignItems="center" gap={16}>
@@ -61,7 +70,7 @@ export const AssetDetailName = () => {
                     />
                     <Column alignItems="flex-start" minWidth={0}>
                         <Text typographyStyle="body-md-strong" ellipsisLineCount={1}>
-                            <TokenUrlBlur text={name} />
+                            {isNameTrusted ? name : <TokenUrlBlur text={name} />}
                         </Text>
                         <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                             <NetworkNameFormatter value={symbol} />
