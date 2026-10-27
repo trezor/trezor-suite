@@ -101,7 +101,7 @@ jobs:
 
   run-e2e-suite-desktop-tests:
     if: |
-      always() &&
+      !cancelled() &&
       github.repository == 'trezor/trezor-suite' &&
       needs.build-app.result == 'success' &&
       needs.resolve-spec-list.result == 'success'
@@ -225,7 +225,7 @@ jobs:
       - changed-scopes
       - determine-strategy
       - run-llm-analysis
-    if: always() && github.repository == 'trezor/trezor-suite' && needs.changed-scopes.outputs.default == 'true'
+    if: ${{ !cancelled() && github.repository == 'trezor/trezor-suite' && needs.changed-scopes.outputs.default == 'true' }}
     runs-on: ubuntu-latest
     outputs:
       spec-list: ${{ steps.resolve.outputs.spec-list }}
@@ -313,7 +313,7 @@ jobs:
 
   run-e2e-suite-web-tests:
     if: |
-      always() &&
+      !cancelled() &&
       github.repository == 'trezor/trezor-suite' &&
       needs.build-web.result == 'success' &&
       needs.build-connect.result == 'success' &&
