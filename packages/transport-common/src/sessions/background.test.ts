@@ -227,15 +227,16 @@ describe('sessions', () => {
 
         // the lock taken by releaseIntent was freed: a fresh acquire of the
         // reconnected device must resolve immediately, not by waiting out the
-        // 4s safety-net timer of a leaked lock (hence the race; the sentinel
-        // must stay well below lockDuration in background.ts)
+        // 4s safety-net timer of a leaked lock. an unblocked acquireIntent is
+        // microtask-only and node drains microtasks before the timer phase, so
+        // a 0ms sentinel wins the race for a leaked lock and only for that
         await client1.enumerateDone({
             descriptors: [{ path: PathInternal('1'), type: 1, apiType: 'usb' }],
         });
         const acquireAgain = await Promise.race([
             client1.acquireIntent({ path: PathPublic('2'), previous: null }),
             new Promise(resolve =>
-                setTimeout(() => resolve('stuck behind the safety-net timer'), 1000),
+                setTimeout(() => resolve('stuck behind the safety-net timer'), 0),
             ),
         ]);
         expect(acquireAgain).toMatchObject({ success: true });
