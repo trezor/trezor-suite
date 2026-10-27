@@ -1,13 +1,17 @@
-import { renderWithBasicProvider, screen } from '@suite-native/test-utils';
+import { fireEvent, renderWithBasicProvider, screen } from '@suite-native/test-utils';
 
 import { BlurUrls } from './BlurUrls';
-import { Box as MockBox } from '../Box';
+import { PressableOpacity as MockPressableOpacity } from '../Pressable';
 
 type UrlCase = [text: string, label: string, urls: string[]];
+type MockBlurredUrlProps = {
+    text: string;
+    onToggle: () => void;
+};
 
 jest.mock('./BlurredUrl', () => ({
-    BlurredUrl: ({ text }: { text: string }) => (
-        <MockBox testID="blurred-url" accessibilityLabel={text} />
+    BlurredUrl: ({ text, onToggle }: MockBlurredUrlProps) => (
+        <MockPressableOpacity testID="blurred-url" accessibilityLabel={text} onPress={onToggle} />
     ),
 }));
 
@@ -19,6 +23,32 @@ describe('BlurUrls', () => {
 
         expect(screen.getByText('Ordinary Token')).toHaveProp('numberOfLines', 1);
         expect(screen.queryByTestId('blurred-url')).toBeNull();
+    });
+
+    it('reveals on tap, masks on a second tap and keeps a different token masked', async () => {
+        const { rerender } = await renderWithBasicProvider(
+            <BlurUrls text="Claim at rewards.example now" />,
+        );
+
+        await fireEvent.press(screen.getByTestId('blurred-url'));
+        expect(screen.getByLabelText('Claim at rewards.example now')).toBeOnTheScreen();
+
+        await fireEvent.press(screen.getByTestId('blurred-url'));
+        expect(screen.getByLabelText('Claim at … now')).toBeOnTheScreen();
+
+        await fireEvent.press(screen.getByTestId('blurred-url'));
+        await rerender(<BlurUrls text="Visit other.example" />);
+        expect(screen.getByLabelText('Visit …')).toBeOnTheScreen();
+    });
+
+    it('lets a screen reader activate the masked text', async () => {
+        await renderWithBasicProvider(<BlurUrls text="Claim at rewards.example now" />);
+
+        await fireEvent(screen.getByLabelText('Claim at … now'), 'accessibilityAction', {
+            nativeEvent: { actionName: 'activate' },
+        });
+
+        expect(screen.getByLabelText('Claim at rewards.example now')).toBeOnTheScreen();
     });
 
     it.each<UrlCase>([

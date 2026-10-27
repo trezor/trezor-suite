@@ -10,6 +10,7 @@ type DiscreetCanvasProps = {
     lineHeight: number;
     text: string;
     color: Color;
+    blur?: number;
 };
 
 const discreetCanvasStyle = prepareNativeStyle<{ lineHeight: number }>((_, { lineHeight }) => ({
@@ -23,7 +24,13 @@ const discreetCanvasStyle = prepareNativeStyle<{ lineHeight: number }>((_, { lin
     borderRadius: lineHeight / 2,
 }));
 
-export const DiscreetCanvas = ({ fontSize, lineHeight, text, color }: DiscreetCanvasProps) => {
+export const DiscreetCanvas = ({
+    fontSize,
+    lineHeight,
+    text,
+    color,
+    blur,
+}: DiscreetCanvasProps) => {
     const {
         applyStyle,
         utils: { colors },
@@ -33,7 +40,7 @@ export const DiscreetCanvas = ({ fontSize, lineHeight, text, color }: DiscreetCa
     if (!font) return null;
 
     // Set blur dynamically so texts of any size look the same.
-    const blurValue = lineHeight * 0.3;
+    const blurValue = blur ?? lineHeight * 0.3;
 
     return (
         <Canvas style={applyStyle(discreetCanvasStyle, { lineHeight })} pointerEvents="none">

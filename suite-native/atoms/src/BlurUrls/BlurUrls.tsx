@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 
 import { extractUrlsFromText } from '@trezor/utils';
 
@@ -15,10 +15,15 @@ export const BlurUrls = ({
     color = 'contentPrimary',
     ...textProps
 }: BlurUrlsProps) => {
+    const [revealedText, setRevealedText] = useState<string | null>(null);
+    const isRevealed = revealedText === text;
     const { textParts, urls } = extractUrlsFromText(text);
-    const accessibilityLabel = textParts
-        .map((part, index) => `${part}${index < urls.length ? '…' : ''}`)
-        .join('');
+    const hasUrls = urls.length > 0;
+    const accessibilityLabel = isRevealed
+        ? text
+        : textParts.map((part, index) => `${part}${index < urls.length ? '…' : ''}`).join('');
+
+    const toggleReveal = () => setRevealedText(isRevealed ? null : text);
 
     return (
         <Text
@@ -26,6 +31,10 @@ export const BlurUrls = ({
             variant={variant}
             color={color}
             accessibilityLabel={accessibilityLabel}
+            accessibilityRole={hasUrls ? 'button' : undefined}
+            accessibilityState={hasUrls ? { expanded: isRevealed } : undefined}
+            accessibilityActions={hasUrls ? [{ name: 'activate' }] : undefined}
+            onAccessibilityAction={hasUrls ? toggleReveal : undefined}
         >
             {textParts.map((part, index) => {
                 const url = urls[index];
@@ -34,7 +43,13 @@ export const BlurUrls = ({
                     <Fragment key={index}>
                         {part}
                         {url !== undefined && (
-                            <BlurredUrl text={url} variant={variant} color={color} />
+                            <BlurredUrl
+                                text={url}
+                                variant={variant}
+                                color={color}
+                                isRevealed={isRevealed}
+                                onToggle={toggleReveal}
+                            />
                         )}
                     </Fragment>
                 );
