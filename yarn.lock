@@ -11536,6 +11536,41 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/earn-staking-common@workspace:*, @suite-common/earn-staking-common@workspace:suite-common/earn-staking-common":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/earn-staking-common@workspace:suite-common/earn-staking-common"
+  dependencies:
+    "@trezor/connect-common": "workspace:*"
+    "@trezor/dependency-injection": "workspace:*"
+    "@trezor/network-module-suite-common-types": "workspace:*"
+    "@trezor/network-module-types": "workspace:*"
+    "@trezor/requirements": "workspace:*"
+    zod: "npm:4.6.7"
+  languageName: unknown
+  linkType: soft
+
+"@suite-common/earn-staking-products@workspace:suite-common/earn-staking-products":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/earn-staking-products@workspace:suite-common/earn-staking-products"
+  dependencies:
+    "@suite-common/earn-staking-common": "workspace:*"
+    "@trezor/requirements": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@suite-common/earn-staking@workspace:suite-common/earn-staking":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/earn-staking@workspace:suite-common/earn-staking"
+  dependencies:
+    "@suite-common/earn-staking-common": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@trezor/dependency-injection": "workspace:*"
+    "@trezor/network-module-types": "workspace:*"
+    "@trezor/requirements": "workspace:*"
+    zod: "npm:4.6.7"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/extra-dependencies@workspace:*, @suite-common/extra-dependencies@workspace:suite-common/extra-dependencies":
   version: 0.0.0-use.local
   resolution: "@suite-common/extra-dependencies@workspace:suite-common/extra-dependencies"
@@ -12446,6 +12481,7 @@ __metadata:
     "@trezor/protobuf": "workspace:*"
     "@trezor/react-utils": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
+    "@trezor/requirements": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
