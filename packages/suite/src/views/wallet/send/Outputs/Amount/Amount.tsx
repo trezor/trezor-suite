@@ -22,6 +22,7 @@ import { NumberInput } from '@trezor/product-components';
 import { BigNumber } from '@trezor/utils';
 
 import { BaseCurrencyValue } from 'src/components/suite';
+import { TokenUrlBlur } from 'src/components/suite/TokenUrlBlur';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
@@ -236,7 +237,11 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                         control={control}
                         rightContent={
                             <Text intent="neutral" priority="secondary">
-                                {withTokens && token ? token?.symbol : displayTicker}
+                                {withTokens && token ? (
+                                    <TokenUrlBlur text={token.symbol} />
+                                ) : (
+                                    displayTicker
+                                )}
                             </Text>
                         }
                     />

@@ -1,9 +1,10 @@
+import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
-import { type Account, asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type Account, type TokenAddress, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Row } from '@trezor/components';
 import { TokenIcon, selectShouldShowNetworkIcon } from '@trezor/product-components';
 
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite/useSelector';
 import { type TokensWithRates } from 'src/utils/wallet/tokenUtils';
 
 import { AssetDetails } from '../AssetDetails';
@@ -33,6 +34,9 @@ export function AssetRowToken({
         selectShouldShowNetworkIcon(state, account.symbol, token.contract),
     );
     const isDisabled = !onClick;
+    const isTokenKnown = useSelector(state =>
+        selectIsSpecificCoinDefinitionKnown(state, account.symbol, token.contract as TokenAddress),
+    );
 
     return (
         <ItemClickableContainer
@@ -55,6 +59,7 @@ export function AssetRowToken({
                     displaySymbol={token.symbol!}
                     networkSymbol={account.symbol}
                     isDisabled={isDisabled}
+                    shouldBlurUrls={!isTokenKnown}
                 />
             </Row>
             {token.balance && (
