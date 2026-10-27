@@ -6,14 +6,13 @@ import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { parseAccountKey } from '@suite-common/wallet-utils';
 import { AccountLabel } from '@suite-native/accounts';
 import { HStack, Text } from '@suite-native/atoms';
-import { TokenName } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import {
     type CloseActionType,
     ScreenHeader,
     useNavigateToInitialScreen,
 } from '@suite-native/navigation';
-import { type TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
+import { TokenName, type TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
 
 import { ReceiveAddressListButton } from './ReceiveAddressListButton';
 

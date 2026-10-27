@@ -21,12 +21,12 @@
         { "path": "../alerts" },
         { "path": "../atoms" },
         { "path": "../confirm-on-trezor" },
-        { "path": "../formatters" },
         { "path": "../forms" },
         { "path": "../icons" },
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },
+        { "path": "../tokens" },
         { "path": "../transaction-management" },
         {
             "path": "../../packages/blockchain-link-types"

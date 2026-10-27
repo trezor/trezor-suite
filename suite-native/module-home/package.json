@@ -52,6 +52,7 @@
         "@suite-native/settings": "workspace:*",
         "@suite-native/suite-sync": "workspace:*",
         "@suite-native/toasts": "workspace:*",
+        "@suite-native/tokens": "workspace:*",
         "@trezor/dependency-injection": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/redux-utils": "workspace:*",

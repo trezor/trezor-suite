@@ -4,12 +4,16 @@ import { useSelector } from 'react-redux';
 import { type Account, type TokenInfoBranded } from '@suite-common/wallet-types';
 import {
     CompactTokenAmountFormatter,
-    TokenName,
     TokenToFiatAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
-import { type TokensRootState, getTokenName, selectAccountTokenSymbol } from '@suite-native/tokens';
+import {
+    TokenName,
+    type TokensRootState,
+    getTokenName,
+    selectAccountTokenSymbol,
+} from '@suite-native/tokens';
 
 import { AccountsListItemBase } from './AccountsListItemBase';
 

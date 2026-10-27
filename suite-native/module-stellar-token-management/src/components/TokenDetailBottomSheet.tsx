@@ -5,9 +5,9 @@ import { type BottomSheetModalMethods } from '@gorhom/bottom-sheet/lib/typescrip
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { BottomSheetModal, Button, HStack, Text, VStack } from '@suite-native/atoms';
-import { TokenName } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { TokenName } from '@suite-native/tokens';
 
 type TokenDetailBottomSheetProps = {
     bottomSheetRef: RefObject<BottomSheetModalMethods | null>;

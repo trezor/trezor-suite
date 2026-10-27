@@ -15,7 +15,6 @@ export { CompactCryptoAmountFormatter } from './components/CompactCryptoAmountFo
 export { CompactTokenAmountFormatter } from './components/CompactTokenAmountFormatter';
 export { ExactCryptoAmountFormatter } from './components/ExactCryptoAmountFormatter';
 export { ExactTokenAmountFormatter } from './components/ExactTokenAmountFormatter';
-export { TokenName } from './components/TokenName';
 export { NetworkDisplaySymbolNameFormatter } from './components/NetworkDisplaySymbolNameFormatter';
 export { TokenToFiatAmountFormatter } from './components/TokenToFiatAmountFormatter';
 export { SignValueFormatter } from './components/SignValueFormatter';

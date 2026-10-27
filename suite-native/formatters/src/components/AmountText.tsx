@@ -7,9 +7,8 @@ import {
     type TextProps,
     resetLetterSpacingOnAndroidStyle,
 } from '@suite-native/atoms';
+import { TokenName } from '@suite-native/tokens';
 import { mergeNativeStyleObjects, useNativeStyles } from '@trezor/styles-native';
-
-import { TokenName } from './TokenName';
 
 type AmountTextProps = {
     isDiscreetText?: boolean;

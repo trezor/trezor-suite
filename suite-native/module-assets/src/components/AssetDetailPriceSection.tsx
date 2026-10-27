@@ -4,10 +4,10 @@ import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { type AssetsRootState, selectAssetName } from '@suite-common/assets';
 import { HStack, VStack } from '@suite-native/atoms';
-import { TokenName } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import type { AssetsStackParamList, AssetsStackRoutes } from '@suite-native/navigation';
 import { AssetPriceChart } from '@suite-native/price-chart';
+import { TokenName } from '@suite-native/tokens';
 
 import { AssetDetailPrice } from './AssetDetailPrice';
 

@@ -20,7 +20,6 @@ import {
     BaseCurrencyAmountFormatter,
     CompactCryptoAmountFormatter,
     CompactTokenAmountFormatter,
-    TokenName,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
@@ -30,6 +29,7 @@ import {
     RootStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
+import { TokenName } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const rowStyle = prepareNativeStyle(utils => ({

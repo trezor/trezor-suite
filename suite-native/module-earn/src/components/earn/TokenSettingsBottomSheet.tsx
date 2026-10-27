@@ -40,7 +40,6 @@ import {
     CoinToFiatAmountFormatter,
     ExactCryptoAmountFormatter,
     ExactTokenAmountFormatter,
-    TokenName,
     TokenToFiatAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
@@ -55,6 +54,7 @@ import {
 import { isDevUtilsEnabledAtom } from '@suite-native/storage';
 import {
     type TokensRootState as NativeTokensRootState,
+    TokenName,
     selectAccountTokenInfo,
     selectIsUnrecognizedToken,
 } from '@suite-native/tokens';

@@ -8,10 +8,9 @@ import {
 } from '@suite-common/wallet-core';
 import type { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { BannerInline } from '@suite-native/atoms';
-import { TokenName } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
-import { type TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
+import { TokenName, type TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
 import { HELP_CENTER_OTHER_CRYPTOCURRENCIES_DESTINATION_TAGS_URL } from '@trezor/urls';
 
 type ReceiveDestinationTagInfoProps = {

@@ -1,9 +1,12 @@
 import { type AccountKey } from '@suite-common/wallet-types';
 import { Box, PressableOpacity } from '@suite-native/atoms';
-import { TokenName } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { useNavigateToTransactionDetail } from '@suite-native/navigation';
-import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
+import {
+    TokenName,
+    type TypedTokenTransfer,
+    type WalletAccountTransaction,
+} from '@suite-native/tokens';
 import {
     TokenTransferListItemValues,
     TransactionListItemValues,

@@ -61,6 +61,7 @@
         { "path": "../settings" },
         { "path": "../suite-sync" },
         { "path": "../toasts" },
+        { "path": "../tokens" },
         {
             "path": "../../packages/dependency-injection"
         },

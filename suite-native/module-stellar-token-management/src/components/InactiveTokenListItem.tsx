@@ -1,8 +1,8 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type StellarTokenInfo } from '@suite-common/wallet-types';
 import { Box, PressableOpacity } from '@suite-native/atoms';
-import { TokenName } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
+import { TokenName } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type InactiveTokenListItemProps = {

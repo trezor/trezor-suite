@@ -12,13 +12,17 @@ import { parseAccountKey } from '@suite-common/wallet-utils';
 import { Badge, Box, ErrorMessage, HStack, Text, VStack } from '@suite-native/atoms';
 import {
     ExactTokenAmountFormatter,
-    TokenName,
     TokenToFiatAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { type TokensRootState, getTokenName, selectAccountTokenInfo } from '@suite-native/tokens';
+import {
+    TokenName,
+    type TokensRootState,
+    getTokenName,
+    selectAccountTokenInfo,
+} from '@suite-native/tokens';
 import { parseStaticSessionId } from '@trezor/device-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
