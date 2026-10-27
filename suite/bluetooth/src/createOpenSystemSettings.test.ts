@@ -2,6 +2,13 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 
 import { createOpenSystemSettings } from './createOpenSystemSettings';
 
+// The toast id is a timestamp, so match the action by type and payload instead of building it again.
+const errorToast = (error: string) =>
+    expect.objectContaining({
+        type: notificationsActions.addToast.type,
+        payload: expect.objectContaining({ type: 'error', error }),
+    });
+
 const setup = (openSystemSettings: jest.Mock) => {
     const dispatch = jest.fn();
     const open = createOpenSystemSettings({ desktopApi: { openSystemSettings }, dispatch });
@@ -27,9 +34,7 @@ describe('createOpenSystemSettings', () => {
             success: false,
             error: 'nope',
         });
-        expect(dispatch).toHaveBeenCalledWith(
-            notificationsActions.addToast({ type: 'error', error: 'nope' }),
-        );
+        expect(dispatch).toHaveBeenCalledWith(errorToast('nope'));
     });
 
     it('resolves a failure and dispatches an error toast when the call rejects', async () => {
@@ -37,8 +42,6 @@ describe('createOpenSystemSettings', () => {
         const { dispatch, open } = setup(openSystemSettings);
 
         await expect(open('bluetooth')).resolves.toEqual({ success: false, error: 'ipc failed' });
-        expect(dispatch).toHaveBeenCalledWith(
-            notificationsActions.addToast({ type: 'error', error: 'ipc failed' }),
-        );
+        expect(dispatch).toHaveBeenCalledWith(errorToast('ipc failed'));
     });
 });
