@@ -196,12 +196,10 @@ describe('analyzeTransactions', () => {
             // the oldest coinjoin: own input and own output on the same address
             bcrt1pg7ly7v4hslk70jutvtjf2za2twe0thfrqvf6e56njhp9sdlas8ksaal0j0: 2,
         });
-        // The `!('address' in vout)` filter in `getRawLiquidityClue` never matches either shape
-        // `transformVinVout` emits, so the account's own 1000000 coinjoin output reaches the clue
-        // next to the foreign 20000 and, being the larger denomination, decides it. Only the
-        // OP_RETURN marker is dropped, by `transformVinVout`. The 500000 of the older coinjoin is
-        // absent because only the most recent coinjoin is the clue's source.
-        expect(externalAmounts).toEqual([1000000, 20000]);
-        expect(response.rawLiquidityClue).toBe(1000000);
+        // Only the other participants' outputs describe their liquidity: the own 1000000 coinjoin
+        // output and the OP_RETURN marker are excluded, leaving the foreign 20000. The 500000 of
+        // the older coinjoin is absent because only the most recent one is the clue's source.
+        expect(externalAmounts).toEqual([20000]);
+        expect(response.rawLiquidityClue).toBe(20000);
     });
 });
