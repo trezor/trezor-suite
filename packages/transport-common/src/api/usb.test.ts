@@ -281,6 +281,40 @@ describe('api/usb', () => {
         expect(listener).toHaveBeenCalledWith([]);
     });
 
+    // paths are raw USB serial numbers, so a device can report a serial colliding
+    // with an Object.prototype member; such a path must not read as a reset that
+    // is already running, otherwise aborts stop cancelling in-flight transfers
+    it('read aborted on a path colliding with Object.prototype keys', async () => {
+        const reset = jest.fn(() => Promise.resolve());
+        const api = new UsbApi({
+            usbInterface: createUsbMock({
+                getDevices: () =>
+                    Promise.resolve([
+                        createMockedDevice({
+                            serialNumber: 'toString',
+                            reset,
+                            transferIn: () =>
+                                new Promise(resolve =>
+                                    setTimeout(
+                                        () => resolve(createTransferInResult(api.chunkSize)),
+                                        100,
+                                    ),
+                                ),
+                        }),
+                    ]),
+            }),
+        });
+
+        const abortController = new AbortController();
+        await api.enumerate(abortController.signal);
+        const promise = api.read(PathInternal('toString'), { signal: abortController.signal });
+        abortController.abort();
+
+        const result = await promise;
+        if (result.success) throw new Error('Unexpected success');
+        expect(reset).toHaveBeenCalledTimes(1);
+    });
+
     it('runInIsolation isolates per path: other paths run in parallel, same path serializes', async () => {
         const api = new UsbApi({ usbInterface: createUsbMock() });
 
