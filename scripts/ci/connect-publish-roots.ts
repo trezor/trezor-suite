@@ -1,9 +1,4 @@
-// The connect distribution packages, the roots of the connect publish closure.
-// These four are released by `deploy-npm-connect` (a hardcoded matrix), not by
+// Defined in `@trezor/requirements`; this module keeps the import path of the connect release
+// scripts. These four are released by `deploy-npm-connect` (a hardcoded matrix), not by
 // `deploy-npm-connect-dependencies`, which releases the rest of the closure.
-export const CONNECT_PUBLISH_ROOTS: ReadonlyArray<string> = [
-    '@trezor/connect',
-    '@trezor/connect-web',
-    '@trezor/connect-mobile',
-    '@trezor/connect-webextension',
-];
+export { CONNECT_PUBLISH_ROOTS } from './publish-closure';
