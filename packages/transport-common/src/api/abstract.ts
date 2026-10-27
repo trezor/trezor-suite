@@ -48,7 +48,9 @@ export abstract class AbstractApi extends TypedEmitter<{
 }> {
     protected logger?: Logger;
     protected listening: boolean = false;
-    protected lock: Record<string, AccessLock> = {};
+    // null prototype: paths are raw USB serial numbers, so inherited keys
+    // ('toString', '__proto__', ...) must not read as existing locks
+    protected lock: Record<string, AccessLock> = Object.create(null);
     public type: ApiType;
     constructor({ logger, type }: AbstractApiConstructorParams) {
         super();
