@@ -9,6 +9,20 @@ export type WorkspacePackage = {
 };
 
 /**
+ * The connect distribution packages 3rd parties install, the roots of the connect publish closure.
+ * The `connect-public-dependencies` snapshots and the connect release scripts in `scripts/ci` share
+ * this list. The `deploy-npm-connect` matrix in `.github/workflows/release-connect-npm.yml`,
+ * `scripts/ci/check-npm-packages-reserved.js`, the shell loops in `test-connect-misc.yml` and the
+ * CHANGELOG table in `scripts/ci/connect-bump-versions.ts` cannot import it and repeat it by hand.
+ */
+export const CONNECT_PUBLISH_ROOTS: ReadonlyArray<string> = [
+    '@trezor/connect',
+    '@trezor/connect-web',
+    '@trezor/connect-mobile',
+    '@trezor/connect-webextension',
+];
+
+/**
  * Read every workspace's package.json into a name-keyed map. Packages without a
  * `name` are skipped; version-less packages are kept so a closure traversal can
  * still walk through them.
