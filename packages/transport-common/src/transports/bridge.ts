@@ -4,6 +4,7 @@ import {
     type TransportProtocol,
     v1 as protocolV1,
 } from '@trezor/protocol';
+
 import * as ERRORS from '../errors';
 import {
     AbstractTransport,
