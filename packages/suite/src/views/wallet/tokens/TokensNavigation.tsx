@@ -1,7 +1,7 @@
 import { type Dispatch, type SetStateAction, useEffect } from 'react';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { selectIsDebugModeActive } from '@suite/debug';
+import { DebugOnlyBadge, selectIsDebugModeActive } from '@suite/debug';
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
 import { openModal } from '@suite/modal';
 import { type Route, gotoThunk, selectRouteName } from '@suite/router';
@@ -195,14 +195,16 @@ export const TokensNavigation = ({
                     }
                 />
                 {showAddToken && (
-                    <IconButton
-                        icon={PlusIcon}
-                        size="medium"
-                        intent="neutral"
-                        priority="secondary"
-                        onClick={handleAddToken}
-                        tooltip={{ content: <Translation id="TR_ADD_TOKEN_SUBMIT" /> }}
-                    />
+                    <DebugOnlyBadge>
+                        <IconButton
+                            icon={PlusIcon}
+                            size="medium"
+                            intent="neutral"
+                            priority="secondary"
+                            onClick={handleAddToken}
+                            tooltip={{ content: <Translation id="TR_ADD_TOKEN_SUBMIT" /> }}
+                        />
+                    </DebugOnlyBadge>
                 )}
             </Row>
         </Row>
