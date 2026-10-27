@@ -1,3 +1,4 @@
+export { accountsDiscoveryResultEvent } from './accountsDiscoveryResultEvent';
 export { accountsInfoEvent } from './accountsInfoEvent';
 export { appFormPercentButtonsEvent } from './appFormPercentButtonsEvent';
 export { coinSignMessageEvent } from './coinSignMessageEvent';
