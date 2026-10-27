@@ -68,7 +68,7 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           set -o pipefail
-          body=$(gh pr view "$PR_NUMBER" --json title,files --jq '{title, files: [.files[].path]}' |
+          body=$(gh pr view "$PR_NUMBER" --json title,body,files --jq '{title, body, files: [.files[].path]}' |
             jq '{
               model: "typesafe/jev-1.13",
               state: {
