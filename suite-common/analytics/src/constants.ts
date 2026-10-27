@@ -37,6 +37,7 @@ export enum EventType {
     WalletConnectSessionRequest = 'wallet-connect/session-request',
     AccountsInfo = 'accounts/info',
     AccountsBalance = 'accounts/balance',
+    AccountsDiscoveryResult = 'accounts/discovery-result',
     OnboardingStepViewed = 'onboarding/step-viewed',
     OnboardingFeedbackBannerClicked = 'onboarding/feedback-banner',
     OnboardingRecoveryWarningCreateNewWallet = 'onboarding/recovery-warning/create-new-wallet',
