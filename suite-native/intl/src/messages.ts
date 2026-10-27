@@ -3770,7 +3770,10 @@ export const messages = {
                 availableOfTotal: '{available} / {total}',
             },
             allVotesUsed: 'All {count} {count, plural, one {vote} other {votes}} used',
-            unstakingCardTitle: 'Unstaking (~{days} days)',
+            unstakingCard: {
+                title: 'Unstaking',
+                daysLocked: '{days, plural, one {# day} other {# days}} locked',
+            },
         },
         notAvailable: 'Not available',
         apyNotAvailable: 'APY not available',

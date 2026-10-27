@@ -23,7 +23,7 @@ import { SolStakingRewardsWarning } from './SolStakingRewardsWarning';
 import { StakingManagementPendingSection } from './StakingManagementPendingSection';
 import { StakingManagementStakedCard } from './StakingManagementStakedCard';
 import { TronResourcesCard } from './TronResourcesCard';
-import { TronStakingUnstakeCard } from './TronStakingUnstakeCard';
+import { TronStakingUnstakeCard } from './TronStakingUnstakeCard/TronStakingUnstakeCard';
 import { TronStakingWithdrawBanner } from './TronStakingWithdrawBanner';
 
 type StakingManagementListHeaderProps = {
