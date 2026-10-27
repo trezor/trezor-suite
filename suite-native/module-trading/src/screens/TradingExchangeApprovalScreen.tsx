@@ -12,7 +12,7 @@ import {
 import { BannerInline, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
-    BACK_NAVIGATION_ACTIONS,
+    DEFAULT_BACK_NAVIGATION_ACTIONS,
     DynamicScreenHeader,
     type RootStackParamList,
     type RootStackRoutes,
@@ -113,7 +113,7 @@ const TradingExchangeApprovalScreenContent = ({
     }, [quote, isReady, isRevoked, dispatch, confirmApproval, reportToAnalytics]);
 
     useOnNavigationRemove({
-        actionTypes: BACK_NAVIGATION_ACTIONS,
+        actionTypes: DEFAULT_BACK_NAVIGATION_ACTIONS,
         onRemoveAttempt: () => {
             dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
             reportToAnalytics('cancel');

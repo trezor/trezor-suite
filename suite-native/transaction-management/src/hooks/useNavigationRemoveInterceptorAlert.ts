@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
 import {
-    BACK_NAVIGATION_ACTIONS,
+    DEFAULT_BACK_NAVIGATION_ACTIONS,
     useNavigationRemoveGuard,
     useOnNavigationRemove,
 } from '@suite-native/navigation';
@@ -37,7 +37,7 @@ export const useNavigationRemoveInterceptorAlert = ({
     useOnNavigationRemove({
         isEnabled: shouldPrevent,
         onRemoveAttempt: action => {
-            if (!BACK_NAVIGATION_ACTIONS.includes(action.type)) {
+            if (!DEFAULT_BACK_NAVIGATION_ACTIONS.includes(action.type)) {
                 hideStayOnScreenAlert();
             }
         },
@@ -45,7 +45,6 @@ export const useNavigationRemoveInterceptorAlert = ({
 
     useNavigationRemoveGuard({
         isEnabled: shouldPrevent,
-        actionTypes: BACK_NAVIGATION_ACTIONS,
         onBlocked: onPreventedRemove,
     });
 };

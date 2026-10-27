@@ -3,11 +3,7 @@ import { useSelector } from 'react-redux';
 import { deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { ejectAllWalletsThunk } from '@suite-common/wallet-core';
 import { Translation } from '@suite-native/intl';
-import {
-    BACK_NAVIGATION_ACTIONS,
-    ScreenHeader,
-    useNavigationRemoveGuard,
-} from '@suite-native/navigation';
+import { ScreenHeader, useNavigationRemoveGuard } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 import { HELP_CENTER_ENTROPY_CHECK_URL } from '@trezor/urls';
@@ -27,7 +23,7 @@ export const DiscoveryEntropyCheckFailModalContent = () => {
     const canClose = typeof deviceId === 'string' && deviceId.length > 0; // matches `getIsDeviceIdValid`
 
     // Always blocked – even when `canClose`, it can be done only by explicit CTAs, not by native navigation or automatic triggers.
-    useNavigationRemoveGuard({ actionTypes: BACK_NAVIGATION_ACTIONS });
+    useNavigationRemoveGuard();
 
     const handleClose = () => {
         if (!canClose || !device) return; // !device just for typescript, but it is guaranteed by canClose

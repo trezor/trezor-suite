@@ -18,6 +18,9 @@ export * from './components/NavigationContainerWithAnalytics';
 export * from './components/GoBackIcon';
 export * from './hooks/useNavigationRouteMatch';
 export * from './hooks/useDisableIOSGesture';
-export { BACK_NAVIGATION_ACTIONS, type NavigationRemoveActionTypes } from './navigationRemove';
+export {
+    DEFAULT_BACK_NAVIGATION_ACTIONS,
+    type NavigationRemoveActionTypes,
+} from './navigationRemove';
 export * from './hooks/useNavigationRemoveGuard';
 export * from './hooks/useOnNavigationRemove';

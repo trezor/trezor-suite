@@ -6,7 +6,6 @@ import { useAlert } from '@suite-native/alerts';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { useTranslate } from '@suite-native/intl';
 import {
-    BACK_NAVIGATION_ACTIONS,
     type DeviceCheckBackupStackParamList,
     type DeviceCheckBackupStackRoutes,
     type DeviceSettingsStackParamList,
@@ -61,7 +60,6 @@ export const CheckBackupScreenWithExitButton = ({ children, ...screenProps }: Sc
     const handleExitButtonPress = useHandleCheckBackupExitButtonPress();
 
     useNavigationRemoveGuard({
-        actionTypes: BACK_NAVIGATION_ACTIONS,
         onBlocked: handleExitButtonPress,
     });
 

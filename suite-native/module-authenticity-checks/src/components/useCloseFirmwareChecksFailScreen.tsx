@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { deviceActions, selectSelectedDevice } from '@suite-common/device';
-import { BACK_NAVIGATION_ACTIONS, useNavigationRemoveGuard } from '@suite-native/navigation';
+import { useNavigationRemoveGuard } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
@@ -21,7 +21,7 @@ export const useCloseFirmwareChecksFailScreen = () => {
     const canClose = typeof deviceId === 'string' && deviceId.length > 0; // matches `getIsDeviceIdValid`
 
     // Always blocked – even when `canClose`, it can be done only by explicit CTAs, not by native navigation or automatic triggers.
-    useNavigationRemoveGuard({ actionTypes: BACK_NAVIGATION_ACTIONS });
+    useNavigationRemoveGuard();
 
     const handleClose = () => {
         if (!canClose) return;

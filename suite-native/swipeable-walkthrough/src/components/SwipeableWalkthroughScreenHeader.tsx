@@ -3,11 +3,7 @@ import { type SharedValue, useAnimatedStyle, withTiming } from 'react-native-rea
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AnimatedView, Box, IconButton } from '@suite-native/atoms';
-import {
-    BACK_NAVIGATION_ACTIONS,
-    ScreenHeader,
-    useNavigationRemoveGuard,
-} from '@suite-native/navigation';
+import { ScreenHeader, useNavigationRemoveGuard } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 type SwipeableWalkthroughScreenHeaderProps = {
@@ -86,7 +82,6 @@ export const SwipeableWalkthroughScreenHeader = ({
     }, [currentStepIndex, onPressBack]);
 
     useNavigationRemoveGuard({
-        actionTypes: BACK_NAVIGATION_ACTIONS,
         onBlocked: handlePressBackButton,
     });
 

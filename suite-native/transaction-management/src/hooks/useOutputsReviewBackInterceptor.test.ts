@@ -30,7 +30,6 @@ describe('useOutputsReviewBackInterceptor', () => {
             );
             const options = jest.mocked(useNavigationRemoveGuard).mock.calls.at(-1)?.[0];
 
-            expect(options?.actionTypes).toEqual(['GO_BACK', 'POP']);
             await options?.onBlocked?.({ action: { type: 'POP' }, continueNavigation });
 
             expect(mockShowReviewCancellationAlert).toHaveBeenCalledTimes(1);

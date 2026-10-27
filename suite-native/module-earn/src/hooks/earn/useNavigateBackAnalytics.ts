@@ -3,10 +3,17 @@ import { useCallback, useRef } from 'react';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 import { type AnalyticsNativeEvents, injectNativeAnalytics } from '@suite-native/analytics';
-import { BACK_NAVIGATION_ACTIONS, useOnNavigationRemove } from '@suite-native/navigation';
+import {
+    DEFAULT_BACK_NAVIGATION_ACTIONS,
+    type NavigationRemoveActionTypes,
+    useOnNavigationRemove,
+} from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
 
-const ACTION_TYPES = [...BACK_NAVIGATION_ACTIONS, 'POP_TO_TOP'];
+const ACTION_TYPES = [
+    ...DEFAULT_BACK_NAVIGATION_ACTIONS,
+    'POP_TO_TOP',
+] satisfies NavigationRemoveActionTypes;
 
 export const useNavigateBackAnalytics = (event: AnalyticsNativeEvents, isEnabled = true) => {
     const { analytics } = useServices(injectNativeAnalytics);

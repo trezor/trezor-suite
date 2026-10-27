@@ -13,7 +13,6 @@ import { injectNativeAnalytics } from '@suite-native/analytics';
 import { Text, useBottomSheetModal } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
-    BACK_NAVIGATION_ACTIONS,
     type StackNavigationProps,
     type YieldStackParamList,
     YieldStackRoutes,
@@ -76,7 +75,6 @@ export const YieldDepositCompleteScreen = () => {
     }, [account?.symbol, analytics, dispatch, flowKey, navigateToInitialScreen, vault?.id]);
 
     useNavigationRemoveGuard({
-        actionTypes: BACK_NAVIGATION_ACTIONS,
         onBlocked: handleExit,
     });
 

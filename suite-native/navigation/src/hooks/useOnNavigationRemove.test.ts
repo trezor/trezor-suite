@@ -3,7 +3,7 @@ import { type NavigationAction } from '@react-navigation/native';
 import { renderHookWithBasicProvider } from '@suite-native/test-utils';
 
 import { type UseOnNavigationRemoveParams, useOnNavigationRemove } from './useOnNavigationRemove';
-import { BACK_NAVIGATION_ACTIONS } from '../navigationRemove';
+import { DEFAULT_BACK_NAVIGATION_ACTIONS } from '../navigationRemove';
 
 type RemoveEvent = { data: { action: NavigationAction }; preventDefault: () => void };
 const mockUnsubscribe = jest.fn();
@@ -45,7 +45,10 @@ describe('useOnNavigationRemove', () => {
     it('only observes selected actions', async () => {
         const onRemoveAttempt = jest.fn();
         await renderHookWithBasicProvider(() =>
-            useOnNavigationRemove({ actionTypes: BACK_NAVIGATION_ACTIONS, onRemoveAttempt }),
+            useOnNavigationRemove({
+                actionTypes: DEFAULT_BACK_NAVIGATION_ACTIONS,
+                onRemoveAttempt,
+            }),
         );
         triggerRemoval('GO_BACK');
         triggerRemoval('POP');
@@ -76,7 +79,7 @@ describe('useOnNavigationRemove', () => {
             {
                 initialProps: {
                     isEnabled: false,
-                    actionTypes: BACK_NAVIGATION_ACTIONS,
+                    actionTypes: DEFAULT_BACK_NAVIGATION_ACTIONS,
                     onRemoveAttempt: originalCallback,
                 },
             },

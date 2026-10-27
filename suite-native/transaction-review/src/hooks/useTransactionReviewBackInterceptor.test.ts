@@ -40,7 +40,6 @@ describe('useTransactionReviewBackInterceptor', () => {
 
             const options = await renderInterceptor({ onReviewCanceled });
 
-            expect(options?.actionTypes).toEqual(['GO_BACK', 'POP']);
             await options?.onBlocked?.({ action: { type: 'POP' }, continueNavigation });
 
             expect(mockShowCancellationAlert).toHaveBeenCalledTimes(1);
