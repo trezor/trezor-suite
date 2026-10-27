@@ -7,5 +7,6 @@ export {
     networkSpecificDefaultEthereum,
     networkSpecificDefaultCardano,
     networkSpecificDefaultStellar,
+    networkSpecificDefaultTron,
 } from './mockWalletAccount';
 export { mockAccountToken } from './mockAccountToken';

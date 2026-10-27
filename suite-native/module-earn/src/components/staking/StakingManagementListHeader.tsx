@@ -23,8 +23,7 @@ import { SolStakingRewardsWarning } from './SolStakingRewardsWarning';
 import { StakingManagementPendingSection } from './StakingManagementPendingSection';
 import { StakingManagementStakedCard } from './StakingManagementStakedCard';
 import { TronResourcesCard } from './TronResourcesCard';
-import { TronStakingUnstakeCard } from './TronStakingUnstakeCard/TronStakingUnstakeCard';
-import { TronStakingWithdrawBanner } from './TronStakingWithdrawBanner';
+import { TronStakingPendingSection } from './TronStakingPendingSection';
 
 type StakingManagementListHeaderProps = {
     accountKey: AccountKey;
@@ -52,40 +51,49 @@ export const StakingManagementListHeader = ({ accountKey }: StakingManagementLis
             {isSupportedEthStakingNetworkSymbol(networkSymbol) && (
                 <InstantUnstakeConfirmationBanner accountKey={accountKey} />
             )}
+
             {isStakingSymbol(networkSymbol) && (
                 <ContextMessage context={Context.getStaking(networkSymbol)} />
             )}
-            {isTronStaking && <TronStakingWithdrawBanner accountKey={accountKey} />}
+
             {isTronStaking ? (
-                <TronStakingUnstakeCard accountKey={accountKey} />
+                <TronStakingPendingSection accountKey={accountKey} />
             ) : (
                 <StakingManagementPendingSection accountKey={accountKey} />
             )}
+
             {isSolanaStaking && <SolStakingRewardsWarning accountKey={accountKey} />}
+
             <VStack spacing="sp16">
                 {isCardanoStaking && <CardanoStakingInfoBanner accountKey={accountKey} />}
+
                 {isStakeSectionShown && (
                     <>
                         <Text variant="headline-sm">
                             <Translation id="earn.stakingManagementScreen.yourStake" />
                         </Text>
+
                         <StakingManagementStakedCard
                             accountKey={accountKey}
                             networkSymbol={networkSymbol}
                         />
+
                         {isSolanaStaking && (
                             <SolExternalStakingBanner
                                 accountKey={accountKey}
                                 networkSymbol={networkSymbol}
                             />
                         )}
+
                         {isCardanoStaking && (
                             <CardanoDelegatedOutsideBanner accountKey={accountKey} />
                         )}
                     </>
                 )}
             </VStack>
+
             {isTronStaking && <TronResourcesCard accountKey={accountKey} />}
+
             <Text variant="headline-sm">
                 <Translation id={historyHeadingId} />
             </Text>
