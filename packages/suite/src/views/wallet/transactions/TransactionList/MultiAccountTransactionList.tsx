@@ -167,13 +167,6 @@ export const MultiAccountTransactionList = ({
         () => searchedTransactions.filter(isPending),
         [searchedTransactions],
     );
-    const confirmedTxs = useMemo(
-        () =>
-            searchedTransactions
-                .filter(transaction => !isPending(transaction))
-                .slice((currentPage - 1) * perPage, currentPage * perPage),
-        [searchedTransactions, currentPage, perPage],
-    );
     // A token's transfers are sparse in the history, so while it loads, a short page is the end of
     // what was found, not a sign of a next page; only a full last page is.
     const isLastPageFull =
@@ -185,6 +178,25 @@ export const MultiAccountTransactionList = ({
     const totalItems = isSearching
         ? searchedTransactions.length - pendingTxs.length
         : loadedTotalItems;
+
+    // Pages counted while loading can turn out not to exist, so the list falls back to the last
+    // page there is rather than showing an empty one.
+    const pageCount = Math.max(1, Math.ceil(totalItems / perPage));
+    const shownPage = Math.min(currentPage, pageCount);
+
+    // The clamp is kept in state too, so a page count that grows again later does not take the
+    // list back to the page that went away.
+    useEffect(() => {
+        setCurrentPage(page => Math.min(page, pageCount));
+    }, [pageCount]);
+
+    const confirmedTxs = useMemo(
+        () =>
+            searchedTransactions
+                .filter(transaction => !isPending(transaction))
+                .slice((shownPage - 1) * perPage, shownPage * perPage),
+        [searchedTransactions, shownPage, perPage],
+    );
 
     const onPageSelected = (page: number) => {
         setCurrentPage(page);
@@ -234,7 +246,7 @@ export const MultiAccountTransactionList = ({
                 {footer}
                 {totalItems > perPage && (
                     <Pagination
-                        currentPage={currentPage}
+                        currentPage={shownPage}
                         perPage={perPage}
                         totalItems={totalItems}
                         onPageSelected={onPageSelected}
