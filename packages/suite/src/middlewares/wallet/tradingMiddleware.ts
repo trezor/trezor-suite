@@ -1,5 +1,5 @@
-import { type Dispatch, type UnknownAction } from '@reduxjs/toolkit';
-import { type MiddlewareAPI } from 'redux';
+import { type UnknownAction } from '@reduxjs/toolkit';
+import { type MiddlewareAPI, type Dispatch as ReduxDispatch } from 'redux';
 
 import { selectFullSelectedAccount } from '@suite/account';
 import { type Route, routerLocationChange, selectRouteName } from '@suite/router';
@@ -9,12 +9,13 @@ import {
     selectTradingActiveSection,
     selectTradingModalAccountKey,
     selectTradingPrefilledFromAccount,
-    tradeApi,
     tradingActions,
     tradingBuyActions,
     tradingExchangeActions,
     tradingSellActions,
+    tradingThunks,
 } from '@suite-common/trading';
+import { type Dispatch } from '@trezor/redux-utils';
 
 import { type AppState } from 'src/types/suite';
 
@@ -31,15 +32,15 @@ const isTradingSectionRoute = (routeName: Route['name'] | undefined): boolean =>
 const isTradingEntryRoute = (routeName: Route['name'] | undefined): boolean =>
     !!routeName && TRADING_ENTRY_ROUTES.includes(routeName);
 
-const resetTradingAccountKeys = (dispatch: Dispatch<UnknownAction>) => {
+const resetTradingAccountKeys = (dispatch: ReduxDispatch<UnknownAction>) => {
     dispatch(tradingExchangeActions.setTradingAccountKey(undefined));
     dispatch(tradingBuyActions.setTradingAccountKey(undefined));
     dispatch(tradingSellActions.setTradingAccountKey(undefined));
 };
 
 export const tradingMiddleware =
-    (api: MiddlewareAPI<Dispatch<UnknownAction>, AppState>) =>
-    (next: Dispatch<UnknownAction>) =>
+    (api: MiddlewareAPI<Dispatch, AppState>) =>
+    (next: ReduxDispatch<UnknownAction>) =>
     (action: UnknownAction): UnknownAction => {
         const prevState = api.getState();
 
@@ -159,7 +160,7 @@ export const tradingMiddleware =
         );
 
         if (isForSettingAccountKey && account) {
-            tradeApi.createApiKey(account.descriptor);
+            api.dispatch(tradingThunks.setTradeApiKeyThunk({ account }));
         }
 
         return action;

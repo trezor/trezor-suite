@@ -32,17 +32,7 @@ import suiteReducer, { type SuiteState } from 'src/reducers/suite/suiteReducer';
 
 import { tradingMiddlewareFixtures } from './__fixtures__/tradingMiddleware';
 
-jest.mock('@suite-common/trading', () => {
-    const originalModule = jest.requireActual('@suite-common/trading');
-
-    return {
-        __esModule: true,
-        ...originalModule,
-        tradeApi: {
-            createApiKey: jest.fn(),
-        },
-    };
-});
+jest.spyOn(tradeApi, 'createApiKey').mockImplementation(() => {});
 
 const tradingReducer = prepareTradingReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },

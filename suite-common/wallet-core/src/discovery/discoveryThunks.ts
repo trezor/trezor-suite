@@ -27,7 +27,11 @@ import {
 import { getNewInstanceNumber } from '@suite-common/suite-utils';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { type TrezorConnectBackendType, asNetworkSymbol } from '@suite-common/wallet-config';
-import { type DiscoveryStatus, type GetTradedAccountKeysDep } from '@suite-common/wallet-types';
+import {
+    type DiscoveryStatus,
+    type EnsureTradeApiDeviceSaltDep,
+    type GetTradedAccountKeysDep,
+} from '@suite-common/wallet-types';
 import TrezorConnect, {
     type AccountInfo,
     type DeviceState,
@@ -320,7 +324,9 @@ type RunDiscoveryParams = {
 
 export type RunDiscoveryThunkState = DiscoveryReportingThunkState;
 
-export type RunDiscoveryThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep> &
+export type RunDiscoveryThunkDeps = WithServices<
+    AnalyticsDep & GetTradedAccountKeysDep & EnsureTradeApiDeviceSaltDep
+> &
     ProcessDiscoveryEntropyCheckThunkDeps & {
         thunks: FetchAndSaveMetadataDep;
     };
@@ -446,6 +452,17 @@ export const runDiscoveryThunk = createThunk<
             }
 
             device = reselectDevice(deviceState);
+
+            await extra.services.ensureTradeApiDeviceSalt({
+                path: device.path,
+                instance,
+                staticSessionId: deviceState.staticSessionId,
+                useEmptyPassphrase: !isAddingHiddenWallet,
+            });
+
+            if (!isDiscoveryInProgress(selectDiscoveryByDevicePath(getState(), device.path))) {
+                return;
+            }
 
             const accountsParam = selectDiscoveryAccountsParam(
                 getState(),
@@ -672,7 +689,9 @@ type StartDiscoveryThunkParams = {
 
 export type StartDiscoveryThunkState = RunDiscoveryThunkState;
 
-export type StartDiscoveryThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep> & {
+export type StartDiscoveryThunkDeps = WithServices<
+    AnalyticsDep & GetTradedAccountKeysDep & EnsureTradeApiDeviceSaltDep
+> & {
     thunks: FetchAndSaveMetadataDep;
 };
 
@@ -716,7 +735,9 @@ export const startDiscoveryThunk = createThunk<
 
 export type RunAdditionalDiscoveryThunkState = RunDiscoveryThunkState;
 
-export type RunAdditionalDiscoveryThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep> &
+export type RunAdditionalDiscoveryThunkDeps = WithServices<
+    AnalyticsDep & GetTradedAccountKeysDep & EnsureTradeApiDeviceSaltDep
+> &
     ProcessDiscoveryEntropyCheckThunkDeps;
 
 export const runAdditionalDiscoveryThunk = createThunk<
@@ -725,7 +746,7 @@ export const runAdditionalDiscoveryThunk = createThunk<
     { state: RunAdditionalDiscoveryThunkState; extra: RunAdditionalDiscoveryThunkDeps }
 >(
     `${DISCOVERY_MODULE_PREFIX}/runAdditional`,
-    async (staticSessionId, { dispatch, getState }): Promise<void> => {
+    async (staticSessionId, { dispatch, getState, extra }): Promise<void> => {
         // todo: not now, but in the future, there could be more devices (wallets) sharing the same static session id, for example
         // an imported wallet + wallet on the physical device. So this should run for all the applicable devices/wallets
 
@@ -773,6 +794,13 @@ export const runAdditionalDiscoveryThunk = createThunk<
                 }),
             );
         }
+
+        await extra.services.ensureTradeApiDeviceSalt({
+            path: device.path,
+            instance: device.instance,
+            staticSessionId,
+            useEmptyPassphrase: !!device.useEmptyPassphrase,
+        });
 
         // NOTE: keep here the previous device as default to prevent TS from screaming
         const updatedDevice = selectDeviceByStaticSessionId(getState(), staticSessionId) ?? device;
@@ -906,7 +934,9 @@ export const submitPassphraseThunk = createThunk<
 
 type StartOrRestartDiscoveryThunkState = RunDiscoveryThunkState;
 
-type StartOrRestartDiscoveryThunkDeps = WithServices<AnalyticsDep & GetTradedAccountKeysDep> & {
+type StartOrRestartDiscoveryThunkDeps = WithServices<
+    AnalyticsDep & GetTradedAccountKeysDep & EnsureTradeApiDeviceSaltDep
+> & {
     thunks: FetchAndSaveMetadataDep;
 };
 

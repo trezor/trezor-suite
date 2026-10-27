@@ -39,6 +39,10 @@ import {
     type TradingWatchTradeResponsePropsMap,
 } from './types';
 import { parseBtcSwapComposeTemplate } from './utils/exchange/btcSwapComposeTemplateSchema';
+import {
+    type CreateSaltedTradeApiKeyParams,
+    createSaltedTradeApiKey,
+} from './utils/tradeApiSaltUtils';
 
 type BodyType =
     | BuyTrade
@@ -91,7 +95,6 @@ class TradeApi {
     // otc service
     private readonly OTC_INFO = '/api/v2/otc';
 
-    private static accountDescriptor: string | undefined;
     private static apiKey: string | undefined;
 
     private getApiKey() {
@@ -106,25 +109,16 @@ class TradeApi {
         return this.SERVERS[this.serverEnvironment];
     }
 
-    getCurrentAccountDescriptor() {
-        return TradeApi.accountDescriptor;
-    }
-
     getCurrentApiKey() {
         return TradeApi.apiKey;
     }
 
-    createApiKey(accountDescriptor: string) {
-        if (accountDescriptor !== TradeApi.accountDescriptor) {
-            const hash = createHash('sha256');
-            hash.update(accountDescriptor);
-            TradeApi.apiKey = hash.digest('hex');
-            TradeApi.accountDescriptor = accountDescriptor;
-        }
+    createApiKey(params: CreateSaltedTradeApiKeyParams) {
+        TradeApi.apiKey = createSaltedTradeApiKey(params);
     }
 
-    resetCurrentAccount() {
-        TradeApi.accountDescriptor = undefined;
+    createAnonymousApiKey(anonymousId: string) {
+        TradeApi.apiKey = createHash('sha256').update(anonymousId).digest('hex');
     }
 
     setServersEnvironment(serverEnvironment: TradeServerEnvironment) {

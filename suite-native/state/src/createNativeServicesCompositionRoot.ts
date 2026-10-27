@@ -10,6 +10,7 @@ import { createNetworksCompositionRoot } from '@suite-common/networks';
 import { createNativePlatformEncryption } from '@suite-common/platform-encryption-native';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import { selectAllLabelsForAccount, selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
+import { tradingThunks } from '@suite-common/trading';
 import { analytics } from '@suite-native/analytics';
 import {
     rerunFwAuthenticityChecksThunk,
@@ -160,6 +161,9 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
         ),
         rerunFwAuthenticityChecksCall: () => {
             deps.dispatch(rerunFwAuthenticityChecksThunk());
+        },
+        ensureTradeApiDeviceSalt: async params => {
+            await deps.dispatch(tradingThunks.ensureTradeApiDeviceSaltThunk(params));
         },
         lockDevice: () => {},
         getBinFilesBaseUrl: asGetter(() => resolveConnectPath('data')),

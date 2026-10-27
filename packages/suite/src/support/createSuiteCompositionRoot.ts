@@ -40,7 +40,7 @@ import {
 } from '@suite-common/suite-sync';
 import { type GetBinFilesBaseUrlDep, type ReloadAppDep } from '@suite-common/suite-types';
 import { type ThpHostNameDep } from '@suite-common/thp';
-import { selectTradedAccountKeys } from '@suite-common/trading';
+import { selectTradedAccountKeys, tradingThunks } from '@suite-common/trading';
 import { selectAccountsByDeviceState } from '@suite-common/wallet-core';
 import { type GetTrezorConnectPrivilegedDep } from '@trezor/connect';
 import { toGetter } from '@trezor/dependency-injection';
@@ -221,6 +221,9 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         ),
         rerunFwAuthenticityChecksCall: () => {
             deps.dispatch(rerunFwAuthenticityChecksThunk());
+        },
+        ensureTradeApiDeviceSalt: async params => {
+            await deps.dispatch(tradingThunks.ensureTradeApiDeviceSaltThunk(params));
         },
         lockDevice: isLocked => {
             deps.dispatch(lockDevice(isLocked));

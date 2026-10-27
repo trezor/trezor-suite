@@ -8,6 +8,7 @@ import { tradingExchangeActions } from '../../reducers/exchangeReducer';
 import { type TradingRootState } from '../../reducers/tradingCommonReducer';
 import { selectTradingExchangeSelectedQuote } from '../../selectors/tradingSelectors';
 import { tradeApi } from '../../tradeApi';
+import { setTradeApiKeyThunk } from '../common/setTradeApiKeyThunk';
 
 export type WatchExchangeApprovalThunkProps = {
     account: Account;
@@ -30,7 +31,7 @@ export const watchExchangeApprovalThunk = createThunk<
             return undefined;
         }
 
-        tradeApi.createApiKey(account.descriptor);
+        dispatch(setTradeApiKeyThunk({ account }));
 
         const response = await tradeApi.watchTrade<'exchange'>(
             selectedQuote,

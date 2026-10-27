@@ -41,6 +41,7 @@ import {
     type AccountKey,
     type SelectedAccountStatus,
 } from '@suite-common/wallet-types';
+import { type StaticSessionId } from '@trezor/connect';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
 import { unique, versionUtils } from '@trezor/utils';
@@ -429,6 +430,16 @@ export const selectTradingExchangeSelectedQuoteIsDex = (state: TradingRootState)
 
 export const selectTradingSellSelectedQuote = (state: TradingRootState) =>
     state.wallet.trading.sell.selectedQuote;
+
+export const selectTradeApiDeviceSalt = (
+    state: TradingRootState,
+    staticSessionId: StaticSessionId,
+): string | undefined =>
+    state.wallet.trading.tradeApiSalts[staticSessionId] ??
+    state.wallet.trading.tradeApiSessionSalts[staticSessionId];
+
+export const selectTradeApiInstallSalt = (state: TradingRootState) =>
+    state.wallet.trading.tradeApiInstallSalt;
 
 export const selectTradingTrades = (state: TradingRootState) =>
     returnStableArrayIfEmpty(state.wallet.trading.trades);

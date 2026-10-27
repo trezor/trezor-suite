@@ -10,7 +10,8 @@ describe('TradeApi', () => {
     const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
     const error = new Error('Error');
     const accountDescriptor = 'test-account';
-    tradeApi.createApiKey(accountDescriptor);
+    const salt = '11'.repeat(32);
+    tradeApi.createApiKey({ descriptor: accountDescriptor, salt });
     const apiKey = tradeApi.getCurrentApiKey();
 
     const abortMock = (abortSignal: AbortSignal) =>
@@ -30,34 +31,19 @@ describe('TradeApi', () => {
         jest.clearAllMocks();
     });
 
-    it('should create an API key', () => {
-        const hash = createHash('sha256');
-        hash.update(accountDescriptor);
-        const expectedApiKey = hash.digest('hex');
-
-        expect(tradeApi.getCurrentApiKey()).toBe(expectedApiKey);
+    it('should create an API key salted with the given salt', () => {
+        expect(apiKey).toBe('35f184d1e92ab1875ad0fc8d1f00afd724f8d73292c604ee698760084ff2daa5');
+        expect(apiKey).not.toBe(createHash('sha256').update(accountDescriptor).digest('hex'));
     });
 
-    it('getCurrentAccountDescriptor', () => {
-        const descriptor = tradeApi.getCurrentAccountDescriptor();
+    it('should create an anonymous API key as a hash of the anonymous id', () => {
+        tradeApi.createAnonymousApiKey('anonymous-id');
 
-        expect(descriptor).toEqual('test-account');
-    });
+        expect(tradeApi.getCurrentApiKey()).toBe(
+            createHash('sha256').update('anonymous-id').digest('hex'),
+        );
 
-    describe('resetCurrentAccount', () => {
-        it('should clear the account descriptor', () => {
-            tradeApi.resetCurrentAccount();
-
-            expect(tradeApi.getCurrentAccountDescriptor()).toBeUndefined();
-        });
-
-        it('should recreate the descriptor and api key after createApiKey is called', () => {
-            tradeApi.resetCurrentAccount();
-            tradeApi.createApiKey(accountDescriptor);
-
-            expect(tradeApi.getCurrentAccountDescriptor()).toEqual(accountDescriptor);
-            expect(typeof tradeApi.getCurrentApiKey()).toBe('string');
-        });
+        tradeApi.createApiKey({ descriptor: accountDescriptor, salt });
     });
 
     describe('getApiKey', () => {

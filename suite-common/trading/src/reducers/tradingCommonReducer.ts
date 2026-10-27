@@ -6,7 +6,7 @@ import {
     type AccountKey,
     type PrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
-import { type FeeLevel } from '@trezor/connect';
+import { type FeeLevel, type StaticSessionId } from '@trezor/connect';
 
 import {
     type TradingInfoConfig,
@@ -71,6 +71,15 @@ export type TradingState = {
     verifiedAddress: TradingVerifiedAddress;
     currentProviderMetadata?: ProviderMetadata;
     quoteRefetchingState: QuoteRefetchingState;
+    tradeApiSalts: Record<StaticSessionId, string>;
+    tradeApiSessionSalts: Record<StaticSessionId, string>;
+    tradeApiInstallSalt: string | undefined;
+};
+
+type SetTradeApiDeviceSaltPayload = {
+    staticSessionId: StaticSessionId;
+    salt: string;
+    isRemembered: boolean;
 };
 
 export type TradingRootState = {
@@ -104,6 +113,9 @@ export const initialState: TradingState = {
         lastFetchTimestamp: undefined,
         status: 'stopped',
     },
+    tradeApiSalts: {},
+    tradeApiSessionSalts: {},
+    tradeApiInstallSalt: undefined,
 };
 
 const tradingCommonSlice = createSlice({
@@ -202,6 +214,16 @@ const tradingCommonSlice = createSlice({
             state.quoteRefetchingState.status =
                 state.quoteRefetchingState.remainingRefetches <= 0 ? 'stopped' : 'running';
             state.quoteRefetchingState.lastFetchTimestamp = payload;
+        },
+        setTradeApiDeviceSalt: (
+            state: TradingState,
+            { payload }: PayloadAction<SetTradeApiDeviceSaltPayload>,
+        ) => {
+            const salts = payload.isRemembered ? state.tradeApiSalts : state.tradeApiSessionSalts;
+            salts[payload.staticSessionId] = payload.salt;
+        },
+        setTradeApiInstallSalt: (state: TradingState, { payload }: PayloadAction<string>) => {
+            state.tradeApiInstallSalt = payload;
         },
     },
 });

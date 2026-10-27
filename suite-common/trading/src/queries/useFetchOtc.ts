@@ -18,7 +18,7 @@ export const useFetchOtc = () =>
         queryKey: tradingQueryKeys.otcData(),
         queryFn: async () => {
             if (!tradeApi.getCurrentApiKey()) {
-                tradeApi.createApiKey(FALLBACK_API_KEY);
+                tradeApi.createAnonymousApiKey(FALLBACK_API_KEY);
             }
 
             return (await tradeApi.getOTCData()) ?? null;

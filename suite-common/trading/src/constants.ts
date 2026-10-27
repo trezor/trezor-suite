@@ -91,6 +91,14 @@ export const SLIPPAGE_MAX = '50';
 export const SLIPPAGE_PRESETS = ['0.1', '0.5', '1', '3'];
 export const TRADE_API_RELOAD_DATA_AFTER_MS = 10 * 60 * 1000; // 10 minutes
 export const TRADING_FALLBACK_API_KEY = getRandomAccountDescriptor();
+export const TRADE_API_DEVICE_SALT_CIPHER_PARAMS = {
+    path: "m/20001'/0'",
+    key: 'Trezor Suite trade API',
+    value: '72ade4f93b6c0e8175a2d9b4e60f3c1a85d27e9b03f64a1c8d5e72b9f06a43d7',
+    encrypt: true,
+    askOnEncrypt: false,
+    askOnDecrypt: false,
+} as const;
 export const TRADE_API_RELOAD_QUOTES_AFTER_SECONDS = 30;
 
 export const CRYPTO_PLATFORM_SEPARATOR = '--';

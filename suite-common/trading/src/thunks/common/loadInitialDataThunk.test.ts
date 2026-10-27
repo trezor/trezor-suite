@@ -110,7 +110,8 @@ describe('loadInitialDataThunk catalog cache', () => {
             lastLoadedTimestamp: Date.now(),
         });
         expect(tradeApi.setServersEnvironment).toHaveBeenCalledWith('localhost');
-        expect(tradeApi.createApiKey).toHaveBeenCalledWith(TRADING_FALLBACK_API_KEY);
+        expect(tradeApi.createAnonymousApiKey).toHaveBeenCalledWith(TRADING_FALLBACK_API_KEY);
+        expect(tradeApi.createApiKey).not.toHaveBeenCalled();
     });
 
     it.each(['exchange', 'sell', 'buy'] as const)(
@@ -142,12 +143,19 @@ describe('loadInitialDataThunk catalog cache', () => {
             services.store.dispatch(tradingBuyActions.setTradingAccountKey(previousAccount?.key));
             await services.store.dispatch(loadInitialDataThunk({ activeSection: 'buy' })).unwrap();
             jest.mocked(tradeApi.createApiKey).mockClear();
+            jest.mocked(tradeApi.createAnonymousApiKey).mockClear();
 
             services.store.dispatch(tradingBuyActions.setTradingAccountKey(selectedAccount?.key));
             await services.store.dispatch(loadInitialDataThunk({ activeSection: 'buy' })).unwrap();
 
-            expect(tradeApi.createApiKey).toHaveBeenCalledWith(
-                selectedAccount?.descriptor || TRADING_FALLBACK_API_KEY,
+            const { tradeApiInstallSalt } = services.store.getState().wallet.trading;
+            expect(jest.mocked(tradeApi.createApiKey).mock.calls).toEqual(
+                selectedAccount
+                    ? [[{ descriptor: selectedAccount.descriptor, salt: tradeApiInstallSalt }]]
+                    : [],
+            );
+            expect(jest.mocked(tradeApi.createAnonymousApiKey).mock.calls).toEqual(
+                selectedAccount ? [] : [[TRADING_FALLBACK_API_KEY]],
             );
             expectCatalogCalls(0);
         },
@@ -165,7 +173,10 @@ describe('loadInitialDataThunk catalog cache', () => {
         await services.store
             .dispatch(loadInitialDataThunk({ activeSection: 'buy', forcedApiKey: 'forced' }))
             .unwrap();
-        expect(tradeApi.createApiKey).toHaveBeenLastCalledWith(account.descriptor);
+        expect(tradeApi.createApiKey).toHaveBeenLastCalledWith({
+            descriptor: account.descriptor,
+            salt: services.store.getState().wallet.trading.tradeApiInstallSalt,
+        });
 
         getSelectedAccount.mockReturnValue({
             status: 'none',
@@ -174,11 +185,11 @@ describe('loadInitialDataThunk catalog cache', () => {
         await services.store
             .dispatch(loadInitialDataThunk({ activeSection: 'buy', forcedApiKey: 'forced' }))
             .unwrap();
-        expect(tradeApi.createApiKey).toHaveBeenLastCalledWith('forced');
+        expect(tradeApi.createAnonymousApiKey).toHaveBeenLastCalledWith('forced');
         await services.store
             .dispatch(loadInitialDataThunk({ activeSection: 'buy', forcedApiKey: '' }))
             .unwrap();
-        expect(tradeApi.createApiKey).toHaveBeenLastCalledWith(TRADING_FALLBACK_API_KEY);
+        expect(tradeApi.createAnonymousApiKey).toHaveBeenLastCalledWith(TRADING_FALLBACK_API_KEY);
         expectCatalogCalls(0);
     });
 
@@ -291,7 +302,10 @@ describe('loadInitialDataThunk catalog cache', () => {
 
         expect(services.store.getState().wallet.trading.isLoading).toBe(true);
         expect(services.store.getState().wallet.trading.activeSection).toBe('exchange');
-        expect(tradeApi.createApiKey).toHaveBeenLastCalledWith(otherAccount.descriptor);
+        expect(tradeApi.createApiKey).toHaveBeenLastCalledWith({
+            descriptor: otherAccount.descriptor,
+            salt: services.store.getState().wallet.trading.tradeApiInstallSalt,
+        });
         expect(tradeApi.getInfo).toHaveBeenCalledTimes(1);
         pendingInfo.resolve(info);
         await firstLoad.unwrap();

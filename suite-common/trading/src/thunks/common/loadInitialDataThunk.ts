@@ -1,6 +1,7 @@
 import { type SelectedAccountStatus } from '@suite-common/wallet-types';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
 
+import { type SetTradeApiKeyThunkState, setTradeApiKeyThunk } from './setTradeApiKeyThunk';
 import {
     TRADE_API_RELOAD_DATA_AFTER_MS,
     TRADING_FALLBACK_API_KEY,
@@ -31,7 +32,7 @@ export interface LoadInitialDataThunkProps {
     forceReload?: boolean;
 }
 
-export type LoadInitialDataThunkState = TradingRootStateWithAccounts;
+export type LoadInitialDataThunkState = TradingRootStateWithAccounts & SetTradeApiKeyThunkState;
 
 export type LoadInitialDataThunkDeps = WithServices<{
     getSelectedAccount: () => SelectedAccountStatus;
@@ -61,8 +62,11 @@ export const loadInitialDataThunk = createThunk<
 
         dispatch(tradingActions.setTradingActiveSection(activeSection));
 
-        const apiKey = account?.descriptor || forcedApiKey || TRADING_FALLBACK_API_KEY;
-        tradeApi.createApiKey(apiKey);
+        if (account) {
+            dispatch(setTradeApiKeyThunk({ account }));
+        } else {
+            tradeApi.createAnonymousApiKey(forcedApiKey || TRADING_FALLBACK_API_KEY);
+        }
 
         const tradeServerEnvironment = extra.services.getTradingEnvironment();
         if (tradeServerEnvironment) {

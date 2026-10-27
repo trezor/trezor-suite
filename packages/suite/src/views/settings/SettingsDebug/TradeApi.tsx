@@ -21,7 +21,6 @@ export const TradeApi = () => {
     const handleChange = (item: { value: TradeServerEnvironment; label: string }) => {
         dispatch(suiteSettingsActions.setDebugMode({ tradeServerEnvironment: item.value }));
         tradeApi.setServersEnvironment(item.value);
-        tradeApi.resetCurrentAccount();
         dispatch(tradingActions.invalidateCatalog());
     };
 
