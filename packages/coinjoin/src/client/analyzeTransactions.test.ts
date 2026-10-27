@@ -203,6 +203,44 @@ describe('analyzeTransactions', () => {
         expect(response.rawLiquidityClue).toBe(20000);
     });
 
+    it('Regtest: no coinjoin in history means no liquidity clue', async () => {
+        let initLiquidityClueCalled = false;
+        server?.addListener('test-request', ({ url, data, resolve }) => {
+            if (url.endsWith('/init-liquidity-clue')) {
+                initLiquidityClueCalled = true;
+                // any non-null answer, so that the assertions below fail if we ever get here
+                resolve({ RawLiquidityClue: calcLiquidityClue(data.ExternalAmounts) });
+            }
+            resolve();
+        });
+
+        const txHistory = [
+            generateTx(
+                [
+                    {
+                        address: 'bcrt1pksq9t85p4lect9ra8frvsn3f358lpkwtmlcgcup8aqaxcvnr4ylqglgdfp',
+                        value: 90,
+                        isAccountOwned: true,
+                    },
+                ],
+                [
+                    {
+                        address: 'bcrt1pssj2qdyxm446ckkj2y22uu8l4wdtwjdqhtwk5uef0glazv69pfnsnza9gz',
+                        value: 80,
+                    },
+                ],
+            ),
+        ];
+
+        const response = await analyzeTransactions(txHistory, {
+            ...server?.requestOptions,
+            network: networks.regtest,
+        });
+        // The middleware must not be consulted at all when there is nothing to derive a clue from.
+        expect(initLiquidityClueCalled).toBe(false);
+        expect(response.rawLiquidityClue).toBe(null);
+    });
+
     it('Regtest: a coinjoin paying only to own addresses means no liquidity clue', async () => {
         let initLiquidityClueCalled = false;
         server?.addListener('test-request', ({ url, resolve }) => {
