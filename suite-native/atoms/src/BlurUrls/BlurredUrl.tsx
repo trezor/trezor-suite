@@ -15,10 +15,11 @@ type BlurredUrlProps = {
 
 export const BlurredUrl = ({ text, variant, color, isRevealed, onToggle }: BlurredUrlProps) => {
     const { utils } = useNativeStyles();
-    const blurRadius = isRevealed ? 1 : 3;
-    // Android's text-shadow radius is measured in physical pixels.
+    const blurSigma = isRevealed ? 1 : 3;
+    // CSS blur uses sigma; Android shadows use a physical-pixel radius. Invert Android's conversion:
+    // https://android.googlesource.com/platform/frameworks/base/+/android-11.0.0_r1/libs/hwui/utils/Blur.cpp
     const textShadowRadius =
-        Platform.OS === 'android' ? PixelRatio.getPixelSizeForLayoutSize(blurRadius) : blurRadius;
+        Platform.OS === 'android' ? (blurSigma * PixelRatio.get() - 0.5) / 0.57735 : blurSigma;
 
     const handlePress = (event: GestureResponderEvent) => {
         event.stopPropagation();

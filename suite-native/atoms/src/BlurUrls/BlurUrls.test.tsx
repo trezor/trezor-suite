@@ -1,3 +1,5 @@
+import { PixelRatio, Platform, StyleSheet } from 'react-native';
+
 import { fireEvent, renderWithBasicProvider, screen } from '@suite-native/test-utils';
 
 import { BlurUrls } from './BlurUrls';
@@ -7,6 +9,8 @@ type UrlCase = [text: string, label: string, urls: string[]];
 const pressEvent = { stopPropagation: () => undefined };
 
 describe('BlurUrls', () => {
+    afterEach(() => jest.restoreAllMocks());
+
     it('preserves an ordinary token name and its truncation props', async () => {
         await renderWithBasicProvider(
             <BlurUrls text="Ordinary Token" numberOfLines={1} ellipsizeMode="tail" />,
@@ -46,6 +50,49 @@ describe('BlurUrls', () => {
         });
 
         expect(screen.getByLabelText('Claim at rewards.example now')).toBeOnTheScreen();
+    });
+
+    it('reveals and masks each URL independently', async () => {
+        await renderWithBasicProvider(<BlurUrls text="Visit first.example or second.example!" />);
+
+        await fireEvent.press(screen.getByText('first.example'), pressEvent);
+        expect(screen.getByLabelText('Visit first.example or …!')).toBeOnTheScreen();
+        expect(screen.getByText('first.example')).toHaveStyle({ textShadowRadius: 1 });
+        expect(screen.getByText('second.example')).toHaveStyle({ textShadowRadius: 3 });
+
+        await fireEvent.press(screen.getByText('second.example'), pressEvent);
+        expect(screen.getByLabelText('Visit first.example or second.example!')).toBeOnTheScreen();
+
+        await fireEvent.press(screen.getByText('first.example'), pressEvent);
+        expect(screen.getByLabelText('Visit … or second.example!')).toBeOnTheScreen();
+        expect(screen.getByText('second.example')).toHaveStyle({ textShadowRadius: 1 });
+    });
+
+    it('exposes separate screen-reader actions for multiple URLs', async () => {
+        await renderWithBasicProvider(<BlurUrls text="Visit first.example or second.example!" />);
+
+        await fireEvent(screen.getByLabelText('Visit … or …!'), 'accessibilityAction', {
+            nativeEvent: { actionName: 'toggle-url-1' },
+        });
+
+        expect(screen.getByLabelText('Visit … or second.example!')).toBeOnTheScreen();
+    });
+
+    it('matches desktop Gaussian blur strength on a high-density Android screen', async () => {
+        jest.replaceProperty(Platform, 'OS', 'android');
+        jest.spyOn(PixelRatio, 'get').mockReturnValue(3.5);
+        await renderWithBasicProvider(<BlurUrls text="rewards.example" />);
+
+        const maskedRadius = StyleSheet.flatten(
+            screen.getByText('rewards.example').props.style,
+        ).textShadowRadius;
+        expect(maskedRadius * 0.57735 + 0.5).toBeCloseTo(10.5);
+
+        await fireEvent.press(screen.getByText('rewards.example'), pressEvent);
+        const revealedRadius = StyleSheet.flatten(
+            screen.getByText('rewards.example').props.style,
+        ).textShadowRadius;
+        expect(revealedRadius * 0.57735 + 0.5).toBeCloseTo(3.5);
     });
 
     it.each<UrlCase>([
