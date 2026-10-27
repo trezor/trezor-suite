@@ -29,14 +29,14 @@ const createState = (walletDescriptor: string, deviceId: string, instance: numbe
     createStaticSessionId({ walletDescriptor, deviceId, instance });
 
 describe(isUnexpectedState.name, () => {
-    it('is unexpected when only the deviceId changes (same wallet, re-provisioned device)', () => {
-        // Documents the bug: a standard wallet after wipe + recovery of the same seed keeps an
-        // identical walletDescriptor but gets a new device_id, and the state is reported as
-        // unexpected — which the user sees as "Passphrase is incorrect".
+    it('is not unexpected when only the deviceId changes (same wallet, re-provisioned device)', () => {
+        // The reported bug: a standard wallet after wipe + recovery of the same seed keeps an
+        // identical walletDescriptor but gets a new device_id. It must NOT be reported as
+        // "Passphrase is incorrect".
         const expected = createState(STANDARD_DESCRIPTOR, DEVICE_ID, 0);
         const current = createState(STANDARD_DESCRIPTOR, RESET_DEVICE_ID, 0);
 
-        expect(isUnexpectedState(expected, current)).toBe(true);
+        expect(isUnexpectedState(expected, current)).toBe(false);
     });
 
     it('is unexpected when the walletDescriptor differs (wrong passphrase / different seed)', () => {
@@ -145,11 +145,11 @@ describe(validateState.name, () => {
     afterEach(() => jest.clearAllMocks());
 
     it.each(['v1', 'v2'] as const)(
-        '%s: throws Device_InvalidState after re-provisioning although the wallet did not change',
+        '%s: adopts the new device_id after re-provisioning instead of keeping a stale staticSessionId',
         async protocolName => {
-            // Documents the bug: same seed + empty passphrase after wipe/recovery => identical
-            // walletDescriptor, new device_id. Both branches reject the saved state instead of
-            // refreshing it, and no passphrase is involved at all.
+            // Same seed + empty passphrase after wipe/recovery => identical walletDescriptor, new
+            // device_id. Both branches must refresh the saved state so `getDeviceState` reports
+            // the current device_id.
             const mock = createMockDevice({
                 protocolName,
                 deviceId: RESET_DEVICE_ID,
@@ -158,9 +158,11 @@ describe(validateState.name, () => {
                 savedState: { staticSessionId: createState(STANDARD_DESCRIPTOR, DEVICE_ID, 0) },
             });
 
-            await expect(runValidateState(mock.device)).rejects.toMatchObject({
-                code: 'Device_InvalidState',
-            });
+            await expect(runValidateState(mock.device)).resolves.toBeUndefined();
+
+            expect(mock.getState()?.staticSessionId).toBe(
+                createState(STANDARD_DESCRIPTOR, RESET_DEVICE_ID, 0),
+            );
         },
     );
 
@@ -183,10 +185,10 @@ describe(validateState.name, () => {
         },
     );
 
-    it('v2: discards the live THP session after re-provisioning although the wallet did not change', async () => {
-        // Documents the bug on the THP branch: a remembered wallet carries its sessionId, the
-        // session still derives the same wallet, yet the session is reset, a new one is created
-        // (re-prompting the passphrase) and the call throws anyway.
+    it('v2: keeps the live THP session and adopts the new device_id when only the deviceId changed', async () => {
+        // A remembered THP wallet carries its sessionId. The session still derives the same wallet,
+        // so it must be reused instead of being discarded and re-created (which would re-prompt the
+        // passphrase on every call).
         const mock = createMockDevice({
             protocolName: 'v2',
             deviceId: RESET_DEVICE_ID,
@@ -198,16 +200,17 @@ describe(validateState.name, () => {
             },
         });
 
-        await expect(runValidateState(mock.device)).rejects.toMatchObject({
-            code: 'Device_InvalidState',
-        });
+        await expect(runValidateState(mock.device)).resolves.toBeUndefined();
 
-        expect(mock.thpState.setSessionId).toHaveBeenNthCalledWith(
-            1,
+        expect(mock.thpState.setSessionId).toHaveBeenCalledTimes(1);
+        expect(mock.thpState.setSessionId).toHaveBeenCalledWith(
             Buffer.from(LIVE_THP_SESSION_ID, 'hex'),
         );
-        expect(mock.thpState.setSessionId).toHaveBeenLastCalledWith(Buffer.alloc(1));
-        expect(createThpSessionMock).toHaveBeenCalledTimes(1);
+        expect(createThpSessionMock).not.toHaveBeenCalled();
+        expect(mock.getState()).toEqual({
+            staticSessionId: createState(STANDARD_DESCRIPTOR, RESET_DEVICE_ID, 0),
+            sessionId: LIVE_THP_SESSION_ID,
+        });
     });
 
     it('v2: discards the live THP session and still throws when the walletDescriptor differs', async () => {
