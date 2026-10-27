@@ -12,7 +12,7 @@ import {
     gettingNpmDistributionTags,
 } from './helpers';
 import { isPackageOnNpmRegistry } from './npm-registry.js';
-import { collectPublishClosure } from './publish-closure';
+import { collectPublishClosure, stripTrezorScope } from './publish-closure';
 import { updateConnectChangelog } from './update-connect-changelog';
 
 const readFile = promisify(fs.readFile);
@@ -152,7 +152,7 @@ const bumpConnect = async () => {
         const allUniquePackagesToUpdate = [
             ...connectDependencies,
             ...connectPackagesWithoutConnect,
-        ].map(name => name.replace('@trezor/', ''));
+        ].map(stripTrezorScope);
 
         console.log('allUniquePackagesToUpdate', allUniquePackagesToUpdate);
 

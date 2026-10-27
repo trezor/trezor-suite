@@ -6,7 +6,7 @@ import util from 'node:util';
 
 import { CONNECT_PUBLISH_ROOTS } from './connect-publish-roots';
 import { exec, getTrezorPackageDir } from './helpers';
-import { collectPublishClosure } from './publish-closure';
+import { collectPublishClosure, stripTrezorScope } from './publish-closure';
 
 const mkdir = util.promisify(fs.mkdir);
 const removeDir = util.promisify(fs.rm);
@@ -118,7 +118,7 @@ const buildAllPackages = async () => {
     // The whole publish closure is packed so the install smoke test resolves every internal
     // dependency of the connect packages from these tarballs instead of from npm.
     const PACKAGES = collectPublishClosure(ROOT_DIR, CONNECT_PUBLISH_ROOTS).map(({ name }) =>
-        name.replace('@trezor/', ''),
+        stripTrezorScope(name),
     );
 
     if (fs.existsSync(OUTPUT_DIR)) {
