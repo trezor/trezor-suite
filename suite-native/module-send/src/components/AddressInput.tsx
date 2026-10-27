@@ -34,7 +34,7 @@ import {
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
-import { injectGetState } from '@trezor/redux-utils';
+import { injectGetState, injectStore } from '@trezor/redux-utils';
 import { HELP_CENTER_EVM_ADDRESS_CHECKSUM, HELP_CENTER_SOLANA_HELP_URL } from '@trezor/urls';
 
 import { AddressInfoMessage } from './AddressInfoMessage';
@@ -44,7 +44,7 @@ import { SendFormLabelEditable } from './SendFormLabelEditable';
 import { useAddressValidationAlerts } from '../hooks/useAddressValidationAlerts/useAddressValidationAlerts';
 import { useSolAssociatedTokenAddress } from '../hooks/useAddressValidationAlerts/useSolAssociatedTokenAddress';
 import { useResolvedAddress } from '../hooks/useResolvedAddress';
-import { useSendAmountPrefill } from '../hooks/useSendAmountPrefill';
+import { prefillSendAmount } from '../prefillSendAmount';
 import { type SendOutputsFormValues } from '../sendOutputsFormSchema';
 import { getOutputFieldName } from '../utils';
 
@@ -73,13 +73,15 @@ export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: Address
     const tokenFieldName = getOutputFieldName(index, 'token');
     const form = useFormContext<SendOutputsFormValues>();
     const { setValue, control } = form;
-    const prefillAmount = useSendAmountPrefill({ form, accountKey, recipientIndex: index });
-    const { getState, analytics, addressValidator, getNamedAddressSupport } = useServices(
+    const { getState, store, analytics, addressValidator, getNamedAddressSupport } = useServices(
         injectGetState,
+        injectStore,
         injectNativeAnalytics,
         injectAddressValidator,
         injectGetNamedAddressSupport,
     );
+    const prefillAmount = (amount: string) =>
+        prefillSendAmount({ form, store, accountKey, recipientIndex: index, amount });
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );

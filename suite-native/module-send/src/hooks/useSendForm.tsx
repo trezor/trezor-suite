@@ -63,9 +63,10 @@ import {
 } from '@suite-native/transaction-management';
 import { useServices } from '@trezor/dependency-injection';
 import { useDebounce } from '@trezor/react-utils';
-import { injectDispatch } from '@trezor/redux-utils';
+import { injectDispatch, injectStore } from '@trezor/redux-utils';
 import { TRANSPORT_ERROR } from '@trezor/transport-common';
 
+import { cancelSendAmountPrefills, prefillSendAmount } from '../prefillSendAmount';
 import { selectDestinationTagFromDraft } from '../selectors';
 import {
     type SendOutputsFormValues,
@@ -73,7 +74,6 @@ import {
 } from '../sendOutputsFormSchema';
 import { constructFormDraft, getSendMaxAmount } from '../utils';
 import { useRequestDelayedNavigationToOutputsReview } from './useRequestDelayedNavigationToOutputsReview';
-import { useSendAmountPrefill } from './useSendAmountPrefill';
 import { useShowDeviceDisconnectedAlert } from './useShowDeviceDisconnectedAlert';
 import { useUtxoSelection } from './useUtxoSelection';
 
@@ -117,10 +117,11 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
     const debounce = useDebounce();
     const navigation = useNavigation<SendFormNavigationProp>();
     const { translate } = useTranslate();
-    const { addressValidator, getNamedAddressSupport, dispatch } = useServices(
+    const { addressValidator, getNamedAddressSupport, dispatch, store } = useServices(
         injectAddressValidator,
         injectGetNamedAddressSupport,
         injectDispatch,
+        injectStore,
     );
 
     const { selectedUtxos } = useUtxoSelection(accountKey);
@@ -203,7 +204,6 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         }),
     });
 
-    const prefillAmount = useSendAmountPrefill({ form, accountKey, recipientIndex: 0 });
     const { handleSubmit, control, getValues, trigger, setError } = form;
     const watchedFormValues = useWatch({ control });
     const watchedAddress = useWatch({ name: 'outputs.0.address', control });
@@ -328,7 +328,9 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
 
     useEffect(() => {
         dispatch(transactionManagementActions.clearFeeLevels());
-    }, [accountKey, dispatch, tokenContract]);
+
+        return () => cancelSendAmountPrefills(control);
+    }, [accountKey, control, dispatch, tokenContract]);
 
     useEffect(() => {
         const prefillValuesFromStoredDraft = () => {
@@ -600,7 +602,14 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
 
     return {
         handleSubmitSendForm,
-        prefillAmount,
+        prefillAmount: (initialAmount: string) =>
+            prefillSendAmount({
+                form,
+                store,
+                accountKey,
+                recipientIndex: 0,
+                amount: initialAmount,
+            }),
         form,
         network,
         amount,
