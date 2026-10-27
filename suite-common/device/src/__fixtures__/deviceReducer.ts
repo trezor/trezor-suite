@@ -672,6 +672,144 @@ const changed: Fixture<ReturnType<typeof deviceActions.deviceChanged>>[] = [
             ),
         ],
     },
+    {
+        description: `Sync sessionId and deriveCardano from connect for the same wallet`,
+        initialState: {
+            ...deviceReducerInitialState,
+            devices: [
+                mockSuiteDevice({
+                    path: '1',
+                    connected: true,
+                    state: {
+                        staticSessionId: '1stTestnet@device_id:0',
+                        sessionId: 'stale-session',
+                    },
+                }),
+            ],
+        },
+        actions: [
+            {
+                type: DEVICE.CHANGED,
+                payload: mockConnectDevice({
+                    path: '1',
+                    state: {
+                        staticSessionId: '1stTestnet@device_id:0',
+                        sessionId: 'fresh-session',
+                        deriveCardano: true,
+                    },
+                }),
+            },
+        ],
+        result: [
+            {
+                state: {
+                    staticSessionId: '1stTestnet@device_id:0',
+                    sessionId: 'fresh-session',
+                    deriveCardano: true,
+                },
+            },
+        ],
+    },
+    {
+        // Documents the bug: the fresh sessionId from connect is dropped because the whole
+        // staticSessionId string is compared, so the stale one keeps being re-sent and a hidden
+        // wallet re-prompts the passphrase on every call.
+        description: `Drop the sessionId when the same wallet is reported with a new device_id (device wiped and recovered with the same seed)`,
+        initialState: {
+            ...deviceReducerInitialState,
+            devices: [
+                mockSuiteDevice({
+                    path: '1',
+                    connected: true,
+                    state: {
+                        staticSessionId: '1stTestnet@device_id:0',
+                        sessionId: 'stale-session',
+                    },
+                }),
+            ],
+        },
+        actions: [
+            {
+                type: DEVICE.CHANGED,
+                payload: mockConnectDevice(
+                    {
+                        path: '1',
+                        state: {
+                            staticSessionId: '1stTestnet@new-device-id:0',
+                            sessionId: 'fresh-session',
+                        },
+                    },
+                    { device_id: 'new-device-id' },
+                ),
+            },
+        ],
+        result: [
+            {
+                id: 'new-device-id',
+                state: { staticSessionId: '1stTestnet@device_id:0', sessionId: 'stale-session' },
+            },
+        ],
+    },
+    {
+        description: `Sync sessionId when neither state has a staticSessionId`,
+        initialState: {
+            ...deviceReducerInitialState,
+            devices: [
+                mockSuiteDevice({
+                    path: '1',
+                    connected: true,
+                    state: { sessionId: 'stale-session' },
+                }),
+            ],
+        },
+        actions: [
+            {
+                type: DEVICE.CHANGED,
+                payload: mockConnectDevice({
+                    path: '1',
+                    state: { sessionId: 'fresh-session' },
+                }),
+            },
+        ],
+        result: [
+            {
+                state: { sessionId: 'fresh-session' },
+            },
+        ],
+    },
+    {
+        description: `Do not sync sessionId from a different wallet`,
+        initialState: {
+            ...deviceReducerInitialState,
+            devices: [
+                mockSuiteDevice({
+                    path: '1',
+                    connected: true,
+                    state: {
+                        staticSessionId: '1stTestnet@device_id:0',
+                        sessionId: 'stale-session',
+                    },
+                }),
+            ],
+        },
+        actions: [
+            {
+                type: DEVICE.CHANGED,
+                payload: mockConnectDevice({
+                    path: '1',
+                    state: {
+                        staticSessionId: 'otherWallet@device_id:0',
+                        sessionId: 'other-session',
+                    },
+                }),
+            },
+        ],
+        result: [
+            {
+                state: { staticSessionId: '1stTestnet@device_id:0', sessionId: 'stale-session' },
+            },
+        ],
+    },
 ];
 
 const selectDevice: Array<
