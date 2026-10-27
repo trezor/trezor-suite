@@ -88,6 +88,7 @@ import {
     cryptoIdToNetwork,
     cryptoIdToNetworkSymbol,
     cryptoIdToNetworkSymbolAndContractAddress,
+    getCryptoId,
     getTradingQuotesByPaymentMethod,
     getTradingQuotesDedupedByProvider,
     isBuyTrade,
@@ -585,6 +586,13 @@ export const selectTradingBuySupportedCryptoIds = createNetworkMemoizedSelector(
     (coins, platforms, supportedCryptoIds, supportedCoins) =>
         getFilteredCryptoIds(supportedCryptoIds, coins, platforms, supportedCoins),
 );
+
+export const selectIsTradingBuyAvailableForNetworkSymbol = (
+    state: TradingRootState & NetworksRootState,
+    networkSymbol: NetworkSymbol,
+): boolean =>
+    !selectTradingBuyLoadingTimestampAndStatus(state).isFullyLoaded ||
+    selectTradingBuySupportedCryptoIds(state).includes(getCryptoId(networkSymbol));
 
 export const selectTradingSellSupportedCryptoIds = createNetworkMemoizedSelector(
     [

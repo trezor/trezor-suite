@@ -13,6 +13,7 @@ import {
     selectWalletSettings,
 } from '@suite-common/wallet-core';
 import { type Account, type DiscoveryStatus } from '@suite-common/wallet-types';
+import { createWeakMapSelector } from '@trezor/redux-utils';
 
 import { type DiscoveryStatusType } from '../../types/wallet';
 
@@ -96,19 +97,31 @@ const getDiscoveryStatus = ({
     return undefined;
 };
 
-// TODO move this selector somewhere more sensible
-export const selectDiscoveryOverallStatus = (state: DiscoveryOverallStatusState) => {
-    const device = selectSelectedDevice(state);
-    const deviceSupportedNetworks = selectDeviceSupportedNetworks(state);
-    const accounts = device?.state && selectAccountsByDeviceState(state, device.state);
-    const discovery = selectDiscoveryForSelectedDevice(state);
-    const walletSettings = selectWalletSettings(state);
+const createMemoizedSelector = createWeakMapSelector.withTypes<DiscoveryOverallStatusState>();
 
-    return getDiscoveryStatus({
-        device,
-        discovery,
-        accounts,
-        deviceSupportedNetworks,
-        walletSettings,
-    });
+const selectSelectedDeviceAccounts = (
+    state: DiscoveryOverallStatusState,
+): Account[] | undefined => {
+    const deviceState = selectSelectedDevice(state)?.state;
+
+    return deviceState && selectAccountsByDeviceState(state, deviceState);
 };
+
+// TODO move this selector somewhere more sensible
+export const selectDiscoveryOverallStatus = createMemoizedSelector(
+    [
+        selectSelectedDevice,
+        selectDeviceSupportedNetworks,
+        selectSelectedDeviceAccounts,
+        selectDiscoveryForSelectedDevice,
+        selectWalletSettings,
+    ],
+    (device, deviceSupportedNetworks, accounts, discovery, walletSettings) =>
+        getDiscoveryStatus({
+            device,
+            discovery,
+            accounts,
+            deviceSupportedNetworks,
+            walletSettings,
+        }),
+);
