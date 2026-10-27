@@ -8,8 +8,9 @@ import { getOriginalTxids, getPreviousTxids, getSerializedPath } from '@trezor/c
 import type { Bip43Path } from '@trezor/crypto-utils';
 
 import { connectPopupActions } from '../connectPopupActions';
+import { createPlaceholderAccount } from './shared/placeholderAccount';
+import { createTemporaryAccountsRegistry } from './shared/temporaryAccountsRegistry';
 import { type PostCallHookParams, type PreCallHookParams } from './types';
-import { createPlaceholderAccount, createTemporaryAccountsRegistry } from './utils';
 
 const temporaryAccounts = createTemporaryAccountsRegistry();
 

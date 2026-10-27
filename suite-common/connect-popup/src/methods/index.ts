@@ -1,13 +1,13 @@
 import type { CallMethodKeys } from '@trezor/connect';
 
-import { addressConfirmationModalHooks } from './addressConfirmation';
-import { bitcoinSignTransaction } from './bitcoinSignTransaction';
-import { cardanoGetPublicKeyCompat } from './cardanoGetPublicKeyCompat';
+import { cardanoGetPublicKeyCompat } from './cardanoGetPublicKey';
 import { composeTransaction } from './composeTransaction';
 import { ethereumSignTransaction } from './ethereumSignTransaction';
-import { getPublicKeyV9Compat } from './getPublicKeyV9Compat';
+import { getPublicKeyV9Compat } from './getPublicKey';
 import { requestLoginHooks } from './requestLogin';
-import { selectAccountHooks } from './selectAccount';
+import { selectAccountHooks } from './selectAccount/selectAccount';
+import { addressConfirmationModalHooks } from './shared/addressConfirmation';
+import { bitcoinSignTransaction } from './signTransaction';
 import { solanaSignTransaction } from './solanaSignTransaction';
 import { stellarSignTransaction } from './stellarSignTransaction';
 import type {
@@ -71,4 +71,4 @@ export async function postCallHooks<M extends CallMethodKeys>(params: PostCallHo
 // Unconditional safety net invoked from the thunk's finally: tears down every sign hook's
 // placeholder accounts (registered via createTemporaryAccountsRegistry) so the leak cannot survive a
 // call even when it throws between preCallHook and postCallHook.
-export { cleanupAllTemporaryAccounts } from './utils';
+export { cleanupAllTemporaryAccounts } from './shared/temporaryAccountsRegistry';

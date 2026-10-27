@@ -1,6 +1,6 @@
 import { type CallMethodKeys } from '@trezor/connect';
 
-import { getPublicKeyV9Compat } from './getPublicKeyV9Compat';
+import { getPublicKeyV9Compat } from './getPublicKey';
 import { type CompatibilityHookParams } from './types';
 
 // Only host apps still on `@trezor/connect` 9.x get the compatibility flag.

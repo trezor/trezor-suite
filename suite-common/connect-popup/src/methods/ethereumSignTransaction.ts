@@ -16,9 +16,10 @@ import { getSerializedPath, validatePath } from '@trezor/connect-common';
 import type { Bip43Path } from '@trezor/crypto-utils';
 
 import { connectPopupActions } from '../connectPopupActions';
-import { createPlaceholderAccount, createTemporaryAccountsRegistry } from './utils';
 import { getPermissionDeferred } from '../connectPopupPromiseManager';
 import { selectConnectPopupCall } from '../connectPopupReducer';
+import { createPlaceholderAccount } from './shared/placeholderAccount';
+import { createTemporaryAccountsRegistry } from './shared/temporaryAccountsRegistry';
 import { type PostCallHookParams, type PreCallHookParams } from './types';
 
 const temporaryAccounts = createTemporaryAccountsRegistry();

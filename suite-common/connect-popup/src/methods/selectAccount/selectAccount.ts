@@ -9,14 +9,14 @@ import { type CallMethodKeys } from '@trezor/connect';
 import { TypedError } from '@trezor/connect-common/src/constants/errors';
 import { type SelectionType } from '@trezor/connect-common/src/types/api/selectAccount';
 
-import { connectPopupActions } from '../connectPopupActions';
-import { getPermissionDeferred } from '../connectPopupPromiseManager';
+import { connectPopupActions } from '../../connectPopupActions';
+import { getPermissionDeferred } from '../../connectPopupPromiseManager';
 import {
     type SelectAccountOptions,
     type SelectAccountTypeTab,
     isUtxoNetwork,
-} from '../connectPopupTypes';
-import { type PostCallHookParams, type PreCallHookParams } from './types';
+} from '../../connectPopupTypes';
+import { type PostCallHookParams, type PreCallHookParams } from '../types';
 
 // Resolves one of the network's built-in types (bypassing the "publicly available" filter that
 // getAvailableAccountTypes applies) — an app explicitly requesting a debug-only type, e.g.

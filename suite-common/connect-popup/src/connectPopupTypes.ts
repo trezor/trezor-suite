@@ -31,6 +31,8 @@ export const CALL_SOURCE_WEB = 'web';
 export const CALL_SOURCE_WALLETCONNECT = 'walletconnect';
 export const CALL_SOURCE_DEEPLINK = 'deeplink';
 
+export const CONNECT_POPUP_MODULE = '@common/connect-popup';
+
 export type ConnectSerializedError = SerializedError;
 export type ConnectProcessInfo = {
     name: string;
