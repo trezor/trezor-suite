@@ -10,8 +10,13 @@ import {
 import { fixtures as dogeFixtures } from './doge-endpoints';
 import { ETH_MOCKED_ACCOUNT, fixtures as ethFixtures } from './eth-endpoints';
 import { fixtures as ltcFixtures } from './ltc-mw-endpoints';
+import {
+    TRON_MOCKED_ACCOUNT,
+    mockTronEmptyAccount,
+    fixtures as tronFixtures,
+} from './tron-endpoints';
 
-type SupportedSymbols = 'ltc' | 'doge' | 'eth' | 'ada';
+type SupportedSymbols = 'ltc' | 'doge' | 'eth' | 'ada' | 'trx';
 
 type SendNewBlockNotificationParams = { height: number; hash: string };
 
@@ -47,6 +52,10 @@ export class BlockbookMock {
                 this.accountState = ADA_MOCKED_ACCOUNT;
 
                 return adaFixtures;
+            case 'trx':
+                this.accountState = TRON_MOCKED_ACCOUNT;
+
+                return tronFixtures;
             default:
                 throw new Error('Unknown blockbook mock type');
         }
@@ -74,7 +83,7 @@ export class BlockbookMock {
 
     @step()
     updateAccountState(accountData: any) {
-        if (this.mockType !== 'eth' && this.mockType !== 'ada') {
+        if (this.mockType !== 'eth' && this.mockType !== 'ada' && this.mockType !== 'trx') {
             throw new Error(
                 `Account state update not supported for this mock type: ${this.mockType}`,
             );
@@ -84,16 +93,22 @@ export class BlockbookMock {
             eth: {
                 accountMethod: 'getAccountInfo',
                 accountId: 'address',
-                fallbackResponse: undefined,
+                getFallbackResponse: () => undefined,
             },
 
             ada: {
                 accountMethod: 'GET_ACCOUNT_INFO',
                 accountId: 'descriptor',
-                fallbackResponse: ADA_MOCKED_EMPTY_ACCOUNT,
+                getFallbackResponse: () => ADA_MOCKED_EMPTY_ACCOUNT,
+            },
+
+            trx: {
+                accountMethod: 'getAccountInfo',
+                accountId: 'address',
+                getFallbackResponse: mockTronEmptyAccount,
             },
         };
-        const { accountMethod, accountId, fallbackResponse } = accountParams[this.mockType];
+        const { accountMethod, accountId, getFallbackResponse } = accountParams[this.mockType];
 
         this.accountState = { ...this.accountState, ...accountData };
         const currentFixture = this.mockServer.getFixtures();
@@ -108,7 +123,11 @@ export class BlockbookMock {
                 response: ({ params }: any) => {
                     if (params.descriptor === this.accountState[accountId]) {
                         return { data: this.accountState };
-                    } else if (fallbackResponse) {
+                    }
+
+                    const fallbackResponse = getFallbackResponse(params.descriptor);
+
+                    if (fallbackResponse) {
                         return { data: fallbackResponse };
                     }
                 },

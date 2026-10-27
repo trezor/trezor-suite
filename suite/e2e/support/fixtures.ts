@@ -17,6 +17,7 @@ import { MetadataMock } from './mocks/metadataMock';
 import { SolanaStakingMock } from './mocks/solanaStakingMock';
 import { TradingMock } from './mocks/trading/tradingMock';
 import { TradingResponses, observeTradingResponses } from './mocks/trading/tradingResponses';
+import { TronStakingMock } from './mocks/tronStakingMock';
 import { YieldMock } from './mocks/yieldMock';
 import { ActivityPage } from './pageObjects/activityPage';
 import { AnalyticsSection } from './pageObjects/analyticsSection';
@@ -34,6 +35,7 @@ import { PromoBanner } from './pageObjects/promoBanner';
 import { RecoveryModal } from './pageObjects/recoveryModal';
 import { SettingsPage } from './pageObjects/settings/settingsPage';
 import { StakingSection } from './pageObjects/staking/stakingSection';
+import { TronStakingPage } from './pageObjects/staking/tronStakingPage';
 import { ToastSection } from './pageObjects/toastSection';
 import { FeeSection } from './pageObjects/trading/feeSection';
 import { TradingPage } from './pageObjects/trading/tradingPage';
@@ -70,11 +72,13 @@ type Fixtures = {
     blockbookMock: BlockbookMock;
     firmwareReleaseConfigMock: FirmwareReleaseConfigMock;
     solanaStakingMock: SolanaStakingMock;
+    tronStakingMock: TronStakingMock;
     tradingMock: TradingMock;
     tradingResponses: TradingResponses;
     connectPermissionsModal: ConnectPermissionsModal;
     connectSelectAccountModal: ConnectSelectAccountModal;
     stakingSection: StakingSection;
+    tronStakingPage: TronStakingPage;
     earnNutshellModal: EarnNutshellModal;
     yieldSection: YieldSection;
     yieldFlowSection: YieldFlowSection;
@@ -179,6 +183,12 @@ const test = suiteBaseTest.extend<Fixtures>({
         await use(solanaStakingMock);
         await solanaStakingMock.stop();
     },
+    tronStakingMock: async ({ page, blockbookMock }, use) => {
+        const tronStakingMock = new TronStakingMock(page, blockbookMock);
+        await tronStakingMock.start();
+        await use(tronStakingMock);
+        await tronStakingMock.stop();
+    },
     // tradingResponses import ensures early start of listeners, so we don't miss any responses in beforeEach
     tradingMock: async ({ page, tradingResponses: _tradingResponses }, use) => {
         const tradingMock = new TradingMock(page);
@@ -196,6 +206,9 @@ const test = suiteBaseTest.extend<Fixtures>({
     },
     stakingSection: async ({ page }, use) => {
         await use(new StakingSection(page));
+    },
+    tronStakingPage: async ({ page, device, devicePrompt }, use) => {
+        await use(new TronStakingPage(page, device, devicePrompt));
     },
     earnNutshellModal: async ({ page }, use) => {
         await use(new EarnNutshellModal(page));
