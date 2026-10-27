@@ -34,10 +34,10 @@ jest.mock('@suite-common/wallet-core', () => ({
 
 const mockedGetAddress = TrezorConnect.ethereumGetAddress as jest.Mock;
 
-const runPreCallHook = (chainId: number) => {
+const runPreCall = (chainId: number) => {
     const dispatch = jest.fn(action => {
         // Stands in for the user confirming the simulation modal. Deferred to the next tick
-        // because the hook creates the permission deferred right after this dispatch.
+        // because preCall creates the permission deferred right after this dispatch.
         if (connectPopupActions.txSimulation.match(action)) {
             setTimeout(() => getPermissionDeferred().resolve());
         }
@@ -45,7 +45,7 @@ const runPreCallHook = (chainId: number) => {
         return action;
     });
 
-    const run = ethereumSignTransaction.preCallHook({
+    const run = ethereumSignTransaction.preCall?.({
         method: 'ethereumSignTransaction',
         payload: {
             path: "m/44'/60'/0'/0/0",
@@ -73,10 +73,10 @@ const contractCallPrecomposedTx: PrecomposedTransactionFinal = {
     isTokenKnown: false,
 };
 
-const runTokenTransferPreCallHook = async () => {
+const runTokenTransferPreCall = async () => {
     const dispatch = jest.fn(action => action);
 
-    await ethereumSignTransaction.preCallHook({
+    await ethereumSignTransaction.preCall?.({
         method: 'ethereumSignTransaction',
         payload: {
             path: "m/44'/60'/0'/0/0",
@@ -100,7 +100,7 @@ const runTokenTransferPreCallHook = async () => {
         .find(sendFormActions.storePrecomposedTransaction.match);
 };
 
-describe('ethereumSignTransaction.preCallHook', () => {
+describe('ethereumSignTransaction.preCall', () => {
     beforeEach(() => {
         mockedGetAddress.mockResolvedValue({ success: true, payload: { address: '0xabc' } });
     });
@@ -110,7 +110,7 @@ describe('ethereumSignTransaction.preCallHook', () => {
     });
 
     it('opens the simulation modal for a chain Blockaid can scan', async () => {
-        const { run, dispatch } = runPreCallHook(getNetwork('eth').chainId);
+        const { run, dispatch } = runPreCall(getNetwork('eth').chainId);
         await run;
 
         expect(dispatch).toHaveBeenCalledWith(
@@ -122,10 +122,10 @@ describe('ethereumSignTransaction.preCallHook', () => {
         ['Arc', getNetwork('arc').chainId],
         ['Arc Testnet', getNetwork('tarc').chainId],
         ['Ethereum Classic', getNetwork('etc').chainId],
-        // The hook falls back to mainnet for account selection, but the simulation reads chainId 0.
+        // preCall falls back to mainnet for account selection, but the simulation reads chainId 0.
         ['chainId 0', 0],
     ])('skips the simulation modal on %s, which Blockaid cannot scan', async (_name, chainId) => {
-        const { run, dispatch } = runPreCallHook(chainId);
+        const { run, dispatch } = runPreCall(chainId);
         await run;
 
         expect(mockedGetAddress).not.toHaveBeenCalled();
@@ -135,7 +135,7 @@ describe('ethereumSignTransaction.preCallHook', () => {
     });
 
     it('stores a token transfer connect could not decode with the account token', async () => {
-        const storeAction = await runTokenTransferPreCallHook();
+        const storeAction = await runTokenTransferPreCall();
 
         expect(storeAction?.payload.precomposedTransaction).toMatchObject({
             outputs: [{ address: RECIPIENT, amount: '1500000' }],

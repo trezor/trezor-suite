@@ -3,7 +3,6 @@ import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { getNetwork } from '@suite-common/wallet-config';
 import { selectAccountForNetworkSymbolAndPath } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
-import type { CallMethodKeys, StellarSignTransaction } from '@trezor/connect';
 import { getSerializedPath, validatePath } from '@trezor/connect-common';
 import type { Bip43Path } from '@trezor/crypto-utils';
 
@@ -11,31 +10,29 @@ import { connectPopupActions } from '../connectPopupActions';
 import { getPermissionDeferred } from '../connectPopupPromiseManager';
 import { createPlaceholderAccount } from './shared/placeholderAccount';
 import { createTemporaryAccountsRegistry } from './shared/temporaryAccountsRegistry';
-import { type PostCallHookParams, type PreCallHookParams } from './types';
+import {
+    type ConnectPopupMethodDefinition,
+    type PostCallParams,
+    type PreCallParams,
+} from './types';
 
 const temporaryAccounts = createTemporaryAccountsRegistry();
 
-const preCallHook = async <M extends CallMethodKeys>({
+const preCall = async ({
     method,
     payload,
     getState,
     dispatch,
     source,
-}: PreCallHookParams<M>) => {
+}: PreCallParams<'stellarSignTransaction'>): Promise<undefined> => {
     try {
-        if (method !== 'stellarSignTransaction') {
-            return;
-        }
-
-        const typedPayload = payload as any as StellarSignTransaction;
-
         // Only the XDR form can be scanned; structured operations would need re-encoding first.
-        if (!('xdrBase64' in typedPayload)) {
+        if (!('xdrBase64' in payload)) {
             return;
         }
 
-        const path = getSerializedPath(validatePath(typedPayload.path)) as Bip43Path;
-        const network = getNetwork(typedPayload.testnet ? 'txlm' : 'xlm');
+        const path = getSerializedPath(validatePath(payload.path)) as Bip43Path;
+        const network = getNetwork(payload.testnet ? 'txlm' : 'xlm');
 
         let selectedAccount = selectAccountForNetworkSymbolAndPath(
             getState(),
@@ -62,7 +59,7 @@ const preCallHook = async <M extends CallMethodKeys>({
             const device = selectSelectedDevice(getState());
             if (!device) throw new Error('No device selected');
             const accountAddress = await TrezorConnect.stellarGetAddress({
-                path: typedPayload.path,
+                path: payload.path,
                 device: {
                     path: device.path,
                     instance: device.instance,
@@ -88,13 +85,13 @@ const preCallHook = async <M extends CallMethodKeys>({
     }
 };
 
-export function postCallHook<M extends CallMethodKeys>({ dispatch }: PostCallHookParams<M>) {
+const postCall = ({ dispatch }: PostCallParams<'stellarSignTransaction'>) => {
     temporaryAccounts.cleanup(dispatch);
 
     return false;
-}
+};
 
-export const stellarSignTransaction = {
-    preCallHook,
-    postCallHook,
+export const stellarSignTransaction: ConnectPopupMethodDefinition<'stellarSignTransaction'> = {
+    preCall,
+    postCall,
 };

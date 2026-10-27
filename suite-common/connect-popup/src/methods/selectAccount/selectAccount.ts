@@ -5,7 +5,6 @@ import {
     isNetworkSymbol,
 } from '@suite-common/wallet-config';
 import { getAvailableAccountTypes } from '@suite-common/wallet-utils';
-import { type CallMethodKeys } from '@trezor/connect';
 import { TypedError } from '@trezor/connect-common/src/constants/errors';
 import { type SelectionType } from '@trezor/connect-common/src/types/api/selectAccount';
 
@@ -16,7 +15,11 @@ import {
     type SelectAccountTypeTab,
     isUtxoNetwork,
 } from '../../connectPopupTypes';
-import { type PostCallHookParams, type PreCallHookParams } from '../types';
+import {
+    type ConnectPopupMethodDefinition,
+    type PostCallParams,
+    type ValidateParams,
+} from '../types';
 
 // Resolves one of the network's built-in types (bypassing the "publicly available" filter that
 // getAvailableAccountTypes applies) — an app explicitly requesting a debug-only type, e.g.
@@ -104,13 +107,8 @@ const buildOptions = (payload: Record<string, any>): SelectAccountOptions => {
 // access to a coin that would only crash buildOptions afterwards. Connect's `__info` call already
 // rejected unknown/typo'd coins with Method_UnknownCoin, so a non-network symbol here is a
 // Connect-valid coin this host cannot render — hence a distinct code the caller can act on.
-const validateHook = <M extends CallMethodKeys>({
-    method,
-    payload,
-}: Pick<PreCallHookParams<M>, 'method' | 'payload'>) => {
-    if (method !== 'selectAccount') return;
-
-    const symbol = String((payload as Record<string, any>).coin).toLowerCase();
+const validate = ({ payload }: ValidateParams<'selectAccount'>) => {
+    const symbol = String(payload.coin).toLowerCase();
     if (!isNetworkSymbol(symbol)) {
         throw TypedError('Method_UnsupportedCoinForHost');
     }
@@ -121,13 +119,8 @@ const validateHook = <M extends CallMethodKeys>({
 // picker to fire nested Connect calls (deriving new indices, verifying addresses on device) without
 // colliding with an in-flight call. We keep the call "ongoing" by blocking on getPermissionDeferred,
 // which connectPopupResolveSelectAccountThunk resolves (confirm) or rejects (cancel).
-async function postCallHook<M extends CallMethodKeys>({
-    method,
-    originalPayload,
-    response,
-    dispatch,
-}: PostCallHookParams<M>) {
-    if (method !== 'selectAccount' || !response.success) return false;
+async function postCall({ originalPayload, response, dispatch }: PostCallParams<'selectAccount'>) {
+    if (!response.success) return false;
 
     const options = buildOptions(originalPayload);
 
@@ -154,4 +147,4 @@ async function postCallHook<M extends CallMethodKeys>({
     return true;
 }
 
-export const selectAccountHooks = { validateHook, postCallHook };
+export const selectAccount: ConnectPopupMethodDefinition<'selectAccount'> = { validate, postCall };

@@ -3,7 +3,6 @@ import { selectSupportedNetworkSymbols } from '@suite-common/networks';
 import { getNetwork } from '@suite-common/wallet-config';
 import { selectAccountForNetworkSymbolAndPath, sendFormActions } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
-import type { CallMethodKeys, SolanaSignTransaction } from '@trezor/connect';
 import { getSerializedPath, validatePath } from '@trezor/connect-common';
 import type { Bip43Path } from '@trezor/crypto-utils';
 
@@ -11,92 +10,89 @@ import { connectPopupActions } from '../connectPopupActions';
 import { getPermissionDeferred } from '../connectPopupPromiseManager';
 import { createPlaceholderAccount } from './shared/placeholderAccount';
 import { createTemporaryAccountsRegistry } from './shared/temporaryAccountsRegistry';
-import { type PostCallHookParams, type PreCallHookParams } from './types';
+import {
+    type ConnectPopupMethodDefinition,
+    type PostCallParams,
+    type PreCallParams,
+} from './types';
 
 const temporaryAccounts = createTemporaryAccountsRegistry();
 
-const preCallHook = async <M extends CallMethodKeys>({
+const preCall = async ({
     method,
     payload,
     getState,
     dispatch,
     txSigningPrecomposed,
     source,
-}: PreCallHookParams<M>) => {
+}: PreCallParams<'solanaSignTransaction'>): Promise<undefined> => {
     try {
-        if (method === 'solanaSignTransaction') {
-            const typedPayload = payload as any as SolanaSignTransaction;
-            const path = getSerializedPath(validatePath(typedPayload.path)) as Bip43Path;
-            const network = getNetwork(typedPayload.additionalInfo?.isDevnet ? 'dsol' : 'sol');
-            // Try to find matching account
-            let selectedAccount = selectAccountForNetworkSymbolAndPath(
-                getState(),
-                network.symbol,
-                path,
+        const path = getSerializedPath(validatePath(payload.path)) as Bip43Path;
+        const network = getNetwork(payload.additionalInfo?.isDevnet ? 'dsol' : 'sol');
+        // Try to find matching account
+        let selectedAccount = selectAccountForNetworkSymbolAndPath(
+            getState(),
+            network.symbol,
+            path,
+        );
+        if (!selectedAccount) {
+            // Create a new placeholder account
+            const createdAccount = await dispatch(
+                createPlaceholderAccount(network, path, selectSupportedNetworkSymbols(getState())),
             );
-            if (!selectedAccount) {
-                // Create a new placeholder account
-                const createdAccount = await dispatch(
-                    createPlaceholderAccount(
-                        network,
-                        path,
-                        selectSupportedNetworkSymbols(getState()),
-                    ),
-                );
-                temporaryAccounts.track(createdAccount.payload.account);
-                selectedAccount = createdAccount.payload.account;
-            }
-            if (!selectedAccount) {
-                throw new Error('Selected account is missing'); // Should not happen
-            }
+            temporaryAccounts.track(createdAccount.payload.account);
+            selectedAccount = createdAccount.payload.account;
+        }
+        if (!selectedAccount) {
+            throw new Error('Selected account is missing'); // Should not happen
+        }
+        dispatch(
+            connectPopupActions.setSelectedAccountKey({
+                selectedAccountKey: selectedAccount.key,
+            }),
+        );
+        // Connect only precomposes when it can decode the message; the simulation does not
+        // depend on it, so a WalletConnect call still gets scanned without one.
+        if (txSigningPrecomposed) {
             dispatch(
-                connectPopupActions.setSelectedAccountKey({
-                    selectedAccountKey: selectedAccount.key,
+                sendFormActions.storePrecomposedTransaction({
+                    formState: {
+                        // Can be left empty, not used in tx review modal
+                        outputs: [],
+                        feeLimit: '',
+                        feePerUnit: '',
+                        selectedUtxos: [],
+                        isCoinControlEnabled: false,
+                        hasCoinControlBeenOpened: false,
+                        options: [],
+                        selectedFee: 'custom',
+                    },
+                    precomposedTransaction: txSigningPrecomposed,
                 }),
             );
-            // Connect only precomposes when it can decode the message; the simulation does not
-            // depend on it, so a WalletConnect call still gets scanned without one.
-            if (txSigningPrecomposed) {
-                dispatch(
-                    sendFormActions.storePrecomposedTransaction({
-                        formState: {
-                            // Can be left empty, not used in tx review modal
-                            outputs: [],
-                            feeLimit: '',
-                            feePerUnit: '',
-                            selectedUtxos: [],
-                            isCoinControlEnabled: false,
-                            hasCoinControlBeenOpened: false,
-                            options: [],
-                            selectedFee: 'custom',
-                        },
-                        precomposedTransaction: txSigningPrecomposed,
-                    }),
-                );
-            }
+        }
 
-            if (source.type !== 'desktop-ws' && source.type !== 'web') {
-                // Display simulation
-                const device = selectSelectedDevice(getState());
-                if (!device) throw new Error('No device selected');
-                const accountAddress = await TrezorConnect.solanaGetAddress({
-                    path: typedPayload.path,
-                    device: {
-                        path: device.path,
-                        instance: device.instance,
-                        state: device.state,
-                        useEmptyPassphrase: device.useEmptyPassphrase,
-                    },
-                    showOnTrezor: false,
-                });
-                if (!accountAddress.success) throw new Error(accountAddress.error.message);
-                dispatch(
-                    connectPopupActions.txSimulation({
-                        fromAddress: accountAddress.payload.address,
-                    }),
-                );
-                await getPermissionDeferred(true).promise;
-            }
+        if (source.type !== 'desktop-ws' && source.type !== 'web') {
+            // Display simulation
+            const device = selectSelectedDevice(getState());
+            if (!device) throw new Error('No device selected');
+            const accountAddress = await TrezorConnect.solanaGetAddress({
+                path: payload.path,
+                device: {
+                    path: device.path,
+                    instance: device.instance,
+                    state: device.state,
+                    useEmptyPassphrase: device.useEmptyPassphrase,
+                },
+                showOnTrezor: false,
+            });
+            if (!accountAddress.success) throw new Error(accountAddress.error.message);
+            dispatch(
+                connectPopupActions.txSimulation({
+                    fromAddress: accountAddress.payload.address,
+                }),
+            );
+            await getPermissionDeferred(true).promise;
         }
     } catch (error) {
         // If an error occurs it's not a problem, we just fall back to generic UI
@@ -108,13 +104,13 @@ const preCallHook = async <M extends CallMethodKeys>({
     }
 };
 
-export function postCallHook<M extends CallMethodKeys>({ dispatch }: PostCallHookParams<M>) {
+const postCall = ({ dispatch }: PostCallParams<'solanaSignTransaction'>) => {
     temporaryAccounts.cleanup(dispatch);
 
     return false;
-}
+};
 
-export const solanaSignTransaction = {
-    preCallHook,
-    postCallHook,
+export const solanaSignTransaction: ConnectPopupMethodDefinition<'solanaSignTransaction'> = {
+    preCall,
+    postCall,
 };

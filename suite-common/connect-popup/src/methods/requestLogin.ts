@@ -1,20 +1,10 @@
-import type { CallMethodKeys } from '@trezor/connect';
+import { type ConnectPopupMethodDefinition, type PreCallParams } from './types';
 
-import { type PreCallHookParams } from './types';
+const preCall = ({ payload, source }: PreCallParams<'requestLogin'>) => ({
+    ...payload,
+    origin: source.origin,
+});
 
-const preCallHook = <M extends CallMethodKeys>({
-    method,
-    payload,
-    source,
-}: PreCallHookParams<M>) => {
-    if (method === 'requestLogin') {
-        return {
-            ...payload,
-            origin: source.origin,
-        };
-    }
-};
-
-export const requestLoginHooks = {
-    preCallHook,
+export const requestLogin: ConnectPopupMethodDefinition<'requestLogin'> = {
+    preCall,
 };

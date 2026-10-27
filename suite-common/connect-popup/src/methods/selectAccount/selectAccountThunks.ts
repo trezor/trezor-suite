@@ -115,7 +115,7 @@ export const connectPopupLoadSelectAccountPageThunk = createThunk<
             const { options, candidates: prevCandidates, selectedAccountTypeKey } = initialCall;
             const { symbol, accountTypeTabs, mode } = options;
             const isUtxo = isUtxoNetwork(symbol);
-            // accountTypeTabs is guaranteed non-empty by the methodHook that builds it
+            // accountTypeTabs is guaranteed non-empty by the selectAccount postCall that builds it
             const activeTab =
                 accountTypeTabs.find(tab => tab.key === selectedAccountTypeKey) ??
                 accountTypeTabs[0]!;
@@ -596,10 +596,10 @@ export const connectPopupVerifySelectAccountThunk = createThunk<
     },
 );
 
-// Finalizes the picker. The selectAccount methodHook is awaiting `getPermissionDeferred`; on cancel
+// Finalizes the picker. The selectAccount postCall is awaiting `getPermissionDeferred`; on cancel
 // we reject it (the call thunk's catch maps Method_Cancel to the final error response), on confirm
 // we override the placeholder method response with the user's selection via `getPopupCallDeferred`
-// and unblock the hook (which then flips the picker into its `exported` phase). Mirrors
+// and unblock the postCall (which then flips the picker into its `exported` phase). Mirrors
 // ConnectAddressConfirmation: after export the modal stays open so the user can keep verifying the
 // exported addresses on device, and only `finishCall` (Close) actually closes it.
 type ConnectPopupResolveSelectAccountThunkState = ConnectPopupStateRootState;
@@ -645,7 +645,7 @@ export const connectPopupResolveSelectAccountThunk = createThunk<
         }));
 
     // Export: deliver the selection to the 3rd-party app and flip the picker into its `exported`
-    // phase, then unblock the methodHook. Do NOT finishCall — keep the modal open so the user can
+    // phase, then unblock the postCall. Do NOT finishCall — keep the modal open so the user can
     // keep verifying the exported addresses on device (mirrors ConnectAddressConfirmation).
     getPopupCallDeferred().resolve({
         success: true,

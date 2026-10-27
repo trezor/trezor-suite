@@ -1,74 +1,53 @@
-import type { CallMethodKeys } from '@trezor/connect';
-
-import { cardanoGetPublicKeyCompat } from './cardanoGetPublicKey';
+import { cardanoGetPublicKey } from './cardanoGetPublicKey';
 import { composeTransaction } from './composeTransaction';
 import { ethereumSignTransaction } from './ethereumSignTransaction';
-import { getPublicKeyV9Compat } from './getPublicKey';
-import { requestLoginHooks } from './requestLogin';
-import { selectAccountHooks } from './selectAccount/selectAccount';
-import { addressConfirmationModalHooks } from './shared/addressConfirmation';
-import { bitcoinSignTransaction } from './signTransaction';
+import { ethereumSignTypedData } from './ethereumSignTypedData';
+import { getPublicKey } from './getPublicKey';
+import { requestLogin } from './requestLogin';
+import { selectAccount } from './selectAccount/selectAccount';
+import { createAddressConfirmation } from './shared/addressConfirmation';
+import { signTransaction } from './signTransaction';
 import { solanaSignTransaction } from './solanaSignTransaction';
 import { stellarSignTransaction } from './stellarSignTransaction';
-import type {
-    CompatibilityHookParams,
-    CompatibilityHookResult,
-    PostCallHookParams,
-    PreCallHookParams,
+import {
+    type ConnectPopupMethodDefinition,
+    type ConnectPopupMethodKey,
+    type ConnectPopupMethodRegistry,
 } from './types';
 
-/**
- * May change the method and its payload before any other actions,
- * mostly in order to preserve backwards compatibility
- */
-export const compatibilityHooks = <M extends CallMethodKeys>(
-    params: CompatibilityHookParams<M>,
-): CompatibilityHookResult<M> =>
-    composeTransaction.compatibilityHook(params) ??
-    getPublicKeyV9Compat.compatibilityHook(params) ??
-    params;
-
-// Runs before the permissions modal, so a call the host cannot fulfil is rejected up front.
-export const validateCallHooks = <M extends CallMethodKeys>(
-    params: Pick<PreCallHookParams<M>, 'method' | 'payload'>,
-) => {
-    selectAccountHooks.validateHook(params);
+// Methods without an entry run the generic popup flow only.
+const methodDefinitions: ConnectPopupMethodRegistry = {
+    cardanoGetAddress: createAddressConfirmation<'cardanoGetAddress'>(),
+    cardanoGetPublicKey,
+    composeTransaction,
+    ethereumGetAddress: createAddressConfirmation<'ethereumGetAddress'>(),
+    ethereumGetPublicKey: createAddressConfirmation<'ethereumGetPublicKey'>(),
+    ethereumSignTransaction,
+    ethereumSignTypedData,
+    getAddress: createAddressConfirmation<'getAddress'>(),
+    getPublicKey,
+    moneroGetAddress: createAddressConfirmation<'moneroGetAddress'>(),
+    requestLogin,
+    rippleGetAddress: createAddressConfirmation<'rippleGetAddress'>(),
+    selectAccount,
+    signTransaction,
+    solanaGetAddress: createAddressConfirmation<'solanaGetAddress'>(),
+    solanaGetPublicKey: createAddressConfirmation<'solanaGetPublicKey'>(),
+    solanaSignTransaction,
+    stellarGetAddress: createAddressConfirmation<'stellarGetAddress'>(),
+    stellarSignTransaction,
+    tezosGetAddress: createAddressConfirmation<'tezosGetAddress'>(),
+    tezosGetPublicKey: createAddressConfirmation<'tezosGetPublicKey'>(),
+    tronGetAddress: createAddressConfirmation<'tronGetAddress'>(),
 };
 
-export const preCallHooks = async <M extends CallMethodKeys>(params: PreCallHookParams<M>) => {
-    const bitcoinSignPayload = await bitcoinSignTransaction.preCallHook(params);
-    if (bitcoinSignPayload) return bitcoinSignPayload;
+// The method name comes from the calling app, so inherited keys must not resolve to a definition.
+export const getMethodDefinition = <M extends ConnectPopupMethodKey>(
+    method: M,
+): ConnectPopupMethodDefinition<M> | undefined =>
+    Object.hasOwn(methodDefinitions, method) ? methodDefinitions[method] : undefined;
 
-    await solanaSignTransaction.preCallHook(params);
-    await stellarSignTransaction.preCallHook(params);
-
-    const ethereumPayload = await ethereumSignTransaction.preCallHook(params);
-    if (ethereumPayload) return ethereumPayload;
-
-    const requestLoginPayload = requestLoginHooks.preCallHook(params);
-    if (requestLoginPayload) return requestLoginPayload;
-
-    const addressConfirmPayload = await addressConfirmationModalHooks.preCallHook(params);
-    if (addressConfirmPayload) return addressConfirmPayload;
-
-    return params.payload;
-};
-
-export async function postCallHooks<M extends CallMethodKeys>(params: PostCallHookParams<M>) {
-    const hooks = [
-        await bitcoinSignTransaction.postCallHook(params),
-        await ethereumSignTransaction.postCallHook(params),
-        await solanaSignTransaction.postCallHook(params),
-        await stellarSignTransaction.postCallHook(params),
-        await addressConfirmationModalHooks.postCallHook(params),
-        await selectAccountHooks.postCallHook(params),
-        await cardanoGetPublicKeyCompat.postCallHook(params),
-    ];
-
-    return hooks.some(Boolean);
-}
-
-// Unconditional safety net invoked from the thunk's finally: tears down every sign hook's
+// Unconditional safety net invoked from the thunk's finally: tears down every sign method's
 // placeholder accounts (registered via createTemporaryAccountsRegistry) so the leak cannot survive a
-// call even when it throws between preCallHook and postCallHook.
+// call even when it throws between preCall and postCall.
 export { cleanupAllTemporaryAccounts } from './shared/temporaryAccountsRegistry';

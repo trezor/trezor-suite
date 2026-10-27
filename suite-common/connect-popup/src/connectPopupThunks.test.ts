@@ -31,7 +31,20 @@ import {
     connectPopupFinishCallThunk,
 } from './connectPopupThunks';
 import { type ConnectCallSource, UNKNOWN_PROCESS } from './connectPopupTypes';
+import { getMethodDefinition } from './methods';
 import { connectPopupResolveSelectAccountThunk } from './methods/selectAccount/selectAccountThunks';
+import {
+    type ConnectPopupMethodDefinition,
+    type ConnectPopupMethodKey,
+    type ConnectPopupMethodRegistry,
+} from './methods/types';
+
+// Passes through to the real registry unless a test swaps in its own definitions.
+jest.mock('./methods', () => {
+    const actual = jest.requireActual('./methods');
+
+    return { ...actual, getMethodDefinition: jest.fn(actual.getMethodDefinition) };
+});
 
 jest.mock('@trezor/connect', () => ({
     ...jest.requireActual('@trezor/connect'),
@@ -64,6 +77,11 @@ type CallThunkTestStore = TestCompositionStore<CallThunkTestState, ConnectPopupC
 
 // Reacts to the popup UI the way a user would.
 type SimulatedUser = (action: UnknownAction, store: CallThunkTestStore) => void;
+
+type MethodStep<
+    M extends ConnectPopupMethodKey,
+    K extends keyof ConnectPopupMethodDefinition<M>,
+> = NonNullable<ConnectPopupMethodDefinition<M>[K]>;
 
 type SigningCase = {
     method: string;
@@ -122,6 +140,15 @@ const ethereumPrecomposedTx: PrecomposedTransactionFinal = {
     feePerByte: '1',
     bytes: 0,
 };
+
+const mockedGetMethodDefinition = jest.mocked(getMethodDefinition);
+const actualGetMethodDefinition = mockedGetMethodDefinition.getMockImplementation()!;
+
+const mockMethodDefinitions = (definitions: ConnectPopupMethodRegistry) =>
+    mockedGetMethodDefinition.mockImplementation(
+        // The registry type cannot correlate an entry with its key.
+        (method => definitions[method]) as typeof getMethodDefinition,
+    );
 
 const mockedConnectCall = jest.mocked(TrezorConnect.call);
 const mockedPushTransaction = jest.mocked(TrezorConnect.pushTransaction);
@@ -631,5 +658,116 @@ describe('connectPopupCallThunk — per-method popup behavior', () => {
         expect(store.getActions().filter(accountsActions.removeAccount.match)).toEqual([
             accountsActions.removeAccount(createdAccount),
         ]);
+    });
+});
+
+describe('connectPopupCallThunk — method registry', () => {
+    beforeEach(() => {
+        mockedConnectCall.mockReset();
+        mockConnectCall({ response: { success: true, payload: { model: 'T3T1' } } });
+    });
+
+    afterEach(() => {
+        mockedGetMethodDefinition.mockImplementation(actualGetMethodDefinition);
+    });
+
+    it('runs only the steps of the called method', async () => {
+        const calledMethod = {
+            validate: mock<MethodStep<'getFeatures', 'validate'>>(),
+            preCall: mock<MethodStep<'getFeatures', 'preCall'>>(),
+            postCall: mock<MethodStep<'getFeatures', 'postCall'>>(() => false),
+        };
+        const otherMethod = {
+            compatibility: mock<MethodStep<'getDeviceState', 'compatibility'>>(),
+            validate: mock<MethodStep<'getDeviceState', 'validate'>>(),
+            preCall: mock<MethodStep<'getDeviceState', 'preCall'>>(),
+            postCall: mock<MethodStep<'getDeviceState', 'postCall'>>(() => false),
+        };
+        mockMethodDefinitions({ getFeatures: calledMethod, getDeviceState: otherMethod });
+        const store = initCallStore();
+
+        await store.dispatch(
+            connectPopupCallThunk({ method: 'getFeatures', payload: {}, source: desktopSource }),
+        );
+
+        expect(calledMethod.validate).toHaveBeenCalledWith({
+            method: 'getFeatures',
+            payload: {},
+            source: desktopSource,
+        });
+        expect(calledMethod.preCall).toHaveBeenCalledTimes(1);
+        expect(calledMethod.postCall).toHaveBeenCalledTimes(1);
+        expect(otherMethod.compatibility).not.toHaveBeenCalled();
+        expect(otherMethod.validate).not.toHaveBeenCalled();
+        expect(otherMethod.preCall).not.toHaveBeenCalled();
+        expect(otherMethod.postCall).not.toHaveBeenCalled();
+    });
+
+    it('continues with the definition of the method a compatibility step redirects to', async () => {
+        const redirectingMethod = {
+            compatibility: mock<MethodStep<'getFeatures', 'compatibility'>>(() => ({
+                method: 'getDeviceState',
+                payload: { keepSession: true },
+            })),
+            preCall: mock<MethodStep<'getFeatures', 'preCall'>>(),
+        };
+        const targetMethod = {
+            compatibility: mock<MethodStep<'getDeviceState', 'compatibility'>>(),
+            preCall: mock<MethodStep<'getDeviceState', 'preCall'>>(),
+        };
+        mockMethodDefinitions({ getFeatures: redirectingMethod, getDeviceState: targetMethod });
+        const store = initCallStore();
+
+        await store.dispatch(
+            connectPopupCallThunk({ method: 'getFeatures', payload: {}, source: desktopSource }),
+        );
+
+        expect(targetMethod.compatibility).not.toHaveBeenCalled();
+        expect(redirectingMethod.preCall).not.toHaveBeenCalled();
+        expect(targetMethod.preCall).toHaveBeenCalledWith(
+            expect.objectContaining({ method: 'getDeviceState', payload: { keepSession: true } }),
+        );
+        expect(getDeviceCallParams()).toEqual([
+            expect.objectContaining({ method: 'getDeviceState', keepSession: true }),
+        ]);
+    });
+
+    it('calls the device with the payload from preCall and passes both payloads to postCall', async () => {
+        const method = {
+            preCall: mock<MethodStep<'getFeatures', 'preCall'>>(() => ({ keepSession: true })),
+            postCall: mock<MethodStep<'getFeatures', 'postCall'>>(() => false),
+        };
+        mockMethodDefinitions({ getFeatures: method });
+        const store = initCallStore();
+
+        await store.dispatch(
+            connectPopupCallThunk({ method: 'getFeatures', payload: {}, source: desktopSource }),
+        );
+
+        expect(getDeviceCallParams()).toEqual([
+            expect.objectContaining({ method: 'getFeatures', keepSession: true }),
+        ]);
+        expect(method.postCall).toHaveBeenCalledWith(
+            expect.objectContaining({
+                payload: { keepSession: true },
+                originalPayload: {},
+                response: expect.objectContaining({ success: true, payload: { model: 'T3T1' } }),
+            }),
+        );
+    });
+
+    it('keeps the call open when postCall resolves to true', async () => {
+        mockMethodDefinitions({
+            getFeatures: { postCall: mock<MethodStep<'getFeatures', 'postCall'>>(() => true) },
+        });
+        const store = initCallStore();
+
+        const response = getPopupCallDeferred(true).promise;
+        await store.dispatch(
+            connectPopupCallThunk({ method: 'getFeatures', payload: {}, source: desktopSource }),
+        );
+
+        await expect(response).resolves.toMatchObject({ success: true });
+        expect(getActionTypes(store)).not.toContain(connectPopupActions.finishCall.type);
     });
 });

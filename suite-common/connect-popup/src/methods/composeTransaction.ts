@@ -1,7 +1,11 @@
 import { getUnusedChangeAddress } from '@suite-common/wallet-utils';
-import type { AccountAddresses, CallMethodKeys, PrecomposeParams } from '@trezor/connect';
+import type { AccountAddresses, PrecomposeParams } from '@trezor/connect';
 
-import type { CompatibilityHookParams, CompatibilityHookResult } from './types';
+import type {
+    CompatibilityParams,
+    CompatibilityResult,
+    ConnectPopupMethodDefinition,
+} from './types';
 
 type LegacyPrecomposeParams = Omit<PrecomposeParams, 'path' | 'utxo' | 'changeAddress'> & {
     // Former `account` param, since replaced by top-level `path`, `utxo` and `changeAddress`.
@@ -17,14 +21,10 @@ const isCurrentPrecomposeParams = (
     ('utxo' in params && !!params.utxo) ||
     ('changeAddress' in params && !!params.changeAddress);
 
-const compatibilityHook = <M extends CallMethodKeys>({
+const compatibility = ({
     method,
     payload,
-}: CompatibilityHookParams<M>): CompatibilityHookResult<M> | undefined => {
-    if (method !== 'composeTransaction') {
-        return undefined;
-    }
-
+}: CompatibilityParams<'composeTransaction'>): CompatibilityResult => {
     const typedPayload = payload as PrecomposeParams | LegacyPrecomposeParams;
 
     if (isCurrentPrecomposeParams(typedPayload)) {
@@ -39,11 +39,13 @@ const compatibilityHook = <M extends CallMethodKeys>({
 
         const patchedPayload = { ...rest, path, utxo, changeAddress };
 
-        return { method, payload: patchedPayload } as CompatibilityHookResult<M>;
+        return { method, payload: patchedPayload };
     }
 
     // Interactive flow of composeTransaction was deprecated in favour of sendTransaction.
-    return { method: 'sendTransaction', payload } as CompatibilityHookResult<M>;
+    return { method: 'sendTransaction', payload };
 };
 
-export const composeTransaction = { compatibilityHook };
+export const composeTransaction: ConnectPopupMethodDefinition<'composeTransaction'> = {
+    compatibility,
+};

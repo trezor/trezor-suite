@@ -3,14 +3,18 @@ import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { selectAccountForNetworkSymbolAndPath, sendFormActions } from '@suite-common/wallet-core';
 import { type FormOptions } from '@suite-common/wallet-types';
 import TrezorConnect from '@trezor/connect';
-import type { CallMethodKeys, SignTransaction, SignedTransaction } from '@trezor/connect';
+import type { SignTransaction } from '@trezor/connect';
 import { getOriginalTxids, getPreviousTxids, getSerializedPath } from '@trezor/connect-common';
 import type { Bip43Path } from '@trezor/crypto-utils';
 
 import { connectPopupActions } from '../connectPopupActions';
 import { createPlaceholderAccount } from './shared/placeholderAccount';
 import { createTemporaryAccountsRegistry } from './shared/temporaryAccountsRegistry';
-import { type PostCallHookParams, type PreCallHookParams } from './types';
+import {
+    type ConnectPopupMethodDefinition,
+    type PostCallParams,
+    type PreCallParams,
+} from './types';
 
 const temporaryAccounts = createTemporaryAccountsRegistry();
 
@@ -35,27 +39,21 @@ const fetchRefTransactions = async (payload: SignTransaction) => {
     }
 };
 
-const preCallHook = async <M extends CallMethodKeys>({
+const preCall = async ({
     method,
     payload,
     getState,
     dispatch,
     txSigningPrecomposed,
-}: PreCallHookParams<M>) => {
-    if (method !== 'signTransaction') {
-        return undefined;
-    }
-
-    const typedPayload = payload as any as SignTransaction;
-
+}: PreCallParams<'signTransaction'>) => {
     // Not awaited yet so it can run in parallel
-    const refTransactionsPromise = fetchRefTransactions(typedPayload).catch(error => {
+    const refTransactionsPromise = fetchRefTransactions(payload).catch(error => {
         console.error(`Error in Connect Popup ${method} hook:`, error);
     });
 
     try {
         if (txSigningPrecomposed) {
-            const network = getNetwork(typedPayload.coin as NetworkSymbol);
+            const network = getNetwork(payload.coin as NetworkSymbol);
             if (!network) {
                 throw new Error(`Network not supported`);
             }
@@ -92,10 +90,10 @@ const preCallHook = async <M extends CallMethodKeys>({
             );
             // Send form options
             const options: FormOptions[] = [];
-            if (typedPayload.push) {
+            if (payload.push) {
                 options.push('broadcast');
             }
-            if (typedPayload.locktime) {
+            if (payload.locktime) {
                 options.push('bitcoinLocktime');
             }
             dispatch(
@@ -125,34 +123,31 @@ const preCallHook = async <M extends CallMethodKeys>({
     const transactions = await refTransactionsPromise;
 
     return {
-        ...typedPayload,
+        ...payload,
         push: false,
-        account: transactions ? { ...typedPayload.account, transactions } : typedPayload.account,
+        account: transactions ? { ...payload.account, transactions } : payload.account,
     } as unknown as typeof payload;
 };
 
-export async function postCallHook<M extends CallMethodKeys>({
-    method,
+const postCall = async ({
     originalPayload,
     response,
     dispatch,
-}: PostCallHookParams<M>) {
+}: PostCallParams<'signTransaction'>) => {
     temporaryAccounts.cleanup(dispatch);
 
     // Must be originalPayload as payload was already stripped from push
-    const typedPayload = originalPayload as unknown as SignTransaction;
-
-    if (method === 'signTransaction' && typedPayload.push && response.success) {
-        const signed = response.payload as SignedTransaction;
+    if (originalPayload.push && response.success) {
+        const signed = response.payload;
         if (signed.serializedTx) {
             const res = await TrezorConnect.pushTransaction({
-                coin: typedPayload.coin,
-                identity: typedPayload.identity,
+                coin: originalPayload.coin,
+                identity: originalPayload.identity,
                 tx: signed.serializedTx,
             });
 
             if (!res.success) {
-                // postCallHooks are not in try/catch, therefore this behaves the same
+                // postCall is not in try/catch, therefore this behaves the same
                 // as if the original signTransaction call fails
                 throw res.error;
             }
@@ -160,9 +155,9 @@ export async function postCallHook<M extends CallMethodKeys>({
     }
 
     return false;
-}
+};
 
-export const bitcoinSignTransaction = {
-    preCallHook,
-    postCallHook,
+export const signTransaction: ConnectPopupMethodDefinition<'signTransaction'> = {
+    preCall,
+    postCall,
 };

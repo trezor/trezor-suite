@@ -1,62 +1,61 @@
 import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
 import { type LockDeviceDep } from '@suite-common/suite-types';
-import TrezorConnect, { type Address, type CallMethodKeys, type PublicKey } from '@trezor/connect';
+import TrezorConnect, { type Address, type PublicKey } from '@trezor/connect';
 import { createThunk } from '@trezor/redux-utils';
 
 import { connectPopupActions } from '../../connectPopupActions';
 import { getPermissionDeferred } from '../../connectPopupPromiseManager';
 import { type ConnectPopupStateRootState, selectConnectPopupCall } from '../../connectPopupReducer';
 import { CONNECT_POPUP_MODULE } from '../../connectPopupTypes';
-import { type PostCallHookParams, type PreCallHookParams } from '../types';
+import {
+    type ConnectPopupMethodDefinition,
+    type PostCallParams,
+    type PreCallParams,
+} from '../types';
 
-const methodsAddress = [
-    'getAddress',
-    'ethereumGetAddress',
-    'cardanoGetAddress',
-    'rippleGetAddress',
-    'solanaGetAddress',
-    'tezosGetAddress',
-    'tronGetAddress',
-    'stellarGetAddress',
-    'moneroGetAddress',
-];
-const methodsPublicKey = [
-    'getPublicKey',
-    'ethereumGetPublicKey',
-    'cardanoGetPublicKey',
-    'solanaGetPublicKey',
-    'tezosGetPublicKey',
-];
-const methods = [...methodsAddress, ...methodsPublicKey];
+type AddressConfirmationMethod =
+    | 'getAddress'
+    | 'ethereumGetAddress'
+    | 'cardanoGetAddress'
+    | 'rippleGetAddress'
+    | 'solanaGetAddress'
+    | 'tezosGetAddress'
+    | 'tronGetAddress'
+    | 'stellarGetAddress'
+    | 'moneroGetAddress'
+    | 'getPublicKey'
+    | 'ethereumGetPublicKey'
+    | 'cardanoGetPublicKey'
+    | 'solanaGetPublicKey'
+    | 'tezosGetPublicKey';
 
-const preCallHook = <M extends CallMethodKeys>({ method, payload }: PreCallHookParams<M>) => {
-    if (methods.includes(method)) {
-        if ('bundle' in payload && Array.isArray(payload.bundle)) {
-            return {
-                ...payload,
-                bundle: payload.bundle.map(item => ({
-                    ...item,
-                    showOnTrezor: false,
-                })),
-            };
-        } else {
-            return {
-                ...payload,
+type AddressConfirmationDefinition<M extends AddressConfirmationMethod> = Required<
+    Pick<ConnectPopupMethodDefinition<M>, 'preCall' | 'postCall'>
+>;
+
+const preCall = ({ payload }: PreCallParams<AddressConfirmationMethod>) => {
+    if ('bundle' in payload && Array.isArray(payload.bundle)) {
+        return {
+            ...payload,
+            bundle: payload.bundle.map(item => ({
+                ...item,
                 showOnTrezor: false,
-            };
-        }
+            })),
+        };
+    } else {
+        return {
+            ...payload,
+            showOnTrezor: false,
+        };
     }
-
-    return payload;
 };
 
-export async function postCallHook<M extends CallMethodKeys>({
-    method,
+const postCall = async ({
     originalPayload,
     response,
     dispatch,
-}: PostCallHookParams<M>) {
-    if (methods.includes(method) && response.success) {
+}: PostCallParams<AddressConfirmationMethod>) => {
+    if (response.success) {
         const bundledResponse = (
             Array.isArray(response.payload) ? response.payload : [response.payload]
         ) as (Address | PublicKey)[];
@@ -95,12 +94,15 @@ export async function postCallHook<M extends CallMethodKeys>({
     }
 
     return false;
-}
-
-export const addressConfirmationModalHooks = {
-    preCallHook,
-    postCallHook,
 };
+
+/**
+ * Exports addresses or public keys without showing them on the device, then lets the user confirm
+ * them in the popup and verify them on the device one by one.
+ */
+export const createAddressConfirmation = <M extends AddressConfirmationMethod>() =>
+    // The steps keep the payload of the method they are called for, which the union cannot express.
+    ({ preCall, postCall }) as unknown as AddressConfirmationDefinition<M>;
 
 type ConnectPopupVerifyAddressThunkState = DeviceRootState & ConnectPopupStateRootState;
 

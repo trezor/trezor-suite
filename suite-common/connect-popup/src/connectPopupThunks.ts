@@ -5,12 +5,7 @@ import { type DeviceRootState, deviceActions, selectSelectedDevice } from '@suit
 import { type LockDeviceDep } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
-import TrezorConnect, {
-    type CallMethodKeys,
-    type CallMethodParams,
-    type CallMethodPayload,
-    type MethodInfo,
-} from '@trezor/connect';
+import TrezorConnect, { type CallMethodPayload, type MethodInfo } from '@trezor/connect';
 import { connectCallableMethods } from '@trezor/connect-common';
 import { TypedError, serializeError } from '@trezor/connect-common/src/constants/errors';
 import { DEEPLINK_VERSION } from '@trezor/connect-common/src/data/version';
@@ -30,14 +25,8 @@ import {
     CONNECT_POPUP_MODULE,
     type ConnectCallSource,
 } from './connectPopupTypes';
-import {
-    cleanupAllTemporaryAccounts,
-    compatibilityHooks,
-    postCallHooks,
-    preCallHooks,
-    validateCallHooks,
-} from './methods';
-import type { DistributiveOmit } from './methods/types';
+import { cleanupAllTemporaryAccounts, getMethodDefinition } from './methods';
+import type { ConnectPopupMethodKey, MethodPayload } from './methods/types';
 import {
     canRememberPermissions,
     deriveCardanoEnabledNetworks,
@@ -61,9 +50,9 @@ const getCallParamNames = (payload: unknown): string[] =>
         ? Object.keys(payload).sort()
         : [];
 
-type ConnectPopupCallThunkParams<M extends CallMethodKeys> = {
+type ConnectPopupCallThunkParams<M extends ConnectPopupMethodKey> = {
     method: M;
-    payload: DistributiveOmit<CallMethodParams<M>, 'method'>;
+    payload: MethodPayload<M>;
     source: ConnectCallSource;
 };
 
@@ -79,13 +68,17 @@ export type ConnectPopupCallThunkDeps = ConnectPopupCallInnerThunkDeps;
 
 export const connectPopupCallInnerThunk = createThunk<
     void,
-    ConnectPopupCallThunkParams<CallMethodKeys>,
+    ConnectPopupCallThunkParams<ConnectPopupMethodKey>,
     { state: ConnectPopupCallInnerThunkState; extra: ConnectPopupCallInnerThunkDeps }
 >(
     `${CONNECT_POPUP_MODULE}/callThunk`,
     async ({ source, ...params }, { dispatch, getState, extra }) => {
         try {
-            const { method, payload } = compatibilityHooks({ ...params, source });
+            // A redirect is resolved once: the target method's own compatibility step is skipped.
+            const { method, payload } =
+                getMethodDefinition(params.method)?.compatibility?.({ ...params, source }) ??
+                params;
+            const definition = getMethodDefinition(method);
 
             if (!connectCallableMethods.includes(method)) throw TypedError('Method_Unsupported');
 
@@ -134,7 +127,7 @@ export const connectPopupCallInnerThunk = createThunk<
 
             // Reject a call this host cannot fulfil (e.g. selectAccount for a coin Suite can't render)
             // before asking for permissions, so the user doesn't approve access only to hit an error.
-            validateCallHooks({ method, payload });
+            definition?.validate?.({ method, payload, source });
 
             // Check if permission remembered (permission, coin). Keyed on THIS call's required
             // permissions (not the declared superset) so a call is silent whenever its own needs are
@@ -187,16 +180,17 @@ export const connectPopupCallInnerThunk = createThunk<
 
             const txSigningPrecomposed: PrecomposedTransactionFinal | undefined =
                 methodInfoPayload.precomposed;
-            const modifiedPayload = await preCallHooks({
-                method,
-                payload,
-                dispatch,
-                getState,
-                txSigningPrecomposed,
-                source,
-            });
+            const modifiedPayload =
+                (await definition?.preCall?.({
+                    method,
+                    payload,
+                    dispatch,
+                    getState,
+                    txSigningPrecomposed,
+                    source,
+                })) ?? payload;
 
-            // refresh device state before call (could have changed during preCallHooks)
+            // refresh device state before call (could have changed during preCall)
             device = selectSelectedDevice(getState());
             if (!device) throw TypedError('Device_Disconnected');
 
@@ -214,15 +208,16 @@ export const connectPopupCallInnerThunk = createThunk<
             } as CallMethodPayload);
             response.id = undefined;
 
-            const postCallOngoing = await postCallHooks({
-                method,
-                payload: modifiedPayload,
-                originalPayload: payload,
-                response,
-                dispatch,
-                getState,
-                source,
-            });
+            const postCallOngoing =
+                (await definition?.postCall?.({
+                    method,
+                    payload: modifiedPayload,
+                    originalPayload: payload,
+                    response,
+                    dispatch,
+                    getState,
+                    source,
+                })) ?? false;
             if (!response.success) {
                 throw response.error;
             }
@@ -288,8 +283,8 @@ export const connectPopupCallInnerThunk = createThunk<
                 error: serializeError(error),
             });
         } finally {
-            // Tear down any placeholder accounts created in preCallHooks even if the call threw
-            // before postCallHooks ran, so they cannot leak into a later removeAccount payload.
+            // Tear down any placeholder accounts created in preCall even if the call threw
+            // before postCall ran, so they cannot leak into a later removeAccount payload.
             cleanupAllTemporaryAccounts(dispatch);
             extra.services.lockDevice(false);
         }
@@ -298,7 +293,7 @@ export const connectPopupCallInnerThunk = createThunk<
 
 // Typed thunk that takes the method as a generic parameter
 // Original thunk is exposed as well for using .fulfilled, .rejected, etc.
-export const connectPopupCallThunk = <M extends CallMethodKeys>(
+export const connectPopupCallThunk = <M extends ConnectPopupMethodKey>(
     params: ConnectPopupCallThunkParams<M>,
 ): AsyncThunkAction<
     void,
@@ -378,7 +373,7 @@ export const connectPopupDeeplinkThunk = createThunk<
                     appIcon: queryParams.appIcon ?? '',
                 },
             },
-            method: method as CallMethodKeys,
+            method: method as ConnectPopupMethodKey,
             payload,
         }),
     );

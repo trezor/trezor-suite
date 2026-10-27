@@ -47,7 +47,7 @@ export function useTxSimulationPopupCall() {
                 };
 
             case 'solanaSignTransaction': {
-                // The account is resolved by the method hook before the simulation is dispatched.
+                // The account is resolved by the method's `preCall` before the simulation is dispatched.
                 if (!account || !isSupportedSolanaNetwork(account.symbol)) {
                     return null;
                 }
