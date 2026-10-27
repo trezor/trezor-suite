@@ -565,6 +565,27 @@ export const selectTradingBuySupportedCryptoIds = createNetworkMemoizedSelector(
         getFilteredCryptoIds(supportedCryptoIds, coins, platforms, supportedCoins),
 );
 
+export const selectTradingBuySupportedNetworkSymbols = createNetworkMemoizedSelector(
+    [selectTradingBuySupportedCryptoIds],
+    (buyCryptoIds): Set<NetworkSymbol> =>
+        buyCryptoIds.reduce<Set<NetworkSymbol>>((networkSymbols, cryptoId) => {
+            const { symbol, contractAddress } = cryptoIdToNetworkSymbolAndContractAddress(cryptoId);
+
+            if (symbol !== undefined && contractAddress === undefined) {
+                networkSymbols.add(symbol);
+            }
+
+            return networkSymbols;
+        }, new Set()),
+);
+
+export const selectIsTradingBuyAvailableForNetworkSymbol = (
+    state: TradingRootState & NetworksRootState,
+    networkSymbol: NetworkSymbol,
+): boolean =>
+    !selectTradingBuyLoadingTimestampAndStatus(state).isFullyLoaded ||
+    selectTradingBuySupportedNetworkSymbols(state).has(networkSymbol);
+
 export const selectTradingSellSupportedCryptoIds = createNetworkMemoizedSelector(
     [
         selectTradingCoins,

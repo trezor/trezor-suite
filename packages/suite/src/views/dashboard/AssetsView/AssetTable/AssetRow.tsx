@@ -1,13 +1,27 @@
 import { memo } from 'react';
+import { useSelector } from 'react-redux';
 
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectIsFinpromRestricted } from '@suite/finprom';
 import { Translation } from '@suite/intl';
 import { gotoThunk } from '@suite/router';
 import { type AssetFiatBalance } from '@suite-common/assets';
-import { selectCoinDefinitions } from '@suite-common/token-definitions';
+import { type NetworksRootState } from '@suite-common/networks';
+import {
+    type TokenDefinitionsRootState,
+    selectCoinDefinitions,
+} from '@suite-common/token-definitions';
+import {
+    type TradingRootState,
+    selectIsTradingBuyAvailableForNetworkSymbol,
+} from '@suite-common/trading';
 import { type Network } from '@suite-common/wallet-config';
-import { selectAnyAccountIsStakingActive, useDisplayBaseCurrency } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    type TransactionsRootState,
+    selectAnyAccountIsStakingActive,
+    useDisplayBaseCurrency,
+} from '@suite-common/wallet-core';
 import { type Account, type RatesByKey } from '@suite-common/wallet-types';
 import { type AmountUnit, isTestnet } from '@suite-common/wallet-utils';
 import type { BaseCurrencyCode, TokenInfo } from '@trezor/blockchain-link-types';
@@ -24,7 +38,6 @@ import {
     TrendTicker,
 } from 'src/components/suite';
 import { TokenIconSetWrapper } from 'src/components/wallet/TokenIconSetWrapper';
-import { useSelector } from 'src/hooks/suite';
 
 import { AssetActionButton } from '../AssetActionButton';
 import { AssetCoinLogo } from '../AssetCoinLogo';
@@ -76,13 +89,18 @@ export const AssetRow = memo(
                 }),
             );
         };
-        const coinDefinitions = useSelector(state => selectCoinDefinitions(state, network.symbol));
+        const coinDefinitions = useSelector((state: TokenDefinitionsRootState) =>
+            selectCoinDefinitions(state, network.symbol),
+        );
         const isFinpromRestricted = useSelector(selectIsFinpromRestricted);
+        const isBuyAvailable = useSelector((state: TradingRootState & NetworksRootState) =>
+            selectIsTradingBuyAvailableForNetworkSymbol(state, symbol),
+        );
         const stakingAccountsForAsset = stakingAccounts.filter(
             account => account.symbol === network.symbol,
         );
 
-        const isStakingActive = useSelector(state =>
+        const isStakingActive = useSelector((state: TransactionsRootState & AccountsRootState) =>
             selectAnyAccountIsStakingActive(state, stakingAccountsForAsset),
         );
 
@@ -200,7 +218,7 @@ export const AssetRow = memo(
                                 </AssetActionButton>
                             )}
 
-                            {!isTestnet(symbol) && !isFinpromRestricted && (
+                            {!isTestnet(symbol) && !isFinpromRestricted && isBuyAvailable && (
                                 <AssetActionButton
                                     symbol={symbol}
                                     routeName="wallet-trading-buy"
