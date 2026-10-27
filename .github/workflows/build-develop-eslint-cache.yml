@@ -5,13 +5,11 @@ name: "[Build] develop ESLint cache"
 # pull request's first lint run starts from an empty ESLint cache and only its later pushes reuse
 # one. Each push to `develop` runs the basic lint job here with the same cache key as the
 # validation workflow and saves the result under the default branch's scope; the type-aware run is
-# never cached (see its job in check-code-validation.yml). Restoring the newest
-# `develop` entry first and linting only the affected projects makes the entry accumulate across
-# pushes; a toolchain change starts a new key and lints every project, which fills it in one run.
-# A change to a workspace manifest alone starts a new key too, but fills it only for the affected
-# projects until the next yarn.lock change or a manual run of this workflow lints every project
-# again. Unlike the Yarn cache, no schedule is needed: develop is pushed often enough to outlive
-# eviction.
+# never cached (see its job in check-code-validation.yml). A run restores the newest `develop`
+# entry for the same toolchain and lints the projects affected since the commit that entry was
+# saved for, so the entry accumulates across pushes. Without such an entry, after a toolchain
+# change or an eviction, it lints every project, which fills the new key in one run. Unlike the
+# Yarn cache, no schedule is needed: develop is pushed often enough to outlive eviction.
 
 permissions:
   contents: read
@@ -27,7 +25,9 @@ env:
 
 concurrency:
   # Runs queue instead of cancelling each other: a cancelled run saves nothing, and on a busy day
-  # the warm-up would otherwise never finish. GitHub keeps at most one run pending per group.
+  # the warm-up would otherwise never finish. GitHub keeps at most one run pending per group and
+  # cancels it when another push queues, which loses nothing: the next run lints everything that
+  # changed since the commit of the entry it restores.
   group: ${{ github.workflow }}
   cancel-in-progress: false
 
@@ -40,27 +40,40 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
-      - name: "Checkout branches for Nx"
-        # A manual run has no pushed range to diff, so it lints every project instead.
-        if: github.event_name == 'push'
-        uses: ./.github/actions/nx-checkout
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
-      - name: ESLint cache key
-        id: eslint-cache-key
-        # Same as in the `lint` job of check-code-validation.yml, which explains it.
-        run: |
-          hash=$(git ls-files -s -- yarn.lock eslint.config.mjs eslint-local-rules packages/eslint ':(glob)*/**/package.json' | sha256sum | cut -d' ' -f1)
-          echo "toolchain=$hash" >> "$GITHUB_OUTPUT"
-      - name: ESLint cache
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
+      - name: ESLint cache inputs
+        id: eslint-cache-inputs
+        run: node scripts/ci/eslint-cache-inputs.js
+      # Same path and keys as the `lint` job of check-code-validation.yml, which explains them.
+      # Restore and save are separate steps because only the restore step reports the matched key.
+      - name: Restore the ESLint cache
+        id: eslint-cache
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
         with:
-          # Same path and keys as the `lint` job of check-code-validation.yml, which explains them.
-          path: |
-            **/.eslintcache
-            !**/node_modules
-          key: ${{ runner.os }}-eslint-basic-${{ steps.eslint-cache-key.outputs.toolchain }}-${{ github.sha }}
+          path: ${{ steps.eslint-cache-inputs.outputs.paths }}
+          key: ${{ runner.os }}-eslint-basic-${{ steps.eslint-cache-inputs.outputs.toolchain }}-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-eslint-basic-${{ steps.eslint-cache-key.outputs.toolchain }}-
+            ${{ runner.os }}-eslint-basic-${{ steps.eslint-cache-inputs.outputs.toolchain }}-
       - name: Lint JS
-        run: yarn ${{ github.event_name == 'push' && 'lint:js' || 'lint:js:all' }} --output-style=stream
+        env:
+          MATCHED_KEY: ${{ steps.eslint-cache.outputs.cache-matched-key }}
+          KEY_PREFIX: ${{ runner.os }}-eslint-basic-${{ steps.eslint-cache-inputs.outputs.toolchain }}-
+        # The restored entry's key ends in the commit it was saved for, so only the projects
+        # affected since that commit can have stale entries. Nx needs no history to find them:
+        # `git merge-base` finds nothing between two shallow commits, so Nx diffs their trees. A
+        # manual run, a run that restored nothing and one whose entry commit can no longer be
+        # fetched lint every project instead.
+        run: |
+          base=${MATCHED_KEY#"$KEY_PREFIX"}
+          if [ "$GITHUB_EVENT_NAME" = push ] && [ -n "$MATCHED_KEY" ] && git fetch --no-tags --depth=1 origin "$base"; then
+            NX_BASE=$base NX_HEAD=$(git rev-parse HEAD) yarn lint:js --output-style=stream
+          else
+            yarn lint:js:all --output-style=stream
+          fi
+      - name: Save the ESLint cache
+        if: steps.eslint-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
+        with:
+          path: ${{ steps.eslint-cache-inputs.outputs.paths }}
+          key: ${{ steps.eslint-cache.outputs.cache-primary-key }}

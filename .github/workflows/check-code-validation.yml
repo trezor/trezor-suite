@@ -81,14 +81,9 @@ jobs:
         uses: ./.github/actions/nx-checkout
       - name: "Minimal yarn install"
         uses: ./.github/actions/minimal-yarn-install
-      - name: ESLint cache key
-        id: eslint-cache-key
-        # Hashes the blob IDs of the tracked toolchain files and workspace manifests. git never lists
-        # node_modules, which hashFiles would walk for a `**/package.json` pattern; `*/**` leaves
-        # out the root manifest, which no workspace lint reads.
-        run: |
-          hash=$(git ls-files -s -- yarn.lock eslint.config.mjs eslint-local-rules packages/eslint ':(glob)*/**/package.json' | sha256sum | cut -d' ' -f1)
-          echo "toolchain=$hash" >> "$GITHUB_OUTPUT"
+      - name: ESLint cache inputs
+        id: eslint-cache-inputs
+        run: node scripts/ci/eslint-cache-inputs.js
       - name: ESLint cache
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
         with:
@@ -98,20 +93,15 @@ jobs:
           # The key ends in the commit SHA because a cache entry is immutable: without it only the
           # first run would save and every later run would start from that one snapshot. The
           # restore key takes the newest entry for the same toolchain instead.
-          # ESLint's own validation covers the file content, the ESLint and Node versions and the
-          # resolved config, but not the implementation of a plugin or a local rule, nor the
-          # workspace manifests `import/no-extraneous-dependencies` reads, which yarn.lock misses
-          # when a dependency only moves to or from devDependencies; the toolchain hash from the
-          # previous step keys those changes out.
+          # scripts/ci/eslint-cache-inputs.js explains what the toolchain hash covers and why the
+          # paths are listed one by one.
           # GitHub lets a run restore only entries saved on its own branch or on the default branch,
           # so a pull request's first run restores the entry that build-develop-eslint-cache.yml
           # saves on every push to `develop`.
-          path: |
-            **/.eslintcache
-            !**/node_modules
-          key: ${{ runner.os }}-eslint-basic-${{ steps.eslint-cache-key.outputs.toolchain }}-${{ github.sha }}
+          path: ${{ steps.eslint-cache-inputs.outputs.paths }}
+          key: ${{ runner.os }}-eslint-basic-${{ steps.eslint-cache-inputs.outputs.toolchain }}-${{ github.sha }}
           restore-keys: |
-            ${{ runner.os }}-eslint-basic-${{ steps.eslint-cache-key.outputs.toolchain }}-
+            ${{ runner.os }}-eslint-basic-${{ steps.eslint-cache-inputs.outputs.toolchain }}-
       - name: Lint JS
         run: yarn lint:js --output-style=stream
       - name: Lint Styles
