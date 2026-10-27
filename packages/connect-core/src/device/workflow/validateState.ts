@@ -36,7 +36,7 @@ const preauthorizeState = ({ device, method }: WorkflowContext) => {
 // Treat two states as "unexpected" if they describe different (walletDescriptor, deviceId)
 // pairs. Instance is intentionally ignored — the same wallet can be referenced through
 // different host-side instance numbers across reconnects.
-const isUnexpectedState = (expected?: StaticSessionId, current?: StaticSessionId) => {
+export const isUnexpectedState = (expected?: StaticSessionId, current?: StaticSessionId) => {
     if (!expected || !current) return false;
     const parsedExpected = parseStaticSessionId(expected);
     const parsedCurrent = parseStaticSessionId(current);
