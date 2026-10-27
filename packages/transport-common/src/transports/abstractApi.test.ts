@@ -44,6 +44,14 @@ const createUsbMock = (optional = {}) =>
         ...optional,
     }) as unknown as UsbApi['usbInterface'];
 
+// enough microtask turns to let a fire-and-forget chain settle. the chain is
+// microtask-only, so this is deterministic where a wall-clock sleep is not
+const flushMicrotasks = async () => {
+    for (let i = 0; i < 16; i += 1) {
+        await Promise.resolve();
+    }
+};
+
 class TestUsbTransport extends AbstractApiTransport {
     public name = 'WebUsbTransport' as const;
 }
@@ -342,9 +350,9 @@ describe('Usb', () => {
             expect(acquireRes).toEqual({ success: true, payload: '1' });
 
             transport.releaseSync(Session('1'));
-            // releaseSync is fire-and-forget; give its releaseIntent ->
-            // closeDevice -> releaseDone chain time to settle
-            await new Promise(resolve => setTimeout(resolve, 10));
+            // releaseSync is fire-and-forget; let its releaseIntent ->
+            // closeDevice -> releaseDone chain settle
+            await flushMicrotasks();
 
             // without releaseDone the session would stay committed, so this
             // acquire would fail immediately with "wrong previous session" (and
