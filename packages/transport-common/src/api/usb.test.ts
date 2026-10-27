@@ -333,13 +333,15 @@ describe('api/usb', () => {
             },
         );
 
-        // an operation on another device must not queue behind it
+        // an operation on another device must not queue behind it. runInIsolation
+        // only awaits microtasks here, and node drains those before the timer
+        // phase, so a 0ms sentinel makes this ordering deterministic
         const path2 = await Promise.race([
             api.runInIsolation({ lock: { read: true, write: true }, path: '2' }, () => ({
                 success: true as const,
                 payload: 'path2',
             })),
-            new Promise(resolve => setTimeout(() => resolve('blocked'), 100)),
+            new Promise(resolve => setTimeout(() => resolve('blocked'), 0)),
         ]);
         expect(path2).toEqual({ success: true, payload: 'path2' });
 
