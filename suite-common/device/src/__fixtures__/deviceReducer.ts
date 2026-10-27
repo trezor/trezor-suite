@@ -1283,10 +1283,7 @@ const setDeviceState: Fixture<ReturnType<typeof deviceActions.setDeviceState>>[]
         ],
     },
     {
-        // Documents the bug: the wallet is re-keyed to the staticSessionId connect reports, which
-        // carries the new device_id. Accounts, metadata and discovery stay keyed by the id the
-        // wallet was authorized with, so they are detached from it.
-        description: `Re-key the wallet when the same wallet is re-authorized with a new device_id (device wiped and recovered with the same seed)`,
+        description: `Keep the wallet key when the same wallet is re-authorized with a new device_id (device wiped and recovered with the same seed)`,
         initialState: {
             ...deviceReducerInitialState,
             devices: [
@@ -1322,10 +1319,7 @@ const setDeviceState: Fixture<ReturnType<typeof deviceActions.setDeviceState>>[]
         result: [
             {
                 id: 'new-device-id',
-                state: {
-                    staticSessionId: '1stTestnet@new-device-id:0',
-                    sessionId: 'fresh-session',
-                },
+                state: { staticSessionId: '1stTestnet@device_id:0', sessionId: 'fresh-session' },
             },
         ],
     },

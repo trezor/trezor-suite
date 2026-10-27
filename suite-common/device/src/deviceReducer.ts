@@ -382,7 +382,14 @@ const setDeviceState = (
     const targetDevice = affectedDevice[0];
     if (!targetDevice) return;
 
-    targetDevice.state = state;
+    // Re-authorizing an already authorized wallet must not re-key it: accounts are keyed by the
+    // staticSessionId the wallet was authorized with, and connect reports a new deviceId for the
+    // same wallet after the device was wiped and recovered with the same seed.
+    const currentState = targetDevice.state;
+    targetDevice.state =
+        currentState && describesSameWallet(currentState, state)
+            ? { ...state, staticSessionId: currentState.staticSessionId }
+            : state;
     targetDevice.useEmptyPassphrase = useEmptyPassphrase;
     targetDevice.walletNumber = deviceUtils.getNewWalletNumber(draft.devices, device);
     delete targetDevice.discovered;
