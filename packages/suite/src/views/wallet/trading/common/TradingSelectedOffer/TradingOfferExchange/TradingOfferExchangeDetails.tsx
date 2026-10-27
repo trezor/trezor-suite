@@ -81,14 +81,12 @@ export const TradingOfferExchangeDetails = ({
     const rateType = provider?.isFixedRate ? 'fixed' : 'floating';
     const dexSlippage = exchangeQuote.isDex ? exchangeQuote.swapSlippage : undefined;
 
-    const receiveAmountBigNumber = new BigNumber(receiveAmount ?? '');
-    const slippageDeduction = new BigNumber(exchangeQuote.swapSlippage ?? '')
-        .dividedBy(100)
-        .multipliedBy(receiveAmountBigNumber)
-        .negated();
+    const quoteReceiveAmount = new BigNumber(exchangeQuote.receiveStringAmount ?? '');
     const minimumYouGetAmount = formatCryptoAmountAsAmount(
-        receiveAmountBigNumber.plus(slippageDeduction),
-        receiveAmountBigNumber,
+        quoteReceiveAmount.minus(
+            quoteReceiveAmount.multipliedBy(exchangeQuote.swapSlippage ?? '').dividedBy(100),
+        ),
+        quoteReceiveAmount,
         decimals,
     );
 

@@ -46,11 +46,11 @@ export const TradingOfferExchangeSlippageSummary = ({
             : selectedQuote.swapSlippage;
 
     const receiveAmountBigNumber = new BigNumber(receiveAmount ?? '');
-    const slippageDeduction = new BigNumber(previewSlippage ?? '')
-        .dividedBy(100)
-        .multipliedBy(receiveAmountBigNumber)
-        .negated();
-    const minimumReceiveAmount = receiveAmountBigNumber.plus(slippageDeduction);
+    const quoteReceiveAmount = new BigNumber(selectedQuote.receiveStringAmount ?? '');
+    const minimumReceiveAmount = quoteReceiveAmount.minus(
+        quoteReceiveAmount.multipliedBy(previewSlippage ?? '').dividedBy(100),
+    );
+    const slippageDeduction = minimumReceiveAmount.minus(receiveAmountBigNumber);
 
     const rows: {
         label: TranslationKey;
