@@ -17,7 +17,8 @@ export const BlurredUrl = ({ text, variant, color }: BlurredUrlProps) => {
     const fontSize = typography.fontSize * scale;
     const lineHeight = typography.lineHeight * scale;
     const font = useDiscreetFont(fontSize);
-    const width = font?.measureText(text).width ?? fontSize * text.length;
+    // Text ellipsizes inline views as a whole. Keep long URLs compact so their blur remains visible.
+    const width = Math.min(font?.measureText(text).width ?? fontSize * text.length, fontSize * 6);
 
     return (
         <Box
