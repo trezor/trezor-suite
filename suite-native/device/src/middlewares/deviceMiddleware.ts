@@ -7,6 +7,7 @@ import {
     type AccountsRootState,
     type DiscoveryRootState,
     accountsActions,
+    endUnfinishedDiscoveryThunk,
     forgetDisconnectedDevicesThunk,
     handleDeviceDisconnectThunk,
     observeSelectedDeviceThunk,
@@ -52,6 +53,17 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps<
     DeviceMiddlewareState
 >((action, { dispatch, next, getState, extra }) => {
     if (deviceActions.deviceDisconnect.match(action)) {
+        // Forgetting an unremembered device below deletes its discovery, so its outcome is recorded first.
+        dispatch(
+            endUnfinishedDiscoveryThunk({
+                devicePath: action.payload.path,
+                status: {
+                    status: 'failed',
+                    error: 'Device disconnected',
+                    errorCode: 'Device_Disconnected',
+                },
+            }),
+        );
         dispatch(
             forgetDisconnectedDevicesThunk({
                 device: action.payload,

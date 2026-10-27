@@ -8,6 +8,7 @@ import {
     type WalletCoreCompoundRootState,
     changeCoinVisibilityThunk,
     changeNetworks,
+    deleteDiscoveryThunk,
     discoveryActions,
     selectDiscoveryForSelectedDevice,
     selectIsAnyNetworkEnabled,
@@ -42,7 +43,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps<
     DiscoveryMiddlewareState
 >((action, { dispatch, next, getState }) => {
     if (deviceActions.forgetDevice.match(action) && action.payload.device.state?.staticSessionId) {
-        dispatch(discoveryActions.deleteDiscovery(action.payload.device.path));
+        dispatch(deleteDiscoveryThunk(action.payload.device.path));
     }
 
     // We need to wait until `authorizeDeviceThunk` action is fulfilled, because we need

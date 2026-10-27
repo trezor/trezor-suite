@@ -8,6 +8,7 @@ import { type Result, err, ok } from '@trezor/type-utils';
 
 import { DISCOVERY_MODULE_PREFIX, discoveryActions } from './discoveryActions';
 import { selectDiscoveryByDevicePath } from './discoverySelectors';
+import { updateDiscoveryThunk } from './discoveryStateThunks';
 import {
     type RunAdditionalDiscoveryThunkDeps,
     type RunAdditionalDiscoveryThunkState,
@@ -119,7 +120,7 @@ export const activateNetworkWithDiscoveryThunk = createThunk<
                           ),
                       };
 
-                dispatch(discoveryActions.updateDiscovery(status, devicePath));
+                dispatch(updateDiscoveryThunk({ status, path: devicePath }));
 
                 if (!wasCancelled) {
                     dispatch(notificationsActions.addToast({ type: 'discovery-error', error }));
@@ -207,7 +208,9 @@ export const activateNetworkWithDiscoveryThunk = createThunk<
         }
 
         dispatch(
-            discoveryActions.updateDiscovery(finalDiscoveryStatus, devicePath, {
+            updateDiscoveryThunk({
+                status: finalDiscoveryStatus,
+                path: devicePath,
                 isSilent: hasReachedOutcome,
             }),
         );

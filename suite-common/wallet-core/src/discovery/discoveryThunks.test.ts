@@ -12,14 +12,22 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type DiscoveryStatus } from '@suite-common/wallet-types';
 import { mockGetTradedAccountKeys } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
-import TrezorConnect, { type StaticSessionId, asDeviceUniquePath } from '@trezor/connect';
+import TrezorConnect, {
+    type StaticSessionId,
+    UI_EVENTS,
+    asDeviceUniquePath,
+} from '@trezor/connect';
 import { createMockDispatch, mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { discoveryActions } from './discoveryActions';
 import {
+    type EndUnfinishedDiscoveryThunkDeps,
+    type EndUnfinishedDiscoveryThunkState,
     type RunDiscoveryThunkDeps,
     type RunDiscoveryThunkState,
     applyDeviceStatesThunk,
+    endUnfinishedDiscoveryThunk,
+    runAdditionalDiscoveryThunk,
     runDiscoveryThunk,
 } from './discoveryThunks';
 import { blockchainInitialState } from '../blockchain/blockchainReducer';
@@ -149,42 +157,45 @@ describe('applyDeviceStatesThunk', () => {
     );
 });
 
+const existingWalletState: StaticSessionId = 'standard@device-id:1';
+const existingWallet = mockSuiteDevice({
+    path: devicePath,
+    instance: 1,
+    connected: true,
+    state: { staticSessionId: existingWalletState },
+    useEmptyPassphrase: true,
+});
+
+const createState = (
+    discovery: DiscoveryStatus,
+    selectedDevice: TrezorDevice = statelessDevice,
+): RunDiscoveryThunkState => ({
+    wallet: {
+        accounts: [],
+        blockchain: blockchainInitialState,
+        discovery: { [devicePath]: discovery },
+        settings: initialWalletSettingsState,
+    },
+    device: {
+        devices: [existingWallet, statelessDevice],
+        selectedDevice,
+        buttonRequestsByPath: {},
+    },
+    persistentDeviceData: persistentDeviceDataInitialState,
+    tokenDefinitions: tokenDefinitionsInitialState,
+    networks: mockNetworksState([asNetworkSymbol('btc')]),
+});
+
+const createExtra = (): RunDiscoveryThunkDeps => ({
+    services: {
+        analytics: mockAnalytics<AnalyticsSharedEvents>(),
+        getTradedAccountKeys: mockGetTradedAccountKeys(),
+        reportSecurityCheck: jest.fn(),
+    },
+    thunks: { fetchAndSaveMetadata: jest.fn() },
+});
+
 describe('runDiscoveryThunk duplicates', () => {
-    const existingWalletState: StaticSessionId = 'standard@device-id:1';
-    const existingWallet = mockSuiteDevice({
-        path: devicePath,
-        instance: 1,
-        connected: true,
-        state: { staticSessionId: existingWalletState },
-        useEmptyPassphrase: true,
-    });
-
-    const createState = (discovery: DiscoveryStatus): RunDiscoveryThunkState => ({
-        wallet: {
-            accounts: [],
-            blockchain: blockchainInitialState,
-            discovery: { [devicePath]: discovery },
-            settings: initialWalletSettingsState,
-        },
-        device: {
-            devices: [existingWallet, statelessDevice],
-            selectedDevice: statelessDevice,
-            buttonRequestsByPath: {},
-        },
-        persistentDeviceData: persistentDeviceDataInitialState,
-        tokenDefinitions: tokenDefinitionsInitialState,
-        networks: mockNetworksState([asNetworkSymbol('btc')]),
-    });
-
-    const createExtra = (): RunDiscoveryThunkDeps => ({
-        services: {
-            analytics: mockAnalytics<AnalyticsSharedEvents>(),
-            getTradedAccountKeys: mockGetTradedAccountKeys(),
-            reportSecurityCheck: jest.fn(),
-        },
-        thunks: { fetchAndSaveMetadata: jest.fn() },
-    });
-
     const runDiscovery = async (discovery: DiscoveryStatus) => {
         // The device returns the state of the wallet which is already in the list.
         jest.mocked(TrezorConnect.getDeviceState).mockResolvedValue({
@@ -230,5 +241,130 @@ describe('runDiscoveryThunk duplicates', () => {
             ),
         );
         expect(actions).not.toContainEqual(deviceActions.selectDevice(existingWallet));
+    });
+});
+
+describe('runAdditionalDiscoveryThunk', () => {
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    it('ignores progress events once the run has an outcome', async () => {
+        const state = createState({ status: 'progress', total: 2, progress: 1 }, existingWallet);
+        let onBundleProgress: ((event: unknown) => void) | undefined;
+        jest.spyOn(TrezorConnect, 'on').mockImplementation(((
+            event: string,
+            listener: (payload: unknown) => void,
+        ) => {
+            if (event === UI_EVENTS.BUNDLE_PROGRESS) onBundleProgress = listener;
+        }) as typeof TrezorConnect.on);
+        jest.spyOn(TrezorConnect, 'off').mockImplementation(jest.fn());
+        jest.mocked(TrezorConnect.getDeviceState).mockResolvedValue({
+            success: true,
+            payload: { state: { staticSessionId: existingWalletState } },
+        });
+        jest.spyOn(TrezorConnect, 'discoverAccounts').mockImplementation(() => {
+            state.wallet.discovery[devicePath] = {
+                status: 'failed',
+                error: 'Device disconnected',
+                errorCode: 'Device_Disconnected',
+            };
+            onBundleProgress?.({
+                progress: 2,
+                total: 2,
+                response: {
+                    index: 0,
+                    symbol: 'btc',
+                    type: 'normal',
+                    path: "m/84'/0'/0'",
+                    descriptor: 'xpub',
+                    balance: '0',
+                    availableBalance: '0',
+                    empty: true,
+                    last: true,
+                    history: { total: 0, unconfirmed: 0 },
+                },
+            });
+
+            return Promise.resolve({
+                success: false,
+                error: { message: 'Device disconnected', code: 'Device_Disconnected' },
+            });
+        });
+        const { actions, dispatch } = createMockDispatch({
+            getState: () => state,
+            extra: createExtra(),
+        });
+
+        await dispatch(
+            runAdditionalDiscoveryThunk({ staticSessionId: existingWalletState, trigger: 'retry' }),
+        );
+
+        expect(actions).toContainEqual(
+            expect.objectContaining({ type: runAdditionalDiscoveryThunk.fulfilled.type }),
+        );
+        expect(actions).not.toContainEqual(
+            expect.objectContaining({
+                type: discoveryActions.updateDiscovery.type,
+                payload: expect.objectContaining({
+                    status: expect.objectContaining({ status: 'progress' }),
+                }),
+            }),
+        );
+    });
+});
+
+describe('endUnfinishedDiscoveryThunk', () => {
+    const disconnected: Extract<DiscoveryStatus, { status: 'failed' }> = {
+        status: 'failed',
+        error: 'Device disconnected',
+        errorCode: 'Device_Disconnected',
+    };
+
+    const endUnfinishedDiscovery = async (discovery: DiscoveryStatus) => {
+        const { actions, dispatch } = createMockDispatch<
+            EndUnfinishedDiscoveryThunkState,
+            EndUnfinishedDiscoveryThunkDeps
+        >({
+            getState: () => ({ wallet: { discovery: { [devicePath]: discovery } } }),
+            extra: { services: { analytics: mockAnalytics<AnalyticsSharedEvents>() } },
+        });
+
+        await dispatch(endUnfinishedDiscoveryThunk({ devicePath, status: disconnected }));
+
+        return actions;
+    };
+
+    it('records the outcome of a run that is still in progress', async () => {
+        const actions = await endUnfinishedDiscovery({
+            status: 'progress',
+            total: 10,
+            progress: 1,
+            trigger: 'device-connect',
+        });
+
+        expect(actions).toContainEqual(discoveryActions.updateDiscovery(disconnected, devicePath));
+    });
+
+    it('leaves a passphrase outcome alone', async () => {
+        const actions = await endUnfinishedDiscovery({
+            status: 'passphrase-mismatch',
+            trigger: 'add-wallet',
+        });
+
+        expect(actions).not.toContainEqual(
+            expect.objectContaining({ type: discoveryActions.updateDiscovery.type }),
+        );
+    });
+
+    it('leaves a run that has already ended alone', async () => {
+        const actions = await endUnfinishedDiscovery({
+            status: 'cancelled',
+            trigger: 'device-connect',
+        });
+
+        expect(actions).not.toContainEqual(
+            expect.objectContaining({ type: discoveryActions.updateDiscovery.type }),
+        );
     });
 });
