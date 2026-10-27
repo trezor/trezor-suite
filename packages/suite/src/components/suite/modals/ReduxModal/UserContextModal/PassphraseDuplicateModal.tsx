@@ -1,7 +1,7 @@
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
 import {
-    cancelDiscoveryThunk,
+    cancelDiscoveryForRestartThunk,
     startAddWalletDiscoveryThunk,
     switchToDuplicatedWalletThunk,
 } from '@suite-common/wallet-core';
@@ -33,7 +33,7 @@ export const PassphraseDuplicateModal = ({
     };
 
     const onTryDifferentPassphrase = () => {
-        dispatch(cancelDiscoveryThunk(device));
+        dispatch(cancelDiscoveryForRestartThunk(device));
         dispatch(
             startAddWalletDiscoveryThunk({
                 device,
@@ -44,7 +44,7 @@ export const PassphraseDuplicateModal = ({
     };
 
     const onBack = () => {
-        dispatch(cancelDiscoveryThunk(device));
+        dispatch(cancelDiscoveryForRestartThunk(device));
         dispatch(
             startAddWalletDiscoveryThunk({
                 device,

@@ -1,4 +1,4 @@
-import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
+import { type Dispatch, type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
 
 import { type AnalyticsDep } from '@suite-common/analytics';
 import {
@@ -49,7 +49,7 @@ import { type SuiteCompatibleThunk, type WithServices, createThunk } from '@trez
 import { DISCOVERY_MODULE_PREFIX, discoveryActions } from './discoveryActions';
 import { type DiscoveryRootState } from './discoveryReducer';
 import { isDiscoveryInProgress, selectDiscoveryByDevicePath } from './discoverySelectors';
-import { shouldFetchAssetsAfterDiscovery } from './discoveryUtils';
+import { getErrorCode, shouldFetchAssetsAfterDiscovery } from './discoveryUtils';
 import { type CreateAccountActionProps, accountsActions } from '../accounts/accountsActions';
 import { selectAccountsByDeviceState } from '../accounts/accountsSelectors';
 import {
@@ -307,14 +307,26 @@ const completeDiscovery = (
     );
 };
 
+type CancelDiscoveryParams = {
+    device: TrezorDevice;
+    isSilent: boolean;
+};
+
+const cancelDiscovery = ({ device, isSilent }: CancelDiscoveryParams, dispatch: Dispatch) => {
+    // cancel with a custom error code so we can distinguish it from device cancellation
+    TrezorConnect.cancel({ reason: USER_UI_CANCEL_CODE });
+
+    dispatch(discoveryActions.updateDiscovery({ status: 'cancelled' }, device.path, { isSilent }));
+};
+
 export const cancelDiscoveryThunk = createThunk<void, TrezorDevice, void>(
     `${DISCOVERY_MODULE_PREFIX}/cancel`,
-    (device, { dispatch }) => {
-        // cancel with a custom error code so we can distinguish it from device cancellation
-        TrezorConnect.cancel({ reason: USER_UI_CANCEL_CODE });
+    (device, { dispatch }) => cancelDiscovery({ device, isSilent: false }, dispatch),
+);
 
-        dispatch(discoveryActions.updateDiscovery({ status: 'cancelled' }, device.path));
-    },
+export const cancelDiscoveryForRestartThunk = createThunk<void, TrezorDevice, void>(
+    `${DISCOVERY_MODULE_PREFIX}/cancelForRestart`,
+    (device, { dispatch }) => cancelDiscovery({ device, isSilent: true }, dispatch),
 );
 
 type RunDiscoveryParams = {
@@ -674,7 +686,10 @@ export const runDiscoveryThunk = createThunk<
             });
         } catch (error) {
             dispatch(
-                discoveryActions.updateDiscovery({ status: 'failed', error }, passedDevice.path),
+                discoveryActions.updateDiscovery(
+                    { status: 'failed', error, errorCode: getErrorCode(error) },
+                    passedDevice.path,
+                ),
             );
         }
     },
@@ -949,6 +964,8 @@ export const startOrRestartDiscoveryThunk = createThunk<
 >(`${DISCOVERY_MODULE_PREFIX}/restart`, ({ trigger }, { dispatch, getState }) => {
     const device = selectSelectedDevice(getState());
     if (!device) return;
+    if (isDiscoveryInProgress(selectDiscoveryByDevicePath(getState(), device.path))) return;
+
     const staticSessionId = device.state?.staticSessionId;
     if (staticSessionId) {
         // we already have staticSessionId (=passphrase state), we probably failed during blockchain discovery

@@ -5,7 +5,7 @@ import { createThunk } from '@trezor/redux-utils';
 import { DISCOVERY_MODULE_PREFIX } from './discoveryActions';
 import { type DiscoveryRootState } from './discoveryReducer';
 import { isDiscoveryInProgress, selectDiscoveryByDevicePath } from './discoverySelectors';
-import { cancelDiscoveryThunk, startDiscoveryThunk } from './discoveryThunks';
+import { cancelDiscoveryForRestartThunk, startDiscoveryThunk } from './discoveryThunks';
 import { forgetDisconnectedDevicesThunk } from '../device/deviceThunks';
 
 type EjectAllWalletsThunkParams = {
@@ -32,7 +32,7 @@ export const ejectAllWalletsThunk = createThunk<
 >(`${DISCOVERY_MODULE_PREFIX}/ejectAllWallets`, async ({ device }, { dispatch, getState }) => {
     // Cancel, so that the running discovery doesn't recreate accounts of the ejected wallets.
     if (isDiscoveryInProgress(selectDiscoveryByDevicePath(getState(), device.path))) {
-        await dispatch(cancelDiscoveryThunk(device));
+        await dispatch(cancelDiscoveryForRestartThunk(device));
     }
 
     // Despite the name, it forgets all wallets of the device regardless of connection when forced.

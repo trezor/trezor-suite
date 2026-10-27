@@ -14,6 +14,7 @@ import {
     cancelDiscoveryThunk,
     runAdditionalDiscoveryThunk,
 } from './discoveryThunks';
+import { UNKNOWN_ERROR_CODE, getDiscoveryOutcome, getErrorCode } from './discoveryUtils';
 import { accountsActions } from '../accounts/accountsActions';
 import { selectAccounts } from '../accounts/accountsSelectors';
 import { selectEnabledNetworks } from '../settings/walletSettingsReducer';
@@ -110,7 +111,13 @@ export const activateNetworkWithDiscoveryThunk = createThunk<
 
                 const status: DiscoveryStatus = wasCancelled
                     ? { status: 'cancelled' }
-                    : { status: 'failed', error };
+                    : {
+                          status: 'failed',
+                          error,
+                          errorCode: getErrorCode(
+                              wasActivationRejected ? enableResult.error : undefined,
+                          ),
+                      };
 
                 dispatch(discoveryActions.updateDiscovery(status, devicePath));
 
@@ -168,17 +175,21 @@ export const activateNetworkWithDiscoveryThunk = createThunk<
         }
 
         const wasCancelled = signal.aborted || discovery?.status === 'cancelled';
+        const hasReachedOutcome = getDiscoveryOutcome(discovery) !== undefined;
         let error = 'Account discovery failed';
+        let errorCode = UNKNOWN_ERROR_CODE;
 
         if (discovery?.status === 'failed') {
             error = discovery.error ?? error;
+            errorCode = discovery.errorCode ?? errorCode;
         } else if (runAdditionalDiscoveryThunk.rejected.match(discoveryResult)) {
             error = discoveryResult.error.message ?? error;
+            errorCode = getErrorCode(discoveryResult.error);
         }
 
         const finalDiscoveryStatus: DiscoveryStatus = wasCancelled
             ? { status: 'cancelled' }
-            : { status: 'failed', error };
+            : { status: 'failed', error, errorCode };
 
         if (!wasNetworkEnabled) {
             // Keep discovery marked as running during rollback for the same middleware reason as
@@ -195,7 +206,11 @@ export const activateNetworkWithDiscoveryThunk = createThunk<
             );
         }
 
-        dispatch(discoveryActions.updateDiscovery(finalDiscoveryStatus, devicePath));
+        dispatch(
+            discoveryActions.updateDiscovery(finalDiscoveryStatus, devicePath, {
+                isSilent: hasReachedOutcome,
+            }),
+        );
 
         if (!wasCancelled) {
             dispatch(notificationsActions.addToast({ type: 'discovery-error', error }));
