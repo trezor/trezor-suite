@@ -2,12 +2,13 @@ import { useMemo } from 'react';
 
 import { useTranslation } from '@suite/intl';
 import { selectWalletAssetName } from '@suite-common/assets';
-import { Column } from '@trezor/components';
+import { Box, Column, Row } from '@trezor/components';
 
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { useDiscovery, useLayout, useSelector } from 'src/hooks/suite';
 
 import { AssetDetailBalance, AssetDetailBalanceSkeleton } from './AssetDetailBalance';
+import { AssetDetailEarn } from './AssetDetailEarn';
 import { AssetDetailMarketPrice } from './AssetDetailMarketPrice';
 import { AssetNotExists } from './AssetNotExists';
 import { selectRoutedAssetKey } from './selectRoutedAssetKey';
@@ -28,7 +29,12 @@ export const AssetDetail = () => {
     return (
         <Column gap={16} alignItems="stretch" data-testid="@asset-detail">
             <AssetDetailMarketPrice assetKey={assetKey} />
-            <AssetDetailBalance assetKey={assetKey} />
+            <Row gap={16} alignItems="stretch" flexWrap="wrap">
+                <Box flex="1" minWidth={280}>
+                    <AssetDetailBalance assetKey={assetKey} />
+                </Box>
+                <AssetDetailEarn assetKey={assetKey} />
+            </Row>
         </Column>
     );
 };
