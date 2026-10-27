@@ -160,9 +160,31 @@ export const PinInput = ({
         setSymbols(parseDefaultCode(defaultCode, length));
     }, [length, defaultCode]);
 
+    const handleCodeChange = (newCode: Symbol, index: number) => {
+        setSymbols(prev => setSymbolAtPosition(prev, newCode, index));
+
+        if (newCode.length > 0 && index + 1 < length) {
+            focusAt(index + 1);
+        }
+    };
+
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
         if (isDisabled) {
             e.preventDefault();
+
+            return;
+        }
+
+        if (e.ctrlKey || e.altKey || e.metaKey || e.nativeEvent.isComposing) {
+            return;
+        }
+
+        // Physical number-row codes are independent of the keyboard layout and Shift.
+        const numberRowDigit = e.code.startsWith('Digit') ? e.code.slice('Digit'.length) : '';
+
+        if (isSymbolValid(numberRowDigit)) {
+            e.preventDefault();
+            handleCodeChange(isSymbolValid(e.key) ? e.key : numberRowDigit, index);
 
             return;
         }
@@ -204,14 +226,6 @@ export const PinInput = ({
 
         if (e.key === 'Tab' && !e.shiftKey && index + 1 < length) {
             e.preventDefault();
-            focusAt(index + 1);
-        }
-    };
-
-    const handleCodeChange = (newCode: Symbol, index: number) => {
-        setSymbols(prev => setSymbolAtPosition(prev, newCode, index));
-
-        if (newCode.length > 0 && index + 1 < length) {
             focusAt(index + 1);
         }
     };
