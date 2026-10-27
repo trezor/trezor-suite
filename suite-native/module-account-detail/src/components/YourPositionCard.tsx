@@ -1,18 +1,16 @@
-import { useSelector } from 'react-redux';
-
 import { getDisplaySymbol, getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import { type Account, type TokenInfoBranded, type TokenSymbol } from '@suite-common/wallet-types';
-import { BlurUrls, Box, Card, HStack, Text } from '@suite-native/atoms';
+import { Box, Card, HStack } from '@suite-native/atoms';
 import {
     CryptoToFiatAmountFormatter,
     ExactCryptoAmountFormatter,
     ExactTokenAmountFormatter,
+    TokenName,
     TokenToFiatAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { YieldBadge } from '@suite-native/module-earn';
-import { type TokensRootState, selectIsUnrecognizedToken } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { useYourPositionCardYieldBadge } from '../hooks/useYourPositionCardYieldBadge';
@@ -40,9 +38,6 @@ interface YourPositionCardProps {
 
 export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
     const { applyStyle } = useNativeStyles();
-    const isUnrecognized = useSelector((state: TokensRootState) =>
-        selectIsUnrecognizedToken(state, account.key, token?.contract),
-    );
 
     const { symbol } = account;
 
@@ -77,13 +72,13 @@ export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
                 <HStack alignItems="center" justifyContent="space-between" flex={1}>
                     <Box style={applyStyle(cardContentStyle)}>
                         <HStack>
-                            <Text variant="body-sm-strong" color="contentPrimary">
-                                {isUnrecognized ? (
-                                    <BlurUrls text={tokenSymbol} variant="body-sm-strong" />
-                                ) : (
-                                    tokenSymbol
-                                )}
-                            </Text>
+                            <TokenName
+                                text={tokenSymbol}
+                                networkSymbol={symbol}
+                                tokenContract={token?.contract}
+                                variant="body-sm-strong"
+                                color="contentPrimary"
+                            />
 
                             {yieldBadge && account && (
                                 <YieldBadge
@@ -95,17 +90,14 @@ export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
                             )}
                         </HStack>
 
-                        <Text variant="body-sm" color="contentSecondary" numberOfLines={1}>
-                            {isUnrecognized ? (
-                                <BlurUrls
-                                    text={tokenName}
-                                    variant="body-sm"
-                                    color="contentSecondary"
-                                />
-                            ) : (
-                                tokenName
-                            )}
-                        </Text>
+                        <TokenName
+                            text={tokenName}
+                            networkSymbol={symbol}
+                            tokenContract={token?.contract}
+                            variant="body-sm"
+                            color="contentSecondary"
+                            numberOfLines={1}
+                        />
                     </Box>
 
                     <Box alignItems="flex-end" flexShrink={1}>
@@ -134,7 +126,8 @@ export const YourPositionCard = ({ account, token }: YourPositionCardProps) => {
                             <ExactTokenAmountFormatter
                                 value={asDecimalTokenAmount(token.balance ?? '0')}
                                 tokenSymbol={tokenAmountSymbol}
-                                shouldBlurUrls={isUnrecognized}
+                                networkSymbol={symbol}
+                                tokenContract={token.contract}
                                 maxDisplayedDecimals={token.decimals}
                                 numberOfLines={1}
                                 adjustsFontSizeToFit

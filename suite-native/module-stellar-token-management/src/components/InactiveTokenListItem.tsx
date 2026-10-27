@@ -1,12 +1,7 @@
-import { useSelector } from 'react-redux';
-
-import {
-    type TokenDefinitionsRootState,
-    selectIsSpecificCoinDefinitionKnown,
-} from '@suite-common/token-definitions';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type StellarTokenInfo } from '@suite-common/wallet-types';
-import { BlurUrls, Box, PressableOpacity, Text } from '@suite-native/atoms';
+import { Box, PressableOpacity } from '@suite-native/atoms';
+import { TokenName } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -34,9 +29,6 @@ const iconContainerStyle = prepareNativeStyle(utils => ({
 
 export const InactiveTokenListItem = ({ token, onPress }: InactiveTokenListItemProps) => {
     const { applyStyle } = useNativeStyles();
-    const isRecognized = useSelector((state: TokenDefinitionsRootState) =>
-        selectIsSpecificCoinDefinitionKnown(state, asNetworkSymbol('xlm'), token.contract),
-    );
 
     return (
         <PressableOpacity onPress={onPress}>
@@ -50,22 +42,18 @@ export const InactiveTokenListItem = ({ token, onPress }: InactiveTokenListItemP
                     />
                 </Box>
                 <Box flex={1}>
-                    {isRecognized ? (
-                        <Text variant="body-md">{token.name || token.symbol}</Text>
-                    ) : (
-                        <BlurUrls text={token.name || token.symbol || ''} />
-                    )}
-                    <Text variant="body-sm" color="contentSecondary">
-                        {isRecognized ? (
-                            token.symbol
-                        ) : (
-                            <BlurUrls
-                                text={token.symbol ?? ''}
-                                variant="body-sm"
-                                color="contentSecondary"
-                            />
-                        )}
-                    </Text>
+                    <TokenName
+                        text={token.name || token.symbol || ''}
+                        networkSymbol={asNetworkSymbol('xlm')}
+                        tokenContract={token.contract}
+                    />
+                    <TokenName
+                        text={token.symbol ?? ''}
+                        networkSymbol={asNetworkSymbol('xlm')}
+                        tokenContract={token.contract}
+                        variant="body-sm"
+                        color="contentSecondary"
+                    />
                 </Box>
             </Box>
         </PressableOpacity>

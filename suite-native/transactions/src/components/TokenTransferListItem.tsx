@@ -21,7 +21,6 @@ import {
     type TypedTokenTransfer,
     type WalletAccountTransaction,
     selectAccountTokenInfo,
-    selectIsUnrecognizedToken,
 } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -67,9 +66,6 @@ export const TokenTransferListItemValues = ({
     const token = useSelector((state: TokensRootState) =>
         selectAccountTokenInfo(state, accountKey, tokenTransfer?.contract),
     );
-    const isUnrecognized = useSelector((state: TokensRootState) =>
-        selectIsUnrecognizedToken(state, accountKey, tokenTransfer.contract),
-    );
 
     if (!tokenTransfer?.amount || !tokenTransfer?.symbol) return;
 
@@ -104,7 +100,8 @@ export const TokenTransferListItemValues = ({
                 numberOfLines={1}
                 ellipsizeMode="tail"
                 isPhishingTransaction={isPhishingTransaction}
-                shouldBlurUrls={isUnrecognized}
+                networkSymbol={transaction.symbol}
+                tokenContract={tokenTransfer.contract}
                 variant="body-sm"
                 color="contentSecondary"
             />

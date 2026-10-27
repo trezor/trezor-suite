@@ -1,9 +1,5 @@
 import { useSelector } from 'react-redux';
 
-import {
-    type TokenDefinitionsRootState,
-    selectIsSpecificCoinDefinitionKnown,
-} from '@suite-common/token-definitions';
 import { type FiatRatesRootState, type WalletSettingsRootState } from '@suite-common/wallet-core';
 import {
     ExactTokenAmountFormatter,
@@ -36,9 +32,6 @@ export const TransactionDetailTokenAmount = ({
     const { applyStyle } = useNativeStyles();
     const isFailedTx = transaction.type === 'failed';
     const signValue = getTransactionValueSign(tokenTransfer.type);
-    const isRecognized = useSelector((state: TokenDefinitionsRootState) =>
-        selectIsSpecificCoinDefinitionKnown(state, transaction.symbol, tokenTransfer.contract),
-    );
 
     return (
         <>
@@ -53,7 +46,8 @@ export const TransactionDetailTokenAmount = ({
             <ExactTokenAmountFormatter
                 value={convertTokenValueToDecimal(tokenTransfer.amount, tokenTransfer.decimals)}
                 tokenSymbol={tokenTransfer.symbol ?? null}
-                shouldBlurUrls={!isRecognized}
+                networkSymbol={transaction.symbol}
+                tokenContract={tokenTransfer.contract}
                 maxDisplayedDecimals={tokenTransfer.decimals}
                 variant="headline-md"
                 color="contentPrimary"

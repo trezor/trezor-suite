@@ -1,5 +1,6 @@
 import { type CryptoAmountFormatterFormatStyle, useFormatters } from '@suite-common/formatters';
-import { type TokenSymbol } from '@suite-common/wallet-types';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type TokenAddress, type TokenSymbol } from '@suite-common/wallet-types';
 import { type TextProps } from '@suite-native/atoms';
 
 import { type FormatterProps } from '../types';
@@ -10,8 +11,8 @@ export type TokenAmountFormatterCommonProps = {
     tokenSymbol: TokenSymbol | null;
     isDiscreetText?: boolean;
     isPhishingTransaction?: boolean;
-    // Mask untrusted symbols by default; callers with token definitions can exempt recognized tokens.
-    shouldBlurUrls?: boolean;
+    networkSymbol?: NetworkSymbol;
+    tokenContract?: TokenAddress;
 } & FormatterProps<DecimalTokenAmount> &
     TextProps;
 
@@ -32,7 +33,8 @@ export const BaseTokenAmountFormatter = ({
     variant = 'body-sm',
     color = 'contentSecondary',
     isPhishingTransaction = false,
-    shouldBlurUrls = true,
+    networkSymbol,
+    tokenContract,
     formatStyle,
     ...rest
 }: BaseTokenAmountFormatterProps) => {
@@ -55,7 +57,8 @@ export const BaseTokenAmountFormatter = ({
             variant={variant}
             color={color}
             isForcedDiscreetMode={isPhishingTransaction}
-            shouldBlurUrls={shouldBlurUrls}
+            shouldBlurUrls
+            token={networkSymbol === undefined ? undefined : { networkSymbol, tokenContract }}
             {...rest}
         />
     );

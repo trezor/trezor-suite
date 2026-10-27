@@ -2,19 +2,14 @@ import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type Account, type TokenInfoBranded } from '@suite-common/wallet-types';
-import { BlurUrls } from '@suite-native/atoms';
 import {
     CompactTokenAmountFormatter,
+    TokenName,
     TokenToFiatAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
-import {
-    type TokensRootState,
-    getTokenName,
-    selectAccountTokenSymbol,
-    selectIsUnrecognizedToken,
-} from '@suite-native/tokens';
+import { type TokensRootState, getTokenName, selectAccountTokenSymbol } from '@suite-native/tokens';
 
 import { AccountsListItemBase } from './AccountsListItemBase';
 
@@ -43,9 +38,6 @@ export const AccountsListTokenItem = ({
     const tokenSymbol = useSelector((state: TokensRootState) =>
         selectAccountTokenSymbol(state, account.key, token.contract),
     );
-    const isUnrecognized = useSelector((state: TokensRootState) =>
-        selectIsUnrecognizedToken(state, account.key, token.contract),
-    );
     const balance = token.balance ?? '0';
     const tokenName = getTokenName(token.name);
 
@@ -63,7 +55,13 @@ export const AccountsListTokenItem = ({
                     showNetworkIcon
                 />
             }
-            title={isUnrecognized ? <BlurUrls text={tokenName} /> : tokenName}
+            title={
+                <TokenName
+                    text={tokenName}
+                    networkSymbol={account.symbol}
+                    tokenContract={token.contract}
+                />
+            }
             badges={badges}
             mainValue={
                 showFiatValue && (
@@ -78,7 +76,8 @@ export const AccountsListTokenItem = ({
                 <CompactTokenAmountFormatter
                     value={asDecimalTokenAmount(balance)}
                     tokenSymbol={tokenSymbol}
-                    shouldBlurUrls={isUnrecognized}
+                    networkSymbol={account.symbol}
+                    tokenContract={token.contract}
                     tokenDecimals={token.decimals}
                     numberOfLines={1}
                     adjustsFontSizeToFit

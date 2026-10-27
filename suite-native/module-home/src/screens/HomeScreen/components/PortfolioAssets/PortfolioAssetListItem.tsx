@@ -13,17 +13,14 @@ import {
     selectWalletAssetTokenSymbol,
 } from '@suite-common/assets';
 import { useFormatters } from '@suite-common/formatters';
-import {
-    type TokenDefinitionsRootState,
-    selectIsSpecificCoinDefinitionKnown,
-} from '@suite-common/token-definitions';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { areBaseCurrencyAmountsEqual } from '@suite-common/wallet-types';
-import { BlurUrls, Box, HStack, PressableOpacity, Text, VStack } from '@suite-native/atoms';
+import { Box, HStack, PressableOpacity, Text, VStack } from '@suite-native/atoms';
 import {
     BaseCurrencyAmountFormatter,
     CompactCryptoAmountFormatter,
     CompactTokenAmountFormatter,
+    TokenName,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
@@ -59,12 +56,6 @@ export const PortfolioAssetListItem = ({ assetKey }: PortfolioAssetListItemProps
     );
     const tokenSymbol = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetTokenSymbol(state, assetKey),
-    );
-    const isUnrecognized = useSelector(
-        (state: TokenDefinitionsRootState) =>
-            symbol !== undefined &&
-            contractAddress !== undefined &&
-            !selectIsSpecificCoinDefinitionKnown(state, symbol, contractAddress),
     );
     const tokenDecimals = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetTokenDecimals(state, assetKey),
@@ -109,13 +100,13 @@ export const PortfolioAssetListItem = ({ assetKey }: PortfolioAssetListItemProps
             <VStack flex={1} spacing="sp4">
                 <HStack alignItems="center" justifyContent="space-between" spacing="sp8">
                     <Box flex={1}>
-                        <Text variant="body-sm" numberOfLines={1}>
-                            {isUnrecognized && displaySymbol !== undefined ? (
-                                <BlurUrls text={displaySymbol} variant="body-sm" />
-                            ) : (
-                                displaySymbol
-                            )}
-                        </Text>
+                        <TokenName
+                            text={displaySymbol ?? ''}
+                            networkSymbol={symbol}
+                            tokenContract={contractAddress}
+                            variant="body-sm"
+                            numberOfLines={1}
+                        />
                     </Box>
                     <BaseCurrencyAmountFormatter
                         value={fiatValue ?? null}
@@ -133,7 +124,8 @@ export const PortfolioAssetListItem = ({ assetKey }: PortfolioAssetListItemProps
                         <CompactTokenAmountFormatter
                             value={asDecimalTokenAmount(amount)}
                             tokenSymbol={tokenSymbol}
-                            shouldBlurUrls={isUnrecognized}
+                            networkSymbol={symbol}
+                            tokenContract={contractAddress}
                             tokenDecimals={tokenDecimals}
                             variant="body-xs"
                             color="contentTertiary"

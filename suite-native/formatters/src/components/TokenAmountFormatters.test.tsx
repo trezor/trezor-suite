@@ -1,5 +1,6 @@
-import { type TokenSymbol } from '@suite-common/wallet-types';
-import { fireEvent, renderWithBasicProvider } from '@suite-native/test-utils';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { type TokenSymbol, toTokenAddress } from '@suite-common/wallet-types';
+import { fireEvent, renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import {
     CompactTokenAmountFormatter,
@@ -11,6 +12,11 @@ import {
 } from './ExactTokenAmountFormatter';
 import { asDecimalTokenAmount } from '../utils';
 
+const networkSymbol = asNetworkSymbol('eth');
+const knownContract = toTokenAddress('0x0000000000000000000000000000000000000001');
+const unknownContract = toTokenAddress('0x0000000000000000000000000000000000000002');
+const preloadedState = { tokenDefinitions: { eth: { coin: { data: [knownContract] } } } };
+
 jest.mock('@suite-common/discreet-mode', () => ({
     useDiscreetMode: () => ({
         isDiscreetMode: false,
@@ -21,12 +27,15 @@ jest.mock('@suite-common/discreet-mode', () => ({
 // by the caller.
 describe('ExactTokenAmountFormatter', () => {
     const renderExactTokenAmountFormatter = (props: Partial<ExactTokenAmountFormatterProps>) =>
-        renderWithBasicProvider(
+        renderWithStoreProvider(
             <ExactTokenAmountFormatter
+                networkSymbol={networkSymbol}
+                tokenContract={unknownContract}
                 tokenSymbol={'USDC' as TokenSymbol}
                 value={asDecimalTokenAmount('1234.56')}
                 {...props}
             />,
+            { preloadedState },
         );
 
     it('should render formatted value', async () => {
@@ -63,10 +72,10 @@ describe('ExactTokenAmountFormatter', () => {
         expect(getByLabelText('1,234.56 claim.example')).toBeOnTheScreen();
     });
 
-    it('keeps a recognized symbol readable when masking is disabled', async () => {
+    it('keeps a recognized symbol readable from its network and contract', async () => {
         const { getByTestId, queryByLabelText } = await renderExactTokenAmountFormatter({
             tokenSymbol: 'known.example' as TokenSymbol,
-            shouldBlurUrls: false,
+            tokenContract: knownContract,
         });
 
         expect(getByTestId('plain-text')).toHaveTextContent('1,234.56 known.example');
@@ -76,12 +85,15 @@ describe('ExactTokenAmountFormatter', () => {
 
 describe('CompactTokenAmountFormatter', () => {
     const renderCompactTokenAmountFormatter = (props: Partial<CompactTokenAmountFormatterProps>) =>
-        renderWithBasicProvider(
+        renderWithStoreProvider(
             <CompactTokenAmountFormatter
+                networkSymbol={networkSymbol}
+                tokenContract={unknownContract}
                 tokenSymbol={'USDC' as TokenSymbol}
                 value={asDecimalTokenAmount('1234.56')}
                 {...props}
             />,
+            { preloadedState },
         );
 
     it('should render compact formatted value', async () => {

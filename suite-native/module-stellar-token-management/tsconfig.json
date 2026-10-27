@@ -21,6 +21,7 @@
         { "path": "../alerts" },
         { "path": "../atoms" },
         { "path": "../confirm-on-trezor" },
+        { "path": "../formatters" },
         { "path": "../forms" },
         { "path": "../icons" },
         { "path": "../intl" },

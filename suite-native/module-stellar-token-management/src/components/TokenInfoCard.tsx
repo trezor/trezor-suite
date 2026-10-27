@@ -1,13 +1,9 @@
 import { Pressable } from 'react-native';
-import { useSelector } from 'react-redux';
 
-import {
-    type TokenDefinitionsRootState,
-    selectIsSpecificCoinDefinitionKnown,
-} from '@suite-common/token-definitions';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
-import { BlurUrls, Card, HStack, Text, VStack } from '@suite-native/atoms';
+import { Card, HStack, Text, VStack } from '@suite-native/atoms';
+import { TokenName } from '@suite-native/formatters';
 import { Icon, TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
@@ -32,11 +28,6 @@ export const TokenInfoCard = ({
     onPress,
 }: TokenInfoCardProps) => {
     const { applyStyle } = useNativeStyles();
-    const isRecognized = useSelector(
-        (state: TokenDefinitionsRootState) =>
-            iconContractAddress !== undefined &&
-            selectIsSpecificCoinDefinitionKnown(state, asNetworkSymbol('xlm'), iconContractAddress),
-    );
 
     return (
         <Pressable onPress={onPress}>
@@ -59,11 +50,11 @@ export const TokenInfoCard = ({
                                     tokenSymbol={tokenName}
                                     size="extraSmall"
                                 />
-                                {isRecognized ? (
-                                    <Text variant="body-md">{tokenName}</Text>
-                                ) : (
-                                    <BlurUrls text={tokenName} />
-                                )}
+                                <TokenName
+                                    text={tokenName}
+                                    networkSymbol={asNetworkSymbol('xlm')}
+                                    tokenContract={iconContractAddress}
+                                />
                             </HStack>
                             <Text variant="body-md">{issuerDomain}</Text>
                         </VStack>

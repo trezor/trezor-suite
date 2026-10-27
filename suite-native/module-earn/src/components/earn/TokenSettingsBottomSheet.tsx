@@ -25,7 +25,6 @@ import {
 import { type AccountKey, type TokenAddress, toTokenSymbol } from '@suite-common/wallet-types';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import {
-    BlurUrls,
     BottomSheetModal,
     Box,
     Button,
@@ -41,6 +40,7 @@ import {
     CoinToFiatAmountFormatter,
     ExactCryptoAmountFormatter,
     ExactTokenAmountFormatter,
+    TokenName,
     TokenToFiatAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
@@ -234,11 +234,12 @@ export const TokenSettingsBottomSheet = forwardRef(
             <BottomSheetModal
                 ref={ref}
                 title={
-                    isUnrecognized ? (
-                        <BlurUrls text={tokenTitle} variant="headline-sm" />
-                    ) : (
-                        tokenTitle
-                    )
+                    <TokenName
+                        text={tokenTitle}
+                        networkSymbol={symbol}
+                        tokenContract={tokenContract}
+                        variant="headline-sm"
+                    />
                 }
                 isCloseDisplayed
             >
@@ -289,7 +290,8 @@ export const TokenSettingsBottomSheet = forwardRef(
                                     <VStack spacing={0} alignItems="flex-end">
                                         {tokenContract ? (
                                             <ExactTokenAmountFormatter
-                                                shouldBlurUrls={isUnrecognized}
+                                                networkSymbol={symbol}
+                                                tokenContract={tokenContract}
                                                 value={asDecimalTokenAmount(tokenBalance)}
                                                 tokenSymbol={tokenSymbol}
                                                 variant="body-sm"
