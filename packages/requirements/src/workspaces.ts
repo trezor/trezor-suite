@@ -14,6 +14,28 @@ export type WorkspaceEntry = {
 const workspacesCache = new Map<string, ReadonlyArray<WorkspaceEntry>>();
 const workspaceDirectoryMapCache = new Map<string, ReadonlyMap<string, string>>();
 
+/**
+ * Parses `yarn workspaces list --json` output (one object per line), root workspace included.
+ * Workspace dirs are resolved against `repoRoot`; a relative `repoRoot` is resolved against the
+ * process cwd first.
+ */
+export const parseYarnWorkspacesList = (
+    output: string,
+    repoRoot: string,
+): ReadonlyArray<WorkspaceEntry> => {
+    const root = resolve(repoRoot);
+
+    return output
+        .trim()
+        .split('\n')
+        .filter(Boolean)
+        .map(line => JSON.parse(line) as YarnWorkspaceInfo)
+        .map(workspace => ({
+            name: workspace.name,
+            dir: resolve(root, workspace.location),
+        }));
+};
+
 export const listAllWorkspaces = (repoRoot: string): ReadonlyArray<WorkspaceEntry> => {
     const cacheKey = resolve(repoRoot);
     const cached = workspacesCache.get(cacheKey);
@@ -35,15 +57,7 @@ export const listAllWorkspaces = (repoRoot: string): ReadonlyArray<WorkspaceEntr
         throw new Error(`Failed to list workspaces in ${cacheKey}: ${message}`, { cause: error });
     }
 
-    const workspaces = rawOutput
-        .trim()
-        .split('\n')
-        .filter(Boolean)
-        .map(line => JSON.parse(line) as YarnWorkspaceInfo)
-        .map(workspace => ({
-            name: workspace.name,
-            dir: resolve(cacheKey, workspace.location),
-        }));
+    const workspaces = parseYarnWorkspacesList(rawOutput, cacheKey);
 
     workspacesCache.set(cacheKey, workspaces);
 
