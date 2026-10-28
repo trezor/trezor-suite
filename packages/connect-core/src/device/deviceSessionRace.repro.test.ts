@@ -9,20 +9,17 @@
  * different session arrives before our acquire settles. `acquire()`'s
  * `waitAndCompareSession` then rejects with `SESSION_WRONG_PREVIOUS`.
  *
- * CHARACTERIZATION: this test pins the **current, buggy** behaviour.
- * `Device.updateDescriptor` (the transport-event handler) does
+ * ROOT CAUSE: `Device.updateDescriptor` (the transport-event handler) did
  * `await Promise.all([this.acquirePromise, this.releasePromise])`. It only needs
- * to wait for those to *settle* before reading `sessionAcquired`, but
- * `Promise.all` re-raises the acquire rejection. `updateDescriptor` is invoked
- * fire-and-forget from `onTransportDeviceEvent` — its returned promise is
- * discarded by the emitter — so under this interleaving two of its invocations
- * reject (one per session-changed event that observes the still-pending acquire)
- * on a path with no `catch`, i.e. as unhandled rejections. The run path already
- * handles the same rejection; the event path must not re-raise it.
+ * to wait for those to *settle* before reading `sessionAcquired`, but `Promise.all`
+ * re-raises the acquire rejection. `updateDescriptor` is invoked fire-and-forget
+ * from `onTransportDeviceEvent`, so that rejection is unhandled (two of them here,
+ * one per session-changed event that observes the still-pending acquire). The run
+ * path already handles the same rejection; the event path must not re-raise it.
  *
- * The expectation below records those two rejections as the behaviour of the
- * tree as it stands today, so the change in behaviour is visible in the commit
- * that fixes it.
+ * FIX: `Promise.allSettled` in `updateDescriptor` (Device.ts). This test asserts
+ * no `updateDescriptor` invocation rejects under the interleaving; it fails before
+ * the fix (2 rejections) and passes after.
  */
 import { noopCreateLogger } from '@trezor/logger';
 import { createDeferred } from '@trezor/utils';
@@ -48,7 +45,7 @@ describe('Device session-change race (INV-2 liveness)', () => {
         jest.restoreAllMocks();
     });
 
-    it('rejects updateDescriptor when the session is taken elsewhere mid-acquire', async () => {
+    it('does not leak an unhandled rejection when the session is taken elsewhere mid-acquire', async () => {
         const transport = createControllableTransport(PATH);
         const device = new Device({
             id: 'repro' as any,
@@ -62,19 +59,13 @@ describe('Device session-change race (INV-2 liveness)', () => {
             undefined as any,
         );
 
-        // Record the outcome of every promise the transport-event handler
-        // (updateDescriptor) returns — those are the fire-and-forget promises that
-        // leak. The handler is attached eagerly so the rejections this test
-        // documents are observed here rather than failing the suite as unhandled
-        // rejections before the assertion is even reached.
-        const descriptorOutcomes: string[] = [];
+        // Capture every promise the transport-event handler (updateDescriptor)
+        // returns — those are the fire-and-forget promises that would leak.
+        const descriptorPromises: Promise<unknown>[] = [];
         const origUpdate = (device as any).updateDescriptor.bind(device);
         jest.spyOn(device as any, 'updateDescriptor').mockImplementation((...a: any[]) => {
             const p = origUpdate(...a);
-            p.then(
-                () => descriptorOutcomes.push('fulfilled'),
-                (error: Error) => descriptorOutcomes.push(`rejected: ${error.message}`),
-            );
+            descriptorPromises.push(p);
 
             return p;
         });
@@ -97,10 +88,9 @@ describe('Device session-change race (INV-2 liveness)', () => {
         await runP;
         await flush();
 
-        const rejected = descriptorOutcomes.filter(outcome => outcome !== 'fulfilled');
-        expect(rejected).toEqual([
-            'rejected: wrong previous session',
-            'rejected: wrong previous session',
-        ]);
+        const rejected = (await Promise.allSettled(descriptorPromises)).filter(
+            r => r.status === 'rejected',
+        );
+        expect(rejected).toEqual([]);
     });
 });
