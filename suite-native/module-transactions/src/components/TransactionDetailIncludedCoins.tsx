@@ -1,3 +1,6 @@
+import { useSelector } from 'react-redux';
+
+import { type AccountsRootState, selectIsAccountUtxoBased } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import {
     BottomSheetModal,
@@ -6,9 +9,12 @@ import {
     IconCircle,
     PressableOpacity,
     Text,
+    VStack,
     useBottomSheetModal,
 } from '@suite-native/atoms';
+import { TransactionIdFormatter } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
+import { Translation, useTranslate } from '@suite-native/intl';
 import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
 import { useNativeStyles } from '@trezor/styles-native';
 
@@ -61,6 +67,11 @@ export const TransactionDetailIncludedCoins = ({
 }: TransactionDetailIncludedCoinsProps) => {
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
 
+    const isAccountUtxoBased = useSelector((state: AccountsRootState) =>
+        selectIsAccountUtxoBased(state, accountKey),
+    );
+    const { translate } = useTranslate();
+
     const isTokenTransactionDetail = !!tokenTransfer;
 
     const transactionTokensCount = transaction.tokens.length;
@@ -68,8 +79,12 @@ export const TransactionDetailIncludedCoins = ({
         ? transactionTokensCount - 1
         : transactionTokensCount;
 
-    const sheetTitle = `${coinsIncludedCount} coin${coinsIncludedCount > 1 ? 's' : ''} included`;
-    const sheetSubtitle = `Transaction #${transaction.txid}`;
+    const sheetTitle = translate(
+        isAccountUtxoBased
+            ? 'transactions.detail.coinsIncluded'
+            : 'transactions.detail.tokensIncluded',
+        { count: coinsIncludedCount },
+    );
 
     const includedTokens = isTokenTransactionDetail
         ? transaction.tokens.filter(
@@ -89,7 +104,14 @@ export const TransactionDetailIncludedCoins = ({
             <BottomSheetModal
                 ref={bottomSheetRef}
                 title={sheetTitle}
-                subtitle={sheetSubtitle}
+                subtitle={
+                    <VStack spacing="sp1">
+                        <Text>
+                            <Translation id="transactions.detail.transaction" />
+                        </Text>
+                        <TransactionIdFormatter value={transaction.txid} color="contentPrimary" />
+                    </VStack>
+                }
                 isCloseDisplayed
             >
                 {isEthereumCoinDisplayed && (
