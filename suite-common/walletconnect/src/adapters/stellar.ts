@@ -70,6 +70,7 @@ const stellarSignXDRThunk = createThunk<
             throw new Error('Account not found');
         }
 
+        const deferred = trezorConnectPopupActions.createPopupCallDeferred();
         dispatch(
             trezorConnectPopupActions.connectPopupCallThunk({
                 method: 'stellarSignTransaction',
@@ -87,10 +88,11 @@ const stellarSignXDRThunk = createThunk<
                         appIcon: session.peer.metadata.icons?.[0],
                     },
                 },
+                responseId: deferred.id,
             }),
         );
 
-        const response = await trezorConnectPopupActions.getPopupCallDeferred(true).promise;
+        const response = await deferred.promise;
         if (!response.success) {
             console.error('stellar_signXDR error', response);
             throw new Error('Stellar signing error');
