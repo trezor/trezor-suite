@@ -75,7 +75,10 @@ export class SessionsClient extends TypedEmitter<{
         return this.request({ type: 'getPathBySession', payload });
     }
     public dispose() {
+        this.background.off('descriptors', this.onDescriptors);
+        this.background.off('releaseRequest', this.onReleaseRequest);
         this.removeAllListeners('descriptors');
+        this.removeAllListeners('releaseRequest');
 
         return this.request({ type: 'dispose' });
     }
