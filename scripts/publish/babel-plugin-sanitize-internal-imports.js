@@ -1,10 +1,11 @@
 import { isWorkerUrl } from './is-worker-url.js';
 
-// Mirrors the specifier sanitizeInternalImports rewrites; non-global so .test() stays stateless.
-const internalSrcSpecifier = /@trezor\/[^/]+\/src/;
+// Single source for the specifier sanitizeInternalImports rewrites; non-global so .test() here
+// stays stateless (a /g/ regexp carries lastIndex across calls).
+const internalSrcSpecifier = /@trezor\/([^/]+)\/src/;
 
 const sanitizeInternalImports = (src, moduleType) => {
-    const searchValue = new RegExp('@trezor/([^/]+)/src', 'g');
+    const searchValue = new RegExp(internalSrcSpecifier.source, 'g');
 
     if (moduleType === 'cjs' && searchValue.test(src)) {
         throw new Error(
