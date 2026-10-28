@@ -1,5 +1,5 @@
 import { Translation, useTranslation } from '@suite/intl';
-import { gotoThunk } from '@suite/router';
+import { gotoThunk, selectSettingsBackRoute } from '@suite/router';
 import {
     selectWalletAssetContractAddress,
     selectWalletAssetDisplaySymbol,
@@ -19,7 +19,11 @@ import { selectRoutedAssetKey } from 'src/views/home/AssetDetail/selectRoutedAss
 
 const AssetDetailBackButton = () => {
     const { dispatch } = useServices(injectDispatch);
+    const previousRoute = useSelector(selectSettingsBackRoute);
     const { translationString } = useTranslation();
+
+    const goBack = () =>
+        dispatch(gotoThunk({ routeName: previousRoute.name, params: previousRoute.params }));
 
     return (
         <IconButton
@@ -27,7 +31,7 @@ const AssetDetailBackButton = () => {
             intent="neutral"
             priority="secondary"
             size="large"
-            onClick={() => dispatch(gotoThunk({ routeName: 'suite-index' }))}
+            onClick={goBack}
             data-testid="@asset-detail/back"
             aria-label={translationString('TR_BACK')}
             tooltip={{ content: <Translation id="TR_BACK" /> }}
