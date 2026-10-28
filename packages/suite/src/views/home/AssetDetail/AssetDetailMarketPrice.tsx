@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
 import { Translation } from '@suite/intl';
+import { AssetPriceChart } from '@suite/price-chart';
 import { selectWalletAssetContractAddress, selectWalletAssetSymbol } from '@suite-common/assets';
 import {
     type WalletAssetKey,
@@ -56,24 +57,27 @@ export const AssetDetailMarketPrice = ({ assetKey }: AssetDetailMarketPriceProps
 
     return (
         <Card data-testid="@asset-detail/market-price">
-            <Column gap={8} alignItems="flex-start">
-                <Text typographyStyle="body-md" intent="neutral" priority="secondary">
-                    <Translation id="TR_ASSET_DETAIL_MARKET_PRICE" />
-                </Text>
-                <HomeTotalBalance
-                    fiatValue={price}
-                    isExact
-                    data-testid="@asset-detail/market-price/fiat-amount"
-                />
-                {weekChange !== undefined && (
-                    <HomeBalanceChange
-                        period={<Translation id="TR_HOME_ASSET_WEEK_PERIOD" />}
-                        change={weekChange.change}
-                        changePercent={weekChange.changePercent}
+            <Column gap={16} alignItems="stretch">
+                <Column gap={8} alignItems="flex-start">
+                    <Text typographyStyle="body-md" intent="neutral" priority="secondary">
+                        <Translation id="TR_ASSET_DETAIL_MARKET_PRICE" />
+                    </Text>
+                    <HomeTotalBalance
+                        fiatValue={price}
                         isExact
-                        data-testid="@asset-detail/market-price/week-change"
+                        data-testid="@asset-detail/market-price/fiat-amount"
                     />
-                )}
+                    {weekChange !== undefined && (
+                        <HomeBalanceChange
+                            period={<Translation id="TR_HOME_ASSET_WEEK_PERIOD" />}
+                            change={weekChange.change}
+                            changePercent={weekChange.changePercent}
+                            isExact
+                            data-testid="@asset-detail/market-price/week-change"
+                        />
+                    )}
+                </Column>
+                <AssetPriceChart networkSymbol={symbol} tokenContract={contractAddress} />
             </Column>
         </Card>
     );

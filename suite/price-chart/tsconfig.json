@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/formatters"
+        },
+        {
             "path": "../../suite-common/price-chart"
         },
         {
@@ -14,6 +17,8 @@
         {
             "path": "../../suite-common/wallet-types"
         },
-        { "path": "../../packages/components" }
+        { "path": "../ui-animations" },
+        { "path": "../../packages/components" },
+        { "path": "../../packages/utils" }
     ]
 }
