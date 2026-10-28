@@ -3,7 +3,7 @@ import { type Locator, type Page } from '@playwright/test';
 import { step } from '../../common';
 import { expect } from '../../testExtends/customMatchers';
 
-type TronStakingToastType = 'tx-staked' | 'tx-unstaked' | 'tx-withdrawn';
+type TronStakingToastType = 'tx-staked' | 'tx-unstaked' | 'tx-withdrawn' | 'tx-claimed';
 
 export class TronStakingSection {
     // The flow advances only after the app re-fetches the account and sees the broadcast
@@ -42,6 +42,12 @@ export class TronStakingSection {
     readonly withdrawAmount: Locator;
     readonly withdrawContinueButton: Locator;
     readonly reviewWithdrawNote: Locator;
+
+    // claim flow
+    readonly claimTitle: Locator;
+    readonly claimAmount: Locator;
+    readonly claimContinueButton: Locator;
+    readonly reviewClaimNote: Locator;
 
     // vote step
     readonly remainingVotes: Locator;
@@ -104,6 +110,7 @@ export class TronStakingSection {
     readonly summarySuppliedAmount: Locator;
     readonly summaryUnstakedAmount: Locator;
     readonly summaryWithdrawnAmount: Locator;
+    readonly summaryClaimedAmount: Locator;
     readonly summaryResourceReduction: Locator;
     readonly backToOverviewButton: Locator;
 
@@ -136,6 +143,9 @@ export class TronStakingSection {
     readonly withdrawReadyBanner: Locator;
     readonly withdrawReadyDescription: Locator;
     readonly withdrawReadyButton: Locator;
+    readonly rewardsCard: Locator;
+    readonly rewardsAmount: Locator;
+    readonly claimButton: Locator;
     readonly resourceValue = (resource: 'bandwidth' | 'energy') =>
         this.page.getByTestId(`@staking/tron-resources-card/${resource}`);
 
@@ -178,6 +188,13 @@ export class TronStakingSection {
         );
         this.reviewWithdrawNote = this.page
             .getByTestId('@modal/output-tron-withdraw')
+            .getByTestId('@modal/output-value');
+
+        this.claimTitle = this.page.getByTestId('@staking/tron-claim/title');
+        this.claimAmount = this.page.getByTestId('@staking/tron-claim/amount');
+        this.claimContinueButton = this.page.getByTestId('@staking/tron-claim/continue-button');
+        this.reviewClaimNote = this.page
+            .getByTestId('@modal/output-tron-claim')
             .getByTestId('@modal/output-value');
 
         this.remainingVotes = this.page.getByTestId('@staking/tron-vote/remaining-votes');
@@ -244,6 +261,9 @@ export class TronStakingSection {
         this.summaryWithdrawnAmount = this.summaryCard.getByTestId(
             '@staking/tron-complete/withdrawn-amount',
         );
+        this.summaryClaimedAmount = this.summaryCard.getByTestId(
+            '@staking/tron-complete/claimed-amount',
+        );
         this.summaryResourceReduction = this.summaryCard.getByTestId(
             '@staking/tron-complete/resource-reduction',
         );
@@ -274,6 +294,9 @@ export class TronStakingSection {
         this.withdrawReadyButton = this.withdrawReadyBanner.getByTestId(
             '@staking/tron-withdraw-banner/withdraw-button',
         );
+        this.rewardsCard = this.page.getByTestId('@staking/tron-rewards-card/container');
+        this.rewardsAmount = this.rewardsCard.getByTestId('@staking/tron-rewards-card/amount');
+        this.claimButton = this.rewardsCard.getByTestId('@staking/tron-rewards-card/claim-button');
     }
 
     // The confirmed toast replaces the pending one for the same txid; dismissing the pending toast
