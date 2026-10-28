@@ -1,7 +1,10 @@
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
+import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import fixtures from './__fixtures__/deviceReducer';
-import { prepareDeviceReducer } from './deviceReducer';
+import { deviceActions } from './deviceActions';
+import { deviceReducerInitialState, prepareDeviceReducer } from './deviceReducer';
 
 const deviceReducer = prepareDeviceReducer({
     actionTypes: {
@@ -69,6 +72,40 @@ describe('DEVICE.DISCONNECT', () => {
                 expect(device).toMatchObject(expected);
             });
         });
+    });
+});
+
+describe('addAuthorizedDevice', () => {
+    it('does not inherit wallet specific data from the passed device', () => {
+        const standardWallet = mockSuiteDevice({
+            instance: 1,
+            connected: true,
+            state: { staticSessionId: 'standard@device-id:1' },
+            useEmptyPassphrase: true,
+            walletNumber: 1,
+            passwords: { 1: { fileName: 'file', aesKey: 'aes-key', key: 'key' } },
+            temporaryRemember: true,
+        });
+        if (!isDeviceAcquired(standardWallet)) throw new Error('Expected an acquired device');
+
+        const state = deviceReducer(
+            { ...deviceReducerInitialState, devices: [standardWallet] },
+            deviceActions.addAuthorizedDevice({
+                device: standardWallet,
+                state: { staticSessionId: 'passphrase@device-id:2' },
+                useEmptyPassphrase: false,
+            }),
+        );
+
+        expect(state.devices[0]).toEqual(standardWallet);
+        expect(state.devices[1]).toMatchObject({
+            state: { staticSessionId: 'passphrase@device-id:2' },
+            useEmptyPassphrase: false,
+            walletNumber: 1,
+            metadata: {},
+            temporaryRemember: false,
+        });
+        expect(state.devices[1]?.passwords).toEqual({});
     });
 });
 

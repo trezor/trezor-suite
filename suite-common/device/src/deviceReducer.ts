@@ -340,6 +340,8 @@ const addAuthorizedDevice = (
     const newDevice = {
         ...oldDevice,
         metadata: {},
+        passwords: {},
+        temporaryRemember: false,
         instance: deviceUtils.getNewInstanceNumber(draft.devices, device),
         walletNumber: deviceUtils.getNewWalletNumber(draft.devices, device),
         useEmptyPassphrase,
