@@ -1,0 +1,33 @@
+{
+    "name": "@suite-common/refer-a-friend",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "type": "module",
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "test:unit": "yarn g:jest",
+        "type-check": "yarn g:tsc --build"
+    },
+    "dependencies": {
+        "@noble/curves": "^2.0.1",
+        "@noble/hashes": "^2.0.1",
+        "@reduxjs/toolkit": "2.13.0",
+        "@suite-common/device": "workspace:*",
+        "@suite-common/platform-encryption": "workspace:*",
+        "@suite-common/suite-types": "workspace:*",
+        "@trezor/connect": "workspace:*",
+        "@trezor/connect-common": "workspace:*",
+        "@trezor/env-utils": "workspace:*",
+        "@trezor/redux-utils": "workspace:*",
+        "@trezor/type-utils": "workspace:*",
+        "@trezor/urls": "workspace:*",
+        "@trezor/utils": "workspace:*"
+    },
+    "devDependencies": {
+        "@trezor/dependency-injection": "workspace:*"
+    }
+}
