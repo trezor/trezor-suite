@@ -6,6 +6,7 @@ import { type SuiteRouterHistoryDep } from '@suite/router';
 import { type ReduxLoggerControlDep } from '@suite/settings';
 import { type TransportsDep } from '@suite-common/connect-init';
 import { type CommonServices } from '@suite-common/extra-dependencies';
+import { type ReferAFriendDep } from '@suite-common/refer-a-friend';
 import { type TransactionRetrieverDep } from '@suite-common/wallet-core';
 import { type DbDep } from '@trezor/suite';
 
@@ -17,5 +18,6 @@ export type SuiteServices = CommonServices &
     SuiteRouterHistoryDep &
     TransportsDep &
     BluetoothDep &
+    ReferAFriendDep &
     TransactionRetrieverDep &
     ReduxLoggerControlDep;
