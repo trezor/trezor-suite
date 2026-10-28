@@ -3,6 +3,7 @@ import { LinearTransition } from 'react-native-reanimated';
 
 import { type Rating, ratingOptions } from '@suite-common/feedback';
 import { AnimatedBox, Card, HStack, Text, VStack, useBottomSheetModal } from '@suite-native/atoms';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import type { NativeTypographyStyle } from '@trezor/theme';
 
 import { EmojiRatingButton } from './EmojiRatingButton';
@@ -10,6 +11,11 @@ import { FeedbackFormSheet } from './FeedbackFormSheet';
 import { FeedbackSuccessMessage } from './FeedbackSuccessMessage';
 
 type FeedbackCardView = 'form' | 'success';
+
+const ratingRowStyle = prepareNativeStyle(() => ({
+    width: '100%',
+    maxWidth: 360,
+}));
 
 export type FeedbackCardProps = {
     heading: ReactNode;
@@ -36,6 +42,7 @@ export const FeedbackCard = ({
     onRatingSelect,
     defaultView = 'form',
 }: FeedbackCardProps) => {
+    const { applyStyle } = useNativeStyles();
     const [rating, setRating] = useState<Rating | undefined>();
     const [feedbackText, setFeedbackText] = useState('');
     const [view, setView] = useState<FeedbackCardView>(defaultView);
@@ -78,7 +85,11 @@ export const FeedbackCard = ({
                 ) : (
                     <VStack spacing="sp16">
                         <Text variant={headingVariant}>{heading}</Text>
-                        <HStack spacing="sp8" justifyContent="space-between">
+                        <HStack
+                            spacing="sp8"
+                            justifyContent="space-between"
+                            style={applyStyle(ratingRowStyle)}
+                        >
                             {ratingOptions.map(({ id, emoji }) => (
                                 <EmojiRatingButton
                                     key={id}

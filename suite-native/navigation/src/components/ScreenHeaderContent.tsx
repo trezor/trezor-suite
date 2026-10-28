@@ -30,17 +30,14 @@ export const ScreenHeaderContent = ({ title, customContent }: ScreenHeaderConten
                 exiting={FadeOut}
                 style={applyStyle(titleContainerStyle)}
             >
-                <Box alignItems="center">
-                    <Text
-                        variant="body-md-strong"
-                        adjustsFontSizeToFit
-                        minimumFontScale={0.8}
-                        numberOfLines={1}
-                        testID="@screen/sub-header/title"
-                    >
-                        {title}
-                    </Text>
-                </Box>
+                <Text
+                    variant="body-md-strong"
+                    textAlign="center"
+                    numberOfLines={1}
+                    testID="@screen/sub-header/title"
+                >
+                    {title}
+                </Text>
             </AnimatedView>
         );
     }
