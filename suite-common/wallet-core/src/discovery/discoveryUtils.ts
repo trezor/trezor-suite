@@ -1,6 +1,7 @@
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { isDirectRpcBackendType } from '@suite-common/wallet-utils';
 import { type DeviceState } from '@trezor/connect';
+import { isSameWallet, isStaticSessionId } from '@trezor/device-utils';
 
 import { type CreateAccountActionProps } from '../accounts/accountsActions';
 
@@ -11,11 +12,22 @@ import { type CreateAccountActionProps } from '../accounts/accountsActions';
 export const shouldFetchAssetsAfterDiscovery = (account: CreateAccountActionProps) =>
     !account.failed && !account.accountInfo.empty && isDirectRpcBackendType(account.backendType);
 
-export const describesSameWallet = (first: DeviceState) => {
-    const firstParsed = first.staticSessionId?.split(':')[0];
+// Two states belong to the same wallet when their `walletDescriptor` matches. Neither the
+// `deviceId` nor the `instance` part of the static session id is compared: connect reports a fresh
+// `deviceId` after the device was wiped and recovered with the same seed, and the instance is a
+// host-side number a newly added hidden wallet always gets anew.
+export const describesSameWallet = (first: DeviceState) => (second?: DeviceState) => {
+    // Bound to locals so that the `isStaticSessionId` predicate narrows them: `StaticSessionId` is
+    // a template-literal type, not a runtime brand, so a persisted value of the wrong shape would
+    // otherwise reach `isSameWallet` and make its `parseStaticSessionId` throw.
+    const firstSessionId = first.staticSessionId;
+    const secondSessionId = second?.staticSessionId;
 
-    return (second?: DeviceState) =>
-        firstParsed ? firstParsed === second?.staticSessionId?.split(':')[0] : false;
+    return (
+        isStaticSessionId(firstSessionId) &&
+        isStaticSessionId(secondSessionId) &&
+        isSameWallet(firstSessionId, secondSessionId)
+    );
 };
 
 /**

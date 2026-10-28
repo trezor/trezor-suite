@@ -69,7 +69,7 @@ describe(findDuplicateWallet.name, () => {
         ).toEqual(held.state);
     });
 
-    it('misses a wallet still keyed by the device_id it was authorized with before the reset', () => {
+    it('finds a wallet still keyed by the device_id it was authorized with before the reset', () => {
         const reprovisioned = mockSuiteDevice({ id: 'fresh_device_id' });
         // The entry was attached while the device was wiped and recovered, so the reducer re-keyed
         // it to the fresh `device_id` while its static session id kept the pre-reset one.
@@ -78,14 +78,11 @@ describe(findDuplicateWallet.name, () => {
             state: { staticSessionId: '1stTestnetAddress@device_id:1' },
         });
 
-        // Documents #31883 in the duplicate guard: the comparison keeps the `deviceId`, so the
-        // wallet Suite already holds is not recognized and authorizing it adds a second entry for
-        // the same wallet. Flips in the following commit.
         expect(
             findDuplicateWallet([held, reprovisioned], reprovisioned, {
                 staticSessionId: '1stTestnetAddress@fresh_device_id:1',
             }),
-        ).toBeUndefined();
+        ).toEqual(held.state);
     });
 
     it('keeps the wallets of a second device recovered from the same seed apart', () => {
