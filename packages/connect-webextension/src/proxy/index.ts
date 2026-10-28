@@ -12,6 +12,7 @@ import {
 } from '@trezor/connect-common/src/utils/cancelParams';
 
 let _channel: any;
+let _reconnect: (() => void) | undefined;
 
 const dispose = () => Promise.resolve(undefined);
 
@@ -38,10 +39,14 @@ const init = (settings: ConnectDynamicSettings): Promise<void> => {
         // By connecting again we keep the service worker active.
         cancel();
         _channel = null;
+        _reconnect = undefined;
         init(settings);
     };
 
-    _channel.port.onDisconnect.removeListener(reconnect);
+    if (_reconnect) {
+        _channel.port.onDisconnect.removeListener(_reconnect);
+    }
+    _reconnect = reconnect;
     _channel.port.onDisconnect.addListener(reconnect);
 
     return _channel.init().then(() =>
