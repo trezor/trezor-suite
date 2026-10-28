@@ -13,7 +13,7 @@ import {
     removeStellarContractTokenThunk,
     selectIsStellarContractTokenWatched,
 } from '@suite-common/wallet-core';
-import { type Account, type TokenAddress } from '@suite-common/wallet-types';
+import { type Account, type TokenAddress, toTokenAddress } from '@suite-common/wallet-types';
 import { Column, Row, Table, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { TokenIcon } from '@trezor/product-components';
@@ -26,6 +26,7 @@ import {
     PriceTicker,
     TrendTicker,
 } from 'src/components/suite';
+import { AssetDetailLink } from 'src/components/suite/AssetDetailLink/AssetDetailLink';
 import { TokenUrlBlur } from 'src/components/suite/TokenUrlBlur';
 import { StellarManageTokenModal } from 'src/components/suite/modals/ReduxModal/UserContextModal/StellarManageTokenModal';
 import { useSelector } from 'src/hooks/suite';
@@ -105,14 +106,20 @@ export const TokenRow = ({
             <Table.Row isCollapsed={isCollapsed} data-testid={`@token-row/${token.symbol}`}>
                 <Table.Cell>
                     <Row gap={8}>
-                        <TokenIcon
-                            placeholder={token.name || token.symbol || 'token'}
+                        <AssetDetailLink
                             symbol={account.symbol}
-                            contractAddress={token.contract}
-                            size={24}
-                            shouldTryToFetch={isTokenKnown}
-                        />
-                        {isTokenKnown ? token.name : <TokenUrlBlur text={token.name} />}
+                            contractAddress={toTokenAddress(token.contract)}
+                            gap={8}
+                        >
+                            <TokenIcon
+                                placeholder={token.name || token.symbol || 'token'}
+                                symbol={account.symbol}
+                                contractAddress={token.contract}
+                                size={24}
+                                shouldTryToFetch={isTokenKnown}
+                            />
+                            {isTokenKnown ? token.name : <TokenUrlBlur text={token.name} />}
+                        </AssetDetailLink>
                         {yieldBadge && (
                             <YieldBadge
                                 apy={yieldBadge.apy}
