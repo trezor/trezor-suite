@@ -29,6 +29,13 @@ export type SearchableAccountsListHeaderProps = {
 };
 
 const HEADER_ANIMATION_DURATION = 100;
+const ICON_SIZE = 40;
+
+const titleStyle = prepareNativeStyle(() => ({ flexShrink: 1 }));
+
+const sideActionsStyle = prepareNativeStyle(({ spacings }) => ({
+    minWidth: 2 * ICON_SIZE + spacings.sp8,
+}));
 
 const searchFormContainerStyle = prepareNativeStyle<{ noPaddingTop: boolean }>(
     ({ spacings }, { noPaddingTop }) => ({
@@ -94,7 +101,12 @@ export const SearchableAccountsListHeader = ({
                     exiting={FadeOut.duration(HEADER_ANIMATION_DURATION)}
                 >
                     <HStack alignItems="center">
-                        <HStack flex={1} alignItems="center" spacing="sp8">
+                        <HStack
+                            flex={1}
+                            alignItems="center"
+                            spacing="sp8"
+                            style={applyStyle(sideActionsStyle)}
+                        >
                             {closeActionType && (
                                 <GoBackIcon
                                     closeActionType={closeActionType}
@@ -109,7 +121,11 @@ export const SearchableAccountsListHeader = ({
                                 priority="secondary"
                             />
                         </HStack>
-                        <Text variant="body-md-strong" numberOfLines={1} adjustsFontSizeToFit>
+                        <Text
+                            variant="body-md-strong"
+                            numberOfLines={1}
+                            style={applyStyle(titleStyle)}
+                        >
                             {title}
                         </Text>
                         <HStack
@@ -117,6 +133,7 @@ export const SearchableAccountsListHeader = ({
                             justifyContent="flex-end"
                             alignItems="center"
                             spacing="sp8"
+                            style={applyStyle(sideActionsStyle)}
                         >
                             <NetworkFilterButton filter={networkFilter} />
                             {flowType && (
