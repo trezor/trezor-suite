@@ -18,6 +18,8 @@ export const TradingReceiveAddressPickerScreen = () => {
     return (
         <Screen
             isScrollable={false}
+            noBottomPadding
+            hasBottomInset={false}
             header={
                 <ScreenHeader
                     title={<Translation id="moduleTrading.accountScreen.receiveAddressTitle" />}

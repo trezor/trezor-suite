@@ -33,6 +33,8 @@ export const TradingHistoryScreen = () => {
             }
             isScrollable={false}
             noHorizontalPadding
+            noBottomPadding
+            hasBottomInset={false}
         >
             <TradingHistory onOpenTradeDetail={openTradeDetailScreen} />
         </Screen>
