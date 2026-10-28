@@ -12,7 +12,7 @@ import { useSelector } from 'src/hooks/suite';
 import { ConfirmActionModal } from './ConfirmActionModal';
 import { ConfirmFingerprintModal } from './ConfirmFingerprintModal';
 import { ConfirmPassphraseBeforeAction } from './ConfirmPassphraseBeforeAction';
-import { PassphraseOnDeviceModal } from './PassphraseOnDeviceModal';
+import { EnterPassphraseOnDevice } from './EnterPassphraseOnDevice';
 import { PinModal } from './PinModal';
 import { SignMessageModal } from './SignMessageModal';
 import { ConfirmXpubModal } from '../ConfirmXpubModal';
@@ -44,7 +44,7 @@ export const DeviceContextModal = ({
         // T2T1 firmware
         case UI_EVENTS.PASSPHRASE_ON_DEVICE:
         case 'ButtonRequest_PassphraseEntry':
-            return <PassphraseOnDeviceModal device={device} />;
+            return <EnterPassphraseOnDevice />;
         case 'ButtonRequest_ConfirmOutput':
         case 'ButtonRequest_FeeOverThreshold':
         case 'ButtonRequest_SignTx': {
