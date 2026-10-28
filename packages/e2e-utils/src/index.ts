@@ -9,6 +9,11 @@ export type { RecordedConnection, SocksFault, SocksFaultRule } from './mocks/tor
 export { captureInterceptedGlobals } from './mocks/captureInterceptedGlobals';
 export { DropboxMock } from './mocks/dropbox';
 export { GoogleMock } from './mocks/google';
+export {
+    REFER_A_FRIEND_MOCK_PORT,
+    ReferAFriendMock,
+} from './mocks/referAFriend/referAFriendServer';
+export type { MockReferralScenario } from './mocks/referAFriend/mockReferAFriendData';
 export { GitHubReporterBase, InitializationState } from './githubReporter/gitHubReporterBase';
 export { GitHubProject } from './githubReporter/gitHubProject';
 export { IssueRequests } from './githubReporter/issueRequests';

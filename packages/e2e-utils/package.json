@@ -9,6 +9,7 @@
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "test-health": "tsx ./src/quarantineBot/index.ts",
+        "refer-a-friend-server": "tsx ./src/mocks/referAFriend/startReferAFriendServer.ts",
         "select-tests": "tsx ./src/testCoverage/selectTestsByChangedFiles.ts",
         "build-coverage-map": "tsx ./src/testCoverage/buildCoverageMap.ts",
         "seed-tests": "CURRENTS_PROJECT_ID=iBEsWE yarn pwc --config ./src/quarantineBot/seed/playwright.config.ts",
