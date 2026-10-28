@@ -84,6 +84,7 @@ describe('addAuthorizedDevice', () => {
             useEmptyPassphrase: true,
             walletNumber: 1,
             passwords: { 1: { fileName: 'file', aesKey: 'aes-key', key: 'key' } },
+            remember: true,
             temporaryRemember: true,
         });
         if (!isDeviceAcquired(standardWallet)) throw new Error('Expected an acquired device');
@@ -103,10 +104,44 @@ describe('addAuthorizedDevice', () => {
             useEmptyPassphrase: false,
             walletNumber: 1,
             metadata: {},
+            remember: false,
             temporaryRemember: false,
         });
         expect(state.devices[1]?.passwords).toEqual({});
     });
+
+    it.each([
+        { useEmptyPassphrase: false, passphraseProtection: true, expectedAvailable: true },
+        { useEmptyPassphrase: false, passphraseProtection: false, expectedAvailable: false },
+        { useEmptyPassphrase: true, passphraseProtection: false, expectedAvailable: true },
+        { useEmptyPassphrase: true, passphraseProtection: true, expectedAvailable: true },
+    ])(
+        'derives availability ($expectedAvailable) of the added wallet when useEmptyPassphrase is $useEmptyPassphrase and passphrase protection is $passphraseProtection',
+        ({ useEmptyPassphrase, passphraseProtection, expectedAvailable }) => {
+            // The passed device has the opposite availability, so it can not be inherited.
+            const siblingWallet = mockSuiteDevice(
+                {
+                    instance: 1,
+                    connected: true,
+                    available: !expectedAvailable,
+                    state: { staticSessionId: 'sibling@device-id:1' },
+                },
+                { passphrase_protection: passphraseProtection },
+            );
+            if (!isDeviceAcquired(siblingWallet)) throw new Error('Expected an acquired device');
+
+            const state = deviceReducer(
+                { ...deviceReducerInitialState, devices: [siblingWallet] },
+                deviceActions.addAuthorizedDevice({
+                    device: siblingWallet,
+                    state: { staticSessionId: 'added@device-id:2' },
+                    useEmptyPassphrase,
+                }),
+            );
+
+            expect(state.devices[1]?.available).toBe(expectedAvailable);
+        },
+    );
 });
 
 describe('SUITE.SELECT_DEVICE', () => {

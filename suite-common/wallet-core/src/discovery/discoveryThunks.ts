@@ -164,13 +164,13 @@ export const applyDeviceStatesThunk = createThunk<
                         useEmptyPassphrase,
                     }),
                 );
-                dispatch(deviceActions.setRememberDevice({ device, remember }));
 
                 // select the device after deviceReducer updates it (it's a new object reference)
                 const newlyAddedDevice = selectDeviceByStaticSessionId(getState(), staticSessionId);
                 if (newlyAddedDevice === undefined) {
                     return rejectWithValue('applyDeviceStatesThunk: newly added device not found');
                 }
+                dispatch(deviceActions.setRememberDevice({ device: newlyAddedDevice, remember }));
 
                 return fulfillWithValue({ device: newlyAddedDevice });
             } else {
@@ -181,13 +181,13 @@ export const applyDeviceStatesThunk = createThunk<
                         useEmptyPassphrase,
                     }),
                 );
-                dispatch(deviceActions.setRememberDevice({ device, remember }));
 
-                // select the device after deviceReducer updates it (it's a new object reference)
+                // `device` is another wallet of the same physical device, so find the added one by its static session id.
                 const newlyAddedDevice = selectDeviceByStaticSessionId(getState(), staticSessionId);
                 if (newlyAddedDevice === undefined) {
                     return rejectWithValue('applyDeviceStatesThunk: newly added device not found');
                 }
+                dispatch(deviceActions.setRememberDevice({ device: newlyAddedDevice, remember }));
                 dispatch(selectDeviceThunk({ device: newlyAddedDevice }));
 
                 return fulfillWithValue({ device: newlyAddedDevice });
