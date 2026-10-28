@@ -28,6 +28,7 @@
         "@suite-common/persistent-device-data": "workspace:*",
         "@suite-common/platform-encryption-native": "workspace:*",
         "@suite-common/receive": "workspace:*",
+        "@suite-common/refer-a-friend": "workspace:*",
         "@suite-common/suite-rbf-labels-migrations": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
         "@suite-common/suite-sync-quota-manager": "workspace:*",

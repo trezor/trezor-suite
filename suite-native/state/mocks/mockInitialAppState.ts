@@ -7,6 +7,7 @@ import { logsSliceInitialState } from '@suite-common/logger';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { persistentDeviceDataInitialState } from '@suite-common/persistent-device-data';
 import { receiveInitialState } from '@suite-common/receive';
+import { referAFriendInitialState } from '@suite-common/refer-a-friend';
 import { initialSuiteSyncDataState, initialSuiteSyncState } from '@suite-common/suite-sync';
 import { quotaManagerInitialState } from '@suite-common/suite-sync-quota-manager';
 import { initialThpState } from '@suite-common/thp';
@@ -83,6 +84,7 @@ export const mockInitialAppState = (partialState?: Partial<FullAppState>): FullA
     tokenDefinitions: tokenDefinitionsInitialState,
     walletConnect: walletConnectInitialState,
     suiteSyncQuotaManager: quotaManagerInitialState,
+    referAFriend: referAFriendInitialState,
     featureFeedback: featureFeedbackInitialState,
     persistentDeviceData: persistentDeviceDataInitialState,
 

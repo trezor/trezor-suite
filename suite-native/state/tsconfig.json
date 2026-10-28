@@ -39,6 +39,9 @@
         },
         { "path": "../../suite-common/receive" },
         {
+            "path": "../../suite-common/refer-a-friend"
+        },
+        {
             "path": "../../suite-common/suite-rbf-labels-migrations"
         },
         {
