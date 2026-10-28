@@ -182,12 +182,14 @@ describe('Blockchain Actions', () => {
         it(`onConnect: ${f.description}`, async () => {
             testMocks.setTrezorConnectFixtures(f.connect);
             const store = mockStore(getInitialState(f.initialState as Args));
-            await store.dispatch(onBlockchainConnectThunk(f.symbol));
+            await store.dispatch(onBlockchainConnectThunk(f.info));
             expect(filterThunkActionTypes(store.getActions())).toMatchObject(f.actions);
             expect(TrezorConnect.blockchainEstimateFee).toHaveBeenCalledTimes(
                 f.blockchainEstimateFee,
             );
-            expect(TrezorConnect.blockchainSubscribe).toHaveBeenCalledTimes(f.blockchainSubscribe);
+            expect(TrezorConnect.blockchainSubscribe.mock.calls).toMatchObject(
+                f.blockchainSubscribe,
+            );
         });
     });
 

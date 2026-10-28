@@ -170,7 +170,7 @@ describe('signTransactionThunk', () => {
         expect(pushTransactionMock).toHaveBeenCalledWith({
             tx: SIGNED_TX,
             coin: 'ada',
-            identity: undefined,
+            identity: account.deviceState,
         });
         expect(mockNotifyEarnTransactionBroadcastThunk).toHaveBeenCalledWith(
             expect.objectContaining({ account, txid: TXID, flow: 'stake' }),

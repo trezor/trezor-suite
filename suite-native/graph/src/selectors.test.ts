@@ -180,7 +180,7 @@ describe('selectPortfolioGraphAccountItemsIfDiscoveryIsNotRunning', () => {
             {
                 symbol: 'btc',
                 descriptor: 'descriptor1',
-                identity: undefined,
+                identity: account.deviceState,
                 accountKey: account.key,
                 tokensFilter: [],
             },
@@ -232,7 +232,7 @@ describe('selectPortfolioGraphAccountItemsIfDiscoveryIsNotRunning', () => {
             {
                 symbol: 'btc',
                 descriptor: 'descriptor1',
-                identity: undefined,
+                identity: account.deviceState,
                 accountKey: account.key,
                 tokensFilter: [],
             },
