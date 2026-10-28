@@ -1,4 +1,3 @@
-import type { NetworkSymbol } from '@suite-common/wallet-config';
 import type { Result } from '@trezor/type-utils';
 
 import type {
@@ -27,8 +26,6 @@ export type TransactionStore = {
      */
     setAccounts: (accounts: TransactionStoreAccount[]) => Promise<void>;
     removeAccounts: (accountKeys: string[]) => Promise<void>;
-    /** The networks to keep fresh (the connected ones); the ones left out stop being watched. */
-    watchNetworks: (symbols: NetworkSymbol[]) => Promise<void>;
     requestSync: (params: { accountKeys: string[]; mode: SyncMode }) => Promise<void>;
     getSyncStatus: (accountKeys: string[]) => Promise<AccountSyncStatus[]>;
     selectTransactions: (params: SelectTransactionsParams) => Promise<StoredTransaction[]>;

@@ -22,7 +22,6 @@ import {
     createTransactionStoreCompositionRoot,
     startTransactionStoreRpcHost,
 } from '@suite-common/transaction-store';
-import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 
 import { createBlockchainLinks } from './createBlockchainLinks';
 import { startBufferedPort } from './startBufferedPort';
@@ -37,11 +36,6 @@ const DATABASE_NAME = 'trezor-transaction-store';
 // Larger than a screen's page: the backfill walks the whole history, and fewer requests are faster.
 const PAGE_SIZE = 50;
 const MAX_CONCURRENT_JOBS_PER_NETWORK = 2;
-const FALLBACK_INTERVAL_MS = 60 * 1000;
-
-// As the app's `shouldSubscribeBlocks`: a Solana block comes every ~400 ms, too often to sync on.
-// Inlined, so the worker does not bundle wallet-utils and everything it imports.
-const shouldSubscribeBlocks = (symbol: NetworkSymbol) => getNetworkType(symbol) !== 'solana';
 
 // In a worker, `self` posts to the app without a target origin, unlike a window.
 const workerPort = self as unknown as TransactionStorePort;
@@ -74,21 +68,6 @@ const openSqlite = async (): Promise<OpenedSqlite> => {
     };
 };
 
-/** Re-subscribes a network whose backend changed, so blocks come from the new one. */
-const rewatchNetworks = async (
-    transactionStore: TransactionStore,
-    watchedNetworks: NetworkSymbol[],
-    changedNetworks: NetworkSymbol[],
-) => {
-    const changedWatched = watchedNetworks.filter(symbol => changedNetworks.includes(symbol));
-    if (changedWatched.length === 0) return;
-
-    await transactionStore.watchNetworks(
-        watchedNetworks.filter(symbol => !changedWatched.includes(symbol)),
-    );
-    await transactionStore.watchNetworks(watchedNetworks);
-};
-
 /**
  * Starts the store and serves it to the app; resolves with what stops all of it again, or with
  * `null` if the database is from a newer version.
@@ -102,16 +81,9 @@ const startTransactionStoreWorker = async (): Promise<Dispose | null> => {
         transactionSource: createBlockchainLinkTransactionSource({
             getBlockchainLink: blockchainLinks.get,
             pageSize: PAGE_SIZE,
-            shouldSubscribeBlocks,
         }),
-        startInterval: ({ callback, intervalMs }) => {
-            const interval = setInterval(callback, intervalMs);
-
-            return () => clearInterval(interval);
-        },
         now: () => Date.now(),
         maxConcurrentJobsPerNetwork: MAX_CONCURRENT_JOBS_PER_NETWORK,
-        fallbackIntervalMs: FALLBACK_INTERVAL_MS,
     });
 
     if (!started.success) {
@@ -122,29 +94,17 @@ const startTransactionStoreWorker = async (): Promise<Dispose | null> => {
     }
 
     const engine = started.payload;
-    let watchedNetworks: NetworkSymbol[] = [];
     const disposeEngine = async () => {
         blockchainLinks.disposeAll();
         await engine.dispose();
         close();
     };
-    // The entry needs to know what is watched to re-subscribe on a backend change, and the app's
-    // `dispose` stops the engine here; the worker is terminated right after.
-    const transactionStore: TransactionStore = {
-        ...engine,
-        watchNetworks: symbols => {
-            watchedNetworks = symbols;
-
-            return engine.watchNetworks(symbols);
-        },
-        dispose: disposeEngine,
-    };
+    // The app's `dispose` stops the backends with the engine; the worker is terminated right after.
+    const transactionStore: TransactionStore = { ...engine, dispose: disposeEngine };
 
     const handleCommand = createWorkerMessageHandler<TransactionStoreWorkerCommands>({
-        setBackends: ({ backends }) => {
-            const changedNetworks = blockchainLinks.setBackends(backends);
-            void rewatchNetworks(engine, watchedNetworks, changedNetworks);
-        },
+        // The app asks for a sync of the accounts once their backends are set.
+        setBackends: ({ backends }) => blockchainLinks.setBackends(backends),
     });
     const onWorkerMessage = ({ data }: TransactionStorePortMessage) => handleCommand(data);
     bufferedPort.port.addEventListener('message', onWorkerMessage);
@@ -159,7 +119,6 @@ const startTransactionStoreWorker = async (): Promise<Dispose | null> => {
         bufferedPort.port.removeEventListener('message', onWorkerMessage);
         bufferedPort.dispose();
         await disposeEngine();
-        await started.payload?.dispose();
     };
 };
 

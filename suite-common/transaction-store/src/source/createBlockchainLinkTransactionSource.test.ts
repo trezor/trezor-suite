@@ -29,17 +29,12 @@ const mockAccountInfo = (accountInfo: Partial<AccountInfo>): AccountInfo => ({
 
 const mockClient = (getAccountInfo: BlockchainLinkClient['getAccountInfo']) => ({
     getAccountInfo: mock(getAccountInfo),
-    subscribe: mock<BlockchainLinkClient['subscribe']>(() => Promise.resolve()),
-    unsubscribe: mock<BlockchainLinkClient['unsubscribe']>(() => Promise.resolve()),
-    on: mock<BlockchainLinkClient['on']>(),
-    off: mock<BlockchainLinkClient['off']>(),
 });
 
 const createSource = (client: BlockchainLinkClient | undefined) => {
     const deps = createMockDeps<BlockchainLinkTransactionSourceDeps>({
         pageSize: 25,
         getBlockchainLink: () => client,
-        shouldSubscribeBlocks: symbol => symbol !== asNetworkSymbol('sol'),
     });
 
     return { deps, source: createBlockchainLinkTransactionSource(deps) };
@@ -138,55 +133,5 @@ describe(createBlockchainLinkTransactionSource.name, () => {
             success: false,
             error: 'BackendUnavailable',
         });
-        expect(await source.subscribeBlocks({ symbol: btc, onBlock: () => {} })).toEqual({
-            success: false,
-            error: 'BackendUnavailable',
-        });
-    });
-
-    it('calls back on every block until unsubscribed', async () => {
-        const client = mockClient(() => Promise.resolve(mockAccountInfo({})));
-        const onBlock = mock<() => void>();
-        const { source } = createSource(client);
-
-        const result = await source.subscribeBlocks({ symbol: btc, onBlock });
-        const [event, listener] = client.on.mock.calls[0] ?? [];
-        listener?.({ blockHeight: 1, blockHash: 'hash' });
-
-        expect(client.subscribe).toHaveBeenCalledWith({ type: 'block' });
-        expect(event).toBe('block');
-        expect(onBlock).toHaveBeenCalledTimes(1);
-        expect(result.success).toBe(true);
-
-        if (result.success) result.payload();
-
-        expect(client.off).toHaveBeenCalledWith('block', listener);
-        expect(client.unsubscribe).toHaveBeenCalledWith({ type: 'block' });
-    });
-
-    it('reports a block subscription the backend refused', async () => {
-        const client = mockClient(() => Promise.resolve(mockAccountInfo({})));
-        client.subscribe.mockRejectedValue(new Error('Disconnected'));
-        const { source } = createSource(client);
-
-        expect(await source.subscribeBlocks({ symbol: btc, onBlock: () => {} })).toEqual({
-            success: false,
-            error: 'BackendError',
-        });
-        expect(client.on).not.toHaveBeenCalled();
-    });
-
-    it('subscribes to no blocks on a network whose blocks come too often', async () => {
-        const client = mockClient(() => Promise.resolve(mockAccountInfo({})));
-        const { source } = createSource(client);
-
-        const result = await source.subscribeBlocks({
-            symbol: asNetworkSymbol('sol'),
-            onBlock: () => {},
-        });
-
-        expect(result.success).toBe(true);
-        expect(client.subscribe).not.toHaveBeenCalled();
-        expect(client.on).not.toHaveBeenCalled();
     });
 });

@@ -57,7 +57,6 @@ export const createTransactionStoreRpcClient = (
     return {
         setAccounts: call('setAccounts'),
         removeAccounts: call('removeAccounts'),
-        watchNetworks: call('watchNetworks'),
         requestSync: call('requestSync'),
         getSyncStatus: call('getSyncStatus'),
         selectTransactions: call('selectTransactions'),

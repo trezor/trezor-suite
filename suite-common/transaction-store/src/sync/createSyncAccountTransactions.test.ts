@@ -36,7 +36,6 @@ const setUp = async (pages: Transaction[][]) => {
                 Promise.resolve(
                     ok({ transactions: pages[page - 1] ?? [], hasNextPage: page < pages.length }),
                 ),
-            subscribeBlocks: null,
         },
         now: () => 5000,
         onTransactionsStored: () => {},

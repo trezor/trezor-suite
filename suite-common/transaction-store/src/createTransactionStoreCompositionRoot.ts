@@ -11,20 +11,18 @@ import { createSyncAccountTransactions } from './sync/createSyncAccountTransacti
 import { createSyncQueue } from './sync/createSyncQueue';
 import type { TransactionStore } from './transactionStore';
 import type { TransactionStoreEvent, TransactionStoreListener } from './transactionStoreTypes';
-import { type StartInterval, createNetworkWatcher } from './watch/createNetworkWatcher';
 
-/** What each platform entry provides: its SQLite, its backends and its timers. */
+/** What each platform entry provides: its SQLite and its backends. */
 export type TransactionStoreCompositionRootDeps = TransactionStoreSqliteDep &
     TransactionSourceDep & {
-        startInterval: StartInterval;
         now: () => number;
         maxConcurrentJobsPerNetwork: number;
-        fallbackIntervalMs: number;
     };
 
 /**
- * Starts the store: migrates the database and wires the engine. It then keeps the watched
- * networks fresh on its own until `dispose`.
+ * Starts the store: migrates the database and wires the engine. It syncs when asked to
+ * (`requestSync`, and new accounts on `setAccounts`), not on a clock of its own: the app already
+ * refreshes its accounts and tells the store when one changed, so there is one cadence for both.
  */
 export const createTransactionStoreCompositionRoot = (
     deps: TransactionStoreCompositionRootDeps,
@@ -52,34 +50,17 @@ export const createTransactionStoreCompositionRoot = (
         maxConcurrentJobsPerNetwork: deps.maxConcurrentJobsPerNetwork,
         onStatusChanged: status => emit({ type: 'syncStatusChanged', status }),
     });
-    const networkWatcher = createNetworkWatcher({
-        syncQueue,
-        transactionRepository,
-        transactionSource: deps.transactionSource,
-        startInterval: deps.startInterval,
-        fallbackIntervalMs: deps.fallbackIntervalMs,
-    });
 
     const transactionStore: TransactionStore = {
         setAccounts: accounts => {
             const { addedAccountKeys, removedAccountKeys } =
                 transactionRepository.replaceAccounts(accounts);
-            const watchedNetworks = networkWatcher.getWatchedNetworks();
 
             if (removedAccountKeys.length > 0) {
                 emit({ type: 'transactionsChanged', accountKeys: removedAccountKeys });
             }
-            // The accounts already stored are kept fresh by blocks and the interval.
-            syncQueue.requestSync({
-                accountKeys: accounts
-                    .filter(
-                        ({ accountKey, symbol }) =>
-                            addedAccountKeys.includes(accountKey) &&
-                            watchedNetworks.includes(symbol),
-                    )
-                    .map(({ accountKey }) => accountKey),
-                mode: 'latest',
-            });
+            // The accounts already stored are synced when the app sees them change.
+            syncQueue.requestSync({ accountKeys: addedAccountKeys, mode: 'latest' });
 
             return Promise.resolve();
         },
@@ -89,7 +70,6 @@ export const createTransactionStoreCompositionRoot = (
 
             return Promise.resolve();
         },
-        watchNetworks: symbols => networkWatcher.watchNetworks(symbols),
         requestSync: params => Promise.resolve(syncQueue.requestSync(params)),
         getSyncStatus: accountKeys => Promise.resolve(accountKeys.map(syncQueue.getSyncStatus)),
         selectTransactions: params =>
@@ -106,7 +86,6 @@ export const createTransactionStoreCompositionRoot = (
         },
         whenIdle: () => syncQueue.whenIdle(),
         dispose: async () => {
-            networkWatcher.unwatchAll();
             await syncQueue.close();
             listeners.clear();
         },

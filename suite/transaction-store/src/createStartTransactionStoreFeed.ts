@@ -8,6 +8,7 @@ import type { CustomBackend } from '@suite-common/wallet-types';
 import type { GetTransactionStoreServiceDep } from './createTransactionStoreService';
 import {
     type TransactionStoreFeedState,
+    selectTransactionStoreAccountRevisions,
     selectTransactionStoreAccounts,
     selectTransactionStoreBackends,
 } from './transactionStoreFeedSelectors';
@@ -31,11 +32,16 @@ export const injectStartTransactionStoreFeed = (services: any): StartTransaction
     startTransactionStoreFeed: services.startTransactionStoreFeed,
 });
 
-type Fed = { accounts: TransactionStoreAccount[]; backends: CustomBackend[] };
+type Fed = {
+    accounts: TransactionStoreAccount[];
+    backends: CustomBackend[];
+    revisions: ReadonlyMap<string, string>;
+};
 
 /**
- * Keeps the store told what the app knows: its accounts, the enabled networks and their
- * backends. Pushes only what changed, and stops the store when it gets disabled.
+ * Keeps the store told what the app knows: its accounts and their backends, and when the app's
+ * own refresh found an account changed, which is when the store syncs it. The store has no clock
+ * of its own. Pushes only what changed, and stops the store when it gets disabled.
  */
 export const createStartTransactionStoreFeed =
     (deps: StartTransactionStoreFeedDeps): StartTransactionStoreFeed =>
@@ -60,7 +66,9 @@ export const createStartTransactionStoreFeed =
             const state = deps.getState();
             const accounts = selectTransactionStoreAccounts(state);
             const backends = selectTransactionStoreBackends(state);
+            const revisions = selectTransactionStoreAccountRevisions(state);
             const service = deps.getTransactionStoreService();
+            const accountKeys = accounts.map(({ accountKey }) => accountKey);
 
             if (accounts !== fed?.accounts) {
                 // The whole list: the store diffs it against what it holds and deletes the rest,
@@ -69,17 +77,26 @@ export const createStartTransactionStoreFeed =
                 void service.transactionStore.setAccounts(accounts);
             }
             if (backends !== fed?.backends) {
-                // Backends first, so the networks subscribe to blocks on them right away.
+                // Every account syncs once its backend is set (or switched), new ones included,
+                // whose first sync may have run before the backends arrived.
                 void service
                     .setBackends(backends)
                     .then(() =>
-                        service.transactionStore.watchNetworks(
-                            backends.map(({ symbol }) => symbol),
-                        ),
+                        service.transactionStore.requestSync({ accountKeys, mode: 'latest' }),
                     );
+            } else if (revisions !== fed?.revisions) {
+                const previousRevisions = fed?.revisions;
+                const changedAccountKeys = [...revisions]
+                    .filter(([key, revision]) => previousRevisions?.get(key) !== revision)
+                    .map(([key]) => key);
+
+                void service.transactionStore.requestSync({
+                    accountKeys: changedAccountKeys,
+                    mode: 'latest',
+                });
             }
 
-            fed = { accounts, backends };
+            fed = { accounts, backends, revisions };
         };
 
         feed();

@@ -23,7 +23,6 @@ export type {
 } from './sqlite/transactionStoreSqlite';
 export type {
     FetchTransactionsPageParams,
-    SubscribeBlocksParams,
     TransactionSource,
     TransactionsPage,
 } from './source/transactionSource';
@@ -32,7 +31,6 @@ export {
     type BlockchainLinkTransactionSourceDeps,
     createBlockchainLinkTransactionSource,
 } from './source/createBlockchainLinkTransactionSource';
-export type { StartInterval } from './watch/createNetworkWatcher';
 export type {
     SelectRowsError,
     SelectTransactionsParams,

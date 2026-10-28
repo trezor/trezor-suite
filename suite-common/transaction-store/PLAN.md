@@ -2,14 +2,14 @@
 
 Status: in progress on `feat/transaction-store`.
 
-- Phases 1–3 (engine, sync, watcher, RPC) are in this package.
+- Phases 1–3 (engine, sync, RPC) are in this package.
 - Phase 4 for web and desktop is in `@suite/transaction-store`: the worker entry, the service
   and its feed in the Suite composition root, the react-query hooks, a Debug settings section,
   and the account transaction list reading from it. It runs only while its Debug settings
   switch is on in debug mode (debug mode alone, as E2E tests use it, keeps the Redux list).
 - Native (Phase 4b) is not started; see "Native: the open problem".
 - Tested: migrations, repository, blockchain-link source and the sync job, on real SQLite.
-  Not tested yet: the queue, the watcher, the composition root, the RPC pair and the web entry.
+  Not tested yet: the queue, the composition root, the RPC pair, the feed and the web entry.
 
 ## Problem
 
@@ -72,9 +72,8 @@ app entry (per platform)                      package composition root (this pac
 createXxxTransactionStoreEntry                createTransactionStoreCompositionRoot(deps)
   sqlite            = Evolu SqliteDriver  ─┐    migrate schema
   transactionSource = blockchain-link     ─┼─►  repository  = createTransactionRepository
-  startInterval     = setInterval wrapper ─┤    syncAccount = createSyncAccountTransactions
-  now               = Date.now            ─┘    syncQueue   = createSyncQueue
-                                                watcher     = createNetworkWatcher
+  now               = Date.now            ─┘    syncAccount = createSyncAccountTransactions
+                                                syncQueue   = createSyncQueue
                                                 └─► TransactionStore (public API, disposable)
 ```
 
@@ -84,7 +83,6 @@ Platform contracts the entries provide (all marked `@serviceContract`):
 | ------------------------ | --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ | ------------------------------------------------------- |
 | `TransactionStoreSqlite` | `createWasmSqliteDriver` (`@evolu/web`, OPFS)                                                                               | `createExpoSqliteDriver` (`@evolu/react-native`) | `createBetterSqliteDriver` (`@evolu/nodejs`, in memory) |
 | `TransactionSource`      | `createBlockchainLinkTransactionSource` over `@trezor/blockchain-link` instances, one per network, honoring custom backends | same                                             | fake source                                             |
-| `StartInterval`          | `setInterval`                                                                                                               | `setInterval`                                    | manual ticks                                            |
 
 All three SQLite drivers already ship in the repo (via `suite-sync`) and implement Evolu's
 synchronous `SqliteDriver` contract (`exec({ sql, parameters }) → { rows, changes }`), so the
@@ -104,7 +102,7 @@ API, and every method of it is async, so the boundary can sit anywhere.
 main thread (app)                          dedicated worker (transactionStoreWorker.ts)
 -----------------                          -------------------------------------------
 startTransactionStoreFeed (service)        createTransactionStoreCompositionRoot
-  setAccounts / watchNetworks       ─RPC─►   sync queue, jobs, watcher
+  setAccounts / requestSync         ─RPC─►   sync queue, jobs
   setBackends (Connect defaults     ─msg─►   blockchain-link per network
   filled in on the main thread)              └─ nested Worker per backend (blockbook, …)
 useStoredAccountTransactions      ◄─RPC─   SQLite (Evolu WASM driver, OPFS SAHPool)
@@ -119,8 +117,8 @@ useStoredAccountTransactions      ◄─RPC─   SQLite (Evolu WASM driver, OPFS
   themselves in a worker too). Electrum needs Node sockets, so it stays `BackendUnavailable`.
 - Backends disagree on what `page` means (blockbook: 1-based page and page count; Solana:
   0-based page and transaction count), so a page shorter than asked for ends the history.
-- Networks whose blocks come too often to sync on each (Solana, as the app's
-  `shouldSubscribeBlocks`) are not subscribed to blocks; the fallback interval refreshes them.
+- The worker never subscribes to blocks and has no timer: it fetches only when the app asks
+  (see "When the store syncs").
 - The worker buffers the app's messages until the store has started, so calls made right
   after spawning it are not lost.
 - **Reads must be paginated.** Rows are copied from the worker and deserialized on the main
@@ -144,11 +142,10 @@ The target is 2; native is not wired until the spike decides.
 ### Setup API and disposal
 
 `createTransactionStoreCompositionRoot(deps)` migrates the schema and returns
-`Result<TransactionStore, TransactionStoreStartError>`; after that the store keeps running:
-block subscriptions and fallback intervals keep watched networks fresh until it is disposed.
+`Result<TransactionStore, TransactionStoreStartError>`; after that it syncs whenever asked until
+it is disposed.
 
-`transactionStore.dispose()` unsubscribes from every network, stops every interval, lets
-in-flight jobs finish without queueing new ones, and resolves once the queue is idle. Entries
+`transactionStore.dispose()` lets in-flight jobs finish without queueing new ones, and resolves once the queue is idle. Entries
 dispose it on app shutdown (and on "forget device" once that is wired). The RPC host has its own
 `dispose()` that detaches from the port without touching the store.
 
@@ -188,7 +185,7 @@ block_time NULL, PRIMARY KEY(account_key, txid, idx))` (v2), index
 `setAccounts` takes the app's whole account list; `replaceAccounts` diffs it against the
 `accounts` table in one SQLite transaction, deletes every stored account missing from it (its
 transactions, transfers and sync state cascade) and upserts the rest. Only the added accounts
-get a sync; the others are kept fresh by blocks and the interval. Because the diff is against
+get a sync; the others sync when the app sees them change. Because the diff is against
 the database, it also catches what left while the store was off:
 
 - a forgotten device's wallets, and a not remembered wallet after a restart (Suite does not
@@ -234,11 +231,24 @@ amounts and dates after `<`, `>`, `=` or `!=`, joined by `&` and `|`.
       Pages are 50 transactions (more than a screen's) to make the walk take fewer requests.
     - A backend without paging (no `page` in the response) returns everything at once, so the
       account is complete after the first page.
-    - Failures are recorded as an error type in `sync_state.last_error`; the next block or
-      interval tick retries. That is the backoff in v1.
-- **Watcher** (`createNetworkWatcher`): `watchNetworks(symbols)` subscribes to blocks of the
-  added networks and unsubscribes removed ones; every block, and every fallback interval tick,
-  requests `latest` for the network's registered accounts.
+    - Failures are recorded as an error type in `sync_state.last_error`; the next time the app
+      sees the account change, it is retried. That is the backoff in v1.
+
+### When the store syncs: on the app's cue, not its own clock
+
+The app already refreshes every account: `syncAccountsWithBlockchainThunk` on a per-network
+interval while the window is visible, `onBlockMinedThunk` on new blocks (except fast networks
+on the metered backend unless custom), `onBlockchainNotificationThunk` for mempool
+transactions. All of them update the account through `fetchAndUpdateAccountThunk`. A second
+timer and block subscription in the worker would double that load, ignore those rules and run
+while the window is hidden, so the store has neither.
+
+Instead the feed keeps a revision per account (`history.total`, `unconfirmed`, `tokens`,
+balance; `selectTransactionStoreAccountRevisions`) and requests a `latest` sync of exactly the
+accounts whose revision changed. An account the app found unchanged costs the store no request;
+a confirmation changes `unconfirmed`, so it is picked up too. Setting or switching backends
+requests a sync of every account. The backfill still runs on its own once an account has
+synced, since that is the store's own work, not a refresh.
 
 ### App-facing API
 
@@ -247,7 +257,6 @@ type TransactionStore = {
     /** The app's whole list; the store deletes every other account it holds, with its history. */
     setAccounts: (accounts: TransactionStoreAccount[]) => Promise<void>;
     removeAccounts: (accountKeys: string[]) => Promise<void>;
-    watchNetworks: (symbols: NetworkSymbol[]) => Promise<void>;
     requestSync: (params: { accountKeys: string[]; mode: SyncMode }) => Promise<void>;
     getSyncStatus: (accountKeys: string[]) => Promise<AccountSyncStatus[]>;
     selectTransactions: (params: SelectTransactionsParams) => Promise<StoredTransaction[]>;
@@ -271,8 +280,9 @@ through `query`, so feature queries are typed end to end. No own query builder.
    tested on the in-memory better-sqlite3 driver.
 2. **Sync engine** — done here. Queue (dedupe, upgrade, rerun, per-network cap), latest/full
    jobs, sync state, events; tested with a fake source.
-3. **Watcher and setup API** — done here. Block subscriptions, fallback interval, composition
-   root, disposal; RPC host/client for running in a worker.
+3. **Setup API** — done here. Composition root, disposal; RPC host/client for running in a
+   worker. (A block-subscription watcher with a fallback interval was here first and was
+   removed: the app's refresh drives the store.)
 4. **Web and desktop entry** (`@suite/transaction-store`) — done, behind a Debug settings switch:
     - `worker/transactionStoreWorker.ts`: `startTransactionStoreWorker` opens the Evolu WASM
       driver, keeps a blockchain-link per network on nested workers, runs the composition root
@@ -315,8 +325,6 @@ thunks and their merging.
   complete after one response.
 - `full` resumes from page 1 (idempotent upserts); resuming from a stored page needs an overlap
   window because new transactions shift page indexes.
-- Account notifications (`subscribe({ type: 'accounts' })`) to pick up mempool transactions
-  before the next block; v1 relies on the interval for those.
 - Per-contract sync (`contractFilter`) for backends whose account history leaves out a token's
   oldest transfers.
 - Exponential backoff per backend instead of "retry on next tick".

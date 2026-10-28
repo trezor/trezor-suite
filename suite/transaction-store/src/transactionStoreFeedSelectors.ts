@@ -58,6 +58,34 @@ export const selectTransactionStoreAccounts = createMemoizedSelector(
     { memoizeOptions: { resultEqualityCheck: haveSameAccounts } },
 );
 
+type AccountRevisions = ReadonlyMap<string, string>;
+
+const haveSameRevisions = (a: AccountRevisions, b: AccountRevisions) =>
+    a.size === b.size && [...a].every(([accountKey, revision]) => b.get(accountKey) === revision);
+
+/**
+ * What the app last learned of each synced account's history. The app's own refresh (its
+ * interval, new blocks, mempool notifications) updates these, so a change is the store's cue to
+ * sync that account, and an account the app found unchanged costs the store nothing.
+ */
+export const selectTransactionStoreAccountRevisions = createMemoizedSelector(
+    [selectAccounts, selectTransactionStoreAccounts],
+    (accounts, storeAccounts): AccountRevisions => {
+        const storeAccountKeys = new Set(storeAccounts.map(({ accountKey }) => accountKey));
+
+        return new Map(
+            accounts
+                .filter(account => storeAccountKeys.has(account.key))
+                .map(({ key, history, balance }) => [
+                    key,
+                    // Counts include pending ones, so a confirmation is a change too.
+                    `${history.total}:${history.unconfirmed}:${history.tokens ?? 0}:${balance}`,
+                ]),
+        );
+    },
+    { memoizeOptions: { resultEqualityCheck: haveSameRevisions } },
+);
+
 /**
  * Each enabled network's backend: the custom one, or its default type without URLs, which the
  * service fills in from Connect. The same reference while unchanged, though the blockchain state
