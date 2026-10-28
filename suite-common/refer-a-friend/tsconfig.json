@@ -1,0 +1,42 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "outDir": "libDev"
+    },
+    "include": ["src/**/*.ts"],
+    "references": [
+        {
+            "path": "../device"
+        },
+        {
+            "path": "../platform-encryption"
+        },
+        {
+            "path": "../suite-types"
+        },
+        {
+            "path": "../../packages/connect"
+        },
+        {
+            "path": "../../packages/connect-common"
+        },
+        {
+            "path": "../../packages/env-utils"
+        },
+        {
+            "path": "../../packages/redux-utils"
+        },
+        {
+            "path": "../../packages/type-utils"
+        },
+        {
+            "path": "../../packages/urls"
+        },
+        {
+            "path": "../../packages/utils"
+        },
+        {
+            "path": "../../packages/dependency-injection"
+        }
+    ]
+}
