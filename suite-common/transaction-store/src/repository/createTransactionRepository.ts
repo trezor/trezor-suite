@@ -14,11 +14,20 @@ import type {
     TransactionSourceErrorType,
     TransactionStoreAccount,
 } from '../transactionStoreTypes';
+import { flattenTransfers } from './flattenTransfers';
 
 export type TransactionRepositoryDeps = TransactionStoreSqliteDep;
 
-export type SelectTransactionsParams = {
+export type TransactionsFilter = {
     accountKeys: string[];
+    /**
+     * Only transactions moving this asset: a token's contract, or `null` for the network's own
+     * coin. Left out, every transaction.
+     */
+    contract?: string | null;
+};
+
+export type SelectTransactionsParams = TransactionsFilter & {
     limit?: number;
     offset?: number;
 };
@@ -41,6 +50,7 @@ export type TransactionRepository = {
     upsertTransactions: (params: { accountKey: string; transactions: Transaction[] }) => number;
     selectStoredTxids: (params: { accountKey: string; txids: string[] }) => Set<string>;
     selectTransactions: (params: SelectTransactionsParams) => StoredTransaction[];
+    countTransactions: (filter: TransactionsFilter) => number;
     selectSyncState: (accountKey: string) => SyncState;
     updateSyncState: (
         params: { accountKey: string } & Omit<SyncState, 'newestBlockHeight'>,
@@ -82,11 +92,60 @@ const toBlockHeight = (transaction: Transaction) =>
         ? transaction.blockHeight
         : null;
 
+/** The `WHERE` of transactions passing the filter, aliased `t`, and its parameters. */
+const toFilterClause = ({ accountKeys, contract }: TransactionsFilter) => {
+    const byAccounts = `t.account_key IN (${toPlaceholders(accountKeys)})`;
+
+    if (contract === undefined) {
+        return { where: byAccounts, parameters: accountKeys };
+    }
+
+    return {
+        // `IS` matches `NULL` too, so the same clause serves the coin and a token.
+        where: `${byAccounts} AND EXISTS (
+            SELECT 1 FROM transfers f
+            WHERE f.account_key = t.account_key AND f.txid = t.txid AND f.contract IS ?
+        )`,
+        parameters: [...accountKeys, contract],
+    };
+};
+
 export const createTransactionRepository = (
     deps: TransactionRepositoryDeps,
 ): TransactionRepository => {
     const exec = <TRow extends SqlRow>(sql: string, parameters: ReadonlyArray<SqlValue> = []) =>
         deps.sqlite.exec<TRow>({ sql, parameters });
+
+    const replaceTransfers = (accountKey: string, transaction: Transaction) => {
+        exec('DELETE FROM transfers WHERE account_key = ? AND txid = ?', [
+            accountKey,
+            transaction.txid,
+        ]);
+        flattenTransfers(transaction).forEach(transfer =>
+            exec(
+                `INSERT INTO transfers (
+                    account_key, txid, idx, kind, contract, direction, amount, decimals, symbol,
+                    standard, from_address, to_address, block_height, block_time
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                [
+                    accountKey,
+                    transaction.txid,
+                    transfer.idx,
+                    transfer.kind,
+                    transfer.contract,
+                    transfer.direction,
+                    transfer.amount,
+                    transfer.decimals,
+                    transfer.symbol,
+                    transfer.standard,
+                    transfer.fromAddress,
+                    transfer.toAddress,
+                    toBlockHeight(transaction),
+                    transaction.blockTime ?? null,
+                ],
+            ),
+        );
+    };
 
     return {
         upsertAccounts: accounts =>
@@ -131,32 +190,33 @@ export const createTransactionRepository = (
 
         upsertTransactions: ({ accountKey, transactions }) =>
             runInSqliteTransaction(deps.sqlite, () =>
-                transactions.reduce(
-                    (changes, transaction) =>
-                        changes +
-                        exec(
-                            // An unchanged row is not rewritten, so it does not count as a change
-                            // and a block does not make every list refetch.
-                            `INSERT INTO transactions
-                                (account_key, txid, block_height, block_time, type, data)
-                            VALUES (?, ?, ?, ?, ?, ?)
-                            ON CONFLICT (account_key, txid) DO UPDATE SET
-                                block_height = excluded.block_height,
-                                block_time = excluded.block_time,
-                                type = excluded.type,
-                                data = excluded.data
-                            WHERE data IS NOT excluded.data`,
-                            [
-                                accountKey,
-                                transaction.txid,
-                                toBlockHeight(transaction),
-                                transaction.blockTime ?? null,
-                                transaction.type,
-                                JSON.stringify(transaction),
-                            ],
-                        ).changes,
-                    0,
-                ),
+                transactions.reduce((changes, transaction) => {
+                    const { changes: hasChanged } = exec(
+                        // An unchanged row is not rewritten, so it does not count as a change
+                        // and a block does not make every list refetch.
+                        `INSERT INTO transactions
+                            (account_key, txid, block_height, block_time, type, data)
+                        VALUES (?, ?, ?, ?, ?, ?)
+                        ON CONFLICT (account_key, txid) DO UPDATE SET
+                            block_height = excluded.block_height,
+                            block_time = excluded.block_time,
+                            type = excluded.type,
+                            data = excluded.data
+                        WHERE data IS NOT excluded.data`,
+                        [
+                            accountKey,
+                            transaction.txid,
+                            toBlockHeight(transaction),
+                            transaction.blockTime ?? null,
+                            transaction.type,
+                            JSON.stringify(transaction),
+                        ],
+                    );
+                    // In the same SQLite transaction, so the transfers never disagree with it.
+                    if (hasChanged > 0) replaceTransfers(accountKey, transaction);
+
+                    return changes + hasChanged;
+                }, 0),
             ),
 
         selectStoredTxids: ({ accountKey, txids }) =>
@@ -170,20 +230,35 @@ export const createTransactionRepository = (
                       ).rows.map(row => row.txid),
             ),
 
-        selectTransactions: ({ accountKeys, limit = -1, offset = 0 }) =>
-            exec<TransactionRow>(
-                `SELECT account_key, txid, block_height, block_time, data FROM transactions
-                WHERE account_key IN (${toPlaceholders(accountKeys)})
-                ORDER BY block_height IS NULL DESC, block_time DESC, txid
+        countTransactions: filter => {
+            const { where, parameters } = toFilterClause(filter);
+
+            return (
+                exec<{ count: number }>(
+                    `SELECT COUNT(*) AS count FROM transactions t WHERE ${where}`,
+                    parameters,
+                ).rows[0]?.count ?? 0
+            );
+        },
+
+        selectTransactions: ({ limit = -1, offset = 0, ...filter }) => {
+            const { where, parameters } = toFilterClause(filter);
+
+            return exec<TransactionRow>(
+                `SELECT t.account_key, t.txid, t.block_height, t.block_time, t.data
+                FROM transactions t
+                WHERE ${where}
+                ORDER BY t.block_height IS NULL DESC, t.block_time DESC, t.txid
                 LIMIT ? OFFSET ?`,
-                [...accountKeys, limit, offset],
+                [...parameters, limit, offset],
             ).rows.map(row => ({
                 accountKey: row.account_key,
                 txid: row.txid,
                 blockHeight: row.block_height,
                 blockTime: row.block_time,
                 transaction: JSON.parse(row.data),
-            })),
+            }));
+        },
 
         selectSyncState: accountKey => {
             const row = exec<SyncStateRow>(

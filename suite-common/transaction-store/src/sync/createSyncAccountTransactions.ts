@@ -7,6 +7,8 @@ import type { SyncMode, TransactionSourceErrorType } from '../transactionStoreTy
 export type SyncAccountTransactionsDeps = TransactionRepositoryDep &
     TransactionSourceDep & {
         now: () => number;
+        /** After each page that changed rows, so lists fill in while a long history syncs. */
+        onTransactionsStored: (accountKey: string) => void;
     };
 
 export type SyncAccountTransactionsParams = {
@@ -67,7 +69,10 @@ export const createSyncAccountTransactions =
                 accountKey,
                 transactions,
             });
-            hasChanged = hasChanged || changes > 0;
+            if (changes > 0) {
+                hasChanged = true;
+                deps.onTransactionsStored(accountKey);
+            }
 
             if (!hasNextPage) {
                 isComplete = true;

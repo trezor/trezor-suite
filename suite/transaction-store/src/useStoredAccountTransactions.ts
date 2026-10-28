@@ -17,12 +17,17 @@ export type UseStoredAccountTransactionsParams = {
     /** 1 is the newest page. */
     page: number;
     perPage: number;
+    /**
+     * Only the transactions moving this asset: a token's contract, or `null` for the network's
+     * own coin (e.g. an asset's detail). Left out, all of them.
+     */
+    contract?: string | null;
 };
 
 export type StoredAccountTransactions = {
     /** The page, pending transactions first, ready for the transaction list. */
     transactions: WalletAccountTransaction[];
-    /** How many transactions the store holds for the account, which may be short of its history. */
+    /** How many of them the store holds, which may be short of the history while it syncs. */
     storedCount: number;
     syncStatus: AccountSyncStatus | undefined;
     /** Nothing to show yet: the page is loading, or the first sync has not brought anything. */
@@ -40,6 +45,7 @@ export const useStoredAccountTransactions = ({
     account,
     page,
     perPage,
+    contract,
 }: UseStoredAccountTransactionsParams): StoredAccountTransactions => {
     const { getTransactionStoreService } = useServices(injectGetTransactionStoreService);
     const { transactionStore } = getTransactionStoreService();
@@ -53,10 +59,15 @@ export const useStoredAccountTransactions = ({
     }, [transactionStore, accountKey]);
 
     const rows = useQuery({
-        queryKey: transactionStoreQueryKeys.accountTransactions(accountKey, { page, perPage }),
+        queryKey: transactionStoreQueryKeys.accountTransactions(accountKey, {
+            page,
+            perPage,
+            contract,
+        }),
         queryFn: () =>
             transactionStore.selectTransactions({
                 accountKeys: [accountKey],
+                contract,
                 limit: perPage,
                 offset: (page - 1) * perPage,
             }),
@@ -64,16 +75,8 @@ export const useStoredAccountTransactions = ({
         placeholderData: previous => previous,
     });
     const storedCount = useQuery({
-        queryKey: transactionStoreQueryKeys.accountTransactions(accountKey, 'count'),
-        queryFn: async () => {
-            const result = await transactionStore.query({
-                sql: 'SELECT COUNT(*) AS count FROM transactions WHERE account_key = ?',
-                parameters: [accountKey],
-            });
-            const count = result.success ? result.payload[0]?.count : undefined;
-
-            return typeof count === 'number' ? count : 0;
-        },
+        queryKey: transactionStoreQueryKeys.accountTransactions(accountKey, { count: contract }),
+        queryFn: () => transactionStore.countTransactions({ accountKeys: [accountKey], contract }),
     });
     const syncStatus = useQuery({
         queryKey: transactionStoreQueryKeys.syncStatus([accountKey]),

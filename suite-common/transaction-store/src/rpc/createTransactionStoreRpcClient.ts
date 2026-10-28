@@ -61,6 +61,7 @@ export const createTransactionStoreRpcClient = (
         requestSync: call('requestSync'),
         getSyncStatus: call('getSyncStatus'),
         selectTransactions: call('selectTransactions'),
+        countTransactions: call('countTransactions'),
         query: call('query'),
         whenIdle: call('whenIdle'),
         // The store on the other side stops first, then the client lets go of the port.

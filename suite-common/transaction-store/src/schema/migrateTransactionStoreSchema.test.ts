@@ -22,7 +22,12 @@ describe(migrateTransactionStoreSchema.name, () => {
         const result = migrateTransactionStoreSchema({ sqlite });
 
         expect(result.success).toBe(true);
-        expect(getTableNames(sqlite)).toEqual(['accounts', 'sync_state', 'transactions']);
+        expect(getTableNames(sqlite)).toEqual([
+            'accounts',
+            'sync_state',
+            'transactions',
+            'transfers',
+        ]);
         expect(getUserVersion(sqlite)).toBe(TRANSACTION_STORE_MIGRATIONS.length);
         sqlite.dispose();
     });

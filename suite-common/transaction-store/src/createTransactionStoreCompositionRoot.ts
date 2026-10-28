@@ -43,13 +43,14 @@ export const createTransactionStoreCompositionRoot = (
         transactionRepository,
         transactionSource: deps.transactionSource,
         now: deps.now,
+        onTransactionsStored: accountKey =>
+            emit({ type: 'transactionsChanged', accountKeys: [accountKey] }),
     });
     const syncQueue = createSyncQueue({
         syncAccountTransactions,
         transactionRepository,
         maxConcurrentJobsPerNetwork: deps.maxConcurrentJobsPerNetwork,
         onStatusChanged: status => emit({ type: 'syncStatusChanged', status }),
-        onTransactionsChanged: accountKeys => emit({ type: 'transactionsChanged', accountKeys }),
     });
     const networkWatcher = createNetworkWatcher({
         syncQueue,
@@ -83,6 +84,8 @@ export const createTransactionStoreCompositionRoot = (
         getSyncStatus: accountKeys => Promise.resolve(accountKeys.map(syncQueue.getSyncStatus)),
         selectTransactions: params =>
             Promise.resolve(transactionRepository.selectTransactions(params)),
+        countTransactions: filter =>
+            Promise.resolve(transactionRepository.countTransactions(filter)),
         query: query => Promise.resolve(transactionRepository.selectRows(query)),
         subscribe: listener => {
             listeners.add(listener);

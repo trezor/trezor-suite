@@ -11,6 +11,7 @@ export const TRANSACTION_STORE_RPC_METHODS = [
     'requestSync',
     'getSyncStatus',
     'selectTransactions',
+    'countTransactions',
     'query',
     'whenIdle',
     'dispose',

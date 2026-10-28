@@ -4,6 +4,7 @@ import type { Result } from '@trezor/type-utils';
 import type {
     SelectRowsError,
     SelectTransactionsParams,
+    TransactionsFilter,
 } from './repository/createTransactionRepository';
 import type { SqlQuery, SqlRow } from './sqlite/transactionStoreSqlite';
 import type {
@@ -27,6 +28,7 @@ export type TransactionStore = {
     requestSync: (params: { accountKeys: string[]; mode: SyncMode }) => Promise<void>;
     getSyncStatus: (accountKeys: string[]) => Promise<AccountSyncStatus[]>;
     selectTransactions: (params: SelectTransactionsParams) => Promise<StoredTransaction[]>;
+    countTransactions: (filter: TransactionsFilter) => Promise<number>;
     /** Any read-only SQL over the schema in `schema/transactionStoreMigrations.ts`. */
     query: (query: SqlQuery) => Promise<Result<ReadonlyArray<SqlRow>, SelectRowsError>>;
     subscribe: (listener: TransactionStoreListener) => Promise<Unsubscribe>;

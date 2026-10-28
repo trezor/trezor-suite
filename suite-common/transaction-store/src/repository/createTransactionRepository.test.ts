@@ -204,4 +204,93 @@ describe(createTransactionRepository.name, () => {
         expect(repository.selectAccounts({})).toHaveLength(2);
         sqlite.dispose();
     });
+
+    it('lists the transactions moving one asset: a token, or the coin', async () => {
+        const { sqlite, repository } = await setUp();
+        const usdc = '0xusdc';
+        repository.upsertTransactions({
+            accountKey: 'eth-account',
+            transactions: [
+                mockTransaction({ txid: 'coin', amount: '5', blockTime: 3 }),
+                mockTransaction({
+                    txid: 'token',
+                    amount: '0',
+                    blockTime: 2,
+                    tokens: [
+                        {
+                            type: 'recv',
+                            standard: 'ERC20',
+                            amount: '100',
+                            from: '0xfrom',
+                            to: '0xeth',
+                            contract: usdc,
+                            symbol: 'USDC',
+                            decimals: 6,
+                        },
+                    ],
+                }),
+                mockTransaction({
+                    txid: 'internal',
+                    amount: '0',
+                    blockTime: 1,
+                    internalTransfers: [{ type: 'recv', amount: '7', from: '0xa', to: '0xeth' }],
+                }),
+            ],
+        });
+
+        const byContract = (contract: string | null) =>
+            repository
+                .selectTransactions({ accountKeys: ['eth-account'], contract })
+                .map(({ txid }) => txid);
+
+        expect(byContract(usdc)).toEqual(['token']);
+        expect(byContract(null)).toEqual(['coin', 'internal']);
+        expect(repository.countTransactions({ accountKeys: ['eth-account'], contract: usdc })).toBe(
+            1,
+        );
+        expect(repository.countTransactions({ accountKeys: ['eth-account'] })).toBe(3);
+        expect(
+            repository.selectRows({
+                sql: 'SELECT kind, contract, direction, amount, decimals FROM transfers WHERE txid = ?',
+                parameters: ['token'],
+            }),
+        ).toEqual({
+            success: true,
+            payload: [
+                { kind: 'token', contract: usdc, direction: 'recv', amount: '100', decimals: 6 },
+            ],
+        });
+        sqlite.dispose();
+    });
+
+    it("rewrites a transaction's transfers when it changes, and drops them with it", async () => {
+        const { sqlite, repository } = await setUp();
+        const countTransfers = () =>
+            repository.selectRows({
+                sql: 'SELECT COUNT(*) AS count FROM transfers',
+                parameters: [],
+            });
+        repository.upsertTransactions({
+            accountKey: 'btc-account',
+            transactions: [mockTransaction({ txid: 'tx', blockHeight: undefined })],
+        });
+
+        repository.upsertTransactions({
+            accountKey: 'btc-account',
+            transactions: [mockTransaction({ txid: 'tx', blockHeight: 9 })],
+        });
+
+        expect(countTransfers()).toEqual({ success: true, payload: [{ count: 1 }] });
+        expect(
+            repository.selectRows({
+                sql: 'SELECT block_height FROM transfers WHERE txid = ?',
+                parameters: ['tx'],
+            }),
+        ).toEqual({ success: true, payload: [{ block_height: 9 }] });
+
+        repository.removeAccounts(['btc-account']);
+
+        expect(countTransfers()).toEqual({ success: true, payload: [{ count: 0 }] });
+        sqlite.dispose();
+    });
 });

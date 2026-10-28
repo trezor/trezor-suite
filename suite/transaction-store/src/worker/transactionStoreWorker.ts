@@ -34,7 +34,8 @@ import {
 } from './transactionStoreWorkerProtocol';
 
 const DATABASE_NAME = 'trezor-transaction-store';
-const PAGE_SIZE = 25;
+// Larger than a screen's page: the backfill walks the whole history, and fewer requests are faster.
+const PAGE_SIZE = 50;
 const MAX_CONCURRENT_JOBS_PER_NETWORK = 2;
 const FALLBACK_INTERVAL_MS = 60 * 1000;
 

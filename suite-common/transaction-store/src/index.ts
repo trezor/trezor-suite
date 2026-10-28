@@ -36,7 +36,9 @@ export type { StartInterval } from './watch/createNetworkWatcher';
 export type {
     SelectRowsError,
     SelectTransactionsParams,
+    TransactionsFilter,
 } from './repository/createTransactionRepository';
+export type { FlatTransfer, TransferKind } from './repository/flattenTransfers';
 export type { MigrateTransactionStoreSchemaError } from './schema/migrateTransactionStoreSchema';
 export {
     type TransactionStorePort,

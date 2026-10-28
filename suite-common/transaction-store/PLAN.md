@@ -154,15 +154,34 @@ dispose it on app shutdown (and on "forget device" once that is wired). The RPC 
 
 ### Database
 
-Schema v1 (`PRAGMA user_version` holds the version; migrations are numbered statement lists):
+`PRAGMA user_version` holds the version; migrations are numbered statement lists.
 
 - `accounts(account_key PK, symbol, descriptor)`
 - `transactions(account_key, txid, block_height NULL, block_time NULL, type, data JSON,
 PRIMARY KEY(account_key, txid))`, index `(account_key, block_time DESC)`. `data` is the whole
-  blockchain-link `Transaction`; only what lists sort and filter by is a column. Pending
-  transactions have `block_height NULL`.
-- `sync_state(account_key PK, is_complete, newest_block_height NULL, last_synced_at NULL,
-last_error NULL)`
+  blockchain-link `Transaction`, for rendering. Pending transactions have `block_height NULL`.
+- `transfers(account_key, txid, idx, kind, contract NULL, direction, amount, decimals NULL,
+symbol NULL, standard NULL, from_address NULL, to_address NULL, block_height NULL,
+block_time NULL, PRIMARY KEY(account_key, txid, idx))` (v2), index
+  `(account_key, contract, block_time DESC)`. Every asset movement of a transaction, flat: its
+  native leg (when it moves any coin), each token transfer and each internal transfer, each
+  with its own direction. `contract IS NULL` is the network's coin. Written with its
+  transaction in one SQLite transaction (`flattenTransfers`, typed TypeScript, no SQL JSON) and
+  deleted with it, so an asset's history is a plain indexed query:
+
+    ```sql
+    SELECT t.data FROM transactions t
+    WHERE t.account_key = ?
+      AND EXISTS (SELECT 1 FROM transfers f
+                  WHERE f.account_key = t.account_key AND f.txid = t.txid AND f.contract IS ?)
+    ORDER BY t.block_height IS NULL DESC, t.block_time DESC
+    ```
+
+    `selectTransactions` / `countTransactions` take that filter as `contract` (a token, `null`
+    for the coin, left out for all). v2 clears v1's rows, which the stores sync again.
+
+- `sync_state(account_key PK, is_complete, last_synced_at NULL, last_error NULL)`; the newest
+  block is computed from `transactions`.
 
 ### Sync engine
 
@@ -175,6 +194,11 @@ last_error NULL)`
       transaction already stored (pending ones are re-upserted, so confirmations update rows).
     - `full`: walk pages to the end and mark the account complete. A `full` request on a complete
       account runs as `latest`.
+    - The first sync of an account stops after its newest page, so the list shows something
+      at once. The queue then **backfills on its own**: after every sync that worked, an account
+      that is not complete gets a `full` job, so the whole history arrives without anyone
+      paging. Each stored page emits `transactionsChanged`, so lists fill in while it walks.
+      Pages are 50 transactions (more than a screen's) to make the walk take fewer requests.
     - A backend without paging (no `page` in the response) returns everything at once, so the
       account is complete after the first page.
     - Failures are recorded as an error type in `sync_state.last_error`; the next block or
@@ -256,7 +280,8 @@ thunks and their merging.
   window because new transactions shift page indexes.
 - Account notifications (`subscribe({ type: 'accounts' })`) to pick up mempool transactions
   before the next block; v1 relies on the interval for those.
-- Token transfers as a child table, so per-token lists (asset detail) do not scan JSON.
+- Per-contract sync (`contractFilter`) for backends whose account history leaves out a token's
+  oldest transfers.
 - Exponential backoff per backend instead of "retry on next tick".
 - Leader election (Web Locks) so several web tabs share one engine.
 - Wipe the device's rows on "forget device".

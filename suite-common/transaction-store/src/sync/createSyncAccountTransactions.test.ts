@@ -39,6 +39,7 @@ const setUp = async (pages: Transaction[][]) => {
             subscribeBlocks: null,
         },
         now: () => 5000,
+        onTransactionsStored: () => {},
     });
 
     return {
@@ -57,13 +58,14 @@ const setUp = async (pages: Transaction[][]) => {
 
 describe(createSyncAccountTransactions.name, () => {
     it('stores only the newest page the first time, so the account shows up fast', async () => {
-        const { sqlite, syncAccountTransactions, transactionRepository, getFetchedPages } =
+        const { sqlite, syncAccountTransactions, transactionRepository, getFetchedPages, deps } =
             await setUp([toTransactions(['c', 'b']), toTransactions(['a'])]);
 
         const result = await syncAccountTransactions({ accountKey: 'btc-account', mode: 'latest' });
 
         expect(result).toEqual({ success: true, payload: { hasChanged: true } });
         expect(getFetchedPages()).toEqual([1]);
+        expect(deps.onTransactionsStored).toHaveBeenCalledWith('btc-account');
         expect(transactionRepository.selectSyncState('btc-account')).toMatchObject({
             isComplete: false,
             lastSyncedAt: 5000,

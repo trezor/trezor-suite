@@ -9,7 +9,6 @@ export type SyncQueueDeps = SyncAccountTransactionsDep &
         /** Keeps one slow backend from holding up the others, and from being hammered. */
         maxConcurrentJobsPerNetwork: number;
         onStatusChanged: (status: AccountSyncStatus) => void;
-        onTransactionsChanged: (accountKeys: string[]) => void;
     };
 
 export type SyncQueue = {
@@ -58,21 +57,29 @@ export const createSyncQueue = (deps: SyncQueueDeps): SyncQueue => {
     const countRunning = (symbol: NetworkSymbol) =>
         [...running.values()].filter(job => job.symbol === symbol).length;
 
+    /** The mode to run again right away: a request made meanwhile, or the rest of the history. */
+    const getFollowUpMode = (accountKey: string, isSynced: boolean): SyncMode | null => {
+        const rerunMode = running.get(accountKey)?.rerunMode ?? null;
+        // Backfilled on its own after a sync that worked, so the whole history arrives without
+        // anyone asking; after a failure, the next block or interval tick retries instead.
+        const isBackfillDue =
+            isSynced && !deps.transactionRepository.selectSyncState(accountKey).isComplete;
+
+        return isBackfillDue ? mergeModes(rerunMode, 'full') : rerunMode;
+    };
+
     const runJob = async (accountKey: string, mode: SyncMode) => {
         // An unexpected failure (the database, not the backend) must not leave the account
         // stuck as syncing; the next request retries it.
-        const hasChanged = await deps
+        const isSynced = await deps
             .syncAccountTransactions({ accountKey, mode })
-            .then(result => result.success && result.payload.hasChanged)
+            .then(result => result.success)
             .catch(() => false);
-        const rerunMode = running.get(accountKey)?.rerunMode ?? null;
+        const followUpMode = getFollowUpMode(accountKey, isSynced);
         running.delete(accountKey);
 
-        if (hasChanged) {
-            deps.onTransactionsChanged([accountKey]);
-        }
-        if (rerunMode !== null && !isClosed) {
-            queued.set(accountKey, mergeModes(queued.get(accountKey), rerunMode));
+        if (followUpMode !== null && !isClosed) {
+            queued.set(accountKey, mergeModes(queued.get(accountKey), followUpMode));
         }
 
         notifyStatus(accountKey);
