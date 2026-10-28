@@ -14,7 +14,21 @@ import {
 let _channel: any;
 let _reconnect: (() => void) | undefined;
 
-const dispose = () => Promise.resolve(undefined);
+const dispose = () => {
+    if (_channel) {
+        // the reconnect listener would re-enter init() on the next port disconnect and keep the
+        // service worker alive, which is exactly what dispose() is called to stop
+        if (_reconnect) {
+            _channel.port.onDisconnect.removeListener(_reconnect);
+            _reconnect = undefined;
+        }
+        _channel.disconnect();
+        _channel.clear();
+        _channel = null;
+    }
+
+    return Promise.resolve(undefined);
+};
 
 const cancel = (params?: CancelParams) => {
     if (_channel) {
