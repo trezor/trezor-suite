@@ -21,6 +21,7 @@ type DeviceManagerModalProps = {
     customSwitchRightView?: ReactNode;
     onClose?: () => void;
     footer?: ReactNode;
+    isDeviceListVisible?: boolean;
 };
 
 export const MANAGER_MODAL_BOTTOM_RADIUS = nativeBorders.radii.r12;
@@ -38,20 +39,30 @@ const modalBackgroundOverlayStyle = prepareNativeStyle<{
 }));
 
 const deviceManagerModalWrapperStyle = prepareNativeStyle(utils => ({
-    backgroundColor: utils.colors.surfaceFillRaised,
+    backgroundColor: utils.colors.surfaceFillPage,
     borderBottomLeftRadius: MANAGER_MODAL_BOTTOM_RADIUS,
     borderBottomRightRadius: MANAGER_MODAL_BOTTOM_RADIUS,
 }));
 
-const deviceManagerHeaderStyle = prepareNativeStyle(utils => ({
-    marginHorizontal: utils.spacings.sp16,
-    backgroundColor: utils.colors.surfaceFillRaised,
-    borderWidth: utils.borders.widths.small,
-    borderBottomLeftRadius: utils.borders.radii.r12,
-    borderBottomRightRadius: utils.borders.radii.r12,
-    borderColor: utils.colors.borderNeutral,
-    borderTopWidth: 0,
-}));
+const deviceManagerHeaderStyle = prepareNativeStyle<{ isDeviceListVisible: boolean }>(
+    (utils, { isDeviceListVisible }) => ({
+        marginHorizontal: utils.spacings.sp16,
+        backgroundColor: utils.colors.surfaceFillRaised,
+        borderWidth: utils.borders.widths.small,
+        borderBottomLeftRadius: utils.borders.radii.r12,
+        borderBottomRightRadius: utils.borders.radii.r12,
+        borderColor: utils.colors.borderNeutral,
+        borderTopWidth: 0,
+        extend: {
+            condition: isDeviceListVisible,
+            style: {
+                borderBottomLeftRadius: 0,
+                borderBottomRightRadius: 0,
+                borderBottomWidth: 0,
+            },
+        },
+    }),
+);
 
 const modalHeaderStyle = prepareNativeStyle(utils => ({
     paddingLeft: utils.spacings.sp16,
@@ -81,6 +92,7 @@ export const DeviceManagerModal = ({
     customSwitchRightView,
     onClose,
     footer,
+    isDeviceListVisible = false,
 }: DeviceManagerModalProps) => {
     const { applyStyle } = useNativeStyles();
 
@@ -125,7 +137,9 @@ export const DeviceManagerModal = ({
                         >
                             <Pressable
                                 onPress={handleClose}
-                                style={applyStyle(deviceManagerHeaderStyle)}
+                                style={applyStyle(deviceManagerHeaderStyle, {
+                                    isDeviceListVisible,
+                                })}
                             >
                                 <ScreenHeaderWrapper style={applyStyle(modalHeaderStyle)}>
                                     <HStack
