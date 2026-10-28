@@ -15,7 +15,7 @@ import {
     type NetworkSymbol,
     toNetworkSymbolNonTestnet,
 } from '@suite-common/wallet-config';
-import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { type TokenAddress, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils';
 
 type BuildGlobalReceiveAssetOptionsParams = {
@@ -53,6 +53,27 @@ export const buildGlobalReceiveAssetOptions = ({
 
     return assets;
 };
+
+type BuildGlobalReceiveAssetOptionParams = {
+    symbol: NetworkSymbol;
+    contractAddress: TokenAddress | undefined;
+    tokenSymbol: string | null;
+    name: string;
+};
+
+export const buildGlobalReceiveAssetOption = ({
+    symbol,
+    contractAddress,
+    tokenSymbol,
+    name,
+}: BuildGlobalReceiveAssetOptionParams): TradingAssetOption =>
+    contractAddress === undefined
+        ? createAssetNativeTokenOption(toNetworkSymbolNonTestnet(symbol))
+        : createAssetTokenOption(symbol, {
+              contract: contractAddress,
+              symbol: tokenSymbol ?? name,
+              name,
+          });
 
 export type GlobalReceiveAssetListItem = {
     asset: TradingAssetOption;

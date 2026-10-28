@@ -2,11 +2,13 @@ import { Translation } from '@suite/intl';
 import { getGlobalReceiveAssetDescriptionValues } from '@suite-common/receive';
 import { type TradingAssetOption } from '@suite-common/trading';
 
-type GlobalReceiveAssetDescriptionProps = {
+type GlobalSendReceiveAssetDescriptionProps = {
     asset: TradingAssetOption | undefined;
 };
 
-export const GlobalReceiveAssetDescription = ({ asset }: GlobalReceiveAssetDescriptionProps) => {
+export const GlobalSendReceiveAssetDescription = ({
+    asset,
+}: GlobalSendReceiveAssetDescriptionProps) => {
     if (!asset) {
         return null;
     }

@@ -3,12 +3,15 @@ import { type CryptoId } from 'invity-api';
 import { type TokenDefinitionsState } from '@suite-common/token-definitions';
 import { getTokens } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-import { getContractAddressForNetworkSymbol } from '@suite-common/wallet-utils';
+import { getContractAddressForNetworkSymbol, isTestnet } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { CONTRACT_ADDRESS_FOR_NATIVE_TOKEN } from '../constants';
 import { type TradingType } from '../types';
 import { parseCryptoId, toTokenCryptoId } from '../utils';
+
+export const isSellableAccount = (account: Account) =>
+    !isTestnet(account.symbol) && account.accountType !== 'coinjoin';
 
 export const isAccountEligibleForTrade = (
     account: Account,

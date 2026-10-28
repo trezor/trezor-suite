@@ -1,11 +1,8 @@
 import { type TokenDefinitionsState } from '@suite-common/token-definitions';
+import { isSellableAccount } from '@suite-common/trading';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type RatesByKey } from '@suite-common/wallet-types';
-import {
-    filterAccountsByNetworkSymbol,
-    isStellarContractToken,
-    isTestnet,
-} from '@suite-common/wallet-utils';
+import { filterAccountsByNetworkSymbol, isStellarContractToken } from '@suite-common/wallet-utils';
 import { type BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import { BigNumber } from '@trezor/utils';
 
@@ -49,7 +46,7 @@ export const buildSellAssetRows = ({
     };
 
     const validAccounts = accounts.filter(account => {
-        if (isTestnet(account.symbol) || account.accountType === 'coinjoin') {
+        if (!isSellableAccount(account)) {
             return false;
         }
 

@@ -28,15 +28,23 @@ type TradeActionsProps = {
     source: TradeActionsSource;
     prefill?: TradeActionsPrefill;
     isDisabled?: boolean;
+    canBuy?: boolean;
+    canSell?: boolean;
 };
 
-export const TradeActions = ({ source, prefill, isDisabled }: TradeActionsProps) => {
+export const TradeActions = ({
+    source,
+    prefill,
+    isDisabled,
+    canBuy = true,
+    canSell = true,
+}: TradeActionsProps) => {
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
     const isAccountTabPage = useSelector(selectIsAccountTabPage);
     const currentRouteName = useSelector(selectRouteName);
     const isFinpromRestricted = useSelector(selectIsFinpromRestricted);
 
-    if (isFinpromRestricted) {
+    if (isFinpromRestricted || (!canBuy && !canSell)) {
         return null;
     }
 
@@ -84,20 +92,24 @@ export const TradeActions = ({ source, prefill, isDisabled }: TradeActionsProps)
         <Row gap={12}>
             <AppNavigationTooltip>
                 <ButtonGroup intent="neutral" priority="secondary" isDisabled={isDisabled}>
-                    <HeaderActionButton
-                        icon={PlusIcon}
-                        onClick={() => navigateToTrading('buy')}
-                        data-testid="@wallet/menu/wallet-trading-buy"
-                    >
-                        <Translation id="TR_NAV_BUY" />
-                    </HeaderActionButton>
-                    <HeaderActionButton
-                        icon={MinusIcon}
-                        onClick={() => navigateToTrading('sell')}
-                        data-testid="@wallet/menu/wallet-trading-sell"
-                    >
-                        <Translation id="TR_NAV_SELL" />
-                    </HeaderActionButton>
+                    {canBuy ? (
+                        <HeaderActionButton
+                            icon={PlusIcon}
+                            onClick={() => navigateToTrading('buy')}
+                            data-testid="@wallet/menu/wallet-trading-buy"
+                        >
+                            <Translation id="TR_NAV_BUY" />
+                        </HeaderActionButton>
+                    ) : null}
+                    {canSell ? (
+                        <HeaderActionButton
+                            icon={MinusIcon}
+                            onClick={() => navigateToTrading('sell')}
+                            data-testid="@wallet/menu/wallet-trading-sell"
+                        >
+                            <Translation id="TR_NAV_SELL" />
+                        </HeaderActionButton>
+                    ) : null}
                 </ButtonGroup>
             </AppNavigationTooltip>
         </Row>

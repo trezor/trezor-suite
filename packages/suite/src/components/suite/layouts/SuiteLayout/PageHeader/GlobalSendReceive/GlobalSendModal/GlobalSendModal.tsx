@@ -1,17 +1,13 @@
-import { useCallback, useRef } from 'react';
+import { type ReactNode, useCallback, useRef } from 'react';
 import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { selectSelectedDevice } from '@suite-common/device';
-import { sendFormActions } from '@suite-common/wallet-core';
-import { type Account } from '@suite-common/wallet-types';
+import { type Account, toTokenAddress } from '@suite-common/wallet-types';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { Box, Divider } from '@trezor/components';
-import { useServices } from '@trezor/dependency-injection';
 import { useCurrentRef } from '@trezor/react-utils';
-import { injectDispatch } from '@trezor/redux-utils';
 
-import { setSendFormPrefill } from 'src/actions/suite/suiteActions';
 import {
     AssetGroupLabel,
     AssetGroupSpace,
@@ -34,18 +30,25 @@ import { getAssetPickerItemHeight } from 'src/components/suite/asset-picker/util
 import { globalSendReceiveFiltersSelectors } from 'src/slices/wallet/globalSendReceiveFilters';
 
 import { AssetSearchWithNetworkFilter } from '../AssetSearchWithNetworkFilter/AssetSearchWithNetworkFilter';
+import { type GlobalSendTarget } from '../types';
 import { useAccountWithTokensOptions } from './hooks/useAccountWithTokensOptions';
+import { type SendTargetOptionsState, selectSendTargetOptions } from './selectSendTargetOptions';
 
 type GlobalSendModalProps = {
+    targets?: readonly GlobalSendTarget[];
+    description?: ReactNode;
     onCancel: (filledSearch: boolean) => void;
-    onSubmit: (account: Account, filledSearch: boolean) => void;
+    onSubmit: (target: GlobalSendTarget, filledSearch: boolean) => void;
 };
 
 const LIST_HEIGHT = 480;
 
-export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
-    const { dispatch } = useServices(injectDispatch);
-
+export function GlobalSendModal({
+    targets,
+    description,
+    onCancel,
+    onSubmit,
+}: GlobalSendModalProps) {
     const networkSymbolFilter = useSelector(globalSendReceiveFiltersSelectors.selectNetworkSymbol);
     const searchFilter = useSelector(globalSendReceiveFiltersSelectors.selectSearch);
     const { expandedGroupKeys, toggleGroup } = useExpandableGroups();
@@ -56,12 +59,15 @@ export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
         expandedHiddenTokensGroups: expandedGroupKeys,
         staticSessionId: device?.state?.staticSessionId ?? null,
     });
-
     const filteredAccountsWithTokens = useFilterAccountsWithTokens({
         accountsWithTokens,
         search: searchFilter,
     });
-    const globalSendListItems = useInsertGroupLabelsAndSpaces(filteredAccountsWithTokens);
+    const targetOptions = useSelector((state: SendTargetOptionsState) =>
+        selectSendTargetOptions(state, targets),
+    );
+    const listOptions = targetOptions ?? filteredAccountsWithTokens;
+    const globalSendListItems = useInsertGroupLabelsAndSpaces(listOptions);
 
     const submitRef = useCurrentRef(onSubmit);
     const listRef = useRef<HTMLDivElement>(null);
@@ -69,18 +75,18 @@ export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
 
     const handleAccountClick = useCallback(
         (account: Account) => {
-            dispatch(sendFormActions.removeDraft({ accountKey: account.key }));
-            submitRef.current?.(account, filledSearch);
+            submitRef.current?.({ account }, filledSearch);
         },
-        [submitRef, filledSearch, dispatch],
+        [submitRef, filledSearch],
     );
     const handleTokenClick = useCallback(
         (token: TokenInfo, account: Account) => {
-            dispatch(sendFormActions.removeDraft({ accountKey: account.key }));
-            dispatch(setSendFormPrefill({ contractAddress: token.contract }));
-            submitRef.current?.(account, filledSearch);
+            submitRef.current?.(
+                { account, contractAddress: toTokenAddress(token.contract) },
+                filledSearch,
+            );
         },
-        [submitRef, filledSearch, dispatch],
+        [submitRef, filledSearch],
     );
 
     const renderItem = useCallback(
@@ -145,20 +151,25 @@ export function GlobalSendModal({ onCancel, onSubmit }: GlobalSendModalProps) {
     return (
         <AssetsModal
             heading={<Translation id="SEND_TRANSACTION" />}
+            description={description}
             onClose={() => onCancel(filledSearch)}
         >
-            <Box padding={{ horizontal: 16 }}>
-                <AssetSearchWithNetworkFilter
-                    placeholder="TR_SEND_SEARCH"
-                    listRef={listRef}
-                    modal="send"
-                />
-            </Box>
+            {targetOptions === undefined && (
+                <>
+                    <Box padding={{ horizontal: 16 }}>
+                        <AssetSearchWithNetworkFilter
+                            placeholder="TR_SEND_SEARCH"
+                            listRef={listRef}
+                            modal="send"
+                        />
+                    </Box>
 
-            <Divider margin={{ top: 16 }} />
+                    <Divider margin={{ top: 16 }} />
+                </>
+            )}
 
             <AssetsListEmpty
-                isEmpty={filteredAccountsWithTokens.length === 0}
+                isEmpty={listOptions.length === 0}
                 heading={filledSearch ? 'TR_ACCOUNT_SEARCH_NO_RESULTS' : 'TR_ACCOUNT_NO_ACCOUNTS'}
                 height={LIST_HEIGHT}
             >

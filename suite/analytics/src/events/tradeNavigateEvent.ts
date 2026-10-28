@@ -9,6 +9,7 @@ export type TradeNavigateEventFrom =
     | 'dashboard/assets'
     | 'dashboard/empty-wallet'
     | 'dashboard/staking-dashboard'
+    | 'asset/header'
     | 'earn-dashboard'
     | 'account/header'
     | 'account/tokens'
@@ -48,6 +49,7 @@ export const tradeNavigateEvent: EventDef<Attributes, EventType.TradeNavigate> =
                 { version: '26.5.2', notes: 'added `earn-dashboard` value' },
                 { version: '26.7.0', notes: 'added `sidebar` value' },
                 { version: '26.7.0', notes: 'added `otc-banner` value' },
+                { version: '26.11.0', notes: 'added `asset/header` value' },
             ],
             description:
                 'Location where the user initiated the trading action (e.g., `dashboard/header`, `account/tradebox`, `dashboard/assets`)',
