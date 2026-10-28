@@ -55,7 +55,7 @@ export const createTransactionStoreRpcClient = (
             }) as ReturnType<TransactionStore[M]>;
 
     return {
-        registerAccounts: call('registerAccounts'),
+        setAccounts: call('setAccounts'),
         removeAccounts: call('removeAccounts'),
         watchNetworks: call('watchNetworks'),
         requestSync: call('requestSync'),

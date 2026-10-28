@@ -41,8 +41,15 @@ export type SyncState = {
 
 export type SelectRowsError = { type: 'QueryFailed' };
 
+export type ReplaceAccountsResult = { addedAccountKeys: string[]; removedAccountKeys: string[] };
+
 export type TransactionRepository = {
     upsertAccounts: (accounts: TransactionStoreAccount[]) => void;
+    /**
+     * Makes the stored accounts exactly these: upserts them, and deletes every other stored
+     * account with its whole history, in one SQLite transaction.
+     */
+    replaceAccounts: (accounts: TransactionStoreAccount[]) => ReplaceAccountsResult;
     removeAccounts: (accountKeys: string[]) => void;
     selectAccount: (accountKey: string) => TransactionStoreAccount | undefined;
     selectAccounts: (params: { symbol?: NetworkSymbol }) => TransactionStoreAccount[];
@@ -147,25 +154,52 @@ export const createTransactionRepository = (
         );
     };
 
+    const upsertAccount = (account: TransactionStoreAccount) =>
+        exec(
+            `INSERT INTO accounts (account_key, symbol, descriptor) VALUES (?, ?, ?)
+            ON CONFLICT (account_key) DO UPDATE
+            SET symbol = excluded.symbol, descriptor = excluded.descriptor`,
+            [account.accountKey, account.symbol, account.descriptor],
+        );
+
+    // The account's transactions, their transfers and its sync state go with it (cascade).
+    const deleteAccounts = (accountKeys: string[]) => {
+        if (accountKeys.length === 0) return;
+
+        exec(
+            `DELETE FROM accounts WHERE account_key IN (${toPlaceholders(accountKeys)})`,
+            accountKeys,
+        );
+    };
+
     return {
         upsertAccounts: accounts =>
-            runInSqliteTransaction(deps.sqlite, () =>
-                accounts.forEach(account =>
-                    exec(
-                        `INSERT INTO accounts (account_key, symbol, descriptor) VALUES (?, ?, ?)
-                        ON CONFLICT (account_key) DO UPDATE
-                        SET symbol = excluded.symbol, descriptor = excluded.descriptor`,
-                        [account.accountKey, account.symbol, account.descriptor],
-                    ),
-                ),
-            ),
+            runInSqliteTransaction(deps.sqlite, () => accounts.forEach(upsertAccount)),
 
-        removeAccounts: accountKeys => {
-            exec(
-                `DELETE FROM accounts WHERE account_key IN (${toPlaceholders(accountKeys)})`,
-                accountKeys,
-            );
-        },
+        replaceAccounts: accounts =>
+            runInSqliteTransaction(deps.sqlite, () => {
+                const storedAccountKeys = new Set(
+                    exec<{ account_key: string }>('SELECT account_key FROM accounts').rows.map(
+                        row => row.account_key,
+                    ),
+                );
+                const accountKeys = new Set(accounts.map(({ accountKey }) => accountKey));
+                const removedAccountKeys = [...storedAccountKeys].filter(
+                    accountKey => !accountKeys.has(accountKey),
+                );
+
+                deleteAccounts(removedAccountKeys);
+                accounts.forEach(upsertAccount);
+
+                return {
+                    addedAccountKeys: [...accountKeys].filter(
+                        accountKey => !storedAccountKeys.has(accountKey),
+                    ),
+                    removedAccountKeys,
+                };
+            }),
+
+        removeAccounts: deleteAccounts,
 
         selectAccount: accountKey => {
             const row = exec<AccountRow>(

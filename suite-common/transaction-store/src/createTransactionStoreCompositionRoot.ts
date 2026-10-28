@@ -61,12 +61,22 @@ export const createTransactionStoreCompositionRoot = (
     });
 
     const transactionStore: TransactionStore = {
-        registerAccounts: accounts => {
-            transactionRepository.upsertAccounts(accounts);
+        setAccounts: accounts => {
+            const { addedAccountKeys, removedAccountKeys } =
+                transactionRepository.replaceAccounts(accounts);
             const watchedNetworks = networkWatcher.getWatchedNetworks();
+
+            if (removedAccountKeys.length > 0) {
+                emit({ type: 'transactionsChanged', accountKeys: removedAccountKeys });
+            }
+            // The accounts already stored are kept fresh by blocks and the interval.
             syncQueue.requestSync({
                 accountKeys: accounts
-                    .filter(({ symbol }) => watchedNetworks.includes(symbol))
+                    .filter(
+                        ({ accountKey, symbol }) =>
+                            addedAccountKeys.includes(accountKey) &&
+                            watchedNetworks.includes(symbol),
+                    )
                     .map(({ accountKey }) => accountKey),
                 mode: 'latest',
             });

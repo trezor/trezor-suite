@@ -5,7 +5,7 @@ import type { TransactionStoreEvent } from '../transactionStoreTypes';
 export type TransactionStoreRpcMethod = Exclude<keyof TransactionStore, 'subscribe'>;
 
 export const TRANSACTION_STORE_RPC_METHODS = [
-    'registerAccounts',
+    'setAccounts',
     'removeAccounts',
     'watchNetworks',
     'requestSync',

@@ -29,7 +29,7 @@ easy to get wrong.
 A standalone engine that owns a local SQL database of transactions and keeps it up to date on
 its own, on web, Electron desktop and React Native. The app only:
 
-1. registers the accounts it knows and says which networks it is interested in,
+1. hands over the accounts it knows and says which networks it is interested in,
 2. asks what is synced (and gets told when that changes),
 3. runs queries.
 
@@ -104,7 +104,7 @@ API, and every method of it is async, so the boundary can sit anywhere.
 main thread (app)                          dedicated worker (transactionStoreWorker.ts)
 -----------------                          -------------------------------------------
 startTransactionStoreFeed (service)        createTransactionStoreCompositionRoot
-  registerAccounts / watchNetworks  ─RPC─►   sync queue, jobs, watcher
+  setAccounts / watchNetworks       ─RPC─►   sync queue, jobs, watcher
   setBackends (Connect defaults     ─msg─►   blockchain-link per network
   filled in on the main thread)              └─ nested Worker per backend (blockbook, …)
 useStoredAccountTransactions      ◄─RPC─   SQLite (Evolu WASM driver, OPFS SAHPool)
@@ -183,6 +183,21 @@ block_time NULL, PRIMARY KEY(account_key, txid, idx))` (v2), index
 - `sync_state(account_key PK, is_complete, last_synced_at NULL, last_error NULL)`; the newest
   block is computed from `transactions`.
 
+### Accounts stay in sync with the app's
+
+`setAccounts` takes the app's whole account list; `replaceAccounts` diffs it against the
+`accounts` table in one SQLite transaction, deletes every stored account missing from it (its
+transactions, transfers and sync state cascade) and upserts the rest. Only the added accounts
+get a sync; the others are kept fresh by blocks and the interval. Because the diff is against
+the database, it also catches what left while the store was off:
+
+- a forgotten device's wallets, and a not remembered wallet after a restart (Suite does not
+  persist its accounts, so the store does not keep its history either);
+- accounts of a network that gets disabled, and accounts hidden in the app.
+
+The feed starts after Redux is hydrated with the stored accounts (`initThunk` runs after
+`hydrateReduxStore`), so the first list is complete and nothing is wiped by mistake.
+
 ### Sync engine
 
 - **Queue** (`createSyncQueue`): one job per account, deduplicated. Requesting `full` while
@@ -211,7 +226,8 @@ block_time NULL, PRIMARY KEY(account_key, txid, idx))` (v2), index
 
 ```ts
 type TransactionStore = {
-    registerAccounts: (accounts: TransactionStoreAccount[]) => Promise<void>;
+    /** The app's whole list; the store deletes every other account it holds, with its history. */
+    setAccounts: (accounts: TransactionStoreAccount[]) => Promise<void>;
     removeAccounts: (accountKeys: string[]) => Promise<void>;
     watchNetworks: (symbols: NetworkSymbol[]) => Promise<void>;
     requestSync: (params: { accountKeys: string[]; mode: SyncMode }) => Promise<void>;
@@ -257,7 +273,7 @@ through `query`, so feature queries are typed end to end. No own query builder.
       Memoized selectors (`transactionStoreFeedSelectors.ts`) derive the accounts (visible,
       enabled networks, no coinjoin) and the backends, and keep the same reference while those
       are unchanged, so balance updates and blocks push nothing. On a change it registers
-      accounts (removing only ones seen leaving), sets backends and watches the networks; when
+      hands the store the whole account list (`setAccounts`), sets backends and watches the networks; when
       disabled it disposes the store and its worker.
     - `useStoredAccountTransactions({ account, page, perPage })`: the account's page of rows,
       enhanced to `WalletAccountTransaction`, its stored count and sync status, `isLoading`,
@@ -287,7 +303,6 @@ thunks and their merging.
   oldest transfers.
 - Exponential backoff per backend instead of "retry on next tick".
 - Leader election (Web Locks) so several web tabs share one engine.
-- Wipe the device's rows on "forget device".
 
 ## Acceptance criteria
 

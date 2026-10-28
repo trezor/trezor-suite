@@ -293,4 +293,35 @@ describe(createTransactionRepository.name, () => {
         expect(countTransfers()).toEqual({ success: true, payload: [{ count: 0 }] });
         sqlite.dispose();
     });
+
+    it('keeps exactly the given accounts, deleting the others with their history', async () => {
+        const { sqlite, repository } = await setUp();
+        repository.upsertTransactions({
+            accountKey: 'btc-account',
+            transactions: [mockTransaction({ txid: 'tx' })],
+        });
+        const ltcAccount: TransactionStoreAccount = {
+            accountKey: 'ltc-account',
+            symbol: asNetworkSymbol('ltc'),
+            descriptor: 'xpub-ltc',
+        };
+
+        const result = repository.replaceAccounts([ethAccount, ltcAccount]);
+
+        expect(result).toEqual({
+            addedAccountKeys: ['ltc-account'],
+            removedAccountKeys: ['btc-account'],
+        });
+        expect(repository.selectAccounts({}).map(({ accountKey }) => accountKey)).toEqual([
+            'eth-account',
+            'ltc-account',
+        ]);
+        expect(
+            repository.selectRows({
+                sql: 'SELECT (SELECT COUNT(*) FROM transactions) + (SELECT COUNT(*) FROM transfers) AS count',
+                parameters: [],
+            }),
+        ).toEqual({ success: true, payload: [{ count: 0 }] });
+        sqlite.dispose();
+    });
 });

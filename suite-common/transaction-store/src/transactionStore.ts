@@ -21,7 +21,11 @@ import type {
  * of a store in a worker (web, desktop) are interchangeable.
  */
 export type TransactionStore = {
-    registerAccounts: (accounts: TransactionStoreAccount[]) => Promise<void>;
+    /**
+     * The accounts the store keeps: the app's whole list. Any other stored account is deleted
+     * with its history (a forgotten or not remembered wallet), and new ones are synced.
+     */
+    setAccounts: (accounts: TransactionStoreAccount[]) => Promise<void>;
     removeAccounts: (accountKeys: string[]) => Promise<void>;
     /** The networks to keep fresh (the connected ones); the ones left out stop being watched. */
     watchNetworks: (symbols: NetworkSymbol[]) => Promise<void>;

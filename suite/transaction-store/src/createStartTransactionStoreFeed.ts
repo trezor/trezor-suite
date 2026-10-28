@@ -63,16 +63,10 @@ export const createStartTransactionStoreFeed =
             const service = deps.getTransactionStoreService();
 
             if (accounts !== fed?.accounts) {
-                const accountKeys = new Set(accounts.map(({ accountKey }) => accountKey));
-                // Only accounts seen leaving since the start; at startup the app has none loaded yet.
-                const removedAccountKeys = (fed?.accounts ?? [])
-                    .map(({ accountKey }) => accountKey)
-                    .filter(accountKey => !accountKeys.has(accountKey));
-
-                if (removedAccountKeys.length > 0) {
-                    void service.transactionStore.removeAccounts(removedAccountKeys);
-                }
-                void service.transactionStore.registerAccounts(accounts);
+                // The whole list: the store diffs it against what it holds and deletes the rest,
+                // so a forgotten wallet's history goes even if it left while the store was off.
+                // Safe from the start, as the feed starts after the stored accounts are loaded.
+                void service.transactionStore.setAccounts(accounts);
             }
             if (backends !== fed?.backends) {
                 // Backends first, so the networks subscribe to blocks on them right away.
