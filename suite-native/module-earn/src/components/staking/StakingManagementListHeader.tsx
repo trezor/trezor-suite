@@ -47,7 +47,7 @@ export const StakingManagementListHeader = ({ accountKey }: StakingManagementLis
         : 'earn.stakingManagementScreen.stakingHistory';
 
     return (
-        <VStack spacing="sp48" marginTop="sp32" paddingHorizontal="sp16">
+        <VStack spacing="sp24" marginTop="sp16" paddingHorizontal="sp16">
             {isSupportedEthStakingNetworkSymbol(networkSymbol) && (
                 <InstantUnstakeConfirmationBanner accountKey={accountKey} />
             )}
