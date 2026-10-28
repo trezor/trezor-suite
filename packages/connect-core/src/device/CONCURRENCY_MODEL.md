@@ -226,6 +226,7 @@ not as asserted bugs:
    `device.interrupt()` then expects to `device.run()` (override path). Verify
    no window where `runPromise` is still set when the override's `run()` is
    issued (would throw `Device_CallInProgress`).
+   _Verified safe — see §6 (override dispatch seam)._
 3. **Single `sessionDfd` shared by acquire & release.** Both `acquire()` and
    `release()` arm/await the _same_ `sessionDfd` slot (`getSessionChangePromise`,
    `Device.getSessionChangePromise()`). Verify overlapping acquire/release (e.g. interrupt mid-
@@ -426,3 +427,57 @@ repro — pre-fix the reconnected `'2'` is never registered; passes post-fix). T
 connected; it reds without the fix (counterexample
 `connect 1, connect 3, disconnect 3, connect 3, connect 1`) and is green with it
 across 1600 runs × seeds 1/7/42/99.
+
+---
+
+## 6. Override dispatch seam (verified safe — INV-4)
+
+The last objective-enumerated seam, the `core/index.ts` override path
+(`onCallDevice:313-330`), was driven directly. In production a method with
+`overridePreviousCall` preempts another in-flight call to the **same device**;
+`overridePreviousCall` is set by exactly **one** method — `setBusy` (`api/setBusy.ts:16`)
+— so the only production-reachable override is a single `setBusy` overriding a
+single in-flight call. Core's sequence is:
+
+```
+await device.interrupt(Method_Override);   // abort the in-flight run
+if (method.overridden) { respond(false, Method_Override); throw; }
+await device.run(innerAction, ...);        // start the overriding run
+```
+
+**The device-level contract this rests on:** the instant `await device.interrupt(reason)`
+resolves, the device is immediately runnable (`device.run()` on the next line must
+not throw `Device_CallInProgress`), and the interrupted run has rejected with
+**exactly** `reason` (so the overridden call responds with `Method_Override`, not a
+stray error).
+
+**Why it holds (code-grounded).** `interrupt()` ends with `await this.currentRun`
+(`Device.interrupt()`); `currentRun` is `runPromise?.catch(()=>{})` (the `Device.currentRun`
+getter),
+and `runPromise` is the full chain `…race().catch().finally(clear).then()`
+(assembled in `Device.run()`). The `.finally` that sets `runPromise = undefined` is part of
+that chain, so `await this.currentRun` cannot resolve until `runPromise` is already
+cleared. Therefore core's next-line `device.run()` always sees `runPromise ===
+undefined` and proceeds. The interrupted run rejects via the `Promise.race` abort
+branch with `signal.reason` (the `Promise.race` in `Device.run()`), which the `.catch` re-throws
+unchanged — so the reason is verbatim `Method_Override`.
+
+**Tests:** `deviceOverrideDispatch.test.ts` drives the **real**
+`Device.interrupt` → immediate `Device.run` (no reproduction of `onCallDevice`'s
+bookkeeping) across the three in-flight states core can interrupt — a run blocked
+in its `fn` body, blocked in `acquire()`, and parked before `acquire()` at
+`await this.releasePromise` — asserting in each: the override `run()` does not
+throw, the interrupted run rejected with `Method_Override`, and the device drains
+with a balanced session ledger. A companion case asserts the other half of the
+contract: a **non-override** second run on a busy device is rejected with
+`Device_CallInProgress` (the `else if (device.currentRun)` branch). The existing
+fuzz harness only checks runnability after a full drain; core re-runs on the next
+microtask, so this immediate `interrupt → run` sequence is its own seam.
+
+**Not an INV violation (corner not reachable in production).** Two _concurrent_
+override-capable calls (two `setBusy`) to the same device have a timing-dependent
+window where both pass the `if (method.overridden)` re-check and both reach
+`device.run()`; the loser gets a `Device_CallInProgress` **response**. This is a
+defined error response, not a hang/leak/stuck device (INV-4 recovery still holds —
+the next call succeeds), and it is not reachable from normal usage (Suite never
+fires two `setBusy` concurrently). Flagged here for completeness, not as a defect.
