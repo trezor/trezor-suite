@@ -5,7 +5,7 @@ import { getWeakRandomId } from '@trezor/utils';
 import { tradeApi } from '../tradeApi';
 import { type TradingCountryCode, type TradingOTC } from '../types';
 
-const FALLBACK_API_KEY = getWeakRandomId(20);
+const ANONYMOUS_ID = getWeakRandomId(20);
 
 export const getOtcProvidersByCountry = (
     data: TradingOTC | null | undefined,
@@ -18,7 +18,7 @@ export const useFetchOtc = () =>
         queryKey: tradingQueryKeys.otcData(),
         queryFn: async () => {
             if (!tradeApi.getCurrentApiKey()) {
-                tradeApi.createAnonymousApiKey(FALLBACK_API_KEY);
+                tradeApi.createAnonymousApiKey(ANONYMOUS_ID);
             }
 
             return (await tradeApi.getOTCData()) ?? null;

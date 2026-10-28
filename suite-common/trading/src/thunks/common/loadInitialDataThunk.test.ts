@@ -14,7 +14,7 @@ import {
 } from './loadInitialDataThunk';
 import coinsFixture from '../../__fixtures__/coins.json';
 import platformsFixture from '../../__fixtures__/platforms.json';
-import { TRADE_API_RELOAD_DATA_AFTER_MS, TRADING_FALLBACK_API_KEY } from '../../constants';
+import { TRADE_API_RELOAD_DATA_AFTER_MS, TRADING_ANONYMOUS_ID } from '../../constants';
 import { tradingBuyActions } from '../../reducers/buyReducer';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
 import {
@@ -110,7 +110,7 @@ describe('loadInitialDataThunk catalog cache', () => {
             lastLoadedTimestamp: Date.now(),
         });
         expect(tradeApi.setServersEnvironment).toHaveBeenCalledWith('localhost');
-        expect(tradeApi.createAnonymousApiKey).toHaveBeenCalledWith(TRADING_FALLBACK_API_KEY);
+        expect(tradeApi.createAnonymousApiKey).toHaveBeenCalledWith(TRADING_ANONYMOUS_ID);
         expect(tradeApi.createApiKey).not.toHaveBeenCalled();
     });
 
@@ -155,13 +155,13 @@ describe('loadInitialDataThunk catalog cache', () => {
                     : [],
             );
             expect(jest.mocked(tradeApi.createAnonymousApiKey).mock.calls).toEqual(
-                selectedAccount ? [] : [[TRADING_FALLBACK_API_KEY]],
+                selectedAccount ? [] : [[TRADING_ANONYMOUS_ID]],
             );
             expectCatalogCalls(0);
         },
     );
 
-    it('preserves desktop selected-account and forced-key precedence on cache hits', async () => {
+    it('preserves desktop selected-account and forced anonymous id precedence on cache hits', async () => {
         const { services, getSelectedAccount } = await initLoadedTestServices();
         const selectedAccount: SelectedAccountStatus = {
             status: 'loaded',
@@ -171,7 +171,7 @@ describe('loadInitialDataThunk catalog cache', () => {
         };
         getSelectedAccount.mockReturnValue(selectedAccount);
         await services.store
-            .dispatch(loadInitialDataThunk({ activeSection: 'buy', forcedApiKey: 'forced' }))
+            .dispatch(loadInitialDataThunk({ activeSection: 'buy', forcedAnonymousId: 'forced' }))
             .unwrap();
         expect(tradeApi.createApiKey).toHaveBeenLastCalledWith({
             descriptor: account.descriptor,
@@ -183,13 +183,13 @@ describe('loadInitialDataThunk catalog cache', () => {
             account: undefined,
         });
         await services.store
-            .dispatch(loadInitialDataThunk({ activeSection: 'buy', forcedApiKey: 'forced' }))
+            .dispatch(loadInitialDataThunk({ activeSection: 'buy', forcedAnonymousId: 'forced' }))
             .unwrap();
         expect(tradeApi.createAnonymousApiKey).toHaveBeenLastCalledWith('forced');
         await services.store
-            .dispatch(loadInitialDataThunk({ activeSection: 'buy', forcedApiKey: '' }))
+            .dispatch(loadInitialDataThunk({ activeSection: 'buy', forcedAnonymousId: '' }))
             .unwrap();
-        expect(tradeApi.createAnonymousApiKey).toHaveBeenLastCalledWith(TRADING_FALLBACK_API_KEY);
+        expect(tradeApi.createAnonymousApiKey).toHaveBeenLastCalledWith(TRADING_ANONYMOUS_ID);
         expectCatalogCalls(0);
     });
 

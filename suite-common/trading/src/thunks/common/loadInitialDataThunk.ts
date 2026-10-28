@@ -4,7 +4,7 @@ import { type WithServices, createThunk } from '@trezor/redux-utils';
 import { type SetTradeApiKeyThunkState, setTradeApiKeyThunk } from './setTradeApiKeyThunk';
 import {
     TRADE_API_RELOAD_DATA_AFTER_MS,
-    TRADING_FALLBACK_API_KEY,
+    TRADING_ANONYMOUS_ID,
     TRADING_THUNK_PREFIX,
 } from '../../constants';
 import { tradingBuyActions } from '../../reducers/buyReducer';
@@ -28,7 +28,7 @@ import { loadSellInfoThunk } from '../sell/loadSellInfoThunk';
 
 export interface LoadInitialDataThunkProps {
     activeSection: TradingType;
-    forcedApiKey?: string;
+    forcedAnonymousId?: string;
     forceReload?: boolean;
 }
 
@@ -47,7 +47,10 @@ export const loadInitialDataThunk = createThunk<
     { state: LoadInitialDataThunkState; extra: LoadInitialDataThunkDeps }
 >(
     `${TRADING_THUNK_PREFIX}/loadInitialData`,
-    async ({ activeSection, forcedApiKey, forceReload = false }, { dispatch, getState, extra }) => {
+    async (
+        { activeSection, forcedAnonymousId, forceReload = false },
+        { dispatch, getState, extra },
+    ) => {
         const selectedAccount = extra.services.getSelectedAccount();
         const account = selectTradingAccountAccordingActiveSection(
             getState(),
@@ -65,7 +68,7 @@ export const loadInitialDataThunk = createThunk<
         if (account) {
             dispatch(setTradeApiKeyThunk({ account }));
         } else {
-            tradeApi.createAnonymousApiKey(forcedApiKey || TRADING_FALLBACK_API_KEY);
+            tradeApi.createAnonymousApiKey(forcedAnonymousId || TRADING_ANONYMOUS_ID);
         }
 
         const tradeServerEnvironment = extra.services.getTradingEnvironment();
