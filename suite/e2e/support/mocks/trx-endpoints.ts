@@ -113,6 +113,7 @@ type TronTxPayload = {
     resource?: string;
     stakeAmount?: string;
     unstakeAmount?: string;
+    claimedVoteReward?: string;
     votes?: { address: string; count: string }[];
 };
 

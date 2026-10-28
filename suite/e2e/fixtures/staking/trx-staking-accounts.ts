@@ -44,6 +44,16 @@ type TrxWithdrawnAccountParams = TrxUnstakingAccountParams & {
     withdrawTxid: string;
 };
 
+type TrxRewardedAccountParams = TrxVotedAccountParams & {
+    // Unclaimed voting reward in Sun.
+    rewardAmountSun: string;
+};
+
+type TrxClaimedAccountParams = TrxRewardedAccountParams & {
+    claimTxid: string;
+    claimTime: number;
+};
+
 // Bandwidth gained by freezing `stakeAmount` TRX on the mocked network.
 export const getTrxBandwidthGain = (stakeAmount: string) =>
     Math.round(
@@ -205,6 +215,61 @@ export const buildTrxWithdrawnAccountState = (params: TrxWithdrawnAccountParams)
                 stakingInfo: {
                     ...unstakingAccountState.chainExtraData.payload.stakingInfo,
                     unstakingBatches: [],
+                },
+            },
+        },
+    };
+};
+
+// The voted account once its representative has paid out `rewardAmountSun` of voting rewards that
+// are still waiting to be claimed.
+export const buildTrxRewardedAccountState = (params: TrxRewardedAccountParams) => {
+    const votedAccountState = buildTrxVotedAccountState(params);
+
+    return {
+        ...votedAccountState,
+        chainExtraData: {
+            payloadType: 'tron',
+            payload: {
+                ...votedAccountState.chainExtraData.payload,
+                stakingInfo: {
+                    ...votedAccountState.chainExtraData.payload.stakingInfo,
+                    unclaimedReward: params.rewardAmountSun,
+                },
+            },
+        },
+    };
+};
+
+// The rewarded account after a confirmed claim moved the reward to the available balance. Tron
+// records the claim time, which starts the 24-hour cooldown before the next claim.
+export const buildTrxClaimedAccountState = (params: TrxClaimedAccountParams) => {
+    const rewardedAccountState = buildTrxRewardedAccountState(params);
+    const claimTx = buildTrxStakingTx({
+        txid: params.claimTxid,
+        address: TRX_FIRST_ACCOUNT_ADDRESS,
+        blockHeight: TRX_BEST_BLOCK.height + 3,
+        payload: {
+            contractType: 'WithdrawBalanceContract',
+            operation: 'claim',
+            claimedVoteReward: params.rewardAmountSun,
+        },
+    });
+
+    return {
+        ...rewardedAccountState,
+        balance: (BigInt(rewardedAccountState.balance) + BigInt(params.rewardAmountSun)).toString(),
+        txs: 4,
+        nonTokenTxs: 4,
+        transactions: [claimTx, ...rewardedAccountState.transactions],
+        chainExtraData: {
+            payloadType: 'tron',
+            payload: {
+                ...rewardedAccountState.chainExtraData.payload,
+                stakingInfo: {
+                    ...rewardedAccountState.chainExtraData.payload.stakingInfo,
+                    unclaimedReward: '0',
+                    latestWithdrawTime: params.claimTime,
                 },
             },
         },
