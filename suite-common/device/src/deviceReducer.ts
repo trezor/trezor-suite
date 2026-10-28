@@ -71,6 +71,10 @@ const isUnlocked = (features: Features): boolean =>
         : // Older FW (<2.3.2) which doesn't have `unlocked` feature also doesn't have auto-lock and is always unlocked.
           true;
 
+// A wallet created with a passphrase is available only while the passphrase protection is enabled.
+const getIsWalletAvailable = (useEmptyPassphrase: boolean | undefined, features: Features) =>
+    !!useEmptyPassphrase || !!features.passphrase_protection;
+
 /**
  * Local utility: get state in DeviceState format from AcquiredDevice in backwards compatible way
  * @param upcoming
@@ -303,10 +307,7 @@ const changeDevice = (
             }
             if (d.state && isDeviceUnlocked) {
                 // if device is unlocked and authorized (with state) check availability.
-                // if it was created with passphrase (useEmptyPassphrase = false) then availability depends on current settings
-                const available = d.useEmptyPassphrase
-                    ? true
-                    : !!device.features.passphrase_protection;
+                const available = getIsWalletAvailable(d.useEmptyPassphrase, device.features);
 
                 return merge(d, { ...device, ...extended, available });
             }
@@ -341,7 +342,9 @@ const addAuthorizedDevice = (
         ...oldDevice,
         metadata: {},
         passwords: {},
+        remember: false,
         temporaryRemember: false,
+        available: getIsWalletAvailable(useEmptyPassphrase, device.features),
         instance: deviceUtils.getNewInstanceNumber(draft.devices, device),
         walletNumber: deviceUtils.getNewWalletNumber(draft.devices, device),
         useEmptyPassphrase,
