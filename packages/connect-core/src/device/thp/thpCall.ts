@@ -1,4 +1,4 @@
-import { DEVICE } from '@trezor/connect-common';
+import { DEVICE, normalizeButtonRequestPayload } from '@trezor/connect-common';
 import { TypedError } from '@trezor/connect-common/src/constants/errors';
 import type { thp as protocolThp } from '@trezor/protocol';
 
@@ -84,7 +84,10 @@ export const thpCall = async <T extends MessageKey>(
         if (result.payload.message.code === 'ButtonRequest_PassphraseEntry') {
             device.emit(DEVICE.PASSPHRASE_ON_DEVICE);
         } else {
-            device.emit(DEVICE.BUTTON, { device, payload: result.payload.message });
+            device.emit(DEVICE.BUTTON, {
+                device,
+                payload: normalizeButtonRequestPayload(result.payload.message),
+            });
         }
 
         return thpCall(device, 'ButtonAck' as T, {} as ThpMessagePayload<T>, expectedFor);
