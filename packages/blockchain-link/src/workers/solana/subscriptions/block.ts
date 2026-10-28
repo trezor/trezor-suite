@@ -36,7 +36,7 @@ export const subscribeBlock = async ({ state, connect, post }: Context) => {
     fetchBlock();
 
     // the solana RPC api has subscribe method, see here: https://www.quicknode.com/docs/solana/rootSubscribe
-    // but solana block height is updated so often that it slows down the whole application and overloads the the api
+    // but solana block height is updated so often that it slows down the whole application and overloads the api
     // so we instead use setInterval to check for new blocks every `BLOCK_SUBSCRIBE_INTERVAL_MS`
     const interval = setInterval(fetchBlock, BLOCK_SUBSCRIBE_INTERVAL_MS);
     // we save the interval in the state so we can clear it later
