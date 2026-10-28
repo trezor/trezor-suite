@@ -51,6 +51,7 @@
     - [transactions export](./features/transactions/export.md)
     - [transactions search](./features/transactions/search.md)
     - [metadata labeling](./features/metadata.md)
+    - [Suite Sync](./features/suite-sync.md)
     - [fiat rates](./features/fiat-rates.md)
     - [guide](./features/guide.md)
     - [coinjoin](./features/coinjoin.md)

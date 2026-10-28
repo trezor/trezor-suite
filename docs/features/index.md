@@ -6,6 +6,7 @@ This directory contains description of various Trezor Suite features.
 - [transactions export](./transactions/export.md)
 - [transactions search](./transactions//search.md)
 - [metadata labeling](./metadata.md)
+- [Suite Sync](./suite-sync.md)
 - [fiat rates](./fiat-rates.md)
 - [guide](./guide.md)
 - [localization](./localization.md)
