@@ -146,6 +146,16 @@ describe('publish import transforms — new URL is gated on the worker idiom', (
         ).toThrow(/published packages ship lib\/ only/);
     });
 
+    // Pins the other branch of the gate: the base is import.meta.url, but the parent is not a
+    // worker constructor, so the specifier is still unresolvable for a consumer.
+    it('throws on a non-worker new URL(@trezor/*/src, import.meta.url)', () => {
+        expect(() =>
+            runEsm(
+                `const d = readFileSync(new URL('@trezor/blockchain-link/src/workers/blockbook', import.meta.url));`,
+            ),
+        ).toThrow(/published packages ship lib\/ only/);
+    });
+
     it('leaves a single-argument new URL(literal) untouched', () => {
         const out = runEsm(`const u = new URL('./api/status');`);
         expect(out).not.toContain('./api/status.js');
