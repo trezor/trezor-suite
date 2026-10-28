@@ -12337,6 +12337,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/transaction-store@workspace:suite-common/transaction-store":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/transaction-store@workspace:suite-common/transaction-store"
+  dependencies:
+    "@evolu/common": "npm:8.10.0"
+    "@evolu/nodejs": "npm:4.0.0"
+    "@suite-common/wallet-config": "workspace:*"
+    "@trezor/blockchain-link-types": "workspace:*"
+    "@trezor/dependency-injection": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/transfer-uri@workspace:*, @suite-common/transfer-uri@workspace:suite-common/transfer-uri":
   version: 0.0.0-use.local
   resolution: "@suite-common/transfer-uri@workspace:suite-common/transfer-uri"
