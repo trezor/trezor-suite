@@ -1,9 +1,35 @@
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { DEFAULT_FLAGSHIP_MODEL } from '@trezor/device';
 import { DeviceModelInternal } from '@trezor/device-utils';
 
-import { deviceReducerInitialState } from './deviceReducer';
-import { selectDeviceModelWithFlagshipFallback } from './deviceSelectors';
+import { type DeviceRootState, deviceReducerInitialState } from './deviceReducer';
+import {
+    selectDeviceModelWithFlagshipFallback,
+    selectStandardWalletByDeviceId,
+    selectStandardWalletDescriptorByDeviceId,
+} from './deviceSelectors';
+
+const createWallet = (overrides: Partial<TrezorDevice>) =>
+    ({
+        id: 'device-1',
+        connected: true,
+        instance: 1,
+        useEmptyPassphrase: true,
+        state: { staticSessionId: 'standard@device-1:1' },
+        ...overrides,
+    }) as unknown as TrezorDevice;
+
+const createState = (devices: TrezorDevice[]): DeviceRootState => ({
+    device: { ...deviceReducerInitialState, devices },
+});
+
+const standardWallet = createWallet({});
+const hiddenWallet = createWallet({
+    instance: 2,
+    useEmptyPassphrase: false,
+    state: { staticSessionId: 'hidden@device-1:2' },
+});
 
 describe(selectDeviceModelWithFlagshipFallback.name, () => {
     it('returns the model of the selected device', () => {
@@ -40,5 +66,58 @@ describe(selectDeviceModelWithFlagshipFallback.name, () => {
         };
 
         expect(selectDeviceModelWithFlagshipFallback(state)).toBe(DEFAULT_FLAGSHIP_MODEL);
+    });
+});
+
+describe(selectStandardWalletByDeviceId.name, () => {
+    it('selects the standard wallet', () => {
+        expect(selectStandardWalletByDeviceId(createState([standardWallet]), 'device-1')).toBe(
+            standardWallet,
+        );
+    });
+
+    it('selects the standard wallet when a hidden wallet of the device is listed first', () => {
+        expect(
+            selectStandardWalletByDeviceId(createState([hiddenWallet, standardWallet]), 'device-1'),
+        ).toBe(standardWallet);
+    });
+
+    it('never selects a hidden wallet', () => {
+        expect(selectStandardWalletByDeviceId(createState([hiddenWallet]), 'device-1')).toBeNull();
+    });
+
+    it('ignores a standard wallet without state', () => {
+        expect(
+            selectStandardWalletByDeviceId(
+                createState([createWallet({ state: undefined })]),
+                'device-1',
+            ),
+        ).toBeNull();
+    });
+
+    it('ignores standard wallets of other devices', () => {
+        expect(
+            selectStandardWalletByDeviceId(
+                createState([createWallet({ id: 'device-2' })]),
+                'device-1',
+            ),
+        ).toBeNull();
+    });
+});
+
+describe(selectStandardWalletDescriptorByDeviceId.name, () => {
+    it('returns the descriptor of the standard wallet', () => {
+        expect(
+            selectStandardWalletDescriptorByDeviceId(
+                createState([hiddenWallet, standardWallet]),
+                'device-1',
+            ),
+        ).toBe('standard');
+    });
+
+    it('returns null without a standard wallet', () => {
+        expect(
+            selectStandardWalletDescriptorByDeviceId(createState([hiddenWallet]), 'device-1'),
+        ).toBeNull();
     });
 });
