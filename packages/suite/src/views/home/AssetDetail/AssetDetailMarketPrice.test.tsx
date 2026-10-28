@@ -2,6 +2,11 @@ import '@suite-common/test-utils/globalOverrides';
 
 import { screen } from '@testing-library/react';
 
+import {
+    type AssetPricePoint,
+    INITIAL_ASSET_PRICE_CHART_RANGE,
+    useAssetPriceHistoryQuery,
+} from '@suite-common/price-chart';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 
@@ -10,6 +15,27 @@ import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { AssetDetailMarketPrice } from './AssetDetailMarketPrice';
 import { ETH, ETH_ASSET_KEY, getEthAssetState } from './assetDetailTestState';
+
+jest.mock('@suite-common/price-chart', () => ({
+    ...jest.requireActual('@suite-common/price-chart'),
+    useAssetPriceHistoryQuery: jest.fn(),
+}));
+
+const mockUseAssetPriceHistoryQuery = jest.mocked(useAssetPriceHistoryQuery);
+
+const historyQuery = (data: AssetPricePoint[] | null | undefined, isLoading = false) =>
+    ({ data, isLoading }) as ReturnType<typeof useAssetPriceHistoryQuery>;
+
+const PRICE_HISTORY: AssetPricePoint[] = [
+    { timestamp: 1700000000000, price: 2900 },
+    { timestamp: 1700086400000, price: 3000 },
+];
+
+global.ResizeObserver = class MockedResizeObserver {
+    observe = jest.fn();
+    unobserve = jest.fn();
+    disconnect = jest.fn();
+};
 
 type InitialStateParams = {
     /** What one ether costs, if the market prices it at all. */
@@ -32,6 +58,11 @@ const renderMarketPrice = (state: AppState) => {
 };
 
 describe('the market price on the asset screen', () => {
+    beforeEach(() => {
+        mockUseAssetPriceHistoryQuery.mockReset();
+        mockUseAssetPriceHistoryQuery.mockReturnValue(historyQuery(PRICE_HISTORY));
+    });
+
     it('says what one unit of the asset costs', () => {
         renderMarketPrice(getInitialState({ ethRate: 3000 }));
 
@@ -75,5 +106,36 @@ describe('the market price on the asset screen', () => {
         renderMarketPrice(getInitialState({}));
 
         expect(screen.queryByTestId('@asset-detail/market-price')).not.toBeInTheDocument();
+    });
+
+    describe('the price chart in it', () => {
+        it("draws the week's price history", () => {
+            renderMarketPrice(getInitialState({ ethRate: 3000 }));
+
+            expect(screen.getByTestId('@price-chart/graph')).toBeInTheDocument();
+            expect(mockUseAssetPriceHistoryQuery).toHaveBeenLastCalledWith({
+                ticker: { symbol: ETH, tokenAddress: undefined },
+                fiatCurrency: 'usd',
+                range: INITIAL_ASSET_PRICE_CHART_RANGE,
+            });
+        });
+
+        it('holds its place with a skeleton while the history loads', () => {
+            mockUseAssetPriceHistoryQuery.mockReturnValue(historyQuery(undefined, true));
+
+            renderMarketPrice(getInitialState({ ethRate: 3000 }));
+
+            expect(screen.getByTestId('@price-chart/skeleton')).toBeInTheDocument();
+            expect(screen.queryByTestId('@price-chart/graph')).not.toBeInTheDocument();
+        });
+
+        it('is left out for an asset without a price history, leaving the price alone', () => {
+            mockUseAssetPriceHistoryQuery.mockReturnValue(historyQuery(null));
+
+            renderMarketPrice(getInitialState({ ethRate: 3000 }));
+
+            expect(screen.getByTestId('@asset-detail/market-price')).toHaveTextContent('$3,000');
+            expect(screen.queryByTestId('@price-chart/graph')).not.toBeInTheDocument();
+        });
     });
 });

@@ -88,6 +88,9 @@
             "path": "../../suite-common/platform-encryption"
         },
         {
+            "path": "../../suite-common/price-chart"
+        },
+        {
             "path": "../../suite-common/react-query"
         },
         { "path": "../../suite-common/receive" },
@@ -211,6 +214,7 @@
         {
             "path": "../../suite/onboarding-components"
         },
+        { "path": "../../suite/price-chart" },
         { "path": "../../suite/receive" },
         { "path": "../../suite/recovery" },
         { "path": "../../suite/router" },

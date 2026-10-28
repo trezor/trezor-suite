@@ -17027,18 +17027,23 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite/price-chart@workspace:suite/price-chart":
+"@suite/price-chart@workspace:*, @suite/price-chart@workspace:suite/price-chart":
   version: 0.0.0-use.local
   resolution: "@suite/price-chart@workspace:suite/price-chart"
   dependencies:
+    "@suite-common/formatters": "workspace:*"
     "@suite-common/price-chart": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
+    "@suite/ui-animations": "workspace:*"
     "@trezor/components": "workspace:*"
+    "@trezor/utils": "workspace:*"
     "@types/react": "npm:19.2.14"
     react: "npm:19.2.3"
     react-redux: "npm:9.3.0"
+    recharts: "npm:^2.15.3"
+    styled-components: "npm:^6.5.3"
   languageName: unknown
   linkType: soft
 
@@ -19566,6 +19571,7 @@ __metadata:
     "@suite-common/networks": "workspace:*"
     "@suite-common/persistent-device-data": "workspace:*"
     "@suite-common/platform-encryption": "workspace:*"
+    "@suite-common/price-chart": "workspace:*"
     "@suite-common/react-query": "workspace:*"
     "@suite-common/receive": "workspace:*"
     "@suite-common/sentry": "workspace:*"
@@ -19630,6 +19636,7 @@ __metadata:
     "@suite/nfc": "workspace:*"
     "@suite/nfts": "workspace:*"
     "@suite/onboarding-components": "workspace:*"
+    "@suite/price-chart": "workspace:*"
     "@suite/receive": "workspace:*"
     "@suite/recovery": "workspace:*"
     "@suite/router": "workspace:*"
