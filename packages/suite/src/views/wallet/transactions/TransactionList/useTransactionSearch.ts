@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useDebounce } from 'react-use';
 
 import { advancedSearchTransactions } from '@suite-common/transaction-search';
-import { sortByBlockHeight } from '@suite-common/wallet-utils';
+import { sortByBlockHeightThenTime } from '@suite-common/wallet-core';
 
 import {
     type SelectAccountLabelsForSearchState,
@@ -55,7 +55,7 @@ export const useTransactionSearch = (
                               searchQuery,
                           );
                 })
-                .sort(sortByBlockHeight);
+                .sort(sortByBlockHeightThenTime);
 
             setSearchResult({ query: searchQuery, transactions: results });
         },

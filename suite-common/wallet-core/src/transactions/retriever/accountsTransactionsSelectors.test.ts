@@ -138,6 +138,20 @@ describe(selectAccountsTransactions.name, () => {
         ).toBe(true);
     });
 
+    it('orders pending transactions of several accounts by their time', () => {
+        const pendingAt = (txid: string, blockTime: number) =>
+            ({ ...transaction(txid, 0), blockTime }) as WalletAccountTransaction;
+        const state = stateWith({
+            transactions: {
+                [FIRST]: [pendingAt('yesterday', 1_700_000_000)],
+                [SECOND]: [pendingAt('today', 1_700_086_400)],
+            },
+            loadedAccountKeys: [FIRST, SECOND],
+        });
+
+        expect(txids(state, [FIRST, SECOND])).toEqual(['today', 'yesterday']);
+    });
+
     it('tells Stellar assets apart by the case of their code', () => {
         const ISSUER = 'GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN';
         const state = stateWith({
@@ -180,14 +194,21 @@ describe(selectAccountsTransactions.name, () => {
             [FIRST],
         );
 
-        expect(isAccountsTransactionsPageReady(loading, 1, 2)).toBe(true);
-        expect(isAccountsTransactionsPageReady(loading, 2, 2)).toBe(false);
         expect(
-            isAccountsTransactionsPageReady(
-                selectAccountsTransactions(stateWith({ transactions: {} }), []),
-                2,
-                2,
-            ),
+            isAccountsTransactionsPageReady({ accountsTransactions: loading, page: 1, perPage: 2 }),
+        ).toBe(true);
+        expect(
+            isAccountsTransactionsPageReady({ accountsTransactions: loading, page: 2, perPage: 2 }),
+        ).toBe(false);
+        expect(
+            isAccountsTransactionsPageReady({
+                accountsTransactions: selectAccountsTransactions(
+                    stateWith({ transactions: {} }),
+                    [],
+                ),
+                page: 2,
+                perPage: 2,
+            }),
         ).toBe(true);
     });
 });

@@ -32,6 +32,11 @@ type AccountTransfers = {
     isComplete: boolean;
 };
 
+export const sortByBlockHeightThenTime = (
+    a: Pick<WalletAccountTransaction, 'blockHeight' | 'blockTime'>,
+    b: Pick<WalletAccountTransaction, 'blockHeight' | 'blockTime'>,
+) => sortByBlockHeight(a, b) || (b.blockTime ?? 0) - (a.blockTime ?? 0);
+
 export type AccountsTransactions = {
     transactions: WalletAccountTransaction[];
     confirmedCount: number;
@@ -122,7 +127,7 @@ export const selectAccountsTransactions = createMemoizedSelector(
             .filter(
                 transaction => isPending(transaction) || (transaction.blockHeight ?? 0) > frontier,
             )
-            .sort(sortByBlockHeight);
+            .sort(sortByBlockHeightThenTime);
 
         return {
             transactions: returnStableArrayIfEmpty(transactions),
@@ -132,8 +137,15 @@ export const selectAccountsTransactions = createMemoizedSelector(
     },
 );
 
-export const isAccountsTransactionsPageReady = (
-    accountsTransactions: AccountsTransactions,
-    page: number,
-    perPage: number,
-) => accountsTransactions.isComplete || accountsTransactions.confirmedCount >= page * perPage;
+type IsAccountsTransactionsPageReadyParams = {
+    accountsTransactions: AccountsTransactions;
+    page: number;
+    perPage: number;
+};
+
+export const isAccountsTransactionsPageReady = ({
+    accountsTransactions,
+    page,
+    perPage,
+}: IsAccountsTransactionsPageReadyParams) =>
+    accountsTransactions.isComplete || accountsTransactions.confirmedCount >= page * perPage;

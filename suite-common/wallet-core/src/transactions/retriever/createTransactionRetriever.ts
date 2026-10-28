@@ -101,11 +101,14 @@ export const createTransactionRetriever = (
 
     const retrievePage: TransactionRetriever['retrievePage'] = async params => {
         const isPageReady = () =>
-            isAccountsTransactionsPageReady(
-                deps.getAccountsTransactions(params.accountKeys, params.contractAddress),
-                params.page,
-                params.perPage,
-            );
+            isAccountsTransactionsPageReady({
+                accountsTransactions: deps.getAccountsTransactions(
+                    params.accountKeys,
+                    params.contractAddress,
+                ),
+                page: params.page,
+                perPage: params.perPage,
+            });
 
         while (!isPageReady()) {
             if (params.signal?.aborted) {

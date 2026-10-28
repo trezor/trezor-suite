@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { Translation, useTranslation } from '@suite/intl';
 import { findAnchorTransactionPage, selectRouterAnchor } from '@suite/router';
@@ -16,9 +16,17 @@ import {
     selectIsHideSuspiciousTransactions,
     selectPhishingTransactions,
 } from '@suite-common/wallet-core';
-import { type Account, type TokenAddress } from '@suite-common/wallet-types';
-import { isPending } from '@suite-common/wallet-utils';
-import { Card, Column, Text } from '@trezor/components';
+import {
+    type Account,
+    type TokenAddress,
+    type WalletAccountTransaction,
+} from '@suite-common/wallet-types';
+import {
+    getDirectRpcHistoryState,
+    getOlderHistoryFrom,
+    isPending,
+} from '@suite-common/wallet-utils';
+import { Button, Card, Column, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
@@ -26,6 +34,7 @@ import { DashboardSection } from 'src/components/dashboard';
 import { Pagination } from 'src/components/wallet';
 import { useSelector } from 'src/hooks/suite';
 
+import { LoadOlderHistory } from './LoadOlderHistory';
 import { TransactionListActions } from './TransactionListActions/TransactionListActions';
 import { TransactionListBody } from './TransactionListBody';
 import { findTransactionAccount } from './findTransactionAccount';
@@ -38,12 +47,29 @@ type EmptyListMessageProps = {
     id: 'TR_NO_TRANSACTIONS_YET' | 'TR_NO_VISIBLE_TRANSACTIONS' | 'TR_NO_RECENT_TRANSACTIONS';
 };
 
-export const EmptyListMessage = ({ id }: EmptyListMessageProps) => (
+const EmptyListMessage = ({ id }: EmptyListMessageProps) => (
     <Card>
         <Column alignItems="center">
             <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
                 <Translation id={id} />
             </Text>
+        </Column>
+    </Card>
+);
+
+type LoadFailedMessageProps = {
+    onRetry: () => void;
+};
+
+const LoadFailedMessage = ({ onRetry }: LoadFailedMessageProps) => (
+    <Card data-testid="@transactions/load-failed">
+        <Column alignItems="center" gap={12}>
+            <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
+                <Translation id="TR_GENERIC_ERROR_TITLE" />
+            </Text>
+            <Button size="small" intent="neutral" priority="secondary" onClick={onRetry}>
+                <Translation id="TR_RETRY" />
+            </Button>
         </Column>
     </Card>
 );
@@ -57,9 +83,6 @@ type MultiAccountTransactionListProps = {
     isBumpFeeAllowed?: boolean;
     isExportable?: boolean;
     knownTotal?: number;
-    isHistoryPending?: boolean;
-    customNoTransactions?: ReactNode;
-    footer?: ReactNode;
     'data-testid'?: string;
 };
 
@@ -72,9 +95,6 @@ export const MultiAccountTransactionList = ({
     isBumpFeeAllowed = false,
     isExportable = false,
     knownTotal,
-    isHistoryPending = false,
-    customNoTransactions,
-    footer,
     'data-testid': dataTestId = '@transactions/multi-account',
 }: MultiAccountTransactionListProps) => {
     const sectionRef = useRef<HTMLDivElement>(null);
@@ -96,20 +116,6 @@ export const MultiAccountTransactionList = ({
             }),
         );
 
-    const {
-        transactions: loadedTransactions,
-        isComplete,
-        isLoading,
-    } = useAccountsTransactions({
-        accountKeys,
-        contractAddress,
-        page: currentPage,
-        perPage,
-        isAllRequested: !!anchor || isSearching,
-        isWaitingForAll: isSearching,
-        onError: isSearching ? showSearchFailed : undefined,
-    });
-
     const isHidingSuspicious = useSelector(
         state =>
             hasNetworkPotentialFraudTransactions(symbol) &&
@@ -120,10 +126,10 @@ export const MultiAccountTransactionList = ({
     const txsMarkedAsNotScamByAccount = useSelector(selectPhishingTransactions);
     const dustThreshold = useSelector(selectActiveDustPhishingThreshold);
 
-    const transactions = useMemo(() => {
-        if (!isHidingSuspicious) return loadedTransactions;
+    const isTransactionShown = useMemo(() => {
+        if (!isHidingSuspicious) return undefined;
 
-        return loadedTransactions.filter(transaction => {
+        return (transaction: WalletAccountTransaction) => {
             const account = findTransactionAccount(accounts, transaction);
 
             return !isPhishingTransaction({
@@ -134,16 +140,36 @@ export const MultiAccountTransactionList = ({
                     (account && txsMarkedAsNotScamByAccount[account.key]) ?? NO_TXIDS,
                 dustThreshold,
             }).isPhishing;
-        });
+        };
     }, [
         isHidingSuspicious,
-        loadedTransactions,
         accounts,
         tokenDefinitions,
         historicRates,
         txsMarkedAsNotScamByAccount,
         dustThreshold,
     ]);
+
+    const {
+        transactions: loadedTransactions,
+        isComplete,
+        isLoading,
+        isFailed,
+        retry,
+    } = useAccountsTransactions({
+        accountKeys,
+        contractAddress,
+        page: currentPage,
+        perPage,
+        isAllRequested: !!anchor || isSearching,
+        onError: isSearching ? showSearchFailed : undefined,
+    });
+
+    const transactions = useMemo(
+        () =>
+            isTransactionShown ? loadedTransactions.filter(isTransactionShown) : loadedTransactions,
+        [isTransactionShown, loadedTransactions],
+    );
     const confirmedTransactions = useMemo(
         () => transactions.filter(transaction => !isPending(transaction)),
         [transactions],
@@ -162,6 +188,7 @@ export const MultiAccountTransactionList = ({
     }, [anchorPage]);
 
     const searchedTransactions = useTransactionSearch(accounts, transactions, searchQuery);
+    const isSearchPending = !isComplete && !isFailed && searchedTransactions.length === 0;
 
     const pendingTxs = useMemo(
         () => searchedTransactions.filter(isPending),
@@ -203,14 +230,25 @@ export const MultiAccountTransactionList = ({
         sectionRef.current?.scrollIntoView();
     };
 
+    // A direct-RPC backend only scans a recent window of blocks, so an empty list there means no
+    // recent transactions rather than none at all, and the window is still pending until scanned.
+    const hasOlderHistory = accounts.some(account => getOlderHistoryFrom(account) !== undefined);
+    const isHistoryUnscanned = accounts.some(
+        account => getDirectRpcHistoryState(account) === 'unscanned',
+    );
+
     const getCustomNoTransactions = () => {
-        if (transactions.length > 0) return undefined;
+        if (isFailed || transactions.length > 0) return undefined;
 
         if (loadedTransactions.length > 0) {
             return <EmptyListMessage id="TR_NO_VISIBLE_TRANSACTIONS" />;
         }
 
-        return customNoTransactions ?? <EmptyListMessage id="TR_NO_TRANSACTIONS_YET" />;
+        return (
+            <EmptyListMessage
+                id={hasOlderHistory ? 'TR_NO_RECENT_TRANSACTIONS' : 'TR_NO_TRANSACTIONS_YET'}
+            />
+        );
     };
 
     return (
@@ -231,9 +269,12 @@ export const MultiAccountTransactionList = ({
         >
             <Column gap={32} padding={{ top: 16 }}>
                 <TransactionListBody
-                    isLoading={isLoading || isHistoryPending}
+                    isLoading={(isSearching ? isSearchPending : isLoading) || isHistoryUnscanned}
                     hasNoSearchResults={
-                        isSearching && transactions.length > 0 && searchedTransactions.length === 0
+                        !isFailed &&
+                        isSearching &&
+                        transactions.length > 0 &&
+                        searchedTransactions.length === 0
                     }
                     pendingTxs={pendingTxs}
                     confirmedTxs={confirmedTxs}
@@ -243,7 +284,8 @@ export const MultiAccountTransactionList = ({
                     isAccountShown={isAccountShown}
                     isBumpFeeAllowed={isBumpFeeAllowed}
                 />
-                {footer}
+                {isFailed && <LoadFailedMessage onRetry={retry} />}
+                <LoadOlderHistory accounts={accounts} />
                 {totalItems > perPage && (
                     <Pagination
                         currentPage={shownPage}

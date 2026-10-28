@@ -15,7 +15,6 @@ type UseAccountsTransactionsParams = {
     page: number;
     perPage: number;
     isAllRequested: boolean;
-    isWaitingForAll: boolean;
     /** Called once a load has failed for good, after its retry. */
     onError?: (error: Error) => void;
 };
@@ -41,19 +40,23 @@ export const useAccountsTransactions = ({
     page,
     perPage,
     isAllRequested,
-    isWaitingForAll,
     onError,
 }: UseAccountsTransactionsParams) => {
     const { transactionRetriever } = useServices(injectTransactionRetriever);
     const accountsTransactions = useSelector(state =>
         selectAccountsTransactions(state, accountKeys, contractAddress),
     );
-    const isPageReady = isAccountsTransactionsPageReady(accountsTransactions, page, perPage);
+    const isPageReady = isAccountsTransactionsPageReady({ accountsTransactions, page, perPage });
 
     const pageQuery = useQuery({
         ...QUERY_OPTIONS,
         retry: retryOrReport(onError),
-        queryKey: commonQueryKeys.transactionsPage(accountKeys, contractAddress, page, perPage),
+        queryKey: commonQueryKeys.transactionsPage({
+            accountKeys,
+            contractAddress,
+            page,
+            perPage,
+        }),
         queryFn: async ({ signal }) => {
             await transactionRetriever.retrievePage({
                 accountKeys,
@@ -80,8 +83,13 @@ export const useAccountsTransactions = ({
         enabled: isAllRequested && !accountsTransactions.isComplete,
     });
 
-    const error = isAllRequested ? allQuery.error : pageQuery.error;
-    const isReady = isWaitingForAll ? accountsTransactions.isComplete : isPageReady;
+    const activeQuery = isAllRequested ? allQuery : pageQuery;
+    const isFailed = activeQuery.error !== null;
 
-    return { ...accountsTransactions, isLoading: !isReady && !error };
+    return {
+        ...accountsTransactions,
+        isLoading: !isPageReady && !isFailed,
+        isFailed,
+        retry: () => activeQuery.refetch(),
+    };
 };
