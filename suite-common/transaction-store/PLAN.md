@@ -1,9 +1,14 @@
 # Transaction store: local transaction database and sync engine
 
-Status: in progress on `feat/transaction-store`. Phases 1–3 and the RPC layer live in this
-package; the per-platform entries (Phase 4) are the next step. Tested so far: migrations,
-repository, blockchain-link source and the sync job (on real SQLite). Not yet tested: the
-queue, the watcher, the composition root and the RPC host/client.
+Status: in progress on `feat/transaction-store`.
+
+- Phases 1–3 (engine, sync, watcher, RPC) are in this package.
+- Phase 4 for web and desktop is in `@suite/transaction-store`: the worker entry, the service
+  in the Suite composition root, the feeder, the react-query hooks and a Debug settings
+  section. It runs only while debug mode is on, until a screen consumes it.
+- Native (Phase 4b) is not started; see "Native: the open problem".
+- Tested: migrations, repository, blockchain-link source and the sync job, on real SQLite.
+  Not tested yet: the queue, the watcher, the composition root, the RPC pair and the web entry.
 
 ## Problem
 
@@ -85,20 +90,50 @@ synchronous `SqliteDriver` contract (`exec({ sql, parameters }) → { rows, chan
 engine adds no new database dependency. Kysely is also already present (through Evolu) and is
 the planned typed query layer once the raw-SQL API settles.
 
-### Where it runs: in a worker, or in process
+### Where it runs: the whole engine off the main thread
 
-The engine is synchronous over SQLite and talks to the app only through the `TransactionStore`
-API, so where it runs is an entry decision:
+Syncing is expensive: paging backends, parsing large history responses, serializing every
+transaction to JSON and writing it to SQLite. None of it may run on the thread that renders
+the app, on any platform. The engine talks to the app only through the `TransactionStore`
+API, and every method of it is async, so the boundary can sit anywhere.
 
-- **Web and Electron renderer:** a dedicated Web Worker. The worker entry builds the deps, calls
-  the composition root and serves the store through `createTransactionStoreRpcHost` on the
-  worker's port. The app side uses `createTransactionStoreRpcClient`, which implements the same
-  `TransactionStore` type. OPFS (SAHPool VFS) needs a worker anyway and needs no COOP/COEP.
-- **React Native:** in process on the JS thread, no RPC: the native entry calls the composition
-  root directly and hands the store to the app. Moving it to a worklet or separate runtime later
-  only means putting the RPC host/client pair on that boundary.
+**Web and Electron renderer** (`@suite/transaction-store`, done):
 
-Every public method is async, so the in-process store and the RPC client are interchangeable.
+```
+main thread (app)                          dedicated worker (transactionStoreWorker.ts)
+-----------------                          -------------------------------------------
+TransactionStoreFeeder                     createTransactionStoreCompositionRoot
+  registerAccounts / watchNetworks  ─RPC─►   sync queue, jobs, watcher
+  setBackends (Connect defaults     ─msg─►   blockchain-link per network
+  filled in on the main thread)              └─ nested Worker per backend (blockbook, …)
+useStoredTransactions (react-query) ◄─RPC─   SQLite (Evolu WASM driver, OPFS SAHPool)
+  invalidated by store events       ◄─evt─
+```
+
+- Only small messages cross: commands, events, and the rows a screen asked for.
+- blockchain-link's backends run as nested workers. Its in-thread module variant cannot be
+  used in a worker: inside any worker it answers through `self.postMessage`, so it would talk
+  to the app and take over the store's messages. Solana, EVM RPC and Electrum have no browser
+  worker build, so the store reports them as `BackendUnavailable` for now.
+- The worker buffers the app's messages until the store has started, so calls made right
+  after spawning it are not lost.
+- **Reads must be paginated.** Rows are copied from the worker and deserialized on the main
+  thread, so a screen asks for a page (`limit` / `offset`) and only the columns it shows. A
+  "whole history" read would bring the jank back.
+
+**React Native: the open problem.** There are no Web Workers, and Evolu's expo-sqlite driver
+is synchronous, so running the engine in process would block the JS thread during a big
+sync. Options, cheapest first:
+
+1. **Chunked work:** in process, but yield between pages and batched writes. The UI stays
+   responsive, but the work still runs on the JS thread. Acceptable only as a stopgap.
+2. **Separate JS runtime:** run the engine in its own runtime (e.g. `react-native-worklets`
+   runtimes) with the same RPC host/client pair on that boundary; the code needs no change.
+   Needs a spike to confirm blockchain-link's websockets and the SQLite driver work there.
+3. **Async native SQLite:** a driver that runs queries off the JS thread (op-sqlite). This
+   moves only the I/O, not the parsing; it combines with 1 or 2.
+
+The target is 2; native is not wired until the spike decides.
 
 ### Setup API and disposal
 
@@ -174,21 +209,27 @@ through `query`, so feature queries are typed end to end. No own query builder.
    jobs, sync state, events; tested with a fake source.
 3. **Watcher and setup API** — done here. Block subscriptions, fallback interval, composition
    root, disposal; RPC host/client for running in a worker.
-4. **Platform entries** — next:
-    - `@suite/transaction-store-worker`: worker entry for web and Electron renderer
-      (`@evolu/web` driver, blockchain-link per network with the user's custom backends,
-      `createTransactionStoreRpcHost` on `self`), plus the client wiring in
-      `createSuiteWebCompositionRoot` / `createSuiteDesktopCompositionRoot`.
-    - `@suite-native/transaction-store`: in-process entry (`createExpoSqliteDriver`), wired in
-      the native composition root.
-    - App feeding: register accounts from discovery, `watchNetworks` from enabled networks,
-      re-create the network's source when its custom backend changes.
-    - React hooks over react-query (`useStoredTransactions`, `useAccountSyncStatus`), invalidated
-      by store events.
-5. **First consumer** — the asset detail transactions list (#33764) reads from the store.
-6. **Migration** — one-time import of IndexedDB `txs` (`packages/suite/src/storage`, with an IDB
-   migration per `skills/idb-migrations`), move the remaining readers, delete the old fetch
-   thunks and their merging.
+4. **Web and desktop entry** (`@suite/transaction-store`) — done, behind debug mode:
+    - `worker/transactionStoreWorker.ts`: `startTransactionStoreWorker` opens the Evolu WASM
+      driver, keeps a blockchain-link per network on nested workers, runs the composition root
+      and serves it with `startTransactionStoreRpcHost`. Returns the dispose of all of it.
+    - `worker/transactionStoreWorkerProtocol.ts`: the worker's own messages, typed by one map
+      per direction (`TransactionStoreWorkerCommands`, `TransactionStoreWorkerEvents`); senders
+      use `toWorkerMessage`, receivers `createWorkerMessageHandler`, which needs a handler for
+      every name.
+    - `createGetTransactionStoreService`: in `createSuiteServicesCompositionRoot`, so web and
+      desktop share it. Spawns the worker on first use and fills in Connect's default backends.
+    - `TransactionStoreFeeder` (mounted in `Main` in debug mode): registers visible accounts of
+      the enabled networks (no coinjoin), watches the enabled networks, passes their backends
+      on. Removes only accounts seen leaving in the session.
+    - `useStoredTransactions`, `useAccountSyncStatuses`, invalidated by store events.
+    - `TransactionStoreDebug`: Settings → Debug → Transaction store.
+
+    Every `start…` returns its dispose; services that hold state expose `dispose`.
+
+4b. **Native entry** — after the runtime spike (see "React Native: the open problem"). 5. **First consumer** — the asset detail transactions list (#33764) reads from the store. 6. **Migration** — one-time import of IndexedDB `txs` (`packages/suite/src/storage`, with an IDB
+migration per `skills/idb-migrations`), move the remaining readers, delete the old fetch
+thunks and their merging.
 
 ## Follow-ups and open decisions
 

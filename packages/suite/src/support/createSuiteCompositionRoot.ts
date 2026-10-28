@@ -18,6 +18,11 @@ import {
 } from '@suite/router';
 import { selectDebugSettings, selectLanguage, selectTradeServerEnvironment } from '@suite/settings';
 import { createSuiteSyncDesktopCompositionRoot } from '@suite/suite-sync';
+import {
+    type GetTransactionStoreServiceDep,
+    createGetTransactionStoreService,
+    createTransactionStoreWorker,
+} from '@suite/transaction-store';
 import { createBip329CompositionRoot } from '@suite-common/bip329';
 import {
     type ConnectInitSettings,
@@ -74,7 +79,8 @@ export type SuiteServices = CommonServices &
     MetadataMigrationDep &
     SuiteRouterHistoryDep &
     TransportsDep &
-    BluetoothDep;
+    BluetoothDep &
+    GetTransactionStoreServiceDep;
 
 export type StoreAPIDep = Pick<SuiteReduxStore, 'getState' | 'dispatch'>;
 
@@ -167,6 +173,11 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         desktopApi: deps.desktopApi,
         networks,
         suiteSync,
+        // Lazy: the worker starts on the first use, today only in debug mode.
+        getTransactionStoreService: createGetTransactionStoreService({
+            getTrezorConnect: deps.getTrezorConnect,
+            createWorker: createTransactionStoreWorker,
+        }),
         bip329,
         migrateLegacyLabelsToSuiteSync,
         ensureDelegatedIdentityKey,

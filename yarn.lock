@@ -12337,7 +12337,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/transaction-store@workspace:suite-common/transaction-store":
+"@suite-common/transaction-store@workspace:*, @suite-common/transaction-store@workspace:suite-common/transaction-store":
   version: 0.0.0-use.local
   resolution: "@suite-common/transaction-store@workspace:suite-common/transaction-store"
   dependencies:
@@ -17332,6 +17332,29 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite/transaction-store@workspace:*, @suite/transaction-store@workspace:suite/transaction-store":
+  version: 0.0.0-use.local
+  resolution: "@suite/transaction-store@workspace:suite/transaction-store"
+  dependencies:
+    "@evolu/common": "npm:8.10.0"
+    "@evolu/web": "patch:@evolu/web@npm%3A3.1.2#~/.yarn/patches/@evolu-web-npm-3.1.2-b0d061c39c.patch"
+    "@suite-common/react-query": "workspace:*"
+    "@suite-common/transaction-store": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
+    "@trezor/blockchain-link": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/connect-common": "workspace:*"
+    "@trezor/dependency-injection": "workspace:*"
+    "@trezor/product-components": "workspace:*"
+    "@types/react": "npm:19.2.14"
+    react: "npm:19.2.3"
+    react-redux: "npm:9.3.0"
+  languageName: unknown
+  linkType: soft
+
 "@suite/transfer-uri@workspace:*, @suite/transfer-uri@workspace:suite/transfer-uri":
   version: 0.0.0-use.local
   resolution: "@suite/transfer-uri@workspace:suite/transfer-uri"
@@ -19591,6 +19614,7 @@ __metadata:
     "@suite/tor-desktop": "workspace:*"
     "@suite/tor-web": "workspace:*"
     "@suite/trading": "workspace:*"
+    "@suite/transaction-store": "workspace:*"
     "@suite/transfer-uri": "workspace:*"
     "@suite/tx-simulation": "workspace:^"
     "@suite/ui-animations": "workspace:*"

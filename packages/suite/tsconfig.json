@@ -222,6 +222,9 @@
         { "path": "../../suite/thp" },
         { "path": "../../suite/tor" },
         { "path": "../../suite/tor-desktop" },
+        {
+            "path": "../../suite/transaction-store"
+        },
         { "path": "../../suite/tor-web" },
         { "path": "../../suite/trading" },
         { "path": "../../suite/transfer-uri" },

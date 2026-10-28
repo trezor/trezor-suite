@@ -141,6 +141,7 @@
         "@suite/thp": "workspace:*",
         "@suite/tor": "workspace:*",
         "@suite/tor-desktop": "workspace:*",
+        "@suite/transaction-store": "workspace:*",
         "@suite/tor-web": "workspace:*",
         "@suite/trading": "workspace:*",
         "@suite/transfer-uri": "workspace:*",
