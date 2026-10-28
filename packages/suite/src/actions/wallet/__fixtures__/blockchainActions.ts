@@ -258,7 +258,7 @@ type OnConnectFixture = {
     symbol: string;
     actions: UnknownAction[];
     blockchainEstimateFee: number;
-    blockchainSubscribe: number;
+    blockchainSubscribe: any[];
 };
 
 // Fake timer handle seeded into blockchain[symbol].syncTimeout by the onDisconnect fixtures.
@@ -497,7 +497,7 @@ export const onConnect: OnConnectFixture[] = [
         symbol: 'btc-invalid',
         actions: [],
         blockchainEstimateFee: 0,
-        blockchainSubscribe: 0,
+        blockchainSubscribe: [],
     },
     {
         description: 'successful, no accounts, no subscriptions',
@@ -507,12 +507,12 @@ export const onConnect: OnConnectFixture[] = [
             { type: blockchainActions.connected.type },
         ],
         blockchainEstimateFee: 1,
-        blockchainSubscribe: 0,
+        blockchainSubscribe: [[{ blocks: true }]],
     },
     {
         description: 'successful, different coin accounts, no subscriptions',
         initialState: {
-            accounts: [{ symbol: 'ltc' }],
+            accounts: [{ symbol: 'ltc', deviceState: 'foobar' }],
         },
         symbol: 'btc',
         actions: [
@@ -520,12 +520,12 @@ export const onConnect: OnConnectFixture[] = [
             { type: blockchainActions.connected.type },
         ],
         blockchainEstimateFee: 1,
-        blockchainSubscribe: 0,
+        blockchainSubscribe: [[{ blocks: true }]],
     },
     {
         description: 'successful with subscription',
         initialState: {
-            accounts: [{ symbol: 'btc', history: {} }],
+            accounts: [{ symbol: 'btc', history: {}, deviceState: 'foobar' }],
             blockchain: {
                 btc: {
                     reconnection: { id: 1 },
@@ -538,12 +538,12 @@ export const onConnect: OnConnectFixture[] = [
             { type: blockchainActions.connected.type },
         ],
         blockchainEstimateFee: 1,
-        blockchainSubscribe: 1,
+        blockchainSubscribe: [[{ blocks: true }], [{ blocks: false, accounts: [{}] }]],
     },
     {
         description: 'successful, fee levels sorted',
         initialState: {
-            accounts: [{ symbol: 'btc', history: {} }],
+            accounts: [{ symbol: 'btc', history: {}, deviceState: 'foobar' }],
         },
         // order: estimateFee
         connect: [
@@ -555,12 +555,12 @@ export const onConnect: OnConnectFixture[] = [
             { type: blockchainActions.connected.type },
         ],
         blockchainEstimateFee: 1,
-        blockchainSubscribe: 1,
+        blockchainSubscribe: [[{ blocks: true }], [{ blocks: false, accounts: [{}] }]],
     },
     {
         description: 'successful, blockchainEstimateFee errored',
         initialState: {
-            accounts: [{ symbol: 'btc', history: {} }],
+            accounts: [{ symbol: 'btc', history: {}, deviceState: 'foobar' }],
         },
         // order: estimateFee > subscribe > estimateFee
         connect: [{ success: false }, undefined, { success: false }],
@@ -571,12 +571,12 @@ export const onConnect: OnConnectFixture[] = [
             { type: blockchainActions.connected.type },
         ],
         blockchainEstimateFee: 1,
-        blockchainSubscribe: 1,
+        blockchainSubscribe: [[{ blocks: true }], [{ blocks: false, accounts: [{}] }]],
     },
     {
         description: 'successful, ETH blockchainEstimateFee errored',
         initialState: {
-            accounts: [{ symbol: 'eth', history: {}, deviceState: 'abc' }],
+            accounts: [{ symbol: 'eth', history: {}, deviceState: 'foobar' }],
         },
         // order: estimateFee > subscribe > subscribe > estimateFee
         connect: [{ success: false }, undefined, undefined, { success: false }],
@@ -587,7 +587,7 @@ export const onConnect: OnConnectFixture[] = [
             { type: blockchainActions.connected.type },
         ],
         blockchainEstimateFee: 1,
-        blockchainSubscribe: 2,
+        blockchainSubscribe: [[{ blocks: true }], [{ blocks: false, accounts: [{}] }]],
     },
 ];
 
