@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl';
 
 import { Translation, type TranslationKey, useTranslation } from '@suite/intl';
+import { type ReferralVoucher } from '@suite-common/refer-a-friend';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     Badge,
@@ -24,8 +25,6 @@ import {
 } from '@trezor/icons';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { type ReferralVoucher } from './mockReferralProgram';
-
 type VoucherState = {
     icon: IconComponent;
     intent: 'brand' | 'neutral' | 'critical';
@@ -33,7 +32,7 @@ type VoucherState = {
 };
 
 const voucherStates = {
-    ready: { icon: GiftIcon, intent: 'brand', label: 'TR_REFERRAL_VOUCHER_READY' },
+    available: { icon: GiftIcon, intent: 'brand', label: 'TR_REFERRAL_VOUCHER_READY' },
     pending: {
         icon: GiftIcon,
         intent: 'neutral',
@@ -52,17 +51,22 @@ const voucherStates = {
     },
 } as const satisfies Record<ReferralVoucher['status'], VoucherState>;
 
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+const getDaysUntil = (date: string) =>
+    Math.max(0, Math.ceil((new Date(date).getTime() - Date.now()) / DAY_MS));
+
 const getVoucherTooltip = (voucher: ReferralVoucher, formatExpiry: (date: string) => string) => {
     switch (voucher.status) {
         case 'pending':
             return (
                 <Translation
                     id="TR_REFERRAL_VOUCHER_AVAILABLE_IN"
-                    values={{ days: voucher.availableInDays }}
+                    values={{ days: getDaysUntil(voucher.availableAt) }}
                 />
             );
-        case 'ready':
-            return (
+        case 'available':
+            return voucher.expiresAt === null ? undefined : (
                 <Translation
                     id="TR_REFERRAL_VOUCHER_EXPIRATION"
                     values={{ date: formatExpiry(voucher.expiresAt) }}
@@ -82,14 +86,16 @@ const getVoucherTooltip = (voucher: ReferralVoucher, formatExpiry: (date: string
 
 type ReferralVoucherRowProps = {
     voucher: ReferralVoucher;
-    rewardAmount: string;
+    voucherNumber: number;
+    amount: string;
 };
 
-export const ReferralVoucherRow = ({ voucher, rewardAmount }: ReferralVoucherRowProps) => {
+export const ReferralVoucherRow = ({ voucher, voucherNumber, amount }: ReferralVoucherRowProps) => {
     const { dispatch } = useServices(injectDispatch);
     const { translationString } = useTranslation();
     const { formatDate } = useIntl();
     const config = voucherStates[voucher.status];
+    const voucherCode = voucher.code;
     const isInactive = ['used', 'canceled', 'expired'].includes(voucher.status);
     const formatExpiry = (date: string) =>
         formatDate(date, { dateStyle: 'medium', timeZone: 'UTC' });
@@ -107,14 +113,14 @@ export const ReferralVoucherRow = ({ voucher, rewardAmount }: ReferralVoucherRow
     };
 
     return (
-        <Table.Row key={voucher.id} data-testid={`@referral/voucher/${voucher.id}`}>
+        <Table.Row data-testid={`@referral/voucher/${voucherNumber}`}>
             <Table.Cell>
                 <Row gap={16}>
                     <IconCircle icon={config.icon} size={32} intent={config.intent} />
                     <Text typographyStyle="body-md">
                         <Translation
                             id="TR_REFERRAL_VOUCHER_NUMBER"
-                            values={{ number: voucher.id }}
+                            values={{ number: voucherNumber }}
                         />
                     </Text>
                 </Row>
@@ -125,7 +131,7 @@ export const ReferralVoucherRow = ({ voucher, rewardAmount }: ReferralVoucherRow
                         intent={config.intent}
                         size="medium"
                         iconLeft={tooltip ? InfoIcon : undefined}
-                        data-testid={`@referral/voucher/${voucher.id}/status`}
+                        data-testid={`@referral/voucher/${voucherNumber}/status`}
                     >
                         <Translation id={config.label} />
                     </Badge>
@@ -139,11 +145,11 @@ export const ReferralVoucherRow = ({ voucher, rewardAmount }: ReferralVoucherRow
                     priority="secondary"
                     isDisabled={voucher.status === 'used'}
                 >
-                    {rewardAmount}
+                    {amount}
                 </Text>
             </Table.Cell>
             <Table.Cell align="end">
-                {voucher.status === 'pending' ? (
+                {voucherCode === null ? (
                     <Text intent="neutral" priority="secondary">
                         -
                     </Text>
@@ -153,11 +159,11 @@ export const ReferralVoucherRow = ({ voucher, rewardAmount }: ReferralVoucherRow
                         priority="secondary"
                         size="small"
                         iconRight={CopyIcon}
-                        isDisabled={voucher.status !== 'ready'}
-                        onClick={() => copyCode(voucher.code)}
-                        data-testid={`@referral/voucher/${voucher.id}/copy`}
+                        isDisabled={voucher.status !== 'available'}
+                        onClick={() => copyCode(voucherCode)}
+                        data-testid={`@referral/voucher/${voucherNumber}/copy`}
                     >
-                        {isInactive ? <s>{voucher.code}</s> : voucher.code}
+                        {isInactive ? <s>{voucherCode}</s> : voucherCode}
                     </Button>
                 )}
             </Table.Cell>

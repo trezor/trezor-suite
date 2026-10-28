@@ -16,9 +16,12 @@
     },
     "dependencies": {
         "@suite-common/device": "workspace:*",
+        "@suite-common/refer-a-friend": "workspace:*",
         "@suite/intl": "workspace:*",
         "@trezor/components": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*",
         "@trezor/icons": "workspace:*",
+        "@trezor/redux-utils": "workspace:*",
         "@trezor/suite": "workspace:*",
         "react": "19.3.0",
         "react-intl": "^12.1.4",
