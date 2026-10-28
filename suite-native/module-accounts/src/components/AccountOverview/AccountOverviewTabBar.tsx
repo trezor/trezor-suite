@@ -9,14 +9,16 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type AccountOverviewFlow, type AccountOverviewTab } from './types';
 import { useActiveTabScroll } from './useActiveTabScroll';
 
-const scrollStyle = prepareNativeStyle(() => ({
+const scrollStyle = prepareNativeStyle(({ spacings }) => ({
     flexGrow: 0,
+    marginHorizontal: -spacings.sp16,
 }));
 
 const scrollContentStyle = prepareNativeStyle(({ spacings }) => ({
     alignItems: 'flex-start',
     gap: spacings.sp12,
     paddingVertical: spacings.sp8,
+    paddingHorizontal: spacings.sp16,
 }));
 
 type TabItem = {
