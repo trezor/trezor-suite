@@ -32,6 +32,11 @@ import {
 import { type EncryptedHex } from '@suite-common/platform-encryption';
 import { type ReceiveRootState, selectReceiveAccountState } from '@suite-common/receive';
 import {
+    type ReferAFriendRootState,
+    selectReferAFriendDevices,
+    selectReferAFriendSettings,
+} from '@suite-common/refer-a-friend';
+import {
     type WithSuiteSyncQuotaManagerState,
     selectSuiteSyncQuotaManager,
 } from '@suite-common/suite-sync-quota-manager';
@@ -968,6 +973,30 @@ export const saveSuiteSyncQuotaManagerThunk =
                 ownersAllowance: suiteSyncQuotaManager.ownersAllowance,
             },
             'suiteSyncQuotaManager',
+            true,
+        );
+    };
+
+type SaveReferAFriendThunkState = ReferAFriendRootState;
+
+type SaveReferAFriendThunkDeps = WithServices<DbDep>;
+
+export const saveReferAFriendThunk =
+    () =>
+    (
+        _dispatch: Dispatch<UnknownAction>,
+        getState: () => SaveReferAFriendThunkState,
+        extra: SaveReferAFriendThunkDeps,
+    ) => {
+        if (!extra.services.db.isAccessible()) return;
+
+        return extra.services.db.addItem(
+            'referAFriend',
+            {
+                settings: selectReferAFriendSettings(getState()),
+                devices: selectReferAFriendDevices(getState()),
+            },
+            'referAFriend',
             true,
         );
     };

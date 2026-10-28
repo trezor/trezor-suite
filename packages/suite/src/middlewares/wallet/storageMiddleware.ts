@@ -32,6 +32,7 @@ import { firmwareActions } from '@suite-common/firmware';
 import { messageSystemActions } from '@suite-common/message-system';
 import { persistentDeviceDataActions } from '@suite-common/persistent-device-data';
 import { receiveActions } from '@suite-common/receive';
+import { referAFriendActions } from '@suite-common/refer-a-friend';
 import {
     setSuiteSyncOwner,
     setSuiteSyncRelayUrl,
@@ -469,6 +470,17 @@ export const prepareStorageMiddleware = createMiddlewareWithExtraDeps<
         )(action)
     ) {
         api.dispatch(storageActions.saveSuiteSyncQuotaManagerThunk());
+    }
+
+    if (
+        isAnyOf(
+            referAFriendActions.setReferAFriendApiBaseUrl,
+            referAFriendActions.setEncryptedReferralKey,
+            referAFriendActions.setReferralLink,
+            referAFriendActions.removeReferralDevice,
+        )(action)
+    ) {
+        api.dispatch(storageActions.saveReferAFriendThunk());
     }
 
     if (deviceActions.setRememberDevice.match(action)) {

@@ -18,6 +18,7 @@ import {
 } from '@suite/router';
 import { selectDebugSettings, selectLanguage, selectTradeServerEnvironment } from '@suite/settings';
 import { createSuiteSyncDesktopCompositionRoot } from '@suite/suite-sync';
+import { selectIsTorEnabled } from '@suite/tor';
 import { createBip329CompositionRoot } from '@suite-common/bip329';
 import {
     type ConnectInitSettings,
@@ -31,6 +32,10 @@ import { type CommonServices } from '@suite-common/extra-dependencies';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
 import { createNetworksCompositionRoot } from '@suite-common/networks';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
+import {
+    type ReferAFriendDep,
+    createReferAFriendCompositionRoot,
+} from '@suite-common/refer-a-friend';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import {
     createSuiteSyncWriteLabels,
@@ -74,7 +79,8 @@ export type SuiteServices = CommonServices &
     MetadataMigrationDep &
     SuiteRouterHistoryDep &
     TransportsDep &
-    BluetoothDep;
+    BluetoothDep &
+    ReferAFriendDep;
 
 export type StoreAPIDep = Pick<SuiteReduxStore, 'getState' | 'dispatch'>;
 
@@ -144,6 +150,15 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         updateOutputLabel: suiteSync.labeling.updateOutputLabel,
     });
 
+    const referAFriend = createReferAFriendCompositionRoot({
+        dispatch: deps.dispatch,
+        getState: deps.getState,
+        getIsTorEnabled: toGetter(deps.getState, selectIsTorEnabled),
+        platformEncryption: deps.platformEncryption,
+        getTrezorConnect: deps.getTrezorConnect,
+        fetch: globalThis.fetch.bind(globalThis),
+    });
+
     const networks = createNetworksCompositionRoot({
         getTrezorConnect: deps.getTrezorConnect,
         dispatch: deps.dispatch,
@@ -171,6 +186,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         migrateLegacyLabelsToSuiteSync,
         ensureDelegatedIdentityKey,
         platformEncryption: deps.platformEncryption,
+        referAFriend,
         analytics,
         bluetooth,
         suiteRouterHistory: createSuiteRouterHistory({

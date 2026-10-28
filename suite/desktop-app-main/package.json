@@ -19,6 +19,7 @@
         "@suite-common/connect-popup": "workspace:*",
         "@suite-common/delegated-identity-key": "workspace:*",
         "@suite-common/platform-encryption": "workspace:*",
+        "@suite-common/refer-a-friend": "workspace:*",
         "@suite-common/sentry": "workspace:*",
         "@suite-common/suite-constants": "workspace:^",
         "@suite-common/suite-sync-storage": "workspace:*",

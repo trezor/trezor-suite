@@ -23,6 +23,7 @@ import {
     preparePersistentDeviceDataReducer,
 } from '@suite-common/persistent-device-data';
 import { type ReceiveState, prepareReceiveReducer } from '@suite-common/receive';
+import { type ReferAFriendState } from '@suite-common/refer-a-friend';
 import { type SuiteSyncDataState, suiteSyncDataReducer } from '@suite-common/suite-sync';
 import { type SuiteSyncQuotaManagerState } from '@suite-common/suite-sync-quota-manager';
 import { type ThpState, prepareThpReducer } from '@suite-common/thp';
@@ -32,6 +33,7 @@ import {
 } from '@suite-common/token-definitions';
 import { isCodesignBuild } from '@trezor/env-utils';
 
+import { referAFriendSlice } from 'src/actions/referAFriend/referAFriendSlice';
 import { suiteSyncQuotaManagerSlice } from 'src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
 import onboardingMiddlewares from 'src/middlewares/onboarding';
 import { type GetSuiteMiddlewareDeps, getSuiteMiddleware } from 'src/middlewares/suite';
@@ -57,6 +59,7 @@ const thpReducer = prepareThpReducer(extraDependencies);
 const suiteSyncReducer = prepareSuiteSyncReducer(extraDependencies);
 const suiteSyncQuotaManagerReducer = suiteSyncQuotaManagerSlice.prepareReducer(extraDependencies);
 const receiveReducer = prepareReceiveReducer(extraDependencies);
+const referAFriendReducer = referAFriendSlice.prepareReducer(extraDependencies);
 const persistentDeviceDataReducer = preparePersistentDeviceDataReducer(extraDependencies);
 
 export type AppState = SuiteReducersState & {
@@ -78,6 +81,7 @@ export type AppState = SuiteReducersState & {
     geolocation: GeolocationState;
     globalSendReceiveFilters: GlobalSendReceiveFiltersState;
     persistentDeviceData: PersistentDeviceDataState;
+    referAFriend: ReferAFriendState;
 };
 
 export type SuiteRootReducer = Reducer<AppState, UnknownAction, Partial<AppState>>;
@@ -102,6 +106,7 @@ export const rootReducer: SuiteRootReducer = combineReducers({
     geolocation: geolocationReducer,
     globalSendReceiveFilters: globalSendReceiveFiltersReducer,
     persistentDeviceData: persistentDeviceDataReducer,
+    referAFriend: referAFriendReducer,
 } satisfies ReducersMapObject<AppState, never, Record<keyof AppState, never>>);
 
 const loggerExcludedActions = [addLog.type];

@@ -40,6 +40,7 @@ export const loadStoragePayload = async (db: Db) => {
         discreetMode,
         debug,
         earnOnboarding,
+        referAFriend,
     ] = await Promise.all([
         db.getItemByPK('suiteSettings', 'suite'),
         db.getItemsExtended('devices'),
@@ -76,6 +77,7 @@ export const loadStoragePayload = async (db: Db) => {
         db.getItemByPK('discreetMode', 'discreetMode'),
         db.getItemByPK('debug', 'debug'),
         db.getItemsWithKeys('earnOnboarding'),
+        db.getItemByPK('referAFriend', 'referAFriend'),
     ]);
 
     return {
@@ -117,5 +119,6 @@ export const loadStoragePayload = async (db: Db) => {
         discreetMode,
         debug,
         earnOnboarding,
+        referAFriend,
     } as const;
 };

@@ -16,6 +16,7 @@ import type { MessageState } from '@suite-common/message-system';
 import type { MetadataState } from '@suite-common/metadata-types';
 import { type EncryptedHex } from '@suite-common/platform-encryption';
 import type { ReceiveAccountState } from '@suite-common/receive';
+import type { ReferAFriendState } from '@suite-common/refer-a-friend';
 import type { SuiteSyncQuotaManagerState } from '@suite-common/suite-sync-quota-manager';
 import { type SuiteSyncOwnerSerialized } from '@suite-common/suite-sync-storage';
 import type {
@@ -191,6 +192,10 @@ export interface SuiteDBSchema extends DBSchema {
     suiteSyncQuotaManager: {
         key: 'suiteSyncQuotaManager';
         value: SuiteSyncQuotaManagerState;
+    };
+    referAFriend: {
+        key: 'referAFriend';
+        value: Pick<ReferAFriendState, 'settings' | 'devices'>;
     };
     messageSystem: {
         key: 'suite';

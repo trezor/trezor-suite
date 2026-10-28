@@ -15,6 +15,7 @@ import { messageSystemInitialState } from '@suite-common/message-system';
 import { type MetadataState } from '@suite-common/metadata-types';
 import { persistentDeviceDataInitialState } from '@suite-common/persistent-device-data';
 import { receiveInitialState } from '@suite-common/receive';
+import { referAFriendInitialState } from '@suite-common/refer-a-friend';
 import { quotaManagerInitialState } from '@suite-common/suite-sync-quota-manager';
 
 import { type OnboardingState } from 'src/reducers/onboarding/onboardingReducer';
@@ -50,6 +51,7 @@ export const mockInitialAppState: AppState = {
     },
     suiteSync: initialSuiteSyncDesktopState,
     suiteSyncQuotaManager: quotaManagerInitialState,
+    referAFriend: referAFriendInitialState,
     window: {
         isVisible: true,
         isBelowMobile: false,

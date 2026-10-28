@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 26.11.0.1
+
+- add `referAFriend` object store (Refer a Friend API settings and per-device referral records)
+
 ## 26.11.0
 
 - backfill `manualCheckResult` to all `persistentDeviceData` entries (all previously known devices assumed confirmed)

@@ -68,6 +68,7 @@
         "@suite-common/platform-encryption": "workspace:*",
         "@suite-common/react-query": "workspace:*",
         "@suite-common/receive": "workspace:*",
+        "@suite-common/refer-a-friend": "workspace:*",
         "@suite-common/sentry": "workspace:*",
         "@suite-common/suite-config": "workspace:*",
         "@suite-common/suite-constants": "workspace:*",
