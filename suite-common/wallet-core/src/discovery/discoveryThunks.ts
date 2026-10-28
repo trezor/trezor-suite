@@ -399,12 +399,12 @@ export const runDiscoveryThunk = createThunk<
 
             const { discovered } = device;
 
-            if (isAddingHiddenWallet) {
-                const duplicate = selectDevices(getState())
-                    .map(d => d.state)
-                    .find(deviceStateEqualTo(deviceState));
+            const duplicate = selectDevices(getState())
+                .map(d => d.state)
+                .find(deviceStateEqualTo(deviceState));
 
-                if (duplicate?.staticSessionId) {
+            if (duplicate?.staticSessionId) {
+                if (isAddingHiddenWallet) {
                     dispatch(
                         discoveryActions.updateDiscovery(
                             {
@@ -414,10 +414,23 @@ export const runDiscoveryThunk = createThunk<
                             device.path,
                         ),
                     );
+                } else {
+                    // Only the passphrase wallet flow has UI for a duplicate, so switch to the existing wallet.
+                    dispatch(discoveryActions.updateDiscovery({ status: 'complete' }, device.path));
 
-                    return;
+                    const duplicatedDevice = selectDeviceByStaticSessionId(
+                        getState(),
+                        duplicate.staticSessionId,
+                    );
+                    if (duplicatedDevice) {
+                        dispatch(selectDeviceThunk({ device: duplicatedDevice }));
+                    }
                 }
 
+                return;
+            }
+
+            if (isAddingHiddenWallet) {
                 const standardWallet = selectDevices(getState()).find(
                     d => d.path === passedDevice.path && d.useEmptyPassphrase,
                 );

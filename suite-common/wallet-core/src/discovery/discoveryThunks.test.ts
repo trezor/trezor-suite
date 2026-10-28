@@ -1,17 +1,42 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
-import { type DeviceRootState, prepareDeviceReducer } from '@suite-common/device';
+import { type AnalyticsSharedEvents } from '@suite-common/analytics';
+import { type DeviceRootState, deviceActions, prepareDeviceReducer } from '@suite-common/device';
+import { mockNetworksState } from '@suite-common/networks/mocks';
+import { persistentDeviceDataInitialState } from '@suite-common/persistent-device-data';
 import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
-import { asDeviceUniquePath } from '@trezor/connect';
-import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
+import { tokenDefinitionsInitialState } from '@suite-common/token-definitions';
+import { asNetworkSymbol } from '@suite-common/wallet-config';
+import { type DiscoveryStatus } from '@suite-common/wallet-types';
+import { mockGetTradedAccountKeys } from '@suite-common/wallet-types/mocks';
+import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
+import TrezorConnect, { type StaticSessionId, asDeviceUniquePath } from '@trezor/connect';
+import { createMockDispatch, mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
-import { applyDeviceStatesThunk } from './discoveryThunks';
+import { discoveryActions } from './discoveryActions';
+import {
+    type RunDiscoveryThunkDeps,
+    type RunDiscoveryThunkState,
+    applyDeviceStatesThunk,
+    runDiscoveryThunk,
+} from './discoveryThunks';
+import { blockchainInitialState } from '../blockchain/blockchainReducer';
 import {
     type WalletSettingsRootState,
     initialWalletSettingsState,
 } from '../settings/walletSettingsReducer';
+
+jest.mock('@trezor/connect', () => {
+    const actual = jest.requireActual('@trezor/connect');
+
+    return {
+        ...actual,
+        __esModule: true,
+        default: { ...actual.default, getDeviceState: jest.fn() },
+    };
+});
 
 type State = DeviceRootState & WalletSettingsRootState;
 
@@ -122,4 +147,88 @@ describe('applyDeviceStatesThunk', () => {
             });
         },
     );
+});
+
+describe('runDiscoveryThunk duplicates', () => {
+    const existingWalletState: StaticSessionId = 'standard@device-id:1';
+    const existingWallet = mockSuiteDevice({
+        path: devicePath,
+        instance: 1,
+        connected: true,
+        state: { staticSessionId: existingWalletState },
+        useEmptyPassphrase: true,
+    });
+
+    const createState = (discovery: DiscoveryStatus): RunDiscoveryThunkState => ({
+        wallet: {
+            accounts: [],
+            blockchain: blockchainInitialState,
+            discovery: { [devicePath]: discovery },
+            settings: initialWalletSettingsState,
+        },
+        device: {
+            devices: [existingWallet, statelessDevice],
+            selectedDevice: statelessDevice,
+            buttonRequestsByPath: {},
+        },
+        persistentDeviceData: persistentDeviceDataInitialState,
+        tokenDefinitions: tokenDefinitionsInitialState,
+        networks: mockNetworksState([asNetworkSymbol('btc')]),
+    });
+
+    const createExtra = (): RunDiscoveryThunkDeps => ({
+        services: {
+            analytics: mockAnalytics<AnalyticsSharedEvents>(),
+            getTradedAccountKeys: mockGetTradedAccountKeys(),
+            reportSecurityCheck: jest.fn(),
+        },
+        thunks: { fetchAndSaveMetadata: jest.fn() },
+    });
+
+    const runDiscovery = async (discovery: DiscoveryStatus) => {
+        // The device returns the state of the wallet which is already in the list.
+        jest.mocked(TrezorConnect.getDeviceState).mockResolvedValue({
+            success: true,
+            payload: { state: { staticSessionId: 'standard@device-id:0' } },
+        });
+        const state = createState(discovery);
+        const { actions, dispatch } = createMockDispatch({
+            getState: () => state,
+            extra: createExtra(),
+        });
+
+        await dispatch(runDiscoveryThunk({ device: statelessDevice }));
+
+        return actions;
+    };
+
+    it('selects the existing wallet when a standard wallet is added twice', async () => {
+        const actions = await runDiscovery({ status: 'starting', isAddingHiddenWallet: false });
+
+        expect(actions).toContainEqual(
+            discoveryActions.updateDiscovery({ status: 'complete' }, devicePath),
+        );
+        expect(actions).toContainEqual(deviceActions.selectDevice(existingWallet));
+        expect(actions).not.toContainEqual(
+            expect.objectContaining({ type: deviceActions.addAuthorizedDevice.type }),
+        );
+        expect(actions).not.toContainEqual(
+            expect.objectContaining({ type: deviceActions.setDeviceState.type }),
+        );
+    });
+
+    it('asks the user what to do when a passphrase wallet is a duplicate', async () => {
+        const actions = await runDiscovery({ status: 'starting', isAddingHiddenWallet: true });
+
+        expect(actions).toContainEqual(
+            discoveryActions.updateDiscovery(
+                {
+                    status: 'passphrase-duplicate',
+                    duplicateDeviceStaticSessionId: existingWalletState,
+                },
+                devicePath,
+            ),
+        );
+        expect(actions).not.toContainEqual(deviceActions.selectDevice(existingWallet));
+    });
 });
