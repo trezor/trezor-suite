@@ -10,6 +10,7 @@ export type {
     TransactionSourceErrorType,
     TransactionStoreAccount,
     TransactionStoreEvent,
+    Dispose,
     TransactionStoreListener,
     Unsubscribe,
 } from './transactionStoreTypes';
@@ -37,11 +38,14 @@ export type {
     SelectTransactionsParams,
 } from './repository/createTransactionRepository';
 export type { MigrateTransactionStoreSchemaError } from './schema/migrateTransactionStoreSchema';
-export { type TransactionStorePort } from './rpc/transactionStoreRpcProtocol';
 export {
-    type TransactionStoreRpcHost,
-    createTransactionStoreRpcHost,
-} from './rpc/createTransactionStoreRpcHost';
+    type TransactionStorePort,
+    type TransactionStorePortMessage,
+} from './rpc/transactionStoreRpcProtocol';
+export {
+    type StartTransactionStoreRpcHostDeps,
+    startTransactionStoreRpcHost,
+} from './rpc/startTransactionStoreRpcHost';
 export {
     type TransactionStoreRpcClient,
     createTransactionStoreRpcClient,

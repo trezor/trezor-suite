@@ -40,3 +40,6 @@ export type TransactionStoreEvent =
 export type TransactionStoreListener = (event: TransactionStoreEvent) => void;
 
 export type Unsubscribe = () => void;
+
+/** What every `start…` returns: undoes what it started, resolving once it has stopped. */
+export type Dispose = () => Promise<void>;

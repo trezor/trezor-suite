@@ -1,4 +1,5 @@
 import type { TransactionStore } from '../transactionStore';
+import type { Dispose } from '../transactionStoreTypes';
 import {
     type TransactionStorePort,
     type TransactionStorePortMessage,
@@ -8,14 +9,9 @@ import {
     isTransactionStoreRpcRequest,
 } from './transactionStoreRpcProtocol';
 
-export type TransactionStoreRpcHostDeps = {
+export type StartTransactionStoreRpcHostDeps = {
     transactionStore: TransactionStore;
     port: TransactionStorePort;
-};
-
-export type TransactionStoreRpcHost = {
-    /** Detaches from the port; the store keeps running. */
-    dispose: () => Promise<void>;
 };
 
 const callStore = (store: TransactionStore, request: TransactionStoreRpcRequest) => {
@@ -26,10 +22,11 @@ const callStore = (store: TransactionStore, request: TransactionStoreRpcRequest)
     return method(...request.params);
 };
 
-/** Serves a store over a port, e.g. from a worker to the app. */
-export const createTransactionStoreRpcHost = (
-    deps: TransactionStoreRpcHostDeps,
-): TransactionStoreRpcHost => {
+/**
+ * Serves a store over a port, e.g. from a worker to the app. The returned dispose detaches from
+ * the port; the store keeps running.
+ */
+export const startTransactionStoreRpcHost = (deps: StartTransactionStoreRpcHostDeps): Dispose => {
     const post = (message: TransactionStoreRpcResponse | TransactionStoreRpcEvent) =>
         deps.port.postMessage(message);
 
@@ -48,11 +45,9 @@ export const createTransactionStoreRpcHost = (
     };
     deps.port.addEventListener('message', onMessage);
 
-    return {
-        dispose: () => {
-            deps.port.removeEventListener('message', onMessage);
+    return () => {
+        deps.port.removeEventListener('message', onMessage);
 
-            return unsubscribePromise.then(unsubscribe => unsubscribe());
-        },
+        return unsubscribePromise.then(unsubscribe => unsubscribe());
     };
 };

@@ -2,6 +2,7 @@ import type { TransactionStore } from '../transactionStore';
 import type { TransactionStoreListener } from '../transactionStoreTypes';
 import {
     type TransactionStorePort,
+    type TransactionStorePortMessage,
     type TransactionStoreRpcMethod,
     isTransactionStoreRpcEvent,
     isTransactionStoreRpcResponse,
@@ -23,7 +24,7 @@ export const createTransactionStoreRpcClient = (
     const listeners = new Set<TransactionStoreListener>();
     let nextId = 0;
 
-    deps.port.addEventListener('message', ({ data }) => {
+    const onMessage = ({ data }: TransactionStorePortMessage) => {
         if (isTransactionStoreRpcEvent(data)) {
             listeners.forEach(listener => listener(data.event));
 
@@ -40,7 +41,8 @@ export const createTransactionStoreRpcClient = (
             // Unexpected on the other side; the store's expected failures come back as `Result`.
             pendingCall?.reject(new Error('Transaction store call failed'));
         }
-    });
+    };
+    deps.port.addEventListener('message', onMessage);
 
     const call =
         <M extends TransactionStoreRpcMethod>(method: M) =>
@@ -61,7 +63,12 @@ export const createTransactionStoreRpcClient = (
         selectTransactions: call('selectTransactions'),
         query: call('query'),
         whenIdle: call('whenIdle'),
-        dispose: call('dispose'),
+        // The store on the other side stops first, then the client lets go of the port.
+        dispose: () =>
+            call('dispose')().finally(() => {
+                deps.port.removeEventListener('message', onMessage);
+                listeners.clear();
+            }),
         subscribe: listener => {
             listeners.add(listener);
 
