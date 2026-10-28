@@ -41,6 +41,7 @@ import { OAuthApi } from './OAuthApi';
 import { PingDevice } from './PingDevice';
 import { PlatformEncryption } from './PlatformEncryption';
 import { QuotaManagerSettings } from './QuotaManagerSettings';
+import { ReferAFriendApi } from './ReferAFriendApi';
 import { ResetThpCredentials } from './ResetThpCredentials';
 import { ShowBluetoothDebugInfo } from './ShowBluetoothDebugInfo';
 import { ThrowTestingError } from './ThrowTestingError';
@@ -99,6 +100,9 @@ export const SettingsDebug = () => {
             </SettingsSection>
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="OAuth">
                 <OAuthApi />
+            </SettingsSection>
+            <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Refer a Friend">
+                <ReferAFriendApi />
             </SettingsSection>
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Coinjoin">
                 <CoinjoinApi />
