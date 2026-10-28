@@ -20,9 +20,12 @@
         {
             "path": "../../suite-common/wallet-utils"
         },
+        { "path": "../debug" },
+        { "path": "../settings" },
         {
             "path": "../../packages/blockchain-link"
         },
+        { "path": "../../packages/components" },
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/connect-common"
@@ -33,8 +36,6 @@
         {
             "path": "../../packages/product-components"
         },
-        {
-            "path": "../../packages/redux-utils"
-        }
+        { "path": "../../packages/redux-utils" }
     ]
 }

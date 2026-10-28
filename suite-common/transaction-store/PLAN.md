@@ -4,8 +4,9 @@ Status: in progress on `feat/transaction-store`.
 
 - Phases 1–3 (engine, sync, watcher, RPC) are in this package.
 - Phase 4 for web and desktop is in `@suite/transaction-store`: the worker entry, the service
-  and its feed in the Suite composition root, the react-query hooks and a Debug settings
-  section. It runs only while debug mode is on, until a screen consumes it.
+  and its feed in the Suite composition root, the react-query hooks, a Debug settings section,
+  and the account transaction list reading from it. It runs only while its Debug settings
+  switch is on in debug mode (debug mode alone, as E2E tests use it, keeps the Redux list).
 - Native (Phase 4b) is not started; see "Native: the open problem".
 - Tested: migrations, repository, blockchain-link source and the sync job, on real SQLite.
   Not tested yet: the queue, the watcher, the composition root, the RPC pair and the web entry.
@@ -106,7 +107,7 @@ startTransactionStoreFeed (service)        createTransactionStoreCompositionRoot
   registerAccounts / watchNetworks  ─RPC─►   sync queue, jobs, watcher
   setBackends (Connect defaults     ─msg─►   blockchain-link per network
   filled in on the main thread)              └─ nested Worker per backend (blockbook, …)
-useStoredTransactions (react-query) ◄─RPC─   SQLite (Evolu WASM driver, OPFS SAHPool)
+useStoredAccountTransactions      ◄─RPC─   SQLite (Evolu WASM driver, OPFS SAHPool)
   invalidated by store events       ◄─evt─
 ```
 
@@ -209,7 +210,7 @@ through `query`, so feature queries are typed end to end. No own query builder.
    jobs, sync state, events; tested with a fake source.
 3. **Watcher and setup API** — done here. Block subscriptions, fallback interval, composition
    root, disposal; RPC host/client for running in a worker.
-4. **Web and desktop entry** (`@suite/transaction-store`) — done, behind debug mode:
+4. **Web and desktop entry** (`@suite/transaction-store`) — done, behind a Debug settings switch:
     - `worker/transactionStoreWorker.ts`: `startTransactionStoreWorker` opens the Evolu WASM
       driver, keeps a blockchain-link per network on nested workers, runs the composition root
       and serves it with `startTransactionStoreRpcHost`. Returns the dispose of all of it.
@@ -226,8 +227,14 @@ through `query`, so feature queries are typed end to end. No own query builder.
       reference while those are unchanged, so balance updates and blocks push nothing. On a
       change it registers accounts (removing only ones seen leaving), sets backends and watches
       the networks; when disabled it disposes the store and its worker.
-    - `useStoredTransactions`, `useAccountSyncStatuses`, invalidated by store events.
-    - `TransactionStoreDebug`: Settings → Debug → Transaction store.
+    - `useStoredAccountTransactions({ account, page, perPage })`: the account's page of rows,
+      enhanced to `WalletAccountTransaction`, its stored count and sync status, `isLoading`,
+      `isSyncing` and `requestFullHistory`. Query keys are per account, so a change on one
+      account refetches only its queries; opening it requests a `latest` sync.
+    - `StoredTransactionList`: the account's Transactions list on that hook, with the sync status
+      line; paging past what is stored requests the whole history. No search or export yet.
+    - `TransactionStoreDebug`: Settings → Debug → Transaction store, with the switch
+      (`suiteSettings.debug.isTransactionStoreEnabled`) and per-account sync details.
 
     Every `start…` returns its dispose; services that hold state expose `dispose`.
 

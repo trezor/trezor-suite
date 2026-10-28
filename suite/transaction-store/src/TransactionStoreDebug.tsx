@@ -1,21 +1,29 @@
 import { useSelector } from 'react-redux';
 
+import { selectIsTransactionStoreEnabled, suiteSettingsActions } from '@suite/settings';
 import { useQuery } from '@suite-common/react-query';
 import type { AccountSyncStatus } from '@suite-common/transaction-store';
 import { selectAccounts } from '@suite-common/wallet-core';
 import type { Account } from '@suite-common/wallet-types';
+import { Switch } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { SectionItem } from '@trezor/product-components';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { injectGetTransactionStoreService } from './createTransactionStoreService';
-import { useAccountSyncStatuses, useTransactionStoreInvalidation } from './transactionStoreQueries';
+import {
+    transactionStoreQueryKeys,
+    useAccountSyncStatuses,
+    useTransactionStoreInvalidation,
+} from './transactionStoreQueries';
+import { selectIsTransactionStoreActive } from './transactionStoreSelectors';
 
 const useStoredTransactionCounts = () => {
     const { getTransactionStoreService } = useServices(injectGetTransactionStoreService);
 
     return useQuery({
-        // Under the transactions key, so it refetches whenever rows change.
-        queryKey: ['transaction-store', 'transactions', 'counts'],
+        // Under the transactions key but no account's, so it refetches whenever any rows change.
+        queryKey: [...transactionStoreQueryKeys.allTransactions(), { kind: 'counts' }],
         queryFn: async () => {
             const result = await getTransactionStoreService().transactionStore.query({
                 sql: 'SELECT account_key, COUNT(*) AS count FROM transactions GROUP BY account_key',
@@ -45,8 +53,8 @@ const describeStatus = (status: AccountSyncStatus | undefined, count: unknown) =
 const getAccountTitle = (account: Account) =>
     `${account.symbol.toUpperCase()} #${account.index + 1} (${account.accountType})`;
 
-/** What the transaction store's worker holds and is doing, per account. */
-export const TransactionStoreDebug = () => {
+/** What the worker holds and is doing, per account; mounted only while the store runs. */
+const TransactionStoreAccounts = () => {
     const { getTransactionStoreService } = useServices(injectGetTransactionStoreService);
     const accounts = useSelector(selectAccounts).filter(account => account.visible);
     const { data: statuses } = useAccountSyncStatuses(accounts.map(({ key }) => key));
@@ -59,8 +67,8 @@ export const TransactionStoreDebug = () => {
     return (
         <>
             <SectionItem
-                title="Transaction store"
-                description="Runs in its own worker while debug mode is on: syncs every account of the enabled networks into SQLite (OPFS) and refreshes on new blocks."
+                title="Whole history"
+                description="Fetches the whole history of every account, page by page in the worker."
                 actions={
                     <SectionItem.Button
                         size="small"
@@ -89,6 +97,32 @@ export const TransactionStoreDebug = () => {
                     }
                 />
             ))}
+        </>
+    );
+};
+
+export const TransactionStoreDebug = () => {
+    const { dispatch } = useServices(injectDispatch);
+    const isEnabled = useSelector(selectIsTransactionStoreEnabled);
+    const isActive = useSelector(selectIsTransactionStoreActive);
+
+    const handleChange = (isChecked: boolean) =>
+        dispatch(suiteSettingsActions.setDebugMode({ isTransactionStoreEnabled: isChecked }));
+
+    return (
+        <>
+            <SectionItem
+                title="Transaction store"
+                description="Syncs every account of the enabled networks into SQLite in its own worker, refreshes on new blocks, and serves the accounts' transaction lists."
+                actions={
+                    <Switch
+                        isChecked={isEnabled}
+                        onChange={handleChange}
+                        data-testid="@settings/debug/transaction-store/switch"
+                    />
+                }
+            />
+            {isActive && <TransactionStoreAccounts />}
         </>
     );
 };

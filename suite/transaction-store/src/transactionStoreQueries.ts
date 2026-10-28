@@ -1,21 +1,23 @@
 import { useEffect } from 'react';
 
 import { useQuery, useQueryClient } from '@suite-common/react-query';
-import type { SelectTransactionsParams } from '@suite-common/transaction-store';
 import { useServices } from '@trezor/dependency-injection';
 
 import { injectGetTransactionStoreService } from './createTransactionStoreService';
 
-const transactionStoreQueryKeys = {
-    transactions: (params?: SelectTransactionsParams) => [
+/** Keys are per account, so a change on one account refetches only that account's queries. */
+export const transactionStoreQueryKeys = {
+    allTransactions: () => ['transaction-store', 'transactions'],
+    accountTransactions: (accountKey: string, variant?: unknown) => [
         'transaction-store',
         'transactions',
-        ...(params === undefined ? [] : [params]),
+        accountKey,
+        ...(variant === undefined ? [] : [variant]),
     ],
     syncStatus: (accountKeys?: string[]) => [
         'transaction-store',
         'sync-status',
-        ...(accountKeys === undefined ? [] : [accountKeys]),
+        ...(accountKeys ?? []),
     ],
 };
 
@@ -27,11 +29,23 @@ export const useTransactionStoreInvalidation = () => {
     useEffect(() => {
         const unsubscribePromise = getTransactionStoreService().transactionStore.subscribe(
             event => {
-                const queryKey =
-                    event.type === 'transactionsChanged'
-                        ? transactionStoreQueryKeys.transactions()
-                        : transactionStoreQueryKeys.syncStatus();
-                void queryClient.invalidateQueries({ queryKey });
+                if (event.type === 'transactionsChanged') {
+                    // Lists over several accounts (e.g. counts) refetch along with the account's.
+                    void queryClient.invalidateQueries({
+                        queryKey: transactionStoreQueryKeys.allTransactions(),
+                        predicate: query =>
+                            typeof query.queryKey[2] !== 'string' ||
+                            event.accountKeys.includes(query.queryKey[2]),
+                    });
+
+                    return;
+                }
+                void queryClient.invalidateQueries({
+                    queryKey: transactionStoreQueryKeys.syncStatus(),
+                    predicate: query =>
+                        query.queryKey.length === 2 ||
+                        query.queryKey.includes(event.status.accountKey),
+                });
             },
         );
 
@@ -39,16 +53,6 @@ export const useTransactionStoreInvalidation = () => {
             void unsubscribePromise.then(unsubscribe => unsubscribe());
         };
     }, [getTransactionStoreService, queryClient]);
-};
-
-/** A page of the stored history; keep `limit` small, the rows are copied from the worker. */
-export const useStoredTransactions = (params: SelectTransactionsParams) => {
-    const { getTransactionStoreService } = useServices(injectGetTransactionStoreService);
-
-    return useQuery({
-        queryKey: transactionStoreQueryKeys.transactions(params),
-        queryFn: () => getTransactionStoreService().transactionStore.selectTransactions(params),
-    });
 };
 
 export const useAccountSyncStatuses = (accountKeys: string[]) => {

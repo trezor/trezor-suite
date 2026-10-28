@@ -3,7 +3,6 @@ import { saveAs } from 'file-saver';
 import { type DesktopAnalyticsDep, createAnalytics } from '@suite/analytics';
 import { selectShouldRetryFirmwareRevisionCheckError } from '@suite/authenticity-checks';
 import { type BluetoothDep, createBluetoothCompositionRoot } from '@suite/bluetooth';
-import { selectIsDebugModeActive } from '@suite/debug';
 import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { rerunFwAuthenticityChecksThunk } from '@suite/device';
 import { lockDevice } from '@suite/locks';
@@ -24,6 +23,7 @@ import {
     type TransactionStoreFeedDep,
     createGetTransactionStoreService,
     createTransactionStoreWorker,
+    selectIsTransactionStoreActive,
     startTransactionStoreFeed,
 } from '@suite/transaction-store';
 import { createBip329CompositionRoot } from '@suite-common/bip329';
@@ -155,8 +155,8 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         updateOutputLabel: suiteSync.labeling.updateOutputLabel,
     });
 
-    // Lazy: the worker starts on the first use. The feed starts it while debug mode is on, until
-    // a screen consumes the store.
+    // Lazy: the worker starts on the first use. The feed starts it only while its Debug settings
+    // switch is on, until it replaces the Redux history.
     const getTransactionStoreService = createGetTransactionStoreService({
         getTrezorConnect: deps.getTrezorConnect,
         createWorker: createTransactionStoreWorker,
@@ -165,7 +165,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         getTransactionStoreService,
         getState: deps.getState,
         subscribe: deps.subscribe,
-        getIsEnabled: toGetter(deps.getState, selectIsDebugModeActive),
+        getIsEnabled: toGetter(deps.getState, selectIsTransactionStoreActive),
     });
 
     const networks = createNetworksCompositionRoot({
