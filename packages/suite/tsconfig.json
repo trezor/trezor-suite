@@ -91,6 +91,9 @@
             "path": "../../suite-common/react-query"
         },
         { "path": "../../suite-common/receive" },
+        {
+            "path": "../../suite-common/refer-a-friend"
+        },
         { "path": "../../suite-common/sentry" },
         {
             "path": "../../suite-common/suite-config"

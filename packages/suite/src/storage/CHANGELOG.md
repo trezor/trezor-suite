@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 26.12.0
+
+- add `referAFriend` object store (Refer a Friend API settings and per-device referral records)
+
 ## 26.11.0.2
 
 - add `tradeApiInstallSalt` (per-installation trade API salt) object store

@@ -27,6 +27,7 @@ export { replaceByFeeErrorMiddleware } from './src/middlewares/wallet/replaceByF
 export { prepareStorageMiddleware } from './src/middlewares/wallet/storageMiddleware';
 export { tradingMiddleware as walletTradingMiddleware } from './src/middlewares/wallet/tradingMiddleware';
 export { default as onboardingMiddleware } from './src/middlewares/onboarding/onboardingMiddleware';
+export { prepareReferAFriendReducer } from './src/actions/referAFriend/referAFriendSlice';
 export { prepareSuiteSyncQuotaManagerReducer } from './src/actions/suiteSyncQuotaManager/suiteSyncQuotaManagerSlice';
 export { toastMiddleware } from './src/middlewares/suite/toastMiddleware';
 export { default as onboardingReducers } from './src/reducers/onboarding/onboardingReducer';

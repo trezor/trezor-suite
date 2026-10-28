@@ -11,6 +11,7 @@ import { selectLabelingDataForAccount } from '@suite/metadata';
 import { createMetadataMigrationCompositionRoot } from '@suite/metadata-migration';
 import { type HistoryDep, createSuiteRouterHistory } from '@suite/router';
 import { selectDebugSettings, selectLanguage, selectTradeServerEnvironment } from '@suite/settings';
+import { selectIsTorEnabled } from '@suite/tor';
 import { createSuiteSyncDesktopCompositionRoot } from '@suite-app/suite-sync';
 import { createBip329CompositionRoot } from '@suite-common/bip329';
 import {
@@ -29,6 +30,7 @@ import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authentic
 import { createNetworksCompositionRoot } from '@suite-common/networks';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
 import { createQueryClient } from '@suite-common/react-query';
+import { createReferAFriendCompositionRoot } from '@suite-common/refer-a-friend';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import {
     createSuiteSyncWriteLabels,
@@ -137,6 +139,15 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         updateOutputLabel: suiteSync.labeling.updateOutputLabel,
     });
 
+    const referAFriend = createReferAFriendCompositionRoot({
+        dispatch: deps.dispatch,
+        getState: deps.getState,
+        getIsTorEnabled: toGetter(deps.getState, selectIsTorEnabled),
+        platformEncryption: deps.platformEncryption,
+        getTrezorConnect: deps.getTrezorConnect,
+        fetch: globalThis.fetch.bind(globalThis),
+    });
+
     const networks = createNetworksCompositionRoot({
         getTrezorConnect: deps.getTrezorConnect,
         dispatch: deps.dispatch,
@@ -178,6 +189,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         migrateLegacyLabelsToSuiteSync,
         ensureDelegatedIdentityKey,
         platformEncryption: deps.platformEncryption,
+        referAFriend,
         analytics,
         bluetooth,
         suiteRouterHistory: createSuiteRouterHistory({

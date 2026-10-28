@@ -23,6 +23,7 @@ import {
     preparePersistentDeviceDataReducer,
 } from '@suite-common/persistent-device-data';
 import { type ReceiveState, prepareReceiveReducer } from '@suite-common/receive';
+import { type ReferAFriendState } from '@suite-common/refer-a-friend';
 import { type SuiteSyncDataState, suiteSyncDataReducer } from '@suite-common/suite-sync';
 import { type SuiteSyncQuotaManagerState } from '@suite-common/suite-sync-quota-manager';
 import { type ThpState, prepareThpReducer } from '@suite-common/thp';
@@ -43,6 +44,7 @@ import {
     onboardingMiddleware,
     onboardingReducers,
     prepareBioAuthReducer,
+    prepareReferAFriendReducer,
     prepareSuiteSyncQuotaManagerReducer,
     toastMiddleware,
 } from '@trezor/suite';
@@ -60,6 +62,7 @@ const thpReducer = prepareThpReducer(extraDependencies);
 const suiteSyncReducer = prepareSuiteSyncReducer(extraDependencies);
 const suiteSyncQuotaManagerReducer = prepareSuiteSyncQuotaManagerReducer(extraDependencies);
 const receiveReducer = prepareReceiveReducer(extraDependencies);
+const referAFriendReducer = prepareReferAFriendReducer(extraDependencies);
 const persistentDeviceDataReducer = preparePersistentDeviceDataReducer(extraDependencies);
 const walletReducers = createWalletReducer(extraDependencies);
 
@@ -83,6 +86,7 @@ export type AppState = SuiteReducersState & {
     geolocation: GeolocationState;
     globalSendReceiveFilters: GlobalSendReceiveFiltersState;
     persistentDeviceData: PersistentDeviceDataState;
+    referAFriend: ReferAFriendState;
 };
 
 export type SuiteRootReducer = Reducer<AppState, UnknownAction, Partial<AppState>>;
@@ -108,6 +112,7 @@ export const rootReducer: SuiteRootReducer = combineReducers({
     geolocation: geolocationReducer,
     globalSendReceiveFilters: globalSendReceiveFiltersReducer,
     persistentDeviceData: persistentDeviceDataReducer,
+    referAFriend: referAFriendReducer,
 } satisfies ReducersMapObject<AppState, never, Record<keyof AppState, never>>);
 
 const loggerExcludedActions = [addLog.type];
