@@ -10354,6 +10354,51 @@ export const messages = defineMessages({
         id: 'TR_REFERRAL_UNAVAILABLE',
         defaultMessage: 'Refer-A-Friend is currently unavailable.',
     },
+    TR_REFERRAL_LOAD_REWARDS: {
+        id: 'TR_REFERRAL_LOAD_REWARDS',
+        defaultMessage: 'Load rewards',
+    },
+    TR_REFERRAL_LOAD_REWARDS_DESCRIPTION: {
+        id: 'TR_REFERRAL_LOAD_REWARDS_DESCRIPTION',
+        defaultMessage: 'Confirm on your Trezor to load your rewards.',
+    },
+    TR_REFERRAL_ERROR_PROGRAM: {
+        id: 'TR_REFERRAL_ERROR_PROGRAM',
+        defaultMessage: 'Refer-A-Friend couldn’t be loaded.',
+    },
+    TR_REFERRAL_ERROR_REWARDS: {
+        id: 'TR_REFERRAL_ERROR_REWARDS',
+        defaultMessage: 'Your rewards couldn’t be loaded.',
+    },
+    TR_REFERRAL_ERROR_NETWORK: {
+        id: 'TR_REFERRAL_ERROR_NETWORK',
+        defaultMessage: 'Check your internet connection and try again.',
+    },
+    TR_REFERRAL_ERROR_TIMESTAMP_EXPIRED: {
+        id: 'TR_REFERRAL_ERROR_TIMESTAMP_EXPIRED',
+        defaultMessage:
+            'Your computer’s clock seems to be wrong. Correct the date and time, then try again.',
+    },
+    TR_REFERRAL_ERROR_RATE_LIMITED: {
+        id: 'TR_REFERRAL_ERROR_RATE_LIMITED',
+        defaultMessage: 'Too many requests. Try again later.',
+    },
+    TR_REFERRAL_ERROR_SIGNATURE_INVALID: {
+        id: 'TR_REFERRAL_ERROR_SIGNATURE_INVALID',
+        defaultMessage: 'The request couldn’t be verified. Try again.',
+    },
+    TR_REFERRAL_ERROR_GENERIC: {
+        id: 'TR_REFERRAL_ERROR_GENERIC',
+        defaultMessage: 'Something went wrong. Try again later.',
+    },
+    TR_REFERRAL_ERROR_DEVICE_CANCELLED: {
+        id: 'TR_REFERRAL_ERROR_DEVICE_CANCELLED',
+        defaultMessage: 'The action was cancelled on your Trezor.',
+    },
+    TR_REFERRAL_ERROR_DEVICE: {
+        id: 'TR_REFERRAL_ERROR_DEVICE',
+        defaultMessage: 'Your Trezor couldn’t complete the action. Try again.',
+    },
     TR_QUICK_ACTION_DEBUG_EXPERIMENTAL_SETTINGS: {
         id: 'TR_QUICK_ACTION_DEBUG_EXPERIMENTAL_SETTINGS',
         defaultMessage: 'Debug and experimental settings',

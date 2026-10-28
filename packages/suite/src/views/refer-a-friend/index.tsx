@@ -1,9 +1,18 @@
-import { type ReactNode, useEffect, useState } from 'react';
+import { type ReactNode, useEffect } from 'react';
 import { useIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
 
 import { Translation, type TranslationKey } from '@suite/intl';
-import { selectIsDeviceUsingPassphrase, selectSelectedDevice } from '@suite-common/device';
+import { type DeviceRootState, selectSelectedDevice } from '@suite-common/device';
+import {
+    type ReferAFriendRootState,
+    fetchReferralAccountThunk,
+    fetchReferralProgramThunk,
+    selectReferralAccountState,
+    selectReferralDeviceRecord,
+    selectReferralKeyDerivationDevice,
+    selectReferralProgram,
+} from '@suite-common/refer-a-friend';
 import {
     Box,
     Card,
@@ -11,12 +20,13 @@ import {
     Column,
     Paragraph,
     Row,
-    Select,
     StepList,
     Text,
     TextButton,
 } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 import { CaretDownIcon, CaretUpDownIcon } from '@trezor/icons';
+import { injectDispatch } from '@trezor/redux-utils';
 
 import { useModal } from 'src/components/suite/asset-picker/hooks/useModal';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
@@ -24,24 +34,19 @@ import { useLayout } from 'src/hooks/suite';
 
 import { LeaveProgramModal } from './LeaveProgramModal';
 import { ReferralDisconnected } from './ReferralDisconnected';
+import { ReferralError } from './ReferralError';
 import { ReferralInvitation } from './ReferralInvitation';
-import { ReferralLinkCard } from './ReferralLinkCard';
-import { ReferralRewards } from './ReferralRewards';
+import { ReferralJoinedContent } from './ReferralJoinedContent';
+import { ReferralLoading } from './ReferralLoading';
 import { ReferralUnavailable } from './ReferralUnavailable';
-import { mockReferralProgram, mockReferralScenarios } from './mockReferralProgram';
-import { getReferralRewardsSummary } from './referralRewardsUtils';
+import { ANNUAL_REWARD_LIMIT } from './referralConstants';
 import { selectIsReferralAvailable } from './referralSelectors';
+import { useReferralActions } from './useReferralActions';
 
 const referralSteps: { title: TranslationKey; description: TranslationKey }[] = [
     { title: 'TR_REFERRAL_GET_LINK', description: 'TR_REFERRAL_GET_LINK_DESCRIPTION' },
     { title: 'TR_REFERRAL_INVITE_FRIENDS', description: 'TR_REFERRAL_INVITE_FRIENDS_DESCRIPTION' },
     { title: 'TR_REFERRAL_SPEND_REWARDS', description: 'TR_REFERRAL_SPEND_REWARDS_DESCRIPTION' },
-];
-
-const mockScenarioOptions: { value: keyof typeof mockReferralScenarios; label: string }[] = [
-    { value: 'allStates', label: 'Active vouchers' },
-    { value: 'empty', label: 'No vouchers' },
-    { value: 'limitReached', label: 'Limit reached' },
 ];
 
 type ReferralFAQ = {
@@ -52,24 +57,88 @@ type ReferralFAQ = {
 };
 
 export const ReferAFriend = () => {
-    const [isJoined, setIsJoined] = useState(false);
-    const [mockScenario, setMockScenario] =
-        useState<keyof typeof mockReferralScenarios>('allStates');
-    const leaveModal = useModal();
     const device = useSelector(selectSelectedDevice);
+    const deviceId = device?.id ?? undefined;
     const isReferralAvailable = useSelector(selectIsReferralAvailable);
-    const isDeviceUsingPassphrase = useSelector(selectIsDeviceUsingPassphrase);
+    const program = useSelector(selectReferralProgram);
+    const deviceRecord = useSelector((state: ReferAFriendRootState) =>
+        selectReferralDeviceRecord(state, deviceId),
+    );
+    const accountState = useSelector((state: ReferAFriendRootState) =>
+        selectReferralAccountState(state, deviceId),
+    );
+    const canDeriveKey = useSelector(
+        (state: DeviceRootState) => selectReferralKeyDerivationDevice(state, deviceId) !== null,
+    );
+
+    const leaveModal = useModal();
+    const { dispatch } = useServices(injectDispatch);
+    const { formatNumber } = useIntl();
+    const { join, leave } = useReferralActions(deviceId);
+
     const isDeviceConnected = !!device?.connected;
+    const shareUrl = deviceRecord?.shareUrl ?? null;
+    const isJoined = shareUrl !== null;
     const closeLeaveModal = leaveModal.closeModal;
-    const { formatNumber, formatDate } = useIntl();
-    const {
-        fiatCurrency,
-        rewardAmount,
-        minimumOrderAmount,
-        friendDiscountPercentage,
-        annualReferralLimit,
-        annualRewardLimit,
-    } = mockReferralProgram;
+
+    useLayout('Refer-A-Friend', <PageHeader />);
+
+    // Read endpoints load only when the page opens or the wallet of another device is selected.
+    useEffect(() => {
+        if (!isReferralAvailable) return;
+
+        dispatch(fetchReferralProgramThunk());
+    }, [isReferralAvailable, dispatch]);
+
+    useEffect(() => {
+        if (!isReferralAvailable || deviceId === undefined) return;
+
+        dispatch(fetchReferralAccountThunk({ deviceId }));
+    }, [isReferralAvailable, deviceId, dispatch]);
+
+    useEffect(() => {
+        if (!isReferralAvailable || !isJoined) {
+            closeLeaveModal();
+        }
+    }, [isReferralAvailable, isJoined, closeLeaveModal]);
+
+    if (!isReferralAvailable) {
+        return <ReferralUnavailable description="TR_REFERRAL_UNAVAILABLE" />;
+    }
+
+    if (program.status === 'error') {
+        return (
+            <Column width="100%" maxWidth={760} margin={{ horizontal: 'auto' }}>
+                <ReferralError
+                    title="TR_REFERRAL_ERROR_PROGRAM"
+                    error={program.error}
+                    onRetry={() => dispatch(fetchReferralProgramThunk())}
+                />
+            </Column>
+        );
+    }
+
+    if (program.data === null) {
+        return <ReferralLoading />;
+    }
+
+    if (!isJoined && !isDeviceConnected) {
+        return (
+            <Column width="100%" data-testid="@referral/page">
+                <ReferralDisconnected />
+            </Column>
+        );
+    }
+
+    // Joining derives the key on the standard wallet, a hidden wallet alone cannot do it.
+    if (!isJoined && !canDeriveKey) {
+        return <ReferralUnavailable description="TR_REFERRAL_SWITCH_TO_STANDARD_WALLET" />;
+    }
+
+    const { fiatCurrency, rewardAmount, minimumOrderAmount, friendDiscountPercentage, termsUrl } =
+        program.data;
+    const annualReferralLimit =
+        accountState.account?.redemptionLimit ?? program.data.redemptionLimit;
     const translationValues = {
         rewardAmount: formatNumber(rewardAmount, {
             style: 'currency',
@@ -81,7 +150,7 @@ export const ReferAFriend = () => {
             currency: fiatCurrency,
             maximumFractionDigits: 0,
         }),
-        annualRewardLimit: formatNumber(annualRewardLimit, {
+        annualRewardLimit: formatNumber(ANNUAL_REWARD_LIMIT, {
             style: 'currency',
             currency: fiatCurrency,
             maximumFractionDigits: 0,
@@ -174,35 +243,6 @@ export const ReferAFriend = () => {
     const faqItems = referralFAQs.filter(
         faq => faq.visibility === 'both' || faq.visibility === (isJoined ? 'after' : 'before'),
     );
-    const vouchers = mockReferralScenarios[mockScenario];
-    const rewardsSummary = getReferralRewardsSummary(vouchers, rewardAmount);
-    const isLimitReached =
-        rewardsSummary.totalEarned >= annualRewardLimit ||
-        rewardsSummary.referralCount >= annualReferralLimit;
-
-    useLayout('Refer-A-Friend', <PageHeader />);
-
-    useEffect(() => {
-        if (!isDeviceConnected || !isReferralAvailable || isDeviceUsingPassphrase) {
-            closeLeaveModal();
-        }
-    }, [isDeviceConnected, isReferralAvailable, isDeviceUsingPassphrase, closeLeaveModal]);
-
-    if (!isReferralAvailable) {
-        return <ReferralUnavailable description="TR_REFERRAL_UNAVAILABLE" />;
-    }
-
-    if (isDeviceUsingPassphrase) {
-        return <ReferralUnavailable description="TR_REFERRAL_SWITCH_TO_STANDARD_WALLET" />;
-    }
-
-    if (!isDeviceConnected) {
-        return (
-            <Column width="100%" data-testid="@referral/page">
-                <ReferralDisconnected />
-            </Column>
-        );
-    }
 
     return (
         <Column
@@ -212,46 +252,21 @@ export const ReferAFriend = () => {
             gap={24}
             data-testid="@referral/page"
         >
-            {isJoined ? (
-                <>
-                    <Select
-                        label="Debug: mock state"
-                        aria-label="Debug: mock state"
-                        size="medium"
-                        options={mockScenarioOptions}
-                        value={mockScenarioOptions.find(option => option.value === mockScenario)}
-                        onChange={option => setMockScenario(option.value)}
-                        isClearable={false}
-                        data-testid="@referral/debug/mock-state"
-                    />
-                    <ReferralLinkCard
-                        referralLink={mockReferralProgram.referralLink}
-                        rewardAmount={translationValues.rewardAmount}
-                        minimumOrderAmount={translationValues.minimumOrderAmount}
-                        friendDiscountPercentage={friendDiscountPercentage}
-                        annualReferralLimit={annualReferralLimit}
-                        annualRewardLimit={translationValues.annualRewardLimit}
-                        nextResetDate={formatDate(mockReferralProgram.nextResetDate, {
-                            dateStyle: 'long',
-                            timeZone: 'UTC',
-                        })}
-                        isLimitReached={isLimitReached}
-                    />
-                    <ReferralRewards
-                        vouchers={vouchers}
-                        rewardAmount={rewardAmount}
-                        fiatCurrency={fiatCurrency}
-                        annualRewardLimit={annualRewardLimit}
-                        annualReferralLimit={annualReferralLimit}
-                        rewardWaitingPeriodDays={mockReferralProgram.rewardWaitingPeriodDays}
-                    />
-                </>
+            {isJoined && deviceId !== undefined ? (
+                <ReferralJoinedContent
+                    deviceId={deviceId}
+                    shareUrl={shareUrl}
+                    isDeviceConnected={isDeviceConnected}
+                    program={program.data}
+                />
             ) : (
                 <ReferralInvitation
                     rewardAmount={translationValues.rewardAmount}
                     minimumOrderAmount={translationValues.minimumOrderAmount}
                     friendDiscountPercentage={friendDiscountPercentage}
-                    onJoin={() => setIsJoined(true)}
+                    termsUrl={termsUrl}
+                    isJoining={accountState.pendingAction === 'join'}
+                    onJoin={join}
                 />
             )}
             <Card type="sunken" paddingType="none">
@@ -373,8 +388,8 @@ export const ReferAFriend = () => {
                 <LeaveProgramModal
                     onCancel={leaveModal.closeModal}
                     onConfirm={() => {
-                        setIsJoined(false);
                         leaveModal.closeModal();
+                        leave();
                     }}
                 />
             )}

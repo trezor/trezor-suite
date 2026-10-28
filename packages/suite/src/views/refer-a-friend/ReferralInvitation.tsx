@@ -10,6 +10,8 @@ type ReferralInvitationProps = {
     rewardAmount: string;
     minimumOrderAmount: string;
     friendDiscountPercentage: number;
+    termsUrl: string;
+    isJoining: boolean;
     onJoin: () => void;
 };
 
@@ -17,6 +19,8 @@ export const ReferralInvitation = ({
     rewardAmount,
     minimumOrderAmount,
     friendDiscountPercentage,
+    termsUrl,
+    isJoining,
     onJoin,
 }: ReferralInvitationProps) => {
     const isBelowTablet = useIsContentBelowBreakpoint(breakpoints.tablet);
@@ -75,6 +79,7 @@ export const ReferralInvitation = ({
                         <Button
                             data-testid="@referral/join"
                             size={isBelowTablet ? 'medium' : 'large'}
+                            isLoading={isJoining}
                             onClick={onJoin}
                         >
                             <Translation id="TR_REFERRAL_JOIN_PROGRAM" />
@@ -96,11 +101,7 @@ export const ReferralInvitation = ({
                                 {chunks}
                             </Link>
                         ),
-                        programTerms: chunks => (
-                            <Link href="https://trezor.io/terms-of-use#refer-a-friend">
-                                {chunks}
-                            </Link>
-                        ),
+                        programTerms: chunks => <Link href={termsUrl}>{chunks}</Link>,
                         generalTerms: chunks => (
                             <Link href="https://trezor.io/terms-of-use">{chunks}</Link>
                         ),
