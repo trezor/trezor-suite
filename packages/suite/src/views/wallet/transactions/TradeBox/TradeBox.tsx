@@ -10,6 +10,7 @@ import { TokenIcon } from '@trezor/product-components';
 import { DashboardSection } from 'src/components/dashboard';
 import { YieldBadge } from 'src/components/earn/YieldBadge/YieldBadge';
 import { PriceTicker, TrendTicker } from 'src/components/suite';
+import { AssetDetailLink } from 'src/components/suite/AssetDetailLink/AssetDetailLink';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
 import { type Account } from 'src/types/wallet';
 
@@ -41,7 +42,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                         direction={isBelowMobile ? 'column' : 'row'}
                         gap={isBelowMobile ? 16 : 40}
                     >
-                        <Row gap={12}>
+                        <AssetDetailLink symbol={account.symbol} gap={12}>
                             <TokenIcon size={40} symbol={account.symbol} showNetworkIcon />
                             <InfoItem
                                 label={getNetworkDisplaySymbolName(account.symbol)}
@@ -59,7 +60,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
                                     {getNetworkDisplaySymbol(account.symbol)}
                                 </Text>
                             </InfoItem>
-                        </Row>
+                        </AssetDetailLink>
                         {shallDisplayBaseCurrency ? (
                             <>
                                 <InfoItem
