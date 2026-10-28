@@ -17,6 +17,12 @@ import {
 export class BrowserSessionsBackground implements SessionsBackgroundInterface {
     private readonly background;
     private readonly portListeners: Array<(e: MessageEvent<any>) => void> = [];
+    // event -> caller listener -> its port wrappers. One entry per registration, so that
+    // registering the same listener twice needs two off() calls, same as EventEmitter.
+    private readonly listenerMap = new Map<
+        string,
+        Map<(...args: any[]) => void, Array<(e: MessageEvent<any>) => void>>
+    >();
 
     constructor(sessionsBackgroundUrl: string) {
         this.background = new SharedWorker(sessionsBackgroundUrl, {
@@ -68,8 +74,29 @@ export class BrowserSessionsBackground implements SessionsBackgroundInterface {
                 }
             }
         };
+        let eventMap = this.listenerMap.get(event);
+        if (!eventMap) {
+            eventMap = new Map();
+            this.listenerMap.set(event, eventMap);
+        }
+        const wrappedListeners = eventMap.get(listener) ?? [];
+        wrappedListeners.push(wrappedListener);
+        eventMap.set(listener, wrappedListeners);
         this.portListeners.push(wrappedListener);
         this.background.port.addEventListener('message', wrappedListener);
+    }
+
+    off(event: 'descriptors', listener: (descriptors: Descriptor[]) => void): void;
+    off(event: 'releaseRequest', listener: (descriptor: Descriptor) => void): void;
+    off(event: 'descriptors' | 'releaseRequest', listener: (...args: any[]) => void): void {
+        const wrappedListeners = this.listenerMap.get(event)?.get(listener);
+        const wrappedListener = wrappedListeners?.pop();
+        if (wrappedListener) {
+            this.removePortListener(wrappedListener);
+            if (!wrappedListeners?.length) {
+                this.listenerMap.get(event)!.delete(listener);
+            }
+        }
     }
 
     dispose() {
@@ -77,5 +104,12 @@ export class BrowserSessionsBackground implements SessionsBackgroundInterface {
             this.background.port.removeEventListener('message', listener);
         }
         this.portListeners.length = 0;
+        this.listenerMap.clear();
+    }
+
+    private removePortListener(listener: (e: MessageEvent<any>) => void) {
+        this.background.port.removeEventListener('message', listener);
+        const idx = this.portListeners.indexOf(listener);
+        if (idx !== -1) this.portListeners.splice(idx, 1);
     }
 }
