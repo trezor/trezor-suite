@@ -338,7 +338,10 @@ export class Blockchain {
 
     disconnect() {
         this.link.removeAllListeners();
-        this.link.disconnect().then(() => this.link.dispose());
+        this.link
+            .disconnect()
+            .catch(() => {})
+            .finally(() => this.link.dispose());
         this.onBackendDisconnected();
     }
 }
