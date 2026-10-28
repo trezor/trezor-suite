@@ -1,16 +1,15 @@
 import { useIntl } from 'react-intl';
 
 import { Translation } from '@suite/intl';
+import { type ReferralVoucher, getReferralRewardsSummary } from '@suite-common/refer-a-friend';
 import { Card, Column, H3, IconCircle, Note, Row, Table, Text, Tooltip } from '@trezor/components';
 import { GiftIcon } from '@trezor/icons';
 
 import { ReferralVoucherRow } from './ReferralVoucherRow';
-import { type ReferralVoucher } from './mockReferralProgram';
-import { getReferralRewardsSummary } from './referralRewardsUtils';
 
 type ReferralRewardsProps = {
     vouchers: ReferralVoucher[];
-    rewardAmount: number;
+    redemptionCount: number;
     fiatCurrency: string;
     annualRewardLimit: number;
     annualReferralLimit: number;
@@ -19,14 +18,14 @@ type ReferralRewardsProps = {
 
 export const ReferralRewards = ({
     vouchers,
-    rewardAmount,
+    redemptionCount,
     fiatCurrency,
     annualRewardLimit,
     annualReferralLimit,
     rewardWaitingPeriodDays,
 }: ReferralRewardsProps) => {
     const { formatNumber } = useIntl();
-    const summary = getReferralRewardsSummary(vouchers, rewardAmount);
+    const summary = getReferralRewardsSummary(vouchers);
     const formatAmount = (amount: number) =>
         formatNumber(amount, {
             style: 'currency',
@@ -97,7 +96,7 @@ export const ReferralRewards = ({
                                 typographyStyle="headline-sm"
                                 data-testid="@referral/referral-count"
                             >
-                                {summary.referralCount}{' '}
+                                {redemptionCount}{' '}
                                 <Text
                                     typographyStyle="body-sm"
                                     intent="neutral"
@@ -130,13 +129,19 @@ export const ReferralRewards = ({
             ) : (
                 <Table>
                     <Table.Body>
-                        {vouchers.map(voucher => (
-                            <ReferralVoucherRow
-                                key={voucher.id}
-                                voucher={voucher}
-                                rewardAmount={formatAmount(rewardAmount)}
-                            />
-                        ))}
+                        {vouchers.map((voucher, index) => {
+                            // Vouchers come newest first, the numbering follows the order they were earned in.
+                            const voucherNumber = vouchers.length - index;
+
+                            return (
+                                <ReferralVoucherRow
+                                    key={voucherNumber}
+                                    voucher={voucher}
+                                    voucherNumber={voucherNumber}
+                                    amount={formatAmount(voucher.amount)}
+                                />
+                            );
+                        })}
                     </Table.Body>
                 </Table>
             )}
