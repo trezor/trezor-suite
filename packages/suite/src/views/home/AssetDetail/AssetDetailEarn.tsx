@@ -8,6 +8,7 @@ import {
     selectWalletAssetStakingRatio,
     selectWalletAssetSymbol,
 } from '@suite-common/assets';
+import { getNetworkType } from '@suite-common/wallet-config';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { Box, Card, Column, Icon, ProgressBar, Row, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -21,6 +22,7 @@ import { useStakingRate } from 'src/hooks/earn/useStakingRate';
 import { useSelector } from 'src/hooks/suite';
 
 const AVAILABLE_COLOR = 'elementFillAccentVioletBold' satisfies Color;
+const UNSTAKED_COLOR = 'elementFillNeutralSoft' satisfies Color;
 const STAKING_COLOR = 'elementFillBrandBold' satisfies Color;
 
 const LegendSquare = ({ color }: { color: Color }) => (
@@ -46,6 +48,11 @@ export const AssetDetailEarn = ({ assetKey }: AssetDetailEarnProps) => {
         return null;
     }
 
+    // A Cardano delegation leaves the whole balance spendable, so the rest is unstaked, not the
+    // only part available.
+    const isCardano = getNetworkType(symbol) === 'cardano';
+    const unstakedColor = isCardano ? UNSTAKED_COLOR : AVAILABLE_COLOR;
+
     return (
         <Box flex="1" minWidth={280}>
             <Card
@@ -70,18 +77,24 @@ export const AssetDetailEarn = ({ assetKey }: AssetDetailEarnProps) => {
                         <ProgressBar
                             value={stakingRatio}
                             max={1}
-                            backgroundColor={theme[AVAILABLE_COLOR]}
+                            backgroundColor={theme[unstakedColor]}
                             foregroundColor={theme[STAKING_COLOR]}
                         />
                         <Row justifyContent="space-between" alignItems="center">
                             <Row gap={12} alignItems="center">
-                                <LegendSquare color={AVAILABLE_COLOR} />
+                                <LegendSquare color={unstakedColor} />
                                 <Text
                                     typographyStyle="body-sm"
                                     intent="neutral"
                                     priority="secondary"
                                 >
-                                    <Translation id="TR_STAKE_AVAILABLE" />
+                                    <Translation
+                                        id={
+                                            isCardano
+                                                ? 'TR_ASSET_DETAIL_UNSTAKED'
+                                                : 'TR_STAKE_AVAILABLE'
+                                        }
+                                    />
                                 </Text>
                             </Row>
                             <Text typographyStyle="body-md-strong">

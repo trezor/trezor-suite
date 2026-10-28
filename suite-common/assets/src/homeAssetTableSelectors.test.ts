@@ -41,6 +41,7 @@ const BTC = asNetworkSymbol('btc');
 const ETH = asNetworkSymbol('eth');
 const POL = asNetworkSymbol('pol');
 const DSOL = asNetworkSymbol('dsol');
+const ADA = asNetworkSymbol('ada');
 
 /** What the desktop table folds at; the selectors take whatever a platform passes. */
 const ROW_LIMIT = 8;
@@ -142,6 +143,7 @@ const createState = ({
             [ETH]: { symbol: ETH, name: 'Ethereum' },
             [POL]: { symbol: POL, name: 'Polygon PoS' },
             [DSOL]: { symbol: DSOL, name: 'Solana Devnet' },
+            [ADA]: { symbol: ADA, name: 'Cardano' },
         },
     } as unknown as HomeAssetTableState;
 };
@@ -435,6 +437,7 @@ describe('the total over the wallet', () => {
     });
     const ethereumKey = getWalletAssetKey({ deviceState: ALICE, symbol: ETH });
     const bitcoinKey = getWalletAssetKey({ deviceState: ALICE, symbol: BTC });
+    const cardanoKey = getWalletAssetKey({ deviceState: ALICE, symbol: ADA });
 
     it('adds up every asset of the wallet', () => {
         expect(selectHomeAssetTotals(state).fiatValue?.toFixed()).toBe('56000');
@@ -531,6 +534,48 @@ describe('the total over the wallet', () => {
         expect(selectWalletAssetStakingRatio(staked, ethereumKey)).toBeCloseTo(2 / 3);
         expect(selectWalletAssetFiatValue(staked, ethereumKey)?.toFixed()).toBe('9000');
         expect(selectHomeAssetTotalFiatValue(staked)?.toFixed()).toBe('9000');
+    });
+
+    it('counts a delegating Cardano account whole as staked', () => {
+        const delegating = createState({
+            accounts: [
+                {
+                    ...mockAccount({ symbol: ADA, balance: '3' }),
+                    networkType: 'cardano',
+                    balance: '3000000',
+                    misc: { staking: { isActive: true } },
+                } as Account,
+                {
+                    ...mockAccount({ symbol: ADA, index: 1, balance: '1' }),
+                    networkType: 'cardano',
+                    balance: '1000000',
+                    misc: { staking: { isActive: false } },
+                } as Account,
+            ],
+            enabledNetworks: [ADA],
+        });
+
+        expect(selectWalletAssetAvailableAmount(delegating, cardanoKey)).toBe('1');
+        expect(selectWalletAssetStakingAmount(delegating, cardanoKey)).toBe('3');
+        expect(selectWalletAssetStakingRatio(delegating, cardanoKey)).toBeCloseTo(3 / 4);
+    });
+
+    it('leaves a pending send out of what a delegating Cardano account stakes', () => {
+        const sending = createState({
+            accounts: [
+                {
+                    ...mockAccount({ symbol: ADA, balance: '2.5' }),
+                    networkType: 'cardano',
+                    balance: '3000000',
+                    misc: { staking: { isActive: true } },
+                } as Account,
+            ],
+            enabledNetworks: [ADA],
+        });
+
+        expect(selectWalletAssetStakingAmount(sending, cardanoKey)).toBe('2.5');
+        expect(selectWalletAssetAvailableAmount(sending, cardanoKey)).toBe('0');
+        expect(selectWalletAssetStakingRatio(sending, cardanoKey)).toBe(1);
     });
 
     it('says nothing at all while no asset of the wallet can be priced', () => {

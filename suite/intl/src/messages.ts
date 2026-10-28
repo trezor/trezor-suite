@@ -1843,6 +1843,10 @@ export const messages = defineMessages({
         defaultMessage: 'Market price',
         id: 'TR_ASSET_DETAIL_MARKET_PRICE',
     },
+    TR_ASSET_DETAIL_UNSTAKED: {
+        defaultMessage: 'Unstaked',
+        id: 'TR_ASSET_DETAIL_UNSTAKED',
+    },
     TR_ASSET_DETAIL_YOUR_BALANCE: {
         defaultMessage: 'Your balance',
         id: 'TR_ASSET_DETAIL_YOUR_BALANCE',

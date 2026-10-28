@@ -27,6 +27,7 @@ import {
     selectVisibleDeviceAccounts,
 } from '@suite-common/wallet-core';
 import {
+    type Account,
     type BaseCurrencyAmount,
     type CryptoBaseCurrencyPair,
     type Rate,
@@ -624,16 +625,20 @@ export const selectWalletAssetAccountCount = (
     isHidden?: boolean,
 ) => selectWalletAsset(state, assetKey, isHidden)?.accountCount ?? 0;
 
+// A Cardano delegation stakes what the account can spend, which a pending send has already
+// reduced, as the asset's amount has; its on-chain balance would count the send too.
+const getAssetStakingBalance = (account: Account) => {
+    if (account.networkType !== 'cardano') {
+        return getAccountTotalStakingBalance(account);
+    }
+
+    return account.misc?.staking?.isActive ? account.formattedBalance : null;
+};
+
 export const selectWalletAssetStakingAmount = createMemoizedSelector(
     [selectVisibleDeviceAccounts, selectWalletAssetSymbol, selectWalletAssetContractAddress],
     (accounts, networkSymbol, contractAddress) => {
-        // Cardano delegates the spendable account balance itself, so it cannot be split into
-        // separate available and staked amounts like the other staking networks.
-        if (
-            networkSymbol === undefined ||
-            networkSymbol === 'ada' ||
-            contractAddress !== undefined
-        ) {
+        if (networkSymbol === undefined || contractAddress !== undefined) {
             return '0';
         }
 
@@ -641,7 +646,7 @@ export const selectWalletAssetStakingAmount = createMemoizedSelector(
             .reduce(
                 (total, account) =>
                     account.symbol === networkSymbol
-                        ? total.plus(getAccountTotalStakingBalance(account) ?? 0)
+                        ? total.plus(getAssetStakingBalance(account) ?? 0)
                         : total,
                 new BigNumber(0),
             )
