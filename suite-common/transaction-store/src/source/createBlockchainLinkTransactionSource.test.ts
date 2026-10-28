@@ -39,6 +39,7 @@ const createSource = (client: BlockchainLinkClient | undefined) => {
     const deps = createMockDeps<BlockchainLinkTransactionSourceDeps>({
         pageSize: 25,
         getBlockchainLink: () => client,
+        shouldSubscribeBlocks: symbol => symbol !== asNetworkSymbol('sol'),
     });
 
     return { deps, source: createBlockchainLinkTransactionSource(deps) };
@@ -46,14 +47,13 @@ const createSource = (client: BlockchainLinkClient | undefined) => {
 
 describe(createBlockchainLinkTransactionSource.name, () => {
     it("asks the network's backend for a page of the account's history", async () => {
+        const fullPage = Array.from({ length: 25 }, (_, index) =>
+            mockTransaction({ txid: `tx${index}` }),
+        );
         const client = mockClient(() =>
             Promise.resolve(
                 mockAccountInfo({
-                    history: {
-                        total: 60,
-                        unconfirmed: 0,
-                        transactions: [mockTransaction({ txid: 'a' })],
-                    },
+                    history: { total: 60, unconfirmed: 0, transactions: fullPage },
                     page: { index: 2, size: 25, total: 3 },
                 }),
             ),
@@ -71,7 +71,30 @@ describe(createBlockchainLinkTransactionSource.name, () => {
         });
         expect(result).toEqual({
             success: true,
-            payload: { transactions: [mockTransaction({ txid: 'a' })], hasNextPage: true },
+            payload: { transactions: fullPage, hasNextPage: true },
+        });
+    });
+
+    it("takes a short page as the end of history, though Solana's page says there is more", async () => {
+        const { source } = createSource(
+            mockClient(() =>
+                Promise.resolve(
+                    mockAccountInfo({
+                        history: {
+                            total: 3,
+                            unconfirmed: 0,
+                            transactions: [mockTransaction({ txid: 'a' })],
+                        },
+                        // Solana's: the page index from 0, the total in transactions.
+                        page: { index: 0, size: 1, total: 3 },
+                    }),
+                ),
+            ),
+        );
+
+        expect(await source.fetchTransactionsPage({ account, page: 1 })).toEqual({
+            success: true,
+            payload: { transactions: [mockTransaction({ txid: 'a' })], hasNextPage: false },
         });
     });
 
@@ -150,6 +173,20 @@ describe(createBlockchainLinkTransactionSource.name, () => {
             success: false,
             error: 'BackendError',
         });
+        expect(client.on).not.toHaveBeenCalled();
+    });
+
+    it('subscribes to no blocks on a network whose blocks come too often', async () => {
+        const client = mockClient(() => Promise.resolve(mockAccountInfo({})));
+        const { source } = createSource(client);
+
+        const result = await source.subscribeBlocks({
+            symbol: asNetworkSymbol('sol'),
+            onBlock: () => {},
+        });
+
+        expect(result.success).toBe(true);
+        expect(client.subscribe).not.toHaveBeenCalled();
         expect(client.on).not.toHaveBeenCalled();
     });
 });

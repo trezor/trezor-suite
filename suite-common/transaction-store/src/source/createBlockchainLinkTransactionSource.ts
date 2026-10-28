@@ -23,6 +23,8 @@ export type BlockchainLinkTransactionSourceDeps = {
      */
     getBlockchainLink: (symbol: NetworkSymbol) => BlockchainLinkClient | undefined;
     pageSize: number;
+    /** False for networks whose blocks come too often to sync on each (Solana); they use the interval. */
+    shouldSubscribeBlocks: (symbol: NetworkSymbol) => boolean;
 };
 
 export const createBlockchainLinkTransactionSource = (
@@ -43,11 +45,16 @@ export const createBlockchainLinkTransactionSource = (
                 pageSize: deps.pageSize,
             });
 
+            const transactions = accountInfo.history.transactions ?? [];
+
             return ok({
-                transactions: accountInfo.history.transactions ?? [],
-                // Only paging backends answer with a page; the others send the whole history.
+                transactions,
+                // Only paging backends answer with a page; the others send the whole history. Their
+                // `page` differs (blockbook counts pages from 1, Solana counts transactions and pages
+                // from 0), so a page shorter than asked for is what ends the history for all of them.
                 hasNextPage:
                     accountInfo.page !== undefined &&
+                    transactions.length >= deps.pageSize &&
                     accountInfo.page.index < accountInfo.page.total,
             });
         } catch {
@@ -61,6 +68,10 @@ export const createBlockchainLinkTransactionSource = (
 
         if (blockchainLink === undefined) {
             return err('BackendUnavailable');
+        }
+        if (!deps.shouldSubscribeBlocks(symbol)) {
+            // Nothing to end: the watcher's interval alone keeps this network fresh.
+            return ok(() => {});
         }
 
         try {

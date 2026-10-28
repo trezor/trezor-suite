@@ -114,8 +114,13 @@ useStoredAccountTransactions      ◄─RPC─   SQLite (Evolu WASM driver, OPFS
 - Only small messages cross: commands, events, and the rows a screen asked for.
 - blockchain-link's backends run as nested workers. Its in-thread module variant cannot be
   used in a worker: inside any worker it answers through `self.postMessage`, so it would talk
-  to the app and take over the store's messages. Solana, EVM RPC and Electrum have no browser
-  worker build, so the store reports them as `BackendUnavailable` for now.
+  to the app and take over the store's messages. Every backend runs as a nested worker,
+  Solana and EVM RPC included (Connect runs those two in-thread in the browser, but they start
+  themselves in a worker too). Electrum needs Node sockets, so it stays `BackendUnavailable`.
+- Backends disagree on what `page` means (blockbook: 1-based page and page count; Solana:
+  0-based page and transaction count), so a page shorter than asked for ends the history.
+- Networks whose blocks come too often to sync on each (Solana, as the app's
+  `shouldSubscribeBlocks`) are not subscribed to blocks; the fallback interval refreshes them.
 - The worker buffers the app's messages until the store has started, so calls made right
   after spawning it are not lost.
 - **Reads must be paginated.** Rows are copied from the worker and deserialized on the main

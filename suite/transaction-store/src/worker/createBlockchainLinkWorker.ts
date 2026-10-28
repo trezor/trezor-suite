@@ -5,8 +5,8 @@ import type { BackendType } from '@suite-common/wallet-config';
  * variant cannot be used here: inside any worker it answers through `self.postMessage`, which
  * would go to the app and take over the store's messages.
  *
- * Solana, EVM RPC and Electrum have no worker build for the browser, so the store reports their
- * backend as unavailable for now.
+ * Electrum needs Node sockets and has no browser build at all, so the store reports it as
+ * unavailable.
  */
 export const createBlockchainLinkWorker = (type: BackendType): (() => Worker) | undefined => {
     switch (type) {
@@ -46,6 +46,28 @@ export const createBlockchainLinkWorker = (type: BackendType): (() => Worker) | 
                     new URL(
                         /* webpackChunkName: "workers/transaction-store-stellar-worker" */
                         '@trezor/blockchain-link/src/workers/stellar',
+                        import.meta.url,
+                    ),
+                    { type: 'module' },
+                );
+        // Connect runs these two in-thread in the browser, but both start themselves as workers
+        // too (their `CONTEXT === 'worker'` branch), which is all a nested worker needs.
+        case 'solana':
+            return () =>
+                new Worker(
+                    new URL(
+                        /* webpackChunkName: "workers/transaction-store-solana-worker" */
+                        '@trezor/blockchain-link/src/workers/solana',
+                        import.meta.url,
+                    ),
+                    { type: 'module' },
+                );
+        case 'evm-rpc':
+            return () =>
+                new Worker(
+                    new URL(
+                        /* webpackChunkName: "workers/transaction-store-evm-rpc-worker" */
+                        '@trezor/blockchain-link/src/workers/evm-rpc',
                         import.meta.url,
                     ),
                     { type: 'module' },

@@ -22,7 +22,7 @@ import {
     createTransactionStoreCompositionRoot,
     startTransactionStoreRpcHost,
 } from '@suite-common/transaction-store';
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 
 import { createBlockchainLinks } from './createBlockchainLinks';
 import { startBufferedPort } from './startBufferedPort';
@@ -37,6 +37,10 @@ const DATABASE_NAME = 'trezor-transaction-store';
 const PAGE_SIZE = 25;
 const MAX_CONCURRENT_JOBS_PER_NETWORK = 2;
 const FALLBACK_INTERVAL_MS = 60 * 1000;
+
+// As the app's `shouldSubscribeBlocks`: a Solana block comes every ~400 ms, too often to sync on.
+// Inlined, so the worker does not bundle wallet-utils and everything it imports.
+const shouldSubscribeBlocks = (symbol: NetworkSymbol) => getNetworkType(symbol) !== 'solana';
 
 // In a worker, `self` posts to the app without a target origin, unlike a window.
 const workerPort = self as unknown as TransactionStorePort;
@@ -97,6 +101,7 @@ const startTransactionStoreWorker = async (): Promise<Dispose | null> => {
         transactionSource: createBlockchainLinkTransactionSource({
             getBlockchainLink: blockchainLinks.get,
             pageSize: PAGE_SIZE,
+            shouldSubscribeBlocks,
         }),
         startInterval: ({ callback, intervalMs }) => {
             const interval = setInterval(callback, intervalMs);
