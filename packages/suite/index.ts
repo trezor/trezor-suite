@@ -199,6 +199,7 @@ export { OAuthApi as DebugOAuthApi } from './src/views/settings/SettingsDebug/OA
 export { PingDevice as DebugPingDevice } from './src/views/settings/SettingsDebug/PingDevice';
 export { PlatformEncryption as DebugPlatformEncryption } from './src/views/settings/SettingsDebug/PlatformEncryption';
 export { QuotaManagerSettings as DebugQuotaManagerSettings } from './src/views/settings/SettingsDebug/QuotaManagerSettings';
+export { ReferAFriendApi as DebugReferAFriendApi } from './src/views/settings/SettingsDebug/ReferAFriendApi';
 export { ResetThpCredentials as DebugResetThpCredentials } from './src/views/settings/SettingsDebug/ResetThpCredentials';
 export { ShowBluetoothDebugInfo as DebugShowBluetoothDebugInfo } from './src/views/settings/SettingsDebug/ShowBluetoothDebugInfo';
 export { ThrowTestingError as DebugThrowTestingError } from './src/views/settings/SettingsDebug/ThrowTestingError';

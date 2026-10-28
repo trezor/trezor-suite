@@ -36,6 +36,7 @@ import {
     DebugPingDevice,
     DebugPlatformEncryption,
     DebugQuotaManagerSettings,
+    DebugReferAFriendApi,
     DebugResetThpCredentials,
     DebugShowBluetoothDebugInfo,
     DebugThrowTestingError,
@@ -99,6 +100,9 @@ export const SettingsDebugPage = () => {
             </SettingsSection>
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="OAuth">
                 <DebugOAuthApi />
+            </SettingsSection>
+            <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Refer a Friend">
+                <DebugReferAFriendApi />
             </SettingsSection>
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Coinjoin">
                 <DebugCoinjoinApi />
