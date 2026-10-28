@@ -156,7 +156,7 @@ describe('connectPopupCancelThunk', () => {
         const getDeviceCallId = () =>
             callSpy.mock.calls.find(([params]) => !('__info' in params))?.[0].callId;
 
-        const startCallOnDevice = async (payload: { path: string; callId?: string }) => {
+        const startCallOnDevice = async (payload: { path: string }) => {
             const store = createCallStore();
             store.dispatch(connectPopupCallThunk({ method: 'getAddress', payload, source }));
             await waitFor(
