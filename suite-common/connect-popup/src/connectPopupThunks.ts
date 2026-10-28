@@ -36,10 +36,15 @@ import { resolveAfter } from '@trezor/utils';
 
 import { connectPopupActions } from './connectPopupActions';
 import {
+    abortStartedPopupCall,
     createPopupCallDeferred,
+    getCancelledStartedPopupCall,
     getPermissionDeferred,
+    isStartedPopupCallAborted,
+    registerStartedPopupCall,
     resolveActiveOrLatestPopupCall,
     resolvePopupCall,
+    unregisterStartedPopupCall,
 } from './connectPopupPromiseManager';
 import {
     type ConnectPopupStateRootState,
@@ -119,6 +124,7 @@ export const connectPopupCallInnerThunk = createThunk<
         { source, responseId, callId: retriedCallId, ...params },
         { dispatch, getState, extra },
     ) => {
+        let startedCallId: string | undefined;
         try {
             const { method, payload } = compatibilityHooks({ ...params, source });
             // Store the caller's token before permissions or device selection so a cancel can be
@@ -126,6 +132,16 @@ export const connectPopupCallInnerThunk = createThunk<
             // so that its cancel ends only this call.
             const callId =
                 (payload as { callId?: string }).callId ?? retriedCallId ?? crypto.randomUUID();
+            // Register before the `__info` round-trip: until it returns, this call is in neither
+            // Redux nor Core, so the record is the only way a cancel can reach it.
+            startedCallId = callId;
+            registerStartedPopupCall(callId, responseId);
+            // A cancel that arrived before the device was asked ends the call here. A call that
+            // needs no consent (remembered app, WalletConnect) has no permission deferred for the
+            // cancel to reject, so without this check it would run on to the device.
+            const throwIfAborted = () => {
+                if (isStartedPopupCallAborted(callId)) throw TypedError('Method_Cancel');
+            };
 
             if (!connectCallableMethods.includes(method)) throw TypedError('Method_Unsupported');
 
@@ -137,6 +153,7 @@ export const connectPopupCallInnerThunk = createThunk<
             if (!methodInfo.success) {
                 throw methodInfo.error;
             }
+            throwIfAborted();
             const methodInfoPayload = methodInfo.payload as MethodInfo;
             const callPermissions = methodInfoPayload.requiredPermissions;
             const hasPermission = (name: string) =>
@@ -244,6 +261,7 @@ export const connectPopupCallInnerThunk = createThunk<
 
             dispatch(connectPopupActions.setCallDevicePath(device.path));
 
+            throwIfAborted();
             const response = await TrezorConnect.call({
                 device: {
                     path: device.path,
@@ -334,6 +352,7 @@ export const connectPopupCallInnerThunk = createThunk<
             // Tear down any placeholder accounts created in preCallHooks even if the call threw
             // before postCallHooks ran, so they cannot leak into a later removeAccount payload.
             cleanupAllTemporaryAccounts(dispatch);
+            if (startedCallId) unregisterStartedPopupCall(startedCallId);
             extra.services.lockDevice(false);
         }
     },
@@ -1172,9 +1191,20 @@ export const connectPopupCancelThunk = createThunk<
 
     getPermissionDeferred().reject(TypedError('Method_Cancel'));
     // Without a token Core would abort every in-flight call, including Suite's own, so a popup
-    // cancel reaches Core only when it names a call. An empty callId names none.
-    const scopedCallId = callId || activeCall?.callId;
-    if (scopedCallId) TrezorConnect.cancel({ reason: error, callId: scopedCallId });
+    // cancel reaches Core only when it names a call. An empty callId names none, and neither does
+    // a stored call that has already finished: it lingers in Redux until the modal teardown clears
+    // it, while the call that is starting right now reaches Redux only after its `__info`
+    // round-trip, so for that one the record of started calls is the only source.
+    const startedCall = getCancelledStartedPopupCall(callId);
+    const scopedCallId =
+        callId ||
+        (activeCall?.state !== 'finished' ? activeCall?.callId : undefined) ||
+        startedCall?.callId;
+    if (scopedCallId) {
+        // Core ignores a callId it has no method for, e.g. a call that has not reached it yet.
+        abortStartedPopupCall(scopedCallId);
+        TrezorConnect.cancel({ reason: error, callId: scopedCallId });
+    }
     // Clear now instead of when the aborted call settles. No-op before the call reaches a device.
     dispatch(deviceActions.removeButtonRequests({ path: activeCall?.devicePath }));
 
