@@ -120,6 +120,24 @@ describe('connectPopupCancelThunk', () => {
         expect(cancelSpy).toHaveBeenCalledWith({ reason: undefined, callId: 'active-id' });
     });
 
+    it('does not cancel other calls when neither the cancel nor the active call has a callId', () => {
+        const store = createStore(createActiveCall());
+
+        store.dispatch(connectPopupCancelThunk({}));
+
+        expect(cancelSpy).not.toHaveBeenCalled();
+        expect(hasFinishedCall(store)).toBe(true);
+    });
+
+    it('ends a cancel with an empty callId by the callId of the active call', () => {
+        const store = createStore(createActiveCall('active-id'));
+
+        store.dispatch(connectPopupCancelThunk({ callId: '' }));
+
+        expect(cancelSpy).toHaveBeenCalledWith({ reason: undefined, callId: 'active-id' });
+        expect(hasFinishedCall(store)).toBe(true);
+    });
+
     describe('popup call on the device', () => {
         let callSpy: jest.SpiedFunction<typeof TrezorConnect.call>;
 
