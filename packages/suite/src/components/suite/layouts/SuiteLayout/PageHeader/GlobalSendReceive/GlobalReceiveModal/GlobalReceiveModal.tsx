@@ -1,8 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { type CryptoId } from 'invity-api';
-
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { selectIsDebugModeActive } from '@suite/debug';
 import { useDevice } from '@suite/device';
@@ -26,12 +24,27 @@ import { GlobalReceiveNetworkSetupStep } from './steps/GlobalReceiveNetworkSetup
 import { GlobalReceiveSearchStep } from './steps/GlobalReceiveSearchStep';
 import { type GlobalReceiveStep, type GlobalReceiveTab } from './types';
 
+type IsNetworkSetupRequiredParams = {
+    isNetworkEnabled: boolean;
+    eligibleAccountCount: number;
+};
+
+const isNetworkSetupRequired = ({
+    isNetworkEnabled,
+    eligibleAccountCount,
+}: IsNetworkSetupRequiredParams) => !isNetworkEnabled || eligibleAccountCount === 0;
+
 type GlobalReceiveModalProps = {
+    initialAsset?: TradingAssetOption;
     onCancel: (filledSearch: boolean) => void;
     onSubmit: (account: Account, filledSearch: boolean) => void;
 };
 
-export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalProps) => {
+export const GlobalReceiveModal = ({
+    initialAsset,
+    onCancel,
+    onSubmit,
+}: GlobalReceiveModalProps) => {
     const isBitcoinOnlyFirmware = useSelector(selectHasBitcoinOnlyFirmware);
     const accounts = useSelector(selectAccounts);
     const enabledNetworks = useSelector(selectEnabledNetworks);
@@ -45,21 +58,23 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
     const { device } = useDevice();
     const { isDiscoveryRunning } = useDiscovery();
     const accountModal = useModal();
+
+    const staticSessionId = device?.state?.staticSessionId;
+    const isNetworkSetupAvailable =
+        !!device?.connected &&
+        !!device.available &&
+        !!device.path &&
+        !!staticSessionId &&
+        !isDiscoveryRunning;
+    const hasSearchStep = initialAsset === undefined;
+
     const [activeTab, setActiveTab] = useState<GlobalReceiveTab>(
         isBitcoinOnlyFirmware ? 'accounts' : 'assets',
     );
-    const [receiveStep, setReceiveStep] = useState<GlobalReceiveStep>('search');
-    const [selectedAssetCryptoId, setSelectedAssetCryptoId] = useState<CryptoId>();
-    const [wasSelectedAssetNetworkInactive, setWasSelectedAssetNetworkInactive] = useState(false);
-
-    const { assets, myAssets, otherAssets, networks, catalogStatus, retry } =
-        useGlobalReceiveAssets({ search, networkSymbols: networkSymbol ? [networkSymbol] : [] });
-
-    const selectedAsset = useMemo(
-        () => assets.find(asset => asset.id === selectedAssetCryptoId),
-        [assets, selectedAssetCryptoId],
+    const [selectedAsset, setSelectedAsset] = useState(initialAsset);
+    const [wasSelectedAssetNetworkInactive, setWasSelectedAssetNetworkInactive] = useState(
+        initialAsset !== undefined && !enabledNetworks.includes(initialAsset.networkSymbol),
     );
-    const staticSessionId = device?.state?.staticSessionId;
     const selectedAssetAccounts = useMemo(() => {
         if (!selectedAsset || !staticSessionId) {
             return [];
@@ -73,6 +88,24 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
             isDebug,
         });
     }, [accounts, isDebug, selectedAsset, staticSessionId, supportedNetworks]);
+    const [receiveStep, setReceiveStep] = useState<GlobalReceiveStep>(() => {
+        if (initialAsset === undefined) {
+            return 'search';
+        }
+
+        const isSetupRequired = isNetworkSetupRequired({
+            isNetworkEnabled: enabledNetworks.includes(initialAsset.networkSymbol),
+            eligibleAccountCount: selectedAssetAccounts.length,
+        });
+
+        return isSetupRequired && isNetworkSetupAvailable ? 'network-setup' : 'account';
+    });
+
+    const { myAssets, otherAssets, networks, catalogStatus, retry } = useGlobalReceiveAssets({
+        search,
+        networkSymbols: networkSymbol ? [networkSymbol] : [],
+    });
+
     const submitSelection = useCallback(
         (account: Account) => {
             onSubmit(account, filledSearch);
@@ -81,12 +114,6 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
     );
 
     const handleAccountSelectionRequired = useCallback(() => setReceiveStep('account'), []);
-    const isNetworkSetupAvailable =
-        !!device?.connected &&
-        !!device.available &&
-        !!device.path &&
-        !!staticSessionId &&
-        !isDiscoveryRunning;
 
     const continueWithAsset = useCallback(
         (asset: TradingAssetOption) => {
@@ -99,16 +126,19 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
             });
             const [onlyAccount] = eligibleAccounts;
             const isNetworkEnabled = enabledNetworks.includes(asset.networkSymbol);
-            const isNetworkSetupRequired = !isNetworkEnabled || eligibleAccounts.length === 0;
+            const isSetupRequired = isNetworkSetupRequired({
+                isNetworkEnabled,
+                eligibleAccountCount: eligibleAccounts.length,
+            });
 
-            if (isNetworkSetupRequired && !isNetworkSetupAvailable) {
+            if (isSetupRequired && !isNetworkSetupAvailable) {
                 return;
             }
 
-            setSelectedAssetCryptoId(asset.id);
+            setSelectedAsset(asset);
             setWasSelectedAssetNetworkInactive(!isNetworkEnabled);
 
-            if (isNetworkSetupRequired) {
+            if (isSetupRequired) {
                 setReceiveStep('network-setup');
 
                 return;
@@ -147,7 +177,10 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
                 isDebug,
             });
 
-            return !enabledNetworks.includes(asset.networkSymbol) || eligibleAccounts.length === 0;
+            return isNetworkSetupRequired({
+                isNetworkEnabled: enabledNetworks.includes(asset.networkSymbol),
+                eligibleAccountCount: eligibleAccounts.length,
+            });
         },
         [
             accounts,
@@ -164,6 +197,7 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
     };
 
     const handleBack = useCallback(() => {
+        setSelectedAsset(undefined);
         setReceiveStep('search');
     }, []);
 
@@ -214,7 +248,7 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
                         accounts={selectedAssetAccounts}
                         asset={selectedAsset}
                         onAccountClick={submitSelection}
-                        onBack={handleBack}
+                        onBack={hasSearchStep ? handleBack : undefined}
                         onCancel={handleCancel}
                     />
                 );
@@ -225,8 +259,9 @@ export const GlobalReceiveModal = ({ onCancel, onSubmit }: GlobalReceiveModalPro
                         assetAccounts={selectedAssetAccounts}
                         wasAssetNetworkInactive={wasSelectedAssetNetworkInactive}
                         onAccountSelectionRequired={handleAccountSelectionRequired}
-                        onBack={handleBack}
+                        onBack={hasSearchStep ? handleBack : undefined}
                         onCancel={handleCancel}
+                        onSetupFailure={hasSearchStep ? handleBack : handleCancel}
                         onSubmit={submitSelection}
                     />
                 );

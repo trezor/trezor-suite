@@ -2,7 +2,7 @@ import type { AttributeDef, EventDef } from '@suite-common/analytics';
 
 import { EventType } from '../constants';
 
-export type DashboardReceiveModalEventSource = 'page-header' | 'empty-wallet';
+export type DashboardReceiveModalEventSource = 'page-header' | 'empty-wallet' | 'asset-header';
 
 type Attributes = {
     source: AttributeDef<DashboardReceiveModalEventSource>;
@@ -15,9 +15,12 @@ export const dashboardReceiveModalEvent: EventDef<Attributes, EventType.Dashboar
 
     attributes: {
         source: {
-            changelog: [{ version: '26.3.0', notes: 'added' }],
+            changelog: [
+                { version: '26.3.0', notes: 'added' },
+                { version: '26.11.0', notes: 'added `asset-header` value' },
+            ],
             description:
-                'Where the receive modal was opened from: `page-header` from the main page header button, `empty-wallet` from empty wallet state',
+                'Where the receive modal was opened from: `page-header` from the main page header button, `empty-wallet` from empty wallet state, `asset-header` from the asset detail page header button',
         },
     },
 };

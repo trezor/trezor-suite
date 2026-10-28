@@ -5,7 +5,7 @@ import { Column, H4, Paragraph, Spinner } from '@trezor/components';
 
 import { AssetsModal } from 'src/components/suite/asset-picker/components';
 
-import { GlobalReceiveAssetDescription } from '../components/GlobalReceiveAssetDescription';
+import { GlobalSendReceiveAssetDescription } from '../../components/GlobalSendReceiveAssetDescription';
 import { GLOBAL_RECEIVE_MODAL_HEIGHT } from '../constants';
 import { useGlobalReceiveNetworkSetup } from '../hooks/useGlobalReceiveNetworkSetup';
 
@@ -14,8 +14,9 @@ type GlobalReceiveNetworkSetupStepProps = {
     assetAccounts: Account[];
     wasAssetNetworkInactive: boolean;
     onAccountSelectionRequired: () => void;
-    onBack: () => void;
+    onBack?: () => void;
     onCancel: () => void;
+    onSetupFailure: () => void;
     onSubmit: (account: Account) => void;
 };
 
@@ -26,6 +27,7 @@ export const GlobalReceiveNetworkSetupStep = ({
     onAccountSelectionRequired,
     onBack,
     onCancel,
+    onSetupFailure,
     onSubmit,
 }: GlobalReceiveNetworkSetupStepProps) => {
     useGlobalReceiveNetworkSetup({
@@ -33,14 +35,14 @@ export const GlobalReceiveNetworkSetupStep = ({
         selectedAssetAccounts: assetAccounts,
         wasSelectedAssetNetworkInactive: wasAssetNetworkInactive,
         onAccountSelectionRequired,
-        onSetupFailure: onBack,
+        onSetupFailure,
         submitSelection: onSubmit,
     });
 
     return (
         <AssetsModal
             heading={<Translation id="TR_RECEIVE" />}
-            description={<GlobalReceiveAssetDescription asset={asset} />}
+            description={<GlobalSendReceiveAssetDescription asset={asset} />}
             onBackClick={onBack}
             onClose={onCancel}
             maxHeight={GLOBAL_RECEIVE_MODAL_HEIGHT}

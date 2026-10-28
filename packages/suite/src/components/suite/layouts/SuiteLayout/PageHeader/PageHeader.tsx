@@ -17,7 +17,8 @@ import { zIndices } from '@trezor/theme';
 import { HEADER_HEIGHT } from 'src/constants/suite/layout';
 import { useSelector } from 'src/hooks/suite';
 
-import { GlobalSendReceive } from './GlobalSendReceive/GlobalSendReceive';
+import { AssetDetailActions } from './AssetDetailActions';
+import { DashboardSendReceive } from './GlobalSendReceive/DashboardSendReceive';
 import { HeaderActions } from './HeaderActions';
 import { HeaderDropdown } from './HeaderDropdown';
 import { PageName } from './PageNames/PageName';
@@ -55,7 +56,7 @@ const PageHeaderIndex = () => {
         <Row gap={12}>
             <HeaderDropdown />
             <TradeActions source={{ from: 'dashboard/header' }} />
-            <GlobalSendReceive />
+            <DashboardSendReceive />
         </Row>
     );
 };
@@ -87,6 +88,7 @@ export const PageHeader = ({ children, expandable }: PageHeaderProps) => {
             <PageName />
 
             {effectiveRouteName === 'suite-index' && <PageHeaderIndex />}
+            {effectiveRouteName === 'suite-asset' && <AssetDetailActions />}
             {!!selectedAccountKey && isAccountTabPage && <HeaderActions />}
         </Container>
     );
