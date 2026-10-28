@@ -107,6 +107,9 @@ export const connectPopupCallInnerThunk = createThunk<
     async ({ source, ...params }, { dispatch, getState, extra }) => {
         try {
             const { method, payload } = compatibilityHooks({ ...params, source });
+            // Store the caller's token before permissions or device selection so a cancel can be
+            // matched throughout the entire popup flow.
+            const { callId } = payload as { callId?: string };
 
             if (!connectCallableMethods.includes(method)) throw TypedError('Method_Unsupported');
 
@@ -150,6 +153,7 @@ export const connectPopupCallInnerThunk = createThunk<
                     },
                     payload,
                     source,
+                    callId,
                 }),
             );
 
@@ -1114,7 +1118,8 @@ export const connectPopupResolveSelectAccountThunk = createThunk<
     getPermissionDeferred().resolve();
 });
 
-type ConnectPopupCancelThunkState = ConnectPopupStateRootState;
+// Reads the active call so a scoped cancel can be matched against its callId.
+export type ConnectPopupCancelThunkState = ConnectPopupStateRootState;
 
 export const connectPopupCancelThunk = createThunk<
     void,
@@ -1125,8 +1130,24 @@ export const connectPopupCancelThunk = createThunk<
 >(`${CONNECT_POPUP_MODULE}/cancelThunk`, ({ error, callId }, { dispatch, getState }) => {
     const activeCall = selectConnectPopupCall(getState());
 
+    // A scoped cancel for another call still needs to reach Core, but must not tear down the
+    // active popup. A finished call is no longer that popup: it lingers in Redux until the modal
+    // teardown clears it, while the call the cancel names may be the one starting right now, which
+    // appears in Redux only after its `__info` round-trip. Forwarding then would leave it running.
+    if (
+        activeCall?.callId !== undefined &&
+        activeCall.state !== 'finished' &&
+        callId !== undefined &&
+        callId !== activeCall.callId
+    ) {
+        TrezorConnect.cancel({ reason: error, callId });
+
+        return;
+    }
+
     getPermissionDeferred().reject(TypedError('Method_Cancel'));
-    TrezorConnect.cancel({ reason: error, callId });
+    // Without a token Core keeps its legacy behavior of aborting every in-flight call.
+    TrezorConnect.cancel({ reason: error, callId: callId ?? activeCall?.callId });
     // Clear now instead of when the aborted call settles. No-op before the call reaches a device.
     dispatch(deviceActions.removeButtonRequests({ path: activeCall?.devicePath }));
 
