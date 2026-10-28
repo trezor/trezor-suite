@@ -17,6 +17,7 @@ import {
 import { networksReducer } from '@suite-common/networks';
 import { preparePersistentDeviceDataReducer } from '@suite-common/persistent-device-data';
 import { prepareReceiveReducer } from '@suite-common/receive';
+import { referAFriendPersistedKeys, referAFriendReducer } from '@suite-common/refer-a-friend';
 import { suiteSyncDataReducer, suiteSyncReducer } from '@suite-common/suite-sync';
 import { suiteSyncQuotaManagerReducer } from '@suite-common/suite-sync-quota-manager';
 import type { PersistentDeviceData } from '@suite-common/suite-types';
@@ -526,6 +527,14 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
         storage: deps.mmkvStorage,
     });
 
+    const referAFriendPersistedReducer = preparePersistReducer({
+        reducer: referAFriendReducer,
+        persistedKeys: referAFriendPersistedKeys,
+        key: 'referAFriend',
+        version: 1,
+        storage: deps.mmkvStorage,
+    });
+
     const rootReducer = preparePersistReducer({
         reducer: combineReducers({
             networks: networksReducer,
@@ -553,6 +562,7 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
             pendingCoinVisibility: pendingCoinVisibilitySlice.reducer,
             persistentDeviceData: persistentDeviceDataPersistedReducer,
             receive: receivePersistedReducer,
+            referAFriend: referAFriendPersistedReducer,
             suiteSync: suiteSyncPersistedReducer,
             suiteSyncData: suiteSyncDataReducer,
             thp: thpPersistedReducer,

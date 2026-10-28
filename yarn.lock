@@ -15752,6 +15752,7 @@ __metadata:
     "@suite-common/platform-encryption-native": "workspace:*"
     "@suite-common/react-query": "workspace:*"
     "@suite-common/receive": "workspace:*"
+    "@suite-common/refer-a-friend": "workspace:*"
     "@suite-common/suite-rbf-labels-migrations": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
     "@suite-common/suite-sync-quota-manager": "workspace:*"

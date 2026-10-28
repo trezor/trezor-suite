@@ -11,6 +11,7 @@ import { notImplementedGetter } from '@suite-common/extra-dependencies';
 import { createNetworksCompositionRoot } from '@suite-common/networks';
 import { createNativePlatformEncryption } from '@suite-common/platform-encryption-native';
 import { createQueryClient } from '@suite-common/react-query';
+import { createReferAFriendCompositionRoot } from '@suite-common/refer-a-friend';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import { selectAllLabelsForAccount, selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import { analytics } from '@suite-native/analytics';
@@ -87,6 +88,15 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
         updateAddressLabel: suiteSync.labeling.updateAddressLabel,
         updateOutputLabel: suiteSync.labeling.updateOutputLabel,
     });
+    // Tor is not available on mobile.
+    const referAFriend = createReferAFriendCompositionRoot({
+        dispatch: deps.dispatch,
+        getState: deps.getState,
+        getIsTorEnabled: () => false,
+        platformEncryption,
+        getTrezorConnect: deps.getTrezorConnect,
+        fetch: globalThis.fetch.bind(globalThis),
+    });
     const networks = createNetworksCompositionRoot({
         getTrezorConnect: deps.getTrezorConnect,
         dispatch: deps.dispatch,
@@ -116,6 +126,7 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
         bip329,
         ensureDelegatedIdentityKey,
         platformEncryption,
+        referAFriend,
         analytics,
         getMMKVStorage: () => deps.mmkvStorage.getMMKV(),
         reportSecurityCheck,
