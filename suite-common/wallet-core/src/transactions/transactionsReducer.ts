@@ -1,6 +1,7 @@
 import { freeze, isAnyOf, isDraft, original } from '@reduxjs/toolkit';
 
 import type { AccountKey } from '@suite-common/wallet-types';
+import { isPending } from '@suite-common/wallet-utils';
 import { type AccountInfo } from '@trezor/connect';
 import {
     type ActionTypesDep,
@@ -88,6 +89,15 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
 
                 const transactions = state.transactions[account.key];
                 if (transactions) {
+                    const isConfirmedRemoved = transactions.some(
+                        tx => !!tx && removedTxids.has(tx.txid) && !isPending(tx),
+                    );
+                    const detail = state.fetchStatusDetail[account.key];
+                    if (isConfirmedRemoved && detail) {
+                        const { areAllTransactionsLoaded, fetchedPages, ...rest } = detail;
+                        state.fetchStatusDetail[account.key] = rest;
+                    }
+
                     state.transactions[account.key] = transactions.filter(
                         tx => !tx || !removedTxids.has(tx.txid),
                     );

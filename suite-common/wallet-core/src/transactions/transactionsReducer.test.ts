@@ -128,6 +128,44 @@ describe(transactionsReducer.name, () => {
         });
     });
 
+    describe('removeTransaction of a walked history', () => {
+        const loaded = (): TransactionsState => ({
+            ...transactionsInitialState,
+            transactions: {
+                [account.key]: [
+                    testMocks.getWalletTransaction({ txid: 'confirmed', blockHeight: 100 }),
+                    testMocks.getWalletTransaction({ txid: 'pending', blockHeight: 0 }),
+                ],
+            },
+            fetchStatusDetail: {
+                [account.key]: {
+                    status: 'idle',
+                    error: null,
+                    areAllTransactionsLoaded: true,
+                    fetchedPages: { count: 1, perPage: 25 },
+                },
+            },
+        });
+
+        it('forgets that the history was walked to its end once a confirmed one is gone', () => {
+            const state = transactionsReducer(
+                loaded(),
+                transactionsActions.removeTransaction({ account, txs: [{ txid: 'confirmed' }] }),
+            );
+
+            expect(state.fetchStatusDetail[account.key]).toEqual({ status: 'idle', error: null });
+        });
+
+        it('keeps the walk when only a pending one is gone', () => {
+            const state = transactionsReducer(
+                loaded(),
+                transactionsActions.removeTransaction({ account, txs: [{ txid: 'pending' }] }),
+            );
+
+            expect(state.fetchStatusDetail[account.key]?.areAllTransactionsLoaded).toBe(true);
+        });
+    });
+
     describe('fetchTransactionsPageThunk.fulfilled', () => {
         const fetchedPage = (state: TransactionsState, page: number, hasPageAfter = true) =>
             transactionsReducer(

@@ -1,5 +1,12 @@
 import type { AllowedQueryKey } from '../types';
 
+type TransactionsPageQueryKeyParams = {
+    accountKeys: readonly string[];
+    contractAddress: string | undefined;
+    page: number;
+    perPage: number;
+};
+
 export const commonQueryKeys = {
     networkTxSimulation: (input?: any) => ['network-tx-simulation', input],
     dappScan: (url?: string) => ['dapp-scan', url],
@@ -26,12 +33,19 @@ export const commonQueryKeys = {
     ],
     merklRewards: (...args: any[]) => ['merkl-rewards', ...args],
     missingRateTickers: (...args: any[]) => ['missing-rate-tickers', ...args],
-    transactionsPage: (
-        accountKeys: readonly string[],
-        contractAddress: string | undefined,
-        page: number,
-        perPage: number,
-    ) => ['transactions', 'page', accountKeys, contractAddress ?? null, page, perPage],
+    transactionsPage: ({
+        accountKeys,
+        contractAddress,
+        page,
+        perPage,
+    }: TransactionsPageQueryKeyParams) => [
+        'transactions',
+        'page',
+        accountKeys,
+        contractAddress ?? null,
+        page,
+        perPage,
+    ],
     allTransactions: (accountKeys: readonly string[]) => ['transactions', 'all', accountKeys],
     // `lastKnownNonce` (account.misc.nonce) is part of the key, not just an input to the fetcher —
     // when it changes (e.g. a delayed accountsActions.updateAccount lands after a tx was already

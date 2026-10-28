@@ -186,7 +186,7 @@ export const TransactionList = ({
                     symbol={symbol}
                 />
 
-                <LoadOlderHistory account={account} loadedCount={allTransactions.length} />
+                <LoadOlderHistory accounts={accounts} />
 
                 {showPagination && (
                     <Pagination

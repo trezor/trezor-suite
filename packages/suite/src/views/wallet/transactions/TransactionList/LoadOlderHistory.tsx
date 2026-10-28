@@ -1,8 +1,9 @@
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { Translation } from '@suite/intl';
 import { getTxsPerPage } from '@suite-common/suite-utils';
-import { fetchTransactionsPageThunk } from '@suite-common/wallet-core';
+import { type TransactionsRootState, fetchTransactionsPageThunk } from '@suite-common/wallet-core';
 import { getHistoryCoveredSince, getOlderHistoryFrom } from '@suite-common/wallet-utils';
 import { Button, Column, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -12,41 +13,49 @@ import { FormattedDate } from 'src/components/suite';
 import { type Account } from 'src/types/wallet';
 
 import SkeletonTransactionItem from './SkeletonTransactionItem';
+import { selectStoredTransactionCounts } from './selectStoredTransactionCounts';
 
 interface LoadOlderHistoryProps {
-    account: Account;
-    /** How many transactions the list already holds, including not-yet-filled page slots. */
-    loadedCount: number;
+    accounts: readonly Account[];
 }
 
 /**
  * A direct-RPC backend cannot enumerate an address's whole history, so it scans a window of blocks
  * and reports where that window ends. Everything older stays unreachable until someone asks for it,
- * which is what this does - one step further back per press.
+ * which is what this does - one step further back per press, for every account that has more.
  */
-export const LoadOlderHistory = ({ account, loadedCount }: LoadOlderHistoryProps) => {
+export const LoadOlderHistory = ({ accounts }: LoadOlderHistoryProps) => {
     const { dispatch } = useServices(injectDispatch);
     const [isLoading, setIsLoading] = useState(false);
 
-    const from = getOlderHistoryFrom(account);
+    const olderAccounts = accounts.filter(account => getOlderHistoryFrom(account) !== undefined);
+    // Including not-yet-filled page slots, so the next page starts where the stored ones end.
+    const loadedCounts = useSelector((state: TransactionsRootState) =>
+        selectStoredTransactionCounts(state, olderAccounts),
+    );
 
-    if (from === undefined) return null;
+    if (olderAccounts.length === 0) return null;
 
     const handleClick = async () => {
-        const perPage = getTxsPerPage(account.networkType);
         setIsLoading(true);
         try {
             // `from` widens the backend's window and the page starting where the list ends comes
             // back in the same request. `noLoading` keeps the loaded transactions on screen; only
             // the incoming page gets skeletons, and the thunk stores it before it resolves.
-            await dispatch(
-                fetchTransactionsPageThunk({
-                    accountKey: account.key,
-                    page: Math.floor(loadedCount / perPage) + 1,
-                    perPage,
-                    forceRefetch: true,
-                    noLoading: true,
-                    from,
+            await Promise.all(
+                olderAccounts.map((account, index) => {
+                    const perPage = getTxsPerPage(account.networkType);
+
+                    return dispatch(
+                        fetchTransactionsPageThunk({
+                            accountKey: account.key,
+                            page: Math.floor((loadedCounts[index] ?? 0) / perPage) + 1,
+                            perPage,
+                            forceRefetch: true,
+                            noLoading: true,
+                            from: getOlderHistoryFrom(account),
+                        }),
+                    );
                 }),
             );
         } finally {
@@ -55,7 +64,11 @@ export const LoadOlderHistory = ({ account, loadedCount }: LoadOlderHistoryProps
     };
 
     // A step can find nothing, so the date the list reaches back to is what shows the press worked.
-    const coveredSince = getHistoryCoveredSince(account);
+    // With several accounts it is the latest of their dates, the one all of them reach.
+    const coveredSinceDates = olderAccounts
+        .map(getHistoryCoveredSince)
+        .filter(date => date !== undefined);
+    const coveredSince = coveredSinceDates.length > 0 ? Math.max(...coveredSinceDates) : undefined;
 
     return (
         <Column gap={32}>
