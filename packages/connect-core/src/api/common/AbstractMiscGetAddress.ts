@@ -1,5 +1,6 @@
 import {
     Bundle,
+    type DeviceButtonRequestCode,
     GetAddress as GetAddressSchema,
     type PermissionRequest,
     UI_EVENTS,
@@ -77,7 +78,7 @@ export abstract class AbstractMiscGetAddress<
         return `Export ${coinName} address for account #${fromHardenedPathPart(accountIndex) + 1}`;
     }
 
-    getButtonRequestData(code: string) {
+    getButtonRequestData(code: DeviceButtonRequestCode) {
         if (code === 'ButtonRequest_Address') {
             const { params, progress } = this;
             // @ts-expect-error: indexing with noUncheckedIndexedAccess
