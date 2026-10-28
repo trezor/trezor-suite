@@ -124,6 +124,8 @@ type GetDescriptorForNetworkTypeParams = {
     coin?: NetworkSymbol;
     // Only meaningful for `cardano`.
     derivationType?: PROTO.CardanoDerivationType;
+    // Correlation token of the call this derivation belongs to, so a scoped cancel can abort it.
+    callId?: string;
 };
 
 type DeviceAccountDescriptor = Pick<
@@ -139,11 +141,12 @@ export const getDescriptorForNetworkType = ({
     path,
     coin: symbol,
     derivationType,
+    callId,
 }: GetDescriptorForNetworkTypeParams): Promise<
     Result<DeviceAccountDescriptor, SerializedError>
 > => {
     const coin = symbol && asCoinSymbol(symbol);
-    const params = { device, path, coin, showOnTrezor: false, derivationType };
+    const params = { device, path, coin, showOnTrezor: false, derivationType, callId };
 
     const extractDescriptor =
         <T, E>(extract: (payload: T) => DeviceAccountDescriptor) =>
