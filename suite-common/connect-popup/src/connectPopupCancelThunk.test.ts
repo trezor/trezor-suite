@@ -16,6 +16,7 @@ import {
     type ConnectPopupCancelThunkState,
     connectPopupCallThunk,
     connectPopupCancelThunk,
+    connectPopupVerifyAddressThunk,
 } from './connectPopupThunks';
 import {
     CALL_SOURCE_WEB,
@@ -176,5 +177,35 @@ describe('connectPopupCancelThunk', () => {
             expect(deviceCallId).toEqual(expect.any(String));
             expect(cancelSpy).toHaveBeenCalledWith({ reason: undefined, callId: deviceCallId });
         });
+    });
+
+    it('checks an address on the device under the callId of its call', async () => {
+        const getAddressSpy = jest
+            .spyOn(TrezorConnect, 'getAddress')
+            .mockImplementation(() => new Promise(() => {}));
+        const store = createCallStore({
+            state: 'address-confirmation',
+            method: 'getAddress',
+            payload: {},
+            methodInfo: { methodTitle: '', permissionTypes: [], useUi: true },
+            source,
+            exported: false,
+            addresses: [
+                {
+                    address: 'address',
+                    loading: false,
+                    validated: 'not-started',
+                    validatePayload: { path: "m/84'/0'/0'/0/0" },
+                },
+            ],
+            callId: 'active-id',
+        });
+
+        store.dispatch(connectPopupVerifyAddressThunk({ index: 0 }));
+        await waitFor(() => getAddressSpy.mock.calls.length > 0);
+
+        expect(getAddressSpy).toHaveBeenCalledWith(
+            expect.objectContaining({ callId: 'active-id' }),
+        );
     });
 });

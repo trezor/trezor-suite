@@ -469,6 +469,7 @@ export const connectPopupVerifyAddressThunk = createThunk<
                 ...call.addresses?.[index]?.validatePayload,
                 showOnTrezor: true,
                 chunked: false,
+                callId: call.callId,
             });
             const validatedStatus = res.success ? 'valid' : 'failed';
             dispatch(
