@@ -22,16 +22,15 @@
  *      run that was aborted in step 4. That acquire succeeds and sets
  *      `sessionAcquired`, but no one releases it: run B already settled.
  *
- * CHARACTERIZATION: this test pins the **current, buggy** behaviour. `_runInner`
- * only checks `abortSignal.aborted` *after* `acquire()`. A run aborted while
- * parked *before* the acquire decision keeps running in the background (it lost
- * the `Promise.race`, it was not cancelled) and proceeds to acquire a session the
- * already-finished run can never release.
+ * ROOT CAUSE: `_runInner` only checks `abortSignal.aborted` *after* `acquire()`.
+ * A run aborted while parked *before* the acquire decision keeps running in the
+ * background (it lost the `Promise.race`, it was not cancelled) and proceeds to
+ * acquire a session the already-finished run can never release.
  *
- * The expectation below records that leaked session (`sessionAcquired === 's1'`
- * with `keepTransportSession === false`, i.e. an INV-3 violation) as the
- * behaviour of the tree as it stands today, so the change in behaviour is visible
- * in the commit that fixes it.
+ * FIX: check `abortSignal.aborted` *before* `acquire()` in `_runInner`
+ * (Device.ts), so an already-aborted run bails out instead of acquiring a session
+ * it will leak. This test asserts no session is held after the system drains; it
+ * fails before the fix (`sessionAcquired` is a leaked session) and passes after.
  */
 import { noopCreateLogger } from '@trezor/logger';
 import { TRANSPORT } from '@trezor/transport-common';
@@ -58,7 +57,7 @@ describe('Device run-interrupt session leak (INV-3 session balance)', () => {
         jest.restoreAllMocks();
     });
 
-    it('leaks a session when a run is interrupted while parked before acquire', async () => {
+    it('does not leak a session when a run is interrupted while parked before acquire', async () => {
         const transport = createControllableTransport(PATH);
         const device = new Device({
             id: 'repro' as any,
@@ -111,12 +110,11 @@ describe('Device run-interrupt session leak (INV-3 session balance)', () => {
         transport.completeRelease();
         await flush();
 
-        // INV-3 says that after everything drains no session may be held unless
-        // the device is deliberately keeping it (keepTransportSession). The leaked
-        // acquire from the aborted run B shows up here as `held: 's1'` — the
-        // violation this test documents.
+        // INV-3: after everything drains, no session may be held unless the device
+        // is deliberately keeping it (keepTransportSession). A leaked acquire from
+        // the aborted run B shows up here as a non-null sessionAcquired.
         const held = (device as any).sessionAcquired;
         const keep = (device as any).keepTransportSession;
-        expect({ held, keep }).toEqual({ held: 's1', keep: false });
+        expect({ held, keep }).toEqual({ held: null, keep: false });
     });
 });

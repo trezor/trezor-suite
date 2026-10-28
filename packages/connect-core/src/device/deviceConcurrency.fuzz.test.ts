@@ -74,6 +74,7 @@ const opArb: fc.Arbitrary<Op> = fc.oneof(
     fc.constant({ t: 'completeRelease' as const }),
     fc.constant({ t: 'completeMessage' as const }),
     fc.constant({ t: 'interrupt' as const }),
+    fc.constant({ t: 'requestRelease' as const }),
     fc.constant({ t: 'externalSession' as const }),
 );
 
@@ -211,6 +212,25 @@ class Harness {
     }
 
     /**
+     * INV-3 session balance at quiescence: a session may only remain acquired on
+     * purpose (`keepTransportSession`). Holding `sessionAcquired` with
+     * `keepTransportSession === false` after the system has drained means a
+     * release was lost — e.g. `release()`'s `waitAndCompareSession` failed and
+     * skipped the `sessionAcquired = null` assignment — leaving a stale session
+     * that the next run would reuse instead of re-acquiring (`acquireNeeded` keys
+     * off `isUsedHere() === !!sessionAcquired`).
+     */
+    checkSessionBalanceAtQuiescence() {
+        const held = (this.device as any).sessionAcquired;
+        const keep = (this.device as any).keepTransportSession;
+        if (held != null && !keep) {
+            this.violations.push(
+                `INV-3: session ${held} held at quiescence without keepTransportSession`,
+            );
+        }
+    }
+
+    /**
      * INV-2: no `updateDescriptor` (fire-and-forget transport-event handler)
      * rejected. A rejection here is an unhandled rejection escaping the device.
      */
@@ -290,6 +310,9 @@ describe('Device run-queue concurrency (fuzz)', () => {
                 // INV-2 liveness: the system must drain to quiescence.
                 const drained = await h.drain();
                 expect(drained).toBe(true);
+
+                // INV-3: no stale session held after the system drained.
+                h.checkSessionBalanceAtQuiescence();
 
                 // INV-4 recovery: after quiescence the device must accept a new run
                 // (no stuck Device_CallInProgress, no orphaned state).
