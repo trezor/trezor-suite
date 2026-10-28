@@ -308,10 +308,7 @@ describe(createTransactionRepository.name, () => {
 
         const result = repository.replaceAccounts([ethAccount, ltcAccount]);
 
-        expect(result).toEqual({
-            addedAccountKeys: ['ltc-account'],
-            removedAccountKeys: ['btc-account'],
-        });
+        expect(result).toEqual({ removedAccountKeys: ['btc-account'] });
         expect(repository.selectAccounts({}).map(({ accountKey }) => accountKey)).toEqual([
             'eth-account',
             'ltc-account',

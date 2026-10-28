@@ -14,6 +14,8 @@ export type SyncQueueDeps = SyncAccountTransactionsDep &
 export type SyncQueue = {
     requestSync: (params: { accountKeys: string[]; mode: SyncMode }) => void;
     getSyncStatus: (accountKey: string) => AccountSyncStatus;
+    /** Resolves once the account has no job queued or running, its result stored or recorded. */
+    whenSettled: (accountKey: string) => Promise<void>;
     whenIdle: () => Promise<void>;
     /** Takes no more jobs and resolves once the running ones are done. */
     close: () => Promise<void>;
@@ -31,6 +33,7 @@ export const createSyncQueue = (deps: SyncQueueDeps): SyncQueue => {
     const queued = new Map<string, SyncMode>();
     const running = new Map<string, RunningJob>();
     let idleWaiters: Array<() => void> = [];
+    const settleWaiters = new Map<string, Array<() => void>>();
     let isClosed = false;
 
     const getSyncStatus = (accountKey: string): AccountSyncStatus => {
@@ -54,35 +57,30 @@ export const createSyncQueue = (deps: SyncQueueDeps): SyncQueue => {
         idleWaiters = [];
     };
 
+    const resolveSettleWaiters = (accountKey: string) => {
+        if (queued.has(accountKey) || running.has(accountKey)) return;
+
+        settleWaiters.get(accountKey)?.forEach(resolve => resolve());
+        settleWaiters.delete(accountKey);
+    };
+
     const countRunning = (symbol: NetworkSymbol) =>
         [...running.values()].filter(job => job.symbol === symbol).length;
-
-    /** The mode to run again right away: a request made meanwhile, or the rest of the history. */
-    const getFollowUpMode = (accountKey: string, isSynced: boolean): SyncMode | null => {
-        const rerunMode = running.get(accountKey)?.rerunMode ?? null;
-        // Backfilled on its own after a sync that worked, so the whole history arrives without
-        // anyone asking; after a failure, the next block or interval tick retries instead.
-        const isBackfillDue =
-            isSynced && !deps.transactionRepository.selectSyncState(accountKey).isComplete;
-
-        return isBackfillDue ? mergeModes(rerunMode, 'full') : rerunMode;
-    };
 
     const runJob = async (accountKey: string, mode: SyncMode) => {
         // An unexpected failure (the database, not the backend) must not leave the account
         // stuck as syncing; the next request retries it.
-        const isSynced = await deps
-            .syncAccountTransactions({ accountKey, mode })
-            .then(result => result.success)
-            .catch(() => false);
-        const followUpMode = getFollowUpMode(accountKey, isSynced);
+        await deps.syncAccountTransactions({ accountKey, mode }).catch(() => undefined);
+        // Only a request made while it ran; nothing continues on its own.
+        const rerunMode = running.get(accountKey)?.rerunMode ?? null;
         running.delete(accountKey);
 
-        if (followUpMode !== null && !isClosed) {
-            queued.set(accountKey, mergeModes(queued.get(accountKey), followUpMode));
+        if (rerunMode !== null && !isClosed) {
+            queued.set(accountKey, mergeModes(queued.get(accountKey), rerunMode));
         }
 
         notifyStatus(accountKey);
+        resolveSettleWaiters(accountKey);
     };
 
     const startJobs = () => {
@@ -91,6 +89,7 @@ export const createSyncQueue = (deps: SyncQueueDeps): SyncQueue => {
 
             if (account === undefined) {
                 queued.delete(accountKey);
+                resolveSettleWaiters(accountKey);
 
                 return;
             }
@@ -130,6 +129,12 @@ export const createSyncQueue = (deps: SyncQueueDeps): SyncQueue => {
 
         getSyncStatus,
 
+        whenSettled: accountKey =>
+            new Promise<void>(resolve => {
+                settleWaiters.set(accountKey, [...(settleWaiters.get(accountKey) ?? []), resolve]);
+                resolveSettleWaiters(accountKey);
+            }),
+
         whenIdle: () =>
             new Promise<void>(resolve => {
                 idleWaiters.push(resolve);
@@ -138,7 +143,9 @@ export const createSyncQueue = (deps: SyncQueueDeps): SyncQueue => {
 
         close: () => {
             isClosed = true;
+            const droppedAccountKeys = [...queued.keys()];
             queued.clear();
+            droppedAccountKeys.forEach(resolveSettleWaiters);
 
             return new Promise<void>(resolve => {
                 idleWaiters.push(resolve);

@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 
 import { useQuery } from '@suite-common/react-query';
 import type { AccountSyncStatus, TransactionSearch } from '@suite-common/transaction-store';
@@ -40,8 +40,9 @@ export type StoredAccountTransactions = {
 };
 
 /**
- * An account's history from the transaction store, a page at a time. Refetches when the store
- * reports the account's rows or sync status changed; the store keeps them fresh on its own.
+ * An account's history from the transaction store, a page at a time. Asking is what makes the
+ * store download it (its newest page, the rest on `requestFullHistory`); after that it stays
+ * fresh as the app refreshes the account, and the queries refetch on the store's events.
  */
 export const useStoredAccountTransactions = ({
     account,
@@ -56,11 +57,6 @@ export const useStoredAccountTransactions = ({
 
     useTransactionStoreInvalidation();
 
-    // Opening the list is a reason to catch up now, rather than at the next block.
-    useEffect(() => {
-        void transactionStore.requestSync({ accountKeys: [accountKey], mode: 'latest' });
-    }, [transactionStore, accountKey]);
-
     const rows = useQuery({
         queryKey: transactionStoreQueryKeys.accountTransactions(accountKey, {
             page,
@@ -68,14 +64,18 @@ export const useStoredAccountTransactions = ({
             contract,
             search,
         }),
-        queryFn: () =>
-            transactionStore.selectTransactions({
+        // Lazy: the first time the account is asked for, its newest history is downloaded first.
+        queryFn: async () => {
+            await transactionStore.ensureSynced([accountKey]);
+
+            return transactionStore.selectTransactions({
                 accountKeys: [accountKey],
                 contract,
                 search,
                 limit: perPage,
                 offset: (page - 1) * perPage,
-            }),
+            });
+        },
         // The previous page stays on screen while the next one is read from the worker.
         placeholderData: previous => previous,
     });
@@ -84,8 +84,15 @@ export const useStoredAccountTransactions = ({
             count: contract,
             search,
         }),
-        queryFn: () =>
-            transactionStore.countTransactions({ accountKeys: [accountKey], contract, search }),
+        queryFn: async () => {
+            await transactionStore.ensureSynced([accountKey]);
+
+            return transactionStore.countTransactions({
+                accountKeys: [accountKey],
+                contract,
+                search,
+            });
+        },
     });
     const syncStatus = useQuery({
         queryKey: transactionStoreQueryKeys.syncStatus([accountKey]),
@@ -99,16 +106,13 @@ export const useStoredAccountTransactions = ({
 
     const status = syncStatus.data?.[0];
     const isSyncing = status?.status === 'syncing' || status?.status === 'queued';
-    // Still waiting for its first sync, unless that failed: then there is nothing to wait for and
-    // the status tells why.
-    const isAwaitingFirstSync = status?.lastSyncedAt === null && status.lastError === null;
 
     return {
         transactions,
         storedCount: storedCount.data ?? 0,
         syncStatus: status,
-        isLoading:
-            rows.isPending || (transactions.length === 0 && (isSyncing || isAwaitingFirstSync)),
+        // Pending covers the first download too, as the query waits for it.
+        isLoading: rows.isPending,
         isSyncing,
         requestFullHistory: () => {
             void transactionStore.requestSync({ accountKeys: [accountKey], mode: 'full' });

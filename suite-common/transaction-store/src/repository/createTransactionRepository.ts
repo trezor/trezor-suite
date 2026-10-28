@@ -45,7 +45,7 @@ export type SyncState = {
 
 export type SelectRowsError = { type: 'QueryFailed' };
 
-export type ReplaceAccountsResult = { addedAccountKeys: string[]; removedAccountKeys: string[] };
+export type ReplaceAccountsResult = { removedAccountKeys: string[] };
 
 export type TransactionRepository = {
     upsertAccounts: (accounts: TransactionStoreAccount[]) => void;
@@ -63,6 +63,8 @@ export type TransactionRepository = {
     selectTransactions: (params: SelectTransactionsParams) => StoredTransaction[];
     countTransactions: (filter: TransactionsFilter) => number;
     selectSyncState: (accountKey: string) => SyncState;
+    /** The accounts the store has synced or tried to, i.e. the ones someone has asked for. */
+    selectTrackedAccountKeys: (accountKeys: string[]) => string[];
     updateSyncState: (
         params: { accountKey: string } & Omit<SyncState, 'newestBlockHeight'>,
     ) => void;
@@ -205,12 +207,7 @@ export const createTransactionRepository = (
                 deleteAccounts(removedAccountKeys);
                 accounts.forEach(upsertAccount);
 
-                return {
-                    addedAccountKeys: [...accountKeys].filter(
-                        accountKey => !storedAccountKeys.has(accountKey),
-                    ),
-                    removedAccountKeys,
-                };
+                return { removedAccountKeys };
             }),
 
         removeAccounts: deleteAccounts,
@@ -336,6 +333,15 @@ export const createTransactionRepository = (
                 lastError: (row?.last_error ?? null) as TransactionSourceErrorType | null,
             };
         },
+
+        selectTrackedAccountKeys: accountKeys =>
+            accountKeys.length === 0
+                ? []
+                : exec<{ account_key: string }>(
+                      `SELECT account_key FROM sync_state
+                      WHERE account_key IN (${toPlaceholders(accountKeys)})`,
+                      accountKeys,
+                  ).rows.map(row => row.account_key),
 
         updateSyncState: ({ accountKey, isComplete, lastSyncedAt, lastError }) => {
             exec(

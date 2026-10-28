@@ -39,6 +39,7 @@ const useStoredTransactionCounts = () => {
 
 const describeStatus = (status: AccountSyncStatus | undefined, count: unknown) => {
     if (status === undefined) return 'Not registered';
+    if (status.lastSyncedAt === null && status.status === 'idle') return 'Not asked for yet';
 
     const history = status.isComplete ? 'whole history' : 'newest part';
     const syncedAt =
@@ -66,18 +67,6 @@ const TransactionStoreAccounts = () => {
 
     return (
         <>
-            <SectionItem
-                title="Whole history"
-                description="Fetches the whole history of every account, page by page in the worker."
-                actions={
-                    <SectionItem.Button
-                        size="small"
-                        onClick={() => requestFullSync(accounts.map(({ key }) => key))}
-                    >
-                        Fetch all history
-                    </SectionItem.Button>
-                }
-            />
             {accounts.map(account => (
                 <SectionItem
                     key={account.key}
@@ -113,7 +102,7 @@ export const TransactionStoreDebug = () => {
         <>
             <SectionItem
                 title="Transaction store"
-                description="Syncs every account of the enabled networks into SQLite in its own worker, refreshes on new blocks, and serves the accounts' transaction lists."
+                description="Keeps transaction history in SQLite in its own worker: an account is downloaded the first time its list is opened, then refreshed whenever the app refreshes it."
                 actions={
                     <Switch
                         isChecked={isEnabled}

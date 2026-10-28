@@ -76,24 +76,21 @@ export const createStartTransactionStoreFeed =
                 // Safe from the start, as the feed starts after the stored accounts are loaded.
                 void service.transactionStore.setAccounts(accounts);
             }
+            // The store syncs only the accounts something has asked for; it ignores the rest.
             if (backends !== fed?.backends) {
-                // Every account syncs once its backend is set (or switched), new ones included,
-                // whose first sync may have run before the backends arrived.
+                // Once their backend is set or switched, including those whose first sync ran
+                // before the backends arrived.
                 void service
                     .setBackends(backends)
-                    .then(() =>
-                        service.transactionStore.requestSync({ accountKeys, mode: 'latest' }),
-                    );
+                    .then(() => service.transactionStore.refreshAccounts(accountKeys));
             } else if (revisions !== fed?.revisions) {
                 const previousRevisions = fed?.revisions;
-                const changedAccountKeys = [...revisions]
-                    .filter(([key, revision]) => previousRevisions?.get(key) !== revision)
-                    .map(([key]) => key);
 
-                void service.transactionStore.requestSync({
-                    accountKeys: changedAccountKeys,
-                    mode: 'latest',
-                });
+                void service.transactionStore.refreshAccounts(
+                    [...revisions]
+                        .filter(([key, revision]) => previousRevisions?.get(key) !== revision)
+                        .map(([key]) => key),
+                );
             }
 
             fed = { accounts, backends, revisions };

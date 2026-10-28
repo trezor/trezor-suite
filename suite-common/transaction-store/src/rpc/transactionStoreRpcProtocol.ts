@@ -6,6 +6,8 @@ export type TransactionStoreRpcMethod = Exclude<keyof TransactionStore, 'subscri
 
 export const TRANSACTION_STORE_RPC_METHODS = [
     'setAccounts',
+    'ensureSynced',
+    'refreshAccounts',
     'removeAccounts',
     'requestSync',
     'getSyncStatus',

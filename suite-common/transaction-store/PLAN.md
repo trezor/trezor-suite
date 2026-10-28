@@ -185,7 +185,7 @@ block_time NULL, PRIMARY KEY(account_key, txid, idx))` (v2), index
 `setAccounts` takes the app's whole account list; `replaceAccounts` diffs it against the
 `accounts` table in one SQLite transaction, deletes every stored account missing from it (its
 transactions, transfers and sync state cascade) and upserts the rest. Only the added accounts
-get a sync; the others sync when the app sees them change. Because the diff is against
+get downloaded only when asked for (see below). Because the diff is against
 the database, it also catches what left while the store was off:
 
 - a forgotten device's wallets, and a not remembered wallet after a restart (Suite does not
@@ -224,11 +224,10 @@ amounts and dates after `<`, `>`, `=` or `!=`, joined by `&` and `|`.
       transaction already stored (pending ones are re-upserted, so confirmations update rows).
     - `full`: walk pages to the end and mark the account complete. A `full` request on a complete
       account runs as `latest`.
-    - The first sync of an account stops after its newest page, so the list shows something
-      at once. The queue then **backfills on its own**: after every sync that worked, an account
-      that is not complete gets a `full` job, so the whole history arrives without anyone
-      paging. Each stored page emits `transactionsChanged`, so lists fill in while it walks.
-      Pages are 50 transactions (more than a screen's) to make the walk take fewer requests.
+    - The first sync of an account stops after its newest page. The rest comes only on a
+      `full` request (the list asks when it pages past what is stored). Each stored page emits
+      `transactionsChanged`, so lists fill in while a full sync walks. Pages are 50
+      transactions, more than a screen's, to make that walk take fewer requests.
     - A backend without paging (no `page` in the response) returns everything at once, so the
       account is complete after the first page.
     - Failures are recorded as an error type in `sync_state.last_error`; the next time the app
@@ -244,11 +243,24 @@ timer and block subscription in the worker would double that load, ignore those 
 while the window is hidden, so the store has neither.
 
 Instead the feed keeps a revision per account (`history.total`, `unconfirmed`, `tokens`,
-balance; `selectTransactionStoreAccountRevisions`) and requests a `latest` sync of exactly the
-accounts whose revision changed. An account the app found unchanged costs the store no request;
-a confirmation changes `unconfirmed`, so it is picked up too. Setting or switching backends
-requests a sync of every account. The backfill still runs on its own once an account has
-synced, since that is the store's own work, not a refresh.
+balance; `selectTransactionStoreAccountRevisions`) and passes the accounts whose revision changed
+to `refreshAccounts`. An account the app found unchanged costs the store no request; a
+confirmation changes `unconfirmed`, so it is picked up too. Setting or switching backends
+refreshes every account.
+
+### Lazy: nothing is downloaded until something asks
+
+`setAccounts` only says which accounts exist (so the store can delete the others); it downloads
+nothing. An account's history is first fetched by `ensureSynced`, which the list's query awaits:
+it requests the newest page of accounts never synced and resolves once that is stored or failed,
+so react-query's pending state covers the first load. Accounts synced before resolve at once and
+are refreshed in the background. `refreshAccounts` syncs only the accounts the store tracks (it
+has a `sync_state` row: synced, or tried), so accounts nobody opened never reach the backend.
+The whole history only comes when asked for (`requestSync({ mode: 'full' })`), never on its own.
+
+Screens over several accounts (a search across all, a portfolio graph, an asset across its
+accounts) pay for that at first use: they ask for every account they show and should say how
+many are still syncing rather than show partial results as final.
 
 ### App-facing API
 

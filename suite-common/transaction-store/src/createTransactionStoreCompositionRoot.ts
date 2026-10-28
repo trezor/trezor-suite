@@ -20,9 +20,9 @@ export type TransactionStoreCompositionRootDeps = TransactionStoreSqliteDep &
     };
 
 /**
- * Starts the store: migrates the database and wires the engine. It syncs when asked to
- * (`requestSync`, and new accounts on `setAccounts`), not on a clock of its own: the app already
- * refreshes its accounts and tells the store when one changed, so there is one cadence for both.
+ * Starts the store: migrates the database and wires the engine. It is lazy: it downloads an
+ * account's history only once something asks for it (`ensureSynced`), keeps those accounts fresh
+ * when the app says they changed (`refreshAccounts`), and has no clock of its own.
  */
 export const createTransactionStoreCompositionRoot = (
     deps: TransactionStoreCompositionRootDeps,
@@ -53,14 +53,30 @@ export const createTransactionStoreCompositionRoot = (
 
     const transactionStore: TransactionStore = {
         setAccounts: accounts => {
-            const { addedAccountKeys, removedAccountKeys } =
-                transactionRepository.replaceAccounts(accounts);
+            const { removedAccountKeys } = transactionRepository.replaceAccounts(accounts);
 
             if (removedAccountKeys.length > 0) {
                 emit({ type: 'transactionsChanged', accountKeys: removedAccountKeys });
             }
-            // The accounts already stored are synced when the app sees them change.
-            syncQueue.requestSync({ accountKeys: addedAccountKeys, mode: 'latest' });
+
+            return Promise.resolve();
+        },
+        ensureSynced: async accountKeys => {
+            const neverSyncedAccountKeys = accountKeys.filter(
+                accountKey =>
+                    transactionRepository.selectAccount(accountKey) !== undefined &&
+                    transactionRepository.selectSyncState(accountKey).lastSyncedAt === null,
+            );
+            syncQueue.requestSync({ accountKeys: neverSyncedAccountKeys, mode: 'latest' });
+            await Promise.all(neverSyncedAccountKeys.map(syncQueue.whenSettled));
+
+            return accountKeys.map(syncQueue.getSyncStatus);
+        },
+        refreshAccounts: accountKeys => {
+            syncQueue.requestSync({
+                accountKeys: transactionRepository.selectTrackedAccountKeys(accountKeys),
+                mode: 'latest',
+            });
 
             return Promise.resolve();
         },

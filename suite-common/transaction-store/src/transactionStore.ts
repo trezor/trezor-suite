@@ -21,10 +21,19 @@ import type {
  */
 export type TransactionStore = {
     /**
-     * The accounts the store keeps: the app's whole list. Any other stored account is deleted
-     * with its history (a forgotten or not remembered wallet), and new ones are synced.
+     * The accounts the store may sync: the app's whole list. Any other stored account is deleted
+     * with its history (a forgotten or not remembered wallet). Nothing is downloaded for them
+     * until something asks (`ensureSynced`).
      */
     setAccounts: (accounts: TransactionStoreAccount[]) => Promise<void>;
+    /**
+     * Downloads the newest history of accounts never synced, and resolves once it is stored (or
+     * failed) with their status. Accounts synced before resolve at once; they stay fresh through
+     * `refreshAccounts`. The whole history only comes on `requestSync({ mode: 'full' })`.
+     */
+    ensureSynced: (accountKeys: string[]) => Promise<AccountSyncStatus[]>;
+    /** The app saw these accounts change: syncs the ones the store tracks, ignores the rest. */
+    refreshAccounts: (accountKeys: string[]) => Promise<void>;
     removeAccounts: (accountKeys: string[]) => Promise<void>;
     requestSync: (params: { accountKeys: string[]; mode: SyncMode }) => Promise<void>;
     getSyncStatus: (accountKeys: string[]) => Promise<AccountSyncStatus[]>;
