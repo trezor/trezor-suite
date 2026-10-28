@@ -7,6 +7,20 @@ const legacyResults = [
     },
 ];
 
+const v1LegacyResults = [
+    {
+        // Solana v1 transactions not supported below this version
+        rules: ['<2.13.1', '1'],
+        success: false,
+    },
+];
+
+// Messages and signatures from the firmware fixtures in sign_tx.v1_transactions.json.
+const v1TransferTx =
+    '81010001000000001aea57c9906a7cad656ff61b3893abda63f4b6b210c939855e7ab6e54049213d010300d1699dcb1811b50bb0055f13044463128242e37a463b52f6c97a1f6eef88adc80f8b50107e9f3e3c16a661b8c806df454a6deb293d5e8730a9d28f2f4998c6000000000000000000000000000000000000000000000000000000000000000002020c00000102000000400d030000000000';
+const v1TransferSignature =
+    'b51fe97a35dd9b13d661178b0f19f0de886cf4e87b638d831244881da1f3aba5e8a01537545dae3108a4b4e6f985f6b07916583a017d3a81bd883dc737351003';
+
 const solanaSignTransaction: TestCase = {
     method: 'solanaSignTransaction',
     setup: {
@@ -38,6 +52,43 @@ const solanaSignTransaction: TestCase = {
                     '18cfc28c0119e9045b3ead4e82cfee79450ecda7e18835d0461278c1df0e6dee4c75ad01fab32c3d395390703fc755e68f8de1832e8b3f8503c0fbc82359af0b',
             },
             legacyResults,
+        },
+        {
+            description: 'v1 transaction',
+            params: {
+                path: "m/44'/501'/0'/0'",
+                serializedTx: v1TransferTx,
+            },
+            result: {
+                signature: v1TransferSignature,
+            },
+            legacyResults: v1LegacyResults,
+        },
+        {
+            description: 'v1 transaction with config',
+            params: {
+                path: "m/44'/501'/0'/0'",
+                serializedTx:
+                    '810100011f0000001aea57c9906a7cad656ff61b3893abda63f4b6b210c939855e7ab6e54049213d010300d1699dcb1811b50bb0055f13044463128242e37a463b52f6c97a1f6eef88adc80f8b50107e9f3e3c16a661b8c806df454a6deb293d5e8730a9d28f2f4998c600000000000000000000000000000000000000000000000000000000000000004006000000000000400d0300000001000000010002020c00000102000000002d310100000000',
+            },
+            result: {
+                signature:
+                    '0164337e487bcf07f80eb6db935a28d4d241a6a06d989d0f57412f67cacc525eb3e3277cac88f6126e40bb37041f631ae5cdaebab1194f7c765b1ee3bd6d9907',
+            },
+            legacyResults: v1LegacyResults,
+        },
+        {
+            description: 'v1 transaction serialized with signatures after the message',
+            params: {
+                path: "m/44'/501'/0'/0'",
+                serializedTx: `${v1TransferTx}${'00'.repeat(64)}`,
+                serialize: true,
+            },
+            result: {
+                signature: v1TransferSignature,
+                serializedTx: `${v1TransferTx}${v1TransferSignature}`,
+            },
+            legacyResults: v1LegacyResults,
         },
     ],
 };

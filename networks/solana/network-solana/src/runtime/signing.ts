@@ -7,6 +7,7 @@ import {
     getBase16Encoder,
     getCompiledTransactionMessageDecoder,
     getTransactionDecoder,
+    getTransactionMessagePriorityFeeLamports,
     getTransactionVersionDecoder,
     pipe,
 } from '@solana/kit';
@@ -107,11 +108,10 @@ const SOLANA_BASE_FEE = 5000; // lamports
 export type DecompiledMessage = {
     message: TransactionMessage & TransactionMessageWithFeePayer & TransactionMessageWithLifetime;
     baseFee: BigNumber;
+    // Set only for v1, which takes the priority fee in lamports from its config.
+    priorityFee?: BigNumber;
     instructions: ReturnType<typeof parseInstruction>[];
 };
-
-// Shared by the fee estimate and the signing call, which a caller reaches in that order.
-export const V1_NOT_SUPPORTED_MESSAGE = 'Solana transaction version 1 is not supported by firmware';
 
 // SIMD-0385 moves the message ahead of the signatures and drops the signature-array length
 // prefix, so a serialized v1 transaction starts with the same version byte as a bare v1 message
@@ -148,6 +148,18 @@ export const getDecompiledMessage = (
     const baseFee = new BigNumber(SOLANA_BASE_FEE).multipliedBy(
         compiledMessage.header.numSignerAccounts,
     );
+    if (message.version === 1) {
+        // v1 ignores ComputeBudget instructions, its config sets the fee and limits instead.
+        const instructions = (message.instructions as readonly Instruction[])
+            .filter(instruction => instruction.programAddress !== COMPUTE_BUDGET_PROGRAM_ADDRESS)
+            .map(parseInstruction);
+        const priorityFee = new BigNumber(
+            (getTransactionMessagePriorityFeeLamports(message) ?? 0).toString(),
+        );
+
+        return { message, baseFee, priorityFee, instructions };
+    }
+
     const instructions = (message.instructions as readonly Instruction[]).map(parseInstruction);
 
     return { message, baseFee, instructions };

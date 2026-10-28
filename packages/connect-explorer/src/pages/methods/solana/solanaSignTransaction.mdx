@@ -8,6 +8,7 @@ import signTransaction from '../../../data/methods/solana/signTransaction.ts';
 <ApiPlayground
     options={[
         { title: 'Sign transaction', legacyConfig: signTransaction[0] },
+        { title: 'Sign v1 transaction', legacyConfig: signTransaction[1] },
         {
             title: 'Advanced schema',
             method: 'solanaSignTransaction',
@@ -26,6 +27,8 @@ export const paramDescriptions = {
 ## Solana: Sign transaction
 
 Asks device to sign given transaction. User is asked to confirm all transaction details on Trezor.
+
+Legacy, v0 and v1 ([SIMD-0385](https://github.com/solana-foundation/solana-improvement-documents/blob/main/proposals/0385-transaction-v1.md)) transactions are supported. v1 transactions require firmware 2.13.1 or newer.
 
 ```javascript
 const result = await TrezorConnect.solanaSignTransaction(params);
@@ -72,6 +75,16 @@ TrezorConnect.solanaSignTransaction({
             },
         ],
     },
+});
+```
+
+The following v1 transaction transfers 0.02 SOL to `ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF` with a priority fee of 1600 lamports. It requires firmware 2.13.1 or newer. With the `all all ...` mnemonic, the signature is `0164337e487bcf07f80eb6db935a28d4d241a6a06d989d0f57412f67cacc525eb3e3277cac88f6126e40bb37041f631ae5cdaebab1194f7c765b1ee3bd6d9907`.
+
+```javascript
+TrezorConnect.solanaSignTransaction({
+    path: "m/44'/501'/0'/0'",
+    serializedTx:
+        '810100011f0000001aea57c9906a7cad656ff61b3893abda63f4b6b210c939855e7ab6e54049213d010300d1699dcb1811b50bb0055f13044463128242e37a463b52f6c97a1f6eef88adc80f8b50107e9f3e3c16a661b8c806df454a6deb293d5e8730a9d28f2f4998c600000000000000000000000000000000000000000000000000000000000000004006000000000000400d0300000001000000010002020c00000102000000002d310100000000',
 });
 ```
 

@@ -16,6 +16,7 @@ export type {
     CompiledTransactionMessageWithLifetime,
     LegacyCompiledTransactionMessage,
     V0CompiledTransactionMessage,
+    V1CompiledTransactionMessage,
     GetFeeForMessageApi,
     GetRecentPrioritizationFeesApi,
     Rpc,
