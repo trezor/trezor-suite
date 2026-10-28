@@ -438,7 +438,7 @@ const onDeviceButtonHandler =
     ({ payload: request }: DeviceEvents['button']) => {
         const { sendCoreMessage } = context;
         const data =
-            typeof method?.getButtonRequestData === 'function' && request.code
+            typeof method?.getButtonRequestData === 'function'
                 ? method?.getButtonRequestData(request.code, request.name)
                 : undefined;
         // request view
