@@ -15,7 +15,8 @@
     "dependencies": {
         "@suite-common/wallet-config": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
-        "@trezor/type-utils": "workspace:*"
+        "@trezor/type-utils": "workspace:*",
+        "@trezor/utils": "workspace:*"
     },
     "devDependencies": {
         "@evolu/common": "8.10.0",

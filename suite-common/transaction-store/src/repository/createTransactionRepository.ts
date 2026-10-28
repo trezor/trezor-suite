@@ -1,7 +1,8 @@
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { type NetworkSymbol, getNetworkDecimals } from '@suite-common/wallet-config';
 import type { Transaction } from '@trezor/blockchain-link-types';
 import { type Result, err, ok } from '@trezor/type-utils';
 
+import { toTransactionSearchClause } from '../search/toTransactionSearchClause';
 import { runInSqliteTransaction } from '../sqlite/runInSqliteTransaction';
 import type {
     SqlQuery,
@@ -15,6 +16,7 @@ import type {
     TransactionStoreAccount,
 } from '../transactionStoreTypes';
 import { flattenTransfers } from './flattenTransfers';
+import type { TransactionSearch } from '../search/transactionSearch';
 
 export type TransactionRepositoryDeps = TransactionStoreSqliteDep;
 
@@ -25,6 +27,8 @@ export type TransactionsFilter = {
      * coin. Left out, every transaction.
      */
     contract?: string | null;
+    /** Only the transactions the search matches, run in SQL here; see `parseTransactionSearch`. */
+    search?: TransactionSearch;
 };
 
 export type SelectTransactionsParams = TransactionsFilter & {
@@ -99,21 +103,26 @@ const toBlockHeight = (transaction: Transaction) =>
         ? transaction.blockHeight
         : null;
 
-/** The `WHERE` of transactions passing the filter, aliased `t`, and its parameters. */
-const toFilterClause = ({ accountKeys, contract }: TransactionsFilter) => {
-    const byAccounts = `t.account_key IN (${toPlaceholders(accountKeys)})`;
+const toContractClause = (contract: string | null) => ({
+    // `IS` matches `NULL` too, so the same clause serves the coin and a token.
+    sql: `EXISTS (
+        SELECT 1 FROM transfers f
+        WHERE f.account_key = t.account_key AND f.txid = t.txid AND f.contract IS ?
+    )`,
+    parameters: [contract],
+});
 
-    if (contract === undefined) {
-        return { where: byAccounts, parameters: accountKeys };
-    }
+/** The `WHERE` of transactions passing the filter, aliased `t`, and its parameters. */
+const toFilterClause = ({ accountKeys, contract, search }: TransactionsFilter) => {
+    const clauses = [
+        { sql: `t.account_key IN (${toPlaceholders(accountKeys)})`, parameters: accountKeys },
+        ...(contract === undefined ? [] : [toContractClause(contract)]),
+        ...(search === undefined ? [] : [toTransactionSearchClause(search)]),
+    ];
 
     return {
-        // `IS` matches `NULL` too, so the same clause serves the coin and a token.
-        where: `${byAccounts} AND EXISTS (
-            SELECT 1 FROM transfers f
-            WHERE f.account_key = t.account_key AND f.txid = t.txid AND f.contract IS ?
-        )`,
-        parameters: [...accountKeys, contract],
+        where: clauses.map(clause => clause.sql).join(' AND '),
+        parameters: clauses.flatMap((clause): SqlValue[] => clause.parameters),
     };
 };
 
@@ -123,17 +132,21 @@ export const createTransactionRepository = (
     const exec = <TRow extends SqlRow>(sql: string, parameters: ReadonlyArray<SqlValue> = []) =>
         deps.sqlite.exec<TRow>({ sql, parameters });
 
-    const replaceTransfers = (accountKey: string, transaction: Transaction) => {
+    const replaceTransfers = (
+        accountKey: string,
+        transaction: Transaction,
+        networkDecimals: number | undefined,
+    ) => {
         exec('DELETE FROM transfers WHERE account_key = ? AND txid = ?', [
             accountKey,
             transaction.txid,
         ]);
-        flattenTransfers(transaction).forEach(transfer =>
+        flattenTransfers(transaction, networkDecimals).forEach(transfer =>
             exec(
                 `INSERT INTO transfers (
-                    account_key, txid, idx, kind, contract, direction, amount, decimals, symbol,
-                    standard, from_address, to_address, block_height, block_time
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                    account_key, txid, idx, kind, contract, direction, amount, value, decimals,
+                    symbol, standard, from_address, to_address, block_height, block_time
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                 [
                     accountKey,
                     transaction.txid,
@@ -142,6 +155,7 @@ export const createTransactionRepository = (
                     transfer.contract,
                     transfer.direction,
                     transfer.amount,
+                    transfer.value,
                     transfer.decimals,
                     transfer.symbol,
                     transfer.standard,
@@ -222,8 +236,14 @@ export const createTransactionRepository = (
                   )
             ).rows.map(toAccount),
 
-        upsertTransactions: ({ accountKey, transactions }) =>
-            runInSqliteTransaction(deps.sqlite, () =>
+        upsertTransactions: ({ accountKey, transactions }) => {
+            const symbol = exec<{ symbol: string }>(
+                'SELECT symbol FROM accounts WHERE account_key = ?',
+                [accountKey],
+            ).rows[0]?.symbol;
+            const networkDecimals = symbol === undefined ? undefined : getNetworkDecimals(symbol);
+
+            return runInSqliteTransaction(deps.sqlite, () =>
                 transactions.reduce((changes, transaction) => {
                     const { changes: hasChanged } = exec(
                         // An unchanged row is not rewritten, so it does not count as a change
@@ -247,11 +267,12 @@ export const createTransactionRepository = (
                         ],
                     );
                     // In the same SQLite transaction, so the transfers never disagree with it.
-                    if (hasChanged > 0) replaceTransfers(accountKey, transaction);
+                    if (hasChanged > 0) replaceTransfers(accountKey, transaction, networkDecimals);
 
                     return changes + hasChanged;
                 }, 0),
-            ),
+            );
+        },
 
         selectStoredTxids: ({ accountKey, txids }) =>
             new Set(

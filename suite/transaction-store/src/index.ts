@@ -21,3 +21,4 @@ export {
     useStoredAccountTransactions,
 } from './useStoredAccountTransactions';
 export { selectIsTransactionStoreActive } from './transactionStoreSelectors';
+export { type ToTransactionSearchParams, toTransactionSearch } from './toTransactionSearch';

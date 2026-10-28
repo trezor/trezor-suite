@@ -6,6 +6,9 @@
             "path": "../../suite-common/react-query"
         },
         {
+            "path": "../../suite-common/transaction-search"
+        },
+        {
             "path": "../../suite-common/transaction-store"
         },
         {

@@ -53,4 +53,10 @@ export const TRANSACTION_STORE_MIGRATIONS: ReadonlyArray<ReadonlyArray<string>> 
         'DELETE FROM transactions',
         'DELETE FROM sync_state',
     ],
+    [
+        // The amount in units ("0.0012"), as people search for it; `amount` stays in base units.
+        'ALTER TABLE transfers ADD COLUMN value TEXT',
+        'DELETE FROM transactions',
+        'DELETE FROM sync_state',
+    ],
 ];

@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 
 import { useQuery } from '@suite-common/react-query';
-import type { AccountSyncStatus } from '@suite-common/transaction-store';
+import type { AccountSyncStatus, TransactionSearch } from '@suite-common/transaction-store';
 import type { Account, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { enhanceTransaction } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
@@ -22,6 +22,8 @@ export type UseStoredAccountTransactionsParams = {
      * own coin (e.g. an asset's detail). Left out, all of them.
      */
     contract?: string | null;
+    /** Only the transactions this search matches, searched in the worker; see `toTransactionSearch`. */
+    search?: TransactionSearch;
 };
 
 export type StoredAccountTransactions = {
@@ -46,6 +48,7 @@ export const useStoredAccountTransactions = ({
     page,
     perPage,
     contract,
+    search,
 }: UseStoredAccountTransactionsParams): StoredAccountTransactions => {
     const { getTransactionStoreService } = useServices(injectGetTransactionStoreService);
     const { transactionStore } = getTransactionStoreService();
@@ -63,11 +66,13 @@ export const useStoredAccountTransactions = ({
             page,
             perPage,
             contract,
+            search,
         }),
         queryFn: () =>
             transactionStore.selectTransactions({
                 accountKeys: [accountKey],
                 contract,
+                search,
                 limit: perPage,
                 offset: (page - 1) * perPage,
             }),
@@ -75,8 +80,12 @@ export const useStoredAccountTransactions = ({
         placeholderData: previous => previous,
     });
     const storedCount = useQuery({
-        queryKey: transactionStoreQueryKeys.accountTransactions(accountKey, { count: contract }),
-        queryFn: () => transactionStore.countTransactions({ accountKeys: [accountKey], contract }),
+        queryKey: transactionStoreQueryKeys.accountTransactions(accountKey, {
+            count: contract,
+            search,
+        }),
+        queryFn: () =>
+            transactionStore.countTransactions({ accountKeys: [accountKey], contract, search }),
     });
     const syncStatus = useQuery({
         queryKey: transactionStoreQueryKeys.syncStatus([accountKey]),

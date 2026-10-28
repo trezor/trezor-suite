@@ -39,6 +39,13 @@ export type {
     TransactionsFilter,
 } from './repository/createTransactionRepository';
 export type { FlatTransfer, TransferKind } from './repository/flattenTransfers';
+export type {
+    TransactionSearch,
+    TransactionSearchOperator,
+    TransactionSearchTerm,
+    TransactionSearchTextMatches,
+} from './search/transactionSearch';
+export { parseTransactionSearch } from './search/parseTransactionSearch';
 export type { MigrateTransactionStoreSchemaError } from './schema/migrateTransactionStoreSchema';
 export {
     type TransactionStorePort,

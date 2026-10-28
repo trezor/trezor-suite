@@ -198,6 +198,24 @@ the database, it also catches what left while the store was off:
 The feed starts after Redux is hydrated with the stored accounts (`initThunk` runs after
 `hydrateReduxStore`), so the first list is complete and nothing is wiped by mistake.
 
+### Search
+
+The list's search runs as SQL in the worker over everything stored, not over a loaded page,
+with the syntax of the Redux list (`@suite-common/transaction-search`): free text, `YYYY-MM-DD`,
+amounts and dates after `<`, `>`, `=` or `!=`, joined by `&` and `|`.
+
+- `parseTransactionSearch` turns the query into data (`TransactionSearch`: groups of terms,
+  any group matching when all its terms do). Labels are the app's, so the app resolves each
+  text term to the txids and addresses whose labels contain it, and whether it is the
+  network's symbol (`toTransactionSearch`); only those lists reach the worker.
+- `toTransactionSearchClause` turns it into one condition on `transactions`:
+    - text: txid; transfers' from/to, contract, symbol and amount digits; UTXO input, output and
+      target addresses (`json_tree` over `data`); the EVM function name; label matches;
+    - amounts: `transfers.value` (the amount in units, schema v3), a sent one as negative;
+    - dates: `block_time`, with the Redux list's day bounds.
+- It is part of `TransactionsFilter`, so `selectTransactions` and `countTransactions` page and
+  count the matches, and it combines with `contract`.
+
 ### Sync engine
 
 - **Queue** (`createSyncQueue`): one job per account, deduplicated. Requesting `full` while
@@ -280,7 +298,7 @@ through `query`, so feature queries are typed end to end. No own query builder.
       `isSyncing` and `requestFullHistory`. Query keys are per account, so a change on one
       account refetches only its queries; opening it requests a `latest` sync.
     - `StoredTransactionList`: the account's Transactions list on that hook, with the sync status
-      line; paging past what is stored requests the whole history. No search or export yet.
+      line; paging past what is stored requests the whole history. Search as below; no export yet.
     - `TransactionStoreDebug`: Settings → Debug → Transaction store, with the switch
       (`suiteSettings.debug.isTransactionStoreEnabled`) and per-account sync details.
 
