@@ -6,9 +6,7 @@ import {
     markNewContentIndicatorAsSeen,
     selectIsNewContentIndicatorVisible,
 } from '@suite/flags';
-import { Translation } from '@suite/intl';
 import { type Route, selectRouteName } from '@suite/router';
-import { selectIsDeviceUsingPassphrase } from '@suite-common/device';
 import { Column, Divider } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { GearSixIcon, GiftIcon } from '@trezor/icons';
@@ -29,7 +27,6 @@ export const BottomNavigation = () => {
     const { isSidebarCollapsed } = useResponsiveContext();
     const { dispatch } = useServices(injectDispatch);
     const isReferralAvailable = useSelector(selectIsReferralAvailable);
-    const isReferralDisabled = useSelector(selectIsDeviceUsingPassphrase);
     const routeName = useSelector(selectRouteName);
     const isReferralNewContentIndicatorVisible = useSelector(
         selectIsNewContentIndicatorVisible(NewContentIndicatorId.ReferAFriend26_10),
@@ -60,12 +57,6 @@ export const BottomNavigation = () => {
                         goToRoute="suite-refer-a-friend"
                         routes={['suite-refer-a-friend']}
                         hasNewContentIndicator={isReferralNewContentIndicatorVisible}
-                        isDisabled={isReferralDisabled}
-                        tooltipContent={
-                            isReferralDisabled ? (
-                                <Translation id="TR_REFERRAL_SWITCH_TO_STANDARD_WALLET" />
-                            ) : undefined
-                        }
                     />
                 )}
                 <NavigationItem
