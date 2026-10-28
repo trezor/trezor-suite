@@ -14,11 +14,10 @@
  *   connect '1' → connect '2' (queued behind '1') → disconnect '2' →
  *   reconnect '2' → drain.
  *
- * CHARACTERIZATION: this test pins the **current, buggy** behaviour — device '1'
- * registers, but the stale '2' instance hangs the lock, so the reconnected '2'
- * never registers and is silently lost. The expectation below records that lost
- * device as the behaviour of the tree as it stands today, so the change in
- * behaviour is visible in the commit that fixes it.
+ * Pre-fix: device '1' registers, but the stale '2' instance hangs the lock, so
+ * the reconnected '2' never registers (lost device) and the system never drains.
+ * Post-fix (`run()`/`handshake()` bail when `disconnected`): the stale instance
+ * reports not-connected, the lock is released, and the reconnected '2' registers.
  */
 import { noopCreateLogger } from '@trezor/logger';
 import { TRANSPORT } from '@trezor/transport-common';
@@ -46,7 +45,7 @@ describe('DeviceList handshakeLock deadlock (PHASE 3 Finding 3)', () => {
         jest.restoreAllMocks();
     });
 
-    it('loses a device that disconnected while its handshake was queued', async () => {
+    it('a device disconnected while its handshake is queued does not stall the lock', async () => {
         const transport = createControllableTransport('1' as any);
         transport.disconnectPath('1' as any);
 
@@ -100,10 +99,9 @@ describe('DeviceList handshakeLock deadlock (PHASE 3 Finding 3)', () => {
         expect(drained).toBe(true);
 
         const registeredPaths = deviceList.getAllDevices().map(d => (d as any).descriptor.path);
-        // Only '1' is registered: the stale '2' instance is still parked inside
-        // `waitAndCompareSession` holding `handshakeLock`, so the reconnected '2'
-        // never gets its handshake and is never pushed into the registry.
-        expect(registeredPaths).toEqual(['1']);
+        // Reconnected '2' must be registered, and exactly once.
+        expect(registeredPaths.filter(p => p === '2')).toHaveLength(1);
+        expect(new Set(registeredPaths)).toEqual(new Set(['1', '2']));
 
         await deviceList.dispose();
     });
