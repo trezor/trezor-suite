@@ -10519,6 +10519,26 @@ export const messages = defineMessages({
         id: 'TR_REFERRAL_UNAVAILABLE',
         defaultMessage: 'Refer-A-Friend is currently unavailable.',
     },
+    TR_REFERRAL_LOAD_REWARDS: {
+        id: 'TR_REFERRAL_LOAD_REWARDS',
+        defaultMessage: 'Load rewards',
+    },
+    TR_REFERRAL_LOAD_REWARDS_DESCRIPTION: {
+        id: 'TR_REFERRAL_LOAD_REWARDS_DESCRIPTION',
+        defaultMessage: 'Confirm on your Trezor to load your rewards.',
+    },
+    TR_REFERRAL_ERROR_PROGRAM: {
+        id: 'TR_REFERRAL_ERROR_PROGRAM',
+        defaultMessage: 'Refer-A-Friend couldn’t be loaded.',
+    },
+    TR_REFERRAL_ERROR_REWARDS: {
+        id: 'TR_REFERRAL_ERROR_REWARDS',
+        defaultMessage: 'Your rewards couldn’t be loaded.',
+    },
+    TR_REFERRAL_ERROR_GENERIC: {
+        id: 'TR_REFERRAL_ERROR_GENERIC',
+        defaultMessage: 'Something went wrong. Try again later.',
+    },
     TR_QUICK_ACTION_DEBUG_EXPERIMENTAL_SETTINGS: {
         id: 'TR_QUICK_ACTION_DEBUG_EXPERIMENTAL_SETTINGS',
         defaultMessage: 'Debug and experimental settings',

@@ -11838,9 +11838,12 @@ __metadata:
   resolution: "@suite-app/module-refer-a-friend@workspace:suite-app/module-refer-a-friend"
   dependencies:
     "@suite-common/device": "workspace:*"
+    "@suite-common/refer-a-friend": "workspace:*"
     "@suite/intl": "workspace:*"
     "@trezor/components": "workspace:*"
+    "@trezor/dependency-injection": "workspace:*"
     "@trezor/icons": "workspace:*"
+    "@trezor/redux-utils": "workspace:*"
     "@trezor/requirements": "workspace:*"
     "@trezor/suite": "workspace:*"
     react: "npm:19.3.0"
