@@ -1,8 +1,11 @@
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
     Line,
     LineChart,
+    ReferenceDot,
+    ReferenceLine,
     ResponsiveContainer,
     Tooltip,
     type TooltipProps,
@@ -31,6 +34,71 @@ export type AssetPriceChartProps = {
 
 const CHART_HEIGHT = 240;
 const LINE_THICKNESS = 2;
+const LABEL_FONT_SIZE = 12;
+const LABEL_GAP = 8;
+const LABEL_SPACE = LABEL_FONT_SIZE + LABEL_GAP + 4;
+const LABEL_EDGE_SHARE = 0.1;
+
+type PriceExtremes = {
+    high: AssetPricePoint;
+    low: AssetPricePoint;
+    highIndex: number;
+    lowIndex: number;
+};
+
+const getPriceExtremes = (points: AssetPricePoint[]): PriceExtremes | undefined => {
+    const first = points[0];
+    if (first === undefined) {
+        return undefined;
+    }
+
+    return points.reduce<PriceExtremes>(
+        (extremes, point, index) => ({
+            ...extremes,
+            ...(point.price > extremes.high.price && { high: point, highIndex: index }),
+            ...(point.price < extremes.low.price && { low: point, lowIndex: index }),
+        }),
+        { high: first, low: first, highIndex: 0, lowIndex: 0 },
+    );
+};
+
+const getLabelAnchor = (index: number, count: number) => {
+    const share = count > 1 ? index / (count - 1) : 0.5;
+    if (share < LABEL_EDGE_SHARE) return 'start';
+    if (share > 1 - LABEL_EDGE_SHARE) return 'end';
+
+    return 'middle';
+};
+
+type ExtremeLabelProps = {
+    viewBox?: { x: number; y: number };
+    text: string;
+    placement: 'above' | 'below';
+    textAnchor: 'start' | 'middle' | 'end';
+};
+
+const ExtremeLabel = ({ viewBox, text, placement, textAnchor }: ExtremeLabelProps) => {
+    const theme = useTheme();
+    if (viewBox === undefined) {
+        return null;
+    }
+
+    return (
+        <text
+            x={viewBox.x}
+            y={
+                placement === 'above'
+                    ? viewBox.y - LABEL_GAP
+                    : viewBox.y + LABEL_GAP + LABEL_FONT_SIZE
+            }
+            textAnchor={textAnchor}
+            fill={theme.contentTertiary}
+            fontSize={LABEL_FONT_SIZE}
+        >
+            {text}
+        </text>
+    );
+};
 
 const ChartFrame = styled.div`
     position: relative;
@@ -87,6 +155,12 @@ const PriceTooltip = ({ active, payload }: TooltipProps<number, string>) => {
 
 export const AssetPriceChart = ({ networkSymbol, tokenContract }: AssetPriceChartProps) => {
     const theme = useTheme();
+    const { BaseCurrencyAmountFormatter } = useFormatters();
+    const formatPrice = (price: number) =>
+        BaseCurrencyAmountFormatter.format(asBaseCurrencyAmount(new BigNumber(price)), {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 4,
+        }) ?? '';
     const fiatCurrency = useSelector(selectBaseCurrency);
     const shouldAnimateSkeleton = useSelector(selectShouldAnimateLoadingSkeleton);
     const { data: points, isLoading } = useAssetPriceHistoryQuery({
@@ -94,6 +168,7 @@ export const AssetPriceChart = ({ networkSymbol, tokenContract }: AssetPriceChar
         fiatCurrency,
         range: INITIAL_ASSET_PRICE_CHART_RANGE,
     });
+    const extremes = useMemo(() => (points ? getPriceExtremes(points) : undefined), [points]);
 
     if (points === null) {
         return null;
@@ -107,18 +182,18 @@ export const AssetPriceChart = ({ networkSymbol, tokenContract }: AssetPriceChar
         );
     }
 
+    if (extremes === undefined) {
+        return null;
+    }
+
     return (
         <ChartFrame data-testid="@price-chart/graph">
             <ChartFill>
                 <ResponsiveContainer width="100%" height="100%">
                     <LineChart
                         data={points}
-                        margin={{
-                            top: LINE_THICKNESS,
-                            right: 0,
-                            bottom: LINE_THICKNESS,
-                            left: 0,
-                        }}
+                        margin={{ top: LABEL_SPACE, right: 0, bottom: LABEL_SPACE, left: 0 }}
+                        accessibilityLayer
                     >
                         <XAxis
                             dataKey="timestamp"
@@ -127,6 +202,35 @@ export const AssetPriceChart = ({ networkSymbol, tokenContract }: AssetPriceChar
                             hide
                         />
                         <YAxis domain={['dataMin', 'dataMax']} hide />
+                        <ReferenceLine
+                            y={extremes.high.price}
+                            stroke={theme.contentTertiary}
+                            strokeDasharray="1 4"
+                        />
+                        <ReferenceDot
+                            x={extremes.high.timestamp}
+                            y={extremes.high.price}
+                            r={0}
+                            label={
+                                <ExtremeLabel
+                                    text={formatPrice(extremes.high.price)}
+                                    placement="above"
+                                    textAnchor={getLabelAnchor(extremes.highIndex, points.length)}
+                                />
+                            }
+                        />
+                        <ReferenceDot
+                            x={extremes.low.timestamp}
+                            y={extremes.low.price}
+                            r={0}
+                            label={
+                                <ExtremeLabel
+                                    text={formatPrice(extremes.low.price)}
+                                    placement="below"
+                                    textAnchor={getLabelAnchor(extremes.lowIndex, points.length)}
+                                />
+                            }
+                        />
                         <Tooltip
                             content={<PriceTooltip />}
                             cursor={{ stroke: theme.borderNeutral, strokeWidth: 1 }}
