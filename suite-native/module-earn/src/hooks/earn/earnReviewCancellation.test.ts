@@ -158,7 +158,7 @@ describe.each(['stake', 'yield', 'approve', 'revoke'] as const)(
             expect(analytics.report).not.toHaveBeenCalled();
         });
 
-        it.each(['REPLACE', 'RESET', 'POP'])(
+        it.each(['REPLACE', 'RESET', 'POP', 'POP_TO'])(
             'does not count a programmatic %s as user cancellation',
             async type => {
                 const { analytics, remove } = await renderCancellation(flow);

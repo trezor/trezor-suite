@@ -133,6 +133,13 @@ export type WrappedNativeTokenPendingTxParams = {
     txid: string;
 };
 
+export type StakingPendingTxParams = {
+    amountInBaseUnits: string;
+    fee?: string;
+    submittedAt: number;
+    txid: string;
+};
+
 type YieldDepositApprovalReviewParams = YieldFlowParams & {
     amount: string;
     approvalLimitType: 'per-deposit' | 'unlimited';
@@ -552,6 +559,7 @@ export type RootStackParamList = {
     [RootStackRoutes.WrappedNativeTokenNavigator]: NavigatorScreenParams<WrappedNativeTokenStackParamList>;
     [RootStackRoutes.StakingForm]: {
         accountKey: AccountKey;
+        pendingTransaction?: StakingPendingTxParams;
     };
     [RootStackRoutes.EarnConsents]: {
         accountKey: AccountKey;
@@ -568,10 +576,14 @@ export type RootStackParamList = {
         stakeType: 'stake' | 'unstake' | 'claim';
         amountInBaseUnits: string;
     };
-    [RootStackRoutes.UnstakeFlow]: { accountKey: AccountKey };
+    [RootStackRoutes.UnstakeFlow]: {
+        accountKey: AccountKey;
+        pendingTransaction?: StakingPendingTxParams;
+    };
     [RootStackRoutes.StakingClaimReview]: {
         accountKey: AccountKey;
         symbol: NetworkSymbol;
+        pendingTransaction?: StakingPendingTxParams;
     };
     [RootStackRoutes.DeviceSettingsStack]: NavigatorScreenParams<DeviceSettingsStackParamList>;
     [RootStackRoutes.AddCoinAccountStack]: NavigatorScreenParams<AddCoinAccountStackParamList>;

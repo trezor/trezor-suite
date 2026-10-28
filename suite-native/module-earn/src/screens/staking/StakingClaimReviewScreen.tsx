@@ -33,10 +33,12 @@ import { MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT } from '@trezor/network-solana/const
 import { BigNumber } from '@trezor/utils';
 
 import { EarnAmountCard } from '../../components/earn/EarnAmountCard';
+import { StakingPendingTransactionModal } from '../../components/staking/StakingPendingTransactionModal';
 import { useComposeEarnFees } from '../../hooks/earn/useComposeEarnFees';
 import { useEarnDeviceStatus } from '../../hooks/earn/useEarnDeviceStatus';
 import { useNavigateBackAnalytics } from '../../hooks/earn/useNavigateBackAnalytics';
 import { useSolanaStakingLimit } from '../../hooks/staking/useSolanaStakingLimit';
+import { useStakingPendingTransaction } from '../../hooks/staking/useStakingPendingTransaction';
 import { buildEarnComposeFormState } from '../../utils/earn/utils';
 
 export const StakingClaimReviewScreen = () => {
@@ -45,8 +47,14 @@ export const StakingClaimReviewScreen = () => {
         useNavigation<
             StackNavigationProps<RootStackParamList, RootStackRoutes.StakingClaimReview>
         >();
-    const { accountKey, symbol } = route.params;
+    const { accountKey, symbol, pendingTransaction } = route.params;
     const displaySymbol = getNetworkDisplaySymbol(symbol);
+
+    const { isPending, pendingModal } = useStakingPendingTransaction({
+        accountKey,
+        pendingTransaction,
+        stakeType: 'claim',
+    });
 
     const canClaimInstantly = useSelector((state: StakeRootState) =>
         selectCanClaimByAccountKey(state, accountKey),
@@ -96,14 +104,17 @@ export const StakingClaimReviewScreen = () => {
 
     const { analytics } = useServices(injectNativeAnalytics);
     const deviceStatus = useEarnDeviceStatus();
-    const registerNavigateBackAnalytics = useNavigateBackAnalytics({
-        type: events.stakingClaimEvent.name,
-        payload: {
-            action: 'cancel',
-            step: 'claim-form-modal',
-            networkSymbol: symbol,
+    const registerNavigateBackAnalytics = useNavigateBackAnalytics(
+        {
+            type: events.stakingClaimEvent.name,
+            payload: {
+                action: 'cancel',
+                step: 'claim-form-modal',
+                networkSymbol: symbol,
+            },
         },
-    });
+        !isPending,
+    );
 
     const handleReviewAndSign = () => {
         registerNavigateBackAnalytics();
@@ -144,6 +155,7 @@ export const StakingClaimReviewScreen = () => {
                     <Button
                         onPress={handleReviewAndSign}
                         isDisabled={
+                            isPending ||
                             !claimFormState ||
                             !canClaimInstantly ||
                             isInsufficientFeeBalance ||
@@ -160,65 +172,73 @@ export const StakingClaimReviewScreen = () => {
                 </Box>
             }
         >
-            <VStack spacing="sp16">
-                <EarnAmountCard
-                    accountKey={accountKey}
-                    label={<Translation id="earn.claimReviewScreen.amountLabel" />}
-                    cryptoAmount={claimableAmount}
-                />
-                <FeeSelector
-                    accountKey={accountKey}
-                    updateThunk={updateFeeLevelThunk}
-                    selectedFee={formDraft?.selectedFee ?? 'normal'}
-                    selectedFeePerUnit={formDraft?.feePerUnit}
-                    formDraft={formDraft}
-                    formDraftKey={formDraftKey}
-                />
-                {isInsufficientFeeBalance && (
-                    <BannerFull
-                        intent="critical"
-                        iconName="warningCircle"
-                        title={
-                            <Translation
-                                id="earn.claimReviewScreen.insufficientFeeBalance.title"
-                                values={{ displaySymbol }}
-                            />
-                        }
-                        description={
-                            <Translation
-                                id="earn.claimReviewScreen.insufficientFeeBalance.description"
-                                values={{ amount: formattedAvailableBalance }}
-                            />
-                        }
+            <Box pointerEvents={isPending ? 'none' : 'auto'}>
+                <VStack spacing="sp16">
+                    <EarnAmountCard
+                        accountKey={accountKey}
+                        label={<Translation id="earn.claimReviewScreen.amountLabel" />}
+                        cryptoAmount={claimableAmount}
                     />
-                )}
-                {canClaimInstantly && !isInsufficientFeeBalance && (
-                    <BannerInline
-                        intent="brand"
-                        title={
-                            <Translation
-                                id="earn.claimReviewScreen.instantClaimBanner"
-                                values={{ displaySymbol }}
-                            />
-                        }
+                    <FeeSelector
+                        accountKey={accountKey}
+                        updateThunk={updateFeeLevelThunk}
+                        selectedFee={formDraft?.selectedFee ?? 'normal'}
+                        selectedFeePerUnit={formDraft?.feePerUnit}
+                        formDraft={formDraft}
+                        formDraftKey={formDraftKey}
                     />
-                )}
-                {isAccountLimitExceeded && (
-                    <BannerInline
-                        intent="info"
-                        title={
-                            <Translation
-                                id="earn.claimReviewScreen.accountLimitBanner"
-                                values={{
-                                    limit: MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT,
-                                    amount: claimableLimitAmount,
-                                    symbol: displaySymbol,
-                                }}
-                            />
-                        }
-                    />
-                )}
-            </VStack>
+                    {isInsufficientFeeBalance && (
+                        <BannerFull
+                            intent="critical"
+                            iconName="warningCircle"
+                            title={
+                                <Translation
+                                    id="earn.claimReviewScreen.insufficientFeeBalance.title"
+                                    values={{ displaySymbol }}
+                                />
+                            }
+                            description={
+                                <Translation
+                                    id="earn.claimReviewScreen.insufficientFeeBalance.description"
+                                    values={{ amount: formattedAvailableBalance }}
+                                />
+                            }
+                        />
+                    )}
+                    {canClaimInstantly && !isInsufficientFeeBalance && (
+                        <BannerInline
+                            intent="brand"
+                            title={
+                                <Translation
+                                    id="earn.claimReviewScreen.instantClaimBanner"
+                                    values={{ displaySymbol }}
+                                />
+                            }
+                        />
+                    )}
+                    {isAccountLimitExceeded && (
+                        <BannerInline
+                            intent="info"
+                            title={
+                                <Translation
+                                    id="earn.claimReviewScreen.accountLimitBanner"
+                                    values={{
+                                        limit: MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT,
+                                        amount: claimableLimitAmount,
+                                        symbol: displaySymbol,
+                                    }}
+                                />
+                            }
+                        />
+                    )}
+                </VStack>
+            </Box>
+
+            <StakingPendingTransactionModal
+                accountKey={accountKey}
+                pendingModal={pendingModal}
+                stakeType="claim"
+            />
         </Screen>
     );
 };

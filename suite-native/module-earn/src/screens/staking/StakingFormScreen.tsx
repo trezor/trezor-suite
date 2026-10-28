@@ -29,18 +29,26 @@ import { EarnAmountCard } from '../../components/earn/EarnAmountCard';
 import { EarnOutputFields } from '../../components/earn/EarnOutputFields';
 import { StakingFormScreenFooter } from '../../components/staking/StakingFormScreenFooter';
 import { StakingNoBalanceContent } from '../../components/staking/StakingNoBalanceContent';
+import { StakingPendingTransactionModal } from '../../components/staking/StakingPendingTransactionModal';
 import { useEarnDeviceStatus } from '../../hooks/earn/useEarnDeviceStatus';
 import { useNavigateBackAnalytics } from '../../hooks/earn/useNavigateBackAnalytics';
 import { useStakingForm } from '../../hooks/staking/useStakingForm';
+import { useStakingPendingTransaction } from '../../hooks/staking/useStakingPendingTransaction';
 import { isBalanceBelowStakingMinimum } from '../../utils/staking/isBalanceBelowStakingMinimum';
 
 export const StakingFormScreen = () => {
     const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.StakingForm>>();
-    const { accountKey } = route.params;
+    const { accountKey, pendingTransaction } = route.params;
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.StakingForm>>();
 
     const stakingForm = useStakingForm(accountKey);
+
+    const { isPending, pendingModal } = useStakingPendingTransaction({
+        accountKey,
+        pendingTransaction,
+        stakeType: 'stake',
+    });
     const isOnboardingConfirmed = useSelector((state: EarnOnboardingRootState) =>
         selectIsEarnOnboardingConfirmed(
             state,
@@ -57,15 +65,18 @@ export const StakingFormScreen = () => {
     const handleCurrencyChange = useCallback((activeView: ActiveView) => {
         setCurrency(activeView === 'primary' ? 'crypto' : 'fiat');
     }, []);
-    const registerNavigateBackAnalytics = useNavigateBackAnalytics({
-        type: events.stakingStakeEvent.name,
-        payload: {
-            action: 'cancel',
-            step: 'stake-form-modal',
-            networkSymbol: networkSymbol ?? undefined,
-            currency,
+    const registerNavigateBackAnalytics = useNavigateBackAnalytics(
+        {
+            type: events.stakingStakeEvent.name,
+            payload: {
+                action: 'cancel',
+                step: 'stake-form-modal',
+                networkSymbol: networkSymbol ?? undefined,
+                currency,
+            },
         },
-    });
+        !isPending,
+    );
 
     if (!stakingForm) {
         return null;
@@ -133,33 +144,41 @@ export const StakingFormScreen = () => {
                 <StakingFormScreenFooter
                     symbol={account.symbol}
                     amountValue={amountValue}
-                    isDisabled={!isValid || isFeeUnavailable || isPrecomposeError}
+                    isDisabled={!isValid || isFeeUnavailable || isPrecomposeError || isPending}
                     onPress={() => handleSubmit()}
                 />
             }
             footerHorizontalPadding="sp16"
         >
-            <EarnAmountCard accountKey={accountKey} />
-            <Box marginTop="sp16">
-                <Form form={form}>
-                    <EarnOutputFields
-                        accountKey={accountKey}
-                        onCurrencyChange={handleCurrencyChange}
-                    />
-                </Form>
-            </Box>
-            {isValid && (
-                <Box marginTop="sp24">
-                    <FeeSelector
-                        accountKey={accountKey}
-                        updateThunk={updateFeeLevelThunk}
-                        selectedFee={formDraft?.selectedFee ?? 'normal'}
-                        selectedFeePerUnit={formDraft?.feePerUnit}
-                        formDraft={formDraft}
-                        formDraftKey={formDraftKey}
-                    />
+            <Box pointerEvents={isPending ? 'none' : 'auto'}>
+                <EarnAmountCard accountKey={accountKey} />
+                <Box marginTop="sp16">
+                    <Form form={form}>
+                        <EarnOutputFields
+                            accountKey={accountKey}
+                            onCurrencyChange={handleCurrencyChange}
+                        />
+                    </Form>
                 </Box>
-            )}
+                {isValid && (
+                    <Box marginTop="sp24">
+                        <FeeSelector
+                            accountKey={accountKey}
+                            updateThunk={updateFeeLevelThunk}
+                            selectedFee={formDraft?.selectedFee ?? 'normal'}
+                            selectedFeePerUnit={formDraft?.feePerUnit}
+                            formDraft={formDraft}
+                            formDraftKey={formDraftKey}
+                        />
+                    </Box>
+                )}
+            </Box>
+
+            <StakingPendingTransactionModal
+                accountKey={accountKey}
+                pendingModal={pendingModal}
+                stakeType="stake"
+            />
         </Screen>
     );
 };
