@@ -249,13 +249,16 @@ through `query`, so feature queries are typed end to end. No own query builder.
       every name.
     - `createGetTransactionStoreService`: in `createSuiteServicesCompositionRoot`, so web and
       desktop share it. Spawns the worker on first use and fills in Connect's default backends.
-    - `startTransactionStoreFeed`: a service, not a component. Started in the same composition
-      root with the Redux `getState` / `subscribe`, the store service and `getIsEnabled` (debug
-      mode); returns its dispose. Memoized selectors (`transactionStoreFeedSelectors.ts`) derive
-      the accounts (visible, enabled networks, no coinjoin) and the backends, and keep the same
-      reference while those are unchanged, so balance updates and blocks push nothing. On a
-      change it registers accounts (removing only ones seen leaving), sets backends and watches
-      the networks; when disabled it disposes the store and its worker.
+    - `createStartTransactionStoreFeed`: a service, not a component. The composition root
+      binds it to the Redux `getState` / `subscribe`, the store service and `getIsEnabled` (the
+      Debug settings switch); `initThunk` starts it right after Connect and the backends are
+      initialised (step 7b), since the networks' default backends come from Connect's coin info.
+      Started any earlier, every default backend resolved to nothing. Returns its dispose.
+      Memoized selectors (`transactionStoreFeedSelectors.ts`) derive the accounts (visible,
+      enabled networks, no coinjoin) and the backends, and keep the same reference while those
+      are unchanged, so balance updates and blocks push nothing. On a change it registers
+      accounts (removing only ones seen leaving), sets backends and watches the networks; when
+      disabled it disposes the store and its worker.
     - `useStoredAccountTransactions({ account, page, perPage })`: the account's page of rows,
       enhanced to `WalletAccountTransaction`, its stored count and sync status, `isLoading`,
       `isSyncing` and `requestFullHistory`. Query keys are per account, so a change on one

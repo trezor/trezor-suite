@@ -7,10 +7,12 @@ export {
 } from './createTransactionStoreService';
 export { createTransactionStoreWorker } from './createTransactionStoreWorker';
 export {
+    type StartTransactionStoreFeed,
+    type StartTransactionStoreFeedDep,
     type StartTransactionStoreFeedDeps,
-    type TransactionStoreFeedDep,
-    startTransactionStoreFeed,
-} from './startTransactionStoreFeed';
+    createStartTransactionStoreFeed,
+    injectStartTransactionStoreFeed,
+} from './createStartTransactionStoreFeed';
 export { TransactionStoreDebug } from './TransactionStoreDebug';
 export { useAccountSyncStatuses, useTransactionStoreInvalidation } from './transactionStoreQueries';
 export {

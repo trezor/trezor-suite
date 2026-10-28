@@ -47,10 +47,12 @@ export const createGetTransactionStoreService = (
     ): Promise<TransactionStoreBackend | null> => {
         if (backend.urls.length > 0) return backend;
 
-        const coinInfo = await deps.getTrezorConnect().getCoinInfo({
-            coin: asCoinSymbol(backend.symbol),
-        });
-        const blockchainLink = coinInfo.success ? coinInfo.payload.blockchainLink : undefined;
+        // One network Connect cannot answer for must not take the others' backends with it.
+        const coinInfo = await deps
+            .getTrezorConnect()
+            .getCoinInfo({ coin: asCoinSymbol(backend.symbol) })
+            .catch(() => null);
+        const blockchainLink = coinInfo?.success ? coinInfo.payload.blockchainLink : undefined;
 
         return blockchainLink === undefined
             ? null

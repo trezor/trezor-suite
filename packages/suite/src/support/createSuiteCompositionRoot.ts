@@ -20,11 +20,11 @@ import { selectDebugSettings, selectLanguage, selectTradeServerEnvironment } fro
 import { createSuiteSyncDesktopCompositionRoot } from '@suite/suite-sync';
 import {
     type GetTransactionStoreServiceDep,
-    type TransactionStoreFeedDep,
+    type StartTransactionStoreFeedDep,
     createGetTransactionStoreService,
+    createStartTransactionStoreFeed,
     createTransactionStoreWorker,
     selectIsTransactionStoreActive,
-    startTransactionStoreFeed,
 } from '@suite/transaction-store';
 import { createBip329CompositionRoot } from '@suite-common/bip329';
 import {
@@ -84,7 +84,7 @@ export type SuiteServices = CommonServices &
     TransportsDep &
     BluetoothDep &
     GetTransactionStoreServiceDep &
-    TransactionStoreFeedDep;
+    StartTransactionStoreFeedDep;
 
 export type StoreAPIDep = Pick<SuiteReduxStore, 'getState' | 'dispatch'>;
 
@@ -155,13 +155,13 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         updateOutputLabel: suiteSync.labeling.updateOutputLabel,
     });
 
-    // Lazy: the worker starts on the first use. The feed starts it only while its Debug settings
-    // switch is on, until it replaces the Redux history.
+    // Lazy: the worker starts on the first use. The feed, started by the app's init once Connect
+    // is up, starts it only while its Debug settings switch is on.
     const getTransactionStoreService = createGetTransactionStoreService({
         getTrezorConnect: deps.getTrezorConnect,
         createWorker: createTransactionStoreWorker,
     });
-    const disposeTransactionStoreFeed = startTransactionStoreFeed({
+    const startTransactionStoreFeed = createStartTransactionStoreFeed({
         getTransactionStoreService,
         getState: deps.getState,
         subscribe: deps.subscribe,
@@ -192,7 +192,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         networks,
         suiteSync,
         getTransactionStoreService,
-        disposeTransactionStoreFeed,
+        startTransactionStoreFeed,
         bip329,
         migrateLegacyLabelsToSuiteSync,
         ensureDelegatedIdentityKey,
