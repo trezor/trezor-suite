@@ -244,15 +244,47 @@ not as asserted bugs:
 
 ---
 
-## 4. Harness plan (PHASE 2/3, summary)
+## 4. Harness (PHASE 2 — implemented)
 
-Build a deterministic mock transport whose `acquire`/`release`/`call`/`send`/
-`enumerate` resolve **on command** (controllable deferreds), so the test drives
-every interleaving. Use `fast-check` to generate sequences of operations —
-_run method_, _override with a second run_, _abort via signal_,
-_disconnect/reconnect_, _toggle keepSession_ — and their interleavings, then
-assert INV-1..INV-5 after each step and at quiescence. Follow the existing
-mock-transport conventions (`global.JestMocks.createTestTransport`, jest). For
-each distinct violation: shrink, commit a minimal deterministic repro + a note
-(invariant, interleaving, suspected root cause), and only commit a fix if it is
-obviously correct and all existing tests pass.
+A deterministic mock transport whose `acquire`/`release`/`call`/`send`/`receive`/
+`enumerate` settle **on command** (controllable deferreds) so the test drives
+every interleaving. `fast-check` generates operation sequences and the harness
+asserts the invariants after every step and at quiescence.
+
+- `__fixtures__/controllableTransport.ts` — `ControllableTransport extends
+AbstractTransport`. The transport methods the `Device` calls park their result
+  in a FIFO of deferreds; `completeAcquire`/`completeRelease`/`completeMessage`
+  settle them on command. Session transitions go through the **real**
+  `handleDescriptorsChange`, so `getSessionChangePromise`/`waitAndCompareSession`
+  run exactly as in production. (`init()`/`listen()` must run first — otherwise
+  `handleDescriptorsChange` short-circuits on `stopped` and no
+  `DEVICE_SESSION_CHANGED` ever fans out.)
+- `deviceConcurrency.fuzz.test.ts` — drives `run` / `completeAcquire`
+  (+`Fail`) / `completeFn` / `completeRelease` / `completeMessage` / `interrupt`
+  with a `keepSession` toggle, then drains to quiescence. Asserts INV-1
+  (`live`/`activeFn` ≤ 1), INV-2 (drain reaches quiescence within a bound), INV-3
+  (releases never exceed acquires), INV-4 (post-quiescence the device accepts a
+  fresh `run`). The firmware/handshake/feature-reload middle of `_runInner` is
+  stubbed so only the queue + session mechanics are exercised. Run via
+  `yarn workspace @trezor/connect-core test:fuzz` (env `FUZZ_RUNS` / `FUZZ_SEED`).
+
+**Faithfulness note.** The generated `fn` body honors the run's abort signal,
+mirroring a real method whose in-flight `typedCall` is aborted by `interrupt`.
+An earlier abort-agnostic `fn` produced a spurious "two fn bodies concurrent"
+INV-1 report — a harness artifact, not a Device bug — which is why the body must
+model prompt abort response.
+
+### Deferred to PHASE 3
+
+- The externally-driven `requestRelease` / `externalSession` (`usedElsewhere`)
+  ops are implemented in the harness `step()` but held out of the generator. They
+  open the **acquire-vs-session-change** race where `updateDescriptor` awaits a
+  rejecting `acquirePromise` (`Device.ts:385`) on an event-handler path with no
+  `catch` → a candidate unhandled rejection. This must be confirmed against real
+  Device semantics (not the mock) before being asserted on.
+- INV-5 (`DeviceList` consistency) needs a `DeviceList`/`Core`-level harness, not
+  a single `Device`; it is out of scope for this file.
+
+For each distinct, **verified** violation: shrink, commit a minimal deterministic
+repro + a note (invariant, interleaving, suspected root cause), and only commit a
+fix if it is obviously correct and all existing tests pass.
