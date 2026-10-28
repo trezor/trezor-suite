@@ -44,7 +44,6 @@ import {
     isEvmApprovalTx,
     prepareEthereumTransaction,
     subunitsToUnits,
-    tryGetAccountIdentity,
     unitsToSubunits,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { type FeeLevel, type TokenInfo } from '@trezor/connect';
@@ -512,7 +511,7 @@ export const resolveEthereumNonce = async ({
             const accountInfoResponse = await TrezorConnect.getAccountInfo({
                 coin: asCoinSymbol(selectedAccount.symbol),
                 descriptor: selectedAccount.descriptor,
-                identity: tryGetAccountIdentity(selectedAccount),
+                identity: getAccountIdentity(selectedAccount),
                 details: 'basic',
                 confirmedNonce: true,
                 suppressBackupWarning: true,

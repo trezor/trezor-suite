@@ -8,10 +8,10 @@ import {
 } from '@suite-common/token-definitions';
 import { type Account, type AccountKey } from '@suite-common/wallet-types';
 import {
+    getAccountIdentity,
     getConvertedOrDefaultFeeInfo,
     getStellarTrustlineMemo,
     isTestnet,
-    tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
@@ -126,7 +126,7 @@ const manageTrustline = async (
     const pushResponse = await TrezorConnect.pushTransaction({
         tx: serializedTx,
         coin: asCoinSymbol(account.symbol),
-        identity: tryGetAccountIdentity(account),
+        identity: getAccountIdentity(account),
     });
 
     if (!pushResponse.success) {

@@ -7,9 +7,9 @@ import {
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import {
+    getAccountIdentity,
     getEvmNonceInfo,
     getEvmNonceInfoFromConfirmedNonce,
-    tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
@@ -47,7 +47,7 @@ export const useEvmNonceInfo = (
     );
     const isEnabled = enabled && account !== undefined;
 
-    // eslint-disable-next-line @tanstack/query/exhaustive-deps -- cache identity is symbol + descriptor + misc.nonce; tryGetAccountIdentity(account) only reads stable identity fields that don't widen the key
+    // eslint-disable-next-line @tanstack/query/exhaustive-deps -- cache identity is symbol + descriptor + misc.nonce; getAccountIdentity(account) only reads stable identity fields that don't widen the key
     const { data, isLoading } = useQuery({
         // account.misc.nonce is included so a delayed store update (e.g. fetchAndUpdateAccountThunk
         // dispatches the tx-list update, then updates account.misc.nonce only after an `await` a few
@@ -65,7 +65,7 @@ export const useEvmNonceInfo = (
             const response = await TrezorConnect.getAccountInfo({
                 coin: asCoinSymbol(account.symbol),
                 descriptor: account.descriptor,
-                identity: tryGetAccountIdentity(account),
+                identity: getAccountIdentity(account),
                 details: 'basic',
                 confirmedNonce: true,
                 suppressBackupWarning: true,
