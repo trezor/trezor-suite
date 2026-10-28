@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { CommonActions, useNavigation } from '@react-navigation/native';
@@ -11,7 +11,6 @@ import {
     selectAccountNetworkSymbol,
     selectConvertedNetworkFeeInfo,
     selectTransactionByAccountKeyAndTxid,
-    sendFormActions,
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import {
@@ -23,28 +22,30 @@ import {
     type RootStackParamList,
     RootStackRoutes,
     type StackNavigationProps,
+    type StakingPendingTxParams,
     TransactionDetailStackRoutes,
 } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { type EarnFormDraftPrefix } from '../../types';
+import { type EarnFormDraftPrefix, type StakingPendingModal } from '../../types';
+import { useEarnPendingTransactionSheet } from '../earn/useEarnPendingTransactionSheet';
 
 type NavigationProps = StackNavigationProps<RootStackParamList, RootStackRoutes>;
 
-interface NavigateToPushedTransactionActionProps {
+type NavigateToPushedTransactionActionParams = {
     accountKey: AccountKey;
     amountInBaseUnits: string;
     failedTxid?: string;
     stakeType: EarnFormDraftPrefix;
-}
+};
 
 const navigateToPushedTransactionAction = ({
     accountKey,
     amountInBaseUnits,
     failedTxid,
     stakeType,
-}: NavigateToPushedTransactionActionProps) =>
+}: NavigateToPushedTransactionActionParams) =>
     CommonActions.reset({
         index: 2,
         routes: [
@@ -77,93 +78,86 @@ const navigateToPushedTransactionAction = ({
         ],
     });
 
-type UseNavigateAfterPushedTransactionParams = {
+type UseStakingPendingTransactionParams = {
     accountKey: AccountKey;
-    amountInBaseUnits: string;
-    markReviewNavigationSuccess: () => void;
+    pendingTransaction: StakingPendingTxParams | undefined;
     stakeType: EarnFormDraftPrefix;
 };
 
-export const useNavigateAfterPushedTransaction = ({
+type UseStakingPendingTransactionResult = {
+    isPending: boolean;
+    pendingModal: StakingPendingModal | null;
+};
+
+export const useStakingPendingTransaction = ({
     accountKey,
-    amountInBaseUnits,
-    markReviewNavigationSuccess,
+    pendingTransaction,
     stakeType,
-}: UseNavigateAfterPushedTransactionParams) => {
+}: UseStakingPendingTransactionParams): UseStakingPendingTransactionResult => {
     const { dispatch } = useServices(injectDispatch);
     const navigation = useNavigation<NavigationProps>();
-    const [txid, setTxid] = useState('');
-    const [submittedAt, setSubmittedAt] = useState<Date | null>(null);
+
+    const txid = pendingTransaction?.txid;
+    const amountInBaseUnits = pendingTransaction?.amountInBaseUnits;
 
     const networkSymbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
-
     const transaction = useSelector((state: TransactionsRootState) =>
-        selectTransactionByAccountKeyAndTxid(state, accountKey, txid),
+        txid ? selectTransactionByAccountKeyAndTxid(state, accountKey, txid) : null,
     );
-    const isTransactionConfirmed = !!transaction && !isTransactionDataPending(transaction);
-    const isTransactionFailed = transaction?.type === 'failed';
-
     const feeInfo = useSelector((state: FeesRootState) =>
         networkSymbol ? selectConvertedNetworkFeeInfo(state, networkSymbol) : null,
     );
+
+    const isTransactionConfirmed = !!transaction && !isTransactionDataPending(transaction);
+    const isTransactionFailed = transaction?.type === 'failed';
+    const isPending = !!txid && !isTransactionConfirmed;
     const pollIntervalMs = getPollIntervalMs(feeInfo?.blockTime);
 
-    const shouldPollPendingTransaction = !!txid && !isTransactionConfirmed;
-
     useEffect(() => {
-        if (!shouldPollPendingTransaction) {
-            return undefined;
-        }
+        if (!isPending) return undefined;
 
         const interval = setInterval(() => {
             dispatch(fetchAndUpdateAccountThunk({ accountKey }));
         }, pollIntervalMs);
 
         return () => clearInterval(interval);
-    }, [accountKey, dispatch, pollIntervalMs, shouldPollPendingTransaction]);
+    }, [accountKey, dispatch, isPending, pollIntervalMs]);
 
     useEffect(() => {
-        if (txid && isTransactionConfirmed) {
-            markReviewNavigationSuccess();
-            navigation.dispatch(
-                navigateToPushedTransactionAction({
-                    accountKey,
-                    amountInBaseUnits,
-                    failedTxid: isTransactionFailed ? txid : undefined,
-                    stakeType,
-                }),
-            );
-        }
+        if (!txid || amountInBaseUnits === undefined || !isTransactionConfirmed) return;
+
+        navigation.dispatch(
+            navigateToPushedTransactionAction({
+                accountKey,
+                amountInBaseUnits,
+                failedTxid: isTransactionFailed ? txid : undefined,
+                stakeType,
+            }),
+        );
     }, [
         accountKey,
         amountInBaseUnits,
         isTransactionConfirmed,
         isTransactionFailed,
-        markReviewNavigationSuccess,
         navigation,
         stakeType,
         txid,
     ]);
 
-    useEffect(() => {
-        if (!txid) return undefined;
+    const { pendingBottomSheetRef, isExploreDisabled, openInBlockchain } =
+        useEarnPendingTransactionSheet({ accountKey, isPending, pendingTxid: txid });
 
-        return () => {
-            dispatch(sendFormActions.discardTransaction());
-        };
-    }, [txid, dispatch]);
+    const pendingModal =
+        isPending && pendingTransaction
+            ? {
+                  bottomSheetRef: pendingBottomSheetRef,
+                  isExploreDisabled,
+                  onExplorePress: openInBlockchain,
+                  pendingTransaction,
+              }
+            : null;
 
-    const trackPushedTransaction = useCallback((pushedTxid: string) => {
-        setTxid(pushedTxid);
-        setSubmittedAt(new Date());
-    }, []);
-
-    return {
-        trackPushedTransaction,
-        pendingTxid: txid || undefined,
-        isPending: shouldPollPendingTransaction,
-        submittedAt,
-    };
+    return { isPending, pendingModal };
 };

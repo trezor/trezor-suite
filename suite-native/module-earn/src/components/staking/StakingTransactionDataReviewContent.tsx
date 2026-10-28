@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import { StackActions, useNavigation } from '@react-navigation/native';
+
 import {
     type AccountsRootState,
     type StakeRootState,
@@ -13,7 +15,6 @@ import { isDeviceReviewOnlyTransaction } from '@suite-common/wallet-utils';
 import { Button, VStack } from '@suite-native/atoms';
 import { useConfirmOnTrezorController } from '@suite-native/confirm-on-trezor';
 import { FollowDeviceScreenContent } from '@suite-native/device';
-import { ExactCryptoAmountFormatter } from '@suite-native/formatters';
 import { Translation, type TxKeyPath } from '@suite-native/intl';
 import { Screen, ScreenHeader } from '@suite-native/navigation';
 import { ScrollToEndOnMount } from '@suite-native/scrollview';
@@ -24,19 +25,16 @@ import {
 } from '@suite-native/transaction-management';
 import { TransactionReviewScreen, TxValidityTimer } from '@suite-native/transaction-review';
 
-import { useEarnAccountLabel } from '../../hooks/earn/useEarnAccountLabel';
-import { useEarnPendingTransactionSheet } from '../../hooks/earn/useEarnPendingTransactionSheet';
 import { useEarnReviewAutoStart } from '../../hooks/earn/useEarnReviewAutoStart';
 import { useEarnSelectedPrecomposedTransaction } from '../../hooks/earn/useEarnSelectedPrecomposedTransaction';
 import { useEarnTxValidityFlow } from '../../hooks/earn/useEarnTxValidityFlow';
 import { useHandleOnEarnTransactionReview } from '../../hooks/earn/useHandleOnEarnTransactionReview';
-import { useNavigateAfterPushedTransaction } from '../../hooks/staking/useNavigateAfterPushedTransaction';
 import { useStakingTransactionReviewOutputs } from '../../hooks/staking/useStakingTransactionReviewOutputs';
 import { type EarnFormDraftPrefix } from '../../types';
 import { getEarnPendingAmountInBaseUnits } from '../../utils/earn/getEarnPendingAmountInBaseUnits';
 import { getAmountInBaseUnits } from '../../utils/staking/getAmountInBaseUnits';
+import { resolveStakingFormRoute } from '../../utils/staking/resolveStakingFormRoute';
 import { StakingTransactionReviewSummaryCard } from '../earn/StakingTransactionReviewSummaryCard';
-import { YieldPendingTransactionModal } from '../yield/YieldPendingTransactionModal';
 
 const screenHeaderTranslationId: Record<EarnFormDraftPrefix, TxKeyPath> = {
     stake: 'earn.earnTransactionDataReviewScreen.title',
@@ -56,18 +54,6 @@ const actionButtonDataTestId: Record<EarnFormDraftPrefix, string> = {
     claim: '@earn/claim-now',
 };
 
-const pendingTxModalTitleTranslationId: Record<EarnFormDraftPrefix, TxKeyPath> = {
-    stake: 'earn.earnTransactionDataReviewScreen.pendingTitle',
-    unstake: 'earn.unstakeTransactionDataReviewScreen.pendingTitle',
-    claim: 'earn.claimTransactionDataReviewScreen.pendingTitle',
-};
-
-const pendingTxModalAmountLabelTranslationId: Record<EarnFormDraftPrefix, TxKeyPath> = {
-    stake: 'earn.earnTransactionDataReviewScreen.amountLabel',
-    unstake: 'earn.unstakeTransactionDataReviewScreen.amountLabel',
-    claim: 'earn.claimTransactionDataReviewScreen.amountLabel',
-};
-
 type StakingTransactionDataReviewContentProps = {
     accountKey: AccountKey;
     amount?: string;
@@ -82,7 +68,6 @@ export const StakingTransactionDataReviewContent = ({
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const accountLabel = useEarnAccountLabel(account);
 
     const stakingTransactionReviewOutputs = useStakingTransactionReviewOutputs({
         account,
@@ -90,7 +75,6 @@ export const StakingTransactionDataReviewContent = ({
     });
 
     const [isPushing, setIsPushing] = useState(false);
-    const [frozenClaimableAmount, setFrozenClaimableAmount] = useState<string | null>(null);
 
     const isTransactionAlreadySigned = useSelector(selectIsTransactionAlreadySigned);
     const precomposedTransaction = useEarnSelectedPrecomposedTransaction(stakeType, accountKey);
@@ -101,8 +85,10 @@ export const StakingTransactionDataReviewContent = ({
 
     const { confirmOnTrezorRef, revealConfirmOnTrezorSheet, closeSheet } =
         useConfirmOnTrezorController();
+    const navigation = useNavigation();
 
-    const isSolanaStaking = !!account && isSupportedSolStakingNetworkSymbol(account.symbol);
+    const networkSymbol = account?.symbol;
+    const isSolanaStaking = !!networkSymbol && isSupportedSolStakingNetworkSymbol(networkSymbol);
 
     const isReadyToContinue = isTransactionAlreadySigned && !!account;
 
@@ -111,52 +97,40 @@ export const StakingTransactionDataReviewContent = ({
     );
 
     const pendingAmountInBaseUnits = useMemo(() => {
-        if (!account) return '0';
+        if (!networkSymbol) return '0';
 
         switch (stakeType) {
             case 'stake':
                 return getEarnPendingAmountInBaseUnits({
                     fallbackAmountInBaseUnits: amount
-                        ? getAmountInBaseUnits(amount, account.symbol)
+                        ? getAmountInBaseUnits(amount, networkSymbol)
                         : '0',
                     isSolanaStaking,
                     precomposedTransaction,
                 });
             case 'unstake':
-                return amount ? getAmountInBaseUnits(amount, account.symbol) : '0';
+                return amount ? getAmountInBaseUnits(amount, networkSymbol) : '0';
             case 'claim':
                 return getEarnPendingAmountInBaseUnits({
                     fallbackAmountInBaseUnits: getAmountInBaseUnits(
-                        frozenClaimableAmount ?? claimableAmount ?? '0',
-                        account.symbol,
+                        claimableAmount ?? '0',
+                        networkSymbol,
                     ),
                     isSolanaStaking,
                     precomposedTransaction,
                 });
         }
     }, [
-        account,
+        networkSymbol,
         amount,
         stakeType,
         isSolanaStaking,
         precomposedTransaction,
-        frozenClaimableAmount,
         claimableAmount,
     ]);
 
     const { handleSign, handlePush, closeReview, markReviewNavigationSuccess } =
         useHandleOnEarnTransactionReview({ accountKey, stakeType, isPushing });
-
-    const { trackPushedTransaction, pendingTxid, isPending, submittedAt } =
-        useNavigateAfterPushedTransaction({
-            accountKey,
-            amountInBaseUnits: pendingAmountInBaseUnits,
-            markReviewNavigationSuccess,
-            stakeType,
-        });
-
-    const { pendingBottomSheetRef, isExploreDisabled, openInBlockchain } =
-        useEarnPendingTransactionSheet({ accountKey, isPending, pendingTxid });
 
     const txValidityFlow = useEarnTxValidityFlow({
         accountKey,
@@ -178,25 +152,48 @@ export const StakingTransactionDataReviewContent = ({
         closeSheet();
     }, [closeSheet, isTransactionAlreadySigned]);
 
-    const onSendTransaction = useCallback(async () => {
-        setIsPushing(true);
+    const precomposedFee = precomposedTransaction?.fee;
 
-        if (stakeType === 'claim') {
-            setFrozenClaimableAmount(claimableAmount ?? null);
-        }
+    const onSendTransaction = useCallback(async () => {
+        if (!networkSymbol) return undefined;
+
+        setIsPushing(true);
 
         const pushedTxid = await handlePush();
 
-        if (pushedTxid) {
-            trackPushedTransaction(pushedTxid);
+        if (!pushedTxid) {
+            setIsPushing(false);
 
-            return pushedTxid;
+            return undefined;
         }
 
-        setIsPushing(false);
+        markReviewNavigationSuccess();
 
-        return undefined;
-    }, [stakeType, claimableAmount, handlePush, trackPushedTransaction]);
+        const { name, params } = resolveStakingFormRoute({
+            accountKey,
+            networkSymbol,
+            pendingTransaction: {
+                amountInBaseUnits: pendingAmountInBaseUnits,
+                fee: precomposedFee,
+                submittedAt: Date.now(),
+                txid: pushedTxid,
+            },
+            stakeType,
+        });
+
+        navigation.dispatch(StackActions.popTo(name, params));
+
+        return pushedTxid;
+    }, [
+        accountKey,
+        handlePush,
+        markReviewNavigationSuccess,
+        navigation,
+        networkSymbol,
+        pendingAmountInBaseUnits,
+        precomposedFee,
+        stakeType,
+    ]);
 
     const isFollowDeviceReview =
         stakeType === 'unstake' && isDeviceReviewOnlyTransaction(precomposedTransaction);
@@ -216,30 +213,6 @@ export const StakingTransactionDataReviewContent = ({
         },
     ];
 
-    const pendingTxModal = isPending && !!pendingTxid && !!submittedAt && !!account && (
-        <YieldPendingTransactionModal
-            ref={pendingBottomSheetRef}
-            accountLabel={accountLabel}
-            accountSymbol={account.symbol}
-            amount={
-                <ExactCryptoAmountFormatter
-                    value={pendingAmountInBaseUnits}
-                    symbol={account.symbol}
-                    color="contentPrimary"
-                    isBalance={false}
-                    isDiscreetText={false}
-                />
-            }
-            amountLabel={<Translation id={pendingTxModalAmountLabelTranslationId[stakeType]} />}
-            fee={precomposedTransaction?.fee}
-            isExploreDisabled={isExploreDisabled}
-            onExplorePress={openInBlockchain}
-            submittedAt={submittedAt}
-            title={<Translation id={pendingTxModalTitleTranslationId[stakeType]} />}
-            txid={pendingTxid}
-        />
-    );
-
     if (isFollowDeviceReview) {
         const timer = txValidityFlow.showTimer && (
             <TxValidityTimer
@@ -253,40 +226,36 @@ export const StakingTransactionDataReviewContent = ({
         );
 
         return (
-            <>
-                <Screen
-                    isScrollable={false}
-                    header={
-                        <ScreenHeader
-                            closeActionType="back"
-                            closeAction={closeReview}
-                            rightIcon={timer}
-                        />
-                    }
-                >
-                    <VStack flex={1} justifyContent="center" spacing="sp24">
-                        <FollowDeviceScreenContent
-                            titleTxKey="earn.unstakeTransactionDataReviewScreen.followDeviceInstructions"
-                            isTxSigned={isTransactionAlreadySigned}
-                        />
+            <Screen
+                isScrollable={false}
+                header={
+                    <ScreenHeader
+                        closeActionType="back"
+                        closeAction={closeReview}
+                        rightIcon={timer}
+                    />
+                }
+            >
+                <VStack flex={1} justifyContent="center" spacing="sp24">
+                    <FollowDeviceScreenContent
+                        titleTxKey="earn.unstakeTransactionDataReviewScreen.followDeviceInstructions"
+                        isTxSigned={isTransactionAlreadySigned}
+                    />
 
-                        {isReadyToContinue && (
-                            <ScrollToEndOnMount>
-                                <Button
-                                    isLoading={isPushing}
-                                    isDisabled={txValidityFlow.isPastDeadline}
-                                    onPress={onSendTransaction}
-                                    testID={actionButtonDataTestId[stakeType]}
-                                >
-                                    <Translation id={actionButtonTranslationId[stakeType]} />
-                                </Button>
-                            </ScrollToEndOnMount>
-                        )}
-                    </VStack>
-                </Screen>
-
-                {pendingTxModal}
-            </>
+                    {isReadyToContinue && (
+                        <ScrollToEndOnMount>
+                            <Button
+                                isLoading={isPushing}
+                                isDisabled={txValidityFlow.isPastDeadline}
+                                onPress={onSendTransaction}
+                                testID={actionButtonDataTestId[stakeType]}
+                            >
+                                <Translation id={actionButtonTranslationId[stakeType]} />
+                            </Button>
+                        </ScrollToEndOnMount>
+                    )}
+                </VStack>
+            </Screen>
         );
     }
 
@@ -320,8 +289,6 @@ export const StakingTransactionDataReviewContent = ({
             closeAction={closeReview}
             outputTitleOverride={stakingTransactionReviewOutputs.getOutputTitle}
             outputOverride={stakingTransactionReviewOutputs.getOutputValue}
-        >
-            {pendingTxModal}
-        </TransactionReviewScreen>
+        />
     );
 };
