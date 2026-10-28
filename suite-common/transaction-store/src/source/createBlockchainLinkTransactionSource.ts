@@ -42,10 +42,11 @@ export const createBlockchainLinkTransactionSource = (
                 transactions,
                 // Only paging backends answer with a page; the others send the whole history. Their
                 // `page` differs (blockbook counts pages from 1, Solana counts transactions and pages
-                // from 0), so a page shorter than asked for is what ends the history for all of them.
+                // from 0, Electrum always says page 1 and sends everything), so only a page of exactly
+                // the size asked for can have more after it.
                 hasNextPage:
                     accountInfo.page !== undefined &&
-                    transactions.length >= deps.pageSize &&
+                    transactions.length === deps.pageSize &&
                     accountInfo.page.index < accountInfo.page.total,
             });
         } catch {

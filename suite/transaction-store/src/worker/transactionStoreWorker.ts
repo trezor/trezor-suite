@@ -25,6 +25,7 @@ import {
 
 import { createBlockchainLinks } from './createBlockchainLinks';
 import { startBufferedPort } from './startBufferedPort';
+import { startConnectRelay } from './startConnectRelay';
 import {
     type TransactionStoreWorkerCommands,
     type TransactionStoreWorkerEvents,
@@ -74,7 +75,10 @@ const openSqlite = async (): Promise<OpenedSqlite> => {
  */
 const startTransactionStoreWorker = async (): Promise<Dispose | null> => {
     const bufferedPort = startBufferedPort(workerPort);
-    const blockchainLinks = createBlockchainLinks();
+    const connectRelay = startConnectRelay(bufferedPort.port);
+    const blockchainLinks = createBlockchainLinks({
+        getRelayedBlockchainLink: connectRelay.getBlockchainLink,
+    });
     const { sqlite, close } = await openSqlite();
     const started = createTransactionStoreCompositionRoot({
         sqlite,
@@ -87,6 +91,7 @@ const startTransactionStoreWorker = async (): Promise<Dispose | null> => {
     });
 
     if (!started.success) {
+        connectRelay.dispose();
         bufferedPort.dispose();
         close();
 
@@ -96,6 +101,7 @@ const startTransactionStoreWorker = async (): Promise<Dispose | null> => {
     const engine = started.payload;
     const disposeEngine = async () => {
         blockchainLinks.disposeAll();
+        connectRelay.dispose();
         await engine.dispose();
         close();
     };
@@ -105,6 +111,7 @@ const startTransactionStoreWorker = async (): Promise<Dispose | null> => {
     const handleCommand = createWorkerMessageHandler<TransactionStoreWorkerCommands>({
         // The app asks for a sync of the accounts once their backends are set.
         setBackends: ({ backends }) => blockchainLinks.setBackends(backends),
+        accountInfo: connectRelay.handleAccountInfo,
     });
     const onWorkerMessage = ({ data }: TransactionStorePortMessage) => handleCommand(data);
     bufferedPort.port.addEventListener('message', onWorkerMessage);

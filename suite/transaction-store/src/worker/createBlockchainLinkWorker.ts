@@ -5,8 +5,8 @@ import type { BackendType } from '@suite-common/wallet-config';
  * variant cannot be used here: inside any worker it answers through `self.postMessage`, which
  * would go to the app and take over the store's messages.
  *
- * Electrum needs Node sockets and has no browser build at all, so the store reports it as
- * unavailable.
+ * Electrum needs Node sockets and has no browser build at all, so it has none here: the store
+ * fetches its pages through the app's Connect instead.
  */
 export const createBlockchainLinkWorker = (type: BackendType): (() => Worker) | undefined => {
     switch (type) {

@@ -1,3 +1,4 @@
+import type { BlockchainLinkClient } from '@suite-common/transaction-store';
 import type { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
 
 /**
@@ -12,14 +13,26 @@ export type TransactionStoreBackend = {
     urls: string[];
 };
 
+export type RelayedAccountInfoParams = Parameters<BlockchainLinkClient['getAccountInfo']>[0];
+
+export type RelayedAccountInfo = Awaited<ReturnType<BlockchainLinkClient['getAccountInfo']>>;
+
 /** App → worker. */
 export type TransactionStoreWorkerCommands = {
     setBackends: { backends: TransactionStoreBackend[] };
+    /** Connect's answer to `getAccountInfo`; `null` when it failed. */
+    accountInfo: { requestId: number; accountInfo: RelayedAccountInfo | null };
 };
 
 /** Worker → app. */
 export type TransactionStoreWorkerEvents = {
     startFailed: { reason: 'DatabaseUnavailable' | 'SchemaFromNewerVersion' };
+    /** For a backend the worker cannot reach itself, so Connect fetches the page instead. */
+    getAccountInfo: {
+        requestId: number;
+        symbol: NetworkSymbol;
+        params: RelayedAccountInfoParams;
+    };
 };
 
 const MESSAGE_TYPE_PREFIX = 'transactionStoreWorker/';

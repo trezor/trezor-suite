@@ -106,6 +106,27 @@ describe(createBlockchainLinkTransactionSource.name, () => {
         });
     });
 
+    it("takes more than a page as the whole history, though Electrum's page says there is more", async () => {
+        const wholeHistory = Array.from({ length: 60 }, (_, index) =>
+            mockTransaction({ txid: `tx${index}` }),
+        );
+        const { source } = createSource(
+            mockClient(() =>
+                Promise.resolve(
+                    mockAccountInfo({
+                        history: { total: 60, unconfirmed: 0, transactions: wholeHistory },
+                        page: { index: 1, size: 25, total: 3 },
+                    }),
+                ),
+            ),
+        );
+
+        expect(await source.fetchTransactionsPage({ account, page: 1 })).toEqual({
+            success: true,
+            payload: { transactions: wholeHistory, hasNextPage: false },
+        });
+    });
+
     it('takes a backend without pages as answering with the whole history', async () => {
         const { source } = createSource(mockClient(() => Promise.resolve(mockAccountInfo({}))));
 

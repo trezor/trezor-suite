@@ -74,6 +74,22 @@ export const createGetTransactionStoreService = (
                 // Only the reason; nothing identifying the accounts.
                 console.warn(`Transaction store did not start: ${reason}`);
             },
+            getAccountInfo: async ({ requestId, symbol, params }) => {
+                const response = await deps
+                    .getTrezorConnect()
+                    .getAccountInfo({
+                        ...params,
+                        coin: asCoinSymbol(symbol),
+                        suppressBackupWarning: true,
+                    })
+                    .catch(() => null);
+                worker.postMessage(
+                    toWorkerMessage<TransactionStoreWorkerCommands, 'accountInfo'>('accountInfo', {
+                        requestId,
+                        accountInfo: response?.success ? response.payload : null,
+                    }),
+                );
+            },
         });
         const onWorkerMessage = ({ data }: MessageEvent) => handleEvent(data);
         worker.addEventListener('message', onWorkerMessage);
