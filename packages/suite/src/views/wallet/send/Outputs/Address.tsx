@@ -34,8 +34,8 @@ import type { Output } from '@suite-common/wallet-types';
 import {
     checkIsAddressNotUsedNotChecksummed,
     convertAmountSubunitsToUnits,
+    getAccountIdentity,
     isProgramDerivedAccount,
-    tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import { Icon, IconButton, Input, Link, Row, Text } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
@@ -107,7 +107,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     const { descriptor, networkType, symbol } = account;
     // Every backend call below rides the sending account's connection, so a recipient lookup
     // cannot be correlated across accounts through the shared default one.
-    const identity = tryGetAccountIdentity(account);
+    const identity = getAccountIdentity(account);
     const namedAddress = getNamedAddressSupport(symbol);
     const inputName = `outputs.${outputId}.address` as const;
     // NOTE: compose errors are always associated with the amount.

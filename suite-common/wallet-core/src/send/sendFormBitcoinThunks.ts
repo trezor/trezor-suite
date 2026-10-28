@@ -11,6 +11,7 @@ import {
 import {
     datetimeToLocktime,
     formatNetworkAmount,
+    getAccountIdentity,
     getBitcoinComposeOutputs,
     getUnusedChangeAddress,
     getUtxoOutpoint,
@@ -401,6 +402,7 @@ export const signBitcoinSendFormTransactionThunk = createThunk<
                 state: device.state,
                 useEmptyPassphrase: device.useEmptyPassphrase,
             },
+            identity: getAccountIdentity(selectedAccount),
             inputs: precomposedTransaction.inputs,
             outputs: precomposedTransaction.outputs,
             account: {

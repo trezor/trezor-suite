@@ -8,7 +8,7 @@ import {
     selectIsMevProtectionEnabled,
     sendFormActions,
 } from '@suite-common/wallet-core';
-import { isHexValid, tryGetAccountIdentity } from '@suite-common/wallet-utils';
+import { getAccountIdentity, isHexValid } from '@suite-common/wallet-utils';
 import { Button, Card, H3, IconButton, Row, Textarea, Tooltip } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { XIcon } from '@trezor/icons';
@@ -60,7 +60,7 @@ export const SendRaw = ({ account }: SendRawProps) => {
                 tx: inputValue,
                 symbol: account.symbol,
                 descriptor: account.descriptor,
-                identity: tryGetAccountIdentity(account),
+                identity: getAccountIdentity(account),
                 isMevProtectionEnabled: isMevProtectionEnabled && isMevProtectionFeatureEnabled,
             }),
         ).unwrap();

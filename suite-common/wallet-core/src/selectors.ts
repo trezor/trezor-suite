@@ -16,9 +16,9 @@ import {
 } from '@suite-common/wallet-types';
 import {
     findAccountsByAddress,
+    getAccountIdentity,
     isAccountDiscoverable,
     isAccountFailed,
-    tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import { type ContractInfoProtocol } from '@trezor/blockchain-link-types/src/blockbook';
 import { type StaticSessionId, type TrezorConnectCallable } from '@trezor/connect';
@@ -127,7 +127,7 @@ export const selectDiscoveryAccountsParam = (
     getDeviceAccountsPerEnabledNetwork(state, deviceState).map(({ symbol, accounts }) => {
         const network = getNetwork(symbol);
         const { networkType } = network;
-        const identity = tryGetAccountIdentity({ networkType, deviceState });
+        const identity = getAccountIdentity({ deviceState });
         const bitcoinGap = networkType === 'bitcoin' ? selectGapLimit(state, symbol) : undefined;
 
         const protocols: ContractInfoProtocol[] | undefined =

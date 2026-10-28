@@ -8,7 +8,7 @@ import {
     selectIsElectrumBackendSelected,
 } from '@suite-common/wallet-core';
 import { type AccountKey, createAccountKey } from '@suite-common/wallet-types';
-import { isTrezorConnectBackendType, tryGetAccountIdentity } from '@suite-common/wallet-utils';
+import { getAccountIdentity, isTrezorConnectBackendType } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { createThunk } from '@trezor/redux-utils';
@@ -92,7 +92,7 @@ const fetchAccountGraphDataThunk =
 
         const response = await TrezorConnect.blockchainGetAccountBalanceHistory({
             coin: asCoinSymbol(account.symbol),
-            identity: tryGetAccountIdentity(account),
+            identity: getAccountIdentity(account),
             descriptor: account.descriptor,
             from: lastCachedPoint ? lastCachedPoint.time - DAY_IN_SECONDS : undefined,
             groupBy: DAY_IN_SECONDS, // day

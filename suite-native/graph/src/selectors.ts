@@ -16,7 +16,7 @@ import {
     selectHasRunningDiscovery,
 } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
-import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
+import { getAccountIdentity } from '@suite-common/wallet-utils';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { deepEqual } from '@trezor/utils';
 
@@ -45,7 +45,7 @@ export const selectPortfolioGraphAccountItems = createMemoizedSelector(
                         symbol: account.symbol,
                         backendType: account.backendType,
                         descriptor: account.descriptor,
-                        identity: tryGetAccountIdentity(account),
+                        identity: getAccountIdentity(account),
                         accountKey: account.key,
                         tokensFilter,
                     };
