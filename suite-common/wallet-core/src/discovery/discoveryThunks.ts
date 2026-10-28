@@ -54,7 +54,13 @@ import {
     type UpdateDiscoveryThunkState,
     updateDiscoveryThunk,
 } from './discoveryStateThunks';
-import { getErrorCode, hasDiscoveryEnded, shouldFetchAssetsAfterDiscovery } from './discoveryUtils';
+import {
+    describesSameWallet,
+    findDuplicateWallet,
+    getErrorCode,
+    hasDiscoveryEnded,
+    shouldFetchAssetsAfterDiscovery,
+} from './discoveryUtils';
 import { type CreateAccountActionProps, accountsActions } from '../accounts/accountsActions';
 import { selectAccountsByDeviceState } from '../accounts/accountsSelectors';
 import {
@@ -104,13 +110,6 @@ function assertStaticSessionId(
         throw new Error('assertion error: device state does not contain static session id');
     }
 }
-
-const describesSameWallet = (first: DeviceState) => {
-    const firstParsed = first.staticSessionId?.split(':')[0];
-
-    return (second?: DeviceState) =>
-        firstParsed ? firstParsed === second?.staticSessionId?.split(':')[0] : false;
-};
 
 type ApplyDeviceStatesThunkState = DeviceRootState & WalletSettingsRootState;
 
@@ -454,9 +453,7 @@ export const runDiscoveryThunk = createThunk<
 
             const { discovered } = device;
 
-            const duplicate = selectDevices(getState())
-                .map(d => d.state)
-                .find(describesSameWallet(deviceState));
+            const duplicate = findDuplicateWallet(selectDevices(getState()), device, deviceState);
 
             if (duplicate?.staticSessionId) {
                 if (isAddingHiddenWallet) {
