@@ -4,7 +4,7 @@ Status: in progress on `feat/transaction-store`.
 
 - Phases 1–3 (engine, sync, watcher, RPC) are in this package.
 - Phase 4 for web and desktop is in `@suite/transaction-store`: the worker entry, the service
-  in the Suite composition root, the feeder, the react-query hooks and a Debug settings
+  and its feed in the Suite composition root, the react-query hooks and a Debug settings
   section. It runs only while debug mode is on, until a screen consumes it.
 - Native (Phase 4b) is not started; see "Native: the open problem".
 - Tested: migrations, repository, blockchain-link source and the sync job, on real SQLite.
@@ -102,7 +102,7 @@ API, and every method of it is async, so the boundary can sit anywhere.
 ```
 main thread (app)                          dedicated worker (transactionStoreWorker.ts)
 -----------------                          -------------------------------------------
-TransactionStoreFeeder                     createTransactionStoreCompositionRoot
+startTransactionStoreFeed (service)        createTransactionStoreCompositionRoot
   registerAccounts / watchNetworks  ─RPC─►   sync queue, jobs, watcher
   setBackends (Connect defaults     ─msg─►   blockchain-link per network
   filled in on the main thread)              └─ nested Worker per backend (blockbook, …)
@@ -219,9 +219,13 @@ through `query`, so feature queries are typed end to end. No own query builder.
       every name.
     - `createGetTransactionStoreService`: in `createSuiteServicesCompositionRoot`, so web and
       desktop share it. Spawns the worker on first use and fills in Connect's default backends.
-    - `TransactionStoreFeeder` (mounted in `Main` in debug mode): registers visible accounts of
-      the enabled networks (no coinjoin), watches the enabled networks, passes their backends
-      on. Removes only accounts seen leaving in the session.
+    - `startTransactionStoreFeed`: a service, not a component. Started in the same composition
+      root with the Redux `getState` / `subscribe`, the store service and `getIsEnabled` (debug
+      mode); returns its dispose. Memoized selectors (`transactionStoreFeedSelectors.ts`) derive
+      the accounts (visible, enabled networks, no coinjoin) and the backends, and keep the same
+      reference while those are unchanged, so balance updates and blocks push nothing. On a
+      change it registers accounts (removing only ones seen leaving), sets backends and watches
+      the networks; when disabled it disposes the store and its worker.
     - `useStoredTransactions`, `useAccountSyncStatuses`, invalidated by store events.
     - `TransactionStoreDebug`: Settings → Debug → Transaction store.
 

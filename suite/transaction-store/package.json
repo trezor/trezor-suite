@@ -24,6 +24,7 @@
         "@trezor/connect-common": "workspace:*",
         "@trezor/dependency-injection": "workspace:*",
         "@trezor/product-components": "workspace:*",
+        "@trezor/redux-utils": "workspace:*",
         "react": "19.2.3",
         "react-redux": "9.3.0"
     },

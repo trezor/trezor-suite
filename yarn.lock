@@ -17349,6 +17349,7 @@ __metadata:
     "@trezor/connect-common": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
     "@trezor/product-components": "workspace:*"
+    "@trezor/redux-utils": "workspace:*"
     "@types/react": "npm:19.2.14"
     react: "npm:19.2.3"
     react-redux: "npm:9.3.0"

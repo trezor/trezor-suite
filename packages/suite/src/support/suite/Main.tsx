@@ -15,7 +15,6 @@ import { ConnectPopupModals } from './ConnectPopupModals';
 import { ConnectedFormatterProvider } from './ConnectedFormatterProvider';
 import { ConnectedIntlProvider } from './ConnectedIntlProvider';
 import { RouterHandler } from './RouterHandler';
-import { TransactionStore } from './TransactionStore';
 
 type MainProps = {
     trafficLightOffset?: React.ReactNode;
@@ -37,7 +36,6 @@ export const Main = ({ trafficLightOffset, children }: MainProps) => (
                         <Protocol />
                         <OnlineStatus />
                         <RouterHandler />
-                        <TransactionStore />
                         <ConnectedIntlProvider>
                             <SelectCacheProvider>
                                 <ConnectedFormatterProvider>{children}</ConnectedFormatterProvider>

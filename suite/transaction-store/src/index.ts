@@ -6,7 +6,11 @@ export {
     injectGetTransactionStoreService,
 } from './createTransactionStoreService';
 export { createTransactionStoreWorker } from './createTransactionStoreWorker';
-export { TransactionStoreFeeder } from './TransactionStoreFeeder';
+export {
+    type StartTransactionStoreFeedDeps,
+    type TransactionStoreFeedDep,
+    startTransactionStoreFeed,
+} from './startTransactionStoreFeed';
 export { TransactionStoreDebug } from './TransactionStoreDebug';
 export {
     useAccountSyncStatuses,

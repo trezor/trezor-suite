@@ -8,7 +8,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { SectionItem } from '@trezor/product-components';
 
 import { injectGetTransactionStoreService } from './createTransactionStoreService';
-import { useAccountSyncStatuses } from './transactionStoreQueries';
+import { useAccountSyncStatuses, useTransactionStoreInvalidation } from './transactionStoreQueries';
 
 const useStoredTransactionCounts = () => {
     const { getTransactionStoreService } = useServices(injectGetTransactionStoreService);
@@ -51,6 +51,7 @@ export const TransactionStoreDebug = () => {
     const accounts = useSelector(selectAccounts).filter(account => account.visible);
     const { data: statuses } = useAccountSyncStatuses(accounts.map(({ key }) => key));
     const { data: counts } = useStoredTransactionCounts();
+    useTransactionStoreInvalidation();
 
     const requestFullSync = (accountKeys: string[]) =>
         getTransactionStoreService().transactionStore.requestSync({ accountKeys, mode: 'full' });

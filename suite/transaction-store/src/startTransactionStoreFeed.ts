@@ -1,0 +1,86 @@
+import type {
+    Dispose,
+    TransactionStoreAccount,
+    Unsubscribe,
+} from '@suite-common/transaction-store';
+import type { CustomBackend } from '@suite-common/wallet-types';
+
+import type { GetTransactionStoreServiceDep } from './createTransactionStoreService';
+import {
+    type TransactionStoreFeedState,
+    selectTransactionStoreAccounts,
+    selectTransactionStoreBackends,
+} from './transactionStoreFeedSelectors';
+
+export type StartTransactionStoreFeedDeps = GetTransactionStoreServiceDep & {
+    getState: () => TransactionStoreFeedState;
+    subscribe: (listener: () => void) => Unsubscribe;
+    /** Whether the store runs at all; until a screen uses it, only in debug mode. */
+    getIsEnabled: () => boolean;
+};
+
+/** The started feed's dispose, kept by the app's services for its teardown. */
+export type TransactionStoreFeedDep = { disposeTransactionStoreFeed: Dispose };
+
+type Fed = { accounts: TransactionStoreAccount[]; backends: CustomBackend[] };
+
+/**
+ * Keeps the store told what the app knows: its accounts, the enabled networks and their
+ * backends. Pushes only what changed, and stops the store when it gets disabled.
+ */
+export const startTransactionStoreFeed = (deps: StartTransactionStoreFeedDeps): Dispose => {
+    // What the store was last told; `null` while it is not running.
+    let fed: Fed | null = null;
+
+    const stop = async () => {
+        if (fed === null) return;
+
+        fed = null;
+        await deps.getTransactionStoreService().dispose();
+    };
+
+    const feed = () => {
+        if (!deps.getIsEnabled()) {
+            void stop();
+
+            return;
+        }
+
+        const state = deps.getState();
+        const accounts = selectTransactionStoreAccounts(state);
+        const backends = selectTransactionStoreBackends(state);
+        const service = deps.getTransactionStoreService();
+
+        if (accounts !== fed?.accounts) {
+            const accountKeys = new Set(accounts.map(({ accountKey }) => accountKey));
+            // Only accounts seen leaving since the start; at startup the app has none loaded yet.
+            const removedAccountKeys = (fed?.accounts ?? [])
+                .map(({ accountKey }) => accountKey)
+                .filter(accountKey => !accountKeys.has(accountKey));
+
+            if (removedAccountKeys.length > 0) {
+                void service.transactionStore.removeAccounts(removedAccountKeys);
+            }
+            void service.transactionStore.registerAccounts(accounts);
+        }
+        if (backends !== fed?.backends) {
+            // Backends first, so the networks subscribe to blocks on them right away.
+            void service
+                .setBackends(backends)
+                .then(() =>
+                    service.transactionStore.watchNetworks(backends.map(({ symbol }) => symbol)),
+                );
+        }
+
+        fed = { accounts, backends };
+    };
+
+    feed();
+    const unsubscribe = deps.subscribe(feed);
+
+    return () => {
+        unsubscribe();
+
+        return stop();
+    };
+};

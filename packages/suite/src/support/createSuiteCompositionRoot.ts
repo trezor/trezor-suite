@@ -3,6 +3,7 @@ import { saveAs } from 'file-saver';
 import { type DesktopAnalyticsDep, createAnalytics } from '@suite/analytics';
 import { selectShouldRetryFirmwareRevisionCheckError } from '@suite/authenticity-checks';
 import { type BluetoothDep, createBluetoothCompositionRoot } from '@suite/bluetooth';
+import { selectIsDebugModeActive } from '@suite/debug';
 import { type DesktopApiDep } from '@suite/desktop-app-api';
 import { rerunFwAuthenticityChecksThunk } from '@suite/device';
 import { lockDevice } from '@suite/locks';
@@ -20,8 +21,10 @@ import { selectDebugSettings, selectLanguage, selectTradeServerEnvironment } fro
 import { createSuiteSyncDesktopCompositionRoot } from '@suite/suite-sync';
 import {
     type GetTransactionStoreServiceDep,
+    type TransactionStoreFeedDep,
     createGetTransactionStoreService,
     createTransactionStoreWorker,
+    startTransactionStoreFeed,
 } from '@suite/transaction-store';
 import { createBip329CompositionRoot } from '@suite-common/bip329';
 import {
@@ -80,11 +83,13 @@ export type SuiteServices = CommonServices &
     SuiteRouterHistoryDep &
     TransportsDep &
     BluetoothDep &
-    GetTransactionStoreServiceDep;
+    GetTransactionStoreServiceDep &
+    TransactionStoreFeedDep;
 
 export type StoreAPIDep = Pick<SuiteReduxStore, 'getState' | 'dispatch'>;
 
 export type SuiteAppDeps = StoreAPIDep &
+    Pick<SuiteReduxStore, 'subscribe'> &
     DbDep &
     DesktopApiDep &
     HistoryDep &
@@ -150,6 +155,19 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         updateOutputLabel: suiteSync.labeling.updateOutputLabel,
     });
 
+    // Lazy: the worker starts on the first use. The feed starts it while debug mode is on, until
+    // a screen consumes the store.
+    const getTransactionStoreService = createGetTransactionStoreService({
+        getTrezorConnect: deps.getTrezorConnect,
+        createWorker: createTransactionStoreWorker,
+    });
+    const disposeTransactionStoreFeed = startTransactionStoreFeed({
+        getTransactionStoreService,
+        getState: deps.getState,
+        subscribe: deps.subscribe,
+        getIsEnabled: toGetter(deps.getState, selectIsDebugModeActive),
+    });
+
     const networks = createNetworksCompositionRoot({
         getTrezorConnect: deps.getTrezorConnect,
         dispatch: deps.dispatch,
@@ -173,11 +191,8 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         desktopApi: deps.desktopApi,
         networks,
         suiteSync,
-        // Lazy: the worker starts on the first use, today only in debug mode.
-        getTransactionStoreService: createGetTransactionStoreService({
-            getTrezorConnect: deps.getTrezorConnect,
-            createWorker: createTransactionStoreWorker,
-        }),
+        getTransactionStoreService,
+        disposeTransactionStoreFeed,
         bip329,
         migrateLegacyLabelsToSuiteSync,
         ensureDelegatedIdentityKey,
