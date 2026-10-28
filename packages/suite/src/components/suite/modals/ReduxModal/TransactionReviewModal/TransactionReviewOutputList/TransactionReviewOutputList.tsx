@@ -200,6 +200,7 @@ export const TransactionReviewOutputList = ({
                 return (
                     <Wrapper
                         key={index}
+                        data-testid={`@modal/transaction-review/output-${index}`}
                         ref={(ref: HTMLDivElement | null) => {
                             outputRefs.current[index] = ref;
                         }}

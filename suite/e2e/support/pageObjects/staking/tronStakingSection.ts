@@ -3,7 +3,8 @@ import { type Locator, type Page } from '@playwright/test';
 import { step } from '../../common';
 import { expect } from '../../testExtends/customMatchers';
 
-type TronStakingToastType = 'tx-staked' | 'tx-unstaked' | 'tx-withdrawn' | 'tx-claimed';
+type TronStakingToastType =
+    'tx-staked' | 'tx-unstaked' | 'tx-withdrawn' | 'tx-claimed' | 'tx-voted';
 
 export class TronStakingSection {
     // The flow advances only after the app re-fetches the account and sees the broadcast
@@ -50,8 +51,10 @@ export class TronStakingSection {
     readonly reviewClaimNote: Locator;
 
     // vote step
+    readonly voteTitle: Locator;
     readonly remainingVotes: Locator;
     readonly selectRepresentativesButton: Locator;
+    readonly changeRepresentativesButton: Locator;
     readonly allocationRow = (address: string) =>
         this.page.getByTestId(`@staking/tron-vote/allocation-row/${address}`);
     readonly allocationRowName = (address: string) =>
@@ -75,6 +78,9 @@ export class TronStakingSection {
         this.representativeRow(address).getByTestId(
             '@staking/tron-select-representatives/checkbox',
         );
+    // The checked state lives on the hidden input inside the checkbox label.
+    readonly representativeCheckboxInput = (address: string) =>
+        this.representativeCheckbox(address).locator('input');
     readonly representativeName = (address: string) =>
         this.representativeRow(address).getByTestId('@staking/tron-representative/name');
     readonly representativeAddress = (address: string) =>
@@ -85,6 +91,17 @@ export class TronStakingSection {
     readonly selectRepresentativesDescription: Locator;
     readonly selectRepresentativesConfirmButton: Locator;
 
+    // reassign votes modal
+    readonly reassignVotesModal: Locator;
+    readonly reassignVotesHeading: Locator;
+    readonly reassignVotesRemainingVotes: Locator;
+    readonly reassignVotesInput = (address: string) =>
+        this.reassignVotesModal
+            .getByTestId(`@staking/tron-reassign-votes/row/${address}`)
+            .getByTestId('@staking/tron-reassign-votes/votes-input');
+    readonly reassignVotesExceedBanner: Locator;
+    readonly reassignVotesConfirmButton: Locator;
+
     // stake consent modal
     readonly stakeConsentModal: Locator;
     readonly stakeConsentHeading: Locator;
@@ -94,6 +111,7 @@ export class TronStakingSection {
 
     // vote consent modal
     readonly voteConsentModal: Locator;
+    readonly voteConsentHeading: Locator;
     readonly voteConsentCheckbox: Locator;
     readonly voteConsentConfirmButton: Locator;
 
@@ -101,6 +119,18 @@ export class TronStakingSection {
     readonly reviewResource: Locator;
     readonly reviewVoteAddress: Locator;
     readonly reviewVoteCount: Locator;
+    // A vote for several representatives has one review output per representative, in the order
+    // of the allocation table.
+    readonly reviewOutput = (index: number) =>
+        this.page.getByTestId(`@modal/transaction-review/output-${index}`);
+    readonly reviewOutputVoteAddress = (index: number) =>
+        this.reviewOutput(index)
+            .getByTestId('@modal/output-address')
+            .getByTestId('@modal/output-value');
+    readonly reviewOutputVoteCount = (index: number) =>
+        this.reviewOutput(index)
+            .getByTestId('@modal/output-votes')
+            .getByTestId('@modal/output-value');
 
     // complete screen
     readonly completeHeading: Locator;
@@ -112,6 +142,15 @@ export class TronStakingSection {
     readonly summaryWithdrawnAmount: Locator;
     readonly summaryClaimedAmount: Locator;
     readonly summaryResourceReduction: Locator;
+    readonly summaryVoteAllocations: Locator;
+    readonly summaryVoteAllocationRow = (address: string) =>
+        this.summaryVoteAllocations.getByTestId(`@staking/tron-vote/allocation-row/${address}`);
+    readonly summaryVoteAllocationRowName = (address: string) =>
+        this.summaryVoteAllocationRow(address).getByTestId('@staking/tron-representative/name');
+    readonly summaryVoteAllocationRowVotes = (address: string) =>
+        this.summaryVoteAllocationRow(address).getByTestId(
+            '@staking/tron-vote/allocation-row-votes',
+        );
     readonly backToOverviewButton: Locator;
 
     // toasts
@@ -132,6 +171,7 @@ export class TronStakingSection {
     readonly unstakeButton: Locator;
     readonly voteButton: Locator;
     readonly votesToAllocateButton: Locator;
+    readonly remainingVotesButton: Locator;
     readonly resourcesCard: Locator;
     readonly unstakingCard: Locator;
     readonly unstakingRow = (index: number) =>
@@ -148,6 +188,20 @@ export class TronStakingSection {
     readonly claimButton: Locator;
     readonly resourceValue = (resource: 'bandwidth' | 'energy') =>
         this.page.getByTestId(`@staking/tron-resources-card/${resource}`);
+
+    // vote allocation modal opened from the dashboard
+    readonly voteAllocationModal: Locator;
+    readonly voteAllocationAssignedVotes: Locator;
+    readonly voteAllocationRow = (address: string) =>
+        this.voteAllocationModal.getByTestId(`@modal/tron-vote-allocation/row/${address}`);
+    readonly voteAllocationRowName = (address: string) =>
+        this.voteAllocationRow(address).getByTestId('@modal/tron-vote-allocation/row-name');
+    readonly voteAllocationRowVotes = (address: string) =>
+        this.voteAllocationRow(address).getByTestId('@modal/tron-vote-allocation/row-votes');
+    readonly voteAllocationRowApr = (address: string) =>
+        this.voteAllocationRow(address).getByTestId('@modal/tron-vote-allocation/row-apr');
+    readonly voteAllocationChangeVotesButton: Locator;
+    readonly voteAllocationCloseButton: Locator;
 
     constructor(private readonly page: Page) {
         this.howItWorksButton = this.page.getByTestId('@staking/tron-header/how-it-works-button');
@@ -197,9 +251,13 @@ export class TronStakingSection {
             .getByTestId('@modal/output-tron-claim')
             .getByTestId('@modal/output-value');
 
+        this.voteTitle = this.page.getByTestId('@staking/tron-vote/title');
         this.remainingVotes = this.page.getByTestId('@staking/tron-vote/remaining-votes');
         this.selectRepresentativesButton = this.page.getByTestId(
             '@staking/tron-vote/select-representatives-button',
+        );
+        this.changeRepresentativesButton = this.page.getByTestId(
+            '@staking/tron-vote/change-representatives-button',
         );
         this.votesToAllocateBanner = this.page.getByTestId(
             '@staking/tron-vote/votes-to-allocate-banner',
@@ -217,6 +275,18 @@ export class TronStakingSection {
         this.selectRepresentativesDescription =
             this.selectRepresentativesModal.getByTestId('@modal/header-paragraph');
 
+        this.reassignVotesModal = this.page.getByTestId('@modal/tron-reassign-votes');
+        this.reassignVotesHeading = this.reassignVotesModal.getByTestId('@modal/header');
+        this.reassignVotesRemainingVotes = this.reassignVotesModal.getByTestId(
+            '@staking/tron-reassign-votes/remaining-votes',
+        );
+        this.reassignVotesExceedBanner = this.reassignVotesModal.getByTestId(
+            '@staking/tron-reassign-votes/votes-exceed-banner',
+        );
+        this.reassignVotesConfirmButton = this.reassignVotesModal.getByTestId(
+            '@modal/tron-reassign-votes/confirm-button',
+        );
+
         this.stakeConsentModal = this.page.getByTestId('@modal/tron-stake-consent');
         this.stakeConsentHeading = this.stakeConsentModal.getByTestId('@modal/header');
         this.stakeConsentDescription =
@@ -229,6 +299,7 @@ export class TronStakingSection {
         );
 
         this.voteConsentModal = this.page.getByTestId('@modal/tron-vote-consent');
+        this.voteConsentHeading = this.voteConsentModal.getByTestId('@modal/header');
         this.voteConsentCheckbox = this.voteConsentModal.getByTestId(
             '@modal/tron-vote-consent/checkbox',
         );
@@ -267,6 +338,9 @@ export class TronStakingSection {
         this.summaryResourceReduction = this.summaryCard.getByTestId(
             '@staking/tron-complete/resource-reduction',
         );
+        this.summaryVoteAllocations = this.page.getByTestId(
+            '@staking/tron-complete/vote-allocations',
+        );
         this.backToOverviewButton = this.page.getByTestId(
             '@staking/tron-complete/back-to-overview-button',
         );
@@ -285,6 +359,9 @@ export class TronStakingSection {
         this.votesToAllocateButton = this.stakedCard.getByTestId(
             '@staking/tron-staked-card/votes-to-allocate-button',
         );
+        this.remainingVotesButton = this.stakedCard.getByTestId(
+            '@staking/tron-staked-card/remaining-votes-button',
+        );
         this.resourcesCard = this.page.getByTestId('@staking/tron-resources-card/container');
         this.unstakingCard = this.page.getByTestId('@staking/tron-unstaking-card/container');
         this.withdrawReadyBanner = this.page.getByTestId('@staking/tron-withdraw-banner/container');
@@ -297,6 +374,16 @@ export class TronStakingSection {
         this.rewardsCard = this.page.getByTestId('@staking/tron-rewards-card/container');
         this.rewardsAmount = this.rewardsCard.getByTestId('@staking/tron-rewards-card/amount');
         this.claimButton = this.rewardsCard.getByTestId('@staking/tron-rewards-card/claim-button');
+
+        this.voteAllocationModal = this.page.getByTestId('@modal/tron-vote-allocation');
+        this.voteAllocationAssignedVotes = this.voteAllocationModal.getByTestId(
+            '@modal/tron-vote-allocation/assigned-votes',
+        );
+        this.voteAllocationChangeVotesButton = this.voteAllocationModal.getByTestId(
+            '@modal/tron-vote-allocation/change-votes-button',
+        );
+        this.voteAllocationCloseButton =
+            this.voteAllocationModal.getByTestId('@modal/close-button');
     }
 
     // The confirmed toast replaces the pending one for the same txid; dismissing the pending toast
