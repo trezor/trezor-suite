@@ -18,6 +18,7 @@ import {
 import { isArrayMember } from '@trezor/utils';
 
 import {
+    BUTTON_REQUESTS_NAMES,
     MODAL_CONTEXT_DEVICE,
     MODAL_CONTEXT_DEVICE_CONFIRMATION,
     MODAL_CONTEXT_NONE,
@@ -33,9 +34,15 @@ import {
 
 export type State = ModalState & { preserve?: boolean; preserveOnTxTimeout?: boolean };
 
+type ButtonRequestNameKeys = keyof typeof BUTTON_REQUESTS_NAMES;
+type ButtonRequestNameView = (typeof BUTTON_REQUESTS_NAMES)[ButtonRequestNameKeys];
+type ButtonRequestName =
+    (typeof THP_BUTTON_REQUESTS_NAMES)[number] | ButtonRequestNameKeys | undefined;
+
 type DeviceContextWindowType =
     | PROTO.ButtonRequestType
     | PROTO.WordRequestType
+    | ButtonRequestNameView
     | typeof UI_REQUESTS.REQUEST_PIN
     | typeof UI_REQUESTS.REQUEST_PASSPHRASE
     | typeof UI_EVENTS.PIN_INVALID
@@ -112,18 +119,21 @@ export const modalReducer = (state: State = initialState, action: UnknownAction)
     }
 
     if (isUiEventOfType(action, UI_EVENTS.BUTTON_REQUEST)) {
+        const buttonName = action.payload.name as ButtonRequestName;
         // THP ButtonRequests handled separately in the `thpReducer`
-        if (
-            action.payload.name !== undefined &&
-            isArrayMember(action.payload.name, THP_BUTTON_REQUESTS_NAMES)
-        ) {
+        if (buttonName && isArrayMember(buttonName, THP_BUTTON_REQUESTS_NAMES)) {
             return state;
+        }
+
+        let windowType: DeviceContextWindowType = action.payload.code;
+        if (buttonName && BUTTON_REQUESTS_NAMES[buttonName]) {
+            windowType = BUTTON_REQUESTS_NAMES[buttonName];
         }
 
         return {
             context: MODAL_CONTEXT_DEVICE,
             device: action.payload.device,
-            windowType: action.payload.code,
+            windowType,
             data: action.payload.data,
             preserve: state.preserve,
         };

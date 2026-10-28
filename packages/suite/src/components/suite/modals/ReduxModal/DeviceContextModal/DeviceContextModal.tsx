@@ -12,6 +12,7 @@ import { useSelector } from 'src/hooks/suite';
 import { ConfirmActionModal } from './ConfirmActionModal';
 import { ConfirmFingerprintModal } from './ConfirmFingerprintModal';
 import { ConfirmPassphraseBeforeAction } from './ConfirmPassphraseBeforeAction';
+import { ConfirmPassphraseOnDevice } from './ConfirmPassphraseOnDevice';
 import { EnterPassphraseOnDevice } from './EnterPassphraseOnDevice';
 import { PinModal } from './PinModal';
 import { SignMessageModal } from './SignMessageModal';
@@ -45,6 +46,8 @@ export const DeviceContextModal = ({
         case UI_EVENTS.PASSPHRASE_ON_DEVICE:
         case 'ButtonRequest_PassphraseEntry':
             return <EnterPassphraseOnDevice />;
+        case 'ConfirmPassphraseOnDevice':
+            return <ConfirmPassphraseOnDevice />;
         case 'ButtonRequest_ConfirmOutput':
         case 'ButtonRequest_FeeOverThreshold':
         case 'ButtonRequest_SignTx': {
