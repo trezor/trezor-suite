@@ -676,6 +676,7 @@ export const connectPopupLoadSelectAccountPageThunk = createThunk<
                         bip43Path: activeTab.bip43Path as Bip43PathTemplate,
                     },
                     device: activeDevice,
+                    callId: call.callId,
                 });
 
                 // bail if the user navigated to another page/tab, this load was superseded by a
@@ -830,6 +831,7 @@ export const connectPopupLoadSelectAccountPageThunk = createThunk<
                     bip43Path: activeTab.bip43Path as Bip43PathTemplate,
                 },
                 device: activeDevice,
+                callId: call.callId,
             });
 
             // bail if the user navigated to another tab/account or closed the picker meanwhile
@@ -1012,6 +1014,7 @@ export const connectPopupVerifySelectAccountThunk = createThunk<
                     coin: candidate.symbol,
                     showOnTrezor: true,
                     derivationType: getDerivationType(accountType),
+                    callId: call.callId,
                 });
                 if (!res.success) {
                     console.error('connectPopupVerifySelectAccountThunk (xpub)', res.error);
@@ -1047,6 +1050,7 @@ export const connectPopupVerifySelectAccountThunk = createThunk<
                               derivationType: getDerivationType(accountType),
                           }
                         : undefined,
+                callId: call.callId,
             });
 
             if (!res.success) {
