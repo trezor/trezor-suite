@@ -133,7 +133,7 @@ export const AccountsListItemBase = ({
                         </Text>
                         {titleBadge}
                     </HStack>
-                    <HStack spacing="sp4" alignItems="center">
+                    <HStack spacing="sp4" alignItems="center" flexWrap="wrap">
                         {badges}
                     </HStack>
                 </Box>

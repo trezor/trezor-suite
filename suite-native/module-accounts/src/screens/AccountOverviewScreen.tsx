@@ -81,7 +81,7 @@ export const AccountOverviewScreen = ({
         <Screen
             header={<AccountOverviewScreenHeader accountKey={accountKey} flowType={flowType} />}
             isScrollable={false}
-            noHorizontalPadding={isFailed}
+            noHorizontalPadding
             noBottomPadding
             hasBottomInset={false}
         >
