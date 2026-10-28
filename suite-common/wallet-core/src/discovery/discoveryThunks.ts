@@ -144,7 +144,7 @@ export const applyDeviceStatesThunk = createThunk<
                     'there must be either one or zero physical devices without state',
                 );
             }
-            const device = devicesByPath[0];
+            const device = devicesByPathWithoutState[0] ?? devicesByPath[0];
 
             assertDeviceIsAcquired(device);
             assertStaticSessionId(newDeviceState);
