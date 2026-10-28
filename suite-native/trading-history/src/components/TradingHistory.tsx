@@ -34,6 +34,10 @@ const listFooterStyle = prepareNativeStyle(({ spacings }) => ({
     paddingTop: spacings.sp32,
 }));
 
+const emptyStateStyle = prepareNativeStyle<{ insetBottom: number }>(
+    ({ spacings }, { insetBottom }) => ({ paddingBottom: insetBottom + spacings.sp16 }),
+);
+
 const keyExtractor = (item: TradingTransaction) =>
     item.key ?? item.data.orderId ?? `${item.tradeType}-${item.date}`;
 
@@ -86,7 +90,11 @@ export const TradingHistory = ({ onOpenTradeDetail }: TradingHistoryProps) => {
     );
 
     if (trades.length === 0) {
-        return <TradingHistoryEmptyState onBackToTradeForm={navigation.goBack} />;
+        return (
+            <Box flex={1} style={applyStyle(emptyStateStyle, { insetBottom })}>
+                <TradingHistoryEmptyState onBackToTradeForm={navigation.goBack} />
+            </Box>
+        );
     }
 
     return (
@@ -96,6 +104,8 @@ export const TradingHistory = ({ onOpenTradeDetail }: TradingHistoryProps) => {
             </Box>
             <Box flex={1}>
                 <FlashList
+                    automaticallyAdjustsScrollIndicatorInsets={false}
+                    scrollIndicatorInsets={{ bottom: insetBottom }}
                     ref={flashListRef}
                     testID="@trading/history/list"
                     contentContainerStyle={applyStyle(contentContainerStyle, {

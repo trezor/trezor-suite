@@ -35,10 +35,12 @@ const contentContainerStyle = prepareNativeStyle<{
     insetBottom: number;
 }>((utils, { insetBottom }) => ({
     paddingBottom: Math.max(insetBottom, utils.spacings.sp16),
+    paddingHorizontal: utils.spacings.sp16,
 }));
 
-const listStyle = prepareNativeStyle(() => ({
+const listStyle = prepareNativeStyle(({ spacings }) => ({
     flex: 1,
+    marginHorizontal: -spacings.sp16,
 }));
 
 export const keyExtractor = (item: ReceiveAccount) =>
@@ -94,6 +96,8 @@ export const AccountList = ({ data, symbol, onAddAccountTap, tradingType }: Acco
 
     return (
         <FlashList
+            automaticallyAdjustsScrollIndicatorInsets={false}
+            scrollIndicatorInsets={{ bottom: insetBottom }}
             style={applyStyle(listStyle)}
             contentContainerStyle={applyStyle(contentContainerStyle, {
                 insetBottom,
