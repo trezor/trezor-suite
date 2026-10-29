@@ -156,11 +156,26 @@ describe('publish import transforms — new URL is gated on the worker idiom', (
         ).toThrow(/published packages ship lib\/ only/);
     });
 
-    // Documents a bug: src is matched anywhere in the specifier, so a @trezor/*/src-prefixed
-    // runtime address such as src-maps/foo is taken for an internal import and fails the build.
-    it('fails the build on a new URL(@trezor/*/src-maps, base)', () => {
+    // src must match a whole path segment: a @trezor/*/src-prefixed runtime address is not an
+    // internal import, so it neither fails the build nor gets rewritten to a lib-prefixed one.
+    it('leaves a new URL(@trezor/*/src-maps, base) untouched', () => {
+        const out = runEsm(`const u = new URL('@trezor/blockchain-link/src-maps/foo', base);`);
+        expect(out).toContain('@trezor/blockchain-link/src-maps/foo');
+    });
+
+    // A query or a fragment terminates the path segment as well, so a suffixed specifier is an
+    // internal import too: a gated one must still be rewritten, and a non-gated one must still fail
+    // the build instead of publishing an unresolvable /src path.
+    it('rewrites a gated new URL(@trezor/*/src?suffix, import.meta.url)', () => {
+        const out = runEsm(
+            `new Worker(new URL('@trezor/blockchain-link/src?worker', import.meta.url));`,
+        );
+        expect(out).toContain('@trezor/blockchain-link/lib?worker');
+    });
+
+    it('throws on a non-worker new URL(@trezor/*/src#fragment, base)', () => {
         expect(() =>
-            runEsm(`const u = new URL('@trezor/blockchain-link/src-maps/foo', base);`),
+            runEsm(`const u = new URL('@trezor/blockchain-link/src#frag', base);`),
         ).toThrow(/published packages ship lib\/ only/);
     });
 
