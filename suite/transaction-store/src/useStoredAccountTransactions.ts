@@ -105,7 +105,7 @@ export const useStoredAccountTransactions = ({
     );
 
     const status = syncStatus.data?.[0];
-    const isSyncing = status?.status === 'syncing' || status?.status === 'queued';
+    const isSyncing = status?.status === 'syncing';
 
     return {
         transactions,
@@ -115,7 +115,7 @@ export const useStoredAccountTransactions = ({
         isLoading: rows.isPending,
         isSyncing,
         requestFullHistory: () => {
-            void transactionStore.requestSync({ accountKeys: [accountKey], mode: 'full' });
+            void transactionStore.requestFullHistory(accountKey);
         },
     };
 };

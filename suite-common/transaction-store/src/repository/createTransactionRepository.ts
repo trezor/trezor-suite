@@ -1,15 +1,9 @@
 import { type NetworkSymbol, getNetworkDecimals } from '@suite-common/wallet-config';
 import type { Transaction } from '@trezor/blockchain-link-types';
-import { type Result, err, ok } from '@trezor/type-utils';
 
 import { toTransactionSearchClause } from '../search/toTransactionSearchClause';
 import { runInSqliteTransaction } from '../sqlite/runInSqliteTransaction';
-import type {
-    SqlQuery,
-    SqlRow,
-    SqlValue,
-    TransactionStoreSqliteDep,
-} from '../sqlite/transactionStoreSqlite';
+import type { SqlRow, SqlValue, TransactionStoreSqliteDep } from '../sqlite/transactionStoreSqlite';
 import type {
     StoredTransaction,
     TransactionSourceErrorType,
@@ -38,25 +32,19 @@ export type SelectTransactionsParams = TransactionsFilter & {
 
 export type SyncState = {
     isComplete: boolean;
-    newestBlockHeight: number | null;
     lastSyncedAt: number | null;
     lastError: TransactionSourceErrorType | null;
 };
 
-export type SelectRowsError = { type: 'QueryFailed' };
-
 export type ReplaceAccountsResult = { removedAccountKeys: string[] };
 
 export type TransactionRepository = {
-    upsertAccounts: (accounts: TransactionStoreAccount[]) => void;
     /**
      * Makes the stored accounts exactly these: upserts them, and deletes every other stored
      * account with its whole history, in one SQLite transaction.
      */
     replaceAccounts: (accounts: TransactionStoreAccount[]) => ReplaceAccountsResult;
-    removeAccounts: (accountKeys: string[]) => void;
     selectAccount: (accountKey: string) => TransactionStoreAccount | undefined;
-    selectAccounts: (params: { symbol?: NetworkSymbol }) => TransactionStoreAccount[];
     /** Returns how many rows were added or actually changed. */
     upsertTransactions: (params: { accountKey: string; transactions: Transaction[] }) => number;
     selectStoredTxids: (params: { accountKey: string; txids: string[] }) => Set<string>;
@@ -65,11 +53,7 @@ export type TransactionRepository = {
     selectSyncState: (accountKey: string) => SyncState;
     /** The accounts the store has synced or tried to, i.e. the ones someone has asked for. */
     selectTrackedAccountKeys: (accountKeys: string[]) => string[];
-    updateSyncState: (
-        params: { accountKey: string } & Omit<SyncState, 'newestBlockHeight'>,
-    ) => void;
-    /** Any read-only statement; writes are refused by SQLite itself. */
-    selectRows: (query: SqlQuery) => Result<ReadonlyArray<SqlRow>, SelectRowsError>;
+    updateSyncState: (params: { accountKey: string } & SyncState) => void;
 };
 
 export type TransactionRepositoryDep = { transactionRepository: TransactionRepository };
@@ -88,7 +72,6 @@ type SyncStateRow = {
     is_complete: number;
     last_synced_at: number | null;
     last_error: string | null;
-    newest_block_height: number | null;
 };
 
 const toPlaceholders = (values: ReadonlyArray<unknown>) => values.map(() => '?').join(', ');
@@ -178,20 +161,7 @@ export const createTransactionRepository = (
             [account.accountKey, account.symbol, account.descriptor],
         );
 
-    // The account's transactions, their transfers and its sync state go with it (cascade).
-    const deleteAccounts = (accountKeys: string[]) => {
-        if (accountKeys.length === 0) return;
-
-        exec(
-            `DELETE FROM accounts WHERE account_key IN (${toPlaceholders(accountKeys)})`,
-            accountKeys,
-        );
-    };
-
     return {
-        upsertAccounts: accounts =>
-            runInSqliteTransaction(deps.sqlite, () => accounts.forEach(upsertAccount)),
-
         replaceAccounts: accounts =>
             runInSqliteTransaction(deps.sqlite, () => {
                 const storedAccountKeys = new Set(
@@ -204,13 +174,17 @@ export const createTransactionRepository = (
                     accountKey => !accountKeys.has(accountKey),
                 );
 
-                deleteAccounts(removedAccountKeys);
+                // Their transactions, transfers and sync state go with them (cascade).
+                if (removedAccountKeys.length > 0) {
+                    exec(
+                        `DELETE FROM accounts WHERE account_key IN (${toPlaceholders(removedAccountKeys)})`,
+                        removedAccountKeys,
+                    );
+                }
                 accounts.forEach(upsertAccount);
 
                 return { removedAccountKeys };
             }),
-
-        removeAccounts: deleteAccounts,
 
         selectAccount: accountKey => {
             const row = exec<AccountRow>(
@@ -220,18 +194,6 @@ export const createTransactionRepository = (
 
             return row === undefined ? undefined : toAccount(row);
         },
-
-        selectAccounts: ({ symbol }) =>
-            (symbol === undefined
-                ? exec<AccountRow>(
-                      'SELECT account_key, symbol, descriptor FROM accounts ORDER BY account_key',
-                  )
-                : exec<AccountRow>(
-                      `SELECT account_key, symbol, descriptor FROM accounts WHERE symbol = ?
-                      ORDER BY account_key`,
-                      [symbol],
-                  )
-            ).rows.map(toAccount),
 
         upsertTransactions: ({ accountKey, transactions }) => {
             const symbol = exec<{ symbol: string }>(
@@ -314,20 +276,12 @@ export const createTransactionRepository = (
 
         selectSyncState: accountKey => {
             const row = exec<SyncStateRow>(
-                `SELECT
-                    COALESCE(s.is_complete, 0) AS is_complete,
-                    s.last_synced_at,
-                    s.last_error,
-                    (SELECT MAX(block_height) FROM transactions t WHERE t.account_key = ?)
-                        AS newest_block_height
-                FROM (SELECT ? AS account_key) k
-                LEFT JOIN sync_state s ON s.account_key = k.account_key`,
-                [accountKey, accountKey],
+                'SELECT is_complete, last_synced_at, last_error FROM sync_state WHERE account_key = ?',
+                [accountKey],
             ).rows[0];
 
             return {
                 isComplete: row?.is_complete === 1,
-                newestBlockHeight: row?.newest_block_height ?? null,
                 lastSyncedAt: row?.last_synced_at ?? null,
                 // Written only from `TransactionSourceErrorType`.
                 lastError: (row?.last_error ?? null) as TransactionSourceErrorType | null,
@@ -353,18 +307,6 @@ export const createTransactionRepository = (
                     last_error = excluded.last_error`,
                 [accountKey, isComplete ? 1 : 0, lastSyncedAt, lastError],
             );
-        },
-
-        selectRows: query => {
-            exec('PRAGMA query_only = ON');
-            try {
-                return ok(deps.sqlite.exec(query).rows);
-            } catch {
-                // A malformed query or a write: the caller's mistake, which it gets told about.
-                return err({ type: 'QueryFailed' });
-            } finally {
-                exec('PRAGMA query_only = OFF');
-            }
         },
     };
 };

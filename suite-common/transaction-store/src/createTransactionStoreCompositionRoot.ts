@@ -16,7 +16,6 @@ import type { TransactionStoreEvent, TransactionStoreListener } from './transact
 export type TransactionStoreCompositionRootDeps = TransactionStoreSqliteDep &
     TransactionSourceDep & {
         now: () => number;
-        maxConcurrentJobsPerNetwork: number;
     };
 
 /**
@@ -47,7 +46,6 @@ export const createTransactionStoreCompositionRoot = (
     const syncQueue = createSyncQueue({
         syncAccountTransactions,
         transactionRepository,
-        maxConcurrentJobsPerNetwork: deps.maxConcurrentJobsPerNetwork,
         onStatusChanged: status => emit({ type: 'syncStatusChanged', status }),
     });
 
@@ -62,13 +60,15 @@ export const createTransactionStoreCompositionRoot = (
             return Promise.resolve();
         },
         ensureSynced: async accountKeys => {
-            const neverSyncedAccountKeys = accountKeys.filter(
-                accountKey =>
-                    transactionRepository.selectAccount(accountKey) !== undefined &&
-                    transactionRepository.selectSyncState(accountKey).lastSyncedAt === null,
-            );
-            syncQueue.requestSync({ accountKeys: neverSyncedAccountKeys, mode: 'latest' });
-            await Promise.all(neverSyncedAccountKeys.map(syncQueue.whenSettled));
+            syncQueue.requestSync({
+                accountKeys: accountKeys.filter(
+                    accountKey =>
+                        transactionRepository.selectAccount(accountKey) !== undefined &&
+                        transactionRepository.selectSyncState(accountKey).lastSyncedAt === null,
+                ),
+                mode: 'latest',
+            });
+            await Promise.all(accountKeys.map(syncQueue.whenSettled));
 
             return accountKeys.map(syncQueue.getSyncStatus);
         },
@@ -80,19 +80,16 @@ export const createTransactionStoreCompositionRoot = (
 
             return Promise.resolve();
         },
-        removeAccounts: accountKeys => {
-            transactionRepository.removeAccounts(accountKeys);
-            emit({ type: 'transactionsChanged', accountKeys });
+        requestFullHistory: accountKey => {
+            syncQueue.requestSync({ accountKeys: [accountKey], mode: 'full' });
 
             return Promise.resolve();
         },
-        requestSync: params => Promise.resolve(syncQueue.requestSync(params)),
         getSyncStatus: accountKeys => Promise.resolve(accountKeys.map(syncQueue.getSyncStatus)),
         selectTransactions: params =>
             Promise.resolve(transactionRepository.selectTransactions(params)),
         countTransactions: filter =>
             Promise.resolve(transactionRepository.countTransactions(filter)),
-        query: query => Promise.resolve(transactionRepository.selectRows(query)),
         subscribe: listener => {
             listeners.add(listener);
 
@@ -100,7 +97,6 @@ export const createTransactionStoreCompositionRoot = (
                 listeners.delete(listener);
             });
         },
-        whenIdle: () => syncQueue.whenIdle(),
         dispose: async () => {
             await syncQueue.close();
             listeners.clear();

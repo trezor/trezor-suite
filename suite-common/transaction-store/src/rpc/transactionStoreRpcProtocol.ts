@@ -8,13 +8,10 @@ export const TRANSACTION_STORE_RPC_METHODS = [
     'setAccounts',
     'ensureSynced',
     'refreshAccounts',
-    'removeAccounts',
-    'requestSync',
+    'requestFullHistory',
     'getSyncStatus',
     'selectTransactions',
     'countTransactions',
-    'query',
-    'whenIdle',
     'dispose',
 ] as const satisfies ReadonlyArray<TransactionStoreRpcMethod>;
 

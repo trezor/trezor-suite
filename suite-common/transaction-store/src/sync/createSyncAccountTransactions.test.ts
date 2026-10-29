@@ -28,7 +28,7 @@ const setUp = async (pages: Transaction[][]) => {
     const sqlite = await testCreateTransactionStoreSqlite();
     migrateTransactionStoreSchema({ sqlite });
     const transactionRepository = createTransactionRepository({ sqlite });
-    transactionRepository.upsertAccounts([account]);
+    transactionRepository.replaceAccounts([account]);
     const deps = createMockDeps<SyncAccountTransactionsDeps>({
         transactionRepository,
         transactionSource: {
@@ -62,7 +62,8 @@ describe(createSyncAccountTransactions.name, () => {
 
         const result = await syncAccountTransactions({ accountKey: 'btc-account', mode: 'latest' });
 
-        expect(result).toEqual({ success: true, payload: { hasChanged: true } });
+        expect(result).toEqual({ success: true, payload: undefined });
+        expect(deps.onTransactionsStored).toHaveBeenCalledWith('btc-account');
         expect(getFetchedPages()).toEqual([1]);
         expect(deps.onTransactionsStored).toHaveBeenCalledWith('btc-account');
         expect(transactionRepository.selectSyncState('btc-account')).toMatchObject({
@@ -122,11 +123,13 @@ describe(createSyncAccountTransactions.name, () => {
         ]);
         await syncAccountTransactions({ accountKey: 'btc-account', mode: 'full' });
         deps.transactionSource.fetchTransactionsPage.mockClear();
+        deps.onTransactionsStored.mockClear();
 
         const result = await syncAccountTransactions({ accountKey: 'btc-account', mode: 'full' });
 
         expect(getFetchedPages()).toEqual([1]);
-        expect(result).toEqual({ success: true, payload: { hasChanged: false } });
+        expect(result).toEqual({ success: true, payload: undefined });
+        expect(deps.onTransactionsStored).not.toHaveBeenCalled();
         sqlite.dispose();
     });
 
@@ -162,14 +165,15 @@ describe(createSyncAccountTransactions.name, () => {
     it('writes nothing for an account removed while its page was on the way', async () => {
         const { sqlite, syncAccountTransactions, transactionRepository, deps } = await setUp([]);
         deps.transactionSource.fetchTransactionsPage.mockImplementation(() => {
-            transactionRepository.removeAccounts(['btc-account']);
+            transactionRepository.replaceAccounts([]);
 
             return Promise.resolve(ok({ transactions: toTransactions(['a']), hasNextPage: false }));
         });
 
         const result = await syncAccountTransactions({ accountKey: 'btc-account', mode: 'latest' });
 
-        expect(result).toEqual({ success: true, payload: { hasChanged: false } });
+        expect(result).toEqual({ success: true, payload: undefined });
+        expect(deps.onTransactionsStored).not.toHaveBeenCalled();
         expect(transactionRepository.selectTransactions({ accountKeys: ['btc-account'] })).toEqual(
             [],
         );

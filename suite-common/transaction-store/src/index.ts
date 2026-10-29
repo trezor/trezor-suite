@@ -6,7 +6,6 @@ export { type TransactionStore, type TransactionStoreDep } from './transactionSt
 export type {
     AccountSyncStatus,
     StoredTransaction,
-    SyncMode,
     TransactionSourceErrorType,
     TransactionStoreAccount,
     TransactionStoreEvent,
@@ -32,7 +31,6 @@ export {
     createBlockchainLinkTransactionSource,
 } from './source/createBlockchainLinkTransactionSource';
 export type {
-    SelectRowsError,
     SelectTransactionsParams,
     TransactionsFilter,
 } from './repository/createTransactionRepository';

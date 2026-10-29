@@ -25,10 +25,9 @@ export type TransactionSourceErrorType = 'BackendUnavailable' | 'BackendError';
 
 export type AccountSyncStatus = {
     accountKey: string;
-    status: 'idle' | 'queued' | 'syncing' | 'error';
+    status: 'idle' | 'syncing' | 'error';
     /** The whole history is stored, not just its newest part. */
     isComplete: boolean;
-    newestBlockHeight: number | null;
     lastSyncedAt: number | null;
     lastError: TransactionSourceErrorType | null;
 };

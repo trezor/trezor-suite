@@ -58,13 +58,10 @@ export const createTransactionStoreRpcClient = (
         setAccounts: call('setAccounts'),
         ensureSynced: call('ensureSynced'),
         refreshAccounts: call('refreshAccounts'),
-        removeAccounts: call('removeAccounts'),
-        requestSync: call('requestSync'),
+        requestFullHistory: call('requestFullHistory'),
         getSyncStatus: call('getSyncStatus'),
         selectTransactions: call('selectTransactions'),
         countTransactions: call('countTransactions'),
-        query: call('query'),
-        whenIdle: call('whenIdle'),
         // The store on the other side stops first, then the client lets go of the port.
         dispose: () =>
             call('dispose')().finally(() => {

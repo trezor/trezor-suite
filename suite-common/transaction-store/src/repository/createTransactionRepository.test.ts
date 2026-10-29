@@ -21,7 +21,7 @@ const setUp = async () => {
     const sqlite = await testCreateTransactionStoreSqlite();
     migrateTransactionStoreSchema({ sqlite });
     const repository = createTransactionRepository({ sqlite });
-    repository.upsertAccounts([btcAccount, ethAccount]);
+    repository.replaceAccounts([btcAccount, ethAccount]);
 
     return { sqlite, repository };
 };
@@ -30,7 +30,6 @@ describe(createTransactionRepository.name, () => {
     it('keeps the accounts of each network', async () => {
         const { sqlite, repository } = await setUp();
 
-        expect(repository.selectAccounts({ symbol: asNetworkSymbol('btc') })).toEqual([btcAccount]);
         expect(repository.selectAccount('eth-account')).toEqual(ethAccount);
         expect(repository.selectAccount('unknown')).toBeUndefined();
         sqlite.dispose();
@@ -135,7 +134,7 @@ describe(createTransactionRepository.name, () => {
         sqlite.dispose();
     });
 
-    it("tracks an account's sync state, with the newest block it holds", async () => {
+    it("tracks an account's sync state", async () => {
         const { sqlite, repository } = await setUp();
         repository.upsertTransactions({
             accountKey: 'btc-account',
@@ -154,13 +153,11 @@ describe(createTransactionRepository.name, () => {
 
         expect(repository.selectSyncState('btc-account')).toEqual({
             isComplete: true,
-            newestBlockHeight: 9,
             lastSyncedAt: 1234,
             lastError: null,
         });
         expect(repository.selectSyncState('eth-account')).toEqual({
             isComplete: false,
-            newestBlockHeight: null,
             lastSyncedAt: null,
             lastError: null,
         });
@@ -180,28 +177,11 @@ describe(createTransactionRepository.name, () => {
             lastError: null,
         });
 
-        repository.removeAccounts(['btc-account']);
+        repository.replaceAccounts([ethAccount]);
 
         expect(repository.selectAccount('btc-account')).toBeUndefined();
         expect(repository.selectTransactions({ accountKeys: ['btc-account'] })).toEqual([]);
         expect(repository.selectSyncState('btc-account').isComplete).toBe(false);
-        sqlite.dispose();
-    });
-
-    it('answers read-only queries and refuses writes through them', async () => {
-        const { sqlite, repository } = await setUp();
-
-        expect(
-            repository.selectRows({
-                sql: 'SELECT account_key FROM accounts WHERE symbol = ?',
-                parameters: ['eth'],
-            }),
-        ).toEqual({ success: true, payload: [{ account_key: 'eth-account' }] });
-        expect(repository.selectRows({ sql: 'DELETE FROM accounts', parameters: [] })).toEqual({
-            success: false,
-            error: { type: 'QueryFailed' },
-        });
-        expect(repository.selectAccounts({})).toHaveLength(2);
         sqlite.dispose();
     });
 
@@ -250,26 +230,20 @@ describe(createTransactionRepository.name, () => {
         );
         expect(repository.countTransactions({ accountKeys: ['eth-account'] })).toBe(3);
         expect(
-            repository.selectRows({
+            sqlite.exec({
                 sql: 'SELECT kind, contract, direction, amount, decimals FROM transfers WHERE txid = ?',
                 parameters: ['token'],
-            }),
-        ).toEqual({
-            success: true,
-            payload: [
-                { kind: 'token', contract: usdc, direction: 'recv', amount: '100', decimals: 6 },
-            ],
-        });
+            }).rows,
+        ).toEqual([
+            { kind: 'token', contract: usdc, direction: 'recv', amount: '100', decimals: 6 },
+        ]);
         sqlite.dispose();
     });
 
     it("rewrites a transaction's transfers when it changes, and drops them with it", async () => {
         const { sqlite, repository } = await setUp();
         const countTransfers = () =>
-            repository.selectRows({
-                sql: 'SELECT COUNT(*) AS count FROM transfers',
-                parameters: [],
-            });
+            sqlite.exec({ sql: 'SELECT COUNT(*) AS count FROM transfers', parameters: [] }).rows;
         repository.upsertTransactions({
             accountKey: 'btc-account',
             transactions: [mockTransaction({ txid: 'tx', blockHeight: undefined })],
@@ -280,17 +254,17 @@ describe(createTransactionRepository.name, () => {
             transactions: [mockTransaction({ txid: 'tx', blockHeight: 9 })],
         });
 
-        expect(countTransfers()).toEqual({ success: true, payload: [{ count: 1 }] });
+        expect(countTransfers()).toEqual([{ count: 1 }]);
         expect(
-            repository.selectRows({
+            sqlite.exec({
                 sql: 'SELECT block_height FROM transfers WHERE txid = ?',
                 parameters: ['tx'],
-            }),
-        ).toEqual({ success: true, payload: [{ block_height: 9 }] });
+            }).rows,
+        ).toEqual([{ block_height: 9 }]);
 
-        repository.removeAccounts(['btc-account']);
+        repository.replaceAccounts([ethAccount]);
 
-        expect(countTransfers()).toEqual({ success: true, payload: [{ count: 0 }] });
+        expect(countTransfers()).toEqual([{ count: 0 }]);
         sqlite.dispose();
     });
 
@@ -309,16 +283,14 @@ describe(createTransactionRepository.name, () => {
         const result = repository.replaceAccounts([ethAccount, ltcAccount]);
 
         expect(result).toEqual({ removedAccountKeys: ['btc-account'] });
-        expect(repository.selectAccounts({}).map(({ accountKey }) => accountKey)).toEqual([
-            'eth-account',
-            'ltc-account',
-        ]);
+        expect(repository.selectAccount('btc-account')).toBeUndefined();
+        expect(repository.selectAccount('ltc-account')).toEqual(ltcAccount);
         expect(
-            repository.selectRows({
+            sqlite.exec({
                 sql: 'SELECT (SELECT COUNT(*) FROM transactions) + (SELECT COUNT(*) FROM transfers) AS count',
                 parameters: [],
-            }),
-        ).toEqual({ success: true, payload: [{ count: 0 }] });
+            }).rows,
+        ).toEqual([{ count: 0 }]);
         sqlite.dispose();
     });
 });

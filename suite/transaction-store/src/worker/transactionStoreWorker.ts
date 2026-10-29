@@ -34,9 +34,8 @@ import {
 } from './transactionStoreWorkerProtocol';
 
 const DATABASE_NAME = 'trezor-transaction-store';
-// Larger than a screen's page: the backfill walks the whole history, and fewer requests are faster.
+// Larger than a screen's page: walking a whole history takes fewer requests.
 const PAGE_SIZE = 50;
-const MAX_CONCURRENT_JOBS_PER_NETWORK = 2;
 
 // In a worker, `self` posts to the app without a target origin, unlike a window.
 const workerPort = self as unknown as TransactionStorePort;
@@ -87,7 +86,6 @@ const startTransactionStoreWorker = async (): Promise<Dispose | null> => {
             pageSize: PAGE_SIZE,
         }),
         now: () => Date.now(),
-        maxConcurrentJobsPerNetwork: MAX_CONCURRENT_JOBS_PER_NETWORK,
     });
 
     if (!started.success) {

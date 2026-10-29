@@ -18,26 +18,26 @@ import {
 } from './transactionStoreQueries';
 import { selectIsTransactionStoreActive } from './transactionStoreSelectors';
 
-const useStoredTransactionCounts = () => {
+const useStoredTransactionCounts = (accountKeys: string[]) => {
     const { getTransactionStoreService } = useServices(injectGetTransactionStoreService);
 
     return useQuery({
         // Under the transactions key but no account's, so it refetches whenever any rows change.
-        queryKey: [...transactionStoreQueryKeys.allTransactions(), { kind: 'counts' }],
+        queryKey: [...transactionStoreQueryKeys.allTransactions(), { counts: accountKeys }],
         queryFn: async () => {
-            const result = await getTransactionStoreService().transactionStore.query({
-                sql: 'SELECT account_key, COUNT(*) AS count FROM transactions GROUP BY account_key',
-                parameters: [],
-            });
-
-            return new Map(
-                result.success ? result.payload.map(row => [row.account_key, row.count]) : [],
+            const { transactionStore } = getTransactionStoreService();
+            const counts = await Promise.all(
+                accountKeys.map(accountKey =>
+                    transactionStore.countTransactions({ accountKeys: [accountKey] }),
+                ),
             );
+
+            return new Map(accountKeys.map((accountKey, index) => [accountKey, counts[index]]));
         },
     });
 };
 
-const describeStatus = (status: AccountSyncStatus | undefined, count: unknown) => {
+const describeStatus = (status: AccountSyncStatus | undefined, count: number | undefined) => {
     if (status === undefined) return 'Not registered';
     if (status.lastSyncedAt === null && status.status === 'idle') return 'Not asked for yet';
 
@@ -48,7 +48,7 @@ const describeStatus = (status: AccountSyncStatus | undefined, count: unknown) =
             : `synced ${new Date(status.lastSyncedAt).toLocaleTimeString()}`;
     const error = status.lastError === null ? '' : ` · ${status.lastError}`;
 
-    return `${status.status} · ${String(count ?? 0)} transactions (${history}) · ${syncedAt}${error}`;
+    return `${status.status} · ${count ?? 0} transactions (${history}) · ${syncedAt}${error}`;
 };
 
 const getAccountTitle = (account: Account) =>
@@ -58,12 +58,13 @@ const getAccountTitle = (account: Account) =>
 const TransactionStoreAccounts = () => {
     const { getTransactionStoreService } = useServices(injectGetTransactionStoreService);
     const accounts = useSelector(selectAccounts).filter(account => account.visible);
-    const { data: statuses } = useAccountSyncStatuses(accounts.map(({ key }) => key));
-    const { data: counts } = useStoredTransactionCounts();
+    const accountKeys = accounts.map(({ key }) => key);
+    const { data: statuses } = useAccountSyncStatuses(accountKeys);
+    const { data: counts } = useStoredTransactionCounts(accountKeys);
     useTransactionStoreInvalidation();
 
-    const requestFullSync = (accountKeys: string[]) =>
-        getTransactionStoreService().transactionStore.requestSync({ accountKeys, mode: 'full' });
+    const requestFullHistory = (accountKey: string) =>
+        getTransactionStoreService().transactionStore.requestFullHistory(accountKey);
 
     return (
         <>
@@ -79,7 +80,7 @@ const TransactionStoreAccounts = () => {
                         <SectionItem.Button
                             size="small"
                             priority="secondary"
-                            onClick={() => requestFullSync([account.key])}
+                            onClick={() => requestFullHistory(account.key)}
                         >
                             Fetch all
                         </SectionItem.Button>

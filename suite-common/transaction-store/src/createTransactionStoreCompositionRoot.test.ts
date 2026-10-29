@@ -24,19 +24,20 @@ const ltcAccount: TransactionStoreAccount = {
 
 const setUp = async () => {
     const sqlite = await testCreateTransactionStoreSqlite();
-    const fetchTransactionsPage = mock<TransactionSource['fetchTransactionsPage']>(({ account }) =>
-        Promise.resolve(
-            ok({
-                transactions: [mockTransaction({ txid: `${account.accountKey}-tx` })],
-                hasNextPage: true,
-            }),
-        ),
+    // Two pages of history per account.
+    const fetchTransactionsPage = mock<TransactionSource['fetchTransactionsPage']>(
+        ({ account, page }) =>
+            Promise.resolve(
+                ok({
+                    transactions: [mockTransaction({ txid: `${account.accountKey}-tx${page}` })],
+                    hasNextPage: page < 2,
+                }),
+            ),
     );
     const deps: TransactionStoreCompositionRootDeps = {
         sqlite,
         transactionSource: { fetchTransactionsPage },
         now: () => 1000,
-        maxConcurrentJobsPerNetwork: 2,
     };
     const started = createTransactionStoreCompositionRoot(deps);
 
@@ -46,15 +47,14 @@ const setUp = async () => {
     await store.setAccounts([btcAccount, ltcAccount]);
     const getFetchedAccountKeys = () =>
         fetchTransactionsPage.mock.calls.map(([{ account }]) => account.accountKey);
+    const getFetchedPages = () => fetchTransactionsPage.mock.calls.map(([{ page }]) => page);
 
-    return { sqlite, store, getFetchedAccountKeys };
+    return { sqlite, store, getFetchedAccountKeys, getFetchedPages };
 };
 
 describe('the transaction store, lazily', () => {
     it('downloads nothing for the accounts it is only told about', async () => {
-        const { sqlite, store, getFetchedAccountKeys } = await setUp();
-
-        await store.whenIdle();
+        const { sqlite, getFetchedAccountKeys } = await setUp();
 
         expect(getFetchedAccountKeys()).toEqual([]);
         sqlite.dispose();
@@ -67,7 +67,7 @@ describe('the transaction store, lazily', () => {
 
         expect(status).toMatchObject({ accountKey: 'btc', lastSyncedAt: 1000, isComplete: false });
         expect(await store.selectTransactions({ accountKeys: ['btc'] })).toMatchObject([
-            { txid: 'btc-tx' },
+            { txid: 'btc-tx1' },
         ]);
 
         await store.ensureSynced(['btc']);
@@ -81,9 +81,20 @@ describe('the transaction store, lazily', () => {
         await store.ensureSynced(['btc']);
 
         await store.refreshAccounts(['btc', 'ltc']);
-        await store.whenIdle();
+        await store.ensureSynced(['btc']);
 
         expect(getFetchedAccountKeys()).toEqual(['btc', 'btc']);
+        sqlite.dispose();
+    });
+
+    it('syncs again what was asked for while it synced, before it settles', async () => {
+        const { sqlite, store, getFetchedPages } = await setUp();
+
+        const synced = store.ensureSynced(['btc']);
+        await store.requestFullHistory('btc');
+
+        expect(await synced).toMatchObject([{ isComplete: true, status: 'idle' }]);
+        expect(getFetchedPages()).toEqual([1, 1, 2]);
         sqlite.dispose();
     });
 

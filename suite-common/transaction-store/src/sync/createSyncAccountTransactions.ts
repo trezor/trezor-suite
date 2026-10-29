@@ -18,7 +18,7 @@ export type SyncAccountTransactionsParams = {
 
 export type SyncAccountTransactions = (
     params: SyncAccountTransactionsParams,
-) => Promise<Result<{ hasChanged: boolean }, TransactionSourceErrorType>>;
+) => Promise<Result<void, TransactionSourceErrorType>>;
 
 export type SyncAccountTransactionsDep = { syncAccountTransactions: SyncAccountTransactions };
 
@@ -30,13 +30,12 @@ export const createSyncAccountTransactions =
         // A complete history only ever grows at its newest end.
         const isWalkingToTheEnd = mode === 'full' && !syncState.isComplete;
         let { isComplete } = syncState;
-        let hasChanged = false;
 
         for (let page = 1; ; page++) {
             const account = deps.transactionRepository.selectAccount(accountKey);
 
             if (account === undefined) {
-                return ok({ hasChanged });
+                return ok();
             }
 
             const pageResult = await deps.transactionSource.fetchTransactionsPage({
@@ -57,7 +56,7 @@ export const createSyncAccountTransactions =
 
             // Removed while the page was on its way; its rows are gone and must stay gone.
             if (deps.transactionRepository.selectAccount(accountKey) === undefined) {
-                return ok({ hasChanged });
+                return ok();
             }
 
             const { transactions, hasNextPage } = pageResult.payload;
@@ -69,10 +68,7 @@ export const createSyncAccountTransactions =
                 accountKey,
                 transactions,
             });
-            if (changes > 0) {
-                hasChanged = true;
-                deps.onTransactionsStored(accountKey);
-            }
+            if (changes > 0) deps.onTransactionsStored(accountKey);
 
             if (!hasNextPage) {
                 isComplete = true;
@@ -95,5 +91,5 @@ export const createSyncAccountTransactions =
             lastError: null,
         });
 
-        return ok({ hasChanged });
+        return ok();
     };

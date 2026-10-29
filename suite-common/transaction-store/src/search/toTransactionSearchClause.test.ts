@@ -21,7 +21,7 @@ const setUp = async () => {
     const sqlite = await testCreateTransactionStoreSqlite();
     migrateTransactionStoreSchema({ sqlite });
     const repository = createTransactionRepository({ sqlite });
-    repository.upsertAccounts([
+    repository.replaceAccounts([
         { accountKey: 'btc', symbol: asNetworkSymbol('btc'), descriptor: 'xpub' },
     ]);
     repository.upsertTransactions({
