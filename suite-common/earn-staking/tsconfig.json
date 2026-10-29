@@ -10,6 +10,8 @@
         {
             "path": "../../networks/network-module/network-module-types"
         },
+        { "path": "../../packages/redux-utils" },
+        { "path": "../../packages/utils" },
         { "path": "../../packages/requirements" }
     ]
 }
