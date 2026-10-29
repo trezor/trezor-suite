@@ -10,3 +10,5 @@ export * from './instrumentation';
 export * from './store';
 export * from './storeReader';
 export * from './publishRuns';
+export * from './browserHistory';
+export * from './lighthouseFlow';
