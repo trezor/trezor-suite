@@ -1,4 +1,4 @@
-const { TX_CACHE } = global.TestUtils;
+import { getRefTxs } from './refTxs';
 
 const signTransactionReplace: TestCase = {
     method: 'signTransaction',
@@ -40,7 +40,7 @@ const signTransactionReplace: TestCase = {
                         orig_index: 1,
                     },
                 ],
-                refTxs: TX_CACHE(['beafc7', '50f6f1']),
+                refTxs: getRefTxs(['beafc7', '50f6f1']),
             },
             result: {
                 serializedTx:
@@ -85,7 +85,7 @@ const signTransactionReplace: TestCase = {
                         orig_index: 0,
                     },
                 ],
-                refTxs: TX_CACHE(['5e7667', 'efaa41', '334cd7']),
+                refTxs: getRefTxs(['5e7667', 'efaa41', '334cd7']),
             },
             result: {
                 serializedTx:
@@ -129,7 +129,7 @@ const signTransactionReplace: TestCase = {
                     },
                 ],
                 locktime: 1348713,
-                refTxs: TX_CACHE(['43d273', '70f987']),
+                refTxs: getRefTxs(['43d273', '70f987']),
             },
             result: {
                 serializedTx:
@@ -211,7 +211,7 @@ const signTransactionReplace: TestCase = {
                         script_type: 'PAYTOP2SHWITNESS',
                     },
                 ],
-                refTxs: TX_CACHE(['5e7667', 'efaa41', '334cd7', '6673b7', 'ed89ac', '927784']),
+                refTxs: getRefTxs(['5e7667', 'efaa41', '334cd7', '6673b7', 'ed89ac', '927784']),
             },
             result: {
                 serializedTx:
@@ -255,7 +255,7 @@ const signTransactionReplace: TestCase = {
                         orig_index: 1,
                     },
                 ],
-                refTxs: TX_CACHE(['408397', 'ba917a']),
+                refTxs: getRefTxs(['408397', 'ba917a']),
             },
             result: {
                 serializedTx:
@@ -306,7 +306,7 @@ const signTransactionReplace: TestCase = {
                     },
                 ],
                 locktime: 1904477,
-                refTxs: TX_CACHE(['2d5dfc', '5bf10d', '56ebd8']),
+                refTxs: getRefTxs(['2d5dfc', '5bf10d', '56ebd8']),
             },
             result: {
                 serializedTx:
@@ -351,7 +351,7 @@ const signTransactionReplace: TestCase = {
                         orig_index: 0,
                     },
                 ],
-                refTxs: TX_CACHE(['5e7667', 'efaa41', '334cd7']),
+                refTxs: getRefTxs(['5e7667', 'efaa41', '334cd7']),
             },
             result: {
                 serializedTx:
@@ -386,7 +386,7 @@ const signTransactionReplace: TestCase = {
                         orig_index: 0,
                     },
                 ],
-                refTxs: TX_CACHE(['901593']), // Taproot RBF still requires streaming original txs (unlike previous txs)
+                refTxs: getRefTxs(['901593']), // Taproot RBF still requires streaming original txs (unlike previous txs)
             },
             result: {
                 serializedTx:

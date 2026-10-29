@@ -58,47 +58,43 @@ const resolveWorkerUrlsPlugin = (): Plugin => ({
 });
 
 /**
- * Vite plugin that provides the TX_CACHE data as a virtual module.
- * In Node environment, __txcache__/index.js uses fs.readdirSync which works fine.
- * In browser environment, we need to pre-read all JSON cache files at build time
- * and serve them as a virtual module.
+ * Serves the referenced transaction fixtures as `virtual:ref-txs` so no `fs` reaches the browser
+ * (see __fixtures__/refTxs.ts). Walks the fixtures dir at build time into a map keyed by the first
+ * 6 characters of the tx hash, adding the full `hash` required by @trezor/connect params.
  */
-function txCachePlugin(): Plugin {
-    const virtualModuleId = 'virtual:txcache';
+function refTxsPlugin(): Plugin {
+    const virtualModuleId = 'virtual:ref-txs';
     const resolvedVirtualModuleId = '\0' + virtualModuleId;
+    const refTxsRoot = path.resolve(e2eDir, './__fixtures__/refTxs');
 
-    const cacheFiles = (dir: string, cache: Record<string, unknown> = {}) => {
-        const dirFiles = fs.readdirSync(dir);
-        dirFiles.forEach(file => {
-            const filePath = path.resolve(dir, file);
-            if (fs.statSync(filePath).isDirectory()) {
-                cacheFiles(filePath, cache);
-            } else if (file.endsWith('.json')) {
-                const key = file.substring(0, 6);
-                if (key in cache) throw Error(`TX_CACHE duplicated key: ${key} file: ${file}`);
-                const rawJson = fs.readFileSync(filePath, 'utf-8');
-                const content = JSON.parse(rawJson);
-                cache[key] = {
-                    ...content,
-                    hash: file.split('.')[0],
+    const readRefTxs = (dir: string, out: Record<string, unknown> = {}) => {
+        fs.readdirSync(dir, { withFileTypes: true }).forEach(entry => {
+            const absolutePath = path.join(dir, entry.name);
+            if (entry.isDirectory()) {
+                readRefTxs(absolutePath, out);
+            } else if (entry.name.endsWith('.json')) {
+                const shortHash = entry.name.substring(0, 6);
+                if (shortHash in out) {
+                    throw Error(`refTx fixture duplicated key: ${shortHash} file: ${entry.name}`);
+                }
+                out[shortHash] = {
+                    ...JSON.parse(fs.readFileSync(absolutePath, 'utf-8')),
+                    hash: entry.name.split('.')[0],
                 };
             }
         });
 
-        return cache;
+        return out;
     };
 
     return {
-        name: 'tx-cache',
+        name: 'ref-txs',
         resolveId(id: string) {
             if (id === virtualModuleId) return resolvedVirtualModuleId;
         },
         load(id: string) {
             if (id === resolvedVirtualModuleId) {
-                const cacheDir = path.resolve(e2eDir, './__txcache__');
-                const cache = cacheFiles(cacheDir);
-
-                return `export const CACHE = ${JSON.stringify(cache)};`;
+                return `export const REF_TXS = ${JSON.stringify(readRefTxs(refTxsRoot))};`;
             }
         },
     };
@@ -262,7 +258,7 @@ export default defineConfig(
             },
             plugins: [
                 commonFixturesPlugin(),
-                txCachePlugin(),
+                refTxsPlugin(),
                 resolveWorkerUrlsPlugin(),
                 ...(isWebProject
                     ? [
@@ -295,7 +291,6 @@ export default defineConfig(
                 'process.env.TESTS_EXCLUDED_METHODS': JSON.stringify(
                     process.env.TESTS_EXCLUDED_METHODS,
                 ),
-                'process.env.TESTS_USE_TX_CACHE': JSON.stringify(process.env.TESTS_USE_TX_CACHE),
                 'process.env.TESTS_USE_WS_CACHE': JSON.stringify(process.env.TESTS_USE_WS_CACHE),
                 'process.env.TESTS_TRANSPORT': JSON.stringify(process.env.TESTS_TRANSPORT),
                 'process.env.EMULATOR_START_OPTS': JSON.stringify(process.env.EMULATOR_START_OPTS),

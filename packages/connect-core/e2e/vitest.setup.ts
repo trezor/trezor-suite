@@ -11,28 +11,6 @@ if (typeof process !== 'undefined' && typeof process.nextTick !== 'function') {
     };
 }
 
-// Load TX cache data: Node reads JSON files at runtime via fs,
-// browser uses a pre-built virtual module (see txCachePlugin in vitest.config.ts).
-const CACHE: Record<string, unknown> =
-    typeof window === 'undefined'
-        ? (await import('./__txcache__/index.js')).CACHE
-        : (await import('virtual:txcache')).CACHE;
-
-globalThis.TestUtils = {
-    ...globalThis.TestUtils,
-    TX_CACHE: (txs: string[], force = false) => {
-        if (process.env.TESTS_USE_TX_CACHE === 'false' && !force) return [];
-
-        return txs.map((hash: string) => {
-            if (!CACHE[hash]) {
-                throw Error(`TX_CACHE for ${hash} is undefined`);
-            }
-
-            return CACHE[hash];
-        });
-    },
-};
-
 // Use the bundled firmware release config instead of fetching it from data.trezor.io on every init.
 vi.mock(import('../src/data/firmwareInfo'), async importOriginal => ({
     ...(await importOriginal()),

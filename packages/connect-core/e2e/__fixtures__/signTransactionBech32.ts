@@ -1,4 +1,4 @@
-const { TX_CACHE } = global.TestUtils;
+import { getRefTxs } from './refTxs';
 
 const signTransactionBech32: TestCase = {
     method: 'signTransaction',
@@ -39,7 +39,7 @@ const signTransactionBech32: TestCase = {
                     },
                 ],
                 locktime: 1287124,
-                refTxs: TX_CACHE(['e294c4']),
+                refTxs: getRefTxs(['e294c4']),
             },
             result: {
                 signatures: [
@@ -90,7 +90,7 @@ const signTransactionBech32: TestCase = {
                     },
                 ],
                 locktime: 1446137,
-                refTxs: TX_CACHE(['70f987', 'f405b5']),
+                refTxs: getRefTxs(['70f987', 'f405b5']),
             },
             result: {
                 signatures: [
@@ -129,7 +129,7 @@ const signTransactionBech32: TestCase = {
                         script_type: 'PAYTOWITNESS',
                     },
                 ],
-                refTxs: TX_CACHE(['ae0949']),
+                refTxs: getRefTxs(['ae0949']),
             },
             result: {
                 signatures: [
