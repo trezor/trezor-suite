@@ -2399,12 +2399,12 @@ export const messages = {
                 accounts: 'Accounts',
             },
             balanceSection: {
-                title: 'Your balance',
-                accountCount: 'on {count, plural, one {# account} other {# accounts}}',
-                asset: 'Asset',
+                balance: 'Balance',
+                accountCount: 'All accounts ({count})',
             },
             earnSection: {
                 title: 'Earn',
+                viewAll: 'View all',
                 available: 'Available',
                 staking: 'Staking',
             },
