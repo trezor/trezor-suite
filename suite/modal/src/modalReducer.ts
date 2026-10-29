@@ -1,10 +1,12 @@
 import { type UnknownAction } from '@reduxjs/toolkit';
 
 import { deviceActions } from '@suite-common/device';
-import { type TrezorDevice, type UserContextPayload } from '@suite-common/suite-types';
+import { type UserContextPayload } from '@suite-common/suite-types';
 import { THP_BUTTON_REQUESTS_NAMES } from '@suite-common/thp';
 import {
     type Device,
+    type DeviceButtonRequestCode,
+    type PROTO,
     UI_EVENTS,
     UI_REQUESTS,
     type UiRequestButtonData,
@@ -32,12 +34,20 @@ import {
 
 export type State = ModalState & { preserve?: boolean; preserveOnTxTimeout?: boolean };
 
+type DeviceContextWindowType =
+    | DeviceButtonRequestCode
+    | PROTO.WordRequestType
+    | typeof UI_REQUESTS.REQUEST_PIN
+    | typeof UI_REQUESTS.REQUEST_PASSPHRASE
+    | typeof UI_EVENTS.PIN_INVALID
+    | typeof UI_EVENTS.PASSPHRASE_ON_DEVICE;
+
 export type ModalState =
     | { context: typeof MODAL_CONTEXT_NONE }
     | {
           context: typeof MODAL_CONTEXT_DEVICE;
-          device: TrezorDevice | Device;
-          windowType?: string;
+          device: Device;
+          windowType: DeviceContextWindowType;
           data?: UiRequestButtonData;
           requestId?: string;
       }
