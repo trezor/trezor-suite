@@ -58,7 +58,7 @@ const desktopTest = suiteTest.extend({
             artefactFolder: testInfo.outputDir,
             viewport: { width: 1600, height: 1000 },
             remoteDebuggingPort: 9222,
-            recordVideo: false,
+            skipVideoRecording: true,
         });
         enhancePage(suite.window);
         await use(suite.window);
