@@ -16,7 +16,7 @@ describe('baseCurrency', () => {
     });
 
     describe('isFiatBaseCurrencyCode', () => {
-        it.each(['usd', 'eur'])(`should return true for [%s]`, code => {
+        it.each(['usd', 'eur', 'all', 'aoa', 'kgs', 'rsd'])(`should return true for [%s]`, code => {
             expect(isFiatBaseCurrencyCode(code)).toBe(true);
         });
 
