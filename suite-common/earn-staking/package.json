@@ -13,10 +13,14 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@reduxjs/toolkit": "2.13.0",
         "@suite-common/earn-staking-common": "workspace:*",
+        "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@trezor/dependency-injection": "workspace:*",
         "@trezor/network-module-types": "workspace:*",
+        "@trezor/redux-utils": "workspace:*",
+        "@trezor/utils": "workspace:*",
         "zod": "4.6.7"
     },
     "devDependencies": {
