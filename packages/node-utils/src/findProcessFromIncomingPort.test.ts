@@ -285,7 +285,30 @@ describe('findProcessFromIncomingPort for an accepted connection', () => {
         expect(processInfo).toEqual({ name: 'client', pid: '300', fullPath: '', warning: true });
     });
 
-    test('identifies a snap-packaged Linux process by the path its revisions share', async () => {
+    // A snap installed from the store is revisioned by a number, a sideloaded one by `x1`, `x2`.
+    test.each(['142', 'x1'])(
+        'identifies a snap-packaged Linux process at revision %s by the path its revisions share',
+        async revision => {
+            setPlatform('linux');
+            mockCommands([
+                [
+                    'lsof',
+                    'client 300 user 18u IPv4 207199 0t0 TCP 127.0.0.1:40000->127.0.0.1:21335 (ESTABLISHED)',
+                ],
+            ]);
+            jest.spyOn(fs, 'readlink').mockResolvedValue(`/snap/client/${revision}/usr/bin/client`);
+
+            const processInfo = await findProcessFromIncomingPort(40000, true, connection);
+
+            // The revision in the path changes with every refresh of the snap, so permissions
+            // remembered for the app would not survive its updates.
+            expect(processInfo?.fullPath).toBe('/snap/client/current/usr/bin/client');
+        },
+    );
+
+    // Distros without a real /snap directory mount snaps under /var/lib/snapd/snap, where a
+    // classic snap, which runs in the host's mount namespace, is rendered.
+    test('identifies a classic snap under the snapd mount dir by the path its revisions share', async () => {
         setPlatform('linux');
         mockCommands([
             [
@@ -293,18 +316,44 @@ describe('findProcessFromIncomingPort for an accepted connection', () => {
                 'client 300 user 18u IPv4 207199 0t0 TCP 127.0.0.1:40000->127.0.0.1:21335 (ESTABLISHED)',
             ],
         ]);
-        jest.spyOn(fs, 'readlink').mockResolvedValue('/snap/client/142/usr/bin/client');
+        jest.spyOn(fs, 'readlink').mockResolvedValue(
+            '/var/lib/snapd/snap/client/142/usr/bin/client',
+        );
 
         const processInfo = await findProcessFromIncomingPort(40000, true, connection);
 
-        // The revision in the path changes with every refresh of the snap, so permissions
-        // remembered for the app would not survive its updates.
-        expect(processInfo?.fullPath).toBe('/snap/client/current/usr/bin/client');
+        expect(processInfo?.fullPath).toBe('/var/lib/snapd/snap/client/current/usr/bin/client');
     });
 
-    // Documents the behaviour today: an AppImage runs from a mountpoint made up anew on every
-    // launch, and that mountpoint is part of the path.
-    test('identifies an AppImage Linux process by the mountpoint it runs from', async () => {
+    // The AppImage runtime mounts under `$TMPDIR`, falling back to /tmp when it is unset.
+    test.each(['/tmp', '/run/user/1000'])(
+        'reports no path for an AppImage Linux process, which runs from a new mountpoint under %s on every launch',
+        async tmpDir => {
+            setPlatform('linux');
+            mockCommands([
+                [
+                    'lsof',
+                    'client 300 user 18u IPv4 207199 0t0 TCP 127.0.0.1:40000->127.0.0.1:21335 (ESTABLISHED)',
+                ],
+            ]);
+            jest.spyOn(fs, 'readlink').mockResolvedValue(
+                `${tmpDir}/.mount_clientAbC123/usr/bin/client`,
+            );
+
+            const processInfo = await findProcessFromIncomingPort(40000, true, connection);
+
+            // The mountpoint identifies nothing, so the caller counts as unidentified instead of
+            // as a different app on every start.
+            expect(processInfo).toEqual({
+                name: 'client',
+                pid: '300',
+                fullPath: '',
+                warning: true,
+            });
+        },
+    );
+
+    test('reports no path for a flatpak Linux process, which runs from a path only its own sandbox has', async () => {
         setPlatform('linux');
         mockCommands([
             [
@@ -312,14 +361,17 @@ describe('findProcessFromIncomingPort for an accepted connection', () => {
                 'client 300 user 18u IPv4 207199 0t0 TCP 127.0.0.1:40000->127.0.0.1:21335 (ESTABLISHED)',
             ],
         ]);
-        jest.spyOn(fs, 'readlink').mockResolvedValue('/tmp/.mount_clientAbC123/usr/bin/client');
+        jest.spyOn(fs, 'readlink').mockResolvedValue('/app/bin/client');
 
         const processInfo = await findProcessFromIncomingPort(40000, true, connection);
 
+        // /app is where the flatpak's own files are mounted, so the path names nothing on the
+        // host and every flatpak with a client of this name would be the same app.
         expect(processInfo).toEqual({
             name: 'client',
             pid: '300',
-            fullPath: '/tmp/.mount_clientAbC123/usr/bin/client',
+            fullPath: '',
+            warning: true,
         });
     });
 
