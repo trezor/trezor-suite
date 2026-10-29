@@ -55,6 +55,9 @@ const IPV4_MAPPED_IPV6 = /^::ffff:(\d{1,3}(?:\.\d{1,3}){3})$/;
 // replaced, as an upgrade of a running app does.
 const DELETED_EXE_SUFFIX = ' (deleted)';
 
+// The revision a snap was last refreshed to, which its exe path carries.
+const SNAP_REVISION_PATH = /^(\/snap\/[^/]+)\/\d+\//;
+
 // A literal "... (deleted)" must refer to the running executable itself. A different file can
 // exist at that path while the kernel is marking an unlinked executable.
 const resolveExePath = async (exe: string, processExePath: string): Promise<string | undefined> => {
@@ -192,6 +195,10 @@ export async function findProcessFromIncomingPort(
                         return { name: sanitizedName, pid, fullPath: '', warning: true };
                     }
 
+                    // A snap's revision changes with every refresh, while `current` is the
+                    // symlink snapd keeps pointing at the active one, so permissions remembered
+                    // for the app survive its updates.
+                    const installedPath = fullPath.replace(SNAP_REVISION_PATH, '$1/current/');
                     // Binaries can be all over the place on Linux, so we don't check the path
 
                     // A client started by an interpreter reports the interpreter, so the path
@@ -200,7 +207,7 @@ export async function findProcessFromIncomingPort(
                     // tell two of them apart, and for MCP not even that, because its origin is
                     // one constant for every caller; see `isSameConnectApp`, which compares the
                     // source type, the origin and this path, and never the declared manifest.
-                    return { name: sanitizedName, pid, fullPath };
+                    return { name: sanitizedName, pid, fullPath: installedPath };
                 }
             }
 
