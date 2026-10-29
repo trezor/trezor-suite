@@ -1,5 +1,6 @@
 import childProcess, { type ChildProcess } from 'child_process';
 import { EventEmitter } from 'events';
+import { type Stats, promises as fs } from 'fs';
 import net from 'net';
 
 import { findProcessFromIncomingPort } from './findProcessFromIncomingPort';
@@ -96,33 +97,108 @@ describe('findProcessFromIncomingPort for an accepted connection', () => {
                     lsofLine('client', 300, '127.0.0.1:40000->127.0.0.1:21335 (ESTABLISHED)'),
                 ].join('\n'),
             ],
-            ['cat /proc/', '/usr/bin/client\0'],
         ]);
+        jest.spyOn(fs, 'readlink').mockResolvedValue('/usr/bin/client');
 
         const processInfo = await findProcessFromIncomingPort(40000, true, connection);
 
         expect(processInfo?.pid).toBe('300');
     });
 
-    // Documents the behaviour the path of a Linux client is read with today: it is whatever
-    // argv[0] the process was started with, not the executable the kernel runs.
-    test('identifies a Linux process by the argv[0] it was started with, not by its executable', async () => {
+    test('identifies a Linux process by its executable, not by the argv[0] it was started with', async () => {
         setPlatform('linux');
         const spawn = mockCommands([
             [
                 'lsof',
                 'node 300 user 18u IPv4 207199 0t0 TCP 127.0.0.1:40000->127.0.0.1:21335 (ESTABLISHED)',
             ],
-            // A process started as `/usr/bin/google-chrome script.js`, a path it picked for
-            // itself; its executable is /usr/local/bin/node.
+            // Answered so that an implementation reading argv[0] reports a different path
+            // instead of failing to spawn at all.
             ['cat /proc/300/cmdline', '/usr/bin/google-chrome\0script.js\0'],
         ]);
+        jest.spyOn(fs, 'readlink').mockResolvedValue('/usr/local/bin/node');
 
         const processInfo = await findProcessFromIncomingPort(40000, true, connection);
 
-        expect(processInfo?.fullPath).toBe('/usr/bin/google-chrome');
-        // argv[0] is read with a command of its own, so lsof is not the only one asked.
-        expect(spawn).toHaveBeenCalledTimes(2);
+        expect(processInfo?.fullPath).toBe('/usr/local/bin/node');
+        // Only lsof is asked, so argv[0] is never consulted.
+        expect(spawn).toHaveBeenCalledTimes(1);
+    });
+
+    test('reports the interpreter of a script client, which identifies the runtime not the app', async () => {
+        setPlatform('linux');
+        mockCommands([
+            [
+                'lsof',
+                'python3 300 user 18u IPv4 207199 0t0 TCP 127.0.0.1:40000->127.0.0.1:21335 (ESTABLISHED)',
+            ],
+        ]);
+        jest.spyOn(fs, 'readlink').mockResolvedValue('/usr/bin/python3');
+
+        const processInfo = await findProcessFromIncomingPort(40000, true, connection);
+
+        // Every script the interpreter runs shares this path, so permissions remembered for one
+        // script client cover the next one on the same origin; only the origin tells them apart.
+        expect(processInfo?.fullPath).toBe('/usr/bin/python3');
+    });
+
+    test('identifies a Linux process whose executable was replaced by the path it was installed at', async () => {
+        setPlatform('linux');
+        mockCommands([
+            [
+                'lsof',
+                'client 300 user 18u IPv4 207199 0t0 TCP 127.0.0.1:40000->127.0.0.1:21335 (ESTABLISHED)',
+            ],
+        ]);
+        jest.spyOn(fs, 'readlink').mockResolvedValue('/usr/bin/client (deleted)');
+        // Nothing is at the path the kernel printed, which is what the marker means.
+        jest.spyOn(fs, 'stat').mockRejectedValue(
+            new Error("ENOENT: no such file or directory, stat '/usr/bin/client (deleted)'"),
+        );
+
+        const processInfo = await findProcessFromIncomingPort(40000, true, connection);
+
+        expect(processInfo?.fullPath).toBe('/usr/bin/client');
+    });
+
+    test('keeps the path of a Linux executable whose own name ends in the deleted marker', async () => {
+        setPlatform('linux');
+        mockCommands([
+            [
+                'lsof',
+                'client 300 user 18u IPv4 207199 0t0 TCP 127.0.0.1:40000->127.0.0.1:21335 (ESTABLISHED)',
+            ],
+        ]);
+        jest.spyOn(fs, 'readlink').mockResolvedValue('/usr/bin/client (deleted)');
+        jest.spyOn(fs, 'stat').mockResolvedValue({} as Stats);
+
+        const processInfo = await findProcessFromIncomingPort(40000, true, connection);
+
+        // The file exists at the path as printed, so the suffix is part of its name; stripping
+        // it would hand this binary whatever is remembered for /usr/bin/client.
+        expect(processInfo?.fullPath).toBe('/usr/bin/client (deleted)');
+    });
+
+    test('keeps the Linux process lsof named when its executable cannot be read', async () => {
+        setPlatform('linux');
+        mockCommands([
+            [
+                'lsof',
+                'client 300 user 18u IPv4 207199 0t0 TCP 127.0.0.1:40000->127.0.0.1:21335 (ESTABLISHED)',
+            ],
+        ]);
+        jest.spyOn(fs, 'readlink').mockRejectedValue(
+            new Error("EACCES: permission denied, readlink '/proc/300/exe'"),
+        );
+
+        const processInfo = await findProcessFromIncomingPort(40000, true, connection);
+
+        expect(processInfo).toEqual({
+            name: 'client',
+            pid: '300',
+            fullPath: '',
+            warning: true,
+        });
     });
 
     test('matches an IPv4-mapped IPv6 address as the plain IPv4 form lsof prints', async () => {
@@ -135,8 +211,8 @@ describe('findProcessFromIncomingPort for an accepted connection', () => {
                     'client 300 user 18u IPv4 207199 0t0 TCP 127.0.0.1:40000->127.0.0.1:21335 (ESTABLISHED)',
                 ].join('\n'),
             ],
-            ['cat /proc/', '/usr/bin/client\0'],
         ]);
+        jest.spyOn(fs, 'readlink').mockResolvedValue('/usr/bin/client');
 
         const processInfo = await findProcessFromIncomingPort(40000, true, {
             remoteAddress: '::ffff:127.0.0.1',
@@ -157,8 +233,8 @@ describe('findProcessFromIncomingPort for an accepted connection', () => {
                     'client 300 user 18u IPv6 207199 0t0 TCP [::1]:40000->[::1]:21335 (ESTABLISHED)',
                 ].join('\n'),
             ],
-            ['cat /proc/', '/usr/bin/client\0'],
         ]);
+        jest.spyOn(fs, 'readlink').mockResolvedValue('/usr/bin/client');
 
         const processInfo = await findProcessFromIncomingPort(40000, true, {
             remoteAddress: '::1',
