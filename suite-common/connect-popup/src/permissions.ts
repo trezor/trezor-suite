@@ -85,7 +85,7 @@ export const isSameConnectApp = (app: ConnectCallSource, source: ConnectCallSour
 // path is checked for being a string because persisted grants reach this predicate unvalidated
 // (see the `storageLoad` case of `connectPopupReducer`), and such an entry must be dropped, not
 // thrown on.
-const isIdentifiedProcess = (process: ConnectProcessInfo): boolean =>
+export const isIdentifiedProcess = (process: ConnectProcessInfo): boolean =>
     typeof process.fullPath === 'string' &&
     process.fullPath.trim() !== '' &&
     process.fullPath !== UNKNOWN_PROCESS.fullPath;

@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 
+import { Translation } from '@suite/intl';
+import { isIdentifiedProcess } from '@suite-common/connect-popup';
 import { type ConnectProcessInfo } from '@suite-common/connect-popup/src/connectPopupTypes';
 import { Badge, Icon, Row, Text, Tooltip } from '@trezor/components';
 import { AppWindowIcon, WarningIcon } from '@trezor/icons';
@@ -19,8 +21,17 @@ export const ConnectProcessLabel = ({
     'data-testid': dataTest,
 }: ConnectProcessLabelProps) => {
     if (process.warning) {
+        // A path that identifies nothing, or only repeats the name on the badge, would make a
+        // tooltip that says nothing, so it explains what the warning means instead.
+        const tooltip =
+            isIdentifiedProcess(process) && process.fullPath !== process.name ? (
+                process.fullPath
+            ) : (
+                <Translation id="TR_CONNECT_PROCESS_UNVERIFIED" />
+            );
+
         return (
-            <Tooltip content={process.fullPath}>
+            <Tooltip content={tooltip}>
                 <Badge intent="warning" iconLeft={WarningIcon}>
                     <Text data-testid={dataTest}>{process.name}</Text>
                 </Badge>

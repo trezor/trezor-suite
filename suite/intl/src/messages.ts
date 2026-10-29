@@ -12875,6 +12875,10 @@ export const messages = defineMessages({
         id: 'TR_CONNECT_MODAL_REMEMBER',
         defaultMessage: 'Always allow for this app',
     },
+    TR_CONNECT_PROCESS_UNVERIFIED: {
+        id: 'TR_CONNECT_PROCESS_UNVERIFIED',
+        defaultMessage: 'Suite could not verify which application this is.',
+    },
     TR_WALLETCONNECT_SERVICE_VERIFIED: {
         id: 'TR_WALLETCONNECT_SERVICE_VERIFIED',
         defaultMessage: 'Verified service',
