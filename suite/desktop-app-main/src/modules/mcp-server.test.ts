@@ -490,16 +490,15 @@ describe('MCP server', () => {
             );
         });
 
-        // Documents the behaviour today: the declared name is parsed JSON from a local caller, and
-        // whatever it is reaches the renderer as the caller's name and as the app of the manifest.
-        it('forwards a declared name that is not a string', async () => {
+        it('ignores a declared name that is not a string', async () => {
             const server = await startMcpServer();
             cleanup = server.cleanup;
 
             const popupCall = await initializeAndCallPopup(server, { clientInfo: { name: {} } });
 
-            expect(popupCall.process).toEqual({ name: {}, fullPath: '', warning: true });
-            expect(popupCall.manifest.appName).toEqual({});
+            // The name is a React child in the consent prompt, where an object would throw.
+            expect(popupCall.process).toBeUndefined();
+            expect(popupCall.manifest.appName).toBe('MCP Agent');
         });
 
         it('allows re-initialization after DELETE', async () => {
