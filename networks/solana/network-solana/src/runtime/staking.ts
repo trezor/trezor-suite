@@ -158,6 +158,9 @@ export const stake = async ({
             rentLamports: minimumRent.toString(),
             feeIncludingRentLamports,
             hasSplitInstruction: false,
+            lastValidBlockHeight: Number(
+                transactionMessage.lifetimeConstraint.lastValidBlockHeight,
+            ),
         };
 
         return {
@@ -330,6 +333,9 @@ export const unstake = async ({
             rentLamports: minimumRent.toString(),
             feeIncludingRentLamports,
             hasSplitInstruction: accountsToSplit.length > 0,
+            lastValidBlockHeight: Number(
+                transactionMessage.lifetimeConstraint.lastValidBlockHeight,
+            ),
         };
 
         return { unstakeTx: transactionMessage, unstakeAmount, txMeta };
@@ -394,6 +400,9 @@ export const claim = async ({
             rentLamports: '0',
             feeIncludingRentLamports: feeSummary.feeLamports,
             hasSplitInstruction: false,
+            lastValidBlockHeight: Number(
+                transactionMessage.lifetimeConstraint.lastValidBlockHeight,
+            ),
         };
 
         return {
