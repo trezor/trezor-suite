@@ -62,6 +62,7 @@ export const AssetDetailMarketPrice = ({ assetKey }: AssetDetailMarketPriceProps
                 </Text>
                 <HomeTotalBalance
                     fiatValue={price}
+                    isExact
                     data-testid="@asset-detail/market-price/fiat-amount"
                 />
                 {weekChange !== undefined && (
@@ -69,6 +70,7 @@ export const AssetDetailMarketPrice = ({ assetKey }: AssetDetailMarketPriceProps
                         period={<Translation id="TR_HOME_ASSET_WEEK_PERIOD" />}
                         change={weekChange.change}
                         changePercent={weekChange.changePercent}
+                        isExact
                         data-testid="@asset-detail/market-price/week-change"
                     />
                 )}
