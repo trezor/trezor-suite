@@ -170,8 +170,12 @@ jobs:
       - name: Build Message System Config
         run: yarn message-system-sign-config
 
+      - name: Install Playwright dependencies
+        run: yarn workspace @trezor/suite-e2e exec playwright install-deps chromium
+
       - name: Install Playwright Chromium
-        run: yarn workspace @trezor/suite-e2e exec playwright install chromium --with-deps
+        if: inputs.platform != 'desktop'
+        run: yarn workspace @trezor/suite-e2e exec playwright install chromium
 
       - name: Download desktop build
         if: inputs.platform == 'desktop'
