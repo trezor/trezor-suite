@@ -14,8 +14,8 @@ const execFileAsync = promisify(execFile);
 // Built from docker/anvil-blockbook, which CI does before the e2e tests.
 const DEFAULT_IMAGE = 'anvil-blockbook';
 
-// Covers pulling the image on a first local run; in CI it is already there.
-const STARTUP_TIMEOUT_MS = 180_000;
+// Stays under the fixture's own timeout, so a stuck start fails with Blockbook's logs.
+export const BLOCKBOOK_STARTUP_TIMEOUT_MS = 90_000;
 const STARTUP_POLL_INTERVAL_MS = 1_000;
 // Indexing from the fork's height takes a few seconds; a Blockbook still at height 0 after this long
 // cannot read the fork's blocks, e.g. because it hashes their headers differently.
@@ -137,28 +137,35 @@ export class AnvilBlockbook {
 
     private async waitUntilSynced(startHeight: number) {
         const startedAt = Date.now();
-        const deadline = startedAt + STARTUP_TIMEOUT_MS;
+        const deadline = startedAt + BLOCKBOOK_STARTUP_TIMEOUT_MS;
+        let lastStatus = 'no answer';
         while (Date.now() < deadline) {
             let status: BlockbookStatus | undefined;
             try {
                 const response = await fetch(`${this.url}/api/`);
+                const body = await response.text();
+                lastStatus = `${response.status} ${body}`;
                 if (response.ok) {
-                    status = (await response.json()) as BlockbookStatus;
+                    status = JSON.parse(body) as BlockbookStatus;
                 }
-            } catch {
-                // Not listening yet.
+            } catch (error) {
+                lastStatus = `${error}`;
             }
             if (status) {
                 const { inSync, bestHeight } = status.blockbook;
                 if (inSync && bestHeight >= startHeight) return;
                 if (bestHeight === 0 && Date.now() - startedAt > NOTHING_INDEXED_TIMEOUT_MS) {
-                    throw new Error(`indexed no block within ${NOTHING_INDEXED_TIMEOUT_MS} ms`);
+                    throw new Error(
+                        `indexed no block within ${NOTHING_INDEXED_TIMEOUT_MS} ms, last status: ${lastStatus}`,
+                    );
                 }
             }
             await new Promise(resolve => setTimeout(resolve, STARTUP_POLL_INTERVAL_MS));
         }
 
-        throw new Error(`not in sync within ${STARTUP_TIMEOUT_MS} ms`);
+        throw new Error(
+            `not in sync at height ${startHeight} within ${BLOCKBOOK_STARTUP_TIMEOUT_MS} ms, last status: ${lastStatus}`,
+        );
     }
 
     async getAddress(address: Address): Promise<BlockbookAddress> {
