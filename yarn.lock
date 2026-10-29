@@ -11586,6 +11586,7 @@ __metadata:
     "@suite-common/analytics": "workspace:*"
     "@suite-common/bip329-types": "workspace:*"
     "@suite-common/delegated-identity-key-types": "workspace:*"
+    "@suite-common/earn-staking": "workspace:*"
     "@suite-common/locale": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/networks": "workspace:*"
@@ -13143,6 +13144,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/blockchain@workspace:suite-native/blockchain"
   dependencies:
+    "@suite-common/earn-staking": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -15276,6 +15278,8 @@ __metadata:
     "@suite-common/delegated-identity-key": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/discreet-mode": "workspace:*"
+    "@suite-common/earn-staking": "workspace:*"
+    "@suite-common/earn-staking-products": "workspace:*"
     "@suite-common/extra-dependencies": "workspace:*"
     "@suite-common/firmware": "workspace:*"
     "@suite-common/geolocation": "workspace:*"

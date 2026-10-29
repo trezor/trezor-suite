@@ -18,6 +18,8 @@
         "@suite-common/delegated-identity-key": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/discreet-mode": "workspace:*",
+        "@suite-common/earn-staking": "workspace:*",
+        "@suite-common/earn-staking-products": "workspace:*",
         "@suite-common/extra-dependencies": "workspace:*",
         "@suite-common/firmware": "workspace:*",
         "@suite-common/geolocation": "workspace:*",
