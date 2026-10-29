@@ -13,6 +13,9 @@ inputs:
   openrouter-api-key:
     description: "OpenRouter API key for the LLM test selector"
     required: true
+  currents-api-key:
+    description: "Currents API key for read-only quarantine checks"
+    required: false
   slack-webhook:
     description: "Slack webhook for selector failure alerts. Absent on fork PRs."
     required: false
@@ -45,6 +48,7 @@ runs:
       shell: bash
       env:
         OPENROUTER_API_KEY: ${{ inputs.openrouter-api-key }}
+        CURRENTS_API_KEY: ${{ inputs.currents-api-key }}
         SLACK_WEBHOOK: ${{ inputs.slack-webhook }}
         BASE_REF: ${{ inputs.base-ref }}
       run: |

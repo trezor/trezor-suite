@@ -211,6 +211,7 @@ jobs:
         with:
           base-ref: ${{ github.event.pull_request.base.sha }}
           openrouter-api-key: ${{ secrets.E2E_SELECTOR_API_KEY }}
+          currents-api-key: ${{ secrets.CURRENTS_API_KEY }}
           slack-webhook: ${{ secrets.SLACK_FIX_AGENT_WEBHOOK }}
       - name: Post LLM analysis to PR description
         if: steps.check-size.outputs.is_small_pr == 'true'
