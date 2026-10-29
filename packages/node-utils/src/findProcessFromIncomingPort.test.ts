@@ -179,6 +179,23 @@ describe('findProcessFromIncomingPort for an accepted connection', () => {
         expect(processInfo?.fullPath).toBe('/usr/bin/client (deleted)');
     });
 
+    // Documents the behaviour today: the path of a snap-packaged process carries the revision
+    // the snap was last refreshed to.
+    test('identifies a snap-packaged Linux process by the path of its revision', async () => {
+        setPlatform('linux');
+        mockCommands([
+            [
+                'lsof',
+                'client 300 user 18u IPv4 207199 0t0 TCP 127.0.0.1:40000->127.0.0.1:21335 (ESTABLISHED)',
+            ],
+        ]);
+        jest.spyOn(fs, 'readlink').mockResolvedValue('/snap/client/142/usr/bin/client');
+
+        const processInfo = await findProcessFromIncomingPort(40000, true, connection);
+
+        expect(processInfo?.fullPath).toBe('/snap/client/142/usr/bin/client');
+    });
+
     test('keeps the Linux process lsof named when its executable cannot be read', async () => {
         setPlatform('linux');
         mockCommands([
