@@ -1,6 +1,10 @@
 import { useSelector } from 'react-redux';
 
-import { deviceActions, selectSelectedDevice } from '@suite-common/device';
+import {
+    deviceActions,
+    selectIsDeviceInitialized,
+    selectSelectedDevice,
+} from '@suite-common/device';
 import { useNavigationRemoveActionInterceptor } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -14,11 +18,14 @@ import { useCloseDeviceCompromisedScreen } from './useCloseDeviceCompromisedScre
 export const useCloseFirmwareChecksFailScreen = () => {
     const { dispatch } = useServices(injectDispatch);
     const device = useSelector(selectSelectedDevice);
+    const isDeviceInitialized = useSelector(selectIsDeviceInitialized);
     const { handleClose: closeScreen } = useCloseDeviceCompromisedScreen();
 
-    // Should always be true, but if not, fail-closed by not allowing to dismiss the failed check.
+    // Device id should always be present, but if not, fail-closed by not allowing to dismiss the failed check.
+    // For an initialized device, the check must be dismissible for emergency access to wallet.
     const deviceId = device?.id;
-    const canClose = typeof deviceId === 'string' && deviceId.length > 0; // matches `getIsDeviceIdValid`
+    const isValidId = typeof deviceId === 'string' && deviceId.length > 0; // matches `getIsDeviceIdValid`
+    const canClose = isValidId && isDeviceInitialized;
 
     // Always blocked – even when `canClose`, it can be done only by explicit CTAs, not by native navigation or automatic triggers.
     useNavigationRemoveActionInterceptor({});
