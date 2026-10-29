@@ -113,6 +113,7 @@ export const TradingOfferExchange = () => {
         simulationResult,
         selectedTrade.receive,
     );
+    const receiveAmount = simulatedReceiveAmount ?? selectedTrade.receiveStringAmount;
 
     const reportConfirmAndSendStep = (action: TradeExchangeAction) => {
         analytics.report({
@@ -171,7 +172,7 @@ export const TradingOfferExchange = () => {
                         account={receiveAccount}
                         label={amountLabels.receiveLabel}
                         currency={selectedTrade.receive}
-                        amount={simulatedReceiveAmount ?? selectedTrade.receiveStringAmount}
+                        amount={receiveAmount}
                         isAmountLoading={isSimulationLoading}
                         receiveAddress={selectedTrade.receiveAddress}
                         isReceive
@@ -180,6 +181,7 @@ export const TradingOfferExchange = () => {
                         <TradingOfferExchangeDetails
                             account={sendAccount}
                             exchangeQuote={selectedTrade}
+                            receiveAmount={receiveAmount}
                             providers={providers as TradingExchangeProvidersInfoProps}
                             exchange={exchange}
                             networkFeeEdit={networkFeeEdit}
