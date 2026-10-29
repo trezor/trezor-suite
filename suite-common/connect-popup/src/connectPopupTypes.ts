@@ -17,6 +17,14 @@ export const isUtxoNetwork = (symbol: NetworkSymbol) => {
     return networkType === 'bitcoin' || networkType === 'cardano';
 };
 
+// After these errors the popup stays open so that the user can reconnect or switch the device and
+// retry. The caller has not been answered yet.
+export const isDeviceReconnectError = (code: string | undefined) =>
+    code === 'Device_NotFound' ||
+    code === 'Device_Disconnected' ||
+    code === 'Device_UsedElsewhere' ||
+    code === 'Device_InvalidState';
+
 export type ManifestPartial = {
     appName: string;
     appIcon?: string;

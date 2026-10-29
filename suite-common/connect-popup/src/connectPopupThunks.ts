@@ -3,13 +3,11 @@ import { type AsyncThunkAction } from '@reduxjs/toolkit';
 import { type AnalyticsDep, events } from '@suite-common/analytics';
 import { type DeviceRootState, deviceActions, selectSelectedDevice } from '@suite-common/device';
 import { type LockDeviceDep } from '@suite-common/suite-types';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     selectDeviceAccountsByNetworkSymbol,
 } from '@suite-common/wallet-core';
-import { type PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import {
     formatNetworkAmount,
     getAddressForNetworkType,
@@ -20,61 +18,30 @@ import {
     getPublicKeyForNetworkType,
     prepareNewAccountPayload,
 } from '@suite-common/wallet-utils';
-import TrezorConnect, {
-    type CallMethodAnyResponse,
-    type CallMethodKeys,
-    type CallMethodParams,
-    type CallMethodPayload,
-    type MethodInfo,
-} from '@trezor/connect';
-import { connectCallableMethods } from '@trezor/connect-common';
+import TrezorConnect, { type CallMethodAnyResponse, type CallMethodKeys } from '@trezor/connect';
 import { TypedError, serializeError } from '@trezor/connect-common/src/constants/errors';
 import { DEEPLINK_VERSION } from '@trezor/connect-common/src/data/version';
 import type { Bip43PathTemplate } from '@trezor/crypto-utils';
 import { createThunk } from '@trezor/redux-utils';
-import { resolveAfter } from '@trezor/utils';
 
 import { connectPopupActions } from './connectPopupActions';
 import { getPermissionDeferred, getPopupCallDeferred } from './connectPopupPromiseManager';
-import {
-    type ConnectPopupStateRootState,
-    selectConnectAppPermissions,
-    selectConnectPopupCall,
-} from './connectPopupReducer';
+import { type ConnectPopupStateRootState, selectConnectPopupCall } from './connectPopupReducer';
 import {
     CALL_SOURCE_DEEPLINK,
-    CALL_SOURCE_WALLETCONNECT,
-    type ConnectCallSource,
     SELECT_ACCOUNT_PAGE_SIZE,
     type SelectAccountCandidate,
+    isDeviceReconnectError,
     isUtxoNetwork,
 } from './connectPopupTypes';
+import { type PopupFlowParams } from './popupFlows/CommonPopupFlow';
+import { createPopupFlow } from './popupFlows/createPopupFlow';
 import {
-    cleanupAllTemporaryAccounts,
-    compatibilityHooks,
-    postCallHooks,
-    preCallHooks,
-    validateCallHooks,
-} from './methodHooks';
-import type { DistributiveOmit } from './methodHooks/types';
-import {
-    canRememberPermissions,
-    deriveCardanoEnabledNetworks,
-    isSameConnectApp,
-    mergePermissions,
-    permissionsAreCovered,
-    sanitizeRequestedPermissions,
-} from './permissions';
+    applyRequestCompatibility,
+    applyResponseCompatibility,
+} from './popupFlows/utils/compatibility';
 
 const CONNECT_POPUP_MODULE = '@common/connect-popup';
-
-// After these errors the popup stays open so that the user can reconnect or switch the device and
-// retry. The caller has not been answered yet.
-export const isDeviceReconnectError = (code: string | undefined) =>
-    code === 'Device_NotFound' ||
-    code === 'Device_Disconnected' ||
-    code === 'Device_UsedElsewhere' ||
-    code === 'Device_InvalidState';
 
 // Names only, values may hold confidential data. Deeplink payloads are arbitrary parsed JSON.
 const getCallParamNames = (payload: unknown): string[] =>
@@ -82,11 +49,17 @@ const getCallParamNames = (payload: unknown): string[] =>
         ? Object.keys(payload).sort()
         : [];
 
-type ConnectPopupCallThunkParams<M extends CallMethodKeys> = {
-    method: M;
-    payload: DistributiveOmit<CallMethodParams<M>, 'method'>;
-    source: ConnectCallSource;
-};
+// Reported with the params as requested by the caller, before applyRequestCompatibility.
+const getCallAttributes = ({ method, payload, source }: PopupFlowParams<CallMethodKeys>) => ({
+    method,
+    origin: source.origin,
+    appName: source.manifest.appName,
+    appUrl: source.manifest.appUrl,
+    appEmail: source.manifest.email,
+    npmVersion: source.manifest.npmVersion,
+    connectionType: source.type,
+    paramNames: getCallParamNames(payload),
+});
 
 export type ConnectPopupCallInnerThunkState = DeviceRootState & ConnectPopupStateRootState;
 
@@ -100,230 +73,65 @@ export type ConnectPopupCallThunkDeps = ConnectPopupCallInnerThunkDeps;
 
 export const connectPopupCallInnerThunk = createThunk<
     void,
-    ConnectPopupCallThunkParams<CallMethodKeys>,
+    PopupFlowParams<CallMethodKeys>,
     { state: ConnectPopupCallInnerThunkState; extra: ConnectPopupCallInnerThunkDeps }
->(
-    `${CONNECT_POPUP_MODULE}/callThunk`,
-    async ({ source, ...params }, { dispatch, getState, extra }) => {
-        try {
-            const { method, payload } = compatibilityHooks({ ...params, source });
+>(`${CONNECT_POPUP_MODULE}/callThunk`, async (params, { dispatch, getState, extra }) => {
+    const paramsCompat = applyRequestCompatibility(params);
+    const flow = createPopupFlow(paramsCompat, { dispatch, getState });
 
-            if (!connectCallableMethods.includes(method)) throw TypedError('Method_Unsupported');
+    try {
+        const responseOriginal = await flow.run();
+        const response = applyResponseCompatibility(params, responseOriginal);
 
-            const methodInfo = await TrezorConnect.call({
-                ...payload,
-                method,
-                __info: true,
-            } as CallMethodPayload);
-            if (!methodInfo.success) {
-                throw methodInfo.error;
-            }
-            const methodInfoPayload = methodInfo.payload as MethodInfo;
-            const callPermissions = methodInfoPayload.requiredPermissions;
-            const hasPermission = (name: string) =>
-                callPermissions.some(p => p.permission === name);
-            if (
-                hasPermission('management') ||
-                hasPermission('internal') ||
-                (hasPermission('push_tx') && source.type === CALL_SOURCE_DEEPLINK)
-            ) {
-                throw TypedError('Method_NotAllowed');
-            }
+        extra.services.analytics.report({
+            type: events.connectPopupCallEvent.name,
+            payload: getCallAttributes(params),
+        });
 
-            // Permissions the host/dapp declared up front (ConnectSettings.requestedPermissions),
-            // sanitized against the same rules as the hard block above. Merged with this call's own
-            // required permissions so the first consent covers the whole declared set at once — a
-            // single "Remember" then silences every later in-scope call.
-            const declaredPermissions = sanitizeRequestedPermissions(
-                source.requestedPermissions,
-                source.type === CALL_SOURCE_DEEPLINK,
-            );
-            const consentPermissions = mergePermissions(callPermissions, declaredPermissions);
+        // Not returned from the thunk, the response may hold confidential data which would then pass
+        // through Redux.
+        getPopupCallDeferred().resolve(response);
+    } catch (error) {
+        console.error('connectPopupCallThunk', error);
+        if (error?.error === 'switching-device') {
+            // Do nothing, call will be restarted after device switch
+            return;
+        } else if (
+            error?.code === 'Method_Cancel' ||
+            error?.code === 'Method_Unsupported' // handled by fallback mechanism in connect-web
+        ) {
+            dispatch(connectPopupActions.finishCall());
+        } else {
+            dispatch(connectPopupActions.setError(serializeError(error)));
 
-            dispatch(
-                connectPopupActions.initiateCall({
-                    method,
-                    methodInfo: {
-                        methodTitle: methodInfoPayload.info,
-                        permissionTypes: consentPermissions,
-                        useUi: methodInfoPayload.useUi,
-                    },
-                    payload,
-                    source,
-                }),
-            );
-
-            // Reject a call this host cannot fulfil (e.g. selectAccount for a coin Suite can't render)
-            // before asking for permissions, so the user doesn't approve access only to hit an error.
-            validateCallHooks({ method, payload });
-
-            // Check if permission remembered (permission, coin). Keyed on THIS call's required
-            // permissions (not the declared superset) so a call is silent whenever its own needs are
-            // already covered, even if the app declared more than it has been granted so far.
-            const rememberedApps = selectConnectAppPermissions(getState());
-
-            const isRemembered =
-                canRememberPermissions(source) &&
-                rememberedApps.some(
-                    app =>
-                        isSameConnectApp(app, source) &&
-                        permissionsAreCovered(callPermissions, app.allowedPermissions),
-                );
-
-            if (!isRemembered && source.type !== CALL_SOURCE_WALLETCONNECT) {
-                // Create the deferred BEFORE dispatching requestPermissions.
-                // Otherwise the modal can render and the user can click "confirm"
-                // (dispatching approvePermissions) before the deferred exists,
-                // causing the thunk to hang forever on a second, unresolved deferred.
-                const permissionDeferred = getPermissionDeferred(true);
-                dispatch(connectPopupActions.requestPermissions());
-                await permissionDeferred.promise;
-            }
-
-            // Project the granted per-coin permissions into @trezor/connect's enabledNetworks
-            // capability (today: Cardano `derive_cardano`) before any device session is created.
-            // Lives in the shared call thunk — not a host-side middleware — so it runs on every
-            // platform (desktop/web popup AND native deeplink) and for remembered apps too (which
-            // skip the approve action a middleware would key off). updateConnectSettings returns
-            // { success: false } rather than throwing on the thin transports; the result is ignored.
-            const enabledNetworks = deriveCardanoEnabledNetworks(consentPermissions);
-            if (enabledNetworks.length) {
-                await TrezorConnect.updateConnectSettings({ enabledNetworks });
-            }
-
-            let device = selectSelectedDevice(getState());
-            let attempt = 0;
-            // more time needed on mobile deeplink, less on desktop
-            // todo: be smarter about the timeout based on actual connection events
-            const maxAttempts = source.type === CALL_SOURCE_DEEPLINK ? 10 : 5;
-            // retry loop to wait for device to reconnect
-            while (!device?.connected) {
-                await resolveAfter(1000);
-                device = selectSelectedDevice(getState());
-                attempt++;
-                if (attempt > maxAttempts) {
-                    throw TypedError('Device_Disconnected');
-                }
-            }
-
-            const txSigningPrecomposed: PrecomposedTransactionFinal | undefined =
-                methodInfoPayload.precomposed;
-            const modifiedPayload = await preCallHooks({
-                method,
-                payload,
-                dispatch,
-                getState,
-                txSigningPrecomposed,
-                source,
-            });
-
-            // refresh device state before call (could have changed during preCallHooks)
-            device = selectSelectedDevice(getState());
-            if (!device) throw TypedError('Device_Disconnected');
-
-            dispatch(connectPopupActions.setCallDevicePath(device.path));
-
-            const response = await TrezorConnect.call({
-                device: {
-                    path: device.path,
-                    instance: device.instance,
-                    state: device.state,
-                    useEmptyPassphrase: device.useEmptyPassphrase,
-                },
-                ...modifiedPayload,
-                method,
-            } as CallMethodPayload);
-            response.id = undefined;
-
-            const postCallOngoing = await postCallHooks({
-                method,
-                payload: modifiedPayload,
-                originalPayload: payload,
-                response,
-                dispatch,
-                getState,
-                source,
-            });
-            if (!response.success) {
-                throw response.error;
-            }
-            if (!postCallOngoing) {
-                dispatch(connectPopupActions.finishCall());
-                dispatch(
-                    notificationsActions.addToast({
-                        type: 'connect-popup-success',
-                        appName: source.manifest.appName,
-                    }),
-                );
-            }
-
-            extra.services.analytics.report({
-                type: events.connectPopupCallEvent.name,
-                payload: {
-                    method: params.method,
-                    appName: source.manifest.appName,
-                    appUrl: source.manifest.appUrl,
-                    appEmail: source.manifest.email,
-                    npmVersion: source.manifest.npmVersion,
-                    connectionType: source.type,
-                    origin: source.origin,
-                    paramNames: getCallParamNames(params.payload),
-                },
-            });
-
-            getPopupCallDeferred().resolve(response);
-        } catch (error) {
-            console.error('connectPopupCallThunk', error);
-            if (error?.error === 'switching-device') {
-                // Do nothing, call will be restarted after device switch
-                return;
-            } else if (
-                error?.code === 'Method_Cancel' ||
-                error?.code === 'Method_Unsupported' // handled by fallback mechanism in connect-web
-            ) {
-                dispatch(connectPopupActions.finishCall());
-            } else {
-                dispatch(connectPopupActions.setError(serializeError(error)));
-
-                // don't return error, allow user to reconnect device
-                if (isDeviceReconnectError(error?.code)) return;
-            }
-
-            extra.services.analytics.report({
-                type: events.connectPopupErrorEvent.name,
-                payload: {
-                    method: params.method,
-                    origin: source.origin,
-                    error: error?.code,
-                    appName: source.manifest.appName,
-                    appUrl: source.manifest.appUrl,
-                    appEmail: source.manifest.email,
-                    npmVersion: source.manifest.npmVersion,
-                    connectionType: source.type,
-                    paramNames: getCallParamNames(params.payload),
-                },
-            });
-
-            getPopupCallDeferred().resolve({
-                success: false,
-                error: serializeError(error),
-            });
-        } finally {
-            // Tear down any placeholder accounts created in preCallHooks even if the call threw
-            // before postCallHooks ran, so they cannot leak into a later removeAccount payload.
-            cleanupAllTemporaryAccounts(dispatch);
-            extra.services.lockDevice(false);
+            // don't return error, allow user to reconnect device
+            if (isDeviceReconnectError(error?.code)) return;
         }
-    },
-);
+
+        extra.services.analytics.report({
+            type: events.connectPopupErrorEvent.name,
+            payload: { ...getCallAttributes(params), error: error?.code },
+        });
+
+        getPopupCallDeferred().resolve({
+            success: false,
+            error: serializeError(error),
+        });
+    } finally {
+        // Only after the error handling above, so the active call never refers to a removed
+        // placeholder account.
+        flow.cleanup();
+        extra.services.lockDevice(false);
+    }
+});
 
 // Typed thunk that takes the method as a generic parameter
 // Original thunk is exposed as well for using .fulfilled, .rejected, etc.
 export const connectPopupCallThunk = <M extends CallMethodKeys>(
-    params: ConnectPopupCallThunkParams<M>,
+    params: PopupFlowParams<M>,
 ): AsyncThunkAction<
     void,
-    ConnectPopupCallThunkParams<M>,
+    PopupFlowParams<M>,
     { state: ConnectPopupCallThunkState; extra: ConnectPopupCallThunkDeps }
 > => connectPopupCallInnerThunk(params) as any;
 
