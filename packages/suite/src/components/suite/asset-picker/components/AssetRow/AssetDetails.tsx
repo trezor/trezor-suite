@@ -2,10 +2,13 @@ import { type NetworkSymbol, getNetwork } from '@suite-common/wallet-config';
 import { Badge, Column, Row, Text } from '@trezor/components';
 import { hasOwn } from '@trezor/utils';
 
+import { TokenUrlBlur } from 'src/components/suite/TokenUrlBlur';
+
 type AssetDetailsProps = {
     name: string;
     displaySymbol: string;
     isDisabled?: boolean;
+    shouldBlurUrls?: boolean;
 } & (
     | {
           networkSymbol: NetworkSymbol;
@@ -19,6 +22,7 @@ export function AssetDetails({
     name,
     displaySymbol,
     isDisabled = false,
+    shouldBlurUrls = false,
     ...props
 }: AssetDetailsProps) {
     const badge = hasOwn(props, 'networkSymbol')
@@ -33,7 +37,7 @@ export function AssetDetails({
                 maxWidth="100%"
                 isDisabled={isDisabled}
             >
-                {name}
+                {shouldBlurUrls ? <TokenUrlBlur text={name} /> : name}
             </Text>
             <Row gap={8} alignItems="center">
                 <Text
@@ -42,7 +46,7 @@ export function AssetDetails({
                     priority="secondary"
                     isDisabled={isDisabled}
                 >
-                    {displaySymbol}
+                    {shouldBlurUrls ? <TokenUrlBlur text={displaySymbol} /> : displaySymbol}
                 </Text>
                 {badge !== name && <Badge size="small">{badge}</Badge>}
             </Row>

@@ -11,11 +11,17 @@ import {
 } from './ExactTokenAmountFormatter';
 import { asDecimalTokenAmount } from '../utils';
 
+let mockIsDiscreetMode = false;
+
 jest.mock('@suite-common/discreet-mode', () => ({
     useDiscreetMode: () => ({
-        isDiscreetMode: false,
+        isDiscreetMode: mockIsDiscreetMode,
     }),
 }));
+
+beforeEach(() => {
+    mockIsDiscreetMode = false;
+});
 
 // Both formatters expect `value` in human-readable units; base-unit amounts must be converted
 // by the caller.
@@ -30,9 +36,19 @@ describe('ExactTokenAmountFormatter', () => {
         );
 
     it('should render formatted value', async () => {
-        const { getByTestId } = await renderExactTokenAmountFormatter({});
+        const { getByTestId, getByText } = await renderExactTokenAmountFormatter({});
 
-        expect(getByTestId('plain-text')).toHaveTextContent('1,234.56 USDC');
+        expect(getByTestId('plain-text')).toHaveTextContent('1,234.56');
+        expect(getByText('USDC')).toBeOnTheScreen();
+    });
+
+    it('hides the amount while keeping the token symbol visible in discreet mode', async () => {
+        mockIsDiscreetMode = true;
+        const { getByTestId, getByText } = await renderExactTokenAmountFormatter({});
+
+        expect(getByTestId('discreet-text')).toHaveTextContent('1,234.56');
+        expect(getByTestId('discreet-text')).not.toBeVisible();
+        expect(getByText('USDC')).toBeVisible();
     });
 
     it('should cap displayed decimals to the token precision', async () => {
@@ -41,16 +57,17 @@ describe('ExactTokenAmountFormatter', () => {
             maxDisplayedDecimals: 18,
         });
 
-        expect(getByTestId('plain-text')).toHaveTextContent('0.000000000000000001 USDC');
+        expect(getByTestId('plain-text')).toHaveTextContent('0.000000000000000001');
     });
 
     it('should render phishing transaction with empty value as discreet text', async () => {
-        const { getByTestId } = await renderExactTokenAmountFormatter({
+        const { getByTestId, getByText } = await renderExactTokenAmountFormatter({
             value: asDecimalTokenAmount(''),
             isPhishingTransaction: true,
         });
 
-        expect(getByTestId('discreet-text')).toHaveTextContent('0 USDC');
+        expect(getByTestId('discreet-text')).toHaveTextContent('0');
+        expect(getByText('USDC')).toBeVisible();
     });
 });
 
@@ -67,7 +84,7 @@ describe('CompactTokenAmountFormatter', () => {
     it('should render compact formatted value', async () => {
         const { getByTestId } = await renderCompactTokenAmountFormatter({});
 
-        expect(getByTestId('plain-text')).toHaveTextContent('1,234.56 USDC');
+        expect(getByTestId('plain-text')).toHaveTextContent('1,234.56');
     });
 
     it('should render compact formatted dust value', async () => {
@@ -75,7 +92,7 @@ describe('CompactTokenAmountFormatter', () => {
             value: asDecimalTokenAmount('0.000009'),
         });
 
-        expect(getByTestId('plain-text')).toHaveTextContent('<0.00001 USDC');
+        expect(getByTestId('plain-text')).toHaveTextContent('<0.00001');
     });
 
     it('should format a 6-decimal token balance money-like (two decimals)', async () => {
@@ -84,7 +101,7 @@ describe('CompactTokenAmountFormatter', () => {
             value: asDecimalTokenAmount('23.910287'),
         });
 
-        expect(getByTestId('plain-text')).toHaveTextContent('23.91 USDC');
+        expect(getByTestId('plain-text')).toHaveTextContent('23.91');
     });
 
     it('should apply the money dust threshold for 6-decimal tokens', async () => {
@@ -93,7 +110,7 @@ describe('CompactTokenAmountFormatter', () => {
             value: asDecimalTokenAmount('0.009'),
         });
 
-        expect(getByTestId('plain-text')).toHaveTextContent('<0.01 USDC');
+        expect(getByTestId('plain-text')).toHaveTextContent('<0.01');
     });
 
     it('should not apply money formatting to non-6-decimal tokens', async () => {
@@ -102,6 +119,6 @@ describe('CompactTokenAmountFormatter', () => {
             value: asDecimalTokenAmount('0.009'),
         });
 
-        expect(getByTestId('plain-text')).toHaveTextContent('0.009 USDC');
+        expect(getByTestId('plain-text')).toHaveTextContent('0.009');
     });
 });

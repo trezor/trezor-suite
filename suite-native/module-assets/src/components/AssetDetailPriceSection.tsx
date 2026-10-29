@@ -3,10 +3,11 @@ import { useSelector } from 'react-redux';
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
 import { type AssetsRootState, selectAssetName } from '@suite-common/assets';
-import { HStack, Text, VStack } from '@suite-native/atoms';
+import { HStack, VStack } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
 import type { AssetsStackParamList, AssetsStackRoutes } from '@suite-native/navigation';
 import { AssetPriceChart } from '@suite-native/price-chart';
+import { TokenName } from '@suite-native/tokens';
 
 import { AssetDetailPrice } from './AssetDetailPrice';
 
@@ -27,7 +28,12 @@ export const AssetDetailPriceSection = () => {
                     showNetworkIcon
                     size="extraSmall"
                 />
-                <Text variant="body-md-strong">{assetName}</Text>
+                <TokenName
+                    text={assetName}
+                    networkSymbol={networkSymbol}
+                    tokenContract={tokenContract}
+                    variant="body-md-strong"
+                />
             </HStack>
 
             <AssetDetailPrice networkSymbol={networkSymbol} tokenContract={tokenContract} />

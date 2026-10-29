@@ -12,6 +12,7 @@ export * from './BannerInline/BannerInline';
 export * from './InlineAlertText';
 export * from './Text';
 export * from './Box';
+export * from './BlurUrls/BlurUrls';
 export * from './Hint';
 export * from './HoldToConfirmButton';
 export * from './Radio';

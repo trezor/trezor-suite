@@ -26,6 +26,7 @@
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },
+        { "path": "../tokens" },
         { "path": "../transaction-management" },
         {
             "path": "../../packages/blockchain-link-types"

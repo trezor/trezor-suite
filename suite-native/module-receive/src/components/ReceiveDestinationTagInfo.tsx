@@ -10,7 +10,7 @@ import type { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { BannerInline } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
-import { type TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
+import { TokenName, type TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
 import { HELP_CENTER_OTHER_CRYPTOCURRENCIES_DESTINATION_TAGS_URL } from '@trezor/urls';
 
 type ReceiveDestinationTagInfoProps = {
@@ -56,7 +56,14 @@ export const ReceiveDestinationTagInfo = ({
                                 textPressedColor="contentSecondary"
                             />
                         ),
-                        coinSymbol: tokenSymbol ?? getDisplaySymbol(accountSymbol),
+                        coinSymbol: (
+                            <TokenName
+                                text={tokenSymbol ?? getDisplaySymbol(accountSymbol)}
+                                networkSymbol={accountSymbol}
+                                tokenContract={tokenContract}
+                                variant="body-xs"
+                            />
+                        ),
                     }}
                 />
             }

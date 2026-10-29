@@ -26,6 +26,7 @@ import { injectDispatch } from '@trezor/redux-utils';
 
 import { setSendFormPrefill } from 'src/actions/suite/suiteActions';
 import { BaseCurrencyValue, FormattedCryptoAmount, HiddenPlaceholder } from 'src/components/suite';
+import { TokenUrlBlur } from 'src/components/suite/TokenUrlBlur';
 import { useSelector } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { selectSendFormPrefill } from 'src/selectors/suite/suiteSelectors';
@@ -144,8 +145,12 @@ export const TokenSelect = ({ outputId }: TokenSelectProps) => {
                                     typographyStyle="body-md"
                                     data-testid={`@wallet/send/token-name/${outputId}`}
                                 >
-                                    {selectedToken?.name ||
-                                        getNetworkDisplaySymbolName(account.symbol)}
+                                    {selectedToken?.name && !isTokenKnown ? (
+                                        <TokenUrlBlur text={selectedToken.name} />
+                                    ) : (
+                                        selectedToken?.name ||
+                                        getNetworkDisplaySymbolName(account.symbol)
+                                    )}
                                 </Text>
                             </Row>
                             <Row>

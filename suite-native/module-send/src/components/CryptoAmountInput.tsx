@@ -9,7 +9,7 @@ import { Input, Text } from '@suite-native/atoms';
 import { useCryptoFiatConverters } from '@suite-native/formatters';
 import { useField, useFormContext } from '@suite-native/forms';
 import { useAmountInputTransformers } from '@suite-native/helpers';
-import { type TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
+import { TokenName, type TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
 import { useDebounce } from '@trezor/react-utils';
 import { type Color } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
@@ -49,6 +49,10 @@ export const CryptoAmountInput = ({
     const tokenSymbol = useSelector((state: TokensRootState) =>
         selectAccountTokenSymbol(state, accountKey, tokenContract),
     );
+    const displaySymbol =
+        tokenSymbol !== null
+            ? getDisplaySymbol(tokenSymbol, tokenContract)
+            : formatter.format(symbol);
 
     const cryptoFieldName = getOutputFieldName(recipientIndex, 'amount');
     const fiatFieldName = getOutputFieldName(recipientIndex, 'fiat');
@@ -103,9 +107,12 @@ export const CryptoAmountInput = ({
             hasError={!isDisabled && hasError}
             rightIcon={
                 <SendAmountCurrencyLabelWrapper isDisabled={isDisabled}>
-                    {tokenSymbol !== null
-                        ? getDisplaySymbol(tokenSymbol, tokenContract)
-                        : formatter.format(symbol)}
+                    <TokenName
+                        text={displaySymbol}
+                        networkSymbol={symbol}
+                        tokenContract={tokenContract}
+                        color={isDisabled ? 'contentSecondary' : 'contentPrimary'}
+                    />
                 </SendAmountCurrencyLabelWrapper>
             }
         />

@@ -17,7 +17,12 @@ import {
 } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { type TokensRootState, getTokenName, selectAccountTokenInfo } from '@suite-native/tokens';
+import {
+    TokenName,
+    type TokensRootState,
+    getTokenName,
+    selectAccountTokenInfo,
+} from '@suite-native/tokens';
 import { parseStaticSessionId } from '@trezor/device-utils';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -84,7 +89,11 @@ export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps
                         />
                     </Box>
                     <Box style={applyStyle(tokenDescriptionStyle)}>
-                        <Text>{tokenName}</Text>
+                        <TokenName
+                            text={tokenName}
+                            networkSymbol={symbol}
+                            tokenContract={contract}
+                        />
 
                         <HStack alignItems="center" spacing="sp4">
                             <Text
@@ -111,6 +120,8 @@ export const TokenReceiveCard = ({ contract, accountKey }: TokenReceiveCardProps
                     <ExactTokenAmountFormatter
                         value={asDecimalTokenAmount(token.balance ?? '0')}
                         tokenSymbol={token.symbol}
+                        networkSymbol={symbol}
+                        tokenContract={contract}
                         maxDisplayedDecimals={token.decimals}
                     />
                 </Box>

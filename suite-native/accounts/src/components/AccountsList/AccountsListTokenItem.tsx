@@ -8,7 +8,12 @@ import {
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
-import { type TokensRootState, getTokenName, selectAccountTokenSymbol } from '@suite-native/tokens';
+import {
+    TokenName,
+    type TokensRootState,
+    getTokenName,
+    selectAccountTokenSymbol,
+} from '@suite-native/tokens';
 
 import { AccountsListItemBase } from './AccountsListItemBase';
 
@@ -38,6 +43,7 @@ export const AccountsListTokenItem = ({
         selectAccountTokenSymbol(state, account.key, token.contract),
     );
     const balance = token.balance ?? '0';
+    const tokenName = getTokenName(token.name);
 
     return (
         <AccountsListItemBase
@@ -53,7 +59,13 @@ export const AccountsListTokenItem = ({
                     showNetworkIcon
                 />
             }
-            title={getTokenName(token.name)}
+            title={
+                <TokenName
+                    text={tokenName}
+                    networkSymbol={account.symbol}
+                    tokenContract={token.contract}
+                />
+            }
             badges={badges}
             mainValue={
                 showFiatValue && (
@@ -68,6 +80,8 @@ export const AccountsListTokenItem = ({
                 <CompactTokenAmountFormatter
                     value={asDecimalTokenAmount(balance)}
                     tokenSymbol={tokenSymbol}
+                    networkSymbol={account.symbol}
+                    tokenContract={token.contract}
                     tokenDecimals={token.decimals}
                     numberOfLines={1}
                     adjustsFontSizeToFit

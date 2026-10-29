@@ -29,6 +29,7 @@ import {
     RootStackRoutes,
     type StackNavigationProps,
 } from '@suite-native/navigation';
+import { TokenName } from '@suite-native/tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 const rowStyle = prepareNativeStyle(utils => ({
@@ -99,9 +100,13 @@ export const PortfolioAssetListItem = ({ assetKey }: PortfolioAssetListItemProps
             <VStack flex={1} spacing="sp4">
                 <HStack alignItems="center" justifyContent="space-between" spacing="sp8">
                     <Box flex={1}>
-                        <Text variant="body-sm" numberOfLines={1}>
-                            {displaySymbol}
-                        </Text>
+                        <TokenName
+                            text={displaySymbol ?? ''}
+                            networkSymbol={symbol}
+                            tokenContract={contractAddress}
+                            variant="body-sm"
+                            numberOfLines={1}
+                        />
                     </Box>
                     <BaseCurrencyAmountFormatter
                         value={fiatValue ?? null}
@@ -119,6 +124,8 @@ export const PortfolioAssetListItem = ({ assetKey }: PortfolioAssetListItemProps
                         <CompactTokenAmountFormatter
                             value={asDecimalTokenAmount(amount)}
                             tokenSymbol={tokenSymbol}
+                            networkSymbol={symbol}
+                            tokenContract={contractAddress}
                             tokenDecimals={tokenDecimals}
                             variant="body-xs"
                             color="contentTertiary"

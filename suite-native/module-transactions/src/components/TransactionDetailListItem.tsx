@@ -1,8 +1,12 @@
 import { type AccountKey } from '@suite-common/wallet-types';
-import { Box, PressableOpacity, Text } from '@suite-native/atoms';
+import { Box, PressableOpacity } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
 import { useNavigateToTransactionDetail } from '@suite-native/navigation';
-import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
+import {
+    TokenName,
+    type TypedTokenTransfer,
+    type WalletAccountTransaction,
+} from '@suite-native/tokens';
 import {
     TokenTransferListItemValues,
     TransactionListItemValues,
@@ -60,7 +64,11 @@ export const TransactionDetailListItem = ({
                     />
                 </Box>
                 <Box style={applyStyle(CoinNameContainerStyle)}>
-                    <Text>{tokenTransfer?.name ?? 'Ethereum'}</Text>
+                    <TokenName
+                        text={tokenTransfer?.name ?? 'Ethereum'}
+                        networkSymbol={transaction.symbol}
+                        tokenContract={tokenTransfer?.contract}
+                    />
                 </Box>
             </Box>
             <Box style={applyStyle(valuesContainerStyle)}>

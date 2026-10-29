@@ -7,7 +7,7 @@ import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import { BannerInline, Text, VStack } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
-import { type TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
+import { TokenName, type TokensRootState, selectAccountTokenSymbol } from '@suite-native/tokens';
 
 type ParagraphProps = {
     header: ReactNode;
@@ -51,7 +51,18 @@ export const TokenOfNetworkAlertBody = ({
             <Text variant="headline-sm">
                 <Translation
                     id="moduleSend.outputs.tokenOfNetworkSheet.title"
-                    values={{ tokenSymbol, networkName }}
+                    values={{
+                        tokenSymbol:
+                            tokenSymbol === null ? null : (
+                                <TokenName
+                                    text={tokenSymbol}
+                                    networkSymbol={symbol}
+                                    tokenContract={tokenContract}
+                                    variant="headline-sm"
+                                />
+                            ),
+                        networkName,
+                    }}
                 />
             </Text>
             <Paragraph

@@ -98,6 +98,8 @@ export const AssetDetailBalanceSection = () => {
                         <ExactTokenAmountFormatter
                             value={asDecimalTokenAmount(amount)}
                             tokenSymbol={tokenSymbol}
+                            networkSymbol={networkSymbol}
+                            tokenContract={tokenContract}
                             maxDisplayedDecimals={tokenDecimals}
                             variant="body-md-strong"
                             color="contentPrimary"

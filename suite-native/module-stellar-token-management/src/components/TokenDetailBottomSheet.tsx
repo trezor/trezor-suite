@@ -7,6 +7,7 @@ import { type TokenAddress } from '@suite-common/wallet-types';
 import { BottomSheetModal, Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
+import { TokenName } from '@suite-native/tokens';
 
 type TokenDetailBottomSheetProps = {
     bottomSheetRef: RefObject<BottomSheetModalMethods | null>;
@@ -37,10 +38,18 @@ export const TokenDetailBottomSheet = ({
                     size="large"
                 />
                 <VStack>
-                    <Text variant="body-md">{tokenName}</Text>
-                    <Text variant="body-sm" color="contentSecondary">
-                        {assetCode}
-                    </Text>
+                    <TokenName
+                        text={tokenName}
+                        networkSymbol={asNetworkSymbol('xlm')}
+                        tokenContract={iconContractAddress}
+                    />
+                    <TokenName
+                        text={assetCode}
+                        networkSymbol={asNetworkSymbol('xlm')}
+                        tokenContract={iconContractAddress}
+                        variant="body-sm"
+                        color="contentSecondary"
+                    />
                 </VStack>
             </HStack>
 

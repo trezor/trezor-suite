@@ -100,6 +100,8 @@ export const TokenTransferListItemValues = ({
                 numberOfLines={1}
                 ellipsizeMode="tail"
                 isPhishingTransaction={isPhishingTransaction}
+                networkSymbol={transaction.symbol}
+                tokenContract={tokenTransfer.contract}
                 variant="body-sm"
                 color="contentSecondary"
             />
