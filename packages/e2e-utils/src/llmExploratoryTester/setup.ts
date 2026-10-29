@@ -5,8 +5,8 @@ import { join } from 'node:path';
 
 import { error, log } from '../logger';
 import {
-    killHarnessBrowser,
-    killHarnessBrowserOnExitSignals,
+    registerHarnessBrowserCleanup,
+    stopHarnessBrowser,
     writeBrowserState,
 } from './browserState';
 import { CONTEXT_FILE, REPO_ROOT, SETUP_READY_FILE, readJson } from './paths';
@@ -46,7 +46,7 @@ async function runOnboardingSpec({
     if (child.pid === undefined) {
         throw new Error('failed to start playwright');
     }
-    // Track the browser immediately so failure/interrupt cleanup can kill it
+    // Track the browser immediately so failure/interrupt cleanup can stop it
     // even when onboarding never becomes ready.
     writeBrowserState(child.pid);
 
@@ -67,7 +67,7 @@ async function runOnboardingSpec({
 }
 
 async function main(): Promise<void> {
-    killHarnessBrowserOnExitSignals();
+    registerHarnessBrowserCleanup();
     loadDotenv({ path: join(REPO_ROOT, 'packages/e2e-utils/.env'), quiet: true });
 
     const context = PrContextSchema.parse(readJson(CONTEXT_FILE));
@@ -76,7 +76,7 @@ async function main(): Promise<void> {
     log(`Suite:  ${context.platform === 'desktop' ? 'local Electron build' : context.suiteUrl}`);
     log(`Model:  ${context.deviceModel}`);
 
-    await killHarnessBrowser();
+    await stopHarnessBrowser();
     await runOnboardingSpec(context);
 
     log('Setup done. Browser stays running for the agent session.');
@@ -84,6 +84,10 @@ async function main(): Promise<void> {
 
 main().catch(async e => {
     error(`setup failed: ${e instanceof Error ? e.message : e}`);
-    await killHarnessBrowser().catch(() => {});
+    await stopHarnessBrowser().catch(cleanupError => {
+        error(
+            `Browser cleanup failed: ${cleanupError instanceof Error ? cleanupError.message : cleanupError}`,
+        );
+    });
     process.exitCode = 1;
 });
