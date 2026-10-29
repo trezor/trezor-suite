@@ -7,6 +7,10 @@ export {
 } from './repository/createStakingProductRepository';
 export type { StakingDep, StakingServices } from './stakingServices';
 export {
+    selectStakingProductAccess,
+    type ResolvedStakingProductAccess,
+} from './state/stakingAccessSelectors';
+export {
     mergeAccountPositions,
     type StakingAccountPositions,
 } from './state/stakingPositionsReducer';
