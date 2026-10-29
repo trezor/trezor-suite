@@ -15,6 +15,7 @@
         { "path": "../../packages/redux-utils" },
         { "path": "../../packages/utils" },
         { "path": "../suite-types" },
+        { "path": "../test-utils" },
         { "path": "../../packages/requirements" }
     ]
 }

@@ -1,11 +1,24 @@
 export {
+    createStakingCompositionRoot,
+    type StakingCompositionRootDeps,
+} from './createStakingCompositionRoot';
+export {
     createStakingProductRepository,
     injectStakingProductRepository,
     type StakingProductRepository,
     type StakingProductRepositoryDep,
     type StakingProductRepositoryDeps,
 } from './repository/createStakingProductRepository';
-export type { StakingDep, StakingServices } from './stakingServices';
+export type {
+    GetStakingAccountByKey,
+    GetStakingAccounts,
+    GetStakingEnabledNetworks,
+    LoadStakingProducts,
+    LoadStakingProductsDep,
+    StakingDep,
+    StakingServices,
+    StakingWalletDeps,
+} from './stakingServices';
 export {
     selectStakingProductAccess,
     type ResolvedStakingProductAccess,
@@ -39,3 +52,14 @@ export {
     selectStakingProductInfo,
     selectStakingProductInfoResult,
 } from './state/stakingSelectors';
+export {
+    refreshStakingProductInfoThunk,
+    syncAllStakingPositionsThunk,
+    syncStakingPositionsThunk,
+    type RefreshStakingProductInfoThunkDeps,
+    type RefreshStakingProductInfoThunkState,
+    type SyncAllStakingPositionsThunkDeps,
+    type SyncAllStakingPositionsThunkState,
+    type SyncStakingPositionsThunkDeps,
+    type SyncStakingPositionsThunkState,
+} from './state/stakingThunks';

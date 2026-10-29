@@ -11567,6 +11567,7 @@ __metadata:
     "@suite-common/earn-staking-common": "workspace:*"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
+    "@suite-common/test-utils": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
     "@trezor/network-module-types": "workspace:*"
