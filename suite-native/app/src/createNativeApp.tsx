@@ -38,6 +38,7 @@ export const createNativeApp = (deps: NativeAppDeps): NativeApp => {
 
         await deps.services.hydrateReduxStore();
         deps.services.networks.loadNetworkModules();
+        deps.services.staking.loadStakingProducts();
         await deps.services.store.dispatch(applicationInitThunk());
     };
 
