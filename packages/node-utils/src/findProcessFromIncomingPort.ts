@@ -1,4 +1,5 @@
 import { spawn } from 'child_process';
+import { promises as fs } from 'fs';
 
 function spawnAndCollectStdout(
     command: string,
@@ -49,6 +50,40 @@ type IncomingConnection = {
 
 // IPv4 address mapped into IPv6, which lsof and netstat print in its plain IPv4 form.
 const IPV4_MAPPED_IPV6 = /^::ffff:(\d{1,3}(?:\.\d{1,3}){3})$/;
+
+// How the kernel renders /proc/<pid>/exe of a process whose executable has been unlinked or
+// replaced, as an upgrade of a running app does.
+const DELETED_EXE_SUFFIX = ' (deleted)';
+
+// A literal "... (deleted)" must refer to the running executable itself. A different file can
+// exist at that path while the kernel is marking an unlinked executable.
+const resolveExePath = async (exe: string, processExePath: string): Promise<string | undefined> => {
+    if (!exe.endsWith(DELETED_EXE_SUFFIX)) {
+        return exe;
+    }
+
+    const [processStats, literalStats] = await Promise.all([
+        fs.stat(processExePath, { bigint: true }).catch(() => undefined),
+        fs.stat(exe, { bigint: true }).catch((error: NodeJS.ErrnoException) =>
+            // Only ENOENT establishes absence; a permission error leaves the identity unknown.
+            error.code === 'ENOENT' ? null : undefined,
+        ),
+    ]);
+    if (!processStats || literalStats === undefined) {
+        return undefined;
+    }
+
+    // Unlinking a literal "... (deleted)" during the checks adds another marker. Do not strip
+    // its actual filename using the stale path read before the unlink.
+    if ((await fs.readlink(processExePath).catch(() => undefined)) !== exe) {
+        return undefined;
+    }
+
+    const isSameFile =
+        literalStats?.dev === processStats.dev && literalStats?.ino === processStats.ino;
+
+    return isSameFile ? exe : exe.slice(0, -DELETED_EXE_SUFFIX.length);
+};
 
 // Endpoint as lsof and netstat print it, with IPv6 addresses in brackets.
 const formatEndpoint = (address: string, port: number) => {
@@ -140,16 +175,32 @@ export async function findProcessFromIncomingPort(
                         return { name: sanitizedName, pid, fullPath, warning: true };
                     }
                 } else {
-                    const fullPathRaw = await spawnAndCollectStdout(
-                        'cat',
-                        [`/proc/${pid}/cmdline`],
-                        signal,
-                    );
-                    const fullPath = fullPathRaw.split('\0')[0] ?? '';
-                    const trimmedFullPath = fullPath.trim();
+                    // The executable the kernel runs, not the argv[0] the process was started
+                    // with. Reading it fails when the process exited since lsof listed it, or
+                    // when ptrace-level access to it is denied; the socket still belonged to the
+                    // process lsof named, only its path stays unknown.
+                    const processExePath = `/proc/${pid}/exe`;
+                    const exe = await fs.readlink(processExePath).catch(() => undefined);
+                    if (exe === undefined) {
+                        return { name: sanitizedName, pid, fullPath: '', warning: true };
+                    }
+
+                    // The path is the identity of the app, so a replaced binary keeps the one it
+                    // was installed at.
+                    const fullPath = await resolveExePath(exe, processExePath);
+                    if (fullPath === undefined) {
+                        return { name: sanitizedName, pid, fullPath: '', warning: true };
+                    }
+
                     // Binaries can be all over the place on Linux, so we don't check the path
 
-                    return { name: sanitizedName, pid, fullPath: trimmedFullPath };
+                    // A client started by an interpreter reports the interpreter, so the path
+                    // identifies the runtime and not the app: every Node-based client shares the
+                    // path of node. The origin it connects from is then the only thing left to
+                    // tell two of them apart, and for MCP not even that, because its origin is
+                    // one constant for every caller; see `isSameConnectApp`, which compares the
+                    // source type, the origin and this path, and never the declared manifest.
+                    return { name: sanitizedName, pid, fullPath };
                 }
             }
 
