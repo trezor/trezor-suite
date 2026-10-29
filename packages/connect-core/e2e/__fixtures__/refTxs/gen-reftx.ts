@@ -2,11 +2,11 @@ import { bufferUtils } from '@trezor/utils';
 import * as BitcoinJs from '@trezor/utxo-lib';
 import type { TxInput, TxOutput } from '@trezor/utxo-lib';
 
-import type { RefTransaction } from '../../src';
+import type { RefTransaction } from '../../../src';
 
 // Referenced transaction generator script.
 // Transform bitcoin-like transaction data in to format required by tests of signTransaction method.
-// Data are stored in packages/connect-core/e2e/__txcache__/[network]
+// Data are stored in packages/connect-core/e2e/__fixtures__/refTxs/[network]
 
 // Step 1.
 // Go to blockchain explorer and find referenced tx by input.prev_hash and locate tx HEX
@@ -60,7 +60,7 @@ const enhanceTransaction = (refTx: typeof refTxArg, srcTx: typeof tx) => {
 const refTx = enhanceTransaction(refTxArg, tx);
 
 // Step 3. run script
-// yarn tsx e2e/__txcache__/gen-reftx.ts > e2e/__txcache__/[network]/[input.prev_hash].json
-// yarn tsx e2e/__txcache__/gen-reftx.ts > e2e/__txcache__/testnet/f405b50dff7053f3697f485f95fe1c0f6a4f5e52446281b4ef470c2762a15dae.json
+// yarn tsx e2e/__fixtures__/refTxs/gen-reftx.ts > e2e/__fixtures__/refTxs/[network]/[input.prev_hash].json
+// yarn tsx e2e/__fixtures__/refTxs/gen-reftx.ts > e2e/__fixtures__/refTxs/testnet/f405b50dff7053f3697f485f95fe1c0f6a4f5e52446281b4ef470c2762a15dae.json
 // eslint-disable-next-line no-console
 console.log(JSON.stringify(refTx, null, 2));

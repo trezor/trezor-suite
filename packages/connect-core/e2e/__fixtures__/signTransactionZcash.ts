@@ -1,4 +1,4 @@
-const { TX_CACHE } = global.TestUtils;
+import { getRefTxs } from './refTxs';
 
 const signTransactionZcash: TestCase = {
     method: 'signTransaction',
@@ -35,7 +35,7 @@ const signTransactionZcash: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['84533a']),
+                refTxs: getRefTxs(['84533a']),
             },
             result: {
                 serializedTx:
@@ -64,7 +64,7 @@ const signTransactionZcash: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['29d255']),
+                refTxs: getRefTxs(['29d255']),
             },
             result: {
                 serializedTx:
@@ -109,7 +109,7 @@ const signTransactionZcash: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['6df53c', 'e7e1d1']),
+                refTxs: getRefTxs(['6df53c', 'e7e1d1']),
             },
             result: false, // since 2.3.3 Failure_DataError Unsupported transaction version.
             legacyResults: [
@@ -149,7 +149,7 @@ const signTransactionZcash: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['4264f5']),
+                refTxs: getRefTxs(['4264f5']),
             },
             result: {
                 serializedTx:
@@ -183,7 +183,7 @@ const signTransactionZcash: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['4b6cec'], true),
+                refTxs: getRefTxs(['4b6cec']),
             },
             result: {
                 serializedTx:
@@ -216,7 +216,7 @@ const signTransactionZcash: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['868508'], true),
+                refTxs: getRefTxs(['868508']),
             },
             result: {
                 serializedTx:
@@ -249,7 +249,7 @@ const signTransactionZcash: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                // refTxs: TX_CACHE([]), // v5 doesnt require streaming previous transactions
+                // refTxs: getRefTxs([]), // v5 doesnt require streaming previous transactions
             },
             result: {
                 serializedTx:
@@ -282,7 +282,7 @@ const signTransactionZcash: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                // refTxs: TX_CACHE([]), // v5 doesnt require streaming previous transactions
+                // refTxs: getRefTxs([]), // v5 doesnt require streaming previous transactions
             },
             result: {
                 serializedTx:
@@ -320,7 +320,7 @@ const signTransactionZcash: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                // refTxs: TX_CACHE([]), // v5 doesnt require streaming previous transactions
+                // refTxs: getRefTxs([]), // v5 doesnt require streaming previous transactions
             },
             result: {
                 serializedTx:
@@ -363,7 +363,7 @@ const signTransactionZcash: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                // refTxs: TX_CACHE([]), // v5 doesnt require streaming previous transactions
+                // refTxs: getRefTxs([]), // v5 doesnt require streaming previous transactions
             },
             result: {
                 serializedTx:
@@ -415,7 +415,7 @@ const signTransactionZcash: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                // refTxs: TX_CACHE([]), // v5 doesnt require streaming previous transactions
+                // refTxs: getRefTxs([]), // v5 doesnt require streaming previous transactions
             },
             result: {
                 signatures: [

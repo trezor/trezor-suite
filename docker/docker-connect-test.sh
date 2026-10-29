@@ -52,7 +52,6 @@ FIRMWARE_BTC_ONLY=false
 INCLUDED_METHODS=""
 EXCLUDED_METHODS=""
 DOCKER=true
-USE_TX_CACHE=true
 USE_WS_CACHE=true
 PATTERN=""
 FIRMWARE_MODEL=""
@@ -68,7 +67,6 @@ while getopts ":p:i:e:f:b:u:m:t:hdcro" opt; do
     DOCKER=false
     ;;
   c)
-    USE_TX_CACHE=false
     USE_WS_CACHE=false
     ;;
   f)
@@ -128,7 +126,6 @@ fi
 export TESTS_FIRMWARE=$FIRMWARE
 export TESTS_INCLUDED_METHODS=$INCLUDED_METHODS
 export TESTS_EXCLUDED_METHODS=$EXCLUDED_METHODS
-export TESTS_USE_TX_CACHE=$USE_TX_CACHE
 export TESTS_USE_WS_CACHE=$USE_WS_CACHE
 export TESTS_PATTERN=$PATTERN
 export TESTS_SCRIPT=$SCRIPT
@@ -154,7 +151,6 @@ run() {
   echo "  Test pattern: $PATTERN"
   echo "  Included methods: ${INCLUDED_METHODS}"
   echo "  Excluded methods: ${EXCLUDED_METHODS}"
-  echo "  TxCache: ${USE_TX_CACHE}"
   echo "  WsCache: ${USE_WS_CACHE}"
   echo "  Random: ${RANDOMIZE}"
   echo "  Transport: ${TRANSPORT}"

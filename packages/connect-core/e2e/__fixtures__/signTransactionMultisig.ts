@@ -1,4 +1,4 @@
-const { TX_CACHE } = global.TestUtils;
+import { getRefTxs } from './refTxs';
 
 // fixtures: https://github.com/trezor/trezor-firmware/blob/main/tests/device_tests/test_multisig.py
 
@@ -67,7 +67,7 @@ const signTransactionMultisig: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['6b07c1']),
+                refTxs: getRefTxs(['6b07c1']),
             },
             result: {
                 signatures: [SIGNATURES_2_OF_3[0]],
@@ -100,7 +100,7 @@ const signTransactionMultisig: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['6b07c1']),
+                refTxs: getRefTxs(['6b07c1']),
             },
             result: {
                 signatures: [SIGNATURES_2_OF_3[1]],
@@ -152,7 +152,7 @@ const signTransactionMultisig: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['0d5b56']),
+                refTxs: getRefTxs(['0d5b56']),
             },
             result: {
                 serializedTx:
@@ -188,7 +188,7 @@ const signTransactionMultisig: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['0d5b56']),
+                refTxs: getRefTxs(['0d5b56']),
             },
             result: false,
         },
@@ -265,7 +265,7 @@ const signTransactionMultisig: TestCase = {
                         address: 'tb1q0egy6cmrhzz69l3xn7tpndjt2dtqkk7a9mlruh',
                     },
                 ],
-                refTxs: TX_CACHE(['a48aa3']),
+                refTxs: getRefTxs(['a48aa3']),
             },
             result: {
                 signatures: [

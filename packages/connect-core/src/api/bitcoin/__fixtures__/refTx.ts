@@ -2,7 +2,7 @@
 import { networks } from '@trezor/utxo-lib';
 
 // @ts-ignore
-import txba917a from '../../../../e2e/__txcache__/testnet/ba917a2b563966e324ab37ed7de5f5cd7503b970b0f0bb9a5208f5835557e99c.json';
+import txba917a from '../../../../e2e/__fixtures__/refTxs/testnet/ba917a2b563966e324ab37ed7de5f5cd7503b970b0f0bb9a5208f5835557e99c.json';
 
 const tx70f987blockbook = {
     txid: '70f9871eb03a38405cfd7a01e0e1448678132d815e2c9f552ad83ae23969509e',

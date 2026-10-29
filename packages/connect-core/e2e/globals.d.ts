@@ -2,8 +2,6 @@ import type { CoinSymbol } from '@trezor/connect-common';
 
 // Globals used in connect test
 declare global {
-    var TestUtils: any;
-
     type LegacyResult = {
         rules: string[];
         payload?: any;

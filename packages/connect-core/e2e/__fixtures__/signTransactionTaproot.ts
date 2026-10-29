@@ -1,6 +1,6 @@
 // fixures: https://github.com/trezor/trezor-firmware/blob/main/tests/device_tests/bitcoin/test_signtx_taproot.py
 
-const { TX_CACHE } = global.TestUtils;
+import { getRefTxs } from './refTxs';
 
 const signTransactionTaproot: TestCase = {
     method: 'signTransaction',
@@ -31,7 +31,7 @@ const signTransactionTaproot: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                // refTxs: TX_CACHE([]), // Taproot inputs doesnt require streaming previous transactions
+                // refTxs: getRefTxs([]), // Taproot inputs doesnt require streaming previous transactions
             },
             result: {
                 serializedTx:
@@ -74,7 +74,7 @@ const signTransactionTaproot: TestCase = {
                         script_type: 'PAYTOTAPROOT',
                     },
                 ],
-                // refTxs: TX_CACHE([]), // Taproot inputs doesnt require streaming previous transactions
+                // refTxs: getRefTxs([]), // Taproot inputs doesnt require streaming previous transactions
             },
             result: {
                 serializedTx:
@@ -147,7 +147,7 @@ const signTransactionTaproot: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['8c3ea7', '7956f1', '901593', '3ac32e']), // referenced transactions are required because of mixed inputs
+                refTxs: getRefTxs(['8c3ea7', '7956f1', '901593', '3ac32e']), // referenced transactions are required because of mixed inputs
             },
             result: {
                 serializedTx:

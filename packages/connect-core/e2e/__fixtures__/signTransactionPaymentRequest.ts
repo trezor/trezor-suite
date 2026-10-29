@@ -1,6 +1,6 @@
 // fixtures: https://github.com/trezor/trezor-firmware/blob/main/tests/device_tests/bitcoin/test_signtx_payreq.py
 
-const { TX_CACHE } = global.TestUtils;
+import { getRefTxs } from './refTxs';
 
 const signTransactionPaymentRequest: TestCase = {
     method: 'signTransaction',
@@ -55,7 +55,7 @@ const signTransactionPaymentRequest: TestCase = {
                             '6cc47e87150a0f3d4889b97ef45f9adfbdc2d8aa30b5dca07f964296059db2d4e1baf107a09b6bb45b0655edf729fd7e29f2f807a50da8919dc6a0376b2ce66e',
                     },
                 ],
-                refTxs: TX_CACHE(['b223a7'], true),
+                refTxs: getRefTxs(['b223a7']),
             },
             result: {
                 serializedTx:

@@ -1,4 +1,4 @@
-const { TX_CACHE } = global.TestUtils;
+import { getRefTxs } from './refTxs';
 
 // vectors from https://github.com/trezor/trezor-firmware/blob/main/tests/device_tests/test_msg_signtx.py
 
@@ -46,7 +46,7 @@ const signTransaction: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['0dac36']),
+                refTxs: getRefTxs(['0dac36']),
                 coin: 'btc',
             },
             result: {
@@ -78,7 +78,7 @@ const signTransaction: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['e5040e']),
+                refTxs: getRefTxs(['e5040e']),
                 coin: 'test',
             },
             result: {
@@ -105,7 +105,7 @@ const signTransaction: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['25fee5']),
+                refTxs: getRefTxs(['25fee5']),
                 coin: 'test',
             },
             result: {
@@ -137,7 +137,7 @@ const signTransaction: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['50f6f1']),
+                refTxs: getRefTxs(['50f6f1']),
                 coin: 'btc',
             },
             result: {
@@ -174,7 +174,7 @@ const signTransaction: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['bb5169']),
+                refTxs: getRefTxs(['bb5169']),
                 coin: 'test',
             },
             result: {
@@ -213,7 +213,7 @@ const signTransaction: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['ac4ca0']),
+                refTxs: getRefTxs(['ac4ca0']),
                 coin: 'btc',
             },
             result: {
@@ -238,7 +238,7 @@ const signTransaction: TestCase = {
                     },
                 ],
                 outputs,
-                refTxs: TX_CACHE(['58d56a']),
+                refTxs: getRefTxs(['58d56a']),
                 coin: 'test',
             },
             result: {
@@ -267,7 +267,7 @@ const signTransaction: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['1f326f']),
+                refTxs: getRefTxs(['1f326f']),
             },
             result: {
                 serializedTx:
@@ -295,7 +295,7 @@ const signTransaction: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['d5f65e']),
+                refTxs: getRefTxs(['d5f65e']),
             },
             result: false,
         },
@@ -319,7 +319,7 @@ const signTransaction: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['005f6f'], true), // Fake tx
+                refTxs: getRefTxs(['005f6f']), // Fake tx
             },
             result: {
                 serializedTx:
@@ -359,7 +359,7 @@ const signTransaction: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['e5040e']),
+                refTxs: getRefTxs(['e5040e']),
             },
             result: {
                 serializedTx:
@@ -386,7 +386,7 @@ const signTransaction: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['58d56a']),
+                refTxs: getRefTxs(['58d56a']),
             },
             result: {
                 serializedTx:
@@ -413,7 +413,7 @@ const signTransaction: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['074b00']),
+                refTxs: getRefTxs(['074b00']),
             },
             result: {
                 serializedTx:
@@ -446,7 +446,7 @@ const signTransaction: TestCase = {
                         script_type: 'PAYTOADDRESS',
                     },
                 ],
-                refTxs: TX_CACHE(['e5040e']),
+                refTxs: getRefTxs(['e5040e']),
             },
             result: {
                 serializedTx:
