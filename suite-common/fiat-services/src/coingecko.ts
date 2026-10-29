@@ -28,6 +28,7 @@ type FetchCoinGeckoMarketChartParams = {
     ticker: TickerId;
     fiatCurrency: BaseCurrencyCode;
     days: CoinGeckoMarketChartDays;
+    signal?: AbortSignal;
 };
 
 type CoinGeckoMarketChartResponse = {
@@ -36,13 +37,24 @@ type CoinGeckoMarketChartResponse = {
 
 const rateLimiter = new RateLimiter(1_000, 15_000);
 
-const fetchCoinGecko = async (url: string, skipCache?: boolean) => {
+type FetchCoinGeckoOptions = {
+    skipCache?: boolean;
+    signal?: AbortSignal;
+};
+
+const fetchCoinGecko = async (url: string, options: FetchCoinGeckoOptions = {}) => {
     try {
         let res: Response;
-        if (skipCache) {
-            res = await fetchUrl(url, { headers: { 'X-Bypass-Cache': '1' } });
+        if (options.skipCache) {
+            res = await fetchUrl(url, {
+                headers: { 'X-Bypass-Cache': '1' },
+                signal: options.signal,
+            });
         } else {
-            res = await rateLimiter.limit(signal => fetchUrl(url, { signal }));
+            res = await rateLimiter.limit(
+                fetchSignal => fetchUrl(url, { signal: fetchSignal }),
+                options.signal,
+            );
         }
         if (!res.ok) {
             console.warn(`Coingecko: Fiat rates failed to fetch: ${res.status}`);
@@ -52,6 +64,8 @@ const fetchCoinGecko = async (url: string, skipCache?: boolean) => {
 
         return res.json();
     } catch (error) {
+        if (options.signal?.aborted) throw error;
+
         // Do not report to Sentry to save the issues count limit.
         console.warn(error);
     }
@@ -115,13 +129,15 @@ export const fetchCoinGeckoMarketChart = async ({
     ticker,
     fiatCurrency,
     days,
+    signal,
 }: FetchCoinGeckoMarketChartParams): Promise<CoinGeckoPricePair[] | null> => {
     const coinUrls = await buildCoinUrls(ticker);
     const urlParams = `vs_currency=${fiatCurrency}&days=${days}`;
 
     for (const coinUrl of coinUrls) {
-        const response = (await fetchCoinGecko(`${coinUrl}/market_chart?${urlParams}`)) as
-            CoinGeckoMarketChartResponse | undefined;
+        const response = (await fetchCoinGecko(`${coinUrl}/market_chart?${urlParams}`, {
+            signal,
+        })) as CoinGeckoMarketChartResponse | undefined;
         const prices = response?.prices;
 
         if (prices && prices.length > 0) {
@@ -151,7 +167,7 @@ export const fetchCurrentFiatRates = async (
 
     for (const coinUrl of coinUrls) {
         const url = `${coinUrl}?${urlParams}`;
-        const rates = await fetchCoinGecko(url, options?.skipCache);
+        const rates = await fetchCoinGecko(url, { skipCache: options?.skipCache });
 
         if (rates) {
             return {

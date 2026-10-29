@@ -86,4 +86,14 @@ describe('fetchCoinGeckoMarketChart', () => {
             expect.anything(),
         );
     });
+
+    it('gives up without a request once the caller has left', async () => {
+        const controller = new AbortController();
+        controller.abort();
+
+        await expect(
+            fetchCoinGeckoMarketChart({ ticker, fiatCurrency, days: 7, signal: controller.signal }),
+        ).rejects.toBe(controller.signal.reason);
+        expect(fetchUrlMock).not.toHaveBeenCalled();
+    });
 });
