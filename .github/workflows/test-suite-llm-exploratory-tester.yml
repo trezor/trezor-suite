@@ -167,8 +167,12 @@ jobs:
       - name: Install dependencies
         run: yarn workspaces focus @trezor/e2e-utils @trezor/suite-e2e
 
+      - name: Install Playwright dependencies
+        run: yarn workspace @trezor/suite-e2e exec playwright install-deps chromium
+
       - name: Install Playwright Chromium
-        run: yarn workspace @trezor/suite-e2e exec playwright install chromium --with-deps
+        if: inputs.platform != 'desktop'
+        run: yarn workspace @trezor/suite-e2e exec playwright install chromium
 
       - name: Download desktop build
         if: inputs.platform == 'desktop'
