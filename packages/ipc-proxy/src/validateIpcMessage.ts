@@ -1,74 +1,43 @@
-import path from 'path';
-
 import { type ElectronIpcMainInvokeEvent } from './types';
 
-const defaultDirnameProvider = () => __dirname;
+/**
+ * The only page allowed to message the main process. The packaged renderer is served by the
+ * protocol handler of `@suite/desktop-app-main` (libs/renderer-protocol.ts); development loads it
+ * from the webpack dev server instead.
+ */
+const RENDERER_URL = 'suite://app/index.html';
+const DEV_RENDERER_HOST = 'localhost:8000';
 
 type ValidateIpcMessageParams = {
     ipcEvent: ElectronIpcMainInvokeEvent;
-    dirnameProvider?: () => string;
-    platformProvider?: () => string;
-    pathProvider?: typeof path;
 };
 
-export const validateIpcMessage = ({
-    ipcEvent,
-    dirnameProvider = defaultDirnameProvider,
-    platformProvider = () => process.platform,
-    pathProvider = path,
-}: ValidateIpcMessageParams) => {
-    if (ipcEvent?.senderFrame && 'url' in ipcEvent.senderFrame) {
-        // Example of `ipcEvent.senderFrame.url` is:
-        //      'file:///tmp/.mount_Trezorztdoqo/resources/app.asar/build/index.html'
-        const parsedUrl = new URL(ipcEvent.senderFrame.url);
-
-        const isDev = process.env.NODE_ENV !== 'production';
-
-        if (isDev && parsedUrl.host === 'localhost:8000') {
-            return; // We are ok on develop, only allowed is `localhost:8000`
-        }
-
-        if (parsedUrl.hostname !== '') {
-            throw new Error(`Hostname ${parsedUrl.hostname} found, must be empty`);
-        }
-
-        if (parsedUrl.host !== '') {
-            throw new Error(`Host ${parsedUrl.hostname} found, must be empty`);
-        }
-
-        if (parsedUrl.protocol !== 'file:') {
-            throw new Error(`Invalid protocol "${parsedUrl.protocol}", only file: allowed`);
-        }
-
-        const baseDir = dirnameProvider();
-
-        // Windows quirk: strip leading slash if path looks like /C:/...
-        const winFixedPathname =
-            platformProvider() === 'win32' &&
-            parsedUrl.pathname.startsWith('/') &&
-            /^[A-Za-z]:/.test(parsedUrl.pathname.slice(1))
-                ? parsedUrl.pathname.slice(1)
-                : parsedUrl.pathname;
-        const sanitizedPathname = decodeURIComponent(winFixedPathname);
-
-        const normalizedBase = pathProvider.normalize(baseDir);
-        const normalizedFile = pathProvider.normalize(sanitizedPathname);
-        // for purposes of comparison, revert Windows backslashes to forward slashes
-        const relativePath = pathProvider
-            .relative(normalizedBase, normalizedFile)
-            .replace(/\\/g, '/');
-
-        // Verify that the sender is our index.html and nothing else.
-        // Electron-main is running in asar/dist, so by comparing the relativePath,
-        // only our asar/build/index.html can pass the check.
-        if (relativePath !== '../build/index.html') {
-            throw new Error(
-                `Invalid ipcEvent.senderFrame.url: "${ipcEvent.senderFrame.url}", ` +
-                    `relative path is: "${relativePath}", ` +
-                    `dirname is: "${baseDir}"`,
-            );
-        }
-    } else {
+export const validateIpcMessage = ({ ipcEvent }: ValidateIpcMessageParams) => {
+    if (!ipcEvent?.senderFrame || !('url' in ipcEvent.senderFrame)) {
         throw new Error(`Invalid ipcEvent: ${JSON.stringify(ipcEvent)}`);
+    }
+
+    const senderUrl = ipcEvent.senderFrame.url;
+    const parsedUrl = new URL(senderUrl);
+
+    const isDev = process.env.NODE_ENV !== 'production';
+
+    if (isDev && parsedUrl.host === DEV_RENDERER_HOST) {
+        return; // We are ok on develop, only allowed is `localhost:8000`
+    }
+
+    // The query and the fragment are ignored on purpose; the scheme, the host and the path are
+    // what identify Suite's own page, and nothing else can be served under them.
+    const { protocol, host, pathname } = parsedUrl;
+    const expectedUrl = new URL(RENDERER_URL);
+
+    if (
+        protocol !== expectedUrl.protocol ||
+        host !== expectedUrl.host ||
+        pathname !== expectedUrl.pathname
+    ) {
+        throw new Error(
+            `Invalid ipcEvent.senderFrame.url: "${senderUrl}", only "${RENDERER_URL}" is allowed`,
+        );
     }
 };

@@ -86,6 +86,7 @@ const config: webpack.Configuration = {
         // NOTE: in DEV ONLY pick app with react dev tools installed
         { app: isDev ? 'app-with-devtools' : 'app' },
         { preload: 'preload' },
+        { 'legacy-origin-storage-preload': 'legacy-origin-storage-preload' },
         ...threads.map(thread => ({ [String(thread)]: thread })),
     ].reduce(
         (prev, cur) => ({
@@ -164,10 +165,10 @@ const config: webpack.Configuration = {
     },
     optimization: {
         splitChunks: {
-            // The preload runs sandboxed (`sandbox: true` in src/libs/createMainWindow.ts), where
-            // `require` loads only a few built-in modules and never a file, so a chunk split out of
-            // it can never load.
-            chunks: chunk => chunk.name !== 'preload',
+            // The preloads run sandboxed (`sandbox: true` in src/libs/createMainWindow.ts and in
+            // src/modules/legacy-origin-storage.ts), where `require` loads only a few built-in
+            // modules and never a file, so a chunk split out of them can never load.
+            chunks: chunk => !chunk.name?.endsWith('preload'),
             name(_: any, chunks: any) {
                 if (chunks.every((item: any) => item.name)) {
                     return chunks.length > 1

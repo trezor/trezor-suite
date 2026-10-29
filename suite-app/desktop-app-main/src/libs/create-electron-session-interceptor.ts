@@ -4,6 +4,7 @@ import { isWhitelistedHost } from '@trezor/utils';
 
 import { electronOrigin, localhostDomains } from '../config';
 import { hasSwitch } from './process-switches';
+import { RENDERER_ORIGIN } from './renderer-protocol';
 
 /**
  * Create an electron Renderer interceptor with API to add/remove custom handlers. In the Renderer process,
@@ -20,7 +21,8 @@ export const createElectronSessionInterceptor = (): RequestInterceptor => {
     // URLs that should work even in offline mode (e.g., localhost, test servers)
     const offlineModeAllowedUrls = [
         'http://localhost:8000', // Development server (app itself)
-        'file://', // App's own local resources
+        `${RENDERER_ORIGIN}/`, // App's own resources, served by the renderer protocol
+        'file://', // The legacy-origin-storage export page
         'devtools://', // Chrome DevTools
         'chrome-extension://', // Browser extensions
         'data:', // Inline data URLs

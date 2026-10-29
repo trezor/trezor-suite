@@ -19,6 +19,7 @@ import type { ILogger } from './libs/logger';
 import { type MainWindowProxy } from './libs/main-window-proxy';
 import { hasSwitch } from './libs/process-switches';
 import { isValidProtocol } from './libs/protocol';
+import { handleRendererProtocol, registerRendererScheme } from './libs/renderer-protocol';
 import { MIN_HEIGHT, MIN_WIDTH } from './libs/screen';
 import { initSentry } from './libs/sentry';
 import { Store } from './libs/store';
@@ -104,7 +105,11 @@ export const createDesktopMainApp =
         // https://github.com/electron/electron/issues/46538#issuecomment-2808806722
         app.commandLine.appendSwitch('gtk-version', '3');
 
+        registerRendererScheme();
+
         await app.whenReady();
+
+        handleRendererProtocol({ logger: deps.logger });
 
         // Load bridge module first, it is required in both UI and daemon mode
         const interceptor = createElectronSessionInterceptor();
