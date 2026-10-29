@@ -11551,7 +11551,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/earn-staking-products@workspace:suite-common/earn-staking-products":
+"@suite-common/earn-staking-products@workspace:*, @suite-common/earn-staking-products@workspace:suite-common/earn-staking-products":
   version: 0.0.0-use.local
   resolution: "@suite-common/earn-staking-products@workspace:suite-common/earn-staking-products"
   dependencies:
@@ -11560,7 +11560,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/earn-staking@workspace:suite-common/earn-staking":
+"@suite-common/earn-staking@workspace:*, @suite-common/earn-staking@workspace:suite-common/earn-staking":
   version: 0.0.0-use.local
   resolution: "@suite-common/earn-staking@workspace:suite-common/earn-staking"
   dependencies:
@@ -19608,7 +19608,9 @@ __metadata:
     "@suite-common/discreet-mode": "workspace:*"
     "@suite-common/earn-stablecoin": "workspace:^"
     "@suite-common/earn-stablecoin-api": "workspace:*"
+    "@suite-common/earn-staking": "workspace:*"
     "@suite-common/earn-staking-api": "workspace:*"
+    "@suite-common/earn-staking-products": "workspace:*"
     "@suite-common/extra-dependencies": "workspace:*"
     "@suite-common/feedback": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"
