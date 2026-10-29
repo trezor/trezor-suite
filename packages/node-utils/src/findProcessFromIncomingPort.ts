@@ -46,6 +46,9 @@ const IPV4_MAPPED_IPV6 = /^::ffff:(\d{1,3}(?:\.\d{1,3}){3})$/;
 // replaced, as an upgrade of a running app does.
 const DELETED_EXE_SUFFIX = ' (deleted)';
 
+// The revision a snap was last refreshed to, which its exe path carries.
+const SNAP_REVISION_PATH = /^(\/snap\/[^/]+)\/\d+\//;
+
 // The path the executable was installed at. The suffix is only the kernel's marker when nothing
 // exists at the printed path: a file literally named "... (deleted)" is its own executable and
 // must not be handed the identity of the path it would be stripped to.
@@ -157,12 +160,17 @@ export async function findProcessFromIncomingPort(
                     // The path is the identity of the app, so a replaced binary keeps the one it
                     // was installed at.
                     const fullPath = await resolveExePath(exe);
+
+                    // A snap's revision changes with every refresh, while `current` is the
+                    // symlink snapd keeps pointing at the active one, so permissions remembered
+                    // for the app survive its updates.
+                    const installedPath = fullPath.replace(SNAP_REVISION_PATH, '$1/current/');
                     // Binaries can be all over the place on Linux, so we don't check the path
 
                     // A client started by an interpreter reports the interpreter, so the path
                     // identifies the runtime and not the app: every Node-based client shares the
                     // path of node, and only the origin it connects from tells two of them apart.
-                    return { name: sanitizedName, pid, fullPath };
+                    return { name: sanitizedName, pid, fullPath: installedPath };
                 }
             }
 

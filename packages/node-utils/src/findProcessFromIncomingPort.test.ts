@@ -179,9 +179,7 @@ describe('findProcessFromIncomingPort for an accepted connection', () => {
         expect(processInfo?.fullPath).toBe('/usr/bin/client (deleted)');
     });
 
-    // Documents the behaviour today: the path of a snap-packaged process carries the revision
-    // the snap was last refreshed to.
-    test('identifies a snap-packaged Linux process by the path of its revision', async () => {
+    test('identifies a snap-packaged Linux process by the path its revisions share', async () => {
         setPlatform('linux');
         mockCommands([
             [
@@ -193,7 +191,9 @@ describe('findProcessFromIncomingPort for an accepted connection', () => {
 
         const processInfo = await findProcessFromIncomingPort(40000, true, connection);
 
-        expect(processInfo?.fullPath).toBe('/snap/client/142/usr/bin/client');
+        // The revision in the path changes with every refresh of the snap, so permissions
+        // remembered for the app would not survive its updates.
+        expect(processInfo?.fullPath).toBe('/snap/client/current/usr/bin/client');
     });
 
     test('keeps the Linux process lsof named when its executable cannot be read', async () => {
