@@ -13,6 +13,7 @@ import {
 import { Column, H3, Paragraph } from '@trezor/components';
 import TrezorConnect, { UI_REQUESTS, UI_RESPONSE } from '@trezor/connect';
 
+import { WalletLabeling } from 'src/components/suite/labeling/WalletLabeling';
 import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
 import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
 
@@ -53,6 +54,21 @@ export const ConfirmPassphraseBeforeAction = () => {
         return null;
     }
 
+    const description = device.state?.staticSessionId ? (
+        <Translation
+            id="TR_CONFIRM_PASSPHRASE_FOR_WALLET_LABEL"
+            values={{
+                walletLabel: (
+                    <b>
+                        <WalletLabeling device={device} />
+                    </b>
+                ),
+            }}
+        />
+    ) : (
+        <Translation id="TR_CONFIRM_PASSPHRASE_WITHOUT_ADVICE_DESCRIPTION" />
+    );
+
     return (
         <SwitchDeviceModal onCancel={onEnterPassphraseDialogCancel}>
             <CardWithDevice
@@ -64,9 +80,7 @@ export const ConfirmPassphraseBeforeAction = () => {
                     <H3>
                         <Translation id="TR_CONFIRM_PASSPHRASE" />
                     </H3>
-                    <Paragraph>
-                        <Translation id="TR_CONFIRM_PASSPHRASE_WITHOUT_ADVICE_DESCRIPTION" />
-                    </Paragraph>
+                    <Paragraph>{description}</Paragraph>
                 </Column>
                 <PassphraseInputCard
                     isDeviceLoading={isDeviceLoading}

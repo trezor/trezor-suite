@@ -2264,6 +2264,10 @@ export const messages = defineMessages({
         defaultMessage: 'Confirm passphrase',
         id: 'TR_CONFIRM_PASSPHRASE',
     },
+    TR_CONFIRM_PASSPHRASE_FOR_WALLET_LABEL: {
+        defaultMessage: 'Unlock {walletLabel} to authorize this action.',
+        id: 'TR_CONFIRM_PASSPHRASE_FOR_WALLET_LABEL',
+    },
     TR_PASSPHRASE: {
         defaultMessage: 'Passphrase',
         id: 'TR_PASSPHRASE',
