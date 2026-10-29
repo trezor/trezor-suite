@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { useSelector } from 'react-redux';
 
 import {
     Fingerprint,
@@ -7,7 +8,7 @@ import {
     useFirmwareInstallationProgressCheck,
 } from '@suite/firmware-upgrade';
 import { Translation } from '@suite/intl';
-import { MODAL_CONTEXT_DEVICE, selectModal } from '@suite/modal';
+import { selectDeviceContextWindowType } from '@suite/modal';
 import { OnboardingCard } from '@suite/onboarding-components';
 import { selectSelectedDevice } from '@suite-common/device';
 import { Card } from '@trezor/components';
@@ -17,7 +18,7 @@ import { exhaustive } from '@trezor/type-utils';
 
 import { FirmwareInstallationProgressCheck } from 'src/components/firmware/ProgressCheck/FirmwareInstallationProgressCheck';
 import { ThpPairingStep } from 'src/components/onboarding/ThpPairingStep/ThpPairingStep';
-import { useOnboarding, useSelector } from 'src/hooks/suite';
+import { useOnboarding } from 'src/hooks/suite';
 
 import { FirmwareInitialStep } from './FirmwareInitialStep';
 import { FirmwareInstallationStep } from './FirmwareInstallationStep';
@@ -25,7 +26,6 @@ import { DeviceDisconnectedStep } from '../../UnexpectedState/DeviceDisconnected
 
 export const FirmwareStep = () => {
     const device = useSelector(selectSelectedDevice);
-    const modal = useSelector(selectModal);
     const { goToNextStep, updateAnalytics } = useOnboarding();
     const { error, resetReducer, firmwareUpdate, targetType, status } = useFirmwareDesktopUpdate();
     const { isProgressCheckDisplayed, handleDismissProgressCheck } =
@@ -36,10 +36,9 @@ export const FirmwareStep = () => {
         goToNextStep();
         resetReducer();
     }, [goToNextStep, resetReducer]);
+    const windowType = useSelector(selectDeviceContextWindowType);
 
-    const showFingerprintCheck =
-        modal.context === MODAL_CONTEXT_DEVICE &&
-        modal.windowType === 'ButtonRequest_FirmwareCheck';
+    const showFingerprintCheck = windowType === 'ButtonRequest_FirmwareCheck';
 
     if (showFingerprintCheck && device) {
         // Some old firmwares ask for verifying firmware fingerprint by dispatching ButtonRequest_FirmwareCheck
