@@ -37,7 +37,7 @@ export const ConfirmPassphraseOnDevice = () => {
                         <Translation id="TR_CONFIRM_ACTION_ON_YOUR" />
                     </Paragraph>
 
-                    <Row alignSelf="center" data-testid="@suite/modal/confirm-action-on-device">
+                    <Row alignSelf="center" data-testid="@prompts/confirm-on-device">
                         <DeviceWithScene
                             deviceModel={device.features.internal_model}
                             unitColor={device.features.unit_color}
