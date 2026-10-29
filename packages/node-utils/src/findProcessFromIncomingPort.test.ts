@@ -196,6 +196,27 @@ describe('findProcessFromIncomingPort for an accepted connection', () => {
         expect(processInfo?.fullPath).toBe('/snap/client/current/usr/bin/client');
     });
 
+    // Documents the behaviour today: an AppImage runs from a mountpoint made up anew on every
+    // launch, and that mountpoint is part of the path.
+    test('identifies an AppImage Linux process by the mountpoint it runs from', async () => {
+        setPlatform('linux');
+        mockCommands([
+            [
+                'lsof',
+                'client 300 user 18u IPv4 207199 0t0 TCP 127.0.0.1:40000->127.0.0.1:21335 (ESTABLISHED)',
+            ],
+        ]);
+        jest.spyOn(fs, 'readlink').mockResolvedValue('/tmp/.mount_clientAbC123/usr/bin/client');
+
+        const processInfo = await findProcessFromIncomingPort(40000, true, connection);
+
+        expect(processInfo).toEqual({
+            name: 'client',
+            pid: '300',
+            fullPath: '/tmp/.mount_clientAbC123/usr/bin/client',
+        });
+    });
+
     test('keeps the Linux process lsof named when its executable cannot be read', async () => {
         setPlatform('linux');
         mockCommands([
