@@ -2,38 +2,14 @@ import '@suite-common/test-utils/globalOverrides';
 
 import { screen } from '@testing-library/react';
 
-import { mockNetworksState } from '@suite-common/networks/mocks';
-import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
-import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { getWalletAssetKey } from '@suite-common/wallet-core';
-import { type CurrentRate, type Timestamp } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
-import { getFiatRateKey } from '@suite-common/wallet-utils';
-import { type StaticSessionId } from '@trezor/device-utils';
 
 import { type AppState } from 'src/reducers/store';
 import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { AssetDetailMarketPrice } from './AssetDetailMarketPrice';
-import { mockInitialAppState } from '../../../../mocks/mockInitialAppState';
-
-const DEVICE_STATE = '1stTestnetAddress@device_id:0' as StaticSessionId;
-
-const ETH = asNetworkSymbol('eth');
-
-const ETH_ASSET_KEY = getWalletAssetKey({ deviceState: DEVICE_STATE, symbol: ETH });
-
-// In dollars, the dollar rate is the rate itself.
-const mockRate = (rate: number) =>
-    ({
-        rate,
-        usdRate: rate,
-        lastTickerTimestamp: 1700000000000 as Timestamp,
-        lastSuccessfulFetchTimestamp: 1700000000000 as Timestamp,
-        isLoading: false,
-        error: null,
-    }) as CurrentRate;
+import { ETH, ETH_ASSET_KEY, getEthAssetState } from './assetDetailTestState';
 
 type InitialStateParams = {
     /** What one ether costs, if the market prices it at all. */
@@ -42,32 +18,12 @@ type InitialStateParams = {
     ethWeekAgoRate?: number;
 };
 
-const getInitialState = ({ ethRate, ethWeekAgoRate }: InitialStateParams): AppState => ({
-    ...mockInitialAppState,
-    networks: mockNetworksState([ETH]),
-    device: {
-        ...mockInitialAppState.device,
-        selectedDevice: mockSuiteDevice({ state: { staticSessionId: DEVICE_STATE } }),
-    },
-    wallet: {
-        ...mockInitialAppState.wallet,
+const getInitialState = ({ ethRate, ethWeekAgoRate }: InitialStateParams): AppState =>
+    getEthAssetState({
         accounts: [mockWalletAccount({ symbol: ETH, formattedBalance: '2' })],
-        settings: {
-            ...mockInitialAppState.wallet.settings,
-            enabledNetworks: [ETH],
-            localCurrency: 'usd',
-        },
-        fiat: {
-            ...mockInitialAppState.wallet.fiat,
-            current:
-                ethRate === undefined ? {} : { [getFiatRateKey(ETH, 'usd')]: mockRate(ethRate) },
-            lastWeek:
-                ethWeekAgoRate === undefined
-                    ? {}
-                    : { [getFiatRateKey(ETH, 'usd')]: mockRate(ethWeekAgoRate) },
-        },
-    },
-});
+        ethRate,
+        ethWeekAgoRate,
+    });
 
 const renderMarketPrice = (state: AppState) => {
     const { services } = createTestCompositionRoot<void, AppState>({ preloadedState: state });
