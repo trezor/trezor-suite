@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { injectDesktopAnalytics } from '@suite/analytics';
 import { injectDesktopApi } from '@suite/desktop-app-api';
-import { MODAL_CONTEXT_DEVICE, openModal } from '@suite/modal';
+import { openModal, selectDeviceContextWindowType } from '@suite/modal';
 import { events } from '@suite-common/analytics';
 import {
     CALL_SOURCE_DESKTOP_WS,
@@ -28,6 +28,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { isMacOs } from '@trezor/env-utils';
 import { injectDispatch } from '@trezor/redux-utils';
 import { exhaustive } from '@trezor/type-utils';
+import { isArrayMember } from '@trezor/utils';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectSuiteLifecycle } from 'src/selectors/suite/suiteSelectors';
@@ -214,21 +215,18 @@ export const useConnectPopupDesktop = () => {
     // True when Suite is showing a modal that needs user input (passphrase,
     // PIN, recovery word). Silent mode still focuses the window in these cases
     // because the user can't respond to the device without seeing Suite.
-    const isUserInputModalOpen = useSelector(state => {
-        const { modal } = state;
-        if (modal.context !== MODAL_CONTEXT_DEVICE) return false;
-        if (!('windowType' in modal) || !modal.windowType) return false;
-
-        return (
-            [
-                UI_REQUESTS.REQUEST_PIN,
-                UI_EVENTS.PIN_INVALID,
-                UI_REQUESTS.REQUEST_PASSPHRASE,
-                UI_EVENTS.PASSPHRASE_ON_DEVICE,
-                UI_REQUESTS.REQUEST_WORD,
-            ] as string[]
-        ).includes(modal.windowType);
-    });
+    const windowType = useSelector(selectDeviceContextWindowType);
+    const isUserInputModalOpen =
+        windowType &&
+        isArrayMember(windowType, [
+            UI_REQUESTS.REQUEST_PIN,
+            UI_EVENTS.PIN_INVALID,
+            UI_REQUESTS.REQUEST_PASSPHRASE,
+            UI_EVENTS.PASSPHRASE_ON_DEVICE,
+            'WordRequestType_Plain',
+            'WordRequestType_Matrix9',
+            'WordRequestType_Matrix6',
+        ]);
 
     const [currentlyOngoing, setCurrentlyOngoing] = useState(false);
     const [wasVisible, setWasVisible] = useState(false);
