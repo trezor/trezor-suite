@@ -14,7 +14,9 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.13.0",
+        "@suite-common/device": "workspace:*",
         "@suite-common/earn-staking-common": "workspace:*",
+        "@suite-common/message-system": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@trezor/dependency-injection": "workspace:*",
@@ -24,6 +26,7 @@
         "zod": "4.6.7"
     },
     "devDependencies": {
+        "@suite-common/suite-types": "workspace:*",
         "@trezor/requirements": "workspace:*"
     }
 }
