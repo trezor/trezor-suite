@@ -13,8 +13,10 @@ import {
     type DeviceUniquePath,
     type Features,
     type KnownDevice,
+    type StaticSessionId,
 } from '@trezor/connect';
 import { type SerializedError } from '@trezor/connect-common/src/constants/errors';
+import { parseStaticSessionId } from '@trezor/device-utils';
 import {
     type ActionTypesDep,
     type ReducersDep,
@@ -74,6 +76,17 @@ const isUnlocked = (features: Features): boolean =>
 // A wallet created with a passphrase is available only while the passphrase protection is enabled.
 const getIsWalletAvailable = (useEmptyPassphrase: boolean | undefined, features: Features) =>
     !!useEmptyPassphrase || !!features.passphrase_protection;
+
+// The instance is ignored, the same wallet can be referenced through a different one after a reconnect.
+const isSameWallet = (first: StaticSessionId, second: StaticSessionId) => {
+    const firstParts = parseStaticSessionId(first);
+    const secondParts = parseStaticSessionId(second);
+
+    return (
+        firstParts.walletDescriptor === secondParts.walletDescriptor &&
+        firstParts.deviceId === secondParts.deviceId
+    );
+};
 
 /**
  * Local utility: get state in DeviceState format from AcquiredDevice in backwards compatible way
@@ -361,24 +374,34 @@ const setDeviceState = (
     // change only acquired devices
     if (!device.features) return;
 
-    const affectedDevice = draft.devices.filter(
+    const [targetDevice, ...otherDevices] = draft.devices.filter(
         d =>
             d.features &&
             d.connected &&
             d.instance === device.instance &&
             (d.id === device.id || (d.path.length > 0 && d.path === device.path)),
     );
+    if (!targetDevice) return;
 
-    if (affectedDevice.length > 1) {
-        console.error('there must be only one device with the same id and without state');
+    if (otherDevices.length > 0) {
+        console.error('there must be only one matching connected device');
 
         return;
     }
 
-    const targetDevice = affectedDevice[0];
-    if (!targetDevice) return;
+    // Refreshing the state of the same wallet is fine, overwriting another wallet is not.
+    const currentStaticSessionId = targetDevice.state?.staticSessionId;
+    if (currentStaticSessionId && !isSameWallet(currentStaticSessionId, state.staticSessionId)) {
+        console.error('the device is already authorized with a different state');
 
-    targetDevice.state = state;
+        return;
+    }
+
+    // The accounts of an authorized wallet are bound to its static session id, so it must not change.
+    targetDevice.state = {
+        ...state,
+        staticSessionId: currentStaticSessionId ?? state.staticSessionId,
+    };
     targetDevice.useEmptyPassphrase = useEmptyPassphrase;
     targetDevice.walletNumber = deviceUtils.getNewWalletNumber(draft.devices, device);
     delete targetDevice.discovered;
