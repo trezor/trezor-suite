@@ -62,3 +62,5 @@ export const selectShowTranslationKeys = (state: SuiteSettingsRootState) =>
     state.suiteSettings.debug.showTranslationKeys;
 export const selectIsAppsEmbeddingEnabled = (state: SuiteSettingsRootState) =>
     state.suiteSettings.debug.isAppsEmbeddingEnabled;
+export const selectIsReduxLoggerEnabled = (state: SuiteSettingsRootState) =>
+    state.suiteSettings.debug.isReduxLoggerEnabled;

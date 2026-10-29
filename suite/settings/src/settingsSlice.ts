@@ -35,6 +35,7 @@ export interface DebugModeOptions {
     isN4w1BackupEnabled: boolean;
     showTranslationKeys: boolean;
     isAppsEmbeddingEnabled: boolean;
+    isReduxLoggerEnabled: boolean;
 }
 
 export interface AutodetectSettings {
@@ -98,6 +99,7 @@ export const suiteSettingsInitialState: SuiteSettingsState = {
         isN4w1BackupEnabled: false,
         showTranslationKeys: false,
         isAppsEmbeddingEnabled: false,
+        isReduxLoggerEnabled: false,
     },
     autodetect: {
         language: true,
