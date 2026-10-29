@@ -106,8 +106,8 @@ const test = suiteBaseTest.extend<Fixtures>({
     activityPage: async ({ page }, use) => {
         await use(new ActivityPage(page));
     },
-    dashboardPage: async ({ page, device, devicePrompt }, use) => {
-        await use(new DashboardPage(page, device, devicePrompt));
+    dashboardPage: async ({ page, device, devicePrompt, target }, use) => {
+        await use(new DashboardPage(page, device, devicePrompt, target));
     },
     settingsPage: async ({ page, device }, use) => {
         await use(new SettingsPage(page, device));

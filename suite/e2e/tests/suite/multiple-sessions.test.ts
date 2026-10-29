@@ -80,7 +80,7 @@ test.describe('Multiple sessions', { tag: ['@T3W1', '@T3T1', '@optional'] }, () 
                 stream: TestStream.Connect,
             }),
         },
-        async ({ context, device, onboardingPage, dashboardPage }) => {
+        async ({ context, device, onboardingPage, dashboardPage, target }) => {
             await onboardingPage.completeOnboarding();
 
             const pageTwo = await context.newPage();
@@ -92,7 +92,7 @@ test.describe('Multiple sessions', { tag: ['@T3W1', '@T3T1', '@optional'] }, () 
             await pageTwo.goto('./');
             const devicePromptTwo = new DevicePrompt(pageTwo, device);
 
-            const dashboardPageTwo = new DashboardPage(pageTwo, device, devicePromptTwo);
+            const dashboardPageTwo = new DashboardPage(pageTwo, device, devicePromptTwo, target);
             await expect(dashboardPageTwo.deviceStatus).toHaveTranslation('TR_CONNECTED', {
                 timeout: 30_000, // Longer timeout needed here to wait for page load and session restore
             });

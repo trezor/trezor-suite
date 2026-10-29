@@ -1,11 +1,13 @@
 import { Locator, Page } from '@playwright/test';
 
 import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { type TrezorConnectPrivilegedAPI, UI_REQUESTS } from '@trezor/connect-web';
 
-import { step } from '../common';
+import { isWebProject, step } from '../common';
 import { DevicePrompt } from './devicePrompt';
 import { DeviceFixture } from '../device';
 import { expect } from '../testExtends/customMatchers';
+import { type PlaywrightTarget } from '../testExtends/suiteTestOptions';
 
 export type graphRangeOptions = 'day' | 'week' | 'month' | 'year' | 'all';
 
@@ -72,6 +74,7 @@ export class DashboardPage {
         private readonly page: Page,
         private readonly device: DeviceFixture,
         private readonly devicePrompt: DevicePrompt,
+        private readonly target: PlaywrightTarget,
     ) {
         this.suiteLayout = this.page.getByTestId('@suite-layout/body');
         this.dashboardMenuButton = this.page.getByTestId('@suite/menu/suite-index');
@@ -179,11 +182,30 @@ export class DashboardPage {
 
     @step()
     async addHiddenWallet(passphrase: string, options?: { skipDiscovery?: boolean }) {
+        // The form can become enabled before Connect is ready to accept the passphrase.
+        const passphraseRequest = isWebProject(this.target)
+            ? await this.page.evaluateHandle(requestType => {
+                  const connect = (window as Window & { TrezorConnect: TrezorConnectPrivilegedAPI })
+                      .TrezorConnect;
+                  const request = { received: false };
+                  const onRequest = () => {
+                      request.received = true;
+                      connect.off(requestType, onRequest);
+                  };
+                  connect.on(requestType, onRequest);
+
+                  return request;
+              }, UI_REQUESTS.REQUEST_PASSPHRASE)
+            : undefined;
+
         await this.addHiddenWalletButton.click();
         await this.addExistingHiddenWalletButton.click();
 
         await this.passphraseInput.fill(passphrase);
-        await this.device.expectToContainOnDisplay('Please enter your passphrase.');
+        if (passphraseRequest) {
+            await this.page.waitForFunction(request => request.received, passphraseRequest);
+            await passphraseRequest.dispose();
+        }
         await this.passphraseSubmitButton.click();
         await expect(this.passphraseInput).toBeHidden();
 
