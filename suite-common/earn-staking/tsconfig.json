@@ -3,6 +3,7 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../earn-staking-common" },
+        { "path": "../wallet-core" },
         { "path": "../wallet-types" },
         {
             "path": "../../packages/dependency-injection"
@@ -10,6 +11,8 @@
         {
             "path": "../../networks/network-module/network-module-types"
         },
+        { "path": "../../packages/redux-utils" },
+        { "path": "../../packages/utils" },
         { "path": "../../packages/requirements" }
     ]
 }
