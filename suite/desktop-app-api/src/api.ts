@@ -137,6 +137,7 @@ export interface InvokeChannels {
     'bridge/get-status': () => InvokeResult<Status>;
     'bridge/change-settings': (payload: Partial<BridgeSettings>) => InvokeResult;
     'bridge/get-settings': () => InvokeResult<BridgeSettings>;
+    'bridge/is-legacy-running': () => InvokeResult<boolean>;
     'user-data/clear': () => InvokeResult;
     'user-data/open': (directory?: string) => InvokeResult;
     'udev/install': () => InvokeResult;
@@ -258,6 +259,7 @@ export type DesktopApi = {
     toggleBridge: DesktopApiInvoke<'bridge/toggle'>;
     changeBridgeSettings: DesktopApiInvoke<'bridge/change-settings'>;
     getBridgeSettings: DesktopApiInvoke<'bridge/get-settings'>;
+    isLegacyBridgeRunning: DesktopApiInvoke<'bridge/is-legacy-running'>;
     // Tray
     changeTraySettings: DesktopApiInvoke<'tray/change-settings'>;
     getTraySettings: DesktopApiInvoke<'tray/get-settings'>;

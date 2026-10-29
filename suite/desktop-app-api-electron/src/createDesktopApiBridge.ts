@@ -182,6 +182,8 @@ export const createDesktopApiBridge = <R extends StrictIpcRenderer<any, IpcRende
 
     getBridgeSettings: () => ipcRenderer.invoke('bridge/get-settings'),
 
+    isLegacyBridgeRunning: () => ipcRenderer.invoke('bridge/is-legacy-running'),
+
     // Tray
     changeTraySettings: payload => {
         if (validation.isObject({ showOnTray: 'boolean' }, payload)) {
