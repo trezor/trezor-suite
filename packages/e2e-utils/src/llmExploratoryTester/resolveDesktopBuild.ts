@@ -1,12 +1,7 @@
 import type { Octokit } from '@octokit/rest';
-import { createRequire } from 'node:module';
 
-import type * as targetHelpers from './target';
-
-// The gate runs before dependencies are installed, so Node loads the TypeScript source directly.
-const { ghView, loadLinkedNumbersFrom, parseTarget }: typeof targetHelpers = createRequire(
-    import.meta.url,
-)('./target.ts');
+// This job runs before Yarn install. Node loads the TypeScript files directly.
+import { ghView, loadLinkedNumbersFrom, parseTarget } from './target.ts';
 
 type PullRequest = {
     number: number;
@@ -26,37 +21,44 @@ export const resolveDesktopBuild = async ({
     core,
 }: ResolveDesktopBuildParams): Promise<void> => {
     const target = parseTarget(process.env.TARGET);
-    const numbers =
-        target.kind === 'pr' ? [target.number] : loadLinkedNumbersFrom('issue', target.number);
-    if (!numbers.length) throw new Error('Issue has no linked Suite PR');
+    let prNumber = target.number;
 
-    const pr = ghView<PullRequest>(
-        'pr',
-        Math.max(...numbers),
-        'number,headRefOid,isCrossRepository',
-    );
-    if (pr.isCrossRepository) throw new Error('Desktop testing of fork PRs is not supported');
+    if (target.kind === 'issue') {
+        const linkedPrNumbers = loadLinkedNumbersFrom('issue', target.number);
+        if (linkedPrNumbers.length === 0) {
+            throw new Error('Issue has no linked Suite PR');
+        }
+
+        // When an issue links to several PRs, test the most recently opened one.
+        prNumber = Math.max(...linkedPrNumbers);
+    }
+
+    const pr = ghView<PullRequest>('pr', prNumber, 'number,headRefOid,isCrossRepository');
+    if (pr.isCrossRepository) {
+        throw new Error('Desktop testing of fork PRs is not supported');
+    }
+
     core.setOutput('head-sha', pr.headRefOid);
 
-    const {
-        data: {
-            workflow_runs: [run],
-        },
-    } = await github.rest.actions.listWorkflowRuns({
+    const workflowRunsResponse = await github.rest.actions.listWorkflowRuns({
         ...context.repo,
         workflow_id: 'test-suite-web-desktop-e2e-pr.yml',
         head_sha: pr.headRefOid,
-        event: 'pull_request',
         per_page: 1,
     });
-    if (!run) return;
+    const latestRun = workflowRunsResponse.data.workflow_runs[0];
+    if (!latestRun) {
+        // Without a run-id output, the workflow builds the app from head-sha.
+        return;
+    }
 
-    const {
-        data: { artifacts },
-    } = await github.rest.actions.listWorkflowRunArtifacts({
+    const artifactsResponse = await github.rest.actions.listWorkflowRunArtifacts({
         ...context.repo,
-        run_id: run.id,
+        run_id: latestRun.id,
         name: 'desktop-app-build-e2e',
     });
-    if (artifacts.some(artifact => !artifact.expired)) core.setOutput('run-id', run.id);
+    const hasAvailableBuild = artifactsResponse.data.artifacts.some(artifact => !artifact.expired);
+    if (hasAvailableBuild) {
+        core.setOutput('run-id', latestRun.id);
+    }
 };
