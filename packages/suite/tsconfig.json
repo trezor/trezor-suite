@@ -51,7 +51,13 @@
             "path": "../../suite-common/earn-stablecoin-api"
         },
         {
+            "path": "../../suite-common/earn-staking"
+        },
+        {
             "path": "../../suite-common/earn-staking-api"
+        },
+        {
+            "path": "../../suite-common/earn-staking-products"
         },
         {
             "path": "../../suite-common/extra-dependencies"
