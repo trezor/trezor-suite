@@ -38,6 +38,14 @@ describe('the market price on the asset screen', () => {
         expect(screen.getByTestId('@asset-detail/market-price')).toHaveTextContent('$3,000');
     });
 
+    it('shows a price with every decimal it has', () => {
+        renderMarketPrice(getInitialState({ ethRate: 0.0000123456 }));
+
+        expect(screen.getByTestId('@asset-detail/market-price/fiat-amount')).toHaveTextContent(
+            '$0.0000123456',
+        );
+    });
+
     it('says how the price moved over the week, as the Home total does', () => {
         renderMarketPrice(getInitialState({ ethRate: 3000, ethWeekAgoRate: 2500 }));
 
@@ -45,6 +53,14 @@ describe('the market price on the asset screen', () => {
 
         expect(weekChange).toHaveTextContent('$500');
         expect(weekChange).toHaveTextContent('20');
+    });
+
+    it('shows a price change below a cent with every decimal it has', () => {
+        renderMarketPrice(getInitialState({ ethRate: 0.00003, ethWeekAgoRate: 0.00001 }));
+
+        expect(screen.getByTestId('@asset-detail/market-price/week-change')).toHaveTextContent(
+            '$0.00002',
+        );
     });
 
     it('says nothing of the week while last week has no price', () => {

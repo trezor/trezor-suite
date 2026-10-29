@@ -8,11 +8,15 @@ import { type BigNumber } from '@trezor/utils';
 import { HiddenPlaceholder, Sign } from 'src/components/suite';
 import { TrendBadge } from 'src/components/suite/Ticker/TrendBadge';
 
+const MIN_EXACT_DECIMALS = 2;
+
 type HomeBalanceChangeProps = {
     /** What the change is over, e.g. "7d". */
     period: ReactNode;
     change: BigNumber;
     changePercent: BigNumber | undefined;
+    /** Every decimal of the change, as a price's change needs, rather than cents. */
+    isExact?: boolean;
     'data-testid'?: string;
 };
 
@@ -21,10 +25,18 @@ export const HomeBalanceChange = ({
     period,
     change,
     changePercent,
+    isExact = false,
     'data-testid': dataTestId,
 }: HomeBalanceChangeProps) => {
     const { BaseCurrencyAmountFormatter } = useFormatters();
-    const changed = BaseCurrencyAmountFormatter.format(asBaseCurrencyAmount(change.abs()));
+    const absoluteChange = asBaseCurrencyAmount(change.abs());
+    const exactDecimals = Math.max(MIN_EXACT_DECIMALS, absoluteChange.decimalPlaces() ?? 0);
+    const changed = BaseCurrencyAmountFormatter.format(
+        absoluteChange,
+        isExact
+            ? { minimumFractionDigits: exactDecimals, maximumFractionDigits: exactDecimals }
+            : {},
+    );
 
     return (
         <Row gap={12} data-testid={dataTestId}>

@@ -16,18 +16,21 @@ const TabularNumbers = styled.span`
 
 type HomeTotalBalanceProps = {
     fiatValue: BigNumber | undefined;
+    /** Every decimal of the value, as a price needs, rather than cents. */
+    isExact?: boolean;
     'data-testid'?: string;
 };
 
 export const HomeTotalBalance = memo(
     ({
         fiatValue,
+        isExact,
         'data-testid': dataTestId = '@dashboard/home-asset/fiat-amount',
     }: HomeTotalBalanceProps) => {
         const locale = useSelector(selectLanguage);
 
         const { currencySymbol, wholeNumber, decimalNumber, isCurrencySymbolFirst } =
-            useCurrencyAmountParts({ value: fiatValue?.toFixed(), locale });
+            useCurrencyAmountParts({ value: fiatValue?.toFixed(), locale, isExact });
 
         // Nothing the wallet holds can be priced; a total of zero would say the wallet is empty.
         if (fiatValue === undefined) {
