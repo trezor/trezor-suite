@@ -13,6 +13,7 @@ type DeviceHeaderProps = {
     onCancel?: ForegroundAppProps['onCancel'];
     onBackButtonClick?: () => void;
     isDeviceStatusVisible?: boolean;
+    forceConnectionInfo?: boolean;
     actions?: ReactNode | null;
 };
 
@@ -21,6 +22,7 @@ export const DeviceHeader = ({
     device,
     onBackButtonClick,
     isDeviceStatusVisible = true,
+    forceConnectionInfo = true,
     actions,
 }: DeviceHeaderProps) => {
     const deviceModelInternal = getDeviceInternalModel(device);
@@ -49,11 +51,11 @@ export const DeviceHeader = ({
                 />
             )}
 
-            {deviceModelInternal && isDeviceStatusVisible && (
+            {isDeviceStatusVisible && (
                 <DeviceStatus
                     deviceModel={deviceModelInternal}
                     device={device}
-                    forceConnectionInfo={true}
+                    forceConnectionInfo={forceConnectionInfo}
                 />
             )}
 
