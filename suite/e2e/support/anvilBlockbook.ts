@@ -17,8 +17,8 @@ const execFileAsync = promisify(execFile);
 const DEFAULT_IMAGE = 'ghcr.io/trezor/trezor-user-env-regtest';
 const DEFAULT_BLOCKBOOK_DIR = '/opt/coins/blockbook/bitcoin_regtest';
 
-// Covers pulling the image on a first local run; in CI it is already there.
-const STARTUP_TIMEOUT_MS = 180_000;
+// Stays under the fixture's own timeout, so a stuck start fails with Blockbook's logs.
+export const BLOCKBOOK_STARTUP_TIMEOUT_MS = 90_000;
 const STARTUP_POLL_INTERVAL_MS = 1_000;
 const LOG_TAIL_LINES = '50';
 
@@ -141,21 +141,26 @@ export class AnvilBlockbook {
     }
 
     private async waitUntilSynced(startHeight: number) {
-        const deadline = Date.now() + STARTUP_TIMEOUT_MS;
+        const deadline = Date.now() + BLOCKBOOK_STARTUP_TIMEOUT_MS;
+        let lastStatus = 'no answer';
         while (Date.now() < deadline) {
             try {
                 const response = await fetch(`${this.url}/api/`);
+                const body = await response.text();
+                lastStatus = `${response.status} ${body}`;
                 if (response.ok) {
-                    const { blockbook } = (await response.json()) as BlockbookStatus;
+                    const { blockbook } = JSON.parse(body) as BlockbookStatus;
                     if (blockbook.inSync && blockbook.bestHeight >= startHeight) return;
                 }
-            } catch {
-                // Not listening yet.
+            } catch (error) {
+                lastStatus = `${error}`;
             }
             await new Promise(resolve => setTimeout(resolve, STARTUP_POLL_INTERVAL_MS));
         }
 
-        throw new Error(`not in sync within ${STARTUP_TIMEOUT_MS} ms`);
+        throw new Error(
+            `not in sync at height ${startHeight} within ${BLOCKBOOK_STARTUP_TIMEOUT_MS} ms, last status: ${lastStatus}`,
+        );
     }
 
     async getAddress(address: Address): Promise<BlockbookAddress> {

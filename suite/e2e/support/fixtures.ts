@@ -7,7 +7,7 @@ import type { PerfMetrics } from '@trezor/perf-e2e';
 
 import { AnalyticsFixture, AnalyticsHelper } from './analytics';
 import { AnvilFork } from './anvil';
-import { AnvilBlockbook } from './anvilBlockbook';
+import { AnvilBlockbook, BLOCKBOOK_STARTUP_TIMEOUT_MS } from './anvilBlockbook';
 import type { AnvilForkOptions } from './anvilNetworks';
 import { ClipboardFixture } from './clipboard';
 import { isDesktopProject } from './common';
@@ -182,12 +182,16 @@ const test = suiteBaseTest.extend<Fixtures>({
         await use(anvil);
         await anvil.stop();
     },
-    anvilBlockbook: async ({ anvil }, use) => {
-        const anvilBlockbook = new AnvilBlockbook(anvil);
-        await anvilBlockbook.start();
-        await use(anvilBlockbook);
-        await anvilBlockbook.stop();
-    },
+    anvilBlockbook: [
+        async ({ anvil }, use) => {
+            const anvilBlockbook = new AnvilBlockbook(anvil);
+            await anvilBlockbook.start();
+            await use(anvilBlockbook);
+            await anvilBlockbook.stop();
+        },
+        // Own timeout, so a slow Blockbook start does not eat the test's time.
+        { timeout: BLOCKBOOK_STARTUP_TIMEOUT_MS + 60_000 },
+    ],
     firmwareReleaseConfigMock: async ({ page, device, trezorUserEnv }, use) => {
         const firmwareReleaseConfigMock = new FirmwareReleaseConfigMock(
             page,
