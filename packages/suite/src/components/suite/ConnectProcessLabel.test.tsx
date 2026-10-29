@@ -24,20 +24,17 @@ const renderLabel = (process: ConnectProcessInfo) =>
         </ThemeProvider>,
     );
 
-// The tooltip the hovered label reveals, or `undefined` when it reveals none.
 const hoverLabel = async () => {
     await userEvent.hover(screen.getByTestId('@process'));
 
-    return waitFor(() => screen.getByTestId('@tooltip')).catch(() => undefined);
+    return waitFor(() => screen.getByTestId('@tooltip'));
 };
 
 describe('ConnectProcessLabel', () => {
-    // Documents the behaviour today: the path is revealed only next to a warning, so the badge
-    // of a process the lookup trusts never shows the path it is remembered by.
-    it('shows no path on the badge of a process that is not warned about', async () => {
+    it('shows the path of a process that is not warned about', async () => {
         renderLabel({ name: 'node', fullPath: '/usr/local/bin/node', warning: false });
 
-        expect(await hoverLabel()).toBeUndefined();
+        expect(await hoverLabel()).toHaveTextContent('/usr/local/bin/node');
     });
 
     it('shows the executable path of a warned-about process', async () => {
