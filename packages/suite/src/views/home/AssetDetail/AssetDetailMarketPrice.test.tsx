@@ -1,8 +1,10 @@
 import '@suite-common/test-utils/globalOverrides';
 
-import { screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 
+import { setAssetPriceChartRange } from '@suite/flags';
 import {
+    AssetPriceChartRange,
     type AssetPricePoint,
     INITIAL_ASSET_PRICE_CHART_RANGE,
     useAssetPriceHistoryQuery,
@@ -15,6 +17,7 @@ import { renderWithProviders } from 'src/support/test-utils/hooksHelper';
 
 import { AssetDetailMarketPrice } from './AssetDetailMarketPrice';
 import { ETH, ETH_ASSET_KEY, getEthAssetState } from './assetDetailTestState';
+import { mockInitialAppState } from '../../../../mocks/mockInitialAppState';
 
 jest.mock('@suite-common/price-chart', () => ({
     ...jest.requireActual('@suite-common/price-chart'),
@@ -42,19 +45,28 @@ type InitialStateParams = {
     ethRate?: number;
     /** What it cost a week ago. */
     ethWeekAgoRate?: number;
+    chartRange?: AssetPriceChartRange;
 };
 
-const getInitialState = ({ ethRate, ethWeekAgoRate }: InitialStateParams): AppState =>
-    getEthAssetState({
+const getInitialState = ({
+    ethRate,
+    ethWeekAgoRate,
+    chartRange = INITIAL_ASSET_PRICE_CHART_RANGE,
+}: InitialStateParams): AppState => ({
+    ...getEthAssetState({
         accounts: [mockWalletAccount({ symbol: ETH, formattedBalance: '2' })],
         ethRate,
         ethWeekAgoRate,
-    });
+    }),
+    flags: { ...mockInitialAppState.flags, assetPriceChartRange: chartRange },
+});
 
 const renderMarketPrice = (state: AppState) => {
     const { services } = createTestCompositionRoot<void, AppState>({ preloadedState: state });
 
     renderWithProviders(services, <AssetDetailMarketPrice assetKey={ETH_ASSET_KEY} />);
+
+    return services;
 };
 
 describe('the market price on the asset screen', () => {
@@ -118,6 +130,26 @@ describe('the market price on the asset screen', () => {
                 fiatCurrency: 'usd',
                 range: INITIAL_ASSET_PRICE_CHART_RANGE,
             });
+        });
+
+        it('draws the range picked last time', () => {
+            renderMarketPrice(
+                getInitialState({ ethRate: 3000, chartRange: AssetPriceChartRange.Month }),
+            );
+
+            expect(mockUseAssetPriceHistoryQuery).toHaveBeenLastCalledWith(
+                expect.objectContaining({ range: AssetPriceChartRange.Month }),
+            );
+        });
+
+        it('lets another range be picked', () => {
+            const { store } = renderMarketPrice(getInitialState({ ethRate: 3000 }));
+
+            fireEvent.click(screen.getByTestId('@price-chart/range/1m'));
+
+            expect(store.getActions()).toContainEqual(
+                setAssetPriceChartRange(AssetPriceChartRange.Month),
+            );
         });
 
         it('holds its place with a skeleton while the history loads', () => {

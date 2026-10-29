@@ -16703,6 +16703,7 @@ __metadata:
   resolution: "@suite/flags@workspace:suite/flags"
   dependencies:
     "@reduxjs/toolkit": "npm:2.13.0"
+    "@suite-common/price-chart": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/redux-utils": "workspace:*"
@@ -17031,13 +17032,18 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite/price-chart@workspace:suite/price-chart"
   dependencies:
+    "@suite-common/assets": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/price-chart": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
+    "@suite/flags": "workspace:*"
     "@suite/ui-animations": "workspace:*"
     "@trezor/components": "workspace:*"
+    "@trezor/dependency-injection": "workspace:*"
+    "@trezor/redux-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/react": "npm:19.2.14"
     react: "npm:19.2.3"

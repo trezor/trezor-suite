@@ -1,5 +1,9 @@
 import { type PayloadAction } from '@reduxjs/toolkit';
 
+import {
+    type AssetPriceChartRange,
+    INITIAL_ASSET_PRICE_CHART_RANGE,
+} from '@suite-common/price-chart';
 import { DEVICE } from '@trezor/connect';
 import {
     type ActionTypesDep,
@@ -18,6 +22,7 @@ export type FlagsState = {
     securityStepsHidden: boolean;
     dashboardGraphHidden: boolean;
     dashboardAssetsGridMode: boolean;
+    assetPriceChartRange: AssetPriceChartRange;
     showTEXDashboardPromoBanner: boolean;
     showTS7DashboardPromoBanner: boolean;
     showDefiYieldDashboardPromoBanner: boolean;
@@ -65,6 +70,7 @@ export const flagsInitialState: FlagsState = {
     securityStepsHidden: false,
     dashboardGraphHidden: false,
     dashboardAssetsGridMode: true,
+    assetPriceChartRange: INITIAL_ASSET_PRICE_CHART_RANGE,
     showTEXDashboardPromoBanner: true,
     showTS7DashboardPromoBanner: true,
     showDefiYieldDashboardPromoBanner: true,
@@ -109,6 +115,12 @@ const flagsSlice = createSliceWithExtraDeps({
         ) => {
             state[payload.key] = payload.value;
         },
+        setAssetPriceChartRange: (
+            state: FlagsState,
+            { payload }: PayloadAction<AssetPriceChartRange>,
+        ) => {
+            state.assetPriceChartRange = payload;
+        },
         markNewContentIndicatorAsSeen: (
             state: FlagsState,
             { payload }: PayloadAction<NewContentIndicatorId>,
@@ -138,12 +150,18 @@ const flagsSlice = createSliceWithExtraDeps({
     },
 });
 
-export const { markNewContentIndicatorAsSeen, setFlag, setNewContentIndicatorSeen } =
-    flagsSlice.actions;
+export const {
+    markNewContentIndicatorAsSeen,
+    setAssetPriceChartRange,
+    setFlag,
+    setNewContentIndicatorSeen,
+} = flagsSlice.actions;
 export const flagsActions = flagsSlice.actions;
 export const prepareFlagsReducer = flagsSlice.prepareReducer;
 
 export const selectFlags = (state: FlagsRootState) => state.flags;
+export const selectAssetPriceChartRange = (state: FlagsRootState) =>
+    state.flags.assetPriceChartRange;
 export const selectIsTEXDashboardPromoBannerShown = (state: FlagsRootState) =>
     state.flags.showTEXDashboardPromoBanner;
 export const selectIsTS7DashboardPromoBannerShown = (state: FlagsRootState) =>
