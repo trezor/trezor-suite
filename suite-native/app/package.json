@@ -123,7 +123,7 @@
         "@trezor/theme": "workspace:*",
         "@trezor/trezor-user-env-link": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "@walletconnect/react-native-compat": "^2.23.10",
+        "@walletconnect/react-native-compat": "^2.26.0",
         "abortcontroller-polyfill": "1.7.8",
         "browserify-zlib": "^0.2.0",
         "crypto-browserify": "3.12.1",
