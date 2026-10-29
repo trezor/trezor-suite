@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import { fireEvent, renderWithBasicProvider, screen, userEvent } from '@suite-native/test-utils';
 import { palette } from '@trezor/theme';
 
@@ -8,11 +10,26 @@ import {
     type AmountInputProps,
 } from './AmountInput';
 
+// AmountInput is controlled, so the typed text is displayed only after the value is updated.
+const ControlledAmountInput = ({
+    value: initialValue,
+    onChangeText,
+    ...props
+}: AmountInputProps) => {
+    const [value, setValue] = useState(initialValue);
+
+    const handleChangeText = (text: string | undefined) => {
+        setValue(text);
+        onChangeText(text);
+    };
+
+    return <AmountInput {...props} value={value} onChangeText={handleChangeText} />;
+};
+
 describe('AmountInput', () => {
     const renderAmountInput = (props: Partial<AmountInputProps>) =>
         renderWithBasicProvider(
-            <AmountInput
-                inputTransformer={v => v}
+            <ControlledAmountInput
                 onChangeText={jest.fn()}
                 accessibilityLabel="INPUT"
                 {...props}
@@ -40,7 +57,7 @@ describe('AmountInput', () => {
 
         await userEvent.type(getByLabelText('INPUT'), '1234567890');
 
-        expect(getByLabelText('INPUT')).toHaveDisplayValue('12345');
+        expect(getByLabelText('INPUT')).toHaveDisplayValue('12,345');
         expect(changeTextMock).toHaveBeenLastCalledWith('12345');
     });
 
@@ -53,7 +70,7 @@ describe('AmountInput', () => {
         );
 
         expect(getByLabelText('INPUT')).toHaveDisplayValue(
-            '12345678901234567890123456789012345678901234567890',
+            '12,345,678,901,234,567,890,123,456,789,012,345,678,901,234,567,890',
         );
     });
 
@@ -67,6 +84,87 @@ describe('AmountInput', () => {
 
         expect(input).toHaveDisplayValue('');
         expect(changeTextMock).toHaveBeenLastCalledWith(undefined);
+    });
+
+    it('should keep the cursor at the end of the displayed amount', async () => {
+        const { getByLabelText } = await renderAmountInput({ value: '1234.5' });
+
+        expect(getByLabelText('INPUT')).toHaveDisplayValue('1,234.5');
+        expect(getByLabelText('INPUT').props.selection).toEqual({ start: 7, end: 7 });
+    });
+
+    it('should ignore an edit that is not at the end', async () => {
+        const changeTextMock = jest.fn();
+        const { getByLabelText } = await renderAmountInput({
+            value: '1234',
+            onChangeText: changeTextMock,
+        });
+
+        await fireEvent.changeText(getByLabelText('INPUT'), '91,234');
+
+        expect(changeTextMock).not.toHaveBeenCalled();
+        expect(getByLabelText('INPUT')).toHaveDisplayValue('1,234');
+    });
+
+    describe('text selection', () => {
+        const selectText = (start: number, end: number) =>
+            fireEvent(screen.getByLabelText('INPUT'), 'selectionChange', {
+                nativeEvent: { selection: { start, end } },
+            });
+
+        it('should keep selected text selected', async () => {
+            await renderAmountInput({ value: '1234' });
+
+            await selectText(0, 2);
+
+            expect(screen.getByLabelText('INPUT').props.selection).toEqual({ start: 0, end: 2 });
+        });
+
+        it('should move a cursor placed in the middle back to the end', async () => {
+            await renderAmountInput({ value: '1234' });
+
+            await selectText(1, 1);
+
+            expect(screen.getByLabelText('INPUT').props.selection).toEqual({ start: 5, end: 5 });
+        });
+
+        it.each([
+            ['typed digit', '5', '5'],
+            ['pasted amount', '1.5', '1.5'],
+            ['deletion', '', undefined],
+        ])(
+            'should replace the whole selected text with %s',
+            async (_, nextDisplayedAmount, expected) => {
+                const changeTextMock = jest.fn();
+                await renderAmountInput({ value: '1234', onChangeText: changeTextMock });
+
+                await selectText(0, 5);
+                await fireEvent.changeText(screen.getByLabelText('INPUT'), nextDisplayedAmount);
+
+                expect(changeTextMock).toHaveBeenLastCalledWith(expected);
+            },
+        );
+
+        it('should ignore an edit of partially selected text', async () => {
+            const changeTextMock = jest.fn();
+            await renderAmountInput({ value: '1234', onChangeText: changeTextMock });
+
+            await selectText(0, 2);
+            await fireEvent.changeText(screen.getByLabelText('INPUT'), '234');
+
+            expect(changeTextMock).not.toHaveBeenCalled();
+            expect(screen.getByLabelText('INPUT')).toHaveDisplayValue('1,234');
+        });
+
+        it('should not limit native length while text is selected', async () => {
+            await renderAmountInput({ value: '1.23', maxDecimals: 2 });
+
+            expect(screen.getByLabelText('INPUT').props.maxLength).toBe(4);
+
+            await selectText(0, 4);
+
+            expect(screen.getByLabelText('INPUT').props.maxLength).toBeUndefined();
+        });
     });
 
     it('should have default color for valid input value', async () => {
@@ -250,6 +348,15 @@ describe('AmountInput', () => {
             await userEvent.type(getByLabelText('INPUT'), '1234567890.100000000');
 
             expect(onChangeText).toHaveBeenLastCalledWith('1234567890.100');
+        });
+
+        it('should ignore decimal separator when limit is 0', async () => {
+            const { getByLabelText } = await renderAmountInput({ onChangeText, maxDecimals: 0 });
+
+            await userEvent.type(getByLabelText('INPUT'), '12.5');
+
+            expect(onChangeText).toHaveBeenLastCalledWith('125');
+            expect(onChangeText).not.toHaveBeenCalledWith(expect.stringContaining('.'));
         });
 
         it.each(['0', '123456', '0.1', '12345.789'])(
