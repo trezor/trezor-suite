@@ -17,6 +17,29 @@ const isExternalCjsSubpath = src => externalCjsSubpaths.includes(src);
 
 const externalJsonImports = [];
 
+// Locate the packages root (the directory holding every @trezor package) from the absolute path of
+// the file being transformed, i.e. the parent of the package directory whose lib/ holds the file.
+// A path can contain several lib/ segments, so the candidates are validated rather than guessed:
+// neither an ancestor directory named lib (a checkout under ~/lib) nor one nested in the package's
+// own output (lib/device/lib/helpers.js) may be mistaken for the package's own lib/.
+const resolvePackagesRoot = (filename, packageName) => {
+    const segment = `${path.sep}lib${path.sep}`;
+    const innermost = filename.lastIndexOf(segment);
+
+    // Walk the lib/ segments from the end and keep the first candidate that actually holds
+    // <packageName>/src.
+    let index = innermost;
+    while (index > 0) {
+        const candidate = path.dirname(filename.substring(0, index));
+        if (fs.existsSync(path.join(candidate, packageName, 'src'))) return candidate;
+        index = filename.lastIndexOf(segment, index - 1);
+    }
+
+    // No candidate holds the package: fall back to the innermost lib/, so the src/ stat below
+    // misses and the specifier stays on the file branch, as before.
+    return path.dirname(filename.substring(0, innermost));
+};
+
 /**
  * Babel plugin to rewrite import/export statements to their runtime ESM extensions.
  * This way we can keep our codebase with moduleResolution: bundler (imports without extensions).
@@ -37,9 +60,7 @@ const addEsmExtensionPlugin = ({ types }) => {
 
             // Find packages/ root from the current file's absolute path by locating the lib/ segment.
             // e.g., /packages/connect/lib/device/thp/pairing.js → /packages/
-            const libIndex = filename.indexOf(`${path.sep}lib${path.sep}`);
-            const packageDir = filename.substring(0, libIndex);
-            const packagesRoot = path.dirname(packageDir);
+            const packagesRoot = resolvePackagesRoot(filename, packageName);
             // Check src/ instead of lib/ — src/ is always present in the repo regardless of
             // build order, whereas lib/ may not exist yet in CI when this package is compiled.
             const resolvedSrcPath = path.join(packagesRoot, packageName, 'src', subpath);

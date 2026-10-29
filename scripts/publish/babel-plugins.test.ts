@@ -177,6 +177,43 @@ describe('publish import transforms — new URL is gated on the worker idiom', (
     });
 });
 
+describe('publish import transforms — package root lookup', () => {
+    // The @trezor/<pkg>/lib/<subpath> branch locates the packages root by a lib/ segment of the
+    // file being transformed, so neither an ancestor directory named lib nor one nested in the
+    // package's own output must be mistaken for it — otherwise the src/ stat misses and a
+    // directory specifier silently ships as a bare .js path.
+    it('resolves the package root under an ancestor directory named lib', () => {
+        const nested = path.join(root, 'lib', 'packages');
+        const workers = path.join(nested, 'blockchain-link', 'src', 'workers');
+        fs.mkdirSync(path.join(workers, 'blockbook'), { recursive: true });
+        fs.writeFileSync(path.join(workers, 'blockbook', 'index.ts'), '');
+        const filename = path.join(nested, 'connect-core', 'lib', 'workers', 'workers.js');
+        fs.mkdirSync(path.dirname(filename), { recursive: true });
+
+        const out = transform(
+            `import { blockbook } from '@trezor/blockchain-link/src/workers/blockbook';`,
+            { filename, plugins: [sanitizeInternalImports, addEsmExtension] },
+        );
+        expect(out).toContain('@trezor/blockchain-link/lib/workers/blockbook/index.js');
+    });
+
+    // lib/ mirrors src/ one-to-one, so a src/**/lib/ directory in a published package yields a
+    // transformed file with a lib/ segment below the package's own one.
+    it('resolves the package root with a lib directory inside the package output', () => {
+        const filename = path.join(root, 'connect-core', 'lib', 'device', 'lib', 'helpers.js');
+        fs.mkdirSync(path.dirname(filename), { recursive: true });
+
+        const out = transform(
+            `import { solana } from '@trezor/blockchain-link/src/workers/solana';`,
+            {
+                filename,
+                plugins: [sanitizeInternalImports, addEsmExtension],
+            },
+        );
+        expect(out).toContain('@trezor/blockchain-link/lib/workers/solana/index.js');
+    });
+});
+
 describe('publish import transforms — preserved behaviors', () => {
     // Guards the pre-existing isStringLiteral check (shared by every rewrite position), not the
     // import.meta.url gate: a non-literal specifier can never be resolved to a runtime path.
