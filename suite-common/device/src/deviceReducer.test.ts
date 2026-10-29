@@ -1,9 +1,10 @@
+import { type TrezorDevice } from '@suite-common/suite-types';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { isDeviceAcquired } from '@suite-common/suite-utils';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import fixtures from './__fixtures__/deviceReducer';
-import { deviceActions } from './deviceActions';
+import { type DeviceStateActionPayload, deviceActions } from './deviceActions';
 import { deviceReducerInitialState, prepareDeviceReducer } from './deviceReducer';
 
 const deviceReducer = prepareDeviceReducer({
@@ -142,6 +143,134 @@ describe('addAuthorizedDevice', () => {
             expect(state.devices[1]?.available).toBe(expectedAvailable);
         },
     );
+});
+
+describe('setDeviceState', () => {
+    const standardState: DeviceStateActionPayload['state'] = {
+        staticSessionId: 'standard@device-id:1',
+    };
+    let errorSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+        errorSpy = jest.spyOn(console, 'error').mockImplementation(() => undefined);
+    });
+
+    afterEach(() => {
+        errorSpy.mockRestore();
+    });
+
+    const setDeviceState = (
+        devices: TrezorDevice[],
+        device: TrezorDevice,
+        newState: DeviceStateActionPayload['state'] = standardState,
+    ) => {
+        if (!isDeviceAcquired(device)) throw new Error('Expected an acquired device');
+
+        return deviceReducer(
+            { ...deviceReducerInitialState, devices },
+            deviceActions.setDeviceState({
+                device,
+                state: newState,
+                useEmptyPassphrase: true,
+            }),
+        );
+    };
+
+    it('authorizes a device without state', () => {
+        const statelessDevice = mockSuiteDevice({ instance: 1, connected: true });
+
+        const state = setDeviceState([statelessDevice], statelessDevice);
+
+        expect(state.devices[0]).toMatchObject({ state: standardState, useEmptyPassphrase: true });
+        expect(errorSpy).not.toHaveBeenCalled();
+    });
+
+    // Connect reports a partial state (without staticSessionId) before the device state is read.
+    it.each([{ deriveCardano: false }, { sessionId: 'session-id' }])(
+        'authorizes a device with the partial state %p',
+        partialState => {
+            const statelessDevice = mockSuiteDevice({
+                instance: 1,
+                connected: true,
+                state: partialState,
+            });
+
+            const state = setDeviceState([statelessDevice], statelessDevice);
+
+            expect(state.devices[0]?.state).toEqual(standardState);
+            expect(errorSpy).not.toHaveBeenCalled();
+        },
+    );
+
+    it('refreshes the state of the already authorized wallet with the same staticSessionId', () => {
+        const standardWallet = mockSuiteDevice({
+            instance: 1,
+            connected: true,
+            state: { ...standardState, sessionId: 'stale' },
+            useEmptyPassphrase: true,
+            discovered: true,
+        });
+
+        const state = setDeviceState([standardWallet], standardWallet);
+
+        expect(state.devices[0]).toMatchObject({ state: standardState, useEmptyPassphrase: true });
+        expect(state.devices[0]).not.toHaveProperty('discovered');
+        expect(errorSpy).not.toHaveBeenCalled();
+    });
+
+    it('keeps the staticSessionId of the authorized wallet when the same wallet is referenced through another instance', () => {
+        const standardWallet = mockSuiteDevice({
+            instance: 1,
+            connected: true,
+            state: { ...standardState, sessionId: 'stale' },
+            useEmptyPassphrase: true,
+        });
+
+        const state = setDeviceState([standardWallet], standardWallet, {
+            staticSessionId: 'standard@device-id:2',
+            sessionId: 'fresh',
+        });
+
+        expect(state.devices[0]?.state).toEqual({ ...standardState, sessionId: 'fresh' });
+        expect(errorSpy).not.toHaveBeenCalled();
+    });
+
+    it('does not overwrite a wallet authorized with a different staticSessionId', () => {
+        const hiddenWallet = mockSuiteDevice({
+            instance: 1,
+            connected: true,
+            state: { staticSessionId: 'hidden@device-id:1' },
+            useEmptyPassphrase: false,
+        });
+
+        const state = setDeviceState([hiddenWallet], hiddenWallet);
+
+        expect(state.devices[0]).toEqual(hiddenWallet);
+        expect(errorSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('does nothing when more devices match', () => {
+        const devices = [
+            mockSuiteDevice({ instance: 1, connected: true }),
+            mockSuiteDevice({ instance: 1, connected: true }),
+        ];
+        const [device] = devices;
+        if (!device) throw new Error('Expected a device');
+
+        const state = setDeviceState(devices, device);
+
+        expect(state.devices).toEqual(devices);
+        expect(errorSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('does nothing when no connected device matches', () => {
+        const disconnectedDevice = mockSuiteDevice({ instance: 1, connected: false });
+
+        const state = setDeviceState([disconnectedDevice], disconnectedDevice);
+
+        expect(state.devices).toEqual([disconnectedDevice]);
+        expect(errorSpy).not.toHaveBeenCalled();
+    });
 });
 
 describe('SUITE.SELECT_DEVICE', () => {
