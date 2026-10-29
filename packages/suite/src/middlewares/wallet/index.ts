@@ -4,6 +4,7 @@ import { type DesktopAnalyticsDep } from '@suite/analytics';
 import { coinjoinMiddleware } from '@suite/coinjoin';
 import { prepareDiscoveryMiddleware } from '@suite/discovery';
 import { prepareConnectPopupMiddleware } from '@suite-common/connect-popup';
+import { stakingApiMiddleware } from '@suite-common/earn-staking';
 import { prepareSuiteSyncMiddleware } from '@suite-common/suite-sync';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import {
@@ -48,6 +49,7 @@ export const getWalletMiddlewares = (
     prepareFiatRatesMiddleware(getExtra),
     prepareTokenDefinitionsMiddleware(getExtra),
     prepareStakeMiddleware(getExtra),
+    stakingApiMiddleware,
     prepareStorageMiddleware(getExtra),
     graphMiddleware,
     tradingMiddleware,

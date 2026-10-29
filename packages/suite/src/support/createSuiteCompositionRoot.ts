@@ -27,6 +27,8 @@ import {
 } from '@suite-common/connect-init';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { selectDeviceByStaticSessionId } from '@suite-common/device';
+import { type StakingDep, createStakingCompositionRoot } from '@suite-common/earn-staking';
+import { createStakingProductsCompositionRoot } from '@suite-common/earn-staking-products';
 import { type CommonServices } from '@suite-common/extra-dependencies';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
 import { createNetworksCompositionRoot } from '@suite-common/networks';
@@ -41,7 +43,12 @@ import {
 import { type GetBinFilesBaseUrlDep, type ReloadAppDep } from '@suite-common/suite-types';
 import { type ThpHostNameDep } from '@suite-common/thp';
 import { selectTradedAccountKeys } from '@suite-common/trading';
-import { selectAccountsByDeviceState } from '@suite-common/wallet-core';
+import {
+    selectAccountByKey,
+    selectAccounts,
+    selectAccountsByDeviceState,
+    selectEnabledNetworks,
+} from '@suite-common/wallet-core';
 import { type GetTrezorConnectPrivilegedDep } from '@trezor/connect';
 import { toGetter } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';
@@ -68,6 +75,7 @@ const connectInitSettings: ConnectInitSettings = {
 };
 
 export type SuiteServices = CommonServices &
+    StakingDep &
     DbDep &
     DesktopApiDep &
     DesktopAnalyticsDep &
@@ -149,6 +157,15 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         dispatch: deps.dispatch,
     });
 
+    const staking = createStakingCompositionRoot({
+        platform: 'desktop',
+        adapters: createStakingProductsCompositionRoot(),
+        dispatch: deps.dispatch,
+        getAccounts: toGetter(deps.getState, selectAccounts),
+        getAccountByKey: toGetter(deps.getState, selectAccountByKey),
+        getEnabledNetworks: toGetter(deps.getState, selectEnabledNetworks),
+    });
+
     const createTransports: CreateTransports = transports => {
         const factories = deps.getTransportsFactories();
 
@@ -166,6 +183,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         db: deps.db,
         desktopApi: deps.desktopApi,
         networks,
+        staking,
         suiteSync,
         bip329,
         migrateLegacyLabelsToSuiteSync,

@@ -4,12 +4,18 @@ import { type MiddlewareAPI, type Dispatch as ReduxDispatch } from 'redux';
 import { selectSelectedAccountKey } from '@suite/account';
 import { routerLocationChange, selectRouteName } from '@suite/router';
 import { deviceActions } from '@suite-common/device';
+import {
+    refreshStakingProductInfoThunk,
+    stakingActions,
+    syncStakingPositionsThunk,
+} from '@suite-common/earn-staking';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { tradingActions } from '@suite-common/trading';
 import {
     WALLET_SETTINGS,
     accountsActions,
     blockchainActions,
+    changeNetworks,
     convertSendFormDraftsBtcAmountUnitsThunk,
     selectAllNetworkSymbolsOfVisibleAccounts,
     selectNetworksWithPendingTxs,
@@ -54,6 +60,25 @@ const walletMiddleware =
                     perPage: getTxsPerPage(account.networkType),
                 }),
             );
+        }
+
+        if (
+            accountsActions.createAccount.match(action) ||
+            accountsActions.updateAccount.match(action)
+        ) {
+            api.dispatch(syncStakingPositionsThunk({ accountKey: action.payload.account.key }));
+        }
+
+        if (accountsActions.removeAccount.match(action)) {
+            api.dispatch(
+                stakingActions.positionsRemoved({
+                    accountKeys: action.payload.map(account => account.key),
+                }),
+            );
+        }
+
+        if (changeNetworks.match(action)) {
+            api.dispatch(refreshStakingProductInfoThunk());
         }
 
         // Update custom backends
