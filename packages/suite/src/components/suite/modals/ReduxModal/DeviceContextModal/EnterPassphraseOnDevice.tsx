@@ -2,6 +2,7 @@ import { useIntl } from 'react-intl';
 import { useSelector } from 'react-redux';
 
 import { Translation, messages } from '@suite/intl';
+import { selectModalDevice } from '@suite/modal';
 import { selectSelectedDevice, selectSelectedDeviceLabelOrName } from '@suite-common/device';
 import { Column, H3, Paragraph, Row } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
@@ -15,6 +16,7 @@ export const EnterPassphraseOnDevice = () => {
     // When creating a wallet the one which is being created does not exists in the reducer yet.
     // see modalReducer.device to access the device (the trezor/connect type of device) which is currently requesting the passphrase.
     const device = useSelector(selectSelectedDevice);
+    const requestingDevice = useSelector(selectModalDevice);
 
     const intl = useIntl();
     const deviceLabel = useSelector(selectSelectedDeviceLabelOrName);
@@ -28,7 +30,11 @@ export const EnterPassphraseOnDevice = () => {
 
     return (
         <SwitchDeviceModal onCancel={onCancel}>
-            <CardWithDevice onCancel={onCancel} device={device}>
+            <CardWithDevice
+                onCancel={onCancel}
+                device={device}
+                forceConnectionInfo={!requestingDevice?.state?.staticSessionId}
+            >
                 <Column gap={8} padding={{ horizontal: 8 }} margin={{ bottom: 16 }}>
                     <H3>
                         <Translation

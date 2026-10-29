@@ -283,3 +283,6 @@ export const selectRecoveryWordRequestInputType = (state: ModalRootState) => {
 
 export const selectDeviceContextWindowType = (state: ModalRootState) =>
     state.modal.context === MODAL_CONTEXT_DEVICE ? state.modal.windowType : undefined;
+
+export const selectModalDevice = (state: ModalRootState) =>
+    state.modal.context === MODAL_CONTEXT_DEVICE ? state.modal.device : undefined;
