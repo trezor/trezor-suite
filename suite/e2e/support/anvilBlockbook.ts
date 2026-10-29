@@ -36,7 +36,9 @@ const createBlockchainConfig = (anvil: AnvilFork) => ({
     coin_name: 'Ethereum',
     coin_shortcut: 'ETH',
     coin_label: 'Ethereum',
-    rpc_url: anvil.url,
+    // Blockbook 0.4 in the regtest image subscribes to new blocks over rpc_url and has no
+    // rpc_url_ws, so both point at the fork's WebSocket endpoint.
+    rpc_url: anvil.wsUrl,
     rpc_url_ws: anvil.wsUrl,
     rpc_user: '',
     rpc_pass: '',
