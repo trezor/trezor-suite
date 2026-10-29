@@ -18,7 +18,7 @@ import {
     Screen,
     ScreenHeader,
     type StackProps,
-    useNavigationRemoveActionInterceptor,
+    useNavigationBackListener,
 } from '@suite-native/navigation';
 import { useExchangeAnalyticsStepReport } from '@suite-native/trading-analytics';
 import { useServices } from '@trezor/dependency-injection';
@@ -37,7 +37,6 @@ type TradingExchangeApprovalScreenProps = StackProps<
 
 const TradingExchangeApprovalScreenContent = ({
     route: { params },
-    navigation,
 }: TradingExchangeApprovalScreenProps) => {
     const { shouldIncreaseLimit, isRevoked } = params;
     const { dispatch } = useServices(injectDispatch);
@@ -112,11 +111,10 @@ const TradingExchangeApprovalScreenContent = ({
         };
     }, [quote, isReady, isRevoked, dispatch, confirmApproval, reportToAnalytics]);
 
-    useNavigationRemoveActionInterceptor({
-        onInterceptedAction: action => {
+    useNavigationBackListener({
+        onBack: () => {
             dispatch(tradingExchangeActions.saveSelectedQuote(undefined));
             reportToAnalytics('cancel');
-            navigation.dispatch(action);
         },
     });
 
