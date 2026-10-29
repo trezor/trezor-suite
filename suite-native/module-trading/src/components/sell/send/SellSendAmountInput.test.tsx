@@ -156,7 +156,7 @@ describe('SellSendAmountInput', () => {
         expect(form.getValues('cryptoStringAmount')).toEqual('1123');
         expect(
             getByLabelText(getTranslation('moduleTrading.selectCoinToSell.amountLabel')),
-        ).toHaveDisplayValue('1123');
+        ).toHaveDisplayValue('1,123');
     });
 
     it('should always escape non-numeric characters', async () => {

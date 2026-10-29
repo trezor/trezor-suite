@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 
 import { selectTradingBuyIsLoading } from '@suite-common/trading';
 import { useWatch } from '@suite-native/forms';
-import { useAmountInputTransformers } from '@suite-native/helpers';
+import { useCryptoAmountMaxDecimals } from '@suite-native/helpers';
 import { useTranslate } from '@suite-native/intl';
 import { getSymbolFromTradeableAsset } from '@suite-native/trading-atoms';
 import { MAX_CRYPTO_DECIMALS } from '@suite-native/trading-consts';
@@ -29,7 +29,7 @@ export const BuyCryptoAmountInput = ({ showAssetsSheet, ref }: CryptoAmountInput
         name: ['amountInCrypto', 'asset'],
     });
     const symbol = getSymbolFromTradeableAsset(asset);
-    const { cryptoAmountTransformer } = useAmountInputTransformers(symbol);
+    const maxDecimals = useCryptoAmountMaxDecimals(symbol, MAX_CRYPTO_DECIMALS);
     const isLoading = useSelector(selectTradingBuyIsLoading);
     const inputControls = useBuyInputFormControls('cryptoValue');
 
@@ -42,8 +42,7 @@ export const BuyCryptoAmountInput = ({ showAssetsSheet, ref }: CryptoAmountInput
             {...inputControls}
             accessibilityLabel={translate('moduleTrading.selectCoin.amountLabel')}
             editable={isAssetSelected}
-            inputTransformer={cryptoAmountTransformer}
-            maxDecimals={MAX_CRYPTO_DECIMALS}
+            maxDecimals={maxDecimals}
             onPress={isAssetSelected ? undefined : showAssetsSheet}
             testID={CRYPTO_AMOUNT_TEST_ID}
             isLoading={isLoading && !amountInCrypto}
