@@ -366,10 +366,13 @@ export const usePreparedTxFees = <
         [clearFeeStore],
     );
 
+    const hasEstimationError =
+        hasFeeEstimationError || (!!baseActionContext && !feeDraftState && !isCurrentFeePreparing);
+
     return {
         formDraft,
         formDraftKey,
-        hasFeeEstimationError,
+        hasFeeEstimationError: hasEstimationError,
         isFeePreparing: isCurrentFeePreparing,
         isFeeReady,
         isFeeUnavailable,
