@@ -32,8 +32,9 @@ const appAssets = path.join(repoRoot, 'suite', 'app-assets', 'files');
 const DEV_PORT = 8000;
 
 /**
- * The packaged application loads from `file://`, so assets must resolve relative to the
- * application directory rather than the filesystem root.
+ * The packaged application is served from `build/` over the `suite://app` origin (see
+ * desktop-app-main's libs/renderer-protocol.ts), so assets must resolve relative to the page
+ * rather than to the origin's root.
  */
 const DESKTOP_ASSET_PREFIX = '.';
 
@@ -102,6 +103,12 @@ const rendererConfig: webpack.Configuration = {
                     from: path.join(appAssets, 'release-notes.md'),
                     to: buildDir,
                 },
+                // The main process loads it hidden from `file://` to export the storage of that
+                // legacy origin, see desktop-app-main's legacy-origin-storage module.
+                {
+                    from: path.join(rendererDir, 'src', 'static', 'legacy-origin-storage.html'),
+                    to: buildDir,
+                },
                 {
                     from: path.join(
                         path.dirname(require.resolve('@suite-common/flags/package.json')),
@@ -119,9 +126,9 @@ const rendererConfig: webpack.Configuration = {
             minify: !isDev,
             template: path.join(rendererDir, 'src', 'static', 'index.html'),
             templateParameters: {
-                // This needs to be set as `.` so it loads from appDir of the Electron app.
-                // For example (in case of AppImage): `file:///tmp/.mount_TrezorAvGo8g/resources/app.asar/build`,
-                // where the  requested asset (for example: `static/fonts/fonts.css`) is located.
+                // This needs to be set as `.` so it loads next to the page, which the main process
+                // serves from the app's `build` directory as `suite://app/index.html`; the requested
+                // asset (for example `static/fonts/fonts.css`) is located there.
                 assetPrefix: DESKTOP_ASSET_PREFIX,
                 isOnionLocation: FLAGS.ONION_LOCATION_META,
             },

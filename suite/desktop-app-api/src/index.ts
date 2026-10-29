@@ -20,7 +20,26 @@ export type {
     InAppBrowserBounds,
     InAppBrowserHostEvent,
     InAppBrowserOpenPayload,
+    LegacyOriginDatabase,
+    LegacyOriginDatabaseDefinition,
+    LegacyOriginExportFailedMessage,
+    LegacyOriginExportFinishedMessage,
+    LegacyOriginExportObjectStoreMessage,
+    LegacyOriginFile,
+    LegacyOriginIndexDefinition,
+    LegacyOriginObjectStore,
+    LegacyOriginObjectStoreDefinition,
+    LegacyOriginRecord,
+    LegacyOriginStorage,
+    LegacyOriginStorageImportReport,
 } from './messages';
-export { inAppBrowserBounds, inAppBrowserOpenPayload } from './messages';
+export {
+    inAppBrowserBounds,
+    inAppBrowserOpenPayload,
+    legacyOriginExportFailedMessage,
+    legacyOriginExportFinishedMessage,
+    legacyOriginExportObjectStoreMessage,
+    legacyOriginFile,
+} from './messages';
 
 export { type DesktopApiDep, injectDesktopApi } from './desktopApiDependency';

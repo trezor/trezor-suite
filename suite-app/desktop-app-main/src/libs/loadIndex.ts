@@ -3,6 +3,7 @@ import { type BrowserWindow } from 'electron';
 import { isDevEnv } from '@suite-common/suite-utils';
 
 import type { ILogger } from './logger';
+import { RENDERER_URL } from './renderer-protocol';
 
 type LoadIndexParams = {
     mainWindow: BrowserWindow;
@@ -14,7 +15,7 @@ export const loadIndex = ({ mainWindow, logger }: LoadIndexParams) => {
         logger.debug('init', `Load URL http://localhost:8000/`);
         mainWindow.loadURL('http://localhost:8000/');
     } else {
-        logger.debug('init', `Load URL build/index.html`);
-        mainWindow.loadFile('build/index.html');
+        logger.debug('init', `Load URL ${RENDERER_URL}`);
+        mainWindow.loadURL(RENDERER_URL);
     }
 };

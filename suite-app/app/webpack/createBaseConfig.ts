@@ -88,8 +88,8 @@ export type BaseConfigOptions = {
     /** Application directory owning the `build` output, used to locate source maps. */
     baseDir: string;
     /**
-     * Prefix every emitted asset URL is resolved against. The desktop renderer loads from
-     * `file://` inside the packaged app, so it must be relative.
+     * Prefix every emitted asset URL is resolved against. The desktop renderer is served from the
+     * packaged app's `build` directory over its own scheme, so it must be relative.
      */
     assetPrefix: string;
     /**

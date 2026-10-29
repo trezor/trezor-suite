@@ -245,3 +245,101 @@ export type InAppBrowserHostEvent =
           outcome: 'denied' | 'opened-in-app';
       }
     | { type: 'navigation-blocked'; url: string };
+
+/**
+ * Browser storage of the renderer's legacy `file://` origin, moved once into the origin the
+ * renderer loads from now (see desktop-app-main's legacy-origin-storage module). The shapes mirror
+ * the IndexedDB and File System APIs so the data can be recreated exactly: records and file
+ * contents pass through IPC by structured clone, untouched.
+ */
+export const legacyOriginIndexDefinition = z.object({
+    name: z.string(),
+    keyPath: z.union([z.string(), z.array(z.string())]),
+    unique: z.boolean(),
+    multiEntry: z.boolean(),
+});
+
+export type LegacyOriginIndexDefinition = z.infer<typeof legacyOriginIndexDefinition>;
+
+export const legacyOriginObjectStoreDefinition = z.object({
+    name: z.string(),
+    // `null` for stores with out-of-line keys, which the records then carry explicitly.
+    keyPath: z.union([z.string(), z.array(z.string()), z.null()]),
+    autoIncrement: z.boolean(),
+    indexes: z.array(legacyOriginIndexDefinition),
+});
+
+export type LegacyOriginObjectStoreDefinition = z.infer<typeof legacyOriginObjectStoreDefinition>;
+
+export const legacyOriginDatabaseDefinition = z.object({
+    name: z.string().min(1),
+    version: z.number().int().positive(),
+});
+
+export type LegacyOriginDatabaseDefinition = z.infer<typeof legacyOriginDatabaseDefinition>;
+
+export const legacyOriginRecord = z.object({
+    key: z.unknown(),
+    value: z.unknown(),
+});
+
+export type LegacyOriginRecord = z.infer<typeof legacyOriginRecord>;
+
+export type LegacyOriginObjectStore = LegacyOriginObjectStoreDefinition & {
+    records: LegacyOriginRecord[];
+};
+
+export type LegacyOriginDatabase = LegacyOriginDatabaseDefinition & {
+    objectStores: LegacyOriginObjectStore[];
+};
+
+/** A file of the origin private file system, with its path from the root directory. */
+export const legacyOriginFile = z.object({
+    path: z.array(z.string().min(1)).min(1),
+    content: z.instanceof(ArrayBuffer),
+});
+
+export type LegacyOriginFile = z.infer<typeof legacyOriginFile>;
+
+export type LegacyOriginStorage = {
+    databases: LegacyOriginDatabase[];
+    localStorage: Record<string, string>;
+    files: LegacyOriginFile[];
+};
+
+export type LegacyOriginStorageImportReport =
+    | {
+          success: true;
+          /** False when the renderer origin already had the database, so nothing was written. */
+          isImported: boolean;
+      }
+    | { success: false; error: string };
+
+/**
+ * Messages of the export page's preload to the main process, one object store (in slices of
+ * records) or file at a time, so no single IPC message has to carry a whole wallet history.
+ */
+export const legacyOriginExportObjectStoreMessage = z.object({
+    database: legacyOriginDatabaseDefinition,
+    objectStore: legacyOriginObjectStoreDefinition,
+    records: z.array(legacyOriginRecord),
+});
+
+export type LegacyOriginExportObjectStoreMessage = z.infer<
+    typeof legacyOriginExportObjectStoreMessage
+>;
+
+export const legacyOriginExportFinishedMessage = z.object({
+    databases: z.array(
+        legacyOriginDatabaseDefinition.extend({ objectStoreNames: z.array(z.string()) }),
+    ),
+    localStorage: z.record(z.string(), z.string()),
+});
+
+export type LegacyOriginExportFinishedMessage = z.infer<typeof legacyOriginExportFinishedMessage>;
+
+export const legacyOriginExportFailedMessage = z.object({
+    error: z.string(),
+});
+
+export type LegacyOriginExportFailedMessage = z.infer<typeof legacyOriginExportFailedMessage>;

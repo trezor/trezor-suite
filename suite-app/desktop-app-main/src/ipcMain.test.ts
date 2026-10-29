@@ -25,12 +25,12 @@ jest.mock('@trezor/ipc-proxy', () => ({
 
 const createIpcEvent = (): IpcMainEvent =>
     ({
-        senderFrame: { url: 'file:///build/index.html', isDestroyed: () => false },
+        senderFrame: { url: 'suite://app/index.html', isDestroyed: () => false },
     }) as unknown as IpcMainEvent;
 
 const createIpcInvokeEvent = (): IpcMainInvokeEvent =>
     ({
-        senderFrame: { url: 'file:///build/index.html', isDestroyed: () => false },
+        senderFrame: { url: 'suite://app/index.html', isDestroyed: () => false },
     }) as unknown as IpcMainInvokeEvent;
 
 describe('ipcMain validation wrapper', () => {
