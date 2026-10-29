@@ -58,7 +58,11 @@ export const ConfirmPassphraseBeforeAction = () => {
 
     return (
         <SwitchDeviceModal onCancel={onEnterPassphraseDialogCancel}>
-            <CardWithDevice onCancel={onEnterPassphraseDialogCancel} device={device}>
+            <CardWithDevice
+                onCancel={onEnterPassphraseDialogCancel}
+                device={device}
+                forceConnectionInfo={!device.state?.staticSessionId}
+            >
                 <Column gap={8} padding={{ horizontal: 8 }} margin={{ bottom: 16 }}>
                     <H3>
                         <Translation id="TR_CONFIRM_PASSPHRASE" />
