@@ -2,23 +2,14 @@ import { existsSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 
 import { type ExecCliCommandDep } from './execCliCommand';
+import { type WorkspaceEntry, parseYarnWorkspacesList } from './workspaces';
 
 const ROOT_WORKSPACE_NAME = 'trezor-suite';
 const REPO_ROOT_FROM_REQUIREMENTS_WORKSPACE = '../..';
 
-type WorkspaceInfo = {
-    readonly name: string;
-    readonly dir: string;
-};
-
-type YarnWorkspaceInfo = {
-    readonly name: string;
-    readonly location: string;
-};
-
 type GetAffectedWorkspacesResult = {
     readonly repoRoot: string;
-    readonly workspaces: ReadonlyArray<WorkspaceInfo>;
+    readonly workspaces: ReadonlyArray<WorkspaceEntry>;
 };
 
 export type GetAffectedWorkspacesDeps = ExecCliCommandDep & { requirementsWorkspaceName: string };
@@ -52,20 +43,11 @@ export const createGetAffectedWorkspaces =
             throw new Error(`Failed to list workspaces: ${workspacesResult.stderr}`);
         }
 
-        const parsedWorkspaces = workspacesResult.stdout
-            .trim()
-            .split('\n')
-            .filter(Boolean)
-            .map(line => JSON.parse(line) as YarnWorkspaceInfo);
-
         const repoRoot = resolve(cwd, REPO_ROOT_FROM_REQUIREMENTS_WORKSPACE);
 
-        const allWorkspaces = parsedWorkspaces
-            .filter(workspace => workspace.name !== ROOT_WORKSPACE_NAME)
-            .map(workspace => ({
-                name: workspace.name,
-                dir: join(repoRoot, workspace.location),
-            }));
+        const allWorkspaces = parseYarnWorkspacesList(workspacesResult.stdout, repoRoot).filter(
+            workspace => workspace.name !== ROOT_WORKSPACE_NAME,
+        );
 
         const nxAffectedResult = await deps.execCliCommand({
             command: 'yarn',
