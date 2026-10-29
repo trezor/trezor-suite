@@ -10,8 +10,6 @@ export { getTrezorPackageDir, getTrezorPackageRelativePath } from './trezor-pack
 
 const ROOT = path.join(import.meta.dirname, '..', '..');
 
-const updateNeeded: string[] = [];
-
 export const gettingNpmDistributionTags = async (
     packageName: string,
 ): Promise<Record<string, string> | undefined> => {
@@ -37,55 +35,6 @@ export const getNpmRemoteGreatestVersion = async (moduleName: string) => {
     }
 
     return versionArray.reduce((max, current) => (semver.gt(current, max) ? current : max));
-};
-
-export const getTrezorDependencies = async (packageNameWithoutTrezorPrefix: string) => {
-    const packageJsonPath = path.join(
-        getTrezorPackageDir(packageNameWithoutTrezorPrefix),
-        'package.json',
-    );
-    const packageJsonContent = await fs.promises.readFile(packageJsonPath, 'utf-8');
-    const packageJson = JSON.parse(packageJsonContent);
-    // We should ignore devDependencies.
-    const dependencies = packageJson.dependencies ? Object.keys(packageJson.dependencies) : [];
-
-    return dependencies
-        .filter(dep => dep.startsWith('@trezor/'))
-        .map(dep => dep.replace('@trezor/', ''));
-};
-
-/**
- * This functions recursively checks the @trezor dependencies of a given package
- * @param packageNameWithoutTrezorPrefix (string) - package name without the @trezor/ prefix
- * @returns
- */
-export const getPackageDependencies = async (
-    packageNameWithoutTrezorPrefix: string,
-): Promise<{ update: string[] }> => {
-    console.info('-------------------------------------------------------------------------');
-    console.info(`Getting @trezor dependencies of package ${packageNameWithoutTrezorPrefix}`);
-
-    const trezorDependencies = await getTrezorDependencies(packageNameWithoutTrezorPrefix);
-    console.info(`Trezor dependencies: ${trezorDependencies.join(', ')}`);
-
-    for await (const trezorDependencyNameWithoutPrefix of trezorDependencies) {
-        // trezorDependencyNameWithoutPrefix is like 'connect', 'suite', etc.
-
-        // if the checked dependency is already in the array, remove it and push it to the end of array
-        // this way, the final array should be sorted in order in which that dependencies listed there
-        // should be released from the last to the first.
-        const index = updateNeeded.indexOf(trezorDependencyNameWithoutPrefix);
-        if (index > -1) {
-            updateNeeded.splice(index, 1);
-        }
-        updateNeeded.push(trezorDependencyNameWithoutPrefix);
-
-        await getPackageDependencies(trezorDependencyNameWithoutPrefix);
-    }
-
-    return {
-        update: updateNeeded,
-    };
 };
 
 export const exec = (cmd: string, params: any[]): Promise<{ stdout: string; stderr: string }> => {

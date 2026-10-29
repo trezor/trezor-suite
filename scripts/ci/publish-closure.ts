@@ -27,3 +27,16 @@ export const collectPublishClosure = (
         name => packages.get(name) ?? [],
     );
 };
+
+// The connect release scripts address packages by their unscoped name, which
+// `getTrezorPackageRelativePath` maps to `packages/<name>` or `networks/*/*`. The closure walk
+// returns every workspace dependency, so a future member from another scope has no such mapping.
+export const stripTrezorScope = (name: string): string => {
+    if (!name.startsWith('@trezor/')) {
+        throw new Error(
+            `Publish closure member ${name} is not in the @trezor scope; the connect release scripts cannot resolve its directory.`,
+        );
+    }
+
+    return name.slice('@trezor/'.length);
+};
