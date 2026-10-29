@@ -4,7 +4,6 @@ import {
     selectSelectedDevice,
 } from '@suite-common/device';
 import { type EvmGasParamsGwei } from '@suite-common/schemas/src/evm';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork, getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import {
     ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT,
@@ -52,7 +51,6 @@ import { asCoinSymbol } from '@trezor/connect-common';
 import { createThunk } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { reportEthereumFeeEstimationFailed } from './reportEthereumFeeEstimationError';
 import { sendFormActions } from './sendFormActions';
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 import {
@@ -358,20 +356,6 @@ export const composeEthereumTransactionFeeLevelsThunk = createThunk<
                 tokenInfo || transactionData
                     ? ETH_CONTRACT_CALL_BACKUP_GAS_LIMIT
                     : ETH_TRANSFER_BACKUP_GAS_LIMIT,
-            );
-
-            reportEthereumFeeEstimationFailed({
-                account,
-                formState,
-                tokenInfo,
-                estimateTarget: ethereumEstimateFeeParams.to,
-                error: estimatedFee.error,
-            });
-
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'estimated-fee-error',
-                }),
             );
         }
 
