@@ -76,7 +76,6 @@ jobs:
       run: ${{ inputs.confirm_trusted_branch || steps.preview.outcome == 'success' }}
       head-sha: ${{ steps.desktop.outputs.head-sha }}
       desktop-run-id: ${{ steps.desktop.outputs.run-id }}
-      build-target: ${{ steps.desktop.outputs.build-target }}
     steps:
       - id: jev
         if: github.event_name == 'pull_request'
@@ -168,7 +167,6 @@ jobs:
       DEVICE_MODEL: ${{ inputs.device_model || 'T3W1' }}
       LLM_EXPLORATORY_TESTER_MODEL: ${{ inputs.model }}
       LLM_EXPLORATORY_TESTER_PLATFORM: ${{ inputs.platform || 'web' }}
-      LLM_EXPLORATORY_TESTER_BUILD_TARGET: ${{ needs.gate.outputs.build-target }}
 
     steps:
       # Manual dispatch picks the branch. Do not run this workflow from an

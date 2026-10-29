@@ -37,7 +37,6 @@ export const resolveDesktopBuild = async ({
     );
     if (pr.isCrossRepository) throw new Error('Desktop testing of fork PRs is not supported');
     core.setOutput('head-sha', pr.headRefOid);
-    core.setOutput('build-target', `${pr.number}:${pr.headRefOid}`);
 
     const {
         data: {
