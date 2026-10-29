@@ -12,6 +12,7 @@ import { TorStatus } from '@suite/tor-types';
 import type { Store } from './store';
 import type { MainThreadEmitter } from '../modules';
 import { hasSwitch } from './process-switches';
+import { RENDERER_ORIGIN } from './renderer-protocol';
 
 interface InitSentryParams {
     mainThreadEmitter: MainThreadEmitter;
@@ -20,10 +21,12 @@ interface InitSentryParams {
 
 /**
  * @sentry/electron attaches each renderer's last URL to Electron breadcrumbs and renderer crash reports.
- * Suite's own window is normalized to `app:///`; any other URL is a page the in-app browser loaded,
- * which can be a URL the user typed or one carrying an address or an OAuth code.
+ * Suite's own window loads from the renderer origin, and the SDK normalizes its `file://` pages
+ * (the legacy-origin-storage export page) to `app:///`; any other URL is a page the in-app browser
+ * loaded, which can be a URL the user typed or one carrying an address or an OAuth code.
  */
-const isSuiteRendererUrl = (url: unknown) => typeof url === 'string' && url.startsWith('app:///');
+const isSuiteRendererUrl = (url: unknown) =>
+    typeof url === 'string' && (url.startsWith(`${RENDERER_ORIGIN}/`) || url.startsWith('app:///'));
 
 const ELECTRON_MAIN_SENTRY_CONFIG = {
     ...SENTRY_CONFIG,

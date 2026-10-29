@@ -231,6 +231,16 @@ export const createDesktopApiBridge = <R extends StrictIpcRenderer<any, IpcRende
     // Browser Window
     reloadBrowserWindow: () => ipcRenderer.invoke('browser-window/reload'),
 
+    // Legacy-origin storage
+    pullLegacyOriginStorage: () => ipcRenderer.invoke('legacy-origin-storage/pull'),
+    reportLegacyOriginStorageImport: report => {
+        if (validation.isObject({ success: 'boolean' }, report)) {
+            return ipcRenderer.invoke('legacy-origin-storage/report-import', report);
+        }
+
+        return Promise.resolve();
+    },
+
     // In-app browser (debug-only)
     inAppBrowserOpenView: payload => {
         if (inAppBrowserOpenPayload.safeParse(payload).success) {

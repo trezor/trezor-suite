@@ -11,7 +11,7 @@ import {
 } from '@suite-app/app';
 import TrezorConnect from '@trezor/connect-electron';
 import { toGetter } from '@trezor/dependency-injection';
-import { createDb, createPreloadStore } from '@trezor/suite';
+import { createDb, createMigrateLegacyOriginStorage, createPreloadStore } from '@trezor/suite';
 
 import { type DesktopApp, createDesktopApp } from './createDesktopApp';
 
@@ -56,6 +56,7 @@ export const createSuiteDesktopCompositionRoot = (): SuiteDesktopCompositionRoot
         getTransportsFactories,
         getTrezorConnect: () => TrezorConnect,
     });
+    const migrateLegacyOriginStorage = createMigrateLegacyOriginStorage({ desktopApi });
     const preloadStore = createPreloadStore({ db });
     const hydrateReduxStore = createHydrateReduxStore({
         store,
@@ -68,5 +69,5 @@ export const createSuiteDesktopCompositionRoot = (): SuiteDesktopCompositionRoot
     // Inject them after construction to break the cycle, before the app can dispatch any actions.
     injectServicesIntoReduxExtra(services);
 
-    return { app: createDesktopApp({ desktopApi, services }) };
+    return { app: createDesktopApp({ desktopApi, migrateLegacyOriginStorage, services }) };
 };
