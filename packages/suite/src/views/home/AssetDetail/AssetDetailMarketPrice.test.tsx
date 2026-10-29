@@ -121,10 +121,10 @@ describe('the market price on the asset screen', () => {
     });
 
     describe('the price chart in it', () => {
-        it("draws the week's price history", () => {
+        it("draws the week's price history", async () => {
             renderMarketPrice(getInitialState({ ethRate: 3000 }));
 
-            expect(screen.getByTestId('@price-chart/graph')).toBeInTheDocument();
+            expect(await screen.findByTestId('@price-chart/graph')).toBeInTheDocument();
             expect(mockUseAssetPriceHistoryQuery).toHaveBeenLastCalledWith({
                 ticker: { symbol: ETH, tokenAddress: undefined },
                 fiatCurrency: 'usd',
