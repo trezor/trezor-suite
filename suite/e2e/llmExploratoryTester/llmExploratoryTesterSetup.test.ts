@@ -1,5 +1,6 @@
-import { chromium } from '@playwright/test';
-import { writeFileSync } from 'node:fs';
+import { chromium, expect } from '@playwright/test';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
 
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
@@ -9,9 +10,9 @@ import { launchSuite } from '../support/electron';
 import { test as suiteTest } from '../support/fixtures';
 import { enhancePage } from '../support/testExtends/enhancePage';
 
-const CDP_URL = 'http://127.0.0.1:9222';
+let cdpEndpoint = 'http://127.0.0.1:9222';
 
-// The agent's Playwright MCP attaches over CDP (:9222) and only sees the
+// The agent's Playwright MCP attaches over CDP and only sees the
 // browser's DEFAULT context. Playwright test normally puts its page in an
 // isolated context that is invisible over CDP, so these fixtures re-attach to
 // the Playwright-launched browser via CDP and onboard in the default context —
@@ -21,7 +22,7 @@ const webTest = suiteTest.extend({
     // Depending on `browser` makes Playwright launch its Chromium (with the
     // CDP port from the llmExploratoryTester config) before we re-attach to it.
     context: async ({ browser: _launched }, use) => {
-        const cdpBrowser = await chromium.connectOverCDP(CDP_URL);
+        const cdpBrowser = await chromium.connectOverCDP(cdpEndpoint);
         const [defaultContext] = cdpBrowser.contexts();
         if (!defaultContext) {
             // Creating a context here instead would put onboarding back into an
@@ -57,9 +58,23 @@ const desktopTest = suiteTest.extend({
             colorScheme,
             artefactFolder: testInfo.outputDir,
             viewport: { width: 1600, height: 1000 },
-            remoteDebuggingPort: 9222,
             skipVideoRecording: true,
         });
+
+        const userDataDir = await suite.electronApp.evaluate(({ app }) => app.getPath('userData'));
+        const portFilePath = join(userDataDir, 'DevToolsActivePort');
+
+        // Chromium writes the port first, then the browser path. Retry until both lines exist.
+        await expect(() => {
+            const portFileContents = readFileSync(portFilePath, 'utf8');
+            const [port, browserPath] = portFileContents.split('\n');
+
+            expect(port).toMatch(/^\d+$/);
+            expect(browserPath).toMatch(/^\/devtools\//);
+
+            cdpEndpoint = `http://127.0.0.1:${port}`;
+        }).toPass({ timeout: 10_000 });
+
         enhancePage(suite.window);
         await use(suite.window);
         await suite.electronApp.close();
@@ -107,7 +122,7 @@ test.describe('LLM Exploratory Tester setup', { tag: ['@T2T1', '@T3B1', '@T3T1',
         await test.step('Signal readiness and stay alive', async () => {
             // Stay alive so the agent can attach over CDP to this Playwright browser.
             test.info().setTimeout(0);
-            writeFileSync(process.env.LLM_EXPLORATORY_TESTER_READY_FILE!, '');
+            writeFileSync(process.env.LLM_EXPLORATORY_TESTER_READY_FILE!, cdpEndpoint);
             await new Promise(() => {});
         });
     });
