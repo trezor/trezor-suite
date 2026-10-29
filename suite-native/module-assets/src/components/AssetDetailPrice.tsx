@@ -1,8 +1,9 @@
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { AssetPriceChange, useAssetPrice } from '@suite-native/assets';
-import { VStack } from '@suite-native/atoms';
+import { Text, VStack } from '@suite-native/atoms';
 import { BaseCurrencyAmountHeaderFormatter } from '@suite-native/formatters';
+import { Translation } from '@suite-native/intl';
 
 type AssetDetailPriceProps = {
     networkSymbol: NetworkSymbol;
@@ -17,6 +18,9 @@ export const AssetDetailPrice = ({ networkSymbol, tokenContract }: AssetDetailPr
 
     return (
         <VStack spacing="sp12">
+            <Text variant="body-xs" color="contentSecondary">
+                <Translation id="moduleAssets.assetDetailScreen.priceSection.title" />
+            </Text>
             <BaseCurrencyAmountHeaderFormatter value={price} isDiscreetText={false} />
             {sevenDayPercentageChange !== null && (
                 <AssetPriceChange

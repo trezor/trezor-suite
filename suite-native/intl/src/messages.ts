@@ -2390,7 +2390,9 @@ export const messages = {
     },
     moduleAssets: {
         assetDetailScreen: {
-            headerTitle: 'Asset details',
+            priceSection: {
+                title: 'Market price',
+            },
             settings: {
                 openButtonAccessibilityLabel: 'Asset settings',
                 network: 'Network',
