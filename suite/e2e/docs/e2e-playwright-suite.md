@@ -17,11 +17,14 @@ _Note: All paths below are relative to the root of trezor-suite repository, if n
 
 Tests that use the `anvil` fixture (e.g. `wallet/send-eth-anvil.test.ts`, `yield/deposit-anvil.test.ts`) start a fresh `anvil` fork of an EVM network for each test and connect Suite to it as a custom `evm-rpc` backend, so signed transactions are executed on the fork. How to write and debug them is in the [Forked Chain skill](../skills/forked-chain/SKILL.md).
 
+Tests that use the `anvilBlockbook` fixture also start a Blockbook in Docker that indexes the fork, and connect Suite to it as a custom `blockbook` backend, so Suite gets transaction history from the fork. They need Docker with host networking, i.e. Linux or CI, and the Blockbook image built once with `docker build --tag anvil-blockbook docker/anvil-blockbook` (compiles RocksDB, takes a while).
+
 Optional environment variables:
 
 - `ANVIL_BIN` – path to the `anvil` binary, defaults to `anvil` in `PATH`
 - `ANVIL_FORK_URL_<SYMBOL>` (e.g. `ANVIL_FORK_URL_ETH`) – upstream RPC to fork from, defaults to the network's public endpoint in `support/anvilNetworks.ts`
 - `ANVIL_FORK_BLOCK_NUMBER_<SYMBOL>` – pins the fork to a block, defaults to the latest block
+- `BLOCKBOOK_IMAGE` – Docker image with the Blockbook for `anvilBlockbook`, defaults to `anvil-blockbook`
 
 ### Common steps
 

@@ -7,6 +7,7 @@ import type { PerfMetrics } from '@trezor/perf-e2e';
 
 import { AnalyticsFixture, AnalyticsHelper } from './analytics';
 import { AnvilFork } from './anvil';
+import { AnvilBlockbook } from './anvilBlockbook';
 import type { AnvilForkOptions } from './anvilNetworks';
 import { ClipboardFixture } from './clipboard';
 import { isDesktopProject } from './common';
@@ -77,6 +78,7 @@ type Fixtures = {
     blockbookMock: BlockbookMock;
     anvilFork: AnvilForkOptions;
     anvil: AnvilFork;
+    anvilBlockbook: AnvilBlockbook;
     firmwareReleaseConfigMock: FirmwareReleaseConfigMock;
     solanaStakingMock: SolanaStakingMock;
     tradingMock: TradingMock;
@@ -184,6 +186,12 @@ const test = suiteBaseTest.extend<Fixtures>({
         await anvil.start();
         await use(anvil);
         await anvil.stop();
+    },
+    anvilBlockbook: async ({ anvil }, use) => {
+        const anvilBlockbook = new AnvilBlockbook(anvil);
+        await anvilBlockbook.start();
+        await use(anvilBlockbook);
+        await anvilBlockbook.stop();
     },
     firmwareReleaseConfigMock: async ({ page, device, trezorUserEnv }, use) => {
         const firmwareReleaseConfigMock = new FirmwareReleaseConfigMock(
