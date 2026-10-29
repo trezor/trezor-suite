@@ -1,6 +1,6 @@
 import type { Octokit } from '@octokit/rest';
 
-// This job runs before Yarn install. Node loads the TypeScript files directly.
+// This step runs before Yarn install. Node loads the TypeScript files directly.
 import { ghView, loadLinkedNumbersFrom, parseTarget } from './target.ts';
 
 type PullRequest = {
@@ -38,8 +38,6 @@ export const resolveDesktopBuild = async ({
         throw new Error('Desktop testing of fork PRs is not supported');
     }
 
-    core.setOutput('head-sha', pr.headRefOid);
-
     const workflowRunsResponse = await github.rest.actions.listWorkflowRuns({
         ...context.repo,
         workflow_id: 'test-suite-web-desktop-e2e-pr.yml',
@@ -48,8 +46,9 @@ export const resolveDesktopBuild = async ({
     });
     const latestRun = workflowRunsResponse.data.workflow_runs[0];
     if (!latestRun) {
-        // Without a run-id output, the workflow builds the app from head-sha.
-        return;
+        throw new Error(
+            `No regular E2E run found for PR #${pr.number} at ${pr.headRefOid}. Run the regular E2E workflow first.`,
+        );
     }
 
     const artifactsResponse = await github.rest.actions.listWorkflowRunArtifacts({
@@ -58,7 +57,11 @@ export const resolveDesktopBuild = async ({
         name: 'desktop-app-build-e2e',
     });
     const hasAvailableBuild = artifactsResponse.data.artifacts.some(artifact => !artifact.expired);
-    if (hasAvailableBuild) {
-        core.setOutput('run-id', latestRun.id);
+    if (!hasAvailableBuild) {
+        throw new Error(
+            `Desktop build artifact is missing or expired in run ${latestRun.id}. Wait for the regular E2E desktop build to finish, or rerun it.`,
+        );
     }
+
+    core.setOutput('run-id', latestRun.id);
 };

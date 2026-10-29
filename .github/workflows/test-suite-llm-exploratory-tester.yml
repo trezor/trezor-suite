@@ -21,7 +21,7 @@ on:
         required: true
         type: string
       platform:
-        description: "Suite platform (desktop reuses the target PR’s Linux E2E build)"
+        description: "Suite platform (desktop requires the target PR’s Linux E2E build)"
         default: web
         type: choice
         options: [web, desktop]
@@ -47,7 +47,7 @@ on:
     types: [opened, ready_for_review, reopened]
 
 permissions:
-  actions: read
+  actions: read # Download desktop artifacts from another workflow run.
   contents: read
   issues: read
   pull-requests: write
@@ -69,13 +69,9 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      actions: read
-      issues: read
       pull-requests: read
     outputs:
       run: ${{ inputs.confirm_trusted_branch || steps.preview.outcome == 'success' }}
-      head-sha: ${{ steps.desktop.outputs.head-sha }}
-      desktop-run-id: ${{ steps.desktop.outputs.run-id }}
     steps:
       - id: jev
         if: github.event_name == 'pull_request'
@@ -128,39 +124,11 @@ jobs:
           done
           [ "$conclusion" = success ]
 
-      - name: Checkout target helpers
-        if: inputs.confirm_trusted_branch && inputs.platform == 'desktop'
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
-        with:
-          sparse-checkout: packages/e2e-utils/src/llmExploratoryTester
-
-      - name: Resolve desktop build
-        id: desktop
-        if: inputs.confirm_trusted_branch && inputs.platform == 'desktop'
-        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
-        env:
-          GH_TOKEN: ${{ github.token }}
-          TARGET: ${{ inputs.target }}
-        with:
-          script: |
-            const { resolveDesktopBuild } = require('./packages/e2e-utils/src/llmExploratoryTester/resolveDesktopBuild.ts');
-            await resolveDesktopBuild({ github, context, core });
-
-  build-desktop:
-    needs: gate
-    if: needs.gate.outputs.run == 'true' && inputs.platform == 'desktop' && needs.gate.outputs.desktop-run-id == ''
-    permissions:
-      contents: read
-    uses: ./.github/workflows/build-suite-desktop-e2e.yml
-    with:
-      ref: ${{ needs.gate.outputs.head-sha }}
-
   llm-exploratory-tester:
-    needs: [gate, build-desktop]
+    needs: gate
+    if: needs.gate.outputs.run == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 240
-    if: >-
-      !cancelled() && !failure() && needs.gate.outputs.run == 'true'
     env:
       COMPOSE_FILE: ./docker/docker-compose.suite-ci-e2e.yml
       TARGET: ${{ inputs.target || github.event.pull_request.html_url }}
@@ -176,6 +144,17 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
         with:
           ref: ${{ github.event_name == 'pull_request' && 'develop' || '' }}
+
+      - name: Find existing desktop build
+        if: inputs.platform == 'desktop'
+        id: desktop
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9
+        env:
+          GH_TOKEN: ${{ github.token }}
+        with:
+          script: |
+            const { resolveDesktopBuild } = require('./packages/e2e-utils/src/llmExploratoryTester/resolveDesktopBuild.ts');
+            await resolveDesktopBuild({ github, context, core });
 
       - name: Setup Node.js
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
@@ -196,7 +175,7 @@ jobs:
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
           name: desktop-app-build-e2e
-          run-id: ${{ needs.gate.outputs.desktop-run-id || github.run_id }}
+          run-id: ${{ steps.desktop.outputs.run-id }}
           github-token: ${{ github.token }}
           path: artifact-download
 

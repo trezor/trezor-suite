@@ -1,11 +1,6 @@
 name: "Reusable Build Suite Desktop for E2E tests"
 on:
   workflow_call:
-    inputs:
-      ref:
-        description: "Commit to build; defaults to the caller’s PR head or workflow commit"
-        required: false
-        type: string
 
 jobs:
   build-desktop:
@@ -16,7 +11,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
         with:
-          ref: ${{ inputs.ref || github.event.pull_request.head.sha || github.sha }}
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
 
       - name: Setup Node.js
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
