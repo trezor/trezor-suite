@@ -98,7 +98,7 @@ describe('ExchangeSendContent', () => {
 
             await userEvent.type(getByLabelText(cryptoAmountLabel), '1.5');
 
-            expect(getByLabelText(baseCurrencyAmountLabel)).toHaveDisplayValue('1500');
+            expect(getByLabelText(baseCurrencyAmountLabel)).toHaveDisplayValue('1,500');
         });
 
         it('should update crypto amount when typing base currency amount', async () => {
