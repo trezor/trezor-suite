@@ -12,14 +12,23 @@ export class RateLimiter {
         this.timeoutMs = timeoutMs;
     }
 
-    limit<T>(fn: (signal?: AbortSignal) => Promise<T>): Promise<T> {
-        const resultPromise = this.queue.then(
-            async () => await scheduleAction(signal => fn(signal), { timeout: this.timeoutMs }),
-        );
+    limit<T>(fn: (signal?: AbortSignal) => Promise<T>, signal?: AbortSignal): Promise<T> {
+        let isSkipped = false;
+        const resultPromise = this.queue.then(async () => {
+            if (signal?.aborted) {
+                isSkipped = true;
+                throw signal.reason;
+            }
+
+            return await scheduleAction(fn, { timeout: this.timeoutMs, signal });
+        });
 
         this.queue = resultPromise
-            .catch(error => console.error(error)) // ensure errors don't stop the queue
-            .then(() => resolveAfter(this.delayMs));
+            .catch(error => {
+                // ensure errors don't stop the queue
+                if (!signal?.aborted) console.error(error);
+            })
+            .then(() => (isSkipped ? undefined : resolveAfter(this.delayMs)));
 
         return resultPromise;
     }

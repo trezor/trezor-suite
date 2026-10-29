@@ -36,17 +36,17 @@ const getPriceHistoryTicker = async (ticker: TickerId): Promise<TickerId> => {
     return { symbol: ticker.symbol, tokenAddress: underlyingAsset.contract };
 };
 
-export const fetchAssetPriceHistory = async ({
-    ticker,
-    fiatCurrency,
-    range,
-}: FetchAssetPriceHistoryParams): Promise<AssetPricePoint[] | null> => {
+export const fetchAssetPriceHistory = async (
+    { ticker, fiatCurrency, range }: FetchAssetPriceHistoryParams,
+    signal?: AbortSignal,
+): Promise<AssetPricePoint[] | null> => {
     const { coinGeckoDays: days } = assetPriceChartRangeOptionsByRange[range];
     const priceHistoryTicker = await getPriceHistoryTicker(ticker);
     const prices = await fetchCoinGeckoMarketChart({
         ticker: priceHistoryTicker,
         fiatCurrency,
         days,
+        signal,
     });
 
     if (prices === null) {

@@ -24,10 +24,13 @@ const getAssetPriceHistoryQueryKey = ({
 
 const fetchAssetPriceHistoryOrNull = async (
     params: FetchAssetPriceHistoryParams,
+    signal: AbortSignal,
 ): Promise<AssetPricePoint[] | null> => {
     try {
-        return await fetchAssetPriceHistory(params);
-    } catch {
+        return await fetchAssetPriceHistory(params, signal);
+    } catch (error) {
+        if (signal.aborted) throw error;
+
         console.error('Failed to fetch asset price history.');
 
         return null;
@@ -41,6 +44,7 @@ export const useAssetPriceHistoryQuery = ({
 }: FetchAssetPriceHistoryParams): UseQueryResult<AssetPricePoint[] | null> =>
     useQuery({
         queryKey: getAssetPriceHistoryQueryKey({ ticker, fiatCurrency, range }),
-        queryFn: () => fetchAssetPriceHistoryOrNull({ ticker, fiatCurrency, range }),
+        queryFn: ({ signal }) =>
+            fetchAssetPriceHistoryOrNull({ ticker, fiatCurrency, range }, signal),
         staleTime: ASSET_PRICE_HISTORY_STALE_TIME_MS,
     });
