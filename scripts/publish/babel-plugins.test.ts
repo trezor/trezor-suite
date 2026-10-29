@@ -131,6 +131,36 @@ describe('publish import transforms — specifier positions', () => {
     });
 });
 
+// Characterizes the current behavior: both NewExpression visitors match on the callee name and
+// the first string-literal argument, so every new URL('<literal>', ...) is rewritten — not just
+// the new Worker(new URL('<specifier>', import.meta.url)) worker idiom the visitors' own comments
+// describe. The expectations below are that wrong output.
+describe('publish import transforms — new URL rewrites are not gated on the worker idiom', () => {
+    it('appends the runtime extension to a runtime new URL(relative, base)', () => {
+        const out = runEsm(`const u = new URL('./api/status', origin);`);
+        expect(out).toContain('./api/status.js');
+    });
+
+    it('rewrites a non-worker new URL(@trezor/*/src, base) into a lib path', () => {
+        const out = runEsm(
+            `const u = new URL('@trezor/blockchain-link/src/workers/blockbook', base);`,
+        );
+        expect(out).toContain('@trezor/blockchain-link/lib/workers/blockbook/index.js');
+    });
+
+    it('appends the runtime extension to a single-argument new URL(literal)', () => {
+        const out = runEsm(`const u = new URL('./api/status');`);
+        expect(out).toContain('./api/status.js');
+    });
+
+    // import.meta.url is also the idiomatic base for a data file next to the module, so this one
+    // is rewritten even though it addresses an asset rather than a worker module.
+    it('appends /index.js to a non-worker new URL(literal, import.meta.url)', () => {
+        const out = runEsm(`const data = readFileSync(new URL('./localdir', import.meta.url));`);
+        expect(out).toContain('./localdir/index.js');
+    });
+});
+
 describe('publish import transforms — preserved behaviors', () => {
     // Guards the pre-existing isStringLiteral check (shared by every rewrite position), not the
     // import.meta.url gate: a non-literal specifier can never be resolved to a runtime path.
