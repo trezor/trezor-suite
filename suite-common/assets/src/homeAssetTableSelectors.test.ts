@@ -18,7 +18,6 @@ import {
     selectDisplayedWalletAssetKeysOfNetwork,
     selectHiddenWalletAssetKeys,
     selectHomeAssetGrouping,
-    selectHomeAssetTotalFiatValue,
     selectHomeAssetTotals,
     selectIsHomeAssetTableFoldable,
     selectIsHomeAssetTableMenuAvailable,
@@ -441,22 +440,6 @@ describe('the total over the wallet', () => {
 
     it('adds up every asset of the wallet', () => {
         expect(selectHomeAssetTotals(state).fiatValue?.toFixed()).toBe('56000');
-        expect(selectHomeAssetTotalFiatValue(state)?.toFixed()).toBe('56000');
-    });
-
-    it('hands back the same total while its value stays the same', () => {
-        const before = selectHomeAssetTotalFiatValue(state);
-        const after = selectHomeAssetTotalFiatValue(
-            createState({
-                accounts: [
-                    mockAccount({ symbol: ETH, balance: '2' }),
-                    mockAccount({ symbol: BTC, index: 1, balance: '0.5' }),
-                ],
-                rates: { ...mockRate(ETH, 3000), ...mockRate(BTC, 100000) },
-            }),
-        );
-
-        expect(after).toBe(before);
     });
 
     it('prices each asset on its own', () => {
@@ -533,7 +516,6 @@ describe('the total over the wallet', () => {
         expect(selectWalletAssetStakingAmount(staked, ethereumKey)).toBe('2');
         expect(selectWalletAssetStakingRatio(staked, ethereumKey)).toBeCloseTo(2 / 3);
         expect(selectWalletAssetFiatValue(staked, ethereumKey)?.toFixed()).toBe('9000');
-        expect(selectHomeAssetTotalFiatValue(staked)?.toFixed()).toBe('9000');
     });
 
     it('counts a delegating Cardano account whole as staked', () => {
@@ -584,7 +566,6 @@ describe('the total over the wallet', () => {
         });
 
         expect(selectHomeAssetTotals(unpriced).fiatValue).toBeUndefined();
-        expect(selectHomeAssetTotalFiatValue(unpriced)).toBeUndefined();
         expect(selectWalletAssetFiatValue(unpriced, ethereumKey)).toBeUndefined();
     });
 

@@ -33,7 +33,6 @@ import {
     type Rate,
     type TokenAddress,
     type TokenSymbol,
-    areBaseCurrencyAmountsEqual,
     asBaseCurrencyAmount,
     toTokenSymbol,
 } from '@suite-common/wallet-types';
@@ -816,11 +815,4 @@ export const selectHomeAssetTotals = createMemoizedSelector(
             weekChangePercent: weekChange.div(weekAgoFiatValue),
         };
     },
-);
-
-export const selectHomeAssetTotalFiatValue = createMemoizedSelector(
-    [selectHomeAssetTotals],
-    ({ fiatValue }): BaseCurrencyAmount | undefined =>
-        fiatValue === undefined ? undefined : asBaseCurrencyAmount(fiatValue),
-    { memoizeOptions: { resultEqualityCheck: areBaseCurrencyAmountsEqual } },
 );
