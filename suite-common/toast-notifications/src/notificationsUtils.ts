@@ -13,6 +13,17 @@ export const isTransactionNotification = <TKey extends string = UnknownTranslati
 ): notification is Extract<NotificationEntry<TKey>, { type: TransactionNotificationType }> =>
     notification.type.startsWith('tx-') || notification.type === 'raw-tx-sent';
 
+export const isSameTransactionNotification = (
+    first: NotificationEntry,
+    second: NotificationEntry,
+): boolean =>
+    isTransactionNotification(first) &&
+    isTransactionNotification(second) &&
+    first.type === second.type &&
+    first.symbol === second.symbol &&
+    first.descriptor === second.descriptor &&
+    first.txid === second.txid;
+
 export const getSeenAndUnseenNotifications = <T extends NotificationEntry<string>>(
     notifications: T[],
 ): {
