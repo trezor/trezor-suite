@@ -53,7 +53,11 @@ permissions:
   pull-requests: write
 
 concurrency:
-  group: ${{ inputs.target || github.event.pull_request.html_url }}-${{ inputs.platform || 'web' }}
+  # Replace older runs for the same target and platform.
+  # Web and desktop runs can run together. Automatic PR runs use web.
+  group: >-
+    target=${{ inputs.target || github.event.pull_request.html_url }}
+    platform=${{ inputs.platform || 'web' }}
   cancel-in-progress: true
 
 jobs:
