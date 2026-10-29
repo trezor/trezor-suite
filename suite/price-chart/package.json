@@ -11,13 +11,18 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@suite-common/assets": "workspace:*",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/price-chart": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
+        "@suite-common/wallet-utils": "workspace:*",
+        "@suite/flags": "workspace:*",
         "@suite/ui-animations": "workspace:*",
         "@trezor/components": "workspace:*",
+        "@trezor/dependency-injection": "workspace:*",
+        "@trezor/redux-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "react": "19.2.3",
         "react-redux": "9.3.0",

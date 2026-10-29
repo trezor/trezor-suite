@@ -14,16 +14,15 @@ import {
 } from 'recharts';
 import styled, { useTheme } from 'styled-components';
 
+import { selectAssetPriceChartRange } from '@suite/flags';
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
+import { type AssetsRootState, selectAssetTokenInfo } from '@suite-common/assets';
 import { useFormatters } from '@suite-common/formatters';
-import {
-    type AssetPricePoint,
-    INITIAL_ASSET_PRICE_CHART_RANGE,
-    useAssetPriceHistoryQuery,
-} from '@suite-common/price-chart';
+import { type AssetPricePoint, useAssetPriceHistoryQuery } from '@suite-common/price-chart';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectBaseCurrency } from '@suite-common/wallet-core';
 import { type TokenAddress, asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { isErc4626 } from '@suite-common/wallet-utils';
 import { Skeleton } from '@trezor/components';
 import { BigNumber } from '@trezor/utils';
 
@@ -163,10 +162,18 @@ export const AssetPriceChart = ({ networkSymbol, tokenContract }: AssetPriceChar
         }) ?? '';
     const fiatCurrency = useSelector(selectBaseCurrency);
     const shouldAnimateSkeleton = useSelector(selectShouldAnimateLoadingSkeleton);
+    const token = useSelector((state: AssetsRootState) =>
+        selectAssetTokenInfo(state, networkSymbol, tokenContract),
+    );
+    const range = useSelector(selectAssetPriceChartRange);
     const { data: points, isLoading } = useAssetPriceHistoryQuery({
-        ticker: { symbol: networkSymbol, tokenAddress: tokenContract },
+        ticker: {
+            symbol: networkSymbol,
+            tokenAddress: tokenContract,
+            protocols: isErc4626(token) ? ['erc4626'] : undefined,
+        },
         fiatCurrency,
-        range: INITIAL_ASSET_PRICE_CHART_RANGE,
+        range,
     });
     const extremes = useMemo(() => (points ? getPriceExtremes(points) : undefined), [points]);
 

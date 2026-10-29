@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../../suite-common/assets" },
         {
             "path": "../../suite-common/formatters"
         },
@@ -17,8 +18,16 @@
         {
             "path": "../../suite-common/wallet-types"
         },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
+        { "path": "../flags" },
         { "path": "../ui-animations" },
         { "path": "../../packages/components" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
+        { "path": "../../packages/redux-utils" },
         { "path": "../../packages/utils" }
     ]
 }

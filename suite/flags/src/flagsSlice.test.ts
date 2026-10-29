@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 
+import { AssetPriceChartRange } from '@suite-common/price-chart';
 import { DEVICE } from '@trezor/connect';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
@@ -8,8 +9,10 @@ import {
     flagsInitialState,
     markNewContentIndicatorAsSeen,
     prepareFlagsReducer,
+    selectAssetPriceChartRange,
     selectFlags,
     selectIsNewContentIndicatorVisible,
+    setAssetPriceChartRange,
     setFlag,
     setNewContentIndicatorSeen,
 } from './flagsSlice';
@@ -53,6 +56,12 @@ describe('flagsSlice', () => {
         expect(state.taprootBannerClosed).toBe(true);
         expect(state.initialRun).toBe(flagsInitialState.initialRun);
         expect(state.dashboardAssetsGridMode).toBe(flagsInitialState.dashboardAssetsGridMode);
+    });
+
+    it('remembers the range picked for the asset price chart', () => {
+        const store = initStore();
+        store.dispatch(setAssetPriceChartRange(AssetPriceChartRange.Month));
+        expect(selectAssetPriceChartRange(store.getState())).toBe(AssetPriceChartRange.Month);
     });
 
     it('hides all current new-content indicators on a fresh start', () => {

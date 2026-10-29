@@ -10,6 +10,7 @@ import { featureUsed, feedbackDismissed, feedbackRequested } from '@suite/featur
 import {
     type FlagsRootState,
     markNewContentIndicatorAsSeen,
+    setAssetPriceChartRange,
     setFlag,
     setNewContentIndicatorSeen,
 } from '@suite/flags';
@@ -581,6 +582,7 @@ export const prepareStorageMiddleware = createMiddlewareWithExtraDeps<
         isAnyOf(
             suiteSettingsActions.setLanguage,
             setFlag,
+            setAssetPriceChartRange,
             markNewContentIndicatorAsSeen,
             setNewContentIndicatorSeen,
             suiteSettingsActions.setDebugMode,

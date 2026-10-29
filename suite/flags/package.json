@@ -13,6 +13,7 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "2.13.0",
+        "@suite-common/price-chart": "workspace:*",
         "@suite-common/test-utils": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/redux-utils": "workspace:*",
