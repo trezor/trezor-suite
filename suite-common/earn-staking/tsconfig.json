@@ -2,7 +2,9 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../device" },
         { "path": "../earn-staking-common" },
+        { "path": "../message-system" },
         { "path": "../wallet-core" },
         { "path": "../wallet-types" },
         {
@@ -13,6 +15,7 @@
         },
         { "path": "../../packages/redux-utils" },
         { "path": "../../packages/utils" },
+        { "path": "../suite-types" },
         { "path": "../../packages/requirements" }
     ]
 }
