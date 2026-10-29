@@ -183,6 +183,7 @@ export class DashboardPage {
         await this.addExistingHiddenWalletButton.click();
 
         await this.passphraseInput.fill(passphrase);
+        await this.device.expectToContainOnDisplay('Please enter your passphrase.');
         await this.passphraseSubmitButton.click();
         await expect(this.passphraseInput).toBeHidden();
 
