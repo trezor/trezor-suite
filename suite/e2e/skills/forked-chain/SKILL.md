@@ -14,7 +14,9 @@ The `anvil` fixture (`support/anvil.ts`) starts a fresh Anvil fork for each test
 
 ```
 Does the flow need real contract execution or real chain state?
-├── YES → anvil fixture (this skill)
+├── YES → Does Suite need data only Blockbook serves (transaction history, details of past txs)?
+│   ├── YES → anvilBlockbook fixture (eth only, see "Blockbook on the fork")
+│   └── NO  → anvil fixture (this skill)
 └── NO  → Do you need an exact, hand-crafted backend state (edge cases, error states, pagination)?
     ├── YES → blockbookMock (support/mocks/blockBookMock.ts)
     └── BTC-like → regtest through trezorUserEnv
@@ -121,6 +123,28 @@ With automine on, these calls resolve once the transaction is mined, and throw i
 - Public L2 nodes keep only a few minutes of recent state. A long test that reads untouched contracts late may fail with "missing trie node". Use an archive URL for it.
 - Adding a network takes one line in `ANVIL_FORK_URLS` (`support/anvilNetworks.ts`). The chain id comes from Suite's network config, and only networks with an `evm-rpc` backend can be forked.
 - CI installs Foundry in `.github/workflows/template-suite-run-e2e.yml`. Locally, install it with `foundryup` or point `ANVIL_BIN` at the binary.
+
+## Blockbook on the fork
+
+Suite's `evm-rpc` backend has no transaction history: it knows only the transactions it sent itself, as pending, and token transfers from logs. When the test needs what Blockbook serves (history after leaving and reopening an account, confirmed transaction details), request `anvilBlockbook` instead. It starts the `anvil` fork as usual, then a Blockbook in Docker that indexes it from the fork's current block, so it never reads mainnet history.
+
+```typescript
+test.beforeEach(async ({ anvil, anvilBlockbook, settingsPage, walletPage }) => {
+    await anvil.setBalance(OWNER_ADDRESS, parseEther('1'));
+    // ...onboarding
+    await settingsPage.changeNetworks({ enableNetworks: [anvilBlockbook.networkToEnable] });
+    await walletPage.openAccount({ symbol: asNetworkSymbol('eth') });
+});
+
+// Wait for Blockbook to index a transaction before asserting the UI on it.
+await expect.poll(async () => (await anvilBlockbook.getAddress(OWNER_ADDRESS)).txs).toBe(1);
+```
+
+- Connect Suite with `anvilBlockbook.networkToEnable`, never with both backends; the `anvil` helpers (funding, mining, time) keep working on the same fork.
+- Only `eth` forks: the Blockbook config is its Ethereum coin.
+- Blockbook runs from the `trezor-user-env-regtest` image, which CI already pulls, on the host network. Docker Desktop (macOS) does not share the host's `127.0.0.1` with containers, so run these tests on Linux or in CI. `BLOCKBOOK_IMAGE` and `BLOCKBOOK_DIR` point at another build.
+- Internal transactions are off: they need `debug_traceBlockByHash`, which Anvil lacks.
+- History starts at the fork's block: transactions an account made on mainnet before the fork are not listed. Use fresh seeds, as everywhere on a fork.
 
 ## Driving a fork by hand
 
