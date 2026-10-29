@@ -15,7 +15,6 @@ type PullRequest = {
     title: string;
     body: string;
     headRefName: string;
-    headRefOid: string;
     url: string;
 };
 
@@ -27,7 +26,7 @@ type GithubIssue = {
 };
 
 function loadPullRequest(prNumber: number): PullRequest {
-    return ghView<PullRequest>('pr', prNumber, 'number,title,body,headRefName,headRefOid,url');
+    return ghView<PullRequest>('pr', prNumber, 'number,title,body,headRefName,url');
 }
 
 function loadIssue(issueNumber: number): GithubIssue {
@@ -97,10 +96,6 @@ async function main(): Promise<void> {
     }
 
     const pr = newestPr(prs);
-    const buildTarget = process.env.LLM_EXPLORATORY_TESTER_BUILD_TARGET;
-    if (buildTarget && buildTarget !== `${pr.number}:${pr.headRefOid}`) {
-        throw new Error('Target PR changed during the desktop build; rerun the workflow');
-    }
     const suiteUrl = `${PREVIEW_SUITE_URL_BASE}/${pr.headRefName}/web/`;
     const contextImages = await downloadAttachmentImages([
         ...prs.map(({ body }) => body),
