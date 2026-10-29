@@ -32,6 +32,14 @@ const hoverLabel = async () => {
 };
 
 describe('ConnectProcessLabel', () => {
+    // Documents the behaviour today: the path is revealed only next to a warning, so the badge
+    // of a process the lookup trusts never shows the path it is remembered by.
+    it('shows no path on the badge of a process that is not warned about', async () => {
+        renderLabel({ name: 'node', fullPath: '/usr/local/bin/node', warning: false });
+
+        expect(await hoverLabel()).toBeUndefined();
+    });
+
     it('shows the executable path of a warned-about process', async () => {
         renderLabel({ name: 'node', fullPath: '/tmp/node', warning: true });
 
