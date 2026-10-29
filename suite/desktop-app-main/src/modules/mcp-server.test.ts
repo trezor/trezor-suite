@@ -46,6 +46,7 @@ jest.mock('../libs/process-icon', () => ({
 }));
 
 import { CALL_SOURCE_MCP } from '@suite-common/connect-popup';
+import { findProcessFromIncomingPort } from '@trezor/node-utils';
 
 import { init } from './mcp-server';
 import { addMessage } from '../libs/connect-popup-messages';
@@ -499,6 +500,43 @@ describe('MCP server', () => {
             // The name is a React child in the consent prompt, where an object would throw.
             expect(popupCall.process).toBeUndefined();
             expect(popupCall.manifest.appName).toBe('MCP Agent');
+        });
+
+        // Documents the behaviour today: a lookup that found the process is kept whatever it
+        // reports, so a process without a path is labelled by the name it picked for its own
+        // kernel task, while the manifest shows the name the client declared.
+        it('names the client by its pathless process, not by the name it declared', async () => {
+            // The Linux lookup reports an empty path when it cannot read /proc/<pid>/exe, or when
+            // the process runs from an AppImage mountpoint.
+            (findProcessFromIncomingPort as jest.Mock).mockResolvedValueOnce({
+                name: 'node',
+                pid: '1',
+                fullPath: '',
+                warning: true,
+            });
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const popupCall = await initializeAndCallPopup(server, {
+                clientInfo: { name: 'Claude Code' },
+            });
+
+            expect(popupCall.process).toEqual({ name: 'node', fullPath: '', warning: true });
+            expect(popupCall.manifest.appName).toBe('Claude Code');
+        });
+
+        it('keeps the pathless process name when the client declared none', async () => {
+            (findProcessFromIncomingPort as jest.Mock).mockResolvedValueOnce({
+                name: 'node',
+                pid: '1',
+                fullPath: '',
+            });
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const popupCall = await initializeAndCallPopup(server);
+
+            expect(popupCall.process).toEqual({ name: 'node', fullPath: '', warning: false });
         });
 
         it('allows re-initialization after DELETE', async () => {
