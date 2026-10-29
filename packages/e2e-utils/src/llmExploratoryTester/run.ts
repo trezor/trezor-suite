@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { readJson } from '@trezor/node-utils';
 
 import { error, log } from '../logger';
-import { killHarnessBrowser, killHarnessBrowserOnExitSignals } from './browserState';
+import { registerHarnessBrowserCleanup, stopHarnessBrowser } from './browserState';
 import { BROWSER_DIR, CONTEXT_FILE, REPO_ROOT, TEST_RESULT_FILE, writeJson } from './paths';
 import { runOpencode } from './runOpencode';
 import { type PrContext, PrContextSchema } from './schemas';
@@ -27,7 +27,7 @@ function buildPrContextPrompt(context: PrContext): string {
 
 async function main(): Promise<void> {
     loadDotenv({ path: join(REPO_ROOT, 'packages/e2e-utils/.env'), quiet: true });
-    killHarnessBrowserOnExitSignals();
+    registerHarnessBrowserCleanup();
     try {
         const budgetUsd = Number(
             process.env.LLM_EXPLORATORY_TESTER_BUDGET_USD ?? DEFAULT_BUDGET_USD,
@@ -64,7 +64,7 @@ async function main(): Promise<void> {
             process.exitCode = 1;
         }
     } finally {
-        await killHarnessBrowser();
+        await stopHarnessBrowser();
     }
 }
 
