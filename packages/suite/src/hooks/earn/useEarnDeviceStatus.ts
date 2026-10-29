@@ -1,5 +1,5 @@
 import { useDevice } from '@suite/device';
-import { MODAL_CONTEXT_DEVICE, selectModal } from '@suite/modal';
+import { selectDeviceContextWindowType } from '@suite/modal';
 import { getEarnDeviceStatus } from '@suite-common/analytics';
 import { UI_EVENTS, UI_REQUESTS } from '@trezor/connect';
 
@@ -7,8 +7,7 @@ import { useSelector } from 'src/hooks/suite';
 
 export const useEarnDeviceStatus = () => {
     const { device } = useDevice();
-    const modal = useSelector(selectModal);
-    const windowType = modal.context === MODAL_CONTEXT_DEVICE ? modal.windowType : undefined;
+    const windowType = useSelector(selectDeviceContextWindowType);
 
     return getEarnDeviceStatus(device, {
         isPinRequested:
