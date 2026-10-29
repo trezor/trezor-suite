@@ -1,5 +1,11 @@
+import { isWorkerUrl } from './is-worker-url.js';
+
+// Single source for the specifier sanitizeInternalImports rewrites; non-global so .test() here
+// stays stateless (a /g/ regexp carries lastIndex across calls).
+const internalSrcSpecifier = /@trezor\/([^/]+)\/src/;
+
 const sanitizeInternalImports = (src, moduleType) => {
-    const searchValue = new RegExp('@trezor/([^/]+)/src', 'g');
+    const searchValue = new RegExp(internalSrcSpecifier.source, 'g');
 
     if (moduleType === 'cjs' && searchValue.test(src)) {
         throw new Error(
@@ -85,10 +91,29 @@ const sanitizeInternalImportsPlugin = ({ types }) => {
             // e.g. new URL('@trezor/blockchain-link/src/workers/blockbook', import.meta.url)
             //   → new URL('@trezor/blockchain-link/lib/workers/blockbook', import.meta.url)
             // Published packages ship lib/ only, so a /src specifier cannot resolve for consumers.
+            // The guard keeps every other new URL(...) untouched — except for an internal /src
+            // specifier, which would ship unresolvable, so it fails the build here the same way
+            // a CJS require does above.
             NewExpression(path) {
                 if (!types.isIdentifier(path.node.callee, { name: 'URL' })) return;
                 const [first] = path.node.arguments;
                 if (!types.isStringLiteral(first)) return;
+
+                if (!isWorkerUrl(types, path)) {
+                    if (internalSrcSpecifier.test(first.value)) {
+                        // buildCodeFrameError, not a plain Error: babel prefixes a plain throw with
+                        // the built lib/ filename only, leaving no line to find the offending node in.
+                        throw path.buildCodeFrameError(
+                            `Cannot sanitize new URL('${first.value}'): published packages ship lib/ only, ` +
+                                `and only new Worker(new URL('<specifier>', import.meta.url)) is rewritten. ` +
+                                `Either use that shape, or add the constructor to workerConstructors in ` +
+                                `scripts/publish/is-worker-url.js if this is a bundler module-reference position.`,
+                        );
+                    }
+
+                    return;
+                }
+
                 first.value = sanitizeInternalImports(first.value, 'esm');
             },
             // handle template literals (for dynamic imports with template strings)
