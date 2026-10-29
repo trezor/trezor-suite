@@ -47,7 +47,8 @@ type YarnWhyNode = {
 type DependencyPath = {
     // From the workspace to the vulnerable package, both excluded.
     intermediateLocators: string[];
-    vulnerableDescriptor: string;
+    // Descriptors of all dependents resolved to this version, not only of this path.
+    vulnerableDescriptors: Set<string>;
 };
 
 type AlertGroup = {
@@ -64,6 +65,18 @@ const log = (message: string) => console.error(message);
 
 const getSeverityRank = (severity: Severity) => severities.indexOf(severity);
 
+// GitHub ranges never name prereleases, so `7.0.0-alpha.9` would satisfy none of them by default.
+// It is matched both by semver order (vulnerable if `< 7.0.0`) and as its release (vulnerable if
+// `>= 7.0.0, < 7.0.5`), because the range doesn't tell which prereleases contain the vulnerability.
+const isVersionInRange = (version: string, range: string) =>
+    semver.satisfies(version, range, { includePrerelease: true }) ||
+    semver.satisfies(version.replace(/-.*$/, ''), range);
+
+/**
+ * Fetches open alerts from GitHub, paginated by at most 100 (the API limit).
+ * With more than 100 alerts, the API was seen to occasionally return fewer of them without an error.
+ * That is accepted, missed alerts just stay open in the Dependabot dashboard and are solved ad-hoc.
+ */
 const getOpenAlerts = (minSeverity: Severity): DependabotAlert[] => {
     const selectedSeverities = severities.slice(getSeverityRank(minSeverity)).join(',');
     const output = runCommand('gh', [
@@ -133,13 +146,12 @@ const findDependencyPaths = (packageName: string) => {
 
         if (typeof node.value !== 'string' && getLocatorName(locator) === packageName) {
             const version = getLocatorVersion(locator);
-
-            if (!pathsByVersion.has(version)) {
-                pathsByVersion.set(version, {
-                    intermediateLocators: ancestorLocators.slice(1),
-                    vulnerableDescriptor: node.value.descriptor,
-                });
-            }
+            const dependencyPath = pathsByVersion.get(version) ?? {
+                intermediateLocators: ancestorLocators.slice(1),
+                vulnerableDescriptors: new Set<string>(),
+            };
+            dependencyPath.vulnerableDescriptors.add(node.value.descriptor);
+            pathsByVersion.set(version, dependencyPath);
         }
 
         Object.values(node.children).forEach(child =>
@@ -174,7 +186,7 @@ const groupAlerts = (alerts: DependabotAlert[]) => {
                 const vulnerableRange =
                     alert.security_vulnerability.vulnerable_version_range.replaceAll(',', ' ');
                 const vulnerableVersions = [...pathsByVersion.keys()].filter(version =>
-                    semver.satisfies(version, vulnerableRange),
+                    isVersionInRange(version, vulnerableRange),
                 );
 
                 if (vulnerableVersions.length === 0) {
@@ -199,7 +211,7 @@ const groupAlerts = (alerts: DependabotAlert[]) => {
 };
 
 /**
- * Returns the lowest version fixing all alerts of the group, with warnings if it is outside the requested range or some alerts have no fix.
+ * Returns the lowest version fixing all alerts of the group, with warnings if it is outside a range requested by any dependent or some alerts have no fix.
  */
 const getPatchedVersion = ({ alerts, dependencyPath }: AlertGroup) => {
     const patchedVersions = alerts.map(
@@ -214,16 +226,21 @@ const getPatchedVersion = ({ alerts, dependencyPath }: AlertGroup) => {
     const patchedVersion = knownPatchedVersions.reduce((highest, version) =>
         semver.gt(version, highest) ? version : highest,
     );
-    const requestedRange = dependencyPath.vulnerableDescriptor.split('@npm:')[1];
-    const isOutsideRequestedRange =
-        !!requestedRange &&
-        !!semver.validRange(requestedRange) &&
-        !semver.satisfies(patchedVersion, requestedRange);
+    const unsatisfiedRanges = [...dependencyPath.vulnerableDescriptors]
+        .map(descriptor => descriptor.split('@npm:')[1])
+        .filter(
+            requestedRange =>
+                !!requestedRange &&
+                !!semver.validRange(requestedRange) &&
+                !semver.satisfies(patchedVersion, requestedRange),
+        );
     const isPartiallyPatched = knownPatchedVersions.length < patchedVersions.length;
 
     return [
         patchedVersion,
-        isOutsideRequestedRange ? `⚠️ outside \`${requestedRange}\`` : '',
+        unsatisfiedRanges.length > 0
+            ? `⚠️ outside ${unsatisfiedRanges.map(range => `\`${range}\``).join(', ')}`
+            : '',
         isPartiallyPatched ? '⚠️ some alerts have no fix' : '',
     ]
         .filter(Boolean)
@@ -247,7 +264,15 @@ const getOwnership = (
     return explicitDependency === packageName ? team : `${team} via \`${explicitDependency}\``;
 };
 
-const escapeTableCell = (text: string) => text.replaceAll('|', '\\|');
+const escapeTableCell = (text: string) => text.replaceAll('|', '\\|').replace(/\s+/g, ' ');
+
+// GitHub returns `null` when it cannot classify the scope, which must not look like `development`.
+const getScopeLabel = (scopes: Set<DependabotAlert['dependency']['scope']>) => {
+    if (scopes.has('runtime')) return 'runtime';
+    if (scopes.has(null)) return 'unknown';
+
+    return 'development';
+};
 
 const renderAlertLink = (alert: DependabotAlert) => `[#${alert.number}](${alert.html_url})`;
 
@@ -267,7 +292,7 @@ const renderIssueBody = (
             if (!mainAlert) return [];
 
             const otherAlertsCount = alerts.length - 1;
-            const isRuntime = alerts.some(alert => alert.dependency.scope === 'runtime');
+            const scopes = new Set(alerts.map(alert => alert.dependency.scope));
             const { severity } = mainAlert.security_vulnerability;
 
             return {
@@ -283,7 +308,7 @@ const renderIssueBody = (
                     `\`${group.packageName}\``,
                     group.installedVersion,
                     getPatchedVersion(group),
-                    isRuntime ? 'runtime' : 'development',
+                    getScopeLabel(scopes),
                 ],
             };
         })
@@ -345,10 +370,9 @@ const renderIssueBody = (
 
 const createIssue = (minSeverity: Severity, body: string) => {
     if (body.length > MAX_ISSUE_BODY_LENGTH) {
-        log(
-            `Issue body has ${body.length} characters, more than GitHub allows (${MAX_ISSUE_BODY_LENGTH}). Use a higher severity.`,
+        throw new Error(
+            `GitHub issue cannot be created: its body has ${body.length} characters, more than GitHub allows (${MAX_ISSUE_BODY_LENGTH}). The full markdown was printed to stdout, so it is available locally if redirected to a file. Run with a higher severity to create the issue.`,
         );
-        process.exit(1);
     }
 
     const date = new Date().toISOString().slice(0, 10);
@@ -387,10 +411,10 @@ const createIssue = (minSeverity: Severity, body: string) => {
 
     const body = renderIssueBody(minSeverity, groupAlerts(alerts), getOwnershipByPackage());
 
+    // Always print the raw markdown to stdout first, so it is not lost when creating the issue fails.
+    console.log(body);
+
     if (shouldCreateIssue) {
         createIssue(minSeverity, body);
     }
-
-    // Always print the raw markdow to stdout.
-    console.log(body);
 })();
