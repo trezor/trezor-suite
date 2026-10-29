@@ -5,6 +5,8 @@ import * as Device from 'expo-device';
 
 import { createBip329CompositionRoot } from '@suite-common/bip329';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
+import { createStakingCompositionRoot } from '@suite-common/earn-staking';
+import { createStakingProductsCompositionRoot } from '@suite-common/earn-staking-products';
 import { notImplementedGetter } from '@suite-common/extra-dependencies';
 import { createNetworksCompositionRoot } from '@suite-common/networks';
 import { createNativePlatformEncryption } from '@suite-common/platform-encryption-native';
@@ -88,6 +90,12 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
         dispatch: deps.dispatch,
     });
 
+    const staking = createStakingCompositionRoot({
+        platform: 'mobile',
+        adapters: createStakingProductsCompositionRoot(),
+        dispatch: deps.dispatch,
+    });
+
     const createLogger: ConnectSettings['createLogger'] = (prefix: string) =>
         initLog(prefix, false);
 
@@ -95,6 +103,7 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
 
     return {
         networks,
+        staking,
         suiteSync,
         bip329,
         ensureDelegatedIdentityKey,

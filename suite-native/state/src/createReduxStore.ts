@@ -1,5 +1,6 @@
 import { type Middleware, configureStore } from '@reduxjs/toolkit';
 
+import { type StakingDep, prepareStakingMiddleware } from '@suite-common/earn-staking';
 import { type ExtraDependenciesStatic } from '@suite-common/extra-dependencies';
 import { logsMiddleware } from '@suite-common/logger';
 import { prepareSuiteSyncMiddleware } from '@suite-common/suite-sync';
@@ -61,7 +62,7 @@ export type PreloadedState = DeepPartial<FullPersistedAppState> | undefined;
 
 const ENABLE_REDUX_LOGGER = false;
 
-type GetMiddlewaresDeps = WithServices<NativeAnalyticsDep & SuiteSyncDep>;
+type GetMiddlewaresDeps = WithServices<NativeAnalyticsDep & SuiteSyncDep & StakingDep>;
 
 const getMiddlewares = (getExtra: () => GetMiddlewaresDeps | null) => {
     const middlewares: Middleware[] = [
@@ -70,6 +71,7 @@ const getMiddlewares = (getExtra: () => GetMiddlewaresDeps | null) => {
         prepareBlockchainSubscriptionMiddleware(getExtra),
         prepareFiatRatesMiddleware(getExtra),
         prepareEarnTransactionsMiddleware(getExtra),
+        prepareStakingMiddleware(getExtra),
         prepareDeviceMiddleware(getExtra),
         prepareDiscoveryMiddleware(getExtra),
         sendFormMiddleware,
