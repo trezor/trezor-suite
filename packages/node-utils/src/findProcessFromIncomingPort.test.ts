@@ -196,9 +196,7 @@ describe('findProcessFromIncomingPort for an accepted connection', () => {
         expect(processInfo?.fullPath).toBe('/snap/client/current/usr/bin/client');
     });
 
-    // Documents the behaviour today: an AppImage runs from a mountpoint made up anew on every
-    // launch, and that mountpoint is part of the path.
-    test('identifies an AppImage Linux process by the mountpoint it runs from', async () => {
+    test('reports no path for an AppImage Linux process, which runs from a new mountpoint on every launch', async () => {
         setPlatform('linux');
         mockCommands([
             [
@@ -210,10 +208,13 @@ describe('findProcessFromIncomingPort for an accepted connection', () => {
 
         const processInfo = await findProcessFromIncomingPort(40000, true, connection);
 
+        // The mountpoint identifies nothing, so the caller counts as unidentified instead of as
+        // a different app on every start.
         expect(processInfo).toEqual({
             name: 'client',
             pid: '300',
-            fullPath: '/tmp/.mount_clientAbC123/usr/bin/client',
+            fullPath: '',
+            warning: true,
         });
     });
 

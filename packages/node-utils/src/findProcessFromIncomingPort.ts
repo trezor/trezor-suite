@@ -46,8 +46,11 @@ const IPV4_MAPPED_IPV6 = /^::ffff:(\d{1,3}(?:\.\d{1,3}){3})$/;
 // replaced, as an upgrade of a running app does.
 const DELETED_EXE_SUFFIX = ' (deleted)';
 
-// The revision a snap was last refreshed to, which its exe path carries.
+// Packaging formats that put a component into the exe path which does not identify the app: a
+// snap's path carries the revision it was last refreshed to, and an AppImage runs from a
+// mountpoint made up anew on every launch.
 const SNAP_REVISION_PATH = /^(\/snap\/[^/]+)\/\d+\//;
+const APPIMAGE_MOUNT_PATH = /^\/tmp\/\.mount_[^/]+\//;
 
 // The path the executable was installed at. The suffix is only the kernel's marker when nothing
 // exists at the printed path: a file literally named "... (deleted)" is its own executable and
@@ -160,6 +163,12 @@ export async function findProcessFromIncomingPort(
                     // The path is the identity of the app, so a replaced binary keeps the one it
                     // was installed at.
                     const fullPath = await resolveExePath(exe);
+                    if (APPIMAGE_MOUNT_PATH.test(fullPath)) {
+                        // The mountpoint an AppImage runs from is new on every launch and does
+                        // not name the .AppImage it was started from, so it identifies nothing;
+                        // reported as it is, such a caller would be a different app every time.
+                        return { name: sanitizedName, pid, fullPath: '', warning: true };
+                    }
 
                     // A snap's revision changes with every refresh, while `current` is the
                     // symlink snapd keeps pointing at the active one, so permissions remembered
