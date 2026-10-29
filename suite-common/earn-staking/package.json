@@ -27,6 +27,7 @@
     },
     "devDependencies": {
         "@suite-common/suite-types": "workspace:*",
+        "@suite-common/test-utils": "workspace:*",
         "@trezor/requirements": "workspace:*"
     }
 }
