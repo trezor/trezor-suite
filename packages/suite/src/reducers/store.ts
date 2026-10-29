@@ -14,6 +14,7 @@ import { type BackupState, backupMiddleware, backupReducer } from '@suite/backup
 import { type DesktopBluetoothState, prepareDesktopBluetoothReducer } from '@suite/bluetooth';
 import { type RecoveryState, recoveryReducer } from '@suite/recovery';
 import { type DesktopSuiteSyncState, prepareSuiteSyncReducer } from '@suite/suite-sync';
+import { type StakingState, stakingReducer } from '@suite-common/earn-staking';
 import { type FirmwareUpdateState, prepareFirmwareReducer } from '@suite-common/firmware';
 import { type GeolocationState, geolocationReducer } from '@suite-common/geolocation';
 import { addLog } from '@suite-common/logger';
@@ -64,6 +65,7 @@ export type AppState = SuiteReducersState & {
     onboarding: OnboardingState;
     receive: ReceiveState;
     wallet: WalletState;
+    staking: StakingState;
     recovery: RecoveryState;
     firmware: FirmwareUpdateState;
     backup: BackupState;
@@ -88,6 +90,7 @@ export const rootReducer: SuiteRootReducer = combineReducers({
     onboarding: onboardingReducers,
     receive: receiveReducer,
     wallet: walletReducers,
+    staking: stakingReducer,
     recovery: recoveryReducer,
     firmware: firmwareReducer,
     backup: backupReducer,

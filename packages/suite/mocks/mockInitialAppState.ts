@@ -10,6 +10,7 @@ import { type RouterState } from '@suite/router';
 import { suiteSettingsInitialState } from '@suite/settings';
 import { initialSuiteSyncDesktopState } from '@suite/suite-sync';
 import { TorStatus } from '@suite/tor';
+import { stakingInitialState } from '@suite-common/earn-staking';
 import { type FirmwareUpdateState } from '@suite-common/firmware';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { type MetadataState } from '@suite-common/metadata-types';
@@ -76,6 +77,7 @@ export const mockInitialAppState: AppState = {
     receive: receiveInitialState,
     persistentDeviceData: persistentDeviceDataInitialState,
     wallet: walletReducers(undefined, { type: '@@INIT' }),
+    staking: stakingInitialState,
     desktopUpdate: desktopUpdateInitialState,
     router: {
         loaded: true,
