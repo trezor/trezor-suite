@@ -39,7 +39,10 @@ import TrezorConnect, {
 } from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { LOVELACE_UNIT } from '@trezor/network-cardano/constants';
-import { SOLANA_SLOT_TIME_MS } from '@trezor/network-solana/constants';
+import {
+    SOLANA_BLOCKHASH_VALIDITY_BLOCKS,
+    SOLANA_SLOT_TIME_MS,
+} from '@trezor/network-solana/constants';
 import { createSingleInstanceThunk, createThunk } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
@@ -832,6 +835,7 @@ type AddFakePendingSolanaTxThunkParams = {
     tokens?: WalletAccountTransaction['tokens'];
     internalTransfers?: WalletAccountTransaction['internalTransfers'];
     stakeOperation?: SolanaStakeOperation;
+    lastValidBlockHeight?: number;
 };
 
 export type AddFakePendingSolanaTxThunkState = BlockchainRootState;
@@ -843,12 +847,29 @@ export const addFakePendingSolanaTxThunk = createThunk<
 >(
     `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
     (
-        { txid, account, amount, fee, type, target, tokens, internalTransfers, stakeOperation },
+        {
+            txid,
+            account,
+            amount,
+            fee,
+            type,
+            target,
+            tokens,
+            internalTransfers,
+            stakeOperation,
+            lastValidBlockHeight,
+        },
         { dispatch, getState },
     ) => {
         if (account.networkType !== 'solana') return;
 
         const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol) ?? 0;
+        // The stored Solana height is the last valid height of the latest blockhash, which runs
+        // SOLANA_BLOCKHASH_VALIDITY_BLOCKS ahead of the height at which this tx's blockhash expires.
+        const deadline =
+            lastValidBlockHeight === undefined
+                ? blockHeight + Math.ceil(SOLANA_FAKE_TX_TTL_SECONDS / SOLANA_BLOCK_TIME_SECONDS)
+                : lastValidBlockHeight + SOLANA_BLOCKHASH_VALIDITY_BLOCKS;
 
         const fakeTx = {
             type,
@@ -883,8 +904,7 @@ export const addFakePendingSolanaTxThunk = createThunk<
                 totalInput: '0',
                 totalOutput: target?.amount ?? '0',
             },
-            deadline:
-                blockHeight + Math.ceil(SOLANA_FAKE_TX_TTL_SECONDS / SOLANA_BLOCK_TIME_SECONDS),
+            deadline,
         };
         dispatch(transactionsActions.addTransaction({ transactions: [fakeTx], account }));
     },
@@ -988,6 +1008,7 @@ export const addFakePendingSolanaStakeTxThunk = createThunk<
                           ]
                         : undefined,
                 stakeOperation: { type: stakeType, amount: operatedAmount },
+                lastValidBlockHeight: solanaTxMeta?.lastValidBlockHeight,
             }),
         );
     },

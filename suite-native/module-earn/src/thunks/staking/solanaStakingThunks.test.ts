@@ -46,6 +46,7 @@ const solanaTxMetaMock = {
     rentLamports: '2282880',
     feeIncludingRentLamports: '2287880',
     hasSplitInstruction: false,
+    lastValidBlockHeight: 1000,
 };
 
 const prepareStakeSolTxMock = jest.fn();

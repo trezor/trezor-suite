@@ -152,6 +152,7 @@ export type SolanaTxMeta = {
     feeLamports: string;
     rentLamports: string;
     feeIncludingRentLamports: string;
+    lastValidBlockHeight?: number;
 };
 
 type PrecomposedTransactionNonFinal = PrecomposedTransactionConnectResponseNonFinal & {

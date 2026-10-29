@@ -13,7 +13,10 @@ import {
     networkSpecificDefaultSolana,
 } from '@suite-common/wallet-types/mocks';
 import { isPending } from '@suite-common/wallet-utils';
-import { SOLANA_SLOT_TIME_MS } from '@trezor/network-solana/constants';
+import {
+    SOLANA_BLOCKHASH_VALIDITY_BLOCKS,
+    SOLANA_SLOT_TIME_MS,
+} from '@trezor/network-solana/constants';
 import { createMockDispatch } from '@trezor/redux-utils/mocks';
 
 import { transactionsActions } from './transactionsActions';
@@ -488,6 +491,18 @@ describe('Solana fake pending transactions', () => {
                 }),
             );
             expect(transaction && isPending(transaction)).toBe(true);
+        });
+
+        it('expires with the blockhash of the stake when the metadata carries its last valid height', async () => {
+            const transaction = await dispatchStakeTransaction('stake', {
+                deviceAmountLamports: '1000',
+                feeLamports: SOL_FEE,
+                rentLamports: '0',
+                feeIncludingRentLamports: SOL_FEE,
+                lastValidBlockHeight: 1000,
+            });
+
+            expect(transaction?.deadline).toBe(1000 + SOLANA_BLOCKHASH_VALIDITY_BLOCKS);
         });
 
         it('stores a stake with the staked amount and the fee as the balance change', async () => {
