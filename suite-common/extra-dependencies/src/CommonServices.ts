@@ -1,6 +1,7 @@
 import type { AnalyticsDep } from '@suite-common/analytics';
 import { type Bip329Dep } from '@suite-common/bip329-types';
 import { type EnsureDelegatedIdentityKeyDep } from '@suite-common/delegated-identity-key-types';
+import type { StakingDep } from '@suite-common/earn-staking';
 import { type GetLanguageDep } from '@suite-common/locale';
 import type { NetworksDep } from '@suite-common/networks';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
@@ -32,6 +33,7 @@ import type { CreateLoggerDep } from '@trezor/logger';
 
 export type CommonServices = SuiteSyncDep &
     NetworksDep &
+    StakingDep &
     Bip329Dep &
     EnsureDelegatedIdentityKeyDep &
     PlatformEncryptionDep &

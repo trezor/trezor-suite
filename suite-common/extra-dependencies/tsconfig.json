@@ -7,6 +7,7 @@
         {
             "path": "../delegated-identity-key-types"
         },
+        { "path": "../earn-staking" },
         { "path": "../locale" },
         { "path": "../metadata-types" },
         { "path": "../networks" },
