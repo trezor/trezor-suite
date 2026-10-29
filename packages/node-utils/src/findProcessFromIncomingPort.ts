@@ -55,8 +55,25 @@ const IPV4_MAPPED_IPV6 = /^::ffff:(\d{1,3}(?:\.\d{1,3}){3})$/;
 // replaced, as an upgrade of a running app does.
 const DELETED_EXE_SUFFIX = ' (deleted)';
 
-// The revision a snap was last refreshed to, which its exe path carries.
-const SNAP_REVISION_PATH = /^(\/snap\/[^/]+)\/\d+\//;
+// Packaging formats that put a component into the exe path which does not identify the app: a
+// snap's path carries the revision it was last refreshed to, a number from the store and `x1`,
+// `x2`, ... for a sideloaded snap, and an AppImage runs from a mountpoint made up anew on every
+// launch. The mountpoint is matched on its `.mount_<name>XXXXXX` component rather than on a
+// /tmp prefix, because the AppImage runtime mounts under `$TMPDIR` and falls back to /tmp only
+// when it is unset: a sandboxed or systemd-started client would otherwise have its per-launch
+// path pass as an identity.
+//
+// A strictly confined snap is rendered as its own mount namespace sees it, under /snap on every
+// distro. A classic snap runs in the host's namespace, where distros without a real /snap
+// directory (Fedora, Arch) mount snaps under /var/lib/snapd/snap: the /snap symlink that classic
+// snaps require there is resolved, so the kernel renders the snapd mount dir.
+const SNAP_REVISION_PATH = /^((?:\/var\/lib\/snapd)?\/snap\/[^/]+)\/x?\d+\//;
+const APPIMAGE_MOUNT_PATH = /(^|\/)\.mount_[^/]+\//;
+
+// Where a flatpak runs from: /app is where its own files are mounted inside the sandbox, with
+// its runtime at /usr, so the whole path is local to that namespace instead of naming a
+// component of it.
+const FLATPAK_APP_PREFIX = '/app/';
 
 // A literal "... (deleted)" must refer to the running executable itself. A different file can
 // exist at that path while the kernel is marking an unlinked executable.
@@ -192,6 +209,22 @@ export async function findProcessFromIncomingPort(
                     // was installed at.
                     const fullPath = await resolveExePath(exe, processExePath);
                     if (fullPath === undefined) {
+                        return { name: sanitizedName, pid, fullPath: '', warning: true };
+                    }
+
+                    if (APPIMAGE_MOUNT_PATH.test(fullPath)) {
+                        // An AppImage runs from a mountpoint made anew on every launch. Its name
+                        // does carry the basename of the .AppImage, but truncated and with six
+                        // random characters appended, so it is neither a path nor reliably the
+                        // name of the app; reported as it is, such a caller would be a different
+                        // app every time.
+                        return { name: sanitizedName, pid, fullPath: '', warning: true };
+                    }
+
+                    if (fullPath.startsWith(FLATPAK_APP_PREFIX)) {
+                        // Such a path resolves to nothing on the host and carries no application
+                        // id, so it is neither something the user could act on nor an identity:
+                        // two flatpaks whose entry binaries share a name would be one app.
                         return { name: sanitizedName, pid, fullPath: '', warning: true };
                     }
 
