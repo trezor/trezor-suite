@@ -134,3 +134,81 @@ test.describe('Send ETH on a mainnet fork', { tag: ['@T3W1', '@T3T1'] }, () => {
         },
     );
 });
+
+test.describe(
+    'Send ETH on a mainnet fork, history from Blockbook',
+    { tag: ['@T3W1', '@T3T1'] },
+    () => {
+        test.use({ deviceSetup: { mnemonic } });
+
+        test.beforeEach(
+            async ({ page, anvil, anvilBlockbook, onboardingPage, settingsPage, walletPage }) => {
+                await anvil.setBalance(senderAddress, parseEther(fundedAmount));
+                await page.clock.install();
+                await onboardingPage.completeOnboarding();
+                await settingsPage.changeNetworks({
+                    enableNetworks: [anvilBlockbook.networkToEnable],
+                });
+                await walletPage.openAccount({ symbol: ethSymbol });
+            },
+        );
+
+        test(
+            'User sees the sent transaction in history after coming back to the account',
+            { annotation: createTestAnnotation({ stream: TestStream.Wallet }) },
+            async ({
+                page,
+                anvilBlockbook,
+                dashboardPage,
+                devicePrompt,
+                toastSection,
+                tradingPage,
+                walletPage,
+            }) => {
+                await test.step('Send ETH', async () => {
+                    await walletPage.openSendFormButton.click();
+                    await tradingPage.sendAddressInput.fill(recipientAddress);
+                    await tradingPage.sendAmountInput.fill(sendAmount);
+                    await tradingPage.sendButton.click();
+                    await devicePrompt.waitForPromptAndClick();
+                    await devicePrompt.waitForPromptAndConfirm();
+                    await page.expectReduxObjectToEqual(
+                        'wallet.send.serializedTx.symbol',
+                        ethSymbol,
+                    );
+                    await devicePrompt.sendButton.click();
+                    await toastSection.verifyTxSentToast({
+                        account: accountLabel,
+                        amount: formattedSendAmount,
+                    });
+                });
+
+                await test.step('Blockbook indexes the transfer', async () => {
+                    await expect
+                        .poll(
+                            async () => (await anvilBlockbook.getAddress(senderAddress)).txs,
+                            'Blockbook should index the sent transaction',
+                        )
+                        .toBe(1);
+                });
+
+                await test.step('Leave the account and come back', async () => {
+                    await dashboardPage.navigateTo();
+                    await walletPage.openAccount({ symbol: ethSymbol });
+                });
+
+                await test.step('History shows the confirmed transaction', async () => {
+                    // Suite's own copy of a sent transaction is pending; only Blockbook's carries a
+                    // block, so a single confirmed row is the one Blockbook served.
+                    await expect(async () => {
+                        await page.clock.fastForward('00:30');
+                        await expect(walletPage.pendingTransactionHeading).toBeHidden();
+                        await expect(walletPage.transactionItem).toHaveCount(1);
+                    }, 'Suite should show the transaction confirmed').toPass({ timeout: 60_000 });
+                    const shownRecipient = await walletPage.transactionAddress.first().innerText();
+                    expect(shownRecipient.replace(/\s/g, '')).toContain(recipientAddress.slice(-4));
+                });
+            },
+        );
+    },
+);
