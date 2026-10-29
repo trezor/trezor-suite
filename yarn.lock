@@ -11563,7 +11563,10 @@ __metadata:
   resolution: "@suite-common/earn-staking@workspace:suite-common/earn-staking"
   dependencies:
     "@reduxjs/toolkit": "npm:2.13.0"
+    "@suite-common/device": "workspace:*"
     "@suite-common/earn-staking-common": "workspace:*"
+    "@suite-common/message-system": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
