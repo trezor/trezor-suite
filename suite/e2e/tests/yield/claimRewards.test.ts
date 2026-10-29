@@ -1,3 +1,4 @@
+import { events } from '@suite-common/analytics';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
@@ -39,32 +40,36 @@ test.describe('stablecoin yield claim', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
         },
     });
 
-    test.beforeEach(async ({ onboardingPage, settingsPage, blockbookMock, yieldMock }) => {
-        await onboardingPage.completeOnboarding();
-        await blockbookMock.start('eth');
-        blockbookMock.setBroadcastTxid(CLAIM_TXID);
-        blockbookMock.updateAccountState({
-            txs: 3,
-            nonce: '2',
-            transactions: [ETH_STAKE_CONFIRMED_TX, ETH_BASE_TX],
-            tokens: buildEthAccountTokens({ withClaimedMorpho: false }),
-        });
-        await yieldMock.start();
-        await yieldMock.mockMerklRewards(YIELD_MERKL_SMALL_CLAIM_REWARD);
-        await settingsPage.changeNetworks({
-            enableNetworks: [
-                {
-                    symbol: asNetworkSymbol('eth'),
-                    backend: { type: 'blockbook', url: blockbookMock.url },
-                },
-            ],
-        });
-    });
+    test.beforeEach(
+        async ({ analytics, onboardingPage, settingsPage, blockbookMock, yieldMock }) => {
+            await analytics.interceptAnalytics();
+            await onboardingPage.completeOnboarding();
+            await blockbookMock.start('eth');
+            blockbookMock.setBroadcastTxid(CLAIM_TXID);
+            blockbookMock.updateAccountState({
+                txs: 3,
+                nonce: '2',
+                transactions: [ETH_STAKE_CONFIRMED_TX, ETH_BASE_TX],
+                tokens: buildEthAccountTokens({ withClaimedMorpho: false }),
+            });
+            await yieldMock.start();
+            await yieldMock.mockMerklRewards(YIELD_MERKL_SMALL_CLAIM_REWARD);
+            await settingsPage.changeNetworks({
+                enableNetworks: [
+                    {
+                        symbol: asNetworkSymbol('eth'),
+                        backend: { type: 'blockbook', url: blockbookMock.url },
+                    },
+                ],
+            });
+        },
+    );
 
     test(
         'User can claim yield rewards',
         { annotation: createTestAnnotation({ stream: TestStream.Earn }) },
         async ({
+            analytics,
             page,
             walletPage,
             yieldSection,
@@ -221,6 +226,48 @@ test.describe('stablecoin yield claim', { tag: ['@webOnly', '@T3W1', '@T3T1'] },
                 await expect(yieldSection.yieldTitle).toHaveTranslation('TR_EARN_DEFI_YIELD_TITLE');
                 await expect(yieldSection.claimRewardsAmount).toHaveText('$0.00');
                 await expect(yieldSection.claimRewardsButton).toBeDisabled();
+            });
+
+            await test.step('Yield analytics events were reported', async () => {
+                const claimContext = { action: 'continue', networkSymbol: 'eth' };
+                const claimFunnel = [
+                    {
+                        action: 'continue',
+                        from: 'earn-dashboard',
+                        to: 'claim-select-account-modal',
+                    },
+                    { action: 'continue', from: 'claim-select-account-modal', to: 'claim-form' },
+                ];
+
+                // The claim form is opened twice: first left without claiming because of the
+                // fee warning (reported as a cancel), then completed.
+                expect(
+                    analytics
+                        .findAnalyticsEventsByType(events.yieldNavigateEvent.name)
+                        .map(({ action, from, to }) => ({ action, from, to })),
+                ).toEqual([
+                    ...claimFunnel,
+                    { action: 'cancel', from: 'claim-form', to: 'earn-dashboard' },
+                    ...claimFunnel,
+                    { action: 'continue', from: 'claim-form', to: 'earn-dashboard' },
+                ]);
+
+                // The on-chain resolution is reported asynchronously once the block arrives.
+                await expect
+                    .poll(() =>
+                        analytics
+                            .findAnalyticsEventsByType(events.yieldClaimEvent.name)
+                            .map(({ type }) => type),
+                    )
+                    .toEqual(['claim', 'tx-simulation-modal', 'success']);
+
+                expect(
+                    analytics.findAnalyticsEventsByType(events.yieldClaimEvent.name),
+                ).toMatchObject([
+                    { ...claimContext, deviceStatus: 'connected', rewardCount: '1' },
+                    { ...claimContext, rewardCount: '1' },
+                    { ...claimContext, durationMs: expect.stringMatching(/^\d+$/) },
+                ]);
             });
         },
     );

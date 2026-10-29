@@ -1,3 +1,4 @@
+import { events } from '@suite-common/analytics';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
@@ -29,24 +30,29 @@ test.describe('stablecoin yield', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
         },
     });
 
-    test.beforeEach(async ({ onboardingPage, settingsPage, blockbookMock, yieldMock }) => {
-        await onboardingPage.completeOnboarding();
-        await blockbookMock.start('eth');
-        await yieldMock.start();
-        await settingsPage.changeNetworks({
-            enableNetworks: [
-                {
-                    symbol: asNetworkSymbol('eth'),
-                    backend: { type: 'blockbook', url: blockbookMock.url },
-                },
-            ],
-        });
-    });
+    test.beforeEach(
+        async ({ analytics, onboardingPage, settingsPage, blockbookMock, yieldMock }) => {
+            await analytics.interceptAnalytics();
+            await onboardingPage.completeOnboarding();
+            await blockbookMock.start('eth');
+            await yieldMock.start();
+            await settingsPage.changeNetworks({
+                enableNetworks: [
+                    {
+                        symbol: asNetworkSymbol('eth'),
+                        backend: { type: 'blockbook', url: blockbookMock.url },
+                    },
+                ],
+            });
+        },
+    );
 
     test(
         'User can deposit USDC into a yield vault',
         { annotation: createTestAnnotation({ stream: TestStream.Earn }) },
         async ({
+            analytics,
+            analyticsHelper,
             page,
             walletPage,
             yieldSection,
@@ -89,6 +95,12 @@ test.describe('stablecoin yield', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
             });
 
             await test.step('Check APY breakdown tooltip', async () => {
+                // The tooltip reports only after the pointer dwells on it, so keep hovering
+                // until the event is sent.
+                const apyTooltipEvent = analyticsHelper.waitForEvent({
+                    c_type: events.yieldInteractionEvent.name,
+                    element: 'apy-tooltip',
+                });
                 await yieldSection.hoverApyPercentage(usdcPrime.id);
 
                 const { symbols, rates } = usdcPrime.apyBreakdown;
@@ -101,6 +113,7 @@ test.describe('stablecoin yield', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
                 await expect(yieldSection.apyBreakdownFooter).toHaveTranslation(
                     'TR_EARN_YIELD_APY_APR_TOOLTIP_FOOTER',
                 );
+                await apyTooltipEvent;
             });
 
             await yieldSection.clickDepositNow(usdcPrime.id);
@@ -112,11 +125,18 @@ test.describe('stablecoin yield', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
                 await expect(earnNutshellModal.withdrawProcess).toBeVisible();
                 await expect(earnNutshellModal.claimProcess).toBeVisible();
 
+                // The process tab reports once its expand animation finishes, so let it
+                // finish before leaving the modal.
+                const processTabEvent = analyticsHelper.waitForEvent({
+                    c_type: events.yieldInteractionEvent.name,
+                    element: 'in-a-nutshell-process-tab',
+                });
                 await earnNutshellModal.depositProcess.click();
                 await expect(earnNutshellModal.depositApyValue).toHaveTranslation(
                     'TR_EARN_APY_APPROX',
                     { values: { apyPercent: usdcPrime.apyBreakdown.apyPercent } },
                 );
+                await processTabEvent;
                 await earnNutshellModal.continueButton.click();
             });
 
@@ -307,6 +327,74 @@ test.describe('stablecoin yield', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () =>
                 await expect(yieldSection.withdrawButton(usdcPrime.id)).toBeVisible();
                 await expect(yieldSection.depositMoreButton(usdcPrime.id)).toBeVisible();
                 await expect(yieldSection.depositNowButton(usdcPrime.id)).toBeHidden();
+            });
+
+            await test.step('Yield analytics events were reported', async () => {
+                const vaultContext = { networkSymbol: 'eth', vaultId: usdcPrime.id };
+
+                expect(
+                    analytics
+                        .findAnalyticsEventsByType(events.yieldNavigateEvent.name)
+                        .map(({ action, from, to }) => ({ action, from, to })),
+                ).toEqual([
+                    {
+                        action: 'continue',
+                        from: 'earn-dashboard',
+                        to: 'deposit-in-a-nutshell-modal',
+                    },
+                    {
+                        action: 'continue',
+                        from: 'deposit-in-a-nutshell-modal',
+                        to: 'deposit-legal-modal',
+                    },
+                    { action: 'continue', from: 'deposit-legal-modal', to: 'deposit-form' },
+                    { action: 'continue', from: 'deposit-form', to: 'earn-dashboard' },
+                ]);
+
+                expect(
+                    analytics
+                        .findAnalyticsEventsByType(events.yieldInteractionEvent.name)
+                        .map(({ element, value }) => ({ element, value })),
+                ).toEqual([
+                    { element: 'apy-tooltip', value: undefined },
+                    { element: 'in-a-nutshell-process-tab', value: 'deposit' },
+                ]);
+
+                // The on-chain resolution is reported asynchronously once the block arrives.
+                await expect
+                    .poll(() =>
+                        analytics
+                            .findAnalyticsEventsByType(events.yieldDepositEvent.name)
+                            .map(({ type }) => type),
+                    )
+                    .toEqual([
+                        'approve',
+                        'approve-modal',
+                        'approve-success',
+                        'deposit',
+                        'tx-simulation-modal',
+                        'success',
+                    ]);
+
+                const depositContext = { action: 'continue', ...vaultContext };
+                const durationMs = expect.stringMatching(/^\d+$/);
+                const apyBreakdown = usdcPrime.apyBreakdown.analyticsAttribute;
+
+                expect(
+                    analytics.findAnalyticsEventsByType(events.yieldDepositEvent.name),
+                ).toMatchObject([
+                    { ...depositContext, deviceStatus: 'connected' },
+                    depositContext,
+                    { ...depositContext, durationMs },
+                    {
+                        ...depositContext,
+                        deviceStatus: 'connected',
+                        wrappedNative: 'false',
+                        apyBreakdown,
+                    },
+                    depositContext,
+                    { ...depositContext, wrappedNative: 'false', apyBreakdown, durationMs },
+                ]);
             });
         },
     );

@@ -1,3 +1,4 @@
+import { events } from '@suite-common/analytics';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
@@ -42,34 +43,38 @@ test.describe('stablecoin yield withdrawal', { tag: ['@webOnly', '@T3W1', '@T3T1
         },
     });
 
-    test.beforeEach(async ({ onboardingPage, settingsPage, blockbookMock, yieldMock }) => {
-        await onboardingPage.completeOnboarding();
-        await blockbookMock.start('eth');
-        blockbookMock.setBroadcastTxid(WITHDRAW_TXID);
-        blockbookMock.updateAccountState({
-            txs: 3,
-            nonce: '2',
-            transactions: [ETH_STAKE_CONFIRMED_TX, ETH_BASE_TX],
-            tokens: buildEthAccountTokens({
-                usdcBalance: '990000000',
-                shareBalance: YIELD_USDC_VAULT_SHARE_TOKEN.balance,
-            }),
-        });
-        await yieldMock.start();
-        await settingsPage.changeNetworks({
-            enableNetworks: [
-                {
-                    symbol: asNetworkSymbol('eth'),
-                    backend: { type: 'blockbook', url: blockbookMock.url },
-                },
-            ],
-        });
-    });
+    test.beforeEach(
+        async ({ analytics, onboardingPage, settingsPage, blockbookMock, yieldMock }) => {
+            await analytics.interceptAnalytics();
+            await onboardingPage.completeOnboarding();
+            await blockbookMock.start('eth');
+            blockbookMock.setBroadcastTxid(WITHDRAW_TXID);
+            blockbookMock.updateAccountState({
+                txs: 3,
+                nonce: '2',
+                transactions: [ETH_STAKE_CONFIRMED_TX, ETH_BASE_TX],
+                tokens: buildEthAccountTokens({
+                    usdcBalance: '990000000',
+                    shareBalance: YIELD_USDC_VAULT_SHARE_TOKEN.balance,
+                }),
+            });
+            await yieldMock.start();
+            await settingsPage.changeNetworks({
+                enableNetworks: [
+                    {
+                        symbol: asNetworkSymbol('eth'),
+                        backend: { type: 'blockbook', url: blockbookMock.url },
+                    },
+                ],
+            });
+        },
+    );
 
     test(
         'User can withdraw USDC from a yield vault',
         { annotation: createTestAnnotation({ stream: TestStream.Earn }) },
         async ({
+            analytics,
             yieldSection,
             yieldFlowSection,
             txSimulationModal,
@@ -220,6 +225,53 @@ test.describe('stablecoin yield withdrawal', { tag: ['@webOnly', '@T3W1', '@T3T1
                 );
                 await expect(yieldSection.yearlyRewardAmount(usdcPrime.id)).toHaveText('0.21 USDC');
                 await expect(yieldSection.withdrawButton(usdcPrime.id)).toBeVisible();
+            });
+
+            await test.step('Yield analytics events were reported', async () => {
+                const withdrawContext = {
+                    action: 'continue',
+                    operation: 'withdraw',
+                    networkSymbol: 'eth',
+                    vaultId: usdcPrime.id,
+                };
+
+                expect(
+                    analytics
+                        .findAnalyticsEventsByType(events.yieldNavigateEvent.name)
+                        .map(({ action, from, to }) => ({ action, from, to })),
+                ).toEqual([
+                    { action: 'continue', from: 'earn-dashboard', to: 'withdraw-form' },
+                    { action: 'continue', from: 'withdraw-form', to: 'earn-dashboard' },
+                ]);
+
+                // The on-chain resolution is reported asynchronously once the block arrives.
+                await expect
+                    .poll(() =>
+                        analytics
+                            .findAnalyticsEventsByType(events.yieldWithdrawEvent.name)
+                            .map(({ type }) => type),
+                    )
+                    .toEqual(['withdraw', 'tx-simulation-modal', 'success']);
+
+                const apyBreakdown = usdcPrime.apyBreakdown.analyticsAttribute;
+
+                expect(
+                    analytics.findAnalyticsEventsByType(events.yieldWithdrawEvent.name),
+                ).toMatchObject([
+                    {
+                        ...withdrawContext,
+                        deviceStatus: 'connected',
+                        wrappedNative: 'false',
+                        apyBreakdown,
+                    },
+                    withdrawContext,
+                    {
+                        ...withdrawContext,
+                        wrappedNative: 'false',
+                        apyBreakdown,
+                        durationMs: expect.stringMatching(/^\d+$/),
+                    },
+                ]);
             });
         },
     );

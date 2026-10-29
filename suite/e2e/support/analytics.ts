@@ -156,6 +156,14 @@ export class AnalyticsFixture {
         return [...this.requests].reverse().find(req => req.c_type === eventType);
     }
 
+    /**
+     * Returns every intercepted request of the given event type in the order the app sent them.
+     * Pair it with `expect.poll` when the last event is reported asynchronously.
+     */
+    findAnalyticsEventsByType(eventType: string) {
+        return this.requests.filter(req => req.c_type === eventType);
+    }
+
     @step()
     async interceptAnalytics() {
         await this.page.route('**://data.trezor.io/suite/log/**', route => {

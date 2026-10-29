@@ -1,3 +1,4 @@
+import { events } from '@suite-common/analytics';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { TestStream } from '@trezor/e2e-utils';
 
@@ -45,34 +46,38 @@ test.describe('stablecoin yield redeem', { tag: ['@webOnly', '@T3W1', '@T3T1'] }
         },
     });
 
-    test.beforeEach(async ({ onboardingPage, settingsPage, blockbookMock, yieldMock }) => {
-        await onboardingPage.completeOnboarding();
-        await blockbookMock.start('eth');
-        blockbookMock.setBroadcastTxid(REDEEM_TXID);
-        blockbookMock.updateAccountState({
-            txs: 3,
-            nonce: '2',
-            transactions: [ETH_STAKE_CONFIRMED_TX, ETH_BASE_TX],
-            tokens: buildEthAccountTokens({
-                usdcBalance: '990000000',
-                shareBalance: YIELD_USDC_VAULT_SHARE_TOKEN.balance,
-            }),
-        });
-        await yieldMock.start();
-        await settingsPage.changeNetworks({
-            enableNetworks: [
-                {
-                    symbol: asNetworkSymbol('eth'),
-                    backend: { type: 'blockbook', url: blockbookMock.url },
-                },
-            ],
-        });
-    });
+    test.beforeEach(
+        async ({ analytics, onboardingPage, settingsPage, blockbookMock, yieldMock }) => {
+            await analytics.interceptAnalytics();
+            await onboardingPage.completeOnboarding();
+            await blockbookMock.start('eth');
+            blockbookMock.setBroadcastTxid(REDEEM_TXID);
+            blockbookMock.updateAccountState({
+                txs: 3,
+                nonce: '2',
+                transactions: [ETH_STAKE_CONFIRMED_TX, ETH_BASE_TX],
+                tokens: buildEthAccountTokens({
+                    usdcBalance: '990000000',
+                    shareBalance: YIELD_USDC_VAULT_SHARE_TOKEN.balance,
+                }),
+            });
+            await yieldMock.start();
+            await settingsPage.changeNetworks({
+                enableNetworks: [
+                    {
+                        symbol: asNetworkSymbol('eth'),
+                        backend: { type: 'blockbook', url: blockbookMock.url },
+                    },
+                ],
+            });
+        },
+    );
 
     test(
         'User can redeem yield vault shares using the max button',
         { annotation: createTestAnnotation({ stream: TestStream.Earn }) },
         async ({
+            analytics,
             yieldSection,
             yieldFlowSection,
             txSimulationModal,
@@ -192,6 +197,42 @@ test.describe('stablecoin yield redeem', { tag: ['@webOnly', '@T3W1', '@T3T1'] }
                     },
                 );
                 await expect(yieldSection.withdrawButton(usdcPrime.id)).toBeVisible();
+            });
+
+            await test.step('Yield analytics events were reported', async () => {
+                const redeemContext = {
+                    action: 'continue',
+                    operation: 'redeem',
+                    networkSymbol: 'eth',
+                    vaultId: usdcPrime.id,
+                };
+
+                expect(
+                    analytics
+                        .findAnalyticsEventsByType(events.yieldInteractionEvent.name)
+                        .map(({ element }) => element),
+                ).toEqual(['withdraw-max']);
+
+                // The on-chain resolution is reported asynchronously once the block arrives.
+                await expect
+                    .poll(() =>
+                        analytics
+                            .findAnalyticsEventsByType(events.yieldWithdrawEvent.name)
+                            .map(({ type }) => type),
+                    )
+                    .toEqual(['withdraw', 'tx-simulation-modal', 'success']);
+
+                expect(
+                    analytics.findAnalyticsEventsByType(events.yieldWithdrawEvent.name),
+                ).toMatchObject([
+                    { ...redeemContext, deviceStatus: 'connected', wrappedNative: 'false' },
+                    redeemContext,
+                    {
+                        ...redeemContext,
+                        wrappedNative: 'false',
+                        durationMs: expect.stringMatching(/^\d+$/),
+                    },
+                ]);
             });
         },
     );
