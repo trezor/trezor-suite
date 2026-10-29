@@ -43,7 +43,7 @@ const HISTORY_PAD_BATCH = 1_000;
 // Gas reserve given to an impersonated account whose balance cannot cover a transaction.
 const GAS_TOP_UP = 10n ** 18n;
 
-const getFreePort = () =>
+export const getFreePort = () =>
     new Promise<number>((resolve, reject) => {
         const server = createServer();
         server.unref();
@@ -120,6 +120,15 @@ export class AnvilFork {
         }
 
         return `http://127.0.0.1:${this.port}`;
+    }
+
+    /** Anvil serves WebSocket JSON-RPC on the same port, e.g. for a Blockbook following the fork. */
+    get wsUrl() {
+        return this.url.replace('http', 'ws');
+    }
+
+    get symbol() {
+        return this.config.symbol;
     }
 
     /** Pass to `settingsPage.changeNetworks` to connect Suite to this fork. */
@@ -228,6 +237,11 @@ export class AnvilFork {
 
     getBalance(address: Address) {
         return this.rpc.getBalance({ address });
+    }
+
+    // Uncached: viem otherwise answers from a block number read up to a few seconds ago.
+    getBlockNumber() {
+        return this.rpc.getBlockNumber({ cacheTime: 0 });
     }
 
     getTransactionCount(address: Address) {
