@@ -7,9 +7,11 @@ import {
     type TextInputProps,
     View,
 } from 'react-native';
+import { useSelector } from 'react-redux';
 
 import { Box, BoxSkeleton, HStack, TEXT_MAX_FONT_MULTIPLIER, Text } from '@suite-native/atoms';
-import { truncateDecimals } from '@suite-native/helpers';
+import { useLocalizedAmountInput } from '@suite-native/helpers';
+import { selectLocale } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type NativeTypographyStyle, typographyStylesBase } from '@trezor/theme';
 
@@ -48,8 +50,8 @@ const amountInputSizes = {
 export type AmountInputSize = keyof typeof amountInputSizes;
 
 export type AmountInputProps = {
-    inputTransformer: (value: string) => string;
     maxDecimals?: number;
+    maxLength?: number;
     hasError?: boolean;
     onChangeText: (text: string | undefined) => void;
     isLoading?: boolean;
@@ -58,7 +60,16 @@ export type AmountInputProps = {
     prefix?: string;
     hitSlop?: Insets | number;
     ref?: Ref<TextInput>;
-} & Omit<TextInputProps, 'style' | 'onLayout' | 'onContentSizeChange' | 'onChangeText' | 'hitSlop'>;
+} & Omit<
+    TextInputProps,
+    | 'style'
+    | 'onLayout'
+    | 'onContentSizeChange'
+    | 'onChangeText'
+    | 'hitSlop'
+    | 'maxLength'
+    | 'selection'
+>;
 
 export const AMOUNT_INPUT_TEST_ID = '@trading/amountInput/wrapper';
 export const AMOUNT_INPUT_CONTENT_TEST_ID = '@trading/amountInput/content';
@@ -223,7 +234,6 @@ export const AmountInput = ({
     onPress,
     value,
     maxDecimals,
-    inputTransformer,
     maxLength,
     onChangeText,
     hasError = false,
@@ -236,8 +246,11 @@ export const AmountInput = ({
     hitSlop,
     placeholder = '0.0',
     ref,
+    onSelectionChange,
     ...inputProps
 }: AmountInputProps) => {
+    const locale = useSelector(selectLocale);
+
     const innerRef = useRef<TextInput>(null);
     useImperativeHandle(ref, () => innerRef.current!, []);
 
@@ -248,16 +261,14 @@ export const AmountInput = ({
         sizeConfig,
     );
 
-    const handleTextChange = useCallback(
-        (text: string) => {
-            let transformedText = inputTransformer(text);
-            transformedText = truncateDecimals(transformedText, maxDecimals);
-            transformedText = transformedText.slice(0, maxLength);
-
-            return onChangeText(transformedText === '' ? undefined : transformedText);
-        },
-        [maxLength, maxDecimals, inputTransformer, onChangeText],
-    );
+    const localizedAmountInputProps = useLocalizedAmountInput({
+        rawAmount: value,
+        locale,
+        maxDecimals,
+        maxLength,
+        onRawAmountChange: onChangeText,
+        onSelectionChange,
+    });
 
     const focusInputCallback = useCallback(() => {
         innerRef.current?.focus();
@@ -336,9 +347,7 @@ export const AmountInput = ({
                         inputMode="decimal"
                         placeholder={placeholder}
                         placeholderTextColor="transparent"
-                        value={value}
-                        maxLength={maxLength}
-                        onChangeText={handleTextChange}
+                        {...localizedAmountInputProps}
                         onFocus={onFocus}
                         onBlur={onBlur}
                         onPress={onPress}
