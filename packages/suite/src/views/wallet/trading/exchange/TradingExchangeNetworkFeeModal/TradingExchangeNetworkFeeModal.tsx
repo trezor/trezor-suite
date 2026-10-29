@@ -80,7 +80,7 @@ export const TradingExchangeNetworkFeeModal = ({
     useEffect(() => {
         composeRequest('selectedFee');
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [feeInfo]);
 
     const composedLevel = composedLevels?.[fees.selectedFee];
     const isConfirmDisabled = isLoading || !isComposedFeeLevel(composedLevel);
