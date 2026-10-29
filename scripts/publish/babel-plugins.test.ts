@@ -156,6 +156,14 @@ describe('publish import transforms — new URL is gated on the worker idiom', (
         ).toThrow(/published packages ship lib\/ only/);
     });
 
+    // Documents a bug: src is matched anywhere in the specifier, so a @trezor/*/src-prefixed
+    // runtime address such as src-maps/foo is taken for an internal import and fails the build.
+    it('fails the build on a new URL(@trezor/*/src-maps, base)', () => {
+        expect(() =>
+            runEsm(`const u = new URL('@trezor/blockchain-link/src-maps/foo', base);`),
+        ).toThrow(/published packages ship lib\/ only/);
+    });
+
     it('leaves a single-argument new URL(literal) untouched', () => {
         const out = runEsm(`const u = new URL('./api/status');`);
         expect(out).not.toContain('./api/status.js');
