@@ -2,7 +2,7 @@ import { type Config } from '@opencode-ai/sdk/v2';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-import { BOT_DIR, BROWSER_RELATIVE_DIR, REPO_ROOT } from './paths';
+import { BOT_DIR, BROWSER_RELATIVE_DIR, REPO_ROOT, SETUP_READY_FILE } from './paths';
 
 const AGENT_NAME = 'llm-exploratory-tester';
 
@@ -17,6 +17,8 @@ const FALLBACK_MODEL_ID = process.env.LLM_EXPLORATORY_TESTER_FALLBACK_MODEL || '
 
 // Applied as the prompt `variant`; OpenRouter ignores provider `options` for effort.
 export const REASONING_EFFORT = process.env.LLM_EXPLORATORY_TESTER_EFFORT ?? 'high';
+
+const cdpEndpoint = readFileSync(SETUP_READY_FILE, 'utf8').trim();
 
 // A global enabled_providers allowlist would otherwise silently disable OpenRouter.
 export const OPENCODE_CONFIG: Config = {
@@ -56,7 +58,7 @@ export const OPENCODE_CONFIG: Config = {
             command: [
                 join(REPO_ROOT, 'node_modules/.bin/playwright'),
                 'mcp',
-                '--cdp-endpoint=http://127.0.0.1:9222',
+                `--cdp-endpoint=${cdpEndpoint}`,
                 `--output-dir=${BROWSER_RELATIVE_DIR}`,
                 '--timeout-action=12000',
                 // Unlabeled tooltip icons are not snapshot refs; vision enables mouse_move_xy.

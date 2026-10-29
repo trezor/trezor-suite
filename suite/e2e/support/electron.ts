@@ -16,7 +16,6 @@ const exposeStoreArgument = '--expose-store';
 
 export type LaunchSuiteParams = {
     keepUserData?: boolean;
-    remoteDebuggingPort?: number;
     skipVideoRecording?: boolean;
     bridgeDaemon?: 'with-ui' | 'without-ui';
     exposeConnectWs?: boolean;
@@ -56,10 +55,6 @@ const buildArgs = (params: LaunchSuiteParams) => {
         disableHWAccelerationArgument,
         showConnectLogsArgument,
     ];
-
-    if (params.remoteDebuggingPort) {
-        args.push(`--remote-debugging-port=${params.remoteDebuggingPort}`);
-    }
 
     if (params.bridgeDaemon) {
         args.push(

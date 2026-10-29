@@ -2,12 +2,10 @@ import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node
 import { dirname } from 'node:path';
 
 import { error, log } from '../logger';
-import { BROWSER_STATE_FILE } from './paths';
+import { BROWSER_STATE_FILE, SETUP_READY_FILE } from './paths';
 
 // Tracks the harness-owned Playwright runner so setup can replace its browser
-// and the run can stop it afterwards. Foreign browsers on :9222 (e.g. the developer's own)
-// are never tracked here and never killed.
-const CDP_ENDPOINT = 'http://127.0.0.1:9222';
+// and the run can stop it afterwards. Foreign browsers are never tracked here or killed.
 
 interface BrowserState {
     pid: number;
@@ -18,13 +16,20 @@ export function writeBrowserState(pid: number): void {
     writeFileSync(BROWSER_STATE_FILE, JSON.stringify({ pid } satisfies BrowserState));
 }
 
-async function isCdpPortInUse(): Promise<boolean> {
+async function isCdpEndpointInUse(endpoint: string): Promise<boolean> {
     try {
-        await fetch(`${CDP_ENDPOINT}/json/version`, { signal: AbortSignal.timeout(1_000) });
+        await fetch(`${endpoint}/json/version`, { signal: AbortSignal.timeout(1_000) });
 
         return true;
     } catch {
         return false;
+    }
+}
+
+export async function ensureWebCdpPortAvailable(): Promise<void> {
+    // Web uses a fixed port. Refuse to onboard in a browser the harness did not start.
+    if (await isCdpEndpointInUse('http://127.0.0.1:9222')) {
+        throw new Error('a browser the harness does not own is running on :9222 — close it first');
     }
 }
 
@@ -74,12 +79,14 @@ export async function stopHarnessBrowser(): Promise<void> {
         log(`Browser runner (pid ${state.pid}) stopped.`);
     }
 
-    // A browser we did not start (e.g. the developer's own) would steal the
-    // CDP attach — refuse to continue rather than onboard in the wrong browser.
-    if (await isCdpPortInUse()) {
-        throw new Error('a browser the harness does not own is running on :9222 — close it first');
+    if (existsSync(SETUP_READY_FILE)) {
+        const endpoint = readFileSync(SETUP_READY_FILE, 'utf8').trim();
+        if (await isCdpEndpointInUse(endpoint)) {
+            throw new Error(`Browser is still listening at ${endpoint} after cleanup`);
+        }
     }
     rmSync(BROWSER_STATE_FILE, { force: true });
+    rmSync(SETUP_READY_FILE, { force: true });
 }
 
 // Ctrl-C / kill would otherwise leak the browser: it lives in a detached
