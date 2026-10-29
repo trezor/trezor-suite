@@ -104,7 +104,7 @@ export const prepareAnalyticsMiddleware = createAnalyticsMiddleware(
             analytics.report({
                 type: events.selectWalletTypeEvent.name,
                 payload: {
-                    type: action.payload.device.walletNumber ? 'hidden' : 'standard',
+                    type: action.payload.useEmptyPassphrase ? 'standard' : 'hidden',
                 },
             });
         } else if (onSuiteReady.match(action)) {
