@@ -22,12 +22,16 @@ export {
 export { prepareStakingMiddleware, type StakingMiddlewareDeps } from './state/stakingMiddleware';
 export {
     mergeAccountPositions,
+    type StakingAccountPositions,
+} from './state/stakingPositionsReducer';
+export {
+    type StakingProductEntry,
+    type StakingProductInfoStatus,
+} from './state/stakingProductsReducer';
+export {
     stakingActions,
     stakingInitialState,
     stakingReducer,
-    type StakingAccountPositions,
-    type StakingProductEntry,
-    type StakingProductInfoStatus,
     type StakingRootState,
     type StakingState,
 } from './state/stakingReducer';

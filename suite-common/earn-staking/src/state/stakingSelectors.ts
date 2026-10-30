@@ -10,7 +10,8 @@ import type { NetworkSymbol } from '@trezor/network-module-types';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import type { StakingProductEntry, StakingRootState } from './stakingReducer';
+import { type StakingProductEntry } from './stakingProductsReducer';
+import type { StakingRootState } from './stakingReducer';
 
 const isDefined = <T>(value: T | undefined): value is T => value !== undefined;
 
