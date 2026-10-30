@@ -100,6 +100,7 @@ interface Args {
     fees?: any;
     selectedAccount?: any;
     coinjoin?: any;
+    transactions?: any;
     bitcoinAmountUnit?: PROTO.AmountUnit;
     protocol?: Partial<ProtocolState>;
 }
@@ -140,6 +141,7 @@ const createTestServices = ({
     fees,
     selectedAccount,
     coinjoin,
+    transactions,
     bitcoinAmountUnit,
     protocol,
 }: Args = {}) => {
@@ -152,6 +154,7 @@ const createTestServices = ({
             wallet: {
                 send,
                 coinjoin,
+                ...(transactions ? { transactions: { transactions } } : {}),
                 settings: { bitcoinAmountUnit, enabledNetworks: ['thod'] },
             },
             suiteSettings: { ...suiteSettingsInitialState, language: 'en' },

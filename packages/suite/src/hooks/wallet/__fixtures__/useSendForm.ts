@@ -819,6 +819,10 @@ export const setMax: any[] = [
                     },
                 ],
             },
+            // a coinjoin in the history keeps the anonymity restriction in place
+            transactions: {
+                'xpub-btc-1stTestnetAddress@device_id:0': [{ type: 'joint' }],
+            },
         },
         actions: [
             {
@@ -862,6 +866,64 @@ export const setMax: any[] = [
                 // only utxos with enough anonymity are used in TrezorConnect.composeTransaction
                 // see sendFormBitcoinThunks
                 utxo: [UTXO.BB, UTXO.DD],
+            },
+        },
+    },
+    {
+        description: 'setMax: a never mixed privacy account spends all of its utxos',
+        store: {
+            selectedAccount: {
+                ...BTC_ACCOUNT,
+                account: {
+                    ...BTC_ACCOUNT.account,
+                    accountType: 'coinjoin',
+                    addresses: {
+                        ...BTC_ACCOUNT.account!.addresses,
+                        anonymitySet: {
+                            AA: 1,
+                            BB: 1,
+                            CC: 1,
+                            DD: 1,
+                            EE: 1,
+                            'should-never-be-used': 1,
+                        },
+                    },
+                },
+            },
+            coinjoin: {
+                accounts: [{ key: 'xpub-btc-1stTestnetAddress@device_id:0' }],
+            },
+        },
+        actions: [
+            {
+                type: 'hover',
+                element: 'outputs.0.amount',
+            },
+            {
+                type: 'click',
+                element: 'outputs.0.setMax',
+                result: {
+                    composeTransactionCalls: 1,
+                    composeTransactionParams: {
+                        outputs: [{ type: 'send-max-noaddress' }],
+                    },
+                },
+            },
+        ],
+        connect: {
+            success: true,
+            payload: [
+                {
+                    type: 'nonfinal',
+                    max: '31249999500',
+                },
+            ],
+        },
+        finalResult: {
+            composeTransactionCalls: 1,
+            composeTransactionParams: {
+                // no joint transaction and no coordinator, so no utxo is held back
+                utxo: Object.values(UTXO),
             },
         },
     },

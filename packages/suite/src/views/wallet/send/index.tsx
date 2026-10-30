@@ -4,8 +4,8 @@ import styled from 'styled-components';
 
 import { selectFullSelectedAccount } from '@suite/account';
 import {
+    selectEffectiveTargetAnonymityByAccountKey,
     selectRegisteredUtxosByAccountKey,
-    selectTargetAnonymityByAccountKey,
 } from '@suite/coinjoin';
 import { Form } from '@suite/form';
 import { Translation } from '@suite/intl';
@@ -74,7 +74,7 @@ const SendLoaded = ({ children, selectedAccount }: SendLoadedProps) => {
     const isMetadataProviderConnected = useSelector(selectIsMetadataProviderConnected);
     const metadataEnabled = isMetadataProviderConnected || isSuiteSyncEnabled;
     const targetAnonymity = useSelector(state =>
-        selectTargetAnonymityByAccountKey(state, accountKey),
+        selectEffectiveTargetAnonymityByAccountKey(state, accountKey),
     );
     const prison = useSelector(state => selectRegisteredUtxosByAccountKey(state, accountKey));
 
