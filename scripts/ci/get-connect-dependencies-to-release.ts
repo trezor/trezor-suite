@@ -8,7 +8,7 @@ import type { WorkspacePackage } from '@trezor/requirements';
 
 import { CONNECT_PUBLISH_ROOTS } from './connect-publish-roots';
 import { getNpmRemoteGreatestVersion } from './helpers';
-import { collectPublishClosure } from './publish-closure';
+import { collectPublishClosure, toReleaseScriptName } from './publish-closure';
 
 const ROOT = path.join(import.meta.dirname, '..', '..');
 
@@ -32,7 +32,7 @@ const getConnectDependenciesToRelease = async () => {
     for (const pkg of candidates) {
         if (await isPackageBumped(pkg)) {
             // The release workflow takes package names without the `@trezor/` scope.
-            dependenciesToRelease.push(pkg.name.replace('@trezor/', ''));
+            dependenciesToRelease.push(toReleaseScriptName(ROOT, pkg));
         }
     }
 
