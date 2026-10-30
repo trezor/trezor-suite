@@ -8,7 +8,7 @@ import {
 import { type Account } from '@suite-common/wallet-types';
 import { isStakingNetworkType } from '@suite-common/wallet-utils';
 import { Banner } from '@trezor/components';
-import { FileFilledIcon, ShieldWarningFilledIcon } from '@trezor/icons';
+import { FileFilledIcon, LockFilledIcon, ShieldWarningFilledIcon } from '@trezor/icons';
 import { exhaustive } from '@trezor/type-utils';
 
 interface StakingProviderConsentBannersProps {
@@ -34,6 +34,16 @@ export const StakingProviderConsentBanners = ({
                         intent="info"
                         description={
                             <Translation
+                                id="TR_EARN_BY_STAKING_YOU_CAN_EARN_REWARDS"
+                                values={{ networkDisplaySymbol: displaySymbol }}
+                            />
+                        }
+                    />
+                    <Banner
+                        icon={LockFilledIcon}
+                        intent="info"
+                        description={
+                            <Translation
                                 id="TR_EARN_STAKE_EVERSTAKE_MANAGES"
                                 values={{
                                     networkDisplaySymbol: displaySymbol,
@@ -45,7 +55,12 @@ export const StakingProviderConsentBanners = ({
                     <Banner
                         icon={ShieldWarningFilledIcon}
                         intent="info"
-                        description={<Translation id="TR_EARN_STAKE_TREZOR_NO_LIABILITY" />}
+                        description={
+                            <Translation
+                                id="TR_EARN_STAKE_TREZOR_NO_LIABILITY"
+                                values={{ networkDisplaySymbol: displaySymbol }}
+                            />
+                        }
                     />
                 </>
             );
