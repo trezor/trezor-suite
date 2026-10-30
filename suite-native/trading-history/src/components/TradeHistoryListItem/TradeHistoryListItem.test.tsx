@@ -34,19 +34,19 @@ describe('TradeHistoryListItem', () => {
         expect(getByLabelText('flag-US')).toBeTruthy();
         expect(getByLabelText('ethereum')).toBeTruthy();
         expect(getByText('$1,234.00')).toBeTruthy();
-        expect(getByText('0.462586 ETH')).toBeTruthy();
+        expect(getByText('0.46258 ETH')).toBeTruthy();
         expect(queryByText('Mercuryo')).toBeNull();
         expect(queryByText(/d3ef3451/)).toBeNull();
     });
 
-    it('should render exchange and sell trade directions', async () => {
+    it('should render exchange and sell trade directions with compact crypto amounts', async () => {
         const exchangeTrade = getExchangeTrade({ status: 'SUCCESS' });
         const sellTrade = getSellTrade({ status: 'ERROR' });
 
         const exchangeResult = await renderTradeHistoryListItem(exchangeTrade);
 
-        expect(exchangeResult.getByText('10.1232 JTO')).toBeTruthy();
-        expect(exchangeResult.getByText('0.462586 SOL')).toBeTruthy();
+        expect(exchangeResult.getByText('10.12 JTO')).toBeTruthy();
+        expect(exchangeResult.getByText('0.46258 SOL')).toBeTruthy();
         await exchangeResult.unmount();
 
         const sellResult = await renderTradeHistoryListItem(sellTrade);

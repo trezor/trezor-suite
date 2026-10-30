@@ -6,7 +6,7 @@ import { type Coins, type CryptoId } from 'invity-api';
 import { joinAmountWithSymbol } from '@suite-common/formatters';
 import { MockedFormatterProvider } from '@suite-common/formatters/mocks';
 
-import { useFormatCryptoValue } from './useFormatCryptoValue';
+import { type UseFormatCryptoValueParams, useFormatCryptoValue } from './useFormatCryptoValue';
 import { createTradingTestState, renderHookWithTradingStore } from '../test-utils/testUtils';
 
 const FormattersProvider = ({ children }: PropsWithChildren) => (
@@ -34,8 +34,8 @@ const coins = {
 } satisfies Coins;
 
 describe('useFormatCryptoValue', () => {
-    const renderUseFormatCryptoValue = () =>
-        renderHookWithTradingStore(() => useFormatCryptoValue(), {
+    const renderUseFormatCryptoValue = (params?: UseFormatCryptoValueParams) =>
+        renderHookWithTradingStore(() => useFormatCryptoValue(params), {
             preloadedState: createTradingTestState({ info: { coins, platforms: undefined } }),
             wrapper: FormattersProvider,
         });
@@ -70,6 +70,17 @@ describe('useFormatCryptoValue', () => {
         ],
     ])('respects network decimal precision for %s %s', (value, cryptoId, expected) => {
         const { result } = renderUseFormatCryptoValue();
+
+        expect(result.current(value, cryptoId)).toBe(expected);
+    });
+
+    it.each<[string, CryptoId, string]>([
+        ['0.123456789', BITCOIN_CRYPTO_ID, joinAmountWithSymbol('0.12345', 'BTC')],
+        ['10.1232', USDC_CRYPTO_ID, joinAmountWithSymbol('10.12', 'USDC')],
+        ['1234567.899', USDC_CRYPTO_ID, joinAmountWithSymbol('1.23M', 'USDC')],
+        ['0.000001', BITCOIN_CRYPTO_ID, joinAmountWithSymbol('<0.00001', 'BTC')],
+    ])('formats %s %s as "%s" in the compact-balance style', (value, cryptoId, expected) => {
+        const { result } = renderUseFormatCryptoValue({ formatStyle: 'compact-balance' });
 
         expect(result.current(value, cryptoId)).toBe(expected);
     });
