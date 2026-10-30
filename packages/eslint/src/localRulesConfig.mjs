@@ -135,6 +135,14 @@ export const localRulesConfig = [
                       'local-rules/no-unused-intersection-members': 'error',
                   },
               },
+              {
+                  // Base-relative glob, like the type-aware block in typescriptConfig, so the rule
+                  // also applies in packages that lint with their own eslint.config.mjs.
+                  files: ['**/src/**/*.{ts,tsx}'],
+                  rules: {
+                      'local-rules/no-any-object-from-entries': 'error',
+                  },
+              },
           ]
         : []),
 ];

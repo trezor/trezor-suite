@@ -54,6 +54,7 @@ export const createEvmDecoder = <const T extends Abi>(abi: T): Decoder<T> => {
                 return normalize(v, inputIndexed.type);
             });
 
+            // eslint-disable-next-line no-restricted-syntax -- `DecodedAbiInputs<T>` is derived from the generic ABI, which no entries type can express.
             return Object.fromEntries(
                 paramNames.map((name, i) => [name, values[i]]),
             ) as DecodedAbiInputs<T>;

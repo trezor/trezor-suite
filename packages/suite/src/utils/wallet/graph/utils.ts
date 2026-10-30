@@ -49,7 +49,7 @@ export const ensureHistoryRates = async (
         baseCurrencyCode,
         isElectrumBackend,
     )
-        .then(res => (res?.tickers || []).map(({ ts, rates }) => [ts, rates]))
+        .then(res => (res?.tickers || []).map(({ ts, rates }) => [ts, rates] as const))
         .then(res => Object.fromEntries(res));
 
     return data.map(({ rates, time, ...rest }) => ({
