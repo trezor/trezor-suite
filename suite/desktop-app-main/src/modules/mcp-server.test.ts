@@ -472,10 +472,7 @@ describe('MCP server', () => {
             expect(res.status).toBe(200);
         });
 
-        // Documents the behaviour today: the name a client declares in `initialize` stands in for
-        // the path of a process the lookup did not find, so it becomes what permissions are
-        // remembered by.
-        it('keys the client by the name it declared when its process was not found', async () => {
+        it('does not key the client by the name it declared when its process was not found', async () => {
             const server = await startMcpServer();
             cleanup = server.cleanup;
 
@@ -483,10 +480,12 @@ describe('MCP server', () => {
                 clientInfo: { name: 'Claude Code' },
             });
 
+            // `fullPath` is what permissions are remembered by, and the declared name is not a
+            // path the client can be identified by, so it is forwarded as the name only.
             expect(popupCall).toEqual(
                 expect.objectContaining({
                     sourceType: CALL_SOURCE_MCP,
-                    process: { name: 'Claude Code', fullPath: 'Claude Code', warning: true },
+                    process: { name: 'Claude Code', fullPath: '', warning: true },
                 }),
             );
         });
