@@ -1,10 +1,10 @@
-import type { Dispatch } from '@reduxjs/toolkit';
-
 import type { StakingPlatform, StakingProductAdapter } from '@suite-common/earn-staking-common';
+import type { Dispatch } from '@trezor/redux-utils';
 
 import { createStakingProductRepository } from './repository/createStakingProductRepository';
 import type { StakingServices } from './stakingServices';
 import { stakingActions } from './state/stakingReducer';
+import { syncAllStakingPositionsThunk } from './state/stakingThunks';
 
 export type StakingCompositionRootDeps = {
     platform: StakingPlatform;
@@ -22,6 +22,7 @@ export const createStakingCompositionRoot = (deps: StakingCompositionRootDeps): 
                 descriptors: stakingProductRepository.list().map(adapter => adapter.descriptor),
             }),
         );
+        deps.dispatch(syncAllStakingPositionsThunk());
     };
 
     return { stakingProductRepository, loadStakingProducts };

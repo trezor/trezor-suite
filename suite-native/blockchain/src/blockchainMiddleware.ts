@@ -1,7 +1,12 @@
+import {
+    refreshStakingProductInfoThunk,
+    syncStakingPositionsThunk,
+} from '@suite-common/earn-staking';
 import { isNetworkSymbol } from '@suite-common/wallet-config';
 import {
     accountsActions,
     blockchainActions,
+    changeNetworks,
     onBlockchainDisconnectThunk,
     selectNetworksWithPendingTxs,
     setCustomBackendThunk,
@@ -47,8 +52,13 @@ export const blockchainMiddleware = createMiddleware((action, { dispatch, next, 
         accountsActions.createAccount.match(action) ||
         accountsActions.updateAccount.match(action)
     ) {
-        const { symbol } = action.payload.account;
+        const { key, symbol } = action.payload.account;
         schedulePolledNetworkSync({ symbol, dispatch, getState, shouldReplaceScheduled: false });
+        dispatch(syncStakingPositionsThunk({ accountKey: key }));
+    }
+
+    if (changeNetworks.match(action)) {
+        dispatch(refreshStakingProductInfoThunk());
     }
 
     if (blockchainActions.setBackend.match(action)) {

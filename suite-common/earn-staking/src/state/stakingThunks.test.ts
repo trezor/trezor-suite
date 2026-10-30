@@ -69,7 +69,10 @@ describe('refreshStakingProductInfoThunk', () => {
         enabledNetworks = [asNetworkSymbol('eth')],
     ): RefreshStakingProductInfoThunkState => ({
         staking,
-        wallet: { settings: { ...initialWalletSettingsState, enabledNetworks } },
+        wallet: {
+            accounts: [ethAccount, btcAccount],
+            settings: { ...initialWalletSettingsState, enabledNetworks },
+        },
     });
 
     const run = async (
@@ -110,6 +113,19 @@ describe('refreshStakingProductInfoThunk', () => {
                     info: mockStakingProductInfo(),
                 }),
             }),
+        ]);
+    });
+
+    it('re-syncs the positions of the fetched product network', async () => {
+        const ethAdapter = createAdapter(eth);
+        const actions = await run(createState(), createDeps([ethAdapter, createAdapter(sol)]));
+
+        expect(ethAdapter.getPosition).toHaveBeenCalledWith({
+            account: ethAccount,
+            productInfo: null,
+        });
+        expect(actions.filter(stakingActions.positionsSynced.match)).toEqual([
+            stakingActions.positionsSynced({ accountKey: ethAccount.key, positions: [] }),
         ]);
     });
 
@@ -238,7 +254,14 @@ describe('syncStakingPositionsThunk', () => {
         const { actions } = await run(createState([btcAccount]), createDeps([adapter]));
 
         expect(adapter.getPosition).not.toHaveBeenCalled();
-        expect(actions.filter(stakingActions.positionsSynced.match)).toEqual([]);
+        expect(actions).toEqual([]);
+    });
+
+    it('does nothing for an account on a network without a product', async () => {
+        const adapter = createAdapter(eth);
+        const { actions } = await run(createState(), createDeps([adapter]), btcAccount.key);
+
+        expect(actions).toEqual([]);
     });
 
     it('rejects a position that does not match the contract', async () => {

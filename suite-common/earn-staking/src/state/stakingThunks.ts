@@ -24,70 +24,6 @@ const STAKING_MODULE_PREFIX = '@suite-common/earn-staking/staking';
 
 const PRODUCT_INFO_FRESHNESS_MS = 5 * 60 * 1000;
 
-type RefreshStakingProductInfoParams = {
-    force?: boolean;
-};
-
-const isProductInfoStale = (entry: StakingProductEntry, now: number) =>
-    entry.infoFetchedAt === null || entry.infoFetchedAt <= now - PRODUCT_INFO_FRESHNESS_MS;
-
-export type RefreshStakingProductInfoThunkState = StakingRootState & WalletSettingsRootState;
-
-export type RefreshStakingProductInfoThunkDeps = WithServices<StakingDep>;
-
-export const refreshStakingProductInfoThunk = createThunk<
-    void,
-    RefreshStakingProductInfoParams | undefined,
-    { state: RefreshStakingProductInfoThunkState; extra: RefreshStakingProductInfoThunkDeps }
->(
-    `${STAKING_MODULE_PREFIX}/refreshStakingProductInfo`,
-    async (params, { dispatch, getState, extra }) => {
-        const enabledNetworks = selectEnabledNetworks(getState());
-        const productDescriptors = selectStakingProductDescriptors(getState());
-
-        const now = Date.now();
-        const force = params?.force ?? false;
-
-        const productIds = productDescriptors
-            .filter(descriptor => enabledNetworks.includes(descriptor.symbol))
-            .map(descriptor => descriptor.id)
-            .filter(productId => {
-                const entry = selectStakingProductEntry(getState(), productId);
-
-                return (
-                    entry !== null &&
-                    entry.infoStatus !== 'loading' &&
-                    (force || isProductInfoStale(entry, now))
-                );
-            });
-
-        await Promise.all(
-            productIds.map(async productId => {
-                dispatch(stakingActions.productInfoRequested({ productId }));
-
-                try {
-                    const info = await extra.services.staking.stakingProductRepository
-                        .get(productId)
-                        .fetchProductInfo({});
-
-                    dispatch(
-                        stakingActions.productInfoFetched({
-                            productId,
-                            info,
-                            fetchedAt: Date.now(),
-                        }),
-                    );
-                } catch (error) {
-                    const message = error instanceof Error ? error.message : 'Unknown error';
-
-                    console.warn(`Staking product info for ${productId} failed: ${message}`);
-                    dispatch(stakingActions.productInfoFailed({ productId, error: message }));
-                }
-            }),
-        );
-    },
-);
-
 type SyncStakingPositionsParams = {
     accountKey: AccountKey;
 };
@@ -126,6 +62,13 @@ export const syncStakingPositionsThunk = createThunk<
 
         dispatch(stakingActions.positionsSynced({ accountKey, positions }));
     },
+    {
+        condition: ({ accountKey }, { getState }) => {
+            const account = selectAccountByKey(getState(), accountKey);
+
+            return account !== null && selectIsStakingSupportedSymbol(getState(), account.symbol);
+        },
+    },
 );
 
 type SyncAllStakingPositionsParams = {
@@ -155,3 +98,68 @@ export const syncAllStakingPositionsThunk = createThunk<
         ),
     );
 });
+
+type RefreshStakingProductInfoParams = {
+    force?: boolean;
+};
+
+const isProductInfoStale = (entry: StakingProductEntry, now: number) =>
+    entry.infoFetchedAt === null || entry.infoFetchedAt <= now - PRODUCT_INFO_FRESHNESS_MS;
+
+export type RefreshStakingProductInfoThunkState = SyncAllStakingPositionsThunkState &
+    WalletSettingsRootState;
+
+export type RefreshStakingProductInfoThunkDeps = WithServices<StakingDep>;
+
+export const refreshStakingProductInfoThunk = createThunk<
+    void,
+    RefreshStakingProductInfoParams | undefined,
+    { state: RefreshStakingProductInfoThunkState; extra: RefreshStakingProductInfoThunkDeps }
+>(
+    `${STAKING_MODULE_PREFIX}/refreshStakingProductInfo`,
+    async (params, { dispatch, getState, extra }) => {
+        const enabledNetworks = selectEnabledNetworks(getState());
+        const productDescriptors = selectStakingProductDescriptors(getState());
+
+        const now = Date.now();
+        const force = params?.force ?? false;
+
+        const staleDescriptors = productDescriptors
+            .filter(descriptor => enabledNetworks.includes(descriptor.symbol))
+            .filter(descriptor => {
+                const entry = selectStakingProductEntry(getState(), descriptor.id);
+
+                return (
+                    entry !== null &&
+                    entry.infoStatus !== 'loading' &&
+                    (force || isProductInfoStale(entry, now))
+                );
+            });
+
+        await Promise.all(
+            staleDescriptors.map(async ({ id: productId, symbol }) => {
+                dispatch(stakingActions.productInfoRequested({ productId }));
+
+                try {
+                    const info = await extra.services.staking.stakingProductRepository
+                        .get(productId)
+                        .fetchProductInfo({});
+
+                    dispatch(
+                        stakingActions.productInfoFetched({
+                            productId,
+                            info,
+                            fetchedAt: Date.now(),
+                        }),
+                    );
+                    await dispatch(syncAllStakingPositionsThunk({ symbol }));
+                } catch (error) {
+                    const message = error instanceof Error ? error.message : 'Unknown error';
+
+                    console.warn(`Staking product info for ${productId} failed: ${message}`);
+                    dispatch(stakingActions.productInfoFailed({ productId, error: message }));
+                }
+            }),
+        );
+    },
+);

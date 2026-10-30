@@ -1,6 +1,13 @@
 import { type SelectedAccountState, selectedAccountReducer } from '@suite/account';
 import { mockDesktopAnalytics } from '@suite/analytics/mocks';
 import { type RouterState } from '@suite/router';
+import {
+    type StakingState,
+    refreshStakingProductInfoThunk,
+    stakingReducer,
+    syncStakingPositionsThunk,
+} from '@suite-common/earn-staking';
+import { mockStakingServices, mockStakingState } from '@suite-common/earn-staking/mocks';
 import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
 import { mockGetIsWindowVisible } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot, testMocks } from '@suite-common/test-utils';
@@ -9,8 +16,10 @@ import {
     type AccountsState,
     type SendState,
     type SyncAccountsWithBlockchainThunkDeps,
+    accountsActions,
     accountsRefreshTimeReducer,
     blockchainActions,
+    changeNetworks,
     formDraftInitialState,
     prepareBlockchainMiddleware,
     prepareBlockchainSubscriptionMiddleware,
@@ -53,6 +62,7 @@ type State = {
     suite: Record<string, never>;
     device: { selectedDevice: { state: { staticSessionId: string } } };
     window: { isVisible: boolean };
+    staking: StakingState;
     wallet: Pick<
         WalletState,
         | 'accounts'
@@ -91,6 +101,7 @@ const getInitialState = ({
     window: {
         isVisible: isWindowVisible,
     },
+    staking: mockStakingState(),
     wallet: {
         accounts: accounts || accountsReducer(undefined, { type: 'foo' } as any),
         accountsRefreshTime: accountsRefreshTimeReducer(undefined, { type: 'foo' } as any),
@@ -125,6 +136,7 @@ const mockStore = (preloadedState: State) =>
         serializableCheck: { ignoredActions: [blockchainActions.synced.type] },
         reducer: (state = preloadedState, action) => ({
             ...state,
+            staking: stakingReducer(state.staking, action),
             wallet: {
                 ...state.wallet,
                 accounts: accountsReducer(state.wallet.accounts, action),
@@ -147,6 +159,7 @@ const mockStore = (preloadedState: State) =>
             networks: { getAccountSyncInterval: mockGetAccountSyncInterval() },
             getIsWindowVisible: mockGetIsWindowVisible(),
             getTradedAccountKeys: mockGetTradedAccountKeys(),
+            staking: mockStakingServices(),
         }),
     }).services.store;
 
@@ -314,6 +327,36 @@ describe('walletMiddleware', () => {
             store.dispatch(updateWindowVisibility(true));
 
             expect(TrezorConnect.getAccountInfo).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('staking', () => {
+        const ethAccount = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
+        const btcAccount = mockWalletAccount({ symbol: asNetworkSymbol('btc') });
+
+        const getActionTypes = (store: ReturnType<typeof mockStore>) =>
+            store.getActions().map(({ type }) => type);
+
+        it('syncs the staking positions of an updated account on a network with a product', () => {
+            const store = mockStore(getInitialState({ accounts: [ethAccount, btcAccount] }));
+
+            store.dispatch(accountsActions.updateAccount(ethAccount));
+            store.dispatch(accountsActions.updateAccount(btcAccount));
+
+            expect(
+                getActionTypes(store).filter(
+                    type => type === syncStakingPositionsThunk.pending.type,
+                ),
+            ).toHaveLength(1);
+        });
+
+        it('refreshes the staking product info when the enabled networks change', () => {
+            const btc = asNetworkSymbol('btc');
+            const store = mockStore(getInitialState());
+
+            store.dispatch(changeNetworks([btc], [btc]));
+
+            expect(getActionTypes(store)).toContain(refreshStakingProductInfoThunk.pending.type);
         });
     });
 

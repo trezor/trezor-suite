@@ -19,7 +19,6 @@ export {
     selectStakingProductAccess,
     type ResolvedStakingProductAccess,
 } from './state/stakingAccessSelectors';
-export { prepareStakingMiddleware, type StakingMiddlewareDeps } from './state/stakingMiddleware';
 export {
     mergeAccountPositions,
     type StakingAccountPositions,

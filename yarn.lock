@@ -13145,6 +13145,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/blockchain@workspace:suite-native/blockchain"
   dependencies:
+    "@suite-common/earn-staking": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
