@@ -31,6 +31,8 @@ export const CALL_SOURCE_WEB = 'web';
 export const CALL_SOURCE_WALLETCONNECT = 'walletconnect';
 export const CALL_SOURCE_DEEPLINK = 'deeplink';
 
+export const CONNECT_POPUP_MODULE = '@common/connect-popup';
+
 export type ConnectSerializedError = SerializedError;
 export type ConnectProcessInfo = {
     name: string;
@@ -133,7 +135,7 @@ export type SelectAccountCandidate = {
 
 export const SELECT_ACCOUNT_PAGE_SIZE = 5;
 
-// Picker options derived from the `selectAccount` method params (by its methodHook).
+// Picker options derived from the `selectAccount` method params (by its `postCall`).
 export type SelectAccountOptions = {
     symbol: NetworkSymbol;
     selectionType: 'single' | 'multi';

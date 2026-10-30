@@ -1,6 +1,7 @@
-import { type CallMethodKeys, type CardanoPublicKey } from '@trezor/connect';
+import { createAddressConfirmation } from './shared/addressConfirmation';
+import { type ConnectPopupMethodDefinition, type PostCallParams } from './types';
 
-import { type PostCallHookParams } from './types';
+const addressConfirmation = createAddressConfirmation<'cardanoGetPublicKey'>();
 
 /**
  * Connect v9 returned the Cardano extended public key (xpub) directly in the
@@ -13,30 +14,29 @@ import { type PostCallHookParams } from './types';
  * working, rewrite `publicKey` back to the extended key for those callers.
  * Callers on a newer version receive the unified shape untouched.
  */
-export function postCallHook<M extends CallMethodKeys>({
-    method,
+const patchPublicKeyForConnectV9 = ({
     response,
     source,
-}: PostCallHookParams<M>) {
-    if (
-        method === 'cardanoGetPublicKey' &&
-        response.success &&
-        source.manifest.npmVersion?.startsWith('9.')
-    ) {
+}: PostCallParams<'cardanoGetPublicKey'>) => {
+    if (response.success && source.manifest.npmVersion?.startsWith('9.')) {
         // `response` is resolved back to the calling app verbatim, so patch the
         // payload in place. Both the single and bundled (array) forms are handled.
-        const bundledResponse = (
-            Array.isArray(response.payload) ? response.payload : [response.payload]
-        ) as CardanoPublicKey[];
+        const bundledResponse = Array.isArray(response.payload)
+            ? response.payload
+            : [response.payload];
 
         bundledResponse.forEach(item => {
             item.publicKey = item.xpub;
         });
     }
+};
 
-    return false;
-}
+export const cardanoGetPublicKey: ConnectPopupMethodDefinition<'cardanoGetPublicKey'> = {
+    ...addressConfirmation,
+    postCall: async params => {
+        const isCallOngoing = await addressConfirmation.postCall(params);
+        patchPublicKeyForConnectV9(params);
 
-export const cardanoGetPublicKeyCompat = {
-    postCallHook,
+        return isCallOngoing;
+    },
 };

@@ -1,17 +1,15 @@
-import { type CallMethodKeys } from '@trezor/connect';
-
-import { getPublicKeyV9Compat } from './getPublicKeyV9Compat';
-import { type CompatibilityHookParams } from './types';
+import { getPublicKey } from './getPublicKey';
+import { type CompatibilityParams } from './types';
 
 // Only host apps still on `@trezor/connect` 9.x get the compatibility flag.
 const v9Source = { manifest: { appName: 'app', npmVersion: '9.4.2' } };
 
 const run = (
-    params: Omit<CompatibilityHookParams<CallMethodKeys>, 'source'>,
+    params: Omit<CompatibilityParams<'getPublicKey'>, 'source'>,
     source: { manifest: { appName: string; npmVersion?: string } } = v9Source,
-) => getPublicKeyV9Compat.compatibilityHook({ ...params, source } as any);
+) => getPublicKey.compatibility?.({ ...params, source } as any);
 
-describe('getPublicKeyV9Compat', () => {
+describe('getPublicKey.compatibility', () => {
     it('sets the _v9_compat flag on a non-bitcoin getPublicKey for 9.x callers', () => {
         const payload = { path: "m/44'/195'/0'/0/0", coin: 'trx' };
 
@@ -56,14 +54,5 @@ describe('getPublicKeyV9Compat', () => {
         const noVersionSource = { manifest: { appName: 'app' } };
 
         expect(run({ method: 'getPublicKey', payload } as any, noVersionSource)).toBeUndefined();
-    });
-
-    it('leaves non-getPublicKey methods untouched', () => {
-        expect(
-            run({
-                method: 'getAddress',
-                payload: { path: "m/44'/195'/0'/0/0", coin: 'trx' },
-            } as any),
-        ).toBeUndefined();
     });
 });
