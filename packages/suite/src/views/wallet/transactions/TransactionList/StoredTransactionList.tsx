@@ -45,13 +45,14 @@ type SyncState = TransactionStoreRow<ReturnType<typeof getSyncStateQuery>>;
 
 const describeSyncStatus = (
     syncState: SyncState | undefined,
-    storedCount: number,
+    storedCount: number | undefined,
     isSearching: boolean,
 ) => {
     const history = syncState?.is_complete === 1 ? 'whole history' : 'newest part of the history';
     const activity = syncState?.is_syncing === 1 ? 'syncing' : 'up to date';
     const error = syncState?.last_error ? ` · last sync failed: ${syncState.last_error}` : '';
-    const count = isSearching ? `${storedCount} matching` : `${storedCount} stored`;
+    const countText = storedCount ?? '…';
+    const count = isSearching ? `${countText} matching` : `${countText} stored`;
 
     return `Transaction store: ${activity} · ${count} (${history})${error}`;
 };
@@ -114,19 +115,23 @@ export const StoredTransactionList = ({ account }: StoredTransactionListProps) =
     }, [account.key, account.symbol, search, hideSuspicious, page, perPage]);
 
     const rows = useTransactionStoreQuery(queries.page);
-    const storedCount = useTransactionStoreQuery(queries.count)?.[0]?.count ?? 0;
+    const countRows = useTransactionStoreQuery(queries.count);
+    const storedCount = countRows?.[0]?.count ?? 0;
     const syncState = useTransactionStoreQuery(queries.syncState)?.[0];
     const transactions = useMemo(
         () => (rows ?? []).map(row => enhanceTransaction(JSON.parse(row.data), account)),
         [rows, account],
     );
     const isComplete = syncState?.is_complete === 1;
-    // Nothing to show until the first sync brought something or failed.
+    // Nothing to show yet, but more history is on its way: the account's first sync, or a later
+    // page past what is stored, which asked for the rest. A search covers only what is stored.
+    const isFirstSyncPending =
+        syncState === undefined ||
+        (syncState.last_synced_at === null && syncState.last_error === null);
+    const isRestComing = page > 1 && !isComplete && syncState?.last_error === null;
     const isLoading =
         rows === undefined ||
-        (transactions.length === 0 &&
-            (syncState === undefined ||
-                (syncState.last_synced_at === null && syncState.last_error === null)));
+        (transactions.length === 0 && !isSearching && (isFirstSyncPending || isRestComing));
 
     const pendingTxsByDate = useMemo(
         () => groupTransactionsByDate(transactions.filter(isPending), 'day'),
@@ -170,7 +175,7 @@ export const StoredTransactionList = ({ account }: StoredTransactionListProps) =
         >
             <Column gap={32} padding={{ top: 16 }}>
                 <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
-                    {describeSyncStatus(syncState, storedCount, isSearching)}
+                    {describeSyncStatus(syncState, countRows?.[0]?.count, isSearching)}
                 </Text>
                 {isLoading ? (
                     <Column gap={16}>
