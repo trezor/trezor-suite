@@ -353,6 +353,7 @@ export class TrezorUserEnvLinkClass extends TypedEmitter<WebsocketClientEvents> 
         return null;
     }
     async getScreenContent() {
+        await resolveAfter(EMU_RACE_CONDITION_WORKAROUND_DELAY);
         const { response } = await this.client.send({ type: 'emulator-get-screen-content' });
 
         return response;
