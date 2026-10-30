@@ -1284,6 +1284,12 @@ export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
                 if (jsonRpcRequest.method === 'initialize') {
                     sessionId = crypto.randomUUID();
 
+                    // A client is not required to send `DELETE`, so the session it replaces is
+                    // forgotten here: a new client must never be labelled by — or have the
+                    // permissions remembered for — the process of the previous one.
+                    sessionProcessInfo = undefined;
+                    sessionManifest = MCP_MANIFEST;
+
                     // Identify the calling process via TCP port lookup + MCP clientInfo
                     const clientName = readDeclaredClientName(jsonRpcRequest.params);
 
