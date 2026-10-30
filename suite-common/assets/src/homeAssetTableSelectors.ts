@@ -564,10 +564,15 @@ const selectWalletAsset = (
     state: HomeAssetTableState,
     assetKey: WalletAssetKey | undefined,
     isHidden = false,
-) =>
-    assetKey === undefined
-        ? undefined
-        : (isHidden ? selectHiddenWalletAssets(state) : selectWalletAssets(state)).get(assetKey);
+) => {
+    if (assetKey === undefined) {
+        return undefined;
+    }
+
+    const hiddenAsset = () => selectHiddenWalletAssets(state).get(assetKey);
+
+    return isHidden ? hiddenAsset() : (selectWalletAssets(state).get(assetKey) ?? hiddenAsset());
+};
 
 export const selectWalletAssetKey = createMemoizedSelector(
     [
@@ -623,6 +628,21 @@ export const selectWalletAssetAccountCount = (
     assetKey: WalletAssetKey | undefined,
     isHidden?: boolean,
 ) => selectWalletAsset(state, assetKey, isHidden)?.accountCount ?? 0;
+
+export const selectWalletAssetHoldings = createMemoizedSelector(
+    [
+        selectDeviceAssetAccounts,
+        (_state: HomeAssetTableState, assetKey: WalletAssetKey | undefined) => assetKey,
+    ],
+    (assetAccounts, assetKey): readonly AssetAccount[] =>
+        returnStableArrayIfEmpty(
+            assetAccounts.filter(
+                assetAccount =>
+                    assetAccount.assetKey === assetKey &&
+                    isPositiveBalance(assetAccount.cryptoBalance),
+            ),
+        ),
+);
 
 // A Cardano delegation stakes what the account can spend, which a pending send has already
 // reduced, as the asset's amount has; its on-chain balance would count the send too.
@@ -762,17 +782,30 @@ export const selectHasHiddenWalletAssets = createMemoizedSelector(
     byReason => byReason.size > 0,
 );
 
+export const selectWalletAssetHiddenReason = (
+    state: HomeAssetTableState,
+    assetKey: WalletAssetKey | undefined,
+): HiddenTokenReason | undefined => {
+    const symbol = selectWalletAssetSymbol(state, assetKey);
+    const contractAddress = selectWalletAssetContractAddress(state, assetKey);
+
+    return symbol === undefined || contractAddress === undefined
+        ? undefined
+        : selectHiddenTokenReasons(state).get(symbol)?.get(contractAddress);
+};
+
 export const selectWalletAssetFiatValue = createMemoizedSelector(
     [
         selectWalletAssetValues,
+        selectHiddenWalletAssetValues,
         (_state: HomeAssetTableState, assetKey: WalletAssetKey | undefined) => assetKey,
     ],
-    (values, assetKey): BaseCurrencyAmount | undefined => {
+    (values, hiddenValues, assetKey): BaseCurrencyAmount | undefined => {
         if (assetKey === undefined) {
             return undefined;
         }
 
-        const fiatValue = values.get(assetKey);
+        const fiatValue = values.get(assetKey) ?? hiddenValues.get(assetKey);
 
         return fiatValue === undefined ? undefined : asBaseCurrencyAmount(fiatValue);
     },
