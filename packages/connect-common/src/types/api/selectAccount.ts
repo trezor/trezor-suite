@@ -67,12 +67,15 @@ export const SelectAccount = Type.Object({
     // individual address. Controls which of two separate flows a UTXO account is shared through:
     // - 'fullAccount' (default when omitted): the whole account is shared as an xpub, like a
     //   watch-only wallet import. No individual address is picked or verified as part of this
-    //   call. Requires `read_xpub`.
+    //   call; the xpub is confirmed on the device only with an explicit
+    //   `requireOnDeviceVerification: true`. Requires `read_xpub`.
     // - 'firstFresh' | 'manual': only the individual address(es) the user picks are exported —
     //   'firstFresh' auto-selects the next unused receive address, 'manual' lets the user pick a
     //   used one. The xpub is never exported here; requires the narrower `read_address` instead.
     addressSelection: Type.Optional(AddressSelection),
-    // Require the selected address(es) to be confirmed on the device. Default true.
+    // Require every selected entry to be confirmed on the device before it is shared. Default true
+    // for addresses and false for the 'fullAccount' xpub flow, like the `showOnTrezor` defaults of
+    // getAddress and getPublicKey.
     requireOnDeviceVerification: Type.Optional(Type.Boolean()),
 });
 
