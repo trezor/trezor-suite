@@ -22,8 +22,13 @@ export const useTransactionStoreQuery = <TRow>(
         (): TransactionStoreQuery<TRow> => JSON.parse(queryKey),
         [queryKey],
     );
-    // The cache holds what this query's live subscription sent, so the rows are its own.
-    const getCachedRows = (key: string) => queryCache.get(key) as TRow[] | undefined;
+    // The cache holds what this query's live subscription sent, so the rows are its own. An empty
+    // result is not served from it: it may be from before a sync, and would show as no history.
+    const getCachedRows = (key: string) => {
+        const cachedRows = queryCache.get(key) as TRow[] | undefined;
+
+        return cachedRows?.length === 0 ? undefined : cachedRows;
+    };
     const [result, setResult] = useState(() => ({ queryKey, rows: getCachedRows(queryKey) }));
 
     useEffect(

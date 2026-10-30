@@ -5,7 +5,11 @@ import type { SyncAccountTransactionsDep } from './createSyncAccountTransactions
 export type SyncQueueDeps = SyncAccountTransactionsDep & TransactionRepositoryDep;
 
 export type SyncQueue = {
-    requestSync: (params: { accountKeys: string[]; mode: SyncMode }) => void;
+    /**
+     * Starts the syncs in the background; resolves once each new one is marked as syncing, so a
+     * reader after it sees the account as syncing.
+     */
+    requestSync: (params: { accountKeys: string[]; mode: SyncMode }) => Promise<void>;
     isSyncing: (accountKey: string) => boolean;
     /** Takes no more requests and resolves once the running syncs are done. */
     close: () => Promise<void>;
@@ -44,11 +48,12 @@ export const createSyncQueue = (deps: SyncQueueDeps): SyncQueue => {
     };
 
     /** Marked as syncing in the database, so the app reads it with the rest of its state. */
-    const runAccount = async (accountKey: string, mode: SyncMode) => {
+    const runAccount = async (accountKey: string, mode: SyncMode, onStarted: () => void) => {
         // Only stored accounts can be synced, or have a sync state.
         if ((await deps.transactionRepository.selectAccount(accountKey)) === undefined) return;
 
         await deps.transactionRepository.setSyncing({ accountKey, isSyncing: true });
+        onStarted();
         try {
             await runSyncs(accountKey, mode);
         } finally {
@@ -60,23 +65,30 @@ export const createSyncQueue = (deps: SyncQueueDeps): SyncQueue => {
     };
 
     return {
-        requestSync: ({ accountKeys, mode }) => {
+        requestSync: async ({ accountKeys, mode }) => {
             if (isClosed) return;
 
-            accountKeys.forEach(accountKey => {
+            const starts = accountKeys.map(accountKey => {
                 if (running.has(accountKey)) {
                     reruns.set(accountKey, mergeModes(reruns.get(accountKey), mode));
 
-                    return;
+                    return Promise.resolve();
                 }
 
-                const run = runAccount(accountKey, mode)
-                    // An unexpected failure (the database, not the backend) must not leave the
-                    // account stuck as syncing; the next request retries it.
-                    .catch(() => {})
-                    .finally(() => running.delete(accountKey));
-                running.set(accountKey, run);
+                return new Promise<void>(onStarted => {
+                    const run = runAccount(accountKey, mode, onStarted)
+                        // An unexpected failure (the database, not the backend) must not leave
+                        // the account stuck as syncing; the next request retries it.
+                        .catch(() => {})
+                        .finally(() => {
+                            running.delete(accountKey);
+                            // Never started (not stored, or the database failed): nothing waits.
+                            onStarted();
+                        });
+                    running.set(accountKey, run);
+                });
             });
+            await Promise.all(starts);
         },
 
         isSyncing: accountKey => running.has(accountKey),

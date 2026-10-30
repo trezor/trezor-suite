@@ -34,11 +34,14 @@ import { PendingGroupHeader } from './TransactionsGroup/PendingGroupHeader';
 const SEARCH_DEBOUNCE_MS = 200;
 
 const getSyncStateQuery = (accountKey: string) =>
-    createTransactionStoreQuery(db =>
-        db
-            .selectFrom('sync_state')
-            .select(['is_syncing', 'is_complete', 'last_synced_at', 'last_error'])
-            .where('account_key', '=', accountKey),
+    createTransactionStoreQuery(
+        db =>
+            db
+                .selectFrom('sync_state')
+                .select(['is_syncing', 'is_complete', 'last_synced_at', 'last_error'])
+                .where('account_key', '=', accountKey),
+        // Named, so its first rows come once a sync it starts is marked, like the page's.
+        { accountKeys: [accountKey] },
     );
 
 type SyncState = TransactionStoreRow<ReturnType<typeof getSyncStateQuery>>;
@@ -125,9 +128,11 @@ export const StoredTransactionList = ({ account }: StoredTransactionListProps) =
     const isComplete = syncState?.is_complete === 1;
     // Nothing to show yet, but more history is on its way: the account's first sync, or a later
     // page past what is stored, which asked for the rest. A search covers only what is stored.
+    // An earlier attempt may have failed; while it retries, that is still pending, not empty.
     const isFirstSyncPending =
         syncState === undefined ||
-        (syncState.last_synced_at === null && syncState.last_error === null);
+        (syncState.last_synced_at === null &&
+            (syncState.last_error === null || syncState.is_syncing === 1));
     const isRestComing = page > 1 && !isComplete && syncState?.last_error === null;
     const isLoading =
         rows === undefined ||

@@ -73,7 +73,7 @@ export const createTransactionStoreCompositionRoot = (
                     .map(({ accountKey }) => accountKey);
                 revisions.clear();
                 accounts.forEach(({ accountKey, revision }) => revisions.set(accountKey, revision));
-                syncQueue.requestSync({
+                void syncQueue.requestSync({
                     // Only those something has asked for; the store ignores the rest.
                     accountKeys:
                         await transactionRepository.selectTrackedAccountKeys(changedAccountKeys),
@@ -94,14 +94,12 @@ export const createTransactionStoreCompositionRoot = (
             let isSubscribed = true;
 
             void whenStarted(async () => {
-                if (!isSubscribed) return;
-
-                unsubscribe = liveQueries.subscribe(query, onRows);
-                // Lazy: asking for an account's rows is what downloads its history.
+                // Lazy: asking for an account's rows is what downloads its history. Started first,
+                // so the first rows already say the account is syncing, not that it has nothing.
                 const syncStates = await Promise.all(
                     query.accountKeys.map(transactionRepository.selectSyncState),
                 );
-                syncQueue.requestSync({
+                await syncQueue.requestSync({
                     accountKeys: query.accountKeys.filter(
                         (accountKey, index) =>
                             !syncQueue.isSyncing(accountKey) &&
@@ -109,6 +107,9 @@ export const createTransactionStoreCompositionRoot = (
                     ),
                     mode: 'latest',
                 });
+                if (!isSubscribed) return;
+
+                unsubscribe = liveQueries.subscribe(query, onRows);
             });
 
             return () => {
