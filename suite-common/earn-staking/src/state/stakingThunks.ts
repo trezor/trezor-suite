@@ -11,7 +11,8 @@ import type { NetworkSymbol } from '@trezor/network-module-types';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
 
 import type { StakingDep } from '../stakingServices';
-import { type StakingProductEntry, type StakingRootState, stakingActions } from './stakingReducer';
+import type { StakingProductEntry } from './stakingProductsReducer';
+import { type StakingRootState, stakingActions } from './stakingReducer';
 import {
     selectIsStakingSupportedSymbol,
     selectStakingProductDescriptors,
