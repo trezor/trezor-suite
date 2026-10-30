@@ -224,7 +224,7 @@ const bumpConnect = async () => {
         const preBumpPackageJSON = JSON.parse(preBumpRawPackageJSON);
         const { version: preBumpVersion } = preBumpPackageJSON;
 
-        // Uses script packages/connect/script/bump-version.ts to increase version in multiple files.
+        // Uses script packages/connect/scripts/bump-version.ts to increase version in multiple files.
         await exec('yarn', ['workspace', '@trezor/connect', `version:${semver}`]);
 
         const rawPackageJSON = await readFile(CONNECT_PACKAGE_JSON_PATH, 'utf-8');
