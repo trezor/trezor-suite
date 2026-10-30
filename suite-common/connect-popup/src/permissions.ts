@@ -11,6 +11,7 @@ import { isArrayMember } from '@trezor/utils';
 import { unique } from '@trezor/utils/src/unique';
 
 import {
+    CALL_SOURCE_MCP,
     CALL_SOURCE_WALLETCONNECT,
     type ConnectCallSource,
     type ConnectProcessInfo,
@@ -94,14 +95,16 @@ export const isIdentifiedProcess = (process: ConnectProcessInfo): boolean =>
  * Permissions are remembered only for a caller that can be told apart from others: not for a
  * process that could not be identified, and not for the origin `null` that browsers send for every
  * sandboxed or local page. WalletConnect is excluded too: its consent lives in its own session.
- * A source with no `process` at all (web, deeplink, MCP without a resolved process) is told apart
- * by its origin alone — for MCP that origin is the constant `mcp://localhost`, so MCP callers
- * whose process stayed unresolved do still share one grant.
+ * A source with no `process` at all (web, deeplink) is told apart by its origin alone. MCP is the
+ * exception: its origin is the constant `mcp://localhost`, so every MCP caller without a resolved
+ * process would share one grant — an identified process is required for it instead.
  */
 export const canRememberPermissions = (source: ConnectCallSource): boolean =>
     source.type !== CALL_SOURCE_WALLETCONNECT &&
     source.origin !== 'null' &&
-    (!source.process || isIdentifiedProcess(source.process));
+    (source.type === CALL_SOURCE_MCP
+        ? !!source.process && isIdentifiedProcess(source.process)
+        : !source.process || isIdentifiedProcess(source.process));
 
 export const groupPermissionsByCoin = (permissions: PermissionRequest[]): GroupedPermissions[] => {
     const order: (CoinSymbol | undefined)[] = [];
