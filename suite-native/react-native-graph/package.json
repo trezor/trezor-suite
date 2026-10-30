@@ -17,7 +17,7 @@
         "@trezor/utils": "workspace:*",
         "@types/react": "19.3.0",
         "react": "19.3.0",
-        "react-native": "0.88.0",
+        "react-native": "0.88.1",
         "react-native-gesture-handler": "~3.3.0",
         "react-native-reanimated": "4.7.1"
     },
