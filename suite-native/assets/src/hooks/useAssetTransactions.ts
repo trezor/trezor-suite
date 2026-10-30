@@ -14,15 +14,15 @@ import {
     areAccountHistoriesEqual,
     selectWalletAssetAccountHistories,
 } from '../assetTransactionsSelectors';
+import { useAccountPageFetching } from './useAccountPageFetching';
+import { useRefreshAccounts } from './useRefreshAccounts';
 import {
     getAccountPaging,
     getAssetTokenTransfers,
     groupAssetTransactionsByDay,
     mergeAssetTransactions,
     takeWholeTransactions,
-} from '../assetTransactionsUtils';
-import { useAccountPageFetching } from './useAccountPageFetching';
-import { useRefreshAccounts } from './useRefreshAccounts';
+} from '../utils/assetTransactionsUtils';
 
 type UseAssetTransactionsParams = {
     networkSymbol: NetworkSymbol;

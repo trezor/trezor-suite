@@ -1,11 +1,11 @@
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
+import { AssetTransactionList } from '@suite-native/assets';
 import {
     type AssetsStackParamList,
     type AssetsStackRoutes,
     Screen,
 } from '@suite-native/navigation';
-import { AssetTransactionList } from '@suite-native/transactions';
 
 import { AssetDetailActions } from '../components/AssetDetailActions';
 import { AssetDetailHeader } from '../components/AssetDetailHeader';

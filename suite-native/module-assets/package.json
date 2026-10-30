@@ -28,7 +28,6 @@
         "@suite-native/navigation": "workspace:*",
         "@suite-native/price-chart": "workspace:*",
         "@suite-native/toasts": "workspace:*",
-        "@suite-native/transactions": "workspace:*",
         "@trezor/styles-native": "workspace:*",
         "react": "19.2.3",
         "react-redux": "9.3.0"

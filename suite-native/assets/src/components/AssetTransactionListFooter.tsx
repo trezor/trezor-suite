@@ -1,5 +1,4 @@
-import { OlderHistoryStatus } from './OlderHistoryStatus';
-import { TransactionsListFooter } from './TransactionsListFooter';
+import { OlderHistoryStatus, TransactionsListFooter } from '@suite-native/transactions';
 
 type AssetTransactionListFooterProps = {
     hasMoreTransactions: boolean;

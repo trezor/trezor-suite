@@ -26,7 +26,6 @@
         { "path": "../navigation" },
         { "path": "../price-chart" },
         { "path": "../toasts" },
-        { "path": "../transactions" },
         {
             "path": "../../packages/styles-native"
         },

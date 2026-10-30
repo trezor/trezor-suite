@@ -6,15 +6,17 @@ import { FlashList } from '@shopify/flash-list';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
 import { Box, useScrollDivider } from '@suite-native/atoms';
+import {
+    TokenTransferListItem,
+    TransactionListGroupTitle,
+    TransactionListItem,
+} from '@suite-native/transactions';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-import { type AssetTransactionListItem } from '../assetTransactionsUtils';
 import { AssetTransactionListEmptyState } from './AssetTransactionListEmptyState';
 import { AssetTransactionListFooter } from './AssetTransactionListFooter';
-import { TokenTransferListItem } from './TokenTransferListItem';
-import { TransactionListGroupTitle } from './TransactionListGroupTitle';
-import { TransactionListItem } from './TransactionListItem';
 import { useAssetTransactions } from '../hooks/useAssetTransactions';
+import { type AssetTransactionListItem } from '../utils/assetTransactionsUtils';
 
 const listContainerStyle = prepareNativeStyle(utils => ({
     paddingTop: utils.spacings.sp8,

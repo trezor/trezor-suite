@@ -1,6 +1,5 @@
 export * from './components/InstantStakeBanner';
 export * from './components/TransactionList';
-export * from './components/AssetTransactionList';
 export * from './components/TransactionIcon';
 export * from './components/TransactionName';
 export * from './components/UnstakeTransactionDetailTitle';
@@ -10,6 +9,9 @@ export * from './components/TransactionOutputLabelEditable';
 export * from './components/TokenTransferListItem';
 export * from './components/TransactionListItem';
 export * from './components/TransactionListItemContainer';
+export * from './components/TransactionListGroupTitle';
+export * from './components/TransactionsListFooter';
+export * from './components/OlderHistoryStatus';
 export * from './components/TransactionsEmptyState';
 export * from './hooks/useFetchMissingTransactionFiatRates';
 export * from './components/TransactionTarget';

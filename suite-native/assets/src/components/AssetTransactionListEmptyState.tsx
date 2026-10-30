@@ -1,6 +1,5 @@
 import { ListItemSkeleton, VStack } from '@suite-native/atoms';
-
-import { TransactionsEmptyState } from './TransactionsEmptyState';
+import { TransactionsEmptyState } from '@suite-native/transactions';
 
 type AssetTransactionListEmptyStateProps = {
     isLoading: boolean;

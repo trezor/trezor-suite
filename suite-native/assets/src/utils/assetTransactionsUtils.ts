@@ -5,8 +5,7 @@ import {
     sortByBlockHeight,
 } from '@suite-common/wallet-utils';
 import { type TypedTokenTransfer, type WalletAccountTransaction } from '@suite-native/tokens';
-
-import { getOlderHistoryPage } from './utils';
+import { getOlderHistoryPage } from '@suite-native/transactions';
 
 const PENDING_GROUP_KEY = 'pending';
 

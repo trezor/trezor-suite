@@ -5,7 +5,7 @@ import { type AccountKey } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { type PageRequest } from '../assetTransactionsUtils';
+import { type PageRequest } from '../utils/assetTransactionsUtils';
 
 const NO_ACCOUNT_KEYS: ReadonlySet<AccountKey> = new Set();
 
