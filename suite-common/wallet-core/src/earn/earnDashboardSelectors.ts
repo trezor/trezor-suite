@@ -725,3 +725,18 @@ export const selectIsEarnBalanceBreakdownDisplayed = createMemoizedSelector(
         !isFiatTotalIncomplete &&
         !isFiatTotalUnavailable,
 );
+
+export const selectStakingPositionsCount = createMemoizedSelector(
+    [selectStakingListItems],
+    stakingPositions => stakingPositions.length,
+);
+
+export const selectYieldPositionsCount = createMemoizedSelector(
+    [selectYieldListItems],
+    yieldPositions => yieldPositions.length,
+);
+
+export const selectEarnPositionsCount = createMemoizedSelector(
+    [selectStakingPositionsCount, selectYieldPositionsCount],
+    (stakingPositionsCount, yieldPositionsCount) => stakingPositionsCount + yieldPositionsCount,
+);
