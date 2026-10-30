@@ -12,14 +12,26 @@ import { createWorkerSqlite } from './sqlite/createWorkerSqlite';
 
 // Larger than a screen's page: walking a whole history takes fewer requests.
 const PAGE_SIZE = 50;
+// Enough for the pages, counts and states of the accounts someone clicks through.
+const QUERY_CACHE_SIZE = 100;
 
 export type EnsureTransactionStoreDeps = GetTrezorConnectPrivilegedDep & {
     /** The SQLite worker; see `createTransactionStoreWorker`. */
     createWorker: () => Worker;
 };
 
+/**
+ * The last rows of each query, by its compiled form, as Evolu caches them: a list mounted again
+ * shows them at once while its live query refreshes, instead of starting empty.
+ */
+export type TransactionStoreQueryCache = {
+    get: (queryKey: string) => unknown[] | undefined;
+    set: (queryKey: string, rows: unknown[]) => void;
+};
+
 export type TransactionStoreService = {
     transactionStore: TransactionStore;
+    queryCache: TransactionStoreQueryCache;
     /** Disposes the store, then ends its SQLite worker. */
     dispose: () => Promise<void>;
     /**
@@ -47,6 +59,23 @@ export const createEnsureTransactionStore = (
     deps: EnsureTransactionStoreDeps,
 ): EnsureTransactionStore => {
     let service: TransactionStoreService | null = null;
+
+    const createQueryCache = (): TransactionStoreQueryCache => {
+        // A `Map` keeps insertion order, so the first key is the least recently set.
+        const rowsByQuery = new Map<string, unknown[]>();
+
+        return {
+            get: queryKey => rowsByQuery.get(queryKey),
+            set: (queryKey, rows) => {
+                rowsByQuery.delete(queryKey);
+                rowsByQuery.set(queryKey, rows);
+                if (rowsByQuery.size > QUERY_CACHE_SIZE) {
+                    const [oldestKey] = rowsByQuery.keys();
+                    if (oldestKey !== undefined) rowsByQuery.delete(oldestKey);
+                }
+            },
+        };
+    };
 
     /**
      * The app's Connect, on the backend the user chose; it holds the networks' connections, so
@@ -93,6 +122,7 @@ export const createEnsureTransactionStore = (
 
         return {
             transactionStore,
+            queryCache: createQueryCache(),
             dispose: () => stop(),
             deleteDatabase: () => stop(sqlite.deleteDatabase),
         };

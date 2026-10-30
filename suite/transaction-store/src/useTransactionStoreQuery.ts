@@ -7,25 +7,35 @@ import { injectEnsureTransactionStore } from './createEnsureTransactionStore';
 
 /**
  * The query's rows, kept current, as Evolu's `useQuery`: the store runs the query in its worker
- * and sends new rows whenever a write changes them. `undefined` until the first rows arrive; while
- * a changed query loads, the previous one's. Build the query with `createTransactionStoreQuery`.
+ * and sends new rows whenever a write changes them. A query asked for before starts from its last
+ * rows while it refreshes; a new one from the previous query's rows, or `undefined` if none. Build
+ * the query with `createTransactionStoreQuery`.
  */
 export const useTransactionStoreQuery = <TRow>(
     query: TransactionStoreQuery<TRow>,
 ): TRow[] | undefined => {
     const { ensureTransactionStore } = useServices(injectEnsureTransactionStore);
-    // The same query, however often it is rebuilt, keeps its subscription.
+    const { transactionStore, queryCache } = ensureTransactionStore();
+    // The same query, however often it is rebuilt, keeps its subscription and its cached rows.
     const queryKey = JSON.stringify(query);
     const stableQuery = useMemo(
         (): TransactionStoreQuery<TRow> => JSON.parse(queryKey),
         [queryKey],
     );
-    const [rows, setRows] = useState<TRow[]>();
+    // The cache holds what this query's live subscription sent, so the rows are its own.
+    const getCachedRows = (key: string) => queryCache.get(key) as TRow[] | undefined;
+    const [result, setResult] = useState(() => ({ queryKey, rows: getCachedRows(queryKey) }));
 
     useEffect(
-        () => ensureTransactionStore().transactionStore.subscribeQuery(stableQuery, setRows),
-        [ensureTransactionStore, stableQuery],
+        () =>
+            transactionStore.subscribeQuery(stableQuery, rows => {
+                queryCache.set(queryKey, rows);
+                setResult({ queryKey, rows });
+            }),
+        [transactionStore, queryCache, stableQuery, queryKey],
     );
 
-    return rows;
+    if (result.queryKey === queryKey) return result.rows;
+
+    return getCachedRows(queryKey) ?? result.rows;
 };
