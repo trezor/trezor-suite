@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react';
 
 import { selectFullSelectedAccount } from '@suite/account';
+import { selectIsTransactionStoreActive } from '@suite/transaction-store';
 import {
     selectAccountTransactionsWithNulls,
     selectIsLoadingAccountTransactions,
@@ -44,6 +45,7 @@ export const Transactions = () => {
     const accountTransactions = useSelector(state =>
         selectAccountTransactionsWithNulls(state, selectedAccount.account?.key || null),
     );
+    const isTransactionStoreActive = useSelector(selectIsTransactionStoreActive);
 
     if (selectedAccount.status !== 'loaded') {
         return <Layout selectedAccount={selectedAccount} />;
@@ -82,7 +84,16 @@ export const Transactions = () => {
         !account.empty &&
         (isDirectRpcHistoryUnscanned(account) || getOlderHistoryFrom(account) !== undefined);
 
-    if (accountTransactions.length > 0 || transactionsIsLoading || hasDirectRpcHistoryToLoad) {
+    // The store's list reads its own history and shows its own loading, so whether Redux happens
+    // to hold the account's transactions yet must not decide that there are none.
+    const hasStoredHistory = isTransactionStoreActive && !account.empty;
+
+    if (
+        accountTransactions.length > 0 ||
+        transactionsIsLoading ||
+        hasDirectRpcHistoryToLoad ||
+        hasStoredHistory
+    ) {
         return (
             <Layout selectedAccount={selectedAccount}>
                 <CardanoNewProviderCard account={account} />
