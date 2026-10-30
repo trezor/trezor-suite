@@ -5,7 +5,7 @@ import { TestStream } from '@trezor/e2e-utils';
 import { expect, test } from '../../support/fixtures';
 import { createTestAnnotation } from '../../support/reporters/annotations';
 
-test.describe('TrezorConnect', { tag: ['@T3T1', '@T3W1', '@desktopOnly'] }, () => {
+test.describe('TrezorConnect', { tag: ['@T3T1', '@T3W1', '@desktopOnly', '@windows'] }, () => {
     test.use({ electronConf: { exposeConnectWs: true } });
 
     test.beforeEach(async ({ onboardingPage }) => {
@@ -44,7 +44,7 @@ test.describe('TrezorConnect', { tag: ['@T3T1', '@T3W1', '@desktopOnly'] }, () =
             });
 
             await expect(connectPermissionsModal.processParagraph).toHaveText(
-                /^(node|MainThread)$/,
+                /^(node|Node\.js|MainThread)$/,
             );
             await expect(connectPermissionsModal.rememberCheckbox).toHaveTranslation(
                 'TR_CONNECT_MODAL_REMEMBER',
@@ -75,7 +75,7 @@ test.describe('TrezorConnect', { tag: ['@T3T1', '@T3W1', '@desktopOnly'] }, () =
                 coin: 'btc',
             });
             await expect(connectPermissionsModal.processParagraph).toHaveText(
-                /^(node|MainThread)$/,
+                /^(node|Node\.js|MainThread)$/,
             );
         },
     );

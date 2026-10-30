@@ -33,7 +33,7 @@ function currentsActionUrl(projectId: string, actionId: string): string {
  * :white_check_mark: *Restored (1)*
  * • Settings > Change passphrase — 25/25 pass · currents
  *
- * *Trezor Suite (desktop)*
+ * *Trezor Suite (Linux desktop)*
  * :warning: *Quarantined (1)*
  * • Onboarding > Create new wallet — 4/5 fail · action · currents
  *
