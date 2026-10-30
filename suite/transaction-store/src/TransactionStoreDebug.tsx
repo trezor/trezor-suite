@@ -10,7 +10,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { SectionItem } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
-import { injectGetTransactionStoreService } from './createTransactionStoreService';
+import { injectEnsureTransactionStore } from './createEnsureTransactionStore';
 import {
     transactionStoreQueryKeys,
     useAccountSyncStatuses,
@@ -19,13 +19,13 @@ import {
 import { selectIsTransactionStoreActive } from './transactionStoreSelectors';
 
 const useStoredTransactionCounts = (accountKeys: string[]) => {
-    const { getTransactionStoreService } = useServices(injectGetTransactionStoreService);
+    const { ensureTransactionStore } = useServices(injectEnsureTransactionStore);
 
     return useQuery({
         // Under the transactions key but no account's, so it refetches whenever any rows change.
         queryKey: [...transactionStoreQueryKeys.allTransactions(), { counts: accountKeys }],
         queryFn: async () => {
-            const { transactionStore } = getTransactionStoreService();
+            const { transactionStore } = ensureTransactionStore();
             const counts = await Promise.all(
                 accountKeys.map(accountKey =>
                     transactionStore.countTransactions({ accountKeys: [accountKey] }),
@@ -56,7 +56,7 @@ const getAccountTitle = (account: Account) =>
 
 /** What the worker holds and is doing, per account; mounted only while the store runs. */
 const TransactionStoreAccounts = () => {
-    const { getTransactionStoreService } = useServices(injectGetTransactionStoreService);
+    const { ensureTransactionStore } = useServices(injectEnsureTransactionStore);
     const accounts = useSelector(selectAccounts).filter(account => account.visible);
     const accountKeys = accounts.map(({ key }) => key);
     const { data: statuses } = useAccountSyncStatuses(accountKeys);
@@ -64,7 +64,7 @@ const TransactionStoreAccounts = () => {
     useTransactionStoreInvalidation();
 
     const requestFullHistory = (accountKey: string) =>
-        getTransactionStoreService().transactionStore.requestFullHistory(accountKey);
+        ensureTransactionStore().transactionStore.requestFullHistory(accountKey);
 
     return (
         <>

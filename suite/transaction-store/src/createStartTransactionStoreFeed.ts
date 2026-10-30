@@ -5,7 +5,7 @@ import type {
     Unsubscribe,
 } from '@suite-common/transaction-store';
 
-import type { GetTransactionStoreServiceDep } from './createTransactionStoreService';
+import type { EnsureTransactionStoreDep } from './createEnsureTransactionStore';
 import {
     type TransactionStoreFeedState,
     selectTransactionStoreAccountRevisions,
@@ -13,7 +13,7 @@ import {
     selectTransactionStoreKnownTokens,
 } from './transactionStoreFeedSelectors';
 
-export type StartTransactionStoreFeedDeps = GetTransactionStoreServiceDep & {
+export type StartTransactionStoreFeedDeps = EnsureTransactionStoreDep & {
     getState: () => TransactionStoreFeedState;
     subscribe: (listener: () => void) => Unsubscribe;
     /** Whether the store runs at all; until a screen uses it, only in debug mode. */
@@ -54,7 +54,7 @@ export const createStartTransactionStoreFeed =
             if (fed === null) return;
 
             fed = null;
-            await deps.getTransactionStoreService().dispose();
+            await deps.ensureTransactionStore().dispose();
         };
 
         const feed = () => {
@@ -68,7 +68,7 @@ export const createStartTransactionStoreFeed =
             const accounts = selectTransactionStoreAccounts(state);
             const revisions = selectTransactionStoreAccountRevisions(state);
             const knownTokens = selectTransactionStoreKnownTokens(state);
-            const service = deps.getTransactionStoreService();
+            const service = deps.ensureTransactionStore();
 
             if (accounts !== fed?.accounts) {
                 // The whole list: the store diffs it against what it holds and deletes the rest,

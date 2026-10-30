@@ -19,9 +19,9 @@ import {
 import { selectDebugSettings, selectLanguage, selectTradeServerEnvironment } from '@suite/settings';
 import { createSuiteSyncDesktopCompositionRoot } from '@suite/suite-sync';
 import {
-    type GetTransactionStoreServiceDep,
+    type EnsureTransactionStoreDep,
     type StartTransactionStoreFeedDep,
-    createGetTransactionStoreService,
+    createEnsureTransactionStore,
     createStartTransactionStoreFeed,
     createTransactionStoreWorker,
     selectIsTransactionStoreActive,
@@ -83,7 +83,7 @@ export type SuiteServices = CommonServices &
     SuiteRouterHistoryDep &
     TransportsDep &
     BluetoothDep &
-    GetTransactionStoreServiceDep &
+    EnsureTransactionStoreDep &
     StartTransactionStoreFeedDep;
 
 export type StoreAPIDep = Pick<SuiteReduxStore, 'getState' | 'dispatch'>;
@@ -157,12 +157,12 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
 
     // Lazy: the worker starts on the first use. The feed, started by the app's init once Connect
     // is up, starts it only while its Debug settings switch is on.
-    const getTransactionStoreService = createGetTransactionStoreService({
+    const ensureTransactionStore = createEnsureTransactionStore({
         getTrezorConnect: deps.getTrezorConnect,
         createWorker: createTransactionStoreWorker,
     });
     const startTransactionStoreFeed = createStartTransactionStoreFeed({
-        getTransactionStoreService,
+        ensureTransactionStore,
         getState: deps.getState,
         subscribe: deps.subscribe,
         getIsEnabled: toGetter(deps.getState, selectIsTransactionStoreActive),
@@ -191,7 +191,7 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         desktopApi: deps.desktopApi,
         networks,
         suiteSync,
-        getTransactionStoreService,
+        ensureTransactionStore,
         startTransactionStoreFeed,
         bip329,
         migrateLegacyLabelsToSuiteSync,

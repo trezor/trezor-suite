@@ -12,7 +12,7 @@ import {
     toWorkerMessage,
 } from './worker/transactionStoreWorkerProtocol';
 
-export type GetTransactionStoreServiceDeps = GetTrezorConnectPrivilegedDep & {
+export type EnsureTransactionStoreDeps = GetTrezorConnectPrivilegedDep & {
     createWorker: () => Worker;
 };
 
@@ -22,20 +22,23 @@ export type TransactionStoreService = {
     dispose: () => Promise<void>;
 };
 
-/** Spawns the worker on the first call only, so nothing runs until the store is used. */
-export type GetTransactionStoreService = () => TransactionStoreService;
+/**
+ * The running store, started first when it is not: spawns the worker, which opens and migrates the
+ * database. Nothing runs until something needs the store.
+ */
+export type EnsureTransactionStore = () => TransactionStoreService;
 
-export type GetTransactionStoreServiceDep = {
-    getTransactionStoreService: GetTransactionStoreService;
+export type EnsureTransactionStoreDep = {
+    ensureTransactionStore: EnsureTransactionStore;
 };
 
-export const injectGetTransactionStoreService = (services: any): GetTransactionStoreServiceDep => ({
-    getTransactionStoreService: services.getTransactionStoreService,
+export const injectEnsureTransactionStore = (services: any): EnsureTransactionStoreDep => ({
+    ensureTransactionStore: services.ensureTransactionStore,
 });
 
-export const createGetTransactionStoreService = (
-    deps: GetTransactionStoreServiceDeps,
-): GetTransactionStoreService => {
+export const createEnsureTransactionStore = (
+    deps: EnsureTransactionStoreDeps,
+): EnsureTransactionStore => {
     let service: TransactionStoreService | null = null;
 
     const createService = (): TransactionStoreService => {

@@ -10,7 +10,7 @@ import type { Account, WalletAccountTransaction } from '@suite-common/wallet-typ
 import { enhanceTransaction } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
 
-import { injectGetTransactionStoreService } from './createTransactionStoreService';
+import { injectEnsureTransactionStore } from './createEnsureTransactionStore';
 import {
     transactionStoreQueryKeys,
     useTransactionStoreInvalidation,
@@ -58,8 +58,8 @@ export const useStoredAccountTransactions = ({
     search,
     hideSuspicious,
 }: UseStoredAccountTransactionsParams): StoredAccountTransactions => {
-    const { getTransactionStoreService } = useServices(injectGetTransactionStoreService);
-    const { transactionStore } = getTransactionStoreService();
+    const { ensureTransactionStore } = useServices(injectEnsureTransactionStore);
+    const { transactionStore } = ensureTransactionStore();
     const accountKey = account.key;
 
     useTransactionStoreInvalidation();

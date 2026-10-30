@@ -25,7 +25,7 @@ flowchart TB
         root["createSuiteCompositionRoot"]
         init["initAction"]
         feed["startTransactionStoreFeed"]
-        service["getTransactionStoreService<br/>(spawns the worker on first use)"]
+        service["ensureTransactionStore<br/>(starts the worker when not running)"]
         client["RPC client<br/>TransactionStore"]
         hook["useStoredAccountTransactions<br/>(react-query)"]
         list["StoredTransactionList"]
@@ -86,7 +86,7 @@ flowchart TB
 | `createTransactionStoreRpcClient` / `startTransactionStoreRpcHost` | engine  | The typed RPC between the app and the worker.                                                                                   |
 | `transactionStoreWorker`                                           | host    | The worker entry. Opens SQLite, starts the engine and serves it.                                                                |
 | `startConnectRelay`                                                | host    | Sends each `getAccountInfo` to the app and resolves it with Connect's answer.                                                   |
-| `getTransactionStoreService`                                       | host    | Spawns the worker on first use and owns it. Answers the relay with Connect's `getAccountInfo`.                                  |
+| `ensureTransactionStore`                                           | host    | Spawns the worker on first use and owns it. Answers the relay with Connect's `getAccountInfo`.                                  |
 | `startTransactionStoreFeed`                                        | host    | Pushes what changed in Redux to the store: accounts, account revisions and known tokens. Stops the store when it gets disabled. |
 | `useStoredAccountTransactions`                                     | host    | A page, its count and the sync status for React. Refetches on the store's events.                                               |
 

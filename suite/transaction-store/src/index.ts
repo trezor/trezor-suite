@@ -1,10 +1,10 @@
 export {
-    type GetTransactionStoreService,
+    type EnsureTransactionStore,
     type TransactionStoreService,
-    type GetTransactionStoreServiceDep,
-    createGetTransactionStoreService,
-    injectGetTransactionStoreService,
-} from './createTransactionStoreService';
+    type EnsureTransactionStoreDep,
+    createEnsureTransactionStore,
+    injectEnsureTransactionStore,
+} from './createEnsureTransactionStore';
 export { createTransactionStoreWorker } from './createTransactionStoreWorker';
 export {
     type StartTransactionStoreFeed,
