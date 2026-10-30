@@ -1292,14 +1292,17 @@ export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
                         } else if (clientInfo?.name) {
                             sessionProcessInfo = {
                                 name: clientInfo.name,
-                                fullPath: clientInfo.name,
+                                // The declared name is one the client chooses, so it labels the
+                                // caller but is never the path that permissions are keyed by.
+                                fullPath: '',
                                 warning: true,
                             };
                         }
                     } else if (clientInfo?.name) {
+                        // Nothing was looked up, so the declared name is a label and no more.
                         sessionProcessInfo = {
                             name: clientInfo.name,
-                            fullPath: clientInfo.name,
+                            fullPath: '',
                             warning: true,
                         };
                     }
