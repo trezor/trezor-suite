@@ -4,6 +4,7 @@ import { Translation } from '@suite/intl';
 import { selectIsTransactionStoreActive } from '@suite/transaction-store';
 import { hasNetworkPotentialFraudTransactions } from '@suite-common/token-definitions';
 import {
+    selectAccountTransactionsFetchStatus,
     selectAreAllTransactionsLoaded,
     selectIsHideSuspiciousTransactions,
     useDirectRpcHistoryState,
@@ -66,6 +67,16 @@ const ReduxTransactionList = ({
     // as the account having no transactions.
     const directRpcHistoryState = useDirectRpcHistoryState(account.key);
     const isRecentWindowEmpty = directRpcHistoryState === 'recentWindowEmpty';
+    const fetchStatus = useSelector(state =>
+        selectAccountTransactionsFetchStatus(state, account.key),
+    );
+    // An account with history but none of it loaded yet is still loading: "no transactions found"
+    // is for when everything loaded is hidden. A failed fetch still ends in the message.
+    const isFirstPagePending =
+        result.allTransactions.length === 0 &&
+        account.history.total > 0 &&
+        !isRecentWindowEmpty &&
+        fetchStatus?.status !== 'error';
 
     return (
         <TransactionList
@@ -83,7 +94,9 @@ const ReduxTransactionList = ({
             transactions={result.visibleTransactions}
             symbol={symbol}
             account={account}
-            isLoading={result.isFetching || directRpcHistoryState === 'unscanned'}
+            isLoading={
+                result.isFetching || directRpcHistoryState === 'unscanned' || isFirstPagePending
+            }
             customTotalItems={customTotalItems ?? result.visibleTotal}
             isExportable={isExportable}
             onPageRequested={setVisiblePages}
