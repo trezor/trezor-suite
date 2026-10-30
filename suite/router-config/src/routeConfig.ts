@@ -419,6 +419,12 @@ export const routes = [
     },
 
     {
+        name: 'wallet-coinjoin',
+        pattern: '/accounts/coinjoin',
+        app: 'wallet',
+        params: walletParams,
+    },
+    {
         name: 'wallet-anonymize',
         pattern: '/accounts/anonymize',
         app: 'wallet',

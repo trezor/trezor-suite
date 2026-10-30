@@ -31,7 +31,7 @@ export const CoinjoinSuccessModal = ({ relatedAccountKey }: CoinjoinSuccessModal
         dispatch(closeModal());
         dispatch(
             gotoThunk({
-                routeName: 'wallet-index',
+                routeName: 'wallet-coinjoin',
                 params: {
                     symbol,
                     accountIndex: index,

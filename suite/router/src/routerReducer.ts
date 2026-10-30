@@ -11,6 +11,7 @@ import { type RouterAppWithParams, type SettingsBackRoute } from './routes';
 const ACCOUNT_TABS = [
     'wallet-index',
     'wallet-details',
+    'wallet-coinjoin',
     // Debug only: trading form embed preview
     'wallet-trade',
     'wallet-tokens',

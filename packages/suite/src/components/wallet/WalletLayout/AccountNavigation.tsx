@@ -80,6 +80,17 @@ export const AccountNavigation = ({ account }: AccountNavigationProps) => {
             'data-testid': '@wallet/menu/staking',
         },
         {
+            id: 'wallet-coinjoin',
+            // Coinjoin surfaces report nothing to analytics.
+            callback: () => {
+                dispatch(gotoThunk({ routeName: 'wallet-coinjoin', preserveParams: true }));
+            },
+            title: <Translation id="TR_ACCOUNT_TYPE_COINJOIN" />,
+            isHidden: account?.backendType !== 'coinjoin',
+            activeRoutes: ['wallet-coinjoin', 'wallet-anonymize'],
+            'data-testid': '@wallet/menu/wallet-coinjoin',
+        },
+        {
             id: 'wallet-details',
             callback: () => {
                 goToWithAnalytics({ routeName: 'wallet-details', preserveParams: true });

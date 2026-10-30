@@ -155,6 +155,7 @@ const SECTIONS = {
         '/accounts/staking',
         '/accounts/sign-verify',
         '/accounts/details',
+        '/accounts/coinjoin',
         // Debug only: trading form embed preview
         '/accounts/trade',
         '/accounts/anonymize',
