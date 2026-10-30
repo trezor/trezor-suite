@@ -52,7 +52,7 @@ export const HomeAssetFeedback = () => {
     }
 
     return (
-        <Box position={{ type: 'relative' }}>
+        <Box position={{ type: 'relative' }} data-testid="@dashboard/home-asset/feedback">
             <FeedbackCard
                 heading={<Translation id="TR_HOME_ASSET_FEEDBACK_TITLE" />}
                 description={<Translation id="TR_FEEDBACK_CARD_DESCRIPTION" />}

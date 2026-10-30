@@ -58,7 +58,12 @@ export const UnhideAssetModal = ({ assetKey, reason, onCancel }: UnhideAssetModa
                     >
                         <Translation id="TR_HOME_ASSET_UNHIDE" />
                     </Modal.Button>
-                    <Modal.Button intent="neutral" priority="secondary" onClick={onCancel}>
+                    <Modal.Button
+                        intent="neutral"
+                        priority="secondary"
+                        onClick={onCancel}
+                        data-testid="@hidden-tokens/unhide/cancel"
+                    >
                         <Translation id="TR_CANCEL" />
                     </Modal.Button>
                 </>

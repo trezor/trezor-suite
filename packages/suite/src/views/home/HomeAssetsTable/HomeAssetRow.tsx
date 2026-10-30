@@ -24,11 +24,13 @@ import { HOME_ASSET_CELL_PADDING, HOME_ASSET_LINE_GAP } from './homeAssetTableLa
 type HomeAssetRowProps = {
     assetKey: WalletAssetKey;
     hasBorderTop?: boolean;
+    assetNameTestId?: string;
 };
 
 export const HomeAssetRow = memo(function HomeAssetRow({
     assetKey,
     hasBorderTop,
+    assetNameTestId,
 }: HomeAssetRowProps) {
     const { dispatch } = useServices(injectDispatch);
     const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey));
@@ -50,7 +52,7 @@ export const HomeAssetRow = memo(function HomeAssetRow({
             onClick={openAssetDetail}
             data-testid={`@dashboard/home-asset-item/${symbol}/${contractAddress ?? 'coin'}`}
         >
-            <Table.Cell padding={HOME_ASSET_CELL_PADDING.first}>
+            <Table.Cell padding={HOME_ASSET_CELL_PADDING.first} data-testid={assetNameTestId}>
                 <HomeAssetIdentity
                     symbol={symbol}
                     contractAddress={contractAddress}

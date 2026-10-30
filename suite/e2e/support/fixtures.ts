@@ -28,6 +28,7 @@ import { DashboardPage } from './pageObjects/dashboardPage';
 import { DevicePrompt } from './pageObjects/devicePrompt';
 import { EarnNutshellModal } from './pageObjects/earnNutshellModal';
 import { GuidePanel } from './pageObjects/guidePanel';
+import { HomeAssetsSection } from './pageObjects/homeAssetsSection';
 import { MetadataPage } from './pageObjects/metadata/metadataPage';
 import { OnboardingPage } from './pageObjects/onboarding/onboardingPage';
 import { PaginationControl } from './pageObjects/pagination';
@@ -61,6 +62,7 @@ type Fixtures = {
     tradingPage: TradingPage;
     feeSection: FeeSection;
     assetsSection: AssetsSection;
+    homeAssetsSection: HomeAssetsSection;
     metadataPage: MetadataPage;
     trezorInput: TrezorInput;
     analytics: AnalyticsFixture;
@@ -135,6 +137,9 @@ const test = suiteBaseTest.extend<Fixtures>({
     },
     feeSection: async ({ page }, use) => {
         await use(new FeeSection(page));
+    },
+    homeAssetsSection: async ({ page }, use) => {
+        await use(new HomeAssetsSection(page));
     },
     assetsSection: async ({ page }, use) => {
         await use(new AssetsSection(page));
