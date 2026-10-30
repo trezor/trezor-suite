@@ -45,5 +45,55 @@ export const getCommitsSinceLastStableRelease = (commitLines: string[], packageN
 // `npm-prerelease(connect):`, `release:`) and non-user-facing churn (chore/test/ci/build/style/docs)
 // with or without a scope, and is self-limiting: a bookkeeping type added later cannot leak in.
 const USER_FACING_COMMIT = /^-\s+(?:feat|fix|perf|refactor|revert)(?:\([^)]*\))?:|^-\s+Revert "/;
-export const filterChangelogCommits = (commitLines: string[]) =>
-    commitLines.filter(line => USER_FACING_COMMIT.test(line));
+
+// The connect entry points are thin wrappers around `@trezor/connect`, so a repo-wide sweep that
+// happened to touch only their package manifest or tsconfig (e.g. `fix: add TON of missing
+// dependecies in package.json`) survives the type filter and reads as a real change to their
+// consumers. For them, a commit has to look like their own change in one of two ways: a matching
+// scope (connect or the package itself), or a diff that reached the package's own source. A sweep
+// that did reach their `src` is kept on purpose — see below. The generic dependency packages stay
+// on the type-only filter: there a foreign scope is not a reliable signal, since their changes are
+// routinely committed under the scope of the feature that needed them.
+const CHANGELOG_SCOPES: Record<string, string[]> = {
+    'connect-web': ['connect', 'connect-web'],
+    'connect-webextension': ['connect', 'connect-webextension'],
+    'connect-mobile': ['connect', 'connect-mobile'],
+};
+const COMMIT_SCOPE = /^-\s+(?:Revert ")?\w+\(([^)]*)\):/;
+
+// Whether `filterChangelogCommits` needs `commitsTouchingSrc` for this package, so the caller can
+// skip the extra src-scoped git log for the packages that do not use the scope allow-list.
+export const hasChangelogScopes = (packageName: string) => packageName in CHANGELOG_SCOPES;
+
+export const filterChangelogCommits = (
+    commitLines: string[],
+    packageName: string,
+    // Lines of the same log scoped to the package's `src`, to be matched by identity.
+    commitsTouchingSrc?: ReadonlySet<string>,
+) => {
+    const scopes = CHANGELOG_SCOPES[packageName];
+
+    return commitLines.filter(line => {
+        if (!USER_FACING_COMMIT.test(line)) {
+            return false;
+        }
+        if (!scopes) {
+            return true;
+        }
+
+        // A comma-separated scope (`fix(connect, connect-web): ...`) counts when any part matches.
+        const scope = line.match(COMMIT_SCOPE)?.[1];
+        if (scope?.split(',').some(part => scopes.includes(part.trim()))) {
+            return true;
+        }
+
+        // A foreign- or unscoped commit can still be a real change to the entry point: it is
+        // routine here to change one package under another's scope (e.g. `feat(suite-web): make
+        // permissions query in init optional ...`, whose whole diff is in `connect-web/src`). The
+        // scope rule alone would drop it, and a dropped change is invisible — the changelog is the
+        // only artifact these packages ship — so a commit that touched the package's own source
+        // counts whatever its scope says. A sweep that only touched the package's config or
+        // manifest still does not.
+        return !!commitsTouchingSrc?.has(line);
+    });
+};

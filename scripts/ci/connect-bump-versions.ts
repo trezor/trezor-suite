@@ -2,7 +2,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { promisify } from 'node:util';
 
-import { filterChangelogCommits, getCommitsSinceLastStableRelease } from './connect-changelog';
+import {
+    filterChangelogCommits,
+    getCommitsSinceLastStableRelease,
+    hasChangelogScopes,
+} from './connect-changelog';
 import {
     comment,
     commit,
@@ -212,8 +216,24 @@ const bumpConnect = async () => {
                 // Stop at the previous stable release so the entry spans only this release.
                 const newCommits = getCommitsSinceLastStableRelease(commitsArr, packageName);
 
+                // The packages filtered by commit scope (the connect entry points) also keep a
+                // commit committed under a foreign scope whose diff reached their own source, so
+                // read the src-scoped log for them. Same format, so the lines match by identity.
+                const srcGitLog = hasChangelogScopes(packageName)
+                    ? await getGitCommitByPath(
+                          path.posix.join(getTrezorPackageRelativePath(packageName), 'src'),
+                      )
+                    : undefined;
+                const commitsTouchingSrc = srcGitLog
+                    ? new Set(normalizeGitLog(srcGitLog.stdout))
+                    : undefined;
+
                 // Keep only user-facing changes; drop release bookkeeping and mechanical churn.
-                const changelogCommits = filterChangelogCommits(newCommits);
+                const changelogCommits = filterChangelogCommits(
+                    newCommits,
+                    packageName,
+                    commitsTouchingSrc,
+                );
 
                 if (changelogCommits.length) {
                     const CHANGELOG_PATH = path.join(PACKAGE_PATH, 'CHANGELOG.md');
