@@ -17,6 +17,7 @@ export const commonQueryKeys = {
     solanaRewards: (...args: any[]) => ['solana-rewards', ...args],
     solanaRewardsTotal: (address: string) => ['solana-rewards-total', address],
     tronStakingStats: () => ['tron-staking-stats'],
+    stakingProductInfo: (productId: string) => ['staking-product-info', productId],
     yieldOpportunity: (vaultId: string | undefined) => ['yield-opportunities', 'single', vaultId],
     yieldOpportunitiesList: (params: { limit: number }) => ['yield-opportunities', 'list', params],
     yieldOpportunitiesByAddress: (params: { outputToken?: string; network?: string }) => [

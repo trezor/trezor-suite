@@ -2,7 +2,10 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../device" },
         { "path": "../earn-staking-common" },
+        { "path": "../message-system" },
+        { "path": "../react-query" },
         { "path": "../wallet-types" },
         {
             "path": "../../packages/dependency-injection"
@@ -10,6 +13,10 @@
         {
             "path": "../../networks/network-module/network-module-types"
         },
+        { "path": "../../packages/redux-utils" },
+        { "path": "../../packages/utils" },
+        { "path": "../suite-types" },
+        { "path": "../test-utils" },
         { "path": "../../packages/requirements" }
     ]
 }

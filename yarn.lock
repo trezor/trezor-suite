@@ -11549,7 +11549,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/earn-staking-products@workspace:suite-common/earn-staking-products":
+"@suite-common/earn-staking-products@workspace:*, @suite-common/earn-staking-products@workspace:suite-common/earn-staking-products":
   version: 0.0.0-use.local
   resolution: "@suite-common/earn-staking-products@workspace:suite-common/earn-staking-products"
   dependencies:
@@ -11558,15 +11558,23 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/earn-staking@workspace:suite-common/earn-staking":
+"@suite-common/earn-staking@workspace:*, @suite-common/earn-staking@workspace:suite-common/earn-staking":
   version: 0.0.0-use.local
   resolution: "@suite-common/earn-staking@workspace:suite-common/earn-staking"
   dependencies:
+    "@reduxjs/toolkit": "npm:2.13.0"
+    "@suite-common/device": "workspace:*"
     "@suite-common/earn-staking-common": "workspace:*"
+    "@suite-common/message-system": "workspace:*"
+    "@suite-common/react-query": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/test-utils": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
     "@trezor/network-module-types": "workspace:*"
+    "@trezor/redux-utils": "workspace:*"
     "@trezor/requirements": "workspace:*"
+    "@trezor/utils": "workspace:*"
     zod: "npm:4.6.7"
   languageName: unknown
   linkType: soft
@@ -11579,10 +11587,12 @@ __metadata:
     "@suite-common/analytics": "workspace:*"
     "@suite-common/bip329-types": "workspace:*"
     "@suite-common/delegated-identity-key-types": "workspace:*"
+    "@suite-common/earn-staking": "workspace:*"
     "@suite-common/locale": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/networks": "workspace:*"
     "@suite-common/platform-encryption": "workspace:*"
+    "@suite-common/react-query": "workspace:*"
     "@suite-common/suite-rbf-labels-migrations-types": "workspace:*"
     "@suite-common/suite-sync-types": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
@@ -13136,6 +13146,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/blockchain@workspace:suite-native/blockchain"
   dependencies:
+    "@suite-common/earn-staking": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -15269,6 +15280,8 @@ __metadata:
     "@suite-common/delegated-identity-key": "workspace:*"
     "@suite-common/device": "workspace:*"
     "@suite-common/discreet-mode": "workspace:*"
+    "@suite-common/earn-staking": "workspace:*"
+    "@suite-common/earn-staking-products": "workspace:*"
     "@suite-common/extra-dependencies": "workspace:*"
     "@suite-common/firmware": "workspace:*"
     "@suite-common/geolocation": "workspace:*"
@@ -15278,6 +15291,7 @@ __metadata:
     "@suite-common/networks": "workspace:*"
     "@suite-common/persistent-device-data": "workspace:*"
     "@suite-common/platform-encryption-native": "workspace:*"
+    "@suite-common/react-query": "workspace:*"
     "@suite-common/receive": "workspace:*"
     "@suite-common/suite-rbf-labels-migrations": "workspace:*"
     "@suite-common/suite-sync": "workspace:*"
@@ -19523,7 +19537,9 @@ __metadata:
     "@suite-common/discreet-mode": "workspace:*"
     "@suite-common/earn-stablecoin": "workspace:^"
     "@suite-common/earn-stablecoin-api": "workspace:*"
+    "@suite-common/earn-staking": "workspace:*"
     "@suite-common/earn-staking-api": "workspace:*"
+    "@suite-common/earn-staking-products": "workspace:*"
     "@suite-common/extra-dependencies": "workspace:*"
     "@suite-common/feedback": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"

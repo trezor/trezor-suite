@@ -17,6 +17,12 @@
             "path": "../../suite-common/discreet-mode"
         },
         {
+            "path": "../../suite-common/earn-staking"
+        },
+        {
+            "path": "../../suite-common/earn-staking-products"
+        },
+        {
             "path": "../../suite-common/extra-dependencies"
         },
         { "path": "../../suite-common/firmware" },
@@ -36,6 +42,9 @@
         },
         {
             "path": "../platform-encryption-native"
+        },
+        {
+            "path": "../../suite-common/react-query"
         },
         { "path": "../../suite-common/receive" },
         {

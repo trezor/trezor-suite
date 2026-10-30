@@ -40,6 +40,7 @@ export const createDesktopApp =
         const preloadAction = await deps.services.hydrateReduxStore();
 
         deps.services.networks.loadNetworkModules();
+        deps.services.staking.loadStakingProducts();
 
         // Expose Redux store for Playwright/e2e tests
         if (typeof window !== 'undefined' && window.desktopFlags?.exposeStore) {
@@ -65,7 +66,7 @@ export const createDesktopApp =
                 root.render(
                     <ServicesProvider services={deps.services}>
                         <ReduxProvider store={deps.services.store}>
-                            <ReactQueryProvider>
+                            <ReactQueryProvider client={deps.services.queryClient}>
                                 <ConnectedIntlProvider>
                                     <TorLoadingScreen callback={resolve} />
                                 </ConnectedIntlProvider>
