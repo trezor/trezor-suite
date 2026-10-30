@@ -18,7 +18,7 @@ import { DynamicScreenHeader, Screen } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
 
 const DiscreetTextExample = () => (
-    <Discreet isForcedDiscreetMode>
+    <Discreet isForcedDiscreetMode color="contentSecondary" placeholderVariant="body-sm">
         <Text variant="body-sm" color="contentSecondary">
             {DISCREET_PLACEHOLDER}
         </Text>

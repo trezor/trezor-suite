@@ -1,12 +1,10 @@
-import { type ReactNode } from 'react';
-
 import { redactNumericalSubstring, useShouldRedactNumbers } from '@suite-common/discreet-mode';
 
 import { Discreet } from '../Discreet/Discreet';
 import { Text, type TextProps } from '../Text';
 
-export type DiscreetTextProps = TextProps & {
-    children?: ReactNode;
+export type DiscreetTextProps = Omit<TextProps, 'children'> & {
+    children?: string | number | null;
     isForcedDiscreetMode?: boolean;
 };
 
@@ -30,7 +28,11 @@ export const DiscreetText = ({
     if (children === null || children === undefined || children === '') return null;
 
     return (
-        <Discreet isForcedDiscreetMode={isForcedDiscreetMode}>
+        <Discreet
+            color={color}
+            placeholderVariant={textProps.variant}
+            isForcedDiscreetMode={isForcedDiscreetMode}
+        >
             <DiscreetTextContent color={color} testID={testID} {...textProps}>
                 {children}
             </DiscreetTextContent>

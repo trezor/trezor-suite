@@ -26,5 +26,13 @@ export const DiscreetAmountText = ({
         return text;
     }
 
-    return <Discreet isForcedDiscreetMode={discreetMode === 'enforced'}>{text}</Discreet>;
+    return (
+        <Discreet
+            color={color}
+            placeholderVariant={textProps.variant}
+            isForcedDiscreetMode={discreetMode === 'enforced'}
+        >
+            {text}
+        </Discreet>
+    );
 };

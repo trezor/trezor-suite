@@ -9,6 +9,33 @@ import { Text } from '../Text';
 import { Discreet } from './Discreet';
 
 describe('Discreet', () => {
+    it('renders a placeholder immediately without waiting for layout or capture', async () => {
+        const { getByTestId } = await renderWithStoreProvider(
+            <Discreet isForcedDiscreetMode>
+                <Text>### BTC</Text>
+            </Discreet>,
+        );
+
+        expect(
+            getByTestId('discreet-placeholder', { includeHiddenElements: true }),
+        ).toBeOnTheScreen();
+    });
+
+    it('uses only the outer placeholder for nested discreet content', async () => {
+        const { getAllByTestId, getByText } = await renderWithStoreProvider(
+            <Discreet isForcedDiscreetMode>
+                <Discreet>
+                    <Text>### BTC</Text>
+                </Discreet>
+            </Discreet>,
+        );
+
+        expect(
+            getAllByTestId('discreet-placeholder', { includeHiddenElements: true }),
+        ).toHaveLength(1);
+        expect(getByText('### BTC', { includeHiddenElements: true })).not.toBeVisible();
+    });
+
     it.each([false, true])(
         'provides the redaction flag when privacy mode is %s',
         async isActive => {

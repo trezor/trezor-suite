@@ -48,7 +48,7 @@ const Skeleton = () => (
 
 const FormattedBalance = ({ value }: { value: BaseCurrencyAmount }) => (
     <DiscreetTextTrigger testID="@home/portfolio/fiat-balance-header/discreet-trigger">
-        <Discreet blurIntensity={10}>
+        <Discreet blurIntensity={10} placeholderVariant="headline-lg">
             <BaseCurrencyAmountLargeFormatter
                 value={value}
                 testID="@home/portfolio/fiat-balance-header"

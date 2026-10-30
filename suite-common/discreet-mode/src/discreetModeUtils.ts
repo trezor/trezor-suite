@@ -2,7 +2,7 @@ import { createContext, useContext } from 'react';
 
 export const DISCREET_PLACEHOLDER = '###';
 
-const numericalSubstringRegex = /[\d\-.,]*\d+[.\d]*/g;
+const numericalSubstringRegex = /[-.,]*\p{Nd}+(?:[.,'’ \u00a0\u202f\u066b\u066c]\p{Nd}+)*\.?/gu;
 
 /**
  * Search the input for all numerical substrings and replace them with DISCREET_PLACEHOLDER.

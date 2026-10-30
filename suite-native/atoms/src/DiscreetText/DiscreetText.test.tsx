@@ -1,6 +1,5 @@
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
-import { Text } from '../Text';
 import { DiscreetText } from './DiscreetText';
 
 describe('DiscreetText', () => {
@@ -16,30 +15,20 @@ describe('DiscreetText', () => {
 
     it('keeps the amount and symbol visible when privacy mode is off', async () => {
         const { getByText } = await renderWithStoreProvider(
-            <DiscreetText>
-                <Text>1234.56</Text>
-                <Text> BTC</Text>
-            </DiscreetText>,
+            <DiscreetText>1234.56 BTC</DiscreetText>,
             { preloadedState: { discreetMode: { isActive: false } } },
         );
 
-        expect(getByText('1234.56')).toBeVisible();
-        expect(getByText(' BTC')).toBeVisible();
+        expect(getByText('1234.56 BTC')).toBeVisible();
     });
 
-    it('conceals nested text including its symbol when privacy mode is on', async () => {
+    it('conceals the redacted text including its symbol when privacy mode is on', async () => {
         const { getByTestId, getByText } = await renderWithStoreProvider(
-            <DiscreetText>
-                <Text>###</Text>
-                <Text> BTC</Text>
-            </DiscreetText>,
+            <DiscreetText>1234.56 BTC</DiscreetText>,
             { preloadedState: { discreetMode: { isActive: true } } },
         );
 
-        expect(getByTestId('discreet-text', { includeHiddenElements: true })).toHaveTextContent(
-            '### BTC',
-        );
         expect(getByTestId('discreet-text')).toBeVisible();
-        expect(getByText(' BTC', { includeHiddenElements: true })).not.toBeVisible();
+        expect(getByText('### BTC', { includeHiddenElements: true })).not.toBeVisible();
     });
 });
