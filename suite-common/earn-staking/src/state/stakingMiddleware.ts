@@ -1,19 +1,19 @@
 import type { UnknownAction } from '@reduxjs/toolkit';
 
-import { parseStakingProductId } from '@suite-common/earn-staking-common';
+import type { QueryClientDep } from '@suite-common/react-query';
 import { accountsActions, changeNetworks } from '@suite-common/wallet-core';
 import type { Account } from '@suite-common/wallet-types';
 import { type WithServices, createMiddlewareWithExtraDeps } from '@trezor/redux-utils';
 
+import type { StakingDep } from '../stakingServices';
 import { stakingActions } from './stakingReducer';
 import {
     refreshStakingProductInfoThunk,
     syncAllStakingPositionsThunk,
     syncStakingPositionsThunk,
 } from './stakingThunks';
-import type { StakingDep } from '../stakingServices';
 
-export type StakingMiddlewareDeps = WithServices<StakingDep>;
+export type StakingMiddlewareDeps = WithServices<StakingDep & QueryClientDep>;
 
 type StakingMiddlewareState = void;
 
@@ -49,14 +49,6 @@ export const prepareStakingMiddleware = createMiddlewareWithExtraDeps<
 
     if (stakingActions.productsRegistered.match(action)) {
         dispatch(syncAllStakingPositionsThunk());
-    }
-
-    if (stakingActions.productInfoFetched.match(action)) {
-        const parts = parseStakingProductId(action.payload.productId);
-
-        if (parts !== null) {
-            dispatch(syncAllStakingPositionsThunk({ symbol: parts.symbol }));
-        }
     }
 
     return action;

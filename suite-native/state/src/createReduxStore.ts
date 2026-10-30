@@ -3,6 +3,7 @@ import { type Middleware, configureStore } from '@reduxjs/toolkit';
 import { type StakingDep, prepareStakingMiddleware } from '@suite-common/earn-staking';
 import { type ExtraDependenciesStatic } from '@suite-common/extra-dependencies';
 import { logsMiddleware } from '@suite-common/logger';
+import { type QueryClientDep } from '@suite-common/react-query';
 import { prepareSuiteSyncMiddleware } from '@suite-common/suite-sync';
 import { type SuiteSyncDep } from '@suite-common/suite-sync-types';
 import {
@@ -62,7 +63,9 @@ export type PreloadedState = DeepPartial<FullPersistedAppState> | undefined;
 
 const ENABLE_REDUX_LOGGER = false;
 
-type GetMiddlewaresDeps = WithServices<NativeAnalyticsDep & SuiteSyncDep & StakingDep>;
+type GetMiddlewaresDeps = WithServices<
+    NativeAnalyticsDep & SuiteSyncDep & StakingDep & QueryClientDep
+>;
 
 const getMiddlewares = (getExtra: () => GetMiddlewaresDeps | null) => {
     const middlewares: Middleware[] = [
