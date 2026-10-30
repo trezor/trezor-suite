@@ -748,8 +748,8 @@ export const startCoinjoinSessionThunk =
                     session: params,
                 }),
             );
-            // switch to account
-            dispatch(gotoThunk({ routeName: 'wallet-index', preserveParams: true }));
+            // switch to the account's mixing progress
+            dispatch(gotoThunk({ routeName: 'wallet-coinjoin', preserveParams: true }));
         }
 
         dispatch(coinjoinSessionStarting(account.key, false));

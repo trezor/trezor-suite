@@ -14,8 +14,6 @@ import { useSelector } from 'src/hooks/suite';
 import { type AppState } from 'src/types/suite';
 import { isNetworkWithGraphFeature } from 'src/utils/wallet/graph';
 
-import { CoinjoinExplanation } from './CoinjoinExplanation/CoinjoinExplanation';
-import { CoinjoinSummary } from './CoinjoinSummary/CoinjoinSummary';
 import { TradeBox } from './TradeBox/TradeBox';
 import { WalletTransactionList } from './TransactionList/WalletTransactionList';
 import { AccountEmpty } from './components/AccountEmpty';
@@ -57,21 +55,24 @@ export const Transactions = () => {
         const isLoading = account.status === 'out-of-sync' && !!account.syncing;
         const isEmpty = !accountTransactions.length;
 
+        if (isLoading) {
+            return (
+                <Layout selectedAccount={selectedAccount}>
+                    <CoinjoinAccountDiscoveryProgress />
+                </Layout>
+            );
+        }
+
+        // The whole mixing surface lives in the Coinjoin tab, so the Privacy account overview is a
+        // plain balance and history. Trading is unavailable for the account type, so neither the TradeBox nor the
+        // graph (absent from the account type features) is rendered here.
         return (
             <Layout selectedAccount={selectedAccount}>
-                {isLoading && <CoinjoinAccountDiscoveryProgress />}
-
-                {!isLoading && (
-                    <>
-                        <CoinjoinSummary accountKey={account.key} />
-
-                        {isEmpty ? (
-                            <CoinjoinExplanation />
-                        ) : (
-                            <WalletTransactionList account={account} symbol={account.symbol} />
-                        )}
-                    </>
-                )}
+                <Column gap={20}>
+                    <AccountOverviewBalance selectedAccount={selectedAccount} />
+                    {isEmpty && <AccountEmpty account={account} />}
+                </Column>
+                {!isEmpty && <WalletTransactionList account={account} symbol={account.symbol} />}
             </Layout>
         );
     }

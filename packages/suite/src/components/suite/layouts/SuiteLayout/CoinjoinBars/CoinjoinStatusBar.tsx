@@ -120,7 +120,7 @@ export const CoinjoinStatusBar = ({ accountKey, session, isSingle }: CoinjoinSta
 
         dispatch(
             gotoThunk({
-                routeName: 'wallet-index',
+                routeName: 'wallet-coinjoin',
                 params: {
                     symbol,
                     accountIndex: index,

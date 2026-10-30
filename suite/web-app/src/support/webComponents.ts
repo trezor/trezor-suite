@@ -161,6 +161,9 @@ export const webComponents: Record<PageName, LazyExoticComponent<ComponentType>>
     'wallet-anonymize': lazy(
         () => import(/* webpackChunkName: "wallet" */ 'src/views/wallet/anonymize'),
     ),
+    'wallet-coinjoin': lazy(
+        () => import(/* webpackChunkName: "wallet" */ 'src/views/wallet/coinjoin'),
+    ),
 
     // trading
     'wallet-trading-buy': lazy(() =>
