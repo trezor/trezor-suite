@@ -61,10 +61,24 @@ export const permissionIcons = {
     internal: 'cube',
 } as const satisfies Record<PermissionRequest['permission'], string>;
 
+// The grant list of a remembered app is typed as an array, but is only validated by the reducer's
+// storageLoad case, and that case never runs on native: redux-persist rehydrates the raw payload
+// instead of dispatching that action, so a record written by an earlier schema reaches readers
+// with `allowedPermissions` missing — see SUITE-NATIVE-4PR. Read such a list as empty wherever
+// there is nothing to fail closed about: forgetting a permission has to clear the record either
+// way, and the connected-apps screen has to stay open so that it can be forgotten.
+export const readGrantedPermissions = (
+    granted: PermissionRequest[] | undefined,
+): PermissionRequest[] => (Array.isArray(granted) ? granted : []);
+
+// Deciding whether a call is already granted fails closed instead (see `readGrantedPermissions`
+// for how `granted` can be unreadable): an unreadable list covers nothing, so the user is prompted
+// again rather than a call being silently approved against a grant list we cannot read.
 export const permissionsAreCovered = (
     requested: PermissionRequest[],
-    granted: PermissionRequest[],
+    granted: PermissionRequest[] | undefined,
 ): boolean =>
+    Array.isArray(granted) &&
     requested.every(req =>
         granted.some(g => g.permission === req.permission && g.coin === req.coin),
     );

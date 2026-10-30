@@ -30,6 +30,19 @@ const app: AppRememberedPermission = {
     allowedPermissions: [{ permission: 'read_address' }],
 };
 
+// What an earlier native release persisted: the granted list under the former `types` key, so
+// `allowedPermissions` is missing.
+const malformedApp = {
+    ...app,
+    allowedPermissions: undefined,
+    types: [{ permission: 'read_address' }],
+} as unknown as AppRememberedPermission;
+
+const stateWith = (...apps: AppRememberedPermission[]) => ({
+    ...connectPopupInitialState,
+    permissions: apps,
+});
+
 describe('rememberAppPermissions', () => {
     it.each<[string, AppRememberedPermission]>([
         [
@@ -64,6 +77,34 @@ describe('rememberAppPermissions', () => {
             rememberApps({ ...app, type: CALL_SOURCE_WALLETCONNECT, process: undefined })
                 .permissions,
         ).toEqual([]);
+    });
+
+    // A record persisted on native can reach the reducer without `allowedPermissions`, where the
+    // storageLoad validation never runs (SUITE-NATIVE-4PR).
+    it('remembers over a record whose granted list is unreadable', () => {
+        const state = connectPopupReducer(
+            stateWith(malformedApp),
+            connectPopupActions.rememberAppPermissions(app),
+        );
+
+        expect(state.permissions).toEqual([app]);
+    });
+});
+
+describe('forgetAppPermission', () => {
+    // Pins the defensive branch of the reducer rather than a path a user can reach today: the
+    // singular forget is dispatched only by the desktop/web settings list, where storageLoad has
+    // already dropped such a record.
+    it('drops an app whose granted list is unreadable', () => {
+        const state = connectPopupReducer(
+            stateWith(malformedApp),
+            connectPopupActions.forgetAppPermission({
+                origin: app.origin,
+                permission: { permission: 'read_address' },
+            }),
+        );
+
+        expect(state.permissions).toEqual([]);
     });
 });
 
