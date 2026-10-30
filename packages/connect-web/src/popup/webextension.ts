@@ -106,9 +106,7 @@ export class WebExtensionPopup extends Popup {
                 return;
             }
             chrome.tabs.query({ windowId: newWindow.id, active: true }, tabs => {
-                // @ts-expect-error: indexing with noUncheckedIndexedAccess
-                const tab: chrome.tabs.Tab = tabs[0];
-                this.onPopupTabResolved(tab, popupWindowPromise);
+                this.onPopupTabResolved(tabs[0], popupWindowPromise);
             });
         });
     }
@@ -141,7 +139,7 @@ export class WebExtensionPopup extends Popup {
     }
 
     private onPopupTabResolved(
-        tab: chrome.tabs.Tab,
+        tab: chrome.tabs.Tab | undefined,
         popupWindowPromise: Deferred<chrome.tabs.Tab>,
     ): void {
         if (this.isSuperseded(popupWindowPromise)) {
@@ -152,6 +150,16 @@ export class WebExtensionPopup extends Popup {
                     this.logChromeError('close', chrome.runtime.lastError);
                 });
             }
+
+            return;
+        }
+
+        // Chrome passes no tab when it could not create one.
+        if (!tab?.id) {
+            this.onPopupOpenFailed(
+                chrome.runtime.lastError?.message ?? 'Failed to create popup tab',
+                popupWindowPromise,
+            );
 
             return;
         }
