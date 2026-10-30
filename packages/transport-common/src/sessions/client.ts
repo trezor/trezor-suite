@@ -24,13 +24,17 @@ export class SessionsClient extends TypedEmitter<{
     private caller = getWeakRandomId(3);
     private id;
     private background;
+    private readonly onDescriptors = (descriptors: Descriptor[]) =>
+        this.emit('descriptors', descriptors);
+    private readonly onReleaseRequest = (descriptor: Descriptor) =>
+        this.emit('releaseRequest', descriptor);
 
     constructor(background: SessionsBackgroundInterface) {
         super();
         this.id = 0;
         this.background = background;
-        background.on('descriptors', descriptors => this.emit('descriptors', descriptors));
-        background.on('releaseRequest', descriptor => this.emit('releaseRequest', descriptor));
+        background.on('descriptors', this.onDescriptors);
+        background.on('releaseRequest', this.onReleaseRequest);
     }
 
     public setBackground(background: SessionsBackgroundInterface) {
@@ -38,8 +42,8 @@ export class SessionsClient extends TypedEmitter<{
 
         this.id = 0;
         this.background = background;
-        background.on('descriptors', descriptors => this.emit('descriptors', descriptors));
-        background.on('releaseRequest', descriptor => this.emit('releaseRequest', descriptor));
+        background.on('descriptors', this.onDescriptors);
+        background.on('releaseRequest', this.onReleaseRequest);
     }
 
     private request<M extends HandleMessageParams>(params: M) {
@@ -71,7 +75,10 @@ export class SessionsClient extends TypedEmitter<{
         return this.request({ type: 'getPathBySession', payload });
     }
     public dispose() {
+        this.background.off('descriptors', this.onDescriptors);
+        this.background.off('releaseRequest', this.onReleaseRequest);
         this.removeAllListeners('descriptors');
+        this.removeAllListeners('releaseRequest');
 
         return this.request({ type: 'dispose' });
     }
