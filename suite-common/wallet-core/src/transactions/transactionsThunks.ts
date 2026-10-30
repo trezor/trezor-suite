@@ -1165,6 +1165,13 @@ export const fetchUtxoTransactionsForAccountThunk = createSingleInstanceThunk<
             return selectAccountTransactions(getState(), accountKey);
         }
 
+        // The coinjoin backend already stores every transaction of the account. Connect does not
+        // know the account, so its copies would come back unlinked from it (type 'unknown', no
+        // owned inputs or outputs) and replace the stored ones.
+        if (!isTrezorConnectBackendType(account.backendType)) {
+            return selectAccountTransactions(getState(), accountKey);
+        }
+
         const result = await TrezorConnect.blockchainGetTransactions({
             coin: asCoinSymbol(account.symbol),
             txs: account.utxo.map(utxo => utxo.txid),
