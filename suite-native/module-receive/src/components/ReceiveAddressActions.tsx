@@ -9,11 +9,13 @@ import { useReceiveAddressSharing } from '../hooks/useReceiveAddressSharing';
 type ReceiveAddressActionsProps = {
     address: string;
     isDeviceVerificationEnabled: boolean;
+    isDisabled?: boolean;
 };
 
 export const ReceiveAddressActions = ({
     address,
     isDeviceVerificationEnabled,
+    isDisabled = false,
 }: ReceiveAddressActionsProps) => {
     const { handleCopyAddress, handleVerifyAddress } = useReceiveAddressInteractions();
     const {
@@ -30,7 +32,12 @@ export const ReceiveAddressActions = ({
     return (
         <>
             <VStack spacing="sp8">
-                <Button iconLeft="copy" onPress={handleCopyAddress} isFullWidth>
+                <Button
+                    iconLeft="copy"
+                    onPress={handleCopyAddress}
+                    isDisabled={isDisabled}
+                    isFullWidth
+                >
                     <Translation id="qrCode.copyButton" />
                 </Button>
                 <HStack spacing="sp8">
@@ -39,6 +46,7 @@ export const ReceiveAddressActions = ({
                         intent="neutral"
                         priority="secondary"
                         onPress={handleShareAddress}
+                        isDisabled={isDisabled}
                         flex={1}
                     >
                         <Translation id="qrCode.shareButton" />
@@ -46,6 +54,7 @@ export const ReceiveAddressActions = ({
                     {isDeviceVerificationEnabled && (
                         <Button
                             iconLeft="trezorDevices"
+                            isDisabled={isDisabled}
                             intent="neutral"
                             priority="secondary"
                             onPress={() =>

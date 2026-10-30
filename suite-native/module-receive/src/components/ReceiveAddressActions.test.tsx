@@ -45,7 +45,7 @@ describe('ReceiveAddressActions', () => {
     const addressPath = "m/84'/0'/0'/0/0";
     const mockUseNavigation = jest.mocked(useNavigation);
 
-    const renderActions = (isDeviceVerificationEnabled = true) =>
+    const renderActions = (isDeviceVerificationEnabled = true, isDisabled = false) =>
         renderWithBasicProvider(
             <ReceiveAddressInteractionsProvider
                 accountKey={accountKey}
@@ -56,6 +56,7 @@ describe('ReceiveAddressActions', () => {
                 <ReceiveAddressActions
                     address={address}
                     isDeviceVerificationEnabled={isDeviceVerificationEnabled}
+                    isDisabled={isDisabled}
                 />
             </ReceiveAddressInteractionsProvider>,
             { services },
@@ -77,6 +78,19 @@ describe('ReceiveAddressActions', () => {
                 openModal: mockOpenSharedAddressBottomSheet,
                 closeModal: mockCloseSharedAddressBottomSheet,
             });
+    });
+
+    it('does not copy, share or verify while disabled', async () => {
+        const { getByText } = await renderActions(true, true);
+
+        await userEvent.press(getByText(getTranslation('qrCode.copyButton')));
+        await userEvent.press(getByText(getTranslation('qrCode.shareButton')));
+        await userEvent.press(getByText(getTranslation('moduleReceive.addressActions.verify')));
+
+        expect(mockCopyToClipboard).not.toHaveBeenCalled();
+        expect(mockShare).not.toHaveBeenCalled();
+        expect(mockNavigate).not.toHaveBeenCalled();
+        expect(mockAnalyticsReport).not.toHaveBeenCalled();
     });
 
     it('opens the verification sheet after copying the address', async () => {
