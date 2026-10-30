@@ -29,6 +29,7 @@
         "@suite-common/networks": "workspace:*",
         "@suite-common/persistent-device-data": "workspace:*",
         "@suite-common/platform-encryption-native": "workspace:*",
+        "@suite-common/react-query": "workspace:*",
         "@suite-common/receive": "workspace:*",
         "@suite-common/suite-rbf-labels-migrations": "workspace:*",
         "@suite-common/suite-sync": "workspace:*",
