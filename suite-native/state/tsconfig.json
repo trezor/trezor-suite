@@ -43,6 +43,9 @@
         {
             "path": "../platform-encryption-native"
         },
+        {
+            "path": "../../suite-common/react-query"
+        },
         { "path": "../../suite-common/receive" },
         {
             "path": "../../suite-common/suite-rbf-labels-migrations"

@@ -71,7 +71,7 @@ type PureAppProps = {
 export const PureApp = ({ services }: PureAppProps) => (
     <GestureHandlerRootView style={{ flex: 1 }}>
         <StoreProvider services={services}>
-            <ReactNativeQueryProvider>
+            <ReactNativeQueryProvider client={services.queryClient}>
                 <IntlProvider>
                     <KeyboardProvider>
                         <SafeAreaProvider>
