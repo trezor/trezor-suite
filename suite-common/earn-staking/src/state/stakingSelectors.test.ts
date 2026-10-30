@@ -1,12 +1,10 @@
 import {
     mockStakingPosition,
     mockStakingProductDescriptor,
-    mockStakingProductInfo,
 } from '@suite-common/earn-staking-common/mocks';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import type { StakingApiRootState } from './stakingApi';
 import type { StakingRootState } from './stakingReducer';
 import {
     selectIsStakingSupportedSymbol,
@@ -17,10 +15,8 @@ import {
     selectStakingProductDescriptor,
     selectStakingProductDescriptors,
     selectStakingProductDescriptorsBySymbol,
-    selectStakingProductInfo,
-    selectStakingProductInfoResult,
 } from './stakingSelectors';
-import { mockStakingApiState, mockStakingState } from '../../mocks';
+import { mockStakingState } from '../../mocks';
 
 const eth = mockStakingProductDescriptor();
 const sol = mockStakingProductDescriptor({ symbol: asNetworkSymbol('sol'), type: 'native' });
@@ -82,19 +78,6 @@ describe('staking selectors', () => {
                 mockStakingProductDescriptor({ symbol: asNetworkSymbol('ada') }).id,
             ),
         ).toBeNull();
-    });
-
-    it('selects a product info and its query status from the api cache', () => {
-        const apiState: StakingApiRootState = {
-            stakingApi: mockStakingApiState({
-                productInfo: { [eth.id]: mockStakingProductInfo() },
-            }),
-        };
-
-        expect(selectStakingProductInfo(apiState, eth.id)).toEqual(mockStakingProductInfo());
-        expect(selectStakingProductInfoResult(apiState, eth.id).isSuccess).toBe(true);
-        expect(selectStakingProductInfo(apiState, sol.id)).toBeNull();
-        expect(selectStakingProductInfoResult(apiState, sol.id).isUninitialized).toBe(true);
     });
 
     it('lists an account positions with a stable reference', () => {

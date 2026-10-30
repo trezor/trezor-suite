@@ -8,7 +8,11 @@ import {
     stakingReducer,
     syncStakingPositionsThunk,
 } from '@suite-common/earn-staking';
-import { mockStakingServices, mockStakingState } from '@suite-common/earn-staking/mocks';
+import {
+    mockStakingQueryClient,
+    mockStakingServices,
+    mockStakingState,
+} from '@suite-common/earn-staking/mocks';
 import { mockGetAccountSyncInterval } from '@suite-common/networks/mocks';
 import { mockGetIsWindowVisible } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot, testMocks } from '@suite-common/test-utils';
@@ -164,6 +168,7 @@ const mockStore = (preloadedState: State) =>
             networks: { getAccountSyncInterval: mockGetAccountSyncInterval() },
             getIsWindowVisible: mockGetIsWindowVisible(),
             getTradedAccountKeys: mockGetTradedAccountKeys(),
+            queryClient: mockStakingQueryClient(),
             staking: mockStakingServices({
                 getAccounts: toGetter(store.getState, selectAccounts),
                 getAccountByKey: toGetter(store.getState, selectAccountByKey),

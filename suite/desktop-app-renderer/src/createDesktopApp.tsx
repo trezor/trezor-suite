@@ -66,7 +66,7 @@ export const createDesktopApp =
                 root.render(
                     <ServicesProvider services={deps.services}>
                         <ReduxProvider store={deps.services.store}>
-                            <ReactQueryProvider>
+                            <ReactQueryProvider client={deps.services.queryClient}>
                                 <ConnectedIntlProvider>
                                     <TorLoadingScreen callback={resolve} />
                                 </ConnectedIntlProvider>

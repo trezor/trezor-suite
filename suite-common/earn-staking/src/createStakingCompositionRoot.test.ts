@@ -4,6 +4,7 @@ import {
     mockStakingProductAdapter,
     mockStakingProductDescriptor,
 } from '@suite-common/earn-staking-common/mocks';
+import { type QueryClientDep, createQueryClient } from '@suite-common/react-query';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { asGetter, mock } from '@trezor/dependency-injection';
@@ -11,11 +12,6 @@ import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import { createStakingCompositionRoot } from './createStakingCompositionRoot';
 import type { StakingDep } from './stakingServices';
-import {
-    type StakingApiRootState,
-    stakingApiMiddleware,
-    stakingApiReducer,
-} from './state/stakingApi';
 import { type StakingRootState, stakingReducer } from './state/stakingReducer';
 import {
     selectStakingPlatform,
@@ -23,7 +19,7 @@ import {
     selectStakingProductDescriptors,
 } from './state/stakingSelectors';
 
-type StakingCompositionRootTestState = StakingRootState & StakingApiRootState;
+type StakingCompositionRootTestState = StakingRootState;
 
 const position = mockStakingPosition();
 const ethAdapter = mockStakingProductAdapter({
@@ -40,10 +36,11 @@ const flushThunks = () => new Promise(resolve => setTimeout(resolve, 0));
 
 const initStore = (adapters: readonly StakingProductAdapter[]) => {
     const root = createTestCompositionRoot<
-        { services: StakingDep },
+        { services: StakingDep & QueryClientDep },
         StakingCompositionRootTestState
     >({
         services: store => ({
+            queryClient: createQueryClient({ shouldRefetchOnEvents: false }),
             staking: createStakingCompositionRoot({
                 platform: 'mobile',
                 adapters,
@@ -55,10 +52,8 @@ const initStore = (adapters: readonly StakingProductAdapter[]) => {
                 getEnabledNetworks: asGetter(() => []),
             }),
         }),
-        middleware: [stakingApiMiddleware],
         reducer: {
             staking: stakingReducer,
-            stakingApi: stakingApiReducer,
         },
     });
 

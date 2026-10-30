@@ -17,6 +17,7 @@
         "@suite-common/device": "workspace:*",
         "@suite-common/earn-staking-common": "workspace:*",
         "@suite-common/message-system": "workspace:*",
+        "@suite-common/react-query": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@trezor/dependency-injection": "workspace:*",
         "@trezor/network-module-types": "workspace:*",

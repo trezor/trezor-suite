@@ -5,7 +5,11 @@ import type {
     SyncStakingPositionsThunkDeps,
     SyncStakingPositionsThunkState,
 } from '@suite-common/earn-staking';
-import { mockStakingServices, mockStakingState } from '@suite-common/earn-staking/mocks';
+import {
+    mockStakingQueryClient,
+    mockStakingServices,
+    mockStakingState,
+} from '@suite-common/earn-staking/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
@@ -98,6 +102,7 @@ const initStore = ({ symbol, deviceState = SELECTED_DEVICE_STATE }: InitStorePar
         services: () => ({
             analytics: mockNativeAnalytics(),
             getTradedAccountKeys: mockGetTradedAccountKeys(),
+            queryClient: mockStakingQueryClient(),
             staking: mockStakingServices({
                 getAccounts: asGetter(() => [account]),
                 getAccountByKey: asGetter(accountKey =>

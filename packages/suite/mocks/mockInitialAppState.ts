@@ -11,7 +11,6 @@ import { suiteSettingsInitialState } from '@suite/settings';
 import { initialSuiteSyncDesktopState } from '@suite/suite-sync';
 import { TorStatus } from '@suite/tor';
 import { stakingInitialState } from '@suite-common/earn-staking';
-import { mockStakingApiState } from '@suite-common/earn-staking/mocks';
 import { type FirmwareUpdateState } from '@suite-common/firmware';
 import { messageSystemInitialState } from '@suite-common/message-system';
 import { type MetadataState } from '@suite-common/metadata-types';
@@ -79,7 +78,6 @@ export const mockInitialAppState: AppState = {
     persistentDeviceData: persistentDeviceDataInitialState,
     wallet: walletReducers(undefined, { type: '@@INIT' }),
     staking: stakingInitialState,
-    stakingApi: mockStakingApiState(),
     desktopUpdate: desktopUpdateInitialState,
     router: {
         loaded: true,

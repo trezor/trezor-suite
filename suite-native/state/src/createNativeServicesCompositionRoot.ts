@@ -10,6 +10,7 @@ import { createStakingProductsCompositionRoot } from '@suite-common/earn-staking
 import { notImplementedGetter } from '@suite-common/extra-dependencies';
 import { createNetworksCompositionRoot } from '@suite-common/networks';
 import { createNativePlatformEncryption } from '@suite-common/platform-encryption-native';
+import { createQueryClient } from '@suite-common/react-query';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import { selectAllLabelsForAccount, selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
 import {
@@ -95,6 +96,8 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
         dispatch: deps.dispatch,
     });
 
+    const queryClient = createQueryClient({ shouldRefetchOnEvents: false });
+
     const staking = createStakingCompositionRoot({
         platform: 'mobile',
         adapters: createStakingProductsCompositionRoot(),
@@ -112,6 +115,7 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
     return {
         networks,
         staking,
+        queryClient,
         suiteSync,
         bip329,
         ensureDelegatedIdentityKey,
