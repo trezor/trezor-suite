@@ -439,15 +439,6 @@ const addAnonymityLevel = (
     account.anonymityGains.history = cleanAnonymityGains(account.anonymityGains.history);
 };
 
-const updateLastReportTimestamp = (
-    draft: CoinjoinState,
-    payload: ExtractActionPayload<typeof COINJOIN.ACCOUNT_UPDATE_LAST_REPORT_TIMESTAMP>,
-) => {
-    const account = getAccount(draft, payload.accountKey);
-    if (!account?.anonymityGains) return;
-    account.anonymityGains.lastReportTimestamp = Date.now();
-};
-
 export const coinjoinReducer = (
     state: CoinjoinState = initialState,
     action: CoinjoinAction,
@@ -570,9 +561,6 @@ export const coinjoinReducer = (
                 break;
             case COINJOIN.ACCOUNT_ADD_ANONYMITY_LEVEL:
                 addAnonymityLevel(draft, action.payload);
-                break;
-            case COINJOIN.ACCOUNT_UPDATE_LAST_REPORT_TIMESTAMP:
-                updateLastReportTimestamp(draft, action.payload);
                 break;
             // no default
         }

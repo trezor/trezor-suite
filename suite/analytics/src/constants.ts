@@ -11,8 +11,6 @@ export enum EventType {
     // eslint-disable-next-line local-rules/analytics-event-name
     AutostartModal = 'autostart-modal',
     // eslint-disable-next-line local-rules/analytics-event-name
-    CoinjoinAnonymityGain = 'coinjoin/anonymity-gain',
-    // eslint-disable-next-line local-rules/analytics-event-name
     CreateBackup = 'create-backup',
     // eslint-disable-next-line local-rules/analytics-event-name
     CreateReceiveAddressConfirmOnTrezor = 'create-receive-address/confirm-on-trezor',

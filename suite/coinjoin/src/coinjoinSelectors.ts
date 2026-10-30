@@ -25,7 +25,6 @@ import {
     breakdownCoinjoinBalance,
     calculateAnonymityProgress,
     calculateAverageAnonymityGainPerRound,
-    cleanAnonymityGains,
     getMaxFeePerVbyte,
     getMaxRounds,
     getSkipRounds,
@@ -359,35 +358,6 @@ export const selectRoundsNeededByAccountKey = (
         (targetAnonymity - weightedAnonymity) /
             Math.max(averageAnonymityGainPerRound, MIN_ANONYMITY_GAINED_PER_ROUND),
     );
-};
-
-export const selectAnonymityGainToReportByAccountKey = (
-    state: CoinjoinRootState,
-    accountKey: AccountKey,
-) => {
-    const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
-    const lastReport = coinjoinAccount?.anonymityGains?.lastReportTimestamp;
-
-    if (!coinjoinAccount?.anonymityGains) {
-        return null;
-    }
-
-    const anonymityGains = cleanAnonymityGains(coinjoinAccount.anonymityGains.history);
-
-    // Report only results not reported before.
-    const gainsToReport = lastReport
-        ? anonymityGains.filter(level => level.timestamp > lastReport)
-        : anonymityGains;
-
-    if (!gainsToReport.length) {
-        return null;
-    }
-
-    // Report average value. Reporting values per round would compromise data privacy.
-    const average =
-        gainsToReport.reduce((total, current) => total + current.level, 0) / gainsToReport.length;
-
-    return parseFloat(average.toFixed(3));
 };
 
 export const selectRoundsLeftByAccountKey = (state: CoinjoinRootState, accountKey: AccountKey) => {
