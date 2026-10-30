@@ -41,6 +41,7 @@ import {
     createDeferred,
     deepEqual,
     isArrayMember,
+    promiseRaceWithSignal,
     versionUtils,
 } from '@trezor/utils';
 import type { VersionArray } from '@trezor/utils/src/versionUtils';
@@ -455,12 +456,7 @@ export class Device extends TypedEmitter<DeviceEvents> implements IDevice {
         this.runAbort = new AbortController();
         const { signal } = this.runAbort;
 
-        this.runPromise = Promise.race([
-            this._runInner(fn, options, signal),
-            new Promise<never>((_, reject) => {
-                signal.addEventListener('abort', () => reject(signal.reason));
-            }),
-        ])
+        this.runPromise = promiseRaceWithSignal(this._runInner(fn, options, signal), signal)
             .catch(async err => {
                 this.keepTransportSession = false;
                 await this.acquirePromise;
