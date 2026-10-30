@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
+import { redactNumericalSubstring } from '@suite-common/discreet-mode';
 import { useFormatters } from '@suite-common/formatters';
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import {
@@ -142,6 +143,11 @@ export const TransactionListItemContainer = ({
     const coinSymbol = isPhishingTransaction ? undefined : symbol;
     const contractAddress = isPhishingTransaction ? undefined : tokenTransfer?.contract;
 
+    const formattedDate = DateTimeFormatter.format(transactionBlockTime);
+    const date =
+        isPhishingTransaction && formattedDate
+            ? redactNumericalSubstring(formattedDate)
+            : formattedDate;
     const DateTextComponent = isPhishingTransaction ? DiscreetText : Text;
 
     return (
@@ -190,7 +196,7 @@ export const TransactionListItemContainer = ({
                             variant="body-sm"
                             color="contentSecondary"
                         >
-                            {DateTimeFormatter.format(transactionBlockTime)}
+                            {date}
                         </DateTextComponent>
                     </Box>
                 </Box>

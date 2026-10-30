@@ -14,7 +14,7 @@ import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { BannerInline, Box, Button, DiscreetText, HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
-import { Translation, useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import {
     type RootStackParamList,
     RootStackRoutes,
@@ -41,11 +41,10 @@ const containerStyle = prepareNativeStyle(utils => ({
 export const StakingManagementReadyToClaimCard = ({
     accountKey,
 }: StakingManagementReadyToClaimCardProps) => {
-    const { translate } = useTranslate();
     const { applyStyle } = useNativeStyles();
     const { isPortfolioTrackerDevice, openPortfolioTrackerSheet } = useEarnPortfolioTrackerGuard();
     const navigation = useNavigation<NavigationProp>();
-    const { CryptoAmountFormatter: amountFormatter } = useFormatters();
+    const { CryptoAmountFormatter } = useFormatters();
     const { analytics } = useServices(injectNativeAnalytics);
 
     const symbol = useSelector((state: StakeRootState) =>
@@ -92,22 +91,26 @@ export const StakingManagementReadyToClaimCard = ({
         return null;
     }
 
-    const formattedAmount = amountFormatter.format(claimableAmount, {
-        isBalance: true,
-        maxDisplayedDecimals: BASE_CRYPTO_MAX_DISPLAYED_DECIMALS,
-        symbol,
-        isEllipsisAppended: false,
-    });
-
     return (
         <Box style={applyStyle(containerStyle)}>
             <HStack spacing="sp12">
                 <Icon name="checkCircle" size="large" color="contentPrimary" />
                 <VStack flex={1} spacing="sp12">
                     <DiscreetText variant="body-md">
-                        {translate('earn.stakingManagementScreen.claim.readyToClaim', {
-                            amount: formattedAmount,
-                        })}
+                        <Translation
+                            id="earn.stakingManagementScreen.claim.readyToClaim"
+                            values={{
+                                amount: (
+                                    <CryptoAmountFormatter
+                                        value={claimableAmount}
+                                        isBalance
+                                        maxDisplayedDecimals={BASE_CRYPTO_MAX_DISPLAYED_DECIMALS}
+                                        symbol={symbol}
+                                        isEllipsisAppended={false}
+                                    />
+                                ),
+                            }}
+                        />
                     </DiscreetText>
 
                     {isClaimingDisabled && claimingMessageContent && (

@@ -1,23 +1,11 @@
-import { redactNumericalSubstring, useShouldRedactNumbers } from '@suite-common/discreet-mode';
-
 import { Discreet } from '../Discreet/Discreet';
 import { Text, type TextProps } from '../Text';
 
-export type DiscreetTextProps = Omit<TextProps, 'children'> & {
-    children?: string | number | null;
+export type DiscreetTextProps = TextProps & {
     isForcedDiscreetMode?: boolean;
 };
 
-const DiscreetTextContent = ({ children, ...textProps }: TextProps) => {
-    const shouldRedactNumbers = useShouldRedactNumbers();
-    const content =
-        shouldRedactNumbers && (typeof children === 'string' || typeof children === 'number')
-            ? redactNumericalSubstring(children)
-            : children;
-
-    return <Text {...textProps}>{content}</Text>;
-};
-
+// Formatters redact their output; callers must redact any raw values before passing them here.
 export const DiscreetText = ({
     children,
     color = 'contentPrimary',
@@ -33,9 +21,9 @@ export const DiscreetText = ({
             placeholderVariant={textProps.variant}
             isForcedDiscreetMode={isForcedDiscreetMode}
         >
-            <DiscreetTextContent color={color} testID={testID} {...textProps}>
+            <Text color={color} testID={testID} {...textProps}>
                 {children}
-            </DiscreetTextContent>
+            </Text>
         </Discreet>
     );
 };
