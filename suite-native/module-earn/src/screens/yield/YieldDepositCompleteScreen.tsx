@@ -17,7 +17,7 @@ import {
     type YieldStackParamList,
     YieldStackRoutes,
     useNavigateToInitialScreen,
-    useOverrideBackNavigation,
+    useNavigationRemoveGuard,
 } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
@@ -74,7 +74,9 @@ export const YieldDepositCompleteScreen = () => {
         navigateToInitialScreen();
     }, [account?.symbol, analytics, dispatch, flowKey, navigateToInitialScreen, vault?.id]);
 
-    useOverrideBackNavigation({ onNavigateBack: handleExit });
+    useNavigationRemoveGuard({
+        onBlocked: handleExit,
+    });
 
     useEffect(() => {
         if (resolutionStatus !== 'resolved') {

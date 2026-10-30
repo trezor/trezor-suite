@@ -1,9 +1,19 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useRef } from 'react';
 
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 import { type AnalyticsNativeEvents, injectNativeAnalytics } from '@suite-native/analytics';
+import {
+    DEFAULT_BACK_NAVIGATION_ACTIONS,
+    type NavigationRemoveActionTypes,
+    useOnNavigationRemove,
+} from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
+
+const ACTION_TYPES = [
+    ...DEFAULT_BACK_NAVIGATION_ACTIONS,
+    'POP_TO_TOP',
+] satisfies NavigationRemoveActionTypes;
 
 export const useNavigateBackAnalytics = (event: AnalyticsNativeEvents, isEnabled = true) => {
     const { analytics } = useServices(injectNativeAnalytics);
@@ -18,27 +28,14 @@ export const useNavigateBackAnalytics = (event: AnalyticsNativeEvents, isEnabled
         }, []),
     );
 
-    useEffect(
-        () =>
-            navigation.addListener('beforeRemove', e => {
-                // Native-stack dismissals (iOS swipe-back, native header back) dispatch POP,
-                // while JS navigation.goBack() dispatches GO_BACK. Closing a yield stack uses POP_TO_TOP.
-                const isBackRemoval =
-                    e.data.action.type === 'GO_BACK' ||
-                    e.data.action.type === 'POP' ||
-                    e.data.action.type === 'POP_TO_TOP';
-
-                if (
-                    isEnabled &&
-                    isBackRemoval &&
-                    navigation.isFocused() &&
-                    !hasContinuedRef.current
-                ) {
-                    analytics.report(eventRef.current);
-                }
-            }),
-        [navigation, analytics, isEnabled],
-    );
+    useOnNavigationRemove({
+        actionTypes: ACTION_TYPES,
+        onRemoveAttempt: () => {
+            if (navigation.isFocused() && !hasContinuedRef.current && isEnabled) {
+                analytics.report(eventRef.current);
+            }
+        },
+    });
 
     return useCallback(() => {
         hasContinuedRef.current = true;
