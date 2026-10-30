@@ -179,3 +179,41 @@ for (const filename of [
         );
     });
 }
+
+const stakingProductsImport =
+    "import { createStakingProductsCompositionRoot } from '@suite-common/earn-staking-products';";
+
+for (const filename of [
+    `${repositoryRoot}packages/suite/src/support/createSuiteCompositionRoot.ts`,
+    `${repositoryRoot}suite-native/state/src/createNativeServicesCompositionRoot.ts`,
+]) {
+    test(`allows staking products in the composition root ${filename}`, async () => {
+        assert.deepEqual(
+            await lintRestrictedImports({ code: stakingProductsImport, filename }),
+            [],
+        );
+    });
+}
+
+for (const filename of [
+    `${repositoryRoot}packages/suite/src/hooks/earn/useStakingProducts.ts`,
+    `${repositoryRoot}suite-native/module-earn/src/screens/StakingScreen.tsx`,
+    `${repositoryRoot}suite-common/earn-staking/src/state/stakingThunks.ts`,
+    `${repositoryRoot}suite-common/wallet-core/src/staking/stakingSelectors.ts`,
+]) {
+    test(`keeps staking products out of ${filename}`, async () => {
+        const errors = await lintRestrictedImports({ code: stakingProductsImport, filename });
+        assert.equal(errors.length, 1);
+        assert.match(errors[0].message, /composition root/);
+    });
+
+    test(`allows the staking core in ${filename}`, async () => {
+        assert.deepEqual(
+            await lintRestrictedImports({
+                code: "import { injectStakingProductRepository } from '@suite-common/earn-staking';",
+                filename,
+            }),
+            [],
+        );
+    });
+}
