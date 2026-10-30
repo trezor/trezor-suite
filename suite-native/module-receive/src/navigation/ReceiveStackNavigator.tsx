@@ -10,6 +10,8 @@ import { ReceiveAddressVerificationStackNavigator } from './ReceiveAddressVerifi
 import { ReceiveAccountsScreen } from '../screens/ReceiveAccountsScreen';
 import { ReceiveAddressDetailScreen } from '../screens/ReceiveAddressDetailScreen';
 import { ReceiveAddressListScreen } from '../screens/ReceiveAddressListScreen';
+import { ReceiveCrossroadsScreen } from '../screens/ReceiveCrossroadsScreen';
+import { ReceiveDiscoveryScreen } from '../screens/ReceiveDiscoveryScreen';
 import { ReceiveFreshAddressScreen } from '../screens/ReceiveFreshAddressScreen';
 
 const ReceiveStack = createNativeStackNavigator<ReceiveStackParamList>();
@@ -19,6 +21,14 @@ export const ReceiveStackNavigator = () => (
         initialRouteName={ReceiveStackRoutes.ReceiveAccounts}
         screenOptions={stackNavigationOptionsConfig}
     >
+        <ReceiveStack.Screen
+            name={ReceiveStackRoutes.ReceiveCrossroads}
+            component={ReceiveCrossroadsScreen}
+        />
+        <ReceiveStack.Screen
+            name={ReceiveStackRoutes.ReceiveDiscovery}
+            component={ReceiveDiscoveryScreen}
+        />
         <ReceiveStack.Screen
             name={ReceiveStackRoutes.ReceiveAccounts}
             component={ReceiveAccountsScreen}
