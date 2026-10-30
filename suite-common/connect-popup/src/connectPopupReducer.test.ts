@@ -103,6 +103,16 @@ describe('storageLoad', () => {
         );
     });
 
+    it('does not load permissions remembered under the name an mcp client declared', () => {
+        expect(
+            loadApps({
+                ...app,
+                type: CALL_SOURCE_MCP,
+                process: { name: 'Claude Code', fullPath: 'Claude Code', warning: true },
+            }).permissions,
+        ).toEqual([]);
+    });
+
     // Nothing schema-validates the persisted grants, so a `process` without a path must be
     // dropped like any other malformed entry — a throw here would abort the store hydration.
     it('does not load a permission whose persisted process has no path', () => {
