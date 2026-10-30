@@ -352,7 +352,7 @@ export const getDecreaseOutputId = (
         : undefined;
 
 /* Convert date to string in YYYY-MM-DD format */
-const generateTransactionDateKey = (d: Date) =>
+export const generateTransactionDateKey = (d: Date) =>
     `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
 
 /** Parse Date object from a string in YYYY-MM-DD format */
