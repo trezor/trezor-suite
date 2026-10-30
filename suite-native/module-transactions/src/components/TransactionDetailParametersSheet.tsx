@@ -8,7 +8,7 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey, type WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Box, Card, IconButton, Text, VStack } from '@suite-native/atoms';
-import { useCopyToClipboard } from '@suite-native/clipboard';
+import { ClipboardCopyMenu, useCopyToClipboard } from '@suite-native/clipboard';
 import { FeeFormatter, TransactionIdFormatter } from '@suite-native/formatters';
 import { Icon } from '@suite-native/icons';
 import { useTranslate } from '@suite-native/intl';
@@ -129,14 +129,17 @@ export const TransactionDetailParametersSheet = ({
                             paddingLeft="sp16"
                             justifyContent="flex-end"
                         >
-                            <Text numberOfLines={1} style={{ flexShrink: 1 }}>
-                                <TransactionIdFormatter value={transaction.txid} />
-                            </Text>
+                            <ClipboardCopyMenu onCopy={handleClickCopy} style={{ flexShrink: 1 }}>
+                                <Text numberOfLines={1}>
+                                    <TransactionIdFormatter value={transaction.txid} />
+                                </Text>
+                            </ClipboardCopyMenu>
 
                             <Box marginLeft="sp8">
                                 <IconButton
                                     iconName="copy"
                                     onPress={handleClickCopy}
+                                    accessibilityLabel={translate('generic.buttons.copy')}
                                     intent="neutral"
                                     priority="secondary"
                                     size="small"

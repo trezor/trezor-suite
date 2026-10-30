@@ -10,6 +10,7 @@ import { type AccountDescriptor, type TxTargetId } from '@suite-common/wallet-ty
 import { isUtxoBased } from '@suite-common/wallet-utils';
 import { AddressLabel } from '@suite-native/address';
 import { HStack, Text, VStack } from '@suite-native/atoms';
+import { ClipboardCopyMenu } from '@suite-native/clipboard';
 import { isDebugEnv } from '@suite-native/config';
 import { AddressFormatter } from '@suite-native/formatters';
 import { selectIsLabellingAllowed } from '@suite-native/labeling';
@@ -45,11 +46,13 @@ export const TransactionAddress = ({
     return (
         <VStack alignItems="flex-start">
             <HStack spacing={4}>
-                <AddressLabel
-                    address={address}
-                    deviceStaticSessionId={deviceStaticSessionId}
-                    fallback={<AddressFormatter key={address} value={address} format="long" />}
-                />
+                <ClipboardCopyMenu value={address}>
+                    <AddressLabel
+                        address={address}
+                        deviceStaticSessionId={deviceStaticSessionId}
+                        fallback={<AddressFormatter key={address} value={address} format="long" />}
+                    />
+                </ClipboardCopyMenu>
 
                 {isUtxoBasedAccount && isLabellingAllowed && isDebugEnv() && (
                     <Text>[{`${txTargetId}`}]</Text>
