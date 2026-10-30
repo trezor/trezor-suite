@@ -1,4 +1,4 @@
-import type { CryptoId } from 'invity-api';
+import type { CryptoId, ExchangeTrade } from 'invity-api';
 
 import type {
     IsWrappedNativeTokenDep,
@@ -13,7 +13,11 @@ import type {
     FormStateTradingFiatCurrency,
 } from '@suite-common/wallet-types';
 import { getTranslation } from '@suite-native/intl';
-import { btc1NormalAccount } from '@suite-native/trading-fixtures';
+import {
+    btc1NormalAccount,
+    mercuryoDexQuote,
+    mercuryoFixedBestQuote,
+} from '@suite-native/trading-fixtures';
 
 import { type ContentBuilderProps, useTradingContentBuilder } from './useTradingContentBuilder';
 import { renderWithTradingProvider } from '../../test-utils/tradingTestUtils';
@@ -64,12 +68,16 @@ describe('useTradingContentBuilder', () => {
         return <>{contentBuilder({ ...baseProps, ...props })}</>;
     };
 
-    const renderContentBuilder = (props: Partial<ContentBuilderProps> = {}) =>
+    const renderContentBuilder = (
+        props: Partial<ContentBuilderProps> = {},
+        selectedQuote: ExchangeTrade = mercuryoDexQuote,
+    ) =>
         renderWithTradingProvider<ContentBuilderTestServices>(
             <ContentBuilderWrapper props={props} />,
             {
                 tradeType: 'exchange',
                 services,
+                overrides: { wallet: { trading: { exchange: { selectedQuote } } } },
             },
         );
 
@@ -114,10 +122,16 @@ describe('useTradingContentBuilder', () => {
         expect(getByText('-1.22 BTC')).toBeOnTheScreen();
     });
 
-    it('renders receive amount adjusted by slippage with plus prefix', async () => {
+    it('renders receive amount adjusted by slippage with plus prefix for DEX quote', async () => {
         const { getByText } = await renderContentBuilder();
 
         expect(getByText('+0.45796014 ETH')).toBeOnTheScreen();
+    });
+
+    it('renders receive amount without slippage for non-DEX quote', async () => {
+        const { getByText } = await renderContentBuilder({}, mercuryoFixedBestQuote);
+
+        expect(getByText('+0.462586 ETH')).toBeOnTheScreen();
     });
 
     describe('recipient row', () => {

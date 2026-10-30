@@ -1,7 +1,7 @@
 import { renderHookWithStoreProvider } from '@suite-native/test-utils-store';
 import { getInitializedTradingState, mercuryoDexQuote } from '@suite-native/trading-fixtures';
 
-import { useReceiveAmountMultiplier } from './useReceiveAmountMultiplier';
+import { useReceiveAmountWithSlippage } from './useReceiveAmountWithSlippage';
 
 const getPreloadedState = (swapSlippage: string | undefined) => {
     const trading = getInitializedTradingState();
@@ -10,12 +10,12 @@ const getPreloadedState = (swapSlippage: string | undefined) => {
     return { wallet: { trading } };
 };
 
-const renderUseReceiveAmountMultiplier = (swapSlippage: string | undefined) =>
-    renderHookWithStoreProvider(() => useReceiveAmountMultiplier(), {
+const renderUseReceiveAmountWithSlippage = (swapSlippage: string | undefined) =>
+    renderHookWithStoreProvider(() => useReceiveAmountWithSlippage(), {
         preloadedState: getPreloadedState(swapSlippage),
     });
 
-describe('useReceiveAmountMultiplier', () => {
+describe('useReceiveAmountWithSlippage', () => {
     it.each([
         [undefined, '0.99'],
         ['0', '1'],
@@ -23,7 +23,7 @@ describe('useReceiveAmountMultiplier', () => {
     ])(
         'applies slippage multiplier for selected quote swapSlippage=%s',
         async (swapSlippage, expectedAmount) => {
-            const { result } = await renderUseReceiveAmountMultiplier(swapSlippage);
+            const { result } = await renderUseReceiveAmountWithSlippage(swapSlippage);
 
             expect(result.current('1')).toBe(expectedAmount);
         },

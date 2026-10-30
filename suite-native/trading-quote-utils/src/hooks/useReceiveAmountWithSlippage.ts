@@ -7,7 +7,7 @@ import {
 } from '@suite-common/trading';
 import { BigNumber } from '@trezor/utils';
 
-export const useReceiveAmountMultiplier = () => {
+export const useReceiveAmountWithSlippage = () => {
     const swapSlippage =
         useSelector(selectTradingExchangeSelectedQuoteSwapSlippage) ??
         TRADING_SETTINGS_MAX_SLIPPAGE_PERCENTAGE_DEFAULT;
