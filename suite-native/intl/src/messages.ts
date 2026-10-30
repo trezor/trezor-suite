@@ -2407,6 +2407,10 @@ export const messages = {
                 viewAll: 'View all',
                 available: 'Available',
                 staking: 'Staking',
+                banner: {
+                    title: 'Earn available',
+                    description: 'Earn up to {apy}% on your {symbol}.',
+                },
             },
         },
     },

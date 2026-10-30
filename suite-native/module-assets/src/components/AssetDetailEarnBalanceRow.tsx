@@ -1,9 +1,5 @@
-import { useSelector } from 'react-redux';
-
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
-import { useFormatters } from '@suite-common/formatters';
-import { type StakeRootState, selectApy } from '@suite-common/wallet-core';
 import { Box, HStack, Text } from '@suite-native/atoms';
 import { CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { Translation } from '@suite-native/intl';
@@ -16,7 +12,8 @@ const balanceIndicatorStyle = prepareNativeStyle<{ type: BalanceType }>((utils, 
     width: utils.spacings.sp12,
     height: utils.spacings.sp12,
     borderRadius: utils.borders.radii.r4,
-    backgroundColor: utils.colors[type === 'staking' ? 'contentBrand' : 'elementFillBrandSofter'],
+    backgroundColor:
+        utils.colors[type === 'staking' ? 'elementFillBrandBold' : 'elementFillAccentVioletBold'],
 }));
 
 type AssetDetailEarnBalanceRowProps = {
@@ -25,19 +22,15 @@ type AssetDetailEarnBalanceRowProps = {
 };
 
 export const AssetDetailEarnBalanceRow = ({ amount, type }: AssetDetailEarnBalanceRowProps) => {
-    const { PercentageFormatter } = useFormatters();
     const { networkSymbol } =
         useRoute<RouteProp<AssetsStackParamList, AssetsStackRoutes.AssetDetail>>().params;
     const { applyStyle } = useNativeStyles();
-    const apy = useSelector((state: StakeRootState) =>
-        type === 'staking' ? selectApy(state, { networkSymbol }) : null,
-    );
 
     return (
         <HStack alignItems="center" justifyContent="space-between" spacing="sp16">
             <HStack alignItems="center" spacing="sp12">
                 <Box style={applyStyle(balanceIndicatorStyle, { type })} />
-                <Text variant="body-md" color="contentSecondary">
+                <Text variant="body-sm" color="contentSecondary">
                     <Translation
                         id={
                             type === 'staking'
@@ -48,20 +41,12 @@ export const AssetDetailEarnBalanceRow = ({ amount, type }: AssetDetailEarnBalan
                 </Text>
             </HStack>
 
-            <HStack alignItems="center" justifyContent="flex-end" spacing="sp12" flexShrink={1}>
-                {apy != null && apy > 0 && (
-                    <Text variant="body-md" color="contentBrand" numberOfLines={1}>
-                        <Translation
-                            id="earn.yieldRateBadge.apy"
-                            values={{ value: PercentageFormatter.format(apy) }}
-                        />
-                    </Text>
-                )}
+            <HStack alignItems="center" justifyContent="flex-end" flexShrink={1}>
                 <CryptoToFiatAmountFormatter
                     value={amount}
                     symbol={networkSymbol}
                     isBalance
-                    variant="body-md-strong"
+                    variant="body-sm-strong"
                     numberOfLines={1}
                     adjustsFontSizeToFit
                 />
