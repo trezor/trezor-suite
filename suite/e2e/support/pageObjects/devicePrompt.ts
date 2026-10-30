@@ -129,8 +129,9 @@ export class DevicePrompt {
     // This secondary device prompt for Suite Sync happens on first label change per wallet
     @step()
     async confirmSuiteSyncSetup() {
-        await this.device.expectToContainOnDisplay('to use Suite Sync with this Trezor?');
+        // Prompt first: an earlier debuglink display read can drop the ButtonRequest
         await this.confirmOnDevicePromptIsShown();
+        await this.device.expectToContainOnDisplay('to use Suite Sync with this Trezor?');
         await this.device.pressYes();
         // wait before closing the modal to prevent "Trezor Sync key retrieval failed" error
         await this.page.waitForTimeout(2_000);
