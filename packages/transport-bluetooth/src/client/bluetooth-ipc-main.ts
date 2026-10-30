@@ -1,4 +1,4 @@
-import { TypedEmitter, resolveAfter } from '@trezor/utils';
+import { TypedEmitter, createLazy, resolveAfter } from '@trezor/utils';
 
 import { TrezorBluetooth } from './trezor-bluetooth';
 import type {
@@ -13,20 +13,32 @@ import type {
     TrezorBluetoothSettings,
 } from './types';
 
+type ConnectResult = IpcFailure | { success: true; api: TrezorBluetooth };
+
 /*
  * used in @suite/desktop-app-main nodejs (main) context
  * unavailable in browser (renderer) context
  */
 export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements BluetoothIpcApi {
-    private api: TrezorBluetooth;
     private state: BluetoothIpcState = { knownDevices: [] };
     private shouldScan = false;
     private scanOwners = new Set<ScanOwner>();
     private scanPromise: Promise<unknown> = Promise.resolve();
+    private initPromise: Promise<unknown> = Promise.resolve();
+    private initialSettings: TrezorBluetoothSettings;
+    // holds a client only when it is fully initialized, concurrent callers share one attempt
+    private lazyApi = createLazy(
+        () => this.createApi(),
+        api => api.dispose(),
+    );
 
     constructor(settings: TrezorBluetoothSettings) {
         super();
-        this.api = new TrezorBluetooth(settings);
+        this.initialSettings = settings;
+    }
+
+    private get api() {
+        return this.lazyApi.get();
     }
 
     private serializeScan<T>(action: () => Promise<T>): Promise<T> {
@@ -48,7 +60,10 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
         );
     }
 
-    private failure(message: string): IpcFailure {
+    private failure(error: unknown): IpcFailure {
+        const hasMessage = typeof error === 'object' && error !== null && 'message' in error;
+        const message = hasMessage ? String(error.message) : String(error);
+
         return { success: false, error: { message, code: 'Bluetooth_Error' } };
     }
 
@@ -56,15 +71,21 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
         return { success: true };
     }
 
-    private async connectApi() {
-        if (this.api.isConnected()) return;
-
-        try {
-            await this.api.connect();
-        } catch (error) {
-            return this.failure(error.message);
+    // concurrent callers share one connection attempt, it never rejects
+    private async connectApi(): Promise<ConnectResult> {
+        // a lost connection gets a new client
+        if (this.api && !this.api.isConnected()) {
+            await this.lazyApi.dispose();
         }
 
+        try {
+            return { success: true, api: await this.lazyApi.getOrInit() };
+        } catch (error) {
+            return this.failure(error);
+        }
+    }
+
+    private attachListeners(api: TrezorBluetooth) {
         const emitListUpdate = ({ devices }: { devices: BluetoothDevice[] }) => {
             this.emit('device-list-update', this.filterConnectableDevices(devices));
         };
@@ -75,18 +96,18 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
                 // auto restart scan if adapter becomes enabled
                 this.serializeScan(async () => {
                     if (!this.shouldScan) return;
-                    await this.api.send('start_scan');
+                    await api.send('start_scan');
                 }).catch(error => {
                     console.warn('Auto start_scan error', error);
                 });
             }
         };
 
-        this.api.on('device_discovered', emitListUpdate);
-        this.api.on('device_connected', emitListUpdate);
-        this.api.on('device_disconnected', emitListUpdate);
-        this.api.on('adapter_state_changed', emitAdapterState);
-        this.api.on('device_updated', ({ id, devices }) => {
+        api.on('device_discovered', emitListUpdate);
+        api.on('device_connected', emitListUpdate);
+        api.on('device_disconnected', emitListUpdate);
+        api.on('adapter_state_changed', emitAdapterState);
+        api.on('device_updated', ({ id, devices }) => {
             emitListUpdate({ devices });
             const device = this.filterConnectableDevices(devices).find(d => d.id === id);
             if (device) {
@@ -94,26 +115,63 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
             }
         });
 
-        this.api.on('open_bluetooth_settings', event => {
+        api.on('open_bluetooth_settings', event => {
             this.emit('open-bluetooth-settings', event);
         });
-
-        return this.result();
     }
 
-    async init(state?: BluetoothIpcState) {
+    // the client once it is ready, waiting for an attempt in flight
+    private async getReadyApi() {
+        await this.lazyApi.getPending()?.catch(() => {});
+        const { api } = this;
+
+        return api?.isConnected() ? api : undefined;
+    }
+
+    private async createApi() {
+        const api = new TrezorBluetooth(this.initialSettings);
+        try {
+            this.attachListeners(api);
+            await api.connect();
+            await api.send('set_state', { devices: this.state.knownDevices });
+        } catch (error) {
+            // a connection without the state would be treated as ready by the next call
+            api.dispose();
+
+            throw error;
+        }
+
+        return api;
+    }
+
+    init(state?: BluetoothIpcState) {
+        const next = this.initPromise.catch(() => {}).then(() => this.runInit(state));
+        this.initPromise = next;
+
+        return next;
+    }
+
+    private async runInit(state?: BluetoothIpcState) {
         if (state) {
             this.state = state;
+
+            // set_state is otherwise sent only when connecting
+            const api = await this.getReadyApi();
+            if (api) {
+                try {
+                    await api.send('set_state', { devices: this.state.knownDevices });
+                } catch (error) {
+                    return this.failure(error);
+                }
+            }
         }
 
         if (this.state.knownDevices.length > 0) {
             try {
-                await this.connectApi();
-                await this.api.send('set_state', {
-                    devices: this.state.knownDevices,
-                });
+                const connection = await this.connectApi();
+                if (!connection.success) return connection;
 
-                const initialScan = await this.api
+                const initialScan = await connection.api
                     .send('start_scan')
                     // todo: bluetooth-ipc-main.init is called in inInitBluetoothThunk. If it returns an error there, thunk does not proceed and listeners are not registered.
                     // This is a hotfix, I believe, that initBluetoothThunks call to bluetoothIpc.init should only check that ipc channel is established, nothing more.
@@ -143,12 +201,12 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
                 // Block start_scan before this stop.
                 await this.serializeScan(async () => {
                     if (this.shouldScan) return;
-                    await this.api.send('stop_scan');
+                    await connection.api.send('stop_scan');
                 }).catch(error => {
                     console.warn('Initial stop_scan error', error);
                 });
             } catch (error) {
-                return this.failure(error.message);
+                return this.failure(error);
             }
         }
 
@@ -156,18 +214,25 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
     }
 
     async getInfo() {
+        const connection = await this.connectApi();
+        if (!connection.success) return connection;
+
         try {
-            await this.connectApi();
-            const info = await this.api.send('get_info');
+            const info = await connection.api.send('get_info');
 
             return { success: true as const, payload: info };
         } catch (error) {
-            return this.failure(error.message);
+            return this.failure(error);
         }
     }
 
-    dispose() {
-        return Promise.resolve(this.result());
+    async dispose() {
+        this.shouldScan = false;
+        this.scanOwners.clear();
+        // queued scan actions connect the client, so they must finish before it is disposed
+        await this.serializeScan(() => this.lazyApi.dispose());
+
+        return this.result();
     }
 
     startScan(owner: ScanOwner) {
@@ -177,17 +242,15 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
         return this.serializeScan(async () => {
             try {
                 const connection = await this.connectApi();
-                if (connection && !connection.success) {
-                    return connection;
-                }
+                if (!connection.success) return connection;
 
-                const { devices } = await this.api.send('start_scan');
+                const { devices } = await connection.api.send('start_scan');
 
                 this.emit('device-list-update', this.filterConnectableDevices(devices));
 
                 return this.result();
             } catch (error) {
-                return this.failure(error.message);
+                return this.failure(error);
             }
         });
     }
@@ -206,21 +269,23 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
                 return this.result();
             }
 
+            // an in-flight connection may resume the scan, wait for it before deciding
+            const api = await this.getReadyApi();
+            // nothing to stop if the process was never started
+            if (!api) {
+                return this.result();
+            }
+
+            if (this.shouldScan || this.scanOwners.size > 0) {
+                return this.result();
+            }
+
             try {
-                const connection = await this.connectApi();
-                if (connection && !connection.success) {
-                    return connection;
-                }
-
-                if (this.shouldScan || this.scanOwners.size > 0) {
-                    return this.result();
-                }
-
-                await this.api.send('stop_scan');
+                await api.send('stop_scan');
 
                 return this.result();
             } catch (error) {
-                return this.failure(error.message);
+                return this.failure(error);
             }
         });
     }
@@ -228,52 +293,56 @@ export class BluetoothIpc extends TypedEmitter<BluetoothIpcEvents> implements Bl
     async connectDevice(id: string) {
         const timeout = 30000;
 
-        try {
-            await this.connectApi();
-        } catch (error) {
-            return this.failure(error.message);
-        }
+        const connection = await this.connectApi();
+        if (!connection.success) return connection;
+        const { api } = connection;
 
         // this is intentionally not wrapped in try/catch
         // we want to remove event listeners before error is returned
         const emitDeviceUpdate = ({ device }: { device: BluetoothDevice }) =>
             this.emit('device-update', device);
-        this.api.on('device_connection_status', emitDeviceUpdate);
-        const result = await this.api
+        api.on('device_connection_status', emitDeviceUpdate);
+        const result = await api
             .send('connect_device', { id, timeout })
             .then(() => this.result())
-            .catch(error => this.failure(error.message));
-        this.api.off('device_connection_status', emitDeviceUpdate);
+            .catch(error => this.failure(error));
+        api.off('device_connection_status', emitDeviceUpdate);
 
         return result;
     }
 
     async disconnectDevice(id: string) {
+        const connection = await this.connectApi();
+        if (!connection.success) return connection;
+
         try {
-            await this.connectApi();
-            await this.api.send('disconnect_device', { id });
+            await connection.api.send('disconnect_device', { id });
         } catch (error) {
-            return this.failure(error.message);
+            return this.failure(error);
         }
 
         return this.result();
     }
 
     async forgetDevice(id: string) {
+        const connection = await this.connectApi();
+        if (!connection.success) return connection;
+
         try {
-            await this.connectApi();
-            await this.api.send('forget_device', { id });
+            await connection.api.send('forget_device', { id });
         } catch (error) {
-            return this.failure(error.message);
+            return this.failure(error);
         }
 
         return this.result();
     }
 
     async enumerateDevices() {
+        const connection = await this.connectApi();
+        if (!connection.success) return [];
+
         try {
-            await this.connectApi();
-            const { devices } = await this.api.send('enumerate');
+            const { devices } = await connection.api.send('enumerate');
 
             return this.filterConnectableDevices(devices);
         } catch {
