@@ -44,7 +44,8 @@ export const FeeSummaryRow = ({
                     symbol={symbol}
                     isBalance={false}
                     isLoading={areFeesLoading}
-                    isDiscreetText={false}
+                    // The user must be able to review the selected transaction fee.
+                    discreetMode="disabled"
                     testID="@transactionManagement/fee-crypto-amount"
                 />
                 <HStack spacing="sp2" alignItems="center" justifyContent="flex-end">
@@ -59,7 +60,8 @@ export const FeeSummaryRow = ({
                         value={fee}
                         symbol={symbol}
                         isLoading={areFeesLoading}
-                        isDiscreetText={false}
+                        // Show the fiat equivalent of the selected transaction fee.
+                        discreetMode="disabled"
                     />
                 </HStack>
             </VStack>

@@ -7,7 +7,7 @@ import {
     AccountLabelFieldHint,
     MAX_ACCOUNT_LABEL_LENGTH,
 } from '@suite-native/accounts';
-import { VStack } from '@suite-native/atoms';
+import { Discreet, VStack } from '@suite-native/atoms';
 import {
     BaseCurrencyAmountLargeFormatter,
     ExactCryptoAmountFormatter,
@@ -45,7 +45,8 @@ export const AccountImportOverview = ({ balance, symbol, formControl }: AssetsOv
                 <ExactCryptoAmountFormatter
                     value={balance}
                     symbol={symbol}
-                    isDiscreetText={false}
+                    // Show the discovered balance so the user can identify the account being imported.
+                    discreetMode="disabled"
                     isBalance={false}
                     variant="body-xs"
                 />
@@ -53,7 +54,9 @@ export const AccountImportOverview = ({ balance, symbol, formControl }: AssetsOv
         >
             <VStack spacing="sp24">
                 {shallDisplayBaseCurrency && (
-                    <BaseCurrencyAmountLargeFormatter value={fiatBalanceValue} />
+                    <Discreet>
+                        <BaseCurrencyAmountLargeFormatter value={fiatBalanceValue} />
+                    </Discreet>
                 )}
                 <VStack spacing="sp8">
                     <TextInputField

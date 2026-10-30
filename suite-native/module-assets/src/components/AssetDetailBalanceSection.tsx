@@ -14,7 +14,7 @@ import {
 import { selectBaseCurrency, selectIsBaseCurrencyInSats } from '@suite-common/wallet-core';
 import { areBaseCurrencyAmountsEqual } from '@suite-common/wallet-types';
 import { buildCurrencyShortOption } from '@suite-common/wallet-utils';
-import { Box, HStack, Text, VStack } from '@suite-native/atoms';
+import { Box, Discreet, HStack, Text, VStack } from '@suite-native/atoms';
 import {
     BaseCurrencyAmountHeaderFormatter,
     ExactCryptoAmountFormatter,
@@ -76,7 +76,9 @@ export const AssetDetailBalanceSection = () => {
                     {baseCurrencyLabel}
                 </Text>
                 <Box alignItems="flex-end" flexShrink={1}>
-                    <BaseCurrencyAmountHeaderFormatter value={fiatValue ?? null} />
+                    <Discreet>
+                        <BaseCurrencyAmountHeaderFormatter value={fiatValue ?? null} />
+                    </Discreet>
                 </Box>
             </HStack>
 

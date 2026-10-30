@@ -38,7 +38,8 @@ const TransactionReviewOutputItemCryptoAmount = ({
                 maxDisplayedDecimals={tokenInfo.decimals}
                 adjustsFontSizeToFit
                 numberOfLines={1}
-                isDiscreetText={false}
+                // The user must be able to verify the token amount before signing.
+                discreetMode="disabled"
             />
         );
     }
@@ -56,7 +57,8 @@ const TransactionReviewOutputItemCryptoAmount = ({
             isBalance={false}
             adjustsFontSizeToFit
             numberOfLines={1}
-            isDiscreetText={false}
+            // The user must be able to verify the crypto amount before signing.
+            discreetMode="disabled"
         />
     );
 };
@@ -98,7 +100,8 @@ export const TransactionReviewOutputItemValues = ({
                     tokenContract={tokenContract}
                     adjustsFontSizeToFit
                     numberOfLines={1}
-                    isDiscreetText={false}
+                    // Show the fiat equivalent so the user can assess the transaction amount.
+                    discreetMode="disabled"
                 />
 
                 <TransactionReviewOutputItemCryptoAmount

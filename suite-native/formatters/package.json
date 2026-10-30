@@ -12,6 +12,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "dependencies": {
+        "@suite-common/discreet-mode": "workspace:*",
         "@suite-common/formatters": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",

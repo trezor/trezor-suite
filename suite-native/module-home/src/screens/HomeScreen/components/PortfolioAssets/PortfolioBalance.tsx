@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { BASE_CURRENCY_ZERO } from '@suite-common/wallet-utils';
-import { DiscreetTextTrigger } from '@suite-native/atoms';
+import { Discreet, DiscreetTextTrigger } from '@suite-native/atoms';
 import { selectSelectedDeviceTotalFiatBalance } from '@suite-native/device';
 import { BaseCurrencyAmountHeaderFormatter, EmptyAmountSkeleton } from '@suite-native/formatters';
 
@@ -17,7 +17,9 @@ export const PortfolioBalance = () => {
 
     return (
         <DiscreetTextTrigger testID="@home/portfolio-assets/total-balance">
-            <BaseCurrencyAmountHeaderFormatter value={totalFiatBalance} />
+            <Discreet>
+                <BaseCurrencyAmountHeaderFormatter value={totalFiatBalance} />
+            </Discreet>
         </DiscreetTextTrigger>
     );
 };

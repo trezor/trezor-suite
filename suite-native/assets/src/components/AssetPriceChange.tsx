@@ -52,7 +52,8 @@ export const AssetPriceChange = ({ valueChange, percentageChange }: AssetPriceCh
                         value={absoluteValueChange}
                         variant="body-sm"
                         color={textColor}
-                        isDiscreetText={false}
+                        // This is a public market-price change, not a wallet balance.
+                        discreetMode="disabled"
                     />
                 </HStack>
             )}

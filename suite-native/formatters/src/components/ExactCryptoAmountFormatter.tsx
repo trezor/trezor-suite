@@ -16,19 +16,20 @@ export const ExactCryptoAmountFormatter = ({
     maxDisplayedDecimals,
     ...otherProps
 }: ExactCryptoAmountFormatterProps) => {
-    const { CryptoAmountFormatter: formatter } = useFormatters();
+    const { CryptoAmountFormatter } = useFormatters();
 
     const resolvedMaxDisplayedDecimals = maxDisplayedDecimals ?? getAccountDecimals(symbol);
 
     const formattedValue =
-        value === null
-            ? null
-            : formatter.format(typeof value === 'number' ? value.toString() : value, {
-                  isBalance,
-                  maxDisplayedDecimals: resolvedMaxDisplayedDecimals,
-                  symbol,
-                  isEllipsisAppended: false,
-              });
+        value === null ? null : (
+            <CryptoAmountFormatter
+                value={typeof value === 'number' ? value.toString() : value}
+                isBalance={isBalance}
+                symbol={symbol}
+                isEllipsisAppended={false}
+                maxDisplayedDecimals={resolvedMaxDisplayedDecimals}
+            />
+        );
 
     return <FormattedCryptoAmountText formattedValue={formattedValue} {...otherProps} />;
 };

@@ -7,13 +7,13 @@ import { type SignValue } from '@suite-common/suite-types';
 import { type TokenSymbol } from '@suite-common/wallet-types';
 import { type TextProps } from '@suite-native/atoms';
 
-import { type FormatterProps } from '../types';
+import { type DiscreetMode, type FormatterProps } from '../types';
 import { type DecimalTokenAmount } from '../utils';
 import { FormattedCryptoAmountText } from './FormattedCryptoAmountText';
 
 export type TokenAmountFormatterCommonProps = {
     tokenSymbol: TokenSymbol | null;
-    isDiscreetText?: boolean;
+    discreetMode?: DiscreetMode;
     isPhishingTransaction?: boolean;
     signValue?: SignValue;
 } & FormatterProps<DecimalTokenAmount> &
@@ -30,6 +30,7 @@ export type BaseTokenAmountFormatterProps = TokenAmountFormatterCommonProps & {
 export const BaseTokenAmountFormatter = ({
     value,
     tokenSymbol,
+    discreetMode = 'auto',
     tokenDecimals,
     maxDisplayedDecimals,
     isPhishingTransaction = false,
@@ -40,23 +41,29 @@ export const BaseTokenAmountFormatter = ({
     // These values are hidden by discreet mode, so the exact value does not matter anyway.
     const decimalValue = isPhishingTransaction || !value ? '0' : value.toString();
 
-    const { CryptoAmountFormatter: formatter } = useFormatters();
-    const formattedValue = formatter.format(decimalValue, {
-        // Token values are already decimal; a ticker matching a network must not change units.
-        smallestUnitsOverride: false,
-        withSymbol: false,
-        maxDisplayedDecimals,
-        formatStyle,
-        tokenDecimals,
-    });
-    const valueWithSymbol = tokenSymbol
-        ? joinAmountWithSymbol(formattedValue, tokenSymbol)
-        : formattedValue;
+    const { CryptoAmountFormatter } = useFormatters();
+    const formattedValue = (
+        <>
+            <CryptoAmountFormatter
+                value={decimalValue}
+                // Token values are already decimal; a ticker matching a network must not change units.
+                smallestUnitsOverride={false}
+                withSymbol={false}
+                maxDisplayedDecimals={maxDisplayedDecimals}
+                formatStyle={formatStyle}
+                tokenDecimals={tokenDecimals}
+            />
+            {tokenSymbol ? joinAmountWithSymbol('', tokenSymbol) : null}
+        </>
+    );
 
     return (
         <FormattedCryptoAmountText
-            formattedValue={valueWithSymbol}
-            isForcedDiscreetMode={isPhishingTransaction}
+            formattedValue={formattedValue}
+            // Conceal phishing amounts in auto mode while honoring explicit mode overrides.
+            discreetMode={
+                discreetMode === 'auto' && isPhishingTransaction ? 'enforced' : discreetMode
+            }
             {...rest}
         />
     );

@@ -83,6 +83,7 @@ export function AnimatedLineGraph<TEventPayload extends object>({
     loading = false,
     loadingLineColor = '#d9d9d9',
     blurOverlay = false,
+    enforceIntensity,
     showPlaceholder = false,
     ...props
 }: AnimatedLineGraphProps<TEventPayload>): ReactElement {
@@ -480,7 +481,7 @@ export function AnimatedLineGraph<TEventPayload extends object>({
                         {/* Fix for react-native-skia's incorrect type declarations */}
                         <Canvas style={styles.svg}>
                             <Group>
-                                <BlurOverlay isVisible={blurOverlay} />
+                                <BlurOverlay isVisible={blurOverlay} blur={enforceIntensity} />
 
                                 {loading || showPlaceholder ? (
                                     <LoadingLine
