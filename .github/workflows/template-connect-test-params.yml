@@ -29,9 +29,8 @@ on:
         type: "boolean"
         required: false
         default: false
-      # After migrating from testnet 3 to testnet 4 using `disable_cache_tx=true` should be required for tests where tx are used.
       disable_cache_tx:
-        description: "Disable Cache transactions (when `true` tests don't use cache for transactions)"
+        description: "Disable the websocket (blockchain-link) response cache (when `true` passes `-c` to docker-connect-test.sh). Referenced transactions always come from fixtures."
         type: "string"
         required: false
         default: "false"

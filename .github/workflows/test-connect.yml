@@ -82,10 +82,8 @@ jobs:
         # `btc-sign` and `btc-others` cover the bulk of real-world usage. Other
         # coins (cardano, solana, monero, …) are intentionally omitted —
         # historically untested on T1B1 in CI; expanding cautiously.
-        # `disable_cache_tx=false` matches the daily/nightly matrices for
-        # T2T1+T3W1: btc-sign/btc-others fixtures reference Testnet 3 prev_hashes
-        # that the public Testnet 4 backend cannot serve, so the local TX cache
-        # is required.
+        # `disable_cache_tx=false` keeps the websocket (blockchain-link) response
+        # cache enabled, matching the daily/nightly matrices for T2T1+T3W1.
         run: echo "matrix=$(node ./scripts/ci/connect-test-matrix-generator.js --model=T1B1 --firmware=1-latest --env=node --groups=api,ethereum,btc-sign,btc-others --disable_cache_tx=false --transport=node-bridge)" >> $GITHUB_OUTPUT
 
       - name: Set T1B1 main matrix
