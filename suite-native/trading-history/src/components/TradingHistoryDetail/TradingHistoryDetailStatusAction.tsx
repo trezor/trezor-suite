@@ -16,7 +16,9 @@ import {
     AppTabsRoutes,
     type RootStackParamList,
     RootStackRoutes,
-    type StackNavigationProps,
+    type StackToStackCompositeNavigationProps,
+    type TradingFlowStackParamList,
+    type TradingFlowStackRoutes,
     TradingStackRoutes,
 } from '@suite-native/navigation';
 import { exhaustive } from '@trezor/type-utils';
@@ -26,9 +28,10 @@ import {
     tradingHistoryDetailExitingTransition,
 } from '../../utils/tradingHistoryDetailAnimations';
 
-type NavigationProp = StackNavigationProps<
-    RootStackParamList,
-    RootStackRoutes.TradingHistoryDetail
+type NavigationProp = StackToStackCompositeNavigationProps<
+    TradingFlowStackParamList,
+    TradingFlowStackRoutes.TradingHistoryDetail,
+    RootStackParamList
 >;
 
 type TradingHistoryDetailStatusActionProps = {

@@ -7,8 +7,8 @@ import { events } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { getTranslation } from '@suite-native/intl';
 import {
-    type RootStackParamList,
-    RootStackRoutes,
+    type TradingFlowStackParamList,
+    TradingFlowStackRoutes,
     useNavigationRemoveActionInterceptor,
 } from '@suite-native/navigation';
 import { fireEvent } from '@suite-native/test-utils-store';
@@ -65,10 +65,10 @@ jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
     useRoute: () =>
         ({
-            key: RootStackRoutes.TradingExchangeApproval,
-            name: RootStackRoutes.TradingExchangeApproval,
+            key: TradingFlowStackRoutes.TradingExchangeApproval,
+            name: TradingFlowStackRoutes.TradingExchangeApproval,
             params: {},
-        }) as RouteProp<RootStackParamList, RootStackRoutes.TradingExchangeApproval>,
+        }) as RouteProp<TradingFlowStackParamList, TradingFlowStackRoutes.TradingExchangeApproval>,
     useNavigation: () => ({
         setOptions: jest.fn(),
     }),
@@ -82,12 +82,6 @@ jest.mock('@suite-native/atoms', () => ({
         showSheet: mockShowSheet,
         hideSheet: mockHideSheet,
     }),
-}));
-
-let mockIsDeviceConnected = true;
-jest.mock('@suite-common/device', () => ({
-    ...jest.requireActual('@suite-common/device'),
-    selectIsDeviceConnected: () => mockIsDeviceConnected,
 }));
 
 const testQuote = mercuryoFixedWorstQuote;
@@ -121,8 +115,6 @@ describe('TradingExchangeApprovalScreen', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-
-        mockIsDeviceConnected = true;
 
         store = createTradingTestStore({ tradeType: 'exchange' });
         store.dispatch(tradingExchangeActions.saveSelectedQuote(testQuote));
@@ -211,16 +203,6 @@ describe('TradingExchangeApprovalScreen', () => {
             getByText(
                 getTranslation('moduleTrading.tradingExchangeApprovalScreen.revokeSuccessAlert'),
             ),
-        ).toBeOnTheScreen();
-    });
-
-    it('should display device guard when device is not connected', async () => {
-        mockIsDeviceConnected = false;
-
-        const { getByText } = await renderScreen();
-
-        expect(
-            getByText(getTranslation('moduleConnectDevice.connectAndUnlockScreen.title')),
         ).toBeOnTheScreen();
     });
 

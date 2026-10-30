@@ -48,6 +48,7 @@ import {
     type SettingsStackRoutes,
     type SignAndVerifyStackRoutes,
     type StellarManageTokenStackRoutes,
+    type TradingFlowStackRoutes,
     type TradingStackRoutes,
     type TransactionDetailStackRoutes,
     type WipeDeviceStackRoutes,
@@ -581,6 +582,7 @@ export type RootStackParamList = {
         accountKey: AccountKey;
         pendingTransaction?: StakingPendingTxParams;
     };
+    [RootStackRoutes.TradingFlowStack]: NavigatorScreenParams<TradingFlowStackParamList>;
     [RootStackRoutes.StakingClaimReview]: {
         accountKey: AccountKey;
         symbol: NetworkSymbol;
@@ -608,49 +610,6 @@ export type RootStackParamList = {
     [RootStackRoutes.PassphraseStack]: NavigatorScreenParams<PassphraseStackParamList>;
     [RootStackRoutes.StellarManageTokenStack]: NavigatorScreenParams<StellarManageTokenStackParamList>;
     [RootStackRoutes.FeatureFeedbackModal]: { feature: ExperimentalFeature };
-    [RootStackRoutes.TradingExchangePreview]: {
-        isApproved?: boolean;
-    };
-    [RootStackRoutes.TradingExchangeApproval]: {
-        shouldIncreaseLimit?: boolean;
-        isRevoked?: boolean;
-    };
-    [RootStackRoutes.TradingExchangeRevoke]: {
-        shouldIncreaseLimit?: boolean;
-    };
-    [RootStackRoutes.TradingSellPreview]: undefined;
-    [RootStackRoutes.TradingSellCompletion]: undefined;
-    [RootStackRoutes.TradingSellTransactionReview]: {
-        accountKey: AccountKey;
-        tokenContract?: TokenAddress;
-        orderId: string;
-    };
-    [RootStackRoutes.TradingExchangeTransactionReview]: {
-        accountKey: AccountKey;
-        tokenContract?: TokenAddress;
-        orderId: string;
-        flowType: ExchangeFlowType;
-    };
-    [RootStackRoutes.TradingConfirming]: {
-        flowType: ConfirmingScreenFlowType;
-    };
-    [RootStackRoutes.TradingMyAsset]: {
-        tradingType: Extract<TradingType, 'sell' | 'exchange'>;
-    };
-    [RootStackRoutes.TradingTradeableAsset]: {
-        tradingType: Extract<TradingType, 'buy' | 'exchange'>;
-    };
-    [RootStackRoutes.ReceiveAccounts]: {
-        symbol: NetworkSymbol;
-        tradingType: Exclude<TradingType, 'sell'>;
-    };
-    [RootStackRoutes.TradingReceiveAddress]: {
-        accountKey: AccountKey;
-        tradingType: Exclude<TradingType, 'sell'>;
-    };
-    [RootStackRoutes.TradingHistory]: undefined;
-    [RootStackRoutes.TradingHistoryDetail]: { orderId: string };
-    [RootStackRoutes.TradingBuyPreview]: undefined;
     [RootStackRoutes.ActivityCenterStack]: NavigatorScreenParams<ActivityCenterStackParamList>;
 };
 
@@ -682,6 +641,52 @@ export type TradingStackParamList = {
         selectedMyAssetCryptoId?: string;
         selectedTradeableAssetCryptoId?: string;
     };
+};
+
+export type TradingFlowStackParamList = {
+    [TradingFlowStackRoutes.TradingExchangePreview]: {
+        isApproved?: boolean;
+    };
+    [TradingFlowStackRoutes.TradingExchangeApproval]: {
+        shouldIncreaseLimit?: boolean;
+        isRevoked?: boolean;
+    };
+    [TradingFlowStackRoutes.TradingExchangeRevoke]: {
+        shouldIncreaseLimit?: boolean;
+    };
+    [TradingFlowStackRoutes.TradingSellPreview]: undefined;
+    [TradingFlowStackRoutes.TradingSellCompletion]: undefined;
+    [TradingFlowStackRoutes.TradingSellTransactionReview]: {
+        accountKey: AccountKey;
+        tokenContract?: TokenAddress;
+        orderId: string;
+    };
+    [TradingFlowStackRoutes.TradingExchangeTransactionReview]: {
+        accountKey: AccountKey;
+        tokenContract?: TokenAddress;
+        orderId: string;
+        flowType: ExchangeFlowType;
+    };
+    [TradingFlowStackRoutes.TradingConfirming]: {
+        flowType: ConfirmingScreenFlowType;
+    };
+    [TradingFlowStackRoutes.TradingMyAsset]: {
+        tradingType: Extract<TradingType, 'sell' | 'exchange'>;
+    };
+    [TradingFlowStackRoutes.TradingTradeableAsset]: {
+        tradingType: Extract<TradingType, 'buy' | 'exchange'>;
+    };
+    [TradingFlowStackRoutes.ReceiveAccounts]: {
+        symbol: NetworkSymbol;
+        tradingType: Exclude<TradingType, 'sell'>;
+    };
+    [TradingFlowStackRoutes.TradingReceiveAddress]: {
+        accountKey: AccountKey;
+        tradingType: Exclude<TradingType, 'sell'>;
+    };
+    [TradingFlowStackRoutes.TradingHistory]: undefined;
+    [TradingFlowStackRoutes.TradingHistoryDetail]: { orderId: string };
+    [TradingFlowStackRoutes.TradingBuyPreview]: undefined;
 };
 
 export type StellarManageTokenStackParamList = {

@@ -13,7 +13,6 @@ import { createTradingTestStore } from '../../test-utils/tradingTestUtils';
 type State = TradingRootState & DeviceRootState;
 
 const mockNavigation = {
-    popToTop: jest.fn(),
     setOptions: jest.fn(),
 } as any;
 

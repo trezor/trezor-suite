@@ -14,18 +14,14 @@ import {
 import { useAlert } from '@suite-native/alerts';
 import { VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import {
-    type RootStackParamList,
-    RootStackRoutes,
-    Screen,
-    type StackProps,
-} from '@suite-native/navigation';
+import { Screen, TradingFlowStackRoutes } from '@suite-native/navigation';
 import { useExchangeAnalyticsStepReport } from '@suite-native/trading-analytics';
 import { Footer } from '@suite-native/trading-provider-utils';
 import {
     selectExchangeSelectedReceiveAccount,
     selectExchangeSelectedSendAccount,
 } from '@suite-native/trading-state';
+import { type TradingFlowStackScreenProps } from '@suite-native/trading-types';
 import { useSubscribeForSolanaBlockUpdates } from '@suite-native/transaction-management';
 import { useServices } from '@trezor/dependency-injection';
 import { useDebounce } from '@trezor/react-utils';
@@ -36,22 +32,21 @@ import {
     ExchangePreviewScreenHeader,
     ExchangePreviewView,
 } from '../components/exchange/ExchangePreview';
-import { TradingDeviceConnectionGuard } from '../components/general/TradingDeviceConnectionGuard';
 import { useExchangeFlow } from '../hooks/exchange/useExchangeFlow';
+import { useCloseTradingFlow } from '../hooks/general/useCloseTradingFlow';
 import { clearTradingStateThunk } from '../thunks';
 import { getReceiveAccountAddressText } from '../utils/general/receiveAccountUtils';
 
-export type TradingExchangePreviewScreenProps = StackProps<
-    RootStackParamList,
-    RootStackRoutes.TradingExchangePreview
->;
+export type TradingExchangePreviewScreenProps =
+    TradingFlowStackScreenProps<TradingFlowStackRoutes.TradingExchangePreview>;
 
-const TradingExchangePreviewScreenContent = ({
+export const TradingExchangePreviewScreen = ({
     navigation,
     route: { params },
 }: TradingExchangePreviewScreenProps) => {
     const { isApproved } = params;
     const { showAlert } = useAlert();
+    const closeTradingFlow = useCloseTradingFlow();
     const { dispatch } = useServices(injectDispatch);
     const debounce = useDebounce();
     const { isInternetReachable } = useNetInfo();
@@ -128,7 +123,7 @@ const TradingExchangePreviewScreenContent = ({
 
     useEffect(() => {
         if (quote?.status === 'APPROVAL_REQ') {
-            navigation.navigate(RootStackRoutes.TradingExchangeApproval, {});
+            navigation.navigate(TradingFlowStackRoutes.TradingExchangeApproval, {});
         }
     }, [navigation, quote?.status]);
 
@@ -162,7 +157,7 @@ const TradingExchangePreviewScreenContent = ({
                 secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
                 secondaryButtonColorProps: { intent: 'critical', priority: 'secondary' },
                 onPressSecondaryButton: () => {
-                    navigation.popToTop();
+                    closeTradingFlow();
                     reportToAnalytics('cancel');
                 },
             });
@@ -172,7 +167,7 @@ const TradingExchangePreviewScreenContent = ({
         handleConfirmTrade,
         isConfirmationErrorRequested,
         isInternetReachable,
-        navigation,
+        closeTradingFlow,
         showAlert,
         reportToAnalytics,
     ]);
@@ -204,9 +199,3 @@ const TradingExchangePreviewScreenContent = ({
         </Screen>
     );
 };
-
-export const TradingExchangePreviewScreen = (props: TradingExchangePreviewScreenProps) => (
-    <TradingDeviceConnectionGuard>
-        <TradingExchangePreviewScreenContent {...props} />
-    </TradingDeviceConnectionGuard>
-);

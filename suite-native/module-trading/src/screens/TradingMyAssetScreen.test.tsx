@@ -6,8 +6,9 @@ import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import {
     AppTabsRoutes,
-    type RootStackParamList,
     RootStackRoutes,
+    type TradingFlowStackParamList,
+    TradingFlowStackRoutes,
     TradingStackRoutes,
 } from '@suite-native/navigation';
 import { fireEvent } from '@suite-native/test-utils-store';
@@ -39,7 +40,7 @@ const sections = [
 
 jest.mock('@react-navigation/native', () => ({
     ...jest.requireActual('@react-navigation/native'),
-    useRoute: () => ({ name: RootStackRoutes.TradingMyAsset }),
+    useRoute: () => ({ name: TradingFlowStackRoutes.TradingMyAsset }),
 }));
 
 jest.mock('@suite-native/trading-state', () => ({
@@ -54,9 +55,9 @@ jest.mock('@suite-common/trading', () => ({
 
 const createRoute = (
     tradingType: 'sell' | 'exchange',
-): RouteProp<RootStackParamList, RootStackRoutes.TradingMyAsset> => ({
-    key: RootStackRoutes.TradingMyAsset,
-    name: RootStackRoutes.TradingMyAsset,
+): RouteProp<TradingFlowStackParamList, TradingFlowStackRoutes.TradingMyAsset> => ({
+    key: TradingFlowStackRoutes.TradingMyAsset,
+    name: TradingFlowStackRoutes.TradingMyAsset,
     params: { tradingType },
 });
 

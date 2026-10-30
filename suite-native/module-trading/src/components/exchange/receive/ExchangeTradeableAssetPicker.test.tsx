@@ -145,8 +145,11 @@ describe('ExchangeTradeableAssetPicker', () => {
             getByLabelText(getTranslation('moduleTrading.selectCoin.buttonTitle')),
         );
 
-        expect(mockNavigate).toHaveBeenCalledWith('TradingTradeableAsset', {
-            tradingType: 'exchange',
+        expect(mockNavigate).toHaveBeenCalledWith('TradingFlowStack', {
+            screen: 'TradingTradeableAsset',
+            params: {
+                tradingType: 'exchange',
+            },
         });
     });
 

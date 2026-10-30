@@ -13,29 +13,25 @@ import { BannerInline, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     DynamicScreenHeader,
-    type RootStackParamList,
-    type RootStackRoutes,
     Screen,
     ScreenHeader,
-    type StackProps,
+    type TradingFlowStackRoutes,
     useNavigationRemoveActionInterceptor,
 } from '@suite-native/navigation';
 import { useExchangeAnalyticsStepReport } from '@suite-native/trading-analytics';
+import { type TradingFlowStackScreenProps } from '@suite-native/trading-types';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { ApprovalButton } from '../components/exchange/Approval/ApprovalButton';
 import { ExchangeRevokeDetails } from '../components/exchange/Approval/ExchangeRevokeDetails';
-import { TradingDeviceConnectionGuard } from '../components/general/TradingDeviceConnectionGuard';
 import { useApprovalFlow } from '../hooks/exchange/Approval/useApprovalFlow';
 import { useEvmApprovalFees } from '../hooks/exchange/Approval/useEvmApprovalFees';
 
-type TradingExchangeRevokeScreenProps = StackProps<
-    RootStackParamList,
-    RootStackRoutes.TradingExchangeRevoke
->;
+type TradingExchangeRevokeScreenProps =
+    TradingFlowStackScreenProps<TradingFlowStackRoutes.TradingExchangeRevoke>;
 
-const TradingExchangeRevokeScreenContent = ({
+export const TradingExchangeRevokeScreen = ({
     route: { params },
     navigation,
 }: TradingExchangeRevokeScreenProps) => {
@@ -175,9 +171,3 @@ const TradingExchangeRevokeScreenContent = ({
         </Screen>
     );
 };
-
-export const TradingExchangeRevokeScreen = (props: TradingExchangeRevokeScreenProps) => (
-    <TradingDeviceConnectionGuard>
-        <TradingExchangeRevokeScreenContent {...props} />
-    </TradingDeviceConnectionGuard>
-);
