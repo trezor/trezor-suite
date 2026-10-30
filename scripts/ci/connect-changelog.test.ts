@@ -111,7 +111,9 @@ describe('filterChangelogCommits', () => {
         'revert(connect): revert something',
         'Revert "feat(connect): add something"',
     ])('keeps %s', subject => {
-        expect(filterChangelogCommits([commitLine(subject)])).toEqual([commitLine(subject)]);
+        expect(filterChangelogCommits([commitLine(subject)], 'utils')).toEqual([
+            commitLine(subject),
+        ]);
     });
 
     it.each([
@@ -126,6 +128,50 @@ describe('filterChangelogCommits', () => {
         'npm-prerelease(connect): @trezor/utils 1.2.3-beta.1',
         'release: connect 9.4.0',
     ])('drops %s', subject => {
-        expect(filterChangelogCommits([commitLine(subject)])).toEqual([]);
+        expect(filterChangelogCommits([commitLine(subject)], 'utils')).toEqual([]);
+    });
+
+    it('drops a foreign-scoped sweep from a connect entry point', () => {
+        const commitLines = [
+            commitLine('feat(logger): create and use `@trezor/logger` package'),
+            commitLine('refactor(connect): share webextension <-> Suite Web channel identifiers'),
+            commitLine('fix(connect-web): fix something here'),
+            commitLine('fix: unscoped change'),
+        ];
+
+        expect(filterChangelogCommits(commitLines, 'connect-web')).toEqual(commitLines.slice(1, 3));
+    });
+
+    it('drops an unscoped sweep from a connect entry point', () => {
+        expect(
+            filterChangelogCommits([commitLine('feat: update typescript')], 'connect-web'),
+        ).toEqual([]);
+    });
+
+    it('keeps a foreign-scoped commit for a package without a scope allow-list', () => {
+        const sweep = commitLine('feat(logger): create and use `@trezor/logger` package');
+
+        expect(filterChangelogCommits([sweep], 'utils')).toEqual([sweep]);
+    });
+
+    it('keeps a foreign- or unscoped commit that touched the entry point source', () => {
+        const foreignScoped = commitLine('feat(suite-web): make permissions query optional');
+        const unscoped = commitLine('fix: resolve errors across the codebase');
+        const sweep = commitLine('feat(logger): create and use `@trezor/logger` package');
+        const commitsTouchingSrc = new Set([foreignScoped, unscoped]);
+
+        expect(
+            filterChangelogCommits(
+                [foreignScoped, unscoped, sweep],
+                'connect-web',
+                commitsTouchingSrc,
+            ),
+        ).toEqual([foreignScoped, unscoped]);
+    });
+
+    it('drops a non-user-facing commit that touched the entry point source', () => {
+        const chore = commitLine('chore(deps): bump something');
+
+        expect(filterChangelogCommits([chore], 'connect-web', new Set([chore]))).toEqual([]);
     });
 });
