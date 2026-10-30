@@ -8,7 +8,6 @@ import {
     getCompiledTransactionMessageDecoder,
     getTransactionDecoder,
     getTransactionMessagePriorityFeeLamports,
-    getTransactionVersionDecoder,
     pipe,
 } from '@solana/kit';
 import {
@@ -111,18 +110,6 @@ export type DecompiledMessage = {
     // Set only for v1, which takes the priority fee in lamports from its config.
     priorityFee?: BigNumber;
     instructions: ReturnType<typeof parseInstruction>[];
-};
-
-// SIMD-0385 moves the message ahead of the signatures and drops the signature-array length
-// prefix, so a serialized v1 transaction starts with the same version byte as a bare v1 message
-// and the leading byte settles both shapes.
-export const isV1Transaction = (serializedTx: string) => {
-    const [version] = getTransactionVersionDecoder().read(
-        getBase16Encoder().encode(serializedTx.slice(0, 2)),
-        0,
-    );
-
-    return version === 1;
 };
 
 export const getDecompiledMessage = (
