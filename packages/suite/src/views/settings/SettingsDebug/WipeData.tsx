@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 import { injectDesktopApi } from '@suite/desktop-app-api';
+import { injectEnsureTransactionStore } from '@suite/transaction-store';
 import { injectReloadApp } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { useServices } from '@trezor/dependency-injection';
@@ -20,10 +21,11 @@ const UserDataLink = styled.span`
 
 export const WipeData = () => {
     const userDataDir = useSelector(selectDesktopUserDataDirectory);
-    const { desktopApi, reloadApp, dispatch } = useServices(
+    const { desktopApi, reloadApp, dispatch, ensureTransactionStore } = useServices(
         injectReloadApp,
         injectDispatch,
         injectDesktopApi,
+        injectEnsureTransactionStore,
     );
 
     const openUserDataDir = async () => {
@@ -34,6 +36,10 @@ export const WipeData = () => {
     };
 
     const clearUserData = async () => {
+        // Closed and deleted first: its worker holds the database open while the folder is wiped.
+        await ensureTransactionStore()
+            .deleteDatabase()
+            .catch(() => {});
         const result = await desktopApi.clearUserData();
         if (!result.success) {
             dispatch(notificationsActions.addToast({ type: 'error', error: result.error }));

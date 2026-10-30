@@ -22,6 +22,11 @@ export type TransactionStoreService = {
     transactionStore: TransactionStore;
     /** Disposes the store, then ends its SQLite worker. */
     dispose: () => Promise<void>;
+    /**
+     * Disposes the store and deletes its database from the device, then ends its SQLite worker;
+     * for resetting the app. The next call starts on an empty database.
+     */
+    deleteDatabase: () => Promise<void>;
 };
 
 /**
@@ -77,15 +82,19 @@ export const createEnsureTransactionStore = (
             },
         });
 
+        const stop = async (beforeEnd?: () => Promise<void>) => {
+            // Cleared first, so a caller right after (a React remount) gets a fresh store.
+            service = null;
+            await transactionStore.dispose();
+            await beforeEnd?.();
+            sqlite.dispose();
+            worker.terminate();
+        };
+
         return {
             transactionStore,
-            dispose: async () => {
-                // Cleared first, so a caller right after (a React remount) gets a fresh store.
-                service = null;
-                await transactionStore.dispose();
-                sqlite.dispose();
-                worker.terminate();
-            },
+            dispose: () => stop(),
+            deleteDatabase: () => stop(sqlite.deleteDatabase),
         };
     };
 

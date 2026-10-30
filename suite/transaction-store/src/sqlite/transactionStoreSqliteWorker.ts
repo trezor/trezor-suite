@@ -37,6 +37,8 @@ const exec = (driver: SqliteDriver, query: SqlQuery) =>
 const execAll = (driver: SqliteDriver, sqls: string[]) =>
     sqls.forEach(sql => exec(driver, { sql, parameters: [] }));
 
+let isDeleted = false;
+
 const handle = (driver: SqliteDriver, request: SqliteWorkerRequest): SqlRow[] => {
     switch (request.type) {
         case 'exec':
@@ -59,6 +61,11 @@ const handle = (driver: SqliteDriver, request: SqliteWorkerRequest): SqlRow[] =>
             } finally {
                 execAll(driver, ['PRAGMA query_only = 0']);
             }
+        case 'deleteDatabase':
+            driver.deleteDatabase();
+            isDeleted = true;
+
+            return [];
     }
 };
 
@@ -69,7 +76,7 @@ self.addEventListener('message', async ({ data }: MessageEvent<SqliteWorkerReque
     const driver = await driverPromise;
     let response: SqliteWorkerResponse;
     try {
-        if (driver === null) throw new Error('Database unavailable');
+        if (driver === null || isDeleted) throw new Error('Database unavailable');
         response = { id: data.id, isOk: true, rows: handle(driver, data) };
     } catch {
         response = { id: data.id, isOk: false };

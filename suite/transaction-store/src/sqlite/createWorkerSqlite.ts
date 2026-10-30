@@ -7,6 +7,8 @@ type PendingCall = { resolve: (rows: SqlRow[]) => void; reject: (error: Error) =
 type DistributiveOmit<T, K extends PropertyKey> = T extends unknown ? Omit<T, K> : never;
 
 export type WorkerSqlite = TransactionStoreSqlite & {
+    /** Closes the database and deletes it from the device. */
+    deleteDatabase: () => Promise<void>;
     /** Fails the calls still waiting; the caller then ends the worker. */
     dispose: () => void;
 };
@@ -41,6 +43,9 @@ export const createWorkerSqlite = (worker: Worker): WorkerSqlite => {
             await call({ type: 'execBatch', queries });
         },
         select: query => call({ type: 'select', query }),
+        deleteDatabase: async () => {
+            await call({ type: 'deleteDatabase' });
+        },
         dispose: () => {
             worker.removeEventListener('message', onMessage);
             pendingCalls.forEach(({ reject }) => reject(new Error('SQLite was disposed')));
