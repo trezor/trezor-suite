@@ -9,7 +9,7 @@ import { type TextProps } from '@suite-native/atoms';
 
 import { type FormatterProps } from '../types';
 import { type DecimalTokenAmount } from '../utils';
-import { AmountText } from './AmountText';
+import { FormattedCryptoAmountText } from './FormattedCryptoAmountText';
 
 export type TokenAmountFormatterCommonProps = {
     tokenSymbol: TokenSymbol | null;
@@ -30,21 +30,17 @@ export type BaseTokenAmountFormatterProps = TokenAmountFormatterCommonProps & {
 export const BaseTokenAmountFormatter = ({
     value,
     tokenSymbol,
-    isDiscreetText = true,
     tokenDecimals,
     maxDisplayedDecimals,
-    variant = 'body-sm',
-    color = 'contentSecondary',
     isPhishingTransaction = false,
     formatStyle,
-    signValue,
     ...rest
 }: BaseTokenAmountFormatterProps) => {
     // Phishing transactions values may be equal to empty string, so we replace it with 0.
     // These values are hidden by discreet mode, so the exact value does not matter anyway.
     const decimalValue = isPhishingTransaction || !value ? '0' : value.toString();
 
-    const { CryptoAmountFormatter: formatter, SignValueFormatter } = useFormatters();
+    const { CryptoAmountFormatter: formatter } = useFormatters();
     const formattedValue = formatter.format(decimalValue, {
         // Token values are already decimal; a ticker matching a network must not change units.
         smallestUnitsOverride: false,
@@ -56,14 +52,10 @@ export const BaseTokenAmountFormatter = ({
     const valueWithSymbol = tokenSymbol
         ? joinAmountWithSymbol(formattedValue, tokenSymbol)
         : formattedValue;
-    const valueWithSign = `${SignValueFormatter.format(signValue)}${valueWithSymbol}`;
 
     return (
-        <AmountText
-            value={valueWithSign}
-            isDiscreetText={isDiscreetText}
-            variant={variant}
-            color={color}
+        <FormattedCryptoAmountText
+            formattedValue={valueWithSymbol}
             isForcedDiscreetMode={isPhishingTransaction}
             {...rest}
         />
