@@ -29,6 +29,7 @@ import { HomeAssetNetworkSection } from './HomeAssetNetworkSection';
 import { HomeAssetNewBanner } from './HomeAssetNewBanner';
 import { HomeAssetRow } from './HomeAssetRow';
 import { HomeAssetSmallBalancesHiddenRow } from './HomeAssetSmallBalancesHiddenRow';
+import { HomeAssetTableEmptyState } from './HomeAssetTableEmptyState';
 import { HomeAssetTableFilterHeader } from './HomeAssetTableFilter';
 import { HOME_ASSET_CELL_PADDING, HOME_ASSET_COL_WIDTHS } from './homeAssetTableLayout';
 
@@ -73,7 +74,9 @@ export const HomeAssetTable = () => {
     if (!hasAssets) {
         return isDiscoveryRunning ? (
             <AssetRowsSkeleton data-testid="@dashboard/home-asset-table/loading" />
-        ) : null;
+        ) : (
+            <HomeAssetTableEmptyState />
+        );
     }
 
     return (
