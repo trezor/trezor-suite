@@ -45,7 +45,10 @@ jest.mock('../libs/process-icon', () => ({
     getProcessIcon: jest.fn().mockResolvedValue(undefined),
 }));
 
+import { CALL_SOURCE_MCP } from '@suite-common/connect-popup';
+
 import { init } from './mcp-server';
+import { addMessage } from '../libs/connect-popup-messages';
 
 const TEST_TOKEN = 'test-token-abc123';
 
@@ -65,16 +68,33 @@ const createMockStore = (overrides?: Partial<McpSettings>) => {
     };
 };
 
-const createMockMainWindowProxy = (hasWindow = true) => ({
-    getInstance: jest.fn(() =>
-        hasWindow
-            ? {
-                  webContents: { send: jest.fn() },
-                  isDestroyed: () => false,
-              }
-            : undefined,
-    ),
-});
+const createMockMainWindowProxy = (hasWindow = true) => {
+    // One window for the whole proxy, so a test can see what was sent to the renderer.
+    const mainWindow = {
+        webContents: { send: jest.fn() },
+        isDestroyed: () => false,
+    };
+
+    return {
+        mainWindow,
+        getInstance: jest.fn(() => (hasWindow ? mainWindow : undefined)),
+    };
+};
+
+/** The payload of the `connect-popup/call` sent to the renderer, once it arrives. */
+const sentPopupCall = async (send: jest.Mock) => {
+    for (let attempt = 0; attempt < 100; attempt++) {
+        const call = send.mock.calls.find(([channel]) => channel === 'connect-popup/call');
+        if (call) {
+            return call[1];
+        }
+        await new Promise(resolve => {
+            setTimeout(resolve, 10);
+        });
+    }
+
+    throw new Error('Nothing was sent to the renderer');
+};
 
 /**
  * Start an MCP server on a free port and return the port + cleanup function.
@@ -176,6 +196,33 @@ const jsonRpcNotification = (method: string, params?: Record<string, unknown>) =
     method,
     params,
 });
+
+/** Initializes a session and returns the payload of the first popup call it makes. */
+const initializeAndCallPopup = async (
+    server: Awaited<ReturnType<typeof startMcpServer>>,
+    initializeParams?: Record<string, unknown>,
+) => {
+    const initRes = await mcpFetch(server.port, jsonRpc('initialize', initializeParams));
+    const call = mcpFetch(
+        server.port,
+        jsonRpc(
+            'tools/call',
+            { name: 'trezor_get_account_info', arguments: { coin: 'btc', path: "m/84'/0'/0'" } },
+            2,
+        ),
+        { sessionId: initRes.headers.get('mcp-session-id') },
+    );
+
+    const popupCall = await sentPopupCall(server.mainWindowProxy.mainWindow.webContents.send);
+    // Answer the forwarded call, so that the request completes with the server.
+    (addMessage as jest.Mock).mock.results.at(-1)?.value.resolve({
+        success: false,
+        error: 'Not needed by this test',
+    });
+    await call;
+
+    return popupCall;
+};
 
 describe('MCP server', () => {
     let cleanup: (() => void) | undefined;
@@ -423,6 +470,25 @@ describe('MCP server', () => {
             const res = await mcpFetch(server.port, jsonRpc('initialize', undefined, 2));
 
             expect(res.status).toBe(200);
+        });
+
+        // Documents the behaviour today: the name a client declares in `initialize` stands in for
+        // the path of a process the lookup did not find, so it becomes what permissions are
+        // remembered by.
+        it('keys the client by the name it declared when its process was not found', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const popupCall = await initializeAndCallPopup(server, {
+                clientInfo: { name: 'Claude Code' },
+            });
+
+            expect(popupCall).toEqual(
+                expect.objectContaining({
+                    sourceType: CALL_SOURCE_MCP,
+                    process: { name: 'Claude Code', fullPath: 'Claude Code', warning: true },
+                }),
+            );
         });
 
         it('allows re-initialization after DELETE', async () => {
