@@ -40,13 +40,13 @@ const isInternal = (
     vinvout: AnalyzeInternalVinVout | AnalyzeExternalVinVout,
 ): vinvout is AnalyzeInternalVinVout => 'Address' in vinvout;
 
-const getRawLiquidityClue = (
+const getRawLiquidityClue = async (
     transactions: Transaction[],
     options: AnalyzeTransactionsOptions,
 ): Promise<middleware.RawLiquidityClue> => {
     // find most recent coinjoin transaction in history
     const cjTx = transactions.find(tx => tx.type === 'joint');
-    if (!cjTx) return Promise.resolve(null);
+    if (!cjTx) return null;
     // Only the other participants' outputs describe their liquidity, so the account's own
     // coinjoin outputs must not reach the clue.
     const externalAmounts = cjTx.details.vout
@@ -55,12 +55,20 @@ const getRawLiquidityClue = (
         .map(o => Number(o.Value));
     // A `joint` transaction only means that some input is foreign, so every output can still be
     // the account's own; nothing foreign means nothing to infer about the others' liquidity.
-    if (externalAmounts.length === 0) return Promise.resolve(null);
+    if (externalAmounts.length === 0) return null;
 
-    return middleware.initLiquidityClue(externalAmounts, {
-        baseUrl: options.middlewareUrl,
-        signal: options.signal,
-    });
+    // Like the anonymity scores, a missing clue must not fail the account update that asked for it:
+    // only mixing needs it, and a signed coinjoin round updates it again.
+    try {
+        return await middleware.initLiquidityClue(externalAmounts, {
+            baseUrl: options.middlewareUrl,
+            signal: options.signal,
+        });
+    } catch (error) {
+        options.logger.error(`Error calculating liquidity clue. ${error}`);
+
+        return null;
+    }
 };
 
 /**
