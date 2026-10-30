@@ -1,4 +1,4 @@
-import { createQueryClient, injectQueryClient } from './createQueryClient';
+import { SILENT_QUERY_META, createQueryClient, injectQueryClient } from './createQueryClient';
 
 describe('createQueryClient', () => {
     it.each([true, false])('refetches on focus, mount and reconnect: %s', shouldRefetchOnEvents => {
@@ -9,6 +9,24 @@ describe('createQueryClient', () => {
             refetchOnMount: shouldRefetchOnEvents,
             refetchOnReconnect: shouldRefetchOnEvents,
         });
+    });
+
+    it('logs a failed query unless the query is silent', async () => {
+        jest.spyOn(console, 'error').mockImplementation(() => {});
+        const queryClient = createQueryClient({ shouldRefetchOnEvents: false });
+        const queryFn = () => Promise.reject(new Error('offline'));
+
+        await expect(queryClient.fetchQuery({ queryKey: ['loud'], queryFn })).rejects.toThrow(
+            'offline',
+        );
+        expect(console.error).toHaveBeenCalledTimes(1);
+
+        await expect(
+            queryClient.fetchQuery({ queryKey: ['quiet'], queryFn, meta: SILENT_QUERY_META }),
+        ).rejects.toThrow('offline');
+        expect(console.error).toHaveBeenCalledTimes(1);
+
+        jest.restoreAllMocks();
     });
 
     it('creates an independent client per call', () => {

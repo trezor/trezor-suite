@@ -5,6 +5,7 @@
         { "path": "../device" },
         { "path": "../earn-staking-common" },
         { "path": "../message-system" },
+        { "path": "../react-query" },
         { "path": "../wallet-core" },
         { "path": "../wallet-types" },
         {

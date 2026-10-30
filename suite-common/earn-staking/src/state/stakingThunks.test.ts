@@ -1,21 +1,20 @@
-import {
-    type StakingProductAdapter,
-    type StakingProductInfo,
-} from '@suite-common/earn-staking-common';
+import type { StakingProductAdapter } from '@suite-common/earn-staking-common';
 import {
     mockStakingPosition,
     mockStakingProductAdapter,
     mockStakingProductDescriptor,
     mockStakingProductInfo,
 } from '@suite-common/earn-staking-common/mocks';
+import { type QueryClient, commonQueryKeys } from '@suite-common/react-query';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import type { Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mock } from '@trezor/dependency-injection';
-import { asNetworkSymbol } from '@trezor/network-module-types';
+import { type NetworkSymbol, asNetworkSymbol } from '@trezor/network-module-types';
 import { createMockDispatch } from '@trezor/redux-utils/mocks';
 
-import { stakingActions, stakingReducer } from './stakingReducer';
+import { getCachedStakingProductInfo } from './stakingProductInfoQuery';
+import { stakingActions } from './stakingReducer';
 import {
     type RefreshStakingProductInfoThunkDeps,
     type RefreshStakingProductInfoThunkState,
@@ -25,11 +24,17 @@ import {
     syncAllStakingPositionsThunk,
     syncStakingPositionsThunk,
 } from './stakingThunks';
-import { mockStakingProductRepository, mockStakingServices, mockStakingState } from '../../mocks';
+import {
+    mockStakingProductRepository,
+    mockStakingQueryClient,
+    mockStakingServices,
+    mockStakingState,
+} from '../../mocks';
 
 const eth = mockStakingProductDescriptor();
 const sol = mockStakingProductDescriptor({ symbol: asNetworkSymbol('sol'), type: 'native' });
 const ethAccount = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
+const solAccount = mockWalletAccount({ symbol: asNetworkSymbol('sol') });
 const btcAccount = mockWalletAccount({ symbol: asNetworkSymbol('btc') });
 
 const createAdapter = (
@@ -44,7 +49,10 @@ const createAdapter = (
         ...overrides,
     });
 
-const createDeps = (adapters: readonly StakingProductAdapter[]) => ({
+const createDeps = (
+    adapters: readonly StakingProductAdapter[],
+    queryClient: QueryClient = mockStakingQueryClient(),
+) => ({
     services: {
         staking: mockStakingServices({
             stakingProductRepository: mockStakingProductRepository({
@@ -60,16 +68,27 @@ const createDeps = (adapters: readonly StakingProductAdapter[]) => ({
                 ),
             }),
         }),
+        queryClient,
     },
 });
 
+const seedInfo = (queryClient: QueryClient, productId: string, updatedAt: number) =>
+    queryClient.setQueryData(
+        commonQueryKeys.stakingProductInfo(productId),
+        mockStakingProductInfo(),
+        { updatedAt },
+    );
+
 describe('refreshStakingProductInfoThunk', () => {
     const createState = (
-        staking = mockStakingState({ descriptors: [eth, sol] }),
-        enabledNetworks = [asNetworkSymbol('eth')],
+        accounts: readonly Account[] = [ethAccount, solAccount, btcAccount],
+        enabledNetworks: NetworkSymbol[] = [asNetworkSymbol('eth')],
     ): RefreshStakingProductInfoThunkState => ({
-        staking,
-        wallet: { settings: { ...initialWalletSettingsState, enabledNetworks } },
+        staking: mockStakingState({ descriptors: [eth, sol] }),
+        wallet: {
+            accounts: [...accounts],
+            settings: { ...initialWalletSettingsState, enabledNetworks },
+        },
     });
 
     const run = async (
@@ -85,101 +104,117 @@ describe('refreshStakingProductInfoThunk', () => {
         return actions;
     };
 
+    const syncedAccountKeys = (actions: readonly unknown[]) =>
+        actions
+            .filter(stakingActions.positionsSynced.match)
+            .map(action => action.payload.accountKey);
+
     beforeEach(() => {
         jest.spyOn(console, 'warn').mockImplementation(() => {});
+        jest.spyOn(console, 'error').mockImplementation(() => {});
     });
 
     afterEach(() => {
         jest.restoreAllMocks();
     });
 
-    it('fetches the info of products on enabled networks only', async () => {
+    it('fetches and caches the info of products on enabled networks only', async () => {
         const ethAdapter = createAdapter(eth);
         const solAdapter = createAdapter(sol);
-        const actions = await run(createState(), createDeps([ethAdapter, solAdapter]));
+        const extra = createDeps([ethAdapter, solAdapter]);
+
+        await run(createState(), extra);
 
         expect(ethAdapter.fetchProductInfo).toHaveBeenCalledTimes(1);
         expect(solAdapter.fetchProductInfo).not.toHaveBeenCalled();
-        expect(actions.filter(stakingActions.productInfoRequested.match)).toEqual([
-            stakingActions.productInfoRequested({ productId: eth.id }),
-        ]);
-        expect(actions.filter(stakingActions.productInfoFetched.match)).toEqual([
-            expect.objectContaining({
-                payload: expect.objectContaining({
-                    productId: eth.id,
-                    info: mockStakingProductInfo(),
-                }),
-            }),
-        ]);
+        expect(getCachedStakingProductInfo(extra.services.queryClient, eth.id)).toEqual(
+            mockStakingProductInfo(),
+        );
+        expect(getCachedStakingProductInfo(extra.services.queryClient, sol.id)).toBeNull();
+    });
+
+    it('re-syncs the positions of a network whose info arrived, once', async () => {
+        const actions = await run(
+            createState(undefined, [asNetworkSymbol('eth'), asNetworkSymbol('sol')]),
+            createDeps([createAdapter(eth), createAdapter(sol)]),
+        );
+
+        expect(syncedAccountKeys(actions)).toEqual([ethAccount.key, solAccount.key]);
     });
 
     it('skips info fetched less than five minutes ago unless forced', async () => {
-        const fresh = stakingReducer(
-            mockStakingState({ descriptors: [eth] }),
-            stakingActions.productInfoFetched({
-                productId: eth.id,
-                info: mockStakingProductInfo(),
-                fetchedAt: Date.now() - 60_000,
-            }),
-        );
         const adapter = createAdapter(eth);
+        const queryClient = mockStakingQueryClient();
+        seedInfo(queryClient, eth.id, Date.now() - 60_000);
+        const extra = createDeps([adapter], queryClient);
 
-        await run(createState(fresh), createDeps([adapter]));
+        await run(createState(), extra);
         expect(adapter.fetchProductInfo).not.toHaveBeenCalled();
 
-        await run(createState(fresh), createDeps([adapter]), { force: true });
+        await run(createState(), extra, { force: true });
         expect(adapter.fetchProductInfo).toHaveBeenCalledTimes(1);
     });
 
     it('fetches again once the info is older than five minutes', async () => {
-        const stale = stakingReducer(
-            mockStakingState({ descriptors: [eth] }),
-            stakingActions.productInfoFetched({
-                productId: eth.id,
-                info: mockStakingProductInfo(),
-                fetchedAt: Date.now() - 6 * 60_000,
-            }),
-        );
         const adapter = createAdapter(eth);
+        const queryClient = mockStakingQueryClient();
+        seedInfo(queryClient, eth.id, Date.now() - 6 * 60_000);
 
-        await run(createState(stale), createDeps([adapter]));
+        await run(createState(), createDeps([adapter], queryClient));
 
         expect(adapter.fetchProductInfo).toHaveBeenCalledTimes(1);
     });
 
-    it('does not fetch a product whose info is already loading', async () => {
-        const loading = stakingReducer(
-            mockStakingState({ descriptors: [eth] }),
-            stakingActions.productInfoRequested({ productId: eth.id }),
-        );
-        const adapter = createAdapter(eth);
+    it('does not re-sync when a forced fetch returns the same info', async () => {
+        const queryClient = mockStakingQueryClient();
+        seedInfo(queryClient, eth.id, Date.now() - 60_000);
 
-        await run(createState(loading), createDeps([adapter]));
+        const actions = await run(createState(), createDeps([createAdapter(eth)], queryClient), {
+            force: true,
+        });
 
-        expect(adapter.fetchProductInfo).not.toHaveBeenCalled();
+        expect(syncedAccountKeys(actions)).toEqual([]);
     });
 
-    it('records a failure without throwing', async () => {
+    it('joins a fetch that is already running', async () => {
+        const adapter = createAdapter(eth);
+        const extra = createDeps([adapter]);
+        const state = createState();
+        const getState = () => state;
+        const { dispatch } = createMockDispatch({ getState, extra });
+
+        await Promise.all([
+            refreshStakingProductInfoThunk()(dispatch, getState, extra),
+            refreshStakingProductInfoThunk()(dispatch, getState, extra),
+        ]);
+
+        expect(adapter.fetchProductInfo).toHaveBeenCalledTimes(1);
+    });
+
+    it('warns about a failure without throwing or reporting an error', async () => {
         const adapter = createAdapter(eth, {
             fetchProductInfo: mock<StakingProductAdapter['fetchProductInfo']>(() =>
                 Promise.reject(new Error('offline')),
             ),
         });
-        const actions = await run(createState(), createDeps([adapter]));
+        const extra = createDeps([adapter]);
 
-        expect(actions.filter(stakingActions.productInfoFailed.match)).toEqual([
-            stakingActions.productInfoFailed({ productId: eth.id, error: 'offline' }),
-        ]);
-        expect(actions.filter(stakingActions.productInfoFetched.match)).toEqual([]);
+        const actions = await run(createState(), extra);
+
+        expect(syncedAccountKeys(actions)).toEqual([]);
+        expect(getCachedStakingProductInfo(extra.services.queryClient, eth.id)).toBeNull();
         expect(console.warn).toHaveBeenCalledWith(expect.stringContaining('offline'));
+        expect(console.error).not.toHaveBeenCalled();
     });
 });
 
 describe('syncStakingPositionsThunk', () => {
     const createState = (
         accounts: readonly Account[] = [ethAccount, btcAccount],
-        staking = mockStakingState({ descriptors: [eth, sol] }),
-    ): SyncStakingPositionsThunkState => ({ staking, wallet: { accounts: [...accounts] } });
+    ): SyncStakingPositionsThunkState => ({
+        staking: mockStakingState({ descriptors: [eth, sol] }),
+        wallet: { accounts: [...accounts] },
+    });
 
     const run = async (
         state: SyncStakingPositionsThunkState,
@@ -209,15 +244,12 @@ describe('syncStakingPositionsThunk', () => {
         ]);
     });
 
-    it('passes the current product info to the adapter', async () => {
-        const info: StakingProductInfo = mockStakingProductInfo({ rate: 4.2 });
-        const staking = stakingReducer(
-            mockStakingState({ descriptors: [eth] }),
-            stakingActions.productInfoFetched({ productId: eth.id, info, fetchedAt: 1 }),
-        );
+    it('passes the cached product info to the adapter', async () => {
+        const info = mockStakingProductInfo({ rate: 4.2 });
         const adapter = createAdapter(eth);
+        const queryClient = mockStakingQueryClient({ productInfo: { [eth.id]: info } });
 
-        await run(createState([ethAccount], staking), createDeps([adapter]));
+        await run(createState(), createDeps([adapter], queryClient));
 
         expect(adapter.getPosition).toHaveBeenCalledWith({
             account: ethAccount,
@@ -256,7 +288,6 @@ describe('syncStakingPositionsThunk', () => {
 });
 
 describe('syncAllStakingPositionsThunk', () => {
-    const solAccount = mockWalletAccount({ symbol: asNetworkSymbol('sol') });
     const state: SyncStakingPositionsThunkState = {
         staking: mockStakingState({ descriptors: [eth, sol] }),
         wallet: { accounts: [ethAccount, solAccount, btcAccount] },

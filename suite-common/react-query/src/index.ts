@@ -16,6 +16,7 @@ export {
 export {
     createQueryClient,
     injectQueryClient,
+    SILENT_QUERY_META,
     type CreateQueryClientParams,
     type QueryClientDep,
 } from './createQueryClient';

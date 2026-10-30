@@ -25,9 +25,9 @@ export {
     type StakingAccountPositions,
 } from './state/stakingPositionsReducer';
 export {
-    type StakingProductEntry,
-    type StakingProductInfoStatus,
-} from './state/stakingProductsReducer';
+    getCachedStakingProductInfo,
+    getStakingProductInfoQueryOptions,
+} from './state/stakingProductInfoQuery';
 export {
     stakingActions,
     stakingInitialState,
@@ -44,8 +44,6 @@ export {
     selectStakingProductDescriptor,
     selectStakingProductDescriptors,
     selectStakingProductDescriptorsBySymbol,
-    selectStakingProductEntry,
-    selectStakingProductInfo,
 } from './state/stakingSelectors';
 export {
     refreshStakingProductInfoThunk,
