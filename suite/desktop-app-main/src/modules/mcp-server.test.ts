@@ -531,7 +531,7 @@ describe('MCP server', () => {
             expect(popupCall.manifest.appName).toBe('a'.repeat(99));
         });
 
-        it('lets a new session inherit the identity of the one it replaces', async () => {
+        it('does not let a new session inherit the identity of the one it replaces', async () => {
             const server = await startMcpServer();
             cleanup = server.cleanup;
 
@@ -551,12 +551,10 @@ describe('MCP server', () => {
             (addMessage as jest.Mock).mockClear();
             const unidentified = await initializeAndCallPopup(server);
 
-            // Permissions are remembered by `process.fullPath`, so this client is labelled by
-            // the previous process and matches the permissions remembered for it.
-            expect(unidentified.process).toEqual(
-                expect.objectContaining({ fullPath: '/usr/bin/trusted' }),
-            );
-            expect(unidentified.manifest.appName).toBe('Trusted');
+            // Permissions are remembered by `process.fullPath`, so inheriting the previous
+            // process would let this client pass for the identified one.
+            expect(unidentified.process).toBeUndefined();
+            expect(unidentified.manifest.appName).toBe('MCP Agent');
         });
 
         it('allows re-initialization after DELETE', async () => {
