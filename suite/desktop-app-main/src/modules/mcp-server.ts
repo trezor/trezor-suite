@@ -1297,6 +1297,16 @@ export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
                 if (jsonRpcRequest.method === 'initialize') {
                     sessionId = crypto.randomUUID();
 
+                    // A client is not required to send `DELETE`, so the session it replaces is
+                    // forgotten here: a new client is not to be labelled by — or match the
+                    // permissions remembered for — the process of the previous one. This covers
+                    // a client that initializes after the previous one is done. The session state
+                    // is still shared, so a request overlapping an `initialize` — another
+                    // `initialize`, or a tool call of the replaced session still in progress — is
+                    // not covered; keeping the identity per session is left for a follow-up.
+                    sessionProcessInfo = undefined;
+                    sessionManifest = MCP_MANIFEST;
+
                     // Identify the calling process via TCP port lookup + MCP clientInfo
                     const clientName = readDeclaredClientName(jsonRpcRequest.params);
 
