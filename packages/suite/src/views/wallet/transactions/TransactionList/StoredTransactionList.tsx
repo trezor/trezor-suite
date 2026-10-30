@@ -126,17 +126,19 @@ export const StoredTransactionList = ({ account }: StoredTransactionListProps) =
         [rows, account],
     );
     const isComplete = syncState?.is_complete === 1;
-    // Nothing to show yet, but more history is on its way: the account's first sync, or a later
-    // page past what is stored, which asked for the rest. A search covers only what is stored.
-    // An earlier attempt may have failed; while it retries, that is still pending, not empty.
+    // An empty result is final only once nothing is still working on it: no sync running (the
+    // first one, a refresh or the whole history), no later page waiting for the rest it asked
+    // for, and no search still being typed. Until then it shows as loading, not as nothing.
+    const isSyncing = syncState?.is_syncing === 1;
     const isFirstSyncPending =
         syncState === undefined ||
-        (syncState.last_synced_at === null &&
-            (syncState.last_error === null || syncState.is_syncing === 1));
-    const isRestComing = page > 1 && !isComplete && syncState?.last_error === null;
+        (syncState.last_synced_at === null && syncState.last_error === null);
+    const isRestComing = !isSearching && page > 1 && !isComplete && syncState?.last_error === null;
+    const isSearchPending = searchQuery !== debouncedSearchQuery;
     const isLoading =
         rows === undefined ||
-        (transactions.length === 0 && !isSearching && (isFirstSyncPending || isRestComing));
+        (transactions.length === 0 &&
+            (isSyncing || isFirstSyncPending || isRestComing || isSearchPending));
 
     const pendingTxsByDate = useMemo(
         () => groupTransactionsByDate(transactions.filter(isPending), 'day'),
