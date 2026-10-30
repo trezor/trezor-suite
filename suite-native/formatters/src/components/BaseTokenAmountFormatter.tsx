@@ -1,4 +1,9 @@
-import { type CryptoAmountFormatterFormatStyle, useFormatters } from '@suite-common/formatters';
+import {
+    type CryptoAmountFormatterFormatStyle,
+    joinAmountWithSymbol,
+    useFormatters,
+} from '@suite-common/formatters';
+import { type SignValue } from '@suite-common/suite-types';
 import { type TokenSymbol } from '@suite-common/wallet-types';
 import { type TextProps } from '@suite-native/atoms';
 
@@ -10,6 +15,7 @@ export type TokenAmountFormatterCommonProps = {
     tokenSymbol: TokenSymbol | null;
     isDiscreetText?: boolean;
     isPhishingTransaction?: boolean;
+    signValue?: SignValue;
 } & FormatterProps<DecimalTokenAmount> &
     TextProps;
 
@@ -31,23 +37,30 @@ export const BaseTokenAmountFormatter = ({
     color = 'contentSecondary',
     isPhishingTransaction = false,
     formatStyle,
+    signValue,
     ...rest
 }: BaseTokenAmountFormatterProps) => {
     // Phishing transactions values may be equal to empty string, so we replace it with 0.
     // These values are hidden by discreet mode, so the exact value does not matter anyway.
     const decimalValue = isPhishingTransaction || !value ? '0' : value.toString();
 
-    const { CryptoAmountFormatter: formatter } = useFormatters();
+    const { CryptoAmountFormatter: formatter, SignValueFormatter } = useFormatters();
     const formattedValue = formatter.format(decimalValue, {
-        symbol: tokenSymbol ?? undefined,
+        // Token values are already decimal; a ticker matching a network must not change units.
+        smallestUnitsOverride: false,
+        withSymbol: false,
         maxDisplayedDecimals,
         formatStyle,
         tokenDecimals,
     });
+    const valueWithSymbol = tokenSymbol
+        ? joinAmountWithSymbol(formattedValue, tokenSymbol)
+        : formattedValue;
+    const valueWithSign = `${SignValueFormatter.format(signValue)}${valueWithSymbol}`;
 
     return (
         <AmountText
-            value={formattedValue}
+            value={valueWithSign}
             isDiscreetText={isDiscreetText}
             variant={variant}
             color={color}
