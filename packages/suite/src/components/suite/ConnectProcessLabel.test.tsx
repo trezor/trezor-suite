@@ -52,6 +52,14 @@ describe('ConnectProcessLabel', () => {
         expect(await hoverLabel()).toHaveTextContent('TR_CONNECT_PROCESS_UNVERIFIED');
     });
 
+    // On Linux the path is argv[0], which the caller sets itself, and the lookup sets no warning
+    // there — so an unidentifiable process can arrive without one.
+    it('says that a process without a path could not be verified even with no warning', async () => {
+        renderLabel({ name: 'node', fullPath: '', warning: false });
+
+        expect(await hoverLabel()).toHaveTextContent('TR_CONNECT_PROCESS_UNVERIFIED');
+    });
+
     it('says that the placeholder for a caller that could not be identified is not verified', async () => {
         renderLabel(UNKNOWN_PROCESS);
 

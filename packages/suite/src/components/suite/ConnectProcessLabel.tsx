@@ -20,15 +20,17 @@ export const ConnectProcessLabel = ({
     process,
     'data-testid': dataTest,
 }: ConnectProcessLabelProps) => {
-    if (process.warning) {
-        // A path that identifies nothing, or only repeats the name on the badge, would make a
-        // tooltip that says nothing, so it explains what the warning means instead.
-        const tooltip =
-            isIdentifiedProcess(process) && process.fullPath !== process.name ? (
-                process.fullPath
-            ) : (
-                <Translation id="TR_CONNECT_PROCESS_UNVERIFIED" />
-            );
+    // A path that identifies nothing, or only repeats the name on the badge, tells the user
+    // nothing about who is calling — the same predicate decides whether permissions can be
+    // remembered, so such a process is warned about even when the lookup set no warning.
+    const isUnverified = !isIdentifiedProcess(process) || process.fullPath === process.name;
+
+    if (process.warning || isUnverified) {
+        const tooltip = isUnverified ? (
+            <Translation id="TR_CONNECT_PROCESS_UNVERIFIED" />
+        ) : (
+            process.fullPath
+        );
 
         return (
             <Tooltip content={tooltip}>
