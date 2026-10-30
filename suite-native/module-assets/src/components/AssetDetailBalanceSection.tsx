@@ -75,7 +75,7 @@ export const AssetDetailBalanceSection = () => {
         });
 
     return (
-        <VStack paddingHorizontal="sp20" paddingVertical="sp24" spacing="sp16">
+        <VStack paddingHorizontal="sp20" spacing="sp16">
             <HStack alignItems="center" justifyContent="space-between" spacing="sp16">
                 <Text variant="body-xs" color="contentSecondary">
                     <Translation id="moduleAssets.assetDetailScreen.balanceSection.balance" />
