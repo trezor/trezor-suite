@@ -3348,17 +3348,17 @@ export const messages = defineMessages({
         defaultMessage: 'This transaction is on a testnet network',
         id: 'TR_NETWORK_TESTNET',
     },
-    TR_NETWORK_COINJOIN_BITCOIN: {
-        defaultMessage: 'Coinjoin',
-        id: 'TR_NETWORK_COINJOIN_BITCOIN',
+    TR_NETWORK_PRIVACY_BITCOIN: {
+        defaultMessage: 'Privacy',
+        id: 'TR_NETWORK_PRIVACY_BITCOIN',
     },
-    TR_NETWORK_COINJOIN_BITCOIN_TESTNET: {
-        defaultMessage: 'Coinjoin Testnet',
-        id: 'TR_NETWORK_COINJOIN_BITCOIN_TESTNET',
+    TR_NETWORK_PRIVACY_BITCOIN_TESTNET: {
+        defaultMessage: 'Privacy Testnet',
+        id: 'TR_NETWORK_PRIVACY_BITCOIN_TESTNET',
     },
-    TR_NETWORK_COINJOIN_BITCOIN_REGTEST: {
-        defaultMessage: 'Coinjoin Regtest',
-        id: 'TR_NETWORK_COINJOIN_BITCOIN_REGTEST',
+    TR_NETWORK_PRIVACY_BITCOIN_REGTEST: {
+        defaultMessage: 'Privacy Regtest',
+        id: 'TR_NETWORK_PRIVACY_BITCOIN_REGTEST',
     },
     TR_SOLANA_DEVNET_SHORTCUT_WARNING: {
         defaultMessage:
@@ -4486,13 +4486,13 @@ export const messages = defineMessages({
         defaultMessage: 'BIP44, Base58',
         dynamic: true,
     },
-    TR_ACCOUNT_TYPE_SLIP25_NAME: {
-        id: 'TR_ACCOUNT_TYPE_SLIP25_NAME',
-        defaultMessage: 'Coinjoin',
+    TR_ACCOUNT_TYPE_PRIVACY_NAME: {
+        id: 'TR_ACCOUNT_TYPE_PRIVACY_NAME',
+        defaultMessage: 'Privacy',
     },
     TR_ACCOUNT_TYPE_SLIP25_TECH: {
         id: 'TR_ACCOUNT_TYPE_SLIP25_TECH',
-        defaultMessage: 'SLIP25, P2TR, Bech32m',
+        defaultMessage: 'Coinjoin, SLIP25, P2TR, Bech32m',
     },
     TR_ACCOUNT_TYPE_SLIP25_DESC: {
         id: 'TR_ACCOUNT_TYPE_SLIP25_DESC',
