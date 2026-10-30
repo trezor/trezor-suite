@@ -19,10 +19,12 @@ import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mock } from '@trezor/dependency-injection';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import { createStakingCompositionRoot } from '../createStakingCompositionRoot';
 import { type StakingMiddlewareDeps, prepareStakingMiddleware } from './stakingMiddleware';
+import { getCachedStakingProductInfo } from './stakingProductInfoQuery';
 import { type StakingRootState, stakingReducer } from './stakingReducer';
-import { selectStakingPositionsByAccount, selectStakingProductInfo } from './stakingSelectors';
+import { mockStakingQueryClient } from '../../mocks';
+import { createStakingCompositionRoot } from '../createStakingCompositionRoot';
+import { selectStakingPositionsByAccount } from './stakingSelectors';
 
 type StakingMiddlewareTestState = StakingRootState & AccountsRootState & WalletSettingsRootState;
 
@@ -42,6 +44,7 @@ const initStore = (adapterOverrides: Partial<StakingProductAdapter> = {}) => {
         ),
         ...adapterOverrides,
     });
+    const queryClient = mockStakingQueryClient();
     let getExtra: () => StakingMiddlewareDeps = () => {
         throw new Error('Services are not composed yet');
     };
@@ -52,9 +55,9 @@ const initStore = (adapterOverrides: Partial<StakingProductAdapter> = {}) => {
                 adapters: [adapter],
                 dispatch: store.dispatch,
             });
-            getExtra = () => ({ services: { staking } });
+            getExtra = () => ({ services: { staking, queryClient } });
 
-            return { staking };
+            return { staking, queryClient };
         },
         middleware: [prepareStakingMiddleware(() => getExtra())],
         reducer: {
@@ -74,7 +77,7 @@ const initStore = (adapterOverrides: Partial<StakingProductAdapter> = {}) => {
         },
     });
 
-    return { ...root.services, adapter };
+    return { ...root.services, adapter, queryClient };
 };
 
 describe('prepareStakingMiddleware', () => {
@@ -113,7 +116,7 @@ describe('prepareStakingMiddleware', () => {
     });
 
     it('refreshes the product info when the enabled networks change, then re-syncs', async () => {
-        const { store, staking, adapter } = initStore();
+        const { store, staking, adapter, queryClient } = initStore();
 
         staking.loadStakingProducts();
         await flushThunks();
@@ -123,9 +126,7 @@ describe('prepareStakingMiddleware', () => {
         await flushThunks();
 
         expect(adapter.fetchProductInfo).toHaveBeenCalledTimes(1);
-        expect(selectStakingProductInfo(store.getState(), eth.id)).toEqual(
-            mockStakingProductInfo(),
-        );
+        expect(getCachedStakingProductInfo(queryClient, eth.id)).toEqual(mockStakingProductInfo());
         expect(adapter.getPosition).toHaveBeenCalledWith({
             account: ethAccount,
             productInfo: mockStakingProductInfo(),

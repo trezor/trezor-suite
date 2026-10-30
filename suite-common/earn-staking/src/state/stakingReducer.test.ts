@@ -1,7 +1,6 @@
 import {
     mockStakingPosition,
     mockStakingProductDescriptor,
-    mockStakingProductInfo,
 } from '@suite-common/earn-staking-common/mocks';
 import { accountsActions } from '@suite-common/wallet-core';
 import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -19,37 +18,21 @@ const registered = stakingReducer(
     stakingActions.productsRegistered({ platform: 'desktop', descriptors: [eth, sol] }),
 );
 
-const withInfo = stakingReducer(
-    registered,
-    stakingActions.productInfoFetched({
-        productId: eth.id,
-        info: mockStakingProductInfo(),
-        fetchedAt: 1_777_000_000_000,
-    }),
-);
-
 describe('stakingReducer', () => {
     it('starts without a platform, products or positions', () => {
         expect(stakingReducer(undefined, { type: 'init' })).toEqual(stakingInitialState);
     });
 
     describe('productsRegistered', () => {
-        it('stores the platform and an idle entry per descriptor', () => {
+        it('stores the platform and the descriptors', () => {
             expect(registered.platform).toBe('desktop');
-            expect(Object.keys(registered.products)).toEqual([eth.id, sol.id]);
-            expect(registered.products[eth.id]).toEqual({
-                descriptor: eth,
-                info: null,
-                infoStatus: 'idle',
-                infoFetchedAt: null,
-                infoError: null,
-            });
+            expect(registered.products).toEqual({ [eth.id]: eth, [sol.id]: sol });
         });
 
-        it('keeps the info of a product registered again and drops the others', () => {
+        it('replaces the descriptors when products are registered again', () => {
             const updatedEth = mockStakingProductDescriptor({ rateKind: 'apr' });
             const state = stakingReducer(
-                withInfo,
+                registered,
                 stakingActions.productsRegistered({
                     platform: 'mobile',
                     descriptors: [updatedEth],
@@ -57,10 +40,7 @@ describe('stakingReducer', () => {
             );
 
             expect(state.platform).toBe('mobile');
-            expect(Object.keys(state.products)).toEqual([eth.id]);
-            expect(state.products[eth.id]?.descriptor).toEqual(updatedEth);
-            expect(state.products[eth.id]?.info).toEqual(mockStakingProductInfo());
-            expect(state.products[eth.id]?.infoStatus).toBe('ready');
+            expect(state.products).toEqual({ [eth.id]: updatedEth });
         });
 
         it('keeps positions', () => {
@@ -74,68 +54,6 @@ describe('stakingReducer', () => {
             );
 
             expect(state.positions).toBe(synced.positions);
-        });
-    });
-
-    describe('product info', () => {
-        it('marks a product loading and keeps its last info', () => {
-            const state = stakingReducer(
-                withInfo,
-                stakingActions.productInfoRequested({ productId: eth.id }),
-            );
-
-            expect(state.products[eth.id]?.infoStatus).toBe('loading');
-            expect(state.products[eth.id]?.info).toEqual(mockStakingProductInfo());
-            expect(state.products[eth.id]?.infoFetchedAt).toBe(1_777_000_000_000);
-        });
-
-        it('stores fetched info with its time and clears a previous error', () => {
-            const failed = stakingReducer(
-                registered,
-                stakingActions.productInfoFailed({ productId: eth.id, error: 'offline' }),
-            );
-            const state = stakingReducer(
-                failed,
-                stakingActions.productInfoFetched({
-                    productId: eth.id,
-                    info: mockStakingProductInfo(),
-                    fetchedAt: 1_777_000_000_000,
-                }),
-            );
-
-            expect(state.products[eth.id]).toEqual({
-                descriptor: eth,
-                info: mockStakingProductInfo(),
-                infoStatus: 'ready',
-                infoFetchedAt: 1_777_000_000_000,
-                infoError: null,
-            });
-        });
-
-        it('records a failure and keeps the last info and its time', () => {
-            const state = stakingReducer(
-                withInfo,
-                stakingActions.productInfoFailed({ productId: eth.id, error: 'offline' }),
-            );
-
-            expect(state.products[eth.id]?.infoStatus).toBe('error');
-            expect(state.products[eth.id]?.infoError).toBe('offline');
-            expect(state.products[eth.id]?.info).toEqual(mockStakingProductInfo());
-            expect(state.products[eth.id]?.infoFetchedAt).toBe(1_777_000_000_000);
-        });
-
-        it('ignores a product that is not registered', () => {
-            const unknown = mockStakingProductDescriptor({ symbol: asNetworkSymbol('ada') });
-            const state = stakingReducer(
-                registered,
-                stakingActions.productInfoFetched({
-                    productId: unknown.id,
-                    info: mockStakingProductInfo(),
-                    fetchedAt: 1,
-                }),
-            );
-
-            expect(state).toBe(registered);
         });
     });
 

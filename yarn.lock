@@ -11568,6 +11568,7 @@ __metadata:
     "@suite-common/device": "workspace:*"
     "@suite-common/earn-staking-common": "workspace:*"
     "@suite-common/message-system": "workspace:*"
+    "@suite-common/react-query": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"

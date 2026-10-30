@@ -10,7 +10,6 @@ import type { NetworkSymbol } from '@trezor/network-module-types';
 import { createWeakMapSelector, returnStableArrayIfEmpty } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
 
-import { type StakingProductEntry } from './stakingProductsReducer';
 import type { StakingRootState } from './stakingReducer';
 
 const isDefined = <T>(value: T | undefined): value is T => value !== undefined;
@@ -24,11 +23,7 @@ const selectSymbolParam = (_state: StakingRootState, symbol: NetworkSymbol) => s
 export const selectStakingProductDescriptors = createWeakMapSelector(
     [selectStakingProducts],
     (products): readonly StakingProductDescriptor[] =>
-        returnStableArrayIfEmpty(
-            Object.values(products)
-                .filter(isDefined)
-                .map(entry => entry.descriptor),
-        ),
+        returnStableArrayIfEmpty(Object.values(products).filter(isDefined)),
 );
 
 export const selectStakingProductDescriptorsBySymbol = createWeakMapSelector(
@@ -37,18 +32,10 @@ export const selectStakingProductDescriptorsBySymbol = createWeakMapSelector(
         returnStableArrayIfEmpty(descriptors.filter(descriptor => descriptor.symbol === symbol)),
 );
 
-export const selectStakingProductEntry = (
-    state: StakingRootState,
-    productId: StakingProductId,
-): StakingProductEntry | null => state.staking.products[productId] ?? null;
-
 export const selectStakingProductDescriptor = (
     state: StakingRootState,
     productId: StakingProductId,
-): StakingProductDescriptor | null => state.staking.products[productId]?.descriptor ?? null;
-
-export const selectStakingProductInfo = (state: StakingRootState, productId: StakingProductId) =>
-    state.staking.products[productId]?.info ?? null;
+): StakingProductDescriptor | null => state.staking.products[productId] ?? null;
 
 export const selectIsStakingSupportedSymbol = (state: StakingRootState, symbol: NetworkSymbol) =>
     selectStakingProductDescriptorsBySymbol(state, symbol).length > 0;

@@ -1,12 +1,11 @@
 import {
     mockStakingPosition,
     mockStakingProductDescriptor,
-    mockStakingProductInfo,
 } from '@suite-common/earn-staking-common/mocks';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import { type StakingRootState, stakingActions, stakingReducer } from './stakingReducer';
+import type { StakingRootState } from './stakingReducer';
 import {
     selectIsStakingSupportedSymbol,
     selectStakingAccountTotals,
@@ -16,8 +15,6 @@ import {
     selectStakingProductDescriptor,
     selectStakingProductDescriptors,
     selectStakingProductDescriptorsBySymbol,
-    selectStakingProductEntry,
-    selectStakingProductInfo,
 } from './stakingSelectors';
 import { mockStakingState } from '../../mocks';
 
@@ -73,25 +70,11 @@ describe('staking selectors', () => {
         expect(selectIsStakingSupportedSymbol(state, asNetworkSymbol('ada'))).toBe(false);
     });
 
-    it('selects a product entry, descriptor and info', () => {
-        const withInfo: StakingRootState = {
-            staking: stakingReducer(
-                state.staking,
-                stakingActions.productInfoFetched({
-                    productId: eth.id,
-                    info: mockStakingProductInfo(),
-                    fetchedAt: 1,
-                }),
-            ),
-        };
-
-        expect(selectStakingProductEntry(withInfo, eth.id)?.infoStatus).toBe('ready');
-        expect(selectStakingProductDescriptor(withInfo, eth.id)).toEqual(eth);
-        expect(selectStakingProductInfo(withInfo, eth.id)).toEqual(mockStakingProductInfo());
-        expect(selectStakingProductInfo(withInfo, sol.id)).toBeNull();
+    it('selects a descriptor by product id', () => {
+        expect(selectStakingProductDescriptor(state, eth.id)).toEqual(eth);
         expect(
-            selectStakingProductEntry(
-                withInfo,
+            selectStakingProductDescriptor(
+                state,
                 mockStakingProductDescriptor({ symbol: asNetworkSymbol('ada') }).id,
             ),
         ).toBeNull();
