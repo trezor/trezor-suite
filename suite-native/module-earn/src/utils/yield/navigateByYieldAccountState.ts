@@ -1,4 +1,8 @@
-import { type StablecoinYieldVaultToken, type YieldFlowType } from '@suite-common/wallet-core';
+import {
+    type StablecoinYieldVaultToken,
+    type YieldFlowType,
+    hasPositiveContractTokenBalance,
+} from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
 import {
     type RootStackParamList,
@@ -8,7 +12,6 @@ import {
 } from '@suite-native/navigation';
 
 import { type YieldNavigationItem } from '../../types';
-import { hasPositiveContractTokenBalance } from '../earn/contractTokenBalanceUtils';
 
 type YieldNavigateFn = StackNavigationProps<
     RootStackParamList,

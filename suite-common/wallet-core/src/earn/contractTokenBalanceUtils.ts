@@ -1,7 +1,8 @@
-import { getYieldDepositableBalance } from '@suite-common/wallet-core';
 import { type Account, type TokenAddress } from '@suite-common/wallet-types';
 import { getContractAddressForNetworkSymbol, isPositiveBalance } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
+
+import { getYieldDepositableBalance } from '../yield/utils/yieldUtils';
 
 type AccountToken = NonNullable<Account['tokens']>[number];
 

@@ -6,6 +6,7 @@ import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type StakeRootState,
+    type StakingListItem,
     selectAccountByKey,
     selectIsCardanoStakedOutsideEverstake,
     selectIsCardanoStakedWithFiveBinaries,
@@ -21,7 +22,6 @@ import { Translation } from '@suite-native/intl';
 import { useStakingDetailNavigation } from '../../hooks/staking/useStakingDetailNavigation';
 import { useStakingNavigateAnalytics } from '../../hooks/staking/useStakingNavigateAnalytics';
 import { useStakingRate } from '../../hooks/staking/useStakingRate';
-import { type StakingListItem } from '../../types';
 import { ApyValue } from '../earn/ApyValue';
 import { EarnAccountCardLayout } from '../earn/EarnAccountCardLayout';
 import { EarnTronVotingAlert } from '../earn/EarnTronVotingAlert';

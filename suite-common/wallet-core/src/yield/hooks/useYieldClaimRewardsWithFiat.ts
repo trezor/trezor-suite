@@ -7,19 +7,19 @@ import {
     useGetMerklRewardsQueryEntries,
 } from '@suite-common/earn-stablecoin-api';
 import { getNetworkByEvmChainId } from '@suite-common/wallet-config';
-import {
-    type FiatRatesRootState,
-    createStableFiatRateKeys,
-    selectBaseCurrency,
-    selectCurrentFiatRatesByFiatRateKeys,
-    useMissingRateTickersQuery,
-} from '@suite-common/wallet-core';
 import { type CryptoBaseCurrencyPair, toTokenAddress } from '@suite-common/wallet-types';
 import { getContractAddressForNetworkSymbol, getFiatRateKey } from '@suite-common/wallet-utils';
 
-import { selectYieldClaimAccounts } from '../../earnScreenSelectors';
+import { selectYieldClaimAccounts } from '../../earn/earnDashboardSelectors';
+import {
+    createStableFiatRateKeys,
+    selectCurrentFiatRatesByFiatRateKeys,
+} from '../../fiat-rates/fiatRatesSelectors';
+import { type FiatRatesRootState } from '../../fiat-rates/fiatRatesTypes';
+import { useMissingRateTickersQuery } from '../../fiat-rates/useMissingRateTickersQuery';
+import { selectBaseCurrency } from '../../settings/walletSettingsReducer';
 
-export const useClaimRewardsWithFiat = () => {
+export const useYieldClaimRewardsWithFiat = () => {
     const baseCurrency = useSelector(selectBaseCurrency);
     const claimAccounts = useSelector(selectYieldClaimAccounts);
 

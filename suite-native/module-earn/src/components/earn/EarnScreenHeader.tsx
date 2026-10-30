@@ -2,22 +2,22 @@ import { useSelector } from 'react-redux';
 
 import { type DeviceRootState } from '@suite-common/device';
 import { type NetworksRootState } from '@suite-common/networks';
-import { type AccountsRootState } from '@suite-common/wallet-core';
-import { VStack } from '@suite-native/atoms';
-import { returnStableArrayIfEmpty } from '@trezor/redux-utils';
-
-import { EarnBalanceCard } from './EarnBalanceCard';
 import {
+    type AccountsRootState,
     type EarnListRootState,
     selectCardanoStakedWithFiveBinariesAccountKey,
     selectStakingListItems,
     selectYieldClaimListItems,
     selectYieldListItems,
-} from '../../earnScreenSelectors';
+    useYieldClaimRewardsWithFiat,
+    useYieldOpportunities,
+} from '@suite-common/wallet-core';
+import { VStack } from '@suite-native/atoms';
+import { returnStableArrayIfEmpty } from '@trezor/redux-utils';
+
+import { EarnBalanceCard } from './EarnBalanceCard';
 import { useMessageSystemEarnDashboard } from '../../hooks/earn/useMessageSystemEarnDashboard';
 import { useReportEarnDashboardReadyEvent } from '../../hooks/earn/useReportEarnDashboardReadyEvent';
-import { useClaimRewardsWithFiat } from '../../hooks/yield/useClaimRewardsWithFiat';
-import { useYieldOpportunities } from '../../hooks/yield/useYieldOpportunities';
 import { CardanoStakingInfoBanner } from '../staking/CardanoStakingInfoBanner';
 import { StakingPositionsCard } from '../staking/StakingPositionsCard';
 import { YieldPositionsCard } from '../yield/YieldPositionsCard';
@@ -42,7 +42,7 @@ export const EarnScreenHeader = () => {
         !isYieldDisabled ? selectYieldListItems(state, yieldOpportunities) : EMPTY_ARRAY,
     );
 
-    const { claimRewardsWithFiat, isClaimLoading, isClaimError } = useClaimRewardsWithFiat();
+    const { claimRewardsWithFiat, isClaimLoading, isClaimError } = useYieldClaimRewardsWithFiat();
 
     const claimItems = useSelector((state: EarnListRootState) =>
         selectYieldClaimListItems(state, claimRewardsWithFiat),
