@@ -1,9 +1,12 @@
+import { testMocks } from '@suite-common/test-utils';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import {
     type Account,
     type TokenAddress,
     type WalletAccountTransaction,
+    asAccountDescriptor,
 } from '@suite-common/wallet-types';
+import { mockAccountToken, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { type StaticSessionId } from '@trezor/device-utils';
 
 import {
@@ -38,16 +41,18 @@ const mockAccount = ({
     isFailed = false,
     tokens = [],
 }: MockAccountParams = {}): Account =>
-    ({
-        key: `descriptor${index}-${symbol}-${deviceState}`,
-        descriptor: `descriptor${index}`,
-        deviceState,
-        symbol,
-        index,
-        visible: isVisible,
-        ...(isFailed ? { failed: true, error: 'backend down' } : {}),
-        tokens,
-    }) as unknown as Account;
+    mockWalletAccount(
+        {
+            symbol,
+            deviceState,
+            index,
+            descriptor: asAccountDescriptor(`descriptor${index}`),
+            visible: isVisible,
+            tokens: tokens.map(token => mockAccountToken(token)),
+        },
+        undefined,
+        isFailed ? { failed: true, error: 'backend down' } : undefined,
+    );
 
 type MockTokenTransferParams = {
     txid: string;
@@ -56,7 +61,7 @@ type MockTokenTransferParams = {
 };
 
 const mockTokenTransfer = ({ txid, contract, amount }: MockTokenTransferParams) =>
-    ({
+    testMocks.getWalletTransaction({
         txid,
         symbol: ETH,
         type: 'recv',
@@ -65,9 +70,18 @@ const mockTokenTransfer = ({ txid, contract, amount }: MockTokenTransferParams) 
         blockHeight: 100,
         blockTime: 1700000000,
         targets: [],
-        internalTransfers: [],
-        tokens: [{ contract, amount, type: 'recv', standard: 'ERC20', decimals: 6 }],
-    }) as unknown as WalletAccountTransaction;
+        tokens: [
+            {
+                contract,
+                amount,
+                type: 'recv',
+                standard: 'ERC20',
+                decimals: 6,
+                from: '0xsender',
+                to: '0xrecipient',
+            },
+        ],
+    });
 
 type CreateStateParams = {
     accounts: Account[];
