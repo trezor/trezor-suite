@@ -27,9 +27,13 @@ import {
     selectWalletAssetAccountCount,
     selectWalletAssetAmount,
     selectWalletAssetAvailableAmount,
+    selectWalletAssetContractAddress,
     selectWalletAssetFiatValue,
+    selectWalletAssetHiddenReason,
+    selectWalletAssetHoldings,
     selectWalletAssetStakingAmount,
     selectWalletAssetStakingRatio,
+    selectWalletAssetSymbol,
     selectWalletAssetTokenSymbol,
 } from './homeAssetTableSelectors';
 
@@ -468,6 +472,41 @@ describe('the total over the wallet', () => {
         expect(selectWalletAssetAccountCount(stateWithThreeEthereumAccounts, ethereumKey)).toBe(3);
     });
 
+    it('lists the accounts that hold the selected asset, each with what it holds of it', () => {
+        const tokenKey = getWalletAssetKey({
+            deviceState: ALICE,
+            symbol: ETH,
+            contractAddress: USDC_ON_ETH,
+        });
+        const stateWithTwoHolders = createState({
+            accounts: [
+                mockAccount({
+                    symbol: ETH,
+                    tokens: [{ contract: USDC_ON_ETH, balance: '1', symbol: 'USDC' }],
+                }),
+                mockAccount({
+                    symbol: ETH,
+                    index: 1,
+                    tokens: [{ contract: USDC_ON_ETH, balance: '0', symbol: 'USDC' }],
+                }),
+                mockAccount({
+                    symbol: ETH,
+                    index: 2,
+                    tokens: [{ contract: USDC_ON_ETH, balance: '5', symbol: 'USDC' }],
+                }),
+            ],
+        });
+
+        expect(
+            selectWalletAssetHoldings(stateWithTwoHolders, tokenKey).map(
+                ({ cryptoBalance }) => cryptoBalance,
+            ),
+        ).toEqual(['1', '5']);
+        expect(selectWalletAssetHoldings(stateWithTwoHolders, tokenKey)).toHaveLength(
+            selectWalletAssetAccountCount(stateWithTwoHolders, tokenKey),
+        );
+    });
+
     it('separates available from staked, pending, and withdrawing balances', () => {
         const staked = createState({
             accounts: [
@@ -747,6 +786,45 @@ describe('the tokens the table leaves out', () => {
             `${ALICE}/eth/${USDC_ON_ETH}`,
             `${ALICE}/pol/${USDC_ON_POL}`,
         ]);
+    });
+
+    it('still describes a hidden token, priced, for its own screen', () => {
+        const state = createState({
+            accounts: [
+                mockAccount({
+                    symbol: ETH,
+                    tokens: [{ symbol: 'usdc', contract: USDC_ON_ETH, balance: '10' }],
+                }),
+            ],
+            rates: mockRate(ETH, 1, USDC_ON_ETH),
+            hiddenTokens: [USDC_ON_ETH],
+        });
+        const assetKey = getWalletAssetKey({
+            deviceState: ALICE,
+            symbol: ETH,
+            contractAddress: USDC_ON_ETH,
+        });
+
+        expect(selectWalletAssetSymbol(state, assetKey)).toBe(ETH);
+        expect(selectWalletAssetContractAddress(state, assetKey)).toBe(USDC_ON_ETH);
+        expect(selectWalletAssetFiatValue(state, assetKey)?.toFixed()).toBe('10');
+    });
+
+    it('says why a token is hidden, and nothing for one that is shown', () => {
+        const state = stateWithBitcoinBalance('1');
+        const getTokenKey = (contractAddress: TokenAddress) =>
+            getWalletAssetKey({ deviceState: ALICE, symbol: ETH, contractAddress });
+
+        expect(selectWalletAssetHiddenReason(state, getTokenKey(USDC_ON_ETH))).toBe('hiddenByUser');
+        expect(selectWalletAssetHiddenReason(state, getTokenKey(UNKNOWN_TOKEN))).toBe(
+            'unrecognized',
+        );
+        expect(
+            selectWalletAssetHiddenReason(
+                state,
+                getWalletAssetKey({ deviceState: ALICE, symbol: BTC }),
+            ),
+        ).toBeUndefined();
     });
 
     it('leaves out a hidden token on a network the user has not enabled', () => {

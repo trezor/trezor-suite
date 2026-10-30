@@ -1,0 +1,1 @@
+export const ASSET_DETAIL_MODAL_MAX_HEIGHT = 670;

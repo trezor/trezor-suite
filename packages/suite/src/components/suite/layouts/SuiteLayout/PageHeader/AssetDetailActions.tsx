@@ -15,6 +15,7 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { useSelector } from 'src/hooks/suite';
+import { AssetDetailMenu } from 'src/views/home/AssetDetail/AssetDetailMenu/AssetDetailMenu';
 import { selectRoutedAssetKey } from 'src/views/home/AssetDetail/selectRoutedAssetKey';
 
 import { AssetSendReceive } from './GlobalSendReceive/AssetSendReceive';
@@ -53,6 +54,7 @@ export const AssetDetailActions = () => {
 
     return (
         <Row gap={12}>
+            <AssetDetailMenu assetKey={assetKey} />
             <TradeActions
                 source={{ from: 'asset/header', networkSymbol: symbol, contractAddress }}
                 prefill={{ buy: buyPrefill, sell: sellPrefill }}
