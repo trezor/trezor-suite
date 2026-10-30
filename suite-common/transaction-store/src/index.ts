@@ -42,6 +42,7 @@ export type {
     TransactionSearchTextMatches,
 } from './search/transactionSearch';
 export { parseTransactionSearch } from './search/parseTransactionSearch';
+export type { KnownTokens, SuspiciousTransactionsContext } from './transactionStoreTypes';
 export type { MigrateTransactionStoreSchemaError } from './schema/migrateTransactionStoreSchema';
 export {
     type TransactionStorePort,

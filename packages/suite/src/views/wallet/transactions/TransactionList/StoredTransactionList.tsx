@@ -9,6 +9,17 @@ import {
     useStoredAccountTransactions,
 } from '@suite/transaction-store';
 import { getTxsPerPage } from '@suite-common/suite-utils';
+import {
+    hasNetworkPotentialFraudTransactions,
+    isPhishingTransaction,
+} from '@suite-common/token-definitions';
+import type { SuspiciousTransactionsContext } from '@suite-common/transaction-store';
+import {
+    selectAccountTransactions,
+    selectActiveDustPhishingThreshold,
+    selectIsHideSuspiciousTransactions,
+    selectPhishingTransactionsContext,
+} from '@suite-common/wallet-core';
 import { groupTransactionsByDate, isPending } from '@suite-common/wallet-utils';
 import { Column, Text } from '@trezor/components';
 
@@ -43,6 +54,50 @@ type StoredTransactionListProps = {
 };
 
 /**
+ * What the store needs to hide suspicious transactions when the user chose to, or `undefined`.
+ * The store detects most of it in SQL; dust needs historic fiat rates, which only the app has,
+ * so the app's own detection flags those among the transactions Redux holds.
+ */
+const useHideSuspicious = (account: Account): SuspiciousTransactionsContext | undefined => {
+    const isHiding = useSelector(state =>
+        selectIsHideSuspiciousTransactions(state, account.symbol),
+    );
+    const { tokenDefinitions, txsMarkedAsNotScam, historicRates } = useSelector(state =>
+        selectPhishingTransactionsContext(state, account.key, account.symbol),
+    );
+    const dustThreshold = useSelector(selectActiveDustPhishingThreshold);
+    const reduxTransactions = useSelector(state => selectAccountTransactions(state, account.key));
+
+    return useMemo(() => {
+        if (!isHiding || !hasNetworkPotentialFraudTransactions(account.symbol)) return undefined;
+
+        return {
+            notScamTxids: txsMarkedAsNotScam,
+            flaggedTxids: reduxTransactions
+                .filter(
+                    transaction =>
+                        isPhishingTransaction({
+                            transaction,
+                            tokenDefinitions,
+                            txsMarkedAsNotScam,
+                            historicRates,
+                            dustThreshold,
+                        }).isPhishing,
+                )
+                .map(({ txid }) => txid),
+        };
+    }, [
+        isHiding,
+        account.symbol,
+        reduxTransactions,
+        tokenDefinitions,
+        txsMarkedAsNotScam,
+        historicRates,
+        dustThreshold,
+    ]);
+};
+
+/**
  * The account's history read from the transaction store instead of Redux; shown in debug mode.
  * Paging past what is stored asks the store for the whole history, which its worker fetches.
  * The search runs in the worker over everything stored, with the syntax of the Redux list.
@@ -64,7 +119,14 @@ export const StoredTransactionList = ({ account }: StoredTransactionListProps) =
         [debouncedSearchQuery, account.symbol, labels],
     );
     const isSearching = search !== undefined;
-    const storedTransactions = useStoredAccountTransactions({ account, page, perPage, search });
+    const hideSuspicious = useHideSuspicious(account);
+    const storedTransactions = useStoredAccountTransactions({
+        account,
+        page,
+        perPage,
+        search,
+        hideSuspicious,
+    });
     const { transactions, storedCount, syncStatus, isLoading, requestFullHistory } =
         storedTransactions;
     const isComplete = syncStatus?.isComplete ?? false;
@@ -103,9 +165,8 @@ export const StoredTransactionList = ({ account }: StoredTransactionListProps) =
                     searchQuery={searchQuery}
                     setSearch={setSearchQuery}
                     setSelectedPage={setPage}
-                    // Both read the Redux history; the store has no export or filter yet.
+                    // Export reads the Redux history; the store has no export yet.
                     isExportable={false}
-                    isTxFilteringEnabled={false}
                 />
             }
             data-testid="@wallet/accounts/stored-transaction-list"

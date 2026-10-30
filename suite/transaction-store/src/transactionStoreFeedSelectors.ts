@@ -1,4 +1,10 @@
-import type { TransactionStoreAccount } from '@suite-common/transaction-store';
+import {
+    type TokenDefinition,
+    type TokenDefinitionsRootState,
+    selectTokenDefinitions,
+} from '@suite-common/token-definitions';
+import type { KnownTokens, TransactionStoreAccount } from '@suite-common/transaction-store';
+import { type NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     type BlockchainRootState,
@@ -8,12 +14,17 @@ import {
     selectEnabledNetworks,
 } from '@suite-common/wallet-core';
 import type { CustomBackend } from '@suite-common/wallet-types';
-import { getCustomBackends, getDefaultBackendType } from '@suite-common/wallet-utils';
+import {
+    getContractAddressForNetworkSymbol,
+    getCustomBackends,
+    getDefaultBackendType,
+} from '@suite-common/wallet-utils';
 import { createWeakMapSelector } from '@trezor/redux-utils';
 
 export type TransactionStoreFeedState = AccountsRootState &
     BlockchainRootState &
-    WalletSettingsRootState;
+    WalletSettingsRootState &
+    TokenDefinitionsRootState;
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<TransactionStoreFeedState>();
 
@@ -84,6 +95,51 @@ export const selectTransactionStoreAccountRevisions = createMemoizedSelector(
         );
     },
     { memoizeOptions: { resultEqualityCheck: haveSameRevisions } },
+);
+
+/**
+ * The contracts the fake-token detector takes as legit: the definitions' own plus those the
+ * user showed, less those the user hid, as `isFakeTokenPhishing` decides. `null` until the
+ * definitions have loaded, as the app flags no fake token before either.
+ */
+const toKnownContracts = (symbol: NetworkSymbol, definition: TokenDefinition | undefined) => {
+    if (definition?.data === undefined) return null;
+
+    const toKey = (contract: string) => getContractAddressForNetworkSymbol(symbol, contract);
+    const hidden = new Set(definition.hide.map(toKey));
+
+    return [...new Set([...definition.data, ...definition.show.map(toKey)])]
+        .filter(contract => !hidden.has(contract))
+        .sort();
+};
+
+const haveSameContracts = (a: string[] | null, b: string[] | null) =>
+    a === b || (a !== null && b !== null && a.join() === b.join());
+
+const haveSameKnownTokens = (a: KnownTokens[], b: KnownTokens[]) =>
+    a.length === b.length &&
+    a.every(
+        (knownTokens, index) =>
+            knownTokens.symbol === b[index]?.symbol &&
+            haveSameContracts(knownTokens.coin, b[index]?.coin ?? null) &&
+            haveSameContracts(knownTokens.nft, b[index]?.nft ?? null),
+    );
+
+/**
+ * The token definitions of the enabled networks that have them, which hiding suspicious
+ * transactions needs in the store. The same reference until a list actually changes.
+ */
+export const selectTransactionStoreKnownTokens = createMemoizedSelector(
+    [selectTokenDefinitions, selectEnabledNetworks],
+    (tokenDefinitions, enabledNetworks): KnownTokens[] =>
+        enabledNetworks
+            .filter(symbol => getNetworkFeatures(symbol).includes('coin-definitions'))
+            .map(symbol => ({
+                symbol,
+                coin: toKnownContracts(symbol, tokenDefinitions?.[symbol]?.coin),
+                nft: toKnownContracts(symbol, tokenDefinitions?.[symbol]?.nft),
+            })),
+    { memoizeOptions: { resultEqualityCheck: haveSameKnownTokens } },
 );
 
 /**

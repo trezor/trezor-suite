@@ -17,6 +17,25 @@ export type StoredTransaction = {
     transaction: Transaction;
 };
 
+/** A network's token definitions as the store needs them: which contracts count as known. */
+export type KnownTokens = {
+    symbol: NetworkSymbol;
+    /** Known coin contracts; `null` while the app has no definitions for the network. */
+    coin: string[] | null;
+    nft: string[] | null;
+};
+
+/** What the app knows that deciding a transaction is suspicious also needs. */
+export type SuspiciousTransactionsContext = {
+    /** Transactions the user marked as not a scam, which always stay. */
+    notScamTxids: string[];
+    /**
+     * Transactions the app's own detection flagged from what only it has, such as the fiat
+     * rates dust needs; hidden along with what the store detects itself.
+     */
+    flaggedTxids: string[];
+};
+
 /** `latest` fetches until it reaches stored history, `full` until the account's first transaction. */
 export type SyncMode = 'latest' | 'full';
 

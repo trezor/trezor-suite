@@ -1,5 +1,6 @@
 import type {
     Dispose,
+    KnownTokens,
     TransactionStoreAccount,
     Unsubscribe,
 } from '@suite-common/transaction-store';
@@ -11,6 +12,7 @@ import {
     selectTransactionStoreAccountRevisions,
     selectTransactionStoreAccounts,
     selectTransactionStoreBackends,
+    selectTransactionStoreKnownTokens,
 } from './transactionStoreFeedSelectors';
 
 export type StartTransactionStoreFeedDeps = GetTransactionStoreServiceDep & {
@@ -36,10 +38,12 @@ type Fed = {
     accounts: TransactionStoreAccount[];
     backends: CustomBackend[];
     revisions: ReadonlyMap<string, string>;
+    knownTokens: KnownTokens[];
 };
 
 /**
- * Keeps the store told what the app knows: its accounts and their backends, and when the app's
+ * Keeps the store told what the app knows: its accounts and their backends, the networks' token
+ * definitions (for hiding suspicious transactions), and when the app's
  * own refresh found an account changed, which is when the store syncs it. The store has no clock
  * of its own. Pushes only what changed, and stops the store when it gets disabled.
  */
@@ -67,6 +71,7 @@ export const createStartTransactionStoreFeed =
             const accounts = selectTransactionStoreAccounts(state);
             const backends = selectTransactionStoreBackends(state);
             const revisions = selectTransactionStoreAccountRevisions(state);
+            const knownTokens = selectTransactionStoreKnownTokens(state);
             const service = deps.getTransactionStoreService();
             const accountKeys = accounts.map(({ accountKey }) => accountKey);
 
@@ -93,7 +98,11 @@ export const createStartTransactionStoreFeed =
                 );
             }
 
-            fed = { accounts, backends, revisions };
+            if (knownTokens !== fed?.knownTokens) {
+                void service.transactionStore.setKnownTokens(knownTokens);
+            }
+
+            fed = { accounts, backends, revisions, knownTokens };
         };
 
         feed();

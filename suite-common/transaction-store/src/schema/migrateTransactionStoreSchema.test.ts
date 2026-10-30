@@ -24,7 +24,9 @@ describe(migrateTransactionStoreSchema.name, () => {
         expect(result.success).toBe(true);
         expect(getTableNames(sqlite)).toEqual([
             'accounts',
+            'known_tokens',
             'sync_state',
+            'token_definition_networks',
             'transactions',
             'transfers',
         ]);

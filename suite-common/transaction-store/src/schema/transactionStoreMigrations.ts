@@ -59,4 +59,16 @@ export const TRANSACTION_STORE_MIGRATIONS: ReadonlyArray<ReadonlyArray<string>> 
         'DELETE FROM transactions',
         'DELETE FROM sync_state',
     ],
+    [
+        // What hiding suspicious transactions needs from the app, so that filter runs in SQL too.
+        // The contracts of a network's token definitions, with the user's show/hide applied.
+        `CREATE TABLE known_tokens (
+            symbol TEXT NOT NULL,
+            kind TEXT NOT NULL,
+            contract TEXT NOT NULL,
+            PRIMARY KEY (symbol, kind, contract)
+        )`,
+        // Listed once the app has fed the network's definitions; before, no token is "fake".
+        'CREATE TABLE token_definition_networks (symbol TEXT PRIMARY KEY)',
+    ],
 ];

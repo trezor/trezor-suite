@@ -10,6 +10,7 @@ export const TRANSACTION_STORE_RPC_METHODS = [
     'refreshAccounts',
     'requestFullHistory',
     'getSyncStatus',
+    'setKnownTokens',
     'selectTransactions',
     'countTransactions',
     'dispose',

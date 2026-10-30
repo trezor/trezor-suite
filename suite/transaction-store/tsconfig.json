@@ -6,6 +6,9 @@
             "path": "../../suite-common/react-query"
         },
         {
+            "path": "../../suite-common/token-definitions"
+        },
+        {
             "path": "../../suite-common/transaction-search"
         },
         {

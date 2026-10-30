@@ -1,11 +1,19 @@
-import { type NetworkSymbol, getNetworkDecimals } from '@suite-common/wallet-config';
+import {
+    type NetworkSymbol,
+    type NetworkType,
+    getNetworkDecimals,
+    getNetworkType,
+} from '@suite-common/wallet-config';
 import type { Transaction } from '@trezor/blockchain-link-types';
 
 import { toTransactionSearchClause } from '../search/toTransactionSearchClause';
 import { runInSqliteTransaction } from '../sqlite/runInSqliteTransaction';
 import type { SqlRow, SqlValue, TransactionStoreSqliteDep } from '../sqlite/transactionStoreSqlite';
+import { toSuspiciousClause } from '../suspicious/toSuspiciousClause';
 import type {
+    KnownTokens,
     StoredTransaction,
+    SuspiciousTransactionsContext,
     TransactionSourceErrorType,
     TransactionStoreAccount,
 } from '../transactionStoreTypes';
@@ -23,6 +31,8 @@ export type TransactionsFilter = {
     contract?: string | null;
     /** Only the transactions the search matches, run in SQL here; see `parseTransactionSearch`. */
     search?: TransactionSearch;
+    /** Without the suspicious ones, decided in SQL from what the app fed; see `toSuspiciousClause`. */
+    hideSuspicious?: SuspiciousTransactionsContext;
 };
 
 export type SelectTransactionsParams = TransactionsFilter & {
@@ -45,6 +55,9 @@ export type TransactionRepository = {
      */
     replaceAccounts: (accounts: TransactionStoreAccount[]) => ReplaceAccountsResult;
     selectAccount: (accountKey: string) => TransactionStoreAccount | undefined;
+    selectAccountKeys: (params: { symbols: NetworkSymbol[] }) => string[];
+    /** Makes the network's known tokens exactly these; `null` lists forget its definitions. */
+    replaceKnownTokens: (knownTokens: KnownTokens) => void;
     /** Returns how many rows were added or actually changed. */
     upsertTransactions: (params: { accountKey: string; transactions: Transaction[] }) => number;
     selectStoredTxids: (params: { accountKey: string; txids: string[] }) => Set<string>;
@@ -98,11 +111,17 @@ const toContractClause = (contract: string | null) => ({
 });
 
 /** The `WHERE` of transactions passing the filter, aliased `t`, and its parameters. */
-const toFilterClause = ({ accountKeys, contract, search }: TransactionsFilter) => {
+const toFilterClause = (
+    { accountKeys, contract, search, hideSuspicious }: TransactionsFilter,
+    groupAccountKeysByNetworkType: (accountKeys: string[]) => Map<NetworkType, string[]>,
+) => {
     const clauses = [
         { sql: `t.account_key IN (${toPlaceholders(accountKeys)})`, parameters: accountKeys },
         ...(contract === undefined ? [] : [toContractClause(contract)]),
         ...(search === undefined ? [] : [toTransactionSearchClause(search)]),
+        ...(hideSuspicious === undefined
+            ? []
+            : [toSuspiciousClause(hideSuspicious, groupAccountKeysByNetworkType(accountKeys))]),
     ];
 
     return {
@@ -161,6 +180,29 @@ export const createTransactionRepository = (
             [account.accountKey, account.symbol, account.descriptor],
         );
 
+    const selectAccount = (accountKey: string) => {
+        const row = exec<AccountRow>(
+            'SELECT account_key, symbol, descriptor FROM accounts WHERE account_key = ?',
+            [accountKey],
+        ).rows[0];
+
+        return row === undefined ? undefined : toAccount(row);
+    };
+
+    // Each network type has its own suspicion detectors; unknown accounts match nothing anyway.
+    const groupAccountKeysByNetworkType = (accountKeys: string[]) =>
+        accountKeys.reduce((groups, accountKey) => {
+            const account = selectAccount(accountKey);
+            if (account === undefined) return groups;
+
+            const networkType = getNetworkType(account.symbol);
+
+            return groups.set(networkType, [...(groups.get(networkType) ?? []), accountKey]);
+        }, new Map<NetworkType, string[]>());
+
+    const toFilterWhere = (filter: TransactionsFilter) =>
+        toFilterClause(filter, groupAccountKeysByNetworkType);
+
     return {
         replaceAccounts: accounts =>
             runInSqliteTransaction(deps.sqlite, () => {
@@ -186,14 +228,33 @@ export const createTransactionRepository = (
                 return { removedAccountKeys };
             }),
 
-        selectAccount: accountKey => {
-            const row = exec<AccountRow>(
-                'SELECT account_key, symbol, descriptor FROM accounts WHERE account_key = ?',
-                [accountKey],
-            ).rows[0];
+        selectAccount,
 
-            return row === undefined ? undefined : toAccount(row);
-        },
+        selectAccountKeys: ({ symbols }) =>
+            symbols.length === 0
+                ? []
+                : exec<{ account_key: string }>(
+                      `SELECT account_key FROM accounts WHERE symbol IN (${toPlaceholders(symbols)})`,
+                      symbols,
+                  ).rows.map(row => row.account_key),
+
+        replaceKnownTokens: ({ symbol, coin, nft }) =>
+            runInSqliteTransaction(deps.sqlite, () => {
+                exec('DELETE FROM known_tokens WHERE symbol = ?', [symbol]);
+                exec('DELETE FROM token_definition_networks WHERE symbol = ?', [symbol]);
+                if (coin === null && nft === null) return;
+
+                exec('INSERT INTO token_definition_networks (symbol) VALUES (?)', [symbol]);
+                Object.entries({ coin, nft }).forEach(([kind, contracts]) =>
+                    contracts?.forEach(contract =>
+                        exec(
+                            `INSERT OR IGNORE INTO known_tokens (symbol, kind, contract)
+                            VALUES (?, ?, ?)`,
+                            [symbol, kind, contract],
+                        ),
+                    ),
+                );
+            }),
 
         upsertTransactions: ({ accountKey, transactions }) => {
             const symbol = exec<{ symbol: string }>(
@@ -245,7 +306,7 @@ export const createTransactionRepository = (
             ),
 
         countTransactions: filter => {
-            const { where, parameters } = toFilterClause(filter);
+            const { where, parameters } = toFilterWhere(filter);
 
             return (
                 exec<{ count: number }>(
@@ -256,7 +317,7 @@ export const createTransactionRepository = (
         },
 
         selectTransactions: ({ limit = -1, offset = 0, ...filter }) => {
-            const { where, parameters } = toFilterClause(filter);
+            const { where, parameters } = toFilterWhere(filter);
 
             return exec<TransactionRow>(
                 `SELECT t.account_key, t.txid, t.block_height, t.block_time, t.data

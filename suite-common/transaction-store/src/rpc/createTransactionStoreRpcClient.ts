@@ -60,6 +60,7 @@ export const createTransactionStoreRpcClient = (
         refreshAccounts: call('refreshAccounts'),
         requestFullHistory: call('requestFullHistory'),
         getSyncStatus: call('getSyncStatus'),
+        setKnownTokens: call('setKnownTokens'),
         selectTransactions: call('selectTransactions'),
         countTransactions: call('countTransactions'),
         // The store on the other side stops first, then the client lets go of the port.

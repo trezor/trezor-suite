@@ -4,6 +4,7 @@ import type {
 } from './repository/createTransactionRepository';
 import type {
     AccountSyncStatus,
+    KnownTokens,
     StoredTransaction,
     TransactionStoreAccount,
     TransactionStoreListener,
@@ -32,6 +33,11 @@ export type TransactionStore = {
     /** Walks the account's history back to its first transaction, in the background. */
     requestFullHistory: (accountKey: string) => Promise<void>;
     getSyncStatus: (accountKeys: string[]) => Promise<AccountSyncStatus[]>;
+    /**
+     * The networks' token definitions, which hiding suspicious transactions needs to tell an
+     * unknown token in SQL; see `toSuspiciousClause`.
+     */
+    setKnownTokens: (knownTokens: KnownTokens[]) => Promise<void>;
     selectTransactions: (params: SelectTransactionsParams) => Promise<StoredTransaction[]>;
     countTransactions: (filter: TransactionsFilter) => Promise<number>;
     subscribe: (listener: TransactionStoreListener) => Promise<Unsubscribe>;

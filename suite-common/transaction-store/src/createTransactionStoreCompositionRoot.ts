@@ -1,3 +1,4 @@
+import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { type Result, ok } from '@trezor/type-utils';
 
 import { createTransactionRepository } from './repository/createTransactionRepository';
@@ -36,6 +37,12 @@ export const createTransactionStoreCompositionRoot = (
     const emit = (event: TransactionStoreEvent) => listeners.forEach(listener => listener(event));
 
     const transactionRepository = createTransactionRepository(deps);
+    // What is suspicious may have changed for these networks' accounts, so their lists refetch.
+    const emitNetworksChanged = (symbols: NetworkSymbol[]) => {
+        const accountKeys = transactionRepository.selectAccountKeys({ symbols });
+
+        if (accountKeys.length > 0) emit({ type: 'transactionsChanged', accountKeys });
+    };
     const syncAccountTransactions = createSyncAccountTransactions({
         transactionRepository,
         transactionSource: deps.transactionSource,
@@ -86,6 +93,12 @@ export const createTransactionStoreCompositionRoot = (
             return Promise.resolve();
         },
         getSyncStatus: accountKeys => Promise.resolve(accountKeys.map(syncQueue.getSyncStatus)),
+        setKnownTokens: knownTokens => {
+            knownTokens.forEach(transactionRepository.replaceKnownTokens);
+            emitNetworksChanged(knownTokens.map(({ symbol }) => symbol));
+
+            return Promise.resolve();
+        },
         selectTransactions: params =>
             Promise.resolve(transactionRepository.selectTransactions(params)),
         countTransactions: filter =>

@@ -1,7 +1,11 @@
 import { useMemo } from 'react';
 
 import { useQuery } from '@suite-common/react-query';
-import type { AccountSyncStatus, TransactionSearch } from '@suite-common/transaction-store';
+import type {
+    AccountSyncStatus,
+    SuspiciousTransactionsContext,
+    TransactionSearch,
+} from '@suite-common/transaction-store';
 import type { Account, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { enhanceTransaction } from '@suite-common/wallet-utils';
 import { useServices } from '@trezor/dependency-injection';
@@ -24,6 +28,8 @@ export type UseStoredAccountTransactionsParams = {
     contract?: string | null;
     /** Only the transactions this search matches, searched in the worker; see `toTransactionSearch`. */
     search?: TransactionSearch;
+    /** Without the suspicious ones, filtered in the worker, so pages and counts stay right. */
+    hideSuspicious?: SuspiciousTransactionsContext;
 };
 
 export type StoredAccountTransactions = {
@@ -50,6 +56,7 @@ export const useStoredAccountTransactions = ({
     perPage,
     contract,
     search,
+    hideSuspicious,
 }: UseStoredAccountTransactionsParams): StoredAccountTransactions => {
     const { getTransactionStoreService } = useServices(injectGetTransactionStoreService);
     const { transactionStore } = getTransactionStoreService();
@@ -63,6 +70,7 @@ export const useStoredAccountTransactions = ({
             perPage,
             contract,
             search,
+            hideSuspicious,
         }),
         // Lazy: the first time the account is asked for, its newest history is downloaded first.
         queryFn: async () => {
@@ -72,6 +80,7 @@ export const useStoredAccountTransactions = ({
                 accountKeys: [accountKey],
                 contract,
                 search,
+                hideSuspicious,
                 limit: perPage,
                 offset: (page - 1) * perPage,
             });
@@ -83,6 +92,7 @@ export const useStoredAccountTransactions = ({
         queryKey: transactionStoreQueryKeys.accountTransactions(accountKey, {
             count: contract,
             search,
+            hideSuspicious,
         }),
         queryFn: async () => {
             await transactionStore.ensureSynced([accountKey]);
@@ -91,6 +101,7 @@ export const useStoredAccountTransactions = ({
                 accountKeys: [accountKey],
                 contract,
                 search,
+                hideSuspicious,
             });
         },
     });
