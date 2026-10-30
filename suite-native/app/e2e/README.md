@@ -21,14 +21,16 @@ To run the tests locally, you need to have the following installed:
 With the debug config, the app is running in Expo dev-client and the JavaScript bundle is served from the local Metro server. This configuration is suitable for development and testing purposes because the Metro hot reloads make it easy to debug the test scenarios. To run the tests in debug mode, follow these steps:
 
 1. Navigate to the `suite-native/app` folder
-2. generate Expo native code with `yarn prebuild`
+2. Generate Expo native code with `NODE_ENV=test yarn prebuild` to load `.env.test`.
 3. Create a debug build:
     - (**Android**) `yarn build:e2e android.emu.debug`
     - (**iOS**) `yarn build:e2e ios.sim.debug`
-4. Run Metro server using test ENV variables from `.evn.test`: `yarn start:e2e`
+4. Run Metro server using test ENV variables from `.env.test`: `yarn start:e2e`
 5. While is Metro server running in a different console, execute the E2E tests:
     - (**Android**) `yarn test:e2e:android`
     - (**iOS**) `yarn test:e2e:ios`
+
+The `EXPO_PUBLIC_IS_DETOX_BUILD=true` flag in `.env.test` configures Expo's development client to skip onboarding and keep its menu closed at launch. These are native build settings: rerun prebuild and rebuild the app after changing them. JavaScript and test-only changes can reuse the APK with Metro running.
 
 > BEWARE: Sometimes the first execution of debug build fail, because the bundling on the metro server takes longer for the first time. If you encounter this behavior, just rerun the tests and the second run should go smoothly.
 
@@ -37,7 +39,7 @@ With the debug config, the app is running in Expo dev-client and the JavaScript 
 To test the app in the release mode, you need to build the app with the release configuration. The JavaScript bundle is bundled within the app and the app is running in the standalone mode. To run the tests in the release mode, follow these steps:
 
 1. Navigate to the `suite-native/app` folder
-2. generate Expo native code with `yarn prebuild`
+2. Generate Expo native code with `NODE_ENV=test yarn prebuild` to load `.env.test`.
 3. Create a release build:
     - (**Android**) `yarn build:e2e android.emu.release`
     - (**iOS**) `yarn build:e2e ios.sim.release`
