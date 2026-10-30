@@ -9,6 +9,7 @@ import { useDiscovery, useLayout, useSelector } from 'src/hooks/suite';
 
 import { AssetDetailBalance, AssetDetailBalanceSkeleton } from './AssetDetailBalance';
 import { AssetDetailEarn } from './AssetDetailEarn';
+import { AssetDetailHiddenBanner } from './AssetDetailHiddenBanner';
 import { AssetDetailMarketPrice } from './AssetDetailMarketPrice';
 import { AssetDetailTransactions } from './AssetDetailTransactions';
 import { AssetNotExists } from './AssetNotExists';
@@ -29,6 +30,7 @@ export const AssetDetail = () => {
 
     return (
         <Column gap={16} alignItems="stretch" data-testid="@asset-detail">
+            <AssetDetailHiddenBanner assetKey={assetKey} />
             <AssetDetailMarketPrice assetKey={assetKey} />
             <Row gap={16} alignItems="stretch" flexWrap="wrap">
                 <Box flex="1" minWidth={280}>
