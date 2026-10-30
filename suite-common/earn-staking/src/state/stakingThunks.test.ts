@@ -1,3 +1,5 @@
+import { combineReducers } from '@reduxjs/toolkit';
+
 import {
     type StakingProductAdapter,
     type StakingProductInfo,
@@ -8,6 +10,7 @@ import {
     mockStakingProductDescriptor,
     mockStakingProductInfo,
 } from '@suite-common/earn-staking-common/mocks';
+import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import type { Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
@@ -15,7 +18,9 @@ import { mock } from '@trezor/dependency-injection';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 import { createMockDispatch } from '@trezor/redux-utils/mocks';
 
+import { stakingApiMiddleware, stakingApiReducer } from './stakingApi';
 import { stakingActions, stakingReducer } from './stakingReducer';
+import { selectStakingProductInfo, selectStakingProductInfoResult } from './stakingSelectors';
 import {
     type RefreshStakingProductInfoThunkDeps,
     type RefreshStakingProductInfoThunkState,
@@ -25,7 +30,12 @@ import {
     syncAllStakingPositionsThunk,
     syncStakingPositionsThunk,
 } from './stakingThunks';
-import { mockStakingProductRepository, mockStakingServices, mockStakingState } from '../../mocks';
+import {
+    mockStakingApiState,
+    mockStakingProductRepository,
+    mockStakingServices,
+    mockStakingState,
+} from '../../mocks';
 
 const eth = mockStakingProductDescriptor();
 const sol = mockStakingProductDescriptor({ symbol: asNetworkSymbol('sol'), type: 'native' });
@@ -64,129 +74,134 @@ const createDeps = (adapters: readonly StakingProductAdapter[]) => ({
 });
 
 describe('refreshStakingProductInfoThunk', () => {
-    const createState = (
-        staking = mockStakingState({ descriptors: [eth, sol] }),
-        enabledNetworks = [asNetworkSymbol('eth')],
-    ): RefreshStakingProductInfoThunkState => ({
-        staking,
-        wallet: {
-            accounts: [ethAccount, btcAccount],
-            settings: { ...initialWalletSettingsState, enabledNetworks },
-        },
-    });
+    const FETCHED_AT = 1_777_000_000_000;
 
-    const run = async (
-        state: RefreshStakingProductInfoThunkState,
-        extra: RefreshStakingProductInfoThunkDeps,
-        params?: { force: boolean },
-    ) => {
-        const getState = () => state;
-        const { actions, dispatch } = createMockDispatch({ getState, extra });
+    const initStore = (adapters: readonly StakingProductAdapter[]) =>
+        createTestCompositionRoot<
+            RefreshStakingProductInfoThunkDeps,
+            RefreshStakingProductInfoThunkState
+        >({
+            services: () => createDeps(adapters).services,
+            middleware: [stakingApiMiddleware],
+            reducer: {
+                staking: stakingReducer,
+                stakingApi: stakingApiReducer,
+                wallet: combineReducers({
+                    accounts: (state = [ethAccount, btcAccount]) => state,
+                    settings: (
+                        state = { ...initialWalletSettingsState, enabledNetworks: [eth.symbol] },
+                    ) => state,
+                }),
+            },
+            preloadedState: { staking: mockStakingState({ descriptors: [eth, sol] }) },
+        }).services.store;
 
-        await refreshStakingProductInfoThunk(params)(dispatch, getState, extra);
-
-        return actions;
-    };
+    const setNow = (now: number) => jest.setSystemTime(now);
 
     beforeEach(() => {
+        // Only the clock is faked, the store keeps resolving on real timers.
+        jest.useFakeTimers({
+            now: FETCHED_AT,
+            doNotFake: [
+                'nextTick',
+                'setImmediate',
+                'clearImmediate',
+                'queueMicrotask',
+                'setTimeout',
+                'clearTimeout',
+                'setInterval',
+                'clearInterval',
+            ],
+        });
         jest.spyOn(console, 'warn').mockImplementation(() => {});
     });
 
     afterEach(() => {
+        jest.useRealTimers();
         jest.restoreAllMocks();
     });
 
     it('fetches the info of products on enabled networks only', async () => {
         const ethAdapter = createAdapter(eth);
         const solAdapter = createAdapter(sol);
-        const actions = await run(createState(), createDeps([ethAdapter, solAdapter]));
+        const store = initStore([ethAdapter, solAdapter]);
+
+        await store.dispatch(refreshStakingProductInfoThunk());
 
         expect(ethAdapter.fetchProductInfo).toHaveBeenCalledTimes(1);
         expect(solAdapter.fetchProductInfo).not.toHaveBeenCalled();
-        expect(actions.filter(stakingActions.productInfoRequested.match)).toEqual([
-            stakingActions.productInfoRequested({ productId: eth.id }),
-        ]);
-        expect(actions.filter(stakingActions.productInfoFetched.match)).toEqual([
-            expect.objectContaining({
-                payload: expect.objectContaining({
-                    productId: eth.id,
-                    info: mockStakingProductInfo(),
-                }),
-            }),
-        ]);
+        expect(selectStakingProductInfo(store.getState(), eth.id)).toEqual(
+            mockStakingProductInfo(),
+        );
+        expect(selectStakingProductInfoResult(store.getState(), sol.id).isUninitialized).toBe(true);
     });
 
     it('re-syncs the positions of the fetched product network', async () => {
         const ethAdapter = createAdapter(eth);
-        const actions = await run(createState(), createDeps([ethAdapter, createAdapter(sol)]));
+        const store = initStore([ethAdapter, createAdapter(sol)]);
+
+        await store.dispatch(refreshStakingProductInfoThunk());
 
         expect(ethAdapter.getPosition).toHaveBeenCalledWith({
             account: ethAccount,
-            productInfo: null,
+            productInfo: mockStakingProductInfo(),
         });
-        expect(actions.filter(stakingActions.positionsSynced.match)).toEqual([
-            stakingActions.positionsSynced({ accountKey: ethAccount.key, positions: [] }),
-        ]);
     });
 
     it('skips info fetched less than five minutes ago unless forced', async () => {
-        const fresh = stakingReducer(
-            mockStakingState({ descriptors: [eth] }),
-            stakingActions.productInfoFetched({
-                productId: eth.id,
-                info: mockStakingProductInfo(),
-                fetchedAt: Date.now() - 60_000,
-            }),
-        );
         const adapter = createAdapter(eth);
+        const store = initStore([adapter]);
 
-        await run(createState(fresh), createDeps([adapter]));
-        expect(adapter.fetchProductInfo).not.toHaveBeenCalled();
-
-        await run(createState(fresh), createDeps([adapter]), { force: true });
+        await store.dispatch(refreshStakingProductInfoThunk());
+        setNow(FETCHED_AT + 60_000);
+        await store.dispatch(refreshStakingProductInfoThunk());
         expect(adapter.fetchProductInfo).toHaveBeenCalledTimes(1);
+
+        await store.dispatch(refreshStakingProductInfoThunk({ force: true }));
+        expect(adapter.fetchProductInfo).toHaveBeenCalledTimes(2);
     });
 
     it('fetches again once the info is older than five minutes', async () => {
-        const stale = stakingReducer(
-            mockStakingState({ descriptors: [eth] }),
-            stakingActions.productInfoFetched({
-                productId: eth.id,
-                info: mockStakingProductInfo(),
-                fetchedAt: Date.now() - 6 * 60_000,
-            }),
-        );
         const adapter = createAdapter(eth);
+        const store = initStore([adapter]);
 
-        await run(createState(stale), createDeps([adapter]));
+        await store.dispatch(refreshStakingProductInfoThunk());
+        setNow(FETCHED_AT + 6 * 60_000);
+        await store.dispatch(refreshStakingProductInfoThunk());
+
+        expect(adapter.fetchProductInfo).toHaveBeenCalledTimes(2);
+    });
+
+    it('does not fetch a product whose info is already loading', async () => {
+        const adapter = createAdapter(eth);
+        const store = initStore([adapter]);
+
+        await Promise.all([
+            store.dispatch(refreshStakingProductInfoThunk()),
+            store.dispatch(refreshStakingProductInfoThunk({ force: true })),
+        ]);
 
         expect(adapter.fetchProductInfo).toHaveBeenCalledTimes(1);
     });
 
-    it('does not fetch a product whose info is already loading', async () => {
-        const loading = stakingReducer(
-            mockStakingState({ descriptors: [eth] }),
-            stakingActions.productInfoRequested({ productId: eth.id }),
+    it('records a failure and keeps the last info', async () => {
+        const fetchProductInfo = mock<StakingProductAdapter['fetchProductInfo']>(() =>
+            Promise.resolve(mockStakingProductInfo()),
         );
-        const adapter = createAdapter(eth);
+        const adapter = createAdapter(eth, { fetchProductInfo });
+        const store = initStore([adapter]);
 
-        await run(createState(loading), createDeps([adapter]));
+        await store.dispatch(refreshStakingProductInfoThunk());
+        jest.mocked(adapter.getPosition).mockClear();
+        fetchProductInfo.mockRejectedValueOnce(new Error('offline'));
+        await store.dispatch(refreshStakingProductInfoThunk({ force: true }));
 
-        expect(adapter.fetchProductInfo).not.toHaveBeenCalled();
-    });
+        const result = selectStakingProductInfoResult(store.getState(), eth.id);
 
-    it('records a failure without throwing', async () => {
-        const adapter = createAdapter(eth, {
-            fetchProductInfo: mock<StakingProductAdapter['fetchProductInfo']>(() =>
-                Promise.reject(new Error('offline')),
-            ),
-        });
-        const actions = await run(createState(), createDeps([adapter]));
-
-        expect(actions.filter(stakingActions.productInfoFailed.match)).toEqual([
-            stakingActions.productInfoFailed({ productId: eth.id, error: 'offline' }),
-        ]);
-        expect(actions.filter(stakingActions.productInfoFetched.match)).toEqual([]);
+        expect(result.isError).toBe(true);
+        expect(result.error).toBe('offline');
+        expect(result.data).toEqual(mockStakingProductInfo());
+        expect(adapter.getPosition).not.toHaveBeenCalled();
         expect(console.warn).toHaveBeenCalledWith(expect.stringContaining('offline'));
     });
 });
@@ -194,8 +209,12 @@ describe('refreshStakingProductInfoThunk', () => {
 describe('syncStakingPositionsThunk', () => {
     const createState = (
         accounts: readonly Account[] = [ethAccount, btcAccount],
-        staking = mockStakingState({ descriptors: [eth, sol] }),
-    ): SyncStakingPositionsThunkState => ({ staking, wallet: { accounts: [...accounts] } });
+        stakingApi = mockStakingApiState(),
+    ): SyncStakingPositionsThunkState => ({
+        staking: mockStakingState({ descriptors: [eth, sol] }),
+        stakingApi,
+        wallet: { accounts: [...accounts] },
+    });
 
     const run = async (
         state: SyncStakingPositionsThunkState,
@@ -225,15 +244,14 @@ describe('syncStakingPositionsThunk', () => {
         ]);
     });
 
-    it('passes the current product info to the adapter', async () => {
+    it('passes the cached product info to the adapter', async () => {
         const info: StakingProductInfo = mockStakingProductInfo({ rate: 4.2 });
-        const staking = stakingReducer(
-            mockStakingState({ descriptors: [eth] }),
-            stakingActions.productInfoFetched({ productId: eth.id, info, fetchedAt: 1 }),
-        );
         const adapter = createAdapter(eth);
 
-        await run(createState([ethAccount], staking), createDeps([adapter]));
+        await run(
+            createState([ethAccount], mockStakingApiState({ productInfo: { [eth.id]: info } })),
+            createDeps([adapter]),
+        );
 
         expect(adapter.getPosition).toHaveBeenCalledWith({
             account: ethAccount,
@@ -282,6 +300,7 @@ describe('syncAllStakingPositionsThunk', () => {
     const solAccount = mockWalletAccount({ symbol: asNetworkSymbol('sol') });
     const state: SyncStakingPositionsThunkState = {
         staking: mockStakingState({ descriptors: [eth, sol] }),
+        stakingApi: mockStakingApiState(),
         wallet: { accounts: [ethAccount, solAccount, btcAccount] },
     };
 

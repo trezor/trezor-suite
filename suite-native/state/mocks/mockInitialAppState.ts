@@ -2,6 +2,7 @@ import { analyticsInitialState } from '@suite-common/analytics-redux';
 import { connectPopupInitialState } from '@suite-common/connect-popup';
 import { deviceInitialState } from '@suite-common/device';
 import { stakingInitialState } from '@suite-common/earn-staking';
+import { mockStakingApiState } from '@suite-common/earn-staking/mocks';
 import { firmwareInitialState } from '@suite-common/firmware';
 import { geolocationInitialState } from '@suite-common/geolocation';
 import { logsSliceInitialState } from '@suite-common/logger';
@@ -57,6 +58,7 @@ import type { FullAppState } from '../src/createReduxStore';
 export const mockInitialAppState = (partialState?: Partial<FullAppState>): FullAppState => ({
     networks: null,
     staking: stakingInitialState,
+    stakingApi: mockStakingApiState(),
     analytics: analyticsInitialState,
     app: appSliceInitialState,
     appSettings: appSettingsInitialState,

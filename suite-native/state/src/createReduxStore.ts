@@ -1,5 +1,6 @@
 import { type Middleware, configureStore } from '@reduxjs/toolkit';
 
+import { stakingApiMiddleware } from '@suite-common/earn-staking';
 import { type ExtraDependenciesStatic } from '@suite-common/extra-dependencies';
 import { logsMiddleware } from '@suite-common/logger';
 import { prepareSuiteSyncMiddleware } from '@suite-common/suite-sync';
@@ -70,6 +71,7 @@ const getMiddlewares = (getExtra: () => GetMiddlewaresDeps | null) => {
         prepareBlockchainSubscriptionMiddleware(getExtra),
         prepareFiatRatesMiddleware(getExtra),
         prepareEarnTransactionsMiddleware(getExtra),
+        stakingApiMiddleware,
         prepareDeviceMiddleware(getExtra),
         prepareDiscoveryMiddleware(getExtra),
         sendFormMiddleware,

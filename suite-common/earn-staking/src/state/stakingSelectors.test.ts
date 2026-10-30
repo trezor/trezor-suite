@@ -6,7 +6,8 @@ import {
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
-import { type StakingRootState, stakingActions, stakingReducer } from './stakingReducer';
+import type { StakingApiRootState } from './stakingApi';
+import type { StakingRootState } from './stakingReducer';
 import {
     selectIsStakingSupportedSymbol,
     selectStakingAccountTotals,
@@ -16,10 +17,10 @@ import {
     selectStakingProductDescriptor,
     selectStakingProductDescriptors,
     selectStakingProductDescriptorsBySymbol,
-    selectStakingProductEntry,
     selectStakingProductInfo,
+    selectStakingProductInfoResult,
 } from './stakingSelectors';
-import { mockStakingState } from '../../mocks';
+import { mockStakingApiState, mockStakingState } from '../../mocks';
 
 const eth = mockStakingProductDescriptor();
 const sol = mockStakingProductDescriptor({ symbol: asNetworkSymbol('sol'), type: 'native' });
@@ -73,28 +74,27 @@ describe('staking selectors', () => {
         expect(selectIsStakingSupportedSymbol(state, asNetworkSymbol('ada'))).toBe(false);
     });
 
-    it('selects a product entry, descriptor and info', () => {
-        const withInfo: StakingRootState = {
-            staking: stakingReducer(
-                state.staking,
-                stakingActions.productInfoFetched({
-                    productId: eth.id,
-                    info: mockStakingProductInfo(),
-                    fetchedAt: 1,
-                }),
-            ),
-        };
-
-        expect(selectStakingProductEntry(withInfo, eth.id)?.infoStatus).toBe('ready');
-        expect(selectStakingProductDescriptor(withInfo, eth.id)).toEqual(eth);
-        expect(selectStakingProductInfo(withInfo, eth.id)).toEqual(mockStakingProductInfo());
-        expect(selectStakingProductInfo(withInfo, sol.id)).toBeNull();
+    it('selects a product descriptor', () => {
+        expect(selectStakingProductDescriptor(state, eth.id)).toEqual(eth);
         expect(
-            selectStakingProductEntry(
-                withInfo,
+            selectStakingProductDescriptor(
+                state,
                 mockStakingProductDescriptor({ symbol: asNetworkSymbol('ada') }).id,
             ),
         ).toBeNull();
+    });
+
+    it('selects a product info and its query status from the api cache', () => {
+        const apiState: StakingApiRootState = {
+            stakingApi: mockStakingApiState({
+                productInfo: { [eth.id]: mockStakingProductInfo() },
+            }),
+        };
+
+        expect(selectStakingProductInfo(apiState, eth.id)).toEqual(mockStakingProductInfo());
+        expect(selectStakingProductInfoResult(apiState, eth.id).isSuccess).toBe(true);
+        expect(selectStakingProductInfo(apiState, sol.id)).toBeNull();
+        expect(selectStakingProductInfoResult(apiState, sol.id).isUninitialized).toBe(true);
     });
 
     it('lists an account positions with a stable reference', () => {

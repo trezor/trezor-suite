@@ -14,6 +14,11 @@ import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import { createStakingCompositionRoot } from './createStakingCompositionRoot';
 import type { StakingDep } from './stakingServices';
+import {
+    type StakingApiRootState,
+    stakingApiMiddleware,
+    stakingApiReducer,
+} from './state/stakingApi';
 import { type StakingRootState, stakingReducer } from './state/stakingReducer';
 import {
     selectStakingPlatform,
@@ -21,7 +26,7 @@ import {
     selectStakingProductDescriptors,
 } from './state/stakingSelectors';
 
-type StakingCompositionRootTestState = StakingRootState & AccountsRootState;
+type StakingCompositionRootTestState = StakingRootState & StakingApiRootState & AccountsRootState;
 
 const position = mockStakingPosition();
 const ethAdapter = mockStakingProductAdapter({
@@ -47,8 +52,10 @@ const initStore = (adapters: readonly StakingProductAdapter[]) => {
                 dispatch: store.dispatch,
             }),
         }),
+        middleware: [stakingApiMiddleware],
         reducer: {
             staking: stakingReducer,
+            stakingApi: stakingApiReducer,
             wallet: combineReducers({
                 accounts: (state = [ethAccount, btcAccount]) => state,
             }),
