@@ -20,7 +20,7 @@ import {
     Box,
     Button,
     Card,
-    DiscreetText,
+    Discreet,
     DiscreetTextTrigger,
     HStack,
     Text,
@@ -337,14 +337,17 @@ export const YieldVaultDetailScreenContent = ({
                                 variant="headline-sm"
                             />
 
-                            <DiscreetText variant="body-md" color="contentSecondary">
-                                <Translation
-                                    id="earn.yearlyRewardsDeposited"
-                                    values={{
-                                        amountWithSymbol: yearlyRewards.formattedDepositedAmount,
-                                    }}
-                                />
-                            </DiscreetText>
+                            <Discreet placeholderVariant="body-md" color="contentSecondary">
+                                <Text variant="body-md" color="contentSecondary">
+                                    <Translation
+                                        id="earn.yearlyRewardsDeposited"
+                                        values={{
+                                            amountWithSymbol:
+                                                yearlyRewards.formattedDepositedAmount,
+                                        }}
+                                    />
+                                </Text>
+                            </Discreet>
                         </VStack>
                     )}
 
@@ -366,15 +369,17 @@ export const YieldVaultDetailScreenContent = ({
                                 variant="headline-sm"
                             />
 
-                            <DiscreetText variant="body-md" color="contentSecondary">
-                                <Translation
-                                    id="earn.potentialRewardsIfYouAdd"
-                                    values={{
-                                        amountWithSymbol:
-                                            potentialRewards.formattedAdditionalDepositAmount,
-                                    }}
-                                />
-                            </DiscreetText>
+                            <Discreet placeholderVariant="body-md" color="contentSecondary">
+                                <Text variant="body-md" color="contentSecondary">
+                                    <Translation
+                                        id="earn.potentialRewardsIfYouAdd"
+                                        values={{
+                                            amountWithSymbol:
+                                                potentialRewards.formattedAdditionalDepositAmount,
+                                        }}
+                                    />
+                                </Text>
+                            </Discreet>
                         </VStack>
                     )}
 

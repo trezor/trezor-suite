@@ -5,7 +5,7 @@ import {
 } from '@suite-common/discreet-mode';
 import { useFormatters } from '@suite-common/formatters';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
-import { Discreet, DiscreetText } from '@suite-native/atoms';
+import { Discreet, Text } from '@suite-native/atoms';
 import { Translation, getTranslation } from '@suite-native/intl';
 import {
     act,
@@ -27,21 +27,27 @@ describe('Crypto amount formatters', () => {
         { isActive: true, isForced: false, expectedAmount: `${DISCREET_PLACEHOLDER} ETH` },
         { isActive: false, isForced: true, expectedAmount: `${DISCREET_PLACEHOLDER} ETH` },
     ])(
-        'redacts a formatter inside translated DiscreetText (%j)',
+        'redacts a formatter inside translated discreet text (%j)',
         async ({ isActive, isForced, expectedAmount }) => {
             const { result } = await renderHookWithStoreProvider(useFormatters);
             const { CryptoAmountFormatter } = result.current;
             const { getByText, queryByText } = await renderWithStoreProvider(
-                <DiscreetText isForcedDiscreetMode={isForced}>
-                    <Translation
-                        id="earn.stakingManagementScreen.claim.readyToClaim"
-                        values={{
-                            amount: (
-                                <CryptoAmountFormatter value="1.239" symbol={ethSymbol} isBalance />
-                            ),
-                        }}
-                    />
-                </DiscreetText>,
+                <Discreet isForcedDiscreetMode={isForced}>
+                    <Text>
+                        <Translation
+                            id="earn.stakingManagementScreen.claim.readyToClaim"
+                            values={{
+                                amount: (
+                                    <CryptoAmountFormatter
+                                        value="1.239"
+                                        symbol={ethSymbol}
+                                        isBalance
+                                    />
+                                ),
+                            }}
+                        />
+                    </Text>
+                </Discreet>,
                 { preloadedState: { discreetMode: { isActive } } },
             );
 

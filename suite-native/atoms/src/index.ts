@@ -24,7 +24,6 @@ export * from './Input/SearchInputWithCancel';
 export * from './Input/Input';
 export * from './CheckBox';
 export * from './Switch';
-export * from './DiscreetText/DiscreetText';
 export * from './Discreet/Discreet';
 export * from './DiscreetText/DiscreetTextTrigger';
 export * from './Sheet/BottomSheetFlashList';

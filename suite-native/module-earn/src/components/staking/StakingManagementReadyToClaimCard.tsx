@@ -12,7 +12,7 @@ import {
 import { type AccountKey } from '@suite-common/wallet-types';
 import { isPositiveBalance } from '@suite-common/wallet-utils';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
-import { BannerInline, Box, Button, DiscreetText, HStack, Text, VStack } from '@suite-native/atoms';
+import { BannerInline, Box, Button, Discreet, HStack, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
@@ -96,22 +96,26 @@ export const StakingManagementReadyToClaimCard = ({
             <HStack spacing="sp12">
                 <Icon name="checkCircle" size="large" color="contentPrimary" />
                 <VStack flex={1} spacing="sp12">
-                    <DiscreetText variant="body-md">
-                        <Translation
-                            id="earn.stakingManagementScreen.claim.readyToClaim"
-                            values={{
-                                amount: (
-                                    <CryptoAmountFormatter
-                                        value={claimableAmount}
-                                        isBalance
-                                        maxDisplayedDecimals={BASE_CRYPTO_MAX_DISPLAYED_DECIMALS}
-                                        symbol={symbol}
-                                        isEllipsisAppended={false}
-                                    />
-                                ),
-                            }}
-                        />
-                    </DiscreetText>
+                    <Discreet placeholderVariant="body-md">
+                        <Text variant="body-md">
+                            <Translation
+                                id="earn.stakingManagementScreen.claim.readyToClaim"
+                                values={{
+                                    amount: (
+                                        <CryptoAmountFormatter
+                                            value={claimableAmount}
+                                            isBalance
+                                            maxDisplayedDecimals={
+                                                BASE_CRYPTO_MAX_DISPLAYED_DECIMALS
+                                            }
+                                            symbol={symbol}
+                                            isEllipsisAppended={false}
+                                        />
+                                    ),
+                                }}
+                            />
+                        </Text>
+                    </Discreet>
 
                     {isClaimingDisabled && claimingMessageContent && (
                         <BannerInline intent="warning" title={claimingMessageContent} />

@@ -18,7 +18,7 @@ import {
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import { isPending } from '@suite-common/wallet-utils';
-import { Badge, Box, DiscreetText, HStack, PressableOpacity, Text } from '@suite-native/atoms';
+import { Badge, Box, Discreet, HStack, PressableOpacity, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { useNavigateToTransactionDetail } from '@suite-native/navigation';
 import { type TypedTokenTransfer } from '@suite-native/tokens';
@@ -148,7 +148,11 @@ export const TransactionListItemContainer = ({
         isPhishingTransaction && formattedDate
             ? redactNumericalSubstring(formattedDate)
             : formattedDate;
-    const DateTextComponent = isPhishingTransaction ? DiscreetText : Text;
+    const dateText = (
+        <Text variant="body-sm" color="contentSecondary">
+            {date}
+        </Text>
+    );
 
     return (
         <PressableOpacity
@@ -191,13 +195,17 @@ export const TransactionListItemContainer = ({
                             {hasTokens && <Badge label={tokensLabel} size="small" />}
                         </HStack>
 
-                        <DateTextComponent
-                            isForcedDiscreetMode={isPhishingTransaction}
-                            variant="body-sm"
-                            color="contentSecondary"
-                        >
-                            {date}
-                        </DateTextComponent>
+                        {isPhishingTransaction
+                            ? date && (
+                                  <Discreet
+                                      isForcedDiscreetMode
+                                      placeholderVariant="body-sm"
+                                      color="contentSecondary"
+                                  >
+                                      {dateText}
+                                  </Discreet>
+                              )
+                            : dateText}
                     </Box>
                 </Box>
                 <Box style={applyStyle(valuesContainerStyle)}>{children}</Box>

@@ -23,7 +23,10 @@ export type DiscreetProps = BoxProps & {
     placeholderVariant?: NativeTypographyStyle;
 };
 
-/** Conceals redacted descendants behind a synchronous blurred text placeholder. */
+/**
+ * Conceals redacted descendants behind a synchronous blurred text placeholder.
+ * Formatters redact their output; callers must redact any raw values before passing them here.
+ */
 export const Discreet = ({
     children,
     isForcedDiscreetMode = false,
