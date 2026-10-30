@@ -31,10 +31,18 @@ export const HomeAssetNewBanner = () => {
                 <IconCircle icon={LightningIcon} size={32} intent="brand" />
 
                 <Column gap={2} alignItems="flex-start" flex="1">
-                    <Text typographyStyle="body-md-strong">
+                    <Text
+                        typographyStyle="body-md-strong"
+                        data-testid="@dashboard/home-asset/banner/title"
+                    >
                         <Translation id="TR_HOME_ASSET_BANNER_TITLE" />
                     </Text>
-                    <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
+                    <Text
+                        typographyStyle="body-sm"
+                        intent="neutral"
+                        priority="secondary"
+                        data-testid="@dashboard/home-asset/banner/description"
+                    >
                         <Translation id="TR_HOME_ASSET_BANNER_TEXT" />
                     </Text>
                 </Column>

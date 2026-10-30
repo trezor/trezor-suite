@@ -30,6 +30,7 @@
         "@scure/base": "^2.0.0",
         "@suite-common/address": "workspace:*",
         "@suite-common/analytics": "workspace:*",
+        "@suite-common/assets": "workspace:*",
         "@suite-common/device": "workspace:*",
         "@suite-common/e2e-evolu-client": "workspace:*",
         "@suite-common/earn-staking-api": "workspace:*",

@@ -17,6 +17,7 @@
         {
             "path": "../../suite-common/analytics"
         },
+        { "path": "../../suite-common/assets" },
         { "path": "../../suite-common/device" },
         {
             "path": "../../suite-common/e2e-evolu-client"

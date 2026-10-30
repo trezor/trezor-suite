@@ -13,6 +13,10 @@ export class DashboardPage {
     readonly suiteLayout: Locator;
     readonly dashboardMenuButton: Locator;
     readonly dashboardHeader: Locator;
+    readonly assetHome: Locator;
+    readonly assetHomeTable: Locator;
+    readonly assetHomeRow = (symbol: NetworkSymbol): Locator =>
+        this.page.getByTestId(`@dashboard/home-asset-item/${symbol}/coin`);
     readonly graph: Locator;
     readonly graphRangeSelector = (range: graphRangeOptions) =>
         this.page.getByTestId(`@graph/range-selector/${range}`);
@@ -76,6 +80,8 @@ export class DashboardPage {
         this.suiteLayout = this.page.getByTestId('@suite-layout/body');
         this.dashboardMenuButton = this.page.getByTestId('@suite/menu/suite-index');
         this.dashboardHeader = this.page.getByRole('heading', { name: 'Dashboard' });
+        this.assetHome = this.page.getByTestId('@dashboard/home-asset');
+        this.assetHomeTable = this.page.getByTestId('@dashboard/home-asset-table');
         this.graph = this.page.getByTestId('@dashboard/graph');
         this.deviceSwitchingOpenButton = this.page.getByTestId('@menu/switch-device');
         this.deviceSwitchingCloseButton = this.page.getByTestId('@modal/backdrop').first();

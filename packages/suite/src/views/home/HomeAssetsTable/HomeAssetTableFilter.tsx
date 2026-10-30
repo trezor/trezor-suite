@@ -81,6 +81,7 @@ const HomeAssetTableFilter = ({
                             hasSeparatorBefore: true,
                             closeOnClick: false,
                             onClick: () => onSmallBalancesChange(!areSmallBalancesShown),
+                            'data-testid': '@dashboard/home-asset/small-balances-toggle',
                         },
                         {
                             label: <Translation id="TR_HIDDEN_TOKENS" />,
