@@ -21,6 +21,12 @@ jest.mock('@trezor/node-utils', () => ({
     findProcessFromIncomingPort: jest.fn(() => Promise.resolve(undefined)),
 }));
 
+// A missing process is only answered with a failure outside Linux.
+jest.mock('@trezor/env-utils', () => ({
+    ...jest.requireActual('@trezor/env-utils'),
+    isLinux: () => false,
+}));
+
 type ExposeConnectWsParams = Parameters<typeof exposeConnectWs>[0];
 
 const LOOPBACK = '127.0.0.1';
@@ -175,6 +181,21 @@ describe('connect-ws', () => {
 
         expect(await firstEvent).toBe('close');
         expect(findProcessFromIncomingPort).not.toHaveBeenCalled();
+    });
+
+    // Documents the current behaviour: the frame carries its message only in `payload`, while
+    // the client reads the error from the top level of the frame and dereferences its code.
+    it('fails a call whose calling process could not be identified', async () => {
+        const client = await openClient(await startServer(), 'https://app.test');
+        expect(await request(client, handshake)).toMatchObject({ payload: 'ok' });
+
+        expect(
+            await request(client, { type: CORE_CALL, payload: { method: 'getFeatures' } }),
+        ).toEqual({
+            id: expect.any(String),
+            success: false,
+            payload: { error: 'Calling process could not be identified' },
+        });
     });
 
     describe('idle timeout', () => {
