@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { type ComponentType, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
@@ -18,7 +18,10 @@ import { type WalletAccountTransaction } from '@suite-native/tokens';
 
 import { groupTargetOutputs } from '../utils';
 import { TokenTransferListItem } from './TokenTransferListItem';
-import { TransactionListItemContainer } from './TransactionListItemContainer';
+import {
+    TransactionListItemContainer,
+    type TransactionSubtitleProps,
+} from './TransactionListItemContainer';
 import { TransactionTarget } from './TransactionTarget';
 
 type TransactionListItemProps = {
@@ -26,6 +29,7 @@ type TransactionListItemProps = {
     accountKey: AccountKey;
     isFirst?: boolean;
     isLast?: boolean;
+    subtitleComponent?: ComponentType<TransactionSubtitleProps>;
 };
 
 export const TransactionListItem = ({
@@ -33,6 +37,7 @@ export const TransactionListItem = ({
     accountKey,
     isFirst = false,
     isLast = false,
+    subtitleComponent,
 }: TransactionListItemProps) => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -68,6 +73,7 @@ export const TransactionListItem = ({
                 hasTokensCount={hasTokensCount}
                 isFirst={isFirst}
                 isLast={isLast}
+                subtitleComponent={subtitleComponent}
             >
                 <EmptyAmountText />
             </TransactionListItemContainer>
@@ -85,6 +91,7 @@ export const TransactionListItem = ({
                 hasTokensCount={transaction.tokens.length - 1}
                 isFirst={isFirst}
                 isLast={isLast}
+                subtitleComponent={subtitleComponent}
             />
         );
 
@@ -97,6 +104,7 @@ export const TransactionListItem = ({
             hasTokensCount={hasTokensCount}
             isFirst={isFirst}
             isLast={isLast}
+            subtitleComponent={subtitleComponent}
         >
             {allOutputs.map((target, i) => (
                 <TransactionTarget

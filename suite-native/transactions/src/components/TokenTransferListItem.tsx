@@ -1,3 +1,4 @@
+import { type ComponentType } from 'react';
 import { useSelector } from 'react-redux';
 
 import { type TokenDefinitionsRootState } from '@suite-common/token-definitions';
@@ -26,7 +27,10 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { selectTransactionFiatRate } from '../selectors';
 import { getTransactionValueSign } from '../utils';
-import { TransactionListItemContainer } from './TransactionListItemContainer';
+import {
+    TransactionListItemContainer,
+    type TransactionSubtitleProps,
+} from './TransactionListItemContainer';
 
 const failedTxStyle = prepareNativeStyle<{ isFailedTx: boolean }>((_, { isFailedTx }) => ({
     extend: {
@@ -117,6 +121,7 @@ type TokenTransferListItemProps = {
     hasTokensCount?: number;
     isFirst?: boolean;
     isLast?: boolean;
+    subtitleComponent?: ComponentType<TransactionSubtitleProps>;
 };
 
 export const TokenTransferListItem = ({
@@ -126,6 +131,7 @@ export const TokenTransferListItem = ({
     hasTokensCount = 0,
     isFirst,
     isLast,
+    subtitleComponent,
 }: TokenTransferListItemProps) => {
     const isFailedTxn = transaction.type === 'failed';
 
@@ -138,6 +144,7 @@ export const TokenTransferListItem = ({
             accountKey={accountKey}
             isFirst={isFirst}
             isLast={isLast}
+            subtitleComponent={subtitleComponent}
         >
             <TokenTransferListItemValues
                 tokenTransfer={tokenTransfer}
