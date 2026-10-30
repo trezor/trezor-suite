@@ -1,7 +1,7 @@
 import { fileURLToPath } from 'node:url';
 import tseslint from 'typescript-eslint';
 
-import { areExpensiveChecksEnabled } from './expensiveChecks.mjs';
+import { areTypeAwareRulesConfigured, isTypeInformationNeeded } from './ruleSets.mjs';
 import { allRoots } from './workspaceRoots.mjs';
 
 // Deny importing from build artifact directories — consumers should resolve
@@ -250,12 +250,23 @@ export const typescriptConfig = [
             '@typescript-eslint/no-unnecessary-type-assertion': 'off',
         },
     },
-    ...(areExpensiveChecksEnabled
+    ...(isTypeInformationNeeded
         ? []
         : [
               {
-                  ...tseslint.configs.disableTypeChecked,
+                  // No TypeScript program: nothing in the basic rule set reads one.
                   files: ['**/src/**/*.{ts,tsx}'],
+                  languageOptions: tseslint.configs.disableTypeChecked.languageOptions,
+              },
+          ]),
+    ...(areTypeAwareRulesConfigured
+        ? []
+        : [
+              {
+                  // Without the runner's rule filter, a type-aware rule configured on would crash
+                  // on the missing program; see `ruleSets.mjs`.
+                  files: ['**/src/**/*.{ts,tsx}'],
+                  rules: tseslint.configs.disableTypeChecked.rules,
               },
           ]),
 ];

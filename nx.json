@@ -55,15 +55,20 @@
         },
         "lint:js": {
             "inputs": [
+                "^production",
                 "{projectRoot}/**/*",
                 "{workspaceRoot}/eslint.config.mjs",
                 "{workspaceRoot}/eslint-local-rules/**/*",
                 "{workspaceRoot}/packages/eslint/**/*",
                 {
-                    "env": "ESLINT_RUN_EXPENSIVE_CHECKS"
+                    "env": "ESLINT_RULE_SET"
                 }
             ],
-            "outputs": ["{projectRoot}/.eslintcache"],
+            "outputs": [
+                "{projectRoot}/.eslintcache",
+                "{projectRoot}/.eslintcache-type-aware",
+                "{projectRoot}/.eslintcache-all"
+            ],
             "cache": true
         },
         "lint:styles": {
