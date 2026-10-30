@@ -188,4 +188,21 @@ describe('WebExtensionPopup', () => {
         await jest.advanceTimersByTimeAsync(10000);
         expect(getSentMessages().length).toBeGreaterThan(0);
     });
+
+    // Documents the bug: chrome passes no tab when it could not create one, and
+    // onPopupTabResolved() reads its id, so the callback throws and the open()
+    // never settles; the call only fails once the channel handshake times out.
+    it('throws in the chrome callback when chrome could not create the popup tab', async () => {
+        await popup.focusOrCreate();
+        const handshakeState = trackSettled(getHandshakePromise().promise);
+        chromeMock.answerGetCurrent();
+        chromeMock.answerQuery([{ id: 1, index: 0 }]);
+
+        chromeMock.runtime.lastError = { message: 'Tabs cannot be edited right now' };
+        expect(() => chromeMock.answerCreate(undefined)).toThrow(TypeError);
+        chromeMock.runtime.lastError = undefined;
+
+        await jest.advanceTimersByTimeAsync(0);
+        expect(handshakeState.settled).toBe(false);
+    });
 });
