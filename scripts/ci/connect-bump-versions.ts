@@ -48,15 +48,29 @@ const deploymentType = ['prepatch', 'preminor', 'prerelease'].includes(semver)
 
 const ROOT = path.join(import.meta.dirname, '..', '..');
 
-const getGitCommitByPackageName = (packageName: string, maxCount?: number) =>
+const getGitCommitByPath = (relativePath: string, maxCount?: number) =>
     exec('git', [
         'log',
         '--oneline',
         ...(maxCount === undefined ? [] : ['--max-count', `${maxCount}`]),
         '--pretty=tformat:"-   %s (%h)"',
         '--',
-        `./${getTrezorPackageRelativePath(packageName)}`,
+        `./${relativePath}`,
     ]);
+
+const getGitCommitByPackageName = (packageName: string, maxCount?: number) =>
+    getGitCommitByPath(getTrezorPackageRelativePath(packageName), maxCount);
+
+// The log format wraps every line in literal quotes (no shell to strip them). Only the wrapping
+// pair is removed: dropping every quote would also mangle a subject that contains one, e.g. git's
+// own revert subject `Revert "feat(connect): ..."`.
+const normalizeGitLog = (gitLogStdout: string) =>
+    gitLogStdout
+        .split('\n')
+        .map(commit => commit.replace(/^"/, '').replace(/"$/, ''))
+        // `%s` is a single-line subject, so the only empty line is the trailing one git always
+        // writes; keeping it would inflate every count taken from this list.
+        .filter(Boolean);
 
 const splitByNewlines = (input: string) => input.split('\n');
 
@@ -190,16 +204,7 @@ const bumpConnect = async () => {
             // range instead (@trezor/transport already has more than 1000 commits here). The
             // release workflow checks out with `fetch-depth: 0`.
             const packageGitLog = await getGitCommitByPackageName(packageName);
-
-            // The log format wraps every line in literal quotes (no shell to strip them). Only the
-            // wrapping pair is removed: dropping every quote would also mangle a subject that
-            // contains one, e.g. git's own revert subject `Revert "feat(connect): ..."`.
-            const commitsArr = packageGitLog.stdout
-                .split('\n')
-                .map(commit => commit.replace(/^"/, '').replace(/"$/, ''))
-                // `%s` is a single-line subject, so the only empty line is the trailing one git
-                // always writes; keeping it would inflate every count taken from this list.
-                .filter(Boolean);
+            const commitsArr = normalizeGitLog(packageGitLog.stdout);
 
             // In Connect dependencies packages we only update CHANGELOG when doing a stable release (patch or minor).
             // We do that so we can generate the complete CHANGELOG automatically when doing stable release.
