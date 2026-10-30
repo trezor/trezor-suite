@@ -456,16 +456,28 @@ const createPhishingNotificationsSelector = createWeakMapSelector.withTypes<
 >();
 
 // Returns a stable predicate; recomputed only when phishing-relevant slices change.
-const selectIsNotificationPhishing = createPhishingNotificationsSelector(
+export const selectIsAccountTransactionPhishing = createPhishingNotificationsSelector(
     [
-        selectDeviceAccounts,
-        selectTransactions,
         selectPhishingTransactions,
         selectHistoricFiatRates,
         selectTokenDefinitions,
         selectActiveDustPhishingThreshold,
     ],
-    (deviceAccounts, transactions, phishingMap, historicRates, tokenDefinitions, dustThreshold) =>
+    (phishingMap, historicRates, tokenDefinitions, dustThreshold) =>
+        (accountKey: AccountKey, transaction: WalletAccountTransaction): boolean =>
+            isPhishingTransaction({
+                transaction,
+                tokenDefinitions: tokenDefinitions?.[transaction.symbol],
+                historicRates,
+                txsMarkedAsNotScam: phishingMap[accountKey] ?? [],
+                dustThreshold,
+            }).isPhishing,
+);
+
+// Returns a stable predicate; recomputed only when phishing-relevant slices change.
+const selectIsNotificationPhishing = createPhishingNotificationsSelector(
+    [selectDeviceAccounts, selectTransactions, selectIsAccountTransactionPhishing],
+    (deviceAccounts, transactions, isAccountTransactionPhishing) =>
         (notification: TransactionNotification): boolean => {
             const account = deviceAccounts.find(
                 a => a.descriptor === notification.descriptor && a.symbol === notification.symbol,
@@ -477,13 +489,7 @@ const selectIsNotificationPhishing = createPhishingNotificationsSelector(
             );
             if (!transaction) return false;
 
-            return isPhishingTransaction({
-                transaction,
-                tokenDefinitions: tokenDefinitions?.[transaction.symbol],
-                historicRates,
-                txsMarkedAsNotScam: phishingMap[account.key] ?? [],
-                dustThreshold,
-            }).isPhishing;
+            return isAccountTransactionPhishing(account.key, transaction);
         },
 );
 

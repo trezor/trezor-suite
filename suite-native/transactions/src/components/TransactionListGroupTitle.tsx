@@ -1,12 +1,14 @@
 import { useFormatters } from '@suite-common/formatters';
-import { type MonthKey, parseTransactionMonthKey } from '@suite-common/wallet-utils';
+import {
+    type MonthKey,
+    parseTransactionDateKey,
+    parseTransactionMonthKey,
+} from '@suite-common/wallet-utils';
 import { Box, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-type TransactionListGroupProps = {
-    monthKey: MonthKey;
-};
+type TransactionListGroupTitleProps = { monthKey: MonthKey } | { dayKey: string };
 
 const dateTextStyle = prepareNativeStyle(({ spacings }) => ({
     marginTop: spacings.sp24,
@@ -14,15 +16,20 @@ const dateTextStyle = prepareNativeStyle(({ spacings }) => ({
     marginBottom: spacings.sp12,
 }));
 
-export const TransactionListGroupTitle = ({ monthKey }: TransactionListGroupProps) => {
+export const TransactionListGroupTitle = (props: TransactionListGroupTitleProps) => {
     const { translate } = useTranslate();
-    const { MonthNameFormatter } = useFormatters();
+    const { MonthNameFormatter, DateFormatter } = useFormatters();
     const { applyStyle } = useNativeStyles();
 
+    const groupKey = 'dayKey' in props ? props.dayKey : props.monthKey;
+
+    const formatGroupDate = () =>
+        'dayKey' in props
+            ? DateFormatter.format(parseTransactionDateKey(props.dayKey))
+            : MonthNameFormatter.format(parseTransactionMonthKey(props.monthKey));
+
     const sectionTitle =
-        monthKey === 'pending'
-            ? translate('transactions.status.pending')
-            : MonthNameFormatter.format(parseTransactionMonthKey(monthKey));
+        groupKey === 'pending' ? translate('transactions.status.pending') : formatGroupDate();
 
     return (
         <Box paddingLeft="sp16">

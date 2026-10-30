@@ -25,5 +25,8 @@
         "@trezor/redux-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "react-redux": "9.3.0"
+    },
+    "devDependencies": {
+        "@suite-common/test-utils": "workspace:*"
     }
 }

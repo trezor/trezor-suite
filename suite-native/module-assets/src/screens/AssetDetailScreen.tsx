@@ -1,27 +1,32 @@
-import { FlashList } from '@shopify/flash-list';
+import { type RouteProp, useRoute } from '@react-navigation/native';
 
-import { Box } from '@suite-native/atoms';
-import { Screen } from '@suite-native/navigation';
+import { AssetTransactionList } from '@suite-native/assets';
+import {
+    type AssetsStackParamList,
+    type AssetsStackRoutes,
+    Screen,
+} from '@suite-native/navigation';
 
 import { AssetDetailActions } from '../components/AssetDetailActions';
 import { AssetDetailHeader } from '../components/AssetDetailHeader';
 import { AssetDetailScreenHeader } from '../components/AssetDetailScreenHeader';
 
-const ASSET_DETAIL_ITEMS: readonly never[] = [];
+export const AssetDetailScreen = () => {
+    const { networkSymbol, tokenContract } =
+        useRoute<RouteProp<AssetsStackParamList, AssetsStackRoutes.AssetDetail>>().params;
 
-export const AssetDetailScreen = () => (
-    <Screen
-        header={<AssetDetailScreenHeader />}
-        isScrollable={false}
-        noHorizontalPadding
-        footer={<AssetDetailActions />}
-    >
-        <Box flex={1}>
-            <FlashList
-                data={ASSET_DETAIL_ITEMS}
-                renderItem={() => null}
-                ListHeaderComponent={<AssetDetailHeader />}
+    return (
+        <Screen
+            header={<AssetDetailScreenHeader />}
+            isScrollable={false}
+            noHorizontalPadding
+            footer={<AssetDetailActions />}
+        >
+            <AssetTransactionList
+                networkSymbol={networkSymbol}
+                tokenContract={tokenContract}
+                listHeaderComponent={<AssetDetailHeader />}
             />
-        </Box>
-    </Screen>
-);
+        </Screen>
+    );
+};
