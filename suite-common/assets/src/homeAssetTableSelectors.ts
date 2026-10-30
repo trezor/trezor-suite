@@ -814,7 +814,7 @@ export const selectWalletAssetFiatValue = createMemoizedSelector(
 );
 
 export type HomeAssetTotals = {
-    /** Undefined while nothing the wallet holds can be priced — a total of zero would be a lie. */
+    /** Undefined while nothing the wallet holds can be priced; zero once it holds nothing at all. */
     fiatValue: BigNumber | undefined;
     weekChange: BigNumber | undefined;
     weekChangePercent: BigNumber | undefined;
@@ -823,6 +823,10 @@ export type HomeAssetTotals = {
 export const selectHomeAssetTotals = createMemoizedSelector(
     [selectShownWalletAssetKeys, selectWalletAssetValues, selectWalletAssetWeekAgoValues],
     (assetKeys, values, weekAgoValues): HomeAssetTotals => {
+        if (assetKeys.length === 0) {
+            return { fiatValue: ZERO, weekChange: ZERO, weekChangePercent: ZERO };
+        }
+
         const addUp = (
             priced: ReadonlyMap<WalletAssetKey, BigNumber>,
             keys: readonly WalletAssetKey[],
