@@ -8,8 +8,9 @@ import { injectEnsureTransactionStore } from './createEnsureTransactionStore';
 /**
  * The query's rows, kept current, as Evolu's `useQuery`: the store runs the query in its worker
  * and sends new rows whenever a write changes them. A query asked for before starts from its last
- * rows while it refreshes; a new one from the previous query's rows, or `undefined` if none. Build
- * the query with `createTransactionStoreQuery`.
+ * rows while it refreshes; a new one from the previous query's rows, or `undefined` if those were
+ * empty or there were none, so a list shows it is loading, not that there is nothing. Build the
+ * query with `createTransactionStoreQuery`.
  */
 export const useTransactionStoreQuery = <TRow>(
     query: TransactionStoreQuery<TRow>,
@@ -42,5 +43,7 @@ export const useTransactionStoreQuery = <TRow>(
 
     if (result.queryKey === queryKey) return result.rows;
 
-    return getCachedRows(queryKey) ?? result.rows;
+    // Not answered yet. The previous query's empty rows (a search that matched nothing, a page
+    // past the end) say nothing about this one.
+    return getCachedRows(queryKey) ?? (result.rows?.length ? result.rows : undefined);
 };
