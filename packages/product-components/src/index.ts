@@ -22,9 +22,10 @@ export { LastUpdateTooltip } from './components/LastUpdateTooltip/LastUpdateTool
 export { NetworkIcon, type NetworkIconProps } from './components/NetworkIcon/NetworkIcon';
 export * from './components/NetworkIconSet/NetworkIconSet';
 export { ExchangeInfoNotification } from './components/Notifications/ExchangeInfoNotification';
-export type { TransactionNotificationType } from './components/Notifications/notificationsTypes';
-export { TransactionNotification } from './components/Notifications/TransactionNotification';
-export type { TransactionNotificationProps } from './components/Notifications/TransactionNotification';
+export type {
+    ExchangeInfoAmountSide,
+    ExchangeInfoAsset,
+} from './components/Notifications/notificationsTypes';
 export { NumberInput } from './components/NumberInput/NumberInput';
 export { PasswordStrengthIndicator } from './components/PasswordStrengthIndicator/PasswordStrengthIndicator';
 export {
@@ -58,6 +59,8 @@ export * from './components/TopAssets/TopAssets';
 export { TrezorLogo } from './components/TrezorLogo/TrezorLogo';
 export type { NetworkConfig } from './network-display/NetworkConfig';
 export { selectShouldShowNetworkIcon } from './network-display/networkDisplaySelectors';
+export { selectDisplaySymbol } from './network-display/networkDisplaySelectors';
+export { formatDisplaySymbol } from './components/Notifications/formatDisplaySymbol';
 export { getLargeModelImagePath, getModelFrontColor } from './utils/getModelFrontColor';
 export { mapTrezorModelToFilledIcon, mapTrezorModelToIcon } from './utils/mapTrezorModelToIcon';
 export { NetworkIconBadge } from './components/NetworkIcon/NetworkIconBadge';

@@ -143,6 +143,7 @@
         "@suite/tor-desktop": "workspace:*",
         "@suite/tor-web": "workspace:*",
         "@suite/trading": "workspace:*",
+        "@suite/transaction": "workspace:*",
         "@suite/transfer-uri": "workspace:*",
         "@suite/tx-simulation": "workspace:^",
         "@suite/ui-animations": "workspace:*",

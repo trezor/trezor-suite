@@ -14,9 +14,6 @@
     "include": [".", "**/*.json"],
     "references": [
         { "path": "../../suite-common/locale" },
-        {
-            "path": "../../suite-common/toast-notifications"
-        },
         { "path": "../asset-utils" },
         { "path": "../components" },
         { "path": "../dependency-injection" },

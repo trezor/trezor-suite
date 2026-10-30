@@ -69,11 +69,15 @@ export const ExchangeInfoRenderer = ({ render: View, ...props }: ExchangeInfoRen
                             />
                         }
                         send={{
-                            ...send,
+                            symbol: send.symbol,
+                            contractAddress: send.contractAddress,
+                            amount: send.amount,
                             displaySymbol: sendSymbol || send.symbol,
                         }}
                         receive={{
-                            ...receive,
+                            symbol: receive.symbol,
+                            contractAddress: receive.contractAddress,
+                            amount: receive.amount,
                             displaySymbol: receiveSymbol || receive.symbol,
                         }}
                         renderAmount={(amount, side) => (
