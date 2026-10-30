@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { type UseFormReturn, useForm } from 'react-hook-form';
 
-import { selectCurrentTargetAnonymity } from '@suite/coinjoin';
+import { selectEffectiveTargetAnonymityByAccountKey } from '@suite/coinjoin';
 import { type Network, getNetwork } from '@suite-common/wallet-config';
 import {
     DEFAULT_OPRETURN,
@@ -174,7 +174,9 @@ const getRbfFeeInfo = (info: FeeInfo, rbfParams: RbfTransactionParams) => {
 
 const useRbfState = ({ account, rbfParams, chainedTxs }: UseRbfProps): RbfState => {
     const networkFees = useSelector(state => selectRawNetworkFeeInfo(state, account.symbol));
-    const targetAnonymity = useSelector(selectCurrentTargetAnonymity);
+    const targetAnonymity = useSelector(state =>
+        selectEffectiveTargetAnonymityByAccountKey(state, account.key),
+    );
     const coinjoinRegisteredUtxos = useCoinjoinRegisteredUtxos({ account });
 
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);

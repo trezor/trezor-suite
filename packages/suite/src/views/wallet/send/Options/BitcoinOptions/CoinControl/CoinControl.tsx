@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { selectCurrentTargetAnonymity } from '@suite/coinjoin';
+import { selectEffectiveTargetAnonymityByAccountKey } from '@suite/coinjoin';
 import { Translation } from '@suite/intl';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { filterAndCategorizeUtxos } from '@suite-common/transaction-search';
@@ -67,7 +67,9 @@ export const CoinControl = ({ close }: CoinControlProps) => {
         },
     } = useSendFormContext();
     const { outputLabels } = useSelector(state => selectAccountLabelsForSearch(state, account));
-    const targetAnonymity = useSelector(selectCurrentTargetAnonymity);
+    const targetAnonymity = useSelector(state =>
+        selectEffectiveTargetAnonymityByAccountKey(state, account.key),
+    );
     const { dispatch } = useServices(injectDispatch);
 
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
@@ -138,7 +140,8 @@ export const CoinControl = ({ close }: CoinControlProps) => {
     const spendableUtxosOnPage = paginatedCategories[0] ?? [];
     const lowAnonymityUtxosOnPage = paginatedCategories[1] ?? [];
     const dustUtxosOnPage = paginatedCategories[2] ?? [];
-    const isCoinjoinAccount = account.accountType === 'coinjoin';
+    // Private / not private categories mean something only where coins are held back.
+    const shouldShowAnonymityCategories = !!targetAnonymity && targetAnonymity > 1;
     const hasEligibleUtxos = spendableUtxos.length + lowAnonymityUtxos.length > 0;
 
     // fetch all transactions so that we can show a transaction timestamp for each UTXO
@@ -216,7 +219,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                 )}
                 {!!spendableUtxosOnPage.length && (
                     <UtxoSelectionList
-                        withHeader={isCoinjoinAccount}
+                        withHeader={shouldShowAnonymityCategories}
                         heading={<Translation id="TR_PRIVATE" />}
                         description={
                             <Translation id="TR_PRIVATE_DESCRIPTION" values={{ targetAnonymity }} />
