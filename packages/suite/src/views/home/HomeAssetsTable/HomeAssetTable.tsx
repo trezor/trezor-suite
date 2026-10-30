@@ -71,12 +71,8 @@ export const HomeAssetTable = () => {
         [dispatch],
     );
 
-    if (!hasAssets) {
-        return isDiscoveryRunning ? (
-            <AssetRowsSkeleton data-testid="@dashboard/home-asset-table/loading" />
-        ) : (
-            <HomeAssetTableEmptyState />
-        );
+    if (!hasAssets && isDiscoveryRunning) {
+        return <AssetRowsSkeleton data-testid="@dashboard/home-asset-table/loading" />;
     }
 
     return (
@@ -102,7 +98,8 @@ export const HomeAssetTable = () => {
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
-                    {assetKeys.length === 0 && (
+                    {!hasAssets && <HomeAssetTableEmptyState />}
+                    {hasAssets && assetKeys.length === 0 && (
                         <HomeAssetSmallBalancesHiddenRow
                             onShowSmallBalances={() => changeSmallBalances(true)}
                         />
