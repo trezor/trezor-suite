@@ -25,7 +25,14 @@ import {
     groupTransactionsByDate,
     isPending,
 } from '@suite-common/wallet-utils';
-import { Box, ListItemSkeleton, VStack, useScrollDivider } from '@suite-native/atoms';
+import {
+    Box,
+    ListItemSkeleton,
+    VStack,
+    useBannerAwareSafeAreaInsets,
+    useScrollDivider,
+} from '@suite-native/atoms';
+import { useIsBottomInsetApplicable } from '@suite-native/navigation';
 import {
     type TokensRootState,
     type TypedTokenTransfer,
@@ -85,8 +92,8 @@ const sectionListContainerStyle = prepareNativeStyle(utils => ({
     paddingTop: utils.spacings.sp8,
 }));
 
-const listFooterStyle = prepareNativeStyle(utils => ({
-    paddingBottom: utils.spacings.sp32,
+const listFooterStyle = prepareNativeStyle<{ insetBottom: number }>((utils, { insetBottom }) => ({
+    paddingBottom: utils.spacings.sp32 + insetBottom,
 }));
 
 const sortKeysPendingFirst = (a: string, b: string) => {
@@ -161,6 +168,8 @@ export const TransactionList = ({
     const accountKey = account.key;
     const { dispatch } = useServices(injectDispatch);
     const [isRefreshing, setIsRefreshing] = useState(false);
+    const { bottom } = useBannerAwareSafeAreaInsets();
+    const isBottomInsetApplicable = useIsBottomInsetApplicable();
 
     const {
         applyStyle,
@@ -483,7 +492,9 @@ export const TransactionList = ({
                         )}
                     </TransactionsListFooter>
                 }
-                ListFooterComponentStyle={applyStyle(listFooterStyle)}
+                ListFooterComponentStyle={applyStyle(listFooterStyle, {
+                    insetBottom: isBottomInsetApplicable ? bottom : 0,
+                })}
                 refreshControl={
                     <RefreshControl
                         refreshing={isRefreshing}
