@@ -108,6 +108,7 @@ export const EthereumERC7730FieldInfo = Type.Object(
         callee_path: Type.Optional(EthereumERC7730Path),
         selector: Type.Optional(Type.String()),
         enum_values: Type.Array(EthereumERC7730EnumEntry),
+        lookup_address: Type.Optional(Type.Boolean()),
     },
     { $id: 'EthereumERC7730FieldInfo' },
 );
