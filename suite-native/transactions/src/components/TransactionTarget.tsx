@@ -84,7 +84,7 @@ export const TransactionListItemValues = ({
                 symbol={transaction.symbol}
                 isBalance={false}
                 numberOfLines={1}
-                sign={operation === 'positive' ? '+' : '-'}
+                signValue={operation ?? 'negative'}
                 adjustsFontSizeToFit
                 isForcedDiscreetMode={isPhishingTransaction}
                 variant="body-sm"

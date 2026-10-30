@@ -73,6 +73,20 @@ describe('CompactTokenAmountFormatter', () => {
         expect(getByTestId('plain-text')).toHaveTextContent(`20.00 ${symbol}`);
     });
 
+    it.each([
+        ['positive', '+20.00 ARB'],
+        ['negative', '-20.00 ARB'],
+        [undefined, '20.00 ARB'],
+    ] as const)('renders a token amount with %s direction', async (signValue, expected) => {
+        const { getByTestId } = await renderCompactTokenAmountFormatter({
+            tokenSymbol: 'ARB' as TokenSymbol,
+            value: asDecimalTokenAmount('20'),
+            signValue,
+        });
+
+        expect(getByTestId('plain-text')).toHaveTextContent(expected);
+    });
+
     it('should render compact formatted value', async () => {
         const { getByTestId } = await renderCompactTokenAmountFormatter({});
 

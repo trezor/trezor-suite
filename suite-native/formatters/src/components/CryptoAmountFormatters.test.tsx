@@ -21,6 +21,18 @@ describe('Crypto amount formatters', () => {
         expect(getByTestId('plain-text')).toHaveTextContent('1.239 ETH');
     });
 
+    it.each([
+        ['positive', '+1.23 ETH'],
+        ['negative', '-1.23 ETH'],
+        [undefined, '1.23 ETH'],
+    ] as const)('renders a native amount with %s direction', async (signValue, expected) => {
+        const { getByTestId } = await renderWithBasicProvider(
+            <CompactCryptoAmountFormatter value="1.239" symbol={ethSymbol} signValue={signValue} />,
+        );
+
+        expect(getByTestId('plain-text')).toHaveTextContent(expected);
+    });
+
     it('renders compact value with compact wrapper', async () => {
         const { getByTestId } = await renderWithBasicProvider(
             <CompactCryptoAmountFormatter value="1.239" symbol={ethSymbol} />,
