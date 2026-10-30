@@ -272,7 +272,10 @@ describe('canRememberPermissions', () => {
                 manifest,
             },
         ],
-        ['an mcp client', { type: CALL_SOURCE_MCP, origin: 'http://127.0.0.1', manifest }],
+        [
+            'an mcp client whose process stayed unresolved',
+            { type: CALL_SOURCE_MCP, origin: 'mcp://localhost', manifest },
+        ],
     ])('remembers permissions for %s', (_, source) => {
         expect(canRememberPermissions(source)).toBe(true);
     });
