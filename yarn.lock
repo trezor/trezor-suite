@@ -14098,7 +14098,6 @@ __metadata:
   dependencies:
     "@react-navigation/native": "npm:7.1.31"
     "@react-navigation/native-stack": "npm:7.12.0"
-    "@shopify/flash-list": "npm:2.3.0"
     "@suite-common/assets": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
@@ -14113,6 +14112,7 @@ __metadata:
     "@suite-native/navigation": "workspace:*"
     "@suite-native/price-chart": "workspace:*"
     "@suite-native/toasts": "workspace:*"
+    "@suite-native/transactions": "workspace:*"
     "@trezor/requirements": "workspace:*"
     "@trezor/styles-native": "workspace:*"
     react: "npm:19.2.3"
@@ -16024,6 +16024,7 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@shopify/flash-list": "npm:2.3.0"
+    "@suite-common/assets": "workspace:*"
     "@suite-common/discreet-mode": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/icons": "workspace:*"
