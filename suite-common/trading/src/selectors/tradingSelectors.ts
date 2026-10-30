@@ -444,6 +444,9 @@ export const selectTradeApiInstallSalt = (state: TradingRootState) =>
 export const selectTradingTrades = (state: TradingRootState) =>
     returnStableArrayIfEmpty(state.wallet.trading.trades);
 
+export const selectTradingTradeApiKey = (state: TradingRootState, tradeKey: string | undefined) =>
+    state.wallet.trading.trades.find(trade => trade.key === tradeKey)?.apiKey;
+
 export const selectTradedAccountKeys = createMemoizedSelector([selectTradingTrades], trades =>
     unique(
         trades

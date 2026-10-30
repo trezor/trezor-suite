@@ -11,7 +11,6 @@ import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { tokenDefinitionsInitialState } from '@suite-common/token-definitions';
 import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import { type StartDiscoveryThunkDeps } from '@suite-common/wallet-core';
-import { mockEnsureTradeApiDeviceSalt } from '@suite-common/wallet-types/mocks';
 import { asGetter } from '@trezor/dependency-injection';
 import { type WithServices } from '@trezor/redux-utils';
 
@@ -63,7 +62,6 @@ const createStore = (initialState: GoToNextStepThunkState) =>
         services: () => ({
             analytics: mockDesktopAnalytics(),
             getTradedAccountKeys: asGetter(() => []),
-            ensureTradeApiDeviceSalt: mockEnsureTradeApiDeviceSalt(),
             suiteRouterHistory: {
                 getLocation: jest.fn(),
                 navigate: jest.fn(),

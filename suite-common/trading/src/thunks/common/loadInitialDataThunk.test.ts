@@ -1,9 +1,13 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
+import { type DeviceReducerState, deviceInitialState } from '@suite-common/device';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { asNetworkSymbol, getNetwork } from '@suite-common/wallet-config';
+import { discoveryInitialState } from '@suite-common/wallet-core';
 import { type SelectedAccountStatus, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import TrezorConnect from '@trezor/connect';
 import { mockActionType } from '@trezor/redux-utils/mocks';
 import { createDeferred } from '@trezor/utils';
 
@@ -24,6 +28,7 @@ import {
 } from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
 import { tradeApi } from '../../tradeApi';
+import { createSaltedTradeApiKey, deriveTradeApiDeviceSalt } from '../../utils/tradeApiSaltUtils';
 
 jest.mock('../../tradeApi');
 
@@ -44,7 +49,10 @@ const tradingReducer = prepareTradingReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
 });
 
-const initTestServices = (tradingState: Partial<TradingState> = {}) => {
+const initTestServices = (
+    tradingState: Partial<TradingState> = {},
+    deviceState: DeviceReducerState = deviceInitialState,
+) => {
     const getSelectedAccount = jest.fn<SelectedAccountStatus, []>(() => ({
         status: 'none',
         account: undefined,
@@ -54,9 +62,11 @@ const initTestServices = (tradingState: Partial<TradingState> = {}) => {
         LoadInitialDataThunkState
     >({
         reducer: {
+            device: () => deviceState,
             wallet: combineReducers({
                 trading: tradingReducer,
                 accounts: () => [account, otherAccount],
+                discovery: () => discoveryInitialState,
             }),
         },
         preloadedState: {
@@ -111,7 +121,7 @@ describe('loadInitialDataThunk catalog cache', () => {
         });
         expect(tradeApi.setServersEnvironment).toHaveBeenCalledWith('localhost');
         expect(tradeApi.createAnonymousApiKey).toHaveBeenCalledWith(TRADING_ANONYMOUS_ID);
-        expect(tradeApi.createApiKey).not.toHaveBeenCalled();
+        expect(tradeApi.setApiKey).not.toHaveBeenCalled();
     });
 
     it.each(['exchange', 'sell', 'buy'] as const)(
@@ -142,16 +152,23 @@ describe('loadInitialDataThunk catalog cache', () => {
             const { services } = await initLoadedTestServices();
             services.store.dispatch(tradingBuyActions.setTradingAccountKey(previousAccount?.key));
             await services.store.dispatch(loadInitialDataThunk({ activeSection: 'buy' })).unwrap();
-            jest.mocked(tradeApi.createApiKey).mockClear();
+            jest.mocked(tradeApi.setApiKey).mockClear();
             jest.mocked(tradeApi.createAnonymousApiKey).mockClear();
 
             services.store.dispatch(tradingBuyActions.setTradingAccountKey(selectedAccount?.key));
             await services.store.dispatch(loadInitialDataThunk({ activeSection: 'buy' })).unwrap();
 
             const { tradeApiInstallSalt } = services.store.getState().wallet.trading;
-            expect(jest.mocked(tradeApi.createApiKey).mock.calls).toEqual(
+            expect(jest.mocked(tradeApi.setApiKey).mock.calls).toEqual(
                 selectedAccount
-                    ? [[{ descriptor: selectedAccount.descriptor, salt: tradeApiInstallSalt }]]
+                    ? [
+                          [
+                              createSaltedTradeApiKey({
+                                  descriptor: selectedAccount.descriptor,
+                                  salt: tradeApiInstallSalt ?? '',
+                              }),
+                          ],
+                      ]
                     : [],
             );
             expect(jest.mocked(tradeApi.createAnonymousApiKey).mock.calls).toEqual(
@@ -160,6 +177,40 @@ describe('loadInitialDataThunk catalog cache', () => {
             expectCatalogCalls(0);
         },
     );
+
+    it('keeps the key of the current trading account when an older load finishes last', async () => {
+        const device = mockSuiteDevice({
+            path: '1',
+            connected: true,
+            state: { staticSessionId: account.deviceState },
+        });
+        const { services } = initTestServices(
+            {},
+            { ...deviceInitialState, devices: [device], selectedDevice: device },
+        );
+        const olderSalt = createDeferred<unknown>();
+        const newerSalt = createDeferred<unknown>();
+        (jest.spyOn(TrezorConnect, 'cipherKeyValue') as unknown as jest.Mock)
+            .mockReturnValueOnce(olderSalt.promise)
+            .mockReturnValueOnce(newerSalt.promise);
+        const cipheredValue = 'ab'.repeat(32);
+
+        services.store.dispatch(tradingBuyActions.setTradingAccountKey(account.key));
+        const olderLoad = services.store.dispatch(loadInitialDataThunk({ activeSection: 'buy' }));
+        services.store.dispatch(tradingBuyActions.setTradingAccountKey(otherAccount.key));
+        const newerLoad = services.store.dispatch(loadInitialDataThunk({ activeSection: 'buy' }));
+        newerSalt.resolve({ success: true, payload: { value: cipheredValue } });
+        await newerLoad;
+        olderSalt.resolve({ success: true, payload: { value: cipheredValue } });
+        await olderLoad;
+
+        expect(tradeApi.setApiKey).toHaveBeenLastCalledWith(
+            createSaltedTradeApiKey({
+                descriptor: otherAccount.descriptor,
+                salt: deriveTradeApiDeviceSalt(cipheredValue),
+            }),
+        );
+    });
 
     it('preserves desktop selected-account and forced anonymous id precedence on cache hits', async () => {
         const { services, getSelectedAccount } = await initLoadedTestServices();
@@ -173,10 +224,12 @@ describe('loadInitialDataThunk catalog cache', () => {
         await services.store
             .dispatch(loadInitialDataThunk({ activeSection: 'buy', forcedAnonymousId: 'forced' }))
             .unwrap();
-        expect(tradeApi.createApiKey).toHaveBeenLastCalledWith({
-            descriptor: account.descriptor,
-            salt: services.store.getState().wallet.trading.tradeApiInstallSalt,
-        });
+        expect(tradeApi.setApiKey).toHaveBeenLastCalledWith(
+            createSaltedTradeApiKey({
+                descriptor: account.descriptor,
+                salt: services.store.getState().wallet.trading.tradeApiInstallSalt ?? '',
+            }),
+        );
 
         getSelectedAccount.mockReturnValue({
             status: 'none',
@@ -302,10 +355,12 @@ describe('loadInitialDataThunk catalog cache', () => {
 
         expect(services.store.getState().wallet.trading.isLoading).toBe(true);
         expect(services.store.getState().wallet.trading.activeSection).toBe('exchange');
-        expect(tradeApi.createApiKey).toHaveBeenLastCalledWith({
-            descriptor: otherAccount.descriptor,
-            salt: services.store.getState().wallet.trading.tradeApiInstallSalt,
-        });
+        expect(tradeApi.setApiKey).toHaveBeenLastCalledWith(
+            createSaltedTradeApiKey({
+                descriptor: otherAccount.descriptor,
+                salt: services.store.getState().wallet.trading.tradeApiInstallSalt ?? '',
+            }),
+        );
         expect(tradeApi.getInfo).toHaveBeenCalledTimes(1);
         pendingInfo.resolve(info);
         await firstLoad.unwrap();

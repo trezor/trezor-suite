@@ -483,12 +483,23 @@ describe('createPaymentRequestsThunk', () => {
         it('signs the whole-balance amount in the memo text', async () => {
             tradeApi.getSignedTrade = jest.fn().mockResolvedValue(mockSignedSellTrade);
 
+            const tradeApiKey = 'trade-api-key';
             const store = createMockStore({
                 sell: {
-                    selectedQuote: mockSellQuote,
+                    selectedQuote: { ...mockSellQuote, orderId: 'sell-order-123' },
                     sellInfo: mockSellProviders,
                 },
                 info: mockInfoCoins,
+                trades: [
+                    {
+                        tradeType: 'sell',
+                        date: '2026-10-30',
+                        key: 'sell-order-123',
+                        data: mockSellQuote,
+                        sendAccountKey: mockAccount.key,
+                        apiKey: tradeApiKey,
+                    },
+                ],
             });
 
             const result = await store.dispatch(
@@ -506,6 +517,7 @@ describe('createPaymentRequestsThunk', () => {
                     type: 'sell',
                     memoText: 'Selling 0.00099 BTC for 50 USD',
                 }),
+                tradeApiKey,
             );
             expect(result.payload).toEqual([
                 expect.objectContaining({

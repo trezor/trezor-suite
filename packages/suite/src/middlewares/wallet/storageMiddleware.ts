@@ -44,7 +44,7 @@ import { getIsDeviceRemembered } from '@suite-common/suite-utils';
 import { thpActions } from '@suite-common/thp';
 import { TokenManagementAction } from '@suite-common/token-definitions';
 import { tokenDefinitionsActions } from '@suite-common/token-definitions/src/tokenDefinitionsActions';
-import { tradingActions } from '@suite-common/trading';
+import { type TradingRootState, selectTradingTrades, tradingActions } from '@suite-common/trading';
 import {
     type AccountsRootState,
     type FiatRatesRootState,
@@ -102,7 +102,8 @@ export type StorageMiddlewareState = AccountsRootState &
     FiatRatesRootState &
     WalletSettingsRootState &
     FlagsRootState &
-    SuiteSettingsRootState & {
+    SuiteSettingsRootState &
+    TradingRootState & {
         suite: Pick<SuiteState, 'evmSettings' | 'seenDisconnectNotificationForDeviceIds'>;
         wallet: {
             graph: GraphState;
@@ -610,7 +611,13 @@ export const prepareStorageMiddleware = createMiddlewareWithExtraDeps<
     } else if (debugActions.setShowDebugMenu.match(action)) {
         api.dispatch(storageActions.saveDebugSettingsThunk());
     } else if (tradingActions.saveTrade.match(action)) {
-        storageActions.saveTradingTrade(api.extra.services, action.payload);
+        const savedTrade = selectTradingTrades(api.getState()).find(
+            trade => trade.key === action.payload.key,
+        );
+
+        if (savedTrade) {
+            storageActions.saveTradingTrade(api.extra.services, savedTrade);
+        }
     } else if (tradingActions.setTradeApiInstallSalt.match(action)) {
         api.dispatch(storageActions.saveTradeApiInstallSaltThunk(action.payload));
     } else if (

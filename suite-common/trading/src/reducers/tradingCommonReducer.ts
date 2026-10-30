@@ -136,8 +136,11 @@ const tradingCommonSlice = createSlice({
 
         saveTrade(state: TradingState, action: PayloadAction<TradingTransaction>) {
             if (action.payload.key) {
+                const apiKey =
+                    state.trades.find(t => t.key === action.payload.key)?.apiKey ??
+                    action.payload.apiKey;
                 const trades = state.trades.filter(t => t.key !== action.payload.key);
-                trades.push(action.payload);
+                trades.push(apiKey ? { ...action.payload, apiKey } : action.payload);
 
                 state.trades = trades;
             }

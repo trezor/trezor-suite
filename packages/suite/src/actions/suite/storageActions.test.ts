@@ -736,6 +736,38 @@ describe('Storage actions', () => {
         expect(await db.getItemByPK('tradeApiInstallSalt', 'tradeApiInstallSalt')).toBe('cc');
     });
 
+    it('should keep the stored API key of a trade when it is saved again without it', async () => {
+        const store = mockStore(db, getInitialState());
+        const trade = {
+            tradeType: 'buy' as const,
+            date: '2026-10-30',
+            key: 'tradeKey',
+            data: { paymentId: 'tradeKey', status: 'LOGIN_REQUEST' as const },
+            selectedAccountKey: undefined,
+            receiveAccountKey: undefined,
+        };
+
+        store.dispatch(tradingActions.saveTrade({ ...trade, apiKey: 'trade-api-key' }));
+        store.dispatch(
+            tradingActions.saveTrade({
+                ...trade,
+                data: { ...trade.data, status: 'SUBMITTED' as const },
+            }),
+        );
+
+        await new Promise(resolve => setTimeout(resolve, 100));
+
+        const reloadedStore = mockStore(db, getInitialState());
+        reloadedStore.dispatch((await preloadStore())!);
+        expect(reloadedStore.getState().wallet.trading.trades).toEqual([
+            {
+                ...trade,
+                data: { ...trade.data, status: 'SUBMITTED' as const },
+                apiKey: 'trade-api-key',
+            },
+        ]);
+    });
+
     it('should remove legacy labels migration flag on forgetDevice', async () => {
         const forgottenDeviceStaticSessionId: StaticSessionId = 'forgotten-wallet@device_a_id:0';
         const forgottenWalletDescriptor = asWalletDescriptor('forgotten-wallet');

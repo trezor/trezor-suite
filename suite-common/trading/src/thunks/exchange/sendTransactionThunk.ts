@@ -17,6 +17,7 @@ import {
     selectTradingExchangeReceiveAccountKey,
     selectTradingExchangeSelectedQuote,
 } from '../../selectors/tradingSelectors';
+import { tradeApi } from '../../tradeApi';
 import { type TradingSendRejectedProps } from '../../types';
 import { getTradingFormState } from '../../utils';
 import { buildRecomposeInputsFromTrade } from '../common/buildRecomposeInputsFromTrade';
@@ -60,6 +61,7 @@ export const sendTransactionThunk = createThunk<
         const receiveAccountKey = selectTradingExchangeReceiveAccountKey(getState());
         const selectedTrade = trade ?? selectedQuote;
         const providers = selectTradingExchangeProviders(getState());
+        const apiKey = tradeApi.getCurrentApiKey();
         // sendAddress may be set by useTradingWatchTrade hook to the trade object
         const sendAddress = selectedTrade?.sendAddress;
 
@@ -144,6 +146,7 @@ export const sendTransactionThunk = createThunk<
                 sendAccountKey,
                 receiveAccountKey,
                 sendTxid: recomposeAndSignTx.payload.payload.txid,
+                apiKey,
             }),
         );
         dispatch(tradingExchangeActions.saveTransactionId(selectedTrade.orderId));

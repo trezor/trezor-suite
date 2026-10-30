@@ -32,7 +32,7 @@ import suiteReducer, { type SuiteState } from 'src/reducers/suite/suiteReducer';
 
 import { tradingMiddlewareFixtures } from './__fixtures__/tradingMiddleware';
 
-jest.spyOn(tradeApi, 'createApiKey').mockImplementation(() => {});
+jest.spyOn(tradeApi, 'setApiKey').mockImplementation(() => {});
 
 const tradingReducer = prepareTradingReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
@@ -450,7 +450,7 @@ describe('tradingMiddleware', () => {
             payload: 'btc-descriptor',
         });
 
-        expect(tradeApi.createApiKey).toHaveBeenCalledTimes(1);
+        expect(tradeApi.setApiKey).toHaveBeenCalledTimes(1);
         expect(store.getState().wallet.trading[section].tradingAccountKey).toEqual(
             'btc-descriptor',
         );
@@ -481,7 +481,7 @@ describe('tradingMiddleware', () => {
                 }),
             );
 
-            expect(tradeApi.createApiKey).toHaveBeenCalledTimes(calls);
+            expect(tradeApi.setApiKey).toHaveBeenCalledTimes(calls);
         },
     );
 });

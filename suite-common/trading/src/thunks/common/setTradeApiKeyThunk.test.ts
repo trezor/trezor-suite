@@ -9,13 +9,14 @@ import {
     tradingActions,
 } from '../../reducers/tradingCommonReducer';
 import { tradeApi } from '../../tradeApi';
+import { createSaltedTradeApiKey } from '../../utils/tradeApiSaltUtils';
 
 const deviceState = 'device-id@wallet-id:0' as StaticSessionId;
 const account = { descriptor: asAccountDescriptor('xpub-descriptor'), deviceState };
 const deviceSalt = 'aa'.repeat(32);
 const installSalt = 'bb'.repeat(32);
 
-const createApiKeySpy = jest.spyOn(tradeApi, 'createApiKey');
+const setApiKeySpy = jest.spyOn(tradeApi, 'setApiKey');
 
 const runThunk = async (trading: Partial<TradingState>) => {
     const state: SetTradeApiKeyThunkState = {
@@ -31,7 +32,7 @@ const runThunk = async (trading: Partial<TradingState>) => {
 
 describe('setTradeApiKeyThunk', () => {
     beforeEach(() => {
-        createApiKeySpy.mockReset();
+        setApiKeySpy.mockReset();
     });
 
     it.each([
@@ -40,20 +41,18 @@ describe('setTradeApiKeyThunk', () => {
     ])('salts the key with the $scenario device salt of the wallet', async ({ trading }) => {
         const installSaltActions = await runThunk({ ...trading, tradeApiInstallSalt: installSalt });
 
-        expect(createApiKeySpy).toHaveBeenCalledWith({
-            descriptor: account.descriptor,
-            salt: deviceSalt,
-        });
+        expect(setApiKeySpy).toHaveBeenCalledWith(
+            createSaltedTradeApiKey({ descriptor: account.descriptor, salt: deviceSalt }),
+        );
         expect(installSaltActions).toEqual([]);
     });
 
     it('falls back to the install salt when the wallet has no device salt', async () => {
         const installSaltActions = await runThunk({ tradeApiInstallSalt: installSalt });
 
-        expect(createApiKeySpy).toHaveBeenCalledWith({
-            descriptor: account.descriptor,
-            salt: installSalt,
-        });
+        expect(setApiKeySpy).toHaveBeenCalledWith(
+            createSaltedTradeApiKey({ descriptor: account.descriptor, salt: installSalt }),
+        );
         expect(installSaltActions).toEqual([]);
     });
 
@@ -62,9 +61,8 @@ describe('setTradeApiKeyThunk', () => {
 
         const [generatedSalt] = installSaltActions.map(({ payload }) => payload);
         expect(generatedSalt).toMatch(/^[0-9a-f]{64}$/);
-        expect(createApiKeySpy).toHaveBeenCalledWith({
-            descriptor: account.descriptor,
-            salt: generatedSalt,
-        });
+        expect(setApiKeySpy).toHaveBeenCalledWith(
+            createSaltedTradeApiKey({ descriptor: account.descriptor, salt: generatedSalt ?? '' }),
+        );
     });
 });

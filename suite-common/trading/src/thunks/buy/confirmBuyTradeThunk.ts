@@ -63,6 +63,7 @@ export const confirmBuyTradeThunk = createThunk<
             receiveAddressExtraId: extraField,
         };
 
+        const apiKey = tradeApi.getCurrentApiKey();
         const response = await tradeApi.doBuyTrade({
             trade,
             returnUrl,
@@ -102,6 +103,7 @@ export const confirmBuyTradeThunk = createThunk<
                 data: response.trade,
                 receiveAccountKey,
                 selectedAccountKey: account.key,
+                apiKey,
             }),
         );
 

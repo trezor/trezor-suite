@@ -5,13 +5,14 @@ import coins from './__fixtures__/coins.json';
 import platforms from './__fixtures__/platforms.json';
 import { tradeApiFixtures } from './__fixtures__/tradeApi';
 import { tradeApi } from './tradeApi';
+import { createSaltedTradeApiKey } from './utils/tradeApiSaltUtils';
 
 describe('TradeApi', () => {
     const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
     const error = new Error('Error');
     const accountDescriptor = 'test-account';
     const salt = '11'.repeat(32);
-    tradeApi.createApiKey({ descriptor: accountDescriptor, salt });
+    tradeApi.setApiKey(createSaltedTradeApiKey({ descriptor: accountDescriptor, salt }));
     const apiKey = tradeApi.getCurrentApiKey();
 
     const abortMock = (abortSignal: AbortSignal) =>
@@ -43,7 +44,22 @@ describe('TradeApi', () => {
             createHash('sha256').update('anonymous-id').digest('hex'),
         );
 
-        tradeApi.createApiKey({ descriptor: accountDescriptor, salt });
+        tradeApi.setApiKey(createSaltedTradeApiKey({ descriptor: accountDescriptor, salt }));
+    });
+
+    it('sends a request-specific API key with a trace id derived from that key', async () => {
+        const tradeKey = 'cd'.repeat(32);
+        (global.fetch as jest.Mock).mockResolvedValueOnce({
+            ok: true,
+            json: () => Promise.resolve({}),
+        });
+
+        await tradeApi.watchTrade({} as any, 'buy', 1, tradeKey);
+
+        const { headers } = (global.fetch as jest.Mock).mock.calls[0][1];
+        expect(headers['X-SuiteW-Api']).toBe(tradeKey);
+        expect(headers['X-Trace-Id']).toBe(createHash('sha256').update(tradeKey).digest('hex'));
+        expect(tradeApi.getCurrentApiKey()).toBe(apiKey);
     });
 
     describe('getApiKey', () => {

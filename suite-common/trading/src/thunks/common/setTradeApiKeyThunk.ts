@@ -1,3 +1,5 @@
+import { type Dispatch } from '@reduxjs/toolkit';
+
 import { type Account } from '@suite-common/wallet-types';
 import { createThunk } from '@trezor/redux-utils';
 
@@ -8,19 +10,22 @@ import {
     selectTradeApiInstallSalt,
 } from '../../selectors/tradingSelectors';
 import { tradeApi } from '../../tradeApi';
-import { generateTradeApiInstallSalt } from '../../utils/tradeApiSaltUtils';
+import {
+    createSaltedTradeApiKey,
+    generateTradeApiInstallSalt,
+} from '../../utils/tradeApiSaltUtils';
 
-type SetTradeApiKeyThunkParams = {
-    account: Pick<Account, 'descriptor' | 'deviceState'>;
+type TradeApiKeyAccount = Pick<Account, 'descriptor' | 'deviceState'>;
+
+type TradeApiKeyThunkParams = {
+    account: TradeApiKeyAccount;
 };
 
-export type SetTradeApiKeyThunkState = TradingRootState;
-
-export const setTradeApiKeyThunk = createThunk<
-    void,
-    SetTradeApiKeyThunkParams,
-    { state: SetTradeApiKeyThunkState }
->(`${TRADING_THUNK_PREFIX}/setTradeApiKey`, ({ account }, { dispatch, getState }) => {
+const resolveTradeApiSalt = (
+    account: TradeApiKeyAccount,
+    dispatch: Dispatch,
+    getState: () => TradingRootState,
+) => {
     const storedInstallSalt = selectTradeApiInstallSalt(getState());
     const installSalt = storedInstallSalt ?? generateTradeApiInstallSalt();
 
@@ -28,8 +33,25 @@ export const setTradeApiKeyThunk = createThunk<
         dispatch(tradingActions.setTradeApiInstallSalt(installSalt));
     }
 
-    tradeApi.createApiKey({
+    return selectTradeApiDeviceSalt(getState(), account.deviceState) ?? installSalt;
+};
+
+export const resolveTradeApiKey = (
+    account: TradeApiKeyAccount,
+    dispatch: Dispatch,
+    getState: () => TradingRootState,
+) =>
+    createSaltedTradeApiKey({
         descriptor: account.descriptor,
-        salt: selectTradeApiDeviceSalt(getState(), account.deviceState) ?? installSalt,
+        salt: resolveTradeApiSalt(account, dispatch, getState),
     });
+
+export type SetTradeApiKeyThunkState = TradingRootState;
+
+export const setTradeApiKeyThunk = createThunk<
+    void,
+    TradeApiKeyThunkParams,
+    { state: SetTradeApiKeyThunkState }
+>(`${TRADING_THUNK_PREFIX}/setTradeApiKey`, ({ account }, { dispatch, getState }) => {
+    tradeApi.setApiKey(resolveTradeApiKey(account, dispatch, getState));
 });

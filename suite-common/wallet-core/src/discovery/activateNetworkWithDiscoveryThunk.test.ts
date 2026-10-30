@@ -6,11 +6,7 @@ import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { tokenDefinitionsInitialState } from '@suite-common/token-definitions';
 import { type NetworkSymbol, asNetworkSymbol } from '@suite-common/wallet-config';
 import { type Account, asAccountDescriptor } from '@suite-common/wallet-types';
-import {
-    mockEnsureTradeApiDeviceSalt,
-    mockGetTradedAccountKeys,
-    mockWalletAccount,
-} from '@suite-common/wallet-types/mocks';
+import { mockGetTradedAccountKeys, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { mockAnalytics } from '@trezor/analytics-uploader/mocks';
 import { type StaticSessionId, asDeviceUniquePath } from '@trezor/connect';
 import { createMockDispatch } from '@trezor/redux-utils/mocks';
@@ -106,7 +102,6 @@ const createExtra = (): ActivateNetworkWithDiscoveryThunkDeps => ({
     services: {
         analytics: mockAnalytics<AnalyticsSharedEvents>(),
         getTradedAccountKeys: mockGetTradedAccountKeys(),
-        ensureTradeApiDeviceSalt: mockEnsureTradeApiDeviceSalt(),
         reportSecurityCheck: jest.fn(),
     },
 });

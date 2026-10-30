@@ -520,6 +520,22 @@ export const saveTradingTrade = (deps: DbDep, trade: TradingTransaction) => {
     return deps.db.addItem('tradingTrades', trade, undefined, true);
 };
 
+type SaveTradeApiDeviceSaltParams = {
+    staticSessionId: StaticSessionId;
+    salt: string;
+};
+
+const saveTradeApiDeviceSalt = (
+    deps: DbDep,
+    { staticSessionId, salt }: SaveTradeApiDeviceSaltParams,
+) => {
+    if (!deps.db.isAccessible()) {
+        return;
+    }
+
+    return deps.db.addItem('tradeApiSalts', salt, staticSessionId, true);
+};
+
 export const saveGraph = (deps: DbDep, graphData: GraphData[]) => {
     if (!deps.db.isAccessible()) return;
 
@@ -653,12 +669,10 @@ export const rememberDeviceThunk =
                 saveGraph(extra.services, graphData),
                 ...(tradeApiSalt
                     ? [
-                          extra.services.db.addItem(
-                              'tradeApiSalts',
-                              tradeApiSalt,
-                              device.state.staticSessionId,
-                              true,
-                          ),
+                          saveTradeApiDeviceSalt(extra.services, {
+                              staticSessionId: device.state.staticSessionId,
+                              salt: tradeApiSalt,
+                          }),
                       ]
                     : []),
                 // eslint-disable-next-line  @typescript-eslint/no-use-before-define
@@ -938,26 +952,16 @@ export const saveSuiteSyncSettingsThunk =
         );
     };
 
-type SaveTradeApiDeviceSaltParams = {
-    staticSessionId: StaticSessionId;
-    salt: string;
-};
-
 type SaveTradeApiDeviceSaltThunkDeps = WithServices<DbDep>;
 
 export const saveTradeApiDeviceSaltThunk =
-    ({ staticSessionId, salt }: SaveTradeApiDeviceSaltParams) =>
+    (params: SaveTradeApiDeviceSaltParams) =>
     (
         _dispatch: Dispatch<UnknownAction>,
         _getState: () => unknown,
         extra: SaveTradeApiDeviceSaltThunkDeps,
-    ) => {
-        if (!extra.services.db.isAccessible()) {
-            return;
-        }
-
-        return extra.services.db.addItem('tradeApiSalts', salt, staticSessionId, true);
-    };
+    ) =>
+        saveTradeApiDeviceSalt(extra.services, params);
 
 type SaveTradeApiInstallSaltThunkDeps = WithServices<DbDep>;
 

@@ -1,4 +1,5 @@
 import { combineReducers } from '@reduxjs/toolkit';
+import { type BuyTrade } from 'invity-api';
 
 import { deviceActions } from '@suite-common/device';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
@@ -336,6 +337,44 @@ describe('Testing trading reducer', () => {
             });
         });
     });
+
+    it.each([
+        { scenario: 'without a key', resavedApiKey: undefined },
+        { scenario: 'with another key', resavedApiKey: 'cd'.repeat(32) },
+    ])(
+        'keeps the API key of a saved trade when the trade is saved again $scenario',
+        ({ resavedApiKey }) => {
+            const trade = {
+                tradeType: 'buy' as const,
+                date: '2026-10-28',
+                key: 'tradeKey',
+                data: { paymentId: 'tradeKey', status: 'SUBMITTED' } as BuyTrade,
+                selectedAccountKey: undefined,
+                receiveAccountKey: undefined,
+            };
+            const savedState = tradingReducer(
+                initialState,
+                tradingActions.saveTrade({ ...trade, apiKey: 'ef'.repeat(32) }),
+            );
+
+            const state = tradingReducer(
+                savedState,
+                tradingActions.saveTrade({
+                    ...trade,
+                    data: { ...trade.data, receiveTxHash: 'receiveTxHash' },
+                    apiKey: resavedApiKey,
+                }),
+            );
+
+            expect(state.trades).toEqual([
+                {
+                    ...trade,
+                    data: { ...trade.data, receiveTxHash: 'receiveTxHash' },
+                    apiKey: 'ef'.repeat(32),
+                },
+            ]);
+        },
+    );
 
     describe('trade API salts', () => {
         const staticSessionId = 'device-id@wallet-id:0' as StaticSessionId;

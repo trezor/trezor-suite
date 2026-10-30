@@ -58,6 +58,7 @@ export const confirmApprovalThunk = createThunk<
 
         dispatch(tradingExchangeActions.saveTransactionId(undefined));
 
+        const apiKey = tradeApi.getCurrentApiKey();
         const rawResponse = await tradeApi.doExchangeTrade({
             trade,
             receiveAddress,
@@ -133,6 +134,7 @@ export const confirmApprovalThunk = createThunk<
                 data: response,
                 sendAccountKey,
                 receiveAccountKey,
+                apiKey,
             }),
         );
         dispatch(tradingExchangeActions.saveTransactionId(response.orderId));

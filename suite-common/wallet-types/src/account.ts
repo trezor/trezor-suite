@@ -7,7 +7,7 @@ import type {
     StakingPool,
     TronAccountExtraData,
 } from '@trezor/blockchain-link-types';
-import type { AccountInfo, DeviceUniquePath, PROTO, TokenInfo } from '@trezor/connect';
+import type { AccountInfo, PROTO, TokenInfo } from '@trezor/connect';
 import type { Bip43Path } from '@trezor/crypto-utils';
 import { type Getter } from '@trezor/dependency-injection';
 import type { StaticSessionId } from '@trezor/device-utils';
@@ -145,17 +145,6 @@ export type AccountKey = `${AccountDescriptor}-${NetworkSymbol}-${StaticSessionI
 
 export type GetTradedAccountKeysDep = {
     getTradedAccountKeys: Getter<[], AccountKey[]>;
-};
-
-export type EnsureTradeApiDeviceSaltParams = {
-    path: DeviceUniquePath;
-    instance: number | undefined;
-    staticSessionId: StaticSessionId;
-    useEmptyPassphrase: boolean;
-};
-
-export type EnsureTradeApiDeviceSaltDep = {
-    ensureTradeApiDeviceSalt: (params: EnsureTradeApiDeviceSaltParams) => Promise<void>;
 };
 
 type CreateAccountKeyParams = {

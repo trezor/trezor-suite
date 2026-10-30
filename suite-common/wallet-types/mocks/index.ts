@@ -1,5 +1,4 @@
 export { mockAccountKey } from './mockAccountKey';
-export { mockEnsureTradeApiDeviceSalt } from './mockEnsureTradeApiDeviceSalt';
 export { mockGetTradedAccountKeys } from './mockGetTradedAccountKeys';
 export {
     mockWalletAccount,

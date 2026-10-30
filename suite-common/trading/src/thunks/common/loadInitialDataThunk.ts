@@ -1,6 +1,10 @@
 import { type SelectedAccountStatus } from '@suite-common/wallet-types';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
 
+import {
+    type EnsureTradeApiDeviceSaltThunkState,
+    ensureTradeApiDeviceSaltThunk,
+} from './ensureTradeApiDeviceSaltThunk';
 import { type SetTradeApiKeyThunkState, setTradeApiKeyThunk } from './setTradeApiKeyThunk';
 import {
     TRADE_API_RELOAD_DATA_AFTER_MS,
@@ -14,6 +18,7 @@ import { tradingActions } from '../../reducers/tradingCommonReducer';
 import {
     type TradingRootStateWithAccounts,
     selectTradingAccountAccordingActiveSection,
+    selectTradingActiveSection,
     selectTradingBuyInfo,
     selectTradingExchangeInfo,
     selectTradingInfo,
@@ -32,7 +37,9 @@ export interface LoadInitialDataThunkProps {
     forceReload?: boolean;
 }
 
-export type LoadInitialDataThunkState = TradingRootStateWithAccounts & SetTradeApiKeyThunkState;
+export type LoadInitialDataThunkState = TradingRootStateWithAccounts &
+    EnsureTradeApiDeviceSaltThunkState &
+    SetTradeApiKeyThunkState;
 
 export type LoadInitialDataThunkDeps = WithServices<{
     getSelectedAccount: () => SelectedAccountStatus;
@@ -51,25 +58,35 @@ export const loadInitialDataThunk = createThunk<
         { activeSection, forcedAnonymousId, forceReload = false },
         { dispatch, getState, extra },
     ) => {
-        const selectedAccount = extra.services.getSelectedAccount();
-        const account = selectTradingAccountAccordingActiveSection(
+        const sectionAccount = selectTradingAccountAccordingActiveSection(
             getState(),
             activeSection,
-            selectedAccount,
+            extra.services.getSelectedAccount(),
         );
-        const buyInfo = selectTradingBuyInfo(getState());
-        const exchangeInfo = selectTradingExchangeInfo(getState());
-        const sellInfo = selectTradingSellInfo(getState());
-        const { isLoading, lastLoadedTimestamp } = selectTradingLoadingAndTimestamp(getState());
-        const { platforms, coins } = selectTradingInfo(getState());
 
         dispatch(tradingActions.setTradingActiveSection(activeSection));
+
+        if (sectionAccount) {
+            await dispatch(ensureTradeApiDeviceSaltThunk({ account: sectionAccount }));
+        }
+
+        const account = selectTradingAccountAccordingActiveSection(
+            getState(),
+            selectTradingActiveSection(getState()),
+            extra.services.getSelectedAccount(),
+        );
 
         if (account) {
             dispatch(setTradeApiKeyThunk({ account }));
         } else {
             tradeApi.createAnonymousApiKey(forcedAnonymousId || TRADING_ANONYMOUS_ID);
         }
+
+        const buyInfo = selectTradingBuyInfo(getState());
+        const exchangeInfo = selectTradingExchangeInfo(getState());
+        const sellInfo = selectTradingSellInfo(getState());
+        const { isLoading, lastLoadedTimestamp } = selectTradingLoadingAndTimestamp(getState());
+        const { platforms, coins } = selectTradingInfo(getState());
 
         const tradeServerEnvironment = extra.services.getTradingEnvironment();
         if (tradeServerEnvironment) {

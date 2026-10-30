@@ -39,10 +39,6 @@ import {
     type TradingWatchTradeResponsePropsMap,
 } from './types';
 import { parseBtcSwapComposeTemplate } from './utils/exchange/btcSwapComposeTemplateSchema';
-import {
-    type CreateSaltedTradeApiKeyParams,
-    createSaltedTradeApiKey,
-} from './utils/tradeApiSaltUtils';
 
 type BodyType =
     | BuyTrade
@@ -113,8 +109,8 @@ class TradeApi {
         return TradeApi.apiKey;
     }
 
-    createApiKey(params: CreateSaltedTradeApiKeyParams) {
-        TradeApi.apiKey = createSaltedTradeApiKey(params);
+    setApiKey(apiKey: string) {
+        TradeApi.apiKey = apiKey;
     }
 
     createAnonymousApiKey(anonymousId: string) {
@@ -125,8 +121,8 @@ class TradeApi {
         this.serverEnvironment = serverEnvironment;
     }
 
-    private getSuiteTraceHeader() {
-        return createHash('sha256').update(this.getApiKey()).digest('hex');
+    private getSuiteTraceHeader(apiKey: string) {
+        return createHash('sha256').update(apiKey).digest('hex');
     }
 
     private getOptionAPIHeader() {
@@ -143,13 +139,14 @@ class TradeApi {
         signal?: SignalType,
     ): RequestInit {
         const apiHeader = this.getOptionAPIHeader();
+        const apiKey = apiHeaderValue || this.getApiKey();
 
         return {
             method,
             mode: 'cors',
             headers: {
-                [apiHeader]: apiHeaderValue || this.getApiKey(),
-                'X-Trace-Id': this.getSuiteTraceHeader(),
+                [apiHeader]: apiKey,
+                'X-Trace-Id': this.getSuiteTraceHeader(apiKey),
                 'X-Suite-Version': getSuiteVersion(),
                 'X-Suite-Platform': getOsName(),
                 ...(method === 'POST' && {
@@ -382,12 +379,13 @@ class TradeApi {
         }
     };
 
-    doSellConfirm = async (trade: SellFiatTrade): Promise<SellFiatTrade> => {
+    doSellConfirm = async (trade: SellFiatTrade, apiKey?: string): Promise<SellFiatTrade> => {
         try {
             const response: SellFiatTrade = await this.request(
                 this.SELL_FIAT_CONFIRM,
                 trade,
                 'POST',
+                apiKey,
             );
 
             return response;
@@ -434,6 +432,7 @@ class TradeApi {
         tradeData: TradingTradeType,
         tradeType: TradingType,
         counter: number,
+        apiKey?: string,
     ): Promise<TradingWatchTradeResponsePropsMap[T]> => {
         const tradesData = this.getWatchTradeData(tradeType);
 
@@ -442,6 +441,7 @@ class TradeApi {
                 tradesData.url.replace('{{counter}}', counter.toString()),
                 tradeData,
                 'POST',
+                apiKey,
             );
 
             return response;
@@ -469,9 +469,10 @@ class TradeApi {
         P extends CreateTradeSignatureRequestSell | CreateTradeSignatureRequestExchange,
     >(
         params: P,
+        apiKey?: string,
     ): Promise<T | undefined> => {
         try {
-            const response = await this.request(this.TRADE_SIGN, params, 'POST');
+            const response = await this.request(this.TRADE_SIGN, params, 'POST', apiKey);
 
             if (response) {
                 return response;
