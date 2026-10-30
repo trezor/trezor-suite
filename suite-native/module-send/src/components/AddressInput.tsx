@@ -34,7 +34,7 @@ import {
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
-import { injectGetState } from '@trezor/redux-utils';
+import { injectGetState, injectStore } from '@trezor/redux-utils';
 import { HELP_CENTER_EVM_ADDRESS_CHECKSUM, HELP_CENTER_SOLANA_HELP_URL } from '@trezor/urls';
 
 import { AddressInfoMessage } from './AddressInfoMessage';
@@ -44,6 +44,7 @@ import { SendFormLabelEditable } from './SendFormLabelEditable';
 import { useAddressValidationAlerts } from '../hooks/useAddressValidationAlerts/useAddressValidationAlerts';
 import { useSolAssociatedTokenAddress } from '../hooks/useAddressValidationAlerts/useSolAssociatedTokenAddress';
 import { useResolvedAddress } from '../hooks/useResolvedAddress';
+import { prefillSendAmount } from '../prefillSendAmount';
 import { type SendOutputsFormValues } from '../sendOutputsFormSchema';
 import { getOutputFieldName } from '../utils';
 
@@ -69,15 +70,18 @@ type AddressInputProps = {
 export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: AddressInputProps) => {
     const addressFieldName = getOutputFieldName(index, 'address');
     const utxoLabelFieldName = getOutputFieldName(index, 'label');
-    const amountFieldName = getOutputFieldName(index, 'amount');
     const tokenFieldName = getOutputFieldName(index, 'token');
-    const { setValue, control } = useFormContext<SendOutputsFormValues>();
-    const { getState, analytics, addressValidator, getNamedAddressSupport } = useServices(
+    const form = useFormContext<SendOutputsFormValues>();
+    const { setValue, control } = form;
+    const { getState, store, analytics, addressValidator, getNamedAddressSupport } = useServices(
         injectGetState,
+        injectStore,
         injectNativeAnalytics,
         injectAddressValidator,
         injectGetNamedAddressSupport,
     );
+    const prefillAmount = (amount: string) =>
+        prefillSendAmount({ form, store, accountKey, recipientIndex: index, amount });
     const symbol = useSelector((state: AccountsRootState) =>
         selectAccountNetworkSymbol(state, accountKey),
     );
@@ -192,7 +196,7 @@ export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: Address
                 setValue(tokenFieldName, erc681.token, { shouldDirty: true });
                 const displayAmount = toDisplayAmount(account);
                 if (displayAmount !== undefined) {
-                    setValue(amountFieldName, displayAmount, { shouldValidate: true });
+                    prefillAmount(displayAmount);
                 }
             }
             analytics.report({
@@ -213,7 +217,7 @@ export const AddressInput = ({ index, accountKey, onQrNetworkMismatch }: Address
             onQrNetworkMismatch?.(null);
             setValue(addressFieldName, bip321.address, { shouldValidate: true });
             if (bip321.amount) {
-                setValue(amountFieldName, bip321.amount, { shouldValidate: true });
+                prefillAmount(bip321.amount);
             }
             if (bip321.label) {
                 setValue(utxoLabelFieldName, bip321.label, { shouldValidate: true });
