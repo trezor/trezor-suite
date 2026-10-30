@@ -1299,7 +1299,12 @@ export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
                             return undefined;
                         });
 
-                        if (processInfo) {
+                        // A lookup that found the process but has no path for it reports an
+                        // empty one. The declared name is preferred over such a result as the
+                        // label: it is at least what the client calls itself in the manifest,
+                        // where the pathless lookup only has the name the process picked for
+                        // its own kernel task, and an empty path is nothing to find an icon by.
+                        if (processInfo?.fullPath) {
                             sessionProcessInfo = {
                                 name: processInfo.name,
                                 fullPath: processInfo.fullPath,
@@ -1312,6 +1317,12 @@ export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
                                 // The declared name is one the client chooses, so it labels the
                                 // caller but is never the path that permissions are keyed by.
                                 fullPath: '',
+                                warning: true,
+                            };
+                        } else if (processInfo) {
+                            sessionProcessInfo = {
+                                name: processInfo.name,
+                                fullPath: processInfo.fullPath,
                                 warning: true,
                             };
                         }

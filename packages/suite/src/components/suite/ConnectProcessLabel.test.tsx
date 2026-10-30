@@ -24,14 +24,19 @@ const renderLabel = (process: ConnectProcessInfo) =>
         </ThemeProvider>,
     );
 
-// The tooltip the hovered label reveals, or `undefined` when it reveals none.
 const hoverLabel = async () => {
     await userEvent.hover(screen.getByTestId('@process'));
 
-    return waitFor(() => screen.getByTestId('@tooltip')).catch(() => undefined);
+    return waitFor(() => screen.getByTestId('@tooltip'));
 };
 
 describe('ConnectProcessLabel', () => {
+    it('shows the path of a process that is not warned about', async () => {
+        renderLabel({ name: 'node', fullPath: '/usr/local/bin/node', warning: false });
+
+        expect(await hoverLabel()).toHaveTextContent('/usr/local/bin/node');
+    });
+
     it('shows the executable path of a warned-about process', async () => {
         renderLabel({ name: 'node', fullPath: '/tmp/node', warning: true });
 

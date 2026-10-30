@@ -1,4 +1,5 @@
 import { spawn } from 'child_process';
+import { promises as fs } from 'fs';
 
 function spawnAndCollectStdout(command: string): Promise<string> {
     return new Promise((resolve, reject) => {
@@ -40,6 +41,32 @@ type IncomingConnection = {
 
 // IPv4 address mapped into IPv6, which lsof and netstat print in its plain IPv4 form.
 const IPV4_MAPPED_IPV6 = /^::ffff:(\d{1,3}(?:\.\d{1,3}){3})$/;
+
+// How the kernel renders /proc/<pid>/exe of a process whose executable has been unlinked or
+// replaced, as an upgrade of a running app does.
+const DELETED_EXE_SUFFIX = ' (deleted)';
+
+// Packaging formats that put a component into the exe path which does not identify the app: a
+// snap's path carries the revision it was last refreshed to, and an AppImage runs from a
+// mountpoint made up anew on every launch.
+const SNAP_REVISION_PATH = /^(\/snap\/[^/]+)\/\d+\//;
+const APPIMAGE_MOUNT_PATH = /^\/tmp\/\.mount_[^/]+\//;
+
+// The path the executable was installed at. The suffix is only the kernel's marker when nothing
+// exists at the printed path: a file literally named "... (deleted)" is its own executable and
+// must not be handed the identity of the path it would be stripped to.
+const resolveExePath = async (exe: string) => {
+    if (!exe.endsWith(DELETED_EXE_SUFFIX)) {
+        return exe;
+    }
+
+    const literalExists = await fs.stat(exe).then(
+        () => true,
+        () => false,
+    );
+
+    return literalExists ? exe : exe.slice(0, -DELETED_EXE_SUFFIX.length);
+};
 
 // Endpoint as lsof and netstat print it, with IPv6 addresses in brackets.
 const formatEndpoint = (address: string, port: number) => {
@@ -124,13 +151,35 @@ export async function findProcessFromIncomingPort(
                         return { name: sanitizedName, pid, fullPath, warning: true };
                     }
                 } else {
-                    const fullPathCommand = `cat /proc/${pid}/cmdline`;
-                    const fullPathRaw = await spawnAndCollectStdout(fullPathCommand);
-                    const fullPath = fullPathRaw.split('\0')[0] ?? '';
-                    const trimmedFullPath = fullPath.trim();
+                    // The executable the kernel runs, not the argv[0] the process was started
+                    // with. Reading it fails when the process exited since lsof listed it, or
+                    // when ptrace-level access to it is denied; the socket still belonged to the
+                    // process lsof named, only its path stays unknown.
+                    const exe = await fs.readlink(`/proc/${pid}/exe`).catch(() => undefined);
+                    if (exe === undefined) {
+                        return { name: sanitizedName, pid, fullPath: '', warning: true };
+                    }
+
+                    // The path is the identity of the app, so a replaced binary keeps the one it
+                    // was installed at.
+                    const fullPath = await resolveExePath(exe);
+                    if (APPIMAGE_MOUNT_PATH.test(fullPath)) {
+                        // The mountpoint an AppImage runs from is new on every launch and does
+                        // not name the .AppImage it was started from, so it identifies nothing;
+                        // reported as it is, such a caller would be a different app every time.
+                        return { name: sanitizedName, pid, fullPath: '', warning: true };
+                    }
+
+                    // A snap's revision changes with every refresh, while `current` is the
+                    // symlink snapd keeps pointing at the active one, so permissions remembered
+                    // for the app survive its updates.
+                    const installedPath = fullPath.replace(SNAP_REVISION_PATH, '$1/current/');
                     // Binaries can be all over the place on Linux, so we don't check the path
 
-                    return { name: sanitizedName, pid, fullPath: trimmedFullPath };
+                    // A client started by an interpreter reports the interpreter, so the path
+                    // identifies the runtime and not the app: every Node-based client shares the
+                    // path of node, and only the origin it connects from tells two of them apart.
+                    return { name: sanitizedName, pid, fullPath: installedPath };
                 }
             }
 
