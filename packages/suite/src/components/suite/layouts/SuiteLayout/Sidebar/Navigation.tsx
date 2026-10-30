@@ -11,6 +11,7 @@ import {
 } from '@suite/flags';
 import { type Route, isTradingRoute, selectRouteName } from '@suite/router';
 import { selectHasBitcoinOnlyFirmware } from '@suite-common/device';
+import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
 import { selectHasUnseenTransactionNotifications } from '@suite-common/toast-notifications';
 import { Column } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -69,6 +70,10 @@ export const Navigation = ({ children }: NavigationProps) => {
 
     const startRoute: Route['name'] = 'suite-index';
 
+    const isHomeTableActive = useIsExperimentVariantActive({
+        experimentId: ExperimentId.assetFirstHomeTable,
+        variant: 'B',
+    });
     const isBtcOnly = useSelector(selectHasBitcoinOnlyFirmware);
     const isFinpromRestricted = useSelector(selectIsFinpromRestricted);
     const isAppsEmbeddingAvailable = useSelector(selectIsAppsEmbeddingAvailable);
@@ -177,7 +182,7 @@ export const Navigation = ({ children }: NavigationProps) => {
         useMemo(
             () => [
                 {
-                    nameId: 'TR_DASHBOARD',
+                    nameId: isHomeTableActive ? 'TR_HOME' : 'TR_DASHBOARD',
                     icon: HouseIcon,
                     goToRoute: startRoute,
                     routes: [startRoute],
@@ -243,6 +248,7 @@ export const Navigation = ({ children }: NavigationProps) => {
                 },
             ],
             [
+                isHomeTableActive,
                 startRoute,
                 isBtcOnly,
                 isFinpromRestricted,
