@@ -144,56 +144,69 @@ sequenceDiagram
 
 ## Schema
 
-Removing an account from `setAccounts` deletes its transactions, transfers and sync state through
-the cascades.
+The database `trezor-transaction-store` (OPFS), after the five migrations in
+`transactionStoreMigrations.ts`; `TransactionStoreDatabase` types it for Kysely. Removing an account
+in `setAccounts` deletes its transactions, transfers and sync state through the cascades; resetting
+or wiping the app deletes the whole database.
 
 ```mermaid
 erDiagram
-    accounts ||--o{ transactions : "has"
-    accounts ||--o| sync_state : "has"
-    transactions ||--o{ transfers : "moves"
-    token_definition_networks ||--o{ known_tokens : "lists"
+    accounts ||--o{ transactions : "has (cascade)"
+    accounts ||--o| sync_state : "has (cascade)"
+    transactions ||--o{ transfers : "moves (cascade)"
+    token_definition_networks ||--o{ known_tokens : "same symbol"
 
     accounts {
-        TEXT account_key PK
-        TEXT symbol
-        TEXT descriptor
+        TEXT account_key PK "the app's account key"
+        TEXT symbol "network"
+        TEXT descriptor "xpub or address"
     }
     transactions {
         TEXT account_key PK, FK
         TEXT txid PK
-        INTEGER block_height
-        INTEGER block_time
-        TEXT type
+        INTEGER block_height "NULL while pending"
+        INTEGER block_time "seconds"
+        TEXT type "sent, recv, self, ..."
         TEXT data "the whole transaction as JSON"
     }
     sync_state {
         TEXT account_key PK, FK
-        INTEGER is_complete
-        INTEGER last_synced_at
-        TEXT last_error
-        INTEGER is_syncing
+        INTEGER is_complete "1: the whole history is stored"
+        INTEGER last_synced_at "ms; NULL: never synced"
+        TEXT last_error "BackendUnavailable or BackendError"
+        INTEGER is_syncing "1 while a sync runs"
     }
     transfers {
         TEXT account_key PK, FK
         TEXT txid PK, FK
-        INTEGER idx PK
-        TEXT kind "native or token"
-        TEXT contract
-        TEXT direction
+        INTEGER idx PK "order within the transaction"
+        TEXT kind "native, token or internal"
+        TEXT contract "NULL for the network's coin"
+        TEXT direction "sent, recv, self"
         TEXT amount "base units"
         TEXT value "units, for search"
-        TEXT standard
+        INTEGER decimals
+        TEXT symbol
+        TEXT standard "ERC20, ERC721, ..."
+        TEXT from_address
+        TEXT to_address
+        INTEGER block_height
+        INTEGER block_time
     }
     known_tokens {
         TEXT symbol PK
         TEXT kind PK "coin or nft"
-        TEXT contract PK
+        TEXT contract PK "as the definitions list it"
     }
     token_definition_networks {
-        TEXT symbol PK
+        TEXT symbol PK "definitions fed for this network"
     }
 ```
+
+| Index                  | On                                                   | For                                          |
+| ---------------------- | ---------------------------------------------------- | -------------------------------------------- |
+| `transactions_by_time` | `transactions (account_key, block_time DESC)`        | an account's history, newest first           |
+| `transfers_by_asset`   | `transfers (account_key, contract, block_time DESC)` | an asset's history (a token's or the coin's) |
 
 ## Hiding suspicious transactions
 
