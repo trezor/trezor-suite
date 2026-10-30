@@ -3,15 +3,12 @@ import { useSelector } from 'react-redux';
 import { CommonActions, type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import {
-    type HomeAssetEarnState,
     type HomeAssetTableState,
     selectWalletAssetAvailableAmount,
-    selectWalletAssetEarnAvailable,
     selectWalletAssetKey,
     selectWalletAssetStakingAmount,
 } from '@suite-common/assets';
-import { HStack, PressableOpacity, Text, VStack } from '@suite-native/atoms';
-import { Icon } from '@suite-native/icons';
+import { Divider, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     AppTabsRoutes,
@@ -26,6 +23,11 @@ import {
 import { AssetDetailEarnBalanceBar } from './AssetDetailEarnBalanceBar';
 import { AssetDetailEarnBalanceRow } from './AssetDetailEarnBalanceRow';
 import { AssetDetailEarnBanner } from './AssetDetailEarnBanner';
+import { AssetDetailSectionHeader } from './AssetDetailSectionHeader';
+import {
+    type AssetDetailEarnState,
+    selectShouldShowWalletAssetEarnSection,
+} from '../assetDetailEarnSelectors';
 
 type NavigationProps = StackNavigationProps<RootStackParamList, RootStackRoutes.AppTabs>;
 
@@ -41,8 +43,8 @@ export const AssetDetailEarnSection = () => {
     const stakingAmount = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetStakingAmount(state, assetKey),
     );
-    const isEarnAvailable = useSelector((state: HomeAssetEarnState) =>
-        selectWalletAssetEarnAvailable(state, assetKey),
+    const isEarnAvailable = useSelector((state: AssetDetailEarnState) =>
+        selectShouldShowWalletAssetEarnSection(state, assetKey),
     );
     const navigation = useNavigation<NavigationProps>();
 
@@ -69,34 +71,23 @@ export const AssetDetailEarnSection = () => {
         );
 
     return (
-        <VStack paddingHorizontal="sp20" spacing="sp12">
-            <VStack spacing="sp12">
-                <HStack alignItems="center" justifyContent="space-between" spacing="sp8">
-                    <Text variant="body-xs" color="contentSecondary">
-                        <Translation id="moduleAssets.assetDetailScreen.earnSection.title" />
-                    </Text>
-                    <PressableOpacity
-                        accessibilityRole="button"
-                        onPress={handlePress}
-                        testID="@assets/asset-detail/earn-section"
-                    >
-                        <HStack alignItems="center" spacing="sp4">
-                            <Text variant="body-xs" color="contentBrand">
-                                <Translation id="moduleAssets.assetDetailScreen.earnSection.viewAll" />
-                            </Text>
-                            <Icon name="caretRight" size="small" color="contentBrand" />
-                        </HStack>
-                    </PressableOpacity>
-                </HStack>
+        <>
+            <Divider />
+            <VStack paddingHorizontal="sp20" spacing="sp12">
+                <AssetDetailSectionHeader
+                    title={<Translation id="moduleAssets.assetDetailScreen.earnSection.title" />}
+                    linkLabel={
+                        <Translation id="moduleAssets.assetDetailScreen.earnSection.viewAll" />
+                    }
+                    onPress={handlePress}
+                    testID="@assets/asset-detail/earn-view-all-button"
+                />
 
-                <AssetDetailEarnBalanceBar />
-            </VStack>
-
-            <VStack spacing="sp12">
+                <AssetDetailEarnBalanceBar assetKey={assetKey} />
                 <AssetDetailEarnBalanceRow amount={availableAmount} type="available" />
                 <AssetDetailEarnBalanceRow amount={stakingAmount} type="staking" />
-                <AssetDetailEarnBanner onPress={handlePress} />
+                <AssetDetailEarnBanner assetKey={assetKey} onPress={handlePress} />
             </VStack>
-        </VStack>
+        </>
     );
 };

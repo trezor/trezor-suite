@@ -14,7 +14,7 @@ export const AssetPriceChartRangeSelector = () => {
     const [range, setRange] = useAtom(assetPriceChartRangeAtom);
 
     return (
-        <Box paddingHorizontal="sp16">
+        <Box paddingHorizontal="sp20">
             <SegmentedControl
                 options={segmentedControlOptions}
                 selectedValue={range}
