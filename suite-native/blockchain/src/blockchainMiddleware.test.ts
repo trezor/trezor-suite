@@ -1,5 +1,6 @@
 import type {
     refreshStakingProductInfoThunk as RefreshStakingProductInfoThunk,
+    stakingActions as StakingActions,
     syncStakingPositionsThunk as SyncStakingPositionsThunk,
     SyncStakingPositionsThunkDeps,
     SyncStakingPositionsThunkState,
@@ -16,6 +17,7 @@ import { mockGetTradedAccountKeys, mockWalletAccount } from '@suite-common/walle
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import type TrezorConnectType from '@trezor/connect';
 import { type StaticSessionId } from '@trezor/connect';
+import { asGetter } from '@trezor/dependency-injection';
 
 import type { blockchainMiddleware as BlockchainMiddleware } from './blockchainMiddleware';
 import type * as BlockchainThunks from './blockchainThunks';
@@ -28,6 +30,7 @@ type BlockchainModules = {
     polledNetworkSync: typeof PolledNetworkSync;
     thunks: typeof BlockchainThunks;
     refreshStakingProductInfoThunk: typeof RefreshStakingProductInfoThunk;
+    stakingActions: typeof StakingActions;
     syncStakingPositionsThunk: typeof SyncStakingPositionsThunk;
     TrezorConnect: typeof TrezorConnectType;
 };
@@ -44,6 +47,7 @@ const loadModules = () => {
             thunks: require('./blockchainThunks'),
             refreshStakingProductInfoThunk: require('@suite-common/earn-staking')
                 .refreshStakingProductInfoThunk,
+            stakingActions: require('@suite-common/earn-staking').stakingActions,
             syncStakingPositionsThunk: require('@suite-common/earn-staking')
                 .syncStakingPositionsThunk,
             TrezorConnect: require('@trezor/connect').default,
@@ -69,6 +73,7 @@ const initStore = ({ symbol, deviceState = SELECTED_DEVICE_STATE }: InitStorePar
         polledNetworkSync,
         thunks,
         refreshStakingProductInfoThunk,
+        stakingActions,
         syncStakingPositionsThunk,
         TrezorConnect,
     } = loadModules();
@@ -93,24 +98,36 @@ const initStore = ({ symbol, deviceState = SELECTED_DEVICE_STATE }: InitStorePar
         services: () => ({
             analytics: mockNativeAnalytics(),
             getTradedAccountKeys: mockGetTradedAccountKeys(),
-            staking: mockStakingServices(),
+            staking: mockStakingServices({
+                getAccounts: asGetter(() => [account]),
+                getAccountByKey: asGetter(accountKey =>
+                    accountKey === account.key ? account : null,
+                ),
+            }),
         }),
     }).services;
 
     const updateAccount = () => store.dispatch(accountsActions.updateAccount(account));
+    const removeAccount = () => store.dispatch(accountsActions.removeAccount([account]));
     const changeEnabledNetworks = () => store.dispatch(changeNetworks([symbol], [symbol]));
     const countActions = (type: string) =>
         store.getActions().filter(action => action.type === type).length;
     const getSyncCount = () => countActions(thunks.syncAccountsWithBlockchainThunk.pending.type);
     const getStakingSyncCount = () => countActions(syncStakingPositionsThunk.pending.type);
     const getStakingRefreshCount = () => countActions(refreshStakingProductInfoThunk.pending.type);
+    const getRemovedStakingPositions = () =>
+        store.getActions().filter(stakingActions.positionsRemoved.match);
 
     return {
+        account,
         updateAccount,
+        removeAccount,
         changeEnabledNetworks,
         getSyncCount,
         getStakingSyncCount,
         getStakingRefreshCount,
+        getRemovedStakingPositions,
+        stakingActions,
         interval: polledNetworkSync.POLLED_NETWORK_SYNC_INTERVAL_MS,
     };
 };
@@ -204,6 +221,17 @@ describe('blockchainMiddleware', () => {
             changeEnabledNetworks();
 
             expect(getStakingRefreshCount()).toBe(1);
+        });
+
+        it('removes the staking positions of removed accounts', () => {
+            const { account, removeAccount, getRemovedStakingPositions, stakingActions } =
+                initStore({ symbol: eth });
+
+            removeAccount();
+
+            expect(getRemovedStakingPositions()).toEqual([
+                stakingActions.positionsRemoved({ accountKeys: [account.key] }),
+            ]);
         });
     });
 });

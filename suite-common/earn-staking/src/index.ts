@@ -10,10 +10,14 @@ export {
     type StakingProductRepositoryDeps,
 } from './repository/createStakingProductRepository';
 export type {
+    GetStakingAccountByKey,
+    GetStakingAccounts,
+    GetStakingEnabledNetworks,
     LoadStakingProducts,
     LoadStakingProductsDep,
     StakingDep,
     StakingServices,
+    StakingWalletDeps,
 } from './stakingServices';
 export {
     selectStakingProductAccess,

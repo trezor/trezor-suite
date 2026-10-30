@@ -5,7 +5,6 @@
         { "path": "../device" },
         { "path": "../earn-staking-common" },
         { "path": "../message-system" },
-        { "path": "../wallet-core" },
         { "path": "../wallet-types" },
         {
             "path": "../../packages/dependency-injection"

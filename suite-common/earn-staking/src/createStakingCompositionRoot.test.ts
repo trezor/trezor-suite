@@ -1,5 +1,3 @@
-import { combineReducers } from '@reduxjs/toolkit';
-
 import type { StakingProductAdapter } from '@suite-common/earn-staking-common';
 import {
     mockStakingPosition,
@@ -7,9 +5,8 @@ import {
     mockStakingProductDescriptor,
 } from '@suite-common/earn-staking-common/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
-import type { AccountsRootState } from '@suite-common/wallet-core';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
-import { mock } from '@trezor/dependency-injection';
+import { asGetter, mock } from '@trezor/dependency-injection';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
 import { createStakingCompositionRoot } from './createStakingCompositionRoot';
@@ -26,7 +23,7 @@ import {
     selectStakingProductDescriptors,
 } from './state/stakingSelectors';
 
-type StakingCompositionRootTestState = StakingRootState & StakingApiRootState & AccountsRootState;
+type StakingCompositionRootTestState = StakingRootState & StakingApiRootState;
 
 const position = mockStakingPosition();
 const ethAdapter = mockStakingProductAdapter({
@@ -37,6 +34,7 @@ const solAdapter = mockStakingProductAdapter({
 });
 const ethAccount = mockWalletAccount({ symbol: asNetworkSymbol('eth') });
 const btcAccount = mockWalletAccount({ symbol: asNetworkSymbol('btc') });
+const accounts = [ethAccount, btcAccount];
 
 const flushThunks = () => new Promise(resolve => setTimeout(resolve, 0));
 
@@ -50,15 +48,17 @@ const initStore = (adapters: readonly StakingProductAdapter[]) => {
                 platform: 'mobile',
                 adapters,
                 dispatch: store.dispatch,
+                getAccounts: asGetter(() => accounts),
+                getAccountByKey: asGetter(
+                    accountKey => accounts.find(account => account.key === accountKey) ?? null,
+                ),
+                getEnabledNetworks: asGetter(() => []),
             }),
         }),
         middleware: [stakingApiMiddleware],
         reducer: {
             staking: stakingReducer,
             stakingApi: stakingApiReducer,
-            wallet: combineReducers({
-                accounts: (state = [ethAccount, btcAccount]) => state,
-            }),
         },
     });
 

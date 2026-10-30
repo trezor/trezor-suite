@@ -1,5 +1,6 @@
 import {
     refreshStakingProductInfoThunk,
+    stakingActions,
     syncStakingPositionsThunk,
 } from '@suite-common/earn-staking';
 import { isNetworkSymbol } from '@suite-common/wallet-config';
@@ -55,6 +56,9 @@ export const blockchainMiddleware = createMiddleware((action, { dispatch, next, 
         const { key, symbol } = action.payload.account;
         schedulePolledNetworkSync({ symbol, dispatch, getState, shouldReplaceScheduled: false });
         dispatch(syncStakingPositionsThunk({ accountKey: key }));
+    } else if (accountsActions.removeAccount.match(action)) {
+        const accountKeys = action.payload.map(account => account.key);
+        dispatch(stakingActions.positionsRemoved({ accountKeys }));
     }
 
     if (changeNetworks.match(action)) {

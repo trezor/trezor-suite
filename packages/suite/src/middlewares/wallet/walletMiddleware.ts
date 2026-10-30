@@ -6,6 +6,7 @@ import { routerLocationChange, selectRouteName } from '@suite/router';
 import { deviceActions } from '@suite-common/device';
 import {
     refreshStakingProductInfoThunk,
+    stakingActions,
     syncStakingPositionsThunk,
 } from '@suite-common/earn-staking';
 import { getTxsPerPage } from '@suite-common/suite-utils';
@@ -66,6 +67,14 @@ const walletMiddleware =
             accountsActions.updateAccount.match(action)
         ) {
             api.dispatch(syncStakingPositionsThunk({ accountKey: action.payload.account.key }));
+        }
+
+        if (accountsActions.removeAccount.match(action)) {
+            api.dispatch(
+                stakingActions.positionsRemoved({
+                    accountKeys: action.payload.map(account => account.key),
+                }),
+            );
         }
 
         if (changeNetworks.match(action)) {

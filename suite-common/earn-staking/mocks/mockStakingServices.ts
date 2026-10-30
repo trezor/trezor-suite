@@ -1,4 +1,4 @@
-import { mock } from '@trezor/dependency-injection';
+import { asGetter, mock } from '@trezor/dependency-injection';
 
 import { mockStakingProductRepository } from './mockStakingProductRepository';
 import type { LoadStakingProducts, StakingServices } from '../src/stakingServices';
@@ -6,5 +6,8 @@ import type { LoadStakingProducts, StakingServices } from '../src/stakingService
 export const mockStakingServices = (overrides: Partial<StakingServices> = {}): StakingServices => ({
     stakingProductRepository: mockStakingProductRepository(),
     loadStakingProducts: mock<LoadStakingProducts>(() => {}),
+    getAccounts: asGetter(() => []),
+    getAccountByKey: asGetter(() => null),
+    getEnabledNetworks: asGetter(() => []),
     ...overrides,
 });

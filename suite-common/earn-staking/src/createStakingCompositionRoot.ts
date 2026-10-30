@@ -2,11 +2,11 @@ import type { StakingPlatform, StakingProductAdapter } from '@suite-common/earn-
 import type { Dispatch } from '@trezor/redux-utils';
 
 import { createStakingProductRepository } from './repository/createStakingProductRepository';
-import type { StakingServices } from './stakingServices';
+import type { StakingServices, StakingWalletDeps } from './stakingServices';
 import { stakingActions } from './state/stakingReducer';
 import { syncAllStakingPositionsThunk } from './state/stakingThunks';
 
-export type StakingCompositionRootDeps = {
+export type StakingCompositionRootDeps = StakingWalletDeps & {
     platform: StakingPlatform;
     adapters: readonly StakingProductAdapter[];
     dispatch: Dispatch;
@@ -25,5 +25,11 @@ export const createStakingCompositionRoot = (deps: StakingCompositionRootDeps): 
         deps.dispatch(syncAllStakingPositionsThunk());
     };
 
-    return { stakingProductRepository, loadStakingProducts };
+    return {
+        stakingProductRepository,
+        loadStakingProducts,
+        getAccounts: deps.getAccounts,
+        getAccountByKey: deps.getAccountByKey,
+        getEnabledNetworks: deps.getEnabledNetworks,
+    };
 };

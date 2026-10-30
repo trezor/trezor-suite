@@ -2,7 +2,6 @@ import {
     mockStakingPosition,
     mockStakingProductDescriptor,
 } from '@suite-common/earn-staking-common/mocks';
-import { accountsActions } from '@suite-common/wallet-core';
 import { mockAccountKey, mockWalletAccount } from '@suite-common/wallet-types/mocks';
 import { asNetworkSymbol } from '@trezor/network-module-types';
 
@@ -151,7 +150,10 @@ describe('stakingReducer', () => {
                 ),
             registered,
         );
-        const state = stakingReducer(synced, accountsActions.removeAccount([removed]));
+        const state = stakingReducer(
+            synced,
+            stakingActions.positionsRemoved({ accountKeys: [removed.key] }),
+        );
 
         expect(Object.keys(state.positions)).toEqual([kept.key]);
         expect(state.positions[kept.key]).toBe(synced.positions[kept.key]);

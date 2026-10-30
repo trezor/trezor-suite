@@ -1,5 +1,3 @@
-import { combineReducers } from '@reduxjs/toolkit';
-
 import {
     type StakingProductAdapter,
     type StakingProductInfo,
@@ -11,11 +9,10 @@ import {
     mockStakingProductInfo,
 } from '@suite-common/earn-staking-common/mocks';
 import { createTestCompositionRoot } from '@suite-common/test-utils';
-import { initialWalletSettingsState } from '@suite-common/wallet-core';
 import type { Account } from '@suite-common/wallet-types';
 import { mockWalletAccount } from '@suite-common/wallet-types/mocks';
-import { mock } from '@trezor/dependency-injection';
-import { asNetworkSymbol } from '@trezor/network-module-types';
+import { asGetter, mock } from '@trezor/dependency-injection';
+import { type NetworkSymbol, asNetworkSymbol } from '@trezor/network-module-types';
 import { createMockDispatch } from '@trezor/redux-utils/mocks';
 
 import { stakingApiMiddleware, stakingApiReducer } from './stakingApi';
@@ -54,9 +51,22 @@ const createAdapter = (
         ...overrides,
     });
 
-const createDeps = (adapters: readonly StakingProductAdapter[]) => ({
+type WalletFixture = {
+    accounts?: readonly Account[];
+    enabledNetworks?: readonly NetworkSymbol[];
+};
+
+const createDeps = (
+    adapters: readonly StakingProductAdapter[],
+    { accounts = [ethAccount, btcAccount], enabledNetworks = [eth.symbol] }: WalletFixture = {},
+) => ({
     services: {
         staking: mockStakingServices({
+            getAccounts: asGetter(() => accounts),
+            getAccountByKey: asGetter(
+                accountKey => accounts.find(account => account.key === accountKey) ?? null,
+            ),
+            getEnabledNetworks: asGetter(() => enabledNetworks),
             stakingProductRepository: mockStakingProductRepository({
                 get: mock(productId => {
                     const adapter = adapters.find(item => item.descriptor.id === productId);
@@ -86,12 +96,6 @@ describe('refreshStakingProductInfoThunk', () => {
             reducer: {
                 staking: stakingReducer,
                 stakingApi: stakingApiReducer,
-                wallet: combineReducers({
-                    accounts: (state = [ethAccount, btcAccount]) => state,
-                    settings: (
-                        state = { ...initialWalletSettingsState, enabledNetworks: [eth.symbol] },
-                    ) => state,
-                }),
             },
             preloadedState: { staking: mockStakingState({ descriptors: [eth, sol] }) },
         }).services.store;
@@ -207,13 +211,9 @@ describe('refreshStakingProductInfoThunk', () => {
 });
 
 describe('syncStakingPositionsThunk', () => {
-    const createState = (
-        accounts: readonly Account[] = [ethAccount, btcAccount],
-        stakingApi = mockStakingApiState(),
-    ): SyncStakingPositionsThunkState => ({
+    const createState = (stakingApi = mockStakingApiState()): SyncStakingPositionsThunkState => ({
         staking: mockStakingState({ descriptors: [eth, sol] }),
         stakingApi,
-        wallet: { accounts: [...accounts] },
     });
 
     const run = async (
@@ -249,8 +249,8 @@ describe('syncStakingPositionsThunk', () => {
         const adapter = createAdapter(eth);
 
         await run(
-            createState([ethAccount], mockStakingApiState({ productInfo: { [eth.id]: info } })),
-            createDeps([adapter]),
+            createState(mockStakingApiState({ productInfo: { [eth.id]: info } })),
+            createDeps([adapter], { accounts: [ethAccount] }),
         );
 
         expect(adapter.getPosition).toHaveBeenCalledWith({
@@ -269,7 +269,10 @@ describe('syncStakingPositionsThunk', () => {
 
     it('does nothing for an account that is gone', async () => {
         const adapter = createAdapter(eth);
-        const { actions } = await run(createState([btcAccount]), createDeps([adapter]));
+        const { actions } = await run(
+            createState(),
+            createDeps([adapter], { accounts: [btcAccount] }),
+        );
 
         expect(adapter.getPosition).not.toHaveBeenCalled();
         expect(actions).toEqual([]);
@@ -301,11 +304,12 @@ describe('syncAllStakingPositionsThunk', () => {
     const state: SyncStakingPositionsThunkState = {
         staking: mockStakingState({ descriptors: [eth, sol] }),
         stakingApi: mockStakingApiState(),
-        wallet: { accounts: [ethAccount, solAccount, btcAccount] },
     };
 
     const run = async (params?: { symbol: ReturnType<typeof asNetworkSymbol> }) => {
-        const extra = createDeps([createAdapter(eth), createAdapter(sol)]);
+        const extra = createDeps([createAdapter(eth), createAdapter(sol)], {
+            accounts: [ethAccount, solAccount, btcAccount],
+        });
         const getState = () => state;
         const { actions, dispatch } = createMockDispatch({ getState, extra });
 

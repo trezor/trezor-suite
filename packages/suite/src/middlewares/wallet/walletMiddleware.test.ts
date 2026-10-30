@@ -4,6 +4,7 @@ import { type RouterState } from '@suite/router';
 import {
     type StakingState,
     refreshStakingProductInfoThunk,
+    stakingActions,
     stakingReducer,
     syncStakingPositionsThunk,
 } from '@suite-common/earn-staking';
@@ -24,9 +25,13 @@ import {
     prepareBlockchainMiddleware,
     prepareBlockchainSubscriptionMiddleware,
     prepareSendFormReducer,
+    selectAccountByKey,
+    selectAccounts,
+    selectEnabledNetworks,
 } from '@suite-common/wallet-core';
 import { type WalletSettings, asAccountDescriptor } from '@suite-common/wallet-types';
 import { mockGetTradedAccountKeys, mockWalletAccount } from '@suite-common/wallet-types/mocks';
+import { toGetter } from '@trezor/dependency-injection';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { updateWindowVisibility } from 'src/actions/suite/windowActions';
@@ -154,12 +159,16 @@ const mockStore = (preloadedState: State) =>
             },
         }),
         preloadedState,
-        services: () => ({
+        services: store => ({
             analytics: mockDesktopAnalytics(),
             networks: { getAccountSyncInterval: mockGetAccountSyncInterval() },
             getIsWindowVisible: mockGetIsWindowVisible(),
             getTradedAccountKeys: mockGetTradedAccountKeys(),
-            staking: mockStakingServices(),
+            staking: mockStakingServices({
+                getAccounts: toGetter(store.getState, selectAccounts),
+                getAccountByKey: toGetter(store.getState, selectAccountByKey),
+                getEnabledNetworks: toGetter(store.getState, selectEnabledNetworks),
+            }),
         }),
     }).services.store;
 
@@ -357,6 +366,16 @@ describe('walletMiddleware', () => {
             store.dispatch(changeNetworks([btc], [btc]));
 
             expect(getActionTypes(store)).toContain(refreshStakingProductInfoThunk.pending.type);
+        });
+
+        it('removes the staking positions of removed accounts', () => {
+            const store = mockStore(getInitialState({ accounts: [ethAccount, btcAccount] }));
+
+            store.dispatch(accountsActions.removeAccount([ethAccount]));
+
+            expect(store.getActions().filter(stakingActions.positionsRemoved.match)).toEqual([
+                stakingActions.positionsRemoved({ accountKeys: [ethAccount.key] }),
+            ]);
         });
     });
 

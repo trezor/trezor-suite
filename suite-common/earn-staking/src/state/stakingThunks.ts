@@ -1,11 +1,4 @@
 import { assertStakingPosition } from '@suite-common/earn-staking-common';
-import {
-    type AccountsRootState,
-    type WalletSettingsRootState,
-    selectAccountByKey,
-    selectAccounts,
-    selectEnabledNetworks,
-} from '@suite-common/wallet-core';
 import type { AccountKey } from '@suite-common/wallet-types';
 import type { NetworkSymbol } from '@trezor/network-module-types';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
@@ -27,9 +20,7 @@ type SyncStakingPositionsParams = {
     accountKey: AccountKey;
 };
 
-export type SyncStakingPositionsThunkState = StakingRootState &
-    StakingApiRootState &
-    AccountsRootState;
+export type SyncStakingPositionsThunkState = StakingRootState & StakingApiRootState;
 
 export type SyncStakingPositionsThunkDeps = WithServices<StakingDep>;
 
@@ -40,7 +31,7 @@ export const syncStakingPositionsThunk = createThunk<
 >(
     `${STAKING_MODULE_PREFIX}/syncStakingPositions`,
     ({ accountKey }, { dispatch, getState, extra }) => {
-        const account = selectAccountByKey(getState(), accountKey);
+        const account = extra.services.staking.getAccountByKey(accountKey);
 
         if (!account) return;
 
@@ -64,8 +55,8 @@ export const syncStakingPositionsThunk = createThunk<
         dispatch(stakingActions.positionsSynced({ accountKey, positions }));
     },
     {
-        condition: ({ accountKey }, { getState }) => {
-            const account = selectAccountByKey(getState(), accountKey);
+        condition: ({ accountKey }, { getState, extra }) => {
+            const account = extra.services.staking.getAccountByKey(accountKey);
 
             return account !== null && selectIsStakingSupportedSymbol(getState(), account.symbol);
         },
@@ -84,28 +75,30 @@ export const syncAllStakingPositionsThunk = createThunk<
     void,
     SyncAllStakingPositionsParams | undefined,
     { state: SyncAllStakingPositionsThunkState; extra: SyncAllStakingPositionsThunkDeps }
->(`${STAKING_MODULE_PREFIX}/syncAllStakingPositions`, async (params, { dispatch, getState }) => {
-    const accounts = selectAccounts(getState());
+>(
+    `${STAKING_MODULE_PREFIX}/syncAllStakingPositions`,
+    async (params, { dispatch, getState, extra }) => {
+        const accounts = extra.services.staking.getAccounts();
 
-    const filteredAccounts = accounts.filter(
-        account =>
-            (params?.symbol === undefined || account.symbol === params.symbol) &&
-            selectIsStakingSupportedSymbol(getState(), account.symbol),
-    );
+        const filteredAccounts = accounts.filter(
+            account =>
+                (params?.symbol === undefined || account.symbol === params.symbol) &&
+                selectIsStakingSupportedSymbol(getState(), account.symbol),
+        );
 
-    await Promise.all(
-        filteredAccounts.map(account =>
-            dispatch(syncStakingPositionsThunk({ accountKey: account.key })),
-        ),
-    );
-});
+        await Promise.all(
+            filteredAccounts.map(account =>
+                dispatch(syncStakingPositionsThunk({ accountKey: account.key })),
+            ),
+        );
+    },
+);
 
 type RefreshStakingProductInfoParams = {
     force?: boolean;
 };
 
-export type RefreshStakingProductInfoThunkState = SyncAllStakingPositionsThunkState &
-    WalletSettingsRootState;
+export type RefreshStakingProductInfoThunkState = SyncAllStakingPositionsThunkState;
 
 export type RefreshStakingProductInfoThunkDeps = WithServices<StakingDep>;
 
@@ -113,25 +106,28 @@ export const refreshStakingProductInfoThunk = createThunk<
     void,
     RefreshStakingProductInfoParams | undefined,
     { state: RefreshStakingProductInfoThunkState; extra: RefreshStakingProductInfoThunkDeps }
->(`${STAKING_MODULE_PREFIX}/refreshStakingProductInfo`, async (params, { dispatch, getState }) => {
-    const enabledNetworks = selectEnabledNetworks(getState());
-    const descriptors = selectStakingProductDescriptors(getState()).filter(descriptor =>
-        enabledNetworks.includes(descriptor.symbol),
-    );
+>(
+    `${STAKING_MODULE_PREFIX}/refreshStakingProductInfo`,
+    async (params, { dispatch, getState, extra }) => {
+        const enabledNetworks = extra.services.staking.getEnabledNetworks();
+        const descriptors = selectStakingProductDescriptors(getState()).filter(descriptor =>
+            enabledNetworks.includes(descriptor.symbol),
+        );
 
-    await Promise.all(
-        descriptors.map(async ({ id: productId, symbol }) => {
-            const previousInfo = selectStakingProductInfo(getState(), productId);
-            const result = await dispatch(
-                stakingApi.endpoints.getProductInfo.initiate(productId, {
-                    subscribe: false,
-                    forceRefetch: params?.force === true ? true : PRODUCT_INFO_MAX_AGE_SECONDS,
-                }),
-            );
+        await Promise.all(
+            descriptors.map(async ({ id: productId, symbol }) => {
+                const previousInfo = selectStakingProductInfo(getState(), productId);
+                const result = await dispatch(
+                    stakingApi.endpoints.getProductInfo.initiate(productId, {
+                        subscribe: false,
+                        forceRefetch: params?.force === true ? true : PRODUCT_INFO_MAX_AGE_SECONDS,
+                    }),
+                );
 
-            if (result.data !== undefined && result.data !== previousInfo) {
-                await dispatch(syncAllStakingPositionsThunk({ symbol }));
-            }
-        }),
-    );
-});
+                if (result.data !== undefined && result.data !== previousInfo) {
+                    await dispatch(syncAllStakingPositionsThunk({ symbol }));
+                }
+            }),
+        );
+    },
+);

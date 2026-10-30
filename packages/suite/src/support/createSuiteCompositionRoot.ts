@@ -43,7 +43,12 @@ import {
 import { type GetBinFilesBaseUrlDep, type ReloadAppDep } from '@suite-common/suite-types';
 import { type ThpHostNameDep } from '@suite-common/thp';
 import { selectTradedAccountKeys } from '@suite-common/trading';
-import { selectAccountsByDeviceState } from '@suite-common/wallet-core';
+import {
+    selectAccountByKey,
+    selectAccounts,
+    selectAccountsByDeviceState,
+    selectEnabledNetworks,
+} from '@suite-common/wallet-core';
 import { type GetTrezorConnectPrivilegedDep } from '@trezor/connect';
 import { toGetter } from '@trezor/dependency-injection';
 import { isDesktop } from '@trezor/env-utils';
@@ -155,6 +160,9 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         platform: 'desktop',
         adapters: createStakingProductsCompositionRoot(),
         dispatch: deps.dispatch,
+        getAccounts: toGetter(deps.getState, selectAccounts),
+        getAccountByKey: toGetter(deps.getState, selectAccountByKey),
+        getEnabledNetworks: toGetter(deps.getState, selectEnabledNetworks),
     });
 
     const createTransports: CreateTransports = transports => {

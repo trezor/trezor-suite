@@ -1,7 +1,6 @@
 import { type Draft, type PayloadAction, createSlice, isDraft, original } from '@reduxjs/toolkit';
 
 import type { StakingPosition, StakingProductId } from '@suite-common/earn-staking-common';
-import { accountsActions } from '@suite-common/wallet-core';
 import type { AccountKey } from '@suite-common/wallet-types';
 import { deepEqual } from '@trezor/utils';
 
@@ -12,6 +11,10 @@ export type StakingPositionsState = Partial<Record<AccountKey, StakingAccountPos
 type PositionsSyncedPayload = {
     accountKey: AccountKey;
     positions: readonly StakingPosition[];
+};
+
+type PositionsRemovedPayload = {
+    accountKeys: readonly AccountKey[];
 };
 
 export const stakingPositionsInitialState: StakingPositionsState = {};
@@ -74,16 +77,14 @@ const stakingPositionsSlice = createSlice({
 
             state[payload.accountKey] = next;
         },
-    },
-    extraReducers: builder => {
-        builder.addCase(
-            accountsActions.removeAccount,
-            (state: StakingPositionsState, { payload }) => {
-                payload.forEach(account => {
-                    delete state[account.key];
-                });
-            },
-        );
+        positionsRemoved(
+            state: StakingPositionsState,
+            { payload }: PayloadAction<PositionsRemovedPayload>,
+        ) {
+            payload.accountKeys.forEach(accountKey => {
+                delete state[accountKey];
+            });
+        },
     },
 });
 

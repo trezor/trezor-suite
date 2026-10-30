@@ -12,6 +12,11 @@ import { createNetworksCompositionRoot } from '@suite-common/networks';
 import { createNativePlatformEncryption } from '@suite-common/platform-encryption-native';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import { selectAllLabelsForAccount, selectIsSuiteSyncEnabled } from '@suite-common/suite-sync';
+import {
+    selectAccountByKey,
+    selectAccounts,
+    selectEnabledNetworks,
+} from '@suite-common/wallet-core';
 import { analytics } from '@suite-native/analytics';
 import {
     rerunFwAuthenticityChecksThunk,
@@ -94,6 +99,9 @@ export const createNativeServicesCompositionRoot = (deps: NativeAppDeps): Native
         platform: 'mobile',
         adapters: createStakingProductsCompositionRoot(),
         dispatch: deps.dispatch,
+        getAccounts: toGetter(deps.getState, selectAccounts),
+        getAccountByKey: toGetter(deps.getState, selectAccountByKey),
+        getEnabledNetworks: toGetter(deps.getState, selectEnabledNetworks),
     });
 
     const createLogger: ConnectSettings['createLogger'] = (prefix: string) =>
