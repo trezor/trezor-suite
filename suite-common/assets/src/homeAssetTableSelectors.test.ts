@@ -639,6 +639,18 @@ describe('the total over the wallet', () => {
         expect(selectWalletAssetFiatValue(unpriced, ethereumKey)).toBeUndefined();
     });
 
+    it('is zero, and so is its change, once the wallet holds nothing', () => {
+        const empty = createState({
+            accounts: [mockAccount({ symbol: ETH, balance: '0' })],
+            rates: mockRate(ETH, 3000),
+        });
+        const { fiatValue, weekChange, weekChangePercent } = selectHomeAssetTotals(empty);
+
+        expect(fiatValue?.toFixed()).toBe('0');
+        expect(weekChange?.toFixed()).toBe('0');
+        expect(weekChangePercent?.toFixed()).toBe('0');
+    });
+
     it('says nothing about a week ago when no rate for it is known', () => {
         expect(selectHomeAssetTotals(state).weekChange).toBeUndefined();
     });
