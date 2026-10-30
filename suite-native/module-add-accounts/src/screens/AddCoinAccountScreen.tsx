@@ -1,10 +1,11 @@
 import { useCallback } from 'react';
 
 import { events } from '@suite-common/analytics';
+import { getNetwork } from '@suite-common/wallet-config';
 import { AccountTypeDecisionBottomSheet, useAddCoinAccount } from '@suite-native/add-coin-account';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { VStack } from '@suite-native/atoms';
-import { NetworkListItem } from '@suite-native/coin-enabling';
+import { NetworkListItem, useNetworkRepresentativeAssets } from '@suite-native/coin-enabling';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
@@ -48,6 +49,9 @@ export const AddCoinAccountScreen = ({
         getAccountTypeToBeAddedName,
         bottomSheetRef,
     } = useAddCoinAccount(searchQuery);
+    const representativeAssets = useNetworkRepresentativeAssets(
+        supportedNetworkSymbols.map(symbol => getNetwork(symbol)),
+    );
 
     const { flowType } = route.params;
 
@@ -61,6 +65,7 @@ export const AddCoinAccountScreen = ({
                     <NetworkListItem
                         key={symbol}
                         symbol={symbol}
+                        representativeAssets={representativeAssets.get(symbol)}
                         accessory={<Icon name="caretRight" color="contentSecondary" />}
                         onPress={() =>
                             onSelectedNetworkItem({

@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react';
 
+import { type RepresentativeAsset } from '@suite-common/token-definitions';
 import { type Network } from '@suite-common/wallet-config';
 import { Box, Divider, HStack, Text, VStack } from '@suite-native/atoms';
 import { NetworkIcon } from '@suite-native/icons';
@@ -12,6 +13,7 @@ import { RepresentativeAssetsConnectorSvg } from './RepresentativeAssetsConnecto
 type NetworkListItemContentProps = {
     network: Network;
     accessory: ReactNode;
+    representativeAssets?: readonly RepresentativeAsset[];
 };
 
 const dividerStyle = prepareNativeStyle(utils => ({
@@ -21,6 +23,7 @@ const dividerStyle = prepareNativeStyle(utils => ({
 export const MainnetNetworkListItemContent = ({
     network,
     accessory,
+    representativeAssets,
 }: NetworkListItemContentProps) => {
     const { applyStyle } = useNativeStyles();
     const { name: networkName, symbol } = network;
@@ -51,7 +54,7 @@ export const MainnetNetworkListItemContent = ({
                     <Divider style={applyStyle(dividerStyle)} />
                 </VStack>
                 <HStack spacing="sp12" justifyContent="space-between" alignItems="center">
-                    <CryptoIconSet symbol={symbol} />
+                    <CryptoIconSet symbol={symbol} assets={representativeAssets} />
                     <NetworkBackendsButton symbol={symbol} />
                 </HStack>
             </VStack>

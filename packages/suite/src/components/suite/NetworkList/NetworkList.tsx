@@ -1,4 +1,5 @@
 import { type ReactNode } from 'react';
+import { useSelector } from 'react-redux';
 
 import { useDevice } from '@suite/device';
 import { Translation } from '@suite/intl';
@@ -9,10 +10,11 @@ import { Column, Tooltip } from '@trezor/components';
 import { getFirmwareVersion, isDeviceInBootloaderMode } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
 
-import { useDiscovery, useSelector } from 'src/hooks/suite';
+import { useDiscovery } from 'src/hooks/suite';
 
 import { NetworkCard } from './NetworkCard';
 import { getBackendStatus } from './getBackendStatus';
+import { useNetworkRepresentativeAssets } from './useNetworkRepresentativeAssets';
 
 export type NetworkListProps = {
     networks: Network[];
@@ -56,6 +58,7 @@ export const NetworkList = ({
     const { device, isLocked } = useDevice();
     const blockchain = useSelector(selectBlockchainState);
     const { isDiscoveryRunning } = useDiscovery();
+    const representativeAssets = useNetworkRepresentativeAssets(networks, showRepresentativeAssets);
     const isDeviceLocked =
         !ignoreDeviceLock &&
         !!device &&
@@ -128,6 +131,7 @@ export const NetworkList = ({
                             onClick={onClick}
                             onSettings={showSettings ? onSettings : undefined}
                             showRepresentativeAssets={showRepresentativeAssets}
+                            representativeAssets={representativeAssets.get(symbol)}
                             rightContent={renderRightContent?.({
                                 network,
                                 isEnabled,
