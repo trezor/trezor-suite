@@ -105,12 +105,12 @@ export const sortByBIP44AddressIndex = <T extends { path: string }>(
 export const getTitleForCoinjoinAccount = (symbol: NetworkSymbolExtended) => {
     switch (symbol) {
         case 'test':
-            return 'TR_NETWORK_COINJOIN_BITCOIN_TESTNET';
+            return 'TR_NETWORK_PRIVACY_BITCOIN_TESTNET';
         case 'regtest':
-            return 'TR_NETWORK_COINJOIN_BITCOIN_REGTEST';
+            return 'TR_NETWORK_PRIVACY_BITCOIN_REGTEST';
         case 'btc':
         default:
-            return 'TR_NETWORK_COINJOIN_BITCOIN';
+            return 'TR_NETWORK_PRIVACY_BITCOIN';
     }
 };
 
@@ -196,7 +196,7 @@ export const getAccountTypeName = ({ path, accountType, networkType }: getAccoun
     if (bip43 === 'bip84') return 'TR_ACCOUNT_TYPE_BIP84_NAME';
     if (bip43 === 'bip49') return 'TR_ACCOUNT_TYPE_BIP49_NAME';
     if (bip43 === 'shelley') return 'TR_ACCOUNT_TYPE_SHELLEY';
-    if (bip43 === 'slip25') return 'TR_ACCOUNT_TYPE_SLIP25_NAME';
+    if (bip43 === 'slip25') return 'TR_ACCOUNT_TYPE_PRIVACY_NAME';
 
     return 'TR_ACCOUNT_TYPE_BIP44_NAME';
 };
