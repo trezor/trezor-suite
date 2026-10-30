@@ -64,6 +64,15 @@ describe('CompactTokenAmountFormatter', () => {
             />,
         );
 
+    it.each(['arb', 'eth', 'btc'])('keeps %s tokens in decimal token units', async symbol => {
+        const { getByTestId } = await renderCompactTokenAmountFormatter({
+            tokenSymbol: symbol as TokenSymbol,
+            value: asDecimalTokenAmount('20'),
+        });
+
+        expect(getByTestId('plain-text')).toHaveTextContent(`20.00 ${symbol}`);
+    });
+
     it('should render compact formatted value', async () => {
         const { getByTestId } = await renderCompactTokenAmountFormatter({});
 
