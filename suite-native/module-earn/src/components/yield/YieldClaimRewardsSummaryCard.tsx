@@ -113,13 +113,14 @@ export const YieldClaimRewardsSummaryCard = () => {
 
                         <HStack spacing="sp4" alignItems="center" flexWrap="wrap">
                             {!isClaimLoading && totalClaimableFiatAmount !== null ? (
-                                <Text variant="body-md-strong">
-                                    {'≈\u00A0'}
+                                <HStack spacing="sp1">
+                                    <Text variant="body-md-strong">{'≈\u00A0'}</Text>
+
                                     <BaseCurrencyAmountFormatter
                                         value={totalClaimableFiatAmount}
                                         variant="body-md-strong"
                                     />
-                                </Text>
+                                </HStack>
                             ) : (
                                 <BaseCurrencyAmountFormatter
                                     value={totalClaimableFiatAmount}
