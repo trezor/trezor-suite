@@ -48,12 +48,8 @@ describe('AbstractMessageChannel.abortHandshake', () => {
     const countConfirmations = () =>
         logger.messages.filter(({ message }) => message.includes('handshake confirmed')).length;
 
-    // Documents the bug: abortHandshake() clears `handshakeFinished`, which the
-    // retry loop awaits. The next attempt therefore posts one more
-    // `channel-handshake-request` and then awaits nothing, which resolves: the
-    // aborted handshake is logged as confirmed and the queued messages are
-    // flushed to the peer that has just failed.
-    it('reports an aborted handshake as confirmed', async () => {
+    // The retry loop awaits `handshakeFinished`, which abortHandshake() clears.
+    it('does not report an aborted handshake as confirmed', async () => {
         const init = channel.init();
         await jest.advanceTimersByTimeAsync(0);
         expect(countRequests(channel)).toBe(1);
@@ -62,8 +58,8 @@ describe('AbstractMessageChannel.abortHandshake', () => {
         await expect(init).rejects.toThrow('handshake-timeout');
 
         await jest.advanceTimersByTimeAsync(10000);
-        expect(countRequests(channel)).toBe(2);
-        expect(countConfirmations()).toBe(1);
+        expect(countRequests(channel)).toBe(1);
+        expect(countConfirmations()).toBe(0);
     });
 
     it('handshakes again when init() is called after an abort', async () => {
@@ -72,16 +68,16 @@ describe('AbstractMessageChannel.abortHandshake', () => {
         channel.abortHandshake('handshake-timeout');
         await expect(aborted).rejects.toThrow('handshake-timeout');
 
-        // The aborted loop runs on and awaits the new handshake too: it sends one
-        // more request, and both loops log the confirmation.
+        // Only the new handshake's loop runs: one request from it on top of the
+        // aborted one, and one confirmation.
         const retried = channel.init();
         await jest.advanceTimersByTimeAsync(0);
-        expect(countRequests(channel)).toBe(3);
+        expect(countRequests(channel)).toBe(2);
 
         channel.receiveFromPeer('channel-handshake-confirm');
         await expect(retried).resolves.toBeUndefined();
 
         await jest.advanceTimersByTimeAsync(0);
-        expect(countConfirmations()).toBe(2);
+        expect(countConfirmations()).toBe(1);
     });
 });
