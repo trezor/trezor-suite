@@ -21,13 +21,13 @@ import {
     asAmountSubunit,
     findAccountDevice,
     formatNetworkAmount,
+    getAccountIdentity,
     getAccountTransactions,
     isAccountOutdated,
     isDirectRpcBackendType,
     isPending,
     isTrezorConnectBackendType,
     subunitsToUnits,
-    tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, {
     type AccountInfo,
@@ -99,7 +99,7 @@ const fetchAccountTokens = async (account: Account, payloadTokens: AccountInfo['
     const promises = customTokens.map(t =>
         TrezorConnect.getAccountInfo({
             coin: asCoinSymbol(account.symbol),
-            identity: tryGetAccountIdentity(account),
+            identity: getAccountIdentity(account),
             descriptor: account.descriptor,
             details: 'tokenBalances',
             contractFilter: t.contract,
@@ -214,7 +214,7 @@ export const fetchAndUpdateAccountThunk = createThunk<
 
         const basic = await TrezorConnect.getAccountInfo({
             coin: asCoinSymbol(account.symbol),
-            identity: tryGetAccountIdentity(account),
+            identity: getAccountIdentity(account),
             descriptor: account.descriptor,
             details: getRefreshDetails(account),
             suppressBackupWarning: true,
@@ -248,7 +248,7 @@ export const fetchAndUpdateAccountThunk = createThunk<
 
         const response = await TrezorConnect.getAccountInfo({
             coin: asCoinSymbol(account.symbol),
-            identity: tryGetAccountIdentity(account),
+            identity: getAccountIdentity(account),
             descriptor: account.descriptor,
             details: 'txs',
             page: 1, // useful for every network except ripple and stellar

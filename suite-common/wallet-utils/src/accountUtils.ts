@@ -48,7 +48,7 @@ import { HELP_CENTER_ADDRESSES_URL, HELP_CENTER_TAPROOT_URL } from '@trezor/urls
 import { BigNumber, arrayDistinct, bufferUtils, typedObjectKeys } from '@trezor/utils';
 
 import { convertAmountSubunitsToUnits, formatNetworkAmount } from './amountUtils';
-import { isDirectRpcBackendType } from './backendUtils';
+import { getAccountIdentity, isDirectRpcBackendType } from './backendUtils';
 import { getDerivationType } from './cardanoUtils';
 import { getDescriptorForNetworkType } from './deviceAddressUtils';
 import { toFiatCurrency } from './fiatConverterUtils';
@@ -1309,6 +1309,8 @@ export const prepareNewAccountPayload = async ({
 
     if (!newPath || !device.state?.staticSessionId) return new Error('Missing path');
 
+    const deviceState = device.state.staticSessionId;
+
     const descriptorResult = await getDescriptorForNetworkType({
         path: newPath,
         coin: networkSymbol,
@@ -1329,6 +1331,7 @@ export const prepareNewAccountPayload = async ({
     const res = await TrezorConnect.getAccountInfo({
         descriptor,
         coin: asCoinSymbol(networkSymbol),
+        identity: getAccountIdentity({ deviceState }),
         details: 'txs',
         protocols: network.networkType === 'ethereum' ? ['erc4626'] : undefined,
     });
@@ -1338,7 +1341,7 @@ export const prepareNewAccountPayload = async ({
     return {
         accountInfo: { ...res.payload, ...deviceAccountDetails },
         visible: true,
-        deviceState: device.state.staticSessionId,
+        deviceState,
         symbol: networkSymbol,
         index,
         accountType,

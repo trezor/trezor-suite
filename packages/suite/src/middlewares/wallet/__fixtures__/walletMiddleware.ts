@@ -76,7 +76,7 @@ export const blockchainSubscription: Array<{
                 coin: asNetworkSymbol('eth'),
             },
             disconnect: {
-                called: 1,
+                called: 0,
             },
         },
     },
@@ -132,7 +132,7 @@ export const blockchainSubscription: Array<{
                 coin: asNetworkSymbol('btc'),
             },
             disconnect: {
-                called: 1,
+                called: 2, // LTC wallet identity and LTC default (blocks).
                 coin: asNetworkSymbol('ltc'),
             },
         },

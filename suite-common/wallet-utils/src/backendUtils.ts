@@ -74,11 +74,6 @@ export const isTrezorConnectBackendType = (type?: BackendType) => {
     return !!TREZOR_CONNECT_BACKENDS.find(b => b === type);
 };
 
-export const shouldUseIdentities = (symbol: NetworkSymbol) => getNetworkType(symbol) === 'ethereum';
-
 export const shouldSubscribeBlocks = (symbol: NetworkSymbol) => getNetworkType(symbol) !== 'solana';
 
 export const getAccountIdentity = (account: Pick<Account, 'deviceState'>) => account.deviceState;
-
-export const tryGetAccountIdentity = (account: Pick<Account, 'networkType' | 'deviceState'>) =>
-    account.networkType === 'ethereum' ? getAccountIdentity(account) : undefined;

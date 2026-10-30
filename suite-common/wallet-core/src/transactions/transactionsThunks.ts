@@ -17,6 +17,7 @@ import {
     findTransactions,
     fromGwei,
     getAccountAddresses,
+    getAccountIdentity,
     getEvmTransactionTextSignature,
     getPendingAccount,
     getRbfParams,
@@ -27,7 +28,6 @@ import {
     isRbfBumpFeeTransaction,
     isTrezorConnectBackendType,
     replaceEthereumSpecific,
-    tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import { type TokenInfo } from '@trezor/blockchain-link-types';
 import { blockbookUtils } from '@trezor/blockchain-link-utils';
@@ -949,7 +949,7 @@ export const fetchTransactionsPageThunk = createThunk<
         const { marker, stellarCursor } = account;
         const result = await TrezorConnect.getAccountInfo({
             coin: asCoinSymbol(account.symbol),
-            identity: tryGetAccountIdentity(account),
+            identity: getAccountIdentity(account),
             descriptor: account.descriptor,
             details: 'txs',
             page, // useful for every network except ripple and stellar
@@ -1031,6 +1031,7 @@ export const fetchUtxoTransactionsForAccountThunk = createSingleInstanceThunk<
 
         const result = await TrezorConnect.blockchainGetTransactions({
             coin: asCoinSymbol(account.symbol),
+            identity: getAccountIdentity(account),
             txs: account.utxo.map(utxo => utxo.txid),
             descriptor: account.descriptor,
         });

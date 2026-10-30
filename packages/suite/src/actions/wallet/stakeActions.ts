@@ -47,10 +47,10 @@ import {
     type WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import {
+    getAccountIdentity,
     getMevProtectedTxData,
     isCardanoTx,
     isRbfBumpFeeTransaction,
-    tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
@@ -150,7 +150,7 @@ const pushTransactionThunk =
         const sentTx = await TrezorConnect.pushTransaction({
             tx: txData,
             coin: asCoinSymbol(account.symbol),
-            identity: tryGetAccountIdentity(account),
+            identity: getAccountIdentity(account),
         });
 
         const flow = stakeType === 'change-delegate' ? 'vote' : stakeType;

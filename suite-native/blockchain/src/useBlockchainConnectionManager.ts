@@ -7,17 +7,18 @@ import {
     type BlockchainRootState,
     reconnectBlockchainThunk,
     selectBlockchainBackendType,
+    selectNetworkBlockchainInfo,
 } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 import { asCoinSymbol } from '@trezor/connect-common';
 import { useServices } from '@trezor/dependency-injection';
-import { injectDispatch } from '@trezor/redux-utils';
+import { injectDispatch, injectGetState } from '@trezor/redux-utils';
 
 // No other networks need managing at the moment.
 const symbol: NetworkSymbol = asNetworkSymbol('btc');
 
 export const useBlockchainConnectionManager = () => {
-    const { dispatch } = useServices(injectDispatch);
+    const { dispatch, getState } = useServices(injectDispatch, injectGetState);
 
     const blockchainBackendType = useSelector((state: BlockchainRootState) =>
         selectBlockchainBackendType(state, symbol),
@@ -31,7 +32,15 @@ export const useBlockchainConnectionManager = () => {
             // connection. So we need to manage the connection based on the app state.
             const subscription = AppState.addEventListener('change', nextAppState => {
                 if (nextAppState === 'background') {
-                    TrezorConnect.blockchainDisconnect({ coin: asCoinSymbol(symbol) });
+                    const coin = asCoinSymbol(symbol);
+                    const identities = Object.keys(
+                        selectNetworkBlockchainInfo(getState(), symbol).identityConnections ?? {},
+                    );
+
+                    TrezorConnect.blockchainDisconnect({ coin });
+                    identities.forEach(identity =>
+                        TrezorConnect.blockchainDisconnect({ coin, identity }),
+                    );
                 } else if (nextAppState === 'active') {
                     dispatch(reconnectBlockchainThunk({ symbol }));
                 }
@@ -41,5 +50,5 @@ export const useBlockchainConnectionManager = () => {
                 subscription.remove();
             };
         }
-    }, [blockchainBackendType, dispatch]);
+    }, [blockchainBackendType, dispatch, getState]);
 };

@@ -20,11 +20,7 @@ import {
     updateFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import { type Timestamp, type TokenAddress } from '@suite-common/wallet-types';
-import {
-    getAccountIdentity,
-    getBackendFromSettings,
-    shouldUseIdentities,
-} from '@suite-common/wallet-utils';
+import { getAccountIdentity, getBackendFromSettings } from '@suite-common/wallet-utils';
 import { isNetworkWithTokens } from '@suite-native/tokens';
 import type { BaseCurrencyCode } from '@trezor/blockchain-link-types';
 import TrezorConnect, { type AccountInfo } from '@trezor/connect';
@@ -142,11 +138,9 @@ export const getAccountInfoThunk = createThunk<
             const [fetchedAccountInfo] = await Promise.all([
                 TrezorConnect.getAccountInfo({
                     coin: asCoinSymbol(symbol),
-                    identity: shouldUseIdentities(symbol)
-                        ? getAccountIdentity({
-                              deviceState: PORTFOLIO_TRACKER_DEVICE_STATE,
-                          })
-                        : undefined,
+                    identity: getAccountIdentity({
+                        deviceState: PORTFOLIO_TRACKER_DEVICE_STATE,
+                    }),
                     descriptor: taprootXpubWithApostrophes ?? xpubAddress,
                     details: 'txs',
                     suppressBackupWarning: true,

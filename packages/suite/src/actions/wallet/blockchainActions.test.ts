@@ -187,7 +187,9 @@ describe('Blockchain Actions', () => {
             expect(TrezorConnect.blockchainEstimateFee).toHaveBeenCalledTimes(
                 f.blockchainEstimateFee,
             );
-            expect(TrezorConnect.blockchainSubscribe).toHaveBeenCalledTimes(f.blockchainSubscribe);
+            expect(TrezorConnect.blockchainSubscribe.mock.calls).toMatchObject(
+                f.blockchainSubscribe,
+            );
         });
     });
 
