@@ -8,7 +8,7 @@ import { Box, Text } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-type TransactionListGroupProps = { monthKey: MonthKey } | { dayKey: string };
+type TransactionListGroupTitleProps = { monthKey: MonthKey } | { dayKey: string };
 
 const dateTextStyle = prepareNativeStyle(({ spacings }) => ({
     marginTop: spacings.sp24,
@@ -16,7 +16,7 @@ const dateTextStyle = prepareNativeStyle(({ spacings }) => ({
     marginBottom: spacings.sp12,
 }));
 
-export const TransactionListGroupTitle = (props: TransactionListGroupProps) => {
+export const TransactionListGroupTitle = (props: TransactionListGroupTitleProps) => {
     const { translate } = useTranslate();
     const { MonthNameFormatter, DateFormatter } = useFormatters();
     const { applyStyle } = useNativeStyles();
