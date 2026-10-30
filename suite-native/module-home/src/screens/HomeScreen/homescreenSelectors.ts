@@ -97,6 +97,10 @@ export const selectShouldDisplaySuiteSyncFirmwareUpdateAlert = createMemoizedSel
     interactionNeeded => interactionNeeded === 'firmware-upgrade-needed',
 );
 
+export const selectAreTransferButtonsVisible = (
+    state: DeviceRootState & DiscoveryRootState,
+): boolean => selectIsDeviceAuthorized(state) && !selectHasRunningDiscovery(state);
+
 export const selectHomeScreenState = (state: NativeDeviceRootState): HomeScreenState => {
     const isDeviceConnected = selectIsDeviceConnected(state);
     const isDeviceUnlocked = selectIsDeviceUnlocked(state);
