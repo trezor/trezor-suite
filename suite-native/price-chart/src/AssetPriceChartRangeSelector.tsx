@@ -1,7 +1,7 @@
 import { useAtom } from 'jotai';
 
 import { assetPriceChartRangeOptions } from '@suite-common/price-chart';
-import { SegmentedControl } from '@suite-native/atoms';
+import { Box, SegmentedControl } from '@suite-native/atoms';
 
 import { assetPriceChartRangeAtom } from './assetPriceChartRangeAtom';
 
@@ -14,11 +14,13 @@ export const AssetPriceChartRangeSelector = () => {
     const [range, setRange] = useAtom(assetPriceChartRangeAtom);
 
     return (
-        <SegmentedControl
-            options={segmentedControlOptions}
-            selectedValue={range}
-            onValueChange={setRange}
-            isCompact
-        />
+        <Box paddingHorizontal="sp20">
+            <SegmentedControl
+                options={segmentedControlOptions}
+                selectedValue={range}
+                onValueChange={setRange}
+                isCompact
+            />
+        </Box>
     );
 };

@@ -1,5 +1,5 @@
 import { type DeviceRootState } from '@suite-common/device';
-import { type NetworkSymbol, getAssetName } from '@suite-common/wallet-config';
+import { type NetworkSymbol } from '@suite-common/wallet-config';
 import {
     type AccountsRootState,
     selectVisibleDeviceAccountsByNetworkSymbol,
@@ -32,17 +32,4 @@ export const selectAssetTokenInfo = createMemoizedSelector(
 
         return null;
     },
-);
-
-export const selectAssetName = createMemoizedSelector(
-    [
-        selectAssetTokenInfo,
-        (_state: AssetsRootState, networkSymbol: NetworkSymbol) => networkSymbol,
-    ],
-    (token, networkSymbol) =>
-        getAssetName({
-            symbol: networkSymbol,
-            tokenName: token?.name,
-            tokenSymbol: token?.symbol,
-        }),
 );

@@ -5,7 +5,7 @@ import { AssetDetailEarnSection } from './AssetDetailEarnSection';
 import { AssetDetailPriceSection } from './AssetDetailPriceSection';
 
 export const AssetDetailHeader = () => (
-    <VStack spacing={0}>
+    <VStack spacing="sp20">
         <AssetDetailPriceSection />
         <Divider />
         <AssetDetailBalanceSection />

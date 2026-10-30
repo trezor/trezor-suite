@@ -4,11 +4,11 @@ import { GestureDetector } from 'react-native-gesture-handler';
 
 import { Icon, type IconName } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
-import { type Color } from '@trezor/theme';
+import { type Color, type NativeSpacing } from '@trezor/theme';
 
 import { BannerInline, type BannerInlineProps } from '../BannerInline/BannerInline';
 import { Box } from '../Box';
-import { IconCircle, type IconCircleIntent } from '../Icon/IconCircle';
+import { IconCircle, type IconCircleIntent, type IconCircleSize } from '../Icon/IconCircle';
 import { Loader } from '../Loader';
 import { HStack, VStack } from '../Stack';
 import { Text } from '../Text';
@@ -24,6 +24,12 @@ export type CompactCardWithIconLayoutProps = {
     subtitle?: ReactNode;
     isDisabled?: boolean;
     alertBoxProps?: BannerInlineProps;
+    /** Diameter of the {@linkcode IconCircle} background. Defaults to 48. */
+    iconSize?: IconCircleSize;
+    /** Horizontal content inset. Defaults to 16. */
+    paddingHorizontal?: NativeSpacing;
+    /** Vertical content inset. Defaults to 12. */
+    paddingVertical?: NativeSpacing;
     onPress: () => void;
     variant?: CompactCardVariant;
     borderColor?: Color | null;
@@ -67,6 +73,9 @@ export const CompactCardWithIconLayout = ({
     title,
     subtitle,
     alertBoxProps,
+    iconSize,
+    paddingHorizontal = 'sp16',
+    paddingVertical = 'sp12',
     onPress,
     noShadow,
     testID,
@@ -92,12 +101,12 @@ export const CompactCardWithIconLayout = ({
                     {...cardProps}
                 >
                     <HStack
-                        paddingHorizontal="sp16"
-                        paddingVertical="sp12"
+                        paddingHorizontal={paddingHorizontal}
+                        paddingVertical={paddingVertical}
                         spacing="sp12"
                         alignItems="center"
                     >
-                        <IconCircle intent={iconIntent} name={icon} />
+                        <IconCircle intent={iconIntent} name={icon} size={iconSize} />
                         <VStack spacing="sp2" style={applyStyle(contentStyle)}>
                             <Text color={titleColor}>{title}</Text>
                             {subtitle && (

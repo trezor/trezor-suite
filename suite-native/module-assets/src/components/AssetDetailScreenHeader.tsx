@@ -5,13 +5,14 @@ import { type RouteProp, useRoute } from '@react-navigation/native';
 import { type AssetsRootState, selectAssetTokenInfo } from '@suite-common/assets';
 import { getDisplaySymbol } from '@suite-common/wallet-config';
 import { IconButton, useBottomSheetModal } from '@suite-native/atoms';
-import { Translation, useTranslate } from '@suite-native/intl';
+import { useTranslate } from '@suite-native/intl';
 import {
     type AssetsStackParamList,
     type AssetsStackRoutes,
     ScreenHeader,
 } from '@suite-native/navigation';
 
+import { AssetDetailScreenHeaderContent } from './AssetDetailScreenHeaderContent';
 import { AssetSettingsBottomSheet } from './AssetSettingsBottomSheet';
 
 export const AssetDetailScreenHeader = () => {
@@ -30,7 +31,9 @@ export const AssetDetailScreenHeader = () => {
     return (
         <>
             <ScreenHeader
-                title={<Translation id="moduleAssets.assetDetailScreen.headerTitle" />}
+                customContent={
+                    <AssetDetailScreenHeaderContent assetDisplaySymbol={assetDisplaySymbol} />
+                }
                 rightIcon={
                     <IconButton
                         iconName="dotsThree"
