@@ -17,7 +17,7 @@ export const AssetDetailPrice = ({ networkSymbol, tokenContract }: AssetDetailPr
     });
 
     return (
-        <VStack spacing="sp12">
+        <VStack paddingHorizontal="sp20" spacing="sp12">
             <Text variant="body-xs" color="contentSecondary">
                 <Translation id="moduleAssets.assetDetailScreen.priceSection.title" />
             </Text>

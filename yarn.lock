@@ -14115,6 +14115,7 @@ __metadata:
     "@suite-native/toasts": "workspace:*"
     "@trezor/requirements": "workspace:*"
     "@trezor/styles-native": "workspace:*"
+    "@trezor/utils": "workspace:*"
     react: "npm:19.2.3"
     react-redux: "npm:9.3.0"
   languageName: unknown

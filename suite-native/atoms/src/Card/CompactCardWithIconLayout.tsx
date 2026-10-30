@@ -18,11 +18,6 @@ import { AnimatedContainerCard, type CardProps } from './Card';
 export const COMPACT_CARD_VARIANTS = ['normal', 'danger', 'primary'] as const;
 type CompactCardVariant = (typeof COMPACT_CARD_VARIANTS)[number];
 
-type CompactCardContentPadding = {
-    horizontal?: NativeSpacing;
-    vertical?: NativeSpacing;
-};
-
 export type CompactCardWithIconLayoutProps = {
     icon: IconName;
     title: ReactNode;
@@ -31,8 +26,10 @@ export type CompactCardWithIconLayoutProps = {
     alertBoxProps?: BannerInlineProps;
     /** Diameter of the {@linkcode IconCircle} background. Defaults to 48. */
     iconSize?: IconCircleSize;
-    /** Horizontal and vertical content insets. Defaults to 16 and 12, respectively. */
-    contentPadding?: CompactCardContentPadding;
+    /** Horizontal content inset. Defaults to 16. */
+    paddingHorizontal?: NativeSpacing;
+    /** Vertical content inset. Defaults to 12. */
+    paddingVertical?: NativeSpacing;
     onPress: () => void;
     variant?: CompactCardVariant;
     borderColor?: Color | null;
@@ -76,8 +73,9 @@ export const CompactCardWithIconLayout = ({
     title,
     subtitle,
     alertBoxProps,
-    iconSize = 48,
-    contentPadding,
+    iconSize,
+    paddingHorizontal = 'sp16',
+    paddingVertical = 'sp12',
     onPress,
     noShadow,
     testID,
@@ -103,8 +101,8 @@ export const CompactCardWithIconLayout = ({
                     {...cardProps}
                 >
                     <HStack
-                        paddingHorizontal={contentPadding?.horizontal ?? 'sp16'}
-                        paddingVertical={contentPadding?.vertical ?? 'sp12'}
+                        paddingHorizontal={paddingHorizontal}
+                        paddingVertical={paddingVertical}
                         spacing="sp12"
                         alignItems="center"
                     >

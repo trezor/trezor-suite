@@ -6,19 +6,18 @@ import { Translation } from '@suite-native/intl';
 import type { AssetsStackParamList, AssetsStackRoutes } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
-type BalanceType = 'available' | 'staking';
+import { type EarnBalanceType, earnBalanceColors, earnBalanceLabels } from './earnBalance';
 
-const balanceIndicatorStyle = prepareNativeStyle<{ type: BalanceType }>((utils, { type }) => ({
+const balanceIndicatorStyle = prepareNativeStyle<{ type: EarnBalanceType }>((utils, { type }) => ({
     width: utils.spacings.sp12,
     height: utils.spacings.sp12,
     borderRadius: utils.borders.radii.r4,
-    backgroundColor:
-        utils.colors[type === 'staking' ? 'elementFillBrandBold' : 'elementFillAccentVioletBold'],
+    backgroundColor: utils.colors[earnBalanceColors[type]],
 }));
 
 type AssetDetailEarnBalanceRowProps = {
     amount: string;
-    type: BalanceType;
+    type: EarnBalanceType;
 };
 
 export const AssetDetailEarnBalanceRow = ({ amount, type }: AssetDetailEarnBalanceRowProps) => {
@@ -31,17 +30,11 @@ export const AssetDetailEarnBalanceRow = ({ amount, type }: AssetDetailEarnBalan
             <HStack alignItems="center" spacing="sp12">
                 <Box style={applyStyle(balanceIndicatorStyle, { type })} />
                 <Text variant="body-sm" color="contentSecondary">
-                    <Translation
-                        id={
-                            type === 'staking'
-                                ? 'moduleAssets.assetDetailScreen.earnSection.staking'
-                                : 'moduleAssets.assetDetailScreen.earnSection.available'
-                        }
-                    />
+                    <Translation id={earnBalanceLabels[type]} />
                 </Text>
             </HStack>
 
-            <HStack alignItems="center" justifyContent="flex-end" flexShrink={1}>
+            <Box flexShrink={1}>
                 <CryptoToFiatAmountFormatter
                     value={amount}
                     symbol={networkSymbol}
@@ -50,7 +43,7 @@ export const AssetDetailEarnBalanceRow = ({ amount, type }: AssetDetailEarnBalan
                     numberOfLines={1}
                     adjustsFontSizeToFit
                 />
-            </HStack>
+            </Box>
         </HStack>
     );
 };

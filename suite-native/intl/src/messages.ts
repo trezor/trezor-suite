@@ -2399,8 +2399,8 @@ export const messages = {
                 accounts: 'Accounts',
             },
             balanceSection: {
-                balance: 'Balance',
-                accountCount: 'All accounts ({count})',
+                balanceTitle: 'Balance',
+                allAccountsButton: 'All accounts ({count})',
             },
             earnSection: {
                 title: 'Earn',

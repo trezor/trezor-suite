@@ -32,11 +32,7 @@ export const AssetDetailScreenHeader = () => {
         <>
             <ScreenHeader
                 customContent={
-                    <AssetDetailScreenHeaderContent
-                        assetDisplaySymbol={assetDisplaySymbol}
-                        networkSymbol={networkSymbol}
-                        tokenContract={tokenContract}
-                    />
+                    <AssetDetailScreenHeaderContent assetDisplaySymbol={assetDisplaySymbol} />
                 }
                 rightIcon={
                     <IconButton

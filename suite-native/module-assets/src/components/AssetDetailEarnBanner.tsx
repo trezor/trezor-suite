@@ -2,12 +2,6 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
-import {
-    type HomeAssetTableState,
-    selectWalletAssetAvailableAmount,
-    selectWalletAssetKey,
-    selectWalletAssetStakingAmount,
-} from '@suite-common/assets';
 import { useFormatters } from '@suite-common/formatters';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
 import { type StakeRootState, selectApy } from '@suite-common/wallet-core';
@@ -23,31 +17,29 @@ const bannerStyle = prepareNativeStyle(utils => ({
 }));
 
 type AssetDetailEarnBannerProps = {
+    availableAmount: string;
+    stakingAmount: string;
     onPress: () => void;
 };
 
-export const AssetDetailEarnBanner = ({ onPress }: AssetDetailEarnBannerProps) => {
+export const AssetDetailEarnBanner = ({
+    availableAmount,
+    stakingAmount,
+    onPress,
+}: AssetDetailEarnBannerProps) => {
     const { networkSymbol, tokenContract } =
         useRoute<RouteProp<AssetsStackParamList, AssetsStackRoutes.AssetDetail>>().params;
-    const assetKey = useSelector((state: HomeAssetTableState) =>
-        selectWalletAssetKey(state, networkSymbol, tokenContract),
-    );
-    const availableAmount = useSelector((state: HomeAssetTableState) =>
-        selectWalletAssetAvailableAmount(state, assetKey),
-    );
-    const stakingAmount = useSelector((state: HomeAssetTableState) =>
-        selectWalletAssetStakingAmount(state, assetKey),
-    );
     const stakingApy = useSelector((state: StakeRootState) =>
         tokenContract === undefined ? selectApy(state, { networkSymbol }) : null,
     );
     const { PercentageFormatter } = useFormatters();
     const { applyStyle } = useNativeStyles();
-    const displayedStakingApy = stakingApy ?? 0;
+    // Promotes staking only while there is a balance to stake and nothing staked yet. The section
+    // itself stays visible for already staked assets.
     const shouldShowEarnBanner =
-        isApyAvailable(displayedStakingApy) &&
-        isPositiveBalance(availableAmount ?? '0') &&
-        !isPositiveBalance(stakingAmount ?? '0');
+        isApyAvailable(stakingApy) &&
+        isPositiveBalance(availableAmount) &&
+        !isPositiveBalance(stakingAmount);
 
     if (!shouldShowEarnBanner) {
         return null;
@@ -57,7 +49,8 @@ export const AssetDetailEarnBanner = ({ onPress }: AssetDetailEarnBannerProps) =
         <CompactCardWithIconLayout
             icon="piggyBank"
             iconSize={32}
-            contentPadding={{ horizontal: 'sp12', vertical: 'sp8' }}
+            paddingHorizontal="sp12"
+            paddingVertical="sp8"
             title={
                 <Text variant="body-sm-strong" color="contentBrand">
                     <Translation id="moduleAssets.assetDetailScreen.earnSection.banner.title" />
@@ -68,7 +61,7 @@ export const AssetDetailEarnBanner = ({ onPress }: AssetDetailEarnBannerProps) =
                     <Translation
                         id="moduleAssets.assetDetailScreen.earnSection.banner.description"
                         values={{
-                            apy: PercentageFormatter.format(displayedStakingApy),
+                            apy: PercentageFormatter.format(stakingApy ?? 0),
                             symbol: getNetworkDisplaySymbol(networkSymbol),
                         }}
                     />

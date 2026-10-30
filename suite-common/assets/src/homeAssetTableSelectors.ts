@@ -681,7 +681,7 @@ export const selectWalletAssetAvailableAmount = createMemoizedSelector(
             : new BigNumber(totalAmount).minus(stakingAmount).toFixed(),
 );
 
-export const selectWalletAssetEarnAvailable = (
+export const selectIsWalletAssetEarnAvailable = (
     state: HomeAssetEarnState,
     assetKey: WalletAssetKey | undefined,
 ) => {
