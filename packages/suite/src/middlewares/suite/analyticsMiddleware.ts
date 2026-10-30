@@ -2,15 +2,6 @@ import { type UnknownAction, isAnyOf } from '@reduxjs/toolkit';
 
 import { type DesktopAnalyticsDep, events } from '@suite/analytics';
 import {
-    type CoinjoinRootState,
-    coinjoinAccountUnregister,
-    coinjoinSessionCompleted,
-    coinjoinSessionPause,
-    selectAnonymityGainToReportByAccountKey,
-    selectCoinjoinAccountByKey,
-    updateLastAnonymityReportTimestamp,
-} from '@suite/coinjoin';
-import {
     type RouterRootState,
     anchorChange,
     routerLocationChange,
@@ -26,7 +17,6 @@ import {
     getPhysicalDeviceCount,
 } from '@suite-common/suite-utils';
 import { changeCoinVisibilityEvent, setBitcoinAmountUnits } from '@suite-common/wallet-core';
-import { type AccountKey } from '@suite-common/wallet-types';
 import { TRANSPORT, isTransportEventOfType } from '@trezor/connect';
 import {
     getBootloaderHash,
@@ -56,8 +46,7 @@ import {
 */
 export type PrepareAnalyticsMiddlewareDeps = WithServices<DesktopAnalyticsDep>;
 
-type AnalyticsMiddlewareState = CoinjoinRootState &
-    GetSuiteReadyPayloadState &
+type AnalyticsMiddlewareState = GetSuiteReadyPayloadState &
     RouterRootState & {
         suite: Pick<SuiteRootState['suite'], 'lifecycle'>;
     };
@@ -69,7 +58,7 @@ const createAnalyticsMiddleware = createMiddlewareWithExtraDeps<
 >;
 
 export const prepareAnalyticsMiddleware = createAnalyticsMiddleware(
-    (action: UnknownAction, { extra, next, dispatch, getState }) => {
+    (action: UnknownAction, { extra, next, getState }) => {
         const prevRouterUrl = selectRouterUrl(getState());
         const prevRouteName = selectRouteName(getState());
         // NOTE: pass action on, keep the result
@@ -198,35 +187,6 @@ export const prepareAnalyticsMiddleware = createAnalyticsMiddleware(
                         anchor: redactAnchor(action.payload),
                     },
                 });
-            }
-        } else if (
-            isAnyOf(
-                coinjoinSessionCompleted,
-                coinjoinSessionPause,
-                coinjoinAccountUnregister,
-            )(action)
-        ) {
-            const coinjoinAccount = selectCoinjoinAccountByKey(
-                state,
-                action.payload.accountKey as AccountKey,
-            );
-            const anonymityGainToReport = selectAnonymityGainToReportByAccountKey(
-                state,
-                action.payload.accountKey as AccountKey,
-            );
-
-            if (coinjoinAccount && anonymityGainToReport !== null) {
-                analytics.report(
-                    {
-                        type: events.coinjoinAnonymityGainEvent.name,
-                        payload: {
-                            networkSymbol: coinjoinAccount.symbol,
-                            value: anonymityGainToReport,
-                        },
-                    },
-                    { anonymize: true },
-                );
-                dispatch(updateLastAnonymityReportTimestamp(action.payload.accountKey));
             }
         } else if (deviceActions.setRememberDevice.match(action)) {
             analytics.report({
