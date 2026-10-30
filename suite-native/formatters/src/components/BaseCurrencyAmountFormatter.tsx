@@ -3,7 +3,7 @@ import React from 'react';
 import { useFormatters } from '@suite-common/formatters';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type BaseCurrencyAmount } from '@suite-common/wallet-types';
-import { BASE_CURRENCY_ZERO, isTestnet } from '@suite-common/wallet-utils';
+import { isTestnet } from '@suite-common/wallet-utils';
 import { type TextProps } from '@suite-native/atoms';
 
 import { type DiscreetMode, type FormatterProps } from '../types';
@@ -34,13 +34,13 @@ export const BaseCurrencyAmountFormatter = React.memo(
         if (!!symbol && isTestnet(symbol)) {
             return <EmptyAmountText variant={variant} />;
         }
-        if (isLoading || (value === null && discreetMode !== 'enforced')) {
+        if (isLoading || value === null) {
             return <EmptyAmountSkeleton variant={variant} />;
         }
 
         const formattedValue = (
             <formatters.BaseCurrencyAmountFormatter
-                value={value ?? BASE_CURRENCY_ZERO}
+                value={value}
                 maximumFractionDigits={maximumFractionDigits}
             />
         );

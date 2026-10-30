@@ -2,7 +2,6 @@ import { useFormatters } from '@suite-common/formatters';
 import { type SignValue } from '@suite-common/suite-types';
 import { type NetworkSymbol } from '@suite-common/wallet-config';
 import { type TokenAddress } from '@suite-common/wallet-types';
-import { BASE_CURRENCY_ZERO } from '@suite-common/wallet-utils';
 import { type TextProps } from '@suite-native/atoms';
 
 import { useFiatFromCryptoValue } from '../hooks/useFiatFromCryptoValue';
@@ -45,14 +44,14 @@ export const TokenToFiatAmountFormatter = ({
         useHistoricRate,
     });
 
-    if (fiatValue === null && discreetMode !== 'enforced') {
+    if (fiatValue === null) {
         return <EmptyAmountSkeleton />;
     }
 
     const formattedFiatValue = (
         <>
             <SignValueFormatter value={signValue} />
-            <BaseCurrencyAmountFormatter value={fiatValue ?? BASE_CURRENCY_ZERO} />
+            <BaseCurrencyAmountFormatter value={fiatValue} />
         </>
     );
 
