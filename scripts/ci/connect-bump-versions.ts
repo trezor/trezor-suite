@@ -2,16 +2,19 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { promisify } from 'node:util';
 
+import type { WorkspacePackage } from '@trezor/requirements';
+
+import { CONNECT_PUBLISH_ROOTS } from './connect-publish-roots';
 import {
     comment,
     commit,
     exec,
-    getPackageDependencies,
     getTrezorPackageDir,
     getTrezorPackageRelativePath,
     gettingNpmDistributionTags,
 } from './helpers';
 import { isPackageOnNpmRegistry } from './npm-registry.js';
+import { collectPublishClosure, toReleaseScriptName } from './publish-closure';
 import { updateConnectChangelog } from './update-connect-changelog';
 
 const readFile = promisify(fs.readFile);
@@ -134,34 +137,19 @@ const getUnreservedNpmPackages = async (packageNames: string[]) => {
 
 const bumpConnect = async () => {
     try {
-        // connect-plugin-ethereum and connect-plugin-stellar are deprecated in
-        // 10.x (their logic moved into @trezor/connect). Both 10.x releases are
-        // stubs and the package sources are frozen — no need to auto-bump them
-        // on every connect release. Neither is reachable from the publish dep
-        // closure in `get-connect-dependencies-to-release.ts` either, so a bump
-        // would land in git and never reach npm.
-        const mainPackages = ['connect-webextension', 'connect-mobile', 'connect-web', 'connect'];
+        // Bump the same publish closure that the npm release workflow publishes.
+        // Anything outside it, such as the deprecated connect-plugin-ethereum and
+        // connect-plugin-stellar stubs, would get a version bump in git that never reaches npm.
+        const publishClosure = collectPublishClosure(ROOT, CONNECT_PUBLISH_ROOTS);
+        const isConnectRoot = ({ name }: WorkspacePackage) => CONNECT_PUBLISH_ROOTS.includes(name);
 
-        const results = await Promise.all(
-            mainPackages.map(async pkg => {
-                const result = await getPackageDependencies(pkg);
-                console.log(`${pkg} dependencies to update:`, result);
-
-                return result.update;
-            }),
-        );
-
-        // We remove from the list the `mainPackages` so they are added later on in correct order,
-        // so the commits for `mainPackages` are at the end of the changelog.
-        const connectDependencies = results.flat().filter(dep => !mainPackages.includes(dep));
-
-        // Remove connect since it is going to be bumped later using script packages/connect/script/bump-version.ts
-        const mainPackagesWithoutConnect = mainPackages.filter(pkg => pkg !== 'connect');
-
-        // We deduplicate and add the connect packages themselves to the list of packages to update.
+        // The connect packages go last so their commits follow those of their dependencies.
+        // Connect itself is bumped later by packages/connect/scripts/bump-version.ts.
+        // The bump loop and the PR comments use names without the `@trezor/` scope.
         const allUniquePackagesToUpdate = [
-            ...new Set([...connectDependencies, ...mainPackagesWithoutConnect]),
-        ];
+            ...publishClosure.filter(pkg => !isConnectRoot(pkg)),
+            ...publishClosure.filter(pkg => isConnectRoot(pkg) && pkg.name !== '@trezor/connect'),
+        ].map(pkg => toReleaseScriptName(ROOT, pkg));
 
         console.log('allUniquePackagesToUpdate', allUniquePackagesToUpdate);
 
