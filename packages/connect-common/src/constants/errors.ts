@@ -7,7 +7,7 @@ export const ERROR_CODES = {
     Init_ManifestMissing:
         'Manifest not set. Read more at https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/index.md', // manifest is not set
 
-    Handshake_Error: '', // one of: 'iframe-blocked', 'iframe-timeout', 'popup-blocked', 'handshake-timeout', 'channel-id-missing', 'origin-missing', 'env-not-supported', 'unknown' (see BootstrapError)
+    Handshake_Error: '', // one of: 'iframe-blocked', 'iframe-timeout', 'iframe-destroyed', 'popup-blocked', 'handshake-timeout', 'channel-id-missing', 'origin-missing', 'env-not-supported', 'unknown' (see BootstrapError)
     Popup_ConnectionMissing: 'Unable to establish connection with iframe', // thrown by popup
     Desktop_ConnectionMissing: 'Unable to establish connection with Suite', // thrown by suite-desktop
 
