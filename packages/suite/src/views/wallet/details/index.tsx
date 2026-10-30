@@ -1,7 +1,5 @@
 import { type ReactNode } from 'react';
 
-import styled from 'styled-components';
-
 import { AccountTypeBadge, selectFullSelectedAccount } from '@suite/account';
 import { useDevice } from '@suite/device';
 import { LearnMoreButton } from '@suite/external-links';
@@ -11,7 +9,6 @@ import { getAccountTypeTech } from '@suite-common/wallet-utils';
 import { Button, Card, Column, InfoItem, Paragraph } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
-import { typography } from '@trezor/theme';
 import { HELP_CENTER_BIP32_URL, HELP_CENTER_XPUB_URL, type Url } from '@trezor/urls';
 
 import { showXpubThunk } from 'src/actions/wallet/publicKeyActions';
@@ -22,15 +19,8 @@ import { ContentFlex, useIsContentBelowBreakpoint } from 'src/support/suite/Cont
 
 import { AccountNonce } from './AccountNonce';
 import { CoinjoinLogs } from './CoinjoinLogs';
-import { CoinjoinSetup } from './CoinjoinSetup/CoinjoinSetup';
 import { RescanAccount } from './RescanAccount';
 import { Bip329Labels } from '../labels/Bip329Labels';
-
-const Heading = styled.h3`
-    color: ${({ theme }) => theme.contentSecondary};
-    ${typography['body-sm-strong']}
-    text-transform: uppercase;
-`;
 
 type DetailsRowProps = {
     title: TranslationKey;
@@ -98,15 +88,6 @@ const Details = () => {
 
     return (
         <WalletLayout title="TR_ACCOUNT_DETAILS_HEADER" account={selectedAccount}>
-            {isCoinjoinAccount && (
-                <Column gap={8}>
-                    <Heading>
-                        <Translation id="TR_COINJOIN_SETUP_HEADING" />
-                    </Heading>
-                    <CoinjoinSetup accountKey={account.key} />
-                </Column>
-            )}
-
             <Card data-testid="@wallet/account-details">
                 <Column gap={40} hasDivider>
                     <DetailsRow
