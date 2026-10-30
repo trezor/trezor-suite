@@ -9,6 +9,7 @@ import {
     formatExperimentVariantsForAnalytics,
     selectActiveExperimentsWithVariants,
 } from '@suite-common/message-system';
+import { closeHomeAssetTableFeedback } from '@suite-common/wallet-core';
 import { createThunk } from '@trezor/redux-utils';
 
 export const HOME_ASSET_TABLE_FEEDBACK_CATEGORY: FeedbackCategory = 'dashboard';
@@ -23,8 +24,8 @@ export const sendHomeAssetTableFeedbackThunk = createThunk<
     { state: SendHomeAssetTableFeedbackThunkState }
 >(
     '@suite-common/assets/sendHomeAssetTableFeedback',
-    ({ rating, description }, { dispatch, getState }) => {
-        dispatch(
+    async ({ rating, description }, { dispatch, getState }) => {
+        const result = await dispatch(
             sendFeedbackThunk({
                 type: 'SUGGESTION',
                 payload: {
@@ -40,5 +41,9 @@ export const sendHomeAssetTableFeedbackThunk = createThunk<
                 },
             }),
         );
+
+        if (result.meta.requestStatus === 'fulfilled') {
+            dispatch(closeHomeAssetTableFeedback());
+        }
     },
 );

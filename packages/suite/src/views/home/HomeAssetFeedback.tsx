@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import { events, injectDesktopAnalytics } from '@suite/analytics';
 import { FeedbackCard } from '@suite/feature-feedback';
 import { Translation } from '@suite/intl';
@@ -23,6 +25,7 @@ export const HomeAssetFeedback = () => {
     const isClosed = useSelector(selectIsHomeAssetTableFeedbackClosed);
     const assetKeys = useSelector(selectShownWalletAssetKeys);
     const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
+    const [isSubmitted, setIsSubmitted] = useState(false);
 
     const handleRatingSelect = (rating: Rating) => {
         analytics.report({
@@ -36,6 +39,7 @@ export const HomeAssetFeedback = () => {
     };
 
     const handleSubmit = (rating: Rating, description: string) => {
+        setIsSubmitted(true);
         dispatch(sendHomeAssetTableFeedbackThunk({ rating, description }));
 
         analytics.report({
@@ -47,7 +51,12 @@ export const HomeAssetFeedback = () => {
         });
     };
 
-    if (isClosed || assetKeys.length === 0) {
+    const handleDismiss = () => {
+        setIsSubmitted(false);
+        dispatch(closeHomeAssetTableFeedback());
+    };
+
+    if ((isClosed && !isSubmitted) || assetKeys.length === 0) {
         return null;
     }
 
@@ -69,7 +78,7 @@ export const HomeAssetFeedback = () => {
                 <GhostContainer
                     padding={4}
                     borderRadius={6}
-                    onClick={() => dispatch(closeHomeAssetTableFeedback())}
+                    onClick={handleDismiss}
                     data-testid="@dashboard/home-asset/feedback/dismiss"
                 >
                     <Icon as={XIcon} size={16} intent="neutral" priority="secondary" />
