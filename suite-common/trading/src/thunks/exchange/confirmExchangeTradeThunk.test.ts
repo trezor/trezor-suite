@@ -5,7 +5,10 @@ import { createTestCompositionRoot } from '@suite-common/test-utils';
 import { type Account } from '@suite-common/wallet-types';
 import { mockActionType } from '@trezor/redux-utils/mocks';
 
-import { type ConfirmExchangeTradeThunkState } from './confirmExchangeTradeThunk';
+import {
+    type ConfirmExchangeTradeThunkDeps,
+    type ConfirmExchangeTradeThunkState,
+} from './confirmExchangeTradeThunk';
 import { MIN_MAX_QUOTES_OK } from '../../__fixtures__/exchangeUtils';
 import { accountBtc } from '../../__fixtures__/utils';
 import { type TradingExchangeState } from '../../reducers/exchangeReducer';
@@ -20,6 +23,8 @@ import { exchangeThunks } from './index';
 const tradingReducer = prepareTradingReducer({
     actionTypes: { storageLoad: mockActionType('storageLoad') },
 });
+const RECEIVE_ADDRESS = 'receiveAddress';
+const ETH_ADDRESS = '0x742d35Cc6634C0532925a3b844Bc454e4438f44e';
 
 jest.mock('../common/logErrorThunk', () => ({
     logErrorThunk: (props: LogErrorThunkProps) => ({
@@ -46,7 +51,10 @@ describe('confirmExchangeTradeThunk', () => {
             send: quoteNotTyped.send as CryptoId,
             receive: quoteNotTyped.receive as CryptoId,
         };
-        const { store } = createTestCompositionRoot<void, ConfirmExchangeTradeThunkState>({
+        const { store } = createTestCompositionRoot<
+            ConfirmExchangeTradeThunkDeps,
+            ConfirmExchangeTradeThunkState
+        >({
             reducer: combineReducers({
                 wallet: combineReducers({
                     trading: tradingReducer,
@@ -70,6 +78,16 @@ describe('confirmExchangeTradeThunk', () => {
                     },
                 },
             },
+            services: () => ({
+                networks: {
+                    addressValidator: {
+                        getAddressType: jest.fn(),
+                        isAddressValid: jest.fn(
+                            (address, symbol) => address === RECEIVE_ADDRESS && symbol === 'btc',
+                        ),
+                    },
+                },
+            }),
         }).services;
 
         const mockProcessResponseData = jest.fn();
@@ -87,7 +105,7 @@ describe('confirmExchangeTradeThunk', () => {
         return {
             store,
             returnUrl: 'returnUrl',
-            receiveAddress: 'receiveAddress',
+            receiveAddress: RECEIVE_ADDRESS,
             account,
             trade,
             mockProcessResponseData,
@@ -272,6 +290,136 @@ describe('confirmExchangeTradeThunk', () => {
         expect(exchange.transactionId).toBeUndefined();
         expect(exchange.isLoading).toBeFalsy();
         expect(!!response).toBeFalsy();
+    });
+
+    describe('receive address network guard', () => {
+        it('should not call the API when the receive address is not valid for the receive network', async () => {
+            const {
+                store,
+                returnUrl,
+                account,
+                trade,
+                mockProcessResponseData,
+                mockNextStep,
+                mockTriggerAnalyticsTradeConfirmation,
+            } = getMocks();
+            const doExchangeTradeSpy = jest.fn();
+            tradeApi.doExchangeTrade = doExchangeTradeSpy;
+
+            const response = await store
+                .dispatch(
+                    exchangeThunks.confirmTradeThunk({
+                        returnUrl,
+                        receiveAddress: ETH_ADDRESS,
+                        account,
+                        trade,
+                        nextStep: mockNextStep,
+                        triggerAnalyticsTradeConfirmation: mockTriggerAnalyticsTradeConfirmation,
+                        processResponseData: mockProcessResponseData,
+                    }),
+                )
+                .unwrap();
+
+            const logErrorAction = store
+                .getActions()
+                .find(action => action.type === 'mockedLogErrorThunk');
+
+            expect(doExchangeTradeSpy).not.toHaveBeenCalled();
+            expect(logErrorAction?.payload).toEqual({
+                errorMessage: 'Receive address does not match the receive network',
+                tradingType: 'exchange',
+            });
+            expect(response).toBeUndefined();
+        });
+
+        it('should not move to the send step when the response receive address is not valid for the receive network', async () => {
+            const {
+                store,
+                returnUrl,
+                receiveAddress,
+                account,
+                trade,
+                mockProcessResponseData,
+                mockNextStep,
+                mockTriggerAnalyticsTradeConfirmation,
+            } = getMocks();
+            const tradeResponse = {
+                ...trade,
+                status: 'CONFIRM',
+                orderId: 'orderId',
+                isDex: true,
+                receiveAddress: ETH_ADDRESS,
+            } as ExchangeTrade;
+            tradeApi.doExchangeTrade = () => Promise.resolve(tradeResponse);
+
+            const response = await store
+                .dispatch(
+                    exchangeThunks.confirmTradeThunk({
+                        returnUrl,
+                        receiveAddress,
+                        account,
+                        trade,
+                        nextStep: mockNextStep,
+                        triggerAnalyticsTradeConfirmation: mockTriggerAnalyticsTradeConfirmation,
+                        processResponseData: mockProcessResponseData,
+                    }),
+                )
+                .unwrap();
+
+            const { exchange } = store.getState().wallet.trading;
+            const logErrorAction = store
+                .getActions()
+                .find(action => action.type === 'mockedLogErrorThunk');
+
+            expect(logErrorAction?.payload).toEqual({
+                errorMessage: 'Receive address does not match the receive network',
+                tradingType: 'exchange',
+            });
+            expect(exchange.selectedQuote).not.toEqual(tradeResponse);
+            expect(exchange.formStep).not.toEqual('SEND_TRANSACTION');
+            expect(response).toBeUndefined();
+        });
+
+        it('should save an already submitted trade even when its receive address does not match the receive network', async () => {
+            const {
+                store,
+                returnUrl,
+                account,
+                trade,
+                mockProcessResponseData,
+                mockNextStep,
+                mockTriggerAnalyticsTradeConfirmation,
+            } = getMocks();
+            const tradeResponse = {
+                ...trade,
+                status: 'CONFIRMING',
+                orderId: 'orderId',
+                receiveAddress: ETH_ADDRESS,
+            } as ExchangeTrade;
+            tradeApi.doExchangeTrade = () => Promise.resolve(tradeResponse);
+
+            await store
+                .dispatch(
+                    exchangeThunks.confirmTradeThunk({
+                        returnUrl,
+                        receiveAddress: ETH_ADDRESS,
+                        account,
+                        trade,
+                        isTradeSubmitted: true,
+                        nextStep: mockNextStep,
+                        triggerAnalyticsTradeConfirmation: mockTriggerAnalyticsTradeConfirmation,
+                        processResponseData: mockProcessResponseData,
+                    }),
+                )
+                .unwrap();
+
+            const { trading } = store.getState().wallet;
+
+            expect(trading.exchange.transactionId).toBe('orderId');
+            expect(trading.trades).toEqual([
+                expect.objectContaining({ key: 'orderId', data: tradeResponse }),
+            ]);
+        });
     });
 
     it('should return undefined when request is aborted', async () => {
