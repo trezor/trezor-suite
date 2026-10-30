@@ -1,11 +1,10 @@
 import type { TransactionStore } from '../transactionStore';
-import type { TransactionStoreListener } from '../transactionStoreTypes';
 import {
     type TransactionStorePort,
     type TransactionStorePortMessage,
+    type TransactionStoreRpcMessage,
     type TransactionStoreRpcMethod,
-    isTransactionStoreRpcEvent,
-    isTransactionStoreRpcResponse,
+    isTransactionStoreRpcMessage,
 } from './transactionStoreRpcProtocol';
 
 export type TransactionStoreRpcClientDeps = {
@@ -21,25 +20,26 @@ export const createTransactionStoreRpcClient = (
     deps: TransactionStoreRpcClientDeps,
 ): TransactionStoreRpcClient => {
     const pendingCalls = new Map<number, PendingCall>();
-    const listeners = new Set<TransactionStoreListener>();
+    const subscriptions = new Map<number, (rows: unknown[]) => void>();
     let nextId = 0;
 
+    const post = (message: TransactionStoreRpcMessage) => deps.port.postMessage(message);
+
     const onMessage = ({ data }: TransactionStorePortMessage) => {
-        if (isTransactionStoreRpcEvent(data)) {
-            listeners.forEach(listener => listener(data.event));
+        if (!isTransactionStoreRpcMessage(data)) return;
 
-            return;
-        }
-        if (!isTransactionStoreRpcResponse(data)) return;
+        if (data.type === 'transactionStore/queryRows') {
+            subscriptions.get(data.subscriptionId)?.(data.rows);
+        } else if (data.type === 'transactionStore/response') {
+            const pendingCall = pendingCalls.get(data.id);
+            pendingCalls.delete(data.id);
 
-        const pendingCall = pendingCalls.get(data.id);
-        pendingCalls.delete(data.id);
-
-        if (data.isResolved) {
-            pendingCall?.resolve(data.value);
-        } else {
-            // Unexpected on the other side; the store's expected failures come back as `Result`.
-            pendingCall?.reject(new Error('Transaction store call failed'));
+            if (data.isResolved) {
+                pendingCall?.resolve(data.value);
+            } else {
+                // Unexpected on the other side; the store's expected failures come back as data.
+                pendingCall?.reject(new Error('Transaction store call failed'));
+            }
         }
     };
     deps.port.addEventListener('message', onMessage);
@@ -50,8 +50,7 @@ export const createTransactionStoreRpcClient = (
             new Promise<unknown>((resolve, reject) => {
                 const id = nextId++;
                 pendingCalls.set(id, { resolve, reject });
-                const request = { type: 'transactionStore/request', id, method, params };
-                deps.port.postMessage(request);
+                deps.port.postMessage({ type: 'transactionStore/request', id, method, params });
             }) as ReturnType<TransactionStore[M]>;
 
     return {
@@ -59,22 +58,29 @@ export const createTransactionStoreRpcClient = (
         ensureSynced: call('ensureSynced'),
         refreshAccounts: call('refreshAccounts'),
         requestFullHistory: call('requestFullHistory'),
-        getSyncStatus: call('getSyncStatus'),
         setKnownTokens: call('setKnownTokens'),
-        selectTransactions: call('selectTransactions'),
-        countTransactions: call('countTransactions'),
+        // The rows are the query's; its type travels with it.
+        query: call('query') as TransactionStore['query'],
+        subscribeQuery: ({ sql, parameters }, onRows) => {
+            const subscriptionId = nextId++;
+            // The rows are the query's; its type travels with it.
+            subscriptions.set(subscriptionId, onRows as (rows: unknown[]) => void);
+            post({
+                type: 'transactionStore/subscribeQuery',
+                subscriptionId,
+                query: { sql, parameters },
+            });
+
+            return () => {
+                subscriptions.delete(subscriptionId);
+                post({ type: 'transactionStore/unsubscribeQuery', subscriptionId });
+            };
+        },
         // The store on the other side stops first, then the client lets go of the port.
         dispose: () =>
             call('dispose')().finally(() => {
                 deps.port.removeEventListener('message', onMessage);
-                listeners.clear();
+                subscriptions.clear();
             }),
-        subscribe: listener => {
-            listeners.add(listener);
-
-            return Promise.resolve(() => {
-                listeners.delete(listener);
-            });
-        },
     };
 };

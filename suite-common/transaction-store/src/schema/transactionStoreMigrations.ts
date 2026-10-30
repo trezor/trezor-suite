@@ -71,4 +71,9 @@ export const TRANSACTION_STORE_MIGRATIONS: ReadonlyArray<ReadonlyArray<string>> 
         // Listed once the app has fed the network's definitions; before, no token is "fake".
         'CREATE TABLE token_definition_networks (symbol TEXT PRIMARY KEY)',
     ],
+    [
+        // A sync in progress as data, so the app reads it with the rest; the engine clears it
+        // on start, as a sync never outlives the worker.
+        'ALTER TABLE sync_state ADD COLUMN is_syncing INTEGER NOT NULL DEFAULT 0',
+    ],
 ];

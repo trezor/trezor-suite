@@ -1,8 +1,11 @@
 import { useSelector } from 'react-redux';
 
 import { selectIsTransactionStoreEnabled, suiteSettingsActions } from '@suite/settings';
-import { useQuery } from '@suite-common/react-query';
-import type { AccountSyncStatus } from '@suite-common/transaction-store';
+import {
+    type TransactionStoreRow,
+    toTransactionStoreQuery,
+    transactionStoreDb,
+} from '@suite-common/transaction-store';
 import { selectAccounts } from '@suite-common/wallet-core';
 import type { Account } from '@suite-common/wallet-types';
 import { Switch } from '@trezor/components';
@@ -11,44 +14,47 @@ import { SectionItem } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { injectEnsureTransactionStore } from './createEnsureTransactionStore';
-import {
-    transactionStoreQueryKeys,
-    useAccountSyncStatuses,
-    useTransactionStoreInvalidation,
-} from './transactionStoreQueries';
 import { selectIsTransactionStoreActive } from './transactionStoreSelectors';
+import { useTransactionStoreQuery } from './useTransactionStoreQuery';
 
-const useStoredTransactionCounts = (accountKeys: string[]) => {
-    const { ensureTransactionStore } = useServices(injectEnsureTransactionStore);
+/** Every stored account with its sync state and how many transactions it holds. */
+const STORED_ACCOUNTS_QUERY = toTransactionStoreQuery(
+    transactionStoreDb
+        .selectFrom('accounts as a')
+        .leftJoin('sync_state as s', 's.account_key', 'a.account_key')
+        .select(eb => [
+            'a.account_key',
+            's.is_syncing',
+            's.is_complete',
+            's.last_synced_at',
+            's.last_error',
+            eb
+                .selectFrom('transactions as t')
+                .select(tb => tb.fn.countAll<number>().as('count'))
+                .whereRef('t.account_key', '=', 'a.account_key')
+                .as('count'),
+        ]),
+);
 
-    return useQuery({
-        // Under the transactions key but no account's, so it refetches whenever any rows change.
-        queryKey: [...transactionStoreQueryKeys.allTransactions(), { counts: accountKeys }],
-        queryFn: async () => {
-            const { transactionStore } = ensureTransactionStore();
-            const counts = await Promise.all(
-                accountKeys.map(accountKey =>
-                    transactionStore.countTransactions({ accountKeys: [accountKey] }),
-                ),
-            );
+type StoredAccount = TransactionStoreRow<typeof STORED_ACCOUNTS_QUERY>;
 
-            return new Map(accountKeys.map((accountKey, index) => [accountKey, counts[index]]));
-        },
-    });
-};
+const describeStatus = (storedAccount: StoredAccount | undefined) => {
+    if (storedAccount === undefined) return 'Not registered';
+    if (storedAccount.last_synced_at === null && storedAccount.is_syncing !== 1) {
+        return storedAccount.last_error === null
+            ? 'Not asked for yet'
+            : `error · ${storedAccount.last_error}`;
+    }
 
-const describeStatus = (status: AccountSyncStatus | undefined, count: number | undefined) => {
-    if (status === undefined) return 'Not registered';
-    if (status.lastSyncedAt === null && status.status === 'idle') return 'Not asked for yet';
-
-    const history = status.isComplete ? 'whole history' : 'newest part';
+    const activity = storedAccount.is_syncing === 1 ? 'syncing' : 'idle';
+    const history = storedAccount.is_complete === 1 ? 'whole history' : 'newest part';
     const syncedAt =
-        status.lastSyncedAt === null
+        storedAccount.last_synced_at === null
             ? 'never synced'
-            : `synced ${new Date(status.lastSyncedAt).toLocaleTimeString()}`;
-    const error = status.lastError === null ? '' : ` · ${status.lastError}`;
+            : `synced ${new Date(storedAccount.last_synced_at).toLocaleTimeString()}`;
+    const error = storedAccount.last_error === null ? '' : ` · ${storedAccount.last_error}`;
 
-    return `${status.status} · ${count ?? 0} transactions (${history}) · ${syncedAt}${error}`;
+    return `${activity} · ${storedAccount.count ?? 0} transactions (${history}) · ${syncedAt}${error}`;
 };
 
 const getAccountTitle = (account: Account) =>
@@ -58,10 +64,7 @@ const getAccountTitle = (account: Account) =>
 const TransactionStoreAccounts = () => {
     const { ensureTransactionStore } = useServices(injectEnsureTransactionStore);
     const accounts = useSelector(selectAccounts).filter(account => account.visible);
-    const accountKeys = accounts.map(({ key }) => key);
-    const { data: statuses } = useAccountSyncStatuses(accountKeys);
-    const { data: counts } = useStoredTransactionCounts(accountKeys);
-    useTransactionStoreInvalidation();
+    const { rows: storedAccounts } = useTransactionStoreQuery(STORED_ACCOUNTS_QUERY);
 
     const requestFullHistory = (accountKey: string) =>
         ensureTransactionStore().transactionStore.requestFullHistory(accountKey);
@@ -73,8 +76,7 @@ const TransactionStoreAccounts = () => {
                     key={account.key}
                     title={getAccountTitle(account)}
                     description={describeStatus(
-                        statuses?.find(({ accountKey }) => accountKey === account.key),
-                        counts?.get(account.key),
+                        storedAccounts?.find(({ account_key }) => account_key === account.key),
                     )}
                     actions={
                         <SectionItem.Button

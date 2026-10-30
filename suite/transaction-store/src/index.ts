@@ -14,8 +14,12 @@ export {
     injectStartTransactionStoreFeed,
 } from './createStartTransactionStoreFeed';
 export { TransactionStoreDebug } from './TransactionStoreDebug';
-export { useAccountSyncStatuses, useTransactionStoreInvalidation } from './transactionStoreQueries';
 export {
+    type TransactionStoreQueryResult,
+    useTransactionStoreQuery,
+} from './useTransactionStoreQuery';
+export {
+    type AccountSyncState,
     type StoredAccountTransactions,
     type UseStoredAccountTransactionsParams,
     useStoredAccountTransactions,

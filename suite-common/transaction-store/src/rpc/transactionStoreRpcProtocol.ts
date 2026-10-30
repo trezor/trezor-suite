@@ -1,39 +1,29 @@
+import type { SqlQuery } from '../sqlite/transactionStoreSqlite';
 import type { TransactionStore } from '../transactionStore';
-import type { TransactionStoreEvent } from '../transactionStoreTypes';
 
-/** Everything but `subscribe`, which the client serves locally from forwarded events. */
-export type TransactionStoreRpcMethod = Exclude<keyof TransactionStore, 'subscribe'>;
+/** Everything but `subscribeQuery`, whose callback stays on the client. */
+export type TransactionStoreRpcMethod = Exclude<keyof TransactionStore, 'subscribeQuery'>;
 
-export const TRANSACTION_STORE_RPC_METHODS = [
-    'setAccounts',
-    'ensureSynced',
-    'refreshAccounts',
-    'requestFullHistory',
-    'getSyncStatus',
-    'setKnownTokens',
-    'selectTransactions',
-    'countTransactions',
-    'dispose',
-] as const satisfies ReadonlyArray<TransactionStoreRpcMethod>;
-
-export type TransactionStoreRpcRequest = {
-    [M in TransactionStoreRpcMethod]: {
-        type: 'transactionStore/request';
-        id: number;
-        method: M;
-        params: Parameters<TransactionStore[M]>;
-    };
-}[TransactionStoreRpcMethod];
-
-export type TransactionStoreRpcResponse =
+/**
+ * Every message between the app and the store. Both ends are built from the same
+ * `TransactionStore` type and ship together, so a message is trusted once its `type` says it is
+ * the store's; nothing else is checked.
+ */
+export type TransactionStoreRpcMessage =
+    | {
+          [M in TransactionStoreRpcMethod]: {
+              type: 'transactionStore/request';
+              id: number;
+              method: M;
+              params: Parameters<TransactionStore[M]>;
+          };
+      }[TransactionStoreRpcMethod]
     | { type: 'transactionStore/response'; id: number; isResolved: true; value: unknown }
     // No error detail crosses the boundary; it could carry account data.
-    | { type: 'transactionStore/response'; id: number; isResolved: false };
-
-export type TransactionStoreRpcEvent = {
-    type: 'transactionStore/event';
-    event: TransactionStoreEvent;
-};
+    | { type: 'transactionStore/response'; id: number; isResolved: false }
+    | { type: 'transactionStore/subscribeQuery'; subscriptionId: number; query: SqlQuery }
+    | { type: 'transactionStore/unsubscribeQuery'; subscriptionId: number }
+    | { type: 'transactionStore/queryRows'; subscriptionId: number; rows: unknown[] };
 
 export type TransactionStorePortMessage = { data: unknown };
 
@@ -51,25 +41,12 @@ export type TransactionStorePort = {
     removeEventListener: (type: 'message', listener: MessageListener) => void;
 };
 
-const isObject = (value: unknown): value is Record<string, unknown> =>
-    typeof value === 'object' && value !== null;
-
-export const isTransactionStoreRpcRequest = (
+/** The store's messages share the port with others, such as the worker's own. */
+export const isTransactionStoreRpcMessage = (
     message: unknown,
-): message is TransactionStoreRpcRequest =>
-    isObject(message) &&
-    message.type === 'transactionStore/request' &&
-    typeof message.id === 'number' &&
-    TRANSACTION_STORE_RPC_METHODS.some(method => method === message.method) &&
-    Array.isArray(message.params);
-
-export const isTransactionStoreRpcResponse = (
-    message: unknown,
-): message is TransactionStoreRpcResponse =>
-    isObject(message) &&
-    message.type === 'transactionStore/response' &&
-    typeof message.id === 'number' &&
-    typeof message.isResolved === 'boolean';
-
-export const isTransactionStoreRpcEvent = (message: unknown): message is TransactionStoreRpcEvent =>
-    isObject(message) && message.type === 'transactionStore/event' && isObject(message.event);
+): message is TransactionStoreRpcMessage =>
+    typeof message === 'object' &&
+    message !== null &&
+    'type' in message &&
+    typeof message.type === 'string' &&
+    message.type.startsWith('transactionStore/');

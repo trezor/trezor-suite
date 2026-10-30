@@ -13,7 +13,6 @@
     "dependencies": {
         "@evolu/common": "8.10.0",
         "@evolu/web": "patch:@evolu/web@npm%3A3.1.2#~/.yarn/patches/@evolu-web-npm-3.1.2-b0d061c39c.patch",
-        "@suite-common/react-query": "workspace:*",
         "@suite-common/token-definitions": "workspace:*",
         "@suite-common/transaction-search": "workspace:*",
         "@suite-common/transaction-store": "workspace:*",

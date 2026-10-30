@@ -1,12 +1,10 @@
 import type { TransactionStore } from '../transactionStore';
-import type { Dispose } from '../transactionStoreTypes';
+import type { Dispose, Unsubscribe } from '../transactionStoreTypes';
 import {
     type TransactionStorePort,
     type TransactionStorePortMessage,
-    type TransactionStoreRpcEvent,
-    type TransactionStoreRpcRequest,
-    type TransactionStoreRpcResponse,
-    isTransactionStoreRpcRequest,
+    type TransactionStoreRpcMessage,
+    isTransactionStoreRpcMessage,
 } from './transactionStoreRpcProtocol';
 
 export type StartTransactionStoreRpcHostDeps = {
@@ -14,9 +12,10 @@ export type StartTransactionStoreRpcHostDeps = {
     port: TransactionStorePort;
 };
 
-const callStore = (store: TransactionStore, request: TransactionStoreRpcRequest) => {
-    // The request was validated against the method list, and each method's parameters come
-    // from the same `TransactionStore` type on the client.
+type RequestMessage = Extract<TransactionStoreRpcMessage, { type: 'transactionStore/request' }>;
+
+const callStore = (store: TransactionStore, request: RequestMessage) => {
+    // Each method's parameters come from the same `TransactionStore` type on the client.
     const method = store[request.method] as (...params: unknown[]) => Promise<unknown>;
 
     return method(...request.params);
@@ -24,30 +23,55 @@ const callStore = (store: TransactionStore, request: TransactionStoreRpcRequest)
 
 /**
  * Serves a store over a port, e.g. from a worker to the app. The returned dispose detaches from
- * the port; the store keeps running.
+ * the port and ends the app's live queries; the store keeps running.
  */
 export const startTransactionStoreRpcHost = (deps: StartTransactionStoreRpcHostDeps): Dispose => {
-    const post = (message: TransactionStoreRpcResponse | TransactionStoreRpcEvent) =>
-        deps.port.postMessage(message);
+    const subscriptions = new Map<number, Unsubscribe>();
 
-    const unsubscribePromise = deps.transactionStore.subscribe(event =>
-        post({ type: 'transactionStore/event', event }),
-    );
+    const post = (message: TransactionStoreRpcMessage) => deps.port.postMessage(message);
 
     const onMessage = ({ data }: TransactionStorePortMessage) => {
-        if (!isTransactionStoreRpcRequest(data)) return;
+        if (!isTransactionStoreRpcMessage(data)) return;
 
-        callStore(deps.transactionStore, data).then(
-            value =>
-                post({ type: 'transactionStore/response', id: data.id, isResolved: true, value }),
-            () => post({ type: 'transactionStore/response', id: data.id, isResolved: false }),
-        );
+        switch (data.type) {
+            case 'transactionStore/request':
+                callStore(deps.transactionStore, data).then(
+                    value =>
+                        post({
+                            type: 'transactionStore/response',
+                            id: data.id,
+                            isResolved: true,
+                            value,
+                        }),
+                    () =>
+                        post({ type: 'transactionStore/response', id: data.id, isResolved: false }),
+                );
+                break;
+            case 'transactionStore/subscribeQuery':
+                subscriptions.set(
+                    data.subscriptionId,
+                    deps.transactionStore.subscribeQuery(data.query, rows =>
+                        post({
+                            type: 'transactionStore/queryRows',
+                            subscriptionId: data.subscriptionId,
+                            rows,
+                        }),
+                    ),
+                );
+                break;
+            case 'transactionStore/unsubscribeQuery':
+                subscriptions.get(data.subscriptionId)?.();
+                subscriptions.delete(data.subscriptionId);
+                break;
+        }
     };
     deps.port.addEventListener('message', onMessage);
 
     return () => {
         deps.port.removeEventListener('message', onMessage);
+        subscriptions.forEach(unsubscribe => unsubscribe());
+        subscriptions.clear();
 
-        return unsubscribePromise.then(unsubscribe => unsubscribe());
+        return Promise.resolve();
     };
 };

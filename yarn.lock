@@ -12345,6 +12345,7 @@ __metadata:
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
+    kysely: "npm:0.29.5"
   languageName: unknown
   linkType: soft
 
@@ -17336,7 +17337,6 @@ __metadata:
   dependencies:
     "@evolu/common": "npm:8.10.0"
     "@evolu/web": "patch:@evolu/web@npm%3A3.1.2#~/.yarn/patches/@evolu-web-npm-3.1.2-b0d061c39c.patch"
-    "@suite-common/react-query": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
     "@suite-common/transaction-search": "workspace:*"
     "@suite-common/transaction-store": "workspace:*"
@@ -35387,7 +35387,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"kysely@npm:^0.29.5":
+"kysely@npm:0.29.5, kysely@npm:^0.29.5":
   version: 0.29.5
   resolution: "kysely@npm:0.29.5"
   checksum: 10/f62218965838cbc1900ad6364757d0fa5537089c5d0627af9f3cff08eb719b8d81840b5f5d22cdd3b41e4255c1b60ec50a602b589b07439d7485f05feceb5f4a

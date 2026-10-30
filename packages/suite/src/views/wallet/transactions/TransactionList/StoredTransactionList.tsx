@@ -38,12 +38,12 @@ import { PendingGroupHeader } from './TransactionsGroup/PendingGroupHeader';
 const SEARCH_DEBOUNCE_MS = 200;
 
 const describeSyncStatus = (
-    { syncStatus, storedCount, isSyncing }: StoredAccountTransactions,
+    { syncState, storedCount }: StoredAccountTransactions,
     isSearching: boolean,
 ) => {
-    const history = syncStatus?.isComplete ? 'whole history' : 'newest part of the history';
-    const activity = isSyncing ? 'syncing' : 'up to date';
-    const error = syncStatus?.lastError ? ` · last sync failed: ${syncStatus.lastError}` : '';
+    const history = syncState?.isComplete ? 'whole history' : 'newest part of the history';
+    const activity = syncState?.isSyncing ? 'syncing' : 'up to date';
+    const error = syncState?.lastError ? ` · last sync failed: ${syncState.lastError}` : '';
     const count = isSearching ? `${storedCount} matching` : `${storedCount} stored`;
 
     return `Transaction store: ${activity} · ${count} (${history})${error}`;
@@ -127,9 +127,9 @@ export const StoredTransactionList = ({ account }: StoredTransactionListProps) =
         search,
         hideSuspicious,
     });
-    const { transactions, storedCount, syncStatus, isLoading, requestFullHistory } =
+    const { transactions, storedCount, syncState, isLoading, requestFullHistory } =
         storedTransactions;
-    const isComplete = syncStatus?.isComplete ?? false;
+    const isComplete = syncState?.isComplete ?? false;
 
     const pendingTxsByDate = useMemo(
         () => groupTransactionsByDate(transactions.filter(isPending), 'day'),

@@ -4,15 +4,22 @@ export {
 } from './createTransactionStoreCompositionRoot';
 export { type TransactionStore, type TransactionStoreDep } from './transactionStore';
 export type {
-    AccountSyncStatus,
-    StoredTransaction,
     TransactionSourceErrorType,
     TransactionStoreAccount,
-    TransactionStoreEvent,
     Dispose,
-    TransactionStoreListener,
     Unsubscribe,
 } from './transactionStoreTypes';
+export {
+    type TransactionStoreDatabase,
+    type TransactionStoreQuery,
+    type TransactionStoreRow,
+    toTransactionStoreQuery,
+    transactionStoreDb,
+} from './query/transactionStoreDatabase';
+export {
+    type SelectAccountTransactionsParams,
+    selectAccountTransactions,
+} from './query/selectAccountTransactions';
 export type {
     SqlExecResult,
     SqlQuery,
@@ -30,10 +37,6 @@ export {
     type BlockchainLinkTransactionSourceDeps,
     createBlockchainLinkTransactionSource,
 } from './source/createBlockchainLinkTransactionSource';
-export type {
-    SelectTransactionsParams,
-    TransactionsFilter,
-} from './repository/createTransactionRepository';
 export type { FlatTransfer, TransferKind } from './repository/flattenTransfers';
 export type {
     TransactionSearch,

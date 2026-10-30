@@ -15,6 +15,7 @@
         "@suite-common/wallet-config": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/type-utils": "workspace:*",
-        "@trezor/utils": "workspace:*"
+        "@trezor/utils": "workspace:*",
+        "kysely": "0.29.5"
     }
 }

@@ -15,6 +15,11 @@ The store opens no backend connection of its own. Every page of history comes fr
 Connect, which already holds one connection per network on the user's chosen backend, and which
 reaches Electrum through the desktop main process. Asking by descriptor never involves the device.
 
+The app reads with queries of its own. It builds them with Kysely (`transactionStoreDb`) against
+the store's table types (`TransactionStoreDatabase`) and sends the compiled SQL; the store runs it
+read-only (`PRAGMA query_only`) and sends new rows whenever a write changes the result. The only
+other API is a handful of commands, which say what to sync.
+
 ## Components
 
 ```mermaid
@@ -27,8 +32,10 @@ flowchart TB
         feed["startTransactionStoreFeed"]
         service["ensureTransactionStore<br/>(starts the worker when not running)"]
         client["RPC client<br/>TransactionStore"]
-        hook["useStoredAccountTransactions<br/>(react-query)"]
         list["StoredTransactionList"]
+        hook["useStoredAccountTransactions"]
+        live["useTransactionStoreQuery"]
+        kysely["transactionStoreDb (Kysely)<br/>selectAccountTransactions"]
         connect["TrezorConnect"]
 
         root --> service
@@ -37,9 +44,12 @@ flowchart TB
         redux -- "accounts, revisions,<br/>token definitions" --> feed
         feed -- "setAccounts / refreshAccounts /<br/>setKnownTokens" --> client
         service --> client
-        list --> hook
         redux -- "dust txids, not-scam txids" --> list
-        hook -- "ensureSynced / selectTransactions /<br/>countTransactions / requestFullHistory" --> client
+        list --> hook
+        hook -- "builds and compiles" --> kysely
+        hook -- "ensureSynced /<br/>requestFullHistory" --> client
+        hook --> live
+        live -- "subscribeQuery(compiled SQL)" --> client
         service -- "getAccountInfo by descriptor" --> connect
     end
 
@@ -49,74 +59,52 @@ flowchart TB
         host["startTransactionStoreRpcHost"]
         relay["startConnectRelay"]
         engine["createTransactionStoreCompositionRoot<br/>TransactionStore"]
+        liveQueries["createLiveQueries<br/>(read-only, re-run after each write)"]
         queue["createSyncQueue<br/>(one sync per account at a time)"]
         sync["createSyncAccountTransactions"]
-        repo["createTransactionRepository"]
-        clauses["toTransactionSearchClause<br/>toSuspiciousClause"]
+        repo["createTransactionRepository<br/>(the engine's own reads and writes)"]
         source["createBlockchainLinkTransactionSource"]
         sqlite[("SQLite in OPFS<br/>trezor-transaction-store")]
 
         port --> host --> engine
         port --> relay
         engine --> queue --> sync
-        engine --> repo
+        engine --> liveQueries
         sync --> source
         sync --> repo
-        repo --> clauses
+        queue -- "is_syncing" --> repo
+        repo -- "written" --> liveQueries
         repo --> sqlite
+        liveQueries --> sqlite
         source --> relay
     end
 
     backends(("Backends<br/>(the user's choice)"))
 
-    client <-->|"postMessage RPC<br/>+ store events"| port
+    client <-->|"commands, compiled queries /<br/>responses, rows when changed"| port
     service <-->|"getAccountInfo / accountInfo,<br/>startFailed"| port
     connect --> backends
 ```
 
 | Component                                                          | Package | Role                                                                                                                            |
 | ------------------------------------------------------------------ | ------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `transactionStoreDb` / `TransactionStoreDatabase`                  | engine  | Kysely over the store's table types. It only compiles; the store runs the SQL.                                                  |
+| `selectAccountTransactions`                                        | engine  | An account's transactions, filtered by asset, search and suspiciousness; the caller picks columns, order and page, or counts.   |
+| `matchesTransactionSearch`                                         | engine  | The Redux list's search syntax as a Kysely condition.                                                                           |
+| `isNotSuspicious`                                                  | engine  | The app's phishing detectors, except dust, as a Kysely condition.                                                               |
 | `createTransactionStoreCompositionRoot`                            | engine  | Migrates the schema and wires the engine into a `TransactionStore`.                                                             |
-| `createSyncQueue`                                                  | engine  | Runs one sync per account at a time; a request arriving mid-sync runs once more after it. Reports each account's sync status.   |
+| `createLiveQueries`                                                | engine  | Runs the app's queries read-only and re-runs the open ones after each write, sending only changed results.                      |
+| `createSyncQueue`                                                  | engine  | Runs one sync per account at a time; a request arriving mid-sync runs once more after it. Marks the account as syncing.         |
 | `createSyncAccountTransactions`                                    | engine  | Fetches pages from the source and stores them: the newest page (`latest`) or the whole history (`full`).                        |
-| `createTransactionRepository`                                      | engine  | All SQL: accounts, transactions, transfers, sync state and known tokens. Filters by asset, search and suspiciousness.           |
-| `toTransactionSearchClause`                                        | engine  | The Redux list's search syntax as SQL.                                                                                          |
-| `toSuspiciousClause`                                               | engine  | The app's phishing detectors, except dust, as SQL.                                                                              |
+| `createTransactionRepository`                                      | engine  | The engine's own reads and writes, in Kysely. Each write is atomic and tells the live queries.                                  |
 | `createBlockchainLinkTransactionSource`                            | engine  | Reads history pages through a `BlockchainLinkClient`, which on web and desktop is the relay.                                    |
-| `createTransactionStoreRpcClient` / `startTransactionStoreRpcHost` | engine  | The typed RPC between the app and the worker.                                                                                   |
+| `createTransactionStoreRpcClient` / `startTransactionStoreRpcHost` | engine  | The RPC between the app and the worker: commands, one-off queries and live queries.                                             |
 | `transactionStoreWorker`                                           | host    | The worker entry. Opens SQLite, starts the engine and serves it.                                                                |
 | `startConnectRelay`                                                | host    | Sends each `getAccountInfo` to the app and resolves it with Connect's answer.                                                   |
-| `ensureTransactionStore`                                           | host    | Spawns the worker on first use and owns it. Answers the relay with Connect's `getAccountInfo`.                                  |
+| `ensureTransactionStore`                                           | host    | Starts the worker when it is not running and owns it. Answers the relay with Connect's `getAccountInfo`.                        |
 | `startTransactionStoreFeed`                                        | host    | Pushes what changed in Redux to the store: accounts, account revisions and known tokens. Stops the store when it gets disabled. |
-| `useStoredAccountTransactions`                                     | host    | A page, its count and the sync status for React. Refetches on the store's events.                                               |
-
-## Where this is going
-
-Planned next, not built yet: typed queries and live results over the RPC. The app builds queries
-with Kysely against the store's table types; the worker runs them read-only and pushes new rows
-whenever a write changes a result. That replaces the store events, `selectTransactions`,
-`countTransactions`, `getSyncStatus` and react-query. Sync status becomes a column the queue writes.
-
-```mermaid
-flowchart LR
-    subgraph main["App main thread"]
-        list["StoredTransactionList"] --> live["useLiveQuery"]
-        live --> kysely["Kysely<br/>(compiles only)"]
-    end
-
-    subgraph worker["Transaction store worker"]
-        live_host["Live queries<br/>(re-run after each write batch)"]
-        writes["Sync queue / setAccounts /<br/>setKnownTokens"]
-        sqlite[("SQLite")]
-
-        live_host -- "read-only" --> sqlite
-        writes --> sqlite
-        writes -- "committed" --> live_host
-    end
-
-    kysely -- "subscribeQuery(compiled SQL)" --> live_host
-    live_host -- "rows, when changed" --> live
-```
+| `useTransactionStoreQuery`                                         | host    | Keeps a compiled query open in the store and returns its latest rows.                                                           |
+| `useStoredAccountTransactions`                                     | host    | A page, its count and the sync state for React, as three live queries.                                                          |
 
 ## Reading a page
 
@@ -128,24 +116,26 @@ sequenceDiagram
     participant Queue as Sync queue
     participant Backend as Connect (app thread)
 
+    UI->>Store: subscribeQuery(page), subscribeQuery(count), subscribeQuery(sync_state)
+    Store-->>UI: rows now (empty for a new account)
     UI->>Store: ensureSynced([account])
     alt never synced
         Store->>Queue: requestSync(latest)
+        Queue->>Store: is_syncing = 1
+        Store-->>UI: sync_state rows
         Queue->>Backend: newest page
         Backend-->>Queue: transactions
-        Queue->>Store: stored → transactionsChanged
+        Queue->>Store: stored, is_syncing = 0
+        Store-->>UI: page, count and sync_state rows
     end
-    Store-->>UI: sync status
-    UI->>Store: selectTransactions(page, search, hideSuspicious)
-    Store-->>UI: rows from SQLite
 
     Note over UI,Store: Paging past what is stored
     UI->>Store: requestFullHistory(account)
     Store->>Queue: requestSync(full)
     loop until the last page
         Queue->>Backend: next page
-        Queue->>Store: stored → transactionsChanged
-        Store-->>UI: event → refetch
+        Queue->>Store: stored
+        Store-->>UI: changed rows only
     end
 
     Note over UI,Store: The app's refresh found the account changed
@@ -183,6 +173,7 @@ erDiagram
         INTEGER is_complete
         INTEGER last_synced_at
         TEXT last_error
+        INTEGER is_syncing
     }
     transfers {
         TEXT account_key PK, FK

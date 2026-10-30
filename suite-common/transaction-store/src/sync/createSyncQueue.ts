@@ -1,15 +1,12 @@
 import type { TransactionRepositoryDep } from '../repository/createTransactionRepository';
-import type { AccountSyncStatus, SyncMode } from '../transactionStoreTypes';
+import type { SyncMode } from '../transactionStoreTypes';
 import type { SyncAccountTransactionsDep } from './createSyncAccountTransactions';
 
-export type SyncQueueDeps = SyncAccountTransactionsDep &
-    TransactionRepositoryDep & {
-        onStatusChanged: (status: AccountSyncStatus) => void;
-    };
+export type SyncQueueDeps = SyncAccountTransactionsDep & TransactionRepositoryDep;
 
 export type SyncQueue = {
     requestSync: (params: { accountKeys: string[]; mode: SyncMode }) => void;
-    getSyncStatus: (accountKey: string) => AccountSyncStatus;
+    isSyncing: (accountKey: string) => boolean;
     /** Resolves once the account's sync, with any asked for while it ran, is done. */
     whenSettled: (accountKey: string) => Promise<void>;
     /** Takes no more requests and resolves once the running syncs are done. */
@@ -31,18 +28,9 @@ export const createSyncQueue = (deps: SyncQueueDeps): SyncQueue => {
     const reruns = new Map<string, SyncMode>();
     let isClosed = false;
 
-    const getSyncStatus = (accountKey: string): AccountSyncStatus => {
-        const syncState = deps.transactionRepository.selectSyncState(accountKey);
-        const getStatus = (): AccountSyncStatus['status'] => {
-            if (running.has(accountKey)) return 'syncing';
-
-            return syncState.lastError === null ? 'idle' : 'error';
-        };
-
-        return { accountKey, status: getStatus(), ...syncState };
-    };
-
-    const notifyStatus = (accountKey: string) => deps.onStatusChanged(getSyncStatus(accountKey));
+    // In the database, so the app reads it with the rest of the account's state.
+    const setSyncing = (accountKey: string, isSyncing: boolean) =>
+        deps.transactionRepository.setSyncing({ accountKey, isSyncing });
 
     const takeRerun = (accountKey: string) => {
         const mode = reruns.get(accountKey);
@@ -68,22 +56,27 @@ export const createSyncQueue = (deps: SyncQueueDeps): SyncQueue => {
             if (isClosed) return;
 
             accountKeys.forEach(accountKey => {
+                // Only stored accounts can be synced, or have a sync state.
+                if (deps.transactionRepository.selectAccount(accountKey) === undefined) return;
                 if (running.has(accountKey)) {
                     reruns.set(accountKey, mergeModes(reruns.get(accountKey), mode));
 
                     return;
                 }
 
+                setSyncing(accountKey, true);
                 const run = runSyncs(accountKey, mode).finally(() => {
                     running.delete(accountKey);
-                    notifyStatus(accountKey);
+                    // The account may have been removed meanwhile; then there is nothing to clear.
+                    if (deps.transactionRepository.selectAccount(accountKey) !== undefined) {
+                        setSyncing(accountKey, false);
+                    }
                 });
                 running.set(accountKey, run);
-                notifyStatus(accountKey);
             });
         },
 
-        getSyncStatus,
+        isSyncing: accountKey => running.has(accountKey),
 
         whenSettled: accountKey => running.get(accountKey) ?? Promise.resolve(),
 

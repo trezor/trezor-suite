@@ -7,8 +7,6 @@ import type { SyncMode, TransactionSourceErrorType } from '../transactionStoreTy
 export type SyncAccountTransactionsDeps = TransactionRepositoryDep &
     TransactionSourceDep & {
         now: () => number;
-        /** After each page that changed rows, so lists fill in while a long history syncs. */
-        onTransactionsStored: (accountKey: string) => void;
     };
 
 export type SyncAccountTransactionsParams = {
@@ -64,11 +62,8 @@ export const createSyncAccountTransactions =
                 accountKey,
                 txids: transactions.map(({ txid }) => txid),
             });
-            const changes = deps.transactionRepository.upsertTransactions({
-                accountKey,
-                transactions,
-            });
-            if (changes > 0) deps.onTransactionsStored(accountKey);
+            // Each page is a write of its own, so lists fill in while a long history syncs.
+            deps.transactionRepository.upsertTransactions({ accountKey, transactions });
 
             if (!hasNextPage) {
                 isComplete = true;
