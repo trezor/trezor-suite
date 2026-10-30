@@ -13,13 +13,72 @@ jobs:
   build-app:
     uses: ./.github/workflows/build-suite-desktop-e2e.yml
 
-  run-e2e-windows:
+  # EXPERIMENT: Docker engine inside a stock Ubuntu WSL distro, tenv from the shared compose file.
+  run-e2e-windows-docker:
     needs:
       - build-app
-    uses: ./.github/workflows/template-suite-run-e2e-windows.yml
-    with:
-      download-artifact-name: "desktop-app-build-e2e"
-      currents-ci-build-id: "manual-windows-run-${{ github.run_id }}-${{ github.run_attempt }}"
-    secrets:
-      currents-record-key: ${{ secrets.CURRENTS_RECORD_KEY }}
-      e2e-passphrase: ${{ secrets.E2E_TEST_PASSPHRASE }}
+    name: Run e2e on Windows via Docker in WSL (${{ matrix.runner }}/${{ strategy.job-total }})
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [1, 2, 3, 4]
+    runs-on: windows-latest
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v6
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Install e2e workspace
+        env:
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
+        run: yarn workspaces focus @trezor/suite-e2e
+
+      - name: Install Playwright Chromium
+        run: yarn workspace @trezor/suite-e2e exec playwright install chromium
+
+      - name: Prefetch Electron binary
+        run: node node_modules/electron/install.js
+
+      - name: Build message system config
+        run: yarn message-system-sign-config
+
+      - name: Download desktop build
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: desktop-app-build-e2e
+          path: artifact-download
+
+      - name: Extract desktop build
+        run: tar -xzf artifact-download\app-build.tar.gz -C suite\desktop-app
+
+      - name: Download Ubuntu WSL rootfs
+        run: curl.exe -sSL -o "${{ runner.temp }}\ubuntu-wsl.tar.gz" https://cloud-images.ubuntu.com/wsl/releases/24.04/current/ubuntu-noble-wsl-amd64-wsl.rootfs.tar.gz
+
+      - name: Start Docker in WSL, trezor-user-env via compose, run tests
+        env:
+          GITHUB_ACTION: true
+          PASSPHRASE: ${{ secrets.E2E_TEST_PASSPHRASE }}
+          CURRENTS_PROJECT_ID: "q2uGxh"
+          CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
+          CURRENTS_CI_BUILD_ID: "docker-wsl-experiment-${{ github.run_id }}-${{ github.run_attempt }}"
+          GH_BRANCH: ${{ github.ref_name }}
+        run: yarn workspace @trezor/suite-e2e exec tsx ./scripts/windows/run-e2e-docker.ts "${{ runner.temp }}\ubuntu-wsl.tar.gz"
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: docker-wsl-logs-${{ matrix.runner }}
+          path: |
+            suite/e2e/tenv-logs
+            docker/trezor-user-env-logs
+          if-no-files-found: warn
+          retention-days: 7
