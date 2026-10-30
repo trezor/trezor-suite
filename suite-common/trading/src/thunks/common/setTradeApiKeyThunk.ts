@@ -11,6 +11,7 @@ import {
 } from '../../selectors/tradingSelectors';
 import { tradeApi } from '../../tradeApi';
 import {
+    createInstallTradeApiKey,
     createSaltedTradeApiKey,
     generateTradeApiInstallSalt,
 } from '../../utils/tradeApiSaltUtils';
@@ -18,11 +19,11 @@ import {
 type TradeApiKeyAccount = Pick<Account, 'descriptor' | 'deviceState'>;
 
 type TradeApiKeyThunkParams = {
-    account: TradeApiKeyAccount;
+    account: TradeApiKeyAccount | undefined;
 };
 
-const resolveTradeApiSalt = (
-    account: TradeApiKeyAccount,
+export const resolveTradeApiKey = (
+    account: TradeApiKeyAccount | undefined,
     dispatch: Dispatch,
     getState: () => TradingRootState,
 ) => {
@@ -33,18 +34,15 @@ const resolveTradeApiSalt = (
         dispatch(tradingActions.setTradeApiInstallSalt(installSalt));
     }
 
-    return selectTradeApiDeviceSalt(getState(), account.deviceState) ?? installSalt;
-};
+    if (!account) {
+        return createInstallTradeApiKey(installSalt);
+    }
 
-export const resolveTradeApiKey = (
-    account: TradeApiKeyAccount,
-    dispatch: Dispatch,
-    getState: () => TradingRootState,
-) =>
-    createSaltedTradeApiKey({
+    return createSaltedTradeApiKey({
         descriptor: account.descriptor,
-        salt: resolveTradeApiSalt(account, dispatch, getState),
+        salt: selectTradeApiDeviceSalt(getState(), account.deviceState) ?? installSalt,
     });
+};
 
 export type SetTradeApiKeyThunkState = TradingRootState;
 

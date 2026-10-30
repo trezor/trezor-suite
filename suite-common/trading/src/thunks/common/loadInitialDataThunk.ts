@@ -17,7 +17,7 @@ import { tradingSellActions } from '../../reducers/sellReducer';
 import { tradingActions } from '../../reducers/tradingCommonReducer';
 import {
     type TradingRootStateWithAccounts,
-    selectTradingAccountAccordingActiveSection,
+    selectTradeApiKeyAccount,
     selectTradingActiveSection,
     selectTradingBuyInfo,
     selectTradingExchangeInfo,
@@ -58,7 +58,7 @@ export const loadInitialDataThunk = createThunk<
         { activeSection, forcedAnonymousId, forceReload = false },
         { dispatch, getState, extra },
     ) => {
-        const sectionAccount = selectTradingAccountAccordingActiveSection(
+        const sectionAccount = selectTradeApiKeyAccount(
             getState(),
             activeSection,
             extra.services.getSelectedAccount(),
@@ -70,13 +70,14 @@ export const loadInitialDataThunk = createThunk<
             await dispatch(ensureTradeApiDeviceSaltThunk({ account: sectionAccount }));
         }
 
-        const account = selectTradingAccountAccordingActiveSection(
+        const currentSection = selectTradingActiveSection(getState());
+        const account = selectTradeApiKeyAccount(
             getState(),
-            selectTradingActiveSection(getState()),
+            currentSection,
             extra.services.getSelectedAccount(),
         );
 
-        if (account) {
+        if (account || currentSection === 'buy') {
             dispatch(setTradeApiKeyThunk({ account }));
         } else {
             tradeApi.createAnonymousApiKey(forcedAnonymousId || TRADING_ANONYMOUS_ID);

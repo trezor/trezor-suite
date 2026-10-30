@@ -17,12 +17,21 @@ import {
     prepareTradingReducer,
     tradeApi,
     tradingActions,
+    tradingBuyActions,
     tradingExchangeActions,
     tradingSellActions,
 } from '@suite-common/trading';
+import {
+    createInstallTradeApiKey,
+    createSaltedTradeApiKey,
+} from '@suite-common/trading/src/utils/tradeApiSaltUtils';
 import { type AccountsState, prepareAccountsReducer } from '@suite-common/wallet-core';
 import { mockSetAccountAddMetadata } from '@suite-common/wallet-core/mocks';
-import { type AccountKey, type SelectedAccountStatus } from '@suite-common/wallet-types';
+import {
+    type AccountKey,
+    type SelectedAccountStatus,
+    asAccountDescriptor,
+} from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
@@ -52,7 +61,12 @@ type StoreState = {
     router: RouterState;
     modal: ModalState;
 };
-const accounts = [ACCOUNT];
+const RECEIVE_ACCOUNT = {
+    ...ACCOUNT,
+    descriptor: asAccountDescriptor('receiveDescriptor'),
+    key: mockAccountKey({ descriptor: 'receiveDescriptor' }),
+};
+const accounts = [ACCOUNT, RECEIVE_ACCOUNT];
 
 interface Args {
     trading?: TradingState;
@@ -453,6 +467,29 @@ describe('tradingMiddleware', () => {
         expect(tradeApi.setApiKey).toHaveBeenCalledTimes(1);
         expect(store.getState().wallet.trading[section].tradingAccountKey).toEqual(
             'btc-descriptor',
+        );
+    });
+
+    it('sets the API key of the buy receive account and falls back to the install key for a custom address', () => {
+        const store = initStore(
+            getInitialState({
+                trading: { ...initialState, activeSection: 'buy' },
+                router: { ...getInitialState().router },
+            }),
+        );
+        const getInstallSalt = () => store.getState().wallet.trading.tradeApiInstallSalt ?? '';
+
+        store.dispatch(tradingBuyActions.setReceiveAccountKey(RECEIVE_ACCOUNT.key));
+        expect(tradeApi.setApiKey).toHaveBeenLastCalledWith(
+            createSaltedTradeApiKey({
+                descriptor: RECEIVE_ACCOUNT.descriptor,
+                salt: getInstallSalt(),
+            }),
+        );
+
+        store.dispatch(tradingBuyActions.setReceiveAccountKey(undefined));
+        expect(tradeApi.setApiKey).toHaveBeenLastCalledWith(
+            createInstallTradeApiKey(getInstallSalt()),
         );
     });
 

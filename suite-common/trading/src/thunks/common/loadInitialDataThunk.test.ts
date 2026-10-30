@@ -21,6 +21,7 @@ import platformsFixture from '../../__fixtures__/platforms.json';
 import { TRADE_API_RELOAD_DATA_AFTER_MS, TRADING_ANONYMOUS_ID } from '../../constants';
 import { tradingBuyActions } from '../../reducers/buyReducer';
 import { tradingExchangeActions } from '../../reducers/exchangeReducer';
+import { tradingSellActions } from '../../reducers/sellReducer';
 import {
     type TradingState,
     initialState,
@@ -28,7 +29,11 @@ import {
 } from '../../reducers/tradingCommonReducer';
 import { prepareTradingReducer } from '../../reducers/tradingReducer';
 import { tradeApi } from '../../tradeApi';
-import { createSaltedTradeApiKey, deriveTradeApiDeviceSalt } from '../../utils/tradeApiSaltUtils';
+import {
+    createInstallTradeApiKey,
+    createSaltedTradeApiKey,
+    deriveTradeApiDeviceSalt,
+} from '../../utils/tradeApiSaltUtils';
 
 jest.mock('../../tradeApi');
 
@@ -112,7 +117,7 @@ describe('loadInitialDataThunk catalog cache', () => {
     it('loads the complete catalog on first use', async () => {
         const { services } = initTestServices();
 
-        await services.store.dispatch(loadInitialDataThunk({ activeSection: 'buy' })).unwrap();
+        await services.store.dispatch(loadInitialDataThunk({ activeSection: 'sell' })).unwrap();
 
         expectCatalogCalls(1);
         expect(services.store.getState().wallet.trading).toMatchObject({
@@ -150,13 +155,13 @@ describe('loadInitialDataThunk catalog cache', () => {
         'updates API identity on account $scenario without reloading',
         async ({ previousAccount, selectedAccount }) => {
             const { services } = await initLoadedTestServices();
-            services.store.dispatch(tradingBuyActions.setTradingAccountKey(previousAccount?.key));
-            await services.store.dispatch(loadInitialDataThunk({ activeSection: 'buy' })).unwrap();
+            services.store.dispatch(tradingSellActions.setTradingAccountKey(previousAccount?.key));
+            await services.store.dispatch(loadInitialDataThunk({ activeSection: 'sell' })).unwrap();
             jest.mocked(tradeApi.setApiKey).mockClear();
             jest.mocked(tradeApi.createAnonymousApiKey).mockClear();
 
-            services.store.dispatch(tradingBuyActions.setTradingAccountKey(selectedAccount?.key));
-            await services.store.dispatch(loadInitialDataThunk({ activeSection: 'buy' })).unwrap();
+            services.store.dispatch(tradingSellActions.setTradingAccountKey(selectedAccount?.key));
+            await services.store.dispatch(loadInitialDataThunk({ activeSection: 'sell' })).unwrap();
 
             const { tradeApiInstallSalt } = services.store.getState().wallet.trading;
             expect(jest.mocked(tradeApi.setApiKey).mock.calls).toEqual(
@@ -178,6 +183,39 @@ describe('loadInitialDataThunk catalog cache', () => {
         },
     );
 
+    it('requests buy data with the key of the buy receive account', async () => {
+        const { services } = initTestServices();
+        services.store.dispatch(tradingBuyActions.setTradingAccountKey(account.key));
+        services.store.dispatch(tradingBuyActions.setReceiveAccountKey(otherAccount.key));
+
+        await services.store.dispatch(loadInitialDataThunk({ activeSection: 'buy' })).unwrap();
+
+        expect(tradeApi.setApiKey).toHaveBeenLastCalledWith(
+            createSaltedTradeApiKey({
+                descriptor: otherAccount.descriptor,
+                salt: services.store.getState().wallet.trading.tradeApiInstallSalt ?? '',
+            }),
+        );
+    });
+
+    it('requests buy data with the install key when no receive account is selected', async () => {
+        const { services, getSelectedAccount } = initTestServices();
+        getSelectedAccount.mockReturnValue({
+            status: 'loaded',
+            account,
+            network: getNetwork(account.symbol),
+            params: undefined,
+        });
+
+        await services.store.dispatch(loadInitialDataThunk({ activeSection: 'buy' })).unwrap();
+
+        expect(tradeApi.setApiKey).toHaveBeenLastCalledWith(
+            createInstallTradeApiKey(
+                services.store.getState().wallet.trading.tradeApiInstallSalt ?? '',
+            ),
+        );
+    });
+
     it('keeps the key of the current trading account when an older load finishes last', async () => {
         const device = mockSuiteDevice({
             path: '1',
@@ -195,10 +233,10 @@ describe('loadInitialDataThunk catalog cache', () => {
             .mockReturnValueOnce(newerSalt.promise);
         const cipheredValue = 'ab'.repeat(32);
 
-        services.store.dispatch(tradingBuyActions.setTradingAccountKey(account.key));
-        const olderLoad = services.store.dispatch(loadInitialDataThunk({ activeSection: 'buy' }));
-        services.store.dispatch(tradingBuyActions.setTradingAccountKey(otherAccount.key));
-        const newerLoad = services.store.dispatch(loadInitialDataThunk({ activeSection: 'buy' }));
+        services.store.dispatch(tradingSellActions.setTradingAccountKey(account.key));
+        const olderLoad = services.store.dispatch(loadInitialDataThunk({ activeSection: 'sell' }));
+        services.store.dispatch(tradingSellActions.setTradingAccountKey(otherAccount.key));
+        const newerLoad = services.store.dispatch(loadInitialDataThunk({ activeSection: 'sell' }));
         newerSalt.resolve({ success: true, payload: { value: cipheredValue } });
         await newerLoad;
         olderSalt.resolve({ success: true, payload: { value: cipheredValue } });
@@ -222,7 +260,7 @@ describe('loadInitialDataThunk catalog cache', () => {
         };
         getSelectedAccount.mockReturnValue(selectedAccount);
         await services.store
-            .dispatch(loadInitialDataThunk({ activeSection: 'buy', forcedAnonymousId: 'forced' }))
+            .dispatch(loadInitialDataThunk({ activeSection: 'sell', forcedAnonymousId: 'forced' }))
             .unwrap();
         expect(tradeApi.setApiKey).toHaveBeenLastCalledWith(
             createSaltedTradeApiKey({
@@ -236,11 +274,11 @@ describe('loadInitialDataThunk catalog cache', () => {
             account: undefined,
         });
         await services.store
-            .dispatch(loadInitialDataThunk({ activeSection: 'buy', forcedAnonymousId: 'forced' }))
+            .dispatch(loadInitialDataThunk({ activeSection: 'sell', forcedAnonymousId: 'forced' }))
             .unwrap();
         expect(tradeApi.createAnonymousApiKey).toHaveBeenLastCalledWith('forced');
         await services.store
-            .dispatch(loadInitialDataThunk({ activeSection: 'buy', forcedAnonymousId: '' }))
+            .dispatch(loadInitialDataThunk({ activeSection: 'sell', forcedAnonymousId: '' }))
             .unwrap();
         expect(tradeApi.createAnonymousApiKey).toHaveBeenLastCalledWith(TRADING_ANONYMOUS_ID);
         expectCatalogCalls(0);

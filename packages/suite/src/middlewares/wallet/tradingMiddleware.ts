@@ -7,6 +7,7 @@ import {
     selectTradingAccountAccordingActiveSection,
     selectTradingAccountKeyByTradeType,
     selectTradingActiveSection,
+    selectTradingBuyReceiveAccount,
     selectTradingModalAccountKey,
     selectTradingPrefilledFromAccount,
     tradingActions,
@@ -161,6 +162,14 @@ export const tradingMiddleware =
 
         if (isForSettingAccountKey && account) {
             api.dispatch(tradingThunks.setTradeApiKeyThunk({ account }));
+        }
+
+        if (tradingBuyActions.setReceiveAccountKey.match(action)) {
+            api.dispatch(
+                tradingThunks.setTradeApiKeyThunk({
+                    account: selectTradingBuyReceiveAccount(nextState),
+                }),
+            );
         }
 
         return action;

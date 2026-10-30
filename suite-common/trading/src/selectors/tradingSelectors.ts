@@ -957,6 +957,15 @@ export const selectTradingBuyReceiveAccount = createMemoizedSelectorWithAccounts
     },
 );
 
+export const selectTradeApiKeyAccount = (
+    state: TradingRootStateWithAccounts,
+    activeSection: TradingType,
+    selectedAccount: SelectedAccountStatus,
+) =>
+    activeSection === 'buy'
+        ? selectTradingBuyReceiveAccount(state)
+        : selectTradingAccountAccordingActiveSection(state, activeSection, selectedAccount);
+
 export const selectTradingExchangeAccountKey = (state: TradingRootState) =>
     state.wallet.trading.exchange.tradingAccountKey;
 
