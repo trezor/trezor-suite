@@ -15,7 +15,12 @@ describe('TokenToFiatAmountFormatter', () => {
             { preloadedState: { wallet: { fiat: { current: {} } } } },
         );
 
-        expect(getByText('$###', { includeHiddenElements: true })).not.toBeVisible();
+        // The redacted text stays mounted for layout; Discreet draws a blurred placeholder over it.
+        const redactedAmount = getByText('$###', { includeHiddenElements: true });
+        expect(redactedAmount).toBeOnTheScreen();
+        expect(redactedAmount).not.toBeVisible();
+
+        // EmptyAmountSkeleton contains a zero-width space to preserve its line height.
         expect(queryByText('\u200b', { includeHiddenElements: true })).toBeNull();
         expect(queryByText('$0.00', { includeHiddenElements: true })).toBeNull();
     });
