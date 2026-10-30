@@ -1,5 +1,5 @@
 import { events, injectDesktopAnalytics } from '@suite/analytics';
-import { setConnectionMode, toggleConnectionModal } from '@suite/device';
+import { toggleConnectionModal } from '@suite/device';
 import { Translation } from '@suite/intl';
 import { bluetoothActions, selectAdapterStatus } from '@suite-common/bluetooth';
 import { selectDevices } from '@suite-common/device';
@@ -31,7 +31,6 @@ export const SwitchDeviceContent = ({ cancelable, onCancel }: ForegroundAppProps
 
         if (bluetoothAdapterStatus === 'enabled') {
             dispatch(bluetoothActions.enableAutoConnect());
-            dispatch(setConnectionMode('bluetooth'));
         }
 
         analytics.report({
