@@ -1,8 +1,9 @@
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { asNetworkSymbol } from '@suite-common/wallet-config';
 import { type AccountInfo, type StaticSessionId } from '@trezor/connect';
 import type { Bip43Path } from '@trezor/crypto-utils';
 
-import { shouldFetchAssetsAfterDiscovery } from './discoveryUtils';
+import { findDuplicateWallet, shouldFetchAssetsAfterDiscovery } from './discoveryUtils';
 import { type CreateAccountActionProps } from '../accounts/accountsActions';
 
 const accountInfo = (empty: boolean): AccountInfo => ({
@@ -49,5 +50,83 @@ describe(shouldFetchAssetsAfterDiscovery.name, () => {
         expect(shouldFetchAssetsAfterDiscovery({ ...discovered, backendType: undefined })).toBe(
             false,
         );
+    });
+});
+
+describe(findDuplicateWallet.name, () => {
+    const authorizing = mockSuiteDevice({ id: 'device_id' });
+
+    it('finds another instance of the same wallet held by the device', () => {
+        const held = mockSuiteDevice({
+            id: 'device_id',
+            state: { staticSessionId: '1stTestnetAddress@device_id:1' },
+        });
+
+        expect(
+            findDuplicateWallet([held, authorizing], authorizing, {
+                staticSessionId: '1stTestnetAddress@device_id:2',
+            }),
+        ).toEqual(held.state);
+    });
+
+    it('finds a wallet still keyed by the device_id it was authorized with before the reset', () => {
+        const reprovisioned = mockSuiteDevice({ id: 'fresh_device_id' });
+        // The entry was attached while the device was wiped and recovered, so the reducer re-keyed
+        // it to the fresh `device_id` while its static session id kept the pre-reset one.
+        const held = mockSuiteDevice({
+            id: 'fresh_device_id',
+            state: { staticSessionId: '1stTestnetAddress@device_id:1' },
+        });
+
+        expect(
+            findDuplicateWallet([held, reprovisioned], reprovisioned, {
+                staticSessionId: '1stTestnetAddress@fresh_device_id:1',
+            }),
+        ).toEqual(held.state);
+    });
+
+    it('keeps the wallets of a second device recovered from the same seed apart', () => {
+        const otherDevice = mockSuiteDevice({
+            id: 'other_device_id',
+            state: { staticSessionId: '1stTestnetAddress@other_device_id:1' },
+        });
+
+        expect(
+            findDuplicateWallet([otherDevice, authorizing], authorizing, {
+                staticSessionId: '1stTestnetAddress@device_id:1',
+            }),
+        ).toBeUndefined();
+    });
+
+    it('misses an instance that was already detached when the device_id changed', () => {
+        const reprovisioned = mockSuiteDevice({ id: 'fresh_device_id' });
+        // A remembered instance keeps the pre-reset `id` forever: the reducer re-keys only
+        // connected or path-matched entries. This records the known limitation of the filter.
+        const detached = mockSuiteDevice({
+            id: 'device_id',
+            remember: true,
+            connected: false,
+            path: '',
+            state: { staticSessionId: '1stTestnetAddress@device_id:1' },
+        });
+
+        expect(
+            findDuplicateWallet([detached, reprovisioned], reprovisioned, {
+                staticSessionId: '1stTestnetAddress@fresh_device_id:1',
+            }),
+        ).toBeUndefined();
+    });
+
+    it('ignores a persisted device state that is not a static session id', () => {
+        const legacy = mockSuiteDevice({
+            id: 'device_id',
+            state: { staticSessionId: 'legacy-device-state' as StaticSessionId },
+        });
+
+        expect(
+            findDuplicateWallet([legacy, authorizing], authorizing, {
+                staticSessionId: '1stTestnetAddress@device_id:1',
+            }),
+        ).toBeUndefined();
     });
 });
