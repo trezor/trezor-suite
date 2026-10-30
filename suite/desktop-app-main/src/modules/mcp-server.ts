@@ -1096,6 +1096,40 @@ const readJsonBody = (req: http.IncomingMessage): Promise<unknown> =>
         req.on('error', reject);
     });
 
+const MAX_CLIENT_NAME_LENGTH = 100;
+
+/**
+ * The name a client declares in `initialize`, which is unvalidated JSON from a local caller. Suite
+ * renders it in the consent prompt and carries it in the session manifest, so anything but a string
+ * is dropped instead of reaching the renderer. Control characters and lone surrogates are reduced to
+ * spaces so the name stays the single line of text the prompt expects, invisible format characters
+ * (bidi overrides, joiners) are removed so they can neither reorder the text around the name nor
+ * split a word, and the length is bounded to what a badge can show, counted in code points so that
+ * the cut never leaves half of a surrogate pair.
+ */
+const readDeclaredClientName = (params?: Record<string, unknown>) => {
+    const clientInfo = params?.clientInfo;
+    const name =
+        typeof clientInfo === 'object' && clientInfo !== null
+            ? (clientInfo as { name?: unknown }).name
+            : undefined;
+
+    if (typeof name !== 'string') return undefined;
+
+    const singleLineName = name
+        .replace(/\p{Cf}/gu, '')
+        .replace(/[\p{Cc}\p{Cs}]/gu, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    const declaredName = Array.from(singleLineName)
+        .slice(0, MAX_CLIENT_NAME_LENGTH)
+        .join('')
+        // The cut can land on a space, which would be shown as a trailing one.
+        .trim();
+
+    return declaredName || undefined;
+};
+
 export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
     let server: http.Server | null = null;
     let sessionId: string | null = null;
@@ -1264,11 +1298,7 @@ export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
                     sessionId = crypto.randomUUID();
 
                     // Identify the calling process via TCP port lookup + MCP clientInfo
-                    const clientInfo = (
-                        jsonRpcRequest.params as {
-                            clientInfo?: { name?: string; version?: string };
-                        }
-                    )?.clientInfo;
+                    const clientName = readDeclaredClientName(jsonRpcRequest.params);
 
                     const { remotePort } = req.socket;
                     if (remotePort) {
@@ -1289,26 +1319,26 @@ export const init: ModuleInit = ({ mainWindowProxy, store, logger }) => {
                                 warning: !!processInfo.warning,
                                 icon: await getProcessIcon({ path: processInfo.fullPath, logger }),
                             };
-                        } else if (clientInfo?.name) {
+                        } else if (clientName) {
                             sessionProcessInfo = {
-                                name: clientInfo.name,
+                                name: clientName,
                                 // The declared name is one the client chooses, so it labels the
                                 // caller but is never the path that permissions are keyed by.
                                 fullPath: '',
                                 warning: true,
                             };
                         }
-                    } else if (clientInfo?.name) {
+                    } else if (clientName) {
                         // Nothing was looked up, so the declared name is a label and no more.
                         sessionProcessInfo = {
-                            name: clientInfo.name,
+                            name: clientName,
                             fullPath: '',
                             warning: true,
                         };
                     }
 
-                    if (clientInfo?.name) {
-                        sessionManifest = { ...MCP_MANIFEST, appName: clientInfo.name };
+                    if (clientName) {
+                        sessionManifest = { ...MCP_MANIFEST, appName: clientName };
                     }
 
                     logger.info(

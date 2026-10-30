@@ -490,16 +490,55 @@ describe('MCP server', () => {
             );
         });
 
-        // Documents the behaviour today: the declared name is parsed JSON from a local caller, and
-        // whatever it is reaches the renderer as the caller's name and as the app of the manifest.
-        it('forwards a declared name that is not a string', async () => {
+        it('ignores a declared name that is not a string', async () => {
             const server = await startMcpServer();
             cleanup = server.cleanup;
 
             const popupCall = await initializeAndCallPopup(server, { clientInfo: { name: {} } });
 
-            expect(popupCall.process).toEqual({ name: {}, fullPath: '', warning: true });
-            expect(popupCall.manifest.appName).toEqual({});
+            // The name is a React child in the consent prompt, where an object would throw.
+            expect(popupCall.process).toBeUndefined();
+            expect(popupCall.manifest.appName).toBe('MCP Agent');
+        });
+
+        it('reduces a declared name with control and format characters to a single line', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const popupCall = await initializeAndCallPopup(server, {
+                clientInfo: { name: '  Claude\n\tCo\u00ADde\u202E ' },
+            });
+
+            // The name labels the caller in the consent prompt, so it may not break its layout
+            // or reorder the text around it, and an invisible character does not split a word.
+            expect(popupCall.process).toEqual({
+                name: 'Claude Code',
+                fullPath: '',
+                warning: true,
+            });
+            expect(popupCall.manifest.appName).toBe('Claude Code');
+        });
+
+        it('does not end a capped declared name with the space the cut landed on', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const popupCall = await initializeAndCallPopup(server, {
+                clientInfo: { name: `${'a'.repeat(99)} ${'b'.repeat(10)}` },
+            });
+
+            expect(popupCall.manifest.appName).toBe('a'.repeat(99));
+        });
+
+        it('does not cut a capped declared name in the middle of a character', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const popupCall = await initializeAndCallPopup(server, {
+                clientInfo: { name: `${'a'.repeat(99)}\u{1F600}b` },
+            });
+
+            expect(popupCall.manifest.appName).toBe(`${'a'.repeat(99)}\u{1F600}`);
         });
 
         it('allows re-initialization after DELETE', async () => {
