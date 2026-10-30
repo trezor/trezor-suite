@@ -21,13 +21,15 @@ export const AssetDetailPrice = ({ networkSymbol, tokenContract }: AssetDetailPr
             <Text variant="body-xs" color="contentSecondary">
                 <Translation id="moduleAssets.assetDetailScreen.priceSection.title" />
             </Text>
-            <BaseCurrencyAmountHeaderFormatter value={price} isDiscreetText={false} />
-            {sevenDayPercentageChange !== null && (
-                <AssetPriceChange
-                    valueChange={sevenDayValueChange}
-                    percentageChange={sevenDayPercentageChange}
-                />
-            )}
+            <VStack spacing="sp16">
+                <BaseCurrencyAmountHeaderFormatter value={price} isDiscreetText={false} />
+                {sevenDayPercentageChange !== null && (
+                    <AssetPriceChange
+                        valueChange={sevenDayValueChange}
+                        percentageChange={sevenDayPercentageChange}
+                    />
+                )}
+            </VStack>
         </VStack>
     );
 };
