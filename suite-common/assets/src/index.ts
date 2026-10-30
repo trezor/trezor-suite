@@ -1,5 +1,6 @@
 export * from './assetSelectors';
 export * from './assetDetailSelectors';
+export * from './assetDetailAccountKeysSelectors';
 export {
     calculateAssetsPercentage,
     type AssetFiatBalanceWithPercentage,
