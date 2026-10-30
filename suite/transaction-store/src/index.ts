@@ -16,6 +16,7 @@ export {
 export { TransactionStoreDebug } from './TransactionStoreDebug';
 export { useTransactionStoreQuery } from './useTransactionStoreQuery';
 export { selectIsTransactionStoreActive } from './transactionStoreSelectors';
+export { selectTransactionStoreHideSuspicious } from './transactionStoreSuspiciousSelectors';
 export {
     selectTransactionStoreAccounts,
     selectTransactionStoreKnownTokens,

@@ -5,26 +5,16 @@ import { DebugOnlyBadge } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import {
     injectEnsureTransactionStore,
+    selectTransactionStoreHideSuspicious,
     toTransactionSearch,
     useTransactionStoreQuery,
 } from '@suite/transaction-store';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import {
-    hasNetworkPotentialFraudTransactions,
-    isPhishingTransaction,
-} from '@suite-common/token-definitions';
-import {
-    type SuspiciousTransactionsContext,
     type TransactionStoreRow,
     createTransactionStoreQuery,
     getAccountTransactionsQuery,
 } from '@suite-common/transaction-store';
-import {
-    selectAccountTransactions,
-    selectActiveDustPhishingThreshold,
-    selectIsHideSuspiciousTransactions,
-    selectPhishingTransactionsContext,
-} from '@suite-common/wallet-core';
 import { enhanceTransaction, groupTransactionsByDate, isPending } from '@suite-common/wallet-utils';
 import { Column, Text } from '@trezor/components';
 import { useServices } from '@trezor/dependency-injection';
@@ -71,50 +61,6 @@ type StoredTransactionListProps = {
 };
 
 /**
- * What the store needs to hide suspicious transactions when the user chose to, or `undefined`.
- * The store detects most of it in SQL; dust needs historic fiat rates, which only the app has,
- * so the app's own detection flags those among the transactions Redux holds.
- */
-const useHideSuspicious = (account: Account): SuspiciousTransactionsContext | undefined => {
-    const isHiding = useSelector(state =>
-        selectIsHideSuspiciousTransactions(state, account.symbol),
-    );
-    const { tokenDefinitions, txsMarkedAsNotScam, historicRates } = useSelector(state =>
-        selectPhishingTransactionsContext(state, account.key, account.symbol),
-    );
-    const dustThreshold = useSelector(selectActiveDustPhishingThreshold);
-    const reduxTransactions = useSelector(state => selectAccountTransactions(state, account.key));
-
-    return useMemo(() => {
-        if (!isHiding || !hasNetworkPotentialFraudTransactions(account.symbol)) return undefined;
-
-        return {
-            notScamTxids: txsMarkedAsNotScam,
-            flaggedTxids: reduxTransactions
-                .filter(
-                    transaction =>
-                        isPhishingTransaction({
-                            transaction,
-                            tokenDefinitions,
-                            txsMarkedAsNotScam,
-                            historicRates,
-                            dustThreshold,
-                        }).isPhishing,
-                )
-                .map(({ txid }) => txid),
-        };
-    }, [
-        isHiding,
-        account.symbol,
-        reduxTransactions,
-        tokenDefinitions,
-        txsMarkedAsNotScam,
-        historicRates,
-        dustThreshold,
-    ]);
-};
-
-/**
  * The account's history read from the transaction store instead of Redux; shown in debug mode.
  * Paging past what is stored asks the store for the whole history, which its worker fetches.
  * The search runs in the worker over everything stored, with the syntax of the Redux list.
@@ -136,7 +82,9 @@ export const StoredTransactionList = ({ account }: StoredTransactionListProps) =
         [debouncedSearchQuery, account.symbol, labels],
     );
     const isSearching = search !== undefined;
-    const hideSuspicious = useHideSuspicious(account);
+    const hideSuspicious = useSelector(state =>
+        selectTransactionStoreHideSuspicious(state, account.key, account.symbol),
+    );
     const { ensureTransactionStore } = useServices(injectEnsureTransactionStore);
 
     const queries = useMemo(() => {
