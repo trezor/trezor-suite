@@ -5,7 +5,12 @@ import {
     EthereumSignTypedData as EthereumSignTypedDataParams,
     EthereumSignTypedHash as EthereumSignTypedHashParams,
 } from '@trezor/connect-common';
-import type { EthereumSignTypedDataTypes, PROTO, PermissionRequest } from '@trezor/connect-common';
+import type {
+    DeviceButtonRequestCode,
+    EthereumSignTypedDataTypes,
+    PROTO,
+    PermissionRequest,
+} from '@trezor/connect-common';
 import { ERRORS } from '@trezor/connect-common/src/constants';
 import { DeviceModelInternal } from '@trezor/device-utils';
 import { Assert, Type } from '@trezor/schema-utils';
@@ -134,7 +139,7 @@ export default class EthereumSignTypedData extends AbstractMethod<'ethereumSignT
         );
     }
 
-    getButtonRequestData(code: string, name?: string) {
+    getButtonRequestData(code: DeviceButtonRequestCode, name?: string) {
         if (
             (code === 'ButtonRequest_Other' &&
                 name &&

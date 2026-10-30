@@ -16,3 +16,9 @@ export const REFETCH_FEES_EXCLUDED_MODAL_WINDOW_TYPES = [
     'ButtonRequest_ConfirmOutput',
     'ButtonRequest_SignTx',
 ];
+
+// UI_EVENTS.BUTTON_REQUEST `name` mapped to their corresponding modal component
+export const BUTTON_REQUESTS_NAMES = {
+    passphrase_host1: 'ConfirmPassphraseOnDevice', // Step 1. Confirm that the passphrase will be displayed.
+    passphrase_host2: 'ConfirmPassphraseOnDevice', // Step 2. Confirm the passphrase value.
+} as const;

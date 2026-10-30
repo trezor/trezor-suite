@@ -1,8 +1,9 @@
 import { useCallback } from 'react';
 import { useIntl } from 'react-intl';
+import { useSelector } from 'react-redux';
 
 import { Translation, messages } from '@suite/intl';
-import { MODAL_CONTEXT_DEVICE, selectModal, selectModalRequestId } from '@suite/modal';
+import { selectDeviceContextWindowType, selectModalRequestId } from '@suite/modal';
 import {
     getPassphraseMaxLength,
     selectDeviceModel,
@@ -12,7 +13,7 @@ import {
 import { Column, H3, Paragraph } from '@trezor/components';
 import TrezorConnect, { UI_REQUESTS, UI_RESPONSE } from '@trezor/connect';
 
-import { useSelector } from 'src/hooks/suite';
+import { WalletLabeling } from 'src/components/suite/labeling/WalletLabeling';
 import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
 import { SwitchDeviceModal } from 'src/views/suite/SwitchDevice/SwitchDeviceModal';
 
@@ -22,13 +23,10 @@ export const ConfirmPassphraseBeforeAction = () => {
     const device = useSelector(selectSelectedDevice);
     const deviceModel = useSelector(selectDeviceModel);
     const requestId = useSelector(selectModalRequestId);
-    const modal = useSelector(selectModal);
+    const windowType = useSelector(selectDeviceContextWindowType);
 
     // Global passphrase modal: the device is ready once Connect raises REQUEST_PASSPHRASE.
-    const isDeviceLoading = !(
-        modal.context === MODAL_CONTEXT_DEVICE &&
-        modal.windowType === UI_REQUESTS.REQUEST_PASSPHRASE
-    );
+    const isDeviceLoading = !(windowType === UI_REQUESTS.REQUEST_PASSPHRASE);
 
     const intl = useIntl();
 
@@ -56,16 +54,33 @@ export const ConfirmPassphraseBeforeAction = () => {
         return null;
     }
 
+    const description = device.state?.staticSessionId ? (
+        <Translation
+            id="TR_CONFIRM_PASSPHRASE_FOR_WALLET_LABEL"
+            values={{
+                walletLabel: (
+                    <b>
+                        <WalletLabeling device={device} />
+                    </b>
+                ),
+            }}
+        />
+    ) : (
+        <Translation id="TR_CONFIRM_PASSPHRASE_WITHOUT_ADVICE_DESCRIPTION" />
+    );
+
     return (
         <SwitchDeviceModal onCancel={onEnterPassphraseDialogCancel}>
-            <CardWithDevice onCancel={onEnterPassphraseDialogCancel} device={device}>
+            <CardWithDevice
+                onCancel={onEnterPassphraseDialogCancel}
+                device={device}
+                forceConnectionInfo={!device.state?.staticSessionId}
+            >
                 <Column gap={8} padding={{ horizontal: 8 }} margin={{ bottom: 16 }}>
                     <H3>
                         <Translation id="TR_CONFIRM_PASSPHRASE" />
                     </H3>
-                    <Paragraph>
-                        <Translation id="TR_CONFIRM_PASSPHRASE_WITHOUT_ADVICE_DESCRIPTION" />
-                    </Paragraph>
+                    <Paragraph>{description}</Paragraph>
                 </Column>
                 <PassphraseInputCard
                     isDeviceLoading={isDeviceLoading}

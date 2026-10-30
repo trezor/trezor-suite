@@ -2264,10 +2264,6 @@ export const messages = defineMessages({
         defaultMessage: 'View the address on your Trezor',
         id: 'TR_COMPARE_ADDRESS_ON_TREZOR',
     },
-    TR_CONFIRM_EMPTY_HIDDEN_WALLET_ON: {
-        defaultMessage: 'Confirm empty Passphrase wallet on your {deviceLabel}',
-        id: 'TR_CONFIRM_EMPTY_HIDDEN_WALLET_ON',
-    },
     TR_CONFIRM_PASSPHRASE_WITHOUT_ADVICE_DESCRIPTION: {
         defaultMessage: 'Enter your passphrase to authorize this action.',
         id: 'TR_CONFIRM_PASSPHRASE_WITHOUT_ADVICE_DESCRIPTION',
@@ -2275,6 +2271,10 @@ export const messages = defineMessages({
     TR_CONFIRM_PASSPHRASE: {
         defaultMessage: 'Confirm passphrase',
         id: 'TR_CONFIRM_PASSPHRASE',
+    },
+    TR_CONFIRM_PASSPHRASE_FOR_WALLET_LABEL: {
+        defaultMessage: 'Unlock {walletLabel} to authorize this action.',
+        id: 'TR_CONFIRM_PASSPHRASE_FOR_WALLET_LABEL',
     },
     TR_PASSPHRASE: {
         defaultMessage: 'Passphrase',
@@ -3979,11 +3979,6 @@ export const messages = defineMessages({
     TR_UNSUPPORTED_COINS_DESCRIPTION: {
         defaultMessage: 'These networks are supported on Trezor Safe devices and Trezor Model T.',
         id: 'TR_UNSUPPORTED_COINS_DESCRIPTION',
-    },
-    TR_THIS_HIDDEN_WALLET_IS_EMPTY_SOURCE: {
-        defaultMessage:
-            "This Passphrase wallet is empty. To make sure you're in the correct wallet, enter the passphrase on your Trezor.",
-        id: 'TR_THIS_HIDDEN_WALLET_IS_EMPTY_SOURCE',
     },
     TR_ADDRESS_PHISHING_WARNING: {
         defaultMessage:

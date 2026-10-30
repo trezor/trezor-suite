@@ -1,6 +1,10 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/EthereumSignMessage.js
 
-import type { EthereumNetworkInfo, PermissionRequest } from '@trezor/connect-common';
+import type {
+    DeviceButtonRequestCode,
+    EthereumNetworkInfo,
+    PermissionRequest,
+} from '@trezor/connect-common';
 import { EthereumSignMessage as EthereumSignMessageSchema } from '@trezor/connect-common';
 import type { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert } from '@trezor/schema-utils';
@@ -52,7 +56,7 @@ export default class EthereumSignMessage extends AbstractMethod<'ethereumSignMes
         return getNetworkLabel('Sign #NETWORK message', this.params.network);
     }
 
-    getButtonRequestData(code: string, name?: string) {
+    getButtonRequestData(code: DeviceButtonRequestCode, name?: string) {
         if (code === 'ButtonRequest_Other' && name === 'sign_message') {
             return {
                 type: 'message' as const,
