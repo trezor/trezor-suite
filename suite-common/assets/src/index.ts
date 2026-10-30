@@ -6,3 +6,4 @@ export {
 } from './utils';
 export * from './homeAssetTableSelectors';
 export * from './homeAssetTableUtils';
+export * from './assetDetailSelectors';
