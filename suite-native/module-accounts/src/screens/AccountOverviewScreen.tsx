@@ -18,7 +18,7 @@ import {
     selectIsAccountDiscoveryFailed,
     useResolvedAccountKey,
 } from '@suite-native/accounts';
-import { VStack } from '@suite-native/atoms';
+import { Box, VStack } from '@suite-native/atoms';
 import { type RootStackParamList, type RootStackRoutes, Screen } from '@suite-native/navigation';
 
 import { AccountEarnPromoBanner } from '../components/AccountOverview/AccountEarnPromoBanner';
@@ -92,7 +92,9 @@ export const AccountOverviewScreen = ({
             hasBottomInset={false}
         >
             {isFailed ? (
-                <AccountDiscoveryFailedBanner accountKey={accountKey} />
+                <Box paddingHorizontal="sp16">
+                    <AccountDiscoveryFailedBanner accountKey={accountKey} />
+                </Box>
             ) : (
                 <AccountOverviewTabContent
                     accountKey={accountKey}
