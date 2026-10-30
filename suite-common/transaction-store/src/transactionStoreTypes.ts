@@ -5,7 +5,15 @@ export type TransactionStoreAccount = {
     accountKey: string;
     symbol: NetworkSymbol;
     descriptor: string;
+    /**
+     * What the app last learned of the account's history. The app's own refresh updates it, so a
+     * change is the store's cue to sync the account, if anything has asked for it.
+     */
+    revision: string;
 };
+
+/** An account as the store keeps it; the revision is only the app's. */
+export type StoredAccount = Omit<TransactionStoreAccount, 'revision'>;
 
 /** A network's token definitions as the store needs them: which contracts count as known. */
 export type KnownTokens = {

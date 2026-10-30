@@ -5,20 +5,14 @@ import { useServices } from '@trezor/dependency-injection';
 
 import { injectEnsureTransactionStore } from './createEnsureTransactionStore';
 
-export type TransactionStoreQueryResult<TRow> = {
-    /** The latest rows; while a changed query loads, those of the previous one. */
-    rows: TRow[] | undefined;
-    /** The rows are not yet the current query's. */
-    isPending: boolean;
-};
-
 /**
- * The query's rows, kept current: the store runs it in its worker and sends new rows whenever a
- * write changes them. Build the query with `transactionStoreDb` and `toTransactionStoreQuery`.
+ * The query's rows, kept current, as Evolu's `useQuery`: the store runs the query in its worker
+ * and sends new rows whenever a write changes them. `undefined` until the first rows arrive; while
+ * a changed query loads, the previous one's. Build the query with `createTransactionStoreQuery`.
  */
 export const useTransactionStoreQuery = <TRow>(
     query: TransactionStoreQuery<TRow>,
-): TransactionStoreQueryResult<TRow> => {
+): TRow[] | undefined => {
     const { ensureTransactionStore } = useServices(injectEnsureTransactionStore);
     // The same query, however often it is rebuilt, keeps its subscription.
     const queryKey = JSON.stringify(query);
@@ -26,15 +20,12 @@ export const useTransactionStoreQuery = <TRow>(
         (): TransactionStoreQuery<TRow> => JSON.parse(queryKey),
         [queryKey],
     );
-    const [result, setResult] = useState<{ queryKey: string; rows: TRow[] }>();
+    const [rows, setRows] = useState<TRow[]>();
 
     useEffect(
-        () =>
-            ensureTransactionStore().transactionStore.subscribeQuery(stableQuery, rows =>
-                setResult({ queryKey, rows }),
-            ),
-        [ensureTransactionStore, stableQuery, queryKey],
+        () => ensureTransactionStore().transactionStore.subscribeQuery(stableQuery, setRows),
+        [ensureTransactionStore, stableQuery],
     );
 
-    return { rows: result?.rows, isPending: result?.queryKey !== queryKey };
+    return rows;
 };

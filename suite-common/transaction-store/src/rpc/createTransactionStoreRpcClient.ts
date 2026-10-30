@@ -55,20 +55,16 @@ export const createTransactionStoreRpcClient = (
 
     return {
         setAccounts: call('setAccounts'),
-        ensureSynced: call('ensureSynced'),
-        refreshAccounts: call('refreshAccounts'),
-        requestFullHistory: call('requestFullHistory'),
         setKnownTokens: call('setKnownTokens'),
-        // The rows are the query's; its type travels with it.
-        query: call('query') as TransactionStore['query'],
-        subscribeQuery: ({ sql, parameters }, onRows) => {
+        requestFullHistory: call('requestFullHistory'),
+        subscribeQuery: ({ sql, parameters, accountKeys }, onRows) => {
             const subscriptionId = nextId++;
             // The rows are the query's; its type travels with it.
             subscriptions.set(subscriptionId, onRows as (rows: unknown[]) => void);
             post({
                 type: 'transactionStore/subscribeQuery',
                 subscriptionId,
-                query: { sql, parameters },
+                query: { sql, parameters, accountKeys },
             });
 
             return () => {

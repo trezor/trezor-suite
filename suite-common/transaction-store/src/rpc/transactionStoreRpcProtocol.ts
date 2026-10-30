@@ -1,4 +1,4 @@
-import type { SqlQuery } from '../sqlite/transactionStoreSqlite';
+import type { TransactionStoreQuery } from '../query/transactionStoreDatabase';
 import type { TransactionStore } from '../transactionStore';
 
 /** Everything but `subscribeQuery`, whose callback stays on the client. */
@@ -21,7 +21,11 @@ export type TransactionStoreRpcMessage =
     | { type: 'transactionStore/response'; id: number; isResolved: true; value: unknown }
     // No error detail crosses the boundary; it could carry account data.
     | { type: 'transactionStore/response'; id: number; isResolved: false }
-    | { type: 'transactionStore/subscribeQuery'; subscriptionId: number; query: SqlQuery }
+    | {
+          type: 'transactionStore/subscribeQuery';
+          subscriptionId: number;
+          query: TransactionStoreQuery<unknown>;
+      }
     | { type: 'transactionStore/unsubscribeQuery'; subscriptionId: number }
     | { type: 'transactionStore/queryRows'; subscriptionId: number; rows: unknown[] };
 

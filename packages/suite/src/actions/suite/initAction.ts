@@ -165,7 +165,7 @@ export const initThunk =
             .catch(err => console.error(err));
 
         // 7b. feed the transaction store, which runs while its Debug settings switch is on. It
-        // needs Connect initialised for the networks' default backends. Runs for the app's life.
+        // fetches history through Connect, which is ready by now. Runs for the app's life.
         extra.services.startTransactionStoreFeed();
 
         // 8. fetch token definitions (has to be fetched before fiat rates)

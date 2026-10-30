@@ -4,24 +4,30 @@ import { useDebounce } from 'react-use';
 import { DebugOnlyBadge } from '@suite/debug';
 import { Translation } from '@suite/intl';
 import {
-    type StoredAccountTransactions,
+    injectEnsureTransactionStore,
     toTransactionSearch,
-    useStoredAccountTransactions,
+    useTransactionStoreQuery,
 } from '@suite/transaction-store';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import {
     hasNetworkPotentialFraudTransactions,
     isPhishingTransaction,
 } from '@suite-common/token-definitions';
-import type { SuspiciousTransactionsContext } from '@suite-common/transaction-store';
+import {
+    type SuspiciousTransactionsContext,
+    type TransactionStoreRow,
+    createTransactionStoreQuery,
+    getAccountTransactionsQuery,
+} from '@suite-common/transaction-store';
 import {
     selectAccountTransactions,
     selectActiveDustPhishingThreshold,
     selectIsHideSuspiciousTransactions,
     selectPhishingTransactionsContext,
 } from '@suite-common/wallet-core';
-import { groupTransactionsByDate, isPending } from '@suite-common/wallet-utils';
+import { enhanceTransaction, groupTransactionsByDate, isPending } from '@suite-common/wallet-utils';
 import { Column, Text } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
 
 import { DashboardSection } from 'src/components/dashboard';
 import { Pagination } from 'src/components/wallet';
@@ -37,13 +43,24 @@ import { PendingGroupHeader } from './TransactionsGroup/PendingGroupHeader';
 
 const SEARCH_DEBOUNCE_MS = 200;
 
+const getSyncStateQuery = (accountKey: string) =>
+    createTransactionStoreQuery(db =>
+        db
+            .selectFrom('sync_state')
+            .select(['is_syncing', 'is_complete', 'last_synced_at', 'last_error'])
+            .where('account_key', '=', accountKey),
+    );
+
+type SyncState = TransactionStoreRow<ReturnType<typeof getSyncStateQuery>>;
+
 const describeSyncStatus = (
-    { syncState, storedCount }: StoredAccountTransactions,
+    syncState: SyncState | undefined,
+    storedCount: number,
     isSearching: boolean,
 ) => {
-    const history = syncState?.isComplete ? 'whole history' : 'newest part of the history';
-    const activity = syncState?.isSyncing ? 'syncing' : 'up to date';
-    const error = syncState?.lastError ? ` · last sync failed: ${syncState.lastError}` : '';
+    const history = syncState?.is_complete === 1 ? 'whole history' : 'newest part of the history';
+    const activity = syncState?.is_syncing === 1 ? 'syncing' : 'up to date';
+    const error = syncState?.last_error ? ` · last sync failed: ${syncState.last_error}` : '';
     const count = isSearching ? `${storedCount} matching` : `${storedCount} stored`;
 
     return `Transaction store: ${activity} · ${count} (${history})${error}`;
@@ -120,16 +137,48 @@ export const StoredTransactionList = ({ account }: StoredTransactionListProps) =
     );
     const isSearching = search !== undefined;
     const hideSuspicious = useHideSuspicious(account);
-    const storedTransactions = useStoredAccountTransactions({
-        account,
-        page,
-        perPage,
-        search,
-        hideSuspicious,
-    });
-    const { transactions, storedCount, syncState, isLoading, requestFullHistory } =
-        storedTransactions;
-    const isComplete = syncState?.isComplete ?? false;
+    const { ensureTransactionStore } = useServices(injectEnsureTransactionStore);
+
+    const queries = useMemo(() => {
+        const filter = { accountKey: account.key, symbol: account.symbol, search, hideSuspicious };
+
+        return {
+            page: createTransactionStoreQuery(
+                () =>
+                    getAccountTransactionsQuery(filter)
+                        .select('t.data')
+                        // Pending first, then the newest.
+                        .orderBy(eb => eb('t.block_height', 'is', null), 'desc')
+                        .orderBy('t.block_time', 'desc')
+                        .orderBy('t.txid')
+                        .limit(perPage)
+                        .offset((page - 1) * perPage),
+                // Asking for the account's rows is what downloads its history.
+                { accountKeys: [account.key] },
+            ),
+            count: createTransactionStoreQuery(() =>
+                getAccountTransactionsQuery(filter).select(eb =>
+                    eb.fn.countAll<number>().as('count'),
+                ),
+            ),
+            syncState: getSyncStateQuery(account.key),
+        };
+    }, [account.key, account.symbol, search, hideSuspicious, page, perPage]);
+
+    const rows = useTransactionStoreQuery(queries.page);
+    const storedCount = useTransactionStoreQuery(queries.count)?.[0]?.count ?? 0;
+    const syncState = useTransactionStoreQuery(queries.syncState)?.[0];
+    const transactions = useMemo(
+        () => (rows ?? []).map(row => enhanceTransaction(JSON.parse(row.data), account)),
+        [rows, account],
+    );
+    const isComplete = syncState?.is_complete === 1;
+    // Nothing to show until the first sync brought something or failed.
+    const isLoading =
+        rows === undefined ||
+        (transactions.length === 0 &&
+            (syncState === undefined ||
+                (syncState.last_synced_at === null && syncState.last_error === null)));
 
     const pendingTxsByDate = useMemo(
         () => groupTransactionsByDate(transactions.filter(isPending), 'day'),
@@ -147,7 +196,7 @@ export const StoredTransactionList = ({ account }: StoredTransactionListProps) =
         sectionRef.current?.scrollIntoView();
 
         if (!isSearching && !isComplete && selectedPage * perPage >= storedCount) {
-            requestFullHistory();
+            void ensureTransactionStore().transactionStore.requestFullHistory(account.key);
         }
     };
 
@@ -173,7 +222,7 @@ export const StoredTransactionList = ({ account }: StoredTransactionListProps) =
         >
             <Column gap={32} padding={{ top: 16 }}>
                 <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
-                    {describeSyncStatus(storedTransactions, isSearching)}
+                    {describeSyncStatus(syncState, storedCount, isSearching)}
                 </Text>
                 {isLoading ? (
                     <Column gap={16}>

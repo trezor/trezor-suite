@@ -3,8 +3,7 @@ import { useSelector } from 'react-redux';
 import { selectIsTransactionStoreEnabled, suiteSettingsActions } from '@suite/settings';
 import {
     type TransactionStoreRow,
-    toTransactionStoreQuery,
-    transactionStoreDb,
+    createTransactionStoreQuery,
 } from '@suite-common/transaction-store';
 import { selectAccounts } from '@suite-common/wallet-core';
 import type { Account } from '@suite-common/wallet-types';
@@ -18,8 +17,8 @@ import { selectIsTransactionStoreActive } from './transactionStoreSelectors';
 import { useTransactionStoreQuery } from './useTransactionStoreQuery';
 
 /** Every stored account with its sync state and how many transactions it holds. */
-const STORED_ACCOUNTS_QUERY = toTransactionStoreQuery(
-    transactionStoreDb
+const STORED_ACCOUNTS_QUERY = createTransactionStoreQuery(db =>
+    db
         .selectFrom('accounts as a')
         .leftJoin('sync_state as s', 's.account_key', 'a.account_key')
         .select(eb => [
@@ -64,7 +63,7 @@ const getAccountTitle = (account: Account) =>
 const TransactionStoreAccounts = () => {
     const { ensureTransactionStore } = useServices(injectEnsureTransactionStore);
     const accounts = useSelector(selectAccounts).filter(account => account.visible);
-    const { rows: storedAccounts } = useTransactionStoreQuery(STORED_ACCOUNTS_QUERY);
+    const storedAccounts = useTransactionStoreQuery(STORED_ACCOUNTS_QUERY);
 
     const requestFullHistory = (accountKey: string) =>
         ensureTransactionStore().transactionStore.requestFullHistory(accountKey);

@@ -20,8 +20,8 @@ export type TransactionStoreCompositionRootDeps = TransactionStoreSqliteDep &
 
 /**
  * Starts the store: migrates the database and wires the engine. It is lazy: it downloads an
- * account's history only once something asks for it (`ensureSynced`), keeps those accounts fresh
- * when the app says they changed (`refreshAccounts`), and has no clock of its own.
+ * account's history only once a query asks for it, keeps those accounts fresh when the app says
+ * they changed (a new revision), and has no clock of its own.
  */
 export const createTransactionStoreCompositionRoot = (
     deps: TransactionStoreCompositionRootDeps,
@@ -45,33 +45,23 @@ export const createTransactionStoreCompositionRoot = (
     });
     const syncQueue = createSyncQueue({ syncAccountTransactions, transactionRepository });
 
+    // What the app last said of each account; the first list after a start syncs every tracked
+    // account, as they may have changed while the store was off.
+    const revisions = new Map<string, string>();
+
     const transactionStore: TransactionStore = {
         setAccounts: accounts => {
             transactionRepository.replaceAccounts(accounts);
-
-            return Promise.resolve();
-        },
-        ensureSynced: async accountKeys => {
+            const changedAccountKeys = accounts
+                .filter(({ accountKey, revision }) => revisions.get(accountKey) !== revision)
+                .map(({ accountKey }) => accountKey);
+            revisions.clear();
+            accounts.forEach(({ accountKey, revision }) => revisions.set(accountKey, revision));
             syncQueue.requestSync({
-                accountKeys: accountKeys.filter(
-                    accountKey =>
-                        !syncQueue.isSyncing(accountKey) &&
-                        transactionRepository.selectSyncState(accountKey).lastSyncedAt === null,
-                ),
+                // Only those something has asked for; the store ignores the rest.
+                accountKeys: transactionRepository.selectTrackedAccountKeys(changedAccountKeys),
                 mode: 'latest',
             });
-            await Promise.all(accountKeys.map(syncQueue.whenSettled));
-        },
-        refreshAccounts: accountKeys => {
-            syncQueue.requestSync({
-                accountKeys: transactionRepository.selectTrackedAccountKeys(accountKeys),
-                mode: 'latest',
-            });
-
-            return Promise.resolve();
-        },
-        requestFullHistory: accountKey => {
-            syncQueue.requestSync({ accountKeys: [accountKey], mode: 'full' });
 
             return Promise.resolve();
         },
@@ -80,9 +70,24 @@ export const createTransactionStoreCompositionRoot = (
 
             return Promise.resolve();
         },
-        // A failing query rejects instead of throwing at the caller (or the RPC host).
-        query: query => new Promise(resolve => resolve(liveQueries.run(query))),
-        subscribeQuery: liveQueries.subscribe,
+        requestFullHistory: accountKey => {
+            syncQueue.requestSync({ accountKeys: [accountKey], mode: 'full' });
+
+            return Promise.resolve();
+        },
+        subscribeQuery: (query, onRows) => {
+            // Lazy: asking for an account's rows is what downloads its history.
+            syncQueue.requestSync({
+                accountKeys: query.accountKeys.filter(
+                    accountKey =>
+                        !syncQueue.isSyncing(accountKey) &&
+                        transactionRepository.selectSyncState(accountKey).lastSyncedAt === null,
+                ),
+                mode: 'latest',
+            });
+
+            return liveQueries.subscribe(query, onRows);
+        },
         dispose: async () => {
             await syncQueue.close();
             liveQueries.dispose();

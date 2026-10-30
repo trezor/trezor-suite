@@ -25,6 +25,8 @@ import {
     createStartTransactionStoreFeed,
     createTransactionStoreWorker,
     selectIsTransactionStoreActive,
+    selectTransactionStoreAccounts,
+    selectTransactionStoreKnownTokens,
 } from '@suite/transaction-store';
 import { createBip329CompositionRoot } from '@suite-common/bip329';
 import {
@@ -155,17 +157,18 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         updateOutputLabel: suiteSync.labeling.updateOutputLabel,
     });
 
-    // Lazy: the worker starts on the first use. The feed, started by the app's init once Connect
-    // is up, starts it only while its Debug settings switch is on.
+    // Lazy: the worker starts on the first use. The feed, started by the app's init, starts it
+    // only while its Debug settings switch is on.
     const ensureTransactionStore = createEnsureTransactionStore({
         getTrezorConnect: deps.getTrezorConnect,
         createWorker: createTransactionStoreWorker,
     });
     const startTransactionStoreFeed = createStartTransactionStoreFeed({
         ensureTransactionStore,
-        getState: deps.getState,
-        subscribe: deps.subscribe,
+        getAccounts: toGetter(deps.getState, selectTransactionStoreAccounts),
+        getKnownTokens: toGetter(deps.getState, selectTransactionStoreKnownTokens),
         getIsEnabled: toGetter(deps.getState, selectIsTransactionStoreActive),
+        subscribe: deps.subscribe,
     });
 
     const networks = createNetworksCompositionRoot({

@@ -4,22 +4,23 @@ export {
 } from './createTransactionStoreCompositionRoot';
 export { type TransactionStore, type TransactionStoreDep } from './transactionStore';
 export type {
+    StoredAccount,
     TransactionSourceErrorType,
     TransactionStoreAccount,
     Dispose,
     Unsubscribe,
 } from './transactionStoreTypes';
 export {
+    type CreateTransactionStoreQueryOptions,
     type TransactionStoreDatabase,
     type TransactionStoreQuery,
     type TransactionStoreRow,
-    toTransactionStoreQuery,
-    transactionStoreDb,
+    createTransactionStoreQuery,
 } from './query/transactionStoreDatabase';
 export {
-    type SelectAccountTransactionsParams,
-    selectAccountTransactions,
-} from './query/selectAccountTransactions';
+    type GetAccountTransactionsQueryParams,
+    getAccountTransactionsQuery,
+} from './query/getAccountTransactionsQuery';
 export type {
     SqlExecResult,
     SqlQuery,

@@ -6,7 +6,7 @@ import type { TransactionSearch } from '../search/transactionSearch';
 import { isNotSuspicious } from '../suspicious/isNotSuspicious';
 import type { SuspiciousTransactionsContext } from '../transactionStoreTypes';
 
-export type SelectAccountTransactionsParams = {
+export type GetAccountTransactionsQueryParams = {
     accountKey: string;
     symbol: NetworkSymbol;
     /**
@@ -24,13 +24,13 @@ export type SelectAccountTransactionsParams = {
  * An account's transactions, aliased `t`, filtered; the caller picks the columns, order and page,
  * or counts them.
  */
-export const selectAccountTransactions = ({
+export const getAccountTransactionsQuery = ({
     accountKey,
     symbol,
     contract,
     search,
     hideSuspicious,
-}: SelectAccountTransactionsParams) => {
+}: GetAccountTransactionsQueryParams) => {
     let query = transactionStoreDb
         .selectFrom('transactions as t')
         .where('t.account_key', '=', accountKey);

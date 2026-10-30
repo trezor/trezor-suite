@@ -11,6 +11,7 @@ import { runInSqliteTransaction } from '../sqlite/runInSqliteTransaction';
 import type { TransactionStoreSqliteDep } from '../sqlite/transactionStoreSqlite';
 import type {
     KnownTokens,
+    StoredAccount,
     TransactionSourceErrorType,
     TransactionStoreAccount,
 } from '../transactionStoreTypes';
@@ -34,7 +35,7 @@ export type TransactionRepository = {
      * account with its whole history.
      */
     replaceAccounts: (accounts: TransactionStoreAccount[]) => void;
-    selectAccount: (accountKey: string) => TransactionStoreAccount | undefined;
+    selectAccount: (accountKey: string) => StoredAccount | undefined;
     /** Makes the network's known tokens exactly these; `null` lists forget its definitions. */
     replaceKnownTokens: (knownTokens: KnownTokens) => void;
     upsertTransactions: (params: { accountKey: string; transactions: Transaction[] }) => void;

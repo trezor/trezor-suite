@@ -114,6 +114,11 @@ export const transactionStoreDb = new Kysely<TransactionStoreDatabase>({
 
 /** A compiled query, plain data to send to the store, typed by the rows it returns. */
 export type TransactionStoreQuery<TRow> = SqlQuery & {
+    /**
+     * The accounts the query reads. Subscribing downloads the newest history of those never
+     * synced, so asking for an account's rows is what syncs it.
+     */
+    accountKeys: ReadonlyArray<string>;
     /** Never set; carries the row type from where the query is built to where its rows land. */
     readonly rowType?: TRow;
 };
@@ -122,11 +127,27 @@ export type TransactionStoreQuery<TRow> = SqlQuery & {
 export type TransactionStoreRow<TQuery> =
     TQuery extends TransactionStoreQuery<infer TRow> ? TRow : never;
 
+/** Compiles a query to run inside the engine. */
 export const toTransactionStoreQuery = <TRow>(
     query: Compilable<TRow>,
+    accountKeys: ReadonlyArray<string> = [],
 ): TransactionStoreQuery<TRow> => {
     const { sql, parameters } = query.compile();
 
     // The builders bind only strings, numbers and `null`.
-    return { sql, parameters: parameters as ReadonlyArray<SqlValue> };
+    return { sql, parameters: parameters as ReadonlyArray<SqlValue>, accountKeys };
 };
+
+export type CreateTransactionStoreQueryOptions = {
+    /** The accounts the query reads, which subscribing to it syncs if they never were. */
+    accountKeys?: ReadonlyArray<string>;
+};
+
+/**
+ * A query for the store, as Evolu's `createQuery`: built with Kysely against the store's tables
+ * and compiled here, to be sent to the store and run there.
+ */
+export const createTransactionStoreQuery = <TRow>(
+    build: (db: typeof transactionStoreDb) => Compilable<TRow>,
+    { accountKeys = [] }: CreateTransactionStoreQueryOptions = {},
+): TransactionStoreQuery<TRow> => toTransactionStoreQuery(build(transactionStoreDb), accountKeys);

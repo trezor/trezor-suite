@@ -14,15 +14,10 @@ export {
     injectStartTransactionStoreFeed,
 } from './createStartTransactionStoreFeed';
 export { TransactionStoreDebug } from './TransactionStoreDebug';
-export {
-    type TransactionStoreQueryResult,
-    useTransactionStoreQuery,
-} from './useTransactionStoreQuery';
-export {
-    type AccountSyncState,
-    type StoredAccountTransactions,
-    type UseStoredAccountTransactionsParams,
-    useStoredAccountTransactions,
-} from './useStoredAccountTransactions';
+export { useTransactionStoreQuery } from './useTransactionStoreQuery';
 export { selectIsTransactionStoreActive } from './transactionStoreSelectors';
+export {
+    selectTransactionStoreAccounts,
+    selectTransactionStoreKnownTokens,
+} from './transactionStoreFeedSelectors';
 export { type ToTransactionSearchParams, toTransactionSearch } from './toTransactionSearch';

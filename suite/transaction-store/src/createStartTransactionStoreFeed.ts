@@ -6,23 +6,20 @@ import type {
 } from '@suite-common/transaction-store';
 
 import type { EnsureTransactionStoreDep } from './createEnsureTransactionStore';
-import {
-    type TransactionStoreFeedState,
-    selectTransactionStoreAccountRevisions,
-    selectTransactionStoreAccounts,
-    selectTransactionStoreKnownTokens,
-} from './transactionStoreFeedSelectors';
 
 export type StartTransactionStoreFeedDeps = EnsureTransactionStoreDep & {
-    getState: () => TransactionStoreFeedState;
-    subscribe: (listener: () => void) => Unsubscribe;
+    /** The same reference while nothing the store needs of them changes. */
+    getAccounts: () => TransactionStoreAccount[];
+    /** The same reference until a list actually changes. */
+    getKnownTokens: () => KnownTokens[];
     /** Whether the store runs at all; until a screen uses it, only in debug mode. */
     getIsEnabled: () => boolean;
+    subscribe: (listener: () => void) => Unsubscribe;
 };
 
 /**
- * Starts feeding the store and returns what stops it. Called once Connect is initialised, since
- * the store fetches history through it.
+ * Starts feeding the store and returns what stops it. Called once the stored accounts are loaded,
+ * as the store deletes the history of every account it is not given.
  */
 export type StartTransactionStoreFeed = () => Dispose;
 
@@ -34,15 +31,13 @@ export const injectStartTransactionStoreFeed = (services: any): StartTransaction
 
 type Fed = {
     accounts: TransactionStoreAccount[];
-    revisions: ReadonlyMap<string, string>;
     knownTokens: KnownTokens[];
 };
 
 /**
- * Keeps the store told what the app knows: its accounts, the networks' token definitions (for
- * hiding suspicious transactions), and when the app's own refresh found an account changed, which
- * is when the store syncs it. The store has no clock of its own. Pushes only what changed, and
- * stops the store when it gets disabled.
+ * Keeps the store told what the app knows: its accounts, with what it last learned of their
+ * history, and the networks' token definitions (for hiding suspicious transactions). The store
+ * has no clock of its own. Pushes only what changed, and stops the store when it gets disabled.
  */
 export const createStartTransactionStoreFeed =
     (deps: StartTransactionStoreFeedDeps): StartTransactionStoreFeed =>
@@ -64,34 +59,21 @@ export const createStartTransactionStoreFeed =
                 return;
             }
 
-            const state = deps.getState();
-            const accounts = selectTransactionStoreAccounts(state);
-            const revisions = selectTransactionStoreAccountRevisions(state);
-            const knownTokens = selectTransactionStoreKnownTokens(state);
-            const service = deps.ensureTransactionStore();
+            const accounts = deps.getAccounts();
+            const knownTokens = deps.getKnownTokens();
+            const { transactionStore } = deps.ensureTransactionStore();
 
             if (accounts !== fed?.accounts) {
-                // The whole list: the store diffs it against what it holds and deletes the rest,
-                // so a forgotten wallet's history goes even if it left while the store was off.
-                // Safe from the start, as the feed starts after the stored accounts are loaded.
-                void service.transactionStore.setAccounts(accounts);
+                // The whole list: the store deletes the history of any account not in it, so a
+                // forgotten wallet's goes even if it left while the store was off, and syncs those
+                // whose revision changed.
+                void transactionStore.setAccounts(accounts);
             }
-            // The store syncs only the accounts something has asked for; it ignores the rest.
-            if (revisions !== fed?.revisions) {
-                const previousRevisions = fed?.revisions;
-
-                void service.transactionStore.refreshAccounts(
-                    [...revisions]
-                        .filter(([key, revision]) => previousRevisions?.get(key) !== revision)
-                        .map(([key]) => key),
-                );
-            }
-
             if (knownTokens !== fed?.knownTokens) {
-                void service.transactionStore.setKnownTokens(knownTokens);
+                void transactionStore.setKnownTokens(knownTokens);
             }
 
-            fed = { accounts, revisions, knownTokens };
+            fed = { accounts, knownTokens };
         };
 
         feed();

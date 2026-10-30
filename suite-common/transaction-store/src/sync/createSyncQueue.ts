@@ -7,8 +7,6 @@ export type SyncQueueDeps = SyncAccountTransactionsDep & TransactionRepositoryDe
 export type SyncQueue = {
     requestSync: (params: { accountKeys: string[]; mode: SyncMode }) => void;
     isSyncing: (accountKey: string) => boolean;
-    /** Resolves once the account's sync, with any asked for while it ran, is done. */
-    whenSettled: (accountKey: string) => Promise<void>;
     /** Takes no more requests and resolves once the running syncs are done. */
     close: () => Promise<void>;
 };
@@ -77,8 +75,6 @@ export const createSyncQueue = (deps: SyncQueueDeps): SyncQueue => {
         },
 
         isSyncing: accountKey => running.has(accountKey),
-
-        whenSettled: accountKey => running.get(accountKey) ?? Promise.resolve(),
 
         close: async () => {
             isClosed = true;

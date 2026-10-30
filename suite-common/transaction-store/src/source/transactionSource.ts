@@ -1,7 +1,7 @@
 import type { Transaction } from '@trezor/blockchain-link-types';
 import type { Result } from '@trezor/type-utils';
 
-import type { TransactionSourceErrorType, TransactionStoreAccount } from '../transactionStoreTypes';
+import type { StoredAccount, TransactionSourceErrorType } from '../transactionStoreTypes';
 
 export type TransactionsPage = {
     /** Newest first. */
@@ -10,7 +10,7 @@ export type TransactionsPage = {
 };
 
 export type FetchTransactionsPageParams = {
-    account: TransactionStoreAccount;
+    account: StoredAccount;
     /** 1 is the newest page. */
     page: number;
 };
