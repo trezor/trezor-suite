@@ -51,7 +51,7 @@ export const TransactionDetailScreen = ({
         askForRating();
     });
 
-    useFetchMissingTransactionFiatRates({ accountKey, isEnabled: !!transaction });
+    useFetchMissingTransactionFiatRates({ accountKeys: [accountKey], isEnabled: !!transaction });
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
