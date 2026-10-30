@@ -15,8 +15,6 @@ export const selectAutodetectTheme = (state: SuiteSettingsRootState) =>
     state.suiteSettings.autodetect.theme;
 export const selectTorOnionLinks = (state: SuiteSettingsRootState) =>
     state.suiteSettings.torOnionLinks;
-export const selectIsCoinjoinReceiveWarningHidden = (state: SuiteSettingsRootState) =>
-    state.suiteSettings.isCoinjoinReceiveWarningHidden;
 export const selectIsUnlockedBootloaderAllowed = (state: SuiteSettingsRootState) =>
     state.suiteSettings.debug.isUnlockedBootloaderAllowed;
 export const selectDebugTransports = (state: SuiteSettingsRootState) =>

@@ -222,48 +222,10 @@ export const saveCoinjoinAccountThunk =
         return extra.services.db.addItem('coinjoinAccounts', serializedAccount, accountKey, true);
     };
 
-type RemoveCoinjoinRelatedSettingState = FlagsRootState &
-    SuiteSettingsRootState & {
-        suite: Pick<SuiteState, 'evmSettings' | 'seenDisconnectNotificationForDeviceIds'>;
-    };
-
-const removeCoinjoinRelatedSetting = (deps: DbDep, state: RemoveCoinjoinRelatedSettingState) => {
-    const settings = { ...selectSuiteSettings(state) };
-
-    settings.isCoinjoinReceiveWarningHidden = false;
-
-    deps.db.addItem(
-        'suiteSettings',
-        {
-            settings,
-            flags: state.flags,
-            evmSettings: state.suite.evmSettings,
-            seenDisconnectNotificationForDeviceIds:
-                state.suite.seenDisconnectNotificationForDeviceIds,
-        },
-        'suite',
-        true,
-    );
-};
-
-type RemoveCoinjoinAccountState = FlagsRootState &
-    SuiteSettingsRootState & {
-        suite: Pick<SuiteState, 'evmSettings' | 'seenDisconnectNotificationForDeviceIds'>;
-    };
-
-export const removeCoinjoinAccount = async (
-    deps: DbDep,
-    accountKey: AccountKey,
-    state: RemoveCoinjoinAccountState,
-) => {
+export const removeCoinjoinAccount = async (deps: DbDep, accountKey: AccountKey) => {
     if (!deps.db.isAccessible()) return;
 
     await deps.db.removeItemByPK('coinjoinAccounts', accountKey);
-
-    const savedCoinjoinAccounts = await deps.db.getItemsExtended('coinjoinAccounts');
-    if (!savedCoinjoinAccounts.length) {
-        removeCoinjoinRelatedSetting(deps, state);
-    }
 };
 
 type SaveCoinjoinDebugSettingsThunkState = CoinjoinRootState;
@@ -411,14 +373,7 @@ export const removeAccountStellarContractTokens = (deps: DbDep, accountKey: Acco
     return deps.db.removeItemByPK('stellarContractTokens', accountKey);
 };
 
-type RemoveAccountWithDependenciesState = FlagsRootState &
-    SuiteSettingsRootState & {
-        suite: Pick<SuiteState, 'evmSettings' | 'seenDisconnectNotificationForDeviceIds'>;
-    };
-
-type RemoveAccountWithDependenciesDeps = DbDep & {
-    getState: () => RemoveAccountWithDependenciesState;
-};
+type RemoveAccountWithDependenciesDeps = DbDep;
 
 export const removeAccountWithDependencies =
     (deps: RemoveAccountWithDependenciesDeps) => (account: Account) =>
@@ -430,7 +385,7 @@ export const removeAccountWithDependencies =
             deps.db.removeItemByPK('receive', account.key),
             removeAccountTransactions(deps, account),
             removeAccountGraph(deps, account),
-            removeCoinjoinAccount(deps, account.key, deps.getState()),
+            removeCoinjoinAccount(deps, account.key),
             removeAccount(deps, account),
             removeAccountHistoricRates(deps, account.key),
             removeAccountPhishing(deps, account.key),
@@ -438,8 +393,7 @@ export const removeAccountWithDependencies =
             removeAccountStellarContractTokens(deps, account.key),
         ]);
 
-export type ForgetDeviceThunkState = AccountsRootState &
-    RemoveAccountWithDependenciesState & { metadata: MetadataState };
+export type ForgetDeviceThunkState = AccountsRootState & { metadata: MetadataState };
 
 type ForgetDeviceThunkDeps = WithServices<DbDep>;
 
@@ -473,7 +427,7 @@ export const forgetDeviceThunk =
             extra.services.db.removeItemByIndex('accounts', 'deviceState', staticSessionId),
             extra.services.db.removeItemByIndex('txs', 'deviceState', staticSessionId),
             extra.services.db.removeItemByIndex('graph', 'deviceState', staticSessionId),
-            ...accounts.map(removeAccountWithDependencies({ db: extra.services.db, getState })),
+            ...accounts.map(removeAccountWithDependencies({ db: extra.services.db })),
             // eslint-disable-next-line @typescript-eslint/no-use-before-define
             saveMetadata(extra.services, { error, hasLegacyLabelsMigrated }),
         ]);
