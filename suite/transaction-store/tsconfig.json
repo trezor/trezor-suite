@@ -28,9 +28,6 @@
         },
         { "path": "../debug" },
         { "path": "../settings" },
-        {
-            "path": "../../packages/blockchain-link"
-        },
         { "path": "../../packages/components" },
         { "path": "../../packages/connect" },
         {

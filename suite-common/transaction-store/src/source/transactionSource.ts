@@ -16,8 +16,8 @@ export type FetchTransactionsPageParams = {
 };
 
 /**
- * Where the store gets history from; each platform entry provides it over its blockchain-link
- * instances, so custom backends apply. It only fetches when asked: when to sync is the app's call.
+ * Where the store gets history from; each platform entry provides it over the app's own backend
+ * connection, so custom backends apply. It only fetches when asked: when to sync is the app's call.
  *
  * @serviceContract
  */

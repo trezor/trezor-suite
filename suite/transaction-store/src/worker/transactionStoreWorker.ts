@@ -1,6 +1,6 @@
 /**
- * The transaction store's worker, for web and the Electron renderer: the whole engine (sync,
- * backends, SQLite) runs here, off the app's main thread. Only RPC messages cross to the app.
+ * The transaction store's worker, for web and the Electron renderer: the engine (sync, SQLite)
+ * runs here, off the app's main thread. Its history pages come through the app's Connect.
  */
 import {
     Name,
@@ -23,7 +23,6 @@ import {
     startTransactionStoreRpcHost,
 } from '@suite-common/transaction-store';
 
-import { createBlockchainLinks } from './createBlockchainLinks';
 import { startBufferedPort } from './startBufferedPort';
 import { startConnectRelay } from './startConnectRelay';
 import {
@@ -75,14 +74,11 @@ const openSqlite = async (): Promise<OpenedSqlite> => {
 const startTransactionStoreWorker = async (): Promise<Dispose | null> => {
     const bufferedPort = startBufferedPort(workerPort);
     const connectRelay = startConnectRelay(bufferedPort.port);
-    const blockchainLinks = createBlockchainLinks({
-        getRelayedBlockchainLink: connectRelay.getBlockchainLink,
-    });
     const { sqlite, close } = await openSqlite();
     const started = createTransactionStoreCompositionRoot({
         sqlite,
         transactionSource: createBlockchainLinkTransactionSource({
-            getBlockchainLink: blockchainLinks.get,
+            getBlockchainLink: connectRelay.getBlockchainLink,
             pageSize: PAGE_SIZE,
         }),
         now: () => Date.now(),
@@ -98,17 +94,14 @@ const startTransactionStoreWorker = async (): Promise<Dispose | null> => {
 
     const engine = started.payload;
     const disposeEngine = async () => {
-        blockchainLinks.disposeAll();
         connectRelay.dispose();
         await engine.dispose();
         close();
     };
-    // The app's `dispose` stops the backends with the engine; the worker is terminated right after.
+    // The app's `dispose` fails the pending fetches with the engine; the worker ends right after.
     const transactionStore: TransactionStore = { ...engine, dispose: disposeEngine };
 
     const handleCommand = createWorkerMessageHandler<TransactionStoreWorkerCommands>({
-        // The app asks for a sync of the accounts once their backends are set.
-        setBackends: ({ backends }) => blockchainLinks.setBackends(backends),
         accountInfo: connectRelay.handleAccountInfo,
     });
     const onWorkerMessage = ({ data }: TransactionStorePortMessage) => handleCommand(data);

@@ -4,14 +4,12 @@ import type {
     TransactionStoreAccount,
     Unsubscribe,
 } from '@suite-common/transaction-store';
-import type { CustomBackend } from '@suite-common/wallet-types';
 
 import type { GetTransactionStoreServiceDep } from './createTransactionStoreService';
 import {
     type TransactionStoreFeedState,
     selectTransactionStoreAccountRevisions,
     selectTransactionStoreAccounts,
-    selectTransactionStoreBackends,
     selectTransactionStoreKnownTokens,
 } from './transactionStoreFeedSelectors';
 
@@ -24,7 +22,7 @@ export type StartTransactionStoreFeedDeps = GetTransactionStoreServiceDep & {
 
 /**
  * Starts feeding the store and returns what stops it. Called once Connect is initialised, since
- * the networks' default backends come from it.
+ * the store fetches history through it.
  */
 export type StartTransactionStoreFeed = () => Dispose;
 
@@ -36,16 +34,15 @@ export const injectStartTransactionStoreFeed = (services: any): StartTransaction
 
 type Fed = {
     accounts: TransactionStoreAccount[];
-    backends: CustomBackend[];
     revisions: ReadonlyMap<string, string>;
     knownTokens: KnownTokens[];
 };
 
 /**
- * Keeps the store told what the app knows: its accounts and their backends, the networks' token
- * definitions (for hiding suspicious transactions), and when the app's
- * own refresh found an account changed, which is when the store syncs it. The store has no clock
- * of its own. Pushes only what changed, and stops the store when it gets disabled.
+ * Keeps the store told what the app knows: its accounts, the networks' token definitions (for
+ * hiding suspicious transactions), and when the app's own refresh found an account changed, which
+ * is when the store syncs it. The store has no clock of its own. Pushes only what changed, and
+ * stops the store when it gets disabled.
  */
 export const createStartTransactionStoreFeed =
     (deps: StartTransactionStoreFeedDeps): StartTransactionStoreFeed =>
@@ -69,11 +66,9 @@ export const createStartTransactionStoreFeed =
 
             const state = deps.getState();
             const accounts = selectTransactionStoreAccounts(state);
-            const backends = selectTransactionStoreBackends(state);
             const revisions = selectTransactionStoreAccountRevisions(state);
             const knownTokens = selectTransactionStoreKnownTokens(state);
             const service = deps.getTransactionStoreService();
-            const accountKeys = accounts.map(({ accountKey }) => accountKey);
 
             if (accounts !== fed?.accounts) {
                 // The whole list: the store diffs it against what it holds and deletes the rest,
@@ -82,13 +77,7 @@ export const createStartTransactionStoreFeed =
                 void service.transactionStore.setAccounts(accounts);
             }
             // The store syncs only the accounts something has asked for; it ignores the rest.
-            if (backends !== fed?.backends) {
-                // Once their backend is set or switched, including those whose first sync ran
-                // before the backends arrived.
-                void service
-                    .setBackends(backends)
-                    .then(() => service.transactionStore.refreshAccounts(accountKeys));
-            } else if (revisions !== fed?.revisions) {
+            if (revisions !== fed?.revisions) {
                 const previousRevisions = fed?.revisions;
 
                 void service.transactionStore.refreshAccounts(
@@ -102,7 +91,7 @@ export const createStartTransactionStoreFeed =
                 void service.transactionStore.setKnownTokens(knownTokens);
             }
 
-            fed = { accounts, backends, revisions, knownTokens };
+            fed = { accounts, revisions, knownTokens };
         };
 
         feed();

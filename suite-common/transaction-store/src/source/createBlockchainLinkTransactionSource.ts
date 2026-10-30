@@ -11,8 +11,8 @@ export type BlockchainLinkClient = {
 
 export type BlockchainLinkTransactionSourceDeps = {
     /**
-     * The engine's own instance for the network, connected to the user's backend; `undefined` for
-     * a network it has none for.
+     * What answers for the network, on the user's backend (on web and desktop, the app's Connect);
+     * `undefined` for a network nothing answers for.
      */
     getBlockchainLink: (symbol: NetworkSymbol) => BlockchainLinkClient | undefined;
     pageSize: number;

@@ -9,7 +9,7 @@ import {
 } from './transactionStoreWorkerProtocol';
 
 export type ConnectRelay = {
-    /** A client for the network that asks the app's Connect instead of a backend of its own. */
+    /** A client for the network that asks the app's Connect. */
     getBlockchainLink: (symbol: NetworkSymbol) => BlockchainLinkClient;
     handleAccountInfo: (payload: TransactionStoreWorkerCommands['accountInfo']) => void;
     /** Fails the requests still waiting for the app. */
@@ -22,9 +22,9 @@ type PendingRequest = {
 };
 
 /**
- * Fetches through the app's Connect for backends the worker cannot run: Electrum needs Node
- * sockets, which only desktop Connect in the Electron main process has. Connect already uses the
- * user's custom backend for that network.
+ * Fetches history through the app's Connect, so the store opens no connection of its own: Connect
+ * already holds one per network, on the user's custom backend, and only desktop Connect has the
+ * Node sockets Electrum needs. Asking by descriptor never involves the device.
  */
 export const startConnectRelay = (port: TransactionStorePort): ConnectRelay => {
     const pending = new Map<number, PendingRequest>();
