@@ -25,6 +25,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
 import { InstantStakeBanner } from './InstantStakeBanner';
 import { TransactionIcon } from './TransactionIcon';
+import { TransactionListItemAccountLine } from './TransactionListItemAccountLine';
 import { TransactionName } from './TransactionName';
 
 type TransactionListItemStyleProps = {
@@ -95,6 +96,7 @@ type TransactionListItemContainerProps = {
     tokenTransfer?: TypedTokenTransfer;
     transactionType: TransactionType;
     stakeOperationType?: StakeType;
+    isAccountLabelShown?: boolean;
 };
 
 export const TransactionListItemContainer = ({
@@ -107,6 +109,7 @@ export const TransactionListItemContainer = ({
     transactionType,
     stakeOperationType,
     tokenTransfer,
+    isAccountLabelShown = false,
 }: TransactionListItemContainerProps) => {
     const { applyStyle } = useNativeStyles();
     const navigateToTransactionDetail = useNavigateToTransactionDetail();
@@ -185,13 +188,21 @@ export const TransactionListItemContainer = ({
                             {hasTokens && <Badge label={tokensLabel} size="small" />}
                         </HStack>
 
-                        <DateTextComponent
-                            isForcedDiscreetMode={isPhishingTransaction}
-                            variant="body-sm"
-                            color="contentSecondary"
-                        >
-                            {DateTimeFormatter.format(transactionBlockTime)}
-                        </DateTextComponent>
+                        {isAccountLabelShown ? (
+                            <TransactionListItemAccountLine
+                                accountKey={accountKey}
+                                blockTime={transactionBlockTime}
+                                isPhishingTransaction={isPhishingTransaction}
+                            />
+                        ) : (
+                            <DateTextComponent
+                                isForcedDiscreetMode={isPhishingTransaction}
+                                variant="body-sm"
+                                color="contentSecondary"
+                            >
+                                {DateTimeFormatter.format(transactionBlockTime)}
+                            </DateTextComponent>
+                        )}
                     </Box>
                 </Box>
                 <Box style={applyStyle(valuesContainerStyle)}>{children}</Box>

@@ -26,6 +26,7 @@ type TransactionListItemProps = {
     accountKey: AccountKey;
     isFirst?: boolean;
     isLast?: boolean;
+    isAccountLabelShown?: boolean;
 };
 
 export const TransactionListItem = ({
@@ -33,6 +34,7 @@ export const TransactionListItem = ({
     accountKey,
     isFirst = false,
     isLast = false,
+    isAccountLabelShown,
 }: TransactionListItemProps) => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -68,6 +70,7 @@ export const TransactionListItem = ({
                 hasTokensCount={hasTokensCount}
                 isFirst={isFirst}
                 isLast={isLast}
+                isAccountLabelShown={isAccountLabelShown}
             >
                 <EmptyAmountText />
             </TransactionListItemContainer>
@@ -85,6 +88,7 @@ export const TransactionListItem = ({
                 hasTokensCount={transaction.tokens.length - 1}
                 isFirst={isFirst}
                 isLast={isLast}
+                isAccountLabelShown={isAccountLabelShown}
             />
         );
 
@@ -97,6 +101,7 @@ export const TransactionListItem = ({
             hasTokensCount={hasTokensCount}
             isFirst={isFirst}
             isLast={isLast}
+            isAccountLabelShown={isAccountLabelShown}
         >
             {allOutputs.map((target, i) => (
                 <TransactionTarget

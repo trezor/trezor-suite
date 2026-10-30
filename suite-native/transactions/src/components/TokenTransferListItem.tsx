@@ -114,6 +114,7 @@ type TokenTransferListItemProps = {
     hasTokensCount?: number;
     isFirst?: boolean;
     isLast?: boolean;
+    isAccountLabelShown?: boolean;
 };
 
 export const TokenTransferListItem = ({
@@ -123,6 +124,7 @@ export const TokenTransferListItem = ({
     hasTokensCount = 0,
     isFirst,
     isLast,
+    isAccountLabelShown,
 }: TokenTransferListItemProps) => {
     const isFailedTxn = transaction.type === 'failed';
 
@@ -135,6 +137,7 @@ export const TokenTransferListItem = ({
             accountKey={accountKey}
             isFirst={isFirst}
             isLast={isLast}
+            isAccountLabelShown={isAccountLabelShown}
         >
             <TokenTransferListItemValues
                 tokenTransfer={tokenTransfer}
