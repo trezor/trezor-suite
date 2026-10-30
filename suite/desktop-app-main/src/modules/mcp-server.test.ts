@@ -46,6 +46,7 @@ jest.mock('../libs/process-icon', () => ({
 }));
 
 import { CALL_SOURCE_MCP } from '@suite-common/connect-popup';
+import { findProcessFromIncomingPort } from '@trezor/node-utils';
 
 import { init } from './mcp-server';
 import { addMessage } from '../libs/connect-popup-messages';
@@ -528,6 +529,34 @@ describe('MCP server', () => {
             });
 
             expect(popupCall.manifest.appName).toBe('a'.repeat(99));
+        });
+
+        it('lets a new session inherit the identity of the one it replaces', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            (findProcessFromIncomingPort as jest.Mock).mockResolvedValueOnce({
+                name: 'Trusted',
+                fullPath: '/usr/bin/trusted',
+            });
+            const identified = await initializeAndCallPopup(server, {
+                clientInfo: { name: 'Trusted' },
+            });
+            expect(identified.process).toEqual(
+                expect.objectContaining({ fullPath: '/usr/bin/trusted' }),
+            );
+
+            // A client is not required to send DELETE, so a second one just initializes again.
+            server.mainWindowProxy.mainWindow.webContents.send.mockClear();
+            (addMessage as jest.Mock).mockClear();
+            const unidentified = await initializeAndCallPopup(server);
+
+            // Permissions are remembered by `process.fullPath`, so this client is labelled by
+            // the previous process and matches the permissions remembered for it.
+            expect(unidentified.process).toEqual(
+                expect.objectContaining({ fullPath: '/usr/bin/trusted' }),
+            );
+            expect(unidentified.manifest.appName).toBe('Trusted');
         });
 
         it('allows re-initialization after DELETE', async () => {
