@@ -2,6 +2,18 @@ import { createContext, useContext } from 'react';
 
 export const DISCREET_PLACEHOLDER = '###';
 
+// Match each complete localized number so grouping separators cannot reveal its magnitude:
+// "1 234 567,89 Kč" must become "### Kč", not "### ### ### Kč".
+// The pattern consists of:
+// - [-.,]*: Optional leading minus signs or decimal punctuation, including values like "-.1".
+// - \p{Nd}+: One or more Unicode decimal digits, including Arabic-Indic digits.
+// - (?:separator\p{Nd}+)*: Further digit groups joined by a decimal or grouping separator.
+//   Separators include dots, commas, straight/curly apostrophes, ordinary spaces, non-breaking
+//   spaces (\u00a0), narrow non-breaking spaces (\u202f), and Arabic decimal/grouping marks
+//   (\u066b/\u066c). Requiring digits after a separator keeps trailing spaces outside the match.
+// - \.?: An optional trailing decimal point, preserving redaction of values like "123.".
+// The g flag replaces every match; u enables Unicode property matching. This recognizes numeric
+// substrings for concealment, rather than validating a particular locale's number format.
 const numericalSubstringRegex = /[-.,]*\p{Nd}+(?:[.,'’ \u00a0\u202f\u066b\u066c]\p{Nd}+)*\.?/gu;
 
 /**
