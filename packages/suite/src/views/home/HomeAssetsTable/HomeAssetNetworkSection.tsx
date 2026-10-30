@@ -55,7 +55,12 @@ export const HomeAssetNetworkSection = memo(
                     </Table.Cell>
                 </Table.Row>
                 {assetKeys.map(assetKey => (
-                    <HomeAssetRow key={assetKey} assetKey={assetKey} hasBorderTop={false} />
+                    <HomeAssetRow
+                        key={assetKey}
+                        assetKey={assetKey}
+                        hasBorderTop={false}
+                        assetNameTestId={`@dashboard/home-asset-group/${symbol}/asset`}
+                    />
                 ))}
             </>
         );
