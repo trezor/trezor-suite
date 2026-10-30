@@ -259,7 +259,9 @@ export const selectShownWalletAssetKeys = createMemoizedSelector(
     (assets, values, enabledNetworks): readonly WalletAssetKey[] =>
         returnStableArrayIfEmpty(
             [...assets.values()]
-                .filter(asset => enabledNetworks.includes(asset.symbol))
+                .filter(
+                    asset => enabledNetworks.includes(asset.symbol) && asset.cryptoBalance.gt(0),
+                )
                 .map(asset => asset.assetKey)
                 .sort(byValue(values)),
         ),
