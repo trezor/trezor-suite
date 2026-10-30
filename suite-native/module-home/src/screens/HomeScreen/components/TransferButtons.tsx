@@ -2,8 +2,6 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { selectIsDeviceAuthorized } from '@suite-common/device';
-import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { selectHasDeviceAnySendAvailableAccount } from '@suite-native/accounts';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Button, HStack } from '@suite-native/atoms';
@@ -17,6 +15,8 @@ import {
     type StackNavigationProps,
 } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
+
+import { selectAreTransferButtonsVisible } from '../homescreenSelectors';
 
 const ReceiveButton = () => {
     const { analytics } = useServices(injectNativeAnalytics);
@@ -82,12 +82,9 @@ export const SendButton = () => {
 };
 
 export const TransferButtons = () => {
-    const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
-    const hasDiscovery = useSelector(selectHasRunningDiscovery);
+    const areTransferButtonsVisible = useSelector(selectAreTransferButtonsVisible);
 
-    const showTransferButtons = isDeviceAuthorized && !hasDiscovery;
-
-    if (!showTransferButtons) return null;
+    if (!areTransferButtonsVisible) return null;
 
     return (
         <HStack spacing="sp16" justifyContent="space-between">

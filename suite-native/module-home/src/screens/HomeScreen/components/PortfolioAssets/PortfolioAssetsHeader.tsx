@@ -17,11 +17,10 @@ export const PortfolioAssetsHeader = () => (
         </VStack>
 
         <Divider />
-        <VStack paddingVertical="sp20" spacing="sp20">
+        <VStack paddingTop="sp20" spacing="sp20">
             <HomescreenAlerts />
             <PromoBanners hasNegativeVerticalMargin={false} hasHorizontalMargin />
             <PortfolioActionButtons />
         </VStack>
-        <Divider />
     </VStack>
 );
