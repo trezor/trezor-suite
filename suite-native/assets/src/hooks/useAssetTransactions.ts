@@ -1,5 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
+
+import { useFocusEffect } from '@react-navigation/native';
 
 import { type AssetDetailState } from '@suite-common/assets';
 import { getTxsPerPage } from '@suite-common/suite-utils';
@@ -105,24 +107,28 @@ export const useAssetTransactions = ({
         accountHistory => accountHistory.nextPageRequest,
     );
 
-    useEffect(
-        function fetchMissingPages() {
-            if (!isFetching && pageRequests.length > 0) {
-                fetchAccountPageBatch(pageRequests);
-            }
-        },
-        [isFetching, pageRequests, fetchAccountPageBatch],
+    useFocusEffect(
+        useCallback(
+            function fetchMissingPages() {
+                if (!isFetching && pageRequests.length > 0) {
+                    fetchAccountPageBatch(pageRequests);
+                }
+            },
+            [isFetching, pageRequests, fetchAccountPageBatch],
+        ),
     );
 
-    useEffect(
-        function fetchMissingFiatRates() {
-            accountHistories
-                .filter(accountHistory => accountHistory.isAssetAccount)
-                .forEach(({ accountKey }) =>
-                    dispatch(updateMissingTxFiatRatesThunk({ localCurrency, accountKey })),
-                );
-        },
-        [dispatch, localCurrency, accountHistories],
+    useFocusEffect(
+        useCallback(
+            function fetchMissingFiatRates() {
+                accountHistories
+                    .filter(accountHistory => accountHistory.isAssetAccount)
+                    .forEach(({ accountKey }) =>
+                        dispatch(updateMissingTxFiatRatesThunk({ localCurrency, accountKey })),
+                    );
+            },
+            [dispatch, localCurrency, accountHistories],
+        ),
     );
 
     const loadMore = () => {
