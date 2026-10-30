@@ -38,13 +38,25 @@ export const EarnConsentsDelegatingCard = ({
                     <Translation id="earn.earnConsentsScreen.maintained" />
                 </Text>
                 <IconList iconIntent="info" textVariant="body-sm-strong">
-                    <IconListTextItem icon="everstakeLogo">
+                    {itemsTranslationKey === 'eth' && (
+                        <IconListTextItem icon="everstakeLogo">
+                            <Translation
+                                id="earn.earnConsentsScreen.delegatingCard.eth.benefits"
+                                values={{ displaySymbol }}
+                            />
+                        </IconListTextItem>
+                    )}
+                    <IconListTextItem
+                        icon={itemsTranslationKey === 'eth' ? 'lock' : 'everstakeLogo'}
+                    >
                         <Translation
                             id={`earn.earnConsentsScreen.delegatingCard.${itemsTranslationKey}.firstItem`}
                             values={{ displaySymbol }}
                         />
                     </IconListTextItem>
-                    <IconListTextItem icon="lock">
+                    <IconListTextItem
+                        icon={itemsTranslationKey === 'eth' ? 'shieldWarning' : 'lock'}
+                    >
                         <Translation
                             id={`earn.earnConsentsScreen.delegatingCard.${itemsTranslationKey}.secondItem`}
                             values={{ displaySymbol }}
