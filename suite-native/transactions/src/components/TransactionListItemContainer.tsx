@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react';
+import { type ComponentType, type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
@@ -85,6 +85,12 @@ export const valuesContainerStyle = prepareNativeStyle(utils => ({
     maxWidth: '40%',
 }));
 
+export type TransactionSubtitleProps = {
+    accountKey: AccountKey;
+    blockTime: number | null;
+    isPhishingTransaction: boolean;
+};
+
 type TransactionListItemContainerProps = {
     children: ReactNode;
     transaction: WalletAccountTransaction;
@@ -95,6 +101,7 @@ type TransactionListItemContainerProps = {
     tokenTransfer?: TypedTokenTransfer;
     transactionType: TransactionType;
     stakeOperationType?: StakeType;
+    subtitleComponent?: ComponentType<TransactionSubtitleProps>;
 };
 
 export const TransactionListItemContainer = ({
@@ -107,6 +114,7 @@ export const TransactionListItemContainer = ({
     transactionType,
     stakeOperationType,
     tokenTransfer,
+    subtitleComponent: SubtitleComponent,
 }: TransactionListItemContainerProps) => {
     const { applyStyle } = useNativeStyles();
     const navigateToTransactionDetail = useNavigateToTransactionDetail();
@@ -185,13 +193,21 @@ export const TransactionListItemContainer = ({
                             {hasTokens && <Badge label={tokensLabel} size="small" />}
                         </HStack>
 
-                        <DateTextComponent
-                            isForcedDiscreetMode={isPhishingTransaction}
-                            variant="body-sm"
-                            color="contentSecondary"
-                        >
-                            {DateTimeFormatter.format(transactionBlockTime)}
-                        </DateTextComponent>
+                        {SubtitleComponent ? (
+                            <SubtitleComponent
+                                accountKey={accountKey}
+                                blockTime={transactionBlockTime}
+                                isPhishingTransaction={isPhishingTransaction}
+                            />
+                        ) : (
+                            <DateTextComponent
+                                isForcedDiscreetMode={isPhishingTransaction}
+                                variant="body-sm"
+                                color="contentSecondary"
+                            >
+                                {DateTimeFormatter.format(transactionBlockTime)}
+                            </DateTextComponent>
+                        )}
                     </Box>
                 </Box>
                 <Box style={applyStyle(valuesContainerStyle)}>{children}</Box>
