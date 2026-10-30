@@ -118,18 +118,15 @@ export const YieldClaimRewardsAccountCard = ({
 
                 <VStack spacing="sp1">
                     {item.summary.tokens.map(token => (
-                        <Text
+                        <CompactTokenAmountFormatter
                             key={`${token.symbol}:${token.contractAddress}`}
+                            value={asDecimalTokenAmount(token.claimableAmount)}
+                            tokenSymbol={toTokenSymbol(token.symbol)}
+                            numberOfLines={2}
                             variant="body-xs"
                             color="contentSecondary"
                             style={applyStyle(tokenAmountsStyle)}
-                        >
-                            <CompactTokenAmountFormatter
-                                value={asDecimalTokenAmount(token.claimableAmount)}
-                                tokenSymbol={toTokenSymbol(token.symbol)}
-                                numberOfLines={2}
-                            />
-                        </Text>
+                        />
                     ))}
                 </VStack>
             </VStack>
