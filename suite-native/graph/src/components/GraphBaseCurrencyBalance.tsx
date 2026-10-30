@@ -6,7 +6,15 @@ import { useFormatters } from '@suite-common/formatters';
 import { type FiatGraphPoint } from '@suite-common/graph';
 import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
 import { type BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
-import { Box, BoxSkeleton, DiscreetTextTrigger, HStack, Text, VStack } from '@suite-native/atoms';
+import {
+    Box,
+    BoxSkeleton,
+    Discreet,
+    DiscreetTextTrigger,
+    HStack,
+    Text,
+    VStack,
+} from '@suite-native/atoms';
 import { BaseCurrencyAmountLargeFormatter } from '@suite-native/formatters';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { BigNumber } from '@trezor/utils';
@@ -40,10 +48,12 @@ const Skeleton = () => (
 
 const FormattedBalance = ({ value }: { value: BaseCurrencyAmount }) => (
     <DiscreetTextTrigger testID="@home/portfolio/fiat-balance-header/discreet-trigger">
-        <BaseCurrencyAmountLargeFormatter
-            value={value}
-            testID="@home/portfolio/fiat-balance-header"
-        />
+        <Discreet blurIntensity={10}>
+            <BaseCurrencyAmountLargeFormatter
+                value={value}
+                testID="@home/portfolio/fiat-balance-header"
+            />
+        </Discreet>
     </DiscreetTextTrigger>
 );
 

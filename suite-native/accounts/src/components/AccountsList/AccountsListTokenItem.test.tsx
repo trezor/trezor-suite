@@ -26,12 +26,6 @@ jest.mock('@suite-native/formatters', () => ({
     TokenToFiatAmountFormatter: () => <Text>US$23.91</Text>,
 }));
 
-jest.mock('@suite-common/discreet-mode', () => ({
-    useDiscreetMode: () => ({
-        isDiscreetMode: false,
-    }),
-}));
-
 describe('AccountsListTokenItem', () => {
     const renderAccountsListTokenItem = ({
         showFiatValue,
@@ -46,7 +40,10 @@ describe('AccountsListTokenItem', () => {
                 onSelectAccount={jest.fn()}
             />,
             {
-                preloadedState: { wallet: { accounts: [mockAccount] } },
+                preloadedState: {
+                    wallet: { accounts: [mockAccount] },
+                    discreetMode: { isActive: false },
+                },
             },
         );
 

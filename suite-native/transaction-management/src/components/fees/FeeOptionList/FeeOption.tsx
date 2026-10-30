@@ -210,7 +210,8 @@ export const FeeOption = ({
                                 value={fee}
                                 symbol={symbol}
                                 isLoading={isLoading}
-                                isDiscreetText={false}
+                                // Fee options must stay readable so the user can compare their costs.
+                                discreetMode="disabled"
                             />
                             <ExactCryptoAmountFormatter
                                 variant="body-sm"
@@ -221,7 +222,8 @@ export const FeeOption = ({
                                 adjustsFontSizeToFit
                                 numberOfLines={1}
                                 isLoading={isLoading}
-                                isDiscreetText={false}
+                                // Fee options must stay readable so the user can compare their costs.
+                                discreetMode="disabled"
                             />
                         </VStack>
                         {isInteractive && (

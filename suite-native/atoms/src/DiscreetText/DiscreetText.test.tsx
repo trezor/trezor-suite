@@ -1,31 +1,45 @@
-import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
-import { Box as MockBox } from '../Box';
+import { Text } from '../Text';
 import { DiscreetText } from './DiscreetText';
 
-jest.mock('@suite-common/discreet-mode', () => ({
-    useDiscreetMode: () => ({
-        isDiscreetMode: false,
-        setIsDiscreetMode: jest.fn(),
-    }),
-}));
-
-jest.mock('./DiscreetCanvas', () => ({
-    DiscreetCanvas: () => <MockBox testID="discreet-canvas" />,
-}));
-
 describe('DiscreetText', () => {
-    it('should render the canvas without reacting to text layout changes', async () => {
-        const { container, getByTestId } = await renderWithBasicProvider(
-            <DiscreetText isForcedDiscreetMode>Hidden amount</DiscreetText>,
+    it('redacts numbers in plain text before blurring it', async () => {
+        const { getByText, queryByText } = await renderWithStoreProvider(
+            <DiscreetText isForcedDiscreetMode>Claim 1234.56 ETH</DiscreetText>,
+            { preloadedState: { discreetMode: { isActive: false } } },
         );
 
-        const hasLayoutHandler = container.queryAll(
-            view => typeof view.props.onLayout === 'function',
-        ).length;
+        expect(queryByText('Claim 1234.56 ETH', { includeHiddenElements: true })).toBeNull();
+        expect(getByText('Claim ### ETH', { includeHiddenElements: true })).not.toBeVisible();
+    });
 
-        expect(getByTestId('discreet-text')).toBeOnTheScreen();
-        expect(getByTestId('discreet-canvas')).toBeOnTheScreen();
-        expect(hasLayoutHandler).toBe(0);
+    it('keeps the amount and symbol visible when privacy mode is off', async () => {
+        const { getByText } = await renderWithStoreProvider(
+            <DiscreetText>
+                <Text>1234.56</Text>
+                <Text> BTC</Text>
+            </DiscreetText>,
+            { preloadedState: { discreetMode: { isActive: false } } },
+        );
+
+        expect(getByText('1234.56')).toBeVisible();
+        expect(getByText(' BTC')).toBeVisible();
+    });
+
+    it('conceals nested text including its symbol when privacy mode is on', async () => {
+        const { getByTestId, getByText } = await renderWithStoreProvider(
+            <DiscreetText>
+                <Text>###</Text>
+                <Text> BTC</Text>
+            </DiscreetText>,
+            { preloadedState: { discreetMode: { isActive: true } } },
+        );
+
+        expect(getByTestId('discreet-text', { includeHiddenElements: true })).toHaveTextContent(
+            '### BTC',
+        );
+        expect(getByTestId('discreet-text')).toBeVisible();
+        expect(getByText(' BTC', { includeHiddenElements: true })).not.toBeVisible();
     });
 });

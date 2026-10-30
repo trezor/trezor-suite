@@ -5,30 +5,18 @@ import { type FormatterProps } from '../types';
 import { AmountText } from './AmountText';
 import { BaseCurrencyAmount, type FormattedBaseCurrencyAmount } from './BaseCurrencyAmount';
 
-type BaseCurrencyAmountHeaderFormatterProps = FormatterProps<BaseCurrencyAmountValue | null> & {
-    isDiscreetText?: boolean;
-};
-
-type BaseCurrencyAmountContentProps = FormattedBaseCurrencyAmount & {
-    isDiscreetText: boolean;
-};
+type BaseCurrencyAmountHeaderFormatterProps = FormatterProps<BaseCurrencyAmountValue | null>;
 
 const BaseCurrencyAmountContent = ({
     currencySymbol,
     wholeNumber,
     decimalNumber,
     isCryptoCurrency,
-    isDiscreetText,
-}: BaseCurrencyAmountContentProps) => {
+}: FormattedBaseCurrencyAmount) => {
     const valueElement = (
         <Box flexDirection="row" alignItems="flex-end" flexShrink={1}>
-            <AmountText value={wholeNumber} variant="headline-md" isDiscreetText={isDiscreetText} />
-            <AmountText
-                value={decimalNumber}
-                variant="headline-md"
-                color="contentSecondary"
-                isDiscreetText={isDiscreetText}
-            />
+            <AmountText value={wholeNumber} variant="headline-md" />
+            <AmountText value={decimalNumber} variant="headline-md" color="contentSecondary" />
         </Box>
     );
     const currencyElement = (
@@ -52,11 +40,8 @@ const BaseCurrencyAmountContent = ({
 
 export const BaseCurrencyAmountHeaderFormatter = ({
     value,
-    isDiscreetText = true,
 }: BaseCurrencyAmountHeaderFormatterProps) => (
     <BaseCurrencyAmount value={value}>
-        {formattedAmount => (
-            <BaseCurrencyAmountContent {...formattedAmount} isDiscreetText={isDiscreetText} />
-        )}
+        {formattedAmount => <BaseCurrencyAmountContent {...formattedAmount} />}
     </BaseCurrencyAmount>
 );

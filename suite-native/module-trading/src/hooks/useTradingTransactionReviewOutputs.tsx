@@ -235,7 +235,8 @@ export const useTradingTransactionReviewOutputs = ({
                                 )}
                                 tokenSymbol={output.token.symbol as TokenSymbol}
                                 maxDisplayedDecimals={output.token.decimals}
-                                isDiscreetText={false}
+                                // The user must be able to verify token amounts before signing the trade.
+                                discreetMode="disabled"
                             />
                         );
                     };

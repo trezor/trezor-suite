@@ -13030,6 +13030,7 @@ __metadata:
     "@suite-native/icons": "workspace:*"
     "@suite-native/intl": "workspace:^"
     "@suite-native/test-utils": "workspace:*"
+    "@suite-native/test-utils-store": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/react-utils": "workspace:*"
     "@trezor/styles-native": "workspace:*"
@@ -13612,6 +13613,7 @@ __metadata:
   resolution: "@suite-native/formatters@workspace:suite-native/formatters"
   dependencies:
     "@reduxjs/toolkit": "npm:2.13.0"
+    "@suite-common/discreet-mode": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"

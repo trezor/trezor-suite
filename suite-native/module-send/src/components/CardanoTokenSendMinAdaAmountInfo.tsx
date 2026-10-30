@@ -69,7 +69,8 @@ export const CardanoTokenSendMinAdaAmountInfo = ({
                     color="contentSecondary"
                     value={minAdaAmountInUnits}
                     symbol={symbol}
-                    isDiscreetText={false}
+                    // In the send form, users must always see real values, even when privacy mode is enabled.
+                    discreetMode="disabled"
                 />
             </HStack>
             <BottomSheetModal ref={bottomSheetRef}>

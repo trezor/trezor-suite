@@ -74,7 +74,8 @@ export const TransactionListItemValues = ({
                         symbol={transaction.symbol}
                         historicRate={historicRate}
                         useHistoricRate={!!historicRate}
-                        isForcedDiscreetMode={isPhishingTransaction}
+                        // Conceal phishing-transaction amounts even when global discreet mode is off.
+                        discreetMode={isPhishingTransaction ? 'enforced' : 'auto'}
                         style={applyStyle(failedTxStyle, { isFailedTx })}
                     />
                 </Box>
@@ -86,7 +87,8 @@ export const TransactionListItemValues = ({
                 numberOfLines={1}
                 signValue={operation ?? 'negative'}
                 adjustsFontSizeToFit
-                isForcedDiscreetMode={isPhishingTransaction}
+                // Conceal phishing-transaction amounts even when global discreet mode is off.
+                discreetMode={isPhishingTransaction ? 'enforced' : 'auto'}
                 variant="body-sm"
                 color="contentSecondary"
             />

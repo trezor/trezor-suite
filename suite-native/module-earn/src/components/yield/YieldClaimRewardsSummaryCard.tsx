@@ -124,7 +124,8 @@ export const YieldClaimRewardsSummaryCard = () => {
                                 <BaseCurrencyAmountFormatter
                                     value={totalClaimableFiatAmount}
                                     variant="body-md-strong"
-                                    isDiscreetText={false}
+                                    // The user needs to see the total rewards they are about to claim.
+                                    discreetMode="disabled"
                                     isLoading={isClaimLoading}
                                 />
                             )}

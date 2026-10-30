@@ -29,3 +29,4 @@ export {
     getFormattedCurrencySymbol,
 } from './utils';
 export type { DecimalTokenAmount } from './utils';
+export type { DiscreetMode } from './types';

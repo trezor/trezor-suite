@@ -1,5 +1,5 @@
 import { type TokenSymbol } from '@suite-common/wallet-types';
-import { renderWithBasicProvider } from '@suite-native/test-utils';
+import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 
 import {
     CompactTokenAmountFormatter,
@@ -11,22 +11,20 @@ import {
 } from './ExactTokenAmountFormatter';
 import { asDecimalTokenAmount } from '../utils';
 
-jest.mock('@suite-common/discreet-mode', () => ({
-    useDiscreetMode: () => ({
-        isDiscreetMode: false,
-    }),
-}));
-
 // Both formatters expect `value` in human-readable units; base-unit amounts must be converted
 // by the caller.
 describe('ExactTokenAmountFormatter', () => {
-    const renderExactTokenAmountFormatter = (props: Partial<ExactTokenAmountFormatterProps>) =>
-        renderWithBasicProvider(
+    const renderExactTokenAmountFormatter = (
+        props: Partial<ExactTokenAmountFormatterProps>,
+        isDiscreetMode = false,
+    ) =>
+        renderWithStoreProvider(
             <ExactTokenAmountFormatter
                 tokenSymbol={'USDC' as TokenSymbol}
                 value={asDecimalTokenAmount('1234.56')}
                 {...props}
             />,
+            { preloadedState: { discreetMode: { isActive: isDiscreetMode } } },
         );
 
     it('should render formatted value', async () => {
@@ -34,6 +32,21 @@ describe('ExactTokenAmountFormatter', () => {
 
         expect(getByTestId('plain-text')).toHaveTextContent('1,234.56 USDC');
     });
+
+    it.each(['1', '1234567.89'])(
+        'uses the same redacted text for different amount lengths (%s)',
+        async value => {
+            const { getByTestId, getByText } = await renderExactTokenAmountFormatter(
+                { value: asDecimalTokenAmount(value) },
+                true,
+            );
+
+            expect(getByTestId('discreet-text', { includeHiddenElements: true })).toHaveTextContent(
+                '### USDC',
+            );
+            expect(getByText('### USDC', { includeHiddenElements: true })).not.toBeVisible();
+        },
+    );
 
     it('should cap displayed decimals to the token precision', async () => {
         const { getByTestId } = await renderExactTokenAmountFormatter({
@@ -50,13 +63,15 @@ describe('ExactTokenAmountFormatter', () => {
             isPhishingTransaction: true,
         });
 
-        expect(getByTestId('discreet-text')).toHaveTextContent('0 USDC');
+        expect(getByTestId('discreet-text', { includeHiddenElements: true })).toHaveTextContent(
+            '### USDC',
+        );
     });
 });
 
 describe('CompactTokenAmountFormatter', () => {
     const renderCompactTokenAmountFormatter = (props: Partial<CompactTokenAmountFormatterProps>) =>
-        renderWithBasicProvider(
+        renderWithStoreProvider(
             <CompactTokenAmountFormatter
                 tokenSymbol={'USDC' as TokenSymbol}
                 value={asDecimalTokenAmount('1234.56')}

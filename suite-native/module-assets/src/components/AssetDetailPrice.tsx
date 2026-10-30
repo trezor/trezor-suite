@@ -17,7 +17,7 @@ export const AssetDetailPrice = ({ networkSymbol, tokenContract }: AssetDetailPr
 
     return (
         <VStack spacing="sp12">
-            <BaseCurrencyAmountHeaderFormatter value={price} isDiscreetText={false} />
+            <BaseCurrencyAmountHeaderFormatter value={price} />
             {sevenDayPercentageChange !== null && (
                 <AssetPriceChange
                     valueChange={sevenDayValueChange}
