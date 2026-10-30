@@ -1,38 +1,28 @@
 import { useSelector } from 'react-redux';
 
-import { type RouteProp, useRoute } from '@react-navigation/native';
-
-import {
-    type HomeAssetTableState,
-    selectWalletAssetKey,
-    selectWalletAssetStakingRatio,
-} from '@suite-common/assets';
+import { type HomeAssetTableState, selectWalletAssetStakingRatio } from '@suite-common/assets';
+import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { Box, HStack } from '@suite-native/atoms';
-import type { AssetsStackParamList, AssetsStackRoutes } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
-import { clamp } from '@trezor/utils';
 
-type BalanceType = 'available' | 'staking';
+import { type EarnBalanceType, earnBalanceColors } from './earnBalance';
 
-const balanceBarSegmentStyle = prepareNativeStyle<{ type: BalanceType }>((utils, { type }) => ({
+const balanceBarSegmentStyle = prepareNativeStyle<{ type: EarnBalanceType }>((utils, { type }) => ({
     height: utils.spacings.sp6,
     borderRadius: utils.borders.radii.r4,
-    backgroundColor:
-        utils.colors[type === 'staking' ? 'elementFillBrandBold' : 'elementFillAccentVioletBold'],
+    backgroundColor: utils.colors[earnBalanceColors[type]],
 }));
 
-export const AssetDetailEarnBalanceBar = () => {
-    const { networkSymbol, tokenContract } =
-        useRoute<RouteProp<AssetsStackParamList, AssetsStackRoutes.AssetDetail>>().params;
-    const assetKey = useSelector((state: HomeAssetTableState) =>
-        selectWalletAssetKey(state, networkSymbol, tokenContract),
-    );
+type AssetDetailEarnBalanceBarProps = {
+    assetKey: WalletAssetKey | undefined;
+};
+
+export const AssetDetailEarnBalanceBar = ({ assetKey }: AssetDetailEarnBalanceBarProps) => {
     const stakingRatio = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetStakingRatio(state, assetKey),
     );
     const { applyStyle } = useNativeStyles();
-    const clampedStakingRatio = clamp(stakingRatio ?? 0, 0, 1);
-    const availableRatio = 1 - clampedStakingRatio;
+    const availableRatio = 1 - (stakingRatio ?? 0);
 
     return (
         <HStack spacing="sp4">
@@ -42,9 +32,9 @@ export const AssetDetailEarnBalanceBar = () => {
                     style={applyStyle(balanceBarSegmentStyle, { type: 'available' })}
                 />
             )}
-            {clampedStakingRatio > 0 && (
+            {stakingRatio !== undefined && (
                 <Box
-                    flex={clampedStakingRatio}
+                    flex={stakingRatio}
                     style={applyStyle(balanceBarSegmentStyle, { type: 'staking' })}
                 />
             )}

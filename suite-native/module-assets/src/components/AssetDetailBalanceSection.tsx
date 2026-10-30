@@ -12,14 +12,13 @@ import {
     selectWalletAssetTokenSymbol,
 } from '@suite-common/assets';
 import { areBaseCurrencyAmountsEqual } from '@suite-common/wallet-types';
-import { HStack, PressableOpacity, Text, VStack } from '@suite-native/atoms';
+import { VStack } from '@suite-native/atoms';
 import {
     BaseCurrencyAmountHeaderFormatter,
     CompactCryptoAmountFormatter,
     CompactTokenAmountFormatter,
     asDecimalTokenAmount,
 } from '@suite-native/formatters';
-import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
     AccountsStackRoutes,
@@ -30,6 +29,8 @@ import {
     RootStackRoutes,
     type StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
+
+import { AssetDetailSectionHeader } from './AssetDetailSectionHeader';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     AssetsStackParamList,
@@ -76,26 +77,19 @@ export const AssetDetailBalanceSection = () => {
 
     return (
         <VStack paddingHorizontal="sp20" spacing="sp16">
-            <HStack alignItems="center" justifyContent="space-between" spacing="sp16">
-                <Text variant="body-xs" color="contentSecondary">
-                    <Translation id="moduleAssets.assetDetailScreen.balanceSection.balance" />
-                </Text>
-                <PressableOpacity
-                    accessibilityRole="button"
-                    onPress={handleAccountsPress}
-                    testID="@assets/asset-detail/all-accounts-button"
-                >
-                    <HStack alignItems="center" spacing="sp4">
-                        <Text variant="body-xs" color="contentBrand">
-                            <Translation
-                                id="moduleAssets.assetDetailScreen.balanceSection.accountCount"
-                                values={{ count: accountCount }}
-                            />
-                        </Text>
-                        <Icon name="caretRight" size="small" color="contentBrand" />
-                    </HStack>
-                </PressableOpacity>
-            </HStack>
+            <AssetDetailSectionHeader
+                title={
+                    <Translation id="moduleAssets.assetDetailScreen.balanceSection.balanceTitle" />
+                }
+                linkLabel={
+                    <Translation
+                        id="moduleAssets.assetDetailScreen.balanceSection.allAccountsButton"
+                        values={{ count: accountCount }}
+                    />
+                }
+                onPress={handleAccountsPress}
+                testID="@assets/asset-detail/all-accounts-button"
+            />
 
             <VStack spacing="sp4">
                 <BaseCurrencyAmountHeaderFormatter
@@ -106,7 +100,6 @@ export const AssetDetailBalanceSection = () => {
                     <CompactCryptoAmountFormatter
                         value={amount}
                         symbol={networkSymbol}
-                        variant="body-sm"
                         color="contentPrimary"
                         numberOfLines={1}
                         adjustsFontSizeToFit
@@ -116,7 +109,6 @@ export const AssetDetailBalanceSection = () => {
                         value={asDecimalTokenAmount(amount)}
                         tokenSymbol={tokenSymbol}
                         tokenDecimals={tokenDecimals}
-                        variant="body-sm"
                         color="contentPrimary"
                         numberOfLines={1}
                         adjustsFontSizeToFit

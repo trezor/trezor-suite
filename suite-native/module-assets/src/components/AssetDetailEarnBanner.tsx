@@ -2,20 +2,18 @@ import { useSelector } from 'react-redux';
 
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
-import {
-    type HomeAssetTableState,
-    selectWalletAssetAvailableAmount,
-    selectWalletAssetKey,
-    selectWalletAssetStakingAmount,
-} from '@suite-common/assets';
 import { useFormatters } from '@suite-common/formatters';
 import { getNetworkDisplaySymbol } from '@suite-common/wallet-config';
-import { type StakeRootState, selectApy } from '@suite-common/wallet-core';
-import { isApyAvailable, isPositiveBalance } from '@suite-common/wallet-utils';
+import { type StakeRootState, type WalletAssetKey, selectApy } from '@suite-common/wallet-core';
 import { CompactCardWithIconLayout, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import type { AssetsStackParamList, AssetsStackRoutes } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
+
+import {
+    type AssetDetailEarnState,
+    selectShouldShowWalletAssetEarnBanner,
+} from '../assetDetailEarnSelectors';
 
 const bannerStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.elementFillBrandSofter,
@@ -23,31 +21,19 @@ const bannerStyle = prepareNativeStyle(utils => ({
 }));
 
 type AssetDetailEarnBannerProps = {
+    assetKey: WalletAssetKey | undefined;
     onPress: () => void;
 };
 
-export const AssetDetailEarnBanner = ({ onPress }: AssetDetailEarnBannerProps) => {
-    const { networkSymbol, tokenContract } =
+export const AssetDetailEarnBanner = ({ assetKey, onPress }: AssetDetailEarnBannerProps) => {
+    const { networkSymbol } =
         useRoute<RouteProp<AssetsStackParamList, AssetsStackRoutes.AssetDetail>>().params;
-    const assetKey = useSelector((state: HomeAssetTableState) =>
-        selectWalletAssetKey(state, networkSymbol, tokenContract),
-    );
-    const availableAmount = useSelector((state: HomeAssetTableState) =>
-        selectWalletAssetAvailableAmount(state, assetKey),
-    );
-    const stakingAmount = useSelector((state: HomeAssetTableState) =>
-        selectWalletAssetStakingAmount(state, assetKey),
-    );
-    const stakingApy = useSelector((state: StakeRootState) =>
-        tokenContract === undefined ? selectApy(state, { networkSymbol }) : null,
-    );
+    const stakingApy = useSelector((state: StakeRootState) => selectApy(state, { networkSymbol }));
     const { PercentageFormatter } = useFormatters();
     const { applyStyle } = useNativeStyles();
-    const displayedStakingApy = stakingApy ?? 0;
-    const shouldShowEarnBanner =
-        isApyAvailable(displayedStakingApy) &&
-        isPositiveBalance(availableAmount ?? '0') &&
-        !isPositiveBalance(stakingAmount ?? '0');
+    const shouldShowEarnBanner = useSelector((state: AssetDetailEarnState) =>
+        selectShouldShowWalletAssetEarnBanner(state, assetKey),
+    );
 
     if (!shouldShowEarnBanner) {
         return null;
@@ -57,7 +43,8 @@ export const AssetDetailEarnBanner = ({ onPress }: AssetDetailEarnBannerProps) =
         <CompactCardWithIconLayout
             icon="piggyBank"
             iconSize={32}
-            contentPadding={{ horizontal: 'sp12', vertical: 'sp8' }}
+            paddingHorizontal="sp12"
+            paddingVertical="sp8"
             title={
                 <Text variant="body-sm-strong" color="contentBrand">
                     <Translation id="moduleAssets.assetDetailScreen.earnSection.banner.title" />
@@ -68,7 +55,7 @@ export const AssetDetailEarnBanner = ({ onPress }: AssetDetailEarnBannerProps) =
                     <Translation
                         id="moduleAssets.assetDetailScreen.earnSection.banner.description"
                         values={{
-                            apy: PercentageFormatter.format(displayedStakingApy),
+                            apy: PercentageFormatter.format(stakingApy ?? 0),
                             symbol: getNetworkDisplaySymbol(networkSymbol),
                         }}
                     />

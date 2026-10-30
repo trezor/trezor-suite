@@ -12,11 +12,9 @@ import {
     type AssetAccountsRootState,
     type FiatRatesRootState,
     type HiddenTokenReason,
-    type StakeRootState,
     type WalletAssetKey,
     type WalletSettingsRootState,
     getWalletAssetKey,
-    selectApy,
     selectAreHomeAssetSmallBalancesShown,
     selectBaseCurrency,
     selectCurrentFiatRates,
@@ -41,7 +39,6 @@ import {
 import {
     getAccountTotalStakingBalance,
     getFiatRateKey,
-    isApyAvailable,
     isPositiveBalance,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
@@ -56,8 +53,6 @@ export type HomeAssetTableState = AssetAccountsRootState &
     NetworksRootState &
     FiatRatesRootState &
     WalletSettingsRootState;
-
-export type HomeAssetEarnState = HomeAssetTableState & StakeRootState;
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<HomeAssetTableState>();
 
@@ -702,26 +697,6 @@ export const selectWalletAssetAvailableAmount = createMemoizedSelector(
             ? undefined
             : new BigNumber(totalAmount).minus(stakingAmount).toFixed(),
 );
-
-export const selectWalletAssetEarnAvailable = (
-    state: HomeAssetEarnState,
-    assetKey: WalletAssetKey | undefined,
-) => {
-    const stakingAmount = selectWalletAssetStakingAmount(state, assetKey);
-
-    if (isPositiveBalance(stakingAmount)) {
-        return true;
-    }
-
-    const networkSymbol = selectWalletAssetSymbol(state, assetKey);
-    const contractAddress = selectWalletAssetContractAddress(state, assetKey);
-
-    return (
-        networkSymbol !== undefined &&
-        contractAddress === undefined &&
-        isApyAvailable(selectApy(state, { networkSymbol }))
-    );
-};
 
 export const selectWalletAssetTokenSymbol = (
     state: HomeAssetTableState,
