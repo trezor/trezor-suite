@@ -66,16 +66,12 @@ describe('rememberAppPermissions', () => {
         ).toEqual([]);
     });
 
-    // A path the main process read as blank identifies the caller no better than UNKNOWN_PROCESS
-    // does, yet such a grant is remembered, and `isSameConnectApp` — which tells callers apart by
-    // `fullPath` alone — matches it against every other blank-path caller of the same origin. The
-    // test documents that behaviour before it is changed.
     it.each(['', '   '])(
-        'remembers permissions for a desktop app whose process path is %p',
+        'does not remember permissions for a desktop app whose process path is %p',
         fullPath => {
-            const blankPath = { ...app, process: { ...appProcess, fullPath } };
-
-            expect(rememberApps(blankPath).permissions).toEqual([blankPath]);
+            expect(
+                rememberApps({ ...app, process: { ...appProcess, fullPath } }).permissions,
+            ).toEqual([]);
         },
     );
 });
@@ -101,9 +97,17 @@ describe('storageLoad', () => {
         ).toEqual([]);
     });
 
-    it('loads permissions remembered for a blank process path', () => {
-        const blankPath = { ...app, process: { ...appProcess, fullPath: '' } };
+    it('does not load permissions remembered for a blank process path by an earlier version', () => {
+        expect(loadApps({ ...app, process: { ...appProcess, fullPath: '' } }).permissions).toEqual(
+            [],
+        );
+    });
 
-        expect(loadApps(blankPath).permissions).toEqual([blankPath]);
+    // Nothing schema-validates the persisted grants, so a `process` without a path must be
+    // dropped like any other malformed entry — a throw here would abort the store hydration.
+    it('does not load a permission whose persisted process has no path', () => {
+        const withoutPath = { ...app, process: { name: 'App' } } as unknown;
+
+        expect(loadApps(withoutPath as AppRememberedPermission).permissions).toEqual([]);
     });
 });
