@@ -30,6 +30,14 @@ type RenderItemParams = {
     item: AssetTransactionListItem;
 };
 
+const getItemType = (item: AssetTransactionListItem) => {
+    if (typeof item === 'string') {
+        return 'dayTitle';
+    }
+
+    return item.tokenTransfer ? 'tokenTransfer' : 'transaction';
+};
+
 const renderItem = ({ item }: RenderItemParams) => {
     if (typeof item === 'string') {
         return <TransactionListGroupTitle dayKey={item} />;
@@ -93,6 +101,7 @@ export const AssetTransactionList = ({
             <FlashList<AssetTransactionListItem>
                 data={items}
                 renderItem={renderItem}
+                getItemType={getItemType}
                 contentContainerStyle={applyStyle(listContainerStyle)}
                 ListEmptyComponent={
                     <AssetTransactionListEmptyState

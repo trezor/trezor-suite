@@ -127,7 +127,7 @@ export const useAssetTransactions = ({
 
     const loadMore = () => {
         retryFailed();
-        setVisibleCount(count => count + perPage);
+        setVisibleCount(count => Math.max(count, visibleRows.length) + perPage);
 
         if (needsOlderHistoryScan && accountHistoryToFetch && !isFetching) {
             fetchAccountPageBatch([accountHistoryToFetch.nextPageRequest]);
