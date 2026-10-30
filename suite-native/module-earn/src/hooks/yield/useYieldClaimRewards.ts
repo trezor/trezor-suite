@@ -7,16 +7,13 @@ import {
     useGetMerklRewardsQueryEntries,
 } from '@suite-common/earn-stablecoin-api';
 import {
+    type StablecoinYieldAccountRewards,
+    getStablecoinYieldAccountRewards,
     selectBaseCurrency,
     selectCurrentFiatRates,
     useMissingRateTickersQuery,
 } from '@suite-common/wallet-core';
 import { type Account } from '@suite-common/wallet-types';
-
-import {
-    type StablecoinYieldAccountRewards,
-    getStablecoinYieldAccountRewards,
-} from '../../utils/yield/stablecoinYieldClaimSummaryUtils';
 
 type UseYieldClaimRewardsParams = {
     account: Account | null;

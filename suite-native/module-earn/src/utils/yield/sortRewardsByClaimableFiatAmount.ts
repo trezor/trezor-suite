@@ -1,6 +1,5 @@
+import { type StablecoinYieldAccountRewards } from '@suite-common/wallet-core';
 import { BigNumber } from '@trezor/utils';
-
-import { type StablecoinYieldAccountRewards } from './stablecoinYieldClaimSummaryUtils';
 
 type Reward = StablecoinYieldAccountRewards['rewards'][number];
 

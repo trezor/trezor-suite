@@ -5,15 +5,12 @@ import { useIsFocused } from '@react-navigation/native';
 
 import { events } from '@suite-common/analytics';
 import { type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
+import { type EarnListRootState, selectYieldPromoListItems } from '@suite-common/wallet-core';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { useEarnEntryId } from '@suite-native/navigation';
 import { useServices } from '@trezor/dependency-injection';
 
-import {
-    type EarnListRootState,
-    selectStakingPromoListSymbols,
-    selectYieldPromoListItems,
-} from '../../earnScreenSelectors';
+import { selectStakingPromoListSymbols } from '../../earnScreenSelectors';
 
 type UseReportEarnDashboardReadyEventProps = {
     yieldOpportunities: YieldDtoV2[];

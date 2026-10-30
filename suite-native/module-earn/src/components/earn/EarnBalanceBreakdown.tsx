@@ -1,5 +1,14 @@
 import { useSelector } from 'react-redux';
 
+import {
+    type EarnListRootState,
+    selectEarnTotalFiatAmount,
+    selectIsEarnBalanceBreakdownDisplayed,
+    selectStakingTotalFiatAmount,
+    selectYieldTotalFiatAmount,
+    useEarnMissingRateTickersQuery,
+    useYieldOpportunities,
+} from '@suite-common/wallet-core';
 import { type BaseCurrencyAmount, asBaseCurrencyAmount } from '@suite-common/wallet-types';
 import { Box, HStack, Text, VStack } from '@suite-native/atoms';
 import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
@@ -7,16 +16,6 @@ import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 import { type Color } from '@trezor/theme';
 import { BigNumber } from '@trezor/utils';
-
-import {
-    type EarnListRootState,
-    selectEarnTotalFiatAmount,
-    selectIsEarnBalanceBreakdownDisplayed,
-    selectStakingTotalFiatAmount,
-    selectYieldTotalFiatAmount,
-} from '../../earnScreenSelectors';
-import { useEarnMissingRateTickersQuery } from '../../hooks/earn/useEarnMissingRateTickersQuery';
-import { useYieldOpportunities } from '../../hooks/yield/useYieldOpportunities';
 
 const MIN_BALANCE_SEGMENT_FLEX = 0.05;
 

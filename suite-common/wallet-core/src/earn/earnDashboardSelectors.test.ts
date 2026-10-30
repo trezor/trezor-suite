@@ -1,13 +1,13 @@
 import { type ChainRewardsWithFiat, type YieldDtoV2 } from '@suite-common/earn-stablecoin-api';
 import { mockNetworksState } from '@suite-common/networks/mocks';
 import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
-import { FIVE_BINARIES_POOLS, asNetworkSymbol } from '@suite-common/wallet-config';
-import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import {
-    fiatRatesInitialState,
-    initialWalletSettingsState,
-    selectFirstCardanoAccountStakedWithFiveBinaries,
-} from '@suite-common/wallet-core';
+    FIVE_BINARIES_POOLS,
+    PROD_STAKING_SYMBOLS,
+    STAKING_SYMBOLS,
+    asNetworkSymbol,
+} from '@suite-common/wallet-config';
+import { mockGetSupportedNetworks } from '@suite-common/wallet-config/mocks';
 import {
     type Account,
     type CryptoBaseCurrencyPair,
@@ -25,12 +25,12 @@ import {
     networkSpecificDefaultCardano,
 } from '@suite-common/wallet-types/mocks';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
-import { appSettingsInitialState } from '@suite-native/settings';
 import { type StaticSessionId } from '@trezor/device-utils';
 import { BigNumber } from '@trezor/utils';
 
 import {
     type EarnListRootState,
+    getStakingPromoListSymbols,
     selectCardanoAccountForFiveBinariesBanner,
     selectCardanoStakedWithFiveBinariesAccountKey,
     selectEarnFiatValuations,
@@ -52,7 +52,10 @@ import {
     selectYieldListVaultIcons,
     selectYieldPromoListItems,
     selectYieldTotalFiatAmount,
-} from './earnScreenSelectors';
+} from './earnDashboardSelectors';
+import { fiatRatesInitialState } from '../fiat-rates/fiatRatesReducer';
+import { initialWalletSettingsState } from '../settings/walletSettingsReducer';
+import { selectFirstCardanoAccountStakedWithFiveBinaries } from '../staking/cardano/cardanoStakingSelectors';
 
 const DEVICE_STATIC_SESSION_ID: StaticSessionId = 'selectedWallet@deviceId:0';
 const OTHER_DEVICE_STATIC_SESSION_ID: StaticSessionId = 'otherWallet@otherDeviceId:0';
@@ -132,7 +135,6 @@ const createState = (
         settings: initialWalletSettingsState,
         fiat: { ...fiatRatesInitialState, current: currentFiatRates },
     },
-    appSettings: appSettingsInitialState,
 });
 
 type RateEntry = { ticker: TickerId; fiatRateKey: CryptoBaseCurrencyPair; rate: number };
@@ -955,5 +957,16 @@ describe('earn fiat selectors', () => {
         expect(selectIsEarnFiatTotalUnavailable(partialState, [valuedVault], false)).toBe(false);
         expect(selectIsEarnFiatTotalUnavailable(emptyState, [valuedVault], false)).toBe(true);
         expect(selectIsEarnFiatTotalUnavailable(emptyState, [valuedVault], true)).toBe(false);
+    });
+});
+
+describe('getStakingPromoListSymbols', () => {
+    it('promotes testnet staking networks only when testnets are enabled', () => {
+        expect(getStakingPromoListSymbols(false)).toEqual(PROD_STAKING_SYMBOLS);
+        expect(getStakingPromoListSymbols(true)).toEqual(STAKING_SYMBOLS);
+    });
+
+    it('keeps the same reference for the same flag', () => {
+        expect(getStakingPromoListSymbols(true)).toBe(getStakingPromoListSymbols(true));
     });
 });

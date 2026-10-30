@@ -1,15 +1,16 @@
 import { useSelector } from 'react-redux';
 
 import { useFormatters } from '@suite-common/formatters';
-import { selectHasRunningDiscovery } from '@suite-common/wallet-core';
+import {
+    type YieldPromoListItem as YieldPromoListItemType,
+    selectHasRunningDiscovery,
+} from '@suite-common/wallet-core';
 import { isApyAvailable } from '@suite-common/wallet-utils';
 import { Box, BoxSkeleton, HStack, PressableOpacity, Text } from '@suite-native/atoms';
 import { NetworkDisplaySymbolNameFormatter } from '@suite-native/formatters';
 import { TokenIcon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
-
-import { type YieldPromoListItem as YieldPromoListItemType } from '../../types';
 
 const promoItemStyle = prepareNativeStyle(utils => ({
     paddingVertical: utils.spacings.sp12,

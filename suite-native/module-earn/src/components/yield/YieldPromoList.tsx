@@ -1,6 +1,12 @@
 import React, { useCallback, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
+import {
+    type EarnListRootState,
+    type YieldPromoListItem as YieldPromoListItemType,
+    selectYieldPromoListItems,
+    useYieldOpportunities,
+} from '@suite-common/wallet-core';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import { Card, CardDivider, HStack, ListItemSkeleton, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
@@ -10,11 +16,8 @@ import { useServices } from '@trezor/dependency-injection';
 import { YieldLoadErrorAlert } from './YieldLoadErrorAlert';
 import { YieldPromoListItem } from './YieldPromoListItem';
 import { YieldPromoListProvider } from './YieldPromoListProvider';
-import { type EarnListRootState, selectYieldPromoListItems } from '../../earnScreenSelectors';
 import { useMessageSystemEarnDashboard } from '../../hooks/earn/useMessageSystemEarnDashboard';
-import { useYieldOpportunities } from '../../hooks/yield/useYieldOpportunities';
 import { useYieldPromoNavigation } from '../../hooks/yield/useYieldPromoNavigation';
-import { type YieldPromoListItem as YieldPromoListItemType } from '../../types';
 import { EarnEnableNetworkBottomSheet } from '../earn/EarnEnableNetworkBottomSheet';
 import { EarnPromoDisabledBanner } from '../earn/EarnPromoDisabledBanner';
 import { EarnSelectAccountBottomSheet } from '../earn/EarnSelectAccountBottomSheet';

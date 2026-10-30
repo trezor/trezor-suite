@@ -1,5 +1,6 @@
 import { Fragment } from 'react';
 
+import { type YieldClaimAccountItem } from '@suite-common/wallet-core';
 import {
     BottomSheetModal,
     type BottomSheetModalRef,
@@ -10,7 +11,6 @@ import {
 import { Translation } from '@suite-native/intl';
 
 import { YieldClaimRewardsAccountCard } from './YieldClaimRewardsAccountCard';
-import { type YieldClaimAccountItem } from '../../types';
 
 type YieldClaimRewardsBottomSheetProps = {
     ref: BottomSheetModalRef;
