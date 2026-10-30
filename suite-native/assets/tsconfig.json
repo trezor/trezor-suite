@@ -15,6 +15,9 @@
             "path": "../../suite-common/react-query"
         },
         {
+            "path": "../../suite-common/suite-utils"
+        },
+        {
             "path": "../../suite-common/token-definitions"
         },
         {
@@ -38,7 +41,14 @@
         { "path": "../module-earn" },
         { "path": "../navigation" },
         { "path": "../tokens" },
+        { "path": "../transactions" },
+        {
+            "path": "../../packages/dependency-injection"
+        },
         { "path": "../../packages/redux-utils" },
+        {
+            "path": "../../packages/styles-native"
+        },
         { "path": "../../packages/utils" },
         { "path": "../test-utils-store" }
     ]

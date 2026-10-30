@@ -1,5 +1,7 @@
-import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useCallback } from 'react';
+import { shallowEqual, useSelector } from 'react-redux';
+
+import { useFocusEffect } from '@react-navigation/native';
 
 import {
     type TransactionsRootState,
@@ -9,26 +11,45 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { useServices } from '@trezor/dependency-injection';
-import { injectDispatch } from '@trezor/redux-utils';
+import { createWeakMapSelector, injectDispatch } from '@trezor/redux-utils';
+
+const createMemoizedSelector = createWeakMapSelector.withTypes<TransactionsRootState>();
+
+const selectKeyedAccountTransactions = createMemoizedSelector(
+    [(_state, accountKey: AccountKey) => accountKey, selectAccountTransactions],
+    (accountKey, transactions) => ({ accountKey, transactions }),
+);
 
 type UseFetchMissingTransactionFiatRatesParams = {
-    accountKey?: AccountKey;
+    accountKeys: readonly AccountKey[];
     isEnabled?: boolean;
 };
 
 export const useFetchMissingTransactionFiatRates = ({
-    accountKey,
+    accountKeys,
     isEnabled = true,
 }: UseFetchMissingTransactionFiatRatesParams) => {
     const { dispatch } = useServices(injectDispatch);
     const localCurrency = useSelector(selectBaseCurrency);
-    const transactions = useSelector((state: TransactionsRootState) =>
-        selectAccountTransactions(state, accountKey ?? null),
+    // Keeps the effect stable when a caller passes a new accountKeys array on every render.
+    const keyedAccountTransactions = useSelector(
+        (state: TransactionsRootState) =>
+            accountKeys.map(accountKey => selectKeyedAccountTransactions(state, accountKey)),
+        shallowEqual,
     );
 
-    useEffect(() => {
-        if (isEnabled) {
-            dispatch(updateMissingTxFiatRatesThunk({ localCurrency, accountKey }));
-        }
-    }, [isEnabled, dispatch, localCurrency, accountKey, transactions]);
+    useFocusEffect(
+        useCallback(
+            function fetchMissingFiatRates() {
+                if (!isEnabled) return;
+
+                keyedAccountTransactions
+                    .filter(({ transactions }) => transactions.length > 0)
+                    .forEach(({ accountKey }) =>
+                        dispatch(updateMissingTxFiatRatesThunk({ localCurrency, accountKey })),
+                    );
+            },
+            [isEnabled, dispatch, localCurrency, keyedAccountTransactions],
+        ),
+    );
 };

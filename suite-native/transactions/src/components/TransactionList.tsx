@@ -8,7 +8,6 @@ import { getTxsPerPage } from '@suite-common/suite-utils';
 import {
     type AccountsRootState,
     type TransactionsRootState,
-    fetchAndUpdateAccountThunk,
     fetchTransactionsPageThunk,
     selectAccountTransactionsCount,
     selectAccountTransactionsFetchStatus,
@@ -25,13 +24,7 @@ import {
     groupTransactionsByDate,
     isPending,
 } from '@suite-common/wallet-utils';
-import {
-    Box,
-    ListItemSkeleton,
-    VStack,
-    useBannerAwareSafeAreaInsets,
-    useScrollDivider,
-} from '@suite-native/atoms';
+import { Box, useBannerAwareSafeAreaInsets, useScrollDivider } from '@suite-native/atoms';
 import { useIsBottomInsetApplicable } from '@suite-native/navigation';
 import {
     type TokensRootState,
@@ -48,12 +41,13 @@ import { exhaustive } from '@trezor/type-utils';
 import { arrayPartition } from '@trezor/utils';
 
 import { useFetchMissingTransactionFiatRates } from '../hooks/useFetchMissingTransactionFiatRates';
+import { useRefreshAccounts } from '../hooks/useRefreshAccounts';
 import { getNextRequestedTransactionCount, getOlderHistoryPage } from '../utils';
 import { OlderHistoryStatus } from './OlderHistoryStatus';
 import { TokenTransferListItem } from './TokenTransferListItem';
+import { TransactionListEmptyState } from './TransactionListEmptyState';
 import { TransactionListGroupTitle } from './TransactionListGroupTitle';
 import { TransactionListItem } from './TransactionListItem';
-import { TransactionsEmptyState } from './TransactionsEmptyState';
 import { TransactionsListFooter } from './TransactionsListFooter';
 
 type RenderSectionHeaderParams = {
@@ -167,7 +161,6 @@ export const TransactionList = ({
 }: AccountTransactionProps) => {
     const accountKey = account.key;
     const { dispatch } = useServices(injectDispatch);
-    const [isRefreshing, setIsRefreshing] = useState(false);
     const { bottom } = useBannerAwareSafeAreaInsets();
     const isBottomInsetApplicable = useIsBottomInsetApplicable();
 
@@ -240,6 +233,11 @@ export const TransactionList = ({
     );
 
     const { scrollDivider, handleScroll } = useScrollDivider();
+    const { isRefreshing, refreshAccountsAndLatestTransactions } = useRefreshAccounts({
+        accountKeys: [accountKey],
+        perPage: txnsPerPage,
+        onRefresh,
+    });
 
     const fetchPage = useCallback(
         async (requestedPage: number, from?: number) => {
@@ -283,28 +281,6 @@ export const TransactionList = ({
             handleOnLoadMore();
         }
     }, [isInitialPageLoaded, handleOnLoadMore]);
-
-    const handleOnRefresh = useCallback(async () => {
-        try {
-            setIsRefreshing(true);
-            await Promise.allSettled([
-                dispatch(fetchAndUpdateAccountThunk({ accountKey })),
-                dispatch(
-                    fetchTransactionsPageThunk({
-                        accountKey,
-                        page: 1,
-                        perPage: txnsPerPage,
-                        forceRefetch: true,
-                    }),
-                ),
-                onRefresh?.(),
-            ]);
-        } catch {
-            // Do nothing
-        }
-        // It's usually too fast so loading indicator only flashes for a moment, which is not nice
-        setTimeout(() => setIsRefreshing(false), 1500);
-    }, [dispatch, accountKey, txnsPerPage, onRefresh]);
 
     const data = useMemo((): TransactionListItem[] => {
         // groupTransactionsByDate now sorts also pending transactions, if they have blockTime set.
@@ -398,33 +374,7 @@ export const TransactionList = ({
         }
     };
 
-    useFetchMissingTransactionFiatRates({ accountKey, isEnabled: data.length > 0 });
-
-    const getListEmptyComponent = () => {
-        if (isHistoryUnscanned) {
-            return (
-                <VStack spacing="sp8">
-                    <ListItemSkeleton />
-                    <ListItemSkeleton />
-                    <ListItemSkeleton />
-                </VStack>
-            );
-        }
-
-        if (shouldDeferEmptyState) {
-            return null;
-        }
-
-        // The list is empty here, so a reachable older window is what sets this apart from an
-        // account (or token) without any transactions.
-        const isRecentWindowEmpty = olderHistoryFrom !== undefined;
-
-        return (
-            renderListEmptyComponent?.({ isRecentWindowEmpty }) ?? (
-                <TransactionsEmptyState isRecentWindowEmpty={isRecentWindowEmpty} />
-            )
-        );
-    };
+    useFetchMissingTransactionFiatRates({ accountKeys: [accountKey], isEnabled: data.length > 0 });
 
     const renderItem = useCallback(
         ({ item, index }: { item: TransactionListItem; index: number }) => {
@@ -467,7 +417,16 @@ export const TransactionList = ({
                 data={data}
                 renderItem={renderItem}
                 contentContainerStyle={applyStyle(sectionListContainerStyle)}
-                ListEmptyComponent={getListEmptyComponent()}
+                ListEmptyComponent={
+                    <TransactionListEmptyState
+                        isLoading={isHistoryUnscanned}
+                        isDeferred={shouldDeferEmptyState}
+                        // The list is empty here, so a reachable older window is what sets this apart
+                        // from an account (or token) without any transactions.
+                        isRecentWindowEmpty={olderHistoryFrom !== undefined}
+                        renderEmptyComponent={renderListEmptyComponent}
+                    />
+                }
                 ListHeaderComponent={listHeaderComponent}
                 ListFooterComponent={
                     <TransactionsListFooter
@@ -498,7 +457,7 @@ export const TransactionList = ({
                 refreshControl={
                     <RefreshControl
                         refreshing={isRefreshing}
-                        onRefresh={handleOnRefresh}
+                        onRefresh={refreshAccountsAndLatestTransactions}
                         colors={[colors.elementFillBrandBold]}
                     />
                 }
