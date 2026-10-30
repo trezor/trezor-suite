@@ -60,6 +60,20 @@ const createPopup = () =>
         logger: initLog('test'),
     });
 
+const trackSettled = (promise: Promise<unknown>) => {
+    const state = { settled: false };
+    promise.then(
+        () => {
+            state.settled = true;
+        },
+        () => {
+            state.settled = true;
+        },
+    );
+
+    return state;
+};
+
 jest.useFakeTimers();
 
 describe('WebExtensionPopup', () => {
@@ -100,38 +114,41 @@ describe('WebExtensionPopup', () => {
         return getHandshakePromise();
     };
 
-    // Documents the bug: the chrome callbacks of the superseded first attempt
-    // use the shared popupWindowPromise and the manager state, which by then
-    // belong to the second attempt. The manager is locked again, so the guard
-    // in handleOpenFailure() cannot tell the two attempts apart either.
-    it('fails the newer session when a superseded open() reports a failure', async () => {
+    it('ignores a failure reported by a superseded open()', async () => {
         const handshake = await openTwice();
+        const handshakeState = trackSettled(handshake.promise);
 
-        // The first attempt hears back that there is no active tab.
         chromeMock.answerQuery([]);
         await jest.advanceTimersByTimeAsync(0);
+        expect(handshakeState.settled).toBe(false);
 
-        await expect(handshake.promise).rejects.toThrow('No active tab found');
+        chromeMock.answerQuery([{ id: 1, index: 0 }]);
+        chromeMock.answerCreate({ id: 42 });
+
+        // The newer open() owns the popup: the next call focuses its tab.
+        await popup.focusOrCreate();
+        expect(chromeMock.tabs.update).toHaveBeenCalledWith(42, { active: true });
     });
 
-    // Documents the bug: the channel awaits the current popup tab before every
-    // send, and the deferred of the superseded attempt never settles, so the
-    // whole send chain stalls, including the newer session's handshake.
-    it('stalls the messages of the newer open() behind a superseded one', async () => {
+    // The channel awaits the current popup tab before every send, so a
+    // superseded attempt that never settles would stall the whole send chain.
+    it('sends the messages of the newer open() after a superseded one', async () => {
         await openTwice();
 
+        // The superseded attempt hears back first and gives up; the newer one
+        // gets its tab.
         chromeMock.answerQuery([{ id: 1, index: 0 }]);
         chromeMock.answerQuery([{ id: 1, index: 0 }]);
         chromeMock.answerCreate({ id: 42 });
 
         await jest.advanceTimersByTimeAsync(10000);
-        expect(getSentMessages()).toHaveLength(0);
+
+        const sentMessages = getSentMessages();
+        expect(sentMessages.length).toBeGreaterThan(0);
+        sentMessages.forEach(([tabId]) => expect(tabId).toBe(42));
     });
 
-    // Documents the bug: a late success of the superseded attempt also runs
-    // unguarded, so its tab is never closed and it resolves the channel's
-    // popupWindowPromise, which now belongs to the newer session.
-    it('leaves the tab created for a superseded open() behind', async () => {
+    it('closes the tab created for a superseded open()', async () => {
         await popup.focusOrCreate();
         chromeMock.answerGetCurrent();
         chromeMock.answerQuery([{ id: 1, index: 0 }]);
@@ -142,28 +159,25 @@ describe('WebExtensionPopup', () => {
         chromeMock.answerCreate({ id: 41 });
         chromeMock.answerCreate({ id: 42 });
 
-        expect(chromeMock.tabs.remove).not.toHaveBeenCalled();
+        expect(chromeMock.tabs.remove).toHaveBeenCalledTimes(1);
+        expect(chromeMock.tabs.remove).toHaveBeenCalledWith(41, expect.any(Function));
 
         await popup.focusOrCreate();
         expect(chromeMock.tabs.update).toHaveBeenCalledWith(42, { active: true });
     });
 
-    // Documents the bug: both attempts go on once chrome reports the current
-    // window, so each opens a popup window.
-    it('opens a popup window for each open() when a superseded one still waits for the current window', async () => {
+    it('opens one popup window when a superseded open() still waits for the current window', async () => {
         await popup.focusOrCreate();
         await popup.focusOrCreate();
 
         chromeMock.answerGetCurrent('popup');
         chromeMock.answerGetCurrent('popup');
 
-        expect(chromeMock.windows.create).toHaveBeenCalledTimes(2);
+        expect(chromeMock.windows.create).toHaveBeenCalledTimes(1);
     });
 
-    // Documents the bug: a message sent before the first open(), e.g. by
-    // TrezorConnect.cancel(), awaits the deferred the constructor created, which
-    // no open() ever settles, so the whole send chain stalls.
-    it('stalls the messages of the first open() behind a message sent before it', async () => {
+    // e.g. TrezorConnect.cancel() before the first call
+    it('sends the messages of the first open() after a message sent before it', async () => {
         popup.channel.postMessage({ type: 'test-message' }, { usePromise: false });
 
         await popup.focusOrCreate();
@@ -172,6 +186,6 @@ describe('WebExtensionPopup', () => {
         chromeMock.answerCreate({ id: 42 });
 
         await jest.advanceTimersByTimeAsync(10000);
-        expect(getSentMessages()).toHaveLength(0);
+        expect(getSentMessages().length).toBeGreaterThan(0);
     });
 });
