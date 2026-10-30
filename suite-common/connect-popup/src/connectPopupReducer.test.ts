@@ -103,14 +103,14 @@ describe('storageLoad', () => {
         );
     });
 
-    it('loads permissions remembered under the name an mcp client declared', () => {
-        const remembered: AppRememberedPermission = {
-            ...app,
-            type: CALL_SOURCE_MCP,
-            process: { name: 'Claude Code', fullPath: 'Claude Code', warning: true },
-        };
-
-        expect(loadApps(remembered).permissions).toEqual([remembered]);
+    it('does not load permissions remembered under the name an mcp client declared', () => {
+        expect(
+            loadApps({
+                ...app,
+                type: CALL_SOURCE_MCP,
+                process: { name: 'Claude Code', fullPath: 'Claude Code', warning: true },
+            }).permissions,
+        ).toEqual([]);
     });
 
     // Nothing schema-validates the persisted grants, so a `process` without a path must be
