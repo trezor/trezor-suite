@@ -1101,7 +1101,9 @@ const MAX_CLIENT_NAME_LENGTH = 100;
 /**
  * The name a client declares in `initialize`, which is unvalidated JSON from a local caller. Suite
  * renders it in the consent prompt and carries it in the session manifest, so anything but a string
- * is dropped instead of reaching the renderer, and the length is bounded to what a badge can show.
+ * is dropped instead of reaching the renderer, control and format characters (line breaks, tabs,
+ * bidi overrides) are reduced to spaces so the name stays the single line the prompt expects, and
+ * the length is bounded to what a badge can show.
  */
 const readDeclaredClientName = (params?: Record<string, unknown>) => {
     const clientInfo = params?.clientInfo;
@@ -1112,7 +1114,13 @@ const readDeclaredClientName = (params?: Record<string, unknown>) => {
 
     if (typeof name !== 'string') return undefined;
 
-    const declaredName = name.trim().slice(0, MAX_CLIENT_NAME_LENGTH);
+    const declaredName = name
+        .replace(/[\p{Cc}\p{Cf}]/gu, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .slice(0, MAX_CLIENT_NAME_LENGTH)
+        // The cut can land on a space, which would be shown as a trailing one.
+        .trim();
 
     return declaredName || undefined;
 };

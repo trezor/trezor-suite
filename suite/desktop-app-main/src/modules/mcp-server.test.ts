@@ -502,6 +502,35 @@ describe('MCP server', () => {
             expect(popupCall.manifest.appName).toBe('MCP Agent');
         });
 
+        it('reduces a declared name with control characters to a single line', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const popupCall = await initializeAndCallPopup(server, {
+                clientInfo: { name: '  Claude\n\tCode\u202E ' },
+            });
+
+            // The name labels the caller in the consent prompt, so it may not break its layout
+            // or reorder the text around it.
+            expect(popupCall.process).toEqual({
+                name: 'Claude Code',
+                fullPath: '',
+                warning: true,
+            });
+            expect(popupCall.manifest.appName).toBe('Claude Code');
+        });
+
+        it('does not end a capped declared name with the space the cut landed on', async () => {
+            const server = await startMcpServer();
+            cleanup = server.cleanup;
+
+            const popupCall = await initializeAndCallPopup(server, {
+                clientInfo: { name: `${'a'.repeat(99)} ${'b'.repeat(10)}` },
+            });
+
+            expect(popupCall.manifest.appName).toBe('a'.repeat(99));
+        });
+
         it('does not let a new session inherit the identity of the one it replaces', async () => {
             const server = await startMcpServer();
             cleanup = server.cleanup;
