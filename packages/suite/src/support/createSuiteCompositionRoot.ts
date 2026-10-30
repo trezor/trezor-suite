@@ -27,10 +27,13 @@ import {
 } from '@suite-common/connect-init';
 import { delegatedIdentityKeyCompositionRoot } from '@suite-common/delegated-identity-key';
 import { selectDeviceByStaticSessionId } from '@suite-common/device';
+import { createStakingCompositionRoot } from '@suite-common/earn-staking';
+import { createStakingProductsCompositionRoot } from '@suite-common/earn-staking-products';
 import { type CommonServices } from '@suite-common/extra-dependencies';
 import { FW_HASH_CHECK_DEFAULT_TIMEOUTS } from '@suite-common/firmware-authenticity';
 import { createNetworksCompositionRoot } from '@suite-common/networks';
 import { type PlatformEncryptionDep } from '@suite-common/platform-encryption';
+import { createQueryClient } from '@suite-common/react-query';
 import { createMigrateSuiteSyncLabelsForRbfTransactionCompositionRoot } from '@suite-common/suite-rbf-labels-migrations';
 import {
     createSuiteSyncWriteLabels,
@@ -149,6 +152,14 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         dispatch: deps.dispatch,
     });
 
+    const staking = createStakingCompositionRoot({
+        platform: 'desktop',
+        adapters: createStakingProductsCompositionRoot(),
+        dispatch: deps.dispatch,
+    });
+
+    const queryClient = createQueryClient({ shouldRefetchOnEvents: true });
+
     const createTransports: CreateTransports = transports => {
         const factories = deps.getTransportsFactories();
 
@@ -166,6 +177,8 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         db: deps.db,
         desktopApi: deps.desktopApi,
         networks,
+        staking,
+        queryClient,
         suiteSync,
         bip329,
         migrateLegacyLabelsToSuiteSync,

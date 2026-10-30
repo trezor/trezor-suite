@@ -100,7 +100,10 @@
 !/suite-common/earn-stablecoin
 !/suite-common/earn-stablecoin-api
 !/suite-common/earn-stablecoin-defs
+!/suite-common/earn-staking
 !/suite-common/earn-staking-api
+!/suite-common/earn-staking-common
+!/suite-common/earn-staking-products
 !/suite-common/extra-dependencies
 !/suite-common/feedback
 !/suite-common/fiat-services

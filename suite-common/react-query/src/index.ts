@@ -13,6 +13,13 @@ export {
     type InfiniteData,
     keepPreviousData,
 } from '@tanstack/react-query';
+export {
+    createQueryClient,
+    injectQueryClient,
+    SILENT_QUERY_META,
+    type CreateQueryClientParams,
+    type QueryClientDep,
+} from './createQueryClient';
 export * from './constants/queryKeys';
 export * from './constants/mutationKeys';
 // The query client providers are platform-specific React components, so they live in the
