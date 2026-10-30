@@ -4,6 +4,7 @@
 
 import { randomUUID } from 'node:crypto';
 
+import { POPUP } from '@trezor/connect-common/src/events';
 import { initLog } from '@trezor/connect-common/src/utils/debug';
 
 import { WebPopup } from './web';
@@ -113,13 +114,9 @@ const openUntilBootstrapHandshake = async (popup: WebPopup) => {
 };
 
 describe('WebPopup', () => {
-    // Documents the Connect Explorer bug: offline, the loaded iframe holds the
-    // browser's error page, which handleIframeLoad() accepts because reading its
-    // cross-origin location throws. It never answers, so the handshake times
-    // out. The iframe keeps a resolved initPromise, so the retry reuses it
-    // together with the channel id in its `src`, and no retry can ever bootstrap
-    // until a page reload.
-    it('reuses an iframe that never answered, and its channel id, on a retry', async () => {
+    // The Connect Explorer report: offline, the loaded iframe holds the browser's
+    // error page and never answers, so the handshake with it times out.
+    it('recovers from an iframe that never answers with a fresh iframe and channel id', async () => {
         const popup = createPopup();
         const { opened, iframe } = await openUntilBootstrapHandshake(popup);
         const failedChannelId = getChannelId(iframe.src);
@@ -128,16 +125,19 @@ describe('WebPopup', () => {
         await jest.advanceTimersByTimeAsync(11000);
         await expect(opened).rejects.toThrow('handshake failed');
         expect(getOpenedWindow(0).close).not.toHaveBeenCalled();
-        expect(iframe.isConnected).toBe(true);
+        expect(iframe.isConnected).toBe(false);
 
         const retry = await openUntilBootstrapHandshake(popup);
-        expect(retry.iframe).toBe(iframe);
-        expect(getChannelId(getOpenedWindow(1).location.href)).toBe(failedChannelId);
+        expect(retry.iframe).not.toBe(iframe);
+        expect(getChannelId(retry.iframe.src)).not.toBe(failedChannelId);
+
+        sendFromIframe({ type: 'channel-handshake-confirm' });
+        await expect(retry.opened).resolves.toBeUndefined();
     });
 
-    // Documents the same reuse after the iframe reports that its handshake with
-    // the popup failed (`connect-popup-err=handshake-timeout`).
-    it('reuses the iframe and the channel id after a reported bootstrap handshake error', async () => {
+    // The iframe reports that its handshake with the popup failed
+    // (`connect-popup-err=handshake-timeout`).
+    it('recovers from a reported bootstrap handshake error with a fresh iframe and channel id', async () => {
         const popup = createPopup();
         const { opened, iframe } = await openUntilBootstrapHandshake(popup);
         const failedWindow = getOpenedWindow(0);
@@ -150,21 +150,33 @@ describe('WebPopup', () => {
             message: 'handshake-timeout',
         });
 
-        // The popup is told to show the error and stays open.
+        // The popup is told to show the error and stays open; the iframe is gone.
         expect(failedWindow.postMessage).toHaveBeenCalledWith(
             { type: 'channel-handshake-error', error: 'handshake-timeout' },
             ORIGIN,
         );
         expect(failedWindow.close).not.toHaveBeenCalled();
+        expect(iframe.isConnected).toBe(false);
+        expect(document.querySelector('iframe')).toBeNull();
 
-        // The iframe that could not bootstrap is still in the document.
-        expect(iframe.isConnected).toBe(true);
-
-        // The retry hands the same iframe, and the same channel id, to a new popup.
+        // The retry rebuilds the iframe and gives it and the popup a new channel id.
         const retry = await openUntilBootstrapHandshake(popup);
-        expect(retry.iframe).toBe(iframe);
-        expect(getChannelId(retry.iframe.src)).toBe(failedChannelId);
-        expect(getChannelId(getOpenedWindow(1).location.href)).toBe(failedChannelId);
+        expect(retry.iframe).not.toBe(iframe);
+        const retryChannelId = getChannelId(retry.iframe.src);
+        expect(retryChannelId).not.toBe(failedChannelId);
+        expect(getChannelId(getOpenedWindow(1).location.href)).toBe(retryChannelId);
+
+        sendFromIframe({ type: 'channel-handshake-confirm' });
+        await expect(retry.opened).resolves.toBeUndefined();
+
+        // The popup channel handshake and CORE_LOADED complete on the recovered manager.
+        const channelHandshake = popup.channel.init();
+        await jest.advanceTimersByTimeAsync(0);
+        sendFromIframe({ type: 'channel-handshake-confirm' }, '@trezor/connect-popup');
+        await expect(channelHandshake).resolves.toBeUndefined();
+
+        sendFromIframe({ type: POPUP.CORE_LOADED }, '@trezor/connect-popup');
+        await expect(popup.handshakePromise?.promise).resolves.toBeUndefined();
     });
 
     // The #29770 scenario: the iframe itself never loads.
