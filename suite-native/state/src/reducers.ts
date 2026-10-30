@@ -5,7 +5,7 @@ import { prepareAnalyticsReducer } from '@suite-common/analytics-redux';
 import { prepareConnectPopupReducer } from '@suite-common/connect-popup';
 import { prepareDeviceReducer } from '@suite-common/device';
 import { discreetModeReducer } from '@suite-common/discreet-mode';
-import { stakingApiReducer, stakingReducer } from '@suite-common/earn-staking';
+import { stakingReducer } from '@suite-common/earn-staking';
 import { prepareFirmwareReducer } from '@suite-common/firmware';
 import { geolocationReducer } from '@suite-common/geolocation';
 import { type LegacyNetworkSymbol } from '@suite-common/legacy-network-config';
@@ -553,7 +553,6 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
             tokenDefinitions: tokenDefinitionsReducer,
             wallet: walletPersistedReducer,
             staking: stakingReducer,
-            stakingApi: stakingApiReducer,
             walletConnect: walletConnectReducer,
             suiteSyncQuotaManager: quotaManagerPersistedReducer,
         } as const),
