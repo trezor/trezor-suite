@@ -9,6 +9,7 @@ import {
     type YieldFlowResolvedData,
     type YieldFlowStepId,
     type YieldRootState,
+    hasYieldDepositableBalance,
     initYieldAllowanceThunk,
     selectYieldSession,
     selectYieldSessionByFlowKey,
@@ -25,8 +26,6 @@ import { useServices } from '@trezor/dependency-injection';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 import { injectDispatch } from '@trezor/redux-utils';
 import { BigNumber } from '@trezor/utils';
-
-import { hasYieldDepositableBalance } from '../../utils/earn/contractTokenBalanceUtils';
 
 type NavigationProps = StackNavigationProps<YieldStackParamList, YieldStackRoutes.YieldConsents>;
 

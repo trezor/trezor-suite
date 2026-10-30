@@ -9,6 +9,7 @@ import {
     type AccountsRootState,
     type ComposeYieldWrapErrorReason,
     type WrappedNativeFlowType,
+    getAccountTokenByContract,
     getWrapReserveStatus,
     getWrappableNativeBalance,
     getYieldNativeFeeStatus,
@@ -27,7 +28,6 @@ import { useStandaloneWrappedNativeFlow } from './useStandaloneWrappedNativeFlow
 import { useWrappedNativeFlowReport } from './useWrappedNativeFlowReport';
 import { useWrappedNativeTokenFees } from './useWrappedNativeTokenFees';
 import { useWrappedNativeTokenForm } from './useWrappedNativeTokenForm';
-import { getAccountTokenByContract } from '../../utils/earn/contractTokenBalanceUtils';
 import { useYieldCurrencyToggleAnalytics } from '../yield/useYieldCurrencyToggleAnalytics';
 import { useYieldDepositGasReserve } from '../yield/useYieldDepositGasReserve';
 

@@ -1,11 +1,11 @@
 import { type ReactNode } from 'react';
 
+import { type StablecoinYieldAccountRewards } from '@suite-common/wallet-core';
 import { Card, ListItemSkeleton, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 import { YieldClaimRewardItem } from './YieldClaimRewardItem';
 import { sortRewardsByClaimableFiatAmount } from '../../utils/yield/sortRewardsByClaimableFiatAmount';
-import { type StablecoinYieldAccountRewards } from '../../utils/yield/stablecoinYieldClaimSummaryUtils';
 
 type YieldClaimRewardsCardProps = {
     accountRewards: StablecoinYieldAccountRewards | null;

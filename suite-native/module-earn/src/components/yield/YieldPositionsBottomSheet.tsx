@@ -2,11 +2,11 @@ import { useCallback } from 'react';
 
 import { FlashList } from '@shopify/flash-list';
 
+import { type YieldListItem } from '@suite-common/wallet-core';
 import { BottomSheetModal, type BottomSheetModalRef, Box } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 import { YieldPositionCard } from './YieldPositionCard';
-import { type YieldListItem } from '../../types';
 
 type YieldPositionsBottomSheetProps = {
     ref: BottomSheetModalRef;

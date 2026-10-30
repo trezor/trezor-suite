@@ -1,19 +1,18 @@
 import { useSelector } from 'react-redux';
 
-import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
-import { DiscreetTextTrigger, HStack, Text, VStack } from '@suite-native/atoms';
-import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
-import { Translation } from '@suite-native/intl';
-import { BigNumber } from '@trezor/utils';
-
 import {
     type EarnListRootState,
     selectEarnTotalFiatAmount,
     selectIsEarnFiatTotalIncomplete,
     selectIsEarnFiatTotalUnavailable,
-} from '../../earnScreenSelectors';
-import { useEarnMissingRateTickersQuery } from '../../hooks/earn/useEarnMissingRateTickersQuery';
-import { useYieldOpportunities } from '../../hooks/yield/useYieldOpportunities';
+    useEarnMissingRateTickersQuery,
+    useYieldOpportunities,
+} from '@suite-common/wallet-core';
+import { asBaseCurrencyAmount } from '@suite-common/wallet-types';
+import { DiscreetTextTrigger, HStack, Text, VStack } from '@suite-native/atoms';
+import { BaseCurrencyAmountFormatter } from '@suite-native/formatters';
+import { Translation } from '@suite-native/intl';
+import { BigNumber } from '@trezor/utils';
 
 export const EarnBalance = () => {
     const { isFiatRatesLoading } = useEarnMissingRateTickersQuery();

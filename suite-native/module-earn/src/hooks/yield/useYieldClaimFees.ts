@@ -11,6 +11,7 @@ import { getEarnYieldClaimContractAddress, getNetwork } from '@suite-common/wall
 import {
     type FeesRootState,
     type FormDraftRootState,
+    type StablecoinYieldAccountRewards,
     estimateYieldFeeLevel,
     ethereumGetCurrentNonceThunk,
     formDraftActions,
@@ -39,7 +40,6 @@ import {
     updateYieldClaimSelectedFeeLevelThunk,
 } from '../../thunks/yield/yieldClaimThunks';
 import { buildEarnComposeFormState } from '../../utils/earn/utils';
-import { type StablecoinYieldAccountRewards } from '../../utils/yield/stablecoinYieldClaimSummaryUtils';
 import { buildYieldClaimFeeLevels, getYieldClaimFee } from '../../utils/yield/yieldClaimFeeUtils';
 
 export type PreparedYieldClaimAction = {
