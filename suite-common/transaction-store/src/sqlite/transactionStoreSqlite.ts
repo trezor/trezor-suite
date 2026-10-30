@@ -7,20 +7,19 @@ export type SqlQuery = {
     parameters: ReadonlyArray<SqlValue>;
 };
 
-export type SqlExecResult<TRow extends SqlRow = SqlRow> = {
-    rows: ReadonlyArray<TRow>;
-    changes: number;
-};
-
 /**
- * Synchronous SQLite, one statement per call. Shaped after Evolu's `SqliteDriver`, so each
- * platform entry wraps its driver: `@evolu/web` (OPFS), `@evolu/react-native` (expo-sqlite)
- * or `@evolu/nodejs` (better-sqlite3).
+ * SQLite somewhere else, e.g. in a worker, as Evolu runs it: on web the OPFS database is only
+ * reachable from a worker. Each call is one message, and calls run in the order made.
  *
  * @serviceContract
  */
 export type TransactionStoreSqlite = {
-    exec: <TRow extends SqlRow = SqlRow>(query: SqlQuery) => SqlExecResult<TRow>;
+    /** Runs one statement. */
+    exec: (query: SqlQuery) => Promise<SqlRow[]>;
+    /** Runs the statements atomically, in one SQLite transaction. */
+    execBatch: (queries: ReadonlyArray<SqlQuery>) => Promise<void>;
+    /** Runs a query SQLite refuses to write in (`PRAGMA query_only`). */
+    select: (query: SqlQuery) => Promise<SqlRow[]>;
 };
 
 export type TransactionStoreSqliteDep = {

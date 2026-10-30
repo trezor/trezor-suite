@@ -1,5 +1,6 @@
 export {
     type TransactionStoreCompositionRootDeps,
+    type TransactionStoreStartFailure,
     createTransactionStoreCompositionRoot,
 } from './createTransactionStoreCompositionRoot';
 export { type TransactionStore, type TransactionStoreDep } from './transactionStore';
@@ -22,7 +23,6 @@ export {
     getAccountTransactionsQuery,
 } from './query/getAccountTransactionsQuery';
 export type {
-    SqlExecResult,
     SqlQuery,
     SqlRow,
     SqlValue,
@@ -47,16 +47,3 @@ export type {
 } from './search/transactionSearch';
 export { parseTransactionSearch } from './search/parseTransactionSearch';
 export type { KnownTokens, SuspiciousTransactionsContext } from './transactionStoreTypes';
-export type { MigrateTransactionStoreSchemaError } from './schema/migrateTransactionStoreSchema';
-export {
-    type TransactionStorePort,
-    type TransactionStorePortMessage,
-} from './rpc/transactionStoreRpcProtocol';
-export {
-    type StartTransactionStoreRpcHostDeps,
-    startTransactionStoreRpcHost,
-} from './rpc/startTransactionStoreRpcHost';
-export {
-    type TransactionStoreRpcClient,
-    createTransactionStoreRpcClient,
-} from './rpc/createTransactionStoreRpcClient';

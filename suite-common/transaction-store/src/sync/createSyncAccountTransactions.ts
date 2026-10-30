@@ -23,14 +23,14 @@ export type SyncAccountTransactionsDep = { syncAccountTransactions: SyncAccountT
 export const createSyncAccountTransactions =
     (deps: SyncAccountTransactionsDeps): SyncAccountTransactions =>
     async ({ accountKey, mode }) => {
-        const syncState = deps.transactionRepository.selectSyncState(accountKey);
+        const syncState = await deps.transactionRepository.selectSyncState(accountKey);
         const hasStoredHistory = syncState.lastSyncedAt !== null;
         // A complete history only ever grows at its newest end.
         const isWalkingToTheEnd = mode === 'full' && !syncState.isComplete;
         let { isComplete } = syncState;
 
         for (let page = 1; ; page++) {
-            const account = deps.transactionRepository.selectAccount(accountKey);
+            const account = await deps.transactionRepository.selectAccount(accountKey);
 
             if (account === undefined) {
                 return ok();
@@ -42,7 +42,7 @@ export const createSyncAccountTransactions =
             });
 
             if (!pageResult.success) {
-                deps.transactionRepository.updateSyncState({
+                await deps.transactionRepository.updateSyncState({
                     accountKey,
                     isComplete,
                     lastSyncedAt: syncState.lastSyncedAt,
@@ -52,18 +52,19 @@ export const createSyncAccountTransactions =
                 return err(pageResult.error);
             }
 
-            // Removed while the page was on its way; its rows are gone and must stay gone.
-            if (deps.transactionRepository.selectAccount(accountKey) === undefined) {
+            // Removed while the page was on its way; its rows are gone and must stay gone (the
+            // foreign key refuses them anyway, should it go after this).
+            if ((await deps.transactionRepository.selectAccount(accountKey)) === undefined) {
                 return ok();
             }
 
             const { transactions, hasNextPage } = pageResult.payload;
-            const storedTxids = deps.transactionRepository.selectStoredTxids({
+            const storedTxids = await deps.transactionRepository.selectStoredTxids({
                 accountKey,
                 txids: transactions.map(({ txid }) => txid),
             });
             // Each page is a write of its own, so lists fill in while a long history syncs.
-            deps.transactionRepository.upsertTransactions({ accountKey, transactions });
+            await deps.transactionRepository.upsertTransactions({ account, transactions });
 
             if (!hasNextPage) {
                 isComplete = true;
@@ -79,7 +80,7 @@ export const createSyncAccountTransactions =
             }
         }
 
-        deps.transactionRepository.updateSyncState({
+        await deps.transactionRepository.updateSyncState({
             accountKey,
             isComplete,
             lastSyncedAt: deps.now(),

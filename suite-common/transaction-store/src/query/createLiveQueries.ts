@@ -5,8 +5,6 @@ import type { Unsubscribe } from '../transactionStoreTypes';
 export type LiveQueriesDeps = TransactionStoreSqliteDep;
 
 export type LiveQueries = {
-    /** Runs the query read-only: SQLite itself refuses any write in it. */
-    run: <TRow>(query: TransactionStoreQuery<TRow>) => TRow[];
     /** Calls back with the rows now, and again whenever a write changes them. */
     subscribe: <TRow>(
         query: TransactionStoreQuery<TRow>,
@@ -24,38 +22,20 @@ type LiveQuery = {
     lastRows: string | null;
 };
 
-const PRAGMA_QUERY_ONLY = (isOn: boolean) => ({
-    sql: `PRAGMA query_only = ${isOn ? 1 : 0}`,
-    parameters: [],
-});
-
 /**
  * The queries the app keeps open. They are few (a page, its count, a sync status) and indexed, so
  * re-running all of them after each write costs less than working out which ones a write touched.
+ * SQLite answers in the order asked, so an older result never lands after a newer one.
  */
 export const createLiveQueries = (deps: LiveQueriesDeps): LiveQueries => {
     const liveQueries = new Set<LiveQuery>();
     let isRefreshScheduled = false;
 
-    const run = <TRow>(query: TransactionStoreQuery<TRow>): TRow[] => {
-        // The store runs one thing at a time, so no write of its own falls in between.
-        deps.sqlite.exec(PRAGMA_QUERY_ONLY(true));
-        try {
-            // The rows are what the query selects; its type says so.
-            return deps.sqlite.exec(query).rows as TRow[];
-        } finally {
-            deps.sqlite.exec(PRAGMA_QUERY_ONLY(false));
-        }
-    };
+    const refresh = async (liveQuery: LiveQuery) => {
+        // A broken query sends nothing; the others still refresh.
+        const rows = await deps.sqlite.select(liveQuery.query).catch(() => null);
+        if (rows === null || !liveQueries.has(liveQuery)) return;
 
-    const refresh = (liveQuery: LiveQuery) => {
-        let rows: unknown[];
-        try {
-            rows = run(liveQuery.query);
-        } catch {
-            // A broken query sends nothing; the others still refresh.
-            return;
-        }
         const serializedRows = JSON.stringify(rows);
         if (serializedRows === liveQuery.lastRows) return;
 
@@ -64,8 +44,6 @@ export const createLiveQueries = (deps: LiveQueriesDeps): LiveQueries => {
     };
 
     return {
-        run,
-
         subscribe: (query, onRows) => {
             const liveQuery: LiveQuery = {
                 query,
@@ -74,7 +52,7 @@ export const createLiveQueries = (deps: LiveQueriesDeps): LiveQueries => {
                 lastRows: null,
             };
             liveQueries.add(liveQuery);
-            refresh(liveQuery);
+            void refresh(liveQuery);
 
             return () => {
                 liveQueries.delete(liveQuery);
@@ -87,7 +65,7 @@ export const createLiveQueries = (deps: LiveQueriesDeps): LiveQueries => {
             isRefreshScheduled = true;
             queueMicrotask(() => {
                 isRefreshScheduled = false;
-                liveQueries.forEach(refresh);
+                liveQueries.forEach(liveQuery => void refresh(liveQuery));
             });
         },
 

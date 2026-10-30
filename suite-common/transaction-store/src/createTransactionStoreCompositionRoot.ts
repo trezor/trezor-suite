@@ -1,43 +1,36 @@
-import { type Result, ok } from '@trezor/type-utils';
-
 import { createLiveQueries } from './query/createLiveQueries';
 import { createTransactionRepository } from './repository/createTransactionRepository';
-import {
-    type MigrateTransactionStoreSchemaError,
-    migrateTransactionStoreSchema,
-} from './schema/migrateTransactionStoreSchema';
+import { migrateTransactionStoreSchema } from './schema/migrateTransactionStoreSchema';
 import type { TransactionSourceDep } from './source/transactionSource';
 import type { TransactionStoreSqliteDep } from './sqlite/transactionStoreSqlite';
 import { createSyncAccountTransactions } from './sync/createSyncAccountTransactions';
 import { createSyncQueue } from './sync/createSyncQueue';
 import type { TransactionStore } from './transactionStore';
+import type { Unsubscribe } from './transactionStoreTypes';
+
+export type TransactionStoreStartFailure = 'DatabaseUnavailable' | 'SchemaFromNewerVersion';
 
 /** What each platform entry provides: its SQLite and its source of history. */
 export type TransactionStoreCompositionRootDeps = TransactionStoreSqliteDep &
     TransactionSourceDep & {
         now: () => number;
+        /** The store then does nothing; the rest of the app runs as before. */
+        onStartFailed: (reason: TransactionStoreStartFailure) => void;
     };
 
 /**
- * Starts the store: migrates the database and wires the engine. It is lazy: it downloads an
- * account's history only once a query asks for it, keeps those accounts fresh when the app says
- * they changed (a new revision), and has no clock of its own.
+ * The store, starting: it migrates the database first, and every call waits for that. It is
+ * lazy: it downloads an account's history only once a query asks for it, keeps those accounts
+ * fresh when the app says they changed (a new revision), and has no clock of its own.
  */
 export const createTransactionStoreCompositionRoot = (
     deps: TransactionStoreCompositionRootDeps,
-): Result<TransactionStore, MigrateTransactionStoreSchemaError> => {
-    const migration = migrateTransactionStoreSchema(deps);
-
-    if (!migration.success) {
-        return migration;
-    }
-
+): TransactionStore => {
     const liveQueries = createLiveQueries(deps);
     const transactionRepository = createTransactionRepository({
         sqlite: deps.sqlite,
         onWritten: liveQueries.invalidate,
     });
-    transactionRepository.clearSyncing();
     const syncAccountTransactions = createSyncAccountTransactions({
         transactionRepository,
         transactionSource: deps.transactionSource,
@@ -45,54 +38,89 @@ export const createTransactionStoreCompositionRoot = (
     });
     const syncQueue = createSyncQueue({ syncAccountTransactions, transactionRepository });
 
+    /** Whether the store runs; every call waits for it. */
+    const isStarted = migrateTransactionStoreSchema(deps)
+        .then(async migration => {
+            if (!migration.success) {
+                deps.onStartFailed(migration.error.type);
+
+                return false;
+            }
+            await transactionRepository.clearSyncing();
+
+            return true;
+        })
+        .catch(() => {
+            deps.onStartFailed('DatabaseUnavailable');
+
+            return false;
+        });
+    const whenStarted = (run: () => Promise<void> | void) =>
+        isStarted.then(async isRunning => {
+            if (isRunning) await run();
+        });
+
     // What the app last said of each account; the first list after a start syncs every tracked
     // account, as they may have changed while the store was off.
     const revisions = new Map<string, string>();
 
-    const transactionStore: TransactionStore = {
-        setAccounts: accounts => {
-            transactionRepository.replaceAccounts(accounts);
-            const changedAccountKeys = accounts
-                .filter(({ accountKey, revision }) => revisions.get(accountKey) !== revision)
-                .map(({ accountKey }) => accountKey);
-            revisions.clear();
-            accounts.forEach(({ accountKey, revision }) => revisions.set(accountKey, revision));
-            syncQueue.requestSync({
-                // Only those something has asked for; the store ignores the rest.
-                accountKeys: transactionRepository.selectTrackedAccountKeys(changedAccountKeys),
-                mode: 'latest',
-            });
+    return {
+        setAccounts: accounts =>
+            whenStarted(async () => {
+                await transactionRepository.replaceAccounts(accounts);
+                const changedAccountKeys = accounts
+                    .filter(({ accountKey, revision }) => revisions.get(accountKey) !== revision)
+                    .map(({ accountKey }) => accountKey);
+                revisions.clear();
+                accounts.forEach(({ accountKey, revision }) => revisions.set(accountKey, revision));
+                syncQueue.requestSync({
+                    // Only those something has asked for; the store ignores the rest.
+                    accountKeys:
+                        await transactionRepository.selectTrackedAccountKeys(changedAccountKeys),
+                    mode: 'latest',
+                });
+            }),
 
-            return Promise.resolve();
-        },
-        setKnownTokens: knownTokens => {
-            knownTokens.forEach(transactionRepository.replaceKnownTokens);
+        setKnownTokens: knownTokens =>
+            whenStarted(async () => {
+                await Promise.all(knownTokens.map(transactionRepository.replaceKnownTokens));
+            }),
 
-            return Promise.resolve();
-        },
-        requestFullHistory: accountKey => {
-            syncQueue.requestSync({ accountKeys: [accountKey], mode: 'full' });
+        requestFullHistory: accountKey =>
+            whenStarted(() => syncQueue.requestSync({ accountKeys: [accountKey], mode: 'full' })),
 
-            return Promise.resolve();
-        },
         subscribeQuery: (query, onRows) => {
-            // Lazy: asking for an account's rows is what downloads its history.
-            syncQueue.requestSync({
-                accountKeys: query.accountKeys.filter(
-                    accountKey =>
-                        !syncQueue.isSyncing(accountKey) &&
-                        transactionRepository.selectSyncState(accountKey).lastSyncedAt === null,
-                ),
-                mode: 'latest',
+            let unsubscribe: Unsubscribe | null = null;
+            let isSubscribed = true;
+
+            void whenStarted(async () => {
+                if (!isSubscribed) return;
+
+                unsubscribe = liveQueries.subscribe(query, onRows);
+                // Lazy: asking for an account's rows is what downloads its history.
+                const syncStates = await Promise.all(
+                    query.accountKeys.map(transactionRepository.selectSyncState),
+                );
+                syncQueue.requestSync({
+                    accountKeys: query.accountKeys.filter(
+                        (accountKey, index) =>
+                            !syncQueue.isSyncing(accountKey) &&
+                            syncStates[index]?.lastSyncedAt === null,
+                    ),
+                    mode: 'latest',
+                });
             });
 
-            return liveQueries.subscribe(query, onRows);
+            return () => {
+                isSubscribed = false;
+                unsubscribe?.();
+            };
         },
+
         dispose: async () => {
+            await isStarted;
             await syncQueue.close();
             liveQueries.dispose();
         },
     };
-
-    return ok(transactionStore);
 };

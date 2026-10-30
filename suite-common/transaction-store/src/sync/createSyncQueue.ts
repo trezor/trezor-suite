@@ -26,10 +26,6 @@ export const createSyncQueue = (deps: SyncQueueDeps): SyncQueue => {
     const reruns = new Map<string, SyncMode>();
     let isClosed = false;
 
-    // In the database, so the app reads it with the rest of the account's state.
-    const setSyncing = (accountKey: string, isSyncing: boolean) =>
-        deps.transactionRepository.setSyncing({ accountKey, isSyncing });
-
     const takeRerun = (accountKey: string) => {
         const mode = reruns.get(accountKey);
         reruns.delete(accountKey);
@@ -43,9 +39,23 @@ export const createSyncQueue = (deps: SyncQueueDeps): SyncQueue => {
             nextMode !== undefined;
             nextMode = takeRerun(accountKey)
         ) {
-            // An unexpected failure (the database, not the backend) must not leave the account
-            // stuck as syncing; the next request retries it.
-            await deps.syncAccountTransactions({ accountKey, mode: nextMode }).catch(() => {});
+            await deps.syncAccountTransactions({ accountKey, mode: nextMode });
+        }
+    };
+
+    /** Marked as syncing in the database, so the app reads it with the rest of its state. */
+    const runAccount = async (accountKey: string, mode: SyncMode) => {
+        // Only stored accounts can be synced, or have a sync state.
+        if ((await deps.transactionRepository.selectAccount(accountKey)) === undefined) return;
+
+        await deps.transactionRepository.setSyncing({ accountKey, isSyncing: true });
+        try {
+            await runSyncs(accountKey, mode);
+        } finally {
+            // The account may have been removed meanwhile; then there is nothing to clear.
+            if ((await deps.transactionRepository.selectAccount(accountKey)) !== undefined) {
+                await deps.transactionRepository.setSyncing({ accountKey, isSyncing: false });
+            }
         }
     };
 
@@ -54,22 +64,17 @@ export const createSyncQueue = (deps: SyncQueueDeps): SyncQueue => {
             if (isClosed) return;
 
             accountKeys.forEach(accountKey => {
-                // Only stored accounts can be synced, or have a sync state.
-                if (deps.transactionRepository.selectAccount(accountKey) === undefined) return;
                 if (running.has(accountKey)) {
                     reruns.set(accountKey, mergeModes(reruns.get(accountKey), mode));
 
                     return;
                 }
 
-                setSyncing(accountKey, true);
-                const run = runSyncs(accountKey, mode).finally(() => {
-                    running.delete(accountKey);
-                    // The account may have been removed meanwhile; then there is nothing to clear.
-                    if (deps.transactionRepository.selectAccount(accountKey) !== undefined) {
-                        setSyncing(accountKey, false);
-                    }
-                });
+                const run = runAccount(accountKey, mode)
+                    // An unexpected failure (the database, not the backend) must not leave the
+                    // account stuck as syncing; the next request retries it.
+                    .catch(() => {})
+                    .finally(() => running.delete(accountKey));
                 running.set(accountKey, run);
             });
         },

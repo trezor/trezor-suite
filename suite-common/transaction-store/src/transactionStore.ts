@@ -2,9 +2,9 @@ import type { TransactionStoreQuery } from './query/transactionStoreDatabase';
 import type { KnownTokens, TransactionStoreAccount, Unsubscribe } from './transactionStoreTypes';
 
 /**
- * What the app uses. The commands are async, so the in-process store (native) and the RPC client
- * of a store in a worker (web, desktop) are interchangeable. Reads are queries the app builds with
- * `createTransactionStoreQuery`; the store runs them read-only.
+ * What the app uses; it runs where the app does, with SQLite wherever the platform keeps it (a
+ * worker on web and desktop). Reads are queries the app builds with `createTransactionStoreQuery`;
+ * the store runs them read-only.
  */
 export type TransactionStore = {
     /**
