@@ -252,6 +252,20 @@ describe('the home-asset table', () => {
         expect(assetNames).toEqual(['BTC', 'ETH', 'USDC']);
     });
 
+    it('says the wallet holds nothing once every balance is zero', () => {
+        renderTable(
+            getInitialState({
+                accounts: [
+                    mockWalletAccount({ symbol: ETH, formattedBalance: '0' }),
+                    mockWalletAccount({ symbol: BTC, formattedBalance: '0' }),
+                ],
+            }),
+        );
+
+        expect(screen.getByTestId('@dashboard/home-asset-table/empty')).toBeInTheDocument();
+        expect(screen.queryByTestId('@dashboard/home-asset-table')).not.toBeInTheDocument();
+    });
+
     describe('the APY badge next to the ticker', () => {
         it('offers a coin its staking rate, and nothing to what cannot earn', () => {
             renderTable(getInitialState({ ethStakingApy: 3.2 }));

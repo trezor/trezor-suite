@@ -1797,6 +1797,15 @@ export const messages = defineMessages({
         defaultMessage: '7d',
         id: 'TR_HOME_ASSET_WEEK_PERIOD',
     },
+    TR_HOME_ASSET_EMPTY_TITLE: {
+        defaultMessage: "You don't hold any assets",
+        id: 'TR_HOME_ASSET_EMPTY_TITLE',
+    },
+    TR_HOME_ASSET_EMPTY_DESCRIPTION: {
+        defaultMessage:
+            'Your balance is now 0. Receive crypto from another wallet or buy some to fill it up again.',
+        id: 'TR_HOME_ASSET_EMPTY_DESCRIPTION',
+    },
     TR_HOME_ASSET_GROUPING_DEFAULT: {
         defaultMessage: 'Default',
         id: 'TR_HOME_ASSET_GROUPING_DEFAULT',
