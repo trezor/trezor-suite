@@ -1872,6 +1872,24 @@ export const messages = defineMessages({
         defaultMessage: 'Accounts',
         id: 'TR_ASSET_DETAIL_ACCOUNTS',
     },
+    TR_ASSET_DETAIL_SUSPICIOUS_TOKEN_TITLE: {
+        defaultMessage: 'Flagged as suspicious',
+        id: 'TR_ASSET_DETAIL_SUSPICIOUS_TOKEN_TITLE',
+    },
+    TR_ASSET_DETAIL_SUSPICIOUS_TOKEN_DESCRIPTION: {
+        defaultMessage:
+            'This token arrived unrequested and may be a phishing attempt. Do not interact with its website.',
+        id: 'TR_ASSET_DETAIL_SUSPICIOUS_TOKEN_DESCRIPTION',
+    },
+    TR_ASSET_DETAIL_HIDDEN_TOKEN_TITLE: {
+        defaultMessage: 'Hidden by you',
+        id: 'TR_ASSET_DETAIL_HIDDEN_TOKEN_TITLE',
+    },
+    TR_ASSET_DETAIL_HIDDEN_TOKEN_DESCRIPTION: {
+        defaultMessage:
+            '{asset} does not appear in your asset list. Everything about it still works here.',
+        id: 'TR_ASSET_DETAIL_HIDDEN_TOKEN_DESCRIPTION',
+    },
     TR_ASSET_DETAIL_POLICY_ID: {
         defaultMessage: 'Policy ID',
         id: 'TR_ASSET_DETAIL_POLICY_ID',
