@@ -62,13 +62,14 @@ const EarnBalanceLegendItem = ({ amount, color, title }: EarnBalanceLegendItemPr
             <Box style={applyStyle(legendDotStyle, { color })} />
 
             <Text variant="body-sm" color="contentSecondary" numberOfLines={1}>
-                {title}{' '}
-                <BaseCurrencyAmountFormatter
-                    value={amount}
-                    variant="body-sm"
-                    color="contentSecondary"
-                />
+                {title}
             </Text>
+
+            <BaseCurrencyAmountFormatter
+                value={amount}
+                variant="body-sm"
+                color="contentSecondary"
+            />
         </HStack>
     );
 };
