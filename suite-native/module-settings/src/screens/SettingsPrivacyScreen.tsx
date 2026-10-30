@@ -2,7 +2,7 @@ import { Platform } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics-redux';
-import { useDiscreetMode } from '@suite-common/discreet-mode';
+import { DISCREET_PLACEHOLDER, useDiscreetMode } from '@suite-common/discreet-mode';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
 import {
     Box,
@@ -20,7 +20,7 @@ import { useServices } from '@trezor/dependency-injection';
 const DiscreetTextExample = () => (
     <Discreet isForcedDiscreetMode>
         <Text variant="body-sm" color="contentSecondary">
-            ###
+            {DISCREET_PLACEHOLDER}
         </Text>
     </Discreet>
 );
