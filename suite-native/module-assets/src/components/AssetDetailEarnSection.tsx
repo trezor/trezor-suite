@@ -10,7 +10,7 @@ import {
     selectWalletAssetKey,
     selectWalletAssetStakingAmount,
 } from '@suite-common/assets';
-import { Divider, HStack, PressableOpacity, Text, VStack } from '@suite-native/atoms';
+import { HStack, PressableOpacity, Text, VStack } from '@suite-native/atoms';
 import { Icon } from '@suite-native/icons';
 import { Translation } from '@suite-native/intl';
 import {
@@ -69,37 +69,34 @@ export const AssetDetailEarnSection = () => {
         );
 
     return (
-        <>
-            <Divider />
-            <VStack paddingHorizontal="sp20" paddingVertical="sp20" spacing="sp12">
-                <VStack spacing="sp12">
-                    <HStack alignItems="center" justifyContent="space-between" spacing="sp8">
-                        <Text variant="body-xs" color="contentSecondary">
-                            <Translation id="moduleAssets.assetDetailScreen.earnSection.title" />
-                        </Text>
-                        <PressableOpacity
-                            accessibilityRole="button"
-                            onPress={handlePress}
-                            testID="@assets/asset-detail/earn-section"
-                        >
-                            <HStack alignItems="center" spacing="sp4">
-                                <Text variant="body-xs" color="contentBrand">
-                                    <Translation id="moduleAssets.assetDetailScreen.earnSection.viewAll" />
-                                </Text>
-                                <Icon name="caretRight" size="small" color="contentBrand" />
-                            </HStack>
-                        </PressableOpacity>
-                    </HStack>
+        <VStack paddingHorizontal="sp20" spacing="sp12">
+            <VStack spacing="sp12">
+                <HStack alignItems="center" justifyContent="space-between" spacing="sp8">
+                    <Text variant="body-xs" color="contentSecondary">
+                        <Translation id="moduleAssets.assetDetailScreen.earnSection.title" />
+                    </Text>
+                    <PressableOpacity
+                        accessibilityRole="button"
+                        onPress={handlePress}
+                        testID="@assets/asset-detail/earn-section"
+                    >
+                        <HStack alignItems="center" spacing="sp4">
+                            <Text variant="body-xs" color="contentBrand">
+                                <Translation id="moduleAssets.assetDetailScreen.earnSection.viewAll" />
+                            </Text>
+                            <Icon name="caretRight" size="small" color="contentBrand" />
+                        </HStack>
+                    </PressableOpacity>
+                </HStack>
 
-                    <AssetDetailEarnBalanceBar />
-                </VStack>
-
-                <VStack spacing="sp12">
-                    <AssetDetailEarnBalanceRow amount={availableAmount} type="available" />
-                    <AssetDetailEarnBalanceRow amount={stakingAmount} type="staking" />
-                    <AssetDetailEarnBanner onPress={handlePress} />
-                </VStack>
+                <AssetDetailEarnBalanceBar />
             </VStack>
-        </>
+
+            <VStack spacing="sp12">
+                <AssetDetailEarnBalanceRow amount={availableAmount} type="available" />
+                <AssetDetailEarnBalanceRow amount={stakingAmount} type="staking" />
+                <AssetDetailEarnBanner onPress={handlePress} />
+            </VStack>
+        </VStack>
     );
 };

@@ -1,6 +1,6 @@
 import { type RouteProp, useRoute } from '@react-navigation/native';
 
-import { VStack } from '@suite-native/atoms';
+import { Box, VStack } from '@suite-native/atoms';
 import type { AssetsStackParamList, AssetsStackRoutes } from '@suite-native/navigation';
 import { AssetPriceChart } from '@suite-native/price-chart';
 
@@ -11,8 +11,10 @@ export const AssetDetailPriceSection = () => {
         useRoute<RouteProp<AssetsStackParamList, AssetsStackRoutes.AssetDetail>>().params;
 
     return (
-        <VStack spacing="sp12" paddingHorizontal="sp16" paddingVertical="sp8">
-            <AssetDetailPrice networkSymbol={networkSymbol} tokenContract={tokenContract} />
+        <VStack spacing="sp24" paddingTop="sp24">
+            <Box paddingHorizontal="sp20">
+                <AssetDetailPrice networkSymbol={networkSymbol} tokenContract={tokenContract} />
+            </Box>
             <AssetPriceChart networkSymbol={networkSymbol} tokenContract={tokenContract} />
         </VStack>
     );

@@ -58,7 +58,7 @@ export const AssetPriceChart = ({ networkSymbol, tokenContract }: AssetPriceChar
     }
 
     return (
-        <VStack spacing="sp16" paddingVertical="sp8">
+        <VStack spacing="sp24" paddingTop="sp8" paddingBottom="sp12">
             <LineGraph
                 animated
                 color={colors.borderBrand}
