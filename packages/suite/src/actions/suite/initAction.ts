@@ -18,6 +18,7 @@ import {
     suiteSettingsActions,
 } from '@suite/settings';
 import { onSuiteInit, onSuiteReady } from '@suite/suite-lifecycle';
+import { type StartTransactionStoreFeedDep } from '@suite/transaction-store';
 import * as trezorConnectActions from '@suite-common/connect-init';
 import { type ConnectInitThunkDeps, type ConnectInitThunkState } from '@suite-common/connect-init';
 import { type DeviceRootState } from '@suite-common/device';
@@ -85,7 +86,7 @@ type InitThunkDeps = ConnectInitThunkDeps &
     InitTokenDefinitionsThunkDeps &
     PeriodicFetchFiatRatesThunkDeps &
     WalletConnectInitThunkDeps &
-    WithServices<InitThunkDesktopApiDep>;
+    WithServices<InitThunkDesktopApiDep & StartTransactionStoreFeedDep>;
 
 export type InitThunkDesktopApiDep = DesktopApiDep<
     | 'setAutomaticUpdateEnabled'
@@ -162,6 +163,10 @@ export const initThunk =
         await dispatch(initBlockchainThunk())
             .unwrap()
             .catch(err => console.error(err));
+
+        // 7b. feed the transaction store, which runs while its Debug settings switch is on. It
+        // needs Connect initialised for the networks' default backends. Runs for the app's life.
+        extra.services.startTransactionStoreFeed();
 
         // 8. fetch token definitions (has to be fetched before fiat rates)
         await dispatch(periodicCheckTokenDefinitionsThunk());

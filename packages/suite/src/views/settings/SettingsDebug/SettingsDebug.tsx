@@ -6,6 +6,7 @@ import {
     MessageSystemDebug,
 } from '@suite/message-system';
 import { SuiteSyncSettings, suiteSyncErrorHandler } from '@suite/suite-sync';
+import { TransactionStoreDebug } from '@suite/transaction-store';
 import { Context } from '@suite-common/message-system';
 import { type SuiteSyncUpdateError } from '@suite-common/suite-sync-storage';
 import { type EnsureWalletSuiteSyncOnErrors } from '@suite-common/suite-sync-types';
@@ -83,6 +84,12 @@ export const SettingsDebug = () => {
                 <TriggerHighlight />
                 <TriggerToast />
                 <TriggerActivityNotification />
+            </SettingsSection>
+            <SettingsSection
+                hasVerticalLayout={hasContentBelowTabletWidth}
+                title="Transaction store"
+            >
+                <TransactionStoreDebug />
             </SettingsSection>
             <SettingsSection hasVerticalLayout={hasContentBelowTabletWidth} title="Analytics">
                 <AnalyticsLogging />

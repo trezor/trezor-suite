@@ -18,6 +18,14 @@ import {
 } from '@suite/router';
 import { selectDebugSettings, selectLanguage, selectTradeServerEnvironment } from '@suite/settings';
 import { createSuiteSyncDesktopCompositionRoot } from '@suite/suite-sync';
+import {
+    type GetTransactionStoreServiceDep,
+    type StartTransactionStoreFeedDep,
+    createGetTransactionStoreService,
+    createStartTransactionStoreFeed,
+    createTransactionStoreWorker,
+    selectIsTransactionStoreActive,
+} from '@suite/transaction-store';
 import { createBip329CompositionRoot } from '@suite-common/bip329';
 import {
     type ConnectInitSettings,
@@ -74,11 +82,14 @@ export type SuiteServices = CommonServices &
     MetadataMigrationDep &
     SuiteRouterHistoryDep &
     TransportsDep &
-    BluetoothDep;
+    BluetoothDep &
+    GetTransactionStoreServiceDep &
+    StartTransactionStoreFeedDep;
 
 export type StoreAPIDep = Pick<SuiteReduxStore, 'getState' | 'dispatch'>;
 
 export type SuiteAppDeps = StoreAPIDep &
+    Pick<SuiteReduxStore, 'subscribe'> &
     DbDep &
     DesktopApiDep &
     HistoryDep &
@@ -144,6 +155,19 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         updateOutputLabel: suiteSync.labeling.updateOutputLabel,
     });
 
+    // Lazy: the worker starts on the first use. The feed, started by the app's init once Connect
+    // is up, starts it only while its Debug settings switch is on.
+    const getTransactionStoreService = createGetTransactionStoreService({
+        getTrezorConnect: deps.getTrezorConnect,
+        createWorker: createTransactionStoreWorker,
+    });
+    const startTransactionStoreFeed = createStartTransactionStoreFeed({
+        getTransactionStoreService,
+        getState: deps.getState,
+        subscribe: deps.subscribe,
+        getIsEnabled: toGetter(deps.getState, selectIsTransactionStoreActive),
+    });
+
     const networks = createNetworksCompositionRoot({
         getTrezorConnect: deps.getTrezorConnect,
         dispatch: deps.dispatch,
@@ -167,6 +191,8 @@ export const createSuiteServicesCompositionRoot = (deps: SuiteAppDeps): SuiteSer
         desktopApi: deps.desktopApi,
         networks,
         suiteSync,
+        getTransactionStoreService,
+        startTransactionStoreFeed,
         bip329,
         migrateLegacyLabelsToSuiteSync,
         ensureDelegatedIdentityKey,

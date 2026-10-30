@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { Translation } from '@suite/intl';
+import { selectIsTransactionStoreActive } from '@suite/transaction-store';
 import { hasNetworkPotentialFraudTransactions } from '@suite-common/token-definitions';
 import {
     selectAreAllTransactionsLoaded,
@@ -12,6 +13,7 @@ import { Card, Column, Text } from '@trezor/components';
 import { useSelector } from 'src/hooks/suite';
 import { type Account, type WalletAccountTransaction } from 'src/types/wallet';
 
+import { StoredTransactionList } from './StoredTransactionList';
 import { TransactionList } from './TransactionList';
 import { useVisibleTransactions } from './useFetchTransactions';
 
@@ -38,7 +40,7 @@ interface TransactionListProps {
     isExportable?: boolean;
 }
 
-export const WalletTransactionList = ({
+const ReduxTransactionList = ({
     account,
     symbol,
     customTotalItems,
@@ -86,5 +88,16 @@ export const WalletTransactionList = ({
             isExportable={isExportable}
             onPageRequested={setVisiblePages}
         />
+    );
+};
+
+export const WalletTransactionList = (props: TransactionListProps) => {
+    // Read from the transaction store only while its Debug settings switch is on.
+    const isTransactionStoreActive = useSelector(selectIsTransactionStoreActive);
+
+    return isTransactionStoreActive ? (
+        <StoredTransactionList key={props.account.key} account={props.account} />
+    ) : (
+        <ReduxTransactionList {...props} />
     );
 };

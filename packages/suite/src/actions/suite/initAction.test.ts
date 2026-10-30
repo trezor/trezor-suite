@@ -23,6 +23,10 @@ import {
     suiteSettingsInitialState,
 } from '@suite/settings';
 import { onSuiteInit, onSuiteReady } from '@suite/suite-lifecycle';
+import {
+    type StartTransactionStoreFeed,
+    type StartTransactionStoreFeedDep,
+} from '@suite/transaction-store';
 import { type ConnectInitThunkDeps, connectInitThunk } from '@suite-common/connect-init';
 import {
     mockConnectInitDeviceEventHooks,
@@ -298,7 +302,7 @@ type InitActionTestDeps = ConnectInitThunkDeps &
     InitTokenDefinitionsThunkDeps &
     PeriodicFetchFiatRatesThunkDeps &
     WalletConnectInitThunkDeps &
-    WithServices<InitThunkDesktopApiDep>;
+    WithServices<InitThunkDesktopApiDep & StartTransactionStoreFeedDep>;
 
 const initStore = (state: InitThunkState) => {
     const memoryHistory = createMemoryHistory();
@@ -306,6 +310,9 @@ const initStore = (state: InitThunkState) => {
     const { services } = createTestCompositionRoot<InitActionTestDeps, InitThunkState>({
         services: store => ({
             ...createDesktopApiDep(),
+            startTransactionStoreFeed: mock<StartTransactionStoreFeed>(
+                () => () => Promise.resolve(),
+            ),
             analytics: mockDesktopAnalytics(),
             connectInitDeviceEventHooks: mockConnectInitDeviceEventHooks(),
             connectInitSettings: mockConnectInitSettings(),
