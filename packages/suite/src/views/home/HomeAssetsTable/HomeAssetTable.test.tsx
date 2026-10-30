@@ -252,7 +252,7 @@ describe('the home-asset table', () => {
         expect(assetNames).toEqual(['BTC', 'ETH', 'USDC']);
     });
 
-    it('says the wallet holds nothing once every balance is zero', () => {
+    it('says the wallet holds nothing once every balance is zero, and keeps the menu over it', () => {
         renderTable(
             getInitialState({
                 accounts: [
@@ -263,7 +263,8 @@ describe('the home-asset table', () => {
         );
 
         expect(screen.getByTestId('@dashboard/home-asset-table/empty')).toBeInTheDocument();
-        expect(screen.queryByTestId('@dashboard/home-asset-table')).not.toBeInTheDocument();
+        expect(screen.queryAllByTestId('@dashboard/home-asset/name')).toHaveLength(0);
+        expect(screen.getByTestId('@dashboard/home-asset/grouping')).toBeInTheDocument();
     });
 
     describe('the APY badge next to the ticker', () => {
