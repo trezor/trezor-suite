@@ -183,18 +183,19 @@ describe('connect-ws', () => {
         expect(findProcessFromIncomingPort).not.toHaveBeenCalled();
     });
 
-    // Documents the current behaviour: the frame carries its message only in `payload`, while
-    // the client reads the error from the top level of the frame and dereferences its code.
     it('fails a call whose calling process could not be identified', async () => {
         const client = await openClient(await startServer(), 'https://app.test');
         expect(await request(client, handshake)).toMatchObject({ payload: 'ok' });
 
+        // The client reads the error from the top level of the frame and dereferences its code.
         expect(
             await request(client, { type: CORE_CALL, payload: { method: 'getFeatures' } }),
-        ).toEqual({
-            id: expect.any(String),
+        ).toMatchObject({
             success: false,
-            payload: { error: 'Calling process could not be identified' },
+            error: {
+                message: 'Calling process could not be identified',
+                code: 'Failure_UnknownCode',
+            },
         });
     });
 

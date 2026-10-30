@@ -11,6 +11,7 @@ import {
     type PopupClosedMessage,
     type PopupHandshake,
 } from '@trezor/connect';
+import { serializeError } from '@trezor/connect-common/src/constants/errors';
 import { parseManifest, parseVersion } from '@trezor/connect-common/src/data/connectSettings';
 import { isLinux } from '@trezor/env-utils';
 import { type ProcessInfo, findProcessFromIncomingPort } from '@trezor/node-utils';
@@ -80,6 +81,17 @@ const validateIncomingMessage = (message: any): message is IncomingMessage => {
 
     return false;
 };
+
+// Failure answered by the server itself, in the shape the renderer's own failures use: the client
+// reads the top-level `error` and dereferences its `code`, while `payload` is where connect v9
+// clients read the error instead.
+const createFailureResponse = (id: string, message: string) =>
+    JSON.stringify({
+        id,
+        success: false,
+        error: serializeError(new Error(message)),
+        payload: { error: message },
+    });
 
 type ExposeConnectWsParams = {
     mainThreadEmitter: Dependencies['mainThreadEmitter'];
@@ -288,12 +300,14 @@ export const exposeConnectWs = ({
 
                     if (!isLinux()) {
                         // we ignore missing process on linux because of AppImage/Flatpak sandboxing
+                        // The client puts no deadline on a core call, so without an explicit
+                        // failure it would wait for the connection to close to learn that the
+                        // call was dropped.
                         ws.send(
-                            JSON.stringify({
-                                id: message.id,
-                                success: false,
-                                payload: { error: 'Calling process could not be identified' },
-                            }),
+                            createFailureResponse(
+                                message.id,
+                                'Calling process could not be identified',
+                            ),
                         );
 
                         return;
@@ -323,13 +337,7 @@ export const exposeConnectWs = ({
                 // overwriting its deferred (which would leave the first call without a response).
                 if (connectionPendingMessages.has(storeId)) {
                     logger.error(LOG_PREFIX, `duplicate in-flight id ${message.id}`);
-                    ws.send(
-                        JSON.stringify({
-                            id: message.id,
-                            success: false,
-                            payload: { error: 'Duplicate in-flight request id' },
-                        }),
-                    );
+                    ws.send(createFailureResponse(message.id, 'Duplicate in-flight request id'));
 
                     return;
                 }
@@ -359,15 +367,7 @@ export const exposeConnectWs = ({
                         );
                         deleteMessage(storeId);
                         connectionPendingMessages.delete(storeId);
-                        ws.send(
-                            JSON.stringify({
-                                id: message.id,
-                                success: false,
-                                payload: {
-                                    error: 'Main window not available',
-                                },
-                            }),
-                        );
+                        ws.send(createFailureResponse(message.id, 'Main window not available'));
 
                         return;
                     }
