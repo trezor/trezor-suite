@@ -1,7 +1,7 @@
 import { createAction } from '@reduxjs/toolkit';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
-import type { CustomBackend } from '@suite-common/wallet-types';
+import type { AccountKey, CustomBackend } from '@suite-common/wallet-types';
 import type { TimerId } from '@trezor/type-utils';
 
 export const BLOCKCHAIN_MODULE_PREFIX = '@common/wallet-core/blockchain';
@@ -34,9 +34,15 @@ const setBackendGapLimit = createAction(
     (payload: { symbol: NetworkSymbol; gapLimit: number | undefined }) => ({ payload }),
 );
 
+const setWatchedAccount = createAction(
+    `${BLOCKCHAIN_MODULE_PREFIX}/setWatchedAccount`,
+    (payload: { symbol: NetworkSymbol; accountKey: AccountKey | undefined }) => ({ payload }),
+);
+
 export const blockchainActions = {
     setBackend,
     setBackendGapLimit,
     connected,
     synced,
+    setWatchedAccount,
 };

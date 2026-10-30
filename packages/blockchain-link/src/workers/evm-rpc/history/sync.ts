@@ -1,10 +1,11 @@
 import type { PublicClient } from 'viem';
 
-import { INITIAL_HISTORY_BLOCKS, MAX_DISCOVERED_TOKENS, TIP_LAG_BLOCKS } from './constants';
+import { INITIAL_HISTORY_BLOCKS, TIP_LAG_BLOCKS } from './constants';
 import { type BlockRange, type RawLog, scanTransferLogs } from './logScanner';
 import { getNativeLogSources } from './nativeAsset';
 import {
     type DescriptorHistory,
+    discoverTokenContract,
     forgetOwnTxid,
     getDescriptorHistory,
     getOwnTxids,
@@ -52,12 +53,7 @@ const ingestLogs = (
             blockTimestamp: toNumber(log.blockTimestamp) ?? known?.blockTimestamp,
         });
 
-        if (
-            !nativeAddresses.has(transfer.contract) &&
-            history.tokenContracts.size < MAX_DISCOVERED_TOKENS
-        ) {
-            history.tokenContracts.add(transfer.contract);
-        }
+        discoverTokenContract(history, transfer, nativeAddresses);
     });
 };
 
