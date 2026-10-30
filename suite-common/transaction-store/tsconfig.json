@@ -7,9 +7,6 @@
             "path": "../../packages/blockchain-link-types"
         },
         { "path": "../../packages/type-utils" },
-        { "path": "../../packages/utils" },
-        {
-            "path": "../../packages/dependency-injection"
-        }
+        { "path": "../../packages/utils" }
     ]
 }

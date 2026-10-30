@@ -15,7 +15,7 @@ export type SqlExecResult<TRow extends SqlRow = SqlRow> = {
 /**
  * Synchronous SQLite, one statement per call. Shaped after Evolu's `SqliteDriver`, so each
  * platform entry wraps its driver: `@evolu/web` (OPFS), `@evolu/react-native` (expo-sqlite)
- * or `@evolu/nodejs` (better-sqlite3) in tests.
+ * or `@evolu/nodejs` (better-sqlite3).
  *
  * @serviceContract
  */
