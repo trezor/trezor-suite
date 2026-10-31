@@ -70,7 +70,9 @@ const PARTIALLY_UNSTAKED_DETAILS: TronStakingDetails = {
     votes: [{ address: MOCK_TRON_LUGANODES_SR, voteCount: '500' }],
     totalVotingPower: '500',
     pendingUnstakeBalance: '200',
-    pendingUnstakingBatches: [{ amount: '200', daysLocked: 7, resource: undefined }],
+    pendingUnstakingBatches: [
+        { amount: '200', expireTime: MOCK_STAKING_NOW_SECONDS + 7 * SECONDS_IN_DAY },
+    ],
 };
 
 describe('tron staking details characterization', () => {
@@ -128,7 +130,6 @@ describe('tron staking details characterization', () => {
                     {
                         amount: '200000000',
                         expireTime: MOCK_STAKING_NOW_SECONDS + 7 * SECONDS_IN_DAY,
-                        resource: undefined,
                     },
                 ],
             },
@@ -142,12 +143,10 @@ describe('tron staking details characterization', () => {
                     {
                         amount: '300000000',
                         expireTime: MOCK_STAKING_NOW_SECONDS - SECONDS_IN_DAY,
-                        resource: undefined,
                     },
                     {
                         amount: '200000000',
                         expireTime: MOCK_STAKING_NOW_SECONDS + 7 * SECONDS_IN_DAY,
-                        resource: undefined,
                     },
                 ],
             },
@@ -164,7 +163,7 @@ describe('tron staking details characterization', () => {
         expect(readTronStakingDetails(mockTronStakingAccount(scenario))).toEqual(expected);
     });
 
-    it('matches unstaking batches to unfreeze transactions to resolve their resource', () => {
+    it('preserves batch amounts and expiry times independently of transaction resources', () => {
         const account = mockTronStakingAccount('unstakingWithdrawable');
         const state = mockStakeRootState({
             accounts: [account],
@@ -195,15 +194,15 @@ describe('tron staking details characterization', () => {
                 {
                     amount: '300000000',
                     expireTime: MOCK_STAKING_NOW_SECONDS - SECONDS_IN_DAY,
-                    resource: 'energy',
                 },
                 {
                     amount: '200000000',
                     expireTime: MOCK_STAKING_NOW_SECONDS + 7 * SECONDS_IN_DAY,
-                    resource: 'bandwidth',
                 },
             ],
-            pendingUnstakingBatches: [{ amount: '200', daysLocked: 7, resource: 'bandwidth' }],
+            pendingUnstakingBatches: [
+                { amount: '200', expireTime: MOCK_STAKING_NOW_SECONDS + 7 * SECONDS_IN_DAY },
+            ],
         });
     });
 });
