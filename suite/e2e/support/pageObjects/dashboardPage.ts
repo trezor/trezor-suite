@@ -233,15 +233,16 @@ export class DashboardPage {
         await this.devicePrompt.confirmOnDevicePromptIsShown();
         await this.device.pressYes();
 
+        // Prompt first: an earlier debuglink display read can drop the ButtonRequest
         if (options?.suiteSync === 'enable') {
-            await this.device.expectToContainOnDisplay('to use Suite Sync with this Trezor?');
             await this.devicePrompt.confirmOnDevicePromptIsShown();
+            await this.device.expectToContainOnDisplay('to use Suite Sync with this Trezor?');
             await this.device.pressYes();
             // wait before closing the modal to prevent "Trezor Sync key retrieval failed" error
             await this.page.waitForTimeout(2000);
         } else if (options?.suiteSync === 'decline') {
-            await this.device.expectToContainOnDisplay('to use Suite Sync with this Trezor?');
             await this.devicePrompt.confirmOnDevicePromptIsShown();
+            await this.device.expectToContainOnDisplay('to use Suite Sync with this Trezor?');
             await this.device.pressNo();
         }
 
