@@ -46260,9 +46260,9 @@ __metadata:
   linkType: hard
 
 "toml@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "toml@npm:5.0.0"
-  checksum: 10/552aab0eee603c3590ecd51bbe861acaeacd328bf936aced185697fd1658b58aff2a5a1932b38f544fee27c47a0c24a5ea430ef80516d562b6488e391cc98b9a
+  version: 5.0.1
+  resolution: "toml@npm:5.0.1"
+  checksum: 10/cd4e3007779dc293748589577ce99a02b52416b6d43c04e9f985e208abc04ebd94c735beb2fa371ce938a48c3b929e414933d1096df5a082e9a88b14e01a331b
   languageName: node
   linkType: hard
 
