@@ -10,8 +10,9 @@ export const trezorConnectMiddleware =
 
         next(action);
 
+        // Auto-init on the first method so the testing tool works out of the box (core mode is still
+        // read from ?core-mode=). Reconfiguring is optional via the Connect settings panel.
         if ([SET_SCHEMA, SET_METHOD].includes(action.type) && !prevConnectOptions) {
-            const options = {};
-            api.dispatch(init(options));
+            api.dispatch(init({}));
         }
     };
