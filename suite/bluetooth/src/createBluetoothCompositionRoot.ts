@@ -29,6 +29,7 @@ import { createBluetoothOnDeviceConnected } from './createBluetoothOnDeviceConne
 import { createBluetoothStartScan } from './createBluetoothStartScan';
 import { createBluetoothStopScan } from './createBluetoothStopScan';
 import { createBluetoothUnpairCurrentBond } from './createBluetoothUnpairCurrentBond';
+import { createOnPowerSuspend } from './createOnPowerSuspend';
 import { createOpenSystemSettings } from './createOpenSystemSettings';
 import { createSetupBluetoothAutoReconnect } from './createSetupBluetoothAutoReconnect';
 import { createSetupBluetoothListeners } from './createSetupBluetoothListeners';
@@ -97,6 +98,13 @@ export const createBluetoothCompositionRoot = (deps: CompositionRootDeps): Bluet
         getSelectedDevice: toGetter(deps.getState, selectSelectedDevice),
     });
 
+    const onPowerSuspend = createOnPowerSuspend({
+        dispatch: deps.dispatch,
+        backgroundScan,
+        getKnownDevices,
+        disconnectDevice,
+    });
+
     const setupBluetoothAutoReconnect = createSetupBluetoothAutoReconnect({
         getKnownDevices,
         getConnectingDeviceIds: toGetter(deps.getState, selectConnectingDevices),
@@ -119,6 +127,7 @@ export const createBluetoothCompositionRoot = (deps: CompositionRootDeps): Bluet
         init: bluetoothInit,
         restartBackgroundScan: backgroundScan.restartIfNeeded,
         openSystemSettings,
+        onPowerSuspend,
         startScan,
         stopScan,
         connectDevice,
