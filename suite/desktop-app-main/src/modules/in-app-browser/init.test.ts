@@ -172,6 +172,7 @@ describe('in-app browser module and the Tor settings', () => {
             cspNonce: 'test-nonce',
             powerSaveBlocker: {} as Dependencies['powerSaveBlocker'],
             logger,
+            messageSystem: {} as Dependencies['messageSystem'],
         };
         const inAppBrowser = init(dependencies);
 
