@@ -1,9 +1,12 @@
 import { useSelector } from 'react-redux';
 
+import {
+    type EarnListRootState,
+    selectYieldListVaultIcons,
+    useYieldOpportunities,
+} from '@suite-common/wallet-core';
 import { TokenIcon } from '@suite-native/icons';
 
-import { type EarnListRootState, selectYieldListVaultIcons } from '../../earnScreenSelectors';
-import { useYieldOpportunities } from '../../hooks/yield/useYieldOpportunities';
 import { EarnPositionsCardIcon, MAX_VISIBLE_POSITION_ICONS } from '../earn/EarnPositionsCardIcon';
 
 export const YieldPositionsIcons = () => {

@@ -4,7 +4,11 @@ import { useSelector } from 'react-redux';
 import { events } from '@suite-common/analytics';
 import { useFormatters } from '@suite-common/formatters';
 import { getNetworkDisplaySymbolName } from '@suite-common/wallet-config';
-import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import {
+    type AccountsRootState,
+    type YieldListItem,
+    selectAccountByKey,
+} from '@suite-common/wallet-core';
 import { isApyAvailable } from '@suite-common/wallet-utils';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import { Text } from '@suite-native/atoms';
@@ -19,7 +23,6 @@ import { useServices } from '@trezor/dependency-injection';
 import { isWrappedNativeToken } from '@trezor/network-ethereum-suite-common';
 
 import { useYieldDetailNavigation } from '../../hooks/yield/useYieldDetailNavigation';
-import { type YieldListItem } from '../../types';
 import { ApyValue } from '../earn/ApyValue';
 import { EarnAccountCardLayout } from '../earn/EarnAccountCardLayout';
 

@@ -1,8 +1,7 @@
+import { type YieldClaimToken } from '@suite-common/wallet-core';
 import { Box, Text } from '@suite-native/atoms';
 import { TokenIcon } from '@suite-native/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
-
-import { type YieldClaimToken } from '../../types';
 
 const MAX_ICONS_WITHOUT_OVERFLOW = 3;
 const MAX_VISIBLE_ICONS_WITH_OVERFLOW = 2;

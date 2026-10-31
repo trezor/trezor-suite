@@ -1,19 +1,19 @@
 import { asNetworkSymbol } from '@suite-common/wallet-config';
+import {
+    selectCardanoStakedWithFiveBinariesAccountKey,
+    selectStakingListItems,
+    selectYieldClaimListItems,
+    selectYieldListItems,
+    useYieldClaimRewardsWithFiat,
+    useYieldOpportunities,
+} from '@suite-common/wallet-core';
 import { type NativeAnalyticsDep } from '@suite-native/analytics';
 import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import { renderWithStoreProvider } from '@suite-native/test-utils-store';
 import { mock } from '@trezor/dependency-injection';
 
 import { EarnScreenHeader } from './EarnScreenHeader';
-import {
-    selectCardanoStakedWithFiveBinariesAccountKey,
-    selectStakingListItems,
-    selectStakingPromoListSymbols,
-    selectYieldClaimListItems,
-    selectYieldListItems,
-} from '../../earnScreenSelectors';
-import { useClaimRewardsWithFiat } from '../../hooks/yield/useClaimRewardsWithFiat';
-import { useYieldOpportunities } from '../../hooks/yield/useYieldOpportunities';
+import { selectStakingPromoListSymbols } from '../../earnScreenSelectors';
 
 let mockIsYieldDisabled = false;
 
@@ -32,15 +32,17 @@ jest.mock('../../hooks/earn/useMessageSystemEarnDashboard', () => ({
         isDisabled: type === 'yield' && mockIsYieldDisabled,
     }),
 }));
-jest.mock('../../hooks/yield/useYieldOpportunities');
-jest.mock('../../hooks/yield/useClaimRewardsWithFiat');
-jest.mock('../../earnScreenSelectors', () => ({
-    ...jest.requireActual('../../earnScreenSelectors'),
+jest.mock('@suite-common/wallet-core', () => ({
+    ...jest.requireActual('@suite-common/wallet-core'),
+    useYieldOpportunities: jest.fn(),
+    useYieldClaimRewardsWithFiat: jest.fn(),
     selectStakingListItems: jest.fn(),
-    selectStakingPromoListSymbols: jest.fn(),
     selectYieldListItems: jest.fn(),
     selectYieldClaimListItems: jest.fn(),
     selectCardanoStakedWithFiveBinariesAccountKey: jest.fn(),
+}));
+jest.mock('../../earnScreenSelectors', () => ({
+    selectStakingPromoListSymbols: jest.fn(),
 }));
 
 describe('EarnScreenHeader analytics', () => {
@@ -60,7 +62,7 @@ describe('EarnScreenHeader analytics', () => {
             isError: false,
             refetch: mock(),
         });
-        jest.mocked(useClaimRewardsWithFiat).mockReturnValue({
+        jest.mocked(useYieldClaimRewardsWithFiat).mockReturnValue({
             claimRewardsWithFiat: [],
             isClaimLoading: false,
             isClaimError: false,
@@ -138,7 +140,7 @@ describe('EarnScreenHeader analytics', () => {
         { isClaimLoading: true, isClaimError: false },
         { isClaimLoading: false, isClaimError: true },
     ])('waits for successful rewards ($isClaimLoading, $isClaimError)', async status => {
-        jest.mocked(useClaimRewardsWithFiat).mockReturnValue({
+        jest.mocked(useYieldClaimRewardsWithFiat).mockReturnValue({
             claimRewardsWithFiat: [],
             ...status,
         });

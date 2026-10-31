@@ -8,7 +8,7 @@ import {
 import { mockWalletAccount, networkSpecificDefaultCardano } from '@suite-common/wallet-types/mocks';
 import { BigNumber } from '@trezor/utils';
 
-import { getStablecoinYieldAccountRewards } from './stablecoinYieldClaimSummaryUtils';
+import { getStablecoinYieldAccountRewards } from './yieldClaimSummaryUtils';
 
 const ethereumAccount = mockWalletAccount({
     symbol: asNetworkSymbol('eth'),

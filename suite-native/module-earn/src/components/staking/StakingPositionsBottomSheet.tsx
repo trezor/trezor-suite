@@ -2,11 +2,11 @@ import { useCallback } from 'react';
 
 import { FlashList } from '@shopify/flash-list';
 
+import { type StakingListItem } from '@suite-common/wallet-core';
 import { BottomSheetModal, type BottomSheetModalRef, Box } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 import { StakingPositionCard } from './StakingPositionCard';
-import { type StakingListItem } from '../../types';
 
 type StakingPositionsBottomSheetProps = {
     ref: BottomSheetModalRef;

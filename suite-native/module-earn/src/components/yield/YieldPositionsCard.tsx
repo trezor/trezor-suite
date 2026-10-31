@@ -2,6 +2,13 @@ import { useSelector } from 'react-redux';
 
 import { selectIsPortfolioTrackerDevice } from '@suite-common/device';
 import {
+    type EarnListRootState,
+    selectYieldClaimListItems,
+    selectYieldListItems,
+    useYieldClaimRewardsWithFiat,
+    useYieldOpportunities,
+} from '@suite-common/wallet-core';
+import {
     Box,
     Card,
     HStack,
@@ -16,19 +23,12 @@ import { Translation } from '@suite-native/intl';
 import { YieldClaimRewardsSummaryCard } from './YieldClaimRewardsSummaryCard';
 import { YieldPositionsBottomSheet } from './YieldPositionsBottomSheet';
 import { YieldPositionsIcons } from './YieldPositionsIcons';
-import {
-    type EarnListRootState,
-    selectYieldClaimListItems,
-    selectYieldListItems,
-} from '../../earnScreenSelectors';
-import { useClaimRewardsWithFiat } from '../../hooks/yield/useClaimRewardsWithFiat';
-import { useYieldOpportunities } from '../../hooks/yield/useYieldOpportunities';
 
 export const YieldPositionsCard = () => {
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
 
     const { yieldOpportunities } = useYieldOpportunities();
-    const { claimRewardsWithFiat, isClaimLoading } = useClaimRewardsWithFiat();
+    const { claimRewardsWithFiat, isClaimLoading } = useYieldClaimRewardsWithFiat();
 
     const positions = useSelector((state: EarnListRootState) =>
         selectYieldListItems(state, yieldOpportunities),

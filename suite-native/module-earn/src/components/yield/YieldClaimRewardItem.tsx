@@ -1,11 +1,11 @@
 import { useMemo } from 'react';
 
 import { type NetworkSymbol } from '@suite-common/wallet-config';
+import { type StablecoinYieldAccountRewards } from '@suite-common/wallet-core';
 import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { BigNumber } from '@trezor/utils';
 
 import { YieldClaimRewardRow } from './YieldClaimRewardRow';
-import { type StablecoinYieldAccountRewards } from '../../utils/yield/stablecoinYieldClaimSummaryUtils';
 
 type StablecoinYieldClaimReward = StablecoinYieldAccountRewards['rewards'][number];
 

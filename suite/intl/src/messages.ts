@@ -9276,6 +9276,14 @@ export const messages = defineMessages({
         id: 'TR_INSTANT_STAKING',
         defaultMessage: 'Staked instantly',
     },
+    TR_EARN_EARNING_BALANCE: {
+        id: 'TR_EARN_EARNING_BALANCE',
+        defaultMessage: 'Earning balance',
+    },
+    TR_EARN_BALANCE_BREAKDOWN: {
+        id: 'TR_EARN_BALANCE_BREAKDOWN',
+        defaultMessage: 'Balance breakdown',
+    },
     TR_EARN_AMOUNT_STAKED_INSTANTLY: {
         id: 'TR_EARN_AMOUNT_STAKED_INSTANTLY',
         defaultMessage: '{amount} {symbol} staked instantly',
@@ -10608,6 +10616,14 @@ export const messages = defineMessages({
         id: 'TR_TO',
         defaultMessage: 'To',
     },
+    TR_EARN_DEFI_YIELD: {
+        id: 'TR_EARN_DEFI_YIELD',
+        defaultMessage: 'DeFi Yield',
+    },
+    TR_EARN_STAKING: {
+        id: 'TR_EARN_STAKING',
+        defaultMessage: 'Staking',
+    },
     TR_EARN_STAKING_DASHBOARD_TITLE: {
         id: 'TR_EARN_STAKING_DASHBOARD_TITLE',
         defaultMessage: 'Staking',
@@ -11419,6 +11435,10 @@ export const messages = defineMessages({
     TR_EARN_NOT_AVAILABLE: {
         id: 'TR_EARN_NOT_AVAILABLE',
         defaultMessage: 'Not available',
+    },
+    TR_EARN_N_A: {
+        id: 'TR_EARN_N_A',
+        defaultMessage: 'N/A',
     },
     TR_EARN_APY_N_A: {
         id: 'TR_EARN_APY_N_A',

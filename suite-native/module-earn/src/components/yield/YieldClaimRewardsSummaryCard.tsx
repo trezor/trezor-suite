@@ -1,6 +1,16 @@
 import { useSelector } from 'react-redux';
 
 import { events } from '@suite-common/analytics';
+import {
+    type EarnListRootState,
+    selectYieldClaimAccountItems,
+    selectYieldClaimListItems,
+    selectYieldClaimTokens,
+    selectYieldClaimTotalFiatAmount,
+    selectYieldListItems,
+    useYieldClaimRewardsWithFiat,
+    useYieldOpportunities,
+} from '@suite-common/wallet-core';
 import { injectNativeAnalytics } from '@suite-native/analytics';
 import {
     BannerInline,
@@ -17,18 +27,8 @@ import { Translation } from '@suite-native/intl';
 import { useServices } from '@trezor/dependency-injection';
 
 import { YieldClaimRewardsBottomSheet } from './YieldClaimRewardsBottomSheet';
-import {
-    type EarnListRootState,
-    selectYieldClaimAccountItems,
-    selectYieldClaimListItems,
-    selectYieldClaimTokens,
-    selectYieldClaimTotalFiatAmount,
-    selectYieldListItems,
-} from '../../earnScreenSelectors';
-import { useClaimRewardsWithFiat } from '../../hooks/yield/useClaimRewardsWithFiat';
 import { useMessageSystemYield } from '../../hooks/yield/useMessageSystemYield';
 import { useStablecoinYieldFirmwareUpdateAlert } from '../../hooks/yield/useStablecoinYieldFirmwareUpdateAlert';
-import { useYieldOpportunities } from '../../hooks/yield/useYieldOpportunities';
 import { EarnClaimTokenIconSet } from '../earn/EarnClaimTokenIconSet';
 
 export const YieldClaimRewardsSummaryCard = () => {
@@ -48,7 +48,7 @@ export const YieldClaimRewardsSummaryCard = () => {
         selectYieldListItems(state, yieldOpportunities),
     );
 
-    const { claimRewardsWithFiat, isClaimLoading } = useClaimRewardsWithFiat();
+    const { claimRewardsWithFiat, isClaimLoading } = useYieldClaimRewardsWithFiat();
 
     const claimItems = useSelector((state: EarnListRootState) =>
         selectYieldClaimListItems(state, claimRewardsWithFiat),
@@ -113,13 +113,14 @@ export const YieldClaimRewardsSummaryCard = () => {
 
                         <HStack spacing="sp4" alignItems="center" flexWrap="wrap">
                             {!isClaimLoading && totalClaimableFiatAmount !== null ? (
-                                <Text variant="body-md-strong">
-                                    {'≈\u00A0'}
+                                <HStack spacing="sp1">
+                                    <Text variant="body-md-strong">{'≈\u00A0'}</Text>
+
                                     <BaseCurrencyAmountFormatter
                                         value={totalClaimableFiatAmount}
                                         variant="body-md-strong"
                                     />
-                                </Text>
+                                </HStack>
                             ) : (
                                 <BaseCurrencyAmountFormatter
                                     value={totalClaimableFiatAmount}

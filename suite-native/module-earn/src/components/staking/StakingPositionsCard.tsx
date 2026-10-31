@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 
+import { selectStakingListItems } from '@suite-common/wallet-core';
 import {
     Box,
     Card,
@@ -14,7 +15,6 @@ import { Translation } from '@suite-native/intl';
 
 import { StakingPositionsBottomSheet } from './StakingPositionsBottomSheet';
 import { StakingPositionsIcons } from './StakingPositionsIcons';
-import { selectStakingListItems } from '../../earnScreenSelectors';
 
 export const StakingPositionsCard = () => {
     const { bottomSheetRef, openModal, closeModal } = useBottomSheetModal();
