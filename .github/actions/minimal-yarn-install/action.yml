@@ -27,5 +27,7 @@ runs:
         config-file: .github/pmg-config.yml
 
     - name: Install dependencies using Yarn
+      env:
+        PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
       shell: bash
       run: yarn --immutable
