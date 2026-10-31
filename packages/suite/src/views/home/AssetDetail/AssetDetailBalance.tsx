@@ -1,3 +1,4 @@
+import { HiddenPlaceholder } from '@suite/discreet-mode';
 import { Translation } from '@suite/intl';
 import { selectShouldAnimateLoadingSkeleton } from '@suite/ui-animations';
 import {
@@ -9,12 +10,15 @@ import {
     selectWalletAssetTokenDecimals,
     selectWalletAssetTokenSymbol,
 } from '@suite-common/assets';
-import { type WalletAssetKey, selectBaseCurrency } from '@suite-common/wallet-core';
+import { useFormatters } from '@suite-common/formatters';
+import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { Card, Column, Row, Skeleton, Text } from '@trezor/components';
 
 import { FormattedCryptoAmount } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
-import { HomeTotalBalance } from 'src/views/home/HomeBalance/HomeTotalBalance';
+
+const HEADER_GAP = 24;
+const AMOUNT_GAP = 4;
 
 type AssetDetailBalanceProps = {
     assetKey: WalletAssetKey;
@@ -24,27 +28,30 @@ export const AssetDetailBalanceSkeleton = () => {
     const shouldAnimate = useSelector(selectShouldAnimateLoadingSkeleton);
 
     return (
-        <Card data-testid="@asset-detail/balance-skeleton">
-            <Column gap={16} alignItems="stretch">
+        <Card height="100%" data-testid="@asset-detail/balance-skeleton">
+            <Column
+                gap={HEADER_GAP}
+                height="100%"
+                justifyContent="space-between"
+                alignItems="stretch"
+            >
                 <Row justifyContent="space-between" alignItems="center">
                     <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
-                        <Translation id="TR_ASSET_DETAIL_YOUR_BALANCE" />
+                        <Translation id="TR_ASSET_DETAIL_MY_BALANCE" />
                     </Text>
                     <Skeleton width={80} height={16} animate={shouldAnimate} />
                 </Row>
-                <Row justifyContent="flex-end">
+                <Column gap={AMOUNT_GAP} alignItems="flex-start">
                     <Skeleton width={180} height={32} animate={shouldAnimate} />
-                </Row>
-                <Row justifyContent="flex-end">
                     <Skeleton width={120} height={20} animate={shouldAnimate} />
-                </Row>
+                </Column>
             </Column>
         </Card>
     );
 };
 
 export const AssetDetailBalance = ({ assetKey }: AssetDetailBalanceProps) => {
-    const baseCurrency = useSelector(selectBaseCurrency);
+    const { BaseCurrencyAmountFormatter } = useFormatters();
     const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey));
     const contractAddress = useSelector(state => selectWalletAssetContractAddress(state, assetKey));
     const tokenSymbol = useSelector(state => selectWalletAssetTokenSymbol(state, assetKey));
@@ -58,45 +65,44 @@ export const AssetDetailBalance = ({ assetKey }: AssetDetailBalanceProps) => {
     }
 
     return (
-        <Card data-testid="@asset-detail/balance">
-            <Column gap={16} alignItems="stretch">
+        <Card height="100%" data-testid="@asset-detail/balance">
+            <Column
+                gap={HEADER_GAP}
+                height="100%"
+                justifyContent="space-between"
+                alignItems="stretch"
+            >
                 <Row justifyContent="space-between" alignItems="center">
                     <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
-                        <Translation id="TR_ASSET_DETAIL_YOUR_BALANCE" />
+                        <Translation id="TR_ASSET_DETAIL_MY_BALANCE" />
                     </Text>
                     {accountCount > 0 && (
                         <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
-                            <Translation
-                                id="TR_ASSET_DETAIL_ACCOUNT_COUNT"
-                                values={{ count: accountCount }}
-                            />
+                            <Translation id="TR_ACCOUNT_COUNT" values={{ count: accountCount }} />
                         </Text>
                     )}
                 </Row>
-                {fiatValue !== undefined && (
-                    <Row justifyContent="space-between" alignItems="center">
-                        <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
-                            {baseCurrency.toUpperCase()}
-                        </Text>
-                        <HomeTotalBalance
-                            fiatValue={fiatValue}
-                            data-testid="@asset-detail/balance/fiat-amount"
-                        />
-                    </Row>
-                )}
-                <Row justifyContent="space-between" alignItems="center">
-                    <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
-                        <Translation id="TR_ASSET" />
-                    </Text>
+                <Column gap={AMOUNT_GAP} alignItems="flex-start">
+                    {fiatValue !== undefined && (
+                        <HiddenPlaceholder>
+                            <Text
+                                typographyStyle="headline-md"
+                                data-testid="@asset-detail/balance/fiat-amount"
+                            >
+                                <BaseCurrencyAmountFormatter value={fiatValue} />
+                            </Text>
+                        </HiddenPlaceholder>
+                    )}
                     <Text typographyStyle="body-md">
                         <FormattedCryptoAmount
                             value={amount}
                             symbol={tokenSymbol ?? symbol}
                             contractAddress={contractAddress}
                             tokenDecimals={tokenDecimals}
+                            isSymbolSecondary
                         />
                     </Text>
-                </Row>
+                </Column>
             </Column>
         </Card>
     );
