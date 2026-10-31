@@ -2984,15 +2984,17 @@ export const messages = {
             },
         },
         earnConsentsScreen: {
-            maintained: 'Your staked funds are maintained by Everstake.',
+            maintained: 'Staking infrastructure is maintained by Everstake.',
             acknowledge: 'I acknowledge and consent to stake with Everstake.',
             title: 'Before you continue',
             delegatingCard: {
                 eth: {
+                    benefits:
+                        "Stake your {displaySymbol} to receive rewards and help enhance the network's security and stability.",
                     firstItem:
-                        'Everstake maintains and protects your staked {displaySymbol} with their smart contracts, infrastructure, and technology.',
+                        'Your private keys stay on your Trezor device. Only you can initiate staking and unstaking, and Everstake never has access to your private keys.',
                     secondItem:
-                        "When you stake, the responsibility for your funds' security transitions from your Trezor device to Everstake.",
+                        "Staked {displaySymbol} is held in Everstake's smart contracts and is subject to smart contract and operational risks that are not covered by your Trezor device's security protections.",
                 },
                 sol: {
                     firstItem:

@@ -12550,17 +12550,17 @@ export const messages = defineMessages({
     },
     TR_EARN_YOUR_STAKED_FUNDS_MAINTAINED: {
         id: 'TR_EARN_YOUR_STAKED_FUNDS_MAINTAINED',
-        defaultMessage: 'Your staked funds are maintained by {providerName}.',
+        defaultMessage: 'Staking infrastructure is maintained by {providerName}.',
     },
     TR_EARN_STAKE_EVERSTAKE_MANAGES: {
         id: 'TR_EARN_STAKE_EVERSTAKE_MANAGES',
         defaultMessage:
-            'Everstake maintains and protects your staked {networkDisplaySymbol} <t>with their smart contracts, infrastructure, and technology.</t>',
+            'Your private keys stay on your Trezor device. Only you can initiate staking and unstaking, and Everstake never has access to your private keys.',
     },
     TR_EARN_STAKE_TREZOR_NO_LIABILITY: {
         id: 'TR_EARN_STAKE_TREZOR_NO_LIABILITY',
         defaultMessage:
-            "When you stake, the responsibility for your funds' security transitions from your Trezor device to Everstake.",
+            "Staked {networkDisplaySymbol} is held in Everstake's smart contracts and is subject to smart contract and operational risks that are not covered by your Trezor device's security protections.",
     },
     TR_EARN_BY_STAKING_YOU_CAN_EARN_REWARDS: {
         id: 'TR_EARN_BY_STAKING_YOU_CAN_EARN_REWARDS',
