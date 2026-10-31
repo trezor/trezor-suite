@@ -1,8 +1,13 @@
 import { type AsyncThunkAction } from '@reduxjs/toolkit';
 
 import { type AnalyticsDep, events } from '@suite-common/analytics';
-import { type DeviceRootState, deviceActions, selectSelectedDevice } from '@suite-common/device';
-import { type LockDeviceDep } from '@suite-common/suite-types';
+import {
+    type DeviceRootState,
+    deviceActions,
+    selectDevices,
+    selectSelectedDevice,
+} from '@suite-common/device';
+import { type LockDeviceDep, type TrezorDevice } from '@suite-common/suite-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { getNetwork } from '@suite-common/wallet-config';
 import {
@@ -81,6 +86,57 @@ const getCallParamNames = (payload: unknown): string[] =>
     payload && typeof payload === 'object' && !Array.isArray(payload)
         ? Object.keys(payload).sort()
         : [];
+
+type RequestedDevice = {
+    path?: string;
+    instance?: number;
+    // `state` is either the object or the plain staticSessionId string, @trezor/connect accepts
+    // both spellings (see validateDeviceState).
+    state?: string | { staticSessionId?: string };
+    useEmptyPassphrase?: boolean;
+};
+
+const getRequestedStaticSessionId = (requested: RequestedDevice) =>
+    typeof requested.state === 'string' ? requested.state : requested.state?.staticSessionId;
+
+// The user approves a popup call on the wallet selected in Suite, so a `device` in its payload may
+// only name that wallet. Only a value that is known on both sides and differs proves another
+// wallet: Suite and @trezor/connect spell "empty" differently (Suite leaves `instance` unset for a
+// device without passphrase protection, connect normalizes the same wallet to 0), and Suite does
+// not know `state` or `useEmptyPassphrase` until it authorizes the device. Fields the payload
+// leaves out, and fields Suite does not know yet, are taken from the selected wallet.
+const namesAnotherWallet = (
+    requested: RequestedDevice,
+    selected: TrezorDevice,
+    devices: TrezorDevice[],
+) => {
+    // `path` is minted per connection (see DeviceList), so a path that names no connected device is
+    // stale rather than foreign - only another connected device proves a different wallet.
+    if (
+        requested.path !== undefined &&
+        requested.path !== selected.path &&
+        devices.some(d => d.connected && d.path === requested.path)
+    )
+        return true;
+
+    if (requested.instance !== undefined && requested.instance !== (selected.instance ?? 0))
+        return true;
+
+    if (
+        requested.useEmptyPassphrase !== undefined &&
+        selected.useEmptyPassphrase !== undefined &&
+        requested.useEmptyPassphrase !== selected.useEmptyPassphrase
+    )
+        return true;
+
+    const requestedStaticSessionId = getRequestedStaticSessionId(requested);
+
+    return (
+        requestedStaticSessionId !== undefined &&
+        selected.state?.staticSessionId !== undefined &&
+        requestedStaticSessionId !== selected.state.staticSessionId
+    );
+};
 
 type ConnectPopupCallThunkParams<M extends CallMethodKeys> = {
     method: M;
@@ -221,16 +277,30 @@ export const connectPopupCallInnerThunk = createThunk<
             device = selectSelectedDevice(getState());
             if (!device) throw TypedError('Device_Disconnected');
 
+            // Deeplink and WalletConnect payloads are arbitrary parsed JSON, so `device` is only
+            // an identity when it really is an object.
+            const requestedDevice = (modifiedPayload as { device?: unknown }).device;
+            if (
+                requestedDevice &&
+                typeof requestedDevice === 'object' &&
+                namesAnotherWallet(requestedDevice, device, selectDevices(getState()))
+            ) {
+                throw TypedError(
+                    'Method_InvalidParameter',
+                    'device does not match the wallet selected in Suite',
+                );
+            }
+
             dispatch(connectPopupActions.setCallDevicePath(device.path));
 
             const response = await TrezorConnect.call({
+                ...modifiedPayload,
                 device: {
                     path: device.path,
                     instance: device.instance,
                     state: device.state,
                     useEmptyPassphrase: device.useEmptyPassphrase,
                 },
-                ...modifiedPayload,
                 method,
             } as CallMethodPayload);
             response.id = undefined;
@@ -452,13 +522,13 @@ export const connectPopupVerifyAddressThunk = createThunk<
         try {
             // @ts-expect-error: method is dynamic
             const res = await TrezorConnect[call.method]({
+                ...call.addresses?.[index]?.validatePayload,
                 device: {
                     path: device.path,
                     instance: device.instance,
                     state: device.state,
                     useEmptyPassphrase: device.useEmptyPassphrase,
                 },
-                ...call.addresses?.[index]?.validatePayload,
                 showOnTrezor: true,
                 chunked: false,
             });
