@@ -1,5 +1,10 @@
-export { createBluetoothCompositionRoot } from './createBluetoothCompositionRoot';
-export { type Bluetooth, type BluetoothDep, injectBluetooth } from './createBluetooth';
+export {
+    createBluetoothCompositionRoot,
+    type Bluetooth,
+    type BluetoothDep,
+    injectBluetooth,
+} from './createBluetoothCompositionRoot';
+
 export { type DesktopBluetoothDevice, fromBluetoothDevice } from './DesktopBluetoothDevice';
 
 export * from './desktopBluetoothReducer';

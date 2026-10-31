@@ -1,7 +1,7 @@
 import { BLUETOOTH_PREFIX, type ForgetBluetoothDeviceThunkParams } from '@suite-common/bluetooth';
 import { type WithServices, createThunk } from '@trezor/redux-utils';
 
-import { type BluetoothDep } from './createBluetooth';
+import { type BluetoothDep } from './createBluetoothCompositionRoot';
 
 type ForgetBluetoothDeviceThunkDeps = WithServices<BluetoothDep>;
 
