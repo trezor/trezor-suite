@@ -70,6 +70,7 @@ export {
     type GhostContainerProps,
 } from './components/GhostContainer/GhostContainer';
 export * from './components/Divider/Divider';
+export * from './components/SegmentedBar/SegmentedBar';
 export * from './components/Dropdown/Dropdown';
 export * from './components/Flex/Flex';
 export {
