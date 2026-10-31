@@ -2,7 +2,7 @@ import { transformTransaction } from '@trezor/blockchain-link-utils/src/blockboo
 import { createCooldown } from '@trezor/utils';
 
 import { CoinjoinAddressController } from './CoinjoinAddressController';
-import { doesTxContainAddress } from './backendUtils';
+import { doesTxContainAddress, getBlockIdentityIndex } from './backendUtils';
 import { getMultiFilter } from './filters';
 import { CHECKPOINT_COOLDOWN } from '../constants';
 import type {
@@ -51,14 +51,26 @@ export const scanAccount = async (
         const scripts = addresses.receive.concat(addresses.change).map(({ script }) => script);
 
         if (isMatch(scripts)) {
-            const block = await client.fetchBlock(blockHeight, { signal: abortSignal });
-            if (mempool?.status === 'running') {
-                mempool.removeTransactions(block.txs.map(({ txid }) => txid));
+            const identity = getBlockIdentityIndex(blockHeight);
+            onProgressInfo({ stage: 'block', activity: 'fetch-item', identity });
+            // The loader pairs every fetch-item with its done, so a failed or aborted fetch reports too.
+            try {
+                const block = await client.fetchBlock(blockHeight, { signal: abortSignal });
+                if (mempool?.status === 'running') {
+                    mempool.removeTransactions(block.txs.map(({ txid }) => txid));
+                }
+                addresses.analyze(
+                    ({ address }) => block.txs.filter(doesTxContainAddress(address)),
+                    transactions => transactions.forEach(txs.add, txs),
+                );
+            } finally {
+                onProgressInfo({
+                    stage: 'block',
+                    activity: 'fetch-item-done',
+                    identity,
+                    relevant: txs.size > 0,
+                });
             }
-            addresses.analyze(
-                ({ address }) => block.txs.filter(doesTxContainAddress(address)),
-                transactions => transactions.forEach(txs.add, txs),
-            );
         }
 
         const transactions = Array.from(txs, transformTx(addresses));
