@@ -6,12 +6,14 @@ import { type BluetoothOnDeviceConnected } from './createBluetoothOnDeviceConnec
 import { type BluetoothStartScan } from './createBluetoothStartScan';
 import { type BluetoothStopScan } from './createBluetoothStopScan';
 import { type BluetoothUnpairCurrentBond } from './createBluetoothUnpairCurrentBond';
+import { type OnPowerSuspend } from './createOnPowerSuspend';
 import { type OpenSystemSettings } from './createOpenSystemSettings';
 
 export type Bluetooth = {
     init: () => Promise<void>;
     restartBackgroundScan: () => void;
     openSystemSettings: OpenSystemSettings;
+    onPowerSuspend: OnPowerSuspend;
     startScan: BluetoothStartScan;
     stopScan: BluetoothStopScan;
     connectDevice: BluetoothConnectDevice;
