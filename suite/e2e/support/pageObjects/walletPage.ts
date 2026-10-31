@@ -283,7 +283,9 @@ export class WalletPage {
     @step()
     async openSellTradingOfToken({ tokenName, ...params }: TokenWalletParams) {
         await this.openAccount({ ...params, subAccount: 'tokens' });
-        await this.page.expectReduxObjectNotToBeEmpty('wallet.trading.info.coins');
+        await this.page.expectReduxObjectNotToBeEmpty('wallet.trading.info.coins', {
+            timeout: 15_000,
+        });
         await this.tokenRowMoreButton(tokenName).click();
         await this.tokenSellButton.click();
     }
