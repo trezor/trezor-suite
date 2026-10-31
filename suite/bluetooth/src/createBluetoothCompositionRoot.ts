@@ -1,4 +1,4 @@
-import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
+import { type Dispatch } from '@reduxjs/toolkit';
 
 import { type DesktopApiDep } from '@suite/desktop-app-api';
 import {
@@ -15,11 +15,10 @@ import {
 import { selectDevices, selectSelectedDevice } from '@suite-common/device';
 import { type FirmwareRootState, selectFirmware } from '@suite-common/firmware';
 import { toGetter } from '@trezor/dependency-injection';
-import { type WithServices } from '@trezor/redux-utils';
 
 import { type DesktopBluetoothDevice } from './DesktopBluetoothDevice';
 import { createBackgroundScan } from './bluetoothBackgroundScan';
-import { type Bluetooth, type BluetoothDep } from './createBluetooth';
+import { type Bluetooth } from './createBluetooth';
 import { createBluetoothConnectDevice } from './createBluetoothConnectDevice';
 import { createBluetoothDisconnectDevice } from './createBluetoothDisconnectDevice';
 import { createBluetoothForgetAllDevices } from './createBluetoothForgetAllDevices';
@@ -38,11 +37,9 @@ import { selectConnectingDevices } from './desktopBluetoothSelectors';
 
 type CompositionRootState = WithBluetoothRootState & DesktopDeviceRootState & FirmwareRootState;
 
-type CompositionRootThunkDispatch = WithServices<BluetoothDep>;
-
 type CompositionRootDeps = DesktopApiDep<'openSystemSettings'> & {
     getState: () => CompositionRootState;
-    dispatch: ThunkDispatch<CompositionRootState, CompositionRootThunkDispatch, UnknownAction>;
+    dispatch: Dispatch;
 };
 
 export const createBluetoothCompositionRoot = (deps: CompositionRootDeps): Bluetooth => {
