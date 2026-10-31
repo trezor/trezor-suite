@@ -17,6 +17,7 @@ import { arrayPartition, isNotUndefined, resolveAfter } from '@trezor/utils';
 
 const PING = Buffer.from('PINGPING');
 const PONG = Buffer.from('PONGPONG');
+const PING_TIMEOUT = 1000;
 
 export class UdpApi extends AbstractApi {
     chunkSize = 64;
@@ -29,6 +30,8 @@ export class UdpApi extends AbstractApi {
     });
     private debugLink?: boolean;
     private readBuffer: ReturnType<typeof readMessageBuffer>;
+    private openedDevices = new Set<string>();
+    private lastPongTimestamp = 0;
 
     constructor({
         logger,
@@ -39,12 +42,16 @@ export class UdpApi extends AbstractApi {
         this.readBuffer = readMessageBuffer();
 
         const onMessage = (message: Buffer, info: UDP.RemoteInfo) => {
+            this.lastPongTimestamp = Date.now();
+
             if (message.compare(PONG) === 0) {
                 return;
             }
 
             const id = `${info.address}:${info.port}`;
-            this.readBuffer.onMessage(id, message);
+            if (this.openedDevices.has(id)) {
+                this.readBuffer.onMessage(id, message);
+            }
             this.logger?.debug('udp: globalOnMessage log:', message.toString('hex'));
         };
         this.interface.addListener('message', onMessage);
@@ -120,6 +127,11 @@ export class UdpApi extends AbstractApi {
     }
 
     private async ping(path: PathInternal, signal?: AbortSignal) {
+        const diff = Date.now() - this.lastPongTimestamp;
+        if (diff < PING_TIMEOUT) {
+            return true;
+        }
+
         await this.write(path, PING, { signal });
         if (signal?.aborted) {
             throw new Error(ERRORS.ABORTED_BY_SIGNAL);
@@ -149,8 +161,7 @@ export class UdpApi extends AbstractApi {
             this.interface.addListener('error', onError);
             this.interface.addListener('message', onMessage);
 
-            // TODO temporarily increased from 1s to 4s until success screen is solved on fw side
-            const timeout = setTimeout(onError, 4000);
+            const timeout = setTimeout(onError, PING_TIMEOUT);
         });
 
         return pinged;
@@ -200,7 +211,10 @@ export class UdpApi extends AbstractApi {
             this.devices,
             device => !devices.some(d => d.path === device.path),
         );
-        disconnected.forEach(d => this.readBuffer.cancelRead(d.path));
+        disconnected.forEach(({ path }) => {
+            this.openedDevices.delete(path);
+            this.readBuffer.cancelRead(path);
+        });
 
         if (known.length !== this.devices.length || unknown.length > 0) {
             this.devices = devices;
@@ -210,12 +224,15 @@ export class UdpApi extends AbstractApi {
         }
     }
 
-    public openDevice(...[_path]: AbstractApiArgs<'openDevice'>) {
+    public openDevice(...[path]: AbstractApiArgs<'openDevice'>) {
         // todo: maybe ping?
+        this.openedDevices.add(path);
+
         return Promise.resolve(success(undefined));
     }
 
     public closeDevice(...[path]: AbstractApiArgs<'closeDevice'>) {
+        this.openedDevices.delete(path);
         this.readBuffer.cancelRead(path);
 
         return Promise.resolve(success(undefined));
