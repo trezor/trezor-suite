@@ -3,7 +3,7 @@ import { mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 import { error, log } from '../logger';
-import { killHarnessBrowser, killHarnessBrowserOnExitSignals } from './browserState';
+import { registerHarnessBrowserCleanup, stopHarnessBrowser } from './browserState';
 import {
     BROWSER_DIR,
     CONTEXT_FILE,
@@ -20,6 +20,7 @@ const DEFAULT_TIMEOUT_MIN = 120;
 
 function buildPrContextPrompt(context: PrContext): string {
     const brief = {
+        platform: context.platform,
         prs: context.prs,
         issues: context.issues,
         deviceModel: context.deviceModel,
@@ -31,7 +32,7 @@ function buildPrContextPrompt(context: PrContext): string {
 
 async function main(): Promise<void> {
     loadDotenv({ path: join(REPO_ROOT, 'packages/e2e-utils/.env'), quiet: true });
-    killHarnessBrowserOnExitSignals();
+    registerHarnessBrowserCleanup();
     try {
         const budgetUsd = Number(
             process.env.LLM_EXPLORATORY_TESTER_BUDGET_USD ?? DEFAULT_BUDGET_USD,
@@ -48,7 +49,8 @@ async function main(): Promise<void> {
         mkdirSync(BROWSER_DIR, { recursive: true });
 
         log(`━━━ LLM Exploratory Tester — PR #${context.prNumber} ━━━`);
-        log(`Suite: ${context.suiteUrl}`);
+        log(`Platform: ${context.platform}`);
+        log(`Suite: ${context.platform === 'desktop' ? 'local Electron build' : context.suiteUrl}`);
         log(`Model: ${context.deviceModel}`);
         log(`Agent: budget $${budgetUsd} · timeout ${timeoutMs / 60_000}min`);
 
@@ -67,7 +69,7 @@ async function main(): Promise<void> {
             process.exitCode = 1;
         }
     } finally {
-        await killHarnessBrowser();
+        await stopHarnessBrowser();
     }
 }
 

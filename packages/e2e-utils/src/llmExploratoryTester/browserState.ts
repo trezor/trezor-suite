@@ -1,13 +1,11 @@
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname } from 'node:path';
 
-import { log } from '../logger';
-import { BROWSER_STATE_FILE } from './paths';
+import { error, log } from '../logger';
+import { BROWSER_STATE_FILE, SETUP_READY_FILE } from './paths';
 
-// Tracks the harness-owned browser so setup can replace it and the run can
-// kill it afterwards. Foreign browsers on :9222 (e.g. the developer's own)
-// are never tracked here and never killed.
-const CDP_ENDPOINT = 'http://127.0.0.1:9222';
+// Tracks the harness-owned Playwright runner so setup can replace its browser
+// and the run can stop it afterwards. Foreign browsers are never tracked here or killed.
 
 interface BrowserState {
     pid: number;
@@ -18,9 +16,9 @@ export function writeBrowserState(pid: number): void {
     writeFileSync(BROWSER_STATE_FILE, JSON.stringify({ pid } satisfies BrowserState));
 }
 
-async function isCdpPortInUse(): Promise<boolean> {
+async function isCdpEndpointInUse(endpoint: string): Promise<boolean> {
     try {
-        await fetch(`${CDP_ENDPOINT}/json/version`, { signal: AbortSignal.timeout(1_000) });
+        await fetch(`${endpoint}/json/version`, { signal: AbortSignal.timeout(1_000) });
 
         return true;
     } catch {
@@ -28,48 +26,76 @@ async function isCdpPortInUse(): Promise<boolean> {
     }
 }
 
-async function waitForCdpPortRelease(timeoutMs: number): Promise<void> {
-    const deadline = Date.now() + timeoutMs;
-    while (Date.now() < deadline && (await isCdpPortInUse())) {
-        await new Promise(resolve => setTimeout(resolve, 200));
-    }
-}
-
-// Kill the harness-owned browser (if any) and remove its state file. Setup
-// calls this at start to replace a previous run; run.ts calls it in finally
-// at the end of the agent session.
-export async function killHarnessBrowser(): Promise<void> {
-    if (existsSync(BROWSER_STATE_FILE)) {
-        const state = JSON.parse(readFileSync(BROWSER_STATE_FILE, 'utf-8')) as BrowserState;
-        rmSync(BROWSER_STATE_FILE, { force: true });
-
-        // The pid is the detached playwright runner, which is its process-group
-        // leader. Signal the whole group: killing only the runner leaves its
-        // Chromium orphaned on :9222 and the next setup silently attaches to
-        // the stale onboarded session instead of a fresh browser.
-        try {
-            process.kill(-state.pid, 'SIGKILL');
-        } catch {
-            // already dead
-        }
-        await waitForCdpPortRelease(5_000);
-        log(`Browser (pid ${state.pid}) stopped.`);
-    }
-
-    // A browser we did not start (e.g. the developer's own) would steal the
-    // CDP attach — refuse to continue rather than onboard in the wrong browser.
-    if (await isCdpPortInUse()) {
+export async function ensureWebCdpPortAvailable(): Promise<void> {
+    // Web uses a fixed port. Refuse to onboard in a browser the harness did not start.
+    if (await isCdpEndpointInUse('http://127.0.0.1:9222')) {
         throw new Error('a browser the harness does not own is running on :9222 — close it first');
     }
 }
 
+async function waitForProcessGroupExit(runnerPid: number): Promise<void> {
+    const deadline = Date.now() + 5_000;
+
+    while (Date.now() < deadline) {
+        try {
+            // A negative PID targets the runner's process group. Signal 0 only checks
+            // whether it exists; it does not stop anything.
+            process.kill(-runnerPid, 0);
+        } catch (processError) {
+            // ESRCH means the process group no longer exists: shutdown is complete.
+            if (processError.code === 'ESRCH') {
+                return;
+            }
+
+            throw processError;
+        }
+
+        await new Promise(resolve => setTimeout(resolve, 200));
+    }
+
+    throw new Error(`Browser runner process group ${runnerPid} did not exit within 5 seconds`);
+}
+
+// Stop the harness-owned browser (if any) and remove its state file. Setup
+// calls this at start to replace a previous run; run.ts calls it in finally
+// at the end of the agent session.
+export async function stopHarnessBrowser(): Promise<void> {
+    if (existsSync(BROWSER_STATE_FILE)) {
+        const stateFileContents = readFileSync(BROWSER_STATE_FILE, 'utf-8');
+        const state = JSON.parse(stateFileContents) as BrowserState;
+
+        // Ask the runner to stop. Playwright then closes its Electron/Chromium processes.
+        // The negative PID sends this request to the runner's whole process group.
+        try {
+            process.kill(-state.pid, 'SIGTERM');
+        } catch (processError) {
+            // An already-stopped runner is fine. Report other errors, such as missing permission.
+            if (processError.code !== 'ESRCH') {
+                throw processError;
+            }
+        }
+
+        await waitForProcessGroupExit(state.pid);
+        log(`Browser runner (pid ${state.pid}) stopped.`);
+    }
+
+    if (existsSync(SETUP_READY_FILE)) {
+        const endpoint = readFileSync(SETUP_READY_FILE, 'utf8').trim();
+        if (await isCdpEndpointInUse(endpoint)) {
+            throw new Error(`Browser is still listening at ${endpoint} after cleanup`);
+        }
+    }
+    rmSync(BROWSER_STATE_FILE, { force: true });
+    rmSync(SETUP_READY_FILE, { force: true });
+}
+
 // Ctrl-C / kill would otherwise leak the browser: it lives in a detached
 // process group the terminal signal never reaches.
-export function killHarnessBrowserOnExitSignals(): void {
+export function registerHarnessBrowserCleanup(): void {
     for (const signal of ['SIGINT', 'SIGTERM'] as const) {
         process.once(signal, () => {
-            killHarnessBrowser()
-                .catch(() => {})
+            stopHarnessBrowser()
+                .catch(e => error(`Browser cleanup failed: ${e instanceof Error ? e.message : e}`))
                 .finally(() => process.exit(signal === 'SIGINT' ? 130 : 143));
         });
     }
