@@ -20,7 +20,7 @@ import {
 import { getFirmwareVersionArray } from '@trezor/device-utils';
 import { BigNumber, isArrayMember, versionUtils } from '@trezor/utils';
 
-import { TRON_STAKING_CONTRACT_TYPES, TRON_UNFREEZE_DELAY_DAYS } from './tronStakingConstants';
+import { TRON_STAKING_CONTRACT_TYPES } from './tronStakingConstants';
 
 export function isSupportedTronStakingNetworkSymbol(
     symbol: NetworkSymbol,
@@ -88,110 +88,20 @@ const sumUnstakingBatchesSun = (
 export const getTronUnstakingBalance = (account: Account): string =>
     sumUnstakingBatchesSun(account, () => true);
 
-export const TRON_UNFREEZE_DELAY_SECONDS = TRON_UNFREEZE_DELAY_DAYS * 24 * 60 * 60;
-
-// Blockbook floors the expiry to seconds and a pending transaction added by Suite carries its
-// broadcast time instead of the block time, so the match allows some slack.
-const UNFREEZE_MATCH_TOLERANCE_SECONDS = 60 * 60;
-
-export type TronUnstakingBatchWithResource = TronUnstakingBatch & {
-    resource?: TronResourceType;
-};
-
-type UnfreezeTransactionCandidate = {
-    unstakeAmount: string;
-    blockTime: number;
-    resource: TronResourceType | undefined;
-};
-
-// Blockbook reports the unfreeze resource in lower case and omits it for bandwidth; the pending
-// transaction added by Suite right after broadcast uses the upper-case protobuf names.
-const getUnfreezeTransactionResource = (
-    resource: string | undefined,
-): TronResourceType | undefined => {
-    const normalizedResource = resource?.toLowerCase() ?? '';
-
-    if (normalizedResource === 'energy') return 'energy';
-    if (normalizedResource === 'bandwidth' || normalizedResource === '') return 'bandwidth';
-
-    return undefined;
-};
-
-const getUnfreezeTransactionCandidates = (
-    transactions: WalletAccountTransaction[],
-): UnfreezeTransactionCandidate[] =>
-    transactions
-        .flatMap(transaction => {
-            const { tronSpecific, blockTime } = transaction;
-
-            if (
-                tronSpecific?.contractType !== 'UnfreezeBalanceV2Contract' ||
-                !tronSpecific.unstakeAmount ||
-                !blockTime
-            ) {
-                return [];
-            }
-
-            return [
-                {
-                    unstakeAmount: tronSpecific.unstakeAmount,
-                    blockTime,
-                    resource: getUnfreezeTransactionResource(tronSpecific.resource),
-                },
-            ];
-        })
-        .toSorted((a, b) => a.blockTime - b.blockTime);
-
-const isMatchingUnfreezeTransaction = (
-    batch: TronUnstakingBatch,
-    candidate: UnfreezeTransactionCandidate,
-): boolean =>
-    candidate.unstakeAmount === batch.amount &&
-    Math.abs(candidate.blockTime + TRON_UNFREEZE_DELAY_SECONDS - batch.expireTime) <=
-        UNFREEZE_MATCH_TOLERANCE_SECONDS;
-
-type GetTronUnstakingBatchesWithResourceParams = {
-    account: Account;
-    transactions: WalletAccountTransaction[];
-};
-
-export const getTronUnstakingBatchesWithResource = ({
-    account,
-    transactions,
-}: GetTronUnstakingBatchesWithResourceParams): TronUnstakingBatchWithResource[] => {
-    const stakingInfo = getTronStakingInfo(account);
-
-    if (!stakingInfo) return [];
-
-    const candidates = getUnfreezeTransactionCandidates(transactions);
-    const usedCandidates = new Set<UnfreezeTransactionCandidate>();
-
-    return stakingInfo.unstakingBatches
-        .toSorted((a, b) => a.expireTime - b.expireTime)
-        .map(batch => {
-            const candidate = candidates.find(
-                item => !usedCandidates.has(item) && isMatchingUnfreezeTransaction(batch, item),
-            );
-
-            if (candidate) usedCandidates.add(candidate);
-
-            return { ...batch, resource: candidate?.resource };
-        });
-};
+export const getTronUnstakingBatches = (account: Account): TronUnstakingBatch[] =>
+    getTronStakingInfo(account)?.unstakingBatches.toSorted((a, b) => a.expireTime - b.expireTime) ??
+    [];
 
 export type TronPendingUnstakingBatch = {
     amount: string;
-    daysLocked: number;
-    resource: TronResourceType | undefined;
+    expireTime: number;
 };
 
 type GetTronPendingUnstakingBatchesParams = {
-    batches: TronUnstakingBatchWithResource[];
+    batches: TronUnstakingBatch[];
     symbol: NetworkSymbol;
     nowSeconds?: number;
 };
-
-const SECONDS_PER_DAY = 24 * 60 * 60;
 
 export const getTronPendingUnstakingBatches = ({
     batches,
@@ -200,11 +110,7 @@ export const getTronPendingUnstakingBatches = ({
 }: GetTronPendingUnstakingBatchesParams): TronPendingUnstakingBatch[] =>
     batches
         .filter(batch => batch.expireTime > nowSeconds)
-        .map(batch => ({
-            amount: sunToTrx(batch.amount, symbol),
-            daysLocked: Math.ceil((batch.expireTime - nowSeconds) / SECONDS_PER_DAY),
-            resource: batch.resource,
-        }));
+        .map(batch => ({ amount: sunToTrx(batch.amount, symbol), expireTime: batch.expireTime }));
 
 export const getTronWithdrawableBalance = (
     account: Account,
