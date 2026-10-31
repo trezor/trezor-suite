@@ -47,6 +47,28 @@ describe('yieldClaimFeeUtils', () => {
         });
     });
 
+    it('does not call missing fee inputs an insufficient balance', () => {
+        const feeLevels = buildYieldClaimFeeLevels({
+            availableBalance: '1000000000000000000',
+            feeInfo,
+            formDraft: undefined,
+            gasLimit: '',
+        });
+
+        expect(feeLevels.normal).toMatchObject({ type: 'error', error: 'TR_GENERIC_ERROR_TITLE' });
+    });
+
+    it('allows exact coverage of the claim fee', () => {
+        const feeLevels = buildYieldClaimFeeLevels({
+            availableBalance: '420000000000000',
+            feeInfo,
+            formDraft: undefined,
+            gasLimit: '21000',
+        });
+
+        expect(feeLevels.normal).toMatchObject({ type: 'final', fee: '420000000000000' });
+    });
+
     it('returns a fee error when native balance cannot pay the claim fee', () => {
         const feeLevels = buildYieldClaimFeeLevels({
             availableBalance: '1',
@@ -55,6 +77,10 @@ describe('yieldClaimFeeUtils', () => {
             gasLimit: '21000',
         });
 
-        expect(feeLevels.normal?.type).toBe('error');
+        expect(feeLevels.normal).toEqual({
+            type: 'error',
+            error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE',
+            errorMessage: { id: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' },
+        });
     });
 });
