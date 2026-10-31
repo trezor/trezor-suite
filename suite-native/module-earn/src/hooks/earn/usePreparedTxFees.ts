@@ -15,7 +15,6 @@ import {
     type FormState,
     type GeneralPrecomposedLevels,
     type PrecomposedTransactionFinal,
-    isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import {
     type NativeSendRootState,
@@ -317,10 +316,7 @@ export const usePreparedTxFees = <
     const selectedFee: FeeLevelLabel =
         feeDraftState?.formDraft.selectedFee ?? formDraft?.selectedFee ?? 'normal';
     const localFeeLevels = feeDraftState?.feeLevels ?? {};
-    const selectedFeeLevel = localFeeLevels[selectedFee];
-    const fee = isFinalPrecomposedTransaction(selectedFeeLevel) ? selectedFeeLevel.fee : null;
     const feeAvailability = getFeeAvailability({
-        fee,
         feeLevels: localFeeLevels,
         selectedFee,
         isLoading: isPreparingFee,

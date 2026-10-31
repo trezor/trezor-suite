@@ -260,7 +260,6 @@ export const useYieldWithdrawFees = ({
     const selectedFeeLevel = feeLevels[selectedFee];
     const fee = isFinalPrecomposedTransaction(selectedFeeLevel) ? selectedFeeLevel.fee : null;
     const { isFeeUnavailable } = getFeeAvailability({
-        fee,
         feeLevels,
         selectedFee,
         isLoading: isComposingWithdrawFee,
