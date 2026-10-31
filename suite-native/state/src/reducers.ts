@@ -168,7 +168,13 @@ export const prepareRootReducers = (deps: PrepareRootReducersDeps) => {
 
     const tradingPersistedReducer = preparePersistReducer({
         reducer: tradingReducer,
-        persistedKeys: ['trades', 'residence', 'tradingEnvironment'],
+        persistedKeys: [
+            'trades',
+            'residence',
+            'tradingEnvironment',
+            'tradeApiSalts',
+            'tradeApiInstallSalt',
+        ],
         key: 'trading',
         version: 4,
         migrations: {

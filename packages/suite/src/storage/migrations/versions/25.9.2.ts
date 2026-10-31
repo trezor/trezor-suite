@@ -10,7 +10,7 @@ export default createMigration<SuiteDBSchema>('25.9.2', async (db, tx) => {
     const store = tx.objectStore('security');
     const security = await store.get('security');
 
-    if (security && 'devicesWithFailedEntropyCheck' in security) {
+    if (security && typeof security === 'object' && 'devicesWithFailedEntropyCheck' in security) {
         delete security.devicesWithFailedEntropyCheck;
         await store.put(security, 'security');
     }

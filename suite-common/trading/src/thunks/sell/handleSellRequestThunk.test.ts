@@ -38,7 +38,6 @@ describe('handleSellRequestThunk', () => {
     jest.mock('../../tradeApi');
 
     tradeApi.setServersEnvironment = () => {};
-    tradeApi.createApiKey = () => {};
 
     const getMocks = (refetchQuotesOverride?: Partial<QuoteRefetchingState>) => {
         const { store } = createTestCompositionRoot<void, HandleSellRequestThunkState>({

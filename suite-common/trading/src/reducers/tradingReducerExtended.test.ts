@@ -1,8 +1,12 @@
 import { combineReducers } from '@reduxjs/toolkit';
+import { type BuyTrade } from 'invity-api';
 
+import { deviceActions } from '@suite-common/device';
+import { mockSuiteDevice } from '@suite-common/suite-types/mocks';
 import { type TestCompositionStore, createTestCompositionRoot } from '@suite-common/test-utils';
 import { type AccountKey } from '@suite-common/wallet-types';
 import { mockAccountKey } from '@suite-common/wallet-types/mocks';
+import { type StaticSessionId } from '@trezor/connect';
 import { mockActionType } from '@trezor/redux-utils/mocks';
 
 import { getProviderMetadataFixture } from './__fixtures__/providerMetadata';
@@ -10,7 +14,12 @@ import { tradingFixtures } from './__fixtures__/tradingReducer';
 import { buyInitialState, tradingBuyActions } from './buyReducer';
 import { exchangeInitialState, tradingExchangeActions } from './exchangeReducer';
 import { sellInitialState, tradingSellActions } from './sellReducer';
-import { type TradingRootState, initialState, tradingActions } from './tradingCommonReducer';
+import {
+    type TradingRootState,
+    type TradingState,
+    initialState,
+    tradingActions,
+} from './tradingCommonReducer';
 import { prepareTradingReducer } from './tradingReducer';
 import { buyThunks } from '../thunks/buy';
 import { exchangeThunks } from '../thunks/exchange';
@@ -326,6 +335,133 @@ describe('Testing trading reducer', () => {
                     'TRADING_KEY',
                 );
             });
+        });
+    });
+
+    it.each([
+        { scenario: 'without a key', resavedApiKey: undefined },
+        { scenario: 'with another key', resavedApiKey: 'cd'.repeat(32) },
+    ])(
+        'keeps the API key of a saved trade when the trade is saved again $scenario',
+        ({ resavedApiKey }) => {
+            const trade = {
+                tradeType: 'buy' as const,
+                date: '2026-10-28',
+                key: 'tradeKey',
+                data: { paymentId: 'tradeKey', status: 'SUBMITTED' } as BuyTrade,
+                selectedAccountKey: undefined,
+                receiveAccountKey: undefined,
+            };
+            const savedState = tradingReducer(
+                initialState,
+                tradingActions.saveTrade({ ...trade, apiKey: 'ef'.repeat(32) }),
+            );
+
+            const state = tradingReducer(
+                savedState,
+                tradingActions.saveTrade({
+                    ...trade,
+                    data: { ...trade.data, receiveTxHash: 'receiveTxHash' },
+                    apiKey: resavedApiKey,
+                }),
+            );
+
+            expect(state.trades).toEqual([
+                {
+                    ...trade,
+                    data: { ...trade.data, receiveTxHash: 'receiveTxHash' },
+                    apiKey: 'ef'.repeat(32),
+                },
+            ]);
+        },
+    );
+
+    describe('trade API salts', () => {
+        const staticSessionId = 'device-id@wallet-id:0' as StaticSessionId;
+        const otherStaticSessionId = 'device-id@wallet-id:1' as StaticSessionId;
+        const device = mockSuiteDevice({ state: { staticSessionId } });
+        const salt = 'aa'.repeat(32);
+        const otherSalt = 'cc'.repeat(32);
+
+        const withSalts = (salts: Partial<TradingState>): TradingState => ({
+            ...initialState,
+            ...salts,
+        });
+
+        it.each([
+            { isRemembered: true, expected: { tradeApiSalts: { [staticSessionId]: salt } } },
+            {
+                isRemembered: false,
+                expected: { tradeApiSessionSalts: { [staticSessionId]: salt } },
+            },
+        ])(
+            'stores a device salt with isRemembered=$isRemembered in its bucket',
+            ({ isRemembered, expected }) => {
+                const state = tradingReducer(
+                    initialState,
+                    tradingActions.setTradeApiDeviceSalt({ staticSessionId, salt, isRemembered }),
+                );
+
+                expect(state).toEqual(withSalts(expected));
+            },
+        );
+
+        it.each([
+            {
+                remember: true,
+                before: { tradeApiSessionSalts: { [staticSessionId]: salt } },
+                after: { tradeApiSalts: { [staticSessionId]: salt } },
+            },
+            {
+                remember: false,
+                before: { tradeApiSalts: { [staticSessionId]: salt } },
+                after: { tradeApiSessionSalts: { [staticSessionId]: salt } },
+            },
+        ])(
+            'moves the wallet salt to the matching bucket when remember=$remember',
+            ({ remember, before, after }) => {
+                const state = tradingReducer(
+                    withSalts(before),
+                    deviceActions.setRememberDevice({ device, remember }),
+                );
+
+                expect(state).toEqual(withSalts(after));
+            },
+        );
+
+        it('removes only the forgotten wallet salt from both buckets', () => {
+            const state = tradingReducer(
+                withSalts({
+                    tradeApiSalts: { [staticSessionId]: salt, [otherStaticSessionId]: otherSalt },
+                    tradeApiSessionSalts: { [staticSessionId]: salt },
+                    tradeApiInstallSalt: otherSalt,
+                }),
+                deviceActions.forgetDevice({ device }),
+            );
+
+            expect(state).toEqual(
+                withSalts({
+                    tradeApiSalts: { [otherStaticSessionId]: otherSalt },
+                    tradeApiInstallSalt: otherSalt,
+                }),
+            );
+        });
+
+        it('loads stored salts, preferring the stored install salt', () => {
+            const state = tradingReducer(withSalts({ tradeApiInstallSalt: otherSalt }), {
+                type: mockActionType('storageLoad'),
+                payload: {
+                    tradeApiSalts: [{ key: staticSessionId, value: salt }],
+                    tradeApiInstallSalt: salt,
+                },
+            });
+
+            expect(state).toEqual(
+                withSalts({
+                    tradeApiSalts: { [staticSessionId]: salt },
+                    tradeApiInstallSalt: salt,
+                }),
+            );
         });
     });
 });

@@ -32,7 +32,7 @@ export const useTradingExchangeWatchApproval = ({
 
         let refreshCount = 1;
         const intervalId = setInterval(() => {
-            dispatch(exchangeThunks.watchExchangeApprovalThunk({ account, refreshCount }));
+            dispatch(exchangeThunks.watchExchangeApprovalThunk({ refreshCount }));
             refreshCount += 1;
         }, POLLING_TIME);
 

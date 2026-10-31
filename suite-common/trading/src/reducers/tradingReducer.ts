@@ -1,6 +1,9 @@
 import { type PayloadAction } from '@reduxjs/toolkit';
 
+import { deviceActions } from '@suite-common/device';
+import { type StaticSessionId } from '@trezor/connect';
 import { type ActionTypesDep, createSliceWithExtraDeps } from '@trezor/redux-utils';
+import { typedObjectFromEntries } from '@trezor/utils';
 
 import {
     TRADING_BUY_PREFIX,
@@ -20,6 +23,8 @@ import { initialState, tradingCommonReducer } from './tradingCommonReducer';
 
 type StorageActionPayload = {
     tradingTrades?: TradingTransaction[];
+    tradeApiSalts?: Array<{ key: StaticSessionId; value: string }>;
+    tradeApiInstallSalt?: string;
 };
 
 export type TradingReducerDeps = ActionTypesDep<'storageLoad'>;
@@ -35,8 +40,50 @@ const tradingSlice = createSliceWithExtraDeps({
                 (state, action: PayloadAction<StorageActionPayload>) => ({
                     ...state,
                     trades: action.payload.tradingTrades ?? state.trades,
+                    tradeApiSalts: {
+                        ...state.tradeApiSalts,
+                        ...typedObjectFromEntries(
+                            (action.payload.tradeApiSalts ?? []).map(({ key, value }) => [
+                                key,
+                                value,
+                            ]),
+                        ),
+                    },
+                    tradeApiInstallSalt:
+                        action.payload.tradeApiInstallSalt ?? state.tradeApiInstallSalt,
                 }),
             )
+            .addCase(deviceActions.forgetDevice, (state, { payload }) => {
+                const staticSessionId = payload.device.state?.staticSessionId;
+
+                if (!staticSessionId) {
+                    return;
+                }
+
+                delete state.tradeApiSalts[staticSessionId];
+                delete state.tradeApiSessionSalts[staticSessionId];
+            })
+            .addCase(deviceActions.setRememberDevice, (state, { payload }) => {
+                const staticSessionId = payload.device.state?.staticSessionId;
+
+                if (!staticSessionId) {
+                    return;
+                }
+
+                const salt =
+                    state.tradeApiSalts[staticSessionId] ??
+                    state.tradeApiSessionSalts[staticSessionId];
+
+                if (!salt) {
+                    return;
+                }
+
+                delete state.tradeApiSalts[staticSessionId];
+                delete state.tradeApiSessionSalts[staticSessionId];
+
+                const salts = payload.remember ? state.tradeApiSalts : state.tradeApiSessionSalts;
+                salts[staticSessionId] = salt;
+            })
             .addCase(buyThunks.handleRequestThunk.pending, state => {
                 state.buy.isLoading = true;
             })
