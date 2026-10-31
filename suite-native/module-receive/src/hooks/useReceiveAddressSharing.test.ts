@@ -43,7 +43,7 @@ describe('useReceiveAddressSharing', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        mockShare.mockResolvedValue({ action: Share.sharedAction });
+        mockShare.mockResolvedValue({ action: Share.sharedAction, activityType: undefined });
         mockUseBottomSheetModal.mockReturnValue({
             bottomSheetRef: { current: null },
             openModal: mockOpenSharedAddressBottomSheet,
@@ -76,7 +76,7 @@ describe('useReceiveAddressSharing', () => {
     });
 
     it('does not open shared address verification after cancelling sharing', async () => {
-        mockShare.mockResolvedValue({ action: Share.dismissedAction });
+        mockShare.mockResolvedValue({ action: Share.dismissedAction, activityType: undefined });
         const { result } = await renderUseReceiveAddressSharing();
 
         await act(() => result.current.handleShareAddress());

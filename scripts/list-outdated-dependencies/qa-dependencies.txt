@@ -23,6 +23,7 @@ fake-indexeddb
 jest
 jest-canvas-mock
 jest-diff
+jest-environment-jsdom
 jest-environment-node
 jest-extended
 jest-junit

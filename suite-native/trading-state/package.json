@@ -43,7 +43,7 @@
         "@trezor/redux-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "react-native": "0.86.3"
+        "react-native": "0.88.1"
     },
     "devDependencies": {
         "@suite-native/trading-fixtures": "workspace:*",

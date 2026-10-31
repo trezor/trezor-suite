@@ -48,7 +48,7 @@ jobs:
 
       - name: Prebuild native expo project
         working-directory: ./suite-native/app
-        run: yarn prebuild --platform android
+        run: yarn prebuild:e2e --platform android
 
       - name: Sign message system config
         working-directory: ./suite-common/message-system

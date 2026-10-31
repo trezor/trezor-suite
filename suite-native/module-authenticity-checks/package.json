@@ -24,8 +24,8 @@
         "@trezor/redux-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/urls": "workspace:*",
-        "react": "19.2.3",
-        "react-native": "0.86.3",
+        "react": "19.3.0",
+        "react-native": "0.88.1",
         "react-redux": "9.3.0"
     },
     "devDependencies": {

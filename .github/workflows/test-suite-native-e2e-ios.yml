@@ -71,7 +71,7 @@ jobs:
 
       - name: Prebuild native expo project
         working-directory: ./suite-native/app
-        run: yarn prebuild --platform ios
+        run: yarn prebuild:e2e --platform ios
 
       # Detox runtime may indirectly import the built config, and that would crash if message-system is not built
       - name: Sign message system config
@@ -83,7 +83,6 @@ jobs:
         with:
           path: suite-native/app/ios/Pods
           key: pods-${{ hashFiles('suite-native/app/ios/Podfile.lock') }}
-          restore-keys: pods-
 
       - name: Cache Xcode DerivedData
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5

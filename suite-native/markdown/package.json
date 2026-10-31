@@ -16,7 +16,7 @@
     },
     "dependencies": {
         "@trezor/styles-native": "workspace:*",
-        "react": "19.2.3",
+        "react": "19.3.0",
         "react-native-enriched-markdown": "^0.7.4"
     }
 }

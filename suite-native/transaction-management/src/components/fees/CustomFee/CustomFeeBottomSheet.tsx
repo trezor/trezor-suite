@@ -102,7 +102,7 @@ export const CustomFeeBottomSheet = ({
                 />
                 <Box marginTop="sp16">
                     <FormSubmitButton
-                        onPress={handleSetCustomFee}
+                        onPress={() => handleSetCustomFee()}
                         isVisible={isButtonVisible}
                         testID="@transactionManagement/custom-fee-submit-button"
                     >

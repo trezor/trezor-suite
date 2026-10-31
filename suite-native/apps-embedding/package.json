@@ -21,10 +21,10 @@
         "@trezor/env-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "expo-web-browser": "~57.0.1",
-        "react": "19.2.3",
-        "react-native": "0.86.3",
-        "react-native-webview": "13.16.1",
+        "expo-web-browser": "~58.0.7",
+        "react": "19.3.0",
+        "react-native": "0.88.1",
+        "react-native-webview": "patch:react-native-webview@npm%3A14.0.1#~/.yarn/patches/react-native-webview-npm-14.0.1-5188b52144.patch",
         "react-redux": "9.3.0"
     },
     "devDependencies": {

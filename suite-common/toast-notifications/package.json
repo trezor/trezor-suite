@@ -21,6 +21,6 @@
         "@trezor/connect": "workspace:*",
         "@trezor/network-module-suite-common-types": "workspace:*",
         "@trezor/redux-utils": "workspace:*",
-        "react": "19.2.3"
+        "react": "19.3.0"
     }
 }
