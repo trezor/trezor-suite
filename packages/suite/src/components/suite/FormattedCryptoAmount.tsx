@@ -36,6 +36,7 @@ export interface FormattedCryptoAmountProps {
      */
     isRawString?: boolean;
     isTabular?: boolean;
+    isSymbolSecondary?: boolean;
     'data-testid'?: string;
     className?: string;
 }
@@ -52,6 +53,7 @@ export const FormattedCryptoAmount = ({
     disableHiddenPlaceholder,
     isRawString,
     isTabular = true,
+    isSymbolSecondary = false,
     className,
     'data-testid': dataTest,
 }: FormattedCryptoAmountProps) => {
@@ -147,7 +149,13 @@ export const FormattedCryptoAmount = ({
             {formattedSymbol && (
                 <>
                     {' '}
-                    <TokenUrlBlur text={formattedSymbol} />
+                    {isSymbolSecondary ? (
+                        <Text intent="neutral" priority="secondary">
+                            <TokenUrlBlur text={formattedSymbol} />
+                        </Text>
+                    ) : (
+                        <TokenUrlBlur text={formattedSymbol} />
+                    )}
                 </>
             )}
         </span>
