@@ -1,0 +1,27 @@
+services:
+  trezor-bluetooth:
+    build:
+      context: ./docker
+    init: true
+    # server listens on 127.0.0.1 inside the container, the host network exposes it to the tests
+    network_mode: host
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    devices:
+      - /dev/vhci:/dev/vhci
+    environment:
+      - TREZOR_BLUETOOTH_AUTH_TOKEN=${TREZOR_BLUETOOTH_AUTH_TOKEN:-e2e-token}
+      - TREZOR_BLUETOOTH_PORT=${TREZOR_BLUETOOTH_PORT:-21327}
+      - E2E_ALLOW_FOREIGN_ADAPTERS=${E2E_ALLOW_FOREIGN_ADAPTERS:-0}
+      - RUST_LOG=${RUST_LOG:-info}
+      - MOCK_LOG_LEVEL=${MOCK_LOG_LEVEL:-INFO}
+      - MOCK_UDP_TARGET=${MOCK_UDP_TARGET:-127.0.0.1:21399}
+      - MOCK_CONTROL_PORT=${MOCK_CONTROL_PORT:-21398}
+    volumes:
+      - ${TREZOR_BLUETOOTH_BIN:-../../../suite/app-assets/files/bin/bluetooth/linux-x64/trezor-bluetooth}:/opt/trezor-bluetooth/trezor-bluetooth:ro
+    healthcheck:
+      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/${TREZOR_BLUETOOTH_PORT:-21327}"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
