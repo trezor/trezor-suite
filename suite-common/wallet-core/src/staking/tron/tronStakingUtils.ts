@@ -181,6 +181,7 @@ export const getTronUnstakingBatchesWithResource = ({
 
 export type TronPendingUnstakingBatch = {
     amount: string;
+    expireTime: number;
     daysLocked: number;
     resource: TronResourceType | undefined;
 };
@@ -202,6 +203,7 @@ export const getTronPendingUnstakingBatches = ({
         .filter(batch => batch.expireTime > nowSeconds)
         .map(batch => ({
             amount: sunToTrx(batch.amount, symbol),
+            expireTime: batch.expireTime,
             daysLocked: Math.ceil((batch.expireTime - nowSeconds) / SECONDS_PER_DAY),
             resource: batch.resource,
         }));
