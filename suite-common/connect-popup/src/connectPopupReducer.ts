@@ -6,6 +6,7 @@ import { connectPopupActions } from './connectPopupActions';
 import { getPermissionDeferred } from './connectPopupPromiseManager';
 import {
     type AppRememberedPermission,
+    CALL_SOURCE_MCP,
     CALL_SOURCE_WALLETCONNECT,
     type ConnectPopupCall,
     type ConnectPopupCallWithState,
@@ -75,6 +76,18 @@ export const prepareConnectPopupReducer = createReducerWithExtraDeps(
                             // `null` persisted by earlier versions, so the settings list
                             // cannot show a grant that is ignored.
                             .filter(canRememberPermissions)
+                            // An earlier version keyed an MCP client by the name it declared, so
+                            // such a grant has the name as its path. No caller produces that path
+                            // any more, so the grant is dropped instead of being listed in
+                            // Settings > Connected apps as if it still applied.
+                            .filter(
+                                app =>
+                                    !(
+                                        app.type === CALL_SOURCE_MCP &&
+                                        !!app.process &&
+                                        app.process.fullPath === app.process.name
+                                    ),
+                            )
                             // Grants persisted before coins were canonicalized at the
                             // source keep the mixed-case `coinInfo.shortcut` (e.g. `BTC`);
                             // lowercase them on load.

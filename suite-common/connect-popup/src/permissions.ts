@@ -11,8 +11,10 @@ import { isArrayMember } from '@trezor/utils';
 import { unique } from '@trezor/utils/src/unique';
 
 import {
+    CALL_SOURCE_MCP,
     CALL_SOURCE_WALLETCONNECT,
     type ConnectCallSource,
+    type ConnectProcessInfo,
     UNKNOWN_PROCESS,
 } from './connectPopupTypes';
 
@@ -78,15 +80,31 @@ export const isSameConnectApp = (app: ConnectCallSource, source: ConnectCallSour
     app.origin === source.origin &&
     app.process?.fullPath === source.process?.fullPath;
 
+// A process is told apart from other processes of the same origin only by its full path (see
+// `isSameConnectApp`), so a blank path identifies nothing — just like the `UNKNOWN_PROCESS`
+// placeholder Suite substitutes when the main process could not identify the caller at all. The
+// path is checked for being a string because persisted grants reach this predicate unvalidated
+// (see the `storageLoad` case of `connectPopupReducer`), and such an entry must be dropped, not
+// thrown on.
+export const isIdentifiedProcess = (process: ConnectProcessInfo): boolean =>
+    typeof process.fullPath === 'string' &&
+    process.fullPath.trim() !== '' &&
+    process.fullPath !== UNKNOWN_PROCESS.fullPath;
+
 /**
- * Permissions are remembered only for a caller that can be told apart from others: not for a desktop
+ * Permissions are remembered only for a caller that can be told apart from others: not for a
  * process that could not be identified, and not for the origin `null` that browsers send for every
  * sandboxed or local page. WalletConnect is excluded too: its consent lives in its own session.
+ * A source with no `process` at all (web, deeplink) is told apart by its origin alone. MCP is the
+ * exception: its origin is the constant `mcp://localhost`, so every MCP caller without a resolved
+ * process would share one grant — an identified process is required for it instead.
  */
 export const canRememberPermissions = (source: ConnectCallSource): boolean =>
     source.type !== CALL_SOURCE_WALLETCONNECT &&
     source.origin !== 'null' &&
-    source.process?.fullPath !== UNKNOWN_PROCESS.fullPath;
+    (source.type === CALL_SOURCE_MCP
+        ? !!source.process && isIdentifiedProcess(source.process)
+        : !source.process || isIdentifiedProcess(source.process));
 
 export const groupPermissionsByCoin = (permissions: PermissionRequest[]): GroupedPermissions[] => {
     const order: (CoinSymbol | undefined)[] = [];
