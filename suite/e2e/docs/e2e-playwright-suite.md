@@ -95,18 +95,19 @@ At the moment, there are these additional tags:
 #### Device coverage on PR
 
 Most E2E tests are specified to cover T3T1 and T3W1, the two flagship models.
-But to save Currents quota, T3T1 is skipped on PR test runs, and only T3W1 is covered, unless the test is exclusive (T3T1-only) test. Meanwhile, nightly tests provide full coverage, i.e. they run both flagship models. This is configured entirely in the Playwright project configs.
+But to save Currents quota, T3T1 is skipped on PR test runs, and only T3W1 is covered, unless the test is exclusive (T3T1-only) test or the PR edits the test file itself. Meanwhile, nightly tests provide full coverage, i.e. they run both flagship models. This is configured entirely in the Playwright project configs.
 To summarize:
 
 - in PR run, if a test specifies T3T1 alongside any other models, T3T1 is skipped, and only other models are covered (usually just T3W1)
 - in PR run, if a test specifies T3T1 as its only model, it is covered
+- in PR run, if the PR edits the test file, all models specified in the test are covered
 - in nightly run, all models specified in the test are covered
 
 #### @desktopOnly or @webOnly
 
 Some tests are only applicable for Desktop app or Web and you can use this tag to notify the runner, that the test should be ignored when running against opposite Suite. This negative filtering is done on playwright-config level.
 
-Currently, we are also applying @webOnly as a positive filter on Web PR runs. This is done in Web PR workflow definition. Meaning, Web PR runs execute only tests with @WebOnly tag to reduce amount of test run daily and save quota on Currents, where we are paying extra for any test runs over 100 000.
+Currently, we are also applying @webOnly as a positive filter on Web PR runs. This is done in the Web PR Playwright config. Meaning, Web PR runs execute only tests with @webOnly tag to reduce amount of test run daily and save quota on Currents, where we are paying extra for any test runs over 100 000. Test files the PR edits are the exception: they run on web even without @webOnly.
 
 #### @skipOnPR
 
