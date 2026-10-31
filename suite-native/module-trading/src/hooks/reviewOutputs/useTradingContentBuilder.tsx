@@ -1,9 +1,10 @@
 import { type ReactNode, useCallback } from 'react';
-import { useStore } from 'react-redux';
+import { useSelector, useStore } from 'react-redux';
 
 import type { FiatCurrencyCode } from 'invity-api';
 
 import type { DeviceRootState } from '@suite-common/device';
+import { selectTradingExchangeSelectedQuoteIsDex } from '@suite-common/trading';
 import { type AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import {
     type AccountKey,
@@ -15,7 +16,7 @@ import {
 import { HStack, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { type ExchangeFlowType } from '@suite-native/navigation';
-import { useReceiveAmountMultiplier } from '@suite-native/trading-quote-utils';
+import { useReceiveAmountWithSlippage } from '@suite-native/trading-quote-utils';
 import { type TokenInfo } from '@trezor/connect';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles-native';
 
@@ -45,7 +46,8 @@ const flexStyle = prepareNativeStyle(() => ({
 export const useTradingContentBuilder = (): ContentBuilderFunction => {
     const { getState } = useStore();
     const { applyStyle } = useNativeStyles();
-    const receiveAmountMultiplier = useReceiveAmountMultiplier();
+    const isDexQuote = useSelector(selectTradingExchangeSelectedQuoteIsDex);
+    const getReceiveAmountWithSlippage = useReceiveAmountWithSlippage();
 
     return useCallback(
         ({ outputType, send, receive }) => {
@@ -75,7 +77,11 @@ export const useTradingContentBuilder = (): ContentBuilderFunction => {
                     {!!cryptoReceive && (
                         <CryptoAmountRow
                             direction="to"
-                            amount={receiveAmountMultiplier(cryptoReceive.amount)}
+                            amount={
+                                isDexQuote
+                                    ? getReceiveAmountWithSlippage(cryptoReceive.amount)
+                                    : cryptoReceive.amount
+                            }
                             cryptoId={cryptoReceive.cryptoId}
                             withNetworkIcon
                         />
@@ -104,6 +110,6 @@ export const useTradingContentBuilder = (): ContentBuilderFunction => {
                 </VStack>
             );
         },
-        [getState, applyStyle, receiveAmountMultiplier],
+        [getState, applyStyle, isDexQuote, getReceiveAmountWithSlippage],
     );
 };
