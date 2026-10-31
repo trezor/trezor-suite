@@ -2,13 +2,15 @@ import { WEBEXTENSION_SUITE_WEB_CHANNEL } from '@trezor/connect-common';
 import { type CoreEventMessage } from '@trezor/connect-common/src/events';
 import { type AbstractMessageChannel } from '@trezor/connect-common/src/messageChannel/abstract';
 import { ServiceWorkerWindowExtConnectableChannel } from '@trezor/connect-common/src/messageChannel/serviceworker-window-ext-connectable';
-import { createDeferred } from '@trezor/utils';
+import { type Deferred, createDeferred } from '@trezor/utils';
 
 import { Popup } from './abstract';
 
 export class WebExtensionPopup extends Popup {
     private popupWindow?: chrome.tabs.Tab;
-    private popupWindowPromise = createDeferred<chrome.tabs.Tab>();
+    // Undefined until the first open(), so a send before it fails right away
+    // instead of waiting for a tab nobody is opening.
+    private popupWindowPromise: Deferred<chrome.tabs.Tab> | undefined;
     private extensionTabId = 0;
 
     /**
@@ -54,19 +56,35 @@ export class WebExtensionPopup extends Popup {
         });
     }
 
+    // open() resolves before the chrome callbacks run, so a second call can
+    // reset() and open() again in the meantime. Each callback therefore checks
+    // that its own popupWindowPromise is still the current one; otherwise it
+    // would fail or take over the newer open().
+    private isSuperseded(popupWindowPromise: Deferred<chrome.tabs.Tab>): boolean {
+        return popupWindowPromise !== this.popupWindowPromise;
+    }
+
     protected open(): Promise<void> {
-        this.popupWindowPromise = createDeferred<chrome.tabs.Tab>();
+        // The channel awaits this deferred via currentId() as the first step of
+        // each send, inside its serialised send chain, so one left pending would
+        // block every later message, including the next handshake. Settling a
+        // resolved one does nothing.
+        this.popupWindowPromise?.reject(new Error('Popup open superseded'));
+        const popupWindowPromise = createDeferred<chrome.tabs.Tab>();
+        this.popupWindowPromise = popupWindowPromise;
         // Prevent unhandled rejection when open fails (e.g. popup blocked).
         // The rejection is surfaced to callers via handleOpenFailure → handshakePromise.
-        this.popupWindowPromise.promise.catch(() => {});
+        popupWindowPromise.promise.catch(() => {});
         const url = this.buildPopupUrl(this.popupSrc);
 
         chrome.windows.getCurrent(currentWindow => {
+            if (this.isSuperseded(popupWindowPromise)) return;
+
             this.logger.debug('opening popup. currentWindow type:', currentWindow.type);
             if (currentWindow.type !== 'normal') {
-                this.openPopupInNewWindow(url);
+                this.openPopupInNewWindow(url, popupWindowPromise);
             } else {
-                this.openPopupInNewTab(url);
+                this.openPopupInNewTab(url, popupWindowPromise);
             }
         });
 
@@ -80,41 +98,75 @@ export class WebExtensionPopup extends Popup {
         return Promise.resolve();
     }
 
-    private openPopupInNewWindow(url: string): void {
+    private openPopupInNewWindow(url: string, popupWindowPromise: Deferred<chrome.tabs.Tab>): void {
         chrome.windows.create({ url }, newWindow => {
             if (!newWindow) {
-                this.popupWindowPromise?.reject(new Error('Failed to create popup window'));
-                this.handleOpenFailure('Failed to create popup window');
+                this.onPopupOpenFailed('Failed to create popup window', popupWindowPromise);
 
                 return;
             }
             chrome.tabs.query({ windowId: newWindow.id, active: true }, tabs => {
-                // @ts-expect-error: indexing with noUncheckedIndexedAccess
-                const tab: chrome.tabs.Tab = tabs[0];
-                this.onPopupTabResolved(tab);
+                this.onPopupTabResolved(tabs[0], popupWindowPromise);
             });
         });
     }
 
-    private openPopupInNewTab(url: string): void {
+    private openPopupInNewTab(url: string, popupWindowPromise: Deferred<chrome.tabs.Tab>): void {
         chrome.tabs.query({ currentWindow: true, active: true }, tabs => {
+            if (this.isSuperseded(popupWindowPromise)) return;
+
             if (!tabs[0]?.id) {
-                this.popupWindowPromise?.reject(new Error('No active tab found'));
-                this.handleOpenFailure('No active tab found');
+                this.onPopupOpenFailed('No active tab found', popupWindowPromise);
 
                 return;
             }
             this.extensionTabId = tabs[0].id;
             chrome.tabs.create({ url, index: tabs[0].index + 1 }, tab =>
-                this.onPopupTabResolved(tab),
+                this.onPopupTabResolved(tab, popupWindowPromise),
             );
         });
     }
 
-    private onPopupTabResolved(tab: chrome.tabs.Tab): void {
+    private onPopupOpenFailed(reason: string, popupWindowPromise: Deferred<chrome.tabs.Tab>): void {
+        if (this.isSuperseded(popupWindowPromise)) {
+            this.logger.debug('Ignoring failure of a superseded popup open:', reason);
+
+            return;
+        }
+
+        popupWindowPromise.reject(new Error(reason));
+        this.handleOpenFailure(reason);
+    }
+
+    private onPopupTabResolved(
+        tab: chrome.tabs.Tab | undefined,
+        popupWindowPromise: Deferred<chrome.tabs.Tab>,
+    ): void {
+        if (this.isSuperseded(popupWindowPromise)) {
+            // The newer open() has its own tab; this one would only linger.
+            this.logger.debug('closing popup tab of a superseded open:', tab?.id);
+            if (tab?.id) {
+                chrome.tabs.remove(tab.id, () => {
+                    this.logChromeError('close', chrome.runtime.lastError);
+                });
+            }
+
+            return;
+        }
+
+        // Chrome passes no tab when it could not create one.
+        if (!tab?.id) {
+            this.onPopupOpenFailed(
+                chrome.runtime.lastError?.message ?? 'Failed to create popup tab',
+                popupWindowPromise,
+            );
+
+            return;
+        }
+
         this.popupWindow = tab;
         this.logger.debug('popup tab resolved:', tab.id);
-        this.popupWindowPromise?.resolve(tab);
+        popupWindowPromise.resolve(tab);
         this.startCloseMonitoring();
     }
 
