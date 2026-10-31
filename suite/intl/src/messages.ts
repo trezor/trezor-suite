@@ -1847,13 +1847,9 @@ export const messages = defineMessages({
         defaultMessage: 'Unstaked',
         id: 'TR_ASSET_DETAIL_UNSTAKED',
     },
-    TR_ASSET_DETAIL_YOUR_BALANCE: {
-        defaultMessage: 'Your balance',
-        id: 'TR_ASSET_DETAIL_YOUR_BALANCE',
-    },
-    TR_ASSET_DETAIL_ACCOUNT_COUNT: {
-        defaultMessage: 'on {count, plural, one {# account} other {# accounts}}',
-        id: 'TR_ASSET_DETAIL_ACCOUNT_COUNT',
+    TR_ASSET_DETAIL_MY_BALANCE: {
+        defaultMessage: 'My balance',
+        id: 'TR_ASSET_DETAIL_MY_BALANCE',
     },
     TR_NO_TRANSACTIONS_YET: {
         defaultMessage: 'No transactions yet.',
