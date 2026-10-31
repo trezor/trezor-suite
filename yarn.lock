@@ -22560,13 +22560,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@xmldom/xmldom@npm:^0.7.2":
-  version: 0.7.13
-  resolution: "@xmldom/xmldom@npm:0.7.13"
-  checksum: 10/a359d15fe3c24fe85a1e1b3bc4cfd23d4f014fb8aa382aa445cccaac545e42958b75e386dd4853c76d82036401400b8d5e33cbcbfb6af7cdadeba769eae6122a
-  languageName: node
-  linkType: hard
-
 "@xmldom/xmldom@npm:^0.8.8":
   version: 0.8.15
   resolution: "@xmldom/xmldom@npm:0.8.15"
@@ -22574,7 +22567,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@xmldom/xmldom@npm:^0.9.12":
+"@xmldom/xmldom@npm:^0.9.10, @xmldom/xmldom@npm:^0.9.12":
   version: 0.9.12
   resolution: "@xmldom/xmldom@npm:0.9.12"
   checksum: 10/4a38ed437688b0e33919f7597c6669f8b0507e80ee15497ee163d6e4bbf7a69fd24a4fe4c2d3ee9fe1e861d42b4030d72895a64a92cb8d4ebc3091f560c29111
@@ -24304,12 +24297,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"brace-expansion@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "brace-expansion@npm:2.0.1"
+"brace-expansion@npm:^2.0.1, brace-expansion@npm:^2.0.2":
+  version: 2.1.7
+  resolution: "brace-expansion@npm:2.1.7"
   dependencies:
     balanced-match: "npm:^1.0.0"
-  checksum: 10/a61e7cd2e8a8505e9f0036b3b6108ba5e926b4b55089eeb5550cd04a471fe216c96d4fe7e4c7f995c728c554ae20ddfc4244cad10aef255e72b62930afd233d1
+  checksum: 10/4763be07b688136db4f98f71ab96c4a1a73b6785f69864c130c748f4429be961c6a9a4129c0a81aad4f9cfb08e31a3cf2809b2427509bf2990d1490b7b5dd2d0
   languageName: node
   linkType: hard
 
@@ -37575,11 +37568,11 @@ __metadata:
   linkType: hard
 
 "minimatch@npm:^7.4.6":
-  version: 7.4.6
-  resolution: "minimatch@npm:7.4.6"
+  version: 7.4.8
+  resolution: "minimatch@npm:7.4.8"
   dependencies:
-    brace-expansion: "npm:^2.0.1"
-  checksum: 10/0046ba1161ac6414bde1b07c440792ebcdb2ed93e6714c85c73974332b709b7e692801550bc9da22028a8613407b3f13861e17dd0dd44f4babdeacd44950430b
+    brace-expansion: "npm:^2.0.2"
+  checksum: 10/5c631ae62fbc5113ee10109f4e03d4f70d2005b25b57266c09e4a7fdaf1c46de5f9245acddb8f611750c9b842ac547ef572c8287a4f3f86d2e69d499670f8a0a
   languageName: node
   linkType: hard
 
@@ -39988,11 +39981,11 @@ __metadata:
   linkType: hard
 
 "path-to-regexp@npm:^1.2.0":
-  version: 1.8.0
-  resolution: "path-to-regexp@npm:1.8.0"
+  version: 1.9.0
+  resolution: "path-to-regexp@npm:1.9.0"
   dependencies:
     isarray: "npm:0.0.1"
-  checksum: 10/45a01690f72919163cf89714e31a285937b14ad54c53734c826363fcf7beba9d9d0f2de802b4986b1264374562d6a3398a2e5289753a764e3a256494f1e52add
+  checksum: 10/67f0f4823f7aab356523d93a83f9f8222bdd119fa0b27a8f8b587e8e6c9825294bb4ccd16ae619def111ff3fe5d15ff8f658cdd3b0d58b9c882de6fd15bc1b76
   languageName: node
   linkType: hard
 
@@ -45622,10 +45615,10 @@ __metadata:
   linkType: hard
 
 "svg2ttf@npm:^6.0.3":
-  version: 6.0.3
-  resolution: "svg2ttf@npm:6.0.3"
+  version: 6.1.0
+  resolution: "svg2ttf@npm:6.1.0"
   dependencies:
-    "@xmldom/xmldom": "npm:^0.7.2"
+    "@xmldom/xmldom": "npm:^0.9.10"
     argparse: "npm:^2.0.1"
     cubic2quad: "npm:^1.2.1"
     lodash: "npm:^4.17.10"
@@ -45633,7 +45626,7 @@ __metadata:
     svgpath: "npm:^2.1.5"
   bin:
     svg2ttf: svg2ttf.js
-  checksum: 10/94b7d36df599fc9cd2eeb5a98fbfb284dbf89593bbf95ddd5222f30111d7a3369aaa22a0493b8cdbbb5601ef416ebb9fd8815c8eb382d4073c65dfec985216b3
+  checksum: 10/95360eadb8fccf5b601486bbb00d85d36458fa032ebd70f06b2af51a02a4ae361d9a839a3f59ad55e48015424f1adc658d3ac3d99576ea3a39a5f3c35b26327d
   languageName: node
   linkType: hard
 
@@ -47087,9 +47080,9 @@ __metadata:
   linkType: hard
 
 "undici@npm:^6.18.2, undici@npm:^6.22.0, undici@npm:^6.28.1":
-  version: 6.29.0
-  resolution: "undici@npm:6.29.0"
-  checksum: 10/fd4969cfc846cb4da7f7b1b225536d629e17b17b4a1913287f1264f30c855b9eb65a6da6cde46ba1ddfe42f113a3969ab2697029c2b920401be2b7b3b40abef8
+  version: 6.29.1
+  resolution: "undici@npm:6.29.1"
+  checksum: 10/92acb64ec190fe3499dec69830fdfc48e28f6f19627bad7563cfd57c37b4e95379c12b8ac15a2e6a8739eaac358f17503a229c160d3dc8774141b1e270d8aa57
   languageName: node
   linkType: hard
 
