@@ -8,6 +8,7 @@ import {
 } from '@suite/coinjoin';
 import { type TranslationKey } from '@suite/intl';
 import { type ScanProgressInfo } from '@trezor/coinjoin';
+import { useCurrentRef } from '@trezor/react-utils';
 
 import { useSelector } from 'src/hooks/suite';
 
@@ -71,11 +72,19 @@ const progressInfoReducer = (
     return state;
 };
 
-export const useCoinjoinAccountLoadingProgress = () => {
+/**
+ * Progress of the selected Privacy account's discovery. `onProgressInfo` also receives every raw
+ * event of the same subscription, so whatever else follows the scan sees the same events in the
+ * same order as the progress text.
+ */
+export const useCoinjoinAccountLoadingProgress = (
+    onProgressInfo?: (info: ScanProgressInfo) => void,
+) => {
     const selectedAccount = useSelector(selectSelectedAccount);
     const [progressInfo, dispatchProgressInfo] = useReducer(progressInfoReducer, {
         progress: 0,
     });
+    const onProgressInfoRef = useCurrentRef(onProgressInfo);
 
     const { symbol, backendType } = selectedAccount || {};
     const progressHandle = selectedAccount && getAccountProgressHandle(selectedAccount);
@@ -96,12 +105,17 @@ export const useCoinjoinAccountLoadingProgress = () => {
             return;
         }
 
-        api.backend.on(`progress-info/${progressHandle}`, dispatchProgressInfo);
+        const listener = (info: ScanProgressInfo) => {
+            dispatchProgressInfo(info);
+            onProgressInfoRef.current?.(info);
+        };
+
+        api.backend.on(`progress-info/${progressHandle}`, listener);
 
         return () => {
-            api.backend.off(`progress-info/${progressHandle}`, dispatchProgressInfo);
+            api.backend.off(`progress-info/${progressHandle}`, listener);
         };
-    }, [symbol, backendType, progressHandle]);
+    }, [symbol, backendType, progressHandle, onProgressInfoRef]);
 
     return progressInfo;
 };
