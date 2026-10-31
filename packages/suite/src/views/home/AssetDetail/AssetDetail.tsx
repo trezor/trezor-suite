@@ -10,6 +10,7 @@ import { useDiscovery, useLayout, useSelector } from 'src/hooks/suite';
 import { AssetDetailBalance, AssetDetailBalanceSkeleton } from './AssetDetailBalance';
 import { AssetDetailEarn } from './AssetDetailEarn';
 import { AssetDetailMarketPrice } from './AssetDetailMarketPrice';
+import { AssetDetailStakingBanner } from './AssetDetailStakingBanner';
 import { AssetDetailTransactions } from './AssetDetailTransactions';
 import { AssetNotExists } from './AssetNotExists';
 import { selectRoutedAssetKey } from './selectRoutedAssetKey';
@@ -36,6 +37,7 @@ export const AssetDetail = () => {
                 </Box>
                 <AssetDetailEarn assetKey={assetKey} />
             </Row>
+            <AssetDetailStakingBanner assetKey={assetKey} />
             <AssetDetailTransactions assetKey={assetKey} />
         </Column>
     );
