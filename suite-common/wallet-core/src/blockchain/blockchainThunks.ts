@@ -21,7 +21,6 @@ import {
     getBackendFromSettings,
     isTrezorConnectBackendType,
     shouldSubscribeBlocks,
-    shouldUseIdentities,
     subunitsToUnits,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, {
@@ -166,12 +165,12 @@ export const subscribeBlockchainThunk = createThunk<
 >(
     `${BLOCKCHAIN_MODULE_PREFIX}/subscribeBlockchainThunk`,
     async ({ symbol, onConnect }, { getState }) => {
-        const useIdentities = shouldUseIdentities(symbol);
         // Don't subscribe to blocks for Solana, this is too intensive
         const blocks = shouldSubscribeBlocks(symbol);
+        const coin = asCoinSymbol(symbol);
 
-        if (onConnect && useIdentities) {
-            await TrezorConnect.blockchainSubscribe({ coin: asCoinSymbol(symbol), blocks });
+        if (onConnect) {
+            await TrezorConnect.blockchainSubscribe({ coin, blocks });
         }
 
         // do NOT subscribe if there are no accounts
@@ -180,18 +179,17 @@ export const subscribeBlockchainThunk = createThunk<
             symbol,
             selectAccounts(getState()),
         ).filter(isAccountSubscribable); // do not subscribe accounts with unsupported backend type
+
         if (!accountsToSubscribe.length) return;
 
-        const paramsArray = useIdentities
-            ? Object.entries(arrayToDictionary(accountsToSubscribe, getAccountIdentity, true)).map(
-                  ([identity, accounts]) => ({
-                      accounts,
-                      coin: asCoinSymbol(symbol),
-                      identity,
-                      blocks: false,
-                  }),
-              )
-            : [{ accounts: accountsToSubscribe, coin: asCoinSymbol(symbol), blocks }];
+        const paramsArray = Object.entries(
+            arrayToDictionary(accountsToSubscribe, getAccountIdentity, true),
+        ).map(([identity, accounts]) => ({
+            accounts,
+            coin,
+            identity,
+            blocks: false,
+        }));
 
         return Promise.all(paramsArray.map(params => TrezorConnect.blockchainSubscribe(params)));
     },
@@ -218,28 +216,23 @@ export const unsubscribeBlockchainThunk = createThunk<
             isAccountSubscribable,
         ); // do not unsubscribe accounts with unsupported backend type
 
-        if (shouldUseIdentities(symbol)) {
-            const accountIdentities = arrayToDictionary(
-                accountsToSubscribe,
-                getAccountIdentity,
-                true,
-            );
+        const accountIdentities = arrayToDictionary(accountsToSubscribe, getAccountIdentity, true);
 
-            const transformedRemovedAccounts = removedAccounts
-                .filter(acc => acc.symbol === symbol)
-                .map(getAccountIdentity)
-                .filter(arrayDistinct)
-                .map(identity => ({
-                    symbol,
-                    identity,
-                    blocks: false,
-                    accounts: accountIdentities[identity] ?? [],
-                }));
+        const transformedRemovedAccounts = removedAccounts
+            .filter(acc => acc.symbol === symbol)
+            .map(getAccountIdentity)
+            .filter(arrayDistinct)
+            .map(identity => ({
+                symbol,
+                identity,
+                blocks: false,
+                accounts: accountIdentities[identity] ?? [],
+            }));
 
-            return [...transformedRemovedAccounts, { symbol, blocks: true, accounts: [] }];
-        } else {
-            return [{ symbol, accounts: accountsToSubscribe, blocks: true }];
-        }
+        // Keep the default backend (blocks) connected while the network still has accounts.
+        return accountsToSubscribe.length
+            ? transformedRemovedAccounts
+            : [...transformedRemovedAccounts, { symbol, blocks: true, accounts: [] }];
     });
 
     return Promise.all(

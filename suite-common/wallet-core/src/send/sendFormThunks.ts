@@ -24,6 +24,7 @@ import {
     convertAmountUnitsToSubunits,
     formatNetworkAmount,
     getAccountDecimals,
+    getAccountIdentity,
     getEvmTransactionTextSignature,
     getMevProtectedTxData,
     getPendingAccount,
@@ -37,7 +38,6 @@ import {
     isRbfCancelTransaction,
     isRbfTransaction,
     subunitsToUnits,
-    tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import { type BlockbookTransaction } from '@trezor/blockchain-link-types';
 import TrezorConnect, { type PROTO } from '@trezor/connect';
@@ -523,7 +523,7 @@ export const pushSendFormTransactionThunk = createThunk<
         const pushTxResponse = await TrezorConnect.pushTransaction({
             tx: txData,
             coin: asCoinSymbol(serializedTx.symbol),
-            identity: tryGetAccountIdentity(selectedAccount),
+            identity: getAccountIdentity(selectedAccount),
         });
 
         // close modal regardless result

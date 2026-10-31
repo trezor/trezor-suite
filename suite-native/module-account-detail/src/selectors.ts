@@ -10,9 +10,9 @@ import {
 } from '@suite-common/wallet-core';
 import { type AccountKey, type TokenAddress } from '@suite-common/wallet-types';
 import {
+    getAccountIdentity,
     isPositiveBalance,
     isStellarContractToken,
-    tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import { type AccountOverviewTab } from '@suite-native/navigation';
 import { type TokensRootState, selectAccountTokenInfo } from '@suite-native/tokens';
@@ -35,7 +35,7 @@ export const selectAccountItemForGraph = createAccountsMemoizedSelector(
             backendType: account.backendType,
             descriptor: account.descriptor,
             accountKey: account.key,
-            identity: tryGetAccountIdentity(account),
+            identity: getAccountIdentity(account),
             hideMainAccount: !!tokenContract,
             // Pass empty array to show only the main account, or the token to show only its graph.
             tokensFilter: tokenContract ? [tokenContract] : [],
