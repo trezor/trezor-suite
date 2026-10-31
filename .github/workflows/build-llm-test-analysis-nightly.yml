@@ -21,6 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     # Only run in the canonical repository, not forks.
     if: github.repository == 'trezor/trezor-suite'
+    continue-on-error: true
     timeout-minutes: 60
     permissions:
       id-token: write
