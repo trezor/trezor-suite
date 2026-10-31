@@ -4,7 +4,9 @@ import fs from 'node:fs';
 import path from 'node:path';
 import util from 'node:util';
 
-import { exec, getPackageDependencies, getTrezorPackageDir } from './helpers';
+import { CONNECT_PUBLISH_ROOTS } from './connect-publish-roots';
+import { exec, getTrezorPackageDir } from './helpers';
+import { collectPublishClosure, toReleaseScriptName } from './publish-closure';
 
 const mkdir = util.promisify(fs.mkdir);
 const removeDir = util.promisify(fs.rm);
@@ -113,18 +115,11 @@ const validatePublishTargets = async (packages: string[]) => {
 };
 
 const buildAllPackages = async () => {
-    // Get dependencies for connect.
-    const connectDeps = (await getPackageDependencies('connect')).update;
-
-    const PACKAGES = [
-        ...new Set([
-            ...connectDeps,
-            'connect',
-            'connect-web',
-            'connect-webextension',
-            'connect-mobile',
-        ]),
-    ];
+    // The whole publish closure is packed so the install smoke test resolves every internal
+    // dependency of the connect packages from these tarballs instead of from npm.
+    const PACKAGES = collectPublishClosure(ROOT_DIR, CONNECT_PUBLISH_ROOTS).map(pkg =>
+        toReleaseScriptName(ROOT_DIR, pkg),
+    );
 
     if (fs.existsSync(OUTPUT_DIR)) {
         await removeDir(OUTPUT_DIR, { recursive: true });
