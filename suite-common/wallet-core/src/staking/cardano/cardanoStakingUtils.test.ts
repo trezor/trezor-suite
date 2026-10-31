@@ -8,6 +8,7 @@ import {
     decodeCardanoDrepId,
     getCardanoAccountDrepId,
     hasCardanoLiveVoteDelegation,
+    isCardanoDrepIdCip129,
     isCardanoStakedOutsideEverstake,
     isCardanoStakedWithEverstake,
     isCardanoStakedWithFiveBinaries,
@@ -97,6 +98,12 @@ describe('cardano staking utils', () => {
             if (normalizedDrepId === null) return;
 
             expect(normalizeCardanoDrepId(normalizedDrepId)).toBe(normalizedDrepId);
+        });
+    });
+
+    fixtures.isCardanoDrepIdCip129.forEach(f => {
+        it(`isCardanoDrepIdCip129: ${f.description}`, () => {
+            expect(isCardanoDrepIdCip129(f.drepId)).toBe(f.result);
         });
     });
 

@@ -11,10 +11,10 @@ import {
     areCardanoDrepIdsEqual,
     getCardanoAccountDrepId,
     getCardanoCurrentVotingOption,
+    isCardanoDrepIdCip129,
     selectStakeVotingDelegation,
     selectVotingDelegationOption,
     stakeActions,
-    validateCardanoDrep,
 } from '@suite-common/wallet-core';
 import { type SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { Banner, Card, Column, Modal, Tooltip } from '@trezor/components';
@@ -145,7 +145,7 @@ export const StakeChangeDelegateModalLoaded = ({
                     return { isDisabled: true, errorType: 'current_delegate' as const };
                 }
 
-                if (!validateCardanoDrep(drepId)) {
+                if (!isCardanoDrepIdCip129(drepId)) {
                     return { isDisabled: true, errorType: 'invalid_drep' as const };
                 }
 

@@ -11210,6 +11210,14 @@ export const messages = defineMessages({
         id: 'TR_STAKING_DREP_ID_CONVERTED',
         defaultMessage: 'Converted to the new DRep ID format',
     },
+    TR_STAKING_DREP_ID_LEGACY_FORMAT: {
+        id: 'TR_STAKING_DREP_ID_LEGACY_FORMAT',
+        defaultMessage: 'DRep ID is in the legacy format',
+    },
+    TR_STAKING_CONVERT_DREP_ID: {
+        id: 'TR_STAKING_CONVERT_DREP_ID',
+        defaultMessage: 'Convert to new format',
+    },
     TR_STAKING_WHO_VOTES_WITH_YOUR_FUNDS: {
         id: 'TR_STAKING_WHO_VOTES_WITH_YOUR_FUNDS',
         defaultMessage: 'Who votes with your {displaySymbol}?',
