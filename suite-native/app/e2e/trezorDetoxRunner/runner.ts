@@ -1,22 +1,11 @@
 /* eslint-disable no-console */
-import * as path from 'path';
-
 import { uploadToCurrents } from './currentsUpload';
 import { runProjectSafely } from './detox';
-import {
-    DETOX_ARTIFACTS_DIR,
-    findNewDetoxArtifactsRootDir,
-    listDetoxArtifactsRootDirs,
-} from './detoxArtifacts';
+import { findNewDetoxArtifactsRootDir, listDetoxArtifactsRootDirs } from './detoxArtifacts';
 import { processJUnitReport } from './junitReport';
 import type { Action } from './quarantine';
 import { readTestAttempts } from './testAttempts';
-import { extractTrezorUserEnvLogs } from './trezorUserEnvLogs';
 import type { ProjectConfig } from './types';
-
-// Only the Android CI jobs run trezor-user-env in Docker, iOS runs device-less tests only.
-const shouldExtractTrezorUserEnvLogs = (project: ProjectConfig): boolean =>
-    Boolean(process.env.GITHUB_ACTION) && project.target.startsWith('android');
 
 /**
  * Performance metrics are a by-product of the run and must never change its verdict. The module is
@@ -49,11 +38,6 @@ export const runAllProjects = async (
             project.target,
             previousArtifactsRootDirs,
         );
-        const instanceAttachments = shouldExtractTrezorUserEnvLogs(project)
-            ? extractTrezorUserEnvLogs(
-                  path.join(DETOX_ARTIFACTS_DIR, `trezor-user-env.${project.projectName}`),
-              )
-            : [];
         const hasRemainingFailures = await processJUnitReport({
             projectName: project.projectName,
             detoxFailed,
@@ -61,7 +45,6 @@ export const runAllProjects = async (
             quarantinedActions,
             testAttempts: readTestAttempts(project.projectName),
             artifactsRootDir,
-            instanceAttachments,
         });
         uploadToCurrents(project.projectName);
 

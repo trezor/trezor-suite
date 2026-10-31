@@ -191,19 +191,6 @@ const addAttemptArtifacts = ({
     });
 };
 
-const addInstanceAttachments = (suite: JUnitTestSuite, attachments: string[]): void => {
-    const properties = attachments.flatMap(filePath =>
-        toArtifactProperties('currents.artifact.instance', {
-            path: filePath,
-            type: 'attachment',
-            contentType: 'text/plain',
-            name: path.basename(filePath),
-        }),
-    );
-
-    appendProperties(suite, properties);
-};
-
 /** Recompute root <testsuites> aggregate counters from the (now-updated) <testsuite> children. */
 const recomputeAggregates = (testsuites: any): void => {
     if (!testsuites.$) return;
@@ -239,16 +226,13 @@ type ProcessJUnitReportParams = {
     testAttempts: Map<string, TestAttempts>;
     /** Detox artifacts directory of this run, relative to the working directory like the report paths. */
     artifactsRootDir?: string;
-    /** Files attached to every failing suite in the Currents report. */
-    instanceAttachments: string[];
 };
 
 /**
  * Process the JUnit XML report for a project.
  * - Filters out skipped tests that don't match grep.
  * - Reshapes the failures into one <failure> per attempt so Currents shows each attempt separately.
- * - Attaches the Detox artifacts of every attempt and the instance attachments as Currents
- *   artifact properties.
+ * - Attaches the Detox artifacts of every attempt as Currents artifact properties.
  * - Marks quarantined failures/errors as skipped while keeping successful tests passed and all
  *   their artifacts available to Currents.
  *
@@ -262,7 +246,6 @@ export const processJUnitReport = async ({
     quarantinedActions,
     testAttempts,
     artifactsRootDir,
-    instanceAttachments,
 }: ProcessJUnitReportParams): Promise<boolean> => {
     const reportPath = getJUnitReportPath(projectName);
     const reportExists = fs.existsSync(reportPath);
@@ -305,10 +288,6 @@ export const processJUnitReport = async ({
 
             if (artifactsRootDir) {
                 addAttemptArtifacts({ suite, testAttempts, artifactsRootDir });
-            }
-
-            if (hasSuiteFailures(suite)) {
-                addInstanceAttachments(suite, instanceAttachments);
             }
         });
 

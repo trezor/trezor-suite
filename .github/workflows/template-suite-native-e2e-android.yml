@@ -43,6 +43,10 @@ jobs:
       fail-fast: false
       matrix:
         TEST_GROUP: [0, 1, 2, 3, 4]
+    env:
+      CURRENTS_PROJECT_ID: iUe1Y4
+      CURRENTS_CI_BUILD_ID: ${{ inputs.currents_ci_build_id }}
+      CURRENTS_MACHINE_ID: android-group-${{ matrix.TEST_GROUP }}
 
     steps:
       - name: Checkout project
@@ -141,10 +145,8 @@ jobs:
           PUBLISH_RESULTS_TO_GITHUB: ${{ inputs.publish_results_to_github == true }}
           TRADING_ACADEMIC_SEED_WALLET_PASSPHRASE: ${{ secrets.E2E_TEST_PASSPHRASE }}
           GITHUB_ACTION: true
-          CURRENTS_PROJECT_ID: iUe1Y4
           CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
           CURRENTS_API_KEY: ${{ secrets.CURRENTS_API_KEY }}
-          CURRENTS_CI_BUILD_ID: ${{ inputs.currents_ci_build_id }}
           CURRENTS_TAG: ${{ inputs.currents_tags }}
           COMMIT_INFO_BRANCH: ${{ github.head_ref }}
           # On a pull request GITHUB_SHA is the ephemeral merge commit, not what was pushed.
@@ -175,8 +177,16 @@ jobs:
           project: "native android"
           currents-project-id: "iUe1Y4"
 
-      # The Detox artifacts and the trezor-user-env logs are attached to the Currents results by the
-      # test runner, only what it cannot reach from inside the emulator run is collected here.
+      - name: Extract and Attach Logs to Currents
+        if: ${{ !cancelled() }}
+        uses: ./.github/actions/upload-test-logs
+        env:
+          COMPOSE_FILE: ./docker/docker-compose.suite-native-ci.yml
+          CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
+        with:
+          destination: currents
+          currents-workspace: "@suite-native/app"
+
       - name: Extract emulator crash reports
         if: ${{ !cancelled() }}
         shell: bash
@@ -194,8 +204,6 @@ jobs:
           adb shell ls /data/tombstones/ 2>/dev/null \
             && adb pull /data/tombstones/. "$LOG_DIR/tombstones" \
             || true
-          docker logs docker-quota-db-1 > quota-db.log 2>&1 || true
-          docker logs docker-suite-sync-1 > suite-sync.log 2>&1 || true
 
       - name: Summarize performance report
         if: always()

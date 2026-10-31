@@ -124,14 +124,12 @@ Some tests must run on specific Firmware version. That version is setup and defi
 
 Results contains traces, metadata, logs, screenshots, videos and various useful information for debugging.
 Traces contain electron logs of our desktop suit app. Both in CI, currents and local env (`suite/e2e/test-results`).
-CI runs have artifact with logs from `trezor-user-env`. They exist per group. Log are separated by Log entry `- - - STARTING TEST trading/swap-tokens.test.ts` and `- - - FINISHING TEST trading/swap-tokens.test.ts`
+CI runs attach the test environment logs to the Currents run, one `test-env-logs-<machine>.zip` per group on the run's Attachments tab. Logs of `trezor-user-env` are separated by Log entry `- - - STARTING TEST trading/swap-tokens.test.ts` and `- - - FINISHING TEST trading/swap-tokens.test.ts`
 
-- electrum-regtest.txt
 - trezor-user-env-debugging.log
 - tenv-emulator-bridge-debugging.log
-- trezor-user-env-version.txt
-- quota-db.txt
-- suite-sync.txt
+- trezor-user-env-tropic_model.log
+- `<service>.log` for every Docker Compose service, e.g. electrum-regtest.log, quota-db.log, suite-sync.log
 
 ### Local Relay Server
 

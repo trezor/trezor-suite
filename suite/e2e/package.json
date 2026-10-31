@@ -19,6 +19,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
     },
     "devDependencies": {
+        "@currents/cmd": "2.2.0",
         "@currents/playwright": "^2.5.2",
         "@evolu/common": "8.10.0",
         "@noble/hashes": "^2.0.1",

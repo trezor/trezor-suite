@@ -45,7 +45,7 @@ on:
         description: "Custom CI build ID for Currents reporting, default is pr-run-TARGET-RUN_ID-RUN_ATTEMPT"
         required: false
         type: string
-        default: "" # Will handle default logic in steps if empty, or just pass it explicitly from caller
+        default: ""
       release-build:
         description: "Information for GitHub Reporter, only on Release workflows"
         required: false
@@ -102,6 +102,9 @@ jobs:
   run-e2e-tests:
     runs-on: ubuntu-24.04
     timeout-minutes: 45
+    env:
+      CURRENTS_CI_BUILD_ID: ${{ inputs.currents-ci-build-id || format('pr-run-{0}-{1}-{2}', inputs.target, github.run_id, github.run_attempt) }}
+      CURRENTS_MACHINE_ID: ${{ inputs.target }}-group-${{ inputs.test-group }}
     steps:
       - name: Generate GitHub App token
         if: inputs.run-reporter == 'true'
@@ -215,7 +218,6 @@ jobs:
           REPORTER_WATCHDOG: ${{ inputs.reporterWatchdog }}
           CURRENTS_PROJECT_ID: ${{ inputs.currents-project-id }}
           CURRENTS_RECORD_KEY: ${{ secrets.currents-record-key }}
-          CURRENTS_CI_BUILD_ID: ${{ inputs.currents-ci-build-id }}
           GH_BRANCH: ${{ env.branch }} # Used by Currents reporter
           PASSPHRASE: ${{ secrets.e2e-passphrase }}
           PASSPHRASE_LIVE: ${{ secrets.e2e-passphrase-live }}
@@ -239,11 +241,6 @@ jobs:
           fi
           export BASE_URL
           echo "Using BASE_URL: $BASE_URL"
-
-          # Handle default for CURRENTS_CI_BUILD_ID if empty
-          if [[ -z "${{ inputs.currents-ci-build-id }}" ]]; then
-             export CURRENTS_CI_BUILD_ID="pr-run-${{ inputs.target }}-${{ github.run_id }}-${{ github.run_attempt }}"
-          fi
 
           if [[ "${{ inputs.enable-coverage }}" == "true" ]]; then
             COVERAGE_OPT="--pwc-coverage"
@@ -321,12 +318,16 @@ jobs:
             --pwc-skip-reporter-injection \
             $COVERAGE_OPT
 
-      - name: Extract and Upload Logs
+      - name: Extract and Attach Logs to Currents
         if: ${{ !cancelled() }}
         uses: ./.github/actions/upload-test-logs
+        env:
+          COMPOSE_FILE: ./docker/docker-compose.suite-ci-e2e.yml
+          CURRENTS_PROJECT_ID: ${{ inputs.currents-project-id }}
+          CURRENTS_RECORD_KEY: ${{ secrets.currents-record-key }}
         with:
-          target: ${{ inputs.target }}
-          test-group: ${{ inputs.test-group }}
+          destination: currents
+          currents-workspace: "@trezor/suite-e2e"
 
       - name: Upload per-test coverage map
         if: inputs.enable-coverage == 'true' && !cancelled()

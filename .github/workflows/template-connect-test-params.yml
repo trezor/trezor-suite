@@ -94,6 +94,8 @@ jobs:
       - name: Extract and Upload Logs
         if: ${{ !cancelled() }}
         uses: ./.github/actions/upload-test-logs
+        env:
+          COMPOSE_FILE: ./docker/docker-compose.connect-test.yml
         with:
           target: ${{ inputs.testEnv }}
           test-group: ${{ inputs.testGroup }}-${{ inputs.testDescription }}
