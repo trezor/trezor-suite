@@ -1,8 +1,11 @@
 import { isWorkerUrl } from './is-worker-url.js';
 
 // Single source for the specifier sanitizeInternalImports rewrites; non-global so .test() here
-// stays stateless (a /g/ regexp carries lastIndex across calls).
-const internalSrcSpecifier = /@trezor\/([^/]+)\/src/;
+// stays stateless (a /g/ regexp carries lastIndex across calls). The lookahead pins src to a whole
+// path segment — ended by /, by a bundler ?query or #fragment suffix, or by the specifier itself —
+// so a @trezor/<pkg>/src-prefixed runtime address such as src-maps/ neither fails the new URL gate
+// below nor gets mangled into lib-maps/; it is transparent to the $1 replacement.
+const internalSrcSpecifier = /@trezor\/([^/]+)\/src(?=[/?#]|$)/;
 
 const sanitizeInternalImports = (src, moduleType) => {
     const searchValue = new RegExp(internalSrcSpecifier.source, 'g');
