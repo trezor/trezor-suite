@@ -18292,6 +18292,23 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/coinjoin-analysis@workspace:*, @trezor/coinjoin-analysis@workspace:packages/coinjoin-analysis":
+  version: 0.0.0-use.local
+  resolution: "@trezor/coinjoin-analysis@workspace:packages/coinjoin-analysis"
+  dependencies:
+    "@trezor/eslint": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
+"@trezor/coinjoin-strategy@workspace:*, @trezor/coinjoin-strategy@workspace:packages/coinjoin-strategy":
+  version: 0.0.0-use.local
+  resolution: "@trezor/coinjoin-strategy@workspace:packages/coinjoin-strategy"
+  dependencies:
+    "@trezor/eslint": "workspace:*"
+    "@trezor/wabisabi-crypto": "workspace:*"
+  languageName: unknown
+  linkType: soft
+
 "@trezor/coinjoin@workspace:*, @trezor/coinjoin@workspace:packages/coinjoin":
   version: 0.0.0-use.local
   resolution: "@trezor/coinjoin@workspace:packages/coinjoin"
@@ -18300,12 +18317,15 @@ __metadata:
     "@trezor/blockchain-link": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/blockchain-link-utils": "workspace:*"
+    "@trezor/coinjoin-analysis": "workspace:*"
+    "@trezor/coinjoin-strategy": "workspace:*"
     "@trezor/eslint": "workspace:*"
     "@trezor/logger": "workspace:*"
     "@trezor/node-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
+    "@trezor/wabisabi-crypto": "workspace:*"
     golomb: "npm:1.2.0"
     n64: "npm:^0.2.10"
     node-fetch: "npm:^3.3.2"
@@ -19968,6 +19988,17 @@ __metadata:
     wif: "npm:^5.0.0"
   peerDependencies:
     tslib: ^2.6.2
+  languageName: unknown
+  linkType: soft
+
+"@trezor/wabisabi-crypto@workspace:*, @trezor/wabisabi-crypto@workspace:packages/wabisabi-crypto":
+  version: 0.0.0-use.local
+  resolution: "@trezor/wabisabi-crypto@workspace:packages/wabisabi-crypto"
+  dependencies:
+    "@noble/curves": "npm:^2.0.1"
+    "@noble/hashes": "npm:^2.0.1"
+    "@trezor/eslint": "workspace:*"
+    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 

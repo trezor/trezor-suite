@@ -12,14 +12,11 @@ import {
     type LogEvent,
 } from '@trezor/coinjoin';
 import { type IpcProxyHandlerOptions, createIpcProxyHandler } from '@trezor/ipc-proxy';
-import { getFreePort } from '@trezor/node-utils';
 import { type InterceptedEvent } from '@trezor/request-manager';
-import { getSynchronize } from '@trezor/utils';
 
 import type { ModuleInit } from './module';
 import { ipcMain, looselyTypedIpcMain } from '../ipcMain';
 import { type ReleasePowerSaveBlocker } from '../libs/createPowerSaveBlocker';
-import { CoinjoinProcess } from '../libs/processes/CoinjoinProcess';
 import { ThreadProxy } from '../libs/thread-proxy';
 
 export const SERVICE_NAME = '@trezor/coinjoin';
@@ -36,26 +33,6 @@ export const init: ModuleInit = ({
 }) => {
     const backends: ThreadProxy<CoinjoinBackend>[] = [];
     const clients: CoinjoinClient[] = [];
-
-    const synchronize = getSynchronize();
-
-    let coinjoinProcess: CoinjoinProcess | undefined;
-
-    const getCoinjoinProcess = async () => {
-        if (!coinjoinProcess) {
-            const [port] = await getFreePort();
-            coinjoinProcess = new CoinjoinProcess({ port, logger });
-        }
-
-        return coinjoinProcess;
-    };
-
-    const killCoinjoinProcess = () => {
-        if (coinjoinProcess) {
-            coinjoinProcess.stop();
-            coinjoinProcess = undefined;
-        }
-    };
 
     const sentryError = (network: string, payload: string) => {
         withScope(scope => {
@@ -136,7 +113,7 @@ export const init: ModuleInit = ({
     };
 
     const clientProxyOptions: IpcProxyHandlerOptions<CoinjoinClient> = {
-        onCreateInstance: async (settings: ConstructorParameters<typeof CoinjoinClient>[0]) => {
+        onCreateInstance: (settings: ConstructorParameters<typeof CoinjoinClient>[0]) => {
             // The client exists even without a coordinator because coinjoin accounts need it
             // for scanning.
             if (settings.coordinatorUrl) {
@@ -148,10 +125,6 @@ export const init: ModuleInit = ({
                 });
             }
 
-            const coinjoinMiddleware = await synchronize(getCoinjoinProcess);
-            const port = coinjoinMiddleware.getPort();
-            // override default url in coinjoin settings
-            settings.middlewareUrl = coinjoinMiddleware.getUrl();
             const client = new CoinjoinClient(settings);
             client.on('log', ({ level, payload }) => {
                 if (level === 'error') {
@@ -162,30 +135,14 @@ export const init: ModuleInit = ({
             clients.push(client);
 
             return {
-                onRequest: async (method, params) => {
+                onRequest: (method, params) => {
                     logger.debug(SERVICE_NAME, `${CLIENT_CHANNEL} call ${method}`);
-                    if (method === 'enable') {
-                        logger.debug(
-                            SERVICE_NAME,
-                            `${CLIENT_CHANNEL} binary enable on port ${port}`,
-                        );
-                        try {
-                            await synchronize(() => coinjoinMiddleware.start());
-                        } catch (err) {
-                            logger.error(SERVICE_NAME, `Start failed: ${err.message}`);
-                            throw err; // pass this error to suite toast
-                        }
-                    }
                     if (method === 'disable') {
                         const clientIndex = clients.indexOf(client);
                         if (clientIndex !== -1) {
                             clients.splice(clientIndex, 1);
                         }
 
-                        if (clients.length === 0) {
-                            logger.debug(SERVICE_NAME, `${CLIENT_CHANNEL} binary stop`);
-                            synchronize(killCoinjoinProcess);
-                        }
                         if (!clients.some(cli => cli.getAccounts().length > 0)) {
                             stopBlockingPowerSave();
                         }
@@ -241,7 +198,7 @@ export const init: ModuleInit = ({
         };
     };
 
-    const dispose = async () => {
+    const dispose = () => {
         backends.forEach(b => b.dispose());
         backends.splice(0, backends.length);
 
@@ -258,12 +215,11 @@ export const init: ModuleInit = ({
         clients.splice(0, clients.length);
 
         unregisterProxies();
-        await synchronize(killCoinjoinProcess);
         stopBlockingPowerSave();
     };
 
-    const onQuit = async () => {
-        await dispose();
+    const onQuit = () => {
+        dispose();
     };
 
     mainWindowProxy.on('init', mainWindow => {

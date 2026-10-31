@@ -1,10 +1,10 @@
+import type { RawLiquidityClue } from '@trezor/coinjoin-analysis';
 import type { Logger } from '@trezor/logger';
 import type { Network } from '@trezor/utxo-lib';
 
 import type { AccountAddress } from './account';
 import type { AliceShape, SerializedAlice } from './alice';
 import type { CoinjoinRequest, CoinjoinRoundParameters, Round } from './coordinator';
-import type { RawLiquidityClue } from './middleware';
 import type { CoinjoinPrisonShape } from './prison';
 import type { EndRoundState, RoundPhase, SessionPhase } from '../enums';
 
@@ -18,7 +18,6 @@ export interface CoinjoinRoundOptions {
     signal: AbortSignal;
     coordinatorName: string;
     coordinatorUrl: string;
-    middlewareUrl: string;
     logger: Logger;
     setSessionPhase: (event: SessionPhaseEvent) => void;
 }

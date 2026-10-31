@@ -1,3 +1,5 @@
+import type { Credential } from '@trezor/wabisabi-crypto';
+
 import type { AccountUtxo } from './account';
 import type {
     AllowedScriptTypes,
@@ -5,7 +7,6 @@ import type {
     RealCredentials,
     RegistrationData,
 } from './coordinator';
-import type { Credentials } from './middleware';
 
 export interface AlicePendingRequest {
     type: 'ownership' | 'signature';
@@ -34,8 +35,8 @@ export interface AliceShape {
     realVsizeCredentials?: RealCredentials; // data from inputRegistration phase
     confirmationInterval?: AliceConfirmationInterval;
     confirmationData?: ConfirmationData; // data from connectionConfirmation phase
-    confirmedAmountCredentials?: Credentials[]; // data from connectionConfirmation phase
-    confirmedVsizeCredentials?: Credentials[]; // data from connectionConfirmation phase
+    confirmedAmountCredentials?: Credential[]; // data from connectionConfirmation phase
+    confirmedVsizeCredentials?: Credential[]; // data from connectionConfirmation phase
     witness?: string; // received as response to RequestEvent, provided by wallet (Suite)
     witnessIndex?: number; // received as response to RequestEvent, provided by wallet (Suite)
     error?: Error;
@@ -45,7 +46,7 @@ export interface AliceShape {
     clearConfirmationInterval(): void;
     setError(error: Error): void;
     setConfirmationData(data: ConfirmationData): void;
-    setConfirmedCredentials(amount: Credentials[], vsize: Credentials[]): void;
+    setConfirmedCredentials(amount: Credential[], vsize: Credential[]): void;
     setRegistrationData(data: RegistrationData): void;
     setRealCredentials(amount: RealCredentials, vsize: RealCredentials): void;
     getResolvedRequest(type: AlicePendingRequest['type']): AlicePendingRequest | undefined;

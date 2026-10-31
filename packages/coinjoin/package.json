@@ -20,6 +20,7 @@
         "test:discovery": "yarn g:tsx ./tools/discovery-test.ts",
         "test:anonymity": "yarn g:tsx ./tools/anonymity-test.ts",
         "test:benchmark": "yarn g:tsx ./tools/benchmark-test.ts",
+        "test:regtest": "yarn g:tsx ./tools/regtest-round-test.ts",
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'"
@@ -29,11 +30,14 @@
         "@trezor/blockchain-link": "workspace:*",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/blockchain-link-utils": "workspace:*",
+        "@trezor/coinjoin-analysis": "workspace:*",
+        "@trezor/coinjoin-strategy": "workspace:*",
         "@trezor/eslint": "workspace:*",
         "@trezor/logger": "workspace:*",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "@trezor/utxo-lib": "workspace:*",
+        "@trezor/wabisabi-crypto": "workspace:*",
         "golomb": "1.2.0",
         "n64": "^0.2.10"
     },

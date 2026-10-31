@@ -1,12 +1,11 @@
 /* eslint-disable no-console */
 
 import fs from 'fs';
-import http from 'http';
 
 import { noopLogger } from '@trezor/logger';
 
 import { getAccountInfo, getAccountInfoParams } from './discovery';
-import { getAnonymityScores } from '../src/client/analyzeTransactions';
+import { getAnonymityScores, getAnonymityScoresRequest } from '../src/client/analyzeTransactions';
 import { getCoinjoinNetwork } from '../src/utils/settingsUtils';
 
 const argvSlice = process.argv.slice(2);
@@ -20,16 +19,17 @@ const CACHE_PARAMS = `${CACHE_DIR}/anonymityScoreParams.json`;
 /**
  * Semi e2e test for debugging purposes
  *
- * NOTE: this test expects coinjoin-backend or coinjoin middleware to be present.
- * see `middlewareUrl` below
+ * NOTE: this test expects coinjoin-backend to be present, for the account discovery.
+ * The scores themselves are computed in process by `@trezor/coinjoin-analysis`; nothing
+ * is posted to a middleware on port 37128 any more.
  *
  * Usage:
  * `yarn workspace @trezor/coinjoin test:anonymity [COIN] [XPUB]`
  *
  * Result:
  * 1. Reads accountInfo using CoinjoinBackend
- * 2. Use accountInfo to calculate anonymity scores in coinjoin middleware
- * 3. stores both accountInfo and params used in middleware in `.cache` directory
+ * 2. Uses accountInfo to calculate anonymity scores locally
+ * 3. stores both accountInfo and the analyzer's input in the `.cache` directory
  */
 
 (async () => {
@@ -39,35 +39,6 @@ const CACHE_PARAMS = `${CACHE_DIR}/anonymityScoreParams.json`;
     if (!fs.existsSync(CACHE_DIR)) {
         fs.mkdirSync(CACHE_DIR);
     }
-
-    // override `http.request` to get exact params sent to middleware
-    // params are stored in CACHE_DIR/CACHE_PARAMS file
-    const originalHttpRequest = http.request;
-    http.request = options => {
-        if (
-            typeof options === 'object' &&
-            'pathname' in options &&
-            options.pathname.includes('get-anonymity-scores')
-        ) {
-            const chunks: Buffer[] = [];
-            const req = originalHttpRequest(options);
-            const originalWrite = req.write.bind(req);
-            req.write = (chunk: Buffer) => {
-                chunks.push(chunk);
-
-                return originalWrite(chunk);
-            };
-
-            req.on('finish', () => {
-                const data = Buffer.concat(chunks).toString('utf-8');
-                fs.writeFileSync(CACHE_PARAMS, JSON.stringify(JSON.parse(data), null, 4));
-            });
-
-            return req;
-        }
-
-        return originalHttpRequest(options);
-    };
 
     // check if account is already discovered and cached
     const transactions: Parameters<typeof getAnonymityScores>[0] = [];
@@ -93,13 +64,18 @@ const CACHE_PARAMS = `${CACHE_DIR}/anonymityScoreParams.json`;
         fs.writeFileSync(CACHE_ACCOUNT_INFO, JSON.stringify(accountInfo, null, 4));
     }
 
-    const anonScores = await getAnonymityScores(transactions, {
-        // middlewareUrl: 'http://localhost:8081/client/',
-        middlewareUrl: 'http://localhost:37128/',
+    const options = {
         network: getCoinjoinNetwork(network as any),
-        signal: new AbortController().signal,
         logger: noopLogger,
-    });
+    };
+
+    // record exactly what the analyzer was fed, for debugging
+    fs.writeFileSync(
+        CACHE_PARAMS,
+        JSON.stringify(getAnonymityScoresRequest(transactions, options), null, 4),
+    );
+
+    const anonScores = getAnonymityScores(transactions, options);
 
     console.log('✅', 'End, printing anonymity scores:');
     console.log(anonScores);
