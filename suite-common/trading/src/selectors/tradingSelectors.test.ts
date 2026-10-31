@@ -25,6 +25,7 @@ import {
     selectDeviceTradingTradesOrderedByDate,
     selectGroupedExchangeQuotes,
     selectGroupedTradingExchangeQuotes,
+    selectIsTradingBuyAvailableForNetworkSymbol,
     selectIsTradingNetworkFeeMissing,
     selectTradedAccountKeys,
     selectTradingAccountAccordingActiveSection,
@@ -47,6 +48,7 @@ import {
     selectTradingBuyReceiveAccount,
     selectTradingBuySelectedQuote,
     selectTradingBuySupportedCryptoIds,
+    selectTradingBuySupportedNetworkSymbols,
     selectTradingCoinInfoByCryptoId,
     selectTradingCoinSymbolByCryptoId,
     selectTradingComposedTransactionInfo,
@@ -924,6 +926,77 @@ describe('tradingSelectors', () => {
             state.wallet.trading.buy.buyInfo = undefined;
 
             expect(selectTradingBuySupportedCryptoIds(state)).toEqual([]);
+        });
+    });
+
+    describe(selectTradingBuySupportedNetworkSymbols.name, () => {
+        it('should select network symbols of native coins offered by buy providers', () => {
+            expect(selectTradingBuySupportedNetworkSymbols(state)).toEqual(
+                new Set([asNetworkSymbol('btc'), asNetworkSymbol('eth'), asNetworkSymbol('base')]),
+            );
+        });
+
+        it('should skip tokens and coins without a buy provider', () => {
+            const buyInfo = getBuyState().buyInfo!;
+
+            state.wallet.trading.buy.buyInfo = {
+                ...buyInfo,
+                supportedCryptoCurrencies: [
+                    'ethereum--0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                    'bitcoin',
+                ] as CryptoId[],
+            };
+
+            expect(selectTradingBuySupportedNetworkSymbols(state)).toEqual(
+                new Set([asNetworkSymbol('btc')]),
+            );
+        });
+
+        it('should be stable', () => {
+            const first = selectTradingBuySupportedNetworkSymbols(state);
+            const second = selectTradingBuySupportedNetworkSymbols(state);
+
+            expect(first).toBe(second);
+        });
+
+        it('should be empty when buy info is not loaded', () => {
+            state.wallet.trading.buy.buyInfo = undefined;
+
+            expect(selectTradingBuySupportedNetworkSymbols(state)).toEqual(new Set());
+        });
+    });
+
+    describe(selectIsTradingBuyAvailableForNetworkSymbol.name, () => {
+        const btc = asNetworkSymbol('btc');
+        const zec = asNetworkSymbol('zec');
+
+        it('should follow the loaded catalog', () => {
+            expect(selectIsTradingBuyAvailableForNetworkSymbol(state, btc)).toBe(true);
+            expect(selectIsTradingBuyAvailableForNetworkSymbol(state, zec)).toBe(false);
+        });
+
+        it('should keep buying available while buy info is not loaded', () => {
+            state.wallet.trading.buy.buyInfo = undefined;
+
+            expect(selectIsTradingBuyAvailableForNetworkSymbol(state, zec)).toBe(true);
+        });
+
+        it('should keep buying available when the provider list failed to load', () => {
+            const buyInfo = getBuyState().buyInfo!;
+
+            state.wallet.trading.buy.buyInfo = {
+                ...buyInfo,
+                buyInfo: { ...buyInfo.buyInfo, providers: [] },
+                supportedCryptoCurrencies: [],
+            };
+
+            expect(selectIsTradingBuyAvailableForNetworkSymbol(state, zec)).toBe(true);
+        });
+
+        it('should keep buying available while the coin catalog is not loaded', () => {
+            state.wallet.trading.info.coins = undefined;
+
+            expect(selectIsTradingBuyAvailableForNetworkSymbol(state, zec)).toBe(true);
         });
     });
 
