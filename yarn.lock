@@ -19455,6 +19455,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/suite-e2e@workspace:suite/e2e"
   dependencies:
+    "@currents/cmd": "npm:2.2.0"
     "@currents/playwright": "npm:^2.5.2"
     "@evolu/common": "npm:8.10.0"
     "@noble/hashes": "npm:^2.0.1"

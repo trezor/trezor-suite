@@ -1,12 +1,22 @@
 name: "Extract and Upload test environment Logs"
-description: "Extracts logs from Trezor-user-env, Regtest, Relay server, and then uploads them as artifacts"
+description: "Extracts the logs of the Docker Compose services in COMPOSE_FILE, then uploads them as a GitHub artifact or attaches them to the Currents run"
 inputs:
+  destination:
+    description: "github uploads an artifact; currents attaches a zip to the run and reads CURRENTS_RECORD_KEY, CURRENTS_PROJECT_ID, CURRENTS_CI_BUILD_ID and CURRENTS_MACHINE_ID"
+    required: false
+    default: "github"
+  currents-workspace:
+    description: "Workspace that provides the currents CLI, required by the currents destination"
+    required: false
+    default: ""
   target:
-    description: "Target environment for which logs are being extracted (e.g., desktop, web)"
-    required: true
+    description: "Target environment for which logs are being extracted (e.g., desktop, web), used by the github destination"
+    required: false
+    default: ""
   test-group:
-    description: "Test group name for log file naming"
-    required: true
+    description: "Test group name for artifact naming, used by the github destination"
+    required: false
+    default: ""
 
 runs:
   using: "composite"
@@ -14,25 +24,30 @@ runs:
     - name: Extract logs from test environment
       shell: bash
       run: |
-        docker cp docker-trezor-user-env-unix-1:/trezor-user-env/logs/debugging.log trezor-user-env-debugging.log || true
-        docker cp docker-trezor-user-env-unix-1:/trezor-user-env/logs/emulator_bridge.log tenv-emulator-bridge-debugging.log || true
-        docker cp docker-trezor-user-env-unix-1:/trezor-user-env/logs/tropic_model.log trezor-user-env-tropic_model.log || true
-        docker cp docker-trezor-user-env-unix-1:/trezor-user-env/docker/version.txt trezor-user-env-version.txt || true
-        docker logs docker-electrum-regtest-1 > electrum-regtest.txt 2>&1 || true
-        docker logs docker-quota-db-1 > quota-db.log 2>&1 || true
-        docker logs docker-suite-sync-1 > suite-sync.log 2>&1 || true
+        mkdir -p test-env-logs
+        docker compose cp trezor-user-env-unix:/trezor-user-env/logs/debugging.log test-env-logs/trezor-user-env-debugging.log || true
+        docker compose cp trezor-user-env-unix:/trezor-user-env/logs/emulator_bridge.log test-env-logs/tenv-emulator-bridge-debugging.log || true
+        docker compose cp trezor-user-env-unix:/trezor-user-env/logs/tropic_model.log test-env-logs/trezor-user-env-tropic_model.log || true
+        for service in $(docker compose ps --all --services); do
+          docker compose logs --no-color "$service" > "test-env-logs/$service.log" 2>&1 || true
+        done
 
     - name: Upload logs of testing environment
+      if: inputs.destination == 'github'
       uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
       continue-on-error: true
       with:
         name: test-env-logs-${{ github.job }}-${{ github.run_attempt }}-${{ inputs.target }}-${{ inputs.test-group }}
-        path: |
-          trezor-user-env-debugging.log
-          tenv-emulator-bridge-debugging.log
-          trezor-user-env-tropic_model.log
-          trezor-user-env-version.txt
-          electrum-regtest.txt
-          quota-db.log
-          suite-sync.log
+        path: test-env-logs/
         retention-days: 30
+
+    - name: Attach logs of testing environment to the Currents run
+      if: inputs.destination == 'currents'
+      continue-on-error: true
+      shell: bash
+      env:
+        CURRENTS_WORKSPACE: ${{ inputs.currents-workspace }}
+      run: |
+        ZIP_PATH="$PWD/test-env-logs-$CURRENTS_MACHINE_ID.zip"
+        zip -j -q "$ZIP_PATH" test-env-logs/*
+        yarn workspace "$CURRENTS_WORKSPACE" exec currents run attach --caption "Test environment logs" "$ZIP_PATH"
