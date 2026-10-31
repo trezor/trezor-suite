@@ -128,24 +128,26 @@ test.describe('TrezorConnect.selectAccount', { tag: ['@T3T1', '@T3W1', '@desktop
         },
     );
 
-    test(
-        'cancelling returns a Method_Cancel error',
-        {
-            tag: ['@optional'],
-            annotation: createTestAnnotation({ stream: TestStream.Connect }),
-        },
-        async ({ connectPermissionsModal, connectSelectAccountModal }) => {
-            const res = TrezorConnect.selectAccount({ coin: 'eth' });
+    for (let i = 0; i < 40; i++) {
+        test(
+            `cancelling returns a Method_Cancel error #${i}`,
+            {
+                tag: ['@optional'],
+                annotation: createTestAnnotation({ stream: TestStream.Connect }),
+            },
+            async ({ connectPermissionsModal, connectSelectAccountModal }) => {
+                const res = TrezorConnect.selectAccount({ coin: 'eth' });
 
-            await connectPermissionsModal.confirmButton.click();
-            await expect(connectSelectAccountModal.account(0)).toBeVisible();
-            await connectSelectAccountModal.cancelButton.click();
+                await connectPermissionsModal.confirmButton.click();
+                await expect(connectSelectAccountModal.account(0)).toBeVisible();
+                await connectSelectAccountModal.cancelButton.click();
 
-            const response = await res;
-            expect(response.success).toBe(false);
-            if (response.success) return;
+                const response = await res;
+                expect(response.success).toBe(false);
+                if (response.success) return;
 
-            expect(response.error.code).toBe('Method_Cancel');
-        },
-    );
+                expect(response.error.code).toBe('Method_Cancel');
+            },
+        );
+    }
 });

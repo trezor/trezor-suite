@@ -182,8 +182,10 @@ export const useConnectPopupDesktop = () => {
                 }
             });
             desktopApi.on('app/auto-start/popup-request', () => {
+                console.warn('[autostart-debug] popup-request received');
                 dispatch(openModal({ type: 'auto-start-before-quit' }));
             });
+            console.warn('[autostart-debug] popup listeners registered');
 
             // Prevent multiple initializations
             if (!initialized.current) {
@@ -200,6 +202,7 @@ export const useConnectPopupDesktop = () => {
 
         return () => {
             if (desktopApi.available) {
+                console.warn('[autostart-debug] popup listeners removed');
                 desktopApi.removeAllListeners('connect-popup/call');
                 desktopApi.removeAllListeners('connect-popup/cancel');
                 desktopApi.removeAllListeners('app/auto-start/popup-request');

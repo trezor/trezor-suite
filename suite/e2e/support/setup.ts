@@ -1,5 +1,6 @@
 import { BrowserContext, TestInfo, expect } from '@playwright/test';
 import { execSync } from 'child_process';
+import { appendFileSync } from 'fs';
 
 import { installPerfInstrumentation } from '@trezor/perf-e2e';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
@@ -26,6 +27,15 @@ export const electronSetup = async (
         artefactFolder: testInfo.outputDir,
         viewport: testInfo.project.use.viewport!,
         ...electronConf,
+    });
+
+    suite.window.on('console', message => {
+        if (message.text().includes('[autostart-debug]')) {
+            appendFileSync(
+                `${testInfo.outputDir}/electron-logs.txt`,
+                `${new Date().toISOString()} - renderer ${message.text()}\n`,
+            );
+        }
     });
 
     // The reload puts the init script in place before the renderer's React loads; the window is
@@ -82,17 +92,31 @@ export const electronTeardown = async (
             contentType: 'video/webm',
         });
     }
+    const debugLog = (message: string) =>
+        appendFileSync(
+            `${testInfo.outputDir}/electron-logs.txt`,
+            `${new Date().toISOString()} - [autostart-debug] test: ${message}\n`,
+        );
+    debugLog('electronApp.close() called');
     const closePromise = suite.electronApp.close();
     // Handle modal that asks to enable auto-start
     if (electronConf.exposeConnectWs) {
         const autoStartQuitButton = suite.window.getByTestId('@auto-start-before-quit/button-quit');
-        await expect(
-            autoStartQuitButton,
-            'expected the AutoStart Quit button to be enabled',
-        ).toBeEnabled();
-        await autoStartQuitButton.click();
+        try {
+            await expect(
+                autoStartQuitButton,
+                'expected the AutoStart Quit button to be enabled',
+            ).toBeEnabled();
+            debugLog('quit button enabled');
+            await autoStartQuitButton.click();
+            debugLog('quit button clicked');
+        } catch (error) {
+            debugLog(`quit button failed: ${String(error).split('\n')[0]}`);
+            throw error;
+        }
     }
     await closePromise;
+    debugLog('electronApp closed');
 };
 
 type WebSetupParams = { webClipboardRead: boolean };

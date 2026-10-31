@@ -268,6 +268,9 @@ export const createDesktopMainApp =
             stoppingDaemon = true;
         });
         app.on('before-quit', async event => {
+            console.warn(
+                `${new Date().toISOString()} - [autostart-debug] main: before-quit fired, readyToQuit=${readyToQuit}`,
+            );
             if (readyToQuit) return;
             event.preventDefault();
             quitBioAuthModule();

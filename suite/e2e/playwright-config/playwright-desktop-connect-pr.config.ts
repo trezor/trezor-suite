@@ -15,12 +15,19 @@ import { PlaywrightTarget } from '../support/testExtends/suiteTestOptions';
  */
 const target = PlaywrightTarget.Desktop;
 const definition: PlaywrightProjectDefinition[] = [
-    { model: Model.T3T1, additionalGrepInvert: /@skipOnPR/, currentsTags: tagsPr },
+    {
+        model: Model.T3T1,
+        grep: /cancelling returns a Method_Cancel error/,
+        additionalGrepInvert: /@skipOnPR/,
+        currentsTags: tagsPr,
+    },
 ];
 
 const config = defineConfig({
     ...baseConfig,
+    retries: 0,
     testDir: '../tests/trezor-connect',
+    testMatch: /selectAccount\.test\.ts/,
     projects: PlaywrightProjectBuilder.buildFromDefinitions(target, definition),
 });
 

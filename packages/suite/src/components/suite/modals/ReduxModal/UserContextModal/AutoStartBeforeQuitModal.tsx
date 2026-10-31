@@ -16,6 +16,12 @@ export const AutoStartBeforeQuitModal = () => {
     );
     const [dontAskAgain, setDontAskAgain] = useState(false);
     useEffect(() => {
+        console.warn('[autostart-debug] AutoStartBeforeQuitModal mounted');
+
+        return () => console.warn('[autostart-debug] AutoStartBeforeQuitModal unmounted');
+    }, []);
+    useEffect(() => {
+        console.warn(`[autostart-debug] ack effect, desktopApi.available=${desktopApi.available}`);
         if (desktopApi.available) desktopApi.appAutoStartPopupAck();
     }, [desktopApi]);
 
@@ -24,6 +30,7 @@ export const AutoStartBeforeQuitModal = () => {
     const handleResponse = (
         action: 'background-always' | 'background-now' | 'quit-always' | 'quit-now',
     ) => {
+        console.warn(`[autostart-debug] response ${action}`);
         desktopApi.appAutoStartPopupResponse(action);
         dispatch(closeModal());
         analytics.report({

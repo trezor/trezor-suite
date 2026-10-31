@@ -82,7 +82,7 @@ const initialState: State = {
     context: MODAL_CONTEXT_NONE,
 };
 
-export const modalReducer = (state: State = initialState, action: UnknownAction): State => {
+const baseModalReducer = (state: State, action: UnknownAction): State => {
     const requestId = typeof action.requestId === 'string' ? action.requestId : undefined;
 
     // device with context assigned to modal was disconnected
@@ -220,6 +220,31 @@ export const modalReducer = (state: State = initialState, action: UnknownAction)
     }
 
     return state;
+};
+
+const isAutoStartModal = (state: State) =>
+    state.context === MODAL_CONTEXT_USER && state.payload.type === 'auto-start-before-quit';
+
+const describeModal = (state: State) =>
+    `${state.context}${state.context === MODAL_CONTEXT_USER ? `:${state.payload.type}` : ''}${state.preserve ? ':preserve' : ''}`;
+
+export const modalReducer = (state: State = initialState, action: UnknownAction): State => {
+    const nextState = baseModalReducer(state, action);
+    if (isAutoStartModal(state) || isAutoStartModal(nextState)) {
+        const payloadType =
+            typeof action.payload === 'object' &&
+            action.payload !== null &&
+            'type' in action.payload
+                ? `(${String(action.payload.type)})`
+                : '';
+        const isClosing = isAutoStartModal(state) && !isAutoStartModal(nextState);
+        console.warn(
+            `[autostart-debug] ${action.type}${payloadType}: ${describeModal(state)} -> ${describeModal(nextState)}`,
+            isClosing ? new Error('closed by').stack : '',
+        );
+    }
+
+    return nextState;
 };
 
 export const selectHasActiveModal = (state: ModalRootState) =>

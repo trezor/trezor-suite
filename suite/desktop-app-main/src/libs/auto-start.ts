@@ -81,7 +81,15 @@ export const setAutoStartEnabled = (enabled: boolean) => {
  * @param mainWindow - Main window to show the dialog
  * @returns continue - if true continue the flow of closing the app, if false, stop and only hide the window
  */
+let debugPromptCount = 0;
+const debugLog = (message: string) =>
+    console.warn(`${new Date().toISOString()} - [autostart-debug] main: ${message}`);
+
 export const promptForAutoStartBeforeQuit = async (mainWindow: BrowserWindow, store: Store) => {
+    const debugPrompt = ++debugPromptCount;
+    debugLog(
+        `prompt #${debugPrompt} enter: autoStartEnabled=${isAutoStartEnabled()} dontAskAgain=${store.getConnectSettings().autoStartDontAskAgain} hasUsedConnectWs=${store.getConnectSettings().hasUsedConnectWs} windowUsable=${isMainWindowUsable(mainWindow)}`,
+    );
     if (
         isAutoStartEnabled() ||
         store.getConnectSettings().autoStartDontAskAgain ||
@@ -99,29 +107,36 @@ export const promptForAutoStartBeforeQuit = async (mainWindow: BrowserWindow, st
     ipcMain.removeHandler('app/auto-start/popup-ack');
     ipcMain.removeHandler('app/auto-start/popup-response');
     ipcMain.handleOnce('app/auto-start/popup-ack', () => {
+        debugLog(`prompt #${debugPrompt} ack received`);
         modalShown = true;
     });
     ipcMain.handleOnce('app/auto-start/popup-response', (_, response) => {
+        debugLog(`prompt #${debugPrompt} response received: ${response}`);
         deferredResponse.resolve(response);
     });
 
     mainWindow.once('closed', () => {
+        debugLog(`prompt #${debugPrompt} window closed`);
         deferredResponse.resolve('quit-now');
     });
 
     try {
         mainWindow.webContents.send('app/auto-start/popup-request');
-    } catch {
+        debugLog(`prompt #${debugPrompt} popup-request sent`);
+    } catch (error) {
+        debugLog(`prompt #${debugPrompt} popup-request send failed: ${error}`);
         deferredResponse.resolve('quit-now');
     }
 
     // Fallback if modal not shown at the moment
     // This can happen on some screens like onboarding, where normal modal might not be shown
     setTimeout(() => {
+        debugLog(`prompt #${debugPrompt} fallback timer: modalShown=${modalShown}`);
         if (!modalShown) deferredResponse.resolve('quit-now');
     }, 1000);
 
     const response = await deferredResponse.promise;
+    debugLog(`prompt #${debugPrompt} resolved: ${response}`);
 
     switch (response) {
         case 'background-always': {
