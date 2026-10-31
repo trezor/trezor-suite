@@ -1,35 +1,86 @@
 import { resolveAfter, scheduleAction } from '@trezor/utils';
 
+export type RequestPriority = 'normal' | 'high';
+
+const PRIORITY_RANK = {
+    normal: 0,
+    high: 1,
+} satisfies Record<RequestPriority, number>;
+
+type LimitOptions = {
+    priority?: RequestPriority;
+};
+
+type Job = {
+    priority: RequestPriority;
+    run: () => Promise<boolean>;
+};
+
 // Poor man's rate limiter that slows down requests so there is a `delayMs` gap between them.
 export class RateLimiter {
     private readonly delayMs: number; // gap between each request
     private readonly timeoutMs: number;
 
-    private queue = Promise.resolve();
+    private readonly jobs: Job[] = [];
+    private isDraining = false;
 
     constructor(delayMs: number, timeoutMs: number) {
         this.delayMs = delayMs;
         this.timeoutMs = timeoutMs;
     }
 
-    limit<T>(fn: (signal?: AbortSignal) => Promise<T>, signal?: AbortSignal): Promise<T> {
-        let isSkipped = false;
-        const resultPromise = this.queue.then(async () => {
-            if (signal?.aborted) {
-                isSkipped = true;
-                throw signal.reason;
-            }
+    limit<T>(
+        fn: (signal?: AbortSignal) => Promise<T>,
+        signal?: AbortSignal,
+        { priority = 'normal' }: LimitOptions = {},
+    ): Promise<T> {
+        return new Promise<T>((resolve, reject) => {
+            const run = async () => {
+                if (signal?.aborted) {
+                    reject(signal.reason);
 
-            return await scheduleAction(fn, { timeout: this.timeoutMs, signal });
+                    return false;
+                }
+
+                try {
+                    resolve(await scheduleAction(fn, { timeout: this.timeoutMs, signal }));
+                } catch (error) {
+                    // ensure errors don't stop the queue
+                    if (!signal?.aborted) console.error(error);
+                    reject(error);
+                }
+
+                return true;
+            };
+
+            this.enqueue({ priority, run });
         });
+    }
 
-        this.queue = resultPromise
-            .catch(error => {
-                // ensure errors don't stop the queue
-                if (!signal?.aborted) console.error(error);
-            })
-            .then(() => (isSkipped ? undefined : resolveAfter(this.delayMs)));
+    private enqueue(job: Job) {
+        const firstLowerPriorityJobIndex = this.jobs.findIndex(
+            ({ priority }) => PRIORITY_RANK[priority] < PRIORITY_RANK[job.priority],
+        );
 
-        return resultPromise;
+        if (firstLowerPriorityJobIndex === -1) {
+            this.jobs.push(job);
+        } else {
+            this.jobs.splice(firstLowerPriorityJobIndex, 0, job);
+        }
+
+        this.drain();
+    }
+
+    private async drain() {
+        if (this.isDraining) return;
+
+        this.isDraining = true;
+        for (let job = this.jobs.shift(); job; job = this.jobs.shift()) {
+            const hasRun = await job.run();
+            if (hasRun) {
+                await resolveAfter(this.delayMs);
+            }
+        }
+        this.isDraining = false;
     }
 }
