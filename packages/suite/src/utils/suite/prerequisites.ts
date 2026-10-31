@@ -1,6 +1,7 @@
 import { isRecoveryInProgress } from '@suite/recovery';
 import { type RouterState } from '@suite/router';
 import { isAdditionalShamirBackupInProgress } from '@suite-common/backup';
+import { getIsFirmwareUpdateRequired } from '@suite-common/suite-utils';
 
 import type { TransportState } from 'src/reducers/suite/suiteReducer';
 import type { AppState, TrezorDevice } from 'src/types/suite';
@@ -104,7 +105,7 @@ export const getPrerequisiteName = ({
     }
 
     // device firmware update required
-    if (device.firmware === 'required') return 'firmware-required';
+    if (getIsFirmwareUpdateRequired(device)) return 'firmware-required';
 
     return null;
 };

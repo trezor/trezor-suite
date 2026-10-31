@@ -27,6 +27,8 @@ import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 const INIT_ACTION = { type: 'foo' };
 
+const supportedFirmwareVersion = { major_version: 2, minor_version: 8, patch_version: 0 };
+
 const deviceReducer = prepareDeviceReducer({
     actionTypes: {
         setDeviceMetadata: mockActionType('setDeviceMetadata'),
@@ -380,6 +382,35 @@ export const deviceConnectBlockedFixtures: NoNavigationFixture[] = [
             },
         },
     },
+    {
+        description: 'blocks navigation when device firmware update is required',
+        initialState: buildInitialState({
+            appSettings: { isOnboardingFinished: true },
+            walletSettings: { enabledNetworks: [asNetworkSymbol('btc')] },
+        }),
+        action: {
+            type: deviceActions.connectDevice.type,
+            payload: {
+                device: mockSuiteDevice({ firmware: 'required' }, supportedFirmwareVersion),
+            },
+        },
+    },
+    {
+        description: 'blocks navigation when device firmware is below minimal supported version',
+        initialState: buildInitialState({
+            appSettings: { isOnboardingFinished: true },
+            walletSettings: { enabledNetworks: [asNetworkSymbol('btc')] },
+        }),
+        action: {
+            type: deviceActions.connectDevice.type,
+            payload: {
+                device: mockSuiteDevice(
+                    { firmware: 'valid' },
+                    { major_version: 2, minor_version: 5, patch_version: 3 },
+                ),
+            },
+        },
+    },
 ];
 
 export const deviceConnectCompromisedFixtures: NavigationFixture[] = [
@@ -474,6 +505,26 @@ export const deviceConnectUninitializedFixtures: ResetNavigationFixture[] = [
 ];
 
 export const deviceConnectAuthorizedFixtures: NavigationFixture[] = [
+    {
+        description:
+            'navigates to ConnectingDevice when onboarding is finished and firmware is supported',
+        initialState: buildInitialState({
+            appSettings: { isOnboardingFinished: true },
+            walletSettings: { enabledNetworks: [asNetworkSymbol('btc')] },
+        }),
+        action: {
+            type: deviceActions.connectDevice.type,
+            payload: {
+                device: mockSuiteDevice({ firmware: 'valid' }, supportedFirmwareVersion),
+            },
+        },
+        expectedNavigation: {
+            route: RootStackRoutes.AuthorizeDeviceStack,
+            params: {
+                screen: AuthorizeDeviceStackRoutes.ConnectingDevice,
+            },
+        },
+    },
     {
         description:
             'navigates to ConnectingDevice when connected new device and network is enabled',
