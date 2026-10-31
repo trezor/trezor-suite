@@ -11,6 +11,7 @@ import { AssetDetailBalance, AssetDetailBalanceSkeleton } from './AssetDetailBal
 import { AssetDetailEarn } from './AssetDetailEarn';
 import { AssetDetailHiddenBanner } from './AssetDetailHiddenBanner';
 import { AssetDetailMarketPrice } from './AssetDetailMarketPrice';
+import { AssetDetailStakingBanner } from './AssetDetailStakingBanner';
 import { AssetDetailTransactions } from './AssetDetailTransactions';
 import { AssetNotExists } from './AssetNotExists';
 import { selectRoutedAssetKey } from './selectRoutedAssetKey';
@@ -38,6 +39,7 @@ export const AssetDetail = () => {
                 </Box>
                 <AssetDetailEarn assetKey={assetKey} />
             </Row>
+            <AssetDetailStakingBanner assetKey={assetKey} />
             <AssetDetailTransactions assetKey={assetKey} />
         </Column>
     );
