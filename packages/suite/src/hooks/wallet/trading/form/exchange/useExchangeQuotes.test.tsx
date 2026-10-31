@@ -177,13 +177,20 @@ const renderExchangeQuotes = (
     defaultValues: TradingExchangeFormProps,
     options: {
         network?: Network;
+        fromAddress?: string;
         receiveAddress?: string;
         receiveAccountKey?: ReturnType<typeof mockAccountKey>;
         receiveAccountSymbol?: NetworkSymbol;
         quotes?: ExchangeTrade[];
     } = {},
 ) => {
-    const { receiveAddress, receiveAccountKey, receiveAccountSymbol, quotes = [] } = options;
+    const {
+        fromAddress,
+        receiveAddress,
+        receiveAccountKey,
+        receiveAccountSymbol,
+        quotes = [],
+    } = options;
     const network = 'network' in options ? options.network : getNetwork(btcSymbol);
     const report = jest.fn();
     const { services } = createTestCompositionRoot<
@@ -215,6 +222,7 @@ const renderExchangeQuotes = (
                 methods,
                 network: currentNetwork,
                 shouldSendInSats: false,
+                fromAddress,
                 receiveAddress,
                 receiveAccountKey: currentReceiveAccountKey,
                 receiveAccountSymbol,
@@ -256,6 +264,25 @@ describe('useExchangeQuotes', () => {
                 formValues: expect.objectContaining({ receiveAddress: '0xreceive' }),
                 network: expect.objectContaining({ symbol: 'btc' }),
                 shouldSendInSats: false,
+            }),
+        );
+    });
+
+    it('sends the account sender address even when the form has none', async () => {
+        const { result } = renderExchangeQuotes(
+            { ...VALID_DEFAULTS, fromAddress: undefined },
+            { fromAddress: '0xsender', receiveAddress: '0xreceive' },
+        );
+
+        await act(async () => {
+            await result.current.methods.trigger();
+        });
+
+        await waitFor(() => expect(mockHandleRequest).toHaveBeenCalledTimes(1), { timeout: 1500 });
+
+        expect(mockHandleRequest).toHaveBeenCalledWith(
+            expect.objectContaining({
+                formValues: expect.objectContaining({ fromAddress: '0xsender' }),
             }),
         );
     });
