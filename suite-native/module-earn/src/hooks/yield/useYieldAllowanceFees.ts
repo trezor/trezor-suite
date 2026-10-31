@@ -86,10 +86,7 @@ export const useYieldAllowanceFees = ({
         () => getYieldAllowanceFeeState(formDraft),
         [formDraft],
     );
-    const selectedFeeLevel = feeLevels[selectedFee];
-    const fee = isFinalPrecomposedTransaction(selectedFeeLevel) ? selectedFeeLevel.fee : null;
     const { isFeeUnavailable } = getFeeAvailability({
-        fee,
         feeLevels,
         selectedFee,
         isLoading: isComposingAllowanceFee,

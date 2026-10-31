@@ -22,6 +22,43 @@ describe('feesFormValidationSchema', () => {
         ...overrides,
     });
 
+    it.each(['customMaxFeePerGas', 'customMaxPriorityFeePerGas', 'customFeeLimit'])(
+        'requires visible EIP-1559 field %s instead of silently keeping a hidden old value',
+        async field => {
+            const values: Record<string, string> = {
+                feeLevel: 'custom',
+                customFeePerUnit: '10',
+                customFeeLimit: '21000',
+                customMaxFeePerGas: '20',
+                customMaxPriorityFeePerGas: '2',
+            };
+            values[field] = '';
+            const context = createContext({
+                isEip1559Fee: true,
+                networkFeeInfo: {
+                    minFee: 1,
+                    maxFee: 100,
+                    minPriorityFee: 1,
+                    levels: [],
+                    blockHeight: 0,
+                    blockTime: 12,
+                },
+            });
+            await expect(
+                feesFormValidationSchema.validate(values, { context }),
+            ).rejects.toMatchObject({ path: field });
+        },
+    );
+
+    it('does not require inactive EIP-1559 inputs for a Standard fee', async () => {
+        await expect(
+            feesFormValidationSchema.validate(
+                { feeLevel: 'normal', customFeePerUnit: '500000' },
+                { context: createContext({ isEip1559Fee: true }) },
+            ),
+        ).resolves.toBeDefined();
+    });
+
     it.each(['0', '1.5'])(
         'preserves Tron fee-limit validation for %s SUN',
         async customFeeLimit => {
@@ -39,6 +76,22 @@ describe('feesFormValidationSchema', () => {
         },
     );
 
+    it.each(['eth', 'trx'] as const)(
+        'requires the active Custom gas/fee limit on %s',
+        async symbol => {
+            await expect(
+                feesFormValidationSchema.validate(
+                    { feeLevel: 'custom', customFeePerUnit: '500000', customFeeLimit: '' },
+                    {
+                        context: createContext({
+                            symbol: asNetworkSymbol(symbol),
+                            isEip1559Fee: false,
+                        }),
+                    },
+                ),
+            ).rejects.toMatchObject({ path: 'customFeeLimit' });
+        },
+    );
     describe('basic validation', () => {
         it('should validate a complete valid form', async () => {
             const data = {

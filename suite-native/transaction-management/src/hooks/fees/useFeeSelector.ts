@@ -1,23 +1,33 @@
 import { useCallback, useRef } from 'react';
+import { useSelector } from 'react-redux';
 
+import { type FeesRootState, selectNetworkFeeLevel } from '@suite-common/wallet-core';
 import type {
     AccountKey,
     FeeLevelLabel,
     FormState,
     TokenAddress,
 } from '@suite-common/wallet-types';
+import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { useBottomSheetModal } from '@suite-native/atoms';
 import { useWatch } from '@suite-native/forms';
+import { useTranslate } from '@suite-native/intl';
 import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { getFeeAvailability } from './feeAvailability';
+import { estimateFee } from './feeEstimate';
+import { getFeeSelectorFormValues } from './feeSelectorFormValues';
+import { getReferenceFeeLevel } from './referenceFeeLevel';
 import { type CustomFeeParams } from './useFeeSelection';
 import { useFeesManagement } from './useFeesManagement';
 import { type FeesFormValues } from '../../feesFormSchema';
 import { updateFeeLimitThunk } from '../../thunks';
 import { type UpdateSelectedFeeLevelThunkParams } from '../../types';
-import { usePrecomposedTransactionError } from '../usePrecomposedTransactionError';
+import {
+    isPrecomposedTransactionError,
+    usePrecomposedTransactionError,
+} from '../usePrecomposedTransactionError';
 
 export type UseFeeSelectorParams = {
     accountKey: AccountKey;
@@ -44,7 +54,6 @@ export const useFeeSelector = ({
 }: UseFeeSelectorParams) => {
     const {
         form,
-        fee,
         feeLevels,
         selectedFeeLevel,
         areFeesLoading,
@@ -68,28 +77,54 @@ export const useFeeSelector = ({
     const snapshotRef = useRef<FeesFormValues | undefined>(undefined);
     const confirmedRef = useRef(false);
 
+    const { translate } = useTranslate();
     const networkType = account?.networkType;
     const isTrc20 = networkType === 'tron' && !!tokenContract;
+    const confirmedFeeLevel = feeLevels[selectedFee ?? selectedFeeLevel];
+    const networkFeeLevel = useSelector((state: FeesRootState) =>
+        selectNetworkFeeLevel(state, symbol, selectedFee ?? selectedFeeLevel),
+    );
+    const estimatedFee =
+        account &&
+        confirmedFeeLevel?.type === 'error' &&
+        isPrecomposedTransactionError(confirmedFeeLevel.error)
+            ? estimateFee({
+                  networkType: account.networkType,
+                  feePerUnit: networkFeeLevel?.maxFeePerGas ?? networkFeeLevel?.feePerUnit,
+                  referenceFeeLevel: getReferenceFeeLevel(feeLevels),
+              })
+            : null;
+    const fee = isFinalPrecomposedTransaction(confirmedFeeLevel)
+        ? confirmedFeeLevel.fee
+        : estimatedFee;
     const { isFeeUnavailable, feeError } = getFeeAvailability({
-        fee,
         feeLevels,
-        selectedFee: selectedFeeLevel,
+        selectedFee: selectedFee ?? selectedFeeLevel,
         isLoading: areFeesLoading,
     });
-    const feeUnavailableErrorTitle = usePrecomposedTransactionError({
+    const precomposedErrorTitle = usePrecomposedTransactionError({
         error: feeError,
         networkSymbol: symbol,
     });
-    const shouldShowFeeUnavailableAlert =
-        formDraft != null && isFeeUnavailable && !!feeUnavailableErrorTitle;
+    const feeUnavailableErrorTitle =
+        precomposedErrorTitle ??
+        (isFeeUnavailable ? translate('moduleSend.fees.unavailable') : null);
+    const shouldShowFeeUnavailableAlert = isFeeUnavailable;
 
     const handleOpen = useCallback(() => {
         confirmedRef.current = false;
-        snapshotRef.current = form.getValues();
-        // Reset to current values so isDirty starts as false for this open cycle
-        form.reset(form.getValues());
+        const savedValues = getFeeSelectorFormValues({
+            networkType,
+            symbol,
+            selectedFee,
+            formDraft,
+            feeLevels,
+            previousValues: form.getValues(),
+        });
+        snapshotRef.current = savedValues;
+        form.reset(savedValues);
         openModal();
-    }, [form, openModal]);
+    }, [form, openModal, selectedFee, formDraft, feeLevels, networkType, symbol]);
 
     const handleConfirm = useCallback(
         async (feeLevel: FeeLevelLabel, customParams?: CustomFeeParams) => {
@@ -127,7 +162,7 @@ export const useFeeSelector = ({
     );
 
     const customFeeLimit = useWatch({ control: form.control, name: 'customFeeLimit' });
-    const feeLimitSunOverride = isTrc20 ? customFeeLimit : undefined;
+    const feeLimitSunOverride = isTrc20 ? customFeeLimit || undefined : undefined;
 
     return {
         form,

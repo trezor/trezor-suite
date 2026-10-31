@@ -118,7 +118,6 @@ export const useYieldClaimFees = ({ accountRewards, isEnabled }: UseYieldClaimFe
     const selectedFeeLevel = feeLevels[selectedFee];
     const feePreview = isFinalPrecomposedTransaction(selectedFeeLevel) ? selectedFeeLevel : null;
     const { isFeeUnavailable } = getFeeAvailability({
-        fee: feePreview?.fee ?? null,
         feeLevels,
         selectedFee,
         isLoading: isPreparingClaimFee,
