@@ -79,6 +79,14 @@ const createAmountValidationContext = (
     ...overrides,
 });
 
+const maxSendAmountByFeeLevel = {
+    custom: undefined,
+    economy: '0.019',
+    high: '0.017',
+    low: undefined,
+    normal: '0.018',
+};
+
 const validateEnteredAmount = (enteredAmount: string, context: SendFormFormContext) =>
     sendOutputsFormValidationSchema.validateAt(
         'outputs[0].amount',
@@ -172,32 +180,25 @@ describe('sendOutputsFormValidationSchema amount', () => {
         await expect(
             validateEnteredAmount(
                 '0.017',
-                createAmountValidationContext({
-                    maxSendAmountByFeeLevel: {
-                        custom: undefined,
-                        economy: '0.018',
-                        high: '0.017',
-                        low: '0.018',
-                        normal: '0.018',
-                    },
-                }),
+                createAmountValidationContext({ maxSendAmountByFeeLevel }),
             ),
         ).resolves.toBe('0.017');
     });
 
-    it('reports insufficient balance when entered amount exceeds the normal fee-adjusted max send amount', async () => {
+    it('accepts an entered amount that only the lowest fee level covers', async () => {
         await expect(
             validateEnteredAmount(
                 '0.019',
-                createAmountValidationContext({
-                    maxSendAmountByFeeLevel: {
-                        custom: undefined,
-                        economy: '0.018',
-                        high: '0.017',
-                        low: '0.018',
-                        normal: '0.018',
-                    },
-                }),
+                createAmountValidationContext({ maxSendAmountByFeeLevel }),
+            ),
+        ).resolves.toBe('0.019');
+    });
+
+    it('reports insufficient balance when entered amount exceeds the max send amount of every fee level', async () => {
+        await expect(
+            validateEnteredAmount(
+                '0.02',
+                createAmountValidationContext({ maxSendAmountByFeeLevel }),
             ),
         ).rejects.toMatchObject({ type: 'is-higher-than-balance' });
     });

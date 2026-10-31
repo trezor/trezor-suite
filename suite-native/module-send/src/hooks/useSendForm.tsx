@@ -73,7 +73,7 @@ import {
     type SendOutputsFormValues,
     sendOutputsFormValidationSchema,
 } from '../sendOutputsFormSchema';
-import { constructFormDraft, getSendMaxAmount } from '../utils';
+import { constructFormDraft, getSendFeeStatus, getSendMaxAmount } from '../utils';
 import { useRequestDelayedNavigationToOutputsReview } from './useRequestDelayedNavigationToOutputsReview';
 import { useShowDeviceDisconnectedAlert } from './useShowDeviceDisconnectedAlert';
 import { useUtxoSelection } from './useUtxoSelection';
@@ -549,7 +549,19 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
 
     if (!account || !networkFeeInfo) return null;
 
-    const handleSubmitSendForm = handleSubmit(() => {
+    const feeStatusParams = {
+        symbol: account.symbol,
+        availableBalance: account.availableBalance,
+        // React Compiler otherwise treats this as a mutable alias of the network config.
+        networkReserve: networkReserve === undefined ? undefined : String(networkReserve),
+    };
+    const { isFeeReady, maxAmountForReserve } = getSendFeeStatus({
+        ...feeStatusParams,
+        feeLevel: feeLevels[sendFormDraft?.selectedFee ?? 'normal'],
+        amount: watchedFormValues.outputs?.[0]?.amount ?? '',
+    });
+
+    const handleSubmitSendForm = handleSubmit(formValues => {
         Keyboard.dismiss();
 
         if (!network) return;
@@ -557,6 +569,15 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         const selectedFee: FeeLevelLabel = sendFormDraft?.selectedFee ?? 'normal';
         const selectedFeeLevelTransaction = feeLevels[selectedFee];
         if (!isFinalPrecomposedTransaction(selectedFeeLevelTransaction)) {
+            return;
+        }
+        if (
+            !getSendFeeStatus({
+                ...feeStatusParams,
+                feeLevel: selectedFeeLevelTransaction,
+                amount: formValues.outputs[0]?.amount ?? '',
+            }).isFeeReady
+        ) {
             return;
         }
 
@@ -617,6 +638,8 @@ export const useSendForm = (accountKey: AccountKey, tokenContract?: TokenAddress
         network,
         amount,
         maxSpendableAmount,
+        maxAmountForReserve,
+        isFeeReady,
         isResolvingNamedAddress,
     };
 };

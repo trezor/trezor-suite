@@ -4,8 +4,6 @@ import { useSelector } from 'react-redux';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { type SendRootState, selectSendFormDraftByKey } from '@suite-common/wallet-core';
-import { isFinalPrecomposedTransaction } from '@suite-common/wallet-types';
 import { AccountDetailsCard } from '@suite-native/accounts';
 import { AnimatedView, BannerInline, Box } from '@suite-native/atoms';
 import { Form } from '@suite-native/forms';
@@ -17,7 +15,6 @@ import {
     type StackProps,
 } from '@suite-native/navigation';
 import { ScreenPerformanceRoot } from '@suite-native/performance-metrics';
-import { selectFeeLevels } from '@suite-native/transaction-management';
 
 import { AccountBalanceScreenHeader } from '../components/AccountBalanceScreenHeader';
 import { SwitchCoinControlButton } from '../components/CoinControl/SwitchCoinControlButton';
@@ -41,16 +38,10 @@ export const SendOutputsScreen = ({
         params;
     const sendForm = useSendForm(accountKey, tokenContract);
     const { totalSelectedAmount, selectedUtxos } = useUtxoSelection(accountKey);
-    const feeLevels = useSelector(selectFeeLevels);
-    const selectedFee = useSelector(
-        (state: SendRootState) =>
-            selectSendFormDraftByKey(state, accountKey, tokenContract)?.selectedFee ?? 'normal',
-    );
     const isCardanoTokenSendAdaInsufficient = useSelector((state: CardanoTokenSendRootState) =>
         selectIsCardanoTokenSendAdaInsufficient(state, accountKey, tokenContract),
     );
 
-    const isFeeReady = isFinalPrecomposedTransaction(feeLevels[selectedFee]);
     const showDeviceDisconnectedAlert = useShowDeviceDisconnectedAlert();
 
     useFocusEffect(
@@ -87,6 +78,8 @@ export const SendOutputsScreen = ({
         amount,
         network,
         maxSpendableAmount,
+        maxAmountForReserve,
+        isFeeReady,
         isResolvingNamedAddress,
     } = sendForm;
     const {
@@ -115,6 +108,7 @@ export const SendOutputsScreen = ({
                                 accountKey={accountKey}
                                 tokenContract={tokenContract}
                                 maxAmount={maxSpendableAmount}
+                                maxAmountForReserve={maxAmountForReserve}
                             />
                             {network?.networkType === 'bitcoin' && (
                                 <Box flexDirection="row" justifyContent="center" marginTop="sp24">
