@@ -11727,8 +11727,8 @@ export const messages = defineMessages({
         id: 'TR_EARN_TRON_ASSIGN_AT_LEAST_ONE_VOTE',
         defaultMessage: 'Assign at least one vote to continue.',
     },
-    TR_EARN_TRON_UNSTAKING: {
-        id: 'TR_EARN_TRON_UNSTAKING',
+    TR_EARN_TRON_UNSTAKING_TITLE: {
+        id: 'TR_EARN_TRON_UNSTAKING_TITLE',
         defaultMessage: 'Unstaking',
     },
     TR_EARN_TRON_UNSTAKING_PENDING_WITHDRAWALS: {

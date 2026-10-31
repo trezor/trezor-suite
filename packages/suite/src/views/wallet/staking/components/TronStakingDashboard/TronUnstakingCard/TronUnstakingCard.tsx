@@ -56,7 +56,7 @@ export const TronUnstakingCard = ({ account, nowSeconds }: TronUnstakingCardProp
                     >
                         <Column gap={2} alignItems="flex-start">
                             <Text typographyStyle="body-sm" intent="neutral" priority="secondary">
-                                <Translation id="TR_EARN_TRON_UNSTAKING" />
+                                <Translation id="TR_EARN_TRON_UNSTAKING_TITLE" />
                             </Text>
                             <Text
                                 typographyStyle="headline-sm"
