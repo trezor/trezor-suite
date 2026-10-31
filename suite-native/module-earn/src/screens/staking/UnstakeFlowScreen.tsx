@@ -21,7 +21,6 @@ import {
     Screen,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import { FeeSelector } from '@suite-native/transaction-management';
 import { useServices } from '@trezor/dependency-injection';
 import { MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT } from '@trezor/network-solana/constants';
 
@@ -32,6 +31,7 @@ import { StakingPendingTransactionModal } from '../../components/staking/Staking
 import { UnstakeCanClaimAlert } from '../../components/staking/UnstakeCanClaimAlert';
 import { UnstakeFlowScreenHeader } from '../../components/staking/UnstakeFlowScreenHeader';
 import { UnstakingTimelineCard } from '../../components/staking/UnstakingTimelineCard';
+import { YieldFeeSection } from '../../components/yield/YieldFeeSection';
 import { useEarnDeviceStatus } from '../../hooks/earn/useEarnDeviceStatus';
 import { useNavigateBackAnalytics } from '../../hooks/earn/useNavigateBackAnalytics';
 import { useSolanaStakingLimit } from '../../hooks/staking/useSolanaStakingLimit';
@@ -92,8 +92,9 @@ export const UnstakeFlowScreen = () => {
         showNetworkFeeWarning,
         formDraft,
         formDraftKey,
-        isFeeUnavailable,
-        isPrecomposeError,
+        hasFeeEstimationError,
+        retryFeeEstimation,
+        isFeeReady,
         updateFeeLevelThunk,
         approximatedInstantEthAmount,
     } = unstakeForm;
@@ -132,9 +133,7 @@ export const UnstakeFlowScreen = () => {
                     <ScreenFooterGradient />
                     <Box paddingBottom="sp16">
                         <Button
-                            isDisabled={
-                                !isValid || isFeeUnavailable || isPrecomposeError || isPending
-                            }
+                            isDisabled={!isValid || !isFeeReady || isPending}
                             onPress={handleReviewAndSign}
                         >
                             <Translation id="earn.earnFormScreen.reviewAndSign" />
@@ -208,13 +207,16 @@ export const UnstakeFlowScreen = () => {
                 )}
                 {isValid && (
                     <Box marginTop="sp24">
-                        <FeeSelector
+                        <YieldFeeSection
                             accountKey={accountKey}
-                            updateThunk={updateFeeLevelThunk}
-                            selectedFee={formDraft?.selectedFee ?? 'normal'}
-                            selectedFeePerUnit={formDraft?.feePerUnit}
-                            formDraft={formDraft}
-                            formDraftKey={formDraftKey}
+                            fees={{
+                                hasFeeEstimationError,
+                                retryFeeEstimation,
+                                updateFeeLevelThunk,
+                                selectedFee: formDraft?.selectedFee ?? 'normal',
+                                formDraft,
+                                formDraftKey,
+                            }}
                         />
                     </Box>
                 )}

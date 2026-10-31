@@ -22,7 +22,6 @@ import {
     ScreenHeader,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import { FeeSelector } from '@suite-native/transaction-management';
 import { useServices } from '@trezor/dependency-injection';
 
 import { EarnAmountCard } from '../../components/earn/EarnAmountCard';
@@ -30,6 +29,7 @@ import { EarnOutputFields } from '../../components/earn/EarnOutputFields';
 import { StakingFormScreenFooter } from '../../components/staking/StakingFormScreenFooter';
 import { StakingNoBalanceContent } from '../../components/staking/StakingNoBalanceContent';
 import { StakingPendingTransactionModal } from '../../components/staking/StakingPendingTransactionModal';
+import { YieldFeeSection } from '../../components/yield/YieldFeeSection';
 import { useEarnDeviceStatus } from '../../hooks/earn/useEarnDeviceStatus';
 import { useNavigateBackAnalytics } from '../../hooks/earn/useNavigateBackAnalytics';
 import { useStakingForm } from '../../hooks/staking/useStakingForm';
@@ -88,8 +88,9 @@ export const StakingFormScreen = () => {
         account,
         formDraft,
         formDraftKey,
-        isFeeUnavailable,
-        isPrecomposeError,
+        hasFeeEstimationError,
+        retryFeeEstimation,
+        isFeeReady,
         updateFeeLevelThunk,
     } = stakingForm;
     const {
@@ -144,7 +145,7 @@ export const StakingFormScreen = () => {
                 <StakingFormScreenFooter
                     symbol={account.symbol}
                     amountValue={amountValue}
-                    isDisabled={!isValid || isFeeUnavailable || isPrecomposeError || isPending}
+                    isDisabled={!isValid || !isFeeReady || isPending}
                     onPress={() => handleSubmit()}
                 />
             }
@@ -162,13 +163,16 @@ export const StakingFormScreen = () => {
                 </Box>
                 {isValid && (
                     <Box marginTop="sp24">
-                        <FeeSelector
+                        <YieldFeeSection
                             accountKey={accountKey}
-                            updateThunk={updateFeeLevelThunk}
-                            selectedFee={formDraft?.selectedFee ?? 'normal'}
-                            selectedFeePerUnit={formDraft?.feePerUnit}
-                            formDraft={formDraft}
-                            formDraftKey={formDraftKey}
+                            fees={{
+                                hasFeeEstimationError,
+                                retryFeeEstimation,
+                                updateFeeLevelThunk,
+                                selectedFee: formDraft?.selectedFee ?? 'normal',
+                                formDraft,
+                                formDraftKey,
+                            }}
                         />
                     </Box>
                 )}

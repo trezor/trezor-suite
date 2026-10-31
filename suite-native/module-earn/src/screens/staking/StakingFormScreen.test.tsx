@@ -122,6 +122,7 @@ beforeEach(() => {
     mockNavigation.addListener.mockReturnValue(jest.fn());
     jest.mocked(useStakingForm).mockReturnValue({
         account: mockWalletAccount({ symbol: asNetworkSymbol('eth') }),
+        isFeeReady: true,
         form: {
             formState: { isValid: true },
             handleSubmit: (callback: () => void) => callback,

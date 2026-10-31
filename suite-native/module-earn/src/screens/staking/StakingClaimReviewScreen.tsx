@@ -9,16 +9,14 @@ import {
     type StakeRootState,
     buildClaimWithdrawRequestData,
     getStakingContractAddress,
-    getStakingLimitsByNetworkSymbol,
     isSupportedEthStakingNetworkSymbol,
     isSupportedSolStakingNetworkSymbol,
     selectAccountByKey,
     selectCanClaimByAccountKey,
     selectClaimableAmountByAccountKey,
 } from '@suite-common/wallet-core';
-import { asAmountSubunit, subunitsToUnits } from '@suite-common/wallet-utils';
 import { events, injectNativeAnalytics } from '@suite-native/analytics';
-import { BannerFull, BannerInline, Box, Button, Text, VStack } from '@suite-native/atoms';
+import { BannerInline, Box, Button, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     type RootStackParamList,
@@ -27,13 +25,13 @@ import {
     ScreenHeader,
     type StackNavigationProps,
 } from '@suite-native/navigation';
-import { FeeSelector } from '@suite-native/transaction-management';
 import { useServices } from '@trezor/dependency-injection';
 import { MAX_DEACTIVATE_ACCOUNTS_WITH_SPLIT } from '@trezor/network-solana/constants';
 import { BigNumber } from '@trezor/utils';
 
 import { EarnAmountCard } from '../../components/earn/EarnAmountCard';
 import { StakingPendingTransactionModal } from '../../components/staking/StakingPendingTransactionModal';
+import { YieldFeeSection } from '../../components/yield/YieldFeeSection';
 import { useComposeEarnFees } from '../../hooks/earn/useComposeEarnFees';
 import { useEarnDeviceStatus } from '../../hooks/earn/useEarnDeviceStatus';
 import { useNavigateBackAnalytics } from '../../hooks/earn/useNavigateBackAnalytics';
@@ -65,15 +63,6 @@ export const StakingClaimReviewScreen = () => {
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const availableBalance = account?.availableBalance ?? '0';
-
-    const feeBuffer = getStakingLimitsByNetworkSymbol(symbol)?.MIN_BALANCE_FOR_FEE_BUFFER;
-    const availableBalanceInUnits = subunitsToUnits({
-        value: asAmountSubunit(new BigNumber(availableBalance)),
-        symbol,
-    });
-    const isInsufficientFeeBalance = !!feeBuffer && availableBalanceInUnits.lt(feeBuffer);
-    const formattedAvailableBalance = `${availableBalanceInUnits.toString()} ${displaySymbol}`;
 
     const claimFormState = useMemo(() => {
         if (!account) return undefined;
@@ -86,18 +75,26 @@ export const StakingClaimReviewScreen = () => {
         }
 
         if (account.networkType === 'solana') {
-            return buildEarnComposeFormState(contractAddress, claimableAmount ?? '0', '');
+            if (!claimableAmount || !new BigNumber(claimableAmount).gt(0)) return undefined;
+
+            return buildEarnComposeFormState(contractAddress, claimableAmount, '');
         }
 
         return buildEarnComposeFormState(contractAddress, '0', '');
     }, [account, claimableAmount]);
 
-    const { formDraft, formDraftKey, isFeeUnavailable, isPrecomposeError, updateFeeLevelThunk } =
-        useComposeEarnFees({
-            accountKey,
-            formState: claimFormState,
-            formDraftPrefix: 'claim',
-        });
+    const {
+        formDraft,
+        formDraftKey,
+        hasFeeEstimationError,
+        retryFeeEstimation,
+        isFeeReady,
+        updateFeeLevelThunk,
+    } = useComposeEarnFees({
+        accountKey,
+        formState: claimFormState,
+        formDraftPrefix: 'claim',
+    });
 
     const { isLimitExceeded: isAccountLimitExceeded, formattedAmount: claimableLimitAmount } =
         useSolanaStakingLimit({ accountKey, type: 'claim', amount: claimableAmount });
@@ -158,9 +155,7 @@ export const StakingClaimReviewScreen = () => {
                             isPending ||
                             !claimFormState ||
                             !canClaimInstantly ||
-                            isInsufficientFeeBalance ||
-                            isFeeUnavailable ||
-                            isPrecomposeError ||
+                            !isFeeReady ||
                             !(
                                 isSupportedEthStakingNetworkSymbol(symbol) ||
                                 isSupportedSolStakingNetworkSymbol(symbol)
@@ -179,33 +174,18 @@ export const StakingClaimReviewScreen = () => {
                         label={<Translation id="earn.claimReviewScreen.amountLabel" />}
                         cryptoAmount={claimableAmount}
                     />
-                    <FeeSelector
+                    <YieldFeeSection
                         accountKey={accountKey}
-                        updateThunk={updateFeeLevelThunk}
-                        selectedFee={formDraft?.selectedFee ?? 'normal'}
-                        selectedFeePerUnit={formDraft?.feePerUnit}
-                        formDraft={formDraft}
-                        formDraftKey={formDraftKey}
+                        fees={{
+                            hasFeeEstimationError,
+                            retryFeeEstimation,
+                            updateFeeLevelThunk,
+                            selectedFee: formDraft?.selectedFee ?? 'normal',
+                            formDraft,
+                            formDraftKey,
+                        }}
                     />
-                    {isInsufficientFeeBalance && (
-                        <BannerFull
-                            intent="critical"
-                            iconName="warningCircle"
-                            title={
-                                <Translation
-                                    id="earn.claimReviewScreen.insufficientFeeBalance.title"
-                                    values={{ displaySymbol }}
-                                />
-                            }
-                            description={
-                                <Translation
-                                    id="earn.claimReviewScreen.insufficientFeeBalance.description"
-                                    values={{ amount: formattedAvailableBalance }}
-                                />
-                            }
-                        />
-                    )}
-                    {canClaimInstantly && !isInsufficientFeeBalance && (
+                    {canClaimInstantly && isFeeReady && (
                         <BannerInline
                             intent="brand"
                             title={

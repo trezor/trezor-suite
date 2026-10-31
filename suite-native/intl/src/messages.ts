@@ -3828,10 +3828,6 @@ export const messages = {
             instantClaimBanner: "You'll claim the {displaySymbol} instantly",
             accountLimitBanner:
                 'Due to transaction size limits, you can claim from up to {limit} accounts per transaction. This transaction claims up to {amount} {symbol}. Repeat to claim the rest.',
-            insufficientFeeBalance: {
-                title: 'Insufficient {displaySymbol} to cover the transaction fee.',
-                description: 'You only have {amount} available.',
-            },
         },
         claimTransactionDataReviewScreen: {
             title: 'Confirm on Trezor',
