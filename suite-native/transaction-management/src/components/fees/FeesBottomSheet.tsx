@@ -1,4 +1,11 @@
-import { type MutableRefObject, type RefObject, useCallback, useState } from 'react';
+import {
+    type MutableRefObject,
+    type RefObject,
+    useCallback,
+    useEffect,
+    useRef,
+    useState,
+} from 'react';
 
 import { type NetworkSymbol, type NetworkType } from '@suite-common/wallet-config';
 import type {
@@ -16,7 +23,7 @@ import {
     SegmentedControl,
 } from '@suite-native/atoms';
 import { Button } from '@suite-native/atoms';
-import { Form, useFormState } from '@suite-native/forms';
+import { Form, useFormState, useWatch } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 
 import { CustomFeeTabContent } from './CustomFee/CustomFeeTabContent';
@@ -82,7 +89,28 @@ export const FeesBottomSheet = ({
     const [activeTab, setActiveTab] = useState<TabValue>(() =>
         showCustomTab ? feeLevelToTab(form.getValues('feeLevel')) : 'standard',
     );
+    const selectedFeeLevel = useWatch({ control: form.control, name: 'feeLevel' });
+    useEffect(() => {
+        setActiveTab(showCustomTab ? feeLevelToTab(selectedFeeLevel) : 'standard');
+    }, [selectedFeeLevel, showCustomTab]);
     const [customIsSubmittable, setCustomIsSubmittable] = useState(false);
+
+    const standardFeeRef = useRef(
+        form.getValues('feeLevel') === 'custom' ? 'normal' : form.getValues('feeLevel'),
+    );
+    const handleTabChange = (tab: TabValue) => {
+        const selectedFee = form.getValues('feeLevel');
+        if (tab === 'custom') {
+            if (selectedFee !== 'custom') standardFeeRef.current = selectedFee;
+            form.setValue('feeLevel', 'custom', { shouldDirty: true, shouldValidate: true });
+        } else if (selectedFee === 'custom') {
+            form.setValue('feeLevel', standardFeeRef.current, {
+                shouldDirty: true,
+                shouldValidate: true,
+            });
+        }
+        setActiveTab(tab);
+    };
 
     const { getValues } = form;
     const { isDirty } = useFormState({ control: form.control });
@@ -168,7 +196,7 @@ export const FeesBottomSheet = ({
                         <SegmentedControl
                             options={TAB_OPTIONS}
                             selectedValue={activeTab}
-                            onValueChange={setActiveTab}
+                            onValueChange={handleTabChange}
                             testID="@transactionManagement/fees-tabs"
                         />
                     </Box>
