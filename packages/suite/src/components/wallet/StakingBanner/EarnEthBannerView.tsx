@@ -1,60 +1,26 @@
-import { injectDesktopAnalytics } from '@suite/analytics';
-import { selectFlags, setFlag } from '@suite/flags';
 import { Translation } from '@suite/intl';
-import { gotoThunk } from '@suite/router';
-import { events as sharedEvents } from '@suite-common/analytics';
 import { type NetworkSymbol, getDisplaySymbol } from '@suite-common/wallet-config';
 import { Banner } from '@trezor/components';
-import { useServices } from '@trezor/dependency-injection';
 import { PiggyBankIcon, XIcon } from '@trezor/icons';
-import { injectDispatch } from '@trezor/redux-utils';
 
 import { useFormatApy } from 'src/hooks/earn/useFormatApy';
-import { useSelector } from 'src/hooks/suite';
 
-type EarnEthBannerProps = {
+type EarnEthBannerViewProps = {
     networkSymbol: NetworkSymbol;
     apy: number | null;
+    onExplore: () => void;
+    onClose: () => void;
 };
 
-export const EarnEthBanner = ({ networkSymbol, apy }: EarnEthBannerProps) => {
-    const { analytics, dispatch } = useServices(injectDesktopAnalytics, injectDispatch);
-    const { earnEthBannerClosed } = useSelector(selectFlags);
+export const EarnEthBannerView = ({
+    networkSymbol,
+    apy,
+    onExplore,
+    onClose,
+}: EarnEthBannerViewProps) => {
     const formatApyValue = useFormatApy();
 
     const displaySymbol = getDisplaySymbol(networkSymbol);
-
-    const closeBanner = () => {
-        dispatch(setFlag({ key: 'earnEthBannerClosed', value: true }));
-
-        analytics.report({
-            type: sharedEvents.yieldNavigateEvent.name,
-            payload: {
-                action: 'cancel',
-                from: 'account-banner',
-                to: 'earn-dashboard',
-                networkSymbol,
-            },
-        });
-    };
-
-    const goToEarnDashboard = () => {
-        dispatch(gotoThunk({ routeName: 'suite-earn' }));
-
-        analytics.report({
-            type: sharedEvents.yieldNavigateEvent.name,
-            payload: {
-                action: 'continue',
-                from: 'account-banner',
-                to: 'earn-dashboard',
-                networkSymbol,
-            },
-        });
-    };
-
-    if (earnEthBannerClosed) {
-        return null;
-    }
 
     return (
         <Banner
@@ -78,13 +44,13 @@ export const EarnEthBanner = ({ networkSymbol, apy }: EarnEthBannerProps) => {
             }
             rightContent={
                 <>
-                    <Banner.Button onClick={goToEarnDashboard}>
+                    <Banner.Button onClick={onExplore}>
                         <Translation id="TR_STAKING_BANNER_ETH_EARN_BUTTON" />
                     </Banner.Button>
                     <Banner.IconButton
                         priority="secondary"
                         icon={XIcon}
-                        onClick={closeBanner}
+                        onClick={onClose}
                         tooltip={{ content: <Translation id="TR_DISMISS" /> }}
                     />
                 </>
