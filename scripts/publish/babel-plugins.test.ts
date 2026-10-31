@@ -176,20 +176,21 @@ describe('publish import transforms — new URL is gated on the worker idiom', (
         expect(out).not.toContain('lib?worker.js');
     });
 
-    // Documents a bug: withExtension treats the whole specifier as a path, so the runtime
-    // extension lands after the suffix, and the file-vs-directory stat -- run on a path the
-    // suffix made nonexistent -- misses the directory and drops the /index.js as well. Only the
-    // top-level src?worker form above escapes, because trezorLibPattern requires a subpath.
-    it('appends the runtime extension after the ?suffix of a gated new URL subpath', () => {
+    // The suffix is not part of the path: the runtime extension goes before it, and the
+    // file-vs-directory stat must not see it — otherwise a suffixed subpath ships as
+    // workers/solana?worker.js, which resolves to nothing in the published package.
+    it('rewrites a gated new URL(@trezor/*/src/<dir>?suffix, import.meta.url) before the suffix', () => {
         const out = runEsm(
             `new Worker(new URL('@trezor/blockchain-link/src/workers/solana?worker', import.meta.url));`,
         );
-        expect(out).toContain('@trezor/blockchain-link/lib/workers/solana?worker.js');
+        expect(out).toContain('@trezor/blockchain-link/lib/workers/solana/index.js?worker');
+        expect(out).not.toContain('?worker.js');
     });
 
-    it('appends the runtime extension after the #fragment of a gated relative new URL', () => {
+    it('rewrites a gated new URL(relative dir#fragment, import.meta.url) before the fragment', () => {
         const out = runEsm(`new Worker(new URL('./localdir#frag', import.meta.url));`);
-        expect(out).toContain('./localdir#frag.js');
+        expect(out).toContain('./localdir/index.js#frag');
+        expect(out).not.toContain('#frag.js');
     });
 
     it('throws on a non-worker new URL(@trezor/*/src#fragment, base)', () => {

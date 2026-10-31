@@ -17,6 +17,15 @@ const isExternalCjsSubpath = src => externalCjsSubpaths.includes(src);
 
 const externalJsonImports = [];
 
+// A bundler ?query / #fragment suffix is not part of the path: the extension goes before it, and
+// the file-vs-directory stat must not see it. The segment boundary it marks is the one
+// internalSrcSpecifier pins in babel-plugin-sanitize-internal-imports.js.
+const splitSuffix = specifier => {
+    const at = specifier.search(/[?#]/);
+
+    return at === -1 ? [specifier, ''] : [specifier.slice(0, at), specifier.slice(at)];
+};
+
 /**
  * Babel plugin to rewrite import/export statements to their runtime ESM extensions.
  * This way we can keep our codebase with moduleResolution: bundler (imports without extensions).
@@ -29,7 +38,9 @@ const externalJsonImports = [];
  */
 const addEsmExtensionPlugin = ({ types }) => {
     // Returns the specifier with its runtime extension, or null when it needs no change.
-    const withExtension = (src, filename) => {
+    const withExtension = (specifier, filename) => {
+        const [src, suffix] = splitSuffix(specifier);
+
         // Handle @trezor package imports to lib
         if (isTrezorLibImport(src)) {
             const match = src.match(/^@trezor\/([^/]+)\/lib\/(.+)$/);
@@ -49,12 +60,12 @@ const addEsmExtensionPlugin = ({ types }) => {
 
             // e.g., @trezor/protocol/lib/protocol-tpn -> @trezor/protocol/lib/protocol-tpn/index.js
             // e.g., @trezor/protocol/lib/bigNumber -> @trezor/protocol/lib/bigNumber.js
-            return isDirectory ? src + '/index.js' : src + '.js';
+            return isDirectory ? src + '/index.js' + suffix : src + '.js' + suffix;
         }
 
         // External CJS subpaths need .js for ESM
         if (isExternalCjsSubpath(src)) {
-            return src + '.js';
+            return src + '.js' + suffix;
         }
 
         if (isRelativeImport(src)) {
@@ -64,7 +75,7 @@ const addEsmExtensionPlugin = ({ types }) => {
             const isDirectory =
                 fs.existsSync(resolvedPath) && fs.statSync(resolvedPath).isDirectory();
 
-            return isDirectory ? src + '/index.js' : src + '.js';
+            return isDirectory ? src + '/index.js' + suffix : src + '.js' + suffix;
         }
 
         return null;
