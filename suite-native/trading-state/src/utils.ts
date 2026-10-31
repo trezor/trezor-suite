@@ -1,4 +1,8 @@
-import { type TradingExchangeType, type TradingSellType } from '@suite-common/trading';
+import {
+    DEFAULT_FIAT_CURRENCY_FALLBACK,
+    type TradingExchangeType,
+    type TradingSellType,
+} from '@suite-common/trading';
 import { getNetworkByCoingeckoId, getNetworkByTradeCryptoId } from '@suite-common/wallet-config';
 import { getFormDraftKey } from '@suite-common/wallet-utils';
 import { type TradeableAsset } from '@suite-native/trading-types';
@@ -34,8 +38,6 @@ export const getAssetByEnabledNetworksFilter =
 
         return true;
     };
-
-const DEFAULT_FIAT_CURRENCY_FALLBACK = 'usd';
 
 type GetDefaultFiatCurrencyParams = {
     baseCurrency: string;
