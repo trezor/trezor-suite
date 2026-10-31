@@ -1,26 +1,17 @@
-import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
+import { type Dispatch } from '@reduxjs/toolkit';
 
 import { bluetoothActions } from '@suite-common/bluetooth';
-import { type WithServices } from '@trezor/redux-utils';
 import { type BluetoothDevice, bluetoothIpc } from '@trezor/transport-bluetooth';
 
 import { type DesktopBluetoothDevice, fromBluetoothDevice } from './DesktopBluetoothDevice';
-import { bluetoothAdapterEventThunk } from './bluetoothAdapterEventThunk';
 import { type BackgroundScan } from './bluetoothBackgroundScan';
-import { type BluetoothDep } from './createBluetooth';
 import type { OpenSystemSettings } from './createOpenSystemSettings';
 import { fixLinuxManufacturerData } from './fixLinuxManufacturerData';
 import { remapKnownDevices } from './remapKnownDevices';
 
-type SetupBluetoothListenersThunkDispatch = ThunkDispatch<
-    unknown,
-    WithServices<BluetoothDep>,
-    UnknownAction
->;
-
 type SetupBluetoothListenersDeps = {
     getKnownDevices: () => DesktopBluetoothDevice[];
-    dispatch: SetupBluetoothListenersThunkDispatch;
+    dispatch: Dispatch;
     backgroundScan: BackgroundScan;
     openSystemSettings: OpenSystemSettings;
 };
@@ -33,7 +24,8 @@ export const createSetupBluetoothListeners =
         bluetoothIpc.on('adapter-event', status => {
             // TODO: check if redux.status != status && status == enabled
             // and fetch bluetoothIpc.getInfo() again
-            deps.dispatch(bluetoothAdapterEventThunk({ status }));
+            deps.dispatch(bluetoothActions.adapterEventAction({ status }));
+            deps.backgroundScan.restartIfNeeded();
         });
 
         bluetoothIpc.on('device-list-update', nearbyDevicesIpc => {
