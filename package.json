@@ -137,6 +137,8 @@
         "### Security fixes forced outside the range requested by the dependent package (dev only), check Dependabot alerts": "1.0.0",
         "shell-quote": "^1.11.0",
         "seroval": "^1.6.2",
+        "### Next 15 pins vulnerable postcss 8.4.31, only Next 16 moves to 8.5.x": "1.0.0",
+        "postcss@npm:8.4.31": "^8.5.29",
         "@solana/rpc@npm:6.9.0": "patch:@solana/rpc@npm%3A6.9.0#~/.yarn/patches/@solana-rpc-npm-6.9.0-ba7976484d.patch"
     },
     "devDependencies": {
