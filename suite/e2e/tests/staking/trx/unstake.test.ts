@@ -13,6 +13,7 @@ import { TRX_BEST_BLOCK, TRX_FIRST_ACCOUNT_ADDRESS } from '../../../support/mock
 const trxSymbol = asNetworkSymbol('trx');
 
 const TRON_UNSTAKING_PERIOD_DAYS = 14;
+const UNSTAKING_TIME_LEFT = `${TRON_UNSTAKING_PERIOD_DAYS - 1} days 23 hours`;
 const STAKE_AMOUNT = '100';
 const STAKE_AMOUNT_SUN = '100000000';
 const UNSTAKE_AMOUNT = '40';
@@ -181,12 +182,20 @@ test.describe('Staking - Tron', { tag: ['@webOnly', '@T3W1', '@T3T1'] }, () => {
                     ({ address }) => address === TRON_LUGANODES_ADDRESS,
                 );
                 await expect(tronStakingSection.stakedCardApr).toContainText(`${luganodes?.apr}%`);
-                await expect(tronStakingSection.unstakingRowLocked(0)).toHaveTranslation(
-                    'TR_EARN_TRON_UNSTAKING_DAYS_LOCKED',
-                    { values: { days: TRON_UNSTAKING_PERIOD_DAYS } },
+                await expect(tronStakingSection.unstakingAmount).toHaveText(
+                    UNSTAKE_AMOUNT_FORMATTED,
                 );
+                await expect(tronStakingSection.unstakingPendingCount).toHaveTranslation(
+                    'TR_EARN_TRON_UNSTAKING_PENDING_WITHDRAWALS',
+                    { values: { count: 1 } },
+                );
+                await expect(tronStakingSection.unstakingRow(0)).toBeHidden();
+                await tronStakingSection.unstakingToggle.click();
                 await expect(tronStakingSection.unstakingRowAmount(0)).toHaveText(
                     UNSTAKE_AMOUNT_FORMATTED,
+                );
+                await expect(tronStakingSection.unstakingRowTimeLeft(0)).toContainText(
+                    UNSTAKING_TIME_LEFT,
                 );
                 await expect(tronStakingSection.withdrawReadyBanner).toBeHidden();
                 await expect(tronStakingSection.resourceValue('bandwidth')).toHaveText(

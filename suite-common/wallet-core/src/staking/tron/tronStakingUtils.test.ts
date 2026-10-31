@@ -439,9 +439,19 @@ describe('getTronPendingUnstakingBatches', () => {
                 nowSeconds: NOW_SECONDS,
             }),
         ).toEqual([
-            { amount: '2', daysLocked: 1, resource: 'energy' },
-            { amount: '3', daysLocked: 6, resource: 'bandwidth' },
-            { amount: '4', daysLocked: 7, resource: undefined },
+            { amount: '2', expireTime: NOW_SECONDS + 1, daysLocked: 1, resource: 'energy' },
+            {
+                amount: '3',
+                expireTime: NOW_SECONDS + 6 * DAY,
+                daysLocked: 6,
+                resource: 'bandwidth',
+            },
+            {
+                amount: '4',
+                expireTime: NOW_SECONDS + 6 * DAY + 1,
+                daysLocked: 7,
+                resource: undefined,
+            },
         ]);
     });
 
@@ -462,7 +472,9 @@ describe('getTronPendingUnstakingBatches', () => {
                 symbol: asNetworkSymbol('trx'),
                 nowSeconds: NOW_SECONDS,
             }),
-        ).toEqual([{ amount: '3', daysLocked: 1, resource: 'bandwidth' }]);
+        ).toEqual([
+            { amount: '3', expireTime: NOW_SECONDS + 10, daysLocked: 1, resource: 'bandwidth' },
+        ]);
     });
 });
 

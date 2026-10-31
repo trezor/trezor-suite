@@ -134,12 +134,15 @@ export class TronStakingSection {
     readonly votesToAllocateButton: Locator;
     readonly resourcesCard: Locator;
     readonly unstakingCard: Locator;
+    readonly unstakingToggle: Locator;
+    readonly unstakingAmount: Locator;
+    readonly unstakingPendingCount: Locator;
     readonly unstakingRow = (index: number) =>
         this.unstakingCard.getByTestId(`@staking/tron-unstaking-card/row-${index}`);
-    readonly unstakingRowLocked = (index: number) =>
-        this.unstakingRow(index).getByTestId(`@staking/tron-unstaking-card/row-${index}/locked`);
     readonly unstakingRowAmount = (index: number) =>
         this.unstakingRow(index).getByTestId(`@staking/tron-unstaking-card/row-${index}/amount`);
+    readonly unstakingRowTimeLeft = (index: number) =>
+        this.unstakingRow(index).getByTestId(`@staking/tron-unstaking-card/row-${index}/time-left`);
     readonly withdrawReadyBanner: Locator;
     readonly withdrawReadyDescription: Locator;
     readonly withdrawReadyButton: Locator;
@@ -287,6 +290,15 @@ export class TronStakingSection {
         );
         this.resourcesCard = this.page.getByTestId('@staking/tron-resources-card/container');
         this.unstakingCard = this.page.getByTestId('@staking/tron-unstaking-card/container');
+        this.unstakingToggle = this.unstakingCard.getByTestId(
+            '@staking/tron-unstaking-card/toggle',
+        );
+        this.unstakingAmount = this.unstakingCard.getByTestId(
+            '@staking/tron-unstaking-card/amount',
+        );
+        this.unstakingPendingCount = this.unstakingCard.getByTestId(
+            '@staking/tron-unstaking-card/pending-count',
+        );
         this.withdrawReadyBanner = this.page.getByTestId('@staking/tron-withdraw-banner/container');
         this.withdrawReadyDescription = this.withdrawReadyBanner.getByTestId(
             '@staking/tron-withdraw-banner/description',
