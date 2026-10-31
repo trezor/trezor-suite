@@ -125,14 +125,26 @@ export const enhancePage = (page: Page): Page => {
     ) {
         await test.step(`Expect Redux "${objectPath}" not to be empty`, async () => {
             await expect(async () => {
-                const testedObject = await page.getReduxObject(objectPath);
-                const isEmpty =
-                    testedObject === undefined ||
-                    testedObject === null ||
-                    (typeof testedObject === 'object' && Object.keys(testedObject).length === 0);
+                const { isEmpty, valueForError } = await page.evaluate(keys => {
+                    const testedObject = keys.reduce(
+                        (node, key) => node?.[key],
+                        window.store.getState(),
+                    );
+                    const isTestedObjectEmpty =
+                        testedObject === undefined ||
+                        testedObject === null ||
+                        (typeof testedObject === 'object' &&
+                            Object.keys(testedObject).length === 0);
+
+                    return {
+                        isEmpty: isTestedObjectEmpty,
+                        valueForError: isTestedObjectEmpty ? testedObject : undefined,
+                    };
+                }, toPath(objectPath));
+
                 if (isEmpty) {
                     throw new Error(
-                        `Expected Redux "${objectPath}" not to be empty but has ${JSON.stringify(testedObject)}`,
+                        `Expected Redux "${objectPath}" not to be empty but has ${JSON.stringify(valueForError)}`,
                     );
                 }
             }).toPass({ timeout: options.timeout });
