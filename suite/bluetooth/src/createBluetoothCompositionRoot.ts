@@ -19,19 +19,39 @@ import { toGetter } from '@trezor/dependency-injection';
 
 import { type DesktopBluetoothDevice } from './DesktopBluetoothDevice';
 import { createBackgroundScan } from './bluetoothBackgroundScan';
-import { type Bluetooth } from './createBluetooth';
-import { createBluetoothConnectDevice } from './createBluetoothConnectDevice';
-import { createBluetoothDisconnectDevice } from './createBluetoothDisconnectDevice';
-import { createBluetoothForgetAllDevices } from './createBluetoothForgetAllDevices';
-import { createBluetoothForgetDevice } from './createBluetoothForgetDevice';
+import {
+    type BluetoothConnectDevice,
+    createBluetoothConnectDevice,
+} from './createBluetoothConnectDevice';
+import {
+    type BluetoothDisconnectDevice,
+    createBluetoothDisconnectDevice,
+} from './createBluetoothDisconnectDevice';
+import {
+    type BluetoothForgetAllDevices,
+    createBluetoothForgetAllDevices,
+} from './createBluetoothForgetAllDevices';
+import {
+    type BluetoothForgetDevice,
+    createBluetoothForgetDevice,
+} from './createBluetoothForgetDevice';
 import { createBluetoothInit } from './createBluetoothInit';
-import { createBluetoothOnDeviceConnected } from './createBluetoothOnDeviceConnected';
-import { createBluetoothRemoveStaleDevices } from './createBluetoothRemoveStaleDevices';
-import { createBluetoothStartScan } from './createBluetoothStartScan';
-import { createBluetoothStopScan } from './createBluetoothStopScan';
-import { createBluetoothUnpairCurrentBond } from './createBluetoothUnpairCurrentBond';
-import { createOnPowerSuspend } from './createOnPowerSuspend';
-import { createOpenSystemSettings } from './createOpenSystemSettings';
+import {
+    type BluetoothOnDeviceConnected,
+    createBluetoothOnDeviceConnected,
+} from './createBluetoothOnDeviceConnected';
+import {
+    type BluetoothRemoveStaleDevices,
+    createBluetoothRemoveStaleDevices,
+} from './createBluetoothRemoveStaleDevices';
+import { type BluetoothStartScan, createBluetoothStartScan } from './createBluetoothStartScan';
+import { type BluetoothStopScan, createBluetoothStopScan } from './createBluetoothStopScan';
+import {
+    type BluetoothUnpairCurrentBond,
+    createBluetoothUnpairCurrentBond,
+} from './createBluetoothUnpairCurrentBond';
+import { type OnPowerSuspend, createOnPowerSuspend } from './createOnPowerSuspend';
+import { type OpenSystemSettings, createOpenSystemSettings } from './createOpenSystemSettings';
 import { createSetupBluetoothAutoReconnect } from './createSetupBluetoothAutoReconnect';
 import { createSetupBluetoothListeners } from './createSetupBluetoothListeners';
 import { type WithBluetoothRootState } from './desktopBluetoothReducer';
@@ -43,6 +63,30 @@ type CompositionRootDeps = DesktopApiDep<'openSystemSettings'> & {
     getState: () => CompositionRootState;
     dispatch: Dispatch;
 };
+
+export type Bluetooth = {
+    init: () => Promise<void>;
+    restartBackgroundScan: () => void;
+    openSystemSettings: OpenSystemSettings;
+    onPowerSuspend: OnPowerSuspend;
+    startScan: BluetoothStartScan;
+    stopScan: BluetoothStopScan;
+    connectDevice: BluetoothConnectDevice;
+    onDeviceConnected: BluetoothOnDeviceConnected;
+    disconnectDevice: BluetoothDisconnectDevice;
+    forgetDevice: BluetoothForgetDevice;
+    forgetAllDevices: BluetoothForgetAllDevices;
+    unpairCurrentBond: BluetoothUnpairCurrentBond;
+    removeStaleDevices: BluetoothRemoveStaleDevices;
+};
+
+export type BluetoothDep = {
+    bluetooth: Bluetooth;
+};
+
+export const injectBluetooth = (services: BluetoothDep): BluetoothDep => ({
+    bluetooth: services.bluetooth,
+});
 
 export const createBluetoothCompositionRoot = (deps: CompositionRootDeps): Bluetooth => {
     const getAdapterStatus = toGetter(deps.getState, selectAdapterStatus);
