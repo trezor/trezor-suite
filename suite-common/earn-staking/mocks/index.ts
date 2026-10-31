@@ -1,0 +1,1 @@
+export { mockStakingProductRepository } from './mockStakingProductRepository';
