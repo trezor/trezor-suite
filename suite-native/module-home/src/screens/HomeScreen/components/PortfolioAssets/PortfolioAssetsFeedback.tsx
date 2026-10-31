@@ -1,4 +1,7 @@
+import { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
+
+import { useFocusEffect } from '@react-navigation/native';
 
 import {
     HOME_ASSET_TABLE_FEEDBACK_CATEGORY,
@@ -22,6 +25,9 @@ export const PortfolioAssetsFeedback = () => {
     const isClosed = useSelector(selectIsHomeAssetTableFeedbackClosed);
     const hasAssets = useSelector(selectHasShownWalletAssets);
     const { analytics, dispatch } = useServices(injectNativeAnalytics, injectDispatch);
+    const [isSubmitted, setIsSubmitted] = useState(false);
+
+    useFocusEffect(useCallback(() => () => setIsSubmitted(false), []));
 
     const handleRatingSelect = (rating: Rating) => {
         analytics.report({
@@ -35,6 +41,7 @@ export const PortfolioAssetsFeedback = () => {
     };
 
     const handleSubmit = (rating: Rating, description: string) => {
+        setIsSubmitted(true);
         dispatch(sendHomeAssetTableFeedbackThunk({ rating, description }));
 
         analytics.report({
@@ -46,13 +53,18 @@ export const PortfolioAssetsFeedback = () => {
         });
     };
 
+    const handleDismiss = () => {
+        setIsSubmitted(false);
+        dispatch(closeHomeAssetTableFeedback());
+    };
+
     if (!hasAssets) {
         return null;
     }
 
     return (
         <CollapsibleBox
-            isCollapsed={isClosed}
+            isCollapsed={isClosed && !isSubmitted}
             paddingHorizontal="sp16"
             paddingVertical="sp16"
             testID="@home/portfolio-assets/feedback"
@@ -67,7 +79,7 @@ export const PortfolioAssetsFeedback = () => {
                 closeLabel={<Translation id="generic.buttons.close" />}
                 onSubmit={handleSubmit}
                 onRatingSelect={handleRatingSelect}
-                onDismiss={() => dispatch(closeHomeAssetTableFeedback())}
+                onDismiss={handleDismiss}
             />
         </CollapsibleBox>
     );

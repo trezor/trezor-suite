@@ -1797,6 +1797,15 @@ export const messages = defineMessages({
         defaultMessage: '7d',
         id: 'TR_HOME_ASSET_WEEK_PERIOD',
     },
+    TR_HOME_ASSET_EMPTY_TITLE: {
+        defaultMessage: "You don't hold any assets",
+        id: 'TR_HOME_ASSET_EMPTY_TITLE',
+    },
+    TR_HOME_ASSET_EMPTY_DESCRIPTION: {
+        defaultMessage:
+            'Your balance is now 0. Receive crypto from another wallet or buy some to fill it up again.',
+        id: 'TR_HOME_ASSET_EMPTY_DESCRIPTION',
+    },
     TR_HOME_ASSET_GROUPING_DEFAULT: {
         defaultMessage: 'Default',
         id: 'TR_HOME_ASSET_GROUPING_DEFAULT',
@@ -1843,17 +1852,21 @@ export const messages = defineMessages({
         defaultMessage: 'Market price',
         id: 'TR_ASSET_DETAIL_MARKET_PRICE',
     },
+    TR_PRICE_CHART_LOAD_ERROR: {
+        defaultMessage: "Price history couldn't be loaded.",
+        id: 'TR_PRICE_CHART_LOAD_ERROR',
+    },
+    TR_PRICE_CHART_NO_HISTORY: {
+        defaultMessage: 'No price history for this period.',
+        id: 'TR_PRICE_CHART_NO_HISTORY',
+    },
     TR_ASSET_DETAIL_UNSTAKED: {
         defaultMessage: 'Unstaked',
         id: 'TR_ASSET_DETAIL_UNSTAKED',
     },
-    TR_ASSET_DETAIL_YOUR_BALANCE: {
-        defaultMessage: 'Your balance',
-        id: 'TR_ASSET_DETAIL_YOUR_BALANCE',
-    },
-    TR_ASSET_DETAIL_ACCOUNT_COUNT: {
-        defaultMessage: 'on {count, plural, one {# account} other {# accounts}}',
-        id: 'TR_ASSET_DETAIL_ACCOUNT_COUNT',
+    TR_ASSET_DETAIL_MY_BALANCE: {
+        defaultMessage: 'My balance',
+        id: 'TR_ASSET_DETAIL_MY_BALANCE',
     },
     TR_NO_TRANSACTIONS_YET: {
         defaultMessage: 'No transactions yet.',
@@ -1862,6 +1875,24 @@ export const messages = defineMessages({
     TR_ASSET_DETAIL_ACCOUNTS: {
         defaultMessage: 'Accounts',
         id: 'TR_ASSET_DETAIL_ACCOUNTS',
+    },
+    TR_ASSET_DETAIL_SUSPICIOUS_TOKEN_TITLE: {
+        defaultMessage: 'Flagged as suspicious',
+        id: 'TR_ASSET_DETAIL_SUSPICIOUS_TOKEN_TITLE',
+    },
+    TR_ASSET_DETAIL_SUSPICIOUS_TOKEN_DESCRIPTION: {
+        defaultMessage:
+            'This token arrived unrequested and may be a phishing attempt. Do not interact with its website.',
+        id: 'TR_ASSET_DETAIL_SUSPICIOUS_TOKEN_DESCRIPTION',
+    },
+    TR_ASSET_DETAIL_HIDDEN_TOKEN_TITLE: {
+        defaultMessage: 'Hidden by you',
+        id: 'TR_ASSET_DETAIL_HIDDEN_TOKEN_TITLE',
+    },
+    TR_ASSET_DETAIL_HIDDEN_TOKEN_DESCRIPTION: {
+        defaultMessage:
+            '{asset} does not appear in your asset list. Everything about it still works here.',
+        id: 'TR_ASSET_DETAIL_HIDDEN_TOKEN_DESCRIPTION',
     },
     TR_ASSET_DETAIL_POLICY_ID: {
         defaultMessage: 'Policy ID',

@@ -1,13 +1,17 @@
 import { memo } from 'react';
 
+import { gotoThunk } from '@suite/router';
 import {
     selectWalletAssetContractAddress,
     selectWalletAssetDisplaySymbol,
     selectWalletAssetSymbol,
     selectWalletAssetTokenSymbol,
 } from '@suite-common/assets';
+import { ExperimentId, useIsExperimentVariantActive } from '@suite-common/message-system';
 import { type WalletAssetKey } from '@suite-common/wallet-core';
 import { Box, Column, type Padding, Row } from '@trezor/components';
+import { useServices } from '@trezor/dependency-injection';
+import { injectDispatch } from '@trezor/redux-utils';
 import { typographyStylesBase } from '@trezor/theme';
 
 import { PriceTicker, TrendTicker } from 'src/components/suite';
@@ -38,6 +42,11 @@ export const HiddenTokenRow = memo(function HiddenTokenRow({
     assetKey,
     onSelect,
 }: HiddenTokenRowProps) {
+    const { dispatch } = useServices(injectDispatch);
+    const isAssetDetailEnabled = useIsExperimentVariantActive({
+        experimentId: ExperimentId.assetFirstHomeTable,
+        variant: 'B',
+    });
     const symbol = useSelector(state => selectWalletAssetSymbol(state, assetKey, true));
     const contractAddress = useSelector(state =>
         selectWalletAssetContractAddress(state, assetKey, true),
@@ -51,9 +60,19 @@ export const HiddenTokenRow = memo(function HiddenTokenRow({
         return null;
     }
 
+    const handleClick = () => {
+        if (!isAssetDetailEnabled) {
+            onSelect(assetKey);
+
+            return;
+        }
+
+        dispatch(gotoThunk({ routeName: 'suite-asset', params: { symbol, contractAddress } }));
+    };
+
     return (
         <Box
-            onClick={() => onSelect(assetKey)}
+            onClick={handleClick}
             cursor="pointer"
             backgroundColorOnInteraction="elementFillGhostHovered"
             data-testid={`@hidden-tokens/item/${symbol}/${contractAddress ?? 'coin'}`}
