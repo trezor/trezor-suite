@@ -31,13 +31,6 @@ jobs:
       - name: Restore develop Yarn cache
         uses: ./.github/actions/restore-yarn-cache
 
-      - name: Cache node_modules
-        id: node-modules-cache
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
-        with:
-          path: node_modules
-          key: node_modules-e2e-utils-${{ hashFiles('yarn.lock') }}
-
       - name: Install dependencies
         run: yarn workspaces focus @trezor/e2e-utils
 
@@ -133,12 +126,10 @@ jobs:
       - name: Restore develop Yarn cache
         uses: ./.github/actions/restore-yarn-cache
 
-      - name: Cache node_modules
-        id: node-modules-cache
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
+      - name: Restore installed dependencies
+        uses: ./.github/actions/node-modules-cache
         with:
-          path: node_modules
-          key: node_modules-suite-web-e2e-${{ hashFiles('yarn.lock') }}
+          profile: suite-web-e2e
 
       - name: Install dependencies
         run: yarn workspaces focus @suite/web-app @trezor/suite @suite/app-assets
@@ -191,13 +182,6 @@ jobs:
 
       - name: Restore develop Yarn cache
         uses: ./.github/actions/restore-yarn-cache
-
-      - name: Cache node_modules
-        id: node-modules-cache
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
-        with:
-          path: node_modules
-          key: node_modules-llm-test-fixer-${{ hashFiles('yarn.lock') }}
 
       - name: Install dependencies
         # Union of test deps and web and desktop build toolchains
@@ -341,13 +325,6 @@ jobs:
       - name: Restore develop Yarn cache
         uses: ./.github/actions/restore-yarn-cache
 
-      - name: Cache node_modules
-        id: node-modules-cache
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
-        with:
-          path: node_modules
-          key: node_modules-e2e-utils-${{ hashFiles('yarn.lock') }}
-
       - name: Install dependencies
         run: yarn workspaces focus @trezor/e2e-utils
 
@@ -410,13 +387,6 @@ jobs:
 
       - name: Restore develop Yarn cache
         uses: ./.github/actions/restore-yarn-cache
-
-      - name: Cache node_modules
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v5
-        with:
-          path: node_modules
-          key: node_modules-${{ hashFiles('yarn.lock') }}
-          restore-keys: node_modules-
 
       - name: Install dependencies
         run: yarn workspaces focus @trezor/e2e-utils
