@@ -232,8 +232,39 @@ describe('the rows the table is given', () => {
             `${ALICE}/eth/${USDC_ON_ETH}`,
             `${ALICE}/eth/`,
             `${ALICE}/pol/${USDC_ON_POL}`,
-            `${ALICE}/pol/`,
         ]);
+    });
+
+    it('leaves out a coin with nothing on it, priced or not, but keeps the tokens held beside it', () => {
+        const stateWithAnEmptyCoin = (rates: MockStateParams['rates']) =>
+            createState({
+                accounts: [
+                    mockAccount({ symbol: BTC, balance: '2' }),
+                    mockAccount({
+                        symbol: ETH,
+                        index: 1,
+                        balance: '0',
+                        tokens: [{ symbol: 'usdc', contract: USDC_ON_ETH, balance: '10' }],
+                    }),
+                ],
+                rates,
+            });
+
+        const priced = stateWithAnEmptyCoin({
+            ...mockRate(BTC, 1),
+            ...mockRate(ETH, 1),
+            ...mockRate(ETH, 1, USDC_ON_ETH),
+        });
+
+        expect(selectHomeAssetRowKeys(priced)).toEqual([
+            `${ALICE}/eth/${USDC_ON_ETH}`,
+            `${ALICE}/btc/`,
+        ]);
+        expect(selectHomeAssetRowKeys(stateWithAnEmptyCoin(mockRate(BTC, 1)))).toEqual([
+            `${ALICE}/btc/`,
+            `${ALICE}/eth/${USDC_ON_ETH}`,
+        ]);
+        expect(selectSmallBalanceSummary(priced)).toBeUndefined();
     });
 
     it('leaves out a network the user has not enabled', () => {
@@ -608,6 +639,18 @@ describe('the total over the wallet', () => {
         expect(selectWalletAssetFiatValue(unpriced, ethereumKey)).toBeUndefined();
     });
 
+    it('is zero, and so is its change, once the wallet holds nothing', () => {
+        const empty = createState({
+            accounts: [mockAccount({ symbol: ETH, balance: '0' })],
+            rates: mockRate(ETH, 3000),
+        });
+        const { fiatValue, weekChange, weekChangePercent } = selectHomeAssetTotals(empty);
+
+        expect(fiatValue?.toFixed()).toBe('0');
+        expect(weekChange?.toFixed()).toBe('0');
+        expect(weekChangePercent?.toFixed()).toBe('0');
+    });
+
     it('says nothing about a week ago when no rate for it is known', () => {
         expect(selectHomeAssetTotals(state).weekChange).toBeUndefined();
     });
@@ -867,7 +910,6 @@ describe('the small balances the switch hides', () => {
         expect(selectDisplayedWalletAssetKeys(stateWithSmallBalances(true))).toEqual([
             `${ALICE}/btc/`,
             `${ALICE}/eth/${USDC_ON_ETH}`,
-            `${ALICE}/eth/`,
         ]);
     });
 
@@ -876,7 +918,7 @@ describe('the small balances the switch hides', () => {
 
         expect(selectDisplayedWalletAssetKeys(state)).toEqual([`${ALICE}/btc/`]);
         // What the wallet holds is unchanged — only what the table draws is.
-        expect(selectShownWalletAssetKeys(state)).toHaveLength(3);
+        expect(selectShownWalletAssetKeys(state)).toHaveLength(2);
     });
 
     it('leaves the wallet total alone, hidden or not', () => {
@@ -890,7 +932,7 @@ describe('the small balances the switch hides', () => {
     it('says how many there are and what they come to', () => {
         const summary = selectSmallBalanceSummary(stateWithSmallBalances(true));
 
-        expect(summary?.assetCount).toBe(2);
+        expect(summary?.assetCount).toBe(1);
         expect(summary?.fiatValue.toFixed()).toBe('0.5');
     });
 
@@ -957,7 +999,7 @@ describe('the small balances the switch hides', () => {
                 areSmallBalancesShown: false,
             });
 
-            expect(selectDisplayedWalletAssetKeys(state)).toHaveLength(2);
+            expect(selectDisplayedWalletAssetKeys(state)).toHaveLength(1);
             expect(selectSmallBalanceSummary(state)).toBeUndefined();
         });
     });
@@ -969,7 +1011,7 @@ describe('the small balances the switch hides', () => {
                 accounts: [
                     mockAccount({
                         symbol: ETH,
-                        balance: '0',
+                        balance: '0.5',
                         tokens: [{ contract: UNKNOWN_TOKEN, balance: '999999' }],
                     }),
                     mockAccount({ symbol: BTC, index: 1, balance: '2' }),
@@ -979,7 +1021,7 @@ describe('the small balances the switch hides', () => {
                 areSmallBalancesShown,
             });
 
-        it('goes below everything that can be priced, even what is worth nothing', () => {
+        it('goes below everything that can be priced, even what is worth little', () => {
             expect(selectDisplayedWalletAssetKeys(stateWithAnUnpricedToken(true))).toEqual([
                 `${ALICE}/btc/`,
                 `${ALICE}/eth/`,
@@ -990,42 +1032,13 @@ describe('the small balances the switch hides', () => {
         it('is never a small balance, so the switch leaves it alone', () => {
             const state = stateWithAnUnpricedToken(false);
 
-            // The empty account, worth nothing, is small; the unpriced token is not.
+            // The coin, worth 50c, is small; the unpriced token is not.
             expect(selectDisplayedWalletAssetKeys(state)).toEqual([
                 `${ALICE}/btc/`,
                 `${ALICE}/eth/${UNKNOWN_TOKEN}`,
             ]);
             expect(selectSmallBalanceSummary(state)?.assetCount).toBe(1);
         });
-    });
-
-    it('counts a priced coin with nothing on it, as it is worth nothing', () => {
-        const state = createState({
-            accounts: [
-                mockAccount({ symbol: BTC, balance: '2' }),
-                mockAccount({ symbol: ETH, index: 1, balance: '0' }),
-            ],
-            rates: { ...mockRate(BTC, 1), ...mockRate(ETH, 1) },
-            areSmallBalancesShown: false,
-        });
-
-        expect(selectDisplayedWalletAssetKeys(state)).toEqual([`${ALICE}/btc/`]);
-        expect(selectSmallBalanceSummary(state)?.assetCount).toBe(1);
-        expect(selectSmallBalanceSummary(state)?.fiatValue.toFixed()).toBe('0');
-    });
-
-    it('leaves a coin with nothing on it alone while nothing can price it', () => {
-        const state = createState({
-            accounts: [
-                mockAccount({ symbol: BTC, balance: '2' }),
-                mockAccount({ symbol: ETH, index: 1, balance: '0' }),
-            ],
-            rates: mockRate(BTC, 1),
-            areSmallBalancesShown: false,
-        });
-
-        expect(selectDisplayedWalletAssetKeys(state)).toEqual([`${ALICE}/btc/`, `${ALICE}/eth/`]);
-        expect(selectSmallBalanceSummary(state)).toBeUndefined();
     });
 
     it('says nothing when every balance is worth having', () => {
@@ -1129,7 +1142,7 @@ describe('the fold a long table shows', () => {
     };
 
     it('says whether there is more than the limit to show, and only that', () => {
-        // Thirty tokens and two coins: more than eight, fewer than a hundred.
+        // Thirty tokens: more than eight, fewer than a hundred.
         const state = stateWithTokenCounts({ eth: 30, pol: 0 });
 
         expect(selectIsHomeAssetTableFoldable(state, ROW_LIMIT)).toBe(true);
@@ -1137,21 +1150,21 @@ describe('the fold a long table shows', () => {
         expect(selectIsHomeAssetTableFoldable(state)).toBe(false);
         // Exactly the limit is not more than it.
         expect(
-            selectIsHomeAssetTableFoldable(stateWithTokenCounts({ eth: 6, pol: 0 }), ROW_LIMIT),
+            selectIsHomeAssetTableFoldable(stateWithTokenCounts({ eth: 8, pol: 0 }), ROW_LIMIT),
         ).toBe(false);
     });
 
     it('shows only the first few of a longer list', () => {
         const state = stateWithTokenCounts({ eth: 30, pol: 0 });
 
-        // Thirty tokens, and the two coins the accounts themselves hold.
-        expect(selectDisplayedWalletAssetKeys(state)).toHaveLength(32);
+        // Thirty tokens; the coins the accounts hold nothing of are left out.
+        expect(selectDisplayedWalletAssetKeys(state)).toHaveLength(30);
         expect(selectDisplayedWalletAssetKeys(state, ROW_LIMIT)).toHaveLength(ROW_LIMIT);
     });
 
     it('counts assets, not networks, and can leave a whole network out', () => {
-        // Seven on Ethereum plus its coin fills the fold exactly, so Polygon waits for "show more".
-        const state = stateWithTokenCounts({ eth: 7, pol: 3 });
+        // Eight on Ethereum fill the fold exactly, so Polygon waits for "show more".
+        const state = stateWithTokenCounts({ eth: 8, pol: 3 });
 
         expect(selectDisplayedNetworkSymbols(state)).toEqual([ETH, POL]);
         expect(selectDisplayedNetworkSymbols(state, ROW_LIMIT)).toEqual([ETH]);
@@ -1162,7 +1175,7 @@ describe('the fold a long table shows', () => {
     });
 
     it('stops part way through a network when the fold runs out there', () => {
-        // Ethereum holds eleven rows; the fold takes eight of them and nothing else.
+        // Ethereum holds ten rows; the fold takes eight of them and nothing else.
         const state = stateWithTokenCounts({ eth: 10, pol: 3 });
 
         expect(selectDisplayedWalletAssetKeysOfNetwork(state, ETH, ROW_LIMIT)).toEqual(
@@ -1174,8 +1187,8 @@ describe('the fold a long table shows', () => {
     it('hands every network its rows once the fold is past', () => {
         const state = stateWithTokenCounts({ eth: 6, pol: 6 });
 
-        expect(selectDisplayedWalletAssetKeysOfNetwork(state, ETH)).toHaveLength(7);
-        expect(selectDisplayedWalletAssetKeysOfNetwork(state, POL)).toHaveLength(7);
+        expect(selectDisplayedWalletAssetKeysOfNetwork(state, ETH)).toHaveLength(6);
+        expect(selectDisplayedWalletAssetKeysOfNetwork(state, POL)).toHaveLength(6);
     });
 });
 

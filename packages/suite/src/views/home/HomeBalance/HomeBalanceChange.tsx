@@ -45,7 +45,7 @@ export const HomeBalanceChange = ({
             </Text>
             <HiddenPlaceholder>
                 <Row gap={0} alignItems="center">
-                    <Sign value={change} />
+                    {!change.isZero() && <Sign value={change} />}
                     <Text typographyStyle="body-md">{changed}</Text>
                 </Row>
             </HiddenPlaceholder>
