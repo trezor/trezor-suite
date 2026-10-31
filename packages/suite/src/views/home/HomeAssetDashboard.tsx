@@ -35,8 +35,8 @@ export const HomeAssetDashboard = memo(() => {
             <HomeBalanceCard />
             <DashboardPromoBanner />
             <HomeAssetTable />
-            <Nfts />
             <HomeAssetFeedback />
+            <Nfts />
         </Column>
     );
 });
