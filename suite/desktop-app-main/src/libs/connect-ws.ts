@@ -11,6 +11,7 @@ import {
     type PopupClosedMessage,
     type PopupHandshake,
 } from '@trezor/connect';
+import { serializeError } from '@trezor/connect-common/src/constants/errors';
 import { parseManifest, parseVersion } from '@trezor/connect-common/src/data/connectSettings';
 import { isLinux } from '@trezor/env-utils';
 import { type ProcessInfo, findProcessFromIncomingPort } from '@trezor/node-utils';
@@ -22,7 +23,12 @@ import { getProcessIcon } from './process-icon';
 import { type Dependencies } from '../modules';
 
 const LOG_PREFIX = 'connect-ws';
-const HANDSHAKE_TIMEOUT_MS = 10000;
+export const HANDSHAKE_TIMEOUT_MS = 10000;
+// Deadline of the process lookup run by the handshake. It is not the client's budget for the
+// handshake itself: connect-web abandons that after 3 s, so a lookup slower than 3 s has already
+// failed the call. This deadline only guarantees that the idle timeout is re-armed.
+export const PROCESS_LOOKUP_TIMEOUT_MS = 10000;
+export const IDLE_CONNECTION_TIMEOUT_MS = 60000;
 export const MAX_CONCURRENT_CONNECTIONS = 50;
 export const MAX_CONNECTIONS_PER_ORIGIN = 5;
 const MAX_MESSAGE_SIZE = 2 * 1024 * 1024; // 2 MB
@@ -75,6 +81,17 @@ const validateIncomingMessage = (message: any): message is IncomingMessage => {
 
     return false;
 };
+
+// Failure answered by the server itself, in the shape the renderer's own failures use: the client
+// reads the top-level `error` and dereferences its `code`, while `payload` is where connect v9
+// clients read the error instead.
+const createFailureResponse = (id: string, message: string) =>
+    JSON.stringify({
+        id,
+        success: false,
+        error: serializeError(new Error(message)),
+        payload: { error: message },
+    });
 
 type ExposeConnectWsParams = {
     mainThreadEmitter: Dependencies['mainThreadEmitter'];
@@ -141,6 +158,21 @@ export const exposeConnectWs = ({
         let version: string | undefined;
         let requestedPermissions: PermissionRequest[] | undefined;
         let isHandshakeDone = false;
+        let idleTimeout: ReturnType<typeof setTimeout> | undefined;
+
+        // Releases the slot of a client that has stopped making calls. Pings do not restart it:
+        // the client pings on its own, so the connection would never expire.
+        const startIdleTimeout = () => {
+            clearTimeout(idleTimeout);
+            if (req.socket.destroyed) return;
+            idleTimeout = setTimeout(() => {
+                logger.info(LOG_PREFIX, `connection closed: idle timeout from ${ip}:${port}`);
+                // A close frame rather than a destroyed socket: a client that is about to call
+                // sees the connection go away and reconnects, instead of sending its handshake
+                // into a dead socket and falling back to the web popup for the whole session.
+                ws.close(1000, 'idle timeout');
+            }, IDLE_CONNECTION_TIMEOUT_MS);
+        };
 
         // Close connection if handshake is not received within timeout
         const handshakeTimeout = setTimeout(() => {
@@ -196,21 +228,52 @@ export const exposeConnectWs = ({
                 }
 
                 const filterSelf = !process.env.PLAYWRIGHT_RUN; // ignore own process, unless testing
-                processOnPort = await findProcessFromIncomingPort(
-                    port,
-                    filterSelf,
-                    req.socket,
-                ).catch(error => {
-                    logger.error(LOG_PREFIX, `findProcessFromIncomingPort failed: ${error}`);
+                // The client handshakes before every call, so expiring the connection during the
+                // lookup would fail that call and make the client fall back to the web popup.
+                clearTimeout(idleTimeout);
+                const lookupDeadline = new AbortController();
+                processOnPort = await Promise.race([
+                    findProcessFromIncomingPort(port, filterSelf, req.socket, lookupDeadline.signal)
+                        .catch(error => {
+                            // An abort is reported by the deadline branch below.
+                            if (!lookupDeadline.signal.aborted) {
+                                logger.error(
+                                    LOG_PREFIX,
+                                    `findProcessFromIncomingPort failed: ${error}`,
+                                );
+                            }
 
-                    return undefined;
-                });
+                            return undefined;
+                        })
+                        .finally(() => lookupDeadline.abort()),
+                    // The lookup spawns a child process and has no deadline of its own. Without
+                    // this bound a hung spawn would leave the idle timeout disarmed for good,
+                    // because the handshake timeout is already cleared on an established
+                    // connection, and the connection would hold its slot forever.
+                    resolveAfter<ProcessInfo | undefined>(
+                        PROCESS_LOOKUP_TIMEOUT_MS,
+                        lookupDeadline.signal,
+                    ).then(
+                        value => {
+                            logger.error(LOG_PREFIX, 'findProcessFromIncomingPort timed out');
+                            // Kills the child of the abandoned lookup, which would otherwise
+                            // survive together with the promise and the closure it captures.
+                            lookupDeadline.abort();
+
+                            return value;
+                        },
+                        () => undefined, // aborted: the lookup won, nothing to report
+                    ),
+                ]);
                 manifest = handshakeManifest;
                 version = parseVersion(message.payload.settings.version);
                 requestedPermissions = message.payload.settings.requestedPermissions;
                 isHandshakeDone = true;
                 clearTimeout(handshakeTimeout);
                 ws.send(JSON.stringify({ id: message.id, type: POPUP.HANDSHAKE, payload: 'ok' }));
+                if (connectionPendingMessages.size === 0) {
+                    startIdleTimeout();
+                }
             } else if (message.type === POPUP.CLOSED) {
                 mainWindowProxy.getInstance()?.webContents.send('connect-popup/cancel', {
                     error: message.payload?.error,
@@ -237,12 +300,14 @@ export const exposeConnectWs = ({
 
                     if (!isLinux()) {
                         // we ignore missing process on linux because of AppImage/Flatpak sandboxing
+                        // The client puts no deadline on a core call, so without an explicit
+                        // failure it would wait for the connection to close to learn that the
+                        // call was dropped.
                         ws.send(
-                            JSON.stringify({
-                                id: message.id,
-                                success: false,
-                                payload: { error: 'Calling process could not be identified' },
-                            }),
+                            createFailureResponse(
+                                message.id,
+                                'Calling process could not be identified',
+                            ),
                         );
 
                         return;
@@ -272,18 +337,14 @@ export const exposeConnectWs = ({
                 // overwriting its deferred (which would leave the first call without a response).
                 if (connectionPendingMessages.has(storeId)) {
                     logger.error(LOG_PREFIX, `duplicate in-flight id ${message.id}`);
-                    ws.send(
-                        JSON.stringify({
-                            id: message.id,
-                            success: false,
-                            payload: { error: 'Duplicate in-flight request id' },
-                        }),
-                    );
+                    ws.send(createFailureResponse(message.id, 'Duplicate in-flight request id'));
 
                     return;
                 }
                 const deferred = addMessage(storeId);
                 connectionPendingMessages.add(storeId);
+                // The user can take longer than the idle timeout to confirm a pending call.
+                clearTimeout(idleTimeout);
 
                 try {
                     // check window exists, if not wait for it to be created
@@ -306,15 +367,7 @@ export const exposeConnectWs = ({
                         );
                         deleteMessage(storeId);
                         connectionPendingMessages.delete(storeId);
-                        ws.send(
-                            JSON.stringify({
-                                id: message.id,
-                                success: false,
-                                payload: {
-                                    error: 'Main window not available',
-                                },
-                            }),
-                        );
+                        ws.send(createFailureResponse(message.id, 'Main window not available'));
 
                         return;
                     }
@@ -363,11 +416,15 @@ export const exposeConnectWs = ({
                     logger.error(LOG_PREFIX, 'error handling call: ' + e);
                 } finally {
                     connectionPendingMessages.delete(storeId);
+                    if (connectionPendingMessages.size === 0) {
+                        startIdleTimeout();
+                    }
                 }
             }
         });
         ws.on('close', () => {
             clearTimeout(handshakeTimeout);
+            clearTimeout(idleTimeout);
             const currentOriginCount = connectionsByOrigin.get(originKey) ?? 1;
             if (currentOriginCount <= 1) {
                 connectionsByOrigin.delete(originKey);

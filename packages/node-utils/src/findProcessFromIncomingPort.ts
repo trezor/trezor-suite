@@ -1,8 +1,15 @@
 import { spawn } from 'child_process';
 
-function spawnAndCollectStdout(command: string): Promise<string> {
+function spawnAndCollectStdout(
+    command: string,
+    args: string[],
+    signal?: AbortSignal,
+): Promise<string> {
     return new Promise((resolve, reject) => {
-        const child = spawn(command, { shell: true });
+        // `signal` kills the child, so an abandoned command does not outlive its caller. The
+        // command is spawned without a shell, because the signal would otherwise only reach the
+        // `sh -c` (or `cmd /c`) wrapper and leave the command it started running.
+        const child = spawn(command, args, { signal });
         let stdout = '';
         let stderr = '';
         child.stdout.on('data', data => {
@@ -11,6 +18,8 @@ function spawnAndCollectStdout(command: string): Promise<string> {
         child.stderr.on('data', data => {
             stderr += data.toString();
         });
+        // A failed spawn and the kill above are reported here, and an unhandled `error` throws.
+        child.on('error', reject);
         child.on('close', code => {
             if (code !== 0) {
                 reject(new Error(`Command failed with code ${code}: ${stderr}`));
@@ -74,6 +83,7 @@ export async function findProcessFromIncomingPort(
     port: number,
     filterSelf: boolean = false,
     connection?: IncomingConnection,
+    signal?: AbortSignal,
 ): Promise<ProcessInfo | undefined> {
     const endpoints = connection && getEndpoints(port, connection);
     if (connection && !endpoints) {
@@ -84,8 +94,11 @@ export async function findProcessFromIncomingPort(
     switch (process.platform) {
         case 'darwin':
         case 'linux': {
-            const command = `lsof -iTCP:${port} -n -P +c0`;
-            const stdout = await spawnAndCollectStdout(command);
+            const stdout = await spawnAndCollectStdout(
+                'lsof',
+                [`-iTCP:${port}`, '-n', '-P', '+c0'],
+                signal,
+            );
             const lines = stdout.split('\n');
             const processLine = lines.find(line => {
                 const columns = line.trim().split(/\s+/);
@@ -108,8 +121,11 @@ export async function findProcessFromIncomingPort(
                 const sanitizedName = name.replace(/\\x\d{2}/g, ' ');
 
                 if (process.platform === 'darwin') {
-                    const fullPathCommand = `ps -p ${pid} -o comm=`;
-                    const fullPathRaw = await spawnAndCollectStdout(fullPathCommand);
+                    const fullPathRaw = await spawnAndCollectStdout(
+                        'ps',
+                        ['-p', pid, '-o', 'comm='],
+                        signal,
+                    );
                     const fullPath = fullPathRaw.trim();
                     const appPathRegex = /^(\/Users\/[^/]*)?\/Applications\/([^/]*)\.app\//;
                     const appPathMatch = fullPath.match(appPathRegex);
@@ -124,8 +140,11 @@ export async function findProcessFromIncomingPort(
                         return { name: sanitizedName, pid, fullPath, warning: true };
                     }
                 } else {
-                    const fullPathCommand = `cat /proc/${pid}/cmdline`;
-                    const fullPathRaw = await spawnAndCollectStdout(fullPathCommand);
+                    const fullPathRaw = await spawnAndCollectStdout(
+                        'cat',
+                        [`/proc/${pid}/cmdline`],
+                        signal,
+                    );
                     const fullPath = fullPathRaw.split('\0')[0] ?? '';
                     const trimmedFullPath = fullPath.trim();
                     // Binaries can be all over the place on Linux, so we don't check the path
@@ -137,8 +156,9 @@ export async function findProcessFromIncomingPort(
             return undefined;
         }
         case 'win32': {
-            const command = `netstat -ano | findstr :${port}`;
-            const stdout = await spawnAndCollectStdout(command);
+            // All connections, filtered by the matcher below: piping netstat into findstr would
+            // need a shell, and the signal would not reach either half of the pipeline.
+            const stdout = await spawnAndCollectStdout('netstat', ['-ano'], signal);
             const lines = stdout.split('\n');
             const record = lines
                 .map(line => {
@@ -160,8 +180,16 @@ export async function findProcessFromIncomingPort(
             if (record) {
                 // Extract the app name from the full path on Windows
                 // Do not load the user profile. A slow profile delays the connect-ws handshake past the client timeout.
-                const appInfoCommand = `powershell -NoProfile -NonInteractive -Command "(Get-Item (Get-Process -Id ${record.pid}).Path).VersionInfo | ConvertTo-Json"`;
-                const appInfoStdout = await spawnAndCollectStdout(appInfoCommand);
+                const appInfoStdout = await spawnAndCollectStdout(
+                    'powershell',
+                    [
+                        '-NoProfile',
+                        '-NonInteractive',
+                        '-Command',
+                        `(Get-Item (Get-Process -Id ${record.pid}).Path).VersionInfo | ConvertTo-Json`,
+                    ],
+                    signal,
+                );
                 const appInfo = JSON.parse(appInfoStdout);
                 const fullPath = appInfo['FileName'];
                 const appName = appInfo['ProductName'];
