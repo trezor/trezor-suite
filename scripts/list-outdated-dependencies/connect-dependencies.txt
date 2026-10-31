@@ -47,7 +47,6 @@ focus-visible
 git-url-parse
 html-inline-script-webpack-plugin
 http-server
-intersection-observer
 json5
 lodash
 lodash-es
