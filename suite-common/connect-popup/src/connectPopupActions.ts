@@ -13,7 +13,7 @@ const ACTION_PREFIX = '@suite-common/connect-popup';
 
 type InitiateCallPayload = Pick<
     ConnectPopupCall & { state: 'ongoing' },
-    'method' | 'methodInfo' | 'source' | 'payload'
+    'method' | 'methodInfo' | 'source' | 'payload' | 'callId'
 >;
 
 const initiateCall = createAction(
