@@ -2468,6 +2468,8 @@ export const messages = {
     graph: {
         retrievingData: 'Loading graph...',
         errorMessage: 'There are some problems loading the graph: ',
+        priceHistoryError: "Price history couldn't be loaded.",
+        priceHistoryEmpty: 'No price history for this period.',
         tryAgain: 'Try again',
         retrievengTakesLongerThanExpected:
             'Your balances are taking longer to load. \n Check your internet connection.',
