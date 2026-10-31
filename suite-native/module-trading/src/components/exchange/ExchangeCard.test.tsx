@@ -68,7 +68,7 @@ describe('ExchangeCard', () => {
         form = result.current;
     });
 
-    it('should render send and receive sections with selected assets', async () => {
+    it('should render send and receive sections with selected assets and the assets switch button', async () => {
         await act(() => {
             form.setValue('sendAsset', usdcAsset);
             form.setValue('sendCryptoAmount', '100');
@@ -109,6 +109,8 @@ describe('ExchangeCard', () => {
         expect(
             within(receiveSection).getByText(getTranslation('moduleTrading.tradingScreen.balance')),
         ).toBeOnTheScreen();
+
+        expect(getByTestId('@trading/exchange/switch-assets')).toBeOnTheScreen();
     });
 
     it('should convert receiveCryptoAmount to the base unit before passing it to CryptoToFiatValueBadge when bitcoin amount unit is sats', async () => {
