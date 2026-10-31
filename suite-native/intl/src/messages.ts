@@ -4855,6 +4855,7 @@ export const messages = {
             },
         },
         fees: {
+            levelUnavailable: 'Unavailable',
             levels: {
                 low: 'Low',
                 normal: 'Normal',

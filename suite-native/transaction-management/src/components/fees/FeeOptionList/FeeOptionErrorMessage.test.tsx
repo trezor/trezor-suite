@@ -5,7 +5,12 @@ import { FeeOptionErrorMessage } from './FeeOptionErrorMessage';
 
 describe('FeeOptionErrorMessage', () => {
     const renderFeeOptionErrorMessage = (isVisible: boolean) =>
-        renderWithBasicProvider(<FeeOptionErrorMessage isVisible={isVisible} />);
+        renderWithBasicProvider(
+            <FeeOptionErrorMessage
+                isVisible={isVisible}
+                message={getTranslation('transactionManagement.fees.error')}
+            />,
+        );
 
     it('should render error message when visible', async () => {
         const { getByText, queryByTestId } = await renderFeeOptionErrorMessage(true);
@@ -14,7 +19,7 @@ describe('FeeOptionErrorMessage', () => {
         expect(queryByTestId('@transactionManagement/fee-option-error-message')).toBeOnTheScreen();
     });
 
-    it('should have height 0 when not visible', async () => {
+    it('should not render when not visible', async () => {
         const { queryByTestId } = await renderFeeOptionErrorMessage(false);
 
         expect(queryByTestId('@transactionManagement/fee-option-error-message')).toBeNull();

@@ -49,3 +49,48 @@ it('displays the confirmed fee when an amount edit resets the draft while the pi
     await act(() => result.current.handleOpen());
     expect(result.current.form.getValues('feeLevel')).toBe('normal');
 });
+
+it.each(['AMOUNT_NOT_ENOUGH_CURRENCY_FEE', 'TR_GENERIC_ERROR_TITLE'] as const)(
+    'shows a known summary estimate only for balance errors (%s)',
+    async error => {
+        const wallet = getWalletState();
+        const { result } = await renderHookWithStoreProvider(useFeeSelector, {
+            initialProps: {
+                accountKey: ETH_ACCOUNT_KEY,
+                selectedFee: 'normal' as const,
+                updateThunk: () => () => undefined,
+                formDraft: null,
+            },
+            preloadedState: {
+                wallet: {
+                    ...wallet,
+                    fees: {
+                        eth: {
+                            status: 'loaded',
+                            data: {
+                                blockHeight: 200,
+                                blockTime: 12,
+                                minFee: 1,
+                                maxFee: 100,
+                                minPriorityFee: 1,
+                                levels: [{ label: 'normal', feePerUnit: '10000000000', blocks: 2 }],
+                            },
+                        },
+                    },
+                    send: {
+                        ...wallet.send,
+                        feeLevels: {
+                            normal: { type: 'error', error },
+                            low: createFeeLevel({ feeLimit: '200000' }),
+                        },
+                    },
+                },
+            },
+        });
+        expect(result.current.fee).toBe(
+            error === 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' ? '2000000000000000' : null,
+        );
+        expect(result.current.shouldShowFeeUnavailableAlert).toBe(true);
+        expect(result.current.isSubmittable).toBe(false);
+    },
+);
