@@ -22,19 +22,24 @@ import {
     type FeeLevelLabel,
     type FormState,
     type PrecomposedLevels,
+    type PrecomposedTransaction,
     type PrecomposedTransactionFinal,
     isFinalPrecomposedTransaction,
 } from '@suite-common/wallet-types';
 import {
+    type FeeSelectorProps,
     type NativeSendRootState,
     type UpdateSelectedFeeLevelThunkParams,
     getFeeAvailability,
+    isPrecomposedTransactionError,
     selectFeeLevels,
     transactionManagementActions,
 } from '@suite-native/transaction-management';
+import { type FeeLevel } from '@trezor/connect';
 import { useServices } from '@trezor/dependency-injection';
 import { useDebounce } from '@trezor/react-utils';
 import { createThunk, injectDispatch } from '@trezor/redux-utils';
+import { BigNumber } from '@trezor/utils';
 
 import { useYieldFeeEstimationError } from './useYieldFeeEstimationError';
 import { EARN_MODULE_PREFIX } from '../../constants';
@@ -58,6 +63,7 @@ type WithdrawFlowData = NonNullable<ResolvedYieldFlowData['flowData']>;
 
 type UseYieldWithdrawFeesResult = {
     fee: string | null;
+    getCustomFeeLevel?: FeeSelectorProps['getCustomFeeLevel'];
     formDraft: FormState | undefined;
     formDraftKey: string;
     hasFeeEstimationError: boolean;
@@ -80,11 +86,13 @@ type ComposeWithdrawFeeParams = {
 
 type BuildYieldWithdrawFeeLevelsParams = {
     amount: string;
+    availableBalance: string;
     feeInfo: FeeInfo;
     gasLimit: string;
     reviewToken: WithdrawFlowData['receiptToken'];
     symbol: WithdrawFlowData['account']['symbol'];
     unsignedTransaction: string;
+    customFee: ReturnType<typeof getYieldWithdrawFeeState>['customFee'];
 };
 
 const FEE_LEVEL_LABELS_BY_PRICE: FeeLevelLabel[] = ['economy', 'low', 'normal', 'high'];
@@ -107,10 +115,7 @@ export const updateYieldWithdrawSelectedFeeLevelThunk = createThunk<
     { state: UpdateYieldWithdrawSelectedFeeLevelThunkState }
 >(
     `${EARN_MODULE_PREFIX}/updateYieldWithdrawSelectedFeeLevelThunk`,
-    (
-        { feeLevelLabel, feePerUnit, feeLimit, formDraftKey, maxFeePerGas, maxPriorityFeePerGas },
-        { dispatch, getState },
-    ) => {
+    ({ feeLevelLabel, formDraftKey }, { dispatch, getState }) => {
         if (!formDraftKey) return;
 
         const formDraft = selectDeepCopyOfFormDraft(getState(), formDraftKey);
@@ -119,30 +124,7 @@ export const updateYieldWithdrawSelectedFeeLevelThunk = createThunk<
             return;
         }
 
-        formDraft.selectedFee = feeLevelLabel;
-
-        if (feeLevelLabel === 'custom') {
-            if (feePerUnit) {
-                formDraft.feePerUnit = feePerUnit;
-            }
-
-            if (feeLimit) {
-                formDraft.feeLimit = feeLimit;
-            }
-
-            if (maxFeePerGas) {
-                formDraft.maxFeePerGas = maxFeePerGas;
-            }
-
-            if (maxPriorityFeePerGas) {
-                formDraft.maxPriorityFeePerGas = maxPriorityFeePerGas;
-            }
-
-            dispatch(formDraftActions.storeDraft({ key: formDraftKey, formDraft }));
-
-            return;
-        }
-
+        // Custom values come from the verified preview committed before this thunk runs.
         const selectedFeeTransaction = selectFeeLevels(getState())[feeLevelLabel];
 
         if (!isFinalPrecomposedTransaction(selectedFeeTransaction)) {
@@ -154,6 +136,7 @@ export const updateYieldWithdrawSelectedFeeLevelThunk = createThunk<
                 key: formDraftKey,
                 formDraft: {
                     ...formDraft,
+                    selectedFee: feeLevelLabel,
                     ...getYieldWithdrawSelectedFeeFields(selectedFeeTransaction),
                 },
             }),
@@ -185,29 +168,78 @@ const getYieldWithdrawFeeState = (formDraft: FormState | null | undefined) => {
     };
 };
 
+type BuildYieldWithdrawFeeLevelParams = Omit<
+    BuildYieldWithdrawFeeLevelsParams,
+    'feeInfo' | 'customFee'
+> & {
+    estimatedGasLimit: string;
+    feeLevel: FeeLevel;
+};
+
+const buildYieldWithdrawFeeLevel = ({
+    amount,
+    availableBalance,
+    gasLimit,
+    estimatedGasLimit,
+    feeLevel,
+    reviewToken,
+    symbol,
+    unsignedTransaction,
+}: BuildYieldWithdrawFeeLevelParams): PrecomposedTransaction => {
+    const { precomposedTransaction } = buildStablecoinYieldTransactionReview({
+        amount,
+        selectedFee: buildEvmSelectedFee({ feeLevel, gasLimit }),
+        symbol,
+        token: reviewToken,
+        unsignedTransaction,
+    });
+
+    return new BigNumber(precomposedTransaction.fee).gt(availableBalance)
+        ? { type: 'error', error: 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE' }
+        : { ...precomposedTransaction, estimatedFeeLimit: estimatedGasLimit };
+};
+
 const buildYieldWithdrawFeeLevels = ({
     amount,
+    availableBalance,
     feeInfo,
     gasLimit,
     reviewToken,
     symbol,
     unsignedTransaction,
-}: BuildYieldWithdrawFeeLevelsParams): PrecomposedLevels =>
-    Object.fromEntries(
-        feeInfo.levels
-            .filter(feeLevel => feeLevel.label !== 'custom')
-            .map(feeLevel => {
-                const { precomposedTransaction } = buildStablecoinYieldTransactionReview({
-                    amount,
-                    selectedFee: buildEvmSelectedFee({ feeLevel, gasLimit }),
-                    symbol,
-                    token: reviewToken,
-                    unsignedTransaction,
-                });
+    customFee,
+}: BuildYieldWithdrawFeeLevelsParams): PrecomposedLevels => {
+    const levels = feeInfo.levels
+        .filter(feeLevel => feeLevel.label !== 'custom')
+        .map(feeLevel => ({ ...feeLevel, feeLimit: gasLimit }));
+    // A new amount can need more gas than the previously confirmed Custom limit.
+    if (customFee && new BigNumber(customFee.feeLimit).gte(gasLimit)) {
+        levels.push({
+            label: 'custom',
+            feePerUnit: customFee.feePerUnit,
+            feeLimit: customFee.feeLimit,
+            maxFeePerGas: customFee.maxFeePerGas,
+            maxPriorityFeePerGas: customFee.maxPriorityFeePerGas,
+            blocks: -1,
+        });
+    }
 
-                return [feeLevel.label, precomposedTransaction];
+    return Object.fromEntries(
+        levels.map(feeLevel => [
+            feeLevel.label,
+            buildYieldWithdrawFeeLevel({
+                amount,
+                availableBalance,
+                gasLimit: feeLevel.feeLimit ?? gasLimit,
+                estimatedGasLimit: gasLimit,
+                feeLevel,
+                reviewToken,
+                symbol,
+                unsignedTransaction,
             }),
+        ]),
     );
+};
 
 export const useYieldWithdrawFees = ({
     amount,
@@ -221,8 +253,14 @@ export const useYieldWithdrawFees = ({
     const store = useStore<FeesRootState>();
     const debounce = useDebounce();
     const requestIdRef = useRef(0);
+    useEffect(
+        () => () => {
+            requestIdRef.current += 1;
+        },
+        [],
+    );
     const [preparedAction, setPreparedAction] = useState<PreparedYieldWithdrawAction | null>(null);
-    const [isComposingWithdrawFee, setIsComposingWithdrawFee] = useState(false);
+    const [isComposingWithdrawFee, setIsComposingWithdrawFee] = useState(true);
     const {
         feeEstimationRetryKey,
         hasFeeEstimationError,
@@ -257,6 +295,7 @@ export const useYieldWithdrawFees = ({
     flowDataRef.current = flowData;
     const feeStateRef = useRef(feeState);
     feeStateRef.current = feeState;
+    const availableBalance = flowData?.account.availableBalance;
     const selectedFeeLevel = feeLevels[selectedFee];
     const fee = isFinalPrecomposedTransaction(selectedFeeLevel) ? selectedFeeLevel.fee : null;
     const { isFeeUnavailable } = getFeeAvailability({
@@ -265,14 +304,50 @@ export const useYieldWithdrawFees = ({
         isLoading: isComposingWithdrawFee,
     });
 
+    const getCustomFeeLevel = useCallback<NonNullable<FeeSelectorProps['getCustomFeeLevel']>>(
+        feeLevel => {
+            if (
+                !isEnabled ||
+                isComposingWithdrawFee ||
+                !preparedAction ||
+                !flowData ||
+                preparedAction.amount !== amount ||
+                preparedAction.flowType !== flowType
+            ) {
+                return;
+            }
+
+            const reviewToken = getYieldWithdrawInputToken({
+                flowData,
+                flowType: preparedAction.flowType,
+            });
+            const { formState: baseFormState } = buildStablecoinYieldTransactionReview({
+                amount: preparedAction.amount,
+                selectedFee: null,
+                symbol: flowData.account.symbol,
+                token: reviewToken,
+                unsignedTransaction: preparedAction.unsignedTransaction,
+            });
+
+            return buildYieldWithdrawFeeLevel({
+                amount: preparedAction.amount,
+                availableBalance: flowData.account.availableBalance,
+                gasLimit: feeLevel.feeLimit || baseFormState.feeLimit,
+                estimatedGasLimit: baseFormState.feeLimit,
+                feeLevel,
+                reviewToken,
+                symbol: flowData.account.symbol,
+                unsignedTransaction: preparedAction.unsignedTransaction,
+            });
+        },
+        [amount, flowData, flowType, isComposingWithdrawFee, isEnabled, preparedAction],
+    );
+
     const composeWithdrawFee = useCallback(
         async (params: ComposeWithdrawFeeParams, requestId: number) => {
             const { amount: withdrawAmount, formDraftKey: withdrawFormDraftKey } = params;
             const withdrawFlowData = flowDataRef.current;
             const currentFlowType = params.flowType;
-            const { customFee: withdrawCustomFee, selectedFee: withdrawSelectedFee } =
-                feeStateRef.current;
-
             try {
                 if (requestId !== requestIdRef.current) {
                     return;
@@ -324,6 +399,8 @@ export const useYieldWithdrawFees = ({
                 }
 
                 const { unsignedTransaction } = composeResult;
+                const { customFee: withdrawCustomFee, selectedFee: withdrawSelectedFee } =
+                    feeStateRef.current;
 
                 const reviewToken = getYieldWithdrawInputToken({
                     flowData: withdrawFlowData,
@@ -338,7 +415,9 @@ export const useYieldWithdrawFees = ({
                 });
                 const withdrawFeeLevels = buildYieldWithdrawFeeLevels({
                     amount: withdrawAmount,
+                    availableBalance: withdrawFlowData.account.availableBalance,
                     feeInfo: withdrawFeeInfo,
+                    customFee: withdrawCustomFee,
                     gasLimit: baseFormState.feeLimit,
                     reviewToken,
                     symbol: withdrawFlowData.account.symbol,
@@ -359,18 +438,20 @@ export const useYieldWithdrawFees = ({
                     transactionManagementActions.storeFeeLevels({ feeLevels: withdrawFeeLevels }),
                 );
 
-                const resolvedSelectedFee = isFinalPrecomposedTransaction(
-                    withdrawFeeLevels[mergedFormState.selectedFee],
-                )
+                const resolvedSelectedFee = withdrawFeeLevels[mergedFormState.selectedFee]
                     ? mergedFormState.selectedFee
-                    : FEE_LEVEL_LABELS_BY_PRICE.find(label =>
-                          isFinalPrecomposedTransaction(withdrawFeeLevels[label]),
-                      );
+                    : FEE_LEVEL_LABELS_BY_PRICE.find(label => withdrawFeeLevels[label]);
                 const selectedFeeTransaction = resolvedSelectedFee
                     ? withdrawFeeLevels[resolvedSelectedFee]
                     : undefined;
 
-                if (!isFinalPrecomposedTransaction(selectedFeeTransaction)) {
+                if (
+                    !isFinalPrecomposedTransaction(selectedFeeTransaction) &&
+                    !(
+                        selectedFeeTransaction?.type === 'error' &&
+                        isPrecomposedTransactionError(selectedFeeTransaction.error)
+                    )
+                ) {
                     reportComposeError('missing-fee-level');
                     setHasFeeEstimationError(true);
                     dispatch(formDraftActions.removeDraft({ key: withdrawFormDraftKey }));
@@ -385,7 +466,9 @@ export const useYieldWithdrawFees = ({
                         formDraft: {
                             ...mergedFormState,
                             selectedFee: resolvedSelectedFee,
-                            ...getYieldWithdrawSelectedFeeFields(selectedFeeTransaction),
+                            ...(isFinalPrecomposedTransaction(selectedFeeTransaction)
+                                ? getYieldWithdrawSelectedFeeFields(selectedFeeTransaction)
+                                : {}),
                         },
                     }),
                 );
@@ -442,6 +525,7 @@ export const useYieldWithdrawFees = ({
         );
     }, [
         amount,
+        availableBalance,
         composeWithdrawFee,
         debounce,
         dispatch,
@@ -454,6 +538,7 @@ export const useYieldWithdrawFees = ({
 
     return {
         fee,
+        getCustomFeeLevel,
         formDraft,
         formDraftKey,
         hasFeeEstimationError,

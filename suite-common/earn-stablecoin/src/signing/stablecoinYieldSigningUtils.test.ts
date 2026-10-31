@@ -151,4 +151,26 @@ describe('buildStablecoinYieldTransactionReview fee selection', () => {
             buildStablecoinYieldTransactionReview(feeLevelReviewParams).formState.selectedFee,
         ).toBe('custom');
     });
+    it('replaces EIP-1559 fields when a legacy fee is selected', () => {
+        const result = buildStablecoinYieldTransactionReview({
+            ...feeLevelReviewParams,
+            unsignedTransaction: JSON.stringify({
+                ...JSON.parse(feeLevelReviewParams.unsignedTransaction),
+                type: 2,
+                maxFeePerGas: '0x2540be400',
+                maxPriorityFeePerGas: '0x3b9aca00',
+            }),
+            selectedFee: { type: 'legacy', gasPrice: '0x77359400', gasLimit: '0x30d40' },
+        });
+        expect(result.precomposedTransaction).toMatchObject({
+            fee: '400000000000000',
+            feePerByte: '2',
+        });
+        expect(result.precomposedTransaction.maxFeePerGas).toBeUndefined();
+        expect(result.transactionForSigning).toMatchObject({
+            gasPrice: '0x77359400',
+            gasLimit: '0x30d40',
+        });
+        expect(result.transactionForSigning).not.toHaveProperty('txType', 2);
+    });
 });
