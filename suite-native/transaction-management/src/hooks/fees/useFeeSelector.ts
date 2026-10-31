@@ -1,5 +1,7 @@
 import { useCallback, useRef } from 'react';
+import { useSelector } from 'react-redux';
 
+import { type FeesRootState, selectNetworkFeeLevel } from '@suite-common/wallet-core';
 import type {
     AccountKey,
     FeeLevelLabel,
@@ -14,13 +16,18 @@ import { useServices } from '@trezor/dependency-injection';
 import { injectDispatch } from '@trezor/redux-utils';
 
 import { getFeeAvailability } from './feeAvailability';
+import { estimateFee } from './feeEstimate';
 import { getFeeSelectorFormValues } from './feeSelectorFormValues';
+import { getReferenceFeeLevel } from './referenceFeeLevel';
 import { type CustomFeeParams } from './useFeeSelection';
 import { useFeesManagement } from './useFeesManagement';
 import { type FeesFormValues } from '../../feesFormSchema';
 import { updateFeeLimitThunk } from '../../thunks';
 import { type UpdateSelectedFeeLevelThunkParams } from '../../types';
-import { usePrecomposedTransactionError } from '../usePrecomposedTransactionError';
+import {
+    isPrecomposedTransactionError,
+    usePrecomposedTransactionError,
+} from '../usePrecomposedTransactionError';
 
 export type UseFeeSelectorParams = {
     accountKey: AccountKey;
@@ -74,7 +81,22 @@ export const useFeeSelector = ({
     const networkType = account?.networkType;
     const isTrc20 = networkType === 'tron' && !!tokenContract;
     const confirmedFeeLevel = feeLevels[selectedFee ?? selectedFeeLevel];
-    const fee = isFinalPrecomposedTransaction(confirmedFeeLevel) ? confirmedFeeLevel.fee : null;
+    const networkFeeLevel = useSelector((state: FeesRootState) =>
+        selectNetworkFeeLevel(state, symbol, selectedFee ?? selectedFeeLevel),
+    );
+    const estimatedFee =
+        account &&
+        confirmedFeeLevel?.type === 'error' &&
+        isPrecomposedTransactionError(confirmedFeeLevel.error)
+            ? estimateFee({
+                  networkType: account.networkType,
+                  feePerUnit: networkFeeLevel?.maxFeePerGas ?? networkFeeLevel?.feePerUnit,
+                  referenceFeeLevel: getReferenceFeeLevel(feeLevels),
+              })
+            : null;
+    const fee = isFinalPrecomposedTransaction(confirmedFeeLevel)
+        ? confirmedFeeLevel.fee
+        : estimatedFee;
     const { isFeeUnavailable, feeError } = getFeeAvailability({
         feeLevels,
         selectedFee: selectedFee ?? selectedFeeLevel,
