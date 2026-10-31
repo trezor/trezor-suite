@@ -87,6 +87,70 @@ describe('fetchCoinGeckoMarketChart', () => {
         );
     });
 
+    it('has no chart for a coin CoinGecko does not list', async () => {
+        fetchUrlMock.mockResolvedValue({ ok: false, status: 404 } as Response);
+
+        await expect(fetchCoinGeckoMarketChart({ ticker, fiatCurrency, days: 7 })).resolves.toBe(
+            null,
+        );
+    });
+
+    it('has an empty chart, not none, for a listed coin without prices in the period', async () => {
+        fetchUrlMock.mockResolvedValue({
+            ok: true,
+            status: 200,
+            json: jest.fn().mockResolvedValue({ prices: [] }),
+        } as unknown as Response);
+
+        await expect(fetchCoinGeckoMarketChart({ ticker, fiatCurrency, days: 7 })).resolves.toEqual(
+            [],
+        );
+    });
+
+    it('fails, rather than reporting no chart, when CoinGecko cannot answer', async () => {
+        fetchUrlMock.mockResolvedValue({ ok: false, status: 500 } as Response);
+
+        await expect(fetchCoinGeckoMarketChart({ ticker, fiatCurrency, days: 7 })).rejects.toThrow(
+            '500',
+        );
+    });
+
+    describe('for a token CoinGecko may list under several addresses', () => {
+        const policyId = 'a'.repeat(56);
+        const cardanoToken = { symbol: 'ada', tokenAddress: `${policyId}4e4654` } as TickerId;
+
+        beforeEach(() => {
+            getNetworkMock.mockReturnValue({
+                coingeckoId: 'cardano',
+                networkType: 'cardano',
+            } as ReturnType<typeof getNetwork>);
+        });
+
+        it('charts the next address when one fails', async () => {
+            const prices: Array<[number, number]> = [[1_700_000_000_000, 0.5]];
+            fetchUrlMock.mockResolvedValueOnce({ ok: false, status: 500 } as Response);
+            fetchUrlMock.mockResolvedValueOnce({
+                ok: true,
+                status: 200,
+                json: jest.fn().mockResolvedValue({ prices }),
+            } as unknown as Response);
+
+            await expect(
+                fetchCoinGeckoMarketChart({ ticker: cardanoToken, fiatCurrency, days: 7 }),
+            ).resolves.toEqual(prices);
+            expect(fetchUrlMock).toHaveBeenCalledTimes(2);
+        });
+
+        it('fails, rather than reporting no chart, when one address fails and the rest are not listed', async () => {
+            fetchUrlMock.mockResolvedValueOnce({ ok: false, status: 500 } as Response);
+            fetchUrlMock.mockResolvedValueOnce({ ok: false, status: 404 } as Response);
+
+            await expect(
+                fetchCoinGeckoMarketChart({ ticker: cardanoToken, fiatCurrency, days: 7 }),
+            ).rejects.toThrow('500');
+        });
+    });
+
     it('gives up without a request once the caller has left', async () => {
         const controller = new AbortController();
         controller.abort();
