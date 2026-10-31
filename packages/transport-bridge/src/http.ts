@@ -80,8 +80,33 @@ const validateProtocolMessageBody =
 
 const ADDRESS = new URL('http://127.0.0.1');
 
+/**
+ * `new URL('HTTP://Host:1/path').origin` is `http://host:1`, the very string a browser sends in
+ * the `Origin` header. Opaque origins (`file:`, a sandboxed iframe) serialize to `null`, which is
+ * a possible header value too and must never be allowed.
+ */
+const normalizeOrigin = (origin: string) => {
+    try {
+        const normalized = new URL(origin).origin;
+
+        return normalized === 'null' ? undefined : normalized;
+    } catch {
+        return undefined;
+    }
+};
+
+type TrezordNodeHidSettings = {
+    /**
+     * Exact origins (scheme and host) allowed to open HID-only Trezor One devices. The general
+     * allowlist matches by hostname suffix, which is too broad for devices that keep their PIN
+     * and passphrase unlocked across sessions. Each entry is normalized, an unparsable one is
+     * logged and dropped.
+     */
+    origins: string[];
+};
+
 export class TrezordNode {
-    version = '3.2.1';
+    version = '3.3.0';
     bundledVersion?: string;
     serviceName = 'trezord-node';
     /** last known descriptors state */
@@ -94,6 +119,9 @@ export class TrezordNode {
     }[];
     /** pending /call /read and /post sessions. can be aborted via /abort endpoint */
     private abortableSignals: { session: string; abort: () => void }[] = [];
+    private readonly hidOrigins: string[];
+    /** Responses to requests sent from one of `hidOrigins`. */
+    private readonly hidAllowedResponses = new WeakSet<Response>();
     private readonly requestedPort: number;
     private port?: number;
     server: HttpServer<never>[] = [];
@@ -108,12 +136,14 @@ export class TrezordNode {
         logger,
         bundledVersion,
         port = 21328,
+        hid,
     }: {
         api: 'legacy' | 'nusb' | 'udp' | AbstractApi;
         assetPrefix?: string;
         logger: Log;
         bundledVersion?: string;
         port?: number;
+        hid?: TrezordNodeHidSettings;
     }) {
         this.logger = logger;
         this.descriptors = [];
@@ -121,7 +151,19 @@ export class TrezordNode {
 
         this.listenSubscriptions = [];
 
-        this.core = createCore(api, this.logger);
+        // A typo would otherwise match no origin at all while still enabling the setting, which
+        // leaves HID-only devices listed and openable by nobody.
+        this.hidOrigins = (hid?.origins ?? []).flatMap(origin => {
+            const normalized = normalizeOrigin(origin);
+            if (!normalized) {
+                this.logger.error(`http: ignoring invalid hid origin '${origin}'`);
+
+                return [];
+            }
+
+            return [normalized];
+        });
+        this.core = createCore(api, this.logger, { hid: this.hidOrigins.length > 0 });
 
         this.assetPrefix = assetPrefix;
         this.requestedPort = port;
@@ -203,6 +245,18 @@ export class TrezordNode {
         this.abortableSignals = this.abortableSignals.filter(s => s.session !== session);
     }
 
+    private isHidOrigin(req: Pick<RequestWithParams, 'headers'>) {
+        const { origin } = req.headers;
+
+        return typeof origin === 'string' && this.hidOrigins.includes(origin);
+    }
+
+    // Body parsers and validators hand a copy of the request to the next handler and the copy
+    // has no headers, while the response object stays the same along the whole chain.
+    private isHidAllowed(res: Response) {
+        return this.hidAllowedResponses.has(res);
+    }
+
     private handleResponse(res: Response, data: string) {
         res.appendHeader('Content-Length', `${Buffer.byteLength(data)}`);
         res.end(data);
@@ -281,7 +335,17 @@ export class TrezordNode {
                         logger: context.logger,
                     });
 
-                    if (isOriginAllowed) {
+                    if (isOriginAllowed && this.isHidOrigin(req)) {
+                        this.hidAllowedResponses.add(res);
+                        // The first request of a client allowed to use HID loads the HID
+                        // backend, so that its very first enumeration already lists the device.
+                        // A rejection must not leave the request without a response. The
+                        // activation reports a failure as `false` and rejects for nothing today.
+                        this.core
+                            .enableHid()
+                            .catch(() => false)
+                            .then(() => next(req, res));
+                    } else if (isOriginAllowed) {
                         next(req, res);
                     } else {
                         // error handling identic to legacy trezord-go
@@ -356,6 +420,7 @@ export class TrezordNode {
                         // @ts-expect-error
                         sessionOwner: req?.body?.sessionOwner,
                         signal,
+                        isHidAllowed: this.isHidAllowed(res),
                     })
                     .then(result => {
                         if (!result.success) {
@@ -382,6 +447,7 @@ export class TrezordNode {
                 this.core
                     .release({
                         session: req.params.session,
+                        isHidAllowed: this.isHidAllowed(res),
                     })
                     .then(result => {
                         if (!result.success) {
@@ -405,15 +471,23 @@ export class TrezordNode {
         app.post('/abort/:session', [
             validateSessionParams,
             parseBodyText,
-            (req, res) => {
+            async (req, res) => {
                 let statusCode = 400;
-                this.abortableSignals.forEach(s => {
-                    if (s.session === req.params.session) {
-                        statusCode = 200;
-                        s.abort();
-                    }
-                });
-                this.removeAbortableSignal(req.params.session);
+                // Session ids are sequential and therefore guessable. Without this check any
+                // allowed origin could interrupt signing on a HID-only device.
+                const isDenied = await this.core.isHidSessionDenied(
+                    req.params.session,
+                    this.isHidAllowed(res),
+                );
+                if (!isDenied) {
+                    this.abortableSignals.forEach(s => {
+                        if (s.session === req.params.session) {
+                            statusCode = 200;
+                            s.abort();
+                        }
+                    });
+                    this.removeAbortableSignal(req.params.session);
+                }
 
                 res.statusCode = statusCode;
 
@@ -440,6 +514,7 @@ export class TrezordNode {
                         ...req.body,
                         session,
                         signal,
+                        isHidAllowed: this.isHidAllowed(res),
                     })
                     .then(result => {
                         this.removeAbortableSignal(session);
@@ -473,6 +548,7 @@ export class TrezordNode {
                         ...req.body,
                         session,
                         signal,
+                        isHidAllowed: this.isHidAllowed(res),
                     })
                     .then(result => {
                         this.removeAbortableSignal(session);
@@ -506,6 +582,7 @@ export class TrezordNode {
                         ...req.body,
                         session,
                         signal,
+                        isHidAllowed: this.isHidAllowed(res),
                     })
                     .then(result => {
                         this.removeAbortableSignal(session);
