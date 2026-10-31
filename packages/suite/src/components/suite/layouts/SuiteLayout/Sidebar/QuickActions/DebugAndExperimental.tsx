@@ -1,6 +1,8 @@
+import { useSelector } from 'react-redux';
+
 import { selectIsDebugModeActive } from '@suite/debug';
 import { selectDesktopUpdateAllowPrerelease } from '@suite/desktop-update';
-import { Translation } from '@suite/intl';
+import { Translation, useTranslation } from '@suite/intl';
 import { SettingsAnchor, gotoThunk } from '@suite/router';
 import { selectIsExperimentalEnabled } from '@suite/settings';
 import { Box, Column, Icon } from '@trezor/components';
@@ -8,8 +10,6 @@ import { useServices } from '@trezor/dependency-injection';
 import { AtomIcon, CheckIcon, DotOutlineFilledIcon, StarFourIcon } from '@trezor/icons';
 import { QuickActionButton, TooltipRow } from '@trezor/product-components';
 import { injectDispatch } from '@trezor/redux-utils';
-
-import { useSelector } from 'src/hooks/suite';
 
 type DebugAndExperimentalTooltipProps = {
     isDebugMode: boolean;
@@ -58,6 +58,7 @@ const DebugAndExperimentalTooltip = ({
 
 export const DebugAndExperimental = () => {
     const { dispatch } = useServices(injectDispatch);
+    const { translationString } = useTranslation();
 
     const isEapEnabled = useSelector(selectDesktopUpdateAllowPrerelease);
     const isExperimental = useSelector(selectIsExperimentalEnabled);
@@ -72,6 +73,7 @@ export const DebugAndExperimental = () => {
 
     return (
         <QuickActionButton
+            aria-label={translationString('TR_QUICK_ACTION_DEBUG_EXPERIMENTAL_SETTINGS')}
             tooltip={{
                 content: (
                     <DebugAndExperimentalTooltip
