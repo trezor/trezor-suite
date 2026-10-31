@@ -1843,6 +1843,14 @@ export const messages = defineMessages({
         defaultMessage: 'Market price',
         id: 'TR_ASSET_DETAIL_MARKET_PRICE',
     },
+    TR_PRICE_CHART_LOAD_ERROR: {
+        defaultMessage: "Price history couldn't be loaded.",
+        id: 'TR_PRICE_CHART_LOAD_ERROR',
+    },
+    TR_PRICE_CHART_NO_HISTORY: {
+        defaultMessage: 'No price history for this period.',
+        id: 'TR_PRICE_CHART_NO_HISTORY',
+    },
     TR_ASSET_DETAIL_UNSTAKED: {
         defaultMessage: 'Unstaked',
         id: 'TR_ASSET_DETAIL_UNSTAKED',

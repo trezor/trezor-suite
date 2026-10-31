@@ -83,7 +83,10 @@ export const AssetDetailMarketPrice = ({ assetKey }: AssetDetailMarketPriceProps
                             />
                         )}
                     </Column>
-                    <AssetPriceChartRangeSelector />
+                    <AssetPriceChartRangeSelector
+                        networkSymbol={symbol}
+                        tokenContract={contractAddress}
+                    />
                 </Row>
                 <AssetPriceChart networkSymbol={symbol} tokenContract={contractAddress} />
             </Column>

@@ -15149,13 +15149,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/price-chart@workspace:suite-native/price-chart"
   dependencies:
-    "@suite-common/assets": "workspace:*"
     "@suite-common/price-chart": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
-    "@suite-common/wallet-utils": "workspace:*"
     "@suite-native/atoms": "workspace:*"
+    "@suite-native/intl": "workspace:*"
     "@suite-native/react-native-graph": "workspace:*"
     "@suite-native/storage": "workspace:*"
     "@trezor/styles-native": "workspace:*"
@@ -17036,14 +17035,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite/price-chart@workspace:suite/price-chart"
   dependencies:
-    "@suite-common/assets": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/price-chart": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
-    "@suite-common/wallet-utils": "workspace:*"
     "@suite/flags": "workspace:*"
+    "@suite/intl": "workspace:*"
     "@suite/ui-animations": "workspace:*"
     "@trezor/components": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
