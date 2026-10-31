@@ -3,6 +3,12 @@ import path from 'node:path';
 import { promisify } from 'node:util';
 
 import {
+    filterChangelogCommits,
+    getCommitsSinceLastStableRelease,
+    hasChangelogScopes,
+    splitChangelogHeader,
+} from './connect-changelog';
+import {
     comment,
     commit,
     exec,
@@ -47,16 +53,29 @@ const deploymentType = ['prepatch', 'preminor', 'prerelease'].includes(semver)
 
 const ROOT = path.join(import.meta.dirname, '..', '..');
 
-const getGitCommitByPackageName = (packageName: string, maxCount = 10) =>
+const getGitCommitByPath = (relativePath: string, maxCount?: number) =>
     exec('git', [
         'log',
         '--oneline',
-        '--max-count',
-        `${maxCount}`,
+        ...(maxCount === undefined ? [] : ['--max-count', `${maxCount}`]),
         '--pretty=tformat:"-   %s (%h)"',
         '--',
-        `./${getTrezorPackageRelativePath(packageName)}`,
+        `./${relativePath}`,
     ]);
+
+const getGitCommitByPackageName = (packageName: string, maxCount?: number) =>
+    getGitCommitByPath(getTrezorPackageRelativePath(packageName), maxCount);
+
+// The log format wraps every line in literal quotes (no shell to strip them). Only the wrapping
+// pair is removed: dropping every quote would also mangle a subject that contains one, e.g. git's
+// own revert subject `Revert "feat(connect): ..."`.
+const normalizeGitLog = (gitLogStdout: string) =>
+    gitLogStdout
+        .split('\n')
+        .map(commit => commit.replace(/^"/, '').replace(/"$/, ''))
+        // `%s` is a single-line subject, so the only empty line is the trailing one git always
+        // writes; keeping it would inflate every count taken from this list.
+        .filter(Boolean);
 
 const splitByNewlines = (input: string) => input.split('\n');
 
@@ -180,31 +199,59 @@ const bumpConnect = async () => {
             const packageJSON = JSON.parse(rawPackageJSON);
             const { version } = packageJSON;
 
-            const packageGitLog = await getGitCommitByPackageName(packageName, 1000);
-
-            const commitsArr = packageGitLog.stdout.split('\n');
-
-            const newCommits: string[] = [];
-            for (const commit of commitsArr) {
-                // Here we check commits utils last stable release
-                if (commit.includes(`npm-release: @trezor/${packageName}`)) {
-                    break;
-                }
-                newCommits.push(commit.replaceAll('"', ''));
-            }
+            // Read the whole path-scoped log: the entry is bounded by the previous stable release
+            // found below, while a cap short enough to cut that marker off would silently widen the
+            // range instead (@trezor/transport already has more than 1000 commits here). The
+            // release workflow checks out with `fetch-depth: 0`.
+            const packageGitLog = await getGitCommitByPackageName(packageName);
+            const commitsArr = normalizeGitLog(packageGitLog.stdout);
 
             // In Connect dependencies packages we only update CHANGELOG when doing a stable release (patch or minor).
             // We do that so we can generate the complete CHANGELOG automatically when doing stable release.
-            if (newCommits.length && deploymentType === 'stable') {
+            if (deploymentType === 'stable') {
+                // Stop at the previous stable release so the entry spans only this release.
+                const newCommits = getCommitsSinceLastStableRelease(commitsArr, packageName);
+
+                // The packages filtered by commit scope (the connect entry points) also keep a
+                // commit committed under a foreign scope whose diff reached their own source, so
+                // read the src-scoped log for them. Same format, so the lines match by identity.
+                const srcGitLog = hasChangelogScopes(packageName)
+                    ? await getGitCommitByPath(
+                          path.posix.join(getTrezorPackageRelativePath(packageName), 'src'),
+                      )
+                    : undefined;
+                const commitsTouchingSrc = srcGitLog
+                    ? new Set(normalizeGitLog(srcGitLog.stdout))
+                    : undefined;
+
+                // Keep only user-facing changes; drop release bookkeeping and mechanical churn.
+                const changelogCommits = filterChangelogCommits(
+                    newCommits,
+                    packageName,
+                    commitsTouchingSrc,
+                );
+
                 const CHANGELOG_PATH = path.join(PACKAGE_PATH, 'CHANGELOG.md');
                 if (!fs.existsSync(CHANGELOG_PATH)) {
                     await writeFile(CHANGELOG_PATH, '');
                 }
 
-                let changelog = await readFile(CHANGELOG_PATH, 'utf-8');
+                const existingChangelog = await readFile(CHANGELOG_PATH, 'utf-8');
+                // Preserve any fixed header (e.g. a pointer to the core changelog) above the version
+                // history instead of prepending the new entry above everything.
+                const { header, history } = splitChangelogHeader(existingChangelog);
+                // The version is bumped, committed and published regardless, so always write the
+                // heading: a package whose commits are all filtered out (or that only moved
+                // dependency versions) must not be missing from its own changelog. The fallback
+                // states only what the filter established — that nothing user-facing is in range —
+                // since the filtered-out commits are not necessarily dependency updates.
+                const entryBody = changelogCommits.length
+                    ? changelogCommits.join('\n')
+                    : '-   Maintenance release: no user-facing changes in this package.';
+                const entry = `# ${version}\n\n${entryBody}`;
+                const changelog = [header, entry, history].filter(Boolean).join('\n\n');
 
-                changelog = `# ${version}\n\n${newCommits.join('\n')}\n\n${changelog}`;
-                await writeFile(CHANGELOG_PATH, changelog, 'utf-8');
+                await writeFile(CHANGELOG_PATH, `${changelog}\n`, 'utf-8');
 
                 await exec('yarn', ['prettier', '--write', CHANGELOG_PATH]);
             }
