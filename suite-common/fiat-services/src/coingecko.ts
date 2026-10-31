@@ -42,20 +42,16 @@ type FetchCoinGeckoOptions = {
     signal?: AbortSignal;
 };
 
+const NOT_FOUND_STATUS = 404;
+
+const requestCoinGecko = (url: string, options: FetchCoinGeckoOptions = {}): Promise<Response> =>
+    options.skipCache
+        ? fetchUrl(url, { headers: { 'X-Bypass-Cache': '1' }, signal: options.signal })
+        : rateLimiter.limit(fetchSignal => fetchUrl(url, { signal: fetchSignal }), options.signal);
+
 const fetchCoinGecko = async (url: string, options: FetchCoinGeckoOptions = {}) => {
     try {
-        let res: Response;
-        if (options.skipCache) {
-            res = await fetchUrl(url, {
-                headers: { 'X-Bypass-Cache': '1' },
-                signal: options.signal,
-            });
-        } else {
-            res = await rateLimiter.limit(
-                fetchSignal => fetchUrl(url, { signal: fetchSignal }),
-                options.signal,
-            );
-        }
+        const res = await requestCoinGecko(url, options);
         if (!res.ok) {
             console.warn(`Coingecko: Fiat rates failed to fetch: ${res.status}`);
 
@@ -133,16 +129,36 @@ export const fetchCoinGeckoMarketChart = async ({
 }: FetchCoinGeckoMarketChartParams): Promise<CoinGeckoPricePair[] | null> => {
     const coinUrls = await buildCoinUrls(ticker);
     const urlParams = `vs_currency=${fiatCurrency}&days=${days}`;
+    let isListed = false;
+    let failedStatus: number | null = null;
 
     for (const coinUrl of coinUrls) {
-        const response = (await fetchCoinGecko(`${coinUrl}/market_chart?${urlParams}`, {
-            signal,
-        })) as CoinGeckoMarketChartResponse | undefined;
-        const prices = response?.prices;
+        const res = await requestCoinGecko(`${coinUrl}/market_chart?${urlParams}`, { signal });
+
+        if (res.status === NOT_FOUND_STATUS) {
+            continue;
+        }
+
+        if (!res.ok) {
+            failedStatus = res.status;
+            continue;
+        }
+
+        isListed = true;
+
+        const { prices } = (await res.json()) as CoinGeckoMarketChartResponse;
 
         if (prices && prices.length > 0) {
             return prices;
         }
+    }
+
+    if (isListed) {
+        return [];
+    }
+
+    if (failedStatus !== null) {
+        throw new Error(`Coingecko: Market chart failed to fetch: ${failedStatus}`);
     }
 
     return null;
