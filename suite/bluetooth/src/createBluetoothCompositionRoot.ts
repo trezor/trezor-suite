@@ -1,7 +1,11 @@
 import { type ThunkDispatch, type UnknownAction } from '@reduxjs/toolkit';
 
 import { type DesktopApiDep } from '@suite/desktop-app-api';
-import { type DesktopDeviceRootState } from '@suite/device';
+import {
+    type DesktopDeviceRootState,
+    selectDeviceDefaultConnectionMode,
+    selectIsConnectionModalOpen,
+} from '@suite/device';
 import {
     selectAdapterStatus,
     selectAutoConnectPolicy,
@@ -14,8 +18,10 @@ import { type WithServices } from '@trezor/redux-utils';
 
 import { type DesktopBluetoothDevice } from './DesktopBluetoothDevice';
 import { createBackgroundScan } from './bluetoothBackgroundScan';
-import { type Bluetooth, type BluetoothDep, createBluetooth } from './createBluetooth';
+import { type Bluetooth, type BluetoothDep } from './createBluetooth';
 import { createBluetoothInit } from './createBluetoothInit';
+import { createBluetoothStartScan } from './createBluetoothStartScan';
+import { createBluetoothStopScan } from './createBluetoothStopScan';
 import { createOpenSystemSettings } from './createOpenSystemSettings';
 import { createSetupBluetoothAutoReconnect } from './createSetupBluetoothAutoReconnect';
 import { createSetupBluetoothListeners } from './createSetupBluetoothListeners';
@@ -39,6 +45,14 @@ export const createBluetoothCompositionRoot = (deps: CompositionRootDeps): Bluet
     const backgroundScan = createBackgroundScan({
         getAdapterStatus,
         getKnownDevices,
+    });
+
+    const startScan = createBluetoothStartScan({ dispatch: deps.dispatch });
+
+    const stopScan = createBluetoothStopScan({
+        dispatch: deps.dispatch,
+        getDefaultConnectionMode: toGetter(deps.getState, selectDeviceDefaultConnectionMode),
+        getIsConnectionModalOpen: toGetter(deps.getState, selectIsConnectionModalOpen),
     });
 
     const setupBluetoothListeners = createSetupBluetoothListeners({
@@ -66,9 +80,11 @@ export const createBluetoothCompositionRoot = (deps: CompositionRootDeps): Bluet
         setupBluetoothAutoReconnect,
     });
 
-    return createBluetooth({
-        bluetoothInit,
-        backgroundScan,
+    return {
+        init: bluetoothInit,
+        restartBackgroundScan: backgroundScan.restartIfNeeded,
         openSystemSettings,
-    });
+        startScan,
+        stopScan,
+    };
 };

@@ -1,16 +1,13 @@
-import { type BackgroundScan } from './bluetoothBackgroundScan';
+import { type BluetoothStartScan } from './createBluetoothStartScan';
+import { type BluetoothStopScan } from './createBluetoothStopScan';
 import { type OpenSystemSettings } from './createOpenSystemSettings';
-
-type BluetoothDeps = {
-    bluetoothInit: () => Promise<void>;
-    backgroundScan: BackgroundScan;
-    openSystemSettings: OpenSystemSettings;
-};
 
 export type Bluetooth = {
     init: () => Promise<void>;
     restartBackgroundScan: () => void;
     openSystemSettings: OpenSystemSettings;
+    startScan: BluetoothStartScan;
+    stopScan: BluetoothStopScan;
 };
 
 export type BluetoothDep = {
@@ -19,10 +16,4 @@ export type BluetoothDep = {
 
 export const injectBluetooth = (services: BluetoothDep): BluetoothDep => ({
     bluetooth: services.bluetooth,
-});
-
-export const createBluetooth = (deps: BluetoothDeps): Bluetooth => ({
-    init: deps.bluetoothInit,
-    restartBackgroundScan: deps.backgroundScan.restartIfNeeded,
-    openSystemSettings: deps.openSystemSettings,
 });
