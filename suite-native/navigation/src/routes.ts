@@ -300,6 +300,8 @@ export enum WrappedNativeTokenStackRoutes {
 }
 
 export enum ReceiveStackRoutes {
+    ReceiveCrossroads = 'ReceiveCrossroads',
+    ReceiveDiscovery = 'ReceiveDiscovery',
     ReceiveAccounts = 'ReceiveAccounts',
     ReceiveAddress = 'ReceiveAddress',
     ReceiveAddressVerification = 'ReceiveAddressVerification',

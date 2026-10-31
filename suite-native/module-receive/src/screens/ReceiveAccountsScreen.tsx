@@ -1,76 +1,50 @@
 import { useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
-
-import { AccountsListWithFilter, type OnSelectAccount } from '@suite-native/accounts';
-import { events, injectNativeAnalytics } from '@suite-native/analytics';
+import { toTokenAddress } from '@suite-common/wallet-types';
+import { AccountsList, type OnSelectAccount } from '@suite-native/accounts';
 import { selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice } from '@suite-native/device';
-import { Translation } from '@suite-native/intl';
 import {
     type ReceiveStackParamList,
-    ReceiveStackRoutes,
+    type ReceiveStackRoutes,
     Screen,
-    type StackNavigationProps,
-    useNavigateToInitialScreen,
+    type StackProps,
 } from '@suite-native/navigation';
-import { useServices } from '@trezor/dependency-injection';
 
 import { ReceiveBlockedDeviceCompromisedScreen } from './ReceiveBlockedDeviceCompromisedScreen';
+import { ReceiveAccountsHeader } from '../components/ReceiveAccountsHeader';
+import { useReceiveNavigation } from '../hooks/useReceiveNavigation';
 
-type NavigationProp = StackNavigationProps<
-    ReceiveStackParamList,
-    ReceiveStackRoutes.ReceiveAccounts
->;
+export const ReceiveAccountsScreen = ({
+    route,
+}: StackProps<ReceiveStackParamList, ReceiveStackRoutes.ReceiveAccounts>) => {
+    const { asset, closeActionType } = route.params;
 
-export const ReceiveAccountsScreen = () => {
-    const navigateToInitialScreen = useNavigateToInitialScreen();
-    const { analytics } = useServices(injectNativeAnalytics);
-    const navigation = useNavigation<NavigationProp>();
+    const { navigateToReceiveAddressScreen } = useReceiveNavigation();
+
     const hasFirmwareAuthenticityCheckHardFailed = useSelector(
         selectHasFirmwareAuthenticityCheckHardFailedForSelectedDevice,
     );
 
-    if (hasFirmwareAuthenticityCheckHardFailed) return <ReceiveBlockedDeviceCompromisedScreen />;
+    if (hasFirmwareAuthenticityCheckHardFailed) {
+        return <ReceiveBlockedDeviceCompromisedScreen />;
+    }
 
-    const navigateToReceiveScreen: OnSelectAccount = ({ account, tokenAddress }) => {
-        analytics.report({
-            type: events.receiveOptionsScreenEvent.name,
-            payload: { option: 'account' },
-        });
-
-        navigation.navigate(ReceiveStackRoutes.ReceiveAddress, {
-            accountKey: account.key,
-            tokenContract: tokenAddress,
-            closeActionType: 'back',
-        });
-    };
-
-    const handleClose = () => {
-        analytics.report({
-            type: events.receiveOptionsScreenEvent.name,
-            payload: { option: 'close' },
-        });
-        navigateToInitialScreen();
-    };
-
-    const handleAddAccount = () => {
-        analytics.report({
-            type: events.receiveOptionsScreenEvent.name,
-            payload: { option: 'addAccount' },
+    const onSelectAccount: OnSelectAccount = args => {
+        navigateToReceiveAddressScreen({
+            ...args,
+            tokenAddress: asset.contractAddress ? toTokenAddress(asset.contractAddress) : undefined,
         });
     };
 
     return (
-        <Screen isScrollable={false} noHorizontalPadding noBottomPadding hasBottomInset={false}>
-            <AccountsListWithFilter
-                title={<Translation id="moduleReceive.receiveTitle" />}
-                onSelectAccount={navigateToReceiveScreen}
-                flowType="receive"
-                networkFilterType="accounts"
-                closeActionType="close"
-                closeAction={handleClose}
-                onAddAccount={handleAddAccount}
-            />
+        <Screen
+            header={<ReceiveAccountsHeader asset={asset} closeActionType={closeActionType} />}
+            isScrollable={false}
+            noHorizontalPadding
+            noBottomPadding
+            hasBottomInset={false}
+        >
+            <AccountsList onSelectAccount={onSelectAccount} networkFilter={[asset.networkSymbol]} />
         </Screen>
     );
 };
