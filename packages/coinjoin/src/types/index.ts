@@ -21,7 +21,12 @@ export interface CoinjoinClientSettings extends BaseSettings {
     prison?: CoinjoinPrisonInmate[];
 }
 
-export type { ScanAccountProgress, ScanAccountCheckpoint, ScanProgressInfo } from './backend';
+export type {
+    FetchIdentityIndex,
+    ScanAccountProgress,
+    ScanAccountCheckpoint,
+    ScanProgressInfo,
+} from './backend';
 
 export type * from './account';
 export type * from './alice';

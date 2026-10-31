@@ -9843,9 +9843,107 @@ export const messages = defineMessages({
         id: 'TR_COINJOIN_DISCOVERY_MEMPOOL_PROGRESS',
         defaultMessage: '{current} out of {total} transactions analyzed',
     },
-    TR_LOADING_FUNDS: {
-        id: 'TR_LOADING_FUNDS',
-        defaultMessage: 'Loading assets...',
+    TR_COINJOIN_DISCOVERY_TITLE: {
+        id: 'TR_COINJOIN_DISCOVERY_TITLE',
+        description: 'Heading of the Privacy account discovery loader',
+        defaultMessage: 'Loading your Privacy account',
+    },
+    TR_COINJOIN_DISCOVERY_CAPTION_BLOCKS_LOCAL: {
+        id: 'TR_COINJOIN_DISCOVERY_CAPTION_BLOCKS_LOCAL',
+        description: 'Discovery loader caption, bold line (also a list item), max ~55 characters',
+        defaultMessage: 'Blocks are checked on this computer.',
+    },
+    TR_COINJOIN_DISCOVERY_CAPTION_MEMPOOL_LOCAL: {
+        id: 'TR_COINJOIN_DISCOVERY_CAPTION_MEMPOOL_LOCAL',
+        description: 'Discovery loader caption, bold line (also a list item), max ~55 characters',
+        defaultMessage: 'Unconfirmed transactions are checked on this computer.',
+    },
+    TR_COINJOIN_DISCOVERY_CAPTION_FILTERS_OVER_TOR: {
+        id: 'TR_COINJOIN_DISCOVERY_CAPTION_FILTERS_OVER_TOR',
+        description:
+            'Discovery loader caption, line under both "…checked on this computer." captions, max ~75 characters',
+        defaultMessage: 'Their filters are downloaded over Tor.',
+    },
+    TR_COINJOIN_DISCOVERY_CAPTION_DISCARD: {
+        id: 'TR_COINJOIN_DISCOVERY_CAPTION_DISCARD',
+        description: 'Discovery loader caption, bold line (also a list item), max ~55 characters',
+        defaultMessage: "Filters that don't match are discarded.",
+    },
+    TR_COINJOIN_DISCOVERY_CAPTION_DISCARD_DETAIL: {
+        id: 'TR_COINJOIN_DISCOVERY_CAPTION_DISCARD_DETAIL',
+        description: 'Discovery loader caption, second line, max ~75 characters',
+        defaultMessage: 'Nothing else is requested for them.',
+    },
+    TR_COINJOIN_DISCOVERY_CAPTION_SERVER: {
+        id: 'TR_COINJOIN_DISCOVERY_CAPTION_SERVER',
+        description: 'Discovery loader caption, bold line, max ~55 characters',
+        defaultMessage: "The scan doesn't send your addresses.",
+    },
+    TR_COINJOIN_DISCOVERY_CAPTION_SERVER_DETAIL: {
+        id: 'TR_COINJOIN_DISCOVERY_CAPTION_SERVER_DETAIL',
+        description: 'Discovery loader caption, second line, max ~75 characters',
+        defaultMessage: 'The server sees Tor requests for filters, blocks and transactions.',
+    },
+    TR_COINJOIN_DISCOVERY_CAPTION_FETCH: {
+        id: 'TR_COINJOIN_DISCOVERY_CAPTION_FETCH',
+        description: 'Discovery loader caption, bold line (also a list item), max ~55 characters',
+        defaultMessage: 'Each match is fetched over one of four Tor circuits.',
+    },
+    TR_COINJOIN_DISCOVERY_CAPTION_FETCH_BLOCKS: {
+        id: 'TR_COINJOIN_DISCOVERY_CAPTION_FETCH_BLOCKS',
+        description: 'Discovery loader caption, second line, max ~75 characters',
+        defaultMessage: 'Only matching blocks are requested.',
+    },
+    TR_COINJOIN_DISCOVERY_CAPTION_FETCH_TRANSACTIONS: {
+        id: 'TR_COINJOIN_DISCOVERY_CAPTION_FETCH_TRANSACTIONS',
+        description:
+            'Discovery loader caption, second line, max ~75 characters. "ID" is the transaction ID.',
+        defaultMessage: 'Only matching transactions are requested by ID.',
+    },
+    TR_COINJOIN_DISCOVERY_CAPTION_KEEP: {
+        id: 'TR_COINJOIN_DISCOVERY_CAPTION_KEEP',
+        description: 'Discovery loader caption, bold line (also a list item), max ~55 characters',
+        defaultMessage: 'Only your transactions are added to your account.',
+    },
+    TR_COINJOIN_DISCOVERY_CAPTION_KEEP_DETAIL: {
+        id: 'TR_COINJOIN_DISCOVERY_CAPTION_KEEP_DETAIL',
+        description: 'Discovery loader caption, second line, max ~75 characters',
+        defaultMessage: 'The rest of the block is discarded.',
+    },
+    TR_COINJOIN_DISCOVERY_CAPTION_CHANCE: {
+        id: 'TR_COINJOIN_DISCOVERY_CAPTION_CHANCE',
+        description: 'Discovery loader caption, bold line, max ~55 characters',
+        defaultMessage: 'Filters sometimes match by chance.',
+    },
+    TR_COINJOIN_DISCOVERY_CAPTION_CHANCE_DETAIL: {
+        id: 'TR_COINJOIN_DISCOVERY_CAPTION_CHANCE_DETAIL',
+        description: 'Discovery loader caption, second line, max ~75 characters',
+        defaultMessage: 'Then nothing is added to your account.',
+    },
+    TR_COINJOIN_DISCOVERY_LABEL_THIS_COMPUTER: {
+        id: 'TR_COINJOIN_DISCOVERY_LABEL_THIS_COMPUTER',
+        description: 'Label in the discovery illustration, max ~25 characters',
+        defaultMessage: 'This computer',
+    },
+    TR_COINJOIN_DISCOVERY_LABEL_BLOCK_FILTERS: {
+        id: 'TR_COINJOIN_DISCOVERY_LABEL_BLOCK_FILTERS',
+        description: 'Label in the discovery illustration, max ~25 characters, may wrap at a space',
+        defaultMessage: 'Block filters over Tor',
+    },
+    TR_COINJOIN_DISCOVERY_LABEL_MEMPOOL: {
+        id: 'TR_COINJOIN_DISCOVERY_LABEL_MEMPOOL',
+        description: 'Label in the discovery illustration, max ~25 characters, may wrap at a space',
+        defaultMessage: 'Mempool over Tor',
+    },
+    TR_COINJOIN_DISCOVERY_LABEL_TOR_CIRCUIT: {
+        id: 'TR_COINJOIN_DISCOVERY_LABEL_TOR_CIRCUIT',
+        description: 'Label in the discovery illustration, max ~25 characters',
+        defaultMessage: 'Tor circuit',
+    },
+    TR_COINJOIN_DISCOVERY_LABEL_TOR_CIRCUIT_NUMBER: {
+        id: 'TR_COINJOIN_DISCOVERY_LABEL_TOR_CIRCUIT_NUMBER',
+        description: 'Label in the discovery illustration, max ~25 characters, {number} is 1 to 4',
+        defaultMessage: 'Tor circuit {number}',
     },
     TR_LOADING_ACCOUNTS: {
         id: 'TR_LOADING_ACCOUNTS',
@@ -9858,157 +9956,6 @@ export const messages = defineMessages({
     TR_MIGRATE: {
         defaultMessage: 'Migrate',
         id: 'TR_MIGRATE',
-    },
-    TR_LOADING_FACT_TITLE: {
-        id: 'TR_LOADING_FACT_TITLE',
-        defaultMessage: 'Did you know?',
-    },
-    TR_LOADING_FACT_0: {
-        id: 'TR_LOADING_FACT_0',
-        description: '140 symbols max',
-        defaultMessage:
-            "Your coinjoin account isn't detected automatically. If you haven't enabled view-only mode on this wallet, you'll need to manually re-add the account after reconnecting your Trezor.",
-    },
-    TR_LOADING_FACT_1: {
-        id: 'TR_LOADING_FACT_1',
-        description: '140 symbols max',
-        defaultMessage:
-            "The Trezor Model One was the world's first hardware wallet, released on July 29, 2014. The follow-up Trezor Model T launched in 2018.",
-    },
-    TR_LOADING_FACT_2: {
-        id: 'TR_LOADING_FACT_2',
-        description: '140 symbols max',
-        defaultMessage:
-            "Your coinjoin account isn't detected automatically. If you haven't enabled view-only mode on this wallet, you'll need to manually re-add the account after reconnecting your Trezor.",
-    },
-    TR_LOADING_FACT_3: {
-        id: 'TR_LOADING_FACT_3',
-        defaultMessage:
-            "Trezor Suite won't remember your coinjoin account in order to protect your privacy, unless you explicitly choose to remember the wallet.",
-    },
-    TR_LOADING_FACT_4: {
-        id: 'TR_LOADING_FACT_4',
-        description: '140 symbols max',
-        defaultMessage:
-            'About 20% of Bitcoin is stuck in wallets by users who have lost access to their private keys. This equates to about 3.67M BTC.',
-    },
-    TR_LOADING_FACT_5: {
-        id: 'TR_LOADING_FACT_5',
-        description: '140 symbols max',
-        defaultMessage:
-            'On October 29th 2013 the first Bitcoin ATM was set up in a coffee shop in Vancouver, Canada. There were over 38,000 Bitcoin ATMs across the globe in 2022.',
-    },
-    TR_LOADING_FACT_6: {
-        id: 'TR_LOADING_FACT_6',
-        description: '140 symbols max',
-        defaultMessage:
-            'Bitcoin was created in the aftermath of the 2008 financial crisis by an anonymous person (or even group of people) known only by the pseudonym Satoshi Nakamoto.',
-    },
-    TR_LOADING_FACT_7: {
-        id: 'TR_LOADING_FACT_7',
-        description: '140 symbols max',
-        defaultMessage: 'One bitcoin is equivalent to 100M satoshis (sats).',
-    },
-    TR_LOADING_FACT_8: {
-        id: 'TR_LOADING_FACT_8',
-        description: '140 symbols max',
-        defaultMessage: 'Less than 2% of the population owned Bitcoin in 2022.',
-    },
-    TR_LOADING_FACT_9: {
-        id: 'TR_LOADING_FACT_9',
-        description: '140 symbols max',
-        defaultMessage:
-            '"Privacy is not something that I\'m merely entitled to, it\'s an absolute prerequisite." - Marlon Brando',
-    },
-    TR_LOADING_FACT_11: {
-        id: 'TR_LOADING_FACT_11',
-        description: '140 symbols max',
-        defaultMessage: '"Privacy is not secrecy." - Eric Hughes',
-    },
-    TR_LOADING_FACT_12: {
-        id: 'TR_LOADING_FACT_12',
-        description: '140 symbols max',
-        defaultMessage:
-            "Like cash, you don't keep your entire net worth in your pocket, you keep walking around money for incidental expenses - Satoshi Nakamoto",
-    },
-    TR_LOADING_FACT_13: {
-        id: 'TR_LOADING_FACT_13',
-        description: '140 symbols max',
-        defaultMessage: '"Privacy is not secrecy." - Eric Hughes',
-    },
-    TR_LOADING_FACT_14: {
-        id: 'TR_LOADING_FACT_14',
-        description: '140 symbols max',
-        defaultMessage:
-            '"Privacy is the power to selectively reveal oneself to the world." - Eric Hughes',
-    },
-    TR_LOADING_FACT_15: {
-        id: 'TR_LOADING_FACT_15',
-        description: '140 symbols max',
-        defaultMessage:
-            '"Privacy is the power to selectively reveal oneself to the world." - Eric Hughes',
-    },
-    TR_LOADING_FACT_16: {
-        id: 'TR_LOADING_FACT_16',
-        description: '140 symbols max',
-        defaultMessage: 'Coinjoin accounts use taproot addresses',
-    },
-    TR_LOADING_FACT_17: {
-        id: 'TR_LOADING_FACT_17',
-        description: '140 symbols max',
-        defaultMessage:
-            'El Salvador became the first nation to accept Bitcoin as legal tender in September 2021',
-    },
-    TR_LOADING_FACT_18: {
-        id: 'TR_LOADING_FACT_18',
-        description: '140 symbols max',
-        defaultMessage:
-            'Laszlo Hanyecz made first commercial BTC transaction. He bought 2 pizzas for 10,000 BTC',
-    },
-    TR_LOADING_FACT_19: {
-        id: 'TR_LOADING_FACT_19',
-        description: '140 symbols max',
-        defaultMessage: 'The last Bitcoin should be mined some time around the year 2140',
-    },
-    TR_LOADING_FACT_20: {
-        id: 'TR_LOADING_FACT_20',
-        description: '140 symbols max',
-        defaultMessage:
-            'Mel B, better known as Scary Spice, was the first mainstream musician to accept Bitcoin payments for a single',
-    },
-    TR_LOADING_FACT_21: {
-        id: 'TR_LOADING_FACT_21',
-        description: '140 symbols max',
-        defaultMessage:
-            'Bitcoin transactions are grouped together in blocks. These blocks are organized in a chronological sequence on the blockchain.',
-    },
-    TR_LOADING_FACT_22: {
-        id: 'TR_LOADING_FACT_22',
-        description: '140 symbols max',
-        defaultMessage:
-            'Halving is the mechanism by which the reward for mining BTC is cut in half every four years. In the beginning, mining one block would earn you 50 BTC, whereas in 2020 it earned you 6.25 BTC',
-    },
-    TR_LOADING_FACT_23: {
-        id: 'TR_LOADING_FACT_23',
-        description: '140 symbols max',
-        defaultMessage: 'Bitcoin has a maximum market cap of 21M coins',
-    },
-    TR_LOADING_FACT_24: {
-        id: 'TR_LOADING_FACT_24',
-        description: '140 symbols max',
-        defaultMessage:
-            '"Privacy is not something that I\'m merely entitled to, it\'s an absolute prerequisite." - Marlon Brando',
-    },
-    TR_LOADING_FACT_25: {
-        id: 'TR_LOADING_FACT_25',
-        description: '140 symbols max',
-        defaultMessage: 'Bitcoin first reached parity with the US Dollar in February 2011',
-    },
-    TR_LOADING_FACT_26: {
-        id: 'TR_LOADING_FACT_26',
-        description: '140 symbols max',
-        defaultMessage:
-            'Slush Pool is the oldest Bitcoin mining pool, and also the first to be publicly available. Today it is operated by Braiins Pool',
     },
     TR_TIMER_PAST_DEADLINE: {
         id: 'TR_TIMER_PAST_DEADLINE',
