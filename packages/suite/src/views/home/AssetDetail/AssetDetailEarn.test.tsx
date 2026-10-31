@@ -17,10 +17,10 @@ import { ETH, ETH_ASSET_KEY, getEthAssetState } from './assetDetailTestState';
 
 const ONE_ETH_IN_WEI = '1000000000000000000';
 
-/** One ether to spend, and `stakedWei` of it with Everstake. */
-const mockEthereumAccount = (stakedWei: string): Account =>
+/** `balance` ether to spend, and `stakedWei` of it with Everstake. */
+const mockEthereumAccount = (stakedWei: string, balance = '1'): Account =>
     ({
-        ...mockWalletAccount({ symbol: ETH, formattedBalance: '1' }),
+        ...mockWalletAccount({ symbol: ETH, formattedBalance: balance }),
         networkType: 'ethereum',
         misc: {
             nonce: '0',
@@ -85,8 +85,18 @@ describe('the earn card on the asset screen', () => {
         expect(card.textContent?.match(/\$3,000/g)).toHaveLength(2);
     });
 
-    it('is left out while nothing is staked', () => {
+    it('shows the whole balance as available while nothing is staked', () => {
         renderEarn(mockEthereumAccount('0'));
+
+        const card = screen.getByTestId('@asset-detail/earn');
+
+        expect(card).toHaveTextContent(intl.formatMessage(messages.TR_STAKE_STAKED));
+        expect(card.textContent?.match(/\$3,000/g)).toHaveLength(1);
+        expect(card).toHaveTextContent('$0.00');
+    });
+
+    it('is left out while there is nothing to stake', () => {
+        renderEarn(mockEthereumAccount('0', '0'));
 
         expect(screen.queryByTestId('@asset-detail/earn')).not.toBeInTheDocument();
     });
