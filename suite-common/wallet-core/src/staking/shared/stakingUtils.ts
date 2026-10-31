@@ -507,3 +507,14 @@ export const isAccountStakingActive = (
 
     return hasDepositedBalance || isStakePending || isUnstakePending || isClaimPending || canClaim;
 };
+
+export const isAccountStakingActiveByHistory = (
+    account: Account,
+    transactions: WalletAccountTransaction[],
+) => {
+    if (!isSupportedStakingNetworkSymbol(account.symbol)) return false;
+
+    const claimTransactions = transactions.filter(tx => getTxStakeType(tx) === 'claim');
+
+    return isAccountStakingActive(account, claimTransactions);
+};

@@ -48,7 +48,11 @@ import type { FiatRatesRootState } from '../fiat-rates/fiatRatesTypes';
 import { type PhishingRootState } from '../phishing/phishingReducerTypes';
 import { selectActiveDustPhishingThreshold } from '../phishing/phishingSelectors';
 import { isCardanoStakingTx } from '../staking/cardano/cardanoStakingUtils';
-import { getTxStakeType, isAccountStakingActive } from '../staking/shared/stakingUtils';
+import {
+    getTxStakeType,
+    isAccountStakingActive,
+    isAccountStakingActiveByHistory,
+} from '../staking/shared/stakingUtils';
 import { isTronStakingTx } from '../staking/tron/tronStakingUtils';
 
 const createMemoizedSelector = createWeakMapSelector.withTypes<
@@ -302,14 +306,9 @@ export const selectAccountIsStakingActive = createMemoizedSelector(
 export const selectAnyAccountIsStakingActive = createMemoizedSelector(
     [selectTransactions, (_: TransactionsRootState, accounts: Account[]) => accounts],
     (transactions, accounts) =>
-        accounts.some(account => {
-            const accountTransactions = transactions[account.key] ?? [];
-            const claimTransactions = accountTransactions.filter(
-                tx => getTxStakeType(tx) === 'claim',
-            );
-
-            return isAccountStakingActive(account, claimTransactions);
-        }),
+        accounts.some(account =>
+            isAccountStakingActiveByHistory(account, transactions[account.key] ?? []),
+        ),
 );
 
 export const selectAccountTransactionsFetchStatus = (
