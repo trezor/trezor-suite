@@ -11,13 +11,12 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@suite-common/assets": "workspace:*",
         "@suite-common/price-chart": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
-        "@suite-common/wallet-utils": "workspace:*",
         "@suite-native/atoms": "workspace:*",
+        "@suite-native/intl": "workspace:*",
         "@suite-native/react-native-graph": "workspace:*",
         "@suite-native/storage": "workspace:*",
         "@trezor/styles-native": "workspace:*",
