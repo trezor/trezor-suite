@@ -1,26 +1,37 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import { buildClaimCalldata } from '@suite-common/earn-stablecoin';
-import { estimateYieldFeeLevel, formDraftReducer } from '@suite-common/wallet-core';
+import {
+    estimateYieldFeeLevel,
+    feesActions,
+    feesReducer,
+    formDraftReducer,
+} from '@suite-common/wallet-core';
 import { type FeesState, type PrecomposedLevels } from '@suite-common/wallet-types';
+import { mockNativeAnalytics } from '@suite-native/analytics/mocks';
 import {
     act,
     createLightStore,
     createStaticReducer,
     renderHookWithStoreProvider,
 } from '@suite-native/test-utils-store';
-import { prepareSendFormReducer } from '@suite-native/transaction-management';
+import {
+    prepareSendFormReducer,
+    transactionManagementActions,
+} from '@suite-native/transaction-management';
 import { mockActionType, mockReducer } from '@trezor/redux-utils/mocks';
 
 import { useYieldClaimFees } from './useYieldClaimFees';
 import { type StablecoinYieldAccountRewards } from '../../utils/yield/stablecoinYieldClaimSummaryUtils';
 import { buildYieldClaimFeeLevels, getYieldClaimFee } from '../../utils/yield/yieldClaimFeeUtils';
 
+const mockGetCurrentNonce = jest.fn<Promise<{ nonce: string }>, []>();
+
 jest.mock('@suite-common/wallet-core', () => ({
     ...jest.requireActual('@suite-common/wallet-core'),
     estimateYieldFeeLevel: jest.fn(),
     ethereumGetCurrentNonceThunk: jest.fn(() => () => ({
-        unwrap: () => Promise.resolve({ nonce: '5' }),
+        unwrap: () => mockGetCurrentNonce(),
     })),
 }));
 
@@ -41,8 +52,18 @@ const buildYieldClaimFeeLevelsMock = jest.mocked(buildYieldClaimFeeLevels);
 const getYieldClaimFeeMock = jest.mocked(getYieldClaimFee);
 
 const FEE_LEVELS = {
-    normal: { type: 'final', fee: '21000000', feeLimit: '21000' },
-} as unknown as PrecomposedLevels;
+    normal: {
+        type: 'final',
+        fee: '21000000',
+        feeLimit: '21000',
+        feePerByte: '10',
+        totalSpent: '21000000',
+        bytes: 0,
+        inputs: [],
+        outputs: [],
+        outputsPermutation: [],
+    },
+} satisfies PrecomposedLevels;
 
 const FEES_STATE = {
     eth: {
@@ -79,7 +100,7 @@ type HookProps = {
     isEnabled: boolean;
 };
 
-const createTestStore = () =>
+const createTestStore = (fees: FeesState = FEES_STATE) =>
     createLightStore({
         reducer: {
             // Static slices required by the test store provider (formatters config).
@@ -91,7 +112,7 @@ const createTestStore = () =>
                     bitcoinAmountUnit: 0,
                     addressDisplayType: 'chunked',
                 }),
-                fees: createStaticReducer(FEES_STATE),
+                fees: feesReducer,
                 formDrafts: formDraftReducer,
                 send: prepareSendFormReducer({
                     actionTypes: { storageLoad: mockActionType('storageLoad') },
@@ -99,13 +120,20 @@ const createTestStore = () =>
                 }),
             }),
         },
+        preloadedState: { wallet: { fees } },
     });
 
-const renderYieldClaimFees = (initialProps: HookProps) =>
-    renderHookWithStoreProvider((props: HookProps) => useYieldClaimFees(props), {
-        services: { store: createTestStore() },
-        initialProps,
-    });
+const renderYieldClaimFees = async (initialProps: HookProps, fees: FeesState = FEES_STATE) => {
+    const store = createTestStore(fees);
+
+    return {
+        store,
+        ...(await renderHookWithStoreProvider((props: HookProps) => useYieldClaimFees(props), {
+            services: { store, analytics: mockNativeAnalytics() },
+            initialProps,
+        })),
+    };
+};
 
 /** Fires the fee preparation debounce (300 ms) and lets the pending promises settle. */
 const settleDebounce = () => act(() => jest.advanceTimersByTimeAsync(300));
@@ -113,6 +141,7 @@ const settleDebounce = () => act(() => jest.advanceTimersByTimeAsync(300));
 describe('useYieldClaimFees', () => {
     beforeEach(() => {
         jest.useFakeTimers();
+        mockGetCurrentNonce.mockResolvedValue({ nonce: '5' });
         estimateYieldFeeLevelMock.mockResolvedValue({
             success: true,
             payload: { feeLimit: '21000' },
@@ -136,6 +165,25 @@ describe('useYieldClaimFees', () => {
         jest.useRealTimers();
     });
 
+    it('does not show a previous flow fee before the current claim is prepared', async () => {
+        const store = createTestStore();
+        store.dispatch(
+            transactionManagementActions.storeFeeLevels({
+                feeLevels: {
+                    normal: { ...FEE_LEVELS.normal!, fee: '999' },
+                },
+            }),
+        );
+        const { result } = await renderHookWithStoreProvider(useYieldClaimFees, {
+            initialProps: { accountRewards: createAccountRewards(), isEnabled: true },
+            services: { store, analytics: mockNativeAnalytics() },
+        });
+        expect(result.current.feePreview).toBeNull();
+        expect(result.current.preparedAction).toBeNull();
+        await settleDebounce();
+        expect(result.current.feePreview).toEqual(FEE_LEVELS.normal);
+    });
+
     it('prepares the claim fee', async () => {
         const { result } = await renderYieldClaimFees({
             accountRewards: createAccountRewards(),
@@ -149,6 +197,79 @@ describe('useYieldClaimFees', () => {
         expect(estimateYieldFeeLevelMock).toHaveBeenCalledTimes(1);
         expect(result.current.isPreparingClaimFee).toBe(false);
         expect(result.current.preparedAction).not.toBeNull();
+    });
+
+    it.each([{}, { eth: { status: 'error' } }] as FeesState[])(
+        'offers retry after an initial network-fee fetch leaves missing data: %j',
+        async fees => {
+            buildYieldClaimFeeLevelsMock.mockImplementation(
+                jest.requireActual('../../utils/yield/yieldClaimFeeUtils').buildYieldClaimFeeLevels,
+            );
+            const { result, store } = await renderYieldClaimFees(
+                {
+                    accountRewards: createAccountRewards(),
+                    isEnabled: true,
+                },
+                fees,
+            );
+            await settleDebounce();
+            expect(result.current.preparedAction).toBeNull();
+            expect(result.current.hasFeeEstimationError).toBe(true);
+            await act(() => {
+                store.dispatch(feesActions.updateMultipleFees(FEES_STATE));
+                result.current.retryFeeEstimation();
+            });
+            await settleDebounce();
+            expect(result.current.hasFeeEstimationError).toBe(false);
+            expect(result.current.preparedAction).not.toBeNull();
+        },
+    );
+
+    it('offers retry for unknown errors returned by the fee calculator', async () => {
+        buildYieldClaimFeeLevelsMock.mockReturnValueOnce({
+            normal: { type: 'error', error: 'TR_GENERIC_ERROR_TITLE' },
+        });
+        const { result } = await renderYieldClaimFees({
+            accountRewards: createAccountRewards(),
+            isEnabled: true,
+        });
+        await settleDebounce();
+        expect(result.current.hasFeeEstimationError).toBe(true);
+        expect(result.current.preparedAction).toBeNull();
+    });
+
+    it('offers retry when nonce preparation fails and recovers without leaving the form', async () => {
+        mockGetCurrentNonce.mockRejectedValueOnce(new Error('Backend unavailable'));
+        const { result } = await renderYieldClaimFees({
+            accountRewards: createAccountRewards(),
+            isEnabled: true,
+        });
+
+        await settleDebounce();
+
+        expect(result.current.isPreparingClaimFee).toBe(false);
+        expect(result.current.preparedAction).toBeNull();
+        expect(result.current.hasFeeEstimationError).toBe(true);
+
+        await act(() => result.current.retryFeeEstimation());
+        await settleDebounce();
+
+        expect(result.current.hasFeeEstimationError).toBe(false);
+        expect(result.current.preparedAction).not.toBeNull();
+    });
+
+    it('offers retry when the fee estimation request rejects', async () => {
+        estimateYieldFeeLevelMock.mockRejectedValueOnce(new Error('Backend unavailable'));
+        const { result } = await renderYieldClaimFees({
+            accountRewards: createAccountRewards(),
+            isEnabled: true,
+        });
+
+        await settleDebounce();
+
+        expect(result.current.isPreparingClaimFee).toBe(false);
+        expect(result.current.preparedAction).toBeNull();
+        expect(result.current.hasFeeEstimationError).toBe(true);
     });
 
     it('does not re-prepare when rewards only get a new identity with unchanged values', async () => {
@@ -171,6 +292,94 @@ describe('useYieldClaimFees', () => {
 
         expect(estimateYieldFeeLevelMock).toHaveBeenCalledTimes(1);
         expect(result.current.preparedAction).toBe(preparedAction);
+    });
+
+    it('recovers after a balance-only top-up and blocks again if fee funds are spent', async () => {
+        buildYieldClaimFeeLevelsMock.mockImplementation(
+            jest.requireActual('../../utils/yield/yieldClaimFeeUtils').buildYieldClaimFeeLevels,
+        );
+        const rewards = createAccountRewards();
+        const withBalance = (availableBalance: string) => ({
+            ...rewards,
+            account: { ...rewards.account, availableBalance },
+        });
+        const { result, rerender } = await renderYieldClaimFees({
+            accountRewards: withBalance('0'),
+            isEnabled: true,
+        });
+        await settleDebounce();
+        expect(result.current.preparedAction).toBeNull();
+        expect(result.current.isFeeUnavailable).toBe(true);
+        expect(result.current.hasFeeEstimationError).toBe(false);
+
+        await rerender({ accountRewards: withBalance(ACCOUNT.availableBalance), isEnabled: true });
+        await settleDebounce();
+        expect(result.current.isFeeUnavailable).toBe(false);
+        expect(result.current.preparedAction).not.toBeNull();
+
+        await rerender({ accountRewards: withBalance('0'), isEnabled: true });
+        await settleDebounce();
+        expect(result.current.preparedAction).toBeNull();
+        expect(result.current.isFeeUnavailable).toBe(true);
+        expect(estimateYieldFeeLevelMock).toHaveBeenCalledTimes(3);
+    });
+
+    it('does not re-prepare when identical network fee data is reloaded', async () => {
+        const { result, store } = await renderYieldClaimFees({
+            accountRewards: createAccountRewards(),
+            isEnabled: true,
+        });
+        await settleDebounce();
+        const { preparedAction } = result.current;
+
+        await act(() =>
+            store.dispatch(
+                feesActions.updateMultipleFees({
+                    eth: {
+                        ...FEES_STATE.eth!,
+                        data: {
+                            ...FEES_STATE.eth!.data!,
+                            levels: FEES_STATE.eth!.data!.levels.map(level => ({ ...level })),
+                        },
+                    },
+                }),
+            ),
+        );
+        await settleDebounce();
+
+        expect(estimateYieldFeeLevelMock).toHaveBeenCalledTimes(1);
+        expect(result.current.preparedAction).toBe(preparedAction);
+    });
+
+    it('reprices when network rates change within the same block', async () => {
+        buildYieldClaimFeeLevelsMock.mockImplementation(
+            jest.requireActual('../../utils/yield/yieldClaimFeeUtils').buildYieldClaimFeeLevels,
+        );
+        const { result, store } = await renderYieldClaimFees({
+            accountRewards: createAccountRewards(),
+            isEnabled: true,
+        });
+        await settleDebounce();
+        const initialFee = result.current.preparedAction?.feePreview.fee;
+        expect(initialFee).toBeDefined();
+
+        await act(() =>
+            store.dispatch(
+                feesActions.updateMultipleFees({
+                    eth: {
+                        ...FEES_STATE.eth!,
+                        data: {
+                            ...FEES_STATE.eth!.data!,
+                            levels: [{ label: 'normal', feePerUnit: '20', blocks: 1 }],
+                        },
+                    },
+                }),
+            ),
+        );
+        await settleDebounce();
+
+        expect(estimateYieldFeeLevelMock).toHaveBeenCalledTimes(2);
+        expect(result.current.preparedAction?.feePreview.fee).not.toBe(initialFee);
     });
 
     it('re-prepares when the claim rewards actually change', async () => {
