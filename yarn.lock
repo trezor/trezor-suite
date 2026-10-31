@@ -17036,14 +17036,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite/price-chart@workspace:suite/price-chart"
   dependencies:
-    "@suite-common/assets": "workspace:*"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/price-chart": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
-    "@suite-common/wallet-utils": "workspace:*"
     "@suite/flags": "workspace:*"
+    "@suite/intl": "workspace:*"
     "@suite/ui-animations": "workspace:*"
     "@trezor/components": "workspace:*"
     "@trezor/dependency-injection": "workspace:*"
