@@ -69,6 +69,8 @@ export class Blockchain {
 
     private onDisconnected: BlockchainOptions['onDisconnected'];
     private initPromise?: Promise<ServerInfo>;
+    // set by disconnect(), which already reported it: a pending init must not report again
+    private isDisconnected = false;
 
     constructor(options: BlockchainOptions) {
         this.identity = options.identity;
@@ -157,6 +159,8 @@ export class Blockchain {
         if (!this.initPromise) {
             this.initPromise = this.initLink()
                 .then(info => {
+                    if (this.isDisconnected) throw ERRORS.TypedError('Backend_Disconnected');
+
                     this.postMessage(
                         createBlockchainMessage(BLOCKCHAIN.CONNECT, {
                             coin: this.coinInfo,
@@ -169,14 +173,16 @@ export class Blockchain {
                     return info;
                 })
                 .catch(error => {
-                    this.postMessage(
-                        createBlockchainMessage(BLOCKCHAIN.ERROR, {
-                            coin: this.coinInfo,
-                            identity: this.identity,
-                            error: error.message,
-                            code: error.code,
-                        }),
-                    );
+                    if (!this.isDisconnected) {
+                        this.postMessage(
+                            createBlockchainMessage(BLOCKCHAIN.ERROR, {
+                                coin: this.coinInfo,
+                                identity: this.identity,
+                                error: error.message,
+                                code: error.code,
+                            }),
+                        );
+                    }
                     this.initPromise = Promise.reject(error);
                     this.link.dispose();
 
@@ -337,6 +343,7 @@ export class Blockchain {
     }
 
     disconnect() {
+        this.isDisconnected = true;
         this.link.removeAllListeners();
         this.link
             .disconnect()

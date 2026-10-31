@@ -7212,6 +7212,14 @@ export const messages = defineMessages({
         id: 'TR_NEWEST_FIRST',
         defaultMessage: 'Newest first',
     },
+    TR_LOADING_TAKES_LONGER_THAN_EXPECTED: {
+        id: 'TR_LOADING_TAKES_LONGER_THAN_EXPECTED',
+        defaultMessage: 'Loading is taking longer than expected.',
+    },
+    TR_LOADING_WAITING_FOR_BACKENDS: {
+        id: 'TR_LOADING_WAITING_FOR_BACKENDS',
+        defaultMessage: 'Waiting for: {backends}',
+    },
     TR_LOADING_TRANSACTION_DETAILS: {
         id: 'TR_LOADING_TRANSACTION_DETAILS',
         defaultMessage: 'Loading transaction details...',
@@ -7464,6 +7472,14 @@ export const messages = defineMessages({
     TR_BACKENDS: {
         id: 'TR_BACKENDS',
         defaultMessage: 'backend',
+    },
+    TR_CUSTOM_BACKEND_UNREACHABLE: {
+        id: 'TR_CUSTOM_BACKEND_UNREACHABLE',
+        defaultMessage: "Can't connect to your custom server",
+    },
+    TR_CUSTOM_BACKEND_UNREACHABLE_DESCRIPTION: {
+        id: 'TR_CUSTOM_BACKEND_UNREACHABLE_DESCRIPTION',
+        defaultMessage: 'Check the server address, or switch back to the default Trezor servers.',
     },
     TR_CUSTOM_BACKEND_INVALID_URL: {
         id: 'TR_CUSTOM_BACKEND_INVALID_URL',
