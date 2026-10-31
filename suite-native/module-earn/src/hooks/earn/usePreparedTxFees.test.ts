@@ -339,6 +339,20 @@ describe('usePreparedTxFees', () => {
         expect(result.current.isFeePreparing).toBe(false);
     });
 
+    it('offers retry when a prepared action has no usable fee draft', async () => {
+        buildFeeDraftStateMock.mockReturnValue(null);
+        const composeTransaction = jest.fn().mockResolvedValue(composeReady());
+        const { result } = await renderPreparedTxFees(createProps({ composeTransaction }));
+        await settleDebounce();
+        expect(result.current.hasFeeEstimationError).toBe(true);
+        expect(result.current.isFeeReady).toBe(false);
+        buildFeeDraftStateMock.mockReturnValue(FEE_DRAFT_STATE);
+        await act(() => result.current.retryFeeEstimation());
+        await settleDebounce();
+        expect(result.current.hasFeeEstimationError).toBe(false);
+        expect(result.current.isFeeReady).toBe(true);
+    });
+
     it('surfaces an error when the compose function throws', async () => {
         const composeTransaction = jest.fn().mockRejectedValue(new Error('compose exploded'));
         const { result } = await renderPreparedTxFees(createProps({ composeTransaction }));

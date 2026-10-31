@@ -4,7 +4,6 @@ import { Form } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import { ContextMessage } from '@suite-native/message-system';
 import { Screen } from '@suite-native/navigation';
-import { FeeSelector } from '@suite-native/transaction-management';
 
 import { YieldAmountInputCard } from '../../components/yield/YieldAmountInputCard';
 import { YieldDepositApprovalLimitBottomSheet } from '../../components/yield/YieldDepositApprovalLimitBottomSheet';
@@ -13,6 +12,7 @@ import { YieldDepositFlowFooter } from '../../components/yield/YieldDepositFlowF
 import { YieldDepositStepCard } from '../../components/yield/YieldDepositStepCard';
 import { YieldDisabledAlert } from '../../components/yield/YieldDisabledAlert';
 import { YieldFeeReserveBanner } from '../../components/yield/YieldFeeReserveBanner';
+import { YieldFeeSection } from '../../components/yield/YieldFeeSection';
 import { YieldFlowScreenHeader } from '../../components/yield/YieldFlowScreenHeader';
 import { YieldSessionPendingModal } from '../../components/yield/YieldSessionPendingModal';
 import { useYieldDepositApprovalController } from '../../hooks/yield/controllers/useYieldDepositApprovalController';
@@ -156,14 +156,17 @@ export const YieldDepositApprovalScreen = () => {
 
                         {feeSection.isVisible && (
                             <Box paddingHorizontal="sp16">
-                                <FeeSelector
+                                <YieldFeeSection
                                     accountKey={account.key}
                                     tokenContract={tokenContract}
-                                    updateThunk={feeSection.updateFeeLevelThunk}
-                                    selectedFee={feeSection.selectedFee}
-                                    selectedFeePerUnit={feeSection.formDraft?.feePerUnit}
-                                    formDraft={feeSection.formDraft}
-                                    formDraftKey={feeSection.formDraftKey}
+                                    fees={{
+                                        hasFeeEstimationError: feeSection.hasFeeEstimationError,
+                                        retryFeeEstimation: feeSection.retryFeeEstimation,
+                                        updateFeeLevelThunk: feeSection.updateFeeLevelThunk,
+                                        selectedFee: feeSection.selectedFee,
+                                        formDraft: feeSection.formDraft,
+                                        formDraftKey: feeSection.formDraftKey,
+                                    }}
                                 />
                             </Box>
                         )}

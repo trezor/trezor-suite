@@ -304,6 +304,8 @@ export const useYieldDepositApprovalController = () => {
         feeReserveAlert: getYieldFeeReserveAlert({ nativeFeeStatus, gasReserve }),
         feeSection: {
             isVisible: isValid && !!amountValue,
+            hasFeeEstimationError: approvalFees.hasFeeEstimationError,
+            retryFeeEstimation: approvalFees.retryFeeEstimation,
             formDraft: approvalFees.formDraft,
             formDraftKey: approvalFees.formDraftKey,
             selectedFee: approvalFees.selectedFee,
