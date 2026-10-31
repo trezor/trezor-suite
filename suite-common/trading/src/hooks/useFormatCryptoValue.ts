@@ -2,14 +2,18 @@ import { useCallback } from 'react';
 
 import type { CryptoId } from 'invity-api';
 
-import { useFormatters } from '@suite-common/formatters';
+import { type CryptoAmountFormatterFormatStyle, useFormatters } from '@suite-common/formatters';
 import { type NetworkSymbol, getNetworkDecimals } from '@suite-common/wallet-config';
 
 import { useTradingUtils } from './useTradingUtils';
 
 const TOKEN_DECIMALS_LENGTH = 16;
 
-export const useFormatCryptoValue = () => {
+export type UseFormatCryptoValueParams = {
+    formatStyle?: CryptoAmountFormatterFormatStyle;
+};
+
+export const useFormatCryptoValue = ({ formatStyle }: UseFormatCryptoValueParams = {}) => {
     const { CryptoAmountFormatter } = useFormatters();
     const { cryptoIdToCoinSymbol } = useTradingUtils();
 
@@ -35,8 +39,9 @@ export const useFormatCryptoValue = () => {
                 symbol: coinSymbol as NetworkSymbol,
                 isEllipsisAppended: false,
                 smallestUnitsOverride,
+                formatStyle,
             });
         },
-        [cryptoIdToCoinSymbol, CryptoAmountFormatter],
+        [cryptoIdToCoinSymbol, CryptoAmountFormatter, formatStyle],
     );
 };
