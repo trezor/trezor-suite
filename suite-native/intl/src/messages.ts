@@ -2398,21 +2398,27 @@ export const messages = {
     },
     moduleAssets: {
         assetDetailScreen: {
-            headerTitle: 'Asset details',
+            priceSection: {
+                title: 'Market price',
+            },
             settings: {
                 openButtonAccessibilityLabel: 'Asset settings',
                 network: 'Network',
                 accounts: 'Accounts',
             },
             balanceSection: {
-                title: 'Your balance',
-                accountCount: 'on {count, plural, one {# account} other {# accounts}}',
-                asset: 'Asset',
+                balanceTitle: 'Balance',
+                allAccountsButton: 'All accounts ({count})',
             },
             earnSection: {
                 title: 'Earn',
+                viewAll: 'View all',
                 available: 'Available',
                 staking: 'Staking',
+                banner: {
+                    title: 'Earn available',
+                    description: 'Earn up to {apy}% on your {symbol}.',
+                },
             },
         },
     },

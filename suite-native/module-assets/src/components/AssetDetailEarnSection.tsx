@@ -3,14 +3,14 @@ import { useSelector } from 'react-redux';
 import { CommonActions, type RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 
 import {
+    type HomeAssetEarnState,
     type HomeAssetTableState,
+    selectIsWalletAssetEarnAvailable,
     selectWalletAssetAvailableAmount,
     selectWalletAssetKey,
     selectWalletAssetStakingAmount,
-    selectWalletAssetStakingRatio,
 } from '@suite-common/assets';
-import { Divider, HStack, PressableOpacity, ProgressBar, Text, VStack } from '@suite-native/atoms';
-import { Icon } from '@suite-native/icons';
+import { Divider, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
     AppTabsRoutes,
@@ -22,7 +22,10 @@ import {
     type StackNavigationProps,
 } from '@suite-native/navigation';
 
+import { AssetDetailEarnBalanceBar } from './AssetDetailEarnBalanceBar';
 import { AssetDetailEarnBalanceRow } from './AssetDetailEarnBalanceRow';
+import { AssetDetailEarnBanner } from './AssetDetailEarnBanner';
+import { AssetDetailSectionHeader } from './AssetDetailSectionHeader';
 
 type NavigationProps = StackNavigationProps<RootStackParamList, RootStackRoutes.AppTabs>;
 
@@ -38,16 +41,12 @@ export const AssetDetailEarnSection = () => {
     const stakingAmount = useSelector((state: HomeAssetTableState) =>
         selectWalletAssetStakingAmount(state, assetKey),
     );
-    const stakingRatio = useSelector((state: HomeAssetTableState) =>
-        selectWalletAssetStakingRatio(state, assetKey),
+    const isEarnAvailable = useSelector((state: HomeAssetEarnState) =>
+        selectIsWalletAssetEarnAvailable(state, assetKey),
     );
     const navigation = useNavigation<NavigationProps>();
 
-    if (
-        availableAmount === undefined ||
-        stakingAmount === undefined ||
-        stakingRatio === undefined
-    ) {
+    if (availableAmount === undefined || stakingAmount === undefined || !isEarnAvailable) {
         return null;
     }
 
@@ -72,23 +71,25 @@ export const AssetDetailEarnSection = () => {
     return (
         <>
             <Divider />
-            <PressableOpacity onPress={handlePress} testID="@assets/asset-detail/earn-section">
-                <VStack paddingHorizontal="sp20" paddingVertical="sp24" spacing="sp20">
-                    <HStack alignItems="center" justifyContent="space-between" spacing="sp8">
-                        <Text variant="body-xs" color="contentSecondary">
-                            <Translation id="moduleAssets.assetDetailScreen.earnSection.title" />
-                        </Text>
-                        <Icon name="caretRight" size="mediumLarge" color="contentSecondary" />
-                    </HStack>
+            <VStack paddingHorizontal="sp20" spacing="sp12">
+                <AssetDetailSectionHeader
+                    title={<Translation id="moduleAssets.assetDetailScreen.earnSection.title" />}
+                    linkLabel={
+                        <Translation id="moduleAssets.assetDetailScreen.earnSection.viewAll" />
+                    }
+                    onPress={handlePress}
+                    testID="@assets/asset-detail/earn-view-all-button"
+                />
 
-                    <ProgressBar value={stakingRatio} max={1} />
-
-                    <VStack spacing="sp16">
-                        <AssetDetailEarnBalanceRow amount={availableAmount} type="available" />
-                        <AssetDetailEarnBalanceRow amount={stakingAmount} type="staking" />
-                    </VStack>
-                </VStack>
-            </PressableOpacity>
+                <AssetDetailEarnBalanceBar assetKey={assetKey} />
+                <AssetDetailEarnBalanceRow amount={availableAmount} type="available" />
+                <AssetDetailEarnBalanceRow amount={stakingAmount} type="staking" />
+                <AssetDetailEarnBanner
+                    availableAmount={availableAmount}
+                    stakingAmount={stakingAmount}
+                    onPress={handlePress}
+                />
+            </VStack>
         </>
     );
 };
