@@ -42,4 +42,30 @@ describe('RateLimiter', () => {
         expect((await last) - (await first)).toBe(delay);
         expect(task).toHaveBeenCalledTimes(2);
     });
+
+    test('lets priority requests ahead of the waiting ones, but not of the running one', async () => {
+        const delay = 42;
+        const limiter = new RateLimiter(delay, 1_000);
+        const order: string[] = [];
+        const task = (name: string) => () => {
+            order.push(name);
+
+            return Promise.resolve(Date.now());
+        };
+
+        const first = limiter.limit(task('first'));
+        const second = limiter.limit(task('second'));
+        const firstPriority = limiter.limit(task('first priority'), undefined, {
+            priority: 'high',
+        });
+        const secondPriority = limiter.limit(task('second priority'), undefined, {
+            priority: 'high',
+        });
+        await jest.advanceTimersByTimeAsync(3 * delay);
+
+        expect(order).toEqual(['first', 'first priority', 'second priority', 'second']);
+        expect((await firstPriority) - (await first)).toBe(delay);
+        expect((await secondPriority) - (await firstPriority)).toBe(delay);
+        expect((await second) - (await secondPriority)).toBe(delay);
+    });
 });
